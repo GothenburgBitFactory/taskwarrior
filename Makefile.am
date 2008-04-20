@@ -1,0 +1,3 @@
+SUBDIRS = src
+EXTRA_DIST = TUTORIAL SAMPLE_taskrc
+
