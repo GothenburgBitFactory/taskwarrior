@@ -1,0 +1,277 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright 2004 - 2008, Paul Beckingham.  All rights reserved.
+//
+//
+////////////////////////////////////////////////////////////////////////////////
+#include <iostream>
+#include <vector>
+#include <string>
+#include "task.h"
+
+///////////////////////////////////////////////////////////////////////////////
+void wrapText (
+  std::vector <std::string>& lines,
+  const std::string& text,
+  const int width)
+{
+  std::string copy = text;
+  std::string line;
+
+  while (copy.length ())
+  {
+    extractLine (copy, line, width);
+    lines.push_back (line);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void split (std::vector<std::string>& results, const std::string& input, const char delimiter)
+{
+  std::string temp = input;
+  std::string::size_type i;
+  while ((i = temp.find (delimiter)) != std::string::npos)
+  {
+    std::string token = temp.substr (0, i);
+    results.push_back (token);
+    temp.erase (0, i + 1);
+  }
+
+  if (temp.length ()) results.push_back (temp);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void split (std::vector<std::string>& results, const std::string& input, const std::string& delimiter)
+{
+  std::string temp = input;
+  std::string::size_type i;
+  while ((i = temp.find (delimiter)) != std::string::npos)
+  {
+    std::string token = temp.substr (0, i);
+    results.push_back (token);
+    temp.erase (0, i + delimiter.length ());
+  }
+
+  if (temp.length ()) results.push_back (temp);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void join (
+  std::string& result,
+  const std::string& separator,
+  const std::vector<std::string>& items)
+{
+  result = "";
+  unsigned int size = items.size ();
+  for (unsigned int i = 0; i < size; ++i)
+  {
+    result += items[i];
+    if (i < size - 1)
+      result += separator;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void extractParagraphs (const std::string& input, std::vector<std::string>& output)
+{
+  std::string copy = input;
+  while (1)
+  {
+    unsigned int so = copy.find ("<p>");
+    unsigned int eo = copy.find ("</p>");
+
+    if (so == std::string::npos && eo == std::string::npos)
+      break;
+
+    std::string extract = trim (copy.substr (so + 3, eo - so - 3));
+    copy = copy.substr (eo + 4, std::string::npos);
+    output.push_back (extract);
+  }
+
+  // There were no paragraphs.
+  if (!output.size ())
+    output.push_back (input);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string trimLeft (const std::string& in, const std::string& t /*= " "*/)
+{
+  std::string out = in;
+  return out.erase (0, in.find_first_not_of (t));
+}
+
+// UNICODE safe
+std::wstring trimLeft (const std::wstring& in, const std::wstring& t /*= L" "*/)
+{
+  std::wstring out = in;
+  return out.erase (0, in.find_first_not_of (t));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string trimRight (const std::string& in, const std::string& t /*= " "*/)
+{
+  std::string out = in;
+  return out.erase (out.find_last_not_of (t) + 1);
+}
+
+// UNICODE safe
+std::wstring trimRight (const std::wstring& in, const std::wstring& t /*= L" "*/)
+{
+  std::wstring out = in;
+  return out.erase (out.find_last_not_of (t) + 1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string trim (const std::string& in, const std::string& t /*= " "*/)
+{
+  std::string out = in;
+  return trimLeft (trimRight (out, t), t);
+}
+
+// UNICODE safe
+std::wstring trim (const std::wstring& in, const std::wstring& t /*= L" "*/)
+{
+  std::wstring out = in;
+  return trimLeft (trimRight (out, t), t);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Remove enclosing balanced quotes.  Assumes trimmed text.
+void unquoteText (std::string& text)
+{
+  char quote = text[0];
+  if (quote == '\'' || quote == '"')
+    if (text[text.length () - 1] == quote)
+      text = text.substr (1, text.length () - 3);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void extractLine (std::string& text, std::string& line, int length)
+{
+  unsigned int eol = text.find ("\n");
+
+  // Special case: found \n in first length characters.
+  if (eol != std::string::npos && eol < (unsigned) length)
+  {
+    line = text.substr (0, eol); // strip \n
+    text = text.substr (eol + 1, std::string::npos);
+    return;
+  }
+
+  // Special case: no \n, and less than length characters total.
+  // special case: text.find ("\n") == std::string::npos && text.length () < length
+  if (eol == std::string::npos && text.length () <= (unsigned) length)
+  {
+    line = text;
+    text = "";
+    return;
+  }
+
+  // Safe to ASSERT text.length () > length
+
+  // Look for the last space prior to length
+  eol = length;
+  while (eol && text[eol] != ' ' && text[eol] != '\n')
+    --eol;
+
+  // If a space was found, break there.
+  if (eol)
+  {
+    line = text.substr (0, eol);
+    text = text.substr (eol + 1, std::string::npos);
+  }
+
+  // If no space was found, hyphenate.
+  else
+  {
+    line = text.substr (0, length - 1) + "-";
+    text = text.substr (length - 1, std::string::npos);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string commify (const std::string& data)
+{
+  // First scan for decimal point and end of digits.
+  int decimalPoint = -1;
+  int end          = -1;
+
+  int i;
+  for (int i = 0; i < (int) data.length (); ++i)
+  {
+    if (::isdigit (data[i]))
+      end = i;
+
+    if (data[i] == '.')
+      decimalPoint = i;
+  }
+
+  std::string result;
+  if (decimalPoint != -1)
+  {
+    // In reverse order, transfer all digits up to, and including the decimal
+    // point.
+    for (i = (int) data.length () - 1; i >= decimalPoint; --i)
+      result += data[i];
+
+    int consecutiveDigits = 0;
+    for (; i >= 0; --i)
+    {
+      if (::isdigit (data[i]))
+      {
+        result += data[i];
+
+        if (++consecutiveDigits == 3 && i && ::isdigit (data[i - 1]))
+        {
+          result += ',';
+          consecutiveDigits = 0;
+        }
+      }
+      else
+        result += data[i];
+    }
+  }
+  else
+  {
+    // In reverse order, transfer all digits up to, but not including the last
+    // digit.
+    for (i = (int) data.length () - 1; i > end; --i)
+      result += data[i];
+
+    int consecutiveDigits = 0;
+    for (; i >= 0; --i)
+    {
+      if (::isdigit (data[i]))
+      {
+        result += data[i];
+
+        if (++consecutiveDigits == 3 && i && ::isdigit (data[i - 1]))
+        {
+          result += ',';
+          consecutiveDigits = 0;
+        }
+      }
+      else
+        result += data[i];
+    }
+  }
+
+  // reverse result into data.
+  std::string done;
+  for (int i = (int) result.length () - 1; i >= 0; --i)
+    done += result[i];
+
+  return done;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string lowerCase (const std::string& input)
+{
+  std::string output = input;
+  for (int i = 0; i < (int) input.length (); ++i)
+    if (::isupper (input[i]))
+      output[i] = ::tolower (input[i]);
+
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
