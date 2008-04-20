@@ -1,0 +1,15 @@
+data.location=/home/bob/.task
+#command.logging=on
+confirmation=yes
+nag=Note: try to stick to high priority tasks.  See "task next".
+next=2
+
+#color.overdue=red
+#color.due=on yellow
+#color.pri.H=red
+#color.pri.M=yellow
+#color.pri.L=green
+#color.pri.none=white on yellow
+#color.active=blue
+#color.tagged=yellow
+
