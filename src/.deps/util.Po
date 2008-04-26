@@ -95,8 +95,9 @@ util.o util.o: util.cpp /usr/include/c++/4.0.0/iostream \
   /usr/include/sys/time.h Table.h /usr/include/c++/4.0.0/map \
   /usr/include/c++/4.0.0/bits/stl_tree.h \
   /usr/include/c++/4.0.0/bits/stl_map.h \
-  /usr/include/c++/4.0.0/bits/stl_multimap.h color.h task.h Config.h \
-  TDB.h T.h stlmacros.h ../auto.h /usr/include/uuid/uuid.h
+  /usr/include/c++/4.0.0/bits/stl_multimap.h color.h Grid.h task.h \
+  Config.h color.h TDB.h T.h stlmacros.h ../auto.h \
+  /usr/include/uuid/uuid.h
 
 /usr/include/c++/4.0.0/iostream:
 
@@ -378,9 +379,13 @@ Table.h:
 
 color.h:
 
+Grid.h:
+
 task.h:
 
 Config.h:
+
+color.h:
 
 TDB.h:
 

@@ -22,10 +22,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
-#include "Table.h"
-#include "Date.h"
-#include "stlmacros.h"
-#include "task.h"
+#include <Table.h>
+#include <Date.h>
+#include <library.h>
+#include <stlmacros.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 Table::Table ()
@@ -153,9 +153,7 @@ void Table::setColumnCommify (int column)
 ////////////////////////////////////////////////////////////////////////////////
 void Table::setColumnJustification (int column, just j)
 {
-  char id[12];
-  sprintf (id, "col:%d", column);
-  mJustification[id] = j;
+  mJustification[column] = j;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -505,20 +503,8 @@ void Table::calculateColumnWidths ()
 ////////////////////////////////////////////////////////////////////////////////
 Table::just Table::getJustification (int row, int col)
 {
-  char idCell[24];
-  sprintf (idCell, "cell:%d,%d", row, col);
-  if (mJustification.find (idCell) != mJustification.end ())
-    return mJustification[idCell];
-
-  char idRow[12];
-  sprintf (idRow, "row:%d", row);
-  if (mJustification.find (idRow) != mJustification.end ())
-    return mJustification[idRow];
-
-  char idCol[12];
-  sprintf (idCol, "col:%d", col);
-  if (mJustification.find (idCol) != mJustification.end ())
-    return mJustification[idCol];
+  if (mJustification.find (col) != mJustification.end ())
+    return mJustification[col];
 
   return left;
 }
@@ -526,11 +512,7 @@ Table::just Table::getJustification (int row, int col)
 ////////////////////////////////////////////////////////////////////////////////
 Table::just Table::getHeaderJustification (int col)
 {
-  char idCol[12];
-  sprintf (idCol,  "col:%d",          col);
-
-  return mJustification.find (idCol)   != mJustification.end () ? mJustification[idCol]
-       : mJustification.find ("table") != mJustification.end () ? mJustification["table"]
+  return mJustification.find (col) != mJustification.end () ? mJustification[col]
        : left;
 }
 

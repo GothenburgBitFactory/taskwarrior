@@ -10,7 +10,8 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "color.h"
+#include <color.h>
+#include <Grid.h>
 
 class Table
 {
@@ -100,7 +101,7 @@ private:
   std::vector <int> mMaxDataWidth;
   std::vector <int> mCalculatedWidth;
 
-  std::map <std::string, just> mJustification;
+  std::map <int, just> mJustification;
   std::map <int, bool> mCommify;
   std::map <std::string, std::string> mData;
   std::vector <int> mSortColumns;
