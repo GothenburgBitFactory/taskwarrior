@@ -378,6 +378,36 @@ Grid::Cell::operator std::string () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Grid::Cell::operator== (const Grid::Cell& rhs) const
+{
+  switch (mType)
+  {
+  case CELL_BOOL:   return mBool   == rhs.mBool   ? true : false;
+  case CELL_CHAR:   return mChar   == rhs.mChar   ? true : false;
+  case CELL_INT:    return mInt    == rhs.mInt    ? true : false;
+  case CELL_FLOAT:  return mFloat  == rhs.mFloat  ? true : false;
+  case CELL_DOUBLE: return mDouble == rhs.mDouble ? true : false;
+  case CELL_STRING: return mString == rhs.mString ? true : false;
+  default:          break; // To prevent warnings.
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Grid::Cell::operator!= (const Grid::Cell& rhs) const
+{
+  switch (mType)
+  {
+  case CELL_BOOL:   return mBool   != rhs.mBool   ? true : false;
+  case CELL_CHAR:   return mChar   != rhs.mChar   ? true : false;
+  case CELL_INT:    return mInt    != rhs.mInt    ? true : false;
+  case CELL_FLOAT:  return mFloat  != rhs.mFloat  ? true : false;
+  case CELL_DOUBLE: return mDouble != rhs.mDouble ? true : false;
+  case CELL_STRING: return mString != rhs.mString ? true : false;
+  default:          break; // To prevent warnings.
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Grid::Cell::cellType Grid::Cell::type () const
 {
   return mType;

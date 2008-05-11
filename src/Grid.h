@@ -29,6 +29,8 @@ public:
     operator float () const;
     operator double () const;
     operator std::string () const;
+    bool operator== (const Cell&) const;
+    bool operator!= (const Cell&) const;
 
     enum cellType {CELL_BOOL, CELL_CHAR, CELL_INT, CELL_FLOAT, CELL_DOUBLE, CELL_STRING};
 
