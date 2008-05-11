@@ -37,5 +37,5 @@ AC_CHECK_FUNCS([select])
 AC_CHECK_FUNC(flock, [AC_DEFINE([HAVE_FLOCK], [1], [Found flock])])
 AC_CHECK_FUNC(uuid_unparse_lower, [AC_DEFINE([HAVE_UUID], [1], [Found uuid_unparse_lower])])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
