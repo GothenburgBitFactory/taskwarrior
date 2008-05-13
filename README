@@ -5,3 +5,43 @@ Based on ideas in todo.sh
 Movie at www.b.n/task.mov
 Feedback, suggestions to task@beckingham.net
 
+
+
+
+Task - a GTD utility featuring:
+
+  - Robust C++ implementation
+  - Tags
+  - Colorful, tabular output
+  - Reports
+  - Low-level API
+  - Auto-completion on all commands, options
+  - Multi-user file locking
+  - Clean architecture allowing quick addition of new features
+  - UUID for all tasks
+
+Task is an implementation of GTD ideas, similar to todo.sh, but without many of
+the limitations in todo.sh, namely:
+
+  - Bugs are not being fixed
+  - No response or web update from ________ on code submission
+  - todo.py is the todo.sh replacement, but requires a python installation - a
+    significant barrier to many users, and is currently merely a
+    reimplementation of todo.sh
+  - project.sh is the natural progression for todo.sh, but is intended to be a
+    project management solution, but is so far todo.sh with a "done" and
+    "overview" command
+  - There is no output formatting
+  - There is no way to enumerate projects, categories
+  - There is no file locking for multi-user access
+  - With no API, a graphical front end must reimplement the primitives
+
+With a robust infrastructure in place for parsing commands, file I/O and
+structured output, the development threshold for adding new features is kept
+low.
+
+It is intended that features, mainly in the form of reports will be added
+frequently, with best practices and useful reports evolving.
+
+Task is scope-limited to GTD functionality only.
+
