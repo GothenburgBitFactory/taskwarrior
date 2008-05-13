@@ -116,6 +116,15 @@ void Grid::add (
 void Grid::add (
   const unsigned int row,
   const unsigned int col,
+  const char* value)
+{
+  expandGrid (row, col);
+  insertCell (row, col, new Cell (std::string (value)));
+}
+
+void Grid::add (
+  const unsigned int row,
+  const unsigned int col,
   const std::string& value)
 {
   expandGrid (row, col);

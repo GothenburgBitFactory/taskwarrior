@@ -170,7 +170,7 @@ int Table::addRow ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::setRowColor (int row, Text::color fg, Text::color bg)
+void Table::setRowColor (const int row, const Text::color fg, const Text::color bg)
 {
   char id[12];
   sprintf (id, "row:%d", row);
@@ -179,7 +179,7 @@ void Table::setRowColor (int row, Text::color fg, Text::color bg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::setRowFg (int row, Text::color c)
+void Table::setRowFg (const int row, const Text::color c)
 {
   char id[12];
   sprintf (id, "row:%d", row);
@@ -187,7 +187,7 @@ void Table::setRowFg (int row, Text::color c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::setRowBg (int row, Text::color c)
+void Table::setRowBg (const int row, const Text::color c)
 {
   char id[12];
   sprintf (id, "row:%d", row);
@@ -195,11 +195,8 @@ void Table::setRowBg (int row, Text::color c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::addCell (int row, int col, const std::string& data)
+void Table::addCell (const int row, const int col, const std::string& data)
 {
-  char id[24];
-  sprintf (id, "cell:%d,%d", row, col);
-
   int length = 0;
 
   if (mSuppressWS)
@@ -212,14 +209,14 @@ void Table::addCell (int row, int col, const std::string& data)
 
     clean (data2);
     length = data2.length ();
-    mData[id] = data2;
+    mData.add (row, col, data2);
   }
   else
   {
     if (mCommify.find (col) != mCommify.end ())
-      mData[id] = commify (data);
+      mData.add (row, col, commify (data));
     else
-      mData[id] = data;
+      mData.add (row, col, data);
 
     length = data.length ();
   }
@@ -229,76 +226,61 @@ void Table::addCell (int row, int col, const std::string& data)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::addCell (int row, int col, char data)
+void Table::addCell (const int row, const int col, const char data)
 {
-  char id[24];
-  sprintf (id, "cell:%d,%d", row, col);
-
-  char value[2];
-  sprintf (value, "%c", data);
-
-  mData[id] = value;
+  mData.add (row, col, data);
 
   // Automatically maintain max width.
-  mMaxDataWidth[col] = max (mMaxDataWidth[col], (signed) ::strlen (value));
+  mMaxDataWidth[col] = max (mMaxDataWidth[col], 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::addCell (int row, int col, int data)
+void Table::addCell (const int row, const int col, const int data)
 {
-  char id[24];
-  sprintf (id, "cell:%d,%d", row, col);
-
   char value[12];
   sprintf (value, "%d", data);
 
   if (mCommify.find (col) != mCommify.end ())
-    mData[id] = commify (value);
+    mData.add (row, col, commify (value));
   else
-    mData[id] = value;
+    mData.add (row, col, value);
 
   // Automatically maintain max width.
   mMaxDataWidth[col] = max (mMaxDataWidth[col], (signed) ::strlen (value));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::addCell (int row, int col, float data)
+void Table::addCell (const int row, const int col, const float data)
 {
-  char id[24];
-  sprintf (id, "cell:%d,%d", row, col);
-
   char value[24];
   sprintf (value, "%.2f", data);
 
   if (mCommify.find (col) != mCommify.end ())
-    mData[id] = commify (value);
+    mData.add (row, col, commify (value));
   else
-    mData[id] = value;
+    mData.add (row, col, value);
 
   // Automatically maintain max width.
   mMaxDataWidth[col] = max (mMaxDataWidth[col], (signed) ::strlen (value));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::addCell (int row, int col, double data)
+void Table::addCell (const int row, const int col, const double data)
 {
-  char id[24];
-  sprintf (id, "cell:%d,%d", row, col);
-
   char value[24];
   sprintf (value, "%.6f", data);
 
   if (mCommify.find (col) != mCommify.end ())
-    mData[id] = commify (value);
+    mData.add (row, col, commify (value));
   else
-    mData[id] = value;
+    mData.add (row, col, value);
 
   // Automatically maintain max width.
   mMaxDataWidth[col] = max (mMaxDataWidth[col], (signed) ::strlen (value));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::setCellColor (int row, int col, Text::color fg, Text::color bg)
+void Table::setCellColor (const int row, const int col, const Text::color fg, const Text::color bg)
 {
   char id[24];
   sprintf (id, "cell:%d,%d", row, col);
@@ -307,7 +289,7 @@ void Table::setCellColor (int row, int col, Text::color fg, Text::color bg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::setCellFg (int row, int col, Text::color c)
+void Table::setCellFg (const int row, const int col, const Text::color c)
 {
   char id[24];
   sprintf (id, "cell:%d,%d", row, col);
@@ -315,7 +297,7 @@ void Table::setCellFg (int row, int col, Text::color c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::setCellBg (int row, int col, Text::color c)
+void Table::setCellBg (const int row, const int col, const Text::color c)
 {
   char id[24];
   sprintf (id, "cell:%d,%d", row, col);
@@ -323,15 +305,17 @@ void Table::setCellBg (int row, int col, Text::color c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Table::getCell (int row, int col)
+std::string Table::getCell (const int row, const int col)
 {
-  char id[24];
-  sprintf (id, "cell:%d,%d", row, col);
-  return mData[id];
+  Grid::Cell* c = mData.byRow (row, col);
+  if (c)
+    return (std::string) *c;
+
+  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Text::color Table::getFg (int row, int col)
+Text::color Table::getFg (const int row, const int col)
 {
   char idCell[24];
   sprintf (idCell, "cell:%d,%d", row, col);
@@ -366,7 +350,7 @@ Text::color Table::getHeaderFg (int col)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Text::color Table::getBg (int row, int col)
+Text::color Table::getBg (const int row, const int col)
 {
   char idCell[24];
   sprintf (idCell, "cell:%d,%d", row, col);
@@ -501,7 +485,7 @@ void Table::calculateColumnWidths ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Table::just Table::getJustification (int row, int col)
+Table::just Table::getJustification (const int row, const int col)
 {
   if (mJustification.find (col) != mJustification.end ())
     return mJustification[col];
@@ -602,10 +586,10 @@ const std::string Table::formatHeader (
 
 ////////////////////////////////////////////////////////////////////////////////
 void Table::formatCell (
-  int row,
-  int col,
-  int width,
-  int padding,
+  const int row,
+  const int col,
+  const int width,
+  const int padding,
   std::vector <std::string>& lines,
   std::string& blank)
 {
@@ -700,10 +684,10 @@ void Table::formatCell (
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::string Table::formatCell (
-  int row,
-  int col,
-  int width,
-  int padding)
+  const int row,
+  const int col,
+  const int width,
+  const int padding)
 {
   assert (width > 0);
 
@@ -855,48 +839,47 @@ void Table::sort (std::vector <int>& order)
       {
         keepScanning = false;
 
-        char left[16];
-        sprintf (left, "cell:%d,%d", order[r], mSortColumns[c]);
+        Grid::Cell* left  = mData.byRow (order[r],       mSortColumns[c]);
+        Grid::Cell* right = mData.byRow (order[r + gap], mSortColumns[c]);
+        if (left == NULL && right != NULL)
+          SWAP
 
-        char right[16];
-        sprintf (right, "cell:%d,%d", order[r + gap], mSortColumns[c]);
-
-        if (mData[left] != mData[right])
+        if (left && right && *left != *right)
         {
           switch (mSortOrder[mSortColumns[c]])
           {
           case ascendingNumeric:
-            if (::atoi (mData[left].c_str ()) > ::atoi (mData[right].c_str ()))
+            if ((float)*left > (float)*right)
               SWAP
             break;
 
           case descendingNumeric:
-            if (::atoi (mData[left].c_str ()) < ::atoi (mData[right].c_str ()))
+            if ((float)*left < (float)*right)
               SWAP
             break;
 
           case ascendingCharacter:
-            if (mData[left] > mData[right])
+            if ((char)*left > (char)*right)
               SWAP
             break;
 
           case descendingCharacter:
-            if (mData[left] < mData[right])
+            if ((char)*left < (char)*right)
               SWAP
             break;
 
           case ascendingDate:
             {
-              if (mData[left] != "" && mData[right] == "")
+              if ((std::string)*left != "" && (std::string)*right == "")
                 break;
 
-              else if (mData[left] == "" && mData[right] != "")
+              else if ((std::string)*left == "" && (std::string)*right != "")
                 SWAP
 
               else
               {
-                Date dl (mData[left]);
-                Date dr (mData[right]);
+                Date dl ((std::string)*left);
+                Date dr ((std::string)*right);
                 if (dl > dr)
                   SWAP
               }
@@ -905,16 +888,16 @@ void Table::sort (std::vector <int>& order)
 
           case descendingDate:
             {
-              if (mData[left] != "" && mData[right] == "")
+              if ((std::string)*left != "" && (std::string)*right == "")
                 break;
 
-              else if (mData[left] == "" && mData[right] != "")
+              else if ((std::string)*left == "" && (std::string)*right != "")
                 SWAP
 
               else
               {
-                Date dl (mData[left]);
-                Date dr (mData[right]);
+                Date dl ((std::string)*left);
+                Date dr ((std::string)*right);
                 if (dl < dr)
                   SWAP
               }
@@ -922,16 +905,16 @@ void Table::sort (std::vector <int>& order)
             break;
 
           case ascendingPriority:
-            if ((mData[left] == "" && mData[right] != "")                             ||
-                (mData[left] == "M" && mData[right] == "L")                           ||
-                (mData[left] == "H" && (mData[right] == "L" || mData[right] == "M")))
+            if (((std::string)*left == ""  && (std::string)*right != "")                             ||
+                ((std::string)*left == "M" && (std::string)*right == "L")                           ||
+                ((std::string)*left == "H" && ((std::string)*right == "L" || (std::string)*right == "M")))
               SWAP
             break;
 
           case descendingPriority:
-            if ((mData[left] == "" && mData[right] != "")                            ||
-                (mData[left] == "L" && (mData[right] == "M" || mData[right] == "H")) ||
-                (mData[left] == "M" && mData[right] == "H"))
+            if (((std::string)*left == "" && (std::string)*right != "")                            ||
+                ((std::string)*left == "L" && ((std::string)*right == "M" || (std::string)*right == "H")) ||
+                ((std::string)*left == "M" && (std::string)*right == "H"))
               SWAP
             break;
           }

@@ -55,6 +55,7 @@ public:
   void add (const unsigned int, const unsigned int, const int);
   void add (const unsigned int, const unsigned int, const float);
   void add (const unsigned int, const unsigned int, const double);
+  void add (const unsigned int, const unsigned int, const char*);
   void add (const unsigned int, const unsigned int, const std::string&);
 
   unsigned int width () const;

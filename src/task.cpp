@@ -492,7 +492,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
 
           // All criteria match, so add refTask to the output table.
           int row = table.addRow ();
-          table.addCell (row, 0, (int) i + 1);
+          table.addCell (row, 0, refTask.getId ());
           table.addCell (row, 1, refTask.getAttribute ("project"));
           table.addCell (row, 2, refTask.getAttribute ("priority"));
           table.addCell (row, 3, due);
@@ -665,7 +665,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
 
           // All criteria match, so add refTask to the output table.
           int row = table.addRow ();
-          table.addCell (row, 0, (int) i + 1);
+          table.addCell (row, 0, refTask.getId ());
           table.addCell (row, 1, refTask.getAttribute ("project"));
           table.addCell (row, 2, refTask.getAttribute ("priority"));
           table.addCell (row, 3, refTask.getDescription ());
@@ -1159,7 +1159,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
 
           // All criteria match, so add refTask to the output table.
           int row = table.addRow ();
-          table.addCell (row, 0, (int) i + 1);
+          table.addCell (row, 0, refTask.getId ());
           table.addCell (row, 1, refTask.getAttribute ("project"));
           table.addCell (row, 2, refTask.getAttribute ("priority"));
           table.addCell (row, 3, entered);
@@ -1980,7 +1980,7 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
 
       // All criteria match, so add refTask to the output table.
       int row = table.addRow ();
-      table.addCell (row, 0, (int) i + 1);
+      table.addCell (row, 0, refTask.getId ());
       table.addCell (row, 1, refTask.getAttribute ("project"));
       table.addCell (row, 2, refTask.getAttribute ("priority"));
       table.addCell (row, 3, due);
@@ -2099,7 +2099,7 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
         {
           // All criteria match, so add refTask to the output table.
           int row = table.addRow ();
-          table.addCell (row, 0, (int) i + 1);
+          table.addCell (row, 0, refTask.getId ());
           table.addCell (row, 1, refTask.getAttribute ("project"));
           table.addCell (row, 2, refTask.getAttribute ("priority"));
           table.addCell (row, 3, due);

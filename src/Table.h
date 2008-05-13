@@ -65,20 +65,20 @@ public:
            const std::string render ();
 
 private:
-           std::string getCell (int, int);
-           Text::color getFg (int, int);
-           Text::color getHeaderFg (int);
-           Text::color getBg (int, int);
-           Text::color getHeaderBg (int);
-           Text::attr getHeaderUnderline (int);
-           int getPadding (int);
+           std::string getCell (const int, const int);
+           Text::color getFg (const int, const int);
+           Text::color getHeaderFg (const int);
+           Text::color getBg (const int, const int);
+           Text::color getHeaderBg (const int);
+           Text::attr getHeaderUnderline (const int);
+           int getPadding (const int);
            int getIntraPadding ();
            void calculateColumnWidths ();
-           just getJustification (int, int);
-           just getHeaderJustification (int);
-           const std::string formatHeader (int, int, int);
-           const std::string formatCell (int, int, int, int);
-           void formatCell (int, int, int, int, std::vector <std::string>&, std::string&);
+           just getJustification (const int, const int);
+           just getHeaderJustification (const int);
+           const std::string formatHeader (const int, const int, const int);
+           const std::string formatCell (const int, const int, const int, const int);
+           void formatCell (const int, const int, const int, const int, std::vector <std::string>&, std::string&);
            void optimize (std::string&);
            void sort (std::vector <int>&);
            void clean (std::string&);
@@ -103,7 +103,7 @@ private:
 
   std::map <int, just> mJustification;
   std::map <int, bool> mCommify;
-  std::map <std::string, std::string> mData;
+  Grid mData;
   std::vector <int> mSortColumns;
   std::map <int, order> mSortOrder;
 
