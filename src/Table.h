@@ -70,7 +70,7 @@ private:
            Text::color getHeaderFg (const int);
            Text::color getBg (const int, const int);
            Text::color getHeaderBg (const int);
-           Text::attr getHeaderUnderline (const int);
+           Text::color getHeaderUnderline (const int);
            int getPadding (const int);
            int getIntraPadding ();
            void calculateColumnWidths ();
@@ -87,9 +87,9 @@ private:
   std::vector <std::string> mColumns;
   int mRows;
   int mIntraPadding;
-  std::map <std::string, Text::color> mFg;
-  std::map <std::string, Text::color> mBg;
-  std::map <std::string, Text::attr> mUnderline;
+  std::map <std::string, std::string> mFg;
+  std::map <std::string, std::string> mBg;
+  std::map <std::string, std::string> mUnderline;
 
   // Padding...
   int mTablePadding;

@@ -45,20 +45,20 @@ Table::~Table ()
 ////////////////////////////////////////////////////////////////////////////////
 void Table::setTableColor (Text::color fg, Text::color bg)
 {
-  mFg["table"] = fg;
-  mBg["table"] = bg;
+  mFg["table"] = Text::colorName (fg);
+  mBg["table"] = Text::colorName (bg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Table::setTableFg (Text::color c)
 {
-  mFg["table"] = c;
+  mFg["table"] = Text::colorName (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Table::setTableBg (Text::color c)
 {
-  mBg["table"] = c;
+  mBg["table"] = Text::colorName (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,8 +97,8 @@ void Table::setColumnColor (int column, Text::color fg, Text::color bg)
 {
   char id[12];
   sprintf (id, "col:%d", column);
-  mFg[id] = fg;
-  mBg[id] = bg;
+  mFg[id] = Text::colorName (fg);
+  mBg[id] = Text::colorName (bg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ void Table::setColumnFg (int column, Text::color c)
 {
   char id[12];
   sprintf (id, "col:%d", column);
-  mFg[id] = c;
+  mFg[id] = Text::colorName (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ void Table::setColumnBg (int column, Text::color c)
 {
   char id[12];
   sprintf (id, "col:%d", column);
-  mBg[id] = c;
+  mBg[id] = Text::colorName (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,8 +174,8 @@ void Table::setRowColor (const int row, const Text::color fg, const Text::color 
 {
   char id[12];
   sprintf (id, "row:%d", row);
-  mFg[id] = fg;
-  mBg[id] = bg;
+  mFg[id] = Text::colorName (fg);
+  mBg[id] = Text::colorName (bg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -183,7 +183,7 @@ void Table::setRowFg (const int row, const Text::color c)
 {
   char id[12];
   sprintf (id, "row:%d", row);
-  mFg[id] = c;
+  mFg[id] = Text::colorName (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ void Table::setRowBg (const int row, const Text::color c)
 {
   char id[12];
   sprintf (id, "row:%d", row);
-  mBg[id] = c;
+  mBg[id] = Text::colorName (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -284,8 +284,8 @@ void Table::setCellColor (const int row, const int col, const Text::color fg, co
 {
   char id[24];
   sprintf (id, "cell:%d,%d", row, col);
-  mFg[id] = fg;
-  mBg[id] = bg;
+  mFg[id] = Text::colorName (fg);
+  mBg[id] = Text::colorName (bg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -293,7 +293,7 @@ void Table::setCellFg (const int row, const int col, const Text::color c)
 {
   char id[24];
   sprintf (id, "cell:%d,%d", row, col);
-  mFg[id] = c;
+  mFg[id] = Text::colorName (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -301,7 +301,7 @@ void Table::setCellBg (const int row, const int col, const Text::color c)
 {
   char id[24];
   sprintf (id, "cell:%d,%d", row, col);
-  mBg[id] = c;
+  mBg[id] = Text::colorName (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -320,20 +320,20 @@ Text::color Table::getFg (const int row, const int col)
   char idCell[24];
   sprintf (idCell, "cell:%d,%d", row, col);
   if (mFg.find (idCell) != mFg.end ())
-    return mFg[idCell];
+    return Text::colorCode (mFg[idCell]);
 
   char idRow[12];
   sprintf (idRow, "row:%d", row);
   if (mFg.find (idRow) != mFg.end ())
-    return mFg[idRow];
+    return Text::colorCode (mFg[idRow]);
 
   char idCol[12];
   sprintf (idCol, "col:%d", col);
   if (mFg.find (idCol) != mFg.end ())
-    return mFg[idCol];
+    return Text::colorCode (mFg[idCol]);
 
   if (mFg.find ("table") != mFg.end ())
-    return mFg["table"];
+    return Text::colorCode (mFg["table"]);
 
   return Text::nocolor;
 }
@@ -344,8 +344,8 @@ Text::color Table::getHeaderFg (int col)
   char idCol[12];
   sprintf (idCol,  "col:%d",          col);
 
-  return mFg.find (idCol)   != mFg.end () ? mFg[idCol]
-       : mFg.find ("table") != mFg.end () ? mFg["table"]
+  return mFg.find (idCol)   != mFg.end () ? Text::colorCode (mFg[idCol])
+       : mFg.find ("table") != mFg.end () ? Text::colorCode (mFg["table"])
        : Text::nocolor;
 }
 
@@ -355,20 +355,20 @@ Text::color Table::getBg (const int row, const int col)
   char idCell[24];
   sprintf (idCell, "cell:%d,%d", row, col);
   if (mBg.find (idCell) != mBg.end ())
-    return mBg[idCell];
+    return Text::colorCode (mBg[idCell]);
 
   char idRow[12];
   sprintf (idRow, "row:%d", row);
   if (mBg.find (idRow) != mBg.end ())
-    return mBg[idRow];
+    return Text::colorCode (mBg[idRow]);
 
   char idCol[12];
   sprintf (idCol, "col:%d", col);
   if (mBg.find (idCol) != mBg.end ())
-    return mBg[idCol];
+    return Text::colorCode (mBg[idCol]);
 
   if (mBg.find ("table") != mBg.end ())
-    return mBg["table"];
+    return Text::colorCode (mBg["table"]);
 
   return Text::nocolor;
 }
@@ -379,19 +379,19 @@ Text::color Table::getHeaderBg (int col)
   char idCol[12];
   sprintf (idCol,  "col:%d",          col);
 
-  return mBg.find (idCol)   != mBg.end () ? mBg[idCol]
-       : mBg.find ("table") != mBg.end () ? mBg["table"]
+  return mBg.find (idCol)   != mBg.end () ? Text::colorCode (mBg[idCol])
+       : mBg.find ("table") != mBg.end () ? Text::colorCode (mBg["table"])
        : Text::nocolor;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Text::attr Table::getHeaderUnderline (int col)
+Text::color Table::getHeaderUnderline (int col)
 {
   char idCol[12];
   sprintf (idCol,  "col:%d",          col);
 
   return mUnderline.find (idCol) != mUnderline.end () ? Text::underline
-       : Text::normal;
+       : Text::nocolor;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -522,42 +522,17 @@ const std::string Table::formatHeader (
 {
   assert (width > 0);
 
-  Text::color fg        = getHeaderFg (col);
-  Text::color bg        = getHeaderBg (col);
-  std::string data      = mColumns[col];
-  Text::attr decoration = getHeaderUnderline (col);
+  Text::color fg         = getHeaderFg (col);
+  Text::color bg         = getHeaderBg (col);
+  std::string data       = mColumns[col];
+  Text::color decoration = getHeaderUnderline (col);
 
-  std::string colorOn  = "";
   std::string pad      = "";
   std::string intraPad = "";
   std::string preJust  = "";
   std::string attrOn   = "";
   std::string attrOff  = "";
   std::string postJust = "";
-  std::string colorOff = "";
-
-  if (fg != Text::nocolor)
-  {
-    char c[12];
-    sprintf (c, "\033[%dm", fg + 29);
-    colorOn += c;
-  }
-
-  if (bg != Text::nocolor)
-  {
-    char c[12];
-    sprintf (c, "\033[%dm", bg + 39);
-    colorOn += c;
-  }
-
-  if (colorOn != "")
-    colorOff += "\033[0m";
-
-  if (decoration == Text::underline)
-  {
-    attrOn  = "\033[4m";
-    attrOff = "\033[0m";
-  }
 
   for (int i = 0; i < padding; ++i)
     pad += " ";
@@ -572,16 +547,11 @@ const std::string Table::formatHeader (
     for (int i = 0; i < getIntraPadding (); ++i)
       intraPad += " ";
 
-  return colorOn  +
-         attrOn   +
-         pad      +
-         preJust  +
-         data     +
-         postJust +
-         pad      +
-         attrOff  +
-         intraPad +
-         colorOff;
+  return Text::colorize (
+           fg, bg,
+           Text::colorize (
+             decoration, Text::nocolor,
+             pad + preJust+ data + postJust + pad) + intraPad);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -600,27 +570,8 @@ void Table::formatCell (
   just justification = getJustification (row, col);
   std::string data   = getCell (row, col);
 
-  std::string colorOn  = "";
   std::string pad      = "";
   std::string intraPad = "";
-  std::string colorOff = "";
-
-  if (fg != Text::nocolor)
-  {
-    char c[12];
-    sprintf (c, "\033[%dm", fg + 29);
-    colorOn += c;
-  }
-
-  if (bg != Text::nocolor)
-  {
-    char c[12];
-    sprintf (c, "\033[%dm", bg + 39);
-    colorOn += c;
-  }
-
-  if (fg != Text::nocolor || bg != Text::nocolor)
-    colorOff += "\033[0m";
 
   for (int i = 0; i < padding; ++i)
     pad += " ";
@@ -660,14 +611,7 @@ void Table::formatCell (
     }
 
     lines.push_back (
-      colorOn       +
-      pad           +
-      preJust       +
-      chunks[chunk] +
-      postJust      +
-      pad           +
-      intraPad      +
-      colorOff);
+      Text::colorize (fg, bg, pad + preJust + chunks[chunk] + postJust + pad + intraPad));
   }
 
   // The blank is used to vertically pad cells that have blank lines.
@@ -675,11 +619,7 @@ void Table::formatCell (
   for (int i = 0; i < width; ++i)
     pad += " ";
 
-  blank =
-    colorOn  +
-    pad      +
-    intraPad +
-    colorOff;
+  blank = Text::colorize (fg, bg, pad + intraPad);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -696,29 +636,10 @@ const std::string Table::formatCell (
   just justification = getJustification (row, col);
   std::string data   = getCell (row, col);
 
-  std::string colorOn  = "";
   std::string pad      = "";
   std::string intraPad = "";
   std::string preJust  = "";
   std::string postJust = "";
-  std::string colorOff = "";
-
-  if (fg != Text::nocolor)
-  {
-    char c[12];
-    sprintf (c, "\033[%dm", fg + 29);
-    colorOn += c;
-  }
-
-  if (bg != Text::nocolor)
-  {
-    char c[12];
-    sprintf (c, "\033[%dm", bg + 39);
-    colorOn += c;
-  }
-
-  if (fg != Text::nocolor || bg != Text::nocolor)
-    colorOff += "\033[0m";
 
   for (int i = 0; i < padding; ++i)
     pad += " ";
@@ -749,14 +670,7 @@ const std::string Table::formatCell (
     for (int i = 0; i < getIntraPadding (); ++i)
       intraPad += " ";
 
-  return colorOn  +
-         pad      +
-         preJust  +
-         data     +
-         postJust +
-         pad      +
-         intraPad +
-         colorOff;
+  return Text::colorize (fg, bg, pad + preJust + data + postJust + pad + intraPad);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
