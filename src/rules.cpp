@@ -16,8 +16,8 @@ static std::map <std::string, Text::color> gsBg;
 ////////////////////////////////////////////////////////////////////////////////
 // There are three supported variants:
 //   1) "fg"
-//   2)    "on bg"
-//   3) "fg on bg"
+//   2) "bg"
+//   3) "fg bg"
 static void parseColorRule (
   const std::string& rule,
   Text::color& fg,
@@ -25,41 +25,18 @@ static void parseColorRule (
 {
   fg = Text::nocolor;
   bg = Text::nocolor;
-  bool error = false;
 
   std::vector <std::string> words;
   split (words, rule, ' ');
-  switch (words.size ())
+
+  std::vector <std::string>::iterator it;
+  for (it = words.begin (); it != words.end (); ++it)
   {
-  case 1: // "fg" - no spaces.
-    fg = Text::colorCode (words[0]);
-    break;
-
-  case 2: // "on bg" - one space, "on" before.
-    if (words[0] == "on")
-      bg = Text::colorCode (words[1]);
+    if (it->substr (0, 3) == "on_")
+      bg = Text::colorCode (*it);
     else
-      error = true;
-    break;
-
-  case 3: // "fg on bg" - two spaces, "on" between them.
-    if (words[1] == "on")
-    {
-      fg = Text::colorCode (words[0]);
-      bg = Text::colorCode (words[2]);
-    }
-    else
-      error = true;
-    break;
-
-  case 0:
-  default:
-    error = true;
-    break;
+      fg = Text::colorCode (*it);
   }
-
-  if (error)
-    std::cout << "Malformed color rule '" << rule << "'" << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

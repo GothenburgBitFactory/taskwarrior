@@ -8,9 +8,12 @@
   ~ Test suite
   ~ All known bugs fixed
 
-------reality-----------------------------------
+------ reality -----------------------------------
 
 0.9.6
+  5/13/208
+    + Replaced color management code.
+    + Improved color rules code.
 
 0.9.5
   5/12/2008
