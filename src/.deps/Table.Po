@@ -94,8 +94,9 @@ Table.o Table.o: Table.cpp /usr/include/c++/4.0.0/iostream \
   /usr/include/c++/4.0.0/bits/stl_multimap.h \
   /usr/include/c++/4.0.0/vector /usr/include/c++/4.0.0/bits/stl_vector.h \
   /usr/include/c++/4.0.0/bits/stl_bvector.h \
-  /usr/include/c++/4.0.0/bits/vector.tcc color.h Grid.h Date.h library.h \
-  /usr/include/sys/types.h stlmacros.h
+  /usr/include/c++/4.0.0/bits/vector.tcc color.h Grid.h Date.h task.h \
+  /usr/include/sys/types.h Config.h Table.h color.h TDB.h T.h T.h \
+  stlmacros.h ../auto.h
 
 /usr/include/c++/4.0.0/iostream:
 
@@ -377,8 +378,22 @@ Grid.h:
 
 Date.h:
 
-library.h:
+task.h:
 
 /usr/include/sys/types.h:
 
+Config.h:
+
+Table.h:
+
+color.h:
+
+TDB.h:
+
+T.h:
+
+T.h:
+
 stlmacros.h:
+
+../auto.h:
