@@ -11,7 +11,9 @@
 ------ reality -----------------------------------
 
 0.9.6
-  5/13/208
+  5/15/2008
+    + Corrected wrong include file in Table.cpp
+  5/13/2008
     + Replaced color management code.
     + Improved color rules code.
 
