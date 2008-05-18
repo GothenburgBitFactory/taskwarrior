@@ -11,8 +11,21 @@
 ------ reality -----------------------------------
 
 0.9.7 (5/17/2008)
+  + Set up structure for AUTHORS file.
+  + Set up NEWS file, with pleas for feedback.
+  + Added welcome message to README.
+  + Completed a chunk of the TUTORIAL.
+  + Added error handling for "task export" when a file name is not specified.
   + Task offers to create a sample ~/.taskrc file if one is not found.
   + Task offers to create a ~/.task directory if one is not found.
+  + Removed unnecessary SAMPLE_taskrc, and assorted references.
+  + Cleaned up ChangeLog.
+  + Minor mods to standard docs.
+  + Bumped version to 0.9.7
+  + Changed some autoconf details
+  + Corrected comment in T.cpp
+  + Made unit tests compile nad run again.
+  + Removed tests from distibution.
 
 0.9.6 (5/13/208)
   + Replaced color management code.
