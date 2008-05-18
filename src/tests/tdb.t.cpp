@@ -4,8 +4,9 @@
 #include <iostream>
 #include <unistd.h>
 
-#include <TDB.h>
-#include <library.h>
+#include "../TDB.h"
+#include "../task.h"
+#include "test.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
@@ -116,10 +117,10 @@ int main (int argc, char** argv)
     return -2;
   }
 
-/*
+
   unlink ("./pending.data");
   unlink ("./completed.data");
-*/
+
   return 0;
 }
 
