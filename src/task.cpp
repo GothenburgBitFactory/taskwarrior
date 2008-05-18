@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Copyright 2006 - 2008 Paul Beckingham.
+// Copyright 2006 - 2008, Paul Beckingham.
 // All rights reserved.
 //
 //
@@ -38,9 +38,9 @@ void usage (Config& conf)
   }
 #endif
 
-  table.addColumn ("");
-  table.addColumn ("");
-  table.addColumn ("");
+  table.addColumn (" ");
+  table.addColumn (" ");
+  table.addColumn (" ");
 
   table.setColumnJustification (0, Table::left);
   table.setColumnJustification (1, Table::left);
@@ -180,11 +180,13 @@ void usage (Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
+// TODO Find out what this is, and either promote it to live code, or remove it.
 //  std::set_terminate (__gnu_cxx::__verbose_terminate_handler);
 
   try
   {
-    // Load the config file from the home directory.
+    // Load the config file from the home directory.  If the file cannot be
+    // found, offer to create a sample one.
     Config conf;
     struct passwd* pw = getpwuid (getuid ());
     if (!pw)
@@ -192,7 +194,8 @@ int main (int argc, char** argv)
 
     std::string home = pw->pw_dir;
     home += "/.taskrc";
-    conf.load (home);
+    if (!conf.load (home))
+      conf.createDefault (home);
 
     TDB tdb;
     tdb.dataDirectory (conf.get ("data.location"));

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <sys/stat.h>
 #include "task.h"
 #include "Config.h"
 
@@ -58,6 +59,67 @@ bool Config::load (const std::string& file)
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Config::createDefault (const std::string& file)
+{
+  if (confirm (
+        "A configuration file could not be found in "
+      + file
+      + "\n\n"
+      + "Would you like a sample .taskrc created, so task can proceed?"))
+  {
+    // Determine a path to the task directory.
+    std::string taskDir = "";
+    for (int i = file.length () - 1; i >= 0; --i)
+    {
+      if (file[i] == '/')
+      {
+        taskDir = file.substr (0, i) + "/.task";
+        if (-1 == access (taskDir.c_str (), F_OK))
+          mkdir (taskDir.c_str (), S_IRWXU);
+        break;
+      }
+    }
+
+    if (taskDir != "")
+    {
+      FILE* out;
+      if (out = fopen (file.c_str (), "w"))
+      {
+        fprintf (out, "data.location=%s\n", taskDir.c_str ());
+        fprintf (out, "command.logging=off\n");
+        fprintf (out, "confirmation=yes\n");
+        fprintf (out, "#nag=Note: try to stick to high priority tasks.  See \"task next\".\n");
+        fprintf (out, "next=2\n");
+        fprintf (out, "curses=on\n");
+        fprintf (out, "color=on\n");
+
+        fprintf (out, "color.overdue=red\n");
+        fprintf (out, "#color.due=on yellow\n");
+        fprintf (out, "#color.pri.H=on_red\n");
+        fprintf (out, "#color.pri.M=on_yellow\n");
+        fprintf (out, "#color.pri.L=on_green\n");
+        fprintf (out, "color.active=cyan\n");
+        fprintf (out, "color.tagged=yellow\n");
+
+        fclose (out);
+
+        set ("data.location", taskDir);
+        set ("command.logging", "off");
+        set ("confirmation", "yes");
+        set ("next", 2);
+        set ("curses", "on");
+        set ("color", "on");
+        set ("color.overdue", "red");
+        set ("color.active", "cyan");
+        set ("color.tagged", "yellow");
+
+        std::cout << "Done." << std::endl;
+      }
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

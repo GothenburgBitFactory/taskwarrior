@@ -17,6 +17,8 @@ public:
   Config (const std::string&);
 
   bool load (const std::string&);
+  void createDefault (const std::string&);
+
   const std::string& get (const char*);
   const std::string& get (const char*, const char*);
   const std::string& get (const std::string&);

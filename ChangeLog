@@ -10,6 +10,11 @@
 
 ------ reality -----------------------------------
 
+0.9.7
+  5/17/2008
+    + Task offers to create a sample ~/.taskrc file if one is not found.
+    + Task offers to create a ~/.task directory if one is not found.
+
 0.9.6
   5/13/208
     + Replaced color management code.

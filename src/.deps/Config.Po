@@ -91,7 +91,7 @@ Config.o Config.o: Config.cpp /usr/include/c++/4.0.0/iostream \
   /usr/include/c++/4.0.0/bits/istream.tcc /usr/include/c++/4.0.0/fstream \
   /usr/include/c++/4.0.0/i686-apple-darwin9/bits/basic_file.h \
   /usr/include/c++/4.0.0/bits/fstream.tcc /usr/include/c++/4.0.0/sstream \
-  /usr/include/c++/4.0.0/bits/sstream.tcc task.h \
+  /usr/include/c++/4.0.0/bits/sstream.tcc /usr/include/sys/stat.h task.h \
   /usr/include/c++/4.0.0/vector /usr/include/c++/4.0.0/bits/stl_vector.h \
   /usr/include/c++/4.0.0/bits/stl_bvector.h \
   /usr/include/c++/4.0.0/bits/vector.tcc /usr/include/c++/4.0.0/map \
@@ -365,6 +365,8 @@ Config.o Config.o: Config.cpp /usr/include/c++/4.0.0/iostream \
 /usr/include/c++/4.0.0/sstream:
 
 /usr/include/c++/4.0.0/bits/sstream.tcc:
+
+/usr/include/sys/stat.h:
 
 task.h:
 
