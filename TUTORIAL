@@ -12,10 +12,10 @@ Build the task program according to the directions in the INSTALL file.  This
 transcript illustrates a typical installation:
 
   % ls
-  task-0.9.0.tar.gz
-  % gunzip task-0.9.0.tar.gz
-  % tar xf task-0.9.0.tar
-  % cd task-0.9.0
+  task-0.9.7.tar.gz
+  % gunzip task-0.9.7.tar.gz
+  % tar xf task-0.9.7.tar
+  % cd task-0.9.7
   % ./configure
   ...
   % make
