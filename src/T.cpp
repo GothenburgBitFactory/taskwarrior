@@ -500,7 +500,7 @@ int T::determineVersion (const std::string& line)
   // a UUID followed by a status, then there is still a way to differentiate
   // between 2 and 3.
   //
-  // The danger is that a version 2 binary reads and misinterprets a version 2
+  // The danger is that a version 2 binary reads and misinterprets a version 3
   // file.  This is why it is a good idea to rely on an explicit version
   // declaration rather than chance positioning.
 
@@ -508,3 +508,4 @@ int T::determineVersion (const std::string& line)
   return 0;
 }
 
+////////////////////////////////////////////////////////////////////////////////

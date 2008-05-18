@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(task, 0.9.6, bugs@beckingham.net)
+AC_INIT(task, 0.9.7, bugs@beckingham.net)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/task.cpp])
 AC_CONFIG_HEADER([auto.h])
@@ -19,7 +19,7 @@ AC_CHECK_LIB(ncurses,initscr)
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h sys/file.h sys/time.h unistd.h])
+AC_CHECK_HEADERS([stdlib.h sys/file.h sys/stat.h sys/time.h unistd.h])
 AC_CHECK_HEADERS([string vector map])
 
 # Checks for typedefs, structures, and compiler characteristics.
