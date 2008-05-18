@@ -2353,34 +2353,38 @@ void handleDone (const TDB& tdb, T& task, Config& conf)
 void handleExport (const TDB& tdb, T& task, Config& conf)
 {
   std::string file = trim (task.getDescription ());
-
-  std::ofstream out (file.c_str ());
-  if (out.good ())
+  if (file.length () > 0)
   {
-    out << "'id',"
-        << "'status',"
-        << "'tags',"
-        << "'entry',"
-        << "'start',"
-        << "'due',"
-        << "'end',"
-        << "'project',"
-        << "'priority',"
-        << "'fg',"
-        << "'bg',"
-        << "'description'"
-        << "\n";
-
-    std::vector <T> all;
-    tdb.allT (all);
-    foreach (t, all)
+    std::ofstream out (file.c_str ());
+    if (out.good ())
     {
-      out << t->composeCSV ().c_str ();
+      out << "'id',"
+          << "'status',"
+          << "'tags',"
+          << "'entry',"
+          << "'start',"
+          << "'due',"
+          << "'end',"
+          << "'project',"
+          << "'priority',"
+          << "'fg',"
+          << "'bg',"
+          << "'description'"
+          << "\n";
+
+      std::vector <T> all;
+      tdb.allT (all);
+      foreach (t, all)
+      {
+        out << t->composeCSV ().c_str ();
+      }
+      out.close ();
     }
-    out.close ();
+    else
+      throw std::string ("Could not write to export file.");
   }
   else
-    throw std::string ("Could not write to export file.");
+    throw std::string ("You must specify a file to write to.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

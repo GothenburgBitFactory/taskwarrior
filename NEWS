@@ -1,4 +1,26 @@
 
-Task 1.0 is released.
+Welcome to Task 1.0.0.
 
+While Task has undergone much testing, bugs are sure to remain.  If you
+encounter a bug, please contact me at bugs@beckingham.net.  Here is what you
+could do, in order of increasing effort (to you) and usefulness (to me):
+
+  - Do nothing.  Bug probably won't get fixed.
+
+  - Send an email to me,  stating that there is a bug.  Thanks, but the bug
+    still probably won't get fixed.
+
+  - Send an email to bugs@beckingham.net, explaining what you saw.  Now we're
+    getting somewhere.  The bug will be addressed, and a new release will be
+    made.  You will be a hero.
+
+  - Send an email, and a reproducible test case in the form of the few commands
+    it takes to recreate the problem.  The bug will be addressed, and a new
+    release will be made.  You will be a hero.
+
+  - If you are a developer, send a patch that fixes the problem.  Your patch
+    will be applied and tested, and a new release will be made.  You will be a
+    hero.
+
+Thank you.
 

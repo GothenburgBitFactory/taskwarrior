@@ -1,14 +1,32 @@
+Thank you for taking a look at task.
 
-Thank you
-GTD
-Based on ideas in todo.sh
-Movie at www.b.n/task.mov
-Feedback, suggestions to task@beckingham.net
-Patches to task@beckingham.net
+You may want to jump straight to the TUTORIAL file, or perhaps watch the task
+movie on YouTube:
+
+  http://?????????????????
+
+Either will give you a fairly good idea of what task is capable of, and whether
+it fits in to your way of working.  As a command line application, task is not
+for everyone and some of you may prefer to not proceed.  The movie or TUTORIAL
+file are the quickest way for you to make that decision.
+
+Task is based on ideas presented in the todo.sh script, found on:
+
+  http://todotxt.org
+
+Task has a few more features than todo.sh, but fundamentally, they are both
+working toward the same goals, which is to help you follow basic Getting Things
+Done (GTD) principles.
+
+All feedback is welcome, in addition to any bug reports or patches to:
+
+  task@beckingham.net
+
+Got an idea for an enhancement?  Send an email!
 
 
 
-Task - a GTD utility featuring:
+Task is a GTD utility featuring:
 
   - Robust C++ implementation
   - Tags
@@ -20,15 +38,8 @@ Task - a GTD utility featuring:
   - Clean architecture allowing quick addition of new features
   - UUID for all tasks
 
-Task is an implementation of GTD ideas, similar to todo.sh, but without many of
-the limitations in todo.sh, namely:
-
-  - There is no output formatting
-  - There is no way to enumerate projects, categories
-  - There is no file locking for multi-user access
-
 It is intended that features, mainly in the form of reports will be added
-frequently, with best practices and useful reports evolving.
+frequently, with best practices and useful reports evolving from usage patterns.
 
 Task is scope-limited to GTD functionality only.
 
