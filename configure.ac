@@ -16,6 +16,7 @@ AC_LANG(C++)
 # Checks for libraries.
 #AC_CHECK_LIB(ncurses, initscr, [LIBS="$LIBS -lncurses" AC_DEFINE([HAVE_NCURSES], [1], [Found ncurses])])
 AC_CHECK_LIB(ncurses,initscr)
+AC_CHECK_LIB(ncurses,endwin)
 
 # Checks for header files.
 AC_HEADER_STDC
