@@ -399,6 +399,8 @@ bool Grid::Cell::operator== (const Grid::Cell& rhs) const
   case CELL_STRING: return mString == rhs.mString ? true : false;
   default:          break; // To prevent warnings.
   }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -414,6 +416,8 @@ bool Grid::Cell::operator!= (const Grid::Cell& rhs) const
   case CELL_STRING: return mString != rhs.mString ? true : false;
   default:          break; // To prevent warnings.
   }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

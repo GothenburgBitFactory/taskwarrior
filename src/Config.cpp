@@ -86,7 +86,7 @@ void Config::createDefault (const std::string& file)
     if (taskDir != "")
     {
       FILE* out;
-      if (out = fopen (file.c_str (), "w"))
+      if ((out = fopen (file.c_str (), "w")))
       {
         fprintf (out, "data.location=%s\n", taskDir.c_str ());
         fprintf (out, "command.logging=off\n");
