@@ -10,8 +10,9 @@
 
 ------ reality -----------------------------------
 
-<<<<<<< HEAD:ChangeLog
-0.9.7 (5/17/2008)
+0.9.7 (5/19/2008)
+  + Migrated old compiler flags into Makefile.am
+  + Added ncurses endwin function check to configure.ac
   + Set up structure for AUTHORS file.
   + Set up NEWS file, with pleas for feedback.
   + Added welcome message to README.
@@ -25,15 +26,16 @@
   + Bumped version to 0.9.7
   + Changed some autoconf details
   + Corrected comment in T.cpp
-  + Made unit tests compile nad run again.
+  + Made unit tests compile and run again.
   + Removed tests from distibution.
 
 0.9.6 (5/13/208)
+  + Corrected wrong include file in Table.cpp
   + Replaced color management code.
   + Improved color rules code.
 
 0.9.5 (5/12/2008)
-  +  Replaced Table storage with Grid.
+  + Replaced Table storage with Grid.
   + Added Grid.cpp to configure.ac
   + Added Makefile to src/.gitignore
   + Makefile should not be part of the repository.
@@ -74,70 +76,6 @@
 0.8.1 (1/28/2008)
 
 0.8.0 Polish (1/25/2008)
-=======
-0.9.6
-  5/15/2008
-    + Corrected wrong include file in Table.cpp
-  5/13/2008
-    + Replaced color management code.
-    + Improved color rules code.
-
-0.9.5
-  5/12/2008
-    +  Replaced Table storage with Grid.
-  5/10/2008
-    + Added Grid.cpp to configure.ac
-    + Added Makefile to src/.gitignore
-    + Makefile should not be part of the repository.
-    + Added Grid.cpp
-    + Added Grid::Cell::operator==
-  4/27/2008
-    + ChangeLog file begun.
-    + Bumped version to 0.9.5 for next release.
-
-0.9.4
-  4/26/2008
-    + Integrated new Grid object into build - not yet integrated into Table.
-  4/19/2008
-    + More .gitignore tweaks.
-    + Added .gitignore
-    + Added more missing files.
-    + Added all source code.
-    + Generic OSS files added.
-    + Initial commit.
-
-0.9.3
-  4/6/2008
-
-0.9.2
-  4/3/2008
-
-0.9.1
-  4/1/2008
-
-0.9.0
-  3/23/2008
-    + flat source directory
-    + autoconf complete
-    + "task next"
-    + "task stats"
-    + "task export"
-    + Rule₋based colorization
-
-0.8.16
-  3/13/208
-
-0.8.14
-  2/20/2008
-
-0.8.13
-  2/2/2008
-
-0.8.1
-  1/28/2008
-
-0.8.0 - Polish (1/25/2008)
->>>>>>> 3e1afc5777448255d599ab1235edcff461c80c80:ChangeLog
   + Code cleanup, reorganization
   + "task overdue"
   + Add "age" column to list and long
@@ -185,4 +123,6 @@
   + Command line parsing
   + API layer
   + Usage
+
+------ start -----------------------------------
 
