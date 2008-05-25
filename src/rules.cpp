@@ -60,8 +60,7 @@ void initializeColorRules (Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 void autoColorize (T& task, Text::color& fg, Text::color& bg)
 {
-  fg = Text::nocolor;
-  bg = Text::nocolor;
+  // Note: fg, bg already contain colors specifically assigned via command.
 
   // Colorization of the tagged.
   if (gsFg["color.tagged"] != Text::nocolor ||
