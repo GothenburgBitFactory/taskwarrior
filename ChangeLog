@@ -1,12 +1,13 @@
 
 1.0.0 - First official release ()
-  - Bug: assertion fails for task info n, where n is out of range
   - Bug: assertion fails on mobile for t v
 
-0.10.0 - Productization ()
-  ~ Documentation complete
-  ~ Test suite
-  ~ All known bugs fixed
+0.9.9
+  - Documentation complete
+
+0.9.8
+  - Autoconf/autmake behaving properly.
+  - All bugs fixed
 
 ------ reality -----------------------------------
 
@@ -65,15 +66,10 @@
   + "task next"
   + "task stats"
   + "task export"
-  + Rule₋based colorization
+  + Rules-based colorization
 
-0.8.16 (3/13/2008)
-
-0.8.14 (2/20/2008)
-
-0.8.13 (2/2/2008)
-
-0.8.1 (1/28/2008)
+0.8.1 (1/28/2008) - 0.8.16 (3/13/2008)
+  + autoconf conversion (many builds)
 
 0.8.0 Polish (1/25/2008)
   + Code cleanup, reorganization
@@ -87,6 +83,9 @@
   + File locking
   + retain deleted tasks
   + "task info ID" report showing all metadata
+
+[Development hiatus while planning for T, TDB API, new features and the future
+of the project.  Seeded to two testers for feedback, suggestions.]
 
 0.6.0 Reports (12/27/2006)
   + "task history"

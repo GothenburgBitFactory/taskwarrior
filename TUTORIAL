@@ -4,6 +4,15 @@ Task program tutorial, for version 1.0.0
 This guide shows how to quickly set up the task program, and become proficient
 with it.
 
+  Contents:
+    Quick Setup
+    Simple Usage
+    Advanced Usage
+    Interacting with the Shell
+    Configuring Task
+    Colors
+
+
 
 Quick Setup
 -----------
@@ -31,7 +40,7 @@ configuration file.
 
 The simplest way to get a configuration file and task directory is to run task.
 On startup, task will check to see if it can find the configuration file and
-task directory, and if not found, will ask you if it may create both.
+task directory, and if not found, will ask you whether it may create both.
 
   % task version
 
@@ -228,26 +237,172 @@ To remove a tag from a task, use the minus sign:
 Advanced Use
 ------------
 
-Commands:
-  - task add
-  - task list
-  - task long
-  - task ls
-  - task done
-  - task delete
-  - task start
-  - task summary
-  - task history
-  - task next
-  - task projects
-  - task active
-  - task overdue
-  - task calendar
-  - task usage
+Here are the other commands, in some detail.  Note that the command:
+
+  % task
+
+with no arguments will generate a help message that lists all these commands.
+
+
+% task projects
+---------------
+
+  This report generates a list of all the different projects that you are using
+  along with a count of the pending tasks for each project.  For example:
+
+    % task projects
+
+    Project   Tasks
+    Errands       1
+    Birthdays     3
+    Car           2
+
+
+
+% task summary
+--------------
+
+  This report lists all the projects and a summary of their task status.
+
+    % task summary
+
+    Project  Remaining Avg age Complete 0%                        100%              
+    Errands          1  3 days      50% XXXXXXXXXXXXXXXX
+    Birthdays        3  7 mths       0%
+    Car              2   2 wks      25% XXXXXXXXX
+
+  This shows the project, the remaining tasks, the average age of each task,
+  the percentage completed (remaining vs total) and a bar indicating that
+  percentage.
+
+
+
+% task delete <id>
+------------------
+
+  There are two ways of getting rid of tasks - mark them as done, or delete
+  them.
+
+
+
+% task done <id>
+----------------
+
+  This is how a task is marked as done.
+
+
+
+% task list ...
+---------------
+
+  The list report will show the active status, and age of the task in addition
+  to the columns that "task ls" shows.  It is just a more detailed list.
+
+
+
+% task long ...
+---------------
+
+  The long report will show the entry date and start date of a task, in
+  addition to the columns that the "task list" shows.
+
+
+
+% task start <id>
+-----------------
+
+  This marks a task as started (and therefore active), which is shown in the
+  "list" report:
+
+    % task list
+
+    ID Project Pri Due Active Age     Description                                                      
+    12 Errand  L                      Remember to deposit check
+    ...
+
+    % task start 12
+    % task list
+
+    ID Project Pri Due Active Age     Description                                                      
+    12 Errand  L       *      3 days  Remember to deposit check
+    ...
+
+
+
+% task active
+-------------
+
+  Shows all active tasks, that is, the tasks for which the "task start ..."
+  command was run, as shown above.
+
+
+
+% task overdue
+--------------
+
+  Simply lists all the task that have a due date that is past, in "list"
+  format.
+
+
+
+% task history
+--------------
+
+  This report shows you an overview of how many tasks were added, completed and
+  deleted, by month.  It looks like this:
+
+    % task history 
+
+    Year Month     Added Completed Deleted Net
+    2008 March        21        16       0   5
+         April        13        11       1   1
+         May           8        14       3  -9
+
+  This shows that for the three months that task has been used, March and April
+  saw the total number of tasks increase, but in May the number decreased as
+  more task were completed than added.
+
+
+
+% task calendar
+---------------
+
+  This report shows a calendar of the current month, with any task due or
+  overdue dates marked on it.  Color is used to mark these dates.
+
+    % task calendar
+
+    May 2008
+
+    Su Mo Tu We Th Fr Sa
+                 1  2  3
+     4  5  6  7  8  9 10
+    11 12 13 14 15 16 17
+    18 19 20 21 22 23 24
+    25 26 27 28 29 30 31
+
+
+
+% task next
+-----------
+
+  This report shows you the tasks you should probable work on next.  Task will
+  scan all the tasks and will pick two task from each project to report.  Those
+  two tasks will be chosen in order of overdue, due soon, High, Medium or Low
+  priority.  Essentially task chooses the two most important task for each
+  project and displays them ordered in the usual way.
+
+  If you wish to show a different number of tasks per project, modify the entry
+  in .taskrc:
+
+    next=2
+
+  To be your preferred number.
 
 
 
 % task <id> ...
+---------------
 
   When a task id is specified, everything applies to just that task.  Suppose
   we needed to correct a task:
@@ -268,28 +423,30 @@ Commands:
 
 
 % task /from/to/
+----------------
 
   If a task has been entered with a typo, it can be easily corrected by this
   command.  For example:
 
-  % task ls
+    % task ls
 
-  ID Project Pri Description               
-  12 Errand  L   Remember to deposit chekc
-  ...
+    ID Project Pri Description               
+    12 Errand  L   Remember to deposit chekc
+    ...
 
-  % task 12 /chekc/check/
-  % task ls
+    % task 12 /chekc/check/
+    % task ls
 
-  ID Project Pri Description               
-  12 Errand  L   Remember to deposit check
-  ...
+    ID Project Pri Description               
+    12 Errand  L   Remember to deposit check
+    ...
 
   This command makes single corrections to a task description.
 
 
 
 % task tags
+-----------
 
   This command will generate a list of all the tags that are currently in use
   by task.
@@ -297,6 +454,7 @@ Commands:
 
 
 % task info <id>
+----------------
 
   This command gives detailed information about a single task.  It will tell
   you when the task was entered, when started, its status, tags, and more.
@@ -304,6 +462,7 @@ Commands:
 
 
 % task stats
+------------
 
   This command generates a list of statistics about your task usage, such as
   the average time it takes to complete a task, how often new tasks are added,
@@ -312,6 +471,7 @@ Commands:
 
 
 % task completed
+----------------
 
   This generates a list of all tasks that have been completed, sorted by their
   completion date.
@@ -319,6 +479,7 @@ Commands:
 
 
 % task export <file name>
+-------------------------
 
   This instructs task to write out a CSV format dump of all tasks, both pending
   and completed, to the file specified.  This is how you might view tasks in a
@@ -326,21 +487,156 @@ Commands:
 
 
 
+% task usage
+------------
+
+  If logging has been enabled by the "command.logging=on" directive in the
+  .taskrc file, then task will record every command that is run.  When this
+  command is run, task will display a count of how many times each command was
+  used.
+
+  This command is for the purpose of seeing whether command are actually used.
+
+
+
 % task version
+--------------
 
   This can be used to show the version number of task, and to display all the
   current configuration settings, as read from the .taskrc file.
 
 
+
 Interacting with the Shell
 --------------------------
-  - Escaping shell metacharacters
+
+  Certain characters are interpreted by the shell.  For example, the "&".  If
+  you wish to include the & in a task description, you need to escape it, so
+  the shell doesn't interpret it.  For example:
+
+    % task add Buy bread & milk
+
+  This command is an error because of the &.  The shell will consider this to
+  be two commands:
+
+    % task add Buy bread &
+    % milk
+
+  The shell treats the & character as an indicator that the command is complete
+  and should be run in the background.  Then the shell considers "milk" to be a
+  command all by itself.  Which it is not.  One way to get around this is to
+  individually escape the & character:
+
+    % task add Buy bread \& milk
+
+  Another is to quote the entire description, with either ' or " characters:
+
+    % task add "Buy bread & milk"
+
+  Task itself interprets the commands, and it too can make mistakes.  For
+  example, any colon : character will be interpreted by task as a delimiter
+  between an attribute name and its value.  Currently there is no workaround
+  for this.
+
+
+
+% task <id> fg:... bg:...
+-------------------------
+
+  Not strictly a command, the setting of the fg and bg (foreground and
+  background) attributes determines the colors used to represent the task.
+  Valid foreground colors are:
+
+  Valid background colors are:
+
+  Note that these are not just colors, but combinations of colors and
+  attributes.
+
+  Note also that this capability does depend on whether your terminal program
+  can display these colors.
+
 
 
 
 Configuring Task
 ----------------
 
--nag
--confirmation
+  Task recognizes several entries in the .taskrc file for configuration
+  purposes.  Valid entries are of the form:
+
+    name=value
+
+  Valid examples are:
+
+    data.location       This is a path to the directory containing all the task
+                        files.  By default, it is set up to be ~/.task, for
+                        example:  /Users/paul/.task
+
+    command.logging     May be "on" or "off", defaulting to "off".  This
+                        determines whether task records commands.  This is not
+                        generally useful, except while developing task.
+
+    confirmation        May be "yes" or "no", and determines whether task will
+                        ask for confirmation before deleting a task.
+
+    nag                 This may be a string of text, or blank.  It is used as
+                        a prompt when a task is completed that is not considered
+                        high priority.  The "task next" command lists important
+                        tasks, and completing one of those does not generate
+                        this nagging.  Default value is:
+
+                          Note: try to stick to high priority tasks.
+                          See "task next".
+
+    next                Is a number, defaulting to 2, which is the number of
+                        tasks for each project that are shown in the "task next"
+                        command.
+
+    curses              Determines whether task uses ncurses to establish the
+                        size of the window you are using, for text wrapping.
+
+    color               May be "on" or "off".  Determines whether task uses
+                        color.
+
+    color.overdue       These are the coloration rules.  They correspond to a
+    color.due           particular attribute of a task, such as it being due, or
+    color.pri.H         being active, and specifies the automatic coloring of
+    color.pri.M         that task.
+    color.pri.L
+    color.pri.none      The value may be one optional foreground color (see
+    color.active        below) and one optional background color.
+    color.tagged
+                        For example, the value may be:
+ 
+                          bold_red on_bright_yellow
+
+
+
+Colors
+------
+
+  Task supports color in several places.  In cases where you may specify a
+  color, a foreground, a background, or a combination foreground and background
+  color may be used.  The following are valid foreground colors:
+
+             bold          underline          bold_underline
+    black    bold_black    underline_black    bold_underline_black
+    red      bold_red      underline_red      bold_underline_red
+    green    bold_green    underline_green    bold_underline_green
+    yellow   bold_yellow   underline_yellow   bold_underline_yellow
+    blue     bold_blue     underline_blue     bold_underline_blue
+    magenta  bold_magenta  underline_magenta  bold_underline_magenta
+    cyan     bold_cyan     underline_cyan     bold_underline_cyan
+    white    bold_white    underline_white    bold_underline_white
+
+  and the following are valid background colors:
+
+    on_black    on_bright_black
+    on_red      on_bright_red
+    on_green    on_bright_green
+    on_yellow   on_bright_yellow
+    on_blue     on_bright_blue
+    on_magenta  on_bright_magenta
+    on_cyan     on_bright_cyan
+    on_white    on_bright_white
 

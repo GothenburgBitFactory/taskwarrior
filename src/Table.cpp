@@ -476,8 +476,16 @@ void Table::calculateColumnWidths ()
       mCalculatedWidth = ideal;
       return;
     }
-//    else
+    else
+    {
 //      std::cout << "# insufficient room, considering only flexible columns." << std::endl;
+
+      // The fallback position is to assume no width was specificed, and just
+      // calculate widths accordingly.
+      mTableWidth = 0;
+      calculateColumnWidths ();
+      return;
+    }
   }
 
   // Try again, treating minimum columns as flexible.

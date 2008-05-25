@@ -56,32 +56,32 @@ void usage (Config& conf)
   table.addCell (row, 1, "task");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task add [tags] [attributes] description...");
+  table.addCell (row, 1, "task add [tags] [attrs] desc...");
   table.addCell (row, 2, "Adds a new task");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task list [tags] [attributes] description...");
+  table.addCell (row, 1, "task list [tags] [attrs] desc...");
   table.addCell (row, 2, "Lists all tasks matching the specified criteria");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task long [tags] [attributes] description...");
+  table.addCell (row, 1, "task long [tags] [attrs] desc...");
   table.addCell (row, 2, "Lists all task, all data, matching the specified criteria");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task ls [tags] [attributes] description...");
+  table.addCell (row, 1, "task ls [tags] [attrs] desc...");
   table.addCell (row, 2, "Minimal listing of all tasks matching the specified criteria");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task completed [tags] [attributes] description...");
+  table.addCell (row, 1, "task completed [tags] [attrs] desc...");
   table.addCell (row, 2, "Chronological listing of all completed tasks matching the specified criteria");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task ID [tags] [attributes] [description...]");
+  table.addCell (row, 1, "task ID [tags] [attrs] [desc...]");
   table.addCell (row, 2, "Modifies the existing task with provided arguments");
 
   row = table.addRow ();
   table.addCell (row, 1, "task ID /from/to/");
-  table.addCell (row, 2, "Perform the substitution on the description, for fixing mistakes");
+  table.addCell (row, 2, "Perform the substitution on the desc, for fixing mistakes");
 
   row = table.addRow ();
   table.addCell (row, 1, "task delete ID");

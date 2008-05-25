@@ -183,8 +183,16 @@ void extractLine (std::string& text, std::string& line, int length)
   // If no space was found, hyphenate.
   else
   {
-    line = text.substr (0, length - 1) + "-";
-    text = text.substr (length - 1, std::string::npos);
+    if (length > 1)
+    {
+      line = text.substr (0, length - 1) + "-";
+      text = text.substr (length - 1, std::string::npos);
+    }
+    else
+    {
+      line = text.substr (0, 1);
+      text = text.substr (length, std::string::npos);
+    }
   }
 }
 
