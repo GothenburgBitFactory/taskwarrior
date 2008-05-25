@@ -487,6 +487,13 @@ with no arguments will generate a help message that lists all these commands.
 
 
 
+% task colors
+-------------
+
+  This command displays all the colors that task supports.
+
+
+
 % task usage
 ------------
 

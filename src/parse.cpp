@@ -93,6 +93,7 @@ static char* commands[] =
   "active",
   "add",
   "calendar",
+  "colors",
   "completed",
   "delete",
   "done",

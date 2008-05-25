@@ -1,17 +1,18 @@
 
-1.0.0 - First official release ()
+1.0.0 (?)
   - Bug: assertion fails on mobile for t v
 
-0.9.9
+0.9.9 (?)
   - Documentation complete
 
-0.9.8
+0.9.8 (?)
   - Autoconf/autmake behaving properly.
   - All bugs fixed
+  + Color command
 
 ------ reality -----------------------------------
 
-0.9.7 (5/19/2008)
+0.9.7 (5/24/2008)
   + Migrated old compiler flags into Makefile.am
   + Added ncurses endwin function check to configure.ac
   + Set up structure for AUTHORS file.

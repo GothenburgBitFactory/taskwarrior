@@ -47,6 +47,7 @@ void handleDelete (const TDB&, T&, Config&);
 void handleStart (const TDB&, T&, Config&);
 void handleDone (const TDB&, T&, Config&);
 void handleModify (const TDB&, T&, Config&);
+void handleColor (Config&);
 void gatherNextTasks (const TDB&, T&, Config&, std::vector <T>&, std::vector <int>&);
 void nag (const TDB&, T&, Config&);
 
