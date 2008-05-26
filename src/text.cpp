@@ -76,8 +76,8 @@ void extractParagraphs (const std::string& input, std::vector<std::string>& outp
   std::string copy = input;
   while (1)
   {
-    unsigned int so = copy.find ("<p>");
-    unsigned int eo = copy.find ("</p>");
+    size_t so = copy.find ("<p>");
+    size_t eo = copy.find ("</p>");
 
     if (so == std::string::npos && eo == std::string::npos)
       break;
@@ -126,7 +126,7 @@ void unquoteText (std::string& text)
 ////////////////////////////////////////////////////////////////////////////////
 void extractLine (std::string& text, std::string& line, int length)
 {
-  unsigned int eol = text.find ("\n");
+  size_t eol = text.find ("\n");
 
   // Special case: found \n in first length characters.
   if (eol != std::string::npos && eol < (unsigned) length)

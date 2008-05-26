@@ -5,6 +5,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <time.h>
+#include <assert.h>
 #include "task.h"
 #include "Date.h"
 
@@ -36,8 +37,8 @@ Date::Date (const int m, const int d, const int y)
 ////////////////////////////////////////////////////////////////////////////////
 Date::Date (const std::string& mdy)
 {
-  unsigned int firstSlash  = mdy.find ("/");
-  unsigned int secondSlash = mdy.find ("/", firstSlash + 1);
+  size_t firstSlash  = mdy.find ("/");
+  size_t secondSlash = mdy.find ("/", firstSlash + 1);
   if (firstSlash != std::string::npos &&
       secondSlash != std::string::npos)
   {
