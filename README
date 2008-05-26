@@ -1,14 +1,13 @@
-Task is a GTD utility featuring:
+Thank you for taking a look at task.  Task is a GTD utility featuring:
 
   - Robust C++ implementation
   - Tags
   - Colorful, tabular output
   - Reports
   - Low-level API
-  - Auto-completion on all commands, options
+  - Abbreviations for all commands, options
   - Multi-user file locking
   - Clean architecture allowing quick addition of new features
-  - UUID for all tasks
 
 It is intended that features, mainly in the form of reports will be added
 frequently, with best practices and useful reports evolving from usage patterns.
@@ -16,8 +15,6 @@ frequently, with best practices and useful reports evolving from usage patterns.
 Task is scope-limited to GTD functionality only.
 
 
-
-Thank you for taking a look at task.
 
 You may want to jump straight to the TUTORIAL file, or perhaps watch the task
 movie on YouTube:

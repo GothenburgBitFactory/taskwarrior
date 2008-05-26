@@ -99,13 +99,6 @@ std::string trimLeft (const std::string& in, const std::string& t /*= " "*/)
   return out.erase (0, in.find_first_not_of (t));
 }
 
-// UNICODE safe
-std::wstring trimLeft (const std::wstring& in, const std::wstring& t /*= L" "*/)
-{
-  std::wstring out = in;
-  return out.erase (0, in.find_first_not_of (t));
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 std::string trimRight (const std::string& in, const std::string& t /*= " "*/)
 {
@@ -113,24 +106,10 @@ std::string trimRight (const std::string& in, const std::string& t /*= " "*/)
   return out.erase (out.find_last_not_of (t) + 1);
 }
 
-// UNICODE safe
-std::wstring trimRight (const std::wstring& in, const std::wstring& t /*= L" "*/)
-{
-  std::wstring out = in;
-  return out.erase (out.find_last_not_of (t) + 1);
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 std::string trim (const std::string& in, const std::string& t /*= " "*/)
 {
   std::string out = in;
-  return trimLeft (trimRight (out, t), t);
-}
-
-// UNICODE safe
-std::wstring trim (const std::wstring& in, const std::wstring& t /*= L" "*/)
-{
-  std::wstring out = in;
   return trimLeft (trimRight (out, t), t);
 }
 

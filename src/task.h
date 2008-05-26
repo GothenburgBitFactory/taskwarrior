@@ -57,9 +57,6 @@ void wrapText (std::vector <std::string>&, const std::string&, const int);
 std::string trimLeft (const std::string& in, const std::string& t = " ");
 std::string trimRight (const std::string& in, const std::string& t = " ");
 std::string trim (const std::string& in, const std::string& t = " ");
-std::wstring trimLeft (const std::wstring& in, const std::wstring& t = L" ");  // UNICODE safe
-std::wstring trimRight (const std::wstring& in, const std::wstring& t = L" "); // UNICODE safe
-std::wstring trim (const std::wstring& in, const std::wstring& t = L" ");      // UNICODE safe
 void extractParagraphs (const std::string&, std::vector<std::string>&);
 void extractLine (std::string&, std::string&, int);
 void split (std::vector<std::string>&, const std::string&, const char);
