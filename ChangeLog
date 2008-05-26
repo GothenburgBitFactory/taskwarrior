@@ -1,16 +1,19 @@
-  - Bug: assertion fails on mobile for t v
-  - Bug: configure.ac does not properly determine ncurses availability 
-  - Bug: when run without arguments, task dumps core on Solaris 10        
-  - Bug: Cannot seem to use the percent character in a task description   
-
 1.0.0 (?)
+  - All bugs fixed.
+  - Bug: assertion fails on mobile for t v
+  - Bug: configure.ac does not properly determine ncurses availability
+  - Bug: when run without arguments, task dumps core on Solaris 10
+  - Bug: Cannot seem to use the percent character in a task description
+  - Bug: New installation "task stats" reports newest task 12/31/1969
+  - Bug: New installation task projects displays header but no data - should short-circuit
+  + Bug: incorrect color specification in sample .taskrc file
 
 0.9.9 (?)
   - Autoconf/autmake behaving properly.
   + Clean build on OS X 10.5.
-  - Clean build on Ubuntu 7.0.
-  - Clean build on Fedora Core 8.
-  - All bugs fixed.
+  - Clean build on Ubuntu 8.0.
+  + Clean build on Fedora Core 8.
+  - Clean build on Fedora Core 9.
 
 ------ reality -----------------------------------
 
