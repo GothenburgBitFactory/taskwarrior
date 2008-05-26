@@ -3,14 +3,15 @@
   - Bug: assertion fails on mobile for t v
 
 0.9.9 (?)
-  - Documentation complete
-
-0.9.8 (?)
   - Autoconf/autmake behaving properly.
-  - All bugs fixed
-  + Color command
+  - All bugs fixed.
 
 ------ reality -----------------------------------
+
+0.9.8 (5/25/2008)
+  + Color command.
+  + Removed unnecessary files.
+  + Completed documentation.
 
 0.9.7 (5/24/2008)
   + Migrated old compiler flags into Makefile.am
