@@ -1,15 +1,21 @@
+  - Bug: assertion fails on mobile for t v
+  - Bug: configure.ac does not properly determine ncurses availability 
+  - Bug: when run without arguments, task dumps core on Solaris 10        
+  - Bug: Cannot seem to use the percent character in a task description   
 
 1.0.0 (?)
-  - Bug: assertion fails on mobile for t v
 
 0.9.9 (?)
   - Autoconf/autmake behaving properly.
+  + Clean build on OS X 10.5.
+  - Clean build on Ubuntu 7.0.
+  - Clean build on Fedora Core 8.
   - All bugs fixed.
 
 ------ reality -----------------------------------
 
 0.9.8 (5/25/2008)
-  + Color command.
+  + Added "task color" command.
   + Removed unnecessary files.
   + Completed documentation.
 
@@ -57,10 +63,18 @@
   + Initial commit.
 
 0.9.3 (4/6/2008)
+  + Added "task completed" command.
+  + Properly recognizes ncurses.
 
 0.9.2 (4/3/2008)
+  + Recognizes whether ncurses, flock is available.
+  + "task" duplicated to "task_rel" for preparation of a fork.
 
 0.9.1 (4/1/2008)
+  + Blank attributes read are longer be written out.
+  + Completed "task export" command.
+  + Added configuration values to "task version" command.
+  + Consolidated header files, removed unnecessary ones.
 
 0.9.0 (3/23/2008)
   + flat source directory

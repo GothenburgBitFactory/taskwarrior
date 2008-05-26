@@ -14,6 +14,10 @@ frequently, with best practices and useful reports evolving from usage patterns.
 
 Task is scope-limited to GTD functionality only.
 
+Task has been built and tested on the following configurations:
+
+  - OS X 10.5 Leopard
+  - Fedora Core 8
 
 
 You may want to jump straight to the TUTORIAL file, or perhaps watch the task
