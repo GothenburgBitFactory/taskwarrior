@@ -22,6 +22,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <assert.h>
 #include <Table.h>
 #include <Date.h>
 #include <task.h>
@@ -415,7 +416,7 @@ void Table::calculateColumnWidths ()
   std::vector <int> ideal = mMaxDataWidth;
   int width = 0;
   int countFlexible = 0;
-  for (unsigned int c = 0; c < mColumns.size (); ++c)
+  for (size_t c = 0; c < mColumns.size (); ++c)
   {
     if (mSpecifiedWidth[c] == flexible)
       ++countFlexible;
@@ -440,7 +441,7 @@ void Table::calculateColumnWidths ()
   {
     ideal = mMaxDataWidth;
     width = 0;
-    for (unsigned int c = 0; c < mColumns.size (); ++c)
+    for (size_t c = 0; c < mColumns.size (); ++c)
     {
       if (mSpecifiedWidth[c] > 0)
         ideal[c] = mSpecifiedWidth[c];
@@ -462,7 +463,7 @@ void Table::calculateColumnWidths ()
       int remainder = available % countFlexible;
 
       int lastFlexible = mColumns.size () - 1;
-      for (unsigned int c = 0; c < mColumns.size (); ++c)
+      for (size_t c = 0; c < mColumns.size (); ++c)
       {
          if (mSpecifiedWidth[c] == flexible)
          {
@@ -593,7 +594,7 @@ void Table::formatCell (
   std::string postJust;
   std::vector <std::string> chunks;
   wrapText (chunks, data, width);
-  for (unsigned int chunk = 0; chunk < chunks.size (); ++chunk)
+  for (size_t chunk = 0; chunk < chunks.size (); ++chunk)
   {
     // Place the data within the available space - justify.
     int gap = width - chunks[chunk].length ();
@@ -614,7 +615,7 @@ void Table::formatCell (
       for (int i = 0; i < gap / 2; ++i)
         preJust += " ";
 
-      for (unsigned int i = 0; i < gap - preJust.length (); ++i)
+      for (size_t i = 0; i < gap - preJust.length (); ++i)
         postJust += " ";
     }
 
@@ -670,7 +671,7 @@ const std::string Table::formatCell (
     for (int i = 0; i < gap / 2; ++i)
       preJust += " ";
 
-    for (unsigned int i = 0; i < gap - preJust.length (); ++i)
+    for (size_t i = 0; i < gap - preJust.length (); ++i)
       postJust += " ";
   }
 
@@ -714,7 +715,7 @@ void Table::optimize (std::string& output)
 */
 
   // \s\n -> \n
-  unsigned int i = 0;
+  size_t i = 0;
   while ((i = output.find (" \n")) != std::string::npos)
   {
     output = output.substr (0, i) +
@@ -757,7 +758,7 @@ void Table::sort (std::vector <int>& order)
     while (r + gap < (int) order.size ())
     {
       bool keepScanning = true;
-      for (unsigned int c = 0; keepScanning && c < mSortColumns.size (); ++c)
+      for (size_t c = 0; keepScanning && c < mSortColumns.size (); ++c)
       {
         keepScanning = false;
 
@@ -855,8 +856,8 @@ void Table::sort (std::vector <int>& order)
 ////////////////////////////////////////////////////////////////////////////////
 void Table::clean (std::string& value)
 {
-  unsigned int start = 0;
-  unsigned int pos;
+  size_t start = 0;
+  size_t pos;
   while ((pos = value.find ('\t', start)) != std::string::npos)
   {
     value.replace (pos, 1, " ");
@@ -884,7 +885,7 @@ const std::string Table::render ()
 
   // Print column headers in column order.
   std::string output;
-  for (unsigned int col = 0; col < mColumns.size (); ++col)
+  for (size_t col = 0; col < mColumns.size (); ++col)
     output += formatHeader (
                 col,
                 mCalculatedWidth[col],
@@ -907,8 +908,8 @@ const std::string Table::render ()
     std::vector <std::vector <std::string> > columns;
     std::vector <std::string> blanks;
 
-    unsigned int maxHeight = 0;
-    for (unsigned int col = 0; col < mColumns.size (); ++col)
+    size_t maxHeight = 0;
+    for (size_t col = 0; col < mColumns.size (); ++col)
     {
       std::vector <std::string> lines;
       std::string blank;
@@ -928,9 +929,9 @@ const std::string Table::render ()
 
     if (maxHeight)
     {
-      for (unsigned int lines = 0; lines < maxHeight; ++lines)
+      for (size_t lines = 0; lines < maxHeight; ++lines)
       {
-        for (unsigned int col = 0; col < mColumns.size (); ++col)
+        for (size_t col = 0; col < mColumns.size (); ++col)
           if (lines < columns[col].size ())
             output += columns[col][lines];
           else

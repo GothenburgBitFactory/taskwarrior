@@ -136,7 +136,7 @@ void guess (const std::string& type, char** list, std::string& candidate)
     error += " '";
     error += candidate;
     error += "' - could be either of ";
-    for (unsigned int i = 0; i < matches.size (); ++i)
+    for (size_t i = 0; i < matches.size (); ++i)
     {
       if (i)
         error += ", ";
@@ -165,8 +165,8 @@ static bool isCommand (const std::string& candidate)
 ////////////////////////////////////////////////////////////////////////////////
 bool validDate (std::string& date)
 {
-  unsigned int firstSlash  = date.find ("/");
-  unsigned int secondSlash = date.find ("/", firstSlash + 1);
+  size_t firstSlash  = date.find ("/");
+  size_t secondSlash = date.find ("/", firstSlash + 1);
   if (firstSlash != std::string::npos &&
       secondSlash != std::string::npos)
   {
@@ -236,7 +236,7 @@ static bool validAttribute (std::string& name, std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 static bool validId (const std::string& input)
 {
-  for (unsigned int i = 0; i < input.length (); ++i)
+  for (size_t i = 0; i < input.length (); ++i)
     if (!::isdigit (input[i]))
       return false;
 
@@ -275,13 +275,13 @@ static bool validSubstitution (
   std::string& from,
   std::string& to)
 {
-  unsigned int first = input.find ('/');
+  size_t first = input.find ('/');
   if (first != std::string::npos)
   {
-    unsigned int second = input.find ('/', first + 1);
+    size_t second = input.find ('/', first + 1);
     if (second != std::string::npos)
     {
-      unsigned int third = input.find ('/', second + 1);
+      size_t third = input.find ('/', second + 1);
       if (third != std::string::npos)
       {
         if (first == 0 &&
@@ -318,10 +318,10 @@ void parse (
   command = "";
 
   std::string descCandidate = "";
-  for (unsigned int i = 0; i < args.size (); ++i)
+  for (size_t i = 0; i < args.size (); ++i)
   {
     std::string arg (args[i]);
-    unsigned int colon;               // Pointer to colon in argument.
+    size_t colon;               // Pointer to colon in argument.
     std::string from;
     std::string to;
 

@@ -35,7 +35,7 @@ bool Config::load (const std::string& file)
     while (getline (in, line))
     {
       // Remove comments.
-      unsigned int pound = line.find ("#");
+      size_type pound = line.find ("#");
       if (pound != std::string::npos)
         line = line.substr (0, pound);
 
@@ -44,7 +44,7 @@ bool Config::load (const std::string& file)
       // Skip empty lines.
       if (line.length () > 0)
       {
-        unsigned int equal = line.find ("=");
+        size_type equal = line.find ("=");
         if (equal != std::string::npos)
         {
           std::string key   = trim (line.substr (0, equal), " \t");

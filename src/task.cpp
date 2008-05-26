@@ -2458,7 +2458,7 @@ void handleModify (const TDB& tdb, T& task, Config& conf)
       if (from != "")
       {
         std::string description = original.getDescription ();
-        unsigned int pattern = description.find (from);
+        size_t pattern = description.find (from);
         if (pattern != std::string::npos)
         {
           description = description.substr (0, pattern) +

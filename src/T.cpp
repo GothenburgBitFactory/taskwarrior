@@ -115,7 +115,7 @@ void T::addTag (const std::string& tag)
 ////////////////////////////////////////////////////////////////////////////////
 void T::addTags (const std::vector <std::string>& tags)
 {
-  for (unsigned int i = 0; i < tags.size (); ++i)
+  for (size_t i = 0; i < tags.size (); ++i)
   {
     if (tags[i].find (' ') != std::string::npos)
       throw std::string ("T::addTags - tags may not contain spaces");
@@ -137,7 +137,7 @@ void T::addTags (const std::vector <std::string>& tags)
 void T::removeTag (const std::string& tag)
 {
   std::vector <std::string> copy;
-  for (unsigned int i = 0; i < mTags.size (); ++i)
+  for (size_t i = 0; i < mTags.size (); ++i)
     if (mTags[i] != tag)
       copy.push_back (mTags[i]);
 
@@ -242,7 +242,7 @@ const std::string T::compose () const
   else if (mStatus == deleted)   line += "X [";
 
   // Tags
-  for (unsigned int i = 0; i < mTags.size (); ++i)
+  for (size_t i = 0; i < mTags.size (); ++i)
   {
     line += (i > 0 ? " " : "");
     line += mTags[i];
@@ -297,7 +297,7 @@ const std::string T::composeCSV ()
 
   // Tags
   line += "'";
-  for (unsigned int i = 0; i < mTags.size (); ++i)
+  for (size_t i = 0; i < mTags.size (); ++i)
   {
     line += (i > 0 ? " " : "");
     line += mTags[i];
@@ -364,13 +364,13 @@ void T::parse (const std::string& line)
         if (line[0] == 'X')
           setStatus (deleted);
 
-        unsigned int openTagBracket  = line.find ("[");
-        unsigned int closeTagBracket = line.find ("]", openTagBracket);
+        size_t openTagBracket  = line.find ("[");
+        size_t closeTagBracket = line.find ("]", openTagBracket);
         if (openTagBracket  != std::string::npos &&
             closeTagBracket != std::string::npos)
         {
-          unsigned int openAttrBracket  = line.find ("[", closeTagBracket);
-          unsigned int closeAttrBracket = line.find ("]", openAttrBracket);
+          size_t openAttrBracket  = line.find ("[", closeTagBracket);
+          size_t closeAttrBracket = line.find ("]", openAttrBracket);
           if (openAttrBracket  != std::string::npos &&
               closeAttrBracket != std::string::npos)
           {
@@ -383,7 +383,7 @@ void T::parse (const std::string& line)
                openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
              std::vector <std::string> pairs;
              split (pairs, attributes, ' ');
-             for (unsigned int i = 0; i <  pairs.size (); ++i)
+             for (size_t i = 0; i <  pairs.size (); ++i)
              {
                std::vector <std::string> pair;
                split (pair, pairs[i], ':');
@@ -415,13 +415,13 @@ void T::parse (const std::string& line)
                   : line[37] == 'X' ? deleted
                   :                  pending;
 
-        unsigned int openTagBracket  = line.find ("[");
-        unsigned int closeTagBracket = line.find ("]", openTagBracket);
+        size_t openTagBracket  = line.find ("[");
+        size_t closeTagBracket = line.find ("]", openTagBracket);
         if (openTagBracket  != std::string::npos &&
             closeTagBracket != std::string::npos)
         {
-          unsigned int openAttrBracket  = line.find ("[", closeTagBracket);
-          unsigned int closeAttrBracket = line.find ("]", openAttrBracket);
+          size_t openAttrBracket  = line.find ("[", closeTagBracket);
+          size_t closeAttrBracket = line.find ("]", openAttrBracket);
           if (openAttrBracket  != std::string::npos &&
               closeAttrBracket != std::string::npos)
           {
@@ -434,7 +434,7 @@ void T::parse (const std::string& line)
                openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
              std::vector <std::string> pairs;
              split (pairs, attributes, ' ');
-             for (unsigned int i = 0; i <  pairs.size (); ++i)
+             for (size_t i = 0; i <  pairs.size (); ++i)
              {
                std::vector <std::string> pair;
                split (pair, pairs[i], ':');
