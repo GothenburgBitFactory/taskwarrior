@@ -96,12 +96,12 @@ void Config::createDefault (const std::string& file)
         fprintf (out, "curses=on\n");
         fprintf (out, "color=on\n");
 
-        fprintf (out, "color.overdue=red\n");
-        fprintf (out, "#color.due=on yellow\n");
+        fprintf (out, "color.overdue=bold_red\n");
+        fprintf (out, "#color.due=on_bright_yellow\n");
         fprintf (out, "#color.pri.H=on_red\n");
         fprintf (out, "#color.pri.M=on_yellow\n");
         fprintf (out, "#color.pri.L=on_green\n");
-        fprintf (out, "color.active=cyan\n");
+        fprintf (out, "color.active=bold_cyan\n");
         fprintf (out, "color.tagged=yellow\n");
 
         fclose (out);
