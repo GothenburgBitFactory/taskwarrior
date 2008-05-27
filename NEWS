@@ -1,6 +1,13 @@
 
 Welcome to Task 1.0.0.
 
+Task has been built and tested on the following configurations:
+
+  - OS X 10.5 Leopard
+  - Fedora Core 8
+  - Fedora Core 9
+  - Ubuntu 8
+
 While Task has undergone much testing, bugs are sure to remain.  If you
 encounter a bug, please contact me at bugs@beckingham.net.  Here is what you
 could do, in order of increasing effort (to you) and usefulness (to me):

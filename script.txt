@@ -1,0 +1,57 @@
+cat hello
+alias t=task
+t add do laundry
+t add project:garage order dumpster
+t add +phone tell mom i loveher
+t add +phone pro:garage schedule goodwill pickup
+t add +email pro:garage ask tom if he wants that old bike
+t list
+
+t 1 pro:home
+t 3 pro:home tell mom i love her
+t list pro:garage
+t lis +phone
+t li pro:garage +phone
+t l mom
+
+t 1 priority:H
+t pri:H 3
+t 1 pri:M
+t l
+t 2 pri:L
+t l
+t do 3
+t l
+
+# There can be an arbitrary number of tags.
+t 2 +phone +mistake
+# Oops!
+t 2 -mistake
+t tags
+
+t projects
+
+t 3 fg:white
+t l
+t 4 bg:red fg:yellow
+t l
+t 4 bg:
+t l
+t 4 fg:
+
+t 1 due:12/23/2006
+t l
+t calendar
+t 1 due:12/16/2006
+t l
+t cal
+
+t start 1
+t active
+t do 1
+t l
+t do 3
+t do 1
+t active
+t summary
+

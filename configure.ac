@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(task, 0.9.8, bugs@beckingham.net)
+AC_INIT(task, 0.9.9, bugs@beckingham.net)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/task.cpp])
 AC_CONFIG_HEADER([auto.h])
