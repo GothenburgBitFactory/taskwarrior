@@ -2144,17 +2144,6 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 void handleReportStats (const TDB& tdb, T& task, Config& conf)
 {
-  // Determine window size, and set table accordingly.
-  int width = 80;
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.allT (tasks);
