@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <sys/stat.h>
+#include <stdlib.h>
 #include "task.h"
 #include "Config.h"
 
@@ -35,7 +36,7 @@ bool Config::load (const std::string& file)
     while (getline (in, line))
     {
       // Remove comments.
-      unsigned int pound = line.find ("#");
+      size_type pound = line.find ("#");
       if (pound != std::string::npos)
         line = line.substr (0, pound);
 
@@ -44,7 +45,7 @@ bool Config::load (const std::string& file)
       // Skip empty lines.
       if (line.length () > 0)
       {
-        unsigned int equal = line.find ("=");
+        size_type equal = line.find ("=");
         if (equal != std::string::npos)
         {
           std::string key   = trim (line.substr (0, equal), " \t");
@@ -96,12 +97,12 @@ void Config::createDefault (const std::string& file)
         fprintf (out, "curses=on\n");
         fprintf (out, "color=on\n");
 
-        fprintf (out, "color.overdue=red\n");
-        fprintf (out, "#color.due=on yellow\n");
+        fprintf (out, "color.overdue=bold_red\n");
+        fprintf (out, "#color.due=on_bright_yellow\n");
         fprintf (out, "#color.pri.H=on_red\n");
         fprintf (out, "#color.pri.M=on_yellow\n");
         fprintf (out, "#color.pri.L=on_green\n");
-        fprintf (out, "color.active=cyan\n");
+        fprintf (out, "color.active=bold_cyan\n");
         fprintf (out, "color.tagged=yellow\n");
 
         fclose (out);

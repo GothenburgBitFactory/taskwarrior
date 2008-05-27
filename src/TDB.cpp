@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sys/file.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "task.h"
 #include "TDB.h"

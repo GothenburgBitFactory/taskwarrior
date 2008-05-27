@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <pwd.h>
 #include <time.h>
 
@@ -1694,7 +1695,7 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
   table.setColumnJustification (4, Table::right);
   table.setColumnJustification (5, Table::right);
 
-  char *months[] =
+  const char *months[] =
   {
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December",
@@ -2458,7 +2459,7 @@ void handleModify (const TDB& tdb, T& task, Config& conf)
       if (from != "")
       {
         std::string description = original.getDescription ();
-        unsigned int pattern = description.find (from);
+        size_t pattern = description.find (from);
         if (pattern != std::string::npos)
         {
           description = description.substr (0, pattern) +
