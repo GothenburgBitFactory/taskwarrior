@@ -11,9 +11,9 @@
 0.9.9 (?)
   - Autoconf/autmake behaving properly.
   + Clean build on OS X 10.5.
-  - Clean build on Ubuntu 8.0.
+  + Clean build on Ubuntu 8.0.
   + Clean build on Fedora Core 8.
-  - Clean build on Fedora Core 9.
+  + Clean build on Fedora Core 9.
 
 ------ reality -----------------------------------
 
