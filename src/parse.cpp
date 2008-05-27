@@ -4,6 +4,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <stdlib.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -13,7 +14,7 @@
 #include "T.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-static char* colors[] =
+static const char* colors[] =
 {
   "bold",
   "underline",
@@ -75,7 +76,7 @@ static char* colors[] =
   "",
 };
 
-static char* attributes[] =
+static const char* attributes[] =
 {
   "project",
   "priority",
@@ -88,7 +89,7 @@ static char* attributes[] =
   "",
 };
 
-static char* commands[] =
+static const char* commands[] =
 {
   "active",
   "add",
@@ -115,7 +116,7 @@ static char* commands[] =
   "",
 };
 
-void guess (const std::string& type, char** list, std::string& candidate)
+void guess (const std::string& type, const char** list, std::string& candidate)
 {
   std::vector <std::string> options;
   for (int i = 0; list[i][0]; ++i)

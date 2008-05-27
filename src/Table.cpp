@@ -22,6 +22,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <string.h>
 #include <assert.h>
 #include <Table.h>
 #include <Date.h>

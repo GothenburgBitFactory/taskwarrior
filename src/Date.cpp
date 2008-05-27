@@ -6,6 +6,7 @@
 #include <iostream>
 #include <time.h>
 #include <assert.h>
+#include <stdlib.h>
 #include "task.h"
 #include "Date.h"
 
@@ -156,7 +157,7 @@ int Date::daysInMonth (int month, int year)
 ////////////////////////////////////////////////////////////////////////////////
 std::string Date::monthName (int month)
 {
-  static char* months[12] =
+  static const char* months[12] =
   {
     "January",
     "February",
@@ -180,7 +181,7 @@ std::string Date::monthName (int month)
 ////////////////////////////////////////////////////////////////////////////////
 void Date::dayName (int dow, std::string& name)
 {
-  static char* days[7] =
+  static const char* days[7] =
   {
     "Sunday",
     "Monday",
@@ -197,7 +198,7 @@ void Date::dayName (int dow, std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 std::string Date::dayName (int dow)
 {
-  static char* days[7] =
+  static const char* days[7] =
   {
     "Sunday",
     "Monday",

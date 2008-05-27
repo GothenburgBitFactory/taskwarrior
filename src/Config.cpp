@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <sys/stat.h>
+#include <stdlib.h>
 #include "task.h"
 #include "Config.h"
 
