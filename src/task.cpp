@@ -307,29 +307,35 @@ void handleProjects (const TDB& tdb, T& task, Config& conf)
     unique[task.getAttribute ("project")] += 1;
   }
 
-  // Render a list of project names from the map.
-  Table table;
-  table.addColumn ("Project");
-  table.addColumn ("Tasks");
-
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-
-  table.setColumnJustification (1, Table::right);
-
-  foreach (i, unique)
+  if (unique.size ())
   {
-    int row = table.addRow ();
-    table.addCell (row, 0, i->first);
-    table.addCell (row, 1, i->second);
-  }
+    // Render a list of project names from the map.
+    Table table;
+    table.addColumn ("Project");
+    table.addColumn ("Tasks");
 
-  std::cout << std::endl
-            << table.render ()
-            << std::endl
-            << unique.size ()
-            << (unique.size () == 1 ? " project" : " projects")
-            << std::endl;
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+
+    table.setColumnJustification (1, Table::right);
+
+    foreach (i, unique)
+    {
+      int row = table.addRow ();
+      table.addCell (row, 0, i->first);
+      table.addCell (row, 1, i->second);
+    }
+
+    std::cout << std::endl
+              << table.render ()
+              << std::endl
+              << unique.size ()
+              << (unique.size () == 1 ? " project" : " projects")
+              << std::endl;
+  }
+  else
+    std::cout << "No projects."
+              << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
