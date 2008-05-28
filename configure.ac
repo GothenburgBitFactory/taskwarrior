@@ -6,7 +6,6 @@ AC_INIT(task, 0.9.9, bugs@beckingham.net)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/task.cpp])
 AC_CONFIG_HEADER([auto.h])
-#AC_CONFIG_SUBDIRS([src])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -14,7 +13,6 @@ AC_PROG_CC
 AC_LANG(C++)
 
 # Checks for libraries.
-#AC_CHECK_LIB(ncurses, initscr, [LIBS="$LIBS -lncurses" AC_DEFINE([HAVE_NCURSES], [1], [Found ncurses])])
 AC_CHECK_LIB(ncurses,initscr)
 AC_CHECK_LIB(ncurses,endwin)
 

@@ -1,57 +1,68 @@
-cat hello
-alias t=task
-t add do laundry
-t add project:garage order dumpster
-t add +phone tell mom i loveher
-t add +phone pro:garage schedule goodwill pickup
-t add +email pro:garage ask tom if he wants that old bike
-t list
+task add do laundry
+task add project:garage order dumpster
+task add +phone tell mom i loveher
+task add +phone pro:garage schedule goodwill pickup
+task add +email pro:garage ask Tom if he wants that old bike
+task ls
 
-t 1 pro:home
-t 3 pro:home tell mom i love her
-t list pro:garage
-t lis +phone
-t li pro:garage +phone
-t l mom
+task 1 pro:home
+task 3 pro:home tell mom I love her
+task ls pro:garage
+task long pro:garage
+task list pro:garage
+task lis +phone
+task li pro:garage +phone
+task l mom
 
-t 1 priority:H
-t pri:H 3
-t 1 pri:M
-t l
-t 2 pri:L
-t l
-t do 3
-t l
+task 1 priority:H
+task pri:H 3
+task 1 pri:M
+task li
+task 2 pri:L
+task li
+task do 3
+task li
 
-# There can be an arbitrary number of tags.
-t 2 +phone +mistake
+# There may be an arbitrary number of tags.
+task 2 +phone +mistake
 # Oops!
-t 2 -mistake
-t tags
+task 2 -mistake
+task tags
+task info 2
 
-t projects
+task projects
 
-t 3 fg:white
-t l
-t 4 bg:red fg:yellow
-t l
-t 4 bg:
-t l
-t 4 fg:
+task 3 fg:bold
+task li
+task 3 fg:white
+task li
+task 3 fg:bold_underline_white
+task li
+task 4 bg:on_bright_red fg:bold_yellow
+task li
+task 4 bg:
+task li
+task 4 fg:
+task colors
 
-t 1 due:12/23/2006
-t l
-t calendar
-t 1 due:12/16/2006
-t l
-t cal
+task 1 due:6/8/2008
+task li
+task calendar
+task 1 due:6/1/2008
+task li
+task overdue
+task cal
 
-t start 1
-t active
-t do 1
-t l
-t do 3
-t do 1
-t active
-t summary
+task export file.csv
+cat file.csv
+
+task start 1
+task active
+task do 1
+task li
+task do 3
+task do 1
+task active
+task summary
+task history
 

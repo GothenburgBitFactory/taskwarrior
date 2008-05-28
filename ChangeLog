@@ -1,5 +1,8 @@
+1.1.0 (?)
+  - Command line specification of .taskrc file
+
 1.0.0 (?)
-  - All bugs fixed.
+  - New movie made, uploaded
   - Bug: assertion fails on mobile for t v
   - Bug: configure.ac does not properly determine ncurses availability
   - Bug: when run without arguments, task dumps core on Solaris 10
@@ -8,14 +11,14 @@
   - Bug: New installation task projects displays header but no data - should short-circuit
   + Bug: incorrect color specification in sample .taskrc file
 
-0.9.9 (?)
-  - Autoconf/autmake behaving properly.
+------ reality -----------------------------------
+
+0.9.9 (5/27/2008)
+  + Autoconf/autmake behaving properly.
   + Clean build on OS X 10.5.
   + Clean build on Ubuntu 8.0.
   + Clean build on Fedora Core 8.
   + Clean build on Fedora Core 9.
-
------- reality -----------------------------------
 
 0.9.8 (5/25/2008)
   + Added "task color" command.

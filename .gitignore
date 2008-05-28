@@ -1,7 +1,6 @@
 Makefile.in
 aclocal.m4
 autom4te.cache
-conf.defs
 auto.h*
 config.h.in
 config.status
