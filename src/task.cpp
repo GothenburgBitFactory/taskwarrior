@@ -2251,7 +2251,7 @@ void handleVersion (Config& conf)
   table.setColumnUnderline (0);
   table.setColumnUnderline (1);
   table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
+  table.setColumnWidth (1, Table::flexible);
   table.setColumnJustification (0, Table::left);
   table.setColumnJustification (1, Table::left);
   table.sortOn (0, Table::ascendingCharacter);
