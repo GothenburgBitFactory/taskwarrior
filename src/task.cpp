@@ -2200,11 +2200,14 @@ void handleReportStats (const TDB& tdb, T& task, Config& conf)
             << "Deleted               " << deletedT   << std::endl
             << "Total                 " << totalT     << std::endl;
 
-  Date e (earliest);
-  std::cout << "Oldest task           " << e.toString () << std::endl;
-  Date l (latest);
-  std::cout << "Newest task           " << l.toString () << std::endl;
-  std::cout << "Task used for         " << formatSeconds (latest - earliest) << std::endl;
+  if (tasks.size ())
+  {
+    Date e (earliest);
+    std::cout << "Oldest task           " << e.toString () << std::endl;
+    Date l (latest);
+    std::cout << "Newest task           " << l.toString () << std::endl;
+    std::cout << "Task used for         " << formatSeconds (latest - earliest) << std::endl;
+  }
 
   if (totalT)
     std::cout << "Task added every      " << formatSeconds ((latest - earliest) / totalT)     << std::endl;
