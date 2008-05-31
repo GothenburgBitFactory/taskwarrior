@@ -1,0 +1,35 @@
+Some considerable time ago - longer than I had hoped - I demonstrated an
+alternate implementation of the todo script, called task, in the form of a
+YouTube movie:
+
+  http://www.youtube.com/watch?v=l68LCl6BYvs
+
+A lot has happened since then, and the task program has been slowly improving
+thanks to feedback from some early testers, and continuous use by me.  Today,
+I have uploaded a new movie:
+
+  http:/www.youtube.com/watch?v=????????????
+
+This movie includes most of the changes and improvements to task, but behind
+the scenes are the biggest changes.  There was a rewrite of the underlying
+storage mechanism yielding a clean API for the front end, and the code was
+reviewed for portability and converted to use GNU autoconf/automake.
+
+Task has been released under GPL, and so far has been tested on:
+
+  Max OS X 10.4 (Tiger)
+  Max OS X 10.5 (Leopard)
+  Fedora 8
+  Fedora 9
+  Ubuntu 8 (Hardy Heron)
+
+Task has been making me more organized and productive for some time now.
+Perhaps some of you might find it useful, and I welcom feedback of all kinds.
+
+You can find the task source code at:
+
+  http://www.beckingham.net/task-1.0.0.tar.gz
+
+Thank you.
+Paul Beckingham
+
