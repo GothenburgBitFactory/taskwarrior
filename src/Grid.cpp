@@ -145,9 +145,9 @@ unsigned int Grid::height () const
 ////////////////////////////////////////////////////////////////////////////////
 Grid::Cell* Grid::byRow (const unsigned int row, const unsigned int col) const
 {
-  if (row <= mRows.size () &&
+  if (row < mRows.size () &&
       mRows[row] != NULL   &&
-      col <= mRows[row]->size ())
+      col < mRows[row]->size ())
     return (*mRows[row])[col];
 
   return NULL;
@@ -155,9 +155,9 @@ Grid::Cell* Grid::byRow (const unsigned int row, const unsigned int col) const
 
 Grid::Cell* Grid::byColumn (const unsigned int row, const unsigned int col) const
 {
-  if (col <= mColumns.size () &&
+  if (col < mColumns.size () &&
       mColumns[col] != NULL   &&
-      row <= mColumns[col]->size ())
+      row < mColumns[col]->size ())
     return (*mColumns[col])[row];
 
   return NULL;
@@ -166,36 +166,25 @@ Grid::Cell* Grid::byColumn (const unsigned int row, const unsigned int col) cons
 ////////////////////////////////////////////////////////////////////////////////
 void Grid::expandGrid (const unsigned int row, const unsigned int col)
 {
+
   // If the new row is outside the bounds of the current grid, add blank rows to
   // pad, then a new row vector.
   if (row >= mRows.size ())
   {
     for (unsigned int r = mRows.size (); r <= row; ++r)
       if (r < row)
-//      {
-//        std::cout << "additional mRows[" << r << "] = NULL" << std::endl;
         mRows.push_back (NULL);
-//      }
       else
-//      {
-//        std::cout << "additional mRows[" << r << "] = new std::vector <Cell*>" << std::endl;
         mRows.push_back (new std::vector <Cell*>);
-//      }
   }
   // If the new row is within the bounds of the current grid, ensure that the
   // row points to a vector of cells.
   else if (mRows[row] == NULL)
-//  {
-//    std::cout << "existing mRows[" << row << "] = new std::vector <Cell*>" << std::endl;
     mRows[row] = new std::vector <Cell*>;
-//  }
 
   if (col >= mRows[row]->size ())
     for (unsigned int c = mRows[row]->size (); c <= col; ++c)
-//    {
-//      std::cout << "additional mRows[" << row << "][" << c << "] = NULL" << std::endl;
       mRows[row]->push_back (NULL);
-//    }
 
   // If the new col is outside the bounds of the current grid, add blank cols to
   // pad, then a new col vector.
@@ -203,30 +192,18 @@ void Grid::expandGrid (const unsigned int row, const unsigned int col)
   {
     for (unsigned int c = mColumns.size (); c <= col; ++c)
       if (c < col)
-//      {
-//        std::cout << "additional mColumns[" << c << "] = NULL" << std::endl;
         mColumns.push_back (NULL);
-//      }
       else
-//      {
-//        std::cout << "additional mColumns[" << c << "] = new std::vector <Cell*>" << std::endl;
         mColumns.push_back (new std::vector <Cell*>);
-//      }
   }
   // If the new col is within the bounds of the current grid, ensure that the
   // col points to a vector of cells.
   else if (mColumns[col] == NULL)
-//  {
-//    std::cout << "existing mColumns[" << col << "] = new std::vector <Cell*>" << std::endl;
     mColumns[col] = new std::vector <Cell*>;
-//  }
 
   if (row >= mColumns[col]->size ())
     for (unsigned int r = mColumns[col]->size (); r <= row; ++r)
-//    {
-//      std::cout << "additional mColumns[" << col << "][" << r << "] = NULL" << std::endl;
       mColumns[col]->push_back (NULL);
-//    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -237,15 +214,10 @@ void Grid::insertCell (
 {
   // Delete any existing cell, because cells are owned by rows, not columns.
   if ((*mRows[row])[col] != NULL)
-//  {
-//    std::cout << "deleted old cell mRows[" << row << "][" << col << "]" << std::endl;
     delete (*mRows[row])[col];
-//  }
 
   (*mRows[row])[col]    = cell;
   (*mColumns[col])[row] = cell;
-//  std::cout << "assigned new cell mRows[" << row << "][" << col << "]" << std::endl;
-//  std::cout << "assigned new cell mColumns[" << col << "][" << row << "]" << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

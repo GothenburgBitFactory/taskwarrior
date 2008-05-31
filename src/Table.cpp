@@ -633,57 +633,6 @@ void Table::formatCell (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string Table::formatCell (
-  const int row,
-  const int col,
-  const int width,
-  const int padding)
-{
-  assert (width > 0);
-
-  Text::color fg     = getFg (row, col);
-  Text::color bg     = getBg (row, col);
-  just justification = getJustification (row, col);
-  std::string data   = getCell (row, col);
-
-  std::string pad      = "";
-  std::string intraPad = "";
-  std::string preJust  = "";
-  std::string postJust = "";
-
-  for (int i = 0; i < padding; ++i)
-    pad += " ";
-
-  // Place the data within the available space - justify.
-  int gap = width - data.length ();
-
-  if (justification == left)
-  {
-    for (int i = 0; i < gap; ++i)
-      postJust += " ";
-  }
-  else if (justification == right)
-  {
-    for (int i = 0; i < gap; ++i)
-      preJust += " ";
-  }
-  else if (justification == center)
-  {
-    for (int i = 0; i < gap / 2; ++i)
-      preJust += " ";
-
-    for (size_t i = 0; i < gap - preJust.length (); ++i)
-      postJust += " ";
-  }
-
-  if (col < (signed) mColumns.size () - 1)
-    for (int i = 0; i < getIntraPadding (); ++i)
-      intraPad += " ";
-
-  return Text::colorize (fg, bg, pad + preJust + data + postJust + pad + intraPad);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void Table::suppressWS ()
 {
   mSuppressWS = true;

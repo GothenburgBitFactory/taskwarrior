@@ -32,11 +32,11 @@ public:
   static std::string monthName (int);
   static void dayName (int, std::string&);
   static std::string dayName (int);
-  int dayOfWeek ();
+  int dayOfWeek () const;
 
-  int month ();
-  int day ();
-  int year ();
+  int month () const;
+  int day () const;
+  int year () const;
 
   bool operator== (const Date&);
   bool operator!= (const Date&);

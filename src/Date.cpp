@@ -213,28 +213,28 @@ std::string Date::dayName (int dow)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Date::dayOfWeek ()
+int Date::dayOfWeek () const
 {
   struct tm* t = localtime (&mT);
   return t->tm_wday;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Date::month ()
+int Date::month () const
 {
   struct tm* t = localtime (&mT);
   return t->tm_mon + 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Date::day ()
+int Date::day () const
 {
   struct tm* t = localtime (&mT);
   return t->tm_mday;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Date::year ()
+int Date::year () const
 {
   struct tm* t = localtime (&mT);
   return t->tm_year + 1900;

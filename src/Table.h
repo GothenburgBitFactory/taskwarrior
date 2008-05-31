@@ -77,7 +77,6 @@ private:
            just getJustification (const int, const int);
            just getHeaderJustification (const int);
            const std::string formatHeader (const int, const int, const int);
-           const std::string formatCell (const int, const int, const int, const int);
            void formatCell (const int, const int, const int, const int, std::vector <std::string>&, std::string&);
            void optimize (std::string&);
            void sort (std::vector <int>&);

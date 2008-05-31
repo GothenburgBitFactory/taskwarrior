@@ -1824,32 +1824,15 @@ void handleReportUsage (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
+std::string renderMonth (
+  int month,
+  int year,
+  const Date& today,
+  std::vector <T>& all,
+  Config& conf)
 {
-  // Today.
-  Date date;
-  int m     = date.month ();
-  int y     = date.year ();
-  int today = date.day ();
-
-  // Read all the tasks, filter by those that have a due date.
-  std::vector <int> annotations;
-  std::vector <T> pending;
-  tdb.pendingT (pending);
-  for (unsigned int i = 0; i < pending.size (); ++i)
-  {
-    T task (pending[i]);
-    if (task.getAttribute ("due") != "")
-    {
-      Date d (::atoi (task.getAttribute ("due").c_str ()));
-      if (d.year () == y && d.month () == m)
-        annotations.push_back (d.day ());
-    }
-  }
-
-  pending.clear ();
-
   Table table;
+  table.addColumn (" ");
   table.addColumn ("Su");
   table.addColumn ("Mo");
   table.addColumn ("Tu");
@@ -1858,13 +1841,13 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Fr");
   table.addColumn ("Sa");
 
-  table.setColumnUnderline (0);
   table.setColumnUnderline (1);
   table.setColumnUnderline (2);
   table.setColumnUnderline (3);
   table.setColumnUnderline (4);
   table.setColumnUnderline (5);
   table.setColumnUnderline (6);
+  table.setColumnUnderline (7);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (1, Table::right);
@@ -1873,25 +1856,35 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
   table.setColumnJustification (4, Table::right);
   table.setColumnJustification (5, Table::right);
   table.setColumnJustification (6, Table::right);
+  table.setColumnJustification (7, Table::right);
 
-  int days = Date::daysInMonth (m, y);
+  int days = Date::daysInMonth (month, year);
   int row = table.addRow ();
   for (int d = 1; d <= days; ++d)
   {
-    Date temp (m, d, y);
+    Date temp (month, d, year);
     int dow = temp.dayOfWeek ();
 
-    table.addCell (row, dow, d);
+    table.addCell (row, dow + 1, d);
 
-    if (conf.get ("color", true) && d == today)
-      table.setCellFg (row, dow, Text::cyan);
+    if (conf.get ("color", true) &&
+        today.day ()   == d      &&
+        today.month () == month  &&
+        today.year ()  == year)
+      table.setCellFg (row, dow + 1, Text::cyan);
 
-    for (unsigned int a = 0; a < annotations.size (); ++a)
+    std::vector <T>::iterator it;
+    for (it = all.begin (); it != all.end (); ++it)
     {
-      if (conf.get ("color", true) && annotations[a] == d)
+      Date due (::atoi (it->getAttribute ("due").c_str ()));
+
+      if (conf.get ("color", true) &&
+          due.day ()   == d        &&
+          due.month () == month    &&
+          due.year ()  == year)
       {
-        table.setCellFg (row, dow, Text::black);
-        table.setCellBg (row, dow, d < today ? Text::red : Text::yellow);
+        table.setCellFg (row, dow + 1, Text::black);
+        table.setCellBg (row, dow + 1, d < today.day () ? Text::red : Text::yellow);
       }
     }
 
@@ -1899,14 +1892,52 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
       row = table.addRow ();
   }
 
-  std::cout << std::endl
-            << Date::monthName (m)
-            << " "
-            << y
-            << std::endl
-            << std::endl
-            << table.render ()
-            << std::endl;
+  return table.render ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
+{
+  // Load all the pending tasks.
+  std::vector <T> pending;
+  tdb.pendingT (pending);
+
+  // Find the oldest pending due date.
+  Date oldest;
+  std::vector <T>::iterator it;
+  for (it = pending.begin (); it != pending.end (); ++it)
+  {
+    if (it->getAttribute ("due") != "")
+    {
+      Date d (::atoi (it->getAttribute ("due").c_str ()));
+      if (d < oldest)
+        oldest = d;
+    }
+  }
+
+  // Iterate from oldest due month, year to now.
+  Date today;
+  int m = oldest.month ();
+  int y = oldest.year ();
+
+  std::cout << std::endl;
+  std::string output;
+  while (y < today.year () || (y == today.year () && m <= today.month ()))
+  {
+    std::cout << Date::monthName (m)
+              << " "
+              << y
+              << std::endl
+              << std::endl
+              << renderMonth (m, y, today, pending, conf)
+              << std::endl;
+
+    if (++m == 13)
+    {
+      m = 1;
+      ++y;
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
