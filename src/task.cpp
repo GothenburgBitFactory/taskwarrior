@@ -1,7 +1,27 @@
 ////////////////////////////////////////////////////////////////////////////////
+// task - a command line task list manager.
+//
 // Copyright 2006 - 2008, Paul Beckingham.
 // All rights reserved.
 //
+// This program is free software; you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software
+// Foundation; either version 2 of the License, or (at your option) any later
+// version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+// details.
+//
+// You should have received a copy of the GNU General Public License along with
+// this program; if not, write to the
+//
+//     Free Software Foundation, Inc.,
+//     51 Franklin Street, Fifth Floor,
+//     Boston, MA
+//     02110-1301
+//     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
@@ -16,7 +36,6 @@
 #include "Config.h"
 #include "Date.h"
 #include "Table.h"
-#include "stlmacros.h"
 #include "TDB.h"
 #include "T.h"
 #include "task.h"
@@ -2307,6 +2326,14 @@ void handleVersion (Config& conf)
             << PACKAGE
             << " "
             << VERSION
+            << std::endl
+            << std::endl
+            << "Task comes with ABSOLUTELY NO WARRANTY; for details read the COPYING file"
+            << std::endl
+            << "included.  This is free software, and you are welcome to redistribute it"
+            << std::endl
+            << "under certain conditions; again, see the COPYING file for details."
+            << std::endl
             << std::endl
             << std::endl
             << table.render ()

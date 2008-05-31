@@ -99,7 +99,7 @@ task.o task.o: task.cpp /usr/include/c++/4.0.0/iostream \
   /usr/include/c++/4.0.0/vector /usr/include/c++/4.0.0/bits/stl_vector.h \
   /usr/include/c++/4.0.0/bits/stl_bvector.h \
   /usr/include/c++/4.0.0/bits/vector.tcc Date.h Table.h color.h Grid.h \
-  stlmacros.h TDB.h T.h task.h color.h ../auto.h /usr/include/ncurses.h \
+  TDB.h T.h task.h color.h ../auto.h /usr/include/ncurses.h \
   /usr/include/ncurses_dll.h /usr/include/unctrl.h /usr/include/curses.h
 
 /usr/include/c++/4.0.0/iostream:
@@ -397,8 +397,6 @@ Table.h:
 color.h:
 
 Grid.h:
-
-stlmacros.h:
 
 TDB.h:
 

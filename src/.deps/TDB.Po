@@ -99,7 +99,7 @@ TDB.o TDB.o: TDB.cpp /usr/include/c++/4.0.0/iostream \
   /usr/include/c++/4.0.0/bits/stl_tree.h \
   /usr/include/c++/4.0.0/bits/stl_map.h \
   /usr/include/c++/4.0.0/bits/stl_multimap.h Config.h Table.h color.h \
-  Grid.h color.h TDB.h T.h stlmacros.h ../auto.h
+  Grid.h color.h TDB.h T.h ../auto.h
 
 /usr/include/c++/4.0.0/iostream:
 
@@ -402,7 +402,5 @@ color.h:
 TDB.h:
 
 T.h:
-
-stlmacros.h:
 
 ../auto.h:

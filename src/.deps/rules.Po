@@ -95,7 +95,7 @@ rules.o rules.o: rules.cpp /usr/include/c++/4.0.0/iostream \
   /usr/include/c++/4.0.0/vector /usr/include/c++/4.0.0/bits/stl_vector.h \
   /usr/include/c++/4.0.0/bits/stl_bvector.h \
   /usr/include/c++/4.0.0/bits/vector.tcc Table.h color.h Grid.h Date.h \
-  T.h task.h /usr/include/sys/types.h color.h TDB.h stlmacros.h ../auto.h
+  T.h task.h /usr/include/sys/types.h color.h TDB.h ../auto.h
 
 /usr/include/c++/4.0.0/iostream:
 
@@ -388,7 +388,5 @@ task.h:
 color.h:
 
 TDB.h:
-
-stlmacros.h:
 
 ../auto.h:
