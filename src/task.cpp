@@ -302,7 +302,6 @@ void handleAdd (const TDB& tdb, T& task, Config& conf)
   task.setAttribute ("entry", entryTime);
 
   if (task.getDescription () == "")
-//    std::cout << "Cannot add a blank task" << std::endl;
     throw std::string ("Cannot add a blank task.");
 
   if (!tdb.addT (task))
@@ -408,7 +407,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
   }
 #endif
 
-  /* int count = */ tdb.gc ();
+  tdb.gc ();
 
   // Get the pending tasks.
   std::vector <T> tasks;
@@ -564,15 +563,6 @@ void handleList (const TDB& tdb, T& task, Config& conf)
   else
     std::cout << "No matches."
               << std::endl;
-
-/*
-  if (count)
-    std::cout << std::endl
-              << "[gc: "
-              << count
-              << " transferred]"
-              << std::endl;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -592,7 +582,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
   }
 #endif
 
-  /* int count = */ tdb.gc ();
+  tdb.gc ();
 
   // Get the pending tasks.
   std::vector <T> tasks;
@@ -734,15 +724,6 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
   else
     std::cout << "No matches."
               << std::endl;
-
-/*
-  if (count)
-    std::cout << std::endl
-              << "[gc: "
-              << count
-              << " transferred]"
-              << std::endl;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -761,7 +742,7 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
   }
 #endif
 
-  /* int count = */ tdb.gc ();
+  tdb.gc ();
 
   // Get the pending tasks.
   std::vector <T> tasks;
@@ -864,15 +845,6 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
   else
     std::cout << "No matches."
               << std::endl;
-
-/*
-  if (count)
-    std::cout << std::endl
-              << "[gc: "
-              << count
-              << " transferred]"
-              << std::endl;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1051,7 +1023,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   }
 #endif
 
-  /* int count = */ tdb.gc ();
+  tdb.gc ();
 
   // Get all the tasks.
   std::vector <T> tasks;
@@ -1231,15 +1203,6 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
               << std::endl;
   else
     std::cout << "No matches." << std::endl;
-
-/*
-  if (count)
-    std::cout << std::endl
-              << "[gc: "
-              << count
-              << " transferred]"
-              << std::endl;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1428,7 +1391,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   }
 #endif
 
-  /* int gcCount = */ tdb.gc ();
+  tdb.gc ();
 
   // Get the pending tasks.
   std::vector <T> tasks;
@@ -1584,15 +1547,6 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   else
     std::cout << "No matches."
               << std::endl;
-
-/*
-  if (gcCount)
-    std::cout << std::endl
-              << "[gc: "
-              << gcCount
-              << " transferred]"
-              << std::endl;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
