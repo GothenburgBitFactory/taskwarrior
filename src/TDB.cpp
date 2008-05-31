@@ -307,7 +307,7 @@ bool TDB::logCommand (int argc, char** argv) const
         delay (0.25);
 #endif
 
-      fprintf (out, command.c_str ());
+      fputs (command.c_str (), out);
 
       fclose (out);
       return true;
@@ -342,7 +342,7 @@ bool TDB::overwritePending (std::vector <T>& all) const
 
     std::vector <T>::iterator it;
     for (it = all.begin (); it != all.end (); ++it)
-      fprintf (out, it->compose ().c_str ());
+      fputs (it->compose ().c_str (), out);
 
     fclose (out);
     return true;
@@ -364,7 +364,7 @@ bool TDB::writePending (const T& t) const
       delay (0.25);
 #endif
 
-    fprintf (out, t.compose ().c_str ());
+    fputs (t.compose ().c_str (), out);
 
     fclose (out);
     return true;
@@ -386,7 +386,7 @@ bool TDB::writeCompleted (const T& t) const
       delay (0.25);
 #endif
 
-    fprintf (out, t.compose ().c_str ());
+    fputs (t.compose ().c_str (), out);
 
     fclose (out);
     return true;
