@@ -1,15 +1,23 @@
+# Welcome to "task".
+
 task add do laundry
 task add project:garage order dumpster
 task add +phone tell mom i loveher
 task add +phone pro:garage schedule goodwill pickup
-task add +email pro:garage ask Tom if he wants that old bike
+task add +email pro:garage ask Tom if he wants that old bkie
+task ls
+
+task 5 /bkie/bike/
 task ls
 
 task 1 pro:home
 task 3 pro:home tell mom I love her
 task ls pro:garage
+
 task long pro:garage
+
 task list pro:garage
+
 task lis +phone
 task li pro:garage +phone
 task l mom
@@ -18,13 +26,15 @@ task 1 priority:H
 task pri:H 3
 task 1 pri:M
 task li
+
 task 2 pri:L
 task li
-task do 3
+
+task done 3
 task li
 
-# There may be an arbitrary number of tags.
 task 2 +phone +mistake
+
 # Oops!
 task 2 -mistake
 task tags
@@ -46,8 +56,11 @@ task 4 fg:
 task colors
 
 task 1 due:6/8/2008
+date
+
 task li
 task calendar
+
 task 1 due:6/1/2008
 task li
 task overdue
@@ -65,4 +78,6 @@ task do 1
 task active
 task summary
 task history
+
+# Thanks for watching.
 

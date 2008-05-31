@@ -16,5 +16,5 @@ included.
   color.cpp       Color support functions.
   rules.cpp       Auto-colorization rules.
 
-Don't forget, please send patches to task@beckingham.net
+Don't forget, please send bugs, patches to task@beckingham.net
 

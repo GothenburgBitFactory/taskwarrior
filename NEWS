@@ -9,15 +9,15 @@ Task has been built and tested on the following configurations:
 
 Known Issues:
 
-  - problems running on Solaris 10
+  - intermittent problems running on Solaris 10
 
 While Task has undergone testing, bugs are sure to remain.  If you encounter a
-bug, please contact me at bugs@beckingham.net.  Here is what you could do, in
+bug, please contact me at task@beckingham.net.  Here is what you could do, in
 order of increasing effort (to you) and usefulness (to me):
 
   - Do nothing.  Bug probably won't get fixed.
 
-  - Send an email to bugs@beckingham.net, explaining what you saw.  The bug
+  - Send an email to task@beckingham.net, explaining what you saw.  The bug
     will be addressed, and a new release will be made.  You will be a hero.
 
   - Send an email, and a reproducible test case in the form of the few commands

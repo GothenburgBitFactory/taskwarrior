@@ -1,11 +1,11 @@
 1.1.0 (?)
   - Command line specification of alternate .taskrc file
+  - Bug: when run without arguments, task dumps core on Solaris 10
 
 1.0.0 (?)
   - New movie made, uploaded
   + Bug: assertion fails on mobile for t v
   + Bug: configure.ac does not properly determine ncurses availability
-  - Bug: when run without arguments, task dumps core on Solaris 10
   + Bug: Cannot seem to use the percent character in a task description
   + Bug: New installation "task stats" reports newest task 12/31/1969
   + Bug: New installation task projects displays header but no data - should short-circuit
