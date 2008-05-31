@@ -243,7 +243,6 @@ bool TDB::addT (const T& t) const
   std::vector <std::string> tags;
   task.getTags (tags);
 
-  // TODO This logic smells funny.
   // +tag or -tag are both considered valid tags to add to a new pending task.
   // Generating an error here would not be friendly.
   for (unsigned int i = 0; i < tags.size (); ++i)

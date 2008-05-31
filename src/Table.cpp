@@ -678,10 +678,10 @@ int Table::columnCount ()
 //   - removal of redundant color codes:
 //       ^[[31mName^[[0m ^[[31mValue^[[0m -> ^[[31mName Value^[[0m
 //
+// This method is a work in progress.
 void Table::optimize (std::string& output)
 {
 /*
-  TODO Unoptimized length.
   int start = output.length ();
 */
 
@@ -694,7 +694,6 @@ void Table::optimize (std::string& output)
   }
 
 /*
-  TODO This code displays the % reduction of the optimize function.
   std::cout << int ((100 * (start - output.length ()) / start))
             << "%" << std::endl;
 */

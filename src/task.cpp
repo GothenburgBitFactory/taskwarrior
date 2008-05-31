@@ -2196,8 +2196,6 @@ void handleReportStats (const TDB& tdb, T& task, Config& conf)
     if (tags.size ()) ++taggedT;
   }
 
-  // TODO Unused feature list
-
   std::cout << "Pending               " << pendingT   << std::endl
             << "Completed             " << completedT << std::endl
             << "Deleted               " << deletedT   << std::endl
