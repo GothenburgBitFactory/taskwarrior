@@ -10,6 +10,7 @@
   + Bug: New installation "task stats" reports newest task 12/31/1969
   + Bug: New installation task projects displays header but no data - should short-circuit
   + Bug: incorrect color specification in sample .taskrc file
+  + "task calendar" now reports all months with due pending tasks
 
 ------ reality -----------------------------------
 
