@@ -4,6 +4,7 @@ Thank you for taking a look at task.  Task is a GTD utility featuring:
   - Tags
   - Colorful, tabular output
   - Reports
+  - Lots of commands
   - Low-level API
   - Abbreviations for all commands, options
   - Multi-user file locking
@@ -41,4 +42,7 @@ All feedback is welcome, in addition to any bug reports or patches to:
   task@beckingham.net
 
 Got an idea for an enhancement?  Send a message!
+
+I have found that task makes me more productive and organized.  I hope task can
+do the same for you.  
 
