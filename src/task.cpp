@@ -1876,38 +1876,43 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
 
   // Find the oldest pending due date.
   Date oldest;
+  Date newest;
   std::vector <T>::iterator it;
   for (it = pending.begin (); it != pending.end (); ++it)
   {
     if (it->getAttribute ("due") != "")
     {
       Date d (::atoi (it->getAttribute ("due").c_str ()));
-      if (d < oldest)
-        oldest = d;
+
+      if (d < oldest) oldest = d;
+      if (d > newest) newest = d;
     }
   }
 
-  // Iterate from oldest due month, year to now.
+  // Iterate from oldest due month, year to newest month, year.
   Date today;
-  int m = oldest.month ();
-  int y = oldest.year ();
+  int mFrom = oldest.month ();
+  int yFrom = oldest.year ();
+
+  int mTo = newest.month ();
+  int yTo = newest.year ();
 
   std::cout << std::endl;
   std::string output;
-  while (y < today.year () || (y == today.year () && m <= today.month ()))
+  while (yFrom < yTo || (yFrom == yTo && mFrom <= mTo))
   {
-    std::cout << Date::monthName (m)
+    std::cout << Date::monthName (mFrom)
               << " "
-              << y
+              << yFrom
               << std::endl
               << std::endl
-              << renderMonth (m, y, today, pending, conf)
+              << renderMonth (mFrom, yFrom, today, pending, conf)
               << std::endl;
 
-    if (++m == 13)
+    if (++mFrom == 13)
     {
-      m = 1;
-      ++y;
+      mFrom = 1;
+      ++yFrom;
     }
   }
 }
