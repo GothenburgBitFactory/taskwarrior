@@ -24,7 +24,7 @@ Task has been released under GPL, and so far has been tested on:
   Ubuntu 8 (Hardy Heron)
 
 Task has been making me more organized and productive for some time now.
-Perhaps some of you might find it useful, and I welcom feedback of all kinds.
+Perhaps some of you might find it useful, and I welcome feedback of all kinds.
 
 You can find the task source code at:
 
