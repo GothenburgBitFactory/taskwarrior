@@ -1,8 +1,9 @@
 1.1.0 (?)
   - Command line specification of alternate .taskrc file
-  - Bug: when run without arguments, task dumps core on Solaris 10
 
-1.0.0 (?)
+------ reality -----------------------------------
+
+1.0.0 (6/3/2008)
   - New movie made, uploaded
   + Bug: assertion fails on mobile for t v
   + Bug: configure.ac does not properly determine ncurses availability
@@ -10,9 +11,8 @@
   + Bug: New installation "task stats" reports newest task 12/31/1969
   + Bug: New installation task projects displays header but no data - should short-circuit
   + Bug: incorrect color specification in sample .taskrc file
+  + Bug: when run without arguments, task dumps core on Solaris 10
   + "task calendar" now reports all months with due pending tasks
-
------- reality -----------------------------------
 
 0.9.9 (5/27/2008)
   + Autoconf/automake behaving properly.

@@ -2,14 +2,12 @@ Welcome to Task 1.0.0.
 
 Task has been built and tested on the following configurations:
 
+  - OS X 10.4 Tiger
   - OS X 10.5 Leopard
   - Fedora Core 8
   - Fedora Core 9
-  - Ubuntu 8
-
-Known Issues:
-
-  - intermittent problems running on Solaris 10
+  - Ubuntu 8 Hardy Heron
+  - Solaris 10
 
 While Task has undergone testing, bugs are sure to remain.  If you encounter a
 bug, please contact me at task@beckingham.net.  Here is what you could do, in
