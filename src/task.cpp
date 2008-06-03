@@ -1856,7 +1856,7 @@ std::string renderMonth (
           due.year ()  == year)
       {
         table.setCellFg (row, dow + 1, Text::black);
-        table.setCellBg (row, dow + 1, d < today.day () ? Text::red : Text::yellow);
+        table.setCellBg (row, dow + 1, d < today.day () ? Text::on_red : Text::on_yellow);
       }
     }
 
@@ -1915,6 +1915,16 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
       ++yFrom;
     }
   }
+
+  std::cout << "Legend: "
+            << Text::colorize (Text::cyan, Text::nocolor, "today")
+            << ", "
+            << Text::colorize (Text::black, Text::on_yellow, "due")
+            << ", "
+            << Text::colorize (Text::black, Text::on_red, "overdue")
+            << "."
+            << std::endl
+            << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
