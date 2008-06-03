@@ -13,6 +13,7 @@
   + Bug: incorrect color specification in sample .taskrc file
   + Bug: when run without arguments, task dumps core on Solaris 10
   + "task calendar" now reports all months with due pending tasks
+  + Added rules for colorization by tag, project and keyword
 
 0.9.9 (5/27/2008)
   + Autoconf/automake behaving properly.

@@ -107,6 +107,7 @@ void Config::createDefault (const std::string& file)
 
     if (taskDir != "")
     {
+      // Create a sample .taskrc file.
       FILE* out;
       if ((out = fopen (file.c_str (), "w")))
       {
@@ -125,9 +126,13 @@ void Config::createDefault (const std::string& file)
         fprintf (out, "#color.pri.L=on_green\n");
         fprintf (out, "color.active=bold_cyan\n");
         fprintf (out, "color.tagged=yellow\n");
+        fprintf (out, "#color.tag.bug=yellow\n");
+        fprintf (out, "#color.project.home=on_green\n");
+        fprintf (out, "#color.keyword.car=on_blue\n");
 
         fclose (out);
 
+        // Now set the live values.
         set ("data.location", taskDir);
         set ("command.logging", "off");
         set ("confirmation", "yes");

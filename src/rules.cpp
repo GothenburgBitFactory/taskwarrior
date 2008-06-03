@@ -83,6 +83,7 @@ void initializeColorRules (Config& conf)
 void autoColorize (T& task, Text::color& fg, Text::color& bg)
 {
   // Note: fg, bg already contain colors specifically assigned via command.
+  // TODO These rules form a hierarchy - the last rule is king.
 
   // Colorization of the tagged.
   if (gsFg["color.tagged"] != Text::nocolor ||
@@ -172,6 +173,49 @@ void autoColorize (T& task, Text::color& fg, Text::color& bg)
     {
       fg = gsFg["color.due"];
       bg = gsBg["color.due"];
+    }
+  }
+
+  // Colorization by tag value.
+  std::map <std::string, Text::color>::iterator it;
+  for (it = gsFg.begin (); it != gsFg.end (); ++it)
+  {
+    if (it->first.substr (0, 10) == "color.tag.")
+    {
+      std::string value = it->first.substr (10, std::string::npos);
+      if (task.hasTag (value))
+      {
+        fg = gsFg[it->first];
+        bg = gsBg[it->first];
+      }
+    }
+  }
+
+  // Colorization by project name.
+  for (it = gsFg.begin (); it != gsFg.end (); ++it)
+  {
+    if (it->first.substr (0, 14) == "color.project.")
+    {
+      std::string value = it->first.substr (14, std::string::npos);
+      if (task.getAttribute ("project") == value)
+      {
+        fg = gsFg[it->first];
+        bg = gsBg[it->first];
+      }
+    }
+  }
+
+  // Colorization by keyword.
+  for (it = gsFg.begin (); it != gsFg.end (); ++it)
+  {
+    if (it->first.substr (0, 14) == "color.keyword.")
+    {
+      std::string value = it->first.substr (14, std::string::npos);
+      if (task.getDescription ().find (value) != std::string::npos)
+      {
+        fg = gsFg[it->first];
+        bg = gsBg[it->first];
+      }
     }
   }
 }

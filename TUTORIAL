@@ -29,7 +29,7 @@ transcript illustrates a typical installation:
   ...
   % make
   ...
-  % make install
+  % make install     # (may require sudo, depending on --prefix)
 
 You need to make sure that the installed task program is in your PATH
 environment variable.
@@ -617,6 +617,11 @@ Configuring Task
  
                           bold_red on_bright_yellow
 
+    color.tag.X         Colors any task that has the tag X.
+
+    color.project.X     Colors any task assigned to project X.
+
+    color.keyword.X     Colors any task where the description contains X.
 
 
 Colors
