@@ -4,7 +4,7 @@
 ------ reality -----------------------------------
 
 1.0.0 (6/3/2008)
-  - New movie made, uploaded
+  + New movie made, uploaded
   + Bug: assertion fails on mobile for t v
   + Bug: configure.ac does not properly determine ncurses availability
   + Bug: Cannot seem to use the percent character in a task description
