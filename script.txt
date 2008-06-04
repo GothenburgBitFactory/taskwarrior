@@ -1,4 +1,4 @@
-# Welcome to "task".                        Hello, and welcome to this quick demo of the task program.
+                                            Hello, and welcome to this quick demo of the task program.
 
 task add do laundry                         Let's add some tasks
                                             I need to do laundry
@@ -87,10 +87,9 @@ task start 1                                Started tasks can be used as reminde
                                               of what you are supposed to be doing
 
 task active                                 They show up as active
-task done 1
+task done 1                                 Let's clear out a couple
 task li
 task done 3
-task done 1
 task active
 
 task summary                                Summary shows progress on all projects

@@ -8,7 +8,7 @@ A lot has happened since then, and the task program has been slowly improving
 thanks to feedback from some early testers, and continuous use by me.  Today,
 I have uploaded a new movie:
 
-  http:/www.youtube.com/watch?v=????????????
+  http://www.youtube.com/watch?v=D2Kn4DMOVSw
 
 This movie includes most of the changes and improvements to task, but behind
 the scenes are the biggest changes.  There was a rewrite of the underlying

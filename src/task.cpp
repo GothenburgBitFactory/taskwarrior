@@ -1856,7 +1856,7 @@ std::string renderMonth (
           due.year ()  == year)
       {
         table.setCellFg (row, dow + 1, Text::black);
-        table.setCellBg (row, dow + 1, d < today.day () ? Text::on_red : Text::on_yellow);
+        table.setCellBg (row, dow + 1, due < today ? Text::on_red : Text::on_yellow);
       }
     }
 
