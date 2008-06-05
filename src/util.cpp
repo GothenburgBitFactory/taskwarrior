@@ -182,14 +182,18 @@ const std::string uuid ()
 static char randomHexDigit ()
 {
   static char digits[] = "0123456789abcdef";
+#ifdef HAVE_RANDOM
   return digits[random () % 16];
+#else
+  return digits[rand () % 16];
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::string uuid ()
 {
   // xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-  char id [37];
+  char id [48] = {0};
   id[0]  = randomHexDigit ();
   id[1]  = randomHexDigit ();
   id[2]  = randomHexDigit ();

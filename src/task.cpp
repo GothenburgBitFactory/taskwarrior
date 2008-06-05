@@ -207,6 +207,13 @@ int main (int argc, char** argv)
 // TODO Find out what this is, and either promote it to live code, or remove it.
 //  std::set_terminate (__gnu_cxx::__verbose_terminate_handler);
 
+  // Set up randomness.
+#ifdef HAVE_SRANDOM
+  srandom (time (NULL));
+#else
+  srand (time (NULL));
+#endif
+
   try
   {
     // Load the config file from the home directory.  If the file cannot be

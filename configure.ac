@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(task, 1.0.0, bugs@beckingham.net)
+AC_INIT(task, 1.0.1, bugs@beckingham.net)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/task.cpp])
 AC_CONFIG_HEADER([auto.h])
@@ -35,6 +35,8 @@ AC_FUNC_SELECT_ARGTYPES
 AC_CHECK_FUNCS([select])
 AC_CHECK_FUNC(flock, [AC_DEFINE([HAVE_FLOCK], [1], [Found flock])])
 AC_CHECK_FUNC(uuid_unparse_lower, [AC_DEFINE([HAVE_UUID], [1], [Found uuid_unparse_lower])])
+AC_CHECK_FUNC(random, [AC_DEFINE([HAVE_RANDOM], [1], [Found random])])
+AC_CHECK_FUNC(srandom, [AC_DEFINE([HAVE_SRANDOM], [1], [Found srandom])])
 
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
