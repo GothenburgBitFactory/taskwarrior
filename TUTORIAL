@@ -1,4 +1,4 @@
-Task program tutorial, for version 1.0.0
+Task program tutorial, for version 1.0.1
 ----------------------------------------
 
 This guide shows how to quickly set up the task program, and become proficient
@@ -21,10 +21,10 @@ Build the task program according to the directions in the INSTALL file.  This
 transcript illustrates a typical installation:
 
   % ls
-  task-1.0.0.tar.gz
-  % gunzip task-1.0.0.tar.gz
-  % tar xf task-1.0.0.tar
-  % cd task-1.0.0
+  task-1.0.1.tar.gz
+  % gunzip task-1.0.1.tar.gz
+  % tar xf task-1.0.1.tar
+  % cd task-1.0.1
   % ./configure
   ...
   % make
@@ -554,7 +554,26 @@ Interacting with the Shell
   background) attributes determines the colors used to represent the task.
   Valid foreground colors are:
 
+             bold          underline          bold_underline
+    black    bold_black    underline_black    bold_underline_black
+    red      bold_red      underline_red      bold_underline_red
+    green    bold_green    underline_green    bold_underline_green
+    yellow   bold_yellow   underline_yellow   bold_underline_yellow
+    blue     bold_blue     underline_blue     bold_underline_blue
+    magenta  bold_magenta  underline_magenta  bold_underline_magenta
+    cyan     bold_cyan     underline_cyan     bold_underline_cyan
+    white    bold_white    underline_white    bold_underline_white
+
   Valid background colors are:
+
+    on_black    on_bright_black
+    on_red      on_bright_red
+    on_green    on_bright_green
+    on_yellow   on_bright_yellow
+    on_blue     on_bright_blue
+    on_magenta  on_bright_magenta
+    on_cyan     on_bright_cyan
+    on_white    on_bright_white
 
   Note that these are not just colors, but combinations of colors and
   attributes.

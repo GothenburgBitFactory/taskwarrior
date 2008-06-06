@@ -1,4 +1,4 @@
-Welcome to Task 1.0.0.
+Welcome to Task 1.0.1.
 
 Task has been built and tested on the following configurations:
 
@@ -8,6 +8,7 @@ Task has been built and tested on the following configurations:
   - Fedora Core 9
   - Ubuntu 8 Hardy Heron
   - Solaris 10
+  - Cygwin 1.5.25-14
 
 While Task has undergone testing, bugs are sure to remain.  If you encounter a
 bug, please contact me at task@beckingham.net.  Here is what you could do, in
