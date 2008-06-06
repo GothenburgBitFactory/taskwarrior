@@ -1,7 +1,22 @@
+Version numbers are of the form:
+
+    1.2.3
+
+where the the 1 represents a major version number, or architecture.  The 2 represents a feature release, and the 3 represents patch.
+
+
+
+
 1.1.0 (?)
   - Command line specification of alternate .taskrc file
 
+1.0.2 (?)
+
 ------ reality -----------------------------------
+
+1.0.1 (6/4/2008)
+  + Bug: UUID generator not properly terminating string.
+  + Bug: srandom/srand not called prior to UUID generation.
 
 1.0.0 (6/3/2008)
   + New movie made, uploaded
