@@ -1,22 +1,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Task</title>
+    <title>Task 1.1.0</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <style type="text/css">
 body {
 	text-align: center;
-	margin: 0; padding: 1em; 
+	margin: 0; padding: 1em;
 }
 
 #container {
 	width: 740px;
-	text-align: left; 
+	text-align: left;
 	margin: 0 auto; padding: 0;
 }
 
 #header {
-	height: 60px; 
+	height: 60px;
 	margin: 0 0 15px; padding: 0;
 }
 
@@ -27,22 +27,22 @@ body {
 }
 
 #header a:link,
-#header a:visited { 
+#header a:visited {
 	color:#000;
 	text-decoration: none;
 }
 
 #header h1 {
-	font: bold 400% georgia, serif; 
-	letter-spacing: -1px; 
+	font: bold 400% georgia, serif;
+	letter-spacing: -1px;
 	margin: 0;
-	float: left; 
+	float: left;
 }
 
 #header h2 {
-	font: normal 12px verdana, arial, sans-serif;  
+	font: normal 12px verdana, arial, sans-serif;
 	margin: 2.5em 0 0 0.8em;
-	float: left; 
+	float: left;
 }
 
 #content {}
@@ -51,41 +51,41 @@ body {
 #content h2,
 #content h3,
 #content h4,
-#content h5 { 
-	font-family: "lucidamac bold", "lucida grande", arial, sans-serif; 
+#content h5 {
+	font-family: "lucidamac bold", "lucida grande", arial, sans-serif;
 	letter-spacing: -1px;
 }
 
-#content h1 { 
+#content h1 {
 	font-size: 24px;
-	margin: 0 0 0.3em;	
+	margin: 0 0 0.3em;
 }
 
-#content h2 { 
+#content h2 {
 	font-size: 22px;
-	margin: 0 0 0.3em;	
+	margin: 0 0 0.3em;
 }
 
-#content h3 { 
+#content h3 {
 	font-size: 20px;
-	margin: 1.2em 0 0.3em;	
+	margin: 1.2em 0 0.3em;
 }
 
-#content h4 { 
+#content h4 {
 	font-size: 18px;
-	margin: 1.2em 0 0.3em;	
+	margin: 1.2em 0 0.3em;
 	border-bottom: 1px dotted #bbb;
 }
 
 #content h5 {
 	font-size: 18px;
 	background: #ffd;
-	margin: 1.2em 0 0.3em;	
+	margin: 1.2em 0 0.3em;
 	border-bottom: 1px dotted #aaa;
 }
 
 #content p {
-	line-height: 15px; 
+	line-height: 15px;
 	margin: 0 0 1.2em;
 }
 
@@ -95,7 +95,7 @@ body {
 	padding:0;
 }
 
-#content code { 
+#content code {
 	font: normal 12px "bitstream vera sans mono", monaco "lucida console", "courier new", courier, serif;
 }
 
@@ -118,6 +118,13 @@ body {
 	font: normal 12px "lucida grande", verdana, arial, helvetica, sans-serif;
 }
 
+th {
+        background-color: #e0e0e0;
+}
+
+td {
+        background-color: #f7f7f7;
+}
 input,
 textarea { font: normal 12px "bitstream vera sans", verdana, sans-serif; }
 
@@ -130,12 +137,13 @@ a img { border: none; padding: 0; margin: 0; }
 
   <body>
     <div id="toolbar">
-      <a href="#setup">Quick Setup</a>
+      <a href="#setup">Setup</a>
       <a href="#simple">Simple</a>
       <a href="#advanced">Advanced</a>
       <a href="#shell">Shell</a>
       <a href="#config">Configuration</a>
       <a href="#color">Colors</a>
+      <a href="#usage">Usage</a>
     </div>
 
     <div id="container">
@@ -149,6 +157,7 @@ a img { border: none; padding: 0; margin: 0; }
           and use the task program.
         </p>
 
+        <br />
         <h2 class="title">
           Get the Source Code
         </h2>
@@ -156,8 +165,8 @@ a img { border: none; padding: 0; margin: 0; }
         <div class="content">
           <p>
             Download the latest task source code
-            <a href="http://www.beckingham.net/task-1.0.1.tar.gz">task-1.0.1.tar.gz</a>
-            (6/4/2008).
+            <a href="http://www.beckingham.net/task-1.1.0.tar.gz">task-1.1.0.tar.gz</a>
+            (6/7/2008).
           </p>
 
           <p>
@@ -175,6 +184,7 @@ a img { border: none; padding: 0; margin: 0; }
           </p>
         </div>
 
+        <br />
         <h2 class="title">
           Task Program Tutorial
         </h2>
@@ -186,6 +196,7 @@ a img { border: none; padding: 0; margin: 0; }
           </p>
         </div>
 
+        <br />
         <h2 class="title">
           <a name="setup">Quick Setup<a>
         </h2>
@@ -197,15 +208,21 @@ a img { border: none; padding: 0; margin: 0; }
           <p>
 
           <pre><code>% ls
-task-1.0.1.tar.gz
-% gunzip task-1.0.1.tar.gz
-% tar xf task-1.0.1.tar
-% cd task-1.0.1
+task-1.1.0.tar.gz
+% gunzip task-1.1.0.tar.gz
+% tar xf task-1.1.0.tar
+% cd task-1.1.0
 % ./configure
 ...
 % make
 ...
 % make install     # (may require sudo, depending on --prefix)</code></pre>
+
+          <p>
+            (For those of you using <a href="http://www.cygwin.com">Cygwin</a>,
+            you need to make sure you have the "g++" and "make" packages
+            available, which are found in the "devel" category.)
+          </p>
 
           <p>
             You need to make sure that the installed task program is in your
@@ -235,6 +252,7 @@ Done.
 [then task will show version information]</code></pre>
         </div>
 
+        <br />
         <h2 class="title">
           <a name="simple">Simple Usage</a>
         </h2>
@@ -461,6 +479,7 @@ ID Project Pri Due       Active Age    Description
           <pre><code>% task 3 -john</code></pre>
         </div>
 
+        <br />
         <h2 class="title">
           <a name="advanced">Advanced Usage</a>
         </h2>
@@ -724,6 +743,7 @@ ID Project Pri Description
           </p>
         </div>
 
+        <br />
         <h2 class="title">
           <a name="shell">Interacting with the Shell</a>
         </h2>
@@ -807,6 +827,7 @@ on_white    on_bright_white</code></pre>
           </p>
         </div>
 
+        <br />
         <h2 class="title">
           <a name="config">Configuring Task</a>
         </h2>
@@ -865,6 +886,57 @@ on_white    on_bright_white</code></pre>
             the window you are using, for text wrapping.
           </dd>
 
+          <dt>blanklines</dt>
+          <dd>
+            May be "on" or "off".  Prevents the display of unnecessary blank
+            lines so that task makes better use screen real estate on small-
+            screened devices.
+          </dd>
+
+          <dt>dateformat</dt>
+          <dd>
+            <p>
+              This is a string of characters that define how task formats dates.
+              The default value is:
+            </p>
+
+            <pre><code>m/d/Y</code></pre>
+
+            <p>
+              which means dates look like:
+            </p>
+
+            <pre><code>6/7/2008</code></pre>
+
+            <p>
+              The string should contain the characters:
+
+              <table>
+                <tr> <th>Character</th> <th>Meaning</th>             <th>Example</th> </tr>
+                <tr> <td>m</td>         <td>minimal-digit month</td> <td>1, 12</td>   </tr>
+                <tr> <td>d</td>         <td>minimal-digit day</td>   <td>1, 30</td>   </tr>
+                <tr> <td>y</td>         <td>two-digit year</td>      <td>08</td>      </tr>
+                <tr> <td>M</td>         <td>two-digit month</td>     <td>01, 12</td>  </tr>
+                <tr> <td>D</td>         <td>two-digit day</td>       <td>01, 30</td>  </tr>
+                <tr> <td>Y</td>         <td>four-digit year</td>     <td>2008</td>    </tr>
+              </table>
+            </p>
+
+            <p>
+              The string may also contain other characters to act as spacers,
+              or formatting.  Other values could include:
+            </p>
+
+            <p>
+              <table>
+                <tr> <th>dateformat</td> <th>How it looks</th> </tr>
+                <tr> <td>d/m/Y</td>      <td>7/6/2008</td>     </tr>
+                <tr> <td>YMD</td>        <td>20080607</td>     </tr>
+                <tr> <td>m-d-y</td>      <td>6-7-08</td>       </tr>
+              </table>
+            </p>
+          <dd>
+
           <dt>color</dt>
           <dd>
            May be "on" or "off".  Determines whether task uses color.
@@ -907,6 +979,7 @@ on_white    on_bright_white</code></pre>
 
         </div>
 
+        <br />
         <h2 class="title">
           <a name="color">Colors</a>
         </h2>
@@ -944,12 +1017,69 @@ on_white    on_bright_white</code></pre>
         </div>
 
         <br />
+        <h2 class="title">
+          <a name="usage">Command Usage<a>
+        </h2>
+
+        <div class="content">
+          <pre><code>task add [tags] [attrs] desc...
+       task list [tags] [attrs] desc...
+       task long [tags] [attrs] desc...
+       task ls [tags] [attrs] desc...
+       task completed [tags] [attrs] desc...
+       task ID [tags] [attrs] [desc...]
+       task ID /from/to/
+       task delete ID
+       task info ID
+       task start ID
+       task done ID
+       task projects
+       task tags
+       task summary
+       task history
+       task next
+       task calendar
+       task active
+       task overdue
+       task stats
+       task usage
+       task export
+       task color
+       task version
+
+ID is the numeric identifier displayed by the 'task list' command
+
+Tags are arbitrary words, any quantity:
+  +tag               The + means add the tag
+  -tag               The - means remove the tag
+
+Attributes are:
+  project:           Project name
+  priority:          Priority
+  due:               Due date
+  fg:                Foreground color
+  bg:                Background color
+
+Any command or attribute name may be abbreviated if still unique:
+  task list project:Home
+  task li       pro:Home
+
+Some task descriptions need to be escaped because of the shell:
+  task add "quoted ' quote"
+  task add escaped \' quote
+
+Many characters have special meaning to the shell, including:
+  $ ! ' " ( ) ; \ ` * ? { } [ ] < > | &amp; % # ~</code></pre>
+        <div>
+
+        <br />
         <br />
         <div class="content">
           <p>
-            Copyright 2006-2008, Paul Beckingham.  All rights reserved.
+            Copyright 2006-2008, P. Beckingham.  All rights reserved.
           </p>
         </div>
+
       </div>
     </div>
   </body>

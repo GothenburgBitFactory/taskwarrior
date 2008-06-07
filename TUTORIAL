@@ -21,10 +21,10 @@ Build the task program according to the directions in the INSTALL file.  This
 transcript illustrates a typical installation:
 
   % ls
-  task-1.0.1.tar.gz
+  task-1.1.0.tar.gz
   % gunzip task-1.1.0.tar.gz
   % tar xf task-1.1.0.tar
-  % cd task-1.0.1
+  % cd task-1.1.0
   % ./configure
   ...
   % make
@@ -624,6 +624,31 @@ Configuring Task
     blanklines          May be "on" or "off".  Prevents the display of
                         unnecessary blank lines so that task makes better use
                         screen real estate on small-screened devices.
+
+    dateformat          This is a string of characters that define how task
+                        formats dates.  The default value is:
+
+                          m/d/Y
+
+                        which means dates look like:
+
+                          6/7/2008
+
+                        The string should contain the characters:
+
+                          m   minimal-digit month   1, 12
+                          d   minimal-digit day     1, 30
+                          y   two-digit year        08
+                          M   two-digit month       01, 12
+                          D   two-digit day         01, 30
+                          Y   four-digit year       2008
+
+                        The string may also contain other characters to act as
+                        spacers, or formatting.  Other values could include:
+
+                          d/m/Y            7/6/2008
+                          YMD              20080607
+                          m-d-y            6-7-08
 
     color               May be "on" or "off".  Determines whether task uses
                         color.

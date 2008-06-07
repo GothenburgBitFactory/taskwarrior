@@ -286,22 +286,6 @@ int main (int argc, char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string epochToString (const std::string& epoch)
-{
-  char formatted[12] = {0};
-
-  if (epoch.length () && epoch.find ("/") == std::string::npos)
-  {
-    Date dt (::atoi (epoch.c_str ()));
-    int m, d, y;
-    dt.toMDY (m, d, y);
-    sprintf (formatted, "%d/%d/%04d", m, d, y);
-  }
-
-  return formatted;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void handleAdd (const TDB& tdb, T& task, Config& conf)
 {
   char entryTime[16];
@@ -507,11 +491,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
           if (due.length () && due.find ("/") == std::string::npos)
           {
             Date dt (::atoi (due.c_str ()));
-            int m, d, y;
-            dt.toMDY (m, d, y);
-            char formatted[12];
-            sprintf (formatted, "%d/%d/%04d", m, d, y);
-            due = formatted;
+            due = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
             overdue = (dt < now) ? true : false;
             now += 7 * 86400;
@@ -671,11 +651,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
           if (due.length () && due.find ("/") == std::string::npos)
           {
             Date dt (::atoi (due.c_str ()));
-            int m, d, y;
-            dt.toMDY (m, d, y);
-            char formatted[12];
-            sprintf (formatted, "%d/%d/%04d", m, d, y);
-            due = formatted;
+            due = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
             overdue = (dt < now) ? true : false;
             now += 7 * 86400;
@@ -826,7 +802,7 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
           // All criteria match, so add refTask to the output table.
           int row = table.addRow ();
 
-          table.addCell (row, 0, end.toString ());
+          table.addCell (row, 0, end.toString (conf.get ("dateformat", "m/d/Y")));
           table.addCell (row, 1, refTask.getAttribute ("project"));
           table.addCell (row, 2, refTask.getDescription ());
 
@@ -935,7 +911,10 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
       {
         row = table.addRow ();
         table.addCell (row, 0, "Due");
-        table.addCell (row, 1, epochToString (due));
+
+        Date dt (::atoi (due.c_str ()));
+        due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+        table.addCell (row, 1, due);
 
         if (due.length () && due.find ("/") == std::string::npos)
         {
@@ -960,7 +939,8 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
       {
         row = table.addRow ();
         table.addCell (row, 0, "Start");
-        table.addCell (row, 1, epochToString (refTask.getAttribute ("start")));
+        Date dt (::atoi (refTask.getAttribute ("start").c_str ()));
+        table.addCell (row, 1, dt.toString (conf.get ("dateformat", "m/d/Y")));
       }
 
       // end
@@ -968,7 +948,8 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
       {
         row = table.addRow ();
         table.addCell (row, 0, "End");
-        table.addCell (row, 1, epochToString (refTask.getAttribute ("end")));
+        Date dt (::atoi (refTask.getAttribute ("end").c_str ()));
+        table.addCell (row, 1, dt.toString (conf.get ("dateformat", "m/d/Y")));
       }
 
       // tags ...
@@ -990,7 +971,8 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
 
       row = table.addRow ();
       table.addCell (row, 0, "Entered");
-      std::string entry = epochToString (refTask.getAttribute ("entry"));
+      Date dt (::atoi (refTask.getAttribute ("entry").c_str ()));
+      std::string entry = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
       std::string age;
       std::string created = refTask.getAttribute ("entry");
@@ -1126,22 +1108,14 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
           if (started.length () && started.find ("/") == std::string::npos)
           {
             Date dt (::atoi (started.c_str ()));
-            int m, d, y;
-            dt.toMDY (m, d, y);
-            char formatted[12];
-            sprintf (formatted, "%d/%d/%04d", m, d, y);
-            started = formatted;
+            started = dt.toString (conf.get ("dateformat", "m/d/Y"));
           }
 
           std::string entered = refTask.getAttribute ("entry");
           if (entered.length () && entered.find ("/") == std::string::npos)
           {
             Date dt (::atoi (entered.c_str ()));
-            int m, d, y;
-            dt.toMDY (m, d, y);
-            char formatted[12];
-            sprintf (formatted, "%d/%d/%04d", m, d, y);
-            entered = formatted;
+            entered = dt.toString (conf.get ("dateformat", "m/d/Y"));
           }
 
           // Now format the matching task.
@@ -1151,11 +1125,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
           if (due.length () && due.find ("/") == std::string::npos)
           {
             Date dt (::atoi (due.c_str ()));
-            int m, d, y;
-            dt.toMDY (m, d, y);
-            char formatted[12];
-            sprintf (formatted, "%d/%d/%04d", m, d, y);
-            due = formatted;
+            due = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
             overdue = (dt < now) ? true : false;
             now += 7 * 86400;
@@ -1491,11 +1461,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
           if (due.length () && due.find ("/") == std::string::npos)
           {
             Date dt (::atoi (due.c_str ()));
-            int m, d, y;
-            dt.toMDY (m, d, y);
-            char formatted[12];
-            sprintf (formatted, "%d/%d/%04d", m, d, y);
-            due = formatted;
+            due = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
             overdue = (dt < now) ? true : false;
             now += 7 * 86400;
@@ -2007,11 +1973,7 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
       if (due.length () && due.find ("/") == std::string::npos)
       {
         Date dt (::atoi (due.c_str ()));
-        int m, d, y;
-        dt.toMDY (m, d, y);
-        char formatted[12];
-        sprintf (formatted, "%d/%d/%04d", m, d, y);
-        due = formatted;
+        due = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
         Date now;
         overdue = dt < now ? true : false;
@@ -2129,11 +2091,7 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
       if (due.length () && due.find ("/") == std::string::npos)
       {
         Date dt (::atoi (due.c_str ()));
-        int m, d, y;
-        dt.toMDY (m, d, y);
-        char formatted[12];
-        sprintf (formatted, "%d/%d/%04d", m, d, y);
-        due = formatted;
+        due = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
         // If overdue.
         if (dt < now)
@@ -2227,9 +2185,9 @@ void handleReportStats (const TDB& tdb, T& task, Config& conf)
   if (tasks.size ())
   {
     Date e (earliest);
-    std::cout << "Oldest task           " << e.toString () << std::endl;
+    std::cout << "Oldest task           " << e.toString (conf.get ("dateformat", "m/d/Y")) << std::endl;
     Date l (latest);
-    std::cout << "Newest task           " << l.toString () << std::endl;
+    std::cout << "Newest task           " << l.toString (conf.get ("dateformat", "m/d/Y")) << std::endl;
     std::cout << "Task used for         " << formatSeconds (latest - earliest) << std::endl;
   }
 

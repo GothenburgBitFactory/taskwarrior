@@ -116,20 +116,77 @@ void Date::toMDY (int& m, int& d, int& y)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Date::toString (std::string& output)
+std::string Date::toString (const std::string& format /*= "m/d/Y"*/)
 {
-  output = toString ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string Date::toString (void)
-{
+/*
   int m, d, y;
   toMDY (m, d, y);
 
   char formatted [11];
   sprintf (formatted, "%d/%d/%d", m, d, y);
   return std::string (formatted);
+*/
+
+  std::string formatted;
+  for (unsigned int i = 0; i < format.length (); ++i)
+  {
+    switch (format[i])
+    {
+    case 'm':
+      {
+        char m[3];
+        sprintf (m, "%d", this->month ());
+        formatted += m;
+      }
+      break;
+
+    case 'M':
+      {
+        char m[3];
+        sprintf (m, "%02d", this->month ());
+        formatted += m;
+      }
+      break;
+
+    case 'd':
+      {
+        char d[3];
+        sprintf (d, "%d", this->day ());
+        formatted += d;
+      }
+      break;
+
+    case 'D':
+      {
+        char d[3];
+        sprintf (d, "%02d", this->day ());
+        formatted += d;
+      }
+      break;
+
+    case 'y':
+      {
+        char y[3];
+        sprintf (y, "%02d", this->year () % 100);
+        formatted += y;
+      }
+      break;
+
+    case 'Y':
+      {
+        char y[5];
+        sprintf (y, "%d", this->year ());
+        formatted += y;
+      }
+      break;
+
+    default:
+      formatted += format[i];
+      break;
+    }
+  }
+
+  return formatted;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
