@@ -350,9 +350,9 @@ void handleProjects (const TDB& tdb, T& task, Config& conf)
       table.addCell (row, 1, i->second);
     }
 
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
-              << std::endl
+              << optionalBlankLine (conf)
               << unique.size ()
               << (unique.size () == 1 ? " project" : " projects")
               << std::endl;
@@ -384,11 +384,12 @@ void handleTags (const TDB& tdb, T& task, Config& conf)
   }
 
   // Render a list of tag names from the map.
+  std::cout << optionalBlankLine (conf);
   foreach (i, unique)
     std::cout << i->first << std::endl;
 
   if (unique.size ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << unique.size ()
               << (unique.size () == 1 ? " tag" : " tags")
               << std::endl;
@@ -561,9 +562,9 @@ void handleList (const TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
-              << std::endl
+              << optionalBlankLine (conf)
               << table.rowCount ()
               << (table.rowCount () == 1 ? " task" : " tasks")
               << std::endl;
@@ -722,9 +723,9 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
-              << std::endl
+              << optionalBlankLine (conf)
               << table.rowCount ()
               << (table.rowCount () == 1 ? " task" : " tasks")
               << std::endl;
@@ -843,9 +844,9 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
-              << std::endl
+              << optionalBlankLine (conf)
               << table.rowCount ()
               << (table.rowCount () == 1 ? " task" : " tasks")
               << std::endl;
@@ -1004,9 +1005,9 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
-              << std::endl
+              << optionalBlankLine (conf)
               << table.rowCount ()
               << (table.rowCount () == 1 ? " task" : " tasks")
               << std::endl;
@@ -1202,9 +1203,9 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
-              << std::endl
+              << optionalBlankLine (conf)
               << table.rowCount ()
               << (table.rowCount () == 1 ? " task" : " tasks")
               << std::endl;
@@ -1348,9 +1349,9 @@ void handleReportSummary (const TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
-              << std::endl
+              << optionalBlankLine (conf)
               << table.rowCount ()
               << (table.rowCount () == 1 ? " project" : " projects")
               << std::endl;
@@ -1545,9 +1546,9 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
-              << std::endl
+              << optionalBlankLine (conf)
               << table.rowCount ()
               << (table.rowCount () == 1 ? " task" : " tasks")
               << std::endl;
@@ -1728,7 +1729,7 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
               << std::endl;
   else
@@ -1791,7 +1792,7 @@ void handleReportUsage (const TDB& tdb, T& task, Config& conf)
     }
 
     if (table.rowCount ())
-      std::cout << std::endl
+      std::cout << optionalBlankLine (conf)
                 << table.render ()
                 << std::endl;
     else
@@ -1911,8 +1912,8 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
     std::cout << Date::monthName (mFrom)
               << " "
               << yFrom
-              << std::endl
-              << std::endl
+              << optionalBlankLine (conf)
+              << optionalBlankLine (conf)
               << renderMonth (mFrom, yFrom, today, pending, conf)
               << std::endl;
 
@@ -1930,7 +1931,7 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
             << ", "
             << Text::colorize (Text::black, Text::on_red, "overdue")
             << "."
-            << std::endl
+            << optionalBlankLine (conf)
             << std::endl;
 }
 
@@ -2046,9 +2047,9 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
-              << std::endl
+              << optionalBlankLine (conf)
               << table.rowCount ()
               << (table.rowCount () == 1 ? " task" : " tasks")
               << std::endl;
@@ -2162,9 +2163,9 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << std::endl
+    std::cout << optionalBlankLine (conf)
               << table.render ()
-              << std::endl
+              << optionalBlankLine (conf)
               << table.rowCount ()
               << (table.rowCount () == 1 ? " task" : " tasks")
               << std::endl;
@@ -2307,7 +2308,6 @@ void handleVersion (Config& conf)
             << "included.  This is free software, and you are welcome to redistribute it"
             << std::endl
             << "under certain conditions; again, see the COPYING file for details."
-            << std::endl
             << std::endl
             << std::endl
             << table.render ()
@@ -2515,7 +2515,7 @@ void handleModify (const TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 void handleColor (Config& conf)
 {
-  std::cout << std::endl << "Foreground" << std::endl
+  std::cout << optionalBlankLine (conf) << "Foreground" << std::endl
             << "           "
                     << Text::colorize (Text::bold,                   Text::nocolor, "bold")                   << "          "
                     << Text::colorize (Text::underline,              Text::nocolor, "underline")              << "          "
@@ -2586,7 +2586,7 @@ void handleColor (Config& conf)
             << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")               << "    "
                     << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")        << std::endl
 
-            <<                 std::endl;
+            <<                 optionalBlankLine (conf);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

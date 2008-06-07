@@ -97,6 +97,7 @@ int autoComplete (const std::string&, const std::vector<std::string>&, std::vect
 void formatTimeDeltaDays (std::string&, time_t);
 std::string formatSeconds (time_t);
 const std::string uuid ();
+const char* optionalBlankLine (Config&);
 
 // rules.cpp
 void initializeColorRules (Config&);

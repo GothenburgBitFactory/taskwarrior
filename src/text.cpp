@@ -29,6 +29,9 @@
 #include <string>
 #include "task.h"
 
+static const char* newline = "\n";
+static const char* noline  = "";
+
 ///////////////////////////////////////////////////////////////////////////////
 void wrapText (
   std::vector <std::string>& lines,
@@ -280,6 +283,15 @@ std::string lowerCase (const std::string& input)
       output[i] = ::tolower (input[i]);
 
   return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const char* optionalBlankLine (Config& conf)
+{
+  if (conf.get ("blanklines", true) == true)
+    return newline;
+
+  return noline;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
