@@ -1,4 +1,4 @@
-Task program tutorial, for version 1.0.1
+Task program tutorial, for version 1.1.0
 ----------------------------------------
 
 This guide shows how to quickly set up the task program, and become proficient
@@ -22,8 +22,8 @@ transcript illustrates a typical installation:
 
   % ls
   task-1.0.1.tar.gz
-  % gunzip task-1.0.1.tar.gz
-  % tar xf task-1.0.1.tar
+  % gunzip task-1.1.0.tar.gz
+  % tar xf task-1.1.0.tar
   % cd task-1.0.1
   % ./configure
   ...
@@ -620,6 +620,10 @@ Configuring Task
 
     curses              Determines whether task uses ncurses to establish the
                         size of the window you are using, for text wrapping.
+
+    blanklines          May be "on" or "off".  Prevents the display of
+                        unnecessary blank lines so that task makes better use
+                        screen real estate on small-screened devices.
 
     color               May be "on" or "off".  Determines whether task uses
                         color.
