@@ -9,9 +9,10 @@ represents a feature release, and the 3 represents patch.
 
 1.1.0 (?)
   - Command line specification of alternate .taskrc file
-  - "blanklines" configuration to stop displaying unnecessary white
+  + "blanklines" configuration to stop displaying unnecessary white
      space and thus work better on small-screen devices
   + Better formatting of "task tags" output
+  + http://www.beckingham.net/task.html home page set up
 
 1.0.2 (?)
 
