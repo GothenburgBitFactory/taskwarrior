@@ -13,6 +13,7 @@ represents a feature release, and the 3 represents patch.
      space and thus work better on small-screen devices
   + Better formatting of "task tags" output
   + http://www.beckingham.net/task.html home page set up
+  + "dateformat" configuration now determines how dates are formatted
 
 1.0.2 (?)
 
