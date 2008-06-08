@@ -1,23 +1,22 @@
 Version numbers are of the form:
 
-    1.2.3
+    x.y.z
 
-where the 1 represents a major version number, or architecture.  The 2
-represents a feature release, and the 3 represents patch.
+where the x represents a major version number, or architecture.  The y
+represents a feature release, and the z represents a patch.
 
-
-
-1.1.0 (?)
+1.2.0 (?)
   - Command line specification of alternate .taskrc file
-  + "blanklines" configuration to stop displaying unnecessary white
-     space and thus work better on small-screen devices
-  + Better formatting of "task tags" output
-  + http://www.beckingham.net/task.html home page set up
-  + "dateformat" configuration now determines how dates are formatted
-
-1.0.2 (?)
 
 ------ reality -----------------------------------
+
+1.1.0 (6/7/2008)
+  + "blanklines" configuration to stop displaying unnecessary white
+     space and thus work better on small-screen devices
+  + "dateformat" configuration now determines how dates are formatted
+  + Better formatting of "task tags" output
+  + http://www.beckingham.net/task.html home page set up
+  + Added tags to the "task long" report
 
 1.0.1 (6/4/2008)
   + Bug: UUID generator not properly terminating string.
