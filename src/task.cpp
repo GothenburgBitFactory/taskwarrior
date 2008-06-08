@@ -1031,6 +1031,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Start");
   table.addColumn ("Due");
   table.addColumn ("Age");
+  table.addColumn ("Tags");
   table.addColumn ("Description");
 
   table.setColumnUnderline (0);
@@ -1041,6 +1042,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   table.setColumnUnderline (5);
   table.setColumnUnderline (6);
   table.setColumnUnderline (7);
+  table.setColumnUnderline (8);
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -1049,7 +1051,8 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   table.setColumnWidth (4, Table::minimum);
   table.setColumnWidth (5, Table::minimum);
   table.setColumnWidth (6, Table::minimum);
-  table.setColumnWidth (7, Table::flexible);
+  table.setColumnWidth (7, Table::minimum);
+  table.setColumnWidth (8, Table::flexible);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (3, Table::right);
@@ -1140,6 +1143,12 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
             formatTimeDeltaDays (age, (time_t) (now - dt));
           }
 
+          // Make a list of tags.
+          std::string tags;
+          std::vector <std::string> all;
+          refTask.getTags (all);
+          join (tags, " ", all);
+
           // All criteria match, so add refTask to the output table.
           int row = table.addRow ();
           table.addCell (row, 0, refTask.getId ());
@@ -1149,7 +1158,8 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
           table.addCell (row, 4, started);
           table.addCell (row, 5, due);
           table.addCell (row, 6, age);
-          table.addCell (row, 7, refTask.getDescription ());
+          table.addCell (row, 7, tags);
+          table.addCell (row, 8, refTask.getDescription ());
 
           if (conf.get ("color", true))
           {
