@@ -660,6 +660,12 @@ void Table::suppressWS ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Table::setDateFormat (const std::string& dateFormat)
+{
+  mDateFormat = dateFormat;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Table::rowCount ()
 {
   return mRows;
@@ -771,8 +777,8 @@ void Table::sort (std::vector <int>& order)
 
               else
               {
-                Date dl ((std::string)*left);
-                Date dr ((std::string)*right);
+                Date dl ((std::string)*left, mDateFormat);
+                Date dr ((std::string)*right, mDateFormat);
                 if (dl > dr)
                   SWAP
               }
@@ -789,8 +795,8 @@ void Table::sort (std::vector <int>& order)
 
               else
               {
-                Date dl ((std::string)*left);
-                Date dr ((std::string)*right);
+                Date dl ((std::string)*left, mDateFormat);
+                Date dr ((std::string)*right, mDateFormat);
                 if (dl < dr)
                   SWAP
               }

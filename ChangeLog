@@ -6,7 +6,7 @@ where the x represents a major version number, or architecture.  The y
 represents a feature release, and the z represents a patch.
 
 1.2.0 (?)
-  -
+  + Bug: "dateformat" configuration variable used to display dates, but not parse them.
 
 ------ reality -----------------------------------
 
@@ -127,6 +127,7 @@ represents a feature release, and the z represents a patch.
   + File locking
   + retain deleted tasks
   + "task info ID" report showing all metadata
+  + File format v2
 
 [Development hiatus while planning for T, TDB API, new features and the future
 of the project.  Seeded to two testers for feedback, suggestions.]

@@ -70,6 +70,7 @@ void usage (Config& conf)
   table.setColumnWidth (1, Table::minimum);
   table.setColumnWidth (2, Table::flexible);
   table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
   int row = table.addRow ();
   table.addCell (row, 0, "Usage:");
@@ -242,7 +243,7 @@ int main (int argc, char** argv)
 
     std::string command;
     T task;
-    parse (args, command, task);
+    parse (args, command, task, conf);
 
          if (command == "add")                handleAdd            (tdb, task, conf);
     else if (command == "projects")           handleProjects       (tdb, task, conf);
@@ -326,6 +327,7 @@ void handleProjects (const TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (1);
 
     table.setColumnJustification (1, Table::right);
+    table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
     foreach (i, unique)
     {
@@ -441,6 +443,8 @@ void handleList (const TDB& tdb, T& task, Config& conf)
   table.sortOn (3, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
   table.sortOn (1, Table::ascendingCharacter);
+
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
   // Split any description specified into words.
   std::vector <std::string> descWords;
@@ -581,6 +585,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
   table.addColumn ("Pri");
@@ -737,6 +742,7 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("Done");
   table.addColumn ("Project");
   table.addColumn ("Description");
@@ -852,6 +858,7 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
 
   Table table;
   table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
   table.addColumn ("Name");
   table.addColumn ("Value");
@@ -1024,6 +1031,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
   table.addColumn ("Pri");
@@ -1279,6 +1287,7 @@ void handleReportSummary (const TDB& tdb, T& task, Config& conf)
   table.setColumnJustification (3, Table::right);
 
   table.sortOn (0, Table::ascendingCharacter);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
   int barWidth = 30;
   foreach (i, allProjects)
@@ -1390,6 +1399,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
   table.addColumn ("Pri");
@@ -1638,6 +1648,7 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
 
   // Now build the table.
   Table table;
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("Year");
   table.addColumn ("Month");
   table.addColumn ("Added");
@@ -1740,7 +1751,7 @@ void handleReportUsage (const TDB& tdb, T& task, Config& conf)
       {
         T task;
         std::string commandName;
-        parse (args, commandName, task);
+        parse (args, commandName, task, conf);
 
         usage[commandName]++;
       }
@@ -1759,6 +1770,7 @@ void handleReportUsage (const TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (1);
     table.setColumnJustification (1, Table::right);
     table.sortOn (1, Table::descendingNumeric);
+    table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
     foreach (i, usage)
     {
@@ -1788,6 +1800,7 @@ std::string renderMonth (
   Config& conf)
 {
   Table table;
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn (" ");
   table.addColumn ("Su");
   table.addColumn ("Mo");
@@ -1934,6 +1947,7 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
   table.addColumn ("Pri");
@@ -2052,6 +2066,7 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
   table.addColumn ("Pri");
@@ -2241,6 +2256,7 @@ void handleVersion (Config& conf)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("Config variable");
   table.addColumn ("Value");
   table.setColumnUnderline (0);

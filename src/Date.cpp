@@ -57,29 +57,114 @@ Date::Date (const int m, const int d, const int y)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Date::Date (const std::string& mdy)
+Date::Date (const std::string& mdy, const std::string format /* = "m/d/Y" */)
 {
-  size_t firstSlash  = mdy.find ("/");
-  size_t secondSlash = mdy.find ("/", firstSlash + 1);
-  if (firstSlash != std::string::npos &&
-      secondSlash != std::string::npos)
-  {
-    int m = ::atoi (mdy.substr (0,               firstSlash              ).c_str ());
-    int d = ::atoi (mdy.substr (firstSlash  + 1, secondSlash - firstSlash).c_str ());
-    int y = ::atoi (mdy.substr (secondSlash + 1, std::string::npos       ).c_str ());
-    if (!valid (m, d, y))
-      throw std::string ("\"") + mdy + "\" is not a valid date.";
+  int month = 0;
+  int day   = 0;
+  int year  = 0;
 
-    // Duplicate Date::Date (const int, const int, const int);
-    struct tm t = {0};
-    t.tm_mday = d;
-    t.tm_mon = m - 1;
-    t.tm_year = y - 1900;
+  unsigned int i = 0; // Index into mdy.
+
+  for (unsigned int f = 0; f < format.length (); ++f)
+  {
+    switch (format[f])
+    {
+    // Single digit.
+    case 'm':
+      if (i >= mdy.length () ||
+          ! ::isdigit (mdy[i]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date.";
+      }
+
+      month = ::atoi (mdy.substr (i, 1).c_str ());
+      ++i;
+      break;
+
+    case 'd':
+      if (i >= mdy.length () ||
+          ! ::isdigit (mdy[i]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date.";
+      }
+
+      day = ::atoi (mdy.substr (i, 1).c_str ());
+      ++i;
+      break;
+
+    // Double digit.
+    case 'y':
+      if (i + 1 >= mdy.length () ||
+          ! ::isdigit (mdy[i + 0]) ||
+          ! ::isdigit (mdy[i + 1]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date.";
+      }
+
+      year = ::atoi (mdy.substr (i, 2).c_str ()) + 2000;
+      i += 2;
+      break;
+
+    case 'M':
+      if (i + 1 >= mdy.length () ||
+          ! ::isdigit (mdy[i + 0]) ||
+          ! ::isdigit (mdy[i + 1]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date.";
+      }
+
+      month = ::atoi (mdy.substr (i, 2).c_str ());
+      i += 2;
+      break;
+
+    case 'D':
+      if (i + 1 >= mdy.length () ||
+          ! ::isdigit (mdy[i + 0]) ||
+          ! ::isdigit (mdy[i + 1]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date.";
+      }
+
+      day = ::atoi (mdy.substr (i, 2).c_str ());
+      i += 2;
+      break;
+
+    // Quadruple digit.
+    case 'Y':
+      if (i + 3 >= mdy.length () ||
+          ! ::isdigit (mdy[i + 0]) ||
+          ! ::isdigit (mdy[i + 1]) ||
+          ! ::isdigit (mdy[i + 2]) ||
+          ! ::isdigit (mdy[i + 3]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date.";
+      }
+
+      year = ::atoi (mdy.substr (i, 4).c_str ());
+      i += 4;
+      break;
+
+    default:
+      if (i >= mdy.length () ||
+          mdy[i] != format[f])
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date.";
+      }
+      ++i;
+      break;
+    }
+  }
+
+  if (!valid (month, day, year))
+    throw std::string ("\"") + mdy + "\" is not a valid date.";
+
+  // Duplicate Date::Date (const int, const int, const int);
+  struct tm t = {0};
+  t.tm_mday = day;
+  t.tm_mon = month - 1;
+  t.tm_year = year - 1900;
 
     mT = mktime (&t);
-  }
-  else
-    throw std::string ("\"") + mdy + "\" is not a valid date.";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -118,15 +203,6 @@ void Date::toMDY (int& m, int& d, int& y)
 ////////////////////////////////////////////////////////////////////////////////
 std::string Date::toString (const std::string& format /*= "m/d/Y"*/)
 {
-/*
-  int m, d, y;
-  toMDY (m, d, y);
-
-  char formatted [11];
-  sprintf (formatted, "%d/%d/%d", m, d, y);
-  return std::string (formatted);
-*/
-
   std::string formatted;
   for (unsigned int i = 0; i < format.length (); ++i)
   {

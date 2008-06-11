@@ -49,8 +49,8 @@ for (typeof (c) *foreach_p = & (c);                                \
        ++i)
 
 // parse.cpp
-void parse (std::vector <std::string>&, std::string&, T&);
-bool validDate (std::string&);
+void parse (std::vector <std::string>&, std::string&, T&, Config&);
+bool validDate (std::string&, Config&);
 
 // task.cpp
 void handleAdd (const TDB&, T&, Config&);

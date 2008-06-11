@@ -79,6 +79,7 @@ public:
            void setCellBg (int, int, Text::color);
 
            void suppressWS ();
+           void setDateFormat (const std::string&);
 
            int rowCount ();
            int columnCount ();
@@ -128,6 +129,7 @@ private:
 
   // Misc...
   bool mSuppressWS;
+  std::string mDateFormat;
 };
 
 #endif

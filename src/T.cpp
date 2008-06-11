@@ -275,20 +275,8 @@ const std::string T::compose () const
   int count = 0;
   foreach (i, mAttributes)
   {
-    std::string converted = i->second;
-
-    // Date attributes may need conversion to epoch.
-    if (i->first == "due"   ||
-        i->first == "start" ||
-        i->first == "entry" ||
-        i->first == "end")
-    {
-      if (i->second.find ("/") != std::string::npos)
-        validDate (converted);
-    }
-
     line += (count > 0 ? " " : "");
-    line += i->first + ":" + converted;
+    line += i->first + ":" + i->second;
 
     ++count;
   }

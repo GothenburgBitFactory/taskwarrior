@@ -185,29 +185,13 @@ static bool isCommand (const std::string& candidate)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool validDate (std::string& date)
+bool validDate (std::string& date, Config& conf)
 {
-  size_t firstSlash  = date.find ("/");
-  size_t secondSlash = date.find ("/", firstSlash + 1);
-  if (firstSlash != std::string::npos &&
-      secondSlash != std::string::npos)
-  {
-    int m = ::atoi (date.substr (0,               firstSlash              ).c_str ());
-    int d = ::atoi (date.substr (firstSlash  + 1, secondSlash - firstSlash).c_str ());
-    int y = ::atoi (date.substr (secondSlash + 1, std::string::npos       ).c_str ());
-    if (!Date::valid (m, d, y))
-      throw std::string ("\"") + date + "\" is not a valid date.";
+  Date test (date, conf.get ("dateformat", "m/d/Y"));
 
-    // Convert to epoch form.
-    Date dt (m, d, y);
-    time_t t;
-    dt.toEpoch (t);
-    char converted[12];
-    sprintf (converted, "%u", (unsigned int) t);
-    date = converted;
-  }
-  else
-    throw std::string ("Badly formed date - use the MM/DD/YYYY format");
+  char epoch[12];
+  sprintf (epoch, "%d", (int) test.toEpoch ());
+  date = epoch;
 
   return true;
 }
@@ -227,7 +211,7 @@ static bool validPriority (std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool validAttribute (std::string& name, std::string& value)
+static bool validAttribute (std::string& name, std::string& value, Config& conf)
 {
   guess ("attribute", attributes, name);
 
@@ -235,7 +219,7 @@ static bool validAttribute (std::string& name, std::string& value)
     guess ("color", colors, value);
 
   else if (name == "due" && value != "")
-    validDate (value);
+    validDate (value, conf);
 
   else if (name == "priority")
   {
@@ -335,7 +319,8 @@ static bool validSubstitution (
 void parse (
   std::vector <std::string>& args,
   std::string& command,
-  T& task)
+  T& task,
+  Config& conf)
 {
   command = "";
 
@@ -369,7 +354,7 @@ void parse (
       std::string name  = arg.substr (0, colon);
       std::string value = arg.substr (colon + 1, std::string::npos);
 
-      if (validAttribute (name, value))
+      if (validAttribute (name, value, conf))
         task.setAttribute (name, value);
     }
 

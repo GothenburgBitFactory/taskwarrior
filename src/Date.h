@@ -37,7 +37,7 @@ public:
            Date ();
            Date (time_t);
            Date (const int, const int, const int);
-           Date (const std::string&);
+           Date (const std::string&, const std::string format = "m/d/Y");
            Date (const Date&);
   virtual ~Date ();
 
