@@ -210,8 +210,9 @@ void autoColorize (T& task, Text::color& fg, Text::color& bg)
   {
     if (it->first.substr (0, 14) == "color.keyword.")
     {
-      std::string value = it->first.substr (14, std::string::npos);
-      if (task.getDescription ().find (value) != std::string::npos)
+      std::string value = lowerCase (it->first.substr (14, std::string::npos));
+      std::string desc  = lowerCase (task.getDescription ());
+      if (desc.find (value) != std::string::npos)
       {
         fg = gsFg[it->first];
         bg = gsBg[it->first];
