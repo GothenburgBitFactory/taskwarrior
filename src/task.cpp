@@ -475,8 +475,16 @@ void handleList (const TDB& tdb, T& task, Config& conf)
       // Apply attribute filter.
       matches = 0;
       foreach (a, attrList)
-        if (a->second == refTask.getAttribute (a->first))
+      {
+        if (a->first == "project")
+        {
+          if (a->second.length () <= refTask.getAttribute (a->first).length ())
+            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
+              ++matches;
+        }
+        else if (a->second == refTask.getAttribute (a->first))
           ++matches;
+      }
 
       if (matches == attrList.size ())
       {
@@ -493,7 +501,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
           bool overdue = false;
           Date now;
           std::string due = refTask.getAttribute ("due");
-          if (due.length () && due.find ("/") == std::string::npos)
+          if (due.length ())
           {
             Date dt (::atoi (due.c_str ()));
             due = dt.toString (conf.get ("dateformat", "m/d/Y"));
@@ -509,7 +517,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
 
           std::string age;
           std::string created = refTask.getAttribute ("entry");
-          if (created.length () && created.find ("/") == std::string::npos)
+          if (created.length ())
           {
             Date dt (::atoi (created.c_str ()));
             formatTimeDeltaDays (age, (time_t) (now - dt));
@@ -637,8 +645,16 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
       // Apply attribute filter.
       matches = 0;
       foreach (a, attrList)
-        if (a->second == refTask.getAttribute (a->first))
+      {
+        if (a->first == "project")
+        {
+          if (a->second.length () <= refTask.getAttribute (a->first).length ())
+            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
+              ++matches;
+        }
+        else if (a->second == refTask.getAttribute (a->first))
           ++matches;
+      }
 
       if (matches == attrList.size ())
       {
@@ -655,7 +671,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
           bool overdue = false;
           Date now;
           std::string due = refTask.getAttribute ("due");
-          if (due.length () && due.find ("/") == std::string::npos)
+          if (due.length ())
           {
             Date dt (::atoi (due.c_str ()));
             due = dt.toString (conf.get ("dateformat", "m/d/Y"));
@@ -671,7 +687,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
 
           std::string age;
           std::string created = refTask.getAttribute ("entry");
-          if (created.length () && created.find ("/") == std::string::npos)
+          if (created.length ())
           {
             Date dt (::atoi (created.c_str ()));
             formatTimeDeltaDays (age, (time_t) (now - dt));
@@ -792,8 +808,16 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
       // Apply attribute filter.
       matches = 0;
       foreach (a, attrList)
-        if (a->second == refTask.getAttribute (a->first))
+      {
+        if (a->first == "project")
+        {
+          if (a->second.length () <= refTask.getAttribute (a->first).length ())
+            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
+              ++matches;
+        }
+        else if (a->second == refTask.getAttribute (a->first))
           ++matches;
+      }
 
       if (matches == attrList.size ())
       {
@@ -926,7 +950,7 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
         due = dt.toString (conf.get ("dateformat", "m/d/Y"));
         table.addCell (row, 1, due);
 
-        if (due.length () && due.find ("/") == std::string::npos)
+        if (due.length ())
         {
           Date dt (::atoi (due.c_str ()));
 
@@ -986,7 +1010,7 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
 
       std::string age;
       std::string created = refTask.getAttribute ("entry");
-      if (created.length () && created.find ("/") == std::string::npos)
+      if (created.length ())
       {
         Date dt (::atoi (created.c_str ()));
         formatTimeDeltaDays (age, (time_t) (now - dt));
@@ -1104,8 +1128,16 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
       // Apply attribute filter.
       matches = 0;
       foreach (a, attrList)
-        if (a->second == refTask.getAttribute (a->first))
+      {
+        if (a->first == "project")
+        {
+          if (a->second.length () <= refTask.getAttribute (a->first).length ())
+            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
+              ++matches;
+        }
+        else if (a->second == refTask.getAttribute (a->first))
           ++matches;
+      }
 
       if (matches == attrList.size ())
       {
@@ -1120,14 +1152,14 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
           Date now;
 
           std::string started = refTask.getAttribute ("start");
-          if (started.length () && started.find ("/") == std::string::npos)
+          if (started.length ())
           {
             Date dt (::atoi (started.c_str ()));
             started = dt.toString (conf.get ("dateformat", "m/d/Y"));
           }
 
           std::string entered = refTask.getAttribute ("entry");
-          if (entered.length () && entered.find ("/") == std::string::npos)
+          if (entered.length ())
           {
             Date dt (::atoi (entered.c_str ()));
             entered = dt.toString (conf.get ("dateformat", "m/d/Y"));
@@ -1137,7 +1169,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
           bool imminent = false;
           bool overdue = false;
           std::string due = refTask.getAttribute ("due");
-          if (due.length () && due.find ("/") == std::string::npos)
+          if (due.length ())
           {
             Date dt (::atoi (due.c_str ()));
             due = dt.toString (conf.get ("dateformat", "m/d/Y"));
@@ -1149,7 +1181,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
 
           std::string age;
           std::string created = refTask.getAttribute ("entry");
-          if (created.length () && created.find ("/") == std::string::npos)
+          if (created.length ())
           {
             Date dt (::atoi (created.c_str ()));
             formatTimeDeltaDays (age, (time_t) (now - dt));
@@ -1465,8 +1497,16 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
       // Apply attribute filter.
       matches = 0;
       foreach (a, attrList)
-        if (a->second == refTask.getAttribute (a->first))
+      {
+        if (a->first == "project")
+        {
+          if (a->second.length () <= refTask.getAttribute (a->first).length ())
+            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
+              ++matches;
+        }
+        else if (a->second == refTask.getAttribute (a->first))
           ++matches;
+      }
 
       if (matches == attrList.size ())
       {
@@ -1483,7 +1523,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
           bool overdue = false;
           Date now;
           std::string due = refTask.getAttribute ("due");
-          if (due.length () && due.find ("/") == std::string::npos)
+          if (due.length ())
           {
             Date dt (::atoi (due.c_str ()));
             due = dt.toString (conf.get ("dateformat", "m/d/Y"));
@@ -1499,7 +1539,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
 
           std::string age;
           std::string created = refTask.getAttribute ("entry");
-          if (created.length () && created.find ("/") == std::string::npos)
+          if (created.length ())
           {
             Date dt (::atoi (created.c_str ()));
             formatTimeDeltaDays (age, (time_t) (now - dt));
@@ -1995,7 +2035,7 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
       bool imminent = false;
       bool overdue = false;
       std::string due = refTask.getAttribute ("due");
-      if (due.length () && due.find ("/") == std::string::npos)
+      if (due.length ())
       {
         Date dt (::atoi (due.c_str ()));
         due = dt.toString (conf.get ("dateformat", "m/d/Y"));
@@ -2110,7 +2150,7 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
     std::string due;
     if ((due = refTask.getAttribute ("due")) != "")
     {
-      if (due.length () && due.find ("/") == std::string::npos)
+      if (due.length ())
       {
         Date dt (::atoi (due.c_str ()));
         due = dt.toString (conf.get ("dateformat", "m/d/Y"));
