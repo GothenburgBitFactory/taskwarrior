@@ -6,7 +6,8 @@ where the x represents a major version number, or architecture.  The y
 represents a feature release, and the z represents a patch.
 
 1.2.0 (?)
-  + Bug: "dateformat" configuration variable used to display dates, but not parse them.
+  + Bug: "dateformat" configuration variable used to display dates, but not parse them
+  + "task list x" now performs a caseless comparison between "x" and the description
 
 ------ reality -----------------------------------
 

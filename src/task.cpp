@@ -448,7 +448,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
 
   // Split any description specified into words.
   std::vector <std::string> descWords;
-  split (descWords, task.getDescription (), ' ');
+  split (descWords, lowerCase (task.getDescription ()), ' ');
 
   // Get all the tags to match against.
   std::vector <std::string> tagList;
@@ -464,9 +464,10 @@ void handleList (const TDB& tdb, T& task, Config& conf)
     T refTask (tasks[i]);
 
     // Apply description filter.
+    std::string desc = lowerCase (refTask.getDescription ());
     unsigned int matches = 0;
     for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (refTask.getDescription ().find (descWords[w]) != std::string::npos)
+      if (desc.find (descWords[w]) != std::string::npos)
         ++matches;
 
     if (matches == descWords.size ())
@@ -609,7 +610,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
 
   // Split any description specified into words.
   std::vector <std::string> descWords;
-  split (descWords, task.getDescription (), ' ');
+  split (descWords, lowerCase (task.getDescription ()), ' ');
 
   // Get all the tags to match against.
   std::vector <std::string> tagList;
@@ -625,9 +626,10 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
     T refTask (tasks[i]);
 
     // Apply description filter.
+    std::string desc = lowerCase (refTask.getDescription ());
     unsigned int matches = 0;
     for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (refTask.getDescription ().find (descWords[w]) != std::string::npos)
+      if (desc.find (descWords[w]) != std::string::npos)
         ++matches;
 
     if (matches == descWords.size ())
@@ -763,7 +765,7 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
 
   // Split any description specified into words.
   std::vector <std::string> descWords;
-  split (descWords, task.getDescription (), ' ');
+  split (descWords, lowerCase (task.getDescription ()), ' ');
 
   // Get all the tags to match against.
   std::vector <std::string> tagList;
@@ -779,9 +781,10 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
     T refTask (tasks[i]);
 
     // Apply description filter.
+    std::string desc = lowerCase (refTask.getDescription ());
     unsigned int matches = 0;
     for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (refTask.getDescription ().find (descWords[w]) != std::string::npos)
+      if (desc.find (descWords[w]) != std::string::npos)
         ++matches;
 
     if (matches == descWords.size ())
@@ -1074,7 +1077,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
 
   // Split any description specified into words.
   std::vector <std::string> descWords;
-  split (descWords, task.getDescription (), ' ');
+  split (descWords, lowerCase (task.getDescription ()), ' ');
 
   // Get all the tags to match against.
   std::vector <std::string> tagList;
@@ -1090,9 +1093,10 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
     T refTask (tasks[i]);
 
     // Apply description filter.
+    std::string desc = lowerCase (refTask.getDescription ());
     unsigned int matches = 0;
     for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (refTask.getDescription ().find (descWords[w]) != std::string::npos)
+      if (desc.find (descWords[w]) != std::string::npos)
         ++matches;
 
     if (matches == descWords.size ())
@@ -1434,7 +1438,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
 
   // Split any description specified into words.
   std::vector <std::string> descWords;
-  split (descWords, task.getDescription (), ' ');
+  split (descWords, lowerCase (task.getDescription ()), ' ');
 
   // Get all the tags to match against.
   std::vector <std::string> tagList;
@@ -1450,9 +1454,10 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
     T refTask (pending[*i]);
 
     // Apply description filter.
+    std::string desc = lowerCase (refTask.getDescription ());
     unsigned int matches = 0;
     for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (refTask.getDescription ().find (descWords[w]) != std::string::npos)
+      if (desc.find (descWords[w]) != std::string::npos)
         ++matches;
 
     if (matches == descWords.size ())
@@ -1973,10 +1978,6 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
   table.sortOn (2, Table::descendingPriority);
   table.sortOn (1, Table::ascendingCharacter);
 
-  // Split any description specified into words.
-  std::vector <std::string> descWords;
-  split (descWords, task.getDescription (), ' ');
-
   // Get all the tags to match against.
   std::vector <std::string> tagList;
   task.getTags (tagList);
@@ -2091,10 +2092,6 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
   table.sortOn (3, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
   table.sortOn (1, Table::ascendingCharacter);
-
-  // Split any description specified into words.
-  std::vector <std::string> descWords;
-  split (descWords, task.getDescription (), ' ');
 
   // Get all the tags to match against.
   std::vector <std::string> tagList;
