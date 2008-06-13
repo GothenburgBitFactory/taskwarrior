@@ -67,7 +67,7 @@ interface.  Let us take a look at those tasks:
 
   % task ls
 
-  ID Project Pri Description           
+  ID Project Pri Description
    1             Book plane ticket
    2             Rent a tux
    3             Reserve a rental car
@@ -97,7 +97,7 @@ a project to these tasks:
   % task 4 project:Family
   % task ls
 
-  ID Project Pri Description               
+  ID Project Pri Description
    3 Family      Send John a birthday card
    2 Wedding     Reserve a rental car
    1 Wedding     Book plane ticket
@@ -107,12 +107,46 @@ attributes changed (project, for example), the ids are prone to change.  But the
 id numbers will remain valid until the next 'ls' command is run.  You should
 only use the ids from the most recent 'ls' command.  The ids change, because
 task is always trying to use small numbers so that it is easy for you to enter
-them correctly.  Now that projects are assigned, we can look at just the Wedding
-project tasks:
+them correctly.
+
+Subprojects are supported.  If you have a project "Wedding", you can specify
+that a task is a subproject "Transport" of "Wedding" by assigning the project
+"Wedding.Transport".  Let's do this:
+
+  % task 2 project:Wedding.Transport
+  % task ls
+
+  ID Project           Pri Description
+   3 Family                Send John a birthday card
+   2 Wedding.Transport     Reserve a rental car
+   1 Wedding               Book plane ticket
+
+Task matches the leftmost part of the project when searching, so projects
+may be abbreviated:
+
+  % task ls project:Wedding.Tra
+
+  ID Project           Pri Description
+   2 Wedding.Transport     Reserve a rental car
+
+This way of matching projects can be used to see all tasks under the
+"Wedding" project and all subprojects:
 
   % task ls project:Wedding
 
-  ID Project Pri Description          
+  ID Project           Pri Description
+   2 Wedding.Transport     Reserve a rental car
+   1 Wedding               Book plane ticket
+
+Let's reassign 2 back to the "Wedding" project:
+
+  % task 2 project:Wedding
+
+Now that projects are assigned, we can look at just the Wedding project tasks:
+
+  % task ls project:Wedding
+
+  ID Project Pri Description
    1 Wedding     Book plane ticket
    2 Wedding     Reserve a rental car
 
@@ -121,14 +155,14 @@ could also have requested:
 
   % task ls ticket plane
 
-  ID Project Pri Description       
+  ID Project Pri Description
    1 Wedding     Book plane ticket
 
 Now let's prioritize.  Priorities can be H, M or L (High, Medium, Low).
 
   % task ls
 
-  ID Project Pri Description               
+  ID Project Pri Description
    3 Family      Send John a birthday card
    2 Wedding     Reserve a rental car
    1 Wedding     Book plane ticket
@@ -140,7 +174,7 @@ Now let's prioritize.  Priorities can be H, M or L (High, Medium, Low).
   % task 3 pri:H
   % task ls
 
-  ID Project Pri Description               
+  ID Project Pri Description
    3 Family  H   Send John a birthday card
    1 Wedding H   Book plane ticket
    2 Wedding M   Reserve a rental car
@@ -161,7 +195,7 @@ command provides more:
 
   % task list
 
-  ID Project Pri Due Active Age    Description               
+  ID Project Pri Due Active Age    Description
    3 Family  H              4 mins Send John a birthday card
    1 Wedding H              5 mins Book plane ticket
    2 Wedding M              5 mins Reserve a rental car
@@ -173,7 +207,7 @@ sorted by due date, then priority.  Let's add due dates:
   % task 1 due:7/31/2008
   % task list
 
-  ID Project Pri Due       Active Age    Description               
+  ID Project Pri Due       Active Age    Description
    3 Family  H   6/25/2008        6 mins Send John a birthday card
    1 Wedding H   7/31/2008        7 mins Book plane ticket
    2 Wedding M                    7 mins Reserve a rental car
@@ -212,7 +246,7 @@ labels.
 
   % task list
 
-  ID Project Pri Due       Active Age    Description               
+  ID Project Pri Due       Active Age    Description
    3 Family  H   6/25/2008        8 mins Send John a birthday card
    1 Wedding H   7/31/2008        9 mins Book plane ticket
    2 Wedding M                    9 mins Reserve a rental car
@@ -224,7 +258,7 @@ labels.
 
   % task list +phone
 
-  ID Project Pri Due       Active Age    Description               
+  ID Project Pri Due       Active Age    Description
    1 Wedding H   7/31/2008        9 mins Book plane ticket
    2 Wedding M                    9 mins Reserve a rental car
 
@@ -266,7 +300,7 @@ with no arguments will generate a help message that lists all these commands.
 
     % task summary
 
-    Project  Remaining Avg age Complete 0%                        100%              
+    Project  Remaining Avg age Complete 0%                        100%
     Errands          1  3 days      50% XXXXXXXXXXXXXXXX
     Birthdays        3  7 mths       0%
     Car              2   2 wks      25% XXXXXXXXX
@@ -316,14 +350,14 @@ with no arguments will generate a help message that lists all these commands.
 
     % task list
 
-    ID Project Pri Due Active Age     Description                                                      
+    ID Project Pri Due Active Age     Description
     12 Errand  L                      Remember to deposit check
     ...
 
     % task start 12
     % task list
 
-    ID Project Pri Due Active Age     Description                                                      
+    ID Project Pri Due Active Age     Description
     12 Errand  L       *      3 days  Remember to deposit check
     ...
 
@@ -351,7 +385,7 @@ with no arguments will generate a help message that lists all these commands.
   This report shows you an overview of how many tasks were added, completed and
   deleted, by month.  It looks like this:
 
-    % task history 
+    % task history
 
     Year Month     Added Completed Deleted Net
     2008 March        21        16       0   5
@@ -409,14 +443,14 @@ with no arguments will generate a help message that lists all these commands.
 
   % task ls
 
-  ID Project Pri Description               
+  ID Project Pri Description
   12 Errand  L   Remember to deposit chekc
   ...
 
   % task 12 Remember to deposit bonus check
   % task ls
 
-  ID Project Pri Description               
+  ID Project Pri Description
   12 Errand  L   Remember to deposit bonus check
   ...
 
@@ -430,14 +464,14 @@ with no arguments will generate a help message that lists all these commands.
 
     % task ls
 
-    ID Project Pri Description               
+    ID Project Pri Description
     12 Errand  L   Remember to deposit chekc
     ...
 
     % task 12 /chekc/check/
     % task ls
 
-    ID Project Pri Description               
+    ID Project Pri Description
     12 Errand  L   Remember to deposit check
     ...
 
@@ -665,7 +699,7 @@ Configuring Task
     color.active        below) and one optional background color.
     color.tagged
                         For example, the value may be:
- 
+
                           bold_red on_bright_yellow
 
     color.tag.X         Colors any task that has the tag X.

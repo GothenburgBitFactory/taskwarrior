@@ -168,14 +168,17 @@ a img { border: none; padding: 0; margin: 0; }
                 <p>
                   Download the latest task source code
                   <a href="http://www.beckingham.net/task-1.2.0.tar.gz">task-1.2.0.tar.gz</a>
-                  (6/7/2008).
+                  (6/13/2008).
                 </p>
 
                 <p>
-                  <strong>New in version 1.2.0</strong>
+                  <h4>New in version 1.2.0</h4>
+                  source: <a href="http://www.beckingham.net/task-1.2.0.tar.gz">task-1.2.0.tar.gz</a>
                 </p>
 
                 <ul>
+                  <li>Subprojects supported - please see documentation below, or TUTORIAL
+                      file
                   <li>"dateformat" configuration variable now properly used to parse as
                       well as render dates
                   <li>"task list x" now performs a caseless comparison between "x" and
@@ -185,7 +188,11 @@ a img { border: none; padding: 0; margin: 0; }
                 </ul>
 
                 <p>
-                  <strong>New in version 1.1.0</strong>
+                  <h4>New in version 1.1.0</h4>
+                  source: <a href="http://www.beckingham.net/task-1.1.0.tar.gz">task-1.1.0.tar.gz</a>
+                  <br />
+                  Debian package: <a href="http://www.beckingham.net/task_1.1.0-1_i386.deb">task_1.1.0-1_i386.deb</a>
+                  (Thanks to Richard Querin)
                 </p>
 
                 <ul>
@@ -352,6 +359,52 @@ Permanently delete task? (y/n) y</code></pre>
                   recent 'ls' command.  The ids change, because task is always trying
                   to use small numbers so that it is easy for you to enter them
                   correctly.  Now that projects are assigned, we can look at just the
+                  Wedding project tasks:
+                </p>
+
+                <p>
+                  Subprojects are supported.  If you have a project "Wedding", you can
+                  specify that a task is a subproject "Transport" of "Wedding" by
+                  assigning the project "Wedding.Transport".  Let's do this:
+               </p>
+
+               <pre><code>% task 2 project:Wedding.Transport
+% task ls
+
+ID Project           Pri Description
+ 3 Family                Send John a birthday card
+ 2 Wedding.Transport     Reserve a rental car
+ 1 Wedding               Book plane ticket</code></pre>
+
+                <p>
+                  Task matches the leftmost part of the project when searching, so
+                  projects may be abbreviated:
+                </p>
+
+                <pre><code>% task ls project:Wedding.Tra
+
+ID Project           Pri Description
+ 2 Wedding.Transport     Reserve a rental car</code></pre>
+
+                <p>
+                  This way of matching projects can be used to see all tasks under
+                  the "Wedding" project and all subprojects:
+                </p>
+
+                <pre><code>% task ls project:Wedding
+
+ID Project           Pri Description
+ 2 Wedding.Transport     Reserve a rental car
+ 1 Wedding               Book plane ticket</code></pre>
+
+                <p>
+                  Let's reassign 2 back to the "Wedding" project:
+                </p>
+
+                <pre><code>% task 2 project:Wedding</code></pre>
+
+                <p>
+                  Now that projects are assigned, we can look at just the
                   Wedding project tasks:
                 </p>
 
