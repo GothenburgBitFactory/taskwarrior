@@ -5,12 +5,21 @@ Version numbers are of the form:
 where the x represents a major version number, or architecture.  The y
 represents a feature release, and the z represents a patch.
 
-1.2.0 (?)
-  + Bug: "dateformat" configuration variable used to display dates, but not parse them
-  + "task list x" now performs a caseless comparison between "x" and the description
-  + Task sub projects supported.
+------ plans -------------------------------------
+
+Configurable columns in reports
 
 ------ reality -----------------------------------
+
+1.2.0 (6/13/2008)
+  + Bug: "dateformat" configuration variable used to display dates, but
+    not parse them
+  + "task list x" now performs a caseless comparison between "x" and the
+    description
+  + Task sub projects supported
+  + "showage" confguration determines whether "Age" column appears on the
+    "list" and "next" reports
+  + Improved TUTORIAL
 
 1.1.0 (6/7/2008)
   + "blanklines" configuration to stop displaying unnecessary white
