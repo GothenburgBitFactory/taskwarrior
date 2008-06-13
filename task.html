@@ -179,7 +179,9 @@ a img { border: none; padding: 0; margin: 0; }
                   <li>"dateformat" configuration variable now properly used to parse as
                       well as render dates
                   <li>"task list x" now performs a caseless comparison between "x" and
-                      the task description.
+                      the task description
+                  <li>"showage" configuration variable determines whether the "Age" column
+                      should appear on the "task list" and "task next" reports
                 </ul>
 
                 <p>
@@ -991,6 +993,12 @@ on_white    on_bright_white</code></pre>
                       </tr>
                     </table>
                   </p>
+                </dd>
+
+                <dt>showage<dt>
+                <dd>
+                  May be "yes" or "no".  Determines whether the "Age"
+                  column appears on the "list" and "next" reports.
                 <dd>
 
                 <dt>color</dt>

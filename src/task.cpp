@@ -409,6 +409,8 @@ void handleList (const TDB& tdb, T& task, Config& conf)
 
   initializeColorRules (conf);
 
+  bool showAge = conf.get ("showage", true);
+
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
@@ -417,7 +419,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Pri");
   table.addColumn ("Due");
   table.addColumn ("Active");
-  table.addColumn ("Age");
+  if (showAge) table.addColumn ("Age");
   table.addColumn ("Description");
 
   table.setColumnUnderline (0);
@@ -426,19 +428,19 @@ void handleList (const TDB& tdb, T& task, Config& conf)
   table.setColumnUnderline (3);
   table.setColumnUnderline (4);
   table.setColumnUnderline (5);
-  table.setColumnUnderline (6);
+  if (showAge) table.setColumnUnderline (6);
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
   table.setColumnWidth (2, Table::minimum);
   table.setColumnWidth (3, Table::minimum);
   table.setColumnWidth (4, Table::minimum);
-  table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth (6, Table::flexible);
+  if (showAge) table.setColumnWidth (5, Table::minimum);
+  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (3, Table::right);
-  table.setColumnJustification (5, Table::right);
+  if (showAge) table.setColumnJustification (5, Table::right);
 
   table.sortOn (3, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
@@ -530,8 +532,8 @@ void handleList (const TDB& tdb, T& task, Config& conf)
           table.addCell (row, 2, refTask.getAttribute ("priority"));
           table.addCell (row, 3, due);
           table.addCell (row, 4, active);
-          table.addCell (row, 5, age);
-          table.addCell (row, 6, refTask.getDescription ());
+          if (showAge) table.addCell (row, 5, age);
+          table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
 
           if (conf.get ("color", true))
           {
@@ -1430,6 +1432,8 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
 
   initializeColorRules (conf);
 
+  bool showAge = conf.get ("showage", true);
+
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
@@ -1439,7 +1443,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Pri");
   table.addColumn ("Due");
   table.addColumn ("Active");
-  table.addColumn ("Age");
+  if (showAge) table.addColumn ("Age");
   table.addColumn ("Description");
 
   table.setColumnUnderline (0);
@@ -1448,19 +1452,19 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   table.setColumnUnderline (3);
   table.setColumnUnderline (4);
   table.setColumnUnderline (5);
-  table.setColumnUnderline (6);
+  if (showAge) table.setColumnUnderline (6);
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
   table.setColumnWidth (2, Table::minimum);
   table.setColumnWidth (3, Table::minimum);
   table.setColumnWidth (4, Table::minimum);
-  table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth (6, Table::flexible);
+  if (showAge) table.setColumnWidth (5, Table::minimum);
+  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (3, Table::right);
-  table.setColumnJustification (5, Table::right);
+  if (showAge) table.setColumnJustification (5, Table::right);
 
   table.sortOn (3, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
@@ -1550,8 +1554,8 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
           table.addCell (row, 2, refTask.getAttribute ("priority"));
           table.addCell (row, 3, due);
           table.addCell (row, 4, active);
-          table.addCell (row, 5, age);
-          table.addCell (row, 6, refTask.getDescription ());
+          if (showAge) table.addCell (row, 5, age);
+          table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
 
           if (conf.get ("color", true))
           {

@@ -650,6 +650,9 @@ Configuring Task
                           YMD              20080607
                           m-d-y            6-7-08
 
+    showage             May be "yes" or "no".  Determines whether the "Age"
+                        column appears on the "list" and "next" reports.
+
     color               May be "on" or "off".  Determines whether task uses
                         color.
 
