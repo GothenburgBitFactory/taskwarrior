@@ -2319,7 +2319,7 @@ void handleVersion (Config& conf)
     }
   }
 
-  std::cout << "Copyright (C) 2006 - 2008 P. Beckingham."
+  std::cout << "Copyright (C) 2006 - 2008, P. Beckingham."
             << std::endl
             << PACKAGE
             << " "
