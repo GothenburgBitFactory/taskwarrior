@@ -69,7 +69,7 @@ Date::Date (const std::string& mdy, const std::string format /* = "m/d/Y" */)
   {
     switch (format[f])
     {
-    // Single digit.
+    // Single or double digit.
     case 'm':
       if (i >= mdy.length () ||
           ! ::isdigit (mdy[i]))
@@ -77,8 +77,18 @@ Date::Date (const std::string& mdy, const std::string format /* = "m/d/Y" */)
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
-      month = ::atoi (mdy.substr (i, 1).c_str ());
-      ++i;
+      if (i + 1 < mdy.length ()                                         &&
+          mdy[i + 0] == '1'                                             &&
+          (mdy[i + 1] == '0' || mdy[i + 1] == '1' || mdy[i + 1] == '2'))
+      {
+        month = ::atoi (mdy.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else
+      {
+        month = ::atoi (mdy.substr (i, 1).c_str ());
+        ++i;
+      }
       break;
 
     case 'd':
@@ -88,8 +98,18 @@ Date::Date (const std::string& mdy, const std::string format /* = "m/d/Y" */)
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
-      day = ::atoi (mdy.substr (i, 1).c_str ());
-      ++i;
+      if (i + 1 < mdy.length ()  &&
+          (mdy[i + 0] == '1' || mdy[i + 0] == '2' || mdy[i + 0] == '3') &&
+          ::isdigit (mdy[i + 1]))
+      {
+        day = ::atoi (mdy.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else
+      {
+        day = ::atoi (mdy.substr (i, 1).c_str ());
+        ++i;
+      }
       break;
 
     // Double digit.

@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  plan (52);
+  plan (63);
 
   Date now;
   Date yesterday;
@@ -27,6 +27,8 @@ int main (int argc, char** argv)
 
   ok    (Date::leapYear (2008), "2008 is a leap year");
   notok (Date::leapYear (2007), "2007 is not a leap year");
+  ok    (Date::leapYear (2000), "2000 is a leap year");
+  ok    (Date::leapYear (1900), "1900 is a leap year");
 
   is (Date::daysInMonth (2, 2008), 29, "29 days in February 2008");
   is (Date::daysInMonth (2, 2007), 28, "28 days in February 2007");
@@ -91,6 +93,20 @@ int main (int argc, char** argv)
   is (fromString3.day (),     1, "ctor (std::string) -> d");
   is (fromString3.year (), 2008, "ctor (std::string) -> y");
 
+  Date fromString4 ("12/31/2007");
+  is (fromString4.month (),  12, "ctor (std::string) -> m");
+  is (fromString4.day (),    31, "ctor (std::string) -> d");
+  is (fromString4.year (), 2007, "ctor (std::string) -> y");
+
+  Date fromString5 ("12/31/2007", "m/d/Y");
+  is (fromString5.month (),  12, "ctor (std::string) -> m");
+  is (fromString5.day (),    31, "ctor (std::string) -> d");
+  is (fromString5.year (), 2007, "ctor (std::string) -> y");
+
+  Date fromString6 ("20071231", "YMD");
+  is (fromString6.month (),  12, "ctor (std::string) -> m");
+  is (fromString6.day (),    31, "ctor (std::string) -> d");
+  is (fromString6.year (), 2007, "ctor (std::string) -> y");
   return 0;
 }
 

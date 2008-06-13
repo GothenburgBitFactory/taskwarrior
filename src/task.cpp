@@ -952,8 +952,6 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
 
         if (due.length ())
         {
-          Date dt (::atoi (due.c_str ()));
-
           overdue = (dt < now) ? true : false;
           now += 7 * 86400;
           imminent = dt < now ? true : false;

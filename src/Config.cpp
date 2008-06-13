@@ -136,7 +136,7 @@ void Config::createDefault (const std::string& file)
         set ("data.location", taskDir);
         set ("command.logging", "off");
         set ("confirmation", "yes");
-        set ("next", 2);
+        set ("next", 1);
         set ("curses", "on");
         set ("color", "on");
         set ("color.overdue", "red");
