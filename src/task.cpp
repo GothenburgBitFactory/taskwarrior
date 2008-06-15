@@ -240,7 +240,6 @@ int main (int argc, char** argv)
     std::vector <std::string> args;
     for (int i = 1; i < argc; ++i)
       args.push_back (argv[i]);
-
     std::string command;
     T task;
     parse (args, command, task, conf);
@@ -382,7 +381,6 @@ void handleTags (const TDB& tdb, T& task, Config& conf)
   else
     std::cout << "No tags."
               << std::endl;
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1387,7 +1385,7 @@ void handleReportSummary (const TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 // A summary of the most important pending tasks.
 //
-// For every project, pull important tasks to present as an 'immediate' task 
+// For every project, pull important tasks to present as an 'immediate' task
 // list.  This hides the overwhelming quantity of other tasks.
 //
 // Present at most three tasks for every project.  Select the tasks using
@@ -1607,7 +1605,7 @@ time_t monthlyEpoch (const std::string& date)
     time_t epoch;
     d2.toEpoch (epoch);
     return epoch;
-  }
+ }
 
   return 0;
 }
@@ -1839,73 +1837,122 @@ void handleReportUsage (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string renderMonth (
-  int month,
-  int year,
+std::string renderMonths (
+  int firstMonth,
+  int firstYear,
   const Date& today,
   std::vector <T>& all,
   Config& conf)
 {
   Table table;
   table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-  table.addColumn (" ");
-  table.addColumn ("Su");
-  table.addColumn ("Mo");
-  table.addColumn ("Tu");
-  table.addColumn ("We");
-  table.addColumn ("Th");
-  table.addColumn ("Fr");
-  table.addColumn ("Sa");
+  int monthsPerLine = (conf.get ("monthsperline", 1));
 
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
-  table.setColumnUnderline (4);
-  table.setColumnUnderline (5);
-  table.setColumnUnderline (6);
-  table.setColumnUnderline (7);
-
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (1, Table::right);
-  table.setColumnJustification (2, Table::right);
-  table.setColumnJustification (3, Table::right);
-  table.setColumnJustification (4, Table::right);
-  table.setColumnJustification (5, Table::right);
-  table.setColumnJustification (6, Table::right);
-  table.setColumnJustification (7, Table::right);
-
-  int days = Date::daysInMonth (month, year);
-  int row = table.addRow ();
-  for (int d = 1; d <= days; ++d)
+  // Build table for the number of months to be displayed.
+  for (int i = 0 ; i < (monthsPerLine * 8); i += 8)
   {
-    Date temp (month, d, year);
-    int dow = temp.dayOfWeek ();
+    table.addColumn (" ");
+    table.addColumn ("Su");
+    table.addColumn ("Mo");
+    table.addColumn ("Tu");
+    table.addColumn ("We");
+    table.addColumn ("Th");
+    table.addColumn ("Fr");
+    table.addColumn ("Sa");
 
-    table.addCell (row, dow + 1, d);
+    table.setColumnUnderline (i + 1);
+    table.setColumnUnderline (i + 2);
+    table.setColumnUnderline (i + 3);
+    table.setColumnUnderline (i + 4);
+    table.setColumnUnderline (i + 5);
+    table.setColumnUnderline (i + 6);
+    table.setColumnUnderline (i + 7);
 
-    if (conf.get ("color", true) &&
-        today.day ()   == d      &&
-        today.month () == month  &&
-        today.year ()  == year)
-      table.setCellFg (row, dow + 1, Text::cyan);
+    table.setColumnJustification (i + 0, Table::right);
+    table.setColumnJustification (i + 1, Table::right);
+    table.setColumnJustification (i + 2, Table::right);
+    table.setColumnJustification (i + 3, Table::right);
+    table.setColumnJustification (i + 4, Table::right);
+    table.setColumnJustification (i + 5, Table::right);
+    table.setColumnJustification (i + 6, Table::right);
+    table.setColumnJustification (i + 7, Table::right);
+  }
 
-    std::vector <T>::iterator it;
-    for (it = all.begin (); it != all.end (); ++it)
+  // Set number of days per month, months to render, and years to render.
+  std::vector<int> years;
+  std::vector<int> months;
+  std::vector<int> daysInMonth;
+  int thisYear = firstYear;
+  int thisMonth = firstMonth;
+  for (int i = 0 ; i < monthsPerLine ; i++)
+  {
+    if (thisMonth < 13)
     {
-      Date due (::atoi (it->getAttribute ("due").c_str ()));
+      years.push_back (thisYear);
+    }
+    else
+    {
+      thisMonth -= 12;
+      years.push_back (++thisYear);
+    }
+    months.push_back (thisMonth);
+    daysInMonth.push_back (Date::daysInMonth (thisMonth++, thisYear));
+  }
+
+  int row = table.addRow ();
+
+  // Loop through months to be added on this line.
+  for (int c = 0 ; c < monthsPerLine ; c++)
+  {
+    // Reset row counter for subsequent months
+    if (c != 0)
+      row = 0;
+
+    // Loop through days in month and add to table.
+    for (int d = 1; d <= daysInMonth.at (c); ++d)
+    {
+      Date temp (months.at (c), d, years.at (c));
+      int dow = temp.dayOfWeek ();
+      int thisCol = dow + 1 + (8 * c);
+
+      table.addCell (row, thisCol, d);
 
       if (conf.get ("color", true) &&
-          due.day ()   == d        &&
-          due.month () == month    &&
-          due.year ()  == year)
+          today.day ()   == d      &&
+          today.month () == months.at (c)  &&
+          today.year ()  == years.at (c))
+        table.setCellFg (row, thisCol, Text::cyan);
+
+      std::vector <T>::iterator it;
+      for (it = all.begin (); it != all.end (); ++it)
       {
-        table.setCellFg (row, dow + 1, Text::black);
-        table.setCellBg (row, dow + 1, due < today ? Text::on_red : Text::on_yellow);
+        Date due (::atoi (it->getAttribute ("due").c_str ()));
+
+        if (conf.get ("color", true) &&
+            due.day ()   == d        &&
+            due.month () == months.at (c)    &&
+            due.year ()  == years.at (c))
+        {
+          table.setCellFg (row, thisCol, Text::black);
+          table.setCellBg (row, thisCol, due < today ? Text::on_red : Text::on_yellow);
+        }
+      }
+
+      // Check for end of week, and...
+      if (dow == 6 && d < daysInMonth.at (c))
+      {
+        // ... Add a row if required, or...
+        if (c == 0)
+        {
+          row = table.addRow ();
+        }
+        // ... Reuse existing row.
+        else
+        {
+          row++;
+        }
       }
     }
-
-    if (dow == 6 && d < days)
-      row = table.addRow ();
   }
 
   return table.render ();
@@ -1943,19 +1990,42 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
 
   std::cout << std::endl;
   std::string output;
+
+  int monthsPerLine = (conf.get ("monthsperline", 1));
+
   while (yFrom < yTo || (yFrom == yTo && mFrom <= mTo))
   {
-    std::cout << Date::monthName (mFrom)
-              << " "
-              << yFrom
+    int nextM = mFrom;
+    int nextY = yFrom;
+
+    // Print month headers (cheating on the width settings, yes)
+    for (int i = 0 ; i < monthsPerLine ; i++)
+    {
+      std::string month = Date::monthName (nextM);
+      std::cout << month
+                << " "
+                << std::setw(23 // one month's output width
+                             - month.length ()// month name length
+                             - 1)// spacer character
+                << std::left
+                << nextY;
+
+      if (++nextM > 12)
+      {
+        nextM = 1;
+        nextY++;
+      }
+    }
+
+    std::cout << std::endl
               << optionalBlankLine (conf)
-              << optionalBlankLine (conf)
-              << renderMonth (mFrom, yFrom, today, pending, conf)
+              << renderMonths (mFrom, yFrom, today, pending, conf)
               << std::endl;
 
-    if (++mFrom == 13)
+    mFrom += monthsPerLine;
+    if (mFrom > 12)
     {
-      mFrom = 1;
+      mFrom -= 12;
       ++yFrom;
     }
   }
@@ -2265,7 +2335,9 @@ void handleReportStats (const TDB& tdb, T& task, Config& conf)
     std::cout << "Task deleted every    " << formatSeconds ((latest - earliest) / deletedT)   << std::endl;
 
   if (pendingT || completedT)
-    std::cout << "Average time pending  " << formatSeconds ((int) ((daysPending / (pendingT + completedT)) * 86400)) << std::endl;
+    std::cout << "Average time pending  "
+              << formatSeconds ((int) ((daysPending / (pendingT + completedT)) * 86400))
+              << std::endl;
 
   if (totalT)
   {
@@ -2821,4 +2893,3 @@ void nag (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
