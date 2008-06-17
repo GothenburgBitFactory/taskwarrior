@@ -507,8 +507,8 @@ void handleList (const TDB& tdb, T& task, Config& conf)
             due = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
             overdue = (dt < now) ? true : false;
-            now += 7 * 86400;
-            imminent = dt < now ? true : false;
+            Date nextweek = now + 7 * 86400;
+            imminent = dt < nextweek ? true : false;
           }
 
           std::string active;
@@ -677,8 +677,8 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
             due = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
             overdue = (dt < now) ? true : false;
-            now += 7 * 86400;
-            imminent = dt < now ? true : false;
+            Date nextweek = now + 7 * 86400;
+            imminent = dt < nextweek ? true : false;
           }
 
           std::string active;
@@ -953,8 +953,8 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
         if (due.length ())
         {
           overdue = (dt < now) ? true : false;
-          now += 7 * 86400;
-          imminent = dt < now ? true : false;
+          Date nextweek = now + 7 * 86400;
+          imminent = dt < nextweek ? true : false;
 
           if (conf.get ("color", true))
           {
@@ -1173,8 +1173,8 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
             due = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
             overdue = (dt < now) ? true : false;
-            now += 7 * 86400;
-            imminent = dt < now ? true : false;
+            Date nextweek = now + 7 * 86400;
+            imminent = dt < nextweek ? true : false;
           }
 
           std::string age;
@@ -1529,8 +1529,8 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
             due = dt.toString (conf.get ("dateformat", "m/d/Y"));
 
             overdue = (dt < now) ? true : false;
-            now += 7 * 86400;
-            imminent = dt < now ? true : false;
+            Date nextweek = now + 7 * 86400;
+            imminent = dt < nextweek ? true : false;
           }
 
           std::string active;
@@ -2111,8 +2111,8 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
 
         Date now;
         overdue = dt < now ? true : false;
-        now += 7 * 86400;
-        imminent = dt < now ? true : false;
+        Date nextweek = now + 7 * 86400;
+        imminent = dt < nextweek ? true : false;
       }
 
       // All criteria match, so add refTask to the output table.
