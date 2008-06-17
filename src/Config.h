@@ -47,11 +47,9 @@ public:
   bool get (const std::string&, bool);
   int get (const std::string&, const int);
   double get (const std::string&, const double);
-  void get (const std::string&, std::vector <std::string>&);
   void set (const std::string&, const int);
   void set (const std::string&, const double);
   void set (const std::string&, const std::string&);
-  void set (const std::string&, const std::vector <std::string>&);
   void all (std::vector <std::string>&);
 };
 

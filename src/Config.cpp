@@ -116,6 +116,9 @@ void Config::createDefault (const std::string& file)
         fprintf (out, "confirmation=yes\n");
         fprintf (out, "#nag=Note: try to stick to high priority tasks.  See \"task next\".\n");
         fprintf (out, "next=2\n");
+        fprintf (out, "dateformat=m/d/Y\n");
+        fprintf (out, "showage=yes\n");
+        fprintf (out, "monthsperline=1\n");
         fprintf (out, "curses=on\n");
         fprintf (out, "color=on\n");
 
@@ -137,6 +140,9 @@ void Config::createDefault (const std::string& file)
         set ("command.logging", "off");
         set ("confirmation", "yes");
         set ("next", 1);
+        set ("dateformat", "m/d/Y");
+        set ("showage", "yes");
+        set ("monthsperline", 3);
         set ("curses", "on");
         set ("color", "on");
         set ("color.overdue", "red");
@@ -244,29 +250,6 @@ void Config::set (const std::string& key, const double value)
 void Config::set (const std::string& key, const std::string& value)
 {
   (*this)[key] = value;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// The vector form of Config::get assumes the single value is comma-separated,
-// and splits accordingly.
-void Config::get (
-  const std::string& key,
-  std::vector <std::string>& values)
-{
-  values.clear ();
-  split (values, (*this)[key], ',');
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// The vector form of Config::set joins the values together with commas, and
-// stores the single value.
-void Config::set (
-  const std::string& key,
-  const std::vector <std::string>& values)
-{
-  std::string conjoined;
-  join (conjoined, ",", values);
-  (*this)[key] = conjoined;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
