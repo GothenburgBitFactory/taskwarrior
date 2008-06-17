@@ -1878,6 +1878,14 @@ std::string renderMonths (
     table.setColumnJustification (i + 7, Table::right);
   }
 
+  // At most, we need 6 rows.
+  table.addRow ();
+  table.addRow ();
+  table.addRow ();
+  table.addRow ();
+  table.addRow ();
+  table.addRow ();
+
   // Set number of days per month, months to render, and years to render.
   std::vector<int> years;
   std::vector<int> months;
@@ -1899,10 +1907,10 @@ std::string renderMonths (
     daysInMonth.push_back (Date::daysInMonth (thisMonth++, thisYear));
   }
 
-  int row = table.addRow ();
+  int row = 0;
 
   // Loop through months to be added on this line.
-  for (int c = 0 ; c < monthsPerLine ; c++)
+  for (int c = 0; c < monthsPerLine ; c++)
   {
     // Reset row counter for subsequent months
     if (c != 0)
@@ -1917,8 +1925,8 @@ std::string renderMonths (
 
       table.addCell (row, thisCol, d);
 
-      if (conf.get ("color", true) &&
-          today.day ()   == d      &&
+      if (conf.get ("color", true)         &&
+          today.day ()   == d              &&
           today.month () == months.at (c)  &&
           today.year ()  == years.at (c))
         table.setCellFg (row, thisCol, Text::cyan);
@@ -1928,9 +1936,9 @@ std::string renderMonths (
       {
         Date due (::atoi (it->getAttribute ("due").c_str ()));
 
-        if (conf.get ("color", true) &&
-            due.day ()   == d        &&
-            due.month () == months.at (c)    &&
+        if (conf.get ("color", true)      &&
+            due.day ()   == d             &&
+            due.month () == months.at (c) &&
             due.year ()  == years.at (c))
         {
           table.setCellFg (row, thisCol, Text::black);
@@ -1940,18 +1948,7 @@ std::string renderMonths (
 
       // Check for end of week, and...
       if (dow == 6 && d < daysInMonth.at (c))
-      {
-        // ... Add a row if required, or...
-        if (c == 0)
-        {
-          row = table.addRow ();
-        }
-        // ... Reuse existing row.
-        else
-        {
-          row++;
-        }
-      }
+        row++;
     }
   }
 
