@@ -57,7 +57,7 @@ Date::Date (const int m, const int d, const int y)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Date::Date (const std::string& mdy, const std::string format /* = "m/d/Y" */)
+Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
 {
   int month = 0;
   int day   = 0;
@@ -221,65 +221,30 @@ void Date::toMDY (int& m, int& d, int& y)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Date::toString (const std::string& format /*= "m/d/Y"*/)
+const std::string Date::toString (const std::string& format /*= "m/d/Y" */) const
 {
-  std::string formatted;
+  std::cout << "# Date::toString (" << format << ")" << std::endl;
+
+  char buffer[12];
+  std::string formatted ("");
+  formatted.resize (24);
   for (unsigned int i = 0; i < format.length (); ++i)
   {
-    switch (format[i])
+    char c = format[i];
+    std::cout << "# before " << c << " formatted=" << formatted << " format=" << format << std::endl;
+    switch (c)
     {
-    case 'm':
-      {
-        char m[3];
-        sprintf (m, "%d", this->month ());
-        formatted += m;
-      }
-      break;
-
-    case 'M':
-      {
-        char m[3];
-        sprintf (m, "%02d", this->month ());
-        formatted += m;
-      }
-      break;
-
-    case 'd':
-      {
-        char d[3];
-        sprintf (d, "%d", this->day ());
-        formatted += d;
-      }
-      break;
-
-    case 'D':
-      {
-        char d[3];
-        sprintf (d, "%02d", this->day ());
-        formatted += d;
-      }
-      break;
-
-    case 'y':
-      {
-        char y[3];
-        sprintf (y, "%02d", this->year () % 100);
-        formatted += y;
-      }
-      break;
-
-    case 'Y':
-      {
-        char y[5];
-        sprintf (y, "%d", this->year ());
-        formatted += y;
-      }
-      break;
-
-    default:
-      formatted += format[i];
-      break;
+    case 'm': sprintf (buffer, "%d",   this->month ());      break;
+    case 'M': sprintf (buffer, "%02d", this->month ());      break;
+    case 'd': sprintf (buffer, "%d",   this->day ());        break;
+    case 'D': sprintf (buffer, "%02d", this->day ());        break;
+    case 'y': sprintf (buffer, "%02d", this->year () % 100); break;
+    case 'Y': sprintf (buffer, "%d",   this->year ());       break;
+    default:  sprintf (buffer, "%c",   c);                   break;
     }
+
+    formatted += buffer;
+    std::cout << "# after  " << c << " formatted=" << formatted << " format=" << format << std::endl;
   }
 
   return formatted;

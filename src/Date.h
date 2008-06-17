@@ -37,14 +37,14 @@ public:
            Date ();
            Date (time_t);
            Date (const int, const int, const int);
-           Date (const std::string&, const std::string format = "m/d/Y");
+           Date (const std::string&, const std::string& format = "m/d/Y");
            Date (const Date&);
   virtual ~Date ();
 
   void toEpoch (time_t&);
   time_t toEpoch ();
   void toMDY (int&, int&, int&);
-  std::string toString (const std::string& format = "m/d/Y");
+  const std::string toString (const std::string& format = "m/d/Y") const;
   static bool valid (const int, const int, const int);
 
   static bool leapYear (int);
