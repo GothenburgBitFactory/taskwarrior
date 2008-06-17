@@ -9,6 +9,13 @@ represents a feature release, and the z represents a patch.
 
 Configurable columns in reports
 
+1.3.0 (?)
+  + "task calendar" now displays multiple months per line, adjustable
+    by the "monthsperline" configuration variable.  Feature added by
+    Damian Glenny
+  - Bug: Segmentation fault when no "dateformat" configuration variable
+    specified
+
 ------ reality -----------------------------------
 
 1.2.0 (6/13/2008)

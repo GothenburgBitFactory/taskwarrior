@@ -678,7 +678,8 @@ Configuring Task
                           Y   four-digit year       2008
 
                         The string may also contain other characters to act as
-                        spacers, or formatting.  Other values could include:
+                        spacers, or formatting.  Other values could include
+                        (but are not limited to):
 
                           d/m/Y            7/6/2008
                           YMD              20080607
@@ -686,6 +687,9 @@ Configuring Task
 
     showage             May be "yes" or "no".  Determines whether the "Age"
                         column appears on the "list" and "next" reports.
+
+    monthsperline       Determines how many months the "task calendar" command
+                        renders across the screen.  Defaults to 1.
 
     color               May be "on" or "off".  Determines whether task uses
                         color.
