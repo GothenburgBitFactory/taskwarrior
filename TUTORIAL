@@ -379,6 +379,22 @@ with no arguments will generate a help message that lists all these commands.
 
 
 
+% task oldest
+-------------
+
+  Lists the oldest tasks.  Shows 10 tasks by default, but can be set via the
+  "oldest" configuration variable.
+
+
+
+% task newest
+-------------
+
+  Lists the newest tasks.  Shows 10 tasks by default, but can be set via the
+  "newest" configuration variable.
+
+
+
 % task history
 --------------
 
@@ -690,6 +706,12 @@ Configuring Task
 
     monthsperline       Determines how many months the "task calendar" command
                         renders across the screen.  Defaults to 1.
+
+    oldest              Determines how many tasks are shown on the "oldest"
+                        report.  Defaults to 10.
+
+    newest              Determines how many tasks are shown on the "newest"
+                        report.  Defaults to 10.
 
     color               May be "on" or "off".  Determines whether task uses
                         color.

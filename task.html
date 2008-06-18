@@ -182,6 +182,8 @@ a img { border: none; padding: 0; margin: 0; }
                   <li>Displays shorter message when a command is entered incorrectly,
                       and the full usage for "task help"
                   <li>"task export" can now filter tasks like the reports
+                  <li>"task oldest" shows the oldest tasks
+                  <li>"task newest" shows the newest tasks
                   <li>Fixed bug where task generates a segmentation fault for several
                       commands, when no "dateformat" configuration variable was present
                   <li>Fixed bug whereby if you have more than one task with a due date,
@@ -759,6 +761,18 @@ ID Project Pri Description
 ID Project Pri Description
 12 Errand  L   Remember to deposit bonus check
 ...</code></pre>
+
+                <strong>% task oldest</strong>
+                <p>
+                  Lists the oldest tasks.  Shows 10 tasks by default, but can be
+                  set via the "oldest" configuration variable.
+                </p>
+
+                <strong>% task newest</strong>
+                <p>
+                  Lists the newest tasks.  Shows 10 tasks by default, but can be
+                  set via the "newest" configuration variable.
+                </p>
 
                 <strong>% task /from/to/</strong>
                 <p>

@@ -36,6 +36,10 @@
 #include "T.h"
 #include "../auto.h"
 
+#ifndef min
+#define min(a,b) ((a) < (b) ? (a) : (b))
+#endif
+
 #ifndef max
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
@@ -69,6 +73,8 @@ void handleReportCalendar (const TDB&, T&, Config&);
 void handleReportActive (const TDB&, T&, Config&);
 void handleReportOverdue (const TDB&, T&, Config&);
 void handleReportStats (const TDB&, T&, Config&);
+void handleReportOldest (const TDB&, T&, Config&);
+void handleReportNewest (const TDB&, T&, Config&);
 void handleVersion (Config&);
 void handleExport (const TDB&, T&, Config&);
 void handleDelete (const TDB&, T&, Config&);

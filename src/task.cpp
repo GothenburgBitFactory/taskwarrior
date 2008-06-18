@@ -153,6 +153,14 @@ void shortUsage (Config& conf)
   table.addCell (row, 2, "Shows all incomplete tasks that are beyond their due date");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task oldest");
+  table.addCell (row, 2, "Shows the oldest tasks");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task newest");
+  table.addCell (row, 2, "Shows the newest tasks");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task stats");
   table.addCell (row, 2, "Shows task database statistics");
 
@@ -183,137 +191,7 @@ void shortUsage (Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 void longUsage (Config& conf)
 {
-  Table table;
-  int width = 80;
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  table.addColumn (" ");
-  table.addColumn (" ");
-  table.addColumn (" ");
-
-  table.setColumnJustification (0, Table::left);
-  table.setColumnJustification (1, Table::left);
-  table.setColumnJustification (2, Table::left);
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::flexible);
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-
-  int row = table.addRow ();
-  table.addCell (row, 0, "Usage:");
-  table.addCell (row, 1, "task");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task add [tags] [attrs] desc...");
-  table.addCell (row, 2, "Adds a new task");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task list [tags] [attrs] desc...");
-  table.addCell (row, 2, "Lists all tasks matching the specified criteria");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task long [tags] [attrs] desc...");
-  table.addCell (row, 2, "Lists all task, all data, matching the specified criteria");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task ls [tags] [attrs] desc...");
-  table.addCell (row, 2, "Minimal listing of all tasks matching the specified criteria");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task completed [tags] [attrs] desc...");
-  table.addCell (row, 2, "Chronological listing of all completed tasks matching the specified criteria");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task ID [tags] [attrs] [desc...]");
-  table.addCell (row, 2, "Modifies the existing task with provided arguments");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task ID /from/to/");
-  table.addCell (row, 2, "Perform the substitution on the desc, for fixing mistakes");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task delete ID");
-  table.addCell (row, 2, "Deletes the specified task");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task info ID");
-  table.addCell (row, 2, "Shows all data, metadata for specified task");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task start ID");
-  table.addCell (row, 2, "Marks specified task as started, starts the clock ticking");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task done ID");
-  table.addCell (row, 2, "Marks the specified task as completed");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task projects");
-  table.addCell (row, 2, "Shows a list of all project names used, and how many tasks are in each");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task tags");
-  table.addCell (row, 2, "Shows a list of all tags used");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task summary");
-  table.addCell (row, 2, "Shows a report of task status by project");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task history");
-  table.addCell (row, 2, "Shows a report of task history, by month");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task next");
-  table.addCell (row, 2, "Shows the most important tasks for each project");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task calendar");
-  table.addCell (row, 2, "Shows a monthly calendar, with due tasks marked");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task active");
-  table.addCell (row, 2, "Shows all task that are started, but not completed");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task overdue");
-  table.addCell (row, 2, "Shows all incomplete tasks that are beyond their due date");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task stats");
-  table.addCell (row, 2, "Shows task database statistics");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task usage");
-  table.addCell (row, 2, "Shows task command usage frequency");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task export");
-  table.addCell (row, 2, "Exports all tasks as a CSV file");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task color");
-  table.addCell (row, 2, "Displays all possible colors");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task version");
-  table.addCell (row, 2, "Shows the task version number");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task help");
-  table.addCell (row, 2, "Shows the long usage text");
-
-  std::cout << table.render ()
-            << std::endl;
+  shortUsage (conf);
 
   std::cout
     << "ID is the numeric identifier displayed by the 'task list' command" << "\n"
@@ -404,6 +282,8 @@ int main (int argc, char** argv)
     else if (command == "calendar")           handleReportCalendar (tdb, task, conf);
     else if (command == "active")             handleReportActive   (tdb, task, conf);
     else if (command == "overdue")            handleReportOverdue  (tdb, task, conf);
+    else if (command == "oldest")             handleReportOldest   (tdb, task, conf);
+    else if (command == "newest")             handleReportNewest   (tdb, task, conf);
     else if (command == "stats")              handleReportStats    (tdb, task, conf);
     else if (command == "usage")              handleReportUsage    (tdb, task, conf);
     else if (command == "" && task.getId ())  handleModify         (tdb, task, conf);
@@ -2211,6 +2091,280 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
   else
     std::cout << "No overdue tasks." << std::endl;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Successively apply filters based on the task object built from the command
+// line.  Tasks that match all the specified criteria are listed.
+void handleReportOldest (const TDB& tdb, T& task, Config& conf)
+{
+  // Determine window size, and set table accordingly.
+  int width = 80;
+#ifdef HAVE_LIBNCURSES
+  if (conf.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+
+  tdb.gc ();
+
+  // Get the pending tasks.
+  std::vector <T> tasks;
+  tdb.pendingT (tasks);
+
+  initializeColorRules (conf);
+
+  bool showAge = conf.get ("showage", true);
+  unsigned int quantity = conf.get ("oldest", 10);
+
+  // Create a table for output.
+  Table table;
+  table.setTableWidth (width);
+  table.addColumn ("ID");
+  table.addColumn ("Project");
+  table.addColumn ("Pri");
+  table.addColumn ("Due");
+  table.addColumn ("Active");
+  if (showAge) table.addColumn ("Age");
+  table.addColumn ("Description");
+
+  table.setColumnUnderline (0);
+  table.setColumnUnderline (1);
+  table.setColumnUnderline (2);
+  table.setColumnUnderline (3);
+  table.setColumnUnderline (4);
+  table.setColumnUnderline (5);
+  if (showAge) table.setColumnUnderline (6);
+
+  table.setColumnWidth (0, Table::minimum);
+  table.setColumnWidth (1, Table::minimum);
+  table.setColumnWidth (2, Table::minimum);
+  table.setColumnWidth (3, Table::minimum);
+  table.setColumnWidth (4, Table::minimum);
+  if (showAge) table.setColumnWidth (5, Table::minimum);
+  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
+
+  table.setColumnJustification (0, Table::right);
+  table.setColumnJustification (3, Table::right);
+  if (showAge) table.setColumnJustification (5, Table::right);
+
+  table.sortOn (3, Table::ascendingDate);
+  table.sortOn (2, Table::descendingPriority);
+  table.sortOn (1, Table::ascendingCharacter);
+
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+
+  filter (tasks, task);
+  for (unsigned int i = 0; i < min (quantity, tasks.size ()); ++i)
+  {
+    T refTask (tasks[i]);
+
+    // Now format the matching task.
+    bool imminent = false;
+    bool overdue = false;
+    Date now;
+    std::string due = refTask.getAttribute ("due");
+    if (due.length ())
+    {
+      Date dt (::atoi (due.c_str ()));
+      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+
+      overdue = (dt < now) ? true : false;
+      Date nextweek = now + 7 * 86400;
+      imminent = dt < nextweek ? true : false;
+    }
+
+    std::string active;
+    if (refTask.getAttribute ("start") != "")
+      active = "*";
+
+    std::string age;
+    std::string created = refTask.getAttribute ("entry");
+    if (created.length ())
+    {
+      Date dt (::atoi (created.c_str ()));
+      formatTimeDeltaDays (age, (time_t) (now - dt));
+    }
+
+    // All criteria match, so add refTask to the output table.
+    int row = table.addRow ();
+    table.addCell (row, 0, refTask.getId ());
+    table.addCell (row, 1, refTask.getAttribute ("project"));
+    table.addCell (row, 2, refTask.getAttribute ("priority"));
+    table.addCell (row, 3, due);
+    table.addCell (row, 4, active);
+    if (showAge) table.addCell (row, 5, age);
+    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
+
+    if (conf.get ("color", true))
+    {
+      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
+      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
+      autoColorize (refTask, fg, bg);
+      table.setRowFg (row, fg);
+      table.setRowBg (row, bg);
+
+      if (fg == Text::nocolor)
+      {
+        if (overdue)
+          table.setCellFg (row, 3, Text::red);
+        else if (imminent)
+          table.setCellFg (row, 3, Text::yellow);
+      }
+    }
+  }
+
+  if (table.rowCount ())
+    std::cout << optionalBlankLine (conf)
+              << table.render ()
+              << optionalBlankLine (conf)
+              << table.rowCount ()
+              << (table.rowCount () == 1 ? " task" : " tasks")
+              << std::endl;
+  else
+    std::cout << "No matches."
+              << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Successively apply filters based on the task object built from the command
+// line.  Tasks that match all the specified criteria are listed.
+void handleReportNewest (const TDB& tdb, T& task, Config& conf)
+{
+  // Determine window size, and set table accordingly.
+  int width = 80;
+#ifdef HAVE_LIBNCURSES
+  if (conf.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+
+  tdb.gc ();
+
+  // Get the pending tasks.
+  std::vector <T> tasks;
+  tdb.pendingT (tasks);
+
+  initializeColorRules (conf);
+
+  bool showAge = conf.get ("showage", true);
+  int quantity = conf.get ("newest", 10);
+
+  // Create a table for output.
+  Table table;
+  table.setTableWidth (width);
+  table.addColumn ("ID");
+  table.addColumn ("Project");
+  table.addColumn ("Pri");
+  table.addColumn ("Due");
+  table.addColumn ("Active");
+  if (showAge) table.addColumn ("Age");
+  table.addColumn ("Description");
+
+  table.setColumnUnderline (0);
+  table.setColumnUnderline (1);
+  table.setColumnUnderline (2);
+  table.setColumnUnderline (3);
+  table.setColumnUnderline (4);
+  table.setColumnUnderline (5);
+  if (showAge) table.setColumnUnderline (6);
+
+  table.setColumnWidth (0, Table::minimum);
+  table.setColumnWidth (1, Table::minimum);
+  table.setColumnWidth (2, Table::minimum);
+  table.setColumnWidth (3, Table::minimum);
+  table.setColumnWidth (4, Table::minimum);
+  if (showAge) table.setColumnWidth (5, Table::minimum);
+  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
+
+  table.setColumnJustification (0, Table::right);
+  table.setColumnJustification (3, Table::right);
+  if (showAge) table.setColumnJustification (5, Table::right);
+
+  table.sortOn (3, Table::ascendingDate);
+  table.sortOn (2, Table::descendingPriority);
+  table.sortOn (1, Table::ascendingCharacter);
+
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+
+  filter (tasks, task);
+  int total = tasks.size ();
+  for (int i = total - 1; i >= max (0, total - quantity); --i)
+  {
+    T refTask (tasks[i]);
+
+    // Now format the matching task.
+    bool imminent = false;
+    bool overdue = false;
+    Date now;
+    std::string due = refTask.getAttribute ("due");
+    if (due.length ())
+    {
+      Date dt (::atoi (due.c_str ()));
+      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+
+      overdue = (dt < now) ? true : false;
+      Date nextweek = now + 7 * 86400;
+      imminent = dt < nextweek ? true : false;
+    }
+
+    std::string active;
+    if (refTask.getAttribute ("start") != "")
+      active = "*";
+
+    std::string age;
+    std::string created = refTask.getAttribute ("entry");
+    if (created.length ())
+    {
+      Date dt (::atoi (created.c_str ()));
+      formatTimeDeltaDays (age, (time_t) (now - dt));
+    }
+
+    // All criteria match, so add refTask to the output table.
+    int row = table.addRow ();
+    table.addCell (row, 0, refTask.getId ());
+    table.addCell (row, 1, refTask.getAttribute ("project"));
+    table.addCell (row, 2, refTask.getAttribute ("priority"));
+    table.addCell (row, 3, due);
+    table.addCell (row, 4, active);
+    if (showAge) table.addCell (row, 5, age);
+    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
+
+    if (conf.get ("color", true))
+    {
+      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
+      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
+      autoColorize (refTask, fg, bg);
+      table.setRowFg (row, fg);
+      table.setRowBg (row, bg);
+
+      if (fg == Text::nocolor)
+      {
+        if (overdue)
+          table.setCellFg (row, 3, Text::red);
+        else if (imminent)
+          table.setCellFg (row, 3, Text::yellow);
+      }
+    }
+  }
+
+  if (table.rowCount ())
+    std::cout << optionalBlankLine (conf)
+              << table.render ()
+              << optionalBlankLine (conf)
+              << table.rowCount ()
+              << (table.rowCount () == 1 ? " task" : " tasks")
+              << std::endl;
+  else
+    std::cout << "No matches."
+              << std::endl;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 void handleReportStats (const TDB& tdb, T& task, Config& conf)
