@@ -223,15 +223,15 @@ void Date::toMDY (int& m, int& d, int& y)
 ////////////////////////////////////////////////////////////////////////////////
 const std::string Date::toString (const std::string& format /*= "m/d/Y" */) const
 {
-  std::cout << "# Date::toString (" << format << ")" << std::endl;
+  // Making this local copy seems to fix a bug.  Remove the local copy and you'll
+  // see segmentation faults and all kinds of gibberish.
+  std::string localFormat = format;
 
   char buffer[12];
-  std::string formatted ("");
-  formatted.resize (24);
-  for (unsigned int i = 0; i < format.length (); ++i)
+  std::string formatted;
+  for (unsigned int i = 0; i < localFormat.length (); ++i)
   {
-    char c = format[i];
-    std::cout << "# before " << c << " formatted=" << formatted << " format=" << format << std::endl;
+    char c = localFormat[i];
     switch (c)
     {
     case 'm': sprintf (buffer, "%d",   this->month ());      break;
@@ -244,7 +244,6 @@ const std::string Date::toString (const std::string& format /*= "m/d/Y" */) cons
     }
 
     formatted += buffer;
-    std::cout << "# after  " << c << " formatted=" << formatted << " format=" << format << std::endl;
   }
 
   return formatted;
