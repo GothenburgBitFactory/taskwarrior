@@ -17,6 +17,8 @@ command:
   | OVERDUE
   | STATS
   | USAGE
+  | OLDEST
+  | NEWEST
   | EXPORT <file>
   | COLOR
   | DELETE <id>
