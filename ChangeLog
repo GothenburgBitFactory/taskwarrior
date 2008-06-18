@@ -10,11 +10,12 @@ represents a feature release, and the z represents a patch.
 Configurable columns in reports
 
 1.3.0 (?)
-  + "task calendar" now displays multiple months per line, adjustable
-    by the "monthsperline" configuration variable.  Feature added by
-    Damian Glenny
+  + "task calendar" now displays multiple months per line, adjustable by the
+    "monthsperline" configuration variable.  Feature added by Damian Glenny
   - Bug: Segmentation fault when no "dateformat" configuration variable
     specified
+  + Bug: Fixed bug whereby if you have more than one task with a due date, 7
+    days gets added to the entry date of task 2..n
 
 ------ reality -----------------------------------
 
