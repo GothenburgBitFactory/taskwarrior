@@ -286,6 +286,66 @@ int main (int argc, char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+static void filter (std::vector<T>& all, T& task)
+{
+  std::vector <T> filtered;
+
+  // Split any description specified into words.
+  std::vector <std::string> descWords;
+  split (descWords, lowerCase (task.getDescription ()), ' ');
+
+  // Get all the tags to match against.
+  std::vector <std::string> tagList;
+  task.getTags (tagList);
+
+  // Get all the attributes to match against.
+  std::map <std::string, std::string> attrList;
+  task.getAttributes (attrList);
+
+  // Iterate over each task, and apply selection criteria.
+  for (unsigned int i = 0; i < all.size (); ++i)
+  {
+    T refTask (all[i]);
+
+    // Apply description filter.
+    std::string desc = lowerCase (refTask.getDescription ());
+    unsigned int matches = 0;
+    for (unsigned int w = 0; w < descWords.size (); ++w)
+      if (desc.find (descWords[w]) != std::string::npos)
+        ++matches;
+
+    if (matches == descWords.size ())
+    {
+      // Apply attribute filter.
+      matches = 0;
+      foreach (a, attrList)
+        if (a->first == "project")
+        {
+          if (a->second.length () <= refTask.getAttribute (a->first).length ())
+            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
+              ++matches;
+        }
+        else if (a->second == refTask.getAttribute (a->first))
+          ++matches;
+
+      if (matches == attrList.size ())
+      {
+        // Apply tag filter.
+        matches = 0;
+        for (unsigned int t = 0; t < tagList.size (); ++t)
+          if (refTask.hasTag (tagList[t]))
+            ++matches;
+
+        if (matches == tagList.size ())
+          filtered.push_back (refTask);
+      }
+    }
+  }
+
+  all = filtered;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void handleAdd (const TDB& tdb, T& task, Config& conf)
 {
   char entryTime[16];
@@ -446,110 +506,62 @@ void handleList (const TDB& tdb, T& task, Config& conf)
 
   table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
-  // Split any description specified into words.
-  std::vector <std::string> descWords;
-  split (descWords, lowerCase (task.getDescription ()), ' ');
-
-  // Get all the tags to match against.
-  std::vector <std::string> tagList;
-  task.getTags (tagList);
-
-  // Get all the attributes to match against.
-  std::map <std::string, std::string> attrList;
-  task.getAttributes (attrList);
-
-  // Iterate over each task, and apply selection criteria.
+  filter (tasks, task);
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
     T refTask (tasks[i]);
 
-    // Apply description filter.
-    std::string desc = lowerCase (refTask.getDescription ());
-    unsigned int matches = 0;
-    for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (desc.find (descWords[w]) != std::string::npos)
-        ++matches;
-
-    if (matches == descWords.size ())
+    // Now format the matching task.
+    bool imminent = false;
+    bool overdue = false;
+    Date now;
+    std::string due = refTask.getAttribute ("due");
+    if (due.length ())
     {
-      // Apply attribute filter.
-      matches = 0;
-      foreach (a, attrList)
+      Date dt (::atoi (due.c_str ()));
+      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+
+      overdue = (dt < now) ? true : false;
+      Date nextweek = now + 7 * 86400;
+      imminent = dt < nextweek ? true : false;
+    }
+
+    std::string active;
+    if (refTask.getAttribute ("start") != "")
+      active = "*";
+
+    std::string age;
+    std::string created = refTask.getAttribute ("entry");
+    if (created.length ())
+    {
+      Date dt (::atoi (created.c_str ()));
+      formatTimeDeltaDays (age, (time_t) (now - dt));
+    }
+
+    // All criteria match, so add refTask to the output table.
+    int row = table.addRow ();
+    table.addCell (row, 0, refTask.getId ());
+    table.addCell (row, 1, refTask.getAttribute ("project"));
+    table.addCell (row, 2, refTask.getAttribute ("priority"));
+    table.addCell (row, 3, due);
+    table.addCell (row, 4, active);
+    if (showAge) table.addCell (row, 5, age);
+    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
+
+    if (conf.get ("color", true))
+    {
+      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
+      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
+      autoColorize (refTask, fg, bg);
+      table.setRowFg (row, fg);
+      table.setRowBg (row, bg);
+
+      if (fg == Text::nocolor)
       {
-        if (a->first == "project")
-        {
-          if (a->second.length () <= refTask.getAttribute (a->first).length ())
-            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
-              ++matches;
-        }
-        else if (a->second == refTask.getAttribute (a->first))
-          ++matches;
-      }
-
-      if (matches == attrList.size ())
-      {
-        // Apply tag filter.
-        matches = 0;
-        for (unsigned int t = 0; t < tagList.size (); ++t)
-          if (refTask.hasTag (tagList[t]))
-            ++matches;
-
-        if (matches == tagList.size ())
-        {
-          // Now format the matching task.
-          bool imminent = false;
-          bool overdue = false;
-          Date now;
-          std::string due = refTask.getAttribute ("due");
-          if (due.length ())
-          {
-            Date dt (::atoi (due.c_str ()));
-            due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-            overdue = (dt < now) ? true : false;
-            Date nextweek = now + 7 * 86400;
-            imminent = dt < nextweek ? true : false;
-          }
-
-          std::string active;
-          if (refTask.getAttribute ("start") != "")
-            active = "*";
-
-          std::string age;
-          std::string created = refTask.getAttribute ("entry");
-          if (created.length ())
-          {
-            Date dt (::atoi (created.c_str ()));
-            formatTimeDeltaDays (age, (time_t) (now - dt));
-          }
-
-          // All criteria match, so add refTask to the output table.
-          int row = table.addRow ();
-          table.addCell (row, 0, refTask.getId ());
-          table.addCell (row, 1, refTask.getAttribute ("project"));
-          table.addCell (row, 2, refTask.getAttribute ("priority"));
-          table.addCell (row, 3, due);
-          table.addCell (row, 4, active);
-          if (showAge) table.addCell (row, 5, age);
-          table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
-
-          if (conf.get ("color", true))
-          {
-            Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-            Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-            autoColorize (refTask, fg, bg);
-            table.setRowFg (row, fg);
-            table.setRowBg (row, bg);
-
-            if (fg == Text::nocolor)
-            {
-              if (overdue)
-                table.setCellFg (row, 3, Text::red);
-              else if (imminent)
-                table.setCellFg (row, 3, Text::yellow);
-            }
-          }
-        }
+        if (overdue)
+          table.setCellFg (row, 3, Text::red);
+        else if (imminent)
+          table.setCellFg (row, 3, Text::yellow);
       }
     }
   }
@@ -616,107 +628,60 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
   table.sortOn (2, Table::descendingPriority);
   table.sortOn (1, Table::ascendingCharacter);
 
-  // Split any description specified into words.
-  std::vector <std::string> descWords;
-  split (descWords, lowerCase (task.getDescription ()), ' ');
-
-  // Get all the tags to match against.
-  std::vector <std::string> tagList;
-  task.getTags (tagList);
-
-  // Get all the attributes to match against.
-  std::map <std::string, std::string> attrList;
-  task.getAttributes (attrList);
-
   // Iterate over each task, and apply selection criteria.
+  filter (tasks, task);
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
     T refTask (tasks[i]);
 
-    // Apply description filter.
-    std::string desc = lowerCase (refTask.getDescription ());
-    unsigned int matches = 0;
-    for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (desc.find (descWords[w]) != std::string::npos)
-        ++matches;
-
-    if (matches == descWords.size ())
+    // Now format the matching task.
+    bool imminent = false;
+    bool overdue = false;
+    Date now;
+    std::string due = refTask.getAttribute ("due");
+    if (due.length ())
     {
-      // Apply attribute filter.
-      matches = 0;
-      foreach (a, attrList)
+      Date dt (::atoi (due.c_str ()));
+      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+
+      overdue = (dt < now) ? true : false;
+      Date nextweek = now + 7 * 86400;
+      imminent = dt < nextweek ? true : false;
+    }
+
+    std::string active;
+    if (refTask.getAttribute ("start") != "")
+      active = "*";
+
+    std::string age;
+    std::string created = refTask.getAttribute ("entry");
+    if (created.length ())
+    {
+      Date dt (::atoi (created.c_str ()));
+      formatTimeDeltaDays (age, (time_t) (now - dt));
+    }
+
+    // All criteria match, so add refTask to the output table.
+    int row = table.addRow ();
+    table.addCell (row, 0, refTask.getId ());
+    table.addCell (row, 1, refTask.getAttribute ("project"));
+    table.addCell (row, 2, refTask.getAttribute ("priority"));
+    table.addCell (row, 3, refTask.getDescription ());
+
+    if (conf.get ("color", true))
+    {
+      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
+      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
+      autoColorize (refTask, fg, bg);
+      table.setRowFg (row, fg);
+      table.setRowBg (row, bg);
+
+      if (fg == Text::nocolor)
       {
-        if (a->first == "project")
-        {
-          if (a->second.length () <= refTask.getAttribute (a->first).length ())
-            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
-              ++matches;
-        }
-        else if (a->second == refTask.getAttribute (a->first))
-          ++matches;
-      }
-
-      if (matches == attrList.size ())
-      {
-        // Apply tag filter.
-        matches = 0;
-        for (unsigned int t = 0; t < tagList.size (); ++t)
-          if (refTask.hasTag (tagList[t]))
-            ++matches;
-
-        if (matches == tagList.size ())
-        {
-          // Now format the matching task.
-          bool imminent = false;
-          bool overdue = false;
-          Date now;
-          std::string due = refTask.getAttribute ("due");
-          if (due.length ())
-          {
-            Date dt (::atoi (due.c_str ()));
-            due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-            overdue = (dt < now) ? true : false;
-            Date nextweek = now + 7 * 86400;
-            imminent = dt < nextweek ? true : false;
-          }
-
-          std::string active;
-          if (refTask.getAttribute ("start") != "")
-            active = "*";
-
-          std::string age;
-          std::string created = refTask.getAttribute ("entry");
-          if (created.length ())
-          {
-            Date dt (::atoi (created.c_str ()));
-            formatTimeDeltaDays (age, (time_t) (now - dt));
-          }
-
-          // All criteria match, so add refTask to the output table.
-          int row = table.addRow ();
-          table.addCell (row, 0, refTask.getId ());
-          table.addCell (row, 1, refTask.getAttribute ("project"));
-          table.addCell (row, 2, refTask.getAttribute ("priority"));
-          table.addCell (row, 3, refTask.getDescription ());
-
-          if (conf.get ("color", true))
-          {
-            Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-            Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-            autoColorize (refTask, fg, bg);
-            table.setRowFg (row, fg);
-            table.setRowBg (row, bg);
-
-            if (fg == Text::nocolor)
-            {
-              if (overdue)
-                table.setCellFg (row, 3, Text::red);
-              else if (imminent)
-                table.setCellFg (row, 3, Text::yellow);
-            }
-          }
-        }
+        if (overdue)
+          table.setCellFg (row, 3, Text::red);
+        else if (imminent)
+          table.setCellFg (row, 3, Text::yellow);
       }
     }
   }
@@ -779,76 +744,29 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
 
   table.sortOn (0, Table::ascendingDate);
 
-  // Split any description specified into words.
-  std::vector <std::string> descWords;
-  split (descWords, lowerCase (task.getDescription ()), ' ');
-
-  // Get all the tags to match against.
-  std::vector <std::string> tagList;
-  task.getTags (tagList);
-
-  // Get all the attributes to match against.
-  std::map <std::string, std::string> attrList;
-  task.getAttributes (attrList);
-
   // Iterate over each task, and apply selection criteria.
+  filter (tasks, task);
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
     T refTask (tasks[i]);
 
-    // Apply description filter.
-    std::string desc = lowerCase (refTask.getDescription ());
-    unsigned int matches = 0;
-    for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (desc.find (descWords[w]) != std::string::npos)
-        ++matches;
+    // Now format the matching task.
+    Date end (::atoi (refTask.getAttribute ("end").c_str ()));
 
-    if (matches == descWords.size ())
+    // All criteria match, so add refTask to the output table.
+    int row = table.addRow ();
+
+    table.addCell (row, 0, end.toString (conf.get ("dateformat", "m/d/Y")));
+    table.addCell (row, 1, refTask.getAttribute ("project"));
+    table.addCell (row, 2, refTask.getDescription ());
+
+    if (conf.get ("color", true))
     {
-      // Apply attribute filter.
-      matches = 0;
-      foreach (a, attrList)
-      {
-        if (a->first == "project")
-        {
-          if (a->second.length () <= refTask.getAttribute (a->first).length ())
-            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
-              ++matches;
-        }
-        else if (a->second == refTask.getAttribute (a->first))
-          ++matches;
-      }
-
-      if (matches == attrList.size ())
-      {
-        // Apply tag filter.
-        matches = 0;
-        for (unsigned int t = 0; t < tagList.size (); ++t)
-          if (refTask.hasTag (tagList[t]))
-            ++matches;
-
-        if (matches == tagList.size ())
-        {
-          // Now format the matching task.
-          Date end (::atoi (refTask.getAttribute ("end").c_str ()));
-
-          // All criteria match, so add refTask to the output table.
-          int row = table.addRow ();
-
-          table.addCell (row, 0, end.toString (conf.get ("dateformat", "m/d/Y")));
-          table.addCell (row, 1, refTask.getAttribute ("project"));
-          table.addCell (row, 2, refTask.getDescription ());
-
-          if (conf.get ("color", true))
-          {
-            Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-            Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-            autoColorize (refTask, fg, bg);
-            table.setRowFg (row, fg);
-            table.setRowBg (row, bg);
-          }
-        }
-      }
+      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
+      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
+      autoColorize (refTask, fg, bg);
+      table.setRowFg (row, fg);
+      table.setRowBg (row, bg);
     }
   }
 
@@ -1097,129 +1015,82 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   table.sortOn (2, Table::descendingPriority);
   table.sortOn (1, Table::ascendingCharacter);
 
-  // Split any description specified into words.
-  std::vector <std::string> descWords;
-  split (descWords, lowerCase (task.getDescription ()), ' ');
-
-  // Get all the tags to match against.
-  std::vector <std::string> tagList;
-  task.getTags (tagList);
-
-  // Get all the attributes to match against.
-  std::map <std::string, std::string> attrList;
-  task.getAttributes (attrList);
-
   // Iterate over each task, and apply selection criteria.
+  filter (tasks, task);
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
     T refTask (tasks[i]);
 
-    // Apply description filter.
-    std::string desc = lowerCase (refTask.getDescription ());
-    unsigned int matches = 0;
-    for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (desc.find (descWords[w]) != std::string::npos)
-        ++matches;
+    Date now;
 
-    if (matches == descWords.size ())
+    std::string started = refTask.getAttribute ("start");
+    if (started.length ())
     {
-      // Apply attribute filter.
-      matches = 0;
-      foreach (a, attrList)
+      Date dt (::atoi (started.c_str ()));
+      started = dt.toString (conf.get ("dateformat", "m/d/Y"));
+    }
+
+    std::string entered = refTask.getAttribute ("entry");
+    if (entered.length ())
+    {
+      Date dt (::atoi (entered.c_str ()));
+      entered = dt.toString (conf.get ("dateformat", "m/d/Y"));
+    }
+
+    // Now format the matching task.
+    bool imminent = false;
+    bool overdue = false;
+    std::string due = refTask.getAttribute ("due");
+    if (due.length ())
+    {
+      Date dt (::atoi (due.c_str ()));
+      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+
+      overdue = (dt < now) ? true : false;
+      Date nextweek = now + 7 * 86400;
+      imminent = dt < nextweek ? true : false;
+    }
+
+    std::string age;
+    std::string created = refTask.getAttribute ("entry");
+    if (created.length ())
+    {
+      Date dt (::atoi (created.c_str ()));
+      formatTimeDeltaDays (age, (time_t) (now - dt));
+    }
+
+    // Make a list of tags.
+    std::string tags;
+    std::vector <std::string> all;
+    refTask.getTags (all);
+    join (tags, " ", all);
+
+    // All criteria match, so add refTask to the output table.
+    int row = table.addRow ();
+    table.addCell (row, 0, refTask.getId ());
+    table.addCell (row, 1, refTask.getAttribute ("project"));
+    table.addCell (row, 2, refTask.getAttribute ("priority"));
+    table.addCell (row, 3, entered);
+    table.addCell (row, 4, started);
+    table.addCell (row, 5, due);
+    table.addCell (row, 6, age);
+    table.addCell (row, 7, tags);
+    table.addCell (row, 8, refTask.getDescription ());
+
+    if (conf.get ("color", true))
+    {
+      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
+      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
+      autoColorize (refTask, fg, bg);
+      table.setRowFg (row, fg);
+      table.setRowBg (row, bg);
+
+      if (fg == Text::nocolor)
       {
-        if (a->first == "project")
-        {
-          if (a->second.length () <= refTask.getAttribute (a->first).length ())
-            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
-              ++matches;
-        }
-        else if (a->second == refTask.getAttribute (a->first))
-          ++matches;
-      }
-
-      if (matches == attrList.size ())
-      {
-        // Apply tag filter.
-        matches = 0;
-        for (unsigned int t = 0; t < tagList.size (); ++t)
-          if (refTask.hasTag (tagList[t]))
-            ++matches;
-
-        if (matches == tagList.size ())
-        {
-          Date now;
-
-          std::string started = refTask.getAttribute ("start");
-          if (started.length ())
-          {
-            Date dt (::atoi (started.c_str ()));
-            started = dt.toString (conf.get ("dateformat", "m/d/Y"));
-          }
-
-          std::string entered = refTask.getAttribute ("entry");
-          if (entered.length ())
-          {
-            Date dt (::atoi (entered.c_str ()));
-            entered = dt.toString (conf.get ("dateformat", "m/d/Y"));
-          }
-
-          // Now format the matching task.
-          bool imminent = false;
-          bool overdue = false;
-          std::string due = refTask.getAttribute ("due");
-          if (due.length ())
-          {
-            Date dt (::atoi (due.c_str ()));
-            due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-            overdue = (dt < now) ? true : false;
-            Date nextweek = now + 7 * 86400;
-            imminent = dt < nextweek ? true : false;
-          }
-
-          std::string age;
-          std::string created = refTask.getAttribute ("entry");
-          if (created.length ())
-          {
-            Date dt (::atoi (created.c_str ()));
-            formatTimeDeltaDays (age, (time_t) (now - dt));
-          }
-
-          // Make a list of tags.
-          std::string tags;
-          std::vector <std::string> all;
-          refTask.getTags (all);
-          join (tags, " ", all);
-
-          // All criteria match, so add refTask to the output table.
-          int row = table.addRow ();
-          table.addCell (row, 0, refTask.getId ());
-          table.addCell (row, 1, refTask.getAttribute ("project"));
-          table.addCell (row, 2, refTask.getAttribute ("priority"));
-          table.addCell (row, 3, entered);
-          table.addCell (row, 4, started);
-          table.addCell (row, 5, due);
-          table.addCell (row, 6, age);
-          table.addCell (row, 7, tags);
-          table.addCell (row, 8, refTask.getDescription ());
-
-          if (conf.get ("color", true))
-          {
-            Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-            Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-            autoColorize (refTask, fg, bg);
-            table.setRowFg (row, fg);
-            table.setRowBg (row, bg);
-
-            if (fg == Text::nocolor)
-            {
-              if (overdue)
-                table.setCellFg (row, 3, Text::red);
-              else if (imminent)
-                table.setCellFg (row, 3, Text::yellow);
-            }
-          }
-        }
+        if (overdue)
+          table.setCellFg (row, 3, Text::red);
+        else if (imminent)
+          table.setCellFg (row, 3, Text::yellow);
       }
     }
   }
@@ -1468,110 +1339,62 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   table.sortOn (2, Table::descendingPriority);
   table.sortOn (1, Table::ascendingCharacter);
 
-  // Split any description specified into words.
-  std::vector <std::string> descWords;
-  split (descWords, lowerCase (task.getDescription ()), ' ');
-
-  // Get all the tags to match against.
-  std::vector <std::string> tagList;
-  task.getTags (tagList);
-
-  // Get all the attributes to match against.
-  std::map <std::string, std::string> attrList;
-  task.getAttributes (attrList);
-
   // Iterate over each task, and apply selection criteria.
   foreach (i, matching)
   {
     T refTask (pending[*i]);
 
-    // Apply description filter.
-    std::string desc = lowerCase (refTask.getDescription ());
-    unsigned int matches = 0;
-    for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (desc.find (descWords[w]) != std::string::npos)
-        ++matches;
-
-    if (matches == descWords.size ())
+    // Now format the matching task.
+    bool imminent = false;
+    bool overdue = false;
+    Date now;
+    std::string due = refTask.getAttribute ("due");
+    if (due.length ())
     {
-      // Apply attribute filter.
-      matches = 0;
-      foreach (a, attrList)
+      Date dt (::atoi (due.c_str ()));
+      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+
+      overdue = (dt < now) ? true : false;
+      Date nextweek = now + 7 * 86400;
+      imminent = dt < nextweek ? true : false;
+    }
+
+    std::string active;
+    if (refTask.getAttribute ("start") != "")
+      active = "*";
+
+    std::string age;
+    std::string created = refTask.getAttribute ("entry");
+    if (created.length ())
+    {
+      Date dt (::atoi (created.c_str ()));
+      formatTimeDeltaDays (age, (time_t) (now - dt));
+    }
+
+    // All criteria match, so add refTask to the output table.
+    int row = table.addRow ();
+    table.addCell (row, 0, refTask.getId ());
+    table.addCell (row, 1, refTask.getAttribute ("project"));
+    table.addCell (row, 2, refTask.getAttribute ("priority"));
+    table.addCell (row, 3, due);
+    table.addCell (row, 4, active);
+    if (showAge) table.addCell (row, 5, age);
+    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
+
+    if (conf.get ("color", true))
+    {
+      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
+      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
+      autoColorize (refTask, fg, bg);
+      table.setRowFg (row, fg);
+      table.setRowBg (row, bg);
+
+      if (fg == Text::nocolor)
       {
-        if (a->first == "project")
-        {
-          if (a->second.length () <= refTask.getAttribute (a->first).length ())
-            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
-              ++matches;
-        }
-        else if (a->second == refTask.getAttribute (a->first))
-          ++matches;
-      }
-
-      if (matches == attrList.size ())
-      {
-        // Apply tag filter.
-        matches = 0;
-        for (unsigned int t = 0; t < tagList.size (); ++t)
-          if (refTask.hasTag (tagList[t]))
-            ++matches;
-
-        if (matches == tagList.size ())
-        {
-          // Now format the matching task.
-          bool imminent = false;
-          bool overdue = false;
-          Date now;
-          std::string due = refTask.getAttribute ("due");
-          if (due.length ())
-          {
-            Date dt (::atoi (due.c_str ()));
-            due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-            overdue = (dt < now) ? true : false;
-            Date nextweek = now + 7 * 86400;
-            imminent = dt < nextweek ? true : false;
-          }
-
-          std::string active;
-          if (refTask.getAttribute ("start") != "")
-            active = "*";
-
-          std::string age;
-          std::string created = refTask.getAttribute ("entry");
-          if (created.length ())
-          {
-            Date dt (::atoi (created.c_str ()));
-            formatTimeDeltaDays (age, (time_t) (now - dt));
-          }
-
-          // All criteria match, so add refTask to the output table.
-          int row = table.addRow ();
-          table.addCell (row, 0, refTask.getId ());
-          table.addCell (row, 1, refTask.getAttribute ("project"));
-          table.addCell (row, 2, refTask.getAttribute ("priority"));
-          table.addCell (row, 3, due);
-          table.addCell (row, 4, active);
-          if (showAge) table.addCell (row, 5, age);
-          table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
-
-          if (conf.get ("color", true))
-          {
-            Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-            Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-            autoColorize (refTask, fg, bg);
-            table.setRowFg (row, fg);
-            table.setRowBg (row, bg);
-
-            if (fg == Text::nocolor)
-            {
-              if (overdue)
-                table.setCellFg (row, 3, Text::red);
-              else if (imminent)
-                table.setCellFg (row, 3, Text::yellow);
-            }
-          }
-        }
+        if (overdue)
+          table.setCellFg (row, 3, Text::red);
+        else if (imminent)
+          table.setCellFg (row, 3, Text::yellow);
       }
     }
   }
@@ -2087,15 +1910,8 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
   table.sortOn (2, Table::descendingPriority);
   table.sortOn (1, Table::ascendingCharacter);
 
-  // Get all the tags to match against.
-  std::vector <std::string> tagList;
-  task.getTags (tagList);
-
-  // Get all the attributes to match against.
-  std::map <std::string, std::string> attrList;
-  task.getAttributes (attrList);
-
   // Iterate over each task, and apply selection criteria.
+  filter (tasks, task);
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
     T refTask (tasks[i]);
@@ -2202,17 +2018,10 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
   table.sortOn (2, Table::descendingPriority);
   table.sortOn (1, Table::ascendingCharacter);
 
-  // Get all the tags to match against.
-  std::vector <std::string> tagList;
-  task.getTags (tagList);
-
-  // Get all the attributes to match against.
-  std::map <std::string, std::string> attrList;
-  task.getAttributes (attrList);
-
   Date now;
 
   // Iterate over each task, and apply selection criteria.
+  filter (tasks, task);
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
     T refTask (tasks[i]);
@@ -2479,7 +2288,11 @@ void handleDone (const TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 void handleExport (const TDB& tdb, T& task, Config& conf)
 {
+  // Use the description as a file name, then clobber the description so the
+  // file name isn't used for filtering.
   std::string file = trim (task.getDescription ());
+  task.setDescription ("");
+
   if (file.length () > 0)
   {
     std::ofstream out (file.c_str ());
@@ -2501,6 +2314,7 @@ void handleExport (const TDB& tdb, T& task, Config& conf)
 
       std::vector <T> all;
       tdb.allT (all);
+      filter (all, task);
       foreach (t, all)
       {
         out << t->composeCSV ().c_str ();
