@@ -45,7 +45,7 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-void usage (Config& conf)
+void shortUsage (Config& conf)
 {
   Table table;
   int width = 80;
@@ -172,6 +172,146 @@ void usage (Config& conf)
   table.addCell (row, 1, "task version");
   table.addCell (row, 2, "Shows the task version number");
 
+  row = table.addRow ();
+  table.addCell (row, 1, "task help");
+  table.addCell (row, 2, "Shows the long usage text");
+
+  std::cout << table.render ()
+            << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void longUsage (Config& conf)
+{
+  Table table;
+  int width = 80;
+#ifdef HAVE_LIBNCURSES
+  if (conf.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+
+  table.addColumn (" ");
+  table.addColumn (" ");
+  table.addColumn (" ");
+
+  table.setColumnJustification (0, Table::left);
+  table.setColumnJustification (1, Table::left);
+  table.setColumnJustification (2, Table::left);
+
+  table.setColumnWidth (0, Table::minimum);
+  table.setColumnWidth (1, Table::minimum);
+  table.setColumnWidth (2, Table::flexible);
+  table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+
+  int row = table.addRow ();
+  table.addCell (row, 0, "Usage:");
+  table.addCell (row, 1, "task");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task add [tags] [attrs] desc...");
+  table.addCell (row, 2, "Adds a new task");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task list [tags] [attrs] desc...");
+  table.addCell (row, 2, "Lists all tasks matching the specified criteria");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task long [tags] [attrs] desc...");
+  table.addCell (row, 2, "Lists all task, all data, matching the specified criteria");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task ls [tags] [attrs] desc...");
+  table.addCell (row, 2, "Minimal listing of all tasks matching the specified criteria");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task completed [tags] [attrs] desc...");
+  table.addCell (row, 2, "Chronological listing of all completed tasks matching the specified criteria");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task ID [tags] [attrs] [desc...]");
+  table.addCell (row, 2, "Modifies the existing task with provided arguments");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task ID /from/to/");
+  table.addCell (row, 2, "Perform the substitution on the desc, for fixing mistakes");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task delete ID");
+  table.addCell (row, 2, "Deletes the specified task");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task info ID");
+  table.addCell (row, 2, "Shows all data, metadata for specified task");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task start ID");
+  table.addCell (row, 2, "Marks specified task as started, starts the clock ticking");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task done ID");
+  table.addCell (row, 2, "Marks the specified task as completed");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task projects");
+  table.addCell (row, 2, "Shows a list of all project names used, and how many tasks are in each");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task tags");
+  table.addCell (row, 2, "Shows a list of all tags used");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task summary");
+  table.addCell (row, 2, "Shows a report of task status by project");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task history");
+  table.addCell (row, 2, "Shows a report of task history, by month");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task next");
+  table.addCell (row, 2, "Shows the most important tasks for each project");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task calendar");
+  table.addCell (row, 2, "Shows a monthly calendar, with due tasks marked");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task active");
+  table.addCell (row, 2, "Shows all task that are started, but not completed");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task overdue");
+  table.addCell (row, 2, "Shows all incomplete tasks that are beyond their due date");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task stats");
+  table.addCell (row, 2, "Shows task database statistics");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task usage");
+  table.addCell (row, 2, "Shows task command usage frequency");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task export");
+  table.addCell (row, 2, "Exports all tasks as a CSV file");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task color");
+  table.addCell (row, 2, "Displays all possible colors");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task version");
+  table.addCell (row, 2, "Shows the task version number");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task help");
+  table.addCell (row, 2, "Shows the long usage text");
+
   std::cout << table.render ()
             << std::endl;
 
@@ -267,7 +407,8 @@ int main (int argc, char** argv)
     else if (command == "stats")              handleReportStats    (tdb, task, conf);
     else if (command == "usage")              handleReportUsage    (tdb, task, conf);
     else if (command == "" && task.getId ())  handleModify         (tdb, task, conf);
-    else                                      usage (conf);
+    else if (command == "help")               longUsage (conf);
+    else                                      shortUsage (conf);
   }
 
   catch (std::string& error)

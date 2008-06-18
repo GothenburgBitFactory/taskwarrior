@@ -120,6 +120,7 @@ static const char* commands[] =
   "delete",
   "done",
   "export",
+  "help",
   "history",
   "info",
   "list",

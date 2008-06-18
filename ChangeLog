@@ -16,6 +16,8 @@ Configurable columns in reports
     "monthsperline" configuration variable.  Feature added by Damian Glenny
   + "task export" can now filter tasks like the reports.
   + Factored out code to filter tasks.
+  + Displays shorter message when a command is entered incorrectly, and the
+    full usage for "task help".
   + Bug: Segmentation fault when no "dateformat" configuration variable
     specified
   + Bug: Fixed bug whereby if you have more than one task with a due date, 7
