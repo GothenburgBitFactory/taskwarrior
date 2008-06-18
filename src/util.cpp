@@ -80,19 +80,19 @@ void formatTimeDeltaDays (std::string& output, time_t delta)
   if (days > 365)
     sprintf (formatted, "%.1f yrs", (days / 365.2422));
   else if (days > 84)
-    sprintf (formatted, "%1d mths", (int) (days / 30.6));
+    sprintf (formatted, "%1d mth%s", (int) (days / 30.6), ((int) (days / 30.6) == 1 ? "" : "s"));
   else if (days > 13)
-    sprintf (formatted, "%d wks", (int) (days / 7.0));
+    sprintf (formatted, "%d wk%s", (int) (days / 7.0), ((int) (days / 7.0) == 1 ? "" : "s"));
   else if (days > 5.0)
-    sprintf (formatted, "%d days", (int) days);
+    sprintf (formatted, "%d day%s", (int) days, ((int) days == 1 ? "" : "s"));
   else if (days > 1.0)
     sprintf (formatted, "%.1f days", days);
   else if (days * 24 > 1.0)
-    sprintf (formatted, "%d hrs", (int) (days * 24.0));
+    sprintf (formatted, "%d hr%s", (int) (days * 24.0), ((int) (days * 24.0) == 1 ? "" : "s"));
   else if (days * 24 * 60 > 1)
-    sprintf (formatted, "%d mins", (int) (days * 24 * 60));
+    sprintf (formatted, "%d min%s", (int) (days * 24 * 60), ((int) (days * 24 * 60) == 1 ? "" : "s"));
   else if (days * 24 * 60 * 60 > 1)
-    sprintf (formatted, "%d secs", (int) (days * 24 * 60 * 60));
+    sprintf (formatted, "%d sec%s", (int) (days * 24 * 60 * 60), ((int) (days * 24 * 60 * 60) == 1 ? "" : "s"));
   else
     strcpy (formatted, "-");
 
@@ -108,19 +108,19 @@ std::string formatSeconds (time_t delta)
   if (days > 365)
     sprintf (formatted, "%.1f yrs", (days / 365.2422));
   else if (days > 84)
-    sprintf (formatted, "%1d mths", (int) (days / 30.6));
+    sprintf (formatted, "%1d mth%s", (int) (days / 30.6), ((int) (days / 30.6) == 1 ? "" : "s"));
   else if (days > 13)
-    sprintf (formatted, "%d wks", (int) (days / 7.0));
+    sprintf (formatted, "%d wk%s", (int) (days / 7.0), ((int) (days / 7.0) == 1 ? "" : "s"));
   else if (days > 5.0)
-    sprintf (formatted, "%d days", (int) days);
+    sprintf (formatted, "%d day%s", (int) days, ((int) days == 1 ? "" : "s"));
   else if (days > 1.0)
     sprintf (formatted, "%.1f days", days);
   else if (days * 24 > 1.0)
-    sprintf (formatted, "%d hrs", (int) (days * 24.0));
+    sprintf (formatted, "%d hr%s", (int) (days * 24.0), ((int) (days * 24) == 1 ? "" : "s"));
   else if (days * 24 * 60 > 1)
-    sprintf (formatted, "%d mins", (int) (days * 24 * 60));
+    sprintf (formatted, "%d min%s", (int) (days * 24 * 60), ((int) (days * 24 * 60) == 1 ? "" : "s"));
   else if (days * 24 * 60 * 60 > 1)
-    sprintf (formatted, "%d secs", (int) (days * 24 * 60 * 60));
+    sprintf (formatted, "%d sec%s", (int) (days * 24 * 60 * 60), ((int) (days * 24 * 60 * 60) == 1 ? "" : "s"));
   else
     strcpy (formatted, "-");
 
