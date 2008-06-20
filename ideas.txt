@@ -1,0 +1,17 @@
+Real Parsing
+  define grammar for command line
+  implement flex/bison parser
+
+User-Defined Reports
+  report.xxx=id,project(2+),priority(1-),description
+  change all list-based reports to user-defined
+
+Generalized Report Writer
+  provide column list, sort order, filter
+
+Test Suite
+  allow .taskrc override
+  debug=on to cause all cout to be csv
+  regression tests for every bug, command, feature
+
+
