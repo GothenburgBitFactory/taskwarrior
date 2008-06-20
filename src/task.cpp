@@ -992,6 +992,8 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
 
   initializeColorRules (conf);
 
+  bool showAge = conf.get ("showage", true);
+
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
@@ -1002,7 +1004,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Entry");
   table.addColumn ("Start");
   table.addColumn ("Due");
-  table.addColumn ("Age");
+  if (showAge) table.addColumn ("Age");
   table.addColumn ("Tags");
   table.addColumn ("Description");
 
@@ -1014,7 +1016,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   table.setColumnUnderline (5);
   table.setColumnUnderline (6);
   table.setColumnUnderline (7);
-  table.setColumnUnderline (8);
+  if (showAge) table.setColumnUnderline (8);
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -1022,15 +1024,15 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   table.setColumnWidth (3, Table::minimum);
   table.setColumnWidth (4, Table::minimum);
   table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth (6, Table::minimum);
-  table.setColumnWidth (7, Table::minimum);
-  table.setColumnWidth (8, Table::flexible);
+  if (showAge) table.setColumnWidth (6, Table::minimum);
+  table.setColumnWidth ((showAge ? 7 : 6), Table::minimum);
+  table.setColumnWidth ((showAge ? 8 : 7), Table::flexible);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (3, Table::right);
   table.setColumnJustification (4, Table::right);
   table.setColumnJustification (5, Table::right);
-  table.setColumnJustification (6, Table::right);
+  if (showAge) table.setColumnJustification (6, Table::right);
 
   table.sortOn (5, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
@@ -1094,9 +1096,9 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
     table.addCell (row, 3, entered);
     table.addCell (row, 4, started);
     table.addCell (row, 5, due);
-    table.addCell (row, 6, age);
-    table.addCell (row, 7, tags);
-    table.addCell (row, 8, refTask.getDescription ());
+    if (showAge) table.addCell (row, 6, age);
+    table.addCell (row, (showAge ? 7 : 6), tags);
+    table.addCell (row, (showAge ? 8 : 7), refTask.getDescription ());
 
     if (conf.get ("color", true))
     {
