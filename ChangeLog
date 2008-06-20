@@ -10,6 +10,10 @@ represents a feature release, and the z represents a patch.
 - Configurable columns in reports
 - Dependencies
 
+1.4.0 (?)
+  + Bug: "showage" configuration variable should apply to all reprts, not
+    just the ones based on "list"
+
 ------ reality -----------------------------------
 
 1.3.0 (6/18/2008)
