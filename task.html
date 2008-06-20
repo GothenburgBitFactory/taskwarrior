@@ -178,6 +178,8 @@ a img { border: none; padding: 0; margin: 0; }
                 <ul>
                   <li>Fixed bug where "showage" configuration variable was not being
                       oberved by the "task long" report
+                  <li>New configuration variable "defaultwidth" determines the width
+                      of windows in the absense of ncurses support
                 </ul>
 
                 <p>
@@ -206,7 +208,7 @@ a img { border: none; padding: 0; margin: 0; }
                   Source: <a href="http://www.beckingham.net/task-1.2.0.tar.gz">task-1.2.0.tar.gz</a>
                   <br />
                   Debian package: <a href="http://www.beckingham.net/task_1.2.0-1_i386.deb">task_1.2.0-1_i386.deb</a>
-                  (Thanks to Richard Querin)
+                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
                 </p>
 
                 <ul>
@@ -226,7 +228,7 @@ a img { border: none; padding: 0; margin: 0; }
                   Source: <a href="http://www.beckingham.net/task-1.1.0.tar.gz">task-1.1.0.tar.gz</a>
                   <br />
                   Debian package: <a href="http://www.beckingham.net/task_1.1.0-1_i386.deb">task_1.1.0-1_i386.deb</a>
-                  (Thanks to Richard Querin)
+                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
                 </p>
 
                 <ul>
@@ -267,6 +269,12 @@ a img { border: none; padding: 0; margin: 0; }
                 <p>
                   This guide shows how to quickly set up the task program, and become
                   proficient with it.
+                </p>
+
+                <p>
+                  Alternatively, watch the
+                  <a href="http://www.youtube.com/watch?v=D2Kn4DMOVSw">task movie</a>
+                  which illustrates many of task's features.
                 </p>
               </div>
 
@@ -1116,6 +1124,12 @@ on_white    on_bright_white</code></pre>
                 <dd>
                   Determines how many tasks the "task newest" command displays.
                   Defaults to 10.
+                </dd>
+
+                <dt>defaultwidth</dt>
+                <dd>
+                  The width of tables used when ncurses support is not available.
+                  Defaults to 80.
                 </dd>
 
                 <dt>color</dt>

@@ -13,6 +13,8 @@ represents a feature release, and the z represents a patch.
 1.4.0 (?)
   + Bug: "showage" configuration variable should apply to all reprts, not
     just the ones based on "list"
+  + New configuration variable, "defaultwidth" that determines the width
+    of tables when ncurses support is not available
 
 ------ reality -----------------------------------
 

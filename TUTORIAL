@@ -713,6 +713,9 @@ Configuring Task
     newest              Determines how many tasks are shown on the "newest"
                         report.  Defaults to 10.
 
+    defaultwidth        The width of tables used when ncurses support is not
+                        available.  Defaults to 80.
+
     color               May be "on" or "off".  Determines whether task uses
                         color.
 

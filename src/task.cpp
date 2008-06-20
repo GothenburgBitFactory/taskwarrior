@@ -48,7 +48,7 @@
 void shortUsage (Config& conf)
 {
   Table table;
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -470,7 +470,7 @@ void handleTags (const TDB& tdb, T& task, Config& conf)
 void handleList (const TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -606,7 +606,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
 void handleSmallList (const TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -725,7 +725,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
 void handleCompleted (const TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -808,7 +808,7 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
 void handleInfo (const TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -974,7 +974,7 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
 void handleLongList (const TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -1306,7 +1306,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   gatherNextTasks (tdb, task, conf, pending, matching);
 
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -1888,7 +1888,7 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
 void handleReportActive (const TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -1996,7 +1996,7 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
 void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -2100,7 +2100,7 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
 void handleReportOldest (const TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -2236,7 +2236,7 @@ void handleReportOldest (const TDB& tdb, T& task, Config& conf)
 void handleReportNewest (const TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -2453,7 +2453,7 @@ void handleReportStats (const TDB& tdb, T& task, Config& conf)
 void handleVersion (Config& conf)
 {
   // Determine window size, and set table accordingly.
-  int width = 80;
+  int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -2462,10 +2462,6 @@ void handleVersion (Config& conf)
     endwin ();
   }
 #endif
-
-  // Handle case for zero width on mobile device.
-  if (width == 0)
-    width = 80;
 
   // Create a table for output.
   Table table;
