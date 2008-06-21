@@ -242,10 +242,9 @@ int main (int argc, char** argv)
     if (!pw)
       throw std::string ("Could not read home directory from passwd file.");
 
+    // Create a default config file and data directory if necessary.
     std::string home = pw->pw_dir;
-    home += "/.taskrc";
-    if (!conf.load (home))
-      conf.createDefault (home);
+    conf.createDefault (home);
 
     TDB tdb;
     tdb.dataDirectory (conf.get ("data.location"));

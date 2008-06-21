@@ -27,8 +27,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <stdlib.h>
+#include <pwd.h>
 #include "task.h"
 #include "Config.h"
 
@@ -84,37 +87,33 @@ bool Config::load (const std::string& file)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Config::createDefault (const std::string& file)
+void Config::createDefault (const std::string& home)
 {
-  if (confirm (
-        "A configuration file could not be found in "
-      + file
-      + "\n\n"
-      + "Would you like a sample .taskrc created, so task can proceed?"))
-  {
-    // Determine a path to the task directory.
-    std::string taskDir = "";
-    for (int i = file.length () - 1; i >= 0; --i)
-    {
-      if (file[i] == '/')
-      {
-        taskDir = file.substr (0, i) + "/.task";
-        if (-1 == access (taskDir.c_str (), F_OK))
-          mkdir (taskDir.c_str (), S_IRWXU);
-        break;
-      }
-    }
+  // Strip trailing slash off home directory, if necessary.
+  std::string terminatedHome = home;
+  if (home[home.length () - 1] == '/')
+    terminatedHome = home.substr (0, home.length () - 1);
 
-    if (taskDir != "")
+  // Determine default names of init file and task directory.
+  std::string rcFile  = terminatedHome + "/.taskrc";
+  std::string dataDir = terminatedHome + "/.task";;
+
+  // If rcFile is not found, offer to create one.
+  if (-1 == access (rcFile.c_str (), F_OK))
+  {
+    if (confirm (
+          "A configuration file could not be found in "
+        + rcFile
+        + "\n\n"
+        + "Would you like a sample .taskrc created, so task can proceed?"))
     {
       // Create a sample .taskrc file.
       FILE* out;
-      if ((out = fopen (file.c_str (), "w")))
+      if ((out = fopen (rcFile.c_str (), "w")))
       {
-        fprintf (out, "data.location=%s\n", taskDir.c_str ());
+        fprintf (out, "data.location=%s\n", dataDir.c_str ());
         fprintf (out, "command.logging=off\n");
         fprintf (out, "confirmation=yes\n");
-        fprintf (out, "#nag=Note: try to stick to high priority tasks.  See \"task next\".\n");
         fprintf (out, "next=2\n");
         fprintf (out, "dateformat=m/d/Y\n");
         fprintf (out, "showage=yes\n");
@@ -135,24 +134,15 @@ void Config::createDefault (const std::string& file)
 
         fclose (out);
 
-        // Now set the live values.
-        set ("data.location", taskDir);
-        set ("command.logging", "off");
-        set ("confirmation", "yes");
-        set ("next", 1);
-        set ("dateformat", "m/d/Y");
-        set ("showage", "yes");
-        set ("monthsperline", 3);
-        set ("curses", "on");
-        set ("color", "on");
-        set ("color.overdue", "red");
-        set ("color.active", "cyan");
-        set ("color.tagged", "yellow");
-
         std::cout << "Done." << std::endl;
       }
     }
   }
+
+  this->load (rcFile);
+
+  if (-1 == access (dataDir.c_str (), F_OK))
+    mkdir (dataDir.c_str (), S_IRWXU);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
