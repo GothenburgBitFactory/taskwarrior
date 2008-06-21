@@ -40,10 +40,10 @@ public:
   bool load (const std::string&);
   void createDefault (const std::string&);
 
-  const std::string& get (const char*);
-  const std::string& get (const char*, const char*);
-  const std::string& get (const std::string&);
-  const std::string& get (const std::string&, const std::string&);
+  const std::string get (const char*);
+  const std::string get (const char*, const char*);
+  const std::string get (const std::string&);
+  const std::string get (const std::string&, const std::string&);
   bool get (const std::string&, bool);
   int get (const std::string&, const int);
   double get (const std::string&, const double);

@@ -157,7 +157,7 @@ void Config::createDefault (const std::string& file)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Return the configuration value given the specified key.
-const std::string& Config::get (const char* key)
+const std::string Config::get (const char* key)
 {
   return this->get (std::string (key));
 }
@@ -165,7 +165,7 @@ const std::string& Config::get (const char* key)
 ////////////////////////////////////////////////////////////////////////////////
 // Return the configuration value given the specified key.  If a default_value
 // is present, it will be the returned value in the event of a missing key.
-const std::string& Config::get (
+const std::string Config::get (
   const char* key,
   const char* default_value)
 {
@@ -174,7 +174,7 @@ const std::string& Config::get (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Return the configuration value given the specified key.
-const std::string& Config::get (const std::string& key)
+const std::string Config::get (const std::string& key)
 {
   return (*this)[key];
 }
@@ -182,7 +182,7 @@ const std::string& Config::get (const std::string& key)
 ////////////////////////////////////////////////////////////////////////////////
 // Return the configuration value given the specified key.  If a default_value
 // is present, it will be the returned value in the event of a missing key.
-const std::string& Config::get (
+const std::string Config::get (
   const std::string& key,
   const std::string& default_value)
 {

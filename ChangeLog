@@ -12,11 +12,14 @@ represents a feature release, and the Z represents a patch.
 - Recurring tasks
 
 
-1.3.1 (?)
-  + Bug: "showage" configuration variable should apply to all reports, not
-    just the ones based on "list"
+1.3.1 (6/21/2008)
   + New configuration variable, "defaultwidth" that determines the width
     of tables when ncurses support is not available
+  + Bug: "showage" configuration variable should apply to all reports, not
+    just the ones based on "list"
+  + Bug: Fixed segmentation faults on Ubuntu when the "dateformat"
+    configuration variables was missing.  This was a code bug, and should
+    have affected more platforms.
 
 ------ reality -----------------------------------
 
