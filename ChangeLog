@@ -19,7 +19,9 @@ represents a feature release, and the Z represents a patch.
     just the ones based on "list"
   + Bug: Fixed segmentation faults on Ubuntu when the "dateformat"
     configuration variables was missing.  This was a code bug, and should
-    have affected more platforms.
+    have affected more platforms
+  + Bug: Task now will recreate a missing ~/.taskrc file, OR a missing
+    ~/.task directory
 
 ------ reality -----------------------------------
 
