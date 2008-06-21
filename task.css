@@ -56,20 +56,23 @@ body {
 
 #content h2 {
 	font-size: 22px;
+	border-bottom: 1px dotted #000;
 }
 
 #content h3 {
 	font-size: 20px;
+	border-bottom: 1px dotted #bbb;
 }
 
 #content h4 {
 	font-size: 18px;
+	border-bottom: 1px dotted #bbb;
 }
 
 #content h5 {
 	font-size: 18px;
 	background: #ffd;
-	border-bottom: 1px dotted #aaa;
+	border-bottom: 1px dotted #bbb;
 }
 
 #content p {
