@@ -33,20 +33,14 @@
                 </p>
 
                 <p>
-                  While a fix is being worked on, here is a workaround:
+                  While a fix is being worked on, there is a workaround.
+                  Add the following line to your ~/.taskrc file:
                 </p>
 
-                <code><pre>% cd
-% mv .task .task_backup
-% mv .taskrc .taskrc_backup
-% task version
-(task will recreate .taskrc and .task)
-% rm -r .task
-% mv .task_backup .task</pre></code>
+                <code><pre>dateformat=m/d/Y</pre></code>
 
-                <p>
-                  Please be careful with that "rm -r .task" command - it is all too
-                  easy to make a mistake and delete something important.
+                <p class="small">
+                  The "dateformat" setting is supported in task 1.1.0 and later.
                 </p>
               </div>
 
