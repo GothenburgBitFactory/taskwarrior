@@ -107,6 +107,10 @@ static const char* attributes[] =
   "entry",
   "start",
   "end",
+  "recur",
+  "until",
+  "base",
+  "range",
   "",
 };
 
@@ -201,7 +205,7 @@ bool validDate (std::string& date, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool validPriority (std::string& input)
+static bool validPriority (const std::string& input)
 {
   if (input != "H" &&
       input != "M" &&
@@ -215,7 +219,10 @@ static bool validPriority (std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool validAttribute (std::string& name, std::string& value, Config& conf)
+static bool validAttribute (
+  std::string& name,
+  std::string& value,
+  Config& conf)
 {
   guess ("attribute", attributes, name);
 
@@ -254,7 +261,7 @@ static bool validId (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool validTag (std::string& input)
+static bool validTag (const std::string& input)
 {
   if ((input[0] == '-' || input[0] == '+') &&
        input.length () > 1)
@@ -307,6 +314,13 @@ static bool validSubstitution (
     }
   }
 
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool validDuration (const std::string& input)
+{
+  // TODO
   return false;
 }
 
