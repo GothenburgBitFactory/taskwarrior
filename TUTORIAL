@@ -319,6 +319,18 @@ with no arguments will generate a help message that lists all these commands.
 
 
 
+% task undelete <id>
+--------------------
+
+  If a task was inadvertently deleted, it may be undeleted, provided that no
+  reports have been run since the deletion.  Ideally, the undelete command is
+  run immediately after the erroneous delete command.
+
+  If a report is run (such as "task list"), then task performs a garbage
+  collection that removes deleted tasks, and the task cannot be undeleted.
+
+
+
 % task done <id>
 ----------------
 

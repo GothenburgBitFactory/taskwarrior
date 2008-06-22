@@ -109,6 +109,10 @@ void shortUsage (Config& conf)
   table.addCell (row, 2, "Deletes the specified task");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task undelete ID");
+  table.addCell (row, 2, "Undeletes the specified task, provided a report has not yet been run");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task info ID");
   table.addCell (row, 2, "Shows all data, metadata for specified task");
 
@@ -266,6 +270,7 @@ int main (int argc, char** argv)
     else if (command == "tags")               handleTags           (tdb, task, conf);
     else if (command == "list")               handleList           (tdb, task, conf);
     else if (command == "info")               handleInfo           (tdb, task, conf);
+    else if (command == "undelete")           handleUndelete       (tdb, task, conf);
     else if (command == "long")               handleLongList       (tdb, task, conf);
     else if (command == "ls")                 handleSmallList      (tdb, task, conf);
     else if (command == "colors")             handleColor          (           conf);
@@ -965,6 +970,43 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
               << std::endl;
   else
     std::cout << "No matches." << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// If a task is deleted, but is still in the pending file, then it may be
+// undeleted simply by changing it's status.
+void handleUndelete (const TDB& tdb, T& task, Config& conf)
+{
+  std::vector <T> all;
+  tdb.allPendingT (all);
+
+  int id = task.getId ();
+  std::vector <T>::iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+  {
+    if (it->getId () == id)
+    {
+      if (it->getStatus () == T::deleted)
+      {
+        T restored (*it);
+        restored.setStatus (T::pending);
+        restored.removeAttribute ("end");
+        tdb.modifyT (restored);
+
+        std::cout << "Task " << id << " successfully undeleted." << std::endl;
+        return;
+      }
+      else
+      {
+        std::cout << "Task " << id << " is not deleted - therefore cannot undelete." << std::endl;
+        return;
+      }
+    }
+  }
+
+  std::cout << "Task " << id
+            << " not found - tasks can only be reliably undeleted if the undelete" << std::endl
+            << "command is run immediately after the errant delete command." << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

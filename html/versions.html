@@ -22,6 +22,25 @@
 
               <div class="content">
                 <p>
+                  <h4>New in version 1.3.1</h4>
+                  Source: <a href="http://www.beckingham.net/task-1.3.1.tar.gz">task-1.3.1.tar.gz</a>
+                  <br />
+                  Debian package: <a href="http://www.beckingham.net/task_1.3.1-1_i386.deb">task_1.3.1-1_i386.deb</a>
+                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
+                </p>
+
+                <ul>
+                  <li>New configuration variable "defaultwidth" determines the width
+                      of windows in the absense of ncurses support
+                  <li>Fixed bug where "showage" configuration variable was not being
+                      oberved by the "task long" report
+                  <li>Fixed bug causing segmentation faults (mostly for Ubuntu users)
+                      when various commands are run
+                  <li>Fixed bug so that task now will recreate a missing ~/.taskrc file,
+                      OR a missing ~/.task directory
+                </ul>
+
+                <p>
                   <h4>New in version 1.3.0</h4>
                   Source: <a href="http://www.beckingham.net/task-1.3.0.tar.gz">task-1.3.0.tar.gz</a>
                   <br />

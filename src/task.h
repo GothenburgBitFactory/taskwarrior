@@ -62,6 +62,7 @@ void handleProjects (const TDB&, T&, Config&);
 void handleTags (const TDB&, T&, Config&);
 void handleList (const TDB&, T&, Config&);
 void handleInfo (const TDB&, T&, Config&);
+void handleUndelete (const TDB&, T&, Config&);
 void handleLongList (const TDB&, T&, Config&);
 void handleSmallList (const TDB&, T&, Config&);
 void handleCompleted (const TDB&, T&, Config&);
