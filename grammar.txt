@@ -22,6 +22,7 @@ command:
   | EXPORT <file>
   | COLOR
   | DELETE <id>
+  | UNDELETE <id>
   | INFO <id>
   | START <id>
   | DONE <id>
