@@ -1600,16 +1600,19 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
   table.setColumnJustification (4, Table::right);
   table.setColumnJustification (5, Table::right);
 
-  const char *months[] =
-  {
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December",
-  };
+  int totalAdded     = 0;
+  int totalCompleted = 0;
+  int totalDeleted   = 0;
 
   int priorYear = 0;
+  int row = 0;
   foreach (i, groups)
   {
-    int row = table.addRow ();
+    row = table.addRow ();
+
+    totalAdded     += addedGroup[i->first];
+    totalCompleted += completedGroup[i->first];
+    totalDeleted   += deletedGroup[i->first];
 
     Date dt (i->first);
     int m, d, y;
@@ -1620,7 +1623,7 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
       table.addCell (row, 0, y);
       priorYear = y;
     }
-    table.addCell (row, 1, months[m - 1]);
+    table.addCell (row, 1, Date::monthName(m));
 
     int net = 0;
 
@@ -1645,6 +1648,19 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
     table.addCell (row, 5, net);
     if (conf.get ("color", true) && net)
       table.setCellFg (row, 5, net > 0 ? Text::red: Text::green);
+  }
+
+  if (table.rowCount ())
+  {
+    table.addRow ();
+    row = table.addRow ();
+
+    table.addCell (row, 1, "Average");
+    if (conf.get ("color", true)) table.setRowFg (row, Text::bold);
+    table.addCell (row, 2, totalAdded / (table.rowCount () - 2));
+    table.addCell (row, 3, totalCompleted / (table.rowCount () - 2));
+    table.addCell (row, 4, totalDeleted / (table.rowCount () - 2));
+    table.addCell (row, 5, (totalAdded - totalCompleted - totalDeleted) / (table.rowCount () - 2));
   }
 
   if (table.rowCount ())

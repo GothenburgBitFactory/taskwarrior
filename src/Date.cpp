@@ -313,7 +313,7 @@ std::string Date::monthName (int month)
 
   assert (month > 0);
   assert (month <= 12);
-  return months[month -1];
+  return months[month - 1];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
