@@ -407,8 +407,11 @@ void handleProjects (const TDB& tdb, T& task, Config& conf)
     table.addColumn ("Project");
     table.addColumn ("Tasks");
 
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
+    if (conf.get ("color", true))
+    {
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
+    }
 
     table.setColumnJustification (1, Table::right);
     table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
@@ -505,13 +508,16 @@ void handleList (const TDB& tdb, T& task, Config& conf)
   if (showAge) table.addColumn ("Age");
   table.addColumn ("Description");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
-  table.setColumnUnderline (4);
-  table.setColumnUnderline (5);
-  if (showAge) table.setColumnUnderline (6);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnUnderline (3);
+    table.setColumnUnderline (4);
+    table.setColumnUnderline (5);
+    if (showAge) table.setColumnUnderline (6);
+  }
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -637,10 +643,13 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Pri");
   table.addColumn ("Description");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnUnderline (3);
+  }
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -755,9 +764,12 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Project");
   table.addColumn ("Description");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+  }
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -833,8 +845,11 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Name");
   table.addColumn ("Value");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+  }
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -1049,15 +1064,18 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Tags");
   table.addColumn ("Description");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
-  table.setColumnUnderline (4);
-  table.setColumnUnderline (5);
-  table.setColumnUnderline (6);
-  table.setColumnUnderline (7);
-  if (showAge) table.setColumnUnderline (8);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnUnderline (3);
+    table.setColumnUnderline (4);
+    table.setColumnUnderline (5);
+    table.setColumnUnderline (6);
+    table.setColumnUnderline (7);
+    if (showAge) table.setColumnUnderline (8);
+  }
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -1246,10 +1264,13 @@ void handleReportSummary (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Complete");
   table.addColumn ("0%                        100%");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnUnderline (3);
+  }
 
   table.setColumnJustification (1, Table::right);
   table.setColumnJustification (2, Table::right);
@@ -1379,13 +1400,16 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   if (showAge) table.addColumn ("Age");
   table.addColumn ("Description");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
-  table.setColumnUnderline (4);
-  table.setColumnUnderline (5);
-  if (showAge) table.setColumnUnderline (6);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnUnderline (3);
+    table.setColumnUnderline (4);
+    table.setColumnUnderline (5);
+    if (showAge) table.setColumnUnderline (6);
+  }
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -1588,12 +1612,15 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Deleted");
   table.addColumn ("Net");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
-  table.setColumnUnderline (4);
-  table.setColumnUnderline (5);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnUnderline (3);
+    table.setColumnUnderline (4);
+    table.setColumnUnderline (5);
+  }
 
   table.setColumnJustification (2, Table::right);
   table.setColumnJustification (3, Table::right);
@@ -1714,8 +1741,13 @@ void handleReportUsage (const TDB& tdb, T& task, Config& conf)
     Table table;
     table.addColumn ("Command");
     table.addColumn ("Frequency");
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
+
+    if (conf.get ("color", true))
+    {
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
+    }
+
     table.setColumnJustification (1, Table::right);
     table.sortOn (1, Table::descendingNumeric);
     table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
@@ -1763,13 +1795,16 @@ std::string renderMonths (
     table.addColumn ("Fr");
     table.addColumn ("Sa");
 
-    table.setColumnUnderline (i + 1);
-    table.setColumnUnderline (i + 2);
-    table.setColumnUnderline (i + 3);
-    table.setColumnUnderline (i + 4);
-    table.setColumnUnderline (i + 5);
-    table.setColumnUnderline (i + 6);
-    table.setColumnUnderline (i + 7);
+    if (conf.get ("color", true))
+    {
+      table.setColumnUnderline (i + 1);
+      table.setColumnUnderline (i + 2);
+      table.setColumnUnderline (i + 3);
+      table.setColumnUnderline (i + 4);
+      table.setColumnUnderline (i + 5);
+      table.setColumnUnderline (i + 6);
+      table.setColumnUnderline (i + 7);
+    }
 
     table.setColumnJustification (i + 0, Table::right);
     table.setColumnJustification (i + 1, Table::right);
@@ -1971,11 +2006,14 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Due");
   table.addColumn ("Description");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
-  table.setColumnUnderline (4);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnUnderline (3);
+    table.setColumnUnderline (4);
+  }
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -2079,11 +2117,14 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
   table.addColumn ("Due");
   table.addColumn ("Description");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
-  table.setColumnUnderline (4);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnUnderline (3);
+    table.setColumnUnderline (4);
+  }
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -2189,13 +2230,16 @@ void handleReportOldest (const TDB& tdb, T& task, Config& conf)
   if (showAge) table.addColumn ("Age");
   table.addColumn ("Description");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
-  table.setColumnUnderline (4);
-  table.setColumnUnderline (5);
-  if (showAge) table.setColumnUnderline (6);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnUnderline (3);
+    table.setColumnUnderline (4);
+    table.setColumnUnderline (5);
+    if (showAge) table.setColumnUnderline (6);
+  }
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -2325,13 +2369,16 @@ void handleReportNewest (const TDB& tdb, T& task, Config& conf)
   if (showAge) table.addColumn ("Age");
   table.addColumn ("Description");
 
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnUnderline (3);
-  table.setColumnUnderline (4);
-  table.setColumnUnderline (5);
-  if (showAge) table.setColumnUnderline (6);
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnUnderline (3);
+    table.setColumnUnderline (4);
+    table.setColumnUnderline (5);
+    if (showAge) table.setColumnUnderline (6);
+  }
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -2526,8 +2573,13 @@ void handleVersion (Config& conf)
   table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("Config variable");
   table.addColumn ("Value");
-  table.setColumnUnderline (0);
-  table.setColumnUnderline (1);
+
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+  }
+
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::flexible);
   table.setColumnJustification (0, Table::left);
@@ -2771,78 +2823,85 @@ void handleModify (const TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 void handleColor (Config& conf)
 {
-  std::cout << optionalBlankLine (conf) << "Foreground" << std::endl
-            << "           "
-                    << Text::colorize (Text::bold,                   Text::nocolor, "bold")                   << "          "
-                    << Text::colorize (Text::underline,              Text::nocolor, "underline")              << "          "
-                    << Text::colorize (Text::bold_underline,         Text::nocolor, "bold_underline")         << std::endl
+  if (conf.get ("color", true))
+  {
+    std::cout << optionalBlankLine (conf) << "Foreground" << std::endl
+              << "           "
+                      << Text::colorize (Text::bold,                   Text::nocolor, "bold")                   << "          "
+                      << Text::colorize (Text::underline,              Text::nocolor, "underline")              << "          "
+                      << Text::colorize (Text::bold_underline,         Text::nocolor, "bold_underline")         << std::endl
 
-            << "  " << Text::colorize (Text::black,                  Text::nocolor, "black")                  << "    "
-                    << Text::colorize (Text::bold_black,             Text::nocolor, "bold_black")             << "    "
-                    << Text::colorize (Text::underline_black,        Text::nocolor, "underline_black")        << "    "
-                    << Text::colorize (Text::bold_underline_black,   Text::nocolor, "bold_underline_black")   << std::endl
+              << "  " << Text::colorize (Text::black,                  Text::nocolor, "black")                  << "    "
+                      << Text::colorize (Text::bold_black,             Text::nocolor, "bold_black")             << "    "
+                      << Text::colorize (Text::underline_black,        Text::nocolor, "underline_black")        << "    "
+                      << Text::colorize (Text::bold_underline_black,   Text::nocolor, "bold_underline_black")   << std::endl
 
-            << "  " << Text::colorize (Text::red,                    Text::nocolor, "red")                    << "      "
-                    << Text::colorize (Text::bold_red,               Text::nocolor, "bold_red")               << "      "
-                    << Text::colorize (Text::underline_red,          Text::nocolor, "underline_red")          << "      "
-                    << Text::colorize (Text::bold_underline_red,     Text::nocolor, "bold_underline_red")     << std::endl
+              << "  " << Text::colorize (Text::red,                    Text::nocolor, "red")                    << "      "
+                      << Text::colorize (Text::bold_red,               Text::nocolor, "bold_red")               << "      "
+                      << Text::colorize (Text::underline_red,          Text::nocolor, "underline_red")          << "      "
+                      << Text::colorize (Text::bold_underline_red,     Text::nocolor, "bold_underline_red")     << std::endl
 
-            << "  " << Text::colorize (Text::green,                  Text::nocolor, "green")                  << "    "
-                    << Text::colorize (Text::bold_green,             Text::nocolor, "bold_green")             << "    "
-                    << Text::colorize (Text::underline_green,        Text::nocolor, "underline_green")        << "    "
-                    << Text::colorize (Text::bold_underline_green,   Text::nocolor, "bold_underline_green")   << std::endl
+              << "  " << Text::colorize (Text::green,                  Text::nocolor, "green")                  << "    "
+                      << Text::colorize (Text::bold_green,             Text::nocolor, "bold_green")             << "    "
+                      << Text::colorize (Text::underline_green,        Text::nocolor, "underline_green")        << "    "
+                      << Text::colorize (Text::bold_underline_green,   Text::nocolor, "bold_underline_green")   << std::endl
 
-            << "  " << Text::colorize (Text::yellow,                 Text::nocolor, "yellow")                 << "   "
-                    << Text::colorize (Text::bold_yellow,            Text::nocolor, "bold_yellow")            << "   "
-                    << Text::colorize (Text::underline_yellow,       Text::nocolor, "underline_yellow")       << "   "
-                    << Text::colorize (Text::bold_underline_yellow,  Text::nocolor, "bold_underline_yellow")  << std::endl
+              << "  " << Text::colorize (Text::yellow,                 Text::nocolor, "yellow")                 << "   "
+                      << Text::colorize (Text::bold_yellow,            Text::nocolor, "bold_yellow")            << "   "
+                      << Text::colorize (Text::underline_yellow,       Text::nocolor, "underline_yellow")       << "   "
+                      << Text::colorize (Text::bold_underline_yellow,  Text::nocolor, "bold_underline_yellow")  << std::endl
 
-            << "  " << Text::colorize (Text::blue,                   Text::nocolor, "blue")                   << "     "
-                    << Text::colorize (Text::bold_blue,              Text::nocolor, "bold_blue")              << "     "
-                    << Text::colorize (Text::underline_blue,         Text::nocolor, "underline_blue")         << "     "
-                    << Text::colorize (Text::bold_underline_blue,    Text::nocolor, "bold_underline_blue")    << std::endl
+              << "  " << Text::colorize (Text::blue,                   Text::nocolor, "blue")                   << "     "
+                      << Text::colorize (Text::bold_blue,              Text::nocolor, "bold_blue")              << "     "
+                      << Text::colorize (Text::underline_blue,         Text::nocolor, "underline_blue")         << "     "
+                      << Text::colorize (Text::bold_underline_blue,    Text::nocolor, "bold_underline_blue")    << std::endl
 
-            << "  " << Text::colorize (Text::magenta,                Text::nocolor, "magenta")                << "  "
-                    << Text::colorize (Text::bold_magenta,           Text::nocolor, "bold_magenta")           << "  "
-                    << Text::colorize (Text::underline_magenta,      Text::nocolor, "underline_magenta")      << "  "
-                    << Text::colorize (Text::bold_underline_magenta, Text::nocolor, "bold_underline_magenta") << std::endl
+              << "  " << Text::colorize (Text::magenta,                Text::nocolor, "magenta")                << "  "
+                      << Text::colorize (Text::bold_magenta,           Text::nocolor, "bold_magenta")           << "  "
+                      << Text::colorize (Text::underline_magenta,      Text::nocolor, "underline_magenta")      << "  "
+                      << Text::colorize (Text::bold_underline_magenta, Text::nocolor, "bold_underline_magenta") << std::endl
 
-            << "  " << Text::colorize (Text::cyan,                   Text::nocolor, "cyan")                   << "     "
-                    << Text::colorize (Text::bold_cyan,              Text::nocolor, "bold_cyan")              << "     "
-                    << Text::colorize (Text::underline_cyan,         Text::nocolor, "underline_cyan")         << "     "
-                    << Text::colorize (Text::bold_underline_cyan,    Text::nocolor, "bold_underline_cyan")    << std::endl
+              << "  " << Text::colorize (Text::cyan,                   Text::nocolor, "cyan")                   << "     "
+                      << Text::colorize (Text::bold_cyan,              Text::nocolor, "bold_cyan")              << "     "
+                      << Text::colorize (Text::underline_cyan,         Text::nocolor, "underline_cyan")         << "     "
+                      << Text::colorize (Text::bold_underline_cyan,    Text::nocolor, "bold_underline_cyan")    << std::endl
 
-            << "  " << Text::colorize (Text::white,                  Text::nocolor, "white")                  << "    "
-                    << Text::colorize (Text::bold_white,             Text::nocolor, "bold_white")             << "    "
-                    << Text::colorize (Text::underline_white,        Text::nocolor, "underline_white")        << "    "
-                    << Text::colorize (Text::bold_underline_white,   Text::nocolor, "bold_underline_white")   << std::endl
+              << "  " << Text::colorize (Text::white,                  Text::nocolor, "white")                  << "    "
+                      << Text::colorize (Text::bold_white,             Text::nocolor, "bold_white")             << "    "
+                      << Text::colorize (Text::underline_white,        Text::nocolor, "underline_white")        << "    "
+                      << Text::colorize (Text::bold_underline_white,   Text::nocolor, "bold_underline_white")   << std::endl
 
-            << std::endl << "Background" << std::endl
-            << "  " << Text::colorize (Text::nocolor, Text::on_black,          "on_black")               << "    "
-                    << Text::colorize (Text::nocolor, Text::on_bright_black,   "on_bright_black")        << std::endl
+              << std::endl << "Background" << std::endl
+              << "  " << Text::colorize (Text::nocolor, Text::on_black,          "on_black")               << "    "
+                      << Text::colorize (Text::nocolor, Text::on_bright_black,   "on_bright_black")        << std::endl
 
-            << "  " << Text::colorize (Text::nocolor, Text::on_red,            "on_red")                 << "      "
-                    << Text::colorize (Text::nocolor, Text::on_bright_red,     "on_bright_red")          << std::endl
+              << "  " << Text::colorize (Text::nocolor, Text::on_red,            "on_red")                 << "      "
+                      << Text::colorize (Text::nocolor, Text::on_bright_red,     "on_bright_red")          << std::endl
 
-            << "  " << Text::colorize (Text::nocolor, Text::on_green,          "on_green")               << "    "
-                    << Text::colorize (Text::nocolor, Text::on_bright_green,   "on_bright_green")        << std::endl
+              << "  " << Text::colorize (Text::nocolor, Text::on_green,          "on_green")               << "    "
+                      << Text::colorize (Text::nocolor, Text::on_bright_green,   "on_bright_green")        << std::endl
 
-            << "  " << Text::colorize (Text::nocolor, Text::on_yellow,         "on_yellow")              << "   "
-                    << Text::colorize (Text::nocolor, Text::on_bright_yellow,  "on_bright_yellow")       << std::endl
+              << "  " << Text::colorize (Text::nocolor, Text::on_yellow,         "on_yellow")              << "   "
+                      << Text::colorize (Text::nocolor, Text::on_bright_yellow,  "on_bright_yellow")       << std::endl
 
-            << "  " << Text::colorize (Text::nocolor, Text::on_blue,           "on_blue")                << "     "
-                    << Text::colorize (Text::nocolor, Text::on_bright_blue,    "on_bright_blue")         << std::endl
+              << "  " << Text::colorize (Text::nocolor, Text::on_blue,           "on_blue")                << "     "
+                      << Text::colorize (Text::nocolor, Text::on_bright_blue,    "on_bright_blue")         << std::endl
 
-            << "  " << Text::colorize (Text::nocolor, Text::on_magenta,        "on_magenta")             << "  "
-                    << Text::colorize (Text::nocolor, Text::on_bright_magenta, "on_bright_magenta")      << std::endl
+              << "  " << Text::colorize (Text::nocolor, Text::on_magenta,        "on_magenta")             << "  "
+                      << Text::colorize (Text::nocolor, Text::on_bright_magenta, "on_bright_magenta")      << std::endl
 
-            << "  " << Text::colorize (Text::nocolor, Text::on_cyan,           "on_cyan")                << "     "
-                    << Text::colorize (Text::nocolor, Text::on_bright_cyan,    "on_bright_cyan")         << std::endl
+              << "  " << Text::colorize (Text::nocolor, Text::on_cyan,           "on_cyan")                << "     "
+                      << Text::colorize (Text::nocolor, Text::on_bright_cyan,    "on_bright_cyan")         << std::endl
 
-            << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")               << "    "
-                    << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")        << std::endl
+              << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")               << "    "
+                      << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")        << std::endl
 
-            <<                 optionalBlankLine (conf);
+              <<                 optionalBlankLine (conf);
+  }
+  else
+  {
+    std::cout << "Color is currently turned off in your .taskrc file." << std::endl;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
