@@ -3,15 +3,17 @@ Real Parsing
   implement flex/bison parser
 
 User-Defined Reports
-  report.xxx=id,project(2+),priority(1-),description
-  change all list-based reports to user-defined
+  report.large=id,uuid,project,priority,entry,start,due,active,tags,description
+  report.long=id,project,priority,entry,start,due,tags,description
+  report.list=id,project,priority,due,active,description
+  report.ls=id,project,priority,description
 
-Generalized Report Writer
-  provide column list, sort order, filter
+  Sorting is always: due+ priority- project+
+
+  ID UUID Project Priority Entry Start Due Active Tags Description
 
 Test Suite
   allow .taskrc override
   debug=on to cause all cout to be csv
   regression tests for every bug, command, feature
-
 
