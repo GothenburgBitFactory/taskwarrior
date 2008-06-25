@@ -346,54 +346,60 @@ void parse (
   for (size_t i = 0; i < args.size (); ++i)
   {
     std::string arg (args[i]);
-    size_t colon;               // Pointer to colon in argument.
-    std::string from;
-    std::string to;
 
-    // An id is the first argument found that contains all digits.
-    if (command != "add"   && // "add" doesn't require an ID
-        task.getId () == 0 &&
-        validId (arg))
-      task.setId (::atoi (arg.c_str ()));
-
-    // Tags begin with + or - and contain arbitrary text.
-    else if (validTag (arg))
+    // Ignore any argument that is "rc:...", because that is the command line
+    // specified rc file.
+    if (arg.substr (0, 3) != "rc:")
     {
-      if (arg[0] == '+')
-        task.addTag (arg.substr (1, std::string::npos));
-      else if (arg[0] == '-')
-        task.addRemoveTag (arg.substr (1, std::string::npos));
-    }
+      size_t colon;               // Pointer to colon in argument.
+      std::string from;
+      std::string to;
 
-    // Attributes contain a constant string followed by a colon, followed by a
-    // value.
-    else if ((colon = arg.find (":")) != std::string::npos)
-    {
-      std::string name  = arg.substr (0, colon);
-      std::string value = arg.substr (colon + 1, std::string::npos);
+      // An id is the first argument found that contains all digits.
+      if (command != "add"   && // "add" doesn't require an ID
+          task.getId () == 0 &&
+          validId (arg))
+        task.setId (::atoi (arg.c_str ()));
 
-      if (validAttribute (name, value, conf))
-        task.setAttribute (name, value);
-    }
+      // Tags begin with + or - and contain arbitrary text.
+      else if (validTag (arg))
+      {
+        if (arg[0] == '+')
+          task.addTag (arg.substr (1, std::string::npos));
+        else if (arg[0] == '-')
+          task.addRemoveTag (arg.substr (1, std::string::npos));
+      }
 
-    // Substitution of description text.
-    else if (validSubstitution (arg, from, to))
-    {
-      task.setSubstitution (from, to);
-    }
+      // Attributes contain a constant string followed by a colon, followed by a
+      // value.
+      else if ((colon = arg.find (":")) != std::string::npos)
+      {
+        std::string name  = arg.substr (0, colon);
+        std::string value = arg.substr (colon + 1, std::string::npos);
 
-    // Command.
-    else if (command == "")
-    {
-      if (!isCommand (arg))
+        if (validAttribute (name, value, conf))
+          task.setAttribute (name, value);
+      }
+
+      // Substitution of description text.
+      else if (validSubstitution (arg, from, to))
+      {
+        task.setSubstitution (from, to);
+      }
+
+      // Command.
+      else if (command == "")
+      {
+        if (!isCommand (arg))
+          descCandidate += std::string (arg) + " ";
+        else if (validCommand (arg))
+          command = arg;
+      }
+
+      // Anything else is just considered description.
+      else
         descCandidate += std::string (arg) + " ";
-      else if (validCommand (arg))
-        command = arg;
     }
-
-    // Anything else is just considered description.
-    else
-      descCandidate += std::string (arg) + " ";
   }
 
   if (validDescription (descCandidate))

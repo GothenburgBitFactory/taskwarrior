@@ -11,10 +11,12 @@ represents a feature release, and the Z represents a patch.
 - Dependencies
 - Recurring tasks
 
+
 1.4.0 ()
   + "task undelete" can now undelete erroneously deleted tasks, provided no
     reports have been run (and therefore TDB::gc run)
   + Added averages to the "task history" report
+  + Added ability to override ~/.taskrc with rc:<file>
   + Bug: Fixed where Esc[0m sequences were being emitted for no good reason
   + Bug: Fixed underlined table headers when color is turned off
 

@@ -45,7 +45,7 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-void shortUsage (Config& conf)
+static void shortUsage (Config& conf)
 {
   Table table;
   int width = conf.get ("defaultwidth", 80);
@@ -193,7 +193,7 @@ void shortUsage (Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void longUsage (Config& conf)
+static void longUsage (Config& conf)
 {
   shortUsage (conf);
 
@@ -210,6 +210,7 @@ void longUsage (Config& conf)
     << "  due:               Due date"                                     << "\n"
     << "  fg:                Foreground color"                             << "\n"
     << "  bg:                Background color"                             << "\n"
+    << "  rc:                Alternate .taskrc file"                       << "\n"
     <<                                                                        "\n"
     << "Any command or attribute name may be abbreviated if still unique:" << "\n"
     << "  task list project:Home"                                          << "\n"
@@ -222,6 +223,32 @@ void longUsage (Config& conf)
     << "Many characters have special meaning to the shell, including:"     << "\n"
     << "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~"                   << "\n"
     << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void loadConfFile (int argc, char** argv, Config& conf)
+{
+  for (int i = 1; i < argc; ++i)
+  {
+    if (! strncmp (argv[i], "rc:", 3))
+    {
+      if (! access (&(argv[i][3]), F_OK))
+      {
+        std::string file = &(argv[i][3]);
+        conf.load (file);
+        return;
+      }
+      else
+        throw std::string ("Could not read configuration file '") + &(argv[i][3]) + "'";
+    }
+  }
+
+  struct passwd* pw = getpwuid (getuid ());
+  if (!pw)
+    throw std::string ("Could not read home directory from passwd file.");
+
+  std::string file = pw->pw_dir;
+  conf.createDefault (file);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -242,13 +269,7 @@ int main (int argc, char** argv)
     // Load the config file from the home directory.  If the file cannot be
     // found, offer to create a sample one.
     Config conf;
-    struct passwd* pw = getpwuid (getuid ());
-    if (!pw)
-      throw std::string ("Could not read home directory from passwd file.");
-
-    // Create a default config file and data directory if necessary.
-    std::string home = pw->pw_dir;
-    conf.createDefault (home);
+    loadConfFile (argc, argv, conf);
 
     TDB tdb;
     tdb.dataDirectory (conf.get ("data.location"));

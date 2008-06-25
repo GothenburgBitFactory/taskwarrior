@@ -576,39 +576,6 @@ with no arguments will generate a help message that lists all these commands.
 
 
 
-Interacting with the Shell
---------------------------
-
-  Certain characters are interpreted by the shell.  For example, the "&".  If
-  you wish to include the & in a task description, you need to escape it, so
-  the shell doesn't interpret it.  For example:
-
-    % task add Buy bread & milk
-
-  This command is an error because of the &.  The shell will consider this to
-  be two commands:
-
-    % task add Buy bread &
-    % milk
-
-  The shell treats the & character as an indicator that the command is complete
-  and should be run in the background.  Then the shell considers "milk" to be a
-  command all by itself.  Which it is not.  One way to get around this is to
-  individually escape the & character:
-
-    % task add Buy bread \& milk
-
-  Another is to quote the entire description, with either ' or " characters:
-
-    % task add "Buy bread & milk"
-
-  Task itself interprets the commands, and it too can make mistakes.  For
-  example, any colon : character will be interpreted by task as a delimiter
-  between an attribute name and its value.  Currently there is no workaround
-  for this.
-
-
-
 % task <id> fg:... bg:...
 -------------------------
 
@@ -643,6 +610,61 @@ Interacting with the Shell
   Note also that this capability does depend on whether your terminal program
   can display these colors.
 
+
+
+% task rc:<file> ...
+--------------------
+
+  By specifying rc:<file>, it is possible to force task to use an alternate
+  .taskrc file.  By default, task looks in your home directory, so these two
+  commands are essentially identical:
+
+    % task list
+    % task rc:~/.taskrc list
+
+  What this override allows, is the possibility of keeping your task lists
+  completely separate, say for work and home.  This can be accomplished with
+  the following commands (valid for bash):
+
+    % alias htask="task rc:/home/me/.taskrc_home"
+    % alias wtask="task rc:/home/me/.taskrc_work"
+    % htask list
+    ...
+    % wtask list
+    ...
+
+
+
+Interacting with the Shell
+--------------------------
+
+  Certain characters are interpreted by the shell.  For example, the "&".  If
+  you wish to include the & in a task description, you need to escape it, so
+  the shell doesn't interpret it.  For example:
+
+    % task add Buy bread & milk
+
+  This command is an error because of the &.  The shell will consider this to
+  be two commands:
+
+    % task add Buy bread &
+    % milk
+
+  The shell treats the & character as an indicator that the command is complete
+  and should be run in the background.  Then the shell considers "milk" to be a
+  command all by itself.  Which it is not.  One way to get around this is to
+  individually escape the & character:
+
+    % task add Buy bread \& milk
+
+  Another is to quote the entire description, with either ' or " characters:
+
+    % task add "Buy bread & milk"
+
+  Task itself interprets the commands, and it too can make mistakes.  For
+  example, any colon : character will be interpreted by task as a delimiter
+  between an attribute name and its value.  Currently there is no workaround
+  for this.
 
 
 

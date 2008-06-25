@@ -39,7 +39,7 @@
                 <p>
                   Download the
                   <a href="http://www.beckingham.net/task-1.4.0.tar.gz">latest version</a>
-                  of the task source code (1.4.0, ????????????????????????????????????????????????).
+                  of the task source code (1.4.0, ????????????????????).
                 </p>
 
                 <p>
@@ -51,6 +51,8 @@
                   <li>Added "task undelete" feature to restore a (very) recently deleted
                       task
                   <li>Added averages to the "task history" report
+                  <li>Added support for rc:&lt;file&gt; to allow override of the default
+                      ~/.taskrc file
                   <li>Fixed bug where Esc[0m sequences were being emitted for no good reason
                   <li>Fixed bug where table headers are underlined when color is turned off
                 </ul>
@@ -711,6 +713,65 @@ ID Project Pri Description
                   all the current configuration settings, as read from the .taskrc
                   file.
                 </p>
+
+                <strong>% task rc:&lt;file&gt; ...</strong>
+                <p>
+                  By specifying rc:<file>, it is possible to force task to use an alternate
+                  .taskrc file.  By default, task looks in your home directory, so these two
+                  commands are essentially identical:
+                </p>
+
+                <pre><code>% task list
+% task rc:~/.taskrc list</code></pre>
+
+                <p>
+                  What this override allows, is the possibility of keeping your task lists
+                  completely separate, say for work and home.  This can be accomplished with
+                  the following commands (valid for bash):
+                </p>
+
+                <pre><code>% alias htask="task rc:/home/me/.taskrc_home"
+% alias wtask="task rc:/home/me/.taskrc_work"
+% htask list
+...
+% wtask list
+...</code></pre>
+
+                <strong>% task &lt;id&gt; fg:... bg:...</strong>
+                <p>
+                  Not strictly a command, the setting of the fg and bg (foreground
+                  and background) attributes determines the colors used to represent
+                  the task.  Valid foreground colors are:
+                </p>
+
+                <pre><code>         bold          underline          bold_underline
+black    bold_black    underline_black    bold_underline_black
+red      bold_red      underline_red      bold_underline_red
+green    bold_green    underline_green    bold_underline_green
+yellow   bold_yellow   underline_yellow   bold_underline_yellow
+blue     bold_blue     underline_blue     bold_underline_blue
+magenta  bold_magenta  underline_magenta  bold_underline_magenta
+cyan     bold_cyan     underline_cyan     bold_underline_cyan
+white    bold_white    underline_white    bold_underline_white</code></pre>
+
+                <p>
+                  Note that these are not just colors, but combinations of colors and
+                  attributes.  Valid background colors are:
+                </p>
+
+                <pre><code>on_black    on_bright_black
+on_red      on_bright_red
+on_green    on_bright_green
+on_yellow   on_bright_yellow
+on_blue     on_bright_blue
+on_magenta  on_bright_magenta
+on_cyan     on_bright_cyan
+on_white    on_bright_white</code></pre>
+
+                <p>
+                  Note also that this capability does depend on whether your terminal
+                  program can display these colors.
+                </p>
               </div>
 
               <br />
@@ -755,42 +816,6 @@ ID Project Pri Description
                   For example, any colon : character will be interpreted by task as a
                   delimiter between an attribute name and its value.  Currently there
                   is no workaround for this.
-                </p>
-
-                <strong>% task &lt;id&gt; fg:... bg:...</strong>
-                <p>
-                  Not strictly a command, the setting of the fg and bg (foreground
-                  and background) attributes determines the colors used to represent
-                  the task.  Valid foreground colors are:
-                </p>
-
-                <pre><code>         bold          underline          bold_underline
-black    bold_black    underline_black    bold_underline_black
-red      bold_red      underline_red      bold_underline_red
-green    bold_green    underline_green    bold_underline_green
-yellow   bold_yellow   underline_yellow   bold_underline_yellow
-blue     bold_blue     underline_blue     bold_underline_blue
-magenta  bold_magenta  underline_magenta  bold_underline_magenta
-cyan     bold_cyan     underline_cyan     bold_underline_cyan
-white    bold_white    underline_white    bold_underline_white</code></pre>
-
-                <p>
-                  Note that these are not just colors, but combinations of colors and
-                  attributes.  Valid background colors are:
-                </p>
-
-                <pre><code>on_black    on_bright_black
-on_red      on_bright_red
-on_green    on_bright_green
-on_yellow   on_bright_yellow
-on_blue     on_bright_blue
-on_magenta  on_bright_magenta
-on_cyan     on_bright_cyan
-on_white    on_bright_white</code></pre>
-
-                <p>
-                  Note also that this capability does depend on whether your terminal
-                  program can display these colors.
                 </p>
               </div>
 
