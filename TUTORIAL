@@ -415,14 +415,33 @@ with no arguments will generate a help message that lists all these commands.
 
     % task history
 
-    Year Month     Added Completed Deleted Net
-    2008 March        21        16       0   5
-         April        13        11       1   1
-         May           8        14       3  -9
+    Year Month   Added Completed Deleted Net
+    2008 March      21        16       0   5
+         April      13        11       1   1
+         May         8        14       3  -9
+
+         Average    14        13       1  -1
 
   This shows that for the three months that task has been used, March and April
   saw the total number of tasks increase, but in May the number decreased as
   more task were completed than added.
+
+
+
+% task ghistory
+--------------
+
+  This report shows you an overview of how many tasks were added, completed and
+  deleted, by month, as does "task history", but as a bar chart.  It looks like this:
+
+    % task history
+
+    Year Month Added/Completed/Deleted
+    2008 March +++++++++++++++++++++XXXXXXXXXXXXXXXX
+         April +++++++++++++XXXXXXXXXXX-
+         May   ++++++++XXXXXXXXXXXXXX---
+
+    With color enabled, the bars contain the size of each bar.
 
 
 

@@ -126,6 +126,7 @@ static const char* commands[] =
   "export",
   "help",
   "history",
+  "ghistory",
   "info",
   "list",
   "long",

@@ -141,6 +141,10 @@ static void shortUsage (Config& conf)
   table.addCell (row, 2, "Shows a report of task history, by month");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task ghistory");
+  table.addCell (row, 2, "Shows a graphical report of task history, by month");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task next");
   table.addCell (row, 2, "Shows the most important tasks for each project");
 
@@ -304,6 +308,7 @@ int main (int argc, char** argv)
     else if (command == "summary")            handleReportSummary  (tdb, task, conf);
     else if (command == "next")               handleReportNext     (tdb, task, conf);
     else if (command == "history")            handleReportHistory  (tdb, task, conf);
+    else if (command == "ghistory")           handleReportGHistory (tdb, task, conf);
     else if (command == "calendar")           handleReportCalendar (tdb, task, conf);
     else if (command == "active")             handleReportActive   (tdb, task, conf);
     else if (command == "overdue")            handleReportOverdue  (tdb, task, conf);
@@ -1715,6 +1720,211 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
     std::cout << optionalBlankLine (conf)
               << table.render ()
               << std::endl;
+  else
+    std::cout << "No tasks." << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void handleReportGHistory (const TDB& tdb, T& task, Config& conf)
+{
+  // Determine window size, and set table accordingly.
+  int width = conf.get ("defaultwidth", 80);
+#ifdef HAVE_LIBNCURSES
+  if (conf.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+  int widthOfBar = width - 15;   // strlen ("2008 September ")
+
+  std::map <time_t, int> groups;
+  std::map <time_t, int> addedGroup;
+  std::map <time_t, int> completedGroup;
+  std::map <time_t, int> deletedGroup;
+
+  // Scan the pending tasks.
+  std::vector <T> pending;
+  tdb.allPendingT (pending);
+  for (unsigned int i = 0; i < pending.size (); ++i)
+  {
+    T task (pending[i]);
+    time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
+    if (epoch)
+    {
+      groups[epoch] = 0;
+
+      if (addedGroup.find (epoch) != addedGroup.end ())
+        addedGroup[epoch] = addedGroup[epoch] + 1;
+      else
+        addedGroup[epoch] = 1;
+
+      if (task.getStatus () == T::deleted)
+      {
+        epoch = monthlyEpoch (task.getAttribute ("end"));
+
+        if (deletedGroup.find (epoch) != deletedGroup.end ())
+          deletedGroup[epoch] = deletedGroup[epoch] + 1;
+        else
+          deletedGroup[epoch] = 1;
+      }
+      else if (task.getStatus () == T::completed)
+      {
+        epoch = monthlyEpoch (task.getAttribute ("end"));
+
+        if (completedGroup.find (epoch) != completedGroup.end ())
+          completedGroup[epoch] = completedGroup[epoch] + 1;
+        else
+          completedGroup[epoch] = 1;
+      }
+    }
+  }
+
+  // Scan the completed tasks.
+  std::vector <T> completed;
+  tdb.allCompletedT (completed);
+  for (unsigned int i = 0; i < completed.size (); ++i)
+  {
+    T task (completed[i]);
+    time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
+    if (epoch)
+    {
+      groups[epoch] = 0;
+
+      if (addedGroup.find (epoch) != addedGroup.end ())
+        addedGroup[epoch] = addedGroup[epoch] + 1;
+      else
+        addedGroup[epoch] = 1;
+
+      epoch = monthlyEpoch (task.getAttribute ("end"));
+      if (task.getStatus () == T::deleted)
+      {
+        epoch = monthlyEpoch (task.getAttribute ("end"));
+
+        if (deletedGroup.find (epoch) != deletedGroup.end ())
+          deletedGroup[epoch] = deletedGroup[epoch] + 1;
+        else
+          deletedGroup[epoch] = 1;
+      }
+      else if (task.getStatus () == T::completed)
+      {
+        epoch = monthlyEpoch (task.getAttribute ("end"));
+        if (completedGroup.find (epoch) != completedGroup.end ())
+          completedGroup[epoch] = completedGroup[epoch] + 1;
+        else
+          completedGroup[epoch] = 1;
+      }
+    }
+  }
+
+  // Now build the table.
+  Table table;
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.addColumn ("Year");
+  table.addColumn ("Month");
+  table.addColumn ("Added/Completed/Deleted");
+
+  if (conf.get ("color", true))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+  }
+
+  // Determine the longest line.
+  int maxLine = 0;
+  foreach (i, groups)
+  {
+    int line = addedGroup[i->first] + completedGroup[i->first] + deletedGroup[i->first];
+
+    if (line > maxLine)
+      maxLine = line;
+  }
+
+  if (maxLine > 0)
+  {
+    int totalAdded     = 0;
+    int totalCompleted = 0;
+    int totalDeleted   = 0;
+
+    int priorYear = 0;
+    int row = 0;
+    foreach (i, groups)
+    {
+      row = table.addRow ();
+
+      totalAdded     += addedGroup[i->first];
+      totalCompleted += completedGroup[i->first];
+      totalDeleted   += deletedGroup[i->first];
+
+      Date dt (i->first);
+      int m, d, y;
+      dt.toMDY (m, d, y);
+
+      if (y != priorYear)
+      {
+        table.addCell (row, 0, y);
+        priorYear = y;
+      }
+      table.addCell (row, 1, Date::monthName(m));
+
+      unsigned int addedBar     = (widthOfBar *     addedGroup[i->first]) / maxLine;
+      unsigned int completedBar = (widthOfBar * completedGroup[i->first]) / maxLine;
+      unsigned int deletedBar   = (widthOfBar *   deletedGroup[i->first]) / maxLine;
+
+      std::string bar;
+      if (conf.get ("color", true))
+      {
+        char number[24];
+        sprintf (number, "%d", addedGroup[i->first]);
+        std::string aBar = number;
+        while (aBar.length () < addedBar)
+          aBar = " " + aBar;
+
+        sprintf (number, "%d", completedGroup[i->first]);
+        std::string cBar = number;
+        while (cBar.length () < completedBar)
+          cBar = " " + cBar;
+
+        sprintf (number, "%d", deletedGroup[i->first]);
+        std::string dBar = number;
+        while (dBar.length () < deletedBar)
+          dBar = " " + dBar;
+
+        bar  = Text::colorize (Text::black, Text::on_green,  aBar);
+        bar += Text::colorize (Text::black, Text::on_yellow, cBar);
+        bar += Text::colorize (Text::black, Text::on_red,    dBar);
+      }
+      else
+      {
+        std::string aBar = ""; while (aBar.length () < addedBar)     aBar += "+";
+        std::string cBar = ""; while (cBar.length () < completedBar) cBar += "+";
+        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += "+";
+
+        bar = aBar + cBar + dBar;
+      }
+
+      table.addCell (row, 2, bar);
+    }
+  }
+
+  if (table.rowCount ())
+  {
+    std::cout << optionalBlankLine (conf)
+              << table.render ()
+              << std::endl;
+
+    if (conf.get ("color", true))
+      std::cout << "Legend: "
+                << Text::colorize (Text::black, Text::on_green, "added")
+                << ", "
+                << Text::colorize (Text::black, Text::on_yellow, "completed")
+                << ", "
+                << Text::colorize (Text::black, Text::on_red, "deleted")
+                << std::endl;
+    else
+      std::cout << "Legend: + added, X completed, - deleted" << std::endl;
+  }
   else
     std::cout << "No tasks." << std::endl;
 }
