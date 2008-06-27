@@ -37,7 +37,7 @@
 class T
 {
 public:
-  enum status   {pending, completed, deleted};
+  enum status   {pending, completed, deleted, recurring};
 
   T ();                    // Default constructor
   T (const std::string&);  // Initialize by parsing storage format

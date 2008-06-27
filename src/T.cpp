@@ -247,7 +247,7 @@ void T::setSubstitution (const std::string& from, const std::string& to)
 // uuid status [tags] [attributes] description
 //
 // uuid         \x{8}-\x{4}-\x{4}-\x{4}-\x{12}
-// status       - O X
+// status       - + X r
 // tags         \w+ \s ...
 // attributes   \w+:\w+ \s ...
 // description  .+
@@ -261,6 +261,7 @@ const std::string T::compose () const
        if (mStatus == pending)   line += "- [";
   else if (mStatus == completed) line += "+ [";
   else if (mStatus == deleted)   line += "X [";
+  else if (mStatus == recurring) line += "r [";
 
   // Tags
   for (size_t i = 0; i < mTags.size (); ++i)
@@ -303,6 +304,7 @@ const std::string T::composeCSV ()
        if (mStatus == pending)   line += "'pending',";
   else if (mStatus == completed) line += "'completed',";
   else if (mStatus == deleted)   line += "'deleted',";
+  else if (mStatus == recurring) line += "'recurring',";
 
   // Tags
   line += "'";
@@ -499,7 +501,7 @@ int T::determineVersion (const std::string& line)
       line[18] == '-' &&
       line[23] == '-' &&
       line[36] == ' ' &&
-      (line[37] == '-' || line[37] == '+' || line[37] == 'X'))
+      (line[37] == '-' || line[37] == '+' || line[37] == 'X' || line[37] == 'r'))
     return 2;
 
   // Version 3?
