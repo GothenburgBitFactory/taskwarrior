@@ -242,8 +242,9 @@ std::string decode (color c)
 ////////////////////////////////////////////////////////////////////////////////
 std::string colorize (color fg, color bg, const std::string& input)
 {
-  if (fg != nocolor || bg != nocolor)
-    return decode (fg) + decode (bg) + input + decode (off);
+  if (input.length ())
+    if (fg != nocolor || bg != nocolor)
+      return decode (fg) + decode (bg) + input + decode (off);
 
   return input;
 }

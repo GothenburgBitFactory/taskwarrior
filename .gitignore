@@ -9,4 +9,5 @@ src/Makefile
 src/task
 stamp-h1
 Makefile
+configure
 config.log

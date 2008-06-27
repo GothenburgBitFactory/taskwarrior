@@ -1876,20 +1876,32 @@ void handleReportGHistory (const TDB& tdb, T& task, Config& conf)
       if (conf.get ("color", true))
       {
         char number[24];
-        sprintf (number, "%d", addedGroup[i->first]);
-        std::string aBar = number;
-        while (aBar.length () < addedBar)
-          aBar = " " + aBar;
+        std::string aBar = "";
+        if (addedGroup[i->first])
+        {
+          sprintf (number, "%d", addedGroup[i->first]);
+          aBar = number;
+          while (aBar.length () < addedBar)
+            aBar = " " + aBar;
+        }
 
-        sprintf (number, "%d", completedGroup[i->first]);
-        std::string cBar = number;
-        while (cBar.length () < completedBar)
-          cBar = " " + cBar;
+        std::string cBar = "";
+        if (completedGroup[i->first])
+        {
+          sprintf (number, "%d", completedGroup[i->first]);
+          cBar = number;
+          while (cBar.length () < completedBar)
+            cBar = " " + cBar;
+        }
 
-        sprintf (number, "%d", deletedGroup[i->first]);
-        std::string dBar = number;
-        while (dBar.length () < deletedBar)
-          dBar = " " + dBar;
+        std::string dBar = "";
+        if (deletedGroup[i->first])
+        {
+          sprintf (number, "%d", deletedGroup[i->first]);
+          dBar = number;
+          while (dBar.length () < deletedBar)
+            dBar = " " + dBar;
+        }
 
         bar  = Text::colorize (Text::black, Text::on_green,  aBar);
         bar += Text::colorize (Text::black, Text::on_yellow, cBar);
