@@ -952,7 +952,7 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
         formatTimeDeltaDays (age, (time_t) (now - dt));
       }
 
-      table.addCell (row, 1, entry + " (" + age + ")");
+      table.addCell (row, 1, entry + " (" + age + " ago)");
     }
   }
 
