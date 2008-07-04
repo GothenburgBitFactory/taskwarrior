@@ -241,9 +241,12 @@ static bool validAttribute (
     return validPriority (value);
   }
 
+  // Some attributes are intended to be private.
   else if (name == "entry" ||
            name == "start" ||
-           name == "end")
+           name == "end"   ||
+           name == "base"  ||
+           name == "range")
     throw std::string ("\"") +
           name              +
           "\" is not an attribute you may modify directly.";
@@ -321,8 +324,7 @@ static bool validSubstitution (
 ////////////////////////////////////////////////////////////////////////////////
 bool validDuration (const std::string& input)
 {
-  // TODO
-  return false;
+  return convertDuration (input) != 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -379,7 +381,10 @@ void parse (
         std::string value = arg.substr (colon + 1, std::string::npos);
 
         if (validAttribute (name, value, conf))
-          task.setAttribute (name, value);
+        {
+          if (name != "recur" || validDuration (value))
+            task.setAttribute (name, value);
+        }
       }
 
       // Substitution of description text.

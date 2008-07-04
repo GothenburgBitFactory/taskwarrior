@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include "Config.h"
 #include "Table.h"
+#include "Date.h"
 #include "color.h"
 #include "TDB.h"
 #include "T.h"
@@ -106,6 +107,8 @@ void formatTimeDeltaDays (std::string&, time_t);
 std::string formatSeconds (time_t);
 const std::string uuid ();
 const char* optionalBlankLine (Config&);
+int convertDuration (const std::string&);
+Date convertRelativeDate (const std::string&);
 
 // rules.cpp
 void initializeColorRules (Config&);

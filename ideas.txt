@@ -22,7 +22,7 @@ Test Suite
 
 Recurrence
   + new T::status recurring (stored as R)
-  - new user-specifiable attributes - recur:<duration> [until:<date>]
+  + new user-specifiable attributes - recur:<duration> [until:<date>]
   - duration:
       daily, day, 1d
       Nd

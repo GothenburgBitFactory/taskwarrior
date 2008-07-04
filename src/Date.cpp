@@ -63,6 +63,10 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
   int day   = 0;
   int year  = 0;
 
+  // Before parsing according to "format", perhaps this is a relative date?
+  if (isRelativeDate (mdy))
+    return;
+
   unsigned int i = 0; // Index into mdy.
 
   for (unsigned int f = 0; f < format.length (); ++f)
@@ -184,7 +188,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
   t.tm_mon = month - 1;
   t.tm_year = year - 1900;
 
-    mT = mktime (&t);
+  mT = mktime (&t);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -358,6 +362,22 @@ int Date::dayOfWeek () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int Date::dayOfWeek (const std::string& input)
+{
+  std::string in = lowerCase (input);
+
+  if (in == "sunday")     return 0;
+  if (in == "monday")     return 1;
+  if (in == "tuesday")    return 2;
+  if (in == "wednesday")  return 3;
+  if (in == "thursday")   return 4;
+  if (in == "friday")     return 5;
+  if (in == "saturday")   return 6;
+
+  return -1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Date::month () const
 {
   struct tm* t = localtime (&mT);
@@ -415,6 +435,36 @@ bool Date::operator>= (const Date& rhs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Date::sameDay (const Date& rhs)
+{
+  if (this->year ()  == rhs.year ()  &&
+      this->month () == rhs.month () &&
+      this->day ()   == rhs.day ())
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Date::sameMonth (const Date& rhs)
+{
+  if (this->year ()  == rhs.year () &&
+      this->month () == rhs.month ())
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Date::sameYear (const Date& rhs)
+{
+  if (this->year () == rhs.year ())
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Date Date::operator+ (const int delta)
 {
   return Date::Date (mT + delta);
@@ -438,6 +488,97 @@ Date& Date::operator-= (const int delta)
 time_t Date::operator- (const Date& rhs)
 {
   return mT - rhs.mT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// If the input string looks like a relative date, determine that date, set mT
+// and return true.
+//
+// What is a relative date?  All of the following should be recognizable, and
+// converted to an absolute date:
+//   wednesday
+//   fri
+//   23rd
+//   today
+//   tomorrow
+//   yesterday
+//   eow         (end of week)
+//   eom         (end of month)
+//   eoy         (end of year)
+bool Date::isRelativeDate (const std::string& input)
+{
+  std::string in (lowerCase (input));
+
+  std::vector <std::string> supported;
+  supported.push_back ("monday");
+  supported.push_back ("tuesday");
+  supported.push_back ("wednesday");
+  supported.push_back ("thursday");
+  supported.push_back ("friday");
+  supported.push_back ("saturday");
+  supported.push_back ("sunday");
+  supported.push_back ("today");
+  supported.push_back ("tomorrow");
+  supported.push_back ("yesterday");
+  supported.push_back ("eow");
+  supported.push_back ("eom");
+  supported.push_back ("eoy");
+
+  std::vector <std::string> matches;
+  if (autoComplete (in, supported, matches) == 1)
+  {
+    std::string found = matches[0];
+    Date today;
+
+    // If day name.
+    int dow;
+    if ((dow = Date::dayOfWeek (found)) != -1 ||
+        found == "eow")
+    {
+      if (found == "eow")
+        dow = 5;
+
+      if (today.dayOfWeek () >= dow)
+        today += (dow - today.dayOfWeek () + 7) * 86400;
+      else
+        today += (dow - today.dayOfWeek ()) * 86400;
+
+      mT = today.mT;
+      return true;
+    }
+    else if (found == "today")
+    {
+      mT = today.mT;
+      return true;
+    }
+    else if (found == "tomorrow")
+    {
+      mT = today.mT + 86400;
+      return true;
+    }
+    else if (found == "yesterday")
+    {
+      mT = today.mT - 86400;
+      return true;
+    }
+    else if (found == "eom")
+    {
+      Date then (today.month (),
+                 daysInMonth (today.month (), today.year ()),
+                 today.year ());
+      mT = then.mT;
+      return true;
+    }
+    else if (found == "eoy")
+    {
+      Date then (12, 31, today.year ());
+      mT = then.mT;
+      return true;
+    }
+//    \d|\d\d|\d\d\d|\d\d\d\d st|nd|rd|th
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

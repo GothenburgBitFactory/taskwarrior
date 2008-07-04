@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include "Date.h"
 #include "Table.h"
 #include "task.h"
 #include "../auto.h"
@@ -234,5 +235,20 @@ const std::string uuid ()
   return id;
 }
 #endif
+
+////////////////////////////////////////////////////////////////////////////////
+// Recognize the following constructs, and return the number of days represented
+int convertDuration (const std::string& input)
+{
+  // TODO
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Date convertRelativeDate (const std::string& input)
+{
+  // TODO
+  return Date ();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
