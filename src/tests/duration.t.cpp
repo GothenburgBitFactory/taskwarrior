@@ -8,19 +8,18 @@
 #include <../task.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-//   daily, day, d, Nd
-//   weekly, w, Nw, sennight, biweekly, fortnight
-//   monthly, m, bimonthly, Nm, semimonthly
+//   daily, day, Nd
+//   weekly, Nw, sennight, biweekly, fortnight
+//   monthly, bimonthly, Nm, semimonthly
 //   1st 2nd 3rd 4th .. 31st
-//   quarterly, q, Nq
-//   biannual, biyearly, annual, semiannual, yearly, y, Na, Ny
+//   quarterly, Nq
+//   biannual, biyearly, annual, semiannual, yearly, Ny
 int main (int argc, char** argv)
 {
-  plan (19);
+  plan (17);
 
   is (convertDuration ("daily"),       1, "duration daily = 1");
   is (convertDuration ("day"),         1, "duration day = 1");
-  is (convertDuration ("d"),           0, "duration d = 1");
   is (convertDuration ("0d"),          0, "duration 0d = 0");
   is (convertDuration ("1d"),          1, "duration 1d = 1");
   is (convertDuration ("7d"),          7, "duration 7d = 7");
@@ -32,7 +31,6 @@ int main (int argc, char** argv)
   is (convertDuration ("biweekly"),   14, "duration biweekly = 14");
   is (convertDuration ("fortnight"),  14, "duration fortnight = 14");
   is (convertDuration ("week"),        7, "duration week = 7");
-  is (convertDuration ("w"),           7, "duration w = 7");
   is (convertDuration ("0w"),          0, "duration 0w = 0");
   is (convertDuration ("1w"),          7, "duration 1w = 7");
   is (convertDuration ("7w"),         49, "duration 7w = 49");

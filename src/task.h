@@ -108,7 +108,7 @@ std::string formatSeconds (time_t);
 const std::string uuid ();
 const char* optionalBlankLine (Config&);
 int convertDuration (const std::string&);
-Date convertRelativeDate (const std::string&);
+int addDuration (const Date&, const std::string&);
 
 // rules.cpp
 void initializeColorRules (Config&);

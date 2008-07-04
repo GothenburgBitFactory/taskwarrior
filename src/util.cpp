@@ -240,15 +240,76 @@ const std::string uuid ()
 // Recognize the following constructs, and return the number of days represented
 int convertDuration (const std::string& input)
 {
-  // TODO
-  return 0;
+  std::string in (lowerCase (input));
+  Date today;
+
+  std::vector <std::string> supported;
+  supported.push_back ("daily");
+  supported.push_back ("day");
+  supported.push_back ("weekly");
+  supported.push_back ("sennight");
+  supported.push_back ("biweekly");
+  supported.push_back ("fortnight");
+  supported.push_back ("monthly");
+  supported.push_back ("bimonthly");
+  supported.push_back ("semimonthly");
+  supported.push_back ("quarterly");
+  supported.push_back ("biannual");
+  supported.push_back ("biyearly");
+  supported.push_back ("annual");
+  supported.push_back ("semiannual");
+  supported.push_back ("yearly");
+
+  std::vector <std::string> matches;
+  if (autoComplete (in, supported, matches) == 1)
+  {
+    std::string found = matches[0];
+
+         if (found == "daily" || found == "day")          return 1;
+    else if (found == "weekly" || found == "sennight")    return 7;
+    else if (found == "biweekly" || found == "fortnight") return 14;
+    else if (found == "semimonthly")                      return 15;
+    else if (found == "monthly")                          return 30;
+    else if (found == "bimonthly")                        return 61;
+    else if (found == "quarterly")                        return 91;
+    else if (found == "semiannual")                       return 183;
+    else if (found == "yearly" || found == "annual")      return 365;
+    else if (found == "biannual" || found == "biyearly")  return 730;
+  }
+
+  // Support \d+ d|w|m|q|y
+
+  else
+  {
+    // Verify all digits followed by d, w, m, q, or y.
+    int length = input.length ();
+    for (unsigned int i = 0; i < length; ++i)
+    {
+      if (! isdigit (input[i]) &&
+          i == length - 1)
+      {
+        int number = ::atoi (input.substr (0, i).c_str ());
+        char ordinal = input[length - 1];
+
+        switch (input[length - 1])
+        {
+        case 'd': return number *   1; break;
+        case 'w': return number *   7; break;
+        case 'm': return number *  30; break;
+        case 'q': return number *  91; break;
+        case 'y': return number * 365; break;
+        }
+      }
+    }
+  }
+
+  return 0; // Error.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Date convertRelativeDate (const std::string& input)
+int addDuration (const Date& base, const std::string& offset)
 {
-  // TODO
-  return Date ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
