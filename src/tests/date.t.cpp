@@ -211,7 +211,8 @@ int main (int argc, char** argv)
 
   catch (std::string& e)
   {
-    std::cout << e << std::endl;
+    fail ("Exception thrown.");
+    diag (e);
   }
 
   return 0;

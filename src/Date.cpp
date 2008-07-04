@@ -508,6 +508,7 @@ time_t Date::operator- (const Date& rhs)
 bool Date::isRelativeDate (const std::string& input)
 {
   std::string in (lowerCase (input));
+  Date today;
 
   std::vector <std::string> supported;
   supported.push_back ("monday");
@@ -528,7 +529,6 @@ bool Date::isRelativeDate (const std::string& input)
   if (autoComplete (in, supported, matches) == 1)
   {
     std::string found = matches[0];
-    Date today;
 
     // If day name.
     int dow;
@@ -575,7 +575,64 @@ bool Date::isRelativeDate (const std::string& input)
       mT = then.mT;
       return true;
     }
-//    \d|\d\d|\d\d\d|\d\d\d\d st|nd|rd|th
+  }
+
+  // Support "21st" to indicate the next date that is the 21st day.
+  else if (input.length () <= 4 &&
+           isdigit (input[0]))
+  {
+    int number;
+    std::string ordinal;
+
+    if (isdigit (input[1]))
+    {
+      number = ::atoi (input.substr (0, 2).c_str ());
+      ordinal = lowerCase (input.substr (2, std::string::npos));
+    }
+    else
+    {
+      number = ::atoi (input.substr (0, 2).c_str ());
+      ordinal = lowerCase (input.substr (1, std::string::npos));
+    }
+
+    // Sanity check.
+    if (number <= 31)
+    {
+      if (ordinal == "st" ||
+          ordinal == "nd" ||
+          ordinal == "rd" ||
+          ordinal == "th")
+      {
+        int m = today.month ();
+        int d = today.day ();
+        int y = today.year ();
+
+        // If it is this month.
+        if (d < number &&
+            number <= Date::daysInMonth (m, y))
+        {
+          Date then (m, number, y);
+          mT = then.mT;
+          return true;
+        }
+
+        do
+        {
+          m++;
+
+          if (m > 12)
+          {
+            m = 1;
+            y++;
+          }
+        }
+        while (number > Date::daysInMonth (m, y));
+
+        Date then (m, number, y);
+        mT = then.mT;
+        return true;
+      }
+    }
   }
 
   return false;
