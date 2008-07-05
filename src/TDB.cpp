@@ -239,7 +239,6 @@ bool TDB::completeT (const T& t) const
 bool TDB::addT (const T& t) const
 {
   T task (t);
-
   std::vector <std::string> tags;
   task.getTags (tags);
 
@@ -254,7 +253,8 @@ bool TDB::addT (const T& t) const
     }
   }
 
-  if (task.getStatus () == T::pending)
+  if (task.getStatus () == T::pending ||
+      task.getStatus () == T::recurring)
     return writePending (task);
 
   return writeCompleted (task);

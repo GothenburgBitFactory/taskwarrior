@@ -381,10 +381,8 @@ void parse (
         std::string value = arg.substr (colon + 1, std::string::npos);
 
         if (validAttribute (name, value, conf))
-        {
           if (name != "recur" || validDuration (value))
             task.setAttribute (name, value);
-        }
       }
 
       // Substitution of description text.
@@ -407,6 +405,14 @@ void parse (
         descCandidate += std::string (arg) + " ";
     }
   }
+
+  if (task.getAttribute ("recur") != "" &&
+      task.getAttribute ("due")   == "")
+    throw std::string ("You cannot specify a recurring task without a due date.");
+
+  if (task.getAttribute ("until") != "" &&
+      task.getAttribute ("recur") == "")
+    throw std::string ("You cannot specify an until date for a non-recurring task.");
 
   if (validDescription (descCandidate))
     task.setDescription (descCandidate);

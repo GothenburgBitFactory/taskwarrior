@@ -83,7 +83,7 @@ void initializeColorRules (Config& conf)
 void autoColorize (T& task, Text::color& fg, Text::color& bg)
 {
   // Note: fg, bg already contain colors specifically assigned via command.
-  // TODO These rules form a hierarchy - the last rule is king.
+  // Note: These rules form a hierarchy - the last rule is king.
 
   // Colorization of the tagged.
   if (gsFg["color.tagged"] != Text::nocolor ||

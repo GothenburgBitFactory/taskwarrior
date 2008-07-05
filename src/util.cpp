@@ -282,7 +282,7 @@ int convertDuration (const std::string& input)
   else
   {
     // Verify all digits followed by d, w, m, q, or y.
-    int length = input.length ();
+    unsigned int length = input.length ();
     for (unsigned int i = 0; i < length; ++i)
     {
       if (! isdigit (input[i]) &&

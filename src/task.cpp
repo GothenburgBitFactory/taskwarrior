@@ -403,6 +403,9 @@ void handleAdd (const TDB& tdb, T& task, Config& conf)
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
   task.setAttribute ("entry", entryTime);
 
+  if (task.getAttribute ("recur") != "")
+    decorateRecurringTask (task);
+
   if (task.getDescription () == "")
     throw std::string ("Cannot add a blank task.");
 
@@ -3352,6 +3355,18 @@ void nag (const TDB& tdb, T& task, Config& conf)
         return;
 
     std::cout << nagMessage << std::endl;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void decorateRecurringTask (T& task)
+{
+  if (task.getAttribute ("due")   != "" &&
+      task.getAttribute ("recur") != "")
+  {
+    task.setAttribute ("base", task.getAttribute ("due"));
+
+    // TODO Create "range".
   }
 }
 
