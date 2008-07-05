@@ -16,14 +16,14 @@ User-Defined Reports
   ID UUID Project Priority Entry Start Due Active Tags Description
 
 Test Suite
-  allow .taskrc override
-  debug=on to cause all cout to be csv
-  regression tests for every bug, command, feature
+  - allow .taskrc override
+  - debug=on to cause all cout to be csv
+  - regression tests for every bug, command, feature
 
 Recurrence
   + new T::status recurring (stored as R)
   + new user-specifiable attributes - recur:<duration> [until:<date>]
-  - duration:
+  + duration:
       daily, day, 1d
       Nd
       weekly, 1w
@@ -37,9 +37,9 @@ Recurrence
       biannual, biyearly
       annual, yearly, 1y
       Na, Ny
-  - recur: without due:   => Error
-  - until: without recur: => Error
-  - New file format (version 3):  supports status R, recur:, until:, base:, range:
+  + recur: without due:   => Error
+  + until: without recur: => Error
+  + New file format:  supports status R, recur:, until:, base:, range:
   - on TDB.gc, adjust base: and compress range: for T::status == recurring
   - all recurring tasks are removed from lists by T::*pendingT, and a synthetic
     addendum is generated
@@ -67,3 +67,4 @@ Recurrence
       5 Friday 7/13/2008                 (not shown)
       6 Friday 7/20/2008                 (not shown)
       7 Friday 7/27/2008                 (not shown)
+

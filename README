@@ -3,12 +3,13 @@ Thank you for taking a look at task.  Task is a GTD utility featuring:
   - Robust C++ implementation
   - Tags
   - Colorful, tabular output
-  - Reports
+  - Reports, graphs
   - Lots of commands
   - Low-level API
   - Abbreviations for all commands, options
   - Multi-user file locking
   - Clean architecture allowing quick addition of new features
+  - Recurring tasks
 
 It is intended that features, mainly in the form of reports will be added
 frequently, with best practices and useful reports evolving from usage patterns.
@@ -33,7 +34,7 @@ Task is based on ideas presented in the todo.sh script, found on:
 
   http://todotxt.org
 
-Task has a few more features than todo.sh, but fundamentally, they are both
+Task has many more features than todo.sh, but fundamentally, they are both
 working toward the same goals, which is to help you follow basic Getting Things
 Done (GTD) principles.
 
