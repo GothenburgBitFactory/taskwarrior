@@ -265,15 +265,15 @@ int convertDuration (const std::string& input)
   {
     std::string found = matches[0];
 
-         if (found == "daily" || found == "day")          return 1;
-    else if (found == "weekly" || found == "sennight")    return 7;
+         if (found == "daily"    || found == "day")       return 1;
+    else if (found == "weekly"   || found == "sennight")  return 7;
     else if (found == "biweekly" || found == "fortnight") return 14;
     else if (found == "semimonthly")                      return 15;
     else if (found == "monthly")                          return 30;
     else if (found == "bimonthly")                        return 61;
     else if (found == "quarterly")                        return 91;
     else if (found == "semiannual")                       return 183;
-    else if (found == "yearly" || found == "annual")      return 365;
+    else if (found == "yearly"   || found == "annual")    return 365;
     else if (found == "biannual" || found == "biyearly")  return 730;
   }
 
@@ -289,7 +289,6 @@ int convertDuration (const std::string& input)
           i == length - 1)
       {
         int number = ::atoi (input.substr (0, i).c_str ());
-        char ordinal = input[length - 1];
 
         switch (input[length - 1])
         {

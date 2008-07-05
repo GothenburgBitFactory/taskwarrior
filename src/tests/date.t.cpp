@@ -158,46 +158,46 @@ int main (int argc, char** argv)
     ok (r3.sameDay (now - 86400), "yesterday = now - 1d");
 
     Date r4 ("sunday");
-    if (now.dayOfWeek () <= 0)
-      ok (r4.sameDay (now + (7 - now.dayOfWeek ()) * 86499), "next sunday");
+    if (now.dayOfWeek () >= 0)
+      ok (r4.sameDay (now + (0 - now.dayOfWeek () + 7) * 86400), "next sunday");
     else
-      ok (r4.sameDay (now + (r4.dayOfWeek () - now.dayOfWeek ()) * 86400), "next sunday");
+      ok (r4.sameDay (now + (0 - now.dayOfWeek ()) * 86400), "next sunday");;
 
     Date r5 ("monday");
-    if (now.dayOfWeek () <= 1)
-      ok (r5.sameDay (now + (7 - now.dayOfWeek ()) * 86499), "next monday");
+    if (now.dayOfWeek () >= 1)
+      ok (r5.sameDay (now + (1 - now.dayOfWeek () + 7) * 86400), "next monday");
     else
-      ok (r5.sameDay (now + (r5.dayOfWeek () - now.dayOfWeek ()) * 86400), "next monday");
+      ok (r5.sameDay (now + (1 - now.dayOfWeek ()) * 86400), "next monday");;
 
     Date r6 ("tuesday");
-    if (now.dayOfWeek () <= 2)
-      ok (r6.sameDay (now + (7 - now.dayOfWeek ()) * 86499), "next tuesday");
+    if (now.dayOfWeek () >= 2)
+      ok (r6.sameDay (now + (2 - now.dayOfWeek () + 7) * 86400), "next tuesday");
     else
-      ok (r6.sameDay (now + (r6.dayOfWeek () - now.dayOfWeek ()) * 86400), "next tuesday");
+      ok (r6.sameDay (now + (2 - now.dayOfWeek ()) * 86400), "next tuesday");;
 
     Date r7 ("wednesday");
-    if (now.dayOfWeek () <= 3)
-      ok (r7.sameDay (now + (7 - now.dayOfWeek ()) * 86499), "next wednesday");
+    if (now.dayOfWeek () >= 3)
+      ok (r7.sameDay (now + (3 - now.dayOfWeek () + 7) * 86400), "next wednesday");
     else
-      ok (r7.sameDay (now + (r7.dayOfWeek () - now.dayOfWeek ()) * 86400), "next wednesday");
+      ok (r7.sameDay (now + (3 - now.dayOfWeek ()) * 86400), "next wednesday");;
 
     Date r8 ("thursday");
-    if (now.dayOfWeek () <= 4)
-      ok (r8.sameDay (now + (7 - now.dayOfWeek ()) * 86499), "next thursday");
+    if (now.dayOfWeek () >= 4)
+      ok (r8.sameDay (now + (4 - now.dayOfWeek () + 7) * 86400), "next thursday");
     else
-      ok (r8.sameDay (now + (r8.dayOfWeek () - now.dayOfWeek ()) * 86400), "next thursday");
+      ok (r8.sameDay (now + (4 - now.dayOfWeek ()) * 86400), "next thursday");;
 
     Date r9 ("friday");
-    if (now.dayOfWeek () <= 5)
-      ok (r9.sameDay (now + (7 - now.dayOfWeek ()) * 86499), "next friday");
+    if (now.dayOfWeek () >= 5)
+      ok (r9.sameDay (now + (5 - now.dayOfWeek () + 7) * 86400), "next friday");
     else
-      ok (r9.sameDay (now + (r9.dayOfWeek () - now.dayOfWeek ()) * 86400), "next friday");
+      ok (r9.sameDay (now + (5 - now.dayOfWeek ()) * 86400), "next friday");;
 
     Date r10 ("saturday");
-    if (now.dayOfWeek () <= 6)
-      ok (r10.sameDay (now + (7 - now.dayOfWeek ()) * 86499), "next saturday");
+    if (now.dayOfWeek () >= 6)
+      ok (r10.sameDay (now + (6 - now.dayOfWeek () + 7) * 86400), "next saturday");
     else
-      ok (r10.sameDay (now + (r10.dayOfWeek () - now.dayOfWeek ()) * 86400), "next saturday");
+      ok (r10.sameDay (now + (6 - now.dayOfWeek ()) * 86400), "next saturday");;
 
     Date r11 ("eow");
     ok (r11 < now + (8 * 86400), "eow < 7 days away");
