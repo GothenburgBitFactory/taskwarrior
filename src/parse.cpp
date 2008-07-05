@@ -235,9 +235,7 @@ static bool validAttribute (
 
   else if (name == "priority")
   {
-    for (std::string::iterator i = value.begin (); i != value.end (); ++i)
-      *i = ::toupper (*i);
-
+    value = upperCase (value);
     return validPriority (value);
   }
 
@@ -248,7 +246,7 @@ static bool validAttribute (
            name == "base"  ||
            name == "range")
     throw std::string ("\"") +
-          name              +
+          name               +
           "\" is not an attribute you may modify directly.";
 
   return true;

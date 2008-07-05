@@ -21,6 +21,7 @@ represents a feature release, and the Z represents a patch.
   + Supports relative due: dates (tomorrow, wednesday, 23rd, eom ...)
   + Bug: Fixed where Esc[0m sequences were being emitted for no good reason
   + Bug: Fixed underlined table headers when color is turned off
+  + Bug: Adding a blank priority resulted in an assigned garbage value
 
 ------ reality -----------------------------------
 

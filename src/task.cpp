@@ -403,6 +403,14 @@ void handleAdd (const TDB& tdb, T& task, Config& conf)
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
   task.setAttribute ("entry", entryTime);
 
+  std::map <std::string, std::string> atts;
+  task.getAttributes (atts);
+  foreach (i, atts)
+  {
+    if (i->second == "")
+      task.removeAttribute (i->first);
+  }
+
   if (task.getAttribute ("recur") != "")
     decorateRecurringTask (task);
 

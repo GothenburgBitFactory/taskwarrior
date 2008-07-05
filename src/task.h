@@ -102,6 +102,7 @@ void split (std::vector<std::string>&, const std::string&, const std::string&);
 void join (std::string&, const std::string&, const std::vector<std::string>&);
 std::string commify (const std::string&);
 std::string lowerCase (const std::string&);
+std::string upperCase (const std::string&);
 void delay (float);
 int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&);
 void formatTimeDeltaDays (std::string&, time_t);
