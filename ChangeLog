@@ -19,6 +19,7 @@ represents a feature release, and the Z represents a patch.
   + Added ability to override ~/.taskrc with rc:<file>
   + Added bar chart history report "task ghistory"
   + Added task filtering on all reports
+  + Automatically shuts off color, curses when output is not a tty
   + Supports relative due: dates (tomorrow, wednesday, 23rd, eom ...)
   + Bug: Fixed where Esc[0m sequences were being emitted for no good reason
   + Bug: Fixed underlined table headers when color is turned off

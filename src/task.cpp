@@ -28,6 +28,7 @@
 #include <iomanip>
 #include <fstream>
 #include <sys/types.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
@@ -274,6 +275,13 @@ int main (int argc, char** argv)
     // found, offer to create a sample one.
     Config conf;
     loadConfFile (argc, argv, conf);
+
+    // When redirecting output to a file, do not use color, curses.
+    if (!isatty (fileno (stdout)))
+    {
+      conf.set ("curses", "off");
+      conf.set ("color",  "off");
+    }
 
     TDB tdb;
     tdb.dataDirectory (conf.get ("data.location"));
@@ -585,16 +593,19 @@ void handleList (const TDB& tdb, T& task, Config& conf)
     // Now format the matching task.
     bool imminent = false;
     bool overdue = false;
-    Date now;
     std::string due = refTask.getAttribute ("due");
     if (due.length ())
     {
+      switch (getDueState (due))
+      {
+      case 2: overdue = true;  break;
+      case 1: imminent = true; break;
+      case 0:
+      default:                 break;
+      }
+
       Date dt (::atoi (due.c_str ()));
       due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-      overdue = (dt < now) ? true : false;
-      Date nextweek = now + 7 * 86400;
-      imminent = dt < nextweek ? true : false;
     }
 
     std::string active;
@@ -605,6 +616,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
     std::string created = refTask.getAttribute ("entry");
     if (created.length ())
     {
+      Date now;
       Date dt (::atoi (created.c_str ()));
       formatTimeDeltaDays (age, (time_t) (now - dt));
     }
@@ -711,16 +723,19 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
     // Now format the matching task.
     bool imminent = false;
     bool overdue = false;
-    Date now;
     std::string due = refTask.getAttribute ("due");
     if (due.length ())
     {
+      switch (getDueState (due))
+      {
+      case 2: overdue = true;  break;
+      case 1: imminent = true; break;
+      case 0:
+      default:                 break;
+      }
+
       Date dt (::atoi (due.c_str ()));
       due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-      overdue = (dt < now) ? true : false;
-      Date nextweek = now + 7 * 86400;
-      imminent = dt < nextweek ? true : false;
     }
 
     std::string active;
@@ -731,6 +746,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
     std::string created = refTask.getAttribute ("entry");
     if (created.length ())
     {
+      Date now;
       Date dt (::atoi (created.c_str ()));
       formatTimeDeltaDays (age, (time_t) (now - dt));
     }
@@ -1165,12 +1181,16 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
     std::string due = refTask.getAttribute ("due");
     if (due.length ())
     {
+      switch (getDueState (due))
+      {
+      case 2: overdue = true;  break;
+      case 1: imminent = true; break;
+      case 0:
+      default:                 break;
+      }
+
       Date dt (::atoi (due.c_str ()));
       due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-      overdue = (dt < now) ? true : false;
-      Date nextweek = now + 7 * 86400;
-      imminent = dt < nextweek ? true : false;
     }
 
     std::string age;
@@ -1475,20 +1495,24 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   foreach (i, matching)
   {
     T refTask (pending[*i]);
+    Date now;
 
     // Now format the matching task.
     bool imminent = false;
     bool overdue = false;
-    Date now;
     std::string due = refTask.getAttribute ("due");
     if (due.length ())
     {
+      switch (getDueState (due))
+      {
+      case 2: overdue = true;  break;
+      case 1: imminent = true; break;
+      case 0:
+      default:                 break;
+      }
+
       Date dt (::atoi (due.c_str ()));
       due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-      overdue = (dt < now) ? true : false;
-      Date nextweek = now + 7 * 86400;
-      imminent = dt < nextweek ? true : false;
     }
 
     std::string active;
@@ -1932,8 +1956,8 @@ void handleReportGHistory (const TDB& tdb, T& task, Config& conf)
       else
       {
         std::string aBar = ""; while (aBar.length () < addedBar)     aBar += "+";
-        std::string cBar = ""; while (cBar.length () < completedBar) cBar += "+";
-        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += "+";
+        std::string cBar = ""; while (cBar.length () < completedBar) cBar += "X";
+        std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += "-";
 
         bar = aBar + cBar + dBar;
       }
@@ -2301,18 +2325,22 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
     T refTask (tasks[i]);
     if (refTask.getAttribute ("start") != "")
     {
+      Date now;
       bool imminent = false;
       bool overdue = false;
       std::string due = refTask.getAttribute ("due");
       if (due.length ())
       {
+        switch (getDueState (due))
+        {
+        case 2: overdue = true;  break;
+        case 1: imminent = true; break;
+        case 0:
+        default:                 break;
+        }
+
         Date dt (::atoi (due.c_str ()));
         due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-        Date now;
-        overdue = dt < now ? true : false;
-        Date nextweek = now + 7 * 86400;
-        imminent = dt < nextweek ? true : false;
       }
 
       // All criteria match, so add refTask to the output table.
@@ -2529,20 +2557,24 @@ void handleReportOldest (const TDB& tdb, T& task, Config& conf)
   for (unsigned int i = 0; i < min (quantity, tasks.size ()); ++i)
   {
     T refTask (tasks[i]);
+    Date now;
 
     // Now format the matching task.
     bool imminent = false;
     bool overdue = false;
-    Date now;
     std::string due = refTask.getAttribute ("due");
     if (due.length ())
     {
+      switch (getDueState (due))
+      {
+      case 2: overdue = true;  break;
+      case 1: imminent = true; break;
+      case 0:
+      default:                 break;
+      }
+
       Date dt (::atoi (due.c_str ()));
       due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-      overdue = (dt < now) ? true : false;
-      Date nextweek = now + 7 * 86400;
-      imminent = dt < nextweek ? true : false;
     }
 
     std::string active;
@@ -2669,20 +2701,24 @@ void handleReportNewest (const TDB& tdb, T& task, Config& conf)
   for (int i = total - 1; i >= max (0, total - quantity); --i)
   {
     T refTask (tasks[i]);
+    Date now;
 
     // Now format the matching task.
     bool imminent = false;
     bool overdue = false;
-    Date now;
     std::string due = refTask.getAttribute ("due");
     if (due.length ())
     {
+      switch (getDueState (due))
+      {
+      case 2: overdue = true;  break;
+      case 1: imminent = true; break;
+      case 0:
+      default:                 break;
+      }
+
       Date dt (::atoi (due.c_str ()));
       due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-      overdue = (dt < now) ? true : false;
-      Date nextweek = now + 7 * 86400;
-      imminent = dt < nextweek ? true : false;
     }
 
     std::string active;
@@ -3386,12 +3422,35 @@ void decorateRecurringTask (T& task)
       task.getAttribute ("recur") != "")
   {
     task.setAttribute ("base", task.getAttribute ("due"));
-
-    // TODO Create "range".
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Determines whether a task is overdue.  Returns
+//   0 = not due at all
+//   1 = imminent
+//   2 = overdue
+int getDueState (const std::string& due)
+{
+  if (due.length ())
+  {
+    Date dt (::atoi (due.c_str ()));
+    Date now;
+
+    if (dt < now)
+      return 2;
+
+    Date nextweek = now + 7 * 86400;
+    if (dt < nextweek)
+      return 1;
+  }
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Scan for recurring tasks, and generate any necessary instances of those
+// tasks.
 void checkRecurring (std::vector <T>& tasks)
 {
   std::vector <T>::iterator it;
@@ -3399,7 +3458,18 @@ void checkRecurring (std::vector <T>& tasks)
   {
     if (it->getStatus () == T::recurring)
     {
+      // This task is recurring.  While it remains hidden from view, it spawns
+      // child tasks automatically, here, that are regular tasks, except they
+      // have a "parent" attribute that contains the UUID of the original.
 
+      // Generate a list of child tasks.
+      std::vector <T> children;
+      std::vector <T>::iterator them;
+      for (them = tasks.begin (); them != tasks.end (); ++them)
+        if (them->getAttribute ("parent") != "")
+          children.push_back (*them);
+
+      // TODO Determine if any new child tasks need to be generated.
 
     }
   }
