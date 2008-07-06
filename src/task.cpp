@@ -1073,6 +1073,12 @@ void handleUndelete (const TDB& tdb, T& task, Config& conf)
     {
       if (it->getStatus () == T::deleted)
       {
+        if (it->getAttribute ("recur") != "")
+        {
+          std::cout << "Task does not support 'undelete' for recurring tasks." << std::endl;
+          return;
+        }
+
         T restored (*it);
         restored.setStatus (T::pending);
         restored.removeAttribute ("end");
