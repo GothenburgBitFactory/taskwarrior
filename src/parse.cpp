@@ -109,8 +109,6 @@ static const char* attributes[] =
   "end",
   "recur",
   "until",
-  "base",
-  "range",
   "",
 };
 
@@ -242,9 +240,7 @@ static bool validAttribute (
   // Some attributes are intended to be private.
   else if (name == "entry" ||
            name == "start" ||
-           name == "end"   ||
-           name == "base"  ||
-           name == "range")
+           name == "end")
     throw std::string ("\"") +
           name               +
           "\" is not an attribute you may modify directly.";

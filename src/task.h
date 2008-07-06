@@ -87,7 +87,6 @@ void handleModify (const TDB&, T&, Config&);
 void handleColor (Config&);
 void gatherNextTasks (const TDB&, T&, Config&, std::vector <T>&, std::vector <int>&);
 void nag (const TDB&, T&, Config&);
-void decorateRecurringTask (T&);
 void checkRecurring (std::vector <T>&);
 
 // util.cpp
