@@ -540,7 +540,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
   tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
-  checkRecurring (tasks);
+  handleRecurrence (tasks);
   filter (tasks, task);
 
   initializeColorRules (conf);
@@ -685,7 +685,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
   tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
-  checkRecurring (tasks);
+  handleRecurrence (tasks);
   filter (tasks, task);
 
   initializeColorRules (conf);
@@ -1114,7 +1114,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
   tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
-  checkRecurring (tasks);
+  handleRecurrence (tasks);
   filter (tasks, task);
 
   initializeColorRules (conf);
@@ -1273,7 +1273,7 @@ void handleReportSummary (const TDB& tdb, T& task, Config& conf)
   std::map <std::string, bool> allProjects;
   std::vector <T> pending;
   tdb.allPendingT (pending);
-  checkRecurring (pending);
+  handleRecurrence (pending);
   filter (pending, task);
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
@@ -1442,7 +1442,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
-  checkRecurring (pending);
+  handleRecurrence (pending);
   filter (pending, task);
 
   // Restrict to matching subset.
@@ -1619,7 +1619,7 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
   tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
-  checkRecurring (pending);
+  handleRecurrence (pending);
   filter (pending, task);
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
@@ -1813,7 +1813,7 @@ void handleReportGHistory (const TDB& tdb, T& task, Config& conf)
   tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
-  checkRecurring (pending);
+  handleRecurrence (pending);
   filter (pending, task);
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
@@ -2002,6 +2002,7 @@ void handleReportGHistory (const TDB& tdb, T& task, Config& conf)
                 << Text::colorize (Text::black, Text::on_yellow, "completed")
                 << ", "
                 << Text::colorize (Text::black, Text::on_red, "deleted")
+                << optionalBlankLine (conf)
                 << std::endl;
     else
       std::cout << "Legend: + added, X completed, - deleted" << std::endl;
@@ -2212,7 +2213,7 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
   tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
-  checkRecurring (pending);
+  handleRecurrence (pending);
   filter (pending, task);
 
   // Find the oldest pending due date.
@@ -2532,7 +2533,7 @@ void handleReportOldest (const TDB& tdb, T& task, Config& conf)
   tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
-  checkRecurring (tasks);
+  handleRecurrence (tasks);
   filter (tasks, task);
 
   initializeColorRules (conf);
@@ -2675,7 +2676,7 @@ void handleReportNewest (const TDB& tdb, T& task, Config& conf)
   tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
-  checkRecurring (tasks);
+  handleRecurrence (tasks);
   filter (tasks, task);
 
   initializeColorRules (conf);
@@ -3492,7 +3493,7 @@ int getDueState (const std::string& due)
 ////////////////////////////////////////////////////////////////////////////////
 // Scan for recurring tasks, and generate any necessary instances of those
 // tasks.
-void checkRecurring (std::vector <T>& tasks)
+void handleRecurrence (std::vector <T>& tasks)
 {
   std::vector <T> modified;
 
@@ -3512,8 +3513,10 @@ void checkRecurring (std::vector <T>& tasks)
         if (them->getAttribute ("parent") != "")
           children.push_back (*them);
 
-      // TODO Determine if any new child tasks need to be generated.
+      // TODO Determine if any new child tasks need to be generated, and do it.
 
+      // TODO if before "until" date, or "until" missing
+        // TODO Iterate from "due", incrementing by "recur"
     }
     else
       modified.push_back (*it);
