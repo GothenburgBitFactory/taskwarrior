@@ -2943,7 +2943,29 @@ void handleVersion (Config& conf)
 void handleDelete (const TDB& tdb, T& task, Config& conf)
 {
   if (conf.get ("confirmation") != "yes" || confirm ("Permanently delete task?"))
-    tdb.deleteT (task);
+  {
+    // Check for the more complex case of a recurring task.
+    std::string parent = task.getAttribute ("parent");
+
+    // If this is a recurring task, get confirmation to delete them all.
+    if (parent != "" &&
+        confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
+    {
+      // Scan all pending tasks for siblings of this task, and the parent
+      // itself, and delete them.
+      std::vector <T> all;
+      tdb.allPendingT (all);
+      std::vector <T>::iterator it;
+      for (it = all.begin (); it != all.end (); ++it)
+        if (it->getAttribute ("parent") == parent ||
+            it->getUUID ()              == parent)
+          tdb.deleteT (*it);
+    }
+
+    // No confirmation, just delete the one.
+    else
+      tdb.deleteT (task);
+  }
   else
     std::cout << "Task not deleted." << std::endl;
 }
