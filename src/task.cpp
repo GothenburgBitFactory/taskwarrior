@@ -2790,6 +2790,7 @@ void handleReportStats (const TDB& tdb, T& task, Config& conf)
   int pendingT      = 0;
   int completedT    = 0;
   int taggedT       = 0;
+  int recurringT    = 0;
   float daysPending = 0.0;
   int descLength    = 0;
 
@@ -2800,6 +2801,7 @@ void handleReportStats (const TDB& tdb, T& task, Config& conf)
     if (it->getStatus () == T::deleted)   ++deletedT;
     if (it->getStatus () == T::pending)   ++pendingT;
     if (it->getStatus () == T::completed) ++completedT;
+    if (it->getStatus () == T::recurring) ++recurringT;
 
     time_t entry = ::atoi (it->getAttribute ("entry").c_str ());
     if (entry < earliest) earliest = entry;
@@ -2822,6 +2824,7 @@ void handleReportStats (const TDB& tdb, T& task, Config& conf)
   }
 
   std::cout << "Pending               " << pendingT   << std::endl
+            << "Recurring             " << recurringT << std::endl
             << "Completed             " << completedT << std::endl
             << "Deleted               " << deletedT   << std::endl
             << "Total                 " << totalT     << std::endl;
