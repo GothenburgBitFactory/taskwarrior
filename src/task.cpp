@@ -528,7 +528,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
 
   // Get the pending tasks.
   std::vector <T> tasks;
-  tdb.pendingT (tasks);
+  tdb.allPendingT (tasks);
 
   initializeColorRules (conf);
 
@@ -575,9 +575,12 @@ void handleList (const TDB& tdb, T& task, Config& conf)
   table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
   filter (tasks, task);
+  checkRecurring (tasks);
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
     T refTask (tasks[i]);
+    if (refTask.getStatus () != T::pending)
+      continue;
 
     // Now format the matching task.
     bool imminent = false;
@@ -1235,6 +1238,7 @@ void handleReportSummary (const TDB& tdb, T& task, Config& conf)
   std::map <std::string, bool> allProjects;
   std::vector <T> pending;
   tdb.pendingT (pending);
+  filter (pending, task);
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
     T task (pending[i]);
@@ -1243,6 +1247,7 @@ void handleReportSummary (const TDB& tdb, T& task, Config& conf)
 
   std::vector <T> completed;
   tdb.completedT (completed);
+  filter (completed, task);
   for (unsigned int i = 0; i < completed.size (); ++i)
   {
     T task (completed[i]);
@@ -1399,6 +1404,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   // Load all pending.
   std::vector <T> pending;
   tdb.allPendingT (pending);
+  filter (pending, task);
 
   // Restrict to matching subset.
   std::vector <int> matching;
@@ -1420,6 +1426,7 @@ void handleReportNext (const TDB& tdb, T& task, Config& conf)
   // Get the pending tasks.
   std::vector <T> tasks;
   tdb.pendingT (tasks);
+  filter (tasks, task);
 
   initializeColorRules (conf);
 
@@ -1568,6 +1575,7 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
   // Scan the pending tasks.
   std::vector <T> pending;
   tdb.allPendingT (pending);
+  filter (pending, task);
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
     T task (pending[i]);
@@ -1605,6 +1613,7 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
   // Scan the completed tasks.
   std::vector <T> completed;
   tdb.allCompletedT (completed);
+  filter (completed, task);
   for (unsigned int i = 0; i < completed.size (); ++i)
   {
     T task (completed[i]);
@@ -1758,6 +1767,7 @@ void handleReportGHistory (const TDB& tdb, T& task, Config& conf)
   // Scan the pending tasks.
   std::vector <T> pending;
   tdb.allPendingT (pending);
+  filter (pending, task);
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
     T task (pending[i]);
@@ -1795,6 +1805,7 @@ void handleReportGHistory (const TDB& tdb, T& task, Config& conf)
   // Scan the completed tasks.
   std::vector <T> completed;
   tdb.allCompletedT (completed);
+  filter (completed, task);
   for (unsigned int i = 0; i < completed.size (); ++i)
   {
     T task (completed[i]);
@@ -2153,6 +2164,7 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
   // Load all the pending tasks.
   std::vector <T> pending;
   tdb.pendingT (pending);
+  filter (pending, task);
 
   // Find the oldest pending due date.
   Date oldest;
@@ -2732,6 +2744,7 @@ void handleReportStats (const TDB& tdb, T& task, Config& conf)
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.allT (tasks);
+  filter (tasks, task);
 
   Date now;
   time_t earliest   = time (NULL);
@@ -3375,6 +3388,20 @@ void decorateRecurringTask (T& task)
     task.setAttribute ("base", task.getAttribute ("due"));
 
     // TODO Create "range".
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void checkRecurring (std::vector <T>& tasks)
+{
+  std::vector <T>::iterator it;
+  for (it = tasks.begin (); it != tasks.end (); ++it)
+  {
+    if (it->getStatus () == T::recurring)
+    {
+
+
+    }
   }
 }
 
