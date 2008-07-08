@@ -468,7 +468,8 @@ int TDB::gc () const
   for (it = all.begin (); it != all.end (); ++it)
   {
     // Some tasks stay in the pending file.
-    if (it->getStatus () == T::pending)
+    if (it->getStatus () == T::pending ||
+        it->getStatus () == T::recurring)
       pending.push_back (*it);
 
     // Others are transferred to the completed file.

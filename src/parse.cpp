@@ -109,6 +109,7 @@ static const char* attributes[] =
   "end",
   "recur",
   "until",
+  "mask",
   "",
 };
 
@@ -231,6 +232,9 @@ static bool validAttribute (
   else if (name == "due" && value != "")
     validDate (value, conf);
 
+  else if (name == "until" && value != "")
+    validDate (value, conf);
+
   else if (name == "priority")
   {
     value = upperCase (value);
@@ -240,7 +244,8 @@ static bool validAttribute (
   // Some attributes are intended to be private.
   else if (name == "entry" ||
            name == "start" ||
-           name == "end")
+           name == "end"   ||
+           name == "mask")
     throw std::string ("\"") +
           name               +
           "\" is not an attribute you may modify directly.";
@@ -316,9 +321,9 @@ static bool validSubstitution (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool validDuration (const std::string& input)
+bool validDuration (std::string& input)
 {
-  return convertDuration (input) != 0 ? true : false;
+  return (convertDuration (input) != 0) ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -58,12 +58,29 @@ void parse (std::vector <std::string>&, std::string&, T&, Config&);
 bool validDate (std::string&, Config&);
 
 // task.cpp
+void gatherNextTasks (const TDB&, T&, Config&, std::vector <T>&, std::vector <int>&);
+void nag (const TDB&, T&, Config&);
+int getDueState (const std::string&);
+void handleRecurrence (const TDB&, std::vector <T>&);
+Date getNextRecurrence (Date&, std::string&);
+
+// command.cpp
 void handleAdd (const TDB&, T&, Config&);
 void handleProjects (const TDB&, T&, Config&);
 void handleTags (const TDB&, T&, Config&);
+void handleUndelete (const TDB&, T&, Config&);
+void handleVersion (Config&);
+void handleExport (const TDB&, T&, Config&);
+void handleDelete (const TDB&, T&, Config&);
+void handleStart (const TDB&, T&, Config&);
+void handleDone (const TDB&, T&, Config&);
+void handleModify (const TDB&, T&, Config&);
+void handleColor (Config&);
+
+// report.cpp
+void filter (std::vector<T>&, T&);
 void handleList (const TDB&, T&, Config&);
 void handleInfo (const TDB&, T&, Config&);
-void handleUndelete (const TDB&, T&, Config&);
 void handleLongList (const TDB&, T&, Config&);
 void handleSmallList (const TDB&, T&, Config&);
 void handleCompleted (const TDB&, T&, Config&);
@@ -78,16 +95,6 @@ void handleReportOverdue (const TDB&, T&, Config&);
 void handleReportStats (const TDB&, T&, Config&);
 void handleReportOldest (const TDB&, T&, Config&);
 void handleReportNewest (const TDB&, T&, Config&);
-void handleVersion (Config&);
-void handleExport (const TDB&, T&, Config&);
-void handleDelete (const TDB&, T&, Config&);
-void handleStart (const TDB&, T&, Config&);
-void handleDone (const TDB&, T&, Config&);
-void handleModify (const TDB&, T&, Config&);
-void handleColor (Config&);
-void gatherNextTasks (const TDB&, T&, Config&, std::vector <T>&, std::vector <int>&);
-void nag (const TDB&, T&, Config&);
-void handleRecurrence (std::vector <T>&);
 
 // util.cpp
 bool confirm (const std::string&);
@@ -109,9 +116,7 @@ void formatTimeDeltaDays (std::string&, time_t);
 std::string formatSeconds (time_t);
 const std::string uuid ();
 const char* optionalBlankLine (Config&);
-int convertDuration (const std::string&);
-int getDueState (const std::string&);
-int addDuration (const Date&, const std::string&);
+int convertDuration (std::string&);
 
 // rules.cpp
 void initializeColorRules (Config&);

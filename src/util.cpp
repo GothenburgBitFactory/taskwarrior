@@ -238,9 +238,9 @@ const std::string uuid ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Recognize the following constructs, and return the number of days represented
-int convertDuration (const std::string& input)
+int convertDuration (std::string& input)
 {
-  std::string in (lowerCase (input));
+  input = lowerCase (input);
   Date today;
 
   std::vector <std::string> supported;
@@ -261,7 +261,7 @@ int convertDuration (const std::string& input)
   supported.push_back ("yearly");
 
   std::vector <std::string> matches;
-  if (autoComplete (in, supported, matches) == 1)
+  if (autoComplete (input, supported, matches) == 1)
   {
     std::string found = matches[0];
 
@@ -303,12 +303,6 @@ int convertDuration (const std::string& input)
   }
 
   return 0; // Error.
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int addDuration (const Date& base, const std::string& offset)
-{
-  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
