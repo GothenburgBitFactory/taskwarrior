@@ -108,7 +108,7 @@ void filter (std::vector<T>& all, T& task)
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-void handleList (const TDB& tdb, T& task, Config& conf)
+void handleList (TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
@@ -253,7 +253,7 @@ void handleList (const TDB& tdb, T& task, Config& conf)
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.  Show a narrow
 // list that works better on mobile devices.
-void handleSmallList (const TDB& tdb, T& task, Config& conf)
+void handleSmallList (TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
@@ -379,7 +379,7 @@ void handleSmallList (const TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-void handleCompleted (const TDB& tdb, T& task, Config& conf)
+void handleCompleted (TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
@@ -464,7 +464,7 @@ void handleCompleted (const TDB& tdb, T& task, Config& conf)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Display all information for the given task.
-void handleInfo (const TDB& tdb, T& task, Config& conf)
+void handleInfo (TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
@@ -548,6 +548,21 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
         row = table.addRow ();
         table.addCell (row, 0, "Recur until");
         table.addCell (row, 1, refTask.getAttribute ("until"));
+
+        row = table.addRow ();
+        table.addCell (row, 0, "Mask");
+        table.addCell (row, 1, refTask.getAttribute ("mask"));
+      }
+
+      if (refTask.getAttribute ("parent") != "")
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Parent task");
+        table.addCell (row, 1, refTask.getAttribute ("parent"));
+
+        row = table.addRow ();
+        table.addCell (row, 0, "Mask Index");
+        table.addCell (row, 1, refTask.getAttribute ("imask"));
       }
 
       // due (colored)
@@ -645,7 +660,7 @@ void handleInfo (const TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-void handleLongList (const TDB& tdb, T& task, Config& conf)
+void handleLongList (TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
@@ -814,7 +829,7 @@ void handleLongList (const TDB& tdb, T& task, Config& conf)
 // Project  Tasks  Avg Age  Status
 // A           12      13d  XXXXXXXX------
 // B          109   3d 12h  XX------------
-void handleReportSummary (const TDB& tdb, T& task, Config& conf)
+void handleReportSummary (TDB& tdb, T& task, Config& conf)
 {
   // Generate unique list of project names.
   tdb.gc ();
@@ -984,7 +999,7 @@ void handleReportSummary (const TDB& tdb, T& task, Config& conf)
 //
 // Make the "three" tasks a configurable number
 //
-void handleReportNext (const TDB& tdb, T& task, Config& conf)
+void handleReportNext (TDB& tdb, T& task, Config& conf)
 {
   // Load all pending.
   tdb.gc ();
@@ -1156,7 +1171,7 @@ time_t monthlyEpoch (const std::string& date)
   return 0;
 }
 
-void handleReportHistory (const TDB& tdb, T& task, Config& conf)
+void handleReportHistory (TDB& tdb, T& task, Config& conf)
 {
   std::map <time_t, int> groups;
   std::map <time_t, int> addedGroup;
@@ -1338,7 +1353,7 @@ void handleReportHistory (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportGHistory (const TDB& tdb, T& task, Config& conf)
+void handleReportGHistory (TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
@@ -1755,7 +1770,7 @@ std::string renderMonths (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
+void handleReportCalendar (TDB& tdb, T& task, Config& conf)
 {
   // Load all the pending tasks.
   tdb.gc ();
@@ -1841,7 +1856,7 @@ void handleReportCalendar (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportActive (const TDB& tdb, T& task, Config& conf)
+void handleReportActive (TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
@@ -1957,7 +1972,7 @@ void handleReportActive (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
+void handleReportOverdue (TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
@@ -2064,7 +2079,7 @@ void handleReportOverdue (const TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-void handleReportOldest (const TDB& tdb, T& task, Config& conf)
+void handleReportOldest (TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
@@ -2207,7 +2222,7 @@ void handleReportOldest (const TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-void handleReportNewest (const TDB& tdb, T& task, Config& conf)
+void handleReportNewest (TDB& tdb, T& task, Config& conf)
 {
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
@@ -2350,7 +2365,7 @@ void handleReportNewest (const TDB& tdb, T& task, Config& conf)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportStats (const TDB& tdb, T& task, Config& conf)
+void handleReportStats (TDB& tdb, T& task, Config& conf)
 {
   // Get all the tasks.
   std::vector <T> tasks;

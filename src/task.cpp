@@ -345,7 +345,7 @@ int main (int argc, char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void nag (const TDB& tdb, T& task, Config& conf)
+void nag (TDB& tdb, T& task, Config& conf)
 {
   std::string nagMessage = conf.get ("nag", std::string (""));
   if (nagMessage != "")
@@ -390,138 +390,296 @@ int getDueState (const std::string& due)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Scan for recurring tasks, and generate any necessary instances of those
-// tasks.
-void handleRecurrence (const TDB& tdb, std::vector <T>& tasks)
+// Scans all tasks, and for any recurring tasks, determines whether any new
+// child tasks need to be generated to fill gaps.
+void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
 {
   std::vector <T> modified;
-  Date now;
 
-  std::cout << "# handleRecurrence" << std::endl;
-  std::vector <T>::iterator it;
-  for (it = tasks.begin (); it != tasks.end (); ++it)
+  // Look at all tasks and find any recurring ones.
+  foreach (t, tasks)
   {
-    if (it->getStatus () == T::recurring)
+    if (t->getStatus () == T::recurring)
     {
-      std::cout << "# found recurring task " << it->getUUID () << std::endl;
+//      std::cout << "# found recurring task " << t->getUUID () << std::endl;
 
-      // This task is recurring.  While it remains hidden from view, it spawns
-      // child tasks automatically, here, that are regular tasks, except they
-      // have a "parent" attribute that contains the UUID of the original.
+      // Generate a list of due dates for this recurring task, regardless of
+      // the mask.
+      std::vector <Date> due;
+      generateDueDates (*t, due);
 
-      // Generate a list of child tasks.
-      std::vector <T> children;
-      std::vector <T>::iterator them;
-      for (them = tasks.begin (); them != tasks.end (); ++them)
-        if (them->getAttribute ("parent") == it->getUUID ())
-          children.push_back (*them);
+      // Get the mask from the parent task.
+      std::string mask = t->getAttribute ("mask");
+//      std::cout << "# mask=" << mask << std::endl;
 
-      // Determine due date, recur period and until date.
-      Date due (atoi (it->getAttribute ("due").c_str ()));
-      std::cout << "# due=" << due.toString () << std::endl;
-      std::string recur = it->getAttribute ("recur");
-      std::cout << "# recur=" << recur << std::endl;
-
-      bool specificEnd = false;
-      Date until;
-      if (it->getAttribute ("until") != "")
+      // Iterate over the due dates, and check each against the mask.
+      bool changed = false;
+      unsigned int i = 0;
+      foreach (d, due)
       {
-        until = Date (atoi (it->getAttribute ("until").c_str ()));
-        specificEnd = true;
-      }
+//        std::cout << "# need: " << d->toString () << std::endl;
 
-      std::cout << "# specficEnd=" << (specificEnd ? "true" : "false") << std::endl;
-      if (specificEnd)
-        std::cout << "# until=" << until.toString () << std::endl;
-
-      for (Date i = due; ; i = getNextRecurrence (i, recur))
-      {
-        std::cout << "# i=" << i.toString () << std::endl;
-        if (specificEnd && i > until)
-          break;
-
-        // Look to see if there is a gap at date "i" by scanning children.
-        bool foundChild = false;
-        std::vector <T>::iterator cit;
-        for (cit = children.begin (); cit != children.end (); ++cit)
+        if (mask.length () <= i)
         {
-          if (atoi (cit->getAttribute ("due").c_str ()) == i.toEpoch ())
-          {
-            foundChild = true;
-            break;
-          }
-        }
+          mask += '-';
+          changed = true;
 
-// TODO A gap may be filled by a completed task.  Oh crap.
-
-        // There is a gap, so insert a task.
-        if (!foundChild)
-        {
-          std::cout << "# found a gap at i=" << i.toString () << std::endl;
-          T rec (*it);  // Clone the parent.
+          T rec (*t);                                 // Clone the parent.
+          rec.setId (tdb.nextId ());                  // Assign a unique id.
+          rec.setUUID (uuid ());                      // New UUID.
+          rec.setStatus (T::pending);                 // Shiny.
+          rec.setAttribute ("parent", t->getUUID ()); // Remember mom.
 
           char dueDate[16];
-          sprintf (dueDate, "%u", (unsigned int) i.toEpoch ());
-          rec.setAttribute ("due", dueDate);
-          rec.setAttribute ("parent", it->getUUID ());
-          rec.setStatus (T::pending);
+          sprintf (dueDate, "%u", (unsigned int) d->toEpoch ());
+          rec.setAttribute ("due", dueDate);          // Store generated due date.
 
-          std::cout << "# adding to modified" << std::endl;
+          char indexMask[12];
+          sprintf (indexMask, "%u", (unsigned int) i);
+          rec.setAttribute ("imask", indexMask);      // Store index into mask.
+
+          // Add the new task to the vector, for immediate use.
+//          std::cout << "# adding to modified" << std::endl;
           modified.push_back (rec);
-          std::cout << "# adding to pending" << std::endl;
+
+          // Add the new task to the DB.
+//          std::cout << "# adding to pending" << std::endl;
           tdb.addT (rec);
         }
 
-        if (i > now)
-        {
-          std::cout << "# already 1 instance into the future, stopping" << std::endl;
-          break;
-        }
+        ++i;
+      }
+
+      // Only modify the parent if necessary.
+      if (changed)
+      {
+//        std::cout << "# modifying parent with mask=" << mask << std::endl;
+        t->setAttribute ("mask", mask);
+        tdb.modifyT (*t);
       }
     }
     else
-      modified.push_back (*it);
+      modified.push_back (*t);
   }
 
   tasks = modified;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Determine a start date (due), an optional end date (until), and an increment
+// period (recur).  Then generate a set of corresponding dates.
+void generateDueDates (T& parent, std::vector <Date>& allDue)
+{
+  // Determine due date, recur period and until date.
+  Date due (atoi (parent.getAttribute ("due").c_str ()));
+//  std::cout << "# due=" << due.toString () << std::endl;
+  std::string recur = parent.getAttribute ("recur");
+//  std::cout << "# recur=" << recur << std::endl;
+
+  bool specificEnd = false;
+  Date until;
+  if (parent.getAttribute ("until") != "")
+  {
+    until = Date (atoi (parent.getAttribute ("until").c_str ()));
+    specificEnd = true;
+  }
+
+//  std::cout << "# specficEnd=" << (specificEnd ? "true" : "false") << std::endl;
+//  if (specificEnd)
+//    std::cout << "# until=" << until.toString () << std::endl;
+
+  Date now;
+  for (Date i = due; ; i = getNextRecurrence (i, recur))
+  {
+    allDue.push_back (i);
+
+//    std::cout << "# i=" << i.toString () << std::endl;
+    if (specificEnd && i > until)
+      break;
+
+    if (i > now)
+//    {
+//      std::cout << "# already 1 instance into the future, stopping" << std::endl;
+      break;
+//    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Date getNextRecurrence (Date& current, std::string& period)
 {
-  int days = convertDuration (period);
+  int m = current.month ();
+  int d = current.day ();
+  int y = current.year ();
 
   // Some periods are difficult, because they can be vague.
-  if (period == "monthly" ||
-      (isdigit (period[0]) && period[period.length () - 1] == 'm'))
+  if (period == "monthly")
   {
-    int m = current.month ();
-    int d = current.day ();
-    int y = current.year ();
+    if (++m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
 
-    if (++m == 13) m = 1;
     while (! Date::valid (m, d, y))
       --d;
 
-    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
+//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
     return Date (m, d, y);
   }
 
-  if (period == "bimonthly"   ||
-      period == "semimonthly" ||
-      period == "quarterly"   ||
-      period == "biannual"    ||
-      period == "biyearly"    ||
-      period == "semiannual"  ||
-      (isdigit (period[0]) && (
-         period[period.length () - 1] == 'm' ||
-         period[period.length () - 1] == 'q')))
+  if (isdigit (period[0]) && period[period.length () - 1] == 'm')
   {
-    // TODO lots of work here...
+    std::string numeric = period.substr (0, period.length () - 1);
+    int increment = atoi (numeric.c_str ());
+
+    m += increment;
+    while (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Date::valid (m, d, y))
+      --d;
+
+//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
+    return Date (m, d, y);
+  }
+
+  else if (period == "quarterly")
+  {
+    m += 3;
+    if (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Date::valid (m, d, y))
+      --d;
+
+//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
+    return Date (m, d, y);
+  }
+
+  else if (isdigit (period[0]) && period[period.length () - 1] == 'q')
+  {
+    std::string numeric = period.substr (0, period.length () - 1);
+    int increment = atoi (numeric.c_str ());
+
+    m += 3 * increment;
+    while (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Date::valid (m, d, y))
+      --d;
+
+//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
+    return Date (m, d, y);
+  }
+
+  else if (period == "semiannual")
+  {
+    m += 6;
+    if (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Date::valid (m, d, y))
+      --d;
+
+//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
+    return Date (m, d, y);
+  }
+
+  else if (period == "bimonthly")
+  {
+    m += 2;
+    if (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Date::valid (m, d, y))
+      --d;
+
+//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
+    return Date (m, d, y);
+  }
+
+  else if (period == "biannual"    ||
+           period == "biyearly")
+  {
+    y += 2;
+
+//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
+    return Date (m, d, y);
   }
 
   // If the period is an 'easy' one, add it to current, and we're done.
+  int days = convertDuration (period);
   return current + (days * 86400);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// When the status of a recurring child task changes, the parent task must
+// update it's mask.
+void updateRecurrenceMask (
+  TDB& tdb,
+  std::vector <T>& all,
+  T& task)
+{
+  std::string parent = task.getAttribute ("parent");
+//  std::cout << "# updateRecurrenceMask of " << parent << std::endl;
+  if (parent != "")
+  {
+    std::vector <T>::iterator it;
+    for (it = all.begin (); it != all.end (); ++it)
+    {
+      if (it->getUUID () == parent)
+      {
+//        std::cout << "# located parent task" << std::endl;
+        unsigned int index = atoi (task.getAttribute ("imask").c_str ());
+//        std::cout << "# child imask=" << index << std::endl;
+        std::string mask = it->getAttribute ("mask");
+//        std::cout << "# parent mask=" << mask << std::endl;
+        if (mask.length () > index)
+        {
+          mask[index] = (task.getStatus () == T::pending)   ? '-'
+                      : (task.getStatus () == T::completed) ? '+'
+                      : (task.getStatus () == T::deleted)   ? 'X'
+                      :                                       '?';
+
+//          std::cout << "# setting parent mask to=" << mask << std::endl;
+          it->setAttribute ("mask", mask);
+//          std::cout << "# tdb.modifyT (parent)" << std::endl;
+          tdb.modifyT (*it);
+        }
+        else
+        {
+//          std::cout << "# mask of insufficient length" << std::endl;
+//          std::cout << "# should never occur" << std::endl;
+          std::string mask;
+          for (unsigned int i = 0; i < index; ++i)
+            mask += "?";
+
+          mask += (task.getStatus () == T::pending)   ? '-'
+                : (task.getStatus () == T::completed) ? '+'
+                : (task.getStatus () == T::deleted)   ? 'X'
+                :                                       '?';
+        }
+
+        return;  // No point continuing the loop.
+      }
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

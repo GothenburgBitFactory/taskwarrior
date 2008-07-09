@@ -450,7 +450,7 @@ void T::parse (const std::string& line)
              {
                std::vector <std::string> pair;
                split (pair, pairs[i], ':');
-               if (pair[1] != "")
+               if (pair.size () == 2)
                  mAttributes[pair[0]] = pair[1];
              }
 

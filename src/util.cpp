@@ -252,7 +252,6 @@ int convertDuration (std::string& input)
   supported.push_back ("fortnight");
   supported.push_back ("monthly");
   supported.push_back ("bimonthly");
-  supported.push_back ("semimonthly");
   supported.push_back ("quarterly");
   supported.push_back ("biannual");
   supported.push_back ("biyearly");
@@ -268,7 +267,6 @@ int convertDuration (std::string& input)
          if (found == "daily"    || found == "day")       return 1;
     else if (found == "weekly"   || found == "sennight")  return 7;
     else if (found == "biweekly" || found == "fortnight") return 14;
-    else if (found == "semimonthly")                      return 15;
     else if (found == "monthly")                          return 30;
     else if (found == "bimonthly")                        return 61;
     else if (found == "quarterly")                        return 91;

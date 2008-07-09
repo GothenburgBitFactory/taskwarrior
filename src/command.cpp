@@ -55,10 +55,8 @@ void handleAdd (const TDB& tdb, T& task, Config& conf)
   std::map <std::string, std::string> atts;
   task.getAttributes (atts);
   foreach (i, atts)
-  {
     if (i->second == "")
       task.removeAttribute (i->first);
-  }
 
   // Recurring tasks get a special status.
   if (task.getAttribute ("due")   != "" &&
@@ -76,7 +74,7 @@ void handleAdd (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleProjects (const TDB& tdb, T& task, Config& conf)
+void handleProjects (TDB& tdb, T& task, Config& conf)
 {
   // Get all the tasks, including deleted ones.
   std::vector <T> tasks;
@@ -127,7 +125,7 @@ void handleProjects (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleTags (const TDB& tdb, T& task, Config& conf)
+void handleTags (TDB& tdb, T& task, Config& conf)
 {
   // Get all the tasks.
   std::vector <T> tasks;
@@ -165,7 +163,7 @@ void handleTags (const TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 // If a task is deleted, but is still in the pending file, then it may be
 // undeleted simply by changing it's status.
-void handleUndelete (const TDB& tdb, T& task, Config& conf)
+void handleUndelete (TDB& tdb, T& task, Config& conf)
 {
   std::vector <T> all;
   tdb.allPendingT (all);
@@ -289,44 +287,54 @@ void handleVersion (Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleDelete (const TDB& tdb, T& task, Config& conf)
+void handleDelete (TDB& tdb, T& task, Config& conf)
 {
   if (conf.get ("confirmation") != "yes" || confirm ("Permanently delete task?"))
   {
-    // Check for the more complex case of a recurring task.  If this is a
-    // recurring task, get confirmation to delete them all.
-    std::string parent = task.getAttribute ("parent");
-    if (parent != "")
+    std::vector <T> all;
+    tdb.allPendingT (all);
+    foreach (t, all)
     {
-      if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
+      if (t->getId () == task.getId ())
       {
-        // Scan all pending tasks for siblings of this task, and the parent
-        // itself, and delete them.
-        std::vector <T> all;
-        tdb.allPendingT (all);
-        std::vector <T>::iterator it;
-        for (it = all.begin (); it != all.end (); ++it)
-          if (it->getAttribute ("parent") == parent ||
-              it->getUUID ()              == parent)
-            tdb.deleteT (*it);
+        // Check for the more complex case of a recurring task.  If this is a
+        // recurring task, get confirmation to delete them all.
+        std::string parent = t->getAttribute ("parent");
+        if (parent != "")
+        {
+          if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
+          {
+            // Scan all pending tasks for siblings of this task, and the parent
+            // itself, and delete them.
+            foreach (sibling, all)
+              if (sibling->getAttribute ("parent") == parent ||
+                  sibling->getUUID ()              == parent)
+                tdb.deleteT (*sibling);
 
-        return;
-      }
-      else
-      {
-        // TODO Update mask in parent.
+            return;
+          }
+          else
+          {
+            // Update mask in parent.
+            t->setStatus (T::deleted);
+            updateRecurrenceMask (tdb, all, *t);
+            tdb.deleteT (*t);
+            return;
+          }
+        }
+        else
+          tdb.deleteT (*t);
+
+        break;  // No point continuing the loop.
       }
     }
-
-    // No confirmation, just delete the one.
-    tdb.deleteT (task);
   }
   else
     std::cout << "Task not deleted." << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleStart (const TDB& tdb, T& task, Config& conf)
+void handleStart (TDB& tdb, T& task, Config& conf)
 {
   std::vector <T> all;
   tdb.pendingT (all);
@@ -359,18 +367,29 @@ void handleStart (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleDone (const TDB& tdb, T& task, Config& conf)
+void handleDone (TDB& tdb, T& task, Config& conf)
 {
   if (!tdb.completeT (task))
     throw std::string ("Could not mark task as completed.");
 
-  // TODO Now updates mask in parent.
+  // Now update mask in parent.
+  std::vector <T> all;
+  tdb.allPendingT (all);
+  foreach (t, all)
+  {
+    if (t->getId () == task.getId ())
+    {
+      t->setStatus (T::completed);
+      updateRecurrenceMask (tdb, all, *t);
+      break;
+    }
+  }
 
   nag (tdb, task, conf);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleExport (const TDB& tdb, T& task, Config& conf)
+void handleExport (TDB& tdb, T& task, Config& conf)
 {
   // Use the description as a file name, then clobber the description so the
   // file name isn't used for filtering.
@@ -413,7 +432,7 @@ void handleExport (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleModify (const TDB& tdb, T& task, Config& conf)
+void handleModify (TDB& tdb, T& task, Config& conf)
 {
   std::vector <T> all;
   tdb.pendingT (all);
