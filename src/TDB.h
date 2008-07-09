@@ -38,22 +38,23 @@ public:
   ~TDB ();
 
   void dataDirectory    (const std::string&);
-  bool allT             (std::vector <T>&) const;
-  bool pendingT         (std::vector <T>&) const;
-  bool allPendingT      (std::vector <T>&) const;
+  bool allT             (std::vector <T>&);
+  bool pendingT         (std::vector <T>&);
+  bool allPendingT      (std::vector <T>&);
   bool completedT       (std::vector <T>&) const;
   bool allCompletedT    (std::vector <T>&) const;
-  bool deleteT          (const T&) const;
-  bool completeT        (const T&) const;
+  bool deleteT          (const T&);
+  bool completeT        (const T&);
   bool addT             (const T&) const;
-  bool modifyT          (const T&) const;
+  bool modifyT          (const T&);
   bool logRead          (std::vector <std::string>&) const;
   bool logCommand       (int, char**) const;
-  int gc                () const;
+  int gc                ();
+  int nextId            ();
 
 private:
   bool lock             (FILE*) const;
-  bool overwritePending (std::vector <T>&) const;
+  bool overwritePending (std::vector <T>&);
   bool writePending     (const T&) const;
   bool writeCompleted   (const T&) const;
   bool readLockedFile   (const std::string&, std::vector <std::string>&) const;
@@ -62,6 +63,7 @@ private:
   std::string mPendingFile;
   std::string mCompletedFile;
   std::string mLogFile;
+  int mId;
 };
 
 #endif

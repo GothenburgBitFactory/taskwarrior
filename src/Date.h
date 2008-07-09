@@ -52,11 +52,12 @@ public:
   static std::string monthName (int);
   static void dayName (int, std::string&);
   static std::string dayName (int);
-  int dayOfWeek () const;
+  static int dayOfWeek (const std::string&);
 
   int month () const;
   int day () const;
   int year () const;
+  int dayOfWeek () const;
 
   bool operator== (const Date&);
   bool operator!= (const Date&);
@@ -64,12 +65,18 @@ public:
   bool operator>  (const Date&);
   bool operator<= (const Date&);
   bool operator>= (const Date&);
+  bool sameDay    (const Date&);
+  bool sameMonth  (const Date&);
+  bool sameYear   (const Date&);
 
   Date operator+  (const int);
   Date& operator+= (const int);
   Date& operator-= (const int);
 
   time_t operator- (const Date&);
+
+private:
+  bool isRelativeDate (const std::string&);
 
 protected:
   time_t mT;

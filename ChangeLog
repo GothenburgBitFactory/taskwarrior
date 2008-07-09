@@ -13,13 +13,18 @@ represents a feature release, and the Z represents a patch.
 
 
 1.4.0 ()
+  + New recurring tasks feature
   + "task undelete" can now undelete erroneously deleted tasks, provided no
     reports have been run (and therefore TDB::gc run)
   + Added averages to the "task history" report
   + Added ability to override ~/.taskrc with rc:<file>
   + Added bar chart history report "task ghistory"
+  + Added task filtering on all reports
+  + Automatically shuts off color, curses when output is not a tty
+  + Supports relative due: dates (tomorrow, wednesday, 23rd, eom ...)
   + Bug: Fixed where Esc[0m sequences were being emitted for no good reason
   + Bug: Fixed underlined table headers when color is turned off
+  + Bug: Adding a blank priority resulted in an assigned garbage value
 
 ------ reality -----------------------------------
 

@@ -38,6 +38,7 @@ TDB::TDB ()
 : mPendingFile ("")
 , mCompletedFile ("")
 , mLogFile ("")
+, mId (1)
 {
 }
 
@@ -67,7 +68,7 @@ void TDB::dataDirectory (const std::string& directory)
 ////////////////////////////////////////////////////////////////////////////////
 // Combine allPendingT with allCompletedT.
 // Note: this method is O(N1) + O(N2), where N2 is not bounded.
-bool TDB::allT (std::vector <T>& all) const
+bool TDB::allT (std::vector <T>& all)
 {
   all.clear ();
 
@@ -95,20 +96,20 @@ bool TDB::allT (std::vector <T>& all) const
 
 ////////////////////////////////////////////////////////////////////////////////
 // Only accesses to the pending file result in Tasks that have assigned ids.
-bool TDB::pendingT (std::vector <T>& all) const
+bool TDB::pendingT (std::vector <T>& all)
 {
   all.clear ();
 
   std::vector <std::string> lines;
   if (readLockedFile (mPendingFile, lines))
   {
-    int id = 1;
+    mId = 1;
 
     std::vector <std::string>::iterator it;
     for (it = lines.begin (); it != lines.end (); ++it)
     {
       T t (*it);
-      t.setId (id++);
+      t.setId (mId++);
       if (t.getStatus () == T::pending)
         all.push_back (t);
     }
@@ -121,20 +122,20 @@ bool TDB::pendingT (std::vector <T>& all) const
 
 ////////////////////////////////////////////////////////////////////////////////
 // Only accesses to the pending file result in Tasks that have assigned ids.
-bool TDB::allPendingT (std::vector <T>& all) const
+bool TDB::allPendingT (std::vector <T>& all)
 {
   all.clear ();
 
   std::vector <std::string> lines;
   if (readLockedFile (mPendingFile, lines))
   {
-    int id = 1;
+    mId = 1;
 
     std::vector <std::string>::iterator it;
     for (it = lines.begin (); it != lines.end (); ++it)
     {
       T t (*it);
-      t.setId (id++);
+      t.setId (mId++);
       all.push_back (t);
     }
 
@@ -188,7 +189,7 @@ bool TDB::allCompletedT (std::vector <T>& all) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::deleteT (const T& t) const
+bool TDB::deleteT (const T& t)
 {
   T task (t);
 
@@ -212,7 +213,7 @@ bool TDB::deleteT (const T& t) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::completeT (const T& t) const
+bool TDB::completeT (const T& t)
 {
   T task (t);
 
@@ -239,7 +240,6 @@ bool TDB::completeT (const T& t) const
 bool TDB::addT (const T& t) const
 {
   T task (t);
-
   std::vector <std::string> tags;
   task.getTags (tags);
 
@@ -254,14 +254,15 @@ bool TDB::addT (const T& t) const
     }
   }
 
-  if (task.getStatus () == T::pending)
+  if (task.getStatus () == T::pending ||
+      task.getStatus () == T::recurring)
     return writePending (task);
 
   return writeCompleted (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::modifyT (const T& t) const
+bool TDB::modifyT (const T& t)
 {
   T modified (t);
 
@@ -348,7 +349,7 @@ bool TDB::lock (FILE* file) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::overwritePending (std::vector <T>& all) const
+bool TDB::overwritePending (std::vector <T>& all)
 {
   // Write a single task to the pending file
   FILE* out;
@@ -453,7 +454,7 @@ bool TDB::readLockedFile (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int TDB::gc () const
+int TDB::gc ()
 {
   int count = 0;
 
@@ -468,7 +469,8 @@ int TDB::gc () const
   for (it = all.begin (); it != all.end (); ++it)
   {
     // Some tasks stay in the pending file.
-    if (it->getStatus () == T::pending)
+    if (it->getStatus () == T::pending ||
+        it->getStatus () == T::recurring)
       pending.push_back (*it);
 
     // Others are transferred to the completed file.
@@ -482,6 +484,12 @@ int TDB::gc () const
   // Dump all clean tasks into pending.
   overwritePending (pending);
   return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int TDB::nextId ()
+{
+  return mId++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

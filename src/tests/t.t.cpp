@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  plan (4);
+  plan (5);
 
   T t;
   std::string s = t.compose ();
@@ -46,6 +46,11 @@ int main (int argc, char** argv)
   t.setStatus (T::deleted);
   s = t.compose ();
   is (s[37], 'X', "T::setStatus (deleted)");
+  diag (s);
+
+  t.setStatus (T::recurring);
+  s = t.compose ();
+  is (s[37], 'r', "T::setStatus (recurring)");
   diag (s);
 
   // Round trip test.

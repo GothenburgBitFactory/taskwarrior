@@ -424,7 +424,8 @@ void T::parse (const std::string& line)
 
         mStatus =   line[37] == '+' ? completed
                   : line[37] == 'X' ? deleted
-                  :                  pending;
+                  : line[37] == 'r' ? recurring
+                  :                   pending;
 
         size_t openTagBracket  = line.find ("[");
         size_t closeTagBracket = line.find ("]", openTagBracket);
@@ -449,7 +450,7 @@ void T::parse (const std::string& line)
              {
                std::vector <std::string> pair;
                split (pair, pairs[i], ':');
-               if (pair[1] != "")
+               if (pair.size () == 2)
                  mAttributes[pair[0]] = pair[1];
              }
 

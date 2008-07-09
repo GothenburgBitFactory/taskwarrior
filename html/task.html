@@ -48,14 +48,20 @@
                 </p>
 
                 <ul>
+                  <li>Added new recurring tasks feature
                   <li>Added "task undelete" feature to restore a (very) recently deleted
                       task
                   <li>Added averages to the "task history" report
                   <li>Added bar chart history report "task ghistory"
                   <li>Added support for rc:&lt;file&gt; to allow override of the default
                       ~/.taskrc file
+                  <li>Added support for relative due: dates, such as "tomorrow", "friday",
+                      "23rd", "eom"
+                  <li>Added support for task filtering on all reports
+                  <li>Automatically shuts off color, ncurses when output is not to a tty
                   <li>Fixed bug where Esc[0m sequences were being emitted for no good reason
                   <li>Fixed bug where table headers are underlined when color is turned off
+                  <li>Fixed bug where adding a blank priority resulted in an assigned garbage value
                 </ul>
 
                 <p>

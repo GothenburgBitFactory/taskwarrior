@@ -32,7 +32,7 @@
 #include <map>
 
 // Length of longest line.
-#define T_LINE_MAX 8192
+#define T_LINE_MAX 32768
 
 class T
 {

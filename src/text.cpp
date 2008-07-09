@@ -286,6 +286,17 @@ std::string lowerCase (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string upperCase (const std::string& input)
+{
+  std::string output = input;
+  for (int i = 0; i < (int) input.length (); ++i)
+    if (::isupper (input[i]))
+      output[i] = ::toupper (input[i]);
+
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const char* optionalBlankLine (Config& conf)
 {
   if (conf.get ("blanklines", true) == true)

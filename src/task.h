@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include "Config.h"
 #include "Table.h"
+#include "Date.h"
 #include "color.h"
 #include "TDB.h"
 #include "T.h"
@@ -57,35 +58,45 @@ void parse (std::vector <std::string>&, std::string&, T&, Config&);
 bool validDate (std::string&, Config&);
 
 // task.cpp
-void handleAdd (const TDB&, T&, Config&);
-void handleProjects (const TDB&, T&, Config&);
-void handleTags (const TDB&, T&, Config&);
-void handleList (const TDB&, T&, Config&);
-void handleInfo (const TDB&, T&, Config&);
-void handleUndelete (const TDB&, T&, Config&);
-void handleLongList (const TDB&, T&, Config&);
-void handleSmallList (const TDB&, T&, Config&);
-void handleCompleted (const TDB&, T&, Config&);
-void handleReportSummary (const TDB&, T&, Config&);
-void handleReportNext (const TDB&, T&, Config&);
-void handleReportHistory (const TDB&, T&, Config&);
-void handleReportGHistory (const TDB&, T&, Config&);
-void handleReportUsage (const TDB&, T&, Config&);
-void handleReportCalendar (const TDB&, T&, Config&);
-void handleReportActive (const TDB&, T&, Config&);
-void handleReportOverdue (const TDB&, T&, Config&);
-void handleReportStats (const TDB&, T&, Config&);
-void handleReportOldest (const TDB&, T&, Config&);
-void handleReportNewest (const TDB&, T&, Config&);
-void handleVersion (Config&);
-void handleExport (const TDB&, T&, Config&);
-void handleDelete (const TDB&, T&, Config&);
-void handleStart (const TDB&, T&, Config&);
-void handleDone (const TDB&, T&, Config&);
-void handleModify (const TDB&, T&, Config&);
-void handleColor (Config&);
 void gatherNextTasks (const TDB&, T&, Config&, std::vector <T>&, std::vector <int>&);
-void nag (const TDB&, T&, Config&);
+void nag (TDB&, T&, Config&);
+int getDueState (const std::string&);
+void handleRecurrence (TDB&, std::vector <T>&);
+void generateDueDates (T&, std::vector <Date>&);
+Date getNextRecurrence (Date&, std::string&);
+void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
+
+// command.cpp
+void handleAdd (const TDB&, T&, Config&);
+void handleProjects (TDB&, T&, Config&);
+void handleTags (TDB&, T&, Config&);
+void handleUndelete (TDB&, T&, Config&);
+void handleVersion (Config&);
+void handleExport (TDB&, T&, Config&);
+void handleDelete (TDB&, T&, Config&);
+void handleStart (TDB&, T&, Config&);
+void handleDone (TDB&, T&, Config&);
+void handleModify (TDB&, T&, Config&);
+void handleColor (Config&);
+
+// report.cpp
+void filter (std::vector<T>&, T&);
+void handleList (TDB&, T&, Config&);
+void handleInfo (TDB&, T&, Config&);
+void handleLongList (TDB&, T&, Config&);
+void handleSmallList (TDB&, T&, Config&);
+void handleCompleted (TDB&, T&, Config&);
+void handleReportSummary (TDB&, T&, Config&);
+void handleReportNext (TDB&, T&, Config&);
+void handleReportHistory (TDB&, T&, Config&);
+void handleReportGHistory (TDB&, T&, Config&);
+void handleReportUsage (const TDB&, T&, Config&);
+void handleReportCalendar (TDB&, T&, Config&);
+void handleReportActive (TDB&, T&, Config&);
+void handleReportOverdue (TDB&, T&, Config&);
+void handleReportStats (TDB&, T&, Config&);
+void handleReportOldest (TDB&, T&, Config&);
+void handleReportNewest (TDB&, T&, Config&);
 
 // util.cpp
 bool confirm (const std::string&);
@@ -100,12 +111,14 @@ void split (std::vector<std::string>&, const std::string&, const std::string&);
 void join (std::string&, const std::string&, const std::vector<std::string>&);
 std::string commify (const std::string&);
 std::string lowerCase (const std::string&);
+std::string upperCase (const std::string&);
 void delay (float);
 int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&);
 void formatTimeDeltaDays (std::string&, time_t);
 std::string formatSeconds (time_t);
 const std::string uuid ();
 const char* optionalBlankLine (Config&);
+int convertDuration (std::string&);
 
 // rules.cpp
 void initializeColorRules (Config&);
