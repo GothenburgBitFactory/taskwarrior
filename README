@@ -30,6 +30,12 @@ it fits in to your way of working.  As a command line application, task is not
 for everyone and some of you may prefer to not proceed.  The movie or TUTORIAL
 file are the quickest way for you to make that decision.
 
+Please note that the TUTORIAL file included is deprecated, and will be removed
+at the next major release of task.  It is superceded by an HTML tutorial that
+can be found at:
+
+  http://www.beckingham.net/task.html
+
 Task is based on ideas presented in the todo.sh script, found on:
 
   http://todotxt.org

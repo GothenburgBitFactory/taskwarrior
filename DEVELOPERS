@@ -1,9 +1,11 @@
 Developers may wish to change task, and here is a high-level guide to the files
 included.
 
-  task.{cpp,h}    Functions that implement the task commands, and main.
+  task.{cpp,h}    Implements main, high level processing.
+  command.cpp     Implements all non-report task commands.
+  report.cpp      Implements all task reports.
   parse.cpp       Parses the command line.
-  TDB.{cpp,h}     The task database, performs all file I/O
+  TDB.{cpp,h}     The task database, performs all file I/O.
   T.{cpp,h}       Represents a single task - parses a record from TDB, and also
                   composes record for TDB.  Provides accessors for tasks.
   Grid.{cpp,h}    Implements a sparse 2D array, provides data storage for the

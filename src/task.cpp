@@ -213,6 +213,8 @@ static void longUsage (Config& conf)
     << "  project:           Project name"                                 << "\n"
     << "  priority:          Priority"                                     << "\n"
     << "  due:               Due date"                                     << "\n"
+    << "  recur:             Recurrence frequency"                         << "\n"
+    << "  until:             Recurrence end date"                          << "\n"
     << "  fg:                Foreground color"                             << "\n"
     << "  bg:                Background color"                             << "\n"
     << "  rc:                Alternate .taskrc file"                       << "\n"
