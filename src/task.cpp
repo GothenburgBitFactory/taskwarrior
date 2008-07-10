@@ -286,7 +286,7 @@ int main (int argc, char** argv)
     }
 
     TDB tdb;
-    tdb.dataDirectory (conf.get ("data.location"));
+    tdb.dataDirectory (expandPath (conf.get ("data.location")));
 
     // Log commands, if desired.
     if (conf.get ("command.logging") == "on")

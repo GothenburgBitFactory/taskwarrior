@@ -119,6 +119,7 @@ std::string formatSeconds (time_t);
 const std::string uuid ();
 const char* optionalBlankLine (Config&);
 int convertDuration (std::string&);
+std::string expandPath (const std::string&);
 
 // rules.cpp
 void initializeColorRules (Config&);

@@ -279,7 +279,7 @@ void handleVersion (Config& conf)
                    "file."
                 << std::endl;
 
-    if (access (conf.get ("data.location").c_str (), X_OK))
+    if (access (expandPath (conf.get ("data.location")).c_str (), X_OK))
       std::cout << "Configuration error: data.location contains a directory name"
                    " that doesn't exist, or is unreadable."
                 << std::endl;

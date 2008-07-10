@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <pwd.h>
 #include "Date.h"
 #include "Table.h"
 #include "task.h"
@@ -301,6 +302,32 @@ int convertDuration (std::string& input)
   }
 
   return 0; // Error.
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string expandPath (const std::string& in)
+{
+  std::string copy = in;
+  unsigned int tilde;
+
+  if ((tilde = copy.find ("~/")) != std::string::npos)
+  {
+    struct passwd* pw = getpwuid (getuid ());
+    copy.replace (tilde, 1, pw->pw_dir);
+  }
+  else if ((tilde = copy.find ("~")) != std::string::npos)
+  {
+    unsigned int slash;
+    if ((slash = copy.find  ("/", tilde)) != std::string::npos)
+    {
+      std::string name = copy.substr (tilde + 1, slash - tilde - 1);
+      struct passwd* pw = getpwnam (name.c_str ());
+      if (pw)
+        copy.replace (tilde, slash - tilde, pw->pw_dir);
+    }
+  }
+
+  return copy;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
