@@ -1,0 +1,426 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Task 1.4.0</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="task.css" type="text/css" />
+  </head>
+
+  <body>
+    <div id="toolbar">
+      <a href="task.html">Home</a>
+      <a href="setup.html">Setup</a>
+      <a href="task.html#simple">Simple</a>
+      <a href="task.html#advanced">Advanced</a>
+      <a href="shell.html">Shell</a>
+      <a href="config.html">Configuration</a>
+      <a href="task.html#color">Colors</a>
+      <a href="usage.html">Usage</a>
+    </div>
+
+    <div id="container">
+
+      <table>
+        <tr>
+          <td>
+
+            <div id="content">
+              <br />
+              <br />
+              <br />
+              <h2 class="title"><a name="advanced">Advanced Usage</a></h2>
+              <div class="content">
+                <p>
+                  Here are the other commands, in some detail.
+                </p>
+
+                <strong>% task</strong>
+                <p>
+                  With no arguments, this command will generate a help message that
+                  lists all these commands.
+                </p>
+
+                <strong>% task projects</strong>
+                <p>
+                  This report generates a list of all the different projects that you
+                  are using along with a count of the pending tasks for each project.
+                  For example:
+                </p>
+
+                <pre><code>% task projects
+
+Project   Tasks
+Errands       1
+Birthdays     3
+Car           2</code></pre>
+
+
+                <strong>% task summary</strong>
+                <p>
+                  This report lists all the projects and a summary of their task
+                  status.
+                </p>
+
+                <pre><code>% task summary
+
+Project  Remaining Avg age Complete 0%                        100%
+Errands          1  3 days      50% XXXXXXXXXXXXXXXX
+Birthdays        3  7 mths       0%
+Car              2   2 wks      25% XXXXXXXXX</code></pre>
+
+                <p>
+                  This shows the project, the remaining tasks, the average age of each
+                  task, the percentage completed (remaining vs total) and a bar
+                  indicating that percentage.
+                </p>
+
+                <strong>% task delete &lt;id&gt;</strong>
+                <p>
+                  There are two ways of getting rid of tasks - mark them as done, or
+                  delete them.
+                </p>
+
+                <strong>% task undelete &lt;id&gt;</strong>
+                <p>
+                  If a task was inadvertently deleted, it may be undeleted, provided that no
+                  reports have been run since the deletion.  Ideally, the undelete command is
+                  run immediately after the erroneous delete command.
+                </p>
+
+                <p>
+                  If a report is run (such as "task list"), then task performs a garbage
+                  collection that removes deleted tasks, and the task cannot be undeleted.
+                </p>
+
+                <strong>% task done &lt;id&gt;</strong>
+                <p>
+                  This is how a task is marked as done.
+                </p>
+
+                <strong>% task list ...</strong>
+                <p>
+                  The list report will show the active status, and age of the task in
+                  addition to the columns that "task ls" shows.  It is just a more
+                  detailed list.
+                </p>
+
+                <strong>% task long ...</strong>
+                <p>
+                  The long report will show the entry date and start date of a task,
+                  in addition to the columns that the "task list" shows.
+                </p>
+
+                <strong>% task start &lt;id&gt;</strong>
+                <p>
+                  This marks a task as started (and therefore active), which is shown
+                  in the "list" report:
+                </p>
+
+                <pre><code>% task list
+
+ID Project Pri Due Active Age     Description
+12 Errand  L                      Remember to deposit check
+...
+
+% task start 12
+% task list
+
+ID Project Pri Due Active Age     Description
+12 Errand  L       *      3 days  Remember to deposit check
+...</code></pre>
+
+                <strong>% task active</strong>
+                <p>
+                  Shows all active tasks, that is, the tasks for which the
+                  "task start ..." command was run, as shown above.
+                </p>
+
+                <strong>% task overdue</strong>
+                <p>
+                  Simply lists all the task that have a due date that is past, in
+                  "list" format.
+                </p>
+
+                <strong>% task history</strong>
+                <p>
+                  This report shows you an overview of how many tasks were added,
+                  completed and deleted, by month.  It looks like this:
+                </p>
+
+                <pre><code>% task history
+
+Year Month     Added Completed Deleted Net
+2008 March        21        16       0   5
+     April        13        11       1   1
+     May           8        14       3  -9</code></pre>
+
+                <p>
+                  This shows that for the three months that task has been used, March
+                  and April saw the total number of tasks increase, but in May the
+                  number decreased as more task were completed than added.
+                </p>
+
+                <strong>% task calendar</strong>
+                <p>
+                  This report shows a calendar of the current month, with any task
+                  due or overdue dates marked on it.  Color is used to mark these
+                  dates.
+                </p>
+
+                <pre><code>% task calendar
+
+May 2008
+
+Su Mo Tu We Th Fr Sa
+             1  2  3
+ 4  5  6  7  8  9 10
+11 12 13 14 15 16 17
+18 19 20 21 22 23 24
+25 26 27 28 29 30 31</code></pre>
+
+                <strong>% task next</strong>
+                <p>
+                  This report shows you the tasks you should probable work on next.
+                  Task will scan all the tasks and will pick two task from each
+                  project to report.  Those two tasks will be chosen in order of
+                  overdue, due soon, High, Medium or Low priority.  Essentially task
+                  chooses the two most important task for each project and displays
+                  them ordered in the usual way.
+                </p>
+
+                <p>
+                  If you wish to show a different number of tasks per project, modify
+                  the entry in .taskrc:
+                </p>
+
+                <pre><code>next=2</code></pre>
+
+                <p>
+                  To be your preferred number.
+                </p>
+
+                <strong>% task &lt;id&gt; ...</strong>
+                <p>
+                  When a task id is specified, everything applies to just that task.
+                  Suppose we needed to correct a task:
+                </p>
+
+                <pre><code>% task ls
+
+ID Project Pri Description
+12 Errand  L   Remember to deposit chekc
+...
+
+% task 12 Remember to deposit bonus check
+% task ls
+
+ID Project Pri Description
+12 Errand  L   Remember to deposit bonus check
+...</code></pre>
+
+                <strong>% task oldest</strong>
+                <p>
+                  Lists the oldest tasks.  Shows 10 tasks by default, but can be
+                  set via the "oldest" configuration variable.
+                </p>
+
+                <strong>% task newest</strong>
+                <p>
+                  Lists the newest tasks.  Shows 10 tasks by default, but can be
+                  set via the "newest" configuration variable.
+                </p>
+
+                <strong>% task /from/to/</strong>
+                <p>
+                  If a task has been entered with a typo, it can be easily corrected
+                  by this command.  For example:
+                </p>
+
+                <pre><code>% task ls
+
+ID Project Pri Description
+12 Errand  L   Remember to deposit chekc
+...
+
+% task 12 /chekc/check/
+% task ls
+
+ID Project Pri Description
+12 Errand  L   Remember to deposit check
+...</code></pre>
+
+                <p>
+                  This command makes single corrections to a task description.
+                </p>
+
+                <strong>% task tags</strong>
+                <p>
+                  This command will generate a list of all the tags that are currently
+                  in use by task.
+                </p>
+
+                <strong>% task info &lt;id&gt;</strong>
+                <p>
+                  This command gives detailed information about a single task.  It
+                  will tell you when the task was entered, when started, its status,
+                  tags, and more.
+                </p>
+
+                <strong>% task stats</strong>
+                <p>
+                  This command generates a list of statistics about your task usage,
+                  such as the average time it takes to complete a task, how often new
+                  tasks are added, and more.
+                </p>
+
+                <strong>% task completed</strong>
+                <p>
+                  This generates a list of all tasks that have been completed, sorted
+                  by their completion date.
+                </p>
+
+                <strong>% task export &lt;file name&gt;</strong>
+                <p>
+                  This instructs task to write out a CSV format dump of all tasks,
+                  both pending and completed, to the file specified.  This is how you
+                  might view tasks in a spreadsheet.
+                </p>
+
+                <strong>% task colors</strong>
+                <p>
+                  This command displays all the colors that task supports.
+                </p>
+
+                <strong>% task usage</strong>
+                <p>
+                  If logging has been enabled by the "command.logging=on" directive
+                  in the .taskrc file, then task will record every command that is
+                  run.  When this command is run, task will display a count of how
+                  many times each command was used.
+                </p>
+
+                <p>
+                  This command is for the purpose of seeing whether command are
+                  actually used.
+                </p>
+
+                <strong>% task version</strong>
+                <p>
+                  This can be used to show the version number of task, and to display
+                  all the current configuration settings, as read from the .taskrc
+                  file.
+                </p>
+
+                <strong>% task rc:&lt;file&gt; ...</strong>
+                <p>
+                  By specifying rc:<file>, it is possible to force task to use an alternate
+                  .taskrc file.  By default, task looks in your home directory, so these two
+                  commands are essentially identical:
+                </p>
+
+                <pre><code>% task list
+% task rc:~/.taskrc list</code></pre>
+
+                <p>
+                  What this override allows, is the possibility of keeping your task lists
+                  completely separate, say for work and home.  This can be accomplished with
+                  the following commands (valid for bash):
+                </p>
+
+                <pre><code>% alias htask="task rc:/home/me/.taskrc_home"
+% alias wtask="task rc:/home/me/.taskrc_work"
+% htask list
+...
+% wtask list
+...</code></pre>
+
+                <strong>% task &lt;id&gt; fg:... bg:...</strong>
+                <p>
+                  Not strictly a command, the setting of the fg and bg (foreground
+                  and background) attributes determines the colors used to represent
+                  the task.  Valid foreground colors are:
+                </p>
+
+                <pre><code>         bold          underline          bold_underline
+black    bold_black    underline_black    bold_underline_black
+red      bold_red      underline_red      bold_underline_red
+green    bold_green    underline_green    bold_underline_green
+yellow   bold_yellow   underline_yellow   bold_underline_yellow
+blue     bold_blue     underline_blue     bold_underline_blue
+magenta  bold_magenta  underline_magenta  bold_underline_magenta
+cyan     bold_cyan     underline_cyan     bold_underline_cyan
+white    bold_white    underline_white    bold_underline_white</code></pre>
+
+                <p>
+                  Note that these are not just colors, but combinations of colors and
+                  attributes.  Valid background colors are:
+                </p>
+
+                <pre><code>on_black    on_bright_black
+on_red      on_bright_red
+on_green    on_bright_green
+on_yellow   on_bright_yellow
+on_blue     on_bright_blue
+on_magenta  on_bright_magenta
+on_cyan     on_bright_cyan
+on_white    on_bright_white</code></pre>
+
+                <p>
+                  Note also that this capability does depend on whether your terminal
+                  program can display these colors.
+                </p>
+              </div>
+
+              <br />
+              <br />
+              <div class="content">
+                <p>
+                  Copyright 2006-2008, P. Beckingham.  All rights reserved.
+                </p>
+              </div>
+
+            </div>
+          </td>
+
+          <td align="right" valign="top" width="200px">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <script type="text/javascript"><!--
+            google_ad_client = "pub-9709799404235424";
+            /* Task Main */
+            google_ad_slot = "8660617875";
+            google_ad_width = 120;
+            google_ad_height = 600;
+            //-->
+            </script>
+            <script type="text/javascript"
+                     src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+            </script>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-4737637-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+
+  </body>
+</html>
+

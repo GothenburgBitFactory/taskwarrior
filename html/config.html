@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Task 1.4.0</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="task.css" type="text/css" />
+  </head>
+
+  <body>
+    <div id="toolbar">
+      <a href="task.html">Home</a>
+      <a href="setup.html">Setup</a>
+      <a href="simple.html">Simple</a>
+      <a href="advanced.html">Advanced</a>
+      <a href="shell.html">Shell</a>
+      <a href="config.html">Configuration</a>
+      <a href="color.html">Colors</a>
+      <a href="usage.html">Usage</a>
+    </div>
+
+    <div id="container">
+
+      <table>
+        <tr>
+          <td>
+
+            <div id="content">
+              <br />
+              <br />
+              <br />
+              <h2 class="title"><a name="config">Configuring Task</a></h2>
+              <div class="content">
+                <p>
+                  Task recognizes several entries in the .taskrc file for
+                  configuration purposes.  Valid entries are of the form:
+                </p>
+
+                <pre><code>name=value</code></pre>
+
+                <p>
+                  Valid examples are:
+                </p>
+
+                <dt>data.location</dt>
+                <dd>
+                  This is a path to the directory containing all the task files.
+                  By default, it is set up to be ~/.task, for example:
+                  /Users/paul/.task
+                </dd>
+
+                <dt>command.logging</dt>
+                <dd>
+                  May be "on" or "off", defaulting to "off".  This determines
+                  whether task records commands.  This is not generally useful,
+                  except while developing task.
+                </dd>
+
+                <dt>confirmation</dt>
+                <dd>
+                  May be "yes" or "no", and determines whether task will ask for
+                  confirmation before deleting a task.
+                </dd>
+
+                <dt>nag</dt>
+                <dd>
+                   This may be a string of text, or blank.  It is used as a prompt
+                   when a task is completed that is not considered high priority.
+                   The "task next" command lists important tasks, and completing
+                   one of those does not generate this nagging.  Default value is:
+
+                   <strong>Note: try to stick to high priority tasks.  See "task next".</strong>
+                </dd>
+
+                <dt>next</dt>
+                <dd>
+                  Is a number, defaulting to 2, which is the number of tasks for
+                  each project that are shown in the "task next" command.
+                </dd>
+
+                <dt>curses</dt>
+                <dd>
+                  Determines whether task uses ncurses to establish the size of
+                  the window you are using, for text wrapping.
+                </dd>
+
+                <dt>blanklines</dt>
+                <dd>
+                  May be "on" or "off".  Prevents the display of unnecessary blank
+                  lines so that task makes better use screen real estate on small-
+                  screened devices.
+                </dd>
+
+                <dt>dateformat</dt>
+                <dd>
+                  <p>
+                    This is a string of characters that define how task formats dates.
+                    The default value is:
+                  </p>
+
+                  <pre><code>m/d/Y</code></pre>
+
+                  <p>
+                    which means dates look like:
+                  </p>
+
+                  <pre><code>6/7/2008</code></pre>
+
+                  <p>
+                    The string should contain the characters:
+
+                    <table>
+                      <tr>
+                        <th class="table_h">Character</th>
+                        <th class="table_h">Meaning</th>
+                        <th class="table_h">Example</th>
+                      </tr>
+                      <tr>
+                        <td class="table_d">m</td>
+                        <td class="table_d">minimal-digit month</td>
+                        <td class="table_d">1, 12</td>
+                      </tr>
+                      <tr>
+                        <td class="table_d">d</td>
+                        <td class="table_d">minimal-digit day</td>
+                        <td class="table_d">1, 30</td>
+                      </tr>
+                      <tr>
+                        <td class="table_d">y</td>
+                        <td class="table_d">two-digit year</td>
+                        <td class="table_d">08</td>
+                      </tr>
+                      <tr>
+                        <td class="table_d">M</td>
+                        <td class="table_d">two-digit month</td>
+                        <td class="table_d">01, 12</td>
+                      </tr>
+                      <tr>
+                        <td class="table_d">D</td>
+                        <td class="table_d">two-digit day</td>
+                        <td class="table_d">01, 30</td>
+                      </tr>
+                      <tr>
+                        <td class="table_d">Y</td>
+                        <td class="table_d">four-digit year</td>
+                        <td class="table_d">2008</td>
+                      </tr>
+                    </table>
+                  </p>
+
+                  <p>
+                    The string may also contain other characters to act as spacers,
+                    or formatting.  Other values could include (but are not limited to):
+                  </p>
+
+                  <p>
+                    <table>
+                      <tr>
+                        <th class="table_h">dateformat</td>
+                        <th class="table_h">How it looks</th>
+                      </tr>
+                      <tr>
+                        <td class="table_d">d/m/Y</td>
+                        <td class="table_d">7/6/2008</td>
+                      </tr>
+                      <tr>
+                        <td class="table_d">YMD</td>
+                        <td class="table_d">20080607</td>
+                      </tr>
+                      <tr>
+                        <td class="table_d">m-d-y</td>
+                        <td class="table_d">6-7-08</td>
+                      </tr>
+                    </table>
+                  </p>
+                </dd>
+
+                <dt>showage<dt>
+                <dd>
+                  May be "yes" or "no".  Determines whether the "Age"
+                  column appears on the "list" and "next" reports.
+                <dd>
+
+                <dt>monthsperline</dt>
+                <dd>
+                  Determines how many months the "task calendar" command
+                  renders across the screen.  Defaults to 1.
+                </dd>
+
+                <dt>oldest</dt>
+                <dd>
+                  Determines how many tasks the "task oldest" command displays.
+                  Defaults to 10.
+                </dd>
+
+                <dt>newest</dt>
+                <dd>
+                  Determines how many tasks the "task newest" command displays.
+                  Defaults to 10.
+                </dd>
+
+                <dt>defaultwidth</dt>
+                <dd>
+                  The width of tables used when ncurses support is not available.
+                  Defaults to 80.
+                </dd>
+
+                <dt>color</dt>
+                <dd>
+                 May be "on" or "off".  Determines whether task uses color.
+                </dd>
+
+                <dt>
+                  color.overdue<br />
+                  color.due<br />
+                  color.pri.H<br />
+                  color.pri.M<br />
+                  color.pri.L<br />
+                  color.pri.none<br />
+                  color.active<br />
+                  color.tagged
+                </dt>
+                <dd>
+                  These are the coloration rules.  They correspond to a particular
+                  attribute of a task, such as it being due, or being active, and
+                  specifies the automatic coloring of that task.  The value may
+                  be one optional foreground color (see below) and one optional
+                  background color.  For example, the value may be:
+                  <br />
+                  <strong>bold_red on_bright_yellow</strong>
+                </dd>
+
+                <dt>color.tag.X</dt>
+                <dd>
+                  Colors any task that has the tag X.
+                </dd>
+
+                <dt>color.project.X</dt>
+                <dd>
+                  Colors any task assigned to project X.
+                </dd>
+
+                <dt>color.keyword.X</dt>
+                <dd>
+                  Colors any task where the description contains X.
+                </dd>
+              </div>
+
+              <br />
+              <br />
+              <div class="content">
+                <p>
+                  Copyright 2006-2008, P. Beckingham.  All rights reserved.
+                </p>
+              </div>
+
+            </div>
+          </td>
+
+          <td align="right" valign="top" width="200px">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <script type="text/javascript"><!--
+            google_ad_client = "pub-9709799404235424";
+            /* Task Main */
+            google_ad_slot = "8660617875";
+            google_ad_width = 120;
+            google_ad_height = 600;
+            //-->
+            </script>
+            <script type="text/javascript"
+                     src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+            </script>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-4737637-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+
+  </body>
+</html>
+
