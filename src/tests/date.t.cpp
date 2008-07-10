@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  plan (97);
+  plan (100);
 
   try
   {
@@ -146,6 +146,11 @@ int main (int argc, char** argv)
     is (fromString6.month (),  12, "ctor (std::string) -> m");
     is (fromString6.day (),    31, "ctor (std::string) -> d");
     is (fromString6.year (), 2007, "ctor (std::string) -> y");
+
+    Date fromString7 ("01/01/2008", "m/d/Y");
+    is (fromString7.month (),   1, "ctor (std::string) -> m");
+    is (fromString7.day (),     1, "ctor (std::string) -> d");
+    is (fromString7.year (), 2008, "ctor (std::string) -> y");
 
     // Relative dates.
     Date r1 ("today");

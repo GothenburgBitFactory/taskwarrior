@@ -18,24 +18,25 @@ int main (int argc, char** argv)
 {
   plan (17);
 
-  is (convertDuration ("daily"),       1, "duration daily = 1");
-  is (convertDuration ("day"),         1, "duration day = 1");
-  is (convertDuration ("0d"),          0, "duration 0d = 0");
-  is (convertDuration ("1d"),          1, "duration 1d = 1");
-  is (convertDuration ("7d"),          7, "duration 7d = 7");
-  is (convertDuration ("10d"),        10, "duration 10d = 10");
-  is (convertDuration ("100d"),      100, "duration 100d = 100");
+  std::string d;
+  d = "daily";     is (convertDuration (d),   1, "duration daily = 1");
+  d = "day";       is (convertDuration (d),   1, "duration day = 1");
+  d = "0d";        is (convertDuration (d),   0, "duration 0d = 0");
+  d = "1d";        is (convertDuration (d),   1, "duration 1d = 1");
+  d = "7d";        is (convertDuration (d),   7, "duration 7d = 7");
+  d = "10d";       is (convertDuration (d),  10, "duration 10d = 10");
+  d = "100d";      is (convertDuration (d), 100, "duration 100d = 100");
 
-  is (convertDuration ("weekly"),      7, "duration weekly = 7");
-  is (convertDuration ("sennight"),    7, "duration sennight = 7");
-  is (convertDuration ("biweekly"),   14, "duration biweekly = 14");
-  is (convertDuration ("fortnight"),  14, "duration fortnight = 14");
-  is (convertDuration ("week"),        7, "duration week = 7");
-  is (convertDuration ("0w"),          0, "duration 0w = 0");
-  is (convertDuration ("1w"),          7, "duration 1w = 7");
-  is (convertDuration ("7w"),         49, "duration 7w = 49");
-  is (convertDuration ("10w"),        70, "duration 10w = 70");
-  is (convertDuration ("100w"),      700, "duration 100w = 700");
+  d = "weekly";    is (convertDuration (d),   7, "duration weekly = 7");
+  d = "sennight";  is (convertDuration (d),   7, "duration sennight = 7");
+  d = "biweekly";  is (convertDuration (d),  14, "duration biweekly = 14");
+  d = "fortnight"; is (convertDuration (d),  14, "duration fortnight = 14");
+  d = "week";      is (convertDuration (d),   7, "duration week = 7");
+  d = "0w";        is (convertDuration (d),   0, "duration 0w = 0");
+  d = "1w";        is (convertDuration (d),   7, "duration 1w = 7");
+  d = "7w";        is (convertDuration (d),  49, "duration 7w = 49");
+  d = "10w";       is (convertDuration (d),  70, "duration 10w = 70");
+  d = "100w";      is (convertDuration (d), 700, "duration 100w = 700");
 
   return 0;
 }

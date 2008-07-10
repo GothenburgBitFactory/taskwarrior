@@ -82,8 +82,8 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
       }
 
       if (i + 1 < mdy.length ()                                         &&
-          mdy[i + 0] == '1'                                             &&
-          (mdy[i + 1] == '0' || mdy[i + 1] == '1' || mdy[i + 1] == '2'))
+          (mdy[i + 0] == '0' || mdy[i + 0] == '1')                      &&
+          ::isdigit (mdy[i + 1]))
       {
         month = ::atoi (mdy.substr (i, 2).c_str ());
         i += 2;
@@ -102,8 +102,8 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
-      if (i + 1 < mdy.length ()  &&
-          (mdy[i + 0] == '1' || mdy[i + 0] == '2' || mdy[i + 0] == '3') &&
+      if (i + 1 < mdy.length ()                                                              &&
+          (mdy[i + 0] == '0' || mdy[i + 0] == '1' || mdy[i + 0] == '2' || mdy[i + 0] == '3') &&
           ::isdigit (mdy[i + 1]))
       {
         day = ::atoi (mdy.substr (i, 2).c_str ());
