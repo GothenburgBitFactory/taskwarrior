@@ -22,6 +22,7 @@ represents a feature release, and the Z represents a patch.
   + Added task filtering on all reports
   + Automatically shuts off color, curses when output is not a tty
   + Supports relative due: dates (tomorrow, wednesday, 23rd, eom ...)
+  + Supports the ~ character in .taskrc data.location
   + Bug: Fixed where Esc[0m sequences were being emitted for no good reason
   + Bug: Fixed underlined table headers when color is turned off
   + Bug: Adding a blank priority resulted in an assigned garbage value
