@@ -80,6 +80,7 @@ public:
   const std::string compose () const;
   const std::string composeCSV ();
   void parse (const std::string&);
+  bool validate () const;
 
 private:
   int determineVersion (const std::string&);

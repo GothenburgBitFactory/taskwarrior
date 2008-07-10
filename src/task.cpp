@@ -406,24 +406,28 @@ void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
   {
     if (t->getStatus () == T::recurring)
     {
-//      std::cout << "# found recurring task " << t->getUUID () << std::endl;
-
       // Generate a list of due dates for this recurring task, regardless of
       // the mask.
       std::vector <Date> due;
-      generateDueDates (*t, due);
+      if (!generateDueDates (*t, due))
+      {
+        std::cout << "Task "
+                  << t->getUUID ()
+                  << " ("
+                  << trim (t->getDescription ())
+                  << ") is past its 'until' date, and has be deleted" << std::endl;
+        tdb.deleteT (*t);
+        continue;
+      }
 
       // Get the mask from the parent task.
       std::string mask = t->getAttribute ("mask");
-//      std::cout << "# mask=" << mask << std::endl;
 
       // Iterate over the due dates, and check each against the mask.
       bool changed = false;
       unsigned int i = 0;
       foreach (d, due)
       {
-//        std::cout << "# need: " << d->toString () << std::endl;
-
         if (mask.length () <= i)
         {
           mask += '-';
@@ -444,11 +448,9 @@ void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
           rec.setAttribute ("imask", indexMask);      // Store index into mask.
 
           // Add the new task to the vector, for immediate use.
-//          std::cout << "# adding to modified" << std::endl;
           modified.push_back (rec);
 
           // Add the new task to the DB.
-//          std::cout << "# adding to pending" << std::endl;
           tdb.addT (rec);
         }
 
@@ -458,7 +460,6 @@ void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
       // Only modify the parent if necessary.
       if (changed)
       {
-//        std::cout << "# modifying parent with mask=" << mask << std::endl;
         t->setAttribute ("mask", mask);
         tdb.modifyT (*t);
       }
@@ -473,13 +474,13 @@ void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
 ////////////////////////////////////////////////////////////////////////////////
 // Determine a start date (due), an optional end date (until), and an increment
 // period (recur).  Then generate a set of corresponding dates.
-void generateDueDates (T& parent, std::vector <Date>& allDue)
+//
+// Returns false if the parent recurring task is depleted.
+bool generateDueDates (T& parent, std::vector <Date>& allDue)
 {
   // Determine due date, recur period and until date.
   Date due (atoi (parent.getAttribute ("due").c_str ()));
-//  std::cout << "# due=" << due.toString () << std::endl;
   std::string recur = parent.getAttribute ("recur");
-//  std::cout << "# recur=" << recur << std::endl;
 
   bool specificEnd = false;
   Date until;
@@ -489,25 +490,29 @@ void generateDueDates (T& parent, std::vector <Date>& allDue)
     specificEnd = true;
   }
 
-//  std::cout << "# specficEnd=" << (specificEnd ? "true" : "false") << std::endl;
-//  if (specificEnd)
-//    std::cout << "# until=" << until.toString () << std::endl;
-
   Date now;
   for (Date i = due; ; i = getNextRecurrence (i, recur))
   {
     allDue.push_back (i);
 
-//    std::cout << "# i=" << i.toString () << std::endl;
     if (specificEnd && i > until)
-      break;
+    {
+      // If i > until, it means there are no more tasks to generate, and if the
+      // parent mask contains all + or X, then there never will be another task
+      // to generate, and this parent task may be safely reaped.
+      std::string mask = parent.getAttribute ("mask");
+      if (mask.length () == allDue.size () &&
+          mask.find ('-') == std::string::npos)
+        return false;
+
+      return true;
+    }
 
     if (i > now)
-//    {
-//      std::cout << "# already 1 instance into the future, stopping" << std::endl;
-      break;
-//    }
+      return true;
   }
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

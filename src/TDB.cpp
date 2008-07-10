@@ -50,7 +50,7 @@ TDB::~TDB ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::dataDirectory (const std::string& directory)
 {
-  if (! access (directory.c_str (), F_OK))
+  if (! access (expandPath (directory).c_str (), F_OK))
   {
     mPendingFile   = directory + "/pending.data";
     mCompletedFile = directory + "/completed.data";

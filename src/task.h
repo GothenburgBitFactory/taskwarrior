@@ -62,7 +62,7 @@ void gatherNextTasks (const TDB&, T&, Config&, std::vector <T>&, std::vector <in
 void nag (TDB&, T&, Config&);
 int getDueState (const std::string&);
 void handleRecurrence (TDB&, std::vector <T>&);
-void generateDueDates (T&, std::vector <Date>&);
+bool generateDueDates (T&, std::vector <Date>&);
 Date getNextRecurrence (Date&, std::string&);
 void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
 
