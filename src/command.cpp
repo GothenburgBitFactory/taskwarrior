@@ -264,6 +264,9 @@ void handleVersion (Config& conf)
             << std::endl
             << std::endl
             << table.render ()
+            << std::endl
+            << "See http://www.beckingham.net/task.html for the latest releases and a full tutorial."
+            << std::endl
             << std::endl;
 
   // Verify installation.  This is mentioned in the documentation as the way to

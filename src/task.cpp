@@ -194,6 +194,9 @@ static void shortUsage (Config& conf)
   table.addCell (row, 2, "Shows the long usage text");
 
   std::cout << table.render ()
+            << std::endl
+            << "See http://www.beckingham.net/task.html for the latest releases and a full tutorial."
+            << std::endl
             << std::endl;
 }
 
