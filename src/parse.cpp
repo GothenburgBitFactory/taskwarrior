@@ -110,6 +110,7 @@ static const char* attributes[] =
   "recur",
   "until",
   "mask",
+  "imask",
   "",
 };
 
@@ -157,7 +158,8 @@ void guess (const std::string& type, const char** list, std::string& candidate)
     candidate = matches[0];
 
   else if (0 == matches.size ())
-    throw std::string ("Unrecognized ") + type + " '" + candidate + "'";
+//    throw std::string ("Unrecognized ") + type + " '" + candidate + "'";
+    candidate = "";
 
   else
   {
@@ -225,32 +227,37 @@ static bool validAttribute (
   Config& conf)
 {
   guess ("attribute", attributes, name);
-
-  if ((name == "fg" || name == "bg") && value != "")
-    guess ("color", colors, value);
-
-  else if (name == "due" && value != "")
-    validDate (value, conf);
-
-  else if (name == "until" && value != "")
-    validDate (value, conf);
-
-  else if (name == "priority")
+  if (name != "")
   {
-    value = upperCase (value);
-    return validPriority (value);
+    if ((name == "fg" || name == "bg") && value != "")
+      guess ("color", colors, value);
+
+    else if (name == "due" && value != "")
+      validDate (value, conf);
+
+    else if (name == "until" && value != "")
+      validDate (value, conf);
+
+    else if (name == "priority")
+    {
+      value = upperCase (value);
+      return validPriority (value);
+    }
+
+    // Some attributes are intended to be private.
+    else if (name == "entry" ||
+             name == "start" ||
+             name == "end"   ||
+             name == "mask"  ||
+             name == "imask")
+      throw std::string ("\"") +
+            name               +
+            "\" is not an attribute you may modify directly.";
+
+    return true;
   }
 
-  // Some attributes are intended to be private.
-  else if (name == "entry" ||
-           name == "start" ||
-           name == "end"   ||
-           name == "mask")
-    throw std::string ("\"") +
-          name               +
-          "\" is not an attribute you may modify directly.";
-
-  return true;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -285,7 +292,12 @@ static bool validDescription (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 static bool validCommand (std::string& input)
 {
-  guess ("command", commands, input);
+  std::string copy = input;
+  guess ("command", commands, copy);
+  if (copy == "")
+    return false;
+
+  input = copy;
   return true;
 }
 
@@ -380,8 +392,15 @@ void parse (
         std::string value = arg.substr (colon + 1, std::string::npos);
 
         if (validAttribute (name, value, conf))
+        {
           if (name != "recur" || validDuration (value))
             task.setAttribute (name, value);
+        }
+
+        // If it is not a valid attribute, then allow the argument as part of
+        // the description.
+        else
+          descCandidate += arg;
       }
 
       // Substitution of description text.
@@ -393,10 +412,10 @@ void parse (
       // Command.
       else if (command == "")
       {
-        if (!isCommand (arg))
-          descCandidate += std::string (arg) + " ";
-        else if (validCommand (arg))
+        if (isCommand (arg) && validCommand (arg))
           command = arg;
+        else
+          throw std::string ("'") + arg + "' is not a valid command.";
       }
 
       // Anything else is just considered description.
