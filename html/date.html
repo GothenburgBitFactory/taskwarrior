@@ -31,49 +31,79 @@
               <br />
               <br />
               <br />
-              <h2 class="title"><a name="simple">30-second Tutorial</a></h2>
+              <h2 class="title">Date Handling</h2>
               <div class="content">
                 <p>
-                  For the excessively lazy.
-                  Add two tasks:
+                  Task reads dates from the command line, and displays dates in the reports.
                 </p>
-
-                <pre><code>% task add Read task documents later
-% task add priority:H Pay bills</code></pre>
 
                 <p>
-                  Easy.  See that second one has a High priority?  Now let's look at those tasks:
+                  In order to do this in a flexible way, task obeys a configuration variable that
+                  determines the expected and desired date format.  See the
+                  <a href="config.html">Configuring Task</a> page for details.
                 </p>
-
-                <pre><code>% task ls
-
-ID Project Pri Description
- 2         H   Pay bills
- 1             Read task documents later</code></pre>
 
                 <p>
-                  They are ordered by priority.  Let's mark number 2 as done:
+                  In addition to exactly specifying the date, such as:
                 </p>
 
-                <pre><code>% task 2 done
-% task ls
-
-ID Project Pri Description
- 1             Read task documents later</code></pre>
+                <pre><code>% task ... due:7/10/2008</code></pre>
 
                 <p>
-                  Gone.  Now let's delete that remaining task, because, well,
-                  why bother now we are already using task:
+                  task supports a flexible variety of alternatives.  For example:
                 </p>
 
-                <pre><code>% task delete 1
-% task ls
-No matches</code></pre>
+                <pre><code>% task ... due:today</code></pre>
 
                 <p>
-                  Easy.  But now consider checking out what task can really do...
+                  Similarly:
                 </p>
+
+                <pre><code>% task ... due:yesterday
+% task ... due:tomorrow</code></pre>
+
+                <p>
+                  Here are some other forms that are accepted.  The day number, followed by an
+                  ordinal:
+                </p>
+
+                <pre><code>% task ... due:23rd</code></pre>
+
+                <p>
+                  End of month:
+                </p>
+
+                <pre><code>% task ... due:eom</code></pre>
+
+                <p>
+                  End of year:
+                </p>
+
+                <pre><code>% task ... due:eoy</code></pre>
+
+                <p>
+                  End of week (Friday):
+                </p>
+
+                <pre><code>% task ... due:eow</code></pre>
+
+                <p>
+                  Next Friday:
+                </p>
+
+                <pre><code>% task ... due:Friday</code></pre>
+
+                <p>
+                  Note that next Friday means seven days from now if today is Friday, otherwise
+                  it means the next occurring Friday.  Most of these forms may be specified using
+                  abbreviations, provided they are unique.  For example:
+                </p>
+
+                <pre><code>% task ... due:fri</code></pre>
+
+
               </div>
+
 
               <br />
               <br />
