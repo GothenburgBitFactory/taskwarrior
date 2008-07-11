@@ -415,7 +415,8 @@ void parse (
         if (isCommand (arg) && validCommand (arg))
           command = arg;
         else
-          throw std::string ("'") + arg + "' is not a valid command.";
+          descCandidate += arg;
+//          throw std::string ("'") + arg + "' is not a valid command.";
       }
 
       // Anything else is just considered description.
