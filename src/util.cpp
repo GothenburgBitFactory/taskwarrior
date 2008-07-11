@@ -308,7 +308,7 @@ int convertDuration (std::string& input)
 std::string expandPath (const std::string& in)
 {
   std::string copy = in;
-  unsigned int tilde;
+  std::string::size_type tilde;
 
   if ((tilde = copy.find ("~/")) != std::string::npos)
   {
@@ -317,7 +317,7 @@ std::string expandPath (const std::string& in)
   }
   else if ((tilde = copy.find ("~")) != std::string::npos)
   {
-    unsigned int slash;
+    std::string::size_type slash;
     if ((slash = copy.find  ("/", tilde)) != std::string::npos)
     {
       std::string name = copy.substr (tilde + 1, slash - tilde - 1);
