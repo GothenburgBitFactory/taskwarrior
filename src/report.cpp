@@ -1816,13 +1816,14 @@ void handleReportCalendar (TDB& tdb, T& task, Config& conf)
     for (int i = 0 ; i < monthsPerLine ; i++)
     {
       std::string month = Date::monthName (nextM);
-      std::cout << month
-                << " "
-                << std::setw(23 // one month's output width
-                             - month.length ()// month name length
-                             - 1)// spacer character
-                << std::left
-                << nextY;
+      int left = (18 - month.length ()) / 2 + 1;
+      int right = 18 - left - month.length ();
+
+      std::cout << std::setw (left) << ' '
+                << month
+                << ' '
+                << nextY
+                << std::setw (right) << ' ';
 
       if (++nextM > 12)
       {
