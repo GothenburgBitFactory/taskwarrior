@@ -16,8 +16,7 @@ frequently, with best practices and useful reports evolving from usage patterns.
 
 Task is scope-limited to GTD functionality only.
 
-You may want to jump straight to the TUTORIAL file, or perhaps watch the old
-task movie on YouTube:
+You may want to watch the old task movie on YouTube:
 
   http://www.youtube.com/watch?v=l68LCl6BYvs
 
@@ -27,12 +26,9 @@ or the new improved one:
 
 Either will give you a fairly good idea of what task is capable of, and whether
 it fits in to your way of working.  As a command line application, task is not
-for everyone and some of you may prefer to not proceed.  The movie or TUTORIAL
-file are the quickest way for you to make that decision.
-
-Please note that the TUTORIAL file included is deprecated, and will be removed
-at the next major release of task.  It is superceded by an HTML tutorial that
-can be found at:
+for everyone and some of you may prefer to not proceed.  The movie or online 
+tutorial file are the quickest way for you to make that decision.  The online
+tutorial can be found at:
 
   http://www.beckingham.net/task.html
 
