@@ -126,6 +126,10 @@ static void shortUsage (Config& conf)
   table.addCell (row, 2, "Marks the specified task as completed");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task undo ID");
+  table.addCell (row, 2, "Marks the specified done task as pending, provided a report has not yet been run");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task projects");
   table.addCell (row, 2, "Shows a list of all project names used, and how many tasks are in each");
 
@@ -316,6 +320,7 @@ int main (int argc, char** argv)
     else if (command == "delete")             handleDelete         (tdb, task, conf);
     else if (command == "start")              handleStart          (tdb, task, conf);
     else if (command == "done")               handleDone           (tdb, task, conf);
+    else if (command == "undo")               handleUndo           (tdb, task, conf);
     else if (command == "export")             handleExport         (tdb, task, conf);
     else if (command == "version")            handleVersion        (           conf);
     else if (command == "summary")            handleReportSummary  (tdb, task, conf);

@@ -141,6 +141,7 @@ static const char* commands[] =
   "summary",
   "tags",
   "undelete",
+  "undo",
   "usage",
   "version",
   "",

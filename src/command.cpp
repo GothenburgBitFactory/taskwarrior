@@ -204,6 +204,49 @@ void handleUndelete (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// If a task is done, but is still in the pending file, then it may be undone
+// simply by changing it's status.
+void handleUndo (TDB& tdb, T& task, Config& conf)
+{
+  std::vector <T> all;
+  tdb.allPendingT (all);
+
+  int id = task.getId ();
+  std::vector <T>::iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+  {
+    if (it->getId () == id)
+    {
+      if (it->getStatus () == T::completed)
+      {
+        if (it->getAttribute ("recur") != "")
+        {
+          std::cout << "Task does not support 'undo' for recurring tasks." << std::endl;
+          return;
+        }
+
+        T restored (*it);
+        restored.setStatus (T::pending);
+        restored.removeAttribute ("end");
+        tdb.modifyT (restored);
+
+        std::cout << "Task " << id << " successfully undone." << std::endl;
+        return;
+      }
+      else
+      {
+        std::cout << "Task " << id << " is not done - therefore cannot be undone." << std::endl;
+        return;
+      }
+    }
+  }
+
+  std::cout << "Task " << id
+            << " not found - tasks can only be reliably undone if the undo" << std::endl
+            << "command is run immediately after the errant done command." << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void handleVersion (Config& conf)
 {
   // Determine window size, and set table accordingly.

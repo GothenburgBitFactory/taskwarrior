@@ -7,7 +7,9 @@ represents a feature release, and the Z represents a patch.
 
 ------ current release ---------------------------
 
-1.5.0 (?/?/?)
+1.5.0 (?/?/2008)
+  + "task undo" can now retract a "task done" command, provided no reports
+    have been run (and therefore TDB::gc run)
 
 ------ old releases ------------------------------
 
