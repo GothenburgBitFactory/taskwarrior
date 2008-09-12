@@ -299,10 +299,23 @@ int main (int argc, char** argv)
     if (conf.get ("command.logging") == "on")
       tdb.logCommand (argc, argv);
 
-    // Parse the command line.
+    // If argc == 1 and the default.command configuration variable is set,
+    // then use that, otherwise stick with argc/argv.
     std::vector <std::string> args;
-    for (int i = 1; i < argc; ++i)
-      args.push_back (argv[i]);
+    std::string defaultCommand = conf.get ("default.command");
+    if (argc == 1 && defaultCommand != "")
+    {
+      // Stuff the command line.
+      split (args, defaultCommand, ' ');
+      std::cout << "[task " << defaultCommand << "]" << std::endl;
+    }
+    else
+    {
+      // Parse the command line.
+      for (int i = 1; i < argc; ++i)
+        args.push_back (argv[i]);
+    }
+
     std::string command;
     T task;
     parse (args, command, task, conf);
