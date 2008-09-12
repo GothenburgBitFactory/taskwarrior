@@ -758,12 +758,12 @@ void Table::sort (std::vector <int>& order)
             break;
 
           case ascendingCharacter:
-            if ((char)*left > (char)*right)
+            if ((std::string)*left > (std::string)*right)
               SWAP
             break;
 
           case descendingCharacter:
-            if ((char)*left < (char)*right)
+            if ((std::string)*left < (std::string)*right)
               SWAP
             break;
 
