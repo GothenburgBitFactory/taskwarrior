@@ -12,6 +12,8 @@ represents a feature release, and the Z represents a patch.
     have been run (and therefore TDB::gc run)
   + Task now correctly sorts on entire strings, instead of just the first
     character (thanks to Andy Lester)
+  + Task now uses dashes (-----) to column underlines when color is disabled
+    (thanks to Vincent Fleuranceau)
 
 ------ old releases ------------------------------
 

@@ -54,6 +54,7 @@
 Table::Table ()
   : mRows (0)
   , mIntraPadding (1)
+  , mDashedUnderline (false)
   , mTablePadding (0)
   , mTableWidth (0)
   , mSuppressWS (false)
@@ -101,6 +102,12 @@ void Table::setTableWidth (int width)
 {
   assert (width > 0);
   mTableWidth = width;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Table::setTableDashedUnderline ()
+{
+  mDashedUnderline = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -582,7 +589,57 @@ const std::string Table::formatHeader (
            fg, bg,
            Text::colorize (
              decoration, Text::nocolor,
-             pad + preJust+ data + postJust + pad) + intraPad);
+             pad + preJust + data + postJust + pad) + intraPad);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// data            One    Data to be rendered
+// width           8      Max data width for column/specified width
+// padding         1      Extra padding around data
+// intraPadding    0      Extra padding between columns only
+// justification   right  Alignment withing padding
+//
+// Returns:
+//      "------- "
+//       -------   data
+//       ^      ^  padding
+//              ^  intraPadding
+//       ^^^^^^^^  width
+//      ^        ^ fg/bg
+//
+const std::string Table::formatHeaderDashedUnderline (
+  int col,
+  int width,
+  int padding)
+{
+  assert (width > 0);
+
+  Text::color fg         = getHeaderFg (col);
+  Text::color bg         = getHeaderBg (col);
+  Text::color decoration = getHeaderUnderline (col);
+
+  std::string data     = "";
+  for (int i = 0; i < width; ++i)
+    data += '-';
+
+  std::string pad      = "";
+  std::string intraPad = "";
+  std::string attrOn   = "";
+  std::string attrOff  = "";
+
+  for (int i = 0; i < padding; ++i)
+    pad += " ";
+
+  // Place the value within the available space - justify.
+  if (col < (signed) mColumns.size () - 1)
+    for (int i = 0; i < getIntraPadding (); ++i)
+      intraPad += " ";
+
+  return Text::colorize (
+           fg, bg,
+           Text::colorize (
+             decoration, Text::nocolor,
+             pad + data + pad) + intraPad);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -861,13 +918,24 @@ const std::string Table::render ()
 
   // Print column headers in column order.
   std::string output;
+  std::string underline;
   for (size_t col = 0; col < mColumns.size (); ++col)
+  {
     output += formatHeader (
                 col,
                 mCalculatedWidth[col],
                 mColumnPadding[col]);
 
+    if (mDashedUnderline)
+      underline += formatHeaderDashedUnderline (
+                     col,
+                     mCalculatedWidth[col],
+                     mColumnPadding[col]);
+  }
+
   output += "\n";
+  if (underline.length ())
+    output += underline + "\n";
 
   // Determine row order, according to sort options.
   std::vector <int> order;
