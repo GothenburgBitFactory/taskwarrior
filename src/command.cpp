@@ -66,6 +66,20 @@ void handleAdd (const TDB& tdb, T& task, Config& conf)
     task.setAttribute ("mask", "");
   }
 
+/**/
+  // Override with default.project, if not specified.
+  if (task.getAttribute ("project") == "")
+    task.setAttribute ("project", conf.get ("default.project", ""));
+
+  // Override with default.priority, if not specified.
+  if (task.getAttribute ("priority") == "")
+  {
+    std::string defaultPriority = conf.get ("default.priority", "");
+    if (validPriority (defaultPriority))
+      task.setAttribute ("priority", defaultPriority);
+  }
+/**/
+
   if (task.getDescription () == "")
     throw std::string ("Cannot add a blank task.");
 

@@ -208,7 +208,7 @@ bool validDate (std::string& date, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool validPriority (const std::string& input)
+bool validPriority (const std::string& input)
 {
   if (input != "H" &&
       input != "M" &&
