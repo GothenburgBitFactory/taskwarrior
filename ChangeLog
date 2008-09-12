@@ -19,6 +19,7 @@ represents a feature release, and the Z represents a patch.
   + Task now supports a default project and priority for new tasks, via
     the new "default.project" and "default.priority" configuration variables
     (thanks to Vincent Fleuranceau)
+  + Task supports improved word-wrapping to the terminal width
 
 ------ old releases ------------------------------
 

@@ -274,6 +274,26 @@ void handleVersion (Config& conf)
   }
 #endif
 
+  // Create a table for the disclaimer.
+  Table disclaimer;
+  disclaimer.setTableWidth (width);
+  disclaimer.addColumn (" ");
+  disclaimer.setColumnWidth (0, Table::flexible);
+  disclaimer.setColumnJustification (0, Table::left);
+  disclaimer.addCell (disclaimer.addRow (), 0,
+    "Task comes with ABSOLUTELY NO WARRANTY; for details read the COPYING file "
+    "included.  This is free software, and you are welcome to redistribute it "
+    "under certain conditions; again, see the COPYING file for details.");
+
+  // Create a table for the URL.
+  Table link;
+  link.setTableWidth (width);
+  link.addColumn (" ");
+  link.setColumnWidth (0, Table::flexible);
+  link.setColumnJustification (0, Table::left);
+  link.addCell (link.addRow (), 0,
+    "See http://www.beckingham.net/task.html for the latest releases and a full tutorial.");
+
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
@@ -312,18 +332,10 @@ void handleVersion (Config& conf)
             << " "
             << VERSION
             << std::endl
-            << std::endl
-            << "Task comes with ABSOLUTELY NO WARRANTY; for details read the COPYING file"
-            << std::endl
-            << "included.  This is free software, and you are welcome to redistribute it"
-            << std::endl
-            << "under certain conditions; again, see the COPYING file for details."
-            << std::endl
+            << disclaimer.render ()
             << std::endl
             << table.render ()
-            << std::endl
-            << "See http://www.beckingham.net/task.html for the latest releases and a full tutorial."
-            << std::endl
+            << link.render ()
             << std::endl;
 
   // Verify installation.  This is mentioned in the documentation as the way to
