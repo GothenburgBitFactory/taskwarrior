@@ -25,6 +25,8 @@ represents a feature release, and the Z represents a patch.
     whenever task is invoked with no arguments.
   + Bug: Now properly supports relative dates in filters (task list due:eom,
     task list due:tomorrow, task list due:23rd ...)
+  + Bug: Source now properly includes <string.h> in order to build clean
+    using gcc 4.3.
 
 ------ old releases ------------------------------
 
