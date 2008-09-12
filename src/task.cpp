@@ -29,6 +29,7 @@
 #include <fstream>
 #include <sys/types.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
@@ -124,6 +125,10 @@ static void shortUsage (Config& conf)
   row = table.addRow ();
   table.addCell (row, 1, "task done ID");
   table.addCell (row, 2, "Marks the specified task as completed");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task undo ID");
+  table.addCell (row, 2, "Marks the specified done task as pending, provided a report has not yet been run");
 
   row = table.addRow ();
   table.addCell (row, 1, "task projects");
@@ -295,10 +300,23 @@ int main (int argc, char** argv)
     if (conf.get ("command.logging") == "on")
       tdb.logCommand (argc, argv);
 
-    // Parse the command line.
+    // If argc == 1 and the default.command configuration variable is set,
+    // then use that, otherwise stick with argc/argv.
     std::vector <std::string> args;
-    for (int i = 1; i < argc; ++i)
-      args.push_back (argv[i]);
+    std::string defaultCommand = conf.get ("default.command");
+    if (argc == 1 && defaultCommand != "")
+    {
+      // Stuff the command line.
+      split (args, defaultCommand, ' ');
+      std::cout << "[task " << defaultCommand << "]" << std::endl;
+    }
+    else
+    {
+      // Parse the command line.
+      for (int i = 1; i < argc; ++i)
+        args.push_back (argv[i]);
+    }
+
     std::string command;
     T task;
     parse (args, command, task, conf);
@@ -316,6 +334,7 @@ int main (int argc, char** argv)
     else if (command == "delete")             handleDelete         (tdb, task, conf);
     else if (command == "start")              handleStart          (tdb, task, conf);
     else if (command == "done")               handleDone           (tdb, task, conf);
+    else if (command == "undo")               handleUndo           (tdb, task, conf);
     else if (command == "export")             handleExport         (tdb, task, conf);
     else if (command == "version")            handleVersion        (           conf);
     else if (command == "summary")            handleReportSummary  (tdb, task, conf);

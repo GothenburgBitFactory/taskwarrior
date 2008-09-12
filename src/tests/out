@@ -1,0 +1,15 @@
+./task li due:monday
+./task li due:tuesday
+./task li due:wednesday
+./task li due:thursday
+./task li due:friday
+./task li due:saturday
+./task li due:sunday
+./task li due:yesterday
+./task li due:today
+./task li due:tomorrow
+./task li due:eow
+./task li due:eom
+./task li due:eoy
+./task li due:21st
+

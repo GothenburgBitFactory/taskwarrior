@@ -66,6 +66,20 @@ void handleAdd (const TDB& tdb, T& task, Config& conf)
     task.setAttribute ("mask", "");
   }
 
+/**/
+  // Override with default.project, if not specified.
+  if (task.getAttribute ("project") == "")
+    task.setAttribute ("project", conf.get ("default.project", ""));
+
+  // Override with default.priority, if not specified.
+  if (task.getAttribute ("priority") == "")
+  {
+    std::string defaultPriority = conf.get ("default.priority", "");
+    if (validPriority (defaultPriority))
+      task.setAttribute ("priority", defaultPriority);
+  }
+/**/
+
   if (task.getDescription () == "")
     throw std::string ("Cannot add a blank task.");
 
@@ -204,6 +218,49 @@ void handleUndelete (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// If a task is done, but is still in the pending file, then it may be undone
+// simply by changing it's status.
+void handleUndo (TDB& tdb, T& task, Config& conf)
+{
+  std::vector <T> all;
+  tdb.allPendingT (all);
+
+  int id = task.getId ();
+  std::vector <T>::iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+  {
+    if (it->getId () == id)
+    {
+      if (it->getStatus () == T::completed)
+      {
+        if (it->getAttribute ("recur") != "")
+        {
+          std::cout << "Task does not support 'undo' for recurring tasks." << std::endl;
+          return;
+        }
+
+        T restored (*it);
+        restored.setStatus (T::pending);
+        restored.removeAttribute ("end");
+        tdb.modifyT (restored);
+
+        std::cout << "Task " << id << " successfully undone." << std::endl;
+        return;
+      }
+      else
+      {
+        std::cout << "Task " << id << " is not done - therefore cannot be undone." << std::endl;
+        return;
+      }
+    }
+  }
+
+  std::cout << "Task " << id
+            << " not found - tasks can only be reliably undone if the undo" << std::endl
+            << "command is run immediately after the errant done command." << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void handleVersion (Config& conf)
 {
   // Determine window size, and set table accordingly.
@@ -216,6 +273,26 @@ void handleVersion (Config& conf)
     endwin ();
   }
 #endif
+
+  // Create a table for the disclaimer.
+  Table disclaimer;
+  disclaimer.setTableWidth (width);
+  disclaimer.addColumn (" ");
+  disclaimer.setColumnWidth (0, Table::flexible);
+  disclaimer.setColumnJustification (0, Table::left);
+  disclaimer.addCell (disclaimer.addRow (), 0,
+    "Task comes with ABSOLUTELY NO WARRANTY; for details read the COPYING file "
+    "included.  This is free software, and you are welcome to redistribute it "
+    "under certain conditions; again, see the COPYING file for details.");
+
+  // Create a table for the URL.
+  Table link;
+  link.setTableWidth (width);
+  link.addColumn (" ");
+  link.setColumnWidth (0, Table::flexible);
+  link.setColumnJustification (0, Table::left);
+  link.addCell (link.addRow (), 0,
+    "See http://www.beckingham.net/task.html for the latest releases and a full tutorial.");
 
   // Create a table for output.
   Table table;
@@ -255,18 +332,10 @@ void handleVersion (Config& conf)
             << " "
             << VERSION
             << std::endl
-            << std::endl
-            << "Task comes with ABSOLUTELY NO WARRANTY; for details read the COPYING file"
-            << std::endl
-            << "included.  This is free software, and you are welcome to redistribute it"
-            << std::endl
-            << "under certain conditions; again, see the COPYING file for details."
-            << std::endl
+            << disclaimer.render ()
             << std::endl
             << table.render ()
-            << std::endl
-            << "See http://www.beckingham.net/task.html for the latest releases and a full tutorial."
-            << std::endl
+            << link.render ()
             << std::endl;
 
   // Verify installation.  This is mentioned in the documentation as the way to

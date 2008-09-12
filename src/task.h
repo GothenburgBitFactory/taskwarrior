@@ -55,6 +55,7 @@ for (typeof (c) *foreach_p = & (c);                                \
 
 // parse.cpp
 void parse (std::vector <std::string>&, std::string&, T&, Config&);
+bool validPriority (const std::string&);
 bool validDate (std::string&, Config&);
 
 // task.cpp
@@ -76,6 +77,7 @@ void handleExport (TDB&, T&, Config&);
 void handleDelete (TDB&, T&, Config&);
 void handleStart (TDB&, T&, Config&);
 void handleDone (TDB&, T&, Config&);
+void handleUndo (TDB&, T&, Config&);
 void handleModify (TDB&, T&, Config&);
 void handleColor (Config&);
 

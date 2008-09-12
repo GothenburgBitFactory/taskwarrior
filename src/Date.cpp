@@ -543,22 +543,35 @@ bool Date::isRelativeDate (const std::string& input)
       else
         today += (dow - today.dayOfWeek ()) * 86400;
 
-      mT = today.mT;
+      int m, d, y;
+      today.toMDY (m, d, y);
+      Date then (m, d, y);
+
+      mT = then.mT;
       return true;
     }
     else if (found == "today")
     {
-      mT = today.mT;
+      Date then (today.month (),
+                 today.day (),
+                 today.year ());
+      mT = then.mT;
       return true;
     }
     else if (found == "tomorrow")
     {
-      mT = today.mT + 86400;
+      Date then (today.month (),
+                 today.day (),
+                 today.year ());
+      mT = then.mT + 86400;
       return true;
     }
     else if (found == "yesterday")
     {
-      mT = today.mT - 86400;
+      Date then (today.month (),
+                 today.day (),
+                 today.year ());
+      mT = then.mT - 86400;
       return true;
     }
     else if (found == "eom")

@@ -7,12 +7,34 @@ represents a feature release, and the Z represents a patch.
 
 ------ current release ---------------------------
 
-1.4.1 (7/?/2008)
+1.4.2 (9/13/2008)
+  + "task undo" can now retract a "task done" command, provided no reports
+    have been run (and therefore TDB::gc run)
+  + Task now correctly sorts on entire strings, instead of just the first
+    character (thanks to Andy Lester)
+  + Task now uses dashes (-----) to column underlines when color is disabled
+    (thanks to Vincent Fleuranceau)
+  + Task now allows mixed case attribute names (pri:, PRI:, Pri: ...) and
+    commands (add, ADD, Add ...) (thanks to Vincent Fleuranceau)
+  + Task now supports a default project and priority for new tasks, via
+    the new "default.project" and "default.priority" configuration variables
+    (thanks to Vincent Fleuranceau)
+  + Task supports improved word-wrapping to the terminal width
+  + Task now supports "default.command" configuration variable (for example
+    it could contain "list due:tomorrow") that is the command that is run
+    whenever task is invoked with no arguments.
+  + Bug: Now properly supports relative dates in filters (task list due:eom,
+    task list due:tomorrow, task list due:23rd ...)
+  + Bug: Source now properly includes <string.h> in order to build clean
+    using gcc 4.3.
+
+------ old releases ------------------------------
+
+1.4.1 (7/18/2008)
   + Bug: Descriptions can not be altered with "task 123 New description"
   + Tweak: For "task calendar" month names are now centered over the month
   + Removed TUTORIAL file contents in favor of online version
-
------- old releases ------------------------------
+  + Provided Mac .pkg binary
 
 1.4.0 (7/10/2008)
   + New recurring tasks feature

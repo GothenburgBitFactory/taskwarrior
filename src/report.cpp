@@ -79,6 +79,7 @@ void filter (std::vector<T>& all, T& task)
       // Apply attribute filter.
       matches = 0;
       foreach (a, attrList)
+      {
         if (a->first == "project")
         {
           if (a->second.length () <= refTask.getAttribute (a->first).length ())
@@ -87,6 +88,7 @@ void filter (std::vector<T>& all, T& task)
         }
         else if (a->second == refTask.getAttribute (a->first))
           ++matches;
+      }
 
       if (matches == attrList.size ())
       {
@@ -143,7 +145,7 @@ void handleList (TDB& tdb, T& task, Config& conf)
   if (showAge) table.addColumn ("Age");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get (std::string ("color"), true))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -153,6 +155,8 @@ void handleList (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (5);
     if (showAge) table.setColumnUnderline (6);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -291,6 +295,8 @@ void handleSmallList (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (2);
     table.setColumnUnderline (3);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -414,6 +420,8 @@ void handleCompleted (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (1);
     table.setColumnUnderline (2);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -493,6 +501,8 @@ void handleInfo (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -710,6 +720,8 @@ void handleLongList (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (7);
     if (showAge) table.setColumnUnderline (8);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -913,6 +925,8 @@ void handleReportSummary (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (2);
     table.setColumnUnderline (3);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnJustification (1, Table::right);
   table.setColumnJustification (2, Table::right);
@@ -1056,6 +1070,8 @@ void handleReportNext (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (5);
     if (showAge) table.setColumnUnderline (6);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -1275,6 +1291,8 @@ void handleReportHistory (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (4);
     table.setColumnUnderline (5);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnJustification (2, Table::right);
   table.setColumnJustification (3, Table::right);
@@ -1462,6 +1480,8 @@ void handleReportGHistory (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
   }
+  else
+    table.setTableDashedUnderline ();
 
   // Determine the longest line.
   int maxLine = 0;
@@ -1623,6 +1643,8 @@ void handleReportUsage (const TDB& tdb, T& task, Config& conf)
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
     }
+  else
+    table.setTableDashedUnderline ();
 
     table.setColumnJustification (1, Table::right);
     table.sortOn (1, Table::descendingNumeric);
@@ -1681,6 +1703,8 @@ std::string renderMonths (
       table.setColumnUnderline (i + 6);
       table.setColumnUnderline (i + 7);
     }
+    else
+      table.setTableDashedUnderline ();
 
     table.setColumnJustification (i + 0, Table::right);
     table.setColumnJustification (i + 1, Table::right);
@@ -1896,6 +1920,8 @@ void handleReportActive (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (3);
     table.setColumnUnderline (4);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -2011,6 +2037,8 @@ void handleReportOverdue (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (3);
     table.setColumnUnderline (4);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -2126,6 +2154,8 @@ void handleReportOldest (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (5);
     if (showAge) table.setColumnUnderline (6);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
@@ -2269,6 +2299,8 @@ void handleReportNewest (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (5);
     if (showAge) table.setColumnUnderline (6);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);

@@ -43,6 +43,25 @@
                   lists all these commands.
                 </p>
 
+                <p>
+                  However, if the following configuration variable is specified:
+                </p>
+
+                <pre><code>default.command=list pri:H</code></pre>
+
+                <p>
+                  Then this command will be run whenever task is run without arguments.
+                  This means that your most common task command can be run simply
+                  with the command:
+                </p>
+
+                  <pre><code>% task
+[task list project:foo]
+
+ID Project Pri Description
+ 1 foo     H   Design the thing
+ 2 foo         Build the thing</code></pre>
+
                 <strong>% task projects</strong>
                 <p>
                   This report generates a list of all the different projects that you
