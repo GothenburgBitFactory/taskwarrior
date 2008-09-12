@@ -14,6 +14,8 @@ represents a feature release, and the Z represents a patch.
     character (thanks to Andy Lester)
   + Task now uses dashes (-----) to column underlines when color is disabled
     (thanks to Vincent Fleuranceau)
+  + Task now allows mixed case attribute names (pri:, PRI:, Pri: ...) and
+    commands (add, ADD, Add ...) (thanks to Vincent Fleuranceau)
 
 ------ old releases ------------------------------
 

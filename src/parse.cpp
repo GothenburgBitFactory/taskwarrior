@@ -371,8 +371,8 @@ void parse (
       std::string to;
 
       // An id is the first argument found that contains all digits.
-      if (command != "add"   && // "add" doesn't require an ID
-          task.getId () == 0 &&
+      if (lowerCase (command) != "add" && // "add" doesn't require an ID
+          task.getId () == 0           &&
           validId (arg))
         task.setId (::atoi (arg.c_str ()));
 
@@ -389,7 +389,7 @@ void parse (
       // value.
       else if ((colon = arg.find (":")) != std::string::npos)
       {
-        std::string name  = arg.substr (0, colon);
+        std::string name  = lowerCase (arg.substr (0, colon));
         std::string value = arg.substr (colon + 1, std::string::npos);
 
         if (validAttribute (name, value, conf))
@@ -413,8 +413,9 @@ void parse (
       // Command.
       else if (command == "")
       {
-        if (isCommand (arg) && validCommand (arg))
-          command = arg;
+        std::string l = lowerCase (arg);
+        if (isCommand (l) && validCommand (l))
+          command = l;
         else
           descCandidate += arg;
 //          throw std::string ("'") + arg + "' is not a valid command.";
