@@ -79,6 +79,7 @@ void filter (std::vector<T>& all, T& task)
       // Apply attribute filter.
       matches = 0;
       foreach (a, attrList)
+      {
         if (a->first == "project")
         {
           if (a->second.length () <= refTask.getAttribute (a->first).length ())
@@ -87,6 +88,7 @@ void filter (std::vector<T>& all, T& task)
         }
         else if (a->second == refTask.getAttribute (a->first))
           ++matches;
+      }
 
       if (matches == attrList.size ())
       {

@@ -20,6 +20,8 @@ represents a feature release, and the Z represents a patch.
     the new "default.project" and "default.priority" configuration variables
     (thanks to Vincent Fleuranceau)
   + Task supports improved word-wrapping to the terminal width
+  + Bug: Now properly supports relative dates in filters (task list due:eom,
+    task list due:tomorrow, task list due:23rd ...)
 
 ------ old releases ------------------------------
 
