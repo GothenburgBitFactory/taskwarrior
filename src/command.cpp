@@ -37,6 +37,7 @@
 #include "Config.h"
 #include "Date.h"
 #include "Table.h"
+#include "color.h"
 #include "TDB.h"
 #include "T.h"
 #include "task.h"
@@ -306,6 +307,8 @@ void handleVersion (Config& conf)
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
   }
+  else
+    table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::flexible);
@@ -328,9 +331,9 @@ void handleVersion (Config& conf)
 
   std::cout << "Copyright (C) 2006 - 2008, P. Beckingham."
             << std::endl
-            << PACKAGE
+            << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, PACKAGE) : PACKAGE)
             << " "
-            << VERSION
+            << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, VERSION) : VERSION)
             << std::endl
             << disclaimer.render ()
             << std::endl
