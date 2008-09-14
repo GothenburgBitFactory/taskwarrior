@@ -418,7 +418,6 @@ void parse (
           command = l;
         else
           descCandidate += arg;
-//          throw std::string ("'") + arg + "' is not a valid command.";
       }
 
       // Anything else is just considered description.

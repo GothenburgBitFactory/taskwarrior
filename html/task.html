@@ -92,7 +92,7 @@
 -->
                 </table>
 
-                <h4>New in version 1.4.2 (9/13/2008)</h4>
+                <h4>New in version 1.4.2 (9/14/2008)</h4>
                 <ul>
                   <li>"task undo" can now retract a "task done" command, provided no
                       reports have been run.
@@ -109,6 +109,8 @@
                   <li>Task now supports "default.command" configuration variable (for example
                       it could contain "list due:tomorrow") which is the command that is run
                       whenever task is invoked with no arguments.
+                  <li>Task supports modifying the existing description of a task, with the
+                      following syntax: task &lt;id&gt; "new description ...".
                   <li>Fixed bug so that relative dates in filters (task list due:eom,
                       task list due:tomorrow, task list due:23rd ...) are now properly
                       supported.
