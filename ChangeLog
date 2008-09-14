@@ -23,6 +23,8 @@ represents a feature release, and the Z represents a patch.
   + Task now supports "default.command" configuration variable (for example
     it could contain "list due:tomorrow") that is the command that is run
     whenever task is invoked with no arguments.
+  + Task supports modifying the existing description of a task, with the
+    following syntax: task <id> "new description ...".
   + Bug: Now properly supports relative dates in filters (task list due:eom,
     task list due:tomorrow, task list due:23rd ...)
   + Bug: Source now properly includes <string.h> in order to build clean
