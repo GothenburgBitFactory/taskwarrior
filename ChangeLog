@@ -7,7 +7,7 @@ represents a feature release, and the Z represents a patch.
 
 ------ current release ---------------------------
 
-1.4.2 (9/14/2008)
+1.4.2 (9/18/2008)
   + "task undo" can now retract a "task done" command, provided no reports
     have been run (and therefore TDB::gc run)
   + Task now correctly sorts on entire strings, instead of just the first
@@ -28,7 +28,7 @@ represents a feature release, and the Z represents a patch.
   + Bug: Now properly supports relative dates in filters (task list due:eom,
     task list due:tomorrow, task list due:23rd ...)
   + Bug: Source now properly includes <string.h> in order to build clean
-    using gcc 4.3.
+    using gcc 4.3 (thanks to H. İbrahim Güngör)
 
 ------ old releases ------------------------------
 
