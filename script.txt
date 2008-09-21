@@ -98,7 +98,7 @@ task history                                History shows general activity - how
                                               completed etc, by month
 
                                             And that's it.  There are more commands than this
-                                            covered in the TUTORIAL file, but this should give
+                                            covered in the online documentation, but this should give
                                             the basic idea.
 
                                             Thank you for watching.
