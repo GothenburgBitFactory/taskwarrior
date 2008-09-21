@@ -92,7 +92,6 @@ void handleReportSummary (TDB&, T&, Config&);
 void handleReportNext (TDB&, T&, Config&);
 void handleReportHistory (TDB&, T&, Config&);
 void handleReportGHistory (TDB&, T&, Config&);
-void handleReportUsage (const TDB&, T&, Config&);
 void handleReportCalendar (TDB&, T&, Config&);
 void handleReportActive (TDB&, T&, Config&);
 void handleReportOverdue (TDB&, T&, Config&);

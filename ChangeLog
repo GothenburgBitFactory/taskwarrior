@@ -1,14 +1,10 @@
-Version numbers are of the form:
-
-    X.Y.Z
-
-where the X represents a major version number, or architecture.  The Y
-represents a feature release, and the Z represents a patch.
 
 ------ current release ---------------------------
 
 1.5.0 (?)
   + Removed deprecated TUTORIAL file.
+  + Removed "usage" command, and support for "command.logging" configuration
+    variable.
 
 ------ old releases ------------------------------
 

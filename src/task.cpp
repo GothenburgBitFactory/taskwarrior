@@ -179,10 +179,6 @@ static void shortUsage (Config& conf)
   table.addCell (row, 2, "Shows task database statistics");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task usage");
-  table.addCell (row, 2, "Shows task command usage frequency");
-
-  row = table.addRow ();
   table.addCell (row, 1, "task export");
   table.addCell (row, 2, "Exports all tasks as a CSV file");
 
@@ -296,10 +292,6 @@ int main (int argc, char** argv)
     TDB tdb;
     tdb.dataDirectory (expandPath (conf.get ("data.location")));
 
-    // Log commands, if desired.
-    if (conf.get ("command.logging") == "on")
-      tdb.logCommand (argc, argv);
-
     // If argc == 1 and the default.command configuration variable is set,
     // then use that, otherwise stick with argc/argv.
     std::vector <std::string> args;
@@ -347,7 +339,6 @@ int main (int argc, char** argv)
     else if (command == "oldest")             handleReportOldest   (tdb, task, conf);
     else if (command == "newest")             handleReportNewest   (tdb, task, conf);
     else if (command == "stats")              handleReportStats    (tdb, task, conf);
-    else if (command == "usage")              handleReportUsage    (tdb, task, conf);
     else if (command == "" && task.getId ())  handleModify         (tdb, task, conf);
     else if (command == "help")               longUsage (conf);
     else                                      shortUsage (conf);
