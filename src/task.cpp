@@ -666,36 +666,47 @@ void updateRecurrenceMask (
 // Using gTdb and gConf, generate a report.
 void onChangeCallback ()
 {
-  if (gConf && gTdb)
+  try
   {
-    gConf->set ("curses", "off");
-    gConf->set ("color",  "off");
-
-    // Determine if shadow file is enabled.
-    std::string shadowFile = expandPath (gConf->get ("shadow.file"));
-    if (shadowFile != "")
+    if (gConf && gTdb)
     {
-      std::string command = gConf->get ("shadow.command", "list");
-      int width = gConf->get ("shadow.width", 80);
+      gConf->set ("curses", "off");
+      gConf->set ("color",  "off");
 
-      // Run report.
-      try
+      // Determine if shadow file is enabled.
+      std::string shadowFile = expandPath (gConf->get ("shadow.file"));
+      if (shadowFile != "")
       {
+        // Capture std::cout for the shadow file.
+        std::ofstream shadow (shadowFile.c_str ());
+        std::streambuf* original = std::cout.rdbuf (shadow.rdbuf ());
+
+        // Run report.  Use shadow.command, using default.command as a fallback
+        // with "list" as a default.
+        std::string command = gConf->get ("shadow.command",
+                                gConf->get ("default.command", "list"));
         std::vector <std::string> args;
         split (args, command, ' ');
         runTaskCommand (args, *gTdb, *gConf);
-      }
 
-      catch (std::string& error)
-      {
-        std::cout << error << std::endl;
+        // Restore std::cout.
+        std::cout.rdbuf (original);
       }
-
-      catch (...)
-      {
-        std::cout << "Unknown error." << std::endl;
-      }
+      else
+        throw std::string ("Could not write to '") + shadowFile + "'.";
     }
+    else
+      throw std::string ("Internal error (TDB/Config).");
+  }
+
+  catch (std::string& error)
+  {
+    std::cout << error << std::endl;
+  }
+
+  catch (...)
+  {
+    std::cout << "Unknown error." << std::endl;
   }
 }
 
