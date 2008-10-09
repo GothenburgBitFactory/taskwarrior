@@ -206,7 +206,9 @@ bool TDB::deleteT (const T& t)
       sprintf (endTime, "%u", (unsigned int) time (NULL));
       it->setAttribute ("end", endTime);
 
-      return overwritePending (all);
+      bool status = overwritePending (all);
+      dbChanged ();
+      return status;
     }
 
   return false;
@@ -230,14 +232,16 @@ bool TDB::completeT (const T& t)
       sprintf (endTime, "%u", (unsigned int) time (NULL));
       it->setAttribute ("end", endTime);
 
-      return overwritePending (all);
+      bool status = overwritePending (all);
+      dbChanged ();
+      return status;
     }
 
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::addT (const T& t) const
+bool TDB::addT (const T& t)
 {
   T task (t);
   std::vector <std::string> tags;
@@ -256,9 +260,15 @@ bool TDB::addT (const T& t) const
 
   if (task.getStatus () == T::pending ||
       task.getStatus () == T::recurring)
-    return writePending (task);
+  {
+    bool status = writePending (task);
+    dbChanged ();
+    return status;
+  }
 
-  return writeCompleted (task);
+  bool status = writeCompleted (task);
+  dbChanged ();
+  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -283,7 +293,9 @@ bool TDB::modifyT (const T& t)
       pending.push_back (*it);
   }
 
-  return overwritePending (pending);
+  bool status = overwritePending (pending);
+  dbChanged ();
+  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -490,6 +502,22 @@ int TDB::gc ()
 int TDB::nextId ()
 {
   return mId++;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::onChange (void (*callback)())
+{
+  if (callback)
+    mOnChange.push_back (callback);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Iterate over callbacks.
+void TDB::dbChanged ()
+{
+  foreach (i, mOnChange)
+    if (*i)
+      (**i) ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

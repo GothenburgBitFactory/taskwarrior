@@ -47,6 +47,11 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+// Globals for exclusive use by callback function.
+static TDB*    gTdb  = NULL;
+static Config* gConf = NULL;
+
+////////////////////////////////////////////////////////////////////////////////
 static void shortUsage (Config& conf)
 {
   Table table;
@@ -284,6 +289,7 @@ int main (int argc, char** argv)
     // Load the config file from the home directory.  If the file cannot be
     // found, offer to create a sample one.
     Config conf;
+    gConf = &conf;
     loadConfFile (argc, argv, conf);
 
     // When redirecting output to a file, do not use color, curses.
@@ -294,63 +300,17 @@ int main (int argc, char** argv)
     }
 
     TDB tdb;
+    gTdb = &tdb;
     tdb.dataDirectory (expandPath (conf.get ("data.location")));
 
     // Log commands, if desired.
     if (conf.get ("command.logging") == "on")
       tdb.logCommand (argc, argv);
 
-    // If argc == 1 and the default.command configuration variable is set,
-    // then use that, otherwise stick with argc/argv.
-    std::vector <std::string> args;
-    std::string defaultCommand = conf.get ("default.command");
-    if (argc == 1 && defaultCommand != "")
-    {
-      // Stuff the command line.
-      split (args, defaultCommand, ' ');
-      std::cout << "[task " << defaultCommand << "]" << std::endl;
-    }
-    else
-    {
-      // Parse the command line.
-      for (int i = 1; i < argc; ++i)
-        args.push_back (argv[i]);
-    }
+    // Set up TDB callback.
+    tdb.onChange (&onChangeCallback);
 
-    std::string command;
-    T task;
-    parse (args, command, task, conf);
-
-         if (command == "add")                handleAdd            (tdb, task, conf);
-    else if (command == "projects")           handleProjects       (tdb, task, conf);
-    else if (command == "tags")               handleTags           (tdb, task, conf);
-    else if (command == "list")               handleList           (tdb, task, conf);
-    else if (command == "info")               handleInfo           (tdb, task, conf);
-    else if (command == "undelete")           handleUndelete       (tdb, task, conf);
-    else if (command == "long")               handleLongList       (tdb, task, conf);
-    else if (command == "ls")                 handleSmallList      (tdb, task, conf);
-    else if (command == "colors")             handleColor          (           conf);
-    else if (command == "completed")          handleCompleted      (tdb, task, conf);
-    else if (command == "delete")             handleDelete         (tdb, task, conf);
-    else if (command == "start")              handleStart          (tdb, task, conf);
-    else if (command == "done")               handleDone           (tdb, task, conf);
-    else if (command == "undo")               handleUndo           (tdb, task, conf);
-    else if (command == "export")             handleExport         (tdb, task, conf);
-    else if (command == "version")            handleVersion        (           conf);
-    else if (command == "summary")            handleReportSummary  (tdb, task, conf);
-    else if (command == "next")               handleReportNext     (tdb, task, conf);
-    else if (command == "history")            handleReportHistory  (tdb, task, conf);
-    else if (command == "ghistory")           handleReportGHistory (tdb, task, conf);
-    else if (command == "calendar")           handleReportCalendar (tdb, task, conf);
-    else if (command == "active")             handleReportActive   (tdb, task, conf);
-    else if (command == "overdue")            handleReportOverdue  (tdb, task, conf);
-    else if (command == "oldest")             handleReportOldest   (tdb, task, conf);
-    else if (command == "newest")             handleReportNewest   (tdb, task, conf);
-    else if (command == "stats")              handleReportStats    (tdb, task, conf);
-    else if (command == "usage")              handleReportUsage    (tdb, task, conf);
-    else if (command == "" && task.getId ())  handleModify         (tdb, task, conf);
-    else if (command == "help")               longUsage (conf);
-    else                                      shortUsage (conf);
+    runTaskCommand (argc, argv, tdb, conf);
   }
 
   catch (std::string& error)
@@ -400,12 +360,18 @@ int getDueState (const std::string& due)
   if (due.length ())
   {
     Date dt (::atoi (due.c_str ()));
-    Date now;
 
-    if (dt < now)
+    // rightNow is the current date + time.
+    Date rightNow;
+
+    // By performing this conversion, today is set up as the same date, but
+    // midnight.
+    Date today (rightNow.month (), rightNow.day (), rightNow.year ());
+
+    if (dt < today)
       return 2;
 
-    Date nextweek = now + 7 * 86400;
+    Date nextweek = today + 7 * 86400;
     if (dt < nextweek)
       return 1;
   }
@@ -553,7 +519,6 @@ Date getNextRecurrence (Date& current, std::string& period)
     while (! Date::valid (m, d, y))
       --d;
 
-//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
     return Date (m, d, y);
   }
 
@@ -572,7 +537,6 @@ Date getNextRecurrence (Date& current, std::string& period)
     while (! Date::valid (m, d, y))
       --d;
 
-//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
     return Date (m, d, y);
   }
 
@@ -588,7 +552,6 @@ Date getNextRecurrence (Date& current, std::string& period)
     while (! Date::valid (m, d, y))
       --d;
 
-//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
     return Date (m, d, y);
   }
 
@@ -607,7 +570,6 @@ Date getNextRecurrence (Date& current, std::string& period)
     while (! Date::valid (m, d, y))
       --d;
 
-//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
     return Date (m, d, y);
   }
 
@@ -623,7 +585,6 @@ Date getNextRecurrence (Date& current, std::string& period)
     while (! Date::valid (m, d, y))
       --d;
 
-//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
     return Date (m, d, y);
   }
 
@@ -639,7 +600,6 @@ Date getNextRecurrence (Date& current, std::string& period)
     while (! Date::valid (m, d, y))
       --d;
 
-//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
     return Date (m, d, y);
   }
 
@@ -648,7 +608,6 @@ Date getNextRecurrence (Date& current, std::string& period)
   {
     y += 2;
 
-//    std::cout << "# next " << current.toString () << " + " << period << " = " << m << "/" << d << "/" << y << std::endl;
     return Date (m, d, y);
   }
 
@@ -666,7 +625,6 @@ void updateRecurrenceMask (
   T& task)
 {
   std::string parent = task.getAttribute ("parent");
-//  std::cout << "# updateRecurrenceMask of " << parent << std::endl;
   if (parent != "")
   {
     std::vector <T>::iterator it;
@@ -674,11 +632,8 @@ void updateRecurrenceMask (
     {
       if (it->getUUID () == parent)
       {
-//        std::cout << "# located parent task" << std::endl;
         unsigned int index = atoi (task.getAttribute ("imask").c_str ());
-//        std::cout << "# child imask=" << index << std::endl;
         std::string mask = it->getAttribute ("mask");
-//        std::cout << "# parent mask=" << mask << std::endl;
         if (mask.length () > index)
         {
           mask[index] = (task.getStatus () == T::pending)   ? '-'
@@ -686,15 +641,11 @@ void updateRecurrenceMask (
                       : (task.getStatus () == T::deleted)   ? 'X'
                       :                                       '?';
 
-//          std::cout << "# setting parent mask to=" << mask << std::endl;
           it->setAttribute ("mask", mask);
-//          std::cout << "# tdb.modifyT (parent)" << std::endl;
           tdb.modifyT (*it);
         }
         else
         {
-//          std::cout << "# mask of insufficient length" << std::endl;
-//          std::cout << "# should never occur" << std::endl;
           std::string mask;
           for (unsigned int i = 0; i < index; ++i)
             mask += "?";
@@ -709,6 +660,110 @@ void updateRecurrenceMask (
       }
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Using gTdb and gConf, generate a report.
+void onChangeCallback ()
+{
+  if (gConf && gTdb)
+  {
+    gConf->set ("curses", "off");
+    gConf->set ("color",  "off");
+
+    // Determine if shadow file is enabled.
+    std::string shadowFile = expandPath (gConf->get ("shadow.file"));
+    if (shadowFile != "")
+    {
+      std::string command = gConf->get ("shadow.command", "list");
+      int width = gConf->get ("shadow.width", 80);
+
+      // Run report.
+      try
+      {
+        std::vector <std::string> args;
+        split (args, command, ' ');
+        runTaskCommand (args, *gTdb, *gConf);
+      }
+
+      catch (std::string& error)
+      {
+        std::cout << error << std::endl;
+      }
+
+      catch (...)
+      {
+        std::cout << "Unknown error." << std::endl;
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void runTaskCommand (
+  int argc,
+  char** argv,
+  TDB& tdb,
+  Config& conf)
+{
+  std::vector <std::string> args;
+  for (int i = 1; i < argc; ++i)
+    args.push_back (argv[i]);
+
+  runTaskCommand (args, tdb, conf);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void runTaskCommand (
+  std::vector <std::string>& args,
+  TDB& tdb,
+  Config& conf)
+{
+  // If argc == 1 and the default.command configuration variable is set,
+  // then use that, otherwise stick with argc/argv.
+  std::string defaultCommand = conf.get ("default.command");
+  if (args.size () == 0 && defaultCommand != "")
+  {
+    // Stuff the command line.
+    args.clear ();
+    split (args, defaultCommand, ' ');
+    std::cout << "[task " << defaultCommand << "]" << std::endl;
+  }
+
+  std::string command;
+  T task;
+  parse (args, command, task, conf);
+
+       if (command == "add")                handleAdd            (tdb, task, conf);
+  else if (command == "projects")           handleProjects       (tdb, task, conf);
+  else if (command == "tags")               handleTags           (tdb, task, conf);
+  else if (command == "list")               handleList           (tdb, task, conf);
+  else if (command == "info")               handleInfo           (tdb, task, conf);
+  else if (command == "undelete")           handleUndelete       (tdb, task, conf);
+  else if (command == "long")               handleLongList       (tdb, task, conf);
+  else if (command == "ls")                 handleSmallList      (tdb, task, conf);
+  else if (command == "colors")             handleColor          (           conf);
+  else if (command == "completed")          handleCompleted      (tdb, task, conf);
+  else if (command == "delete")             handleDelete         (tdb, task, conf);
+  else if (command == "start")              handleStart          (tdb, task, conf);
+  else if (command == "done")               handleDone           (tdb, task, conf);
+  else if (command == "undo")               handleUndo           (tdb, task, conf);
+  else if (command == "export")             handleExport         (tdb, task, conf);
+  else if (command == "version")            handleVersion        (           conf);
+  else if (command == "summary")            handleReportSummary  (tdb, task, conf);
+  else if (command == "next")               handleReportNext     (tdb, task, conf);
+  else if (command == "history")            handleReportHistory  (tdb, task, conf);
+  else if (command == "ghistory")           handleReportGHistory (tdb, task, conf);
+  else if (command == "calendar")           handleReportCalendar (tdb, task, conf);
+  else if (command == "active")             handleReportActive   (tdb, task, conf);
+  else if (command == "overdue")            handleReportOverdue  (tdb, task, conf);
+  else if (command == "oldest")             handleReportOldest   (tdb, task, conf);
+  else if (command == "newest")             handleReportNewest   (tdb, task, conf);
+  else if (command == "stats")              handleReportStats    (tdb, task, conf);
+  else if (command == "usage")              handleReportUsage    (tdb, task, conf);
+  else if (command == "" && task.getId ())  handleModify         (tdb, task, conf);
+  else if (command == "help")               longUsage (conf);
+  else                                      shortUsage (conf);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

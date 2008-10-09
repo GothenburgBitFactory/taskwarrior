@@ -659,9 +659,6 @@ void handleInfo (TDB& tdb, T& task, Config& conf)
   if (table.rowCount ())
     std::cout << optionalBlankLine (conf)
               << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " task" : " tasks")
               << std::endl;
   else
     std::cout << "No matches." << std::endl;
