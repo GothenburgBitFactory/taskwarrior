@@ -47,7 +47,7 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleAdd (const TDB& tdb, T& task, Config& conf)
+void handleAdd (TDB& tdb, T& task, Config& conf)
 {
   char entryTime[16];
   sprintf (entryTime, "%u", (unsigned int) time (NULL));

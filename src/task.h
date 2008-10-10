@@ -66,9 +66,12 @@ void handleRecurrence (TDB&, std::vector <T>&);
 bool generateDueDates (T&, std::vector <Date>&);
 Date getNextRecurrence (Date&, std::string&);
 void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
+void onChangeCallback ();
+void runTaskCommand (int, char**, TDB&, Config&);
+void runTaskCommand (std::vector <std::string>&, TDB&, Config&);
 
 // command.cpp
-void handleAdd (const TDB&, T&, Config&);
+void handleAdd (TDB&, T&, Config&);
 void handleProjects (TDB&, T&, Config&);
 void handleTags (TDB&, T&, Config&);
 void handleUndelete (TDB&, T&, Config&);
