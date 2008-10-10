@@ -301,14 +301,27 @@ int main (int argc, char** argv)
 
     TDB tdb;
     gTdb = &tdb;
-    tdb.dataDirectory (expandPath (conf.get ("data.location")));
+    std::string dataLocation = expandPath (conf.get ("data.location"));
+    tdb.dataDirectory (dataLocation);
 
     // Log commands, if desired.
     if (conf.get ("command.logging") == "on")
       tdb.logCommand (argc, argv);
 
     // Set up TDB callback.
-    tdb.onChange (&onChangeCallback);
+    std::string shadowFile = expandPath (conf.get ("shadow.file"));
+    if (shadowFile != "")
+    {
+      if (shadowFile == dataLocation + "/pending.data")
+        throw std::string ("Configuration variable 'shadow.file' is set to "
+                           "overwrite your pending tasks.  Please change it.");
+
+      if (shadowFile == dataLocation + "/completed.data")
+        throw std::string ("Configuration variable 'shadow.file' is set to "
+                           "overwrite your completed tasks.  Please change it.");
+
+      tdb.onChange (&onChangeCallback);
+    }
 
     runTaskCommand (argc, argv, tdb, conf);
   }
