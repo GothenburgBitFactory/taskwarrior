@@ -679,10 +679,12 @@ void updateRecurrenceMask (
 // Using gTdb and gConf, generate a report.
 void onChangeCallback ()
 {
+  std::cout << "--- callback" << std::endl;
   try
   {
     if (gConf && gTdb)
     {
+      std::cout << "--- valid globals" << std::endl;
       gConf->set ("curses", "off");
       gConf->set ("color",  "off");
 
@@ -690,6 +692,7 @@ void onChangeCallback ()
       std::string shadowFile = expandPath (gConf->get ("shadow.file"));
       if (shadowFile != "")
       {
+        std::cout << "--- shadowFile " << shadowFile<< std::endl;
         // Capture std::cout for the shadow file.
         std::ofstream shadow (shadowFile.c_str ());
         std::streambuf* original = std::cout.rdbuf (shadow.rdbuf ());
@@ -704,6 +707,8 @@ void onChangeCallback ()
 
         // Restore std::cout.
         std::cout.rdbuf (original);
+        shadow.close ();
+        std::cout << "--- Complete " << std::endl;
       }
       else
         throw std::string ("Could not write to '") + shadowFile + "'.";
