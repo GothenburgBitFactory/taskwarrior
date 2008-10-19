@@ -6,7 +6,7 @@ config.h.in
 config.status
 src/.deps
 src/Makefile
-src/task
+*/task
 stamp-h1
 Makefile
 configure
