@@ -79,6 +79,7 @@ void handleVersion (Config&);
 void handleExport (TDB&, T&, Config&);
 void handleDelete (TDB&, T&, Config&);
 void handleStart (TDB&, T&, Config&);
+void handleStop (TDB&, T&, Config&);
 void handleDone (TDB&, T&, Config&);
 void handleUndo (TDB&, T&, Config&);
 void handleModify (TDB&, T&, Config&);

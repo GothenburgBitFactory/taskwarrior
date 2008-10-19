@@ -138,6 +138,7 @@ static const char* commands[] =
   "projects",
   "start",
   "stats",
+  "stop",
   "summary",
   "tags",
   "undelete",

@@ -125,7 +125,11 @@ static void shortUsage (Config& conf)
 
   row = table.addRow ();
   table.addCell (row, 1, "task start ID");
-  table.addCell (row, 2, "Marks specified task as started, starts the clock ticking");
+  table.addCell (row, 2, "Marks specified task as started");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task stop ID");
+  table.addCell (row, 2, "Removes the 'start' time from a task");
 
   row = table.addRow ();
   table.addCell (row, 1, "task done ID");
@@ -299,10 +303,6 @@ int main (int argc, char** argv)
     gTdb = &tdb;
     std::string dataLocation = expandPath (conf.get ("data.location"));
     tdb.dataDirectory (dataLocation);
-
-    // Log commands, if desired.
-    if (conf.get ("command.logging") == "on")
-      tdb.logCommand (argc, argv);
 
     // Set up TDB callback.
     std::string shadowFile = expandPath (conf.get ("shadow.file"));
@@ -766,6 +766,7 @@ void runTaskCommand (
   else if (command == "completed")          handleCompleted      (tdb, task, conf);
   else if (command == "delete")             handleDelete         (tdb, task, conf);
   else if (command == "start")              handleStart          (tdb, task, conf);
+  else if (command == "stop")               handleStop           (tdb, task, conf);
   else if (command == "done")               handleDone           (tdb, task, conf);
   else if (command == "undo")               handleUndo           (tdb, task, conf);
   else if (command == "export")             handleExport         (tdb, task, conf);
@@ -780,7 +781,6 @@ void runTaskCommand (
   else if (command == "oldest")             handleReportOldest   (tdb, task, conf);
   else if (command == "newest")             handleReportNewest   (tdb, task, conf);
   else if (command == "stats")              handleReportStats    (tdb, task, conf);
-  else if (command == "usage")              handleReportUsage    (tdb, task, conf);
   else if (command == "" && task.getId ())  handleModify         (tdb, task, conf);
   else if (command == "help")               longUsage (conf);
   else                                      shortUsage (conf);

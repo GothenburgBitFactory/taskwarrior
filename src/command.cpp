@@ -442,6 +442,36 @@ void handleStart (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void handleStop (TDB& tdb, T& task, Config& conf)
+{
+  std::vector <T> all;
+  tdb.pendingT (all);
+
+  std::vector <T>::iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+  {
+    if (it->getId () == task.getId ())
+    {
+      T original (*it);
+
+      if (original.getAttribute ("start") != "")
+      {
+        original.removeAttribute ("start");
+        original.setId (task.getId ());
+        tdb.modifyT (original);
+
+        nag (tdb, task, conf);
+        return;
+      }
+      else
+        std::cout << "Task " << task.getId () << " not started." << std::endl;
+    }
+  }
+
+  throw std::string ("Task not found.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void handleDone (TDB& tdb, T& task, Config& conf)
 {
   if (!tdb.completeT (task))

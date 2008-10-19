@@ -5,6 +5,7 @@
   + Removed deprecated TUTORIAL file.
   + Removed "usage" command, and support for "command.logging" configuration
     variable.
+  + "task stop" can now remove the start time from a started task.
 
 ------ old releases ------------------------------
 
