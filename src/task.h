@@ -67,41 +67,41 @@ bool generateDueDates (T&, std::vector <Date>&);
 Date getNextRecurrence (Date&, std::string&);
 void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
 void onChangeCallback ();
-void runTaskCommand (int, char**, TDB&, Config&);
-void runTaskCommand (std::vector <std::string>&, TDB&, Config&);
+std::string runTaskCommand (int, char**, TDB&, Config&);
+std::string runTaskCommand (std::vector <std::string>&, TDB&, Config&);
 
 // command.cpp
 void handleAdd (TDB&, T&, Config&);
-void handleProjects (TDB&, T&, Config&);
-void handleTags (TDB&, T&, Config&);
-void handleUndelete (TDB&, T&, Config&);
-void handleVersion (Config&);
 void handleExport (TDB&, T&, Config&);
-void handleDelete (TDB&, T&, Config&);
-void handleStart (TDB&, T&, Config&);
 void handleDone (TDB&, T&, Config&);
-void handleUndo (TDB&, T&, Config&);
 void handleModify (TDB&, T&, Config&);
-void handleColor (Config&);
+std::string handleProjects (TDB&, T&, Config&);
+std::string handleTags (TDB&, T&, Config&);
+std::string handleUndelete (TDB&, T&, Config&);
+std::string handleVersion (Config&);
+std::string handleDelete (TDB&, T&, Config&);
+std::string handleStart (TDB&, T&, Config&);
+std::string handleUndo (TDB&, T&, Config&);
+std::string handleColor (Config&);
 
 // report.cpp
 void filter (std::vector<T>&, T&);
-void handleList (TDB&, T&, Config&);
-void handleInfo (TDB&, T&, Config&);
-void handleLongList (TDB&, T&, Config&);
-void handleSmallList (TDB&, T&, Config&);
-void handleCompleted (TDB&, T&, Config&);
-void handleReportSummary (TDB&, T&, Config&);
-void handleReportNext (TDB&, T&, Config&);
-void handleReportHistory (TDB&, T&, Config&);
-void handleReportGHistory (TDB&, T&, Config&);
-void handleReportUsage (const TDB&, T&, Config&);
-void handleReportCalendar (TDB&, T&, Config&);
-void handleReportActive (TDB&, T&, Config&);
-void handleReportOverdue (TDB&, T&, Config&);
-void handleReportStats (TDB&, T&, Config&);
-void handleReportOldest (TDB&, T&, Config&);
-void handleReportNewest (TDB&, T&, Config&);
+std::string handleList (TDB&, T&, Config&);
+std::string handleInfo (TDB&, T&, Config&);
+std::string handleLongList (TDB&, T&, Config&);
+std::string handleSmallList (TDB&, T&, Config&);
+std::string handleCompleted (TDB&, T&, Config&);
+std::string handleReportSummary (TDB&, T&, Config&);
+std::string handleReportNext (TDB&, T&, Config&);
+std::string handleReportHistory (TDB&, T&, Config&);
+std::string handleReportGHistory (TDB&, T&, Config&);
+std::string handleReportUsage (const TDB&, T&, Config&);
+std::string handleReportCalendar (TDB&, T&, Config&);
+std::string handleReportActive (TDB&, T&, Config&);
+std::string handleReportOverdue (TDB&, T&, Config&);
+std::string handleReportStats (TDB&, T&, Config&);
+std::string handleReportOldest (TDB&, T&, Config&);
+std::string handleReportNewest (TDB&, T&, Config&);
 
 // util.cpp
 bool confirm (const std::string&);

@@ -19,7 +19,7 @@ AC_CHECK_LIB(ncurses,endwin)
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h sys/file.h sys/stat.h sys/time.h unistd.h])
-AC_CHECK_HEADERS([string vector map])
+AC_CHECK_HEADERS([sstream string vector map])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
