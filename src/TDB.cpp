@@ -486,8 +486,11 @@ int TDB::gc ()
     }
   }
 
-  // Dump all clean tasks into pending.
-  overwritePending (pending);
+  // Dump all clean tasks into pending.  But don't bother unless at least one
+  // task was transferred.
+  if (count)
+    overwritePending (pending);
+
   return count;
 }
 

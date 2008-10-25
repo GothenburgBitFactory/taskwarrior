@@ -127,7 +127,6 @@ std::string handleList (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
@@ -278,7 +277,6 @@ std::string handleSmallList (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
@@ -410,7 +408,6 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.completedT (tasks);
   filter (tasks, task);
@@ -700,7 +697,6 @@ std::string handleLongList (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get all the tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
@@ -864,7 +860,6 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   std::stringstream out;
 
   // Generate unique list of project names.
-  tdb.gc ();
   std::map <std::string, bool> allProjects;
   std::vector <T> pending;
   tdb.allPendingT (pending);
@@ -1040,7 +1035,6 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   std::stringstream out;
 
   // Load all pending.
-  tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
@@ -1060,8 +1054,6 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
     endwin ();
   }
 #endif
-
-  tdb.gc ();
 
   // Get the pending tasks.
   std::vector <T> tasks;
@@ -1223,7 +1215,6 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
   std::map <time_t, int> deletedGroup;
 
   // Scan the pending tasks.
-  tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
@@ -1423,7 +1414,6 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   std::map <time_t, int> deletedGroup;
 
   // Scan the pending tasks.
-  tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
@@ -1837,7 +1827,6 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
   std::stringstream out;
 
   // Load all the pending tasks.
-  tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
@@ -1939,7 +1928,6 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get all the tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.pendingT (tasks);
   filter (tasks, task);
@@ -2174,7 +2162,6 @@ std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
@@ -2323,7 +2310,6 @@ std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
