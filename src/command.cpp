@@ -82,7 +82,7 @@ void handleAdd (TDB& tdb, T& task, Config& conf)
 
   // Disallow blank descriptions.
   if (task.getDescription () == "")
-    throw std::string ("Cannot add a blank task.");
+    throw std::string ("Cannot add a task that is blank, or contains <CR> or <LF> characters.");
 
   if (!tdb.addT (task))
     throw std::string ("Could not create new task.");

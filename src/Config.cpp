@@ -131,6 +131,10 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "#color.tag.bug=yellow\n");
         fprintf (out, "#color.project.home=on_green\n");
         fprintf (out, "#color.keyword.car=on_blue\n");
+        fprintf (out, "#shadow.file=%s/shadow.txt\n", dataDir.c_str ());
+        fprintf (out, "#shadow.command=list\n");
+        fprintf (out, "#shadow.notify=on\n");
+        fprintf (out, "#default.command=list\n");
 
         fclose (out);
 

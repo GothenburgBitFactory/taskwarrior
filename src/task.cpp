@@ -679,13 +679,10 @@ void updateRecurrenceMask (
 // Using gTdb and gConf, generate a report.
 void onChangeCallback ()
 {
-  std::cout << "--- callback" << std::endl;
   try
   {
     if (gConf && gTdb)
     {
-      std::cout << "--- valid globals" << std::endl;
-
       // Determine if shadow file is enabled.
       std::string shadowFile = expandPath (gConf->get ("shadow.file"));
       if (shadowFile != "")
@@ -694,8 +691,6 @@ void onChangeCallback ()
         std::string oldColor = gConf->get ("color");
         gConf->set ("curses", "off");
         gConf->set ("color",  "off");
-
-        std::cout << "--- shadowFile " << shadowFile<< std::endl;
 
         // Run report.  Use shadow.command, using default.command as a fallback
         // with "list" as a default.
@@ -714,13 +709,15 @@ void onChangeCallback ()
         else
           throw std::string ("Could not write file '") + shadowFile + "'";
 
-        std::cout << "--- Complete " << std::endl;
-
         gConf->set ("curses", oldCurses);
         gConf->set ("color",  oldColor);
       }
       else
         throw std::string ("No specified shadow file '") + shadowFile + "'.";
+
+      // Optionally display a notification that the shadow file was updated.
+      if (gConf->get (std::string ("shadow.notify"), false))
+        std::cout << "[Shadow file '" << shadowFile << "' updated]" << std::endl;
     }
     else
       throw std::string ("Internal error (TDB/Config).");

@@ -94,13 +94,16 @@
 -->
                 </table>
 
-                <h4>New in version 1.4.3 (9/18/2008)</h4>
+                <h4>New in version 1.4.3 (10/24/2008)</h4>
                 <ul>
                   <li>Fixed misleading task count at bottom of "info" report.
                   <li>Added support for a shadow file that contains a plain text task report,
                       with the "shadow.file" and "shadow.command" configuration variables.
                       The shadow file is automatically updated whenever the task database
                       changes.  Useful for integrating with "Samurize".
+                  <li>Task now displays a message whenever a shadow file is updated, if the
+                      "shadow.notify" configuration variable is set "on".
+                  <li>Fixed bug whereby adding a task with a \n, \r or \f dit not fail properly.
                 </ul>
 
                 <p>
