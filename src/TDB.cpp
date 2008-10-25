@@ -414,7 +414,8 @@ bool TDB::writeCompleted (const T& t)
     fputs (t.compose ().c_str (), out);
 
     fclose (out);
-    dbChanged ();
+    // Note: No call to dbChanged here because this call never occurs by itself.
+    //       It is always accompanied by an overwritePending call.
     return true;
   }
 
