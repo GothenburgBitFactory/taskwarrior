@@ -1380,7 +1380,7 @@ void handleReportGHistory (TDB& tdb, T& task, Config& conf)
     endwin ();
   }
 #endif
-  int widthOfBar = width - 15;   // strlen ("2008 September ")
+  int widthOfBar = width - 15;   // 15 == strlen ("2008 September ")
 
   std::map <time_t, int> groups;
   std::map <time_t, int> addedGroup;
@@ -1480,18 +1480,24 @@ void handleReportGHistory (TDB& tdb, T& task, Config& conf)
   else
     table.setTableDashedUnderline ();
 
-  // Determine the longest line.
-  int maxLine = 0;
+  // Determine the longest line, and the longest "added" line.
+  int maxAddedLine = 0;
+  int maxRemovedLine = 0;
   foreach (i, groups)
   {
-    int line = addedGroup[i->first] + completedGroup[i->first] + deletedGroup[i->first];
+    if (completedGroup[i->first] + deletedGroup[i->first] > maxRemovedLine)
+      maxRemovedLine = completedGroup[i->first] + deletedGroup[i->first];
 
-    if (line > maxLine)
-      maxLine = line;
+    if (addedGroup[i->first] > maxAddedLine)
+      maxAddedLine = addedGroup[i->first];
   }
+
+  int maxLine = maxAddedLine + maxRemovedLine;
 
   if (maxLine > 0)
   {
+    unsigned int leftOffset = (widthOfBar * maxAddedLine) / maxLine;
+
     int totalAdded     = 0;
     int totalCompleted = 0;
     int totalDeleted   = 0;
@@ -1521,7 +1527,7 @@ void handleReportGHistory (TDB& tdb, T& task, Config& conf)
       unsigned int completedBar = (widthOfBar * completedGroup[i->first]) / maxLine;
       unsigned int deletedBar   = (widthOfBar *   deletedGroup[i->first]) / maxLine;
 
-      std::string bar;
+      std::string bar = "";
       if (conf.get ("color", true))
       {
         char number[24];
@@ -1552,9 +1558,12 @@ void handleReportGHistory (TDB& tdb, T& task, Config& conf)
             dBar = " " + dBar;
         }
 
-        bar  = Text::colorize (Text::black, Text::on_red,  aBar);
-        bar += Text::colorize (Text::black, Text::on_green, cBar);
-        bar += Text::colorize (Text::black, Text::on_yellow,    dBar);
+        while (bar.length () < leftOffset - aBar.length ())
+          bar += " ";
+
+        bar += Text::colorize (Text::black, Text::on_red,    aBar);
+        bar += Text::colorize (Text::black, Text::on_green,  cBar);
+        bar += Text::colorize (Text::black, Text::on_yellow, dBar);
       }
       else
       {
@@ -1562,7 +1571,10 @@ void handleReportGHistory (TDB& tdb, T& task, Config& conf)
         std::string cBar = ""; while (cBar.length () < completedBar) cBar += "X";
         std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += "-";
 
-        bar = aBar + cBar + dBar;
+        while (bar.length () < leftOffset - aBar.length ())
+          bar += " ";
+
+        bar += aBar + cBar + dBar;
       }
 
       table.addCell (row, 2, bar);
