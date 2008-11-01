@@ -45,23 +45,27 @@ public:
   bool allCompletedT    (std::vector <T>&) const;
   bool deleteT          (const T&);
   bool completeT        (const T&);
-  bool addT             (const T&) const;
+  bool addT             (const T&);
   bool modifyT          (const T&);
   bool logRead          (std::vector <std::string>&) const;
   int gc                ();
   int nextId            ();
 
+  void onChange         (void (*)());
+
 private:
   bool lock             (FILE*) const;
   bool overwritePending (std::vector <T>&);
-  bool writePending     (const T&) const;
-  bool writeCompleted   (const T&) const;
+  bool writePending     (const T&);
+  bool writeCompleted   (const T&);
   bool readLockedFile   (const std::string&, std::vector <std::string>&) const;
+  void dbChanged        ();
 
 private:
   std::string mPendingFile;
   std::string mCompletedFile;
   int mId;
+  std::vector <void (*)()> mOnChange;
 };
 
 #endif

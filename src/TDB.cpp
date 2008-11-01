@@ -235,7 +235,7 @@ bool TDB::completeT (const T& t)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::addT (const T& t) const
+bool TDB::addT (const T& t)
 {
   T task (t);
   std::vector <std::string> tags;
@@ -254,7 +254,9 @@ bool TDB::addT (const T& t) const
 
   if (task.getStatus () == T::pending ||
       task.getStatus () == T::recurring)
+  {
     return writePending (task);
+  }
 
   return writeCompleted (task);
 }
@@ -312,6 +314,7 @@ bool TDB::overwritePending (std::vector <T>& all)
       fputs (it->compose ().c_str (), out);
 
     fclose (out);
+    dbChanged ();
     return true;
   }
 
@@ -319,7 +322,7 @@ bool TDB::overwritePending (std::vector <T>& all)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::writePending (const T& t) const
+bool TDB::writePending (const T& t)
 {
   // Write a single task to the pending file
   FILE* out;
@@ -334,6 +337,7 @@ bool TDB::writePending (const T& t) const
     fputs (t.compose ().c_str (), out);
 
     fclose (out);
+    dbChanged ();
     return true;
   }
 
@@ -341,7 +345,7 @@ bool TDB::writePending (const T& t) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::writeCompleted (const T& t) const
+bool TDB::writeCompleted (const T& t)
 {
   // Write a single task to the pending file
   FILE* out;
@@ -356,6 +360,7 @@ bool TDB::writeCompleted (const T& t) const
     fputs (t.compose ().c_str (), out);
 
     fclose (out);
+    dbChanged ();
     return true;
   }
 
@@ -436,6 +441,22 @@ int TDB::gc ()
 int TDB::nextId ()
 {
   return mId++;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::onChange (void (*callback)())
+{
+  if (callback)
+    mOnChange.push_back (callback);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Iterate over callbacks.
+void TDB::dbChanged ()
+{
+  foreach (i, mOnChange)
+    if (*i)
+      (**i) ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

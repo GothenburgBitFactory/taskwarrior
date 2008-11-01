@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <fstream>
 #include <sys/types.h>
 #include <stdio.h>
@@ -47,7 +48,7 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleAdd (const TDB& tdb, T& task, Config& conf)
+void handleAdd (TDB& tdb, T& task, Config& conf)
 {
   char entryTime[16];
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
@@ -67,7 +68,6 @@ void handleAdd (const TDB& tdb, T& task, Config& conf)
     task.setAttribute ("mask", "");
   }
 
-/**/
   // Override with default.project, if not specified.
   if (task.getAttribute ("project") == "")
     task.setAttribute ("project", conf.get ("default.project", ""));
@@ -79,8 +79,8 @@ void handleAdd (const TDB& tdb, T& task, Config& conf)
     if (validPriority (defaultPriority))
       task.setAttribute ("priority", defaultPriority);
   }
-/**/
 
+  // Disallow blank descriptions.
   if (task.getDescription () == "")
     throw std::string ("Cannot add a blank task.");
 
@@ -89,8 +89,10 @@ void handleAdd (const TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleProjects (TDB& tdb, T& task, Config& conf)
+std::string handleProjects (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Get all the tasks, including deleted ones.
   std::vector <T> tasks;
   tdb.pendingT (tasks);
@@ -127,21 +129,25 @@ void handleProjects (TDB& tdb, T& task, Config& conf)
       table.addCell (row, 1, i->second);
     }
 
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << unique.size ()
-              << (unique.size () == 1 ? " project" : " projects")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << unique.size ()
+        << (unique.size () == 1 ? " project" : " projects")
+        << std::endl;
   }
   else
-    std::cout << "No projects."
-              << std::endl;
+    out << "No projects."
+        << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleTags (TDB& tdb, T& task, Config& conf)
+std::string handleTags (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.pendingT (tasks);
@@ -166,20 +172,23 @@ void handleTags (TDB& tdb, T& task, Config& conf)
     std::cout << i->first << std::endl;
 
   if (unique.size ())
-    std::cout << optionalBlankLine (conf)
-              << unique.size ()
-              << (unique.size () == 1 ? " tag" : " tags")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << unique.size ()
+        << (unique.size () == 1 ? " tag" : " tags")
+        << std::endl;
   else
-    std::cout << "No tags."
-              << std::endl;
+    out << "No tags."
+        << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // If a task is deleted, but is still in the pending file, then it may be
 // undeleted simply by changing it's status.
-void handleUndelete (TDB& tdb, T& task, Config& conf)
+std::string handleUndelete (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
   std::vector <T> all;
   tdb.allPendingT (all);
 
@@ -193,8 +202,8 @@ void handleUndelete (TDB& tdb, T& task, Config& conf)
       {
         if (it->getAttribute ("recur") != "")
         {
-          std::cout << "Task does not support 'undelete' for recurring tasks." << std::endl;
-          return;
+          out << "Task does not support 'undelete' for recurring tasks." << std::endl;
+          return out.str ();
         }
 
         T restored (*it);
@@ -202,27 +211,31 @@ void handleUndelete (TDB& tdb, T& task, Config& conf)
         restored.removeAttribute ("end");
         tdb.modifyT (restored);
 
-        std::cout << "Task " << id << " successfully undeleted." << std::endl;
-        return;
+        out << "Task " << id << " successfully undeleted." << std::endl;
+        return out.str ();
       }
       else
       {
-        std::cout << "Task " << id << " is not deleted - therefore cannot undelete." << std::endl;
-        return;
+        out << "Task " << id << " is not deleted - therefore cannot undelete." << std::endl;
+        return out.str ();
       }
     }
   }
 
-  std::cout << "Task " << id
-            << " not found - tasks can only be reliably undeleted if the undelete" << std::endl
-            << "command is run immediately after the errant delete command." << std::endl;
+  out << "Task " << id
+      << " not found - tasks can only be reliably undeleted if the undelete" << std::endl
+      << "command is run immediately after the errant delete command." << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // If a task is done, but is still in the pending file, then it may be undone
 // simply by changing it's status.
-void handleUndo (TDB& tdb, T& task, Config& conf)
+std::string handleUndo (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   std::vector <T> all;
   tdb.allPendingT (all);
 
@@ -235,35 +248,36 @@ void handleUndo (TDB& tdb, T& task, Config& conf)
       if (it->getStatus () == T::completed)
       {
         if (it->getAttribute ("recur") != "")
-        {
-          std::cout << "Task does not support 'undo' for recurring tasks." << std::endl;
-          return;
-        }
+          return std::string ("Task does not support 'undo' for recurring tasks.\n");
 
         T restored (*it);
         restored.setStatus (T::pending);
         restored.removeAttribute ("end");
         tdb.modifyT (restored);
 
-        std::cout << "Task " << id << " successfully undone." << std::endl;
-        return;
+        out << "Task " << id << " successfully undone." << std::endl;
+        return out.str ();
       }
       else
       {
-        std::cout << "Task " << id << " is not done - therefore cannot be undone." << std::endl;
-        return;
+        out << "Task " << id << " is not done - therefore cannot be undone." << std::endl;
+        return out.str ();
       }
     }
   }
 
-  std::cout << "Task " << id
-            << " not found - tasks can only be reliably undone if the undo" << std::endl
-            << "command is run immediately after the errant done command." << std::endl;
+  out << "Task " << id
+      << " not found - tasks can only be reliably undone if the undo" << std::endl
+      << "command is run immediately after the errant done command." << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleVersion (Config& conf)
+std::string handleVersion (Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -329,40 +343,42 @@ void handleVersion (Config& conf)
     }
   }
 
-  std::cout << "Copyright (C) 2006 - 2008, P. Beckingham."
-            << std::endl
-            << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, PACKAGE) : PACKAGE)
-            << " "
-            << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, VERSION) : VERSION)
-            << std::endl
-            << disclaimer.render ()
-            << std::endl
-            << table.render ()
-            << link.render ()
-            << std::endl;
+  out << "Copyright (C) 2006 - 2008, P. Beckingham."
+      << std::endl
+      << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, PACKAGE) : PACKAGE)
+      << " "
+      << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, VERSION) : VERSION)
+      << std::endl
+      << disclaimer.render ()
+      << std::endl
+      << table.render ()
+      << link.render ()
+      << std::endl;
 
   // Verify installation.  This is mentioned in the documentation as the way to
   // ensure everything is properly installed.
 
   if (all.size () == 0)
-    std::cout << "Configuration error: .taskrc contains no entries"
-              << std::endl;
+    out << "Configuration error: .taskrc contains no entries"
+        << std::endl;
   else
   {
     if (conf.get ("data.location") == "")
-      std::cout << "Configuration error: data.location not specified in .taskrc "
-                   "file."
-                << std::endl;
+      out << "Configuration error: data.location not specified in .taskrc "
+             "file."
+          << std::endl;
 
     if (access (expandPath (conf.get ("data.location")).c_str (), X_OK))
-      std::cout << "Configuration error: data.location contains a directory name"
-                   " that doesn't exist, or is unreadable."
-                << std::endl;
+      out << "Configuration error: data.location contains a directory name"
+             " that doesn't exist, or is unreadable."
+          << std::endl;
   }
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleDelete (TDB& tdb, T& task, Config& conf)
+std::string handleDelete (TDB& tdb, T& task, Config& conf)
 {
   if (conf.get ("confirmation") != "yes" || confirm ("Permanently delete task?"))
   {
@@ -386,7 +402,7 @@ void handleDelete (TDB& tdb, T& task, Config& conf)
                   sibling->getUUID ()              == parent)
                 tdb.deleteT (*sibling);
 
-            return;
+            return std::string ("");
           }
           else
           {
@@ -394,7 +410,7 @@ void handleDelete (TDB& tdb, T& task, Config& conf)
             t->setStatus (T::deleted);
             updateRecurrenceMask (tdb, all, *t);
             tdb.deleteT (*t);
-            return;
+            return std::string ("");
           }
         }
         else
@@ -405,11 +421,13 @@ void handleDelete (TDB& tdb, T& task, Config& conf)
     }
   }
   else
-    std::cout << "Task not deleted." << std::endl;
+    return std::string ("Task not deleted.\n");
+
+  return std::string ("");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleStart (TDB& tdb, T& task, Config& conf)
+std::string handleStart (TDB& tdb, T& task, Config& conf)
 {
   std::vector <T> all;
   tdb.pendingT (all);
@@ -431,14 +449,19 @@ void handleStart (TDB& tdb, T& task, Config& conf)
         tdb.modifyT (original);
 
         nag (tdb, task, conf);
-        return;
+        return std::string ("");
       }
       else
-        std::cout << "Task " << task.getId () << " already started." << std::endl;
+      {
+        std::stringstream out;
+        out << "Task " << task.getId () << " already started." << std::endl;
+        return out.str ();
+      }
     }
   }
 
   throw std::string ("Task not found.");
+  return std::string (""); // To satisfy gcc.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -597,87 +620,91 @@ void handleModify (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleColor (Config& conf)
+std::string handleColor (Config& conf)
 {
+  std::stringstream out;
+
   if (conf.get ("color", true))
   {
-    std::cout << optionalBlankLine (conf) << "Foreground" << std::endl
-              << "           "
-                      << Text::colorize (Text::bold,                   Text::nocolor, "bold")                   << "          "
-                      << Text::colorize (Text::underline,              Text::nocolor, "underline")              << "          "
-                      << Text::colorize (Text::bold_underline,         Text::nocolor, "bold_underline")         << std::endl
+    out << optionalBlankLine (conf) << "Foreground" << std::endl
+        << "           "
+                << Text::colorize (Text::bold,                   Text::nocolor, "bold")                   << "          "
+                << Text::colorize (Text::underline,              Text::nocolor, "underline")              << "          "
+                << Text::colorize (Text::bold_underline,         Text::nocolor, "bold_underline")         << std::endl
 
-              << "  " << Text::colorize (Text::black,                  Text::nocolor, "black")                  << "    "
-                      << Text::colorize (Text::bold_black,             Text::nocolor, "bold_black")             << "    "
-                      << Text::colorize (Text::underline_black,        Text::nocolor, "underline_black")        << "    "
-                      << Text::colorize (Text::bold_underline_black,   Text::nocolor, "bold_underline_black")   << std::endl
+        << "  " << Text::colorize (Text::black,                  Text::nocolor, "black")                  << "    "
+                << Text::colorize (Text::bold_black,             Text::nocolor, "bold_black")             << "    "
+                << Text::colorize (Text::underline_black,        Text::nocolor, "underline_black")        << "    "
+                << Text::colorize (Text::bold_underline_black,   Text::nocolor, "bold_underline_black")   << std::endl
 
-              << "  " << Text::colorize (Text::red,                    Text::nocolor, "red")                    << "      "
-                      << Text::colorize (Text::bold_red,               Text::nocolor, "bold_red")               << "      "
-                      << Text::colorize (Text::underline_red,          Text::nocolor, "underline_red")          << "      "
-                      << Text::colorize (Text::bold_underline_red,     Text::nocolor, "bold_underline_red")     << std::endl
+        << "  " << Text::colorize (Text::red,                    Text::nocolor, "red")                    << "      "
+                << Text::colorize (Text::bold_red,               Text::nocolor, "bold_red")               << "      "
+                << Text::colorize (Text::underline_red,          Text::nocolor, "underline_red")          << "      "
+                << Text::colorize (Text::bold_underline_red,     Text::nocolor, "bold_underline_red")     << std::endl
 
-              << "  " << Text::colorize (Text::green,                  Text::nocolor, "green")                  << "    "
-                      << Text::colorize (Text::bold_green,             Text::nocolor, "bold_green")             << "    "
-                      << Text::colorize (Text::underline_green,        Text::nocolor, "underline_green")        << "    "
-                      << Text::colorize (Text::bold_underline_green,   Text::nocolor, "bold_underline_green")   << std::endl
+        << "  " << Text::colorize (Text::green,                  Text::nocolor, "green")                  << "    "
+                << Text::colorize (Text::bold_green,             Text::nocolor, "bold_green")             << "    "
+                << Text::colorize (Text::underline_green,        Text::nocolor, "underline_green")        << "    "
+                << Text::colorize (Text::bold_underline_green,   Text::nocolor, "bold_underline_green")   << std::endl
 
-              << "  " << Text::colorize (Text::yellow,                 Text::nocolor, "yellow")                 << "   "
-                      << Text::colorize (Text::bold_yellow,            Text::nocolor, "bold_yellow")            << "   "
-                      << Text::colorize (Text::underline_yellow,       Text::nocolor, "underline_yellow")       << "   "
-                      << Text::colorize (Text::bold_underline_yellow,  Text::nocolor, "bold_underline_yellow")  << std::endl
+        << "  " << Text::colorize (Text::yellow,                 Text::nocolor, "yellow")                 << "   "
+                << Text::colorize (Text::bold_yellow,            Text::nocolor, "bold_yellow")            << "   "
+                << Text::colorize (Text::underline_yellow,       Text::nocolor, "underline_yellow")       << "   "
+                << Text::colorize (Text::bold_underline_yellow,  Text::nocolor, "bold_underline_yellow")  << std::endl
 
-              << "  " << Text::colorize (Text::blue,                   Text::nocolor, "blue")                   << "     "
-                      << Text::colorize (Text::bold_blue,              Text::nocolor, "bold_blue")              << "     "
-                      << Text::colorize (Text::underline_blue,         Text::nocolor, "underline_blue")         << "     "
-                      << Text::colorize (Text::bold_underline_blue,    Text::nocolor, "bold_underline_blue")    << std::endl
+        << "  " << Text::colorize (Text::blue,                   Text::nocolor, "blue")                   << "     "
+                << Text::colorize (Text::bold_blue,              Text::nocolor, "bold_blue")              << "     "
+                << Text::colorize (Text::underline_blue,         Text::nocolor, "underline_blue")         << "     "
+                << Text::colorize (Text::bold_underline_blue,    Text::nocolor, "bold_underline_blue")    << std::endl
 
-              << "  " << Text::colorize (Text::magenta,                Text::nocolor, "magenta")                << "  "
-                      << Text::colorize (Text::bold_magenta,           Text::nocolor, "bold_magenta")           << "  "
-                      << Text::colorize (Text::underline_magenta,      Text::nocolor, "underline_magenta")      << "  "
-                      << Text::colorize (Text::bold_underline_magenta, Text::nocolor, "bold_underline_magenta") << std::endl
+        << "  " << Text::colorize (Text::magenta,                Text::nocolor, "magenta")                << "  "
+                << Text::colorize (Text::bold_magenta,           Text::nocolor, "bold_magenta")           << "  "
+                << Text::colorize (Text::underline_magenta,      Text::nocolor, "underline_magenta")      << "  "
+                << Text::colorize (Text::bold_underline_magenta, Text::nocolor, "bold_underline_magenta") << std::endl
 
-              << "  " << Text::colorize (Text::cyan,                   Text::nocolor, "cyan")                   << "     "
-                      << Text::colorize (Text::bold_cyan,              Text::nocolor, "bold_cyan")              << "     "
-                      << Text::colorize (Text::underline_cyan,         Text::nocolor, "underline_cyan")         << "     "
-                      << Text::colorize (Text::bold_underline_cyan,    Text::nocolor, "bold_underline_cyan")    << std::endl
+        << "  " << Text::colorize (Text::cyan,                   Text::nocolor, "cyan")                   << "     "
+                << Text::colorize (Text::bold_cyan,              Text::nocolor, "bold_cyan")              << "     "
+                << Text::colorize (Text::underline_cyan,         Text::nocolor, "underline_cyan")         << "     "
+                << Text::colorize (Text::bold_underline_cyan,    Text::nocolor, "bold_underline_cyan")    << std::endl
 
-              << "  " << Text::colorize (Text::white,                  Text::nocolor, "white")                  << "    "
-                      << Text::colorize (Text::bold_white,             Text::nocolor, "bold_white")             << "    "
-                      << Text::colorize (Text::underline_white,        Text::nocolor, "underline_white")        << "    "
-                      << Text::colorize (Text::bold_underline_white,   Text::nocolor, "bold_underline_white")   << std::endl
+        << "  " << Text::colorize (Text::white,                  Text::nocolor, "white")                  << "    "
+                << Text::colorize (Text::bold_white,             Text::nocolor, "bold_white")             << "    "
+                << Text::colorize (Text::underline_white,        Text::nocolor, "underline_white")        << "    "
+                << Text::colorize (Text::bold_underline_white,   Text::nocolor, "bold_underline_white")   << std::endl
 
-              << std::endl << "Background" << std::endl
-              << "  " << Text::colorize (Text::nocolor, Text::on_black,          "on_black")               << "    "
-                      << Text::colorize (Text::nocolor, Text::on_bright_black,   "on_bright_black")        << std::endl
+        << std::endl << "Background" << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_black,          "on_black")               << "    "
+                << Text::colorize (Text::nocolor, Text::on_bright_black,   "on_bright_black")        << std::endl
 
-              << "  " << Text::colorize (Text::nocolor, Text::on_red,            "on_red")                 << "      "
-                      << Text::colorize (Text::nocolor, Text::on_bright_red,     "on_bright_red")          << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_red,            "on_red")                 << "      "
+                << Text::colorize (Text::nocolor, Text::on_bright_red,     "on_bright_red")          << std::endl
 
-              << "  " << Text::colorize (Text::nocolor, Text::on_green,          "on_green")               << "    "
-                      << Text::colorize (Text::nocolor, Text::on_bright_green,   "on_bright_green")        << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_green,          "on_green")               << "    "
+                << Text::colorize (Text::nocolor, Text::on_bright_green,   "on_bright_green")        << std::endl
 
-              << "  " << Text::colorize (Text::nocolor, Text::on_yellow,         "on_yellow")              << "   "
-                      << Text::colorize (Text::nocolor, Text::on_bright_yellow,  "on_bright_yellow")       << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_yellow,         "on_yellow")              << "   "
+                << Text::colorize (Text::nocolor, Text::on_bright_yellow,  "on_bright_yellow")       << std::endl
 
-              << "  " << Text::colorize (Text::nocolor, Text::on_blue,           "on_blue")                << "     "
-                      << Text::colorize (Text::nocolor, Text::on_bright_blue,    "on_bright_blue")         << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_blue,           "on_blue")                << "     "
+                << Text::colorize (Text::nocolor, Text::on_bright_blue,    "on_bright_blue")         << std::endl
 
-              << "  " << Text::colorize (Text::nocolor, Text::on_magenta,        "on_magenta")             << "  "
-                      << Text::colorize (Text::nocolor, Text::on_bright_magenta, "on_bright_magenta")      << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_magenta,        "on_magenta")             << "  "
+                << Text::colorize (Text::nocolor, Text::on_bright_magenta, "on_bright_magenta")      << std::endl
 
-              << "  " << Text::colorize (Text::nocolor, Text::on_cyan,           "on_cyan")                << "     "
-                      << Text::colorize (Text::nocolor, Text::on_bright_cyan,    "on_bright_cyan")         << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_cyan,           "on_cyan")                << "     "
+                << Text::colorize (Text::nocolor, Text::on_bright_cyan,    "on_bright_cyan")         << std::endl
 
-              << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")               << "    "
-                      << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")        << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")               << "    "
+                << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")        << std::endl
 
-              <<                 optionalBlankLine (conf);
+        << optionalBlankLine (conf);
   }
   else
   {
-    std::cout << "Color is currently turned off in your .taskrc file." << std::endl;
+    out << "Color is currently turned off in your .taskrc file." << std::endl;
   }
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
