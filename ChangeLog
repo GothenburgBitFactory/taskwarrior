@@ -1,22 +1,6 @@
 
 ------ current release ---------------------------
 
-1.5.0 (?)
-  + Removed deprecated TUTORIAL file.
-  + Removed "usage" command, and support for "command.logging" configuration
-    variable.
-
------- old releases ------------------------------
-
-1.4.3 (10/9/2008)
-  + Fixed misleading task count at bottom on "info" report.
-  + Added support for a shadow file that contains a plain text task report,
-    with the "shadow.file" and "shadow.command" configuration variables.
-    The shadow file is automatically updated whenever the task database
-    changes.  Useful for integrating with "Samurize".
-
------- old releases ------------------------------
-
 1.4.3 (10/9/2008)
   + Fixed misleading task count at bottom on "info" report.
   + Added support for a shadow file that contains a plain text task report,
