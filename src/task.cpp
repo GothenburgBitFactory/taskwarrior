@@ -300,10 +300,6 @@ int main (int argc, char** argv)
     std::string dataLocation = expandPath (conf.get ("data.location"));
     tdb.dataDirectory (dataLocation);
 
-    // Log commands, if desired.
-    if (conf.get ("command.logging") == "on")
-      tdb.logCommand (argc, argv);
-
     // Set up TDB callback.
     std::string shadowFile = expandPath (conf.get ("shadow.file"));
     if (shadowFile != "")
@@ -789,7 +785,6 @@ std::string runTaskCommand (
   else if (command == "oldest")             out = handleReportOldest   (tdb, task, conf);
   else if (command == "newest")             out = handleReportNewest   (tdb, task, conf);
   else if (command == "stats")              out = handleReportStats    (tdb, task, conf);
-  else if (command == "usage")              out = handleReportUsage    (tdb, task, conf);
   else if (command == "" && task.getId ())        handleModify         (tdb, task, conf);
   else if (command == "help")                     longUsage (conf);
   else                                            shortUsage (conf);
