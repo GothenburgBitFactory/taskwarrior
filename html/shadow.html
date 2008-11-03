@@ -53,15 +53,18 @@
 
                 <p>
                   To use a shadow file, edit your .taskrc configuration file,
-                  and add two entries as shown:
+                  and add three entries as shown:
                 </p>
 
                 <pre><code>shadow.file=/path/to/file
-shadow.command=list pri:H</code></pre>
+shadow.command=list pri:H
+shadow.notify=on</code></pre>
 
                 <p>
                   In this example the shadow file contains a report equivalent
-                  to running "task list pri:H".
+                  to running "task list pri:H".  Note that the third entry
+                  causes a message to be displayed whenever task updates the
+                  shadow file.  It is optional.
                 </p>
 
                 <p>
