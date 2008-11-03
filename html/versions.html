@@ -25,6 +25,7 @@
               <a href="date.html">Date Handling</a>
               <a href="troubleshooting.html">Troubleshooting</a>
               <a href="versions.html">Old Versions</a>
+              <a href="links.html">Task on the Web</a>
             </div>
 
             <div id="content">
@@ -35,6 +36,32 @@
               <br />
 
               <div class="content">
+                <p>
+                  <h4>New in version 1.4.3 (11/1/2008)</h4>
+                  <a href="http://www.beckingham.net/task-1.4.3.tar.gz">task-1.4.3.tar.gz</a>
+                  <br />
+                  Mac OS X 10.5 (Leopard) Intel-only:
+                  <a href="http://www.beckingham.net/task-1.4.3.pkg">task-1.4.3.pkg</a>
+                  <br />
+                  Debian package: <a href="http://www.beckingham.net/task_1.4.3-1_i386.deb">task_1.4.3-1_i386.deb</a>
+                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
+                </p>
+
+                  <ul>
+                    <li>Fixed misleading task count at bottom of "info" report.
+                    <li>Added support for a shadow file that contains a plain text task report,
+                        with the "shadow.file" and "shadow.command" configuration variables.
+                        The shadow file is automatically updated whenever the task database
+                        changes.  Useful for integrating with "Samurize".
+                    <li>Task now displays a message whenever a shadow file is updated, if the
+                        "shadow.notify" configuration variable is set "on".
+                    <li>Fixed bug whereby adding a task with a \n, \r or \f dit not fail properly.
+                    <li>Removed "task usage" command.
+                    <li>Added documentation for Shadow files.
+                    <li>Added documentation for task filters.
+                  </ul>
+                </p>
+
                 <p>
                   <h4>New in version 1.4.2 (9/18/2008)</h4>
                   <a href="http://www.beckingham.net/task-1.4.2.tar.gz">task-1.4.2.tar.gz</a>

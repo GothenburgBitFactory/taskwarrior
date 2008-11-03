@@ -25,6 +25,7 @@
               <a href="date.html">Date Handling</a>
               <a href="troubleshooting.html">Troubleshooting</a>
               <a href="versions.html">Old Versions</a>
+              <a href="links.html">Task on the Web</a>
             </div>
 
             <div id="content">
@@ -34,9 +35,48 @@
               <h2 class="title">Task Filters</h2>
               <div class="content">
                 <p>
+                  A task filter is a means of reducing a task report to a
+                  subset that may consist of all tasks that have a specific
+                  project, priority, tag, or part of the description.
+                </p>
+
+                <p>
+                  A task filter consists of additional command line options,
+                  that are specified in the same way as when a task is added.
+                </p>
+
+                <p>
+                  All task reports can make use of filters.
+                </p>
+
+                <p>
+                  For example, the report:
+                </p>
+
+                <code><pre>% task list</pre></code>
+
+                <p>
+                  Lists all tasks.
+                </p>
+
+                <code><pre>% task list the</pre></code>
+
+                <p>
+                  Lists only tasks with "the" in the task description.
+                </p>
+
+                <code><pre>% task list project:Home priority:H</pre></code>
+
+                <p>
+                  Lists only tasks with both the "Home" project and "H" priority.
+                </p>
+
+                <code><pre>% task list +shopping</pre></code>
+
+                <p>
+                  Lists only tasks with the "shopping" tag.
                 </p>
               </div>
-
 
               <br />
               <br />

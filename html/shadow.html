@@ -25,6 +25,7 @@
               <a href="date.html">Date Handling</a>
               <a href="troubleshooting.html">Troubleshooting</a>
               <a href="versions.html">Old Versions</a>
+              <a href="links.html">Task on the Web</a>
             </div>
 
             <div id="content">
@@ -34,9 +35,41 @@
               <h2 class="title">Task Shadow Files</h2>
               <div class="content">
                 <p>
+                  A shadow file is a text file containing a copy of a task
+                  report.  It is automatically maintained by task whenever
+                  something changes in the task database.
+                </p>
+
+                <p>
+                  This means there is always a current version of the task
+                  report kept in a text file.  Products such as
+                  <a href="www.samurize.com">Samurize</a>,
+                  <a href="http://www.mulle-kybernetik.com/software/MkConsole/">MkConsole</a>,
+                  or
+                  <a href="http://projects.tynsoe.org/en/geektool/">GeekTool</a>
+                  can display this file on the computer desktop, so that it
+                  is readily visible.
+                </p>
+
+                <p>
+                  To use a shadow file, edit your .taskrc configuration file,
+                  and add two entries as shown:
+                </p>
+
+                <pre><code>shadow.file=/path/to/file
+shadow.command=list pri:H</code></pre>
+
+                <p>
+                  In this example the shadow file contains a report equivalent
+                  to running "task list pri:H".
+                </p>
+
+                <p>
+                  You can use any task command that generates a report, and of
+                  course, you can specify any file name, provided the directory
+                  it resides in already exists.
                 </p>
               </div>
-
 
               <br />
               <br />

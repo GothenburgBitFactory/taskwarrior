@@ -56,8 +56,8 @@ public:
 private:
   bool lock             (FILE*) const;
   bool overwritePending (std::vector <T>&);
-  bool writePending     (const T&) const;
-  bool writeCompleted   (const T&) const;
+  bool writePending     (const T&);
+  bool writeCompleted   (const T&);
   bool readLockedFile   (const std::string&, std::vector <std::string>&) const;
   void dbChanged        ();
 

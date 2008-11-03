@@ -11,14 +11,18 @@
 
 ------ old releases ------------------------------
 
-1.4.3 (10/9/2008)
+1.4.3 (11/1/2008)
   + Fixed misleading task count at bottom on "info" report.
   + Added support for a shadow file that contains a plain text task report,
-    with the "shadow.file" and "shadow.command" configuration variables.
+    with the "shadow.file" and "shadow.command" configuration variables
     The shadow file is automatically updated whenever the task database
-    changes.  Useful for integrating with "Samurize".
-
------- old releases ------------------------------
+    changes.  Useful for integrating with "Samurize"
+  + Task now displays a message whenever a shadow file is updated, if the
+    "shadow.notify" configuration variable is set "on"
+  + Bug: adding a task with a \n, \r or \f in it now fails properly
+  + Removed "task usage" command.
+  + Added documentation for Shadow files.
+  + Added documentation for task filters.
 
 1.4.2 (9/18/2008)
   + "task undo" can now retract a "task done" command, provided no reports

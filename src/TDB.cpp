@@ -204,9 +204,7 @@ bool TDB::deleteT (const T& t)
       sprintf (endTime, "%u", (unsigned int) time (NULL));
       it->setAttribute ("end", endTime);
 
-      bool status = overwritePending (all);
-      dbChanged ();
-      return status;
+      return overwritePending (all);
     }
 
   return false;
@@ -230,9 +228,7 @@ bool TDB::completeT (const T& t)
       sprintf (endTime, "%u", (unsigned int) time (NULL));
       it->setAttribute ("end", endTime);
 
-      bool status = overwritePending (all);
-      dbChanged ();
-      return status;
+      return overwritePending (all);
     }
 
   return false;
@@ -259,14 +255,10 @@ bool TDB::addT (const T& t)
   if (task.getStatus () == T::pending ||
       task.getStatus () == T::recurring)
   {
-    bool status = writePending (task);
-    dbChanged ();
-    return status;
+    return writePending (task);
   }
 
-  bool status = writeCompleted (task);
-  dbChanged ();
-  return status;
+  return writeCompleted (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -291,9 +283,7 @@ bool TDB::modifyT (const T& t)
       pending.push_back (*it);
   }
 
-  bool status = overwritePending (pending);
-  dbChanged ();
-  return status;
+  return overwritePending (pending);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -324,6 +314,7 @@ bool TDB::overwritePending (std::vector <T>& all)
       fputs (it->compose ().c_str (), out);
 
     fclose (out);
+    dbChanged ();
     return true;
   }
 
@@ -331,7 +322,7 @@ bool TDB::overwritePending (std::vector <T>& all)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::writePending (const T& t) const
+bool TDB::writePending (const T& t)
 {
   // Write a single task to the pending file
   FILE* out;
@@ -346,6 +337,7 @@ bool TDB::writePending (const T& t) const
     fputs (t.compose ().c_str (), out);
 
     fclose (out);
+    dbChanged ();
     return true;
   }
 
@@ -353,7 +345,7 @@ bool TDB::writePending (const T& t) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::writeCompleted (const T& t) const
+bool TDB::writeCompleted (const T& t)
 {
   // Write a single task to the pending file
   FILE* out;
@@ -368,6 +360,8 @@ bool TDB::writeCompleted (const T& t) const
     fputs (t.compose ().c_str (), out);
 
     fclose (out);
+    // Note: No call to dbChanged here because this call never occurs by itself.
+    //       It is always accompanied by an overwritePending call.
     return true;
   }
 
@@ -439,8 +433,11 @@ int TDB::gc ()
     }
   }
 
-  // Dump all clean tasks into pending.
-  overwritePending (pending);
+  // Dump all clean tasks into pending.  But don't bother unless at least one
+  // task was transferred.
+  if (count)
+    overwritePending (pending);
+
   return count;
 }
 

@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <fstream>
 #include <sys/types.h>
 #include <stdio.h>
@@ -110,8 +111,10 @@ void filter (std::vector<T>& all, T& task)
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-void handleList (TDB& tdb, T& task, Config& conf)
+std::string handleList (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -124,7 +127,6 @@ void handleList (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
@@ -242,23 +244,27 @@ void handleList (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " task" : " tasks")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
   else
-    std::cout << "No matches."
-              << std::endl;
+    out << "No matches."
+        << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.  Show a narrow
 // list that works better on mobile devices.
-void handleSmallList (TDB& tdb, T& task, Config& conf)
+std::string handleSmallList (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -271,7 +277,6 @@ void handleSmallList (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
@@ -371,22 +376,26 @@ void handleSmallList (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " task" : " tasks")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
   else
-    std::cout << "No matches."
-              << std::endl;
+    out << "No matches."
+        << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-void handleCompleted (TDB& tdb, T& task, Config& conf)
+std::string handleCompleted (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -399,7 +408,6 @@ void handleCompleted (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.completedT (tasks);
   filter (tasks, task);
@@ -459,21 +467,25 @@ void handleCompleted (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " task" : " tasks")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
   else
-    std::cout << "No matches."
-              << std::endl;
+    out << "No matches."
+        << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Display all information for the given task.
-void handleInfo (TDB& tdb, T& task, Config& conf)
+std::string handleInfo (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -657,18 +669,22 @@ void handleInfo (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << std::endl;
   else
-    std::cout << "No matches." << std::endl;
+    out << "No matches." << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-void handleLongList (TDB& tdb, T& task, Config& conf)
+std::string handleLongList (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -681,7 +697,6 @@ void handleLongList (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get all the tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
@@ -824,24 +839,27 @@ void handleLongList (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " task" : " tasks")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
   else
-    std::cout << "No matches." << std::endl;
+    out << "No matches." << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Project  Tasks  Avg Age  Status
 // A           12      13d  XXXXXXXX------
 // B          109   3d 12h  XX------------
-void handleReportSummary (TDB& tdb, T& task, Config& conf)
+std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Generate unique list of project names.
-  tdb.gc ();
   std::map <std::string, bool> allProjects;
   std::vector <T> pending;
   tdb.allPendingT (pending);
@@ -981,14 +999,16 @@ void handleReportSummary (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " project" : " projects")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " project" : " projects")
+        << std::endl;
   else
-    std::cout << "No projects." << std::endl;
+    out << "No projects." << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1010,10 +1030,11 @@ void handleReportSummary (TDB& tdb, T& task, Config& conf)
 //
 // Make the "three" tasks a configurable number
 //
-void handleReportNext (TDB& tdb, T& task, Config& conf)
+std::string handleReportNext (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Load all pending.
-  tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
@@ -1033,8 +1054,6 @@ void handleReportNext (TDB& tdb, T& task, Config& conf)
     endwin ();
   }
 #endif
-
-  tdb.gc ();
 
   // Get the pending tasks.
   std::vector <T> tasks;
@@ -1151,15 +1170,17 @@ void handleReportNext (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " task" : " tasks")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
   else
-    std::cout << "No matches."
-              << std::endl;
+    out << "No matches."
+        << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1184,15 +1205,16 @@ time_t monthlyEpoch (const std::string& date)
   return 0;
 }
 
-void handleReportHistory (TDB& tdb, T& task, Config& conf)
+std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   std::map <time_t, int> groups;
   std::map <time_t, int> addedGroup;
   std::map <time_t, int> completedGroup;
   std::map <time_t, int> deletedGroup;
 
   // Scan the pending tasks.
-  tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
@@ -1360,16 +1382,20 @@ void handleReportHistory (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << std::endl;
   else
-    std::cout << "No tasks." << std::endl;
+    out << "No tasks." << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportGHistory (TDB& tdb, T& task, Config& conf)
+std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -1388,7 +1414,6 @@ void handleReportGHistory (TDB& tdb, T& task, Config& conf)
   std::map <time_t, int> deletedGroup;
 
   // Scan the pending tasks.
-  tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
@@ -1583,24 +1608,26 @@ void handleReportGHistory (TDB& tdb, T& task, Config& conf)
 
   if (table.rowCount ())
   {
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << std::endl;
 
     if (conf.get ("color", true))
-      std::cout << "Legend: "
-                << Text::colorize (Text::black, Text::on_red, "added")
-                << ", "
-                << Text::colorize (Text::black, Text::on_green, "completed")
-                << ", "
-                << Text::colorize (Text::black, Text::on_yellow, "deleted")
-                << optionalBlankLine (conf)
-                << std::endl;
+      out << "Legend: "
+          << Text::colorize (Text::black, Text::on_red, "added")
+          << ", "
+          << Text::colorize (Text::black, Text::on_green, "completed")
+          << ", "
+          << Text::colorize (Text::black, Text::on_yellow, "deleted")
+          << optionalBlankLine (conf)
+          << std::endl;
     else
-      std::cout << "Legend: + added, X completed, - deleted" << std::endl;
+      out << "Legend: + added, X completed, - deleted" << std::endl;
   }
   else
-    std::cout << "No tasks." << std::endl;
+    out << "No tasks." << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1728,10 +1755,11 @@ std::string renderMonths (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportCalendar (TDB& tdb, T& task, Config& conf)
+std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Load all the pending tasks.
-  tdb.gc ();
   std::vector <T> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
@@ -1760,7 +1788,7 @@ void handleReportCalendar (TDB& tdb, T& task, Config& conf)
   int mTo = newest.month ();
   int yTo = newest.year ();
 
-  std::cout << std::endl;
+  out << std::endl;
   std::string output;
 
   int monthsPerLine = (conf.get ("monthsperline", 1));
@@ -1777,11 +1805,11 @@ void handleReportCalendar (TDB& tdb, T& task, Config& conf)
       int left = (18 - month.length ()) / 2 + 1;
       int right = 18 - left - month.length ();
 
-      std::cout << std::setw (left) << ' '
-                << month
-                << ' '
-                << nextY
-                << std::setw (right) << ' ';
+      out << std::setw (left) << ' '
+          << month
+          << ' '
+          << nextY
+          << std::setw (right) << ' ';
 
       if (++nextM > 12)
       {
@@ -1790,10 +1818,10 @@ void handleReportCalendar (TDB& tdb, T& task, Config& conf)
       }
     }
 
-    std::cout << std::endl
-              << optionalBlankLine (conf)
-              << renderMonths (mFrom, yFrom, today, pending, conf)
-              << std::endl;
+    out << std::endl
+        << optionalBlankLine (conf)
+        << renderMonths (mFrom, yFrom, today, pending, conf)
+        << std::endl;
 
     mFrom += monthsPerLine;
     if (mFrom > 12)
@@ -1803,20 +1831,24 @@ void handleReportCalendar (TDB& tdb, T& task, Config& conf)
     }
   }
 
-  std::cout << "Legend: "
-            << Text::colorize (Text::cyan, Text::nocolor, "today")
-            << ", "
-            << Text::colorize (Text::black, Text::on_yellow, "due")
-            << ", "
-            << Text::colorize (Text::black, Text::on_red, "overdue")
-            << "."
-            << optionalBlankLine (conf)
-            << std::endl;
+  out << "Legend: "
+      << Text::colorize (Text::cyan, Text::nocolor, "today")
+      << ", "
+      << Text::colorize (Text::black, Text::on_yellow, "due")
+      << ", "
+      << Text::colorize (Text::black, Text::on_red, "overdue")
+      << "."
+      << optionalBlankLine (conf)
+      << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportActive (TDB& tdb, T& task, Config& conf)
+std::string handleReportActive (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -1829,7 +1861,6 @@ void handleReportActive (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get all the tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.pendingT (tasks);
   filter (tasks, task);
@@ -1922,19 +1953,23 @@ void handleReportActive (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " task" : " tasks")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
   else
-    std::cout << "No active tasks." << std::endl;
+    out << "No active tasks." << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportOverdue (TDB& tdb, T& task, Config& conf)
+std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -2029,21 +2064,25 @@ void handleReportOverdue (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " task" : " tasks")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
   else
-    std::cout << "No overdue tasks." << std::endl;
+    out << "No overdue tasks." << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-void handleReportOldest (TDB& tdb, T& task, Config& conf)
+std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -2056,7 +2095,6 @@ void handleReportOldest (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
@@ -2173,22 +2211,26 @@ void handleReportOldest (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " task" : " tasks")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
   else
-    std::cout << "No matches."
-              << std::endl;
+    out << "No matches."
+        << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-void handleReportNewest (TDB& tdb, T& task, Config& conf)
+std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Determine window size, and set table accordingly.
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -2201,7 +2243,6 @@ void handleReportNewest (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  tdb.gc ();
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
@@ -2319,21 +2360,25 @@ void handleReportNewest (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    std::cout << optionalBlankLine (conf)
-              << table.render ()
-              << optionalBlankLine (conf)
-              << table.rowCount ()
-              << (table.rowCount () == 1 ? " task" : " tasks")
-              << std::endl;
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
   else
-    std::cout << "No matches."
-              << std::endl;
+    out << "No matches."
+        << std::endl;
+
+  return out.str ();
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleReportStats (TDB& tdb, T& task, Config& conf)
+std::string handleReportStats (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.allT (tasks);
@@ -2380,40 +2425,42 @@ void handleReportStats (TDB& tdb, T& task, Config& conf)
     if (tags.size ()) ++taggedT;
   }
 
-  std::cout << "Pending               " << pendingT   << std::endl
-            << "Recurring             " << recurringT << std::endl
-            << "Completed             " << completedT << std::endl
-            << "Deleted               " << deletedT   << std::endl
-            << "Total                 " << totalT     << std::endl;
+  out << "Pending               " << pendingT   << std::endl
+      << "Recurring             " << recurringT << std::endl
+      << "Completed             " << completedT << std::endl
+      << "Deleted               " << deletedT   << std::endl
+      << "Total                 " << totalT     << std::endl;
 
   if (tasks.size ())
   {
     Date e (earliest);
-    std::cout << "Oldest task           " << e.toString (conf.get ("dateformat", "m/d/Y")) << std::endl;
+    out << "Oldest task           " << e.toString (conf.get ("dateformat", "m/d/Y")) << std::endl;
     Date l (latest);
-    std::cout << "Newest task           " << l.toString (conf.get ("dateformat", "m/d/Y")) << std::endl;
-    std::cout << "Task used for         " << formatSeconds (latest - earliest) << std::endl;
+    out << "Newest task           " << l.toString (conf.get ("dateformat", "m/d/Y")) << std::endl;
+    out << "Task used for         " << formatSeconds (latest - earliest) << std::endl;
   }
 
   if (totalT)
-    std::cout << "Task added every      " << formatSeconds ((latest - earliest) / totalT)     << std::endl;
+    out << "Task added every      " << formatSeconds ((latest - earliest) / totalT)     << std::endl;
 
   if (completedT)
-    std::cout << "Task completed every  " << formatSeconds ((latest - earliest) / completedT) << std::endl;
+    out << "Task completed every  " << formatSeconds ((latest - earliest) / completedT) << std::endl;
 
   if (deletedT)
-    std::cout << "Task deleted every    " << formatSeconds ((latest - earliest) / deletedT)   << std::endl;
+    out << "Task deleted every    " << formatSeconds ((latest - earliest) / deletedT)   << std::endl;
 
   if (pendingT || completedT)
-    std::cout << "Average time pending  "
+    out << "Average time pending  "
               << formatSeconds ((int) ((daysPending / (pendingT + completedT)) * 86400))
               << std::endl;
 
   if (totalT)
   {
-    std::cout << "Average desc length   " << (int) (descLength / totalT) << " characters" << std::endl;
-    std::cout << "Tasks tagged          " << std::setprecision (3) << (100.0 * taggedT / totalT) << "%" << std::endl;
+    out << "Average desc length   " << (int) (descLength / totalT) << " characters" << std::endl;
+    out << "Tasks tagged          " << std::setprecision (3) << (100.0 * taggedT / totalT) << "%" << std::endl;
   }
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

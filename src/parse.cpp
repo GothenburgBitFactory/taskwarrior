@@ -284,10 +284,21 @@ static bool validTag (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 static bool validDescription (const std::string& input)
 {
-  if (input.length () > 0)
+/*
+  if (input.length () > 0                    &&
+      input.find ("\r") == std::string::npos &&
+      input.find ("\f") == std::string::npos &&
+      input.find ("\n") == std::string::npos)
     return true;
 
   return false;
+*/
+  if (input.length () == 0)                   return false;
+  if (input.find ("\r") != std::string::npos) return false;
+  if (input.find ("\f") != std::string::npos) return false;
+  if (input.find ("\n") != std::string::npos) return false;
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
