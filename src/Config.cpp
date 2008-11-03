@@ -112,7 +112,6 @@ void Config::createDefault (const std::string& home)
       if ((out = fopen (rcFile.c_str (), "w")))
       {
         fprintf (out, "data.location=%s\n", dataDir.c_str ());
-        fprintf (out, "command.logging=off\n");
         fprintf (out, "confirmation=yes\n");
         fprintf (out, "next=2\n");
         fprintf (out, "dateformat=m/d/Y\n");

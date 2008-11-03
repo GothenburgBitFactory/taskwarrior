@@ -1,14 +1,8 @@
-Version numbers are of the form:
-
-    X.Y.Z
-
-where the X represents a major version number, or architecture.  The Y
-represents a feature release, and the Z represents a patch.
 
 ------ current release ---------------------------
 
-1.4.3 (10/24/2008)
-  + Fixed misleading task count at bottom on "info" report
+1.4.3 (11/1/2008)
+  + Fixed misleading task count at bottom on "info" report.
   + Added support for a shadow file that contains a plain text task report,
     with the "shadow.file" and "shadow.command" configuration variables
     The shadow file is automatically updated whenever the task database
@@ -16,6 +10,9 @@ represents a feature release, and the Z represents a patch.
   + Task now displays a message whenever a shadow file is updated, if the
     "shadow.notify" configuration variable is set "on"
   + Bug: adding a task with a \n, \r or \f in it now fails properly
+  + Removed "task usage" command.
+  + Added documentation for Shadow files.
+  + Added documentation for task filters.
 
 ------ old releases ------------------------------
 

@@ -48,7 +48,6 @@ public:
   bool addT             (const T&);
   bool modifyT          (const T&);
   bool logRead          (std::vector <std::string>&) const;
-  bool logCommand       (int, char**) const;
   int gc                ();
   int nextId            ();
 
@@ -65,7 +64,6 @@ private:
 private:
   std::string mPendingFile;
   std::string mCompletedFile;
-  std::string mLogFile;
   int mId;
   std::vector <void (*)()> mOnChange;
 };

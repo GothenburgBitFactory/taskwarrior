@@ -142,7 +142,6 @@ static const char* commands[] =
   "tags",
   "undelete",
   "undo",
-  "usage",
   "version",
   "",
 };

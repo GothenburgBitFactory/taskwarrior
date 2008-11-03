@@ -95,7 +95,6 @@ std::string handleReportSummary (TDB&, T&, Config&);
 std::string handleReportNext (TDB&, T&, Config&);
 std::string handleReportHistory (TDB&, T&, Config&);
 std::string handleReportGHistory (TDB&, T&, Config&);
-std::string handleReportUsage (const TDB&, T&, Config&);
 std::string handleReportCalendar (TDB&, T&, Config&);
 std::string handleReportActive (TDB&, T&, Config&);
 std::string handleReportOverdue (TDB&, T&, Config&);

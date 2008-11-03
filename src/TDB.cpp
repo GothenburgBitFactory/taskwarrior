@@ -37,7 +37,6 @@
 TDB::TDB ()
 : mPendingFile ("")
 , mCompletedFile ("")
-, mLogFile ("")
 , mId (1)
 {
 }
@@ -54,7 +53,6 @@ void TDB::dataDirectory (const std::string& directory)
   {
     mPendingFile   = directory + "/pending.data";
     mCompletedFile = directory + "/completed.data";
-    mLogFile       = directory + "/command.log";
   }
   else
   {
@@ -286,58 +284,6 @@ bool TDB::modifyT (const T& t)
   }
 
   return overwritePending (pending);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::logRead (std::vector <std::string>& entries) const
-{
-  entries.clear ();
-  return readLockedFile (mLogFile, entries);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::logCommand (int argc, char** argv) const
-{
-  // Get time info.
-  time_t now;
-  time (&now);
-  struct tm* t = localtime (&now);
-
-  // Generate timestamp.
-  char timestamp[20];
-  sprintf (timestamp, "%04d-%02d-%02d %02d:%02d:%02d",
-                      t->tm_year + 1900,
-                      t->tm_mon + 1,
-                      t->tm_mday,
-                      t->tm_hour,
-                      t->tm_min,
-                      t->tm_sec);
-
-  std::string command = timestamp;
-  command += " \"";
-  for (int i = 0; i < argc; ++i)
-    command += std::string (i ? " " : "") + argv[i];
-  command += "\"\n";
-
-  if (! access (mLogFile.c_str (), F_OK | W_OK))
-  {
-    FILE* out;
-    if ((out = fopen (mLogFile.c_str (), "a")))
-    {
-#ifdef HAVE_FLOCK
-      int retry = 0;
-      while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
-        delay (0.25);
-#endif
-
-      fputs (command.c_str (), out);
-
-      fclose (out);
-      return true;
-    }
-  }
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

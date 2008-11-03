@@ -184,10 +184,6 @@ static void shortUsage (Config& conf)
   table.addCell (row, 2, "Shows task database statistics");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task usage");
-  table.addCell (row, 2, "Shows task command usage frequency");
-
-  row = table.addRow ();
   table.addCell (row, 1, "task export");
   table.addCell (row, 2, "Exports all tasks as a CSV file");
 
@@ -303,10 +299,6 @@ int main (int argc, char** argv)
     gTdb = &tdb;
     std::string dataLocation = expandPath (conf.get ("data.location"));
     tdb.dataDirectory (dataLocation);
-
-    // Log commands, if desired.
-    if (conf.get ("command.logging") == "on")
-      tdb.logCommand (argc, argv);
 
     // Set up TDB callback.
     std::string shadowFile = expandPath (conf.get ("shadow.file"));
@@ -785,7 +777,6 @@ std::string runTaskCommand (
   else if (command == "start")              {                    out = handleStart          (tdb, task, conf); }
   else if (command == "undo")               {                    out = handleUndo           (tdb, task, conf); }
   else if (command == "stats")              {                    out = handleReportStats    (tdb, task, conf); }
-  else if (command == "usage")              {                    out = handleReportUsage    (tdb, task, conf); }
   else if (command == "list")               { if (gc) tdb.gc (); out = handleList           (tdb, task, conf); }
   else if (command == "long")               { if (gc) tdb.gc (); out = handleLongList       (tdb, task, conf); }
   else if (command == "ls")                 { if (gc) tdb.gc (); out = handleSmallList      (tdb, task, conf); }
