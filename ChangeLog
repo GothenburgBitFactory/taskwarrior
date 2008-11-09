@@ -5,6 +5,7 @@
   + Removed deprecated TUTORIAL file.
   + Removed "usage" command, and support for "command.logging" configuration
     variable.
+  + Removed "showage" configuration variable.
   + "task stop" can now remove the start time from a started task.
   + "task ghistory" now displays a differently aligned graph, allowing
     easier comparison by month of tasks added versus completed and deleted.

@@ -134,8 +134,6 @@ std::string handleList (TDB& tdb, T& task, Config& conf)
 
   initializeColorRules (conf);
 
-  bool showAge = conf.get ("showage", true);
-
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
@@ -144,7 +142,7 @@ std::string handleList (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Pri");
   table.addColumn ("Due");
   table.addColumn ("Active");
-  if (showAge) table.addColumn ("Age");
+  table.addColumn ("Age");
   table.addColumn ("Description");
 
   if (conf.get (std::string ("color"), true))
@@ -155,7 +153,7 @@ std::string handleList (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (3);
     table.setColumnUnderline (4);
     table.setColumnUnderline (5);
-    if (showAge) table.setColumnUnderline (6);
+    table.setColumnUnderline (6);
   }
   else
     table.setTableDashedUnderline ();
@@ -165,12 +163,12 @@ std::string handleList (TDB& tdb, T& task, Config& conf)
   table.setColumnWidth (2, Table::minimum);
   table.setColumnWidth (3, Table::minimum);
   table.setColumnWidth (4, Table::minimum);
-  if (showAge) table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
+  table.setColumnWidth (5, Table::minimum);
+  table.setColumnWidth (6, Table::flexible);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (3, Table::right);
-  if (showAge) table.setColumnJustification (5, Table::right);
+  table.setColumnJustification (5, Table::right);
 
   table.sortOn (3, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
@@ -222,8 +220,8 @@ std::string handleList (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 2, refTask.getAttribute ("priority"));
     table.addCell (row, 3, due);
     table.addCell (row, 4, active);
-    if (showAge) table.addCell (row, 5, age);
-    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
+    table.addCell (row, 5, age);
+    table.addCell (row, 6, refTask.getDescription ());
 
     if (conf.get ("color", true))
     {
@@ -704,8 +702,6 @@ std::string handleLongList (TDB& tdb, T& task, Config& conf)
 
   initializeColorRules (conf);
 
-  bool showAge = conf.get ("showage", true);
-
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
@@ -716,7 +712,7 @@ std::string handleLongList (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Entry");
   table.addColumn ("Start");
   table.addColumn ("Due");
-  if (showAge) table.addColumn ("Age");
+  table.addColumn ("Age");
   table.addColumn ("Tags");
   table.addColumn ("Description");
 
@@ -730,7 +726,7 @@ std::string handleLongList (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (5);
     table.setColumnUnderline (6);
     table.setColumnUnderline (7);
-    if (showAge) table.setColumnUnderline (8);
+    table.setColumnUnderline (8);
   }
   else
     table.setTableDashedUnderline ();
@@ -741,15 +737,15 @@ std::string handleLongList (TDB& tdb, T& task, Config& conf)
   table.setColumnWidth (3, Table::minimum);
   table.setColumnWidth (4, Table::minimum);
   table.setColumnWidth (5, Table::minimum);
-  if (showAge) table.setColumnWidth (6, Table::minimum);
-  table.setColumnWidth ((showAge ? 7 : 6), Table::minimum);
-  table.setColumnWidth ((showAge ? 8 : 7), Table::flexible);
+  table.setColumnWidth (6, Table::minimum);
+  table.setColumnWidth (7, Table::minimum);
+  table.setColumnWidth (8, Table::flexible);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (3, Table::right);
   table.setColumnJustification (4, Table::right);
   table.setColumnJustification (5, Table::right);
-  if (showAge) table.setColumnJustification (6, Table::right);
+  table.setColumnJustification (6, Table::right);
 
   table.sortOn (5, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
@@ -816,9 +812,9 @@ std::string handleLongList (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 3, entered);
     table.addCell (row, 4, started);
     table.addCell (row, 5, due);
-    if (showAge) table.addCell (row, 6, age);
-    table.addCell (row, (showAge ? 7 : 6), tags);
-    table.addCell (row, (showAge ? 8 : 7), refTask.getDescription ());
+    table.addCell (row, 6, age);
+    table.addCell (row, 7, tags);
+    table.addCell (row, 8, refTask.getDescription ());
 
     if (conf.get ("color", true))
     {
@@ -1062,8 +1058,6 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
 
   initializeColorRules (conf);
 
-  bool showAge = conf.get ("showage", true);
-
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
@@ -1073,7 +1067,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Pri");
   table.addColumn ("Due");
   table.addColumn ("Active");
-  if (showAge) table.addColumn ("Age");
+  table.addColumn ("Age");
   table.addColumn ("Description");
 
   if (conf.get ("color", true))
@@ -1084,7 +1078,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (3);
     table.setColumnUnderline (4);
     table.setColumnUnderline (5);
-    if (showAge) table.setColumnUnderline (6);
+    table.setColumnUnderline (6);
   }
   else
     table.setTableDashedUnderline ();
@@ -1094,12 +1088,12 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   table.setColumnWidth (2, Table::minimum);
   table.setColumnWidth (3, Table::minimum);
   table.setColumnWidth (4, Table::minimum);
-  if (showAge) table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
+  table.setColumnWidth (5, Table::minimum);
+  table.setColumnWidth (6, Table::flexible);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (3, Table::right);
-  if (showAge) table.setColumnJustification (5, Table::right);
+  table.setColumnJustification (5, Table::right);
 
   table.sortOn (3, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
@@ -1148,8 +1142,8 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 2, refTask.getAttribute ("priority"));
     table.addCell (row, 3, due);
     table.addCell (row, 4, active);
-    if (showAge) table.addCell (row, 5, age);
-    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
+    table.addCell (row, 5, age);
+    table.addCell (row, 6, refTask.getDescription ());
 
     if (conf.get ("color", true))
     {
@@ -2102,7 +2096,6 @@ std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
 
   initializeColorRules (conf);
 
-  bool showAge = conf.get ("showage", true);
   unsigned int quantity = conf.get ("oldest", 10);
 
   // Create a table for output.
@@ -2113,7 +2106,7 @@ std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Pri");
   table.addColumn ("Due");
   table.addColumn ("Active");
-  if (showAge) table.addColumn ("Age");
+  table.addColumn ("Age");
   table.addColumn ("Description");
 
   if (conf.get ("color", true))
@@ -2124,7 +2117,7 @@ std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (3);
     table.setColumnUnderline (4);
     table.setColumnUnderline (5);
-    if (showAge) table.setColumnUnderline (6);
+    table.setColumnUnderline (6);
   }
   else
     table.setTableDashedUnderline ();
@@ -2134,12 +2127,12 @@ std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
   table.setColumnWidth (2, Table::minimum);
   table.setColumnWidth (3, Table::minimum);
   table.setColumnWidth (4, Table::minimum);
-  if (showAge) table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
+  table.setColumnWidth (5, Table::minimum);
+  table.setColumnWidth (6, Table::flexible);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (3, Table::right);
-  if (showAge) table.setColumnJustification (5, Table::right);
+  table.setColumnJustification (5, Table::right);
 
   table.sortOn (3, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
@@ -2189,8 +2182,8 @@ std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 2, refTask.getAttribute ("priority"));
     table.addCell (row, 3, due);
     table.addCell (row, 4, active);
-    if (showAge) table.addCell (row, 5, age);
-    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
+    table.addCell (row, 5, age);
+    table.addCell (row, 6, refTask.getDescription ());
 
     if (conf.get ("color", true))
     {
@@ -2250,7 +2243,6 @@ std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
 
   initializeColorRules (conf);
 
-  bool showAge = conf.get ("showage", true);
   int quantity = conf.get ("newest", 10);
 
   // Create a table for output.
@@ -2261,7 +2253,7 @@ std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Pri");
   table.addColumn ("Due");
   table.addColumn ("Active");
-  if (showAge) table.addColumn ("Age");
+  table.addColumn ("Age");
   table.addColumn ("Description");
 
   if (conf.get ("color", true))
@@ -2272,7 +2264,7 @@ std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (3);
     table.setColumnUnderline (4);
     table.setColumnUnderline (5);
-    if (showAge) table.setColumnUnderline (6);
+    table.setColumnUnderline (6);
   }
   else
     table.setTableDashedUnderline ();
@@ -2282,12 +2274,12 @@ std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
   table.setColumnWidth (2, Table::minimum);
   table.setColumnWidth (3, Table::minimum);
   table.setColumnWidth (4, Table::minimum);
-  if (showAge) table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
+  table.setColumnWidth (5, Table::minimum);
+  table.setColumnWidth (6, Table::flexible);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (3, Table::right);
-  if (showAge) table.setColumnJustification (5, Table::right);
+  table.setColumnJustification (5, Table::right);
 
   table.sortOn (3, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
@@ -2338,8 +2330,8 @@ std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 2, refTask.getAttribute ("priority"));
     table.addCell (row, 3, due);
     table.addCell (row, 4, active);
-    if (showAge) table.addCell (row, 5, age);
-    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
+    table.addCell (row, 5, age);
+    table.addCell (row, 6, refTask.getDescription ());
 
     if (conf.get ("color", true))
     {
