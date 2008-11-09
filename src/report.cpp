@@ -86,9 +86,40 @@ void filter (std::vector<T>& all, T& task)
           if (a->second.length () <= refTask.getAttribute (a->first).length ())
             if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
               ++matches;
+/*
+  TODO Attempt at allowing "pri:!H", thwarted by a lack of coffee and the
+       validation of "!H" as a priority value.  To be revisited soon.
+          {
+            if (a->second[0] == '!')  // Inverted search.
+            {
+              if (a->second.substr (1, std::string::npos) != refTask.getAttribute (a->first).substr (0, a->second.length ()))
+                ++matches;
+            }
+            else
+            {
+              if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
+                ++matches;
+            }
+          }
+*/
         }
         else if (a->second == refTask.getAttribute (a->first))
           ++matches;
+/*
+        else
+        {
+          if (a->second[0] == '!')  // Inverted search.
+          {
+            if (a->second.substr (1, std::string::npos) != refTask.getAttribute (a->first))
+              ++matches;
+          }
+          else
+          {
+            if (a->second == refTask.getAttribute (a->first))
+              ++matches;
+          }
+        }
+*/
       }
 
       if (matches == attrList.size ())
