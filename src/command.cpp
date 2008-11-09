@@ -355,6 +355,42 @@ std::string handleVersion (Config& conf)
       << link.render ()
       << std::endl;
 
+  // Complain about configuration variables that are not recognized.
+  // These are the regular configuration variables.
+  std::string recognized =
+    "blanklines color color.active color.due color.overdue color.pri.H "
+    "color.pri.L color.pri.M color.pri.none color.tagged confirmation curses "
+    "data.location dateformat default.command default.priority defaultwidth due "
+    "monthsperline nag newest next oldest project shadow.command shadow.file "
+    "shadow.notify";
+
+  std::vector <std::string> unrecognized;
+  foreach (i, all)
+  {
+     if (recognized.find (*i) == std::string::npos)
+     {
+       // These are special configuration variables, because their name is
+       // dynamic.
+       if (i->find ("color.keyword.") == std::string::npos &&
+           i->find ("color.project.") == std::string::npos &&
+           i->find ("color.tag.")     == std::string::npos)
+       {
+         unrecognized.push_back (*i);
+       }
+     }
+  }
+
+  if (unrecognized.size ())
+  {
+    out << "Your .taskrc file contains these unrecognized variables:"
+        << std::endl;
+
+    foreach (i, unrecognized)
+      out << "  " << *i << std::endl;
+
+    out << std::endl;
+  }
+
   // Verify installation.  This is mentioned in the documentation as the way to
   // ensure everything is properly installed.
 
