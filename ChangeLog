@@ -187,7 +187,7 @@
   + Added more missing files.
   + Added all source code.
   + Generic OSS files added.
-  + Initial commit.
+  + Initial commit on Github.
 
 0.9.3 (4/6/2008)
   + Added "task completed" command.
@@ -198,7 +198,7 @@
   + "task" duplicated to "task_rel" for preparation of a fork.
 
 0.9.1 (4/1/2008)
-  + Blank attributes read are longer be written out.
+  + Blank attributes read are no longer written out.
   + Completed "task export" command.
   + Added configuration values to "task version" command.
   + Consolidated header files, removed unnecessary ones.
@@ -226,10 +226,12 @@
   + File locking
   + retain deleted tasks
   + "task info ID" report showing all metadata
-  + File format v2
+  + File format v2, including UUID
 
 [Development hiatus while planning for T, TDB API, new features and the future
-of the project.  Seeded to two testers for feedback, suggestions.]
+of the project.  Seeded to two testers for feedback, suggestions.  Development
+deliberately stopped to allow extended use of task, allowing command logging and
+regular usage to determine which features were needed or unnecessary.]
 
 0.6.0 Reports (12/27/2006)
   + "task history"
