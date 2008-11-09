@@ -9,6 +9,8 @@
     easier comparison by month of tasks added versus completed and deleted.
   + "task version" command now reports unrecognized configuration variables,
     which may be spelling mistakes or deprecated variables.
+  + "configure --enable-debug" now supported to suppress compiler optimization
+    to allow debugging.
 
 ------ old releases ------------------------------
 

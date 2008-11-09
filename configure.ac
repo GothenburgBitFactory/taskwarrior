@@ -3,6 +3,29 @@
 
 AC_PREREQ(2.61)
 AC_INIT(task, 1.5.0, bugs@beckingham.net)
+
+
+CFLAGS="${CFLAGS=}"
+CXXFLAGS="${CXXFLAGS=}"
+# this macro is used to get the arguments supplied
+# to the configure script (./configure --enable-debug)
+# Check if we have enable debug support.
+AC_MSG_CHECKING(whether to enable debugging)
+debug_default="yes"
+AC_ARG_ENABLE(debug, [  --enable-debug=[no/yes] turn on debugging
+                       [default=$debug_default]],, enable_debug=$debug_default)
+# Yes, shell scripts can be used
+if test "x$enable_debug" = "xyes"; then
+CFLAGS="$CFLAGS -Wall -pedantic -ggdb3 -DDEBUG"
+CXXFLAGS="$CFLAGS -Wall -pedantic -ggdb3 -DDEBUG"
+AC_MSG_RESULT(yes)
+else
+CFLAGS="$CFLAGS -O3"
+CXXFLAGS="$CFLAGS -O3"
+AC_MSG_RESULT(no)
+fi
+
+
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/task.cpp])
 AC_CONFIG_HEADER([auto.h])
@@ -11,6 +34,8 @@ AC_CONFIG_HEADER([auto.h])
 AC_PROG_CXX
 AC_PROG_CC
 AC_LANG(C++)
+
+AC_SUBST(CFLAGS)
 
 # Checks for libraries.
 AC_CHECK_LIB(ncurses,initscr)
