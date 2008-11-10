@@ -2673,3 +2673,22 @@ void gatherNextTasks (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string handleCustomReport (
+  TDB& tdb,
+  T& task,
+  Config& conf,
+  const std::string& report)
+{
+  std::cout << "# woohoo!" << std::endl;
+
+  std::stringstream out;
+
+  // TODO Load columns.
+  // TODO Load sort order.
+
+
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////

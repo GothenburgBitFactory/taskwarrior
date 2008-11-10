@@ -57,6 +57,8 @@ for (typeof (c) *foreach_p = & (c);                                \
 void parse (std::vector <std::string>&, std::string&, T&, Config&);
 bool validPriority (const std::string&);
 bool validDate (std::string&, Config&);
+void loadCustomReports (Config&);
+bool isCustomReport (const std::string&);
 
 // task.cpp
 void gatherNextTasks (const TDB&, T&, Config&, std::vector <T>&, std::vector <int>&);
@@ -102,6 +104,8 @@ std::string handleReportOverdue (TDB&, T&, Config&);
 std::string handleReportStats (TDB&, T&, Config&);
 std::string handleReportOldest (TDB&, T&, Config&);
 std::string handleReportNewest (TDB&, T&, Config&);
+
+std::string handleCustomReport (TDB&, T&, Config&, const std::string&);
 
 // util.cpp
 bool confirm (const std::string&);

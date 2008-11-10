@@ -571,6 +571,7 @@ void handleExport (TDB& tdb, T& task, Config& conf)
     if (out.good ())
     {
       out << "'id',"
+          << "'uuid',"
           << "'status',"
           << "'tags',"
           << "'entry',"
