@@ -367,17 +367,18 @@ std::string handleVersion (Config& conf)
   std::vector <std::string> unrecognized;
   foreach (i, all)
   {
-     if (recognized.find (*i) == std::string::npos)
-     {
-       // These are special configuration variables, because their name is
-       // dynamic.
-       if (i->find ("color.keyword.") == std::string::npos &&
-           i->find ("color.project.") == std::string::npos &&
-           i->find ("color.tag.")     == std::string::npos)
-       {
-         unrecognized.push_back (*i);
-       }
-     }
+    if (recognized.find (*i) == std::string::npos)
+    {
+      // These are special configuration variables, because their name is
+      // dynamic.
+      if (i->find ("color.keyword.") == std::string::npos &&
+          i->find ("color.project.") == std::string::npos &&
+          i->find ("color.tag.")     == std::string::npos &&
+          i->find ("report.")        == std::string::npos)
+      {
+        unrecognized.push_back (*i);
+      }
+    }
   }
 
   if (unrecognized.size ())
