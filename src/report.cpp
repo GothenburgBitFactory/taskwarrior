@@ -2679,14 +2679,51 @@ std::string handleCustomReport (
   Config& conf,
   const std::string& report)
 {
-  std::cout << "# woohoo!" << std::endl;
+  // Determine window size, and set table accordingly.
+  int width = conf.get ("defaultwidth", 80);
+#ifdef HAVE_LIBNCURSES
+  if (conf.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+
+  // Load report configuration.
+  std::string columnList = conf.get ("report." + report + ".columns");
+  std::vector <std::string> columns;
+  split (columns, columnList, ',');
+
+  std::string sortList   = conf.get ("report." + report + ".sort");
+  std::vector <std::string> sortOrder;
+  split (sortOrder, sortList, ',');
+
+  std::string filter     = conf.get ("report." + report + ".filter");
+
+  std::cout << "# columns  " << columnList << std::endl
+            << "# sort     " << sortList   << std::endl
+            << "# filter   " << filter     << std::endl;
+
+  Table table;
+  table.setTableWidth (width);
+
+  // TODO Load pending tasks.
+  // TODO Apply filters.
+  // TODO Add columns.
+  // TODO Add data.
 
   std::stringstream out;
-
-  // TODO Load columns.
-  // TODO Load sort order.
-
-
+  if (table.rowCount ())
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
+  else
+    out << "No matches."
+        << std::endl;
 
   return out.str ();
 }
