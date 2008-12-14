@@ -349,6 +349,18 @@ static bool validCommand (std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+static bool validBuiltinCommand (std::string& input)
+{
+  std::string copy = input;
+  guess ("command", commands, copy);
+  if (copy == "")
+      return false;
+
+  input = copy;
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 static bool validSubstitution (
   std::string& input,
   std::string& from,

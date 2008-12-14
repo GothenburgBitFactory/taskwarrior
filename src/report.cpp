@@ -265,9 +265,9 @@ std::string handleList (TDB& tdb, T& task, Config& conf)
       if (fg == Text::nocolor)
       {
         if (overdue)
-          table.setCellFg (row, 3, Text::red);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
         else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
       }
     }
   }
@@ -397,9 +397,9 @@ std::string handleSmallList (TDB& tdb, T& task, Config& conf)
       if (fg == Text::nocolor)
       {
         if (overdue)
-          table.setCellFg (row, 3, Text::red);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
         else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
       }
     }
   }
@@ -638,9 +638,9 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
           if (conf.get ("color", true))
           {
             if (overdue)
-              table.setCellFg (row, 1, Text::red);
+              table.setCellFg (row, 1, Text::colorCode (conf.get ("color.overdue", "red")));
             else if (imminent)
-              table.setCellFg (row, 1, Text::yellow);
+              table.setCellFg (row, 1, Text::colorCode (conf.get ("color.due", "yellow")));
           }
         }
       }
@@ -858,9 +858,9 @@ std::string handleLongList (TDB& tdb, T& task, Config& conf)
       if (fg == Text::nocolor)
       {
         if (overdue)
-          table.setCellFg (row, 3, Text::red);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
         else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
       }
     }
   }
@@ -1187,9 +1187,9 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
       if (fg == Text::nocolor)
       {
         if (overdue)
-          table.setCellFg (row, 3, Text::red);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
         else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
       }
     }
   }
@@ -1969,9 +1969,9 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
         if (fg == Text::nocolor)
         {
           if (overdue)
-            table.setCellFg (row, 3, Text::red);
+            table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
           else if (imminent)
-            table.setCellFg (row, 3, Text::yellow);
+            table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
         }
       }
     }
@@ -2227,9 +2227,9 @@ std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
       if (fg == Text::nocolor)
       {
         if (overdue)
-          table.setCellFg (row, 3, Text::red);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
         else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
       }
     }
   }
@@ -2375,9 +2375,9 @@ std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
       if (fg == Text::nocolor)
       {
         if (overdue)
-          table.setCellFg (row, 3, Text::red);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
         else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
       }
     }
   }
@@ -2705,13 +2705,26 @@ std::string handleCustomReport (
             << "# sort     " << sortList   << std::endl
             << "# filter   " << filter     << std::endl;
 
+  // TODO Load pending tasks.
+  std::vector <T> tasks;
+  tdb.allT (tasks);
+//  filter (tasks, task);
+
+  // TODO Apply filters.
+
   Table table;
   table.setTableWidth (width);
 
-  // TODO Load pending tasks.
-  // TODO Apply filters.
-  // TODO Add columns.
-  // TODO Add data.
+  foreach (col, columns)
+  {
+    // TODO Add column.
+    // TODO Add underline.
+
+    // TODO Add data.
+    foreach (t, tasks)
+    {
+    }
+  }
 
   std::stringstream out;
   if (table.rowCount ())
