@@ -289,11 +289,7 @@ bool TDB::modifyT (const T& t)
 ////////////////////////////////////////////////////////////////////////////////
 bool TDB::lock (FILE* file) const
 {
-#ifdef HAVE_FLOCK
   return flock (fileno (file), LOCK_EX) ? false : true;
-#else
-  return true;
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -303,11 +299,9 @@ bool TDB::overwritePending (std::vector <T>& all)
   FILE* out;
   if ((out = fopen (mPendingFile.c_str (), "w")))
   {
-#ifdef HAVE_FLOCK
     int retry = 0;
     while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
       delay (0.25);
-#endif
 
     std::vector <T>::iterator it;
     for (it = all.begin (); it != all.end (); ++it)
@@ -328,11 +322,9 @@ bool TDB::writePending (const T& t)
   FILE* out;
   if ((out = fopen (mPendingFile.c_str (), "a")))
   {
-#ifdef HAVE_FLOCK
     int retry = 0;
     while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
       delay (0.25);
-#endif
 
     fputs (t.compose ().c_str (), out);
 
@@ -351,11 +343,9 @@ bool TDB::writeCompleted (const T& t)
   FILE* out;
   if ((out = fopen (mCompletedFile.c_str (), "a")))
   {
-#ifdef HAVE_FLOCK
     int retry = 0;
     while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
       delay (0.25);
-#endif
 
     fputs (t.compose ().c_str (), out);
 
@@ -380,11 +370,9 @@ bool TDB::readLockedFile (
     FILE* in;
     if ((in = fopen (file.c_str (), "r")))
     {
-#ifdef HAVE_FLOCK
       int retry = 0;
       while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
         delay (0.25);
-#endif
 
       char line[T_LINE_MAX];
       while (fgets (line, T_LINE_MAX, in))

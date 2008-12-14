@@ -130,6 +130,15 @@ const char* optionalBlankLine (Config&);
 int convertDuration (std::string&);
 std::string expandPath (const std::string&);
 
+#ifdef SOLARIS
+  #define LOCK_SH 1
+  #define LOCK_EX 2
+  #define LOCK_NB 4
+  #define LOCK_UN 8
+
+  int flock (int, int);
+#endif
+
 // rules.cpp
 void initializeColorRules (Config&);
 void autoColorize (T&, Text::color&, Text::color&);
