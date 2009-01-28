@@ -1,69 +1,35 @@
 
-This is a full BNF grammar for the task command line.  It is intended that a
-future release of task will incorporate a complete lexer/parser implementing
-this grammar.
+# This is a full BNF grammar for the task command line.  It is intended that a
+# future release of task will incorporate a complete lexer/parser implementing
+# this grammar.
 
+command     ::= simple_command
+              | filter_command filter?
+              | id_command
+              | "export" file
+              | <id>
+              | <id> <substitution>
 
-command:
-    VERSION
-  | HELP
-  | PROJECTS
-  | TAGS
-  | SUMMARY
-  | HISTORY
-  | NEXT
-  | CALENDAR
-  | ACTIVE
-  | OVERDUE
-  | STATS
-  | USAGE
-  | OLDEST
-  | NEWEST
-  | EXPORT <file>
-  | COLOR
-  | DELETE <id>
-  | UNDELETE <id>
-  | INFO <id>
-  | START <id>
-  | DONE <id>
-  | ADD [<tags>] [<attrs>] [<desc>]
-  | LIST [<tags>] [<attrs>] [<desc>]
-  | LONG [<tags>] [<attrs>] [<desc>]
-  | LS [<tags>] [<attrs>] [<desc>]
-  | COMPLETED [<tags>] [<attrs>] [<desc>]
-  | <id> [<tags>] [<attrs>] [<desc>]
-  | <id> <substitution>
+simple_command ::= "version" | "help" | "projects" | "tags" | "next" | "stats"
+                 | "color" ;
 
-id:
-    \d+
-  | \d{8}-\d{4}-\d{4}-\d{12}
+filter_command ::= "summary" | "history" | "calendar" | "active" | "overdue"
+                 | "oldest" | "newest" | "add" | "list" | "long" | "ls"
+                 | "completed" ;
 
-tags:
-    +<tag>
-  | -<tag>
+id_command ::= "delete" | "undelete" | "info" | "start" | "end" | "done"
+             | "undo" ;
 
-tag:
-    \w+
+filter      ::= filter_part+ ;
 
-attrs:
-    <attr>
-  | <attr> <attrs>
+filter_part ::= tag_add | tag_remove | attribute | word ;
 
-attr:
-    <name>:<value>
-
-name:
-    \w+
-
-value:
-    .+
-
-substitution:
-    / <pattern> / <pattern> /
-
-pattern:
-    .+
-
-file:
-    ?
+tag_add     ::= "+" word ;
+tag_remove  ::= "-" word ;
+attribute   ::= word ":" word ;
+word        ::= ...
+file        ::= ...
+id          ::= digit+ ;
+digit       ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+substitution ::= "/" word+ "/" word* "/" ;
 
