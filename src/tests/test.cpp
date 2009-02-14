@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -25,81 +25,157 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <task.h>
-
-static int total = 0;
-static int counter = 0;
+#include "test.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-static void check (void)
+UnitTest::UnitTest ()
+: mPlanned (0)
+, mCounter (0)
+, mPassed (0)
+, mFailed (0)
+, mSkipped (0)
 {
-  if (counter > total)
-    std::cout << "# Warning: There are more tests than planned."
+}
+
+///////////////////////////////////////////////////////////////////////////////
+UnitTest::UnitTest (int planned)
+: mPlanned (planned)
+, mCounter (0)
+, mPassed (0)
+, mFailed (0)
+, mSkipped (0)
+{
+  std::cout << "1.." << mPlanned << std::endl;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+UnitTest::~UnitTest ()
+{
+  float percentPassed = 0.0;
+  if (mPlanned > 0)
+    percentPassed = (100.0 * mPassed) / max (mPlanned, mPassed + mFailed + mSkipped);
+
+  if (mCounter < mPlanned)
+  {
+    std::cout << "# Only "
+              << mCounter
+              << " tests, out of a planned "
+              << mPlanned
+              << " were run."
               << std::endl;
+    mSkipped += mPlanned - mCounter;
+  }
+
+  else if (mCounter > mPlanned)
+    std::cout << "# "
+              << mCounter
+              << " tests were run, but only "
+              << mPlanned
+              << " were planned."
+              << std::endl;
+
+  std::cout << "# "
+            << mPassed
+            << " passed, "
+            << mFailed
+            << " failed, "
+            << mSkipped
+            << " skipped. "
+            << std::setprecision (3) << percentPassed
+            << "% passed."
+            << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void plan (int quantity)
+void UnitTest::plan (int planned)
 {
-  total = quantity;
-  std::cout << "1.." << quantity << std::endl;
-  check ();
+  mPlanned = planned;
+  mCounter = 0;
+  mPassed = 0;
+  mFailed = 0;
+  mSkipped = 0;
+
+  std::cout << "1.." << mPlanned << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void ok (bool expression, const std::string& name)
+void UnitTest::planMore (int extra)
 {
-  ++counter;
+  mPlanned += extra;
+  std::cout << "1.." << mPlanned << std::endl;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void UnitTest::ok (bool expression, const std::string& name)
+{
+  ++mCounter;
 
   if (expression)
+  {
+    ++mPassed;
     std::cout << "ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl;
+  }
   else
+  {
+    ++mFailed;
     std::cout << "not ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl;
-  check ();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void notok (bool expression, const std::string& name)
+void UnitTest::notok (bool expression, const std::string& name)
 {
-  ++counter;
+  ++mCounter;
 
   if (!expression)
+  {
+    ++mPassed;
     std::cout << "ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl;
+  }
   else
+  {
+    ++mFailed;
     std::cout << "not ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl;
-  check ();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void is (bool actual, bool expected, const std::string& name)
+void UnitTest::is (bool actual, bool expected, const std::string& name)
 {
-  ++counter;
+  ++mCounter;
   if (actual == expected)
+  {
+    ++mPassed;
     std::cout << "ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl;
+  }
   else
+  {
+    ++mFailed;
     std::cout << "not ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl
@@ -109,22 +185,27 @@ void is (bool actual, bool expected, const std::string& name)
               << "#      got: "
               << actual
               << std::endl;
-  check ();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void is (size_t actual, size_t expected, const std::string& name)
+void UnitTest::is (size_t actual, size_t expected, const std::string& name)
 {
-  ++counter;
+  ++mCounter;
   if (actual == expected)
+  {
+    ++mPassed;
     std::cout << "ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl;
+  }
   else
+  {
+    ++mFailed;
     std::cout << "not ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl
@@ -134,22 +215,27 @@ void is (size_t actual, size_t expected, const std::string& name)
               << "#      got: "
               << actual
               << std::endl;
-  check ();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void is (int actual, int expected, const std::string& name)
+void UnitTest::is (int actual, int expected, const std::string& name)
 {
-  ++counter;
+  ++mCounter;
   if (actual == expected)
+  {
+    ++mPassed;
     std::cout << "ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl;
+  }
   else
+  {
+    ++mFailed;
     std::cout << "not ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl
@@ -159,22 +245,27 @@ void is (int actual, int expected, const std::string& name)
               << "#      got: "
               << actual
               << std::endl;
-  check ();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void is (double actual, double expected, const std::string& name)
+void UnitTest::is (double actual, double expected, const std::string& name)
 {
-  ++counter;
+  ++mCounter;
   if (actual == expected)
+  {
+    ++mPassed;
     std::cout << "ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl;
+  }
   else
+  {
+    ++mFailed;
     std::cout << "not ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl
@@ -184,22 +275,27 @@ void is (double actual, double expected, const std::string& name)
               << "#      got: "
               << actual
               << std::endl;
-  check ();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void is (char actual, char expected, const std::string& name)
+void UnitTest::is (char actual, char expected, const std::string& name)
 {
-  ++counter;
+  ++mCounter;
   if (actual == expected)
+  {
+    ++mPassed;
     std::cout << "ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl;
+  }
   else
+  {
+    ++mFailed;
     std::cout << "not ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl
@@ -209,25 +305,30 @@ void is (char actual, char expected, const std::string& name)
               << "#      got: "
               << actual
               << std::endl;
-  check ();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void is (
+void UnitTest::is (
   const std::string& actual,
   const std::string& expected,
   const std::string& name)
 {
-  ++counter;
+  ++mCounter;
   if (actual == expected)
+  {
+    ++mPassed;
     std::cout << "ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl;
+  }
   else
+  {
+    ++mFailed;
     std::cout << "not ok "
-              << counter
+              << mCounter
               << " - "
               << name
               << std::endl
@@ -239,11 +340,46 @@ void is (
               << actual
               << "'"
               << std::endl;
-  check ();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void diag (const std::string& text)
+void UnitTest::is (
+  const char* actual,
+  const char* expected,
+  const std::string& name)
+{
+  ++mCounter;
+  if (! strcmp (actual, expected))
+  {
+    ++mPassed;
+    std::cout << "ok "
+              << mCounter
+              << " - "
+              << name
+              << std::endl;
+  }
+  else
+  {
+    ++mFailed;
+    std::cout << "not ok "
+              << mCounter
+              << " - "
+              << name
+              << std::endl
+              << "# expected: '"
+              << expected
+              << "'"
+              << std::endl
+              << "#      got: '"
+              << actual
+              << "'"
+              << std::endl;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void UnitTest::diag (const std::string& text)
 {
   std::string trimmed = trim (text, " \t\n\r\f");
 
@@ -251,22 +387,36 @@ void diag (const std::string& text)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void pass (const std::string& text)
+void UnitTest::pass (const std::string& text)
 {
-  ++counter;
+  ++mCounter;
+  ++mPassed;
   std::cout << "ok "
-            << counter
+            << mCounter
             << " "
             << text
             << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void fail (const std::string& text)
+void UnitTest::fail (const std::string& text)
 {
-  ++counter;
+  ++mCounter;
+  ++mFailed;
   std::cout << "not ok "
-            << counter
+            << mCounter
+            << " "
+            << text
+            << std::endl;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void UnitTest::skip (const std::string& text)
+{
+  ++mCounter;
+  ++mSkipped;
+  std::cout << "skip "
+            << mCounter
             << " "
             << text
             << std::endl;

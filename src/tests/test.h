@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -24,23 +24,42 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_TEST
-#define INCLUDED_TEST
+#ifndef INCLUDED_UNITTEST
+#define INCLUDED_UNITTEST
 
 #include <string>
 
-void plan (int);
-void ok (bool, const std::string&);
-void notok (bool, const std::string&);
-void is (bool, bool, const std::string&);
-void is (int, int, const std::string&);
-void is (size_t, size_t, const std::string&);
-void is (double, double, const std::string&);
-void is (char, char, const std::string&);
-void is (const std::string&, const std::string&, const std::string&);
-void diag (const std::string&);
-void fail (const std::string&);
-void pass (const std::string&);
+class UnitTest
+{
+public:
+  UnitTest ();
+  UnitTest (int);
+  ~UnitTest ();
+
+  void plan (int);
+  void planMore (int);
+  void ok (bool, const std::string&);
+  void notok (bool, const std::string&);
+  void is (bool, bool, const std::string&);
+  void is (size_t, size_t, const std::string&);
+  void is (int, int, const std::string&);
+  void is (double, double, const std::string&);
+  void is (char, char, const std::string&);
+  void is (const std::string&, const std::string&, const std::string&);
+  void is (const char*, const char*, const std::string&);
+  void diag (const std::string&);
+  void pass (const std::string&);
+  void fail (const std::string&);
+  void skip (const std::string&);
+
+private:
+  int mPlanned;
+  int mCounter;
+  int mPassed;
+  int mFailed;
+  int mSkipped;
+};
 
 #endif
+
 ////////////////////////////////////////////////////////////////////////////////
