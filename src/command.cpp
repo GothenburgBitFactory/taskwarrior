@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -343,7 +343,7 @@ std::string handleVersion (Config& conf)
     }
   }
 
-  out << "Copyright (C) 2006 - 2008, P. Beckingham."
+  out << "Copyright (C) 2006 - 2009, P. Beckingham."
       << std::endl
       << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, PACKAGE) : PACKAGE)
       << " "
