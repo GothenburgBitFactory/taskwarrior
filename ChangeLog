@@ -11,6 +11,7 @@
     which may be spelling mistakes or deprecated variables.
   + "configure --enable-debug" now supported to suppress compiler optimization
     to allow debugging.
+  + Allow lower case priorities, and automatically upper case them.
 
 ------ old releases ------------------------------
 

@@ -296,7 +296,7 @@ std::string upperCase (const std::string& input)
 {
   std::string output = input;
   for (int i = 0; i < (int) input.length (); ++i)
-    if (::isupper (input[i]))
+    if (::islower (input[i]))
       output[i] = ::toupper (input[i]);
 
   return output;
