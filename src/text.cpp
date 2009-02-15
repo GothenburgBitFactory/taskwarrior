@@ -54,6 +54,7 @@ void split (
   const std::string& input,
   const char delimiter)
 {
+  results.clear ();
   std::string::size_type start = 0;
   std::string::size_type i;
   while ((i = input.find (delimiter, start)) != std::string::npos)
@@ -62,7 +63,8 @@ void split (
     start = i + 1;
   }
 
-  results.push_back (input.substr (start, std::string::npos));
+  if (input.length ())
+    results.push_back (input.substr (start, std::string::npos));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,6 +73,7 @@ void split (
   const std::string& input,
   const std::string& delimiter)
 {
+  results.clear ();
   std::string::size_type length = delimiter.length ();
 
   std::string::size_type start = 0;
@@ -81,7 +84,8 @@ void split (
     start = i + length;
   }
 
-  results.push_back (input.substr (start, std::string::npos));
+  if (input.length ())
+    results.push_back (input.substr (start, std::string::npos));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
