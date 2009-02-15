@@ -12,6 +12,8 @@
   + "configure --enable-debug" now supported to suppress compiler optimization
     to allow debugging.
   + Allow lower case priorities, and automatically upper case them.
+  + Added support for "due" configuration variable which defines the number
+    of days in the future when a task is considered due.
 
 ------ old releases ------------------------------
 

@@ -141,6 +141,6 @@ std::string expandPath (const std::string&);
 
 // rules.cpp
 void initializeColorRules (Config&);
-void autoColorize (T&, Text::color&, Text::color&);
+void autoColorize (T&, Text::color&, Text::color&, Config&);
 
 ////////////////////////////////////////////////////////////////////////////////

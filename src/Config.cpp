@@ -118,6 +118,7 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "monthsperline=1\n");
         fprintf (out, "curses=on\n");
         fprintf (out, "color=on\n");
+        fprintf (out, "due=7\n");
 
         fprintf (out, "color.overdue=bold_red\n");
         fprintf (out, "#color.due=on_bright_yellow\n");

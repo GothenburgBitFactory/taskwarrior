@@ -80,7 +80,11 @@ void initializeColorRules (Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void autoColorize (T& task, Text::color& fg, Text::color& bg)
+void autoColorize (
+  T& task,
+  Text::color& fg,
+  Text::color& bg,
+  Config& conf)
 {
   // Note: fg, bg already contain colors specifically assigned via command.
   // Note: These rules form a hierarchy - the last rule is king.
@@ -159,7 +163,7 @@ void autoColorize (T& task, Text::color& fg, Text::color& bg)
   {
     Date dueDate (::atoi (due.c_str ()));
     Date now;
-    Date then (now + 7 * 86400);
+    Date then (now + conf.get ("due", 7) * 86400);
 
     // Overdue
     if (dueDate < now)

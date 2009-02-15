@@ -258,7 +258,7 @@ std::string handleList (TDB& tdb, T& task, Config& conf)
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
+      autoColorize (refTask, fg, bg, conf);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
 
@@ -390,7 +390,7 @@ std::string handleSmallList (TDB& tdb, T& task, Config& conf)
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
+      autoColorize (refTask, fg, bg, conf);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
 
@@ -489,7 +489,7 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
+      autoColorize (refTask, fg, bg, conf);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
     }
@@ -851,7 +851,7 @@ std::string handleLongList (TDB& tdb, T& task, Config& conf)
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
+      autoColorize (refTask, fg, bg, conf);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
 
@@ -1180,7 +1180,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
+      autoColorize (refTask, fg, bg, conf);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
 
@@ -1962,7 +1962,7 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
       {
         Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
         Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-        autoColorize (refTask, fg, bg);
+        autoColorize (refTask, fg, bg, conf);
         table.setRowFg (row, fg);
         table.setRowBg (row, bg);
 
@@ -2076,7 +2076,7 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
           {
             Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
             Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-            autoColorize (refTask, fg, bg);
+            autoColorize (refTask, fg, bg, conf);
             table.setRowFg (row, fg);
             table.setRowBg (row, bg);
 
@@ -2220,7 +2220,7 @@ std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
+      autoColorize (refTask, fg, bg, conf);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
 
@@ -2368,7 +2368,7 @@ std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
+      autoColorize (refTask, fg, bg, conf);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
 
