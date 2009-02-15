@@ -784,9 +784,6 @@ std::string runTaskCommand (
   else if (command == "stop")               {                    out = handleStop           (tdb, task, conf         ); }
   else if (command == "undo")               {                    out = handleUndo           (tdb, task, conf         ); }
   else if (command == "stats")              {                    out = handleReportStats    (tdb, task, conf         ); }
-  else if (command == "list")               { if (gc) tdb.gc (); out = handleList           (tdb, task, conf         ); } // TODO replace with Custom
-  else if (command == "long")               { if (gc) tdb.gc (); out = handleLongList       (tdb, task, conf         ); } // TODO replace with Custom
-  else if (command == "ls")                 { if (gc) tdb.gc (); out = handleSmallList      (tdb, task, conf         ); } // TODO replace with Custom
   else if (command == "completed")          { if (gc) tdb.gc (); out = handleCompleted      (tdb, task, conf         ); } // TODO replace with Custom
   else if (command == "summary")            { if (gc) tdb.gc (); out = handleReportSummary  (tdb, task, conf         ); }
   else if (command == "next")               { if (gc) tdb.gc (); out = handleReportNext     (tdb, task, conf         ); } // TODO replace with Custom

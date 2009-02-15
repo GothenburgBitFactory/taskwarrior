@@ -89,10 +89,7 @@ std::string handleColor (Config&);
 
 // report.cpp
 void filter (std::vector<T>&, T&);
-std::string handleList (TDB&, T&, Config&);
 std::string handleInfo (TDB&, T&, Config&);
-std::string handleLongList (TDB&, T&, Config&);
-std::string handleSmallList (TDB&, T&, Config&);
 std::string handleCompleted (TDB&, T&, Config&);
 std::string handleReportSummary (TDB&, T&, Config&);
 std::string handleReportNext (TDB&, T&, Config&);
