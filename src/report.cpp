@@ -2673,6 +2673,8 @@ void gatherNextTasks (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// This report will eventually become the one report that many others morph into
+// via the .taskrc file.
 std::string handleCustomReport (
   TDB& tdb,
   T& task,
@@ -2699,30 +2701,285 @@ std::string handleCustomReport (
   std::vector <std::string> sortOrder;
   split (sortOrder, sortList, ',');
 
-  std::string filter     = conf.get ("report." + report + ".filter");
+  std::string filterList = conf.get ("report." + report + ".filter");
 
   std::cout << "# columns  " << columnList << std::endl
             << "# sort     " << sortList   << std::endl
-            << "# filter   " << filter     << std::endl;
+            << "# filter   " << filterList << std::endl;
 
-  // TODO Load pending tasks.
+  // Load all pending tasks.
   std::vector <T> tasks;
-  tdb.allT (tasks);
-//  filter (tasks, task);
+  tdb.allPendingT (tasks);
 
-  // TODO Apply filters.
+  // Apply filters.
+  {
+    std::vector <std::string> args;
+    split (args, filterList, ' ');
+
+    std::string ignore;
+    T filterTask;
+    parse (args, ignore, filterTask, conf);
+
+    filter (tasks, filterTask);
+  }
+
+  // Initialize colorization for subsequent auto colorization.
+  initializeColorRules (conf);
 
   Table table;
   table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
+  for (unsigned int i = 0; i < tasks.size (); ++i)
+    table.addRow ();
+
+  int columnCount = 0;
+  int dueColumn = -1;
   foreach (col, columns)
   {
-    // TODO Add column.
-    // TODO Add underline.
-
-    // TODO Add data.
-    foreach (t, tasks)
+    // Add each column individually.
+    if (*col == "id")
     {
+      table.addColumn ("ID");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        table.addCell (row, columnCount, tasks[row].getId ());
+    }
+
+    else if (*col == "uuid")
+    {
+      table.addColumn ("UUID");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        table.addCell (row, columnCount, tasks[row].getUUID ());
+    }
+
+    else if (*col == "project")
+    {
+      table.addColumn ("Project");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        table.addCell (row, columnCount, tasks[row].getAttribute ("project"));
+    }
+
+    else if (*col == "priority")
+    {
+      table.addColumn ("Pri");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        table.addCell (row, columnCount, tasks[row].getAttribute ("priority"));
+    }
+
+    else if (*col == "entry")
+    {
+      table.addColumn ("Added");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string entered;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        entered = tasks[row].getAttribute ("entry");
+        if (entered.length ())
+        {
+          Date dt (::atoi (entered.c_str ()));
+          entered = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          table.addCell (row, columnCount, entered);
+        }
+      }
+    }
+
+    else if (*col == "start")
+    {
+      table.addColumn ("Started");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string started;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        started = tasks[row].getAttribute ("start");
+        if (started.length ())
+        {
+          Date dt (::atoi (started.c_str ()));
+          started = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          table.addCell (row, columnCount, started);
+        }
+      }
+    }
+
+    else if (*col == "due")
+    {
+      table.addColumn ("Due");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string due;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        due = tasks[row].getAttribute ("due");
+        if (due.length ())
+        {
+          Date dt (::atoi (due.c_str ()));
+          due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          table.addCell (row, columnCount, due);
+        }
+      }
+
+      dueColumn = columnCount;
+    }
+
+    else if (*col == "age")
+    {
+      table.addColumn ("Age");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string created;
+      std::string age;
+      Date now;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        created = tasks[row].getAttribute ("entry");
+        if (created.length ())
+        {
+          Date dt (::atoi (created.c_str ()));
+          formatTimeDeltaDays (age, (time_t) (now - dt));
+          table.addCell (row, columnCount, age);
+        }
+      }
+    }
+
+    else if (*col == "active")
+    {
+      table.addColumn ("Active");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        if (tasks[row].getAttribute ("start") != "")
+          table.addCell (row, columnCount, "*");
+    }
+
+    else if (*col == "tags")
+    {
+      table.addColumn ("Tags");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      std::vector <std::string> all;
+      std::string tags;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        tasks[row].getTags (all);
+        join (tags, " ", all);
+        table.addCell (row, columnCount, tags);
+      }
+    }
+
+    else if (*col == "description")
+    {
+      table.addColumn ("Description");
+      table.setColumnWidth (columnCount, Table::flexible);
+      table.setColumnJustification (columnCount, Table::left);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        table.addCell (row, columnCount, tasks[row].getDescription ());
+    }
+
+    // Common to all columns.
+    // Add underline.
+    if (conf.get (std::string ("color"), true))
+      table.setColumnUnderline (columnCount);
+    else
+      table.setTableDashedUnderline ();
+
+    ++columnCount;
+  }
+
+  // Dynamically add sort criteria.
+  // Build a map of column names -> index.
+  std::map <std::string, unsigned int> columnIndex;
+  for (unsigned int c = 0; c < columns.size (); ++c)
+    columnIndex[columns[c]] = c;
+
+  foreach (sortColumn, sortOrder)
+  {
+    // Separate column and direction.
+    std::string column = sortColumn->substr (0, sortColumn->length () - 1);
+    char direction = (*sortColumn)[sortColumn->length () - 1];
+
+    if (column == "id")
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingNumeric :
+                      Table::descendingNumeric));
+
+    else if (column == "priority")
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingPriority :
+                      Table::descendingPriority));
+
+    else if (column == "entry" || column == "start" || column == "due")
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingDate :
+                      Table::descendingDate));
+
+    else
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingCharacter :
+                      Table::descendingCharacter));
+  }
+
+  // Now auto colorize all rows.
+  std::string due;
+  bool imminent;
+  bool overdue;
+  for (unsigned int row = 0; row < tasks.size (); ++row)
+  {
+    imminent = false;
+    overdue = false;
+    due = tasks[row].getAttribute ("due");
+    if (due.length ())
+    {
+      switch (getDueState (due))
+      {
+      case 2: overdue = true;  break;
+      case 1: imminent = true; break;
+      case 0:
+      default:                 break;
+      }
+    }
+
+    if (conf.get ("color", true))
+    {
+      Text::color fg = Text::colorCode (tasks[row].getAttribute ("fg"));
+      Text::color bg = Text::colorCode (tasks[row].getAttribute ("bg"));
+      autoColorize (tasks[row], fg, bg, conf);
+      table.setRowFg (row, fg);
+      table.setRowBg (row, bg);
+
+      if (fg == Text::nocolor)
+      {
+        if (dueColumn != -1)
+        {
+          if (overdue)
+            table.setCellFg (row, columnCount, Text::colorCode (conf.get ("color.overdue", "red")));
+          else if (imminent)
+            table.setCellFg (row, columnCount, Text::colorCode (conf.get ("color.due", "yellow")));
+        }
+      }
     }
   }
 
