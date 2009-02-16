@@ -2246,10 +2246,12 @@ std::string handleCustomReport (
   std::string columnList = conf.get ("report." + report + ".columns");
   std::vector <std::string> columns;
   split (columns, columnList, ',');
+  validReportColumns (columns);
 
   std::string sortList   = conf.get ("report." + report + ".sort");
   std::vector <std::string> sortOrder;
   split (sortOrder, sortList, ',');
+  validSortColumns (columns, sortOrder);
 
   std::string filterList = conf.get ("report." + report + ".filter");
   std::vector <std::string> filterArgs;
@@ -2542,6 +2544,60 @@ std::string handleCustomReport (
         << std::endl;
 
   return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void validReportColumns (const std::vector <std::string>& columns)
+{
+  std::vector <std::string> bad;
+
+  std::vector <std::string>::const_iterator it;
+  for (it = columns.begin (); it != columns.end (); ++it)
+    if (*it != "id"       &&
+        *it != "uuid"     &&
+        *it != "project"  &&
+        *it != "priority" &&
+        *it != "entry"    &&
+        *it != "start"    &&
+        *it != "due"      &&
+        *it != "age"      &&
+        *it != "active"   &&
+        *it != "tags"     &&
+        *it != "description")
+      bad.push_back (*it);
+
+  if (bad.size ())
+  {
+    std::string error;
+    join (error, ", ", bad);
+    throw std::string ("Unrecognized column name: ") + error;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void validSortColumns (
+  const std::vector <std::string>& columns,
+  const std::vector <std::string>& sortColumns)
+{
+  std::vector <std::string> bad;
+  std::vector <std::string>::const_iterator sc;
+  for (sc = sortColumns.begin (); sc != sortColumns.end (); ++sc)
+  {
+    std::vector <std::string>::const_iterator co;
+    for (co = columns.begin (); co != columns.end (); ++co)
+      if (sc->substr (0, sc->length () - 1) == *co)
+        break;
+
+    if (co == columns.end ())
+      bad.push_back (*sc);
+  }
+
+  if (bad.size ())
+  {
+    std::string error;
+    join (error, ", ", bad);
+    throw std::string ("Sort column is not part of the report: ") + error;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -103,6 +103,8 @@ std::string handleReportOldest (TDB&, T&, Config&);
 std::string handleReportNewest (TDB&, T&, Config&);
 
 std::string handleCustomReport (TDB&, T&, Config&, const std::string&);
+void validReportColumns (const std::vector <std::string>&);
+void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 
 // util.cpp
 bool confirm (const std::string&);
