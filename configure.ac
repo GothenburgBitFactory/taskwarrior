@@ -73,3 +73,10 @@ AC_CHECK_FUNC(srandom, [AC_DEFINE([HAVE_SRANDOM], [1], [Found srandom])])
 
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
+
+AC_MSG_NOTICE([...])
+AC_MSG_NOTICE([...])
+AC_MSG_NOTICE([Existing task users please read the README.1.5.0 file!])
+AC_MSG_NOTICE([...])
+AC_MSG_NOTICE([...])
+

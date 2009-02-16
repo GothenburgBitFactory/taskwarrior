@@ -3,18 +3,18 @@
 task add do laundry                         Let's add some tasks
                                             I need to do laundry
 
-task add project:garage order dumpster      Oh yeah, the dumpster
+task add project:garage order dumpster      Oh yeah, I need to order the dumpster
 
-task add +phone tell mom i loveher          Must call Mom  (that "phone" there is a tag - they are
-                                              useful for searching, categorizing)
+task add +phone tell mom i loveher          Must call Mom  (that "phone" there is a tag - they can
+                                              be useful for searching and categorizing)
 task add +phone pro:garage schedule
   goodwill pickup
 
-task ad +email pro:garage ask Tom if        Notice I can abbreviating commands
+task ad +email pro:garage ask Tom if        Notice I can abbreviate commands
   he wants that old bkie
 
 task ls                                     Let's see what we've got
-                                            I spelled bike wrong
+                                            Oh, I spelled bike wrong
 
 task 5 /bkie/bike/
 task ls                                     That's better
@@ -96,6 +96,10 @@ task summary                                Summary shows progress on all projec
 
 task history                                History shows general activity - how many added,
                                               completed etc, by month
+
+task ghistory                               This report shows a histogram of tasks that were
+                                              added (in red), completed (in green) and deleted
+                                              (in yellow), all by month.
 
                                             And that's it.  There are more commands than this
                                             covered in the online documentation, but this should give
