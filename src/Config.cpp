@@ -115,25 +115,42 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "confirmation=yes\n");
         fprintf (out, "next=2\n");
         fprintf (out, "dateformat=m/d/Y\n");
-        fprintf (out, "monthsperline=1\n");
+        fprintf (out, "monthsperline=2\n");
         fprintf (out, "curses=on\n");
         fprintf (out, "color=on\n");
         fprintf (out, "due=7\n");
+        fprintf (out, "nag=You have higher priority tasks.\n");
 
         fprintf (out, "color.overdue=bold_red\n");
-        fprintf (out, "#color.due=on_bright_yellow\n");
-        fprintf (out, "#color.pri.H=on_red\n");
+        fprintf (out, "color.due=bold_yellow\n");
+        fprintf (out, "color.pri.H=bold\n");
         fprintf (out, "#color.pri.M=on_yellow\n");
         fprintf (out, "#color.pri.L=on_green\n");
+        fprintf (out, "#color.pri.none=white on_blue\n");
         fprintf (out, "color.active=bold_cyan\n");
         fprintf (out, "color.tagged=yellow\n");
         fprintf (out, "#color.tag.bug=yellow\n");
-        fprintf (out, "#color.project.home=on_green\n");
+        fprintf (out, "#color.project.garden=on_green\n");
         fprintf (out, "#color.keyword.car=on_blue\n");
         fprintf (out, "#shadow.file=%s/shadow.txt\n", dataDir.c_str ());
         fprintf (out, "#shadow.command=list\n");
         fprintf (out, "#shadow.notify=on\n");
-        fprintf (out, "#default.command=list\n");
+        fprintf (out, "#default.project=foo\n");
+        fprintf (out, "#default.priority=M\n");
+        fprintf (out, "default.command=list\n");
+
+        // Custom reports.
+        fprintf (out, "# Fields: id,uuid,project,priority,entry,start,due,age,active,tags,description\n");
+        fprintf (out, "# Sort:   due+,priority-,project+\n");
+        fprintf (out, "# Filter: pro:x pri:H +bug\n");
+        fprintf (out, "report.large.columns=id,uuid,project,priority,entry,start,due,age,active,tags,description\n");
+        fprintf (out, "report.large.sort=due+,priority-,project+\n");
+        fprintf (out, "report.long.columns=id,project,priority,entry,start,due,age,tags,description\n");
+        fprintf (out, "report.long.sort=due+,priority-,project+\n");
+        fprintf (out, "report.list.columns=id,project,priority,due,active,age,description\n");
+        fprintf (out, "report.list.sort=due+,priority-,project+\n");
+        fprintf (out, "report.ls.columns=id,project,priority,description\n");
+        fprintf (out, "report.ls.sort=priority-,project+\n");
 
         fclose (out);
 
