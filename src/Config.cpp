@@ -39,8 +39,6 @@
 Config::Config ()
 {
   // These are default (but overridable) reports.
-  (*this)["report.large.columns"] = "id,uuid,project,priority,entry,start,due,age,active,tags,description";
-  (*this)["report.large.sort"]    = "due+,priority-,project+";
   (*this)["report.long.columns"]  = "id,project,priority,entry,start,due,age,tags,description";
   (*this)["report.long.sort"]     = "due+,priority-,project+";
   (*this)["report.list.columns"]  = "id,project,priority,due,active,age,description";
