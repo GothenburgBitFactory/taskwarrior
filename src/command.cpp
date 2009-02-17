@@ -520,7 +520,6 @@ std::string handleStop (TDB& tdb, T& task, Config& conf)
         original.setId (task.getId ());
         tdb.modifyT (original);
 
-        nag (tdb, task, conf);
         return std::string ("");
       }
       else

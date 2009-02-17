@@ -347,14 +347,56 @@ void nag (TDB& tdb, T& task, Config& conf)
     std::vector <T> pending;
     tdb.allPendingT (pending);
 
-    // Restrict to matching subset.
-    std::vector <int> matching;
-    gatherNextTasks (tdb, task, conf, pending, matching);
+    // Counters.
+    int overdue  = 0;
+    int high     = 0;
+    int medium   = 0;
+    int low      = 0;
 
-    foreach (i, matching)
-      if (pending[*i].getId () == task.getId ())
-        return;
+    // Scan all pending tasks.
+    foreach (t, pending)
+    {
+      if (t->getId () != task.getId ())
+      {
+        if (getDueState (t->getAttribute ("due")) == 2)
+          overdue++;
 
+        std::string priority = t->getAttribute ("priority");
+        if (priority.length ())
+        {
+          switch (priority[0])
+          {
+          case 'H': high++;   break;
+          case 'M': medium++; break;
+          case 'L': low++;    break;
+          }
+        }
+      }
+    }
+
+    // Scan the current task.
+    bool isOverdue = getDueState (task.getAttribute ("due")) == 2 ? true : false;
+
+    char pri = ' ';
+    std::string priority = task.getAttribute ("priority");
+    if (priority.length ())
+      pri = priority[0];
+
+    // General form is "if there are no more deserving tasks", suppress the nag.
+    std::cout << "# isOverdue = " << (isOverdue ? "true" : "false") << std::endl;
+    std::cout << "# pri = "       << pri                            << std::endl;
+    std::cout << "# overdue = "   << overdue                        << std::endl;
+    std::cout << "# high = "      << high                           << std::endl;
+    std::cout << "# medium = "    << medium                         << std::endl;
+    std::cout << "# low = "       << low                            << std::endl;
+
+    if (isOverdue                                         ) return;
+    if (pri == 'H' && !overdue                            ) return;
+    if (pri == 'M' && !overdue && !high                   ) return;
+    if (pri == 'L' && !overdue && !high && !medium        ) return;
+    if (pri == ' ' && !overdue && !high && !medium && !low) return;
+
+    // All the excuses are made, all that remains is to nag the user.
     std::cout << nagMessage << std::endl;
   }
 }
@@ -372,15 +414,12 @@ int getDueState (const std::string& due)
 
     // rightNow is the current date + time.
     Date rightNow;
+    Date midnight (rightNow.month (), rightNow.day (), rightNow.year ());
 
-    // By performing this conversion, today is set up as the same date, but
-    // midnight.
-    Date today (rightNow.month (), rightNow.day (), rightNow.year ());
-
-    if (dt < today)
+    if (dt < midnight)
       return 2;
 
-    Date nextweek = today + 7 * 86400;
+    Date nextweek = midnight + 7 * 86400;
     if (dt < nextweek)
       return 1;
   }
