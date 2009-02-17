@@ -18,6 +18,7 @@
     sort order, with optional filtering in the configuration file.  This
     means user-defined reports can be written, and the reports currently
     in the configuration file can be renamed.
+  + New algorithm for determining when the "nag" message is displayed.
 
 ------ old releases ------------------------------
 

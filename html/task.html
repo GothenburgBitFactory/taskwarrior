@@ -112,22 +112,8 @@
                       sort order, with optional filtering in the configuration file.  This
                       means user-defined reports can be written, and the reports currently
                       in the configuration file can be renamed.
+                  <li>New algorithm for determining when the "nag" message is displayed.
                 </ul>
-
-                <p>
-                  Note that users of task prior to version 1.5.0 will need to add
-                  the following six lines to their .taskrc file.  See also the
-                  README.1.5.0 file in the distribution for more details.
-                </p>
-
-                <pre><code>report.long.columns=id,project,priority,entry,start,due,age,tags,description
-report.long.sort=due+,priority-,project+
-
-report.list.columns=id,project,priority,due,active,age,description
-report.list.sort=due+,priority-,project+
-
-report.ls.columns=id,project,priority,description
-report.ls.sort=priority-,project+</code></pre>
 
                 <p>
                   (Find out <a href="versions.html">what was new in prior versions</a>)
