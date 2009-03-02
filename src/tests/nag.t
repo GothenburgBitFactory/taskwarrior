@@ -36,7 +36,7 @@ if (open my $fh, '>', 'nag.rc')
   print $fh "data.location=.\n",
             "nag=NAG\n";
   close $fh;
-  ok (-r 'nag.rc', 'Created add.rc');
+  ok (-r 'nag.rc', 'Created nag.rc');
 }
 
 my $setup = "../task rc:nag.rc add due:yesterday one;"
