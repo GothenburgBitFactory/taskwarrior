@@ -47,7 +47,6 @@ my $setup = "../task rc:nag.rc add due:yesterday one;"
           . "../task rc:nag.rc add six;";
 qx{$setup};
 
-my $output = qx{../task rc:nag.rc do 6};
 like (qx{../task rc:nag.rc do 6}, qr/NAG/, 'do pri: -> nag');
 like (qx{../task rc:nag.rc do 5}, qr/NAG/, 'do pri:L -> nag');
 like (qx{../task rc:nag.rc do 4}, qr/NAG/, 'do pri:M-> nag');

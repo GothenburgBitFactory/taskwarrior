@@ -334,20 +334,31 @@ void nag (TDB& tdb, T& task, Config& conf)
   std::string nagMessage = conf.get ("nag", std::string (""));
   if (nagMessage != "")
   {
-    // Load all pending.
+    // Load all pending tasks.
     std::vector <T> pending;
     tdb.allPendingT (pending);
 
     // Counters.
-    int overdue  = 0;
-    int high     = 0;
-    int medium   = 0;
-    int low      = 0;
+    int overdue    = 0;
+    int high       = 0;
+    int medium     = 0;
+    int low        = 0;
+    bool isOverdue = false;
+    char pri       = ' ';
 
     // Scan all pending tasks.
     foreach (t, pending)
     {
-      if (t->getId () != task.getId ())
+      if (t->getId () == task.getId ())
+      {
+        if (getDueState (t->getAttribute ("due")) == 2)
+          isOverdue = true;
+
+        std::string priority = t->getAttribute ("priority");
+        if (priority.length ())
+          pri = priority[0];
+      }
+      else if (t->getStatus () == T::pending)
       {
         if (getDueState (t->getAttribute ("due")) == 2)
           overdue++;
@@ -365,21 +376,15 @@ void nag (TDB& tdb, T& task, Config& conf)
       }
     }
 
-    // Scan the current task.
-    bool isOverdue = getDueState (task.getAttribute ("due")) == 2 ? true : false;
-
-    char pri = ' ';
-    std::string priority = task.getAttribute ("priority");
-    if (priority.length ())
-      pri = priority[0];
-
     // General form is "if there are no more deserving tasks", suppress the nag.
+/*
     std::cout << "# task.isOverdue = " << (isOverdue ? "true" : "false") << std::endl;
     std::cout << "# task.pri = "       << pri                            << std::endl;
     std::cout << "# task.overdue = "   << overdue                        << std::endl;
     std::cout << "# pending.high = "   << high                           << std::endl;
     std::cout << "# pending.medium = " << medium                         << std::endl;
     std::cout << "# pending.low = "    << low                            << std::endl;
+*/
 
     if (isOverdue                                         ) return;
     if (pri == 'H' && !overdue                            ) return;
@@ -735,8 +740,6 @@ void updateShadowFile (TDB& tdb, Config& conf)
       conf.set ("curses", oldCurses);
       conf.set ("color",  oldColor);
     }
-    else
-      throw std::string ("No specified shadow file '") + shadowFile + "'.";
 
     // Optionally display a notification that the shadow file was updated.
     if (conf.get (std::string ("shadow.notify"), false))
