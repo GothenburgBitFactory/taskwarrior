@@ -764,6 +764,32 @@ void Table::optimize (std::string& output)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Combsort11, with O(n log n) average, O(n log n) worst case performance.
+//
+// function combsort11(array input)
+//     gap := input.size
+//
+//     loop until gap <= 1 and swaps = 0
+//         if gap > 1
+//             gap := gap / 1.3
+//             if gap = 10 or gap = 9
+//                 gap := 11
+//             end if
+//         end if
+//
+//         i := 0
+//         swaps := 0
+//
+//         loop until i + gap >= input.size
+//             if input[i] > input[i+gap]
+//                 swap(input[i], input[i+gap])
+//                 swaps := 1
+//             end if
+//             i := i + 1
+//         end loop
+//
+//     end loop
+// end function
+
 #define SWAP \
    { \
      int temp = order[r]; \
@@ -776,7 +802,7 @@ void Table::sort (std::vector <int>& order)
   int gap = order.size ();
   int swaps = 1;
 
-  while (gap > 1 || swaps != 0)
+  while (gap > 1 || swaps > 0)
   {
     if (gap > 1)
     {
@@ -797,10 +823,28 @@ void Table::sort (std::vector <int>& order)
 
         Grid::Cell* left  = mData.byRow (order[r],       mSortColumns[c]);
         Grid::Cell* right = mData.byRow (order[r + gap], mSortColumns[c]);
-        if (left == NULL && right != NULL)
-          SWAP
 
-        if (left && right && *left != *right)
+        // Data takes precedence over missing data.
+        if (left == NULL && right != NULL)
+        {
+          SWAP
+          break;
+        }
+
+        // No data - try comparing the next column.
+        else if (left == NULL && right == NULL)
+        {
+          keepScanning = true;
+        }
+
+        // Identical data - try comparing the next column.
+        else if (left && right && *left == *right)
+        {
+          keepScanning = true;
+        }
+
+        // Differing data - do a proper comparison.
+        else if (left && right && *left != *right)
         {
           switch (mSortOrder[mSortColumns[c]])
           {
@@ -861,24 +905,20 @@ void Table::sort (std::vector <int>& order)
             break;
 
           case ascendingPriority:
-            if (((std::string)*left == ""  && (std::string)*right != "")                             ||
-                ((std::string)*left == "M" && (std::string)*right == "L")                           ||
-                ((std::string)*left == "H" && ((std::string)*right == "L" || (std::string)*right == "M")))
+            if (((std::string)*left == ""  && (std::string)*right  != "")  ||
+                ((std::string)*left == "M" && (std::string)*right  == "L") ||
+                ((std::string)*left == "H" && ((std::string)*right == "L"  || (std::string)*right == "M")))
               SWAP
             break;
 
           case descendingPriority:
-            if (((std::string)*left == "" && (std::string)*right != "")                            ||
+            if (((std::string)*left == ""  && (std::string)*right  != "")                                 ||
                 ((std::string)*left == "L" && ((std::string)*right == "M" || (std::string)*right == "H")) ||
-                ((std::string)*left == "M" && (std::string)*right == "H"))
+                ((std::string)*left == "M" && (std::string)*right  == "H"))
               SWAP
             break;
           }
-
-          break;
         }
-        else
-          keepScanning = true;
       }
 
       ++r;
