@@ -69,8 +69,8 @@ bool generateDueDates (T&, std::vector <Date>&);
 Date getNextRecurrence (Date&, std::string&);
 void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
 void onChangeCallback ();
-std::string runTaskCommand (int, char**, TDB&, Config&, bool gc = true);
-std::string runTaskCommand (std::vector <std::string>&, TDB&, Config&, bool gc = false);
+std::string runTaskCommand (int, char**, TDB&, Config&, bool gc = true, bool shadow = true);
+std::string runTaskCommand (std::vector <std::string>&, TDB&, Config&, bool gc = false, bool shadow = false);
 
 // command.cpp
 void handleAdd (TDB&, T&, Config&);

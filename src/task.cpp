@@ -47,11 +47,6 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-// Globals for exclusive use by callback function.
-static TDB*    gTdb  = NULL;
-static Config* gConf = NULL;
-
-////////////////////////////////////////////////////////////////////////////////
 static void shortUsage (Config& conf)
 {
   Table table;
@@ -289,7 +284,6 @@ int main (int argc, char** argv)
     // Load the config file from the home directory.  If the file cannot be
     // found, offer to create a sample one.
     Config conf;
-    gConf = &conf;
     loadConfFile (argc, argv, conf);
 
     // When redirecting output to a file, do not use color, curses.
@@ -300,11 +294,10 @@ int main (int argc, char** argv)
     }
 
     TDB tdb;
-    gTdb = &tdb;
     std::string dataLocation = expandPath (conf.get ("data.location"));
     tdb.dataDirectory (dataLocation);
 
-    // Set up TDB callback.
+    // Check for silly shadow file settings.
     std::string shadowFile = expandPath (conf.get ("shadow.file"));
     if (shadowFile != "")
     {
@@ -315,8 +308,6 @@ int main (int argc, char** argv)
       if (shadowFile == dataLocation + "/completed.data")
         throw std::string ("Configuration variable 'shadow.file' is set to "
                            "overwrite your completed tasks.  Please change it.");
-
-      tdb.onChange (&onChangeCallback);
     }
 
     std::cout << runTaskCommand (argc, argv, tdb, conf);
@@ -383,12 +374,12 @@ void nag (TDB& tdb, T& task, Config& conf)
       pri = priority[0];
 
     // General form is "if there are no more deserving tasks", suppress the nag.
-    std::cout << "# isOverdue = " << (isOverdue ? "true" : "false") << std::endl;
-    std::cout << "# pri = "       << pri                            << std::endl;
-    std::cout << "# overdue = "   << overdue                        << std::endl;
-    std::cout << "# high = "      << high                           << std::endl;
-    std::cout << "# medium = "    << medium                         << std::endl;
-    std::cout << "# low = "       << low                            << std::endl;
+    std::cout << "# task.isOverdue = " << (isOverdue ? "true" : "false") << std::endl;
+    std::cout << "# task.pri = "       << pri                            << std::endl;
+    std::cout << "# task.overdue = "   << overdue                        << std::endl;
+    std::cout << "# pending.high = "   << high                           << std::endl;
+    std::cout << "# pending.medium = " << medium                         << std::endl;
+    std::cout << "# pending.low = "    << low                            << std::endl;
 
     if (isOverdue                                         ) return;
     if (pri == 'H' && !overdue                            ) return;
@@ -711,51 +702,45 @@ void updateRecurrenceMask (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Using gTdb and gConf, generate a report.
-void onChangeCallback ()
+void updateShadowFile (TDB& tdb, Config& conf)
 {
   try
   {
-    if (gConf && gTdb)
+    // Determine if shadow file is enabled.
+    std::string shadowFile = expandPath (conf.get ("shadow.file"));
+    if (shadowFile != "")
     {
-      // Determine if shadow file is enabled.
-      std::string shadowFile = expandPath (gConf->get ("shadow.file"));
-      if (shadowFile != "")
+      std::string oldCurses = conf.get ("curses");
+      std::string oldColor = conf.get ("color");
+      conf.set ("curses", "off");
+      conf.set ("color",  "off");
+
+      // Run report.  Use shadow.command, using default.command as a fallback
+      // with "list" as a default.
+      std::string command = conf.get ("shadow.command",
+                              conf.get ("default.command", "list"));
+      std::vector <std::string> args;
+      split (args, command, ' ');
+      std::string result = runTaskCommand (args, tdb, conf);
+
+      std::ofstream out (shadowFile.c_str ());
+      if (out.good ())
       {
-        std::string oldCurses = gConf->get ("curses");
-        std::string oldColor = gConf->get ("color");
-        gConf->set ("curses", "off");
-        gConf->set ("color",  "off");
-
-        // Run report.  Use shadow.command, using default.command as a fallback
-        // with "list" as a default.
-        std::string command = gConf->get ("shadow.command",
-                                gConf->get ("default.command", "list"));
-        std::vector <std::string> args;
-        split (args, command, ' ');
-        std::string result = runTaskCommand (args, *gTdb, *gConf);
-
-        std::ofstream out (shadowFile.c_str ());
-        if (out.good ())
-        {
-          out << result;
-          out.close ();
-        }
-        else
-          throw std::string ("Could not write file '") + shadowFile + "'";
-
-        gConf->set ("curses", oldCurses);
-        gConf->set ("color",  oldColor);
+        out << result;
+        out.close ();
       }
       else
-        throw std::string ("No specified shadow file '") + shadowFile + "'.";
+        throw std::string ("Could not write file '") + shadowFile + "'";
 
-      // Optionally display a notification that the shadow file was updated.
-      if (gConf->get (std::string ("shadow.notify"), false))
-        std::cout << "[Shadow file '" << shadowFile << "' updated]" << std::endl;
+      conf.set ("curses", oldCurses);
+      conf.set ("color",  oldColor);
     }
     else
-      throw std::string ("Internal error (TDB/Config).");
+      throw std::string ("No specified shadow file '") + shadowFile + "'.";
+
+    // Optionally display a notification that the shadow file was updated.
+    if (conf.get (std::string ("shadow.notify"), false))
+      std::cout << "[Shadow file '" << shadowFile << "' updated]" << std::endl;
   }
 
   catch (std::string& error)
@@ -775,13 +760,14 @@ std::string runTaskCommand (
   char** argv,
   TDB& tdb,
   Config& conf,
-  bool gc /* = true */)
+  bool gc /* = true */,
+  bool shadow /* = true */)
 {
   std::vector <std::string> args;
   for (int i = 1; i < argc; ++i)
     args.push_back (argv[i]);
 
-  return runTaskCommand (args, tdb, conf, gc);
+  return runTaskCommand (args, tdb, conf, gc, shadow);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -789,7 +775,8 @@ std::string runTaskCommand (
   std::vector <std::string>& args,
   TDB& tdb,
   Config& conf,
-  bool gc /* = false */)
+  bool gc /* = false */,
+  bool shadow /* = false */)
 {
   // If argc == 1 and the default.command configuration variable is set,
   // then use that, otherwise stick with argc/argv.
@@ -810,34 +797,34 @@ std::string runTaskCommand (
 
   std::string out = "";
 
-       if (command == "" && task.getId ())  {                          handleModify         (tdb, task, conf         ); }
-  else if (command == "add")                {                          handleAdd            (tdb, task, conf         ); }
-  else if (command == "done")               {                          handleDone           (tdb, task, conf         ); }
-  else if (command == "export")             {                          handleExport         (tdb, task, conf         ); }
-  else if (command == "projects")           {                    out = handleProjects       (tdb, task, conf         ); }
-  else if (command == "tags")               {                    out = handleTags           (tdb, task, conf         ); }
-  else if (command == "info")               {                    out = handleInfo           (tdb, task, conf         ); }
-  else if (command == "undelete")           {                    out = handleUndelete       (tdb, task, conf         ); }
-  else if (command == "delete")             {                    out = handleDelete         (tdb, task, conf         ); }
-  else if (command == "start")              {                    out = handleStart          (tdb, task, conf         ); }
-  else if (command == "stop")               {                    out = handleStop           (tdb, task, conf         ); }
-  else if (command == "undo")               {                    out = handleUndo           (tdb, task, conf         ); }
-  else if (command == "stats")              {                    out = handleReportStats    (tdb, task, conf         ); }
-  else if (command == "completed")          { if (gc) tdb.gc (); out = handleCompleted      (tdb, task, conf         ); } // TODO replace with Custom
-  else if (command == "summary")            { if (gc) tdb.gc (); out = handleReportSummary  (tdb, task, conf         ); }
-  else if (command == "next")               { if (gc) tdb.gc (); out = handleReportNext     (tdb, task, conf         ); } // TODO replace with Custom
-  else if (command == "history")            { if (gc) tdb.gc (); out = handleReportHistory  (tdb, task, conf         ); }
-  else if (command == "ghistory")           { if (gc) tdb.gc (); out = handleReportGHistory (tdb, task, conf         ); }
-  else if (command == "calendar")           { if (gc) tdb.gc (); out = handleReportCalendar (tdb, task, conf         ); }
-  else if (command == "active")             { if (gc) tdb.gc (); out = handleReportActive   (tdb, task, conf         ); } // TODO replace with Custom
-  else if (command == "overdue")            { if (gc) tdb.gc (); out = handleReportOverdue  (tdb, task, conf         ); } // TODO replace with Custom
-  else if (command == "oldest")             { if (gc) tdb.gc (); out = handleReportOldest   (tdb, task, conf         ); } // TODO replace with Custom
-  else if (command == "newest")             { if (gc) tdb.gc (); out = handleReportNewest   (tdb, task, conf         ); } // TODO replace with Custom
-  else if (command == "colors")             {                    out = handleColor          (           conf         ); }
-  else if (command == "version")            {                    out = handleVersion        (           conf         ); }
-  else if (command == "help")               {                          longUsage            (           conf         ); }
-  else if (isCustomReport (command))        { if (gc) tdb.gc (); out = handleCustomReport   (tdb, task, conf, command); } // New Custom reports
-  else                                      {                          shortUsage           (           conf         ); }
+       if (command == "" && task.getId ())  {                          handleModify         (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "add")                {                          handleAdd            (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "done")               {                          handleDone           (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "export")             {                          handleExport         (tdb, task, conf         );                                           }
+  else if (command == "projects")           {                    out = handleProjects       (tdb, task, conf         );                                           }
+  else if (command == "tags")               {                    out = handleTags           (tdb, task, conf         );                                           }
+  else if (command == "info")               {                    out = handleInfo           (tdb, task, conf         );                                           }
+  else if (command == "undelete")           {                    out = handleUndelete       (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "delete")             {                    out = handleDelete         (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "start")              {                    out = handleStart          (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "stop")               {                    out = handleStop           (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "undo")               {                    out = handleUndo           (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "stats")              {                    out = handleReportStats    (tdb, task, conf         );                                           }
+  else if (command == "completed")          { if (gc) tdb.gc (); out = handleCompleted      (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
+  else if (command == "summary")            { if (gc) tdb.gc (); out = handleReportSummary  (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "next")               { if (gc) tdb.gc (); out = handleReportNext     (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
+  else if (command == "history")            { if (gc) tdb.gc (); out = handleReportHistory  (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "ghistory")           { if (gc) tdb.gc (); out = handleReportGHistory (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "calendar")           { if (gc) tdb.gc (); out = handleReportCalendar (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
+  else if (command == "active")             { if (gc) tdb.gc (); out = handleReportActive   (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
+  else if (command == "overdue")            { if (gc) tdb.gc (); out = handleReportOverdue  (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
+  else if (command == "oldest")             { if (gc) tdb.gc (); out = handleReportOldest   (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
+  else if (command == "newest")             { if (gc) tdb.gc (); out = handleReportNewest   (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
+  else if (command == "colors")             {                    out = handleColor          (           conf         );                                           }
+  else if (command == "version")            {                    out = handleVersion        (           conf         );                                           }
+  else if (command == "help")               {                          longUsage            (           conf         );                                           }
+  else if (isCustomReport (command))        { if (gc) tdb.gc (); out = handleCustomReport   (tdb, task, conf, command); if (shadow) updateShadowFile (tdb, conf); } // New Custom reports
+  else                                      {                          shortUsage           (           conf         );                                           }
 
   return out;
 }

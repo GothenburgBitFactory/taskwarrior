@@ -51,21 +51,17 @@ public:
   int gc                ();
   int nextId            ();
 
-  void onChange         (void (*)());
-
 private:
   bool lock             (FILE*) const;
   bool overwritePending (std::vector <T>&);
   bool writePending     (const T&);
   bool writeCompleted   (const T&);
   bool readLockedFile   (const std::string&, std::vector <std::string>&) const;
-  void dbChanged        ();
 
 private:
   std::string mPendingFile;
   std::string mCompletedFile;
   int mId;
-  std::vector <void (*)()> mOnChange;
 };
 
 #endif

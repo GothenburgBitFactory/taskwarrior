@@ -308,7 +308,6 @@ bool TDB::overwritePending (std::vector <T>& all)
       fputs (it->compose ().c_str (), out);
 
     fclose (out);
-    dbChanged ();
     return true;
   }
 
@@ -329,7 +328,6 @@ bool TDB::writePending (const T& t)
     fputs (t.compose ().c_str (), out);
 
     fclose (out);
-    dbChanged ();
     return true;
   }
 
@@ -350,8 +348,6 @@ bool TDB::writeCompleted (const T& t)
     fputs (t.compose ().c_str (), out);
 
     fclose (out);
-    // Note: No call to dbChanged here because this call never occurs by itself.
-    //       It is always accompanied by an overwritePending call.
     return true;
   }
 
@@ -433,22 +429,6 @@ int TDB::gc ()
 int TDB::nextId ()
 {
   return mId++;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB::onChange (void (*callback)())
-{
-  if (callback)
-    mOnChange.push_back (callback);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Iterate over callbacks.
-void TDB::dbChanged ()
-{
-  foreach (i, mOnChange)
-    if (*i)
-      (**i) ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
