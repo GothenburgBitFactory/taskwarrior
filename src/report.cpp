@@ -1070,7 +1070,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("Year");
   table.addColumn ("Month");
-  table.addColumn ("Added/Completed/Deleted");
+  table.addColumn ("Number Added/Completed/Deleted");
 
   if (conf.get ("color", true))
   {
