@@ -63,7 +63,7 @@ like ($output, qr/Status\s+Pending\n/, 'add Pending');
 
 # Cleanup.
 unlink 'pending.data';
-ok (!-r 'pendind.data', 'Removed pending.data');
+ok (!-r 'pending.data', 'Removed pending.data');
 
 unlink 'add.rc';
 ok (!-r 'add.rc', 'Removed add.rc');

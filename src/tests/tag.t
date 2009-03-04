@@ -40,7 +40,6 @@ if (open my $fh, '>', 'tag.rc')
 
 # Add task with tags.
 my $output = qx{../task rc:tag.rc add +1 This +2 is a test +3; ../task rc:tag.rc info 1};
-#like ($output, qr/^Tags\s+1 2 3$/ms, 'tags found');
 like ($output, qr/^Tags\s+1 2 3\n/m, 'tags found');
 
 # Remove tags.
@@ -65,7 +64,7 @@ unlike ($output, qr/^Tags/m, '-missing NOP');
 
 # Cleanup.
 unlink 'pending.data';
-ok (!-r 'pendind.data', 'Removed pending.data');
+ok (!-r 'pending.data', 'Removed pending.data');
 
 unlink 'tag.rc';
 ok (!-r 'tag.rc', 'Removed tag.rc');

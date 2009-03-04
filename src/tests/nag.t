@@ -56,7 +56,7 @@ ok (qx{../task rc:nag.rc do 1} !~ qr/NAG/, 'do due:yesterday -> no nag');
 
 # Cleanup.
 unlink 'pending.data';
-ok (!-r 'pendind.data', 'Removed pending.data');
+ok (!-r 'pending.data', 'Removed pending.data');
 
 unlink 'nag.rc';
 ok (!-r 'nag.rc', 'Removed nag.rc');

@@ -53,7 +53,7 @@ like ($output, qr/three.*one.*two/msi, 'list did not hang after pri:H on 1');
 
 # Cleanup.
 unlink 'pending.data';
-ok (!-r 'pendind.data', 'Removed pending.data');
+ok (!-r 'pending.data', 'Removed pending.data');
 
 unlink 'bug_sort.rc';
 ok (!-r 'bug_sort.rc', 'Removed bug_sort.rc');
