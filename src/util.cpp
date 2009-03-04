@@ -29,10 +29,12 @@
 #include <string>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <pwd.h>
+#include <errno.h>
 #include "Date.h"
 #include "Table.h"
 #include "task.h"
@@ -335,20 +337,20 @@ std::string expandPath (const std::string& in)
 #ifdef SOLARIS
 int flock (int fd, int operation)
 {
-  struct flock flock;
+  struct flock fl;
 
   switch (operation & ~LOCK_NB)
   {
   case LOCK_SH:
-    flock.l_type = F_RDLCK;
+    fl.l_type = F_RDLCK;
     break;
 
   case LOCK_EX:
-    flock.l_type = F_WRLCK;
+    fl.l_type = F_WRLCK;
     break;
 
   case LOCK_UN:
-    flock.l_type = F_UNLCK;
+    fl.l_type = F_UNLCK;
     break;
 
   default:
@@ -356,11 +358,11 @@ int flock (int fd, int operation)
     return -1;
   }
 
-  flock.l_whence = 0;
-  flock.l_start  = 0;
-  flock.l_len    = 0;
+  fl.l_whence = 0;
+  fl.l_start  = 0;
+  fl.l_len    = 0;
 
-  return fcntl (fd, (operation & LOCK_NB) ? F_SETLK : F_SETLKW, &flock);
+  return fcntl (fd, (operation & LOCK_NB) ? F_SETLK : F_SETLKW, &fl);
 }
 #endif
 
