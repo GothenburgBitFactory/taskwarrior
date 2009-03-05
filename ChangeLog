@@ -24,6 +24,7 @@
     and shadow files.
   + Fixed bug with the task sort alogrithm, which led to an unstable sequence
     when there were only a handful of tasks.
+  + Performance enhanced by eliminating unnecessary sorting.
 
 ------ old releases ------------------------------
 

@@ -1,7 +1,12 @@
 
 # This is a full BNF grammar for the task command line.  It is intended that a
 # future release of task will incorporate a complete lexer/parser implementing
-# this grammar.
+# this grammar, which will allow for more sophisticated command lines, for
+# example:
+#
+#    task delete 1 2 4-7
+#    task add pri:H pro:X -- pro pri 1 ///
+#
 
 command     ::= simple_command
               | filter_command filter?
