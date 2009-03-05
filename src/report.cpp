@@ -189,7 +189,10 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
   table.setColumnJustification (1, Table::left);
   table.setColumnJustification (2, Table::left);
 
-  table.sortOn (0, Table::ascendingDate);
+  // Note: There is deliberately no sorting.  The original sorting was on the
+  //       end date.  Tasks are appended to completed.data naturally sorted by
+  //       the end date, so that sequence is assumed to remain unchanged, and
+  //       relied upon here.
 
   // Iterate over each task, and apply selection criteria.
   for (unsigned int i = 0; i < tasks.size (); ++i)
