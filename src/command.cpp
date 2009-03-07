@@ -113,7 +113,7 @@ std::string handleProjects (TDB& tdb, T& task, Config& conf)
     table.addColumn ("Project");
     table.addColumn ("Tasks");
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
@@ -316,7 +316,7 @@ std::string handleVersion (Config& conf)
   table.addColumn ("Config variable");
   table.addColumn ("Value");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -345,9 +345,13 @@ std::string handleVersion (Config& conf)
 
   out << "Copyright (C) 2006 - 2009, P. Beckingham."
       << std::endl
-      << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, PACKAGE) : PACKAGE)
+      << ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+           ? Text::colorize (Text::bold, Text::nocolor, PACKAGE)
+           : PACKAGE)
       << " "
-      << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, VERSION) : VERSION)
+      << ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+           ? Text::colorize (Text::bold, Text::nocolor, VERSION)
+           : VERSION)
       << std::endl
       << disclaimer.render ()
       << std::endl
@@ -363,6 +367,11 @@ std::string handleVersion (Config& conf)
     "data.location dateformat default.command default.priority defaultwidth due "
     "monthsperline nag newest next oldest project shadow.command shadow.file "
     "shadow.notify";
+
+  // This configuration variable is supported, but not documented.  It exists
+  // so that unit tests can force color to be on even when the output from task
+  // is redirected to a file, or stdout is not a tty.
+  recognized += " _forcecolor";
 
   std::vector <std::string> unrecognized;
   foreach (i, all)
@@ -696,7 +705,7 @@ std::string handleColor (Config& conf)
 {
   std::stringstream out;
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     out << optionalBlankLine (conf) << "Foreground" << std::endl
         << "           "

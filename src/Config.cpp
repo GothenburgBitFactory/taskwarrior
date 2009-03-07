@@ -36,9 +36,14 @@
 #include "Config.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+// These are default (but overridable) reports.  These entries are necessary
+// because these three reports were converted from hard-coded reports to custom
+// reports, and therefore need these config file entries.  However, users are
+// already used to seeing these three reports, but do not have these entries.
+// The choice was a) make users edit their .taskrc files, b) write a .taskrc
+// upgrade program to make the change, or c) this.
 Config::Config ()
 {
-  // These are default (but overridable) reports.
   (*this)["report.long.columns"]  = "id,project,priority,entry,start,due,age,tags,description";
   (*this)["report.long.sort"]     = "due+,priority-,project+";
   (*this)["report.list.columns"]  = "id,project,priority,due,active,age,description";

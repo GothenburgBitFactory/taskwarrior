@@ -172,7 +172,7 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Project");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -209,7 +209,7 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 1, refTask.getAttribute ("project"));
     table.addCell (row, 2, refTask.getDescription ());
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
@@ -261,7 +261,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Name");
   table.addColumn ("Value");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -359,7 +359,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
           Date nextweek = now + 7 * 86400;
           imminent = dt < nextweek ? true : false;
 
-          if (conf.get ("color", true))
+          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
           {
             if (overdue)
               table.setCellFg (row, 1, Text::colorCode (conf.get ("color.overdue", "red")));
@@ -513,7 +513,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Complete");
   table.addColumn ("0%                        100%");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -550,7 +550,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
       int completedBar = (c * barWidth) / (c + p);
 
       std::string bar;
-      if (conf.get ("color", true))
+      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
       {
         bar = "\033[42m";
         for (int b = 0; b < completedBar; ++b)
@@ -654,7 +654,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Age");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -729,7 +729,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 5, age);
     table.addCell (row, 6, refTask.getDescription ());
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
@@ -879,7 +879,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Deleted");
   table.addColumn ("Net");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -942,7 +942,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
     }
 
     table.addCell (row, 5, net);
-    if (conf.get ("color", true) && net)
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false) && net)
       table.setCellFg (row, 5, net > 0 ? Text::red: Text::green);
   }
 
@@ -952,7 +952,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
     row = table.addRow ();
 
     table.addCell (row, 1, "Average");
-    if (conf.get ("color", true)) table.setRowFg (row, Text::bold);
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) table.setRowFg (row, Text::bold);
     table.addCell (row, 2, totalAdded / (table.rowCount () - 2));
     table.addCell (row, 3, totalCompleted / (table.rowCount () - 2));
     table.addCell (row, 4, totalDeleted / (table.rowCount () - 2));
@@ -1075,7 +1075,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Month");
   table.addColumn ("Number Added/Completed/Deleted");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1131,7 +1131,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
       unsigned int deletedBar   = (widthOfBar *   deletedGroup[i->first]) / maxLine;
 
       std::string bar = "";
-      if (conf.get ("color", true))
+      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
       {
         char number[24];
         std::string aBar = "";
@@ -1190,7 +1190,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
         << table.render ()
         << std::endl;
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
       out << "Legend: "
           << Text::colorize (Text::black, Text::on_red, "added")
           << ", "
@@ -1232,7 +1232,7 @@ std::string renderMonths (
     table.addColumn ("Fr");
     table.addColumn ("Sa");
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       table.setColumnUnderline (i + 1);
       table.setColumnUnderline (i + 2);
@@ -1302,7 +1302,7 @@ std::string renderMonths (
 
       table.addCell (row, thisCol, d);
 
-      if (conf.get ("color", true)         &&
+      if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
           today.day ()   == d              &&
           today.month () == months.at (c)  &&
           today.year ()  == years.at (c))
@@ -1313,7 +1313,7 @@ std::string renderMonths (
       {
         Date due (::atoi (it->getAttribute ("due").c_str ()));
 
-        if (conf.get ("color", true)      &&
+        if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
             due.day ()   == d             &&
             due.month () == months.at (c) &&
             due.year ()  == years.at (c))
@@ -1455,7 +1455,7 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Due");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1511,7 +1511,7 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
       table.addCell (row, 3, due);
       table.addCell (row, 4, refTask.getDescription ());
 
-      if (conf.get ("color", true))
+      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
       {
         Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
         Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
@@ -1576,7 +1576,7 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Due");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1625,7 +1625,7 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
           table.addCell (row, 3, due);
           table.addCell (row, 4, refTask.getDescription ());
 
-          if (conf.get ("color", true))
+          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
           {
             Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
             Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
@@ -1693,7 +1693,7 @@ std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Age");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1769,7 +1769,7 @@ std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 5, age);
     table.addCell (row, 6, refTask.getDescription ());
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
@@ -1840,7 +1840,7 @@ std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Age");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1917,7 +1917,7 @@ std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 5, age);
     table.addCell (row, 6, refTask.getDescription ());
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
@@ -2449,7 +2449,7 @@ std::string handleCustomReport (
 
     // Common to all columns.
     // Add underline.
-    if (conf.get (std::string ("color"), true))
+    if (conf.get (std::string ("color"), true) || conf.get (std::string ("_forcecolor"), false))
       table.setColumnUnderline (columnCount);
     else
       table.setTableDashedUnderline ();
@@ -2514,7 +2514,7 @@ std::string handleCustomReport (
       }
     }
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       Text::color fg = Text::colorCode (tasks[row].getAttribute ("fg"));
       Text::color bg = Text::colorCode (tasks[row].getAttribute ("bg"));

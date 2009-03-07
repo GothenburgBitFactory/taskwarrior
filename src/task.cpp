@@ -290,7 +290,9 @@ int main (int argc, char** argv)
     if (!isatty (fileno (stdout)))
     {
       conf.set ("curses", "off");
-      conf.set ("color",  "off");
+
+      if (! conf.get (std::string ("_forcecolor"), false))
+        conf.set ("color",  "off");
     }
 
     TDB tdb;
