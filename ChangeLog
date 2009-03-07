@@ -25,6 +25,8 @@
   + Fixed bug with the task sort alogrithm, which led to an unstable sequence
     when there were only a handful of tasks.
   + Performance enhanced by eliminating unnecessary sorting.
+  + Task now has a large (and growing) test suite and bug regression tests
+    to help ensure higher quality releases.
 
 ------ old releases ------------------------------
 
