@@ -468,7 +468,7 @@ void T::parse (const std::string& line)
     break;
 
   default:
-    throw std::string ();
+    throw std::string ("Unrecognized task file format.");
     break;
   }
 }

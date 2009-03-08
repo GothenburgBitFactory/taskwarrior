@@ -14,14 +14,12 @@ debug_default="yes"
 AC_ARG_ENABLE(debug, [  --enable-debug=[no/yes] turn on debugging
                        [default=$debug_default]],, enable_debug=$debug_default)
 # Yes, shell scripts can be used
-if test "x$enable_debug" = "xyes"; then
-CFLAGS="$CFLAGS -Wall -pedantic -ggdb3 -DDEBUG"
-CXXFLAGS="$CFLAGS -Wall -pedantic -ggdb3 -DDEBUG"
-AC_MSG_RESULT(yes)
+if test "$enable_debug" = "yes"; then
+  CXXFLAGS="$CFLAGS -Wall -pedantic -ggdb3 -DDEBUG"
+  AC_MSG_RESULT(yes)
 else
-CFLAGS="$CFLAGS -O3"
-CXXFLAGS="$CFLAGS -O3"
-AC_MSG_RESULT(no)
+  CXXFLAGS="$CFLAGS -O3"
+  AC_MSG_RESULT(no)
 fi
 
 # Check for OS.
