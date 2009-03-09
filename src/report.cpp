@@ -1205,7 +1205,11 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   else
     out << "No tasks." << std::endl;
 
-  return out.str ();
+  // Eliminate redundant color codes.
+  std::string optimized = out.str ();
+  table.optimize (optimized);
+
+  return optimized;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

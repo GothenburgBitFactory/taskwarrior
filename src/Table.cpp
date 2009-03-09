@@ -742,7 +742,7 @@ int Table::columnCount ()
 //       ^[[31mName^[[0m ^[[31mValue^[[0m -> ^[[31mName Value^[[0m
 //
 // This method is a work in progress.
-void Table::optimize (std::string& output)
+void Table::optimize (std::string& output) const
 {
 /*
   int start = output.length ();
@@ -785,14 +785,32 @@ void Table::optimize (std::string& output)
     'task ghistory'       in  0 seconds
 
   Much better.  Table::optimize is currently disabled.
+*/
 
   size_t i = 0;
-  while ((i = output.find (" \n")) != std::string::npos)
+  while ((i = output.find ("        \n")) != std::string::npos)
+  {
+    output = output.substr (0, i) +
+             output.substr (i + 8, std::string::npos);
+  }
+
+  while ((i = output.find ("    \n")) != std::string::npos)
+  {
+    output = output.substr (0, i) +
+             output.substr (i + 4, std::string::npos);
+  }
+
+  while ((i = output.find ("  \n")) != std::string::npos)
   {
     output = output.substr (0, i) +
              output.substr (i + 2, std::string::npos);
   }
-*/
+
+  while ((i = output.find (" \n")) != std::string::npos)
+  {
+    output = output.substr (0, i) +
+             output.substr (i + 1, std::string::npos);
+  }
 
 /*
   std::cout << int ((100 * (start - output.length ()) / start))
@@ -1066,8 +1084,6 @@ const std::string Table::render ()
       output += "\n";
   }
 
-  // Eliminate redundant color codes.
-  optimize (output);
   return output;
 }
 

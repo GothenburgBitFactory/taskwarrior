@@ -85,6 +85,7 @@ public:
            int rowCount ();
            int columnCount ();
            const std::string render ();
+           void optimize (std::string&) const;
 
 private:
            std::string getCell (const int, const int);
@@ -101,7 +102,6 @@ private:
            const std::string formatHeader (const int, const int, const int);
            const std::string formatHeaderDashedUnderline (const int, const int, const int);
            void formatCell (const int, const int, const int, const int, std::vector <std::string>&, std::string&);
-           void optimize (std::string&);
            void sort (std::vector <int>&);
            void clean (std::string&);
 

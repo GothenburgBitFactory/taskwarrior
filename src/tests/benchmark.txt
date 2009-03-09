@@ -1,0 +1,40 @@
+3/8/2009
+  Before:
+    Table::render
+      26.1792
+      16.67
+      18.9697
+      28.6328
+       1.86553
+       0.00044
+       0.000319
+      ---------
+      92.317989
+
+  After Table::optimize removed:
+    Table::render
+       0.146177
+       0.145928
+       0.184444
+       0.014784
+       0.000512
+       0.000267
+      ---------
+       0.492112
+
+  Speedup:
+      92.317989 / 0.492112 = 187.6
+
+3/8/2009
+  New benchmark:
+    1..4
+    ok 1 - Created bench.rc
+    # start=1236558734
+    # 1000 tasks added in 3 seconds
+    # 600 tasks altered in 29 seconds
+    # stop=1236558924
+    # total=190
+    ok 2 - Removed pending.data
+    ok 3 - Removed completed.data
+    ok 4 - Removed bench.rc
+
