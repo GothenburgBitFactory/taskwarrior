@@ -2262,7 +2262,7 @@ std::string handleCustomReport (
 
   // Load all pending tasks.
   std::vector <T> tasks;
-  tdb.allPendingT (tasks);
+  tdb.pendingT (tasks);
   handleRecurrence (tdb, tasks);
 
   // Apply filters.

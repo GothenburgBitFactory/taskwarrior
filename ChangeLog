@@ -27,6 +27,7 @@
   + Performance enhanced by eliminating unnecessary sorting.
   + Task now has a large (and growing) test suite and bug regression tests
     to help ensure higher quality releases.
+  + Fixed bug that caused performance hit during table rendering.
 
 ------ old releases ------------------------------
 

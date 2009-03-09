@@ -749,12 +749,50 @@ void Table::optimize (std::string& output)
 */
 
   // \s\n -> \n
+/*
+  Well, how about that!
+
+  The benchmark.t unit test adds a 1000 tasks, fiddles with some of them, then
+  runs a series of reports.  The results are timed, and look like this:
+
+    1000 tasks added      in  3 seconds
+    600 tasks altered     in 32 seconds
+    'task ls'             in 26 seconds
+    'task list'           in 17 seconds
+    'task list pri:H'     in 19 seconds
+    'task list +tag'      in  0 seconds
+    'task list project_A' in  0 seconds
+    'task long'           in 29 seconds
+    'task completed'      in  2 seconds
+    'task history'        in  0 seconds
+    'task ghistory'       in  0 seconds
+
+  This performance is terrible.  To identify the worst offender, Various Timer
+  objects were added in Table::render, assuming that table sorting is the major
+  bottleneck. But no, it is Table::optimize that is the problem.  After
+  commenting out the code below, the results are now:
+
+    1000 tasks added      in  3 seconds
+    600 tasks altered     in 29 seconds
+    'task ls'             in  0 seconds
+    'task list'           in  0 seconds
+    'task list pri:H'     in  1 seconds
+    'task list +tag'      in  0 seconds
+    'task list project_A' in  0 seconds
+    'task long'           in  0 seconds
+    'task completed'      in  0 seconds
+    'task history'        in  0 seconds
+    'task ghistory'       in  0 seconds
+
+  Much better.  Table::optimize is currently disabled.
+
   size_t i = 0;
   while ((i = output.find (" \n")) != std::string::npos)
   {
     output = output.substr (0, i) +
-             output.substr (i + 1, std::string::npos);
+             output.substr (i + 2, std::string::npos);
   }
+*/
 
 /*
   std::cout << int ((100 * (start - output.length ()) / start))
