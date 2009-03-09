@@ -736,19 +736,14 @@ int Table::columnCount ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Removes extraneous output characters, such as:
-//   - spaces followed by a newline is collapsed to just a newline, if there is
-//     no Bg color.
 //   - removal of redundant color codes:
 //       ^[[31mName^[[0m ^[[31mValue^[[0m -> ^[[31mName Value^[[0m
 //
 // This method is a work in progress.
 void Table::optimize (std::string& output) const
 {
-/*
-  int start = output.length ();
-*/
+//  int start = output.length ();
 
-  // \s\n -> \n
 /*
   Well, how about that!
 
@@ -770,7 +765,7 @@ void Table::optimize (std::string& output) const
   This performance is terrible.  To identify the worst offender, Various Timer
   objects were added in Table::render, assuming that table sorting is the major
   bottleneck. But no, it is Table::optimize that is the problem.  After
-  commenting out the code below, the results are now:
+  commenting out this method, the results are now:
 
     1000 tasks added      in  3 seconds
     600 tasks altered     in 29 seconds
@@ -784,38 +779,11 @@ void Table::optimize (std::string& output) const
     'task history'        in  0 seconds
     'task ghistory'       in  0 seconds
 
-  Much better.  Table::optimize is currently disabled.
+  Much better.
 */
 
-  size_t i = 0;
-  while ((i = output.find ("        \n")) != std::string::npos)
-  {
-    output = output.substr (0, i) +
-             output.substr (i + 8, std::string::npos);
-  }
-
-  while ((i = output.find ("    \n")) != std::string::npos)
-  {
-    output = output.substr (0, i) +
-             output.substr (i + 4, std::string::npos);
-  }
-
-  while ((i = output.find ("  \n")) != std::string::npos)
-  {
-    output = output.substr (0, i) +
-             output.substr (i + 2, std::string::npos);
-  }
-
-  while ((i = output.find (" \n")) != std::string::npos)
-  {
-    output = output.substr (0, i) +
-             output.substr (i + 1, std::string::npos);
-  }
-
-/*
-  std::cout << int ((100 * (start - output.length ()) / start))
-            << "%" << std::endl;
-*/
+//  std::cout << int ((100 * (start - output.length ()) / start))
+//            << "%" << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1077,11 +1045,17 @@ const std::string Table::render ()
           else
             output += blanks[col];
 
+        // Trim right.
+        output.erase (output.find_last_not_of (" ") + 1);
         output += "\n";
       }
     }
     else
+    {
+      // Trim right.
+      output.erase (output.find_last_not_of (" ") + 1);
       output += "\n";
+    }
   }
 
   return output;

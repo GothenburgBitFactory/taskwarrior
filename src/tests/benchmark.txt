@@ -29,11 +29,11 @@
   New benchmark:
     1..4
     ok 1 - Created bench.rc
-    # start=1236558734
+    # start=1236565862
     # 1000 tasks added in 3 seconds
-    # 600 tasks altered in 29 seconds
-    # stop=1236558924
-    # total=190
+    # 600 tasks altered in 28 seconds
+    # stop=1236566048
+    # total=186
     ok 2 - Removed pending.data
     ok 3 - Removed completed.data
     ok 4 - Removed bench.rc

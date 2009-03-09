@@ -1205,11 +1205,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   else
     out << "No tasks." << std::endl;
 
-  // Eliminate redundant color codes.
-  std::string optimized = out.str ();
-  table.optimize (optimized);
-
-  return optimized;
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2266,7 +2262,7 @@ std::string handleCustomReport (
 
   // Load all pending tasks.
   std::vector <T> tasks;
-  tdb.pendingT (tasks);
+  tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
 
   // Apply filters.

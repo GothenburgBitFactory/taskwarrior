@@ -44,7 +44,6 @@ my $setup = "../task rc:bug_sort.rc add one;"
 qx{$setup};
 
 my $output = qx{../task rc:bug_sort.rc list};
-#diag ($output);
 like ($output, qr/three.*(?:one.*two|two.*one)/msi, 'list did not hang');
 
 qx{../task rc:bug_sort.rc 1 priority:H};
