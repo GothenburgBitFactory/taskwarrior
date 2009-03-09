@@ -475,12 +475,20 @@ void parse (
         if (isCommand (l) && validCommand (l))
           command = l;
         else
-          descCandidate += arg;
+        {
+          if (descCandidate.length ())
+            descCandidate += " ";
+          descCandidate += std::string (arg);
+        }
       }
 
       // Anything else is just considered description.
       else
-        descCandidate += std::string (arg) + " ";
+      {
+        if (descCandidate.length ())
+          descCandidate += " ";
+        descCandidate += std::string (arg);
+      }
     }
   }
 
