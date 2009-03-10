@@ -325,6 +325,21 @@ ID Project Pri Description
                   whenever the shadow file is updated by some task command.
                 </dd>
 
+                <dt>locking</dt>
+                <dd>
+                  <p>
+                    Determines whether task uses file locking when accessing the pending.data
+                    and completed.data files.  Default to "on".  Solaris users who store
+                    the task data files on an NFS mount may need to set locking to "off".
+                  </p>
+
+                  <p>
+                    Note that setting this value to "off" is dangerous.  It means that
+                    another program may write to the task.pending file when task is
+                    attempting to do the same.
+                  </p>
+                </dd>
+
                 <p>
                   Note that the command:
                 </p>

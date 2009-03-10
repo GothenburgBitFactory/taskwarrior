@@ -38,6 +38,7 @@ TDB::TDB ()
 : mPendingFile ("")
 , mCompletedFile ("")
 , mId (1)
+, mNoLock (false)
 {
 }
 
@@ -289,6 +290,9 @@ bool TDB::modifyT (const T& t)
 ////////////////////////////////////////////////////////////////////////////////
 bool TDB::lock (FILE* file) const
 {
+  if (mNoLock)
+    return true;
+
   return flock (fileno (file), LOCK_EX) ? false : true;
 }
 
@@ -300,8 +304,9 @@ bool TDB::overwritePending (std::vector <T>& all)
   if ((out = fopen (mPendingFile.c_str (), "w")))
   {
     int retry = 0;
-    while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
-      delay (0.25);
+    if (!mNoLock)
+      while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
+        delay (0.1);
 
     std::vector <T>::iterator it;
     for (it = all.begin (); it != all.end (); ++it)
@@ -322,8 +327,9 @@ bool TDB::writePending (const T& t)
   if ((out = fopen (mPendingFile.c_str (), "a")))
   {
     int retry = 0;
-    while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
-      delay (0.25);
+    if (!mNoLock)
+      while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
+        delay (0.1);
 
     fputs (t.compose ().c_str (), out);
 
@@ -342,8 +348,9 @@ bool TDB::writeCompleted (const T& t)
   if ((out = fopen (mCompletedFile.c_str (), "a")))
   {
     int retry = 0;
-    while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
-      delay (0.25);
+    if (!mNoLock)
+      while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
+        delay (0.1);
 
     fputs (t.compose ().c_str (), out);
 
@@ -367,8 +374,9 @@ bool TDB::readLockedFile (
     if ((in = fopen (file.c_str (), "r")))
     {
       int retry = 0;
-      while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
-        delay (0.25);
+      if (!mNoLock)
+        while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
+          delay (0.1);
 
       char line[T_LINE_MAX];
       while (fgets (line, T_LINE_MAX, in))
@@ -429,6 +437,12 @@ int TDB::gc ()
 int TDB::nextId ()
 {
   return mId++;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::noLock ()
+{
+  mNoLock = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

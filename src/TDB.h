@@ -51,6 +51,8 @@ public:
   int gc                ();
   int nextId            ();
 
+  void noLock           ();
+
 private:
   bool lock             (FILE*) const;
   bool overwritePending (std::vector <T>&);
@@ -62,6 +64,7 @@ private:
   std::string mPendingFile;
   std::string mCompletedFile;
   int mId;
+  bool mNoLock;
 };
 
 #endif

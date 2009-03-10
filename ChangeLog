@@ -33,6 +33,8 @@
     recurring tasks.  This column can be added to any custom report.
   + Added support for "color.recurring" configuration variable which
     specifies the color of recurring tasks.
+  + Added support for "locking" configuration variable that controls whether
+    file locking is used.
 
 ------ old releases ------------------------------
 

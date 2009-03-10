@@ -299,6 +299,10 @@ int main (int argc, char** argv)
     std::string dataLocation = expandPath (conf.get ("data.location"));
     tdb.dataDirectory (dataLocation);
 
+    // Allow user override of file locking.  Solaris/NFS machines may want this.
+    if (! conf.get ("locking", true))
+      tdb.noLock ();
+
     // Check for silly shadow file settings.
     std::string shadowFile = expandPath (conf.get ("shadow.file"));
     if (shadowFile != "")

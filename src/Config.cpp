@@ -132,6 +132,7 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "color=on\n");
         fprintf (out, "due=7\n");
         fprintf (out, "nag=You have higher priority tasks.\n");
+        fprintf (out, "locking=on\n");
 
         fprintf (out, "color.overdue=bold_red\n");
         fprintf (out, "color.due=bold_yellow\n");
@@ -222,11 +223,13 @@ bool Config::get (const std::string& key, bool default_value)
   {
     std::string value = lowerCase ((*this)[key]);
 
-    if (value == "t"    ||
-        value == "true" ||
-        value == "1"    ||
-        value == "yes"  ||
-        value == "on")
+    if (value == "t"      ||
+        value == "true"   ||
+        value == "1"      ||
+        value == "yes"    ||
+        value == "on"     ||
+        value == "enable" ||
+        value == "enabled")
       return true;
 
     return false;
