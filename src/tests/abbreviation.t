@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 22;
 
 # Create the rc file.
 if (open my $fh, '>', 'abbrev.rc')
@@ -38,7 +38,7 @@ if (open my $fh, '>', 'abbrev.rc')
   ok (-r 'abbrev.rc', 'Created abbrev.rc');
 }
 
-# Test the add command.
+# Test the priority attribute abbrevations.
 qx{../task rc:abbrev.rc add priority:H with};
 qx{../task rc:abbrev.rc add without};
 
@@ -65,6 +65,28 @@ unlike ($output, qr/\bwithout\b/, 'prio:H without');
 $output = qx{../task rc:abbrev.rc list pri:H};
 like   ($output, qr/\bwith\b/,    'pri:H with');
 unlike ($output, qr/\bwithout\b/, 'pri:H without');
+
+# Test the version command abbreviations.
+$output = qx{../task version};
+like ($output, qr/ABSOLUTELY NO WARRANTY/, 'version');
+
+$output = qx{../task versio};
+like ($output, qr/ABSOLUTELY NO WARRANTY/, 'versio');
+
+$output = qx{../task versi};
+like ($output, qr/ABSOLUTELY NO WARRANTY/, 'versi');
+
+$output = qx{../task vers};
+like ($output, qr/ABSOLUTELY NO WARRANTY/, 'vers');
+
+$output = qx{../task ver};
+like ($output, qr/ABSOLUTELY NO WARRANTY/, 'ver');
+
+$output = qx{../task ve};
+like ($output, qr/ABSOLUTELY NO WARRANTY/, 've');
+
+$output = qx{../task v};
+like ($output, qr/ABSOLUTELY NO WARRANTY/, 'v');
 
 # Cleanup.
 unlink 'pending.data';

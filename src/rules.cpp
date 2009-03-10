@@ -87,18 +87,7 @@ void autoColorize (
   Config& conf)
 {
   // Note: fg, bg already contain colors specifically assigned via command.
-  // Note: These rules form a hierarchy - the last rule is king.
-
-  // Colorization of the recurring.
-  if (gsFg["color.recurring"] != Text::nocolor ||
-      gsBg["color.recurring"] != Text::nocolor)
-  {
-    if (task.getAttribute ("recur") != "")
-    {
-      fg = gsFg["color.recurring"];
-      bg = gsBg["color.recurring"];
-    }
-  }
+  // Note: These rules form a hierarchy - the last rule is King.
 
   // Colorization of the tagged.
   if (gsFg["color.tagged"] != Text::nocolor ||
@@ -232,6 +221,17 @@ void autoColorize (
     {
       fg = gsFg["color.due"];
       bg = gsBg["color.due"];
+    }
+  }
+
+  // Colorization of the recurring.
+  if (gsFg["color.recurring"] != Text::nocolor ||
+      gsBg["color.recurring"] != Text::nocolor)
+  {
+    if (task.getAttribute ("recur") != "")
+    {
+      fg = gsFg["color.recurring"];
+      bg = gsBg["color.recurring"];
     }
   }
 }
