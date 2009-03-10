@@ -307,7 +307,9 @@ std::string handleVersion (Config& conf)
   link.setColumnWidth (0, Table::flexible);
   link.setColumnJustification (0, Table::left);
   link.addCell (link.addRow (), 0,
-    "See http://www.beckingham.net/task.html for the latest releases and a full tutorial.");
+    "See http://www.beckingham.net/task.html for the latest releases and a "
+    "full tutorial.  New releases containing fixes and enhancements are "
+    "released frequently.");
 
   // Create a table for output.
   Table table;
@@ -363,10 +365,10 @@ std::string handleVersion (Config& conf)
   // These are the regular configuration variables.
   std::string recognized =
     "blanklines color color.active color.due color.overdue color.pri.H "
-    "color.pri.L color.pri.M color.pri.none color.tagged confirmation curses "
-    "data.location dateformat default.command default.priority defaultwidth due "
-    "monthsperline nag newest next oldest project shadow.command shadow.file "
-    "shadow.notify";
+    "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
+    "confirmation curses data.location dateformat default.command "
+    "default.priority defaultwidth due monthsperline nag newest next oldest "
+    "project shadow.command shadow.file shadow.notify";
 
   // This configuration variable is supported, but not documented.  It exists
   // so that unit tests can force color to be on even when the output from task
