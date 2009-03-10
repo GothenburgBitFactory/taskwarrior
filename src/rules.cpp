@@ -89,6 +89,17 @@ void autoColorize (
   // Note: fg, bg already contain colors specifically assigned via command.
   // Note: These rules form a hierarchy - the last rule is king.
 
+  // Colorization of the recurring.
+  if (gsFg["color.recurring"] != Text::nocolor ||
+      gsBg["color.recurring"] != Text::nocolor)
+  {
+    if (task.getAttribute ("recur") != "")
+    {
+      fg = gsFg["color.recurring"];
+      bg = gsBg["color.recurring"];
+    }
+  }
+
   // Colorization of the tagged.
   if (gsFg["color.tagged"] != Text::nocolor ||
       gsBg["color.tagged"] != Text::nocolor)
@@ -157,29 +168,6 @@ void autoColorize (
     }
   }
 
-  // Colorization of the due and overdue.
-  std::string due = task.getAttribute ("due");
-  if (due != "")
-  {
-    Date dueDate (::atoi (due.c_str ()));
-    Date now;
-    Date then (now + conf.get ("due", 7) * 86400);
-
-    // Overdue
-    if (dueDate < now)
-    {
-      fg = gsFg["color.overdue"];
-      bg = gsBg["color.overdue"];
-    }
-
-    // Imminent
-    else if (dueDate < then)
-    {
-      fg = gsFg["color.due"];
-      bg = gsBg["color.due"];
-    }
-  }
-
   // Colorization by tag value.
   std::map <std::string, Text::color>::iterator it;
   for (it = gsFg.begin (); it != gsFg.end (); ++it)
@@ -221,6 +209,29 @@ void autoColorize (
         fg = gsFg[it->first];
         bg = gsBg[it->first];
       }
+    }
+  }
+
+  // Colorization of the due and overdue.
+  std::string due = task.getAttribute ("due");
+  if (due != "")
+  {
+    Date dueDate (::atoi (due.c_str ()));
+    Date now;
+    Date then (now + conf.get ("due", 7) * 86400);
+
+    // Overdue
+    if (dueDate < now)
+    {
+      fg = gsFg["color.overdue"];
+      bg = gsBg["color.overdue"];
+    }
+
+    // Imminent
+    else if (dueDate < then)
+    {
+      fg = gsFg["color.due"];
+      bg = gsBg["color.due"];
     }
   }
 }
