@@ -1214,11 +1214,11 @@ std::string renderMonths (
   int firstYear,
   const Date& today,
   std::vector <T>& all,
-  Config& conf)
+  Config& conf,
+  int monthsPerLine)
 {
   Table table;
   table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-  int monthsPerLine = (conf.get ("monthsperline", 1));
 
   // Build table for the number of months to be displayed.
   for (int i = 0 ; i < (monthsPerLine * 8); i += 8)
@@ -1337,6 +1337,26 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
 
+  // Determine window size, and set table accordingly.
+  int width = conf.get ("defaultwidth", 80);
+#ifdef HAVE_LIBNCURSES
+  if (conf.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+
+  // Each month requires 23 text columns width.  See how many will actually
+  // fit.  But if a preference is specified, and it fits, use it.
+  int preferredMonthsPerLine = (conf.get (std::string ("monthsperline"), 0));
+  int monthsThatFit = width / 23;
+
+  int monthsPerLine = monthsThatFit;
+  if (preferredMonthsPerLine != 0 && preferredMonthsPerLine < monthsThatFit)
+    monthsPerLine = preferredMonthsPerLine;
+
   // Load all the pending tasks.
   std::vector <T> pending;
   tdb.allPendingT (pending);
@@ -1369,8 +1389,6 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
   out << std::endl;
   std::string output;
 
-  int monthsPerLine = (conf.get ("monthsperline", 1));
-
   while (yFrom < yTo || (yFrom == yTo && mFrom <= mTo))
   {
     int nextM = mFrom;
@@ -1398,7 +1416,7 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
 
     out << std::endl
         << optionalBlankLine (conf)
-        << renderMonths (mFrom, yFrom, today, pending, conf)
+        << renderMonths (mFrom, yFrom, today, pending, conf, monthsPerLine)
         << std::endl;
 
     mFrom += monthsPerLine;
@@ -1409,15 +1427,16 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
     }
   }
 
-  out << "Legend: "
-      << Text::colorize (Text::cyan, Text::nocolor, "today")
-      << ", "
-      << Text::colorize (Text::black, Text::on_yellow, "due")
-      << ", "
-      << Text::colorize (Text::black, Text::on_red, "overdue")
-      << "."
-      << optionalBlankLine (conf)
-      << std::endl;
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    out << "Legend: "
+        << Text::colorize (Text::cyan, Text::nocolor, "today")
+        << ", "
+        << Text::colorize (Text::black, Text::on_yellow, "due")
+        << ", "
+        << Text::colorize (Text::black, Text::on_red, "overdue")
+        << "."
+        << optionalBlankLine (conf)
+        << std::endl;
 
   return out.str ();
 }
