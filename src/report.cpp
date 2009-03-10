@@ -813,6 +813,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
       if (task.getStatus () == T::deleted)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
 
         if (deletedGroup.find (epoch) != deletedGroup.end ())
           deletedGroup[epoch] = deletedGroup[epoch] + 1;
@@ -822,6 +823,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
       else if (task.getStatus () == T::completed)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
 
         if (completedGroup.find (epoch) != completedGroup.end ())
           completedGroup[epoch] = completedGroup[epoch] + 1;
@@ -852,6 +854,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
       if (task.getStatus () == T::deleted)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
 
         if (deletedGroup.find (epoch) != deletedGroup.end ())
           deletedGroup[epoch] = deletedGroup[epoch] + 1;
@@ -861,6 +864,8 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
       else if (task.getStatus () == T::completed)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
+
         if (completedGroup.find (epoch) != completedGroup.end ())
           completedGroup[epoch] = completedGroup[epoch] + 1;
         else
@@ -906,9 +911,9 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
   {
     row = table.addRow ();
 
-    totalAdded     += addedGroup[i->first];
-    totalCompleted += completedGroup[i->first];
-    totalDeleted   += deletedGroup[i->first];
+    totalAdded     += addedGroup     [i->first];
+    totalCompleted += completedGroup [i->first];
+    totalDeleted   += deletedGroup   [i->first];
 
     Date dt (i->first);
     int m, d, y;
