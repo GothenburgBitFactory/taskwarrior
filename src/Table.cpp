@@ -941,6 +941,24 @@ void Table::sort (std::vector <int>& order)
                 ((std::string)*left == "M" && (std::string)*right  == "H"))
               SWAP
             break;
+
+          case ascendingPeriod:
+            if ((std::string)*left == "" && (std::string)*right != "")
+              break;
+            else if ((std::string)*left != "" && (std::string)*right == "")
+              SWAP
+            else if (convertDuration ((std::string)*left) > convertDuration ((std::string)*right))
+              SWAP
+            break;
+
+          case descendingPeriod:
+            if ((std::string)*left != "" && (std::string)*right == "")
+              break;
+            else if ((std::string)*left == "" && (std::string)*right != "")
+              SWAP
+            else if (convertDuration ((std::string)*left) < convertDuration ((std::string)*right))
+              SWAP
+            break;
           }
         }
       }

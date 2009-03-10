@@ -126,7 +126,7 @@ void formatTimeDeltaDays (std::string&, time_t);
 std::string formatSeconds (time_t);
 const std::string uuid ();
 const char* optionalBlankLine (Config&);
-int convertDuration (std::string&);
+int convertDuration (const std::string&);
 std::string expandPath (const std::string&);
 
 #ifdef SOLARIS

@@ -241,9 +241,9 @@ const std::string uuid ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Recognize the following constructs, and return the number of days represented
-int convertDuration (std::string& input)
+int convertDuration (const std::string& input)
 {
-  input = lowerCase (input);
+  std::string lower_input = lowerCase (input);
   Date today;
 
   std::vector <std::string> supported;
@@ -263,7 +263,7 @@ int convertDuration (std::string& input)
   supported.push_back ("yearly");
 
   std::vector <std::string> matches;
-  if (autoComplete (input, supported, matches) == 1)
+  if (autoComplete (lower_input, supported, matches) == 1)
   {
     std::string found = matches[0];
 
@@ -279,19 +279,18 @@ int convertDuration (std::string& input)
   }
 
   // Support \d+ d|w|m|q|y
-
   else
   {
     // Verify all digits followed by d, w, m, q, or y.
-    unsigned int length = input.length ();
+    unsigned int length = lower_input.length ();
     for (unsigned int i = 0; i < length; ++i)
     {
-      if (! isdigit (input[i]) &&
+      if (! isdigit (lower_input[i]) &&
           i == length - 1)
       {
-        int number = ::atoi (input.substr (0, i).c_str ());
+        int number = ::atoi (lower_input.substr (0, i).c_str ());
 
-        switch (input[length - 1])
+        switch (lower_input[length - 1])
         {
         case 'd': return number *   1; break;
         case 'w': return number *   7; break;

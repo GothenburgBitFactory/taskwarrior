@@ -37,9 +37,16 @@ class Table
 {
 public:
   enum just   {left, center, right};
-  enum order  {ascendingNumeric, ascendingCharacter, ascendingPriority,
-               ascendingDate, descendingNumeric, descendingCharacter,
-               descendingPriority, descendingDate};
+  enum order  {ascendingNumeric,
+               ascendingCharacter,
+               ascendingPriority,
+               ascendingDate,
+               ascendingPeriod,
+               descendingNumeric,
+               descendingCharacter,
+               descendingPriority,
+               descendingDate,
+               descendingPeriod};
   enum sizing {minimum = -1, flexible = 0};
 
            Table ();

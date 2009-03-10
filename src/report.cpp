@@ -2447,6 +2447,16 @@ std::string handleCustomReport (
         table.addCell (row, columnCount, tasks[row].getDescription ());
     }
 
+    else if (*col == "recur")
+    {
+      table.addColumn ("Recur");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      for (unsigned int row = 0; row < tasks.size (); ++row)
+        table.addCell (row, columnCount, tasks[row].getAttribute ("recur"));
+    }
+
     // Common to all columns.
     // Add underline.
     if (conf.get (std::string ("color"), true) || conf.get (std::string ("_forcecolor"), false))
@@ -2486,6 +2496,12 @@ std::string handleCustomReport (
                     (direction == '+' ?
                       Table::ascendingDate :
                       Table::descendingDate));
+
+    else if (column == "recur")
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingPeriod :
+                      Table::descendingPeriod));
 
     else
       table.sortOn (columnIndex[column],
@@ -2567,6 +2583,7 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "age"      &&
         *it != "active"   &&
         *it != "tags"     &&
+        *it != "recur"    &&
         *it != "description")
       bad.push_back (*it);
 

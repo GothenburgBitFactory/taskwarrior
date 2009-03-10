@@ -29,6 +29,8 @@
     to help ensure higher quality releases.
   + Fixed bug that caused performance hit during table rendering.
   + Fixed bug that concatenated a modified description without spaces.
+  + Added new column 'recur' that displays the recurrence period of any
+    recurring tasks.  This column can be added to any custom report.
 
 ------ old releases ------------------------------
 
