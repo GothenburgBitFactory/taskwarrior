@@ -398,6 +398,8 @@ bool TDB::readLockedFile (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Scans the pending tasks for any that are completed or deleted, and if so,
+// moves them to the completed.data file.  Returns a count of tasks moved.
 int TDB::gc ()
 {
   int count = 0;
@@ -415,7 +417,9 @@ int TDB::gc ()
     // Some tasks stay in the pending file.
     if (it->getStatus () == T::pending ||
         it->getStatus () == T::recurring)
+    {
       pending.push_back (*it);
+    }
 
     // Others are transferred to the completed file.
     else

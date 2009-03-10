@@ -99,10 +99,9 @@ int main (int argc, char** argv)
 
     // Add a new task.
     T t2;
-    t2.setId (2);
+    t2.setId (1);
     t2.setAttribute ("project", "p2");
     t2.setDescription ("task 2");
-    t.diag (t2.compose ());
     t.ok (tdb.addT (t2), "TDB::addT t2");
 
     // Delete task.
