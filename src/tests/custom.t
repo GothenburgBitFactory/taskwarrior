@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'custom.rc')
@@ -36,7 +36,8 @@ if (open my $fh, '>', 'custom.rc')
   print $fh "data.location=.\n",
             "report.foo.description=DESC\n",
             "report.foo.columns=id,description\n",
-            "report.foo.sort=id+\n";
+            "report.foo.sort=id+\n",
+            "report.foo.filter=project:A\n";
   close $fh;
   ok (-r 'custom.rc', 'Created custom.rc');
 }
@@ -44,6 +45,12 @@ if (open my $fh, '>', 'custom.rc')
 # Generate the usage screen, and locate the custom report on it.
 my $output = qx{../task rc:custom.rc usage};
 like ($output, qr/task foo \[tags\] \[attrs\] desc\.\.\.\s+DESC\n/m, 'report.foo');
+
+qx{../task rc:custom.rc add project:A one};
+qx{../task rc:custom.rc add two};
+$output = qx{../task rc:custom.rc foo};
+like ($output, qr/one/, 'custom filter included');
+unlike ($output, qr/two/, 'custom filter excluded');
 
 # Cleanup.
 unlink 'pending.data';
