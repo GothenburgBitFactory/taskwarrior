@@ -59,6 +59,7 @@ bool validPriority (const std::string&);
 bool validDate (std::string&, Config&);
 void loadCustomReports (Config&);
 bool isCustomReport (const std::string&);
+void allCustomReports (std::vector <std::string>&);
 
 // task.cpp
 void gatherNextTasks (const TDB&, T&, Config&, std::vector <T>&, std::vector <int>&);

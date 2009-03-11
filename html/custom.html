@@ -43,25 +43,27 @@
 
                 <p>
                   More importantly, you can define your own.  Here are the
-                  two necessary items in the .taskrc file that define a new
+                  three necessary items in the .taskrc file that define a new
                   report:
                 </p>
 
-                <code><pre>report.mine.columns=id,project,priority,description
+                <code><pre>report.mine.description=Just the essentials
+report.mine.columns=id,project,priority,description
 report.mine.sort=priority-,project+</pre></code>
 
                 <p>
                   This defines a report, called "mine", that has four columns:
                   id, project, priority and description.  It will be sorted on
                   two columns: by descending priority then ascending project.
-                  Because this report is called "mine", it can be run with the
-                  command:
+                  The description that shows up in the task command usage page
+                  is "Just the essentials".  Because this report is called
+                  "mine", it can be run with the command:
                 </p>
 
                 <code><pre>% task mine</pre></code>
 
                 <p>
-                  A filter can also be specified like this:
+                  An optional filter can also be specified like this:
                 </p>
 
                 <code><pre>report.mine.filter=priority:H +bug</pre></code>

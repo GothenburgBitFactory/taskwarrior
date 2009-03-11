@@ -83,18 +83,6 @@ static void shortUsage (Config& conf)
   table.addCell (row, 2, "Adds a new task");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task list [tags] [attrs] desc...");
-  table.addCell (row, 2, "Lists all tasks matching the specified criteria");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task long [tags] [attrs] desc...");
-  table.addCell (row, 2, "Lists all task, all data, matching the specified criteria");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task ls [tags] [attrs] desc...");
-  table.addCell (row, 2, "Minimal listing of all tasks matching the specified criteria");
-
-  row = table.addRow ();
   table.addCell (row, 1, "task completed [tags] [attrs] desc...");
   table.addCell (row, 2, "Chronological listing of all completed tasks matching the specified criteria");
 
@@ -198,6 +186,20 @@ static void shortUsage (Config& conf)
   table.addCell (row, 1, "task help");
   table.addCell (row, 2, "Shows the long usage text");
 
+  // Add custom reports here...
+  std::vector <std::string> all;
+  allCustomReports (all);
+  foreach (report, all)
+  {
+    std::string command = std::string ("task ") + *report + std::string (" [tags] [attrs] desc...");
+    std::string description = conf.get (
+      std::string ("report.") + *report + ".description", std::string ("(missing description)"));
+
+    row = table.addRow ();
+    table.addCell (row, 1, command);
+    table.addCell (row, 2, description);
+  }
+
   std::cout << table.render ()
             << std::endl
             << "See http://www.beckingham.net/task.html for the latest releases and a full tutorial."
@@ -269,9 +271,6 @@ void loadConfFile (int argc, char** argv, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-// TODO Find out what this is, and either promote it to live code, or remove it.
-//  std::set_terminate (__gnu_cxx::__verbose_terminate_handler);
-
   // Set up randomness.
 #ifdef HAVE_SRANDOM
   srandom (time (NULL));
@@ -383,15 +382,6 @@ void nag (TDB& tdb, T& task, Config& conf)
     }
 
     // General form is "if there are no more deserving tasks", suppress the nag.
-/*
-    std::cout << "# task.isOverdue = " << (isOverdue ? "true" : "false") << std::endl;
-    std::cout << "# task.pri = "       << pri                            << std::endl;
-    std::cout << "# task.overdue = "   << overdue                        << std::endl;
-    std::cout << "# pending.high = "   << high                           << std::endl;
-    std::cout << "# pending.medium = " << medium                         << std::endl;
-    std::cout << "# pending.low = "    << low                            << std::endl;
-*/
-
     if (isOverdue                                         ) return;
     if (pri == 'H' && !overdue                            ) return;
     if (pri == 'M' && !overdue && !high                   ) return;

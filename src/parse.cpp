@@ -164,7 +164,6 @@ void guess (const std::string& type, const char** list, std::string& candidate)
     candidate = matches[0];
 
   else if (0 == matches.size ())
-//    throw std::string ("Unrecognized ") + type + " '" + candidate + "'";
     candidate = "";
 
   else
@@ -534,5 +533,11 @@ bool isCustomReport (const std::string& report)
 
   return false;
 }
+////////////////////////////////////////////////////////////////////////////////
+void allCustomReports (std::vector <std::string>& all)
+{
+  all = customReports;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
