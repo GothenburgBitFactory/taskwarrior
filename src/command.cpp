@@ -309,7 +309,7 @@ std::string handleVersion (Config& conf)
   link.addCell (link.addRow (), 0,
     "See http://www.beckingham.net/task.html for the latest releases and a "
     "full tutorial.  New releases containing fixes and enhancements are "
-    "released frequently.");
+    "made frequently.");
 
   // Create a table for output.
   Table table;
