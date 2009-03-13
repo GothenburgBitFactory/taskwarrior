@@ -194,7 +194,9 @@ static void shortUsage (Config& conf)
 
   std::cout << table.render ()
             << std::endl
-            << "See http://www.beckingham.net/task.html for the latest releases and a full tutorial."
+            << "See http://www.beckingham.net/task.html for the latest releases and a "
+            << "full tutorial.  New releases containing fixes and enhancements are "
+            << "made frequently."
             << std::endl
             << std::endl;
 }
@@ -205,32 +207,32 @@ static void longUsage (Config& conf)
   shortUsage (conf);
 
   std::cout
-    << "ID is the numeric identifier displayed by the 'task list' command" << "\n"
-    <<                                                                        "\n"
-    << "Tags are arbitrary words, any quantity:"                           << "\n"
-    << "  +tag               The + means add the tag"                      << "\n"
-    << "  -tag               The - means remove the tag"                   << "\n"
-    <<                                                                        "\n"
-    << "Attributes are:"                                                   << "\n"
-    << "  project:           Project name"                                 << "\n"
-    << "  priority:          Priority"                                     << "\n"
-    << "  due:               Due date"                                     << "\n"
-    << "  recur:             Recurrence frequency"                         << "\n"
-    << "  until:             Recurrence end date"                          << "\n"
-    << "  fg:                Foreground color"                             << "\n"
-    << "  bg:                Background color"                             << "\n"
-    << "  rc:                Alternate .taskrc file"                       << "\n"
-    <<                                                                        "\n"
-    << "Any command or attribute name may be abbreviated if still unique:" << "\n"
-    << "  task list project:Home"                                          << "\n"
-    << "  task li       pro:Home"                                          << "\n"
-    <<                                                                        "\n"
-    << "Some task descriptions need to be escaped because of the shell:"   << "\n"
-    << "  task add \"quoted ' quote\""                                     << "\n"
-    << "  task add escaped \\' quote"                                      << "\n"
-    <<                                                                        "\n"
-    << "Many characters have special meaning to the shell, including:"     << "\n"
-    << "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~"                   << "\n"
+    << "ID is the numeric identifier displayed by the 'task list' command." << "\n"
+    <<                                                                         "\n"
+    << "Tags are arbitrary words, any quantity:"                            << "\n"
+    << "  +tag               The + means add the tag"                       << "\n"
+    << "  -tag               The - means remove the tag"                    << "\n"
+    <<                                                                         "\n"
+    << "Attributes are:"                                                    << "\n"
+    << "  project:           Project name"                                  << "\n"
+    << "  priority:          Priority"                                      << "\n"
+    << "  due:               Due date"                                      << "\n"
+    << "  recur:             Recurrence frequency"                          << "\n"
+    << "  until:             Recurrence end date"                           << "\n"
+    << "  fg:                Foreground color"                              << "\n"
+    << "  bg:                Background color"                              << "\n"
+    << "  rc:                Alternate .taskrc file"                        << "\n"
+    <<                                                                         "\n"
+    << "Any command or attribute name may be abbreviated if still unique:"  << "\n"
+    << "  task list project:Home"                                           << "\n"
+    << "  task li       pro:Home"                                           << "\n"
+    <<                                                                         "\n"
+    << "Some task descriptions need to be escaped because of the shell:"    << "\n"
+    << "  task add \"quoted ' quote\""                                      << "\n"
+    << "  task add escaped \\' quote"                                       << "\n"
+    <<                                                                         "\n"
+    << "Many characters have special meaning to the shell, including:"      << "\n"
+    << "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~"                    << "\n"
     << std::endl;
 }
 
