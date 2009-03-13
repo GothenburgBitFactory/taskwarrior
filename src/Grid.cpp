@@ -325,7 +325,7 @@ Grid::Cell::operator int () const
   case CELL_INT:    return mInt;
   case CELL_FLOAT:  return (int) mFloat;
   case CELL_DOUBLE: return (int) mDouble;
-  case CELL_STRING: return mString.length ();
+  case CELL_STRING: return ::atoi (mString.c_str ());
   }
 
   return 0;
@@ -340,7 +340,7 @@ Grid::Cell::operator float () const
   case CELL_INT:    return (float) mInt;
   case CELL_FLOAT:  return mFloat;
   case CELL_DOUBLE: return (float) mDouble;
-  case CELL_STRING: return (float) mString.length ();
+  case CELL_STRING: return (float) ::atof (mString.c_str ());
   }
 
   return 0.0;
@@ -355,7 +355,7 @@ Grid::Cell::operator double () const
   case CELL_INT:    return (double) mInt;
   case CELL_FLOAT:  return (double) mFloat;
   case CELL_DOUBLE: return mDouble;
-  case CELL_STRING: return (double) mString.length ();
+  case CELL_STRING: return (double) ::atof (mString.c_str ());
   }
 
   return 0.0;

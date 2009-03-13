@@ -994,7 +994,7 @@ void Table::clean (std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string Table::render ()
+const std::string Table::render (int maximum /* = 0 */)
 {
   calculateColumnWidths ();
 
@@ -1028,8 +1028,14 @@ const std::string Table::render ()
   if (mSortColumns.size ())
     sort (order);
 
+  // If a non-zero maximum is specified, then it limits the number of rows of
+  // the table that are rendered.
+  int limit = mRows;
+  if (maximum != 0)
+    limit = maximum;
+
   // Print all rows.
-  for (int row = 0; row < mRows; ++row)
+  for (int row = 0; row < limit; ++row)
   {
     std::vector <std::vector <std::string> > columns;
     std::vector <std::string> blanks;

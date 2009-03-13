@@ -91,7 +91,7 @@ public:
 
            int rowCount ();
            int columnCount ();
-           const std::string render ();
+           const std::string render (int maximum = 0);
 
 private:
            std::string getCell (const int, const int);

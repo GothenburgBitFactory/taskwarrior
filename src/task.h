@@ -100,8 +100,6 @@ std::string handleReportCalendar (TDB&, T&, Config&);
 std::string handleReportActive (TDB&, T&, Config&);
 std::string handleReportOverdue (TDB&, T&, Config&);
 std::string handleReportStats (TDB&, T&, Config&);
-std::string handleReportOldest (TDB&, T&, Config&);
-std::string handleReportNewest (TDB&, T&, Config&);
 
 std::string handleCustomReport (TDB&, T&, Config&, const std::string&);
 void validReportColumns (const std::vector <std::string>&);

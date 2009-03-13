@@ -36,9 +36,10 @@
               <div class="content">
                 <p>
                   Task allows you to customize reports, to a limited degree.
-                  The "list", "long", and "ls" reports are all now custom
-                  reports, whereas in previous releases of task they were not
-                  mutable.  This means they can be modified, renamed, or deleted.
+                  The "list", "long", "ls", "oldest" and "newest" reports are
+                  all now custom reports, whereas in previous releases of task
+                  they were not mutable.  This means they can be modified,
+                  renamed, or deleted.
                 </p>
 
                 <p>
@@ -73,6 +74,14 @@ report.mine.sort=priority-,project+</pre></code>
                   with the "bug" tag are included in the report.  This filter
                   definition is optional.
                 </p>
+
+                <p>
+                  An optional limit can also be specified, which limits the
+                  number of tasks shown in the report.  If a limit is not
+                  specified, then the number of tasks is not limited.
+                </p>
+
+                <code><pre>report.mine.limit=10</pre></code>
 
                 <p>
                   Here is a list of all the possible columns that may be included

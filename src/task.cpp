@@ -159,14 +159,6 @@ static void shortUsage (Config& conf)
   table.addCell (row, 2, "Shows all incomplete tasks that are beyond their due date");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task oldest");
-  table.addCell (row, 2, "Shows the oldest tasks");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task newest");
-  table.addCell (row, 2, "Shows the newest tasks");
-
-  row = table.addRow ();
   table.addCell (row, 1, "task stats");
   table.addCell (row, 2, "Shows task database statistics");
 
@@ -817,8 +809,6 @@ std::string runTaskCommand (
   else if (command == "calendar")           { if (gc) tdb.gc (); out = handleReportCalendar (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
   else if (command == "active")             { if (gc) tdb.gc (); out = handleReportActive   (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
   else if (command == "overdue")            { if (gc) tdb.gc (); out = handleReportOverdue  (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
-  else if (command == "oldest")             { if (gc) tdb.gc (); out = handleReportOldest   (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
-  else if (command == "newest")             { if (gc) tdb.gc (); out = handleReportNewest   (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
   else if (command == "colors")             {                    out = handleColor          (           conf         );                                           }
   else if (command == "version")            {                    out = handleVersion        (           conf         );                                           }
   else if (command == "help")               {                          longUsage            (           conf         );                                           }

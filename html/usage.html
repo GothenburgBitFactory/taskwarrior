@@ -34,12 +34,10 @@
               <br />
               <h2 class="title"><a name="usage">Command Usage<a></h2>
               <div class="content">
-                <pre><code>task add [tags] [attrs] desc...
-       task list [tags] [attrs] desc...
-       task long [tags] [attrs] desc...
-       task ls [tags] [attrs] desc...
+                <pre><code>Usage: task
+       task add [tags] [attrs] desc...
        task completed [tags] [attrs] desc...
-       task ID [tags] [attrs] ["desc..."]
+       task ID [tags] [attrs] [desc...]
        task ID /from/to/
        task delete ID
        task undelete ID
@@ -57,12 +55,18 @@
        task calendar
        task active
        task overdue
-       task oldest
-       task newest
        task stats
        task export
        task color
        task version
+       task help
+       task list [tags] [attrs] desc...
+       task long [tags] [attrs] desc...
+       task ls [tags] [attrs] desc...
+       task newest [tags] [attrs] desc...
+       task oldest [tags] [attrs] desc...
+
+See http://www.beckingham.net/task.html for the latest releases and a full tutorial.
 
 ID is the numeric identifier displayed by the 'task list' command
 
@@ -74,8 +78,11 @@ Attributes are:
   project:           Project name
   priority:          Priority
   due:               Due date
+  recur:             Recurrence frequency
+  until:             Recurrence end date
   fg:                Foreground color
   bg:                Background color
+  rc:                Alternate .taskrc file
 
 Any command or attribute name may be abbreviated if still unique:
   task list project:Home
@@ -86,7 +93,7 @@ Some task descriptions need to be escaped because of the shell:
   task add escaped \' quote
 
 Many characters have special meaning to the shell, including:
-  $ ! ' " ( ) ; \ ` * ? { } [ ] < > | &amp; % # ~</code></pre>
+  $ ! ' " ( ) ; \ ` * ? { } [ ] < > | & % # ~</code></pre>
               <div>
 
               <br />

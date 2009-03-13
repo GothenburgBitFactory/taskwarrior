@@ -17,12 +17,13 @@
   + Added support for custom reports, comprised of a set of column names and
     sort order, with optional filtering in the configuration file.  This
     means user-defined reports can be written, and the reports currently
-    in the configuration file can be renamed.
+    in the configuration file can be renamed.  Several of task's built in
+    reports have been converted to user-defined reports.
   + New online documentation for custom reports.
   + New algorithm for determining when the "nag" message is displayed.
   + Fixed bug where task hangs with a certain combination of recurring tasks
     and shadow files.
-  + Fixed bug with the task sort alogrithm, which led to an unstable sequence
+  + Fixed bug with the task sort algorithm, which led to an unstable sequence
     when there were only a handful of tasks.
   + Performance enhanced by eliminating unnecessary sorting.
   + Task now has a large (and growing) test suite and bug regression tests
