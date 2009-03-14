@@ -774,7 +774,9 @@ std::string runTaskCommand (
   // If argc == 1 and the default.command configuration variable is set,
   // then use that, otherwise stick with argc/argv.
   std::string defaultCommand = conf.get ("default.command");
-  if (args.size () == 0 && defaultCommand != "")
+  if ((args.size () == 0 ||
+      (args.size () == 1 && args[0].substr (0, 3) == "rc:")) &&
+      defaultCommand != "")
   {
     // Stuff the command line.
     args.clear ();
