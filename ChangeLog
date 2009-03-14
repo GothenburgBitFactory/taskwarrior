@@ -36,6 +36,8 @@
     specifies the color of recurring tasks.
   + Added support for "locking" configuration variable that controls whether
     file locking is used.
+  + Task export feature now includes recurrence information, removes nested
+    quotes, and limits output to pending tasks.
 
 ------ old releases ------------------------------
 
