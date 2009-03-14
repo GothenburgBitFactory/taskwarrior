@@ -328,6 +328,11 @@ const std::string T::composeCSV ()
     line += value;
   line += ",";
 
+  value = mAttributes["recur"];
+  if (value != "")
+    line += value;
+  line += ",";
+
   value = mAttributes["end"];
   if (value != "")
     line += value;
@@ -353,7 +358,11 @@ const std::string T::composeCSV ()
     line += "'" + value + "'";
   line += ",";
 
-  line += "'" + mDescription + "'\n";
+  // Convert single quotes to double quotes, because single quotes are used to
+  // delimit the values that need it.
+  std::string clean = mDescription;
+  std::replace (clean.begin (), clean.end (), '\'', '"');
+  line += "'" + clean + "'\n";
 
   return line;
 }

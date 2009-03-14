@@ -578,7 +578,7 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleExport (TDB& tdb, T& task, Config& conf)
 {
-  std::stringstream out;
+  std::stringstream output;
 
   // Use the description as a file name, then clobber the description so the
   // file name isn't used for filtering.
@@ -597,6 +597,7 @@ std::string handleExport (TDB& tdb, T& task, Config& conf)
           << "'entry',"
           << "'start',"
           << "'due',"
+          << "'recur',"
           << "'end',"
           << "'project',"
           << "'priority',"
@@ -605,14 +606,22 @@ std::string handleExport (TDB& tdb, T& task, Config& conf)
           << "'description'"
           << "\n";
 
+      int count = 0;
       std::vector <T> all;
-      tdb.allT (all);
+      tdb.allPendingT (all);
       filter (all, task);
       foreach (t, all)
       {
-        out << t->composeCSV ().c_str ();
+        if (t->getStatus () != T::recurring &&
+            t->getStatus () != T::deleted)
+        {
+          out << t->composeCSV ().c_str ();
+          ++count;
+        }
       }
       out.close ();
+
+      output << count << " tasks exported to '" << file << "'" << std::endl;
     }
     else
       throw std::string ("Could not write to export file.");
@@ -620,7 +629,7 @@ std::string handleExport (TDB& tdb, T& task, Config& conf)
   else
     throw std::string ("You must specify a file to write to.");
 
-  return out.str ();
+  return output.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

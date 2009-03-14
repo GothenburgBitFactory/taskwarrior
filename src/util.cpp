@@ -187,6 +187,7 @@ static char randomHexDigit ()
 {
   static char digits[] = "0123456789abcdef";
 #ifdef HAVE_RANDOM
+  // random is better than rand.
   return digits[random () % 16];
 #else
   return digits[rand () % 16];
