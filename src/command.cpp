@@ -48,8 +48,10 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleAdd (TDB& tdb, T& task, Config& conf)
+std::string handleAdd (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   char entryTime[16];
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
   task.setAttribute ("entry", entryTime);
@@ -86,6 +88,8 @@ void handleAdd (TDB& tdb, T& task, Config& conf)
 
   if (!tdb.addT (task))
     throw std::string ("Could not create new task.");
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -547,8 +551,10 @@ std::string handleStop (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleDone (TDB& tdb, T& task, Config& conf)
+std::string handleDone (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   if (!tdb.completeT (task))
     throw std::string ("Could not mark task as completed.");
 
@@ -566,11 +572,14 @@ void handleDone (TDB& tdb, T& task, Config& conf)
   }
 
   nag (tdb, task, conf);
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleExport (TDB& tdb, T& task, Config& conf)
+std::string handleExport (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   // Use the description as a file name, then clobber the description so the
   // file name isn't used for filtering.
   std::string file = trim (task.getDescription ());
@@ -610,11 +619,14 @@ void handleExport (TDB& tdb, T& task, Config& conf)
   }
   else
     throw std::string ("You must specify a file to write to.");
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleModify (TDB& tdb, T& task, Config& conf)
+std::string handleModify (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
   std::vector <T> all;
   tdb.pendingT (all);
 
@@ -695,11 +707,12 @@ void handleModify (TDB& tdb, T& task, Config& conf)
         tdb.modifyT (original);
       }
 
-      return;
+      return out.str ();
     }
   }
 
   throw std::string ("Task not found.");
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

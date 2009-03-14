@@ -74,10 +74,10 @@ std::string runTaskCommand (int, char**, TDB&, Config&, bool gc = true, bool sha
 std::string runTaskCommand (std::vector <std::string>&, TDB&, Config&, bool gc = false, bool shadow = false);
 
 // command.cpp
-void handleAdd (TDB&, T&, Config&);
-void handleExport (TDB&, T&, Config&);
-void handleDone (TDB&, T&, Config&);
-void handleModify (TDB&, T&, Config&);
+std::string handleAdd (TDB&, T&, Config&);
+std::string handleExport (TDB&, T&, Config&);
+std::string handleDone (TDB&, T&, Config&);
+std::string handleModify (TDB&, T&, Config&);
 std::string handleProjects (TDB&, T&, Config&);
 std::string handleTags (TDB&, T&, Config&);
 std::string handleUndelete (TDB&, T&, Config&);

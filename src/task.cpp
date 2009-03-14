@@ -27,6 +27,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
@@ -47,8 +48,9 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-static void shortUsage (Config& conf)
+static std::string shortUsage (Config& conf)
 {
+  std::stringstream out;
   Table table;
   int width = conf.get ("defaultwidth", 80);
 #ifdef HAVE_LIBNCURSES
@@ -192,48 +194,51 @@ static void shortUsage (Config& conf)
     table.addCell (row, 2, description);
   }
 
-  std::cout << table.render ()
-            << std::endl
-            << "See http://www.beckingham.net/task.html for the latest releases and a "
-            << "full tutorial.  New releases containing fixes and enhancements are "
-            << "made frequently."
-            << std::endl
-            << std::endl;
+  out << table.render ()
+      << std::endl
+      << "See http://www.beckingham.net/task.html for the latest releases and a "
+      << "full tutorial.  New releases containing fixes and enhancements are "
+      << "made frequently."
+      << std::endl
+      << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void longUsage (Config& conf)
+static std::string longUsage (Config& conf)
 {
-  shortUsage (conf);
+  std::stringstream out;
+  out << shortUsage (conf)
+      << "ID is the numeric identifier displayed by the 'task list' command." << "\n"
+      <<                                                                         "\n"
+      << "Tags are arbitrary words, any quantity:"                            << "\n"
+      << "  +tag               The + means add the tag"                       << "\n"
+      << "  -tag               The - means remove the tag"                    << "\n"
+      <<                                                                         "\n"
+      << "Attributes are:"                                                    << "\n"
+      << "  project:           Project name"                                  << "\n"
+      << "  priority:          Priority"                                      << "\n"
+      << "  due:               Due date"                                      << "\n"
+      << "  recur:             Recurrence frequency"                          << "\n"
+      << "  until:             Recurrence end date"                           << "\n"
+      << "  fg:                Foreground color"                              << "\n"
+      << "  bg:                Background color"                              << "\n"
+      << "  rc:                Alternate .taskrc file"                        << "\n"
+      <<                                                                         "\n"
+      << "Any command or attribute name may be abbreviated if still unique:"  << "\n"
+      << "  task list project:Home"                                           << "\n"
+      << "  task li       pro:Home"                                           << "\n"
+      <<                                                                         "\n"
+      << "Some task descriptions need to be escaped because of the shell:"    << "\n"
+      << "  task add \"quoted ' quote\""                                      << "\n"
+      << "  task add escaped \\' quote"                                       << "\n"
+      <<                                                                         "\n"
+      << "Many characters have special meaning to the shell, including:"      << "\n"
+      << "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~"                    << "\n"
+      << std::endl;
 
-  std::cout
-    << "ID is the numeric identifier displayed by the 'task list' command." << "\n"
-    <<                                                                         "\n"
-    << "Tags are arbitrary words, any quantity:"                            << "\n"
-    << "  +tag               The + means add the tag"                       << "\n"
-    << "  -tag               The - means remove the tag"                    << "\n"
-    <<                                                                         "\n"
-    << "Attributes are:"                                                    << "\n"
-    << "  project:           Project name"                                  << "\n"
-    << "  priority:          Priority"                                      << "\n"
-    << "  due:               Due date"                                      << "\n"
-    << "  recur:             Recurrence frequency"                          << "\n"
-    << "  until:             Recurrence end date"                           << "\n"
-    << "  fg:                Foreground color"                              << "\n"
-    << "  bg:                Background color"                              << "\n"
-    << "  rc:                Alternate .taskrc file"                        << "\n"
-    <<                                                                         "\n"
-    << "Any command or attribute name may be abbreviated if still unique:"  << "\n"
-    << "  task list project:Home"                                           << "\n"
-    << "  task li       pro:Home"                                           << "\n"
-    <<                                                                         "\n"
-    << "Some task descriptions need to be escaped because of the shell:"    << "\n"
-    << "  task add \"quoted ' quote\""                                      << "\n"
-    << "  task add escaped \\' quote"                                       << "\n"
-    <<                                                                         "\n"
-    << "Many characters have special meaning to the shell, including:"      << "\n"
-    << "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~"                    << "\n"
-    << std::endl;
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -790,34 +795,49 @@ std::string runTaskCommand (
   T task;
   parse (args, command, task, conf);
 
-  std::string out = "";
+  bool gcMod  = false; // Change occurred by way of gc.
+  bool cmdMod = false; // Change occurred by way of command type.
+  std::string out;
 
-       if (command == "" && task.getId ())  {                          handleModify         (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "add")                {                          handleAdd            (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "done")               {                          handleDone           (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "export")             {                          handleExport         (tdb, task, conf         );                                           }
-  else if (command == "projects")           {                    out = handleProjects       (tdb, task, conf         );                                           }
-  else if (command == "tags")               {                    out = handleTags           (tdb, task, conf         );                                           }
-  else if (command == "info")               {                    out = handleInfo           (tdb, task, conf         );                                           }
-  else if (command == "undelete")           {                    out = handleUndelete       (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "delete")             {                    out = handleDelete         (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "start")              {                    out = handleStart          (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "stop")               {                    out = handleStop           (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "undo")               {                    out = handleUndo           (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "stats")              {                    out = handleReportStats    (tdb, task, conf         );                                           }
-  else if (command == "completed")          { if (gc) tdb.gc (); out = handleCompleted      (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
-  else if (command == "summary")            { if (gc) tdb.gc (); out = handleReportSummary  (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "next")               { if (gc) tdb.gc (); out = handleReportNext     (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
-  else if (command == "history")            { if (gc) tdb.gc (); out = handleReportHistory  (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "ghistory")           { if (gc) tdb.gc (); out = handleReportGHistory (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "calendar")           { if (gc) tdb.gc (); out = handleReportCalendar (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); }
-  else if (command == "active")             { if (gc) tdb.gc (); out = handleReportActive   (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
-  else if (command == "overdue")            { if (gc) tdb.gc (); out = handleReportOverdue  (tdb, task, conf         ); if (shadow) updateShadowFile (tdb, conf); } // TODO replace with Custom
-  else if (command == "colors")             {                    out = handleColor          (           conf         );                                           }
-  else if (command == "version")            {                    out = handleVersion        (           conf         );                                           }
-  else if (command == "help")               {                          longUsage            (           conf         );                                           }
-  else if (isCustomReport (command))        { if (gc) tdb.gc (); out = handleCustomReport   (tdb, task, conf, command); if (shadow) updateShadowFile (tdb, conf); } // New Custom reports
-  else                                      {                          shortUsage           (           conf         );                                           }
+  // Read-only commands with no side effects.
+       if (command == "export")             { out = handleExport         (tdb, task, conf); }
+  else if (command == "projects")           { out = handleProjects       (tdb, task, conf); }
+  else if (command == "tags")               { out = handleTags           (tdb, task, conf); }
+  else if (command == "info")               { out = handleInfo           (tdb, task, conf); }
+  else if (command == "stats")              { out = handleReportStats    (tdb, task, conf); }
+  else if (command == "history")            { out = handleReportHistory  (tdb, task, conf); }
+  else if (command == "ghistory")           { out = handleReportGHistory (tdb, task, conf); }
+  else if (command == "calendar")           { out = handleReportCalendar (tdb, task, conf); }
+  else if (command == "summary")            { out = handleReportSummary  (tdb, task, conf); }
+  else if (command == "colors")             { out = handleColor          (           conf); }
+  else if (command == "version")            { out = handleVersion        (           conf); }
+  else if (command == "help")               { out = longUsage            (           conf); }
+
+  // Commands that cause updates.
+  else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify   (tdb, task, conf); }
+  else if (command == "add")                { cmdMod = true; out = handleAdd      (tdb, task, conf); }
+  else if (command == "done")               { cmdMod = true; out = handleDone     (tdb, task, conf); }
+  else if (command == "undelete")           { cmdMod = true; out = handleUndelete (tdb, task, conf); }
+  else if (command == "delete")             { cmdMod = true; out = handleDelete   (tdb, task, conf); }
+  else if (command == "start")              { cmdMod = true; out = handleStart    (tdb, task, conf); }
+  else if (command == "stop")               { cmdMod = true; out = handleStop     (tdb, task, conf); }
+  else if (command == "undo")               { cmdMod = true; out = handleUndo     (tdb, task, conf); }
+
+  // Command that display IDs and therefore need TDB::gc first.
+
+  else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (tdb, task, conf); }
+  else if (command == "next")               { if (gc) gcMod = tdb.gc (); out = handleReportNext    (tdb, task, conf); }
+  else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (tdb, task, conf); }
+  else if (command == "overdue")            { if (gc) gcMod = tdb.gc (); out = handleReportOverdue (tdb, task, conf); }
+  else if (isCustomReport (command))        { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (tdb, task, conf, command); }
+
+  // If the command is not recognized, display usage.
+  else                                      { out = shortUsage (conf); }
+
+  // Only update the shadow file if such an update was not suppressed (shadow),
+  // and if an actual change occurred (gcMod || cmdMod).
+  if (shadow && (gcMod || cmdMod))
+    updateShadowFile (tdb, conf);
 
   return out;
 }
