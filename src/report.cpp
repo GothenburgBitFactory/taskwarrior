@@ -1699,6 +1699,8 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
   int recurringT    = 0;
   float daysPending = 0.0;
   int descLength    = 0;
+  std::map <std::string, int> allTags;
+  std::map <std::string, int> allProjects;
 
   std::vector <T>::iterator it;
   for (it = tasks.begin (); it != tasks.end (); ++it)
@@ -1727,6 +1729,13 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
     std::vector <std::string> tags;
     it->getTags (tags);
     if (tags.size ()) ++taggedT;
+
+    foreach (t, tags)
+      allTags[*t] = 0;
+
+    std::string project = it->getAttribute ("project");
+    if (project != "")
+      allProjects[project] = 0;
   }
 
   out << "Pending               " << pendingT   << std::endl
@@ -1763,6 +1772,9 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
     out << "Average desc length   " << (int) (descLength / totalT) << " characters" << std::endl;
     out << "Tasks tagged          " << std::setprecision (3) << (100.0 * taggedT / totalT) << "%" << std::endl;
   }
+
+  out << "Unique tags           " << allTags.size () << std::endl;
+  out << "Projects              " << allProjects.size () << std::endl;
 
   return out.str ();
 }
