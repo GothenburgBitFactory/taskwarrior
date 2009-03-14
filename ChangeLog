@@ -38,6 +38,8 @@
     file locking is used.
   + Task export feature now includes recurrence information, removes nested
     quotes, and limits output to pending tasks.
+  + Task no longer includes deleted tasks in the summary report (thanks to
+    Benjamin Tegarden).
 
 ------ old releases ------------------------------
 

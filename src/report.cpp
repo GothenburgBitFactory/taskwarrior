@@ -496,13 +496,18 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   {
     T task (completed[i]);
     std::string project = task.getAttribute ("project");
-    countCompleted[project] = countCompleted[project] + 1;
-    ++counter[project];
+    if (task.getStatus () == T::deleted)
+      continue;
+
+    ++countCompleted[project];
 
     time_t entry = ::atoi (task.getAttribute ("entry").c_str ());
     time_t end   = ::atoi (task.getAttribute ("end").c_str ());
     if (entry && end)
+    {
       sumEntry[project] = sumEntry[project] + (double) (end - entry);
+      ++counter[project];
+    }
   }
 
   // Create a table for output.
