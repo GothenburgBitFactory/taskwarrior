@@ -934,7 +934,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
     }
 
     table.addCell (row, 5, net);
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false) && net)
+    if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) && net)
       table.setCellFg (row, 5, net > 0 ? Text::red: Text::green);
   }
 
