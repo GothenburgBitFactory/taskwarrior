@@ -1032,7 +1032,7 @@ const std::string Table::render (int maximum /* = 0 */)
   // the table that are rendered.
   int limit = mRows;
   if (maximum != 0)
-    limit = maximum;
+    limit = min (maximum, mRows);
 
   // Print all rows.
   for (int row = 0; row < limit; ++row)
