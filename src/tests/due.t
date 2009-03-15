@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'due.rc')
