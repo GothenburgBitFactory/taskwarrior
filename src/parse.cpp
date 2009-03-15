@@ -497,7 +497,7 @@ void loadCustomReports (Config& conf)
     if (i->substr (0, 7) == "report.")
     {
       std::string report = i->substr (7, std::string::npos);
-      size_t columns = report.find (".columns");
+      std::string::size_type columns = report.find (".columns");
       if (columns != std::string::npos)
       {
         report = report.substr (0, columns);
