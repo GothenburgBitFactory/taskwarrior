@@ -40,6 +40,8 @@
     quotes, and limits output to pending tasks.
   + Task no longer includes deleted tasks in the summary report (thanks to
     Benjamin Tegarden).
+  + Fixed bug that prevented the summary report from properly reporting
+    recently completed tasks.
 
 ------ old releases ------------------------------
 

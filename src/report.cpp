@@ -432,33 +432,23 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Project  Tasks  Avg Age  Status
-// A           12      13d  XXXXXXXX------
-// B          109   3d 12h  XX------------
+// Project  Remaining  Avg Age  Complete  0%                  100%
+// A               12      13d       55%  XXXXXXXXXXXXX-----------
+// B              109   3d 12h       10%  XXX---------------------
 std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
 
-  // Generate unique list of project names.
-  std::map <std::string, bool> allProjects;
-  std::vector <T> pending;
-  tdb.allPendingT (pending);
-  handleRecurrence (tdb, pending);
-  filter (pending, task);
-  for (unsigned int i = 0; i < pending.size (); ++i)
-  {
-    T task (pending[i]);
-    allProjects[task.getAttribute ("project")] = false;
-  }
+  std::vector <T> tasks;
+  tdb.allT (tasks);
+  handleRecurrence (tdb, tasks);
+  filter (tasks, task);
 
-  std::vector <T> completed;
-  tdb.allCompletedT (completed);
-  filter (completed, task);
-  for (unsigned int i = 0; i < completed.size (); ++i)
-  {
-    T task (completed[i]);
-    allProjects[task.getAttribute ("project")] = false;
-  }
+  // Generate unique list of project names from all pending tasks.
+  std::map <std::string, bool> allProjects;
+  foreach (t, tasks)
+    if (t->getStatus () == T::pending)
+      allProjects[t->getAttribute ("project")] = false;
 
   // Initialize counts, sum.
   std::map <std::string, int> countPending;
@@ -467,6 +457,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   std::map <std::string, int> counter;
   time_t now = time (NULL);
 
+  // Initialize counters.
   foreach (i, allProjects)
   {
     countPending   [i->first] = 0;
@@ -475,38 +466,29 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
     counter        [i->first] = 0;
   }
 
-  // Count the pending tasks.
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  // Count the various tasks.
+  foreach (t, tasks)
   {
-    T task (pending[i]);
-    std::string project = task.getAttribute ("project");
-    if (task.getStatus () == T::pending)
+    std::string project = t->getAttribute ("project");
+    ++counter[project];
+
+    if (t->getStatus () == T::pending)
+    {
       ++countPending[project];
 
-    time_t entry = ::atoi (task.getAttribute ("entry").c_str ());
-    if (entry)
-    {
-      sumEntry[project] = sumEntry[project] + (double) (now - entry);
-      ++counter[project];
+      time_t entry = ::atoi (t->getAttribute ("entry").c_str ());
+      if (entry)
+        sumEntry[project] = sumEntry[project] + (double) (now - entry);
     }
-  }
 
-  // Count the completed tasks.
-  for (unsigned int i = 0; i < completed.size (); ++i)
-  {
-    T task (completed[i]);
-    std::string project = task.getAttribute ("project");
-    if (task.getStatus () == T::deleted)
-      continue;
-
-    ++countCompleted[project];
-
-    time_t entry = ::atoi (task.getAttribute ("entry").c_str ());
-    time_t end   = ::atoi (task.getAttribute ("end").c_str ());
-    if (entry && end)
+    else if (t->getStatus () == T::completed)
     {
-      sumEntry[project] = sumEntry[project] + (double) (end - entry);
-      ++counter[project];
+      ++countCompleted[project];
+
+      time_t entry = ::atoi (t->getAttribute ("entry").c_str ());
+      time_t end   = ::atoi (task.getAttribute ("end").c_str ());
+      if (entry && end)
+        sumEntry[project] = sumEntry[project] + (double) (end - entry);
     }
   }
 
