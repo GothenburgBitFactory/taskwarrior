@@ -67,25 +67,25 @@ like   ($output, qr/\bwith\b/,    'pri:H with');
 unlike ($output, qr/\bwithout\b/, 'pri:H without');
 
 # Test the version command abbreviations.
-$output = qx{../task version};
+$output = qx{../task rc:abbrev.rc version};
 like ($output, qr/ABSOLUTELY NO WARRANTY/, 'version');
 
-$output = qx{../task versio};
+$output = qx{../task rc:abbrev.rc versio};
 like ($output, qr/ABSOLUTELY NO WARRANTY/, 'versio');
 
-$output = qx{../task versi};
+$output = qx{../task rc:abbrev.rc versi};
 like ($output, qr/ABSOLUTELY NO WARRANTY/, 'versi');
 
-$output = qx{../task vers};
+$output = qx{../task rc:abbrev.rc vers};
 like ($output, qr/ABSOLUTELY NO WARRANTY/, 'vers');
 
-$output = qx{../task ver};
+$output = qx{../task rc:abbrev.rc ver};
 like ($output, qr/ABSOLUTELY NO WARRANTY/, 'ver');
 
-$output = qx{../task ve};
+$output = qx{../task rc:abbrev.rc ve};
 like ($output, qr/ABSOLUTELY NO WARRANTY/, 've');
 
-$output = qx{../task v};
+$output = qx{../task rc:abbrev.rc v};
 like ($output, qr/ABSOLUTELY NO WARRANTY/, 'v');
 
 # Cleanup.
