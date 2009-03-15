@@ -343,18 +343,6 @@ static bool validCommand (std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool validBuiltinCommand (std::string& input)
-{
-  std::string copy = input;
-  guess ("command", commands, copy);
-  if (copy == "")
-      return false;
-
-  input = copy;
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 static bool validSubstitution (
   std::string& input,
   std::string& from,
@@ -509,7 +497,7 @@ void loadCustomReports (Config& conf)
     if (i->substr (0, 7) == "report.")
     {
       std::string report = i->substr (7, std::string::npos);
-      unsigned int columns = report.find (".columns");
+      size_t columns = report.find (".columns");
       if (columns != std::string::npos)
       {
         report = report.substr (0, columns);
