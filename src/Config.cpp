@@ -175,27 +175,27 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "# Filter:        pro:x pri:H +bug\n");
         fprintf (out, "# Limit:         10\n");
 
-        fprintf (out, "report.long.description=Lists all task, all data, matching the specified criteria");
-        fprintf (out, "report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description");
-        fprintf (out, "report.long.sort=due+,priority-,project+");
+        fprintf (out, "report.long.description=Lists all task, all data, matching the specified criteria\n");
+        fprintf (out, "report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description\n");
+        fprintf (out, "report.long.sort=due+,priority-,project+\n");
 
-        fprintf (out, "report.list.description=Lists all tasks matching the specified criteria");
-        fprintf (out, "report.list.columns=id,project,priority,due,active,age,description");
-        fprintf (out, "report.list.sort=due+,priority-,project+");
+        fprintf (out, "report.list.description=Lists all tasks matching the specified criteria\n");
+        fprintf (out, "report.list.columns=id,project,priority,due,active,age,description\n");
+        fprintf (out, "report.list.sort=due+,priority-,project+\n");
 
-        fprintf (out, "report.ls.description=Minimal listing of all tasks matching the specified criteria");
-        fprintf (out, "report.ls.columns=id,project,priority,description");
-        fprintf (out, "report.ls.sort=priority-,project+");
+        fprintf (out, "report.ls.description=Minimal listing of all tasks matching the specified criteria\n");
+        fprintf (out, "report.ls.columns=id,project,priority,description\n");
+        fprintf (out, "report.ls.sort=priority-,project+\n");
 
-        fprintf (out, "report.newest.description=Shows the newest tasks");
-        fprintf (out, "report.newest.columns=id,project,priority,due,active,age,description");
-        fprintf (out, "report.newest.sort=id-");
-        fprintf (out, "report.newest.limit=10");
+        fprintf (out, "report.newest.description=Shows the newest tasks\n");
+        fprintf (out, "report.newest.columns=id,project,priority,due,active,age,description\n");
+        fprintf (out, "report.newest.sort=id-\n");
+        fprintf (out, "report.newest.limit=10\n");
 
-        fprintf (out, "report.oldest.description=Shows the oldest tasks");
-        fprintf (out, "report.oldest.columns=id,project,priority,due,active,age,description");
-        fprintf (out, "report.oldest.sort=id+");
-        fprintf (out, "report.oldest.limit=10");
+        fprintf (out, "report.oldest.description=Shows the oldest tasks\n");
+        fprintf (out, "report.oldest.columns=id,project,priority,due,active,age,description\n");
+        fprintf (out, "report.oldest.sort=id+\n");
+        fprintf (out, "report.oldest.limit=10\n");
 
         fclose (out);
 
