@@ -120,6 +120,7 @@ static const char* commands[] =
 {
   "active",
   "add",
+  "append",
   "calendar",
   "colors",
   "completed",
@@ -188,7 +189,6 @@ void guess (const std::string& type, std::vector<std::string>& options, std::str
     candidate = matches[0];
 
   else if (0 == matches.size ())
-//    throw std::string ("Unrecognized ") + type + " '" + candidate + "'";
     candidate = "";
 
   else

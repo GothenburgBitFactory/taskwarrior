@@ -85,6 +85,10 @@ static std::string shortUsage (Config& conf)
   table.addCell (row, 2, "Adds a new task");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task append [tags] [attrs] desc...");
+  table.addCell (row, 2, "Appends more description to an existing task");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task completed [tags] [attrs] desc...");
   table.addCell (row, 2, "Chronological listing of all completed tasks matching the specified criteria");
 
@@ -816,6 +820,7 @@ std::string runTaskCommand (
   // Commands that cause updates.
   else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify   (tdb, task, conf); }
   else if (command == "add")                { cmdMod = true; out = handleAdd      (tdb, task, conf); }
+  else if (command == "append")             { cmdMod = true; out = handleAppend   (tdb, task, conf); }
   else if (command == "done")               { cmdMod = true; out = handleDone     (tdb, task, conf); }
   else if (command == "undelete")           { cmdMod = true; out = handleUndelete (tdb, task, conf); }
   else if (command == "delete")             { cmdMod = true; out = handleDelete   (tdb, task, conf); }

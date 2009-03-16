@@ -75,6 +75,7 @@ std::string runTaskCommand (std::vector <std::string>&, TDB&, Config&, bool gc =
 
 // command.cpp
 std::string handleAdd (TDB&, T&, Config&);
+std::string handleAppend (TDB&, T&, Config&);
 std::string handleExport (TDB&, T&, Config&);
 std::string handleDone (TDB&, T&, Config&);
 std::string handleModify (TDB&, T&, Config&);

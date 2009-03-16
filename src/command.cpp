@@ -725,6 +725,100 @@ std::string handleModify (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string handleAppend (TDB& tdb, T& task, Config& conf)
+{
+  std::stringstream out;
+  std::vector <T> all;
+  tdb.pendingT (all);
+
+  std::vector <T>::iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+  {
+    if (it->getId () == task.getId ())
+    {
+      T original (*it);
+
+      // A non-zero value forces a file write.
+      int changes = 0;
+
+      // Apply a new description, if any.
+      if (task.getDescription () != "")
+      {
+        original.setDescription (original.getDescription () +
+                                 " " +
+                                task.getDescription ());
+        ++changes;
+      }
+
+      // Apply or remove tags, if any.
+      std::vector <std::string> tags;
+      task.getTags (tags);
+      for (unsigned int i = 0; i < tags.size (); ++i)
+      {
+        if (tags[i][0] == '+')
+          original.addTag (tags[i].substr (1, std::string::npos));
+        else
+          original.addTag (tags[i]);
+
+        ++changes;
+      }
+
+      task.getRemoveTags (tags);
+      for (unsigned int i = 0; i < tags.size (); ++i)
+      {
+        if (tags[i][0] == '-')
+          original.removeTag (tags[i].substr (1, std::string::npos));
+        else
+          original.removeTag (tags[i]);
+
+        ++changes;
+      }
+
+      // Apply or remove attributes, if any.
+      std::map <std::string, std::string> attributes;
+      task.getAttributes (attributes);
+      foreach (i, attributes)
+      {
+        if (i->second == "")
+          original.removeAttribute (i->first);
+        else
+          original.setAttribute (i->first, i->second);
+
+        ++changes;
+      }
+
+      std::string from;
+      std::string to;
+      task.getSubstitution (from, to);
+      if (from != "")
+      {
+        std::string description = original.getDescription ();
+        size_t pattern = description.find (from);
+        if (pattern != std::string::npos)
+        {
+          description = description.substr (0, pattern) +
+                        to                              +
+                        description.substr (pattern + from.length (), std::string::npos);
+          original.setDescription (description);
+          ++changes;
+        }
+      }
+
+      if (changes)
+      {
+        original.setId (task.getId ());
+        tdb.modifyT (original);
+      }
+
+      return out.str ();
+    }
+  }
+
+  throw std::string ("Task not found.");
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string handleColor (Config& conf)
 {
   std::stringstream out;

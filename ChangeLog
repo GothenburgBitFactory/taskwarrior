@@ -1,6 +1,12 @@
 
 ------ current release ---------------------------
 
+1.6.0 (?)
+  + Added support for new "append" command that adds more description text to
+    an existing task.
+
+------ old releases ------------------------------
+
 1.5.0 (3/15/2009)
   + Removed deprecated TUTORIAL file.
   + Removed "showage" configuration variable.
@@ -42,8 +48,6 @@
     Benjamin Tegarden).
   + Fixed bug that prevented the summary report from properly reporting
     recently completed tasks.
-
------- old releases ------------------------------
 
 1.4.3 (11/1/2008) 8639e9260646c8c9224e0fc47e5d2443b46eecfc
   + Fixed misleading task count at bottom on "info" report.
