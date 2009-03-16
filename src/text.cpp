@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -49,33 +49,43 @@ void wrapText (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void split (std::vector<std::string>& results, const std::string& input, const char delimiter)
+void split (
+  std::vector<std::string>& results,
+  const std::string& input,
+  const char delimiter)
 {
-  std::string temp = input;
+  results.clear ();
+  std::string::size_type start = 0;
   std::string::size_type i;
-  while ((i = temp.find (delimiter)) != std::string::npos)
+  while ((i = input.find (delimiter, start)) != std::string::npos)
   {
-    std::string token = temp.substr (0, i);
-    results.push_back (token);
-    temp.erase (0, i + 1);
+    results.push_back (input.substr (start, i - start));
+    start = i + 1;
   }
 
-  if (temp.length ()) results.push_back (temp);
+  if (input.length ())
+    results.push_back (input.substr (start, std::string::npos));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void split (std::vector<std::string>& results, const std::string& input, const std::string& delimiter)
+void split (
+  std::vector<std::string>& results,
+  const std::string& input,
+  const std::string& delimiter)
 {
-  std::string temp = input;
+  results.clear ();
+  std::string::size_type length = delimiter.length ();
+
+  std::string::size_type start = 0;
   std::string::size_type i;
-  while ((i = temp.find (delimiter)) != std::string::npos)
+  while ((i = input.find (delimiter, start)) != std::string::npos)
   {
-    std::string token = temp.substr (0, i);
-    results.push_back (token);
-    temp.erase (0, i + delimiter.length ());
+    results.push_back (input.substr (start, i - start));
+    start = i + length;
   }
 
-  if (temp.length ()) results.push_back (temp);
+  if (input.length ())
+    results.push_back (input.substr (start, std::string::npos));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +300,7 @@ std::string upperCase (const std::string& input)
 {
   std::string output = input;
   for (int i = 0; i < (int) input.length (); ++i)
-    if (::isupper (input[i]))
+    if (::islower (input[i]))
       output[i] = ::toupper (input[i]);
 
   return output;

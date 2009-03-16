@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -29,10 +29,12 @@
 #include <string>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <pwd.h>
+#include <errno.h>
 #include "Date.h"
 #include "Table.h"
 #include "task.h"
@@ -185,6 +187,7 @@ static char randomHexDigit ()
 {
   static char digits[] = "0123456789abcdef";
 #ifdef HAVE_RANDOM
+  // random is better than rand.
   return digits[random () % 16];
 #else
   return digits[rand () % 16];
@@ -239,9 +242,9 @@ const std::string uuid ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Recognize the following constructs, and return the number of days represented
-int convertDuration (std::string& input)
+int convertDuration (const std::string& input)
 {
-  input = lowerCase (input);
+  std::string lower_input = lowerCase (input);
   Date today;
 
   std::vector <std::string> supported;
@@ -261,7 +264,7 @@ int convertDuration (std::string& input)
   supported.push_back ("yearly");
 
   std::vector <std::string> matches;
-  if (autoComplete (input, supported, matches) == 1)
+  if (autoComplete (lower_input, supported, matches) == 1)
   {
     std::string found = matches[0];
 
@@ -277,19 +280,18 @@ int convertDuration (std::string& input)
   }
 
   // Support \d+ d|w|m|q|y
-
   else
   {
     // Verify all digits followed by d, w, m, q, or y.
-    unsigned int length = input.length ();
+    unsigned int length = lower_input.length ();
     for (unsigned int i = 0; i < length; ++i)
     {
-      if (! isdigit (input[i]) &&
+      if (! isdigit (lower_input[i]) &&
           i == length - 1)
       {
-        int number = ::atoi (input.substr (0, i).c_str ());
+        int number = ::atoi (lower_input.substr (0, i).c_str ());
 
-        switch (input[length - 1])
+        switch (lower_input[length - 1])
         {
         case 'd': return number *   1; break;
         case 'w': return number *   7; break;
@@ -329,5 +331,39 @@ std::string expandPath (const std::string& in)
 
   return copy;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// On Solaris no flock function exists.
+#ifdef SOLARIS
+int flock (int fd, int operation)
+{
+  struct flock fl;
+
+  switch (operation & ~LOCK_NB)
+  {
+  case LOCK_SH:
+    fl.l_type = F_RDLCK;
+    break;
+
+  case LOCK_EX:
+    fl.l_type = F_WRLCK;
+    break;
+
+  case LOCK_UN:
+    fl.l_type = F_UNLCK;
+    break;
+
+  default:
+    errno = EINVAL;
+    return -1;
+  }
+
+  fl.l_whence = 0;
+  fl.l_start  = 0;
+  fl.l_len    = 0;
+
+  return fcntl (fd, (operation & LOCK_NB) ? F_SETLK : F_SETLKW, &fl);
+}
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////

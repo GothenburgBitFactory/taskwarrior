@@ -1,4 +1,3 @@
-Makefile.in
 aclocal.m4
 autom4te.cache
 auto.h*
@@ -11,3 +10,4 @@ stamp-h1
 Makefile
 configure
 config.log
+www.xls

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -51,7 +51,7 @@ public:
   int gc                ();
   int nextId            ();
 
-  void onChange         (void (*)());
+  void noLock           ();
 
 private:
   bool lock             (FILE*) const;
@@ -59,13 +59,12 @@ private:
   bool writePending     (const T&);
   bool writeCompleted   (const T&);
   bool readLockedFile   (const std::string&, std::vector <std::string>&) const;
-  void dbChanged        ();
 
 private:
   std::string mPendingFile;
   std::string mCompletedFile;
   int mId;
-  std::vector <void (*)()> mOnChange;
+  bool mNoLock;
 };
 
 #endif

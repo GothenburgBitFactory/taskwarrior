@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -86,9 +86,40 @@ void filter (std::vector<T>& all, T& task)
           if (a->second.length () <= refTask.getAttribute (a->first).length ())
             if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
               ++matches;
+/*
+  TODO Attempt at allowing "pri:!H", thwarted by a lack of coffee and the
+       validation of "!H" as a priority value.  To be revisited soon.
+          {
+            if (a->second[0] == '!')  // Inverted search.
+            {
+              if (a->second.substr (1, std::string::npos) != refTask.getAttribute (a->first).substr (0, a->second.length ()))
+                ++matches;
+            }
+            else
+            {
+              if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
+                ++matches;
+            }
+          }
+*/
         }
         else if (a->second == refTask.getAttribute (a->first))
           ++matches;
+/*
+        else
+        {
+          if (a->second[0] == '!')  // Inverted search.
+          {
+            if (a->second.substr (1, std::string::npos) != refTask.getAttribute (a->first))
+              ++matches;
+          }
+          else
+          {
+            if (a->second == refTask.getAttribute (a->first))
+              ++matches;
+          }
+        }
+*/
       }
 
       if (matches == attrList.size ())
@@ -106,287 +137,6 @@ void filter (std::vector<T>& all, T& task)
   }
 
   all = filtered;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Successively apply filters based on the task object built from the command
-// line.  Tasks that match all the specified criteria are listed.
-std::string handleList (TDB& tdb, T& task, Config& conf)
-{
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Get the pending tasks.
-  std::vector <T> tasks;
-  tdb.allPendingT (tasks);
-  handleRecurrence (tdb, tasks);
-  filter (tasks, task);
-
-  initializeColorRules (conf);
-
-  bool showAge = conf.get ("showage", true);
-
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (width);
-  table.addColumn ("ID");
-  table.addColumn ("Project");
-  table.addColumn ("Pri");
-  table.addColumn ("Due");
-  table.addColumn ("Active");
-  if (showAge) table.addColumn ("Age");
-  table.addColumn ("Description");
-
-  if (conf.get (std::string ("color"), true))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-    table.setColumnUnderline (4);
-    table.setColumnUnderline (5);
-    if (showAge) table.setColumnUnderline (6);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::minimum);
-  table.setColumnWidth (3, Table::minimum);
-  table.setColumnWidth (4, Table::minimum);
-  if (showAge) table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
-
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (3, Table::right);
-  if (showAge) table.setColumnJustification (5, Table::right);
-
-  table.sortOn (3, Table::ascendingDate);
-  table.sortOn (2, Table::descendingPriority);
-  table.sortOn (1, Table::ascendingCharacter);
-
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-
-  for (unsigned int i = 0; i < tasks.size (); ++i)
-  {
-    T refTask (tasks[i]);
-    if (refTask.getStatus () != T::pending)
-      continue;
-
-    // Now format the matching task.
-    bool imminent = false;
-    bool overdue = false;
-    std::string due = refTask.getAttribute ("due");
-    if (due.length ())
-    {
-      switch (getDueState (due))
-      {
-      case 2: overdue = true;  break;
-      case 1: imminent = true; break;
-      case 0:
-      default:                 break;
-      }
-
-      Date dt (::atoi (due.c_str ()));
-      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-    }
-
-    std::string active;
-    if (refTask.getAttribute ("start") != "")
-      active = "*";
-
-    std::string age;
-    std::string created = refTask.getAttribute ("entry");
-    if (created.length ())
-    {
-      Date now;
-      Date dt (::atoi (created.c_str ()));
-      formatTimeDeltaDays (age, (time_t) (now - dt));
-    }
-
-    // All criteria match, so add refTask to the output table.
-    int row = table.addRow ();
-    table.addCell (row, 0, refTask.getId ());
-    table.addCell (row, 1, refTask.getAttribute ("project"));
-    table.addCell (row, 2, refTask.getAttribute ("priority"));
-    table.addCell (row, 3, due);
-    table.addCell (row, 4, active);
-    if (showAge) table.addCell (row, 5, age);
-    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
-
-    if (conf.get ("color", true))
-    {
-      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
-      table.setRowFg (row, fg);
-      table.setRowBg (row, bg);
-
-      if (fg == Text::nocolor)
-      {
-        if (overdue)
-          table.setCellFg (row, 3, Text::red);
-        else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
-      }
-    }
-  }
-
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << optionalBlankLine (conf)
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No matches."
-        << std::endl;
-
-  return out.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Successively apply filters based on the task object built from the command
-// line.  Tasks that match all the specified criteria are listed.  Show a narrow
-// list that works better on mobile devices.
-std::string handleSmallList (TDB& tdb, T& task, Config& conf)
-{
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Get the pending tasks.
-  std::vector <T> tasks;
-  tdb.allPendingT (tasks);
-  handleRecurrence (tdb, tasks);
-  filter (tasks, task);
-
-  initializeColorRules (conf);
-
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-  table.addColumn ("ID");
-  table.addColumn ("Project");
-  table.addColumn ("Pri");
-  table.addColumn ("Description");
-
-  if (conf.get ("color", true))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::minimum);
-  table.setColumnWidth (3, Table::flexible);
-
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (3, Table::left);
-
-  table.sortOn (2, Table::descendingPriority);
-  table.sortOn (1, Table::ascendingCharacter);
-
-  // Iterate over each task, and apply selection criteria.
-  for (unsigned int i = 0; i < tasks.size (); ++i)
-  {
-    T refTask (tasks[i]);
-
-    // Now format the matching task.
-    bool imminent = false;
-    bool overdue = false;
-    std::string due = refTask.getAttribute ("due");
-    if (due.length ())
-    {
-      switch (getDueState (due))
-      {
-      case 2: overdue = true;  break;
-      case 1: imminent = true; break;
-      case 0:
-      default:                 break;
-      }
-
-      Date dt (::atoi (due.c_str ()));
-      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-    }
-
-    std::string active;
-    if (refTask.getAttribute ("start") != "")
-      active = "*";
-
-    std::string age;
-    std::string created = refTask.getAttribute ("entry");
-    if (created.length ())
-    {
-      Date now;
-      Date dt (::atoi (created.c_str ()));
-      formatTimeDeltaDays (age, (time_t) (now - dt));
-    }
-
-    // All criteria match, so add refTask to the output table.
-    int row = table.addRow ();
-    table.addCell (row, 0, refTask.getId ());
-    table.addCell (row, 1, refTask.getAttribute ("project"));
-    table.addCell (row, 2, refTask.getAttribute ("priority"));
-    table.addCell (row, 3, refTask.getDescription ());
-
-    if (conf.get ("color", true))
-    {
-      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
-      table.setRowFg (row, fg);
-      table.setRowBg (row, bg);
-
-      if (fg == Text::nocolor)
-      {
-        if (overdue)
-          table.setCellFg (row, 3, Text::red);
-        else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
-      }
-    }
-  }
-
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << optionalBlankLine (conf)
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No matches."
-        << std::endl;
-
-  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -422,7 +172,7 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Project");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -439,7 +189,10 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
   table.setColumnJustification (1, Table::left);
   table.setColumnJustification (2, Table::left);
 
-  table.sortOn (0, Table::ascendingDate);
+  // Note: There is deliberately no sorting.  The original sorting was on the
+  //       end date.  Tasks are appended to completed.data naturally sorted by
+  //       the end date, so that sequence is assumed to remain unchanged, and
+  //       relied upon here.
 
   // Iterate over each task, and apply selection criteria.
   for (unsigned int i = 0; i < tasks.size (); ++i)
@@ -456,11 +209,11 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 1, refTask.getAttribute ("project"));
     table.addCell (row, 2, refTask.getDescription ());
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
+      autoColorize (refTask, fg, bg, conf);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
     }
@@ -508,7 +261,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Name");
   table.addColumn ("Value");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -606,12 +359,12 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
           Date nextweek = now + 7 * 86400;
           imminent = dt < nextweek ? true : false;
 
-          if (conf.get ("color", true))
+          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
           {
             if (overdue)
-              table.setCellFg (row, 1, Text::red);
+              table.setCellFg (row, 1, Text::colorCode (conf.get ("color.overdue", "red")));
             else if (imminent)
-              table.setCellFg (row, 1, Text::yellow);
+              table.setCellFg (row, 1, Text::colorCode (conf.get ("color.due", "yellow")));
           }
         }
       }
@@ -679,206 +432,23 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Successively apply filters based on the task object built from the command
-// line.  Tasks that match all the specified criteria are listed.
-std::string handleLongList (TDB& tdb, T& task, Config& conf)
-{
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Get all the tasks.
-  std::vector <T> tasks;
-  tdb.allPendingT (tasks);
-  handleRecurrence (tdb, tasks);
-  filter (tasks, task);
-
-  initializeColorRules (conf);
-
-  bool showAge = conf.get ("showage", true);
-
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-  table.addColumn ("ID");
-  table.addColumn ("Project");
-  table.addColumn ("Pri");
-  table.addColumn ("Entry");
-  table.addColumn ("Start");
-  table.addColumn ("Due");
-  if (showAge) table.addColumn ("Age");
-  table.addColumn ("Tags");
-  table.addColumn ("Description");
-
-  if (conf.get ("color", true))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-    table.setColumnUnderline (4);
-    table.setColumnUnderline (5);
-    table.setColumnUnderline (6);
-    table.setColumnUnderline (7);
-    if (showAge) table.setColumnUnderline (8);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::minimum);
-  table.setColumnWidth (3, Table::minimum);
-  table.setColumnWidth (4, Table::minimum);
-  table.setColumnWidth (5, Table::minimum);
-  if (showAge) table.setColumnWidth (6, Table::minimum);
-  table.setColumnWidth ((showAge ? 7 : 6), Table::minimum);
-  table.setColumnWidth ((showAge ? 8 : 7), Table::flexible);
-
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (3, Table::right);
-  table.setColumnJustification (4, Table::right);
-  table.setColumnJustification (5, Table::right);
-  if (showAge) table.setColumnJustification (6, Table::right);
-
-  table.sortOn (5, Table::ascendingDate);
-  table.sortOn (2, Table::descendingPriority);
-  table.sortOn (1, Table::ascendingCharacter);
-
-  // Iterate over each task, and apply selection criteria.
-  for (unsigned int i = 0; i < tasks.size (); ++i)
-  {
-    T refTask (tasks[i]);
-
-    Date now;
-
-    std::string started = refTask.getAttribute ("start");
-    if (started.length ())
-    {
-      Date dt (::atoi (started.c_str ()));
-      started = dt.toString (conf.get ("dateformat", "m/d/Y"));
-    }
-
-    std::string entered = refTask.getAttribute ("entry");
-    if (entered.length ())
-    {
-      Date dt (::atoi (entered.c_str ()));
-      entered = dt.toString (conf.get ("dateformat", "m/d/Y"));
-    }
-
-    // Now format the matching task.
-    bool imminent = false;
-    bool overdue = false;
-    std::string due = refTask.getAttribute ("due");
-    if (due.length ())
-    {
-      switch (getDueState (due))
-      {
-      case 2: overdue = true;  break;
-      case 1: imminent = true; break;
-      case 0:
-      default:                 break;
-      }
-
-      Date dt (::atoi (due.c_str ()));
-      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-    }
-
-    std::string age;
-    std::string created = refTask.getAttribute ("entry");
-    if (created.length ())
-    {
-      Date dt (::atoi (created.c_str ()));
-      formatTimeDeltaDays (age, (time_t) (now - dt));
-    }
-
-    // Make a list of tags.
-    std::string tags;
-    std::vector <std::string> all;
-    refTask.getTags (all);
-    join (tags, " ", all);
-
-    // All criteria match, so add refTask to the output table.
-    int row = table.addRow ();
-    table.addCell (row, 0, refTask.getId ());
-    table.addCell (row, 1, refTask.getAttribute ("project"));
-    table.addCell (row, 2, refTask.getAttribute ("priority"));
-    table.addCell (row, 3, entered);
-    table.addCell (row, 4, started);
-    table.addCell (row, 5, due);
-    if (showAge) table.addCell (row, 6, age);
-    table.addCell (row, (showAge ? 7 : 6), tags);
-    table.addCell (row, (showAge ? 8 : 7), refTask.getDescription ());
-
-    if (conf.get ("color", true))
-    {
-      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
-      table.setRowFg (row, fg);
-      table.setRowBg (row, bg);
-
-      if (fg == Text::nocolor)
-      {
-        if (overdue)
-          table.setCellFg (row, 3, Text::red);
-        else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
-      }
-    }
-  }
-
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << optionalBlankLine (conf)
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No matches." << std::endl;
-
-  return out.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Project  Tasks  Avg Age  Status
-// A           12      13d  XXXXXXXX------
-// B          109   3d 12h  XX------------
+// Project  Remaining  Avg Age  Complete  0%                  100%
+// A               12      13d       55%  XXXXXXXXXXXXX-----------
+// B              109   3d 12h       10%  XXX---------------------
 std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
 
-  // Generate unique list of project names.
-  std::map <std::string, bool> allProjects;
-  std::vector <T> pending;
-  tdb.allPendingT (pending);
-  handleRecurrence (tdb, pending);
-  filter (pending, task);
-  for (unsigned int i = 0; i < pending.size (); ++i)
-  {
-    T task (pending[i]);
-    allProjects[task.getAttribute ("project")] = false;
-  }
+  std::vector <T> tasks;
+  tdb.allT (tasks);
+  handleRecurrence (tdb, tasks);
+  filter (tasks, task);
 
-  std::vector <T> completed;
-  tdb.allCompletedT (completed);
-  filter (completed, task);
-  for (unsigned int i = 0; i < completed.size (); ++i)
-  {
-    T task (completed[i]);
-    allProjects[task.getAttribute ("project")] = false;
-  }
+  // Generate unique list of project names from all pending tasks.
+  std::map <std::string, bool> allProjects;
+  foreach (t, tasks)
+    if (t->getStatus () == T::pending)
+      allProjects[t->getAttribute ("project")] = false;
 
   // Initialize counts, sum.
   std::map <std::string, int> countPending;
@@ -887,6 +457,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   std::map <std::string, int> counter;
   time_t now = time (NULL);
 
+  // Initialize counters.
   foreach (i, allProjects)
   {
     countPending   [i->first] = 0;
@@ -895,34 +466,30 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
     counter        [i->first] = 0;
   }
 
-  // Count the pending tasks.
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  // Count the various tasks.
+  foreach (t, tasks)
   {
-    T task (pending[i]);
-    std::string project = task.getAttribute ("project");
-    if (task.getStatus () == T::pending)
-      ++countPending[project];
-
-    time_t entry = ::atoi (task.getAttribute ("entry").c_str ());
-    if (entry)
-    {
-      sumEntry[project] = sumEntry[project] + (double) (now - entry);
-      ++counter[project];
-    }
-  }
-
-  // Count the completed tasks.
-  for (unsigned int i = 0; i < completed.size (); ++i)
-  {
-    T task (completed[i]);
-    std::string project = task.getAttribute ("project");
-    countCompleted[project] = countCompleted[project] + 1;
+    std::string project = t->getAttribute ("project");
     ++counter[project];
 
-    time_t entry = ::atoi (task.getAttribute ("entry").c_str ());
-    time_t end   = ::atoi (task.getAttribute ("end").c_str ());
-    if (entry && end)
-      sumEntry[project] = sumEntry[project] + (double) (end - entry);
+    if (t->getStatus () == T::pending)
+    {
+      ++countPending[project];
+
+      time_t entry = ::atoi (t->getAttribute ("entry").c_str ());
+      if (entry)
+        sumEntry[project] = sumEntry[project] + (double) (now - entry);
+    }
+
+    else if (t->getStatus () == T::completed)
+    {
+      ++countCompleted[project];
+
+      time_t entry = ::atoi (t->getAttribute ("entry").c_str ());
+      time_t end   = ::atoi (task.getAttribute ("end").c_str ());
+      if (entry && end)
+        sumEntry[project] = sumEntry[project] + (double) (end - entry);
+    }
   }
 
   // Create a table for output.
@@ -933,7 +500,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Complete");
   table.addColumn ("0%                        100%");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -970,7 +537,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
       int completedBar = (c * barWidth) / (c + p);
 
       std::string bar;
-      if (conf.get ("color", true))
+      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
       {
         bar = "\033[42m";
         for (int b = 0; b < completedBar; ++b)
@@ -1062,8 +629,6 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
 
   initializeColorRules (conf);
 
-  bool showAge = conf.get ("showage", true);
-
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
@@ -1073,10 +638,10 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Pri");
   table.addColumn ("Due");
   table.addColumn ("Active");
-  if (showAge) table.addColumn ("Age");
+  table.addColumn ("Age");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1084,7 +649,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
     table.setColumnUnderline (3);
     table.setColumnUnderline (4);
     table.setColumnUnderline (5);
-    if (showAge) table.setColumnUnderline (6);
+    table.setColumnUnderline (6);
   }
   else
     table.setTableDashedUnderline ();
@@ -1094,12 +659,12 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   table.setColumnWidth (2, Table::minimum);
   table.setColumnWidth (3, Table::minimum);
   table.setColumnWidth (4, Table::minimum);
-  if (showAge) table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
+  table.setColumnWidth (5, Table::minimum);
+  table.setColumnWidth (6, Table::flexible);
 
   table.setColumnJustification (0, Table::right);
   table.setColumnJustification (3, Table::right);
-  if (showAge) table.setColumnJustification (5, Table::right);
+  table.setColumnJustification (5, Table::right);
 
   table.sortOn (3, Table::ascendingDate);
   table.sortOn (2, Table::descendingPriority);
@@ -1148,23 +713,23 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 2, refTask.getAttribute ("priority"));
     table.addCell (row, 3, due);
     table.addCell (row, 4, active);
-    if (showAge) table.addCell (row, 5, age);
-    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
+    table.addCell (row, 5, age);
+    table.addCell (row, 6, refTask.getDescription ());
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
+      autoColorize (refTask, fg, bg, conf);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
 
       if (fg == Text::nocolor)
       {
         if (overdue)
-          table.setCellFg (row, 3, Text::red);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
         else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
+          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
       }
     }
   }
@@ -1235,6 +800,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
       if (task.getStatus () == T::deleted)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
 
         if (deletedGroup.find (epoch) != deletedGroup.end ())
           deletedGroup[epoch] = deletedGroup[epoch] + 1;
@@ -1244,6 +810,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
       else if (task.getStatus () == T::completed)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
 
         if (completedGroup.find (epoch) != completedGroup.end ())
           completedGroup[epoch] = completedGroup[epoch] + 1;
@@ -1274,6 +841,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
       if (task.getStatus () == T::deleted)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
 
         if (deletedGroup.find (epoch) != deletedGroup.end ())
           deletedGroup[epoch] = deletedGroup[epoch] + 1;
@@ -1283,6 +851,8 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
       else if (task.getStatus () == T::completed)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
+
         if (completedGroup.find (epoch) != completedGroup.end ())
           completedGroup[epoch] = completedGroup[epoch] + 1;
         else
@@ -1301,7 +871,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Deleted");
   table.addColumn ("Net");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1328,9 +898,9 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
   {
     row = table.addRow ();
 
-    totalAdded     += addedGroup[i->first];
-    totalCompleted += completedGroup[i->first];
-    totalDeleted   += deletedGroup[i->first];
+    totalAdded     += addedGroup     [i->first];
+    totalCompleted += completedGroup [i->first];
+    totalDeleted   += deletedGroup   [i->first];
 
     Date dt (i->first);
     int m, d, y;
@@ -1364,7 +934,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
     }
 
     table.addCell (row, 5, net);
-    if (conf.get ("color", true) && net)
+    if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) && net)
       table.setCellFg (row, 5, net > 0 ? Text::red: Text::green);
   }
 
@@ -1374,7 +944,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
     row = table.addRow ();
 
     table.addCell (row, 1, "Average");
-    if (conf.get ("color", true)) table.setRowFg (row, Text::bold);
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) table.setRowFg (row, Text::bold);
     table.addCell (row, 2, totalAdded / (table.rowCount () - 2));
     table.addCell (row, 3, totalCompleted / (table.rowCount () - 2));
     table.addCell (row, 4, totalDeleted / (table.rowCount () - 2));
@@ -1406,7 +976,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
     endwin ();
   }
 #endif
-  int widthOfBar = width - 15;   // strlen ("2008 September ")
+  int widthOfBar = width - 15;   // 15 == strlen ("2008 September ")
 
   std::map <time_t, int> groups;
   std::map <time_t, int> addedGroup;
@@ -1495,9 +1065,9 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
   table.addColumn ("Year");
   table.addColumn ("Month");
-  table.addColumn ("Added/Completed/Deleted");
+  table.addColumn ("Number Added/Completed/Deleted");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1505,18 +1075,24 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   else
     table.setTableDashedUnderline ();
 
-  // Determine the longest line.
-  int maxLine = 0;
+  // Determine the longest line, and the longest "added" line.
+  int maxAddedLine = 0;
+  int maxRemovedLine = 0;
   foreach (i, groups)
   {
-    int line = addedGroup[i->first] + completedGroup[i->first] + deletedGroup[i->first];
+    if (completedGroup[i->first] + deletedGroup[i->first] > maxRemovedLine)
+      maxRemovedLine = completedGroup[i->first] + deletedGroup[i->first];
 
-    if (line > maxLine)
-      maxLine = line;
+    if (addedGroup[i->first] > maxAddedLine)
+      maxAddedLine = addedGroup[i->first];
   }
+
+  int maxLine = maxAddedLine + maxRemovedLine;
 
   if (maxLine > 0)
   {
+    unsigned int leftOffset = (widthOfBar * maxAddedLine) / maxLine;
+
     int totalAdded     = 0;
     int totalCompleted = 0;
     int totalDeleted   = 0;
@@ -1546,8 +1122,8 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
       unsigned int completedBar = (widthOfBar * completedGroup[i->first]) / maxLine;
       unsigned int deletedBar   = (widthOfBar *   deletedGroup[i->first]) / maxLine;
 
-      std::string bar;
-      if (conf.get ("color", true))
+      std::string bar = "";
+      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
       {
         char number[24];
         std::string aBar = "";
@@ -1577,9 +1153,12 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
             dBar = " " + dBar;
         }
 
-        bar  = Text::colorize (Text::black, Text::on_red,  aBar);
-        bar += Text::colorize (Text::black, Text::on_green, cBar);
-        bar += Text::colorize (Text::black, Text::on_yellow,    dBar);
+        while (bar.length () < leftOffset - aBar.length ())
+          bar += " ";
+
+        bar += Text::colorize (Text::black, Text::on_red,    aBar);
+        bar += Text::colorize (Text::black, Text::on_green,  cBar);
+        bar += Text::colorize (Text::black, Text::on_yellow, dBar);
       }
       else
       {
@@ -1587,7 +1166,10 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
         std::string cBar = ""; while (cBar.length () < completedBar) cBar += "X";
         std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += "-";
 
-        bar = aBar + cBar + dBar;
+        while (bar.length () < leftOffset - aBar.length ())
+          bar += " ";
+
+        bar += aBar + cBar + dBar;
       }
 
       table.addCell (row, 2, bar);
@@ -1600,7 +1182,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
         << table.render ()
         << std::endl;
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
       out << "Legend: "
           << Text::colorize (Text::black, Text::on_red, "added")
           << ", "
@@ -1624,11 +1206,11 @@ std::string renderMonths (
   int firstYear,
   const Date& today,
   std::vector <T>& all,
-  Config& conf)
+  Config& conf,
+  int monthsPerLine)
 {
   Table table;
   table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-  int monthsPerLine = (conf.get ("monthsperline", 1));
 
   // Build table for the number of months to be displayed.
   for (int i = 0 ; i < (monthsPerLine * 8); i += 8)
@@ -1642,7 +1224,7 @@ std::string renderMonths (
     table.addColumn ("Fr");
     table.addColumn ("Sa");
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       table.setColumnUnderline (i + 1);
       table.setColumnUnderline (i + 2);
@@ -1712,7 +1294,7 @@ std::string renderMonths (
 
       table.addCell (row, thisCol, d);
 
-      if (conf.get ("color", true)         &&
+      if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
           today.day ()   == d              &&
           today.month () == months.at (c)  &&
           today.year ()  == years.at (c))
@@ -1723,7 +1305,7 @@ std::string renderMonths (
       {
         Date due (::atoi (it->getAttribute ("due").c_str ()));
 
-        if (conf.get ("color", true)      &&
+        if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
             due.day ()   == d             &&
             due.month () == months.at (c) &&
             due.year ()  == years.at (c))
@@ -1746,6 +1328,26 @@ std::string renderMonths (
 std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
+
+  // Determine window size, and set table accordingly.
+  int width = conf.get ("defaultwidth", 80);
+#ifdef HAVE_LIBNCURSES
+  if (conf.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+
+  // Each month requires 23 text columns width.  See how many will actually
+  // fit.  But if a preference is specified, and it fits, use it.
+  int preferredMonthsPerLine = (conf.get (std::string ("monthsperline"), 0));
+  int monthsThatFit = width / 23;
+
+  int monthsPerLine = monthsThatFit;
+  if (preferredMonthsPerLine != 0 && preferredMonthsPerLine < monthsThatFit)
+    monthsPerLine = preferredMonthsPerLine;
 
   // Load all the pending tasks.
   std::vector <T> pending;
@@ -1779,8 +1381,6 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
   out << std::endl;
   std::string output;
 
-  int monthsPerLine = (conf.get ("monthsperline", 1));
-
   while (yFrom < yTo || (yFrom == yTo && mFrom <= mTo))
   {
     int nextM = mFrom;
@@ -1808,7 +1408,7 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
 
     out << std::endl
         << optionalBlankLine (conf)
-        << renderMonths (mFrom, yFrom, today, pending, conf)
+        << renderMonths (mFrom, yFrom, today, pending, conf, monthsPerLine)
         << std::endl;
 
     mFrom += monthsPerLine;
@@ -1819,15 +1419,16 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
     }
   }
 
-  out << "Legend: "
-      << Text::colorize (Text::cyan, Text::nocolor, "today")
-      << ", "
-      << Text::colorize (Text::black, Text::on_yellow, "due")
-      << ", "
-      << Text::colorize (Text::black, Text::on_red, "overdue")
-      << "."
-      << optionalBlankLine (conf)
-      << std::endl;
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    out << "Legend: "
+        << Text::colorize (Text::cyan, Text::nocolor, "today")
+        << ", "
+        << Text::colorize (Text::black, Text::on_yellow, "due")
+        << ", "
+        << Text::colorize (Text::black, Text::on_red, "overdue")
+        << "."
+        << optionalBlankLine (conf)
+        << std::endl;
 
   return out.str ();
 }
@@ -1865,7 +1466,7 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Due");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1921,20 +1522,20 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
       table.addCell (row, 3, due);
       table.addCell (row, 4, refTask.getDescription ());
 
-      if (conf.get ("color", true))
+      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
       {
         Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
         Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-        autoColorize (refTask, fg, bg);
+        autoColorize (refTask, fg, bg, conf);
         table.setRowFg (row, fg);
         table.setRowBg (row, bg);
 
         if (fg == Text::nocolor)
         {
           if (overdue)
-            table.setCellFg (row, 3, Text::red);
+            table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
           else if (imminent)
-            table.setCellFg (row, 3, Text::yellow);
+            table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
         }
       }
     }
@@ -1986,7 +1587,7 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Due");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -2035,11 +1636,11 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
           table.addCell (row, 3, due);
           table.addCell (row, 4, refTask.getDescription ());
 
-          if (conf.get ("color", true))
+          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
           {
             Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
             Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-            autoColorize (refTask, fg, bg);
+            autoColorize (refTask, fg, bg, conf);
             table.setRowFg (row, fg);
             table.setRowBg (row, bg);
 
@@ -2065,304 +1666,6 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Successively apply filters based on the task object built from the command
-// line.  Tasks that match all the specified criteria are listed.
-std::string handleReportOldest (TDB& tdb, T& task, Config& conf)
-{
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Get the pending tasks.
-  std::vector <T> tasks;
-  tdb.allPendingT (tasks);
-  handleRecurrence (tdb, tasks);
-  filter (tasks, task);
-
-  initializeColorRules (conf);
-
-  bool showAge = conf.get ("showage", true);
-  unsigned int quantity = conf.get ("oldest", 10);
-
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (width);
-  table.addColumn ("ID");
-  table.addColumn ("Project");
-  table.addColumn ("Pri");
-  table.addColumn ("Due");
-  table.addColumn ("Active");
-  if (showAge) table.addColumn ("Age");
-  table.addColumn ("Description");
-
-  if (conf.get ("color", true))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-    table.setColumnUnderline (4);
-    table.setColumnUnderline (5);
-    if (showAge) table.setColumnUnderline (6);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::minimum);
-  table.setColumnWidth (3, Table::minimum);
-  table.setColumnWidth (4, Table::minimum);
-  if (showAge) table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
-
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (3, Table::right);
-  if (showAge) table.setColumnJustification (5, Table::right);
-
-  table.sortOn (3, Table::ascendingDate);
-  table.sortOn (2, Table::descendingPriority);
-  table.sortOn (1, Table::ascendingCharacter);
-
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-
-  for (unsigned int i = 0; i < min (quantity, tasks.size ()); ++i)
-  {
-    T refTask (tasks[i]);
-    Date now;
-
-    // Now format the matching task.
-    bool imminent = false;
-    bool overdue = false;
-    std::string due = refTask.getAttribute ("due");
-    if (due.length ())
-    {
-      switch (getDueState (due))
-      {
-      case 2: overdue = true;  break;
-      case 1: imminent = true; break;
-      case 0:
-      default:                 break;
-      }
-
-      Date dt (::atoi (due.c_str ()));
-      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-    }
-
-    std::string active;
-    if (refTask.getAttribute ("start") != "")
-      active = "*";
-
-    std::string age;
-    std::string created = refTask.getAttribute ("entry");
-    if (created.length ())
-    {
-      Date dt (::atoi (created.c_str ()));
-      formatTimeDeltaDays (age, (time_t) (now - dt));
-    }
-
-    // All criteria match, so add refTask to the output table.
-    int row = table.addRow ();
-    table.addCell (row, 0, refTask.getId ());
-    table.addCell (row, 1, refTask.getAttribute ("project"));
-    table.addCell (row, 2, refTask.getAttribute ("priority"));
-    table.addCell (row, 3, due);
-    table.addCell (row, 4, active);
-    if (showAge) table.addCell (row, 5, age);
-    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
-
-    if (conf.get ("color", true))
-    {
-      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
-      table.setRowFg (row, fg);
-      table.setRowBg (row, bg);
-
-      if (fg == Text::nocolor)
-      {
-        if (overdue)
-          table.setCellFg (row, 3, Text::red);
-        else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
-      }
-    }
-  }
-
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << optionalBlankLine (conf)
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No matches."
-        << std::endl;
-
-  return out.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Successively apply filters based on the task object built from the command
-// line.  Tasks that match all the specified criteria are listed.
-std::string handleReportNewest (TDB& tdb, T& task, Config& conf)
-{
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Get the pending tasks.
-  std::vector <T> tasks;
-  tdb.allPendingT (tasks);
-  handleRecurrence (tdb, tasks);
-  filter (tasks, task);
-
-  initializeColorRules (conf);
-
-  bool showAge = conf.get ("showage", true);
-  int quantity = conf.get ("newest", 10);
-
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (width);
-  table.addColumn ("ID");
-  table.addColumn ("Project");
-  table.addColumn ("Pri");
-  table.addColumn ("Due");
-  table.addColumn ("Active");
-  if (showAge) table.addColumn ("Age");
-  table.addColumn ("Description");
-
-  if (conf.get ("color", true))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-    table.setColumnUnderline (4);
-    table.setColumnUnderline (5);
-    if (showAge) table.setColumnUnderline (6);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::minimum);
-  table.setColumnWidth (3, Table::minimum);
-  table.setColumnWidth (4, Table::minimum);
-  if (showAge) table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth ((showAge ? 6 : 5), Table::flexible);
-
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (3, Table::right);
-  if (showAge) table.setColumnJustification (5, Table::right);
-
-  table.sortOn (3, Table::ascendingDate);
-  table.sortOn (2, Table::descendingPriority);
-  table.sortOn (1, Table::ascendingCharacter);
-
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-
-  int total = tasks.size ();
-  for (int i = total - 1; i >= max (0, total - quantity); --i)
-  {
-    T refTask (tasks[i]);
-    Date now;
-
-    // Now format the matching task.
-    bool imminent = false;
-    bool overdue = false;
-    std::string due = refTask.getAttribute ("due");
-    if (due.length ())
-    {
-      switch (getDueState (due))
-      {
-      case 2: overdue = true;  break;
-      case 1: imminent = true; break;
-      case 0:
-      default:                 break;
-      }
-
-      Date dt (::atoi (due.c_str ()));
-      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-    }
-
-    std::string active;
-    if (refTask.getAttribute ("start") != "")
-      active = "*";
-
-    std::string age;
-    std::string created = refTask.getAttribute ("entry");
-    if (created.length ())
-    {
-      Date dt (::atoi (created.c_str ()));
-      formatTimeDeltaDays (age, (time_t) (now - dt));
-    }
-
-    // All criteria match, so add refTask to the output table.
-    int row = table.addRow ();
-    table.addCell (row, 0, refTask.getId ());
-    table.addCell (row, 1, refTask.getAttribute ("project"));
-    table.addCell (row, 2, refTask.getAttribute ("priority"));
-    table.addCell (row, 3, due);
-    table.addCell (row, 4, active);
-    if (showAge) table.addCell (row, 5, age);
-    table.addCell (row, (showAge ? 6 : 5), refTask.getDescription ());
-
-    if (conf.get ("color", true))
-    {
-      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg);
-      table.setRowFg (row, fg);
-      table.setRowBg (row, bg);
-
-      if (fg == Text::nocolor)
-      {
-        if (overdue)
-          table.setCellFg (row, 3, Text::red);
-        else if (imminent)
-          table.setCellFg (row, 3, Text::yellow);
-      }
-    }
-  }
-
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << optionalBlankLine (conf)
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No matches."
-        << std::endl;
-
-  return out.str ();
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
 std::string handleReportStats (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
@@ -2383,6 +1686,8 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
   int recurringT    = 0;
   float daysPending = 0.0;
   int descLength    = 0;
+  std::map <std::string, int> allTags;
+  std::map <std::string, int> allProjects;
 
   std::vector <T>::iterator it;
   for (it = tasks.begin (); it != tasks.end (); ++it)
@@ -2411,6 +1716,13 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
     std::vector <std::string> tags;
     it->getTags (tags);
     if (tags.size ()) ++taggedT;
+
+    foreach (t, tags)
+      allTags[*t] = 0;
+
+    std::string project = it->getAttribute ("project");
+    if (project != "")
+      allProjects[project] = 0;
   }
 
   out << "Pending               " << pendingT   << std::endl
@@ -2447,6 +1759,9 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
     out << "Average desc length   " << (int) (descLength / totalT) << " characters" << std::endl;
     out << "Tasks tagged          " << std::setprecision (3) << (100.0 * taggedT / totalT) << "%" << std::endl;
   }
+
+  out << "Unique tags           " << allTags.size () << std::endl;
+  out << "Projects              " << allProjects.size () << std::endl;
 
   return out.str ();
 }
@@ -2635,6 +1950,404 @@ void gatherNextTasks (
   // Convert map to vector.
   foreach (i, matching)
     all.push_back (i->first);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// This report will eventually become the one report that many others morph into
+// via the .taskrc file.
+std::string handleCustomReport (
+  TDB& tdb,
+  T& task,
+  Config& conf,
+  const std::string& report)
+{
+  // Determine window size, and set table accordingly.
+  int width = conf.get ("defaultwidth", 80);
+#ifdef HAVE_LIBNCURSES
+  if (conf.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+
+  // Load report configuration.
+  std::string columnList = conf.get ("report." + report + ".columns");
+  std::vector <std::string> columns;
+  split (columns, columnList, ',');
+  validReportColumns (columns);
+
+  std::string sortList   = conf.get ("report." + report + ".sort");
+  std::vector <std::string> sortOrder;
+  split (sortOrder, sortList, ',');
+  validSortColumns (columns, sortOrder);
+
+  std::string filterList = conf.get ("report." + report + ".filter");
+  std::vector <std::string> filterArgs;
+  split (filterArgs, filterList, ' ');
+
+  // Load all pending tasks.
+  std::vector <T> tasks;
+  tdb.allPendingT (tasks);
+  handleRecurrence (tdb, tasks);
+
+  // Apply filters.
+  {
+    std::string ignore;
+    T filterTask;
+    parse (filterArgs, ignore, filterTask, conf);
+
+    filter (tasks, filterTask);  // Filter from custom report
+    filter (tasks, task);        // Filter from command line
+  }
+
+  // Initialize colorization for subsequent auto colorization.
+  initializeColorRules (conf);
+
+  Table table;
+  table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+
+  for (unsigned int i = 0; i < tasks.size (); ++i)
+    table.addRow ();
+
+  int columnCount = 0;
+  int dueColumn = -1;
+  foreach (col, columns)
+  {
+    // Add each column individually.
+    if (*col == "id")
+    {
+      table.addColumn ("ID");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        table.addCell (row, columnCount, tasks[row].getId ());
+    }
+
+    else if (*col == "uuid")
+    {
+      table.addColumn ("UUID");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        table.addCell (row, columnCount, tasks[row].getUUID ());
+    }
+
+    else if (*col == "project")
+    {
+      table.addColumn ("Project");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        table.addCell (row, columnCount, tasks[row].getAttribute ("project"));
+    }
+
+    else if (*col == "priority")
+    {
+      table.addColumn ("Pri");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        table.addCell (row, columnCount, tasks[row].getAttribute ("priority"));
+    }
+
+    else if (*col == "entry")
+    {
+      table.addColumn ("Added");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string entered;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        entered = tasks[row].getAttribute ("entry");
+        if (entered.length ())
+        {
+          Date dt (::atoi (entered.c_str ()));
+          entered = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          table.addCell (row, columnCount, entered);
+        }
+      }
+    }
+
+    else if (*col == "start")
+    {
+      table.addColumn ("Started");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string started;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        started = tasks[row].getAttribute ("start");
+        if (started.length ())
+        {
+          Date dt (::atoi (started.c_str ()));
+          started = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          table.addCell (row, columnCount, started);
+        }
+      }
+    }
+
+    else if (*col == "due")
+    {
+      table.addColumn ("Due");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string due;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        due = tasks[row].getAttribute ("due");
+        if (due.length ())
+        {
+          Date dt (::atoi (due.c_str ()));
+          due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          table.addCell (row, columnCount, due);
+        }
+      }
+
+      dueColumn = columnCount;
+    }
+
+    else if (*col == "age")
+    {
+      table.addColumn ("Age");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string created;
+      std::string age;
+      Date now;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        created = tasks[row].getAttribute ("entry");
+        if (created.length ())
+        {
+          Date dt (::atoi (created.c_str ()));
+          formatTimeDeltaDays (age, (time_t) (now - dt));
+          table.addCell (row, columnCount, age);
+        }
+      }
+    }
+
+    else if (*col == "active")
+    {
+      table.addColumn ("Active");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        if (tasks[row].getAttribute ("start") != "")
+          table.addCell (row, columnCount, "*");
+    }
+
+    else if (*col == "tags")
+    {
+      table.addColumn ("Tags");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      std::vector <std::string> all;
+      std::string tags;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        tasks[row].getTags (all);
+        join (tags, " ", all);
+        table.addCell (row, columnCount, tags);
+      }
+    }
+
+    else if (*col == "description")
+    {
+      table.addColumn ("Description");
+      table.setColumnWidth (columnCount, Table::flexible);
+      table.setColumnJustification (columnCount, Table::left);
+
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        table.addCell (row, columnCount, tasks[row].getDescription ());
+    }
+
+    else if (*col == "recur")
+    {
+      table.addColumn ("Recur");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      for (unsigned int row = 0; row < tasks.size (); ++row)
+        table.addCell (row, columnCount, tasks[row].getAttribute ("recur"));
+    }
+
+    // Common to all columns.
+    // Add underline.
+    if (conf.get (std::string ("color"), true) || conf.get (std::string ("_forcecolor"), false))
+      table.setColumnUnderline (columnCount);
+    else
+      table.setTableDashedUnderline ();
+
+    ++columnCount;
+  }
+
+  // Dynamically add sort criteria.
+  // Build a map of column names -> index.
+  std::map <std::string, unsigned int> columnIndex;
+  for (unsigned int c = 0; c < columns.size (); ++c)
+    columnIndex[columns[c]] = c;
+
+  foreach (sortColumn, sortOrder)
+  {
+    // Separate column and direction.
+    std::string column = sortColumn->substr (0, sortColumn->length () - 1);
+    char direction = (*sortColumn)[sortColumn->length () - 1];
+
+    if (column == "id")
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingNumeric :
+                      Table::descendingNumeric));
+
+    else if (column == "priority")
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingPriority :
+                      Table::descendingPriority));
+
+    else if (column == "entry" || column == "start" || column == "due")
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingDate :
+                      Table::descendingDate));
+
+    else if (column == "recur")
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingPeriod :
+                      Table::descendingPeriod));
+
+    else
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingCharacter :
+                      Table::descendingCharacter));
+  }
+
+  // Now auto colorize all rows.
+  std::string due;
+  bool imminent;
+  bool overdue;
+  for (unsigned int row = 0; row < tasks.size (); ++row)
+  {
+    imminent = false;
+    overdue = false;
+    due = tasks[row].getAttribute ("due");
+    if (due.length ())
+    {
+      switch (getDueState (due))
+      {
+      case 2: overdue = true;  break;
+      case 1: imminent = true; break;
+      case 0:
+      default:                 break;
+      }
+    }
+
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    {
+      Text::color fg = Text::colorCode (tasks[row].getAttribute ("fg"));
+      Text::color bg = Text::colorCode (tasks[row].getAttribute ("bg"));
+      autoColorize (tasks[row], fg, bg, conf);
+      table.setRowFg (row, fg);
+      table.setRowBg (row, bg);
+
+      if (fg == Text::nocolor)
+      {
+        if (dueColumn != -1)
+        {
+          if (overdue)
+            table.setCellFg (row, columnCount, Text::colorCode (conf.get ("color.overdue", "red")));
+          else if (imminent)
+            table.setCellFg (row, columnCount, Text::colorCode (conf.get ("color.due", "yellow")));
+        }
+      }
+    }
+  }
+
+  int maximum = conf.get (std::string ("report.") + report + ".limit", (int)0);
+
+  std::stringstream out;
+  if (table.rowCount ())
+    out << optionalBlankLine (conf)
+        << table.render (maximum)
+        << optionalBlankLine (conf)
+        << table.rowCount ()
+        << (table.rowCount () == 1 ? " task" : " tasks")
+        << std::endl;
+  else
+    out << "No matches."
+        << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void validReportColumns (const std::vector <std::string>& columns)
+{
+  std::vector <std::string> bad;
+
+  std::vector <std::string>::const_iterator it;
+  for (it = columns.begin (); it != columns.end (); ++it)
+    if (*it != "id"       &&
+        *it != "uuid"     &&
+        *it != "project"  &&
+        *it != "priority" &&
+        *it != "entry"    &&
+        *it != "start"    &&
+        *it != "due"      &&
+        *it != "age"      &&
+        *it != "active"   &&
+        *it != "tags"     &&
+        *it != "recur"    &&
+        *it != "description")
+      bad.push_back (*it);
+
+  if (bad.size ())
+  {
+    std::string error;
+    join (error, ", ", bad);
+    throw std::string ("Unrecognized column name: ") + error;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void validSortColumns (
+  const std::vector <std::string>& columns,
+  const std::vector <std::string>& sortColumns)
+{
+  std::vector <std::string> bad;
+  std::vector <std::string>::const_iterator sc;
+  for (sc = sortColumns.begin (); sc != sortColumns.end (); ++sc)
+  {
+    std::vector <std::string>::const_iterator co;
+    for (co = columns.begin (); co != columns.end (); ++co)
+      if (sc->substr (0, sc->length () - 1) == *co)
+        break;
+
+    if (co == columns.end ())
+      bad.push_back (*sc);
+  }
+
+  if (bad.size ())
+  {
+    std::string error;
+    join (error, ", ", bad);
+    throw std::string ("Sort column is not part of the report: ") + error;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

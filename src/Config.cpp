@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -36,8 +36,35 @@
 #include "Config.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+// These are default (but overridable) reports.  These entries are necessary
+// because these three reports were converted from hard-coded reports to custom
+// reports, and therefore need these config file entries.  However, users are
+// already used to seeing these five reports, but do not have these entries.
+// The choice was a) make users edit their .taskrc files, b) write a .taskrc
+// upgrade program to make the change, or c) this.
 Config::Config ()
 {
+  (*this)["report.long.description"]   = "Lists all task, all data, matching the specified criteria";
+  (*this)["report.long.columns"]       = "id,project,priority,entry,start,due,recur,age,tags,description";
+  (*this)["report.long.sort"]          = "due+,priority-,project+";
+
+  (*this)["report.list.description"]   = "Lists all tasks matching the specified criteria";
+  (*this)["report.list.columns"]       = "id,project,priority,due,active,age,description";
+  (*this)["report.list.sort"]          = "due+,priority-,project+";
+
+  (*this)["report.ls.description"]     = "Minimal listing of all tasks matching the specified criteria";
+  (*this)["report.ls.columns"]         = "id,project,priority,description";
+  (*this)["report.ls.sort"]            = "priority-,project+";
+
+  (*this)["report.newest.description"] = "Shows the newest tasks";
+  (*this)["report.newest.columns"]     = "id,project,priority,due,active,age,description";
+  (*this)["report.newest.sort"]        = "id-";
+  (*this)["report.newest.limit"]       = "10";
+
+  (*this)["report.oldest.description"] = "Shows the oldest tasks";
+  (*this)["report.oldest.columns"]     = "id,project,priority,due,active,age,description";
+  (*this)["report.oldest.sort"]        = "id+";
+  (*this)["report.oldest.limit"]       = "10";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,9 +74,9 @@ Config::Config (const std::string& file)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Read the Configuration filee and populate the *this map.  The file format
-// is simply lines with name=value pairs.  Whitespace between name, = and value
-// is not tolerated, but blank lines and comments starting with # are allowed.
+// Read the Configuration file and populate the *this map.  The file format is
+// simply lines with name=value pairs.  Whitespace between name, = and value is
+// not tolerated, but blank lines and comments starting with # are allowed.
 bool Config::load (const std::string& file)
 {
   std::ifstream in;
@@ -115,25 +142,60 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "confirmation=yes\n");
         fprintf (out, "next=2\n");
         fprintf (out, "dateformat=m/d/Y\n");
-        fprintf (out, "showage=yes\n");
-        fprintf (out, "monthsperline=1\n");
+        fprintf (out, "#monthsperline=2\n");
         fprintf (out, "curses=on\n");
         fprintf (out, "color=on\n");
+        fprintf (out, "due=7\n");
+        fprintf (out, "nag=You have higher priority tasks.\n");
+        fprintf (out, "locking=on\n");
 
         fprintf (out, "color.overdue=bold_red\n");
-        fprintf (out, "#color.due=on_bright_yellow\n");
-        fprintf (out, "#color.pri.H=on_red\n");
+        fprintf (out, "color.due=bold_yellow\n");
+        fprintf (out, "color.pri.H=bold\n");
         fprintf (out, "#color.pri.M=on_yellow\n");
         fprintf (out, "#color.pri.L=on_green\n");
+        fprintf (out, "#color.pri.none=white on_blue\n");
         fprintf (out, "color.active=bold_cyan\n");
         fprintf (out, "color.tagged=yellow\n");
         fprintf (out, "#color.tag.bug=yellow\n");
-        fprintf (out, "#color.project.home=on_green\n");
+        fprintf (out, "#color.project.garden=on_green\n");
         fprintf (out, "#color.keyword.car=on_blue\n");
+        fprintf (out, "#color.recurring=on_red\n");
         fprintf (out, "#shadow.file=%s/shadow.txt\n", dataDir.c_str ());
         fprintf (out, "#shadow.command=list\n");
         fprintf (out, "#shadow.notify=on\n");
-        fprintf (out, "#default.command=list\n");
+        fprintf (out, "#default.project=foo\n");
+        fprintf (out, "#default.priority=M\n");
+        fprintf (out, "default.command=list\n");
+
+        // Custom reports.
+        fprintf (out, "# Fields: id,uuid,project,priority,entry,start,due,recur,age,active,tags,description\n");
+        fprintf (out, "# Description:   This report is ...\n");
+        fprintf (out, "# Sort:          due+,priority-,project+\n");
+        fprintf (out, "# Filter:        pro:x pri:H +bug\n");
+        fprintf (out, "# Limit:         10\n");
+
+        fprintf (out, "report.long.description=Lists all task, all data, matching the specified criteria\n");
+        fprintf (out, "report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description\n");
+        fprintf (out, "report.long.sort=due+,priority-,project+\n");
+
+        fprintf (out, "report.list.description=Lists all tasks matching the specified criteria\n");
+        fprintf (out, "report.list.columns=id,project,priority,due,active,age,description\n");
+        fprintf (out, "report.list.sort=due+,priority-,project+\n");
+
+        fprintf (out, "report.ls.description=Minimal listing of all tasks matching the specified criteria\n");
+        fprintf (out, "report.ls.columns=id,project,priority,description\n");
+        fprintf (out, "report.ls.sort=priority-,project+\n");
+
+        fprintf (out, "report.newest.description=Shows the newest tasks\n");
+        fprintf (out, "report.newest.columns=id,project,priority,due,active,age,description\n");
+        fprintf (out, "report.newest.sort=id-\n");
+        fprintf (out, "report.newest.limit=10\n");
+
+        fprintf (out, "report.oldest.description=Shows the oldest tasks\n");
+        fprintf (out, "report.oldest.columns=id,project,priority,due,active,age,description\n");
+        fprintf (out, "report.oldest.sort=id+\n");
+        fprintf (out, "report.oldest.limit=10\n");
 
         fclose (out);
 
@@ -192,11 +254,13 @@ bool Config::get (const std::string& key, bool default_value)
   {
     std::string value = lowerCase ((*this)[key]);
 
-    if (value == "t"    ||
-        value == "true" ||
-        value == "1"    ||
-        value == "yes"  ||
-        value == "on")
+    if (value == "t"      ||
+        value == "true"   ||
+        value == "1"      ||
+        value == "yes"    ||
+        value == "on"     ||
+        value == "enable" ||
+        value == "enabled")
       return true;
 
     return false;

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -38,6 +38,7 @@ TDB::TDB ()
 : mPendingFile ("")
 , mCompletedFile ("")
 , mId (1)
+, mNoLock (false)
 {
 }
 
@@ -289,11 +290,10 @@ bool TDB::modifyT (const T& t)
 ////////////////////////////////////////////////////////////////////////////////
 bool TDB::lock (FILE* file) const
 {
-#ifdef HAVE_FLOCK
+  if (mNoLock)
+    return true;
+
   return flock (fileno (file), LOCK_EX) ? false : true;
-#else
-  return true;
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -303,18 +303,16 @@ bool TDB::overwritePending (std::vector <T>& all)
   FILE* out;
   if ((out = fopen (mPendingFile.c_str (), "w")))
   {
-#ifdef HAVE_FLOCK
     int retry = 0;
-    while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
-      delay (0.25);
-#endif
+    if (!mNoLock)
+      while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
+        delay (0.1);
 
     std::vector <T>::iterator it;
     for (it = all.begin (); it != all.end (); ++it)
       fputs (it->compose ().c_str (), out);
 
     fclose (out);
-    dbChanged ();
     return true;
   }
 
@@ -328,16 +326,14 @@ bool TDB::writePending (const T& t)
   FILE* out;
   if ((out = fopen (mPendingFile.c_str (), "a")))
   {
-#ifdef HAVE_FLOCK
     int retry = 0;
-    while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
-      delay (0.25);
-#endif
+    if (!mNoLock)
+      while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
+        delay (0.1);
 
     fputs (t.compose ().c_str (), out);
 
     fclose (out);
-    dbChanged ();
     return true;
   }
 
@@ -351,17 +347,14 @@ bool TDB::writeCompleted (const T& t)
   FILE* out;
   if ((out = fopen (mCompletedFile.c_str (), "a")))
   {
-#ifdef HAVE_FLOCK
     int retry = 0;
-    while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
-      delay (0.25);
-#endif
+    if (!mNoLock)
+      while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
+        delay (0.1);
 
     fputs (t.compose ().c_str (), out);
 
     fclose (out);
-    // Note: No call to dbChanged here because this call never occurs by itself.
-    //       It is always accompanied by an overwritePending call.
     return true;
   }
 
@@ -380,11 +373,10 @@ bool TDB::readLockedFile (
     FILE* in;
     if ((in = fopen (file.c_str (), "r")))
     {
-#ifdef HAVE_FLOCK
       int retry = 0;
-      while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
-        delay (0.25);
-#endif
+      if (!mNoLock)
+        while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
+          delay (0.1);
 
       char line[T_LINE_MAX];
       while (fgets (line, T_LINE_MAX, in))
@@ -406,6 +398,8 @@ bool TDB::readLockedFile (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Scans the pending tasks for any that are completed or deleted, and if so,
+// moves them to the completed.data file.  Returns a count of tasks moved.
 int TDB::gc ()
 {
   int count = 0;
@@ -423,7 +417,9 @@ int TDB::gc ()
     // Some tasks stay in the pending file.
     if (it->getStatus () == T::pending ||
         it->getStatus () == T::recurring)
+    {
       pending.push_back (*it);
+    }
 
     // Others are transferred to the completed file.
     else
@@ -448,19 +444,9 @@ int TDB::nextId ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB::onChange (void (*callback)())
+void TDB::noLock ()
 {
-  if (callback)
-    mOnChange.push_back (callback);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Iterate over callbacks.
-void TDB::dbChanged ()
-{
-  foreach (i, mOnChange)
-    if (*i)
-      (**i) ();
+  mNoLock = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

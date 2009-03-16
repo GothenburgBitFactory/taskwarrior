@@ -1,0 +1,11 @@
+#! /bin/bash
+
+date > all.log
+
+for i in *.t
+do
+  ./$i >> all.log 2>&1
+done
+
+date >> all.log
+

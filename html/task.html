@@ -57,6 +57,7 @@
                 <li><a href="versions.html">Old Versions</a>
                 <li><a href="filter.html">Filters</a>
                 <li><a href="shadow.html">Shadow Files</a>
+                <li><a href="custom.html">Custom Reports</a>
               </ul>
 
               <p>
@@ -70,61 +71,118 @@
               </p>
 
               <br />
-              <h2 class="title">Get the Latest Release</h2>
+              <h2 class="title">Get the Latest Stable Release</h2>
 
               <div class="content">
                 <table>
                   <tr>
                     <td>Source:</td>
-                    <td><a href="http://www.beckingham.net/task-1.4.3.tar.gz">task-1.4.3.tar.gz</a></td>
+                    <td><a href="http://www.beckingham.net/task-1.5.0.tar.gz">task-1.5.0.tar.gz</a></td>
                   </tr>
                   <tr>
                     <td>Mac OS X 10.5 (Leopard) Intel-only:</td>
-                    <td><a href="http://www.beckingham.net/task-1.4.3.pkg">task-1.4.3.pkg</a></td>
+                    <td><a href="http://www.beckingham.net/task-1.5.0.pkg">task-1.5.0.pkg</a></td>
                   </tr>
                   <tr>
                     <td>
                       Debian package:
                       (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>):
                     </td>
-                    <td><a href="http://www.beckingham.net/task_1.4.3-1_i386.deb">task_1.4.3-1_i386.deb</a></td>
+                    <td><a href="http://www.beckingham.net/task_1.5.0-1_i386.deb">task_1.5.0-1_i386.deb</a></td>
                   </tr>
                 </table>
 
-                <h4>New in version 1.4.3 (11/10/2008)</h4>
+                <h4>New in version 1.5.0 (3/15/2009)</h4>
                 <ul>
-                  <li>Fixed misleading task count at bottom of "info" report.
-                  <li>Added support for a shadow file that contains a plain text task report,
-                      with the "shadow.file" and "shadow.command" configuration variables.
-                      The shadow file is automatically updated whenever the task database
-                      changes.  Useful for integrating with "Samurize".
-                  <li>Task now displays a message whenever a shadow file is updated, if the
-                      "shadow.notify" configuration variable is set "on".
-                  <li>Fixed bug whereby adding a task with a \n, \r or \f did not fail properly.
-                  <li>Removed "task usage" command.
-                  <li>Added documentation for Shadow files.
-                  <li>Added documentation for task filters.
+                  <li>Removed deprecated TUTORIAL file.
+                  <li>Removed support for the "showage" configuration variable.
+                  <li>"task stop" can remove the start time from a started task.
+                  <li>"task ghistory" now displays a differently aligned graph, allowing
+                      easier comparison by month of tasks added versus completed and deleted.
+                  <li>"task version" command now reports unrecognized configuration variables,
+                      which may be spelling mistakes or deprecated variables.
+                  <li>"configure --enable-debug" now supported to suppress compiler optimization
+                      to allow debugging.
+                  <li>Allow lower case priorities, and automatically upper case them.
+                  <li>Added support for "due" configuration variable which defines the number
+                      of days in the future when a task is considered due.
+                  <li>Added support for custom reports, comprised of a set of column names and
+                      sort order, with optional filtering in the configuration file.  This
+                      means user-defined reports can be written, and the reports currently
+                      in the configuration file can be renamed.  Several of task's built in
+                      reports have been converted to user-defined reports.
+                  <li>New online documentation for custom reports.
+                  <li>New algorithm for determining when the "nag" message is displayed.
+                  <li>Fixed bug where task hangs with a certain combination of recurring tasks
+                      and shadow files.
+                  <li>Fixed bug with the task sort algorithm, which led to an unstable sequence
+                      when there were only a handful of tasks.
+                  <li>Performance enhanced by eliminating unnecessary sorting.
+                  <li>Task now has a large (and growing) test suite and bug regression tests
+                      to help ensure higher quality releases.
+                  <li>Fixed bug that caused large performance hit during table rendering.
+                  <li>Fixed bug that concatenated a modified description without spaces.
+                  <li>Added new column 'recur' that displays the recurrence period of any
+                      recurring tasks.  This column can be added to any custom report.
+                  <li>Added support for "color.recurring" configuration variable which
+                      specifies the color of recurring tasks.
+                  <li>Added support for "locking" configuration variable that controls whether
+                      file locking is used.
+                  <li>Task export feature now includes recurrence information, removes nested
+                      quotes, and limits output to pending tasks.
+                  <li>Task no longer includes deleted tasks in the summary report (thanks to
+                      Benjamin Tegarden).
+                  <li>Fixed bug that prevented the summary report from properly reporting
+                      recently completed tasks.
                 </ul>
 
                 <p>
                   (Find out <a href="versions.html">what was new in prior versions</a>)
                 </p>
-
+<!--
+                <h2>Task 1.5.0 Beta</h2>
+                <p>
+                  The next version of task is in beta.  This means it is approaching the
+                  end of the current development and testing cycle, and feedback from
+                  a wider audience is needed to find the last bugs.  If you would like
+                  to help test the next release of task, download the beta source below
+                  and install in the usual manner.
+                </p>
+                <p>
+                  Please note that beta software may contain significant bugs.  If you
+                  use this beta release, you should first backup your existing task
+                  data files.
+                </p>
+                <p>
+                  Refer to the ChangeLog file for details regarding the various fixes
+                  and enhancements.
+                </p>
+                <table>
+                  <tr>
+                    <td>Source:</td>
+                    <td><a href="http://www.beckingham.net/task-1.5.0beta.tar.gz">task-1.5.0beta.tar.gz</a></td>
+                  </tr>
+                </table>
+-->
                 <h2>Troubleshooting</h2>
                 <p>
                   Task has been built from source and tested in the following environments:
                 </p>
 
-                <ul>
-                  <li>OS X 10.4 Tiger
-                  <li>OS X 10.5 Leopard
-                  <li>Fedora Core 8
-                  <li>Fedora Core 9
-                  <li>Ubuntu 7 Feisty Fawn
-                  <li>Ubuntu 8 Hardy Heron
-                  <li>Solaris 10
-                  <li>Cygwin 1.5.25-14
-                </ul>
+                <p>
+                  <ul>
+                    <li>OS X 10.4 Tiger
+                    <li>OS X 10.5 Leopard
+                    <li>Fedora Core 8
+                    <li>Fedora Core 9
+                    <li>Fedora Core 10
+                    <li>Ubuntu 7 Feisty Fawn
+                    <li>Ubuntu 8 Hardy Heron
+                    <li>Ubuntu 8.10 Intrepid Ibex
+                    <li>Solaris 10
+                    <li>Cygwin 1.5.25-14
+                  </ul>
+                </p>
 
                 <p>
                   If you have difficulties building task, have found a bug, have a
@@ -143,7 +201,7 @@
               <br />
               <div class="content">
                 <p>
-                  Copyright 2006-2008, P. Beckingham.  All rights reserved.
+                  Copyright 2006-2009, P. Beckingham.  All rights reserved.
                 </p>
               </div>
 

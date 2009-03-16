@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -328,6 +328,11 @@ const std::string T::composeCSV ()
     line += value;
   line += ",";
 
+  value = mAttributes["recur"];
+  if (value != "")
+    line += value;
+  line += ",";
+
   value = mAttributes["end"];
   if (value != "")
     line += value;
@@ -353,7 +358,11 @@ const std::string T::composeCSV ()
     line += "'" + value + "'";
   line += ",";
 
-  line += "'" + mDescription + "'\n";
+  // Convert single quotes to double quotes, because single quotes are used to
+  // delimit the values that need it.
+  std::string clean = mDescription;
+  std::replace (clean.begin (), clean.end (), '\'', '"');
+  line += "'" + clean + "'\n";
 
   return line;
 }
@@ -468,7 +477,7 @@ void T::parse (const std::string& line)
     break;
 
   default:
-    throw std::string ();
+    throw std::string ("Unrecognized task file format.");
     break;
   }
 }

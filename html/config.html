@@ -171,34 +171,26 @@
                   </p>
                 </dd>
 
-                <dt>showage<dt>
-                <dd>
-                  May be "yes" or "no".  Determines whether the "Age"
-                  column appears on the "list" and "next" reports.
-                <dd>
-
                 <dt>monthsperline</dt>
                 <dd>
                   Determines how many months the "task calendar" command
-                  renders across the screen.  Defaults to 1.
-                </dd>
-
-                <dt>oldest</dt>
-                <dd>
-                  Determines how many tasks the "task oldest" command displays.
-                  Defaults to 10.
-                </dd>
-
-                <dt>newest</dt>
-                <dd>
-                  Determines how many tasks the "task newest" command displays.
-                  Defaults to 10.
+                  renders across the screen.  Defaults to however many will
+                  fit.  If more months that will fit are specified, task will
+                  only show as many that will fit.
                 </dd>
 
                 <dt>defaultwidth</dt>
                 <dd>
                   The width of tables used when ncurses support is not available.
                   Defaults to 80.
+                </dd>
+
+                <dt>due</dt>
+                <dd>
+
+                  This is the number of days into the future that define when a
+                  task is considered due, and is colored accordingly.
+                  Defaults to 7.
                 </dd>
 
                 <dt>color</dt>
@@ -216,7 +208,8 @@
                   color.pri.L<br />
                   color.pri.none<br />
                   color.active<br />
-                  color.tagged
+                  color.tagged<br />
+                  color.recurring
                 </dt>
                 <dd>
                   These are the coloration rules.  They correspond to a particular
@@ -322,13 +315,38 @@ ID Project Pri Description
                   whenever the shadow file is updated by some task command.
                 </dd>
 
+                <dt>locking</dt>
+                <dd>
+                  <p>
+                    Determines whether task uses file locking when accessing the pending.data
+                    and completed.data files.  Default to "on".  Solaris users who store
+                    the task data files on an NFS mount may need to set locking to "off".
+                  </p>
+
+                  <p>
+                    Note that setting this value to "off" is dangerous.  It means that
+                    another program may write to the task.pending file when task is
+                    attempting to do the same.
+                  </p>
+                </dd>
+
+                <p>
+                  Note that the command:
+                </p>
+
+                <pre><code>task version</code></pre>
+
+                <p>
+                  will display the configuration variables found in the .taskrc file,
+                  and will warn you of any variables that are not recognized.
+                </p>
               </div>
 
               <br />
               <br />
               <div class="content">
                 <p>
-                  Copyright 2006-2008, P. Beckingham.  All rights reserved.
+                  Copyright 2006-2009, P. Beckingham.  All rights reserved.
                 </p>
               </div>
 

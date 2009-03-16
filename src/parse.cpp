@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -35,6 +35,8 @@
 #include "T.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+// NOTE: These are static arrays only because there is no initializer list for
+//       std::vector.
 static const char* colors[] =
 {
   "bold",
@@ -128,16 +130,12 @@ static const char* commands[] =
   "history",
   "ghistory",
   "info",
-  "list",
-  "long",
-  "ls",
-  "newest",
   "next",
-  "oldest",
   "overdue",
   "projects",
   "start",
   "stats",
+  "stop",
   "summary",
   "tags",
   "undelete",
@@ -146,12 +144,44 @@ static const char* commands[] =
   "",
 };
 
+static std::vector <std::string> customReports;
+
+////////////////////////////////////////////////////////////////////////////////
 void guess (const std::string& type, const char** list, std::string& candidate)
 {
   std::vector <std::string> options;
   for (int i = 0; list[i][0]; ++i)
     options.push_back (list[i]);
 
+  std::vector <std::string> matches;
+  autoComplete (candidate, options, matches);
+  if (1 == matches.size ())
+    candidate = matches[0];
+
+  else if (0 == matches.size ())
+    candidate = "";
+
+  else
+  {
+    std::string error = "Ambiguous ";
+    error += type;
+    error += " '";
+    error += candidate;
+    error += "' - could be either of ";
+    for (size_t i = 0; i < matches.size (); ++i)
+    {
+      if (i)
+        error += ", ";
+      error += matches[i];
+    }
+
+    throw error;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void guess (const std::string& type, std::vector<std::string>& options, std::string& candidate)
+{
   std::vector <std::string> matches;
   autoComplete (candidate, options, matches);
   if (1 == matches.size ())
@@ -189,7 +219,11 @@ static bool isCommand (const std::string& candidate)
   std::vector <std::string> matches;
   autoComplete (candidate, options, matches);
   if (0 == matches.size ())
-    return false;
+  {
+    autoComplete (candidate, customReports, matches);
+    if (0 == matches.size ())
+      return false;
+  }
 
   return true;
 }
@@ -283,15 +317,6 @@ static bool validTag (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 static bool validDescription (const std::string& input)
 {
-/*
-  if (input.length () > 0                    &&
-      input.find ("\r") == std::string::npos &&
-      input.find ("\f") == std::string::npos &&
-      input.find ("\n") == std::string::npos)
-    return true;
-
-  return false;
-*/
   if (input.length () == 0)                   return false;
   if (input.find ("\r") != std::string::npos) return false;
   if (input.find ("\f") != std::string::npos) return false;
@@ -306,7 +331,12 @@ static bool validCommand (std::string& input)
   std::string copy = input;
   guess ("command", commands, copy);
   if (copy == "")
-    return false;
+  {
+    copy = input;
+    guess ("command", customReports, copy);
+    if (copy == "")
+      return false;
+  }
 
   input = copy;
   return true;
@@ -427,12 +457,20 @@ void parse (
         if (isCommand (l) && validCommand (l))
           command = l;
         else
-          descCandidate += arg;
+        {
+          if (descCandidate.length ())
+            descCandidate += " ";
+          descCandidate += std::string (arg);
+        }
       }
 
       // Anything else is just considered description.
       else
-        descCandidate += std::string (arg) + " ";
+      {
+        if (descCandidate.length ())
+          descCandidate += " ";
+        descCandidate += std::string (arg);
+      }
     }
   }
 
@@ -446,6 +484,42 @@ void parse (
 
   if (validDescription (descCandidate))
     task.setDescription (descCandidate);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void loadCustomReports (Config& conf)
+{
+  std::vector <std::string> all;
+  conf.all (all);
+
+  foreach (i, all)
+  {
+    if (i->substr (0, 7) == "report.")
+    {
+      std::string report = i->substr (7, std::string::npos);
+      std::string::size_type columns = report.find (".columns");
+      if (columns != std::string::npos)
+      {
+        report = report.substr (0, columns);
+        customReports.push_back (report);
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool isCustomReport (const std::string& report)
+{
+  foreach (i, customReports)
+    if (*i == report)
+      return true;
+
+  return false;
+}
+////////////////////////////////////////////////////////////////////////////////
+void allCustomReports (std::vector <std::string>& all)
+{
+  all = customReports;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

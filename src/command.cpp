@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -48,8 +48,10 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleAdd (TDB& tdb, T& task, Config& conf)
+std::string handleAdd (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   char entryTime[16];
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
   task.setAttribute ("entry", entryTime);
@@ -86,6 +88,8 @@ void handleAdd (TDB& tdb, T& task, Config& conf)
 
   if (!tdb.addT (task))
     throw std::string ("Could not create new task.");
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +117,7 @@ std::string handleProjects (TDB& tdb, T& task, Config& conf)
     table.addColumn ("Project");
     table.addColumn ("Tasks");
 
-    if (conf.get ("color", true))
+    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
@@ -307,7 +311,9 @@ std::string handleVersion (Config& conf)
   link.setColumnWidth (0, Table::flexible);
   link.setColumnJustification (0, Table::left);
   link.addCell (link.addRow (), 0,
-    "See http://www.beckingham.net/task.html for the latest releases and a full tutorial.");
+    "See http://www.beckingham.net/task.html for the latest releases and a "
+    "full tutorial.  New releases containing fixes and enhancements are "
+    "made frequently.");
 
   // Create a table for output.
   Table table;
@@ -316,7 +322,7 @@ std::string handleVersion (Config& conf)
   table.addColumn ("Config variable");
   table.addColumn ("Value");
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -343,17 +349,63 @@ std::string handleVersion (Config& conf)
     }
   }
 
-  out << "Copyright (C) 2006 - 2008, P. Beckingham."
+  out << "Copyright (C) 2006 - 2009, P. Beckingham."
       << std::endl
-      << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, PACKAGE) : PACKAGE)
+      << ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+           ? Text::colorize (Text::bold, Text::nocolor, PACKAGE)
+           : PACKAGE)
       << " "
-      << (conf.get ("color", true) ? Text::colorize (Text::bold, Text::nocolor, VERSION) : VERSION)
+      << ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+           ? Text::colorize (Text::bold, Text::nocolor, VERSION)
+           : VERSION)
       << std::endl
       << disclaimer.render ()
       << std::endl
       << table.render ()
       << link.render ()
       << std::endl;
+
+  // Complain about configuration variables that are not recognized.
+  // These are the regular configuration variables.
+  std::string recognized =
+    "blanklines color color.active color.due color.overdue color.pri.H "
+    "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
+    "confirmation curses data.location dateformat default.command "
+    "default.priority defaultwidth due locking monthsperline nag next project "
+    "shadow.command shadow.file shadow.notify";
+
+  // This configuration variable is supported, but not documented.  It exists
+  // so that unit tests can force color to be on even when the output from task
+  // is redirected to a file, or stdout is not a tty.
+  recognized += " _forcecolor";
+
+  std::vector <std::string> unrecognized;
+  foreach (i, all)
+  {
+    if (recognized.find (*i) == std::string::npos)
+    {
+      // These are special configuration variables, because their name is
+      // dynamic.
+      if (i->find ("color.keyword.") == std::string::npos &&
+          i->find ("color.project.") == std::string::npos &&
+          i->find ("color.tag.")     == std::string::npos &&
+          i->find ("report.")        == std::string::npos)
+      {
+        unrecognized.push_back (*i);
+      }
+    }
+  }
+
+  if (unrecognized.size ())
+  {
+    out << "Your .taskrc file contains these unrecognized variables:"
+        << std::endl;
+
+    foreach (i, unrecognized)
+      out << "  " << *i << std::endl;
+
+    out << std::endl;
+  }
 
   // Verify installation.  This is mentioned in the documentation as the way to
   // ensure everything is properly installed.
@@ -465,8 +517,44 @@ std::string handleStart (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleDone (TDB& tdb, T& task, Config& conf)
+std::string handleStop (TDB& tdb, T& task, Config& conf)
 {
+  std::vector <T> all;
+  tdb.pendingT (all);
+
+  std::vector <T>::iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+  {
+    if (it->getId () == task.getId ())
+    {
+      T original (*it);
+
+      if (original.getAttribute ("start") != "")
+      {
+        original.removeAttribute ("start");
+        original.setId (task.getId ());
+        tdb.modifyT (original);
+
+        return std::string ("");
+      }
+      else
+      {
+        std::stringstream out;
+        out << "Task " << task.getId () << " not started." << std::endl;
+        return out.str ();
+      }
+    }
+  }
+
+  throw std::string ("Task not found.");
+  return std::string (""); // To satisfy gcc.
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string handleDone (TDB& tdb, T& task, Config& conf)
+{
+  std::stringstream out;
+
   if (!tdb.completeT (task))
     throw std::string ("Could not mark task as completed.");
 
@@ -484,11 +572,14 @@ void handleDone (TDB& tdb, T& task, Config& conf)
   }
 
   nag (tdb, task, conf);
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleExport (TDB& tdb, T& task, Config& conf)
+std::string handleExport (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream output;
+
   // Use the description as a file name, then clobber the description so the
   // file name isn't used for filtering.
   std::string file = trim (task.getDescription ());
@@ -500,11 +591,13 @@ void handleExport (TDB& tdb, T& task, Config& conf)
     if (out.good ())
     {
       out << "'id',"
+          << "'uuid',"
           << "'status',"
           << "'tags',"
           << "'entry',"
           << "'start',"
           << "'due',"
+          << "'recur',"
           << "'end',"
           << "'project',"
           << "'priority',"
@@ -513,25 +606,36 @@ void handleExport (TDB& tdb, T& task, Config& conf)
           << "'description'"
           << "\n";
 
+      int count = 0;
       std::vector <T> all;
-      tdb.allT (all);
+      tdb.allPendingT (all);
       filter (all, task);
       foreach (t, all)
       {
-        out << t->composeCSV ().c_str ();
+        if (t->getStatus () != T::recurring &&
+            t->getStatus () != T::deleted)
+        {
+          out << t->composeCSV ().c_str ();
+          ++count;
+        }
       }
       out.close ();
+
+      output << count << " tasks exported to '" << file << "'" << std::endl;
     }
     else
       throw std::string ("Could not write to export file.");
   }
   else
     throw std::string ("You must specify a file to write to.");
+
+  return output.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleModify (TDB& tdb, T& task, Config& conf)
+std::string handleModify (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
   std::vector <T> all;
   tdb.pendingT (all);
 
@@ -612,11 +716,12 @@ void handleModify (TDB& tdb, T& task, Config& conf)
         tdb.modifyT (original);
       }
 
-      return;
+      return out.str ();
     }
   }
 
   throw std::string ("Task not found.");
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -624,7 +729,7 @@ std::string handleColor (Config& conf)
 {
   std::stringstream out;
 
-  if (conf.get ("color", true))
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
   {
     out << optionalBlankLine (conf) << "Foreground" << std::endl
         << "           "

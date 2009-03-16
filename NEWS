@@ -1,4 +1,4 @@
-Welcome to Task 1.4.3.
+Welcome to Task 1.5.0.
 
 Task has been built and tested on the following configurations:
 
@@ -6,8 +6,10 @@ Task has been built and tested on the following configurations:
   - OS X 10.5 Leopard
   - Fedora Core 8
   - Fedora Core 9
+  - Fedora Core 10
+  - Ubuntu 7 Feisty Fawn
   - Ubuntu 8 Hardy Heron
-  - Ubuntu 9 Feisty Fawn
+  - Ubunto 8.10 Intrepid Ibex
   - Solaris 10
   - Cygwin 1.5.25-14
 

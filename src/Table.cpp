@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -736,34 +736,84 @@ int Table::columnCount ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Removes extraneous output characters, such as:
-//   - spaces followed by a newline is collapsed to just a newline, if there is
-//     no Bg color.
 //   - removal of redundant color codes:
 //       ^[[31mName^[[0m ^[[31mValue^[[0m -> ^[[31mName Value^[[0m
 //
 // This method is a work in progress.
-void Table::optimize (std::string& output)
+void Table::optimize (std::string& output) const
 {
-/*
-  int start = output.length ();
-*/
-
-  // \s\n -> \n
-  size_t i = 0;
-  while ((i = output.find (" \n")) != std::string::npos)
-  {
-    output = output.substr (0, i) +
-             output.substr (i + 1, std::string::npos);
-  }
+//  int start = output.length ();
 
 /*
-  std::cout << int ((100 * (start - output.length ()) / start))
-            << "%" << std::endl;
+  Well, how about that!
+
+  The benchmark.t unit test adds a 1000 tasks, fiddles with some of them, then
+  runs a series of reports.  The results are timed, and look like this:
+
+    1000 tasks added      in  3 seconds
+    600 tasks altered     in 32 seconds
+    'task ls'             in 26 seconds
+    'task list'           in 17 seconds
+    'task list pri:H'     in 19 seconds
+    'task list +tag'      in  0 seconds
+    'task list project_A' in  0 seconds
+    'task long'           in 29 seconds
+    'task completed'      in  2 seconds
+    'task history'        in  0 seconds
+    'task ghistory'       in  0 seconds
+
+  This performance is terrible.  To identify the worst offender, Various Timer
+  objects were added in Table::render, assuming that table sorting is the major
+  bottleneck. But no, it is Table::optimize that is the problem.  After
+  commenting out this method, the results are now:
+
+    1000 tasks added      in  3 seconds
+    600 tasks altered     in 29 seconds
+    'task ls'             in  0 seconds
+    'task list'           in  0 seconds
+    'task list pri:H'     in  1 seconds
+    'task list +tag'      in  0 seconds
+    'task list project_A' in  0 seconds
+    'task long'           in  0 seconds
+    'task completed'      in  0 seconds
+    'task history'        in  0 seconds
+    'task ghistory'       in  0 seconds
+
+  Much better.
 */
+
+//  std::cout << int ((100 * (start - output.length ()) / start))
+//            << "%" << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Combsort11, with O(n log n) average, O(n log n) worst case performance.
+//
+// function combsort11(array input)
+//     gap := input.size
+//
+//     loop until gap <= 1 and swaps = 0
+//         if gap > 1
+//             gap := gap / 1.3
+//             if gap = 10 or gap = 9
+//                 gap := 11
+//             end if
+//         end if
+//
+//         i := 0
+//         swaps := 0
+//
+//         loop until i + gap >= input.size
+//             if input[i] > input[i+gap]
+//                 swap(input[i], input[i+gap])
+//                 swaps := 1
+//             end if
+//             i := i + 1
+//         end loop
+//
+//     end loop
+// end function
+
 #define SWAP \
    { \
      int temp = order[r]; \
@@ -776,7 +826,7 @@ void Table::sort (std::vector <int>& order)
   int gap = order.size ();
   int swaps = 1;
 
-  while (gap > 1 || swaps != 0)
+  while (gap > 1 || swaps > 0)
   {
     if (gap > 1)
     {
@@ -797,10 +847,28 @@ void Table::sort (std::vector <int>& order)
 
         Grid::Cell* left  = mData.byRow (order[r],       mSortColumns[c]);
         Grid::Cell* right = mData.byRow (order[r + gap], mSortColumns[c]);
-        if (left == NULL && right != NULL)
-          SWAP
 
-        if (left && right && *left != *right)
+        // Data takes precedence over missing data.
+        if (left == NULL && right != NULL)
+        {
+          SWAP
+          break;
+        }
+
+        // No data - try comparing the next column.
+        else if (left == NULL && right == NULL)
+        {
+          keepScanning = true;
+        }
+
+        // Identical data - try comparing the next column.
+        else if (left && right && *left == *right)
+        {
+          keepScanning = true;
+        }
+
+        // Differing data - do a proper comparison.
+        else if (left && right && *left != *right)
         {
           switch (mSortOrder[mSortColumns[c]])
           {
@@ -861,24 +929,38 @@ void Table::sort (std::vector <int>& order)
             break;
 
           case ascendingPriority:
-            if (((std::string)*left == ""  && (std::string)*right != "")                             ||
-                ((std::string)*left == "M" && (std::string)*right == "L")                           ||
-                ((std::string)*left == "H" && ((std::string)*right == "L" || (std::string)*right == "M")))
+            if (((std::string)*left == ""  && (std::string)*right  != "")  ||
+                ((std::string)*left == "M" && (std::string)*right  == "L") ||
+                ((std::string)*left == "H" && ((std::string)*right == "L"  || (std::string)*right == "M")))
               SWAP
             break;
 
           case descendingPriority:
-            if (((std::string)*left == "" && (std::string)*right != "")                            ||
+            if (((std::string)*left == ""  && (std::string)*right  != "")                                 ||
                 ((std::string)*left == "L" && ((std::string)*right == "M" || (std::string)*right == "H")) ||
-                ((std::string)*left == "M" && (std::string)*right == "H"))
+                ((std::string)*left == "M" && (std::string)*right  == "H"))
+              SWAP
+            break;
+
+          case ascendingPeriod:
+            if ((std::string)*left == "" && (std::string)*right != "")
+              break;
+            else if ((std::string)*left != "" && (std::string)*right == "")
+              SWAP
+            else if (convertDuration ((std::string)*left) > convertDuration ((std::string)*right))
+              SWAP
+            break;
+
+          case descendingPeriod:
+            if ((std::string)*left != "" && (std::string)*right == "")
+              break;
+            else if ((std::string)*left == "" && (std::string)*right != "")
+              SWAP
+            else if (convertDuration ((std::string)*left) < convertDuration ((std::string)*right))
               SWAP
             break;
           }
-
-          break;
         }
-        else
-          keepScanning = true;
       }
 
       ++r;
@@ -912,7 +994,7 @@ void Table::clean (std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string Table::render ()
+const std::string Table::render (int maximum /* = 0 */)
 {
   calculateColumnWidths ();
 
@@ -946,8 +1028,14 @@ const std::string Table::render ()
   if (mSortColumns.size ())
     sort (order);
 
+  // If a non-zero maximum is specified, then it limits the number of rows of
+  // the table that are rendered.
+  int limit = mRows;
+  if (maximum != 0)
+    limit = min (maximum, mRows);
+
   // Print all rows.
-  for (int row = 0; row < mRows; ++row)
+  for (int row = 0; row < limit; ++row)
   {
     std::vector <std::vector <std::string> > columns;
     std::vector <std::string> blanks;
@@ -981,15 +1069,19 @@ const std::string Table::render ()
           else
             output += blanks[col];
 
+        // Trim right.
+        output.erase (output.find_last_not_of (" ") + 1);
         output += "\n";
       }
     }
     else
+    {
+      // Trim right.
+      output.erase (output.find_last_not_of (" ") + 1);
       output += "\n";
+    }
   }
 
-  // Eliminate redundant color codes.
-  optimize (output);
   return output;
 }
 

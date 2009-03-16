@@ -1,4 +1,4 @@
-PROJECT = t.t tdb.t date.t duration.t
+PROJECT = t.t tdb.t date.t duration.t t.benchmark.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib
 OBJECTS = ../TDB.o ../T.o ../parse.o ../text.o ../Date.o ../util.o ../Config.o
@@ -28,4 +28,7 @@ date.t: date.t.o $(OBJECTS) test.o
 
 duration.t: duration.t.o $(OBJECTS) test.o
 	g++ duration.t.o $(OBJECTS) test.o $(LFLAGS) -o duration.t
+
+t.benchmark.t: t.benchmark.t.o $(OBJECTS) test.o
+	g++ t.benchmark.t.o $(OBJECTS) test.o $(LFLAGS) -o t.benchmark.t
 

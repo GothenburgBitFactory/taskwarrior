@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -57,6 +57,9 @@ for (typeof (c) *foreach_p = & (c);                                \
 void parse (std::vector <std::string>&, std::string&, T&, Config&);
 bool validPriority (const std::string&);
 bool validDate (std::string&, Config&);
+void loadCustomReports (Config&);
+bool isCustomReport (const std::string&);
+void allCustomReports (std::vector <std::string>&);
 
 // task.cpp
 void gatherNextTasks (const TDB&, T&, Config&, std::vector <T>&, std::vector <int>&);
@@ -67,29 +70,27 @@ bool generateDueDates (T&, std::vector <Date>&);
 Date getNextRecurrence (Date&, std::string&);
 void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
 void onChangeCallback ();
-std::string runTaskCommand (int, char**, TDB&, Config&, bool gc = true);
-std::string runTaskCommand (std::vector <std::string>&, TDB&, Config&, bool gc = false);
+std::string runTaskCommand (int, char**, TDB&, Config&, bool gc = true, bool shadow = true);
+std::string runTaskCommand (std::vector <std::string>&, TDB&, Config&, bool gc = false, bool shadow = false);
 
 // command.cpp
-void handleAdd (TDB&, T&, Config&);
-void handleExport (TDB&, T&, Config&);
-void handleDone (TDB&, T&, Config&);
-void handleModify (TDB&, T&, Config&);
+std::string handleAdd (TDB&, T&, Config&);
+std::string handleExport (TDB&, T&, Config&);
+std::string handleDone (TDB&, T&, Config&);
+std::string handleModify (TDB&, T&, Config&);
 std::string handleProjects (TDB&, T&, Config&);
 std::string handleTags (TDB&, T&, Config&);
 std::string handleUndelete (TDB&, T&, Config&);
 std::string handleVersion (Config&);
 std::string handleDelete (TDB&, T&, Config&);
 std::string handleStart (TDB&, T&, Config&);
+std::string handleStop (TDB&, T&, Config&);
 std::string handleUndo (TDB&, T&, Config&);
 std::string handleColor (Config&);
 
 // report.cpp
 void filter (std::vector<T>&, T&);
-std::string handleList (TDB&, T&, Config&);
 std::string handleInfo (TDB&, T&, Config&);
-std::string handleLongList (TDB&, T&, Config&);
-std::string handleSmallList (TDB&, T&, Config&);
 std::string handleCompleted (TDB&, T&, Config&);
 std::string handleReportSummary (TDB&, T&, Config&);
 std::string handleReportNext (TDB&, T&, Config&);
@@ -99,8 +100,10 @@ std::string handleReportCalendar (TDB&, T&, Config&);
 std::string handleReportActive (TDB&, T&, Config&);
 std::string handleReportOverdue (TDB&, T&, Config&);
 std::string handleReportStats (TDB&, T&, Config&);
-std::string handleReportOldest (TDB&, T&, Config&);
-std::string handleReportNewest (TDB&, T&, Config&);
+
+std::string handleCustomReport (TDB&, T&, Config&, const std::string&);
+void validReportColumns (const std::vector <std::string>&);
+void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 
 // util.cpp
 bool confirm (const std::string&);
@@ -122,11 +125,20 @@ void formatTimeDeltaDays (std::string&, time_t);
 std::string formatSeconds (time_t);
 const std::string uuid ();
 const char* optionalBlankLine (Config&);
-int convertDuration (std::string&);
+int convertDuration (const std::string&);
 std::string expandPath (const std::string&);
+
+#ifdef SOLARIS
+  #define LOCK_SH 1
+  #define LOCK_EX 2
+  #define LOCK_NB 4
+  #define LOCK_UN 8
+
+  int flock (int, int);
+#endif
 
 // rules.cpp
 void initializeColorRules (Config&);
-void autoColorize (T&, Text::color&, Text::color&);
+void autoColorize (T&, Text::color&, Text::color&, Config&);
 
 ////////////////////////////////////////////////////////////////////////////////

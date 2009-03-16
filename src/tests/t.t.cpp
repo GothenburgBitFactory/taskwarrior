@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -31,34 +31,34 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  plan (5);
+  UnitTest test (5);
 
   T t;
   std::string s = t.compose ();
-  is ((int)s.length (), 46, "T::T (); T::compose ()");
-  diag (s);
+  test.is ((int)s.length (), 46, "T::T (); T::compose ()");
+  test.diag (s);
 
   t.setStatus (T::completed);
   s = t.compose ();
-  is (s[37], '+', "T::setStatus (completed)");
-  diag (s);
+  test.is (s[37], '+', "T::setStatus (completed)");
+  test.diag (s);
 
   t.setStatus (T::deleted);
   s = t.compose ();
-  is (s[37], 'X', "T::setStatus (deleted)");
-  diag (s);
+  test.is (s[37], 'X', "T::setStatus (deleted)");
+  test.diag (s);
 
   t.setStatus (T::recurring);
   s = t.compose ();
-  is (s[37], 'r', "T::setStatus (recurring)");
-  diag (s);
+  test.is (s[37], 'r', "T::setStatus (recurring)");
+  test.diag (s);
 
   // Round trip test.
   std::string sample = "00000000-0000-0000-0000-000000000000 - [] [] Sample";
   T t2;
   t2.parse (sample);
   sample += "\n";
-  is (t2.compose (), sample, "T::parse -> T::compose round trip");
+  test.is (t2.compose (), sample, "T::parse -> T::compose round trip");
   return 0;
 }
 

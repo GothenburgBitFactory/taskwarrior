@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2008, Paul Beckingham.
+// Copyright 2006 - 2009, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -37,9 +37,16 @@ class Table
 {
 public:
   enum just   {left, center, right};
-  enum order  {ascendingNumeric, ascendingCharacter, ascendingPriority,
-               ascendingDate, descendingNumeric, descendingCharacter,
-               descendingPriority, descendingDate};
+  enum order  {ascendingNumeric,
+               ascendingCharacter,
+               ascendingPriority,
+               ascendingDate,
+               ascendingPeriod,
+               descendingNumeric,
+               descendingCharacter,
+               descendingPriority,
+               descendingDate,
+               descendingPeriod};
   enum sizing {minimum = -1, flexible = 0};
 
            Table ();
@@ -84,7 +91,7 @@ public:
 
            int rowCount ();
            int columnCount ();
-           const std::string render ();
+           const std::string render (int maximum = 0);
 
 private:
            std::string getCell (const int, const int);
@@ -101,9 +108,9 @@ private:
            const std::string formatHeader (const int, const int, const int);
            const std::string formatHeaderDashedUnderline (const int, const int, const int);
            void formatCell (const int, const int, const int, const int, std::vector <std::string>&, std::string&);
-           void optimize (std::string&);
            void sort (std::vector <int>&);
            void clean (std::string&);
+           void optimize (std::string&) const;
 
 private:
   std::vector <std::string> mColumns;
