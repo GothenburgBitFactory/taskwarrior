@@ -11,3 +11,4 @@ Makefile
 configure
 config.log
 www.xls
+*~
