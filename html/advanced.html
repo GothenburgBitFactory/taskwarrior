@@ -97,6 +97,11 @@ Car              2   2 wks      25% XXXXXXXXX</code></pre>
                   indicating that percentage.
                 </p>
 
+                <strong>% task &lt;id&gt; append ...</strong>
+                <p>
+                  Appends the additional description to an existing task.
+                </p>
+
                 <strong>% task delete &lt;id&gt;</strong>
                 <p>
                   There are two ways of getting rid of tasks - mark them as done, or
@@ -118,6 +123,13 @@ Car              2   2 wks      25% XXXXXXXXX</code></pre>
                 <strong>% task done &lt;id&gt;</strong>
                 <p>
                   This is how a task is marked as done.
+                </p>
+
+                <strong>% task undo &lt;id&gt;</strong>
+                <p>
+                  If a task was recently marked as done, and no report has been run, it
+                  may be possible to cancel the completed status of the task as though
+                  "task done ..." was never run.
                 </p>
 
                 <strong>% task list ...</strong>
