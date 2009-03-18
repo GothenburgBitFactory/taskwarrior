@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 25;
+use Test::More tests => 33;
 
 # Create the rc file.
 if (open my $fh, '>', 'oldest.rc')
@@ -39,10 +39,23 @@ if (open my $fh, '>', 'oldest.rc')
 }
 
 # Add 11 tasks.  Oldest should show 1-10, newest should show 2-11.
-diag ("Adding 11 tasks - takes 10 seconds");
+diag ("Adding 3 tasks - takes 2 seconds");
 qx{../task rc:oldest.rc add one; sleep 1};
 qx{../task rc:oldest.rc add two; sleep 1};
 qx{../task rc:oldest.rc add three; sleep 1};
+my $output = qx{../task rc:oldest.rc oldest};
+like ($output, qr/one/,               'oldest: one');
+like ($output, qr/two/,               'oldest: two');
+like ($output, qr/three/,             'oldest: three');
+like ($output, qr/one.*two.*three/ms, 'oldest: sort');
+
+$output = qx{../task rc:oldest.rc newest};
+like ($output, qr/three/,             'newest: three');
+like ($output, qr/two/,               'newest: two');
+like ($output, qr/one/,               'newest: one');
+like ($output, qr/three.*two.*one/ms, 'newest: sort');
+
+diag ("Adding 8 tasks - takes 7 seconds");
 qx{../task rc:oldest.rc add four; sleep 1};
 qx{../task rc:oldest.rc add five; sleep 1};
 qx{../task rc:oldest.rc add six; sleep 1};
@@ -52,7 +65,7 @@ qx{../task rc:oldest.rc add nine; sleep 1};
 qx{../task rc:oldest.rc add ten; sleep 1};
 qx{../task rc:oldest.rc add eleven};
 
-my $output = qx{../task rc:oldest.rc oldest};
+$output = qx{../task rc:oldest.rc oldest};
 like ($output, qr/one/,      'oldest: one');
 like ($output, qr/two/,      'oldest: two');
 like ($output, qr/three/,    'oldest: three');
