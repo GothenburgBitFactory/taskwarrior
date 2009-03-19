@@ -6,6 +6,7 @@
     an existing task.
   + Added support for the "weekdays" recurrence, which means a task can recur
     five times a week, and not on weekends (thanks to Chris Pride).
+  + UTF8 text is now supported in task project names, tags and descriptions.
 
 ------ old releases ------------------------------
 

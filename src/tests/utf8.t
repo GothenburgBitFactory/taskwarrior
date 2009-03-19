@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'utf8.rc')
@@ -60,6 +60,14 @@ qx{../task rc:utf8.rc add Ξεσκεπάζω τὴν ψυχοφθόρα βδελ
 my $output = qx{../task rc:utf8.rc ls};
 diag ($output);
 like ($output, qr/17/, 'all 17 tasks shown');
+
+qx{../task rc:utf8.rc add project:Çirçös utf8 in project};
+my $output = qx{../task rc:utf8.rc ls project:Çirçös};
+like ($output, qr/Çirçös.+utf8 in project/, 'utf8 in project works');
+
+qx{../task rc:utf8.rc add utf8 in tag +☺};
+my $output = qx{../task rc:utf8.rc ls +☺};
+like ($output, qr/utf8 in tag/, 'utf8 in tag works');
 
 # Cleanup.
 unlink 'pending.data';
