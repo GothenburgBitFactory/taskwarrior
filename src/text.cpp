@@ -105,28 +105,6 @@ void join (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void extractParagraphs (const std::string& input, std::vector<std::string>& output)
-{
-  std::string copy = input;
-  while (1)
-  {
-    size_t so = copy.find ("<p>");
-    size_t eo = copy.find ("</p>");
-
-    if (so == std::string::npos && eo == std::string::npos)
-      break;
-
-    std::string extract = trim (copy.substr (so + 3, eo - so - 3));
-    copy = copy.substr (eo + 4, std::string::npos);
-    output.push_back (extract);
-  }
-
-  // There were no paragraphs.
-  if (!output.size ())
-    output.push_back (input);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 std::string trimLeft (const std::string& in, const std::string& t /*= " "*/)
 {
   std::string out = in;
