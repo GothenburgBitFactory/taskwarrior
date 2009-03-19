@@ -18,7 +18,7 @@ if test "$enable_debug" = "yes"; then
   CXXFLAGS="$CFLAGS -Wall -pedantic -ggdb3 -DDEBUG"
   AC_MSG_RESULT(yes)
 else
-  CXXFLAGS="$CFLAGS -O3"
+  CXXFLAGS="$CFLAGS -Wall -pedantic -O3"
   AC_MSG_RESULT(no)
 fi
 
