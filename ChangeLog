@@ -4,6 +4,8 @@
 1.6.0 (?)
   + Added support for new "append" command that adds more description text to
     an existing task.
+  + Added support for the "weekdays" recurrence, which means a task can recur
+    five times a week, and not on weekends (thanks to Chris Pride).
 
 ------ old releases ------------------------------
 
@@ -52,12 +54,12 @@
 1.4.3 (11/1/2008) 8639e9260646c8c9224e0fc47e5d2443b46eecfc
   + Fixed misleading task count at bottom on "info" report.
   + Added support for a shadow file that contains a plain text task report,
-    with the "shadow.file" and "shadow.command" configuration variables
+    with the "shadow.file" and "shadow.command" configuration variables.
     The shadow file is automatically updated whenever the task database
-    changes.  Useful for integrating with "Samurize"
+    changes.  Useful for integrating with "Samurize".
   + Task now displays a message whenever a shadow file is updated, if the
-    "shadow.notify" configuration variable is set "on"
-  + Bug: adding a task with a \n, \r or \f in it now fails properly
+    "shadow.notify" configuration variable is set "on".
+  + Bug: adding a task with a \n, \r or \f in it now fails properly.
   + Removed "usage" command, and support for "command.logging" configuration
     variable.
   + Added documentation for Shadow files.
@@ -65,111 +67,111 @@
 
 1.4.2 (9/18/2008) e7304e86ce9bb80978c7055fd2a9e999619a6fb8
   + "task undo" can now retract a "task done" command, provided no reports
-    have been run (and therefore TDB::gc run)
+    have been run (and therefore TDB::gc run).
   + Task now correctly sorts on entire strings, instead of just the first
-    character (thanks to Andy Lester)
+    character (thanks to Andy Lester).
   + Task now uses dashes (-----) to column underlines when color is disabled
-    (thanks to Vincent Fleuranceau)
+    (thanks to Vincent Fleuranceau).
   + Task now allows mixed case attribute names (pri:, PRI:, Pri: ...) and
-    commands (add, ADD, Add ...) (thanks to Vincent Fleuranceau)
+    commands (add, ADD, Add ...) (thanks to Vincent Fleuranceau).
   + Task now supports a default project and priority for new tasks, via
     the new "default.project" and "default.priority" configuration variables
-    (thanks to Vincent Fleuranceau)
-  + Task supports improved word-wrapping to the terminal width
+    (thanks to Vincent Fleuranceau).
+  + Task supports improved word-wrapping to the terminal width.
   + Task now supports "default.command" configuration variable (for example
     it could contain "list due:tomorrow") that is the command that is run
     whenever task is invoked with no arguments.
   + Task supports modifying the existing description of a task, with the
     following syntax: task <id> "new description ...".
   + Bug: Now properly supports relative dates in filters (task list due:eom,
-    task list due:tomorrow, task list due:23rd ...)
+    task list due:tomorrow, task list due:23rd ...).
   + Bug: Source now properly includes <string.h> in order to build clean
-    using gcc 4.3 (thanks to H. İbrahim Güngör)
+    using gcc 4.3 (thanks to H. İbrahim Güngör).
 
 1.4.1 (7/18/2008) e080c3168c6064628ab85b21bd859d9875a3a9a7
-  + Bug: Descriptions can not be altered with "task 123 New description"
-  + Tweak: For "task calendar" month names are now centered over the month
-  + Removed TUTORIAL file contents in favor of online version
-  + Provided Mac .pkg binary
+  + Bug: Descriptions can not be altered with "task 123 New description".
+  + Tweak: For "task calendar" month names are now centered over the month.
+  + Removed TUTORIAL file contents in favor of online version.
+  + Provided Mac .pkg binary.
 
 1.4.0 (7/10/2008) 60b7d15a1d22e064acf0974c5d7eabbb57dd8071
-  + New recurring tasks feature
+  + New recurring tasks feature.
   + "task undelete" can now undelete erroneously deleted tasks, provided no
-    reports have been run (and therefore TDB::gc run)
-  + Added averages to the "task history" report
-  + Added ability to override ~/.taskrc with rc:<file>
-  + Added bar chart history report "task ghistory"
-  + Added task filtering on all reports
-  + Automatically shuts off color, curses when output is not a tty
-  + Supports relative due: dates (tomorrow, wednesday, 23rd, eom ...)
-  + Supports the ~ character in .taskrc data.location
+    reports have been run (and therefore TDB::gc run).
+  + Added averages to the "task history" report.
+  + Added ability to override ~/.taskrc with rc:<file>.
+  + Added bar chart history report "task ghistory".
+  + Added task filtering on all reports.
+  + Automatically shuts off color, curses when output is not a tty.
+  + Supports relative due: dates (tomorrow, wednesday, 23rd, eom ...).
+  + Supports the ~ character in .taskrc data.location.
   + Allows colons on the description, provided what is to the left of the colon
-    is not a standard attribute name
-  + Bug: Fixed where Esc[0m sequences were being emitted for no good reason
-  + Bug: Fixed underlined table headers when color is turned off
-  + Bug: Adding a blank priority resulted in an assigned garbage value
-  + Bug: Fixed parsing of date "07/08/2008" when using dateformat "m/d/Y"
+    is not a standard attribute name.
+  + Bug: Fixed where Esc[0m sequences were being emitted for no good reason.
+  + Bug: Fixed underlined table headers when color is turned off.
+  + Bug: Adding a blank priority resulted in an assigned garbage value.
+  + Bug: Fixed parsing of date "07/08/2008" when using dateformat "m/d/Y".
 
 1.3.1 (6/21/2008) 3a6de7d9402f2609a773a73b16eff97b14a32869
   + New configuration variable, "defaultwidth" that determines the width
-    of tables when ncurses support is not available
+    of tables when ncurses support is not available.
   + Bug: "showage" configuration variable should apply to all reports, not
-    just the ones based on "list"
+    just the ones based on "list".
   + Bug: Fixed segmentation faults on Ubuntu when the "dateformat"
     configuration variables was missing.  This was a code bug, and should
-    have affected more platforms
+    have affected more platforms.
   + Bug: Task now will recreate a missing ~/.taskrc file, OR a missing
-    ~/.task directory
+    ~/.task directory.
 
 1.3.0 (6/18/2008) 6673e408a223af98c38779c20b08524042c0edfa
   + "task calendar" now displays multiple months per line, adjustable by the
-    "monthsperline" configuration variable.  Feature added by Damian Glenny
-  + "task export" can now filter tasks like the reports
-  + Factored out code to filter tasks
+    "monthsperline" configuration variable.  Feature added by Damian Glenny.
+  + "task export" can now filter tasks like the reports.
+  + Factored out code to filter tasks.
   + Displays shorter message when a command is entered incorrectly, and the
-    full usage for "task help"
-  + "task oldest" shows the oldest tasks
-  + "task newest" shows the newest tasks
+    full usage for "task help".
+  + "task oldest" shows the oldest tasks.
+  + "task newest" shows the newest tasks.
   + Bug: Segmentation fault when no "dateformat" configuration variable
-    specified
+    specified.
   + Bug: Fixed bug whereby if you have more than one task with a due date, 7
-    days gets added to the entry date of task 2..n
-  + Bug: Fixed bug whereby "1 wks" was being improperly pluralized
+    days gets added to the entry date of task 2..n.
+  + Bug: Fixed bug whereby "1 wks" was being improperly pluralized.
 
 1.2.0 (6/13/2008) c393d47cdfe7e197a31e94f4bb764474fa05ad8d
   + Bug: "dateformat" configuration variable used to display dates, but
-    not parse them
+    not parse them.
   + "task list x" now performs a caseless comparison between "x" and the
-    description
-  + Task sub projects supported
+    description.
+  + Task sub projects supported.
   + "showage" confguration determines whether "Age" column appears on the
-    "list" and "next" reports
-  + Improved TUTORIAL
+    "list" and "next" reports.
+  + Improved TUTORIAL.
 
 1.1.0 (6/7/2008) 73286e86628725b346db2a25fbcd4bd68efb9b3a
   + "blanklines" configuration to stop displaying unnecessary white
-     space and thus work better on small-screen devices
-  + "dateformat" configuration now determines how dates are formatted
-  + Better formatting of "task tags" output
-  + http://www.beckingham.net/task.html home page set up
-  + Added tags to the "task long" report
+     space and thus work better on small-screen devices.
+  + "dateformat" configuration now determines how dates are formatted.
+  + Better formatting of "task tags" output.
+  + http://www.beckingham.net/task.html home page set up.
+  + Added tags to the "task long" report.
 
 1.0.1 (6/4/2008) d216d401217027d93581808fc8944ab7d6b85fb0
   + Bug: UUID generator not properly terminating string.
   + Bug: srandom/srand not called prior to UUID generation.
 
 1.0.0 (6/3/2008) f3de5c07118c597091a05c7d7fe8bdeae95474c1
-  + New movie made, uploaded
-  + Bug: assertion fails on mobile for t v
-  + Bug: configure.ac does not properly determine ncurses availability
-  + Bug: Cannot seem to use the percent character in a task description
-  + Bug: New installation "task stats" reports newest task 12/31/1969
-  + Bug: New installation task projects displays header but no data - should short-circuit
-  + Bug: incorrect color specification in sample .taskrc file
-  + Bug: when run without arguments, task dumps core on Solaris 10
-  + "task calendar" now reports all months with due pending tasks
-  + Added rules for colorization by tag, project and keyword
-  + Added legend to "task calendar"
+  + New movie made, uploaded.
+  + Bug: assertion fails on mobile for t v.
+  + Bug: configure.ac does not properly determine ncurses availability.
+  + Bug: Cannot seem to use the percent character in a task description.
+  + Bug: New installation "task stats" reports newest task 12/31/1969.
+  + Bug: New installation task projects displays header but no data - should short-circuit.
+  + Bug: incorrect color specification in sample .taskrc file.
+  + Bug: when run without arguments, task dumps core on Solaris 10.
+  + "task calendar" now reports all months with due pending tasks.
+  + Added rules for colorization by tag, project and keyword.
+  + Added legend to "task calendar".
 
 0.9.9 (5/27/2008) 2ecf50032226c91b406f247417a063dc17c8e324
   + Autoconf/automake behaving properly.
@@ -184,8 +186,8 @@
   + Completed documentation.
 
 0.9.7 (5/24/2008) 25dc4150947a3e612c8118838d04b3bbe68441f7
-  + Migrated old compiler flags into Makefile.am
-  + Added ncurses endwin function check to configure.ac
+  + Migrated old compiler flags into Makefile.am.
+  + Added ncurses endwin function check to configure.ac.
   + Set up structure for AUTHORS file.
   + Set up NEWS file, with pleas for feedback.
   + Added welcome message to README.
@@ -196,31 +198,31 @@
   + Removed unnecessary SAMPLE_taskrc, and assorted references.
   + Cleaned up ChangeLog.
   + Minor mods to standard docs.
-  + Bumped version to 0.9.7
-  + Changed some autoconf details
-  + Corrected comment in T.cpp
+  + Bumped version to 0.9.7.
+  + Changed some autoconf details.
+  + Corrected comment in T.cpp.
   + Made unit tests compile and run again.
   + Removed tests from distibution.
 
 0.9.6 (5/13/208)
-  + Corrected wrong include file in Table.cpp
+  + Corrected wrong include file in Table.cpp.
   + Replaced color management code.
   + Improved color rules code.
 
 0.9.5 (5/12/2008)
   + Replaced Table storage with Grid.
-  + Added Grid.cpp to configure.ac
-  + Added Makefile to src/.gitignore
+  + Added Grid.cpp to configure.ac.
+  + Added Makefile to src/.gitignore.
   + Makefile should not be part of the repository.
-  + Added Grid.cpp
-  + Added Grid::Cell::operator==
+  + Added Grid.cpp.
+  + Added Grid::Cell::operator==.
   + ChangeLog file begun.
   + Bumped version to 0.9.5 for next release.
 
 0.9.4 (4/26/2008)
   + Integrated new Grid object into build - not yet integrated into Table.
   + More .gitignore tweaks.
-  + Added .gitignore
+  + Added .gitignore.
   + Added more missing files.
   + Added all source code.
   + Generic OSS files added.
@@ -241,29 +243,29 @@
   + Consolidated header files, removed unnecessary ones.
 
 0.9.0 (3/23/2008)
-  + flat source directory
-  + autoconf complete
-  + "task next"
-  + "task stats"
-  + "task export"
-  + Rules-based colorization
+  + flat source directory.
+  + autoconf complete.
+  + "task next".
+  + "task stats".
+  + "task export".
+  + Rules-based colorization.
 
 0.8.1 (1/28/2008) - 0.8.16 (3/13/2008)
-  + autoconf conversion (many builds)
+  + autoconf conversion (many builds).
 
 0.8.0 Polish (1/25/2008)
-  + Code cleanup, reorganization
-  + "task overdue"
-  + Add "age" column to list and long
-  + Use 'conf' for build, version tracking
-  + Add "/from/to/" description editing
+  + Code cleanup, reorganization.
+  + "task overdue".
+  + Add "age" column to list and long.
+  + Use 'conf' for build, version tracking.
+  + Add "/from/to/" description editing.
 
 0.7.0 Multi-user, File handling, atomicity (1/8/2008)
-  + Clean, publishable API reimplementation
-  + File locking
-  + retain deleted tasks
-  + "task info ID" report showing all metadata
-  + File format v2, including UUID
+  + Clean, publishable API reimplementation.
+  + File locking.
+  + retain deleted tasks.
+  + "task info ID" report showing all metadata.
+  + File format v2, including UUID.
 
 [Development hiatus while planning for T, TDB API, new features and the future
 of the project.  Seeded to two testers for feedback, suggestions.  Development
@@ -271,40 +273,40 @@ deliberately stopped to allow extended use of task, allowing command logging and
 regular usage to determine which features were needed or unnecessary.]
 
 0.6.0 Reports (12/27/2006)
-  + "task history"
-  + "task summary"
-  + "task calendar"
-  + due support
-  + Table sorting
+  + "task history".
+  + "task summary".
+  + "task calendar".
+  + due support.
+  + Table sorting.
 
 0.5.0 Multi-user support (12/10/2006)
-  + Command logging
-  + "task usage" report
+  + Command logging.
+  + "task usage" report.
 
 0.4.0 Destructive / modification commands (12/3/2006)
-  + "task delete" complete
-  + "task id ..." complete
-  + "task list ..." synonym for "task find ..."
+  + "task delete" complete.
+  + "task id ..." complete.
+  + "task list ..." synonym for "task find ...".
 
 0.3.0 Work in progress support (12/3/2006)
-  + "task start" complete
-  + "task done" complete
-  + completed.data support
+  + "task start" complete.
+  + "task done" complete.
+  + completed.data support.
 
 0.2.0 Neutral commands (12/2/2006)
-  + "task find" complete
-  + "task projects" complete
-  + "task tags" complete
+  + "task find" complete.
+  + "task projects" complete.
+  + "task tags" complete.
 
 0.1.0 Constructive commands (12/1/2006)
-  + "task add" complete
-  + completed.data support
-  + ~/.taskrc support
+  + "task add" complete.
+  + completed.data support.
+  + ~/.taskrc support.
 
 0.0.1 Basic infrastructure (11/29/2006)
-  + Command line parsing
-  + API layer
-  + Usage
+  + Command line parsing.
+  + API layer.
+  + Usage.
 
 ------ start -----------------------------------
 

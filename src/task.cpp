@@ -565,6 +565,18 @@ Date getNextRecurrence (Date& current, std::string& period)
     return Date (m, d, y);
   }
 
+  if (period == "weekdays")
+  {
+    int dow = current.dayOfWeek ();
+    int days;
+
+         if (dow == 5) days = 3;
+    else if (dow == 6) days = 2;
+    else               days = 1;
+
+    return current + (days * 86400);
+  }
+
   if (isdigit (period[0]) && period[period.length () - 1] == 'm')
   {
     std::string numeric = period.substr (0, period.length () - 1);

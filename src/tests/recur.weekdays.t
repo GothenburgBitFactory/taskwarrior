@@ -28,34 +28,34 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
 {
-  print $fh "data.location=.\n",
-            "report.asc.columns=id,recur,description\n",
-            "report.asc.sort=recur+\n",
-            "report.desc.columns=id,recur,description\n",
-            "report.desc.sort=recur-\n";
+  print $fh "data.location=.\n";
   close $fh;
   ok (-r 'recur.rc', 'Created recur.rc');
 }
 
 # Create a few recurring tasks, and test the sort order of the recur column.
-qx{../task rc:recur.rc add due:tomorrow recur:daily  first};
-qx{../task rc:recur.rc add due:tomorrow recur:weekly second};
-qx{../task rc:recur.rc add due:tomorrow recur:3d     third};
+qx{../task rc:recur.rc add due:friday recur:weekdays one};
+my $output = qx{../task rc:recur.rc list};
+like ($output, qr/one/, 'recur weekdays');
 
-my $output = qx{../task rc:recur.rc asc};
-like ($output, qr/first .* third .* second/msx, 'daily 3d weekly');
+$output = qx{../task rc:recur.rc info 1};
+like ($output, qr/Status\s+Recurring/,    'task is recurring');
+like ($output, qr/Recurrence\s+weekdays/, 'task recurs every weekday');
 
-$output = qx{../task rc:recur.rc desc};
-like ($output, qr/second .* third .* first/msx, 'weekly 3d daily');
+qx{../task rc:recur.rc do 1};
+$output = qx{../task rc:recur.rc list};
 
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'recur.rc';
 ok (!-r 'recur.rc', 'Removed recur.rc');

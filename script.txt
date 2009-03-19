@@ -1,109 +1,109 @@
-                                            Hello, and welcome to this quick demo of the task program.
+                                         Hello, and welcome to this quick demo of the task program.
 
-task add do laundry                         Let's add some tasks
-                                            I need to do laundry
+task add do laundry                      Let's add some tasks
+                                         I need to do laundry
 
-task add project:garage order dumpster      Oh yeah, I need to order the dumpster
+task add project:garage order dumpster   Oh yeah, I need to order the dumpster
 
-task add +phone tell mom i loveher          Must call Mom  (that "phone" there is a tag - they can
-                                              be useful for searching and categorizing)
+task add +phone tell mom i loveher       Must call Mom  (that "phone" there is a tag - they can
+                                           be useful for searching and categorizing)
 task add +phone pro:garage schedule
   goodwill pickup
 
-task ad +email pro:garage ask Tom if        Notice I can abbreviate commands
+task ad +email pro:garage ask Tom if     Notice I can abbreviate commands
   he wants that old bkie
 
-task ls                                     Let's see what we've got
-                                            Oh, I spelled bike wrong
+task ls                                  Let's see what we've got
+                                         Oh, I spelled bike wrong
 
 task 5 /bkie/bike/
-task ls                                     That's better
+task ls                                  That's better
 
-task 1 pro:home                             Let's assign projects
+task 1 pro:home                          Let's assign projects
 task 3 pro:home tell mom I love her
 task ls pro:garage
 
-task long pro:garage                        Let's see all the columns
+task long pro:garage                     Let's see all the columns
 
-task list pro:garage                        There are different ways to list
+task list pro:garage                     There are different ways to list
 
-task lis +phone                             By tag
-task li pro:garage +phone                   By project and tag
-task l mom                                  By word
+task lis +phone                          By tag
+task li pro:garage +phone                By project and tag
+task l mom                               By word
 
-task 1 priority:H                           Priorities can be High, Medium or Low
+task 1 priority:H                        Priorities can be High, Medium or Low
 task pri:H 3
 task 1 pri:M
-task li                                     The list is sorted by priority.
+task li                                  The list is sorted by priority.
 
 task 2 pri:L
 task li
 
-task done 3                                 Suppose task 3 is done
-task li                                     ...and it's gone
+task done 3                              Suppose task 3 is done
+task li                                  ...and it's gone
 
-task 2 +phone +mistake                      Lets add tags
+task 2 +phone +mistake                   Lets add tags
 
 # Oops!
-task 2 -mistake                             or remove tags
+task 2 -mistake                          or remove tags
 
-task tags                                   or look at all the tags
+task tags                                or look at all the tags
 
-task info 2                                 or all the details
+task info 2                              or all the details
 
-task projects                               or all the projects
+task projects                            or all the projects
 
-task 3 fg:bold                              Let's make it colorful
+task 3 fg:bold                           Let's make it colorful
 task 4 fg:bold_green
 task li
 task 3 fg:bold_underline_white
 task li
 
 task 4 bg:on_bright_red fg:bold_yellow
-task li                                     Oh that's just nasty - let's get rid of that.
+task li                                  Oh that's just nasty - let's get rid of that.
 task 4 bg:
 task li
 task 4 fg:
 task 3 fg:
 
-task colors                                 There are many combinations to choose from
+task colors                              There are many combinations to choose from
 
 (Slashes!!!)
-task 1 due:6/8/2008                         Let's add a due date
+task 1 due:6/8/2008                      Let's add a due date
 date
 
 task li
-task calendar                               Notice the due task is in yellow, today is marked cyan
+task calendar                            Notice the due task is in yellow, today is marked cyan
 
-task 1 due:5/20/2008                        This is now an overdue task
-task li                                     and it shows up red
+task 1 due:5/20/2008                     This is now an overdue task
+task li                                  and it shows up red
 task overdue
 task cal
 
-task export file.csv                        You can export the tasks to a spreadsheet
+task export file.csv                     You can export the tasks to a spreadsheet
 cat file.csv
 
-task start 1                                Started tasks can be used as reminders
-                                              of what you are supposed to be doing
+task start 1                             Started tasks can be used as reminders
+                                           of what you are supposed to be doing
 
-task active                                 They show up as active
-task done 1                                 Let's clear out a couple
+task active                              They show up as active
+task done 1                              Let's clear out a couple
 task li
 task done 3
 task active
 
-task summary                                Summary shows progress on all projects
+task summary                             Summary shows progress on all projects
 
-task history                                History shows general activity - how many added,
-                                              completed etc, by month
+task history                             History shows general activity - how many added,
+                                           completed etc, by month
 
-task ghistory                               This report shows a histogram of tasks that were
-                                              added (in red), completed (in green) and deleted
-                                              (in yellow), all by month.
+task ghistory                            This report shows a histogram of tasks that were
+                                           added (in red), completed (in green) and deleted
+                                           (in yellow), all by month.
 
-                                            And that's it.  There are more commands than this
-                                            covered in the online documentation, but this should give
-                                            the basic idea.
+                                         And that's it.  There are more commands than this
+                                         covered in the online documentation, but this should give
+                                         the basic idea.
 
-                                            Thank you for watching.
+                                         Thank you for watching.
 

@@ -250,6 +250,7 @@ int convertDuration (const std::string& input)
   std::vector <std::string> supported;
   supported.push_back ("daily");
   supported.push_back ("day");
+  supported.push_back ("weekdays");
   supported.push_back ("weekly");
   supported.push_back ("sennight");
   supported.push_back ("biweekly");
@@ -269,6 +270,7 @@ int convertDuration (const std::string& input)
     std::string found = matches[0];
 
          if (found == "daily"    || found == "day")       return 1;
+    else if (found == "weekdays")                         return 1;
     else if (found == "weekly"   || found == "sennight")  return 7;
     else if (found == "biweekly" || found == "fortnight") return 14;
     else if (found == "monthly")                          return 30;
