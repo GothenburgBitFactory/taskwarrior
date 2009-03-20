@@ -41,17 +41,28 @@
 #include "../auto.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+// Uses std::getline, because std::cin eats leading whitespace, and that means
+// that if a newline is entered, std::cin eats it and never returns from the
+// "std::cin >> answer;" line, but it does disply the newline.  This way, with
+// std::getline, the newline can be detected, and the prompt re-written.
 bool confirm (const std::string& question)
 {
-  std::cout << question << " (y/n) ";
   std::string answer;
-  std::cin >> answer;
 
-  answer = trim (answer);
-  if (answer == "y" || answer == "Y")
-    return true;
+  do
+  {
+    std::cout << question << " (y/n) ";
+    std::getline (std::cin, answer);
+    answer = lowerCase (trim (answer));
+    if (answer == "\n") std::cout << "newline\n";
+  }
+  while (answer != "y"   &&
+         answer != "ye"  &&
+         answer != "yes" &&
+         answer != "n"   &&
+         answer != "no");
 
-  return false;
+  return (answer == "y" || answer == "ye" || answer == "yes") ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
