@@ -42,6 +42,7 @@ int main (int argc, char** argv)
 
   std::string d;
   d = "daily";     t.is (convertDuration (d),   1, "duration daily = 1");
+  d = "weekdays";  t.is (convertDuration (d),   1, "duration weekdays = 1");
   d = "day";       t.is (convertDuration (d),   1, "duration day = 1");
   d = "0d";        t.is (convertDuration (d),   0, "duration 0d = 0");
   d = "1d";        t.is (convertDuration (d),   1, "duration 1d = 1");
@@ -53,7 +54,6 @@ int main (int argc, char** argv)
   d = "sennight";  t.is (convertDuration (d),   7, "duration sennight = 7");
   d = "biweekly";  t.is (convertDuration (d),  14, "duration biweekly = 14");
   d = "fortnight"; t.is (convertDuration (d),  14, "duration fortnight = 14");
-  d = "week";      t.is (convertDuration (d),   7, "duration week = 7");
   d = "0w";        t.is (convertDuration (d),   0, "duration 0w = 0");
   d = "1w";        t.is (convertDuration (d),   7, "duration 1w = 7");
   d = "7w";        t.is (convertDuration (d),  49, "duration 7w = 49");
