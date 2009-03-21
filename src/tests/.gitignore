@@ -4,3 +4,4 @@ tdb.t
 date.t
 duration.t
 text.t
+autocomplete.t
