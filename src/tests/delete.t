@@ -33,7 +33,8 @@ use Test::More tests => 16;
 # Create the rc file.
 if (open my $fh, '>', 'undelete.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "echo.command=no\n";
   close $fh;
   ok (-r 'undelete.rc', 'Created undelete.rc');
 }

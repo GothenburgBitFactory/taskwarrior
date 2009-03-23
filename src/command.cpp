@@ -432,6 +432,8 @@ std::string handleVersion (Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleDelete (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   if (conf.get ("confirmation") != "yes" || confirm ("Permanently delete task?"))
   {
     std::vector <T> all;
@@ -450,11 +452,19 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
             // Scan all pending tasks for siblings of this task, and the parent
             // itself, and delete them.
             foreach (sibling, all)
+            {
               if (sibling->getAttribute ("parent") == parent ||
                   sibling->getUUID ()              == parent)
+              {
                 tdb.deleteT (*sibling);
-
-            return std::string ("");
+                if (conf.get ("echo.command", true))
+                  out << "Deleting recurring task "
+                      << sibling->getId ()
+                      << " "
+                      << sibling->getDescription ()
+                      << std::endl;
+              }
+            }
           }
           else
           {
@@ -462,20 +472,32 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
             t->setStatus (T::deleted);
             updateRecurrenceMask (tdb, all, *t);
             tdb.deleteT (*t);
-            return std::string ("");
+            out << "Deleting recurring task "
+                << t->getId ()
+                << " "
+                << t->getDescription ()
+                << std::endl;
           }
         }
         else
+        {
           tdb.deleteT (*t);
+          if (conf.get ("echo.command", true))
+            out << "Deleting task "
+                << t->getId ()
+                << " "
+                << t->getDescription ()
+                << std::endl;
+        }
 
         break;  // No point continuing the loop.
       }
     }
   }
   else
-    return std::string ("Task not deleted.\n");
+    out << "Task not deleted." << std::endl;
 
-  return std::string ("");
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -490,6 +512,7 @@ std::string handleStart (TDB& tdb, T& task, Config& conf)
     if (it->getId () == task.getId ())
     {
       T original (*it);
+      std::stringstream out;
 
       if (original.getAttribute ("start") == "")
       {
@@ -500,15 +523,20 @@ std::string handleStart (TDB& tdb, T& task, Config& conf)
         original.setId (task.getId ());
         tdb.modifyT (original);
 
+        if (conf.get ("echo.command", true))
+          out << "Started "
+              << original.getId ()
+              << " "
+              << original.getDescription ()
+              << std::endl;
         nag (tdb, task, conf);
-        return std::string ("");
       }
       else
       {
-        std::stringstream out;
         out << "Task " << task.getId () << " already started." << std::endl;
-        return out.str ();
       }
+
+      return out.str ();
     }
   }
 
@@ -528,6 +556,7 @@ std::string handleStop (TDB& tdb, T& task, Config& conf)
     if (it->getId () == task.getId ())
     {
       T original (*it);
+      std::stringstream out;
 
       if (original.getAttribute ("start") != "")
       {
@@ -535,14 +564,15 @@ std::string handleStop (TDB& tdb, T& task, Config& conf)
         original.setId (task.getId ());
         tdb.modifyT (original);
 
-        return std::string ("");
+        if (conf.get ("echo.command", true))
+          out << "Stopped " << original.getId () << " " << original.getDescription () << std::endl;
       }
       else
       {
-        std::stringstream out;
         out << "Task " << task.getId () << " not started." << std::endl;
-        return out.str ();
       }
+
+      return out.str ();
     }
   }
 
@@ -565,6 +595,13 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
   {
     if (t->getId () == task.getId ())
     {
+      if (conf.get ("echo.command", true))
+        out << "Completed "
+            << t->getId ()
+            << " "
+            << t->getDescription ()
+            << std::endl;
+
       t->setStatus (T::completed);
       updateRecurrenceMask (tdb, all, *t);
       break;

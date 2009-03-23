@@ -140,6 +140,7 @@ void Config::createDefault (const std::string& home)
       {
         fprintf (out, "data.location=%s\n", dataDir.c_str ());
         fprintf (out, "confirmation=yes\n");
+        fprintf (out, "echo.command=yes\n");
         fprintf (out, "next=2\n");
         fprintf (out, "dateformat=m/d/Y\n");
         fprintf (out, "#monthsperline=2\n");

@@ -33,7 +33,8 @@ use Test::More tests => 15;
 # Create the rc file.
 if (open my $fh, '>', 'undo.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "echo.command=no\n";
   close $fh;
   ok (-r 'undo.rc', 'Created undo.rc');
 }
