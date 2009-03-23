@@ -434,7 +434,7 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
 
-  if (conf.get ("confirmation") != "yes" || confirm ("Permanently delete task?"))
+  if (conf.get ("confirmation", true) || confirm ("Permanently delete task?"))
   {
     std::vector <T> all;
     tdb.allPendingT (all);
