@@ -102,6 +102,25 @@ Car              2   2 wks      25% XXXXXXXXX</code></pre>
                   Appends the additional description to an existing task.
                 </p>
 
+                <strong>% task annotate &lt;id&gt; additional note...</strong>
+                <p>
+                  Allows an annotation to be attached to an existing task.  Each
+                  annotation has a time stamp, and when displayed, the annotations
+                  are shown under the task description.  For example:
+                </p>
+
+                <pre><code>% task add Go to the supermarket
+% task annotate 1 need milk
+% task ls
+
+ID Project Pri Due Active Age     Description
+ 1                                Go to the supermarket
+                                  3/23/2009 need milk</code></pre>
+                <p>
+                  The date of the annotation uses the "dateformat" configuration
+                  variable.
+                </p>
+
                 <strong>% task delete &lt;id&gt;</strong>
                 <p>
                   There are two ways of getting rid of tasks - mark them as done, or

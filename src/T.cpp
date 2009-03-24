@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <sstream>
 #include <algorithm>
 #include "task.h"
 #include "T.h"
@@ -39,6 +40,7 @@ T::T ()
   mTags.clear ();
   mAttributes.clear ();
   mDescription = "";
+  mAnnotations.clear ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +60,7 @@ T::T (const T& other)
   mTags        = other.mTags;
   mRemoveTags  = other.mRemoveTags;
   mAttributes  = other.mAttributes;
+  mAnnotations = other.mAnnotations;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +75,7 @@ T& T::operator= (const T& other)
     mTags        = other.mTags;
     mRemoveTags  = other.mRemoveTags;
     mAttributes  = other.mAttributes;
+    mAnnotations = other.mAnnotations;
   }
 
   return *this;
@@ -244,7 +248,23 @@ void T::setSubstitution (const std::string& from, const std::string& to)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// uuid status [tags] [attributes] description
+void T::getAnnotations (std::map <time_t, std::string>& all)
+{
+  all = mAnnotations;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void T::addAnnotation (const std::string& description)
+{
+  std::string sanitized = description;
+  std::replace (sanitized.begin (), sanitized.end (), '\'', '"');
+  std::replace (sanitized.begin (), sanitized.end (), '[', '(');
+  std::replace (sanitized.begin (), sanitized.end (), ']', ')');
+  mAnnotations[time (NULL)] = sanitized;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// uuid status [tags] [attributes] [annotations] description
 //
 // uuid         \x{8}-\x{4}-\x{4}-\x{4}-\x{12}
 // status       - + X r
@@ -282,10 +302,26 @@ const std::string T::compose () const
     ++count;
   }
 
-  line += "] ";
+  line += "] [";
+
+  // Annotations
+  std::stringstream annotation;
+  bool first = true;
+  foreach (note, mAnnotations)
+  {
+    if (first)
+      first = false;
+    else
+      annotation << " ";
+
+    annotation << note->first << ":'" << note->second << "'";
+  }
+  line += annotation.str () + "] ";
 
   // Description
   line += mDescription;
+
+  // EOL
   line += "\n";
 
   if (line.length () > T_LINE_MAX)
@@ -421,10 +457,12 @@ void T::parse (const std::string& line)
       }
       else
         throw std::string ("Line too short");
+
+      mAnnotations.clear ();
     }
     break;
 
-  // File format version 2, from 2008.1.1
+  // File format version 2, from 2008.1.1 - 2009.3.23
   case 2:
     {
       if (line.length () > 46)       // ^.{36} . \[\] \[\] \n
@@ -446,24 +484,122 @@ void T::parse (const std::string& line)
           if (openAttrBracket  != std::string::npos &&
               closeAttrBracket != std::string::npos)
           {
-             std::string tags = line.substr (
-               openTagBracket + 1, closeTagBracket - openTagBracket - 1);
-             std::vector <std::string> rawTags;
-             split (mTags, tags, ' ');
+            std::string tags = line.substr (
+              openTagBracket + 1, closeTagBracket - openTagBracket - 1);
+            std::vector <std::string> rawTags;
+            split (mTags, tags, ' ');
 
-             std::string attributes = line.substr (
-               openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
-             std::vector <std::string> pairs;
-             split (pairs, attributes, ' ');
-             for (size_t i = 0; i <  pairs.size (); ++i)
-             {
-               std::vector <std::string> pair;
-               split (pair, pairs[i], ':');
-               if (pair.size () == 2)
-                 mAttributes[pair[0]] = pair[1];
-             }
+            std::string attributes = line.substr (
+              openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
+            std::vector <std::string> pairs;
+            split (pairs, attributes, ' ');
+            for (size_t i = 0; i <  pairs.size (); ++i)
+            {
+              std::vector <std::string> pair;
+              split (pair, pairs[i], ':');
+              if (pair.size () == 2)
+                mAttributes[pair[0]] = pair[1];
+            }
 
-             mDescription = line.substr (closeAttrBracket + 2, std::string::npos);
+            mDescription = line.substr (closeAttrBracket + 2, std::string::npos);
+          }
+          else
+            throw std::string ("Missing attribute brackets");
+        }
+        else
+          throw std::string ("Missing tag brackets");
+      }
+      else
+        throw std::string ("Line too short");
+
+      mAnnotations.clear ();
+    }
+    break;
+
+  // File format version 3, from 2009.3.23
+  case 3:
+    {
+      if (line.length () > 49)       // ^.{36} . \[\] \[\] \[\] \n
+      {
+        mUUID = line.substr (0, 36);
+
+        mStatus =   line[37] == '+' ? completed
+                  : line[37] == 'X' ? deleted
+                  : line[37] == 'r' ? recurring
+                  :                   pending;
+
+        size_t openTagBracket  = line.find ("[");
+        size_t closeTagBracket = line.find ("]", openTagBracket);
+        if (openTagBracket  != std::string::npos &&
+            closeTagBracket != std::string::npos)
+        {
+          size_t openAttrBracket  = line.find ("[", closeTagBracket);
+          size_t closeAttrBracket = line.find ("]", openAttrBracket);
+          if (openAttrBracket  != std::string::npos &&
+              closeAttrBracket != std::string::npos)
+          {
+            size_t openAnnoBracket  = line.find ("[", closeAttrBracket);
+            size_t closeAnnoBracket = line.find ("]", openAnnoBracket);
+            if (openAnnoBracket  != std::string::npos &&
+                closeAnnoBracket != std::string::npos)
+            {
+              std::string tags = line.substr (
+                openTagBracket + 1, closeTagBracket - openTagBracket - 1);
+              std::vector <std::string> rawTags;
+              split (mTags, tags, ' ');
+
+              std::string attributes = line.substr (
+                openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
+              std::vector <std::string> pairs;
+              split (pairs, attributes, ' ');
+              for (size_t i = 0; i <  pairs.size (); ++i)
+              {
+                std::vector <std::string> pair;
+                split (pair, pairs[i], ':');
+                if (pair.size () == 2)
+                  mAttributes[pair[0]] = pair[1];
+              }
+
+              // Extract and split the annotations, which are of the form:
+              //   1234:'...' 5678:'...'
+              std::string annotations = line.substr (
+                openAnnoBracket + 1, closeAnnoBracket - openAnnoBracket - 1);
+              pairs.clear ();
+
+              std::string::size_type start = 0;
+              std::string::size_type end   = 0;
+              do
+              {
+                end = annotations.find ('\'', start);
+                if (end != std::string::npos)
+                {
+                  end = annotations.find ('\'', end + 1);
+
+                  if (start != std::string::npos &&
+                      end   != std::string::npos)
+                  {
+                    pairs.push_back (annotations.substr (start, end - start + 1));
+                    start = end + 2;
+                  }
+                }
+              }
+              while (start != std::string::npos &&
+                     end   != std::string::npos);
+
+              for (size_t i = 0; i < pairs.size (); ++i)
+              {
+                std::string pair = pairs[i];
+                std::string::size_type colon = pair.find (":");
+                if (colon != std::string::npos)
+                {
+                  std::string name = pair.substr (0, colon);
+                  std::string value = pair.substr (colon + 2, pair.length () - colon - 3);
+                  mAnnotations[::atoi (name.c_str ())] = value;
+                }
+              }
+
+              mDescription = line.substr (closeAnnoBracket + 2, std::string::npos);
+            }
           }
           else
             throw std::string ("Missing attribute brackets");
@@ -512,16 +648,31 @@ int T::determineVersion (const std::string& line)
       line[23] == '-' &&
       line[36] == ' ' &&
       (line[37] == '-' || line[37] == '+' || line[37] == 'X' || line[37] == 'r'))
-    return 2;
+  {
+    // Version 3 looks like:
+    //
+    //   uuid status [tags] [attributes] [annotations] description\n
+    //
+    // Scan for the number of [] pairs.
+    std::string::size_type tagAtts  = line.find ("] [", 0);
+    std::string::size_type attsAnno = line.find ("] [", tagAtts + 1);
+    std::string::size_type annoDesc = line.find ("] ",  attsAnno + 1);
+    if (tagAtts  != std::string::npos &&
+        attsAnno != std::string::npos &&
+        annoDesc != std::string::npos)
+      return 3;
+    else
+      return 2;
+  }
 
-  // Version 3?
+  // Version 4?
   //
-  // Fortunately, with the hindsight that will come with version 3, the
-  // identifying characteristics of 1 and 2 may be modified such that if 3 has
-  // a UUID followed by a status, then there is still a way to differentiate
-  // between 2 and 3.
+  // Fortunately, with the hindsight that will come with version 4, the
+  // identifying characteristics of 1, 2 and 3 may be modified such that if 4
+  // has a UUID followed by a status, then there is still a way to differentiate
+  // between 2, 3 and 4.
   //
-  // The danger is that a version 2 binary reads and misinterprets a version 3
+  // The danger is that a version 3 binary reads and misinterprets a version 4
   // file.  This is why it is a good idea to rely on an explicit version
   // declaration rather than chance positioning.
 

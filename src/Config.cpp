@@ -171,6 +171,7 @@ void Config::createDefault (const std::string& home)
 
         // Custom reports.
         fprintf (out, "# Fields: id,uuid,project,priority,entry,start,due,recur,age,active,tags,description\n");
+        fprintf (out, "#         description_only\n");
         fprintf (out, "# Description:   This report is ...\n");
         fprintf (out, "# Sort:          due+,priority-,project+\n");
         fprintf (out, "# Filter:        pro:x pri:H +bug\n");

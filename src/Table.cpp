@@ -227,7 +227,7 @@ void Table::setRowBg (const int row, const Text::color c)
 ////////////////////////////////////////////////////////////////////////////////
 void Table::addCell (const int row, const int col, const std::string& data)
 {
-  int length = 0;
+  unsigned int length = 0;
 
   if (mSuppressWS)
   {
@@ -238,7 +238,19 @@ void Table::addCell (const int row, const int col, const std::string& data)
       data2 = data;
 
     clean (data2);
-    length = data2.length ();
+    // For multi-line cells, find the longest line.
+    if (data2.find ("\n") != std::string::npos)
+    {
+      length = 0;
+      std::vector <std::string> lines;
+      split (lines, data2, "\n");
+      for (unsigned int i = 0; i < lines.size (); ++i)
+        if (lines[i].length () > length)
+          length = lines[i].length ();
+    }
+    else
+      length = data2.length ();
+
     mData.add (row, col, data2);
   }
   else
@@ -248,11 +260,22 @@ void Table::addCell (const int row, const int col, const std::string& data)
     else
       mData.add (row, col, data);
 
-    length = data.length ();
+    // For multi-line cells, find the longest line.
+    if (data.find ("\n") != std::string::npos)
+    {
+      length = 0;
+      std::vector <std::string> lines;
+      split (lines, data, "\n");
+      for (unsigned int i = 0; i < lines.size (); ++i)
+        if (lines[i].length () > length)
+          length = lines[i].length ();
+    }
+    else
+      length = data.length ();
   }
 
   // Automatically maintain max width.
-  mMaxDataWidth[col] = max (mMaxDataWidth[col], length);
+  mMaxDataWidth[col] = max (mMaxDataWidth[col], (int)length);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -508,9 +531,7 @@ void Table::calculateColumnWidths ()
     }
     else
     {
-//      std::cout << "# insufficient room, considering only flexible columns." << std::endl;
-
-      // The fallback position is to assume no width was specificed, and just
+      // The fallback position is to assume no width was specified, and just
       // calculate widths accordingly.
       mTableWidth = 0;
       calculateColumnWidths ();

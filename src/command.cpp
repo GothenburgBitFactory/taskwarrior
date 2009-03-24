@@ -845,6 +845,14 @@ std::string handleAppend (TDB& tdb, T& task, Config& conf)
       {
         original.setId (task.getId ());
         tdb.modifyT (original);
+
+        if (conf.get ("echo.command", true))
+          out << "Appended '"
+              << task.getDescription ()
+              << "' to task "
+              << task.getId ()
+              << std::endl;
+
       }
 
       return out.str ();
@@ -940,6 +948,37 @@ std::string handleColor (Config& conf)
     out << "Color is currently turned off in your .taskrc file." << std::endl;
   }
 
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string handleAnnotate (TDB& tdb, T& task, Config& conf)
+{
+  std::stringstream out;
+  std::vector <T> all;
+  tdb.pendingT (all);
+
+  std::vector <T>::iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+  {
+    if (it->getId () == task.getId ())
+    {
+      it->addAnnotation (task.getDescription ());
+      tdb.modifyT (*it);
+
+      if (conf.get ("echo.command", true))
+        out << "Annotated "
+            << task.getId ()
+            << " with '"
+            << task.getDescription ()
+            << "'"
+            << std::endl;
+
+      return out.str ();
+    }
+  }
+
+  throw std::string ("Task not found.");
   return out.str ();
 }
 

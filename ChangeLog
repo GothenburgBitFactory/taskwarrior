@@ -12,6 +12,10 @@
   + Added support for the "echo.command" configuration variable that displays
     the task affected by the start, stop, do, undo, delete and undelete
     commands (thanks to Bruce Dillahunty).
+  + Added support for task annotations, with each annotation comprising a
+    timestamp and a description.
+  + Added support for a 'description_only' column that can be used in custom
+    reports which excludes annotations.
 
 ------ old releases ------------------------------
 

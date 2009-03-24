@@ -207,7 +207,18 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
 
     table.addCell (row, 0, end.toString (conf.get ("dateformat", "m/d/Y")));
     table.addCell (row, 1, refTask.getAttribute ("project"));
-    table.addCell (row, 2, refTask.getDescription ());
+
+    std::string description = refTask.getDescription ();
+    std::string when;
+    std::map <time_t, std::string> annotations;
+    refTask.getAnnotations (annotations);
+    foreach (anno, annotations)
+    {
+      Date dt (anno->first);
+      when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+      description += "\n" + when + " " + anno->second;
+    }
+    table.addCell (row, 2, description);
 
     if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
@@ -270,7 +281,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
     table.setTableDashedUnderline ();
 
   table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
+  table.setColumnWidth (1, Table::flexible);
 
   table.setColumnJustification (0, Table::left);
   table.setColumnJustification (1, Table::left);
@@ -296,9 +307,20 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
                               : refTask.getStatus () == T::recurring ? "Recurring"
                               : ""));
 
+      std::string description = refTask.getDescription ();
+      std::string when;
+      std::map <time_t, std::string> annotations;
+      refTask.getAnnotations (annotations);
+      foreach (anno, annotations)
+      {
+        Date dt (anno->first);
+        when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+        description += "\n" + when + " " + anno->second;
+      }
+
       row = table.addRow ();
       table.addCell (row, 0, "Description");
-      table.addCell (row, 1, refTask.getDescription ());
+      table.addCell (row, 1, description);
 
       if (refTask.getAttribute ("project") != "")
       {
@@ -1683,6 +1705,7 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
   int pendingT      = 0;
   int completedT    = 0;
   int taggedT       = 0;
+  int annotationsT  = 0;
   int recurringT    = 0;
   float daysPending = 0.0;
   int descLength    = 0;
@@ -1712,6 +1735,8 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
       daysPending += (now - entry) / 86400.0;
 
     descLength += it->getDescription ().length ();
+
+    annotationsT += it->getAnnotationCount ();
 
     std::vector <std::string> tags;
     it->getTags (tags);
@@ -1760,6 +1785,7 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
     out << "Tasks tagged          " << std::setprecision (3) << (100.0 * taggedT / totalT) << "%" << std::endl;
   }
 
+  out << "Annotations           " << annotationsT << std::endl;
   out << "Unique tags           " << allTags.size () << std::endl;
   out << "Projects              " << allProjects.size () << std::endl;
 
@@ -2164,7 +2190,7 @@ std::string handleCustomReport (
       }
     }
 
-    else if (*col == "description")
+    else if (*col == "description_only")
     {
       table.addColumn ("Description");
       table.setColumnWidth (columnCount, Table::flexible);
@@ -2172,6 +2198,30 @@ std::string handleCustomReport (
 
       for (unsigned int row = 0; row < tasks.size(); ++row)
         table.addCell (row, columnCount, tasks[row].getDescription ());
+    }
+
+    else if (*col == "description")
+    {
+      table.addColumn ("Description");
+      table.setColumnWidth (columnCount, Table::flexible);
+      table.setColumnJustification (columnCount, Table::left);
+
+      std::string description;
+      std::string when;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        description = tasks[row].getDescription ();
+        std::map <time_t, std::string> annotations;
+        tasks[row].getAnnotations (annotations);
+        foreach (anno, annotations)
+        {
+          Date dt (anno->first);
+          when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          description += "\n" + when + " " + anno->second;
+        }
+
+        table.addCell (row, columnCount, description);
+      }
     }
 
     else if (*col == "recur")
@@ -2302,17 +2352,18 @@ void validReportColumns (const std::vector <std::string>& columns)
 
   std::vector <std::string>::const_iterator it;
   for (it = columns.begin (); it != columns.end (); ++it)
-    if (*it != "id"       &&
-        *it != "uuid"     &&
-        *it != "project"  &&
-        *it != "priority" &&
-        *it != "entry"    &&
-        *it != "start"    &&
-        *it != "due"      &&
-        *it != "age"      &&
-        *it != "active"   &&
-        *it != "tags"     &&
-        *it != "recur"    &&
+    if (*it != "id"               &&
+        *it != "uuid"             &&
+        *it != "project"          &&
+        *it != "priority"         &&
+        *it != "entry"            &&
+        *it != "start"            &&
+        *it != "due"              &&
+        *it != "age"              &&
+        *it != "active"           &&
+        *it != "tags"             &&
+        *it != "recur"            &&
+        *it != "description_only" &&
         *it != "description")
       bad.push_back (*it);
 

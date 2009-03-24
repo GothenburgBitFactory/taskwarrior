@@ -121,6 +121,7 @@ static const char* commands[] =
   "active",
   "add",
   "append",
+  "annotate",
   "calendar",
   "colors",
   "completed",

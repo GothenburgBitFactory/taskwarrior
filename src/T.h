@@ -56,6 +56,7 @@ public:
 
   const std::string getDescription () const            { return mDescription; }
   void setDescription (const std::string& description) { mDescription = description; }
+  int getAnnotationCount () const                     { return mAnnotations.size (); }
 
   void getSubstitution (std::string&, std::string&) const;
   void setSubstitution (const std::string&, const std::string&);
@@ -77,6 +78,9 @@ public:
   void removeAttribute (const std::string&);
   void removeAttributes ();
 
+  void getAnnotations (std::map <time_t, std::string>&);
+  void addAnnotation (const std::string&);
+
   const std::string compose () const;
   const std::string composeCSV ();
   void parse (const std::string&);
@@ -93,9 +97,9 @@ private:
   std::vector<std::string>           mTags;
   std::vector<std::string>           mRemoveTags;
   std::map<std::string, std::string> mAttributes;
-
   std::string                        mFrom;
   std::string                        mTo;
+  std::map <time_t, std::string>     mAnnotations;
 };
 
 #endif
