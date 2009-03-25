@@ -89,6 +89,7 @@ std::string handleStop (TDB&, T&, Config&);
 std::string handleUndo (TDB&, T&, Config&);
 std::string handleColor (Config&);
 std::string handleAnnotate (TDB&, T&, Config&);
+T findT (int, const std::vector <T>&);
 
 // report.cpp
 void filter (std::vector<T>&, T&);

@@ -674,12 +674,30 @@ std::string handleModify (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
   std::vector <T> all;
-  tdb.pendingT (all);
+  tdb.allPendingT (all);
 
+  // Lookup the complete task.
+  T complete = findT (task.getId (), all);
+
+  // Perform some logical consistency checks.
+  if (task.getAttribute ("recur")   != "" &&
+      task.getAttribute ("due")     == "" &&
+      complete.getAttribute ("due") == "")
+    throw std::string ("You cannot specify a recurring task without a due date.");
+
+  if (task.getAttribute ("until")     != "" &&
+      task.getAttribute ("recur")     == "" &&
+      complete.getAttribute ("recur") == "")
+    throw std::string ("You cannot specify an until date for a non-recurring task.");
+
+  int count = 0;
   std::vector <T>::iterator it;
   for (it = all.begin (); it != all.end (); ++it)
   {
-    if (it->getId () == task.getId ())
+    if (it->getId ()                == complete.getId ()                 || // Self
+        (complete.getAttribute ("parent") != "" &&
+        it->getAttribute ("parent") == complete.getAttribute ("parent")) || // Sibling
+        it->getUUID ()              == complete.getAttribute ("parent"))    // Parent
     {
       T original (*it);
 
@@ -725,7 +743,13 @@ std::string handleModify (TDB& tdb, T& task, Config& conf)
         if (i->second == "")
           original.removeAttribute (i->first);
         else
+        {
           original.setAttribute (i->first, i->second);
+
+          // If a "recur" attribute is added, upgrade to a recurring task.
+          if (i->first == "recur")
+            original.setStatus (T::recurring);
+        }
 
         ++changes;
       }
@@ -748,16 +772,18 @@ std::string handleModify (TDB& tdb, T& task, Config& conf)
       }
 
       if (changes)
-      {
-        original.setId (task.getId ());
         tdb.modifyT (original);
-      }
 
-      return out.str ();
+      ++count;
     }
   }
 
-  throw std::string ("Task not found.");
+  if (count == 0)
+    throw std::string ("Task not found.");
+
+  if (conf.get ("echo.command", true))
+    out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+
   return out.str ();
 }
 
@@ -766,12 +792,19 @@ std::string handleAppend (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
   std::vector <T> all;
-  tdb.pendingT (all);
+  tdb.allPendingT (all);
 
+  // Lookup the complete task.
+  T complete = findT (task.getId (), all);
+
+  int count = 0;
   std::vector <T>::iterator it;
   for (it = all.begin (); it != all.end (); ++it)
   {
-    if (it->getId () == task.getId ())
+    if (it->getId ()                == complete.getId ()                 || // Self
+        (complete.getAttribute ("parent") != "" &&
+        it->getAttribute ("parent") == complete.getAttribute ("parent")) || // Sibling
+        it->getUUID ()              == complete.getAttribute ("parent"))    // Parent
     {
       T original (*it);
 
@@ -843,23 +876,26 @@ std::string handleAppend (TDB& tdb, T& task, Config& conf)
 
       if (changes)
       {
-        original.setId (task.getId ());
         tdb.modifyT (original);
 
         if (conf.get ("echo.command", true))
           out << "Appended '"
               << task.getDescription ()
               << "' to task "
-              << task.getId ()
+              << original.getId ()
               << std::endl;
-
       }
 
-      return out.str ();
+      ++count;
     }
   }
 
-  throw std::string ("Task not found.");
+  if (count == 0)
+    throw std::string ("Task not found.");
+
+  if (conf.get ("echo.command", true))
+    out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+
   return out.str ();
 }
 
@@ -980,6 +1016,17 @@ std::string handleAnnotate (TDB& tdb, T& task, Config& conf)
 
   throw std::string ("Task not found.");
   return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+T findT (int id, const std::vector <T>& all)
+{
+  std::vector <T>::const_iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+    if (id == it->getId ())
+      return *it;
+
+  return T ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

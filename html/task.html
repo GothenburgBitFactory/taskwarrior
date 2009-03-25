@@ -105,13 +105,17 @@
                   <li>UTF8 text is now supported in task project names, tags and descriptions.
                   <li>Fixed bug that caused the y/n confirmation on task deletion to ignore the
                       Enter key and fail to re-prompt (thanks to Bruce Dillahunty).
-                  <li>Added support for the "echo.command" configuration variable that displays
-                      the task affected by the start, stop, do, undo, delete and undelete
-                      commands (thanks to Bruce Dillahunty).
-                  <li>Added support for task annotations, with each annotation comprising a
-                      timestamp and a description.
-                  <li>Added support for a 'description_only' column that can be used in custom
-                      reports which excludes annotations.
+                  <li>When the "echo.command" configuration variable is set to "yes", it causes
+                      commands that modify tasks to display which task was affected (thanks to
+                      Bruce Dillahunty).
+                  <li>A task can now be annotated with the command "task <id> annotate ...", and
+                      a timestamped annotation will appear in reports.
+                  <li>A 'description_only' column is now available for use in custom reports,
+                      and it excludes annotations.
+                  <li>A task can now be upgraded to a recurring task by adding a recurrence
+                      frequency, a due date, and an optional until date.
+                  <li>When a recurring task is modified, all other instances of the recurring
+                      task are also modified.
                 </ul>
 
                 <p>
