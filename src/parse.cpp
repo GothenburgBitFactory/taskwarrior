@@ -131,6 +131,7 @@ static const char* commands[] =
   "help",
   "history",
   "ghistory",
+  "import",
   "info",
   "next",
   "overdue",

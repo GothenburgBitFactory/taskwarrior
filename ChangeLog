@@ -20,6 +20,8 @@
     frequency, a due date, and an optional until date.
   + When a recurring task is modified, all other instances of the recurring
     task are also modified.
+  + Task can now import tasks from a variety of data formats.  See online
+    docs for full details.
 
 ------ old releases ------------------------------
 

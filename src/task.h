@@ -143,4 +143,7 @@ std::string expandPath (const std::string&);
 void initializeColorRules (Config&);
 void autoColorize (T&, Text::color&, Text::color&, Config&);
 
+// import.cpp
+std::string handleImport (TDB&, T&, Config&);
+
 ////////////////////////////////////////////////////////////////////////////////
