@@ -736,7 +736,19 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 3, due);
     table.addCell (row, 4, active);
     table.addCell (row, 5, age);
-    table.addCell (row, 6, refTask.getDescription ());
+
+    std::string description = refTask.getDescription ();
+    std::string when;
+    std::map <time_t, std::string> annotations;
+    refTask.getAnnotations (annotations);
+    foreach (anno, annotations)
+    {
+      Date dt (anno->first);
+      when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+      description += "\n" + when + " " + anno->second;
+    }
+
+    table.addCell (row, 6, description);
 
     if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
     {
@@ -1542,7 +1554,19 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
       table.addCell (row, 1, refTask.getAttribute ("project"));
       table.addCell (row, 2, refTask.getAttribute ("priority"));
       table.addCell (row, 3, due);
-      table.addCell (row, 4, refTask.getDescription ());
+
+      std::string description = refTask.getDescription ();
+      std::string when;
+      std::map <time_t, std::string> annotations;
+      refTask.getAnnotations (annotations);
+      foreach (anno, annotations)
+      {
+        Date dt (anno->first);
+        when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+        description += "\n" + when + " " + anno->second;
+      }
+
+      table.addCell (row, 4, description);
 
       if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
       {
@@ -1656,7 +1680,19 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
           table.addCell (row, 1, refTask.getAttribute ("project"));
           table.addCell (row, 2, refTask.getAttribute ("priority"));
           table.addCell (row, 3, due);
-          table.addCell (row, 4, refTask.getDescription ());
+
+          std::string description = refTask.getDescription ();
+          std::string when;
+          std::map <time_t, std::string> annotations;
+          refTask.getAnnotations (annotations);
+          foreach (anno, annotations)
+          {
+            Date dt (anno->first);
+            when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+            description += "\n" + when + " " + anno->second;
+          }
+
+          table.addCell (row, 4, description);
 
           if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
           {
