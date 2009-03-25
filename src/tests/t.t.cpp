@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest test (8);
+  UnitTest test (10);
 
   T t;
   std::string s = t.compose ();
@@ -53,12 +53,27 @@ int main (int argc, char** argv)
   test.is (s[37], 'r', "T::setStatus (recurring)");
   test.diag (s);
 
-  // Round trip test.
-  std::string sample = "00000000-0000-0000-0000-000000000000 - [] [] [] Sample";
-  T t2;
-  t2.parse (sample);
-  sample += "\n";
-  test.is (t2.compose (), sample, "T::parse -> T::compose round trip");
+  std::string format3 = "00000000-0000-0000-0000-000000000000 - [] [] [] Sample\n";
+
+  // Format 1 Round trip test.
+  std::string sample = "[] [] Sample";
+  T tf1;
+  tf1.parse (sample);
+  test.is (tf1.compose ().substr (36, std::string::npos),
+           format3.substr (36, std::string::npos),
+           "T::parse format 1 -> T::compose round trip");
+
+  // Format 2 Round trip test.
+  sample = "00000000-0000-0000-0000-000000000000 - [] [] Sample";
+  T tf2;
+  tf2.parse (sample);
+  test.is (tf2.compose (), format3, "T::parse format 2 -> T::compose round trip");
+
+  // Format 3 Round trip test.
+  sample = "00000000-0000-0000-0000-000000000000 - [] [] [] Sample";
+  T tf3;
+  tf3.parse (sample);
+  test.is (tf3.compose (), format3, "T::parse format 3 -> T::compose round trip");
 
   // b10b3236-70d8-47bb-840a-b4c430758fb6 - [foo] [bar:baz] [1237865996:'woof'] sample\n
   // ....:....|....:....|....:....|....:....|....:....|....:....|....:....|....:....|....:....|
