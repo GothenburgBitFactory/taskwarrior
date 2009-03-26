@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <sys/types.h>
@@ -402,5 +403,30 @@ int flock (int fd, int operation)
   return fcntl (fd, (operation & LOCK_NB) ? F_SETLK : F_SETLKW, &fl);
 }
 #endif
+
+////////////////////////////////////////////////////////////////////////////////
+bool slurp (
+  const std::string& file,
+  std::vector <std::string>& contents,
+  bool trimLines /* = false */)
+{
+  contents.clear ();
+
+  std::ifstream in (file.c_str ());
+  if (in.good ())
+  {
+    std::string line;
+    while (getline (in, line))
+    {
+      if (trimLines) line = trim (line);
+      contents.push_back (line);
+    }
+
+    in.close ();
+    return true;
+  }
+
+  return false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////

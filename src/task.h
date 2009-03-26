@@ -139,6 +139,8 @@ std::string expandPath (const std::string&);
   int flock (int, int);
 #endif
 
+bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
+
 // rules.cpp
 void initializeColorRules (Config&);
 void autoColorize (T&, Text::color&, Text::color&, Config&);
