@@ -29,33 +29,12 @@
 #include "task.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// todo.sh v2.x
-//         file format: (A) Walk the dog +project @context
-//                      x 2009-03-25 Walk the dog +project @context
-//            priority: (A) - (Z)
-//   multiple projects: +project
-//   multiple contexts: @context
-
-// task >= 1.5 export
-//         file format: id,uuid,status,tags,entry,start,due,recur,end,project,
-//                      priority,fg,bg,description\n
-
-// task < 1.5 export
-//         file format: id,uuid,status,tags,entry,start,due,project,priority,
-//                      fg,bg,description\n
-
-// single line text
-//         file format: foo bar baz
-
-// CSV
-//         file format: project,priority,description
-
-////////////////////////////////////////////////////////////////////////////////
 enum fileType
 {
   not_a_clue,
   task_1_4_3,
   task_1_5_0,
+  task_cmd_line,
   todo_sh_2_0,
   csv,
   text
@@ -84,6 +63,8 @@ static fileType determineFileType (const std::vector <std::string>& lines)
                     "'priority','fg','bg','description'")
       return task_1_4_3;
   }
+
+  // TODO task_cmd_line
 
   // x 2009-03-25 Walk the dog +project @context
   // This is a test +project @context
@@ -125,7 +106,7 @@ static fileType determineFileType (const std::vector <std::string>& lines)
     }
   }
 
-  // CSV - commas on every line.
+  // CSV - commas on every non-comment, non-trivial line.
   bool commas_on_every_line = true;
   for (unsigned int i = 0; i < lines.size (); ++i)
   {
@@ -175,6 +156,15 @@ static std::string importTask_1_5_0 (
   const std::vector <std::string>& lines)
 {
   return "task 1.5.0\n";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static std::string importTaskCmdLine (
+  TDB& tdb,
+  Config& conf,
+  const std::vector <std::string>& lines)
+{
+  return "task command line\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -232,6 +222,8 @@ static std::string importCSV (
   Config& conf,
   const std::vector <std::string>& lines)
 {
+  // TODO Allow any number of fields, but attempt to map into task fields.
+  // TODO Must have header line to name fields.
   return "CSV\n";
 }
 
@@ -251,11 +243,12 @@ std::string handleImport (TDB& tdb, T& task, Config& conf)
     // Determine which type it might be, then attempt an import.
     switch (determineFileType (lines))
     {
-    case task_1_4_3:  out << importTask_1_4_3 (tdb, conf, lines); break;
-    case task_1_5_0:  out << importTask_1_5_0 (tdb, conf, lines); break;
-    case todo_sh_2_0: out << importTodoSh_2_0 (tdb, conf, lines); break;
-    case csv:         out << importCSV        (tdb, conf, lines); break;
-    case text:        out << importText       (tdb, conf, lines); break;
+    case task_1_4_3:    out << importTask_1_4_3  (tdb, conf, lines); break;
+    case task_1_5_0:    out << importTask_1_5_0  (tdb, conf, lines); break;
+    case task_cmd_line: out << importTaskCmdLine (tdb, conf, lines); break;
+    case todo_sh_2_0:   out << importTodoSh_2_0  (tdb, conf, lines); break;
+    case csv:           out << importCSV         (tdb, conf, lines); break;
+    case text:          out << importText        (tdb, conf, lines); break;
 
     case not_a_clue:
       out << "?";
