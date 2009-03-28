@@ -34,6 +34,30 @@
               <br />
               <h2 class="title">Data Import</h2>
               <div class="content">
+                <p>
+                  Tasks can be imported from files with this command:
+
+                  <pre><code>% task import file</code></pre>
+
+                  A variety of different file types are recognized by task, namely:
+
+                  <ul>
+                    <li>Tasks exported from task prior to version 1.5.0.
+                    <li>Tasks exported from task version 1.5.0 and later.  The file
+                        format changed with 1.5.0.
+                    <li>todo.sh files.
+                    <li>CSV files with a variety of recognized column names.
+                    <li>Plain text files, with one task listed per line.
+                    <li>Task command line format.
+                  </ul>
+
+                  Task makes a good effort to determine which of these formats a
+                  file is, and then imports accordingly.
+                </p>
+
+                <p>
+                  It would be wise to backup your task data files before an import.
+                </p>
               </div>
 
               <br />

@@ -240,8 +240,13 @@ std::string handleImport (TDB& tdb, T& task, Config& conf)
     std::vector <std::string> lines;
     slurp (file, lines, true);
 
+    // Take a guess at the file type.
+    fileType type = determineFileType (lines);
+
+    // TODO Allow an override.
+
     // Determine which type it might be, then attempt an import.
-    switch (determineFileType (lines))
+    switch (type)
     {
     case task_1_4_3:    out << importTask_1_4_3  (tdb, conf, lines); break;
     case task_1_5_0:    out << importTask_1_5_0  (tdb, conf, lines); break;
