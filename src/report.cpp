@@ -2040,6 +2040,18 @@ std::string handleCustomReport (
   split (columns, columnList, ',');
   validReportColumns (columns);
 
+  std::string labelList = conf.get ("report." + report + ".labels");
+  std::vector <std::string> labels;
+  split (labels, labelList, ',');
+
+  if (columns.size () != labels.size ())
+    throw std::string ("There are a different number of columns than labels ") +
+          "for report '" + report + "'.  Please correct this.";
+
+  std::map <std::string, std::string> columnLabels;
+  for (unsigned int i = 0; i < columns.size (); ++i)
+    columnLabels[columns[i]] = labels[i];
+
   std::string sortList   = conf.get ("report." + report + ".sort");
   std::vector <std::string> sortOrder;
   split (sortOrder, sortList, ',');
@@ -2081,7 +2093,7 @@ std::string handleCustomReport (
     // Add each column individually.
     if (*col == "id")
     {
-      table.addColumn ("ID");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "ID");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
@@ -2091,7 +2103,7 @@ std::string handleCustomReport (
 
     else if (*col == "uuid")
     {
-      table.addColumn ("UUID");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "UUID");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::left);
 
@@ -2101,7 +2113,7 @@ std::string handleCustomReport (
 
     else if (*col == "project")
     {
-      table.addColumn ("Project");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Project");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::left);
 
@@ -2111,7 +2123,7 @@ std::string handleCustomReport (
 
     else if (*col == "priority")
     {
-      table.addColumn ("Pri");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Pri");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::left);
 
@@ -2121,7 +2133,7 @@ std::string handleCustomReport (
 
     else if (*col == "entry")
     {
-      table.addColumn ("Added");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Added");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
@@ -2140,7 +2152,7 @@ std::string handleCustomReport (
 
     else if (*col == "start")
     {
-      table.addColumn ("Started");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Started");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
@@ -2159,7 +2171,7 @@ std::string handleCustomReport (
 
     else if (*col == "due")
     {
-      table.addColumn ("Due");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Due");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
@@ -2180,7 +2192,7 @@ std::string handleCustomReport (
 
     else if (*col == "age")
     {
-      table.addColumn ("Age");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Age");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
@@ -2201,7 +2213,7 @@ std::string handleCustomReport (
 
     else if (*col == "active")
     {
-      table.addColumn ("Active");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Active");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::left);
 
@@ -2212,7 +2224,7 @@ std::string handleCustomReport (
 
     else if (*col == "tags")
     {
-      table.addColumn ("Tags");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Tags");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::left);
 
@@ -2228,7 +2240,7 @@ std::string handleCustomReport (
 
     else if (*col == "description_only")
     {
-      table.addColumn ("Description");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Description");
       table.setColumnWidth (columnCount, Table::flexible);
       table.setColumnJustification (columnCount, Table::left);
 
@@ -2238,7 +2250,7 @@ std::string handleCustomReport (
 
     else if (*col == "description")
     {
-      table.addColumn ("Description");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Description");
       table.setColumnWidth (columnCount, Table::flexible);
       table.setColumnJustification (columnCount, Table::left);
 
@@ -2262,7 +2274,7 @@ std::string handleCustomReport (
 
     else if (*col == "recur")
     {
-      table.addColumn ("Recur");
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Recur");
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 

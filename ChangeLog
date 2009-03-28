@@ -20,6 +20,8 @@
     frequency, a due date, and an optional until date.
   + When a recurring task is modified, all other instances of the recurring
     task are also modified.
+  + Custom reports now support user-specified column labels (thanks to T.
+    Charles Yun).
 
 ------ old releases ------------------------------
 

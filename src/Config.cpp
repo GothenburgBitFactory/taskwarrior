@@ -46,23 +46,28 @@ Config::Config ()
 {
   (*this)["report.long.description"]   = "Lists all task, all data, matching the specified criteria";
   (*this)["report.long.columns"]       = "id,project,priority,entry,start,due,recur,age,tags,description";
+  (*this)["report.long.labels"]        = "ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description";
   (*this)["report.long.sort"]          = "due+,priority-,project+";
 
   (*this)["report.list.description"]   = "Lists all tasks matching the specified criteria";
   (*this)["report.list.columns"]       = "id,project,priority,due,active,age,description";
+  (*this)["report.list.labels"]        = "ID,Project,Pri,Due,Active,Age,Description";
   (*this)["report.list.sort"]          = "due+,priority-,project+";
 
   (*this)["report.ls.description"]     = "Minimal listing of all tasks matching the specified criteria";
   (*this)["report.ls.columns"]         = "id,project,priority,description";
+  (*this)["report.ls.labels"]          = "ID,Project,Pri,Description";
   (*this)["report.ls.sort"]            = "priority-,project+";
 
   (*this)["report.newest.description"] = "Shows the newest tasks";
   (*this)["report.newest.columns"]     = "id,project,priority,due,active,age,description";
+  (*this)["report.newest.labels"]      = "ID,Project,Pri,Due,Active,Age,Description";
   (*this)["report.newest.sort"]        = "id-";
   (*this)["report.newest.limit"]       = "10";
 
   (*this)["report.oldest.description"] = "Shows the oldest tasks";
   (*this)["report.oldest.columns"]     = "id,project,priority,due,active,age,description";
+  (*this)["report.oldest.labels"]      = "ID,Project,Pri,Due,Active,Age,Description";
   (*this)["report.oldest.sort"]        = "id+";
   (*this)["report.oldest.limit"]       = "10";
 }
