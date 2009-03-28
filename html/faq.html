@@ -35,6 +35,11 @@
               <h2 class="title">Frequently Asked Questions</h2>
               <div class="content">
                 <p>
+                (Actually, that's a misnomer.  These are really Repeatedly Asked
+                Questions.)
+                </p>
+
+                <p>
                   <b>
                     Q: When I redirect the output of task to a file, I lose all
                        the colors.  How do I fix this?
@@ -45,14 +50,40 @@
                      Prevent this with the following entry in your .taskrc file:
                   <pre><code>_forcecolor=on</code></pre>
                 </p>
+                <hr>
 
                 <p>
                   <b>
-                    Q:
+                    Q: How do I backup my task data files?  Where are they?
                   </b>
                   <br />
-                  A:
+                  A: Task writes all pending tasks to the file ~/.task/pending.data
+                     and all completed and deleted tasks to ~/.task/completed.data.
+                     They are text files, so they can just be copied to another
+                     location for safekeeping. Don't forget there is also the
+                     ~/.taskrc file that contains your task configuration data.
                 </p>
+                <hr>
+
+                <p>
+                  <b>
+                    Q: How can I separate my work tasks from my home tasks?
+                       Specifically, can I keep them completely separate?
+                  </b>
+                  <br />
+                  A: You can do this by creating an alternate .taskrc file,
+                     then using shell aliases.  Here is are example Bash
+                     commands to achieve this:
+
+                  <pre><code>% cp ~/.taskrc ~/.taskrc_home
+% (now edit .taskrc_home to change the value of data.location)
+% alias wtask="task"
+% alias htask="task rc:~/.taskrc_home"</code></pre>
+
+                  This gives you two commands, 'wtask' and 'htask' that
+                  operate using two different sets of task data files.
+                </p>
+                <hr>
 
 <!--
                 <p>
@@ -62,6 +93,7 @@
                   <br />
                   A:
                 </p>
+                <hr>
 -->
               </div>
 
