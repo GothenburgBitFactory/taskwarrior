@@ -283,7 +283,7 @@ std::string handleVersion (Config& conf)
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
+  int width = conf.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {

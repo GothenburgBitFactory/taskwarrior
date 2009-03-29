@@ -147,7 +147,7 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
+  int width = conf.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -251,7 +251,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
+  int width = conf.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -634,7 +634,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   gatherNextTasks (tdb, task, conf, pending, matching);
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
+  int width = conf.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -1001,7 +1001,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
+  int width = conf.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -1364,7 +1364,7 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
+  int width = conf.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -1473,7 +1473,7 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
+  int width = conf.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -1606,7 +1606,7 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
+  int width = conf.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
@@ -2024,7 +2024,7 @@ std::string handleCustomReport (
   const std::string& report)
 {
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", 80);
+  int width = conf.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {

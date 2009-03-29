@@ -52,7 +52,7 @@ static std::string shortUsage (Config& conf)
 {
   std::stringstream out;
   Table table;
-  int width = conf.get ("defaultwidth", 80);
+  int width = conf.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
   if (conf.get ("curses", true))
   {
