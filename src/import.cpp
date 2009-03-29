@@ -26,6 +26,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <sstream>
+#include <stdio.h>
+#include <unistd.h>
 #include "Date.h"
 #include "task.h"
 
@@ -249,7 +251,7 @@ static std::string importTask_1_4_3 (
             std::string tokens = fields[f].substr (1, fields[f].length () - 2);
             std::vector <std::string> tags;
             split (tags, tokens, ' ');
-            for (unsigned int i = 0; i > tags.size (); ++i)
+            for (unsigned int i = 0; i < tags.size (); ++i)
               task.addTag (tags[i]);
           }
           break;
@@ -405,7 +407,7 @@ static std::string importTask_1_5_0 (
             std::string tokens = fields[f].substr (1, fields[f].length () - 2);
             std::vector <std::string> tags;
             split (tags, tokens, ' ');
-            for (unsigned int i = 0; i > tags.size (); ++i)
+            for (unsigned int i = 0; i < tags.size (); ++i)
               task.addTag (tags[i]);
           }
           break;
@@ -566,7 +568,7 @@ static std::string importTask_1_6_0 (
             std::string tokens = fields[f].substr (1, fields[f].length () - 2);
             std::vector <std::string> tags;
             split (tags, tokens, ' ');
-            for (unsigned int i = 0; i > tags.size (); ++i)
+            for (unsigned int i = 0; i < tags.size (); ++i)
               task.addTag (tags[i]);
           }
           break;
@@ -888,9 +890,227 @@ static std::string importCSV (
   Config& conf,
   const std::vector <std::string>& lines)
 {
-  // TODO Allow any number of fields, but attempt to map into task fields.
-  // TODO Must have header line to name fields.
-  return "CSV\n";
+  std::vector <std::string> failed;
+
+  // Set up mappings.  Assume no fields match.
+  std::map <std::string, int> mapping;
+  mapping ["id"]          = -1;
+  mapping ["uuid"]        = -1;
+  mapping ["status"]      = -1;
+  mapping ["tags"]        = -1;
+  mapping ["entry"]       = -1;
+  mapping ["start"]       = -1;
+  mapping ["due"]         = -1;
+  mapping ["recur"]       = -1;
+  mapping ["end"]         = -1;
+  mapping ["project"]     = -1;
+  mapping ["priority"]    = -1;
+  mapping ["fg"]          = -1;
+  mapping ["bg"]          = -1;
+  mapping ["description"] = -1;
+
+  std::vector <std::string> headings;
+  split (headings, lines[0], ',');
+
+  for (unsigned int h = 0; h < headings.size (); ++h)
+  {
+    std::string name = lowerCase (trim (unquoteText (trim (headings[h]))));
+
+    // If there is a mapping for the field, use the value.
+    if (name == "id" ||
+        name == "#" ||
+        name == "sequence" ||
+        name.find ("num") != std::string::npos)
+    {
+      mapping["id"] = (int)h;
+    }
+
+    else if (name == "uuid" ||
+             name == "guid" ||
+             name.find ("unique") != std::string::npos)
+    {
+      mapping["uuid"] = (int)h;
+    }
+
+    else if (name == "status" ||
+             name == "condition" ||
+             name == "state")
+    {
+      mapping["status"] = (int)h;
+    }
+
+    else if (name == "tags" ||
+             name.find ("categor") != std::string::npos ||
+             name.find ("tag") != std::string::npos)
+    {
+      mapping["tags"] = (int)h;
+    }
+
+    else if (name == "entry" ||
+             name.find ("added") != std::string::npos ||
+             name.find ("created") != std::string::npos ||
+             name.find ("entered") != std::string::npos)
+    {
+      mapping["entry"] = (int)h;
+    }
+
+    else if (name == "start" ||
+             name.find ("began") != std::string::npos ||
+             name.find ("begun") != std::string::npos ||
+             name.find ("started") != std::string::npos ||
+             name == "")
+    {
+      mapping["start"] = (int)h;
+    }
+
+    else if (name == "due" ||
+             name.find ("expected") != std::string::npos)
+    {
+      mapping["due"] = (int)h;
+    }
+
+    else if (name == "recur" ||
+             name == "frequency")
+    {
+      mapping["recur"] = (int)h;
+    }
+
+    else if (name == "end" ||
+             name == "done" ||
+             name.find ("complete") != std::string::npos)
+    {
+      mapping["end"] = (int)h;
+    }
+
+    else if (name == "project" ||
+             name.find ("proj") != std::string::npos)
+    {
+      mapping["project"] = (int)h;
+    }
+
+    else if (name == "priority" ||
+             name == "pri" ||
+             name.find ("importan") != std::string::npos)
+    {
+      mapping["priority"] = (int)h;
+    }
+
+    else if (name.find ("fg")         != std::string::npos ||
+             name.find ("foreground") != std::string::npos ||
+             name.find ("color")      != std::string::npos)
+    {
+      mapping["fg"] = (int)h;
+    }
+
+    else if (name == "bg" ||
+             name.find ("background") != std::string::npos)
+    {
+      mapping["bg"] = (int)h;
+    }
+
+    else if (name.find ("desc")   != std::string::npos ||
+             name.find ("detail") != std::string::npos ||
+             name.find ("what")   != std::string::npos)
+    {
+      mapping["description"] = (int)h;
+    }
+  }
+
+  // TODO Dump mappings and ask for confirmation?
+
+  std::vector <std::string>::const_iterator it = lines.begin ();
+  for (++it; it != lines.end (); ++it)
+  {
+    try
+    {
+      std::vector <std::string> fields;
+      split (fields, *it, ',');
+
+      T task;
+
+      int f;
+      if ((f = mapping["uuid"]) != -1)
+        task.setUUID (lowerCase (unquoteText (trim (fields[f]))));
+
+      if ((f = mapping["status"]) != -1)
+      {
+        std::string value = lowerCase (unquoteText (trim (fields[f])));
+
+             if (value == "recurring") task.setStatus (T::recurring);
+        else if (value == "deleted")   task.setStatus (T::deleted);
+        else if (value == "completed") task.setStatus (T::completed);
+        else                           task.setStatus (T::pending);
+      }
+
+      if ((f = mapping["tags"]) != -1)
+      {
+        std::string value = unquoteText (trim (fields[f]));
+        std::vector <std::string> tags;
+        split (tags, value, ' ');
+        for (unsigned int i = 0; i < tags.size (); ++i)
+          task.addTag (tags[i]);
+      }
+
+      if ((f = mapping["entry"]) != -1)
+        task.setAttribute ("entry", lowerCase (unquoteText (trim (fields[f]))));
+
+      if ((f = mapping["start"]) != -1)
+        task.setAttribute ("start", lowerCase (unquoteText (trim (fields[f]))));
+
+      if ((f = mapping["due"]) != -1)
+        task.setAttribute ("due", lowerCase (unquoteText (trim (fields[f]))));
+
+      if ((f = mapping["recur"]) != -1)
+        task.setAttribute ("recur", lowerCase (unquoteText (trim (fields[f]))));
+
+      if ((f = mapping["end"]) != -1)
+        task.setAttribute ("end", lowerCase (unquoteText (trim (fields[f]))));
+
+      if ((f = mapping["project"]) != -1)
+        task.setAttribute ("project", unquoteText (trim (fields[f])));
+
+      if ((f = mapping["priority"]) != -1)
+      {
+        std::string value = upperCase (unquoteText (trim (fields[f])));
+        if (value == "H" || value == "M" || value == "L")
+          task.setAttribute ("priority", value);
+      }
+
+      if ((f = mapping["fg"]) != -1)
+        task.setAttribute ("fg", lowerCase (unquoteText (trim (fields[f]))));
+
+      if ((f = mapping["bg"]) != -1)
+        task.setAttribute ("bg", lowerCase (unquoteText (trim (fields[f]))));
+
+      if ((f = mapping["description"]) != -1)
+        task.setDescription (unquoteText (trim (fields[f])));
+
+      if (! tdb.addT (task))
+        failed.push_back (*it);
+    }
+
+    catch (...)
+    {
+      failed.push_back (*it);
+    }
+  }
+
+  std::stringstream out;
+  out << "Imported "
+      << (lines.size () - failed.size () - 1)
+      << " tasks successfully, with "
+      << failed.size ()
+      << " errors."
+      << std::endl;
+
+  if (failed.size ())
+  {
+    std::string bad;
+    join (bad, "\n", failed);
+    return out.str () + "\nCould not import:\n\n" + bad;
+  }
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -926,8 +1146,25 @@ std::string handleImport (TDB& tdb, T& task, Config& conf)
 
     // Take a guess at the file type.
     fileType type = determineFileType (lines);
+    std::string identifier;
+    switch (type)
+    {
+    case task_1_4_3:    identifier = "This looks like an older task export file.";              break;
+    case task_1_5_0:    identifier = "This looks like a recent task export file.";              break;
+    case task_1_6_0:    identifier = "This looks like a current task export file.";             break;
+    case task_cmd_line: identifier = "This looks like task command line arguments.";            break;
+    case todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                     break;
+    case csv:           identifier = "This looks like a CSV file, but not a task export file."; break;
+    case text:          identifier = "This looks like a text file with one tasks per line.";    break;
+    case not_a_clue:
+      throw std::string ("Task cannot determine which type of file this is, "
+                         "and cannot proceed.");
+    }
 
-    // TODO Allow an override.
+    // For tty users, confirm the import, as it is destructive.
+    if (isatty (fileno (stdout)))
+      if (! confirm (identifier + "  Okay to proceed?"))
+        throw std::string ("Task will not import any data.");
 
     // Determine which type it might be, then attempt an import.
     switch (type)
@@ -939,10 +1176,7 @@ std::string handleImport (TDB& tdb, T& task, Config& conf)
     case todo_sh_2_0:   out << importTodoSh_2_0  (tdb, conf, lines); break;
     case csv:           out << importCSV         (tdb, conf, lines); break;
     case text:          out << importText        (tdb, conf, lines); break;
-
-    case not_a_clue:
-      out << "?";
-      break;
+    case not_a_clue:    /* to stop the compiler from complaining. */ break;
     }
   }
   else

@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (78);
+  UnitTest t (94);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -182,6 +182,24 @@ int main (int argc, char** argv)
   t.is (trim ("xxx",           " \t"), "xxx",       "trim 'xxx' -> 'xxx'");
   t.is (trim ("  \t xxx \t  "),        "\t xxx \t", "trim '  \\t xxx \\t  ' -> '\\t xxx \\t'");
   t.is (trim ("  \t xxx \t  ", " \t"), "xxx",       "trim '  \\t xxx \\t  ' -> 'xxx'");
+
+  // std::string unquoteText (const std::string& text)
+  t.is (unquoteText (""),         "",     "unquoteText '' -> ''");
+  t.is (unquoteText ("x"),        "x",    "unquoteText 'x' -> 'x'");
+  t.is (unquoteText ("'x"),       "'x",   "unquoteText ''x' -> ''x'");
+  t.is (unquoteText ("x'"),       "x'",   "unquoteText 'x'' -> 'x''");
+  t.is (unquoteText ("\"x"),      "\"x",  "unquoteText '\"x' -> '\"x'");
+  t.is (unquoteText ("x\""),      "x\"",  "unquoteText 'x\"' -> 'x\"'");
+  t.is (unquoteText ("''"),       "",     "unquoteText '''' -> ''");
+  t.is (unquoteText ("'''"),      "'",    "unquoteText ''''' -> '''");
+  t.is (unquoteText ("\"\""),     "",     "unquoteText '\"\"' -> ''");
+  t.is (unquoteText ("\"\"\""),    "\"",  "unquoteText '\"\"\"' -> '\"'");
+  t.is (unquoteText ("''''"),     "''",   "unquoteText '''''' -> ''''");
+  t.is (unquoteText ("\"\"\"\""), "\"\"", "unquoteText '\"\"\"\"' -> '\"\"'");
+  t.is (unquoteText ("'\"\"'"),   "\"\"", "unquoteText '''\"\"' -> '\"\"'");
+  t.is (unquoteText ("\"''\""),   "''",   "unquoteText '\"''\"' -> ''''");
+  t.is (unquoteText ("'x'"),      "x",    "unquoteText ''x'' -> 'x'");
+  t.is (unquoteText ("\"x\""),    "x",    "unquoteText '\"x\"' -> 'x'");
 
   // std::string commify (const std::string& data)
   t.is (commify (""),           "",              "commify '' -> ''");

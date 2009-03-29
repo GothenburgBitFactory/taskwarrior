@@ -127,12 +127,19 @@ std::string trim (const std::string& in, const std::string& t /*= " "*/)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Remove enclosing balanced quotes.  Assumes trimmed text.
-void unquoteText (std::string& text)
+std::string unquoteText (const std::string& input)
 {
-  char quote = text[0];
-  if (quote == '\'' || quote == '"')
-    if (text[text.length () - 1] == quote)
-      text = text.substr (1, text.length () - 3);
+  std::string output = input;
+
+  if (output.length () > 1)
+  {
+    char quote = output[0];
+    if ((quote == '\'' || quote == '"') &&
+        output[output.length () - 1] == quote)
+      return output.substr (1, output.length () - 2);
+  }
+
+  return output;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

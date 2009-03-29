@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
@@ -41,23 +41,20 @@ if (open my $fh, '>', 'import.rc')
 # Create import file.
 if (open my $fh, '>', 'import.txt')
 {
-  print $fh "x 2009-03-25 Walk the dog +project \@context\n",
-            "This is a test +project \@context\n",
-            "(A) A prioritized task\n",
+  print $fh "'id','priority','description'\n",
+            "1,H,'this is a test'\n",
+            "2,,'another task'\n",
             "\n";
   close $fh;
   ok (-r 'import.txt', 'Created sample import data');
 }
 
 my $output = qx{../task rc:import.rc import import.txt};
-is ($output, "Imported 3 tasks successfully, with 0 errors.\n", 'no errors');
+is ($output, "Imported 2 tasks successfully, with 0 errors.\n", 'no errors');
 
 $output = qx{../task rc:import.rc list};
-like ($output, qr/1.+project.+This is a test/, 't1');
-like ($output, qr/2.+H.+A prioritized task/,   't2');
-
-$output = qx{../task rc:import.rc completed};
-like ($output, qr/3\/25\/2009.+Walk the dog/,  't3');
+like ($output, qr/1.+H.+this is a test/, 't1');
+like ($output, qr/2.+another task/,      't2');
 
 # Cleanup.
 unlink 'import.txt';
@@ -65,9 +62,6 @@ ok (!-r 'import.txt', 'Removed import.txt');
 
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'import.rc';
 ok (!-r 'import.rc', 'Removed import.rc');
