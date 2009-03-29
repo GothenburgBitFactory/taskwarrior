@@ -1,3 +1,3 @@
-'id','uuid','status','tags','entry','start','due','recur','end','project','priority','fg','bg','description'
+'uuid','status','tags','entry','start','due','recur','end','project','priority','fg','bg','description'
 '7f7a4191-c2f2-487f-8855-7a1eb378c267','pending','',1238037947,,,,,'A','M',,,'foo bar'
 '7f7a4191-c2f2-487f-8855-7a1eb378c267','pending','',1238037947,,,,,'A','M',,,'foo, bar'
