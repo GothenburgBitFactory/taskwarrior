@@ -173,6 +173,10 @@ static std::string shortUsage (Config& conf)
   table.addCell (row, 2, "Shows task database statistics");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task import");
+  table.addCell (row, 2, "Imports tasks from a variety of formats");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task export");
   table.addCell (row, 2, "Exports all tasks as a CSV file");
 
@@ -844,6 +848,7 @@ std::string runTaskCommand (
   else if (command == "start")              { cmdMod = true; out = handleStart    (tdb, task, conf); }
   else if (command == "stop")               { cmdMod = true; out = handleStop     (tdb, task, conf); }
   else if (command == "undo")               { cmdMod = true; out = handleUndo     (tdb, task, conf); }
+  else if (command == "import")             { cmdMod = true; out = handleImport   (tdb, task, conf); }
 
   // Command that display IDs and therefore need TDB::gc first.
 

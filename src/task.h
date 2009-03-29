@@ -108,12 +108,12 @@ std::string handleCustomReport (TDB&, T&, Config&, const std::string&);
 void validReportColumns (const std::vector <std::string>&);
 void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 
-// util.cpp
-bool confirm (const std::string&);
+// text.cpp
 void wrapText (std::vector <std::string>&, const std::string&, const int);
 std::string trimLeft (const std::string& in, const std::string& t = " ");
 std::string trimRight (const std::string& in, const std::string& t = " ");
 std::string trim (const std::string& in, const std::string& t = " ");
+std::string unquoteText (const std::string&);
 void extractLine (std::string&, std::string&, int);
 void split (std::vector<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const std::string&);
@@ -121,12 +121,15 @@ void join (std::string&, const std::string&, const std::vector<std::string>&);
 std::string commify (const std::string&);
 std::string lowerCase (const std::string&);
 std::string upperCase (const std::string&);
+const char* optionalBlankLine (Config&);
+
+// util.cpp
+bool confirm (const std::string&);
 void delay (float);
-int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&);
 void formatTimeDeltaDays (std::string&, time_t);
 std::string formatSeconds (time_t);
+int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&);
 const std::string uuid ();
-const char* optionalBlankLine (Config&);
 int convertDuration (const std::string&);
 std::string expandPath (const std::string&);
 
@@ -139,8 +142,13 @@ std::string expandPath (const std::string&);
   int flock (int, int);
 #endif
 
+bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
+
 // rules.cpp
 void initializeColorRules (Config&);
 void autoColorize (T&, Text::color&, Text::color&, Config&);
+
+// import.cpp
+std::string handleImport (TDB&, T&, Config&);
 
 ////////////////////////////////////////////////////////////////////////////////

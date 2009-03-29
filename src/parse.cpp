@@ -131,6 +131,7 @@ static const char* commands[] =
   "help",
   "history",
   "ghistory",
+  "import",
   "info",
   "next",
   "overdue",
@@ -234,7 +235,7 @@ bool validDate (std::string& date, Config& conf)
 {
   Date test (date, conf.get ("dateformat", "m/d/Y"));
 
-  char epoch[12];
+  char epoch[16];
   sprintf (epoch, "%d", (int) test.toEpoch ());
   date = epoch;
 

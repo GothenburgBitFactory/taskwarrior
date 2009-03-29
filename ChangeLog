@@ -22,6 +22,12 @@
     task are also modified.
   + Custom reports now support user-specified column labels (thanks to T.
     Charles Yun).
+  + Task can now import tasks from a variety of data formats, including task
+    export files from versions 1.4.3 and earlier, versions 1.5.0 and later,
+    todo.sh 2.x, CSV, plain text and task command line.  See online docs for
+    full details.
+  + Export was including 'id' in the column header even though it was not
+    included in the data.
 
 ------ old releases ------------------------------
 
