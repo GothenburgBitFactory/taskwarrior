@@ -1,3 +1,0 @@
-This is a test priority:H project:A
-Another task
-
