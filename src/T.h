@@ -66,6 +66,7 @@ public:
   void getRemoveTags (std::vector<std::string>&); // SPECIAL
   void addRemoveTag (const std::string&);         // SPECIAL
 
+  int getTagCount () const;
   void getTags (std::vector<std::string>&) const;
   void addTag (const std::string&);
   void addTags (const std::vector <std::string>&);

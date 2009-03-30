@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.6.0 (?)
+1.6.0 (4/?/2009)
   + Added support for new "append" command that adds more description text to
     an existing task.
   + Added support for the "weekdays" recurrence, which means a task can recur
@@ -30,6 +30,10 @@
     included in the data.
   + The task file format has changed slightly.  Please back up your task
     data files before upgrading to 1.6.0.
+  + Added new column 'recurrence_indicator' that displays an 'R' if the task
+    is a recurring task.  This column can be added to any custom report.
+  + Added new column 'tag_indicator' that displays a '+' if the task
+    has any tags.  This column can be added to any custom report.
 
 ------ old releases ------------------------------
 

@@ -2283,6 +2283,28 @@ std::string handleCustomReport (
         table.addCell (row, columnCount, tasks[row].getAttribute ("recur"));
     }
 
+    else if (*col == "recurrence_indicator")
+    {
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "R");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      for (unsigned int row = 0; row < tasks.size (); ++row)
+        table.addCell (row, columnCount,
+                       tasks[row].getAttribute ("recur") != "" ? "R" : "");
+    }
+
+    else if (*col == "tag_indicator")
+    {
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "T");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      for (unsigned int row = 0; row < tasks.size (); ++row)
+        table.addCell (row, columnCount,
+                       tasks[row].getTagCount () ? "+" : "");
+    }
+
     // Common to all columns.
     // Add underline.
     if (conf.get (std::string ("color"), true) || conf.get (std::string ("_forcecolor"), false))
@@ -2401,18 +2423,20 @@ void validReportColumns (const std::vector <std::string>& columns)
 
   std::vector <std::string>::const_iterator it;
   for (it = columns.begin (); it != columns.end (); ++it)
-    if (*it != "id"               &&
-        *it != "uuid"             &&
-        *it != "project"          &&
-        *it != "priority"         &&
-        *it != "entry"            &&
-        *it != "start"            &&
-        *it != "due"              &&
-        *it != "age"              &&
-        *it != "active"           &&
-        *it != "tags"             &&
-        *it != "recur"            &&
-        *it != "description_only" &&
+    if (*it != "id"                   &&
+        *it != "uuid"                 &&
+        *it != "project"              &&
+        *it != "priority"             &&
+        *it != "entry"                &&
+        *it != "start"                &&
+        *it != "due"                  &&
+        *it != "age"                  &&
+        *it != "active"               &&
+        *it != "tags"                 &&
+        *it != "recur"                &&
+        *it != "recurrence_indicator" &&
+        *it != "tag_indicator"        &&
+        *it != "description_only"     &&
         *it != "description")
       bad.push_back (*it);
 
