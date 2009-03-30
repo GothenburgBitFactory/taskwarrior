@@ -28,6 +28,8 @@
     full details.
   + Export was including 'id' in the column header even though it was not
     included in the data.
+  + The task file format has changed slightly.  Please back up your task
+    data files before upgrading to 1.6.0.
 
 ------ old releases ------------------------------
 

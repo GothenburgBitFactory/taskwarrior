@@ -45,9 +45,10 @@
                        the colors.  How do I fix this?
                   </b>
                   <br />
-                  A: Task knows when the output is not going directly to a
-                     terminal, and strips out all the color control characters.
-                     Prevent this with the following entry in your .taskrc file:
+                  A: Task knows (or thinks it knows) when the output is not going
+                     directly to a terminal, and strips out all the color control
+                     characters.  Prevent this with the following entry in your
+                     .taskrc file:
                   <pre><code>_forcecolor=on</code></pre>
                 </p>
                 <hr>
@@ -82,6 +83,28 @@
 
                   This gives you two commands, 'wtask' and 'htask' that
                   operate using two different sets of task data files.
+                </p>
+                <hr>
+
+                <p>
+                  <b>
+                    Q: Can I revert to a previous version of task?  How?
+                  </b>
+                  <br />
+                  A: Yes, you can revert to a previous version of task,
+                     simply by downloading an
+                     <a href="versions.html">older version</a> and
+                     installing it.  If you find a bug in task, then this
+                     may be the only way to work around the bug, until a
+                     new release is made.
+                </p>
+                <p>
+                  Note that it is possible that the task file format will
+                  change.  For example, the format changed between versions
+                  1.5.0 and 1.6.0.  Task will automatically upgrade the file
+                  but if you need to revert to a previous version of task,
+                  there is the file format to consider.  This is yet another
+                  good reason to back up your task data files!
                 </p>
                 <hr>
 
