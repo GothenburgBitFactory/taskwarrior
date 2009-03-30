@@ -45,7 +45,6 @@ AC_SUBST(CFLAGS)
 
 # Checks for libraries.
 AC_CHECK_LIB(ncurses,initscr)
-AC_CHECK_LIB(ncurses,endwin)
 
 # Checks for header files.
 AC_HEADER_STDC
