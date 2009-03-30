@@ -2044,13 +2044,14 @@ std::string handleCustomReport (
   std::vector <std::string> labels;
   split (labels, labelList, ',');
 
-  if (columns.size () != labels.size ())
+  if (columns.size () != labels.size () && labels.size () != 0)
     throw std::string ("There are a different number of columns than labels ") +
           "for report '" + report + "'.  Please correct this.";
 
   std::map <std::string, std::string> columnLabels;
-  for (unsigned int i = 0; i < columns.size (); ++i)
-    columnLabels[columns[i]] = labels[i];
+  if (labels.size ())
+    for (unsigned int i = 0; i < columns.size (); ++i)
+      columnLabels[columns[i]] = labels[i];
 
   std::string sortList   = conf.get ("report." + report + ".sort");
   std::vector <std::string> sortOrder;

@@ -37,17 +37,18 @@ if (open my $fh, '>', 'due.rc')
             "due=4\n",
             "color=on\n",
             "color.due=red\n",
-            "_forcecolor=on\n";
+            "_forcecolor=on\n",
+            "dateformat=m/d/Y\n";
   close $fh;
   ok (-r 'due.rc', 'Created due.rc');
 }
 
 # Add a task that is almost due, and one that is just due.
 my ($d, $m, $y) = (localtime (time + 3 * 86_400))[3..5];
-my $just = sprintf ("%d/%02d/%d", $m + 1, $d, $y + 1900);
+my $just = sprintf ("%d/%d/%d", $m + 1, $d, $y + 1900);
 
 ($d, $m, $y) = (localtime (time + 5 * 86_400))[3..5];
-my $almost = sprintf ("%d/%02d/%d", $m + 1, $d, $y + 1900);
+my $almost = sprintf ("%d/%d/%d", $m + 1, $d, $y + 1900);
 
 qx{../task rc:due.rc add one due:$just};
 qx{../task rc:due.rc add two due:$almost};
