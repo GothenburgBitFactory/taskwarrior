@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug_concat.rc')
@@ -47,13 +47,24 @@ if (open my $fh, '>', 'bug_concat.rc')
 #   Thisisanewdescription
 
 qx{../task rc:bug_concat.rc add This is the original text};
-
 my $output = qx{../task rc:bug_concat.rc info 1};
 like ($output, qr/Description\s+This is the original text\n/, 'original correct');
 
 qx{../task rc:bug_concat.rc 1 This is the modified text};
 $output = qx{../task rc:bug_concat.rc info 1};
 like ($output, qr/Description\s+This is the modified text\n/, 'modified correct');
+
+# When a task is added like this:
+#
+#   % task add aaa bbb:ccc ddd
+#
+# The description is concatenated thus:
+#
+#   aaabbb:ccc ddd
+
+qx{../task rc:bug_concat.rc add aaa bbb:ccc ddd};
+$output = qx{../task rc:bug_concat.rc info 2};
+like ($output, qr/Description\s+aaa bbb:ccc ddd\n/, 'properly concatenated');
 
 # Cleanup.
 unlink 'pending.data';

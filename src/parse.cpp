@@ -443,7 +443,11 @@ void parse (
         // If it is not a valid attribute, then allow the argument as part of
         // the description.
         else
+        {
+          if (descCandidate.length ())
+            descCandidate += " ";
           descCandidate += arg;
+        }
       }
 
       // Substitution of description text.
@@ -462,7 +466,7 @@ void parse (
         {
           if (descCandidate.length ())
             descCandidate += " ";
-          descCandidate += std::string (arg);
+          descCandidate += arg;
         }
       }
 
@@ -471,7 +475,7 @@ void parse (
       {
         if (descCandidate.length ())
           descCandidate += " ";
-        descCandidate += std::string (arg);
+        descCandidate += arg;
       }
     }
   }

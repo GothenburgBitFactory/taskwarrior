@@ -34,6 +34,8 @@
     is a recurring task.  This column can be added to any custom report.
   + Added new column 'tag_indicator' that displays a '+' if the task
     has any tags.  This column can be added to any custom report.
+  + Fixed bug where sometimes a task description was concatenated oddly if
+    there was a colon somewhere in the description.
 
 ------ old releases ------------------------------
 
