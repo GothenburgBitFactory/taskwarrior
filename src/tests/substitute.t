@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'subst.rc')
@@ -39,16 +39,24 @@ if (open my $fh, '>', 'subst.rc')
 }
 
 # Test the substitution command.
-qx{../task rc:subst.rc add foo};
+qx{../task rc:subst.rc add foo foo foo};
 qx{../task rc:subst.rc 1 /foo/FOO/};
 my $output = qx{../task rc:subst.rc info 1};
-like ($output, qr/FOO/, 'substitution in description');
+like ($output, qr/FOO foo foo/, 'substitution in description');
+
+qx{../task rc:subst.rc 1 /foo/FOO/g};
+my $output = qx{../task rc:subst.rc info 1};
+like ($output, qr/FOO FOO FOO/, 'global substitution in description');
 
 # Test the substitution command on annotations.
-qx{../task rc:subst.rc annotate 1 bar};
+qx{../task rc:subst.rc annotate 1 bar bar bar};
 qx{../task rc:subst.rc 1 /bar/BAR/};
 $output = qx{../task rc:subst.rc info 1};
-like ($output, qr/BAR/, 'substitution in annotation');
+like ($output, qr/BAR bar bar/, 'substitution in annotation');
+
+qx{../task rc:subst.rc 1 /bar/BAR/g};
+$output = qx{../task rc:subst.rc info 1};
+like ($output, qr/BAR BAR BAR/, 'global substitution in annotation');
 
 # Cleanup.
 unlink 'pending.data';

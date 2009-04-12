@@ -348,7 +348,8 @@ static bool validCommand (std::string& input)
 static bool validSubstitution (
   std::string& input,
   std::string& from,
-  std::string& to)
+  std::string& to,
+  bool& global)
 {
   size_t first = input.find ('/');
   if (first != std::string::npos)
@@ -362,10 +363,17 @@ static bool validSubstitution (
         if (first == 0 &&
             first < second &&
             second < third &&
-            third == input.length () - 1)
+            (third == input.length () - 1 ||
+             third == input.length () - 2))
         {
           from = input.substr (first  + 1, second - first  - 1);
           to   = input.substr (second + 1, third  - second - 1);
+
+          global = false;
+          if (third == input.length () - 2 &&
+              input.find ('g', third + 1) != std::string::npos)
+            global = true;
+
           return true;
         }
       }
@@ -411,6 +419,7 @@ void parse (
       size_t colon;               // Pointer to colon in argument.
       std::string from;
       std::string to;
+      bool global;
 
       // An id is the first argument found that contains all digits.
       if (lowerCase (command) != "add" && // "add" doesn't require an ID
@@ -451,9 +460,9 @@ void parse (
       }
 
       // Substitution of description text.
-      else if (validSubstitution (arg, from, to))
+      else if (validSubstitution (arg, from, to, global))
       {
-        task.setSubstitution (from, to);
+        task.setSubstitution (from, to, global);
       }
 
       // Command.

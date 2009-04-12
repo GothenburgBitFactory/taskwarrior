@@ -40,6 +40,8 @@
     date, because of an assumption of 365 days per year, which failed to
     consider leap years (thanks to T. Charles Yun).
   + Annotations can now be modified with the substitution commands /from/to/.
+  + Substitutions can now be made global with /from/to/g and all occurrences
+    of "from" will be replaced with "to".
 
 ------ old releases ------------------------------
 

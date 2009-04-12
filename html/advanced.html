@@ -289,7 +289,7 @@ ID Project Pri Description
                   set via the "newest" configuration variable.
                 </p>
 
-                <strong>% task /from/to/</strong>
+                <strong>% task &lt;id&gt; /from/to/</strong>
                 <p>
                   If a task has been entered with a typo, it can be easily corrected
                   by this command.  For example:
@@ -309,12 +309,20 @@ ID Project Pri Description
 ...</code></pre>
 
                 <p>
-                  This command makes single corrections to a task description.
+                  This command makes a single correction to the first occurrence of
+                  "from" in a task description.
                 </p>
 
                 <p>
-                  If a task is annotated, the annotation can be modified using
+                  If a task is annotated, the annotation can also be modified using
                   this command.
+                </p>
+
+                <strong>% task &lt;id&gt; /from/to/g</strong>
+                <p>
+                  The "g" modifier to the substitution command causes every occurrence
+                  of "from" to be replaced with "to", in both the description and any
+                  annotations.
                 </p>
 
                 <strong>% task tags</strong>

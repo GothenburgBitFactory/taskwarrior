@@ -40,6 +40,9 @@ T::T ()
   mTags.clear ();
   mAttributes.clear ();
   mDescription = "";
+  mFrom = "";
+  mTo = "";
+  mGlobal = false;
   mAnnotations.clear ();
 }
 
@@ -240,17 +243,25 @@ void T::removeAttribute (const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::getSubstitution (std::string& from, std::string& to) const
+void T::getSubstitution (
+  std::string& from,
+  std::string& to,
+  bool& global) const
 {
-  from = mFrom;
-  to = mTo;
+  from   = mFrom;
+  to     = mTo;
+  global = mGlobal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::setSubstitution (const std::string& from, const std::string& to)
+void T::setSubstitution (
+  const std::string& from,
+  const std::string& to,
+  bool global)
 {
-  mFrom = from;
-  mTo = to;
+  mFrom   = from;
+  mTo     = to;
+  mGlobal = global;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

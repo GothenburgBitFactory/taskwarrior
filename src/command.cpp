@@ -756,40 +756,67 @@ std::string handleModify (TDB& tdb, T& task, Config& conf)
 
       std::string from;
       std::string to;
-      task.getSubstitution (from, to);
+      bool global;
+      task.getSubstitution (from, to, global);
       if (from != "")
       {
         std::string description = original.getDescription ();
-        size_t pattern = description.find (from);
-        if (pattern != std::string::npos)
+        size_t pattern;
+
+        if (global)
         {
-          description = description.substr (0, pattern) +
-                        to                              +
-                        description.substr (pattern + from.length (), std::string::npos);
+          // Perform all subs on description.
+          while ((pattern = description.find (from)) != std::string::npos)
+          {
+            description.replace (pattern, from.length (), to);
+            ++changes;
+          }
+
           original.setDescription (description);
-          ++changes;
-        }
-        else
-        {
+
+          // Perform all subs on annotations.
           std::map <time_t, std::string> annotations;
           original.getAnnotations (annotations);
-
           std::map <time_t, std::string>::iterator it;
           for (it = annotations.begin (); it != annotations.end (); ++it)
           {
-            size_t pattern = it->second.find (from);
-            if (pattern != std::string::npos)
+            while ((pattern = it->second.find (from)) != std::string::npos)
             {
-              it->second = it->second.substr (0, pattern) +
-                           to                             +
-                           it->second.substr (pattern + from.length (), std::string::npos);
+              it->second.replace (pattern, from.length (), to);
               ++changes;
-              break;
             }
           }
 
-          if (changes)
+          original.setAnnotations (annotations);
+        }
+        else
+        {
+          // Perform first description substitution.
+          if ((pattern = description.find (from)) != std::string::npos)
+          {
+            description.replace (pattern, from.length (), to);
+            original.setDescription (description);
+            ++changes;
+          }
+          // Failing that, perform the first annotation substitution.
+          else
+          {
+            std::map <time_t, std::string> annotations;
+            original.getAnnotations (annotations);
+
+            std::map <time_t, std::string>::iterator it;
+            for (it = annotations.begin (); it != annotations.end (); ++it)
+            {
+              if ((pattern = it->second.find (from)) != std::string::npos)
+              {
+                it->second.replace (pattern, from.length (), to);
+                ++changes;
+                break;
+              }
+            }
+
             original.setAnnotations (annotations);
+          }
         }
       }
 
@@ -877,23 +904,6 @@ std::string handleAppend (TDB& tdb, T& task, Config& conf)
           original.setAttribute (i->first, i->second);
 
         ++changes;
-      }
-
-      std::string from;
-      std::string to;
-      task.getSubstitution (from, to);
-      if (from != "")
-      {
-        std::string description = original.getDescription ();
-        size_t pattern = description.find (from);
-        if (pattern != std::string::npos)
-        {
-          description = description.substr (0, pattern) +
-                        to                              +
-                        description.substr (pattern + from.length (), std::string::npos);
-          original.setDescription (description);
-          ++changes;
-        }
       }
 
       if (changes)

@@ -58,8 +58,8 @@ public:
   void setDescription (const std::string& description) { mDescription = description; }
   int getAnnotationCount () const                      { return mAnnotations.size (); }
 
-  void getSubstitution (std::string&, std::string&) const;
-  void setSubstitution (const std::string&, const std::string&);
+  void getSubstitution (std::string&, std::string&, bool&) const;
+  void setSubstitution (const std::string&, const std::string&, bool);
 
   bool hasTag (const std::string&) const;
 
@@ -101,6 +101,7 @@ private:
   std::map<std::string, std::string> mAttributes;
   std::string                        mFrom;
   std::string                        mTo;
+  bool                               mGlobal;
   std::map <time_t, std::string>     mAnnotations;
 };
 
