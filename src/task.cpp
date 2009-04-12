@@ -674,6 +674,19 @@ Date getNextRecurrence (Date& current, std::string& period)
     return Date (m, d, y);
   }
 
+  else if (period == "annual" ||
+           period == "yearly")
+  {
+    y += 1;
+
+    // If the due data just happens to be 2/29 in a leap year, then simply
+    // incrementing y is going to create an invalid date.
+    if (m == 2 && d == 29)
+      d = 28;
+
+    return Date (m, d, y);
+  }
+
   // If the period is an 'easy' one, add it to current, and we're done.
   int days = convertDuration (period);
   return current + (days * 86400);

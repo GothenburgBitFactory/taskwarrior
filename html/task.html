@@ -141,6 +141,9 @@
                       has any tags.  This column can be added to any custom report.
                   <li>Fixed bug where sometimes a task description was concatenated oddly if
                       there was a colon somewhere in the description.
+                  <li>Fixed bug that caused recurring annual tasks to exhibit a creeping due
+                      date, because of an assumption of 365 days per year, which failed to
+                      consider leap years (thanks to T. Charles Yun).
                 </ul>
 
                 <p>

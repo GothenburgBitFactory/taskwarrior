@@ -691,6 +691,7 @@ int T::determineVersion (const std::string& line)
 bool T::validate () const
 {
   // TODO Verify until > due
+  // TODO Verify entry < until, due, start, end
   return true;
 }
 
