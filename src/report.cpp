@@ -1792,6 +1792,13 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
       << "Deleted               " << deletedT   << std::endl
       << "Total                 " << totalT     << std::endl;
 
+  out << "Annotations           " << annotationsT << std::endl;
+  out << "Unique tags           " << allTags.size () << std::endl;
+  out << "Projects              " << allProjects.size () << std::endl;
+
+  if (totalT)
+    out << "Tasks tagged          " << std::setprecision (3) << (100.0 * taggedT / totalT) << "%" << std::endl;
+
   if (tasks.size ())
   {
     Date e (earliest);
@@ -1816,14 +1823,7 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
               << std::endl;
 
   if (totalT)
-  {
     out << "Average desc length   " << (int) (descLength / totalT) << " characters" << std::endl;
-    out << "Tasks tagged          " << std::setprecision (3) << (100.0 * taggedT / totalT) << "%" << std::endl;
-  }
-
-  out << "Annotations           " << annotationsT << std::endl;
-  out << "Unique tags           " << allTags.size () << std::endl;
-  out << "Projects              " << allProjects.size () << std::endl;
 
   return out.str ();
 }
