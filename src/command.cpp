@@ -769,6 +769,28 @@ std::string handleModify (TDB& tdb, T& task, Config& conf)
           original.setDescription (description);
           ++changes;
         }
+        else
+        {
+          std::map <time_t, std::string> annotations;
+          original.getAnnotations (annotations);
+
+          std::map <time_t, std::string>::iterator it;
+          for (it = annotations.begin (); it != annotations.end (); ++it)
+          {
+            size_t pattern = it->second.find (from);
+            if (pattern != std::string::npos)
+            {
+              it->second = it->second.substr (0, pattern) +
+                           to                             +
+                           it->second.substr (pattern + from.length (), std::string::npos);
+              ++changes;
+              break;
+            }
+          }
+
+          if (changes)
+            original.setAnnotations (annotations);
+        }
       }
 
       if (changes)

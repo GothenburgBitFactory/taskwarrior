@@ -79,7 +79,8 @@ public:
   void removeAttribute (const std::string&);
   void removeAttributes ();
 
-  void getAnnotations (std::map <time_t, std::string>&);
+  void getAnnotations (std::map <time_t, std::string>&) const;
+  void setAnnotations (const std::map <time_t, std::string>&);
   void addAnnotation (const std::string&);
 
   const std::string compose () const;

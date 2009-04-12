@@ -39,6 +39,7 @@
   + Fixed bug that caused recurring annual tasks to exhibit a creeping due
     date, because of an assumption of 365 days per year, which failed to
     consider leap years (thanks to T. Charles Yun).
+  + Annotations can now be modified with the substitution commands /from/to/.
 
 ------ old releases ------------------------------
 

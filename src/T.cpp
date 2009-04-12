@@ -254,9 +254,15 @@ void T::setSubstitution (const std::string& from, const std::string& to)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::getAnnotations (std::map <time_t, std::string>& all)
+void T::getAnnotations (std::map <time_t, std::string>& all) const
 {
   all = mAnnotations;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void T::setAnnotations (const std::map <time_t, std::string>& all)
+{
+  mAnnotations = all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
