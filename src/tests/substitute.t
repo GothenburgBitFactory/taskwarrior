@@ -45,7 +45,7 @@ my $output = qx{../task rc:subst.rc info 1};
 like ($output, qr/FOO foo foo/, 'substitution in description');
 
 qx{../task rc:subst.rc 1 /foo/FOO/g};
-my $output = qx{../task rc:subst.rc info 1};
+$output = qx{../task rc:subst.rc info 1};
 like ($output, qr/FOO FOO FOO/, 'global substitution in description');
 
 # Test the substitution command on annotations.
