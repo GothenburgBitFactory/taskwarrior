@@ -280,7 +280,7 @@ void T::setAnnotations (const std::map <time_t, std::string>& all)
 void T::addAnnotation (const std::string& description)
 {
   std::string sanitized = description;
-  std::replace (sanitized.begin (), sanitized.end (), '\'', '"');
+  std::replace (sanitized.begin (), sanitized.end (), '"', '\'');
   std::replace (sanitized.begin (), sanitized.end (), '[', '(');
   std::replace (sanitized.begin (), sanitized.end (), ']', ')');
   mAnnotations[time (NULL)] = sanitized;
@@ -337,7 +337,7 @@ const std::string T::compose () const
     else
       annotation << " ";
 
-    annotation << note->first << ":'" << note->second << "'";
+    annotation << note->first << ":\"" << note->second << "\"";
   }
   line += annotation.str () + "] ";
 
@@ -584,7 +584,7 @@ void T::parse (const std::string& line)
               }
 
               // Extract and split the annotations, which are of the form:
-              //   1234:'...' 5678:'...'
+              //   1234:"..." 5678:"..."
               std::string annotations = line.substr (
                 openAnnoBracket + 1, closeAnnoBracket - openAnnoBracket - 1);
               pairs.clear ();
@@ -593,10 +593,10 @@ void T::parse (const std::string& line)
               std::string::size_type end   = 0;
               do
               {
-                end = annotations.find ('\'', start);
+                end = annotations.find ('"', start);
                 if (end != std::string::npos)
                 {
-                  end = annotations.find ('\'', end + 1);
+                  end = annotations.find ('"', end + 1);
 
                   if (start != std::string::npos &&
                       end   != std::string::npos)
