@@ -337,6 +337,28 @@ ID Project Pri Description
                   </p>
                 </dd>
 
+                <dt>import.synonym.id</dt>
+                <dt>import.synonym.uuid</dt>
+                <dt>import.synonym.status</dt>
+                <dt>import.synonym.tags</dt>
+                <dt>import.synonym.entry</dt>
+                <dt>import.synonym.start</dt>
+                <dt>import.synonym.due</dt>
+                <dt>import.synonym.recur</dt>
+                <dt>import.synonym.end</dt>
+                <dt>import.synonym.project</dt>
+                <dt>import.synonym.priority</dt>
+                <dt>import.synonym.fg</dt>
+                <dt>import.synonym.bg</dt>
+                <dt>import.synonym.description</dt>
+                <dd>
+                  If any of these configuration variables are found, they influence
+                  data import by specifying a single additional field name synonym.
+                  If a data import is failing because certain column names are not
+                  being recognized, then this is how the field mapping can be
+                  controlled.
+                </dd>
+
                 <p>
                   Note that the command:
                 </p>
@@ -347,6 +369,8 @@ ID Project Pri Description
                   will display the configuration variables found in the .taskrc file,
                   and will warn you of any variables that are not recognized.
                 </p>
+
+
               </div>
 
               <br />

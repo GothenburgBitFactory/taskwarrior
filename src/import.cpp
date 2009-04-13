@@ -917,7 +917,8 @@ static std::string importCSV (
     std::string name = lowerCase (trim (unquoteText (trim (headings[h]))));
 
     // If there is a mapping for the field, use the value.
-    if (name == "id" ||
+    if (name == conf.get ("import.synonym.id") ||
+        name == "id" ||
         name == "#" ||
         name == "sequence" ||
         name.find ("num") != std::string::npos)
@@ -925,28 +926,32 @@ static std::string importCSV (
       mapping["id"] = (int)h;
     }
 
-    else if (name == "uuid" ||
+    else if (name == conf.get ("import.synonym.uuid") ||
+             name == "uuid" ||
              name == "guid" ||
              name.find ("unique") != std::string::npos)
     {
       mapping["uuid"] = (int)h;
     }
 
-    else if (name == "status" ||
+    else if (name == conf.get ("import.synonym.status") ||
+             name == "status" ||
              name == "condition" ||
              name == "state")
     {
       mapping["status"] = (int)h;
     }
 
-    else if (name == "tags" ||
+    else if (name == conf.get ("import.synonym.tags") ||
+             name == "tags" ||
              name.find ("categor") != std::string::npos ||
              name.find ("tag") != std::string::npos)
     {
       mapping["tags"] = (int)h;
     }
 
-    else if (name == "entry" ||
+    else if (name == conf.get ("import.synonym.entry") ||
+             name == "entry" ||
              name.find ("added") != std::string::npos ||
              name.find ("created") != std::string::npos ||
              name.find ("entered") != std::string::npos)
@@ -954,62 +959,71 @@ static std::string importCSV (
       mapping["entry"] = (int)h;
     }
 
-    else if (name == "start" ||
+    else if (name == conf.get ("import.synonym.start") ||
+             name == "start" ||
              name.find ("began") != std::string::npos ||
              name.find ("begun") != std::string::npos ||
-             name.find ("started") != std::string::npos ||
-             name == "")
+             name.find ("started") != std::string::npos)
     {
       mapping["start"] = (int)h;
     }
 
-    else if (name == "due" ||
+    else if (name == conf.get ("import.synonym.due") ||
+             name == "due" ||
              name.find ("expected") != std::string::npos)
     {
       mapping["due"] = (int)h;
     }
 
-    else if (name == "recur" ||
+    else if (name == conf.get ("import.synonym.recur") ||
+             name == "recur" ||
              name == "frequency")
     {
       mapping["recur"] = (int)h;
     }
 
-    else if (name == "end" ||
+    else if (name == conf.get ("import.synonym.end") ||
+             name == "end" ||
              name == "done" ||
              name.find ("complete") != std::string::npos)
     {
       mapping["end"] = (int)h;
     }
 
-    else if (name == "project" ||
+    else if (name == conf.get ("import.synonym.project") ||
+             name == "project" ||
              name.find ("proj") != std::string::npos)
     {
       mapping["project"] = (int)h;
     }
 
-    else if (name == "priority" ||
+    else if (name == conf.get ("import.synonym.priority") ||
+             name == "priority" ||
              name == "pri" ||
              name.find ("importan") != std::string::npos)
     {
       mapping["priority"] = (int)h;
     }
 
-    else if (name.find ("fg")         != std::string::npos ||
+    else if (name == conf.get ("import.synonym.fg") ||
+             name.find ("fg")         != std::string::npos ||
              name.find ("foreground") != std::string::npos ||
              name.find ("color")      != std::string::npos)
     {
       mapping["fg"] = (int)h;
     }
 
-    else if (name == "bg" ||
+    else if (name == conf.get ("import.synonym.bg") ||
+             name == "bg" ||
              name.find ("background") != std::string::npos)
     {
       mapping["bg"] = (int)h;
     }
 
-    else if (name.find ("desc")   != std::string::npos ||
+    else if (name == conf.get ("import.synonym.description") ||
+             name.find ("desc")   != std::string::npos ||
              name.find ("detail") != std::string::npos ||
+             name.find ("task")   != std::string::npos ||
              name.find ("what")   != std::string::npos)
     {
       mapping["description"] = (int)h;

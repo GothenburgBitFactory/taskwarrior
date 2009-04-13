@@ -864,7 +864,6 @@ std::string runTaskCommand (
   else if (command == "import")             { cmdMod = true; out = handleImport   (tdb, task, conf); }
 
   // Command that display IDs and therefore need TDB::gc first.
-
   else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (tdb, task, conf); }
   else if (command == "next")               { if (gc) gcMod = tdb.gc (); out = handleReportNext    (tdb, task, conf); }
   else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (tdb, task, conf); }
