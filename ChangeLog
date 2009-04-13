@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.6.0 (4/?/2009)
+1.6.0 (4/12/2009)
   + Added support for new "append" command that adds more description text to
     an existing task.
   + Added support for the "weekdays" recurrence, which means a task can recur
