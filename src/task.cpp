@@ -102,7 +102,11 @@ static std::string shortUsage (Config& conf)
 
   row = table.addRow ();
   table.addCell (row, 1, "task ID /from/to/");
-  table.addCell (row, 2, "Perform the substitution on the desc, for fixing mistakes");
+  table.addCell (row, 2, "Performs one substitution on the task description, for fixing mistakes");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task ID /from/to/g");
+  table.addCell (row, 2, "Performs all substitutions on the task description, for fixing mistakes");
 
   row = table.addRow ();
   table.addCell (row, 1, "task delete ID");
