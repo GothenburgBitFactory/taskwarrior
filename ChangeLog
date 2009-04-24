@@ -6,6 +6,10 @@
 
 ------ old releases ------------------------------
 
+1.6.1 (4/24/2009) 1b6faf57c998617024d0348a87b941a5d2ab2249
+  + Fixed bug that caused new, first-time .taskrc files to be written without
+    including the custom report labels (thanks to P.C. Shyamshankar).
+
 1.6.0 (4/12/2009) 06062a96eb57d10dcd7fbe1edf968bb638a0b3a9
   + Added support for new "append" command that adds more description text to
     an existing task.

@@ -79,81 +79,44 @@
                 <table>
                   <tr>
                     <td>Source:</td>
-                    <td><a href="http://www.beckingham.net/task-1.6.0.tar.gz">task-1.6.0.tar.gz</a></td>
+                    <td><a href="http://www.beckingham.net/task-1.7.0.tar.gz">task-1.7.0.tar.gz</a></td>
                   </tr>
+<!--
                   <tr>
                     <td>Mac OS X 10.5 (Leopard) Intel-only:</td>
-                    <td><a href="http://www.beckingham.net/task-1.6.0.pkg">task-1.6.0.pkg</a></td>
+                    <td><a href="http://www.beckingham.net/task-1.7.0.pkg">task-1.7.0.pkg</a></td>
                   </tr>
                   <tr>
                     <td>
                       Debian:
                       (Thanks to <a href="http://blog.rfquerin.org">Richard&nbsp;Querin</a>):
                     </td>
-                    <td><a href="http://www.beckingham.net/task_1.6.0-1_i386.deb">task_1.6.0-1_i386.deb</a></td>
+                    <td><a href="http://www.beckingham.net/task_1.7.0-1_i386.deb">task_1.7.0-1_i386.deb</a></td>
                   </tr>
                   <tr>
                     <td>
                       Red Hat:
                       (Thanks to <a href="http://www.ultrafredde.com">Federico&nbsp;Hernandez</a>):
                     </td>
-                    <td><a href="http://www.beckingham.net/task-1.6.0-1.i386.rpm">task-1.6.0-1.i386.rpm</a></td>
+                    <td><a href="http://www.beckingham.net/task-1.7.0-1.FC10.i386.rpm">task-1.7.0-1.FC10.i386.rpm</a></td>
                   </tr>
+-->
                   <tr>
                     <td>Git - get the whole source and history:</td>
                     <td><a href="http://github.com/pbeckingham/task">http://github.com/pbeckingham/task</a></td>
                   </tr>
                 </table>
 
-                <h4>New in version 1.6.0 (?)</h4>
+                <h4>New in version 1.7.0 (?)</h4>
                 <ul>
-                  <li>Added support for new "append" command that adds more description text to
-                      an existing task.
-                  <li>Added support for the "weekdays" recurrence, which means a task can recur
-                      five times a week, and not on weekends (thanks to Chris Pride).
-                  <li>UTF8 text is now supported in task project names, tags and descriptions.
-                  <li>Fixed bug that caused the y/n confirmation on task deletion to ignore the
-                      Enter key and fail to re-prompt (thanks to Bruce Dillahunty).
-                  <li>When the "echo.command" configuration variable is set to "yes", it causes
-                      commands that modify tasks to display which task was affected (thanks to
-                      Bruce Dillahunty).
-                  <li>A task can now be annotated with the command "task <id> annotate ...", and
-                      a timestamped annotation will appear in reports.
-                  <li>A 'description_only' column is now available for use in custom reports,
-                      and it excludes annotations.
-                  <li>A task can now be upgraded to a recurring task by adding a recurrence
-                      frequency, a due date, and an optional until date.
-                  <li>When a recurring task is modified, all other instances of the recurring
-                      task are also modified.
-                  <li>Custom reports now support user-specified column labels (thanks to T.
-                      Charles Yun).
-                  <li>Task can now import tasks from a variety of data formats, including task
-                      export files from versions 1.4.3 and earlier, versions 1.5.0 and later,
-                      todo.sh 2.x, CSV, plain text and task command line.  See online docs for
-                      full details.
-                  <li>Export was including 'id' in the column header even though it was not
-                      included in the data.
-                  <li>The task file format has changed slightly.  Please back up your task
-                      data files before upgrading to 1.6.0.
-                  <li>Added new column 'recurrence_indicator' that displays an 'R' if the task
-                      is a recurring task.  This column can be added to any custom report.
-                  <li>Added new column 'tag_indicator' that displays a '+' if the task
-                      has any tags.  This column can be added to any custom report.
-                  <li>Fixed bug where sometimes a task description was concatenated oddly if
-                      there was a colon somewhere in the description.
-                  <li>Fixed bug that caused recurring annual tasks to exhibit a creeping due
-                      date, because of an assumption of 365 days per year, which failed to
-                      consider leap years (thanks to T. Charles Yun).
-                  <li>Annotations can now be modified with the substitution commands /from/to/.
-                  <li>Substitutions can now be made global with /from/to/g and all occurrences
-                      of "from" will be replaced with "to".
+                  <li>
                 </ul>
 
                 <p>
                   (Find out <a href="versions.html">what was new in prior versions</a>)
                 </p>
 <!--
-                <h2>Task 1.6.0 Beta</h2>
+                <h2>Task 1.7.0 Beta</h2>
                 <p>
                   The next version of task is in beta.  This means it is approaching the
                   end of the current development and testing cycle, and feedback from
@@ -173,7 +136,7 @@
                 <table>
                   <tr>
                     <td>Source:</td>
-                    <td><a href="http://www.beckingham.net/task-1.6.0beta.tar.gz">task-1.6.0beta.tar.gz</a></td>
+                    <td><a href="http://www.beckingham.net/task-1.7.0beta.tar.gz">task-1.7.0beta.tar.gz</a></td>
                   </tr>
                 </table>
 -->
@@ -192,6 +155,7 @@
                     <li>Ubuntu 7 Feisty Fawn
                     <li>Ubuntu 8 Hardy Heron
                     <li>Ubuntu 8.10 Intrepid Ibex
+                    <li>Ubuntu 9.04 Jaunty Jackalope
                     <li>Solaris 10
                     <li>Cygwin 1.5.25-14
                   </ul>
