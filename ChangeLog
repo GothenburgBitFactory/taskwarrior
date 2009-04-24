@@ -1,6 +1,12 @@
 
 ------ current release ---------------------------
 
+1.6.1 (4/24/2009)
+  + Fixed bug that caused new, first-time .taskrc files to be written without
+    including the custom report labels (thanks to P.C. Shyamshankar).
+
+------ old releases ------------------------------
+
 1.6.0 (4/12/2009)
   + Added support for new "append" command that adds more description text to
     an existing task.
@@ -42,8 +48,6 @@
   + Annotations can now be modified with the substitution commands /from/to/.
   + Substitutions can now be made global with /from/to/g and all occurrences
     of "from" will be replaced with "to".
-
------- old releases ------------------------------
 
 1.5.0 (3/15/2009) 87be68e2e83d7bb628be1e5679b16a49a26d3549
   + Removed deprecated TUTORIAL file.

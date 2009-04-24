@@ -183,23 +183,28 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "# Limit:         10\n");
 
         fprintf (out, "report.long.description=Lists all task, all data, matching the specified criteria\n");
+        fprintf (out, "report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description\n");
         fprintf (out, "report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description\n");
         fprintf (out, "report.long.sort=due+,priority-,project+\n");
 
         fprintf (out, "report.list.description=Lists all tasks matching the specified criteria\n");
+        fprintf (out, "report.list.labels=ID,Project,Pri,Due,Active,Age,Description\n");
         fprintf (out, "report.list.columns=id,project,priority,due,active,age,description\n");
         fprintf (out, "report.list.sort=due+,priority-,project+\n");
 
         fprintf (out, "report.ls.description=Minimal listing of all tasks matching the specified criteria\n");
+        fprintf (out, "report.ls.labels=ID,Project,Pri,Description\n");
         fprintf (out, "report.ls.columns=id,project,priority,description\n");
         fprintf (out, "report.ls.sort=priority-,project+\n");
 
         fprintf (out, "report.newest.description=Shows the newest tasks\n");
+        fprintf (out, "report.newest.labels=ID,Project,Pri,Due,Active,Age,Description\n");
         fprintf (out, "report.newest.columns=id,project,priority,due,active,age,description\n");
         fprintf (out, "report.newest.sort=id-\n");
         fprintf (out, "report.newest.limit=10\n");
 
         fprintf (out, "report.oldest.description=Shows the oldest tasks\n");
+        fprintf (out, "report.oldest.labels=ID,Project,Pri,Due,Active,Age,Description\n");
         fprintf (out, "report.oldest.columns=id,project,priority,due,active,age,description\n");
         fprintf (out, "report.oldest.sort=id+\n");
         fprintf (out, "report.oldest.limit=10\n");
