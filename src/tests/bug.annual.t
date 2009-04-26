@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 13;
 
 # Create the rc file.
 if (open my $fh, '>', 'annual.rc')
