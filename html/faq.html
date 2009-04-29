@@ -108,6 +108,22 @@
                 </p>
                 <hr>
 
+                <p>
+                  <b>
+                    Q: I'm using Ubuntu 9.04, and I want task to word-wrap
+                    descriptions.  How do I do this?
+                  </b>
+                  <br />
+                  A: You need to install ncurses, by doing this:
+                  <code><pre>% sudo apt-get install libncurses5-dev</pre></code>
+                  Then you need to rebuild task from scratch, starting with
+                  <code><pre>% cd task-X.X.X
+% ./configure
+...</pre></code>
+                  The result should be a task program that knows the width
+                  of the terminal window, and wraps accordingly.
+                </p>
+                <hr>
 <!--
                 <p>
                   <b>
