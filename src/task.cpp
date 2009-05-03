@@ -149,6 +149,10 @@ static std::string shortUsage (Config& conf)
   table.addCell (row, 2, "Shows a report of task status by project");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task timesheet [duration]");
+  table.addCell (row, 2, "Shows a weekly report of tasks completed and started");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task history");
   table.addCell (row, 2, "Shows a report of task history, by month");
 
@@ -841,18 +845,19 @@ std::string runTaskCommand (
   std::string out;
 
   // Read-only commands with no side effects.
-       if (command == "export")             { out = handleExport         (tdb, task, conf); }
-  else if (command == "projects")           { out = handleProjects       (tdb, task, conf); }
-  else if (command == "tags")               { out = handleTags           (tdb, task, conf); }
-  else if (command == "info")               { out = handleInfo           (tdb, task, conf); }
-  else if (command == "stats")              { out = handleReportStats    (tdb, task, conf); }
-  else if (command == "history")            { out = handleReportHistory  (tdb, task, conf); }
-  else if (command == "ghistory")           { out = handleReportGHistory (tdb, task, conf); }
-  else if (command == "calendar")           { out = handleReportCalendar (tdb, task, conf); }
-  else if (command == "summary")            { out = handleReportSummary  (tdb, task, conf); }
-  else if (command == "colors")             { out = handleColor          (           conf); }
-  else if (command == "version")            { out = handleVersion        (           conf); }
-  else if (command == "help")               { out = longUsage            (           conf); }
+       if (command == "export")             { out = handleExport          (tdb, task, conf); }
+  else if (command == "projects")           { out = handleProjects        (tdb, task, conf); }
+  else if (command == "tags")               { out = handleTags            (tdb, task, conf); }
+  else if (command == "info")               { out = handleInfo            (tdb, task, conf); }
+  else if (command == "stats")              { out = handleReportStats     (tdb, task, conf); }
+  else if (command == "history")            { out = handleReportHistory   (tdb, task, conf); }
+  else if (command == "ghistory")           { out = handleReportGHistory  (tdb, task, conf); }
+  else if (command == "calendar")           { out = handleReportCalendar  (tdb, task, conf); }
+  else if (command == "summary")            { out = handleReportSummary   (tdb, task, conf); }
+  else if (command == "timesheet")          { out = handleReportTimesheet (tdb, task, conf); }
+  else if (command == "colors")             { out = handleColor           (           conf); }
+  else if (command == "version")            { out = handleVersion         (           conf); }
+  else if (command == "help")               { out = longUsage             (           conf); }
 
   // Commands that cause updates.
   else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify   (tdb, task, conf); }

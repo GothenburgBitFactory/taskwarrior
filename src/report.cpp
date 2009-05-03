@@ -1235,6 +1235,63 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
+{
+  std::stringstream out;
+
+  // Determine window size, and set table accordingly.
+  int width = conf.get ("defaultwidth", (int) 80);
+#ifdef HAVE_LIBNCURSES
+  if (conf.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+
+  // Get all the tasks.
+  std::vector <T> tasks;
+  tdb.allT (tasks);
+  filter (tasks, task);
+
+  // TODO Was a duration argument specified?
+  //      by default, duration = 1week
+  // TODO Determine start date
+  //      by default, start = prior Monday
+  //      otherwise,  start = prior Monday - ((duration - 1) * 7 * 86,400)
+  // TODO end date = next Sunday
+
+  Table table;
+
+  // TODO Render report
+/*
+  % task timesheet [filter] 2w
+
+  4/19/2009 - 4/26/2009
+   ...
+
+  4/27/2009 - 5/3/2009
+    Tasks Completed (5)
+      <project> <description> <annotations>
+      ...
+
+    Tasks Started (2)
+      <project> <description> <annotations>
+      ...
+*/
+
+  if (table.rowCount ())
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << std::endl;
+  else
+    out << "No tasks." << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string renderMonths (
   int firstMonth,
   int firstYear,
