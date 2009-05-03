@@ -23,7 +23,7 @@
               <a href="usage.html">Usage</a>
               <a href="recur.html">Recurrence</a>
               <a href="date.html">Date Handling</a>
-              <a href="troubleshooting.html">Troubleshooting</a>
+              <a href="faq.html">FAQ</a>
               <a href="versions.html">Old Versions</a>
               <a href="links.html">Task on the Web</a>
             </div>
@@ -124,6 +124,53 @@
                   of the terminal window, and wraps accordingly.
                 </p>
                 <hr>
+
+                <p>
+                  <b>
+                    Q: How do I build task under Cygwin?
+                  </b>
+                  <br />
+                  A: Task is built the same way everywhere.  But under Cygwin, you'll
+                     need to make sure you have the following packages available
+                     first:
+
+                     <ul>
+                       <li>gcc
+                       <li>make
+                       <li>libncurses-devel
+                       <li>libncurses8
+                     </ul>
+
+                     The gcc and make packages allow you to compile the code, and
+                     are therefore required, but the ncurses packages are optional.
+                     Ncurses will allow task to determine the width of the window, and
+                     therefore use the whole width and wrap text accordingly, for a
+                     more aesthetically pleasing display.
+                </p>
+                <hr>
+
+                <p>
+                  <b>
+                    Q: Do colors work under Cygwin?
+                  </b>
+                  <br />
+                  A: They do, but only in a limited way.  You can use regular
+                     foreground colors (black, red, green ...) and you can
+                     regular background colors (on_black, on_red, on_green ...),
+                     but underline and bold are not supported.
+                  <br />
+                  <br />
+                     If you run the command:
+                     <code><pre>% task colors</pre></code>
+                     Task will display all the colors it can use, and you will
+                     see which ones you can use.
+                  <br />
+                  <br />
+                     See the <a href="color.html">color</a> documentation for
+                     more details on which colors can be used.
+                </p>
+                <hr>
+
 <!--
                 <p>
                   <b>
