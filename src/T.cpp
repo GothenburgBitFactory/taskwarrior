@@ -575,6 +575,9 @@ void T::parse (const std::string& line)
                 openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
               std::vector <std::string> pairs;
               split (pairs, attributes, ' ');
+              if (pairs.size () == 0)
+                throw std::string ("Could not find any attributes.");
+
               for (size_t i = 0; i <  pairs.size (); ++i)
               {
                 std::vector <std::string> pair;
@@ -623,15 +626,17 @@ void T::parse (const std::string& line)
 
               mDescription = line.substr (closeAnnoBracket + 2, std::string::npos);
             }
+            else
+              throw std::string ("Missing annotation brackets.");
           }
           else
-            throw std::string ("Missing attribute brackets");
+            throw std::string ("Missing attribute brackets.");
         }
         else
-          throw std::string ("Missing tag brackets");
+          throw std::string ("Missing tag brackets.");
       }
       else
-        throw std::string ("Line too short");
+        throw std::string ("Line too short.");
     }
     break;
 

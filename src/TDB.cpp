@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <sys/file.h>
 #include <unistd.h>
 #include <string.h>
@@ -104,13 +105,27 @@ bool TDB::pendingT (std::vector <T>& all)
   {
     mId = 1;
 
+    int line = 1;
     std::vector <std::string>::iterator it;
     for (it = lines.begin (); it != lines.end (); ++it)
     {
-      T t (*it);
-      t.setId (mId++);
-      if (t.getStatus () == T::pending)
-        all.push_back (t);
+      try
+      {
+        T t (*it);
+        t.setId (mId++);
+        if (t.getStatus () == T::pending)
+          all.push_back (t);
+      }
+
+      catch (std::string& e)
+      {
+        std::stringstream more;
+        more << "  Line " << line << ", in " << "pending.data";
+
+        throw e + more.str ();
+      }
+
+      ++line;
     }
 
     return true;
@@ -130,12 +145,26 @@ bool TDB::allPendingT (std::vector <T>& all)
   {
     mId = 1;
 
+    int line = 1;
     std::vector <std::string>::iterator it;
     for (it = lines.begin (); it != lines.end (); ++it)
     {
-      T t (*it);
-      t.setId (mId++);
-      all.push_back (t);
+      try
+      {
+        T t (*it);
+        t.setId (mId++);
+        all.push_back (t);
+      }
+
+      catch (std::string& e)
+      {
+        std::stringstream more;
+        more << "  Line " << line << ", in " << "pending.data";
+
+        throw e + more.str ();
+      }
+
+      ++line;
     }
 
     return true;
@@ -152,12 +181,26 @@ bool TDB::completedT (std::vector <T>& all) const
   std::vector <std::string> lines;
   if (readLockedFile (mCompletedFile, lines))
   {
+    int line = 1;
     std::vector <std::string>::iterator it;
     for (it = lines.begin (); it != lines.end (); ++it)
     {
-      T t (*it);
-      if (t.getStatus () != T::deleted)
-        all.push_back (t);
+      try
+      {
+        T t (*it);
+        if (t.getStatus () != T::deleted)
+          all.push_back (t);
+      }
+
+      catch (std::string& e)
+      {
+        std::stringstream more;
+        more << "  Line " << line << ", in " << "pending.data";
+
+        throw e + more.str ();
+      }
+
+      ++line;
     }
 
     return true;
@@ -174,11 +217,25 @@ bool TDB::allCompletedT (std::vector <T>& all) const
   std::vector <std::string> lines;
   if (readLockedFile (mCompletedFile, lines))
   {
+    int line = 1;
     std::vector <std::string>::iterator it;
     for (it = lines.begin (); it != lines.end (); ++it)
     {
-      T t (*it);
-      all.push_back (t);
+      try
+      {
+        T t (*it);
+        all.push_back (t);
+      }
+
+      catch (std::string& e)
+      {
+        std::stringstream more;
+        more << "  Line " << line << ", in " << "pending.data";
+
+        throw e + more.str ();
+      }
+
+      ++line;
     }
 
     return true;
