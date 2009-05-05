@@ -149,6 +149,7 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "next=2\n");
         fprintf (out, "dateformat=m/d/Y\n");
         fprintf (out, "#monthsperline=2\n");
+        fprintf (out, "#defaultwidth=80\n");
         fprintf (out, "curses=on\n");
         fprintf (out, "color=on\n");
         fprintf (out, "due=7\n");
