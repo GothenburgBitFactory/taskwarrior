@@ -227,6 +227,12 @@ static std::string longUsage (Config& conf)
   std::stringstream out;
   out << shortUsage (conf)
       << "ID is the numeric identifier displayed by the 'task list' command." << "\n"
+      << "You can specify multiple IDs for task commands, and multiple tasks" << "\n"
+      << "will be affected.  To specify multiple IDs make sure you use one"   << "\n"
+      << "of these forms:"                                                    << "\n"
+      << "  task delete 1,2,3"                                                << "\n"
+      << "  task info 1-3"                                                    << "\n"
+      << "  task pri:H 1,2-5,19"                                              << "\n"
       <<                                                                         "\n"
       << "Tags are arbitrary words, any quantity:"                            << "\n"
       << "  +tag               The + means add the tag"                       << "\n"
