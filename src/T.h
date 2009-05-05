@@ -50,6 +50,8 @@ public:
 
   int getId () const                                   { return mId; }
   void setId (int id)                                  { mId = id; }
+  std::vector <int> getAllIds () const                 { return mSequence; }
+  void addId (int id)                                  { mSequence.push_back (id); }
 
   status getStatus () const                            { return mStatus; }
   void setStatus (status s)                            { mStatus = s; }
@@ -95,6 +97,7 @@ private:
   status                             mStatus;
   std::string                        mUUID;
   int                                mId;
+  std::vector <int>                  mSequence;
   std::string                        mDescription;
   std::vector<std::string>           mTags;
   std::vector<std::string>           mRemoveTags;
