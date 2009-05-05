@@ -290,7 +290,7 @@ void T::addAnnotation (const std::string& description)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool T::inSequence (int id) const
+bool T::sequenceContains (int id) const
 {
   foreach (seq, mSequence)
     if (*seq == id)

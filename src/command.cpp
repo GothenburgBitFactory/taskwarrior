@@ -439,13 +439,13 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
 
-  if (!conf.get (std::string ("confirmation"), false) || confirm ("Permanently delete task?"))
+  std::vector <T> all;
+  tdb.allPendingT (all);
+  foreach (t, all)
   {
-    std::vector <T> all;
-    tdb.allPendingT (all);
-    foreach (t, all)
+    if (t->getId () == task.getId () || task.sequenceContains (t->getId ()))
     {
-      if (t->getId () == task.getId ())
+      if (!conf.get (std::string ("confirmation"), false) || confirm ("Permanently delete task?"))
       {
         // Check for the more complex case of a recurring task.  If this is a
         // recurring task, get confirmation to delete them all.
@@ -494,13 +494,11 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
                 << t->getDescription ()
                 << std::endl;
         }
-
-        break;  // No point continuing the loop.
       }
+      else
+        out << "Task not deleted." << std::endl;
     }
   }
-  else
-    out << "Task not deleted." << std::endl;
 
   return out.str ();
 }

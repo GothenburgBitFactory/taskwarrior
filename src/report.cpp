@@ -271,8 +271,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
   {
     T refTask (tasks[i]);
 
-    if (refTask.getId () == task.getId () ||
-        task.inSequence (refTask.getId ()))
+    if (refTask.getId () == task.getId () || task.sequenceContains (refTask.getId ()))
     {
       ++count;
 
