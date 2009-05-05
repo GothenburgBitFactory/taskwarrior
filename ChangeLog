@@ -4,6 +4,8 @@
 1.7.0 (?) ?
  + Improved the errors when parsing a corrupt or unrecognized pending.data
    or completed.data file (thanks to T. Charles Yun).
+ + Added details to the "info" report about recurring tasks (thanks to T.
+   Charles Yun).
 
 ------ old releases ------------------------------
 

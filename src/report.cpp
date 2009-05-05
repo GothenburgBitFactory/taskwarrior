@@ -299,13 +299,17 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
       table.addCell (row, 0, "ID");
       table.addCell (row, 1, refTask.getId ());
 
+      std::string status = refTask.getStatus () == T::pending   ? "Pending"
+                         : refTask.getStatus () == T::completed ? "Completed"
+                         : refTask.getStatus () == T::deleted   ? "Deleted"
+                         : refTask.getStatus () == T::recurring ? "Recurring"
+                         : "";
+      if (refTask.getAttribute ("parent") != "")
+        status += " (Recurring)";
+
       row = table.addRow ();
       table.addCell (row, 0, "Status");
-      table.addCell (row, 1, (  refTask.getStatus () == T::pending   ? "Pending"
-                              : refTask.getStatus () == T::completed ? "Completed"
-                              : refTask.getStatus () == T::deleted   ? "Deleted"
-                              : refTask.getStatus () == T::recurring ? "Recurring"
-                              : ""));
+      table.addCell (row, 1, status);
 
       std::string description = refTask.getDescription ();
       std::string when;
@@ -336,26 +340,36 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
         table.addCell (row, 1, refTask.getAttribute ("priority"));
       }
 
-      if (refTask.getStatus () == T::recurring)
+      if (refTask.getStatus () == T::recurring ||
+          refTask.getAttribute ("parent") != "")
       {
-        row = table.addRow ();
-        table.addCell (row, 0, "Recurrence");
-        table.addCell (row, 1, refTask.getAttribute ("recur"));
+        if (refTask.getAttribute ("recur") != "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Recurrence");
+          table.addCell (row, 1, refTask.getAttribute ("recur"));
+        }
 
-        row = table.addRow ();
-        table.addCell (row, 0, "Recur until");
-        table.addCell (row, 1, refTask.getAttribute ("until"));
+        if (refTask.getAttribute ("until") != "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Recur until");
+          table.addCell (row, 1, refTask.getAttribute ("until"));
+        }
 
-        row = table.addRow ();
-        table.addCell (row, 0, "Mask");
-        table.addCell (row, 1, refTask.getAttribute ("mask"));
-      }
+        if (refTask.getAttribute ("mask") != "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Mask");
+          table.addCell (row, 1, refTask.getAttribute ("mask"));
+        }
 
-      if (refTask.getAttribute ("parent") != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Parent task");
-        table.addCell (row, 1, refTask.getAttribute ("parent"));
+        if (refTask.getAttribute ("parent") != "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Parent task");
+          table.addCell (row, 1, refTask.getAttribute ("parent"));
+        }
 
         row = table.addRow ();
         table.addCell (row, 0, "Mask Index");
