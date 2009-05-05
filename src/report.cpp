@@ -265,35 +265,38 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
 
-  Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-
-  table.addColumn ("Name");
-  table.addColumn ("Value");
-
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::flexible);
-
-  table.setColumnJustification (0, Table::left);
-  table.setColumnJustification (1, Table::left);
-
   // Find the task.
+  int count = 0;
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
     T refTask (tasks[i]);
 
-    if (refTask.getId () == task.getId ())
+    if (refTask.getId () == task.getId () ||
+        task.inSequence (refTask.getId ()))
     {
-      Date now;
+      ++count;
+
+      Table table;
+      table.setTableWidth (width);
+      table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+
+      table.addColumn ("Name");
+      table.addColumn ("Value");
+
+      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      {
+        table.setColumnUnderline (0);
+        table.setColumnUnderline (1);
+      }
+      else
+        table.setTableDashedUnderline ();
+
+      table.setColumnWidth (0, Table::minimum);
+      table.setColumnWidth (1, Table::flexible);
+
+      table.setColumnJustification (0, Table::left);
+      table.setColumnJustification (1, Table::left);
+          Date now;
 
       int row = table.addRow ();
       table.addCell (row, 0, "ID");
@@ -440,14 +443,14 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
       }
 
       table.addCell (row, 1, entry + " (" + age + ")");
+
+      out << optionalBlankLine (conf)
+          << table.render ()
+          << std::endl;
     }
   }
 
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << std::endl;
-  else
+  if (! count)
     out << "No matches." << std::endl;
 
   return out.str ();

@@ -487,17 +487,9 @@ void parse (
       std::vector <int> sequence;
 
       // An id is the first argument found that contains all digits.
-      if (lowerCase (command) != "add"  &&
-/*
-          task.getSequenceCount () == 0 &&
-*/
+      if (lowerCase (command) != "add"  && // "add" doesn't require an ID
           validSequence (arg, sequence))
       {
-/*
-        for (?)
-          task.addSequence (?)
-*/
-        std::cout << "# look like a sequence" << std::endl;
         foreach (id, sequence)
           task.addId (*id);
       }

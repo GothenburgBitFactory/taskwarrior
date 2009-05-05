@@ -84,6 +84,7 @@ public:
   void getAnnotations (std::map <time_t, std::string>&) const;
   void setAnnotations (const std::map <time_t, std::string>&);
   void addAnnotation (const std::string&);
+  bool inSequence (int) const;
 
   const std::string compose () const;
   const std::string composeCSV ();

@@ -37,6 +37,7 @@ T::T ()
   mUUID = uuid ();
   mStatus = pending;
   mId = 0;
+  mSequence.clear ();
   mTags.clear ();
   mAttributes.clear ();
   mDescription = "";
@@ -59,6 +60,7 @@ T::T (const T& other)
   mStatus      = other.mStatus;
   mUUID        = other.mUUID;
   mId          = other.mId;
+  mSequence    = other.mSequence;
   mDescription = other.mDescription;
   mTags        = other.mTags;
   mRemoveTags  = other.mRemoveTags;
@@ -74,6 +76,7 @@ T& T::operator= (const T& other)
     mStatus      = other.mStatus;
     mUUID        = other.mUUID;
     mId          = other.mId;
+    mSequence    = other.mSequence;
     mDescription = other.mDescription;
     mTags        = other.mTags;
     mRemoveTags  = other.mRemoveTags;
@@ -284,6 +287,16 @@ void T::addAnnotation (const std::string& description)
   std::replace (sanitized.begin (), sanitized.end (), '[', '(');
   std::replace (sanitized.begin (), sanitized.end (), ']', ')');
   mAnnotations[time (NULL)] = sanitized;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool T::inSequence (int id) const
+{
+  foreach (seq, mSequence)
+    if (*seq == id)
+      return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
