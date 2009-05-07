@@ -47,6 +47,53 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+void filterSequence (std::vector<T>& all, T& task)
+{
+  std::vector <int> sequence = task.getAllIds ();
+
+  std::vector <T> filtered;
+  std::vector <T>::iterator t;
+  for (t = all.begin (); t != all.end (); ++t)
+  {
+    std::vector <int>::iterator s;
+    for (s = sequence.begin (); s != sequence.end (); ++s)
+      if (t->getId () == *s)
+        filtered.push_back (*t);
+  }
+
+  if (sequence.size () != filtered.size ())
+  {
+    std::vector <int> filteredSequence;
+    std::vector <T>::iterator fs;
+    for (fs = filtered.begin (); fs != filtered.end (); ++fs)
+      filteredSequence.push_back (fs->getId ());
+
+    std::vector <int> left;
+    std::vector <int> right;
+    listDiff (filteredSequence, sequence, left, right);
+    if (left.size ())
+      throw std::string ("Sequence filtering error - please report this error");
+
+    if (right.size ())
+    {
+      std::stringstream out;
+      out << "Task";
+
+      if (right.size () > 1) out << "s";
+
+      std::vector <int>::iterator s;
+      for (s = right.begin (); s != right.end (); ++s)
+        out << " " << *s;
+
+      out << " not found";
+      throw out.str ();
+    }
+  }
+
+  all = filtered;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void filter (std::vector<T>& all, T& task)
 {
   std::vector <T> filtered;
@@ -265,47 +312,53 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
 
-  Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-
-  table.addColumn ("Name");
-  table.addColumn ("Value");
-
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::flexible);
-
-  table.setColumnJustification (0, Table::left);
-  table.setColumnJustification (1, Table::left);
-
   // Find the task.
+  int count = 0;
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
     T refTask (tasks[i]);
 
-    if (refTask.getId () == task.getId ())
+    if (refTask.getId () == task.getId () || task.sequenceContains (refTask.getId ()))
     {
-      Date now;
+      ++count;
+
+      Table table;
+      table.setTableWidth (width);
+      table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+
+      table.addColumn ("Name");
+      table.addColumn ("Value");
+
+      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      {
+        table.setColumnUnderline (0);
+        table.setColumnUnderline (1);
+      }
+      else
+        table.setTableDashedUnderline ();
+
+      table.setColumnWidth (0, Table::minimum);
+      table.setColumnWidth (1, Table::flexible);
+
+      table.setColumnJustification (0, Table::left);
+      table.setColumnJustification (1, Table::left);
+          Date now;
 
       int row = table.addRow ();
       table.addCell (row, 0, "ID");
       table.addCell (row, 1, refTask.getId ());
 
+      std::string status = refTask.getStatus () == T::pending   ? "Pending"
+                         : refTask.getStatus () == T::completed ? "Completed"
+                         : refTask.getStatus () == T::deleted   ? "Deleted"
+                         : refTask.getStatus () == T::recurring ? "Recurring"
+                         : "";
+      if (refTask.getAttribute ("parent") != "")
+        status += " (Recurring)";
+
       row = table.addRow ();
       table.addCell (row, 0, "Status");
-      table.addCell (row, 1, (  refTask.getStatus () == T::pending   ? "Pending"
-                              : refTask.getStatus () == T::completed ? "Completed"
-                              : refTask.getStatus () == T::deleted   ? "Deleted"
-                              : refTask.getStatus () == T::recurring ? "Recurring"
-                              : ""));
+      table.addCell (row, 1, status);
 
       std::string description = refTask.getDescription ();
       std::string when;
@@ -336,26 +389,36 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
         table.addCell (row, 1, refTask.getAttribute ("priority"));
       }
 
-      if (refTask.getStatus () == T::recurring)
+      if (refTask.getStatus () == T::recurring ||
+          refTask.getAttribute ("parent") != "")
       {
-        row = table.addRow ();
-        table.addCell (row, 0, "Recurrence");
-        table.addCell (row, 1, refTask.getAttribute ("recur"));
+        if (refTask.getAttribute ("recur") != "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Recurrence");
+          table.addCell (row, 1, refTask.getAttribute ("recur"));
+        }
 
-        row = table.addRow ();
-        table.addCell (row, 0, "Recur until");
-        table.addCell (row, 1, refTask.getAttribute ("until"));
+        if (refTask.getAttribute ("until") != "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Recur until");
+          table.addCell (row, 1, refTask.getAttribute ("until"));
+        }
 
-        row = table.addRow ();
-        table.addCell (row, 0, "Mask");
-        table.addCell (row, 1, refTask.getAttribute ("mask"));
-      }
+        if (refTask.getAttribute ("mask") != "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Mask");
+          table.addCell (row, 1, refTask.getAttribute ("mask"));
+        }
 
-      if (refTask.getAttribute ("parent") != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Parent task");
-        table.addCell (row, 1, refTask.getAttribute ("parent"));
+        if (refTask.getAttribute ("parent") != "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Parent task");
+          table.addCell (row, 1, refTask.getAttribute ("parent"));
+        }
 
         row = table.addRow ();
         table.addCell (row, 0, "Mask Index");
@@ -440,14 +503,14 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
       }
 
       table.addCell (row, 1, entry + " (" + age + ")");
+
+      out << optionalBlankLine (conf)
+          << table.render ()
+          << std::endl;
     }
   }
 
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << std::endl;
-  else
+  if (! count)
     out << "No matches." << std::endl;
 
   return out.str ();
@@ -1038,6 +1101,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
       if (task.getStatus () == T::deleted)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
 
         if (deletedGroup.find (epoch) != deletedGroup.end ())
           deletedGroup[epoch] = deletedGroup[epoch] + 1;
@@ -1047,6 +1111,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
       else if (task.getStatus () == T::completed)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
 
         if (completedGroup.find (epoch) != completedGroup.end ())
           completedGroup[epoch] = completedGroup[epoch] + 1;

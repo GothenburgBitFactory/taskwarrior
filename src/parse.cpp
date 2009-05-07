@@ -301,11 +301,64 @@ static bool validAttribute (
 ////////////////////////////////////////////////////////////////////////////////
 static bool validId (const std::string& input)
 {
+  if (input.length () == 0)
+    return false;
+
   for (size_t i = 0; i < input.length (); ++i)
     if (!::isdigit (input[i]))
       return false;
 
   return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// 1,2-4,6
+static bool validSequence (
+  const std::string& input,
+  std::vector <int>& ids)
+{
+  std::vector <std::string> ranges;
+  split (ranges, input, ',');
+
+  std::vector <std::string>::iterator it;
+  for (it = ranges.begin (); it != ranges.end (); ++it)
+  {
+    std::vector <std::string> range;
+    split (range, *it, '-');
+
+    switch (range.size ())
+    {
+    case 1:
+      if (! validId (range[0]))
+        return false;
+
+      int id = ::atoi (range[0].c_str ());
+      ids.push_back (id);
+      break;
+
+    case 2:
+      {
+        if (! validId (range[0]) ||
+            ! validId (range[1]))
+          return false;
+
+        int low  = ::atoi (range[0].c_str ());
+        int high = ::atoi (range[1].c_str ());
+        if (low >= high)
+          return false;
+
+        for (int i = low; i <= high; ++i)
+          ids.push_back (i);
+      }
+      break;
+
+    default:
+      return false;
+      break;
+    }
+  }
+
+  return ids.size () ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -392,15 +445,23 @@ bool validDuration (std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Token        Distinguishing characteristic
-// -------      -----------------------------
-// command      first positional
-// id           \d+
-// description  default, accumulate
-// substitution /\w+/\w*/
-// tags         [-+]\w+
-// attributes   \w+:.+
+// Token        EBNF
+// -------      ----------------------------------
+// command      first non-id recognized argument
 //
+// substitution ::= "/" from "/" to "/g"
+//                | "/" from "/" to "/" ;
+//
+// tags         ::= "+" word
+//                | "-" word ;
+//
+// attributes   ::= word ":" value
+//                | word ":"
+//
+// sequence     ::= \d+ "," sequence
+//                | \d+ "-" \d+ ;
+//
+// description  (whatever isn't one of the above)
 void parse (
   std::vector <std::string>& args,
   std::string& command,
@@ -408,6 +469,9 @@ void parse (
   Config& conf)
 {
   command = "";
+
+  bool foundSequence = false;
+  bool foundSomethingAfterSequence = false;
 
   std::string descCandidate = "";
   for (size_t i = 0; i < args.size (); ++i)
@@ -422,16 +486,24 @@ void parse (
       std::string from;
       std::string to;
       bool global;
+      std::vector <int> sequence;
 
       // An id is the first argument found that contains all digits.
-      if (lowerCase (command) != "add" && // "add" doesn't require an ID
-          task.getId () == 0           &&
-          validId (arg))
-        task.setId (::atoi (arg.c_str ()));
+      if (lowerCase (command) != "add"  && // "add" doesn't require an ID
+          validSequence (arg, sequence) &&
+          ! foundSomethingAfterSequence)
+      {
+        foundSequence = true;
+        foreach (id, sequence)
+          task.addId (*id);
+      }
 
       // Tags begin with + or - and contain arbitrary text.
       else if (validTag (arg))
       {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
         if (arg[0] == '+')
           task.addTag (arg.substr (1, std::string::npos));
         else if (arg[0] == '-')
@@ -442,6 +514,9 @@ void parse (
       // value.
       else if ((colon = arg.find (":")) != std::string::npos)
       {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
         std::string name  = lowerCase (arg.substr (0, colon));
         std::string value = arg.substr (colon + 1, std::string::npos);
 
@@ -464,12 +539,18 @@ void parse (
       // Substitution of description text.
       else if (validSubstitution (arg, from, to, global))
       {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
         task.setSubstitution (from, to, global);
       }
 
       // Command.
       else if (command == "")
       {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
         std::string l = lowerCase (arg);
         if (isCommand (l) && validCommand (l))
           command = l;
@@ -484,6 +565,9 @@ void parse (
       // Anything else is just considered description.
       else
       {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
         if (descCandidate.length ())
           descCandidate += " ";
         descCandidate += arg;

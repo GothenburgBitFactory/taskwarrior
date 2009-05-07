@@ -49,7 +49,9 @@ public:
   void setUUID (const std::string& uuid)               { mUUID = uuid; }
 
   int getId () const                                   { return mId; }
-  void setId (int id)                                  { mId = id; }
+  void setId (int id)                                  { mId = id; mSequence.push_back (id); }
+  std::vector <int> getAllIds () const                 { return mSequence; }
+  void addId (int id)                                  { if (mId == 0) mId = id; mSequence.push_back (id); }
 
   status getStatus () const                            { return mStatus; }
   void setStatus (status s)                            { mStatus = s; }
@@ -82,6 +84,7 @@ public:
   void getAnnotations (std::map <time_t, std::string>&) const;
   void setAnnotations (const std::map <time_t, std::string>&);
   void addAnnotation (const std::string&);
+  bool sequenceContains (int) const;
 
   const std::string compose () const;
   const std::string composeCSV ();
@@ -95,6 +98,7 @@ private:
   status                             mStatus;
   std::string                        mUUID;
   int                                mId;
+  std::vector <int>                  mSequence;
   std::string                        mDescription;
   std::vector<std::string>           mTags;
   std::vector<std::string>           mRemoveTags;

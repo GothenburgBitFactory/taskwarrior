@@ -20,7 +20,6 @@
               <a href="shell.html">Shell</a>
               <a href="config.html">Configuration</a>
               <a href="color.html">Colors</a>
-              <a href="usage.html">Usage</a>
               <a href="recur.html">Recurrence</a>
               <a href="date.html">Date Handling</a>
               <a href="faq.html">FAQ</a>
@@ -50,7 +49,6 @@
                 <li><a href="shell.html">Interacting with the Shell</a>
                 <li><a href="config.html">Configuring Task</a>
                 <li><a href="color.html">Color</a>
-                <li><a href="usage.html">Task Command Usage</a>
                 <li><a href="recur.html">Recurring Tasks</a>
                 <li><a href="date.html">Date Handling</a>
                 <li><a href="versions.html">Old Versions</a>
@@ -59,6 +57,7 @@
                 <li><a href="custom.html">Custom Reports</a>
                 <li><a href="import.html">Data Import</a>
                 <li><a href="faq.html">Frequently Asked Questions</a>
+                <li><a href="sequence.html">ID Sequences</a>
               </ul>
 
               <p>
@@ -69,6 +68,12 @@
                 Alternatively, watch the
                 <a href="http://www.youtube.com/watch?v=D2Kn4DMOVSw">task movie</a>
                 which illustrates many of task's features.
+              </p>
+
+              <p>
+                For the latest news, discussion of proposed task features, and
+                somewhere to voice your opinions, join us at
+                <a href="http://groups.google.com/group/taskprogram">http://groups.google.com/group/taskprogram</a>.
               </p>
 
               <br />
@@ -110,6 +115,14 @@
                 <ul>
                   <li>Improved the errors when parsing a corrupt or unrecognized pending.data
                       or completed.data file (thanks to T. Charles Yun).
+                  <li>Added details to the "info" report about recurring tasks (thanks to T.
+                      Charles Yun).
+                  <li>Now writes a sample "defaultwidth" configuration variable to the default
+                      .taskrc file (thanks to T. Charles Yun).
+                  <li>Task allows commands that require an ID to now be given a sequence, which
+                      is a set of IDs.  This allows commands like "task delete 1 2 5-10,12".
+                  <li>Fixed bug in the ghistory report, which caused it to only show a new
+                      month if a task was added during that month.
                 </ul>
 
                 <p>

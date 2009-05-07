@@ -57,7 +57,7 @@ like ($output, qr/^No matches/, 'No matches');
 ok (-r 'completed.data', 'completed.data created');
 
 $output = qx{../task rc:undelete.rc undelete 1};
-like ($output, qr/reliably undeleted/, 'can only be reliable undeleted...');
+like ($output, qr/Task 1 not found/, 'Task 1 not found');
 
 $output = qx{../task rc:undelete.rc info 1};
 like ($output, qr/No matches./, 'no matches');

@@ -56,8 +56,8 @@ $output = qx{../task rc:undo.rc do 1; ../task rc:undo.rc list};
 like ($output, qr/^No matches/, 'No matches');
 
 $output = qx{../task rc:undo.rc undo 1; ../task rc:undo.rc info 1};
-like ($output, qr/Task 1 not found/, 'task not found');
-like ($output, qr/reliably undone/, 'can only be reliable undone...');
+like ($output, qr/Task 1 not found/, 'Task 1 not found');
+like ($output, qr/No matches/, 'No matches');
 
 # Cleanup.
 ok (-r 'pending.data', 'Need to remove pending.data');

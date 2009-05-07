@@ -5,3 +5,4 @@ date.t
 duration.t
 text.t
 autocomplete.t
+parse.t
