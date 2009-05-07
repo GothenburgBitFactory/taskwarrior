@@ -588,8 +588,6 @@ void T::parse (const std::string& line)
                 openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
               std::vector <std::string> pairs;
               split (pairs, attributes, ' ');
-              if (pairs.size () == 0)
-                throw std::string ("Could not find any attributes.");
 
               for (size_t i = 0; i <  pairs.size (); ++i)
               {

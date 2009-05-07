@@ -49,9 +49,9 @@ public:
   void setUUID (const std::string& uuid)               { mUUID = uuid; }
 
   int getId () const                                   { return mId; }
-  void setId (int id)                                  { mId = id; }
+  void setId (int id)                                  { mId = id; mSequence.push_back (id); }
   std::vector <int> getAllIds () const                 { return mSequence; }
-  void addId (int id)                                  { mSequence.push_back (id); }
+  void addId (int id)                                  { if (mId == 0) mId = id; mSequence.push_back (id); }
 
   status getStatus () const                            { return mStatus; }
   void setStatus (status s)                            { mStatus = s; }
