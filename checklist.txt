@@ -1,0 +1,26 @@
+Release Checklist
+-----------------
+
+- Update "Upcoming Features" document on group
+- Ensure all unit tests pass on OS X
+- Ensure clean build on OS X
+- Make a source package (1)
+- Ensure clean build on latest Fedora Core from source package
+- Git clone and rebuild, ensure all unit tests pass
+- Ensure clean build on latest Ubuntu from source package
+- Git clone and rebuild, ensure all unit tests pass
+- Ensure clean build on Windows/Cygwin from source package
+- Git clone and rebuild, ensure all unit tests pass
+- Make a new source package (2)
+- Add actual release date to ChangeLog
+- Add actual release date to html/task.html
+- Merge version branch to master
+- Tag master
+- Make a new source package (3)
+- Send source package to package maintainer
+- Make OS X .pkg package
+- Wait for all packages
+- Upload all packages to website
+- Upload all docs to website
+- Send announcement to group
+
