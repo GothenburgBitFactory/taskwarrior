@@ -193,42 +193,34 @@ std::string handleTags (TDB& tdb, T& task, Config& conf)
 std::string handleUndelete (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
+
   std::vector <T> all;
   tdb.allPendingT (all);
+  filterSequence (all, task);
 
-  int id = task.getId ();
-  std::vector <T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
+  foreach (t, all)
   {
-    if (it->getId () == id)
+    if (t->getStatus () == T::deleted)
     {
-      if (it->getStatus () == T::deleted)
-      {
-        if (it->getAttribute ("recur") != "")
-        {
-          out << "Task does not support 'undelete' for recurring tasks." << std::endl;
-          return out.str ();
-        }
+      if (t->getAttribute ("recur") != "")
+        out << "Task does not support 'undo' for recurring tasks.\n";
 
-        T restored (*it);
-        restored.setStatus (T::pending);
-        restored.removeAttribute ("end");
-        tdb.modifyT (restored);
+      t->setStatus (T::pending);
+      t->removeAttribute ("end");
+      tdb.modifyT (*t);
 
-        out << "Task " << id << " successfully undeleted." << std::endl;
-        return out.str ();
-      }
-      else
-      {
-        out << "Task " << id << " is not deleted - therefore cannot undelete." << std::endl;
-        return out.str ();
-      }
+      out << "Task " << t->getId () << " '" << t->getDescription () << "' successfully undeleted.\n";
+    }
+    else
+    {
+      out << "Task " << t->getId () << " '" << t->getDescription () << "' is not deleted - therefore cannot be undeleted.\n";
     }
   }
 
-  out << "Task " << id
-      << " not found - tasks can only be reliably undeleted if the undelete" << std::endl
-      << "command is run immediately after the errant delete command." << std::endl;
+  out << "\n"
+      << "Please note that tasks can only be reliably undeleted if the undelete "
+      << "command is run immediately after the errant delete command."
+      << std::endl;
 
   return out.str ();
 }
@@ -242,37 +234,31 @@ std::string handleUndo (TDB& tdb, T& task, Config& conf)
 
   std::vector <T> all;
   tdb.allPendingT (all);
+  filterSequence (all, task);
 
-  int id = task.getId ();
-  std::vector <T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
+  foreach (t, all)
   {
-    if (it->getId () == id)
+    if (t->getStatus () == T::completed)
     {
-      if (it->getStatus () == T::completed)
-      {
-        if (it->getAttribute ("recur") != "")
-          return std::string ("Task does not support 'undo' for recurring tasks.\n");
+      if (t->getAttribute ("recur") != "")
+        out << "Task does not support 'undo' for recurring tasks.\n";
 
-        T restored (*it);
-        restored.setStatus (T::pending);
-        restored.removeAttribute ("end");
-        tdb.modifyT (restored);
+      t->setStatus (T::pending);
+      t->removeAttribute ("end");
+      tdb.modifyT (*t);
 
-        out << "Task " << id << " successfully undone." << std::endl;
-        return out.str ();
-      }
-      else
-      {
-        out << "Task " << id << " is not done - therefore cannot be undone." << std::endl;
-        return out.str ();
-      }
+      out << "Task " << t->getId () << " '" << t->getDescription () << "' successfully undone." << std::endl;
+    }
+    else
+    {
+      out << "Task " << t->getId () << " '" << t->getDescription () << "' is not done - therefore cannot be undone." << std::endl;
     }
   }
 
-  out << "Task " << id
-      << " not found - tasks can only be reliably undone if the undo" << std::endl
-      << "command is run immediately after the errant done command." << std::endl;
+  out << std::endl
+      << "Please note that tasks can only be reliably undone if the undo "
+      << "command is run immediately after the errant done command."
+      << std::endl;
 
   return out.str ();
 }
@@ -367,8 +353,9 @@ std::string handleVersion (Config& conf)
 
   // Complain about configuration variables that are not recognized.
   // These are the regular configuration variables.
+  // Note that there is a leading and trailing space.
   std::string recognized =
-    "blanklines color color.active color.due color.overdue color.pri.H "
+    " blanklines color color.active color.due color.overdue color.pri.H "
     "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
     "confirmation curses data.location dateformat default.command "
     "default.priority defaultwidth due echo.command locking monthsperline nag "
@@ -377,7 +364,7 @@ std::string handleVersion (Config& conf)
     "import.synonym.tags import.synonym.entry import.synonym.start "
     "import.synonym.due import.synonym.recur import.synonym.end "
     "import.synonym.project import.synonym.priority import.synonym.fg "
-    "import.synonym.bg import.synonym.description";
+    "import.synonym.bg import.synonym.description ";
 
   // This configuration variable is supported, but not documented.  It exists
   // so that unit tests can force color to be on even when the output from task
@@ -387,7 +374,10 @@ std::string handleVersion (Config& conf)
   std::vector <std::string> unrecognized;
   foreach (i, all)
   {
-    if (recognized.find (*i) == std::string::npos)
+    // Disallow partial matches by tacking a leading an trailing space on each
+    // variable name.
+    std::string pattern = " " + *i + " ";
+    if (recognized.find (pattern) == std::string::npos)
     {
       // These are special configuration variables, because their name is
       // dynamic.
@@ -441,63 +431,72 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
 
   std::vector <T> all;
   tdb.allPendingT (all);
+  filterSequence (all, task);
+
   foreach (t, all)
   {
-    if (t->getId () == task.getId () || task.sequenceContains (t->getId ()))
+    std::stringstream question;
+    question << "Permanently delete task "
+             << t->getId ()
+             << " '"
+             << t->getDescription ()
+             << "'?";
+
+    if (!conf.get (std::string ("confirmation"), false) || confirm (question.str ()))
     {
-      if (!conf.get (std::string ("confirmation"), false) || confirm ("Permanently delete task?"))
+      // Check for the more complex case of a recurring task.  If this is a
+      // recurring task, get confirmation to delete them all.
+      std::string parent = t->getAttribute ("parent");
+      if (parent != "")
       {
-        // Check for the more complex case of a recurring task.  If this is a
-        // recurring task, get confirmation to delete them all.
-        std::string parent = t->getAttribute ("parent");
-        if (parent != "")
+        if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
         {
-          if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
+          // Scan all pending tasks for siblings of this task, and the parent
+          // itself, and delete them.
+          foreach (sibling, all)
           {
-            // Scan all pending tasks for siblings of this task, and the parent
-            // itself, and delete them.
-            foreach (sibling, all)
+            if (sibling->getAttribute ("parent") == parent ||
+                sibling->getUUID ()              == parent)
             {
-              if (sibling->getAttribute ("parent") == parent ||
-                  sibling->getUUID ()              == parent)
-              {
-                tdb.deleteT (*sibling);
-                if (conf.get ("echo.command", true))
-                  out << "Deleting recurring task "
-                      << sibling->getId ()
-                      << " "
-                      << sibling->getDescription ()
-                      << std::endl;
-              }
+              tdb.deleteT (*sibling);
+              if (conf.get ("echo.command", true))
+                out << "Deleting recurring task "
+                    << sibling->getId ()
+                    << " '"
+                    << sibling->getDescription ()
+                    << "'"
+                    << std::endl;
             }
-          }
-          else
-          {
-            // Update mask in parent.
-            t->setStatus (T::deleted);
-            updateRecurrenceMask (tdb, all, *t);
-            tdb.deleteT (*t);
-            out << "Deleting recurring task "
-                << t->getId ()
-                << " "
-                << t->getDescription ()
-                << std::endl;
           }
         }
         else
         {
+          // Update mask in parent.
+          t->setStatus (T::deleted);
+          updateRecurrenceMask (tdb, all, *t);
           tdb.deleteT (*t);
-          if (conf.get ("echo.command", true))
-            out << "Deleting task "
-                << t->getId ()
-                << " "
-                << t->getDescription ()
-                << std::endl;
+          out << "Deleting recurring task "
+              << t->getId ()
+              << " '"
+              << t->getDescription ()
+              << "'"
+              << std::endl;
         }
       }
       else
-        out << "Task not deleted." << std::endl;
+      {
+        tdb.deleteT (*t);
+        if (conf.get ("echo.command", true))
+          out << "Deleting task "
+              << t->getId ()
+              << " '"
+              << t->getDescription ()
+              << "'"
+              << std::endl;
+      }
     }
+    else
+      out << "Task not deleted." << std::endl;
   }
 
   return out.str ();
@@ -506,81 +505,66 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleStart (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   std::vector <T> all;
   tdb.pendingT (all);
+  filterSequence (all, task);
 
-  std::vector <T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
+  foreach (t, all)
   {
-    if (it->getId () == task.getId ())
+    if (t->getAttribute ("start") == "")
     {
-      T original (*it);
-      std::stringstream out;
+      char startTime[16];
+      sprintf (startTime, "%u", (unsigned int) time (NULL));
+      t->setAttribute ("start", startTime);
 
-      if (original.getAttribute ("start") == "")
-      {
-        char startTime[16];
-        sprintf (startTime, "%u", (unsigned int) time (NULL));
-        original.setAttribute ("start", startTime);
+      tdb.modifyT (*t);
 
-        original.setId (task.getId ());
-        tdb.modifyT (original);
-
-        if (conf.get ("echo.command", true))
-          out << "Started "
-              << original.getId ()
-              << " "
-              << original.getDescription ()
-              << std::endl;
-        nag (tdb, task, conf);
-      }
-      else
-      {
-        out << "Task " << task.getId () << " already started." << std::endl;
-      }
-
-      return out.str ();
+      if (conf.get ("echo.command", true))
+        out << "Started "
+            << t->getId ()
+            << " '"
+            << t->getDescription ()
+            << "'"
+            << std::endl;
+      nag (tdb, task, conf);
+    }
+    else
+    {
+      out << "Task " << t->getId () << " '" << t->getDescription () << "' already started." << std::endl;
     }
   }
 
-  throw std::string ("Task not found.");
-  return std::string (""); // To satisfy gcc.
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleStop (TDB& tdb, T& task, Config& conf)
 {
+  std::stringstream out;
+
   std::vector <T> all;
   tdb.pendingT (all);
+  filterSequence (all, task);
 
-  std::vector <T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
+  foreach (t, all)
   {
-    if (it->getId () == task.getId ())
+    if (t->getAttribute ("start") != "")
     {
-      T original (*it);
-      std::stringstream out;
+      t->removeAttribute ("start");
+      tdb.modifyT (*t);
 
-      if (original.getAttribute ("start") != "")
-      {
-        original.removeAttribute ("start");
-        original.setId (task.getId ());
-        tdb.modifyT (original);
-
-        if (conf.get ("echo.command", true))
-          out << "Stopped " << original.getId () << " " << original.getDescription () << std::endl;
-      }
-      else
-      {
-        out << "Task " << task.getId () << " not started." << std::endl;
-      }
-
-      return out.str ();
+      if (conf.get ("echo.command", true))
+        out << "Stopped " << t->getId () << " '" << t->getDescription () << "'" << std::endl;
+    }
+    else
+    {
+      out << "Task " << t->getId () << " '" << t->getDescription () << "' not started." << std::endl;
     }
   }
 
-  throw std::string ("Task not found.");
-  return std::string (""); // To satisfy gcc.
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -588,30 +572,30 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
 
-  if (!tdb.completeT (task))
-    throw std::string ("Could not mark task as completed.");
-
-  // Now update mask in parent.
   std::vector <T> all;
   tdb.allPendingT (all);
-  foreach (t, all)
-  {
-    if (t->getId () == task.getId ())
-    {
-      if (conf.get ("echo.command", true))
-        out << "Completed "
-            << t->getId ()
-            << " "
-            << t->getDescription ()
-            << std::endl;
+  std::vector <T> filtered = all;
+  filterSequence (filtered, task);
 
-      t->setStatus (T::completed);
-      updateRecurrenceMask (tdb, all, *t);
-      break;
-    }
+  foreach (t, filtered)
+  {
+    t->setStatus (T::completed);
+    if (!tdb.completeT (*t))
+      throw std::string ("Could not mark task as completed.");
+
+    // Now update mask in parent.
+    if (conf.get ("echo.command", true))
+      out << "Completed "
+          << t->getId ()
+          << " '"
+          << t->getDescription ()
+          << "'"
+          << std::endl;
+
+    updateRecurrenceMask (tdb, all, *t);
+    nag (tdb, task, conf);
   }
 
-  nag (tdb, task, conf);
   return out.str ();
 }
 
@@ -675,163 +659,50 @@ std::string handleExport (TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleModify (TDB& tdb, T& task, Config& conf)
 {
+  int count = 0;
   std::stringstream out;
   std::vector <T> all;
   tdb.allPendingT (all);
 
-  // Lookup the complete task.
-  T complete = findT (task.getId (), all);
-
-  // Perform some logical consistency checks.
-  if (task.getAttribute ("recur")   != "" &&
-      task.getAttribute ("due")     == "" &&
-      complete.getAttribute ("due") == "")
-    throw std::string ("You cannot specify a recurring task without a due date.");
-
-  if (task.getAttribute ("until")     != "" &&
-      task.getAttribute ("recur")     == "" &&
-      complete.getAttribute ("recur") == "")
-    throw std::string ("You cannot specify an until date for a non-recurring task.");
-
-  int count = 0;
-  std::vector <T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
+  std::vector <T> filtered = all;
+  filterSequence (filtered, task);
+  foreach (seq, filtered)
   {
-    if (it->getId ()                == complete.getId ()                 || // Self
-        (complete.getAttribute ("parent") != "" &&
-        it->getAttribute ("parent") == complete.getAttribute ("parent")) || // Sibling
-        it->getUUID ()              == complete.getAttribute ("parent"))    // Parent
+    // Perform some logical consistency checks.
+    if (task.getAttribute ("recur") != "" &&
+        task.getAttribute ("due")   == "" &&
+        seq->getAttribute ("due")   == "")
+      throw std::string ("You cannot specify a recurring task without a due date.");
+
+    if (task.getAttribute ("until") != "" &&
+        task.getAttribute ("recur") == "" &&
+        seq->getAttribute ("recur") == "")
+      throw std::string ("You cannot specify an until date for a non-recurring task.");
+
+    // Make all changes.
+    foreach (other, all)
     {
-      T original (*it);
-
-      // A non-zero value forces a file write.
-      int changes = 0;
-
-      // Apply a new description, if any.
-      if (task.getDescription () != "")
+      if (other->getId ()               == seq->getId ()                   || // Self
+          (seq->getAttribute ("parent") != "" &&
+           seq->getAttribute ("parent") == other->getAttribute ("parent")) || // Sibling
+          other->getUUID ()             == seq->getAttribute ("parent"))      // Parent
       {
-        original.setDescription (task.getDescription ());
-        ++changes;
+        // A non-zero value forces a file write.
+        int changes = 0;
+
+        // Apply other deltas.
+        changes += deltaDescription   (*other, task);
+        changes += deltaTags          (*other, task);
+        changes += deltaAttributes    (*other, task);
+        changes += deltaSubstitutions (*other, task);
+
+        if (changes)
+          tdb.modifyT (*other);
+
+        ++count;
       }
-
-      // Apply or remove tags, if any.
-      std::vector <std::string> tags;
-      task.getTags (tags);
-      for (unsigned int i = 0; i < tags.size (); ++i)
-      {
-        if (tags[i][0] == '+')
-          original.addTag (tags[i].substr (1, std::string::npos));
-        else
-          original.addTag (tags[i]);
-
-        ++changes;
-      }
-
-      task.getRemoveTags (tags);
-      for (unsigned int i = 0; i < tags.size (); ++i)
-      {
-        if (tags[i][0] == '-')
-          original.removeTag (tags[i].substr (1, std::string::npos));
-        else
-          original.removeTag (tags[i]);
-
-        ++changes;
-      }
-
-      // Apply or remove attributes, if any.
-      std::map <std::string, std::string> attributes;
-      task.getAttributes (attributes);
-      foreach (i, attributes)
-      {
-        if (i->second == "")
-          original.removeAttribute (i->first);
-        else
-        {
-          original.setAttribute (i->first, i->second);
-
-          // If a "recur" attribute is added, upgrade to a recurring task.
-          if (i->first == "recur")
-            original.setStatus (T::recurring);
-        }
-
-        ++changes;
-      }
-
-      std::string from;
-      std::string to;
-      bool global;
-      task.getSubstitution (from, to, global);
-      if (from != "")
-      {
-        std::string description = original.getDescription ();
-        size_t pattern;
-
-        if (global)
-        {
-          // Perform all subs on description.
-          while ((pattern = description.find (from)) != std::string::npos)
-          {
-            description.replace (pattern, from.length (), to);
-            ++changes;
-          }
-
-          original.setDescription (description);
-
-          // Perform all subs on annotations.
-          std::map <time_t, std::string> annotations;
-          original.getAnnotations (annotations);
-          std::map <time_t, std::string>::iterator it;
-          for (it = annotations.begin (); it != annotations.end (); ++it)
-          {
-            while ((pattern = it->second.find (from)) != std::string::npos)
-            {
-              it->second.replace (pattern, from.length (), to);
-              ++changes;
-            }
-          }
-
-          original.setAnnotations (annotations);
-        }
-        else
-        {
-          // Perform first description substitution.
-          if ((pattern = description.find (from)) != std::string::npos)
-          {
-            description.replace (pattern, from.length (), to);
-            original.setDescription (description);
-            ++changes;
-          }
-          // Failing that, perform the first annotation substitution.
-          else
-          {
-            std::map <time_t, std::string> annotations;
-            original.getAnnotations (annotations);
-
-            std::map <time_t, std::string>::iterator it;
-            for (it = annotations.begin (); it != annotations.end (); ++it)
-            {
-              if ((pattern = it->second.find (from)) != std::string::npos)
-              {
-                it->second.replace (pattern, from.length (), to);
-                ++changes;
-                break;
-              }
-            }
-
-            original.setAnnotations (annotations);
-          }
-        }
-      }
-
-      if (changes)
-        tdb.modifyT (original);
-
-      ++count;
     }
   }
-
-  if (count == 0)
-    throw std::string ("Task not found.");
 
   if (conf.get ("echo.command", true))
     out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
@@ -842,91 +713,46 @@ std::string handleModify (TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleAppend (TDB& tdb, T& task, Config& conf)
 {
+  int count = 0;
   std::stringstream out;
   std::vector <T> all;
   tdb.allPendingT (all);
 
-  // Lookup the complete task.
-  T complete = findT (task.getId (), all);
-
-  int count = 0;
-  std::vector <T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
+  std::vector <T> filtered = all;
+  filterSequence (filtered, task);
+  foreach (seq, filtered)
   {
-    if (it->getId ()                == complete.getId ()                 || // Self
-        (complete.getAttribute ("parent") != "" &&
-        it->getAttribute ("parent") == complete.getAttribute ("parent")) || // Sibling
-        it->getUUID ()              == complete.getAttribute ("parent"))    // Parent
+    foreach (other, all)
     {
-      T original (*it);
-
-      // A non-zero value forces a file write.
-      int changes = 0;
-
-      // Apply a new description, if any.
-      if (task.getDescription () != "")
+      if (other->getId ()               == seq->getId ()                   || // Self
+          (seq->getAttribute ("parent") != "" &&
+           seq->getAttribute ("parent") == other->getAttribute ("parent")) || // Sibling
+          other->getUUID ()            == seq->getAttribute ("parent"))       // Parent
       {
-        original.setDescription (original.getDescription () +
-                                 " " +
-                                task.getDescription ());
-        ++changes;
+        // A non-zero value forces a file write.
+        int changes = 0;
+
+        // Apply other deltas.
+        changes += deltaAppend     (*other, task);
+        changes += deltaTags       (*other, task);
+        changes += deltaAttributes (*other, task);
+
+        if (changes)
+        {
+          tdb.modifyT (*other);
+
+          if (conf.get ("echo.command", true))
+            out << "Appended '"
+                << task.getDescription ()
+                << "' to task "
+                << other->getId ()
+                << std::endl;
+        }
+
+        ++count;
       }
-
-      // Apply or remove tags, if any.
-      std::vector <std::string> tags;
-      task.getTags (tags);
-      for (unsigned int i = 0; i < tags.size (); ++i)
-      {
-        if (tags[i][0] == '+')
-          original.addTag (tags[i].substr (1, std::string::npos));
-        else
-          original.addTag (tags[i]);
-
-        ++changes;
-      }
-
-      task.getRemoveTags (tags);
-      for (unsigned int i = 0; i < tags.size (); ++i)
-      {
-        if (tags[i][0] == '-')
-          original.removeTag (tags[i].substr (1, std::string::npos));
-        else
-          original.removeTag (tags[i]);
-
-        ++changes;
-      }
-
-      // Apply or remove attributes, if any.
-      std::map <std::string, std::string> attributes;
-      task.getAttributes (attributes);
-      foreach (i, attributes)
-      {
-        if (i->second == "")
-          original.removeAttribute (i->first);
-        else
-          original.setAttribute (i->first, i->second);
-
-        ++changes;
-      }
-
-      if (changes)
-      {
-        tdb.modifyT (original);
-
-        if (conf.get ("echo.command", true))
-          out << "Appended '"
-              << task.getDescription ()
-              << "' to task "
-              << original.getId ()
-              << std::endl;
-      }
-
-      ++count;
     }
   }
-
-  if (count == 0)
-    throw std::string ("Task not found.");
 
   if (conf.get ("echo.command", true))
     out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
@@ -1028,28 +854,22 @@ std::string handleAnnotate (TDB& tdb, T& task, Config& conf)
   std::stringstream out;
   std::vector <T> all;
   tdb.pendingT (all);
+  filterSequence (all, task);
 
-  std::vector <T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
+  foreach (t, all)
   {
-    if (it->getId () == task.getId ())
-    {
-      it->addAnnotation (task.getDescription ());
-      tdb.modifyT (*it);
+    t->addAnnotation (task.getDescription ());
+    tdb.modifyT (*t);
 
-      if (conf.get ("echo.command", true))
-        out << "Annotated "
-            << task.getId ()
-            << " with '"
-            << task.getDescription ()
-            << "'"
-            << std::endl;
-
-      return out.str ();
-    }
+    if (conf.get ("echo.command", true))
+      out << "Annotated "
+          << t->getId ()
+          << " with '"
+          << t->getDescription ()
+          << "'"
+          << std::endl;
   }
 
-  throw std::string ("Task not found.");
   return out.str ();
 }
 
@@ -1062,6 +882,159 @@ T findT (int id, const std::vector <T>& all)
       return *it;
 
   return T ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int deltaAppend (T& task, T& delta)
+{
+  if (delta.getDescription () != "")
+  {
+    task.setDescription (
+      task.getDescription () +
+      " " +
+      delta.getDescription ());
+
+    return 1;
+  }
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int deltaDescription (T& task, T& delta)
+{
+  if (delta.getDescription () != "")
+  {
+    task.setDescription (delta.getDescription ());
+    return 1;
+  }
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int deltaTags (T& task, T& delta)
+{
+  int changes = 0;
+
+  // Apply or remove tags, if any.
+  std::vector <std::string> tags;
+  delta.getTags (tags);
+  for (unsigned int i = 0; i < tags.size (); ++i)
+  {
+    if (tags[i][0] == '+')
+      task.addTag (tags[i].substr (1, std::string::npos));
+    else
+      task.addTag (tags[i]);
+
+    ++changes;
+  }
+
+  delta.getRemoveTags (tags);
+  for (unsigned int i = 0; i < tags.size (); ++i)
+  {
+    if (tags[i][0] == '-')
+      task.removeTag (tags[i].substr (1, std::string::npos));
+    else
+      task.removeTag (tags[i]);
+
+    ++changes;
+  }
+
+  return changes;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int deltaAttributes (T& task, T& delta)
+{
+  int changes = 0;
+
+  std::map <std::string, std::string> attributes;
+  delta.getAttributes (attributes);
+  foreach (i, attributes)
+  {
+    if (i->second == "")
+      task.removeAttribute (i->first);
+    else
+      task.setAttribute (i->first, i->second);
+
+    ++changes;
+  }
+
+  return changes;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int deltaSubstitutions (T& task, T& delta)
+{
+  int changes = 0;
+  std::string from;
+  std::string to;
+  bool global;
+  delta.getSubstitution (from, to, global);
+
+  if (from != "")
+  {
+    std::string description = task.getDescription ();
+    size_t pattern;
+
+    if (global)
+    {
+      // Perform all subs on description.
+      while ((pattern = description.find (from)) != std::string::npos)
+      {
+        description.replace (pattern, from.length (), to);
+        ++changes;
+      }
+
+      task.setDescription (description);
+
+      // Perform all subs on annotations.
+      std::map <time_t, std::string> annotations;
+      task.getAnnotations (annotations);
+      std::map <time_t, std::string>::iterator it;
+      for (it = annotations.begin (); it != annotations.end (); ++it)
+      {
+        while ((pattern = it->second.find (from)) != std::string::npos)
+        {
+          it->second.replace (pattern, from.length (), to);
+          ++changes;
+        }
+      }
+
+      task.setAnnotations (annotations);
+    }
+    else
+    {
+      // Perform first description substitution.
+      if ((pattern = description.find (from)) != std::string::npos)
+      {
+        description.replace (pattern, from.length (), to);
+        task.setDescription (description);
+        ++changes;
+      }
+      // Failing that, perform the first annotation substitution.
+      else
+      {
+        std::map <time_t, std::string> annotations;
+        task.getAnnotations (annotations);
+
+        std::map <time_t, std::string>::iterator it;
+        for (it = annotations.begin (); it != annotations.end (); ++it)
+        {
+          if ((pattern = it->second.find (from)) != std::string::npos)
+          {
+            it->second.replace (pattern, from.length (), to);
+            ++changes;
+            break;
+          }
+        }
+
+        task.setAnnotations (annotations);
+      }
+    }
+  }
+  return changes;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

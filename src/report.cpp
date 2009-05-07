@@ -47,6 +47,53 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+void filterSequence (std::vector<T>& all, T& task)
+{
+  std::vector <int> sequence = task.getAllIds ();
+
+  std::vector <T> filtered;
+  std::vector <T>::iterator t;
+  for (t = all.begin (); t != all.end (); ++t)
+  {
+    std::vector <int>::iterator s;
+    for (s = sequence.begin (); s != sequence.end (); ++s)
+      if (t->getId () == *s)
+        filtered.push_back (*t);
+  }
+
+  if (sequence.size () != filtered.size ())
+  {
+    std::vector <int> filteredSequence;
+    std::vector <T>::iterator fs;
+    for (fs = filtered.begin (); fs != filtered.end (); ++fs)
+      filteredSequence.push_back (fs->getId ());
+
+    std::vector <int> left;
+    std::vector <int> right;
+    listDiff (filteredSequence, sequence, left, right);
+    if (left.size ())
+      throw std::string ("Sequence filtering error - please report this error");
+
+    if (right.size ())
+    {
+      std::stringstream out;
+      out << "Task";
+
+      if (right.size () > 1) out << "s";
+
+      std::vector <int>::iterator s;
+      for (s = right.begin (); s != right.end (); ++s)
+        out << " " << *s;
+
+      out << " not found";
+      throw out.str ();
+    }
+  }
+
+  all = filtered;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void filter (std::vector<T>& all, T& task)
 {
   std::vector <T> filtered;
@@ -1054,6 +1101,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
       if (task.getStatus () == T::deleted)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
 
         if (deletedGroup.find (epoch) != deletedGroup.end ())
           deletedGroup[epoch] = deletedGroup[epoch] + 1;
@@ -1063,6 +1111,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
       else if (task.getStatus () == T::completed)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
+        groups[epoch] = 0;
 
         if (completedGroup.find (epoch) != completedGroup.end ())
           completedGroup[epoch] = completedGroup[epoch] + 1;

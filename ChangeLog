@@ -8,6 +8,10 @@
    Charles Yun).
  + Now writes a sample "defaultwidth" configuration variable to the default
    .taskrc file (thanks to T. Charles Yun).
+ + Task allows commands that require an ID to now be given a sequence, which
+   is a set of IDs.  This allows commands like "task delete 1 2 5-10,12".
+ + Fixed bug in the ghistory report, which caused it to only show a new
+   month if a task was added during that month.
 
 ------ old releases ------------------------------
 
