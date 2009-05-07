@@ -90,8 +90,14 @@ std::string handleUndo (TDB&, T&, Config&);
 std::string handleColor (Config&);
 std::string handleAnnotate (TDB&, T&, Config&);
 T findT (int, const std::vector <T>&);
+int deltaAppend (T&, T&);
+int deltaDescription (T&, T&);
+int deltaTags (T&, T&);
+int deltaAttributes (T&, T&);
+int deltaSubstitutions (T&, T&);
 
 // report.cpp
+void filterSequence (std::vector<T>&, T&);
 void filter (std::vector<T>&, T&);
 std::string handleInfo (TDB&, T&, Config&);
 std::string handleCompleted (TDB&, T&, Config&);
@@ -150,5 +156,46 @@ void autoColorize (T&, Text::color&, Text::color&, Config&);
 
 // import.cpp
 std::string handleImport (TDB&, T&, Config&);
+
+// list template
+///////////////////////////////////////////////////////////////////////////////
+template <class T> void listDiff (
+  const T& left, const T& right, T& leftOnly, T& rightOnly)
+{
+  leftOnly.clear ();
+  rightOnly.clear ();
+
+  for (unsigned int l = 0; l < left.size (); ++l)
+  {
+    bool found = false;
+    for (unsigned int r = 0; r < right.size (); ++r)
+    {
+      if (left[l] == right[r])
+      {
+        found = true;
+        break;
+      }
+    }
+
+    if (!found)
+      leftOnly.push_back (left[l]);
+  }
+
+  for (unsigned int r = 0; r < right.size (); ++r)
+  {
+    bool found = false;
+    for (unsigned int l = 0; l < left.size (); ++l)
+    {
+      if (left[l] == right[r])
+      {
+        found = true;
+        break;
+      }
+    }
+
+    if (!found)
+      rightOnly.push_back (right[r]);
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
