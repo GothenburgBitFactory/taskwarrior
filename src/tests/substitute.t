@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 # Create the rc file.
 if (open my $fh, '>', 'subst.rc')
@@ -57,6 +57,16 @@ like ($output, qr/BAR bar bar/, 'substitution in annotation');
 qx{../task rc:subst.rc 1 /bar/BAR/g};
 $output = qx{../task rc:subst.rc info 1};
 like ($output, qr/BAR BAR BAR/, 'global substitution in annotation');
+
+qx{../task rc:subst.rc 1 /FOO/aaa/};
+qx{../task rc:subst.rc 1 /FOO/bbb/};
+qx{../task rc:subst.rc 1 /FOO/ccc/};
+$output = qx{../task rc:subst.rc info 1};
+like ($output, qr/aaa bbb ccc/, 'individual successive substitution in description');
+
+qx{../task rc:subst.rc 1 /bbb//};
+$output = qx{../task rc:subst.rc info 1};
+like ($output, qr/aaa  ccc/, 'word deletion in description');
 
 # Cleanup.
 unlink 'pending.data';
