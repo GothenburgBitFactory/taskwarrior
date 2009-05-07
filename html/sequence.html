@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Task Shadow Files</title>
+    <title>Task Usage</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="task.css" type="text/css" />
   </head>
@@ -31,46 +31,72 @@
               <br />
               <br />
               <br />
-              <h2 class="title">Task Shadow Files</h2>
+              <h1 class="title">ID Sequences</h1>
               <div class="content">
                 <p>
-                  A shadow file is a text file containing a copy of a task
-                  report.  It is automatically maintained by task whenever
-                  something changes in the task database.
+                  Some task commands require an ID to be specified.  For example:
+                </p>
+
+                <pre><code>% task 3 done</code></pre>
+
+                <p>
+                  This marks a single task as done.  But if you wanted to mark
+                  several tasks as done, you could use:
+                </p>
+
+                <pre><code>% task 3,4,5 done</code></pre>
+
+                <p>
+                  Which would mark tasks 3, 4 and 5 as all done.  In this example,
+                  the three IDs are consecutive, which means you could also have
+                  entered:
+                </p>
+
+                <pre><code>% task 3-5 done</code></pre>
+
+                <p>
+                  Or in a more complex example:
+                </p>
+
+                <pre><code>% task 1,3-5,12 23-25 done</code></pre>
+
+                <p>
+                  This would mark tasks 1, 3, 4, 5, 12, 23, 24 and 25 as done.
+                  Note that this example uses two sequences, separated by a space.
                 </p>
 
                 <p>
-                  This means there is always a current version of the task
-                  report kept in a text file.  Products such as
-                  <a href="http://www.samurize.com">Samurize</a>,
-                  <a href="http://www.mulle-kybernetik.com/software/MkConsole/">MkConsole</a>,
-                  or
-                  <a href="http://projects.tynsoe.org/en/geektool/">GeekTool</a>
-                  can display this file on the computer desktop, so that it
-                  is readily visible.
+                  You must be careful though.  Task tries very carefully to do
+                  the right thing when it interprets the command line, but must
+                  still impose some rules so that it can unambiguously read the
+                  command.  If you use one or more sequences, then they must
+                  appear on the command line adjacent to each other.  If they
+                  are separated by something else, then task assumes the second
+                  and subsequent set is not a sequence.  Here is an example
+                  of this:
                 </p>
+
+                <pre><code>% task 3 Order part number 4-123</code></pre>
 
                 <p>
-                  To use a shadow file, edit your .taskrc configuration file,
-                  and add three entries as shown:
+                  Clearly the 4-123 is a part number, and not a sequence.
+                  Task is being asked to modify the description of task 3 to be
+                  "Order part number 4-123".  Note that the ID is separated
+                  from the part number by something other than a sequence.
+                  Here is a bad example that task will misinterpret:
                 </p>
 
-                <pre><code>shadow.file=/path/to/file
-shadow.command=list pri:H
-shadow.notify=on</code></pre>
-
-                <p>
-                  In this example the shadow file contains a report equivalent
-                  to running "task list pri:H".  Note that the third entry
-                  causes a message to be displayed whenever task updates the
-                  shadow file.  It is optional.
-                </p>
+                <pre><code>% task 3 4-123 is back-ordered, try again next week</code></pre>
 
                 <p>
-                  You can use any task command that generates a report, and of
-                  course, you can specify any file name, provided the directory
-                  it resides in already exists.
+                  The intent here is that task 3 have its description modified to be
+                  "40123 is back-ordered, try again next week", but will be
+                  misinterpreted as tasks 3, 4, 5, 6 ... 123 will all be modified
+                  to have the description "is back-ordered, try again next week".
+                  The solution is to quote the whole description:
                 </p>
+
+                <pre><code>% task 3 "4-123 is back-ordered, try again next week"</code></pre>
               </div>
 
               <br />
