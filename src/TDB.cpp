@@ -280,6 +280,7 @@ bool TDB::completeT (const T& t)
   for (it = all.begin (); it != all.end (); ++it)
     if (task.getId () == it->getId ())
     {
+      *it = t;
       it->setStatus (T::completed);
 
       char endTime[16];

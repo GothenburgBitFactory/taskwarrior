@@ -570,31 +570,56 @@ std::string handleStop (TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleDone (TDB& tdb, T& task, Config& conf)
 {
+  int count = 0;
   std::stringstream out;
-
   std::vector <T> all;
   tdb.allPendingT (all);
+
   std::vector <T> filtered = all;
   filterSequence (filtered, task);
-
-  foreach (t, filtered)
+  foreach (seq, filtered)
   {
-    t->setStatus (T::completed);
-    if (!tdb.completeT (*t))
-      throw std::string ("Could not mark task as completed.");
+    if (seq->getStatus () == T::pending)
+    {
+      // Apply deltas.
+      deltaDescription   (*seq, task);
+      deltaTags          (*seq, task);
+      deltaAttributes    (*seq, task);
+      deltaSubstitutions (*seq, task);
 
-    // Now update mask in parent.
-    if (conf.get ("echo.command", true))
-      out << "Completed "
-          << t->getId ()
+      seq->setStatus (T::completed);
+      if (!tdb.completeT (*seq))
+        throw std::string ("Could not mark task as completed.");
+
+      if (conf.get ("echo.command", true))
+        out << "Completed "
+            << seq->getId ()
+            << " '"
+            << seq->getDescription ()
+            << "'"
+            << std::endl;
+
+      updateRecurrenceMask (tdb, all, *seq);
+      nag (tdb, *seq, conf);
+
+      ++count;
+    }
+    else
+      out << "Task "
+          << seq->getId ()
           << " '"
-          << t->getDescription ()
-          << "'"
+          << seq->getDescription ()
+          << "' is not pending"
           << std::endl;
-
-    updateRecurrenceMask (tdb, all, *t);
-    nag (tdb, task, conf);
   }
+
+  if (conf.get ("echo.command", true))
+    out << "Marked "
+        << count
+        << " task"
+        << (count == 1 ? "" : "s")
+        << " as done"
+        << std::endl;
 
   return out.str ();
 }
