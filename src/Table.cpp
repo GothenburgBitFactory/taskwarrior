@@ -803,6 +803,27 @@ void Table::optimize (std::string& output) const
   Much better.
 */
 
+    char* patterns[] =
+    {
+      "        \n",
+      "    \n",
+      "  \n",
+      " \n",
+    };
+
+    std::string::size_type trailing;
+
+    for (int i = 0; i < 4; i++)
+    {
+      do
+      {
+        trailing = output.find (patterns[i]);
+        if (trailing != std::string::npos)
+          output.replace (trailing, strlen (patterns[i]), "\n");
+      }
+      while (trailing != std::string::npos);
+    }
+
 //  std::cout << int ((100 * (start - output.length ()) / start))
 //            << "%" << std::endl;
 }
@@ -1103,6 +1124,7 @@ const std::string Table::render (int maximum /* = 0 */)
     }
   }
 
+  optimize (output);
   return output;
 }
 

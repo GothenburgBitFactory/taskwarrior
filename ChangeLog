@@ -17,6 +17,9 @@
  + The "append", and "done" commands now allow modifications to be applied
    to the task(s) (thanks to David J Patrick).
  + Improved word wrapping in various output.
+ + Fixed bug that added an extra line between header and graph in the
+   ghistory report.
+
 
 ------ old releases ------------------------------
 
