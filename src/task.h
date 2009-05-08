@@ -89,6 +89,7 @@ std::string handleStop (TDB&, T&, Config&);
 std::string handleUndo (TDB&, T&, Config&);
 std::string handleColor (Config&);
 std::string handleAnnotate (TDB&, T&, Config&);
+std::string handleDuplicate (TDB&, T&, Config&);
 T findT (int, const std::vector <T>&);
 int deltaAppend (T&, T&);
 int deltaDescription (T&, T&);

@@ -1,3 +1,21 @@
+Adding New Command Checklist
+----------------------------
+
+- Create new handler in command.cpp or report.cpp.
+- Add prototype to task.h.
+- Add call to appropriate section in task.cpp.
+- Add usage info in task.cpp.
+- Add command name to list in parse.cpp.
+- Add unit tests in src/tests.
+- Add new configuration details to html/config.html.
+- Add command details to html/advanced.html.
+- Add description to ChangeLog, with attribution if the idea
+  came from a single user, but not if it came from multiple
+  users.
+- Add description to html/task.html.
+
+
+
 Release Checklist
 -----------------
 

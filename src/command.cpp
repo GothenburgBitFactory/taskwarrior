@@ -727,7 +727,7 @@ std::string handleAppend (TDB& tdb, T& task, Config& conf)
       if (other->getId ()               == seq->getId ()                   || // Self
           (seq->getAttribute ("parent") != "" &&
            seq->getAttribute ("parent") == other->getAttribute ("parent")) || // Sibling
-          other->getUUID ()            == seq->getAttribute ("parent"))       // Parent
+          other->getUUID ()             == seq->getAttribute ("parent"))      // Parent
       {
         // A non-zero value forces a file write.
         int changes = 0;
@@ -755,7 +755,62 @@ std::string handleAppend (TDB& tdb, T& task, Config& conf)
   }
 
   if (conf.get ("echo.command", true))
-    out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+    out << "Appended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string handleDuplicate (TDB& tdb, T& task, Config& conf)
+{
+  int count = 0;
+  std::stringstream out;
+  std::vector <T> all;
+  tdb.allPendingT (all);
+
+  std::vector <T> filtered = all;
+  filterSequence (filtered, task);
+  foreach (seq, filtered)
+  {
+    if (seq->getStatus () != T::recurring && seq->getAttribute ("parent") == "")
+    {
+      T dup (*seq);
+      dup.setUUID (uuid ());  // Needs a new UUID.
+
+      // Apply deltas.
+      deltaDescription   (dup, task);
+      deltaTags          (dup, task);
+      deltaAttributes    (dup, task);
+      deltaSubstitutions (dup, task);
+
+      // A New task needs a new entry time.
+      char entryTime[16];
+      sprintf (entryTime, "%u", (unsigned int) time (NULL));
+      dup.setAttribute ("entry", entryTime);
+
+      if (!tdb.addT (dup))
+        throw std::string ("Could not create new task.");
+
+      if (conf.get ("echo.command", true))
+        out << "Duplicated "
+            << seq->getId ()
+            << " '"
+            << seq->getDescription ()
+            << "'"
+            << std::endl;
+      ++count;
+    }
+    else
+      out << "Task "
+          << seq->getId ()
+          << " '"
+          << seq->getDescription ()
+          << "' is a recurring task, and cannot be duplicated."
+          << std::endl;
+  }
+
+  if (conf.get ("echo.command", true))
+    out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   return out.str ();
 }

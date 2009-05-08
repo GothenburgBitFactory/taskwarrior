@@ -109,6 +109,10 @@ static std::string shortUsage (Config& conf)
   table.addCell (row, 2, "Performs all substitutions on the task description, for fixing mistakes");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task duplicate ID [tags] [attrs] [desc...]");
+  table.addCell (row, 2, "Duplicates the specified task, and allows modifications");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task delete ID");
   table.addCell (row, 2, "Deletes the specified task");
 
@@ -861,17 +865,18 @@ std::string runTaskCommand (
   else if (command == "help")               { out = longUsage            (           conf); }
 
   // Commands that cause updates.
-  else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify   (tdb, task, conf); }
-  else if (command == "add")                { cmdMod = true; out = handleAdd      (tdb, task, conf); }
-  else if (command == "append")             { cmdMod = true; out = handleAppend   (tdb, task, conf); }
-  else if (command == "annotate")           { cmdMod = true; out = handleAnnotate (tdb, task, conf); }
-  else if (command == "done")               { cmdMod = true; out = handleDone     (tdb, task, conf); }
-  else if (command == "undelete")           { cmdMod = true; out = handleUndelete (tdb, task, conf); }
-  else if (command == "delete")             { cmdMod = true; out = handleDelete   (tdb, task, conf); }
-  else if (command == "start")              { cmdMod = true; out = handleStart    (tdb, task, conf); }
-  else if (command == "stop")               { cmdMod = true; out = handleStop     (tdb, task, conf); }
-  else if (command == "undo")               { cmdMod = true; out = handleUndo     (tdb, task, conf); }
-  else if (command == "import")             { cmdMod = true; out = handleImport   (tdb, task, conf); }
+  else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify    (tdb, task, conf); }
+  else if (command == "add")                { cmdMod = true; out = handleAdd       (tdb, task, conf); }
+  else if (command == "append")             { cmdMod = true; out = handleAppend    (tdb, task, conf); }
+  else if (command == "annotate")           { cmdMod = true; out = handleAnnotate  (tdb, task, conf); }
+  else if (command == "done")               { cmdMod = true; out = handleDone      (tdb, task, conf); }
+  else if (command == "undelete")           { cmdMod = true; out = handleUndelete  (tdb, task, conf); }
+  else if (command == "delete")             { cmdMod = true; out = handleDelete    (tdb, task, conf); }
+  else if (command == "start")              { cmdMod = true; out = handleStart     (tdb, task, conf); }
+  else if (command == "stop")               { cmdMod = true; out = handleStop      (tdb, task, conf); }
+  else if (command == "undo")               { cmdMod = true; out = handleUndo      (tdb, task, conf); }
+  else if (command == "import")             { cmdMod = true; out = handleImport    (tdb, task, conf); }
+  else if (command == "duplicate")          { cmdMod = true; out = handleDuplicate (tdb, task, conf); }
 
   // Command that display IDs and therefore need TDB::gc first.
   else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (tdb, task, conf); }
