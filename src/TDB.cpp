@@ -245,55 +245,6 @@ bool TDB::allCompletedT (std::vector <T>& all) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::deleteT (const T& t)
-{
-  T task (t);
-
-  std::vector <T> all;
-  allPendingT (all);
-
-  std::vector <T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
-    if (task.getId () == it->getId ())
-    {
-      it->setStatus (T::deleted);
-
-      char endTime[16];
-      sprintf (endTime, "%u", (unsigned int) time (NULL));
-      it->setAttribute ("end", endTime);
-
-      return overwritePending (all);
-    }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::completeT (const T& t)
-{
-  T task (t);
-
-  std::vector <T> all;
-  allPendingT (all);
-
-  std::vector <T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
-    if (task.getId () == it->getId ())
-    {
-      *it = t;
-      it->setStatus (T::completed);
-
-      char endTime[16];
-      sprintf (endTime, "%u", (unsigned int) time (NULL));
-      it->setAttribute ("end", endTime);
-
-      return overwritePending (all);
-    }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool TDB::addT (const T& t)
 {
   T task (t);

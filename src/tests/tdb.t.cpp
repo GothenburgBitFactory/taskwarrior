@@ -77,7 +77,8 @@ int main (int argc, char** argv)
     // TODO Modify task.
 
     // Complete task.
-    t.ok (tdb.completeT (t1), "TDB::completeT t1");;
+    t1.setStatus (T::completed);
+    t.ok (tdb.modifyT (t1), "TDB::modifyT (completed) t1");;
     t.ok (tdb.pendingT (all), "TDB::pendingT read db");
     t.is ((int) all.size (), 0, "empty db");
     t.ok (tdb.allPendingT (all), "TDB::allPendingT read db");
@@ -105,7 +106,8 @@ int main (int argc, char** argv)
     t.ok (tdb.addT (t2), "TDB::addT t2");
 
     // Delete task.
-    t.ok (tdb.deleteT (t2), "TDB::deleteT t2");
+    t2.setStatus (T::deleted);
+    t.ok (tdb.modifyT (t2), "TDB::modifyT (deleted) t2");
 
     // GC the files.
     t.is (tdb.gc (), 1, "1 <- TDB::gc");

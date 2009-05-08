@@ -43,11 +43,8 @@ public:
   bool allPendingT      (std::vector <T>&);
   bool completedT       (std::vector <T>&) const;
   bool allCompletedT    (std::vector <T>&) const;
-  bool deleteT          (const T&);
-  bool completeT        (const T&);
   bool addT             (const T&);
   bool modifyT          (const T&);
-  bool logRead          (std::vector <std::string>&) const;
   int gc                ();
   int nextId            ();
 

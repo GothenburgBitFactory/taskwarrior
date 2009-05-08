@@ -433,6 +433,10 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
   tdb.allPendingT (all);
   filterSequence (all, task);
 
+  // Determine the end date.
+  char endTime[16];
+  sprintf (endTime, "%u", (unsigned int) time (NULL));
+
   foreach (t, all)
   {
     std::stringstream question;
@@ -458,7 +462,10 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
             if (sibling->getAttribute ("parent") == parent ||
                 sibling->getUUID ()              == parent)
             {
-              tdb.deleteT (*sibling);
+              sibling->setStatus (T::deleted);
+              sibling->setAttribute ("end", endTime);
+              tdb.modifyT (*sibling);
+
               if (conf.get ("echo.command", true))
                 out << "Deleting recurring task "
                     << sibling->getId ()
@@ -474,7 +481,10 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
           // Update mask in parent.
           t->setStatus (T::deleted);
           updateRecurrenceMask (tdb, all, *t);
-          tdb.deleteT (*t);
+
+          t->setAttribute ("end", endTime);
+          tdb.modifyT (*t);
+
           out << "Deleting recurring task "
               << t->getId ()
               << " '"
@@ -485,7 +495,10 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
       }
       else
       {
-        tdb.deleteT (*t);
+        t->setStatus (T::deleted);
+        t->setAttribute ("end", endTime);
+        tdb.modifyT (*t);
+
         if (conf.get ("echo.command", true))
           out << "Deleting task "
               << t->getId ()
@@ -587,8 +600,15 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
       deltaAttributes    (*seq, task);
       deltaSubstitutions (*seq, task);
 
+      // Add an end date.
+      char entryTime[16];
+      sprintf (entryTime, "%u", (unsigned int) time (NULL));
+      task.setAttribute ("end", entryTime);
+
+      // Change status.
       seq->setStatus (T::completed);
-      if (!tdb.completeT (*seq))
+
+      if (!tdb.modifyT (*seq))
         throw std::string ("Could not mark task as completed.");
 
       if (conf.get ("echo.command", true))

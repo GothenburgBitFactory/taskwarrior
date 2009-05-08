@@ -470,7 +470,13 @@ void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
                   << " ("
                   << trim (t->getDescription ())
                   << ") is past its 'until' date, and has be deleted" << std::endl;
-        tdb.deleteT (*t);
+
+        // Determine the end date.
+        char endTime[16];
+        sprintf (endTime, "%u", (unsigned int) time (NULL));
+        t->setAttribute ("end", endTime);
+        t->setStatus (T::deleted);
+        tdb.modifyT (*t);
         continue;
       }
 
