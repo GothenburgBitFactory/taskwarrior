@@ -47,12 +47,12 @@ my $setup = "../task rc:nag.rc add due:yesterday one;"
           . "../task rc:nag.rc add six;";
 qx{$setup};
 
-like (qx{../task rc:nag.rc do 6}, qr/NAG/, 'do pri: -> nag');
-like (qx{../task rc:nag.rc do 5}, qr/NAG/, 'do pri:L -> nag');
-like (qx{../task rc:nag.rc do 4}, qr/NAG/, 'do pri:M-> nag');
-like (qx{../task rc:nag.rc do 3}, qr/NAG/, 'do pri:H-> nag');
-like (qx{../task rc:nag.rc do 2}, qr/NAG/, 'do due:tomorrow -> nag');
-ok (qx{../task rc:nag.rc do 1} !~ qr/NAG/, 'do due:yesterday -> no nag');
+like   (qx{../task rc:nag.rc do 6}, qr/NAG/, 'do pri: -> nag');
+like   (qx{../task rc:nag.rc do 5}, qr/NAG/, 'do pri:L -> nag');
+like   (qx{../task rc:nag.rc do 4}, qr/NAG/, 'do pri:M-> nag');
+like   (qx{../task rc:nag.rc do 3}, qr/NAG/, 'do pri:H-> nag');
+like   (qx{../task rc:nag.rc do 2}, qr/NAG/, 'do due:tomorrow -> nag');
+unlike (qx{../task rc:nag.rc do 1}, qr/NAG/, 'do due:yesterday -> no nag');
 
 # Cleanup.
 unlink 'pending.data';
