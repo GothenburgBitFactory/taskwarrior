@@ -19,7 +19,7 @@
  + Improved word wrapping in various output.
  + Fixed bug that added an extra line between header and graph in the
    ghistory report.
-
+ + Added simple 'taskprogram' mailing list subscribe form to the web site.
 
 ------ old releases ------------------------------
 
