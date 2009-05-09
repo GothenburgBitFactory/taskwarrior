@@ -116,6 +116,7 @@ static const char* attributes[] =
   "",
 };
 
+// Alphabetical please.
 static const char* commands[] =
 {
   "active",
@@ -142,6 +143,7 @@ static const char* commands[] =
   "stop",
   "summary",
   "tags",
+  "timesheet",
   "undelete",
   "undo",
   "version",
