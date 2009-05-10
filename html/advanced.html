@@ -426,6 +426,22 @@ ID Project Pri Description
                   command.
                 </p>
 
+                <strong>% task &lt;id&gt; edit</strong>
+                <p>
+                  This command allows you to use your text editor to edit all aspects
+                  of a task.  The specified task will be written to a file, and your
+                  text editor will be invoked.  If you modify the task in the text
+                  editor, task will update accordingly.
+                </p>
+                <p>
+                  Task will first check to see if you have defined a text editor
+                  in the TASK_EDITOR environment variable.  If not, task will
+                  check to see if you defined a text editor in the VISUAL
+                  environment variable.  If not task will check to see if you
+                  defined a text editor in the EDITOR environment variable.
+                  If all those fail, task launches vi.
+                </p>
+
                 <strong>% task &lt;id&gt; fg:... bg:...</strong>
                 <p>
                   Not strictly a command, the setting of the fg and bg (foreground

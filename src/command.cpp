@@ -861,6 +861,18 @@ std::string handleDuplicate (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+static const char* leftDelim = "<<";
+static const char* rightDelim = ">>";
+static std::string findValue (const std::string& text, const std::string& name)
+{
+  // Look for /^\s+name:\s+<<(.*)>>/
+  // Extract
+  // Trim
+  // Join
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Introducing the Silver Bullet.  This feature is the catch-all fixative for
 // various other ills.  This is like opening up the hood and going in with a
 // wrench.  To be used sparingly.
@@ -878,47 +890,45 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
     if (access (dataLocation.c_str (), X_OK))
       throw std::string ("Your data.location directory is not writable.");
 
-    // TODO Create a temp file name in data.location.
+    // Create a temp file name in data.location.
     std::stringstream pattern;
-    pattern << dataLocation
-            << "/task."
-            << seq->getId ()
-            << ".XXXXXX";
-    std::cout << "# pattern=" << pattern << std::endl;
+    pattern << dataLocation << "/task." << seq->getId () << ".XXXXXX";
     char cpattern [PATH_MAX];
     strcpy (cpattern, pattern.str ().c_str ());
-
     char* file = mktemp (cpattern);
-    std::cout << "# file=" << file << std::endl;
 
     // TODO Format the contents, T -> text.
     std::stringstream before;
-    before << "# Edit only the items within the chevrons << >>.  "
-           << "All other edits will be ignored."                          << std::endl
-           << "ID:            " << seq->getId ()                          << std::endl
-           << "Project:     <<" << seq->getAttribute ("project")  << ">>" << std::endl
-           << "Priority:    <<" << seq->getAttribute ("priority") << ">>" << std::endl
-           << "Description: <<" << seq->getDescription ()         << ">>" << std::endl;
+    before << "# Edit only the items within the marks "
+           << leftDelim << " " << rightDelim << "."
+           << "All other edits will be ignored."                                           << std::endl
+           << "ID:          "              << seq->getId ()                                << std::endl
+           << "Project:     " << leftDelim << seq->getAttribute ("project")  << rightDelim << std::endl
+           << "Priority:    " << leftDelim << seq->getAttribute ("priority") << rightDelim << std::endl
+           << "Description: " << leftDelim << seq->getDescription ()         << rightDelim << std::endl;
 
     // Write to file.
     spit (file, before.str ());
 
-    // TODO Determine correct editor: $EDITOR > $VISUAL > vi
-    std::string editor = "/usr/bin/vi";
+    // Determine correct editor: $TASK_EDITOR > $VISUAL > $EDITOR > vi
+    const char*  editor = getenv ("TASK_EDITOR");
+    if (!editor) editor = getenv ("VISUAL");
+    if (!editor) editor = getenv ("EDITOR");
+    if (!editor) editor = "vi";
 
-    // system ("$EDITOR $file");
-    std::string command = editor + " " + file;
+    // Launch the editor.
+    std::string command = editor;
+    command += " ";
+    command += file;
     system (command.c_str ());
 
     // Slurp file.
-    std::vector <std::string> after;
+    std::string after;
     slurp (file, after, true);
 
-    // TODO Parse file, text -> T.
-    foreach (line, after)
-    {
-      // TODO Handle each type of line.
-    }
+    seq->setAttribute   ("Project",  findValue (after, "Project"));
+    seq->setAttribute   ("Priority", findValue (after, "Priority"));
+    seq->setDescription (            findValue (after, "Description"));
 
     // Modify task.
     tdb.modifyT (*seq);

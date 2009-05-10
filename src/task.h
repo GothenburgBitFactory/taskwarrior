@@ -152,6 +152,7 @@ std::string expandPath (const std::string&);
 #endif
 
 bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
+bool slurp (const std::string&, std::string&, bool trimLines = false);
 void spit (const std::string&, const std::string&);
 
 // rules.cpp
