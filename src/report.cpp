@@ -1850,6 +1850,17 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
 
+  // Determine window size, and set table accordingly.
+  int width = conf.get ("defaultwidth", (int) 80);
+#ifdef HAVE_LIBNCURSES
+  if (conf.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.allT (tasks);
@@ -1908,44 +1919,126 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
       allProjects[project] = 0;
   }
 
-  out << "Pending               " << pendingT   << std::endl
-      << "Recurring             " << recurringT << std::endl
-      << "Completed             " << completedT << std::endl
-      << "Deleted               " << deletedT   << std::endl
-      << "Total                 " << totalT     << std::endl;
+  // Create a table for output.
+  Table table;
+  table.setTableWidth (width);
+  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.addColumn ("Category");
+  table.addColumn ("Data");
 
-  out << "Annotations           " << annotationsT << std::endl;
-  out << "Unique tags           " << allTags.size () << std::endl;
-  out << "Projects              " << allProjects.size () << std::endl;
+  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+  }
+  else
+    table.setTableDashedUnderline ();
+
+  table.setColumnWidth (0, Table::minimum);
+  table.setColumnWidth (1, Table::flexible);
+
+  table.setColumnJustification (0, Table::left);
+  table.setColumnJustification (1, Table::left);
+
+  int row = table.addRow ();
+  table.addCell (row, 0, "Pending");
+  table.addCell (row, 1, pendingT);
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Recurring");
+  table.addCell (row, 1, recurringT);
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Completed");
+  table.addCell (row, 1, completedT);
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Deleted");
+  table.addCell (row, 1, deletedT);
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Total");
+  table.addCell (row, 1, totalT);
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Annotations");
+  table.addCell (row, 1, annotationsT);
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Unique tags");
+  table.addCell (row, 1, (int)allTags.size ());
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Projects");
+  table.addCell (row, 1, (int)allProjects.size ());
 
   if (totalT)
-    out << "Tasks tagged          " << std::setprecision (3) << (100.0 * taggedT / totalT) << "%" << std::endl;
+  {
+    row = table.addRow ();
+    table.addCell (row, 0, "Tasks tagged");
+
+    std::stringstream value;
+    value << std::setprecision (3) << (100.0 * taggedT / totalT) << "%";
+    table.addCell (row, 1, value.str ());
+  }
 
   if (tasks.size ())
   {
     Date e (earliest);
-    out << "Oldest task           " << e.toString (conf.get ("dateformat", "m/d/Y")) << std::endl;
+    row = table.addRow ();
+    table.addCell (row, 0, "Oldest task");
+    table.addCell (row, 1, e.toString (conf.get ("dateformat", "m/d/Y")));
+
     Date l (latest);
-    out << "Newest task           " << l.toString (conf.get ("dateformat", "m/d/Y")) << std::endl;
-    out << "Task used for         " << formatSeconds (latest - earliest) << std::endl;
+    row = table.addRow ();
+    table.addCell (row, 0, "Newest task");
+    table.addCell (row, 1, l.toString (conf.get ("dateformat", "m/d/Y")));
+
+    row = table.addRow ();
+    table.addCell (row, 0, "Task used for");
+    table.addCell (row, 1, formatSeconds (latest - earliest));
   }
 
   if (totalT)
-    out << "Task added every      " << formatSeconds ((latest - earliest) / totalT)     << std::endl;
+  {
+    row = table.addRow ();
+    table.addCell (row, 0, "Task added every");
+    table.addCell (row, 1, formatSeconds ((latest - earliest) / totalT));
+  }
 
   if (completedT)
-    out << "Task completed every  " << formatSeconds ((latest - earliest) / completedT) << std::endl;
+  {
+    row = table.addRow ();
+    table.addCell (row, 0, "Task completed every");
+    table.addCell (row, 1, formatSeconds ((latest - earliest) / completedT));
+  }
 
   if (deletedT)
-    out << "Task deleted every    " << formatSeconds ((latest - earliest) / deletedT)   << std::endl;
+  {
+    row = table.addRow ();
+    table.addCell (row, 0, "Task deleted every");
+    table.addCell (row, 1, formatSeconds ((latest - earliest) / deletedT));
+  }
 
   if (pendingT || completedT)
-    out << "Average time pending  "
-              << formatSeconds ((int) ((daysPending / (pendingT + completedT)) * 86400))
-              << std::endl;
+  {
+    row = table.addRow ();
+    table.addCell (row, 0, "Average time pending");
+    table.addCell (row, 1, formatSeconds ((int) ((daysPending / (pendingT + completedT)) * 86400)));
+  }
 
   if (totalT)
-    out << "Average desc length   " << (int) (descLength / totalT) << " characters" << std::endl;
+  {
+    row = table.addRow ();
+    table.addCell (row, 0, "Average desc length");
+    std::stringstream value;
+    value << (int) (descLength / totalT) << " characters";
+    table.addCell (row, 1, value.str ());
+  }
+
+  out << optionalBlankLine (conf)
+      << table.render ()
+      << optionalBlankLine (conf);
 
   return out.str ();
 }
