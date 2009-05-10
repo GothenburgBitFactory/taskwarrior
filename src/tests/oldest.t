@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 33;
+use Test::More tests => 55;
 
 # Create the rc file.
 if (open my $fh, '>', 'oldest.rc')
@@ -66,30 +66,56 @@ qx{../task rc:oldest.rc add ten; sleep 1};
 qx{../task rc:oldest.rc add eleven};
 
 $output = qx{../task rc:oldest.rc oldest};
-like ($output, qr/one/,      'oldest: one');
-like ($output, qr/two/,      'oldest: two');
-like ($output, qr/three/,    'oldest: three');
-like ($output, qr/four/,     'oldest: four');
-like ($output, qr/five/,     'oldest: five');
-like ($output, qr/six/,      'oldest: six');
-like ($output, qr/seven/,    'oldest: seven');
-like ($output, qr/eight/,    'oldest: eight');
-like ($output, qr/nine/,     'oldest: nine');
-like ($output, qr/ten/,      'oldest: ten');
+like   ($output, qr/one/,    'oldest: one');
+like   ($output, qr/two/,    'oldest: two');
+like   ($output, qr/three/,  'oldest: three');
+like   ($output, qr/four/,   'oldest: four');
+like   ($output, qr/five/,   'oldest: five');
+like   ($output, qr/six/,    'oldest: six');
+like   ($output, qr/seven/,  'oldest: seven');
+like   ($output, qr/eight/,  'oldest: eight');
+like   ($output, qr/nine/,   'oldest: nine');
+like   ($output, qr/ten/,    'oldest: ten');
+unlike ($output, qr/eleven/, 'no: eleven');
+
+$output = qx{../task rc:oldest.rc oldest 3};
+like   ($output, qr/one/,    'oldest: one');
+like   ($output, qr/two/,    'oldest: two');
+like   ($output, qr/three/,  'oldest: three');
+unlike ($output, qr/four/,   'no: four');
+unlike ($output, qr/five/,   'no: five');
+unlike ($output, qr/six/,    'no: six');
+unlike ($output, qr/seven/,  'no: seven');
+unlike ($output, qr/eight/,  'no: eight');
+unlike ($output, qr/nine/,   'no: nine');
+unlike ($output, qr/ten/,    'no: ten');
 unlike ($output, qr/eleven/, 'no: eleven');
 
 $output = qx{../task rc:oldest.rc newest};
-unlike ($output, qr/one/,  'no: one');
-like ($output, qr/two/,    'newest: two');
-like ($output, qr/three/,  'newest: three');
-like ($output, qr/four/,   'newest: four');
-like ($output, qr/five/,   'newest: five');
-like ($output, qr/six/,    'newest: six');
-like ($output, qr/seven/,  'newest: seven');
-like ($output, qr/eight/,  'newest: eight');
-like ($output, qr/nine/,   'newest: nine');
-like ($output, qr/ten/,    'newest: ten');
-like ($output, qr/eleven/, 'newest: eleven');
+unlike ($output, qr/one/,    'no: one');
+like   ($output, qr/two/,    'newest: two');
+like   ($output, qr/three/,  'newest: three');
+like   ($output, qr/four/,   'newest: four');
+like   ($output, qr/five/,   'newest: five');
+like   ($output, qr/six/,    'newest: six');
+like   ($output, qr/seven/,  'newest: seven');
+like   ($output, qr/eight/,  'newest: eight');
+like   ($output, qr/nine/,   'newest: nine');
+like   ($output, qr/ten/,    'newest: ten');
+like   ($output, qr/eleven/, 'newest: eleven');
+
+$output = qx{../task rc:oldest.rc newest 3};
+unlike ($output, qr/one/,    'no: one');
+unlike ($output, qr/two/,    'no: two');
+unlike ($output, qr/three/,  'no: three');
+unlike ($output, qr/four/,   'no: four');
+unlike ($output, qr/five/,   'no: five');
+unlike ($output, qr/six/,    'no: six');
+unlike ($output, qr/seven/,  'no: seven');
+unlike ($output, qr/eight/,  'no: eight');
+like   ($output, qr/nine/,   'newest: nine');
+like   ($output, qr/ten/,    'newest: ten');
+like   ($output, qr/eleven/, 'newest: eleven');
 
 # Cleanup.
 unlink 'pending.data';

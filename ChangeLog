@@ -20,6 +20,9 @@
  + Fixed bug that added an extra line between header and graph in the
    ghistory report.
  + Added simple 'taskprogram' mailing list subscribe form to the web site.
+ + For custom reports that define a "limit" to the number of rows of output
+   such as "oldest" and "newest", task allows an override value.  For
+   example "task oldest 5" will display the 5 oldest tasks.
 
 ------ old releases ------------------------------
 

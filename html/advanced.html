@@ -294,16 +294,24 @@ ID Project Pri Description
 12 Errand  L   Remember to deposit bonus check
 ...</code></pre>
 
-                <strong>% task oldest</strong>
+                <strong>% task oldest [limit]</strong>
                 <p>
-                  Lists the oldest tasks.  Shows 10 tasks by default, but can be
-                  set via the "oldest" configuration variable.
+                  Lists the oldest tasks.  The number of tasks shown is set by
+                  the configuration variable:
+                  <pre><code>report.oldest.limit=10</code></pre>
+                  This value can be overridden at run time by specifying the
+                  number of tasks on the command line:
+                  <pre><code>task oldest 5</code></pre>
                 </p>
 
-                <strong>% task newest</strong>
+                <strong>% task newest [limit]</strong>
                 <p>
-                  Lists the newest tasks.  Shows 10 tasks by default, but can be
-                  set via the "newest" configuration variable.
+                  Lists the newest tasks.  The number of tasks shown is set by
+                  the configuration variable:
+                  <pre><code>report.newest.limit=10</code></pre>
+                  This value can be overridden at run time by specifying the
+                  number of tasks on the command line:
+                  <pre><code>task newest 5</code></pre>
                 </p>
 
                 <strong>% task &lt;id&gt; /from/to/</strong>

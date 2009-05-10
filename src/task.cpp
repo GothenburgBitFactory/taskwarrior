@@ -133,7 +133,7 @@ static std::string shortUsage (Config& conf)
   table.addCell (row, 2, "Removes the 'start' time from a task");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task done ID");
+  table.addCell (row, 1, "task done ID [tags] [attrs] [desc...]");
   table.addCell (row, 2, "Marks the specified task as completed");
 
   row = table.addRow ();

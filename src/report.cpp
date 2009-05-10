@@ -2521,7 +2521,17 @@ std::string handleCustomReport (
     }
   }
 
+  // Limit the number of rows according to the report definition.
   int maximum = conf.get (std::string ("report.") + report + ".limit", (int)0);
+
+  // If the custom report has a defined limit, then allow an override, which
+  // will show up as a single ID sequence.
+  if (conf.get (std::string ("report.") + report + ".limit", (int)0) != 0)
+  {
+    std::vector <int> sequence = task.getAllIds ();
+    if (sequence.size () == 1)
+      maximum = sequence[0];
+  }
 
   std::stringstream out;
   if (table.rowCount ())
