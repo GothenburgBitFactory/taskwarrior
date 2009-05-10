@@ -861,6 +861,76 @@ std::string handleDuplicate (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Introducing the Silver Bullet.  This feature is the catch-all fixative for
+// various other ills.  This is like opening up the hood and going in with a
+// wrench.  To be used sparingly.
+std::string handleEdit (TDB& tdb, T& task, Config& conf)
+{
+  std::stringstream out;
+  std::vector <T> all;
+  tdb.pendingT (all);
+
+  filterSequence (all, task);
+  foreach (seq, all)
+  {
+    // Check for file permissions.
+    std::string dataLocation = expandPath (conf.get ("data.location"));
+    if (access (dataLocation.c_str (), X_OK))
+      throw std::string ("Your data.location directory is not writable.");
+
+    // TODO Create a temp file name in data.location.
+    std::stringstream pattern;
+    pattern << dataLocation
+            << "/task."
+            << seq->getId ()
+            << ".XXXXXX";
+    std::cout << "# pattern=" << pattern << std::endl;
+    char cpattern [PATH_MAX];
+    strcpy (cpattern, pattern.str ().c_str ());
+
+    char* file = mktemp (cpattern);
+    std::cout << "# file=" << file << std::endl;
+
+    // TODO Format the contents, T -> text.
+    std::stringstream before;
+    before << "# Edit only the items within the chevrons << >>.  "
+           << "All other edits will be ignored."                          << std::endl
+           << "ID:            " << seq->getId ()                          << std::endl
+           << "Project:     <<" << seq->getAttribute ("project")  << ">>" << std::endl
+           << "Priority:    <<" << seq->getAttribute ("priority") << ">>" << std::endl
+           << "Description: <<" << seq->getDescription ()         << ">>" << std::endl;
+
+    // Write to file.
+    spit (file, before.str ());
+
+    // TODO Determine correct editor: $EDITOR > $VISUAL > vi
+    std::string editor = "/usr/bin/vi";
+
+    // system ("$EDITOR $file");
+    std::string command = editor + " " + file;
+    system (command.c_str ());
+
+    // Slurp file.
+    std::vector <std::string> after;
+    slurp (file, after, true);
+
+    // TODO Parse file, text -> T.
+    foreach (line, after)
+    {
+      // TODO Handle each type of line.
+    }
+
+    // Modify task.
+    tdb.modifyT (*seq);
+
+    // Cleanup.
+    unlink (file);
+  }
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string handleColor (Config& conf)
 {
   std::stringstream out;

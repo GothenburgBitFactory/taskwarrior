@@ -430,3 +430,16 @@ bool slurp (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void spit (const std::string& file, const std::string& contents)
+{
+  std::ofstream out (file.c_str ());
+  if (out.good ())
+  {
+    out << contents;
+    out.close ();
+  }
+  else
+    throw std::string ("Could not write file '") + file + "'";
+}
+
+////////////////////////////////////////////////////////////////////////////////
