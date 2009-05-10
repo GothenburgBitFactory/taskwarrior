@@ -603,7 +603,7 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
       // Add an end date.
       char entryTime[16];
       sprintf (entryTime, "%u", (unsigned int) time (NULL));
-      task.setAttribute ("end", entryTime);
+      seq->setAttribute ("end", entryTime);
 
       // Change status.
       seq->setStatus (T::completed);

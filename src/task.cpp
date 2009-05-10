@@ -222,11 +222,8 @@ static std::string shortUsage (Config& conf)
       << std::endl
       << "See http://www.beckingham.net/task.html for the latest releases and a "
       << "full tutorial.  New releases containing fixes and enhancements are "
-      << "made frequently."
-      << std::endl
-      << std::endl
-      << "Join in the discussion of task, present and future, at "
-      << "http://groups.google.com/group/taskprogram"
+      << "made frequently.  Join in the discussion of task, present and future, "
+      << "at http://groups.google.com/group/taskprogram"
       << std::endl
       << std::endl;
 
