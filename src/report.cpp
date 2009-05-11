@@ -1323,38 +1323,70 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
   tdb.allT (tasks);
   filter (tasks, task);
 
-  // TODO Was a duration argument specified?
-  //      by default, duration = 1week
-  // TODO Determine start date
-  //      by default, start = prior Monday
-  //      otherwise,  start = prior Monday - ((duration - 1) * 7 * 86,400)
-  // TODO end date = next Sunday
+  // What day of the week does the user consider the first?
+  int weekStart = Date::dayOfWeek (conf.get ("weekstart", "Monday"));
+  if (weekStart == -1)
+    throw std::string ("The 'weekstart' configuration variable does "
+                       "not contain a day name, such as 'Monday'.");
 
-  Table table;
+  // Determine the date of the first day of the most recent report.
+  Date today;
+  Date start;
+  start -= (((today.dayOfWeek () - weekStart) + 7) % 7) * 86400;
 
-  // TODO Render report
-/*
-  % task timesheet [filter] 2w
+  // Roll back to midnight.
+  start = Date (start.month (), start.day (), start.year ());
+  Date end = start + (7 * 86400) - 1;
 
-  4/19/2009 - 4/26/2009
-   ...
+  // Determine how many reports to run.
+  int quantity = 1;
+  std::vector <int> sequence = task.getAllIds ();
+  if (sequence.size () == 1)
+    quantity = sequence[0];
 
-  4/27/2009 - 5/3/2009
-    Tasks Completed (5)
-      <project> <description> <annotations>
-      ...
-
-    Tasks Started (2)
-      <project> <description> <annotations>
-      ...
-*/
-
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
+  for (int week = 0; week < quantity; ++week)
+  {
+    out << start.toString (conf.get ("dateformat", "m/d/Y"))
+        << " - "
+        << end.toString (conf.get ("dateformat", "m/d/Y"))
         << std::endl;
-  else
-    out << "No tasks." << std::endl;
+
+    // Render the completed table.
+    Table completed;
+    foreach (t, tasks)
+    {
+      // TODO If task completed within range.
+    }
+
+    out << "  Completed (" << completed.rowCount () << ")" << std::endl;
+
+    if (completed.rowCount ())
+      out << optionalBlankLine (conf)
+          << completed.render ()
+          << std::endl;
+    else
+      out << "    None" << std::endl;
+
+    // Now render the started table.
+    Table started;
+    foreach (t, tasks)
+    {
+      // TODO If task started withing range, but not completed withing range.
+    }
+
+    out << "  Started (" << started.rowCount () << ")" << std::endl;
+
+    if (started.rowCount ())
+      out << optionalBlankLine (conf)
+          << started.render ()
+          << std::endl;
+    else
+      out << "    None" << std::endl;
+
+    // Prior week.
+    start -= 7 * 86400;
+    end   -= 7 * 86400;
+  }
 
   return out.str ();
 }
