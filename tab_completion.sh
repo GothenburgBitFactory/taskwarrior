@@ -6,7 +6,8 @@ _task()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    opts="add append annotate completed delete undelete info start stop done undo projects tags summary history ghistory next calendar stats import export color version help list long ls newest oldest overdue active"
+
+    opts="active add annotate append calendar color completed delete done duplicate edit export ghistory help history import info list long ls newest next oldest overdue projects start stats stop summary tags timesheet undelete undo version"
 
     case "${prev}" in
       ls|list|long)
