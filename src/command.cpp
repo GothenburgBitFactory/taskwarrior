@@ -910,7 +910,7 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
     // Write to file.
     spit (file, before.str ());
 
-    // Determine correct editor: $TASK_EDITOR > $VISUAL > $EDITOR > vi
+    // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
     const char*  editor = getenv ("TASK_EDITOR");
     if (!editor) editor = getenv ("VISUAL");
     if (!editor) editor = getenv ("EDITOR");
