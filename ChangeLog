@@ -29,6 +29,7 @@
    and can display multiple weeks.
  + New tab completion script, tab_completion.sh, for bash users (thanks
    to Federico Hernandez).
+ + Added patch to allow task to build on Arch Linux (thanks to Johan Friis).
 
 ------ old releases ------------------------------
 

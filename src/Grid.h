@@ -27,6 +27,7 @@
 #ifndef INCLUDED_GRID
 #define INCLUDED_GRID
 
+#include <stdio.h>
 #include <string>
 #include <vector>
 

@@ -27,6 +27,7 @@
 #ifndef INCLUDED_DATE
 #define INCLUDED_DATE
 
+#include <stdio.h>
 #include <string>
 
 class Date;
