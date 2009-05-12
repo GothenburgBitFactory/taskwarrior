@@ -1,0 +1,263 @@
+.TH task 7 2009-05-11 "Task 1.6.0" "User Manuals"
+
+.SH NAME
+task \- A command line todo manager.
+
+.SH SYNOPSIS
+.B task
+[subcommand] [args]
+
+.SH DESC.TP
+.BTION
+Task is a command line todo manager. It maintains a list of tasks that you want
+to do, allowing you to add/remove, and otherwise manipulate them. Task has a
+rich list of subcommands that allow you to do various things with it.
+
+.SH SUBCOMMANDS
+
+.TP
+.B
+add [tags] [attrs] description
+Adds a new task to the tasklist.
+
+.TP
+.B
+append [tags] [attrs] description
+Appends extra information to an existing task.
+
+.TP
+.B
+annotate ID description
+Adds an annotation to an existing task.
+
+.TP
+.B
+completed [tags] [attrs] description
+Provides a chronological listing of all completed tasks matching specified
+criteria.
+
+.TP
+.B
+ID [tags] [attrs] [description]
+Modifies task with specified parameters.
+
+.TP
+.B
+ID /from/to/
+Performs one substitution on task description for fixing mistakes.
+
+.TP
+.B
+ID /from/to/g
+Performs all substitutions on task description for fixing mistakes.
+
+.TP
+.B
+delete ID
+Deletes task from task list.
+
+.TP
+.B
+undelete ID
+Undeletes task from the task list, provided a report has not
+been executed.
+
+.TP
+.B
+info ID
+Shows all information about a task.
+
+.TP
+.B
+start ID
+Marks task as started.
+
+.TP
+.B
+stop ID
+Removes
+.I started
+status from task.
+
+.TP
+.B
+done ID
+Marks task as done.
+
+.TP
+.B
+undo ID
+Marks task as pending, provided a report has not been executed.
+
+.TP
+.B
+projects
+Lists all project names used, and the number of projects for each.
+
+.TP
+.B
+tags
+Lists all tags used.
+
+.TP
+.B
+summary
+Shows a report of task status by project.
+
+.TP
+.B
+history
+Shows a report of task history by month.
+
+.TP
+.B
+ghistory
+Shows a graphical report of task status by month.
+
+.TP
+.B
+next
+Shows the most important pending tasks for each project.
+
+.TP
+.B
+calendar
+Shows a monthly calendar, with tasks with due-dates marked.
+
+.TP
+.B
+stats
+Shows task database statistics.
+
+.TP
+.B
+import [file]
+
+Imports tasks from a variety of formats
+
+.TP
+.B
+export [file]
+Exports all tasks as a CSV file.
+
+.TP
+.B
+color
+Displays all possible colors.
+
+.TP
+.B
+version
+Display version information
+
+.TP
+.B
+help
+Shows a long help text.
+
+.SH REPORTS
+
+A report is a listing of information from the task database. There are several
+built-in reports currently in task. These are list, long, ls, newest, oldest,
+overdue and active.
+
+The report names can be used as subcommands to invoke the corresponding report.
+
+.SH ATTRIBUTES AND METADATA
+
+.TP
+.B
+ID
+Tasks can be specified uniquely by IDs, which are simply the index of the task
+in a report. Be careful, as the IDs of tasks may change after a modification to
+the database. Always run a report to check you have the right ID for a task.
+
+.TP
+.B
++tag|-tag
+Tags are arbitrary words associated with a task. Use + to add a tag and - to
+remove a tag from a task.
+
+.TP
+.B
+project:<project-name>
+Specify the project to which a task is related to.
+
+.TP
+.B
+priority:H|M|L|N
+Specify High, Medium, Low and No priority for a task.
+
+.TP
+.B
+due:<due-date>
+Specify the due-date of a task.
+.\" TODO: How to specify dates?
+
+.TP
+.B
+recur:<frequency>
+Specify the frequency of recurrence of a task.
+.\" TODO: How to specify frequency?
+
+.TP
+.B
+until:<end-date-of-recurrence>
+Specify the Recurrence end-date of a task.
+
+.TP
+.B
+fg:<color-spec>
+Specify foreground color.
+
+.TP
+.B
+bg:<color-spec>
+Specify background color.
+
+.TP
+.B
+rc:<path>
+Specify alternate configuration file.
+
+.SH COMMAND ABBREVIATION
+All task commands may be abbreviated as long as a unique prefix is used. Eg.
+
+$> task li
+
+is an unambiguous abbreviation for
+
+$> task list
+
+but
+
+$> task l
+
+could be list, ls or long.
+
+.SH "CREDITS & COPYRIGHTS"
+.\" Insert copyright statements and credit to Paul here.
+
+This manpage was written by P.C. Shyamshankar
+
+.SH REPORTING BUGS
+Bugs in task may be reported to the issue-tracker at
+<http://github.com/pbeckingham/task/issues>
+
+.SH SEE ALSO
+For more information regarding task, the following may be referenced.
+
+.TP
+.I
+<http://www.beckingham.net/task.html>
+The official site.
+
+.TP
+.I
+<http://groups.google.com/group/taskprogram/>
+The official mailing list.
+
+.TP
+.I
+<http://github.com/pbeckingham/task/>
+The official code repository.
