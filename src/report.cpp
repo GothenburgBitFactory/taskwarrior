@@ -1346,42 +1346,156 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
 
   for (int week = 0; week < quantity; ++week)
   {
-    out << start.toString (conf.get ("dateformat", "m/d/Y"))
+    out << std::endl
+        << Text::colorize (Text::bold, Text::nocolor)
+        << start.toString (conf.get ("dateformat", "m/d/Y"))
         << " - "
         << end.toString (conf.get ("dateformat", "m/d/Y"))
+        << Text::colorize ()
         << std::endl;
 
     // Render the completed table.
     Table completed;
+    completed.setTableWidth (width);
+    completed.addColumn ("   ");
+    completed.addColumn ("Project");
+    completed.addColumn ("Due");
+    completed.addColumn ("Description");
+
+    completed.setColumnUnderline (1);
+    completed.setColumnUnderline (2);
+    completed.setColumnUnderline (3);
+
+    completed.setColumnWidth (0, Table::minimum);
+    completed.setColumnWidth (1, Table::minimum);
+    completed.setColumnWidth (2, Table::minimum);
+    completed.setColumnWidth (3, Table::flexible);
+
+    completed.setColumnJustification (0, Table::left);
+    completed.setColumnJustification (1, Table::left);
+    completed.setColumnJustification (2, Table::right);
+    completed.setColumnJustification (3, Table::left);
+
     foreach (t, tasks)
     {
-      // TODO If task completed within range.
+      // If task completed within range.
+      if (t->getStatus () == T::completed)
+      {
+        Date compDate (::atoi (t->getAttribute ("end").c_str ()));
+        if (compDate >= start && compDate < end)
+        {
+          int row = completed.addRow ();
+          completed.addCell (row, 1, t->getAttribute ("project"));
+
+          std::string due = t->getAttribute ("due");
+          if (due.length ())
+          {
+            Date d (::atoi (due.c_str ()));
+            due = d.toString (conf.get ("dateformat", "m/d/Y"));
+            completed.addCell (row, 2, due);
+          }
+
+          std::string description = t->getDescription ();
+          std::string when;
+          std::map <time_t, std::string> annotations;
+          t->getAnnotations (annotations);
+          foreach (anno, annotations)
+          {
+            Date dt (anno->first);
+            when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+            description += "\n" + when + " " + anno->second;
+          }
+          completed.addCell (row, 3, description);
+
+          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+          {
+            Text::color fg = Text::colorCode (t->getAttribute ("fg"));
+            Text::color bg = Text::colorCode (t->getAttribute ("bg"));
+            autoColorize (*t, fg, bg, conf);
+            completed.setRowFg (row, fg);
+            completed.setRowBg (row, bg);
+          }
+        }
+      }
     }
 
-    out << "  Completed (" << completed.rowCount () << ")" << std::endl;
+    out << "  Completed (" << completed.rowCount () << " tasks)" << std::endl;
 
     if (completed.rowCount ())
-      out << optionalBlankLine (conf)
-          << completed.render ()
+      out << completed.render ()
           << std::endl;
-    else
-      out << "    None" << std::endl;
 
     // Now render the started table.
     Table started;
+    started.setTableWidth (width);
+    started.addColumn ("   ");
+    started.addColumn ("Project");
+    started.addColumn ("Due");
+    started.addColumn ("Description");
+
+    started.setColumnUnderline (1);
+    started.setColumnUnderline (2);
+    started.setColumnUnderline (3);
+
+    started.setColumnWidth (0, Table::minimum);
+    started.setColumnWidth (1, Table::minimum);
+    started.setColumnWidth (2, Table::minimum);
+    started.setColumnWidth (3, Table::flexible);
+
+    started.setColumnJustification (0, Table::left);
+    started.setColumnJustification (1, Table::left);
+    started.setColumnJustification (2, Table::right);
+    started.setColumnJustification (3, Table::left);
     foreach (t, tasks)
     {
-      // TODO If task started withing range, but not completed withing range.
+      // If task started within range, but not completed withing range.
+      if (t->getStatus () == T::pending &&
+          t->getAttribute ("start") != "")
+      {
+        Date startDate (::atoi (t->getAttribute ("start").c_str ()));
+        if (startDate >= start && startDate < end)
+        {
+          int row = started.addRow ();
+          started.addCell (row, 1, t->getAttribute ("project"));
+
+          std::string due = t->getAttribute ("due");
+          if (due.length ())
+          {
+            Date d (::atoi (due.c_str ()));
+            due = d.toString (conf.get ("dateformat", "m/d/Y"));
+            started.addCell (row, 2, due);
+          }
+
+          std::string description = t->getDescription ();
+          std::string when;
+          std::map <time_t, std::string> annotations;
+          t->getAnnotations (annotations);
+          foreach (anno, annotations)
+          {
+            Date dt (anno->first);
+            when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+            description += "\n" + when + " " + anno->second;
+          }
+          started.addCell (row, 3, description);
+
+          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+          {
+            Text::color fg = Text::colorCode (t->getAttribute ("fg"));
+            Text::color bg = Text::colorCode (t->getAttribute ("bg"));
+            autoColorize (*t, fg, bg, conf);
+            started.setRowFg (row, fg);
+            started.setRowBg (row, bg);
+          }
+        }
+      }
     }
 
-    out << "  Started (" << started.rowCount () << ")" << std::endl;
+    out << "  Started (" << started.rowCount () << " tasks)" << std::endl;
 
     if (started.rowCount ())
-      out << optionalBlankLine (conf)
-          << started.render ()
+      out << started.render ()
+          << std::endl
           << std::endl;
-    else
-      out << "    None" << std::endl;
 
     // Prior week.
     start -= 7 * 86400;

@@ -153,7 +153,7 @@ static std::string shortUsage (Config& conf)
   table.addCell (row, 2, "Shows a report of task status by project");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task timesheet [duration]");
+  table.addCell (row, 1, "task timesheet [weeks]");
   table.addCell (row, 2, "Shows a weekly report of tasks completed and started");
 
   row = table.addRow ();
