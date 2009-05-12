@@ -157,7 +157,7 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = src
-EXTRA_DIST = DEVELOPERS
+EXTRA_DIST = DEVELOPERS tab_completion.sh doc/man7/task.7
 all: auto.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
