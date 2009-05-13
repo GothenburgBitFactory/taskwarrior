@@ -208,8 +208,11 @@ const std::string uuid ()
 {
   uuid_t id;
   uuid_generate (id);
-  char buffer[100];
+  char buffer[100] = {0};
   uuid_unparse_lower (id, buffer);
+
+  // Bug found by Steven de Brouwer.
+  buffer[36] = '\0';
 
   return std::string (buffer);
 }
@@ -271,6 +274,7 @@ const std::string uuid ()
   id[33] = randomHexDigit ();
   id[34] = randomHexDigit ();
   id[35] = randomHexDigit ();
+  id[36] = '\0';
 
   return id;
 }
