@@ -191,6 +191,18 @@
                   Defaults to "Monday".
                 </dd>
 
+                <dt>editor</dt>
+                <dd>
+                  Specifies which text editor you wish to use for when the
+
+                  <pre><code>task edit &lt;ID&gt;</code></pre>
+
+                  command is used.  Task will first for this configuration
+                  variable.  If found, it is used.  Otherwise task will look
+                  for the VISUAL or EDITOR environment variables, before it
+                  defaults to using 'vi'.
+                </dd>
+
                 <dt>defaultwidth</dt>
                 <dd>
                   The width of tables used when ncurses support is not available.
