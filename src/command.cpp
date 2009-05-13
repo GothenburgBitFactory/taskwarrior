@@ -359,7 +359,7 @@ std::string handleVersion (Config& conf)
     "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
     "confirmation curses data.location dateformat default.command "
     "default.priority defaultwidth due echo.command locking monthsperline nag "
-    "next project shadow.command shadow.file shadow.notify "
+    "next project shadow.command shadow.file shadow.notify weekstart "
     "import.synonym.id import.synonym.uuid import.synonym.status "
     "import.synonym.tags import.synonym.entry import.synonym.start "
     "import.synonym.due import.synonym.recur import.synonym.end "
