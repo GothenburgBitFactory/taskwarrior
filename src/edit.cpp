@@ -38,10 +38,21 @@ static std::string findSimpleValue (
   const std::string& text,
   const std::string& name)
 {
-  // Look for /^\s+name:\s+(.*)$/
-  // Extract
-  // Trim
-  // Join
+  std::string::size_type found = text.find (name);
+  if (found != std::string::npos)
+  {
+    std::string::size_type eol = text.find ("\n", found);
+    if (eol != std::string::npos)
+    {
+      std::string value = text.substr (
+        found + name.length (),
+        eol - (found + name.length ()));
+
+      std::cout << "value '" << value << "'" << std::endl;
+      return trim (value, "\t ");
+    }
+  }
+
   return "";
 }
 
@@ -152,15 +163,42 @@ static std::string formatTask (Config& conf, T task)
 ////////////////////////////////////////////////////////////////////////////////
 static void parseTask (T& task, const std::string& after)
 {
-  // TODO status
-//  task.setAttribute   ("Project",  findSimpleValue (after, "Project"));
-//  task.setAttribute   ("Priority", findSimpleValue (after, "Priority"));
-  // TODO tags
+  std::string value;
+
+  // Project
+  value = findSimpleValue (after, "Project:");
+  if (value != "" &&
+     task.getAttribute ("project") != value)
+  {
+    std::cout << "Project modified." << std::endl;
+    task.setAttribute ("project", value);
+  }
+
+  // Priority
+  value = findSimpleValue (after, "Priority:");
+  if (value != "" &&
+      validPriority (value) &&
+      task.getAttribute ("priority") != value)
+  {
+    std::cout << "Priority modified." << std::endl;
+    task.setAttribute ("priority", value);
+  }
+
+  // Tags
+/*
+  value = findSimpleValue (after, "tags");
+  std::vector <std::string> tags;
+  split (tags, " ", value);
+*/
 
   // TODO Disallow blank description.
-//  task.setDescription (            findSimpleValue (after, "Description"));
+//  value = findMultilineValue (after, "Description: ");
+//  if (value != "")
+//  {
+//    std::cout << "Description modified." << std::endl;
+//    task.setDescription (value);
+//  }
 
-  // TODO Annotations
   // TODO start
   // TODO end
   // TODO due
@@ -170,6 +208,7 @@ static void parseTask (T& task, const std::string& after)
   // TODO imask
   // TODO fg
   // TODO bg
+  // TODO Annotations
 }
 
 ////////////////////////////////////////////////////////////////////////////////
