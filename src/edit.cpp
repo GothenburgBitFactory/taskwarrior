@@ -62,11 +62,22 @@ static time_t findSimpleDate (
   const std::string& text,
   const std::string& name)
 {
-  // Look for /^\s+name:\s+(.*)$/
-  // Extract
-  // Trim
-  // Join
-  // Parse date
+  std::string::size_type found = text.find (name);
+  if (found != std::string::npos)
+  {
+    std::string::size_type eol = text.find ("\n", found);
+    if (eol != std::string::npos)
+    {
+      std::string value = text.substr (
+        found + name.length (),
+        eol - (found + name.length ()));
+
+      std::cout << "value '" << value << "'" << std::endl;
+      Date dt (trim (value, "\t "), conf.get ("dateformat", "m/d/Y"));
+      return dt.toEpoch ();
+    }
+  }
+
   return 0;
 }
 
@@ -124,6 +135,8 @@ static std::string formatTask (Config& conf, T task)
          << "# ID:                " << task.getId ()                                    << std::endl
          << "# UUID:              " << task.getUUID ()                                  << std::endl
          << "# Status:            " << formatStatus (task)                              << std::endl
+         << "# Mask:              " << task.getAttribute ("mask")                       << std::endl
+         << "# iMask:             " << task.getAttribute ("imask")                      << std::endl
          << "  Project:           " << task.getAttribute ("project")                    << std::endl
          << "  Priority:          " << task.getAttribute ("priority")                   << std::endl;
 
@@ -142,8 +155,6 @@ static std::string formatTask (Config& conf, T task)
          << "  Due:               " << formatDate (conf, task, "due")                   << std::endl
          << "  Until:             " << formatDate (conf, task, "until")                 << std::endl
          << "  Recur:             " << task.getAttribute ("recur")                      << std::endl
-         << "  Mask:              " << task.getAttribute ("mask")                       << std::endl
-         << "  iMask:             " << task.getAttribute ("imask")                      << std::endl
          << "  Foreground color:  " << task.getAttribute ("fg")                         << std::endl
          << "  Background color:  " << task.getAttribute ("bg")                         << std::endl
          << "# Annotations look like this: <date> <text>, and there can be any number"  << std::endl
@@ -161,7 +172,7 @@ static std::string formatTask (Config& conf, T task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void parseTask (T& task, const std::string& after)
+static void parseTask (Config& conf, T& task, const std::string& after)
 {
   std::string value;
 
@@ -199,11 +210,73 @@ static void parseTask (T& task, const std::string& after)
 //    task.setDescription (value);
 //  }
 
-  // TODO start
-  // TODO end
-  // TODO due
-  // TODO until
+  // start
+  time_t dt = findSimpleDate (conf, after, "Created:");
+  if (dt != 0)
+  {
+    std::cout << "Creation date modified." << std::endl;
+    char epoch[16];
+    sprintf (epoch, "%d", (int) dt);
+    task.setAttribute ("entry", epoch);
+  }
+  else
+    std::cout << "Cannot remove creation date" << std::endl;
+
+  // end
+  dt = findSimpleDate (conf, after, "Ended:");
+  if (dt != 0)
+  {
+    std::cout << "Done date modified." << std::endl;
+    char epoch[16];
+    sprintf (epoch, "%d", (int) dt);
+    task.setAttribute ("end", epoch);
+  }
+  else
+  {
+    std::cout << "Done date removed." << std::endl;
+    task.removeAttribute ("end");
+  }
+
+  // due
+  dt = findSimpleDate (conf, after, "Due:");
+  if (dt != 0)
+  {
+    std::cout << "Due date modified." << std::endl;
+    char epoch[16];
+    sprintf (epoch, "%d", (int) dt);
+    task.setAttribute ("due", epoch);
+  }
+  else
+  {
+    if (task.getStatus () == T::recurring ||
+        task.getAttribute ("parent") != "")
+    {
+      std::cout << "Cannot remove a due date from a recurring task." << std::endl;
+    }
+    else
+    {
+      std::cout << "Due date removed." << std::endl;
+      task.removeAttribute ("due");
+    }
+  }
+
+  // until
+  dt = findSimpleDate (conf, after, "Until:");
+  if (dt != 0)
+  {
+    std::cout << "Until date modified." << std::endl;
+    char epoch[16];
+    sprintf (epoch, "%d", (int) dt);
+    task.setAttribute ("until", epoch);
+  }
+  else
+  {
+    std::cout << "Until date removed." << std::endl;
+    task.removeAttribute ("until");
+  }
+
   // TODO recur
+  // TODO parent
   // TODO mask
   // TODO imask
   // TODO fg
@@ -272,7 +345,7 @@ ARE_THESE_REALLY_HARMFUL:
 
       try
       {
-        parseTask (*seq, after);
+        parseTask (conf, *seq, after);
         tdb.modifyT (*seq);
       }
 
