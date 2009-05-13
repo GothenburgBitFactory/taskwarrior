@@ -330,11 +330,13 @@ static bool validSequence (
     switch (range.size ())
     {
     case 1:
-      if (! validId (range[0]))
-        return false;
+      {
+        if (! validId (range[0]))
+          return false;
 
-      int id = ::atoi (range[0].c_str ());
-      ids.push_back (id);
+        int id = ::atoi (range[0].c_str ());
+        ids.push_back (id);
+      }
       break;
 
     case 2:
