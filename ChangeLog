@@ -33,6 +33,8 @@
  + Applied patch to fix a UUID bug on Solaris 8 (thanks to Steven de Brouwer).
  + The task man page is now installed.  Try "man task" (thanks to Federico
    Hernandez and P.C. Shyamshankar).
+ + Fixed bug that causes task to create a default .task directory, even if
+   .taskrc:data.location specified otherwise (thanks to Federico Hernandez).
 
 ------ old releases ------------------------------
 

@@ -219,6 +219,9 @@ void Config::createDefault (const std::string& home)
 
   this->load (rcFile);
 
+  // Get the data.location value from the (potentially newly created) .taskrc
+  // file.
+  dataDir = this->get ("data.location", dataDir);
   if (-1 == access (dataDir.c_str (), F_OK))
     mkdir (dataDir.c_str (), S_IRWXU);
 }
