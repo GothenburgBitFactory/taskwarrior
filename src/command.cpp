@@ -359,7 +359,7 @@ std::string handleVersion (Config& conf)
     "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
     "confirmation curses data.location dateformat default.command "
     "default.priority defaultwidth due echo.command locking monthsperline nag "
-    "next project shadow.command shadow.file shadow.notify "
+    "next project shadow.command shadow.file shadow.notify editor "
     "import.synonym.id import.synonym.uuid import.synonym.status "
     "import.synonym.tags import.synonym.entry import.synonym.start "
     "import.synonym.due import.synonym.recur import.synonym.end "
@@ -897,35 +897,67 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
     strcpy (cpattern, pattern.str ().c_str ());
     char* file = mktemp (cpattern);
 
-    // TODO Format the contents, T -> text.
+    // Format the contents, T -> text.
     std::stringstream before;
-    before << "# Edit only the items within the marks "
+    before << "# The 'task edit <id>' command allows you to modify all aspects of a task"  << std::endl
+           << "# using a text editor.  What is shown below is a representation of the"     << std::endl
+           << "# task in all it's detail.  Modify what you wish, and if you save and"      << std::endl
+           << "# quit your editor, task will read this file and try to make sense of"      << std::endl
+           << "# what changed, and apply those changes.  If you quit your editor without"  << std::endl
+           << "# saving or making any modifications, task will do nothing."                << std::endl
+           << "#"                                                                          << std::endl
+           << "# Lines that begin with # are comments, and will be ignored by task."       << std::endl
+
+           << "# Edit only the items within the marks "
            << leftDelim << " " << rightDelim << "."
            << "All other edits will be ignored."                                           << std::endl
-           << "ID:          "              << seq->getId ()                                << std::endl
-           << "Project:     " << leftDelim << seq->getAttribute ("project")  << rightDelim << std::endl
-           << "Priority:    " << leftDelim << seq->getAttribute ("priority") << rightDelim << std::endl
-           << "Description: " << leftDelim << seq->getDescription ()         << rightDelim << std::endl;
+
+           << "# Externally Visible"                                                       << std::endl
+           << "  ID:          "              << seq->getId ()                                << std::endl
+           << "  Status:      " << leftDelim << seq->getStatus ()              << rightDelim << std::endl
+           << "  Project:     " << leftDelim << seq->getAttribute ("project")  << rightDelim << std::endl
+           << "  Priority:    " << leftDelim << seq->getAttribute ("priority") << rightDelim << std::endl;
+
+    std::vector <std::string> tags;
+    seq->getTags (tags);
+    std::string allTags;
+    join (allTags, " ", tags);
+    before << "  Tags:        " << leftDelim << allTags                      << rightDelim << std::endl;
+
+    std::map <time_t, std::string> annotations;
+    seq->getAnnotations (annotations);
+    foreach (anno, annotations)
+      before << "  Annotation:  " << leftDelim << anno->first << " " << anno->second << rightDelim << std::endl;
+
+    before << "  Description: " << leftDelim << seq->getDescription ()       << rightDelim << std::endl
+
+           << "# Internals"                                                                << std::endl
+           << "  Start:       " << leftDelim << seq->getAttribute ("start")  << rightDelim << std::endl
+           << "  End:         " << leftDelim << seq->getAttribute ("end")    << rightDelim << std::endl
+           << "  Due:         " << leftDelim << seq->getAttribute ("due")    << rightDelim << std::endl
+           << "  Recur:       " << leftDelim << seq->getAttribute ("recur")  << rightDelim << std::endl
+           << "  Mask:        " << leftDelim << seq->getAttribute ("mask")   << rightDelim << std::endl
+           << "  iMask:       " << leftDelim << seq->getAttribute ("imask")  << rightDelim << std::endl;
 
     // Write to file.
     spit (file, before.str ());
 
     // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
-    const char*  editor = getenv ("TASK_EDITOR");
-    if (!editor) editor = getenv ("VISUAL");
-    if (!editor) editor = getenv ("EDITOR");
-    if (!editor) editor = "vi";
+    std::string editor = conf.get ("editor", "");
+    if (editor == "") editor = getenv ("VISUAL");
+    if (editor == "") editor = getenv ("EDITOR");
+    if (editor == "") editor = "vi";
 
     // Launch the editor.
-    std::string command = editor;
-    command += " ";
-    command += file;
-    system (command.c_str ());
+    editor += " ";
+    editor += file;
+    system (editor.c_str ());
 
     // Slurp file.
     std::string after;
     slurp (file, after, true);
 
+    // Update seq based on what can be parsed back out of the file.
     seq->setAttribute   ("Project",  findValue (after, "Project"));
     seq->setAttribute   ("Priority", findValue (after, "Priority"));
     seq->setDescription (            findValue (after, "Description"));
