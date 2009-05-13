@@ -448,7 +448,7 @@ bool slurp (
     while (getline (in, line))
     {
       if (trimLines) line = trim (line);
-      contents += line;
+      contents += line + "\n";
     }
 
     in.close ();

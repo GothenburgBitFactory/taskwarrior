@@ -34,7 +34,9 @@
 #include "task.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string findSimpleValue (const std::string& text, const std::string& name)
+static std::string findSimpleValue (
+  const std::string& text,
+  const std::string& name)
 {
   // Look for /^\s+name:\s+(.*)$/
   // Extract
@@ -44,7 +46,51 @@ static std::string findSimpleValue (const std::string& text, const std::string& 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string formatTask (T task)
+static time_t findSimpleDate (
+  Config& conf,
+  const std::string& text,
+  const std::string& name)
+{
+  // Look for /^\s+name:\s+(.*)$/
+  // Extract
+  // Trim
+  // Join
+  // Parse date
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static std::string formatStatus (T& task)
+{
+  switch (task.getStatus ())
+  {
+  case T::pending:   return "Pending";   break;
+  case T::completed: return "Completed"; break;
+  case T::deleted:   return "Deleted";   break;
+  case T::recurring: return "Recurring"; break;
+  }
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static std::string formatDate (
+  Config& conf,
+  T& task,
+  const std::string& attribute)
+{
+  std::string value = task.getAttribute (attribute);
+  if (value.length ())
+  {
+    Date dt (::atoi (value.c_str ()));
+    value = dt.toString (conf.get ("dateformat", "m/d/Y"));
+  }
+
+  return value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static std::string formatTask (Config& conf, T task)
 {
   std::stringstream before;
   before << "# The 'task edit <id>' command allows you to modify all aspects of a task" << std::endl
@@ -54,47 +100,76 @@ static std::string formatTask (T task)
          << "# what changed, and apply those changes.  If you quit your editor without" << std::endl
          << "# saving or making any modifications, task will do nothing."               << std::endl
          << "#"                                                                         << std::endl
-         << "# Lines that begin with # are comments, and will be ignored by task."      << std::endl
-         << "# All other edits will be ignored."                                        << std::endl
+         << "# Lines that begin with # represent data you cannot change, like ID."      << std::endl
+         << "# If you get too 'creative' with your editing, task will dump you back "   << std::endl
+         << "# into the editor to try again."                                           << std::endl
          << "#"                                                                         << std::endl
-         << "# Things you probably want to edit"                                        << std::endl
-         << "  ID:          " << task.getId ()                                          << std::endl
-         << "  Status:      " << task.getStatus ()                                      << std::endl
-         << "  Project:     " << task.getAttribute ("project")                          << std::endl
-         << "  Priority:    " << task.getAttribute ("priority")                         << std::endl;
+         << "# Should you find yourself in an endless Groundhog Day loop, editing and"  << std::endl
+         << "# editing the same file, just quit the editor without making any changes." << std::endl
+         << "# Task will notice this and stop the editing."                             << std::endl
+         << "#"                                                                         << std::endl
+         << "# Name               Editable details"                                     << std::endl
+         << "# -----------------  ----------------------------------------------------" << std::endl
+         << "# ID:                " << task.getId ()                                    << std::endl
+         << "# UUID:              " << task.getUUID ()                                  << std::endl
+         << "# Status:            " << formatStatus (task)                              << std::endl
+         << "  Project:           " << task.getAttribute ("project")                    << std::endl
+         << "  Priority:          " << task.getAttribute ("priority")                   << std::endl;
 
   std::vector <std::string> tags;
   task.getTags (tags);
   std::string allTags;
   join (allTags, " ", tags);
-  before << "  Tags:        " << allTags                                                << std::endl;
+  before << "# Separate the tags with spaces, like this:   tag1 tag2"                   << std::endl
+         << "  Tags:              " << allTags                                          << std::endl
+         << "# The description field is allowed to wrap and use multiple lines.  Task"  << std::endl
+         << "# will combine them."                                                      << std::endl
+         << "  Description:       " << task.getDescription ()                           << std::endl
+         << "  Created:           " << formatDate (conf, task, "entry")                 << std::endl
+         << "  Started:           " << formatDate (conf, task, "start")                 << std::endl
+         << "  Ended:             " << formatDate (conf, task, "end")                   << std::endl
+         << "  Due:               " << formatDate (conf, task, "due")                   << std::endl
+         << "  Until:             " << formatDate (conf, task, "until")                 << std::endl
+         << "  Recur:             " << task.getAttribute ("recur")                      << std::endl
+         << "  Mask:              " << task.getAttribute ("mask")                       << std::endl
+         << "  iMask:             " << task.getAttribute ("imask")                      << std::endl
+         << "  Foreground color:  " << task.getAttribute ("fg")                         << std::endl
+         << "  Background color:  " << task.getAttribute ("bg")                         << std::endl
+         << "# Annotations look like this: <date> <text>, and there can be any number"  << std::endl
+         << "# of them."                                                                << std::endl;
 
   std::map <time_t, std::string> annotations;
   task.getAnnotations (annotations);
   foreach (anno, annotations)
-    before << "  Annotation:  " << anno->first << " " << anno->second                   << std::endl;
+    before << "  Annotation:        " << anno->first << " " << anno->second             << std::endl;
 
-  before << "  Description: " << task.getDescription ()                                 << std::endl
-         << "#"                                                                         << std::endl
-         << "# Things you should be very careful about editing"                         << std::endl
-         << "  Start:       " << task.getAttribute ("start")                            << std::endl
-         << "  End:         " << task.getAttribute ("end")                              << std::endl
-         << "  Due:         " << task.getAttribute ("due")                              << std::endl
-         << "#"                                                                         << std::endl
-         << "# Things you should not edit, but can"                                     << std::endl
-         << "  Recur:       " << task.getAttribute ("recur")                            << std::endl
-         << "  Mask:        " << task.getAttribute ("mask")                             << std::endl
-         << "  iMask:       " << task.getAttribute ("imask")                            << std::endl;
-
+  before << "  Annotation:        "                                                     << std::endl
+         << "  Annotation:        "                                                     << std::endl
+         << "# End"                                                                     << std::endl;
   return before.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void parseTask (T& task, const std::string& before, const std::string& after)
+static void parseTask (T& task, const std::string& after)
 {
-  task.setAttribute   ("Project",  findSimpleValue (after, "Project"));
-  task.setAttribute   ("Priority", findSimpleValue (after, "Priority"));
-  task.setDescription (            findSimpleValue (after, "Description"));
+  // TODO status
+//  task.setAttribute   ("Project",  findSimpleValue (after, "Project"));
+//  task.setAttribute   ("Priority", findSimpleValue (after, "Priority"));
+  // TODO tags
+
+  // TODO Disallow blank description.
+//  task.setDescription (            findSimpleValue (after, "Description"));
+
+  // TODO Annotations
+  // TODO start
+  // TODO end
+  // TODO due
+  // TODO until
+  // TODO recur
+  // TODO mask
+  // TODO imask
+  // TODO fg
+  // TODO bg
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +198,7 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
     char* file = mktemp (cpattern);
 
     // Format the contents, T -> text, write to a file.
-    std::string before = formatTask (*seq);
+    std::string before = formatTask (conf, *seq);
     spit (file, before);
 
     // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
@@ -132,20 +207,56 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
     if (editor == "") editor = getenv ("EDITOR");
     if (editor == "") editor = "vi";
 
+ARE_THESE_REALLY_HARMFUL:
     // Launch the editor.
+    std::cout << "Launching '" << editor << "' now..." << std::endl;
     editor += " ";
     editor += file;
     system (editor.c_str ());
+    std::cout << "Editing complete." << std::endl;
 
     // Slurp file.
     std::string after;
-    slurp (file, after, true);
+    slurp (file, after, false);
 
-    // Update seq based on what can be parsed back out of the file.
-    parseTask (*seq, before, after);
+    // TODO Remove this debugging code.
+    //spit ("./before", before);
+    //spit ("./after",  after);
 
-    // Modify task.
-    tdb.modifyT (*seq);
+    // Update seq based on what can be parsed back out of the file, but only
+    // if changes were made.
+    if (before != after)
+    {
+      std::cout << "Edits were detected." << std::endl;
+      std::string problem = "";
+      bool oops = false;
+
+      try
+      {
+        parseTask (*seq, after);
+        tdb.modifyT (*seq);
+      }
+
+      catch (std::string& e)
+      {
+        problem = e;
+        oops = true;
+      }
+
+      if (oops)
+      {
+        std::cout << problem << std::endl;
+
+        // Preserve the edits.
+        before = after;
+        spit (file, before);
+
+        if (confirm ("Task couldn't handle your edits.  Would you like to try again?"))
+          goto ARE_THESE_REALLY_HARMFUL;
+      }
+    }
+    else
+      std::cout << "No edits were detected." << std::endl;
 
     // Cleanup.
     unlink (file);
