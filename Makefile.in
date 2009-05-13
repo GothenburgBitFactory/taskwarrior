@@ -13,6 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
@@ -53,9 +54,17 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	installcheck-recursive installdirs-recursive pdf-recursive \
 	ps-recursive uninstall-recursive
 man1dir = $(mandir)/man1
-am__installdirs = "$(DESTDIR)$(man1dir)"
+am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(otherdir)"
 NROFF = nroff
 MANS = $(man1_MANS)
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+otherDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(other_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 ETAGS = etags
@@ -161,8 +170,10 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = src
-EXTRA_DIST = DEVELOPERS tab_completion.sh doc/man1/task.1
+EXTRA_DIST = task_completion.sh doc/man1/task.1
 man1_MANS = doc/man1/task.1
+otherdir = $(datadir)/doc/task-1.7.0
+other_DATA = AUTHORS ChangeLog COPYING INSTALL NEWS README task_completion.sh
 all: auto.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -261,6 +272,23 @@ uninstall-man1:
 	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
 	  echo " rm -f '$(DESTDIR)$(man1dir)/$$inst'"; \
 	  rm -f "$(DESTDIR)$(man1dir)/$$inst"; \
+	done
+install-otherDATA: $(other_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(otherdir)" || $(MKDIR_P) "$(DESTDIR)$(otherdir)"
+	@list='$(other_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(otherDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(otherdir)/$$f'"; \
+	  $(otherDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(otherdir)/$$f"; \
+	done
+
+uninstall-otherDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(other_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(otherdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(otherdir)/$$f"; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -538,10 +566,10 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(MANS) auto.h
+all-am: Makefile $(MANS) $(DATA) auto.h
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(man1dir)"; do \
+	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(otherdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -587,7 +615,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-man
+install-data-am: install-man install-otherDATA
 
 install-dvi: install-dvi-recursive
 
@@ -623,7 +651,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-man
+uninstall-am: uninstall-man uninstall-otherDATA
 
 uninstall-man: uninstall-man1
 
@@ -639,12 +667,13 @@ uninstall-man: uninstall-man1
 	info-am install install-am install-data install-data-am \
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-html install-html-am install-info install-info-am \
-	install-man install-man1 install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
-	pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
-	uninstall-man uninstall-man1
+	install-man install-man1 install-otherDATA install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic pdf pdf-am ps ps-am tags tags-recursive \
+	uninstall uninstall-am uninstall-man uninstall-man1 \
+	uninstall-otherDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
