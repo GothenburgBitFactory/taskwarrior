@@ -90,6 +90,7 @@ std::string handleUndo (TDB&, T&, Config&);
 std::string handleColor (Config&);
 std::string handleAnnotate (TDB&, T&, Config&);
 std::string handleDuplicate (TDB&, T&, Config&);
+std::string handleEdit (TDB&, T&, Config&);
 T findT (int, const std::vector <T>&);
 int deltaAppend (T&, T&);
 int deltaDescription (T&, T&);
@@ -151,6 +152,8 @@ std::string expandPath (const std::string&);
 #endif
 
 bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
+bool slurp (const std::string&, std::string&, bool trimLines = false);
+void spit (const std::string&, const std::string&);
 
 // rules.cpp
 void initializeColorRules (Config&);

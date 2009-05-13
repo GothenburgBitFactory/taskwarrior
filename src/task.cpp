@@ -109,6 +109,10 @@ static std::string shortUsage (Config& conf)
   table.addCell (row, 2, "Performs all substitutions on the task description, for fixing mistakes");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task edit ID");
+  table.addCell (row, 2, "Launches an editor to let you modify all aspects of a task directly, therefore it is to be used carefully");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task duplicate ID [tags] [attrs] [desc...]");
   table.addCell (row, 2, "Duplicates the specified task, and allows modifications");
 
@@ -889,6 +893,7 @@ std::string runTaskCommand (
   else if (command == "undo")               { cmdMod = true; out = handleUndo      (tdb, task, conf); }
   else if (command == "import")             { cmdMod = true; out = handleImport    (tdb, task, conf); }
   else if (command == "duplicate")          { cmdMod = true; out = handleDuplicate (tdb, task, conf); }
+  else if (command == "edit")               { cmdMod = true; out = handleEdit      (tdb, task, conf); }
 
   // Command that display IDs and therefore need TDB::gc first.
   else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (tdb, task, conf); }

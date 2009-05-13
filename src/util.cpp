@@ -434,3 +434,41 @@ bool slurp (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool slurp (
+  const std::string& file,
+  std::string& contents,
+  bool trimLines /* = false */)
+{
+  contents = "";
+
+  std::ifstream in (file.c_str ());
+  if (in.good ())
+  {
+    std::string line;
+    while (getline (in, line))
+    {
+      if (trimLines) line = trim (line);
+      contents += line;
+    }
+
+    in.close ();
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void spit (const std::string& file, const std::string& contents)
+{
+  std::ofstream out (file.c_str ());
+  if (out.good ())
+  {
+    out << contents;
+    out.close ();
+  }
+  else
+    throw std::string ("Could not write file '") + file + "'";
+}
+
+////////////////////////////////////////////////////////////////////////////////
