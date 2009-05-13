@@ -28,19 +28,12 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
-#include <sys/types.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
 #include <time.h>
 
-#include "Config.h"
-#include "Date.h"
-#include "Table.h"
-#include "color.h"
-#include "TDB.h"
-#include "T.h"
 #include "task.h"
 
 #ifdef HAVE_LIBNCURSES
@@ -856,118 +849,6 @@ std::string handleDuplicate (TDB& tdb, T& task, Config& conf)
 
   if (conf.get ("echo.command", true))
     out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
-
-  return out.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static const char* leftDelim = "<<";
-static const char* rightDelim = ">>";
-static std::string findValue (const std::string& text, const std::string& name)
-{
-  // Look for /^\s+name:\s+<<(.*)>>/
-  // Extract
-  // Trim
-  // Join
-  return "";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Introducing the Silver Bullet.  This feature is the catch-all fixative for
-// various other ills.  This is like opening up the hood and going in with a
-// wrench.  To be used sparingly.
-std::string handleEdit (TDB& tdb, T& task, Config& conf)
-{
-  std::stringstream out;
-  std::vector <T> all;
-  tdb.pendingT (all);
-
-  filterSequence (all, task);
-  foreach (seq, all)
-  {
-    // Check for file permissions.
-    std::string dataLocation = expandPath (conf.get ("data.location"));
-    if (access (dataLocation.c_str (), X_OK))
-      throw std::string ("Your data.location directory is not writable.");
-
-    // Create a temp file name in data.location.
-    std::stringstream pattern;
-    pattern << dataLocation << "/task." << seq->getId () << ".XXXXXX";
-    char cpattern [PATH_MAX];
-    strcpy (cpattern, pattern.str ().c_str ());
-    char* file = mktemp (cpattern);
-
-    // Format the contents, T -> text.
-    std::stringstream before;
-    before << "# The 'task edit <id>' command allows you to modify all aspects of a task"  << std::endl
-           << "# using a text editor.  What is shown below is a representation of the"     << std::endl
-           << "# task in all it's detail.  Modify what you wish, and if you save and"      << std::endl
-           << "# quit your editor, task will read this file and try to make sense of"      << std::endl
-           << "# what changed, and apply those changes.  If you quit your editor without"  << std::endl
-           << "# saving or making any modifications, task will do nothing."                << std::endl
-           << "#"                                                                          << std::endl
-           << "# Lines that begin with # are comments, and will be ignored by task."       << std::endl
-
-           << "# Edit only the items within the marks "
-           << leftDelim << " " << rightDelim << "."
-           << "All other edits will be ignored."                                           << std::endl
-
-           << "# Externally Visible"                                                       << std::endl
-           << "  ID:          "              << seq->getId ()                                << std::endl
-           << "  Status:      " << leftDelim << seq->getStatus ()              << rightDelim << std::endl
-           << "  Project:     " << leftDelim << seq->getAttribute ("project")  << rightDelim << std::endl
-           << "  Priority:    " << leftDelim << seq->getAttribute ("priority") << rightDelim << std::endl;
-
-    std::vector <std::string> tags;
-    seq->getTags (tags);
-    std::string allTags;
-    join (allTags, " ", tags);
-    before << "  Tags:        " << leftDelim << allTags                      << rightDelim << std::endl;
-
-    std::map <time_t, std::string> annotations;
-    seq->getAnnotations (annotations);
-    foreach (anno, annotations)
-      before << "  Annotation:  " << leftDelim << anno->first << " " << anno->second << rightDelim << std::endl;
-
-    before << "  Description: " << leftDelim << seq->getDescription ()       << rightDelim << std::endl
-
-           << "# Internals"                                                                << std::endl
-           << "  Start:       " << leftDelim << seq->getAttribute ("start")  << rightDelim << std::endl
-           << "  End:         " << leftDelim << seq->getAttribute ("end")    << rightDelim << std::endl
-           << "  Due:         " << leftDelim << seq->getAttribute ("due")    << rightDelim << std::endl
-           << "  Recur:       " << leftDelim << seq->getAttribute ("recur")  << rightDelim << std::endl
-           << "  Mask:        " << leftDelim << seq->getAttribute ("mask")   << rightDelim << std::endl
-           << "  iMask:       " << leftDelim << seq->getAttribute ("imask")  << rightDelim << std::endl;
-
-    // Write to file.
-    spit (file, before.str ());
-
-    // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
-    std::string editor = conf.get ("editor", "");
-    if (editor == "") editor = getenv ("VISUAL");
-    if (editor == "") editor = getenv ("EDITOR");
-    if (editor == "") editor = "vi";
-
-    // Launch the editor.
-    editor += " ";
-    editor += file;
-    system (editor.c_str ());
-
-    // Slurp file.
-    std::string after;
-    slurp (file, after, true);
-
-    // Update seq based on what can be parsed back out of the file.
-    seq->setAttribute   ("Project",  findValue (after, "Project"));
-    seq->setAttribute   ("Priority", findValue (after, "Priority"));
-    seq->setDescription (            findValue (after, "Description"));
-
-    // Modify task.
-    tdb.modifyT (*seq);
-
-    // Cleanup.
-    unlink (file);
-  }
 
   return out.str ();
 }

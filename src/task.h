@@ -90,13 +90,15 @@ std::string handleUndo (TDB&, T&, Config&);
 std::string handleColor (Config&);
 std::string handleAnnotate (TDB&, T&, Config&);
 std::string handleDuplicate (TDB&, T&, Config&);
-std::string handleEdit (TDB&, T&, Config&);
 T findT (int, const std::vector <T>&);
 int deltaAppend (T&, T&);
 int deltaDescription (T&, T&);
 int deltaTags (T&, T&);
 int deltaAttributes (T&, T&);
 int deltaSubstitutions (T&, T&);
+
+// edit.cpp
+std::string handleEdit (TDB&, T&, Config&);
 
 // report.cpp
 void filterSequence (std::vector<T>&, T&);
