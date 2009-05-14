@@ -485,10 +485,12 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
         table.addCell (row, 1, allTags);
       }
 
+      // uuid
       row = table.addRow ();
       table.addCell (row, 0, "UUID");
       table.addCell (row, 1, refTask.getUUID ());
 
+      // entry
       row = table.addRow ();
       table.addCell (row, 0, "Entered");
       Date dt (::atoi (refTask.getAttribute ("entry").c_str ()));
@@ -503,6 +505,24 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
       }
 
       table.addCell (row, 1, entry + " (" + age + ")");
+
+      // fg
+      std::string color = refTask.getAttribute ("fg");
+      if (color != "")
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Foreground color");
+        table.addCell (row, 1, color);
+      }
+
+      // bg
+      color = refTask.getAttribute ("bg");
+      if (color != "")
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Background color");
+        table.addCell (row, 1, color);
+      }
 
       out << optionalBlankLine (conf)
           << table.render ()
