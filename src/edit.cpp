@@ -144,7 +144,7 @@ static std::string formatTask (Config& conf, T task)
   task.getTags (tags);
   std::string allTags;
   join (allTags, " ", tags);
-  before << "# Separate the tags with spaces, like this:   tag1 tag2"                   << std::endl
+  before << "# Separate the tags with spaces, like this: tag1 tag2"                     << std::endl
          << "  Tags:              " << allTags                                          << std::endl
          << "# The description field is allowed to wrap and use multiple lines.  Task"  << std::endl
          << "# will combine them."                                                      << std::endl
@@ -164,7 +164,11 @@ static std::string formatTask (Config& conf, T task)
   std::map <time_t, std::string> annotations;
   task.getAnnotations (annotations);
   foreach (anno, annotations)
-    before << "  Annotation:        " << anno->first << " " << anno->second             << std::endl;
+  {
+    Date dt (anno->first);
+    before << "  Annotation:        " << dt.toString (conf.get ("dateformat", "m/d/Y"))
+           << " "                     << anno->second                                   << std::endl;
+  }
 
   before << "  Annotation:        "                                                     << std::endl
          << "  Annotation:        "                                                     << std::endl
@@ -346,15 +350,24 @@ static void parseTask (Config& conf, T& task, const std::string& after)
 */
 
   // recur
-/*
   value = findValue (after, "Recur:");
-  if (value != task.getAttribute ("recur") &&
-      validDuration (value))
+  if (value != task.getAttribute ("recur"))
   {
     if (value != "")
     {
-      std::cout << "Recurrence modified." << std::endl;
-      task.setAttribute ("recur", value);
+      if (validDuration (value))
+      {
+        std::cout << "Recurrence modified." << std::endl;
+        if (task.getAttribute ("due") != "")
+        {
+          task.setAttribute ("recur", value);
+          task.setStatus (T::recurring);
+        }
+        else
+          throw std::string ("A recurring task must have a due date.");
+      }
+      else
+        throw std::string ("Not a valid recurrence duration.");
     }
     else
     {
@@ -362,10 +375,8 @@ static void parseTask (Config& conf, T& task, const std::string& after)
       task.removeAttribute ("recur");
     }
   }
-*/
 
   // parent
-/*
   value = findValue (after, "Parent:");
   if (value != task.getAttribute ("parent"))
   {
@@ -380,10 +391,8 @@ static void parseTask (Config& conf, T& task, const std::string& after)
       task.removeAttribute ("parent");
     }
   }
-*/
 
   // fg
-/*
   value = findValue (after, "Foreground color:");
   if (value != task.getAttribute ("fg"))
   {
@@ -398,10 +407,8 @@ static void parseTask (Config& conf, T& task, const std::string& after)
       task.removeAttribute ("fg");
     }
   }
-*/
 
   // bg
-/*
   value = findValue (after, "Background color:");
   if (value != task.getAttribute ("bg"))
   {
@@ -416,10 +423,8 @@ static void parseTask (Config& conf, T& task, const std::string& after)
       task.removeAttribute ("bg");
     }
   }
-*/
 
   // Annotations
-/*
   std::map <time_t, std::string> annotations;
   std::string::size_type found = 0;
   while ((found = after.find ("Annotation:", found)) != std::string::npos)
@@ -430,20 +435,20 @@ static void parseTask (Config& conf, T& task, const std::string& after)
     if (eol != std::string::npos)
     {
       std::string value = trim (after.substr (
-        found + 11,
-        eol - (found + 11)), "\t ");
+        found,
+        eol - found), "\t ");
 
       std::string::size_type gap = value.find (" ");
-      Date when (value.substr (0, gap));
-      std::string text = trim (value.substr (gap, std::string::npos), "\t ");
-
-      annotations[when.toEpoch ()] = text;
-      std::cout << "annotation '" << when.toString () << "':''" << std::endl;
+      if (gap != std::string::npos)
+      {
+        Date when (value.substr (0, gap));
+        std::string text = trim (value.substr (gap, std::string::npos), "\t ");
+        annotations[when.toEpoch ()] = text;
+      }
     }
   }
 
   task.setAnnotations (annotations);
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

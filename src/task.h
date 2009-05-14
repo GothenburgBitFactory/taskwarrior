@@ -57,6 +57,7 @@ for (typeof (c) *foreach_p = & (c);                                \
 void parse (std::vector <std::string>&, std::string&, T&, Config&);
 bool validPriority (const std::string&);
 bool validDate (std::string&, Config&);
+bool validDuration (std::string&);
 void loadCustomReports (Config&);
 bool isCustomReport (const std::string&);
 void allCustomReports (std::vector <std::string>&);
