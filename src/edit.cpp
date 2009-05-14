@@ -31,6 +31,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <linux/limits.h>
+#include <string.h>
 #include "task.h"
 
 ////////////////////////////////////////////////////////////////////////////////

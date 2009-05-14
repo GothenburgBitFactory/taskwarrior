@@ -1,0 +1,107 @@
+.TH taskrc 5 2009-05-14 "Task 1.7.0" "User Manuals"
+
+.SH NAME
+taskrc \- Configuration file for the task(1) command
+
+.SH SYNOPSIS
+.B $HOME/.taskrc
+.B task rc:<directory-path>/.taskrc
+
+.SH DESCRIPTION
+.B task
+obtains its configuration data from a file called
+.I .taskrc
+\&. This file is normally located in the user's home directory:
+
+.RS
+$HOME/.taskrc
+.RE
+
+The default location can be overriden using the
+.I rc:
+attribute when running task:
+
+.RS
+$ task rc:<directory-path>/.taskrc
+.RE
+
+If
+.B task
+is run without an existing configuration file it will ask if it should create a default, sample
+.I .taskrc
+file in the user's home directory.
+
+The task configuration file consists of a series of "assignments" in each line. The "assignments" have the syntax:
+
+.RS
+<name-of-configuration-variable>=<value-to-be-set>
+.RE
+
+where:
+.RS
+.TP
+<name-of-configuration-variable>
+is one of the variables described below
+
+.TP
+<value-to-be-set>
+is the value the variable is to be set to.
+.RE
+
+and set a configuration variable to a certain value. The equal sign ("=") is used to separate the variable
+name from the value to be set. 
+
+The hash mark, or pounf sign ("#") is used as a "comment" character. It can be used to annotte the
+configuration file. It is placed at the beginning of a line and all text after the character to the
+end of the line is ignored.
+
+.SH CONFIGURATION VARIABLES
+Valid variable names and their default values are:
+
+
+.TP
+.B add [tags] [attrs] description
+
+.TP
+.B append [tags] [attrs] description
+
+.SH "CREDITS & COPYRIGHTS"
+task was written by P. Beckingham <task@beckingham.net>.
+.br
+Copyright (C) 2006 \- 2009 P. Beckingham
+
+This manpage was originally written by Federico Hernandez. It is based on the task man page, which
+was originally written by P.C. Shyamshankar.
+
+task is distributed under the GNU General Public License.  See
+http://www.gnu.org/licenses/gpl-2.0.txt for more information.
+
+.SH SEE ALSO
+.BR task (1)
+
+For more information regarding task, the following may be referenced:
+
+.TP
+<http://www.beckingham.net/task.html>
+The official site.
+
+.TP
+<http://groups.google.com/group/taskprogram>
+The official mailing list.
+
+.TP
+<http://github.com/pbeckingham/task/>
+The official code repository.
+
+.SH REPORTING BUGS
+Bugs in task may be reported to the issue-tracker at
+
+.RS
+<http://github.com/pbeckingham/task/issues>
+.RE
+
+or to the mailing list at
+
+.RS
+<http://groups.google.com/group/taskprogram>
+.RE
