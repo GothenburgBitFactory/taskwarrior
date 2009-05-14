@@ -155,6 +155,7 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "due=7\n");
         fprintf (out, "nag=You have higher priority tasks.\n");
         fprintf (out, "locking=on\n");
+        fprintf (out, "#editor=vi\n");
 
         fprintf (out, "color.overdue=bold_red\n");
         fprintf (out, "color.due=bold_yellow\n");

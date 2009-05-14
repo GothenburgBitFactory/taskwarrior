@@ -34,7 +34,10 @@
  + The task man page is now installed.  Try "man task" (thanks to Federico
    Hernandez and P.C. Shyamshankar).
  + Fixed bug that causes task to create a default .task directory, even if
-   .taskrc:data.location specified otherwise (thanks to Federico Hernandez).
+   data.location specified otherwise (thanks to Federico Hernandez).
+ + New "edit" command that fires up a text editor (uses 'editor' configuration
+   variable, $VISUAL or $EDITOR environment variable) and allows direct
+   editing of all editable task details.
 
 ------ old releases ------------------------------
 
