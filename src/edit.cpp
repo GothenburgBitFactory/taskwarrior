@@ -57,7 +57,7 @@ static std::string findSimpleValue (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static time_t findSimpleDate (
+static std::string findSimpleDate (
   Config& conf,
   const std::string& text,
   const std::string& name)
@@ -74,11 +74,13 @@ static time_t findSimpleDate (
 
       std::cout << "value '" << value << "'" << std::endl;
       Date dt (trim (value, "\t "), conf.get ("dateformat", "m/d/Y"));
-      return dt.toEpoch ();
+      char epoch [16];
+      sprintf (epoch, "%d", (int)dt.toEpoch ());
+      return std::string (epoch);
     }
   }
 
-  return 0;
+  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -155,6 +157,7 @@ static std::string formatTask (Config& conf, T task)
          << "  Due:               " << formatDate (conf, task, "due")                   << std::endl
          << "  Until:             " << formatDate (conf, task, "until")                 << std::endl
          << "  Recur:             " << task.getAttribute ("recur")                      << std::endl
+         << "  Parent:            " << task.getAttribute ("parent")                     << std::endl
          << "  Foreground color:  " << task.getAttribute ("fg")                         << std::endl
          << "  Background color:  " << task.getAttribute ("bg")                         << std::endl
          << "# Annotations look like this: <date> <text>, and there can be any number"  << std::endl
@@ -178,110 +181,226 @@ static void parseTask (Config& conf, T& task, const std::string& after)
 
   // Project
   value = findSimpleValue (after, "Project:");
-  if (value != "" &&
-     task.getAttribute ("project") != value)
+  if (task.getAttribute ("project") != value)
   {
-    std::cout << "Project modified." << std::endl;
-    task.setAttribute ("project", value);
+    if (value != "")
+    {
+      std::cout << "Project modified." << std::endl;
+      task.setAttribute ("project", value);
+    }
+    else
+    {
+      std::cout << "Project deleted." << std::endl;
+      task.removeAttribute ("project");
+    }
   }
 
   // Priority
   value = findSimpleValue (after, "Priority:");
-  if (value != "" &&
-      validPriority (value) &&
-      task.getAttribute ("priority") != value)
+  if (task.getAttribute ("priority") != value)
   {
-    std::cout << "Priority modified." << std::endl;
-    task.setAttribute ("priority", value);
-  }
-
-  // Tags
-/*
-  value = findSimpleValue (after, "tags");
-  std::vector <std::string> tags;
-  split (tags, " ", value);
-*/
-
-  // TODO Disallow blank description.
-//  value = findMultilineValue (after, "Description: ");
-//  if (value != "")
-//  {
-//    std::cout << "Description modified." << std::endl;
-//    task.setDescription (value);
-//  }
-
-  // start
-  time_t dt = findSimpleDate (conf, after, "Created:");
-  if (dt != 0)
-  {
-    std::cout << "Creation date modified." << std::endl;
-    char epoch[16];
-    sprintf (epoch, "%d", (int) dt);
-    task.setAttribute ("entry", epoch);
-  }
-  else
-    std::cout << "Cannot remove creation date" << std::endl;
-
-  // end
-  dt = findSimpleDate (conf, after, "Ended:");
-  if (dt != 0)
-  {
-    std::cout << "Done date modified." << std::endl;
-    char epoch[16];
-    sprintf (epoch, "%d", (int) dt);
-    task.setAttribute ("end", epoch);
-  }
-  else
-  {
-    std::cout << "Done date removed." << std::endl;
-    task.removeAttribute ("end");
-  }
-
-  // due
-  dt = findSimpleDate (conf, after, "Due:");
-  if (dt != 0)
-  {
-    std::cout << "Due date modified." << std::endl;
-    char epoch[16];
-    sprintf (epoch, "%d", (int) dt);
-    task.setAttribute ("due", epoch);
-  }
-  else
-  {
-    if (task.getStatus () == T::recurring ||
-        task.getAttribute ("parent") != "")
+    if (value != "")
     {
-      std::cout << "Cannot remove a due date from a recurring task." << std::endl;
+      std::cout << "Priority modified." << std::endl;
+      task.setAttribute ("priority", value);
     }
     else
     {
-      std::cout << "Due date removed." << std::endl;
-      task.removeAttribute ("due");
+      std::cout << "Priority deleted." << std::endl;
+      task.removeAttribute ("priority");
+    }
+  }
+
+  // Tags
+  value = findSimpleValue (after, "tags");
+  std::vector <std::string> tags;
+  split (tags, value, ' ');
+  task.removeTags ();
+  task.addTags (tags);
+
+  // description.
+  value = findSimpleValue (after, "Description: ");
+  if (task.getDescription () != value)
+  {
+    if (value != "")
+    {
+      std::cout << "Description modified." << std::endl;
+      task.setDescription (value);
+    }
+    else
+      std::cout << "Cannot remove description." << std::endl;
+  }
+
+  // entry
+  value = findSimpleDate (conf, after, "Created:");
+  if (task.getAttribute ("entry") != value)
+  {
+    if (value != "")
+    {
+      std::cout << "Creation date modified." << std::endl;
+      task.setAttribute ("entry", value);
+    }
+    else
+      std::cout << "Cannot remove creation date." << std::endl;
+  }
+
+  // start
+  value = findSimpleDate (conf, after, "Start:");
+  if (task.getAttribute ("start") != value)
+  {
+    if (value != "")
+    {
+      std::cout << "Start date modified." << std::endl;
+      task.setAttribute ("start", value);
+    }
+    else
+      std::cout << "Cannot remove start date" << std::endl;
+  }
+
+  // end
+  value = findSimpleDate (conf, after, "Ended:");
+  if (task.getAttribute ("end") != value)
+  {
+    if (value != "")
+    {
+      std::cout << "Done date modified." << std::endl;
+      task.setAttribute ("end", value);
+    }
+    else
+    {
+      std::cout << "Done date removed." << std::endl;
+      task.removeAttribute ("end");
+    }
+  }
+
+  // due
+  value = findSimpleDate (conf, after, "Due:");
+  if (task.getAttribute ("due") != value)
+  {
+    if (value != "")
+    {
+      std::cout << "Due date modified." << std::endl;
+      task.setAttribute ("due", value);
+    }
+    else
+    {
+      if (task.getStatus () == T::recurring ||
+          task.getAttribute ("parent") != "")
+      {
+        std::cout << "Cannot remove a due date from a recurring task." << std::endl;
+      }
+      else
+      {
+        std::cout << "Due date removed." << std::endl;
+        task.removeAttribute ("due");
+      }
     }
   }
 
   // until
-  dt = findSimpleDate (conf, after, "Until:");
-  if (dt != 0)
+  value = findSimpleDate (conf, after, "Until:");
+  if (task.getAttribute ("until") != value)
   {
-    std::cout << "Until date modified." << std::endl;
-    char epoch[16];
-    sprintf (epoch, "%d", (int) dt);
-    task.setAttribute ("until", epoch);
-  }
-  else
-  {
-    std::cout << "Until date removed." << std::endl;
-    task.removeAttribute ("until");
+    if (value != "")
+    {
+      std::cout << "Until date modified." << std::endl;
+      task.setAttribute ("until", value);
+    }
+    else
+    {
+      std::cout << "Until date removed." << std::endl;
+      task.removeAttribute ("until");
+    }
   }
 
-  // TODO recur
-  // TODO parent
-  // TODO mask
-  // TODO imask
-  // TODO fg
-  // TODO bg
-  // TODO Annotations
+  // recur
+  value = findSimpleValue (after, "Recur:");
+  if (value != task.getAttribute ("recur"))
+  {
+    if (value != "")
+    {
+      std::cout << "Recurrence modified." << std::endl;
+      task.setAttribute ("recur", value);
+    }
+    else
+    {
+      std::cout << "Recurrence removed." << std::endl;
+      task.removeAttribute ("recur");
+    }
+  }
+
+  // parent
+  value = findSimpleValue (after, "Parent:");
+  if (value != task.getAttribute ("parent"))
+  {
+    if (value != "")
+    {
+      std::cout << "Parent UUID modified." << std::endl;
+      task.setAttribute ("parent", value);
+    }
+    else
+    {
+      std::cout << "Parent UUID removed." << std::endl;
+      task.removeAttribute ("parent");
+    }
+  }
+
+  // fg
+  value = findSimpleValue (after, "Foreground color:");
+  if (value != task.getAttribute ("fg"))
+  {
+    if (value != "")
+    {
+      std::cout << "Foreground color modified." << std::endl;
+      task.setAttribute ("fg", value);
+    }
+    else
+    {
+      std::cout << "Foreground color removed." << std::endl;
+      task.removeAttribute ("fg");
+    }
+  }
+
+  // bg
+  value = findSimpleValue (after, "Background color:");
+  if (value != task.getAttribute ("bg"))
+  {
+    if (value != "")
+    {
+      std::cout << "Background color modified." << std::endl;
+      task.setAttribute ("bg", value);
+    }
+    else
+    {
+      std::cout << "Background color removed." << std::endl;
+      task.removeAttribute ("bg");
+    }
+  }
+
+  // Annotations
+  std::map <time_t, std::string> annotations;
+  std::string::size_type found = 0;
+  while ((found = after.find ("Annotation:", found)) != std::string::npos)
+  {
+    found += 11;
+
+    std::string::size_type eol = after.find ("\n", found);
+    if (eol != std::string::npos)
+    {
+      std::string value = trim (after.substr (
+        found + 11,
+        eol - (found + 11)), "\t ");
+
+      std::string::size_type gap = value.find (" ");
+      Date when (value.substr (0, gap));
+      std::string text = trim (value.substr (gap, std::string::npos), "\t ");
+
+      annotations[when.toEpoch ()] = text;
+      std::cout << "annotation '" << when.toString () << "':''" << std::endl;
+    }
+  }
+
+  task.setAnnotations (annotations);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
