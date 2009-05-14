@@ -67,14 +67,17 @@ static std::string findDate (
     std::string::size_type eol = text.find ("\n", found);
     if (eol != std::string::npos)
     {
-      std::string value = text.substr (
+      std::string value = trim (text.substr (
         found + name.length (),
-        eol - (found + name.length ()));
+        eol - (found + name.length ())), "\t ");
 
-      Date dt (trim (value, "\t "), conf.get ("dateformat", "m/d/Y"));
-      char epoch [16];
-      sprintf (epoch, "%d", (int)dt.toEpoch ());
-      return std::string (epoch);
+      if (value != "")
+      {
+        Date dt (value, conf.get ("dateformat", "m/d/Y"));
+        char epoch [16];
+        sprintf (epoch, "%d", (int)dt.toEpoch ());
+        return std::string (epoch);
+      }
     }
   }
 
@@ -300,14 +303,21 @@ static void parseTask (Config& conf, T& task, const std::string& after)
 */
 
   // due
-/*
   value = findDate (conf, after, "Due:");
   if (value != "")
   {
-    Date original (::atoi (task.getAttribute ("due").c_str ()));
     Date edited (::atoi (value.c_str ()));
 
-    if (!original.sameDay (edited))
+    if (task.getAttribute ("due") != "")
+    {
+      Date original (::atoi (task.getAttribute ("due").c_str ()));
+      if (!original.sameDay (edited))
+      {
+        std::cout << "Due date modified." << std::endl;
+        task.setAttribute ("due", value);
+      }
+    }
+    else
     {
       std::cout << "Due date modified." << std::endl;
       task.setAttribute ("due", value);
@@ -315,28 +325,37 @@ static void parseTask (Config& conf, T& task, const std::string& after)
   }
   else
   {
-    if (task.getStatus () == T::recurring ||
-        task.getAttribute ("parent") != "")
+    if (task.getAttribute ("due") != "")
     {
-      std::cout << "Cannot remove a due date from a recurring task." << std::endl;
-    }
-    else
-    {
-      std::cout << "Due date removed." << std::endl;
-      task.removeAttribute ("due");
+      if (task.getStatus () == T::recurring ||
+          task.getAttribute ("parent") != "")
+      {
+        std::cout << "Cannot remove a due date from a recurring task." << std::endl;
+      }
+      else
+      {
+        std::cout << "Due date removed." << std::endl;
+        task.removeAttribute ("due");
+      }
     }
   }
-*/
 
   // until
-/*
   value = findDate (conf, after, "Until:");
   if (value != "")
   {
-    Date original (::atoi (task.getAttribute ("until").c_str ()));
     Date edited (::atoi (value.c_str ()));
 
-    if (!original.sameDay (edited))
+    if (task.getAttribute ("until") != "")
+    {
+      Date original (::atoi (task.getAttribute ("until").c_str ()));
+      if (!original.sameDay (edited))
+      {
+        std::cout << "Until date modified." << std::endl;
+        task.setAttribute ("until", value);
+      }
+    }
+    else
     {
       std::cout << "Until date modified." << std::endl;
       task.setAttribute ("until", value);
@@ -344,10 +363,12 @@ static void parseTask (Config& conf, T& task, const std::string& after)
   }
   else
   {
-    std::cout << "Until date removed." << std::endl;
-    task.removeAttribute ("until");
+    if (task.getAttribute ("until") != "")
+    {
+      std::cout << "Until date removed." << std::endl;
+      task.removeAttribute ("until");
+    }
   }
-*/
 
   // recur
   value = findValue (after, "Recur:");
@@ -459,7 +480,7 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
 {
   std::stringstream out;
   std::vector <T> all;
-  tdb.pendingT (all);
+  tdb.allPendingT (all);
 
   filterSequence (all, task);
   foreach (seq, all)
