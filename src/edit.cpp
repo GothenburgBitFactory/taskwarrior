@@ -238,13 +238,12 @@ static void parseTask (Config& conf, T& task, const std::string& after)
   }
 
   // entry
-/*
   value = findDate (conf, after, "Created:");
   if (value != "")
   {
-    Date original (::atoi (task.getAttribute ("entry").c_str ()));
     Date edited (::atoi (value.c_str ()));
 
+    Date original (::atoi (task.getAttribute ("entry").c_str ()));
     if (!original.sameDay (edited))
     {
       std::cout << "Creation date modified." << std::endl;
@@ -252,18 +251,24 @@ static void parseTask (Config& conf, T& task, const std::string& after)
     }
   }
   else
-    std::cout << "Cannot remove creation date." << std::endl;
-*/
+    throw std::string ("Cannot remove creation date");
 
   // start
-/*
-  value = findDate (conf, after, "Start:");
+  value = findDate (conf, after, "Started:");
   if (value != "")
   {
-    Date original (::atoi (task.getAttribute ("start").c_str ()));
     Date edited (::atoi (value.c_str ()));
 
-    if (!original.sameDay (edited))
+    if (task.getAttribute ("start") != "")
+    {
+      Date original (::atoi (task.getAttribute ("start").c_str ()));
+      if (!original.sameDay (edited))
+      {
+        std::cout << "Start date modified." << std::endl;
+        task.setAttribute ("start", value);
+      }
+    }
+    else
     {
       std::cout << "Start date modified." << std::endl;
       task.setAttribute ("start", value);
@@ -271,36 +276,40 @@ static void parseTask (Config& conf, T& task, const std::string& after)
   }
   else
   {
-    Date original (::atoi (task.getAttribute ("start").c_str ()));
-    Date edited (::atoi (value.c_str ()));
-
-    if (!original.sameDay (edited))
+    if (task.getAttribute ("start") != "")
     {
+      std::cout << "Start date removed." << std::endl;
+      task.removeAttribute ("start");
     }
-
-    std::cout << "Cannot remove start date." << std::endl;
   }
-*/
+
   // end
-/*
   value = findDate (conf, after, "Ended:");
   if (value != "")
   {
-    Date original (::atoi (task.getAttribute ("end").c_str ()));
     Date edited (::atoi (value.c_str ()));
 
-    if (!original.sameDay (edited))
+    if (task.getAttribute ("end") != "")
     {
-      std::cout << "Done date modified." << std::endl;
-      task.setAttribute ("end", value);
+      Date original (::atoi (task.getAttribute ("end").c_str ()));
+      if (!original.sameDay (edited))
+      {
+        std::cout << "Done date modified." << std::endl;
+        task.setAttribute ("end", value);
+      }
     }
+    else if (task.getStatus () != T::deleted)
+      throw std::string ("Cannot set a done date on a pending task.");
   }
   else
   {
-    std::cout << "Done date removed." << std::endl;
-    task.removeAttribute ("end");
+    if (task.getAttribute ("end") != "")
+    {
+      std::cout << "Done date removed." << std::endl;
+      task.setStatus (T::pending);
+      task.removeAttribute ("end");
+    }
   }
-*/
 
   // due
   value = findDate (conf, after, "Due:");
@@ -393,7 +402,11 @@ static void parseTask (Config& conf, T& task, const std::string& after)
     else
     {
       std::cout << "Recurrence removed." << std::endl;
+      task.setStatus (T::pending);
       task.removeAttribute ("recur");
+      task.removeAttribute ("until");
+      task.removeAttribute ("mask");
+      task.removeAttribute ("imask");
     }
   }
 
