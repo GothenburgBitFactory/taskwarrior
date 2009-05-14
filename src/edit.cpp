@@ -34,7 +34,7 @@
 #include "task.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string findSimpleValue (
+static std::string findValue (
   const std::string& text,
   const std::string& name)
 {
@@ -48,7 +48,6 @@ static std::string findSimpleValue (
         found + name.length (),
         eol - (found + name.length ()));
 
-      std::cout << "value '" << value << "'" << std::endl;
       return trim (value, "\t ");
     }
   }
@@ -57,7 +56,7 @@ static std::string findSimpleValue (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string findSimpleDate (
+static std::string findDate (
   Config& conf,
   const std::string& text,
   const std::string& name)
@@ -72,7 +71,6 @@ static std::string findSimpleDate (
         found + name.length (),
         eol - (found + name.length ()));
 
-      std::cout << "value '" << value << "'" << std::endl;
       Date dt (trim (value, "\t "), conf.get ("dateformat", "m/d/Y"));
       char epoch [16];
       sprintf (epoch, "%d", (int)dt.toEpoch ());
@@ -177,10 +175,8 @@ static std::string formatTask (Config& conf, T task)
 ////////////////////////////////////////////////////////////////////////////////
 static void parseTask (Config& conf, T& task, const std::string& after)
 {
-  std::string value;
-
-  // Project
-  value = findSimpleValue (after, "Project:");
+  // project
+  std::string value = findValue (after, "Project:");
   if (task.getAttribute ("project") != value)
   {
     if (value != "")
@@ -195,14 +191,17 @@ static void parseTask (Config& conf, T& task, const std::string& after)
     }
   }
 
-  // Priority
-  value = findSimpleValue (after, "Priority:");
+  // priority
+  value = findValue (after, "Priority:");
   if (task.getAttribute ("priority") != value)
   {
     if (value != "")
     {
-      std::cout << "Priority modified." << std::endl;
-      task.setAttribute ("priority", value);
+      if (validPriority (value))
+      {
+        std::cout << "Priority modified." << std::endl;
+        task.setAttribute ("priority", value);
+      }
     }
     else
     {
@@ -211,15 +210,15 @@ static void parseTask (Config& conf, T& task, const std::string& after)
     }
   }
 
-  // Tags
-  value = findSimpleValue (after, "tags");
+  // tags
+  value = findValue (after, "Tags:");
   std::vector <std::string> tags;
   split (tags, value, ' ');
   task.removeTags ();
   task.addTags (tags);
 
   // description.
-  value = findSimpleValue (after, "Description: ");
+  value = findValue (after, "Description: ");
   if (task.getDescription () != value)
   {
     if (value != "")
@@ -228,94 +227,129 @@ static void parseTask (Config& conf, T& task, const std::string& after)
       task.setDescription (value);
     }
     else
-      std::cout << "Cannot remove description." << std::endl;
+      throw std::string ("Cannot remove description.");
   }
 
   // entry
-  value = findSimpleDate (conf, after, "Created:");
-  if (task.getAttribute ("entry") != value)
+/*
+  value = findDate (conf, after, "Created:");
+  if (value != "")
   {
-    if (value != "")
+    Date original (::atoi (task.getAttribute ("entry").c_str ()));
+    Date edited (::atoi (value.c_str ()));
+
+    if (!original.sameDay (edited))
     {
       std::cout << "Creation date modified." << std::endl;
       task.setAttribute ("entry", value);
     }
-    else
-      std::cout << "Cannot remove creation date." << std::endl;
   }
+  else
+    std::cout << "Cannot remove creation date." << std::endl;
+*/
 
   // start
-  value = findSimpleDate (conf, after, "Start:");
-  if (task.getAttribute ("start") != value)
+/*
+  value = findDate (conf, after, "Start:");
+  if (value != "")
   {
-    if (value != "")
+    Date original (::atoi (task.getAttribute ("start").c_str ()));
+    Date edited (::atoi (value.c_str ()));
+
+    if (!original.sameDay (edited))
     {
       std::cout << "Start date modified." << std::endl;
       task.setAttribute ("start", value);
     }
-    else
-      std::cout << "Cannot remove start date" << std::endl;
   }
-
-  // end
-  value = findSimpleDate (conf, after, "Ended:");
-  if (task.getAttribute ("end") != value)
+  else
   {
-    if (value != "")
+    Date original (::atoi (task.getAttribute ("start").c_str ()));
+    Date edited (::atoi (value.c_str ()));
+
+    if (!original.sameDay (edited))
+    {
+    }
+
+    std::cout << "Cannot remove start date." << std::endl;
+  }
+*/
+  // end
+/*
+  value = findDate (conf, after, "Ended:");
+  if (value != "")
+  {
+    Date original (::atoi (task.getAttribute ("end").c_str ()));
+    Date edited (::atoi (value.c_str ()));
+
+    if (!original.sameDay (edited))
     {
       std::cout << "Done date modified." << std::endl;
       task.setAttribute ("end", value);
     }
-    else
-    {
-      std::cout << "Done date removed." << std::endl;
-      task.removeAttribute ("end");
-    }
   }
+  else
+  {
+    std::cout << "Done date removed." << std::endl;
+    task.removeAttribute ("end");
+  }
+*/
 
   // due
-  value = findSimpleDate (conf, after, "Due:");
-  if (task.getAttribute ("due") != value)
+/*
+  value = findDate (conf, after, "Due:");
+  if (value != "")
   {
-    if (value != "")
+    Date original (::atoi (task.getAttribute ("due").c_str ()));
+    Date edited (::atoi (value.c_str ()));
+
+    if (!original.sameDay (edited))
     {
       std::cout << "Due date modified." << std::endl;
       task.setAttribute ("due", value);
     }
+  }
+  else
+  {
+    if (task.getStatus () == T::recurring ||
+        task.getAttribute ("parent") != "")
+    {
+      std::cout << "Cannot remove a due date from a recurring task." << std::endl;
+    }
     else
     {
-      if (task.getStatus () == T::recurring ||
-          task.getAttribute ("parent") != "")
-      {
-        std::cout << "Cannot remove a due date from a recurring task." << std::endl;
-      }
-      else
-      {
-        std::cout << "Due date removed." << std::endl;
-        task.removeAttribute ("due");
-      }
+      std::cout << "Due date removed." << std::endl;
+      task.removeAttribute ("due");
     }
   }
+*/
 
   // until
-  value = findSimpleDate (conf, after, "Until:");
-  if (task.getAttribute ("until") != value)
+/*
+  value = findDate (conf, after, "Until:");
+  if (value != "")
   {
-    if (value != "")
+    Date original (::atoi (task.getAttribute ("until").c_str ()));
+    Date edited (::atoi (value.c_str ()));
+
+    if (!original.sameDay (edited))
     {
       std::cout << "Until date modified." << std::endl;
       task.setAttribute ("until", value);
     }
-    else
-    {
-      std::cout << "Until date removed." << std::endl;
-      task.removeAttribute ("until");
-    }
   }
+  else
+  {
+    std::cout << "Until date removed." << std::endl;
+    task.removeAttribute ("until");
+  }
+*/
 
   // recur
-  value = findSimpleValue (after, "Recur:");
-  if (value != task.getAttribute ("recur"))
+/*
+  value = findValue (after, "Recur:");
+  if (value != task.getAttribute ("recur") &&
+      validDuration (value))
   {
     if (value != "")
     {
@@ -328,9 +362,11 @@ static void parseTask (Config& conf, T& task, const std::string& after)
       task.removeAttribute ("recur");
     }
   }
+*/
 
   // parent
-  value = findSimpleValue (after, "Parent:");
+/*
+  value = findValue (after, "Parent:");
   if (value != task.getAttribute ("parent"))
   {
     if (value != "")
@@ -344,9 +380,11 @@ static void parseTask (Config& conf, T& task, const std::string& after)
       task.removeAttribute ("parent");
     }
   }
+*/
 
   // fg
-  value = findSimpleValue (after, "Foreground color:");
+/*
+  value = findValue (after, "Foreground color:");
   if (value != task.getAttribute ("fg"))
   {
     if (value != "")
@@ -360,9 +398,11 @@ static void parseTask (Config& conf, T& task, const std::string& after)
       task.removeAttribute ("fg");
     }
   }
+*/
 
   // bg
-  value = findSimpleValue (after, "Background color:");
+/*
+  value = findValue (after, "Background color:");
   if (value != task.getAttribute ("bg"))
   {
     if (value != "")
@@ -376,8 +416,10 @@ static void parseTask (Config& conf, T& task, const std::string& after)
       task.removeAttribute ("bg");
     }
   }
+*/
 
   // Annotations
+/*
   std::map <time_t, std::string> annotations;
   std::string::size_type found = 0;
   while ((found = after.find ("Annotation:", found)) != std::string::npos)
@@ -401,6 +443,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
   }
 
   task.setAnnotations (annotations);
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -434,15 +477,19 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
 
     // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
     std::string editor = conf.get ("editor", "");
-    if (editor == "") editor = getenv ("VISUAL");
-    if (editor == "") editor = getenv ("EDITOR");
+    char* peditor = getenv ("VISUAL");
+    if (editor == "" && peditor) editor = std::string (peditor);
+    peditor = getenv ("EDITOR");
+    if (editor == "" && peditor) editor = std::string (peditor);
     if (editor == "") editor = "vi";
+
+    // Complete the command line.
+    editor += " ";
+    editor += file;
 
 ARE_THESE_REALLY_HARMFUL:
     // Launch the editor.
     std::cout << "Launching '" << editor << "' now..." << std::endl;
-    editor += " ";
-    editor += file;
     system (editor.c_str ());
     std::cout << "Editing complete." << std::endl;
 
@@ -476,7 +523,7 @@ ARE_THESE_REALLY_HARMFUL:
 
       if (oops)
       {
-        std::cout << problem << std::endl;
+        std::cout << "Error: " << problem << std::endl;
 
         // Preserve the edits.
         before = after;
