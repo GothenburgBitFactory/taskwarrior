@@ -31,7 +31,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <linux/limits.h>
+#include <limits.h>
 #include <string.h>
 #include "task.h"
 
@@ -510,7 +510,8 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
     pattern << dataLocation << "/task." << seq->getId () << ".XXXXXX";
     char cpattern [PATH_MAX];
     strcpy (cpattern, pattern.str ().c_str ());
-    char* file = mktemp (cpattern);
+    mkstemp (cpattern);
+    char* file = cpattern;
 
     // Format the contents, T -> text, write to a file.
     std::string before = formatTask (conf, *seq);

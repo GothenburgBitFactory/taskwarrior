@@ -803,7 +803,7 @@ void Table::optimize (std::string& output) const
   Much better.
 */
 
-    char* patterns[] =
+    char patterns[5][16] =
     {
       "        \n",
       "    \n",
