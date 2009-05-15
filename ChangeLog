@@ -1,6 +1,11 @@
 
 ------ current release ---------------------------
 
+1.8.0 (?)
+ + ?
+
+------ old releases ------------------------------
+
 1.7.0 (5/14/2009)
  + Improved the errors when parsing a corrupt or unrecognized pending.data
    or completed.data file (thanks to T. Charles Yun).
@@ -38,8 +43,6 @@
  + New "edit" command that fires up a text editor (uses 'editor' configuration
    variable, $VISUAL or $EDITOR environment variable) and allows direct
    editing of all editable task details.
-
------- old releases ------------------------------
 
 1.6.1 (4/24/2009) 1b6faf57c998617024d0348a87b941a5d2ab2249
   + Fixed bug that caused new, first-time .taskrc files to be written without
