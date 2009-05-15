@@ -6,7 +6,7 @@
 
 ------ old releases ------------------------------
 
-1.7.0 (5/14/2009)
+1.7.0 (5/14/2009) f6b8b39d8b4a85c30a457e9e78b582b74531bfe4
  + Improved the errors when parsing a corrupt or unrecognized pending.data
    or completed.data file (thanks to T. Charles Yun).
  + Added details to the "info" report about recurring tasks (thanks to T.
@@ -36,8 +36,8 @@
    to /usr/local/share/task (thanks to Federico Hernandez).
  + Applied patch to allow task to build on Arch Linux (thanks to Johan Friis).
  + Applied patch to fix a UUID bug on Solaris 8 (thanks to Steven de Brouwer).
- + The task man page is now installed.  Try "man task" (thanks to Federico
-   Hernandez and P.C. Shyamshankar).
+ + The task and taskrc man pages are here.  Try "man task", "man taskrc"
+   (thanks to Federico Hernandez and P.C. Shyamshankar).
  + Fixed bug that causes task to create a default .task directory, even if
    data.location specified otherwise (thanks to Federico Hernandez).
  + New "edit" command that fires up a text editor (uses 'editor' configuration
@@ -285,7 +285,7 @@
   + Made unit tests compile and run again.
   + Removed tests from distibution.
 
-0.9.6 (5/13/208)
+0.9.6 (5/13/2008)
   + Corrected wrong include file in Table.cpp.
   + Replaced color management code.
   + Improved color rules code.
