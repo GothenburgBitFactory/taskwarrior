@@ -27,15 +27,21 @@
 #ifndef INCLUDED_SEQUENCE
 #define INCLUDED_SEQUENCE
 
+#include <vector>
+#include <string>
+
 class Sequence
 {
 public:
-  Sequence ();                    // Default constructor
+  Sequence ();                           // Default constructor
   Sequence (const Sequence&);            // Copy constructor
   Sequence& operator= (const Sequence&); // Assignment operator
-  ~Sequence ();                   // Destructor
+  ~Sequence ();                          // Destructor
+
+  void parse (const std::string&);
 
 private:
+  std::vector <int> mSequence;
 };
 
 #endif

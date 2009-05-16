@@ -27,20 +27,20 @@
 #ifndef INCLUDED_T
 #define INCLUDED_T
 
+#include <string>
+
 class T
 {
 public:
   T ();                    // Default constructor
   T (const T&);            // Copy constructor
+  T (const std::string&);  // Parse
   T& operator= (const T&); // Assignment operator
   ~T ();                   // Destructor
 
-/*
-T (const std::string&);
-composeF4
-composeCSV
-parse
-*/
+  std::string composeF4 ();
+  std::string composeCSV ();
+  void parse (const std::string&);
 
 private:
 };

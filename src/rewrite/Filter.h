@@ -27,21 +27,23 @@
 #ifndef INCLUDED_FILTER
 #define INCLUDED_FILTER
 
+#include <vector>
+#include "Att.h"
+#include "T.h"
+
 class Filter
 {
 public:
-  Filter ();                    // Default constructor
+  Filter ();                         // Default constructor
   Filter (const Filter&);            // Copy constructor
   Filter& operator= (const Filter&); // Assignment operator
-  ~Filter ();                   // Destructor
+  ~Filter ();                        // Destructor
 
-/*
-add (Att&)
-bool Filter::pass (T&)
-Filter::parse ()
-*/
+  void add (Att&);
+  bool pass (T&);
 
 private:
+  std::vector <Att> mAtts;
 };
 
 #endif

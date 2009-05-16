@@ -35,15 +35,27 @@ Context::Context ()
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context (const Context& other)
 {
-//  mOne = other.mOne;
+  throw std::string ("unimplemented");
+//  config   = other.config;
+  filter   = other.filter;
+  keymap   = other.keymap;
+  sequence = other.sequence;
+  task     = other.task;
+  tdb      = other.tdb;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Context& Context::operator= (const Context& other)
 {
+  throw std::string ("unimplemented");
   if (this != &other)
   {
-//    mOne = other.mOne;
+//    config   = other.config;
+    filter   = other.filter;
+    keymap   = other.keymap;
+    sequence = other.sequence;
+    task     = other.task;
+    tdb      = other.tdb;
   }
 
   return *this;
@@ -57,15 +69,17 @@ Context::~Context ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::initialize ()
 {
-  // TODO Load config
-  // TODO Load pending.data
-  // TODO Load completed.data
-  // TODO Load deleted.data
+  throw std::string ("unimplemented");
+  // TODO Load config.
+  // TODO Load pending.data.
+  // TODO Load completed.data.
+  // TODO Load deleted.data.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Context::commandLine (int argc, char** argv)
 {
+  throw std::string ("unimplemented");
   // TODO Support rc: override.
   return 0;
 }
@@ -73,6 +87,11 @@ int Context::commandLine (int argc, char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 int Context::run ()
 {
+  throw std::string ("unimplemented");
+  // TODO Dispatch to command handlers.
+  // TODO Auto shadow update.
+  // TODO Auto gc.
+
   return 0;
 }
 

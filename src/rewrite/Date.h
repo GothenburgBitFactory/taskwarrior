@@ -27,19 +27,22 @@
 #ifndef INCLUDED_DATE
 #define INCLUDED_DATE
 
+#include <string>
+#include <time.h>
+
 class Date
 {
 public:
-  Date ();                    // Default constructor
+  Date ();                       // Default constructor
   Date (const Date&);            // Copy constructor
+  Date (time_t);                 // Copy constructor
   Date& operator= (const Date&); // Assignment operator
-  ~Date ();                   // Destructor
+  ~Date ();                      // Destructor
 
-/*
-bool isDate (const std::string&)
-*/
+  void parse (const std::string&);
 
 private:
+  time_t mTime;
 };
 
 #endif

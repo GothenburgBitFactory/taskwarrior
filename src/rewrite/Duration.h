@@ -27,19 +27,20 @@
 #ifndef INCLUDED_DURATION
 #define INCLUDED_DURATION
 
+#include <string>
+
 class Duration
 {
 public:
-  Duration ();                    // Default constructor
+  Duration ();                           // Default constructor
   Duration (const Duration&);            // Copy constructor
   Duration& operator= (const Duration&); // Assignment operator
-  ~Duration ();                   // Destructor
+  ~Duration ();                          // Destructor
 
-/*
-bool isDuration (const std::string&)
-*/
+  void parse (const std::string&);
 
 private:
+  int mSeconds;
 };
 
 #endif

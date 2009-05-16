@@ -27,15 +27,19 @@
 #ifndef INCLUDED_RECORD
 #define INCLUDED_RECORD
 
+#include <vector>
+#include "Att.h"
+
 class Record
 {
 public:
-  Record ();                    // Default constructor
+  Record ();                         // Default constructor
   Record (const Record&);            // Copy constructor
   Record& operator= (const Record&); // Assignment operator
-  ~Record ();                   // Destructor
+  ~Record ();                        // Destructor
 
 private:
+  std::vector <Att> mAtts;
 };
 
 #endif

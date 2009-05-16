@@ -27,15 +27,24 @@
 #ifndef INCLUDED_KEYMAP
 #define INCLUDED_KEYMAP
 
+#include <string>
+
 class Keymap
 {
 public:
-  Keymap ();                    // Default constructor
+  Keymap ();                         // Default constructor
   Keymap (const Keymap&);            // Copy constructor
   Keymap& operator= (const Keymap&); // Assignment operator
-  ~Keymap ();                   // Destructor
+  ~Keymap ();                        // Destructor
+
+  void load (const std::string&);    // Load the map file
+/*
+  real ();                           // Convert soft to real
+  soft ();                           // Convert real to soft
+*/
 
 private:
+  // TODO Structure for mapping strings to keys.
 };
 
 #endif

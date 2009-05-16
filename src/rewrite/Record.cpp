@@ -35,15 +35,17 @@ Record::Record ()
 ////////////////////////////////////////////////////////////////////////////////
 Record::Record (const Record& other)
 {
-//  mOne = other.mOne;
+  throw std::string ("unimplemented");
+  mAtts = other.mAtts;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Record& Record::operator= (const Record& other)
 {
+  throw std::string ("unimplemented");
   if (this != &other)
   {
-//    mOne = other.mOne;
+    mAtts = other.mAtts;
   }
 
   return *this;

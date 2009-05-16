@@ -27,28 +27,28 @@
 #ifndef INCLUDED_TDB
 #define INCLUDED_TDB
 
+#include <vector>
+#include <string>
+#include "Filter.h"
+#include "T.h"
+
 class TDB
 {
 public:
-  TDB ();                    // Default constructor
+  TDB ();                      // Default constructor
   TDB (const TDB&);            // Copy constructor
   TDB& operator= (const TDB&); // Assignment operator
-  ~TDB ();                   // Destructor
+  ~TDB ();                     // Destructor
 
-/*
-location (path to task dir)
-std::vector <T> load (filter)
-  caches all raw, including comments
-
-update (T& old, T& new)
-commit ()
-  writes all, including comments
-
-autoupgrade ()
-  -> FF4
-*/
+  void location (const std::string&);
+  int load (std::vector <T>&, Filter&);
+  void update (T&, T&);
+  int commit ();
+  void upgrade ();
 
 private:
+  std::vector <std::string> mLocations;
+  // TODO Need cache of raw file contents.
 };
 
 #endif

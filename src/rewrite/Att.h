@@ -27,28 +27,40 @@
 #ifndef INCLUDED_ATT
 #define INCLUDED_ATT
 
+#include <string>
+#include <vector>
+
 class Att
 {
 public:
-  Att ();                    // Default constructor
-  Att (const Att&);            // Copy constructor
-  Att& operator= (const Att&); // Assignment operator
-  ~Att ();                   // Destructor
+  Att ();                                       // Default constructor
+  Att (const std::string&, const std::string&);
+  Att (const Att&);                             // Copy constructor
+  Att& operator= (const Att&);                  // Assignment operator
+  ~Att ();                                      // Destructor
 
-/*
-Att (name, value)
-std::string name ()
-std::string value ()
-int value_int ()
-addMod ()
-bool isFilter ()
-bool isRequired ()
-bool isInternal ()
-composeF4 ()
-parse (const std::stirng&)
-*/
+  void parse (const std::string&);
+  std::string composeF4 () const;
+
+  void addMod (const std::string&);
+
+  std::string name () const;
+  void name (const std::string&);
+
+  std::string value () const;
+  void value (const std::string&);
+
+  int value_int () const;
+  void value_int (int);
+
+  bool filter () const;
+  bool required () const;
+  bool internal () const;
 
 private:
+  std::string mName;
+  std::string mValue;
+  std::vector <std::string> mMods;
 };
 
 #endif

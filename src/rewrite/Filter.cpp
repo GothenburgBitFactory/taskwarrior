@@ -35,15 +35,17 @@ Filter::Filter ()
 ////////////////////////////////////////////////////////////////////////////////
 Filter::Filter (const Filter& other)
 {
-//  mOne = other.mOne;
+  throw std::string ("unimplemented");
+  mAtts = other.mAtts;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Filter& Filter::operator= (const Filter& other)
 {
+  throw std::string ("unimplemented");
   if (this != &other)
   {
-//    mOne = other.mOne;
+    mAtts = other.mAtts;
   }
 
   return *this;
@@ -55,4 +57,17 @@ Filter::~Filter ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Filter::add (Att& att)
+{
+  throw std::string ("unimplemented");
+  mAtts.push_back (att);
+}
 
+////////////////////////////////////////////////////////////////////////////////
+bool Filter::pass (T&)
+{
+  throw std::string ("unimplemented");
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////

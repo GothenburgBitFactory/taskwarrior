@@ -1,4 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
+#include <iostream>
+#include <string>
 #include "Context.h"
 
 int main (int argc, char** argv)
@@ -11,6 +13,11 @@ int main (int argc, char** argv)
     c.run ();
 
     return 0;
+  }
+
+  catch (std::string e)
+  {
+    std::cerr << e << std::endl;
   }
 
   catch (...)

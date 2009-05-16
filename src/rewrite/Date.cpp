@@ -35,15 +35,17 @@ Date::Date ()
 ////////////////////////////////////////////////////////////////////////////////
 Date::Date (const Date& other)
 {
-//  mOne = other.mOne;
+  throw std::string ("unimplemented");
+  mTime = other.mTime;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date& Date::operator= (const Date& other)
 {
+  throw std::string ("unimplemented");
   if (this != &other)
   {
-//    mOne = other.mOne;
+    mTime = other.mTime;
   }
 
   return *this;
@@ -55,4 +57,13 @@ Date::~Date ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Support m/d/y
+// TODO Support ISO-???
+// TODO Support time_t
+// TODO Relative dates (today, tomorrow, yesterday, +1d, -2w, eow, eom, eoy)
+void Date::parse (const std::string& input)
+{
+  throw std::string ("unimplemented");
+}
 
+////////////////////////////////////////////////////////////////////////////////
