@@ -36,14 +36,14 @@ Keymap::Keymap ()
 ////////////////////////////////////////////////////////////////////////////////
 Keymap::Keymap (const Keymap& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Keymap::Keymap");
 //  mOne = other.mOne;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Keymap& Keymap::operator= (const Keymap& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Keymap::operator=");
   if (this != &other)
   {
 //    mOne = other.mOne;
@@ -60,7 +60,7 @@ Keymap::~Keymap ()
 ////////////////////////////////////////////////////////////////////////////////
 void Keymap::load (const std::string& file)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Keymap::load");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

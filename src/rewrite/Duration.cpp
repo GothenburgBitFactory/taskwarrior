@@ -36,14 +36,14 @@ Duration::Duration ()
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration (const Duration& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Duration::Duration");
   mSeconds = other.mSeconds;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration& Duration::operator= (const Duration& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Duration::operator=");
   if (this != &other)
   {
     mSeconds = other.mSeconds;
@@ -60,7 +60,7 @@ Duration::~Duration ()
 ////////////////////////////////////////////////////////////////////////////////
 void Duration::parse (const std::string& input)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Duration::parse");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

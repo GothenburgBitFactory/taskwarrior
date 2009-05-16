@@ -35,14 +35,14 @@ Date::Date ()
 ////////////////////////////////////////////////////////////////////////////////
 Date::Date (const Date& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Date::Date");
   mTime = other.mTime;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date& Date::operator= (const Date& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Date::operator=");
   if (this != &other)
   {
     mTime = other.mTime;
@@ -63,7 +63,7 @@ Date::~Date ()
 // TODO Relative dates (today, tomorrow, yesterday, +1d, -2w, eow, eom, eoy)
 void Date::parse (const std::string& input)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Date::parse");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

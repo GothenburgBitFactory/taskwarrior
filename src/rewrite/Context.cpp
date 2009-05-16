@@ -35,7 +35,7 @@ Context::Context ()
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context (const Context& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Context::Context");
 //  config   = other.config;
   filter   = other.filter;
   keymap   = other.keymap;
@@ -47,7 +47,7 @@ Context::Context (const Context& other)
 ////////////////////////////////////////////////////////////////////////////////
 Context& Context::operator= (const Context& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Context::operator=");
   if (this != &other)
   {
 //    config   = other.config;
@@ -69,7 +69,7 @@ Context::~Context ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::initialize ()
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Context::initialize");
   // TODO Load config.
   // TODO Load pending.data.
   // TODO Load completed.data.
@@ -79,7 +79,7 @@ void Context::initialize ()
 ////////////////////////////////////////////////////////////////////////////////
 int Context::commandLine (int argc, char** argv)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Context::commandLine");
   // TODO Support rc: override.
   return 0;
 }
@@ -87,7 +87,7 @@ int Context::commandLine (int argc, char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 int Context::run ()
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Context::run");
   // TODO Dispatch to command handlers.
   // TODO Auto shadow update.
   // TODO Auto gc.

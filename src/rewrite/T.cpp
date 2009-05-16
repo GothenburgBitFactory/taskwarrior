@@ -36,20 +36,20 @@ T::T ()
 ////////////////////////////////////////////////////////////////////////////////
 T::T (const T& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented T::T");
 //  mOne = other.mOne;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 T::T (const std::string& input)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented T::T");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 T& T::operator= (const T& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented T::operator=");
   if (this != &other)
   {
 //    mOne = other.mOne;
@@ -66,21 +66,21 @@ T::~T ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string T::composeF4 ()
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented T::composeF4");
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string T::composeCSV ()
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented T::composeCSV");
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void T::parse (const std::string& input)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented T::parse");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

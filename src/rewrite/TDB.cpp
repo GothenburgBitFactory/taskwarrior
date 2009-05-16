@@ -36,14 +36,14 @@ TDB::TDB ()
 ////////////////////////////////////////////////////////////////////////////////
 TDB::TDB (const TDB& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented TDB::TDB");
   mLocations = other.mLocations;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 TDB& TDB::operator= (const TDB& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented TDB::operator=");
   if (this != &other)
   {
     mLocations = other.mLocations;
@@ -60,7 +60,7 @@ TDB::~TDB ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::location (const std::string& path)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented TDB::location");
   mLocations.push_back (path);
 }
 
@@ -68,7 +68,7 @@ void TDB::location (const std::string& path)
 // TODO Returns number of filtered tasks.
 int TDB::load (std::vector <T>& tasks, Filter& filter)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented TDB::load");
   return 0;
 }
 
@@ -76,21 +76,21 @@ int TDB::load (std::vector <T>& tasks, Filter& filter)
 // TODO Write to transaction log.
 void TDB::update (T& before, T& after)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented TDB::update");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO writes all, including comments
 int TDB::commit ()
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented TDB::commit");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO -> FF4
 void TDB::upgrade ()
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented TDB::upgrade");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

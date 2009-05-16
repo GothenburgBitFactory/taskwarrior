@@ -35,14 +35,14 @@ Record::Record ()
 ////////////////////////////////////////////////////////////////////////////////
 Record::Record (const Record& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Record::Record");
   mAtts = other.mAtts;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Record& Record::operator= (const Record& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Record:operator=");
   if (this != &other)
   {
     mAtts = other.mAtts;

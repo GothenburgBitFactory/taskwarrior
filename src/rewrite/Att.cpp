@@ -38,7 +38,7 @@ Att::Att ()
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const std::string& name, const std::string& value)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Att::Att");
   mName  = name;
   mValue = value;
 
@@ -47,7 +47,7 @@ Att::Att (const std::string& name, const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const Att& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Att::Att");
   mName  = other.mName;
   mValue = other.mValue;
   mMods  = other.mMods;
@@ -56,7 +56,7 @@ Att::Att (const Att& other)
 ////////////////////////////////////////////////////////////////////////////////
 Att& Att::operator= (const Att& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Att::operator=");
   if (this != &other)
   {
     mName  = other.mName;
@@ -77,20 +77,20 @@ Att::~Att ()
 //    name [[.mod] ...] : [value]
 void Att::parse (const std::string& input)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Att::parse");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Att::composeF4 () const
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Att::composeF4");
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Att::addMod (const std::string&)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Att::addMod");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -120,34 +120,34 @@ void Att::value (const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 int Att::value_int () const
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Att::value_int");
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Att::value_int (int)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Att::value_int");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Att::filter () const
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented filter");
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Att::required () const
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Att::required");
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Att::internal () const
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Att::internal");
   return false;
 }
 

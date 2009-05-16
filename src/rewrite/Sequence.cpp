@@ -36,14 +36,14 @@ Sequence::Sequence ()
 ////////////////////////////////////////////////////////////////////////////////
 Sequence::Sequence (const Sequence& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Sequence::Sequence");
   mSequence = other.mSequence;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Sequence& Sequence::operator= (const Sequence& other)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Sequence::operator=");
   if (this != &other)
   {
     mSequence = other.mSequence;
@@ -60,7 +60,7 @@ Sequence::~Sequence ()
 ////////////////////////////////////////////////////////////////////////////////
 void Sequence::parse (const std::string& input)
 {
-  throw std::string ("unimplemented");
+  throw std::string ("unimplemented Sequence::parse");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
