@@ -219,7 +219,8 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Project");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+      conf.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -329,7 +330,8 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
       table.addColumn ("Name");
       table.addColumn ("Value");
 
-      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+          conf.get (std::string ("fontunderline"), "true"))
       {
         table.setColumnUnderline (0);
         table.setColumnUnderline (1);
@@ -605,7 +607,8 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Complete");
   table.addColumn ("0%                        100%");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+      conf.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -746,7 +749,8 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Age");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+      conf.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -988,7 +992,8 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Deleted");
   table.addColumn ("Net");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+      conf.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1189,7 +1194,8 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Month");
   table.addColumn ("Number Added/Completed/Deleted");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+      conf.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1549,7 +1555,8 @@ std::string renderMonths (
     table.addColumn ("Fr");
     table.addColumn ("Sa");
 
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+        conf.get (std::string ("fontunderline"), "true"))
     {
       table.setColumnUnderline (i + 1);
       table.setColumnUnderline (i + 2);
@@ -1791,7 +1798,8 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Due");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+      conf.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1924,7 +1932,8 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Due");
   table.addColumn ("Description");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+      conf.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -2095,7 +2104,8 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Category");
   table.addColumn ("Data");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+      conf.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -2691,7 +2701,8 @@ std::string handleCustomReport (
 
     // Common to all columns.
     // Add underline.
-    if (conf.get (std::string ("color"), true) || conf.get (std::string ("_forcecolor"), false))
+    if ((conf.get (std::string ("color"), true) || conf.get (std::string ("_forcecolor"), false)) &&
+        conf.get (std::string ("fontunderline"), "true"))
       table.setColumnUnderline (columnCount);
     else
       table.setTableDashedUnderline ();
