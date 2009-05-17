@@ -28,19 +28,26 @@
 #define INCLUDED_DURATION
 
 #include <string>
+#include <time.h>
 
 class Duration
 {
 public:
   Duration ();                           // Default constructor
   Duration (const Duration&);            // Copy constructor
+  Duration (const std::string&);         // Parse
   Duration& operator= (const Duration&); // Assignment operator
+  bool operator< (const Duration&);
+  bool operator> (const Duration&);
   ~Duration ();                          // Destructor
+
+  operator int ();
+  operator time_t ();
 
   void parse (const std::string&);
 
 private:
-  int mSeconds;
+  time_t mDays;
 };
 
 #endif
