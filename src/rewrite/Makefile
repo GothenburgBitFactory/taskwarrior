@@ -1,8 +1,9 @@
 PROJECT = 1.8
-CFLAGS  = -I. -I../../library/include -Wall -pedantic -ggdb3 -fno-rtti -fstack-check
+CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti -fstack-check
 LFLAGS  = 
 LIBS    = 
-OBJECTS = main.o Context.o TDB.o T.o Sequence.o Filter.o Att.o Date.o Duration.o Keymap.o
+OBJECTS = main.o Context.o TDB.o T.o Sequence.o Filter.o Att.o Keymap.o \
+          ../util.o ../text.o ../Config.o ../Date.o
 
 all: $(PROJECT)
 

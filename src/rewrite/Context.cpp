@@ -36,7 +36,7 @@ Context::Context ()
 Context::Context (const Context& other)
 {
   throw std::string ("unimplemented Context::Context");
-//  config   = other.config;
+  config   = other.config;
   filter   = other.filter;
   keymap   = other.keymap;
   sequence = other.sequence;
@@ -50,7 +50,7 @@ Context& Context::operator= (const Context& other)
   throw std::string ("unimplemented Context::operator=");
   if (this != &other)
   {
-//    config   = other.config;
+    config   = other.config;
     filter   = other.filter;
     keymap   = other.keymap;
     sequence = other.sequence;
@@ -81,6 +81,7 @@ int Context::commandLine (int argc, char** argv)
 {
   throw std::string ("unimplemented Context::commandLine");
   // TODO Support rc: override.
+  // TODO Handle "--version, -v" right here.
   return 0;
 }
 

@@ -29,7 +29,7 @@
 
 #include "Filter.h"
 #include "Keymap.h"
-//#include "Config.h"
+#include "Config.h"
 #include "Sequence.h"
 #include "TDB.h"
 #include "T.h"
@@ -48,7 +48,7 @@ public:
   int run ();
 
 public:
-//  Config   config;
+  Config   config;
   Filter   filter;
   Keymap   keymap;
   Sequence sequence;
