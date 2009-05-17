@@ -31,6 +31,7 @@
 #include <map>
 
 #include "Date.h"
+#include "Duration.h"
 #include "task.h"
 #include "T.h"
 
@@ -445,7 +446,9 @@ static bool validSubstitution (
 ////////////////////////////////////////////////////////////////////////////////
 bool validDuration (std::string& input)
 {
-  return (convertDuration (input) != 0) ? true : false;
+  try         { Duration (input); }
+  catch (...) { return false;     }
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
