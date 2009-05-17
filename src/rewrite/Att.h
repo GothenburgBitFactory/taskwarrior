@@ -58,6 +58,10 @@ public:
   bool internal () const;
 
 private:
+  void encode (std::string&) const;
+  void decode (std::string&) const;
+
+private:
   std::string mName;
   std::string mValue;
   std::vector <std::string> mMods;
