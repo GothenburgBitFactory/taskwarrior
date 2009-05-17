@@ -45,9 +45,10 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_task_OBJECTS = Config.$(OBJEXT) Date.$(OBJEXT) T.$(OBJEXT) \
 	TDB.$(OBJEXT) Table.$(OBJEXT) Grid.$(OBJEXT) Timer.$(OBJEXT) \
-	color.$(OBJEXT) parse.$(OBJEXT) task.$(OBJEXT) \
-	command.$(OBJEXT) edit.$(OBJEXT) report.$(OBJEXT) \
-	util.$(OBJEXT) text.$(OBJEXT) rules.$(OBJEXT) import.$(OBJEXT)
+	Duration.$(OBJEXT) color.$(OBJEXT) parse.$(OBJEXT) \
+	task.$(OBJEXT) command.$(OBJEXT) edit.$(OBJEXT) \
+	report.$(OBJEXT) util.$(OBJEXT) text.$(OBJEXT) rules.$(OBJEXT) \
+	import.$(OBJEXT)
 task_OBJECTS = $(am_task_OBJECTS)
 task_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)@am__isrc@
@@ -155,7 +156,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-task_SOURCES = Config.cpp Date.cpp T.cpp TDB.cpp Table.cpp Grid.cpp Timer.cpp color.cpp parse.cpp task.cpp command.cpp edit.cpp report.cpp util.cpp text.cpp rules.cpp import.cpp Config.h Date.h T.h TDB.h Table.h Grid.h Timer.h color.h task.h
+task_SOURCES = Config.cpp Date.cpp T.cpp TDB.cpp Table.cpp Grid.cpp Timer.cpp Duration.cpp color.cpp parse.cpp task.cpp command.cpp edit.cpp report.cpp util.cpp text.cpp rules.cpp import.cpp Config.h Date.h T.h TDB.h Table.h Grid.h Timer.h Duration.h color.h task.h
 all: all-am
 
 .SUFFIXES:
@@ -224,6 +225,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Date.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Duration.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Grid.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/T.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TDB.Po@am__quote@
