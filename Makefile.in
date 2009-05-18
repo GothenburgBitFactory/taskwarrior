@@ -31,7 +31,9 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = .
-DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
+DIST_COMMON = README $(am__configure_deps) $(dist_man1_MANS) \
+	$(dist_man5_MANS) $(nobase_dist_bashscripts_DATA) \
+	$(nobase_dist_zshscripts_DATA) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/auto.h.in \
 	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
 	depcomp install-sh missing
@@ -55,21 +57,22 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	ps-recursive uninstall-recursive
 man1dir = $(mandir)/man1
 am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)" \
-	"$(DESTDIR)$(bashscriptsdir)" "$(DESTDIR)$(docdir)" \
+	"$(DESTDIR)$(docdir)" "$(DESTDIR)$(bashscriptsdir)" \
 	"$(DESTDIR)$(zshscriptsdir)"
 man5dir = $(mandir)/man5
 NROFF = nroff
-MANS = $(man1_MANS) $(man5_MANS)
+MANS = $(dist_man1_MANS) $(dist_man5_MANS)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-bashscriptsDATA_INSTALL = $(INSTALL_DATA)
 docDATA_INSTALL = $(INSTALL_DATA)
-zshscriptsDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(bashscripts_DATA) $(doc_DATA) $(zshscripts_DATA)
+nobase_dist_bashscriptsDATA_INSTALL = $(install_sh_DATA)
+nobase_dist_zshscriptsDATA_INSTALL = $(install_sh_DATA)
+DATA = $(doc_DATA) $(nobase_dist_bashscripts_DATA) \
+	$(nobase_dist_zshscripts_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 ETAGS = etags
@@ -176,17 +179,13 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = src
-MAN_DIST = doc/man1/task.1 doc/man5/taskrc.5
-SCRIPTS_DIST = scripts/bash/task_completion.sh scripts/zsh/_task
-EXTRA_DIST = $(MAN_DIST) $(SCRIPTS_DIST)
-man1_MANS = doc/man1/task.1
-man5_MANS = doc/man5/taskrc.5
+dist_man1_MANS = doc/man1/task.1
+dist_man5_MANS = doc/man5/taskrc.5
 doc_DATA = AUTHORS ChangeLog COPYING INSTALL NEWS README
-scriptsbasedir = $(docdir)/scripts
-bashscriptsdir = $(scriptsbasedir)/bash
-bashscripts_DATA = scripts/bash/task_completion.sh
-zshscriptsdir = $(scriptsbasedir)/zsh
-zshscripts_DATA = scripts/zsh/_task
+bashscriptsdir = $(docdir)
+nobase_dist_bashscripts_DATA = scripts/bash/task_completion.sh
+zshscriptsdir = $(docdir)
+nobase_dist_zshscripts_DATA = scripts/zsh/_task
 all: auto.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -331,23 +330,6 @@ uninstall-man5:
 	  echo " rm -f '$(DESTDIR)$(man5dir)/$$inst'"; \
 	  rm -f "$(DESTDIR)$(man5dir)/$$inst"; \
 	done
-install-bashscriptsDATA: $(bashscripts_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(bashscriptsdir)" || $(MKDIR_P) "$(DESTDIR)$(bashscriptsdir)"
-	@list='$(bashscripts_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(bashscriptsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(bashscriptsdir)/$$f'"; \
-	  $(bashscriptsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(bashscriptsdir)/$$f"; \
-	done
-
-uninstall-bashscriptsDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(bashscripts_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(bashscriptsdir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(bashscriptsdir)/$$f"; \
-	done
 install-docDATA: $(doc_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(docdir)" || $(MKDIR_P) "$(DESTDIR)$(docdir)"
@@ -365,20 +347,41 @@ uninstall-docDATA:
 	  echo " rm -f '$(DESTDIR)$(docdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(docdir)/$$f"; \
 	done
-install-zshscriptsDATA: $(zshscripts_DATA)
+install-nobase_dist_bashscriptsDATA: $(nobase_dist_bashscripts_DATA)
 	@$(NORMAL_INSTALL)
-	test -z "$(zshscriptsdir)" || $(MKDIR_P) "$(DESTDIR)$(zshscriptsdir)"
-	@list='$(zshscripts_DATA)'; for p in $$list; do \
+	test -z "$(bashscriptsdir)" || $(MKDIR_P) "$(DESTDIR)$(bashscriptsdir)"
+	@$(am__vpath_adj_setup) \
+	list='$(nobase_dist_bashscripts_DATA)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(zshscriptsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(zshscriptsdir)/$$f'"; \
-	  $(zshscriptsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(zshscriptsdir)/$$f"; \
+	  $(am__vpath_adj) \
+	  echo " $(nobase_dist_bashscriptsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(bashscriptsdir)/$$f'"; \
+	  $(nobase_dist_bashscriptsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(bashscriptsdir)/$$f"; \
 	done
 
-uninstall-zshscriptsDATA:
+uninstall-nobase_dist_bashscriptsDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(zshscripts_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
+	@$(am__vpath_adj_setup) \
+	list='$(nobase_dist_bashscripts_DATA)'; for p in $$list; do \
+	  $(am__vpath_adj) \
+	  echo " rm -f '$(DESTDIR)$(bashscriptsdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(bashscriptsdir)/$$f"; \
+	done
+install-nobase_dist_zshscriptsDATA: $(nobase_dist_zshscripts_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(zshscriptsdir)" || $(MKDIR_P) "$(DESTDIR)$(zshscriptsdir)"
+	@$(am__vpath_adj_setup) \
+	list='$(nobase_dist_zshscripts_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  $(am__vpath_adj) \
+	  echo " $(nobase_dist_zshscriptsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(zshscriptsdir)/$$f'"; \
+	  $(nobase_dist_zshscriptsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(zshscriptsdir)/$$f"; \
+	done
+
+uninstall-nobase_dist_zshscriptsDATA:
+	@$(NORMAL_UNINSTALL)
+	@$(am__vpath_adj_setup) \
+	list='$(nobase_dist_zshscripts_DATA)'; for p in $$list; do \
+	  $(am__vpath_adj) \
 	  echo " rm -f '$(DESTDIR)$(zshscriptsdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(zshscriptsdir)/$$f"; \
 	done
@@ -666,7 +669,7 @@ check: check-recursive
 all-am: Makefile $(MANS) $(DATA) auto.h
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)" "$(DESTDIR)$(bashscriptsdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(zshscriptsdir)"; do \
+	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man5dir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(bashscriptsdir)" "$(DESTDIR)$(zshscriptsdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -712,8 +715,9 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-bashscriptsDATA install-docDATA install-man \
-	install-zshscriptsDATA
+install-data-am: install-docDATA install-man \
+	install-nobase_dist_bashscriptsDATA \
+	install-nobase_dist_zshscriptsDATA
 
 install-dvi: install-dvi-recursive
 
@@ -749,8 +753,9 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-bashscriptsDATA uninstall-docDATA \
-	uninstall-man uninstall-zshscriptsDATA
+uninstall-am: uninstall-docDATA uninstall-man \
+	uninstall-nobase_dist_bashscriptsDATA \
+	uninstall-nobase_dist_zshscriptsDATA
 
 uninstall-man: uninstall-man1 uninstall-man5
 
@@ -763,18 +768,19 @@ uninstall-man: uninstall-man1 uninstall-man5
 	dist-lzma dist-shar dist-tarZ dist-zip distcheck distclean \
 	distclean-generic distclean-hdr distclean-tags distcleancheck \
 	distdir distuninstallcheck dvi dvi-am html html-am info \
-	info-am install install-am install-bashscriptsDATA \
-	install-data install-data-am install-docDATA install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-man1 install-man5 install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip install-zshscriptsDATA \
-	installcheck installcheck-am installdirs installdirs-am \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-bashscriptsDATA \
+	info-am install install-am install-data install-data-am \
+	install-docDATA install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-man1 install-man5 \
+	install-nobase_dist_bashscriptsDATA \
+	install-nobase_dist_zshscriptsDATA install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
+	pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-docDATA uninstall-man uninstall-man1 uninstall-man5 \
-	uninstall-zshscriptsDATA
+	uninstall-nobase_dist_bashscriptsDATA \
+	uninstall-nobase_dist_zshscriptsDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
