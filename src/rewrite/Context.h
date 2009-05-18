@@ -31,8 +31,8 @@
 #include "Keymap.h"
 #include "Config.h"
 #include "Sequence.h"
-#include "TDB.h"
 #include "T.h"
+#include "TDB.h"
 
 
 class Context
@@ -43,9 +43,11 @@ public:
   Context& operator= (const Context&); // Assignment operator
   ~Context ();                         // Destructor
 
-  void initialize ();
-  int commandLine (int, char**);
+  void initialize (int, char**);
   int run ();
+
+private:
+  void loadCorrectConfigFile (int, char**);
 
 public:
   Config   config;

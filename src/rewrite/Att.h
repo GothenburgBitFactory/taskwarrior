@@ -34,7 +34,7 @@ class Att
 {
 public:
   Att ();                                       // Default constructor
-  Att (const std::string&, const std::string&);
+  Att (const std::string&, const std::string&); // Simple constructor
   Att (const Att&);                             // Copy constructor
   Att& operator= (const Att&);                  // Assignment operator
   ~Att ();                                      // Destructor

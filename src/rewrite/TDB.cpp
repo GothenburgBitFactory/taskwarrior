@@ -26,10 +26,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <string>
+#include "text.h"
+#include "util.h"
 #include "TDB.h"
+#include "task.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 TDB::TDB ()
+: mLock (true)
 {
 }
 
@@ -60,7 +64,11 @@ TDB::~TDB ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::location (const std::string& path)
 {
-  throw std::string ("unimplemented TDB::location");
+  if (access (expandPath (path).c_str (), F_OK))
+    throw std::string ("Data location '") +
+          path +
+          "' does not exist, or is not readable and writable.";
+
   mLocations.push_back (path);
 }
 
@@ -91,6 +99,30 @@ int TDB::commit ()
 void TDB::upgrade ()
 {
   throw std::string ("unimplemented TDB::upgrade");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::noLock ()
+{
+  mLock = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::getPendingFiles (std::vector <std::string> files)
+{
+  files.clear ();
+
+  foreach (location, mLocations)
+    files.push_back (*location + "/pending.data");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::getCompletedFiles (std::vector <std::string> files)
+{
+  files.clear ();
+
+  foreach (location, mLocations)
+    files.push_back (*location + "/completed.data");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

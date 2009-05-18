@@ -46,8 +46,16 @@ public:
   int commit ();
   void upgrade ();
 
+  void noLock ();
+
+private:
+  void getPendingFiles (std::vector <std::string>);
+  void getCompletedFiles (std::vector <std::string>);
+
 private:
   std::vector <std::string> mLocations;
+  bool mLock;
+
   // TODO Need cache of raw file contents.
 };
 

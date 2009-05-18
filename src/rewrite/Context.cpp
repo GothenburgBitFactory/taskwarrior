@@ -25,11 +25,22 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <pwd.h>
 #include "Context.h"
+#include "text.h"
+#include "util.h"
+#include "task.h"
+#include "../auto.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
 {
+  // Set up randomness.
+#ifdef HAVE_SRANDOM
+  srandom (time (NULL));
+#else
+  srand (time (NULL));
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,22 +78,37 @@ Context::~Context ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Context::initialize ()
+void Context::initialize (int argc, char** argv)
 {
-  throw std::string ("unimplemented Context::initialize");
-  // TODO Load config.
+  // Load the config file from the home directory.  If the file cannot be
+  // found, offer to create a sample one.
+  loadCorrectConfigFile (argc, argv);
+
+  // When redirecting output to a file, do not use color, curses.
+  if (!isatty (fileno (stdout)))
+  {
+    config.set ("curses", "off");
+
+    if (! config.get (std::string ("_forcecolor"), false))
+      config.set ("color",  "off");
+  }
+
+  // TODO Handle "--version, -v" right here.
+
+  // init TDB.
+  std::string location = config.get ("data.location");
+  std::vector <std::string> all;
+  split (all, location, ',');
+  foreach (path, all)
+    tdb.location (expandPath (*path));
+
+  // Allow user override of file locking.  Solaris/NFS machines may want this.
+  if (! config.get ("locking", true))
+    tdb.noLock ();
+
   // TODO Load pending.data.
   // TODO Load completed.data.
   // TODO Load deleted.data.
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int Context::commandLine (int argc, char** argv)
-{
-  throw std::string ("unimplemented Context::commandLine");
-  // TODO Support rc: override.
-  // TODO Handle "--version, -v" right here.
-  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,4 +123,29 @@ int Context::run ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Context::loadCorrectConfigFile (int argc, char** argv)
+{
+  for (int i = 1; i < argc; ++i)
+  {
+    if (! strncmp (argv[i], "rc:", 3))
+    {
+      if (! access (&(argv[i][3]), F_OK))
+      {
+        std::string file = &(argv[i][3]);
+        config.load (file);
+        return;
+      }
+      else
+        throw std::string ("Could not read configuration file '") + &(argv[i][3]) + "'";
+    }
+  }
 
+  struct passwd* pw = getpwuid (getuid ());
+  if (!pw)
+    throw std::string ("Could not read home directory from passwd file.");
+
+  std::string file = pw->pw_dir;
+  config.createDefault (file);
+}
+
+////////////////////////////////////////////////////////////////////////////////

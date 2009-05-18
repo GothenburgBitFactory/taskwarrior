@@ -36,7 +36,11 @@ public:
   Record ();                         // Default constructor
   Record (const Record&);            // Copy constructor
   Record& operator= (const Record&); // Assignment operator
-  ~Record ();                        // Destructor
+  virtual ~Record ();                // Destructor
+
+  virtual std::string composeF4 () = 0;
+  virtual std::string composeCSV () = 0;
+  void parse (const std::string&);
 
 private:
   std::vector <Att> mAtts;

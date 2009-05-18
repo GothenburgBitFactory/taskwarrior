@@ -28,19 +28,19 @@
 #define INCLUDED_T
 
 #include <string>
+#include "Record.h"
 
-class T
+class T : public Record
 {
 public:
   T ();                    // Default constructor
-  T (const T&);            // Copy constructor
+//  T (const T&);            // Copy constructor
   T (const std::string&);  // Parse
   T& operator= (const T&); // Assignment operator
   ~T ();                   // Destructor
 
   std::string composeF4 ();
   std::string composeCSV ();
-  void parse (const std::string&);
 
 private:
 };
