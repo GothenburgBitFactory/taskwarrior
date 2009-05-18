@@ -49,7 +49,8 @@
 #include <Table.h>
 #include <Date.h>
 #include <Duration.h>
-#include <task.h>
+#include "text.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 Table::Table ()

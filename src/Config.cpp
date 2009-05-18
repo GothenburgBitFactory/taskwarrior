@@ -32,8 +32,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
-#include "task.h"
 #include "Config.h"
+#include "text.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // These are default (but overridable) reports.  These entries are necessary

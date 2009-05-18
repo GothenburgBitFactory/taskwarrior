@@ -38,6 +38,9 @@
 #include <errno.h>
 #include "Date.h"
 #include "Table.h"
+#include "T.h"
+#include "TDB.h"
+#include "text.h"
 #include "task.h"
 #include "../auto.h"
 

@@ -42,6 +42,8 @@
 #include "Table.h"
 #include "TDB.h"
 #include "T.h"
+#include "text.h"
+#include "util.h"
 #include "task.h"
 
 #ifdef HAVE_LIBNCURSES

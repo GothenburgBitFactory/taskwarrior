@@ -27,8 +27,9 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include "task.h"
 #include "T.h"
+#include "text.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Default

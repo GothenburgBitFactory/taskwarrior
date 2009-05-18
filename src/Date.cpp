@@ -28,8 +28,9 @@
 #include <time.h>
 #include <assert.h>
 #include <stdlib.h>
-#include "task.h"
 #include "Date.h"
+#include "text.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Defaults to "now".

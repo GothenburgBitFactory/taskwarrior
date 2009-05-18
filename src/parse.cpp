@@ -32,8 +32,9 @@
 
 #include "Date.h"
 #include "Duration.h"
-#include "task.h"
 #include "T.h"
+#include "text.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // NOTE: These are static arrays only because there is no initializer list for
