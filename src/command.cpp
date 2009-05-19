@@ -362,7 +362,7 @@ std::string handleVersion (Config& conf)
   // This configuration variable is supported, but not documented.  It exists
   // so that unit tests can force color to be on even when the output from task
   // is redirected to a file, or stdout is not a tty.
-  recognized += " _forcecolor";
+  recognized += "_forcecolor ";
 
   std::vector <std::string> unrecognized;
   foreach (i, all)
