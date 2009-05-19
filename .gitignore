@@ -8,6 +8,7 @@ src/Makefile
 */task
 stamp-h1
 Makefile
+Makefile.in
 configure
 config.log
 www.xls
