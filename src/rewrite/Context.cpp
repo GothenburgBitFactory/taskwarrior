@@ -103,8 +103,7 @@ void Context::initialize (int argc, char** argv)
     tdb.location (expandPath (*path));
 
   // Allow user override of file locking.  Solaris/NFS machines may want this.
-  if (! config.get ("locking", true))
-    tdb.noLock ();
+  tdb.lock (config.get ("locking", true));
 
   // TODO Load pending.data.
   // TODO Load completed.data.
@@ -114,11 +113,12 @@ void Context::initialize (int argc, char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 int Context::run ()
 {
-  throw std::string ("unimplemented Context::run");
   // TODO Dispatch to command handlers.
   // TODO Auto shadow update.
   // TODO Auto gc.
+  // TODO tdb.load (Filter);
 
+  throw std::string ("unimplemented Context::run");
   return 0;
 }
 

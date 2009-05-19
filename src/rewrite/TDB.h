@@ -27,6 +27,7 @@
 #ifndef INCLUDED_TDB
 #define INCLUDED_TDB
 
+#include <map>
 #include <vector>
 #include <string>
 #include "Filter.h"
@@ -40,21 +41,26 @@ public:
   TDB& operator= (const TDB&); // Assignment operator
   ~TDB ();                     // Destructor
 
-  void location (const std::string&);
-  int load (std::vector <T>&, Filter&);
-  void update (T&, T&);
-  int commit ();
-  void upgrade ();
+  void  location (const std::string&);
 
-  void noLock ();
+  void  lock (bool lockFile = true);
+  void  unlock ();
+
+  int   load (std::vector <T>&, Filter&);
+  void  add (T&);
+  void  update (T&, T&);
+  int   commit ();
+  void  upgrade ();
 
 private:
-  void getPendingFiles (std::vector <std::string>);
-  void getCompletedFiles (std::vector <std::string>);
+  void  getPendingFiles (std::vector <std::string>);
+  void  getCompletedFiles (std::vector <std::string>);
+  FILE* openAndLock (const std::string&);
 
 private:
-  std::vector <std::string> mLocations;
+  std::map <std::string, FILE*> mLocations;
   bool mLock;
+  bool mAllOpenAndLocked;
 
   // TODO Need cache of raw file contents.
 };
