@@ -21,6 +21,7 @@ int main (int argc, char** argv)
 
   catch (...)
   {
+    std::cerr << "task internal error." << std::endl;
   }
 
   return -1;

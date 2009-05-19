@@ -66,6 +66,7 @@ T::~T ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// [name:value, name:"value",name:[name:value,name:value]]
 std::string T::composeF4 ()
 {
   throw std::string ("unimplemented T::composeF4");

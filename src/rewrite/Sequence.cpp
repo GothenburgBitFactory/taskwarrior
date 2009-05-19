@@ -37,7 +37,6 @@ Sequence::Sequence ()
 Sequence::Sequence (const Sequence& other)
 {
   throw std::string ("unimplemented Sequence::Sequence");
-  mSequence = other.mSequence;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,7 +45,6 @@ Sequence& Sequence::operator= (const Sequence& other)
   throw std::string ("unimplemented Sequence::operator=");
   if (this != &other)
   {
-    mSequence = other.mSequence;
   }
 
   return *this;

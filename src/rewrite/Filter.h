@@ -29,7 +29,7 @@
 
 #include <vector>
 #include "Att.h"
-#include "T.h"
+#include "Record.h"
 
 class Filter
 {
@@ -40,7 +40,7 @@ public:
   ~Filter ();                        // Destructor
 
   void add (Att&);
-  bool pass (T&);
+  bool pass (Record&);
 
 private:
   std::vector <Att> mAtts;

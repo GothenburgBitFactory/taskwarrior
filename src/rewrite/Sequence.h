@@ -30,7 +30,7 @@
 #include <vector>
 #include <string>
 
-class Sequence
+class Sequence : public std::vector <int>
 {
 public:
   Sequence ();                           // Default constructor
@@ -39,9 +39,6 @@ public:
   ~Sequence ();                          // Destructor
 
   void parse (const std::string&);
-
-private:
-  std::vector <int> mSequence;
 };
 
 #endif

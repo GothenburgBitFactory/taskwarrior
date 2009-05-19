@@ -152,14 +152,24 @@ bool Att::internal () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Encode values prior to serialization.
+// Encode values prior to serialization.
+//   \t -> &tab;
+//   "  -> &quot;
+//   ,  -> &comma;
+//   [  -> &open;
+//   ]  -> &close;
 void Att::encode (std::string&) const
 {
   throw std::string ("unimplemented Att::internal");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Decode values after parse.
+// Decode values after parse.
+//   \t <- &tab;
+//   "  <- &quot;
+//   ,  <- &comma;
+//   [  <- &open;
+//   ]  <- &close;
 void Att::decode (std::string&) const
 {
   throw std::string ("unimplemented Att::internal");

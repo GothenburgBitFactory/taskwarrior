@@ -148,6 +148,10 @@ void TDB::unlock ()
 int TDB::load (std::vector <T>& tasks, Filter& filter)
 {
   throw std::string ("unimplemented TDB::load");
+
+  // TODO Read each row.
+  // TODO Let T::parse disassemble it.
+  // TODO If task passes filter, add to tasks.
   return 0;
 }
 
@@ -156,6 +160,9 @@ int TDB::load (std::vector <T>& tasks, Filter& filter)
 void TDB::add (T& after)
 {
   throw std::string ("unimplemented TDB::add");
+
+  // TODO Seek to end of pending.
+  // TODO write after.composeFF4 ().
 }
 
 ////////////////////////////////////////////////////////////////////////////////

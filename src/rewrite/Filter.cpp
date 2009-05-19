@@ -59,15 +59,20 @@ Filter::~Filter ()
 ////////////////////////////////////////////////////////////////////////////////
 void Filter::add (Att& att)
 {
-  throw std::string ("unimplemented Filter::add");
   mAtts.push_back (att);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Filter::pass (T&)
+bool Filter::pass (Record& record)
 {
   throw std::string ("unimplemented Filter::pass");
-  return false;
+/*
+  foreach (att, mAtts)
+    if (! att->match (record))
+      return false;
+*/
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

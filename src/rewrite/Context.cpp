@@ -80,8 +80,8 @@ Context::~Context ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::initialize (int argc, char** argv)
 {
-  // Load the config file from the home directory.  If the file cannot be
-  // found, offer to create a sample one.
+  // Load the configuration file from the home directory.  If the file cannot
+  // be found, offer to create a sample one.
   loadCorrectConfigFile (argc, argv);
 
   // When redirecting output to a file, do not use color, curses.
