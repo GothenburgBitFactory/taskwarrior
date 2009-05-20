@@ -2,8 +2,10 @@
 ------ current release ---------------------------
 
 1.8.0 (?)
+ + Added zsh tab completion script (thanks to P.C. Shyamshankar).
  + Fixed bug that cause the _forcecolor configuration variable to be
    considered obsolete (thank to Bruce Dillahunty).
+ + Fixed documentation errors (thanks to Thomas@BIC).
 
 ------ old releases ------------------------------
 
