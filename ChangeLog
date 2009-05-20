@@ -2,7 +2,8 @@
 ------ current release ---------------------------
 
 1.8.0 (?)
- + ?
+ + Fixed bug that cause the _forcecolor configuration variable to be
+   considered obsolete (thank to Bruce Dillahunty).
 
 ------ old releases ------------------------------
 
