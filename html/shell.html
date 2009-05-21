@@ -69,10 +69,13 @@
                 <pre><code>% task add "Buy bread &amp; milk"</code></pre>
 
                 <p>
-                  Task itself interprets the commands, and it too can make mistakes.
-                  For example, any colon : character will be interpreted by task as a
-                  delimiter between an attribute name and its value.  Currently there
-                  is no workaround for this.
+                  Note that if an &amp; character (or any other character that needs
+                  to be escaped for the shell) appears in the
+                  <a href="filter.html">filter</a> of a
+                  <a href="custom.html">custom report</a>
+                  then it does not need to be escaped, as it never gets processed
+                  by the shell.  In other words, shell escapes need only be used
+                  when typing task commands at a prompt.
                 </p>
               </div>
 
