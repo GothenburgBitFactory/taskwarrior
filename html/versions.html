@@ -25,6 +25,7 @@
               <a href="faq.html">FAQ</a>
               <a href="versions.html">Old Versions</a>
               <a href="links.html">Task on the Web</a>
+              <a href="download.html">Download</a>
             </div>
 
             <div id="content">
@@ -35,304 +36,156 @@
               <br />
 
               <div class="content">
-
                 <h4>New in version 1.7.0 (5/14/2009)</h4>
-                <p>
-                  <table>
-                    <tr>
-                      <td>Source:</td>
-                      <td><a href="http://www.beckingham.net/task-1.7.0.tar.gz">task-1.7.0.tar.gz</a></td>
-                    </tr>
-<!--
-                    <tr>
-                      <td>Mac OS X 10.5 (Leopard) Intel-only:</td>
-                      <td><a href="http://www.beckingham.net/task-1.7.0.pkg">task-1.7.0.pkg</a></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Debian:
-                        (Thanks to <a href="http://blog.rfquerin.org">Richard&nbsp;Querin</a>):
-                      </td>
-                      <td><a href="http://www.beckingham.net/task_1.7.0-1_i386.deb">task_1.7.0-1_i386.deb</a></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Red Hat:
-                        (Thanks to <a href="http://www.ultrafredde.com">Federico&nbsp;Hernandez</a>):
-                      </td>
-                      <td><a href="http://www.beckingham.net/task-1.7.0-1.FC10.i386.rpm">task-1.7.0-1.FC10.i386.rpm</a></td>
-                    </tr>
--->
-                    <tr>
-                      <td>Git - get the whole source and history:</td>
-                      <td><a href="http://github.com/pbeckingham/task">http://github.com/pbeckingham/task</a></td>
-                    </tr>
-                  </table>
-
-                  <ul>
-                    <li>Improved the errors when parsing a corrupt or unrecognized pending.data
-                        or completed.data file (thanks to T. Charles Yun).
-                    <li>Added details to the "info" report about recurring tasks (thanks to T.
-                        Charles Yun).
-                    <li>Now writes a sample "defaultwidth" configuration variable to the default
-                        .taskrc file (thanks to T. Charles Yun).
-                    <li>Task allows commands that require an ID to now be given a sequence, which
-                        is a set of IDs.  This allows commands like "task delete 1 2 5-10,12".
-                    <li>Fixed bug in the ghistory report, which caused it to only show a new
-                        month if a task was added during that month.
-                    <li>New command "duplicate" which allows an existing task to be duplicated,
-                        and also have modifications applied (thanks to David J Patrick).
-                    <li>The "append", and "done" commands now allow modifications to be applied
-                        to the task(s) (thanks to David J Patrick).
-                    <li>Improved word wrapping in various output.
-                    <li>Fixed bug that added an extra line between header and graph in the
-                        ghistory report.
-                    <li>Added simple 'taskprogram' mailing list subscribe form to the web site.
-                    <li>For custom reports that define a "limit" to the number of rows of output
-                        such as "oldest" and "newest", task allows an override value.  For
-                        example "task oldest 5" will display the 5 oldest tasks.
-                    <li>Modified the "stats" report so that it has the same aesthetics as the
-                        other reports.
-                    <li>New "timesheet" command displays tasks completed and started, per week,
-                        and can display multiple weeks.
-                    <li>New tab completion script, task_completion.sh, for bash users, is installed
-                        to /usr/local/share/task (thanks to Federico Hernandez).
-                    <li>Applied patch to allow task to build on Arch Linux (thanks to Johan Friis).
-                    <li>Applied patch to fix a UUID bug on Solaris 8 (thanks to Steven de Brouwer).
-                    <li>The task man page is now installed.  Try "man task" (thanks to Federico
-                        Hernandez and P.C. Shyamshankar).
-                    <li>Fixed bug that causes task to create a default .task directory, even if
-                        data.location specified otherwise (thanks to Federico Hernandez).
-                    <li>New "edit" command that fires up a text editor (uses 'editor' configuration
-                        variable, $VISUAL or $EDITOR environment variable) and allows direct
-                        editing of all editable task details.
-                  </ul>
-                </p>
+                <ul>
+                  <li>Improved the errors when parsing a corrupt or unrecognized pending.data
+                      or completed.data file (thanks to T. Charles Yun).
+                  <li>Added details to the "info" report about recurring tasks (thanks to T.
+                      Charles Yun).
+                  <li>Now writes a sample "defaultwidth" configuration variable to the default
+                      .taskrc file (thanks to T. Charles Yun).
+                  <li>Task allows commands that require an ID to now be given a sequence, which
+                      is a set of IDs.  This allows commands like "task delete 1 2 5-10,12".
+                  <li>Fixed bug in the ghistory report, which caused it to only show a new
+                      month if a task was added during that month.
+                  <li>New command "duplicate" which allows an existing task to be duplicated,
+                      and also have modifications applied (thanks to David J Patrick).
+                  <li>The "append", and "done" commands now allow modifications to be applied
+                      to the task(s) (thanks to David J Patrick).
+                  <li>Improved word wrapping in various output.
+                  <li>Fixed bug that added an extra line between header and graph in the
+                      ghistory report.
+                  <li>Added simple 'taskprogram' mailing list subscribe form to the web site.
+                  <li>For custom reports that define a "limit" to the number of rows of output
+                      such as "oldest" and "newest", task allows an override value.  For
+                      example "task oldest 5" will display the 5 oldest tasks.
+                  <li>Modified the "stats" report so that it has the same aesthetics as the
+                      other reports.
+                  <li>New "timesheet" command displays tasks completed and started, per week,
+                      and can display multiple weeks.
+                  <li>New tab completion script, task_completion.sh, for bash users, is installed
+                      to /usr/local/share/task (thanks to Federico Hernandez).
+                  <li>Applied patch to allow task to build on Arch Linux (thanks to Johan Friis).
+                  <li>Applied patch to fix a UUID bug on Solaris 8 (thanks to Steven de Brouwer).
+                  <li>The task man page is now installed.  Try "man task" (thanks to Federico
+                      Hernandez and P.C. Shyamshankar).
+                  <li>Fixed bug that causes task to create a default .task directory, even if
+                      data.location specified otherwise (thanks to Federico Hernandez).
+                  <li>New "edit" command that fires up a text editor (uses 'editor' configuration
+                      variable, $VISUAL or $EDITOR environment variable) and allows direct
+                      editing of all editable task details.
+                </ul>
 
                 <h4>New in version 1.6.1 (4/24/2009)</h4>
-                <p>
-                  <table>
-                    <tr>
-                      <td>Source:</td>
-                      <td><a href="http://www.beckingham.net/task-1.6.1.tar.gz">task-1.6.1.tar.gz</a></td>
-                    </tr>
-<!--
-                    <tr>
-                      <td>Mac OS X 10.5 (Leopard) Intel-only:</td>
-                      <td><a href="http://www.beckingham.net/task-1.6.1.pkg">task-1.6.1.pkg</a></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Debian:
-                        (Thanks to <a href="http://blog.rfquerin.org">Richard&nbsp;Querin</a>):
-                      </td>
-                      <td><a href="http://www.beckingham.net/task_1.6.1-1_i386.deb">task_1.6.1-1_i386.deb</a></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Red Hat:
-                        (Thanks to <a href="http://www.ultrafredde.com">Federico&nbsp;Hernandez</a>):
-                      </td>
-                      <td><a href="http://www.beckingham.net/task-1.6.1-1.FC10.i386.rpm">task-1.6.1-1.FC10.i386.rpm</a></td>
-                    </tr>
--->
-                    <tr>
-                      <td>Git - get the whole source and history:</td>
-                      <td><a href="http://github.com/pbeckingham/task">http://github.com/pbeckingham/task</a></td>
-                    </tr>
-                  </table>
-
-                  <ul>
-                    <li>Fixed bug that caused new, first-time .taskrc files to be written without
-                        including the custom report labels (thanks to P.C. Shyamshankar).
-                  </ul>
-                </p>
+                <ul>
+                  <li>Fixed bug that caused new, first-time .taskrc files to be written without
+                      including the custom report labels (thanks to P.C. Shyamshankar).
+                </ul>
 
                 <h4>New in version 1.6.0 (4/13/2009)</h4>
-                <p>
-                  <table>
-                    <tr>
-                      <td>Source:</td>
-                      <td><a href="http://www.beckingham.net/task-1.6.0.tar.gz">task-1.6.0.tar.gz</a></td>
-                    </tr>
-<!--
-                    <tr>
-                      <td>Mac OS X 10.5 (Leopard) Intel-only:</td>
-                      <td><a href="http://www.beckingham.net/task-1.6.0.pkg">task-1.6.0.pkg</a></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Debian:
-                        (Thanks to <a href="http://blog.rfquerin.org">Richard&nbsp;Querin</a>):
-                      </td>
-                      <td><a href="http://www.beckingham.net/task_1.6.0-1_i386.deb">task_1.6.0-1_i386.deb</a></td>
-                    </tr>
--->
-                    <tr>
-                      <td>
-                        Red Hat:
-                        (Thanks to <a href="http://www.ultrafredde.com">Federico&nbsp;Hernandez</a>):
-                      </td>
-                      <td><a href="http://www.beckingham.net/task-1.6.0-1.FC10.i386.rpm">task-1.6.0-1.FC10.i386.rpm</a></td>
-                    </tr>
-                    <tr>
-                      <td>Git - get the whole source and history:</td>
-                      <td><a href="http://github.com/pbeckingham/task">http://github.com/pbeckingham/task</a></td>
-                    </tr>
-                  </table>
+                <ul>
+                  <li>Added support for new "append" command that adds more description text to
+                      an existing task.
+                  <li>Added support for the "weekdays" recurrence, which means a task can recur
+                      five times a week, and not on weekends (thanks to Chris Pride).
+                  <li>UTF8 text is now supported in task project names, tags and descriptions.
+                  <li>Fixed bug that caused the y/n confirmation on task deletion to ignore the
+                      Enter key and fail to re-prompt (thanks to Bruce Dillahunty).
+                  <li>When the "echo.command" configuration variable is set to "yes", it causes
+                      commands that modify tasks to display which task was affected (thanks to
+                      Bruce Dillahunty).
+                  <li>A task can now be annotated with the command "task <id> annotate ...", and
+                      a timestamped annotation will appear in reports.
+                  <li>A 'description_only' column is now available for use in custom reports,
+                      and it excludes annotations.
+                  <li>A task can now be upgraded to a recurring task by adding a recurrence
+                      frequency, a due date, and an optional until date.
+                  <li>When a recurring task is modified, all other instances of the recurring
+                      task are also modified.
+                  <li>Custom reports now support user-specified column labels (thanks to T.
+                      Charles Yun).
+                  <li>Task can now import tasks from a variety of data formats, including task
+                      export files from versions 1.4.3 and earlier, versions 1.5.0 and later,
+                      todo.sh 2.x, CSV, plain text and task command line.  See online docs for
+                      full details.
+                  <li>Export was including 'id' in the column header even though it was not
+                      included in the data.
+                  <li>The task file format has changed slightly.  Please back up your task
+                      data files before upgrading to 1.6.0.
+                  <li>Added new column 'recurrence_indicator' that displays an 'R' if the task
+                      is a recurring task.  This column can be added to any custom report.
+                  <li>Added new column 'tag_indicator' that displays a '+' if the task
+                      has any tags.  This column can be added to any custom report.
+                  <li>Fixed bug where sometimes a task description was concatenated oddly if
+                      there was a colon somewhere in the description.
+                  <li>Fixed bug that caused recurring annual tasks to exhibit a creeping due
+                      date, because of an assumption of 365 days per year, which failed to
+                      consider leap years (thanks to T. Charles Yun).
+                  <li>Annotations can now be modified with the substitution commands /from/to/.
+                  <li>Substitutions can now be made global with /from/to/g and all occurrences
+                      of "from" will be replaced with "to".
+                </ul>
 
-                  <ul>
-                    <li>Added support for new "append" command that adds more description text to
-                        an existing task.
-                    <li>Added support for the "weekdays" recurrence, which means a task can recur
-                        five times a week, and not on weekends (thanks to Chris Pride).
-                    <li>UTF8 text is now supported in task project names, tags and descriptions.
-                    <li>Fixed bug that caused the y/n confirmation on task deletion to ignore the
-                        Enter key and fail to re-prompt (thanks to Bruce Dillahunty).
-                    <li>When the "echo.command" configuration variable is set to "yes", it causes
-                        commands that modify tasks to display which task was affected (thanks to
-                        Bruce Dillahunty).
-                    <li>A task can now be annotated with the command "task <id> annotate ...", and
-                        a timestamped annotation will appear in reports.
-                    <li>A 'description_only' column is now available for use in custom reports,
-                        and it excludes annotations.
-                    <li>A task can now be upgraded to a recurring task by adding a recurrence
-                        frequency, a due date, and an optional until date.
-                    <li>When a recurring task is modified, all other instances of the recurring
-                        task are also modified.
-                    <li>Custom reports now support user-specified column labels (thanks to T.
-                        Charles Yun).
-                    <li>Task can now import tasks from a variety of data formats, including task
-                        export files from versions 1.4.3 and earlier, versions 1.5.0 and later,
-                        todo.sh 2.x, CSV, plain text and task command line.  See online docs for
-                        full details.
-                    <li>Export was including 'id' in the column header even though it was not
-                        included in the data.
-                    <li>The task file format has changed slightly.  Please back up your task
-                        data files before upgrading to 1.6.0.
-                    <li>Added new column 'recurrence_indicator' that displays an 'R' if the task
-                        is a recurring task.  This column can be added to any custom report.
-                    <li>Added new column 'tag_indicator' that displays a '+' if the task
-                        has any tags.  This column can be added to any custom report.
-                    <li>Fixed bug where sometimes a task description was concatenated oddly if
-                        there was a colon somewhere in the description.
-                    <li>Fixed bug that caused recurring annual tasks to exhibit a creeping due
-                        date, because of an assumption of 365 days per year, which failed to
-                        consider leap years (thanks to T. Charles Yun).
-                    <li>Annotations can now be modified with the substitution commands /from/to/.
-                    <li>Substitutions can now be made global with /from/to/g and all occurrences
-                        of "from" will be replaced with "to".
-                  </ul>
-                </p>
+                <h4>New in version 1.5.0 (3/15/2009)</h4>
+                <ul>
+                  <li>Removed deprecated TUTORIAL file.
+                  <li>Removed support for the "showage" configuration variable.
+                  <li>"task stop" can remove the start time from a started task.
+                  <li>"task ghistory" now displays a differently aligned graph, allowing
+                      easier comparison by month of tasks added versus completed and deleted.
+                  <li>"task version" command now reports unrecognized configuration variables,
+                      which may be spelling mistakes or deprecated variables.
+                  <li>"configure --enable-debug" now supported to suppress compiler optimization
+                      to allow debugging.
+                  <li>Allow lower case priorities, and automatically upper case them.
+                  <li>Added support for "due" configuration variable which defines the number
+                      of days in the future when a task is considered due.
+                  <li>Added support for custom reports, comprised of a set of column names and
+                      sort order, with optional filtering in the configuration file.  This
+                      means user-defined reports can be written, and the reports currently
+                      in the configuration file can be renamed.  Several of task's built in
+                      reports have been converted to user-defined reports.
+                  <li>New online documentation for custom reports.
+                  <li>New algorithm for determining when the "nag" message is displayed.
+                  <li>Fixed bug where task hangs with a certain combination of recurring tasks
+                      and shadow files.
+                  <li>Fixed bug with the task sort algorithm, which led to an unstable sequence
+                      when there were only a handful of tasks.
+                  <li>Performance enhanced by eliminating unnecessary sorting.
+                  <li>Task now has a large (and growing) test suite and bug regression tests
+                      to help ensure higher quality releases.
+                  <li>Fixed bug that caused large performance hit during table rendering.
+                  <li>Fixed bug that concatenated a modified description without spaces.
+                  <li>Added new column 'recur' that displays the recurrence period of any
+                      recurring tasks.  This column can be added to any custom report.
+                  <li>Added support for "color.recurring" configuration variable which
+                      specifies the color of recurring tasks.
+                  <li>Added support for "locking" configuration variable that controls whether
+                      file locking is used.
+                  <li>Task export feature now includes recurrence information, removes nested
+                      quotes, and limits output to pending tasks.
+                  <li>Task no longer includes deleted tasks in the summary report (thanks to
+                      Benjamin Tegarden).
+                  <li>Fixed bug that prevented the summary report from properly reporting
+                      recently completed tasks.
+                </ul>
 
-                <p>
-                  <h4>New in version 1.5.0 (3/15/2009)</h4>
-                  <table>
-                    <tr>
-                      <td>Source:</td>
-                      <td><a href="http://www.beckingham.net/task-1.5.0.tar.gz">task-1.5.0.tar.gz</a></td>
-                    </tr>
-                    <tr>
-                      <td>Mac OS X 10.5 (Leopard) Intel-only:</td>
-                      <td><a href="http://www.beckingham.net/task-1.5.0.pkg">task-1.5.0.pkg</a></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Debian:
-                        (Thanks to <a href="http://blog.rfquerin.org">Richard&nbsp;Querin</a>):
-                      </td>
-                      <td><a href="http://www.beckingham.net/task_1.5.0-1_i386.deb">task_1.5.0-1_i386.deb</a></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Red Hat:
-                        (Thanks to <a href="http://www.ultrafredde.com">Federico&nbsp;Hernandez</a>):
-                      </td>
-                      <td><a href="http://www.beckingham.net/task-1.5.0-1.i386.rpm">task-1.5.0-1.i386.rpm</a></td>
-                    </tr>
-                  </table>
-                  <ul>
-                    <li>Removed deprecated TUTORIAL file.
-                    <li>Removed support for the "showage" configuration variable.
-                    <li>"task stop" can remove the start time from a started task.
-                    <li>"task ghistory" now displays a differently aligned graph, allowing
-                        easier comparison by month of tasks added versus completed and deleted.
-                    <li>"task version" command now reports unrecognized configuration variables,
-                        which may be spelling mistakes or deprecated variables.
-                    <li>"configure --enable-debug" now supported to suppress compiler optimization
-                        to allow debugging.
-                    <li>Allow lower case priorities, and automatically upper case them.
-                    <li>Added support for "due" configuration variable which defines the number
-                        of days in the future when a task is considered due.
-                    <li>Added support for custom reports, comprised of a set of column names and
-                        sort order, with optional filtering in the configuration file.  This
-                        means user-defined reports can be written, and the reports currently
-                        in the configuration file can be renamed.  Several of task's built in
-                        reports have been converted to user-defined reports.
-                    <li>New online documentation for custom reports.
-                    <li>New algorithm for determining when the "nag" message is displayed.
-                    <li>Fixed bug where task hangs with a certain combination of recurring tasks
-                        and shadow files.
-                    <li>Fixed bug with the task sort algorithm, which led to an unstable sequence
-                        when there were only a handful of tasks.
-                    <li>Performance enhanced by eliminating unnecessary sorting.
-                    <li>Task now has a large (and growing) test suite and bug regression tests
-                        to help ensure higher quality releases.
-                    <li>Fixed bug that caused large performance hit during table rendering.
-                    <li>Fixed bug that concatenated a modified description without spaces.
-                    <li>Added new column 'recur' that displays the recurrence period of any
-                        recurring tasks.  This column can be added to any custom report.
-                    <li>Added support for "color.recurring" configuration variable which
-                        specifies the color of recurring tasks.
-                    <li>Added support for "locking" configuration variable that controls whether
-                        file locking is used.
-                    <li>Task export feature now includes recurrence information, removes nested
-                        quotes, and limits output to pending tasks.
-                    <li>Task no longer includes deleted tasks in the summary report (thanks to
-                        Benjamin Tegarden).
-                    <li>Fixed bug that prevented the summary report from properly reporting
-                        recently completed tasks.
-                  </ul>
-                </p>
+                <h4>New in version 1.4.3 (11/1/2008)</h4>
+                <ul>
+                  <li>Fixed misleading task count at bottom of "info" report.
+                  <li>Added support for a shadow file that contains a plain text task report,
+                      with the "shadow.file" and "shadow.command" configuration variables.
+                      The shadow file is automatically updated whenever the task database
+                      changes.  Useful for integrating with "Samurize".
+                  <li>Task now displays a message whenever a shadow file is updated, if the
+                      "shadow.notify" configuration variable is set "on".
+                  <li>Fixed bug whereby adding a task with a \n, \r or \f did not fail properly.
+                  <li>Removed "task usage" command.
+                  <li>Added documentation for Shadow files.
+                  <li>Added documentation for task filters.
+                </ul>
 
-                <p>
-                  <h4>New in version 1.4.3 (11/1/2008)</h4>
-                  <a href="http://www.beckingham.net/task-1.4.3.tar.gz">task-1.4.3.tar.gz</a>
-                  <br />
-                  Mac OS X 10.5 (Leopard) Intel-only:
-                  <a href="http://www.beckingham.net/task-1.4.3.pkg">task-1.4.3.pkg</a>
-                  <br />
-                  Debian package: <a href="http://www.beckingham.net/task_1.4.3-1_i386.deb">task_1.4.3-1_i386.deb</a>
-                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
-                </p>
-
-                <p>
-                  <ul>
-                    <li>Fixed misleading task count at bottom of "info" report.
-                    <li>Added support for a shadow file that contains a plain text task report,
-                        with the "shadow.file" and "shadow.command" configuration variables.
-                        The shadow file is automatically updated whenever the task database
-                        changes.  Useful for integrating with "Samurize".
-                    <li>Task now displays a message whenever a shadow file is updated, if the
-                        "shadow.notify" configuration variable is set "on".
-                    <li>Fixed bug whereby adding a task with a \n, \r or \f did not fail properly.
-                    <li>Removed "task usage" command.
-                    <li>Added documentation for Shadow files.
-                    <li>Added documentation for task filters.
-                  </ul>
-                </p>
-
-                <p>
-                  <h4>New in version 1.4.2 (9/18/2008)</h4>
-                  <a href="http://www.beckingham.net/task-1.4.2.tar.gz">task-1.4.2.tar.gz</a>
-                  <br />
-                  Mac OS X 10.5 (Leopard) Intel-only:
-                  <a href="http://www.beckingham.net/task-1.4.2.pkg">task-1.4.2.pkg</a>
-                  <br />
-                  Debian package: <a href="http://www.beckingham.net/task_1.4.2-1_i386.deb">task_1.4.2-1_i386.deb</a>
-                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
-                </p>
-
+                <h4>New in version 1.4.2 (9/18/2008)</h4>
                 <ul>
                   <li>"task undo" can now retract a "task done" command, provided no
                       reports have been run.
@@ -358,17 +211,7 @@
                       order to build clean using gcc 4.3 (thanks to H. İbrahim Güngör)
                 </ul>
 
-                <p>
-                  <h4>New in version 1.4.1 (7/18/2008)</h4>
-                  <a href="http://www.beckingham.net/task-1.4.1.tar.gz">task-1.4.1.tar.gz</a>
-                  <br />
-                  Mac OS X 10.5 (Leopard) Intel-only:
-                  <a href="http://www.beckingham.net/task-1.4.1.pkg">task-1.4.1.pkg</a>
-                  <br />
-                  Debian package: <a href="http://www.beckingham.net/task_1.4.1-1_i386.deb">task_1.4.1-1_i386.deb</a>
-                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
-                </p>
-
+                <h4>New in version 1.4.1 (7/18/2008)</h4>
                 <ul>
                   <li>Fixed bug: Descriptions could not be altered with "task 123 New description"
                   <li>Tweak: For "task calendar" month names are now centered over the month
@@ -376,14 +219,7 @@
                   <li>New Mac Intel-only Leopard (10.5) binary package
                 </ul>
 
-                <p>
-                  <h4>New in version 1.4.0 (7/10/2008)</h4>
-                  Source: <a href="http://www.beckingham.net/task-1.4.0.tar.gz">task-1.4.0.tar.gz</a>
-                  <br />
-                  Debian package: <a href="http://www.beckingham.net/task_1.4.0-1_i386.deb">task_1.4.0-1_i386.deb</a>
-                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
-                </p>
-
+                <h4>New in version 1.4.0 (7/10/2008)</h4>
                 <ul>
                   <li>Added new <a href="recur.html">recurring tasks</a> feature
                   <li>Added "task undelete" feature to restore a (very) recently deleted
@@ -405,14 +241,7 @@
                   <li>Fixed bug parsing date "07/08/2008" when using dateformat "m/d/Y"
                 </ul>
 
-                <p>
-                  <h4>New in version 1.3.1</h4>
-                  Source: <a href="http://www.beckingham.net/task-1.3.1.tar.gz">task-1.3.1.tar.gz</a>
-                  <br />
-                  Debian package: <a href="http://www.beckingham.net/task_1.3.1-1_i386.deb">task_1.3.1-1_i386.deb</a>
-                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
-                </p>
-
+                <h4>New in version 1.3.1</h4>
                 <ul>
                   <li>New configuration variable "defaultwidth" determines the width
                       of windows in the absense of ncurses support
@@ -424,14 +253,7 @@
                       OR a missing ~/.task directory
                 </ul>
 
-                <p>
-                  <h4>New in version 1.3.0</h4>
-                  Source: <a href="http://www.beckingham.net/task-1.3.0.tar.gz">task-1.3.0.tar.gz</a>
-                  <br />
-                  Debian package: <a href="http://www.beckingham.net/task_1.3.0-0_i386.deb">task_1.3.0-0_i386.deb</a>
-                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
-                </p>
-
+                <h4>New in version 1.3.0</h4>
                 <ul>
                   <li>"task calendar" now displays multiple months per line, adjustable
                       by the "monthsperline" configuration variable.  Feature added by
@@ -448,14 +270,7 @@
                   <li>Fixed bug whereby "1 wks" was being improperly pluralized
                 </ul>
 
-                <p>
-                  <h4>New in version 1.2.0</h4>
-                  Source: <a href="http://www.beckingham.net/task-1.2.0.tar.gz">task-1.2.0.tar.gz</a>
-                  <br />
-                  Debian package: <a href="http://www.beckingham.net/task_1.2.0-1_i386.deb">task_1.2.0-1_i386.deb</a>
-                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
-                </p>
-
+                <h4>New in version 1.2.0</h4>
                 <ul>
                   <li>Subprojects supported - please see documentation below, or TUTORIAL
                       file
@@ -468,14 +283,7 @@
                   <li>Improvements to the TUTORIAL file and this page
                 </ul>
 
-                <p>
-                  <h4>New in version 1.1.0</h4>
-                  Source: <a href="http://www.beckingham.net/task-1.1.0.tar.gz">task-1.1.0.tar.gz</a>
-                  <br />
-                  Debian package: <a href="http://www.beckingham.net/task_1.1.0-1_i386.deb">task_1.1.0-1_i386.deb</a>
-                  (Thanks to <a href="http://blog.rfquerin.org">Richard Querin</a>)
-                </p>
-
+                <h4>New in version 1.1.0</h4>
                 <ul>
                   <li>"blanklines" configuration variable to stop displaying unnecessary
                       white space and thus work better on small-screen devices
@@ -485,24 +293,14 @@
                   <li>Added tags to the "task long" report
                 </ul>
 
-                <p>
-                  <h4>New in version 1.0.1</h4>
-                  Source: <a href="http://www.beckingham.net/task-1.0.1.tar.gz">task-1.0.1.tar.gz</a>
-                </p>
-
+                <h4>New in version 1.0.1</h4>
                 <ul>
                   <li>Fixed bug where the UUID generator not properly terminating strings
                   <li>Fixed bug where srandom/srand not called prior to custom UUID generation
                 </ul>
 
-                <p>
-                  <h4>Version 1.0.0</h4>
-                  Source: <a href="http://www.beckingham.net/task-1.0.0.tar.gz">task-1.0.0.tar.gz</a>
-                </p>
-
-                <p>
-                  Task 1.0.0 was the first publicly available version of task.
-                </p>
+                <h4>Version 1.0.0</h4>
+                Task 1.0.0 was the first publicly available version of task.
 
               </div>
 
