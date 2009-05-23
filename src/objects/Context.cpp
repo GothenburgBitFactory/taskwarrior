@@ -47,12 +47,13 @@ Context::Context ()
 Context::Context (const Context& other)
 {
   throw std::string ("unimplemented Context::Context");
-  config   = other.config;
-  filter   = other.filter;
-  keymap   = other.keymap;
-  sequence = other.sequence;
-  task     = other.task;
-  tdb      = other.tdb;
+  config      = other.config;
+  filter      = other.filter;
+  keymap      = other.keymap;
+  sequence    = other.sequence;
+  task        = other.task;
+  tdb         = other.tdb;
+  stringtable = other.stringtable;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,12 +62,13 @@ Context& Context::operator= (const Context& other)
   throw std::string ("unimplemented Context::operator=");
   if (this != &other)
   {
-    config   = other.config;
-    filter   = other.filter;
-    keymap   = other.keymap;
-    sequence = other.sequence;
-    task     = other.task;
-    tdb      = other.tdb;
+    config      = other.config;
+    filter      = other.filter;
+    keymap      = other.keymap;
+    sequence    = other.sequence;
+    task        = other.task;
+    tdb         = other.tdb;
+    stringtable = other.stringtable;
   }
 
   return *this;
@@ -105,6 +107,7 @@ void Context::initialize (int argc, char** argv)
   // Allow user override of file locking.  Solaris/NFS machines may want this.
   tdb.lock (config.get ("locking", true));
 
+  // TODO Load appropriate stringtable.
   // TODO Load pending.data.
   // TODO Load completed.data.
   // TODO Load deleted.data.
@@ -119,6 +122,13 @@ int Context::run ()
   // TODO tdb.load (Filter);
 
   throw std::string ("unimplemented Context::run");
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Context::interactive ()
+{
+  throw std::string ("unimplemented Context::interactive");
   return 0;
 }
 

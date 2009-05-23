@@ -29,6 +29,7 @@
 
 #include <string>
 #include <vector>
+#include "Mod.h"
 
 class Att
 {
@@ -66,7 +67,7 @@ private:
 private:
   std::string mName;
   std::string mValue;
-  std::vector <std::string> mMods;
+  std::vector <Mod> mMods;
 };
 
 #endif

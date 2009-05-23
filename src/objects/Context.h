@@ -33,7 +33,7 @@
 #include "Sequence.h"
 #include "T.h"
 #include "TDB.h"
-
+#include "StringTable.h"
 
 class Context
 {
@@ -45,17 +45,19 @@ public:
 
   void initialize (int, char**);
   int run ();
+  int interactive ();
 
 private:
   void loadCorrectConfigFile (int, char**);
 
 public:
-  Config   config;
-  Filter   filter;
-  Keymap   keymap;
-  Sequence sequence;
-  T        task;
-  TDB      tdb;
+  Config      config;
+  Filter      filter;
+  Keymap      keymap;
+  Sequence    sequence;
+  T           task;
+  TDB         tdb;
+  StringTable stringtable;
 
 private:
 };
