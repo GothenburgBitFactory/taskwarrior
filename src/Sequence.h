@@ -30,6 +30,8 @@
 #include <vector>
 #include <string>
 
+#define SEQUENCE_MAX 1000
+
 class Sequence : public std::vector <int>
 {
 public:

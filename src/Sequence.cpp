@@ -83,8 +83,8 @@ void Sequence::parse (const std::string& input)
         if (low > high)
           throw std::string ("Inverted sequence range high-low");
 
-        if (high - low > 1000)
-          throw std::string ("Range too large, exceeded 1,000 IDs");
+        if (high - low >= SEQUENCE_MAX)
+          throw std::string ("ID Range too large");
 
         for (int i = low; i <= high; ++i)
           this->push_back (i);

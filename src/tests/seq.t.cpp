@@ -90,7 +90,7 @@ int main (int argc, char** argv)
   seq = parseSequence ("1--2");
   t.is (seq.size (), (size_t)0, "seq '1--2' -> 0 items (error)");
 
-  // 1-1000
+  // 1-1000 (SEQUENCE_MAX);
   seq = parseSequence ("1-1000");
   t.is (seq.size (), (size_t)1000, "seq '1-1000' -> 1000 items");
   if (seq.size () == 1000)
