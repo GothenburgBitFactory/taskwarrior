@@ -25,7 +25,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <map>
 #include <string>
+#include "util.h"
 #include "Sequence.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +61,23 @@ Sequence::~Sequence ()
 void Sequence::parse (const std::string& input)
 {
   throw std::string ("unimplemented Sequence::parse");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Sequence::combine (const Sequence& other)
+{
+  // Create a map using the sequence elements as keys.  This will create a
+  // unique list, with no duplicates.
+  std::map <int, int> both;
+  foreach (i, *this) both[*i] = 0;
+  foreach (i, other) both[*i] = 0;
+
+  // Now make a sequence out of the keys of the map.
+  this->clear ();
+  foreach (i, both)
+    this->push_back (i->first);
+
+  std::sort (this->begin (), this->end ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

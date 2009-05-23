@@ -39,6 +39,7 @@ public:
   ~Sequence ();                          // Destructor
 
   void parse (const std::string&);
+  void combine (const Sequence&);
 };
 
 #endif
