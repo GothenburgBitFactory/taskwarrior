@@ -41,6 +41,8 @@ public:
   std::string composeF4 ();
   std::string composeCSV ();
 
+  // TODO Series of helper functions.
+
 private:
 };
 

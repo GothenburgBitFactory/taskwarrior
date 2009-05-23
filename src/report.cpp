@@ -314,227 +314,222 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
+  filterSequence (tasks, task);
 
   // Find the task.
-  int count = 0;
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  foreach (t, tasks)
   {
-    T refTask (tasks[i]);
+    T refTask (*t);
 
-    if (refTask.getId () == task.getId () || task.sequenceContains (refTask.getId ()))
+    Table table;
+    table.setTableWidth (width);
+    table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+
+    table.addColumn ("Name");
+    table.addColumn ("Value");
+
+    if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+        conf.get (std::string ("fontunderline"), "true"))
     {
-      ++count;
-
-      Table table;
-      table.setTableWidth (width);
-      table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-
-      table.addColumn ("Name");
-      table.addColumn ("Value");
-
-      if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-          conf.get (std::string ("fontunderline"), "true"))
-      {
-        table.setColumnUnderline (0);
-        table.setColumnUnderline (1);
-      }
-      else
-        table.setTableDashedUnderline ();
-
-      table.setColumnWidth (0, Table::minimum);
-      table.setColumnWidth (1, Table::flexible);
-
-      table.setColumnJustification (0, Table::left);
-      table.setColumnJustification (1, Table::left);
-          Date now;
-
-      int row = table.addRow ();
-      table.addCell (row, 0, "ID");
-      table.addCell (row, 1, refTask.getId ());
-
-      std::string status = refTask.getStatus () == T::pending   ? "Pending"
-                         : refTask.getStatus () == T::completed ? "Completed"
-                         : refTask.getStatus () == T::deleted   ? "Deleted"
-                         : refTask.getStatus () == T::recurring ? "Recurring"
-                         : "";
-      if (refTask.getAttribute ("parent") != "")
-        status += " (Recurring)";
-
-      row = table.addRow ();
-      table.addCell (row, 0, "Status");
-      table.addCell (row, 1, status);
-
-      std::string description = refTask.getDescription ();
-      std::string when;
-      std::map <time_t, std::string> annotations;
-      refTask.getAnnotations (annotations);
-      foreach (anno, annotations)
-      {
-        Date dt (anno->first);
-        when = dt.toString (conf.get ("dateformat", "m/d/Y"));
-        description += "\n" + when + " " + anno->second;
-      }
-
-      row = table.addRow ();
-      table.addCell (row, 0, "Description");
-      table.addCell (row, 1, description);
-
-      if (refTask.getAttribute ("project") != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Project");
-        table.addCell (row, 1, refTask.getAttribute ("project"));
-      }
-
-      if (refTask.getAttribute ("priority") != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Priority");
-        table.addCell (row, 1, refTask.getAttribute ("priority"));
-      }
-
-      if (refTask.getStatus () == T::recurring ||
-          refTask.getAttribute ("parent") != "")
-      {
-        if (refTask.getAttribute ("recur") != "")
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Recurrence");
-          table.addCell (row, 1, refTask.getAttribute ("recur"));
-        }
-
-        if (refTask.getAttribute ("until") != "")
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Recur until");
-          table.addCell (row, 1, refTask.getAttribute ("until"));
-        }
-
-        if (refTask.getAttribute ("mask") != "")
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Mask");
-          table.addCell (row, 1, refTask.getAttribute ("mask"));
-        }
-
-        if (refTask.getAttribute ("parent") != "")
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Parent task");
-          table.addCell (row, 1, refTask.getAttribute ("parent"));
-        }
-
-        row = table.addRow ();
-        table.addCell (row, 0, "Mask Index");
-        table.addCell (row, 1, refTask.getAttribute ("imask"));
-      }
-
-      // due (colored)
-      bool imminent = false;
-      bool overdue = false;
-      std::string due = refTask.getAttribute ("due");
-      if (due != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Due");
-
-        Date dt (::atoi (due.c_str ()));
-        due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-        table.addCell (row, 1, due);
-
-        if (due.length ())
-        {
-          overdue = (dt < now) ? true : false;
-          Date nextweek = now + 7 * 86400;
-          imminent = dt < nextweek ? true : false;
-
-          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-          {
-            if (overdue)
-              table.setCellFg (row, 1, Text::colorCode (conf.get ("color.overdue", "red")));
-            else if (imminent)
-              table.setCellFg (row, 1, Text::colorCode (conf.get ("color.due", "yellow")));
-          }
-        }
-      }
-
-      // start
-      if (refTask.getAttribute ("start") != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Start");
-        Date dt (::atoi (refTask.getAttribute ("start").c_str ()));
-        table.addCell (row, 1, dt.toString (conf.get ("dateformat", "m/d/Y")));
-      }
-
-      // end
-      if (refTask.getAttribute ("end") != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "End");
-        Date dt (::atoi (refTask.getAttribute ("end").c_str ()));
-        table.addCell (row, 1, dt.toString (conf.get ("dateformat", "m/d/Y")));
-      }
-
-      // tags ...
-      std::vector <std::string> tags;
-      refTask.getTags (tags);
-      if (tags.size ())
-      {
-        std::string allTags;
-        join (allTags, " ", tags);
-
-        row = table.addRow ();
-        table.addCell (row, 0, "Tags");
-        table.addCell (row, 1, allTags);
-      }
-
-      // uuid
-      row = table.addRow ();
-      table.addCell (row, 0, "UUID");
-      table.addCell (row, 1, refTask.getUUID ());
-
-      // entry
-      row = table.addRow ();
-      table.addCell (row, 0, "Entered");
-      Date dt (::atoi (refTask.getAttribute ("entry").c_str ()));
-      std::string entry = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-      std::string age;
-      std::string created = refTask.getAttribute ("entry");
-      if (created.length ())
-      {
-        Date dt (::atoi (created.c_str ()));
-        formatTimeDeltaDays (age, (time_t) (now - dt));
-      }
-
-      table.addCell (row, 1, entry + " (" + age + ")");
-
-      // fg
-      std::string color = refTask.getAttribute ("fg");
-      if (color != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Foreground color");
-        table.addCell (row, 1, color);
-      }
-
-      // bg
-      color = refTask.getAttribute ("bg");
-      if (color != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Background color");
-        table.addCell (row, 1, color);
-      }
-
-      out << optionalBlankLine (conf)
-          << table.render ()
-          << std::endl;
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
     }
+    else
+      table.setTableDashedUnderline ();
+
+    table.setColumnWidth (0, Table::minimum);
+    table.setColumnWidth (1, Table::flexible);
+
+    table.setColumnJustification (0, Table::left);
+    table.setColumnJustification (1, Table::left);
+    Date now;
+
+    int row = table.addRow ();
+    table.addCell (row, 0, "ID");
+    table.addCell (row, 1, refTask.getId ());
+
+    std::string status = refTask.getStatus () == T::pending   ? "Pending"
+                       : refTask.getStatus () == T::completed ? "Completed"
+                       : refTask.getStatus () == T::deleted   ? "Deleted"
+                       : refTask.getStatus () == T::recurring ? "Recurring"
+                       : "";
+    if (refTask.getAttribute ("parent") != "")
+      status += " (Recurring)";
+
+    row = table.addRow ();
+    table.addCell (row, 0, "Status");
+    table.addCell (row, 1, status);
+
+    std::string description = refTask.getDescription ();
+    std::string when;
+    std::map <time_t, std::string> annotations;
+    refTask.getAnnotations (annotations);
+    foreach (anno, annotations)
+    {
+      Date dt (anno->first);
+      when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+      description += "\n" + when + " " + anno->second;
+    }
+
+    row = table.addRow ();
+    table.addCell (row, 0, "Description");
+    table.addCell (row, 1, description);
+
+    if (refTask.getAttribute ("project") != "")
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Project");
+      table.addCell (row, 1, refTask.getAttribute ("project"));
+    }
+
+    if (refTask.getAttribute ("priority") != "")
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Priority");
+      table.addCell (row, 1, refTask.getAttribute ("priority"));
+    }
+
+    if (refTask.getStatus () == T::recurring ||
+        refTask.getAttribute ("parent") != "")
+    {
+      if (refTask.getAttribute ("recur") != "")
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Recurrence");
+        table.addCell (row, 1, refTask.getAttribute ("recur"));
+      }
+
+      if (refTask.getAttribute ("until") != "")
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Recur until");
+        table.addCell (row, 1, refTask.getAttribute ("until"));
+      }
+
+      if (refTask.getAttribute ("mask") != "")
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Mask");
+        table.addCell (row, 1, refTask.getAttribute ("mask"));
+      }
+
+      if (refTask.getAttribute ("parent") != "")
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Parent task");
+        table.addCell (row, 1, refTask.getAttribute ("parent"));
+      }
+
+      row = table.addRow ();
+      table.addCell (row, 0, "Mask Index");
+      table.addCell (row, 1, refTask.getAttribute ("imask"));
+    }
+
+    // due (colored)
+    bool imminent = false;
+    bool overdue = false;
+    std::string due = refTask.getAttribute ("due");
+    if (due != "")
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Due");
+
+      Date dt (::atoi (due.c_str ()));
+      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+      table.addCell (row, 1, due);
+
+      if (due.length ())
+      {
+        overdue = (dt < now) ? true : false;
+        Date nextweek = now + 7 * 86400;
+        imminent = dt < nextweek ? true : false;
+
+        if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+        {
+          if (overdue)
+            table.setCellFg (row, 1, Text::colorCode (conf.get ("color.overdue", "red")));
+          else if (imminent)
+            table.setCellFg (row, 1, Text::colorCode (conf.get ("color.due", "yellow")));
+        }
+      }
+    }
+
+    // start
+    if (refTask.getAttribute ("start") != "")
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Start");
+      Date dt (::atoi (refTask.getAttribute ("start").c_str ()));
+      table.addCell (row, 1, dt.toString (conf.get ("dateformat", "m/d/Y")));
+    }
+
+    // end
+    if (refTask.getAttribute ("end") != "")
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "End");
+      Date dt (::atoi (refTask.getAttribute ("end").c_str ()));
+      table.addCell (row, 1, dt.toString (conf.get ("dateformat", "m/d/Y")));
+    }
+
+    // tags ...
+    std::vector <std::string> tags;
+    refTask.getTags (tags);
+    if (tags.size ())
+    {
+      std::string allTags;
+      join (allTags, " ", tags);
+
+      row = table.addRow ();
+      table.addCell (row, 0, "Tags");
+      table.addCell (row, 1, allTags);
+    }
+
+    // uuid
+    row = table.addRow ();
+    table.addCell (row, 0, "UUID");
+    table.addCell (row, 1, refTask.getUUID ());
+
+    // entry
+    row = table.addRow ();
+    table.addCell (row, 0, "Entered");
+    Date dt (::atoi (refTask.getAttribute ("entry").c_str ()));
+    std::string entry = dt.toString (conf.get ("dateformat", "m/d/Y"));
+
+    std::string age;
+    std::string created = refTask.getAttribute ("entry");
+    if (created.length ())
+    {
+      Date dt (::atoi (created.c_str ()));
+      formatTimeDeltaDays (age, (time_t) (now - dt));
+    }
+
+    table.addCell (row, 1, entry + " (" + age + ")");
+
+    // fg
+    std::string color = refTask.getAttribute ("fg");
+    if (color != "")
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Foreground color");
+      table.addCell (row, 1, color);
+    }
+
+    // bg
+    color = refTask.getAttribute ("bg");
+    if (color != "")
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Background color");
+      table.addCell (row, 1, color);
+    }
+
+    out << optionalBlankLine (conf)
+        << table.render ()
+        << std::endl;
   }
 
-  if (! count)
+  if (! tasks.size ())
     out << "No matches." << std::endl;
 
   return out.str ();

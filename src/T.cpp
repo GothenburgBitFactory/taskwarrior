@@ -231,12 +231,6 @@ void T::setAttributes (const std::map <std::string, std::string>& attributes)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::removeAttributes ()
-{
-  mAttributes.clear ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void T::removeAttribute (const std::string& name)
 {
   std::map <std::string, std::string> copy = mAttributes;
@@ -288,16 +282,6 @@ void T::addAnnotation (const std::string& description)
   std::replace (sanitized.begin (), sanitized.end (), '[', '(');
   std::replace (sanitized.begin (), sanitized.end (), ']', ')');
   mAnnotations[time (NULL)] = sanitized;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool T::sequenceContains (int id) const
-{
-  foreach (seq, mSequence)
-    if (*seq == id)
-      return true;
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
