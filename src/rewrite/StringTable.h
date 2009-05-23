@@ -38,8 +38,11 @@ public:
   StringTable& operator= (const StringTable&);          // Assignment operator
   ~StringTable ();                                      // Destructor
 
+  void load (const std::string&);
+  std::string get (int);
+
 private:
-  std::map <std::string, std::string> mMapping;
+  std::map <int, std::string> mMapping;
 };
 
 #endif
