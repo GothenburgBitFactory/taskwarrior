@@ -34,7 +34,6 @@ class T : public Record
 {
 public:
   T ();                    // Default constructor
-//  T (const T&);            // Copy constructor
   T (const std::string&);  // Parse
   T& operator= (const T&); // Assignment operator
   ~T ();                   // Destructor
