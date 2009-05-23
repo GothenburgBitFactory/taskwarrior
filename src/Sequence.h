@@ -34,12 +34,14 @@ class Sequence : public std::vector <int>
 {
 public:
   Sequence ();                           // Default constructor
-  Sequence (const Sequence&);            // Copy constructor
-  Sequence& operator= (const Sequence&); // Assignment operator
+  Sequence (const std::string&);         // Parse
   ~Sequence ();                          // Destructor
 
   void parse (const std::string&);
   void combine (const Sequence&);
+
+private:
+  bool validId (const std::string&);
 };
 
 #endif

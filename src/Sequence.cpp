@@ -27,7 +27,9 @@
 
 #include <map>
 #include <string>
+#include <ctype.h>
 #include "util.h"
+#include "text.h"
 #include "Sequence.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,20 +38,9 @@ Sequence::Sequence ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Sequence::Sequence (const Sequence& other)
+Sequence::Sequence (const std::string& input)
 {
-  throw std::string ("unimplemented Sequence::Sequence");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Sequence& Sequence::operator= (const Sequence& other)
-{
-  throw std::string ("unimplemented Sequence::operator=");
-  if (this != &other)
-  {
-  }
-
-  return *this;
+  parse (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +51,51 @@ Sequence::~Sequence ()
 ////////////////////////////////////////////////////////////////////////////////
 void Sequence::parse (const std::string& input)
 {
-  throw std::string ("unimplemented Sequence::parse");
+  std::vector <std::string> ranges;
+  split (ranges, input, ',');
+
+  std::vector <std::string>::iterator it;
+  for (it = ranges.begin (); it != ranges.end (); ++it)
+  {
+    std::vector <std::string> range;
+    split (range, *it, '-');
+
+    switch (range.size ())
+    {
+    case 1:
+      {
+        if (! validId (range[0]))
+          throw std::string ("Invalid ID in sequence");
+
+        int id = ::atoi (range[0].c_str ());
+        this->push_back (id);
+      }
+      break;
+
+    case 2:
+      {
+        if (! validId (range[0]) ||
+            ! validId (range[1]))
+          throw std::string ("Invalid ID in range");
+
+        int low  = ::atoi (range[0].c_str ());
+        int high = ::atoi (range[1].c_str ());
+        if (low > high)
+          throw std::string ("Inverted sequence range high-low");
+
+        if (high - low > 1000)
+          throw std::string ("Range too large, exceeded 1,000 IDs");
+
+        for (int i = low; i <= high; ++i)
+          this->push_back (i);
+      }
+      break;
+
+    default:
+      throw std::string ("Not a sequence.");
+      break;
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,3 +116,16 @@ void Sequence::combine (const Sequence& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Sequence::validId (const std::string& input)
+{
+  if (input.length () == 0)
+    return false;
+
+  for (size_t i = 0; i < input.length (); ++i)
+    if (!::isdigit (input[i]))
+      return false;
+
+  return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////// 

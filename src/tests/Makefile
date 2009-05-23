@@ -1,9 +1,9 @@
 PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t \
-          parse.t
+          parse.t seq.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib
 OBJECTS = ../TDB.o ../T.o ../parse.o ../text.o ../Date.o ../Duration.o \
-          ../util.o ../Config.o
+          ../util.o ../Config.o ../Sequence.o
 
 all: $(PROJECT)
 
@@ -42,4 +42,7 @@ autocomplete.t: autocomplete.t.o $(OBJECTS) test.o
 
 parse.t: parse.t.o $(OBJECTS) test.o
 	g++ parse.t.o $(OBJECTS) test.o $(LFLAGS) -o parse.t
+
+seq.t: seq.t.o $(OBJECTS) test.o
+	g++ seq.t.o $(OBJECTS) test.o $(LFLAGS) -o seq.t
 

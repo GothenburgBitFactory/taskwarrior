@@ -6,3 +6,4 @@ duration.t
 text.t
 autocomplete.t
 parse.t
+seq.t

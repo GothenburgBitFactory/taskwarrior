@@ -29,6 +29,8 @@
 #include <vector>
 #include <map>
 #include <sys/types.h>
+#include "T.h"
+#include "TDB.h"
 #include "Config.h"
 #include "Table.h"
 #include "Date.h"

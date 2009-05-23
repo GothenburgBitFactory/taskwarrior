@@ -27,8 +27,8 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "../TDB.h"
-#include "../task.h"
+#include "TDB.h"
+#include "task.h"
 #include "test.h"
 
 ////////////////////////////////////////////////////////////////////////////////

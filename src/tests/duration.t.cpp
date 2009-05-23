@@ -30,11 +30,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 //   daily, day, Nd
-//   weekly, Nw, sennight, biweekly, fortnight
+//   weekly, 1w, sennight, biweekly, fortnight
 //   monthly, bimonthly, Nm, semimonthly
 //   1st 2nd 3rd 4th .. 31st
-//   quarterly, Nq
-//   biannual, biyearly, annual, semiannual, yearly, Ny
+//   quarterly, 1q
+//   biannual, biyearly, annual, semiannual, yearly, 1y
 
 int convertDuration (const std::string& input)
 {

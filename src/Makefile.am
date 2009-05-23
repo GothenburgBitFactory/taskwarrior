@@ -1,2 +1,2 @@
 bin_PROGRAMS = task
-task_SOURCES = Config.cpp Date.cpp Record.cpp T.cpp TDB.cpp Att.cpp Mod.cpp Table.cpp Grid.cpp Timer.cpp Duration.cpp StringTable.cpp color.cpp parse.cpp task.cpp command.cpp edit.cpp report.cpp util.cpp text.cpp rules.cpp import.cpp Config.h Date.h Record.h T.h TDB.h Att.h Mod.h Table.h Grid.h Timer.h Duration.h StringTable.h color.h task.h
+task_SOURCES = Config.cpp Date.cpp Record.cpp T.cpp TDB.cpp Att.cpp Mod.cpp Sequence.cpp Table.cpp Grid.cpp Timer.cpp Duration.cpp StringTable.cpp color.cpp parse.cpp task.cpp command.cpp edit.cpp report.cpp util.cpp text.cpp rules.cpp import.cpp Config.h Date.h Record.h T.h TDB.h Att.h Mod.h Sequence.h Table.h Grid.h Timer.h Duration.h StringTable.h color.h task.h

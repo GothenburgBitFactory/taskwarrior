@@ -28,6 +28,8 @@
 #include <iomanip>
 #include <string>
 #include <task.h>
+#include <util.h>
+#include <text.h>
 #include "test.h"
 
 ///////////////////////////////////////////////////////////////////////////////
