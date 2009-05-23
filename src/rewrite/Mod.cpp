@@ -38,10 +38,61 @@ Mod::~Mod ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Mod::isRecognized ()
+// before after
+// not
+// none any
+// over under
+// synth
+// first last
+// this
+// next
+// is isnt
+// has hasnt
+// startswith endswith
+bool Mod::isValid ()
 {
-  if (*this == ".is")
+  if (*this == "before"     || *this == "after"    ||
+      *this == "not"        ||
+      *this == "none"       || *this == "any"      ||
+      *this == "synth"      ||
+      *this == "under"      || *this == "over"     ||
+      *this == "first"      || *this == "last"     ||
+      *this == "this"       ||
+      *this == "next"       ||
+      *this == "is"         || *this == "isnt"     ||
+      *this == "has"        || *this == "hasnt"    ||
+      *this == "startswith" || *this == "endswith")
     return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Mod::eval (const Mod& other)
+{
+  // before
+  // after
+  // non
+  // none
+  // any
+  // synth
+  // under
+  // over
+  // first
+  // last
+  // this
+  // next
+
+  if (*this == ".is")
+    return *this == other ? true : false;
+
+  if (*this == ".isnt")
+    return *this != other ? true : false;
+
+  // has
+  // hasnt
+  // startswith
+  // endswith
 
   return false;
 }

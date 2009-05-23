@@ -29,13 +29,16 @@
 
 #include <string>
 
+class Mod;
+
 class Mod : public std::string
 {
 public:
   Mod ();                                       // Default constructor
   ~Mod ();                                      // Destructor
 
-  bool isRecognized ();
+  bool isValid ();
+  bool eval (const Mod&);
 };
 
 #endif
