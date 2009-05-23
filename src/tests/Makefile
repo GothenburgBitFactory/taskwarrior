@@ -2,7 +2,8 @@ PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t \
           parse.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib
-OBJECTS = ../TDB.o ../T.o ../parse.o ../text.o ../Date.o ../util.o ../Config.o
+OBJECTS = ../TDB.o ../T.o ../parse.o ../text.o ../Date.o ../Duration.o \
+          ../util.o ../Config.o
 
 all: $(PROJECT)
 

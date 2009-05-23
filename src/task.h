@@ -33,25 +33,7 @@
 #include "Table.h"
 #include "Date.h"
 #include "color.h"
-#include "TDB.h"
-#include "T.h"
 #include "../auto.h"
-
-#ifndef min
-#define min(a,b) ((a) < (b) ? (a) : (b))
-#endif
-
-#ifndef max
-#define max(a,b) ((a) > (b) ? (a) : (b))
-#endif
-
-#define foreach(i, c)                                              \
-for (typeof (c) *foreach_p = & (c);                                \
-     foreach_p;                                                    \
-     foreach_p = 0)                                                \
-  for (typeof (foreach_p->begin()) i = foreach_p->begin();         \
-       i != foreach_p->end();                                      \
-       ++i)
 
 // parse.cpp
 void parse (std::vector <std::string>&, std::string&, T&, Config&);
@@ -119,44 +101,6 @@ std::string handleReportTimesheet (TDB&, T&, Config&);
 std::string handleCustomReport (TDB&, T&, Config&, const std::string&);
 void validReportColumns (const std::vector <std::string>&);
 void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
-
-// text.cpp
-void wrapText (std::vector <std::string>&, const std::string&, const int);
-std::string trimLeft (const std::string& in, const std::string& t = " ");
-std::string trimRight (const std::string& in, const std::string& t = " ");
-std::string trim (const std::string& in, const std::string& t = " ");
-std::string unquoteText (const std::string&);
-void extractLine (std::string&, std::string&, int);
-void split (std::vector<std::string>&, const std::string&, const char);
-void split (std::vector<std::string>&, const std::string&, const std::string&);
-void join (std::string&, const std::string&, const std::vector<std::string>&);
-std::string commify (const std::string&);
-std::string lowerCase (const std::string&);
-std::string upperCase (const std::string&);
-const char* optionalBlankLine (Config&);
-
-// util.cpp
-bool confirm (const std::string&);
-void delay (float);
-void formatTimeDeltaDays (std::string&, time_t);
-std::string formatSeconds (time_t);
-int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&);
-const std::string uuid ();
-int convertDuration (const std::string&);
-std::string expandPath (const std::string&);
-
-#ifdef SOLARIS
-  #define LOCK_SH 1
-  #define LOCK_EX 2
-  #define LOCK_NB 4
-  #define LOCK_UN 8
-
-  int flock (int, int);
-#endif
-
-bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
-bool slurp (const std::string&, std::string&, bool trimLines = false);
-void spit (const std::string&, const std::string&);
 
 // rules.cpp
 void initializeColorRules (Config&);

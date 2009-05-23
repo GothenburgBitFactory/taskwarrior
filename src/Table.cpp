@@ -48,7 +48,9 @@
 #include <assert.h>
 #include <Table.h>
 #include <Date.h>
-#include <task.h>
+#include <Duration.h>
+#include "text.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 Table::Table ()
@@ -989,7 +991,7 @@ void Table::sort (std::vector <int>& order)
               break;
             else if ((std::string)*left != "" && (std::string)*right == "")
               SWAP
-            else if (convertDuration ((std::string)*left) > convertDuration ((std::string)*right))
+            else if (Duration ((std::string)*left) > Duration ((std::string)*right))
               SWAP
             break;
 
@@ -998,7 +1000,7 @@ void Table::sort (std::vector <int>& order)
               break;
             else if ((std::string)*left == "" && (std::string)*right != "")
               SWAP
-            else if (convertDuration ((std::string)*left) < convertDuration ((std::string)*right))
+            else if (Duration ((std::string)*left) < Duration ((std::string)*right))
               SWAP
             break;
           }

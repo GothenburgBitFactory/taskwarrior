@@ -31,8 +31,10 @@
 #include <map>
 
 #include "Date.h"
-#include "task.h"
+#include "Duration.h"
 #include "T.h"
+#include "text.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // NOTE: These are static arrays only because there is no initializer list for
@@ -445,7 +447,9 @@ static bool validSubstitution (
 ////////////////////////////////////////////////////////////////////////////////
 bool validDuration (std::string& input)
 {
-  return (convertDuration (input) != 0) ? true : false;
+  try         { Duration (input); }
+  catch (...) { return false;     }
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

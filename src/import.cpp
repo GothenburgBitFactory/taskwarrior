@@ -29,6 +29,10 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "Date.h"
+#include "T.h"
+#include "TDB.h"
+#include "text.h"
+#include "util.h"
 #include "task.h"
 
 ////////////////////////////////////////////////////////////////////////////////

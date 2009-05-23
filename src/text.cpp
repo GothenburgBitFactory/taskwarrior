@@ -27,7 +27,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "task.h"
+#include "Config.h"
+#include "util.h"
+#include "text.h"
 
 static const char* newline = "\n";
 static const char* noline  = "";

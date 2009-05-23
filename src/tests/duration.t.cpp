@@ -25,9 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
-#include <Date.h>
+#include <Duration.h>
 #include <test.h>
-#include <../task.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 //   daily, day, Nd
@@ -36,29 +35,37 @@
 //   1st 2nd 3rd 4th .. 31st
 //   quarterly, Nq
 //   biannual, biyearly, annual, semiannual, yearly, Ny
+
+int convertDuration (const std::string& input)
+{
+  try { Duration d (input); return (int) d; }
+  catch (...) {}
+  return 0;
+}
+
 int main (int argc, char** argv)
 {
   UnitTest t (17);
 
   std::string d;
-  d = "daily";     t.is (convertDuration (d),   1, "duration daily = 1");
-  d = "weekdays";  t.is (convertDuration (d),   1, "duration weekdays = 1");
-  d = "day";       t.is (convertDuration (d),   1, "duration day = 1");
-  d = "0d";        t.is (convertDuration (d),   0, "duration 0d = 0");
-  d = "1d";        t.is (convertDuration (d),   1, "duration 1d = 1");
-  d = "7d";        t.is (convertDuration (d),   7, "duration 7d = 7");
-  d = "10d";       t.is (convertDuration (d),  10, "duration 10d = 10");
-  d = "100d";      t.is (convertDuration (d), 100, "duration 100d = 100");
+  t.is (convertDuration ("daily"),       1, "duration daily = 1");
+  t.is (convertDuration ("weekdays"),    1, "duration weekdays = 1");
+  t.is (convertDuration ("day"),         1, "duration day = 1");
+  t.is (convertDuration ("0d"),          0, "duration 0d = 0");
+  t.is (convertDuration ("1d"),          1, "duration 1d = 1");
+  t.is (convertDuration ("7d"),          7, "duration 7d = 7");
+  t.is (convertDuration ("10d"),        10, "duration 10d = 10");
+  t.is (convertDuration ("100d"),      100, "duration 100d = 100");
 
-  d = "weekly";    t.is (convertDuration (d),   7, "duration weekly = 7");
-  d = "sennight";  t.is (convertDuration (d),   7, "duration sennight = 7");
-  d = "biweekly";  t.is (convertDuration (d),  14, "duration biweekly = 14");
-  d = "fortnight"; t.is (convertDuration (d),  14, "duration fortnight = 14");
-  d = "0w";        t.is (convertDuration (d),   0, "duration 0w = 0");
-  d = "1w";        t.is (convertDuration (d),   7, "duration 1w = 7");
-  d = "7w";        t.is (convertDuration (d),  49, "duration 7w = 49");
-  d = "10w";       t.is (convertDuration (d),  70, "duration 10w = 70");
-  d = "100w";      t.is (convertDuration (d), 700, "duration 100w = 700");
+  t.is (convertDuration ("weekly"),      7, "duration weekly = 7");
+  t.is (convertDuration ("sennight"),    7, "duration sennight = 7");
+  t.is (convertDuration ("biweekly"),   14, "duration biweekly = 14");
+  t.is (convertDuration ("fortnight"),  14, "duration fortnight = 14");
+  t.is (convertDuration ("0w"),          0, "duration 0w = 0");
+  t.is (convertDuration ("1w"),          7, "duration 1w = 7");
+  t.is (convertDuration ("7w"),         49, "duration 7w = 49");
+  t.is (convertDuration ("10w"),        70, "duration 10w = 70");
+  t.is (convertDuration ("100w"),      700, "duration 100w = 700");
 
   return 0;
 }

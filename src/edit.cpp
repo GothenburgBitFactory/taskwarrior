@@ -33,6 +33,11 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+#include "T.h"
+#include "TDB.h"
+#include "Date.h"
+#include "text.h"
+#include "util.h"
 #include "task.h"
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -30,7 +30,8 @@
 #include "Table.h"
 #include "Date.h"
 #include "T.h"
-#include "task.h"
+#include "text.h"
+#include "util.h"
 
 static std::map <std::string, Text::color> gsFg;
 static std::map <std::string, Text::color> gsBg;

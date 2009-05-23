@@ -38,9 +38,12 @@
 
 #include "Config.h"
 #include "Date.h"
+#include "Duration.h"
 #include "Table.h"
 #include "TDB.h"
 #include "T.h"
+#include "text.h"
+#include "util.h"
 #include "task.h"
 
 #ifdef HAVE_LIBNCURSES
@@ -717,7 +720,10 @@ Date getNextRecurrence (Date& current, std::string& period)
   }
 
   // If the period is an 'easy' one, add it to current, and we're done.
-  int days = convertDuration (period);
+  int days = 0;
+  try { Duration du (period); days = du; }
+  catch (...) { days = 0; }
+
   return current + (days * 86400);
 }
 
