@@ -216,21 +216,6 @@ void T::setAttribute (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::setAttributes (const std::map <std::string, std::string>& attributes)
-{
-  foreach (i, attributes)
-  {
-    if (i->first.find (' ') != std::string::npos)
-      throw std::string ("An attribute name may not contain spaces");
-
-    if (i->second.find (' ') != std::string::npos)
-      throw std::string ("An attribute value may not contain spaces");
-
-    mAttributes[i->first] = i->second;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void T::removeAttribute (const std::string& name)
 {
   std::map <std::string, std::string> copy = mAttributes;

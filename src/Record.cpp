@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
+#include "util.h"
 #include "Record.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,6 +62,59 @@ Record::~Record ()
 void Record::parse (const std::string& input)
 {
   throw std::string ("unimplemented Record::parse");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <Att> Record::all ()
+{
+  std::vector <Att> all;
+  foreach (a, mAtts)
+    all.push_back (a->second);
+
+  return all;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string Record::get (const std::string& name)
+{
+  if (mAtts.find (name) != mAtts.end ())
+    return mAtts[name].value ();
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Record::getInt (const std::string& name)
+{
+  if (mAtts.find (name) != mAtts.end ())
+    return ::atoi (mAtts[name].value ().c_str ());
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Record::set (const std::string& name, const std::string& value)
+{
+  mAtts[name] = Att (name, value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Record::set (const std::string& name, int value)
+{
+  std::stringstream svalue;
+  svalue << value;
+
+  mAtts[name] = Att (name, svalue.str ());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Record::remove (const std::string& name)
+{
+  std::map <std::string, Att> copy = mAtts;
+  mAtts.clear ();
+  foreach (i, copy)
+   if (i->first != name)
+     mAtts[i->first] = i->second;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

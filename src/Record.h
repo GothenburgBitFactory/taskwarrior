@@ -28,6 +28,7 @@
 #define INCLUDED_RECORD
 
 #include <vector>
+#include <map>
 #include "Att.h"
 
 class Record
@@ -42,16 +43,15 @@ public:
   virtual std::string composeCSV () = 0;
   void parse (const std::string&);
 
-/*
-  void getAttributes (std::map<std::string, std::string>&);
-  const std::string getAttribute (const std::string&);
-  void setAttribute (const std::string&, const std::string&);
-  void setAttributes (const std::map <std::string, std::string>&);
-  void removeAttribute (const std::string&);
-*/
+  std::vector <Att> all ();
+  const std::string get (const std::string&);
+  int getInt (const std::string&);
+  void set (const std::string&, const std::string&);
+  void set (const std::string&, int);
+  void remove (const std::string&);
 
 private:
-  std::vector <Att> mAtts;
+  std::map <std::string, Att> mAtts;
 };
 
 #endif

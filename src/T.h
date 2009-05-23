@@ -77,7 +77,6 @@ public:
   void getAttributes (std::map<std::string, std::string>&);
   const std::string getAttribute (const std::string&);
   void setAttribute (const std::string&, const std::string&);
-  void setAttributes (const std::map <std::string, std::string>&);
   void removeAttribute (const std::string&);
 
   void getAnnotations (std::map <time_t, std::string>&) const;
