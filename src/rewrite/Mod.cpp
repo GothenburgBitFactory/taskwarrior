@@ -24,50 +24,26 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_ATT
-#define INCLUDED_ATT
 
-#include <string>
-#include <vector>
+#include "Mod.h"
 
-class Att
+////////////////////////////////////////////////////////////////////////////////
+Mod::Mod ()
 {
-public:
-  Att ();                                       // Default constructor
-  Att (const std::string&, const std::string&); // Simple constructor
-  Att (const Att&);                             // Copy constructor
-  Att& operator= (const Att&);                  // Assignment operator
-  ~Att ();                                      // Destructor
+}
 
-  void parse (const std::string&);
-  std::string composeF4 () const;
+////////////////////////////////////////////////////////////////////////////////
+Mod::~Mod ()
+{
+}
 
-  void addMod (const std::string&);
+////////////////////////////////////////////////////////////////////////////////
+bool Mod::isRecognized ()
+{
+  if (*this == ".is")
+    return true;
 
-  std::string name () const;
-  void name (const std::string&);
+  return false;
+}
 
-  std::string value () const;
-  void value (const std::string&);
-
-  int value_int () const;
-  void value_int (int);
-
-  bool filter () const;
-  bool required () const;
-  bool reserved () const;
-
-private:
-  void enquote (std::string&) const;
-  void dequote (std::string&) const;
-  void encode (std::string&) const;
-  void decode (std::string&) const;
-
-private:
-  std::string mName;
-  std::string mValue;
-  std::vector <std::string> mMods;
-};
-
-#endif
 ////////////////////////////////////////////////////////////////////////////////

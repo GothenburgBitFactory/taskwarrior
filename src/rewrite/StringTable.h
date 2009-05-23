@@ -24,49 +24,22 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_ATT
-#define INCLUDED_ATT
+#ifndef INCLUDED_STRINGTABLE
+#define INCLUDED_STRINGTABLE
 
+#include <map>
 #include <string>
-#include <vector>
 
-class Att
+class StringTable
 {
 public:
-  Att ();                                       // Default constructor
-  Att (const std::string&, const std::string&); // Simple constructor
-  Att (const Att&);                             // Copy constructor
-  Att& operator= (const Att&);                  // Assignment operator
-  ~Att ();                                      // Destructor
-
-  void parse (const std::string&);
-  std::string composeF4 () const;
-
-  void addMod (const std::string&);
-
-  std::string name () const;
-  void name (const std::string&);
-
-  std::string value () const;
-  void value (const std::string&);
-
-  int value_int () const;
-  void value_int (int);
-
-  bool filter () const;
-  bool required () const;
-  bool reserved () const;
+  StringTable ();                                       // Default constructor
+  StringTable (const StringTable&);                     // Copy constructor
+  StringTable& operator= (const StringTable&);          // Assignment operator
+  ~StringTable ();                                      // Destructor
 
 private:
-  void enquote (std::string&) const;
-  void dequote (std::string&) const;
-  void encode (std::string&) const;
-  void decode (std::string&) const;
-
-private:
-  std::string mName;
-  std::string mValue;
-  std::vector <std::string> mMods;
+  std::map <std::string, std::string> mMapping;
 };
 
 #endif

@@ -44,6 +44,7 @@ Att::Att (const std::string& name, const std::string& value)
 
   mMods.clear ();
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const Att& other)
 {
@@ -81,10 +82,14 @@ void Att::parse (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// name : " value "
 std::string Att::composeF4 () const
 {
-  throw std::string ("unimplemented Att::composeF4");
-  return "";
+  std::string value = mValue;
+  encode (value);
+  enquote (value);
+
+  return mName + ":" + value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -145,10 +150,27 @@ bool Att::required () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Att::internal () const
+bool Att::reserved () const
 {
-  throw std::string ("unimplemented Att::internal");
+  throw std::string ("unimplemented Att::reserved");
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Add quotes.
+void Att::enquote (std::string& value) const
+{
+  value = '"' + value + '"';
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Remove quotes.
+void Att::dequote (std::string& value) const
+{
+  if (value.length () > 2 &&
+      value[0] == '"' &&
+      value[value.length () - 1] == '"')
+    value = value.substr (1, value.length () - 2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,9 +180,28 @@ bool Att::internal () const
 //   ,  -> &comma;
 //   [  -> &open;
 //   ]  -> &close;
-void Att::encode (std::string&) const
+//   :  -> &colon;
+void Att::encode (std::string& value) const
 {
-  throw std::string ("unimplemented Att::internal");
+  std::string::size_type i;
+
+  while ((i = value.find ('\t')) != std::string::npos)
+    value.replace (i, 1, "&tab;");
+
+  while ((i = value.find ('"')) != std::string::npos)
+    value.replace (i, 1, "&quot;");
+
+  while ((i = value.find (',')) != std::string::npos)
+    value.replace (i, 1, "&comma;");
+
+  while ((i = value.find ('[')) != std::string::npos)
+    value.replace (i, 1, "&open;");
+
+  while ((i = value.find (']')) != std::string::npos)
+    value.replace (i, 1, "&close;");
+
+  while ((i = value.find (':')) != std::string::npos)
+    value.replace (i, 1, "&colon;");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -170,9 +211,28 @@ void Att::encode (std::string&) const
 //   ,  <- &comma;
 //   [  <- &open;
 //   ]  <- &close;
-void Att::decode (std::string&) const
+//   :  <- &colon;
+void Att::decode (std::string& value) const
 {
-  throw std::string ("unimplemented Att::internal");
+  std::string::size_type i;
+
+  while ((i = value.find ("&tab;")) != std::string::npos)
+    value.replace (i, 5, "\t");
+
+  while ((i = value.find ("&quot;")) != std::string::npos)
+    value.replace (i, 6, "\"");
+
+  while ((i = value.find ("&comma;")) != std::string::npos)
+    value.replace (i, 7, ",");
+
+  while ((i = value.find ("&open;")) != std::string::npos)
+    value.replace (i, 6, "[");
+
+  while ((i = value.find ("&close;")) != std::string::npos)
+    value.replace (i, 7, "]");
+
+  while ((i = value.find ("&colon;")) != std::string::npos)
+    value.replace (i, 7, ":");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

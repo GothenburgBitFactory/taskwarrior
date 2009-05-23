@@ -24,50 +24,36 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_ATT
-#define INCLUDED_ATT
 
-#include <string>
-#include <vector>
+#include "StringTable.h"
 
-class Att
+////////////////////////////////////////////////////////////////////////////////
+StringTable::StringTable ()
 {
-public:
-  Att ();                                       // Default constructor
-  Att (const std::string&, const std::string&); // Simple constructor
-  Att (const Att&);                             // Copy constructor
-  Att& operator= (const Att&);                  // Assignment operator
-  ~Att ();                                      // Destructor
+}
 
-  void parse (const std::string&);
-  std::string composeF4 () const;
+////////////////////////////////////////////////////////////////////////////////
+StringTable::StringTable (const StringTable& other)
+{
+  throw std::string ("unimplemented StringTable::StringTable");
+  mMapping = other.mMapping;
+}
 
-  void addMod (const std::string&);
+////////////////////////////////////////////////////////////////////////////////
+StringTable& StringTable::operator= (const StringTable& other)
+{
+  throw std::string ("unimplemented StringTable::operator=");
+  if (this != &other)
+  {
+    mMapping = other.mMapping;
+  }
 
-  std::string name () const;
-  void name (const std::string&);
+  return *this;
+}
 
-  std::string value () const;
-  void value (const std::string&);
+////////////////////////////////////////////////////////////////////////////////
+StringTable::~StringTable ()
+{
+}
 
-  int value_int () const;
-  void value_int (int);
-
-  bool filter () const;
-  bool required () const;
-  bool reserved () const;
-
-private:
-  void enquote (std::string&) const;
-  void dequote (std::string&) const;
-  void encode (std::string&) const;
-  void decode (std::string&) const;
-
-private:
-  std::string mName;
-  std::string mValue;
-  std::vector <std::string> mMods;
-};
-
-#endif
 ////////////////////////////////////////////////////////////////////////////////
