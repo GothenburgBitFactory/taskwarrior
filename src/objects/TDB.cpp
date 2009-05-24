@@ -147,12 +147,28 @@ void TDB::unlock ()
 // TODO Returns number of filtered tasks.
 int TDB::load (std::vector <T>& tasks, Filter& filter)
 {
-  throw std::string ("unimplemented TDB::load");
+  char line[T_LINE_MAX];
+  foreach (location, mLocations)
+  {
+    while (fgets (line, T_LINE_MAX, location->second))
+    {
+      int length = ::strlen (line);
+      if (length > 1)
+      {
+        line[length - 1] = '\0'; // Kill \n
 
-  // TODO Read each row.
-  // TODO Let T::parse disassemble it.
-  // TODO If task passes filter, add to tasks.
-  return 0;
+        T task (line);
+
+        if (filter.pass (task))
+        {
+          // TODO Add hidden attribute indicating source.
+          tasks.push_back (task);
+        }
+      }
+    }
+  }
+
+  return tasks.size ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -205,6 +221,21 @@ void TDB::getCompletedFiles (std::vector <std::string> files)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void TDB::getContactFiles (std::vector <std::string> files)
+{
+  files.clear ();
+
+  foreach (location, mLocations)
+    files.push_back (location->first + "/contact.data");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::getUndoStack (std::string& file)
+{
+  throw std::string ("unimplemented TDB::getUndoStack");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 FILE* TDB::openAndLock (const std::string& file)
 {
   // Check for access.
@@ -223,7 +254,7 @@ FILE* TDB::openAndLock (const std::string& file)
     while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
       delay (0.1);
 
-  if (!in)
+  if (retry > 3)
     throw std::string ("Could not lock '") + file + "'.";
 
   return in;

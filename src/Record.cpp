@@ -38,7 +38,7 @@ Record::Record ()
 Record::Record (const Record& other)
 {
   throw std::string ("unimplemented Record::Record");
-  mAtts = other.mAtts;
+  *this = other;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ Record& Record::operator= (const Record& other)
   throw std::string ("unimplemented Record:operator=");
   if (this != &other)
   {
-    mAtts = other.mAtts;
+    *this = other;
   }
 
   return *this;
@@ -59,16 +59,26 @@ Record::~Record ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//
+// start --> [ --> name --> : --> " --> value --> " --> ] --> end
+//                  ^                                |
+//                  |________________________________|
+//
 void Record::parse (const std::string& input)
 {
-  throw std::string ("unimplemented Record::parse");
+  if (input[0] == '[' && input[input.length () - 1] == ']')
+  {
+    throw std::string ("unimplemented Record:parse");
+  }
+  else
+    throw std::string ("Record not recognized as FF4");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <Att> Record::all ()
 {
   std::vector <Att> all;
-  foreach (a, mAtts)
+  foreach (a, (*this))
     all.push_back (a->second);
 
   return all;
@@ -77,17 +87,17 @@ std::vector <Att> Record::all ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::string Record::get (const std::string& name)
 {
-  if (mAtts.find (name) != mAtts.end ())
-    return mAtts[name].value ();
+  if (this->find (name) != this->end ())
+    return (*this)[name].value ();
 
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Record::getInt (const std::string& name)
+int Record::get_int (const std::string& name)
 {
-  if (mAtts.find (name) != mAtts.end ())
-    return ::atoi (mAtts[name].value ().c_str ());
+  if (this->find (name) != this->end ())
+    return ::atoi ((*this)[name].value ().c_str ());
 
   return 0;
 }
@@ -95,7 +105,7 @@ int Record::getInt (const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 void Record::set (const std::string& name, const std::string& value)
 {
-  mAtts[name] = Att (name, value);
+  (*this)[name] = Att (name, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,17 +114,17 @@ void Record::set (const std::string& name, int value)
   std::stringstream svalue;
   svalue << value;
 
-  mAtts[name] = Att (name, svalue.str ());
+  (*this)[name] = Att (name, svalue.str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Record::remove (const std::string& name)
 {
-  std::map <std::string, Att> copy = mAtts;
-  mAtts.clear ();
+  std::map <std::string, Att> copy = *this;
+  this->clear ();
   foreach (i, copy)
    if (i->first != name)
-     mAtts[i->first] = i->second;
+     (*this)[i->first] = i->second;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

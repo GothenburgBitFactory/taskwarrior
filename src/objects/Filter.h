@@ -31,7 +31,7 @@
 #include "Att.h"
 #include "Record.h"
 
-class Filter
+class Filter : public std::vector <Att>
 {
 public:
   Filter ();                         // Default constructor
@@ -39,11 +39,7 @@ public:
   Filter& operator= (const Filter&); // Assignment operator
   ~Filter ();                        // Destructor
 
-  void add (Att&);
   bool pass (Record&);
-
-private:
-  std::vector <Att> mAtts;
 };
 
 #endif

@@ -36,7 +36,7 @@ Filter::Filter ()
 Filter::Filter (const Filter& other)
 {
   throw std::string ("unimplemented Filter::Filter");
-  mAtts = other.mAtts;
+  *this = other;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ Filter& Filter::operator= (const Filter& other)
   throw std::string ("unimplemented Filter::operator=");
   if (this != &other)
   {
-    mAtts = other.mAtts;
+    *this = other;
   }
 
   return *this;
@@ -57,17 +57,11 @@ Filter::~Filter ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Filter::add (Att& att)
-{
-  mAtts.push_back (att);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Filter::pass (Record& record)
 {
   throw std::string ("unimplemented Filter::pass");
 /*
-  foreach (att, mAtts)
+  foreach (att, (*this))
     if (! att->match (record))
       return false;
 */

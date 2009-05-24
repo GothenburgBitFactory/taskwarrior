@@ -31,7 +31,7 @@
 #include <map>
 #include "Att.h"
 
-class Record
+class Record : public std::map <std::string, Att>
 {
 public:
   Record ();                         // Default constructor
@@ -45,13 +45,10 @@ public:
 
   std::vector <Att> all ();
   const std::string get (const std::string&);
-  int getInt (const std::string&);
+  int get_int (const std::string&);
   void set (const std::string&, const std::string&);
   void set (const std::string&, int);
   void remove (const std::string&);
-
-private:
-  std::map <std::string, Att> mAtts;
 };
 
 #endif

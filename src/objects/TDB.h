@@ -33,6 +33,9 @@
 #include "Filter.h"
 #include "T.h"
 
+// Length of longest line.
+#define T_LINE_MAX 32768
+
 class TDB
 {
 public:
@@ -55,6 +58,8 @@ public:
 private:
   void  getPendingFiles (std::vector <std::string>);
   void  getCompletedFiles (std::vector <std::string>);
+  void  getContactFiles (std::vector <std::string>);
+  void  getUndoStack (std::string&);
   FILE* openAndLock (const std::string&);
 
 private:

@@ -38,7 +38,6 @@ Att::Att ()
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const std::string& name, const std::string& value)
 {
-  throw std::string ("unimplemented Att::Att");
   mName  = name;
   mValue = value;
 
@@ -48,7 +47,6 @@ Att::Att (const std::string& name, const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const Att& other)
 {
-  throw std::string ("unimplemented Att::Att");
   mName  = other.mName;
   mValue = other.mValue;
   mMods  = other.mMods;

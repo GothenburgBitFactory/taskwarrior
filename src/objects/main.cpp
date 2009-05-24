@@ -9,7 +9,21 @@ int main (int argc, char** argv)
   {
     Context c;
     c.initialize (argc, argv);
-    c.run ();
+//    c.run ();
+
+////////////////////////////////////////////////////////////////////////////////
+
+    c.tdb.lock (c.config.get ("locking", true));
+
+    c.filter.push_back (Att ("priority", "L"));
+
+    std::vector <T> tasks;
+    int quantity = c.tdb.load (tasks, c.filter);
+    std::cout << "# " << quantity << " <-- c.tdb.load" << std::endl;
+
+    c.tdb.unlock ();
+
+////////////////////////////////////////////////////////////////////////////////
 
     return 0;
   }

@@ -104,9 +104,6 @@ void Context::initialize (int argc, char** argv)
   foreach (path, all)
     tdb.location (expandPath (*path));
 
-  // Allow user override of file locking.  Solaris/NFS machines may want this.
-  tdb.lock (config.get ("locking", true));
-
   // TODO Load appropriate stringtable.
   // TODO Load pending.data.
   // TODO Load completed.data.
