@@ -7,3 +7,6 @@ text.t
 autocomplete.t
 parse.t
 seq.t
+att.t
+mod.t
+record.t

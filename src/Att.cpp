@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
+#include <stdlib.h>
 #include "Att.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,6 +47,18 @@ Att::Att (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Att::Att (const std::string& name, int value)
+{
+  mName  = name;
+
+  std::stringstream s;
+  s << value;
+  mValue = s.str ();
+
+  mMods.clear ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Att::Att (const Att& other)
 {
   mName  = other.mName;
@@ -55,7 +69,6 @@ Att::Att (const Att& other)
 ////////////////////////////////////////////////////////////////////////////////
 Att& Att::operator= (const Att& other)
 {
-  throw std::string ("unimplemented Att::operator=");
   if (this != &other)
   {
     mName  = other.mName;
@@ -73,21 +86,43 @@ Att::~Att ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Parse the following forms:
-//    name [[.mod] ...] : [value]
+//    name [[.mod] ...] : " [value] "
 void Att::parse (const std::string& input)
 {
-  throw std::string ("unimplemented Att::parse");
+  mName = "";
+  mValue = "";
+  mMods.clear ();
+
+  std::string::size_type colon = input.find (":");
+  if (colon != std::string::npos)
+  {
+    std::string name = input.substr (0, colon);
+    // TODO Are there mods?
+    mName = name;
+
+    std::string value = input.substr (colon + 1, std::string::npos);
+    dequote (value);
+    decode (value);
+    mValue = value;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // name : " value "
 std::string Att::composeF4 () const
 {
-  std::string value = mValue;
-  encode (value);
-  enquote (value);
+  std::string output = "";
 
-  return mName + ":" + value;
+  if (mName != "" && mValue != "")
+  {
+    std::string value = mValue;
+    encode (value);
+    enquote (value);
+
+    output += mName + ":" + value;
+  }
+
+  return output;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -123,35 +158,15 @@ void Att::value (const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 int Att::value_int () const
 {
-  throw std::string ("unimplemented Att::value_int");
-  return 0;
+  return ::atoi (mValue.c_str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Att::value_int (int)
+void Att::value_int (int value)
 {
-  throw std::string ("unimplemented Att::value_int");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Att::filter () const
-{
-  throw std::string ("unimplemented filter");
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Att::required () const
-{
-  throw std::string ("unimplemented Att::required");
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Att::reserved () const
-{
-  throw std::string ("unimplemented Att::reserved");
-  return false;
+  std::stringstream s;
+  s << value;
+  mValue = s.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -162,13 +177,14 @@ void Att::enquote (std::string& value) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Remove quotes.
+// Remove quotes.  Instead of being picky, just remove them all.  There should
+// be none within the value, and this will correct for one possible corruption
+// that hand-editing the pending.data file could cause.
 void Att::dequote (std::string& value) const
 {
-  if (value.length () > 2 &&
-      value[0] == '"' &&
-      value[value.length () - 1] == '"')
-    value = value.substr (1, value.length () - 2);
+  std::string::size_type quote;
+  while ((quote = value.find ('"')) != std::string::npos)
+    value.replace (quote, 1, "");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

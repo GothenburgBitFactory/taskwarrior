@@ -36,6 +36,7 @@ class Att
 public:
   Att ();                                       // Default constructor
   Att (const std::string&, const std::string&); // Simple constructor
+  Att (const std::string&, int);                // Simple constructor
   Att (const Att&);                             // Copy constructor
   Att& operator= (const Att&);                  // Assignment operator
   ~Att ();                                      // Destructor
@@ -44,6 +45,7 @@ public:
   std::string composeF4 () const;
 
   void addMod (const std::string&);
+  // TODO Need method to access mods.
 
   std::string name () const;
   void name (const std::string&);
@@ -53,10 +55,6 @@ public:
 
   int value_int () const;
   void value_int (int);
-
-  bool filter () const;
-  bool required () const;
-  bool reserved () const;
 
 private:
   void enquote (std::string&) const;

@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include <string>
 #include <sys/file.h>
 #include "text.h"
@@ -144,18 +145,23 @@ void TDB::unlock ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Returns number of filtered tasks.
+// Returns number of filtered tasks.
 int TDB::load (std::vector <T>& tasks, Filter& filter)
 {
   char line[T_LINE_MAX];
   foreach (location, mLocations)
   {
+
+
+
+    std::cout << "# location: " << location->first << std::endl;
     while (fgets (line, T_LINE_MAX, location->second))
     {
       int length = ::strlen (line);
       if (length > 1)
       {
         line[length - 1] = '\0'; // Kill \n
+        std::cout << "# line: " << line << std::endl;
 
         T task (line);
 

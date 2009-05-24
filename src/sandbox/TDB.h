@@ -67,7 +67,7 @@ private:
   bool mLock;
   bool mAllOpenAndLocked;
 
-  // TODO Need cache of raw file contents.
+  // TODO Need cache of raw file contents to preserve comments.
 };
 
 #endif
