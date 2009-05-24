@@ -29,7 +29,24 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 Mod::Mod ()
+: std::string ("")
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Mod::Mod (const char* other)
+: std::string (other)
+{
+  if (!valid ())
+    throw std::string ("Unrecognized modifier '") + other + "'";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Mod::Mod (const std::string& other)
+: std::string (other)
+{
+  if (!valid ())
+    throw std::string ("Unrecognized modifier '") + other + "'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -38,18 +55,7 @@ Mod::~Mod ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// before after
-// not
-// none any
-// over under
-// synth
-// first last
-// this
-// next
-// is isnt
-// has hasnt
-// startswith endswith
-bool Mod::isValid ()
+bool Mod::valid ()
 {
   if (*this == "before"     || *this == "after"    ||
       *this == "not"        ||
@@ -70,18 +76,22 @@ bool Mod::isValid ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Mod::eval (const Mod& other)
 {
-  // before
-  // after
-  // non
-  // none
-  // any
-  // synth
-  // under
-  // over
-  // first
-  // last
-  // this
-  // next
+  // No modifier means automatic pass.
+  if (*this == "")
+    return true;
+
+  // TODO before
+  // TODO after
+  // TODO not
+  // TODO none
+  // TODO any
+  // TODO synth
+  // TODO under
+  // TODO over
+  // TODO first
+  // TODO last
+  // TODO this
+  // TODO next
 
   if (*this == ".is")
     return *this == other ? true : false;
@@ -89,10 +99,10 @@ bool Mod::eval (const Mod& other)
   if (*this == ".isnt")
     return *this != other ? true : false;
 
-  // has
-  // hasnt
-  // startswith
-  // endswith
+  // TODO has
+  // TODO hasnt
+  // TODO startswith
+  // TODO endswith
 
   return false;
 }

@@ -68,6 +68,10 @@ void Record::parse (const std::string& input)
 {
   if (input[0] == '[' && input[input.length () - 1] == ']')
   {
+
+
+
+
     throw std::string ("unimplemented Record:parse");
   }
   else

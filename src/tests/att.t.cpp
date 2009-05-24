@@ -30,7 +30,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (31);
+  UnitTest t (33);
 
   Att a1 ("name", "value");
   t.is (a1.name (), "name", "Att::Att (name, value), Att.name");
@@ -64,7 +64,14 @@ int main (int argc, char** argv)
   t.is (a6.value_int (), 7, "Att::value_int set/get");
   t.is (a6.value (), "7", "Att::value 7");
 
-  // TODO Att::addMod
+  // Att::addMod
+  bool good = true;
+  try {a6.addMod ("is");} catch (...) {t.fail ("Att::addMod (is)"); good = false;}
+  if (good) t.pass ("Att::addMod (is)");
+
+  good = true;
+  try {a6.addMod (Mod ("fartwizzle"));} catch (...) {t.pass ("Att::addMod (fartwizzle) failed"); good = false;}
+  if (good) t.fail ("Att::addMod (fartwizzle)");
 
   // Att::parse
   Att a7;

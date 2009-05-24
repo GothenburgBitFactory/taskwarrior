@@ -44,7 +44,7 @@ public:
   void parse (const std::string&);
   std::string composeF4 () const;
 
-  void addMod (const std::string&);
+  void addMod (const Mod&);
   // TODO Need method to access mods.
 
   std::string name () const;

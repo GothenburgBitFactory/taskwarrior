@@ -34,10 +34,12 @@ class Mod;
 class Mod : public std::string
 {
 public:
-  Mod ();                                       // Default constructor
-  ~Mod ();                                      // Destructor
+  Mod ();                      // Default constructor
+  Mod (const char*);           // Copy constructor
+  Mod (const std::string&);    // Copy constructor
+  ~Mod ();                     // Destructor
 
-  bool isValid ();
+  bool valid ();
   bool eval (const Mod&);
 };
 
