@@ -27,6 +27,7 @@
 
 #include <map>
 #include <string>
+#include <algorithm>
 #include <ctype.h>
 #include "util.h"
 #include "text.h"
