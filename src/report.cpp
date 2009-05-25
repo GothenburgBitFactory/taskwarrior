@@ -1347,10 +1347,10 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
   filter (tasks, task);
 
   // What day of the week does the user consider the first?
-  int weekStart = Date::dayOfWeek (conf.get ("weekstart", "Monday"));
-  if (weekStart == -1)
-    throw std::string ("The 'weekstart' configuration variable does "
-                       "not contain a day name, such as 'Monday'.");
+  int weekStart = Date::dayOfWeek (conf.get ("weekstart", "Sunday"));
+  if (weekStart != 0 && weekStart != 1)
+    throw std::string ("The 'weekstart' configuration variable may "
+                       "only contain 'Sunday' or 'Monday'.");
 
   // Determine the date of the first day of the most recent report.
   Date today;
@@ -1540,8 +1540,9 @@ std::string renderMonths (
   Table table;
   table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
+  // What day of the week does the user consider the first?
   int weekStart = Date::dayOfWeek (conf.get ("weekstart", "Sunday"));
-  if ((weekStart != 0) && (weekStart != 1))
+  if (weekStart != 0 && weekStart != 1)
     throw std::string ("The 'weekstart' configuration variable may "
                        "only contain 'Sunday' or 'Monday'.");
 
