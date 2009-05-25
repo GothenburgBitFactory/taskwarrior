@@ -158,6 +158,7 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "locking=on\n");
         fprintf (out, "#editor=vi\n");
         fprintf (out, "weekstart=Sunday\n");
+        fprintf (out, "displayweeknumber=yes\n");
 
         fprintf (out, "color.overdue=bold_red\n");
         fprintf (out, "color.due=bold_yellow\n");

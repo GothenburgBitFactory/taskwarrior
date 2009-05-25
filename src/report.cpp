@@ -1594,6 +1594,9 @@ std::string renderMonths (
     table.setColumnJustification (i + 5, Table::right);
     table.setColumnJustification (i + 6, Table::right);
     table.setColumnJustification (i + 7, Table::right);
+
+    // This creates a nice gap between the months.
+    table.setColumnWidth (i + 0, 4);
   }
 
   // At most, we need 6 rows.
@@ -1628,31 +1631,36 @@ std::string renderMonths (
   int row = 0;
 
   // Loop through months to be added on this line.
-  for (int c = 0; c < monthsPerLine ; c++)
+  for (int mpl = 0; mpl < monthsPerLine ; mpl++)
   {
     // Reset row counter for subsequent months
-    if (c != 0)
+    if (mpl != 0)
       row = 0;
 
     // Loop through days in month and add to table.
-    for (int d = 1; d <= daysInMonth.at (c); ++d)
+    for (int d = 1; d <= daysInMonth.at (mpl); ++d)
     {
-      Date temp (months.at (c), d, years.at (c));
+      Date temp (months.at (mpl), d, years.at (mpl));
       int dow = temp.dayOfWeek ();
-      int thisCol = dow + 1 + (8 * c);
+      int woy = temp.weekOfYear (weekStart);
 
-      if (weekStart == 1)
-        thisCol -= 1;
+      if (conf.get ("displayweeknumber", true))
+        table.addCell (row, (8 * mpl), woy);
 
-      if (thisCol == (8 * c))
-        thisCol +=7;
+      // Calculate column id.
+      int thisCol = dow +                       // 0 = Sunday
+                    (weekStart == 1 ? 0 : 1) +  // Offset for weekStart
+                    (8 * mpl);                  // Columns in 1 month
+
+      if (thisCol == (8 * mpl))
+        thisCol += 7;
 
       table.addCell (row, thisCol, d);
 
       if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
           today.day ()   == d              &&
-          today.month () == months.at (c)  &&
-          today.year ()  == years.at (c))
+          today.month () == months.at (mpl)  &&
+          today.year ()  == years.at (mpl))
         table.setCellFg (row, thisCol, Text::cyan);
 
       std::vector <T>::iterator it;
@@ -1662,8 +1670,8 @@ std::string renderMonths (
 
         if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
             due.day ()   == d             &&
-            due.month () == months.at (c) &&
-            due.year ()  == years.at (c))
+            due.month () == months.at (mpl) &&
+            due.year ()  == years.at (mpl))
         {
           table.setCellFg (row, thisCol, Text::black);
           table.setCellBg (row, thisCol, due < today ? Text::on_red : Text::on_yellow);
@@ -1674,7 +1682,7 @@ std::string renderMonths (
       int eow = 6;
       if (weekStart == 1)
         eow = 0;
-      if (dow == eow && d < daysInMonth.at (c))
+      if (dow == eow && d < daysInMonth.at (mpl))
         row++;
     }
   }
@@ -1698,10 +1706,10 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
   }
 #endif
 
-  // Each month requires 23 text columns width.  See how many will actually
+  // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
   int preferredMonthsPerLine = (conf.get (std::string ("monthsperline"), 0));
-  int monthsThatFit = width / 23;
+  int monthsThatFit = width / 26;
 
   int monthsPerLine = monthsThatFit;
   if (preferredMonthsPerLine != 0 && preferredMonthsPerLine < monthsThatFit)
@@ -1748,14 +1756,31 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
     for (int i = 0 ; i < monthsPerLine ; i++)
     {
       std::string month = Date::monthName (nextM);
-      int left = (18 - month.length ()) / 2 + 1;
-      int right = 18 - left - month.length ();
 
-      out << std::setw (left) << ' '
+      //    12345678901234567890123456 = 26 chars wide
+      //                ^^             = center
+      //    <------->                  = 13 - (month.length / 2) + 1
+      //                      <------> = 26 - above
+      //   +--------------------------+
+      //   |         July 2009        |
+      //   |     Mo Tu We Th Fr Sa Su |
+      //   |  27        1  2  3  4  5 |
+      //   |  28  6  7  8  9 10 11 12 |
+      //   |  29 13 14 15 16 17 18 19 |
+      //   |  30 20 21 22 23 24 25 26 |
+      //   |  31 27 28 29 30 31       |
+      //   +--------------------------+
+
+      int totalWidth = 26;
+      int labelWidth = month.length () + 5;  // 5 = " 2009"
+      int leftGap = (totalWidth / 2) - (labelWidth / 2);
+      int rightGap = totalWidth - leftGap - labelWidth;
+
+      out << std::setw (leftGap) << ' '
           << month
           << ' '
           << nextY
-          << std::setw (right) << ' ';
+          << std::setw (rightGap) << ' ';
 
       if (++nextM > 12)
       {

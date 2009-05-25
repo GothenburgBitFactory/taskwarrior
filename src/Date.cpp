@@ -356,6 +356,28 @@ std::string Date::dayName (int dow)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int Date::weekOfYear (int weekStart) const
+{
+  struct tm* t = localtime (&mT);
+  char   weekStr[3];
+
+  if (weekStart == 0)
+    strftime(weekStr, sizeof(weekStr), "%U", t);
+  else if (weekStart == 1)
+    strftime(weekStr, sizeof(weekStr), "%V", t);
+  else
+    throw std::string ("The 'weekstart' configuration variable may "
+                       "only contain 'Sunday' or 'Monday'.");
+
+  int weekNumber = ::atoi (weekStr);
+
+  if (weekStart == 0)
+    weekNumber += 1;
+
+  return weekNumber;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Date::dayOfWeek () const
 {
   struct tm* t = localtime (&mT);
