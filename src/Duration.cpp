@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <vector>
+#include <stdlib.h>
 #include "text.h"
 #include "util.h"
 #include "Duration.h"
