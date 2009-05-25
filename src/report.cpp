@@ -1540,17 +1540,36 @@ std::string renderMonths (
   Table table;
   table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
 
+  int weekStart = Date::dayOfWeek (conf.get ("weekstart", "Sunday"));
+  if ((weekStart != 0) && (weekStart != 1))
+    throw std::string ("The 'weekstart' configuration variable may "
+                       "only contain 'Sunday' or 'Monday'.");
+
   // Build table for the number of months to be displayed.
   for (int i = 0 ; i < (monthsPerLine * 8); i += 8)
   {
-    table.addColumn (" ");
-    table.addColumn ("Su");
-    table.addColumn ("Mo");
-    table.addColumn ("Tu");
-    table.addColumn ("We");
-    table.addColumn ("Th");
-    table.addColumn ("Fr");
-    table.addColumn ("Sa");
+    if (weekStart == 1)
+    {
+      table.addColumn (" ");
+      table.addColumn ("Mo");
+      table.addColumn ("Tu");
+      table.addColumn ("We");
+      table.addColumn ("Th");
+      table.addColumn ("Fr");
+      table.addColumn ("Sa");
+      table.addColumn ("Su");
+    }
+    else
+    {
+      table.addColumn (" ");
+      table.addColumn ("Su");
+      table.addColumn ("Mo");
+      table.addColumn ("Tu");
+      table.addColumn ("We");
+      table.addColumn ("Th");
+      table.addColumn ("Fr");
+      table.addColumn ("Sa");
+    }
 
     if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
         conf.get (std::string ("fontunderline"), "true"))
@@ -1621,6 +1640,12 @@ std::string renderMonths (
       int dow = temp.dayOfWeek ();
       int thisCol = dow + 1 + (8 * c);
 
+      if (weekStart == 1)
+        thisCol -= 1;
+
+      if (thisCol == (8 * c))
+        thisCol +=7;
+
       table.addCell (row, thisCol, d);
 
       if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
@@ -1645,7 +1670,10 @@ std::string renderMonths (
       }
 
       // Check for end of week, and...
-      if (dow == 6 && d < daysInMonth.at (c))
+      int eow = 6;
+      if (weekStart == 1)
+        eow = 0;
+      if (dow == eow && d < daysInMonth.at (c))
         row++;
     }
   }
