@@ -175,6 +175,24 @@
                 </p>
                 <hr>
 
+                <p>
+                  <b>
+                    Q: How do I use '+word' in a task description, and prevent it
+                       from being interpreted as a tag?
+                  </b>
+                  <br />
+                  A: There are several ways to do this.  The simplest is to use
+                     the '--' argument in the command line, and task will assume
+                     that everything afterwards is part of the description.  For
+                     example:
+                     <pre><code>% task add -- +tag</code></pre>
+                     Allows the task description to be "+tag".  If you use the
+                     command:
+                     <pre><code>% task &lt;id&gt; edit</code></pre>
+                     Then you are free to put (almost) anything in the description
+                     field without task interpreting it.
+                </p>
+                <hr>
 <!--
                 <p>
                   <b>

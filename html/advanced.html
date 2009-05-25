@@ -485,6 +485,18 @@ on_white    on_bright_white</code></pre>
                   Note also that this capability does depend on whether your terminal
                   program can display these colors.
                 </p>
+
+                <strong>% task add project:Home -- pri:H +tag /from/to/</strong>
+                <p>
+                  The -- argument can be used to tell task to stop interpreting
+                  the command line arguments.  In the example above, a new task
+                  is added for the project 'Home', then the -- argument appears,
+                  and therefore all remaining arguments are part of the
+                  description.  In this case, the description is "pri:H +tag
+                  /from/to/".  This is one way to override task's interpretation
+                  of the command line.  The other way is to put the entire
+                  description in quotes.
+                </p>
               </div>
 
               <br />

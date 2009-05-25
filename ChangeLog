@@ -8,6 +8,8 @@
  + Fixed documentation errors (thanks to Thomas@BIC).
  + The 'weekstart' configuration variable now controls the 'calendar'
    command (thanks to Federico Hernandez).
+ + Supports '--' argument to indicate that all subsequence arguments are
+   part of the description, despite what they otherwise might mean.
 
 ------ old releases ------------------------------
 

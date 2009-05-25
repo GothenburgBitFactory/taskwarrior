@@ -272,6 +272,8 @@ static std::string longUsage (Config& conf)
       << "  task add \"quoted ' quote\""                                      << "\n"
       << "  task add escaped \\' quote"                                       << "\n"
       <<                                                                         "\n"
+      << "The argument -- tells task to treat all other args as description." << "\n"
+      <<                                                                         "\n"
       << "Many characters have special meaning to the shell, including:"      << "\n"
       << "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~"                    << "\n"
       << std::endl;
