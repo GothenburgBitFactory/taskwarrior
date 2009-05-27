@@ -25,58 +25,88 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <string>
-#include "T.h"
+#include <Subst.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-T::T ()
+Subst::Subst ()
+: mFrom ("")
+, mTo ("")
+, mGlobal (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T::T (const std::string& input)
+Subst::Subst (const std::string& input)
 {
   parse (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T& T::operator= (const T& other)
+Subst::Subst (const Subst& other)
 {
-  throw std::string ("unimplemented T::operator=");
+  mFrom   = other.mFrom;
+  mTo     = other.mTo;
+  mGlobal = other.mGlobal;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Subst& Subst::operator= (const Subst& other)
+{
   if (this != &other)
   {
-//    mOne = other.mOne;
+    mFrom   = other.mFrom;
+    mTo     = other.mTo;
+    mGlobal = other.mGlobal;
   }
 
   return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T::~T ()
+Subst::~Subst ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// [name:value, name:"value",name:[name:value,name:value]]
-std::string T::composeF4 ()
+bool Subst::parse (const std::string& input)
 {
-  throw std::string ("unimplemented T::composeF4");
-  return "";
+  size_t first = input.find ('/');
+  if (first != std::string::npos)
+  {
+    size_t second = input.find ('/', first + 1);
+    if (second != std::string::npos)
+    {
+      size_t third = input.find ('/', second + 1);
+      if (third != std::string::npos)
+      {
+        if (first == 0 &&
+            first < second &&
+            second < third &&
+            (third == input.length () - 1 ||
+             third == input.length () - 2))
+        {
+          mFrom = input.substr (first  + 1, second - first  - 1);
+          mTo   = input.substr (second + 1, third  - second - 1);
+
+          mGlobal = false;
+          if (third == input.length () - 2 &&
+              input.find ('g', third + 1) != std::string::npos)
+            mGlobal = true;
+
+          return true;
+        }
+      }
+    }
+  }
+
+ return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string T::composeCSV ()
+void Subst::apply (Record& record) const
 {
-  throw std::string ("unimplemented T::composeCSV");
-  return "";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool T::validate () const
-{
-  // TODO Verify until > due
-  // TODO Verify entry < until, due, start, end
-  return true;
+  // TODO Apply /mFrom/mTo/mGlobal to record.get ("description")
+  // TODO Apply /mFrom/mTo/mGlobal to record.get ("annotation...")
 }
 
 ////////////////////////////////////////////////////////////////////////////////

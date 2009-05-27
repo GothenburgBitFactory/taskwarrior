@@ -64,16 +64,15 @@ public:
   void setSubstitution (const std::string&, const std::string&, bool);
 
   bool hasTag (const std::string&) const;
-
   void getRemoveTags (std::vector<std::string>&); // SPECIAL
   void addRemoveTag (const std::string&);         // SPECIAL
-
   int getTagCount () const;
   void getTags (std::vector<std::string>&) const;
   void addTag (const std::string&);
   void addTags (const std::vector <std::string>&);
   void removeTag (const std::string&);
   void removeTags ();
+
   void getAttributes (std::map<std::string, std::string>&);
   const std::string getAttribute (const std::string&);
   void setAttribute (const std::string&, const std::string&);

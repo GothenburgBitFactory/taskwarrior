@@ -24,32 +24,28 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_T
-#define INCLUDED_T
+#ifndef INCLUDED_SUBST
+#define INCLUDED_SUBST
 
 #include <string>
-#include "Record.h"
+#include <Record.h>
 
-class T : public Record
+class Subst
 {
 public:
-  T ();                    // Default constructor
-  T (const std::string&);  // Parse
-  T& operator= (const T&); // Assignment operator
-  ~T ();                   // Destructor
+  Subst ();                        // Default constructor
+  Subst (const std::string&);      // Default constructor
+  Subst (const Subst&);            // Copy constructor
+  Subst& operator= (const Subst&); // Assignment operator
+  ~Subst ();                       // Destructor
 
-  std::string composeF4 ();
-  std::string composeCSV ();
+  bool parse (const std::string&);
+  void apply (Record&) const;
 
-  // TODO Series of helper functions.
-/*
-  status getStatus () const;
-  void setStatus (status s);
-*/
-
-  bool validate () const;
-
-private:
+public:
+  std::string mFrom;
+  std::string mTo;
+  bool mGlobal;
 };
 
 #endif
