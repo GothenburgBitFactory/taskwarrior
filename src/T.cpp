@@ -417,55 +417,8 @@ void T::parse (const std::string& line)
   {
   // File format version 1, from 2006.11.27 - 2007.12.31
   case 1:
-    {
-      // Generate a UUID for forward support.
-      mUUID = uuid ();
-
-      if (line.length () > 6)       // ^\[\]\s\[\]\n
-      {
-        if (line[0] == 'X')
-          setStatus (deleted);
-
-        size_t openTagBracket  = line.find ("[");
-        size_t closeTagBracket = line.find ("]", openTagBracket);
-        if (openTagBracket  != std::string::npos &&
-            closeTagBracket != std::string::npos)
-        {
-          size_t openAttrBracket  = line.find ("[", closeTagBracket);
-          size_t closeAttrBracket = line.find ("]", openAttrBracket);
-          if (openAttrBracket  != std::string::npos &&
-              closeAttrBracket != std::string::npos)
-          {
-             std::string tags = line.substr (
-               openTagBracket + 1, closeTagBracket - openTagBracket - 1);
-             std::vector <std::string> rawTags;
-             split (mTags, tags, ' ');
-
-             std::string attributes = line.substr (
-               openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
-             std::vector <std::string> pairs;
-             split (pairs, attributes, ' ');
-             for (size_t i = 0; i <  pairs.size (); ++i)
-             {
-               std::vector <std::string> pair;
-               split (pair, pairs[i], ':');
-               if (pair[1] != "")
-                 mAttributes[pair[0]] = pair[1];
-             }
-
-             mDescription = line.substr (closeAttrBracket + 2, std::string::npos);
-          }
-          else
-            throw std::string ("Missing attribute brackets");
-        }
-        else
-          throw std::string ("Missing tag brackets");
-      }
-      else
-        throw std::string ("Line too short");
-
-      mAnnotations.clear ();
-    }
+    throw std::string ("Task no longer supports file format 1, originally used "
+                       "between 27 November 2006 and 31 December 2007.");
     break;
 
   // File format version 2, from 2008.1.1 - 2009.3.23
@@ -637,8 +590,8 @@ int T::determineVersion (const std::string& line)
   //   X [tags] [attributes] description\n
   //
   // Scan for the first character being either the bracket or X.
-  if (line[0] == '[' ||
-      line[0] == 'X')
+  if ((line[0] == '[' && line[line.length () - 1] != ']') ||
+      line.find ("X [") != std::string::npos)
     return 1;
 
   // Version 2 looks like:
@@ -674,12 +627,22 @@ int T::determineVersion (const std::string& line)
       return 2;
   }
 
-  // Version 4?
+  // Version 4 looks like:
   //
-  // Fortunately, with the hindsight that will come with version 4, the
-  // identifying characteristics of 1, 2 and 3 may be modified such that if 4
+  //   [name:"value" ...]
+  //
+  // Scan for [, ] and :".
+  if (line[0] == '[' &&
+      line[line.length () - 1] == ']' &&
+      line.find (":\"") != std::string::npos)
+    return 4;
+
+  // Version 5?
+  //
+  // Fortunately, with the hindsight that will come with version 5, the
+  // identifying characteristics of 1, 2, 3 and 4 may be modified such that if 5
   // has a UUID followed by a status, then there is still a way to differentiate
-  // between 2, 3 and 4.
+  // between 2, 3, 4 and 5.
   //
   // The danger is that a version 3 binary reads and misinterprets a version 4
   // file.  This is why it is a good idea to rely on an explicit version

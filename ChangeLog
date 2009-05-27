@@ -12,6 +12,7 @@
    of week number in the 'calendar' report (thanks to Federico Hernandez).
  + Supports '--' argument to indicate that all subsequence arguments are
    part of the description, despite what they otherwise might mean.
+ + Removed support for the obsolete task file format 1 (never released).
 
 ------ old releases ------------------------------
 
