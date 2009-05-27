@@ -24,47 +24,25 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_TDB
-#define INCLUDED_TDB
+#ifndef INCLUDED_LOCATION
+#define INCLUDED_LOCATION
 
-#include <map>
-#include <vector>
 #include <string>
-#include <Location.h>
-#include <Filter.h>
-#include <T.h>
+#include <stdio.h>
 
-// Length of longest line.
-#define T_LINE_MAX 32768
-
-class TDB
+class Location
 {
 public:
-  TDB ();                      // Default constructor
-  TDB (const TDB&);            // Copy constructor
-  TDB& operator= (const TDB&); // Assignment operator
-  ~TDB ();                     // Destructor
+  Location ();                           // Default constructor
+  Location (const std::string&);         // Default constructor
+  Location (const Location&);            // Copy constructor
+  Location& operator= (const Location&); // Assignment operator
+  ~Location ();                          // Destructor
 
-  void  location (const std::string&);
-
-  void  lock (bool lockFile = true);
-  void  unlock ();
-
-  int   load (std::vector <T>&, Filter&);
-  void  add (T&);
-  void  update (T&, T&);
-  int   commit ();
-  void  upgrade ();
-
-private:
-  FILE* openAndLock (const std::string&);
-
-private:
-  std::vector <Location> mLocations;
-  bool mLock;
-  bool mAllOpenAndLocked;
-
-  // TODO Need cache of raw file contents to preserve comments.
+public:
+  std::string path;
+  FILE*       pending;
+  FILE*       completed;
 };
 
 #endif

@@ -24,48 +24,47 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_TDB
-#define INCLUDED_TDB
 
-#include <map>
-#include <vector>
-#include <string>
-#include <Location.h>
-#include <Filter.h>
-#include <T.h>
+#include "Location.h"
 
-// Length of longest line.
-#define T_LINE_MAX 32768
-
-class TDB
+////////////////////////////////////////////////////////////////////////////////
+Location::Location ()
+: path ("")
+, pending (NULL)
+, completed (NULL)
 {
-public:
-  TDB ();                      // Default constructor
-  TDB (const TDB&);            // Copy constructor
-  TDB& operator= (const TDB&); // Assignment operator
-  ~TDB ();                     // Destructor
+}
 
-  void  location (const std::string&);
+////////////////////////////////////////////////////////////////////////////////
+Location::Location (const std::string& p)
+: path (p)
+{
+}
 
-  void  lock (bool lockFile = true);
-  void  unlock ();
+////////////////////////////////////////////////////////////////////////////////
+Location::Location (const Location& other)
+{
+  path      = other.path;
+  pending   = other.pending;
+  completed = other.completed;
+}
 
-  int   load (std::vector <T>&, Filter&);
-  void  add (T&);
-  void  update (T&, T&);
-  int   commit ();
-  void  upgrade ();
+////////////////////////////////////////////////////////////////////////////////
+Location& Location::operator= (const Location& other)
+{
+  if (this != &other)
+  {
+    path      = other.path;
+    pending   = other.pending;
+    completed = other.completed;
+  }
 
-private:
-  FILE* openAndLock (const std::string&);
+  return *this;
+}
 
-private:
-  std::vector <Location> mLocations;
-  bool mLock;
-  bool mAllOpenAndLocked;
+////////////////////////////////////////////////////////////////////////////////
+Location::~Location ()
+{
+}
 
-  // TODO Need cache of raw file contents to preserve comments.
-};
-
-#endif
 ////////////////////////////////////////////////////////////////////////////////

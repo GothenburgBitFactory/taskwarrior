@@ -73,30 +73,32 @@ TDB::TDB ()
 TDB::TDB (const TDB& other)
 {
   throw std::string ("unimplemented TDB::TDB");
-  mLocations        = other.mLocations;
-  mLock             = other.mLock;
-  mAllOpenAndLocked = false;  // Deliberately so.
-
-  // Set all to NULL.
-  foreach (location, mLocations)
-    mLocations[location->first] = NULL;
+//  mLocations        = other.mLocations;
+//  mFiles            = other.mFiles;
+//  mLock             = other.mLock;
+//  mAllOpenAndLocked = false;  // Deliberately so.
+//
+//  // Set all to NULL, otherwise we are duplicating open file handles.
+//  foreach (file, mFiles)
+//    mFiles[file->first] = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 TDB& TDB::operator= (const TDB& other)
 {
   throw std::string ("unimplemented TDB::operator=");
-  if (this != &other)
-  {
-    mLocations        = other.mLocations;
-    mLock             = other.mLock;
-    mAllOpenAndLocked = false;  // Deliberately so.
-
-    // Set all to NULL.
-    foreach (location, mLocations)
-      mLocations[location->first] = NULL;
-  }
-
+//  if (this != &other)
+//  {
+//    mLocations        = other.mLocations;
+//    mFiles            = other.mFiles;
+//    mLock             = other.mLock;
+//    mAllOpenAndLocked = false;  // Deliberately so.
+//
+//    // Set all to NULL, otherwise we are duplicating open file handles.
+//    foreach (file, mFiles)
+//      mFiles[file->first] = NULL;
+//  }
+//
   return *this;
 }
 
@@ -115,7 +117,7 @@ void TDB::location (const std::string& path)
           path +
           "' does not exist, or is not readable and writable.";
 
-  mLocations[path] = NULL;
+  mLocations.push_back (Location (path));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +126,10 @@ void TDB::lock (bool lockFile /* = true */)
   mLock = lockFile;
 
   foreach (location, mLocations)
-    mLocations[location->first] = openAndLock (location->first);
+  {
+    location->pending   = openAndLock (location->path + "/pending.data");
+    location->completed = openAndLock (location->path + "/completed.data");
+  }
 
   mAllOpenAndLocked = true;
 }
@@ -132,16 +137,18 @@ void TDB::lock (bool lockFile /* = true */)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::unlock ()
 {
-  foreach (location, mLocations)
+  if (mAllOpenAndLocked)
   {
-    if (mLocations[location->first] != NULL)
+    foreach (location, mLocations)
     {
-      fclose (mLocations[location->first]);
-      mLocations[location->first] = NULL;
+      fclose (location->pending);
+      location->pending = NULL;
+      fclose (location->completed);
+      location->completed = NULL;
     }
-  }
 
-  mAllOpenAndLocked = false;
+    mAllOpenAndLocked = false;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -151,11 +158,27 @@ int TDB::load (std::vector <T>& tasks, Filter& filter)
   char line[T_LINE_MAX];
   foreach (location, mLocations)
   {
+    std::cout << "# location.path: " << location->path << std::endl;
 
+    while (fgets (line, T_LINE_MAX, location->pending))
+    {
+      int length = ::strlen (line);
+      if (length > 1)
+      {
+        line[length - 1] = '\0'; // Kill \n
+        std::cout << "# line: " << line << std::endl;
 
+        T task (line);
 
-    std::cout << "# location: " << location->first << std::endl;
-    while (fgets (line, T_LINE_MAX, location->second))
+        if (filter.pass (task))
+        {
+          // TODO Add hidden attribute indicating source.
+          tasks.push_back (task);
+        }
+      }
+    }
+
+    while (fgets (line, T_LINE_MAX, location->completed))
     {
       int length = ::strlen (line);
       if (length > 1)
@@ -206,39 +229,6 @@ int TDB::commit ()
 void TDB::upgrade ()
 {
   throw std::string ("unimplemented TDB::upgrade");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB::getPendingFiles (std::vector <std::string> files)
-{
-  files.clear ();
-
-  foreach (location, mLocations)
-    files.push_back (location->first + "/pending.data");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB::getCompletedFiles (std::vector <std::string> files)
-{
-  files.clear ();
-
-  foreach (location, mLocations)
-    files.push_back (location->first + "/completed.data");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB::getContactFiles (std::vector <std::string> files)
-{
-  files.clear ();
-
-  foreach (location, mLocations)
-    files.push_back (location->first + "/contact.data");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB::getUndoStack (std::string& file)
-{
-  throw std::string ("unimplemented TDB::getUndoStack");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
