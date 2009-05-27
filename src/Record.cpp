@@ -60,16 +60,17 @@ Record::~Record ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// The format is:
+//
+//   [ Att::composeF4 ... ] \n
+//
 std::string Record::composeF4 ()
 {
   std::string ff4 = "[";
 
   bool first = true;
   foreach (r, (*this))
-  {
-    ff4 += (first ? "" : " ");
-    ff4 += r->second.composeF4 ();
-  }
+    ff4 += (first ? "" : " ") + r->second.composeF4 ();
 
   ff4 += "]";
   return ff4;
