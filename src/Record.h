@@ -39,8 +39,9 @@ public:
   Record& operator= (const Record&); // Assignment operator
   virtual ~Record ();                // Destructor
 
-  virtual std::string composeF4 () = 0;
   virtual std::string composeCSV () = 0;
+
+  std::string composeF4 ();
   void parse (const std::string&);
 
   std::vector <Att> all ();
