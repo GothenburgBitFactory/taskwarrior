@@ -948,6 +948,9 @@ std::string handleColor (Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleAnnotate (TDB& tdb, T& task, Config& conf)
 {
+  if (task.getDescription () == "")
+    throw std::string ("Cannot apply a blank annotation.");
+
   std::stringstream out;
   std::vector <T> all;
   tdb.pendingT (all);

@@ -584,16 +584,6 @@ void T::parse (const std::string& line)
 // If this code is inaccurate, data corruption ensues.
 int T::determineVersion (const std::string& line)
 {
-  // Version 1 looks like:
-  //
-  //   [tags] [attributes] description\n
-  //   X [tags] [attributes] description\n
-  //
-  // Scan for the first character being either the bracket or X.
-  if ((line[0] == '[' && line[line.length () - 1] != ']') ||
-      line.find ("X [") != std::string::npos)
-    return 1;
-
   // Version 2 looks like:
   //
   //   uuid status [tags] [attributes] description\n
@@ -626,6 +616,16 @@ int T::determineVersion (const std::string& line)
     else
       return 2;
   }
+
+  // Version 1 looks like:
+  //
+  //   [tags] [attributes] description\n
+  //   X [tags] [attributes] description\n
+  //
+  // Scan for the first character being either the bracket or X.
+  else if ((line[0] == '[' && line[line.length () - 1] != ']') ||
+           line.find ("X [") == 0)
+    return 1;
 
   // Version 4 looks like:
   //

@@ -153,6 +153,8 @@ void Context::loadCorrectConfigFile (int argc, char** argv)
 
   std::string file = pw->pw_dir;
   config.createDefault (file);
+
+  // TODO Apply overrides of type: "rc.name:value"
 }
 
 ////////////////////////////////////////////////////////////////////////////////
