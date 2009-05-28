@@ -14,7 +14,7 @@ Thank you for taking a look at task.  Task is a GTD utility featuring:
 It is intended that features, mainly in the form of reports will be added
 frequently, with best practices and useful reports evolving from usage patterns.
 
-Task is scope-limited to GTD functionality only.
+Task is scope-limited to GTD-like functionality only.
 
 You may want to watch the old task movie on YouTube:
 
@@ -44,7 +44,11 @@ All feedback is welcome, in addition to any bug reports or patches to:
 
   task@beckingham.net
 
-Got an idea for an enhancement?  Send a message!
+Or better yet, get involved in the discussion at
+
+  http://groups.google.com/group/taskprogram
+
+Got an idea for an enhancement?  Post a message!
 
 I have found that task makes me more productive and organized.
 I hope task can do the same for you.  
