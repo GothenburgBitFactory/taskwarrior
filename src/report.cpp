@@ -108,6 +108,9 @@ void filter (std::vector<T>& all, T& task)
   std::vector <std::string> tagList;
   task.getTags (tagList);
 
+  std::vector <std::string> removeTagList;
+  task.getRemoveTags (removeTagList);
+
   // Get all the attributes to match against.
   std::map <std::string, std::string> attrList;
   task.getAttributes (attrList);
@@ -180,7 +183,15 @@ void filter (std::vector<T>& all, T& task)
             ++matches;
 
         if (matches == tagList.size ())
-          filtered.push_back (refTask);
+        {
+          matches = 0;
+          for (unsigned int t = 0; t < removeTagList.size (); ++t)
+            if (refTask.hasTag (removeTagList[t]))
+              ++matches;
+
+          if (matches == 0)
+            filtered.push_back (refTask);
+        }
       }
     }
   }

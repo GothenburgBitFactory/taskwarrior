@@ -14,7 +14,10 @@
    part of the description, despite what they otherwise might mean.
  + Removed support for the obsolete task file format 1 (never released).
  + Fixed bug that allowed blank annotations to be added (thanks to Bruce
-   Dillahunty),
+   Dillahunty).
+ + Supports negative tag filters, so that (task list +foo -bar) now filters
+   tasks that have the "foo" tag, but do not have the "bar" tag (thanks to
+   Chris Pride).
 
 ------ old releases ------------------------------
 
