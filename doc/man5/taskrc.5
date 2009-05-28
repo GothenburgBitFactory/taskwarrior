@@ -17,7 +17,7 @@ obtains its configuration data from a file called
 $HOME/.taskrc
 .RE
 
-The default location can be overriden using the
+The default location can be overridden using the
 .I rc:
 attribute when running task:
 
@@ -49,9 +49,9 @@ is the value the variable is to be set to.
 .RE
 
 and set a configuration variable to a certain value. The equal sign ("=") is used to separate the variable
-name from the value to be set. 
+name from the value to be set.
 
-The hash mark, or pounf sign ("#") is used as a "comment" character. It can be used to annotte the
+The hash mark, or pound sign ("#") is used as a "comment" character. It can be used to annotate the
 configuration file. It is placed at the beginning of a line and all text after the character to the
 end of the line is ignored.
 
@@ -61,7 +61,7 @@ Valid variable names and their default values are:
 .TP
 .B data.location=$HOME/.task
 This is a path to the directory containing all the task files. By default, it is set up to be ~/.task,
-for example: /Users/paul/.task 
+for example: /Users/paul/.task
 
 .TP
 .B confirmation=yes
@@ -75,7 +75,7 @@ May be "yes" or "no", and causes task to display the ID and description of any t
 .B next=2
 Is a number, defaulting to 2, which is the number of tasks for each project that are shown in the 
 .B task next
-command. 
+command.
 
 .TP
 .B dateformat=m/d/Y
@@ -112,21 +112,21 @@ m-d-y  would output 07-24-09
 .B monthsperline=99
 Determines how many months the "task calendar" command renders across the screen.
 Defaults to however many will fit. If more months that will fit are specified,
-task will only show as many that will fit. 
+task will only show as many that will fit.
 
 .TP
 .B defaultwidth=80
-The width of tables used when ncurses support is not available. Defaults to 80. 
+The width of tables used when ncurses support is not available. Defaults to 80.
 
 .TP
 .B curses=on
 Determines whether task uses ncurses to establish the size of the window you are
-using, for text wrapping. 
+using, for text wrapping.
 
 .TP
 .B due=7
 This is the number of days into the future that define when a task is considered due,
-and is colored accordingly. Defaults to 7. 
+and is colored accordingly. Defaults to 7.
 
 .TP
 .B nag=You have higher priority tasks.
@@ -153,7 +153,7 @@ to using "vi".
 .TP
 .B color=on
 May be "on" or "off". Determines whether task uses color. When "off", task will
-use dashes (-----) to underline column headings. 
+use dashes (-----) to underline column headings.
 
 Task has a number of coloration rules. They correspond to a particular attribute
 of a task, such as it being due, or being active, and specifies the automatic
@@ -206,7 +206,7 @@ Certain attributes like tags, projects and keywords can also have their own colo
 .RE
 
 .RS
-.TP 
+.TP
 .B color.tag.X=yellow
 Colors any task that has the tag X.
 
@@ -216,49 +216,49 @@ Colors any task assigned to project X.
 
 .TP
 .B color.keyword.X=on_blue
-Colors any task where the description contains X. 
+Colors any task where the description contains X.
 .RE
 
 .TP
-.B 
+.B
 shadow.file=$HOME/.task/shadow.txt
-If specified, designates a file path that will be autoamtically written to by task,
+If specified, designates a file path that will be automatically written to by task,
 whenever the task database changes. In other words, it is automatically kept up to date.
 The shadow.command configuration variable is used to determine which report is written
 to the shadow file. There is no color used in the shadow file. This feature can be useful
 in maintaining a current file for use by programs like GeekTool, Conky or Samurize.
 
 .TP
-.B 
+.B
 shadow.command=list
-This is the command that is run to maintain the shadow file, determined by the 
+This is the command that is run to maintain the shadow file, determined by the
 .I shadow.file
 configuration variable. The format is identical to that of
 .I default.command
 \&. Please see the corresponding documentation for that command.
 
 .TP
-.B 
+.B
 shadow.notify=on
 When this value is set to "on", task will display a message whenever the shadow
-file is updated by some task command. 
+file is updated by some task command.
 
 .TP
-.B 
+.B
 default.project=foo
 Provides a default project name for the
 .I task add
-command. 
+command.
 
 .TP
-.B 
+.B
 default.priority=M
 Provides a default priority for the
 .I task add
-command. 
+command.
 
 .TP
-.B 
+.B
 default.command=list
 Provides a default command that is run every time task is invoked with no arguments.
 For example, if set to:
