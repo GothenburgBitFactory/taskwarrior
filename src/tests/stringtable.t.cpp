@@ -24,26 +24,34 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_STRINGTABLE
-#define INCLUDED_STRINGTABLE
+#include <unistd.h>
+#include <StringTable.h>
+#include <util.h>
+#include <test.h>
 
-#include <map>
-#include <string>
-
-class StringTable
+////////////////////////////////////////////////////////////////////////////////
+int main (int argc, char** argv)
 {
-public:
-  StringTable ();                                       // Default constructor
-  StringTable (const StringTable&);                     // Copy constructor
-  StringTable& operator= (const StringTable&);          // Assignment operator
-  ~StringTable ();                                      // Destructor
+  UnitTest t (4);
 
-  void load (const std::string&);
-  std::string get (int, const std::string&);
+  // Create a string file.
+  std::string file = "./strings.xx-XX";
+  spit (file, "# comment\n1 found");
+  t.is (access (file.c_str (), F_OK), 0, "strings.xx-XX created.");
 
-private:
-  std::map <int, std::string> mMapping;
-};
+  // Load the string file.
+  StringTable st;
+  st.load (file);
 
-#endif
+  // Test the object.
+  t.is (st.get (1, "nope"), "found", "string 1 'found' found");
+  t.is (st.get (2, "nope"), "nope",  "string 2 'nope'  defaulted");
+
+  // Clean up.
+  unlink (file.c_str ());
+  t.is (access (file.c_str (), F_OK), -1, "strings.xx-XX removed.");
+
+  return 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////

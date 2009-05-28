@@ -25,7 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <fstream>
 #include <sstream>
+#include <text.h>
+#include <util.h>
 #include "StringTable.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +61,6 @@ StringTable::~StringTable ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// [data.location] / language . XX
 // UTF-8 encoding
 //
 //  123 This is the string
@@ -66,19 +68,47 @@ StringTable::~StringTable ()
 //  ...
 void StringTable::load (const std::string& file)
 {
-  // TODO Load the specified file.
+  std::ifstream in;
+  in.open (file.c_str (), std::ifstream::in);
+  if (in.good ())
+  {
+    std::string line;
+    while (getline (in, line))
+    {
+      // Remove comments.
+      std::string::size_type pound = line.find ("#");
+      if (pound != std::string::npos)
+        line = line.substr (0, pound);
+
+      line = trim (line, " \t");
+
+      // Skip empty lines.
+      if (line.length () > 0)
+      {
+        std::string::size_type equal = line.find (" ");
+        if (equal != std::string::npos)
+        {
+          int key = ::atoi (trim (line.substr (0, equal), " \t").c_str ());
+          std::string value = trim (line.substr (equal+1, line.length () - equal), " \t");
+          mMapping[key] = value;
+        }
+      }
+    }
+
+    in.close ();
+  }
+  else
+    throw std::string ("Could not read string file '") + file + "'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string StringTable::get (int id)
+std::string StringTable::get (int id, const std::string& alternate)
 {
   // Return the right string.
   if (mMapping.find (id) != mMapping.end ())
     return mMapping[id];
 
-  std::stringstream error;
-  error << "MISSING " << id;
-  return error.str ();
+  return alternate;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -95,16 +95,21 @@ void Context::initialize (int argc, char** argv)
       config.set ("color",  "off");
   }
 
+  // Load appropriate stringtable as soon after the config file as possible, to
+  // allow all subsequent messages to be localizable.
+  std::string location = expandPath (config.get ("data.location"));
+  std::string locale = config.get ("locale");
+  if (locale != "")
+    stringtable.load (location + "/strings." + locale);
+
   // TODO Handle "--version, -v" right here.
 
   // init TDB.
-  std::string location = config.get ("data.location");
   std::vector <std::string> all;
   split (all, location, ',');
   foreach (path, all)
     tdb.location (expandPath (*path));
 
-  // TODO Load appropriate stringtable.
   // TODO Load pending.data.
   // TODO Load completed.data.
   // TODO Load deleted.data.

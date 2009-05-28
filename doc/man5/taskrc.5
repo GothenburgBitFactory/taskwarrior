@@ -64,6 +64,13 @@ This is a path to the directory containing all the task files. By default, it is
 for example: /Users/paul/.task
 
 .TP
+.B locale=en-US
+The locale is a combination of ISO 639-1 language code and ISO 3166 country
+code.  If not specified, task will assume en-US.  If specified, task will locate
+the correct file of localized strings and proceed.  It is an error to specify a
+locale for which there is no strings file.
+
+.TP
 .B confirmation=yes
 May be "yes" or "no", and determines whether task will ask for confirmation before deleting a task. 
 
