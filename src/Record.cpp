@@ -43,6 +43,12 @@ Record::Record (const Record& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Record::Record (const std::string& input)
+{
+  parse (input);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Record& Record::operator= (const Record& other)
 {
   throw std::string ("unimplemented Record:operator=");

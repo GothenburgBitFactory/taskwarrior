@@ -1,5 +1,5 @@
 PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
-          parse.t seq.t att.t mod.t stringtable.t # subst.t record.t
+          parse.t seq.t att.t mod.t stringtable.t record.t # subst.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib
 OBJECTS = ../TDB.o ../T.o ../parse.o ../text.o ../Date.o ../Duration.o         \

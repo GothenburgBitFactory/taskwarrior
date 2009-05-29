@@ -24,34 +24,53 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_RECORD
-#define INCLUDED_RECORD
+#include <iostream>
+#include <Att.h>
+#include <Record.h>
+#include <test.h>
 
-#include <vector>
-#include <map>
-#include <string>
-#include "Att.h"
-
-class Record : public std::map <std::string, Att>
+////////////////////////////////////////////////////////////////////////////////
+Record parseRecord (const std::string& input)
 {
-public:
-  Record ();                         // Default constructor
-  Record (const Record&);            // Copy constructor
-  Record (const std::string&);       // Copy constructor
-  Record& operator= (const Record&); // Assignment operator
-  virtual ~Record ();                // Destructor
+  try { Record r (input); return r; }
+  catch (...) {}
+  return Record ();
+}
 
-  std::string composeF4 ();
-  std::string composeCSV ();
-  void parse (const std::string&);
+int main (int argc, char** argv)
+{
+  UnitTest t (4);
 
-  std::vector <Att> all ();
-  const std::string get (const std::string&);
-  int get_int (const std::string&);
-  void set (const std::string&, const std::string&);
-  void set (const std::string&, int);
-  void remove (const std::string&);
-};
+  // (blank)
+  Record record = parseRecord ("");
+  t.is (record.size (), (size_t)0, "Record (blank)");
 
-#endif
+  // []
+  record = parseRecord ("[]");
+  t.is (record.size (), (size_t)0, "Record []");
+
+  // [name:value]
+  record = parseRecord ("[name:value]");
+  t.is (record.size (), (size_t)1, "Record [name:value]");
+  if (record.size () == 1)
+  {
+    Att a = record["name"];
+    t.is (a.name (), "name", "Record [name:value] -> 'name'");
+  }
+  else
+  {
+    t.fail ("Record [name:value] -> 'name'");
+  }
+
+  // TODO [name:"value"]
+  // TODO [name:"one two"]
+  // TODO [one:two three:four]
+
+  // TODO FF3
+  // TODO FF2
+  // TODO FF1
+
+  return 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
