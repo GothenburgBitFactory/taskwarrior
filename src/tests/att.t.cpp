@@ -74,57 +74,75 @@ int main (int argc, char** argv)
   if (good) t.fail ("Att::addMod (fartwizzle)");
 
   // Att::parse
+  Nibbler n ("");
   Att a7;
-  a7.parse ("");
-  t.is (a7.composeF4 (), "", "Att::composeF4 ()");
+  good = true;
+  try {a7.parse (n);} catch (...) {t.pass ("Att::compose () -> throw"); good = false;}
+  if (good) t.fail ("Att::composeF4 () -> throw");
 
-  a7.parse ("name:value");
+  n = Nibbler ("name:value");
+  a7.parse (n);
   t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:value)");
 
-  a7.parse ("name:\"value\"");
+  n = Nibbler ("name:\"value\"");
+  a7.parse (n);
   t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:\"value\")");
 
-  a7.parse ("name:\"one two\"");
+  n = Nibbler ("name:\"one two\"");
+  a7.parse (n);
   t.is (a7.composeF4 (), "name:\"one two\"", "Att::composeF4 (name:\"one two\")");
 
-  a7.parse ("name:\"&quot;\"");
+  n = Nibbler ("name:\"&quot;\"");
+  a7.parse (n);
   t.is (a7.composeF4 (), "name:\"&quot;\"", "Att::composeF4 (name:\"&quot;\")");
 
-  a7.parse ("name:\"&tab;&quot;&comma;&open;&close;&colon;\"");
+  n = Nibbler ("name:\"&tab;&quot;&comma;&open;&close;&colon;\"");
+  a7.parse (n);
   t.is (a7.composeF4 (), "name:\"&tab;&quot;&comma;&open;&close;&colon;\"",
                          "Att::composeF4 (name:\"&tab;&quot;&comma;&open;&close;&colon;\")");
 
-  a7.parse ("total gibberish");
+  n = Nibbler ("total gibberish");
+  a7.parse (n);
   t.is (a7.composeF4 (), "", "Att::composeF4 (total gibberish)");
 
-  a7.parse ("malformed");
+  n = Nibbler ("malformed");
+  a7.parse (n);
   t.is (a7.composeF4 (), "", "Att::composeF4 (malformed)");
 
-  a7.parse (":malformed");
+  n = Nibbler (":malformed");
+  a7.parse (n);
   t.is (a7.composeF4 (), "", "Att::composeF4 (:malformed)");
 
-  a7.parse (":\"\"");
+  n = Nibbler (":\"\"");
+  a7.parse (n);
   t.is (a7.composeF4 (), "", "Att::composeF4 (:\"\")");
 
-  a7.parse (":\"");
+  n = Nibbler (":\"");
+  a7.parse (n);
   t.is (a7.composeF4 (), "", "Att::composeF4 (:\")");
 
-  a7.parse ("name:");
+  n = Nibbler ("name:");
+  a7.parse (n);
   t.is (a7.composeF4 (), "", "Att::composeF4 (name:)");
 
-  a7.parse ("name:\"value");
+  n = Nibbler ("name:\"value");
+  a7.parse (n);
   t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:\"value)");
 
-  a7.parse ("name:value\"");
+  n = Nibbler ("name:value\"");
+  a7.parse (n);
   t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:value\")");
 
-  a7.parse ("name:val\"ue");
+  n = Nibbler ("name:val\"ue");
+  a7.parse (n);
   t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:val\"ue)");
 
-  a7.parse ("name:\"\"va\"\"\"\"\"lu\"\"\"e\"\"");
+  n = Nibbler ("name:\"\"va\"\"\"\"\"lu\"\"\"e\"\"");
+  a7.parse (n);
   t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:\"\"va\"\"\"\"\"lu\"\"\"e\"\")");
 
-  a7.parse ("name\"");
+  n = Nibbler ("name\"");
+  a7.parse (n);
   t.is (a7.composeF4 (), "", "Att::composeF4 (name\")");
 
   return 0;

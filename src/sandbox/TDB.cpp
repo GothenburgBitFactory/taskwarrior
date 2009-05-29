@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <sys/file.h>
 #include "text.h"
@@ -155,46 +156,67 @@ void TDB::unlock ()
 // Returns number of filtered tasks.
 int TDB::load (std::vector <T>& tasks, Filter& filter)
 {
-  char line[T_LINE_MAX];
-  foreach (location, mLocations)
+  std::string file;
+  int line_number;
+
+  try
   {
-    std::cout << "# location.path: " << location->path << std::endl;
-
-    while (fgets (line, T_LINE_MAX, location->pending))
+    char line[T_LINE_MAX];
+    foreach (location, mLocations)
     {
-      int length = ::strlen (line);
-      if (length > 1)
+      std::cout << "# location.path: " << location->path << std::endl;
+
+      line_number = 1;
+      file = location->path + "/pending.data";
+      while (fgets (line, T_LINE_MAX, location->pending))
       {
-        line[length - 1] = '\0'; // Kill \n
-        std::cout << "# line: " << line << std::endl;
-
-        T task (line);
-
-        if (filter.pass (task))
+        int length = ::strlen (line);
+        if (length > 1)
         {
-          // TODO Add hidden attribute indicating source.
-          tasks.push_back (task);
+          line[length - 1] = '\0'; // Kill \n
+          std::cout << "# line: " << line << std::endl;
+
+          T task (line);
+
+          if (filter.pass (task))
+          {
+            // TODO Add hidden attribute indicating source.
+            tasks.push_back (task);
+          }
         }
+
+        ++line_number;
+      }
+
+      line_number = 1;
+      file = location->path + "/completed.data";
+      while (fgets (line, T_LINE_MAX, location->completed))
+      {
+        int length = ::strlen (line);
+        if (length > 1)
+        {
+          line[length - 1] = '\0'; // Kill \n
+          std::cout << "# line: " << line << std::endl;
+
+          T task (line);
+
+          if (filter.pass (task))
+          {
+            // TODO Add hidden attribute indicating source.
+            tasks.push_back (task);
+          }
+        }
+
+        ++line_number;
       }
     }
+  }
 
-    while (fgets (line, T_LINE_MAX, location->completed))
-    {
-      int length = ::strlen (line);
-      if (length > 1)
-      {
-        line[length - 1] = '\0'; // Kill \n
-        std::cout << "# line: " << line << std::endl;
-
-        T task (line);
-
-        if (filter.pass (task))
-        {
-          // TODO Add hidden attribute indicating source.
-          tasks.push_back (task);
-        }
-      }
-    }
+  catch (std::string& e)
+  {
+    std::stringstream s;
+    s << "  int " << file << " at line " << line_number;
+    throw e + s.str ();
   }
 
   return tasks.size ();

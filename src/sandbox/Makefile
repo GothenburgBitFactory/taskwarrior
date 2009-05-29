@@ -4,7 +4,7 @@ LFLAGS  =
 LIBS    = 
 OBJECTS = main.o Context.o TDB.o T.o ../Sequence.o ../Filter.o ../Att.o      \
           ../Keymap.o ../Record.o ../Mod.o ../StringTable.o ../util.o        \
-          ../text.o ../Date.o ../Config.o ../Location.o ../Subst.o
+          ../text.o ../Date.o ../Config.o ../Location.o ../Subst.o ../Nibbler.o
 
 all: $(PROJECT)
 

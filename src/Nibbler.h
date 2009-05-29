@@ -24,49 +24,38 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_ATT
-#define INCLUDED_ATT
+#ifndef INCLUDED_NIBBLER
+#define INCLUDED_NIBBLER
 
 #include <string>
-#include <vector>
-#include "Nibbler.h"
-#include "Mod.h"
 
-class Att
+class Nibbler
 {
 public:
-  Att ();                                       // Default constructor
-  Att (const std::string&, const std::string&); // Simple constructor
-  Att (const std::string&, int);                // Simple constructor
-  Att (const Att&);                             // Copy constructor
-  Att& operator= (const Att&);                  // Assignment operator
-  ~Att ();                                      // Destructor
+  Nibbler ();                          // Default constructor
+  Nibbler (const char*);               // Constructor
+  Nibbler (const std::string&);        // Constructor
+  Nibbler (const Nibbler&);            // Copy constructor
+  Nibbler& operator= (const Nibbler&); // Assignment operator
+  ~Nibbler ();                         // Destructor
 
-  bool parse (Nibbler&);
-  std::string composeF4 () const;
-
-  void addMod (const Mod&);
-  // TODO Need method to access mods.
-
-  std::string name () const;
-  void name (const std::string&);
-
-  std::string value () const;
-  void value (const std::string&);
-
-  int value_int () const;
-  void value_int (int);
-
-private:
-  void enquote (std::string&) const;
-  void dequote (std::string&) const;
-  void encode (std::string&) const;
-  void decode (std::string&) const;
+  bool getUntilChar (char, std::string&);
+  bool getUntilChars (const std::string&, std::string&);
+  bool getUntilString (const std::string&, std::string&);
+  bool skip (const int quantity = 1);
+  bool skip (char);
+  bool skipAll (char);
+  bool skipAllChars (const std::string&);
+  bool getQuoted (char, std::string&);
+  bool getInt (int&);
+  bool getUnsignedInt (int&i);
+  bool getUntilEOL (std::string&);
+  bool getUntilEOS (std::string&);
+  bool depleted ();
 
 private:
-  std::string mName;
-  std::string mValue;
-  std::vector <Mod> mMods;
+  std::string mInput;
+  std::string::size_type mCursor;
 };
 
 #endif

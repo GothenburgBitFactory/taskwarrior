@@ -25,9 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include <sstream>
 #include <stdlib.h>
 #include "util.h"
+#include "Nibbler.h"
 #include "Record.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,19 +86,34 @@ std::string Record::composeF4 ()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// start --> [ --> name --> : --> " --> value --> " --> ] --> end
-//                  ^                                |
-//                  |________________________________|
+// start --> name --> : --> " --> value --> " --> end
+//            ^                                |
+//            |________________________________|
 //
 void Record::parse (const std::string& input)
 {
-  if (input[0] == '[' && input[input.length () - 1] == ']')
+  Nibbler n (input);
+  std::string line;
+  if (n.skip ('[') && n.getUntilChar (']', line))
   {
+    Nibbler nl (line);
 
+    bool first = true;
+    Att a;
+    while (a.parse (nl))
+    {
+      if (first)
+        first = false;
+      else
+        nl.skip (' ');
 
+      (*this)[a.name ()] = a;
+    }
 
-
-    throw std::string ("unimplemented Record:parse");
+    std::string remainder;
+    nl.getUntilEOS (remainder);
+    if (remainder.length ())
+      throw std::string ("Unrecognized garbage at end of line");
   }
   else
     throw std::string ("Record not recognized as FF4");

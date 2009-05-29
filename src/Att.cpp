@@ -27,6 +27,7 @@
 
 #include <sstream>
 #include <stdlib.h>
+#include <text.h>
 #include "Att.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,26 +86,45 @@ Att::~Att ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Parse the following forms:
-//    name [[.mod] ...] : " [value] "
-void Att::parse (const std::string& input)
+//
+// start --> name --> . --> mod --> : --> " --> value --> " --> end
+//                    ^          |
+//                    |__________|
+//
+bool Att::parse (Nibbler& n)
 {
+  // Ensure a clean object first.
   mName = "";
   mValue = "";
   mMods.clear ();
 
-  std::string::size_type colon = input.find (":");
-  if (colon != std::string::npos)
+  if (n.getUntilChars (".:", mName))
   {
-    std::string name = input.substr (0, colon);
-    // TODO Are there mods?
-    mName = name;
+    while (n.skip ('.'))
+    {
+      std::string mod;
+      if (n.getUntilChars (".:", mod))
+        mMods.push_back (mod);
+      else
+        throw std::string ("Missing . or : after modifier");
+    }
 
-    std::string value = input.substr (colon + 1, std::string::npos);
-    dequote (value);
-    decode (value);
-    mValue = value;
+    if (n.skip (':'))
+    {
+      if (n.getQuoted ('"', mValue))
+        return true;
+      else if (n.getUntilChar (' ', mValue))
+        return true;
+
+      throw std::string ("Missing attribute value");
+    }
+    else
+      throw std::string ("Missing : after attribute name");
   }
+  else
+    throw std::string ("Missing : after attribute name");
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
