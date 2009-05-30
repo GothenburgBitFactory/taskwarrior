@@ -39,13 +39,13 @@ public:
   Nibbler& operator= (const Nibbler&); // Assignment operator
   ~Nibbler ();                         // Destructor
 
-  bool getUntilChar (char, std::string&);
-  bool getUntilChars (const std::string&, std::string&);
-  bool getUntilString (const std::string&, std::string&);
-  bool skip (const int quantity = 1);
+  bool getUntil (char, std::string&);
+  bool getUntil (const std::string&, std::string&);
+  bool getUntilOneOf (const std::string&, std::string&);
+  bool skipN (const int quantity = 1);
   bool skip (char);
   bool skipAll (char);
-  bool skipAllChars (const std::string&);
+  bool skipAllOneOf (const std::string&);
   bool getQuoted (char, std::string&);
   bool getInt (int&);
   bool getUnsignedInt (int&i);

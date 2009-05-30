@@ -81,6 +81,7 @@ int main (int argc, char** argv)
   if (good) t.fail ("Att::composeF4 () -> throw");
 
   n = Nibbler ("name:value");
+// TODO throws here -->
   a7.parse (n);
   t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:value)");
 

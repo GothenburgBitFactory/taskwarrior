@@ -75,7 +75,8 @@ Nibbler::~Nibbler ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getUntilChar (char c, std::string& result)
+// Extract up until the next c, or EOS.
+bool Nibbler::getUntil (char c, std::string& result)
 {
   if (mCursor < mInput.length ())
   {
@@ -84,15 +85,21 @@ bool Nibbler::getUntilChar (char c, std::string& result)
     {
       result = mInput.substr (mCursor, i - mCursor);
       mCursor = i;
-      return true;
     }
+    else
+    {
+      result = mInput.substr (mCursor, std::string::npos);
+      mCursor = mInput.length ();
+    }
+
+    return true;
   }
 
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getUntilChars (const std::string& chars, std::string& result)
+bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
 {
   if (mCursor < mInput.length ())
   {
@@ -101,15 +108,21 @@ bool Nibbler::getUntilChars (const std::string& chars, std::string& result)
     {
       result = mInput.substr (mCursor, i - mCursor);
       mCursor = i;
-      return true;
     }
+    else
+    {
+      result = mInput.substr (mCursor, std::string::npos);
+      mCursor = mInput.length ();
+    }
+
+    return true;
   }
 
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getUntilString (const std::string& terminator, std::string& result)
+bool Nibbler::getUntil (const std::string& terminator, std::string& result)
 {
   if (mCursor < mInput.length ())
   {
@@ -126,8 +139,11 @@ bool Nibbler::getUntilString (const std::string& terminator, std::string& result
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::skip (const int quantity /* = 1 */)
+bool Nibbler::skipN (const int quantity /* = 1 */)
 {
+  if (mCursor >= mInput.length ())
+    return false;
+
   if (mCursor <= mInput.length () - quantity)
   {
     mCursor += quantity;
@@ -167,7 +183,7 @@ bool Nibbler::skipAll (char c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::skipAllChars (const std::string& chars)
+bool Nibbler::skipAllOneOf (const std::string& chars)
 {
   if (mCursor < mInput.length ())
   {
@@ -254,7 +270,7 @@ bool Nibbler::getUnsignedInt (int& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUntilEOL (std::string& result)
 {
-  return getUntilChar ('\n', result);
+  return getUntil ('\n', result);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

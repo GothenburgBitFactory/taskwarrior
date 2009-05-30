@@ -32,10 +32,112 @@ int main (int argc, char** argv)
 {
   UnitTest t (52);
 
-  Nibbler n ("this is 'a test' of 123the,nibbler");
+  Nibbler n;
   std::string s;
   int i;
 
+  // Make sure the nibbler behaves itself with trivial input.
+  t.diag ("Test all nibbler calls given empty input");
+  n = Nibbler ("");
+  t.notok (n.getUntil (' ', s),        "trivial: getUntil");
+  t.notok (n.getUntil ("hi", s),       "trivial: getUntil");
+  t.notok (n.getUntilOneOf ("ab", s),  "trivial: getUntilOneOf");
+  t.notok (n.skipN (123),              "trivial: skipN");
+  t.notok (n.skip ('x'),               "trivial: skip");
+  t.notok (n.skipAll ('x'),            "trivial: skipAll");
+  t.notok (n.skipAllOneOf ("abc"),     "trivial: skipAllOneOf");
+  t.notok (n.getQuoted ('"', s),       "trivial: getQuoted");
+  t.notok (n.getInt (i),               "trivial: getInt");
+  t.notok (n.getUnsignedInt (i),       "trivial: getUnsignedInt");
+  t.notok (n.getUntilEOL (s),          "trivial: getUntilEOL");
+//
+  t.notok (n.getUntilEOS (s),          "trivial: getUntilEOS");
+  t.ok    (n.depleted (),              "trivial: depleted");
+
+  // bool getUntil (char, std::string&);
+  t.diag ("Nibbler::getUntil");
+  n = Nibbler ("one two");
+  t.ok (n.getUntil (' ', s),       "'one two' :      getUntil (' ')  -> true");
+  t.is (s, "one",                  "'one two' :      getUntil (' ')  -> 'one'");
+  t.ok (n.getUntil (' ', s),       "   ' two' :      getUntil (' ')  -> true");
+  t.is (s, "",                     "   ' two' :      getUntil (' ')  -> ''");
+  t.ok (n.skip (' '),              "   ' two' :          skip (' ')  -> true");
+  t.ok (n.getUntil (' ', s),       "    'two' :      getUntil (' ')  -> 'two'");
+  t.ok (n.getUntil (' ', s),       "       '' :      getUntil (' ')  -> false");
+  t.ok (n.depleted (),             "       '' :      depleted ()     -> true");
+
+  // bool getUntilOneOf (const std::string&, std::string&);
+  t.diag ("Nibbler::getUntilOneOf");
+  n = Nibbler ("ab.cd");
+  t.ok (n.getUntilOneOf (".:", s), "  'ab.cd' : getUntilOneOf ('.:') -> true");
+  t.is (s, "ab",                   "  'ab.cd' : getUntilOneOf ('.:') -> 'ab'");
+  t.ok (n.skipN (),                "    '.cd' :         skipN ()     -> true");
+  t.ok (n.getUntilOneOf (".:", s), "     'cd' : getUntilOneOf ('.:') -> true");
+//
+  t.ok (n.getUntilOneOf (".:", s), "       '' : getUntilOneOf ('.:') -> false");
+  t.ok (n.depleted (),             "       '' :      depleted ()     -> true");
+
+  // bool getUntil (const std::string&, std::string&);
+  t.diag ("Nibbler::getUntil");
+  n = Nibbler ("ab\r\ncd");
+
+  // bool skipN (const int quantity = 1);
+  t.diag ("Nibbler::skipN");
+  n = Nibbler ("abcde");
+  t.ok    (n.skipN (),             "  'abcde' :         skipN ()     -> true");
+  t.ok    (n.skipN (2),            "   'bcde' :         skipN (2     -> true");
+  t.notok (n.skipN (3),            "     'de' :         skipN (3     -> false");
+  t.notok (n.depleted (),          "     'de' :      depleted ()     -> true");
+
+  // bool skip (char);
+  t.diag ("Nibbler::skip");
+  n = Nibbler ("  a");
+  t.ok    (n.skip (' '),           "    '  a' :          skip (' ')  -> true");
+  t.ok    (n.skip (' '),           "     ' a' :          skip (' ')  -> true");
+  t.notok (n.skip (' '),           "      'a' :          skip (' ')  -> false");
+  t.notok (n.depleted (),          "      'a' :      depleted ()     -> false");
+//
+  t.notok (n.skip ('a'),           "       '' :          skip ('a')  -> true");
+  t.ok    (n.depleted (),          "       '' :      depleted ()     -> true");
+
+  // bool skipAll (char);
+  t.diag ("Nibbler::skipAll");
+  n = Nibbler ("aaaabb");
+  t.ok    (n.skipAll ('a'),        " 'aaaabb' :       skipAll ('a')  -> true");
+  t.notok (n.skipAll ('a'),        "     'bb' :       skipAll ('a')  -> false");
+  t.ok    (n.skipAll ('b'),        "     'bb' :       skipAll ('b')  -> true");
+  t.notok (n.skipAll ('b'),        "       '' :       skipAll ('b')  -> false");
+  t.ok    (n.depleted (),          "       '' :      depleted ()     -> true");
+
+  // bool skipAllOneOf (const std::string&);
+  t.diag ("Nibbler::skipAllOneOf");
+
+  // bool getQuoted (char, std::string&);
+  t.diag ("Nibbler::getQuoted");
+
+  // bool getInt (int&);
+  t.diag ("Nibbler::getInt");
+
+  // bool getUnsignedInt (int&i);
+  t.diag ("Nibbler::getUnsignedInt");
+
+  // bool getUntilEOL (std::string&);
+  t.diag ("Nibbler::getUntilEOL");
+
+  // bool getUntilEOS (std::string&);
+  t.diag ("Nibbler::getUntilEOS");
+
+  // bool depleted ();
+  t.diag ("Nibbler::depleted");
+  n = Nibbler (" ");
+  t.notok (n.depleted (),          "      ' ' :      depleted ()     -> false");
+  t.ok    (n.skipN (),             "       '' :          skip ()     -> true");
+  t.ok    (n.depleted (),          "       '' :      depleted ()     -> true");
+
+  return 0;
+
+/*
+  n = Nibbler ("this is 'a test' of 123the,nibbler");
   t.ok (n.getUntilChar (' ', s),    "nibble word");
   t.is (s, "this",                  "found 'this'");
   t.ok (n.skip (' '),               "skip ws");
@@ -83,7 +185,7 @@ int main (int argc, char** argv)
   t.notok (n.getUnsignedInt (i),    "+456 789 -> getUnsignedInt fail");
   t.ok (n.getInt (i),               "+456 789 -> getInt pass");
   t.is (i, 456,                     "+456 789 -> getInt pass");
-  t.ok (n.skip (' '),               "\s789 -> skip ' ' pass");
+  t.ok (n.skip (' '),               "\\s789 -> skip ' ' pass");
   t.ok (n.getUnsignedInt (i),       "789 -> getUnsignedInt pass");
   t.is (i, 789,                     "789 -> getInt pass");
 
@@ -113,8 +215,7 @@ int main (int argc, char** argv)
   t.ok (n.skip ('a'),               "aa -> skip 'a' pass");
   t.ok (n.skip ('a'),               "aa -> skip 'a' pass");
   t.ok (n.depleted (),              "'' -> depleted pass");
-
-  return 0;
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

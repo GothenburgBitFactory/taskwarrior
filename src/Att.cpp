@@ -98,12 +98,12 @@ bool Att::parse (Nibbler& n)
   mValue = "";
   mMods.clear ();
 
-  if (n.getUntilChars (".:", mName))
+  if (n.getUntilOneOf (".:", mName))
   {
     while (n.skip ('.'))
     {
       std::string mod;
-      if (n.getUntilChars (".:", mod))
+      if (n.getUntilOneOf (".:", mod))
         mMods.push_back (mod);
       else
         throw std::string ("Missing . or : after modifier");
@@ -113,7 +113,7 @@ bool Att::parse (Nibbler& n)
     {
       if (n.getQuoted ('"', mValue))
         return true;
-      else if (n.getUntilChar (' ', mValue))
+      else if (n.getUntil (' ', mValue))
         return true;
 
       throw std::string ("Missing attribute value");

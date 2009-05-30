@@ -94,7 +94,7 @@ void Record::parse (const std::string& input)
 {
   Nibbler n (input);
   std::string line;
-  if (n.skip ('[') && n.getUntilChar (']', line))
+  if (n.skip ('[') && n.getUntil (']', line))
   {
     Nibbler nl (line);
 
