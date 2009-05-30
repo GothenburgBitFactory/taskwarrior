@@ -355,13 +355,13 @@ std::string handleVersion (Config& conf)
     " blanklines color color.active color.due color.overdue color.pri.H "
     "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
     "confirmation curses data.location dateformat default.command "
-    "default.priority defaultwidth due echo.command locking monthsperline nag "
-    "next project shadow.command shadow.file shadow.notify weekstart editor "
-    "import.synonym.id import.synonym.uuid import.synonym.status "
-    "import.synonym.tags import.synonym.entry import.synonym.start "
-    "import.synonym.due import.synonym.recur import.synonym.end "
-    "import.synonym.project import.synonym.priority import.synonym.fg "
-    "import.synonym.bg import.synonym.description ";
+    "default.priority defaultwidth displayweeknumber due echo.command locale "
+    "locking monthsperline nag next project shadow.command shadow.file "
+    "shadow.notify weekstart editor import.synonym.id import.synonym.uuid "
+    "import.synonym.status import.synonym.tags import.synonym.entry "
+    "import.synonym.start import.synonym.due import.synonym.recur "
+    "import.synonym.end import.synonym.project import.synonym.priority "
+    "import.synonym.fg import.synonym.bg import.synonym.description ";
 
   // This configuration variable is supported, but not documented.  It exists
   // so that unit tests can force color to be on even when the output from task
