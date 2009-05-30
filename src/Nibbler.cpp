@@ -99,11 +99,11 @@ bool Nibbler::getUntil (char c, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
+bool Nibbler::getUntil (const std::string& terminator, std::string& result)
 {
   if (mCursor < mInput.length ())
   {
-    std::string::size_type i = mInput.find_first_of (chars, mCursor);
+    std::string::size_type i = mInput.find (terminator, mCursor);
     if (i != std::string::npos)
     {
       result = mInput.substr (mCursor, i - mCursor);
@@ -122,17 +122,23 @@ bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getUntil (const std::string& terminator, std::string& result)
+bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
 {
   if (mCursor < mInput.length ())
   {
-    std::string::size_type i = mInput.find (terminator, mCursor);
+    std::string::size_type i = mInput.find_first_of (chars, mCursor);
     if (i != std::string::npos)
     {
       result = mInput.substr (mCursor, i - mCursor);
       mCursor = i;
-      return true;
     }
+    else
+    {
+      result = mInput.substr (mCursor, std::string::npos);
+      mCursor = mInput.length ();
+    }
+
+    return true;
   }
 
   return false;
