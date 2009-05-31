@@ -32,11 +32,26 @@
 ////////////////////////////////////////////////////////////////////////////////
 Record parseRecord (const std::string& input)
 {
-  try { Record r (input); return r; }
-  catch (...) {}
+  try
+  {
+    Record r (input);
+    return r;
+  }
+
+  catch (std::string& e)
+  {
+    std::cout << "# Exception: " << e << std::endl;
+  }
+
+  catch (...)
+  {
+    std::cout << "# Exception!" << std::endl;
+  }
+
   return Record ();
 }
 
+////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
   UnitTest t (4);
@@ -49,8 +64,8 @@ int main (int argc, char** argv)
   record = parseRecord ("[]");
   t.is (record.size (), (size_t)0, "Record []");
 
-  // [name:value]
-  record = parseRecord ("[name:value]");
+  // [name:"value"]
+  record = parseRecord ("[name:\"value\"]");
   t.is (record.size (), (size_t)1, "Record [name:value]");
   if (record.size () == 1)
   {
@@ -65,10 +80,6 @@ int main (int argc, char** argv)
   // TODO [name:"value"]
   // TODO [name:"one two"]
   // TODO [one:two three:four]
-
-  // TODO FF3
-  // TODO FF2
-  // TODO FF1
 
   return 0;
 }

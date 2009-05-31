@@ -17,7 +17,7 @@ int main (int argc, char** argv)
 
     c.filter.push_back (Att ("priority", "L"));
 
-    std::vector <T> tasks;
+    std::vector <T2> tasks;
     int quantity = c.tdb.load (tasks, c.filter);
     std::cout << "# " << quantity << " <-- c.tdb.load" << std::endl;
 

@@ -30,7 +30,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (36);
+  UnitTest t (38);
 
   Att a1 ("name", "value");
   t.is (a1.name (), "name", "Att::Att (name, value), Att.name");
@@ -72,6 +72,12 @@ int main (int argc, char** argv)
   good = true;
   try {a6.addMod (Mod ("fartwizzle"));} catch (...) {good = false;}
   t.notok (good, "Att::addMod (fartwizzle)");
+
+  // Att::mods
+  std::vector <Mod> mods;
+  a6.mods (mods);
+  t.is (mods.size (), (size_t)1, "Att::mods () size == 1");
+  t.is (mods[0], "is",           "Att::mods [0] == 'is'");
 
   // Att::parse
   Nibbler n ("");

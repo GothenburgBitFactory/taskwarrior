@@ -46,7 +46,7 @@ public:
   std::string composeF4 () const;
 
   void addMod (const Mod&);
-  // TODO Need method to access mods.
+  void mods (std::vector <Mod>&);
 
   std::string name () const;
   void name (const std::string&);

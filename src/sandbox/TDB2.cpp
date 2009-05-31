@@ -31,7 +31,7 @@
 #include <sys/file.h>
 #include "text.h"
 #include "util.h"
-#include "TDB.h"
+#include "TDB2.h"
 #include "task.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,16 +64,16 @@
 //  +- TDB::~TDB
 //       [TDB::unlock]
 //
-TDB::TDB ()
+TDB2::TDB2 ()
 : mLock (true)
 , mAllOpenAndLocked (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TDB::TDB (const TDB& other)
+TDB2::TDB2 (const TDB2& other)
 {
-  throw std::string ("unimplemented TDB::TDB");
+  throw std::string ("unimplemented TDB2::TDB2");
 //  mLocations        = other.mLocations;
 //  mFiles            = other.mFiles;
 //  mLock             = other.mLock;
@@ -85,9 +85,9 @@ TDB::TDB (const TDB& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TDB& TDB::operator= (const TDB& other)
+TDB2& TDB2::operator= (const TDB2& other)
 {
-  throw std::string ("unimplemented TDB::operator=");
+  throw std::string ("unimplemented TDB2::operator=");
 //  if (this != &other)
 //  {
 //    mLocations        = other.mLocations;
@@ -104,14 +104,14 @@ TDB& TDB::operator= (const TDB& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TDB::~TDB ()
+TDB2::~TDB2 ()
 {
   if (mAllOpenAndLocked)
     unlock ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB::location (const std::string& path)
+void TDB2::location (const std::string& path)
 {
   if (access (expandPath (path).c_str (), F_OK))
     throw std::string ("Data location '") +
@@ -122,7 +122,7 @@ void TDB::location (const std::string& path)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB::lock (bool lockFile /* = true */)
+void TDB2::lock (bool lockFile /* = true */)
 {
   mLock = lockFile;
 
@@ -136,7 +136,7 @@ void TDB::lock (bool lockFile /* = true */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB::unlock ()
+void TDB2::unlock ()
 {
   if (mAllOpenAndLocked)
   {
@@ -154,7 +154,7 @@ void TDB::unlock ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Returns number of filtered tasks.
-int TDB::load (std::vector <T>& tasks, Filter& filter)
+int TDB2::load (std::vector <T2>& tasks, Filter& filter)
 {
   std::string file;
   int line_number;
@@ -176,7 +176,7 @@ int TDB::load (std::vector <T>& tasks, Filter& filter)
           line[length - 1] = '\0'; // Kill \n
           std::cout << "# line: " << line << std::endl;
 
-          T task (line);
+          T2 task (line);
 
           if (filter.pass (task))
           {
@@ -198,7 +198,7 @@ int TDB::load (std::vector <T>& tasks, Filter& filter)
           line[length - 1] = '\0'; // Kill \n
           std::cout << "# line: " << line << std::endl;
 
-          T task (line);
+          T2 task (line);
 
           if (filter.pass (task))
           {
@@ -224,9 +224,9 @@ int TDB::load (std::vector <T>& tasks, Filter& filter)
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
-void TDB::add (T& after)
+void TDB2::add (T2& after)
 {
-  throw std::string ("unimplemented TDB::add");
+  throw std::string ("unimplemented TDB2::add");
 
   // TODO Seek to end of pending.
   // TODO write after.composeFF4 ().
@@ -234,27 +234,27 @@ void TDB::add (T& after)
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
-void TDB::update (T& before, T& after)
+void TDB2::update (T2& before, T2& after)
 {
-  throw std::string ("unimplemented TDB::update");
+  throw std::string ("unimplemented TDB2::update");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO writes all, including comments
-int TDB::commit ()
+int TDB2::commit ()
 {
-  throw std::string ("unimplemented TDB::commit");
+  throw std::string ("unimplemented TDB2::commit");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO -> FF4
-void TDB::upgrade ()
+void TDB2::upgrade ()
 {
-  throw std::string ("unimplemented TDB::upgrade");
+  throw std::string ("unimplemented TDB2::upgrade");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-FILE* TDB::openAndLock (const std::string& file)
+FILE* TDB2::openAndLock (const std::string& file)
 {
   // Check for access.
   if (access (file.c_str (), F_OK | R_OK | W_OK))

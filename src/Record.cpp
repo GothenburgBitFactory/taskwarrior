@@ -53,12 +53,6 @@ Record::Record (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 Record& Record::operator= (const Record& other)
 {
-  throw std::string ("unimplemented Record:operator=");
-  if (this != &other)
-  {
-    *this = other;
-  }
-
   return *this;
 }
 
@@ -88,25 +82,23 @@ std::string Record::composeF4 ()
 //
 // start --> name --> : --> " --> value --> " --> end
 //            ^                                |
-//            |________________________________|
+//            +------------- \s <--------------+
 //
 void Record::parse (const std::string& input)
 {
   Nibbler n (input);
   std::string line;
-  if (n.skip ('[') && n.getUntil (']', line))
+  if (n.skip     ('[')       &&
+      n.getUntil (']', line) &&
+      n.skip     (']')       &&
+      n.depleted ())
   {
     Nibbler nl (line);
 
-    bool first = true;
     Att a;
     while (a.parse (nl))
     {
-      if (first)
-        first = false;
-      else
-        nl.skip (' ');
-
+      nl.skip (' ');
       (*this)[a.name ()] = a;
     }
 

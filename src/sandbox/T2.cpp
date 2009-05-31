@@ -26,23 +26,23 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <string>
-#include "T.h"
+#include "T2.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-T::T ()
+T2::T2 ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T::T (const std::string& input)
+T2::T2 (const std::string& input)
 {
   parse (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T& T::operator= (const T& other)
+T2& T2::operator= (const T2& other)
 {
-  throw std::string ("unimplemented T::operator=");
+  throw std::string ("unimplemented T2::operator=");
   if (this != &other)
   {
 //    mOne = other.mOne;
@@ -52,27 +52,27 @@ T& T::operator= (const T& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T::~T ()
+T2::~T2 ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // [name:value, name:"value",name:[name:value,name:value]]
-std::string T::composeF4 ()
+std::string T2::composeF4 ()
 {
-  throw std::string ("unimplemented T::composeF4");
+  throw std::string ("unimplemented T2::composeF4");
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string T::composeCSV ()
+std::string T2::composeCSV ()
 {
-  throw std::string ("unimplemented T::composeCSV");
+  throw std::string ("unimplemented T2::composeCSV");
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool T::validate () const
+bool T2::validate () const
 {
   // TODO Verify until > due
   // TODO Verify entry < until, due, start, end

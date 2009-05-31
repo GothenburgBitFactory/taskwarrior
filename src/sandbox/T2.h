@@ -24,47 +24,32 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_TDB
-#define INCLUDED_TDB
+#ifndef INCLUDED_T2
+#define INCLUDED_T2
 
-#include <map>
-#include <vector>
 #include <string>
-#include <Location.h>
-#include <Filter.h>
-#include <T.h>
+#include "Record.h"
 
-// Length of longest line.
-#define T_LINE_MAX 32768
-
-class TDB
+class T2 : public Record
 {
 public:
-  TDB ();                      // Default constructor
-  TDB (const TDB&);            // Copy constructor
-  TDB& operator= (const TDB&); // Assignment operator
-  ~TDB ();                     // Destructor
+  T2 ();                    // Default constructor
+  T2 (const std::string&);  // Parse
+  T2& operator= (const T2&); // Assignment operator
+  ~T2 ();                   // Destructor
 
-  void  location (const std::string&);
+  std::string composeF4 ();
+  std::string composeCSV ();
 
-  void  lock (bool lockFile = true);
-  void  unlock ();
+  // TODO Series of helper functions.
+/*
+  status getStatus () const;
+  void setStatus (status s);
+*/
 
-  int   load (std::vector <T>&, Filter&);
-  void  add (T&);
-  void  update (T&, T&);
-  int   commit ();
-  void  upgrade ();
-
-private:
-  FILE* openAndLock (const std::string&);
+  bool validate () const;
 
 private:
-  std::vector <Location> mLocations;
-  bool mLock;
-  bool mAllOpenAndLocked;
-
-  // TODO Need cache of raw file contents to preserve comments.
 };
 
 #endif

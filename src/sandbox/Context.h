@@ -31,8 +31,8 @@
 #include "Keymap.h"
 #include "Config.h"
 #include "Sequence.h"
-#include "T.h"
-#include "TDB.h"
+#include "T2.h"
+#include "TDB2.h"
 #include "StringTable.h"
 
 class Context
@@ -55,8 +55,8 @@ public:
   Filter      filter;
   Keymap      keymap;
   Sequence    sequence;
-  T           task;
-  TDB         tdb;
+  T2          task;
+  TDB2        tdb;
   StringTable stringtable;
 
 private:
