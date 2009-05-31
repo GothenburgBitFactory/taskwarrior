@@ -100,6 +100,9 @@ bool Att::parse (Nibbler& n)
 
   if (n.getUntilOneOf (".:", mName))
   {
+    if (mName.length () == 0)
+      throw std::string ("Missing attribute name");
+
     while (n.skip ('.'))
     {
       std::string mod;
@@ -113,8 +116,15 @@ bool Att::parse (Nibbler& n)
     {
       if (n.getQuoted ('"', mValue))
         return true;
-      else if (n.getUntil (' ', mValue))
+
+      // This is here to tolerate unquoted values.
+      // Consider removing this for a stricter parse.
+      if (n.getUntil (' ', mValue))
+      {
+        dequote (mValue);
+        decode (mValue);
         return true;
+      }
 
       throw std::string ("Missing attribute value");
     }

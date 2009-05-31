@@ -30,7 +30,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (33);
+  UnitTest t (36);
 
   Att a1 ("name", "value");
   t.is (a1.name (), "name", "Att::Att (name, value), Att.name");
@@ -66,85 +66,100 @@ int main (int argc, char** argv)
 
   // Att::addMod
   bool good = true;
-  try {a6.addMod ("is");} catch (...) {t.fail ("Att::addMod (is)"); good = false;}
-  if (good) t.pass ("Att::addMod (is)");
+  try {a6.addMod ("is");} catch (...) {good = false;}
+  t.ok (good, "Att::addMod (is)");
 
   good = true;
-  try {a6.addMod (Mod ("fartwizzle"));} catch (...) {t.pass ("Att::addMod (fartwizzle) failed"); good = false;}
-  if (good) t.fail ("Att::addMod (fartwizzle)");
+  try {a6.addMod (Mod ("fartwizzle"));} catch (...) {good = false;}
+  t.notok (good, "Att::addMod (fartwizzle)");
 
   // Att::parse
   Nibbler n ("");
   Att a7;
   good = true;
-  try {a7.parse (n);} catch (...) {t.pass ("Att::compose () -> throw"); good = false;}
-  if (good) t.fail ("Att::composeF4 () -> throw");
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.notok (good, "Att::parse () -> throw");
 
   n = Nibbler ("name:value");
-// TODO throws here -->
   a7.parse (n);
-  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:value)");
+  t.is (a7.composeF4 (), "name:\"value\"",
+         "Att::parse (name:value)");
 
   n = Nibbler ("name:\"value\"");
   a7.parse (n);
-  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:\"value\")");
+  t.is (a7.composeF4 (), "name:\"value\"",
+         "Att::parse (name:\"value\")");
 
   n = Nibbler ("name:\"one two\"");
   a7.parse (n);
-  t.is (a7.composeF4 (), "name:\"one two\"", "Att::composeF4 (name:\"one two\")");
+  t.is (a7.composeF4 (), "name:\"one two\"",
+         "Att::parse (name:\"one two\")");
 
   n = Nibbler ("name:\"&quot;\"");
   a7.parse (n);
-  t.is (a7.composeF4 (), "name:\"&quot;\"", "Att::composeF4 (name:\"&quot;\")");
+  t.is (a7.composeF4 (), "name:\"&quot;\"",
+         "Att::parse (name:\"&quot;\")");
 
   n = Nibbler ("name:\"&tab;&quot;&comma;&open;&close;&colon;\"");
   a7.parse (n);
   t.is (a7.composeF4 (), "name:\"&tab;&quot;&comma;&open;&close;&colon;\"",
-                         "Att::composeF4 (name:\"&tab;&quot;&comma;&open;&close;&colon;\")");
+             "Att::parse (name:\"&tab;&quot;&comma;&open;&close;&colon;\")");
 
   n = Nibbler ("total gibberish");
-  a7.parse (n);
-  t.is (a7.composeF4 (), "", "Att::composeF4 (total gibberish)");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.notok (good, "Att::parse (total gibberish)");
 
   n = Nibbler ("malformed");
-  a7.parse (n);
-  t.is (a7.composeF4 (), "", "Att::composeF4 (malformed)");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.notok (good, "Att::parse (malformed)");
 
   n = Nibbler (":malformed");
-  a7.parse (n);
-  t.is (a7.composeF4 (), "", "Att::composeF4 (:malformed)");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.notok (good, "Att::parse (:malformed)");
 
   n = Nibbler (":\"\"");
-  a7.parse (n);
-  t.is (a7.composeF4 (), "", "Att::composeF4 (:\"\")");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.notok (good, "Att::parse (:\"\")");
 
   n = Nibbler (":\"");
-  a7.parse (n);
-  t.is (a7.composeF4 (), "", "Att::composeF4 (:\")");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.notok (good, "Att::parse (:\")");
 
   n = Nibbler ("name:");
-  a7.parse (n);
-  t.is (a7.composeF4 (), "", "Att::composeF4 (name:)");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.notok (good, "Att::parse (name:)");
 
   n = Nibbler ("name:\"value");
-  a7.parse (n);
-  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:\"value)");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.ok (good, "Att::parse (name:\"value)");
+  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 -> name:\"value\"");
 
   n = Nibbler ("name:value\"");
-  a7.parse (n);
-  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:value\")");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.ok (good, "Att::parse (name:value\")");
+  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 -> name:\"value\"");
 
   n = Nibbler ("name:val\"ue");
-  a7.parse (n);
-  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:val\"ue)");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.ok (good, "Att::parse (name:val\"ue)");
+  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 -> name:\"value\"");
 
   n = Nibbler ("name:\"\"va\"\"\"\"\"lu\"\"\"e\"\"");
-  a7.parse (n);
   t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:\"\"va\"\"\"\"\"lu\"\"\"e\"\")");
 
   n = Nibbler ("name\"");
-  a7.parse (n);
-  t.is (a7.composeF4 (), "", "Att::composeF4 (name\")");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.notok (good, "Att::parse (name\")");
 
   return 0;
 }

@@ -212,7 +212,7 @@ bool Nibbler::skipAllOneOf (const std::string& chars)
 bool Nibbler::getQuoted (char c, std::string& result)
 {
   std::string::size_type start = mCursor;
-  if (start < mInput.length () - 1 && mInput[start] == c)
+  if (start < mInput.length () && mInput[start] == c)
   {
     ++start;
     if (start < mInput.length ())
