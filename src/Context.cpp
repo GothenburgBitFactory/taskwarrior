@@ -34,6 +34,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
+: config ()
+, filter ()
+, keymap ()
+, sequence ()
+, task ()
+, tdb ()
+, stringtable ()
 {
   // Set up randomness.
 #ifdef HAVE_SRANDOM

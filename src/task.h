@@ -29,6 +29,7 @@
 #include <vector>
 #include <map>
 #include <sys/types.h>
+#include "Context.h"
 #include "T.h"
 #include "TDB.h"
 #include "Config.h"

@@ -38,6 +38,7 @@ public:
   T2& operator= (const T2&); // Assignment operator
   ~T2 ();                   // Destructor
 
+  void legacyParse (const std::string&);
   std::string composeF4 ();
   std::string composeCSV ();
 

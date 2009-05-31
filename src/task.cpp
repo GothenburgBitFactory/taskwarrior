@@ -317,8 +317,13 @@ int main (int argc, char** argv)
   srand (time (NULL));
 #endif
 
+  // TODO 1.8.0 requires the Context.
+  Context context;
+
   try
   {
+    context.initialize (argc, argv);
+
     // Load the config file from the home directory.  If the file cannot be
     // found, offer to create a sample one.
     Config conf;
@@ -365,7 +370,7 @@ int main (int argc, char** argv)
 
   catch (...)
   {
-    std::cerr << "Unknown error." << std::endl;
+    std::cerr << context.stringtable.get (100, "Unknown error.") << std::endl;
     return -2;
   }
 

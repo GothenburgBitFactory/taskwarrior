@@ -68,6 +68,8 @@ StringTable::~StringTable ()
 //  ...
 void StringTable::load (const std::string& file)
 {
+  mMapping.clear ();  // Allows dynamic reload.
+
   std::ifstream in;
   in.open (file.c_str (), std::ifstream::in);
   if (in.good ())
