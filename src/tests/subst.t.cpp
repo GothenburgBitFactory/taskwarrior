@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (2);
+  UnitTest t (3);
 
   T2 task;
   task.set ("description", "one two three four");
@@ -63,6 +63,20 @@ int main (int argc, char** argv)
   else
   {
     t.fail ("failed to parse '/e /E /g'");
+  }
+
+  if (s.parse ("/from/to/g"))
+  {
+    std::string description = task.get ("description");
+    std::vector <Att> annotations;
+    task.getAnnotations (annotations);
+
+    s.apply (description, annotations);
+    t.is (description, "one two three four", "multiple word subst mismatch");
+  }
+  else
+  {
+    t.fail ("failed to parse '/from/to/g'");
   }
 
   return 0;

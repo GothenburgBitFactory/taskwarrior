@@ -25,7 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <Subst.h>
+#include "Subst.h"
+#include "Nibbler.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 Subst::Subst ()
@@ -70,36 +71,18 @@ Subst::~Subst ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Subst::parse (const std::string& input)
 {
-  size_t first = input.find ('/');
-  if (first != std::string::npos)
+  Nibbler n (input);
+  if (n.skip     ('/')        &&
+      n.getUntil ('/', mFrom) &&
+      n.skip     ('/')        &&
+      n.getUntil ('/', mTo)   &&
+      n.skip     ('/'))
   {
-    size_t second = input.find ('/', first + 1);
-    if (second != std::string::npos)
-    {
-      size_t third = input.find ('/', second + 1);
-      if (third != std::string::npos)
-      {
-        if (first == 0 &&
-            first < second &&
-            second < third &&
-            (third == input.length () - 1 ||
-             third == input.length () - 2))
-        {
-          mFrom = input.substr (first  + 1, second - first  - 1);
-          mTo   = input.substr (second + 1, third  - second - 1);
-
-          mGlobal = false;
-          if (third == input.length () - 2 &&
-              input.find ('g', third + 1) != std::string::npos)
-            mGlobal = true;
-
-          return true;
-        }
-      }
-    }
+    mGlobal = n.skip ('g');
+    return true;
   }
 
- return false;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
