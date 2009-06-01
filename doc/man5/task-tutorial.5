@@ -9,10 +9,267 @@ want to do, allowing you to add/remove, and otherwise manipulate them.  Task
 has a rich list of subcommands that allow you to do various things with it.
 
 .SH 30 second tutorial
-30 second tutorial
+
+For the excessively lazy. Add two tasks:
+.br
+.RS
+% task add Read task documents later
+.br
+% task add priority:H Pay bills
+.RE
+
+Easy. See that second one has a High priority? Now let's look at those tasks:
+.br
+.RS
+% task ls
+.RE
+.br
+.RS
+ID Project Pri Description
+ 2         H   Pay bills
+ 1             Read task documents later
+.RE
+
+They are ordered by priority. Let's mark number 2 as done:
+.br
+.RS
+% task 2 done
+.br
+% task ls
+.RE
+.br
+.RS
+ID Project Pri Description
+ 1             Read task documents later
+.RE
+
+Gone. Now let's delete that remaining task, because, well, why bother now we are already using task:
+.br
+.RS
+% task delete 1
+% task ls
+No matches
+.RE
+
+Easy. But now consider checking out what task can really do...
 
 .SH Simple usage of task
-Simple usage of task
+Let us begin by adding some tasks:
+.br
+.RS
+% task add Book plane ticket
+% task add Rent a tux
+% task add Reserve a rental car
+% task add Reserve a hotel room
+.RE
+
+That's it. You'll notice immediately that task has a very minimalist interface. Let us take a look at those tasks:
+.br
+.RS
+% task ls
+
+ID Project Pri Description
+ 1             Book plane ticket
+ 2             Rent a tux
+ 3             Reserve a rental car
+ 4             Send John a birthday card
+.RE
+
+The 'ls' command provides the most minimal list of tasks. Each task has been given an id number, and you can see that there are no projects or priorities assigned. Wait a minute - I own a tux, I don't need to rent one. Let us delete task 2:
+.br
+.RS
+% task 2 delete
+Permanently delete task? (y/n) y
+.RE
+
+Task wants you to confirm deletions. To remove the confirmation, edit your .taskrc file and change the line:
+
+confirmation=yes
+
+to have a value of "no".
+
+While the use of projects and priorities are not essential to benefitting from task, they can be very useful when the list of tasks grows large. Let's assign a project to these tasks:
+.br
+.RS
+% task 1 project:Wedding
+% task 3 project:Wedding
+% task 4 project:Family
+% task ls
+
+  ID Project Pri Description
+   3 Family      Send John a birthday card
+   2 Wedding     Reserve a rental car
+   1 Wedding     Book plane ticket
+.RE
+
+Notice that the id numbers have changed. When tasks get deleted, or have their attributes changed (project, for example), the ids are prone to change. But the id numbers will remain valid until the next 'ls' command is run. You should only use the ids from the most recent 'ls' command. The ids change, because task is always trying to use small numbers so that it is easy for you to enter them correctly. Now that projects are assigned, we can look at just the Wedding project tasks:
+
+Subprojects are supported. If you have a project "Wedding", you can specify that a task is a subproject "Transport" of "Wedding" by assigning the project "Wedding.Transport". Let's do this:
+.br
+.RS
+% task 2 project:Wedding.Transport
+% task ls
+
+ID Project           Pri Description
+ 3 Family                Send John a birthday card
+ 2 Wedding.Transport     Reserve a rental car
+ 1 Wedding               Book plane ticket
+.RE
+
+Task matches the leftmost part of the project when searching, so projects may be abbreviated:
+.br
+.RS
+% task ls project:Wedding.Tra
+
+ID Project           Pri Description
+ 2 Wedding.Transport     Reserve a rental car
+.RE
+
+This way of matching projects can be used to see all tasks under the "Wedding" project and all subprojects:
+.br
+.RS
+% task ls project:Wedding
+
+ID Project           Pri Description
+ 2 Wedding.Transport     Reserve a rental car
+ 1 Wedding               Book plane ticket
+.RE
+
+Let's reassign 2 back to the "Wedding" project:
+.br
+.RS
+% task 2 project:Wedding
+.RE
+
+Now that projects are assigned, we can look at just the Wedding project tasks:
+.br
+.RS
+% task ls project:Wedding
+
+ID Project Pri Description
+ 1 Wedding     Book plane ticket
+ 2 Wedding     Reserve a rental car
+.RE
+
+Any command arguments after the 'ls' are used for filtering the output. We could also have requested:
+.br
+.RS
+% task ls ticket plane
+
+ID Project Pri Description
+ 1 Wedding     Book plane ticket
+.RE
+
+Now let's prioritize. Priorities can be H, M or L (High, Medium, Low).
+.br
+.RS
+% task ls
+
+ID Project Pri Description
+ 3 Family      Send John a birthday card
+ 2 Wedding     Reserve a rental car
+ 1 Wedding     Book plane ticket
+
+% task 1 priority:H
+% task 2 prior:M
+% task 3 pr:H
+Ambiguous attribute 'pr' - could be either of project, priority
+% task 3 pri:H
+% task ls
+
+ID Project Pri Description
+ 3 Family  H   Send John a birthday card
+ 1 Wedding H   Book plane ticket
+ 2 Wedding M   Reserve a rental car
+.RE
+
+Notice that task supports the abbreviation of words such as priority, project. Priority can be abbreviated to pri, but not pr, because it is ambiguous. Now that tasks have been prioritized, you can see that the tasks are being sorted by priority, with the highest priority tasks at the top.
+
+These attributes can all be provided when the task is added, instead of applying them afterwards, as shown. The following command shows how to set all the attributes at once:
+.br
+.RS
+% task add project:Wedding priority:H Book plane ticket
+.RE
+
+The 'ls' command provides the least information for each task. The 'list' command provides more:
+.br
+.RS
+% task list
+
+ID Project Pri Due Active Age    Description
+ 3 Family  H              4 mins Send John a birthday card
+ 1 Wedding H              5 mins Book plane ticket
+ 2 Wedding M              5 mins Reserve a rental car
+.RE
+
+Notice that a task can have a due date, and can be active. The task lists are sorted by due date, then priority. Let's add due dates:
+.br
+.RS
+% task 3 due:6/25/2008
+% task 1 due:7/31/2008
+% task list
+
+ID Project Pri Due       Active Age    Description
+ 3 Family  H   6/25/2008        6 mins Send John a birthday card
+ 1 Wedding H   7/31/2008        7 mins Book plane ticket
+ 2 Wedding M                    7 mins Reserve a rental car
+.RE
+
+If today's date is 6/23/2008, then task 3 is due in 2 days. It will be colored yellow if your terminal supports color. To change this color, edit your .taskrc file, and change the line to one of these alternatives:
+.br
+.RS
+color.due=red
+color.due=on_blue
+color.due=red on_blue
+color.due=bold_red on_blue
+
+Where color is one of the following:
+
+black
+blue
+red
+green
+cyan
+magenta
+yellow
+white
+.RE
+
+All colors are specified in this way. Take a look in .taskrc for all the other color rules that you control.
+
+Tagging tasks is a good way to group them, aside from specifying a project. To add a tag to a task:
+.br
+.RS
+% task <id> +tag
+.RE
+
+The plus sign indicates that this is a tag. Any number of tags may be applied to a task, and then used for searching. Tags are just single words that are labels.
+.br
+.RS
+% task list
+
+ID Project Pri Due       Active Age    Description
+ 3 Family  H   6/25/2008        8 mins Send John a birthday card
+ 1 Wedding H   7/31/2008        9 mins Book plane ticket
+ 2 Wedding M                    9 mins Reserve a rental car
+
+% task 1 +phone
+% task 2 +phone
+% task 3 +shopping
+% task 3 +john
+
+% task list +phone
+
+ID Project Pri Due       Active Age    Description
+ 1 Wedding H   7/31/2008        9 mins Book plane ticket
+ 2 Wedding M                    9 mins Reserve a rental car
+.RE
+
+To remove a tag from a task, use the minus sign:
+.br
+.RS
+% task 3 -john
+.RE
 
 .SH Advanced usage of task
 Advanced usage of task
