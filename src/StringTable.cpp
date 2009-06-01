@@ -29,6 +29,7 @@
 #include <sstream>
 #include <text.h>
 #include <util.h>
+#include <stdlib.h>
 #include "StringTable.h"
 
 ////////////////////////////////////////////////////////////////////////////////

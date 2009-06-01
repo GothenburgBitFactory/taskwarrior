@@ -26,6 +26,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <pwd.h>
+#include <stdlib.h>
+#include <string.h>
 #include "Context.h"
 #include "text.h"
 #include "util.h"

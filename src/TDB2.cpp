@@ -27,7 +27,7 @@
 
 #include <iostream>
 #include <sstream>
-#include <string>
+#include <string.h>
 #include <sys/file.h>
 #include "text.h"
 #include "util.h"
