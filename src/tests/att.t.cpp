@@ -30,7 +30,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (38);
+  UnitTest t (37);
 
   Att a1 ("name", "value");
   t.is (a1.name (), "name", "Att::Att (name, value), Att.name");
@@ -145,22 +145,19 @@ int main (int argc, char** argv)
   good = true;
   try {a7.parse (n);} catch (...) {good = false;}
   t.ok (good, "Att::parse (name:\"value)");
-  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 -> name:\"value\"");
+  t.is (a7.composeF4 (), "name:\"&quot;value\"", "Att::composeF4 -> name:\"&quot;value\"");
 
   n = Nibbler ("name:value\"");
   good = true;
   try {a7.parse (n);} catch (...) {good = false;}
   t.ok (good, "Att::parse (name:value\")");
-  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 -> name:\"value\"");
+  t.is (a7.composeF4 (), "name:\"value&quot;\"", "Att::composeF4 -> name:\"value&quot;\"");
 
   n = Nibbler ("name:val\"ue");
   good = true;
   try {a7.parse (n);} catch (...) {good = false;}
   t.ok (good, "Att::parse (name:val\"ue)");
-  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 -> name:\"value\"");
-
-  n = Nibbler ("name:\"\"va\"\"\"\"\"lu\"\"\"e\"\"");
-  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 (name:\"\"va\"\"\"\"\"lu\"\"\"e\"\")");
+  t.is (a7.composeF4 (), "name:\"val&quot;ue\"", "Att::composeF4 -> name:\"val&quot;ue\"");
 
   n = Nibbler ("name\"");
   good = true;

@@ -36,9 +36,7 @@ class Record : public std::map <std::string, Att>
 {
 public:
   Record ();                         // Default constructor
-  Record (const Record&);            // Copy constructor
   Record (const std::string&);       // Copy constructor
-  Record& operator= (const Record&); // Assignment operator
   virtual ~Record ();                // Destructor
 
   std::string composeF4 ();

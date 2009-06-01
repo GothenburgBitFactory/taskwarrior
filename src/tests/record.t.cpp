@@ -30,56 +30,52 @@
 #include <test.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-Record parseRecord (const std::string& input)
-{
-  try
-  {
-    Record r (input);
-    return r;
-  }
-
-  catch (std::string& e)
-  {
-    std::cout << "# Exception: " << e << std::endl;
-  }
-
-  catch (...)
-  {
-    std::cout << "# Exception!" << std::endl;
-  }
-
-  return Record ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (4);
+  UnitTest t (11);
 
   // (blank)
-  Record record = parseRecord ("");
-  t.is (record.size (), (size_t)0, "Record (blank)");
+  bool good = true;
+  Record record;
+
+  try {record = Record ("");}
+  catch (std::string& e){t.diag (e); good = false;}
+  t.notok (good, "Record::Record ('')");
 
   // []
-  record = parseRecord ("[]");
-  t.is (record.size (), (size_t)0, "Record []");
+  good = true;
+  try {record = Record ("[]");}
+  catch (std::string& e){t.diag (e); good = false;}
+  t.notok (good, "Record::Record ('[]')");
+
+  // [name:value]
+  good = true;
+  try {record = Record ("[name:value]");}
+  catch (std::string& e){t.diag (e); good = false;}
+  t.ok (good, "Record::Record ('[name:value]')");
+  t.is (record.get ("name"), "value", "name=value");
 
   // [name:"value"]
-  record = parseRecord ("[name:\"value\"]");
-  t.is (record.size (), (size_t)1, "Record [name:value]");
-  if (record.size () == 1)
-  {
-    Att a = record["name"];
-    t.is (a.name (), "name", "Record [name:value] -> 'name'");
-  }
-  else
-  {
-    t.fail ("Record [name:value] -> 'name'");
-  }
+  good = true;
+  try {record = Record ("[name:\"value\"]");}
+  catch (std::string& e){t.diag (e); good = false;}
+  t.ok (good, "Record::Record ('[name:\"value\"]')");
+  t.is (record.get ("name"), "value", "name=value");
 
-  // TODO [name:"value"]
-  // TODO [name:"one two"]
-  // TODO [one:two three:four]
+  // [name:"one two"]
+  good = true;
+  try {record = Record ("[name:\"one two\"]");}
+  catch (std::string& e){t.diag (e); good = false;}
+  t.ok (good, "Record::Record ('[name:\"one two\"]')");
+  t.is (record.get ("name"), "one two", "name=one two");
+
+  // [one:two three:four]
+  good = true;
+  try {record = Record ("[one:\"two\" three:\"four\"]");}
+  catch (std::string& e){t.diag (e); good = false;}
+  t.ok (good, "Record::Record ('[one:\"two\" three:\"four\"]')");
+  t.is (record.get ("one"), "two", "one=two");
+  t.is (record.get ("three"), "four", "three=four");
 
   return 0;
 }

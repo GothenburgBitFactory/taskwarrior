@@ -38,22 +38,9 @@ Record::Record ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Record::Record (const Record& other)
-{
-  throw std::string ("unimplemented Record::Record");
-  *this = other;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Record::Record (const std::string& input)
 {
   parse (input);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Record& Record::operator= (const Record& other)
-{
-  return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,9 +67,9 @@ std::string Record::composeF4 ()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// start --> name --> : --> " --> value --> " --> end
-//            ^                                |
-//            +------------- \s <--------------+
+// [ --> start --> name --> : --> " --> value --> " --> ] --> end
+//                   ^                                |
+//                   +------------- \s <--------------+
 //
 void Record::parse (const std::string& input)
 {
@@ -93,13 +80,15 @@ void Record::parse (const std::string& input)
       n.skip     (']')       &&
       n.depleted ())
   {
-    Nibbler nl (line);
+    if (line.length () == 0)
+      throw std::string ("Empty FF4 record");
 
+    Nibbler nl (line);
     Att a;
-    while (a.parse (nl))
+    while (!nl.depleted () && a.parse (nl))
     {
-      nl.skip (' ');
       (*this)[a.name ()] = a;
+      nl.skip (' ');
     }
 
     std::string remainder;

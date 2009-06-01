@@ -114,19 +114,16 @@ bool Att::parse (Nibbler& n)
 
     if (n.skip (':'))
     {
-      if (n.getQuoted ('"', mValue))
-        return true;
-
-      // This is here to tolerate unquoted values.
+      // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
-      if (n.getUntil (' ', mValue))
+      if (n.getQuoted ('"', mValue) ||
+          n.getUntil  (' ', mValue))
       {
-        dequote (mValue);
         decode (mValue);
         return true;
       }
-
-      throw std::string ("Missing attribute value");
+      else
+        throw std::string ("Missing attribute value");
     }
     else
       throw std::string ("Missing : after attribute name");
