@@ -1,10 +1,11 @@
 PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
-          parse.t seq.t att.t mod.t stringtable.t record.t nibbler.t # subst.t
+          parse.t seq.t att.t mod.t stringtable.t record.t nibbler.t subst.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib
-OBJECTS = ../TDB.o ../T.o ../parse.o ../text.o ../Date.o ../Duration.o         \
-          ../util.o ../Config.o ../Sequence.o ../Att.o ../Record.o ../Mod.o    \
-          ../StringTable.o ../Subst.o ../Nibbler.o
+OBJECTS = ../TDB.o ../TDB2.o ../T.o ../T2.o ../parse.o ../text.o ../Date.o     \
+          ../Duration.o ../util.o ../Config.o ../Sequence.o ../Att.o           \
+          ../Record.o ../Mod.o ../StringTable.o ../Subst.o ../Nibbler.o        \
+          ../Filter.o ../Location.o
 
 all: $(PROJECT)
 

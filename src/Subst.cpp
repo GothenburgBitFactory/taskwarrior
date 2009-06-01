@@ -103,10 +103,54 @@ bool Subst::parse (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Subst::apply (Record& record) const
+void Subst::apply (
+  std::string& description,
+  std::vector <Att>& annotations) const
 {
-  // TODO Apply /mFrom/mTo/mGlobal to record.get ("description")
-  // TODO Apply /mFrom/mTo/mGlobal to record.get ("annotation...")
+  if (mFrom != "")
+  {
+    std::string::size_type pattern;
+
+    if (mGlobal)
+    {
+      // Perform all subs on description.
+      while ((pattern = description.find (mFrom)) != std::string::npos)
+        description.replace (pattern, mFrom.length (), mTo);
+
+      // Perform all subs on annotations.
+      std::vector <Att>::iterator i;
+      for (i = annotations.begin (); i != annotations.end (); ++i)
+      {
+        std::string description = i->value ();
+        while ((pattern = description.find (mFrom)) != std::string::npos)
+        {
+          description.replace (pattern, mFrom.length (), mTo);
+          i->value (description);
+        }
+      }
+    }
+    else
+    {
+      // Perform first description substitution.
+      if ((pattern = description.find (mFrom)) != std::string::npos)
+        description.replace (pattern, mFrom.length (), mTo);
+
+      // Failing that, perform the first annotation substitution.
+      else
+      {
+        std::vector <Att>::iterator i;
+        for (i = annotations.begin (); i != annotations.end (); ++i)
+        {
+          std::string description = i->value ();
+          if ((pattern = description.find (mFrom)) != std::string::npos)
+          {
+            description.replace (pattern, mFrom.length (), mTo);
+            break;
+          }
+        }
+      }
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

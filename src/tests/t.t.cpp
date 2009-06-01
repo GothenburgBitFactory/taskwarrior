@@ -32,7 +32,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest test (10);
+  UnitTest test (9);
 
   T t;
   std::string s = t.compose ();
@@ -88,7 +88,6 @@ int main (int argc, char** argv)
   std::string format = t.compose ();
   test.is (format.substr (36, 20), " - [foo] [bar:baz] [", "compose tag, attribute");
   test.is (format.substr (66, 16), ":\"woof\"] sample\n",  "compose annotation");
-  test.is (t.getAnnotationCount (), 1,                     "annotation count");
 
   return 0;
 }

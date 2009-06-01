@@ -58,7 +58,6 @@ public:
 
   const std::string getDescription () const            { return mDescription; }
   void setDescription (const std::string& description) { mDescription = description; }
-  int getAnnotationCount () const                      { return mAnnotations.size (); }
 
   void getSubstitution (std::string&, std::string&, bool&) const;
   void setSubstitution (const std::string&, const std::string&, bool);

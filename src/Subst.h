@@ -28,7 +28,7 @@
 #define INCLUDED_SUBST
 
 #include <string>
-#include <Record.h>
+#include "Att.h"
 
 class Subst
 {
@@ -40,7 +40,7 @@ public:
   ~Subst ();                       // Destructor
 
   bool parse (const std::string&);
-  void apply (Record&) const;
+  void apply (std::string&, std::vector <Att>&) const;
 
 public:
   std::string mFrom;

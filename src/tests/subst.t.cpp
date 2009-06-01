@@ -24,7 +24,7 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#include <T.h>
+#include <T2.h>
 #include <Subst.h>
 #include <test.h>
 
@@ -33,14 +33,18 @@ int main (int argc, char** argv)
 {
   UnitTest t (2);
 
-  T task;
+  T2 task;
   task.set ("description", "one two three four");
 
   Subst s;
   if (s.parse ("/two/TWO/"))
   {
-    s.apply (task);
-    t.is (task.get ("description"), "one TWO three four", "single word subst");
+    std::string description = task.get ("description");
+    std::vector <Att> annotations;
+    task.getAnnotations (annotations);
+
+    s.apply (description, annotations);
+    t.is (description, "one TWO three four", "single word subst");
   }
   else
   {
@@ -49,8 +53,12 @@ int main (int argc, char** argv)
 
   if (s.parse ("/e /E /g"))
   {
-    s.apply (task);
-    t.is (task.get ("description"), "onE TWO threE four", "multiple word subst");
+    std::string description = task.get ("description");
+    std::vector <Att> annotations;
+    task.getAnnotations (annotations);
+
+    s.apply (description, annotations);
+    t.is (description, "onE two threE four", "multiple word subst");
   }
   else
   {

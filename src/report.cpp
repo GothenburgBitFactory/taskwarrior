@@ -2145,7 +2145,9 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
 
     descLength += it->getDescription ().length ();
 
-    annotationsT += it->getAnnotationCount ();
+    std::map <time_t, std::string> annotations;
+    it->getAnnotations (annotations);
+    annotationsT += annotations.size ();
 
     std::vector <std::string> tags;
     it->getTags (tags);

@@ -29,41 +29,37 @@
 
 #include <string>
 #include "Record.h"
+#include "Subst.h"
+#include "Sequence.h"
 
 class T2 : public Record
 {
 public:
-  T2 ();                    // Default constructor
-  T2 (const std::string&);  // Parse
+  T2 ();                     // Default constructor
+  T2 (const std::string&);   // Parse
   T2& operator= (const T2&); // Assignment operator
-  ~T2 ();                   // Destructor
+  ~T2 ();                    // Destructor
 
   void legacyParse (const std::string&);
-  std::string composeF4 ();
   std::string composeCSV ();
 
+  // Status values.
+  enum status {pending, completed, deleted, recurring};
 
-  // TODO Series of helper functions.
-//  enum status   {pending, completed, deleted, recurring};
+  // Public data.
+  Sequence sequence;
+  Subst    subst;
+
+  // Series of helper functions.
+  int getId () const                                   { return mId; }
+  void setId (int id)                                  { mId = id; sequence.push_back (id); }
 
 /*
-  std::string getUUID () const                         { return mUUID; }
-  void setUUID (const std::string& uuid)               { mUUID = uuid; }
-
-  int getId () const                                   { return mId; }
-  void setId (int id)                                  { mId = id; mSequence.push_back (id); }
   std::vector <int> getAllIds () const                 { return mSequence; }
   void addId (int id)                                  { if (mId == 0) mId = id; mSequence.push_back (id); }
 
   status getStatus () const                            { return mStatus; }
   void setStatus (status s)                            { mStatus = s; }
-
-  const std::string getDescription () const            { return mDescription; }
-  void setDescription (const std::string& description) { mDescription = description; }
-  int getAnnotationCount () const                      { return mAnnotations.size (); }
-
-  void getSubstitution (std::string&, std::string&, bool&) const;
-  void setSubstitution (const std::string&, const std::string&, bool);
 
   bool hasTag (const std::string&) const;
   void getRemoveTags (std::vector<std::string>&); // SPECIAL
@@ -74,40 +70,27 @@ public:
   void addTags (const std::vector <std::string>&);
   void removeTag (const std::string&);
   void removeTags ();
-
-  void getAttributes (std::map<std::string, std::string>&);
-  const std::string getAttribute (const std::string&);
-  void setAttribute (const std::string&, const std::string&);
-  void removeAttribute (const std::string&);
-
-  void getAnnotations (std::map <time_t, std::string>&) const;
-  void setAnnotations (const std::map <time_t, std::string>&);
-  void addAnnotation (const std::string&);
-
-  const std::string compose () const;
-  const std::string composeCSV ();
-  void parse (const std::string&);
 */
+
+  void getAnnotations (std::vector <Att>&) const;
+  void setAnnotations (const std::vector <Att>&);
+  void addAnnotation (const std::string&);
 
   bool validate () const;
 
 private:
+/*
   int determineVersion (const std::string&);
+*/
 
 private:
 /*
   status                             mStatus;
-  std::string                        mUUID;
+*/
   int                                mId;
-  std::vector <int>                  mSequence;
-  std::string                        mDescription;
+/*
   std::vector<std::string>           mTags;
   std::vector<std::string>           mRemoveTags;
-  std::map<std::string, std::string> mAttributes;
-  std::string                        mFrom;
-  std::string                        mTo;
-  bool                               mGlobal;
-  std::map <time_t, std::string>     mAnnotations;
 */
 };
 

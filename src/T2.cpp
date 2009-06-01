@@ -25,22 +25,33 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
 #include <string>
 #include "Nibbler.h"
 #include "T2.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 T2::T2 ()
 {
-/*
-  mUUID = uuid ();
-*/
+  // Each new task gets a uuid.
+  set ("uuid", uuid ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Attempt an FF4 parse first, using Record::parse, and in the event of an error
+// try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
 T2::T2 (const std::string& input)
 {
-  parse (input);
+  try
+  {
+    parse (input);
+  }
+
+  catch (std::string& e)
+  {
+    legacyParse (input);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +60,7 @@ T2& T2::operator= (const T2& other)
   throw std::string ("unimplemented T2::operator=");
   if (this != &other)
   {
-//    mOne = other.mOne;
+    mId = other.mId;
   }
 
   return *this;
@@ -61,16 +72,9 @@ T2::~T2 ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Support FF2, FF3.
 void T2::legacyParse (const std::string& input)
 {
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// [name:value, name:"value",name:[name:value,name:value]]
-std::string T2::composeF4 ()
-{
-  throw std::string ("unimplemented T2::composeF4");
-  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +82,43 @@ std::string T2::composeCSV ()
 {
   throw std::string ("unimplemented T2::composeCSV");
   return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void T2::getAnnotations (std::vector <Att>& annotations) const
+{
+  annotations.clear ();
+
+  Record::const_iterator ci;
+  for (ci = this->begin (); ci != this->end (); ++ci)
+    if (ci->first.substr (0, 11) == "annotation_")
+      annotations.push_back (ci->second);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void T2::setAnnotations (const std::vector <Att>& annotations)
+{
+  // Erase old annotations.
+  Record::iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+    if (i->first.substr (0, 11) == "annotation_")
+      this->erase (i);
+
+  std::vector <Att>::const_iterator ci;
+  for (ci = annotations.begin (); ci != annotations.end (); ++ci)
+    (*this)[ci->name ()] = *ci;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The timestamp is part of the name:
+//    annotation_1234567890:"..."
+//
+void T2::addAnnotation (const std::string& description)
+{
+  std::stringstream s;
+  s << "annotation_" << time (NULL);
+
+  (*this)[s.str ()] = Att (s.str (), description);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
