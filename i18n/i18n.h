@@ -76,6 +76,25 @@
 #define ATT_MASK                310
 #define ATT_IMASK               311
 
+#define ATT_MOD_BEFORE          350
+#define ATT_MOD_AFTER           351
+#define ATT_MOD_NOT             352
+#define ATT_MOD_NONE            353
+#define ATT_MOD_ANY             354
+#define ATT_MOD_SYNTH           355
+#define ATT_MOD_UNDER           356
+#define ATT_MOD_OVER            357
+#define ATT_MOD_FIRST           358
+#define ATT_MOD_LAST            359
+#define ATT_MOD_THIS            360
+#define ATT_MOD_NEXT            361
+#define ATT_MOD_IS              362
+#define ATT_MOD_ISNT            363
+#define ATT_MOD_HAS             364
+#define ATT_MOD_HASNT           365
+#define ATT_MOD_STARTSWITH      366
+#define ATT_MOD_ENDSWITH        367
+
 // 4xx Columns
 
 // 5xx Colors

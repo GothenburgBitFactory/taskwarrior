@@ -57,6 +57,26 @@
 310 mask
 311 imask
 
+# 35x Attribute modifiers
+350 before
+351 after
+352 not
+353 none
+354 any
+355 synth
+356 under
+357 over
+358 first
+359 last
+360 this
+361 next
+362 is
+363 isnt
+364 has
+365 hasnt
+366 startswith
+367 endswith
+
 # 4xx Columns
 
 # 5xx Colors

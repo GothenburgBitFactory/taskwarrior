@@ -29,7 +29,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 Mod::Mod ()
-: std::string ("")
+: std::string ("") // i18n: no
 {
 }
 
@@ -38,7 +38,7 @@ Mod::Mod (const char* other)
 : std::string (other)
 {
   if (!valid ())
-    throw std::string ("Unrecognized modifier '") + other + "'";
+    throw std::string ("Unrecognized modifier '") + other + "'"; // i18n: TODO
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,7 @@ Mod::Mod (const std::string& other)
 : std::string (other)
 {
   if (!valid ())
-    throw std::string ("Unrecognized modifier '") + other + "'";
+    throw std::string ("Unrecognized modifier '") + other + "'"; // i18n: TODO
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,17 +57,17 @@ Mod::~Mod ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Mod::valid ()
 {
-  if (*this == "before"     || *this == "after"    ||
-      *this == "not"        ||
-      *this == "none"       || *this == "any"      ||
-      *this == "synth"      ||
-      *this == "under"      || *this == "over"     ||
-      *this == "first"      || *this == "last"     ||
-      *this == "this"       ||
-      *this == "next"       ||
-      *this == "is"         || *this == "isnt"     ||
-      *this == "has"        || *this == "hasnt"    ||
-      *this == "startswith" || *this == "endswith")
+  if (*this == "before"     || *this == "after"    ||   // i18n: TODO
+      *this == "not"        ||                          // i18n: TODO
+      *this == "none"       || *this == "any"      ||   // i18n: TODO
+      *this == "synth"      ||                          // i18n: TODO
+      *this == "under"      || *this == "over"     ||   // i18n: TODO
+      *this == "first"      || *this == "last"     ||   // i18n: TODO
+      *this == "this"       ||                          // i18n: TODO
+      *this == "next"       ||                          // i18n: TODO
+      *this == "is"         || *this == "isnt"     ||   // i18n: TODO
+      *this == "has"        || *this == "hasnt"    ||   // i18n: TODO
+      *this == "startswith" || *this == "endswith")     // i18n: TODO
     return true;
 
   return false;
@@ -77,7 +77,7 @@ bool Mod::valid ()
 bool Mod::eval (const Mod& other)
 {
   // No modifier means automatic pass.
-  if (*this == "")
+  if (*this == "") // i18n: no
     return true;
 
   // TODO before
@@ -93,10 +93,10 @@ bool Mod::eval (const Mod& other)
   // TODO this
   // TODO next
 
-  if (*this == ".is")
+  if (*this == "is")    // i18n: TODO
     return *this == other ? true : false;
 
-  if (*this == ".isnt")
+  if (*this == "isnt")  // i18n: TODO
     return *this != other ? true : false;
 
   // TODO has
