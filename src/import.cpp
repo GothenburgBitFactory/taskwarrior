@@ -35,6 +35,8 @@
 #include "util.h"
 #include "task.h"
 
+extern Context context;
+
 ////////////////////////////////////////////////////////////////////////////////
 enum fileType
 {
@@ -159,19 +161,19 @@ static fileType determineFileType (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void decorateTask (T& task, Config& conf)
+static void decorateTask (T& task)
 {
   char entryTime[16];
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
   task.setAttribute ("entry", entryTime);
 
   // Override with default.project, if not specified.
-  std::string defaultProject = conf.get ("default.project", "");
+  std::string defaultProject = context.config.get ("default.project", "");
   if (task.getAttribute ("project") == "" && defaultProject  != "")
     task.setAttribute ("project", defaultProject);
 
   // Override with default.priority, if not specified.
-  std::string defaultPriority = conf.get ("default.priority", "");
+  std::string defaultPriority = context.config.get ("default.priority", "");
   if (task.getAttribute ("priority") == "" &&
       defaultPriority                != "" &&
       validPriority (defaultPriority))
@@ -181,7 +183,6 @@ static void decorateTask (T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTask_1_4_3 (
   TDB& tdb,
-  Config& conf,
   const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
@@ -337,7 +338,6 @@ static std::string importTask_1_4_3 (
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTask_1_5_0 (
   TDB& tdb,
-  Config& conf,
   const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
@@ -498,7 +498,6 @@ static std::string importTask_1_5_0 (
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTask_1_6_0 (
   TDB& tdb,
-  Config& conf,
   const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
@@ -659,7 +658,6 @@ static std::string importTask_1_6_0 (
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTaskCmdLine (
   TDB& tdb,
-  Config& conf,
   const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
@@ -676,8 +674,8 @@ static std::string importTaskCmdLine (
 
       T task;
       std::string command;
-      parse (args, command, task, conf);
-      handleAdd (tdb, task, conf);
+      parse (args, command, task);
+      handleAdd (tdb, task);
     }
 
     catch (...)
@@ -707,7 +705,6 @@ static std::string importTaskCmdLine (
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTodoSh_2_0 (
   TDB& tdb,
-  Config& conf,
   const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
@@ -782,8 +779,8 @@ static std::string importTodoSh_2_0 (
 
       T task;
       std::string command;
-      parse (args, command, task, conf);
-      decorateTask (task, conf);
+      parse (args, command, task);
+      decorateTask (task);
 
       if (isPending)
       {
@@ -829,7 +826,6 @@ static std::string importTodoSh_2_0 (
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importText (
   TDB& tdb,
-  Config& conf,
   const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
@@ -856,8 +852,8 @@ static std::string importText (
 
         T task;
         std::string command;
-        parse (args, command, task, conf);
-        decorateTask (task, conf);
+        parse (args, command, task);
+        decorateTask (task);
 
         if (! tdb.addT (task))
           failed.push_back (*it);
@@ -891,7 +887,6 @@ static std::string importText (
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importCSV (
   TDB& tdb,
-  Config& conf,
   const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
@@ -921,7 +916,7 @@ static std::string importCSV (
     std::string name = lowerCase (trim (unquoteText (trim (headings[h]))));
 
     // If there is a mapping for the field, use the value.
-    if (name == conf.get ("import.synonym.id") ||
+    if (name == context.config.get ("import.synonym.id") ||
         name == "id" ||
         name == "#" ||
         name == "sequence" ||
@@ -930,7 +925,7 @@ static std::string importCSV (
       mapping["id"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.uuid") ||
+    else if (name == context.config.get ("import.synonym.uuid") ||
              name == "uuid" ||
              name == "guid" ||
              name.find ("unique") != std::string::npos)
@@ -938,7 +933,7 @@ static std::string importCSV (
       mapping["uuid"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.status") ||
+    else if (name == context.config.get ("import.synonym.status") ||
              name == "status" ||
              name == "condition" ||
              name == "state")
@@ -946,7 +941,7 @@ static std::string importCSV (
       mapping["status"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.tags") ||
+    else if (name == context.config.get ("import.synonym.tags") ||
              name == "tags" ||
              name.find ("categor") != std::string::npos ||
              name.find ("tag") != std::string::npos)
@@ -954,7 +949,7 @@ static std::string importCSV (
       mapping["tags"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.entry") ||
+    else if (name == context.config.get ("import.synonym.entry") ||
              name == "entry" ||
              name.find ("added") != std::string::npos ||
              name.find ("created") != std::string::npos ||
@@ -963,7 +958,7 @@ static std::string importCSV (
       mapping["entry"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.start") ||
+    else if (name == context.config.get ("import.synonym.start") ||
              name == "start" ||
              name.find ("began") != std::string::npos ||
              name.find ("begun") != std::string::npos ||
@@ -972,21 +967,21 @@ static std::string importCSV (
       mapping["start"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.due") ||
+    else if (name == context.config.get ("import.synonym.due") ||
              name == "due" ||
              name.find ("expected") != std::string::npos)
     {
       mapping["due"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.recur") ||
+    else if (name == context.config.get ("import.synonym.recur") ||
              name == "recur" ||
              name == "frequency")
     {
       mapping["recur"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.end") ||
+    else if (name == context.config.get ("import.synonym.end") ||
              name == "end" ||
              name == "done" ||
              name.find ("complete") != std::string::npos)
@@ -994,14 +989,14 @@ static std::string importCSV (
       mapping["end"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.project") ||
+    else if (name == context.config.get ("import.synonym.project") ||
              name == "project" ||
              name.find ("proj") != std::string::npos)
     {
       mapping["project"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.priority") ||
+    else if (name == context.config.get ("import.synonym.priority") ||
              name == "priority" ||
              name == "pri" ||
              name.find ("importan") != std::string::npos)
@@ -1009,7 +1004,7 @@ static std::string importCSV (
       mapping["priority"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.fg") ||
+    else if (name == context.config.get ("import.synonym.fg") ||
              name.find ("fg")         != std::string::npos ||
              name.find ("foreground") != std::string::npos ||
              name.find ("color")      != std::string::npos)
@@ -1017,14 +1012,14 @@ static std::string importCSV (
       mapping["fg"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.bg") ||
+    else if (name == context.config.get ("import.synonym.bg") ||
              name == "bg" ||
              name.find ("background") != std::string::npos)
     {
       mapping["bg"] = (int)h;
     }
 
-    else if (name == conf.get ("import.synonym.description") ||
+    else if (name == context.config.get ("import.synonym.description") ||
              name.find ("desc")   != std::string::npos ||
              name.find ("detail") != std::string::npos ||
              name.find ("task")   != std::string::npos ||
@@ -1132,7 +1127,7 @@ static std::string importCSV (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleImport (TDB& tdb, T& task, Config& conf)
+std::string handleImport (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -1187,13 +1182,13 @@ std::string handleImport (TDB& tdb, T& task, Config& conf)
     // Determine which type it might be, then attempt an import.
     switch (type)
     {
-    case task_1_4_3:    out << importTask_1_4_3  (tdb, conf, lines); break;
-    case task_1_5_0:    out << importTask_1_5_0  (tdb, conf, lines); break;
-    case task_1_6_0:    out << importTask_1_6_0  (tdb, conf, lines); break;
-    case task_cmd_line: out << importTaskCmdLine (tdb, conf, lines); break;
-    case todo_sh_2_0:   out << importTodoSh_2_0  (tdb, conf, lines); break;
-    case csv:           out << importCSV         (tdb, conf, lines); break;
-    case text:          out << importText        (tdb, conf, lines); break;
+    case task_1_4_3:    out << importTask_1_4_3  (tdb, lines); break;
+    case task_1_5_0:    out << importTask_1_5_0  (tdb, lines); break;
+    case task_1_6_0:    out << importTask_1_6_0  (tdb, lines); break;
+    case task_cmd_line: out << importTaskCmdLine (tdb, lines); break;
+    case todo_sh_2_0:   out << importTodoSh_2_0  (tdb, lines); break;
+    case csv:           out << importCSV         (tdb, lines); break;
+    case text:          out << importText        (tdb, lines); break;
     case not_a_clue:    /* to stop the compiler from complaining. */ break;
     }
   }

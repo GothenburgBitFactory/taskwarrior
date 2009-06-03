@@ -30,11 +30,14 @@
 #include <vector>
 #include <map>
 
+#include "Context.h"
 #include "Date.h"
 #include "Duration.h"
 #include "T.h"
 #include "text.h"
 #include "util.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // NOTE: These are static arrays only because there is no initializer list for
@@ -220,9 +223,9 @@ static bool isCommand (const std::string& candidate)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool validDate (std::string& date, Config& conf)
+bool validDate (std::string& date)
 {
-  Date test (date, conf.get ("dateformat", "m/d/Y"));
+  Date test (date, context.config.get ("dateformat", "m/d/Y"));
 
   char epoch[16];
   sprintf (epoch, "%d", (int) test.toEpoch ());
@@ -248,8 +251,7 @@ bool validPriority (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 static bool validAttribute (
   std::string& name,
-  std::string& value,
-  Config& conf)
+  std::string& value)
 {
   guess ("attribute", attributes, name);
   if (name != "")
@@ -258,10 +260,10 @@ static bool validAttribute (
       guess ("color", colors, value);
 
     else if (name == "due" && value != "")
-      validDate (value, conf);
+      validDate (value);
 
     else if (name == "until" && value != "")
-      validDate (value, conf);
+      validDate (value);
 
     else if (name == "priority")
     {
@@ -456,8 +458,7 @@ bool validDuration (std::string& input)
 void parse (
   std::vector <std::string>& args,
   std::string& command,
-  T& task,
-  Config& conf)
+  T& task)
 {
   command = "";
 
@@ -518,7 +519,7 @@ void parse (
           std::string name  = lowerCase (arg.substr (0, colon));
           std::string value = arg.substr (colon + 1, std::string::npos);
 
-          if (validAttribute (name, value, conf))
+          if (validAttribute (name, value))
           {
             if (name != "recur" || validDuration (value))
               task.setAttribute (name, value);
@@ -589,10 +590,10 @@ void parse (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void loadCustomReports (Config& conf)
+void loadCustomReports ()
 {
   std::vector <std::string> all;
-  conf.all (all);
+  context.config.all (all);
 
   foreach (i, all)
   {

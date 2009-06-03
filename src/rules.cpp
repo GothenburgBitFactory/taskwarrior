@@ -26,12 +26,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <stdlib.h>
-#include "Config.h"
+#include "Context.h"
 #include "Table.h"
 #include "Date.h"
 #include "T.h"
 #include "text.h"
 #include "util.h"
+
+extern Context context;
 
 static std::map <std::string, Text::color> gsFg;
 static std::map <std::string, Text::color> gsBg;
@@ -63,17 +65,17 @@ static void parseColorRule (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void initializeColorRules (Config& conf)
+void initializeColorRules ()
 {
   std::vector <std::string> ruleNames;
-  conf.all (ruleNames);
+  context.config.all (ruleNames);
   foreach (it, ruleNames)
   {
     if (it->substr (0, 6) == "color.")
     {
       Text::color fg;
       Text::color bg;
-      parseColorRule (conf.get (*it), fg, bg);
+      parseColorRule (context.config.get (*it), fg, bg);
       gsFg[*it] = fg;
       gsBg[*it] = bg;
     }
@@ -84,8 +86,7 @@ void initializeColorRules (Config& conf)
 void autoColorize (
   T& task,
   Text::color& fg,
-  Text::color& bg,
-  Config& conf)
+  Text::color& bg)
 {
   // Note: fg, bg already contain colors specifically assigned via command.
   // Note: These rules form a hierarchy - the last rule is King.
@@ -208,7 +209,7 @@ void autoColorize (
   {
     Date dueDate (::atoi (due.c_str ()));
     Date now;
-    Date then (now + conf.get ("due", 7) * 86400);
+    Date then (now + context.config.get ("due", 7) * 86400);
 
     // Overdue
     if (dueDate < now)

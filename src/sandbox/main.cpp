@@ -3,25 +3,26 @@
 #include <string>
 #include "Context.h"
 
+Context context;
+
 int main (int argc, char** argv)
 {
   try
   {
-    Context c;
-    c.initialize (argc, argv);
-//    c.run ();
+    context.initialize (argc, argv);
+//    context.run ();
 
 ////////////////////////////////////////////////////////////////////////////////
 
-    c.tdb.lock (c.config.get ("locking", true));
+    context.tdb.lock (context.config.get ("locking", true));
 
-    c.filter.push_back (Att ("priority", "L"));
+    context.filter.push_back (Att ("priority", "L"));
 
     std::vector <T2> tasks;
-    int quantity = c.tdb.load (tasks, c.filter);
-    std::cout << "# " << quantity << " <-- c.tdb.load" << std::endl;
+    int quantity = context.tdb.load (tasks, context.filter);
+    std::cout << "# " << quantity << " <-- context.tdb.load" << std::endl;
 
-    c.tdb.unlock ();
+    context.tdb.unlock ();
 
 ////////////////////////////////////////////////////////////////////////////////
 

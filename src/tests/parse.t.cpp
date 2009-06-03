@@ -29,6 +29,8 @@
 #include "text.h"
 #include "test.h"
 
+Context context;
+
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
@@ -37,13 +39,12 @@ int main (int argc, char** argv)
   std::vector <std::string> args;
   std::string command;
 
-  Config conf;
-  conf.set ("dateformat", "m/d/Y");
+  context.config.set ("dateformat", "m/d/Y");
 
   {
     T task;
     split (args, "add foo", ' ');
-    parse (args, command, task, conf);
+    parse (args, command, task);
     t.is (command,                "add", "(1) command found");
     t.is (task.getId (),          0,     "(1) zero id on add");
     t.is (task.getDescription (), "foo", "(1) correct description");
@@ -52,7 +53,7 @@ int main (int argc, char** argv)
   {
     T task;
     split (args, "delete 1,3-5,7", ' ');
-    parse (args, command, task, conf);
+    parse (args, command, task);
     std::vector <int> sequence = task.getAllIds ();
     t.is (sequence.size (), (size_t)5, "(2) sequence length");
     if (sequence.size () == 5)
@@ -76,7 +77,7 @@ int main (int argc, char** argv)
   {
     T task;
     split (args, "delete 1,2 3,4", ' ');
-    parse (args, command, task, conf);
+    parse (args, command, task);
     std::vector <int> sequence = task.getAllIds ();
     t.is (sequence.size (), (size_t)4, "(3) sequence length");
     if (sequence.size () == 4)
@@ -98,7 +99,7 @@ int main (int argc, char** argv)
   {
     T task;
     split (args, "1 There are 7 days in a week", ' ');
-    parse (args, command, task, conf);
+    parse (args, command, task);
     std::vector <int> sequence = task.getAllIds ();
     t.is (sequence.size (), (size_t)1, "(4) sequence length");
     if (sequence.size () == 1)
@@ -116,7 +117,7 @@ int main (int argc, char** argv)
     args.clear ();
     args.push_back ("1");
     args.push_back ("4-123 is back-ordered");
-    parse (args, command, task, conf);
+    parse (args, command, task);
     std::vector <int> sequence = task.getAllIds ();
     t.is (sequence.size (), (size_t)1, "(5) sequence length");
     if (sequence.size () == 1)

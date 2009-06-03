@@ -40,6 +40,8 @@
 #include "util.h"
 #include "task.h"
 
+extern Context context;
+
 ////////////////////////////////////////////////////////////////////////////////
 static std::string findValue (
   const std::string& text,
@@ -64,7 +66,6 @@ static std::string findValue (
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string findDate (
-  Config& conf,
   const std::string& text,
   const std::string& name)
 {
@@ -80,7 +81,7 @@ static std::string findDate (
 
       if (value != "")
       {
-        Date dt (value, conf.get ("dateformat", "m/d/Y"));
+        Date dt (value, context.config.get ("dateformat", "m/d/Y"));
         char epoch [16];
         sprintf (epoch, "%d", (int)dt.toEpoch ());
         return std::string (epoch);
@@ -107,7 +108,6 @@ static std::string formatStatus (T& task)
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string formatDate (
-  Config& conf,
   T& task,
   const std::string& attribute)
 {
@@ -115,14 +115,14 @@ static std::string formatDate (
   if (value.length ())
   {
     Date dt (::atoi (value.c_str ()));
-    value = dt.toString (conf.get ("dateformat", "m/d/Y"));
+    value = dt.toString (context.config.get ("dateformat", "m/d/Y"));
   }
 
   return value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string formatTask (Config& conf, T task)
+static std::string formatTask (T task)
 {
   std::stringstream before;
   before << "# The 'task edit <id>' command allows you to modify all aspects of a task" << std::endl
@@ -159,11 +159,11 @@ static std::string formatTask (Config& conf, T task)
          << "# The description field is allowed to wrap and use multiple lines.  Task"  << std::endl
          << "# will combine them."                                                      << std::endl
          << "  Description:       " << task.getDescription ()                           << std::endl
-         << "  Created:           " << formatDate (conf, task, "entry")                 << std::endl
-         << "  Started:           " << formatDate (conf, task, "start")                 << std::endl
-         << "  Ended:             " << formatDate (conf, task, "end")                   << std::endl
-         << "  Due:               " << formatDate (conf, task, "due")                   << std::endl
-         << "  Until:             " << formatDate (conf, task, "until")                 << std::endl
+         << "  Created:           " << formatDate (task, "entry")                       << std::endl
+         << "  Started:           " << formatDate (task, "start")                       << std::endl
+         << "  Ended:             " << formatDate (task, "end")                         << std::endl
+         << "  Due:               " << formatDate (task, "due")                         << std::endl
+         << "  Until:             " << formatDate (task, "until")                       << std::endl
          << "  Recur:             " << task.getAttribute ("recur")                      << std::endl
          << "  Parent:            " << task.getAttribute ("parent")                     << std::endl
          << "  Foreground color:  " << task.getAttribute ("fg")                         << std::endl
@@ -176,7 +176,7 @@ static std::string formatTask (Config& conf, T task)
   foreach (anno, annotations)
   {
     Date dt (anno->first);
-    before << "  Annotation:        " << dt.toString (conf.get ("dateformat", "m/d/Y"))
+    before << "  Annotation:        " << dt.toString (context.config.get ("dateformat", "m/d/Y"))
            << " "                     << anno->second                                   << std::endl;
   }
 
@@ -187,7 +187,7 @@ static std::string formatTask (Config& conf, T task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void parseTask (Config& conf, T& task, const std::string& after)
+static void parseTask (T& task, const std::string& after)
 {
   // project
   std::string value = findValue (after, "Project:");
@@ -245,7 +245,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
   }
 
   // entry
-  value = findDate (conf, after, "Created:");
+  value = findDate (after, "Created:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -261,7 +261,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
     throw std::string ("Cannot remove creation date");
 
   // start
-  value = findDate (conf, after, "Started:");
+  value = findDate (after, "Started:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -291,7 +291,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
   }
 
   // end
-  value = findDate (conf, after, "Ended:");
+  value = findDate (after, "Ended:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -319,7 +319,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
   }
 
   // due
-  value = findDate (conf, after, "Due:");
+  value = findDate (after, "Due:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -357,7 +357,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
   }
 
   // until
-  value = findDate (conf, after, "Until:");
+  value = findDate (after, "Until:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -496,7 +496,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
 // Introducing the Silver Bullet.  This feature is the catch-all fixative for
 // various other ills.  This is like opening up the hood and going in with a
 // wrench.  To be used sparingly.
-std::string handleEdit (TDB& tdb, T& task, Config& conf)
+std::string handleEdit (TDB& tdb, T& task)
 {
   std::stringstream out;
   std::vector <T> all;
@@ -506,7 +506,7 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
   foreach (seq, all)
   {
     // Check for file permissions.
-    std::string dataLocation = expandPath (conf.get ("data.location"));
+    std::string dataLocation = expandPath (context.config.get ("data.location"));
     if (access (dataLocation.c_str (), X_OK))
       throw std::string ("Your data.location directory is not writable.");
 
@@ -519,11 +519,11 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
     char* file = cpattern;
 
     // Format the contents, T -> text, write to a file.
-    std::string before = formatTask (conf, *seq);
+    std::string before = formatTask (*seq);
     spit (file, before);
 
     // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
-    std::string editor = conf.get ("editor", "");
+    std::string editor = context.config.get ("editor", "");
     char* peditor = getenv ("VISUAL");
     if (editor == "" && peditor) editor = std::string (peditor);
     peditor = getenv ("EDITOR");
@@ -558,7 +558,7 @@ ARE_THESE_REALLY_HARMFUL:
 
       try
       {
-        parseTask (conf, *seq, after);
+        parseTask (*seq, after);
         tdb.modifyT (*seq);
       }
 

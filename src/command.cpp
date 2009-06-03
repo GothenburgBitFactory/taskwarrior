@@ -44,8 +44,10 @@
 #include <ncurses.h>
 #endif
 
+extern Context context;
+
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAdd (TDB& tdb, T& task, Config& conf)
+std::string handleAdd (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -69,12 +71,12 @@ std::string handleAdd (TDB& tdb, T& task, Config& conf)
 
   // Override with default.project, if not specified.
   if (task.getAttribute ("project") == "")
-    task.setAttribute ("project", conf.get ("default.project", ""));
+    task.setAttribute ("project", context.config.get ("default.project", ""));
 
   // Override with default.priority, if not specified.
   if (task.getAttribute ("priority") == "")
   {
-    std::string defaultPriority = conf.get ("default.priority", "");
+    std::string defaultPriority = context.config.get ("default.priority", "");
     if (validPriority (defaultPriority))
       task.setAttribute ("priority", defaultPriority);
   }
@@ -90,7 +92,7 @@ std::string handleAdd (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleProjects (TDB& tdb, T& task, Config& conf)
+std::string handleProjects (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -114,14 +116,15 @@ std::string handleProjects (TDB& tdb, T& task, Config& conf)
     table.addColumn ("Project");
     table.addColumn ("Tasks");
 
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    if (context.config.get ("color", true) ||
+        context.config.get (std::string ("_forcecolor"), false))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
     }
 
     table.setColumnJustification (1, Table::right);
-    table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+    table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
     foreach (i, unique)
     {
@@ -130,9 +133,9 @@ std::string handleProjects (TDB& tdb, T& task, Config& conf)
       table.addCell (row, 1, i->second);
     }
 
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << unique.size ()
         << (unique.size () == 1 ? " project" : " projects")
         << std::endl;
@@ -145,7 +148,7 @@ std::string handleProjects (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleTags (TDB& tdb, T& task, Config& conf)
+std::string handleTags (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -168,12 +171,12 @@ std::string handleTags (TDB& tdb, T& task, Config& conf)
   }
 
   // Render a list of tag names from the map.
-  std::cout << optionalBlankLine (conf);
+  std::cout << optionalBlankLine ();
   foreach (i, unique)
     std::cout << i->first << std::endl;
 
   if (unique.size ())
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << unique.size ()
         << (unique.size () == 1 ? " tag" : " tags")
         << std::endl;
@@ -187,7 +190,7 @@ std::string handleTags (TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 // If a task is deleted, but is still in the pending file, then it may be
 // undeleted simply by changing it's status.
-std::string handleUndelete (TDB& tdb, T& task, Config& conf)
+std::string handleUndelete (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -225,7 +228,7 @@ std::string handleUndelete (TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 // If a task is done, but is still in the pending file, then it may be undone
 // simply by changing it's status.
-std::string handleUndo (TDB& tdb, T& task, Config& conf)
+std::string handleUndo (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -261,14 +264,14 @@ std::string handleUndo (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleVersion (Config& conf)
+std::string handleVersion ()
 {
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -301,11 +304,11 @@ std::string handleVersion (Config& conf)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Config variable");
   table.addColumn ("Value");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -320,10 +323,10 @@ std::string handleVersion (Config& conf)
   table.sortOn (0, Table::ascendingCharacter);
 
   std::vector <std::string> all;
-  conf.all (all);
+  context.config.all (all);
   foreach (i, all)
   {
-    std::string value = conf.get (*i);
+    std::string value = context.config.get (*i);
     if (value != "")
     {
       int row = table.addRow ();
@@ -334,11 +337,11 @@ std::string handleVersion (Config& conf)
 
   out << "Copyright (C) 2006 - 2009, P. Beckingham."
       << std::endl
-      << ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
            ? Text::colorize (Text::bold, Text::nocolor, PACKAGE)
            : PACKAGE)
       << " "
-      << ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
            ? Text::colorize (Text::bold, Text::nocolor, VERSION)
            : VERSION)
       << std::endl
@@ -407,12 +410,12 @@ std::string handleVersion (Config& conf)
         << std::endl;
   else
   {
-    if (conf.get ("data.location") == "")
+    if (context.config.get ("data.location") == "")
       out << "Configuration error: data.location not specified in .taskrc "
              "file."
           << std::endl;
 
-    if (access (expandPath (conf.get ("data.location")).c_str (), X_OK))
+    if (access (expandPath (context.config.get ("data.location")).c_str (), X_OK))
       out << "Configuration error: data.location contains a directory name"
              " that doesn't exist, or is unreadable."
           << std::endl;
@@ -422,7 +425,7 @@ std::string handleVersion (Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDelete (TDB& tdb, T& task, Config& conf)
+std::string handleDelete (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -443,7 +446,7 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
              << t->getDescription ()
              << "'?";
 
-    if (!conf.get (std::string ("confirmation"), false) || confirm (question.str ()))
+    if (!context.config.get (std::string ("confirmation"), false) || confirm (question.str ()))
     {
       // Check for the more complex case of a recurring task.  If this is a
       // recurring task, get confirmation to delete them all.
@@ -463,7 +466,7 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
               sibling->setAttribute ("end", endTime);
               tdb.modifyT (*sibling);
 
-              if (conf.get ("echo.command", true))
+              if (context.config.get ("echo.command", true))
                 out << "Deleting recurring task "
                     << sibling->getId ()
                     << " '"
@@ -496,7 +499,7 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
         t->setAttribute ("end", endTime);
         tdb.modifyT (*t);
 
-        if (conf.get ("echo.command", true))
+        if (context.config.get ("echo.command", true))
           out << "Deleting task "
               << t->getId ()
               << " '"
@@ -513,7 +516,7 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleStart (TDB& tdb, T& task, Config& conf)
+std::string handleStart (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -531,14 +534,14 @@ std::string handleStart (TDB& tdb, T& task, Config& conf)
 
       tdb.modifyT (*t);
 
-      if (conf.get ("echo.command", true))
+      if (context.config.get ("echo.command", true))
         out << "Started "
             << t->getId ()
             << " '"
             << t->getDescription ()
             << "'"
             << std::endl;
-      nag (tdb, task, conf);
+      nag (tdb, task);
     }
     else
     {
@@ -550,7 +553,7 @@ std::string handleStart (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleStop (TDB& tdb, T& task, Config& conf)
+std::string handleStop (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -565,7 +568,7 @@ std::string handleStop (TDB& tdb, T& task, Config& conf)
       t->removeAttribute ("start");
       tdb.modifyT (*t);
 
-      if (conf.get ("echo.command", true))
+      if (context.config.get ("echo.command", true))
         out << "Stopped " << t->getId () << " '" << t->getDescription () << "'" << std::endl;
     }
     else
@@ -578,7 +581,7 @@ std::string handleStop (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDone (TDB& tdb, T& task, Config& conf)
+std::string handleDone (TDB& tdb, T& task)
 {
   int count = 0;
   std::stringstream out;
@@ -608,7 +611,7 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
       if (!tdb.modifyT (*seq))
         throw std::string ("Could not mark task as completed.");
 
-      if (conf.get ("echo.command", true))
+      if (context.config.get ("echo.command", true))
         out << "Completed "
             << seq->getId ()
             << " '"
@@ -617,7 +620,7 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
             << std::endl;
 
       updateRecurrenceMask (tdb, all, *seq);
-      nag (tdb, *seq, conf);
+      nag (tdb, *seq);
 
       ++count;
     }
@@ -630,7 +633,7 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
           << std::endl;
   }
 
-  if (conf.get ("echo.command", true))
+  if (context.config.get ("echo.command", true))
     out << "Marked "
         << count
         << " task"
@@ -642,7 +645,7 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleExport (TDB& tdb, T& task, Config& conf)
+std::string handleExport (TDB& tdb, T& task)
 {
   std::stringstream output;
 
@@ -699,7 +702,7 @@ std::string handleExport (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleModify (TDB& tdb, T& task, Config& conf)
+std::string handleModify (TDB& tdb, T& task)
 {
   int count = 0;
   std::stringstream out;
@@ -746,14 +749,14 @@ std::string handleModify (TDB& tdb, T& task, Config& conf)
     }
   }
 
-  if (conf.get ("echo.command", true))
+  if (context.config.get ("echo.command", true))
     out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAppend (TDB& tdb, T& task, Config& conf)
+std::string handleAppend (TDB& tdb, T& task)
 {
   int count = 0;
   std::stringstream out;
@@ -783,7 +786,7 @@ std::string handleAppend (TDB& tdb, T& task, Config& conf)
         {
           tdb.modifyT (*other);
 
-          if (conf.get ("echo.command", true))
+          if (context.config.get ("echo.command", true))
             out << "Appended '"
                 << task.getDescription ()
                 << "' to task "
@@ -796,14 +799,14 @@ std::string handleAppend (TDB& tdb, T& task, Config& conf)
     }
   }
 
-  if (conf.get ("echo.command", true))
+  if (context.config.get ("echo.command", true))
     out << "Appended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDuplicate (TDB& tdb, T& task, Config& conf)
+std::string handleDuplicate (TDB& tdb, T& task)
 {
   int count = 0;
   std::stringstream out;
@@ -833,7 +836,7 @@ std::string handleDuplicate (TDB& tdb, T& task, Config& conf)
       if (!tdb.addT (dup))
         throw std::string ("Could not create new task.");
 
-      if (conf.get ("echo.command", true))
+      if (context.config.get ("echo.command", true))
         out << "Duplicated "
             << seq->getId ()
             << " '"
@@ -851,20 +854,20 @@ std::string handleDuplicate (TDB& tdb, T& task, Config& conf)
           << std::endl;
   }
 
-  if (conf.get ("echo.command", true))
+  if (context.config.get ("echo.command", true))
     out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleColor (Config& conf)
+std::string handleColor ()
 {
   std::stringstream out;
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
   {
-    out << optionalBlankLine (conf) << "Foreground" << std::endl
+    out << optionalBlankLine () << "Foreground" << std::endl
         << "           "
                 << Text::colorize (Text::bold,                   Text::nocolor, "bold")                   << "          "
                 << Text::colorize (Text::underline,              Text::nocolor, "underline")              << "          "
@@ -935,7 +938,7 @@ std::string handleColor (Config& conf)
         << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")               << "    "
                 << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")        << std::endl
 
-        << optionalBlankLine (conf);
+        << optionalBlankLine ();
   }
   else
   {
@@ -946,7 +949,7 @@ std::string handleColor (Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAnnotate (TDB& tdb, T& task, Config& conf)
+std::string handleAnnotate (TDB& tdb, T& task)
 {
   if (task.getDescription () == "")
     throw std::string ("Cannot apply a blank annotation.");
@@ -961,7 +964,7 @@ std::string handleAnnotate (TDB& tdb, T& task, Config& conf)
     t->addAnnotation (task.getDescription ());
     tdb.modifyT (*t);
 
-    if (conf.get ("echo.command", true))
+    if (context.config.get ("echo.command", true))
       out << "Annotated "
           << t->getId ()
           << " with '"

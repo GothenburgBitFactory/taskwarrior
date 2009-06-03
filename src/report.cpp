@@ -48,6 +48,8 @@
 #include <ncurses.h>
 #endif
 
+extern Context context;
+
 ////////////////////////////////////////////////////////////////////////////////
 void filterSequence (std::vector<T>& all, T& task)
 {
@@ -202,14 +204,14 @@ void filter (std::vector<T>& all, T& task)
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-std::string handleCompleted (TDB& tdb, T& task, Config& conf)
+std::string handleCompleted (TDB& tdb, T& task)
 {
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -222,18 +224,18 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
   tdb.completedT (tasks);
   filter (tasks, task);
 
-  initializeColorRules (conf);
+  initializeColorRules ();
 
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Done");
   table.addColumn ("Project");
   table.addColumn ("Description");
 
-  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-      conf.get (std::string ("fontunderline"), "true"))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -266,7 +268,7 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
     // All criteria match, so add refTask to the output table.
     int row = table.addRow ();
 
-    table.addCell (row, 0, end.toString (conf.get ("dateformat", "m/d/Y")));
+    table.addCell (row, 0, end.toString (context.config.get ("dateformat", "m/d/Y")));
     table.addCell (row, 1, refTask.getAttribute ("project"));
 
     std::string description = refTask.getDescription ();
@@ -276,25 +278,25 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
     foreach (anno, annotations)
     {
       Date dt (anno->first);
-      when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+      when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
       description += "\n" + when + " " + anno->second;
     }
     table.addCell (row, 2, description);
 
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg, conf);
+      autoColorize (refTask, fg, bg);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
     }
   }
 
   if (table.rowCount ())
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << table.rowCount ()
         << (table.rowCount () == 1 ? " task" : " tasks")
         << std::endl;
@@ -307,14 +309,14 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Display all information for the given task.
-std::string handleInfo (TDB& tdb, T& task, Config& conf)
+std::string handleInfo (TDB& tdb, T& task)
 {
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -334,13 +336,13 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
 
     Table table;
     table.setTableWidth (width);
-    table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+    table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
     table.addColumn ("Name");
     table.addColumn ("Value");
 
-    if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-        conf.get (std::string ("fontunderline"), "true"))
+    if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+        context.config.get (std::string ("fontunderline"), "true"))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
@@ -378,7 +380,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
     foreach (anno, annotations)
     {
       Date dt (anno->first);
-      when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+      when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
       description += "\n" + when + " " + anno->second;
     }
 
@@ -446,7 +448,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
       table.addCell (row, 0, "Due");
 
       Date dt (::atoi (due.c_str ()));
-      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+      due = dt.toString (context.config.get ("dateformat", "m/d/Y"));
       table.addCell (row, 1, due);
 
       if (due.length ())
@@ -455,12 +457,12 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
         Date nextweek = now + 7 * 86400;
         imminent = dt < nextweek ? true : false;
 
-        if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+        if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
         {
           if (overdue)
-            table.setCellFg (row, 1, Text::colorCode (conf.get ("color.overdue", "red")));
+            table.setCellFg (row, 1, Text::colorCode (context.config.get ("color.overdue", "red")));
           else if (imminent)
-            table.setCellFg (row, 1, Text::colorCode (conf.get ("color.due", "yellow")));
+            table.setCellFg (row, 1, Text::colorCode (context.config.get ("color.due", "yellow")));
         }
       }
     }
@@ -471,7 +473,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
       row = table.addRow ();
       table.addCell (row, 0, "Start");
       Date dt (::atoi (refTask.getAttribute ("start").c_str ()));
-      table.addCell (row, 1, dt.toString (conf.get ("dateformat", "m/d/Y")));
+      table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
     }
 
     // end
@@ -480,7 +482,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
       row = table.addRow ();
       table.addCell (row, 0, "End");
       Date dt (::atoi (refTask.getAttribute ("end").c_str ()));
-      table.addCell (row, 1, dt.toString (conf.get ("dateformat", "m/d/Y")));
+      table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
     }
 
     // tags ...
@@ -505,7 +507,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
     row = table.addRow ();
     table.addCell (row, 0, "Entered");
     Date dt (::atoi (refTask.getAttribute ("entry").c_str ()));
-    std::string entry = dt.toString (conf.get ("dateformat", "m/d/Y"));
+    std::string entry = dt.toString (context.config.get ("dateformat", "m/d/Y"));
 
     std::string age;
     std::string created = refTask.getAttribute ("entry");
@@ -535,7 +537,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
       table.addCell (row, 1, color);
     }
 
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
         << std::endl;
   }
@@ -550,7 +552,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
 // Project  Remaining  Avg Age  Complete  0%                  100%
 // A               12      13d       55%  XXXXXXXXXXXXX-----------
 // B              109   3d 12h       10%  XXX---------------------
-std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
+std::string handleReportSummary (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -615,8 +617,8 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Complete");
   table.addColumn ("0%                        100%");
 
-  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-      conf.get (std::string ("fontunderline"), "true"))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -631,7 +633,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   table.setColumnJustification (3, Table::right);
 
   table.sortOn (0, Table::ascendingCharacter);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
   int barWidth = 30;
   foreach (i, allProjects)
@@ -653,7 +655,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
       int completedBar = (c * barWidth) / (c + p);
 
       std::string bar;
-      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
       {
         bar = "\033[42m";
         for (int b = 0; b < completedBar; ++b)
@@ -682,9 +684,9 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << table.rowCount ()
         << (table.rowCount () == 1 ? " project" : " projects")
         << std::endl;
@@ -713,7 +715,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
 //
 // Make the "three" tasks a configurable number
 //
-std::string handleReportNext (TDB& tdb, T& task, Config& conf)
+std::string handleReportNext (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -725,12 +727,12 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
 
   // Restrict to matching subset.
   std::vector <int> matching;
-  gatherNextTasks (tdb, task, conf, pending, matching);
+  gatherNextTasks (tdb, task, pending, matching);
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -743,12 +745,12 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   tdb.pendingT (tasks);
   filter (tasks, task);
 
-  initializeColorRules (conf);
+  initializeColorRules ();
 
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
   table.addColumn ("Pri");
@@ -757,8 +759,8 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Age");
   table.addColumn ("Description");
 
-  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-      conf.get (std::string ("fontunderline"), "true"))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -808,7 +810,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
       }
 
       Date dt (::atoi (due.c_str ()));
-      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+      due = dt.toString (context.config.get ("dateformat", "m/d/Y"));
     }
 
     std::string active;
@@ -839,34 +841,34 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
     foreach (anno, annotations)
     {
       Date dt (anno->first);
-      when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+      when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
       description += "\n" + when + " " + anno->second;
     }
 
     table.addCell (row, 6, description);
 
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     {
       Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
       Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg, conf);
+      autoColorize (refTask, fg, bg);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
 
       if (fg == Text::nocolor)
       {
         if (overdue)
-          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
+          table.setCellFg (row, 3, Text::colorCode (context.config.get ("color.overdue", "red")));
         else if (imminent)
-          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
+          table.setCellFg (row, 3, Text::colorCode (context.config.get ("color.due", "yellow")));
       }
     }
   }
 
   if (table.rowCount ())
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << table.rowCount ()
         << (table.rowCount () == 1 ? " task" : " tasks")
         << std::endl;
@@ -899,7 +901,7 @@ time_t monthlyEpoch (const std::string& date)
   return 0;
 }
 
-std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
+std::string handleReportHistory (TDB& tdb, T& task)
 {
   std::stringstream out;
 
@@ -992,7 +994,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
 
   // Now build the table.
   Table table;
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Year");
   table.addColumn ("Month");
   table.addColumn ("Added");
@@ -1000,8 +1002,8 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
   table.addColumn ("Deleted");
   table.addColumn ("Net");
 
-  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-      conf.get (std::string ("fontunderline"), "true"))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1064,7 +1066,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
     }
 
     table.addCell (row, 5, net);
-    if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) && net)
+    if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) && net)
       table.setCellFg (row, 5, net > 0 ? Text::red: Text::green);
   }
 
@@ -1074,7 +1076,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
     row = table.addRow ();
 
     table.addCell (row, 1, "Average");
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) table.setRowFg (row, Text::bold);
+    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) table.setRowFg (row, Text::bold);
     table.addCell (row, 2, totalAdded / (table.rowCount () - 2));
     table.addCell (row, 3, totalCompleted / (table.rowCount () - 2));
     table.addCell (row, 4, totalDeleted / (table.rowCount () - 2));
@@ -1082,7 +1084,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
         << std::endl;
   else
@@ -1092,14 +1094,14 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
+std::string handleReportGHistory (TDB& tdb, T& task)
 {
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -1197,13 +1199,13 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
 
   // Now build the table.
   Table table;
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Year");
   table.addColumn ("Month");
   table.addColumn ("Number Added/Completed/Deleted");
 
-  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-      conf.get (std::string ("fontunderline"), "true"))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1259,7 +1261,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
       unsigned int deletedBar   = (widthOfBar *   deletedGroup[i->first]) / maxLine;
 
       std::string bar = "";
-      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
       {
         char number[24];
         std::string aBar = "";
@@ -1314,18 +1316,18 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
 
   if (table.rowCount ())
   {
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
         << std::endl;
 
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
       out << "Legend: "
           << Text::colorize (Text::black, Text::on_red, "added")
           << ", "
           << Text::colorize (Text::black, Text::on_green, "completed")
           << ", "
           << Text::colorize (Text::black, Text::on_yellow, "deleted")
-          << optionalBlankLine (conf)
+          << optionalBlankLine ()
           << std::endl;
     else
       out << "Legend: + added, X completed, - deleted" << std::endl;
@@ -1337,14 +1339,14 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
+std::string handleReportTimesheet (TDB& tdb, T& task)
 {
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -1358,7 +1360,7 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
   filter (tasks, task);
 
   // What day of the week does the user consider the first?
-  int weekStart = Date::dayOfWeek (conf.get ("weekstart", "Sunday"));
+  int weekStart = Date::dayOfWeek (context.config.get ("weekstart", "Sunday"));
   if (weekStart != 0 && weekStart != 1)
     throw std::string ("The 'weekstart' configuration variable may "
                        "only contain 'Sunday' or 'Monday'.");
@@ -1382,9 +1384,9 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
   {
     out << std::endl
         << Text::colorize (Text::bold, Text::nocolor)
-        << start.toString (conf.get ("dateformat", "m/d/Y"))
+        << start.toString (context.config.get ("dateformat", "m/d/Y"))
         << " - "
-        << end.toString (conf.get ("dateformat", "m/d/Y"))
+        << end.toString (context.config.get ("dateformat", "m/d/Y"))
         << Text::colorize ()
         << std::endl;
 
@@ -1425,7 +1427,7 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
           if (due.length ())
           {
             Date d (::atoi (due.c_str ()));
-            due = d.toString (conf.get ("dateformat", "m/d/Y"));
+            due = d.toString (context.config.get ("dateformat", "m/d/Y"));
             completed.addCell (row, 2, due);
           }
 
@@ -1436,16 +1438,16 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
           foreach (anno, annotations)
           {
             Date dt (anno->first);
-            when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+            when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
             description += "\n" + when + " " + anno->second;
           }
           completed.addCell (row, 3, description);
 
-          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+          if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
           {
             Text::color fg = Text::colorCode (t->getAttribute ("fg"));
             Text::color bg = Text::colorCode (t->getAttribute ("bg"));
-            autoColorize (*t, fg, bg, conf);
+            autoColorize (*t, fg, bg);
             completed.setRowFg (row, fg);
             completed.setRowBg (row, bg);
           }
@@ -1496,7 +1498,7 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
           if (due.length ())
           {
             Date d (::atoi (due.c_str ()));
-            due = d.toString (conf.get ("dateformat", "m/d/Y"));
+            due = d.toString (context.config.get ("dateformat", "m/d/Y"));
             started.addCell (row, 2, due);
           }
 
@@ -1507,16 +1509,16 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
           foreach (anno, annotations)
           {
             Date dt (anno->first);
-            when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+            when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
             description += "\n" + when + " " + anno->second;
           }
           started.addCell (row, 3, description);
 
-          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+          if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
           {
             Text::color fg = Text::colorCode (t->getAttribute ("fg"));
             Text::color bg = Text::colorCode (t->getAttribute ("bg"));
-            autoColorize (*t, fg, bg, conf);
+            autoColorize (*t, fg, bg);
             started.setRowFg (row, fg);
             started.setRowBg (row, bg);
           }
@@ -1545,14 +1547,13 @@ std::string renderMonths (
   int firstYear,
   const Date& today,
   std::vector <T>& all,
-  Config& conf,
   int monthsPerLine)
 {
   Table table;
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
   // What day of the week does the user consider the first?
-  int weekStart = Date::dayOfWeek (conf.get ("weekstart", "Sunday"));
+  int weekStart = Date::dayOfWeek (context.config.get ("weekstart", "Sunday"));
   if (weekStart != 0 && weekStart != 1)
     throw std::string ("The 'weekstart' configuration variable may "
                        "only contain 'Sunday' or 'Monday'.");
@@ -1583,8 +1584,8 @@ std::string renderMonths (
       table.addColumn ("Sa");
     }
 
-    if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-        conf.get (std::string ("fontunderline"), "true"))
+    if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+        context.config.get (std::string ("fontunderline"), "true"))
     {
       table.setColumnUnderline (i + 1);
       table.setColumnUnderline (i + 2);
@@ -1655,7 +1656,7 @@ std::string renderMonths (
       int dow = temp.dayOfWeek ();
       int woy = temp.weekOfYear (weekStart);
 
-      if (conf.get ("displayweeknumber", true))
+      if (context.config.get ("displayweeknumber", true))
         table.addCell (row, (8 * mpl), woy);
 
       // Calculate column id.
@@ -1668,7 +1669,7 @@ std::string renderMonths (
 
       table.addCell (row, thisCol, d);
 
-      if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+      if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
           today.day ()   == d              &&
           today.month () == months.at (mpl)  &&
           today.year ()  == years.at (mpl))
@@ -1679,7 +1680,7 @@ std::string renderMonths (
       {
         Date due (::atoi (it->getAttribute ("due").c_str ()));
 
-        if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+        if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
             due.day ()   == d             &&
             due.month () == months.at (mpl) &&
             due.year ()  == years.at (mpl))
@@ -1702,14 +1703,14 @@ std::string renderMonths (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
+std::string handleReportCalendar (TDB& tdb, T& task)
 {
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -1719,7 +1720,7 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
 
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
-  int preferredMonthsPerLine = (conf.get (std::string ("monthsperline"), 0));
+  int preferredMonthsPerLine = (context.config.get (std::string ("monthsperline"), 0));
   int monthsThatFit = width / 26;
 
   int monthsPerLine = monthsThatFit;
@@ -1801,8 +1802,8 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
     }
 
     out << std::endl
-        << optionalBlankLine (conf)
-        << renderMonths (mFrom, yFrom, today, pending, conf, monthsPerLine)
+        << optionalBlankLine ()
+        << renderMonths (mFrom, yFrom, today, pending, monthsPerLine)
         << std::endl;
 
     mFrom += monthsPerLine;
@@ -1813,7 +1814,7 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
     }
   }
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     out << "Legend: "
         << Text::colorize (Text::cyan, Text::nocolor, "today")
         << ", "
@@ -1821,21 +1822,21 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
         << ", "
         << Text::colorize (Text::black, Text::on_red, "overdue")
         << "."
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportActive (TDB& tdb, T& task, Config& conf)
+std::string handleReportActive (TDB& tdb, T& task)
 {
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -1848,20 +1849,20 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
   tdb.pendingT (tasks);
   filter (tasks, task);
 
-  initializeColorRules (conf);
+  initializeColorRules ();
 
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
   table.addColumn ("Pri");
   table.addColumn ("Due");
   table.addColumn ("Description");
 
-  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-      conf.get (std::string ("fontunderline"), "true"))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1906,7 +1907,7 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
         }
 
         Date dt (::atoi (due.c_str ()));
-        due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+        due = dt.toString (context.config.get ("dateformat", "m/d/Y"));
       }
 
       // All criteria match, so add refTask to the output table.
@@ -1923,35 +1924,35 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
       foreach (anno, annotations)
       {
         Date dt (anno->first);
-        when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+        when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
         description += "\n" + when + " " + anno->second;
       }
 
       table.addCell (row, 4, description);
 
-      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
       {
         Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
         Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-        autoColorize (refTask, fg, bg, conf);
+        autoColorize (refTask, fg, bg);
         table.setRowFg (row, fg);
         table.setRowBg (row, bg);
 
         if (fg == Text::nocolor)
         {
           if (overdue)
-            table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
+            table.setCellFg (row, 3, Text::colorCode (context.config.get ("color.overdue", "red")));
           else if (imminent)
-            table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
+            table.setCellFg (row, 3, Text::colorCode (context.config.get ("color.due", "yellow")));
         }
       }
     }
   }
 
   if (table.rowCount ())
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << table.rowCount ()
         << (table.rowCount () == 1 ? " task" : " tasks")
         << std::endl;
@@ -1962,14 +1963,14 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
+std::string handleReportOverdue (TDB& tdb, T& task)
 {
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -1982,20 +1983,20 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
   tdb.pendingT (tasks);
   filter (tasks, task);
 
-  initializeColorRules (conf);
+  initializeColorRules ();
 
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
   table.addColumn ("Pri");
   table.addColumn ("Due");
   table.addColumn ("Description");
 
-  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-      conf.get (std::string ("fontunderline"), "true"))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -2031,7 +2032,7 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
       if (due.length ())
       {
         Date dt (::atoi (due.c_str ()));
-        due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+        due = dt.toString (context.config.get ("dateformat", "m/d/Y"));
 
         // If overdue.
         if (dt < now)
@@ -2050,17 +2051,17 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
           foreach (anno, annotations)
           {
             Date dt (anno->first);
-            when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+            when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
             description += "\n" + when + " " + anno->second;
           }
 
           table.addCell (row, 4, description);
 
-          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+          if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
           {
             Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
             Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-            autoColorize (refTask, fg, bg, conf);
+            autoColorize (refTask, fg, bg);
             table.setRowFg (row, fg);
             table.setRowBg (row, bg);
 
@@ -2073,9 +2074,9 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
   }
 
   if (table.rowCount ())
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << table.rowCount ()
         << (table.rowCount () == 1 ? " task" : " tasks")
         << std::endl;
@@ -2086,14 +2087,14 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportStats (TDB& tdb, T& task, Config& conf)
+std::string handleReportStats (TDB& tdb, T& task)
 {
   std::stringstream out;
 
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -2164,12 +2165,12 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Category");
   table.addColumn ("Data");
 
-  if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-      conf.get (std::string ("fontunderline"), "true"))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -2230,12 +2231,12 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
     Date e (earliest);
     row = table.addRow ();
     table.addCell (row, 0, "Oldest task");
-    table.addCell (row, 1, e.toString (conf.get ("dateformat", "m/d/Y")));
+    table.addCell (row, 1, e.toString (context.config.get ("dateformat", "m/d/Y")));
 
     Date l (latest);
     row = table.addRow ();
     table.addCell (row, 0, "Newest task");
-    table.addCell (row, 1, l.toString (conf.get ("dateformat", "m/d/Y")));
+    table.addCell (row, 1, l.toString (context.config.get ("dateformat", "m/d/Y")));
 
     row = table.addRow ();
     table.addCell (row, 0, "Task used for");
@@ -2279,9 +2280,9 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
     table.addCell (row, 1, value.str ());
   }
 
-  out << optionalBlankLine (conf)
+  out << optionalBlankLine ()
       << table.render ()
-      << optionalBlankLine (conf);
+      << optionalBlankLine ();
 
   return out.str ();
 }
@@ -2290,7 +2291,6 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
 void gatherNextTasks (
   const TDB& tdb,
   T& task,
-  Config& conf,
   std::vector <T>& pending,
   std::vector <int>& all)
 {
@@ -2301,7 +2301,7 @@ void gatherNextTasks (
   Date now;
 
   // How many items per project?  Default 3.
-  int limit = conf.get ("next", 3);
+  int limit = context.config.get ("next", 3);
 
   // due:< 1wk, pri:*
   for (unsigned int i = 0; i < pending.size (); ++i)
@@ -2478,13 +2478,12 @@ void gatherNextTasks (
 std::string handleCustomReport (
   TDB& tdb,
   T& task,
-  Config& conf,
   const std::string& report)
 {
   // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -2493,12 +2492,12 @@ std::string handleCustomReport (
 #endif
 
   // Load report configuration.
-  std::string columnList = conf.get ("report." + report + ".columns");
+  std::string columnList = context.config.get ("report." + report + ".columns");
   std::vector <std::string> columns;
   split (columns, columnList, ',');
   validReportColumns (columns);
 
-  std::string labelList = conf.get ("report." + report + ".labels");
+  std::string labelList = context.config.get ("report." + report + ".labels");
   std::vector <std::string> labels;
   split (labels, labelList, ',');
 
@@ -2511,12 +2510,12 @@ std::string handleCustomReport (
     for (unsigned int i = 0; i < columns.size (); ++i)
       columnLabels[columns[i]] = labels[i];
 
-  std::string sortList   = conf.get ("report." + report + ".sort");
+  std::string sortList   = context.config.get ("report." + report + ".sort");
   std::vector <std::string> sortOrder;
   split (sortOrder, sortList, ',');
   validSortColumns (columns, sortOrder);
 
-  std::string filterList = conf.get ("report." + report + ".filter");
+  std::string filterList = context.config.get ("report." + report + ".filter");
   std::vector <std::string> filterArgs;
   split (filterArgs, filterList, ' ');
 
@@ -2529,18 +2528,18 @@ std::string handleCustomReport (
   {
     std::string ignore;
     T filterTask;
-    parse (filterArgs, ignore, filterTask, conf);
+    parse (filterArgs, ignore, filterTask);
 
     filter (tasks, filterTask);  // Filter from custom report
     filter (tasks, task);        // Filter from command line
   }
 
   // Initialize colorization for subsequent auto colorization.
-  initializeColorRules (conf);
+  initializeColorRules ();
 
   Table table;
   table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
   for (unsigned int i = 0; i < tasks.size (); ++i)
     table.addRow ();
@@ -2603,7 +2602,7 @@ std::string handleCustomReport (
         if (entered.length ())
         {
           Date dt (::atoi (entered.c_str ()));
-          entered = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          entered = dt.toString (context.config.get ("dateformat", "m/d/Y"));
           table.addCell (row, columnCount, entered);
         }
       }
@@ -2622,7 +2621,7 @@ std::string handleCustomReport (
         if (started.length ())
         {
           Date dt (::atoi (started.c_str ()));
-          started = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          started = dt.toString (context.config.get ("dateformat", "m/d/Y"));
           table.addCell (row, columnCount, started);
         }
       }
@@ -2641,7 +2640,7 @@ std::string handleCustomReport (
         if (due.length ())
         {
           Date dt (::atoi (due.c_str ()));
-          due = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          due = dt.toString (context.config.get ("dateformat", "m/d/Y"));
           table.addCell (row, columnCount, due);
         }
       }
@@ -2723,7 +2722,7 @@ std::string handleCustomReport (
         foreach (anno, annotations)
         {
           Date dt (anno->first);
-          when = dt.toString (conf.get ("dateformat", "m/d/Y"));
+          when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
           description += "\n" + when + " " + anno->second;
         }
 
@@ -2765,8 +2764,8 @@ std::string handleCustomReport (
 
     // Common to all columns.
     // Add underline.
-    if ((conf.get (std::string ("color"), true) || conf.get (std::string ("_forcecolor"), false)) &&
-        conf.get (std::string ("fontunderline"), "true"))
+    if ((context.config.get (std::string ("color"), true) || context.config.get (std::string ("_forcecolor"), false)) &&
+        context.config.get (std::string ("fontunderline"), "true"))
       table.setColumnUnderline (columnCount);
     else
       table.setTableDashedUnderline ();
@@ -2837,11 +2836,11 @@ std::string handleCustomReport (
       }
     }
 
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     {
       Text::color fg = Text::colorCode (tasks[row].getAttribute ("fg"));
       Text::color bg = Text::colorCode (tasks[row].getAttribute ("bg"));
-      autoColorize (tasks[row], fg, bg, conf);
+      autoColorize (tasks[row], fg, bg);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
 
@@ -2850,20 +2849,20 @@ std::string handleCustomReport (
         if (dueColumn != -1)
         {
           if (overdue)
-            table.setCellFg (row, columnCount, Text::colorCode (conf.get ("color.overdue", "red")));
+            table.setCellFg (row, columnCount, Text::colorCode (context.config.get ("color.overdue", "red")));
           else if (imminent)
-            table.setCellFg (row, columnCount, Text::colorCode (conf.get ("color.due", "yellow")));
+            table.setCellFg (row, columnCount, Text::colorCode (context.config.get ("color.due", "yellow")));
         }
       }
     }
   }
 
   // Limit the number of rows according to the report definition.
-  int maximum = conf.get (std::string ("report.") + report + ".limit", (int)0);
+  int maximum = context.config.get (std::string ("report.") + report + ".limit", (int)0);
 
   // If the custom report has a defined limit, then allow an override, which
   // will show up as a single ID sequence.
-  if (conf.get (std::string ("report.") + report + ".limit", (int)0) != 0)
+  if (context.config.get (std::string ("report.") + report + ".limit", (int)0) != 0)
   {
     std::vector <int> sequence = task.getAllIds ();
     if (sequence.size () == 1)
@@ -2872,9 +2871,9 @@ std::string handleCustomReport (
 
   std::stringstream out;
   if (table.rowCount ())
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render (maximum)
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << table.rowCount ()
         << (table.rowCount () == 1 ? " task" : " tasks")
         << std::endl;

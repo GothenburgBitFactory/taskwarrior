@@ -50,16 +50,17 @@
 #include <ncurses.h>
 #endif
 
+// Global context for use by all.
 Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string shortUsage (Config& conf)
+static std::string shortUsage ()
 {
   std::stringstream out;
   Table table;
-  int width = conf.get ("defaultwidth", (int) 80);
+  int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  if (context.config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
@@ -79,7 +80,7 @@ static std::string shortUsage (Config& conf)
   table.setColumnWidth (1, Table::minimum);
   table.setColumnWidth (2, Table::flexible);
   table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
   int row = table.addRow ();
   table.addCell (row, 0, "Usage:");
@@ -219,7 +220,7 @@ static std::string shortUsage (Config& conf)
   foreach (report, all)
   {
     std::string command = std::string ("task ") + *report + std::string (" [tags] [attrs] desc...");
-    std::string description = conf.get (
+    std::string description = context.config.get (
       std::string ("report.") + *report + ".description", std::string ("(missing description)"));
 
     row = table.addRow ();
@@ -240,10 +241,10 @@ static std::string shortUsage (Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string longUsage (Config& conf)
+static std::string longUsage ()
 {
   std::stringstream out;
-  out << shortUsage (conf)
+  out << shortUsage ()
       << "ID is the numeric identifier displayed by the 'task list' command. "
       << "You can specify multiple IDs for task commands, and multiple tasks "
       << "will be affected.  To specify multiple IDs make sure you use one "
@@ -284,32 +285,6 @@ static std::string longUsage (Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void loadConfFile (int argc, char** argv, Config& conf)
-{
-  for (int i = 1; i < argc; ++i)
-  {
-    if (! strncmp (argv[i], "rc:", 3))
-    {
-      if (! access (&(argv[i][3]), F_OK))
-      {
-        std::string file = &(argv[i][3]);
-        conf.load (file);
-        return;
-      }
-      else
-        throw std::string ("Could not read configuration file '") + &(argv[i][3]) + "'";
-    }
-  }
-
-  struct passwd* pw = getpwuid (getuid ());
-  if (!pw)
-    throw std::string ("Could not read home directory from passwd file.");
-
-  std::string file = pw->pw_dir;
-  conf.createDefault (file);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
   // Set up randomness.
@@ -323,30 +298,25 @@ int main (int argc, char** argv)
   {
     context.initialize (argc, argv);
 
-    // Load the config file from the home directory.  If the file cannot be
-    // found, offer to create a sample one.
-    Config conf;
-    loadConfFile (argc, argv, conf);
-
     // When redirecting output to a file, do not use color, curses.
     if (!isatty (fileno (stdout)))
     {
-      conf.set ("curses", "off");
+      context.config.set ("curses", "off");
 
-      if (! conf.get (std::string ("_forcecolor"), false))
-        conf.set ("color",  "off");
+      if (! context.config.get (std::string ("_forcecolor"), false))
+        context.config.set ("color",  "off");
     }
 
     TDB tdb;
-    std::string dataLocation = expandPath (conf.get ("data.location"));
+    std::string dataLocation = expandPath (context.config.get ("data.location"));
     tdb.dataDirectory (dataLocation);
 
     // Allow user override of file locking.  Solaris/NFS machines may want this.
-    if (! conf.get ("locking", true))
+    if (! context.config.get ("locking", true))
       tdb.noLock ();
 
     // Check for silly shadow file settings.
-    std::string shadowFile = expandPath (conf.get ("shadow.file"));
+    std::string shadowFile = expandPath (context.config.get ("shadow.file"));
     if (shadowFile != "")
     {
       if (shadowFile == dataLocation + "/pending.data")
@@ -358,7 +328,7 @@ int main (int argc, char** argv)
                            "overwrite your completed tasks.  Please change it.");
     }
 
-    std::cout << runTaskCommand (argc, argv, tdb, conf);
+    std::cout << runTaskCommand (argc, argv, tdb);
   }
 
   catch (std::string& error)
@@ -377,9 +347,9 @@ int main (int argc, char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void nag (TDB& tdb, T& task, Config& conf)
+void nag (TDB& tdb, T& task)
 {
-  std::string nagMessage = conf.get ("nag", std::string (""));
+  std::string nagMessage = context.config.get ("nag", std::string (""));
   if (nagMessage != "")
   {
     // Load all pending tasks.
@@ -780,26 +750,26 @@ void updateRecurrenceMask (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void updateShadowFile (TDB& tdb, Config& conf)
+void updateShadowFile (TDB& tdb)
 {
   try
   {
     // Determine if shadow file is enabled.
-    std::string shadowFile = expandPath (conf.get ("shadow.file"));
+    std::string shadowFile = expandPath (context.config.get ("shadow.file"));
     if (shadowFile != "")
     {
-      std::string oldCurses = conf.get ("curses");
-      std::string oldColor = conf.get ("color");
-      conf.set ("curses", "off");
-      conf.set ("color",  "off");
+      std::string oldCurses = context.config.get ("curses");
+      std::string oldColor = context.config.get ("color");
+      context.config.set ("curses", "off");
+      context.config.set ("color",  "off");
 
       // Run report.  Use shadow.command, using default.command as a fallback
       // with "list" as a default.
-      std::string command = conf.get ("shadow.command",
-                              conf.get ("default.command", "list"));
+      std::string command = context.config.get ("shadow.command",
+                              context.config.get ("default.command", "list"));
       std::vector <std::string> args;
       split (args, command, ' ');
-      std::string result = runTaskCommand (args, tdb, conf);
+      std::string result = runTaskCommand (args, tdb);
 
       std::ofstream out (shadowFile.c_str ());
       if (out.good ())
@@ -810,12 +780,12 @@ void updateShadowFile (TDB& tdb, Config& conf)
       else
         throw std::string ("Could not write file '") + shadowFile + "'";
 
-      conf.set ("curses", oldCurses);
-      conf.set ("color",  oldColor);
+      context.config.set ("curses", oldCurses);
+      context.config.set ("color",  oldColor);
     }
 
     // Optionally display a notification that the shadow file was updated.
-    if (conf.get (std::string ("shadow.notify"), false))
+    if (context.config.get (std::string ("shadow.notify"), false))
       std::cout << "[Shadow file '" << shadowFile << "' updated]" << std::endl;
   }
 
@@ -835,7 +805,6 @@ std::string runTaskCommand (
   int argc,
   char** argv,
   TDB& tdb,
-  Config& conf,
   bool gc /* = true */,
   bool shadow /* = true */)
 {
@@ -843,20 +812,19 @@ std::string runTaskCommand (
   for (int i = 1; i < argc; ++i)
     args.push_back (argv[i]);
 
-  return runTaskCommand (args, tdb, conf, gc, shadow);
+  return runTaskCommand (args, tdb, gc, shadow);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string runTaskCommand (
   std::vector <std::string>& args,
   TDB& tdb,
-  Config& conf,
   bool gc /* = false */,
   bool shadow /* = false */)
 {
   // If argc == 1 and the default.command configuration variable is set,
   // then use that, otherwise stick with argc/argv.
-  std::string defaultCommand = conf.get ("default.command");
+  std::string defaultCommand = context.config.get ("default.command");
   if ((args.size () == 0 ||
       (args.size () == 1 && args[0].substr (0, 3) == "rc:")) &&
       defaultCommand != "")
@@ -867,60 +835,60 @@ std::string runTaskCommand (
     std::cout << "[task " << defaultCommand << "]" << std::endl;
   }
 
-  loadCustomReports (conf);
+  loadCustomReports ();
 
   std::string command;
   T task;
-  parse (args, command, task, conf);
+  parse (args, command, task);
 
   bool gcMod  = false; // Change occurred by way of gc.
   bool cmdMod = false; // Change occurred by way of command type.
   std::string out;
 
   // Read-only commands with no side effects.
-       if (command == "export")             { out = handleExport          (tdb, task, conf); }
-  else if (command == "projects")           { out = handleProjects        (tdb, task, conf); }
-  else if (command == "tags")               { out = handleTags            (tdb, task, conf); }
-  else if (command == "info")               { out = handleInfo            (tdb, task, conf); }
-  else if (command == "stats")              { out = handleReportStats     (tdb, task, conf); }
-  else if (command == "history")            { out = handleReportHistory   (tdb, task, conf); }
-  else if (command == "ghistory")           { out = handleReportGHistory  (tdb, task, conf); }
-  else if (command == "calendar")           { out = handleReportCalendar  (tdb, task, conf); }
-  else if (command == "summary")            { out = handleReportSummary   (tdb, task, conf); }
-  else if (command == "timesheet")          { out = handleReportTimesheet (tdb, task, conf); }
-  else if (command == "colors")             { out = handleColor           (           conf); }
-  else if (command == "version")            { out = handleVersion         (           conf); }
-  else if (command == "help")               { out = longUsage             (           conf); }
+       if (command == "export")             { out = handleExport          (tdb, task); }
+  else if (command == "projects")           { out = handleProjects        (tdb, task); }
+  else if (command == "tags")               { out = handleTags            (tdb, task); }
+  else if (command == "info")               { out = handleInfo            (tdb, task); }
+  else if (command == "stats")              { out = handleReportStats     (tdb, task); }
+  else if (command == "history")            { out = handleReportHistory   (tdb, task); }
+  else if (command == "ghistory")           { out = handleReportGHistory  (tdb, task); }
+  else if (command == "calendar")           { out = handleReportCalendar  (tdb, task); }
+  else if (command == "summary")            { out = handleReportSummary   (tdb, task); }
+  else if (command == "timesheet")          { out = handleReportTimesheet (tdb, task); }
+  else if (command == "colors")             { out = handleColor           (         ); }
+  else if (command == "version")            { out = handleVersion         (         ); }
+  else if (command == "help")               { out = longUsage             (         ); }
 
   // Commands that cause updates.
-  else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify    (tdb, task, conf); }
-  else if (command == "add")                { cmdMod = true; out = handleAdd       (tdb, task, conf); }
-  else if (command == "append")             { cmdMod = true; out = handleAppend    (tdb, task, conf); }
-  else if (command == "annotate")           { cmdMod = true; out = handleAnnotate  (tdb, task, conf); }
-  else if (command == "done")               { cmdMod = true; out = handleDone      (tdb, task, conf); }
-  else if (command == "undelete")           { cmdMod = true; out = handleUndelete  (tdb, task, conf); }
-  else if (command == "delete")             { cmdMod = true; out = handleDelete    (tdb, task, conf); }
-  else if (command == "start")              { cmdMod = true; out = handleStart     (tdb, task, conf); }
-  else if (command == "stop")               { cmdMod = true; out = handleStop      (tdb, task, conf); }
-  else if (command == "undo")               { cmdMod = true; out = handleUndo      (tdb, task, conf); }
-  else if (command == "import")             { cmdMod = true; out = handleImport    (tdb, task, conf); }
-  else if (command == "duplicate")          { cmdMod = true; out = handleDuplicate (tdb, task, conf); }
-  else if (command == "edit")               { cmdMod = true; out = handleEdit      (tdb, task, conf); }
+  else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify    (tdb, task); }
+  else if (command == "add")                { cmdMod = true; out = handleAdd       (tdb, task); }
+  else if (command == "append")             { cmdMod = true; out = handleAppend    (tdb, task); }
+  else if (command == "annotate")           { cmdMod = true; out = handleAnnotate  (tdb, task); }
+  else if (command == "done")               { cmdMod = true; out = handleDone      (tdb, task); }
+  else if (command == "undelete")           { cmdMod = true; out = handleUndelete  (tdb, task); }
+  else if (command == "delete")             { cmdMod = true; out = handleDelete    (tdb, task); }
+  else if (command == "start")              { cmdMod = true; out = handleStart     (tdb, task); }
+  else if (command == "stop")               { cmdMod = true; out = handleStop      (tdb, task); }
+  else if (command == "undo")               { cmdMod = true; out = handleUndo      (tdb, task); }
+  else if (command == "import")             { cmdMod = true; out = handleImport    (tdb, task); }
+  else if (command == "duplicate")          { cmdMod = true; out = handleDuplicate (tdb, task); }
+  else if (command == "edit")               { cmdMod = true; out = handleEdit      (tdb, task); }
 
   // Command that display IDs and therefore need TDB::gc first.
-  else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (tdb, task, conf); }
-  else if (command == "next")               { if (gc) gcMod = tdb.gc (); out = handleReportNext    (tdb, task, conf); }
-  else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (tdb, task, conf); }
-  else if (command == "overdue")            { if (gc) gcMod = tdb.gc (); out = handleReportOverdue (tdb, task, conf); }
-  else if (isCustomReport (command))        { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (tdb, task, conf, command); }
+  else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (tdb, task); }
+  else if (command == "next")               { if (gc) gcMod = tdb.gc (); out = handleReportNext    (tdb, task); }
+  else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (tdb, task); }
+  else if (command == "overdue")            { if (gc) gcMod = tdb.gc (); out = handleReportOverdue (tdb, task); }
+  else if (isCustomReport (command))        { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (tdb, task, command); }
 
   // If the command is not recognized, display usage.
-  else                                      { out = shortUsage (conf); }
+  else                                      { out = shortUsage (); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
   // and if an actual change occurred (gcMod || cmdMod).
   if (shadow && (gcMod || cmdMod))
-    updateShadowFile (tdb, conf);
+    updateShadowFile (tdb);
 
   return out;
 }

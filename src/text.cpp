@@ -27,9 +27,11 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "Config.h"
+#include "Context.h"
 #include "util.h"
 #include "text.h"
+
+extern Context context;
 
 static const char* newline = "\n";
 static const char* noline  = "";
@@ -294,9 +296,9 @@ std::string upperCase (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const char* optionalBlankLine (Config& conf)
+const char* optionalBlankLine ()
 {
-  if (conf.get ("blanklines", true) == true)
+  if (context.config.get ("blanklines", true) == true)
     return newline;
 
   return noline;
