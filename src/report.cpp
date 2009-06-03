@@ -512,7 +512,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
     if (created.length ())
     {
       Date dt (::atoi (created.c_str ()));
-      formatTimeDeltaDays (age, (time_t) (now - dt));
+      age = formatSeconds ((time_t) (now - dt));
     }
 
     table.addCell (row, 1, entry + " (" + age + ")");
@@ -644,7 +644,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
       if (counter[i->first])
       {
         std::string age;
-        formatTimeDeltaDays (age, (time_t) (sumEntry[i->first] / counter[i->first]));
+        age = formatSeconds ((time_t) (sumEntry[i->first] / counter[i->first]));
         table.addCell (row, 2, age);
       }
 
@@ -820,7 +820,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
     if (created.length ())
     {
       Date dt (::atoi (created.c_str ()));
-      formatTimeDeltaDays (age, (time_t) (now - dt));
+      age = formatSeconds ((time_t) (now - dt));
     }
 
     // All criteria match, so add refTask to the output table.
@@ -2664,7 +2664,7 @@ std::string handleCustomReport (
         if (created.length ())
         {
           Date dt (::atoi (created.c_str ()));
-          formatTimeDeltaDays (age, (time_t) (now - dt));
+          age = formatSeconds ((time_t) (now - dt));
           table.addCell (row, columnCount, age);
         }
       }
