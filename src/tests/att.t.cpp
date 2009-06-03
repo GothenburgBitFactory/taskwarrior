@@ -30,7 +30,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (37);
+  UnitTest t (42);
 
   Att a1 ("name", "value");
   t.is (a1.name (), "name", "Att::Att (name, value), Att.name");
@@ -163,6 +163,24 @@ int main (int argc, char** argv)
   good = true;
   try {a7.parse (n);} catch (...) {good = false;}
   t.notok (good, "Att::parse (name\")");
+
+  // Mods
+  n = Nibbler ("name.any:\"value\"");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.ok (good, "Att::parse (name.any:\"value\")");
+  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 -> name:\"value\"");
+
+  n = Nibbler ("name.any.none:\"value\"");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.ok (good, "Att::parse (name.any.none:\"value\")");
+  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 -> name:\"value\"");
+
+  n = Nibbler ("name.bogus:\"value\"");
+  good = true;
+  try {a7.parse (n);} catch (...) {good = false;}
+  t.notok (good, "Att::parse (name.bogus:\"value\")");
 
   return 0;
 }
