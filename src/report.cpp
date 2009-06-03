@@ -2669,6 +2669,27 @@ std::string handleCustomReport (
       }
     }
 
+    else if (*col == "age_compact")
+    {
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Age");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string created;
+      std::string age;
+      Date now;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        created = tasks[row].getAttribute ("entry");
+        if (created.length ())
+        {
+          Date dt (::atoi (created.c_str ()));
+          age = formatSecondsCompact ((time_t) (now - dt));
+          table.addCell (row, columnCount, age);
+        }
+      }
+    }
+
     else if (*col == "active")
     {
       table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Active");
@@ -2899,6 +2920,7 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "start"                &&
         *it != "due"                  &&
         *it != "age"                  &&
+        *it != "age_compact"          &&
         *it != "active"               &&
         *it != "tags"                 &&
         *it != "recur"                &&

@@ -121,6 +121,27 @@ std::string formatSeconds (time_t delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Convert a quantity in seconds to a more readable format.
+std::string formatSecondsCompact (time_t delta)
+{
+  char formatted[24];
+  float days = (float) delta / 86400.0;
+
+  if (days > 365)                sprintf (formatted, "%.1fy", (days / 365.2422));
+  else if (days > 84)            sprintf (formatted, "%1dmo", (int) (days / 30.6));
+  else if (days > 13)            sprintf (formatted, "%dwk", (int) (days / 7.0));
+  else if (days > 5.0)           sprintf (formatted, "%dd", (int) days);
+  else if (days > 1.0)           sprintf (formatted, "%.1fd", days);
+  else if (days * 24 > 1.0)      sprintf (formatted, "%dh", (int) (days * 24.0));
+  else if (days * 24 * 60 > 1)   sprintf (formatted, "%dm", (int) (days * 24 * 60));
+  else if (days * 24 * 3600 > 1) sprintf (formatted, "%ds", (int) (days * 24 * 60 * 60));
+  else
+    strcpy (formatted, "-");
+
+  return std::string (formatted);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int autoComplete (
   const std::string& partial,
   const std::vector<std::string>& list,

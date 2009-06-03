@@ -18,6 +18,8 @@
  + Supports negative tag filters, so that (task list +foo -bar) now filters
    tasks that have the "foo" tag, but do not have the "bar" tag (thanks to
    Chris Pride).
+ + Custom reports now support a more compact form of the "age" column,
+   called "age_compact" (thanks to T. Charles Yun).
 
 ------ old releases ------------------------------
 
