@@ -156,12 +156,11 @@ static const char* commands[] =
 static std::vector <std::string> customReports;
 
 ////////////////////////////////////////////////////////////////////////////////
-void guess (const std::string& type, const char** list, std::string& candidate)
+void guess (
+  const std::string& type,
+  std::vector<std::string>& options,
+  std::string& candidate)
 {
-  std::vector <std::string> options;
-  for (int i = 0; list[i][0]; ++i)
-    options.push_back (list[i]);
-
   std::vector <std::string> matches;
   autoComplete (candidate, options, matches);
   if (1 == matches.size ())
@@ -189,32 +188,16 @@ void guess (const std::string& type, const char** list, std::string& candidate)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void guess (const std::string& type, std::vector<std::string>& options, std::string& candidate)
+void guess (
+  const std::string& type,
+  const char** list,
+  std::string& candidate)
 {
-  std::vector <std::string> matches;
-  autoComplete (candidate, options, matches);
-  if (1 == matches.size ())
-    candidate = matches[0];
+  std::vector <std::string> options;
+  for (int i = 0; list[i][0]; ++i)
+    options.push_back (list[i]);
 
-  else if (0 == matches.size ())
-    candidate = "";
-
-  else
-  {
-    std::string error = "Ambiguous ";
-    error += type;
-    error += " '";
-    error += candidate;
-    error += "' - could be either of ";
-    for (size_t i = 0; i < matches.size (); ++i)
-    {
-      if (i)
-        error += ", ";
-      error += matches[i];
-    }
-
-    throw error;
-  }
+  guess (type, options, candidate);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
