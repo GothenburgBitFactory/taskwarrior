@@ -50,6 +50,8 @@
 #include <ncurses.h>
 #endif
 
+Context context;
+
 ////////////////////////////////////////////////////////////////////////////////
 static std::string shortUsage (Config& conf)
 {
@@ -316,9 +318,6 @@ int main (int argc, char** argv)
 #else
   srand (time (NULL));
 #endif
-
-  // TODO 1.8.0 requires the Context.
-  Context context;
 
   try
   {
