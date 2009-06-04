@@ -51,19 +51,16 @@ public:
   Subst    subst;
 
   // Series of helper functions.
-  int getId () const                                   { return mId; }
-  void setId (int id)                                  { mId = id; sequence.push_back (id); }
+  int id () const                                      { return sequence.size () ? sequence[0] : 0; }
+  void id (int anotherId)                              { sequence.push_back (anotherId); }
 
 /*
-  std::vector <int> getAllIds () const                 { return mSequence; }
-  void addId (int id)                                  { if (mId == 0) mId = id; mSequence.push_back (id); }
-
   status getStatus () const                            { return mStatus; }
   void setStatus (status s)                            { mStatus = s; }
 
   bool hasTag (const std::string&) const;
-  void getRemoveTags (std::vector<std::string>&); // SPECIAL
-  void addRemoveTag (const std::string&);         // SPECIAL
+  void getRemoveTags (std::vector<std::string>&);      // SPECIAL
+  void addRemoveTag (const std::string&);              // SPECIAL
   int getTagCount () const;
   void getTags (std::vector<std::string>&) const;
   void addTag (const std::string&);
@@ -79,15 +76,9 @@ public:
   bool validate () const;
 
 private:
-/*
   int determineVersion (const std::string&);
-*/
 
 private:
-/*
-  status                             mStatus;
-*/
-  int                                mId;
 /*
   std::vector<std::string>           mTags;
   std::vector<std::string>           mRemoveTags;
