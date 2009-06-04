@@ -27,6 +27,7 @@
 
 #include <sstream>
 #include <string>
+#include <algorithm>
 #include "Nibbler.h"
 #include "T2.h"
 #include "text.h"
