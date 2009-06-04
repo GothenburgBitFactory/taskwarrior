@@ -1,4 +1,4 @@
-PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
+PROJECT = t.t t2.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t \
           parse.t seq.t att.t stringtable.t record.t nibbler.t subst.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib
@@ -23,6 +23,9 @@ clean:
 
 t.t: t.t.o $(OBJECTS) test.o
 	g++ t.t.o $(OBJECTS) test.o $(LFLAGS) -o t.t
+
+t2.t: t2.t.o $(OBJECTS) test.o
+	g++ t2.t.o $(OBJECTS) test.o $(LFLAGS) -o t2.t
 
 tdb.t: tdb.t.o $(OBJECTS) test.o
 	g++ tdb.t.o $(OBJECTS) test.o $(LFLAGS) -o tdb.t

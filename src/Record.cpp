@@ -59,7 +59,12 @@ std::string Record::composeF4 ()
 
   bool first = true;
   foreach (r, (*this))
-    ff4 += (first ? "" : " ") + r->second.composeF4 ();
+  {
+    if (r->second.value () != "")
+      ff4 += (first ? "" : " ") + r->second.composeF4 ();
+
+    first = false;
+  }
 
   ff4 += "]";
   return ff4;

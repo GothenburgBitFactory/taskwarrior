@@ -29,6 +29,7 @@
 #include <string>
 #include "Nibbler.h"
 #include "T2.h"
+#include "text.h"
 #include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -289,6 +290,38 @@ void T2::addAnnotation (const std::string& description)
   s << "annotation_" << time (NULL);
 
   (*this)[s.str ()] = Att (s.str (), description);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void T2::addTag (const std::string& tag)
+{
+  std::vector <std::string> tags;
+  split (tags, get ("tags"), ',');
+
+  if (std::find (tags.begin (), tags.end (), tag) == tags.end ())
+  {
+    tags.push_back (tag);
+    std::string combined;
+    join (combined, ",", tags);
+    set ("tags", combined);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void T2::removeTag (const std::string& tag)
+{
+  std::vector <std::string> tags;
+  split (tags, get ("tags"), ',');
+
+  std::vector <std::string>::iterator i;
+  i = std::find (tags.begin (), tags.end (), tag);
+  if (i != tags.end ())
+  {
+    tags.erase (i);
+    std::string combined;
+    join (combined, ",", tags);
+    set ("tags", combined);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

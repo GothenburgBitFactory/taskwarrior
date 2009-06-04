@@ -40,11 +40,10 @@ public:
   T2& operator= (const T2&); // Assignment operator
   ~T2 ();                    // Destructor
 
-  void legacyParse (const std::string&);
   std::string composeCSV ();
 
   // Status values.
-  enum status {pending, completed, deleted, recurring};
+  enum status {pending, completed, deleted, recurring /* , retired, deferred */};
 
   // Public data.
   Sequence sequence;
@@ -63,9 +62,13 @@ public:
   void addRemoveTag (const std::string&);              // SPECIAL
   int getTagCount () const;
   void getTags (std::vector<std::string>&) const;
+*/
   void addTag (const std::string&);
+/*
   void addTags (const std::vector <std::string>&);
+*/
   void removeTag (const std::string&);
+/*
   void removeTags ();
 */
 
@@ -77,6 +80,7 @@ public:
 
 private:
   int determineVersion (const std::string&);
+  void legacyParse (const std::string&);
 
 private:
 /*

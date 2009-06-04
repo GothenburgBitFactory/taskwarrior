@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (11);
+  UnitTest t (17);
 
   // (blank)
   bool good = true;
@@ -79,6 +79,25 @@ int main (int argc, char** argv)
   t.ok (good, "Record::Record ('[one:\"two\" three:\"four\"]')");
   t.is (record.get ("one"), "two", "one=two");
   t.is (record.get ("three"), "four", "three=four");
+
+  // Record::set
+  record.clear ();
+  record.set ("name", "value");
+  t.is (record.composeF4 (), "[name:\"value\"]", "Record::set");
+
+  // Record::get_int
+  record.set ("one", 1);
+  t.is (record.composeF4 (), "[name:\"value\" one:\"1\"]", "Record::set");
+  t.is (record.get_int ("one"), 1, "Record::get_int");
+
+  // Record::remove
+  record.remove ("one");
+  t.is (record.composeF4 (), "[name:\"value\"]", "Record::remove");
+
+  // Record::all
+  std::vector <Att> all = record.all ();
+  t.is (all.size (), (size_t)1, "Record::all size");
+  t.is (all[0].name (), "name", "Record::all[0].name ()");
 
   return 0;
 }
