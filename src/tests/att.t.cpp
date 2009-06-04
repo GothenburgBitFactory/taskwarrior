@@ -140,11 +140,6 @@ int main (int argc, char** argv)
   try {a6.addMod ("endswith");} catch (...) {good = false;}
   t.ok (good, "Att::addMod (endswith)");
 
-
-
-
-
-
   good = true;
   try {a6.addMod ("fartwizzle");} catch (...) {good = false;}
   t.notok (good, "Att::addMod (fartwizzle)");
@@ -152,8 +147,8 @@ int main (int argc, char** argv)
   // Att::mods
   std::vector <std::string> mods;
   a6.mods (mods);
-  t.is (mods.size (), (size_t)1, "Att::mods () size == 1");
-  t.is (mods[0], "is",           "Att::mods [0] == 'is'");
+  t.is (mods.size (), (size_t)18, "Att::mods () size == 18");
+  t.is (mods[0], "is",            "Att::mods [0] == 'is'");
 
   // Att::parse
   Nibbler n ("");

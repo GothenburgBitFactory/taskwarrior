@@ -107,7 +107,12 @@ bool Att::parse (Nibbler& n)
     {
       std::string mod;
       if (n.getUntilOneOf (".:", mod))
-        mMods.push_back (mod);
+      {
+        if (validMod (mod))
+          mMods.push_back (mod);
+        else
+          throw std::string ("The name '") + mod + "' is not a valid modifier";
+      }
       else
         throw std::string ("Missing . or : after modifier");
     }
@@ -212,7 +217,10 @@ std::string Att::composeF4 () const
 ////////////////////////////////////////////////////////////////////////////////
 void Att::addMod (const std::string& mod)
 {
-  mMods.push_back (mod);
+  if (validMod (mod))
+    mMods.push_back (mod);
+  else
+    throw std::string ("The name '") + mod + "' is not a valid modifier";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
