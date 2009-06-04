@@ -30,7 +30,6 @@
 #include <string>
 #include <vector>
 #include "Nibbler.h"
-#include "Mod.h"
 
 class Att
 {
@@ -43,10 +42,12 @@ public:
   ~Att ();                                      // Destructor
 
   bool parse (Nibbler&);
+  bool validMod (const std::string&);
+  bool evalMod (Att&);
   std::string composeF4 () const;
 
-  void addMod (const Mod&);
-  void mods (std::vector <Mod>&);
+  void addMod (const std::string&);
+  void mods (std::vector <std::string>&);
 
   std::string name () const;
   void name (const std::string&);
@@ -66,7 +67,7 @@ private:
 private:
   std::string mName;
   std::string mValue;
-  std::vector <Mod> mMods;
+  std::vector <std::string> mMods;
 };
 
 #endif

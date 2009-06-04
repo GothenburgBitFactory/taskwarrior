@@ -135,6 +135,63 @@ bool Att::parse (Nibbler& n)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Att::validMod (const std::string& mod)
+{
+  if (mod == "before"     || mod == "after"    ||   // i18n: TODO
+      mod == "not"        ||                        // i18n: TODO
+      mod == "none"       || mod == "any"      ||   // i18n: TODO
+      mod == "synth"      ||                        // i18n: TODO
+      mod == "under"      || mod == "over"     ||   // i18n: TODO
+      mod == "first"      || mod == "last"     ||   // i18n: TODO
+      mod == "this"       ||                        // i18n: TODO
+      mod == "next"       ||                        // i18n: TODO
+      mod == "is"         || mod == "isnt"     ||   // i18n: TODO
+      mod == "has"        || mod == "hasnt"    ||   // i18n: TODO
+      mod == "startswith" || mod == "endswith")     // i18n: TODO
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Att::evalMod (Att& other)
+{
+  // No modifier means automatic pass.
+/*
+  if (*this == "") // i18n: no
+    return true;
+*/
+
+  // TODO before
+  // TODO after
+  // TODO not
+  // TODO none
+  // TODO any
+  // TODO synth
+  // TODO under
+  // TODO over
+  // TODO first
+  // TODO last
+  // TODO this
+  // TODO next
+
+/*
+  if (*this == "is")    // i18n: TODO
+    return *this == other ? true : false;
+
+  if (*this == "isnt")  // i18n: TODO
+    return *this != other ? true : false;
+*/
+
+  // TODO has
+  // TODO hasnt
+  // TODO startswith
+  // TODO endswith
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // name : " value "
 std::string Att::composeF4 () const
 {
@@ -153,13 +210,13 @@ std::string Att::composeF4 () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Att::addMod (const Mod& mod)
+void Att::addMod (const std::string& mod)
 {
   mMods.push_back (mod);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Att::mods (std::vector <Mod>& all)
+void Att::mods (std::vector <std::string>& all)
 {
   all = mMods;
 }
@@ -281,5 +338,4 @@ void Att::decode (std::string& value) const
   while ((i = value.find ("&colon;")) != std::string::npos)
     value.replace (i, 7, ":");
 }
-
 ////////////////////////////////////////////////////////////////////////////////
