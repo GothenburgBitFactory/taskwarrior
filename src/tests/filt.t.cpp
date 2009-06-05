@@ -24,25 +24,49 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-
+#include "task.h"
+#include "test.h"
 #include "Filter.h"
-#include "util.h"
+#include "T2.h"
+
+Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-// For every Att in the filter, lookup the equivalent in Record, and perform a
-// match.  Aren't filters easy now that everything is an attribute?
-bool Filter::pass (const Record& record) const
+int main (int argc, char** argv)
 {
-  Record::const_iterator r;
+  UnitTest test (6);
 
-  // If record doesn't have the attribute, fail.  If it does have the attribute
-  // but it doesn't match, fail.
-  foreach (att, (*this))
-    if ((r = record.find (att->name ())) == record.end () ||
-        ! att->match (r->second))
-        return false;
+  // Create a filter consisting of two Att criteria.
+  Filter f;
+  f.push_back (Att ("name1", "value1"));
+  f.push_back (Att ("name2", "value2"));
+  test.is (f.size (), (size_t)2, "Filter created");
 
-  return true;
+  // Create a T2 to match against.
+  T2 yes;
+  yes.set ("name1", "value1");
+  yes.set ("name2", "value2");
+  test.ok (f.pass (yes), "full match");
+
+  yes.set ("name3", "value3");
+  test.ok (f.pass (yes), "over match");
+
+  // Negative tests.
+  T2 no0;
+  test.notok (f.pass (no0), "no match against default T2");
+
+  T2 no1;
+  no1.set ("name3", "value3");
+  test.notok (f.pass (no0), "no match against mismatch T2");
+
+  T2 partial;
+  partial.set ("name1", "value1");
+  test.notok (f.pass (no0), "no match against partial T2");
+
+  // TODO Modifiers.
+
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+

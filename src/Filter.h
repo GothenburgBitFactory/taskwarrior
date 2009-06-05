@@ -34,12 +34,7 @@
 class Filter : public std::vector <Att>
 {
 public:
-  Filter ();                         // Default constructor
-  Filter (const Filter&);            // Copy constructor
-  Filter& operator= (const Filter&); // Assignment operator
-  ~Filter ();                        // Destructor
-
-  bool pass (Record&);
+  bool pass (const Record&) const;
 };
 
 #endif

@@ -140,7 +140,7 @@ bool Att::parse (Nibbler& n)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Att::validMod (const std::string& mod)
+bool Att::validMod (const std::string& mod) const
 {
   if (mod == "before"     || mod == "after"    ||   // i18n: TODO
       mod == "not"        ||                        // i18n: TODO
@@ -159,7 +159,7 @@ bool Att::validMod (const std::string& mod)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Att::evalMod (Att& other)
+bool Att::match (const Att& other) const
 {
   // No modifier means automatic pass.
 /*
@@ -197,12 +197,6 @@ bool Att::evalMod (Att& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Att::match (const Att& other)
-{
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // name : " value "
 std::string Att::composeF4 () const
 {
@@ -230,7 +224,7 @@ void Att::addMod (const std::string& mod)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Att::mods (std::vector <std::string>& all)
+void Att::mods (std::vector <std::string>& all) const
 {
   all = mMods;
 }

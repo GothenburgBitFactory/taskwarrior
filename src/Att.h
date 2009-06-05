@@ -42,13 +42,13 @@ public:
   ~Att ();                                      // Destructor
 
   bool parse (Nibbler&);
-  bool validMod (const std::string&);
-  bool evalMod (Att&);
-  bool match (const Att&);
+  bool validMod (const std::string&) const;
+  bool match (const Att&) const;
+
   std::string composeF4 () const;
 
   void addMod (const std::string&);
-  void mods (std::vector <std::string>&);
+  void mods (std::vector <std::string>&) const;
 
   std::string name () const;
   void name (const std::string&);
