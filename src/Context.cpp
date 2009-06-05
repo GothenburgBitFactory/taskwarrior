@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -127,18 +128,53 @@ void Context::initialize (int argc, char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 int Context::run ()
 {
-  // TODO Dispatch to command handlers.
-  // TODO Auto shadow update.
-  // TODO Auto gc.
-  // TODO tdb.load (Filter);
+  std::cout << "--- start 1.8.0 ---" << std::endl;
+  try
+  {
+    parse ();
 
-  throw std::string ("unimplemented Context::run");
+    // TODO Dispatch to command handlers.
+    // TODO Auto shadow update.
+    // TODO Auto gc.
+    // TODO tdb.load (Filter);
+  }
+
+  catch (const std::string& error)
+  {
+    messages.push_back (error);
+  }
+
+  catch (...)
+  {
+    messages.push_back (stringtable.get (100, "Unknown error."));
+  }
+
+  // Dump all messages.
+  foreach (m, messages)
+    std::cout << *m << std::endl;
+
+  if (footnotes.size ())
+  {
+    std::cout << std::endl;
+    foreach (f, footnotes)
+      std::cout << *f << std::endl;
+  }
+
+  std::cout << "--- end 1.8.0 ---" << std::endl;
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Context::interactive ()
 {
+  // TODO init ncurses
+  // TODO create worker thread
+  // TODO create refresh thread
+
+  // TODO join refresh thread
+  // TODO join worker thread
+  // TODO take down ncurses
+
   throw std::string ("unimplemented Context::interactive");
   return 0;
 }
@@ -169,6 +205,13 @@ void Context::loadCorrectConfigFile (int argc, char** argv)
   config.createDefault (file);
 
   // TODO Apply overrides of type: "rc.name:value"
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::parse ()
+{
+  // TODO Replace parse.cpp:parse
+  throw std::string ("unimplemented Context::parse");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

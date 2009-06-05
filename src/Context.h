@@ -43,12 +43,16 @@ public:
   Context& operator= (const Context&); // Assignment operator
   ~Context ();                         // Destructor
 
-  void initialize (int, char**);
-  int run ();
-  int interactive ();
+  void initialize (int, char**);       // all startup
+  int run ();                          // task classic
+  int interactive ();                  // task interactive (not implemented)
+
+  void message (const std::string&);   // Message sink
+  void footnote (const std::string&);  // Footnote sink
 
 private:
   void loadCorrectConfigFile (int, char**);
+  void parse ();
 
 public:
   Config      config;
@@ -60,6 +64,8 @@ public:
   StringTable stringtable;
 
 private:
+  std::vector <std::string> messages;
+  std::vector <std::string> footnotes;
 };
 
 #endif

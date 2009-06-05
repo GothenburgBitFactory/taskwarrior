@@ -37,10 +37,10 @@ int main (int argc, char** argv)
   T2 t;
   t.addTag ("tag1");
   t.addTag ("tag2");
-  test.is (t.composeF4 (), "[tag:\"tag1&commatag2\" uuid:\"...\"]", "T2::addTag");
+  test.is (t.composeF4 (), "[tags:\"tag1&comma;tag2\" uuid:\"...\"]", "T2::addTag");
 
   T2 t2 (t.composeF4 ());
-  test.is (t2.composeF4 (), "[tag:\"tag1&commatag2\" uuid:\"...\"]", "T2::composeF4 -> parse round trip");
+  test.is (t2.composeF4 (), "[tags:\"tag1&comma;tag2\" uuid:\"...\"]", "T2::composeF4 -> parse round trip");
 
   // Round-trip testing.
   T2 t3;

@@ -297,16 +297,9 @@ int main (int argc, char** argv)
   try
   {
     context.initialize (argc, argv);
+    /* return */ context.run ();
 
-    // When redirecting output to a file, do not use color, curses.
-    if (!isatty (fileno (stdout)))
-    {
-      context.config.set ("curses", "off");
-
-      if (! context.config.get (std::string ("_forcecolor"), false))
-        context.config.set ("color",  "off");
-    }
-
+// start OBSOLETE
     TDB tdb;
     std::string dataLocation = expandPath (context.config.get ("data.location"));
     tdb.dataDirectory (dataLocation);
@@ -342,6 +335,7 @@ int main (int argc, char** argv)
     std::cerr << context.stringtable.get (100, "Unknown error.") << std::endl;
     return -2;
   }
+// end OBSOLETE
 
   return 0;
 }
