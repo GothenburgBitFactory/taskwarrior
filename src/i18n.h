@@ -30,6 +30,7 @@
 
 // 1xx task shell
 #define SHELL_UNKNOWN_ERROR     100
+#define SHELL_READ_PASSWD       101
 
 // 2xx Commands
 #define CMD_ACTIVE              200

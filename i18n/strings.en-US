@@ -11,6 +11,7 @@
 
 # 1xx task shell
 100 Unknown Error.
+101 Could not read home directory from the passwd file.
 
 # 2xx Commands
 200 active

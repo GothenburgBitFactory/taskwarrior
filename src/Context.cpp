@@ -33,6 +33,7 @@
 #include "text.h"
 #include "util.h"
 #include "task.h"
+#include "i18n.h"
 #include "../auto.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +200,9 @@ void Context::loadCorrectConfigFile (int argc, char** argv)
 
   struct passwd* pw = getpwuid (getuid ());
   if (!pw)
-    throw std::string ("Could not read home directory from passwd file.");
+    throw std::string (
+      stringtable.get (SHELL_READ_PASSWD,
+                       "Could not read home directory from the passwd file."));
 
   std::string file = pw->pw_dir;
   config.createDefault (file);
