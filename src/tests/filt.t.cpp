@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest test (6);
+  UnitTest test (14);
 
   // Create a filter consisting of two Att criteria.
   Filter f;
@@ -63,7 +63,78 @@ int main (int argc, char** argv)
   partial.set ("name1", "value1");
   test.notok (f.pass (no0), "no match against partial T2");
 
-  // TODO Modifiers.
+  // Modifiers.
+  T2 mods;
+  mods.set ("name", "value");
+
+  Att a ("name", "value");
+  a.addMod ("is");
+  f.clear ();
+  f.push_back (a);
+  test.ok (f.pass (mods), "name:value -> name.is:value = match");
+  // TODO test inverse.
+
+  a = Att ("name", "value");
+  a.addMod ("isnt");
+  f.clear ();
+  f.push_back (a);
+  test.notok (f.pass (mods), "name:value -> name.isnt:value = no match");
+  // TODO test inverse.
+
+  a = Att ("name", "val");
+  a.addMod ("startswith");
+  f.clear ();
+  f.push_back (a);
+  test.ok (f.pass (mods), "name:value -> name.startswith:val = match");
+  // TODO test inverse.
+
+  a = Att ("name", "lue");
+  a.addMod ("endswith");
+  f.clear ();
+  f.push_back (a);
+  test.ok (f.pass (mods), "name:value -> name.endswith:lue = match");
+  // TODO test inverse.
+
+  a = Att ("name", "value");
+  a.addMod ("has");
+  f.clear ();
+  f.push_back (a);
+  test.ok (f.pass (mods), "name:value -> name.has:alu = match");
+  // TODO test inverse.
+
+  a = Att ("name", "value");
+  a.addMod ("hasnt");
+  f.clear ();
+  f.push_back (a);
+  test.notok (f.pass (mods), "name:value -> name.hasnt:alu = no match");
+  // TODO test inverse.
+
+  a = Att ("name", "");
+  a.addMod ("any");
+  f.clear ();
+  f.push_back (a);
+  test.ok (f.pass (mods), "name:value -> name.any: = match");
+  // TODO test inverse.
+
+  a = Att ("name", "");
+  a.addMod ("none");
+  f.clear ();
+  f.push_back (a);
+  test.notok (f.pass (mods), "name:value -> name.none: = no match");
+  // TODO test inverse.
+
+/*
+"before"
+"after"
+"not"
+"synth"
+"under"
+"over"
+"first"
+"last"
+"this"
+"next"
+*/
 
   return 0;
 }

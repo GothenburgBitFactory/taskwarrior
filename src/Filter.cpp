@@ -38,9 +38,17 @@ bool Filter::pass (const Record& record) const
   // If record doesn't have the attribute, fail.  If it does have the attribute
   // but it doesn't match, fail.
   foreach (att, (*this))
-    if ((r = record.find (att->name ())) == record.end () ||
-        ! att->match (r->second))
+  {
+    // If the record doesn't have the attribute, match against a default one.
+    // This is because "att" may contain a modifier like "name.not:X".
+    if ((r = record.find (att->name ())) == record.end ())
+    {
+      if (! att->match (Att ()))
         return false;
+    }
+    else if (! att->match (r->second))
+      return false;
+  }
 
   return true;
 }

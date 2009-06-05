@@ -27,7 +27,8 @@
 
 #include <sstream>
 #include <stdlib.h>
-#include <text.h>
+#include "text.h"
+#include "util.h"
 #include "Att.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -159,41 +160,78 @@ bool Att::validMod (const std::string& mod) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// "this" is the attribute that has modifiers.  "other" is the attribute from a
+// Record that does not have modifiers, but may have a value.
 bool Att::match (const Att& other) const
 {
-  // No modifier means automatic pass.
-/*
-  if (*this == "") // i18n: no
-    return true;
-*/
+  // Assume a match, and short-circuit on mismatch.
+  foreach (mod, mMods)
+  {
+    // is = equal.
+    if (*mod == "is")
+      if (mValue != other.mValue)
+        return false;
 
-  // TODO before
-  // TODO after
-  // TODO not
-  // TODO none
-  // TODO any
-  // TODO synth
-  // TODO under
-  // TODO over
-  // TODO first
-  // TODO last
-  // TODO this
-  // TODO next
+    // isnt = not equal.
+    if (*mod == "isnt")
+      if (mValue == other.mValue)
+        return false;
 
-/*
-  if (*this == "is")    // i18n: TODO
-    return *this == other ? true : false;
+    // any = any value, but not empty value.
+    if (*mod == "any")
+      if (other.mValue == "")
+        return false;
 
-  if (*this == "isnt")  // i18n: TODO
-    return *this != other ? true : false;
-*/
+    // none = must have empty value.
+    if (*mod == "none")
+      if (other.mValue != "")
+        return false;
 
-  // TODO has
-  // TODO hasnt
-  // TODO startswith
-  // TODO endswith
+    // startswith = first characters must match.
+    if (*mod == "startswith")
+    {
+      if (other.mValue.length () < mValue.length ())
+        return false;
 
-  return false;
+      if (mValue != other.mValue.substr (0, mValue.length ()))
+        return false;
+    }
+
+    // endswith = last characters must match.
+    if (*mod == "endswith")
+    {
+      if (other.mValue.length () < mValue.length ())
+        return false;
+
+      if (mValue != other.mValue.substr (
+                      other.mValue.length () - mValue.length (),
+                      std::string::npos))
+        return false;
+    }
+
+    // has = contains as a substring.
+    if (*mod == "has")
+      if (other.mValue.find (mValue) == std::string::npos)
+        return false;
+
+    // hasnt = does not contain as a substring.
+    if (*mod == "hasnt")
+      if (other.mValue.find (mValue) != std::string::npos)
+        return false;
+
+    // TODO before
+    // TODO after
+    // TODO not  <-- could be a problem
+    // TODO synth
+    // TODO under
+    // TODO over
+    // TODO first
+    // TODO last
+    // TODO this
+    // TODO next
+  }
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
