@@ -230,10 +230,10 @@ static std::string shortUsage ()
 
   out << table.render ()
       << std::endl
-      << "See http://www.beckingham.net/task.html for the latest releases and a "
-      << "full tutorial.  New releases containing fixes and enhancements are "
-      << "made frequently.  Join in the discussion of task, present and future, "
-      << "at http://groups.google.com/group/taskprogram"
+      << "See http://taskwarrior.org/wiki/taskwarrior/Download for the latest "
+      << "releases and a full tutorial.  New releases containing fixes and "
+      << "enhancements are made frequently.  Join in the discussion of task, "
+      << "present and future, at http://taskwarrior.org"
       << std::endl
       << std::endl;
 

@@ -18,10 +18,18 @@ Task has been built and tested on the following configurations:
   - Cygwin 1.5.25-14
 
 While Task has undergone testing, bugs are sure to remain.  If you encounter a
-bug, please contact me at task@beckingham.net.  Here is what you could do, in
-order of increasing effort (to you) and usefulness (to me):
+bug, please enter a new issue at:
 
-  - Do nothing.  Bug probably won't get fixed.
+  http://taskwarrior.org/projects/taskwarrior/issues/new
+
+You can also report the issue in the forums at:
+
+  http://taskwarrior.org/projects/taskwarrior/boards
+
+Finally, you can always contact us at task@beckingham.net.  Here is what you
+could do, in order of increasing effort (to you) and usefulness (to us):
+
+  - Do nothing.  Bug may not get fixed.
 
   - Send an email to task@beckingham.net, explaining what you saw.  The bug
     will be addressed, and a new release will be made.  You will be a hero.
@@ -33,10 +41,6 @@ order of increasing effort (to you) and usefulness (to me):
   - If you are a developer, send a patch that fixes the problem.  Your patch
     will be applied and tested, and a new release will be made.  You will be a
     hero.
-
-  - Another option involves using Github's issue tracker, which can be found
-    at http://github.com/pbeckingham/task/issues which has the advantage that
-    everyone gets to see and track the issue.  You will still be a hero.
 
 Thank you.
 

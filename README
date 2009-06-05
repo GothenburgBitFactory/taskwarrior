@@ -1,20 +1,22 @@
-Thank you for taking a look at task.  Task is a GTD utility featuring:
+Thank you for taking a look at task.  Task is a GTD utility with a multitude of
+features, including:
 
-  - Robust C++ implementation
   - Tags
+  - Recurring tasks
   - Colorful, tabular output
   - Reports, graphs
-  - Lots of commands
-  - Low-level API
-  - Abbreviations for all commands, options
+  - Annotated tasks
   - Multi-user file locking
   - Clean architecture allowing quick addition of new features
-  - Recurring tasks
-
-It is intended that features, mainly in the form of reports will be added
-frequently, with best practices and useful reports evolving from usage patterns.
-
-Task is scope-limited to GTD-like functionality only.
+  - Tab completion scripts
+  - Abbreviations for all commands, options
+  - Complex filtering
+  - Custom user-defined reports
+  - Packaged binaries
+  - Flexible import capabilities
+  - Shadow file support
+  - Robust C++ implementation
+  - much more
 
 You may want to watch the old task movie on YouTube:
 
@@ -24,32 +26,24 @@ or the new improved one:
 
   http://www.youtube.com/watch?v=D2Kn4DMOVSw
 
-Either will give you a fairly good idea of what task is capable of, and
-whether it fits in to your way of working.  As a command line application,
-task is not for everyone and some of you may prefer to not proceed.  The
-movie or online tutorial file are the quickest way for you to make that
-decision.  The online tutorial can be found at:
+Although a little dated, Either will give you a fairly good idea of what task is
+capable of, and whether it fits in to your way of working.  As a command line
+application, task is not for everyone.  The movie or online tutorial file are
+the quickest way for you to make that decision.  The online tutorial can be
+found at:
 
-  http://www.beckingham.net/task.html
-
-Task is based on ideas presented in the todo.sh script, found on:
-
-  http://todotxt.org
-
-Task has many more features than todo.sh, but fundamentally, they are
-both working toward the same goals, which is to help you follow basic
-Getting Things Done (GTD) principles.
+  http://taskwarrior.org/wiki/taskwarrior
 
 All feedback is welcome, in addition to any bug reports or patches to:
 
   task@beckingham.net
 
-Or better yet, get involved in the discussion at
+Or better yet, get involved in the discussion forums at
 
-  http://groups.google.com/group/taskprogram
+  http://taskwarrior.org
 
 Got an idea for an enhancement?  Post a message!
 
-I have found that task makes me more productive and organized.
-I hope task can do the same for you.  
+We have found that task makes us more productive and organized.
+We hope task can do the same for you.  
 

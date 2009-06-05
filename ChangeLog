@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.8.0 (?)
+1.8.0 (6/30/2009)
  + Added zsh tab completion script (thanks to P.C. Shyamshankar).
  + Fixed bug that cause the _forcecolor configuration variable to be
    considered obsolete (thank to Bruce Dillahunty).
@@ -20,6 +20,10 @@
    Chris Pride).
  + Custom reports now support a more compact form of the "age" column,
    called "age_compact" (thanks to T. Charles Yun).
+ + Removed obsolete DEVELOPERS file.  The online support forums at
+   http://taskwarrior.org will be able to provide better information.
+ + Replaced old references to old websites and online groups with
+   http://taskwarrior.org.
 
 ------ old releases ------------------------------
 
