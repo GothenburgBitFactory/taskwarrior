@@ -3,9 +3,8 @@ CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti -fno-stack-check
 LFLAGS  = 
 LIBS    = 
 OBJECTS = main.o ../Context.o ../TDB2.o ../T2.o ../Sequence.o ../Filter.o     \
-          ../Att.o ../Keymap.o ../Record.o ../Mod.o ../StringTable.o          \
-          ../util.o ../text.o ../Date.o ../Config.o ../Location.o ../Subst.o  \
-          ../Nibbler.o
+          ../Att.o ../Keymap.o ../Record.o ../StringTable.o ../Location.o     \
+          ../util.o ../text.o ../Date.o ../Config.o ../Subst.o ../Nibbler.o
 
 all: $(PROJECT)
 
