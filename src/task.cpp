@@ -302,7 +302,10 @@ int main (int argc, char** argv)
   try
   {
     context.initialize (argc, argv);
-    /* return */ context.run ();
+    if (context.args[0].find ("itask") != std::string::npos)
+      /* return */ context.interactive ();
+    else
+      /* return */ context.run ();
 
 // start OBSOLETE
     TDB tdb;

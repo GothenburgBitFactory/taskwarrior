@@ -40,6 +40,8 @@
 #define SEQUENCE_RANGE_MAX      106
 #define SEQUENCE_NOT_A_SEQUENCE 107
 
+#define INTERACTIVE_NO_NCURSES  108
+
 // 2xx Commands
 #define CMD_ACTIVE              200
 #define CMD_ADD                 201
