@@ -22,8 +22,9 @@
    called "age_compact" (thanks to T. Charles Yun).
  + Removed obsolete DEVELOPERS file.  The online support forums at
    http://taskwarrior.org will be able to provide better information.
- + Replaced old references to old websites and online groups with
+ + Replaced references to old websites and online groups with
    http://taskwarrior.org.
+ + Replaced references to old contact address with support@taskwarrior.org.
 
 ------ old releases ------------------------------
 

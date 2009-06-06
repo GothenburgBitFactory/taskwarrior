@@ -26,12 +26,12 @@ You can also report the issue in the forums at:
 
   http://taskwarrior.org/projects/taskwarrior/boards
 
-Finally, you can always contact us at task@beckingham.net.  Here is what you
+Finally, you can always contact us at support@taskwarrior.org.  Here is what you
 could do, in order of increasing effort (to you) and usefulness (to us):
 
   - Do nothing.  Bug may not get fixed.
 
-  - Send an email to task@beckingham.net, explaining what you saw.  The bug
+  - Send an email to support@taskwarrior.org, explaining what you saw.  The bug
     will be addressed, and a new release will be made.  You will be a hero.
 
   - Send an email, and a reproducible test case in the form of the few commands

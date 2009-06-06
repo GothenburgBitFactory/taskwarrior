@@ -36,7 +36,7 @@ found at:
 
 All feedback is welcome, in addition to any bug reports or patches to:
 
-  task@beckingham.net
+  support@taskwarrior.org
 
 Or better yet, get involved in the discussion forums at
 
