@@ -32,6 +32,14 @@
 #define SHELL_UNKNOWN_ERROR     100
 #define SHELL_READ_PASSWD       101
 
+#define CONFIRM_YES_NO          102
+
+#define SEQUENCE_BAD_SEQ        103
+#define SEQUENCE_BAD_RANGE      104
+#define SEQUENCE_INVERTED       105
+#define SEQUENCE_RANGE_MAX      106
+#define SEQUENCE_NOT_A_SEQUENCE 107
+
 // 2xx Commands
 #define CMD_ACTIVE              200
 #define CMD_ADD                 201

@@ -38,25 +38,6 @@ StringTable::StringTable ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-StringTable::StringTable (const StringTable& other)
-{
-  throw std::string ("unimplemented StringTable::StringTable");
-  mMapping = other.mMapping;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-StringTable& StringTable::operator= (const StringTable& other)
-{
-  throw std::string ("unimplemented StringTable::operator=");
-  if (this != &other)
-  {
-    mMapping = other.mMapping;
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 StringTable::~StringTable ()
 {
 }
@@ -69,7 +50,7 @@ StringTable::~StringTable ()
 //  ...
 void StringTable::load (const std::string& file)
 {
-  mMapping.clear ();  // Allows dynamic reload.
+  this->clear ();  // Allows dynamic reload.
 
   std::ifstream in;
   in.open (file.c_str (), std::ifstream::in);
@@ -79,21 +60,21 @@ void StringTable::load (const std::string& file)
     while (getline (in, line))
     {
       // Remove comments.
-      std::string::size_type pound = line.find ("#");
+      std::string::size_type pound = line.find ("#"); // no i18n
       if (pound != std::string::npos)
         line = line.substr (0, pound);
 
-      line = trim (line, " \t");
+      line = trim (line, " \t"); // no i18n
 
       // Skip empty lines.
       if (line.length () > 0)
       {
-        std::string::size_type equal = line.find (" ");
+        std::string::size_type equal = line.find (" "); // no i18n
         if (equal != std::string::npos)
         {
-          int key = ::atoi (trim (line.substr (0, equal), " \t").c_str ());
-          std::string value = trim (line.substr (equal+1, line.length () - equal), " \t");
-          mMapping[key] = value;
+          int key = ::atoi (trim (line.substr (0, equal), " \t").c_str ()); // no i18n
+          std::string value = trim (line.substr (equal+1, line.length () - equal), " \t"); // no i18n
+          (*this)[key] = value;
         }
       }
     }
@@ -101,15 +82,15 @@ void StringTable::load (const std::string& file)
     in.close ();
   }
   else
-    throw std::string ("Could not read string file '") + file + "'";
+    throw std::string ("Could not read string file '") + file + "'"; // TODO i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string StringTable::get (int id, const std::string& alternate)
 {
   // Return the right string.
-  if (mMapping.find (id) != mMapping.end ())
-    return mMapping[id];
+  if (this->find (id) != this->end ())
+    return (*this)[id];
 
   return alternate;
 }

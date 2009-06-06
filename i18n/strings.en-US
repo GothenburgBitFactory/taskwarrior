@@ -12,6 +12,13 @@
 # 1xx task shell
 100 Unknown Error.
 101 Could not read home directory from the passwd file.
+102 (y/n)
+103 Invalid ID in sequence
+104 Invalid ID in range
+105 Inverted sequence range high-low
+106 ID Range too large
+107 Not a sequence.
+
 
 # 2xx Commands
 200 active

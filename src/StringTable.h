@@ -30,19 +30,14 @@
 #include <map>
 #include <string>
 
-class StringTable
+class StringTable : public std::map <int, std::string>
 {
 public:
   StringTable ();                                       // Default constructor
-  StringTable (const StringTable&);                     // Copy constructor
-  StringTable& operator= (const StringTable&);          // Assignment operator
   ~StringTable ();                                      // Destructor
 
   void load (const std::string&);
   std::string get (int, const std::string&);
-
-private:
-  std::map <int, std::string> mMapping;
 };
 
 #endif

@@ -306,7 +306,7 @@ Grid::Cell::operator char () const
 {
   switch (mType)
   {
-  case CELL_BOOL:   return mBool ? 'Y' : 'N';
+  case CELL_BOOL:   return mBool ? 'Y' : 'N'; // TODO i18n
   case CELL_CHAR:   return mChar;
   case CELL_INT:    return (char) mInt;
   case CELL_FLOAT:  return (char) (int) mFloat;
@@ -368,7 +368,7 @@ Grid::Cell::operator std::string () const
 
   switch (mType)
   {
-  case CELL_BOOL:   return mBool ? "true" : "false";
+  case CELL_BOOL:   return mBool ? "true" : "false"; // TODO i18n
   case CELL_CHAR:   sprintf (s, "%c", mChar);
                     return std::string (s);
   case CELL_INT:    sprintf (s, "%d", mInt);

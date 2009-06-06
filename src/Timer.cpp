@@ -37,13 +37,13 @@ Timer::Timer (const std::string& description)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Timer stops when the object is desctructed.
+// Timer stops when the object is destructed.
 Timer::~Timer ()
 {
   struct timeval end;
   ::gettimeofday (&end, NULL);
 
-  std::cout << "Timer "
+  std::cout << "Timer " // No i18n
             << mDescription
             << " "
             << std::setprecision (6)

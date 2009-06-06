@@ -42,12 +42,15 @@
 #include "TDB.h"
 #include "text.h"
 #include "task.h"
+#include "i18n.h"
 #include "../auto.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Uses std::getline, because std::cin eats leading whitespace, and that means
 // that if a newline is entered, std::cin eats it and never returns from the
-// "std::cin >> answer;" line, but it does disply the newline.  This way, with
+// "std::cin >> answer;" line, but it does display the newline.  This way, with
 // std::getline, the newline can be detected, and the prompt re-written.
 bool confirm (const std::string& question)
 {
@@ -55,18 +58,22 @@ bool confirm (const std::string& question)
 
   do
   {
-    std::cout << question << " (y/n) ";
+    std::cout << question
+              << " "
+              << context.stringtable.get (CONFIRM_YES_NO, "(y/n)")
+              << " ";
+
     std::getline (std::cin, answer);
     answer = lowerCase (trim (answer));
-    if (answer == "\n") std::cout << "newline\n";
+    if (answer == "\n") std::cout << "newline\n"; // TODO i18n
   }
-  while (answer != "y"   &&
-         answer != "ye"  &&
-         answer != "yes" &&
-         answer != "n"   &&
-         answer != "no");
+  while (answer != "y"   && // TODO i18n
+         answer != "ye"  && // TODO i18n
+         answer != "yes" && // TODO i18n
+         answer != "n"   && // TODO i18n
+         answer != "no");   // TODO i18n
 
-  return (answer == "y" || answer == "ye" || answer == "yes") ? true : false;
+  return (answer == "y" || answer == "ye" || answer == "yes") ? true : false;   // TODO i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,35 +94,35 @@ std::string formatSeconds (time_t delta)
   float days = (float) delta / 86400.0;
 
   if (days > 365)
-    sprintf (formatted, "%.1f yrs", (days / 365.2422));
+    sprintf (formatted, "%.1f yrs", (days / 365.2422));   // TODO i18n
   else if (days > 84)
-    sprintf (formatted, "%1d mth%s",
+    sprintf (formatted, "%1d mth%s",   // TODO i18n
                         (int) (days / 30.6),
-                        ((int) (days / 30.6) == 1 ? "" : "s"));
+                        ((int) (days / 30.6) == 1 ? "" : "s"));   // TODO i18n
   else if (days > 13)
-    sprintf (formatted, "%d wk%s",
+    sprintf (formatted, "%d wk%s",   // TODO i18n
                         (int) (days / 7.0),
-                        ((int) (days / 7.0) == 1 ? "" : "s"));
+                        ((int) (days / 7.0) == 1 ? "" : "s"));   // TODO i18n
   else if (days > 5.0)
-    sprintf (formatted, "%d day%s",
+    sprintf (formatted, "%d day%s",   // TODO i18n
                         (int) days,
-                        ((int) days == 1 ? "" : "s"));
+                        ((int) days == 1 ? "" : "s"));   // TODO i18n
   else if (days > 1.0)
-    sprintf (formatted, "%.1f days", days);
+    sprintf (formatted, "%.1f days", days);   // TODO i18n
   else if (days * 24 > 1.0)
-    sprintf (formatted, "%d hr%s",
+    sprintf (formatted, "%d hr%s",   // TODO i18n
                         (int) (days * 24.0),
-                        ((int) (days * 24) == 1 ? "" : "s"));
+                        ((int) (days * 24) == 1 ? "" : "s"));   // TODO i18n
   else if (days * 24 * 60 > 1)
-    sprintf (formatted, "%d min%s",
+    sprintf (formatted, "%d min%s",   // TODO i18n
                         (int) (days * 24 * 60),
-                        ((int) (days * 24 * 60) == 1 ? "" : "s"));
+                        ((int) (days * 24 * 60) == 1 ? "" : "s"));   // TODO i18n
   else if (days * 24 * 60 * 60 > 1)
-    sprintf (formatted, "%d sec%s",
+    sprintf (formatted, "%d sec%s",   // TODO i18n
                         (int) (days * 24 * 60 * 60),
-                        ((int) (days * 24 * 60 * 60) == 1 ? "" : "s"));
+                        ((int) (days * 24 * 60 * 60) == 1 ? "" : "s"));   // TODO i18n
   else
-    strcpy (formatted, "-");
+    strcpy (formatted, "-"); // no i18n
 
   return std::string (formatted);
 }
@@ -127,16 +134,16 @@ std::string formatSecondsCompact (time_t delta)
   char formatted[24];
   float days = (float) delta / 86400.0;
 
-  if (days > 365)                sprintf (formatted, "%.1fy", (days / 365.2422));
-  else if (days > 84)            sprintf (formatted, "%1dmo", (int) (days / 30.6));
-  else if (days > 13)            sprintf (formatted, "%dwk", (int) (days / 7.0));
-  else if (days > 5.0)           sprintf (formatted, "%dd", (int) days);
-  else if (days > 1.0)           sprintf (formatted, "%.1fd", days);
-  else if (days * 24 > 1.0)      sprintf (formatted, "%dh", (int) (days * 24.0));
-  else if (days * 24 * 60 > 1)   sprintf (formatted, "%dm", (int) (days * 24 * 60));
-  else if (days * 24 * 3600 > 1) sprintf (formatted, "%ds", (int) (days * 24 * 60 * 60));
+  if (days > 365)                sprintf (formatted, "%.1fy", (days / 365.2422));         // TODO i18n
+  else if (days > 84)            sprintf (formatted, "%1dmo", (int) (days / 30.6));       // TODO i18n
+  else if (days > 13)            sprintf (formatted, "%dwk", (int) (days / 7.0));         // TODO i18n
+  else if (days > 5.0)           sprintf (formatted, "%dd", (int) days);                  // TODO i18n
+  else if (days > 1.0)           sprintf (formatted, "%.1fd", days);                      // TODO i18n
+  else if (days * 24 > 1.0)      sprintf (formatted, "%dh", (int) (days * 24.0));         // TODO i18n
+  else if (days * 24 * 60 > 1)   sprintf (formatted, "%dm", (int) (days * 24 * 60));      // TODO i18n
+  else if (days * 24 * 3600 > 1) sprintf (formatted, "%ds", (int) (days * 24 * 60 * 60)); // TODO i18n
   else
-    strcpy (formatted, "-");
+    strcpy (formatted, "-"); // no i18n
 
   return std::string (formatted);
 }
@@ -198,7 +205,7 @@ const std::string uuid ()
 #include <stdlib.h>
 static char randomHexDigit ()
 {
-  static char digits[] = "0123456789abcdef";
+  static char digits[] = "0123456789abcdef"; // no i18n
 #ifdef HAVE_RANDOM
   // random is better than rand.
   return digits[random () % 16];
@@ -255,6 +262,7 @@ const std::string uuid ()
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+// no i18n
 std::string expandPath (const std::string& in)
 {
   std::string copy = in;
@@ -374,7 +382,7 @@ void spit (const std::string& file, const std::string& contents)
     out.close ();
   }
   else
-    throw std::string ("Could not write file '") + file + "'";
+    throw std::string ("Could not write file '") + file + "'"; // TODO i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////
