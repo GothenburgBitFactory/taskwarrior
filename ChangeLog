@@ -20,6 +20,8 @@
    Chris Pride).
  + Custom reports now support a more compact form of the "age" column,
    called "age_compact" (thanks to T. Charles Yun).
+ + Supports 'rc.name:value' for a command line override to .taskrc data
+   (thanks to Federico Hernandez).
  + Removed obsolete DEVELOPERS file.  The online support forums at
    http://taskwarrior.org will provide better information.
  + Replaced website references with http://taskwarrior.org.

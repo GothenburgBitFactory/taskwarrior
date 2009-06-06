@@ -201,13 +201,11 @@ void Context::loadCorrectConfigFile ()
     if (arg->substr (0, 3) == "rc:")
     {
       std::string file = arg->substr (3, std::string::npos);
-      if (! access (file.c_str (), F_OK))
-      {
-        config.load (file);
-        return;
-      }
-      else
+      if (access (file.c_str (), F_OK))
         throw std::string ("Could not read configuration file '") + file + "'";
+
+      messages.push_back (std::string ("Using alternate .taskrc file ") + file); // TODO i18n
+      config.load (file);
     }
   }
 
@@ -221,8 +219,6 @@ void Context::loadCorrectConfigFile ()
   config.createDefault (file);
 
   // Apply overrides of type: "rc.name:value"
-/*
-  // TODO Maybe this should happen after the parse?
   foreach (arg, args)
   {
     if (arg->substr (0, 3) == "rc.")
@@ -237,10 +233,11 @@ void Context::loadCorrectConfigFile ()
           n.getUntilEOS (value))
       {
         config.set (name, value);
+        messages.push_back (std::string ("Configuration override ") +  // TODO i18n
+                           arg->substr (3, std::string::npos));
       }
     }
   }
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -258,7 +255,8 @@ void Context::parse ()
   {
     // Ignore any argument that is "rc:...", because that is the command line
     // specified rc file.
-    if (arg->substr (0, 3) != "rc:")
+    if (arg->substr (0, 3) != "rc:" ||
+        arg->substr (0, 3) != "rc.")
     {
       if (!terminated)
       {
