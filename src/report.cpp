@@ -2165,6 +2165,7 @@ std::string handleReportStats (TDB& tdb, T& task)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
+  table.setTableIntraPadding (2);
   table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Category");
   table.addColumn ("Data");
