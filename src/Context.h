@@ -51,17 +51,19 @@ public:
   void footnote (const std::string&);  // Footnote sink
 
 private:
-  void loadCorrectConfigFile (int, char**);
+  void loadCorrectConfigFile ();
   void parse ();
 
 public:
-  Config      config;
-  Filter      filter;
-  Keymap      keymap;
-  Sequence    sequence;
-  T2          task;
-  TDB2        tdb;
-  StringTable stringtable;
+  Config                    config;
+  Filter                    filter;
+  Keymap                    keymap;
+  Sequence                  sequence;
+  T2                        task;
+  TDB2                      tdb;
+  StringTable               stringtable;
+  std::vector <std::string> args;
+  std::string               command;
 
 private:
   std::vector <std::string> messages;

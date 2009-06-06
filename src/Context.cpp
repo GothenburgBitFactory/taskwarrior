@@ -45,6 +45,7 @@ Context::Context ()
 , task ()
 , tdb ()
 , stringtable ()
+, command ("")
 {
   // Set up randomness.
 #ifdef HAVE_SRANDOM
@@ -65,6 +66,10 @@ Context::Context (const Context& other)
   task        = other.task;
   tdb         = other.tdb;
   stringtable = other.stringtable;
+  args        = other.args;
+  command     = other.command;
+  messages    = other.messages;
+  footnotes   = other.footnotes;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,6 +85,10 @@ Context& Context::operator= (const Context& other)
     task        = other.task;
     tdb         = other.tdb;
     stringtable = other.stringtable;
+    args        = other.args;
+    command     = other.command;
+    messages    = other.messages;
+    footnotes   = other.footnotes;
   }
 
   return *this;
@@ -93,9 +102,13 @@ Context::~Context ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::initialize (int argc, char** argv)
 {
+  // Capture the args.
+  for (int i = 0; i < argc; ++i)
+    args.push_back (argv[i]);
+
   // Load the configuration file from the home directory.  If the file cannot
   // be found, offer to create a sample one.
-  loadCorrectConfigFile (argc, argv);
+  loadCorrectConfigFile ();
 
   // When redirecting output to a file, do not use color, curses.
   if (!isatty (fileno (stdout)))
@@ -181,20 +194,20 @@ int Context::interactive ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Context::loadCorrectConfigFile (int argc, char** argv)
+void Context::loadCorrectConfigFile ()
 {
-  for (int i = 1; i < argc; ++i)
+  foreach (arg, args)
   {
-    if (! strncmp (argv[i], "rc:", 3))
+    if (arg->substr (0, 3) == "rc:")
     {
-      if (! access (&(argv[i][3]), F_OK))
+      std::string file = arg->substr (3, std::string::npos);
+      if (! access (file.c_str (), F_OK))
       {
-        std::string file = &(argv[i][3]);
         config.load (file);
         return;
       }
       else
-        throw std::string ("Could not read configuration file '") + &(argv[i][3]) + "'";
+        throw std::string ("Could not read configuration file '") + file + "'";
     }
   }
 
@@ -207,12 +220,165 @@ void Context::loadCorrectConfigFile (int argc, char** argv)
   std::string file = pw->pw_dir;
   config.createDefault (file);
 
-  // TODO Apply overrides of type: "rc.name:value"
+  // Apply overrides of type: "rc.name:value"
+/*
+  // TODO Maybe this should happen after the parse?
+  foreach (arg, args)
+  {
+    if (arg->substr (0, 3) == "rc.")
+    {
+      std::string name;
+      std::string value;
+      Nibbler n (*arg);
+      if (n.getUntil ('.', name) &&
+          n.skip ('.')           &&
+          n.getUntil (':', name) &&
+          n.skip (':')           &&
+          n.getUntilEOS (value))
+      {
+        config.set (name, value);
+      }
+    }
+  }
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Context::parse ()
 {
+  command = "";
+
+  bool terminated = false;
+  bool foundSequence = false;
+  bool foundSomethingAfterSequence = false;
+
+  std::string descCandidate = "";
+
+  foreach (arg, args)
+  {
+    // Ignore any argument that is "rc:...", because that is the command line
+    // specified rc file.
+    if (arg->substr (0, 3) != "rc:")
+    {
+      if (!terminated)
+      {
+/*
+        size_t colon;               // Pointer to colon in argument.
+        std::string from;
+        std::string to;
+        bool global;
+        std::vector <int> sequence;
+
+        // The '--' argument shuts off all parsing - everything is an argument.
+        if (arg == "--")
+          terminated = true;
+
+        // An id is the first argument found that contains all digits.
+        else if (lowerCase (command) != "add"  && // "add" doesn't require an ID
+            validSequence (arg, sequence) &&
+            ! foundSomethingAfterSequence)
+        {
+          foundSequence = true;
+          foreach (id, sequence)
+            task.addId (*id);
+        }
+
+        // Tags begin with + or - and contain arbitrary text.
+        else if (validTag (arg))
+        {
+          if (foundSequence)
+            foundSomethingAfterSequence = true;
+
+          if (arg[0] == '+')
+            task.addTag (arg->substr (1, std::string::npos));
+          else if (arg[0] == '-')
+            task.addRemoveTag (arg->substr (1, std::string::npos));
+        }
+
+        // Attributes contain a constant string followed by a colon, followed by a
+        // value.
+        else if ((colon = arg->find (":")) != std::string::npos)
+        {
+          if (foundSequence)
+            foundSomethingAfterSequence = true;
+
+          std::string name  = lowerCase (arg->substr (0, colon));
+          std::string value = arg->substr (colon + 1, std::string::npos);
+
+          if (validAttribute (name, value))
+          {
+            if (name != "recur" || validDuration (value))
+              task.setAttribute (name, value);
+          }
+
+          // If it is not a valid attribute, then allow the argument as part of
+          // the description.
+          else
+          {
+            if (descCandidate.length ())
+              descCandidate += " ";
+            descCandidate += arg;
+          }
+        }
+
+        // Substitution of description text.
+        else if (validSubstitution (arg, from, to, global))
+        {
+          if (foundSequence)
+            foundSomethingAfterSequence = true;
+
+          task.setSubstitution (from, to, global);
+        }
+
+        // Command.
+        else if (command == "")
+        {
+          if (foundSequence)
+            foundSomethingAfterSequence = true;
+
+          std::string l = lowerCase (arg);
+          if (isCommand (l) && validCommand (l))
+            command = l;
+          else
+          {
+            if (descCandidate.length ())
+              descCandidate += " ";
+            descCandidate += arg;
+          }
+        }
+
+        // Anything else is just considered description.
+        else
+        {
+          if (foundSequence)
+            foundSomethingAfterSequence = true;
+
+          if (descCandidate.length ())
+            descCandidate += " ";
+          descCandidate += arg;
+        }
+*/
+      }
+      // terminated, therefore everything subsequently is a description.
+      else
+      {
+/*
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
+        if (descCandidate.length ())
+          descCandidate += " ";
+        descCandidate += arg;
+*/
+      }
+    }
+  }
+
+/*
+  if (validDescription (descCandidate))
+    task.set ("description", descCandidate);
+*/
+
   // TODO Replace parse.cpp:parse
   throw std::string ("unimplemented Context::parse");
 }
