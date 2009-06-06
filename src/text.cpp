@@ -298,7 +298,7 @@ std::string upperCase (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 const char* optionalBlankLine ()
 {
-  if (context.config.get ("blanklines", true) == true)
+  if (context.config.get ("blanklines", true) == true) // no i18n
     return newline;
 
   return noline;

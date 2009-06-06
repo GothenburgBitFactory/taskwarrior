@@ -102,7 +102,7 @@ bool Att::parse (Nibbler& n)
   if (n.getUntilOneOf (".:", mName))
   {
     if (mName.length () == 0)
-      throw std::string ("Missing attribute name");
+      throw std::string ("Missing attribute name"); // TODO i18n
 
     while (n.skip ('.'))
     {
@@ -112,10 +112,10 @@ bool Att::parse (Nibbler& n)
         if (validMod (mod))
           mMods.push_back (mod);
         else
-          throw std::string ("The name '") + mod + "' is not a valid modifier";
+          throw std::string ("The name '") + mod + "' is not a valid modifier"; // TODO i18n
       }
       else
-        throw std::string ("Missing . or : after modifier");
+        throw std::string ("Missing . or : after modifier"); // TODO i18n
     }
 
     if (n.skip (':'))
@@ -129,13 +129,13 @@ bool Att::parse (Nibbler& n)
         return true;
       }
       else
-        throw std::string ("Missing attribute value");
+        throw std::string ("Missing attribute value"); // TODO i18n
     }
     else
-      throw std::string ("Missing : after attribute name");
+      throw std::string ("Missing : after attribute name"); // TODO i18n
   }
   else
-    throw std::string ("Missing : after attribute name");
+    throw std::string ("Missing : after attribute name"); // TODO i18n
 
   return false;
 }
@@ -168,27 +168,27 @@ bool Att::match (const Att& other) const
   foreach (mod, mMods)
   {
     // is = equal.
-    if (*mod == "is")
+    if (*mod == "is") // TODO i18n
       if (mValue != other.mValue)
         return false;
 
     // isnt = not equal.
-    if (*mod == "isnt")
+    if (*mod == "isnt") // TODO i18n
       if (mValue == other.mValue)
         return false;
 
     // any = any value, but not empty value.
-    if (*mod == "any")
+    if (*mod == "any") // TODO i18n
       if (other.mValue == "")
         return false;
 
     // none = must have empty value.
-    if (*mod == "none")
+    if (*mod == "none") // TODO i18n
       if (other.mValue != "")
         return false;
 
     // startswith = first characters must match.
-    if (*mod == "startswith")
+    if (*mod == "startswith") // TODO i18n
     {
       if (other.mValue.length () < mValue.length ())
         return false;
@@ -198,7 +198,7 @@ bool Att::match (const Att& other) const
     }
 
     // endswith = last characters must match.
-    if (*mod == "endswith")
+    if (*mod == "endswith") // TODO i18n
     {
       if (other.mValue.length () < mValue.length ())
         return false;
@@ -210,12 +210,12 @@ bool Att::match (const Att& other) const
     }
 
     // has = contains as a substring.
-    if (*mod == "has")
+    if (*mod == "has") // TODO i18n
       if (other.mValue.find (mValue) == std::string::npos)
         return false;
 
     // hasnt = does not contain as a substring.
-    if (*mod == "hasnt")
+    if (*mod == "hasnt") // TODO i18n
       if (other.mValue.find (mValue) != std::string::npos)
         return false;
 
@@ -258,7 +258,7 @@ void Att::addMod (const std::string& mod)
   if (validMod (mod))
     mMods.push_back (mod);
   else
-    throw std::string ("The name '") + mod + "' is not a valid modifier";
+    throw std::string ("The name '") + mod + "' is not a valid modifier"; // TODO i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -336,22 +336,22 @@ void Att::encode (std::string& value) const
   std::string::size_type i;
 
   while ((i = value.find ('\t')) != std::string::npos)
-    value.replace (i, 1, "&tab;");
+    value.replace (i, 1, "&tab;"); // no i18n
 
   while ((i = value.find ('"')) != std::string::npos)
-    value.replace (i, 1, "&quot;");
+    value.replace (i, 1, "&quot;"); // no i18n
 
   while ((i = value.find (',')) != std::string::npos)
-    value.replace (i, 1, "&comma;");
+    value.replace (i, 1, "&comma;"); // no i18n
 
   while ((i = value.find ('[')) != std::string::npos)
-    value.replace (i, 1, "&open;");
+    value.replace (i, 1, "&open;"); // no i18n
 
   while ((i = value.find (']')) != std::string::npos)
-    value.replace (i, 1, "&close;");
+    value.replace (i, 1, "&close;"); // no i18n
 
   while ((i = value.find (':')) != std::string::npos)
-    value.replace (i, 1, "&colon;");
+    value.replace (i, 1, "&colon;"); // no i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -366,22 +366,22 @@ void Att::decode (std::string& value) const
 {
   std::string::size_type i;
 
-  while ((i = value.find ("&tab;")) != std::string::npos)
+  while ((i = value.find ("&tab;")) != std::string::npos) // no i18n
     value.replace (i, 5, "\t");
 
-  while ((i = value.find ("&quot;")) != std::string::npos)
+  while ((i = value.find ("&quot;")) != std::string::npos) // no i18n
     value.replace (i, 6, "\"");
 
-  while ((i = value.find ("&comma;")) != std::string::npos)
+  while ((i = value.find ("&comma;")) != std::string::npos) // no i18n
     value.replace (i, 7, ",");
 
-  while ((i = value.find ("&open;")) != std::string::npos)
+  while ((i = value.find ("&open;")) != std::string::npos) // no i18n
     value.replace (i, 6, "[");
 
-  while ((i = value.find ("&close;")) != std::string::npos)
+  while ((i = value.find ("&close;")) != std::string::npos) // no i18n
     value.replace (i, 7, "]");
 
-  while ((i = value.find ("&colon;")) != std::string::npos)
+  while ((i = value.find ("&colon;")) != std::string::npos) // no i18n
     value.replace (i, 7, ":");
 }
 ////////////////////////////////////////////////////////////////////////////////
