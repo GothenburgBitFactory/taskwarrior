@@ -270,7 +270,7 @@ const std::string Config::get (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Config::get (const std::string& key, bool default_value)
+bool Config::get (const std::string& key, const bool default_value)
 {
   if ((*this).find (key) != (*this).end ())
   {

@@ -310,6 +310,7 @@ int main (int argc, char** argv)
       status = context.run ();
 
 // start OBSOLETE
+/*
     TDB tdb;
     std::string dataLocation = expandPath (context.config.get ("data.location"));
     tdb.dataDirectory (dataLocation);
@@ -332,6 +333,8 @@ int main (int argc, char** argv)
     }
 
     std::cout << runTaskCommand (context.args, tdb);
+*/
+// end OBSOLETE
   }
 
   catch (std::string& error)
@@ -345,7 +348,6 @@ int main (int argc, char** argv)
     std::cerr << context.stringtable.get (100, "Unknown error.") << std::endl;
     return -2;
   }
-// end OBSOLETE
 
   return status;
 }

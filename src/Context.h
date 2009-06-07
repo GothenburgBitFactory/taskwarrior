@@ -41,8 +41,6 @@ class Context
 {
 public:
   Context ();                          // Default constructor
-  Context (const Context&);            // Copy constructor
-  Context& operator= (const Context&); // Assignment operator
   ~Context ();                         // Destructor
 
   void initialize (int, char**);       // all startup

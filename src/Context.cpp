@@ -58,49 +58,6 @@ Context::Context ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Context::Context (const Context& other)
-{
-  throw std::string ("unimplemented Context::Context");
-  config      = other.config;
-  filter      = other.filter;
-  keymap      = other.keymap;
-  sequence    = other.sequence;
-  subst       = other.subst;
-  task        = other.task;
-  tdb         = other.tdb;
-  stringtable = other.stringtable;
-  program     = other.program;
-  args        = other.args;
-  cmd         = other.cmd;
-  messages    = other.messages;
-  footnotes   = other.footnotes;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Context& Context::operator= (const Context& other)
-{
-  throw std::string ("unimplemented Context::operator=");
-  if (this != &other)
-  {
-    config      = other.config;
-    filter      = other.filter;
-    keymap      = other.keymap;
-    sequence    = other.sequence;
-    subst       = other.subst;
-    task        = other.task;
-    tdb         = other.tdb;
-    stringtable = other.stringtable;
-    program     = other.program;
-    args        = other.args;
-    cmd         = other.cmd;
-    messages    = other.messages;
-    footnotes   = other.footnotes;
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Context::~Context ()
 {
 }
