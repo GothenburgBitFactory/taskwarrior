@@ -326,10 +326,11 @@ void T2::removeTag (const std::string& tag)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool T2::validate () const
+bool T2::valid () const
 {
   // TODO Verify until > due
   // TODO Verify entry < until, due, start, end
+  // TODO If name == "recur", then Duration::valid (value).
   return true;
 }
 

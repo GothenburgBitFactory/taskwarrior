@@ -42,6 +42,7 @@ public:
   operator int ();
   operator time_t ();
 
+  bool valid (const std::string&) const;
   void parse (const std::string&);
 
 private:

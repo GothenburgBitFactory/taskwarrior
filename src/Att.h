@@ -42,6 +42,7 @@ public:
   ~Att ();                                      // Destructor
 
   bool valid (const std::string&) const;
+  void parse (const std::string&);
   void parse (Nibbler&);
   bool validMod (const std::string&) const;
   bool match (const Att&) const;

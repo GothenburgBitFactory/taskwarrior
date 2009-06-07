@@ -119,6 +119,12 @@ bool Att::valid (const std::string& input) const
 //                    ^          |
 //                    |__________|
 //
+void Att::parse (const std::string& input)
+{
+  Nibbler n (input);
+  parse (n);
+}
+
 void Att::parse (Nibbler& n)
 {
   // Ensure a clean object first.

@@ -220,6 +220,54 @@ void Context::dispatch ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::shadow ()
 {
+/*
+  try
+  {
+    // Determine if shadow file is enabled.
+    std::string shadowFile = expandPath (context.config.get ("shadow.file"));
+    if (shadowFile != "")
+    {
+      std::string oldCurses = context.config.get ("curses");
+      std::string oldColor = context.config.get ("color");
+      context.config.set ("curses", "off");
+      context.config.set ("color",  "off");
+
+      // Run report.  Use shadow.command, using default.command as a fallback
+      // with "list" as a default.
+      std::string command = context.config.get ("shadow.command",
+                              context.config.get ("default.command", "list"));
+      std::vector <std::string> args;
+      split (args, command, ' ');
+      std::string result = runTaskCommand (args, tdb);
+
+      std::ofstream out (shadowFile.c_str ());
+      if (out.good ())
+      {
+        out << result;
+        out.close ();
+      }
+      else
+        throw std::string ("Could not write file '") + shadowFile + "'";
+
+      context.config.set ("curses", oldCurses);
+      context.config.set ("color",  oldColor);
+    }
+
+    // Optionally display a notification that the shadow file was updated.
+    if (context.config.get (std::string ("shadow.notify"), false))
+      std::cout << "[Shadow file '" << shadowFile << "' updated]" << std::endl;
+  }
+
+  catch (std::string& error)
+  {
+    std::cerr << error << std::endl;
+  }
+
+  catch (...)
+  {
+    std::cerr << "Unknown error." << std::endl;
+  }
+*/
   throw std::string ("unimplemented Context::shadow");
 }
 
@@ -279,6 +327,7 @@ void Context::loadCorrectConfigFile ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::parse ()
 {
+  Att attribute;
   std::string descCandidate        = "";
   bool terminated                  = false;
   bool foundSequence               = false;
@@ -319,33 +368,16 @@ std::cout << "# parse sequence '" << *arg << "'" << std::endl;
           task.addRemoveTag (arg->substr (1, std::string::npos));
       }
 */
-/*
-      // Attributes contain a constant string followed by a colon, followed by a
-      // value.
-      else if ((colon = arg->find (":")) != std::string::npos)
+
+      else if (attribute.valid (*arg))
       {
+std::cout << "# parse attribute '" << *arg << "'" << std::endl;
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
-        std::string name  = lowerCase (arg->substr (0, colon));
-        std::string value = arg->substr (colon + 1, std::string::npos);
-
-        if (validAttribute (name, value))
-        {
-          if (name != "recur" || validDuration (value))
-            task.setAttribute (name, value);
-        }
-
-        // If it is not a valid attribute, then allow the argument as part of
-        // the description.
-        else
-        {
-          if (descCandidate.length ())
-            descCandidate += " ";
-          descCandidate += arg;
-        }
+        attribute.parse (*arg);
+        task[attribute.name ()] = attribute;
       }
-*/
 
       // Substitution of description and/or annotation text.
       else if (subst.valid (*arg))

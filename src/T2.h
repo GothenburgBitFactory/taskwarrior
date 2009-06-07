@@ -76,7 +76,7 @@ public:
   void setAnnotations (const std::vector <Att>&);
   void addAnnotation (const std::string&);
 
-  bool validate () const;
+  bool valid () const;
 
 private:
   int determineVersion (const std::string&);

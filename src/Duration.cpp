@@ -73,42 +73,89 @@ Duration::~Duration ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Duration::valid (const std::string& input) const
+{
+  std::string lower_input = lowerCase (input);
+
+  std::vector <std::string> supported;
+  supported.push_back ("daily");       // TODO i18n
+  supported.push_back ("day");         // TODO i18n
+  supported.push_back ("weekly");      // TODO i18n
+  supported.push_back ("weekdays");    // TODO i18n
+  supported.push_back ("sennight");    // TODO i18n
+  supported.push_back ("biweekly");    // TODO i18n
+  supported.push_back ("fortnight");   // TODO i18n
+  supported.push_back ("monthly");     // TODO i18n
+  supported.push_back ("bimonthly");   // TODO i18n
+  supported.push_back ("quarterly");   // TODO i18n
+  supported.push_back ("biannual");    // TODO i18n
+  supported.push_back ("biyearly");    // TODO i18n
+  supported.push_back ("annual");      // TODO i18n
+  supported.push_back ("semiannual");  // TODO i18n
+  supported.push_back ("yearly");      // TODO i18n
+
+  std::vector <std::string> matches;
+  if (autoComplete (lower_input, supported, matches) == 1)
+    return true;
+
+  // Support \d+ d|w|m|q|y
+  // Verify all digits followed by d, w, m, q, or y.
+  unsigned int length = lower_input.length ();
+  for (unsigned int i = 0; i < length; ++i)
+  {
+    if (! isdigit (lower_input[i]) &&
+        i == length - 1)
+    {
+      std::string type = lower_input.substr (length - 1, std::string::npos);
+      if (type == "d" ||   // TODO i18n
+          type == "w" ||   // TODO i18n
+          type == "m" ||   // TODO i18n
+          type == "q" ||   // TODO i18n
+          type == "y")     // TODO i18n
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Duration::parse (const std::string& input)
 {
   std::string lower_input = lowerCase (input);
 
   std::vector <std::string> supported;
-  supported.push_back ("daily");
-  supported.push_back ("day");
-  supported.push_back ("weekly");
-  supported.push_back ("weekdays");
-  supported.push_back ("sennight");
-  supported.push_back ("biweekly");
-  supported.push_back ("fortnight");
-  supported.push_back ("monthly");
-  supported.push_back ("bimonthly");
-  supported.push_back ("quarterly");
-  supported.push_back ("biannual");
-  supported.push_back ("biyearly");
-  supported.push_back ("annual");
-  supported.push_back ("semiannual");
-  supported.push_back ("yearly");
+  supported.push_back ("daily");        // TODO i18n
+  supported.push_back ("day");          // TODO i18n
+  supported.push_back ("weekly");       // TODO i18n
+  supported.push_back ("weekdays");     // TODO i18n
+  supported.push_back ("sennight");     // TODO i18n
+  supported.push_back ("biweekly");     // TODO i18n
+  supported.push_back ("fortnight");    // TODO i18n
+  supported.push_back ("monthly");      // TODO i18n
+  supported.push_back ("bimonthly");    // TODO i18n
+  supported.push_back ("quarterly");    // TODO i18n
+  supported.push_back ("biannual");     // TODO i18n
+  supported.push_back ("biyearly");     // TODO i18n
+  supported.push_back ("annual");       // TODO i18n
+  supported.push_back ("semiannual");   // TODO i18n
+  supported.push_back ("yearly");       // TODO i18n
 
   std::vector <std::string> matches;
   if (autoComplete (lower_input, supported, matches) == 1)
   {
     std::string found = matches[0];
 
-         if (found == "daily"    || found == "day")       mDays = 1;
-    else if (found == "weekdays")                         mDays = 1;
-    else if (found == "weekly"   || found == "sennight")  mDays = 7;
-    else if (found == "biweekly" || found == "fortnight") mDays = 14;
-    else if (found == "monthly")                          mDays = 30;
-    else if (found == "bimonthly")                        mDays = 61;
-    else if (found == "quarterly")                        mDays = 91;
-    else if (found == "semiannual")                       mDays = 183;
-    else if (found == "yearly"   || found == "annual")    mDays = 365;
-    else if (found == "biannual" || found == "biyearly")  mDays = 730;
+         if (found == "daily"    || found == "day")       mDays = 1;      // TODO i18n
+    else if (found == "weekdays")                         mDays = 1;      // TODO i18n
+    else if (found == "weekly"   || found == "sennight")  mDays = 7;      // TODO i18n
+    else if (found == "biweekly" || found == "fortnight") mDays = 14;     // TODO i18n
+    else if (found == "monthly")                          mDays = 30;     // TODO i18n
+    else if (found == "bimonthly")                        mDays = 61;     // TODO i18n
+    else if (found == "quarterly")                        mDays = 91;     // TODO i18n
+    else if (found == "semiannual")                       mDays = 183;    // TODO i18n
+    else if (found == "yearly"   || found == "annual")    mDays = 365;    // TODO i18n
+    else if (found == "biannual" || found == "biyearly")  mDays = 730;    // TODO i18n
   }
 
   // Support \d+ d|w|m|q|y
@@ -125,18 +172,18 @@ void Duration::parse (const std::string& input)
 
         switch (lower_input[length - 1])
         {
-        case 'd': mDays = number *   1; break;
-        case 'w': mDays = number *   7; break;
-        case 'm': mDays = number *  30; break;
-        case 'q': mDays = number *  91; break;
-        case 'y': mDays = number * 365; break;
+        case 'd': mDays = number *   1; break;   // TODO i18n
+        case 'w': mDays = number *   7; break;   // TODO i18n
+        case 'm': mDays = number *  30; break;   // TODO i18n
+        case 'q': mDays = number *  91; break;   // TODO i18n
+        case 'y': mDays = number * 365; break;   // TODO i18n
         }
       }
     }
   }
 
   if (mDays == 0)
-    throw std::string ("The duration '") + input + "' was not recognized.";
+    throw std::string ("The duration '") + input + "' was not recognized.";  // TODO i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////
