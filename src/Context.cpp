@@ -145,7 +145,7 @@ void Context::initialize (int argc, char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 int Context::run ()
 {
-  std::cout << "--- start 1.8.0 ---" << std::endl;
+  std::cout << "[1;32m--- start 1.8.0 ---[0m" << std::endl;
   try
   {
     parse ();
@@ -177,7 +177,7 @@ int Context::run ()
       std::cout << *f << std::endl;
   }
 
-  std::cout << "--- end 1.8.0 ---" << std::endl;
+  std::cout << "[1;32m--- end 1.8.0 ---[0m" << std::endl;
   return 0;
 }
 
@@ -194,6 +194,9 @@ void Context::loadCorrectConfigFile ()
 
       messages.push_back (std::string ("Using alternate .taskrc file ") + file); // TODO i18n
       config.load (file);
+
+      // No need to handle it again.
+      args.erase (arg);
     }
   }
 
@@ -224,6 +227,9 @@ void Context::loadCorrectConfigFile ()
         messages.push_back (std::string ("Configuration override ") +  // TODO i18n
                            arg->substr (3, std::string::npos));
       }
+
+      // No need to handle it again.
+      args.erase (arg);
     }
   }
 }
@@ -231,119 +237,100 @@ void Context::loadCorrectConfigFile ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::parse ()
 {
-  command = "";
-
-  bool terminated = false;
-  bool foundSequence = false;
+  command                          = "";
+  std::string descCandidate        = "";
+  bool terminated                  = false;
+  bool foundSequence               = false;
   bool foundSomethingAfterSequence = false;
-
-  std::string descCandidate = "";
 
   foreach (arg, args)
   {
-    // Skip any argument that starts with "rc:" or "rc." because it has already
-    // been processed.
-    if (arg->substr (0, 3) != "rc:" ||
-        arg->substr (0, 3) != "rc.")
+    if (!terminated)
     {
-      if (!terminated)
+      // The '--' argument shuts off all parsing - everything is an argument.
+      if (*arg == "--")
+        terminated = true;
+
+      // Sequence
+      // Note: "add" doesn't require an ID
+      else if (command != "add"      &&
+               sequence.valid (*arg) &&
+               ! foundSomethingAfterSequence)
       {
-        // The '--' argument shuts off all parsing - everything is an argument.
-        if (*arg == "--")
-          terminated = true;
-
-        // Sequence
-        // Note: "add" doesn't require an ID
-        else if (command != "add"      &&
-                 sequence.valid (*arg) &&
-                 ! foundSomethingAfterSequence)
-        {
-          std::cout << "# found sequence" << std::endl;
-          sequence.parse (*arg);
-          foundSequence = true;
-        }
-
-/*
-        // Tags begin with + or - and contain arbitrary text.
-        else if (validTag (arg))
-        {
-          if (foundSequence)
-            foundSomethingAfterSequence = true;
-
-          if (arg[0] == '+')
-            task.addTag (arg->substr (1, std::string::npos));
-          else if (arg[0] == '-')
-            task.addRemoveTag (arg->substr (1, std::string::npos));
-        }
-*/
-/*
-        // Attributes contain a constant string followed by a colon, followed by a
-        // value.
-        else if ((colon = arg->find (":")) != std::string::npos)
-        {
-          if (foundSequence)
-            foundSomethingAfterSequence = true;
-
-          std::string name  = lowerCase (arg->substr (0, colon));
-          std::string value = arg->substr (colon + 1, std::string::npos);
-
-          if (validAttribute (name, value))
-          {
-            if (name != "recur" || validDuration (value))
-              task.setAttribute (name, value);
-          }
-
-          // If it is not a valid attribute, then allow the argument as part of
-          // the description.
-          else
-          {
-            if (descCandidate.length ())
-              descCandidate += " ";
-            descCandidate += arg;
-          }
-        }
-*/
-
-        // Substitution of description and/or annotation text.
-        else if (subst.valid (*arg))
-        {
-          if (foundSequence)
-            foundSomethingAfterSequence = true;
-
-          std::cout << "# found subst" << std::endl;
-          subst.parse (*arg);
-        }
-/*
-        // Command.
-        else if (command == "")
-        {
-          if (foundSequence)
-            foundSomethingAfterSequence = true;
-
-          std::string l = lowerCase (arg);
-          if (isCommand (l) && validCommand (l))
-            command = l;
-          else
-          {
-            if (descCandidate.length ())
-              descCandidate += " ";
-            descCandidate += arg;
-          }
-        }
-*/
-        // Anything else is just considered description.
-        else
-        {
-          if (foundSequence)
-            foundSomethingAfterSequence = true;
-
-          if (descCandidate.length ())
-            descCandidate += " ";
-          descCandidate += *arg;
-        }
+        std::cout << "# found sequence" << std::endl;
+        sequence.parse (*arg);
+        foundSequence = true;
       }
 
-      // terminated, therefore everything subsequently is a description.
+/*
+      // Tags begin with + or - and contain arbitrary text.
+      else if (validTag (arg))
+      {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
+        if (arg[0] == '+')
+          task.addTag (arg->substr (1, std::string::npos));
+        else if (arg[0] == '-')
+          task.addRemoveTag (arg->substr (1, std::string::npos));
+      }
+*/
+/*
+      // Attributes contain a constant string followed by a colon, followed by a
+      // value.
+      else if ((colon = arg->find (":")) != std::string::npos)
+      {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
+        std::string name  = lowerCase (arg->substr (0, colon));
+        std::string value = arg->substr (colon + 1, std::string::npos);
+
+        if (validAttribute (name, value))
+        {
+          if (name != "recur" || validDuration (value))
+            task.setAttribute (name, value);
+        }
+
+        // If it is not a valid attribute, then allow the argument as part of
+        // the description.
+        else
+        {
+          if (descCandidate.length ())
+            descCandidate += " ";
+          descCandidate += arg;
+        }
+      }
+*/
+
+      // Substitution of description and/or annotation text.
+      else if (subst.valid (*arg))
+      {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
+        std::cout << "# found subst" << std::endl;
+        subst.parse (*arg);
+      }
+/*
+      // Command.
+      else if (command == "")
+      {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
+        std::string l = lowerCase (arg);
+        if (isCommand (l) && validCommand (l))
+          command = l;
+        else
+        {
+          if (descCandidate.length ())
+            descCandidate += " ";
+          descCandidate += arg;
+        }
+      }
+*/
+      // Anything else is just considered description.
       else
       {
         if (foundSequence)
@@ -353,6 +340,17 @@ void Context::parse ()
           descCandidate += " ";
         descCandidate += *arg;
       }
+    }
+
+    // terminated, therefore everything subsequently is a description.
+    else
+    {
+      if (foundSequence)
+        foundSomethingAfterSequence = true;
+
+      if (descCandidate.length ())
+        descCandidate += " ";
+      descCandidate += *arg;
     }
   }
 

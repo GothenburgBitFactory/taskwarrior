@@ -57,11 +57,11 @@ int main (int argc, char** argv)
 
   T2 no1;
   no1.set ("name3", "value3");
-  test.notok (f.pass (no0), "no match against mismatch T2");
+  test.notok (f.pass (no1), "no match against mismatch T2");
 
   T2 partial;
   partial.set ("name1", "value1");
-  test.notok (f.pass (no0), "no match against partial T2");
+  test.notok (f.pass (partial), "no match against partial T2");
 
   // Modifiers.
   T2 mods;

@@ -85,6 +85,8 @@ Config::Config (const std::string& file)
 // not tolerated, but blank lines and comments starting with # are allowed.
 bool Config::load (const std::string& file)
 {
+  this->clear ();
+
   std::ifstream in;
   in.open (file.c_str (), std::ifstream::in);
   if (in.good ())

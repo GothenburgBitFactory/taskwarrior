@@ -36,7 +36,7 @@
 #include <pwd.h>
 #include <time.h>
 
-#include "Config.h"
+#include "Context.h"
 #include "Date.h"
 #include "Duration.h"
 #include "Table.h"
@@ -299,13 +299,15 @@ int main (int argc, char** argv)
   srand (time (NULL));
 #endif
 
+  int status = 0;
+
   try
   {
     context.initialize (argc, argv);
     if (context.args[0].find ("itask") != std::string::npos)
-      /* return */ context.interactive ();
+      status = context.interactive ();
     else
-      /* return */ context.run ();
+      status = context.run ();
 
 // start OBSOLETE
     TDB tdb;
@@ -329,7 +331,7 @@ int main (int argc, char** argv)
                            "overwrite your completed tasks.  Please change it.");
     }
 
-    std::cout << runTaskCommand (argc, argv, tdb);
+    std::cout << runTaskCommand (context.args, tdb);
   }
 
   catch (std::string& error)
@@ -345,7 +347,7 @@ int main (int argc, char** argv)
   }
 // end OBSOLETE
 
-  return 0;
+  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -812,7 +814,12 @@ std::string runTaskCommand (
 {
   std::vector <std::string> args;
   for (int i = 1; i < argc; ++i)
-    args.push_back (argv[i]);
+    if (strncmp (argv[i], "rc:", 3) &&
+        strncmp (argv[i], "rc.", 3))
+{
+std::cout << "arg=" << argv[i] << std::endl;
+      args.push_back (argv[i]);
+}
 
   return runTaskCommand (args, tdb, gc, shadow);
 }
@@ -824,12 +831,10 @@ std::string runTaskCommand (
   bool gc /* = false */,
   bool shadow /* = false */)
 {
-  // If argc == 1 and the default.command configuration variable is set,
-  // then use that, otherwise stick with argc/argv.
+  // If argc == 1 and there is a default.command, use it.  Otherwise use
+  // argc/argv.
   std::string defaultCommand = context.config.get ("default.command");
-  if ((args.size () == 0 ||
-      (args.size () == 1 && args[0].substr (0, 3) == "rc:")) &&
-      defaultCommand != "")
+  if (args.size () == 0 || defaultCommand != "")
   {
     // Stuff the command line.
     args.clear ();

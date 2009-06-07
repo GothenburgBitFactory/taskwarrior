@@ -103,7 +103,8 @@ bool Att::valid (const std::string& input) const
     if (n.skip (':') &&
         (n.getQuoted ('"', ignored) ||
          n.getUntil  (' ', ignored) ||
-         n.getUntilEOS (ignored)))
+         n.getUntilEOS (ignored)    ||
+         n.depleted ()))
       return true;
 
     return false;

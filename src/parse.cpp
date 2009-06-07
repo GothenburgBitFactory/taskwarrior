@@ -440,108 +440,93 @@ void parse (
   {
     std::string arg (args[i]);
 
-    // Ignore any argument that is "rc:...", because that is the command line
-    // specified rc file.
-    if (arg.substr (0, 3) != "rc:")
+    if (!terminated)
     {
-      if (!terminated)
+      size_t colon;               // Pointer to colon in argument.
+      std::string from;
+      std::string to;
+      bool global;
+      std::vector <int> sequence;
+
+      // The '--' argument shuts off all parsing - everything is an argument.
+      if (arg == "--")
+        terminated = true;
+
+      // An id is the first argument found that contains all digits.
+      else if (lowerCase (command) != "add"  && // "add" doesn't require an ID
+          validSequence (arg, sequence) &&
+          ! foundSomethingAfterSequence)
       {
-        size_t colon;               // Pointer to colon in argument.
-        std::string from;
-        std::string to;
-        bool global;
-        std::vector <int> sequence;
+        foundSequence = true;
+        foreach (id, sequence)
+          task.addId (*id);
+      }
 
-        // The '--' argument shuts off all parsing - everything is an argument.
-        if (arg == "--")
-          terminated = true;
+      // Tags begin with + or - and contain arbitrary text.
+      else if (validTag (arg))
+      {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
 
-        // An id is the first argument found that contains all digits.
-        else if (lowerCase (command) != "add"  && // "add" doesn't require an ID
-            validSequence (arg, sequence) &&
-            ! foundSomethingAfterSequence)
+        if (arg[0] == '+')
+          task.addTag (arg.substr (1, std::string::npos));
+        else if (arg[0] == '-')
+          task.addRemoveTag (arg.substr (1, std::string::npos));
+      }
+
+      // Attributes contain a constant string followed by a colon, followed by a
+      // value.
+      else if ((colon = arg.find (":")) != std::string::npos)
+      {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
+        std::string name  = lowerCase (arg.substr (0, colon));
+        std::string value = arg.substr (colon + 1, std::string::npos);
+
+        if (validAttribute (name, value))
         {
-          foundSequence = true;
-          foreach (id, sequence)
-            task.addId (*id);
+          if (name != "recur" || validDuration (value))
+            task.setAttribute (name, value);
         }
 
-        // Tags begin with + or - and contain arbitrary text.
-        else if (validTag (arg))
-        {
-          if (foundSequence)
-            foundSomethingAfterSequence = true;
-
-          if (arg[0] == '+')
-            task.addTag (arg.substr (1, std::string::npos));
-          else if (arg[0] == '-')
-            task.addRemoveTag (arg.substr (1, std::string::npos));
-        }
-
-        // Attributes contain a constant string followed by a colon, followed by a
-        // value.
-        else if ((colon = arg.find (":")) != std::string::npos)
-        {
-          if (foundSequence)
-            foundSomethingAfterSequence = true;
-
-          std::string name  = lowerCase (arg.substr (0, colon));
-          std::string value = arg.substr (colon + 1, std::string::npos);
-
-          if (validAttribute (name, value))
-          {
-            if (name != "recur" || validDuration (value))
-              task.setAttribute (name, value);
-          }
-
-          // If it is not a valid attribute, then allow the argument as part of
-          // the description.
-          else
-          {
-            if (descCandidate.length ())
-              descCandidate += " ";
-            descCandidate += arg;
-          }
-        }
-
-        // Substitution of description text.
-        else if (validSubstitution (arg, from, to, global))
-        {
-          if (foundSequence)
-            foundSomethingAfterSequence = true;
-
-          task.setSubstitution (from, to, global);
-        }
-
-        // Command.
-        else if (command == "")
-        {
-          if (foundSequence)
-            foundSomethingAfterSequence = true;
-
-          std::string l = lowerCase (arg);
-          if (isCommand (l) && validCommand (l))
-            command = l;
-          else
-          {
-            if (descCandidate.length ())
-              descCandidate += " ";
-            descCandidate += arg;
-          }
-        }
-
-        // Anything else is just considered description.
+        // If it is not a valid attribute, then allow the argument as part of
+        // the description.
         else
         {
-          if (foundSequence)
-            foundSomethingAfterSequence = true;
-
           if (descCandidate.length ())
             descCandidate += " ";
           descCandidate += arg;
         }
       }
-      // terminated, therefore everything subsequently is a description.
+
+      // Substitution of description text.
+      else if (validSubstitution (arg, from, to, global))
+      {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
+        task.setSubstitution (from, to, global);
+      }
+
+      // Command.
+      else if (command == "")
+      {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
+        std::string l = lowerCase (arg);
+        if (isCommand (l) && validCommand (l))
+          command = l;
+        else
+        {
+          if (descCandidate.length ())
+            descCandidate += " ";
+          descCandidate += arg;
+        }
+      }
+
+      // Anything else is just considered description.
       else
       {
         if (foundSequence)
@@ -551,6 +536,16 @@ void parse (
           descCandidate += " ";
         descCandidate += arg;
       }
+    }
+    // terminated, therefore everything subsequently is a description.
+    else
+    {
+      if (foundSequence)
+        foundSomethingAfterSequence = true;
+
+      if (descCandidate.length ())
+        descCandidate += " ";
+      descCandidate += arg;
     }
   }
 
