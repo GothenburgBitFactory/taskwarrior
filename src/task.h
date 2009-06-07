@@ -42,6 +42,8 @@ void parse (std::vector <std::string>&, std::string&, T&);
 bool validPriority (const std::string&);
 bool validDate (std::string&);
 bool validDuration (std::string&);
+bool validDescription (const std::string&);
+bool validSequence (const std::string&, Sequence&);
 void loadCustomReports ();
 bool isCustomReport (const std::string&);
 void allCustomReports (std::vector <std::string>&);

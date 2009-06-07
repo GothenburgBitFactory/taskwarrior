@@ -302,6 +302,18 @@ static bool validId (const std::string& input)
 
 ////////////////////////////////////////////////////////////////////////////////
 // 1,2-4,6
+bool validSequence (
+  const std::string& input,
+  Sequence& sequence)
+{
+  bool valid = true;
+
+  try { sequence.parse (input); }
+  catch (...) { valid = false; }
+
+  return valid;
+}
+
 static bool validSequence (
   const std::string& input,
   std::vector <int>& ids)
@@ -363,14 +375,15 @@ static bool validTag (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool validDescription (const std::string& input)
+bool validDescription (const std::string& input)
 {
-  if (input.length () == 0)                   return false;
-  if (input.find ("\r") != std::string::npos) return false;
-  if (input.find ("\f") != std::string::npos) return false;
-  if (input.find ("\n") != std::string::npos) return false;
+  if (input.length ()                        &&
+      input.find ("\r") == std::string::npos &&
+      input.find ("\f") == std::string::npos &&
+      input.find ("\n") == std::string::npos)
+    return true;
 
-  return true;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

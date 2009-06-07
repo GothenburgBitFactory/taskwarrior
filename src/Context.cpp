@@ -238,8 +238,8 @@ void Context::parse ()
 
   foreach (arg, args)
   {
-    // Ignore any argument that is "rc:...", because that is the command line
-    // specified rc file.
+    // Skip any argument that starts with "rc:" or "rc." because it has already
+    // been processed.
     if (arg->substr (0, 3) != "rc:" ||
         arg->substr (0, 3) != "rc.")
     {
@@ -251,12 +251,23 @@ void Context::parse ()
         std::string to;
         bool global;
         std::vector <int> sequence;
+*/
 
         // The '--' argument shuts off all parsing - everything is an argument.
-        if (arg == "--")
+        if (*arg == "--")
           terminated = true;
 
-        // An id is the first argument found that contains all digits.
+        // Sequence
+        // Note: "add" doesn't require an ID
+        else if (command != "add"               &&
+                 validSequence (*arg, sequence) &&
+                 ! foundSomethingAfterSequence)
+        {
+          std::cout << "# found sequence" << std::endl;
+          foundSequence = true;
+        }
+
+/*
         else if (lowerCase (command) != "add"  && // "add" doesn't require an ID
             validSequence (arg, sequence) &&
             ! foundSomethingAfterSequence)
@@ -265,7 +276,9 @@ void Context::parse ()
           foreach (id, sequence)
             task.addId (*id);
         }
+*/
 
+/*
         // Tags begin with + or - and contain arbitrary text.
         else if (validTag (arg))
         {
@@ -303,7 +316,9 @@ void Context::parse ()
             descCandidate += arg;
           }
         }
+*/
 
+/*
         // Substitution of description text.
         else if (validSubstitution (arg, from, to, global))
         {
@@ -345,22 +360,18 @@ void Context::parse ()
       // terminated, therefore everything subsequently is a description.
       else
       {
-/*
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
         if (descCandidate.length ())
           descCandidate += " ";
-        descCandidate += arg;
-*/
+        descCandidate += *arg;
       }
     }
   }
 
-/*
   if (validDescription (descCandidate))
     task.set ("description", descCandidate);
-*/
 
   // TODO Replace parse.cpp:parse
   throw std::string ("unimplemented Context::parse");

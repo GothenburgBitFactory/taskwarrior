@@ -142,6 +142,8 @@
 548 on_bright_magenta
 549 on_bright_cyan
 550 on_bright_white
+551 off
+552 Unknown color name
 
 # 6xx Config
 

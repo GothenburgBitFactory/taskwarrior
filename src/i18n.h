@@ -164,6 +164,8 @@
 #define COLOR_ON_BRIGHT_MAGENTA 548
 #define COLOR_ON_BRIGHT_CYAN    549
 #define COLOR_ON_BRIGHT_WHITE   550
+#define COLOR_OFF               551
+#define COLOR_UNKNOWN           552
 
 // 6xx Config
 
