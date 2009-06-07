@@ -32,6 +32,7 @@
 #include "Config.h"
 #include "Sequence.h"
 #include "Subst.h"
+#include "Cmd.h"
 #include "T2.h"
 #include "TDB2.h"
 #include "StringTable.h"
@@ -47,6 +48,8 @@ public:
   void initialize (int, char**);       // all startup
   int run ();                          // task classic
   int interactive ();                  // task interactive (not implemented)
+  void dispatch ();                    // command handler dispatch
+  void shadow ();                      // shadow file update
 
   void message (const std::string&);   // Message sink
   void footnote (const std::string&);  // Footnote sink
@@ -64,8 +67,9 @@ public:
   T2                        task;
   TDB2                      tdb;
   StringTable               stringtable;
+  std::string               program;
   std::vector <std::string> args;
-  std::string               command;
+  Cmd                       cmd;
 
 private:
   std::vector <std::string> messages;

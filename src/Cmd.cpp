@@ -134,7 +134,7 @@ void Cmd::loadCommands ()
     commands.push_back (context.stringtable.get (CMD_OVERDUE,   "overdue"));
     commands.push_back (context.stringtable.get (CMD_PROJECTS,  "projects"));
     commands.push_back (context.stringtable.get (CMD_START,     "start"));
-    commands.push_back (context.stringtable.get (CMD_STATS,     "statistics"));
+    commands.push_back (context.stringtable.get (CMD_STATS,     "stats"));
     commands.push_back (context.stringtable.get (CMD_STOP,      "stop"));
     commands.push_back (context.stringtable.get (CMD_SUMMARY,   "summary"));
     commands.push_back (context.stringtable.get (CMD_TAGS,      "tags"));

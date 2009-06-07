@@ -48,6 +48,8 @@ int main (int argc, char** argv)
   t.notok (seq.valid ("1--2"),  "not valid 1--2");
   t.notok (seq.valid ("1-2-3"), "not valid 1-2-3");
   t.notok (seq.valid ("-1-2"),  "not valid -1-2");
+  t.notok (seq.valid ("1-two"), "not valid 1-two");
+  t.notok (seq.valid ("one-2"), "not valid one-2");
 
   t.ok (seq.valid ("1"),       "valid 1");
   t.ok (seq.valid ("1,3"),     "valid 1,3");
@@ -55,8 +57,6 @@ int main (int argc, char** argv)
   t.ok (seq.valid ("1,3-5,7"), "valid 1,3-5,7");
   t.ok (seq.valid ("1-1000"),  "valid 1-1000");
   t.ok (seq.valid ("1-1001"),  "valid 1-1001");
-  t.ok (seq.valid ("1-two"),   "valid 1-two");
-  t.ok (seq.valid ("one-2"),   "valid one-2");
   t.ok (seq.valid ("1-5,3-7"), "valid 1-5,3-7");
 
   // 1

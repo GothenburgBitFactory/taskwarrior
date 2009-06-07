@@ -304,7 +304,7 @@ int main (int argc, char** argv)
   try
   {
     context.initialize (argc, argv);
-    if (context.args[0].find ("itask") != std::string::npos)
+    if (context.program.find ("itask") != std::string::npos)
       status = context.interactive ();
     else
       status = context.run ();

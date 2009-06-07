@@ -68,6 +68,12 @@ bool Sequence::valid (const std::string& input) const
     if (range.size () < 1 ||
         range.size () > 2)
       return false;
+
+    if (range.size () == 1 && !validId (range[0]))
+      return false;
+
+    if (range.size () == 2 && !validId (range[1]))
+      return false;
   }
 
   return true;
