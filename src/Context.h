@@ -68,6 +68,8 @@ public:
   std::string               program;
   std::vector <std::string> args;
   Cmd                       cmd;
+  std::vector <std::string> tagAdditions;
+  std::vector <std::string> tagRemovals;
 
 private:
   std::vector <std::string> messages;

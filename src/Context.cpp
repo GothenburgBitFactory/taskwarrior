@@ -215,6 +215,7 @@ void Context::dispatch ()
 
   return out;
 */
+  throw std::string ("unimplemented Context::dispatch");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -328,6 +329,8 @@ void Context::loadCorrectConfigFile ()
 void Context::parse ()
 {
   Att attribute;
+  tagAdditions.clear ();
+  tagRemovals.clear ();
   std::string descCandidate        = "";
   bool terminated                  = false;
   bool foundSequence               = false;
@@ -355,19 +358,27 @@ std::cout << "# parse sequence '" << *arg << "'" << std::endl;
         foundSequence = true;
       }
 
-/*
-      // Tags begin with + or - and contain arbitrary text.
-      else if (validTag (arg))
+      // Tags to include begin with '+'.
+      else if (arg->length () > 1 &&
+               (*arg)[0] == '+')
       {
+std::cout << "# parse tag addition '" << *arg << "'" << std::endl;
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
-        if (arg[0] == '+')
-          task.addTag (arg->substr (1, std::string::npos));
-        else if (arg[0] == '-')
-          task.addRemoveTag (arg->substr (1, std::string::npos));
+        tagAdditions.push_back (arg->substr (1, std::string::npos));
       }
-*/
+
+      // Tags to remove begin with '-'.
+      else if (arg->length () > 1 &&
+               (*arg)[0] == '-')
+      {
+std::cout << "# parse tag removal '" << *arg << "'" << std::endl;
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
+        tagRemovals.push_back (arg->substr (1, std::string::npos));
+      }
 
       else if (attribute.valid (*arg))
       {
