@@ -69,7 +69,25 @@ Subst::~Subst ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Subst::parse (const std::string& input)
+bool Subst::valid (const std::string& input) const
+{
+  std::string ignored;
+  Nibbler n (input);
+  if (n.skip     ('/')            &&
+      n.getUntil ('/', ignored)   &&
+      n.skip     ('/')            &&
+      n.getUntil ('/', ignored)   &&
+      n.skip     ('/'))
+  {
+    n.skip ('g');
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Subst::parse (const std::string& input)
 {
   Nibbler n (input);
   if (n.skip     ('/')        &&
@@ -78,11 +96,16 @@ bool Subst::parse (const std::string& input)
       n.getUntil ('/', mTo)   &&
       n.skip     ('/'))
   {
-    mGlobal = n.skip ('g');
-    return true;
-  }
+      mGlobal = n.skip ('g');
 
-  return false;
+    if (mFrom == "")
+      throw std::string ("Cannot substitute an empty string");
+
+    if (!n.depleted ())
+      throw std::string ("Unrecognized character(s) at end of substitution");
+  }
+  else
+    throw std::string ("Malformed substitution");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -90,46 +113,43 @@ void Subst::apply (
   std::string& description,
   std::vector <Att>& annotations) const
 {
-  if (mFrom != "")
+  std::string::size_type pattern;
+
+  if (mGlobal)
   {
-    std::string::size_type pattern;
+    // Perform all subs on description.
+    while ((pattern = description.find (mFrom)) != std::string::npos)
+      description.replace (pattern, mFrom.length (), mTo);
 
-    if (mGlobal)
+    // Perform all subs on annotations.
+    std::vector <Att>::iterator i;
+    for (i = annotations.begin (); i != annotations.end (); ++i)
     {
-      // Perform all subs on description.
+      std::string description = i->value ();
       while ((pattern = description.find (mFrom)) != std::string::npos)
+      {
         description.replace (pattern, mFrom.length (), mTo);
+        i->value (description);
+      }
+    }
+  }
+  else
+  {
+    // Perform first description substitution.
+    if ((pattern = description.find (mFrom)) != std::string::npos)
+      description.replace (pattern, mFrom.length (), mTo);
 
-      // Perform all subs on annotations.
+    // Failing that, perform the first annotation substitution.
+    else
+    {
       std::vector <Att>::iterator i;
       for (i = annotations.begin (); i != annotations.end (); ++i)
       {
         std::string description = i->value ();
-        while ((pattern = description.find (mFrom)) != std::string::npos)
+        if ((pattern = description.find (mFrom)) != std::string::npos)
         {
           description.replace (pattern, mFrom.length (), mTo);
-          i->value (description);
-        }
-      }
-    }
-    else
-    {
-      // Perform first description substitution.
-      if ((pattern = description.find (mFrom)) != std::string::npos)
-        description.replace (pattern, mFrom.length (), mTo);
-
-      // Failing that, perform the first annotation substitution.
-      else
-      {
-        std::vector <Att>::iterator i;
-        for (i = annotations.begin (); i != annotations.end (); ++i)
-        {
-          std::string description = i->value ();
-          if ((pattern = description.find (mFrom)) != std::string::npos)
-          {
-            description.replace (pattern, mFrom.length (), mTo);
-            break;
-          }
+          break;
         }
       }
     }

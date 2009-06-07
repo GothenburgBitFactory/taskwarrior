@@ -245,14 +245,6 @@ void Context::parse ()
     {
       if (!terminated)
       {
-/*
-        size_t colon;               // Pointer to colon in argument.
-        std::string from;
-        std::string to;
-        bool global;
-        std::vector <int> sequence;
-*/
-
         // The '--' argument shuts off all parsing - everything is an argument.
         if (*arg == "--")
           terminated = true;

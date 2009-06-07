@@ -39,7 +39,8 @@ public:
   Subst& operator= (const Subst&); // Assignment operator
   ~Subst ();                       // Destructor
 
-  bool parse (const std::string&);
+  bool valid (const std::string&) const;
+  void parse (const std::string&);
   void apply (std::string&, std::vector <Att>&) const;
 
 public:

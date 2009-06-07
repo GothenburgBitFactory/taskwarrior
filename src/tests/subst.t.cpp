@@ -34,13 +34,32 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (3);
+  UnitTest t (15);
 
   T2 task;
   task.set ("description", "one two three four");
 
   Subst s;
-  if (s.parse ("/two/TWO/"))
+  t.ok (s.valid ("/a/b/x"),         "valid /a/b/x");
+  t.ok (s.valid ("/a/b/"),          "valid /a/b/");
+  t.ok (s.valid ("/two/TWO/"),      "valid /two/TWO/");
+  t.ok (s.valid ("/e /E /g"),       "valid /e /E /g");
+  t.ok (s.valid ("/from/to/g"),     "valid /from/to/g");
+  t.ok (s.valid ("/long string//"), "valid /long string//");
+  t.ok (s.valid ("//fail/"),        "valid //fail/");
+
+  bool good = true;
+  try { s.parse ("/a/b/x"); } catch (...) { good = false; }
+  t.notok (good, "failed /a/b/x");
+
+  good = true;
+  try { s.parse ("//to/"); } catch (...) { good = false; }
+  t.notok (good, "failed //to/");
+
+  good = true;
+  try { s.parse ("/two/TWO/"); } catch (...) { good = false; }
+  t.ok (good, "parsed /two/TWO/");
+  if (good)
   {
     std::string description = task.get ("description");
     std::vector <Att> annotations;
@@ -54,7 +73,10 @@ int main (int argc, char** argv)
     t.fail ("failed to parse '/two/TWO/'");
   }
 
-  if (s.parse ("/e /E /g"))
+  good = true;
+  try { s.parse ("/e /E /g"); } catch (...) { good = false; }
+  t.ok (good, "parsed /e /E /g");
+  if (good)
   {
     std::string description = task.get ("description");
     std::vector <Att> annotations;
@@ -68,7 +90,10 @@ int main (int argc, char** argv)
     t.fail ("failed to parse '/e /E /g'");
   }
 
-  if (s.parse ("/from/to/g"))
+  good = true;
+  try { s.parse ("/from/to/g"); } catch (...) { good = false; }
+  t.ok (good, "parsed /from/to/g");
+  if (good)
   {
     std::string description = task.get ("description");
     std::vector <Att> annotations;
