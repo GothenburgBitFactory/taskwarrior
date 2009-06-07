@@ -30,7 +30,11 @@
 #include <stdlib.h>
 #include "util.h"
 #include "Nibbler.h"
+#include "Context.h"
+#include "i18n.h"
 #include "Record.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Record::Record ()
@@ -72,9 +76,9 @@ std::string Record::composeF4 ()
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// [ --> start --> name --> : --> " --> value --> " --> ] --> end
-//                   ^                                |
-//                   +------------- \s <--------------+
+// start --> [ --> Att --> ] --> end
+//              ^       |
+//              +-------+
 //
 void Record::parse (const std::string& input)
 {
@@ -86,7 +90,8 @@ void Record::parse (const std::string& input)
       n.depleted ())
   {
     if (line.length () == 0)
-      throw std::string ("Empty FF4 record");
+      throw context.stringtable.get (RECORD_EMPTY,
+                                     "Empty record in input");
 
     Nibbler nl (line);
     Att a;
@@ -99,10 +104,12 @@ void Record::parse (const std::string& input)
     std::string remainder;
     nl.getUntilEOS (remainder);
     if (remainder.length ())
-      throw std::string ("Unrecognized garbage at end of line");
+      throw context.stringtable.get (RECORD_EXTRA,
+                                     "Unrecognized characters at end of line");
   }
   else
-    throw std::string ("Record not recognized as FF4");
+    throw context.stringtable.get (RECORD_NOT_FF4,
+                                   "Record not recognized as format 4");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -151,11 +158,9 @@ void Record::set (const std::string& name, int value)
 ////////////////////////////////////////////////////////////////////////////////
 void Record::remove (const std::string& name)
 {
-  std::map <std::string, Att> copy = *this;
-  this->clear ();
-  foreach (i, copy)
-   if (i->first != name)
-     (*this)[i->first] = i->second;
+  Record::iterator it;
+  if ((it = this->find (name)) != this->end ())
+    this->erase (it);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -42,6 +42,10 @@
 
 #define INTERACTIVE_NO_NCURSES  108
 
+#define RECORD_EMPTY            109
+#define RECORD_EXTRA            110
+#define RECORD_NOT_FF4          111
+
 // 2xx Commands
 #define CMD_ACTIVE              200
 #define CMD_ADD                 201

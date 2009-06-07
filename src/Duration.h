@@ -34,9 +34,7 @@ class Duration
 {
 public:
   Duration ();                           // Default constructor
-  Duration (const Duration&);            // Copy constructor
   Duration (const std::string&);         // Parse
-  Duration& operator= (const Duration&); // Assignment operator
   bool operator< (const Duration&);
   bool operator> (const Duration&);
   ~Duration ();                          // Destructor
