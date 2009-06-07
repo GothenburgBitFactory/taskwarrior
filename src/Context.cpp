@@ -42,6 +42,7 @@ Context::Context ()
 , filter ()
 , keymap ()
 , sequence ()
+, subst ()
 , task ()
 , tdb ()
 , stringtable ()
@@ -63,6 +64,7 @@ Context::Context (const Context& other)
   filter      = other.filter;
   keymap      = other.keymap;
   sequence    = other.sequence;
+  subst       = other.subst;
   task        = other.task;
   tdb         = other.tdb;
   stringtable = other.stringtable;
@@ -82,6 +84,7 @@ Context& Context::operator= (const Context& other)
     filter      = other.filter;
     keymap      = other.keymap;
     sequence    = other.sequence;
+    subst       = other.subst;
     task        = other.task;
     tdb         = other.tdb;
     stringtable = other.stringtable;
@@ -300,16 +303,17 @@ void Context::parse ()
         }
 */
 
-/*
-        // Substitution of description text.
-        else if (validSubstitution (arg, from, to, global))
+        // Substitution of description and/or annotation text.
+        else if (subst.valid (*arg))
         {
           if (foundSequence)
             foundSomethingAfterSequence = true;
 
-          task.setSubstitution (from, to, global);
+          std::cout << "# found subst" << std::endl;
+          subst.parse (*arg);
         }
 
+/*
         // Command.
         else if (command == "")
         {
@@ -326,6 +330,7 @@ void Context::parse ()
             descCandidate += arg;
           }
         }
+*/
 
         // Anything else is just considered description.
         else
@@ -335,10 +340,10 @@ void Context::parse ()
 
           if (descCandidate.length ())
             descCandidate += " ";
-          descCandidate += arg;
+          descCandidate += *arg;
         }
-*/
       }
+
       // terminated, therefore everything subsequently is a description.
       else
       {
@@ -354,9 +359,6 @@ void Context::parse ()
 
   if (validDescription (descCandidate))
     task.set ("description", descCandidate);
-
-  // TODO Replace parse.cpp:parse
-  throw std::string ("unimplemented Context::parse");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

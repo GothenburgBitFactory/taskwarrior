@@ -31,6 +31,7 @@
 #include "Keymap.h"
 #include "Config.h"
 #include "Sequence.h"
+#include "Subst.h"
 #include "T2.h"
 #include "TDB2.h"
 #include "StringTable.h"
@@ -59,6 +60,7 @@ public:
   Filter                    filter;
   Keymap                    keymap;
   Sequence                  sequence;
+  Subst                     subst;
   T2                        task;
   TDB2                      tdb;
   StringTable               stringtable;
