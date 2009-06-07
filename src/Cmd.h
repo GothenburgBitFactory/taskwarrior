@@ -24,28 +24,35 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_TEXT
-#define INCLUDED_TEXT
+#ifndef INCLUDED_CMD
+#define INCLUDED_CMD
 
-#include <string>
 #include <vector>
-#include "../auto.h"
+#include <string>
+#include "Cmd.h"
 
-// text.cpp
-void wrapText (std::vector <std::string>&, const std::string&, const int);
-std::string trimLeft (const std::string& in, const std::string& t = " ");
-std::string trimRight (const std::string& in, const std::string& t = " ");
-std::string trim (const std::string& in, const std::string& t = " ");
-std::string unquoteText (const std::string&);
-void extractLine (std::string&, std::string&, int);
-void split (std::vector<std::string>&, const std::string&, const char);
-void split (std::vector<std::string>&, const std::string&, const std::string&);
-void join (std::string&, const std::string&, const std::vector<std::string>&);
-std::string commify (const std::string&);
-std::string lowerCase (const std::string&);
-std::string upperCase (const std::string&);
-const char* optionalBlankLine ();
-void guess (const std::string&, std::vector<std::string>&, std::string&);
+class Cmd
+{
+public:
+  Cmd ();                      // Default constructor
+  Cmd (const std::string&);    // Default constructor
+  ~Cmd ();                     // Destructor
+
+  bool valid       (const std::string&);
+  bool validCustom (const std::string&);
+  void parse       (const std::string&);
+
+public:
+  std::string command;
+
+private:
+  void loadCommands ();
+  void loadCustomReports ();
+
+private:
+  std::vector <std::string> commands;
+  std::vector <std::string> customReports;
+};
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

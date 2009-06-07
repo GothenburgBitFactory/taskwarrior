@@ -87,12 +87,38 @@ Att::~Att ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Att::valid (const std::string& input) const
+{
+  Nibbler n (input);
+  std::string ignored;
+  if (n.getUntilOneOf (".:", ignored))
+  {
+    if (ignored.length () == 0)
+      return false;
+
+    while (n.skip ('.'))
+      if (!n.getUntilOneOf (".:", ignored))
+        return false;
+
+    if (n.skip (':') &&
+        (n.getQuoted ('"', ignored) ||
+         n.getUntil  (' ', ignored) ||
+         n.getUntilEOS (ignored)))
+      return true;
+
+    return false;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //
 // start --> name --> . --> mod --> : --> " --> value --> " --> end
 //                    ^          |
 //                    |__________|
 //
-bool Att::parse (Nibbler& n)
+void Att::parse (Nibbler& n)
 {
   // Ensure a clean object first.
   mName = "";
@@ -126,7 +152,6 @@ bool Att::parse (Nibbler& n)
           n.getUntil  (' ', mValue))
       {
         decode (mValue);
-        return true;
       }
       else
         throw std::string ("Missing attribute value"); // TODO i18n
@@ -136,8 +161,6 @@ bool Att::parse (Nibbler& n)
   }
   else
     throw std::string ("Missing : after attribute name"); // TODO i18n
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

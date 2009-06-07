@@ -41,7 +41,8 @@ public:
   Att& operator= (const Att&);                  // Assignment operator
   ~Att ();                                      // Destructor
 
-  bool parse (Nibbler&);
+  bool valid (const std::string&) const;
+  void parse (Nibbler&);
   bool validMod (const std::string&) const;
   bool match (const Att&) const;
 

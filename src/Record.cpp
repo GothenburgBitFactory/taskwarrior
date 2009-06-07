@@ -95,8 +95,9 @@ void Record::parse (const std::string& input)
 
     Nibbler nl (line);
     Att a;
-    while (!nl.depleted () && a.parse (nl))
+    while (!nl.depleted ())
     {
+      a.parse (nl);
       (*this)[a.name ()] = a;
       nl.skip (' ');
     }

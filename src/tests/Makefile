@@ -1,11 +1,12 @@
 PROJECT = t.t t2.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t \
-          parse.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t
+          parse.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t  \
+          cmd.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib
 OBJECTS = ../TDB.o ../TDB2.o ../T.o ../T2.o ../parse.o ../text.o ../Date.o     \
           ../Duration.o ../util.o ../Config.o ../Sequence.o ../Att.o           \
           ../Record.o ../StringTable.o ../Subst.o ../Nibbler.o ../Location.o   \
-          ../Filter.o ../Context.o ../Keymap.o
+          ../Filter.o ../Context.o ../Keymap.o ../Cmd.o
 
 all: $(PROJECT)
 
@@ -68,4 +69,7 @@ nibbler.t: nibbler.t.o $(OBJECTS) test.o
 
 filt.t: filt.t.o $(OBJECTS) test.o
 	g++ filt.t.o $(OBJECTS) test.o $(LFLAGS) -o filt.t
+
+cmd.t: cmd.t.o $(OBJECTS) test.o
+	g++ cmd.t.o $(OBJECTS) test.o $(LFLAGS) -o cmd.t
 

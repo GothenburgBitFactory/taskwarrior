@@ -275,7 +275,8 @@ void Context::parse ()
           else if (arg[0] == '-')
             task.addRemoveTag (arg->substr (1, std::string::npos));
         }
-
+*/
+/*
         // Attributes contain a constant string followed by a colon, followed by a
         // value.
         else if ((colon = arg->find (":")) != std::string::npos)
@@ -312,7 +313,6 @@ void Context::parse ()
           std::cout << "# found subst" << std::endl;
           subst.parse (*arg);
         }
-
 /*
         // Command.
         else if (command == "")
@@ -331,7 +331,6 @@ void Context::parse ()
           }
         }
 */
-
         // Anything else is just considered description.
         else
         {

@@ -305,3 +305,35 @@ const char* optionalBlankLine ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void guess (
+  const std::string& type,
+  std::vector<std::string>& options,
+  std::string& candidate)
+{
+  std::vector <std::string> matches;
+  autoComplete (candidate, options, matches);
+  if (1 == matches.size ())
+    candidate = matches[0];
+
+  else if (0 == matches.size ())
+    candidate = "";
+
+  else
+  {
+    std::string error = "Ambiguous "; // TODO i18n
+    error += type;
+    error += " '";
+    error += candidate;
+    error += "' - could be either of "; // TODO i18n
+    for (size_t i = 0; i < matches.size (); ++i)
+    {
+      if (i)
+        error += ", ";
+      error += matches[i];
+    }
+
+    throw error;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////

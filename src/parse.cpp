@@ -161,38 +161,6 @@ static std::vector <std::string> customReports;
 ////////////////////////////////////////////////////////////////////////////////
 void guess (
   const std::string& type,
-  std::vector<std::string>& options,
-  std::string& candidate)
-{
-  std::vector <std::string> matches;
-  autoComplete (candidate, options, matches);
-  if (1 == matches.size ())
-    candidate = matches[0];
-
-  else if (0 == matches.size ())
-    candidate = "";
-
-  else
-  {
-    std::string error = "Ambiguous ";
-    error += type;
-    error += " '";
-    error += candidate;
-    error += "' - could be either of ";
-    for (size_t i = 0; i < matches.size (); ++i)
-    {
-      if (i)
-        error += ", ";
-      error += matches[i];
-    }
-
-    throw error;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void guess (
-  const std::string& type,
   const char** list,
   std::string& candidate)
 {
@@ -375,7 +343,7 @@ bool validDescription (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool validCommand (std::string& input)
+bool validCommand (std::string& input)
 {
   std::string copy = input;
   guess ("command", commands, copy);

@@ -26,7 +26,7 @@
 113 Unrecognized character(s) at end of substitution
 114 Malformed substitution
 
-# 2xx Commands
+# 2xx Commands - must be sequential
 200 active
 201 add
 202 append
@@ -57,7 +57,7 @@
 227 undo
 228 version
 
-# 3xx Attributes
+# 3xx Attributes - must be sequential
 300 project
 301 priority
 302 fg
@@ -71,7 +71,7 @@
 310 mask
 311 imask
 
-# 35x Attribute modifiers
+# 35x Attribute modifiers - must be sequential
 350 before
 351 after
 352 not

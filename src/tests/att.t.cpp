@@ -33,7 +33,25 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (59);
+  UnitTest t (74);
+
+  Att a;
+  t.notok (a.valid ("name"),            "Att::valid name         -> fail");
+  t.notok (a.valid (":"),               "Att::valid :            -> fail");
+  t.notok (a.valid (":value"),          "Att::valid :value       -> fail");
+
+  t.ok (a.valid ("name:value"),         "Att::valid name:value");
+  t.ok (a.valid ("name:value "),        "Att::valid name:value\\s");
+  t.ok (a.valid ("name:'value'"),       "Att::valid name:'value'");
+  t.ok (a.valid ("name:'one two'"),     "Att::valid name:'one two'");
+  t.ok (a.valid ("name:\"value\""),     "Att::valid name:\"value\"");
+  t.ok (a.valid ("name:\"one two\""),   "Att::valid name:\"one two\"");
+  t.ok (a.valid ("name:"),              "Att::valid name:");
+  t.ok (a.valid ("name:&quot;"),        "Att::valid &quot;");
+  t.ok (a.valid ("name.one:value"),     "Att::valid name.one.value");
+  t.ok (a.valid ("name.one.two:value"), "Att::valid name.one.two:value");
+  t.ok (a.valid ("name.:value"),        "Att::valid name.:value");
+  t.ok (a.valid ("name..:value"),       "Att::valid name..:value");
 
   Att a1 ("name", "value");
   t.is (a1.name (), "name", "Att::Att (name, value), Att.name");
