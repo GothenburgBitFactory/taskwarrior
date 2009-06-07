@@ -48,9 +48,30 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (17);
+  UnitTest t (35);
 
-  std::string d;
+  Duration d;
+  t.ok (d.valid ("daily"),     "duration daily = 1");
+  t.ok (d.valid ("weekdays"),  "duration weekdays = 1");
+  t.ok (d.valid ("day"),       "duration day = 1");
+  t.ok (d.valid ("0d"),        "duration 0d = 0");
+  t.ok (d.valid ("1d"),        "duration 1d = 1");
+  t.ok (d.valid ("7d"),        "duration 7d = 7");
+  t.ok (d.valid ("10d"),       "duration 10d = 10");
+  t.ok (d.valid ("100d"),      "duration 100d = 100");
+
+  t.ok (d.valid ("weekly"),    "duration weekly = 7");
+  t.ok (d.valid ("sennight"),  "duration sennight = 7");
+  t.ok (d.valid ("biweekly"),  "duration biweekly = 14");
+  t.ok (d.valid ("fortnight"), "duration fortnight = 14");
+  t.ok (d.valid ("0w"),        "duration 0w = 0");
+  t.ok (d.valid ("1w"),        "duration 1w = 7");
+  t.ok (d.valid ("7w"),        "duration 7w = 49");
+  t.ok (d.valid ("10w"),       "duration 10w = 70");
+  t.ok (d.valid ("100w"),      "duration 100w = 700");
+
+  t.notok (d.valid ("woof"),   "duration woof = fail");
+
   t.is (convertDuration ("daily"),       1, "duration daily = 1");
   t.is (convertDuration ("weekdays"),    1, "duration weekdays = 1");
   t.is (convertDuration ("day"),         1, "duration day = 1");
