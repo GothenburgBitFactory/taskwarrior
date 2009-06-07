@@ -259,24 +259,14 @@ void Context::parse ()
 
         // Sequence
         // Note: "add" doesn't require an ID
-        else if (command != "add"               &&
-                 validSequence (*arg, sequence) &&
+        else if (command != "add"      &&
+                 sequence.valid (*arg) &&
                  ! foundSomethingAfterSequence)
         {
           std::cout << "# found sequence" << std::endl;
+          sequence.parse (*arg);
           foundSequence = true;
         }
-
-/*
-        else if (lowerCase (command) != "add"  && // "add" doesn't require an ID
-            validSequence (arg, sequence) &&
-            ! foundSomethingAfterSequence)
-        {
-          foundSequence = true;
-          foreach (id, sequence)
-            task.addId (*id);
-        }
-*/
 
 /*
         // Tags begin with + or - and contain arbitrary text.

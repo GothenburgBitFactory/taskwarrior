@@ -41,10 +41,26 @@ Sequence parseSequence (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (18);
+  UnitTest t (30);
+
+  // Test for validity.
+  Sequence seq;
+  t.notok (seq.valid ("1--2"),  "not valid 1--2");
+  t.notok (seq.valid ("1-2-3"), "not valid 1-2-3");
+  t.notok (seq.valid ("-1-2"),  "not valid -1-2");
+
+  t.ok (seq.valid ("1"),       "valid 1");
+  t.ok (seq.valid ("1,3"),     "valid 1,3");
+  t.ok (seq.valid ("3,1"),     "valid 3,1");
+  t.ok (seq.valid ("1,3-5,7"), "valid 1,3-5,7");
+  t.ok (seq.valid ("1-1000"),  "valid 1-1000");
+  t.ok (seq.valid ("1-1001"),  "valid 1-1001");
+  t.ok (seq.valid ("1-two"),   "valid 1-two");
+  t.ok (seq.valid ("one-2"),   "valid one-2");
+  t.ok (seq.valid ("1-5,3-7"), "valid 1-5,3-7");
 
   // 1
-  Sequence seq = parseSequence ("1");
+  seq = parseSequence ("1");
   t.is (seq.size (), (size_t)1, "seq '1' -> 1 item");
   if (seq.size () == 1)
   {

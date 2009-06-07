@@ -302,18 +302,6 @@ static bool validId (const std::string& input)
 
 ////////////////////////////////////////////////////////////////////////////////
 // 1,2-4,6
-bool validSequence (
-  const std::string& input,
-  Sequence& sequence)
-{
-  bool valid = true;
-
-  try { sequence.parse (input); }
-  catch (...) { valid = false; }
-
-  return valid;
-}
-
 static bool validSequence (
   const std::string& input,
   std::vector <int>& ids)

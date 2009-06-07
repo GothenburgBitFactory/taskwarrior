@@ -39,11 +39,12 @@ public:
   Sequence (const std::string&);         // Parse
   ~Sequence ();                          // Destructor
 
+  bool valid (const std::string&) const;
   void parse (const std::string&);
   void combine (const Sequence&);
 
 private:
-  bool validId (const std::string&);
+  bool validId (const std::string&) const;
 };
 
 #endif

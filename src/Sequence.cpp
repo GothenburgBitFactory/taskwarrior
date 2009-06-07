@@ -54,6 +54,26 @@ Sequence::~Sequence ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Sequence::valid (const std::string& input) const
+{
+  std::vector <std::string> ranges;
+  split (ranges, input, ',');
+
+  std::vector <std::string>::iterator it;
+  for (it = ranges.begin (); it != ranges.end (); ++it)
+  {
+    std::vector <std::string> range;
+    split (range, *it, '-');
+
+    if (range.size () < 1 ||
+        range.size () > 2)
+      return false;
+  }
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Sequence::parse (const std::string& input)
 {
   std::vector <std::string> ranges;
@@ -121,7 +141,7 @@ void Sequence::combine (const Sequence& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Sequence::validId (const std::string& input)
+bool Sequence::validId (const std::string& input) const
 {
   if (input.length () == 0)
     return false;
