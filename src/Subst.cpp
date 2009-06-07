@@ -27,6 +27,10 @@
 
 #include "Subst.h"
 #include "Nibbler.h"
+#include "Context.h"
+#include "i18n.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Subst::Subst ()
@@ -99,13 +103,16 @@ void Subst::parse (const std::string& input)
       mGlobal = n.skip ('g');
 
     if (mFrom == "")
-      throw std::string ("Cannot substitute an empty string");
+      throw context.stringtable.get (SUBST_EMPTY,
+                                     "Cannot substitute an empty string");
 
     if (!n.depleted ())
-      throw std::string ("Unrecognized character(s) at end of substitution");
+      throw context.stringtable.get (SUBST_BAD_CHARS,
+                                     "Unrecognized character(s) at end of substitution");
   }
   else
-    throw std::string ("Malformed substitution");
+    throw context.stringtable.get (SUBST_MALFORMED,
+                                   "Malformed substitution");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

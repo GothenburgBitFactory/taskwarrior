@@ -22,6 +22,9 @@
 109 Empty record in input
 110 Unrecognized characters at end of line
 111 Record not recognized as format 4
+112 Cannot substitute an empty string
+113 Unrecognized character(s) at end of substitution
+114 Malformed substitution
 
 # 2xx Commands
 200 active

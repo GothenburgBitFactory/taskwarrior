@@ -46,6 +46,10 @@
 #define RECORD_EXTRA            110
 #define RECORD_NOT_FF4          111
 
+#define SUBST_EMPTY             112
+#define SUBST_BAD_CHARS         113
+#define SUBST_MALFORMED         114
+
 // 2xx Commands
 #define CMD_ACTIVE              200
 #define CMD_ADD                 201
