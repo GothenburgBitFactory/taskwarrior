@@ -69,7 +69,7 @@ std::string handleExport (TDB&, T&);
 std::string handleDone (TDB&, T&);
 std::string handleModify (TDB&, T&);
 std::string handleProjects ();
-std::string handleTags (TDB&, T&);
+std::string handleTags ();
 std::string handleUndelete (TDB&, T&);
 std::string handleVersion ();
 std::string handleDelete (TDB&, T&);

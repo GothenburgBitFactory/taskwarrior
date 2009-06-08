@@ -163,8 +163,8 @@ void Context::dispatch ()
        if (command == "export")             { out = handleExport          (tdb, task); }
 */
        if (cmd.command == "projects")       { out = handleProjects (); }
+  else if (cmd.command == "tags")           { out = handleTags ();     }
 /*
-  else if (command == "tags")               { out = handleTags            (tdb, task); }
   else if (command == "info")               { out = handleInfo            (tdb, task); }
   else if (command == "stats")              { out = handleReportStats     (tdb, task); }
   else if (command == "history")            { out = handleReportHistory   (tdb, task); }

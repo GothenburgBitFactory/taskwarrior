@@ -453,7 +453,6 @@ std::string runTaskCommand (
 
   // Read-only commands with no side effects.
        if (command == "export")             { out = handleExport          (tdb, task); }
-  else if (command == "tags")               { out = handleTags            (tdb, task); }
   else if (command == "info")               { out = handleInfo            (tdb, task); }
   else if (command == "stats")              { out = handleReportStats     (tdb, task); }
   else if (command == "history")            { out = handleReportHistory   (tdb, task); }

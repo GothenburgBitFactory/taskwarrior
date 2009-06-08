@@ -101,6 +101,7 @@ std::string handleProjects ()
   std::vector <T2> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   int quantity = context.tdb.load (tasks, context.filter);
+  context.tdb.unlock ();
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
@@ -144,31 +145,31 @@ std::string handleProjects ()
     out << "No projects."
         << std::endl;
 
-  context.tdb.unlock ();
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleTags (TDB& tdb, T& task)
+std::string handleTags ()
 {
   std::stringstream out;
 
-  // Get all the tasks.
-  std::vector <T> tasks;
-  tdb.pendingT (tasks);
+  context.filter.push_back (Att ("status", "pending"));
+
+  std::vector <T2> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  int quantity = context.tdb.load (tasks, context.filter);
+  context.tdb.unlock ();
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
   std::map <std::string, std::string> unique;
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  foreach (t, tasks)
   {
-    T task (tasks[i]);
-
     std::vector <std::string> tags;
-    task.getTags (tags);
+    t->getTags (tags);
 
-    for (unsigned int t = 0; t < tags.size (); ++t)
-      unique[tags[t]] = "";
+    foreach (tag, tags)
+      unique[*tag] = "";
   }
 
   // Render a list of tag names from the map.
@@ -180,6 +181,7 @@ std::string handleTags (TDB& tdb, T& task)
     out << optionalBlankLine ()
         << unique.size ()
         << (unique.size () == 1 ? " tag" : " tags")
+        << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")"
         << std::endl;
   else
     out << "No tags."
