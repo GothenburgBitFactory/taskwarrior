@@ -92,17 +92,13 @@ void Context::initialize (int argc, char** argv)
   if (locale != "")
     stringtable.load (location + "/strings." + locale);
 
-  // TODO Handle "--version, -v" right here.
+  // TODO Handle "--version, -v" right here?
 
   // init TDB.
   std::vector <std::string> all;
   split (all, location, ',');
   foreach (path, all)
     tdb.location (expandPath (*path));
-
-  // TODO Load pending.data.
-  // TODO Load completed.data.
-  // TODO Load deleted.data.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -112,9 +108,7 @@ int Context::run ()
   try
   {
     parse ();    // Parse command line.
-    // TODO tdb.load (Filter);
     dispatch (); // Dispatch to command handlers.
-    // TODO Auto gc.
     shadow ();   // Auto shadow update.
   }
 
@@ -157,20 +151,19 @@ void Context::dispatch ()
     split (args, defaultCommand, ' ');
     std::cout << "[task " << defaultCommand << "]" << std::endl;
   }
+*/
 
-  loadCustomReports ();
-
-  std::string command;
-  T task;
-  parse (args, command, task);
-
+/*
   bool gcMod  = false; // Change occurred by way of gc.
   bool cmdMod = false; // Change occurred by way of command type.
+*/
   std::string out;
-
+/*
   // Read-only commands with no side effects.
        if (command == "export")             { out = handleExport          (tdb, task); }
-  else if (command == "projects")           { out = handleProjects        (tdb, task); }
+*/
+       if (cmd.command == "projects")       { out = handleProjects (); }
+/*
   else if (command == "tags")               { out = handleTags            (tdb, task); }
   else if (command == "info")               { out = handleInfo            (tdb, task); }
   else if (command == "stats")              { out = handleReportStats     (tdb, task); }
@@ -212,10 +205,9 @@ void Context::dispatch ()
   // and if an actual change occurred (gcMod || cmdMod).
   if (shadow && (gcMod || cmdMod))
     updateShadowFile (tdb);
-
-  return out;
 */
-  throw std::string ("unimplemented Context::dispatch");
+
+  std::cout << out;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include "Cmd.h"
 #include "Context.h"
 #include "util.h"
@@ -59,14 +58,9 @@ bool Cmd::valid (const std::string& input)
   loadCommands ();
   loadCustomReports ();
 
-  std::string candidate = lowerCase (input);
-
   std::vector <std::string> matches;
-  autoComplete (candidate, commands, matches);
-  if (0 == matches.size ())
-      return false;
-
-  return true;
+  autoComplete (lowerCase (input), commands, matches);
+  return matches.size () == 1 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

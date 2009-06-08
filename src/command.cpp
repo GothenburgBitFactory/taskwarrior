@@ -92,22 +92,21 @@ std::string handleAdd (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleProjects (TDB& tdb, T& task)
+std::string handleProjects ()
 {
   std::stringstream out;
 
-  // Get all the tasks, including deleted ones.
-  std::vector <T> tasks;
-  tdb.pendingT (tasks);
+  context.filter.push_back (Att ("status", "pending"));
+
+  std::vector <T2> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  int quantity = context.tdb.load (tasks, context.filter);
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
   std::map <std::string, int> unique;
-  for (unsigned int i = 0; i < tasks.size (); ++i)
-  {
-    T task (tasks[i]);
-    unique[task.getAttribute ("project")] += 1;
-  }
+  foreach (t, tasks)
+    unique[t->get ("project")] += 1;
 
   if (unique.size ())
   {
@@ -138,12 +137,14 @@ std::string handleProjects (TDB& tdb, T& task)
         << optionalBlankLine ()
         << unique.size ()
         << (unique.size () == 1 ? " project" : " projects")
+        << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")"
         << std::endl;
   }
   else
     out << "No projects."
         << std::endl;
 
+  context.tdb.unlock ();
   return out.str ();
 }
 

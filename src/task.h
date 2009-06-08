@@ -50,15 +50,17 @@ void allCustomReports (std::vector <std::string>&);
 
 // task.cpp
 void gatherNextTasks (const TDB&, T&, std::vector <T>&, std::vector <int>&);
-void nag (TDB&, T&);
-int getDueState (const std::string&);
-void handleRecurrence (TDB&, std::vector <T>&);
-bool generateDueDates (T&, std::vector <Date>&);
-Date getNextRecurrence (Date&, std::string&);
-void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
 void onChangeCallback ();
 std::string runTaskCommand (int, char**, TDB&, bool gc = true, bool shadow = true);
 std::string runTaskCommand (std::vector <std::string>&, TDB&, bool gc = false, bool shadow = false);
+
+// recur.cpp
+void handleRecurrence (TDB&, std::vector <T>&);
+Date getNextRecurrence (Date&, std::string&);
+bool generateDueDates (T&, std::vector <Date>&);
+void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
+int getDueState (const std::string&);
+void nag (TDB&, T&);
 
 // command.cpp
 std::string handleAdd (TDB&, T&);
@@ -66,7 +68,7 @@ std::string handleAppend (TDB&, T&);
 std::string handleExport (TDB&, T&);
 std::string handleDone (TDB&, T&);
 std::string handleModify (TDB&, T&);
-std::string handleProjects (TDB&, T&);
+std::string handleProjects ();
 std::string handleTags (TDB&, T&);
 std::string handleUndelete (TDB&, T&);
 std::string handleVersion ();
