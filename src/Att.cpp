@@ -194,6 +194,11 @@ bool Att::validMod (const std::string& mod) const
 // Record that does not have modifiers, but may have a value.
 bool Att::match (const Att& other) const
 {
+  // If there are no mods, just perform a straight compares on value.
+  if (mMods.size () == 0)
+    if (mName != other.mName || mValue != other.mValue)
+      return false;
+
   // Assume a match, and short-circuit on mismatch.
   foreach (mod, mMods)
   {

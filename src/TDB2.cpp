@@ -156,6 +156,9 @@ void TDB2::unlock ()
 // Returns number of filtered tasks.
 int TDB2::load (std::vector <T2>& tasks, Filter& filter)
 {
+  // Note: tasks.clear () is deliberately not called, to allow the combination
+  //       of multiple files.
+
   std::string file;
   int line_number;
 
@@ -173,16 +176,11 @@ int TDB2::load (std::vector <T2>& tasks, Filter& filter)
         int length = ::strlen (line);
         if (length > 1)
         {
+          // TODO Add hidden attribute indicating source?
           line[length - 1] = '\0'; // Kill \n
-          std::cout << "# line: " << line << std::endl;
-
           T2 task (line);
-
           if (filter.pass (task))
-          {
-            // TODO Add hidden attribute indicating source.
             tasks.push_back (task);
-          }
         }
 
         ++line_number;
@@ -198,16 +196,11 @@ int TDB2::load (std::vector <T2>& tasks, Filter& filter)
         int length = ::strlen (line);
         if (length > 1)
         {
+          // TODO Add hidden attribute indicating source?
           line[length - 1] = '\0'; // Kill \n
-          std::cout << "# line: " << line << std::endl;
-
           T2 task (line);
-
           if (filter.pass (task))
-          {
-            // TODO Add hidden attribute indicating source.
             tasks.push_back (task);
-          }
         }
 
         ++line_number;

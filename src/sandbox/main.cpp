@@ -10,10 +10,6 @@ int main (int argc, char** argv)
   try
   {
     context.initialize (argc, argv);
-//    context.run ();
-
-////////////////////////////////////////////////////////////////////////////////
-
     context.tdb.lock (context.config.get ("locking", true));
 
     context.filter.push_back (Att ("priority", "L"));
@@ -23,9 +19,6 @@ int main (int argc, char** argv)
     std::cout << "# " << quantity << " <-- context.tdb.load" << std::endl;
 
     context.tdb.unlock ();
-
-////////////////////////////////////////////////////////////////////////////////
-
     return 0;
   }
 
