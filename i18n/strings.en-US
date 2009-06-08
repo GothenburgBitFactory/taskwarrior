@@ -25,6 +25,7 @@
 112 Cannot substitute an empty string
 113 Unrecognized character(s) at end of substitution
 114 Malformed substitution
+115 Tags are not permitted to contain commas
 
 # 2xx Commands - must be sequential
 200 active

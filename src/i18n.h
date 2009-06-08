@@ -61,6 +61,8 @@
 #define SUBST_BAD_CHARS         113
 #define SUBST_MALFORMED         114
 
+#define TAGS_NO_COMMA           115
+
 // 2xx Commands
 #define CMD_ACTIVE              200
 #define CMD_ADD                 201

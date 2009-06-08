@@ -377,6 +377,10 @@ std::cout << "# parse tag removal '" << *arg << "'" << std::endl;
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
+        if (arg->find (',') != std::string::npos)
+          throw stringtable.get (TAGS_NO_COMMA,
+                                 "Tags are not permitted to contain commas.");
+
         tagRemovals.push_back (arg->substr (1, std::string::npos));
       }
 

@@ -188,6 +188,9 @@ int TDB2::load (std::vector <T2>& tasks, Filter& filter)
         ++line_number;
       }
 
+      // TODO If the filter contains Status:x where x is not deleted or
+      //      completed, then this can be skipped.
+
       line_number = 1;
       file = location->path + "/completed.data";
       while (fgets (line, T_LINE_MAX, location->completed))
@@ -243,6 +246,9 @@ void TDB2::update (T2& before, T2& after)
 // TODO writes all, including comments
 int TDB2::commit ()
 {
+  // TODO Two passes: first the pending file.
+  //                  then the compelted file.
+
   throw std::string ("unimplemented TDB2::commit");
 }
 

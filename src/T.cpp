@@ -629,7 +629,7 @@ int T::determineVersion (const std::string& line)
 
   // Version 4 looks like:
   //
-  //   [name:"value" ...]
+  //   [name:"value" ...]\n
   //
   // Scan for [, ] and :".
   if (line[0] == '[' &&

@@ -40,6 +40,7 @@ public:
   T2& operator= (const T2&); // Assignment operator
   ~T2 ();                    // Destructor
 
+  void parse (const std::string&);
   std::string composeCSV ();
 
   // Status values.
@@ -53,28 +54,23 @@ public:
   int id () const                                      { return sequence.size () ? sequence[0] : 0; }
   void id (int anotherId)                              { sequence.push_back (anotherId); }
 
-/*
-  status getStatus () const                            { return mStatus; }
-  void setStatus (status s)                            { mStatus = s; }
+  static status textToStatus (const std::string&);
+  static std::string statusToText (status);
 
-  bool hasTag (const std::string&) const;
-  void getRemoveTags (std::vector<std::string>&);      // SPECIAL
-  void addRemoveTag (const std::string&);              // SPECIAL
-  int getTagCount () const;
-  void getTags (std::vector<std::string>&) const;
-*/
+  status getStatus ();
+  void setSatus (status);
+
+  int getTagCount ();
+  bool hasTag (const std::string&);
   void addTag (const std::string&);
-/*
   void addTags (const std::vector <std::string>&);
-*/
+  void getTags (std::vector<std::string>&);
   void removeTag (const std::string&);
-/*
-  void removeTags ();
-*/
 
   void getAnnotations (std::vector <Att>&) const;
   void setAnnotations (const std::vector <Att>&);
   void addAnnotation (const std::string&);
+  void removeAnnotations ();
 
   bool valid () const;
 

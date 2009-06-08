@@ -82,6 +82,8 @@ std::string Record::composeF4 ()
 //
 void Record::parse (const std::string& input)
 {
+  clear ();
+
   Nibbler n (input);
   std::string line;
   if (n.skip     ('[')       &&

@@ -26,7 +26,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
-#include <string>
 #include <algorithm>
 #include "Nibbler.h"
 #include "T2.h"
@@ -47,7 +46,7 @@ T2::T2 (const std::string& input)
 {
   try
   {
-    parse (input);
+    Record::parse (input);
   }
 
   catch (std::string& e)
@@ -75,7 +74,56 @@ T2::~T2 ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+T2::status T2::textToStatus (const std::string& input)
+{
+       if (input == "pending")   return pending;
+  else if (input == "completed") return completed;
+  else if (input == "deleted")   return deleted;
+  else if (input == "recurring") return recurring;
+
+  return pending;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string T2::statusToText (T2::status s)
+{
+       if (s == pending)   return "pending";
+  else if (s == completed) return "completed";
+  else if (s == deleted)   return "deleted";
+  else if (s == recurring) return "recurring";
+
+  return "pending";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+T2::status T2::getStatus ()
+{
+  return textToStatus (get ("status"));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void T2::setSatus (T2::status status)
+{
+  set ("status", statusToText (status));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void T2::parse (const std::string& line)
+{
+  try
+  {
+    Record::parse (line);
+  }
+
+  catch (std::string& e)
+  {
+    legacyParse (line);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Support FF2, FF3.
+// Thankfully FF1 is no longer supported.
 void T2::legacyParse (const std::string& line)
 {
   switch (determineVersion (line))
@@ -88,16 +136,17 @@ void T2::legacyParse (const std::string& line)
 
   // File format version 2, from 2008.1.1 - 2009.3.23
   case 2:
-/*
     {
       if (line.length () > 46)       // ^.{36} . \[\] \[\] \n
       {
-        mUUID = line.substr (0, 36);
+        set ("uuid", line.substr (0, 36));
 
-        mStatus =   line[37] == '+' ? completed
-                  : line[37] == 'X' ? deleted
-                  : line[37] == 'r' ? recurring
-                  :                   pending;
+        T2::status status = line[37] == '+' ? completed
+                          : line[37] == 'X' ? deleted
+                          : line[37] == 'r' ? recurring
+                          :                   pending;
+
+        set ("status", statusToText (status));
 
         size_t openTagBracket  = line.find ("[");
         size_t closeTagBracket = line.find ("]", openTagBracket);
@@ -111,8 +160,9 @@ void T2::legacyParse (const std::string& line)
           {
             std::string tags = line.substr (
               openTagBracket + 1, closeTagBracket - openTagBracket - 1);
-            std::vector <std::string> rawTags;
-            split (mTags, tags, ' ');
+            std::vector <std::string> tagSet;
+            split (tagSet, tags, ' ');
+            addTags (tagSet);
 
             std::string attributes = line.substr (
               openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
@@ -123,10 +173,10 @@ void T2::legacyParse (const std::string& line)
               std::vector <std::string> pair;
               split (pair, pairs[i], ':');
               if (pair.size () == 2)
-                mAttributes[pair[0]] = pair[1];
+                set (pair[0], pair[1]);
             }
 
-            mDescription = line.substr (closeAttrBracket + 2, std::string::npos);
+            set ("description", line.substr (closeAttrBracket + 2, std::string::npos));
           }
           else
             throw std::string ("Missing attribute brackets");
@@ -137,23 +187,23 @@ void T2::legacyParse (const std::string& line)
       else
         throw std::string ("Line too short");
 
-      mAnnotations.clear ();
+      removeAnnotations ();
     }
-*/
     break;
 
   // File format version 3, from 2009.3.23
   case 3:
-/*
     {
       if (line.length () > 49)       // ^.{36} . \[\] \[\] \[\] \n
       {
-        mUUID = line.substr (0, 36);
+        set ("uuid", line.substr (0, 36));
 
-        mStatus =   line[37] == '+' ? completed
-                  : line[37] == 'X' ? deleted
-                  : line[37] == 'r' ? recurring
-                  :                   pending;
+        T2::status status = line[37] == '+' ? completed
+                          : line[37] == 'X' ? deleted
+                          : line[37] == 'r' ? recurring
+                          :                   pending;
+
+        set ("status", statusToText (status));
 
         size_t openTagBracket  = line.find ("[");
         size_t closeTagBracket = line.find ("]", openTagBracket);
@@ -172,8 +222,9 @@ void T2::legacyParse (const std::string& line)
             {
               std::string tags = line.substr (
                 openTagBracket + 1, closeTagBracket - openTagBracket - 1);
-              std::vector <std::string> rawTags;
-              split (mTags, tags, ' ');
+              std::vector <std::string> tagSet;
+              split (tagSet, tags, ' ');
+              addTags (tagSet);
 
               std::string attributes = line.substr (
                 openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
@@ -185,9 +236,10 @@ void T2::legacyParse (const std::string& line)
                 std::vector <std::string> pair;
                 split (pair, pairs[i], ':');
                 if (pair.size () == 2)
-                  mAttributes[pair[0]] = pair[1];
+                  set (pair[0], pair[1]);
               }
 
+/*
               // Extract and split the annotations, which are of the form:
               //   1234:"..." 5678:"..."
               std::string annotations = line.substr (
@@ -225,8 +277,9 @@ void T2::legacyParse (const std::string& line)
                   mAnnotations[::atoi (name.c_str ())] = value;
                 }
               }
+*/
 
-              mDescription = line.substr (closeAnnoBracket + 2, std::string::npos);
+              set ("description", line.substr (closeAnnoBracket + 2, std::string::npos));
             }
             else
               throw std::string ("Missing annotation brackets.");
@@ -240,7 +293,6 @@ void T2::legacyParse (const std::string& line)
       else
         throw std::string ("Line too short.");
     }
-*/
     break;
 
   default:
@@ -271,10 +323,7 @@ void T2::getAnnotations (std::vector <Att>& annotations) const
 void T2::setAnnotations (const std::vector <Att>& annotations)
 {
   // Erase old annotations.
-  Record::iterator i;
-  for (i = this->begin (); i != this->end (); ++i)
-    if (i->first.substr (0, 11) == "annotation_")
-      this->erase (i);
+  removeAnnotations ();
 
   std::vector <Att>::const_iterator ci;
   for (ci = annotations.begin (); ci != annotations.end (); ++ci)
@@ -294,6 +343,37 @@ void T2::addAnnotation (const std::string& description)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void T2::removeAnnotations ()
+{
+  // Erase old annotations.
+  Record::iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+    if (i->first.substr (0, 11) == "annotation_")
+      this->erase (i);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int T2::getTagCount ()
+{
+  std::vector <std::string> tags;
+  split (tags, get ("tags"), ',');
+
+  return (int) tags.size ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool T2::hasTag (const std::string& tag)
+{
+  std::vector <std::string> tags;
+  split (tags, get ("tags"), ',');
+
+  if (std::find (tags.begin (), tags.end (), tag) != tags.end ())
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void T2::addTag (const std::string& tag)
 {
   std::vector <std::string> tags;
@@ -306,6 +386,22 @@ void T2::addTag (const std::string& tag)
     join (combined, ",", tags);
     set ("tags", combined);
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void T2::addTags (const std::vector <std::string>& tags)
+{
+  remove ("tags");
+
+  std::vector <std::string>::const_iterator it;
+  for (it = tags.begin (); it != tags.end (); ++it)
+    addTag (*it);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void T2::getTags (std::vector<std::string>& tags)
+{
+  split (tags, get ("tags"), ',');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
