@@ -290,7 +290,7 @@ std::string handleVersion (Config& conf)
   link.setColumnWidth (0, Table::flexible);
   link.setColumnJustification (0, Table::left);
   link.addCell (link.addRow (), 0,
-    "See http://www.beckingham.net/task.html for the latest releases and a "
+    "See http://taskwarrior.org for the latest releases and a "
     "full tutorial.  New releases containing fixes and enhancements are "
     "made frequently.");
 

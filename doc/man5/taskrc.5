@@ -294,96 +294,95 @@ The output columns, their labels and the sort order can be set using the corresp
 variables for each report.
 
 .TP
-.B 
+.B
 report.long.description
 Lists all task, all data, matching the specified criteria
 
 .TP
-.B 
+.B
 report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description
 .RE
 .br
-.B 
+.B
 report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description
 .br
-.B 
+.B
 report.long.sort=due+,priority-,project+
 
 .TP
-.B 
+.B
 report.list.description
 Lists all tasks matching the specified criteria
 
 .TP
-.B 
+.B
 report.list.labels=ID,Project,Pri,Due,Active,Age,Description
 .RE
 .br
-.B 
+.B
 report.list.columns=id,project,priority,due,active,age,description
 .br
-.B 
+.B
 report.list.sort=due+,priority-,project+
 
 
 .TP
-.B 
+.B
 report.ls.description
 Minimal listing of all tasks matching the specified criteria
 
 .TP
-.B 
+.B
 report.ls.labels=ID,Project,Pri,Description
 .RE
 .br
-.B 
+.B
 report.ls.columns=id,project,priority,description
 .br
-.B 
+.B
 report.ls.sort=priority-,project+
 
 .TP
-.B 
+.B
 report.newest.description
 Shows the newest tasks
 
 .TP
-.B 
+.B
 report.newest.labels=ID,Project,Pri,Due,Active,Age,Description
 .RE
 .br
-.B 
+.B
 report.newest.columns=id,project,priority,due,active,age,description
 .br
-.B 
+.B
 report.newest.sort=id-
 .br
-.B 
+.B
 report.newest.limit=10
 
 
 .TP
-.B 
+.B
 report.oldest.description
 Shows the oldest tasks
 
 .TP
-.B 
+.B
 report.oldest.labels=ID,Project,Pri,Due,Active,Age,Description
 .RE
 .br
-.B 
+.B
 report.oldest.columns=id,project,priority,due,active,age,description
 .br
-.B 
+.B
 report.oldest.sort=id+
 .br
-.B 
+.B
 report.oldest.limit=10
 
-
 .SH "CREDITS & COPYRIGHTS"
-task was written by P. Beckingham <task@beckingham.net>.
+task was written by P. Beckingham <paul@beckingham.net>.
 .br
 Copyright (C) 2006 \- 2009 P. Beckingham
 
@@ -394,31 +393,23 @@ task is distributed under the GNU General Public License.  See
 http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 
 .SH SEE ALSO
-.BR task (1)
+.BR task(1)
 
 For more information regarding task, the following may be referenced:
 
 .TP
-<http://www.beckingham.net/task.html>
-The official site.
+The official site at
+<http://taskwarrior.org>
 
 .TP
-<http://groups.google.com/group/taskprogram>
-The official mailing list.
-
-.TP
+The official code repository at
 <http://github.com/pbeckingham/task/>
-The official code repository.
+
+.TP
+You can contact the project by writing an email to
+<support@taskwarrior.org>
 
 .SH REPORTING BUGS
+.TP
 Bugs in task may be reported to the issue-tracker at
-
-.RS
-<http://github.com/pbeckingham/task/issues>
-.RE
-
-or to the mailing list at
-
-.RS
-<http://groups.google.com/group/taskprogram>
-.RE
+<http://taskwarrior.org>
