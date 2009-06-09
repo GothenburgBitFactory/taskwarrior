@@ -29,6 +29,11 @@
 
 ------ old releases ------------------------------
 
+1.7.1 (6/8/2009)
+ + Fixed build failure on OpenBSD (thanks to Mike Adonay).
+ + Took the opportunity of a patch release to update the various email
+   addresses and URLs in the various documents.
+
 1.7.0 (5/14/2009) f6b8b39d8b4a85c30a457e9e78b582b74531bfe4
  + Improved the errors when parsing a corrupt or unrecognized pending.data
    or completed.data file (thanks to T. Charles Yun).
