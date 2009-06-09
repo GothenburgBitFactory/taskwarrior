@@ -12,3 +12,4 @@ configure
 config.log
 www.xls
 *~
+Makefile.in

@@ -32,7 +32,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Default
-T::T ()
+Tt::Tt ()
 {
   mUUID = uuid ();
   mStatus = pending;
@@ -49,13 +49,13 @@ T::T ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Initialize by parsing storage format
-T::T (const std::string& line)
+Tt::Tt (const std::string& line)
 {
   parse (line);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T::T (const T& other)
+Tt::Tt (const Tt& other)
 {
   mStatus      = other.mStatus;
   mUUID        = other.mUUID;
@@ -69,7 +69,7 @@ T::T (const T& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T& T::operator= (const T& other)
+Tt& Tt::operator= (const Tt& other)
 {
   if (this != &other)
   {
@@ -88,12 +88,12 @@ T& T::operator= (const T& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T::~T ()
+Tt::~Tt ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool T::hasTag (const std::string& tag) const
+bool Tt::hasTag (const std::string& tag) const
 {
   std::vector <std::string>::const_iterator it = find (mTags.begin (), mTags.end (), tag);
   if (it != mTags.end ())
@@ -104,38 +104,38 @@ bool T::hasTag (const std::string& tag) const
 
 ////////////////////////////////////////////////////////////////////////////////
 // SPECIAL METHOD - DO NOT REMOVE
-void T::getRemoveTags (std::vector<std::string>& all)
+void Tt::getRemoveTags (std::vector<std::string>& all)
 {
   all = mRemoveTags;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // SPECIAL METHOD - DO NOT REMOVE
-void T::addRemoveTag (const std::string& tag)
+void Tt::addRemoveTag (const std::string& tag)
 {
   if (tag.find (' ') != std::string::npos)
-    throw std::string ("T::addRemoveTag - tags may not contain spaces");
+    throw std::string ("Tt::addRemoveTag - tags may not contain spaces");
 
   mRemoveTags.push_back (tag);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int T::getTagCount () const
+int Tt::getTagCount () const
 {
   return mTags.size ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::getTags (std::vector<std::string>& all) const
+void Tt::getTags (std::vector<std::string>& all) const
 {
   all = mTags;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::addTag (const std::string& tag)
+void Tt::addTag (const std::string& tag)
 {
   if (tag.find (' ') != std::string::npos)
-    throw std::string ("T::addTag - tags may not contain spaces");
+    throw std::string ("Tt::addTag - tags may not contain spaces");
 
   if (tag[0] == '+')
   {
@@ -150,12 +150,12 @@ void T::addTag (const std::string& tag)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::addTags (const std::vector <std::string>& tags)
+void Tt::addTags (const std::vector <std::string>& tags)
 {
   for (size_t i = 0; i < tags.size (); ++i)
   {
     if (tags[i].find (' ') != std::string::npos)
-      throw std::string ("T::addTags - tags may not contain spaces");
+      throw std::string ("Tt::addTags - tags may not contain spaces");
 
     if (tags[i][0] == '+')
     {
@@ -171,7 +171,7 @@ void T::addTags (const std::vector <std::string>& tags)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::removeTag (const std::string& tag)
+void Tt::removeTag (const std::string& tag)
 {
   std::vector <std::string> copy;
   for (size_t i = 0; i < mTags.size (); ++i)
@@ -182,19 +182,19 @@ void T::removeTag (const std::string& tag)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::removeTags ()
+void Tt::removeTags ()
 {
   mTags.clear ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::getAttributes (std::map<std::string, std::string>& all)
+void Tt::getAttributes (std::map<std::string, std::string>& all)
 {
   all = mAttributes;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string T::getAttribute (const std::string& name)
+const std::string Tt::getAttribute (const std::string& name)
 {
   if (mAttributes.find (name) != mAttributes.end ())
     return mAttributes[name];
@@ -203,7 +203,7 @@ const std::string T::getAttribute (const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::setAttribute (const std::string& name, const std::string& value)
+void Tt::setAttribute (const std::string& name, const std::string& value)
 {
   if (name.find (' ') != std::string::npos)
     throw std::string ("An attribute name may not contain spaces");
@@ -215,7 +215,7 @@ void T::setAttribute (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::setAttributes (const std::map <std::string, std::string>& attributes)
+void Tt::setAttributes (const std::map <std::string, std::string>& attributes)
 {
   foreach (i, attributes)
   {
@@ -230,13 +230,13 @@ void T::setAttributes (const std::map <std::string, std::string>& attributes)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::removeAttributes ()
+void Tt::removeAttributes ()
 {
   mAttributes.clear ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::removeAttribute (const std::string& name)
+void Tt::removeAttribute (const std::string& name)
 {
   std::map <std::string, std::string> copy = mAttributes;
   mAttributes.clear ();
@@ -246,7 +246,7 @@ void T::removeAttribute (const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::getSubstitution (
+void Tt::getSubstitution (
   std::string& from,
   std::string& to,
   bool& global) const
@@ -257,7 +257,7 @@ void T::getSubstitution (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::setSubstitution (
+void Tt::setSubstitution (
   const std::string& from,
   const std::string& to,
   bool global)
@@ -268,19 +268,19 @@ void T::setSubstitution (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::getAnnotations (std::map <time_t, std::string>& all) const
+void Tt::getAnnotations (std::map <time_t, std::string>& all) const
 {
   all = mAnnotations;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::setAnnotations (const std::map <time_t, std::string>& all)
+void Tt::setAnnotations (const std::map <time_t, std::string>& all)
 {
   mAnnotations = all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T::addAnnotation (const std::string& description)
+void Tt::addAnnotation (const std::string& description)
 {
   std::string sanitized = description;
   std::replace (sanitized.begin (), sanitized.end (), '"', '\'');
@@ -290,7 +290,7 @@ void T::addAnnotation (const std::string& description)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool T::sequenceContains (int id) const
+bool Tt::sequenceContains (int id) const
 {
   foreach (seq, mSequence)
     if (*seq == id)
@@ -308,7 +308,7 @@ bool T::sequenceContains (int id) const
 // attributes   \w+:\w+ \s ...
 // description  .+
 //
-const std::string T::compose () const
+const std::string Tt::compose () const
 {
   // UUID
   std::string line = mUUID + ' ';
@@ -367,7 +367,7 @@ const std::string T::compose () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string T::composeCSV ()
+const std::string Tt::composeCSV ()
 {
   // UUID
   std::string line = "'" + mUUID + "',";
@@ -441,7 +441,7 @@ const std::string T::composeCSV ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Read all file formats, write only the latest.
-void T::parse (const std::string& line)
+void Tt::parse (const std::string& line)
 {
   switch (determineVersion (line))
   {
@@ -659,7 +659,7 @@ void T::parse (const std::string& line)
 
 ////////////////////////////////////////////////////////////////////////////////
 // If this code is inaccurate, data corruption ensues.
-int T::determineVersion (const std::string& line)
+int Tt::determineVersion (const std::string& line)
 {
   // Version 1 looks like:
   //
@@ -721,7 +721,7 @@ int T::determineVersion (const std::string& line)
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Expand this method into a full-blown task validation check.
-bool T::validate () const
+bool Tt::validate () const
 {
   // TODO Verify until > due
   // TODO Verify entry < until, due, start, end

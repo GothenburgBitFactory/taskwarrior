@@ -47,12 +47,12 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-void filterSequence (std::vector<T>& all, T& task)
+void filterSequence (std::vector<Tt>& all, Tt& task)
 {
   std::vector <int> sequence = task.getAllIds ();
 
-  std::vector <T> filtered;
-  std::vector <T>::iterator t;
+  std::vector <Tt> filtered;
+  std::vector <Tt>::iterator t;
   for (t = all.begin (); t != all.end (); ++t)
   {
     std::vector <int>::iterator s;
@@ -64,7 +64,7 @@ void filterSequence (std::vector<T>& all, T& task)
   if (sequence.size () != filtered.size ())
   {
     std::vector <int> filteredSequence;
-    std::vector <T>::iterator fs;
+    std::vector <Tt>::iterator fs;
     for (fs = filtered.begin (); fs != filtered.end (); ++fs)
       filteredSequence.push_back (fs->getId ());
 
@@ -94,9 +94,9 @@ void filterSequence (std::vector<T>& all, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void filter (std::vector<T>& all, T& task)
+void filter (std::vector<Tt>& all, Tt& task)
 {
-  std::vector <T> filtered;
+  std::vector <Tt> filtered;
 
   // Split any description specified into words.
   std::vector <std::string> descWords;
@@ -113,7 +113,7 @@ void filter (std::vector<T>& all, T& task)
   // Iterate over each task, and apply selection criteria.
   for (unsigned int i = 0; i < all.size (); ++i)
   {
-    T refTask (all[i]);
+    Tt refTask (all[i]);
 
     // Apply description filter.
     std::string desc = lowerCase (refTask.getDescription ());
@@ -189,7 +189,7 @@ void filter (std::vector<T>& all, T& task)
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-std::string handleCompleted (TDB& tdb, T& task, Config& conf)
+std::string handleCompleted (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
@@ -205,7 +205,7 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.completedT (tasks);
   filter (tasks, task);
 
@@ -244,7 +244,7 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
   // Iterate over each task, and apply selection criteria.
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
-    T refTask (tasks[i]);
+    Tt refTask (tasks[i]);
 
     // Now format the matching task.
     Date end (::atoi (refTask.getAttribute ("end").c_str ()));
@@ -293,7 +293,7 @@ std::string handleCompleted (TDB& tdb, T& task, Config& conf)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Display all information for the given task.
-std::string handleInfo (TDB& tdb, T& task, Config& conf)
+std::string handleInfo (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
@@ -309,14 +309,14 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get all the tasks.
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.allPendingT (tasks);
 
   // Find the task.
   int count = 0;
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
-    T refTask (tasks[i]);
+    Tt refTask (tasks[i]);
 
     if (refTask.getId () == task.getId () || task.sequenceContains (refTask.getId ()))
     {
@@ -348,10 +348,10 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
       table.addCell (row, 0, "ID");
       table.addCell (row, 1, refTask.getId ());
 
-      std::string status = refTask.getStatus () == T::pending   ? "Pending"
-                         : refTask.getStatus () == T::completed ? "Completed"
-                         : refTask.getStatus () == T::deleted   ? "Deleted"
-                         : refTask.getStatus () == T::recurring ? "Recurring"
+      std::string status = refTask.getStatus () == Tt::pending   ? "Pending"
+                         : refTask.getStatus () == Tt::completed ? "Completed"
+                         : refTask.getStatus () == Tt::deleted   ? "Deleted"
+                         : refTask.getStatus () == Tt::recurring ? "Recurring"
                          : "";
       if (refTask.getAttribute ("parent") != "")
         status += " (Recurring)";
@@ -389,7 +389,7 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
         table.addCell (row, 1, refTask.getAttribute ("priority"));
       }
 
-      if (refTask.getStatus () == T::recurring ||
+      if (refTask.getStatus () == Tt::recurring ||
           refTask.getAttribute ("parent") != "")
       {
         if (refTask.getAttribute ("recur") != "")
@@ -540,11 +540,11 @@ std::string handleInfo (TDB& tdb, T& task, Config& conf)
 // Project  Remaining  Avg Age  Complete  0%                  100%
 // A               12      13d       55%  XXXXXXXXXXXXX-----------
 // B              109   3d 12h       10%  XXX---------------------
-std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
+std::string handleReportSummary (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.allT (tasks);
   handleRecurrence (tdb, tasks);
   filter (tasks, task);
@@ -552,7 +552,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
   // Generate unique list of project names from all pending tasks.
   std::map <std::string, bool> allProjects;
   foreach (t, tasks)
-    if (t->getStatus () == T::pending)
+    if (t->getStatus () == Tt::pending)
       allProjects[t->getAttribute ("project")] = false;
 
   // Initialize counts, sum.
@@ -577,7 +577,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
     std::string project = t->getAttribute ("project");
     ++counter[project];
 
-    if (t->getStatus () == T::pending)
+    if (t->getStatus () == Tt::pending)
     {
       ++countPending[project];
 
@@ -586,7 +586,7 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
         sumEntry[project] = sumEntry[project] + (double) (now - entry);
     }
 
-    else if (t->getStatus () == T::completed)
+    else if (t->getStatus () == Tt::completed)
     {
       ++countCompleted[project];
 
@@ -702,12 +702,12 @@ std::string handleReportSummary (TDB& tdb, T& task, Config& conf)
 //
 // Make the "three" tasks a configurable number
 //
-std::string handleReportNext (TDB& tdb, T& task, Config& conf)
+std::string handleReportNext (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
   // Load all pending.
-  std::vector <T> pending;
+  std::vector <Tt> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
   filter (pending, task);
@@ -728,7 +728,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get the pending tasks.
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.pendingT (tasks);
   filter (tasks, task);
 
@@ -778,7 +778,7 @@ std::string handleReportNext (TDB& tdb, T& task, Config& conf)
   // Iterate over each task, and apply selection criteria.
   foreach (i, matching)
   {
-    T refTask (pending[*i]);
+    Tt refTask (pending[*i]);
     Date now;
 
     // Now format the matching task.
@@ -887,7 +887,7 @@ time_t monthlyEpoch (const std::string& date)
   return 0;
 }
 
-std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
+std::string handleReportHistory (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
@@ -897,13 +897,13 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
   std::map <time_t, int> deletedGroup;
 
   // Scan the pending tasks.
-  std::vector <T> pending;
+  std::vector <Tt> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
   filter (pending, task);
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
-    T task (pending[i]);
+    Tt task (pending[i]);
     time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
     if (epoch)
     {
@@ -914,7 +914,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
       else
         addedGroup[epoch] = 1;
 
-      if (task.getStatus () == T::deleted)
+      if (task.getStatus () == Tt::deleted)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
         groups[epoch] = 0;
@@ -924,7 +924,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
         else
           deletedGroup[epoch] = 1;
       }
-      else if (task.getStatus () == T::completed)
+      else if (task.getStatus () == Tt::completed)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
         groups[epoch] = 0;
@@ -938,12 +938,12 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
   }
 
   // Scan the completed tasks.
-  std::vector <T> completed;
+  std::vector <Tt> completed;
   tdb.allCompletedT (completed);
   filter (completed, task);
   for (unsigned int i = 0; i < completed.size (); ++i)
   {
-    T task (completed[i]);
+    Tt task (completed[i]);
     time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
     if (epoch)
     {
@@ -955,7 +955,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
         addedGroup[epoch] = 1;
 
       epoch = monthlyEpoch (task.getAttribute ("end"));
-      if (task.getStatus () == T::deleted)
+      if (task.getStatus () == Tt::deleted)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
         groups[epoch] = 0;
@@ -965,7 +965,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
         else
           deletedGroup[epoch] = 1;
       }
-      else if (task.getStatus () == T::completed)
+      else if (task.getStatus () == Tt::completed)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
         groups[epoch] = 0;
@@ -1079,7 +1079,7 @@ std::string handleReportHistory (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
+std::string handleReportGHistory (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
@@ -1101,13 +1101,13 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   std::map <time_t, int> deletedGroup;
 
   // Scan the pending tasks.
-  std::vector <T> pending;
+  std::vector <Tt> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
   filter (pending, task);
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
-    T task (pending[i]);
+    Tt task (pending[i]);
     time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
     if (epoch)
     {
@@ -1118,7 +1118,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
       else
         addedGroup[epoch] = 1;
 
-      if (task.getStatus () == T::deleted)
+      if (task.getStatus () == Tt::deleted)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
         groups[epoch] = 0;
@@ -1128,7 +1128,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
         else
           deletedGroup[epoch] = 1;
       }
-      else if (task.getStatus () == T::completed)
+      else if (task.getStatus () == Tt::completed)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
         groups[epoch] = 0;
@@ -1142,12 +1142,12 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
   }
 
   // Scan the completed tasks.
-  std::vector <T> completed;
+  std::vector <Tt> completed;
   tdb.allCompletedT (completed);
   filter (completed, task);
   for (unsigned int i = 0; i < completed.size (); ++i)
   {
-    T task (completed[i]);
+    Tt task (completed[i]);
     time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
     if (epoch)
     {
@@ -1159,7 +1159,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
         addedGroup[epoch] = 1;
 
       epoch = monthlyEpoch (task.getAttribute ("end"));
-      if (task.getStatus () == T::deleted)
+      if (task.getStatus () == Tt::deleted)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
         groups[epoch] = 0;
@@ -1169,7 +1169,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
         else
           deletedGroup[epoch] = 1;
       }
-      else if (task.getStatus () == T::completed)
+      else if (task.getStatus () == Tt::completed)
       {
         epoch = monthlyEpoch (task.getAttribute ("end"));
         groups[epoch] = 0;
@@ -1323,7 +1323,7 @@ std::string handleReportGHistory (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
+std::string handleReportTimesheet (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
@@ -1339,7 +1339,7 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get all the tasks.
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.allT (tasks);
   filter (tasks, task);
 
@@ -1399,7 +1399,7 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
     foreach (t, tasks)
     {
       // If task completed within range.
-      if (t->getStatus () == T::completed)
+      if (t->getStatus () == Tt::completed)
       {
         Date compDate (::atoi (t->getAttribute ("end").c_str ()));
         if (compDate >= start && compDate < end)
@@ -1469,7 +1469,7 @@ std::string handleReportTimesheet (TDB& tdb, T& task, Config& conf)
     foreach (t, tasks)
     {
       // If task started within range, but not completed withing range.
-      if (t->getStatus () == T::pending &&
+      if (t->getStatus () == Tt::pending &&
           t->getAttribute ("start") != "")
       {
         Date startDate (::atoi (t->getAttribute ("start").c_str ()));
@@ -1530,7 +1530,7 @@ std::string renderMonths (
   int firstMonth,
   int firstYear,
   const Date& today,
-  std::vector <T>& all,
+  std::vector <Tt>& all,
   Config& conf,
   int monthsPerLine)
 {
@@ -1625,7 +1625,7 @@ std::string renderMonths (
           today.year ()  == years.at (c))
         table.setCellFg (row, thisCol, Text::cyan);
 
-      std::vector <T>::iterator it;
+      std::vector <Tt>::iterator it;
       for (it = all.begin (); it != all.end (); ++it)
       {
         Date due (::atoi (it->getAttribute ("due").c_str ()));
@@ -1650,7 +1650,7 @@ std::string renderMonths (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
+std::string handleReportCalendar (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
@@ -1675,7 +1675,7 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
     monthsPerLine = preferredMonthsPerLine;
 
   // Load all the pending tasks.
-  std::vector <T> pending;
+  std::vector <Tt> pending;
   tdb.allPendingT (pending);
   handleRecurrence (tdb, pending);
   filter (pending, task);
@@ -1683,7 +1683,7 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
   // Find the oldest pending due date.
   Date oldest;
   Date newest;
-  std::vector <T>::iterator it;
+  std::vector <Tt>::iterator it;
   for (it = pending.begin (); it != pending.end (); ++it)
   {
     if (it->getAttribute ("due") != "")
@@ -1759,7 +1759,7 @@ std::string handleReportCalendar (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportActive (TDB& tdb, T& task, Config& conf)
+std::string handleReportActive (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
@@ -1775,7 +1775,7 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get all the tasks.
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.pendingT (tasks);
   filter (tasks, task);
 
@@ -1818,7 +1818,7 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
   // Iterate over each task, and apply selection criteria.
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
-    T refTask (tasks[i]);
+    Tt refTask (tasks[i]);
     if (refTask.getAttribute ("start") != "")
     {
       Date now;
@@ -1892,7 +1892,7 @@ std::string handleReportActive (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
+std::string handleReportOverdue (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
@@ -1908,7 +1908,7 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get all the tasks.
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.pendingT (tasks);
   filter (tasks, task);
 
@@ -1953,7 +1953,7 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
   // Iterate over each task, and apply selection criteria.
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
-    T refTask (tasks[i]);
+    Tt refTask (tasks[i]);
     std::string due;
     if ((due = refTask.getAttribute ("due")) != "")
     {
@@ -2015,7 +2015,7 @@ std::string handleReportOverdue (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportStats (TDB& tdb, T& task, Config& conf)
+std::string handleReportStats (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
@@ -2031,7 +2031,7 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
 #endif
 
   // Get all the tasks.
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.allT (tasks);
   filter (tasks, task);
 
@@ -2050,26 +2050,26 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
   std::map <std::string, int> allTags;
   std::map <std::string, int> allProjects;
 
-  std::vector <T>::iterator it;
+  std::vector <Tt>::iterator it;
   for (it = tasks.begin (); it != tasks.end (); ++it)
   {
     ++totalT;
-    if (it->getStatus () == T::deleted)   ++deletedT;
-    if (it->getStatus () == T::pending)   ++pendingT;
-    if (it->getStatus () == T::completed) ++completedT;
-    if (it->getStatus () == T::recurring) ++recurringT;
+    if (it->getStatus () == Tt::deleted)   ++deletedT;
+    if (it->getStatus () == Tt::pending)   ++pendingT;
+    if (it->getStatus () == Tt::completed) ++completedT;
+    if (it->getStatus () == Tt::recurring) ++recurringT;
 
     time_t entry = ::atoi (it->getAttribute ("entry").c_str ());
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
-    if (it->getStatus () == T::completed)
+    if (it->getStatus () == Tt::completed)
     {
       time_t end = ::atoi (it->getAttribute ("end").c_str ());
       daysPending += (end - entry) / 86400.0;
     }
 
-    if (it->getStatus () == T::pending)
+    if (it->getStatus () == Tt::pending)
       daysPending += (now - entry) / 86400.0;
 
     descLength += it->getDescription ().length ();
@@ -2215,9 +2215,9 @@ std::string handleReportStats (TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 void gatherNextTasks (
   const TDB& tdb,
-  T& task,
+  Tt& task,
   Config& conf,
-  std::vector <T>& pending,
+  std::vector <Tt>& pending,
   std::vector <int>& all)
 {
   // For counting tasks by project.
@@ -2232,7 +2232,7 @@ void gatherNextTasks (
   // due:< 1wk, pri:*
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
-    if (pending[i].getStatus () == T::pending)
+    if (pending[i].getStatus () == Tt::pending)
     {
       std::string due = pending[i].getAttribute ("due");
       if (due != "")
@@ -2254,7 +2254,7 @@ void gatherNextTasks (
   // due:*, pri:H
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
-    if (pending[i].getStatus () == T::pending)
+    if (pending[i].getStatus () == Tt::pending)
     {
       std::string due = pending[i].getAttribute ("due");
       if (due != "")
@@ -2276,7 +2276,7 @@ void gatherNextTasks (
   // pri:H
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
-    if (pending[i].getStatus () == T::pending)
+    if (pending[i].getStatus () == Tt::pending)
     {
       std::string priority = pending[i].getAttribute ("priority");
       if (priority == "H")
@@ -2294,7 +2294,7 @@ void gatherNextTasks (
   // due:*, pri:M
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
-    if (pending[i].getStatus () == T::pending)
+    if (pending[i].getStatus () == Tt::pending)
     {
       std::string due = pending[i].getAttribute ("due");
       if (due != "")
@@ -2316,7 +2316,7 @@ void gatherNextTasks (
   // pri:M
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
-    if (pending[i].getStatus () == T::pending)
+    if (pending[i].getStatus () == Tt::pending)
     {
       std::string priority = pending[i].getAttribute ("priority");
       if (priority == "M")
@@ -2334,7 +2334,7 @@ void gatherNextTasks (
   // due:*, pri:L
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
-    if (pending[i].getStatus () == T::pending)
+    if (pending[i].getStatus () == Tt::pending)
     {
       std::string due = pending[i].getAttribute ("due");
       if (due != "")
@@ -2356,7 +2356,7 @@ void gatherNextTasks (
   // pri:L
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
-    if (pending[i].getStatus () == T::pending)
+    if (pending[i].getStatus () == Tt::pending)
     {
       std::string priority = pending[i].getAttribute ("priority");
       if (priority == "L")
@@ -2374,7 +2374,7 @@ void gatherNextTasks (
   // due:, pri:
   for (unsigned int i = 0; i < pending.size (); ++i)
   {
-    if (pending[i].getStatus () == T::pending)
+    if (pending[i].getStatus () == Tt::pending)
     {
       std::string due = pending[i].getAttribute ("due");
       if (due == "")
@@ -2403,7 +2403,7 @@ void gatherNextTasks (
 // via the .taskrc file.
 std::string handleCustomReport (
   TDB& tdb,
-  T& task,
+  Tt& task,
   Config& conf,
   const std::string& report)
 {
@@ -2447,14 +2447,14 @@ std::string handleCustomReport (
   split (filterArgs, filterList, ' ');
 
   // Load all pending tasks.
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.allPendingT (tasks);
   handleRecurrence (tdb, tasks);
 
   // Apply filters.
   {
     std::string ignore;
-    T filterTask;
+    Tt filterTask;
     parse (filterArgs, ignore, filterTask, conf);
 
     filter (tasks, filterTask);  // Filter from custom report

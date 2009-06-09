@@ -38,13 +38,13 @@ public:
   ~TDB ();
 
   void dataDirectory    (const std::string&);
-  bool allT             (std::vector <T>&);
-  bool pendingT         (std::vector <T>&);
-  bool allPendingT      (std::vector <T>&);
-  bool completedT       (std::vector <T>&) const;
-  bool allCompletedT    (std::vector <T>&) const;
-  bool addT             (const T&);
-  bool modifyT          (const T&);
+  bool allT             (std::vector <Tt>&);
+  bool pendingT         (std::vector <Tt>&);
+  bool allPendingT      (std::vector <Tt>&);
+  bool completedT       (std::vector <Tt>&) const;
+  bool allCompletedT    (std::vector <Tt>&) const;
+  bool addT             (const Tt&);
+  bool modifyT          (const Tt&);
   int gc                ();
   int nextId            ();
 
@@ -52,9 +52,9 @@ public:
 
 private:
   bool lock             (FILE*) const;
-  bool overwritePending (std::vector <T>&);
-  bool writePending     (const T&);
-  bool writeCompleted   (const T&);
+  bool overwritePending (std::vector <Tt>&);
+  bool writePending     (const Tt&);
+  bool writeCompleted   (const Tt&);
   bool readLockedFile   (const std::string&, std::vector <std::string>&) const;
 
 private:

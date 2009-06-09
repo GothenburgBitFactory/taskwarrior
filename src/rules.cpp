@@ -81,7 +81,7 @@ void initializeColorRules (Config& conf)
 
 ////////////////////////////////////////////////////////////////////////////////
 void autoColorize (
-  T& task,
+  Tt& task,
   Text::color& fg,
   Text::color& bg,
   Config& conf)

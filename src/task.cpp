@@ -368,13 +368,13 @@ int main (int argc, char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void nag (TDB& tdb, T& task, Config& conf)
+void nag (TDB& tdb, Tt& task, Config& conf)
 {
   std::string nagMessage = conf.get ("nag", std::string (""));
   if (nagMessage != "")
   {
     // Load all pending tasks.
-    std::vector <T> pending;
+    std::vector <Tt> pending;
     tdb.allPendingT (pending);
 
     // Counters.
@@ -397,7 +397,7 @@ void nag (TDB& tdb, T& task, Config& conf)
         if (priority.length ())
           pri = priority[0];
       }
-      else if (t->getStatus () == T::pending)
+      else if (t->getStatus () == Tt::pending)
       {
         if (getDueState (t->getAttribute ("due")) == 2)
           overdue++;
@@ -456,14 +456,14 @@ int getDueState (const std::string& due)
 ////////////////////////////////////////////////////////////////////////////////
 // Scans all tasks, and for any recurring tasks, determines whether any new
 // child tasks need to be generated to fill gaps.
-void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
+void handleRecurrence (TDB& tdb, std::vector <Tt>& tasks)
 {
-  std::vector <T> modified;
+  std::vector <Tt> modified;
 
   // Look at all tasks and find any recurring ones.
   foreach (t, tasks)
   {
-    if (t->getStatus () == T::recurring)
+    if (t->getStatus () == Tt::recurring)
     {
       // Generate a list of due dates for this recurring task, regardless of
       // the mask.
@@ -480,7 +480,7 @@ void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
         char endTime[16];
         sprintf (endTime, "%u", (unsigned int) time (NULL));
         t->setAttribute ("end", endTime);
-        t->setStatus (T::deleted);
+        t->setStatus (Tt::deleted);
         tdb.modifyT (*t);
         continue;
       }
@@ -498,10 +498,10 @@ void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
           mask += '-';
           changed = true;
 
-          T rec (*t);                                 // Clone the parent.
+          Tt rec (*t);                                 // Clone the parent.
           rec.setId (tdb.nextId ());                  // Assign a unique id.
           rec.setUUID (uuid ());                      // New UUID.
-          rec.setStatus (T::pending);                 // Shiny.
+          rec.setStatus (Tt::pending);                 // Shiny.
           rec.setAttribute ("parent", t->getUUID ()); // Remember mom.
 
           char dueDate[16];
@@ -541,7 +541,7 @@ void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
 // period (recur).  Then generate a set of corresponding dates.
 //
 // Returns false if the parent recurring task is depleted.
-bool generateDueDates (T& parent, std::vector <Date>& allDue)
+bool generateDueDates (Tt& parent, std::vector <Date>& allDue)
 {
   // Determine due date, recur period and until date.
   Date due (atoi (parent.getAttribute ("due").c_str ()));
@@ -726,13 +726,13 @@ Date getNextRecurrence (Date& current, std::string& period)
 // update it's mask.
 void updateRecurrenceMask (
   TDB& tdb,
-  std::vector <T>& all,
-  T& task)
+  std::vector <Tt>& all,
+  Tt& task)
 {
   std::string parent = task.getAttribute ("parent");
   if (parent != "")
   {
-    std::vector <T>::iterator it;
+    std::vector <Tt>::iterator it;
     for (it = all.begin (); it != all.end (); ++it)
     {
       if (it->getUUID () == parent)
@@ -741,9 +741,9 @@ void updateRecurrenceMask (
         std::string mask = it->getAttribute ("mask");
         if (mask.length () > index)
         {
-          mask[index] = (task.getStatus () == T::pending)   ? '-'
-                      : (task.getStatus () == T::completed) ? '+'
-                      : (task.getStatus () == T::deleted)   ? 'X'
+          mask[index] = (task.getStatus () == Tt::pending)   ? '-'
+                      : (task.getStatus () == Tt::completed) ? '+'
+                      : (task.getStatus () == Tt::deleted)   ? 'X'
                       :                                       '?';
 
           it->setAttribute ("mask", mask);
@@ -755,9 +755,9 @@ void updateRecurrenceMask (
           for (unsigned int i = 0; i < index; ++i)
             mask += "?";
 
-          mask += (task.getStatus () == T::pending)   ? '-'
-                : (task.getStatus () == T::completed) ? '+'
-                : (task.getStatus () == T::deleted)   ? 'X'
+          mask += (task.getStatus () == Tt::pending)   ? '-'
+                : (task.getStatus () == Tt::completed) ? '+'
+                : (task.getStatus () == Tt::deleted)   ? 'X'
                 :                                       '?';
         }
 
@@ -858,7 +858,7 @@ std::string runTaskCommand (
   loadCustomReports (conf);
 
   std::string command;
-  T task;
+  Tt task;
   parse (args, command, task, conf);
 
   bool gcMod  = false; // Change occurred by way of gc.
