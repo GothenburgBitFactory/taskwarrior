@@ -469,7 +469,7 @@ bool validDuration (std::string& input)
 void parse (
   std::vector <std::string>& args,
   std::string& command,
-  T& task,
+  Tt& task,
   Config& conf)
 {
   command = "";

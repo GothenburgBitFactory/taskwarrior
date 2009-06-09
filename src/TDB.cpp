@@ -68,20 +68,20 @@ void TDB::dataDirectory (const std::string& directory)
 ////////////////////////////////////////////////////////////////////////////////
 // Combine allPendingT with allCompletedT.
 // Note: this method is O(N1) + O(N2), where N2 is not bounded.
-bool TDB::allT (std::vector <T>& all)
+bool TDB::allT (std::vector <Tt>& all)
 {
   all.clear ();
 
   // Retrieve all the pending records.
-  std::vector <T> allp;
+  std::vector <Tt> allp;
   if (allPendingT (allp))
   {
-    std::vector <T>::iterator i;
+    std::vector <Tt>::iterator i;
     for (i = allp.begin (); i != allp.end (); ++i)
       all.push_back (*i);
 
     // Retrieve all the completed records.
-    std::vector <T> allc;
+    std::vector <Tt> allc;
     if (allCompletedT (allc))
     {
       for (i = allc.begin (); i != allc.end (); ++i)
@@ -96,7 +96,7 @@ bool TDB::allT (std::vector <T>& all)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Only accesses to the pending file result in Tasks that have assigned ids.
-bool TDB::pendingT (std::vector <T>& all)
+bool TDB::pendingT (std::vector <Tt>& all)
 {
   all.clear ();
 
@@ -111,9 +111,9 @@ bool TDB::pendingT (std::vector <T>& all)
     {
       try
       {
-        T t (*it);
+        Tt t (*it);
         t.setId (mId++);
-        if (t.getStatus () == T::pending)
+        if (t.getStatus () == Tt::pending)
           all.push_back (t);
       }
 
@@ -136,7 +136,7 @@ bool TDB::pendingT (std::vector <T>& all)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Only accesses to the pending file result in Tasks that have assigned ids.
-bool TDB::allPendingT (std::vector <T>& all)
+bool TDB::allPendingT (std::vector <Tt>& all)
 {
   all.clear ();
 
@@ -151,7 +151,7 @@ bool TDB::allPendingT (std::vector <T>& all)
     {
       try
       {
-        T t (*it);
+        Tt t (*it);
         t.setId (mId++);
         all.push_back (t);
       }
@@ -174,7 +174,7 @@ bool TDB::allPendingT (std::vector <T>& all)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::completedT (std::vector <T>& all) const
+bool TDB::completedT (std::vector <Tt>& all) const
 {
   all.clear ();
 
@@ -187,8 +187,8 @@ bool TDB::completedT (std::vector <T>& all) const
     {
       try
       {
-        T t (*it);
-        if (t.getStatus () != T::deleted)
+        Tt t (*it);
+        if (t.getStatus () != Tt::deleted)
           all.push_back (t);
       }
 
@@ -210,7 +210,7 @@ bool TDB::completedT (std::vector <T>& all) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::allCompletedT (std::vector <T>& all) const
+bool TDB::allCompletedT (std::vector <Tt>& all) const
 {
   all.clear ();
 
@@ -223,7 +223,7 @@ bool TDB::allCompletedT (std::vector <T>& all) const
     {
       try
       {
-        T t (*it);
+        Tt t (*it);
         all.push_back (t);
       }
 
@@ -245,9 +245,9 @@ bool TDB::allCompletedT (std::vector <T>& all) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::addT (const T& t)
+bool TDB::addT (const Tt& t)
 {
-  T task (t);
+  Tt task (t);
   std::vector <std::string> tags;
   task.getTags (tags);
 
@@ -262,8 +262,8 @@ bool TDB::addT (const T& t)
     }
   }
 
-  if (task.getStatus () == T::pending ||
-      task.getStatus () == T::recurring)
+  if (task.getStatus () == Tt::pending ||
+      task.getStatus () == Tt::recurring)
   {
     return writePending (task);
   }
@@ -272,16 +272,16 @@ bool TDB::addT (const T& t)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::modifyT (const T& t)
+bool TDB::modifyT (const Tt& t)
 {
-  T modified (t);
+  Tt modified (t);
 
-  std::vector <T> all;
+  std::vector <Tt> all;
   allPendingT (all);
 
-  std::vector <T> pending;
+  std::vector <Tt> pending;
 
-  std::vector <T>::iterator it;
+  std::vector <Tt>::iterator it;
   for (it = all.begin (); it != all.end (); ++it)
   {
     if (it->getId () == t.getId ())
@@ -306,7 +306,7 @@ bool TDB::lock (FILE* file) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::overwritePending (std::vector <T>& all)
+bool TDB::overwritePending (std::vector <Tt>& all)
 {
   // Write a single task to the pending file
   FILE* out;
@@ -317,7 +317,7 @@ bool TDB::overwritePending (std::vector <T>& all)
       while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
         delay (0.1);
 
-    std::vector <T>::iterator it;
+    std::vector <Tt>::iterator it;
     for (it = all.begin (); it != all.end (); ++it)
       fputs (it->compose ().c_str (), out);
 
@@ -329,7 +329,7 @@ bool TDB::overwritePending (std::vector <T>& all)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::writePending (const T& t)
+bool TDB::writePending (const Tt& t)
 {
   // Write a single task to the pending file
   FILE* out;
@@ -350,7 +350,7 @@ bool TDB::writePending (const T& t)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool TDB::writeCompleted (const T& t)
+bool TDB::writeCompleted (const Tt& t)
 {
   // Write a single task to the pending file
   FILE* out;
@@ -414,18 +414,18 @@ int TDB::gc ()
   int count = 0;
 
   // Read everything from the pending file.
-  std::vector <T> all;
+  std::vector <Tt> all;
   allPendingT (all);
 
   // A list of the truly pending tasks.
-  std::vector <T> pending;
+  std::vector <Tt> pending;
 
-  std::vector<T>::iterator it;
+  std::vector<Tt>::iterator it;
   for (it = all.begin (); it != all.end (); ++it)
   {
     // Some tasks stay in the pending file.
-    if (it->getStatus () == T::pending ||
-        it->getStatus () == T::recurring)
+    if (it->getStatus () == Tt::pending ||
+        it->getStatus () == Tt::recurring)
     {
       pending.push_back (*it);
     }

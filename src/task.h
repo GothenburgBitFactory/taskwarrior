@@ -54,7 +54,7 @@ for (typeof (c) *foreach_p = & (c);                                \
        ++i)
 
 // parse.cpp
-void parse (std::vector <std::string>&, std::string&, T&, Config&);
+void parse (std::vector <std::string>&, std::string&, Tt&, Config&);
 bool validPriority (const std::string&);
 bool validDate (std::string&, Config&);
 bool validDuration (std::string&);
@@ -63,60 +63,60 @@ bool isCustomReport (const std::string&);
 void allCustomReports (std::vector <std::string>&);
 
 // task.cpp
-void gatherNextTasks (const TDB&, T&, Config&, std::vector <T>&, std::vector <int>&);
-void nag (TDB&, T&, Config&);
+void gatherNextTasks (const TDB&, Tt&, Config&, std::vector <Tt>&, std::vector <int>&);
+void nag (TDB&, Tt&, Config&);
 int getDueState (const std::string&);
-void handleRecurrence (TDB&, std::vector <T>&);
-bool generateDueDates (T&, std::vector <Date>&);
+void handleRecurrence (TDB&, std::vector <Tt>&);
+bool generateDueDates (Tt&, std::vector <Date>&);
 Date getNextRecurrence (Date&, std::string&);
-void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
+void updateRecurrenceMask (TDB&, std::vector <Tt>&, Tt&);
 void onChangeCallback ();
 std::string runTaskCommand (int, char**, TDB&, Config&, bool gc = true, bool shadow = true);
 std::string runTaskCommand (std::vector <std::string>&, TDB&, Config&, bool gc = false, bool shadow = false);
 
 // command.cpp
-std::string handleAdd (TDB&, T&, Config&);
-std::string handleAppend (TDB&, T&, Config&);
-std::string handleExport (TDB&, T&, Config&);
-std::string handleDone (TDB&, T&, Config&);
-std::string handleModify (TDB&, T&, Config&);
-std::string handleProjects (TDB&, T&, Config&);
-std::string handleTags (TDB&, T&, Config&);
-std::string handleUndelete (TDB&, T&, Config&);
+std::string handleAdd (TDB&, Tt&, Config&);
+std::string handleAppend (TDB&, Tt&, Config&);
+std::string handleExport (TDB&, Tt&, Config&);
+std::string handleDone (TDB&, Tt&, Config&);
+std::string handleModify (TDB&, Tt&, Config&);
+std::string handleProjects (TDB&, Tt&, Config&);
+std::string handleTags (TDB&, Tt&, Config&);
+std::string handleUndelete (TDB&, Tt&, Config&);
 std::string handleVersion (Config&);
-std::string handleDelete (TDB&, T&, Config&);
-std::string handleStart (TDB&, T&, Config&);
-std::string handleStop (TDB&, T&, Config&);
-std::string handleUndo (TDB&, T&, Config&);
+std::string handleDelete (TDB&, Tt&, Config&);
+std::string handleStart (TDB&, Tt&, Config&);
+std::string handleStop (TDB&, Tt&, Config&);
+std::string handleUndo (TDB&, Tt&, Config&);
 std::string handleColor (Config&);
-std::string handleAnnotate (TDB&, T&, Config&);
-std::string handleDuplicate (TDB&, T&, Config&);
-T findT (int, const std::vector <T>&);
-int deltaAppend (T&, T&);
-int deltaDescription (T&, T&);
-int deltaTags (T&, T&);
-int deltaAttributes (T&, T&);
-int deltaSubstitutions (T&, T&);
+std::string handleAnnotate (TDB&, Tt&, Config&);
+std::string handleDuplicate (TDB&, Tt&, Config&);
+Tt findT (int, const std::vector <Tt>&);
+int deltaAppend (Tt&, Tt&);
+int deltaDescription (Tt&, Tt&);
+int deltaTags (Tt&, Tt&);
+int deltaAttributes (Tt&, Tt&);
+int deltaSubstitutions (Tt&, Tt&);
 
 // edit.cpp
-std::string handleEdit (TDB&, T&, Config&);
+std::string handleEdit (TDB&, Tt&, Config&);
 
 // report.cpp
-void filterSequence (std::vector<T>&, T&);
-void filter (std::vector<T>&, T&);
-std::string handleInfo (TDB&, T&, Config&);
-std::string handleCompleted (TDB&, T&, Config&);
-std::string handleReportSummary (TDB&, T&, Config&);
-std::string handleReportNext (TDB&, T&, Config&);
-std::string handleReportHistory (TDB&, T&, Config&);
-std::string handleReportGHistory (TDB&, T&, Config&);
-std::string handleReportCalendar (TDB&, T&, Config&);
-std::string handleReportActive (TDB&, T&, Config&);
-std::string handleReportOverdue (TDB&, T&, Config&);
-std::string handleReportStats (TDB&, T&, Config&);
-std::string handleReportTimesheet (TDB&, T&, Config&);
+void filterSequence (std::vector<Tt>&, Tt&);
+void filter (std::vector<Tt>&, Tt&);
+std::string handleInfo (TDB&, Tt&, Config&);
+std::string handleCompleted (TDB&, Tt&, Config&);
+std::string handleReportSummary (TDB&, Tt&, Config&);
+std::string handleReportNext (TDB&, Tt&, Config&);
+std::string handleReportHistory (TDB&, Tt&, Config&);
+std::string handleReportGHistory (TDB&, Tt&, Config&);
+std::string handleReportCalendar (TDB&, Tt&, Config&);
+std::string handleReportActive (TDB&, Tt&, Config&);
+std::string handleReportOverdue (TDB&, Tt&, Config&);
+std::string handleReportStats (TDB&, Tt&, Config&);
+std::string handleReportTimesheet (TDB&, Tt&, Config&);
 
-std::string handleCustomReport (TDB&, T&, Config&, const std::string&);
+std::string handleCustomReport (TDB&, Tt&, Config&, const std::string&);
 void validReportColumns (const std::vector <std::string>&);
 void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 
@@ -160,10 +160,10 @@ void spit (const std::string&, const std::string&);
 
 // rules.cpp
 void initializeColorRules (Config&);
-void autoColorize (T&, Text::color&, Text::color&, Config&);
+void autoColorize (Tt&, Text::color&, Text::color&, Config&);
 
 // import.cpp
-std::string handleImport (TDB&, T&, Config&);
+std::string handleImport (TDB&, Tt&, Config&);
 
 // list template
 ///////////////////////////////////////////////////////////////////////////////

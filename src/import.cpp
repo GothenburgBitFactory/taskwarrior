@@ -155,7 +155,7 @@ static fileType determineFileType (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void decorateTask (T& task, Config& conf)
+static void decorateTask (Tt& task, Config& conf)
 {
   char entryTime[16];
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
@@ -227,7 +227,7 @@ static std::string importTask_1_4_3 (
         throw "unrecoverable";
 
       // Build up this task ready for insertion.
-      T task;
+      Tt task;
 
       // Handle the 12 fields.
       for (unsigned int f = 0; f < fields.size (); ++f)
@@ -239,10 +239,10 @@ static std::string importTask_1_4_3 (
           break;
 
         case 1: // 'status'
-               if (fields[f] == "'pending'")   task.setStatus (T::pending);
-          else if (fields[f] == "'recurring'") task.setStatus (T::recurring);
-          else if (fields[f] == "'deleted'")   task.setStatus (T::deleted);
-          else if (fields[f] == "'completed'") task.setStatus (T::completed);
+               if (fields[f] == "'pending'")   task.setStatus (Tt::pending);
+          else if (fields[f] == "'recurring'") task.setStatus (Tt::recurring);
+          else if (fields[f] == "'deleted'")   task.setStatus (Tt::deleted);
+          else if (fields[f] == "'completed'") task.setStatus (Tt::completed);
           break;
 
         case 2: // 'tags'
@@ -383,7 +383,7 @@ static std::string importTask_1_5_0 (
         throw "unrecoverable";
 
       // Build up this task ready for insertion.
-      T task;
+      Tt task;
 
       // Handle the 13 fields.
       for (unsigned int f = 0; f < fields.size (); ++f)
@@ -395,10 +395,10 @@ static std::string importTask_1_5_0 (
           break;
 
         case 1: // 'status'
-               if (fields[f] == "'pending'")   task.setStatus (T::pending);
-          else if (fields[f] == "'recurring'") task.setStatus (T::recurring);
-          else if (fields[f] == "'deleted'")   task.setStatus (T::deleted);
-          else if (fields[f] == "'completed'") task.setStatus (T::completed);
+               if (fields[f] == "'pending'")   task.setStatus (Tt::pending);
+          else if (fields[f] == "'recurring'") task.setStatus (Tt::recurring);
+          else if (fields[f] == "'deleted'")   task.setStatus (Tt::deleted);
+          else if (fields[f] == "'completed'") task.setStatus (Tt::completed);
           break;
 
         case 2: // 'tags'
@@ -544,7 +544,7 @@ static std::string importTask_1_6_0 (
         throw "unrecoverable";
 
       // Build up this task ready for insertion.
-      T task;
+      Tt task;
 
       // Handle the 13 fields.
       for (unsigned int f = 0; f < fields.size (); ++f)
@@ -556,10 +556,10 @@ static std::string importTask_1_6_0 (
           break;
 
         case 1: // 'status'
-               if (fields[f] == "'pending'")   task.setStatus (T::pending);
-          else if (fields[f] == "'recurring'") task.setStatus (T::recurring);
-          else if (fields[f] == "'deleted'")   task.setStatus (T::deleted);
-          else if (fields[f] == "'completed'") task.setStatus (T::completed);
+               if (fields[f] == "'pending'")   task.setStatus (Tt::pending);
+          else if (fields[f] == "'recurring'") task.setStatus (Tt::recurring);
+          else if (fields[f] == "'deleted'")   task.setStatus (Tt::deleted);
+          else if (fields[f] == "'completed'") task.setStatus (Tt::completed);
           break;
 
         case 2: // 'tags'
@@ -670,7 +670,7 @@ static std::string importTaskCmdLine (
       std::vector <std::string> args;
       split (args, std::string ("add ") + line, ' ');
 
-      T task;
+      Tt task;
       std::string command;
       parse (args, command, task, conf);
       handleAdd (tdb, task, conf);
@@ -776,18 +776,18 @@ static std::string importTodoSh_2_0 (
         }
       }
 
-      T task;
+      Tt task;
       std::string command;
       parse (args, command, task, conf);
       decorateTask (task, conf);
 
       if (isPending)
       {
-        task.setStatus (T::pending);
+        task.setStatus (Tt::pending);
       }
       else
       {
-        task.setStatus (T::completed);
+        task.setStatus (Tt::completed);
 
         char end[16];
         sprintf (end, "%u", (unsigned int) endDate.toEpoch ());
@@ -850,7 +850,7 @@ static std::string importText (
         std::vector <std::string> args;
         split (args, std::string ("add ") + line, ' ');
 
-        T task;
+        Tt task;
         std::string command;
         parse (args, command, task, conf);
         decorateTask (task, conf);
@@ -1040,7 +1040,7 @@ static std::string importCSV (
       std::vector <std::string> fields;
       split (fields, *it, ',');
 
-      T task;
+      Tt task;
 
       int f;
       if ((f = mapping["uuid"]) != -1)
@@ -1050,10 +1050,10 @@ static std::string importCSV (
       {
         std::string value = lowerCase (unquoteText (trim (fields[f])));
 
-             if (value == "recurring") task.setStatus (T::recurring);
-        else if (value == "deleted")   task.setStatus (T::deleted);
-        else if (value == "completed") task.setStatus (T::completed);
-        else                           task.setStatus (T::pending);
+             if (value == "recurring") task.setStatus (Tt::recurring);
+        else if (value == "deleted")   task.setStatus (Tt::deleted);
+        else if (value == "completed") task.setStatus (Tt::completed);
+        else                           task.setStatus (Tt::pending);
       }
 
       if ((f = mapping["tags"]) != -1)
@@ -1128,7 +1128,7 @@ static std::string importCSV (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleImport (TDB& tdb, T& task, Config& conf)
+std::string handleImport (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 

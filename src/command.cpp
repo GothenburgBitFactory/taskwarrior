@@ -41,7 +41,7 @@
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAdd (TDB& tdb, T& task, Config& conf)
+std::string handleAdd (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
@@ -59,7 +59,7 @@ std::string handleAdd (TDB& tdb, T& task, Config& conf)
   if (task.getAttribute ("due")   != "" &&
       task.getAttribute ("recur") != "")
   {
-    task.setStatus (T::recurring);
+    task.setStatus (Tt::recurring);
     task.setAttribute ("mask", "");
   }
 
@@ -86,12 +86,12 @@ std::string handleAdd (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleProjects (TDB& tdb, T& task, Config& conf)
+std::string handleProjects (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
   // Get all the tasks, including deleted ones.
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.pendingT (tasks);
 
   // Scan all the tasks for their project name, building a map using project
@@ -99,7 +99,7 @@ std::string handleProjects (TDB& tdb, T& task, Config& conf)
   std::map <std::string, int> unique;
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
-    T task (tasks[i]);
+    Tt task (tasks[i]);
     unique[task.getAttribute ("project")] += 1;
   }
 
@@ -141,12 +141,12 @@ std::string handleProjects (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleTags (TDB& tdb, T& task, Config& conf)
+std::string handleTags (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
   // Get all the tasks.
-  std::vector <T> tasks;
+  std::vector <Tt> tasks;
   tdb.pendingT (tasks);
 
   // Scan all the tasks for their project name, building a map using project
@@ -154,7 +154,7 @@ std::string handleTags (TDB& tdb, T& task, Config& conf)
   std::map <std::string, std::string> unique;
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
-    T task (tasks[i]);
+    Tt task (tasks[i]);
 
     std::vector <std::string> tags;
     task.getTags (tags);
@@ -183,22 +183,22 @@ std::string handleTags (TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 // If a task is deleted, but is still in the pending file, then it may be
 // undeleted simply by changing it's status.
-std::string handleUndelete (TDB& tdb, T& task, Config& conf)
+std::string handleUndelete (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.allPendingT (all);
   filterSequence (all, task);
 
   foreach (t, all)
   {
-    if (t->getStatus () == T::deleted)
+    if (t->getStatus () == Tt::deleted)
     {
       if (t->getAttribute ("recur") != "")
         out << "Task does not support 'undo' for recurring tasks.\n";
 
-      t->setStatus (T::pending);
+      t->setStatus (Tt::pending);
       t->removeAttribute ("end");
       tdb.modifyT (*t);
 
@@ -221,22 +221,22 @@ std::string handleUndelete (TDB& tdb, T& task, Config& conf)
 ////////////////////////////////////////////////////////////////////////////////
 // If a task is done, but is still in the pending file, then it may be undone
 // simply by changing it's status.
-std::string handleUndo (TDB& tdb, T& task, Config& conf)
+std::string handleUndo (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.allPendingT (all);
   filterSequence (all, task);
 
   foreach (t, all)
   {
-    if (t->getStatus () == T::completed)
+    if (t->getStatus () == Tt::completed)
     {
       if (t->getAttribute ("recur") != "")
         out << "Task does not support 'undo' for recurring tasks.\n";
 
-      t->setStatus (T::pending);
+      t->setStatus (Tt::pending);
       t->removeAttribute ("end");
       tdb.modifyT (*t);
 
@@ -418,11 +418,11 @@ std::string handleVersion (Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDelete (TDB& tdb, T& task, Config& conf)
+std::string handleDelete (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.allPendingT (all);
   filterSequence (all, task);
 
@@ -455,7 +455,7 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
             if (sibling->getAttribute ("parent") == parent ||
                 sibling->getUUID ()              == parent)
             {
-              sibling->setStatus (T::deleted);
+              sibling->setStatus (Tt::deleted);
               sibling->setAttribute ("end", endTime);
               tdb.modifyT (*sibling);
 
@@ -472,7 +472,7 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
         else
         {
           // Update mask in parent.
-          t->setStatus (T::deleted);
+          t->setStatus (Tt::deleted);
           updateRecurrenceMask (tdb, all, *t);
 
           t->setAttribute ("end", endTime);
@@ -488,7 +488,7 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
       }
       else
       {
-        t->setStatus (T::deleted);
+        t->setStatus (Tt::deleted);
         t->setAttribute ("end", endTime);
         tdb.modifyT (*t);
 
@@ -509,11 +509,11 @@ std::string handleDelete (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleStart (TDB& tdb, T& task, Config& conf)
+std::string handleStart (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.pendingT (all);
   filterSequence (all, task);
 
@@ -546,11 +546,11 @@ std::string handleStart (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleStop (TDB& tdb, T& task, Config& conf)
+std::string handleStop (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
 
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.pendingT (all);
   filterSequence (all, task);
 
@@ -574,18 +574,18 @@ std::string handleStop (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDone (TDB& tdb, T& task, Config& conf)
+std::string handleDone (TDB& tdb, Tt& task, Config& conf)
 {
   int count = 0;
   std::stringstream out;
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.allPendingT (all);
 
-  std::vector <T> filtered = all;
+  std::vector <Tt> filtered = all;
   filterSequence (filtered, task);
   foreach (seq, filtered)
   {
-    if (seq->getStatus () == T::pending)
+    if (seq->getStatus () == Tt::pending)
     {
       // Apply deltas.
       deltaDescription   (*seq, task);
@@ -599,7 +599,7 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
       seq->setAttribute ("end", entryTime);
 
       // Change status.
-      seq->setStatus (T::completed);
+      seq->setStatus (Tt::completed);
 
       if (!tdb.modifyT (*seq))
         throw std::string ("Could not mark task as completed.");
@@ -638,7 +638,7 @@ std::string handleDone (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleExport (TDB& tdb, T& task, Config& conf)
+std::string handleExport (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream output;
 
@@ -669,13 +669,13 @@ std::string handleExport (TDB& tdb, T& task, Config& conf)
           << "\n";
 
       int count = 0;
-      std::vector <T> all;
+      std::vector <Tt> all;
       tdb.allPendingT (all);
       filter (all, task);
       foreach (t, all)
       {
-        if (t->getStatus () != T::recurring &&
-            t->getStatus () != T::deleted)
+        if (t->getStatus () != Tt::recurring &&
+            t->getStatus () != Tt::deleted)
         {
           out << t->composeCSV ().c_str ();
           ++count;
@@ -695,14 +695,14 @@ std::string handleExport (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleModify (TDB& tdb, T& task, Config& conf)
+std::string handleModify (TDB& tdb, Tt& task, Config& conf)
 {
   int count = 0;
   std::stringstream out;
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.allPendingT (all);
 
-  std::vector <T> filtered = all;
+  std::vector <Tt> filtered = all;
   filterSequence (filtered, task);
   foreach (seq, filtered)
   {
@@ -749,14 +749,14 @@ std::string handleModify (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAppend (TDB& tdb, T& task, Config& conf)
+std::string handleAppend (TDB& tdb, Tt& task, Config& conf)
 {
   int count = 0;
   std::stringstream out;
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.allPendingT (all);
 
-  std::vector <T> filtered = all;
+  std::vector <Tt> filtered = all;
   filterSequence (filtered, task);
   foreach (seq, filtered)
   {
@@ -799,20 +799,20 @@ std::string handleAppend (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDuplicate (TDB& tdb, T& task, Config& conf)
+std::string handleDuplicate (TDB& tdb, Tt& task, Config& conf)
 {
   int count = 0;
   std::stringstream out;
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.allPendingT (all);
 
-  std::vector <T> filtered = all;
+  std::vector <Tt> filtered = all;
   filterSequence (filtered, task);
   foreach (seq, filtered)
   {
-    if (seq->getStatus () != T::recurring && seq->getAttribute ("parent") == "")
+    if (seq->getStatus () != Tt::recurring && seq->getAttribute ("parent") == "")
     {
-      T dup (*seq);
+      Tt dup (*seq);
       dup.setUUID (uuid ());  // Needs a new UUID.
 
       // Apply deltas.
@@ -942,10 +942,10 @@ std::string handleColor (Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAnnotate (TDB& tdb, T& task, Config& conf)
+std::string handleAnnotate (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.pendingT (all);
   filterSequence (all, task);
 
@@ -967,18 +967,18 @@ std::string handleAnnotate (TDB& tdb, T& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T findT (int id, const std::vector <T>& all)
+Tt findT (int id, const std::vector <Tt>& all)
 {
-  std::vector <T>::const_iterator it;
+  std::vector <Tt>::const_iterator it;
   for (it = all.begin (); it != all.end (); ++it)
     if (id == it->getId ())
       return *it;
 
-  return T ();
+  return Tt ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaAppend (T& task, T& delta)
+int deltaAppend (Tt& task, Tt& delta)
 {
   if (delta.getDescription () != "")
   {
@@ -994,7 +994,7 @@ int deltaAppend (T& task, T& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaDescription (T& task, T& delta)
+int deltaDescription (Tt& task, Tt& delta)
 {
   if (delta.getDescription () != "")
   {
@@ -1006,7 +1006,7 @@ int deltaDescription (T& task, T& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaTags (T& task, T& delta)
+int deltaTags (Tt& task, Tt& delta)
 {
   int changes = 0;
 
@@ -1038,7 +1038,7 @@ int deltaTags (T& task, T& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaAttributes (T& task, T& delta)
+int deltaAttributes (Tt& task, Tt& delta)
 {
   int changes = 0;
 
@@ -1058,7 +1058,7 @@ int deltaAttributes (T& task, T& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaSubstitutions (T& task, T& delta)
+int deltaSubstitutions (Tt& task, Tt& delta)
 {
   int changes = 0;
   std::string from;

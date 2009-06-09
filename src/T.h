@@ -24,8 +24,8 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_T
-#define INCLUDED_T
+#ifndef INCLUDED_Tt
+#define INCLUDED_Tt
 
 #include <string>
 #include <vector>
@@ -34,16 +34,16 @@
 // Length of longest line.
 #define T_LINE_MAX 32768
 
-class T
+class Tt
 {
 public:
   enum status   {pending, completed, deleted, recurring};
 
-  T ();                    // Default constructor
-  T (const std::string&);  // Initialize by parsing storage format
-  T (const T&);            // Copy constructor
-  T& operator= (const T&); // Assignment operator
-  ~T ();                   // Destructor
+  Tt ();                    // Default constructor
+  Tt (const std::string&);  // Initialize by parsing storage format
+  Tt (const Tt&);            // Copy constructor
+  Tt& operator= (const Tt&); // Assignment operator
+  ~Tt ();                   // Destructor
 
   std::string getUUID () const                         { return mUUID; }
   void setUUID (const std::string& uuid)               { mUUID = uuid; }

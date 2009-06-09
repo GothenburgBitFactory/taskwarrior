@@ -87,14 +87,14 @@ static std::string findDate (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string formatStatus (T& task)
+static std::string formatStatus (Tt& task)
 {
   switch (task.getStatus ())
   {
-  case T::pending:   return "Pending";   break;
-  case T::completed: return "Completed"; break;
-  case T::deleted:   return "Deleted";   break;
-  case T::recurring: return "Recurring"; break;
+  case Tt::pending:   return "Pending";   break;
+  case Tt::completed: return "Completed"; break;
+  case Tt::deleted:   return "Deleted";   break;
+  case Tt::recurring: return "Recurring"; break;
   }
 
   return "";
@@ -103,7 +103,7 @@ static std::string formatStatus (T& task)
 ////////////////////////////////////////////////////////////////////////////////
 static std::string formatDate (
   Config& conf,
-  T& task,
+  Tt& task,
   const std::string& attribute)
 {
   std::string value = task.getAttribute (attribute);
@@ -117,7 +117,7 @@ static std::string formatDate (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string formatTask (Config& conf, T task)
+static std::string formatTask (Config& conf, Tt task)
 {
   std::stringstream before;
   before << "# The 'task edit <id>' command allows you to modify all aspects of a task" << std::endl
@@ -182,7 +182,7 @@ static std::string formatTask (Config& conf, T task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void parseTask (Config& conf, T& task, const std::string& after)
+static void parseTask (Config& conf, Tt& task, const std::string& after)
 {
   // project
   std::string value = findValue (after, "Project:");
@@ -300,7 +300,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
         task.setAttribute ("end", value);
       }
     }
-    else if (task.getStatus () != T::deleted)
+    else if (task.getStatus () != Tt::deleted)
       throw std::string ("Cannot set a done date on a pending task.");
   }
   else
@@ -308,7 +308,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
     if (task.getAttribute ("end") != "")
     {
       std::cout << "Done date removed." << std::endl;
-      task.setStatus (T::pending);
+      task.setStatus (Tt::pending);
       task.removeAttribute ("end");
     }
   }
@@ -338,7 +338,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
   {
     if (task.getAttribute ("due") != "")
     {
-      if (task.getStatus () == T::recurring ||
+      if (task.getStatus () == Tt::recurring ||
           task.getAttribute ("parent") != "")
       {
         std::cout << "Cannot remove a due date from a recurring task." << std::endl;
@@ -393,7 +393,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
         if (task.getAttribute ("due") != "")
         {
           task.setAttribute ("recur", value);
-          task.setStatus (T::recurring);
+          task.setStatus (Tt::recurring);
         }
         else
           throw std::string ("A recurring task must have a due date.");
@@ -404,7 +404,7 @@ static void parseTask (Config& conf, T& task, const std::string& after)
     else
     {
       std::cout << "Recurrence removed." << std::endl;
-      task.setStatus (T::pending);
+      task.setStatus (Tt::pending);
       task.removeAttribute ("recur");
       task.removeAttribute ("until");
       task.removeAttribute ("mask");
@@ -491,10 +491,10 @@ static void parseTask (Config& conf, T& task, const std::string& after)
 // Introducing the Silver Bullet.  This feature is the catch-all fixative for
 // various other ills.  This is like opening up the hood and going in with a
 // wrench.  To be used sparingly.
-std::string handleEdit (TDB& tdb, T& task, Config& conf)
+std::string handleEdit (TDB& tdb, Tt& task, Config& conf)
 {
   std::stringstream out;
-  std::vector <T> all;
+  std::vector <Tt> all;
   tdb.allPendingT (all);
 
   filterSequence (all, task);
@@ -513,7 +513,7 @@ std::string handleEdit (TDB& tdb, T& task, Config& conf)
     mkstemp (cpattern);
     char* file = cpattern;
 
-    // Format the contents, T -> text, write to a file.
+    // Format the contents, Tt -> text, write to a file.
     std::string before = formatTask (conf, *seq);
     spit (file, before);
 
