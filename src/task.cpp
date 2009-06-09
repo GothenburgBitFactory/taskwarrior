@@ -224,10 +224,9 @@ static std::string shortUsage (Config& conf)
 
   out << table.render ()
       << std::endl
-      << "See http://www.beckingham.net/task.html for the latest releases and a "
+      << "See http://taskwarrior.org for the latest releases and a "
       << "full tutorial.  New releases containing fixes and enhancements are "
-      << "made frequently.  Join in the discussion of task, present and future, "
-      << "at http://groups.google.com/group/taskprogram"
+      << "made frequently.  Join in the discussion of task, present and future."
       << std::endl
       << std::endl;
 
