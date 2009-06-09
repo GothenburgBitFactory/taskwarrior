@@ -1,18 +1,39 @@
+# bash completion support for task
 #
-# bash completion support for task 1.7.0-2
-# Copyright (C) 2009 Federico Hernandez <ultrafredde@gmail.com>
-# Distributed under the GNU General Public License, version 2.0
+# Copyright 2009 Federico Hernandez
+# All rights reserved.
+#
+# This script is part of the task project.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
 #
 # The routines will do completion of:
 #
 #    *) task subcommands
-#    *) local and remote tag names
+#    *) tag names
 #
 # To use these routines:
 #
-#    1) Copy this file to somewhere (e.g. ~/.task-completion.sh).
+#    1) Copy this file to somewhere (e.g. ~/.bash_completion.d/.task_completion.sh).
 #    2) Added the following line to your .bashrc:
-#        source ~/.task-completion.sh
+#        source ~/.bash_completion.d/task_completion.sh
 #
 #    OR
 #
@@ -21,13 +42,9 @@
 #
 # To submit patches/bug reports:
 #
-#    *) Send them to the mailing list:
+#    *) Go to the projects website at
 #
-#       taskprogram@googlegroups.com
-#       
-#    *) CC the all patchesi/bug reports to:
-#
-#       Federico Hernandez <ultrafredde@gmail.com>
+#       http://taskwarrior.org
 #
 
 _task() 
