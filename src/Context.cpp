@@ -164,6 +164,7 @@ void Context::dispatch ()
 */
        if (cmd.command == "projects")       { out = handleProjects (); }
   else if (cmd.command == "tags")           { out = handleTags ();     }
+  else if (cmd.command == "colors")         { out = handleColor ();    }
 /*
   else if (command == "info")               { out = handleInfo            (tdb, task); }
   else if (command == "stats")              { out = handleReportStats     (tdb, task); }
@@ -172,7 +173,6 @@ void Context::dispatch ()
   else if (command == "calendar")           { out = handleReportCalendar  (tdb, task); }
   else if (command == "summary")            { out = handleReportSummary   (tdb, task); }
   else if (command == "timesheet")          { out = handleReportTimesheet (tdb, task); }
-  else if (command == "colors")             { out = handleColor           (         ); }
   else if (command == "version")            { out = handleVersion         (         ); }
   else if (command == "help")               { out = longUsage             (         ); }
 

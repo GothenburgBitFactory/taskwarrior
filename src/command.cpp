@@ -50,7 +50,7 @@ extern Context context;
 std::string handleAdd (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   char entryTime[16];
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
   task.setAttribute ("entry", entryTime);
@@ -87,7 +87,7 @@ std::string handleAdd (TDB& tdb, T& task)
 
   if (!tdb.addT (task))
     throw std::string ("Could not create new task.");
-
+*/
   return out.str ();
 }
 
@@ -196,7 +196,7 @@ std::string handleTags ()
 std::string handleUndelete (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   std::vector <T> all;
   tdb.allPendingT (all);
   filterSequence (all, task);
@@ -224,7 +224,7 @@ std::string handleUndelete (TDB& tdb, T& task)
       << "Please note that tasks can only be reliably undeleted if the undelete "
       << "command is run immediately after the errant delete command."
       << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -234,7 +234,7 @@ std::string handleUndelete (TDB& tdb, T& task)
 std::string handleUndo (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   std::vector <T> all;
   tdb.allPendingT (all);
   filterSequence (all, task);
@@ -262,7 +262,7 @@ std::string handleUndo (TDB& tdb, T& task)
       << "Please note that tasks can only be reliably undone if the undo "
       << "command is run immediately after the errant done command."
       << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -270,7 +270,7 @@ std::string handleUndo (TDB& tdb, T& task)
 std::string handleVersion ()
 {
   std::stringstream out;
-
+/*
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -423,7 +423,7 @@ std::string handleVersion ()
              " that doesn't exist, or is unreadable."
           << std::endl;
   }
-
+*/
   return out.str ();
 }
 
@@ -431,7 +431,7 @@ std::string handleVersion ()
 std::string handleDelete (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   std::vector <T> all;
   tdb.allPendingT (all);
   filterSequence (all, task);
@@ -514,7 +514,7 @@ std::string handleDelete (TDB& tdb, T& task)
     else
       out << "Task not deleted." << std::endl;
   }
-
+*/
   return out.str ();
 }
 
@@ -522,7 +522,7 @@ std::string handleDelete (TDB& tdb, T& task)
 std::string handleStart (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   std::vector <T> all;
   tdb.pendingT (all);
   filterSequence (all, task);
@@ -551,7 +551,7 @@ std::string handleStart (TDB& tdb, T& task)
       out << "Task " << t->getId () << " '" << t->getDescription () << "' already started." << std::endl;
     }
   }
-
+*/
   return out.str ();
 }
 
@@ -559,7 +559,7 @@ std::string handleStart (TDB& tdb, T& task)
 std::string handleStop (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   std::vector <T> all;
   tdb.pendingT (all);
   filterSequence (all, task);
@@ -579,15 +579,18 @@ std::string handleStop (TDB& tdb, T& task)
       out << "Task " << t->getId () << " '" << t->getDescription () << "' not started." << std::endl;
     }
   }
-
+*/
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleDone (TDB& tdb, T& task)
 {
+/*
   int count = 0;
+*/
   std::stringstream out;
+/*
   std::vector <T> all;
   tdb.allPendingT (all);
 
@@ -643,7 +646,7 @@ std::string handleDone (TDB& tdb, T& task)
         << (count == 1 ? "" : "s")
         << " as done"
         << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -651,7 +654,7 @@ std::string handleDone (TDB& tdb, T& task)
 std::string handleExport (TDB& tdb, T& task)
 {
   std::stringstream output;
-
+/*
   // Use the description as a file name, then clobber the description so the
   // file name isn't used for filtering.
   std::string file = trim (task.getDescription ());
@@ -700,15 +703,18 @@ std::string handleExport (TDB& tdb, T& task)
   }
   else
     throw std::string ("You must specify a file to write to.");
-
+*/
   return output.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleModify (TDB& tdb, T& task)
 {
+/*
   int count = 0;
+*/
   std::stringstream out;
+/*
   std::vector <T> all;
   tdb.allPendingT (all);
 
@@ -754,15 +760,18 @@ std::string handleModify (TDB& tdb, T& task)
 
   if (context.config.get ("echo.command", true))
     out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
-
+*/
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleAppend (TDB& tdb, T& task)
 {
+/*
   int count = 0;
+*/
   std::stringstream out;
+/*
   std::vector <T> all;
   tdb.allPendingT (all);
 
@@ -804,15 +813,18 @@ std::string handleAppend (TDB& tdb, T& task)
 
   if (context.config.get ("echo.command", true))
     out << "Appended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
-
+*/
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleDuplicate (TDB& tdb, T& task)
 {
+/*
   int count = 0;
+*/
   std::stringstream out;
+/*
   std::vector <T> all;
   tdb.allPendingT (all);
 
@@ -859,7 +871,7 @@ std::string handleDuplicate (TDB& tdb, T& task)
 
   if (context.config.get ("echo.command", true))
     out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -867,7 +879,6 @@ std::string handleDuplicate (TDB& tdb, T& task)
 std::string handleColor ()
 {
   std::stringstream out;
-
   if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
   {
     out << optionalBlankLine () << "Foreground" << std::endl
@@ -917,35 +928,37 @@ std::string handleColor ()
                 << Text::colorize (Text::bold_underline_white,   Text::nocolor, "bold_underline_white")   << std::endl
 
         << std::endl << "Background" << std::endl
-        << "  " << Text::colorize (Text::nocolor, Text::on_black,          "on_black")               << "    "
-                << Text::colorize (Text::nocolor, Text::on_bright_black,   "on_bright_black")        << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_black,          "on_black")          << "    "
+                << Text::colorize (Text::nocolor, Text::on_bright_black,   "on_bright_black")   << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_red,            "on_red")                 << "      "
-                << Text::colorize (Text::nocolor, Text::on_bright_red,     "on_bright_red")          << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_red,            "on_red")            << "      "
+                << Text::colorize (Text::nocolor, Text::on_bright_red,     "on_bright_red")     << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_green,          "on_green")               << "    "
-                << Text::colorize (Text::nocolor, Text::on_bright_green,   "on_bright_green")        << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_green,          "on_green")          << "    "
+                << Text::colorize (Text::nocolor, Text::on_bright_green,   "on_bright_green")   << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_yellow,         "on_yellow")              << "   "
-                << Text::colorize (Text::nocolor, Text::on_bright_yellow,  "on_bright_yellow")       << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_yellow,         "on_yellow")         << "   "
+                << Text::colorize (Text::nocolor, Text::on_bright_yellow,  "on_bright_yellow")  << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_blue,           "on_blue")                << "     "
-                << Text::colorize (Text::nocolor, Text::on_bright_blue,    "on_bright_blue")         << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_blue,           "on_blue")           << "     "
+                << Text::colorize (Text::nocolor, Text::on_bright_blue,    "on_bright_blue")    << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_magenta,        "on_magenta")             << "  "
-                << Text::colorize (Text::nocolor, Text::on_bright_magenta, "on_bright_magenta")      << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_magenta,        "on_magenta")        << "  "
+                << Text::colorize (Text::nocolor, Text::on_bright_magenta, "on_bright_magenta") << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_cyan,           "on_cyan")                << "     "
-                << Text::colorize (Text::nocolor, Text::on_bright_cyan,    "on_bright_cyan")         << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_cyan,           "on_cyan")           << "     "
+                << Text::colorize (Text::nocolor, Text::on_bright_cyan,    "on_bright_cyan")    << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")               << "    "
-                << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")        << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")          << "    "
+                << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")   << std::endl
 
         << optionalBlankLine ();
   }
   else
   {
-    out << "Color is currently turned off in your .taskrc file." << std::endl;
+    out << "Color is currently turned off in your .taskrc file.  "
+           "To enable color, create the entry 'color=on'."
+        << std::endl;
   }
 
   return out.str ();
@@ -954,10 +967,13 @@ std::string handleColor ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleAnnotate (TDB& tdb, T& task)
 {
+/*
   if (task.getDescription () == "")
     throw std::string ("Cannot apply a blank annotation.");
+*/
 
   std::stringstream out;
+/*
   std::vector <T> all;
   tdb.pendingT (all);
   filterSequence (all, task);
@@ -975,19 +991,8 @@ std::string handleAnnotate (TDB& tdb, T& task)
           << "'"
           << std::endl;
   }
-
+*/
   return out.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-T findT (int id, const std::vector <T>& all)
-{
-  std::vector <T>::const_iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
-    if (id == it->getId ())
-      return *it;
-
-  return T ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

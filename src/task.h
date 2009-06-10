@@ -79,7 +79,6 @@ std::string handleUndo (TDB&, T&);
 std::string handleColor ();
 std::string handleAnnotate (TDB&, T&);
 std::string handleDuplicate (TDB&, T&);
-T findT (int, const std::vector <T>&);
 int deltaAppend (T&, T&);
 int deltaDescription (T&, T&);
 int deltaTags (T&, T&);

@@ -207,7 +207,7 @@ void filter (std::vector<T>& all, T& task)
 std::string handleCompleted (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -303,6 +303,7 @@ std::string handleCompleted (TDB& tdb, T& task)
   else
     out << "No matches."
         << std::endl;
+*/
 
   return out.str ();
 }
@@ -312,7 +313,7 @@ std::string handleCompleted (TDB& tdb, T& task)
 std::string handleInfo (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -544,7 +545,7 @@ std::string handleInfo (TDB& tdb, T& task)
 
   if (! tasks.size ())
     out << "No matches." << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -555,7 +556,7 @@ std::string handleInfo (TDB& tdb, T& task)
 std::string handleReportSummary (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   std::vector <T> tasks;
   tdb.allT (tasks);
   handleRecurrence (tdb, tasks);
@@ -692,7 +693,7 @@ std::string handleReportSummary (TDB& tdb, T& task)
         << std::endl;
   else
     out << "No projects." << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -718,7 +719,7 @@ std::string handleReportSummary (TDB& tdb, T& task)
 std::string handleReportNext (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   // Load all pending.
   std::vector <T> pending;
   tdb.allPendingT (pending);
@@ -875,7 +876,7 @@ std::string handleReportNext (TDB& tdb, T& task)
   else
     out << "No matches."
         << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -904,7 +905,7 @@ time_t monthlyEpoch (const std::string& date)
 std::string handleReportHistory (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   std::map <time_t, int> groups;
   std::map <time_t, int> addedGroup;
   std::map <time_t, int> completedGroup;
@@ -1089,7 +1090,7 @@ std::string handleReportHistory (TDB& tdb, T& task)
         << std::endl;
   else
     out << "No tasks." << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -1097,7 +1098,7 @@ std::string handleReportHistory (TDB& tdb, T& task)
 std::string handleReportGHistory (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -1334,7 +1335,7 @@ std::string handleReportGHistory (TDB& tdb, T& task)
   }
   else
     out << "No tasks." << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -1342,7 +1343,7 @@ std::string handleReportGHistory (TDB& tdb, T& task)
 std::string handleReportTimesheet (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -1537,7 +1538,7 @@ std::string handleReportTimesheet (TDB& tdb, T& task)
     start -= 7 * 86400;
     end   -= 7 * 86400;
   }
-
+*/
   return out.str ();
 }
 
@@ -1706,7 +1707,7 @@ std::string renderMonths (
 std::string handleReportCalendar (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -1824,7 +1825,7 @@ std::string handleReportCalendar (TDB& tdb, T& task)
         << "."
         << optionalBlankLine ()
         << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -1832,7 +1833,7 @@ std::string handleReportCalendar (TDB& tdb, T& task)
 std::string handleReportActive (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -1958,7 +1959,7 @@ std::string handleReportActive (TDB& tdb, T& task)
         << std::endl;
   else
     out << "No active tasks." << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -1966,7 +1967,7 @@ std::string handleReportActive (TDB& tdb, T& task)
 std::string handleReportOverdue (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -2082,7 +2083,7 @@ std::string handleReportOverdue (TDB& tdb, T& task)
         << std::endl;
   else
     out << "No overdue tasks." << std::endl;
-
+*/
   return out.str ();
 }
 
@@ -2090,7 +2091,7 @@ std::string handleReportOverdue (TDB& tdb, T& task)
 std::string handleReportStats (TDB& tdb, T& task)
 {
   std::stringstream out;
-
+/*
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -2284,7 +2285,7 @@ std::string handleReportStats (TDB& tdb, T& task)
   out << optionalBlankLine ()
       << table.render ()
       << optionalBlankLine ();
-
+*/
   return out.str ();
 }
 
@@ -2481,6 +2482,7 @@ std::string handleCustomReport (
   T& task,
   const std::string& report)
 {
+/*
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -2890,8 +2892,9 @@ std::string handleCustomReport (
     if (sequence.size () == 1)
       maximum = sequence[0];
   }
-
+*/
   std::stringstream out;
+/*
   if (table.rowCount ())
     out << optionalBlankLine ()
         << table.render (maximum)
@@ -2902,7 +2905,7 @@ std::string handleCustomReport (
   else
     out << "No matches."
         << std::endl;
-
+*/
   return out.str ();
 }
 
