@@ -126,3 +126,20 @@ int Context::interactive ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int Context::getWidth ()
+{
+  // Determine window size, and set table accordingly.
+  int width = config.get ("defaultwidth", (int) 80);
+#ifdef HAVE_LIBNCURSES
+  if (config.get ("curses", true))
+  {
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+    endwin ();
+  }
+#endif
+
+  return width;
+}
+
+////////////////////////////////////////////////////////////////////////////////

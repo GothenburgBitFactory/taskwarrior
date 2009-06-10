@@ -271,18 +271,8 @@ std::string handleVersion ()
 {
   std::stringstream out;
 
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
   // Create a table for the disclaimer.
+  int width = context.getWidth ();
   Table disclaimer;
   disclaimer.setTableWidth (width);
   disclaimer.addColumn (" ");

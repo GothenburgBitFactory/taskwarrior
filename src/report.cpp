@@ -51,6 +51,7 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete
 void filterSequence (std::vector<T>& all, T& task)
 {
   std::vector <int> sequence = task.getAllIds ();
@@ -98,6 +99,7 @@ void filterSequence (std::vector<T>& all, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete
 void filter (std::vector<T>& all, T& task)
 {
   std::vector <T> filtered;
@@ -207,18 +209,8 @@ void filter (std::vector<T>& all, T& task)
 std::string handleCompleted ()
 {
   std::stringstream out;
-/*
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
 
+/*
   // Get the pending tasks.
   std::vector <T> tasks;
   tdb.completedT (tasks);
@@ -228,7 +220,7 @@ std::string handleCompleted ()
 
   // Create a table for output.
   Table table;
-  table.setTableWidth (width);
+  table.setTableWidth (context.getWidth ());
   table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Done");
   table.addColumn ("Project");
@@ -313,18 +305,8 @@ std::string handleCompleted ()
 std::string handleInfo ()
 {
   std::stringstream out;
-/*
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
 
+/*
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
@@ -730,17 +712,6 @@ std::string handleReportNext ()
   std::vector <int> matching;
   gatherNextTasks (tdb, task, pending, matching);
 
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
   // Get the pending tasks.
   std::vector <T> tasks;
   tdb.pendingT (tasks);
@@ -750,7 +721,7 @@ std::string handleReportNext ()
 
   // Create a table for output.
   Table table;
-  table.setTableWidth (width);
+  table.setTableWidth (context.getWidth ());
   table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
@@ -1098,17 +1069,8 @@ std::string handleReportHistory ()
 std::string handleReportGHistory ()
 {
   std::stringstream out;
+
 /*
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
   int widthOfBar = width - 15;   // 15 == strlen ("2008 September ")
 
   std::map <time_t, int> groups;
@@ -1343,18 +1305,8 @@ std::string handleReportGHistory ()
 std::string handleReportTimesheet ()
 {
   std::stringstream out;
-/*
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
 
+/*
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.allT (tasks);
@@ -1393,7 +1345,7 @@ std::string handleReportTimesheet ()
 
     // Render the completed table.
     Table completed;
-    completed.setTableWidth (width);
+    completed.setTableWidth (context.getWidth ());
     completed.addColumn ("   ");
     completed.addColumn ("Project");
     completed.addColumn ("Due");
@@ -1464,7 +1416,7 @@ std::string handleReportTimesheet ()
 
     // Now render the started table.
     Table started;
-    started.setTableWidth (width);
+    started.setTableWidth (context.getWidth ());
     started.addColumn ("   ");
     started.addColumn ("Project");
     started.addColumn ("Due");
@@ -1707,20 +1659,11 @@ std::string renderMonths (
 std::string handleReportCalendar ()
 {
   std::stringstream out;
-/*
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
 
+/*
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
+  int width = context.getWidth ();
   int preferredMonthsPerLine = (context.config.get (std::string ("monthsperline"), 0));
   int monthsThatFit = width / 26;
 
@@ -1833,18 +1776,8 @@ std::string handleReportCalendar ()
 std::string handleReportActive ()
 {
   std::stringstream out;
-/*
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
 
+/*
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.pendingT (tasks);
@@ -1854,7 +1787,7 @@ std::string handleReportActive ()
 
   // Create a table for output.
   Table table;
-  table.setTableWidth (width);
+  table.setTableWidth (context.getWidth ());
   table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
@@ -1967,18 +1900,8 @@ std::string handleReportActive ()
 std::string handleReportOverdue ()
 {
   std::stringstream out;
-/*
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
 
+/*
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.pendingT (tasks);
@@ -1988,7 +1911,7 @@ std::string handleReportOverdue ()
 
   // Create a table for output.
   Table table;
-  table.setTableWidth (width);
+  table.setTableWidth (context.getWidth ());
   table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("ID");
   table.addColumn ("Project");
@@ -2091,18 +2014,8 @@ std::string handleReportOverdue ()
 std::string handleReportStats ()
 {
   std::stringstream out;
-/*
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
 
+/*
   // Get all the tasks.
   std::vector <T> tasks;
   tdb.allT (tasks);
@@ -2165,7 +2078,7 @@ std::string handleReportStats ()
 
   // Create a table for output.
   Table table;
-  table.setTableWidth (width);
+  table.setTableWidth (context.getWidth ());
   table.setTableIntraPadding (2);
   table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Category");
@@ -2480,17 +2393,6 @@ void gatherNextTasks (
 std::string handleCustomReport (const std::string& report)
 {
 /*
-  // Determine window size, and set table accordingly.
-  int width = context.config.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (context.config.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
   // Load report configuration.
   std::string columnList = context.config.get ("report." + report + ".columns");
   std::vector <std::string> columns;
@@ -2538,7 +2440,7 @@ std::string handleCustomReport (const std::string& report)
   initializeColorRules ();
 
   Table table;
-  table.setTableWidth (width);
+  table.setTableWidth (context.getWidth ());
   table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
   for (unsigned int i = 0; i < tasks.size (); ++i)

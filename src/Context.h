@@ -49,6 +49,8 @@ public:
   void dispatch ();                    // command handler dispatch
   void shadow ();                      // shadow file update
 
+  int getWidth ();                     // determine terminal width
+
   void message (const std::string&);   // Message sink
   void footnote (const std::string&);  // Footnote sink
 
