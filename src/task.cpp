@@ -404,6 +404,7 @@ void updateShadowFile (TDB& tdb)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete
 std::string runTaskCommand (
   int argc,
   char** argv,
@@ -424,6 +425,7 @@ std::cout << "arg=" << argv[i] << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete
 std::string runTaskCommand (
   std::vector <std::string>& args,
   TDB& tdb,
@@ -450,7 +452,7 @@ std::string runTaskCommand (
   bool gcMod  = false; // Change occurred by way of gc.
   bool cmdMod = false; // Change occurred by way of command type.
   std::string out;
-
+/*
   // Read-only commands with no side effects.
        if (command == "export")             { out = handleExport          (tdb, task); }
   else if (command == "info")               { out = handleInfo            (tdb, task); }
@@ -492,6 +494,7 @@ std::string runTaskCommand (
   // and if an actual change occurred (gcMod || cmdMod).
   if (shadow && (gcMod || cmdMod))
     updateShadowFile (tdb);
+*/
 
   return out;
 }

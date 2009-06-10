@@ -160,43 +160,43 @@ void Context::dispatch ()
   std::string out;
 /*
   // Read-only commands with no side effects.
-       if (command == "export")             { out = handleExport          (tdb, task); }
+       if (command == "export")             { out = handleExport ();   }
 */
        if (cmd.command == "projects")       { out = handleProjects (); }
   else if (cmd.command == "tags")           { out = handleTags ();     }
   else if (cmd.command == "colors")         { out = handleColor ();    }
 /*
-  else if (command == "info")               { out = handleInfo            (tdb, task); }
-  else if (command == "stats")              { out = handleReportStats     (tdb, task); }
-  else if (command == "history")            { out = handleReportHistory   (tdb, task); }
-  else if (command == "ghistory")           { out = handleReportGHistory  (tdb, task); }
-  else if (command == "calendar")           { out = handleReportCalendar  (tdb, task); }
-  else if (command == "summary")            { out = handleReportSummary   (tdb, task); }
-  else if (command == "timesheet")          { out = handleReportTimesheet (tdb, task); }
-  else if (command == "version")            { out = handleVersion         (         ); }
-  else if (command == "help")               { out = longUsage             (         ); }
+  else if (command == "info")               { out = handleInfo            (); }
+  else if (command == "stats")              { out = handleReportStats     (); }
+  else if (command == "history")            { out = handleReportHistory   (); }
+  else if (command == "ghistory")           { out = handleReportGHistory  (); }
+  else if (command == "calendar")           { out = handleReportCalendar  (); }
+  else if (command == "summary")            { out = handleReportSummary   (); }
+  else if (command == "timesheet")          { out = handleReportTimesheet (); }
+  else if (command == "version")            { out = handleVersion         (); }
+  else if (command == "help")               { out = longUsage             (); }
 
   // Commands that cause updates.
-  else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify    (tdb, task); }
-  else if (command == "add")                { cmdMod = true; out = handleAdd       (tdb, task); }
-  else if (command == "append")             { cmdMod = true; out = handleAppend    (tdb, task); }
-  else if (command == "annotate")           { cmdMod = true; out = handleAnnotate  (tdb, task); }
-  else if (command == "done")               { cmdMod = true; out = handleDone      (tdb, task); }
-  else if (command == "undelete")           { cmdMod = true; out = handleUndelete  (tdb, task); }
-  else if (command == "delete")             { cmdMod = true; out = handleDelete    (tdb, task); }
-  else if (command == "start")              { cmdMod = true; out = handleStart     (tdb, task); }
-  else if (command == "stop")               { cmdMod = true; out = handleStop      (tdb, task); }
-  else if (command == "undo")               { cmdMod = true; out = handleUndo      (tdb, task); }
-  else if (command == "import")             { cmdMod = true; out = handleImport    (tdb, task); }
-  else if (command == "duplicate")          { cmdMod = true; out = handleDuplicate (tdb, task); }
-  else if (command == "edit")               { cmdMod = true; out = handleEdit      (tdb, task); }
+  else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify    (); }
+  else if (command == "add")                { cmdMod = true; out = handleAdd       (); }
+  else if (command == "append")             { cmdMod = true; out = handleAppend    (); }
+  else if (command == "annotate")           { cmdMod = true; out = handleAnnotate  (); }
+  else if (command == "done")               { cmdMod = true; out = handleDone      (); }
+  else if (command == "undelete")           { cmdMod = true; out = handleUndelete  (); }
+  else if (command == "delete")             { cmdMod = true; out = handleDelete    (); }
+  else if (command == "start")              { cmdMod = true; out = handleStart     (); }
+  else if (command == "stop")               { cmdMod = true; out = handleStop      (); }
+  else if (command == "undo")               { cmdMod = true; out = handleUndo      (); }
+  else if (command == "import")             { cmdMod = true; out = handleImport    (); }
+  else if (command == "duplicate")          { cmdMod = true; out = handleDuplicate (); }
+  else if (command == "edit")               { cmdMod = true; out = handleEdit      (); }
 
   // Command that display IDs and therefore need TDB::gc first.
-  else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (tdb, task); }
-  else if (command == "next")               { if (gc) gcMod = tdb.gc (); out = handleReportNext    (tdb, task); }
-  else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (tdb, task); }
-  else if (command == "overdue")            { if (gc) gcMod = tdb.gc (); out = handleReportOverdue (tdb, task); }
-  else if (isCustomReport (command))        { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (tdb, task, command); }
+  else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (); }
+  else if (command == "next")               { if (gc) gcMod = tdb.gc (); out = handleReportNext    (); }
+  else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (); }
+  else if (command == "overdue")            { if (gc) gcMod = tdb.gc (); out = handleReportOverdue (); }
+  else if (isCustomReport (command))        { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (command); }
 
   // If the command is not recognized, display usage.
   else                                      { out = shortUsage (); }

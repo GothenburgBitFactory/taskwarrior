@@ -675,7 +675,7 @@ static std::string importTaskCmdLine (
       T task;
       std::string command;
       parse (args, command, task);
-      handleAdd (tdb, task);
+      handleAdd ();
     }
 
     catch (...)
@@ -1127,10 +1127,10 @@ static std::string importCSV (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleImport (TDB& tdb, T& task)
+std::string handleImport ()
 {
   std::stringstream out;
-
+#if 0
   // Use the description as a file name.
   std::string file = trim (task.getDescription ());
   if (file.length () > 0)
@@ -1194,7 +1194,7 @@ std::string handleImport (TDB& tdb, T& task)
   }
   else
     throw std::string ("You must specify a file to import.");
-
+#endif
   return out.str ();
 }
 

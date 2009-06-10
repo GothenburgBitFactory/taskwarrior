@@ -47,7 +47,7 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAdd (TDB& tdb, T& task)
+std::string handleAdd ()
 {
   std::stringstream out;
 /*
@@ -193,7 +193,7 @@ std::string handleTags ()
 ////////////////////////////////////////////////////////////////////////////////
 // If a task is deleted, but is still in the pending file, then it may be
 // undeleted simply by changing it's status.
-std::string handleUndelete (TDB& tdb, T& task)
+std::string handleUndelete ()
 {
   std::stringstream out;
 /*
@@ -231,7 +231,7 @@ std::string handleUndelete (TDB& tdb, T& task)
 ////////////////////////////////////////////////////////////////////////////////
 // If a task is done, but is still in the pending file, then it may be undone
 // simply by changing it's status.
-std::string handleUndo (TDB& tdb, T& task)
+std::string handleUndo ()
 {
   std::stringstream out;
 /*
@@ -428,7 +428,7 @@ std::string handleVersion ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDelete (TDB& tdb, T& task)
+std::string handleDelete ()
 {
   std::stringstream out;
 /*
@@ -519,7 +519,7 @@ std::string handleDelete (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleStart (TDB& tdb, T& task)
+std::string handleStart ()
 {
   std::stringstream out;
 /*
@@ -584,7 +584,7 @@ std::string handleStop (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDone (TDB& tdb, T& task)
+std::string handleDone ()
 {
 /*
   int count = 0;
@@ -651,7 +651,7 @@ std::string handleDone (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleExport (TDB& tdb, T& task)
+std::string handleExport ()
 {
   std::stringstream output;
 /*
@@ -708,7 +708,7 @@ std::string handleExport (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleModify (TDB& tdb, T& task)
+std::string handleModify ()
 {
 /*
   int count = 0;
@@ -765,7 +765,7 @@ std::string handleModify (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAppend (TDB& tdb, T& task)
+std::string handleAppend ()
 {
 /*
   int count = 0;
@@ -818,7 +818,7 @@ std::string handleAppend (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDuplicate (TDB& tdb, T& task)
+std::string handleDuplicate ()
 {
 /*
   int count = 0;
@@ -965,7 +965,7 @@ std::string handleColor ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAnnotate (TDB& tdb, T& task)
+std::string handleAnnotate ()
 {
 /*
   if (task.getDescription () == "")

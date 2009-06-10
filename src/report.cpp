@@ -204,7 +204,7 @@ void filter (std::vector<T>& all, T& task)
 ////////////////////////////////////////////////////////////////////////////////
 // Successively apply filters based on the task object built from the command
 // line.  Tasks that match all the specified criteria are listed.
-std::string handleCompleted (TDB& tdb, T& task)
+std::string handleCompleted ()
 {
   std::stringstream out;
 /*
@@ -310,7 +310,7 @@ std::string handleCompleted (TDB& tdb, T& task)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Display all information for the given task.
-std::string handleInfo (TDB& tdb, T& task)
+std::string handleInfo ()
 {
   std::stringstream out;
 /*
@@ -553,7 +553,7 @@ std::string handleInfo (TDB& tdb, T& task)
 // Project  Remaining  Avg Age  Complete  0%                  100%
 // A               12      13d       55%  XXXXXXXXXXXXX-----------
 // B              109   3d 12h       10%  XXX---------------------
-std::string handleReportSummary (TDB& tdb, T& task)
+std::string handleReportSummary ()
 {
   std::stringstream out;
 /*
@@ -716,7 +716,7 @@ std::string handleReportSummary (TDB& tdb, T& task)
 //
 // Make the "three" tasks a configurable number
 //
-std::string handleReportNext (TDB& tdb, T& task)
+std::string handleReportNext ()
 {
   std::stringstream out;
 /*
@@ -902,7 +902,7 @@ time_t monthlyEpoch (const std::string& date)
   return 0;
 }
 
-std::string handleReportHistory (TDB& tdb, T& task)
+std::string handleReportHistory ()
 {
   std::stringstream out;
 /*
@@ -1095,7 +1095,7 @@ std::string handleReportHistory (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportGHistory (TDB& tdb, T& task)
+std::string handleReportGHistory ()
 {
   std::stringstream out;
 /*
@@ -1340,7 +1340,7 @@ std::string handleReportGHistory (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportTimesheet (TDB& tdb, T& task)
+std::string handleReportTimesheet ()
 {
   std::stringstream out;
 /*
@@ -1704,7 +1704,7 @@ std::string renderMonths (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportCalendar (TDB& tdb, T& task)
+std::string handleReportCalendar ()
 {
   std::stringstream out;
 /*
@@ -1830,7 +1830,7 @@ std::string handleReportCalendar (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportActive (TDB& tdb, T& task)
+std::string handleReportActive ()
 {
   std::stringstream out;
 /*
@@ -1964,7 +1964,7 @@ std::string handleReportActive (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportOverdue (TDB& tdb, T& task)
+std::string handleReportOverdue ()
 {
   std::stringstream out;
 /*
@@ -2088,7 +2088,7 @@ std::string handleReportOverdue (TDB& tdb, T& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportStats (TDB& tdb, T& task)
+std::string handleReportStats ()
 {
   std::stringstream out;
 /*
@@ -2477,10 +2477,7 @@ void gatherNextTasks (
 ////////////////////////////////////////////////////////////////////////////////
 // This report will eventually become the one report that many others morph into
 // via the .taskrc file.
-std::string handleCustomReport (
-  TDB& tdb,
-  T& task,
-  const std::string& report)
+std::string handleCustomReport (const std::string& report)
 {
 /*
   // Determine window size, and set table accordingly.

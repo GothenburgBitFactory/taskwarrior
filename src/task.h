@@ -55,7 +55,7 @@ std::string runTaskCommand (int, char**, TDB&, bool gc = true, bool shadow = tru
 std::string runTaskCommand (std::vector <std::string>&, TDB&, bool gc = false, bool shadow = false);
 
 // recur.cpp
-void handleRecurrence (TDB&, std::vector <T>&);
+void handleRecurrence ();
 Date getNextRecurrence (Date&, std::string&);
 bool generateDueDates (T&, std::vector <Date>&);
 void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
@@ -63,22 +63,22 @@ int getDueState (const std::string&);
 void nag (TDB&, T&);
 
 // command.cpp
-std::string handleAdd (TDB&, T&);
-std::string handleAppend (TDB&, T&);
-std::string handleExport (TDB&, T&);
-std::string handleDone (TDB&, T&);
-std::string handleModify (TDB&, T&);
+std::string handleAdd ();
+std::string handleAppend ();
+std::string handleExport ();
+std::string handleDone ();
+std::string handleModify ();
 std::string handleProjects ();
 std::string handleTags ();
-std::string handleUndelete (TDB&, T&);
+std::string handleUndelete ();
 std::string handleVersion ();
-std::string handleDelete (TDB&, T&);
-std::string handleStart (TDB&, T&);
-std::string handleStop (TDB&, T&);
-std::string handleUndo (TDB&, T&);
+std::string handleDelete ();
+std::string handleStart ();
+std::string handleStop ();
+std::string handleUndo ();
 std::string handleColor ();
-std::string handleAnnotate (TDB&, T&);
-std::string handleDuplicate (TDB&, T&);
+std::string handleAnnotate ();
+std::string handleDuplicate ();
 int deltaAppend (T&, T&);
 int deltaDescription (T&, T&);
 int deltaTags (T&, T&);
@@ -86,24 +86,24 @@ int deltaAttributes (T&, T&);
 int deltaSubstitutions (T&, T&);
 
 // edit.cpp
-std::string handleEdit (TDB&, T&);
+std::string handleEdit ();
 
 // report.cpp
 void filterSequence (std::vector<T>&, T&);
 void filter (std::vector<T>&, T&);
-std::string handleInfo (TDB&, T&);
-std::string handleCompleted (TDB&, T&);
-std::string handleReportSummary (TDB&, T&);
-std::string handleReportNext (TDB&, T&);
-std::string handleReportHistory (TDB&, T&);
-std::string handleReportGHistory (TDB&, T&);
-std::string handleReportCalendar (TDB&, T&);
-std::string handleReportActive (TDB&, T&);
-std::string handleReportOverdue (TDB&, T&);
-std::string handleReportStats (TDB&, T&);
-std::string handleReportTimesheet (TDB&, T&);
+std::string handleInfo ();
+std::string handleCompleted ();
+std::string handleReportSummary ();
+std::string handleReportNext ();
+std::string handleReportHistory ();
+std::string handleReportGHistory ();
+std::string handleReportCalendar ();
+std::string handleReportActive ();
+std::string handleReportOverdue ();
+std::string handleReportStats ();
+std::string handleReportTimesheet ();
 
-std::string handleCustomReport (TDB&, T&, const std::string&);
+std::string handleCustomReport (const std::string&);
 void validReportColumns (const std::vector <std::string>&);
 void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 
@@ -112,7 +112,7 @@ void initializeColorRules ();
 void autoColorize (T&, Text::color&, Text::color&);
 
 // import.cpp
-std::string handleImport (TDB&, T&);
+std::string handleImport ();
 
 // list template
 ///////////////////////////////////////////////////////////////////////////////
