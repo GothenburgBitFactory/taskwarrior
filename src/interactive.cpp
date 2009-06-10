@@ -83,8 +83,8 @@ int Context::interactive ()
 
     bkgdset (COLOR_PAIR (2));
     int line = height / 2;
-    mvprintw (line,     width / 2 - 14, " I n t e r a c t i v e   t a s k ");
-    mvprintw (line + 1, width / 2 - 14, "     Coming in version 2.0.0     ");
+    mvprintw (line,     width / 2 - 16, " I n t e r a c t i v e   t a s k ");
+    mvprintw (line + 1, width / 2 - 16, "     Coming in version 2.0.0     ");
 
     std::string footer = "Press 'q' to quit.";
     while ((int) footer.length () < width)

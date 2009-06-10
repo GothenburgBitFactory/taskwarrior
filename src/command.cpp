@@ -270,7 +270,7 @@ std::string handleUndo ()
 std::string handleVersion ()
 {
   std::stringstream out;
-/*
+
   // Determine window size, and set table accordingly.
   int width = context.config.get ("defaultwidth", (int) 80);
 #ifdef HAVE_LIBNCURSES
@@ -301,8 +301,8 @@ std::string handleVersion ()
   link.setColumnJustification (0, Table::left);
   link.addCell (link.addRow (), 0,
     "See http://taskwarrior.org for the latest releases, online documentation "
-    "and lively discussion.  New releases containing fixes and enhancements are "
-    "made frequently.");
+    "and lively discussion.  New releases containing fixes and enhancements "
+    "are made frequently.");
 
   // Create a table for output.
   Table table;
@@ -356,7 +356,7 @@ std::string handleVersion ()
 
   // Complain about configuration variables that are not recognized.
   // These are the regular configuration variables.
-  // Note that there is a leading and trailing space.
+  // Note that there is a leading and trailing space, to make searching easier.
   std::string recognized =
     " blanklines color color.active color.due color.overdue color.pri.H "
     "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
@@ -384,10 +384,10 @@ std::string handleVersion ()
     {
       // These are special configuration variables, because their name is
       // dynamic.
-      if (i->find ("color.keyword.") == std::string::npos &&
-          i->find ("color.project.") == std::string::npos &&
-          i->find ("color.tag.")     == std::string::npos &&
-          i->find ("report.")        == std::string::npos)
+      if (i->substr (0, 14) != "color.keyword." &&
+          i->substr (0, 14) != "color.project." &&
+          i->substr (0, 10) != "color.tag."     &&
+          i->substr (0,  7) != "report.")
       {
         unrecognized.push_back (*i);
       }
@@ -423,7 +423,7 @@ std::string handleVersion ()
              " that doesn't exist, or is unreadable."
           << std::endl;
   }
-*/
+
   return out.str ();
 }
 

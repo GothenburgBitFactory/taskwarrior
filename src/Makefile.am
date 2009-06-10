@@ -1,11 +1,12 @@
 bin_PROGRAMS = task
-task_SOURCES = Config.cpp Date.cpp Record.cpp T.cpp T2.cpp TDB.cpp TDB2.cpp   \
-               Att.cpp Filter.cpp Sequence.cpp Table.cpp Grid.cpp Timer.cpp   \
-               Duration.cpp StringTable.cpp Location.cpp Subst.cpp Keymap.cpp \
-               Nibbler.cpp Context.cpp Cmd.cpp color.cpp parse.cpp task.cpp   \
-               edit.cpp command.cpp report.cpp util.cpp text.cpp rules.cpp    \
-               import.cpp interactive.cpp recur.cpp                           \
-               Config.h Date.h Record.h T.h TDB.h Att.h Filter.h Sequence.h   \
-               Table.h Grid.h Timer.h Duration.h StringTable.h Location.h     \
-               Subst.h Keymap.h Nibbler.h Context.h Cmd.h color.h task.h
-
+task_SOURCES = Att.cpp Cmd.cpp Config.cpp Context.cpp Date.cpp Duration.cpp   \
+               Filter.cpp Grid.cpp Keymap.cpp Location.cpp Nibbler.cpp        \
+               Record.cpp Sequence.cpp StringTable.cpp Subst.cpp T2.cpp       \
+               TDB2.cpp Table.cpp Timer.cpp color.cpp command.cpp edit.cpp    \
+               import.cpp interactive.cpp parse.cpp recur.cpp report.cpp      \
+               rules.cpp task.cpp text.cpp utf8.cpp util.cpp                  \
+               Att.h Cmd.h Config.h Context.h Date.h Duration.h Filter.h      \
+               Grid.h Keymap.h Location.h Nibbler.h Record.h Sequence.h       \
+               StringTable.h Subst.h T2.h TDB2.h Table.h Timer.h color.h      \
+               i18n.h task.h text.h utf8.h util.h                             \
+               T.cpp T.h TDB.cpp TDB.h

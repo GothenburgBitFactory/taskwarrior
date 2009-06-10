@@ -56,8 +56,9 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 // Scans all tasks, and for any recurring tasks, determines whether any new
 // child tasks need to be generated to fill gaps.
-void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
+void handleRecurrence (std::vector <T2>& tasks)
 {
+/*
   std::vector <T> modified;
 
   // Look at all tasks and find any recurring ones.
@@ -134,6 +135,7 @@ void handleRecurrence (TDB& tdb, std::vector <T>& tasks)
   }
 
   tasks = modified;
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

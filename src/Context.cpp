@@ -153,10 +153,8 @@ void Context::dispatch ()
   }
 */
 
-/*
   bool gcMod  = false; // Change occurred by way of gc.
   bool cmdMod = false; // Change occurred by way of command type.
-*/
   std::string out;
 /*
   // Read-only commands with no side effects.
@@ -165,6 +163,7 @@ void Context::dispatch ()
        if (cmd.command == "projects")       { out = handleProjects (); }
   else if (cmd.command == "tags")           { out = handleTags ();     }
   else if (cmd.command == "colors")         { out = handleColor ();    }
+  else if (cmd.command == "version")        { out = handleVersion ();  }
 /*
   else if (command == "info")               { out = handleInfo            (); }
   else if (command == "stats")              { out = handleReportStats     (); }
@@ -173,7 +172,6 @@ void Context::dispatch ()
   else if (command == "calendar")           { out = handleReportCalendar  (); }
   else if (command == "summary")            { out = handleReportSummary   (); }
   else if (command == "timesheet")          { out = handleReportTimesheet (); }
-  else if (command == "version")            { out = handleVersion         (); }
   else if (command == "help")               { out = longUsage             (); }
 
   // Commands that cause updates.
