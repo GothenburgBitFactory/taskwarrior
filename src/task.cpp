@@ -54,7 +54,7 @@
 Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string shortUsage ()
+std::string shortUsage ()
 {
   std::stringstream out;
   Table table;
@@ -241,7 +241,7 @@ static std::string shortUsage ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string longUsage ()
+std::string longUsage ()
 {
   std::stringstream out;
   out << shortUsage ()
@@ -462,7 +462,6 @@ std::string runTaskCommand (
   else if (command == "calendar")           { out = handleReportCalendar  (tdb, task); }
   else if (command == "summary")            { out = handleReportSummary   (tdb, task); }
   else if (command == "timesheet")          { out = handleReportTimesheet (tdb, task); }
-  else if (command == "help")               { out = longUsage             (         ); }
 
   // Commands that cause updates.
   else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify    (tdb, task); }
@@ -485,9 +484,6 @@ std::string runTaskCommand (
   else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (tdb, task); }
   else if (command == "overdue")            { if (gc) gcMod = tdb.gc (); out = handleReportOverdue (tdb, task); }
   else if (isCustomReport (command))        { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (tdb, task, command); }
-
-  // If the command is not recognized, display usage.
-  else                                      { out = shortUsage (); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
   // and if an actual change occurred (gcMod || cmdMod).

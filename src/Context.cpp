@@ -164,6 +164,7 @@ void Context::dispatch ()
   else if (cmd.command == "tags")           { out = handleTags ();     }
   else if (cmd.command == "colors")         { out = handleColor ();    }
   else if (cmd.command == "version")        { out = handleVersion ();  }
+  else if (cmd.command == "help")           { out = longUsage ();      }
 /*
   else if (command == "info")               { out = handleInfo            (); }
   else if (command == "stats")              { out = handleReportStats     (); }
@@ -172,7 +173,6 @@ void Context::dispatch ()
   else if (command == "calendar")           { out = handleReportCalendar  (); }
   else if (command == "summary")            { out = handleReportSummary   (); }
   else if (command == "timesheet")          { out = handleReportTimesheet (); }
-  else if (command == "help")               { out = longUsage             (); }
 
   // Commands that cause updates.
   else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify    (); }
@@ -197,8 +197,10 @@ void Context::dispatch ()
   else if (isCustomReport (command))        { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (command); }
 
   // If the command is not recognized, display usage.
+*/
   else                                      { out = shortUsage (); }
 
+/*
   // Only update the shadow file if such an update was not suppressed (shadow),
   // and if an actual change occurred (gcMod || cmdMod).
   if (shadow && (gcMod || cmdMod))

@@ -53,6 +53,8 @@ void gatherNextTasks (const TDB&, T&, std::vector <T>&, std::vector <int>&);
 void onChangeCallback ();
 std::string runTaskCommand (int, char**, TDB&, bool gc = true, bool shadow = true);
 std::string runTaskCommand (std::vector <std::string>&, TDB&, bool gc = false, bool shadow = false);
+std::string shortUsage ();
+std::string longUsage ();
 
 // recur.cpp
 void handleRecurrence ();
