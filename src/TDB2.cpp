@@ -32,7 +32,7 @@
 #include "text.h"
 #include "util.h"
 #include "TDB2.h"
-#include "task.h"
+#include "main.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 //  The ctor/dtor do nothing.

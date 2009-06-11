@@ -32,7 +32,7 @@
 #include "Context.h"
 #include "text.h"
 #include "util.h"
-#include "task.h"
+#include "main.h"
 #include "i18n.h"
 #include "../auto.h"
 

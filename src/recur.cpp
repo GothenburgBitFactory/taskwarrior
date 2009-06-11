@@ -44,7 +44,7 @@
 #include "T.h"
 #include "text.h"
 #include "util.h"
-#include "task.h"
+#include "main.h"
 
 #ifdef HAVE_LIBNCURSES
 #include <ncurses.h>

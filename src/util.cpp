@@ -41,7 +41,7 @@
 #include "T.h"
 #include "TDB.h"
 #include "text.h"
-#include "task.h"
+#include "main.h"
 #include "i18n.h"
 #include "../auto.h"
 
