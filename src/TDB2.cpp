@@ -154,7 +154,7 @@ void TDB2::unlock ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Returns number of filtered tasks.
-int TDB2::load (std::vector <T2>& tasks, Filter& filter)
+int TDB2::load (std::vector <Task>& tasks, Filter& filter)
 {
   // Note: tasks.clear () is deliberately not called, to allow the combination
   //       of multiple files.
@@ -178,7 +178,7 @@ int TDB2::load (std::vector <T2>& tasks, Filter& filter)
         {
           // TODO Add hidden attribute indicating source?
           line[length - 1] = '\0'; // Kill \n
-          T2 task (line);
+          Task task (line);
           if (filter.pass (task))
             tasks.push_back (task);
         }
@@ -198,7 +198,7 @@ int TDB2::load (std::vector <T2>& tasks, Filter& filter)
         {
           // TODO Add hidden attribute indicating source?
           line[length - 1] = '\0'; // Kill \n
-          T2 task (line);
+          Task task (line);
           if (filter.pass (task))
             tasks.push_back (task);
         }
@@ -220,7 +220,7 @@ int TDB2::load (std::vector <T2>& tasks, Filter& filter)
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
-void TDB2::add (T2& after)
+void TDB2::add (Task& after)
 {
   throw std::string ("unimplemented TDB2::add");
 
@@ -230,7 +230,7 @@ void TDB2::add (T2& after)
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
-void TDB2::update (T2& before, T2& after)
+void TDB2::update (Task& before, Task& after)
 {
   throw std::string ("unimplemented TDB2::update");
 }

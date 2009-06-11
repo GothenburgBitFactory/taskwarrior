@@ -25,7 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <Context.h>
-#include <T2.h>
+#include <Task.h>
 #include <Subst.h>
 #include <test.h>
 
@@ -36,7 +36,7 @@ int main (int argc, char** argv)
 {
   UnitTest t (15);
 
-  T2 task;
+  Task task;
   task.set ("description", "one two three four");
 
   Subst s;

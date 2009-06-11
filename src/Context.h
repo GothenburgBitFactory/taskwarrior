@@ -33,7 +33,7 @@
 #include "Sequence.h"
 #include "Subst.h"
 #include "Cmd.h"
-#include "T2.h"
+#include "Task.h"
 #include "TDB2.h"
 #include "StringTable.h"
 
@@ -64,7 +64,7 @@ public:
   Keymap                    keymap;
   Sequence                  sequence;
   Subst                     subst;
-  T2                        task;
+  Task                      task;
   TDB2                      tdb;
   StringTable               stringtable;
   std::string               program;

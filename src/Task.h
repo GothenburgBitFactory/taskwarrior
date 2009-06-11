@@ -24,21 +24,21 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_T2
-#define INCLUDED_T2
+#ifndef INCLUDED_TASK
+#define INCLUDED_TASK
 
 #include <string>
 #include "Record.h"
 #include "Subst.h"
 #include "Sequence.h"
 
-class T2 : public Record
+class Task : public Record
 {
 public:
-  T2 ();                     // Default constructor
-  T2 (const std::string&);   // Parse
-  T2& operator= (const T2&); // Assignment operator
-  ~T2 ();                    // Destructor
+  Task ();                       // Default constructor
+  Task (const std::string&);     // Parse
+  Task& operator= (const Task&); // Assignment operator
+  ~Task ();                      // Destructor
 
   void parse (const std::string&);
   std::string composeCSV ();

@@ -27,7 +27,7 @@
 #include "main.h"
 #include "test.h"
 #include "Filter.h"
-#include "T2.h"
+#include "Task.h"
 
 Context context;
 
@@ -42,8 +42,8 @@ int main (int argc, char** argv)
   f.push_back (Att ("name2", "value2"));
   test.is (f.size (), (size_t)2, "Filter created");
 
-  // Create a T2 to match against.
-  T2 yes;
+  // Create a Task to match against.
+  Task yes;
   yes.set ("name1", "value1");
   yes.set ("name2", "value2");
   test.ok (f.pass (yes), "full match");
@@ -52,19 +52,19 @@ int main (int argc, char** argv)
   test.ok (f.pass (yes), "over match");
 
   // Negative tests.
-  T2 no0;
-  test.notok (f.pass (no0), "no match against default T2");
+  Task no0;
+  test.notok (f.pass (no0), "no match against default Task");
 
-  T2 no1;
+  Task no1;
   no1.set ("name3", "value3");
-  test.notok (f.pass (no1), "no match against mismatch T2");
+  test.notok (f.pass (no1), "no match against mismatch Task");
 
-  T2 partial;
+  Task partial;
   partial.set ("name1", "value1");
-  test.notok (f.pass (partial), "no match against partial T2");
+  test.notok (f.pass (partial), "no match against partial Task");
 
   // Modifiers.
-  T2 mods;
+  Task mods;
   mods.set ("name", "value");
 
   Att a ("name", "value");

@@ -28,12 +28,12 @@
 #include <sstream>
 #include <algorithm>
 #include "Nibbler.h"
-#include "T2.h"
+#include "Task.h"
 #include "text.h"
 #include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-T2::T2 ()
+Task::Task ()
 {
   // Each new task gets a uuid.
   set ("uuid", uuid ());
@@ -42,7 +42,7 @@ T2::T2 ()
 ////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Record::parse, and in the event of an error
 // try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
-T2::T2 (const std::string& input)
+Task::Task (const std::string& input)
 {
   try
   {
@@ -56,9 +56,9 @@ T2::T2 (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T2& T2::operator= (const T2& other)
+Task& Task::operator= (const Task& other)
 {
-  throw std::string ("unimplemented T2::operator=");
+  throw std::string ("unimplemented Task::operator=");
   if (this != &other)
   {
     sequence = other.sequence;
@@ -69,12 +69,12 @@ T2& T2::operator= (const T2& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T2::~T2 ()
+Task::~Task ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T2::status T2::textToStatus (const std::string& input)
+Task::status Task::textToStatus (const std::string& input)
 {
        if (input == "pending")   return pending;
   else if (input == "completed") return completed;
@@ -85,7 +85,7 @@ T2::status T2::textToStatus (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string T2::statusToText (T2::status s)
+std::string Task::statusToText (Task::status s)
 {
        if (s == pending)   return "pending";
   else if (s == completed) return "completed";
@@ -96,19 +96,19 @@ std::string T2::statusToText (T2::status s)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-T2::status T2::getStatus ()
+Task::status Task::getStatus ()
 {
   return textToStatus (get ("status"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T2::setSatus (T2::status status)
+void Task::setSatus (Task::status status)
 {
   set ("status", statusToText (status));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T2::parse (const std::string& line)
+void Task::parse (const std::string& line)
 {
   try
   {
@@ -124,7 +124,7 @@ void T2::parse (const std::string& line)
 ////////////////////////////////////////////////////////////////////////////////
 // Support FF2, FF3.
 // Thankfully FF1 is no longer supported.
-void T2::legacyParse (const std::string& line)
+void Task::legacyParse (const std::string& line)
 {
   switch (determineVersion (line))
   {
@@ -141,7 +141,7 @@ void T2::legacyParse (const std::string& line)
       {
         set ("uuid", line.substr (0, 36));
 
-        T2::status status = line[37] == '+' ? completed
+        Task::status status = line[37] == '+' ? completed
                           : line[37] == 'X' ? deleted
                           : line[37] == 'r' ? recurring
                           :                   pending;
@@ -198,7 +198,7 @@ void T2::legacyParse (const std::string& line)
       {
         set ("uuid", line.substr (0, 36));
 
-        T2::status status = line[37] == '+' ? completed
+        Task::status status = line[37] == '+' ? completed
                           : line[37] == 'X' ? deleted
                           : line[37] == 'r' ? recurring
                           :                   pending;
@@ -302,14 +302,14 @@ void T2::legacyParse (const std::string& line)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string T2::composeCSV ()
+std::string Task::composeCSV ()
 {
-  throw std::string ("unimplemented T2::composeCSV");
+  throw std::string ("unimplemented Task::composeCSV");
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T2::getAnnotations (std::vector <Att>& annotations) const
+void Task::getAnnotations (std::vector <Att>& annotations) const
 {
   annotations.clear ();
 
@@ -320,7 +320,7 @@ void T2::getAnnotations (std::vector <Att>& annotations) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T2::setAnnotations (const std::vector <Att>& annotations)
+void Task::setAnnotations (const std::vector <Att>& annotations)
 {
   // Erase old annotations.
   removeAnnotations ();
@@ -334,7 +334,7 @@ void T2::setAnnotations (const std::vector <Att>& annotations)
 // The timestamp is part of the name:
 //    annotation_1234567890:"..."
 //
-void T2::addAnnotation (const std::string& description)
+void Task::addAnnotation (const std::string& description)
 {
   std::stringstream s;
   s << "annotation_" << time (NULL);
@@ -343,7 +343,7 @@ void T2::addAnnotation (const std::string& description)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T2::removeAnnotations ()
+void Task::removeAnnotations ()
 {
   // Erase old annotations.
   Record::iterator i;
@@ -353,7 +353,7 @@ void T2::removeAnnotations ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int T2::getTagCount ()
+int Task::getTagCount ()
 {
   std::vector <std::string> tags;
   split (tags, get ("tags"), ',');
@@ -362,7 +362,7 @@ int T2::getTagCount ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool T2::hasTag (const std::string& tag)
+bool Task::hasTag (const std::string& tag)
 {
   std::vector <std::string> tags;
   split (tags, get ("tags"), ',');
@@ -374,7 +374,7 @@ bool T2::hasTag (const std::string& tag)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T2::addTag (const std::string& tag)
+void Task::addTag (const std::string& tag)
 {
   std::vector <std::string> tags;
   split (tags, get ("tags"), ',');
@@ -389,7 +389,7 @@ void T2::addTag (const std::string& tag)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T2::addTags (const std::vector <std::string>& tags)
+void Task::addTags (const std::vector <std::string>& tags)
 {
   remove ("tags");
 
@@ -399,13 +399,13 @@ void T2::addTags (const std::vector <std::string>& tags)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T2::getTags (std::vector<std::string>& tags)
+void Task::getTags (std::vector<std::string>& tags)
 {
   split (tags, get ("tags"), ',');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void T2::removeTag (const std::string& tag)
+void Task::removeTag (const std::string& tag)
 {
   std::vector <std::string> tags;
   split (tags, get ("tags"), ',');
@@ -422,7 +422,7 @@ void T2::removeTag (const std::string& tag)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool T2::valid () const
+bool Task::valid () const
 {
   // TODO Verify until > due
   // TODO Verify entry < until, due, start, end
@@ -431,7 +431,7 @@ bool T2::valid () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int T2::determineVersion (const std::string& line)
+int Task::determineVersion (const std::string& line)
 {
   // Version 2 looks like:
   //

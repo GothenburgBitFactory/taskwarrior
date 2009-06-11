@@ -98,7 +98,7 @@ std::string handleProjects ()
 
   context.filter.push_back (Att ("status", "pending"));
 
-  std::vector <T2> tasks;
+  std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   int quantity = context.tdb.load (tasks, context.filter);
   context.tdb.unlock ();
@@ -155,7 +155,7 @@ std::string handleTags ()
 
   context.filter.push_back (Att ("status", "pending"));
 
-  std::vector <T2> tasks;
+  std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   int quantity = context.tdb.load (tasks, context.filter);
   context.tdb.unlock ();

@@ -34,18 +34,18 @@ int main (int argc, char** argv)
 {
   UnitTest test (34);
 
-  test.is ((int)T2::textToStatus ("pending"),   (int)T2::pending,   "textToStatus pending");
-  test.is ((int)T2::textToStatus ("completed"), (int)T2::completed, "textToStatus completed");
-  test.is ((int)T2::textToStatus ("deleted"),   (int)T2::deleted,   "textToStatus deleted");
-  test.is ((int)T2::textToStatus ("recurring"), (int)T2::recurring, "textToStatus recurring");
+  test.is ((int)Task::textToStatus ("pending"),   (int)Task::pending,   "textToStatus pending");
+  test.is ((int)Task::textToStatus ("completed"), (int)Task::completed, "textToStatus completed");
+  test.is ((int)Task::textToStatus ("deleted"),   (int)Task::deleted,   "textToStatus deleted");
+  test.is ((int)Task::textToStatus ("recurring"), (int)Task::recurring, "textToStatus recurring");
 
-  test.is (T2::statusToText (T2::pending),   "pending",   "statusToText pending");
-  test.is (T2::statusToText (T2::completed), "completed", "statusToText completed");
-  test.is (T2::statusToText (T2::deleted),   "deleted",   "statusToText deleted");
-  test.is (T2::statusToText (T2::recurring), "recurring", "statusToText recurring");
+  test.is (Task::statusToText (Task::pending),   "pending",   "statusToText pending");
+  test.is (Task::statusToText (Task::completed), "completed", "statusToText completed");
+  test.is (Task::statusToText (Task::deleted),   "deleted",   "statusToText deleted");
+  test.is (Task::statusToText (Task::recurring), "recurring", "statusToText recurring");
 
   // Round-trip testing.
-  T2 t3;
+  Task t3;
   std::string before = t3.composeF4 ();
   t3.parse (before);
   std::string after = t3.composeF4 ();
@@ -53,7 +53,7 @@ int main (int argc, char** argv)
   after = t3.composeF4 ();
   t3.parse (after);
   after = t3.composeF4 ();
-  test.is (before, after, "T2::composeF4 -> parse round trip 4 iterations");
+  test.is (before, after, "Task::composeF4 -> parse round trip 4 iterations");
 
   // Legacy Format 1
   //   [tags] [attributes] description\n
@@ -64,7 +64,7 @@ int main (int argc, char** argv)
            "[att1:value1 att2:value2] "
            "Description";
   bool good = true;
-  try { T2 ff1 (sample); } catch (...) { good = false; }
+  try { Task ff1 (sample); } catch (...) { good = false; }
   test.notok (good, "Support for ff1 removed");
 
   // Legacy Format 2
@@ -74,7 +74,7 @@ int main (int argc, char** argv)
            "[tag1 tag2] "
            "[att1:value1 att2:value2] "
            "Description";
-  T2 ff2 (sample);
+  Task ff2 (sample);
   std::string value = ff2.get ("uuid");
   test.is (value, "00000000-0000-0000-0000-000000000000", "ff2 uuid");
   value = ff2.get ("status");
@@ -96,7 +96,7 @@ int main (int argc, char** argv)
            "[tag1 tag2] "
            "[att1:value1 att2:value2] "
            "[123:ann1 456:ann2] Description";
-  T2 ff3 (sample);
+  Task ff3 (sample);
   value = ff2.get ("uuid");
   test.is (value, "00000000-0000-0000-0000-000000000000", "ff3 uuid");
   value = ff2.get ("status");
@@ -121,7 +121,7 @@ int main (int argc, char** argv)
            "att2:\"value2\" "
            "description:\"Description\""
            "]";
-  T2 ff4 (sample);
+  Task ff4 (sample);
   value = ff2.get ("uuid");
   test.is (value, "00000000-0000-0000-0000-000000000000", "ff4 uuid");
   value = ff2.get ("status");
@@ -138,11 +138,11 @@ int main (int argc, char** argv)
 
 /*
 
-T2::composeCSV
-T2::id
-T2::*Status
-T2::*Tag*
-T2::*Annotation*
+Task::composeCSV
+Task::id
+Task::*Status
+Task::*Tag*
+Task::*Annotation*
 
 */
 

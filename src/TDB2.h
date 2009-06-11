@@ -32,7 +32,7 @@
 #include <string>
 #include <Location.h>
 #include <Filter.h>
-#include <T2.h>
+#include <Task.h>
 
 // Length of longest line.
 #define T_LINE_MAX 32768
@@ -50,9 +50,9 @@ public:
   void  lock (bool lockFile = true);
   void  unlock ();
 
-  int   load (std::vector <T2>&, Filter&);
-  void  add (T2&);
-  void  update (T2&, T2&);
+  int   load (std::vector <Task>&, Filter&);
+  void  add (Task&);
+  void  update (Task&, Task&);
   int   commit ();
   void  upgrade ();
 
