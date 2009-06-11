@@ -1,0 +1,16 @@
+task (1.7.1-0ubuntu1) jaunty; urgency=low
+
+  * Initial deb package for bugfix release 1.7.1
+  * Updated references to new project homepage in control file.
+  * dpatch not longer neededas upstream version contains fix
+    for taskrc.5 bug
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Tue, 09 Jun 2009 11:49:51 +0200
+
+task (1.7.0-0ubuntu1) jaunty; urgency=low
+
+  * Initial release (LP: #378847)
+  * Fixed bug in taskrc.5 man page from upstream project
+    which made lintian complain
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Wed, 27 May 2009 23:57:08 +0200

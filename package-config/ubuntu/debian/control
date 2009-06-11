@@ -1,0 +1,20 @@
+Source: task
+Section: utils
+Priority: optional
+Maintainer: Federico Hernandez <ultrafredde@gmail.com>
+XSBC-Original-Maintainer: Federico Hernandez <ultrafredde@gmail.com>
+Build-Depends: debhelper (>= 7), autotools-dev, libncurses5-dev
+Standards-Version: 3.8.0.1
+Homepage: http://taskwarrior.org
+
+Package: task
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: A command-line to do list manager
+ Task is a command-line to do list manager. It is
+ scope-limited to GTD functionality and features:
+ tags, colorful tabular output, reports and graphs,
+ lots of commands, low-level API, abbreviations for
+ all commands and options, multiuser file locking,
+ recurring tasks. Task is based on ideas presented
+ in the todo.sh script found on: http://todotxt.org
