@@ -58,6 +58,8 @@ std::string handleAdd ()
     context.task.setStatus (Task::recurring);
     context.task.set ("mask", "");
   }
+  else
+    context.task.setStatus (Task::pending);
 
   // Override with default.project, if not specified.
   if (context.task.get ("project") == "")
