@@ -33,7 +33,7 @@ else
 fi
 
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([src/task.cpp])
+AC_CONFIG_SRCDIR([src/Task.cpp])
 AC_CONFIG_HEADER([auto.h])
 
 # Checks for programs.
