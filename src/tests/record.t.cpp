@@ -83,16 +83,16 @@ int main (int argc, char** argv)
   // Record::set
   record.clear ();
   record.set ("name", "value");
-  t.is (record.composeF4 (), "[name:\"value\"]", "Record::set");
+  t.is (record.composeF4 (), "[name:\"value\"]\n", "Record::set");
 
   // Record::get_int
   record.set ("one", 1);
-  t.is (record.composeF4 (), "[name:\"value\" one:\"1\"]", "Record::set");
+  t.is (record.composeF4 (), "[name:\"value\" one:\"1\"]\n", "Record::set");
   t.is (record.get_int ("one"), 1, "Record::get_int");
 
   // Record::remove
   record.remove ("one");
-  t.is (record.composeF4 (), "[name:\"value\"]", "Record::remove");
+  t.is (record.composeF4 (), "[name:\"value\"]\n", "Record::remove");
 
   // Record::all
   std::vector <Att> all = record.all ();

@@ -71,7 +71,7 @@ std::string Record::composeF4 ()
     }
   }
 
-  ff4 += "]";
+  ff4 += "]\n";
   return ff4;
 }
 
