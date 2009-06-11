@@ -154,11 +154,22 @@ void TDB2::unlock ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Returns number of filtered tasks.
+// Note: tasks.clear () is deliberately not called, to allow the combination of
+//       multiple files.
 int TDB2::load (std::vector <Task>& tasks, Filter& filter)
 {
-  // Note: tasks.clear () is deliberately not called, to allow the combination
-  //       of multiple files.
+  loadPending   (tasks, filter);
+  loadCompleted (tasks, filter);
 
+  return tasks.size ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Returns number of filtered tasks.
+// Note: tasks.clear () is deliberately not called, to allow the combination of
+//       multiple files.
+int TDB2::loadPending (std::vector <Task>& tasks, Filter& filter)
+{
   std::string file;
   int line_number;
 
@@ -185,6 +196,34 @@ int TDB2::load (std::vector <Task>& tasks, Filter& filter)
 
         ++line_number;
       }
+    }
+  }
+
+  catch (std::string& e)
+  {
+    std::stringstream s;
+    s << "  int " << file << " at line " << line_number;
+    throw e + s.str ();
+  }
+
+  return tasks.size ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Returns number of filtered tasks.
+// Note: tasks.clear () is deliberately not called, to allow the combination of
+//       multiple files.
+int TDB2::loadCompleted (std::vector <Task>& tasks, Filter& filter)
+{
+  std::string file;
+  int line_number;
+
+  try
+  {
+    char line[T_LINE_MAX];
+    foreach (location, mLocations)
+    {
+      std::cout << "# location.path: " << location->path << std::endl;
 
       // TODO If the filter contains Status:x where x is not deleted or
       //      completed, then this can be skipped.

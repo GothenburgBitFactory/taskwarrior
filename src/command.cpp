@@ -98,7 +98,7 @@ std::string handleProjects ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  int quantity = context.tdb.load (tasks, context.filter);
+  int quantity = context.tdb.loadPending (tasks, context.filter);
   context.tdb.unlock ();
 
   // Scan all the tasks for their project name, building a map using project
@@ -155,7 +155,7 @@ std::string handleTags ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  int quantity = context.tdb.load (tasks, context.filter);
+  int quantity = context.tdb.loadPending (tasks, context.filter);
   context.tdb.unlock ();
 
   // Scan all the tasks for their project name, building a map using project

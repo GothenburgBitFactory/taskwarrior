@@ -51,6 +51,8 @@ public:
   void  unlock ();
 
   int   load (std::vector <Task>&, Filter&);
+  int   loadPending (std::vector <Task>&, Filter&);
+  int   loadCompleted (std::vector <Task>&, Filter&);
   void  add (Task&);
   void  update (Task&, Task&);
   int   commit ();
