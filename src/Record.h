@@ -44,8 +44,8 @@ public:
   void parse (const std::string&);
 
   std::vector <Att> all ();
-  const std::string get (const std::string&);
-  int get_int (const std::string&);
+  const std::string get (const std::string&) const;
+  int get_int (const std::string&) const;
   void set (const std::string&, const std::string&);
   void set (const std::string&, int);
   void remove (const std::string&);

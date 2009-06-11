@@ -48,44 +48,36 @@ extern Context context;
 std::string handleAdd ()
 {
   std::stringstream out;
-/*
-  char entryTime[16];
-  sprintf (entryTime, "%u", (unsigned int) time (NULL));
-  task.setAttribute ("entry", entryTime);
 
-  std::map <std::string, std::string> atts;
-  task.getAttributes (atts);
-  foreach (i, atts)
-    if (i->second == "")
-      task.removeAttribute (i->first);
+  context.task.setEntry ();
 
   // Recurring tasks get a special status.
-  if (task.getAttribute ("due")   != "" &&
-      task.getAttribute ("recur") != "")
+  if (context.task.get ("due")   != "" &&
+      context.task.get ("recur") != "")
   {
-    task.setStatus (T::recurring);
-    task.setAttribute ("mask", "");
+    context.task.setStatus (Task::recurring);
+    context.task.set ("mask", "");
   }
 
   // Override with default.project, if not specified.
-  if (task.getAttribute ("project") == "")
-    task.setAttribute ("project", context.config.get ("default.project", ""));
+  if (context.task.get ("project") == "")
+    context.task.set ("project", context.config.get ("default.project", ""));
 
   // Override with default.priority, if not specified.
-  if (task.getAttribute ("priority") == "")
+  if (context.task.get ("priority") == "")
   {
     std::string defaultPriority = context.config.get ("default.priority", "");
     if (validPriority (defaultPriority))
-      task.setAttribute ("priority", defaultPriority);
+      context.task.set ("priority", defaultPriority);
   }
 
-  // Disallow blank descriptions.
-  if (task.getDescription () == "")
-    throw std::string ("Cannot add a task that is blank, or contains <CR> or <LF> characters.");
+  // Only valid tasks can be added.
+  context.task.validate ();
 
-  if (!tdb.addT (task))
-    throw std::string ("Could not create new task.");
-*/
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.add (context.task);
+  context.tdb.unlock ();
+
   return out.str ();
 }
 

@@ -96,13 +96,21 @@ std::string Task::statusToText (Task::status s)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Task::setEntry ()
+{
+  char entryTime[16];
+  sprintf (entryTime, "%u", (unsigned int) time (NULL));
+  set ("entry", entryTime);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Task::status Task::getStatus ()
 {
   return textToStatus (get ("status"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::setSatus (Task::status status)
+void Task::setStatus (Task::status status)
 {
   set ("status", statusToText (status));
 }
@@ -422,12 +430,14 @@ void Task::removeTag (const std::string& tag)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Task::valid () const
+void Task::validate () const
 {
   // TODO Verify until > due
   // TODO Verify entry < until, due, start, end
   // TODO If name == "recur", then Duration::valid (value).
-  return true;
+
+  if (get ("description") == "")
+    throw std::string ("Cannot add a task that is blank, or contains <CR> or <LF> characters.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

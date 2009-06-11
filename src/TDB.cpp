@@ -342,7 +342,6 @@ bool TDB::writePending (const T& t)
         delay (0.1);
 
     fputs (t.compose ().c_str (), out);
-
     fclose (out);
     return true;
   }

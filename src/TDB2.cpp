@@ -28,6 +28,7 @@
 #include <iostream>
 #include <sstream>
 #include <string.h>
+#include <stdio.h>
 #include <sys/file.h>
 #include "text.h"
 #include "util.h"
@@ -182,6 +183,8 @@ int TDB2::loadPending (std::vector <Task>& tasks, Filter& filter)
 
       line_number = 1;
       file = location->path + "/pending.data";
+
+      fseek (location->pending, 0, SEEK_SET);
       while (fgets (line, T_LINE_MAX, location->pending))
       {
         int length = ::strlen (line);
@@ -230,6 +233,8 @@ int TDB2::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 
       line_number = 1;
       file = location->path + "/completed.data";
+
+      fseek (location->completed, 0, SEEK_SET);
       while (fgets (line, T_LINE_MAX, location->completed))
       {
         int length = ::strlen (line);
@@ -259,12 +264,14 @@ int TDB2::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
+// Note: mLocations[0] is where all tasks are written.
 void TDB2::add (Task& after)
 {
-  throw std::string ("unimplemented TDB2::add");
+  // Seek to end of pending.
+  fseek (mLocations[0].pending, 0, SEEK_END);
 
-  // TODO Seek to end of pending.
-  // TODO write after.composeFF4 ().
+  // Write after.composeF4 ().
+  fputs (after.composeF4 ().c_str (), mLocations[0].pending);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -275,11 +282,11 @@ void TDB2::update (Task& before, Task& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO writes all, including comments
+// TODO Writes all, including comments
 int TDB2::commit ()
 {
   // TODO Two passes: first the pending file.
-  //                  then the compelted file.
+  //                  then the completed file.
 
   throw std::string ("unimplemented TDB2::commit");
 }
@@ -300,7 +307,7 @@ FILE* TDB2::openAndLock (const std::string& file)
           file + "'.";
 
   // Open the file.
-  FILE* in = fopen (file.c_str (), "rw");
+  FILE* in = fopen (file.c_str (), "r+");
   if (!in)
     throw std::string ("Could not open '") + file + "'.";
 

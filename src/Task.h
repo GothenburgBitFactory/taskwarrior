@@ -57,8 +57,10 @@ public:
   static status textToStatus (const std::string&);
   static std::string statusToText (status);
 
+  void setEntry ();
+
   status getStatus ();
-  void setSatus (status);
+  void setStatus (status);
 
   int getTagCount ();
   bool hasTag (const std::string&);
@@ -72,7 +74,7 @@ public:
   void addAnnotation (const std::string&);
   void removeAnnotations ();
 
-  bool valid () const;
+  void validate () const;
 
 private:
   int determineVersion (const std::string&);

@@ -62,12 +62,13 @@ std::string Record::composeF4 ()
   std::string ff4 = "[";
 
   bool first = true;
-  foreach (r, (*this))
+  foreach (att, (*this))
   {
-    if (r->second.value () != "")
-      ff4 += (first ? "" : " ") + r->second.composeF4 ();
-
-    first = false;
+    if (att->second.value () != "")
+    {
+      ff4 += (first ? "" : " ") + att->second.composeF4 ();
+      first = false;
+    }
   }
 
   ff4 += "]";
@@ -126,19 +127,21 @@ std::vector <Att> Record::all ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string Record::get (const std::string& name)
+const std::string Record::get (const std::string& name) const
 {
-  if (this->find (name) != this->end ())
-    return (*this)[name].value ();
+  Record::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return i->second.value ();
 
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Record::get_int (const std::string& name)
+int Record::get_int (const std::string& name) const
 {
-  if (this->find (name) != this->end ())
-    return ::atoi ((*this)[name].value ().c_str ());
+  Record::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return ::atoi (i->second.value ().c_str ());
 
   return 0;
 }

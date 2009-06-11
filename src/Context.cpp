@@ -173,10 +173,12 @@ void Context::dispatch ()
   else if (command == "calendar")           { out = handleReportCalendar  (); }
   else if (command == "summary")            { out = handleReportSummary   (); }
   else if (command == "timesheet")          { out = handleReportTimesheet (); }
+*/
 
   // Commands that cause updates.
+  else if (cmd.command == "add")            { cmdMod = true; out = handleAdd (); }
+/*
   else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify    (); }
-  else if (command == "add")                { cmdMod = true; out = handleAdd       (); }
   else if (command == "append")             { cmdMod = true; out = handleAppend    (); }
   else if (command == "annotate")           { cmdMod = true; out = handleAnnotate  (); }
   else if (command == "done")               { cmdMod = true; out = handleDone      (); }
@@ -188,24 +190,24 @@ void Context::dispatch ()
   else if (command == "import")             { cmdMod = true; out = handleImport    (); }
   else if (command == "duplicate")          { cmdMod = true; out = handleDuplicate (); }
   else if (command == "edit")               { cmdMod = true; out = handleEdit      (); }
+*/
 
   // Command that display IDs and therefore need TDB::gc first.
+/*
   else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (); }
   else if (command == "next")               { if (gc) gcMod = tdb.gc (); out = handleReportNext    (); }
   else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (); }
   else if (command == "overdue")            { if (gc) gcMod = tdb.gc (); out = handleReportOverdue (); }
-  else if (isCustomReport (command))        { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (command); }
+  else if (cmd.validCustom (command))       { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (command); }
+*/
 
   // If the command is not recognized, display usage.
-*/
   else                                      { out = shortUsage (); }
 
-/*
   // Only update the shadow file if such an update was not suppressed (shadow),
   // and if an actual change occurred (gcMod || cmdMod).
-  if (shadow && (gcMod || cmdMod))
-    updateShadowFile (tdb);
-*/
+//  if (shadow && (gcMod || cmdMod))
+//    updateShadowFile (tdb);
 
   std::cout << out;
 }
