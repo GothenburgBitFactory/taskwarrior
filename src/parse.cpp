@@ -554,40 +554,4 @@ void parse (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void loadCustomReports ()
-{
-  std::vector <std::string> all;
-  context.config.all (all);
-
-  foreach (i, all)
-  {
-    if (i->substr (0, 7) == "report.")
-    {
-      std::string report = i->substr (7, std::string::npos);
-      std::string::size_type columns = report.find (".columns");
-      if (columns != std::string::npos)
-      {
-        report = report.substr (0, columns);
-        customReports.push_back (report);
-      }
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool isCustomReport (const std::string& report)
-{
-  foreach (i, customReports)
-    if (*i == report)
-      return true;
-
-  return false;
-}
-////////////////////////////////////////////////////////////////////////////////
-void allCustomReports (std::vector <std::string>& all)
-{
-  all = customReports;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 

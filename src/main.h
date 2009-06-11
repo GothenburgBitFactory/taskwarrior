@@ -42,10 +42,6 @@ bool validPriority (const std::string&);
 bool validDate (std::string&);
 bool validDuration (std::string&);
 bool validDescription (const std::string&);
-bool validCommand (std::string&);
-void loadCustomReports ();
-bool isCustomReport (const std::string&);
-void allCustomReports (std::vector <std::string>&);
 
 // task.cpp
 void gatherNextTasks (/*const TDB&,*/ T&, std::vector <T>&, std::vector <int>&);

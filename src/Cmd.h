@@ -38,9 +38,10 @@ public:
   Cmd (const std::string&);    // Default constructor
   ~Cmd ();                     // Destructor
 
-  bool valid       (const std::string&);
-  bool validCustom (const std::string&);
-  void parse       (const std::string&);
+  bool valid            (const std::string&);
+  bool validCustom      (const std::string&);
+  void parse            (const std::string&);
+  void allCustomReports (std::vector <std::string>&) const;
 
 public:
   std::string command;

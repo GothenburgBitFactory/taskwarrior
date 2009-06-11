@@ -203,7 +203,7 @@ std::string shortUsage ()
 
   // Add custom reports here...
   std::vector <std::string> all;
-  allCustomReports (all);
+  context.cmd.allCustomReports (all);
   foreach (report, all)
   {
     std::string command = std::string ("task ") + *report + std::string (" [tags] [attrs] desc...");
