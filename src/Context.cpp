@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <fstream>
 #include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -113,19 +114,18 @@ int Context::run ()
 {
   try
   {
-    parse ();    // Parse command line.
-    dispatch (); // Dispatch to command handlers.
-    shadow ();   // Auto shadow update.
+    parse ();                 // Parse command line.
+    std::cout << dispatch (); // Dispatch to command handlers.
   }
 
   catch (const std::string& error)
   {
-    messages.push_back (error);
+    message (error);
   }
 
   catch (...)
   {
-    messages.push_back (stringtable.get (100, "Unknown error."));
+    message (stringtable.get (100, "Unknown error."));
   }
 
   // Dump all messages.
@@ -143,7 +143,7 @@ int Context::run ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Context::dispatch ()
+std::string Context::dispatch ()
 {
   bool gcMod  = false; // Change occurred by way of gc.
   bool cmdMod = false; // Change occurred by way of command type.
@@ -199,63 +199,49 @@ void Context::dispatch ()
   // Only update the shadow file if such an update was not suppressed (shadow),
   // and if an actual change occurred (gcMod || cmdMod).
 //  if (shadow && (gcMod || cmdMod))
-//    updateShadowFile (tdb);
+//    shadow ();
 
-  std::cout << out;
+  return out;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Context::shadow ()
 {
-/*
-  try
+  // Determine if shadow file is enabled.
+  std::string shadowFile = expandPath (config.get ("shadow.file"));
+  if (shadowFile != "")
   {
-    // Determine if shadow file is enabled.
-    std::string shadowFile = expandPath (context.config.get ("shadow.file"));
-    if (shadowFile != "")
+    std::string oldCurses = config.get ("curses");
+    std::string oldColor  = config.get ("color");
+    config.set ("curses", "off");
+    config.set ("color",  "off");
+
+    // Run report.  Use shadow.command, using default.command as a fallback
+    // with "list" as a default.
+    std::string command = config.get ("shadow.command",
+                            config.get ("default.command", "list"));
+    split (args, command, ' ');
+
+    initialize ();
+    parse ();
+    std::string result = dispatch ();
+
+    std::ofstream out (shadowFile.c_str ());
+    if (out.good ())
     {
-      std::string oldCurses = context.config.get ("curses");
-      std::string oldColor = context.config.get ("color");
-      context.config.set ("curses", "off");
-      context.config.set ("color",  "off");
-
-      // Run report.  Use shadow.command, using default.command as a fallback
-      // with "list" as a default.
-      std::string command = context.config.get ("shadow.command",
-                              context.config.get ("default.command", "list"));
-      std::vector <std::string> args;
-      split (args, command, ' ');
-      std::string result = runTaskCommand (args, tdb);
-
-      std::ofstream out (shadowFile.c_str ());
-      if (out.good ())
-      {
-        out << result;
-        out.close ();
-      }
-      else
-        throw std::string ("Could not write file '") + shadowFile + "'";
-
-      context.config.set ("curses", oldCurses);
-      context.config.set ("color",  oldColor);
+      out << result;
+      out.close ();
     }
+    else
+      throw std::string ("Could not write file '") + shadowFile + "'";
+
+    config.set ("curses", oldCurses);
+    config.set ("color",  oldColor);
 
     // Optionally display a notification that the shadow file was updated.
-    if (context.config.get (std::string ("shadow.notify"), false))
-      std::cout << "[Shadow file '" << shadowFile << "' updated]" << std::endl;
+    if (config.get (std::string ("shadow.notify"), false))
+      footnote (std::string ("[Shadow file '") + shadowFile + "' updated]");
   }
-
-  catch (std::string& error)
-  {
-    std::cerr << error << std::endl;
-  }
-
-  catch (...)
-  {
-    std::cerr << "Unknown error." << std::endl;
-  }
-*/
-  throw std::string ("unimplemented Context::shadow");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -269,7 +255,7 @@ void Context::loadCorrectConfigFile ()
       if (access (file.c_str (), F_OK))
         throw std::string ("Could not read configuration file '") + file + "'";
 
-      messages.push_back (std::string ("Using alternate .taskrc file ") + file); // TODO i18n
+      message (std::string ("Using alternate .taskrc file ") + file); // TODO i18n
       config.load (file);
 
       // No need to handle it again.
@@ -301,8 +287,8 @@ void Context::loadCorrectConfigFile ()
           n.getUntilEOS (value))
       {
         config.set (name, value);
-        messages.push_back (std::string ("Configuration override ") +  // TODO i18n
-                           arg->substr (3, std::string::npos));
+        message (std::string ("Configuration override ") +  // TODO i18n
+                 arg->substr (3, std::string::npos));
       }
 
       // No need to handle it again.
@@ -458,6 +444,18 @@ void Context::constructFilter ()
   foreach (att, task)
     if (att->first != "uuid")
       filter.push_back (att->second);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::message (const std::string& input)
+{
+  messages.push_back (input);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::footnote (const std::string& input)
+{
+  footnotes.push_back (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
