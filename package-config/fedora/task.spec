@@ -1,6 +1,6 @@
 Name:           task
-Version:        1.7.1
-Release:        2%{?dist}
+Version:        1.8.0
+Release:        0%{?dist}
 Summary:        A command-line to do list manager
 
 Group:          Applications/Productivity
@@ -12,13 +12,12 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  ncurses-devel
 
 %description
-Task is a command-line to do list manager. It is
-scope-limited to GTD functionality and features:
-tags, colorful tabular output, reports and graphs,
-lots of commands, low-level api, abbreviations for
-all commands and options, multiuser file locking,
-recurring tasks. Task is based on ideas presented
-in the todo.sh script found on: http://todotxt.org
+Task is a command-line to do list manager. It has
+support for GTD functionality and includes the
+following features: tags, colorful tabular output,
+reports and graphs, lots of manipulation commands,
+low-level API, abbreviations for all commands and
+options, multiuser file locking, recurring tasks.
 
 %prep
 %setup -q
@@ -47,6 +46,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* xxx xxx xx 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.8.0-1
+  Intial RPM for task release 1.8.0
 * Tue Jun 08 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.7.1-2
 - Fixed inclusion of manpages.
 * Tue Jun 08 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.7.1-1
