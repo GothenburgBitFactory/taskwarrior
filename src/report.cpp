@@ -2241,11 +2241,11 @@ std::string handleReportStats ()
 {
   std::stringstream out;
 
-/*
   // Get all the tasks.
-  std::vector <T> tasks;
-  tdb.allT (tasks);
-  filter (tasks, task);
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.load (tasks, context.filter);
+  context.tdb.unlock ();
 
   Date now;
   time_t earliest   = time (NULL);
@@ -2262,31 +2262,31 @@ std::string handleReportStats ()
   std::map <std::string, int> allTags;
   std::map <std::string, int> allProjects;
 
-  std::vector <T>::iterator it;
+  std::vector <Task>::iterator it;
   for (it = tasks.begin (); it != tasks.end (); ++it)
   {
     ++totalT;
-    if (it->getStatus () == T::deleted)   ++deletedT;
-    if (it->getStatus () == T::pending)   ++pendingT;
-    if (it->getStatus () == T::completed) ++completedT;
-    if (it->getStatus () == T::recurring) ++recurringT;
+    if (it->getStatus () == Task::deleted)   ++deletedT;
+    if (it->getStatus () == Task::pending)   ++pendingT;
+    if (it->getStatus () == Task::completed) ++completedT;
+    if (it->getStatus () == Task::recurring) ++recurringT;
 
-    time_t entry = ::atoi (it->getAttribute ("entry").c_str ());
+    time_t entry = ::atoi (it->get ("entry").c_str ());
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
-    if (it->getStatus () == T::completed)
+    if (it->getStatus () == Task::completed)
     {
-      time_t end = ::atoi (it->getAttribute ("end").c_str ());
+      time_t end = ::atoi (it->get ("end").c_str ());
       daysPending += (end - entry) / 86400.0;
     }
 
-    if (it->getStatus () == T::pending)
+    if (it->getStatus () == Task::pending)
       daysPending += (now - entry) / 86400.0;
 
-    descLength += it->getDescription ().length ();
+    descLength += it->get ("description").length ();
 
-    std::map <time_t, std::string> annotations;
+    std::vector <Att> annotations;
     it->getAnnotations (annotations);
     annotationsT += annotations.size ();
 
@@ -2297,7 +2297,7 @@ std::string handleReportStats ()
     foreach (t, tags)
       allTags[*t] = 0;
 
-    std::string project = it->getAttribute ("project");
+    std::string project = it->get ("project");
     if (project != "")
       allProjects[project] = 0;
   }
@@ -2424,7 +2424,7 @@ std::string handleReportStats ()
   out << optionalBlankLine ()
       << table.render ()
       << optionalBlankLine ();
-*/
+
   return out.str ();
 }
 

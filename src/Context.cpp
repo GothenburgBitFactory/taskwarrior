@@ -158,16 +158,16 @@ void Context::dispatch ()
   std::string out;
 /*
   // Read-only commands with no side effects.
-       if (command == "export")             { out = handleExport ();   }
+       if (command == "export")             { out = handleExport ();      }
 */
-       if (cmd.command == "projects")       { out = handleProjects (); }
-  else if (cmd.command == "tags")           { out = handleTags ();     }
-  else if (cmd.command == "colors")         { out = handleColor ();    }
-  else if (cmd.command == "version")        { out = handleVersion ();  }
-  else if (cmd.command == "help")           { out = longUsage ();      }
+       if (cmd.command == "projects")       { out = handleProjects ();    }
+  else if (cmd.command == "tags")           { out = handleTags ();        }
+  else if (cmd.command == "colors")         { out = handleColor ();       }
+  else if (cmd.command == "version")        { out = handleVersion ();     }
+  else if (cmd.command == "help")           { out = longUsage ();         }
+  else if (cmd.command == "stats")          { out = handleReportStats (); }
 /*
   else if (command == "info")               { out = handleInfo            (); }
-  else if (command == "stats")              { out = handleReportStats     (); }
   else if (command == "history")            { out = handleReportHistory   (); }
   else if (command == "ghistory")           { out = handleReportGHistory  (); }
   else if (command == "calendar")           { out = handleReportCalendar  (); }
