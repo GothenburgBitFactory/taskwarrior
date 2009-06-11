@@ -38,7 +38,6 @@
 #include "Context.h"
 #include "Date.h"
 #include "Table.h"
-#include "TDB.h"
 #include "T.h"
 #include "text.h"
 #include "util.h"
@@ -2431,7 +2430,7 @@ std::string handleReportStats ()
 
 ////////////////////////////////////////////////////////////////////////////////
 void gatherNextTasks (
-  const TDB& tdb,
+//  const TDB& tdb,
   T& task,
   std::vector <T>& pending,
   std::vector <int>& all)

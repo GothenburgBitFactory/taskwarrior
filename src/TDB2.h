@@ -40,10 +40,10 @@
 class TDB2
 {
 public:
-  TDB2 ();                      // Default constructor
+  TDB2 ();                       // Default constructor
   TDB2 (const TDB2&);            // Copy constructor
   TDB2& operator= (const TDB2&); // Assignment operator
-  ~TDB2 ();                     // Destructor
+  ~TDB2 ();                      // Destructor
 
   void  location (const std::string&);
 

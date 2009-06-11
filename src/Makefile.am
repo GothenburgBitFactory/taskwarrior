@@ -9,4 +9,4 @@ task_SOURCES = Att.cpp Cmd.cpp Config.cpp Context.cpp Date.cpp Duration.cpp   \
                Grid.h Keymap.h Location.h Nibbler.h Record.h Sequence.h       \
                StringTable.h Subst.h Task.h TDB2.h Table.h Timer.h color.h    \
                i18n.h main.h text.h util.h                                    \
-               T.cpp T.h TDB.cpp TDB.h
+               T.cpp T.h

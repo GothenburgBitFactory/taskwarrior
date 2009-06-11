@@ -30,7 +30,6 @@
 #include <unistd.h>
 #include "Date.h"
 #include "T.h"
-#include "TDB.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"
@@ -182,9 +181,10 @@ static void decorateTask (T& task)
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTask_1_4_3 (
-  TDB& tdb,
+//  TDB& tdb,
   const std::vector <std::string>& lines)
 {
+/*
   std::vector <std::string> failed;
 
   std::vector <std::string>::const_iterator it;
@@ -316,8 +316,10 @@ static std::string importTask_1_4_3 (
       failed.push_back (*it);
     }
   }
+*/
 
   std::stringstream out;
+/*
   out << "Imported "
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
@@ -331,15 +333,16 @@ static std::string importTask_1_4_3 (
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
-
+*/
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTask_1_5_0 (
-  TDB& tdb,
+//  TDB& tdb,
   const std::vector <std::string>& lines)
 {
+/*
   std::vector <std::string> failed;
 
   std::vector <std::string>::const_iterator it;
@@ -477,7 +480,9 @@ static std::string importTask_1_5_0 (
     }
   }
 
+*/
   std::stringstream out;
+/*
   out << "Imported "
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
@@ -491,15 +496,17 @@ static std::string importTask_1_5_0 (
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
+*/
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTask_1_6_0 (
-  TDB& tdb,
+//  TDB& tdb,
   const std::vector <std::string>& lines)
 {
+/*
   std::vector <std::string> failed;
 
   std::vector <std::string>::const_iterator it;
@@ -636,8 +643,10 @@ static std::string importTask_1_6_0 (
       failed.push_back (*it);
     }
   }
+*/
 
   std::stringstream out;
+/*
   out << "Imported "
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
@@ -651,15 +660,16 @@ static std::string importTask_1_6_0 (
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
-
+*/
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTaskCmdLine (
-  TDB& tdb,
+//  TDB& tdb,
   const std::vector <std::string>& lines)
 {
+/*
   std::vector <std::string> failed;
 
   std::vector <std::string>::const_iterator it;
@@ -683,8 +693,10 @@ static std::string importTaskCmdLine (
       failed.push_back (line);
     }
   }
+*/
 
   std::stringstream out;
+/*
   out << "Imported "
       << (lines.size () - failed.size ())
       << " tasks successfully, with "
@@ -698,15 +710,17 @@ static std::string importTaskCmdLine (
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
+*/
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTodoSh_2_0 (
-  TDB& tdb,
+//  TDB& tdb,
   const std::vector <std::string>& lines)
 {
+/*
   std::vector <std::string> failed;
 
   std::vector <std::string>::const_iterator it;
@@ -804,8 +818,10 @@ static std::string importTodoSh_2_0 (
       failed.push_back (*it);
     }
   }
+*/
 
   std::stringstream out;
+/*
   out << "Imported "
       << (lines.size () - failed.size ())
       << " tasks successfully, with "
@@ -819,15 +835,16 @@ static std::string importTodoSh_2_0 (
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
-
+*/
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importText (
-  TDB& tdb,
+//  TDB& tdb,
   const std::vector <std::string>& lines)
 {
+/*
   std::vector <std::string> failed;
   int count = 0;
 
@@ -865,8 +882,10 @@ static std::string importText (
       }
     }
   }
+*/
 
   std::stringstream out;
+/*
   out << "Imported "
       << count
       << " tasks successfully, with "
@@ -880,15 +899,17 @@ static std::string importText (
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
+*/
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importCSV (
-  TDB& tdb,
+//  TDB& tdb,
   const std::vector <std::string>& lines)
 {
+/*
   std::vector <std::string> failed;
 
   // Set up mappings.  Assume no fields match.
@@ -1107,8 +1128,10 @@ static std::string importCSV (
       failed.push_back (*it);
     }
   }
+*/
 
   std::stringstream out;
+/*
   out << "Imported "
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
@@ -1122,6 +1145,7 @@ static std::string importCSV (
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
+*/
 
   return out.str ();
 }

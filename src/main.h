@@ -31,7 +31,6 @@
 #include <sys/types.h>
 #include "Context.h"
 #include "T.h"
-#include "TDB.h"
 #include "Table.h"
 #include "Date.h"
 #include "color.h"
@@ -49,18 +48,20 @@ bool isCustomReport (const std::string&);
 void allCustomReports (std::vector <std::string>&);
 
 // task.cpp
-void gatherNextTasks (const TDB&, T&, std::vector <T>&, std::vector <int>&);
+void gatherNextTasks (/*const TDB&,*/ T&, std::vector <T>&, std::vector <int>&);
 void onChangeCallback ();
+/*
 std::string runTaskCommand (int, char**, TDB&, bool gc = true, bool shadow = true);
 std::string runTaskCommand (std::vector <std::string>&, TDB&, bool gc = false, bool shadow = false);
+*/
 
 // recur.cpp
 void handleRecurrence ();
 Date getNextRecurrence (Date&, std::string&);
 bool generateDueDates (T&, std::vector <Date>&);
-void updateRecurrenceMask (TDB&, std::vector <T>&, T&);
+void updateRecurrenceMask (/*TDB&,*/ std::vector <T>&, T&);
 int getDueState (const std::string&);
-void nag (TDB&, T&);
+void nag (/*TDB&,*/ T&);
 
 // command.cpp
 std::string handleAdd ();

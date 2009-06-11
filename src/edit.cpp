@@ -34,7 +34,6 @@
 #include <limits.h>
 #include <string.h>
 #include "T.h"
-#include "TDB.h"
 #include "Date.h"
 #include "text.h"
 #include "util.h"
@@ -93,6 +92,7 @@ static std::string findDate (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Obsolete - use Task::statusToText
 static std::string formatStatus (T& task)
 {
   switch (task.getStatus ())
@@ -496,9 +496,10 @@ static void parseTask (T& task, const std::string& after)
 // Introducing the Silver Bullet.  This feature is the catch-all fixative for
 // various other ills.  This is like opening up the hood and going in with a
 // wrench.  To be used sparingly.
-std::string handleEdit (TDB& tdb, T& task)
+std::string handleEdit ()
 {
   std::stringstream out;
+/*
   std::vector <T> all;
   tdb.allPendingT (all);
 
@@ -587,6 +588,7 @@ ARE_THESE_REALLY_HARMFUL:
     unlink (file);
   }
 
+*/
   return out.str ();
 }
 

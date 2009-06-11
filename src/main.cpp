@@ -40,7 +40,6 @@
 #include "Date.h"
 #include "Duration.h"
 #include "Table.h"
-#include "TDB.h"
 #include "T.h"
 #include "text.h"
 #include "util.h"
@@ -117,54 +116,9 @@ int main (int argc, char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void updateShadowFile (TDB& tdb)
+// TODO Obsolete
+void updateShadowFile ()
 {
-  try
-  {
-    // Determine if shadow file is enabled.
-    std::string shadowFile = expandPath (context.config.get ("shadow.file"));
-    if (shadowFile != "")
-    {
-      std::string oldCurses = context.config.get ("curses");
-      std::string oldColor = context.config.get ("color");
-      context.config.set ("curses", "off");
-      context.config.set ("color",  "off");
-
-      // Run report.  Use shadow.command, using default.command as a fallback
-      // with "list" as a default.
-      std::string command = context.config.get ("shadow.command",
-                              context.config.get ("default.command", "list"));
-      std::vector <std::string> args;
-      split (args, command, ' ');
-      std::string result = runTaskCommand (args, tdb);
-
-      std::ofstream out (shadowFile.c_str ());
-      if (out.good ())
-      {
-        out << result;
-        out.close ();
-      }
-      else
-        throw std::string ("Could not write file '") + shadowFile + "'";
-
-      context.config.set ("curses", oldCurses);
-      context.config.set ("color",  oldColor);
-    }
-
-    // Optionally display a notification that the shadow file was updated.
-    if (context.config.get (std::string ("shadow.notify"), false))
-      std::cout << "[Shadow file '" << shadowFile << "' updated]" << std::endl;
-  }
-
-  catch (std::string& error)
-  {
-    std::cerr << error << std::endl;
-  }
-
-  catch (...)
-  {
-    std::cerr << "Unknown error." << std::endl;
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,10 +126,11 @@ void updateShadowFile (TDB& tdb)
 std::string runTaskCommand (
   int argc,
   char** argv,
-  TDB& tdb,
+//  TDB& tdb,
   bool gc /* = true */,
   bool shadow /* = true */)
 {
+/*
   std::vector <std::string> args;
   for (int i = 1; i < argc; ++i)
     if (strncmp (argv[i], "rc:", 3) &&
@@ -186,16 +141,19 @@ std::cout << "arg=" << argv[i] << std::endl;
 }
 
   return runTaskCommand (args, tdb, gc, shadow);
+*/
+  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Obsolete
 std::string runTaskCommand (
   std::vector <std::string>& args,
-  TDB& tdb,
+//  TDB& tdb,
   bool gc /* = false */,
   bool shadow /* = false */)
 {
+/*
   // If argc == 1 and there is a default.command, use it.  Otherwise use
   // argc/argv.
   std::string defaultCommand = context.config.get ("default.command");
@@ -215,6 +173,7 @@ std::string runTaskCommand (
 
   bool gcMod  = false; // Change occurred by way of gc.
   bool cmdMod = false; // Change occurred by way of command type.
+*/
   std::string out;
 /*
   // Read-only commands with no side effects.

@@ -36,10 +36,8 @@
 #include <string.h>
 #include <pwd.h>
 #include <errno.h>
+
 #include "Date.h"
-#include "Table.h"
-#include "T.h"
-#include "TDB.h"
 #include "text.h"
 #include "main.h"
 #include "i18n.h"

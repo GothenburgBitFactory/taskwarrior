@@ -34,8 +34,6 @@
 #include <pwd.h>
 #include <time.h>
 
-#include "T.h"
-#include "TDB.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"
@@ -546,7 +544,7 @@ std::string handleStart ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleStop (TDB& tdb, T& task)
+std::string handleStop ()
 {
   std::stringstream out;
 /*

@@ -39,8 +39,6 @@
 #include "Context.h"
 #include "Date.h"
 #include "Duration.h"
-#include "Table.h"
-#include "TDB.h"
 #include "T.h"
 #include "text.h"
 #include "util.h"
@@ -330,10 +328,11 @@ Date getNextRecurrence (Date& current, std::string& period)
 // When the status of a recurring child task changes, the parent task must
 // update it's mask.
 void updateRecurrenceMask (
-  TDB& tdb,
+//  TDB& tdb,
   std::vector <T>& all,
   T& task)
 {
+/*
   std::string parent = task.getAttribute ("parent");
   if (parent != "")
   {
@@ -370,6 +369,7 @@ void updateRecurrenceMask (
       }
     }
   }
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -399,8 +399,9 @@ int getDueState (const std::string& due)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void nag (TDB& tdb, T& task)
+void nag (/*TDB& tdb,*/ T& task)
 {
+/*
   std::string nagMessage = context.config.get ("nag", std::string (""));
   if (nagMessage != "")
   {
@@ -456,6 +457,7 @@ void nag (TDB& tdb, T& task)
     // All the excuses are made, all that remains is to nag the user.
     std::cout << nagMessage << std::endl;
   }
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
