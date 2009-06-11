@@ -24,8 +24,6 @@
    (thanks to Federico Hernandez).
  + Removed obsolete DEVELOPERS file.  The online support forums at
    http://taskwarrior.org will provide better information.
- + Replaced website references with http://taskwarrior.org.
- + Replaced contact references with support@taskwarrior.org.
 
 ------ old releases ------------------------------
 

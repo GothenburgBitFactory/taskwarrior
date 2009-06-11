@@ -96,6 +96,12 @@ void Context::initialize ()
   // allow all subsequent messages to be localizable.
   std::string location = expandPath (config.get ("data.location"));
   std::string locale = config.get ("locale");
+
+  // If there is a locale variant (en-US.<variant>), then strip it.
+  std::string::size_type period = locale.find ('.');
+  if (period != std::string::npos)
+    locale = locale.substr (0, period);
+
   if (locale != "")
     stringtable.load (location + "/strings." + locale);
 
