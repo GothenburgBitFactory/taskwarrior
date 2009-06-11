@@ -44,6 +44,7 @@ public:
   ~Context ();                         // Destructor
 
   void initialize (int, char**);       // all startup
+  void initialize ();                  // for reinitializing
   int run ();                          // task classic
   int interactive ();                  // task interactive (not implemented)
   void dispatch ();                    // command handler dispatch

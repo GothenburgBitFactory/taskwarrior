@@ -45,6 +45,7 @@ public:
   TDB2& operator= (const TDB2&); // Assignment operator
   ~TDB2 ();                      // Destructor
 
+  void  clear ();
   void  location (const std::string&);
 
   void  lock (bool lockFile = true);

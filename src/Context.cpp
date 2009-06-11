@@ -72,6 +72,12 @@ void Context::initialize (int argc, char** argv)
     else
       args.push_back (argv[i]);
 
+  initialize ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::initialize ()
+{
   // Load the configuration file from the home directory.  If the file cannot
   // be found, offer to create a sample one.
   loadCorrectConfigFile ();
@@ -95,6 +101,7 @@ void Context::initialize (int argc, char** argv)
   // TODO Handle "--version, -v" right here?
 
   // init TDB.
+  tdb.clear ();
   std::vector <std::string> all;
   split (all, location, ',');
   foreach (path, all)
@@ -104,7 +111,6 @@ void Context::initialize (int argc, char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 int Context::run ()
 {
-  std::cout << "[1;32m--- start 1.8.0 ---[0m" << std::endl;
   try
   {
     parse ();    // Parse command line.
@@ -133,26 +139,12 @@ int Context::run ()
       std::cout << *f << std::endl;
   }
 
-  std::cout << "[1;32m--- end 1.8.0 ---[0m" << std::endl;
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Context::dispatch ()
 {
-/*
-  // If argc == 1 and there is a default.command, use it.  Otherwise use
-  // argc/argv.
-  std::string defaultCommand = context.config.get ("default.command");
-  if (args.size () == 0 || defaultCommand != "")
-  {
-    // Stuff the command line.
-    args.clear ();
-    split (args, defaultCommand, ' ');
-    std::cout << "[task " << defaultCommand << "]" << std::endl;
-  }
-*/
-
   bool gcMod  = false; // Change occurred by way of gc.
   bool cmdMod = false; // Change occurred by way of command type.
   std::string out;
@@ -337,7 +329,7 @@ void Context::parse ()
       // The '--' argument shuts off all parsing - everything is an argument.
       if (*arg == "--")
 {
-std::cout << "# parse terminator '" << *arg << "'" << std::endl;
+std::cout << "[1;31m# parse terminator '" << *arg << "'[0m" << std::endl;
         terminated = true;
 }
 
@@ -347,7 +339,7 @@ std::cout << "# parse terminator '" << *arg << "'" << std::endl;
                ! foundSomethingAfterSequence &&
                sequence.valid (*arg))
       {
-std::cout << "# parse sequence '" << *arg << "'" << std::endl;
+std::cout << "[1;31m# parse sequence '" << *arg << "'[0m" << std::endl;
         sequence.parse (*arg);
         foundSequence = true;
       }
@@ -356,7 +348,7 @@ std::cout << "# parse sequence '" << *arg << "'" << std::endl;
       else if (arg->length () > 1 &&
                (*arg)[0] == '+')
       {
-std::cout << "# parse tag addition '" << *arg << "'" << std::endl;
+std::cout << "[1;31m# parse tag addition '" << *arg << "'[0m" << std::endl;
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -367,7 +359,7 @@ std::cout << "# parse tag addition '" << *arg << "'" << std::endl;
       else if (arg->length () > 1 &&
                (*arg)[0] == '-')
       {
-std::cout << "# parse tag removal '" << *arg << "'" << std::endl;
+std::cout << "[1;31m# parse tag removal '" << *arg << "'[0m" << std::endl;
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -380,7 +372,7 @@ std::cout << "# parse tag removal '" << *arg << "'" << std::endl;
 
       else if (attribute.valid (*arg))
       {
-std::cout << "# parse attribute '" << *arg << "'" << std::endl;
+std::cout << "[1;31m# parse attribute '" << *arg << "'[0m" << std::endl;
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -394,7 +386,7 @@ std::cout << "# parse attribute '" << *arg << "'" << std::endl;
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
-std::cout << "# parse subst '" << *arg << "'" << std::endl;
+std::cout << "[1;31m# parse subst '" << *arg << "'[0m" << std::endl;
         subst.parse (*arg);
       }
 
@@ -402,7 +394,7 @@ std::cout << "# parse subst '" << *arg << "'" << std::endl;
       else if (cmd.command == "" &&
                cmd.valid (*arg))
       {
-std::cout << "# parse cmd '" << *arg << "'" << std::endl;
+std::cout << "[1;31m# parse cmd '" << *arg << "'[0m" << std::endl;
         cmd.parse (*arg);
 
         if (foundSequence)
@@ -412,7 +404,7 @@ std::cout << "# parse cmd '" << *arg << "'" << std::endl;
       // Anything else is just considered description.
       else
       {
-std::cout << "# parse description '" << *arg << "'" << std::endl;
+std::cout << "[1;31m# parse description '" << *arg << "'[0m" << std::endl;
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -425,7 +417,7 @@ std::cout << "# parse description '" << *arg << "'" << std::endl;
     // terminated, therefore everything subsequently is a description.
     else
     {
-std::cout << "# parse post-termination description '" << *arg << "'" << std::endl;
+std::cout << "[1;31m# parse post-termination description '" << *arg << "'[0m" << std::endl;
       if (foundSequence)
         foundSomethingAfterSequence = true;
 
@@ -439,6 +431,24 @@ std::cout << "# parse post-termination description '" << *arg << "'" << std::end
     task.set ("description", descCandidate);
 
   constructFilter ();
+
+  // If no command was specified, and there were no command line arguments
+  // then invoke the default command.
+  if (cmd.command == "" && args.size () == 0)
+  {
+    std::string defaultCommand = config.get ("default.command");
+    if (defaultCommand != "")
+    {
+      // Stuff the command line.
+      args.clear ();
+      split (args, defaultCommand, ' ');
+      std::cout << "[task " << defaultCommand << "]" << std::endl;
+
+      // Reinitialize the context and recurse.
+      initialize ();
+      parse ();
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
