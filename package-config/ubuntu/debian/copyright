@@ -1,10 +1,10 @@
 This package was debianized by:
 
-    Federico Hernandez <ultrafredde@gmail.com> on Tue, 09 Jun 2009 11:49:51 +0200
+    Federico Hernandez <ultrafredde@gmail.com> on Thu, 11 Jun 2009 23:02:28 +0200
 
 It was downloaded from:
 
-    http://www.beckingham.net/task.html
+    http://taskwarrior.org
 
 Upstream Authors:
 
@@ -28,6 +28,7 @@ Copyright:
 
     Copyright 2006 - 2009, Paul Beckingham
     Copyright 2009 Federico Hernandez
+    Copyright 2009 P.C. Shyamshankar
 
 License:
 
