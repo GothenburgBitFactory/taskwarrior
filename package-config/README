@@ -1,12 +1,12 @@
 The package-config directory contains the configuration files
-for building release packages for the different operationg
+for building release packages for the different operating
 systems:
 
 * osx: binary packages for Mac OSX
 * fedora: rpm packages for Fedora (Linux)
 * ubuntu: deb packages for Ubuntu and (Linux)
 
-Please visit the correspondig operating systems homepage
+Please visit the corresponding operating systems homepage
 for instructions on how to build a binary package of task
 out of the released source tarball with these configuration
 files.
