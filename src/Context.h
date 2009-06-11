@@ -57,6 +57,7 @@ public:
 private:
   void loadCorrectConfigFile ();
   void parse ();
+  void constructFilter ();
 
 public:
   Config                    config;

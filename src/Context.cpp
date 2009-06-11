@@ -435,6 +435,16 @@ std::cout << "# parse post-termination description '" << *arg << "'" << std::end
 
   if (validDescription (descCandidate))
     task.set ("description", descCandidate);
+
+  constructFilter ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Add all the attributes in the task to the filter.
+void Context::constructFilter ()
+{
+  foreach (att, task)
+    filter.push_back (att->second);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
