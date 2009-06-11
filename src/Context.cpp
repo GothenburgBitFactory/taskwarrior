@@ -440,11 +440,12 @@ std::cout << "# parse post-termination description '" << *arg << "'" << std::end
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Add all the attributes in the task to the filter.
+// Add all the attributes in the task to the filter.  All except uuid.
 void Context::constructFilter ()
 {
   foreach (att, task)
-    filter.push_back (att->second);
+    if (att->first != "uuid")
+      filter.push_back (att->second);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
