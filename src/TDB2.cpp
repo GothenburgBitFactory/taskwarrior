@@ -68,40 +68,8 @@
 TDB2::TDB2 ()
 : mLock (true)
 , mAllOpenAndLocked (false)
+, mId (1)
 {
-}
-
-////////////////////////////////////////////////////////////////////////////////
-TDB2::TDB2 (const TDB2& other)
-{
-  throw std::string ("unimplemented TDB2::TDB2");
-//  mLocations        = other.mLocations;
-//  mFiles            = other.mFiles;
-//  mLock             = other.mLock;
-//  mAllOpenAndLocked = false;  // Deliberately so.
-//
-//  // Set all to NULL, otherwise we are duplicating open file handles.
-//  foreach (file, mFiles)
-//    mFiles[file->first] = NULL;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-TDB2& TDB2::operator= (const TDB2& other)
-{
-  throw std::string ("unimplemented TDB2::operator=");
-//  if (this != &other)
-//  {
-//    mLocations        = other.mLocations;
-//    mFiles            = other.mFiles;
-//    mLock             = other.mLock;
-//    mAllOpenAndLocked = false;  // Deliberately so.
-//
-//    // Set all to NULL, otherwise we are duplicating open file handles.
-//    foreach (file, mFiles)
-//      mFiles[file->first] = NULL;
-//  }
-//
-  return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -205,6 +173,8 @@ int TDB2::loadPending (std::vector <Task>& tasks, Filter& filter)
           // TODO Add hidden attribute indicating source?
           line[length - 1] = '\0'; // Kill \n
           Task task (line);
+          task.id (mId++);
+
           if (filter.pass (task))
             tasks.push_back (task);
         }
@@ -255,6 +225,8 @@ int TDB2::loadCompleted (std::vector <Task>& tasks, Filter& filter)
           // TODO Add hidden attribute indicating source?
           line[length - 1] = '\0'; // Kill \n
           Task task (line);
+          task.id (mId++);
+
           if (filter.pass (task))
             tasks.push_back (task);
         }

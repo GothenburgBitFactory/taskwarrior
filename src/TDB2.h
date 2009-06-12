@@ -40,10 +40,8 @@
 class TDB2
 {
 public:
-  TDB2 ();                       // Default constructor
-  TDB2 (const TDB2&);            // Copy constructor
-  TDB2& operator= (const TDB2&); // Assignment operator
-  ~TDB2 ();                      // Destructor
+  TDB2 ();  // Default constructor
+  ~TDB2 (); // Destructor
 
   void  clear ();
   void  location (const std::string&);
@@ -66,6 +64,7 @@ private:
   std::vector <Location> mLocations;
   bool mLock;
   bool mAllOpenAndLocked;
+  int mId;
 
   // TODO Need cache of raw file contents to preserve comments.
 };
