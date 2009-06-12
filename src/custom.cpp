@@ -454,16 +454,15 @@ std::string handleCustomReport (const std::string& report)
   // Limit the number of rows according to the report definition.
   int maximum = context.config.get (std::string ("report.") + report + ".limit", (int)0);
 
-/*
   // If the custom report has a defined limit, then allow an override, which
   // will show up as a single ID sequence.
+
+  // If the custom report has a defined limit, then allow a numeric override.
+  // This is an integer specified on the command line (task oldest 4), which is
+  // parsed as an ID.
   if (context.config.get (std::string ("report.") + report + ".limit", (int)0) != 0)
-  {
-    std::vector <int> sequence = task.getAllIds ();
-    if (sequence.size () == 1)
-      maximum = sequence[0];
-  }
-*/
+    if (context.sequence.size () == 1)
+      maximum = context.sequence[0];
 
   std::stringstream out;
   if (table.rowCount ())
