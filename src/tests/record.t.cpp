@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (17);
+  UnitTest t (19);
 
   // (blank)
   bool good = true;
@@ -84,6 +84,10 @@ int main (int argc, char** argv)
   record.clear ();
   record.set ("name", "value");
   t.is (record.composeF4 (), "[name:\"value\"]\n", "Record::set");
+
+  // Record::has
+  t.ok    (record.has ("name"), "Record::has");
+  t.notok (record.has ("woof"), "Record::has not");
 
   // Record::get_int
   record.set ("one", 1);

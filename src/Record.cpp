@@ -117,6 +117,16 @@ void Record::parse (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Record::has (const std::string& name) const
+{
+  Record::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::vector <Att> Record::all ()
 {
   std::vector <Att> all;

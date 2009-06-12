@@ -43,6 +43,7 @@ public:
   std::string composeCSV ();
   void parse (const std::string&);
 
+  bool has (const std::string&) const;
   std::vector <Att> all ();
   const std::string get (const std::string&) const;
   int get_int (const std::string&) const;
