@@ -33,11 +33,127 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (18);
+  UnitTest t (76);
 
   context.config.set ("report.foo.columns", "id");
 
   Cmd cmd;
+  cmd.command = "active";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand active");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand active");
+
+  cmd.command = "calendar";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand calendar");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand calendar");
+
+  cmd.command = "colors";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand colors");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand colors");
+
+  cmd.command = "completed";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand completed");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand completed");
+
+  cmd.command = "export";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand export");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand export");
+
+  cmd.command = "help";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand help");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand help");
+
+  cmd.command = "history";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand history");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand history");
+
+  cmd.command = "ghistory";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand ghistory");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand ghistory");
+
+  cmd.command = "info";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand info");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand info");
+
+  cmd.command = "next";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand next");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand next");
+
+  cmd.command = "overdue";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand overdue");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand overdue");
+
+  cmd.command = "projects";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand projects");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand projects");
+
+  cmd.command = "stats";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand stats");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand stats");
+
+  cmd.command = "summary";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand summary");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand summary");
+
+  cmd.command = "tags";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand tags");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand tags");
+
+  cmd.command = "timesheet";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand timesheet");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand timesheet");
+
+  cmd.command = "version";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand version");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand version");
+
+  cmd.command = "add";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand add");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand add");
+
+  cmd.command = "append";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand append");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand append");
+
+  cmd.command = "annotate";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand annotate");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand annotate");
+
+  cmd.command = "delete";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand delete");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand delete");
+
+  cmd.command = "done";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand done");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand done");
+
+  cmd.command = "duplicate";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand duplicate");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand duplicate");
+
+  cmd.command = "edit";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand edit");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand edit");
+
+  cmd.command = "import";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand import");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand import");
+
+  cmd.command = "start";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand start");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand start");
+
+  cmd.command = "stop";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand stop");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand stop");
+
+  cmd.command = "undelete";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand undelete");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand undelete");
+
+  cmd.command = "undo";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand undo");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand undo");
+
   t.ok (cmd.valid ("annotate"), "Cmd::valid annotate");
   t.ok (cmd.valid ("annotat"),  "Cmd::valid annotat");
   t.ok (cmd.valid ("annota"),   "Cmd::valid annota");

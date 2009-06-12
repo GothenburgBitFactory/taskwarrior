@@ -42,6 +42,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 // NOTE: These are static arrays only because there is no initializer list for
 //       std::vector.
+// TODO Obsolete
 static const char* colors[] =
 {
   "bold",
@@ -104,6 +105,7 @@ static const char* colors[] =
   "",
 };
 
+// TODO Obsolete
 static const char* attributes[] =
 {
   "project",
@@ -118,44 +120,23 @@ static const char* attributes[] =
   "until",
   "mask",
   "imask",
+//  "limit",
   "",
 };
 
-// Alphabetical please.
-static const char* commands[] =
+static const char* modifiableAttributes[] =
 {
-  "active",
-  "add",
-  "append",
-  "annotate",
-  "calendar",
-  "colors",
-  "completed",
-  "delete",
-  "done",
-  "duplicate",
-  "edit",
-  "export",
-  "help",
-  "history",
-  "ghistory",
-  "import",
-  "info",
-  "next",
-  "overdue",
-  "projects",
-  "start",
-  "stats",
-  "stop",
-  "summary",
-  "tags",
-  "timesheet",
-  "undelete",
-  "undo",
-  "version",
+  "project",
+  "priority",
+  "fg",
+  "bg",
+  "due",
+  "recur",
+  "until",
   "",
 };
 
+// TODO Relocate inside Context.
 static std::vector <std::string> customReports;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -169,25 +150,6 @@ void guess (
     options.push_back (list[i]);
 
   guess (type, options, candidate);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static bool isCommand (const std::string& candidate)
-{
-  std::vector <std::string> options;
-  for (int i = 0; commands[i][0]; ++i)
-    options.push_back (commands[i]);
-
-  std::vector <std::string> matches;
-  autoComplete (candidate, options, matches);
-  if (0 == matches.size ())
-  {
-    autoComplete (candidate, customReports, matches);
-    if (0 == matches.size ())
-      return false;
-  }
-
-  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -217,9 +179,26 @@ bool validPriority (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool validAttribute (
-  std::string& name,
-  std::string& value)
+// Only attributes that are written to the data files.
+// TODO Relocate to Att.cpp.
+bool isModifiableAttribute (const std::string& name)
+{
+  if (name == "project"  ||
+      name == "priority" ||
+      name == "fg"       ||
+      name == "bg"       ||
+      name == "due"      ||
+      name == "recur"    ||
+      name == "until")
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// All attributes, regardless of usage.
+// TODO Relocate to Att.cpp.
+bool validAttribute (std::string& name, std::string& value)
 {
   guess ("attribute", attributes, name);
   if (name != "")
@@ -256,7 +235,7 @@ static bool validAttribute (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool validId (const std::string& input)
+bool validId (const std::string& input)
 {
   if (input.length () == 0)
     return false;
@@ -269,59 +248,7 @@ static bool validId (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// 1,2-4,6
-static bool validSequence (
-  const std::string& input,
-  std::vector <int>& ids)
-{
-  std::vector <std::string> ranges;
-  split (ranges, input, ',');
-
-  std::vector <std::string>::iterator it;
-  for (it = ranges.begin (); it != ranges.end (); ++it)
-  {
-    std::vector <std::string> range;
-    split (range, *it, '-');
-
-    switch (range.size ())
-    {
-    case 1:
-      {
-        if (! validId (range[0]))
-          return false;
-
-        int id = ::atoi (range[0].c_str ());
-        ids.push_back (id);
-      }
-      break;
-
-    case 2:
-      {
-        if (! validId (range[0]) ||
-            ! validId (range[1]))
-          return false;
-
-        int low  = ::atoi (range[0].c_str ());
-        int high = ::atoi (range[1].c_str ());
-        if (low >= high)
-          return false;
-
-        for (int i = low; i <= high; ++i)
-          ids.push_back (i);
-      }
-      break;
-
-    default:
-      return false;
-      break;
-    }
-  }
-
-  return ids.size () ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static bool validTag (const std::string& input)
+bool validTag (const std::string& input)
 {
   if ((input[0] == '-' || input[0] == '+') &&
        input.length () > 1)
@@ -343,217 +270,12 @@ bool validDescription (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool validCommand (std::string& input)
-{
-  std::string copy = input;
-  guess ("command", commands, copy);
-  if (copy == "")
-  {
-    copy = input;
-    guess ("command", customReports, copy);
-    if (copy == "")
-      return false;
-  }
-
-  input = copy;
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static bool validSubstitution (
-  std::string& input,
-  std::string& from,
-  std::string& to,
-  bool& global)
-{
-  size_t first = input.find ('/');
-  if (first != std::string::npos)
-  {
-    size_t second = input.find ('/', first + 1);
-    if (second != std::string::npos)
-    {
-      size_t third = input.find ('/', second + 1);
-      if (third != std::string::npos)
-      {
-        if (first == 0 &&
-            first < second &&
-            second < third &&
-            (third == input.length () - 1 ||
-             third == input.length () - 2))
-        {
-          from = input.substr (first  + 1, second - first  - 1);
-          to   = input.substr (second + 1, third  - second - 1);
-
-          global = false;
-          if (third == input.length () - 2 &&
-              input.find ('g', third + 1) != std::string::npos)
-            global = true;
-
-          return true;
-        }
-      }
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool validDuration (std::string& input)
 {
   try         { Duration (input); }
   catch (...) { return false;     }
   return true;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// Token        EBNF
-// -------      ----------------------------------
-// command      first non-id recognized argument
-//
-// substitution ::= "/" from "/" to "/g"
-//                | "/" from "/" to "/" ;
-//
-// tags         ::= "+" word
-//                | "-" word ;
-//
-// attributes   ::= word ":" value
-//                | word ":"
-//
-// sequence     ::= \d+ "," sequence
-//                | \d+ "-" \d+ ;
-//
-// description  (whatever isn't one of the above)
-/*
-void parse (
-  std::vector <std::string>& args,
-  std::string& command,
-  T& task)
-{
-  command = "";
-
-  bool terminated = false;
-  bool foundSequence = false;
-  bool foundSomethingAfterSequence = false;
-
-  std::string descCandidate = "";
-  for (size_t i = 0; i < args.size (); ++i)
-  {
-    std::string arg (args[i]);
-
-    if (!terminated)
-    {
-      size_t colon;               // Pointer to colon in argument.
-      std::string from;
-      std::string to;
-      bool global;
-      std::vector <int> sequence;
-
-      // The '--' argument shuts off all parsing - everything is an argument.
-      if (arg == "--")
-        terminated = true;
-
-      // An id is the first argument found that contains all digits.
-      else if (lowerCase (command) != "add"  && // "add" doesn't require an ID
-          validSequence (arg, sequence) &&
-          ! foundSomethingAfterSequence)
-      {
-        foundSequence = true;
-        foreach (id, sequence)
-          task.addId (*id);
-      }
-
-      // Tags begin with + or - and contain arbitrary text.
-      else if (validTag (arg))
-      {
-        if (foundSequence)
-          foundSomethingAfterSequence = true;
-
-        if (arg[0] == '+')
-          task.addTag (arg.substr (1, std::string::npos));
-        else if (arg[0] == '-')
-          task.addRemoveTag (arg.substr (1, std::string::npos));
-      }
-
-      // Attributes contain a constant string followed by a colon, followed by a
-      // value.
-      else if ((colon = arg.find (":")) != std::string::npos)
-      {
-        if (foundSequence)
-          foundSomethingAfterSequence = true;
-
-        std::string name  = lowerCase (arg.substr (0, colon));
-        std::string value = arg.substr (colon + 1, std::string::npos);
-
-        if (validAttribute (name, value))
-        {
-          if (name != "recur" || validDuration (value))
-            task.setAttribute (name, value);
-        }
-
-        // If it is not a valid attribute, then allow the argument as part of
-        // the description.
-        else
-        {
-          if (descCandidate.length ())
-            descCandidate += " ";
-          descCandidate += arg;
-        }
-      }
-
-      // Substitution of description text.
-      else if (validSubstitution (arg, from, to, global))
-      {
-        if (foundSequence)
-          foundSomethingAfterSequence = true;
-
-        task.setSubstitution (from, to, global);
-      }
-
-      // Command.
-      else if (command == "")
-      {
-        if (foundSequence)
-          foundSomethingAfterSequence = true;
-
-        std::string l = lowerCase (arg);
-        if (isCommand (l) && validCommand (l))
-          command = l;
-        else
-        {
-          if (descCandidate.length ())
-            descCandidate += " ";
-          descCandidate += arg;
-        }
-      }
-
-      // Anything else is just considered description.
-      else
-      {
-        if (foundSequence)
-          foundSomethingAfterSequence = true;
-
-        if (descCandidate.length ())
-          descCandidate += " ";
-        descCandidate += arg;
-      }
-    }
-    // terminated, therefore everything subsequently is a description.
-    else
-    {
-      if (foundSequence)
-        foundSomethingAfterSequence = true;
-
-      if (descCandidate.length ())
-        descCandidate += " ";
-      descCandidate += arg;
-    }
-  }
-
-  if (validDescription (descCandidate))
-    task.setDescription (descCandidate);
-}
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void validReportColumns (const std::vector <std::string>& columns)

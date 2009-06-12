@@ -43,6 +43,9 @@ public:
   void parse            (const std::string&);
   void allCustomReports (std::vector <std::string>&) const;
 
+  bool isReadOnlyCommand ();
+  bool isWriteCommand ();
+
 public:
   std::string command;
 

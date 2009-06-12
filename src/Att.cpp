@@ -258,8 +258,8 @@ bool Att::match (const Att& other) const
     // TODO after
     // TODO not  <-- could be a problem
     // TODO synth
-    // TODO under
-    // TODO over
+    // TODO under/below
+    // TODO over/above
     // TODO first
     // TODO last
     // TODO this

@@ -37,20 +37,21 @@
 #include "../auto.h"
 
 // valid.cpp
+void guess (const std::string&, const char**, std::string&);
 bool validPriority (const std::string&);
 bool validDate (std::string&);
-bool validDuration (std::string&);
 bool validDescription (const std::string&);
+bool validDuration (std::string&);
 void validReportColumns (const std::vector <std::string>&);
 void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
+bool isModifiableAttribute (const std::string&);
+bool validAttribute (std::string&, std::string&);
+bool validId (const std::string&);
+bool validTag (const std::string&);
 
 // task.cpp
 void gatherNextTasks (/*const TDB&,*/ T&, std::vector <T>&, std::vector <int>&);
 void onChangeCallback ();
-/*
-std::string runTaskCommand (int, char**, TDB&, bool gc = true, bool shadow = true);
-std::string runTaskCommand (std::vector <std::string>&, TDB&, bool gc = false, bool shadow = false);
-*/
 
 // recur.cpp
 void handleRecurrence ();

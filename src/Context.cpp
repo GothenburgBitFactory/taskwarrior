@@ -361,7 +361,8 @@ std::cout << "[1;31m# parse sequence '" << *arg << "'[0m" << std::endl;
 
       // Tags to include begin with '+'.
       else if (arg->length () > 1 &&
-               (*arg)[0] == '+')
+               (*arg)[0] == '+'   &&
+               validTag (*arg))
       {
 std::cout << "[1;31m# parse tag addition '" << *arg << "'[0m" << std::endl;
         if (foundSequence)
@@ -372,7 +373,8 @@ std::cout << "[1;31m# parse tag addition '" << *arg << "'[0m" << std::endl;
 
       // Tags to remove begin with '-'.
       else if (arg->length () > 1 &&
-               (*arg)[0] == '-')
+               (*arg)[0] == '-'   &&
+               validTag (*arg))
       {
 std::cout << "[1;31m# parse tag removal '" << *arg << "'[0m" << std::endl;
         if (foundSequence)
@@ -444,6 +446,10 @@ std::cout << "[1;31m# parse post-termination description '" << *arg << "'[0m" 
 
   if (validDescription (descCandidate))
     task.set ("description", descCandidate);
+
+  // TODO task.validate ()
+  // TODO if readOnlyCommand (cmd.command) then any attributes are allowed
+  // TODO if writeCommand (cmd.command) then only modifiable attributes are allowed
 
   constructFilter ();
 
