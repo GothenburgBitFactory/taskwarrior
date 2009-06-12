@@ -36,8 +36,7 @@
 #include "color.h"
 #include "../auto.h"
 
-// parse.cpp
-void parse (std::vector <std::string>&, std::string&, T&);
+// valid.cpp
 bool validPriority (const std::string&);
 bool validDate (std::string&);
 bool validDuration (std::string&);
@@ -103,6 +102,8 @@ std::string handleReportActive ();
 std::string handleReportOverdue ();
 std::string handleReportStats ();
 std::string handleReportTimesheet ();
+
+// custom.cpp
 std::string handleCustomReport (const std::string&);
 
 // rules.cpp
