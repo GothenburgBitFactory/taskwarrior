@@ -51,7 +51,7 @@ public:
   Subst    subst;
 
   // Series of helper functions.
-  int id () const                                      { return sequence.size () ? sequence[0] : 0; }
+  int  id () const                                     { return sequence.size () ? sequence[0] : 0; }
   void id (int anotherId)                              { sequence.push_back (anotherId); }
 
   static status textToStatus (const std::string&);

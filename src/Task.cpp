@@ -247,7 +247,6 @@ void Task::legacyParse (const std::string& line)
                   set (pair[0], pair[1]);
               }
 
-/*
               // Extract and split the annotations, which are of the form:
               //   1234:"..." 5678:"..."
               std::string annotations = line.substr (
@@ -282,10 +281,9 @@ void Task::legacyParse (const std::string& line)
                 {
                   std::string name = pair.substr (0, colon);
                   std::string value = pair.substr (colon + 2, pair.length () - colon - 3);
-                  mAnnotations[::atoi (name.c_str ())] = value;
+                  set ("annotation_" + name, value);
                 }
               }
-*/
 
               set ("description", line.substr (closeAnnoBracket + 2, std::string::npos));
             }

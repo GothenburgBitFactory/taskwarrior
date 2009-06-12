@@ -104,6 +104,7 @@ std::string handleCustomReport (const std::string& report)
     filter (tasks, filterTask);  // Filter from custom report
     filter (tasks, task);        // Filter from command line
   }
+*/
 
   // Initialize colorization for subsequent auto colorization.
   initializeColorRules ();
@@ -127,7 +128,7 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnJustification (columnCount, Table::right);
 
       for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].getId ());
+        table.addCell (row, columnCount, tasks[row].id ());
     }
 
     else if (*col == "uuid")
@@ -137,7 +138,7 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnJustification (columnCount, Table::left);
 
       for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].getUUID ());
+        table.addCell (row, columnCount, tasks[row].get ("uuid"));
     }
 
     else if (*col == "project")
@@ -147,7 +148,7 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnJustification (columnCount, Table::left);
 
       for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].getAttribute ("project"));
+        table.addCell (row, columnCount, tasks[row].get ("project"));
     }
 
     else if (*col == "priority")
@@ -157,7 +158,7 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnJustification (columnCount, Table::left);
 
       for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].getAttribute ("priority"));
+        table.addCell (row, columnCount, tasks[row].get ("priority"));
     }
 
     else if (*col == "entry")
@@ -169,7 +170,7 @@ std::string handleCustomReport (const std::string& report)
       std::string entered;
       for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        entered = tasks[row].getAttribute ("entry");
+        entered = tasks[row].get ("entry");
         if (entered.length ())
         {
           Date dt (::atoi (entered.c_str ()));
@@ -188,7 +189,7 @@ std::string handleCustomReport (const std::string& report)
       std::string started;
       for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        started = tasks[row].getAttribute ("start");
+        started = tasks[row].get ("start");
         if (started.length ())
         {
           Date dt (::atoi (started.c_str ()));
@@ -207,7 +208,7 @@ std::string handleCustomReport (const std::string& report)
       std::string due;
       for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        due = tasks[row].getAttribute ("due");
+        due = tasks[row].get ("due");
         if (due.length ())
         {
           Date dt (::atoi (due.c_str ()));
@@ -230,7 +231,7 @@ std::string handleCustomReport (const std::string& report)
       Date now;
       for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        created = tasks[row].getAttribute ("entry");
+        created = tasks[row].get ("entry");
         if (created.length ())
         {
           Date dt (::atoi (created.c_str ()));
@@ -251,7 +252,7 @@ std::string handleCustomReport (const std::string& report)
       Date now;
       for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        created = tasks[row].getAttribute ("entry");
+        created = tasks[row].get ("entry");
         if (created.length ())
         {
           Date dt (::atoi (created.c_str ()));
@@ -268,7 +269,7 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnJustification (columnCount, Table::left);
 
       for (unsigned int row = 0; row < tasks.size(); ++row)
-        if (tasks[row].getAttribute ("start") != "")
+        if (tasks[row].get ("start") != "")
           table.addCell (row, columnCount, "*");
     }
 
@@ -295,7 +296,7 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnJustification (columnCount, Table::left);
 
       for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].getDescription ());
+        table.addCell (row, columnCount, tasks[row].get ("description"));
     }
 
     else if (*col == "description")
@@ -308,14 +309,15 @@ std::string handleCustomReport (const std::string& report)
       std::string when;
       for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        description = tasks[row].getDescription ();
-        std::map <time_t, std::string> annotations;
+        description = tasks[row].get ("description");
+
+        std::vector <Att> annotations;
         tasks[row].getAnnotations (annotations);
         foreach (anno, annotations)
         {
-          Date dt (anno->first);
+          Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
           when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-          description += "\n" + when + " " + anno->second;
+          description += "\n" + when + " " + anno->value ();
         }
 
         table.addCell (row, columnCount, description);
@@ -329,7 +331,7 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnJustification (columnCount, Table::right);
 
       for (unsigned int row = 0; row < tasks.size (); ++row)
-        table.addCell (row, columnCount, tasks[row].getAttribute ("recur"));
+        table.addCell (row, columnCount, tasks[row].get ("recur"));
     }
 
     else if (*col == "recurrence_indicator")
@@ -340,7 +342,7 @@ std::string handleCustomReport (const std::string& report)
 
       for (unsigned int row = 0; row < tasks.size (); ++row)
         table.addCell (row, columnCount,
-                       tasks[row].getAttribute ("recur") != "" ? "R" : "");
+                       tasks[row].get ("recur") != "" ? "R" : "");
     }
 
     else if (*col == "tag_indicator")
@@ -415,13 +417,13 @@ std::string handleCustomReport (const std::string& report)
   for (unsigned int row = 0; row < tasks.size (); ++row)
   {
     imminent = false;
-    overdue = false;
-    due = tasks[row].getAttribute ("due");
+    overdue  = false;
+    due = tasks[row].get ("due");
     if (due.length ())
     {
       switch (getDueState (due))
       {
-      case 2: overdue = true;  break;
+      case 2: overdue  = true; break;
       case 1: imminent = true; break;
       case 0:
       default:                 break;
@@ -430,8 +432,8 @@ std::string handleCustomReport (const std::string& report)
 
     if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     {
-      Text::color fg = Text::colorCode (tasks[row].getAttribute ("fg"));
-      Text::color bg = Text::colorCode (tasks[row].getAttribute ("bg"));
+      Text::color fg = Text::colorCode (tasks[row].get ("fg"));
+      Text::color bg = Text::colorCode (tasks[row].get ("bg"));
       autoColorize (tasks[row], fg, bg);
       table.setRowFg (row, fg);
       table.setRowBg (row, bg);
@@ -452,6 +454,7 @@ std::string handleCustomReport (const std::string& report)
   // Limit the number of rows according to the report definition.
   int maximum = context.config.get (std::string ("report.") + report + ".limit", (int)0);
 
+/*
   // If the custom report has a defined limit, then allow an override, which
   // will show up as a single ID sequence.
   if (context.config.get (std::string ("report.") + report + ".limit", (int)0) != 0)
@@ -461,8 +464,8 @@ std::string handleCustomReport (const std::string& report)
       maximum = sequence[0];
   }
 */
+
   std::stringstream out;
-/*
   if (table.rowCount ())
     out << optionalBlankLine ()
         << table.render (maximum)
@@ -473,7 +476,7 @@ std::string handleCustomReport (const std::string& report)
   else
     out << "No matches."
         << std::endl;
-*/
+
   return out.str ();
 }
 
