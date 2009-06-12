@@ -66,6 +66,13 @@ Context::~Context ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::initialize (int argc, char** argv)
 {
+  // Set up randomness.
+#ifdef HAVE_SRANDOM
+  srandom (time (NULL));
+#else
+  srand (time (NULL));
+#endif
+
   // Capture the args.
   for (int i = 0; i < argc; ++i)
     if (i == 0)
@@ -221,6 +228,18 @@ void Context::shadow ()
   std::string shadowFile = expandPath (config.get ("shadow.file"));
   if (shadowFile != "")
   {
+    // TODO Reinstate these checks.
+/*
+    // Check for silly shadow file settings.
+    if (shadowFile == dataLocation + "/pending.data")
+      throw std::string ("Configuration variable 'shadow.file' is set to "
+                         "overwrite your pending tasks.  Please change it.");
+
+    if (shadowFile == dataLocation + "/completed.data")
+      throw std::string ("Configuration variable 'shadow.file' is set to "
+                         "overwrite your completed tasks.  Please change it.");
+*/
+
     std::string oldCurses = config.get ("curses");
     std::string oldColor  = config.get ("color");
     config.set ("curses", "off");

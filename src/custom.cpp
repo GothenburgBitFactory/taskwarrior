@@ -54,7 +54,6 @@ extern Context context;
 // via the .taskrc file.
 std::string handleCustomReport (const std::string& report)
 {
-/*
   // Load report configuration.
   std::string columnList = context.config.get ("report." + report + ".columns");
   std::vector <std::string> columns;
@@ -67,7 +66,7 @@ std::string handleCustomReport (const std::string& report)
 
   if (columns.size () != labels.size () && labels.size () != 0)
     throw std::string ("There are a different number of columns than labels ") +
-          "for report '" + report + "'.  Please correct this.";
+          "for report '" + report + "'.";
 
   std::map <std::string, std::string> columnLabels;
   if (labels.size ())
@@ -83,6 +82,14 @@ std::string handleCustomReport (const std::string& report)
   std::vector <std::string> filterArgs;
   split (filterArgs, filterList, ' ');
 
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  // TODO Include filter from custom report.
+  context.tdb.load (tasks, context.filter);
+  context.tdb.unlock ();
+
+/*
   // Load all pending tasks.
   std::vector <T> tasks;
   tdb.allPendingT (tasks);
