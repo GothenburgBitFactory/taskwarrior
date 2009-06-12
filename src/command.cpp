@@ -52,8 +52,8 @@ std::string handleAdd ()
   context.task.setEntry ();
 
   // Recurring tasks get a special status.
-  if (context.task.get ("due")   != "" &&
-      context.task.get ("recur") != "")
+  if (context.task.has ("due") &&
+      context.task.has ("recur"))
   {
     context.task.setStatus (Task::recurring);
     context.task.set ("mask", "");
@@ -197,7 +197,7 @@ std::string handleUndelete ()
   {
     if (t->getStatus () == T::deleted)
     {
-      if (t->getAttribute ("recur") != "")
+      if (t->has ("recur"))
         out << "Task does not support 'undo' for recurring tasks.\n";
 
       t->setStatus (T::pending);
@@ -235,7 +235,7 @@ std::string handleUndo ()
   {
     if (t->getStatus () == T::completed)
     {
-      if (t->getAttribute ("recur") != "")
+      if (t->has ("recur"))
         out << "Task does not support 'undo' for recurring tasks.\n";
 
       t->setStatus (T::pending);
@@ -548,7 +548,7 @@ std::string handleStop ()
 
   foreach (t, all)
   {
-    if (t->getAttribute ("start") != "")
+    if (t->has ("start"))
     {
       t->removeAttribute ("start");
       tdb.modifyT (*t);
@@ -705,21 +705,21 @@ std::string handleModify ()
   foreach (seq, filtered)
   {
     // Perform some logical consistency checks.
-    if (task.getAttribute ("recur") != "" &&
-        task.getAttribute ("due")   == "" &&
-        seq->getAttribute ("due")   == "")
+    if (task.has ("recur") &&
+        !task.has ("due")  &&
+        !seq->has ("due"))
       throw std::string ("You cannot specify a recurring task without a due date.");
 
-    if (task.getAttribute ("until") != "" &&
-        task.getAttribute ("recur") == "" &&
-        seq->getAttribute ("recur") == "")
+    if (task.has ("until")  &&
+        !task.has ("recur") &&
+        !seq->has ("recur"))
       throw std::string ("You cannot specify an until date for a non-recurring task.");
 
     // Make all changes.
     foreach (other, all)
     {
       if (other->getId ()               == seq->getId ()                   || // Self
-          (seq->getAttribute ("parent") != "" &&
+          (seq->has ("parent") &&
            seq->getAttribute ("parent") == other->getAttribute ("parent")) || // Sibling
           other->getUUID ()             == seq->getAttribute ("parent"))      // Parent
       {
@@ -764,7 +764,7 @@ std::string handleAppend ()
     foreach (other, all)
     {
       if (other->getId ()               == seq->getId ()                   || // Self
-          (seq->getAttribute ("parent") != "" &&
+          (seq->has ("parent") &&
            seq->getAttribute ("parent") == other->getAttribute ("parent")) || // Sibling
           other->getUUID ()             == seq->getAttribute ("parent"))      // Parent
       {

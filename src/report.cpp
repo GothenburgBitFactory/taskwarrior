@@ -575,7 +575,7 @@ std::string handleInfo ()
                        : refTask.getStatus () == T::deleted   ? "Deleted"
                        : refTask.getStatus () == T::recurring ? "Recurring"
                        : "";
-    if (refTask.getAttribute ("parent") != "")
+    if (refTask.has ("parent"))
       status += " (Recurring)";
 
     row = table.addRow ();
@@ -597,14 +597,14 @@ std::string handleInfo ()
     table.addCell (row, 0, "Description");
     table.addCell (row, 1, description);
 
-    if (refTask.getAttribute ("project") != "")
+    if (refTask.has ("project"))
     {
       row = table.addRow ();
       table.addCell (row, 0, "Project");
       table.addCell (row, 1, refTask.getAttribute ("project"));
     }
 
-    if (refTask.getAttribute ("priority") != "")
+    if (refTask.has ("priority"))
     {
       row = table.addRow ();
       table.addCell (row, 0, "Priority");
@@ -612,30 +612,30 @@ std::string handleInfo ()
     }
 
     if (refTask.getStatus () == T::recurring ||
-        refTask.getAttribute ("parent") != "")
+        refTask.has ("parent"))
     {
-      if (refTask.getAttribute ("recur") != "")
+      if (refTask.has ("recur"))
       {
         row = table.addRow ();
         table.addCell (row, 0, "Recurrence");
         table.addCell (row, 1, refTask.getAttribute ("recur"));
       }
 
-      if (refTask.getAttribute ("until") != "")
+      if (refTask.has ("until"))
       {
         row = table.addRow ();
         table.addCell (row, 0, "Recur until");
         table.addCell (row, 1, refTask.getAttribute ("until"));
       }
 
-      if (refTask.getAttribute ("mask") != "")
+      if (refTask.has ("mask"))
       {
         row = table.addRow ();
         table.addCell (row, 0, "Mask");
         table.addCell (row, 1, refTask.getAttribute ("mask"));
       }
 
-      if (refTask.getAttribute ("parent") != "")
+      if (refTask.has ("parent"))
       {
         row = table.addRow ();
         table.addCell (row, 0, "Parent task");
@@ -677,7 +677,7 @@ std::string handleInfo ()
     }
 
     // start
-    if (refTask.getAttribute ("start") != "")
+    if (refTask.has ("start"))
     {
       row = table.addRow ();
       table.addCell (row, 0, "Start");
@@ -686,7 +686,7 @@ std::string handleInfo ()
     }
 
     // end
-    if (refTask.getAttribute ("end") != "")
+    if (refTask.has ("end"))
     {
       row = table.addRow ();
       table.addCell (row, 0, "End");
@@ -1012,7 +1012,7 @@ std::string handleReportNext ()
     }
 
     std::string active;
-    if (refTask.getAttribute ("start") != "")
+    if (refTask.has ("start"))
       active = "*";
 
     std::string age;
@@ -1665,7 +1665,7 @@ std::string handleReportTimesheet ()
     {
       // If task started within range, but not completed withing range.
       if (t->getStatus () == T::pending &&
-          t->getAttribute ("start") != "")
+          t->has ("start"))
       {
         Date startDate (::atoi (t->getAttribute ("start").c_str ()));
         if (startDate >= start && startDate < end)
@@ -1909,7 +1909,7 @@ std::string handleReportCalendar ()
   std::vector <T>::iterator it;
   for (it = pending.begin (); it != pending.end (); ++it)
   {
-    if (it->getAttribute ("due") != "")
+    if (it->has ("due"))
     {
       Date d (::atoi (it->getAttribute ("due").c_str ()));
 
@@ -2050,7 +2050,7 @@ std::string handleReportActive ()
   for (unsigned int i = 0; i < tasks.size (); ++i)
   {
     T refTask (tasks[i]);
-    if (refTask.getAttribute ("start") != "")
+    if (refTask.has ("start"))
     {
       Date now;
       bool imminent = false;
@@ -2177,7 +2177,7 @@ std::string handleReportOverdue ()
   {
     T refTask (tasks[i]);
     std::string due;
-    if ((due = refTask.getAttribute ("due")) != "")
+    if ((due = refTask.has ("due")))
     {
       if (due.length ())
       {
