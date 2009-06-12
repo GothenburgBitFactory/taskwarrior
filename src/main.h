@@ -42,6 +42,8 @@ bool validPriority (const std::string&);
 bool validDate (std::string&);
 bool validDuration (std::string&);
 bool validDescription (const std::string&);
+void validReportColumns (const std::vector <std::string>&);
+void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 
 // task.cpp
 void gatherNextTasks (/*const TDB&,*/ T&, std::vector <T>&, std::vector <int>&);
@@ -101,14 +103,11 @@ std::string handleReportActive ();
 std::string handleReportOverdue ();
 std::string handleReportStats ();
 std::string handleReportTimesheet ();
-
 std::string handleCustomReport (const std::string&);
-void validReportColumns (const std::vector <std::string>&);
-void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 
 // rules.cpp
 void initializeColorRules ();
-void autoColorize (T&, Text::color&, Text::color&);
+void autoColorize (Task&, Text::color&, Text::color&);
 
 // import.cpp
 std::string handleImport ();

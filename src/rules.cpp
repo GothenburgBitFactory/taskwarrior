@@ -32,6 +32,7 @@
 #include "T.h"
 #include "text.h"
 #include "util.h"
+#include "main.h"
 
 extern Context context;
 
@@ -84,7 +85,7 @@ void initializeColorRules ()
 
 ////////////////////////////////////////////////////////////////////////////////
 void autoColorize (
-  T& task,
+  Task& task,
   Text::color& fg,
   Text::color& bg)
 {
@@ -95,9 +96,7 @@ void autoColorize (
   if (gsFg["color.tagged"] != Text::nocolor ||
       gsBg["color.tagged"] != Text::nocolor)
   {
-    std::vector <std::string> tags;
-    task.getTags (tags);
-    if (tags.size ())
+    if (task.getTagCount ())
     {
       fg = gsFg["color.tagged"];
       bg = gsBg["color.tagged"];
@@ -108,7 +107,7 @@ void autoColorize (
   if (gsFg["color.pri.L"] != Text::nocolor ||
       gsBg["color.pri.L"] != Text::nocolor)
   {
-    if (task.getAttribute ("priority") == "L")
+    if (task.get ("priority") == "L")
     {
       fg = gsFg["color.pri.L"];
       bg = gsBg["color.pri.L"];
@@ -119,7 +118,7 @@ void autoColorize (
   if (gsFg["color.pri.M"] != Text::nocolor ||
       gsBg["color.pri.M"] != Text::nocolor)
   {
-    if (task.getAttribute ("priority") == "M")
+    if (task.get ("priority") == "M")
     {
       fg = gsFg["color.pri.M"];
       bg = gsBg["color.pri.M"];
@@ -130,7 +129,7 @@ void autoColorize (
   if (gsFg["color.pri.H"] != Text::nocolor ||
       gsBg["color.pri.H"] != Text::nocolor)
   {
-    if (task.getAttribute ("priority") == "H")
+    if (task.get ("priority") == "H")
     {
       fg = gsFg["color.pri.H"];
       bg = gsBg["color.pri.H"];
@@ -141,7 +140,7 @@ void autoColorize (
   if (gsFg["color.pri.none"] != Text::nocolor ||
       gsBg["color.pri.none"] != Text::nocolor)
   {
-    if (task.getAttribute ("priority") == "")
+    if (task.get ("priority") == "")
     {
       fg = gsFg["color.pri.none"];
       bg = gsBg["color.pri.none"];
@@ -152,7 +151,7 @@ void autoColorize (
   if (gsFg["color.active"] != Text::nocolor ||
       gsBg["color.active"] != Text::nocolor)
   {
-    if (task.getAttribute ("start") != "")
+    if (task.has ("start"))
     {
       fg = gsFg["color.active"];
       bg = gsBg["color.active"];
@@ -180,7 +179,7 @@ void autoColorize (
     if (it->first.substr (0, 14) == "color.project.")
     {
       std::string value = it->first.substr (14, std::string::npos);
-      if (task.getAttribute ("project") == value)
+      if (task.get ("project") == value)
       {
         fg = gsFg[it->first];
         bg = gsBg[it->first];
@@ -194,7 +193,7 @@ void autoColorize (
     if (it->first.substr (0, 14) == "color.keyword.")
     {
       std::string value = lowerCase (it->first.substr (14, std::string::npos));
-      std::string desc  = lowerCase (task.getDescription ());
+      std::string desc  = lowerCase (task.get ("description"));
       if (desc.find (value) != std::string::npos)
       {
         fg = gsFg[it->first];
@@ -204,25 +203,24 @@ void autoColorize (
   }
 
   // Colorization of the due and overdue.
-  std::string due = task.getAttribute ("due");
-  if (due != "")
+  if (task.has ("due"))
   {
-    Date dueDate (::atoi (due.c_str ()));
-    Date now;
-    Date then (now + context.config.get ("due", 7) * 86400);
-
-    // Overdue
-    if (dueDate < now)
+    std::string due = task.get ("due");
+    switch (getDueState (due))
     {
-      fg = gsFg["color.overdue"];
-      bg = gsBg["color.overdue"];
-    }
-
-    // Imminent
-    else if (dueDate < then)
-    {
+    case 1: // imminent
       fg = gsFg["color.due"];
       bg = gsBg["color.due"];
+      break;
+
+    case 2: // overdue
+      fg = gsFg["color.overdue"];
+      bg = gsBg["color.overdue"];
+      break;
+
+    case 0: // not due at all
+    default:
+      break;
     }
   }
 
@@ -230,7 +228,7 @@ void autoColorize (
   if (gsFg["color.recurring"] != Text::nocolor ||
       gsBg["color.recurring"] != Text::nocolor)
   {
-    if (task.getAttribute ("recur") != "")
+    if (task.has ("recur"))
     {
       fg = gsFg["color.recurring"];
       bg = gsBg["color.recurring"];

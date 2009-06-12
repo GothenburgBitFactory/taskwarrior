@@ -390,7 +390,7 @@ int getDueState (const std::string& due)
     if (dt < midnight)
       return 2;
 
-    Date nextweek = midnight + 7 * 86400;
+    Date nextweek = midnight + context.config.get ("due", 7) * 86400;
     if (dt < nextweek)
       return 1;
   }
