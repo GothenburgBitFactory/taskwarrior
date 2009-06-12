@@ -283,6 +283,46 @@ void TDB2::upgrade ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Scans the pending tasks for any that are completed or deleted, and if so,
+// moves them to the completed.data file.  Returns a count of tasks moved.
+int TDB2::gc ()
+{
+  int count = 0;
+/*
+  // Read everything from the pending file.
+  std::vector <T> all;
+  allPendingT (all);
+
+  // A list of the truly pending tasks.
+  std::vector <T> pending;
+
+  std::vector<T>::iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+  {
+    // Some tasks stay in the pending file.
+    if (it->getStatus () == T::pending ||
+        it->getStatus () == T::recurring)
+    {
+      pending.push_back (*it);
+    }
+
+    // Others are transferred to the completed file.
+    else
+    {
+      writeCompleted (*it);
+      ++count;
+    }
+  }
+
+  // Dump all clean tasks into pending.  But don't bother unless at least one
+  // task was transferred.
+  if (count)
+    overwritePending (pending);
+*/
+  return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 FILE* TDB2::openAndLock (const std::string& file)
 {
   // Check for access.

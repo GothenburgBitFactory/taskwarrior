@@ -151,9 +151,12 @@ int Context::run ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string Context::dispatch ()
 {
+  bool gc = true; // TODO Should be false for shadow file updates.
+
   bool gcMod  = false; // Change occurred by way of gc.
   bool cmdMod = false; // Change occurred by way of command type.
   std::string out;
+
 /*
   // Read-only commands with no side effects.
        if (command == "export")             { out = handleExport ();      }
@@ -192,18 +195,19 @@ std::string Context::dispatch ()
 
   // Command that display IDs and therefore need TDB::gc first.
 /*
-  else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (); }
+  else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (); }  // TODO OBSOLETE
   else if (command == "next")               { if (gc) gcMod = tdb.gc (); out = handleReportNext    (); }
-  else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (); }
-  else if (command == "overdue")            { if (gc) gcMod = tdb.gc (); out = handleReportOverdue (); }
-  else if (cmd.validCustom (command))       { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (command); }
+  else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (); }  // TODO OBSOLETE
+  else if (command == "overdue")            { if (gc) gcMod = tdb.gc (); out = handleReportOverdue (); }  // TODO OBSOLETE
 */
+  else if (cmd.validCustom (cmd.command))   { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (cmd.command); }
 
   // If the command is not recognized, display usage.
   else                                      { out = shortUsage (); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
   // and if an actual change occurred (gcMod || cmdMod).
+// TODO
 //  if (shadow && (gcMod || cmdMod))
 //    shadow ();
 

@@ -52,10 +52,12 @@ public:
   int   load (std::vector <Task>&, Filter&);
   int   loadPending (std::vector <Task>&, Filter&);
   int   loadCompleted (std::vector <Task>&, Filter&);
-  void  add (Task&);
-  void  update (Task&, Task&);
-  int   commit ();
-  void  upgrade ();
+
+  void  add (Task&);             // Single task add to pending
+  void  update (Task&, Task&);   // Single task update to pending
+  int   commit ();               // Write out all tasks
+  void  upgrade ();              // Convert both files to FF4
+  int   gc ();                   // Clean up pending
 
 private:
   FILE* openAndLock (const std::string&);
