@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (100);
+  UnitTest t (102);
 
   try
   {
@@ -74,6 +74,9 @@ int main (int argc, char** argv)
     // Validity.
     t.ok    (Date::valid (2, 29, 2008), "valid: 2/29/2008");
     t.notok (Date::valid (2, 29, 2007), "invalid: 2/29/2007");
+
+    t.ok    (Date::valid ("2/29/2008"), "valid: 2/29/2008");
+    t.notok (Date::valid ("2/29/2007"), "invalid: 2/29/2007");
 
     // Leap year.
     t.ok    (Date::leapYear (2008), "2008 is a leap year");

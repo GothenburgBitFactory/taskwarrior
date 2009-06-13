@@ -255,6 +255,22 @@ const std::string Date::toString (const std::string& format /*= "m/d/Y" */) cons
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Date::valid (const std::string& input, const std::string& format)
+{
+  try
+  {
+    Date test (input, format);
+  }
+
+  catch (...)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Date::valid (const int m, const int d, const int y)
 {
   // Check that the year is valid.

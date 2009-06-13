@@ -46,6 +46,7 @@ public:
   time_t toEpoch ();
   void toMDY (int&, int&, int&);
   const std::string toString (const std::string& format = "m/d/Y") const;
+  static bool valid (const std::string&, const std::string& format = "m/d/Y");
   static bool valid (const int, const int, const int);
 
   static bool leapYear (int);

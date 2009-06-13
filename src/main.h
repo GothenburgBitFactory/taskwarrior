@@ -39,7 +39,6 @@
 // valid.cpp
 void guess (const std::string&, const char**, std::string&);
 bool validPriority (const std::string&);
-bool validDate (std::string&);
 bool validDescription (const std::string&);
 bool validDuration (std::string&);
 void validReportColumns (const std::vector <std::string>&);

@@ -153,18 +153,6 @@ void guess (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool validDate (std::string& date)
-{
-  Date test (date, context.config.get ("dateformat", "m/d/Y"));
-
-  char epoch[16];
-  sprintf (epoch, "%d", (int) test.toEpoch ());
-  date = epoch;
-
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool validPriority (const std::string& input)
 {
   if (input != "H" &&
@@ -207,10 +195,10 @@ bool validAttribute (std::string& name, std::string& value)
       guess ("color", colors, value);
 
     else if (name == "due" && value != "")
-      validDate (value);
+      Date (value);
 
     else if (name == "until" && value != "")
-      validDate (value);
+      Date (value);
 
     else if (name == "priority")
     {
