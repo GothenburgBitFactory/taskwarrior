@@ -193,9 +193,9 @@ void Att::parse (Nibbler& n)
 bool Att::validMod (const std::string& mod) const
 {
   if (mod == "before"     || mod == "after"    ||   // i18n: TODO
-      mod == "none"       || mod == "any"      ||   // i18n: TODO
       mod == "under"      || mod == "over"     ||   // i18n: TODO
-      mod == "first"      || mod == "last"     ||   // i18n: TODO
+      mod == "below"      || mod == "above"    ||   // i18n: TODO
+      mod == "none"       || mod == "any"      ||   // i18n: TODO
       mod == "is"         || mod == "isnt"     ||   // i18n: TODO
       mod == "has"        || mod == "hasnt"    ||   // i18n: TODO
       mod == "contains"   ||                        // i18n: TODO
@@ -268,17 +268,19 @@ bool Att::match (const Att& other) const
     if (other.mValue.find (mValue) != std::string::npos)
       return false;
 
-  // Harder:
-    // TODO before/after
-    // TODO under/below
-    // TODO over/above
+  // before = under = below = <
+  else if (mMod == "before" || mMod == "under" || mMod == "below")
+  {
+    // TODO Typed compare
+    return false;
+  }
 
-  // Impossible?
-    // TODO synth
-    // TODO this
-    // TODO next
-    // TODO first
-    // TODO last
+  // after = over = above = >
+  else if (mMod == "after" || mMod == "over" || mMod == "above")
+  {
+    // TODO Typed compare
+    return false;
+  }
 
   return true;
 }

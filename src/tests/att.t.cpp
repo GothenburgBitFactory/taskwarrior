@@ -115,12 +115,12 @@ int main (int argc, char** argv)
   t.ok (good, "Att::mod (under)");
 
   good = true;
-  try {a6.mod ("first");} catch (...) {good = false;}
-  t.ok (good, "Att::mod (first)");
+  try {a6.mod ("above");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (above)");
 
   good = true;
-  try {a6.mod ("last");} catch (...) {good = false;}
-  t.ok (good, "Att::mod (last)");
+  try {a6.mod ("below");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (below)");
 
   good = true;
   try {a6.mod ("isnt");} catch (...) {good = false;}
