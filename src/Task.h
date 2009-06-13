@@ -37,7 +37,6 @@ class Task : public Record
 public:
   Task ();                       // Default constructor
   Task (const std::string&);     // Parse
-  Task& operator= (const Task&); // Assignment operator
   ~Task ();                      // Destructor
 
   void parse (const std::string&);
@@ -47,13 +46,9 @@ public:
   enum status {pending, completed, deleted, recurring /* , retired, deferred */};
 
   // Public data.
-  Sequence sequence;
-  Subst    subst;
+  int id;
 
   // Series of helper functions.
-  int  id () const                                     { return sequence.size () ? sequence[0] : 0; }
-  void id (int anotherId)                              { sequence.push_back (anotherId); }
-
   static status textToStatus (const std::string&);
   static std::string statusToText (status);
 

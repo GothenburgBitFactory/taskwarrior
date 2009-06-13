@@ -34,6 +34,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task ()
+: id (0)
 {
   // Each new task gets a uuid.
   set ("uuid", uuid ());
@@ -53,19 +54,6 @@ Task::Task (const std::string& input)
   {
     legacyParse (input);
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Task& Task::operator= (const Task& other)
-{
-  throw std::string ("unimplemented Task::operator=");
-  if (this != &other)
-  {
-    sequence = other.sequence;
-    subst    = other.subst;
-  }
-
-  return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -430,11 +418,7 @@ void Task::removeTag (const std::string& tag)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::validate () const
 {
-  // Every task needs an ID.
-/*
-  if (sequence[0] == 0)
-    throw std::string ("Every task needs an ID.");
-*/
+  // TODO Every task needs an ID.
 
   // TODO Every task needs an ID, entry and description attribute.
 

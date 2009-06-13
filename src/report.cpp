@@ -265,177 +265,25 @@ std::string longUsage ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete
-void filterSequence (std::vector<T>& all, T& task)
-{
-  std::vector <int> sequence = task.getAllIds ();
-
-  std::vector <T> filtered;
-  std::vector <T>::iterator t;
-  for (t = all.begin (); t != all.end (); ++t)
-  {
-    std::vector <int>::iterator s;
-    for (s = sequence.begin (); s != sequence.end (); ++s)
-      if (t->getId () == *s)
-        filtered.push_back (*t);
-  }
-
-  if (sequence.size () != filtered.size ())
-  {
-    std::vector <int> filteredSequence;
-    std::vector <T>::iterator fs;
-    for (fs = filtered.begin (); fs != filtered.end (); ++fs)
-      filteredSequence.push_back (fs->getId ());
-
-    std::vector <int> left;
-    std::vector <int> right;
-    listDiff (filteredSequence, sequence, left, right);
-    if (left.size ())
-      throw std::string ("Sequence filtering error - please report this error");
-
-    if (right.size ())
-    {
-      std::stringstream out;
-      out << "Task";
-
-      if (right.size () > 1) out << "s";
-
-      std::vector <int>::iterator s;
-      for (s = right.begin (); s != right.end (); ++s)
-        out << " " << *s;
-
-      out << " not found";
-      throw out.str ();
-    }
-  }
-
-  all = filtered;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete
-void filter (std::vector<T>& all, T& task)
-{
-  std::vector <T> filtered;
-
-  // Split any description specified into words.
-  std::vector <std::string> descWords;
-  split (descWords, lowerCase (task.getDescription ()), ' ');
-
-  // Get all the tags to match against.
-  std::vector <std::string> tagList;
-  task.getTags (tagList);
-
-  std::vector <std::string> removeTagList;
-  task.getRemoveTags (removeTagList);
-
-  // Get all the attributes to match against.
-  std::map <std::string, std::string> attrList;
-  task.getAttributes (attrList);
-
-  // Iterate over each task, and apply selection criteria.
-  for (unsigned int i = 0; i < all.size (); ++i)
-  {
-    T refTask (all[i]);
-
-    // Apply description filter.
-    std::string desc = lowerCase (refTask.getDescription ());
-    unsigned int matches = 0;
-    for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (desc.find (descWords[w]) != std::string::npos)
-        ++matches;
-
-    if (matches == descWords.size ())
-    {
-      // Apply attribute filter.
-      matches = 0;
-      foreach (a, attrList)
-      {
-        if (a->first == "project")
-        {
-          if (a->second.length () <= refTask.getAttribute (a->first).length ())
-            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
-              ++matches;
-/*
-  TODO Attempt at allowing "pri:!H", thwarted by a lack of coffee and the
-       validation of "!H" as a priority value.  To be revisited soon.
-          {
-            if (a->second[0] == '!')  // Inverted search.
-            {
-              if (a->second.substr (1, std::string::npos) != refTask.getAttribute (a->first).substr (0, a->second.length ()))
-                ++matches;
-            }
-            else
-            {
-              if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
-                ++matches;
-            }
-          }
-*/
-        }
-        else if (a->second == refTask.getAttribute (a->first))
-          ++matches;
-/*
-        else
-        {
-          if (a->second[0] == '!')  // Inverted search.
-          {
-            if (a->second.substr (1, std::string::npos) != refTask.getAttribute (a->first))
-              ++matches;
-          }
-          else
-          {
-            if (a->second == refTask.getAttribute (a->first))
-              ++matches;
-          }
-        }
-*/
-      }
-
-      if (matches == attrList.size ())
-      {
-        // Apply tag filter.
-        matches = 0;
-        for (unsigned int t = 0; t < tagList.size (); ++t)
-          if (refTask.hasTag (tagList[t]))
-            ++matches;
-
-        if (matches == tagList.size ())
-        {
-          matches = 0;
-          for (unsigned int t = 0; t < removeTagList.size (); ++t)
-            if (refTask.hasTag (removeTagList[t]))
-              ++matches;
-
-          if (matches == 0)
-            filtered.push_back (refTask);
-        }
-      }
-    }
-  }
-
-  all = filtered;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Display all information for the given task.
 std::string handleInfo ()
 {
   std::stringstream out;
 
-/*
   // Get all the tasks.
-  std::vector <T> tasks;
-  tdb.allPendingT (tasks);
-  filterSequence (tasks, task);
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+  context.tdb.unlock ();
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
 
   // Find the task.
-  foreach (t, tasks)
+  foreach (task, tasks)
   {
-    T refTask (*t);
-
     Table table;
-    table.setTableWidth (width);
+    table.setTableWidth (context.getWidth ());
     table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
     table.addColumn ("Name");
@@ -459,89 +307,89 @@ std::string handleInfo ()
 
     int row = table.addRow ();
     table.addCell (row, 0, "ID");
-    table.addCell (row, 1, refTask.getId ());
+    table.addCell (row, 1, task->id);
 
-    std::string status = refTask.getStatus () == T::pending   ? "Pending"
-                       : refTask.getStatus () == T::completed ? "Completed"
-                       : refTask.getStatus () == T::deleted   ? "Deleted"
-                       : refTask.getStatus () == T::recurring ? "Recurring"
+    std::string status = task->getStatus () == Task::pending   ? "Pending"
+                       : task->getStatus () == Task::completed ? "Completed"
+                       : task->getStatus () == Task::deleted   ? "Deleted"
+                       : task->getStatus () == Task::recurring ? "Recurring"
                        : "";
-    if (refTask.has ("parent"))
+    if (task->has ("parent"))
       status += " (Recurring)";
 
     row = table.addRow ();
     table.addCell (row, 0, "Status");
     table.addCell (row, 1, status);
 
-    std::string description = refTask.getDescription ();
+    std::string description = task->get ("description");
     std::string when;
-    std::map <time_t, std::string> annotations;
-    refTask.getAnnotations (annotations);
+    std::vector <Att> annotations;
+    task->getAnnotations (annotations);
     foreach (anno, annotations)
     {
-      Date dt (anno->first);
+      Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
       when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-      description += "\n" + when + " " + anno->second;
+      description += "\n" + when + " " + anno->value ();
     }
 
     row = table.addRow ();
     table.addCell (row, 0, "Description");
     table.addCell (row, 1, description);
 
-    if (refTask.has ("project"))
+    if (task->has ("project"))
     {
       row = table.addRow ();
       table.addCell (row, 0, "Project");
-      table.addCell (row, 1, refTask.getAttribute ("project"));
+      table.addCell (row, 1, task->get ("project"));
     }
 
-    if (refTask.has ("priority"))
+    if (task->has ("priority"))
     {
       row = table.addRow ();
       table.addCell (row, 0, "Priority");
-      table.addCell (row, 1, refTask.getAttribute ("priority"));
+      table.addCell (row, 1, task->get ("priority"));
     }
 
-    if (refTask.getStatus () == T::recurring ||
-        refTask.has ("parent"))
+    if (task->getStatus () == Task::recurring ||
+        task->has ("parent"))
     {
-      if (refTask.has ("recur"))
+      if (task->has ("recur"))
       {
         row = table.addRow ();
         table.addCell (row, 0, "Recurrence");
-        table.addCell (row, 1, refTask.getAttribute ("recur"));
+        table.addCell (row, 1, task->get ("recur"));
       }
 
-      if (refTask.has ("until"))
+      if (task->has ("until"))
       {
         row = table.addRow ();
         table.addCell (row, 0, "Recur until");
-        table.addCell (row, 1, refTask.getAttribute ("until"));
+        table.addCell (row, 1, task->get ("until"));
       }
 
-      if (refTask.has ("mask"))
+      if (task->has ("mask"))
       {
         row = table.addRow ();
         table.addCell (row, 0, "Mask");
-        table.addCell (row, 1, refTask.getAttribute ("mask"));
+        table.addCell (row, 1, task->get ("mask"));
       }
 
-      if (refTask.has ("parent"))
+      if (task->has ("parent"))
       {
         row = table.addRow ();
         table.addCell (row, 0, "Parent task");
-        table.addCell (row, 1, refTask.getAttribute ("parent"));
+        table.addCell (row, 1, task->get ("parent"));
       }
 
       row = table.addRow ();
       table.addCell (row, 0, "Mask Index");
-      table.addCell (row, 1, refTask.getAttribute ("imask"));
+      table.addCell (row, 1, task->get ("imask"));
     }
 
     // due (colored)
     bool imminent = false;
     bool overdue = false;
-    std::string due = refTask.getAttribute ("due");
+    std::string due = task->get ("due");
     if (due != "")
     {
       row = table.addRow ();
@@ -568,26 +416,26 @@ std::string handleInfo ()
     }
 
     // start
-    if (refTask.has ("start"))
+    if (task->has ("start"))
     {
       row = table.addRow ();
       table.addCell (row, 0, "Start");
-      Date dt (::atoi (refTask.getAttribute ("start").c_str ()));
+      Date dt (::atoi (task->get ("start").c_str ()));
       table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
     }
 
     // end
-    if (refTask.has ("end"))
+    if (task->has ("end"))
     {
       row = table.addRow ();
       table.addCell (row, 0, "End");
-      Date dt (::atoi (refTask.getAttribute ("end").c_str ()));
+      Date dt (::atoi (task->get ("end").c_str ()));
       table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
     }
 
     // tags ...
     std::vector <std::string> tags;
-    refTask.getTags (tags);
+    task->getTags (tags);
     if (tags.size ())
     {
       std::string allTags;
@@ -601,16 +449,16 @@ std::string handleInfo ()
     // uuid
     row = table.addRow ();
     table.addCell (row, 0, "UUID");
-    table.addCell (row, 1, refTask.getUUID ());
+    table.addCell (row, 1, task->get ("uuid"));
 
     // entry
     row = table.addRow ();
     table.addCell (row, 0, "Entered");
-    Date dt (::atoi (refTask.getAttribute ("entry").c_str ()));
+    Date dt (::atoi (task->get ("entry").c_str ()));
     std::string entry = dt.toString (context.config.get ("dateformat", "m/d/Y"));
 
     std::string age;
-    std::string created = refTask.getAttribute ("entry");
+    std::string created = task->get ("entry");
     if (created.length ())
     {
       Date dt (::atoi (created.c_str ()));
@@ -620,7 +468,7 @@ std::string handleInfo ()
     table.addCell (row, 1, entry + " (" + age + ")");
 
     // fg
-    std::string color = refTask.getAttribute ("fg");
+    std::string color = task->get ("fg");
     if (color != "")
     {
       row = table.addRow ();
@@ -629,7 +477,7 @@ std::string handleInfo ()
     }
 
     // bg
-    color = refTask.getAttribute ("bg");
+    color = task->get ("bg");
     if (color != "")
     {
       row = table.addRow ();
@@ -644,7 +492,7 @@ std::string handleInfo ()
 
   if (! tasks.size ())
     out << "No matches." << std::endl;
-*/
+
   return out.str ();
 }
 

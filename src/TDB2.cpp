@@ -171,7 +171,7 @@ int TDB2::loadPending (std::vector <Task>& tasks, Filter& filter)
           // TODO Add hidden attribute indicating source?
           line[length - 1] = '\0'; // Kill \n
           Task task (line);
-          task.id (mId++);
+          task.id = mId++;
 
           if (filter.pass (task))
             tasks.push_back (task);
@@ -221,7 +221,7 @@ int TDB2::loadCompleted (std::vector <Task>& tasks, Filter& filter)
           // TODO Add hidden attribute indicating source?
           line[length - 1] = '\0'; // Kill \n
           Task task (line);
-          task.id (mId++);
+          task.id = mId++;
 
           if (filter.pass (task))
             tasks.push_back (task);

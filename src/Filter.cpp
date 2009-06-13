@@ -25,8 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
 #include "Filter.h"
 #include "util.h"
+#include "main.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // For every Att in the filter, lookup the equivalent in Record, and perform a
@@ -51,6 +53,45 @@ bool Filter::pass (const Record& record) const
   }
 
   return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Filter::applySequence (std::vector<Task>& all, Sequence& sequence)
+{
+  std::vector <Task> filtered;
+  foreach (task, all)
+    foreach (i, sequence)
+      if (task->id == *i)
+        filtered.push_back (*task);
+
+  if (sequence.size () != filtered.size ())
+  {
+    std::vector <int> filteredSequence;
+    foreach (task, filtered)
+      filteredSequence.push_back (task->id);
+
+    std::vector <int> left;
+    std::vector <int> right;
+    listDiff (filteredSequence, (std::vector <int>&)sequence, left, right);
+    if (left.size ())
+      throw std::string ("Sequence filtering error - please report this error");
+
+    if (right.size ())
+    {
+      std::stringstream out;
+      out << "Task";
+
+      if (right.size () > 1) out << "s";
+
+      foreach (r, right)
+        out << " " << *r;
+
+      out << " not found";
+      throw out.str ();
+    }
+  }
+
+  all = filtered;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

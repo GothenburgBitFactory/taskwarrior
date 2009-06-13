@@ -29,12 +29,14 @@
 
 #include <vector>
 #include "Att.h"
+#include "Task.h"
 #include "Record.h"
 
 class Filter : public std::vector <Att>
 {
 public:
   bool pass (const Record&) const;
+  void applySequence (std::vector<Task>&, Sequence&);
 };
 
 #endif

@@ -90,8 +90,6 @@ std::string handleEdit ();
 // report.cpp
 std::string shortUsage ();
 std::string longUsage ();
-void filterSequence (std::vector<T>&, T&);
-void filter (std::vector<T>&, T&);
 std::string handleInfo ();
 std::string handleReportSummary ();
 std::string handleReportNext ();

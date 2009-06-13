@@ -128,7 +128,7 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnJustification (columnCount, Table::right);
 
       for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].id ());
+        table.addCell (row, columnCount, tasks[row].id);
     }
 
     else if (*col == "uuid")
