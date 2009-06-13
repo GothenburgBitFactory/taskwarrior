@@ -202,10 +202,7 @@ std::string Context::dispatch ()
 
   // Command that display IDs and therefore need TDB::gc first.
 /*
-  else if (command == "completed")          { if (gc) gcMod = tdb.gc (); out = handleCompleted     (); }  // TODO OBSOLETE
   else if (command == "next")               { if (gc) gcMod = tdb.gc (); out = handleReportNext    (); }
-  else if (command == "active")             { if (gc) gcMod = tdb.gc (); out = handleReportActive  (); }  // TODO OBSOLETE
-  else if (command == "overdue")            { if (gc) gcMod = tdb.gc (); out = handleReportOverdue (); }  // TODO OBSOLETE
 */
   else if (cmd.validCustom (cmd.command))   { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (cmd.command); }
 

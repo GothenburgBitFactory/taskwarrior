@@ -93,14 +93,11 @@ std::string longUsage ();
 void filterSequence (std::vector<T>&, T&);
 void filter (std::vector<T>&, T&);
 std::string handleInfo ();
-std::string handleCompleted ();
 std::string handleReportSummary ();
 std::string handleReportNext ();
 std::string handleReportHistory ();
 std::string handleReportGHistory ();
 std::string handleReportCalendar ();
-std::string handleReportActive ();
-std::string handleReportOverdue ();
 std::string handleReportStats ();
 std::string handleReportTimesheet ();
 

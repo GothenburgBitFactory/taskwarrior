@@ -199,6 +199,25 @@ std::string handleCustomReport (const std::string& report)
       }
     }
 
+    else if (*col == "end")
+    {
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Completed");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string started;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        started = tasks[row].get ("end");
+        if (started.length ())
+        {
+          Date dt (::atoi (started.c_str ()));
+          started = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+          table.addCell (row, columnCount, started);
+        }
+      }
+    }
+
     else if (*col == "due")
     {
       table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Due");

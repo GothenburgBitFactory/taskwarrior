@@ -290,6 +290,7 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "priority"             &&
         *it != "entry"                &&
         *it != "start"                &&
+        *it != "end"                  &&
         *it != "due"                  &&
         *it != "age"                  &&
         *it != "age_compact"          &&
