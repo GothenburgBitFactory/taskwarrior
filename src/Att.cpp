@@ -35,8 +35,28 @@
 Att::Att ()
 : mName ("")
 , mValue ("")
+, mMod ("")
 {
-  mMods.clear ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Att::Att (const std::string& name, const std::string& mod, const std::string& value)
+{
+  mName  = name;
+  mValue = value;
+  mMod   = mod;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Att::Att (const std::string& name, const std::string& mod, int value)
+{
+  mName  = name;
+
+  std::stringstream s;
+  s << value;
+  mValue = s.str ();
+
+  mMod = mod;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,8 +64,7 @@ Att::Att (const std::string& name, const std::string& value)
 {
   mName  = name;
   mValue = value;
-
-  mMods.clear ();
+  mMod   = "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +76,7 @@ Att::Att (const std::string& name, int value)
   s << value;
   mValue = s.str ();
 
-  mMods.clear ();
+  mMod = "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +84,7 @@ Att::Att (const Att& other)
 {
   mName  = other.mName;
   mValue = other.mValue;
-  mMods  = other.mMods;
+  mMod   = other.mMod;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +94,7 @@ Att& Att::operator= (const Att& other)
   {
     mName  = other.mName;
     mValue = other.mValue;
-    mMods  = other.mMods;
+    mMod   = other.mMod;
   }
 
   return *this;
@@ -116,8 +135,8 @@ bool Att::valid (const std::string& input) const
 ////////////////////////////////////////////////////////////////////////////////
 //
 // start --> name --> . --> mod --> : --> " --> value --> " --> end
-//                    ^          |
-//                    |__________|
+//            |                     ^
+//            |_____________________|
 //
 void Att::parse (const std::string& input)
 {
@@ -128,22 +147,22 @@ void Att::parse (const std::string& input)
 void Att::parse (Nibbler& n)
 {
   // Ensure a clean object first.
-  mName = "";
+  mName  = "";
   mValue = "";
-  mMods.clear ();
+  mMod   = "";
 
   if (n.getUntilOneOf (".:", mName))
   {
     if (mName.length () == 0)
       throw std::string ("Missing attribute name"); // TODO i18n
 
-    while (n.skip ('.'))
+    if (n.skip ('.'))
     {
       std::string mod;
-      if (n.getUntilOneOf (".:", mod))
+      if (n.getUntil (":", mod))
       {
         if (validMod (mod))
-          mMods.push_back (mod);
+          mMod = mod;
         else
           throw std::string ("The name '") + mod + "' is not a valid modifier"; // TODO i18n
       }
@@ -174,15 +193,12 @@ void Att::parse (Nibbler& n)
 bool Att::validMod (const std::string& mod) const
 {
   if (mod == "before"     || mod == "after"    ||   // i18n: TODO
-      mod == "not"        ||                        // i18n: TODO
       mod == "none"       || mod == "any"      ||   // i18n: TODO
-      mod == "synth"      ||                        // i18n: TODO
       mod == "under"      || mod == "over"     ||   // i18n: TODO
       mod == "first"      || mod == "last"     ||   // i18n: TODO
-      mod == "this"       ||                        // i18n: TODO
-      mod == "next"       ||                        // i18n: TODO
       mod == "is"         || mod == "isnt"     ||   // i18n: TODO
       mod == "has"        || mod == "hasnt"    ||   // i18n: TODO
+      mod == "contains"   ||                        // i18n: TODO
       mod == "startswith" || mod == "endswith")     // i18n: TODO
     return true;
 
@@ -194,77 +210,75 @@ bool Att::validMod (const std::string& mod) const
 // Record that does not have modifiers, but may have a value.
 bool Att::match (const Att& other) const
 {
-  // If there are no mods, just perform a straight compares on value.
-  if (mMods.size () == 0)
-    if (mName != other.mName || mValue != other.mValue)
-      return false;
+  // If there are no mods, just perform a straight compare on value.
+  if (mMod == "" && mValue != other.mValue)
+    return false;
 
   // Assume a match, and short-circuit on mismatch.
-  foreach (mod, mMods)
+
+  // is = equal.  Nop.
+  else if (mMod == "is") // TODO i18n
+    if (mValue != other.mValue)
+      return false;
+
+  // isnt = not equal.
+  else if (mMod == "isnt") // TODO i18n
+    if (mValue == other.mValue)
+      return false;
+
+  // any = any value, but not empty value.
+  else if (mMod == "any") // TODO i18n
+    if (other.mValue == "")
+      return false;
+
+  // none = must have empty value.
+  else if (mMod == "none") // TODO i18n
+    if (other.mValue != "")
+      return false;
+
+  // startswith = first characters must match.
+  else if (mMod == "startswith") // TODO i18n
   {
-    // is = equal.
-    if (*mod == "is") // TODO i18n
-      if (mValue != other.mValue)
-        return false;
+    if (other.mValue.length () < mValue.length ())
+      return false;
 
-    // isnt = not equal.
-    if (*mod == "isnt") // TODO i18n
-      if (mValue == other.mValue)
-        return false;
+    if (mValue != other.mValue.substr (0, mValue.length ()))
+      return false;
+  }
 
-    // any = any value, but not empty value.
-    if (*mod == "any") // TODO i18n
-      if (other.mValue == "")
-        return false;
+  // endswith = last characters must match.
+  else if (mMod == "endswith") // TODO i18n
+  {
+    if (other.mValue.length () < mValue.length ())
+      return false;
 
-    // none = must have empty value.
-    if (*mod == "none") // TODO i18n
-      if (other.mValue != "")
-        return false;
+    if (mValue != other.mValue.substr (
+                    other.mValue.length () - mValue.length (),
+                    std::string::npos))
+      return false;
+  }
 
-    // startswith = first characters must match.
-    if (*mod == "startswith") // TODO i18n
-    {
-      if (other.mValue.length () < mValue.length ())
-        return false;
+  // has = contains as a substring.
+  else if (mMod == "has" || mMod == "contains") // TODO i18n
+    if (other.mValue.find (mValue) == std::string::npos)
+      return false;
 
-      if (mValue != other.mValue.substr (0, mValue.length ()))
-        return false;
-    }
+  // hasnt = does not contain as a substring.
+  else if (mMod == "hasnt") // TODO i18n
+    if (other.mValue.find (mValue) != std::string::npos)
+      return false;
 
-    // endswith = last characters must match.
-    if (*mod == "endswith") // TODO i18n
-    {
-      if (other.mValue.length () < mValue.length ())
-        return false;
-
-      if (mValue != other.mValue.substr (
-                      other.mValue.length () - mValue.length (),
-                      std::string::npos))
-        return false;
-    }
-
-    // has = contains as a substring.
-    if (*mod == "has") // TODO i18n
-      if (other.mValue.find (mValue) == std::string::npos)
-        return false;
-
-    // hasnt = does not contain as a substring.
-    if (*mod == "hasnt") // TODO i18n
-      if (other.mValue.find (mValue) != std::string::npos)
-        return false;
-
-    // TODO before
-    // TODO after
-    // TODO not  <-- could be a problem
-    // TODO synth
+  // Harder:
+    // TODO before/after
     // TODO under/below
     // TODO over/above
-    // TODO first
-    // TODO last
+
+  // Impossible?
+    // TODO synth
     // TODO this
     // TODO next
-  }
+    // TODO first
+    // TODO last
 
   return true;
 }
@@ -288,18 +302,18 @@ std::string Att::composeF4 () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Att::addMod (const std::string& mod)
+void Att::mod (const std::string& input)
 {
-  if (validMod (mod))
-    mMods.push_back (mod);
-  else
-    throw std::string ("The name '") + mod + "' is not a valid modifier"; // TODO i18n
+  if (!validMod (input))
+    throw std::string ("The name '") + input + "' is not a valid modifier"; // TODO i18n
+
+  mMod = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Att::mods (std::vector <std::string>& all) const
+std::string Att::mod () const
 {
-  all = mMods;
+  return mMod;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -419,4 +433,5 @@ void Att::decode (std::string& value) const
   while ((i = value.find ("&colon;")) != std::string::npos) // no i18n
     value.replace (i, 7, ":");
 }
+
 ////////////////////////////////////////////////////////////////////////////////

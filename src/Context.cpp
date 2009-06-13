@@ -479,6 +479,15 @@ void Context::constructFilter ()
   foreach (att, task)
     if (att->first != "uuid")
       filter.push_back (att->second);
+
+  // TODO this doesn't work.
+  if (task.has ("description"))
+  {
+    std::vector <std::string> words;
+    split (words, task.get ("description"), ' ');
+    foreach (word, words)
+      filter.push_back (Att ("description", "contains", *word));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

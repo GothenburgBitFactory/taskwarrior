@@ -430,6 +430,15 @@ void Task::removeTag (const std::string& tag)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::validate () const
 {
+  // Every task needs an ID.
+/*
+  if (sequence[0] == 0)
+    throw std::string ("Every task needs an ID.");
+*/
+
+  // TODO Every task needs an ID, entry and description attribute.
+
+
   // TODO Verify until > due
   // TODO Verify entry < until, due, start, end
   // TODO If name == "recur", then Duration::valid (value).

@@ -159,8 +159,6 @@ int TDB2::loadPending (std::vector <Task>& tasks, Filter& filter)
     char line[T_LINE_MAX];
     foreach (location, mLocations)
     {
-      std::cout << "[1;31m# location.path: " << location->path << "[0m" << std::endl;
-
       line_number = 1;
       file = location->path + "/pending.data";
 
@@ -208,8 +206,6 @@ int TDB2::loadCompleted (std::vector <Task>& tasks, Filter& filter)
     char line[T_LINE_MAX];
     foreach (location, mLocations)
     {
-      std::cout << "[1;31m# location.path: " << location->path << "[0m" << std::endl;
-
       // TODO If the filter contains Status:x where x is not deleted or
       //      completed, then this can be skipped.
 

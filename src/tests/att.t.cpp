@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (74);
+  UnitTest t (67);
 
   Att a;
   t.notok (a.valid ("name"),            "Att::valid name         -> fail");
@@ -85,88 +85,70 @@ int main (int argc, char** argv)
   t.is (a6.value_int (), 7, "Att::value_int set/get");
   t.is (a6.value (), "7", "Att::value 7");
 
-  // Att::addMod
+  // Att::mod
   bool good = true;
-  try {a6.addMod ("is");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (is)");
+  try {a6.mod ("is");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (is)");
 
   good = true;
-  try {a6.addMod ("before");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (before)");
+  try {a6.mod ("before");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (before)");
 
   good = true;
-  try {a6.addMod ("after");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (after)");
+  try {a6.mod ("after");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (after)");
 
   good = true;
-  try {a6.addMod ("not");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (not)");
+  try {a6.mod ("none");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (none)");
 
   good = true;
-  try {a6.addMod ("none");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (none)");
+  try {a6.mod ("any");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (any)");
 
   good = true;
-  try {a6.addMod ("any");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (any)");
+  try {a6.mod ("over");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (over)");
 
   good = true;
-  try {a6.addMod ("over");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (over)");
+  try {a6.mod ("under");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (under)");
 
   good = true;
-  try {a6.addMod ("under");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (under)");
+  try {a6.mod ("first");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (first)");
 
   good = true;
-  try {a6.addMod ("synth");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (synth)");
+  try {a6.mod ("last");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (last)");
 
   good = true;
-  try {a6.addMod ("first");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (first)");
+  try {a6.mod ("isnt");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (isnt)");
 
   good = true;
-  try {a6.addMod ("last");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (last)");
+  try {a6.mod ("has");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (has)");
 
   good = true;
-  try {a6.addMod ("this");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (this)");
+  try {a6.mod ("contains");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (contains)");
 
   good = true;
-  try {a6.addMod ("next");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (next)");
+  try {a6.mod ("hasnt");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (hasnt)");
 
   good = true;
-  try {a6.addMod ("isnt");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (isnt)");
+  try {a6.mod ("startswith");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (startswith)");
 
   good = true;
-  try {a6.addMod ("has");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (has)");
+  try {a6.mod ("endswith");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (endswith)");
 
   good = true;
-  try {a6.addMod ("hasnt");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (hasnt)");
-
-  good = true;
-  try {a6.addMod ("startswith");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (startswith)");
-
-  good = true;
-  try {a6.addMod ("endswith");} catch (...) {good = false;}
-  t.ok (good, "Att::addMod (endswith)");
-
-  good = true;
-  try {a6.addMod ("fartwizzle");} catch (...) {good = false;}
-  t.notok (good, "Att::addMod (fartwizzle)");
-
-  // Att::mods
-  std::vector <std::string> mods;
-  a6.mods (mods);
-  t.is (mods.size (), (size_t)18, "Att::mods () size == 18");
-  t.is (mods[0], "is",            "Att::mods [0] == 'is'");
+  try {a6.mod ("fartwizzle");} catch (...) {good = false;}
+  t.notok (good, "Att::mod (fartwizzle)");
 
   // Att::parse
   Nibbler n ("");
@@ -258,12 +240,6 @@ int main (int argc, char** argv)
   good = true;
   try {a7.parse (n);} catch (...) {good = false;}
   t.ok (good, "Att::parse (name.any:\"value\")");
-  t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 -> name:\"value\"");
-
-  n = Nibbler ("name.any.none:\"value\"");
-  good = true;
-  try {a7.parse (n);} catch (...) {good = false;}
-  t.ok (good, "Att::parse (name.any.none:\"value\")");
   t.is (a7.composeF4 (), "name:\"value\"", "Att::composeF4 -> name:\"value\"");
 
   n = Nibbler ("name.bogus:\"value\"");
