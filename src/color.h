@@ -50,6 +50,7 @@ namespace Text
   std::string colorize (color, color, const std::string& string);
   std::string colorize (color, color);
   std::string colorize ();
+  std::string guessColor (const std::string&);
 }
 
 #endif

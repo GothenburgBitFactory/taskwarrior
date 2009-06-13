@@ -36,74 +36,13 @@
 #include "T.h"
 #include "text.h"
 #include "util.h"
+#include "color.h"
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // NOTE: These are static arrays only because there is no initializer list for
-//       std::vector.
-// TODO Obsolete
-static const char* colors[] =
-{
-  "bold",
-  "underline",
-  "bold_underline",
-
-  "black",
-  "red",
-  "green",
-  "yellow",
-  "blue",
-  "magenta",
-  "cyan",
-  "white",
-
-  "bold_black",
-  "bold_red",
-  "bold_green",
-  "bold_yellow",
-  "bold_blue",
-  "bold_magenta",
-  "bold_cyan",
-  "bold_white",
-
-  "underline_black",
-  "underline_red",
-  "underline_green",
-  "underline_yellow",
-  "underline_blue",
-  "underline_magenta",
-  "underline_cyan",
-  "underline_white",
-
-  "bold_underline_black",
-  "bold_underline_red",
-  "bold_underline_green",
-  "bold_underline_yellow",
-  "bold_underline_blue",
-  "bold_underline_magenta",
-  "bold_underline_cyan",
-  "bold_underline_white",
-
-  "on_black",
-  "on_red",
-  "on_green",
-  "on_yellow",
-  "on_blue",
-  "on_magenta",
-  "on_cyan",
-  "on_white",
-
-  "on_bright_black",
-  "on_bright_red",
-  "on_bright_green",
-  "on_bright_yellow",
-  "on_bright_blue",
-  "on_bright_magenta",
-  "on_bright_cyan",
-  "on_bright_white",
-  "",
-};
+//       std::vector until C++0x.
 
 // TODO Obsolete
 static const char* attributes[] =
@@ -121,18 +60,6 @@ static const char* attributes[] =
   "mask",
   "imask",
 //  "limit",
-  "",
-};
-
-static const char* modifiableAttributes[] =
-{
-  "project",
-  "priority",
-  "fg",
-  "bg",
-  "due",
-  "recur",
-  "until",
   "",
 };
 
@@ -167,23 +94,6 @@ bool validPriority (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Only attributes that are written to the data files.
-// TODO Relocate to Att.cpp.
-bool isModifiableAttribute (const std::string& name)
-{
-  if (name == "project"  ||
-      name == "priority" ||
-      name == "fg"       ||
-      name == "bg"       ||
-      name == "due"      ||
-      name == "recur"    ||
-      name == "until")
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // All attributes, regardless of usage.
 // TODO Relocate to Att.cpp.
 bool validAttribute (std::string& name, std::string& value)
@@ -192,7 +102,7 @@ bool validAttribute (std::string& name, std::string& value)
   if (name != "")
   {
     if ((name == "fg" || name == "bg") && value != "")
-      guess ("color", colors, value);
+      Text::guessColor (value);
 
     else if (name == "due" && value != "")
       Date (value);

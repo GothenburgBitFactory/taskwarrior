@@ -43,7 +43,6 @@ bool validDescription (const std::string&);
 bool validDuration (std::string&);
 void validReportColumns (const std::vector <std::string>&);
 void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
-bool isModifiableAttribute (const std::string&);
 bool validAttribute (std::string&, std::string&);
 bool validId (const std::string&);
 bool validTag (const std::string&);
