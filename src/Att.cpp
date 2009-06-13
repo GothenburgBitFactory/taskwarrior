@@ -215,7 +215,8 @@ bool Att::validNameValue (
   std::string writableMod   = mod;
   std::string writableValue = value;
   bool status = Att::validNameValue (writableName, writableMod, writableValue);
-
+/*
+  // TODO Is this even worth doing?
   if (name != writableName)
     throw std::string ("The attribute '") + name + "' was not fully qualified.";
 
@@ -224,7 +225,7 @@ bool Att::validNameValue (
 
   if (value != writableValue)
     throw std::string ("The value '") + value + "' was not fully qualified.";
-
+*/
   return status;
 }
 
@@ -262,61 +263,89 @@ bool Att::validNameValue (
   name = matches[0];
 
   // Second, guess at the modifier name.
-  candidates.clear ();
-  for (unsigned i = 0; i < NUM_MODIFIER_NAMES; ++i)
-    candidates.push_back (modifierNames[i]);
-
-  matches.clear ();
-  autoComplete (mod, candidates, matches);
-
-  if (matches.size () == 0)
-    throw std::string ("Unrecognized modifier '") + name + "'";
-
-  else if (matches.size () != 1)
+  if (mod != "")
   {
-    std::string error = "Ambiguous modifier '" + name + "' - could be either of "; // TODO i18n
+    candidates.clear ();
+    for (unsigned i = 0; i < NUM_MODIFIER_NAMES; ++i)
+      candidates.push_back (modifierNames[i]);
 
-    std::string combined;
-    join (combined, ", ", matches);
-    error += combined;
+    matches.clear ();
+    autoComplete (mod, candidates, matches);
 
-    throw error + combined;
+    if (matches.size () == 0)
+      throw std::string ("Unrecognized modifier '") + mod + "'";
+
+    else if (matches.size () != 1)
+    {
+      std::string error = "Ambiguous modifier '" + mod + "' - could be either of "; // TODO i18n
+
+      std::string combined;
+      join (combined, ", ", matches);
+      error += combined;
+
+      throw error + combined;
+    }
+
+    mod = matches[0];
   }
-
-  mod = matches[0];
 
   // Thirdly, make sure the value has the expected form or values.
-  if (name == "project" && !noSpaces (value))
-    throw std::string ("The '") + name + "' attribute may not contain spaces.";
-
-  else if (name == "priority" && value != "")
+  if (name == "project")
   {
-    value = upperCase (value);
-    if (value != "H" &&
-        value != "M" &&
-        value != "L")
-      throw std::string ("\"") +
-            value              +
-            "\" is not a valid priority.  Use H, M, L or leave blank.";
+    if (!noSpaces (value))
+      throw std::string ("The '") + name + "' attribute may not contain spaces.";
   }
 
-  else if (name == "description" && (value != "" || !noVerticalSpace (value)))
-    throw std::string ("The '") + name + "' attribute must not be blank, and must not contain vertical white space.";
+  else if (name == "priority")
+  {
+    if (value != "")
+    {
+      value = upperCase (value);
+      if (value != "H" &&
+          value != "M" &&
+          value != "L")
+        throw std::string ("\"") +
+              value              +
+              "\" is not a valid priority.  Use H, M, L or leave blank.";
+    }
+  }
 
-  else if ((name == "fg" || name == "bg") && value != "")
-    Text::guessColor (value);
+  else if (name == "description")
+  {
+    if (value != "" || !noVerticalSpace (value))
+      throw std::string ("The '") + name + "' attribute must not be blank, and must not contain vertical white space.";
+  }
 
-  else if (name == "due" && value != "")
-    Date (value);
+  else if (name == "fg" || name == "bg")
+  {
+    if (value != "")
+      Text::guessColor (value);
+  }
 
-  else if (name == "until" && value != "")
-    Date (value);
+  else if (name == "due")
+  {
+    if (value != "")
+      Date (value);
+  }
 
-  else if (name == "recur" && value != "")
-    Duration (value);
+  else if (name == "until")
+  {
+    if (value != "")
+      Date (value);
+  }
 
-  else if (name == "limit" && (value == "" || !digitsOnly (value)))
-    throw std::string ("The '") + name + "' attribute must be an integer.";
+  else if (name == "recur")
+  {
+    if (value != "")
+      Duration (value);
+  }
+
+  // TODO Not ready for prime time.
+  else if (name == "limit")
+  {
+    if (value == "" || !digitsOnly (value))
+      throw std::string ("The '") + name + "' attribute must be an integer.";
+  }
 
   // Some attributes are intended to be private.
   else if (name == "entry" ||
@@ -326,9 +355,11 @@ bool Att::validNameValue (
            name == "imask" ||
            name == "uuid"  ||
            name == "status")
+  {
     throw std::string ("\"") +
           name               +
           "\" is not an attribute you may modify directly.";
+  }
 
   else
     throw std::string ("'") + name + "' is an unrecognized attribute.";
@@ -509,7 +540,7 @@ std::string Att::composeF4 () const
 ////////////////////////////////////////////////////////////////////////////////
 void Att::mod (const std::string& input)
 {
-  if (!validMod (input))
+  if (input != "" && !validMod (input))
     throw std::string ("The name '") + input + "' is not a valid modifier"; // TODO i18n
 
   mMod = input;

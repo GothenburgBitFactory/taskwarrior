@@ -383,6 +383,7 @@ std::cout << "[1;31m# parse tag removal '" << *arg << "'[0m" << std::endl;
         tagRemovals.push_back (arg->substr (1, std::string::npos));
       }
 
+      // Atributes - name[.mod]:[value]
       else if (attribute.valid (*arg))
       {
 std::cout << "[1;31m# parse attribute '" << *arg << "'[0m" << std::endl;
@@ -390,6 +391,16 @@ std::cout << "[1;31m# parse attribute '" << *arg << "'[0m" << std::endl;
           foundSomethingAfterSequence = true;
 
         attribute.parse (*arg);
+
+        // There has to be a better way.  And it starts with a fresh coffee.
+        std::string name = attribute.name ();
+        std::string mod = attribute.mod ();
+        std::string value = attribute.value ();
+        attribute.validNameValue (name, mod, value);
+        attribute.name (name);
+        attribute.mod (mod);
+        attribute.value (value);
+
         task[attribute.name ()] = attribute;
       }
 
