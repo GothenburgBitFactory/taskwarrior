@@ -107,13 +107,11 @@ void Cmd::loadCommands ()
 {
   if (commands.size () == 0)
   {
-    commands.push_back (context.stringtable.get (CMD_ACTIVE,    "active"));
     commands.push_back (context.stringtable.get (CMD_ADD,       "add"));
     commands.push_back (context.stringtable.get (CMD_APPEND,    "append"));
     commands.push_back (context.stringtable.get (CMD_ANNOTATE,  "annotate"));
     commands.push_back (context.stringtable.get (CMD_CALENDAR,  "calendar"));
     commands.push_back (context.stringtable.get (CMD_COLORS,    "colors"));
-    commands.push_back (context.stringtable.get (CMD_COMPLETED, "completed"));
     commands.push_back (context.stringtable.get (CMD_DELETE,    "delete"));
     commands.push_back (context.stringtable.get (CMD_DONE,      "done"));
     commands.push_back (context.stringtable.get (CMD_DUPLICATE, "duplicate"));
@@ -125,7 +123,6 @@ void Cmd::loadCommands ()
     commands.push_back (context.stringtable.get (CMD_IMPORT,    "import"));
     commands.push_back (context.stringtable.get (CMD_INFO,      "info"));
     commands.push_back (context.stringtable.get (CMD_NEXT,      "next"));
-    commands.push_back (context.stringtable.get (CMD_OVERDUE,   "overdue"));
     commands.push_back (context.stringtable.get (CMD_PROJECTS,  "projects"));
     commands.push_back (context.stringtable.get (CMD_START,     "start"));
     commands.push_back (context.stringtable.get (CMD_STATS,     "stats"));
@@ -176,23 +173,21 @@ void Cmd::allCustomReports (std::vector <std::string>& all) const
 // Commands that do not directly modify the data files.
 bool Cmd::isReadOnlyCommand ()
 {
-  if (command == context.stringtable.get (CMD_ACTIVE,    "active")    ||  // R
-      command == context.stringtable.get (CMD_CALENDAR,  "calendar")  ||  // R
-      command == context.stringtable.get (CMD_COLORS,    "colors")    ||  // R
-      command == context.stringtable.get (CMD_COMPLETED, "completed") ||  // R
-      command == context.stringtable.get (CMD_EXPORT,    "export")    ||  // R
-      command == context.stringtable.get (CMD_HELP,      "help")      ||  // R
-      command == context.stringtable.get (CMD_HISTORY,   "history")   ||  // R
-      command == context.stringtable.get (CMD_GHISTORY,  "ghistory")  ||  // R
-      command == context.stringtable.get (CMD_INFO,      "info")      ||  // R
-      command == context.stringtable.get (CMD_NEXT,      "next")      ||  // R
-      command == context.stringtable.get (CMD_OVERDUE,   "overdue")   ||  // R
-      command == context.stringtable.get (CMD_PROJECTS,  "projects")  ||  // R
-      command == context.stringtable.get (CMD_STATS,     "stats")     ||  // R
-      command == context.stringtable.get (CMD_SUMMARY,   "summary")   ||  // R
-      command == context.stringtable.get (CMD_TAGS,      "tags")      ||  // R
-      command == context.stringtable.get (CMD_TIMESHEET, "timesheet") ||  // R
-      command == context.stringtable.get (CMD_VERSION,   "version"))      // R
+  if (command == context.stringtable.get (CMD_CALENDAR,  "calendar")  ||
+      command == context.stringtable.get (CMD_COLORS,    "colors")    ||
+      command == context.stringtable.get (CMD_EXPORT,    "export")    ||
+      command == context.stringtable.get (CMD_HELP,      "help")      ||
+      command == context.stringtable.get (CMD_HISTORY,   "history")   ||
+      command == context.stringtable.get (CMD_GHISTORY,  "ghistory")  ||
+      command == context.stringtable.get (CMD_INFO,      "info")      ||
+      command == context.stringtable.get (CMD_NEXT,      "next")      ||
+      command == context.stringtable.get (CMD_PROJECTS,  "projects")  ||
+      command == context.stringtable.get (CMD_STATS,     "stats")     ||
+      command == context.stringtable.get (CMD_SUMMARY,   "summary")   ||
+      command == context.stringtable.get (CMD_TAGS,      "tags")      ||
+      command == context.stringtable.get (CMD_TIMESHEET, "timesheet") ||
+      command == context.stringtable.get (CMD_VERSION,   "version")   ||
+      validCustom (command))
     return true;
 
   return false;
@@ -202,18 +197,18 @@ bool Cmd::isReadOnlyCommand ()
 // Commands that directly modify the data files.
 bool Cmd::isWriteCommand ()
 {
-  if (command == context.stringtable.get (CMD_ADD,       "add")       ||  // W
-      command == context.stringtable.get (CMD_APPEND,    "append")    ||  // W
-      command == context.stringtable.get (CMD_ANNOTATE,  "annotate")  ||  // W
-      command == context.stringtable.get (CMD_DELETE,    "delete")    ||  // W
-      command == context.stringtable.get (CMD_DONE,      "done")      ||  // W
-      command == context.stringtable.get (CMD_DUPLICATE, "duplicate") ||  // W
-      command == context.stringtable.get (CMD_EDIT,      "edit")      ||  // W
-      command == context.stringtable.get (CMD_IMPORT,    "import")    ||  // W
-      command == context.stringtable.get (CMD_START,     "start")     ||  // W
-      command == context.stringtable.get (CMD_STOP,      "stop")      ||  // W
-      command == context.stringtable.get (CMD_UNDELETE,  "undelete")  ||  // W
-      command == context.stringtable.get (CMD_UNDO,      "undo"))         // W
+  if (command == context.stringtable.get (CMD_ADD,       "add")       ||
+      command == context.stringtable.get (CMD_APPEND,    "append")    ||
+      command == context.stringtable.get (CMD_ANNOTATE,  "annotate")  ||
+      command == context.stringtable.get (CMD_DELETE,    "delete")    ||
+      command == context.stringtable.get (CMD_DONE,      "done")      ||
+      command == context.stringtable.get (CMD_DUPLICATE, "duplicate") ||
+      command == context.stringtable.get (CMD_EDIT,      "edit")      ||
+      command == context.stringtable.get (CMD_IMPORT,    "import")    ||
+      command == context.stringtable.get (CMD_START,     "start")     ||
+      command == context.stringtable.get (CMD_STOP,      "stop")      ||
+      command == context.stringtable.get (CMD_UNDELETE,  "undelete")  ||
+      command == context.stringtable.get (CMD_UNDO,      "undo"))
     return true;
 
   return false;

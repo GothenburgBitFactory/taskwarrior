@@ -78,6 +78,7 @@ public:
 private:
   std::vector <std::string> messages;
   std::vector <std::string> footnotes;
+  bool                      inShadow;
 };
 
 #endif

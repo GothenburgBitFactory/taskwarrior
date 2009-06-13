@@ -49,6 +49,7 @@ Context::Context ()
 , stringtable ()
 , program ("")
 , cmd ()
+, inShadow (false)
 {
   // Set up randomness.
 #ifdef HAVE_SRANDOM
@@ -158,61 +159,57 @@ int Context::run ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string Context::dispatch ()
 {
-  bool gc = true; // TODO Should be false for shadow file updates.
-
-  bool gcMod  = false; // Change occurred by way of gc.
-  bool cmdMod = false; // Change occurred by way of command type.
+  int gcMod = 0; // Change occurred by way of gc.
   std::string out;
 
-/*
   // Read-only commands with no side effects.
-       if (command == "export")             { out = handleExport ();      }
+/*
+       if (cmd.command == "export")         { out = handleExport      (); }
 */
-       if (cmd.command == "projects")       { out = handleProjects ();    }
-  else if (cmd.command == "tags")           { out = handleTags ();        }
-  else if (cmd.command == "colors")         { out = handleColor ();       }
-  else if (cmd.command == "version")        { out = handleVersion ();     }
-  else if (cmd.command == "help")           { out = longUsage ();         }
+       if (cmd.command == "projects")       { out = handleProjects    (); }
+  else if (cmd.command == "tags")           { out = handleTags        (); }
+  else if (cmd.command == "colors")         { out = handleColor       (); }
+  else if (cmd.command == "version")        { out = handleVersion     (); }
+  else if (cmd.command == "help")           { out = longUsage         (); }
   else if (cmd.command == "stats")          { out = handleReportStats (); }
 /*
-  else if (command == "info")               { out = handleInfo            (); }
-  else if (command == "history")            { out = handleReportHistory   (); }
-  else if (command == "ghistory")           { out = handleReportGHistory  (); }
-  else if (command == "calendar")           { out = handleReportCalendar  (); }
-  else if (command == "summary")            { out = handleReportSummary   (); }
-  else if (command == "timesheet")          { out = handleReportTimesheet (); }
+  else if (cmd.command == "info")           { out = handleInfo            (); }
+  else if (cmd.command == "history")        { out = handleReportHistory   (); }
+  else if (cmd.command == "ghistory")       { out = handleReportGHistory  (); }
+  else if (cmd.command == "calendar")       { out = handleReportCalendar  (); }
+  else if (cmd.command == "summary")        { out = handleReportSummary   (); }
+  else if (cmd.command == "timesheet")      { out = handleReportTimesheet (); }
 */
 
   // Commands that cause updates.
-  else if (cmd.command == "add")            { cmdMod = true; out = handleAdd (); }
+  else if (cmd.command == "add")            { out = handleAdd       (); }
 /*
-  else if (command == "" && task.getId ())  { cmdMod = true; out = handleModify    (); }
-  else if (command == "append")             { cmdMod = true; out = handleAppend    (); }
-  else if (command == "annotate")           { cmdMod = true; out = handleAnnotate  (); }
-  else if (command == "done")               { cmdMod = true; out = handleDone      (); }
-  else if (command == "undelete")           { cmdMod = true; out = handleUndelete  (); }
-  else if (command == "delete")             { cmdMod = true; out = handleDelete    (); }
-  else if (command == "start")              { cmdMod = true; out = handleStart     (); }
-  else if (command == "stop")               { cmdMod = true; out = handleStop      (); }
-  else if (command == "undo")               { cmdMod = true; out = handleUndo      (); }
-  else if (command == "import")             { cmdMod = true; out = handleImport    (); }
-  else if (command == "duplicate")          { cmdMod = true; out = handleDuplicate (); }
-  else if (command == "edit")               { cmdMod = true; out = handleEdit      (); }
+  else if (command == "" && task.getId ())  { out = handleModify    (); }
+  else if (command == "append")             { out = handleAppend    (); }
+  else if (command == "annotate")           { out = handleAnnotate  (); }
+  else if (command == "done")               { out = handleDone      (); }
+  else if (command == "undelete")           { out = handleUndelete  (); }
+  else if (command == "delete")             { out = handleDelete    (); }
+  else if (command == "start")              { out = handleStart     (); }
+  else if (command == "stop")               { out = handleStop      (); }
+  else if (command == "undo")               { out = handleUndo      (); }
+  else if (command == "import")             { out = handleImport    (); }
+  else if (command == "duplicate")          { out = handleDuplicate (); }
+  else if (command == "edit")               { out = handleEdit      (); }
 */
 
   // Command that display IDs and therefore need TDB::gc first.
 /*
-  else if (command == "next")               { if (gc) gcMod = tdb.gc (); out = handleReportNext    (); }
+  else if (command == "next")               { if (!inShadow) gcMod = tdb.gc (); out = handleReportNext    (); }
 */
-  else if (cmd.validCustom (cmd.command))   { if (gc) gcMod = tdb.gc (); out = handleCustomReport  (cmd.command); }
+  else if (cmd.validCustom (cmd.command))   { if (!inShadow) gcMod = tdb.gc (); out = handleCustomReport  (cmd.command); }
 
   // If the command is not recognized, display usage.
   else                                      { out = shortUsage (); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
-  // and if an actual change occurred (gcMod || cmdMod).
 // TODO
-//  if (shadow && (gcMod || cmdMod))
+//  if (cmd.isWriteCommand (cmd.command) && !inShadow))
 //    shadow ();
 
   return out;
@@ -225,6 +222,8 @@ void Context::shadow ()
   std::string shadowFile = expandPath (config.get ("shadow.file"));
   if (shadowFile != "")
   {
+    inShadow = true;  // Prevents recursion in case shadow command writes.
+
     // TODO Reinstate these checks.
 /*
     // Check for silly shadow file settings.
@@ -267,6 +266,8 @@ void Context::shadow ()
     // Optionally display a notification that the shadow file was updated.
     if (config.get (std::string ("shadow.notify"), false))
       footnote (std::string ("[Shadow file '") + shadowFile + "' updated]");
+
+    inShadow = false;
   }
 }
 
