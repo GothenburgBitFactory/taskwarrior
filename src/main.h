@@ -42,16 +42,16 @@ void validSortColumns (const std::vector <std::string>&, const std::vector <std:
 bool validTag (const std::string&);
 
 // task.cpp
-void gatherNextTasks (/*const TDB&,*/ T&, std::vector <T>&, std::vector <int>&);
+void gatherNextTasks (/*const TDB&,*/ Task&, std::vector <Task>&, std::vector <int>&);
 void onChangeCallback ();
 
 // recur.cpp
 void handleRecurrence ();
 Date getNextRecurrence (Date&, std::string&);
-bool generateDueDates (T&, std::vector <Date>&);
-void updateRecurrenceMask (/*TDB&,*/ std::vector <T>&, T&);
+bool generateDueDates (Task&, std::vector <Date>&);
+void updateRecurrenceMask (/*TDB&,*/ std::vector <T>&, Task&);
 int getDueState (const std::string&);
-void nag (/*TDB&,*/ T&);
+void nag (/*TDB&,*/ Task&);
 
 // command.cpp
 std::string handleAdd ();
@@ -70,11 +70,11 @@ std::string handleUndo ();
 std::string handleColor ();
 std::string handleAnnotate ();
 std::string handleDuplicate ();
-int deltaAppend (T&, T&);
-int deltaDescription (T&, T&);
-int deltaTags (T&, T&);
-int deltaAttributes (T&, T&);
-int deltaSubstitutions (T&, T&);
+int deltaAppend (Task&, Task&);
+int deltaDescription (Task&, Task&);
+int deltaTags (Task&, Task&);
+int deltaAttributes (Task&, Task&);
+int deltaSubstitutions (Task&, Task&);
 
 // edit.cpp
 std::string handleEdit ();

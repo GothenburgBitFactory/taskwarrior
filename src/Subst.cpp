@@ -122,41 +122,44 @@ void Subst::apply (
 {
   std::string::size_type pattern;
 
-  if (mGlobal)
+  if (mFrom != "")
   {
-    // Perform all subs on description.
-    while ((pattern = description.find (mFrom)) != std::string::npos)
-      description.replace (pattern, mFrom.length (), mTo);
-
-    // Perform all subs on annotations.
-    std::vector <Att>::iterator i;
-    for (i = annotations.begin (); i != annotations.end (); ++i)
+    if (mGlobal)
     {
-      std::string description = i->value ();
+      // Perform all subs on description.
       while ((pattern = description.find (mFrom)) != std::string::npos)
-      {
         description.replace (pattern, mFrom.length (), mTo);
-        i->value (description);
-      }
-    }
-  }
-  else
-  {
-    // Perform first description substitution.
-    if ((pattern = description.find (mFrom)) != std::string::npos)
-      description.replace (pattern, mFrom.length (), mTo);
 
-    // Failing that, perform the first annotation substitution.
-    else
-    {
+      // Perform all subs on annotations.
       std::vector <Att>::iterator i;
       for (i = annotations.begin (); i != annotations.end (); ++i)
       {
         std::string description = i->value ();
-        if ((pattern = description.find (mFrom)) != std::string::npos)
+        while ((pattern = description.find (mFrom)) != std::string::npos)
         {
           description.replace (pattern, mFrom.length (), mTo);
-          break;
+          i->value (description);
+        }
+      }
+    }
+    else
+    {
+      // Perform first description substitution.
+      if ((pattern = description.find (mFrom)) != std::string::npos)
+        description.replace (pattern, mFrom.length (), mTo);
+
+      // Failing that, perform the first annotation substitution.
+      else
+      {
+        std::vector <Att>::iterator i;
+        for (i = annotations.begin (); i != annotations.end (); ++i)
+        {
+          std::string description = i->value ();
+          if ((pattern = description.find (mFrom)) != std::string::npos)
+          {
+            description.replace (pattern, mFrom.length (), mTo);
+            break;
+          }
         }
       }
     }

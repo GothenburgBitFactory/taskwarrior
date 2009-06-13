@@ -141,17 +141,17 @@ void handleRecurrence (std::vector <Task>& tasks)
 // period (recur).  Then generate a set of corresponding dates.
 //
 // Returns false if the parent recurring task is depleted.
-bool generateDueDates (T& parent, std::vector <Date>& allDue)
+bool generateDueDates (Task& parent, std::vector <Date>& allDue)
 {
   // Determine due date, recur period and until date.
-  Date due (atoi (parent.getAttribute ("due").c_str ()));
-  std::string recur = parent.getAttribute ("recur");
+  Date due (atoi (parent.get ("due").c_str ()));
+  std::string recur = parent.get ("recur");
 
   bool specificEnd = false;
   Date until;
-  if (parent.getAttribute ("until") != "")
+  if (parent.get ("until") != "")
   {
-    until = Date (atoi (parent.getAttribute ("until").c_str ()));
+    until = Date (atoi (parent.get ("until").c_str ()));
     specificEnd = true;
   }
 
@@ -165,7 +165,7 @@ bool generateDueDates (T& parent, std::vector <Date>& allDue)
       // If i > until, it means there are no more tasks to generate, and if the
       // parent mask contains all + or X, then there never will be another task
       // to generate, and this parent task may be safely reaped.
-      std::string mask = parent.getAttribute ("mask");
+      std::string mask = parent.get ("mask");
       if (mask.length () == allDue.size () &&
           mask.find ('-') == std::string::npos)
         return false;

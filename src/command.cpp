@@ -978,15 +978,12 @@ std::string handleAnnotate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaAppend (T& task, T& delta)
+int deltaAppend (Task& task, Task& delta)
 {
-  if (delta.getDescription () != "")
+  if (delta.has ("description"))
   {
-    task.setDescription (
-      task.getDescription () +
-      " " +
-      delta.getDescription ());
-
+    task.set ("description",
+              task.get ("description") + " " + delta.get ("description"));
     return 1;
   }
 
@@ -994,11 +991,11 @@ int deltaAppend (T& task, T& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaDescription (T& task, T& delta)
+int deltaDescription (Task& task, Task& delta)
 {
-  if (delta.getDescription () != "")
+  if (delta.has ("description"))
   {
-    task.setDescription (delta.getDescription ());
+    task.set ("description", delta.get ("description"));
     return 1;
   }
 
@@ -1006,7 +1003,7 @@ int deltaDescription (T& task, T& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaTags (T& task, T& delta)
+int deltaTags (Task& task, Task& delta)
 {
   int changes = 0;
 
@@ -1023,6 +1020,8 @@ int deltaTags (T& task, T& delta)
     ++changes;
   }
 
+/*
+  // TODO Needs Task::getRemoveTags
   delta.getRemoveTags (tags);
   for (unsigned int i = 0; i < tags.size (); ++i)
   {
@@ -1033,23 +1032,22 @@ int deltaTags (T& task, T& delta)
 
     ++changes;
   }
+*/
 
   return changes;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaAttributes (T& task, T& delta)
+int deltaAttributes (Task& task, Task& delta)
 {
   int changes = 0;
 
-  std::map <std::string, std::string> attributes;
-  delta.getAttributes (attributes);
-  foreach (i, attributes)
+  foreach (att, delta)
   {
-    if (i->second == "")
-      task.removeAttribute (i->first);
+    if (att->second.value () == "")
+      task.remove (att->first);
     else
-      task.setAttribute (i->first, i->second);
+      task.set (att->first, att->second.value ());
 
     ++changes;
   }
@@ -1058,76 +1056,18 @@ int deltaAttributes (T& task, T& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaSubstitutions (T& task, T& delta)
+int deltaSubstitutions (Task& task, Task& delta)
 {
-  int changes = 0;
-  std::string from;
-  std::string to;
-  bool global;
-  delta.getSubstitution (from, to, global);
+  std::string description = task.get ("description");
+  std::vector <Att> annotations;
+  task.getAnnotations (annotations);
 
-  if (from != "")
-  {
-    std::string description = task.getDescription ();
-    size_t pattern;
+  context.subst.apply (description, annotations);
 
-    if (global)
-    {
-      // Perform all subs on description.
-      while ((pattern = description.find (from)) != std::string::npos)
-      {
-        description.replace (pattern, from.length (), to);
-        ++changes;
-      }
+  task.set ("description", description);
+  task.setAnnotations (annotations);
 
-      task.setDescription (description);
-
-      // Perform all subs on annotations.
-      std::map <time_t, std::string> annotations;
-      task.getAnnotations (annotations);
-      std::map <time_t, std::string>::iterator it;
-      for (it = annotations.begin (); it != annotations.end (); ++it)
-      {
-        while ((pattern = it->second.find (from)) != std::string::npos)
-        {
-          it->second.replace (pattern, from.length (), to);
-          ++changes;
-        }
-      }
-
-      task.setAnnotations (annotations);
-    }
-    else
-    {
-      // Perform first description substitution.
-      if ((pattern = description.find (from)) != std::string::npos)
-      {
-        description.replace (pattern, from.length (), to);
-        task.setDescription (description);
-        ++changes;
-      }
-      // Failing that, perform the first annotation substitution.
-      else
-      {
-        std::map <time_t, std::string> annotations;
-        task.getAnnotations (annotations);
-
-        std::map <time_t, std::string>::iterator it;
-        for (it = annotations.begin (); it != annotations.end (); ++it)
-        {
-          if ((pattern = it->second.find (from)) != std::string::npos)
-          {
-            it->second.replace (pattern, from.length (), to);
-            ++changes;
-            break;
-          }
-        }
-
-        task.setAnnotations (annotations);
-      }
-    }
-  }
-  return changes;
+  return 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

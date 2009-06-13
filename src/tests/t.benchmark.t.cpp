@@ -25,7 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <sys/time.h>
-#include "T.h"
+#include "Task.h"
 #include "main.h"
 #include "test.h"
 
@@ -36,11 +36,19 @@ int main (int argc, char** argv)
 {
   UnitTest test (1);
 
-  std::string sample = "d346065c-7ef6-49af-ae77-19c1825807f5 "
-                       "- "
-                       "[bug performance solaris linux osx] "
-                       "[due:1236142800 entry:1236177552 priority:H project:task-1.5.0 start:1236231761] "
-                       "Profile task and identify performance bottlenecks";
+  // FF4 parsing is being tested.  Performance of legacy format parsing is
+  // immaterial.
+  std::string sample = "["
+                       "uuid:\"d346065c-7ef6-49af-ae77-19c1825807f5\" "
+                       "status:\"pending\" "
+                       "tags:\"bug,performance,solaris,linux,osx\" "
+                       "due:\"1236142800\" "
+                       "entry:\"1236177552\" "
+                       "priority:\"H\" "
+                       "project:\"task-1.5.0\" "
+                       "start:\"1236231761\" "
+                       "description:\"Profile task and identify performance bottlenecks\""
+                       "]";
 
   // Start clock
   test.diag ("start");
@@ -49,7 +57,7 @@ int main (int argc, char** argv)
 
   for (int i = 0; i < 1000000; i++)
   {
-    T t (sample);
+    Task t (sample);
   }
 
   // End clock
