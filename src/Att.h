@@ -44,9 +44,13 @@ public:
   ~Att ();
 
   bool valid (const std::string&) const;
+  static bool validName (const std::string&);
+  static bool validModifiableName (const std::string&);
+  static bool validNameValue (const std::string&, const std::string&, const std::string&);
+  static bool validNameValue (std::string&, std::string&, std::string&);
+  static bool validMod (const std::string&);
   void parse (const std::string&);
   void parse (Nibbler&);
-  bool validMod (const std::string&) const;
   bool match (const Att&) const;
 
   std::string composeF4 () const;

@@ -28,8 +28,55 @@
 #include <sstream>
 #include <stdlib.h>
 #include "text.h"
+#include "color.h"
 #include "util.h"
+#include "Date.h"
+#include "Duration.h"
 #include "Att.h"
+
+static char* internalNames[] =
+{
+  "entry",
+  "start",
+  "end",
+  "mask",
+  "imask",
+//  "limit",
+};
+
+static char* modifiableNames[] =
+{
+  "project",
+  "priority",
+  "fg",
+  "bg",
+  "due",
+  "recur",
+  "until",
+};
+
+static char* modifierNames[] =
+{
+  "before",
+  "after",
+  "under",
+  "over",
+  "below",
+  "above",
+  "none",
+  "any",
+  "is",
+  "isnt",
+  "has",
+  "hasnt",
+  "contains",
+  "startswith",
+  "endswith",
+};
+
+#define NUM_INTERNAL_NAMES   (sizeof (internalNames)   / sizeof (internalNames[0]))
+#define NUM_MODIFIABLE_NAMES (sizeof (modifiableNames) / sizeof (modifiableNames[0]))
+#define NUM_MODIFIER_NAMES   (sizeof (modifierNames)   / sizeof (modifierNames[0]))
 
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att ()
@@ -106,6 +153,7 @@ Att::~Att ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// For parsing.
 bool Att::valid (const std::string& input) const
 {
   Nibbler n (input);
@@ -128,6 +176,173 @@ bool Att::valid (const std::string& input) const
 
     return false;
   }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete
+bool Att::validName (const std::string& name)
+{
+  if (validModifiableName (name))
+    return true;
+
+  for (unsigned int i = 0; i < NUM_INTERNAL_NAMES; ++i)
+    if (name == internalNames[i])
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete
+bool Att::validModifiableName (const std::string& name)
+{
+  for (unsigned int i = 0; i < NUM_MODIFIABLE_NAMES; ++i)
+    if (name == modifiableNames[i])
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Att::validNameValue (
+  const std::string& name,
+  const std::string& mod,
+  const std::string& value)
+{
+  std::string writableName  = name;
+  std::string writableMod   = mod;
+  std::string writableValue = value;
+  bool status = Att::validNameValue (writableName, writableMod, writableValue);
+
+  if (name != writableName)
+    throw std::string ("The attribute '") + name + "' was not fully qualified.";
+
+  if (mod != writableMod)
+    throw std::string ("The modifier '") + mod + "' was not fully qualified.";
+
+  if (value != writableValue)
+    throw std::string ("The value '") + value + "' was not fully qualified.";
+
+  return status;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Att::validNameValue (
+  std::string& name,
+  std::string& mod,
+  std::string& value)
+{
+  // First, guess at the full attribute name.
+  std::vector <std::string> candidates;
+  for (unsigned i = 0; i < NUM_INTERNAL_NAMES; ++i)
+    candidates.push_back (internalNames[i]);
+
+  for (unsigned i = 0; i < NUM_MODIFIABLE_NAMES; ++i)
+    candidates.push_back (modifiableNames[i]);
+
+  std::vector <std::string> matches;
+  autoComplete (name, candidates, matches);
+
+  if (matches.size () == 0)
+    throw std::string ("Unrecognized attribute '") + name + "'";
+
+  else if (matches.size () != 1)
+  {
+    std::string error = "Ambiguous attribute '" + name + "' - could be either of "; // TODO i18n
+
+    std::string combined;
+    join (combined, ", ", matches);
+    error += combined;
+
+    throw error + combined;
+  }
+
+  name = matches[0];
+
+  // Second, guess at the modifier name.
+  candidates.clear ();
+  for (unsigned i = 0; i < NUM_MODIFIER_NAMES; ++i)
+    candidates.push_back (modifierNames[i]);
+
+  matches.clear ();
+  autoComplete (mod, candidates, matches);
+
+  if (matches.size () == 0)
+    throw std::string ("Unrecognized modifier '") + name + "'";
+
+  else if (matches.size () != 1)
+  {
+    std::string error = "Ambiguous modifier '" + name + "' - could be either of "; // TODO i18n
+
+    std::string combined;
+    join (combined, ", ", matches);
+    error += combined;
+
+    throw error + combined;
+  }
+
+  mod = matches[0];
+
+  // Thirdly, make sure the value has the expected form or values.
+  if (name == "project" && !noSpaces (value))
+    throw std::string ("The '") + name + "' attribute may not contain spaces.";
+
+  else if (name == "priority" && value != "")
+  {
+    value = upperCase (value);
+    if (value != "H" &&
+        value != "M" &&
+        value != "L")
+      throw std::string ("\"") +
+            value              +
+            "\" is not a valid priority.  Use H, M, L or leave blank.";
+  }
+
+  else if (name == "description" && (value != "" || !noVerticalSpace (value)))
+    throw std::string ("The '") + name + "' attribute must not be blank, and must not contain vertical white space.";
+
+  else if ((name == "fg" || name == "bg") && value != "")
+    Text::guessColor (value);
+
+  else if (name == "due" && value != "")
+    Date (value);
+
+  else if (name == "until" && value != "")
+    Date (value);
+
+  else if (name == "recur" && value != "")
+    Duration (value);
+
+  else if (name == "limit" && (value == "" || !digitsOnly (value)))
+    throw std::string ("The '") + name + "' attribute must be an integer.";
+
+  // Some attributes are intended to be private.
+  else if (name == "entry" ||
+           name == "start" ||
+           name == "end"   ||
+           name == "mask"  ||
+           name == "imask" ||
+           name == "uuid"  ||
+           name == "status")
+    throw std::string ("\"") +
+          name               +
+          "\" is not an attribute you may modify directly.";
+
+  else
+    throw std::string ("'") + name + "' is an unrecognized attribute.";
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete
+bool Att::validMod (const std::string& mod)
+{
+  for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
+    if (modifierNames[i] == mod)
+      return true;
 
   return false;
 }
@@ -187,22 +402,10 @@ void Att::parse (Nibbler& n)
   }
   else
     throw std::string ("Missing : after attribute name"); // TODO i18n
-}
 
-////////////////////////////////////////////////////////////////////////////////
-bool Att::validMod (const std::string& mod) const
-{
-  if (mod == "before"     || mod == "after"    ||   // i18n: TODO
-      mod == "under"      || mod == "over"     ||   // i18n: TODO
-      mod == "below"      || mod == "above"    ||   // i18n: TODO
-      mod == "none"       || mod == "any"      ||   // i18n: TODO
-      mod == "is"         || mod == "isnt"     ||   // i18n: TODO
-      mod == "has"        || mod == "hasnt"    ||   // i18n: TODO
-      mod == "contains"   ||                        // i18n: TODO
-      mod == "startswith" || mod == "endswith")     // i18n: TODO
-    return true;
-
-  return false;
+/* TODO This might be too slow to include.  Test.
+  validNameValue (mName, mMod, mValue);
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

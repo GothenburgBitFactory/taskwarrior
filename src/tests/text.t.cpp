@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (94);
+  UnitTest t (109);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -229,6 +229,27 @@ int main (int argc, char** argv)
   // std::string upperCase (const std::string& input)
   t.is (upperCase (""),            "",            "upperCase '' -> ''");
   t.is (upperCase ("pre01_:POST"), "PRE01_:POST", "upperCase 'pre01_:POST' -> 'PRE01_:POST'");
+
+  // bool digitsOnly (const std::string&);
+  t.ok    (digitsOnly (""),                       "digitsOnly '' -> true");
+  t.ok    (digitsOnly ("0"),                      "digitsOnly '0' -> true");
+  t.ok    (digitsOnly ("123"),                    "digitsOnly '123' -> true");
+  t.notok (digitsOnly ("12fa"),                   "digitsOnly '12fa' -> false");
+
+  // bool noSpaces (const std::string&);
+  t.ok    (noSpaces (""),                         "noSpaces '' -> true");
+  t.ok    (noSpaces ("a"),                        "noSpaces 'a' -> true");
+  t.ok    (noSpaces ("abc"),                      "noSpaces 'abc' -> true");
+  t.notok (noSpaces (" "),                        "noSpaces ' ' -> false");
+  t.notok (noSpaces ("ab cd"),                    "noSpaces 'ab cd' -> false");
+
+  // bool noVerticalSpace (const std::string&);
+  t.ok    (noVerticalSpace (""),                  "noVerticalSpace '' -> true");
+  t.ok    (noVerticalSpace ("a"),                 "noVerticalSpace 'a' -> true");
+  t.ok    (noVerticalSpace ("abc"),               "noVerticalSpace 'abc' -> true");
+  t.notok (noVerticalSpace ("a\nb"),              "noVerticalSpace 'a\\nb' -> false");
+  t.notok (noVerticalSpace ("a\rb"),              "noVerticalSpace 'a\\rb' -> false");
+  t.notok (noVerticalSpace ("a\fb"),              "noVerticalSpace 'a\\fb' -> false");
 
   return 0;
 }

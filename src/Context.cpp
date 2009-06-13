@@ -440,7 +440,7 @@ std::cout << "[1;31m# parse post-termination description '" << *arg << "'[0m" 
     }
   }
 
-  if (validDescription (descCandidate))
+  if (noVerticalSpace (descCandidate))
     task.set ("description", descCandidate);
 
   // TODO task.validate ()

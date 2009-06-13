@@ -35,6 +35,7 @@
 #include <string.h>
 #include "T.h"
 #include "Date.h"
+#include "Duration.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"
@@ -211,7 +212,7 @@ static void parseTask (T& task, const std::string& after)
   {
     if (value != "")
     {
-      if (validPriority (value))
+      if (Att::validNameValue ("priority", "", value))
       {
         std::cout << "Priority modified." << std::endl;
         task.setAttribute ("priority", value);
@@ -392,7 +393,8 @@ static void parseTask (T& task, const std::string& after)
   {
     if (value != "")
     {
-      if (validDuration (value))
+      Duration d;
+      if (d.valid (value))
       {
         std::cout << "Recurrence modified." << std::endl;
         if (task.getAttribute ("due") != "")

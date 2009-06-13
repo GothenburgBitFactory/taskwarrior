@@ -27,6 +27,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <ctype.h>
 #include "Context.h"
 #include "util.h"
 #include "text.h"
@@ -334,6 +335,35 @@ void guess (
 
     throw error;
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool digitsOnly (const std::string& input)
+{
+  for (size_t i = 0; i < input.length (); ++i)
+    if (!::isdigit (input[i]))
+      return false;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool noSpaces (const std::string& input)
+{
+  for (size_t i = 0; i < input.length (); ++i)
+    if (::isspace (input[i]))
+      return false;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool noVerticalSpace (const std::string& input)
+{
+  if (input.find_first_of ("\n\r\f") != std::string::npos)
+    return false;
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

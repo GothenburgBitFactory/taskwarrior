@@ -175,7 +175,7 @@ static void decorateTask (T& task)
   std::string defaultPriority = context.config.get ("default.priority", "");
   if (task.getAttribute ("priority") == "" &&
       defaultPriority                != "" &&
-      validPriority (defaultPriority))
+      Att::validNameValue ("priority", "", defaultPriority))
     task.setAttribute ("priority", defaultPriority);
 }
 

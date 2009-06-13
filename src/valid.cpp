@@ -40,139 +40,18 @@
 
 extern Context context;
 
-////////////////////////////////////////////////////////////////////////////////
-// NOTE: These are static arrays only because there is no initializer list for
-//       std::vector until C++0x.
-
-// TODO Obsolete
-static const char* attributes[] =
-{
-  "project",
-  "priority",
-  "fg",
-  "bg",
-  "due",
-  "entry",
-  "start",
-  "end",
-  "recur",
-  "until",
-  "mask",
-  "imask",
-//  "limit",
-  "",
-};
-
 // TODO Relocate inside Context.
 static std::vector <std::string> customReports;
-
-////////////////////////////////////////////////////////////////////////////////
-void guess (
-  const std::string& type,
-  const char** list,
-  std::string& candidate)
-{
-  std::vector <std::string> options;
-  for (int i = 0; list[i][0]; ++i)
-    options.push_back (list[i]);
-
-  guess (type, options, candidate);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool validPriority (const std::string& input)
-{
-  if (input != "H" &&
-      input != "M" &&
-      input != "L" &&
-      input != "")
-    throw std::string ("\"") +
-          input              +
-          "\" is not a valid priority.  Use H, M, L or leave blank.";
-
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// All attributes, regardless of usage.
-// TODO Relocate to Att.cpp.
-bool validAttribute (std::string& name, std::string& value)
-{
-  guess ("attribute", attributes, name);
-  if (name != "")
-  {
-    if ((name == "fg" || name == "bg") && value != "")
-      Text::guessColor (value);
-
-    else if (name == "due" && value != "")
-      Date (value);
-
-    else if (name == "until" && value != "")
-      Date (value);
-
-    else if (name == "priority")
-    {
-      value = upperCase (value);
-      return validPriority (value);
-    }
-
-    // Some attributes are intended to be private.
-    else if (name == "entry" ||
-             name == "start" ||
-             name == "end"   ||
-             name == "mask"  ||
-             name == "imask")
-      throw std::string ("\"") +
-            name               +
-            "\" is not an attribute you may modify directly.";
-
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool validId (const std::string& input)
-{
-  if (input.length () == 0)
-    return false;
-
-  for (size_t i = 0; i < input.length (); ++i)
-    if (!::isdigit (input[i]))
-      return false;
-
-  return true;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 bool validTag (const std::string& input)
 {
   if ((input[0] == '-' || input[0] == '+') &&
-       input.length () > 1)
+       input.length () > 1                 &&
+       noSpaces (input))
     return true;
 
   return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool validDescription (const std::string& input)
-{
-  if (input.length ()                        &&
-      input.find ("\r") == std::string::npos &&
-      input.find ("\f") == std::string::npos &&
-      input.find ("\n") == std::string::npos)
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool validDuration (std::string& input)
-{
-  try         { Duration (input); }
-  catch (...) { return false;     }
-  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -69,7 +69,7 @@ std::string handleAdd ()
   if (context.task.get ("priority") == "")
   {
     std::string defaultPriority = context.config.get ("default.priority", "");
-    if (validPriority (defaultPriority))
+    if (Att::validNameValue ("priority", "", defaultPriority))
       context.task.set ("priority", defaultPriority);
   }
 
