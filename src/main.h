@@ -30,7 +30,6 @@
 #include <map>
 #include <sys/types.h>
 #include "Context.h"
-#include "T.h"
 #include "Table.h"
 #include "Date.h"
 #include "color.h"
@@ -49,7 +48,7 @@ void onChangeCallback ();
 void handleRecurrence ();
 Date getNextRecurrence (Date&, std::string&);
 bool generateDueDates (Task&, std::vector <Date>&);
-void updateRecurrenceMask (/*TDB&,*/ std::vector <T>&, Task&);
+void updateRecurrenceMask (/*TDB&,*/ std::vector <Task>&, Task&);
 int getDueState (const std::string&);
 void nag (/*TDB&,*/ Task&);
 

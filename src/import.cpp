@@ -159,23 +159,23 @@ static fileType determineFileType (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void decorateTask (T& task)
+static void decorateTask (Task& task)
 {
   char entryTime[16];
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
-  task.setAttribute ("entry", entryTime);
+  task.set ("entry", entryTime);
 
   // Override with default.project, if not specified.
   std::string defaultProject = context.config.get ("default.project", "");
-  if (task.getAttribute ("project") == "" && defaultProject  != "")
-    task.setAttribute ("project", defaultProject);
+  if (!task.has ("project") && defaultProject  != "")
+    task.set ("project", defaultProject);
 
   // Override with default.priority, if not specified.
   std::string defaultPriority = context.config.get ("default.priority", "");
-  if (task.getAttribute ("priority") == "" &&
-      defaultPriority                != "" &&
+  if (!task.has ("priority") &&
+      defaultPriority != "" &&
       Att::validNameValue ("priority", "", defaultPriority))
-    task.setAttribute ("priority", defaultPriority);
+    task.set ("priority", defaultPriority);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,42 +261,42 @@ static std::string importTask_1_4_3 (
           break;
 
         case 3: // entry
-          task.setAttribute ("entry", fields[f]);
+          task.set ("entry", fields[f]);
           break;
 
         case 4: // start
           if (fields[f].length ())
-            task.setAttribute ("start", fields[f]);
+            task.set ("start", fields[f]);
           break;
 
         case 5: // due
           if (fields[f].length ())
-            task.setAttribute ("due", fields[f]);
+            task.set ("due", fields[f]);
           break;
 
         case 6: // end
           if (fields[f].length ())
-            task.setAttribute ("end", fields[f]);
+            task.set ("end", fields[f]);
           break;
 
         case 7: // 'project'
           if (fields[f].length () > 2)
-            task.setAttribute ("project", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("project", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 8: // 'priority'
           if (fields[f].length () > 2)
-            task.setAttribute ("priority", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("priority", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 9: // 'fg'
           if (fields[f].length () > 2)
-            task.setAttribute ("fg", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("fg", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 10: // 'bg'
           if (fields[f].length () > 2)
-            task.setAttribute ("bg", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("bg", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 11: // 'description'
@@ -419,47 +419,47 @@ static std::string importTask_1_5_0 (
           break;
 
         case 3: // entry
-          task.setAttribute ("entry", fields[f]);
+          task.set ("entry", fields[f]);
           break;
 
         case 4: // start
           if (fields[f].length ())
-            task.setAttribute ("start", fields[f]);
+            task.set ("start", fields[f]);
           break;
 
         case 5: // due
           if (fields[f].length ())
-            task.setAttribute ("due", fields[f]);
+            task.set ("due", fields[f]);
           break;
 
         case 6: // recur
           if (fields[f].length ())
-            task.setAttribute ("recur", fields[f]);
+            task.set ("recur", fields[f]);
           break;
 
         case 7: // end
           if (fields[f].length ())
-            task.setAttribute ("end", fields[f]);
+            task.set ("end", fields[f]);
           break;
 
         case 8: // 'project'
           if (fields[f].length () > 2)
-            task.setAttribute ("project", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("project", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 9: // 'priority'
           if (fields[f].length () > 2)
-            task.setAttribute ("priority", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("priority", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 10: // 'fg'
           if (fields[f].length () > 2)
-            task.setAttribute ("fg", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("fg", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 11: // 'bg'
           if (fields[f].length () > 2)
-            task.setAttribute ("bg", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("bg", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 12: // 'description'
@@ -583,47 +583,47 @@ static std::string importTask_1_6_0 (
           break;
 
         case 3: // entry
-          task.setAttribute ("entry", fields[f]);
+          task.set ("entry", fields[f]);
           break;
 
         case 4: // start
           if (fields[f].length ())
-            task.setAttribute ("start", fields[f]);
+            task.set ("start", fields[f]);
           break;
 
         case 5: // due
           if (fields[f].length ())
-            task.setAttribute ("due", fields[f]);
+            task.set ("due", fields[f]);
           break;
 
         case 6: // recur
           if (fields[f].length ())
-            task.setAttribute ("recur", fields[f]);
+            task.set ("recur", fields[f]);
           break;
 
         case 7: // end
           if (fields[f].length ())
-            task.setAttribute ("end", fields[f]);
+            task.set ("end", fields[f]);
           break;
 
         case 8: // 'project'
           if (fields[f].length () > 2)
-            task.setAttribute ("project", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("project", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 9: // 'priority'
           if (fields[f].length () > 2)
-            task.setAttribute ("priority", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("priority", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 10: // 'fg'
           if (fields[f].length () > 2)
-            task.setAttribute ("fg", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("fg", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 11: // 'bg'
           if (fields[f].length () > 2)
-            task.setAttribute ("bg", fields[f].substr (1, fields[f].length () - 2));
+            task.set ("bg", fields[f].substr (1, fields[f].length () - 2));
           break;
 
         case 12: // 'description'
@@ -805,7 +805,7 @@ static std::string importTodoSh_2_0 (
 
         char end[16];
         sprintf (end, "%u", (unsigned int) endDate.toEpoch ());
-        task.setAttribute ("end", end);
+        task.set ("end", end);
       }
 
       if (! tdb.addT (task))
@@ -1085,35 +1085,35 @@ static std::string importCSV (
       }
 
       if ((f = mapping["entry"]) != -1)
-        task.setAttribute ("entry", lowerCase (unquoteText (trim (fields[f]))));
+        task.set ("entry", lowerCase (unquoteText (trim (fields[f]))));
 
       if ((f = mapping["start"]) != -1)
-        task.setAttribute ("start", lowerCase (unquoteText (trim (fields[f]))));
+        task.set ("start", lowerCase (unquoteText (trim (fields[f]))));
 
       if ((f = mapping["due"]) != -1)
-        task.setAttribute ("due", lowerCase (unquoteText (trim (fields[f]))));
+        task.set ("due", lowerCase (unquoteText (trim (fields[f]))));
 
       if ((f = mapping["recur"]) != -1)
-        task.setAttribute ("recur", lowerCase (unquoteText (trim (fields[f]))));
+        task.set ("recur", lowerCase (unquoteText (trim (fields[f]))));
 
       if ((f = mapping["end"]) != -1)
-        task.setAttribute ("end", lowerCase (unquoteText (trim (fields[f]))));
+        task.set ("end", lowerCase (unquoteText (trim (fields[f]))));
 
       if ((f = mapping["project"]) != -1)
-        task.setAttribute ("project", unquoteText (trim (fields[f])));
+        task.set ("project", unquoteText (trim (fields[f])));
 
       if ((f = mapping["priority"]) != -1)
       {
         std::string value = upperCase (unquoteText (trim (fields[f])));
         if (value == "H" || value == "M" || value == "L")
-          task.setAttribute ("priority", value);
+          task.set ("priority", value);
       }
 
       if ((f = mapping["fg"]) != -1)
-        task.setAttribute ("fg", lowerCase (unquoteText (trim (fields[f]))));
+        task.set ("fg", lowerCase (unquoteText (trim (fields[f]))));
 
       if ((f = mapping["bg"]) != -1)
-        task.setAttribute ("bg", lowerCase (unquoteText (trim (fields[f]))));
+        task.set ("bg", lowerCase (unquoteText (trim (fields[f]))));
 
       if ((f = mapping["description"]) != -1)
         task.setDescription (unquoteText (trim (fields[f])));

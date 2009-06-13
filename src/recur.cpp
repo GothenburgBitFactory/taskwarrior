@@ -39,7 +39,6 @@
 #include "Context.h"
 #include "Date.h"
 #include "Duration.h"
-#include "T.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"
@@ -329,8 +328,8 @@ Date getNextRecurrence (Date& current, std::string& period)
 // update it's mask.
 void updateRecurrenceMask (
 //  TDB& tdb,
-  std::vector <T>& all,
-  T& task)
+  std::vector <Task>& all,
+  Task& task)
 {
 /*
   std::string parent = task.getAttribute ("parent");
@@ -399,7 +398,7 @@ int getDueState (const std::string& due)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void nag (/*TDB& tdb,*/ T& task)
+void nag (/*TDB& tdb,*/ Task& task)
 {
 /*
   std::string nagMessage = context.config.get ("nag", std::string (""));
