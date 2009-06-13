@@ -1,4 +1,4 @@
-PROJECT = t.t t2.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t \
+PROJECT = t2.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t     \
           config.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t \
           cmd.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
@@ -22,9 +22,6 @@ clean:
 
 .cpp.o:
 	g++ -c $(CFLAGS) $<
-
-t.t: t.t.o $(OBJECTS) test.o
-	g++ t.t.o $(OBJECTS) test.o $(LFLAGS) -o t.t
 
 t2.t: t2.t.o $(OBJECTS) test.o
 	g++ t2.t.o $(OBJECTS) test.o $(LFLAGS) -o t2.t
