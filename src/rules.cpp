@@ -29,7 +29,6 @@
 #include "Context.h"
 #include "Table.h"
 #include "Date.h"
-#include "T.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"

@@ -33,7 +33,6 @@
 #include "Context.h"
 #include "Date.h"
 #include "Duration.h"
-#include "T.h"
 #include "text.h"
 #include "util.h"
 #include "color.h"

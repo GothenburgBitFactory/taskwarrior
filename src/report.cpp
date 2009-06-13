@@ -38,7 +38,6 @@
 #include "Context.h"
 #include "Date.h"
 #include "Table.h"
-#include "T.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"

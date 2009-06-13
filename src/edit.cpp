@@ -33,7 +33,6 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
-#include "T.h"
 #include "Date.h"
 #include "Duration.h"
 #include "text.h"
@@ -94,14 +93,14 @@ static std::string findDate (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Obsolete - use Task::statusToText
-static std::string formatStatus (T& task)
+static std::string formatStatus (Task& task)
 {
   switch (task.getStatus ())
   {
-  case T::pending:   return "Pending";   break;
-  case T::completed: return "Completed"; break;
-  case T::deleted:   return "Deleted";   break;
-  case T::recurring: return "Recurring"; break;
+  case Task::pending:   return "Pending";   break;
+  case Task::completed: return "Completed"; break;
+  case Task::deleted:   return "Deleted";   break;
+  case Task::recurring: return "Recurring"; break;
   }
 
   return "";
@@ -109,10 +108,10 @@ static std::string formatStatus (T& task)
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string formatDate (
-  T& task,
+  Task& task,
   const std::string& attribute)
 {
-  std::string value = task.getAttribute (attribute);
+  std::string value = task.get (attribute);
   if (value.length ())
   {
     Date dt (::atoi (value.c_str ()));
@@ -123,7 +122,7 @@ static std::string formatDate (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string formatTask (T task)
+static std::string formatTask (Task task)
 {
   std::stringstream before;
   before << "# The 'task edit <id>' command allows you to modify all aspects of a task" << std::endl
@@ -143,13 +142,13 @@ static std::string formatTask (T task)
          << "#"                                                                         << std::endl
          << "# Name               Editable details"                                     << std::endl
          << "# -----------------  ----------------------------------------------------" << std::endl
-         << "# ID:                " << task.getId ()                                    << std::endl
-         << "# UUID:              " << task.getUUID ()                                  << std::endl
+         << "# ID:                " << task.id                                          << std::endl
+         << "# UUID:              " << task.get ("uuid")                                  << std::endl
          << "# Status:            " << formatStatus (task)                              << std::endl
-         << "# Mask:              " << task.getAttribute ("mask")                       << std::endl
-         << "# iMask:             " << task.getAttribute ("imask")                      << std::endl
-         << "  Project:           " << task.getAttribute ("project")                    << std::endl
-         << "  Priority:          " << task.getAttribute ("priority")                   << std::endl;
+         << "# Mask:              " << task.get ("mask")                       << std::endl
+         << "# iMask:             " << task.get ("imask")                      << std::endl
+         << "  Project:           " << task.get ("project")                    << std::endl
+         << "  Priority:          " << task.get ("priority")                   << std::endl;
 
   std::vector <std::string> tags;
   task.getTags (tags);
@@ -159,19 +158,19 @@ static std::string formatTask (T task)
          << "  Tags:              " << allTags                                          << std::endl
          << "# The description field is allowed to wrap and use multiple lines.  Task"  << std::endl
          << "# will combine them."                                                      << std::endl
-         << "  Description:       " << task.getDescription ()                           << std::endl
+         << "  Description:       " << task.get ("description")                           << std::endl
          << "  Created:           " << formatDate (task, "entry")                       << std::endl
          << "  Started:           " << formatDate (task, "start")                       << std::endl
          << "  Ended:             " << formatDate (task, "end")                         << std::endl
          << "  Due:               " << formatDate (task, "due")                         << std::endl
          << "  Until:             " << formatDate (task, "until")                       << std::endl
-         << "  Recur:             " << task.getAttribute ("recur")                      << std::endl
-         << "  Parent:            " << task.getAttribute ("parent")                     << std::endl
-         << "  Foreground color:  " << task.getAttribute ("fg")                         << std::endl
-         << "  Background color:  " << task.getAttribute ("bg")                         << std::endl
+         << "  Recur:             " << task.get ("recur")                      << std::endl
+         << "  Parent:            " << task.get ("parent")                     << std::endl
+         << "  Foreground color:  " << task.get ("fg")                         << std::endl
+         << "  Background color:  " << task.get ("bg")                         << std::endl
          << "# Annotations look like this: <date> <text>, and there can be any number"  << std::endl
          << "# of them."                                                                << std::endl;
-
+/*
   std::map <time_t, std::string> annotations;
   task.getAnnotations (annotations);
   foreach (anno, annotations)
@@ -180,7 +179,7 @@ static std::string formatTask (T task)
     before << "  Annotation:        " << dt.toString (context.config.get ("dateformat", "m/d/Y"))
            << " "                     << anno->second                                   << std::endl;
   }
-
+*/
   before << "  Annotation:        "                                                     << std::endl
          << "  Annotation:        "                                                     << std::endl
          << "# End"                                                                     << std::endl;
@@ -188,40 +187,40 @@ static std::string formatTask (T task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void parseTask (T& task, const std::string& after)
+static void parseTask (Task& task, const std::string& after)
 {
   // project
   std::string value = findValue (after, "Project:");
-  if (task.getAttribute ("project") != value)
+  if (task.get ("project") != value)
   {
     if (value != "")
     {
       std::cout << "Project modified." << std::endl;
-      task.setAttribute ("project", value);
+      task.set ("project", value);
     }
     else
     {
       std::cout << "Project deleted." << std::endl;
-      task.removeAttribute ("project");
+      task.remove ("project");
     }
   }
 
   // priority
   value = findValue (after, "Priority:");
-  if (task.getAttribute ("priority") != value)
+  if (task.get ("priority") != value)
   {
     if (value != "")
     {
       if (Att::validNameValue ("priority", "", value))
       {
         std::cout << "Priority modified." << std::endl;
-        task.setAttribute ("priority", value);
+        task.set ("priority", value);
       }
     }
     else
     {
       std::cout << "Priority deleted." << std::endl;
-      task.removeAttribute ("priority");
+      task.remove ("priority");
     }
   }
 
@@ -229,17 +228,19 @@ static void parseTask (T& task, const std::string& after)
   value = findValue (after, "Tags:");
   std::vector <std::string> tags;
   split (tags, value, ' ');
+/*
   task.removeTags ();
+*/
   task.addTags (tags);
 
   // description.
   value = findValue (after, "Description: ");
-  if (task.getDescription () != value)
+  if (task.get ("description") != value)
   {
     if (value != "")
     {
       std::cout << "Description modified." << std::endl;
-      task.setDescription (value);
+      task.set ("description", value);
     }
     else
       throw std::string ("Cannot remove description.");
@@ -251,11 +252,11 @@ static void parseTask (T& task, const std::string& after)
   {
     Date edited (::atoi (value.c_str ()));
 
-    Date original (::atoi (task.getAttribute ("entry").c_str ()));
+    Date original (::atoi (task.get ("entry").c_str ()));
     if (!original.sameDay (edited))
     {
       std::cout << "Creation date modified." << std::endl;
-      task.setAttribute ("entry", value);
+      task.set ("entry", value);
     }
   }
   else
@@ -267,27 +268,27 @@ static void parseTask (T& task, const std::string& after)
   {
     Date edited (::atoi (value.c_str ()));
 
-    if (task.getAttribute ("start") != "")
+    if (task.get ("start") != "")
     {
-      Date original (::atoi (task.getAttribute ("start").c_str ()));
+      Date original (::atoi (task.get ("start").c_str ()));
       if (!original.sameDay (edited))
       {
         std::cout << "Start date modified." << std::endl;
-        task.setAttribute ("start", value);
+        task.set ("start", value);
       }
     }
     else
     {
       std::cout << "Start date modified." << std::endl;
-      task.setAttribute ("start", value);
+      task.set ("start", value);
     }
   }
   else
   {
-    if (task.getAttribute ("start") != "")
+    if (task.get ("start") != "")
     {
       std::cout << "Start date removed." << std::endl;
-      task.removeAttribute ("start");
+      task.remove ("start");
     }
   }
 
@@ -297,25 +298,25 @@ static void parseTask (T& task, const std::string& after)
   {
     Date edited (::atoi (value.c_str ()));
 
-    if (task.getAttribute ("end") != "")
+    if (task.get ("end") != "")
     {
-      Date original (::atoi (task.getAttribute ("end").c_str ()));
+      Date original (::atoi (task.get ("end").c_str ()));
       if (!original.sameDay (edited))
       {
         std::cout << "Done date modified." << std::endl;
-        task.setAttribute ("end", value);
+        task.set ("end", value);
       }
     }
-    else if (task.getStatus () != T::deleted)
+    else if (task.getStatus () != Task::deleted)
       throw std::string ("Cannot set a done date on a pending task.");
   }
   else
   {
-    if (task.getAttribute ("end") != "")
+    if (task.get ("end") != "")
     {
       std::cout << "Done date removed." << std::endl;
-      task.setStatus (T::pending);
-      task.removeAttribute ("end");
+      task.setStatus (Task::pending);
+      task.remove ("end");
     }
   }
 
@@ -325,34 +326,34 @@ static void parseTask (T& task, const std::string& after)
   {
     Date edited (::atoi (value.c_str ()));
 
-    if (task.getAttribute ("due") != "")
+    if (task.get ("due") != "")
     {
-      Date original (::atoi (task.getAttribute ("due").c_str ()));
+      Date original (::atoi (task.get ("due").c_str ()));
       if (!original.sameDay (edited))
       {
         std::cout << "Due date modified." << std::endl;
-        task.setAttribute ("due", value);
+        task.set ("due", value);
       }
     }
     else
     {
       std::cout << "Due date modified." << std::endl;
-      task.setAttribute ("due", value);
+      task.set ("due", value);
     }
   }
   else
   {
-    if (task.getAttribute ("due") != "")
+    if (task.get ("due") != "")
     {
-      if (task.getStatus () == T::recurring ||
-          task.getAttribute ("parent") != "")
+      if (task.getStatus () == Task::recurring ||
+          task.get ("parent") != "")
       {
         std::cout << "Cannot remove a due date from a recurring task." << std::endl;
       }
       else
       {
         std::cout << "Due date removed." << std::endl;
-        task.removeAttribute ("due");
+        task.remove ("due");
       }
     }
   }
@@ -363,33 +364,33 @@ static void parseTask (T& task, const std::string& after)
   {
     Date edited (::atoi (value.c_str ()));
 
-    if (task.getAttribute ("until") != "")
+    if (task.get ("until") != "")
     {
-      Date original (::atoi (task.getAttribute ("until").c_str ()));
+      Date original (::atoi (task.get ("until").c_str ()));
       if (!original.sameDay (edited))
       {
         std::cout << "Until date modified." << std::endl;
-        task.setAttribute ("until", value);
+        task.set ("until", value);
       }
     }
     else
     {
       std::cout << "Until date modified." << std::endl;
-      task.setAttribute ("until", value);
+      task.set ("until", value);
     }
   }
   else
   {
-    if (task.getAttribute ("until") != "")
+    if (task.get ("until") != "")
     {
       std::cout << "Until date removed." << std::endl;
-      task.removeAttribute ("until");
+      task.remove ("until");
     }
   }
 
   // recur
   value = findValue (after, "Recur:");
-  if (value != task.getAttribute ("recur"))
+  if (value != task.get ("recur"))
   {
     if (value != "")
     {
@@ -397,10 +398,10 @@ static void parseTask (T& task, const std::string& after)
       if (d.valid (value))
       {
         std::cout << "Recurrence modified." << std::endl;
-        if (task.getAttribute ("due") != "")
+        if (task.get ("due") != "")
         {
-          task.setAttribute ("recur", value);
-          task.setStatus (T::recurring);
+          task.set ("recur", value);
+          task.setStatus (Task::recurring);
         }
         else
           throw std::string ("A recurring task must have a due date.");
@@ -411,59 +412,59 @@ static void parseTask (T& task, const std::string& after)
     else
     {
       std::cout << "Recurrence removed." << std::endl;
-      task.setStatus (T::pending);
-      task.removeAttribute ("recur");
-      task.removeAttribute ("until");
-      task.removeAttribute ("mask");
-      task.removeAttribute ("imask");
+      task.setStatus (Task::pending);
+      task.remove ("recur");
+      task.remove ("until");
+      task.remove ("mask");
+      task.remove ("imask");
     }
   }
 
   // parent
   value = findValue (after, "Parent:");
-  if (value != task.getAttribute ("parent"))
+  if (value != task.get ("parent"))
   {
     if (value != "")
     {
       std::cout << "Parent UUID modified." << std::endl;
-      task.setAttribute ("parent", value);
+      task.set ("parent", value);
     }
     else
     {
       std::cout << "Parent UUID removed." << std::endl;
-      task.removeAttribute ("parent");
+      task.remove ("parent");
     }
   }
 
   // fg
   value = findValue (after, "Foreground color:");
-  if (value != task.getAttribute ("fg"))
+  if (value != task.get ("fg"))
   {
     if (value != "")
     {
       std::cout << "Foreground color modified." << std::endl;
-      task.setAttribute ("fg", value);
+      task.set ("fg", value);
     }
     else
     {
       std::cout << "Foreground color removed." << std::endl;
-      task.removeAttribute ("fg");
+      task.remove ("fg");
     }
   }
 
   // bg
   value = findValue (after, "Background color:");
-  if (value != task.getAttribute ("bg"))
+  if (value != task.get ("bg"))
   {
     if (value != "")
     {
       std::cout << "Background color modified." << std::endl;
-      task.setAttribute ("bg", value);
+      task.set ("bg", value);
     }
     else
     {
       std::cout << "Background color removed." << std::endl;
-      task.removeAttribute ("bg");
+      task.remove ("bg");
     }
   }
 
@@ -491,7 +492,9 @@ static void parseTask (T& task, const std::string& after)
     }
   }
 
+/*
   task.setAnnotations (annotations);
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
