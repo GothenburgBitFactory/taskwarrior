@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest test (9);
+  UnitTest test (8);
 
   T t;
   std::string s = t.compose ();
@@ -57,16 +57,10 @@ int main (int argc, char** argv)
 
   std::string format3 = "00000000-0000-0000-0000-000000000000 - [] [] [] Sample\n";
 
-  // Format 1 Round trip test.
-  std::string sample = "[] [] Sample";
-  T tf1;
-  tf1.parse (sample);
-  test.is (tf1.compose ().substr (36, std::string::npos),
-           format3.substr (36, std::string::npos),
-           "T::parse format 1 -> T::compose round trip");
+  // Format 1 Not supported as of 1.8.0.
 
   // Format 2 Round trip test.
-  sample = "00000000-0000-0000-0000-000000000000 - [] [] Sample";
+  std::string sample = "00000000-0000-0000-0000-000000000000 - [] [] Sample";
   T tf2;
   tf2.parse (sample);
   test.is (tf2.compose (), format3, "T::parse format 2 -> T::compose round trip");

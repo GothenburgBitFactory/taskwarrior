@@ -1,6 +1,6 @@
 PROJECT = t.t t2.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t \
-          parse.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t  \
-          cmd.t config.t
+          config.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t \
+          cmd.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib -lncurses
 OBJECTS = ../TDB2.o ../T.o ../Task.o ../valid.o ../text.o ../Date.o ../Table.o \
@@ -46,9 +46,6 @@ text.t: text.t.o $(OBJECTS) test.o
 
 autocomplete.t: autocomplete.t.o $(OBJECTS) test.o
 	g++ autocomplete.t.o $(OBJECTS) test.o $(LFLAGS) -o autocomplete.t
-
-parse.t: parse.t.o $(OBJECTS) test.o
-	g++ parse.t.o $(OBJECTS) test.o $(LFLAGS) -o parse.t
 
 seq.t: seq.t.o $(OBJECTS) test.o
 	g++ seq.t.o $(OBJECTS) test.o $(LFLAGS) -o seq.t

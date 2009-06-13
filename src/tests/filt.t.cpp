@@ -67,57 +67,49 @@ int main (int argc, char** argv)
   Task mods;
   mods.set ("name", "value");
 
-  Att a ("name", "value");
-  a.addMod ("is");
+  Att a ("name", "is", "value");
   f.clear ();
   f.push_back (a);
   test.ok (f.pass (mods), "name:value -> name.is:value = match");
   // TODO test inverse.
 
-  a = Att ("name", "value");
-  a.addMod ("isnt");
+  a = Att ("name", "isnt", "value");
   f.clear ();
   f.push_back (a);
   test.notok (f.pass (mods), "name:value -> name.isnt:value = no match");
   // TODO test inverse.
 
-  a = Att ("name", "val");
-  a.addMod ("startswith");
+  a = Att ("name", "startswith", "val");
   f.clear ();
   f.push_back (a);
   test.ok (f.pass (mods), "name:value -> name.startswith:val = match");
   // TODO test inverse.
 
-  a = Att ("name", "lue");
-  a.addMod ("endswith");
+  a = Att ("name", "endswith", "lue");
   f.clear ();
   f.push_back (a);
   test.ok (f.pass (mods), "name:value -> name.endswith:lue = match");
   // TODO test inverse.
 
-  a = Att ("name", "value");
-  a.addMod ("has");
+  a = Att ("name", "has", "alu");
   f.clear ();
   f.push_back (a);
   test.ok (f.pass (mods), "name:value -> name.has:alu = match");
   // TODO test inverse.
 
-  a = Att ("name", "value");
-  a.addMod ("hasnt");
+  a = Att ("name", "hasnt", "alu");
   f.clear ();
   f.push_back (a);
   test.notok (f.pass (mods), "name:value -> name.hasnt:alu = no match");
   // TODO test inverse.
 
-  a = Att ("name", "");
-  a.addMod ("any");
+  a = Att ("name", "any", "");
   f.clear ();
   f.push_back (a);
   test.ok (f.pass (mods), "name:value -> name.any: = match");
   // TODO test inverse.
 
-  a = Att ("name", "");
-  a.addMod ("none");
+  a = Att ("name", "none", "");
   f.clear ();
   f.push_back (a);
   test.notok (f.pass (mods), "name:value -> name.none: = no match");
@@ -126,14 +118,10 @@ int main (int argc, char** argv)
 /*
 "before"
 "after"
-"not"
-"synth"
 "under"
 "over"
-"first"
-"last"
-"this"
-"next"
+"above"
+"below"
 */
 
   return 0;
