@@ -41,7 +41,7 @@ void validSortColumns (const std::vector <std::string>&, const std::vector <std:
 bool validTag (const std::string&);
 
 // task.cpp
-void gatherNextTasks (/*const TDB&,*/ Task&, std::vector <Task>&, std::vector <int>&);
+void gatherNextTasks (std::vector <Task>&, std::vector <int>&);
 void onChangeCallback ();
 
 // recur.cpp
@@ -89,7 +89,6 @@ std::string handleReportGHistory ();
 std::string handleReportCalendar ();
 std::string handleReportStats ();
 std::string handleReportTimesheet ();
-
 std::string getFullDescription (Task&);
 std::string getDueDate (Task&);
 

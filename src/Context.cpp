@@ -199,13 +199,11 @@ std::string Context::dispatch ()
 */
 
   // Command that display IDs and therefore need TDB::gc first.
-/*
-  else if (command == "next")               { if (!inShadow) gcMod = tdb.gc (); out = handleReportNext    (); }
-*/
-  else if (cmd.validCustom (cmd.command))   { if (!inShadow) gcMod = tdb.gc (); out = handleCustomReport  (cmd.command); }
+  else if (cmd.command == "next")              { if (!inShadow) gcMod = tdb.gc (); out = handleReportNext    (); }
+  else if (cmd.validCustom (cmd.command))      { if (!inShadow) gcMod = tdb.gc (); out = handleCustomReport  (cmd.command); }
 
   // If the command is not recognized, display usage.
-  else                                      { out = shortUsage (); }
+  else                                         { out = shortUsage (); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
 // TODO
