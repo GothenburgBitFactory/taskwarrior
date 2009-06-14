@@ -27,41 +27,54 @@
 #ifndef INCLUDED_TDB
 #define INCLUDED_TDB
 
+#include <map>
 #include <vector>
 #include <string>
-#include "T.h"
+#include <Location.h>
+#include <Filter.h>
+#include <Task.h>
+
+// Length of longest line.
+#define T_LINE_MAX 32768
 
 class TDB
 {
 public:
-  TDB ();
-  ~TDB ();
+  TDB ();  // Default constructor
+  ~TDB (); // Destructor
 
-  void dataDirectory    (const std::string&);
-  bool allT             (std::vector <T>&);
-  bool pendingT         (std::vector <T>&);
-  bool allPendingT      (std::vector <T>&);
-  bool completedT       (std::vector <T>&) const;
-  bool allCompletedT    (std::vector <T>&) const;
-  bool addT             (const T&);
-  bool modifyT          (const T&);
-  int gc                ();
-  int nextId            ();
+  void  clear ();
+  void  location (const std::string&);
 
-  void noLock           ();
+  void  lock (bool lockFile = true);
+  void  unlock ();
 
-private:
-  bool lock             (FILE*) const;
-  bool overwritePending (std::vector <T>&);
-  bool writePending     (const T&);
-  bool writeCompleted   (const T&);
-  bool readLockedFile   (const std::string&, std::vector <std::string>&) const;
+  int   load (std::vector <Task>&, Filter&);
+  int   loadPending (std::vector <Task>&, Filter&);
+  int   loadCompleted (std::vector <Task>&, Filter&);
+
+  void  add (Task&);             // Single task add to pending
+  void  update (Task&, Task&);   // Single task update to pending
+  int   commit ();               // Write out all tasks
+  void  upgrade ();              // Convert both files to FF4
+  int   gc ();                   // Clean up pending
 
 private:
-  std::string mPendingFile;
-  std::string mCompletedFile;
+  FILE* openAndLock (const std::string&);
+
+private:
+  std::vector <Location> mLocations;
+  bool mLock;
+  bool mAllOpenAndLocked;
   int mId;
-  bool mNoLock;
+
+  std::vector <Task> mPending;   // Contents of pending.data
+//  std::vector <Task> mCompleted; // Contents of completed.data
+
+  std::vector <Task> mNew;       // Uncommitted new tasks
+  std::vector <Task> mModified;  // Uncommitted modified tasks
+
+  // TODO Need cache of raw file contents to preserve comments.
 };
 
 #endif

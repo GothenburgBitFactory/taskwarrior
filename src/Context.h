@@ -34,7 +34,7 @@
 #include "Subst.h"
 #include "Cmd.h"
 #include "Task.h"
-#include "TDB2.h"
+#include "TDB.h"
 #include "StringTable.h"
 
 class Context
@@ -67,7 +67,7 @@ public:
   Sequence                  sequence;
   Subst                     subst;
   Task                      task;
-  TDB2                      tdb;
+  TDB                       tdb;
   StringTable               stringtable;
   std::string               program;
   std::vector <std::string> args;

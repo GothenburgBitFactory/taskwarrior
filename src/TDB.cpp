@@ -24,386 +24,311 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <sys/file.h>
-#include <unistd.h>
-#include <string.h>
 
-#include "T.h"
-#include "TDB.h"
+#include <iostream>
+#include <sstream>
+#include <string.h>
+#include <stdio.h>
+#include <sys/file.h>
+#include "text.h"
 #include "util.h"
+#include "TDB.h"
+#include "main.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+//  The ctor/dtor do nothing.
+//  The lock/unlock methods hold the file open.
+//  There should be only one commit.
+//
+//  +- TDB::TDB
+//  |
+//  |  +- TDB::lock
+//  |  |    open
+//  |  |    [lock]
+//  |  |
+//  |  |  +- TDB::load (Filter)
+//  |  |  |    read all
+//  |  |  |    apply filter
+//  |  |  |    return subset
+//  |  |  |
+//  |  |  +- TDB::add (T)
+//  |  |  |
+//  |  |  +- TDB::update (T, T')
+//  |  |  |
+//  |  |  +- TDB::commit
+//  |  |      write all
+//  |  |
+//  |  +- TDB::unlock
+//  |       [unlock]
+//  |       close
+//  |
+//  +- TDB::~TDB
+//       [TDB::unlock]
+//
 TDB::TDB ()
-: mPendingFile ("")
-, mCompletedFile ("")
+: mLock (true)
+, mAllOpenAndLocked (false)
 , mId (1)
-, mNoLock (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 TDB::~TDB ()
 {
+  if (mAllOpenAndLocked)
+    unlock ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB::dataDirectory (const std::string& directory)
+void TDB::clear ()
 {
-  if (! access (expandPath (directory).c_str (), F_OK))
-  {
-    mPendingFile   = directory + "/pending.data";
-    mCompletedFile = directory + "/completed.data";
-  }
-  else
-  {
-    std::string error = "Directory '";
-    error += directory;
-    error += "' does not exist, or is not readable and writable.";
-    throw error;
-  }
+  mLocations.clear ();
+  mLock = true;
+
+  if (mAllOpenAndLocked)
+    unlock ();
+
+  mAllOpenAndLocked = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Combine allPendingT with allCompletedT.
-// Note: this method is O(N1) + O(N2), where N2 is not bounded.
-bool TDB::allT (std::vector <T>& all)
+void TDB::location (const std::string& path)
 {
-  all.clear ();
+  if (access (expandPath (path).c_str (), F_OK))
+    throw std::string ("Data location '") +
+          path +
+          "' does not exist, or is not readable and writable.";
 
-  // Retrieve all the pending records.
-  std::vector <T> allp;
-  if (allPendingT (allp))
+  mLocations.push_back (Location (path));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::lock (bool lockFile /* = true */)
+{
+  mLock = lockFile;
+
+  mPending.clear ();
+//  mCompleted.clear ();
+  mNew.clear ();
+  mPending.clear ();
+
+  foreach (location, mLocations)
   {
-    std::vector <T>::iterator i;
-    for (i = allp.begin (); i != allp.end (); ++i)
-      all.push_back (*i);
+    location->pending   = openAndLock (location->path + "/pending.data");
+    location->completed = openAndLock (location->path + "/completed.data");
+  }
 
-    // Retrieve all the completed records.
-    std::vector <T> allc;
-    if (allCompletedT (allc))
+  mAllOpenAndLocked = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::unlock ()
+{
+  if (mAllOpenAndLocked)
+  {
+    mPending.clear ();
+//    mCompleted.clear ();
+    mNew.clear ();
+    mModified.clear ();
+
+    foreach (location, mLocations)
     {
-      for (i = allc.begin (); i != allc.end (); ++i)
-        all.push_back (*i);
-
-      return true;
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Only accesses to the pending file result in Tasks that have assigned ids.
-bool TDB::pendingT (std::vector <T>& all)
-{
-  all.clear ();
-
-  std::vector <std::string> lines;
-  if (readLockedFile (mPendingFile, lines))
-  {
-    mId = 1;
-
-    int line = 1;
-    std::vector <std::string>::iterator it;
-    for (it = lines.begin (); it != lines.end (); ++it)
-    {
-      try
-      {
-        T t (*it);
-        t.setId (mId++);
-        if (t.getStatus () == T::pending)
-          all.push_back (t);
-      }
-
-      catch (std::string& e)
-      {
-        std::stringstream more;
-        more << "  Line " << line << ", in " << "pending.data";
-
-        throw e + more.str ();
-      }
-
-      ++line;
+      fclose (location->pending);
+      location->pending = NULL;
+      fclose (location->completed);
+      location->completed = NULL;
     }
 
-    return true;
+    mAllOpenAndLocked = false;
   }
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Only accesses to the pending file result in Tasks that have assigned ids.
-bool TDB::allPendingT (std::vector <T>& all)
+// Returns number of filtered tasks.
+// Note: tasks.clear () is deliberately not called, to allow the combination of
+//       multiple files.
+int TDB::load (std::vector <Task>& tasks, Filter& filter)
 {
-  all.clear ();
+  loadPending   (tasks, filter);
+  loadCompleted (tasks, filter);
 
-  std::vector <std::string> lines;
-  if (readLockedFile (mPendingFile, lines))
+  return tasks.size ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Returns number of filtered tasks.
+// Note: tasks.clear () is deliberately not called, to allow the combination of
+//       multiple files.
+int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
+{
+  std::string file;
+  int line_number;
+
+  try
   {
-    mId = 1;
-
-    int line = 1;
-    std::vector <std::string>::iterator it;
-    for (it = lines.begin (); it != lines.end (); ++it)
+    char line[T_LINE_MAX];
+    foreach (location, mLocations)
     {
-      try
-      {
-        T t (*it);
-        t.setId (mId++);
-        all.push_back (t);
-      }
+      line_number = 1;
+      file = location->path + "/pending.data";
 
-      catch (std::string& e)
-      {
-        std::stringstream more;
-        more << "  Line " << line << ", in " << "pending.data";
-
-        throw e + more.str ();
-      }
-
-      ++line;
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::completedT (std::vector <T>& all) const
-{
-  all.clear ();
-
-  std::vector <std::string> lines;
-  if (readLockedFile (mCompletedFile, lines))
-  {
-    int line = 1;
-    std::vector <std::string>::iterator it;
-    for (it = lines.begin (); it != lines.end (); ++it)
-    {
-      try
-      {
-        T t (*it);
-        if (t.getStatus () != T::deleted)
-          all.push_back (t);
-      }
-
-      catch (std::string& e)
-      {
-        std::stringstream more;
-        more << "  Line " << line << ", in " << "pending.data";
-
-        throw e + more.str ();
-      }
-
-      ++line;
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::allCompletedT (std::vector <T>& all) const
-{
-  all.clear ();
-
-  std::vector <std::string> lines;
-  if (readLockedFile (mCompletedFile, lines))
-  {
-    int line = 1;
-    std::vector <std::string>::iterator it;
-    for (it = lines.begin (); it != lines.end (); ++it)
-    {
-      try
-      {
-        T t (*it);
-        all.push_back (t);
-      }
-
-      catch (std::string& e)
-      {
-        std::stringstream more;
-        more << "  Line " << line << ", in " << "pending.data";
-
-        throw e + more.str ();
-      }
-
-      ++line;
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::addT (const T& t)
-{
-  T task (t);
-  std::vector <std::string> tags;
-  task.getTags (tags);
-
-  // +tag or -tag are both considered valid tags to add to a new pending task.
-  // Generating an error here would not be friendly.
-  for (unsigned int i = 0; i < tags.size (); ++i)
-  {
-    if (tags[i][0] == '-' || tags[i][0] == '+')
-    {
-      task.removeTag (tags[i]);
-      task.addTag (tags[i].substr (1, std::string::npos));
-    }
-  }
-
-  if (task.getStatus () == T::pending ||
-      task.getStatus () == T::recurring)
-  {
-    return writePending (task);
-  }
-
-  return writeCompleted (task);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::modifyT (const T& t)
-{
-  T modified (t);
-
-  std::vector <T> all;
-  allPendingT (all);
-
-  std::vector <T> pending;
-
-  std::vector <T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
-  {
-    if (it->getId () == t.getId ())
-    {
-      modified.setUUID (it->getUUID ());
-      pending.push_back (modified);
-    }
-    else
-      pending.push_back (*it);
-  }
-
-  return overwritePending (pending);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::lock (FILE* file) const
-{
-  if (mNoLock)
-    return true;
-
-  return flock (fileno (file), LOCK_EX) ? false : true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::overwritePending (std::vector <T>& all)
-{
-  // Write a single task to the pending file
-  FILE* out;
-  if ((out = fopen (mPendingFile.c_str (), "w")))
-  {
-    int retry = 0;
-    if (!mNoLock)
-      while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
-        delay (0.1);
-
-    std::vector <T>::iterator it;
-    for (it = all.begin (); it != all.end (); ++it)
-      fputs (it->compose ().c_str (), out);
-
-    fclose (out);
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::writePending (const T& t)
-{
-  // Write a single task to the pending file
-  FILE* out;
-  if ((out = fopen (mPendingFile.c_str (), "a")))
-  {
-    int retry = 0;
-    if (!mNoLock)
-      while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
-        delay (0.1);
-
-    fputs (t.compose ().c_str (), out);
-    fclose (out);
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::writeCompleted (const T& t)
-{
-  // Write a single task to the pending file
-  FILE* out;
-  if ((out = fopen (mCompletedFile.c_str (), "a")))
-  {
-    int retry = 0;
-    if (!mNoLock)
-      while (flock (fileno (out), LOCK_EX) && ++retry <= 3)
-        delay (0.1);
-
-    fputs (t.compose ().c_str (), out);
-
-    fclose (out);
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool TDB::readLockedFile (
-  const std::string& file,
-  std::vector <std::string>& contents) const
-{
-  contents.clear ();
-
-  if (! access (file.c_str (), F_OK | R_OK))
-  {
-    FILE* in;
-    if ((in = fopen (file.c_str (), "r")))
-    {
-      int retry = 0;
-      if (!mNoLock)
-        while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
-          delay (0.1);
-
-      char line[T_LINE_MAX];
-      while (fgets (line, T_LINE_MAX, in))
+      fseek (location->pending, 0, SEEK_SET);
+      while (fgets (line, T_LINE_MAX, location->pending))
       {
         int length = ::strlen (line);
         if (length > 1)
         {
+          // TODO Add hidden attribute indicating source?
           line[length - 1] = '\0'; // Kill \n
-          contents.push_back (line);
-        }
-      }
+          Task task (line);
+          task.id = mId++;
 
-      fclose (in);
-      return true;
+          mPending.push_back (task);
+          if (filter.pass (task))
+            tasks.push_back (task);
+        }
+
+        ++line_number;
+      }
     }
   }
 
-  return false;
+  catch (std::string& e)
+  {
+    std::stringstream s;
+    s << "  int " << file << " at line " << line_number;
+    throw e + s.str ();
+  }
+
+  return tasks.size ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Returns number of filtered tasks.
+// Note: tasks.clear () is deliberately not called, to allow the combination of
+//       multiple files.
+int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
+{
+  std::string file;
+  int line_number;
+
+  try
+  {
+    char line[T_LINE_MAX];
+    foreach (location, mLocations)
+    {
+      // TODO If the filter contains Status:x where x is not deleted or
+      //      completed, then this can be skipped.
+
+      line_number = 1;
+      file = location->path + "/completed.data";
+
+      fseek (location->completed, 0, SEEK_SET);
+      while (fgets (line, T_LINE_MAX, location->completed))
+      {
+        int length = ::strlen (line);
+        if (length > 1)
+        {
+          // TODO Add hidden attribute indicating source?
+          line[length - 1] = '\0'; // Kill \n
+          Task task (line);
+          task.id = mId++;
+
+//          mCompleted.push_back (task);
+          if (filter.pass (task))
+            tasks.push_back (task);
+        }
+
+        ++line_number;
+      }
+    }
+  }
+
+  catch (std::string& e)
+  {
+    std::stringstream s;
+    s << "  int " << file << " at line " << line_number;
+    throw e + s.str ();
+  }
+
+  return tasks.size ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO Write to transaction log.
+// Note: mLocations[0] is where all tasks are written.
+void TDB::add (Task& task)
+{
+  mNew.push_back (task);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO Write to transaction log.
+void TDB::update (Task& before, Task& after)
+{
+  mModified.push_back (after);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO Writes all, including comments
+// Interestingly, only the pending file gets written to.  The completed file is
+// only modified by TDB::gc.
+int TDB::commit ()
+{
+  int quantity = mNew.size () + mModified.size ();
+
+  // This is an optimization.  If there are only new tasks, and none were
+  // modified, simply seek to the end of pending and write.
+  if (mNew.size () && ! mModified.size ())
+  {
+    fseek (mLocations[0].pending, 0, SEEK_END);
+    foreach (task, mNew)
+    {
+      mPending.push_back (*task);
+      fputs (task->composeF4 ().c_str (), mLocations[0].pending);
+    }
+
+    mNew.clear ();
+    return quantity;
+  }
+
+  // The alternative is to potentially rewrite both files.
+  else if (mNew.size () || mModified.size ())
+  {
+    foreach (task, mPending)
+      foreach (mtask, mModified)
+        if (task->id == mtask->id)
+          *task = *mtask;
+
+    mModified.clear ();
+
+    foreach (task, mNew)
+      mPending.push_back (*task);
+
+    mNew.clear ();
+
+    // Write out all pending.
+    fseek (mLocations[0].pending, 0, SEEK_SET);
+    // TODO Do I need to truncate the file?  Does file I/O even work that way 
+    //      any more?  I forget.
+    foreach (task, mPending)
+      fputs (task->composeF4 ().c_str (), mLocations[0].pending);
+  }
+
+  return quantity;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO -> FF4
+void TDB::upgrade ()
+{
+  // TODO Read all pending
+  // TODO Write out all pending
+
+  // TODO Read all completed
+  // TODO Write out all completed
+
+  throw std::string ("unimplemented TDB::upgrade");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -412,7 +337,7 @@ bool TDB::readLockedFile (
 int TDB::gc ()
 {
   int count = 0;
-
+/*
   // Read everything from the pending file.
   std::vector <T> all;
   allPendingT (all);
@@ -442,21 +367,33 @@ int TDB::gc ()
   // task was transferred.
   if (count)
     overwritePending (pending);
-
+*/
   return count;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int TDB::nextId ()
+FILE* TDB::openAndLock (const std::string& file)
 {
-  return mId++;
+  // Check for access.
+  if (access (file.c_str (), F_OK | R_OK | W_OK))
+    throw std::string ("Task does not have the correct permissions for '") +
+          file + "'.";
+
+  // Open the file.
+  FILE* in = fopen (file.c_str (), "r+");
+  if (!in)
+    throw std::string ("Could not open '") + file + "'.";
+
+  // Lock if desired.  Try three times before failing.
+  int retry = 0;
+  if (mLock)
+    while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
+      delay (0.1);
+
+  if (retry > 3)
+    throw std::string ("Could not lock '") + file + "'.";
+
+  return in;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB::noLock ()
-{
-  mNoLock = true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
