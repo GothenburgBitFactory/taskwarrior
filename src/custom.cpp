@@ -88,22 +88,7 @@ std::string handleCustomReport (const std::string& report)
   context.tdb.load (tasks, context.filter);
   context.tdb.unlock ();
 
-/*
-  // Load all pending tasks.
-  std::vector <T> tasks;
-  tdb.allPendingT (tasks);
-  handleRecurrence (tdb, tasks);
-
-  // Apply filters.
-  {
-    std::string ignore;
-    T filterTask;
-    parse (filterArgs, ignore, filterTask);
-
-    filter (tasks, filterTask);  // Filter from custom report
-    filter (tasks, task);        // Filter from command line
-  }
-*/
+  // TODO handleRecurrence (tdb, tasks);
 
   // Initialize colorization for subsequent auto colorization.
   initializeColorRules ();

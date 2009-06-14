@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <sstream>
 #include "Filter.h"
 #include "util.h"
@@ -41,6 +42,8 @@ bool Filter::pass (const Record& record) const
   // but it doesn't match, fail.
   foreach (att, (*this))
   {
+// TODO std::cout << "Filter::pass " << att->name () << "=" << att->value () << std::endl;
+
     // If the record doesn't have the attribute, match against a default one.
     // This is because "att" may contain a modifier like "name.not:X".
     if ((r = record.find (att->name ())) == record.end ())

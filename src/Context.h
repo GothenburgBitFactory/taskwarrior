@@ -72,7 +72,7 @@ public:
   std::string               program;
   std::vector <std::string> args;
   Cmd                       cmd;
-  std::vector <std::string> tagAdditions;
+  std::vector <std::string> tagAdditions;  // TODO This is redundant, remove.
   std::vector <std::string> tagRemovals;
 
 private:

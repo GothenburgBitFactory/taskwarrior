@@ -74,12 +74,6 @@ public:
 private:
   int determineVersion (const std::string&);
   void legacyParse (const std::string&);
-
-private:
-/*
-  std::vector<std::string>           mTags;
-  std::vector<std::string>           mRemoveTags;
-*/
 };
 
 #endif

@@ -73,6 +73,10 @@ std::string handleAdd ()
       context.task.set ("priority", defaultPriority);
   }
 
+  // Include tags.
+  foreach (tag, context.tagAdditions)
+    context.task.addTag (*tag);
+
   // Only valid tasks can be added.
   context.task.validate ();
 
