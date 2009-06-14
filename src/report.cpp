@@ -1189,13 +1189,15 @@ std::string handleReportGHistory ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleReportTimesheet ()
 {
-  std::stringstream out;
+  // Scan the pending tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.load (tasks, context.filter);
+  context.tdb.unlock ();
+  // TODO handleRecurrence (tdb, tasks);
 
-/*
-  // Get all the tasks.
-  std::vector <T> tasks;
-  tdb.allT (tasks);
-  filter (tasks, task);
+  // Just do this once.
+  int width = context.getWidth ();
 
   // What day of the week does the user consider the first?
   int weekStart = Date::dayOfWeek (context.config.get ("weekstart", "Sunday"));
@@ -1214,10 +1216,10 @@ std::string handleReportTimesheet ()
 
   // Determine how many reports to run.
   int quantity = 1;
-  std::vector <int> sequence = task.getAllIds ();
-  if (sequence.size () == 1)
-    quantity = sequence[0];
+  if (context.sequence.size () == 1)
+    quantity = context.sequence[0];
 
+  std::stringstream out;
   for (int week = 0; week < quantity; ++week)
   {
     out << std::endl
@@ -1230,7 +1232,7 @@ std::string handleReportTimesheet ()
 
     // Render the completed table.
     Table completed;
-    completed.setTableWidth (context.getWidth ());
+    completed.setTableWidth (width);
     completed.addColumn ("   ");
     completed.addColumn ("Project");
     completed.addColumn ("Due");
@@ -1250,18 +1252,18 @@ std::string handleReportTimesheet ()
     completed.setColumnJustification (2, Table::right);
     completed.setColumnJustification (3, Table::left);
 
-    foreach (t, tasks)
+    foreach (task, tasks)
     {
       // If task completed within range.
-      if (t->getStatus () == Task::completed)
+      if (task->getStatus () == Task::completed)
       {
-        Date compDate (::atoi (t->getAttribute ("end").c_str ()));
+        Date compDate (::atoi (task->get ("end").c_str ()));
         if (compDate >= start && compDate < end)
         {
           int row = completed.addRow ();
-          completed.addCell (row, 1, t->getAttribute ("project"));
+          completed.addCell (row, 1, task->get ("project"));
 
-          std::string due = t->getAttribute ("due");
+          std::string due = task->get ("due");
           if (due.length ())
           {
             Date d (::atoi (due.c_str ()));
@@ -1269,23 +1271,22 @@ std::string handleReportTimesheet ()
             completed.addCell (row, 2, due);
           }
 
-          std::string description = t->getDescription ();
-          std::string when;
-          std::map <time_t, std::string> annotations;
-          t->getAnnotations (annotations);
+          std::string description = task->get ("description");
+          std::vector <Att> annotations;
+          tasks[row].getAnnotations (annotations);
           foreach (anno, annotations)
           {
-            Date dt (anno->first);
-            when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-            description += "\n" + when + " " + anno->second;
+            Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
+            std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+            description += "\n" + when + " " + anno->value ();
           }
           completed.addCell (row, 3, description);
 
           if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
           {
-            Text::color fg = Text::colorCode (t->getAttribute ("fg"));
-            Text::color bg = Text::colorCode (t->getAttribute ("bg"));
-            autoColorize (*t, fg, bg);
+            Text::color fg = Text::colorCode (task->get ("fg"));
+            Text::color bg = Text::colorCode (task->get ("bg"));
+            autoColorize (*task, fg, bg);
             completed.setRowFg (row, fg);
             completed.setRowBg (row, bg);
           }
@@ -1301,7 +1302,7 @@ std::string handleReportTimesheet ()
 
     // Now render the started table.
     Table started;
-    started.setTableWidth (context.getWidth ());
+    started.setTableWidth (width);
     started.addColumn ("   ");
     started.addColumn ("Project");
     started.addColumn ("Due");
@@ -1320,19 +1321,19 @@ std::string handleReportTimesheet ()
     started.setColumnJustification (1, Table::left);
     started.setColumnJustification (2, Table::right);
     started.setColumnJustification (3, Table::left);
-    foreach (t, tasks)
+    foreach (task, tasks)
     {
       // If task started within range, but not completed withing range.
-      if (t->getStatus () == Task::pending &&
-          t->has ("start"))
+      if (task->getStatus () == Task::pending &&
+          task->has ("start"))
       {
-        Date startDate (::atoi (t->getAttribute ("start").c_str ()));
+        Date startDate (::atoi (task->get ("start").c_str ()));
         if (startDate >= start && startDate < end)
         {
           int row = started.addRow ();
-          started.addCell (row, 1, t->getAttribute ("project"));
+          started.addCell (row, 1, task->get ("project"));
 
-          std::string due = t->getAttribute ("due");
+          std::string due = task->get ("due");
           if (due.length ())
           {
             Date d (::atoi (due.c_str ()));
@@ -1340,23 +1341,22 @@ std::string handleReportTimesheet ()
             started.addCell (row, 2, due);
           }
 
-          std::string description = t->getDescription ();
-          std::string when;
-          std::map <time_t, std::string> annotations;
-          t->getAnnotations (annotations);
+          std::string description = task->get ("description");
+          std::vector <Att> annotations;
+          tasks[row].getAnnotations (annotations);
           foreach (anno, annotations)
           {
-            Date dt (anno->first);
-            when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-            description += "\n" + when + " " + anno->second;
+            Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
+            std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+            description += "\n" + when + " " + anno->value ();
           }
           started.addCell (row, 3, description);
 
           if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
           {
-            Text::color fg = Text::colorCode (t->getAttribute ("fg"));
-            Text::color bg = Text::colorCode (t->getAttribute ("bg"));
-            autoColorize (*t, fg, bg);
+            Text::color fg = Text::colorCode (task->get ("fg"));
+            Text::color bg = Text::colorCode (task->get ("bg"));
+            autoColorize (*task, fg, bg);
             started.setRowFg (row, fg);
             started.setRowBg (row, bg);
           }
@@ -1375,7 +1375,7 @@ std::string handleReportTimesheet ()
     start -= 7 * 86400;
     end   -= 7 * 86400;
   }
-*/
+
   return out.str ();
 }
 

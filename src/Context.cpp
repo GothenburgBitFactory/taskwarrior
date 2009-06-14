@@ -178,8 +178,8 @@ std::string Context::dispatch ()
   else if (cmd.command == "summary")           { out = handleReportSummary   (); }
 /*
   else if (cmd.command == "calendar")          { out = handleReportCalendar  (); }
-  else if (cmd.command == "timesheet")         { out = handleReportTimesheet (); }
 */
+  else if (cmd.command == "timesheet")         { out = handleReportTimesheet (); }
   else if (cmd.command == "add")               { out = handleAdd             (); }
 /*
   else if (cmd.command == "" && task.getId ()) { out = handleModify          (); }
