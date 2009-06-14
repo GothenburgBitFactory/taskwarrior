@@ -24,8 +24,8 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_TDB2
-#define INCLUDED_TDB2
+#ifndef INCLUDED_TDB
+#define INCLUDED_TDB
 
 #include <map>
 #include <vector>
@@ -37,11 +37,11 @@
 // Length of longest line.
 #define T_LINE_MAX 32768
 
-class TDB2
+class TDB
 {
 public:
-  TDB2 ();  // Default constructor
-  ~TDB2 (); // Destructor
+  TDB ();  // Default constructor
+  ~TDB (); // Destructor
 
   void  clear ();
   void  location (const std::string&);

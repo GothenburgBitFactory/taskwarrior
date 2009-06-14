@@ -32,7 +32,7 @@
 #include <sys/file.h>
 #include "text.h"
 #include "util.h"
-#include "TDB2.h"
+#include "TDB.h"
 #include "main.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@
 //  +- TDB::~TDB
 //       [TDB::unlock]
 //
-TDB2::TDB2 ()
+TDB::TDB ()
 : mLock (true)
 , mAllOpenAndLocked (false)
 , mId (1)
@@ -73,14 +73,14 @@ TDB2::TDB2 ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TDB2::~TDB2 ()
+TDB::~TDB ()
 {
   if (mAllOpenAndLocked)
     unlock ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::clear ()
+void TDB::clear ()
 {
   mLocations.clear ();
   mLock = true;
@@ -92,7 +92,7 @@ void TDB2::clear ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::location (const std::string& path)
+void TDB::location (const std::string& path)
 {
   if (access (expandPath (path).c_str (), F_OK))
     throw std::string ("Data location '") +
@@ -103,7 +103,7 @@ void TDB2::location (const std::string& path)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::lock (bool lockFile /* = true */)
+void TDB::lock (bool lockFile /* = true */)
 {
   mLock = lockFile;
 
@@ -122,7 +122,7 @@ void TDB2::lock (bool lockFile /* = true */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::unlock ()
+void TDB::unlock ()
 {
   if (mAllOpenAndLocked)
   {
@@ -147,7 +147,7 @@ void TDB2::unlock ()
 // Returns number of filtered tasks.
 // Note: tasks.clear () is deliberately not called, to allow the combination of
 //       multiple files.
-int TDB2::load (std::vector <Task>& tasks, Filter& filter)
+int TDB::load (std::vector <Task>& tasks, Filter& filter)
 {
   loadPending   (tasks, filter);
   loadCompleted (tasks, filter);
@@ -159,7 +159,7 @@ int TDB2::load (std::vector <Task>& tasks, Filter& filter)
 // Returns number of filtered tasks.
 // Note: tasks.clear () is deliberately not called, to allow the combination of
 //       multiple files.
-int TDB2::loadPending (std::vector <Task>& tasks, Filter& filter)
+int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
 {
   std::string file;
   int line_number;
@@ -207,7 +207,7 @@ int TDB2::loadPending (std::vector <Task>& tasks, Filter& filter)
 // Returns number of filtered tasks.
 // Note: tasks.clear () is deliberately not called, to allow the combination of
 //       multiple files.
-int TDB2::loadCompleted (std::vector <Task>& tasks, Filter& filter)
+int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 {
   std::string file;
   int line_number;
@@ -257,14 +257,14 @@ int TDB2::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
 // Note: mLocations[0] is where all tasks are written.
-void TDB2::add (Task& task)
+void TDB::add (Task& task)
 {
   mNew.push_back (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
-void TDB2::update (Task& before, Task& after)
+void TDB::update (Task& before, Task& after)
 {
   mModified.push_back (after);
 }
@@ -272,8 +272,8 @@ void TDB2::update (Task& before, Task& after)
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Writes all, including comments
 // Interestingly, only the pending file gets written to.  The completed file is
-// only modified by TDB2::gc.
-int TDB2::commit ()
+// only modified by TDB::gc.
+int TDB::commit ()
 {
   int quantity = mNew.size () + mModified.size ();
 
@@ -320,7 +320,7 @@ int TDB2::commit ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO -> FF4
-void TDB2::upgrade ()
+void TDB::upgrade ()
 {
   // TODO Read all pending
   // TODO Write out all pending
@@ -328,13 +328,13 @@ void TDB2::upgrade ()
   // TODO Read all completed
   // TODO Write out all completed
 
-  throw std::string ("unimplemented TDB2::upgrade");
+  throw std::string ("unimplemented TDB::upgrade");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Scans the pending tasks for any that are completed or deleted, and if so,
 // moves them to the completed.data file.  Returns a count of tasks moved.
-int TDB2::gc ()
+int TDB::gc ()
 {
   int count = 0;
 /*
@@ -372,7 +372,7 @@ int TDB2::gc ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-FILE* TDB2::openAndLock (const std::string& file)
+FILE* TDB::openAndLock (const std::string& file)
 {
   // Check for access.
   if (access (file.c_str (), F_OK | R_OK | W_OK))
