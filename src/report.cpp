@@ -501,18 +501,18 @@ std::string handleInfo ()
 // B              109   3d 12h       10%  XXX---------------------
 std::string handleReportSummary ()
 {
-  std::stringstream out;
-/*
-  std::vector <T> tasks;
-  tdb.allT (tasks);
-  handleRecurrence (tdb, tasks);
-  filter (tasks, task);
+  // Scan the pending tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.load (tasks, context.filter);
+  context.tdb.unlock ();
+  // TODO handleRecurrence (tdb, tasks);
 
   // Generate unique list of project names from all pending tasks.
   std::map <std::string, bool> allProjects;
-  foreach (t, tasks)
-    if (t->getStatus () == T::pending)
-      allProjects[t->getAttribute ("project")] = false;
+  foreach (task, tasks)
+    if (task->getStatus () == Task::pending)
+      allProjects[task->get ("project")] = false;
 
   // Initialize counts, sum.
   std::map <std::string, int> countPending;
@@ -522,35 +522,35 @@ std::string handleReportSummary ()
   time_t now = time (NULL);
 
   // Initialize counters.
-  foreach (i, allProjects)
+  foreach (project, allProjects)
   {
-    countPending   [i->first] = 0;
-    countCompleted [i->first] = 0;
-    sumEntry       [i->first] = 0.0;
-    counter        [i->first] = 0;
+    countPending   [project->first] = 0;
+    countCompleted [project->first] = 0;
+    sumEntry       [project->first] = 0.0;
+    counter        [project->first] = 0;
   }
 
   // Count the various tasks.
-  foreach (t, tasks)
+  foreach (task, tasks)
   {
-    std::string project = t->getAttribute ("project");
+    std::string project = task->get ("project");
     ++counter[project];
 
-    if (t->getStatus () == T::pending)
+    if (task->getStatus () == Task::pending)
     {
       ++countPending[project];
 
-      time_t entry = ::atoi (t->getAttribute ("entry").c_str ());
+      time_t entry = ::atoi (task->get ("entry").c_str ());
       if (entry)
         sumEntry[project] = sumEntry[project] + (double) (now - entry);
     }
 
-    else if (t->getStatus () == T::completed)
+    else if (task->getStatus () == Task::completed)
     {
       ++countCompleted[project];
 
-      time_t entry = ::atoi (t->getAttribute ("entry").c_str ());
-      time_t end   = ::atoi (task.getAttribute ("end").c_str ());
+      time_t entry = ::atoi (task->get ("entry").c_str ());
+      time_t end   = ::atoi (task->get ("end").c_str ());
       if (entry && end)
         sumEntry[project] = sumEntry[project] + (double) (end - entry);
     }
@@ -630,6 +630,7 @@ std::string handleReportSummary ()
     }
   }
 
+  std::stringstream out;
   if (table.rowCount ())
     out << optionalBlankLine ()
         << table.render ()
@@ -639,7 +640,7 @@ std::string handleReportSummary ()
         << std::endl;
   else
     out << "No projects." << std::endl;
-*/
+
   return out.str ();
 }
 
@@ -1252,7 +1253,7 @@ std::string handleReportTimesheet ()
     foreach (t, tasks)
     {
       // If task completed within range.
-      if (t->getStatus () == T::completed)
+      if (t->getStatus () == Task::completed)
       {
         Date compDate (::atoi (t->getAttribute ("end").c_str ()));
         if (compDate >= start && compDate < end)
@@ -1322,7 +1323,7 @@ std::string handleReportTimesheet ()
     foreach (t, tasks)
     {
       // If task started within range, but not completed withing range.
-      if (t->getStatus () == T::pending &&
+      if (t->getStatus () == Task::pending &&
           t->has ("start"))
       {
         Date startDate (::atoi (t->getAttribute ("start").c_str ()));
