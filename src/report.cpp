@@ -308,11 +308,8 @@ std::string handleInfo ()
     table.addCell (row, 0, "ID");
     table.addCell (row, 1, task->id);
 
-    std::string status = task->getStatus () == Task::pending   ? "Pending"
-                       : task->getStatus () == Task::completed ? "Completed"
-                       : task->getStatus () == Task::deleted   ? "Deleted"
-                       : task->getStatus () == Task::recurring ? "Recurring"
-                       : "";
+    std::string status = Task::statusToText (task->getStatus ());
+
     if (task->has ("parent"))
       status += " (Recurring)";
 
@@ -320,20 +317,9 @@ std::string handleInfo ()
     table.addCell (row, 0, "Status");
     table.addCell (row, 1, status);
 
-    std::string description = task->get ("description");
-    std::string when;
-    std::vector <Att> annotations;
-    task->getAnnotations (annotations);
-    foreach (anno, annotations)
-    {
-      Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
-      when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-      description += "\n" + when + " " + anno->value ();
-    }
-
     row = table.addRow ();
     table.addCell (row, 0, "Description");
-    table.addCell (row, 1, description);
+    table.addCell (row, 1, getFullDescription (*task));
 
     if (task->has ("project"))
     {
@@ -388,29 +374,25 @@ std::string handleInfo ()
     // due (colored)
     bool imminent = false;
     bool overdue = false;
-    std::string due = task->get ("due");
-    if (due != "")
+    if (task->has ("due"))
     {
       row = table.addRow ();
       table.addCell (row, 0, "Due");
 
-      Date dt (::atoi (due.c_str ()));
-      due = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+      Date dt (::atoi (task->get ("due").c_str ()));
+      std::string due = getDueDate (*task);
       table.addCell (row, 1, due);
 
-      if (due.length ())
-      {
-        overdue = (dt < now) ? true : false;
-        Date nextweek = now + 7 * 86400;
-        imminent = dt < nextweek ? true : false;
+      overdue = (dt < now) ? true : false;
+      Date nextweek = now + 7 * 86400;
+      imminent = dt < nextweek ? true : false;
 
-        if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
-        {
-          if (overdue)
-            table.setCellFg (row, 1, Text::colorCode (context.config.get ("color.overdue", "red")));
-          else if (imminent)
-            table.setCellFg (row, 1, Text::colorCode (context.config.get ("color.due", "yellow")));
-        }
+      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+      {
+        if (overdue)
+          table.setCellFg (row, 1, Text::colorCode (context.config.get ("color.overdue", "red")));
+        else if (imminent)
+          table.setCellFg (row, 1, Text::colorCode (context.config.get ("color.due", "yellow")));
       }
     }
 
@@ -1262,25 +1244,8 @@ std::string handleReportTimesheet ()
         {
           int row = completed.addRow ();
           completed.addCell (row, 1, task->get ("project"));
-
-          std::string due = task->get ("due");
-          if (due.length ())
-          {
-            Date d (::atoi (due.c_str ()));
-            due = d.toString (context.config.get ("dateformat", "m/d/Y"));
-            completed.addCell (row, 2, due);
-          }
-
-          std::string description = task->get ("description");
-          std::vector <Att> annotations;
-          tasks[row].getAnnotations (annotations);
-          foreach (anno, annotations)
-          {
-            Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
-            std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-            description += "\n" + when + " " + anno->value ();
-          }
-          completed.addCell (row, 3, description);
+          completed.addCell (row, 2, getDueDate (*task));
+          completed.addCell (row, 3, getFullDescription (*task));
 
           if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
           {
@@ -1332,25 +1297,8 @@ std::string handleReportTimesheet ()
         {
           int row = started.addRow ();
           started.addCell (row, 1, task->get ("project"));
-
-          std::string due = task->get ("due");
-          if (due.length ())
-          {
-            Date d (::atoi (due.c_str ()));
-            due = d.toString (context.config.get ("dateformat", "m/d/Y"));
-            started.addCell (row, 2, due);
-          }
-
-          std::string description = task->get ("description");
-          std::vector <Att> annotations;
-          tasks[row].getAnnotations (annotations);
-          foreach (anno, annotations)
-          {
-            Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
-            std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-            description += "\n" + when + " " + anno->value ();
-          }
-          started.addCell (row, 3, description);
+          started.addCell (row, 2, getDueDate (*task));
+          started.addCell (row, 3, getFullDescription (*task));
 
           if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
           {
@@ -2027,6 +1975,36 @@ void gatherNextTasks (
   // Convert map to vector.
   foreach (i, matching)
     all.push_back (i->first);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+std::string getFullDescription (Task& task)
+{
+  std::string desc = task.get ("description");
+
+  std::vector <Att> annotations;
+  task.getAnnotations (annotations);
+  foreach (anno, annotations)
+  {
+    Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
+    std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+    desc += "\n" + when + " " + anno->value ();
+  }
+
+  return desc;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+std::string getDueDate (Task& task)
+{
+  std::string due = task.get ("due");
+  if (due.length ())
+  {
+    Date d (::atoi (due.c_str ()));
+    due = d.toString (context.config.get ("dateformat", "m/d/Y"));
+  }
+
+  return due;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

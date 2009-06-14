@@ -90,6 +90,9 @@ std::string handleReportCalendar ();
 std::string handleReportStats ();
 std::string handleReportTimesheet ();
 
+std::string getFullDescription (Task&);
+std::string getDueDate (Task&);
+
 // custom.cpp
 std::string handleCustomReport (const std::string&);
 
