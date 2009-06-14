@@ -107,6 +107,11 @@ void TDB2::lock (bool lockFile /* = true */)
 {
   mLock = lockFile;
 
+  mPending.clear ();
+//  mCompleted.clear ();
+  mNew.clear ();
+  mPending.clear ();
+
   foreach (location, mLocations)
   {
     location->pending   = openAndLock (location->path + "/pending.data");
@@ -121,6 +126,11 @@ void TDB2::unlock ()
 {
   if (mAllOpenAndLocked)
   {
+    mPending.clear ();
+//    mCompleted.clear ();
+    mNew.clear ();
+    mModified.clear ();
+
     foreach (location, mLocations)
     {
       fclose (location->pending);
@@ -173,6 +183,7 @@ int TDB2::loadPending (std::vector <Task>& tasks, Filter& filter)
           Task task (line);
           task.id = mId++;
 
+          mPending.push_back (task);
           if (filter.pass (task))
             tasks.push_back (task);
         }
@@ -223,6 +234,7 @@ int TDB2::loadCompleted (std::vector <Task>& tasks, Filter& filter)
           Task task (line);
           task.id = mId++;
 
+//          mCompleted.push_back (task);
           if (filter.pass (task))
             tasks.push_back (task);
         }
@@ -245,36 +257,77 @@ int TDB2::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
 // Note: mLocations[0] is where all tasks are written.
-void TDB2::add (Task& after)
+void TDB2::add (Task& task)
 {
-  // Seek to end of pending.
-  fseek (mLocations[0].pending, 0, SEEK_END);
-
-  // Write after.composeF4 ().
-  fputs (after.composeF4 ().c_str (), mLocations[0].pending);
+  mNew.push_back (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
 void TDB2::update (Task& before, Task& after)
 {
-  throw std::string ("unimplemented TDB2::update");
+  mModified.push_back (after);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Writes all, including comments
+// Interestingly, only the pending file gets written to.  The completed file is
+// only modified by TDB2::gc.
 int TDB2::commit ()
 {
-  // TODO Two passes: first the pending file.
-  //                  then the completed file.
+  int quantity = mNew.size () + mModified.size ();
 
-  throw std::string ("unimplemented TDB2::commit");
+  // This is an optimization.  If there are only new tasks, and none were
+  // modified, simply seek to the end of pending and write.
+  if (mNew.size () && ! mModified.size ())
+  {
+    fseek (mLocations[0].pending, 0, SEEK_END);
+    foreach (task, mNew)
+    {
+      mPending.push_back (*task);
+      fputs (task->composeF4 ().c_str (), mLocations[0].pending);
+    }
+
+    mNew.clear ();
+    return quantity;
+  }
+
+  // The alternative is to potentially rewrite both files.
+  else if (mNew.size () || mModified.size ())
+  {
+    foreach (task, mPending)
+      foreach (mtask, mModified)
+        if (task->id == mtask->id)
+          *task = *mtask;
+
+    mModified.clear ();
+
+    foreach (task, mNew)
+      mPending.push_back (*task);
+
+    mNew.clear ();
+
+    // Write out all pending.
+    fseek (mLocations[0].pending, 0, SEEK_SET);
+    // TODO Do I need to truncate the file?  Does file I/O even work that way 
+    //      any more?  I forget.
+    foreach (task, mPending)
+      fputs (task->composeF4 ().c_str (), mLocations[0].pending);
+  }
+
+  return quantity;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO -> FF4
 void TDB2::upgrade ()
 {
+  // TODO Read all pending
+  // TODO Write out all pending
+
+  // TODO Read all completed
+  // TODO Write out all completed
+
   throw std::string ("unimplemented TDB2::upgrade");
 }
 
