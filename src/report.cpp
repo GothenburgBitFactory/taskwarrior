@@ -174,7 +174,7 @@ std::string shortUsage ()
 
   row = table.addRow ();
   table.addCell (row, 1, "task export");
-  table.addCell (row, 2, "Exports all tasks as a CSV file");
+  table.addCell (row, 2, "Lists all tasks as a CSV file");
 
   row = table.addRow ();
   table.addCell (row, 1, "task color");
@@ -274,6 +274,7 @@ std::string handleInfo ()
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.loadPending (tasks, context.filter);
   context.tdb.unlock ();
+  // TODO handleRecurrence (tdb, tasks);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
@@ -1615,6 +1616,7 @@ std::string handleReportStats ()
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.load (tasks, context.filter);
   context.tdb.unlock ();
+  // TODO handleRecurrence (tdb, tasks);
 
   Date now;
   time_t earliest   = time (NULL);

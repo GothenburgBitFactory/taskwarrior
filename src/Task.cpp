@@ -298,8 +298,36 @@ void Task::legacyParse (const std::string& line)
 ////////////////////////////////////////////////////////////////////////////////
 std::string Task::composeCSV ()
 {
-  throw std::string ("unimplemented Task::composeCSV");
-  return "";
+  std::stringstream out;
+
+  out << "'" << id               << "',";
+  out << "'" << get ("uuid")     << "',";
+  out << "'" << get ("status")   << "',";
+
+  // Tags
+  std::vector <std::string> tags;
+  getTags (tags);
+  std::string allTags;
+  join (allTags, " ", tags);
+  out << "'" << allTags          << "',";
+
+  out << "'" << get ("entry")    << "',";
+  out << "'" << get ("start")    << "',";
+  out << "'" << get ("due")      << "',";
+  out << "'" << get ("recur")    << "',";
+  out << "'" << get ("end")      << "',";
+  out << "'" << get ("project")  << "',";
+  out << "'" << get ("priority") << "',";
+  out << "'" << get ("fg")       << "',";
+  out << "'" << get ("bg")       << "',";
+
+  // Convert single quotes to double quotes, because single quotes are used to
+  // delimit the values that need it.
+  std::string clean = get ("description");
+  std::replace (clean.begin (), clean.end (), '\'', '"');
+  out << "'" << clean            << "'\n";
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

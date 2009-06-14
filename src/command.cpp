@@ -639,58 +639,44 @@ std::string handleDone ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleExport ()
 {
-  std::stringstream output;
-/*
-  // Use the description as a file name, then clobber the description so the
-  // file name isn't used for filtering.
-  std::string file = trim (task.getDescription ());
-  task.setDescription ("");
+  std::stringstream out;
 
-  if (file.length () > 0)
+  out << "'id',"
+      << "'uuid',"
+      << "'status',"
+      << "'tags',"
+      << "'entry',"
+      << "'start',"
+      << "'due',"
+      << "'recur',"
+      << "'end',"
+      << "'project',"
+      << "'priority',"
+      << "'fg',"
+      << "'bg',"
+      << "'description'"
+      << "\n";
+
+  int count = 0;
+
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+  context.tdb.unlock ();
+  // TODO handleRecurrence (tdb, tasks);
+
+  foreach (task, tasks)
   {
-    std::ofstream out (file.c_str ());
-    if (out.good ())
+    if (task->getStatus () != Task::recurring &&
+        task->getStatus () != Task::deleted)
     {
-      out << "'id',"
-          << "'uuid',"
-          << "'status',"
-          << "'tags',"
-          << "'entry',"
-          << "'start',"
-          << "'due',"
-          << "'recur',"
-          << "'end',"
-          << "'project',"
-          << "'priority',"
-          << "'fg',"
-          << "'bg',"
-          << "'description'"
-          << "\n";
-
-      int count = 0;
-      std::vector <T> all;
-      tdb.allPendingT (all);
-      filter (all, task);
-      foreach (t, all)
-      {
-        if (t->getStatus () != T::recurring &&
-            t->getStatus () != T::deleted)
-        {
-          out << t->composeCSV ().c_str ();
-          ++count;
-        }
-      }
-      out.close ();
-
-      output << count << " tasks exported to '" << file << "'" << std::endl;
+      out << task->composeCSV ().c_str ();
+      ++count;
     }
-    else
-      throw std::string ("Could not write to export file.");
   }
-  else
-    throw std::string ("You must specify a file to write to.");
-*/
-  return output.str ();
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

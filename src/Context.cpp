@@ -164,7 +164,6 @@ std::string Context::dispatch ()
 
   // TODO Look at this thing.  It just cries out for a dispatch table.
 /*
-       if (cmd.command == "export")            { out = handleExport          (); }
 */
        if (cmd.command == "projects")          { out = handleProjects        (); }
   else if (cmd.command == "tags")              { out = handleTags            (); }
@@ -191,6 +190,9 @@ std::string Context::dispatch ()
   else if (cmd.command == "start")             { out = handleStart           (); }
   else if (cmd.command == "stop")              { out = handleStop            (); }
   else if (cmd.command == "undo")              { out = handleUndo            (); }
+*/
+  else if (cmd.command == "export")            { out = handleExport          (); }
+/*
   else if (cmd.command == "import")            { out = handleImport          (); }
   else if (cmd.command == "duplicate")         { out = handleDuplicate       (); }
   else if (cmd.command == "edit")              { out = handleEdit            (); }
