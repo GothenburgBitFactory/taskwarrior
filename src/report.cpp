@@ -1473,9 +1473,6 @@ std::string renderMonths (
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleReportCalendar ()
 {
-  std::stringstream out;
-
-/*
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
   int width = context.getWidth ();
@@ -1486,21 +1483,21 @@ std::string handleReportCalendar ()
   if (preferredMonthsPerLine != 0 && preferredMonthsPerLine < monthsThatFit)
     monthsPerLine = preferredMonthsPerLine;
 
-  // Load all the pending tasks.
-  std::vector <T> pending;
-  tdb.allPendingT (pending);
-  handleRecurrence (tdb, pending);
-  filter (pending, task);
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+  context.tdb.unlock ();
+  // TODO handleRecurrence (tdb, tasks);
 
   // Find the oldest pending due date.
   Date oldest;
   Date newest;
-  std::vector <T>::iterator it;
-  for (it = pending.begin (); it != pending.end (); ++it)
+  foreach (task, tasks)
   {
-    if (it->has ("due"))
+    if (task->has ("due"))
     {
-      Date d (::atoi (it->get ("due").c_str ()));
+      Date d (::atoi (task->get ("due").c_str ()));
 
       if (d < oldest) oldest = d;
       if (d > newest) newest = d;
@@ -1515,6 +1512,7 @@ std::string handleReportCalendar ()
   int mTo = newest.month ();
   int yTo = newest.year ();
 
+  std::stringstream out;
   out << std::endl;
   std::string output;
 
@@ -1562,7 +1560,7 @@ std::string handleReportCalendar ()
 
     out << std::endl
         << optionalBlankLine ()
-        << renderMonths (mFrom, yFrom, today, pending, monthsPerLine)
+        << renderMonths (mFrom, yFrom, today, tasks, monthsPerLine)
         << std::endl;
 
     mFrom += monthsPerLine;
@@ -1583,7 +1581,7 @@ std::string handleReportCalendar ()
         << "."
         << optionalBlankLine ()
         << std::endl;
-*/
+
   return out.str ();
 }
 
