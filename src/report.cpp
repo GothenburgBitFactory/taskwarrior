@@ -993,97 +993,55 @@ std::string handleReportHistory ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleReportGHistory ()
 {
-  std::stringstream out;
-
-/*
-  int widthOfBar = width - 15;   // 15 == strlen ("2008 September ")
-
-  std::map <time_t, int> groups;
-  std::map <time_t, int> addedGroup;
-  std::map <time_t, int> completedGroup;
-  std::map <time_t, int> deletedGroup;
+  std::map <time_t, int> groups;          // Represents any month with data
+  std::map <time_t, int> addedGroup;      // Additions by month
+  std::map <time_t, int> completedGroup;  // Completions by month
+  std::map <time_t, int> deletedGroup;    // Deletions by month
 
   // Scan the pending tasks.
-  std::vector <T> pending;
-  tdb.allPendingT (pending);
-  handleRecurrence (tdb, pending);
-  filter (pending, task);
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.load (tasks, context.filter);
+  context.tdb.unlock ();
+  // TODO handleRecurrence (tdb, tasks);
+
+  foreach (task, tasks)
   {
-    T task (pending[i]);
-    time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
-    if (epoch)
+    time_t epoch = monthlyEpoch (task->get ("entry"));
+    groups[epoch] = 0;
+
+    // Every task has an entry date.
+    if (addedGroup.find (epoch) != addedGroup.end ())
+      addedGroup[epoch] = addedGroup[epoch] + 1;
+    else
+      addedGroup[epoch] = 1;
+
+    // All deleted tasks have an end date.
+    if (task->getStatus () == Task::deleted)
     {
+      epoch = monthlyEpoch (task->get ("end"));
       groups[epoch] = 0;
 
-      if (addedGroup.find (epoch) != addedGroup.end ())
-        addedGroup[epoch] = addedGroup[epoch] + 1;
+      if (deletedGroup.find (epoch) != deletedGroup.end ())
+        deletedGroup[epoch] = deletedGroup[epoch] + 1;
       else
-        addedGroup[epoch] = 1;
+        deletedGroup[epoch] = 1;
+    }
 
-      if (task.getStatus () == T::deleted)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
+    // All completed tasks have an end date.
+    else if (task->getStatus () == Task::completed)
+    {
+      epoch = monthlyEpoch (task->get ("end"));
+      groups[epoch] = 0;
 
-        if (deletedGroup.find (epoch) != deletedGroup.end ())
-          deletedGroup[epoch] = deletedGroup[epoch] + 1;
-        else
-          deletedGroup[epoch] = 1;
-      }
-      else if (task.getStatus () == T::completed)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
-
-        if (completedGroup.find (epoch) != completedGroup.end ())
-          completedGroup[epoch] = completedGroup[epoch] + 1;
-        else
-          completedGroup[epoch] = 1;
-      }
+      if (completedGroup.find (epoch) != completedGroup.end ())
+        completedGroup[epoch] = completedGroup[epoch] + 1;
+      else
+        completedGroup[epoch] = 1;
     }
   }
 
-  // Scan the completed tasks.
-  std::vector <T> completed;
-  tdb.allCompletedT (completed);
-  filter (completed, task);
-  for (unsigned int i = 0; i < completed.size (); ++i)
-  {
-    T task (completed[i]);
-    time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
-    if (epoch)
-    {
-      groups[epoch] = 0;
-
-      if (addedGroup.find (epoch) != addedGroup.end ())
-        addedGroup[epoch] = addedGroup[epoch] + 1;
-      else
-        addedGroup[epoch] = 1;
-
-      epoch = monthlyEpoch (task.getAttribute ("end"));
-      if (task.getStatus () == T::deleted)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
-
-        if (deletedGroup.find (epoch) != deletedGroup.end ())
-          deletedGroup[epoch] = deletedGroup[epoch] + 1;
-        else
-          deletedGroup[epoch] = 1;
-      }
-      else if (task.getStatus () == T::completed)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
-
-        if (completedGroup.find (epoch) != completedGroup.end ())
-          completedGroup[epoch] = completedGroup[epoch] + 1;
-        else
-          completedGroup[epoch] = 1;
-      }
-    }
-  }
+  int widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
 
   // Now build the table.
   Table table;
@@ -1202,6 +1160,7 @@ std::string handleReportGHistory ()
     }
   }
 
+  std::stringstream out;
   if (table.rowCount ())
   {
     out << optionalBlankLine ()
@@ -1222,7 +1181,7 @@ std::string handleReportGHistory ()
   }
   else
     out << "No tasks." << std::endl;
-*/
+
   return out.str ();
 }
 
