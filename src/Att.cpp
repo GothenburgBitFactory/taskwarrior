@@ -34,7 +34,7 @@
 #include "Duration.h"
 #include "Att.h"
 
-static char* internalNames[] =
+static const char* internalNames[] =
 {
   "entry",
   "start",
@@ -44,7 +44,7 @@ static char* internalNames[] =
 //  "limit",
 };
 
-static char* modifiableNames[] =
+static const char* modifiableNames[] =
 {
   "project",
   "priority",
@@ -55,7 +55,7 @@ static char* modifiableNames[] =
   "until",
 };
 
-static char* modifierNames[] =
+static const char* modifierNames[] =
 {
   "before",
   "after",
@@ -452,23 +452,31 @@ bool Att::match (const Att& other) const
 
   // is = equal.  Nop.
   else if (mMod == "is") // TODO i18n
+  {
     if (mValue != other.mValue)
       return false;
+  }
 
   // isnt = not equal.
   else if (mMod == "isnt") // TODO i18n
+  {
     if (mValue == other.mValue)
       return false;
+  }
 
   // any = any value, but not empty value.
   else if (mMod == "any") // TODO i18n
+  {
     if (other.mValue == "")
       return false;
+  }
 
   // none = must have empty value.
   else if (mMod == "none") // TODO i18n
+  {
     if (other.mValue != "")
       return false;
+  }
 
   // startswith = first characters must match.
   else if (mMod == "startswith") // TODO i18n
@@ -494,13 +502,17 @@ bool Att::match (const Att& other) const
 
   // has = contains as a substring.
   else if (mMod == "has" || mMod == "contains") // TODO i18n
+  {
     if (other.mValue.find (mValue) == std::string::npos)
       return false;
+  }
 
   // hasnt = does not contain as a substring.
   else if (mMod == "hasnt") // TODO i18n
+  {
     if (other.mValue.find (mValue) != std::string::npos)
       return false;
+  }
 
   // before = under = below = <
   else if (mMod == "before" || mMod == "under" || mMod == "below")
