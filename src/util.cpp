@@ -41,6 +41,7 @@
 #include "text.h"
 #include "main.h"
 #include "i18n.h"
+#include "util.h"
 #include "../auto.h"
 
 extern Context context;
@@ -152,26 +153,25 @@ int autoComplete (
   const std::vector<std::string>& list,
   std::vector<std::string>& matches)
 {
-  matches.erase (matches.begin (), matches.end ());
+  matches.clear ();
 
   // Handle trivial case. 
   unsigned int length = partial.length ();
   if (length)
   {
-    for (unsigned int i = 0; i < list.size (); ++i)
+    foreach (item, list)
     {
-      // Special case where there is an exact match.
-      if (partial == list[i])
+      if (partial == *item)
       {
-        matches.erase (matches.begin (), matches.end ());
-        matches.push_back (list[i]);
+        matches.clear ();
+        matches.push_back (*item);
         return 1;
       }
 
       // Maintain a list of partial matches.
-      if (length <= list[i].length () &&
-          ! strncmp (partial.c_str (), list[i].c_str (), length))
-        matches.push_back (list[i]);
+      if (length <= item->length () &&
+          partial == item->substr (0, length))
+        matches.push_back (*item);
     }
   }
 

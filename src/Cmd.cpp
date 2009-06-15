@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include "Cmd.h"
 #include "Context.h"
 #include "util.h"
@@ -55,8 +56,7 @@ Cmd::~Cmd ()
 // report name.
 bool Cmd::valid (const std::string& input)
 {
-  loadCommands ();
-  loadCustomReports ();
+  load ();
 
   std::vector <std::string> matches;
   autoComplete (lowerCase (input), commands, matches);
@@ -67,7 +67,7 @@ bool Cmd::valid (const std::string& input)
 // Determines whether the string represents a valid custom report name.
 bool Cmd::validCustom (const std::string& input)
 {
-  loadCustomReports ();
+  load ();
 
   std::vector <std::string> matches;
   autoComplete (lowerCase (input), customReports, matches);
@@ -77,8 +77,7 @@ bool Cmd::validCustom (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 void Cmd::parse (const std::string& input)
 {
-  loadCommands ();
-  loadCustomReports ();
+  load ();
 
   std::string candidate = lowerCase (input);
 
@@ -103,7 +102,7 @@ void Cmd::parse (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Cmd::loadCommands ()
+void Cmd::load ()
 {
   if (commands.size () == 0)
   {
@@ -133,14 +132,8 @@ void Cmd::loadCommands ()
     commands.push_back (context.stringtable.get (CMD_UNDELETE,  "undelete"));
     commands.push_back (context.stringtable.get (CMD_UNDO,      "undo"));
     commands.push_back (context.stringtable.get (CMD_VERSION,   "version"));
-  }
-}
 
-////////////////////////////////////////////////////////////////////////////////
-void Cmd::loadCustomReports ()
-{
-  if (customReports.size () == 0)
-  {
+    // Now load the custom reports.
     std::vector <std::string> all;
     context.config.all (all);
 
@@ -155,6 +148,8 @@ void Cmd::loadCustomReports ()
           report = report.substr (0, columns);
 
           // A custom report is also a command.
+          // TODO Make sure a custom report does not clash with a built-in
+          //      command.
           customReports.push_back (report);
           commands.push_back (report);
         }

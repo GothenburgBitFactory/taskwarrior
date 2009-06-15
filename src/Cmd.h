@@ -50,8 +50,7 @@ public:
   std::string command;
 
 private:
-  void loadCommands ();
-  void loadCustomReports ();
+  void load ();
 
 private:
   std::vector <std::string> commands;
