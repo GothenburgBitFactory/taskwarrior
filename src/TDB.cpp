@@ -181,7 +181,6 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
         if (length > 1)
         {
           // TODO Add hidden attribute indicating source?
-          line[length - 1] = '\0'; // Kill \n
           Task task (line);
           task.id = mId++;
 

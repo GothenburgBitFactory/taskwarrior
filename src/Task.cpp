@@ -125,14 +125,20 @@ void Task::setStatus (Task::status status)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::parse (const std::string& line)
 {
+  std::string copy;
+  if (line[line.length () - 1] == '\n')
+    copy = line.substr (0, line.length () - 1);
+  else
+    copy = line;
+
   try
   {
-    Record::parse (line);
+    Record::parse (copy);
   }
 
   catch (std::string& e)
   {
-    legacyParse (line);
+    legacyParse (copy);
   }
 }
 
