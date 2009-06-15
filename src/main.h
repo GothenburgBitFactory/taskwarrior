@@ -48,9 +48,9 @@ void onChangeCallback ();
 void handleRecurrence (std::vector <Task>&);
 Date getNextRecurrence (Date&, std::string&);
 bool generateDueDates (Task&, std::vector <Date>&);
-void updateRecurrenceMask (/*TDB&,*/ std::vector <Task>&, Task&);
+void updateRecurrenceMask (std::vector <Task>&, Task&);
 int getDueState (const std::string&);
-void nag (/*TDB&,*/ Task&);
+void nag (Task&);
 
 // command.cpp
 std::string handleAdd ();

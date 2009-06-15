@@ -24,6 +24,7 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -577,58 +578,65 @@ std::string handleStop ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleDone ()
 {
-/*
   int count = 0;
-*/
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.allPendingT (all);
 
-  std::vector <T> filtered = all;
-  filterSequence (filtered, task);
-  foreach (seq, filtered)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
-    if (seq->getStatus () == T::pending)
+    if (task->getStatus () == Task::pending)
     {
       // Apply deltas.
-      deltaDescription   (*seq, task);
-      deltaTags          (*seq, task);
-      deltaAttributes    (*seq, task);
-      deltaSubstitutions (*seq, task);
+      deltaDescription (*task);
+      context.task.remove ("description");
+
+      deltaTags (*task);
+      context.task.remove ("tags");
+
+      deltaAttributes (*task);
+      deltaSubstitutions (*task);
 
       // Add an end date.
       char entryTime[16];
       sprintf (entryTime, "%u", (unsigned int) time (NULL));
-      seq->setAttribute ("end", entryTime);
+      task->set ("end", entryTime);
 
       // Change status.
-      seq->setStatus (T::completed);
-
-      if (!tdb.modifyT (*seq))
-        throw std::string ("Could not mark task as completed.");
+      task->setStatus (Task::completed);
+      context.tdb.update (*task);
 
       if (context.config.get ("echo.command", true))
         out << "Completed "
-            << seq->getId ()
+            << task->id
             << " '"
-            << seq->getDescription ()
+            << task->get ("description")
             << "'"
             << std::endl;
 
-      updateRecurrenceMask (tdb, all, *seq);
-      nag (tdb, *seq);
+      updateRecurrenceMask (all, *task);
+      nag (*task);
 
       ++count;
     }
     else
       out << "Task "
-          << seq->getId ()
+          << task->id
           << " '"
-          << seq->getDescription ()
+          << task->get ("description")
           << "' is not pending"
           << std::endl;
   }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   if (context.config.get ("echo.command", true))
     out << "Marked "
@@ -637,7 +645,7 @@ std::string handleDone ()
         << (count == 1 ? "" : "s")
         << " as done"
         << std::endl;
-*/
+
   return out.str ();
 }
 

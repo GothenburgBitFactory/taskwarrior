@@ -109,7 +109,6 @@ void TDB::lock (bool lockFile /* = true */)
   mLock = lockFile;
 
   mPending.clear ();
-//  mCompleted.clear ();
   mNew.clear ();
   mPending.clear ();
 
@@ -128,7 +127,6 @@ void TDB::unlock ()
   if (mAllOpenAndLocked)
   {
     mPending.clear ();
-//    mCompleted.clear ();
     mNew.clear ();
     mModified.clear ();
 
@@ -238,7 +236,6 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
           Task task (line);
           task.id = mId++;
 
-//          mCompleted.push_back (task);
           if (filter.pass (task))
             tasks.push_back (task);
         }

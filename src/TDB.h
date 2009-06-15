@@ -69,7 +69,6 @@ private:
   int mId;
 
   std::vector <Task> mPending;   // Contents of pending.data
-//  std::vector <Task> mCompleted; // Contents of completed.data
 
   std::vector <Task> mNew;       // Uncommitted new tasks
   std::vector <Task> mModified;  // Uncommitted modified tasks
