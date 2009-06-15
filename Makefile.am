@@ -3,7 +3,9 @@ SUBDIRS = src
 dist_man_MANS = doc/man/task.1 doc/man/taskrc.5 doc/man/task-tutorial.5
 
 docdir = $(datadir)/doc/${PACKAGE}-${VERSION}
-doc_DATA = AUTHORS ChangeLog COPYING INSTALL NEWS README
+doc_DATA = AUTHORS ChangeLog COPYING NEWS README
+
+EXTRA_DIST = INSTALL
 
 bashscriptsdir = $(docdir)
 nobase_dist_bashscripts_DATA = scripts/bash/task_completion.sh
