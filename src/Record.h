@@ -39,8 +39,8 @@ public:
   Record (const std::string&);       // Copy constructor
   virtual ~Record ();                // Destructor
 
-  std::string composeF4 ();
-  std::string composeCSV ();
+  std::string composeF4 () const;
+  std::string composeCSV () const;
   void parse (const std::string&);
 
   bool has (const std::string&) const;

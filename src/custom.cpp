@@ -86,9 +86,12 @@ std::string handleCustomReport (const std::string& report)
   context.tdb.lock (context.config.get ("locking", true));
   // TODO Include filter from custom report.
   context.tdb.load (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
 
-  // TODO handleRecurrence (tdb, tasks);
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
 
   // Initialize colorization for subsequent auto colorization.
   initializeColorRules ();

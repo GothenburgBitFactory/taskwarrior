@@ -5,7 +5,7 @@ config.h.in
 config.status
 src/.deps
 src/Makefile
-*/task
+*/*task
 stamp-h1
 Makefile
 Makefile.in

@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 #include <sys/file.h>
@@ -53,7 +54,7 @@
 //  |  |  |
 //  |  |  +- TDB::add (T)
 //  |  |  |
-//  |  |  +- TDB::update (T, T')
+//  |  |  +- TDB::update (T)
 //  |  |  |
 //  |  |  +- TDB::commit
 //  |  |      write all
@@ -133,8 +134,11 @@ void TDB::unlock ()
 
     foreach (location, mLocations)
     {
+      fflush (location->pending);
       fclose (location->pending);
       location->pending = NULL;
+
+      fflush (location->completed);
       fclose (location->completed);
       location->completed = NULL;
     }
@@ -257,16 +261,16 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
 // Note: mLocations[0] is where all tasks are written.
-void TDB::add (Task& task)
+void TDB::add (const Task& task)
 {
   mNew.push_back (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Write to transaction log.
-void TDB::update (Task& before, Task& after)
+void TDB::update (const Task& task)
 {
-  mModified.push_back (after);
+  mModified.push_back (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -308,11 +312,9 @@ int TDB::commit ()
     mNew.clear ();
 
     // Write out all pending.
-    fseek (mLocations[0].pending, 0, SEEK_SET);
-    // TODO Do I need to truncate the file?  Does file I/O even work that way 
-    //      any more?  I forget.
-    foreach (task, mPending)
-      fputs (task->composeF4 ().c_str (), mLocations[0].pending);
+    if (fseek (mLocations[0].pending, 0, SEEK_SET) == 0)
+      foreach (task, mPending)
+        fputs (task->composeF4 ().c_str (), mLocations[0].pending);
   }
 
   return quantity;
@@ -337,50 +339,70 @@ void TDB::upgrade ()
 int TDB::gc ()
 {
   int count = 0;
-/*
-  // Read everything from the pending file.
-  std::vector <T> all;
-  allPendingT (all);
 
-  // A list of the truly pending tasks.
-  std::vector <T> pending;
+  // Set up a second TDB.
+  Filter filter;
+  TDB tdb;
+  tdb.location (mLocations[0].path);
+  tdb.lock ();
 
-  std::vector<T>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
+  std::vector <Task> pending;
+  tdb.loadPending (pending, filter);
+
+  std::vector <Task> completed;
+  tdb.loadCompleted (completed, filter);
+
+  // Now move completed and deleted tasks from the pending list to the
+  // completed list.  Isn't garbage collection easy?
+  foreach (task, pending)
   {
-    // Some tasks stay in the pending file.
-    if (it->getStatus () == T::pending ||
-        it->getStatus () == T::recurring)
+    if (task->getStatus () == Task::completed ||
+        task->getStatus () == Task::deleted)
     {
-      pending.push_back (*it);
-    }
-
-    // Others are transferred to the completed file.
-    else
-    {
-      writeCompleted (*it);
+      completed.push_back (*task);
+      pending.erase (task);
       ++count;
     }
   }
 
-  // Dump all clean tasks into pending.  But don't bother unless at least one
-  // task was transferred.
-  if (count)
-    overwritePending (pending);
-*/
+  // No commit - all updates performed manually.
+  if (count > 0)
+  {
+    if (fseek (tdb.mLocations[0].pending, 0, SEEK_SET) == 0)
+    {
+      ftruncate (fileno (tdb.mLocations[0].pending), 0);
+      foreach (task, pending)
+        fputs (task->composeF4 ().c_str (), tdb.mLocations[0].pending);
+    }
+
+    if (fseek (tdb.mLocations[0].completed, 0, SEEK_SET) == 0)
+    {
+      ftruncate (fileno (tdb.mLocations[0].completed), 0);
+      foreach (task, completed)
+        fputs (task->composeF4 ().c_str (), tdb.mLocations[0].completed);
+    }
+  }
+
+  // Close files.
+  tdb.unlock ();
+
   return count;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 FILE* TDB::openAndLock (const std::string& file)
 {
+  // TODO Need provision here for read-only locations.
+
   // Check for access.
-  if (access (file.c_str (), F_OK | R_OK | W_OK))
-    throw std::string ("Task does not have the correct permissions for '") +
-          file + "'.";
+  bool exists = access (file.c_str (), F_OK) ? false : true;
+  if (exists)
+    if (access (file.c_str (), R_OK | W_OK))
+      throw std::string ("Task does not have the correct permissions for '") +
+            file + "'.";
 
   // Open the file.
-  FILE* in = fopen (file.c_str (), "r+");
+  FILE* in = fopen (file.c_str (), (exists ? "r+" : "w+"));
   if (!in)
     throw std::string ("Could not open '") + file + "'.";
 

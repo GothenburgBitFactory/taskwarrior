@@ -33,87 +33,110 @@
 Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
+void get (std::vector <Task>& pending, std::vector <Task>& completed)
+{
+  TDB tdb;
+  tdb.location (".");
+  tdb.lock ();
+  tdb.loadPending   (pending,   context.filter);
+  tdb.loadCompleted (completed, context.filter);
+  tdb.unlock ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (38);
+  UnitTest t (22);
 
   try
   {
-/*
     // Remove any residual test file.
     unlink ("./pending.data");
     unlink ("./completed.data");
 
     // Try reading an empty database.
+    Filter filter;
+    std::vector <Task> all;
+    std::vector <Task> pending;
+    std::vector <Task> completed;
+    get (pending, completed);
+    t.ok (pending.size () == 0, "TDB Read empty pending");
+    t.ok (completed.size () == 0, "TDB Read empty completed");
+
+    // Add without commit.
     TDB tdb;
-    tdb.dataDirectory (".");
-    std::vector <T> all;
-    t.ok (!tdb.pendingT (all), "TDB::pendingT read empty db");
-    t.is ((int) all.size (), 0, "empty db");
-    t.ok (!tdb.allPendingT (all), "TDB::allPendingT read empty db");
-    t.is ((int) all.size (), 0, "empty db");
-    t.ok (!tdb.completedT (all), "TDB::completedT read empty db");
-    t.is ((int) all.size (), 0, "empty db");
-    t.ok (!tdb.allCompletedT (all), "TDB::allCompletedT read empty db");
-    t.is ((int) all.size (), 0, "empty db");
+    tdb.location (".");
+    tdb.lock ();
+    Task task ("[name:\"value\"]");
+    tdb.add (task);
+    tdb.unlock ();
 
-    // Add a new task.
-    T t1;
-    t1.setId (1);
-    t1.setStatus (T::pending);
-    t1.setAttribute ("project", "p1");
-    t1.setDescription ("task 1");
-    t.diag (t1.compose ());
-    t.ok (tdb.addT (t1), "TDB::addT t1");
+    pending.clear ();
+    completed.clear ();
+    get (pending, completed);
+    t.ok (pending.size () == 0, "TDB add -> no commit -> empty");
+    t.ok (completed.size () == 0, "TDB add -> no commit -> empty");
 
-    // Verify as above.
-    t.ok (tdb.pendingT (all), "TDB::pendingT read db");
-    t.is ((int) all.size (), 1, "empty db");
-    t.ok (tdb.allPendingT (all), "TDB::allPendingT read db");
-    t.is ((int) all.size (), 1, "empty db");
-    t.ok (!tdb.completedT (all), "TDB::completedT read empty db");
-    t.is ((int) all.size (), 0, "empty db");
-    t.ok (!tdb.allCompletedT (all), "TDB::allCompletedT read empty db");
-    t.is ((int) all.size (), 0, "empty db");
+    // Add with commit.
+    tdb.lock ();
+    tdb.add (task);
+    tdb.commit ();
+    tdb.unlock ();
 
-    // TODO Modify task.
+    get (pending, completed);
+    t.ok (pending.size () == 1, "TDB add -> commit -> saved");
+    t.is (pending[0].get ("name"), "value", "TDB load name=value");
+    t.is (pending[0].id, 1, "TDB load verification id=1");
+    t.ok (completed.size () == 0, "TDB add -> commit -> saved");
 
-    // Complete task.
-    t1.setStatus (T::completed);
-    t.ok (tdb.modifyT (t1), "TDB::modifyT (completed) t1");;
-    t.ok (tdb.pendingT (all), "TDB::pendingT read db");
-    t.is ((int) all.size (), 0, "empty db");
-    t.ok (tdb.allPendingT (all), "TDB::allPendingT read db");
-    t.is ((int) all.size (), 1, "empty db");
-    t.ok (!tdb.completedT (all), "TDB::completedT read empty db");
-    t.is ((int) all.size (), 0, "empty db");
-    t.ok (!tdb.allCompletedT (all), "TDB::allCompletedT read empty db");
-    t.is ((int) all.size (), 0, "empty db");
+    // Update with commit.
+    tdb.lock ();
+    pending.clear ();
+    completed.clear ();
+    tdb.load (all, context.filter);
+    all[0].set ("name", "value2");
+    tdb.update (all[0]);
+    tdb.commit ();
+    tdb.unlock ();
 
-    t.is (tdb.gc (), 1, "TDB::gc");
-    t.ok (tdb.pendingT (all), "TDB::pendingT read empty db");
-    t.is ((int) all.size (), 0, "empty db");
-    t.ok (tdb.allPendingT (all), "TDB::allPendingT read empty db");
-    t.is ((int) all.size (), 0, "empty db");
-    t.ok (tdb.completedT (all), "TDB::completedT read db");
-    t.is ((int) all.size (), 1, "empty db");
-    t.ok (tdb.allCompletedT (all), "TDB::allCompletedT read db");
-    t.is ((int) all.size (), 1, "empty db");
+    pending.clear ();
+    completed.clear ();
+    get (pending, completed);
+    t.ok (all.size () == 1, "TDB update -> commit -> saved");
+    t.is (all[0].get ("name"), "value2", "TDB load name=value2");
+    t.is (all[0].id, 1, "TDB load verification id=1");
 
-    // Add a new task.
-    T t2;
-    t2.setId (1);
-    t2.setAttribute ("project", "p2");
-    t2.setDescription ("task 2");
-    t.ok (tdb.addT (t2), "TDB::addT t2");
+    // GC.
+    tdb.lock ();
+    all.clear ();
+    tdb.loadPending (all, context.filter);
+    all[0].setStatus (Task::completed);
+    tdb.update (all[0]);
+    Task t2 ("[foo:\"bar\" status:\"pending\"]");
+    tdb.add (t2);
+    tdb.commit ();
+    tdb.unlock ();
 
-    // Delete task.
-    t2.setStatus (T::deleted);
-    t.ok (tdb.modifyT (t2), "TDB::modifyT (deleted) t2");
+    pending.clear ();
+    completed.clear ();
+    get (pending, completed);
+    t.is (pending.size (), (size_t)2,               "TDB before gc pending #2");
+    t.is (pending[0].id, 1,                         "TDB before gc pending id 1");
+    t.is (pending[0].getStatus (), Task::completed, "TDB before gc pending status completed");
+    t.is (pending[1].id, 2,                         "TDB before gc pending id 2");
+    t.is (pending[1].getStatus (), Task::pending,   "TDB before gc pending status pending");
+    t.is (completed.size (), (size_t)0,             "TDB before gc completed 0");
 
-    // GC the files.
-    t.is (tdb.gc (), 1, "1 <- TDB::gc");
-*/
+    tdb.gc ();
+
+    pending.clear ();
+    completed.clear ();
+    get (pending, completed);
+    t.is (pending.size (), (size_t)1,                 "TDB after gc pending #1");
+    t.is (pending[0].id, 1,                           "TDB after gc pending id 2");
+    t.is (pending[0].getStatus (), Task::pending,     "TDB after gc pending status pending");
+    t.is (completed.size (), (size_t)1,               "TDB after gc completed #1");
+    t.is (completed[0].getStatus (), Task::completed, "TDB after gc completed status completed");
   }
 
   catch (std::string& error)
@@ -128,8 +151,10 @@ int main (int argc, char** argv)
     return -2;
   }
 
+/*
   unlink ("./pending.data");
   unlink ("./completed.data");
+*/
 
   return 0;
 }

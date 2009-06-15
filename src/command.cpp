@@ -82,6 +82,7 @@ std::string handleAdd ()
 
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.add (context.task);
+  context.tdb.commit ();
   context.tdb.unlock ();
 
   return out.str ();
@@ -97,6 +98,8 @@ std::string handleProjects ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   int quantity = context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
 
   // Scan all the tasks for their project name, building a map using project
@@ -154,6 +157,8 @@ std::string handleTags ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   int quantity = context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
 
   // Scan all the tasks for their project name, building a map using project
@@ -663,8 +668,9 @@ std::string handleExport ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
-  // TODO handleRecurrence (tdb, tasks);
 
   foreach (task, tasks)
   {

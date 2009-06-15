@@ -271,8 +271,9 @@ std::string handleInfo ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
-  // TODO handleRecurrence (tdb, tasks);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
@@ -487,8 +488,9 @@ std::string handleReportSummary ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.load (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
-  // TODO handleRecurrence (tdb, tasks);
 
   // Generate unique list of project names from all pending tasks.
   std::map <std::string, bool> allProjects;
@@ -651,8 +653,9 @@ std::string handleReportNext ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
-  // TODO handleRecurrence (tdb, tasks);
 
   // Restrict to matching subset.
   std::vector <int> matching;
@@ -814,8 +817,9 @@ std::string handleReportHistory ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.load (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
-  // TODO handleRecurrence (tdb, tasks);
 
   foreach (task, tasks)
   {
@@ -967,8 +971,9 @@ std::string handleReportGHistory ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.load (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
-  // TODO handleRecurrence (tdb, tasks);
 
   foreach (task, tasks)
   {
@@ -1157,8 +1162,9 @@ std::string handleReportTimesheet ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.load (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
-  // TODO handleRecurrence (tdb, tasks);
 
   // Just do this once.
   int width = context.getWidth ();
@@ -1487,8 +1493,9 @@ std::string handleReportCalendar ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
-  // TODO handleRecurrence (tdb, tasks);
 
   // Find the oldest pending due date.
   Date oldest;
@@ -1594,8 +1601,9 @@ std::string handleReportStats ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.load (tasks, context.filter);
+  handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
-  // TODO handleRecurrence (tdb, tasks);
 
   Date now;
   time_t earliest   = time (NULL);

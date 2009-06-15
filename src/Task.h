@@ -36,11 +36,13 @@ class Task : public Record
 {
 public:
   Task ();                       // Default constructor
+  Task (const Task&);            // Copy constructor
+  Task& operator= (const Task&); // Assignment operator
   Task (const std::string&);     // Parse
   ~Task ();                      // Destructor
 
   void parse (const std::string&);
-  std::string composeCSV ();
+  std::string composeCSV () const;
 
   // Status values.
   enum status {pending, completed, deleted, recurring /* , retired, deferred */};
@@ -61,7 +63,7 @@ public:
   bool hasTag (const std::string&);
   void addTag (const std::string&);
   void addTags (const std::vector <std::string>&);
-  void getTags (std::vector<std::string>&);
+  void getTags (std::vector<std::string>&) const;
   void removeTag (const std::string&);
 
   void getAnnotations (std::vector <Att>&) const;

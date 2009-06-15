@@ -57,16 +57,17 @@ Record::~Record ()
 //
 //   [ Att::composeF4 ... ] \n
 //
-std::string Record::composeF4 ()
+std::string Record::composeF4 () const
 {
   std::string ff4 = "[";
 
   bool first = true;
-  foreach (att, (*this))
+  std::map <std::string, Att>::const_iterator it;
+  for (it = this->begin (); it != this->end (); ++it)
   {
-    if (att->second.value () != "")
+    if (it->second.value () != "")
     {
-      ff4 += (first ? "" : " ") + att->second.composeF4 ();
+      ff4 += (first ? "" : " ") + it->second.composeF4 ();
       first = false;
     }
   }

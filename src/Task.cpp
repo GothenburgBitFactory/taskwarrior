@@ -41,6 +41,25 @@ Task::Task ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Task::Task (const Task& other)
+: Record (other)
+, id (other.id)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Task& Task::operator= (const Task& other)
+{
+  if (this != &other)
+  {
+    Record::operator= (other);
+    id = other.id;
+  }
+
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Record::parse, and in the event of an error
 // try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
 Task::Task (const std::string& input)
@@ -296,7 +315,7 @@ void Task::legacyParse (const std::string& line)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Task::composeCSV ()
+std::string Task::composeCSV () const
 {
   std::stringstream out;
 
@@ -421,7 +440,7 @@ void Task::addTags (const std::vector <std::string>& tags)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getTags (std::vector<std::string>& tags)
+void Task::getTags (std::vector<std::string>& tags) const
 {
   split (tags, get ("tags"), ',');
 }
