@@ -49,8 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Jun 15 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.8.0-1
+* Mon Jun 15 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.8.0-0
   Intial RPM for task release 1.8.0
+  Installs now bash_completion file
 * Tue Jun 08 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.7.1-2
 - Fixed inclusion of manpages.
 * Tue Jun 08 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.7.1-1
