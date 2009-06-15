@@ -69,11 +69,11 @@ std::string handleUndo ();
 std::string handleColor ();
 std::string handleAnnotate ();
 std::string handleDuplicate ();
-int deltaAppend (Task&, Task&);
-int deltaDescription (Task&, Task&);
-int deltaTags (Task&, Task&);
-int deltaAttributes (Task&, Task&);
-int deltaSubstitutions (Task&, Task&);
+int deltaAppend (Task&);
+int deltaDescription (Task&);
+int deltaTags (Task&);
+int deltaAttributes (Task&);
+int deltaSubstitutions (Task&);
 
 // edit.cpp
 std::string handleEdit ();

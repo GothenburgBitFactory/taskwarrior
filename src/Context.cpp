@@ -162,7 +162,7 @@ std::string Context::dispatch ()
   int gcMod = 0; // Change occurred by way of gc.
   std::string out;
 
-  // TODO Just look at this thing.  It just cries out for a dispatch table.
+  // TODO Just look at this thing.  It cries out for a dispatch table.
        if (cmd.command == "projects")          { out = handleProjects        (); }
   else if (cmd.command == "tags")              { out = handleTags            (); }
   else if (cmd.command == "colors")            { out = handleColor           (); }
@@ -178,7 +178,9 @@ std::string Context::dispatch ()
   else if (cmd.command == "add")               { out = handleAdd             (); }
 /*
   else if (cmd.command == "" && task.getId ()) { out = handleModify          (); }
+*/
   else if (cmd.command == "append")            { out = handleAppend          (); }
+/*
   else if (cmd.command == "annotate")          { out = handleAnnotate        (); }
   else if (cmd.command == "done")              { out = handleDone            (); }
   else if (cmd.command == "undelete")          { out = handleUndelete        (); }

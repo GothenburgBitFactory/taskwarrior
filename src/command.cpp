@@ -745,42 +745,48 @@ std::string handleModify ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleAppend ()
 {
-/*
   int count = 0;
-*/
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.allPendingT (all);
 
-  std::vector <T> filtered = all;
-  filterSequence (filtered, task);
-  foreach (seq, filtered)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
     foreach (other, all)
     {
-      if (other->getId ()               == seq->getId ()                   || // Self
-          (seq->has ("parent") &&
-           seq->getAttribute ("parent") == other->getAttribute ("parent")) || // Sibling
-          other->getUUID ()             == seq->getAttribute ("parent"))      // Parent
+      if (other->id             == task->id               || // Self
+          (task->has ("parent") &&
+           task->get ("parent") == other->get ("parent")) || // Sibling
+          other->get ("uuid")   == task->get ("parent"))     // Parent
       {
         // A non-zero value forces a file write.
         int changes = 0;
 
         // Apply other deltas.
-        changes += deltaAppend     (*other, task);
-        changes += deltaTags       (*other, task);
-        changes += deltaAttributes (*other, task);
+        changes += deltaAppend (*other);
+        context.task.remove ("description");
+
+        changes += deltaTags (*other);
+        context.task.remove ("tags");
+
+        changes += deltaAttributes (*other);
 
         if (changes)
         {
-          tdb.modifyT (*other);
+          context.tdb.update (*other);
 
           if (context.config.get ("echo.command", true))
             out << "Appended '"
-                << task.getDescription ()
+                << context.task.get ("description")
                 << "' to task "
-                << other->getId ()
+                << other->id
                 << std::endl;
         }
 
@@ -789,9 +795,12 @@ std::string handleAppend ()
     }
   }
 
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
   if (context.config.get ("echo.command", true))
     out << "Appended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
-*/
+
   return out.str ();
 }
 
@@ -974,12 +983,12 @@ std::string handleAnnotate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaAppend (Task& task, Task& delta)
+int deltaAppend (Task& task)
 {
-  if (delta.has ("description"))
+  if (context.task.has ("description"))
   {
     task.set ("description",
-              task.get ("description") + " " + delta.get ("description"));
+              task.get ("description") + " " + context.task.get ("description"));
     return 1;
   }
 
@@ -987,11 +996,11 @@ int deltaAppend (Task& task, Task& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaDescription (Task& task, Task& delta)
+int deltaDescription (Task& task)
 {
-  if (delta.has ("description"))
+  if (context.task.has ("description"))
   {
-    task.set ("description", delta.get ("description"));
+    task.set ("description", context.task.get ("description"));
     return 1;
   }
 
@@ -999,60 +1008,51 @@ int deltaDescription (Task& task, Task& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaTags (Task& task, Task& delta)
+int deltaTags (Task& task)
 {
   int changes = 0;
 
   // Apply or remove tags, if any.
   std::vector <std::string> tags;
-  delta.getTags (tags);
-  for (unsigned int i = 0; i < tags.size (); ++i)
+  context.task.getTags (tags);
+  foreach (tag, tags)
   {
-    if (tags[i][0] == '+')
-      task.addTag (tags[i].substr (1, std::string::npos));
-    else
-      task.addTag (tags[i]);
-
+    task.addTag (*tag);
     ++changes;
   }
 
-/*
-  // TODO Needs Task::getRemoveTags
-  delta.getRemoveTags (tags);
-  for (unsigned int i = 0; i < tags.size (); ++i)
+  foreach (tag, context.tagRemovals)
   {
-    if (tags[i][0] == '-')
-      task.removeTag (tags[i].substr (1, std::string::npos));
-    else
-      task.removeTag (tags[i]);
-
+    task.removeTag (*tag);
     ++changes;
   }
-*/
 
   return changes;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaAttributes (Task& task, Task& delta)
+int deltaAttributes (Task& task)
 {
   int changes = 0;
 
-  foreach (att, delta)
+  foreach (att, context.task)
   {
-    if (att->second.value () == "")
-      task.remove (att->first);
-    else
-      task.set (att->first, att->second.value ());
+    if (att->first != "uuid")
+    {
+      if (att->second.value () == "")
+        task.remove (att->first);
+      else
+        task.set (att->first, att->second.value ());
 
-    ++changes;
+      ++changes;
+    }
   }
 
   return changes;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaSubstitutions (Task& task, Task& delta)
+int deltaSubstitutions (Task& task)
 {
   std::string description = task.get ("description");
   std::vector <Att> annotations;
