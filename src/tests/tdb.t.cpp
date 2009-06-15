@@ -151,10 +151,8 @@ int main (int argc, char** argv)
     return -2;
   }
 
-/*
   unlink ("./pending.data");
   unlink ("./completed.data");
-*/
 
   return 0;
 }
