@@ -64,14 +64,20 @@ Task& Task::operator= (const Task& other)
 // try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
 Task::Task (const std::string& input)
 {
+  std::string copy;
+  if (input[input.length () - 1] == '\n')
+    copy = input.substr (0, input.length () - 1);
+  else
+    copy = input;
+
   try
   {
-    Record::parse (input);
+    Record::parse (copy);
   }
 
   catch (std::string& e)
   {
-    legacyParse (input);
+    legacyParse (copy);
   }
 }
 
@@ -520,25 +526,27 @@ int Task::determineVersion (const std::string& line)
       return 2;
   }
 
+  // Version 4 looks like:
+  //
+  //   [name:"value" ...]
+  //
+  // Scan for [, ] and :".
+  else if (line[0] == '[' &&
+           line[line.length () - 1] == ']' &&
+           line.find ("uuid:\"") != std::string::npos)
+    return 4;
+
   // Version 1 looks like:
   //
   //   [tags] [attributes] description\n
   //   X [tags] [attributes] description\n
   //
   // Scan for the first character being either the bracket or X.
-  else if ((line[0] == '[' && line[line.length () - 1] != ']') ||
-           line.find ("X [") == 0)
+  else if (line.find ("X [") == 0 ||
+           line.find ("uuid") == std::string::npos ||
+           (line[0] == '[' &&
+            line.substr (line.length () - 1, 1) != "]"))
     return 1;
-
-  // Version 4 looks like:
-  //
-  //   [name:"value" ...]
-  //
-  // Scan for [, ] and :".
-  if (line[0] == '[' &&
-      line[line.length () - 1] == ']' &&
-      line.find (":\"") != std::string::npos)
-    return 4;
 
   // Version 5?
   //
