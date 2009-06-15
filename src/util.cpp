@@ -198,8 +198,6 @@ const std::string uuid ()
 
 ////////////////////////////////////////////////////////////////////////////////
 #else
-#warning "Using custom UUID generator"
-
 #include <stdlib.h>
 static char randomHexDigit ()
 {
