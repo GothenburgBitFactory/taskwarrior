@@ -89,21 +89,21 @@ Task::~Task ()
 ////////////////////////////////////////////////////////////////////////////////
 Task::status Task::textToStatus (const std::string& input)
 {
-       if (input == "pending")   return pending;
-  else if (input == "completed") return completed;
-  else if (input == "deleted")   return deleted;
-  else if (input == "recurring") return recurring;
+       if (input == "pending")   return Task::pending;
+  else if (input == "completed") return Task::completed;
+  else if (input == "deleted")   return Task::deleted;
+  else if (input == "recurring") return Task::recurring;
 
-  return pending;
+  return Task::pending;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Task::statusToText (Task::status s)
 {
-       if (s == pending)   return "pending";
-  else if (s == completed) return "completed";
-  else if (s == deleted)   return "deleted";
-  else if (s == recurring) return "recurring";
+       if (s == Task::pending)   return "pending";
+  else if (s == Task::completed) return "completed";
+  else if (s == Task::deleted)   return "deleted";
+  else if (s == Task::recurring) return "recurring";
 
   return "pending";
 }

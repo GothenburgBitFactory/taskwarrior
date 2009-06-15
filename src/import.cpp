@@ -179,9 +179,7 @@ static void decorateTask (Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importTask_1_4_3 (
-//  TDB& tdb,
-  const std::vector <std::string>& lines)
+static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
 {
 /*
   std::vector <std::string> failed;
@@ -337,9 +335,7 @@ static std::string importTask_1_4_3 (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importTask_1_5_0 (
-//  TDB& tdb,
-  const std::vector <std::string>& lines)
+static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
 {
 /*
   std::vector <std::string> failed;
@@ -501,9 +497,7 @@ static std::string importTask_1_5_0 (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importTask_1_6_0 (
-//  TDB& tdb,
-  const std::vector <std::string>& lines)
+static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
 {
 /*
   std::vector <std::string> failed;
@@ -664,9 +658,7 @@ static std::string importTask_1_6_0 (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importTaskCmdLine (
-//  TDB& tdb,
-  const std::vector <std::string>& lines)
+static std::string importTaskCmdLine (const std::vector <std::string>& lines)
 {
 /*
   std::vector <std::string> failed;
@@ -715,9 +707,7 @@ static std::string importTaskCmdLine (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importTodoSh_2_0 (
-//  TDB& tdb,
-  const std::vector <std::string>& lines)
+static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
 {
 /*
   std::vector <std::string> failed;
@@ -839,9 +829,7 @@ static std::string importTodoSh_2_0 (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importText (
-//  TDB& tdb,
-  const std::vector <std::string>& lines)
+static std::string importText (const std::vector <std::string>& lines)
 {
 /*
   std::vector <std::string> failed;
@@ -904,9 +892,7 @@ static std::string importText (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importCSV (
-//  TDB& tdb,
-  const std::vector <std::string>& lines)
+static std::string importCSV (const std::vector <std::string>& lines)
 {
 /*
   std::vector <std::string> failed;
@@ -1153,9 +1139,9 @@ static std::string importCSV (
 std::string handleImport ()
 {
   std::stringstream out;
-#if 0
+
   // Use the description as a file name.
-  std::string file = trim (task.getDescription ());
+  std::string file = trim (context.task.get ("description"));
   if (file.length () > 0)
   {
     // Load the file.
@@ -1205,21 +1191,20 @@ std::string handleImport ()
     // Determine which type it might be, then attempt an import.
     switch (type)
     {
-    case task_1_4_3:    out << importTask_1_4_3  (tdb, lines); break;
-    case task_1_5_0:    out << importTask_1_5_0  (tdb, lines); break;
-    case task_1_6_0:    out << importTask_1_6_0  (tdb, lines); break;
-    case task_cmd_line: out << importTaskCmdLine (tdb, lines); break;
-    case todo_sh_2_0:   out << importTodoSh_2_0  (tdb, lines); break;
-    case csv:           out << importCSV         (tdb, lines); break;
-    case text:          out << importText        (tdb, lines); break;
+    case task_1_4_3:    out << importTask_1_4_3  (lines); break;
+    case task_1_5_0:    out << importTask_1_5_0  (lines); break;
+    case task_1_6_0:    out << importTask_1_6_0  (lines); break;
+    case task_cmd_line: out << importTaskCmdLine (lines); break;
+    case todo_sh_2_0:   out << importTodoSh_2_0  (lines); break;
+    case csv:           out << importCSV         (lines); break;
+    case text:          out << importText        (lines); break;
     case not_a_clue:    /* to stop the compiler from complaining. */ break;
     }
   }
   else
     throw std::string ("You must specify a file to import.");
-#endif
+
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-

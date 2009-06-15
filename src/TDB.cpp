@@ -197,7 +197,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
   catch (std::string& e)
   {
     std::stringstream s;
-    s << "  int " << file << " at line " << line_number;
+    s << " in " << file << " at line " << line_number;
     throw e + s.str ();
   }
 
@@ -228,10 +228,13 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
       while (fgets (line, T_LINE_MAX, location->completed))
       {
         int length = ::strlen (line);
-        if (length > 1)
+        if (length > 2)
         {
           // TODO Add hidden attribute indicating source?
-          line[length - 1] = '\0'; // Kill \n
+
+          if (line[length - 1] == '\n')
+            line[length - 1] = '\0';
+
           Task task (line);
           task.id = mId++;
 
@@ -247,7 +250,7 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
   catch (std::string& e)
   {
     std::stringstream s;
-    s << "  int " << file << " at line " << line_number;
+    s << " in " << file << " at line " << line_number;
     throw e + s.str ();
   }
 
@@ -352,8 +355,10 @@ int TDB::gc ()
   // completed list.  Isn't garbage collection easy?
   foreach (task, pending)
   {
-    if (task->getStatus () == Task::completed ||
-        task->getStatus () == Task::deleted)
+    std::string st = task->get ("status");
+    Task::status s = task->getStatus ();
+    if (s == Task::completed ||
+        s == Task::deleted)
     {
       completed.push_back (*task);
       pending.erase (task);

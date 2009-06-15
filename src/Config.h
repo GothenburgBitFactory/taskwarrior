@@ -39,6 +39,7 @@ public:
 
   bool load (const std::string&);
   void createDefault (const std::string&);
+  void setDefaults ();
 
   const std::string get (const char*);
   const std::string get (const char*, const char*);

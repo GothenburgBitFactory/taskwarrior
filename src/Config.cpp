@@ -45,59 +45,7 @@
 // upgrade program to make the change, or c) this.
 Config::Config ()
 {
-  set ("report.long.description",      "Lists all task, all data, matching the specified criteria");      // TODO i18n
-  set ("report.long.columns",          "id,project,priority,entry,start,due,recur,age,tags,description"); // TODO i18n
-  set ("report.long.labels",           "ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description");    // TODO i18n
-  set ("report.long.sort",             "due+,priority-,project+");                                        // TODO i18n
-  set ("report.long.filter",           "status:pending");                                                 // TODO i18n
-
-  set ("report.list.description",      "Lists all tasks matching the specified criteria");                // TODO i18n
-  set ("report.list.columns",          "id,project,priority,due,active,age,description");                 // TODO i18n
-  set ("report.list.labels",           "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
-  set ("report.list.sort",             "due+,priority-,project+");                                        // TODO i18n
-  set ("report.list.filter",           "status:pending");                                                 // TODO i18n
-
-  set ("report.ls.description",        "Minimal listing of all tasks matching the specified criteria");   // TODO i18n
-  set ("report.ls.columns",            "id,project,priority,description");                                // TODO i18n
-  set ("report.ls.labels",             "ID,Project,Pri,Description");                                     // TODO i18n
-  set ("report.ls.sort",               "priority-,project+");                                             // TODO i18n
-  set ("report.ls.filter",             "status:pending");                                                 // TODO i18n
-
-  set ("report.newest.description",    "Shows the newest tasks");                                         // TODO i18n
-  set ("report.newest.columns",        "id,project,priority,due,active,age,description");                 // TODO i18n
-  set ("report.newest.labels",         "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
-  set ("report.newest.sort",           "id-");                                                            // TODO i18n
-  set ("report.newest.filter",         "status:pending limit:10");                                        // TODO i18n
-
-  set ("report.oldest.description",    "Shows the oldest tasks");                                         // TODO i18n
-  set ("report.oldest.columns",        "id,project,priority,due,active,age,description");                 // TODO i18n
-  set ("report.oldest.labels",         "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
-  set ("report.oldest.sort",           "id+");                                                            // TODO i18n
-  set ("report.oldest.filter",         "status:pending limit:10");                                        // TODO i18n
-
-  set ("report.overdue.description",   "Lists overdue tasks matching the specified criteria");            // TODO i18n
-  set ("report.overdue.columns",       "id,project,priority,due,active,age,description");                 // TODO i18n
-  set ("report.overdue.labels",        "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
-  set ("report.overdue.sort",          "due+,priority-,project+");                                        // TODO i18n
-  set ("report.overdue.filter",        "status:pending due.before:today");                                // TODO i18n
-
-  set ("report.active.description",    "Lists active tasks matching the specified criteria");             // TODO i18n
-  set ("report.active.columns",        "id,project,priority,due,active,age,description");                 // TODO i18n
-  set ("report.active.labels",         "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
-  set ("report.active.sort",           "due+,priority-,project+");                                        // TODO i18n
-  set ("report.active.filter",         "status:pending start.any:");                                      // TODO i18n
-
-  set ("report.completed.description", "Lists completed tasks matching the specified criteria");          // TODO i18n
-  set ("report.completed.columns",     "end,project,priority,age,description");                           // TODO i18n
-  set ("report.completed.labels",      "Complete,Project,Pri,Age,Description");                           // TODO i18n
-  set ("report.completed.sort",        "end+,priority-,project+");                                        // TODO i18n
-  set ("report.completed.filter",      "status:completed");                                               // TODO i18n
-
-  set ("report.recurring.description", "Lists recurring tasks matching the specified criteria");          // TODO i18n
-  set ("report.recurring.columns",     "id,project,priority,due,recur,active,age,description");           // TODO i18n
-  set ("report.recurring.labels",      "ID,Project,Pri,Due,Recur,Active,Age,Description");                // TODO i18n
-  set ("report.recurring.sort",        "due+,priority-,project+");                                        // TODO i18n
-  set ("report.recurring.filter",      "status:pending parent.any:");                                     // TODO i18n
+  setDefaults ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -215,31 +163,58 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "# Limit:         10\n");                                                                  // TODO i18n
 
         fprintf (out, "report.long.description=Lists all task, all data, matching the specified criteria\n");    // TODO i18n
-        fprintf (out, "report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description\n");       // TODO i18n
         fprintf (out, "report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description\n");   // TODO i18n
+        fprintf (out, "report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description\n");       // TODO i18n
         fprintf (out, "report.long.sort=due+,priority-,project+\n");                                             // TODO i18n
+        fprintf (out, "report.long.filter=status:pending\n");                                                    // TODO i18n
 
         fprintf (out, "report.list.description=Lists all tasks matching the specified criteria\n");              // TODO i18n
-        fprintf (out, "report.list.labels=ID,Project,Pri,Due,Active,Age,Description\n");                         // TODO i18n
         fprintf (out, "report.list.columns=id,project,priority,due,active,age,description\n");                   // TODO i18n
+        fprintf (out, "report.list.labels=ID,Project,Pri,Due,Active,Age,Description\n");                         // TODO i18n
         fprintf (out, "report.list.sort=due+,priority-,project+\n");                                             // TODO i18n
-                                      // TODO i18n
+        fprintf (out, "report.list.filter=status:pending\n");                                                    // TODO i18n
+
         fprintf (out, "report.ls.description=Minimal listing of all tasks matching the specified criteria\n");   // TODO i18n
-        fprintf (out, "report.ls.labels=ID,Project,Pri,Description\n");                                          // TODO i18n
         fprintf (out, "report.ls.columns=id,project,priority,description\n");                                    // TODO i18n
+        fprintf (out, "report.ls.labels=ID,Project,Pri,Description\n");                                          // TODO i18n
         fprintf (out, "report.ls.sort=priority-,project+\n");                                                    // TODO i18n
+        fprintf (out, "report.ls.filter=status:pending\n");                                                      // TODO i18n
 
         fprintf (out, "report.newest.description=Shows the newest tasks\n");                                     // TODO i18n
-        fprintf (out, "report.newest.labels=ID,Project,Pri,Due,Active,Age,Description\n");                       // TODO i18n
         fprintf (out, "report.newest.columns=id,project,priority,due,active,age,description\n");                 // TODO i18n
+        fprintf (out, "report.newest.labels=ID,Project,Pri,Due,Active,Age,Description\n");                       // TODO i18n
         fprintf (out, "report.newest.sort=id-\n");                                                               // TODO i18n
-        fprintf (out, "report.newest.limit=10\n");                                                               // TODO i18n
+        fprintf (out, "report.newest.filter=status:pending limit:10\n");                                         // TODO i18n
 
         fprintf (out, "report.oldest.description=Shows the oldest tasks\n");                                     // TODO i18n
-        fprintf (out, "report.oldest.labels=ID,Project,Pri,Due,Active,Age,Description\n");                       // TODO i18n
         fprintf (out, "report.oldest.columns=id,project,priority,due,active,age,description\n");                 // TODO i18n
+        fprintf (out, "report.oldest.labels=ID,Project,Pri,Due,Active,Age,Description\n");                       // TODO i18n
         fprintf (out, "report.oldest.sort=id+\n");                                                               // TODO i18n
-        fprintf (out, "report.oldest.limit=10\n");                                                               // TODO i18n
+        fprintf (out, "report.oldest.filter=status:pending limit:10\n");                                         // TODO i18n
+
+        fprintf (out, "report.overdue.description=Lists overdue tasks matching the specified criteria\n");       // TODO i18n
+        fprintf (out, "report.overdue.columns=id,project,priority,due,active,age,description\n");                // TODO i18n
+        fprintf (out, "report.overdue.labels=ID,Project,Pri,Due,Active,Age,Description\n");                      // TODO i18n
+        fprintf (out, "report.overdue.sort=due+,priority-,project+\n");                                          // TODO i18n
+        fprintf (out, "report.overdue.filter=status:pending due.before:today\n");                                // TODO i18n
+
+        fprintf (out, "report.active.description=Lists active tasks matching the specified criteria\n");         // TODO i18n
+        fprintf (out, "report.active.columns=id,project,priority,due,active,age,description\n");                 // TODO i18n
+        fprintf (out, "report.active.labels=ID,Project,Pri,Due,Active,Age,Description\n");                       // TODO i18n
+        fprintf (out, "report.active.sort=due+,priority-,project+\n");                                           // TODO i18n
+        fprintf (out, "report.active.filter=status:pending start.any:\n");                                       // TODO i18n
+
+        fprintf (out, "report.completed.description=Lists completed tasks matching the specified criteria\n");   // TODO i18n
+        fprintf (out, "report.completed.columns=end,project,priority,age,description\n");                        // TODO i18n
+        fprintf (out, "report.completed.labels=Complete,Project,Pri,Age,Description\n");                         // TODO i18n
+        fprintf (out, "report.completed.sort=end+,priority-,project+\n");                                        // TODO i18n
+        fprintf (out, "report.completed.filter=status:completed\n");                                             // TODO i18n
+
+        fprintf (out, "report.recurring.description=Lists recurring tasks matching the specified criteria\n");   // TODO i18n
+        fprintf (out, "report.recurring.columns=id,project,priority,due,recur,active,age,description\n");        // TODO i18n
+        fprintf (out, "report.recurring.labels=ID,Project,Pri,Due,Recur,Active,Age,Description\n");              // TODO i18n
+        fprintf (out, "report.recurring.sort=due+,priority-,project+\n");                                        // TODO i18n
+        fprintf (out, "report.recurring.filter=status:pending parent.any:\n");                                   // TODO i18n
 
         fclose (out);
 
@@ -255,6 +230,64 @@ void Config::createDefault (const std::string& home)
   dataDir = this->get ("data.location", dataDir); // no i18n
   if (-1 == access (dataDir.c_str (), F_OK))
     mkdir (dataDir.c_str (), S_IRWXU);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Config::setDefaults ()
+{
+  set ("report.long.description",      "Lists all task, all data, matching the specified criteria");      // TODO i18n
+  set ("report.long.columns",          "id,project,priority,entry,start,due,recur,age,tags,description"); // TODO i18n
+  set ("report.long.labels",           "ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description");    // TODO i18n
+  set ("report.long.sort",             "due+,priority-,project+");                                        // TODO i18n
+  set ("report.long.filter",           "status:pending");                                                 // TODO i18n
+
+  set ("report.list.description",      "Lists all tasks matching the specified criteria");                // TODO i18n
+  set ("report.list.columns",          "id,project,priority,due,active,age,description");                 // TODO i18n
+  set ("report.list.labels",           "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
+  set ("report.list.sort",             "due+,priority-,project+");                                        // TODO i18n
+  set ("report.list.filter",           "status:pending");                                                 // TODO i18n
+
+  set ("report.ls.description",        "Minimal listing of all tasks matching the specified criteria");   // TODO i18n
+  set ("report.ls.columns",            "id,project,priority,description");                                // TODO i18n
+  set ("report.ls.labels",             "ID,Project,Pri,Description");                                     // TODO i18n
+  set ("report.ls.sort",               "priority-,project+");                                             // TODO i18n
+  set ("report.ls.filter",             "status:pending");                                                 // TODO i18n
+
+  set ("report.newest.description",    "Shows the newest tasks");                                         // TODO i18n
+  set ("report.newest.columns",        "id,project,priority,due,active,age,description");                 // TODO i18n
+  set ("report.newest.labels",         "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
+  set ("report.newest.sort",           "id-");                                                            // TODO i18n
+  set ("report.newest.filter",         "status:pending limit:10");                                        // TODO i18n
+
+  set ("report.oldest.description",    "Shows the oldest tasks");                                         // TODO i18n
+  set ("report.oldest.columns",        "id,project,priority,due,active,age,description");                 // TODO i18n
+  set ("report.oldest.labels",         "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
+  set ("report.oldest.sort",           "id+");                                                            // TODO i18n
+  set ("report.oldest.filter",         "status:pending limit:10");                                        // TODO i18n
+
+  set ("report.overdue.description",   "Lists overdue tasks matching the specified criteria");            // TODO i18n
+  set ("report.overdue.columns",       "id,project,priority,due,active,age,description");                 // TODO i18n
+  set ("report.overdue.labels",        "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
+  set ("report.overdue.sort",          "due+,priority-,project+");                                        // TODO i18n
+  set ("report.overdue.filter",        "status:pending due.before:today");                                // TODO i18n
+
+  set ("report.active.description",    "Lists active tasks matching the specified criteria");             // TODO i18n
+  set ("report.active.columns",        "id,project,priority,due,active,age,description");                 // TODO i18n
+  set ("report.active.labels",         "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
+  set ("report.active.sort",           "due+,priority-,project+");                                        // TODO i18n
+  set ("report.active.filter",         "status:pending start.any:");                                      // TODO i18n
+
+  set ("report.completed.description", "Lists completed tasks matching the specified criteria");          // TODO i18n
+  set ("report.completed.columns",     "end,project,priority,age,description");                           // TODO i18n
+  set ("report.completed.labels",      "Complete,Project,Pri,Age,Description");                           // TODO i18n
+  set ("report.completed.sort",        "end+,priority-,project+");                                        // TODO i18n
+  set ("report.completed.filter",      "status:completed");                                               // TODO i18n
+
+  set ("report.recurring.description", "Lists recurring tasks matching the specified criteria");          // TODO i18n
+  set ("report.recurring.columns",     "id,project,priority,due,recur,active,age,description");           // TODO i18n
+  set ("report.recurring.labels",      "ID,Project,Pri,Due,Recur,Active,Age,Description");                // TODO i18n
+  set ("report.recurring.sort",        "due+,priority-,project+");                                        // TODO i18n
+  set ("report.recurring.filter",      "status:pending parent.any:");                                     // TODO i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////

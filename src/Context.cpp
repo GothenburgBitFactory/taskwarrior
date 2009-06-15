@@ -272,6 +272,8 @@ void Context::shadow ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::loadCorrectConfigFile ()
 {
+  bool needNewConfig = true;
+
   foreach (arg, args)
   {
     if (arg->substr (0, 3) == "rc:")
@@ -281,21 +283,26 @@ void Context::loadCorrectConfigFile ()
         throw std::string ("Could not read configuration file '") + file + "'";
 
       message (std::string ("Using alternate .taskrc file ") + file); // TODO i18n
-      config.load (file);
+      config.clear ();       // Dump current values.
+      config.setDefaults (); // Add in the custom reports.
+      config.load (file);    // Load new file.
+      needNewConfig = false;
 
       // No need to handle it again.
       args.erase (arg);
     }
   }
 
-  struct passwd* pw = getpwuid (getuid ());
-  if (!pw)
-    throw std::string (
-      stringtable.get (SHELL_READ_PASSWD,
-                       "Could not read home directory from the passwd file."));
+  if (needNewConfig)
+  {
+    struct passwd* pw = getpwuid (getuid ());
+    if (!pw)
+      throw std::string (
+        stringtable.get (SHELL_READ_PASSWD,
+                         "Could not read home directory from the passwd file."));
 
-  std::string file = pw->pw_dir;
-  config.createDefault (file);
+    config.createDefault (pw->pw_dir);
+  }
 
   // Apply overrides of type: "rc.name:value"
   foreach (arg, args)
