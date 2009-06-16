@@ -44,7 +44,7 @@ static const char* internalNames[] =
   "end",
   "mask",
   "imask",
-//  "limit",
+  "limit",
   "status",
   "description",
 };
@@ -200,7 +200,6 @@ bool Att::validName (const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete
 bool Att::validModifiableName (const std::string& name)
 {
   for (unsigned int i = 0; i < NUM_MODIFIABLE_NAMES; ++i)
@@ -294,6 +293,14 @@ bool Att::validNameValue (
     mod = matches[0];
   }
 
+  // Some attributes are intended to be private, unless the command is read-
+  // only, in which cased these are perfectly valid elements of a filter.
+  if (context.cmd.isWriteCommand () &&
+      !validModifiableName (name))
+    throw std::string ("\"") +
+          name               +
+          "\" is not an attribute you may modify directly.";
+
   // Thirdly, make sure the value has the expected form or values.
   if (name == "project")
   {
@@ -333,13 +340,8 @@ bool Att::validNameValue (
       Text::guessColor (value);
   }
 
-  else if (name == "due")
-  {
-    if (value != "")
-      Date (value);
-  }
-
-  else if (name == "until")
+  else if (name == "due" ||
+           name == "until")
   {
     if (value != "")
       Date (value);
@@ -351,28 +353,30 @@ bool Att::validNameValue (
       Duration (value);
   }
 
-  // TODO Not ready for prime time.
   else if (name == "limit")
   {
     if (value == "" || !digitsOnly (value))
       throw std::string ("The '") + name + "' attribute must be an integer.";
   }
 
-  // Some attributes are intended to be private, unless the command is read-
-  // only, in which cased these are perfectly valid elements of a filter.
-  else if (name == "entry"       ||
-           name == "start"       ||
-           name == "end"         ||
-           name == "mask"        ||
-           name == "imask"       ||
-           name == "uuid"        ||
-           name == "status"      ||
-           name == "description")
+  else if (name == "status")
   {
-    if (context.cmd.isWriteCommand ())
+    value = lowerCase (value);
+
+    std::vector <std::string> matches;
+    std::vector <std::string> candidates;
+    candidates.push_back ("pending");
+    candidates.push_back ("completed");
+    candidates.push_back ("deleted");
+    candidates.push_back ("recurring");
+    autoComplete (value, candidates, matches);
+
+    if (matches.size () == 1)
+      value = matches[0];
+    else
       throw std::string ("\"") +
-            name               +
-            "\" is not an attribute you may modify directly.";
+            value              +
+            "\" is not a valid status.  Use 'pending', 'completed', 'deleted' or 'recurring'.";
   }
 
   else

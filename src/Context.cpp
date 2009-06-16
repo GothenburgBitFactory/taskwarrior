@@ -494,7 +494,7 @@ void Context::constructFilter ()
 {
   foreach (att, task)
   {
-    // TODO this doesn't work.
+    // Words are found in the description using the .has modifier.
     if (att->first == "description")
     {
       std::vector <std::string> words;
@@ -502,8 +502,15 @@ void Context::constructFilter ()
       foreach (word, words)
       {
         filter.push_back (Att ("description", "has", *word));
-        std::cout << "Context::constructFilter " << att->first << "=" << *word << std::endl;
+        std::cout << "[1;31m# auto filter: " << att->first << ".has:" << *word << "[0m" << std::endl;
       }
+    }
+
+    // Projects are matched left-most.
+    else if (att->first == "project")
+    {
+      filter.push_back (Att ("project", "startswith", att->second.value ()));
+        std::cout << "[1;31m# auto filter: " << att->first << ".startswith:" << att->second.value () << "[0m" << std::endl;
     }
 
     // TODO Don't create a uuid for every task?
@@ -511,10 +518,11 @@ void Context::constructFilter ()
     // The mechanism for filtering on tags is +/-<tag>, not tags:foo which
     // means that there can only be one tag, "foo".
     else if (att->first != "uuid" &&
-             att->first != "tags")
+             att->first != "tags" &&
+             att->first != "project")
     {
       filter.push_back (att->second);
-      std::cout << "Context::constructFilter " << att->first << "=" << att->second.value () << std::endl;
+      std::cout << "[1;31m# auto filter: " << att->first << ":" << att->second.value () << "[0m" << std::endl;
     }
   }
 
@@ -524,14 +532,14 @@ void Context::constructFilter ()
   foreach (tag, tagAdditions)
   {
     filter.push_back (Att ("tags", "has", *tag));
-    std::cout << "Context::constructFilter tags=+" << *tag << std::endl;
+    std::cout << "[1;31m# auto filter: +" << *tag << "[0m" << std::endl;
   }
 
-  // TODO Include tagRemovals.
+  // Include tagRemovals.
   foreach (tag, tagRemovals)
   {
     filter.push_back (Att ("tags", "hasnt", *tag));
-    std::cout << "Context::constructFilter tags=-" << *tag << std::endl;
+    std::cout << "[1;31m# auto filter: -" << *tag << "[0m" << std::endl;
   }
 }
 
