@@ -312,8 +312,11 @@ int TDB::commit ()
 
     // Write out all pending.
     if (fseek (mLocations[0].pending, 0, SEEK_SET) == 0)
+    {
+      ftruncate (fileno (mLocations[0].pending), 0);
       foreach (task, mPending)
         fputs (task->composeF4 ().c_str (), mLocations[0].pending);
+    }
   }
 
   return quantity;

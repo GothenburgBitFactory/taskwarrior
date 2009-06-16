@@ -570,27 +570,44 @@ std::string handleStart ()
 std::string handleStop ()
 {
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.pendingT (all);
-  filterSequence (all, task);
 
-  foreach (t, all)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
-    if (t->has ("start"))
+    if (task->has ("start"))
     {
-      t->removeAttribute ("start");
-      tdb.modifyT (*t);
+      task->remove ("start");
+      context.tdb.update (*task);
 
       if (context.config.get ("echo.command", true))
-        out << "Stopped " << t->getId () << " '" << t->getDescription () << "'" << std::endl;
+        out << "Stopped "
+            << task->id
+            << " '"
+            << task->get ("description")
+            << "'"
+            << std::endl;
     }
     else
     {
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' not started." << std::endl;
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' not started."
+          << std::endl;
     }
   }
-*/
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
   return out.str ();
 }
 
