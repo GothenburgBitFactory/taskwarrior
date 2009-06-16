@@ -317,8 +317,14 @@ bool Att::validNameValue (
 
   else if (name == "description")
   {
-    if (value != "" || !noVerticalSpace (value))
-      throw std::string ("The '") + name + "' attribute must not be blank, and must not contain vertical white space.";
+    if (context.cmd.isWriteCommand ())
+    {
+      if (value == "")
+        throw std::string ("The '") + name + "' attribute must not be blank.";
+
+      if (!noVerticalSpace (value))
+        throw std::string ("The '") + name + "' attribute must not contain vertical white space.";
+    }
   }
 
   else if (name == "fg" || name == "bg")
