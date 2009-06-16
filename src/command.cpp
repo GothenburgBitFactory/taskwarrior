@@ -198,35 +198,49 @@ std::string handleTags ()
 std::string handleUndelete ()
 {
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.allPendingT (all);
-  filterSequence (all, task);
 
-  foreach (t, all)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.load (tasks, context.filter);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
-    if (t->getStatus () == T::deleted)
+    if (task->getStatus () == Task::deleted)
     {
-      if (t->has ("recur"))
+      if (task->has ("recur"))
         out << "Task does not support 'undo' for recurring tasks.\n";
 
-      t->setStatus (T::pending);
-      t->removeAttribute ("end");
-      tdb.modifyT (*t);
+      task->setStatus (Task::pending);
+      task->remove ("end");
+      context.tdb.update (*task);
 
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' successfully undeleted.\n";
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' successfully undeleted.\n";
     }
     else
     {
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' is not deleted - therefore cannot be undeleted.\n";
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' is not deleted - therefore cannot be undeleted.\n";
     }
   }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   out << "\n"
       << "Please note that tasks can only be reliably undeleted if the undelete "
       << "command is run immediately after the errant delete command."
       << std::endl;
-*/
+
   return out.str ();
 }
 
