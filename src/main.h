@@ -25,6 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+// TDB Optimization attempts to reduce the amount of I/O.
+#define FEATURE_TDB_OPT 1
+
+
 #include <string>
 #include <vector>
 #include <map>

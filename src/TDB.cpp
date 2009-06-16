@@ -151,8 +151,34 @@ void TDB::unlock ()
 //       multiple files.
 int TDB::load (std::vector <Task>& tasks, Filter& filter)
 {
-  loadPending   (tasks, filter);
+#ifdef FEATURE_TDB_OPT
+  // Special optimization: if the filter contains Att ('status', '', 'pending'),
+  // and no other 'status' filters, then loadCompleted can be skipped.
+  int numberStatusClauses = 0;
+  int numberSimpleStatusClauses = 0;
+  foreach (att, filter)
+  {
+    if (att->name () == "status")
+    {
+      ++numberStatusClauses;
+
+      if (att->mod () == "" && att->value () == "pending")
+        ++numberSimpleStatusClauses;
+    }
+  }
+#endif
+
+  loadPending (tasks, filter);
+
+#ifdef FEATURE_TDB_OPT
+  if (numberStatusClauses == 0 ||
+      numberStatusClauses != numberSimpleStatusClauses)
+    loadCompleted (tasks, filter);
+  else
+    std::cout << "[1;31m# TDB::load optimization short circuit[0m" << std::endl;
+#else
   loadCompleted (tasks, filter);
+#endif
 
   return tasks.size ();
 }
