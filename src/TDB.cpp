@@ -353,6 +353,7 @@ int TDB::gc ()
 
   // Now move completed and deleted tasks from the pending list to the
   // completed list.  Isn't garbage collection easy?
+  std::vector <Task> still_pending;
   foreach (task, pending)
   {
     std::string st = task->get ("status");
@@ -361,10 +362,13 @@ int TDB::gc ()
         s == Task::deleted)
     {
       completed.push_back (*task);
-      pending.erase (task);
       ++count;
     }
+    else
+      still_pending.push_back (*task);
   }
+
+  pending = still_pending;
 
   // No commit - all updates performed manually.
   if (count > 0)

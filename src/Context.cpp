@@ -290,6 +290,7 @@ void Context::loadCorrectConfigFile ()
 
       // No need to handle it again.
       args.erase (arg);
+      break;
     }
   }
 
@@ -305,6 +306,7 @@ void Context::loadCorrectConfigFile ()
   }
 
   // Apply overrides of type: "rc.name:value"
+  std::vector <std::string> filtered;
   foreach (arg, args)
   {
     if (arg->substr (0, 3) == "rc.")
@@ -322,11 +324,12 @@ void Context::loadCorrectConfigFile ()
         message (std::string ("Configuration override ") +  // TODO i18n
                  arg->substr (3, std::string::npos));
       }
-
-      // No need to handle it again.
-      args.erase (arg);
     }
+    else
+      filtered.push_back (*arg);
   }
+
+  args = filtered;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
