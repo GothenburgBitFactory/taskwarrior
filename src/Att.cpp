@@ -393,6 +393,27 @@ bool Att::validMod (const std::string& mod)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// The type of an attribute is useful for modifier evaluation.
+std::string type (const std::string& name)
+{
+  if (name == "due" ||
+      name == "until" ||
+      name == "start" ||
+      name == "entry" ||
+      name == "end")
+    return "date";
+
+  else if (name == "recur")
+    return "duration";
+
+  else if (name == "limit")
+    return "number";
+
+  else
+    return "text";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //
 // start --> name --> . --> mod --> : --> " --> value --> " --> end
 //            |                     ^
@@ -439,8 +460,6 @@ void Att::parse (Nibbler& n)
       {
         decode (mValue);
       }
-      else
-        throw std::string ("Missing attribute value"); // TODO i18n
     }
     else
       throw std::string ("Missing : after attribute name"); // TODO i18n

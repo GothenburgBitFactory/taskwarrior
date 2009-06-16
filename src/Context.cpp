@@ -494,7 +494,6 @@ void Context::constructFilter ()
 {
   foreach (att, task)
   {
-
     // TODO this doesn't work.
     if (att->first == "description")
     {
@@ -503,7 +502,7 @@ void Context::constructFilter ()
       foreach (word, words)
       {
         filter.push_back (Att ("description", "has", *word));
-        std::cout << "Context::constructFilter " << att->first << "=" << att->second.value () << std::endl;
+        std::cout << "Context::constructFilter " << att->first << "=" << *word << std::endl;
       }
     }
 
