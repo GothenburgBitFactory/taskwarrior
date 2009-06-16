@@ -463,11 +463,12 @@ std::cout << "[1;31m# parse post-termination description '" << *arg << "'[0m" 
   if (descCandidate != "" && noVerticalSpace (descCandidate))
     task.set ("description", descCandidate);
 
-  // TODO task.validate ()
-  // TODO if readOnlyCommand (cmd.command) then any attributes are allowed
-  // TODO if writeCommand (cmd.command) then only modifiable attributes are allowed
+  // TODO task.validate () ?
 
-  constructFilter ();
+  // Read-only command (reports, status, info ...) use filters.  Write commands
+  // (add, done ...) do not.
+  if (cmd.isReadOnlyCommand ())
+    autoFilter ();
 
   // If no command was specified, and there were no command line arguments
   // then invoke the default command.
@@ -490,7 +491,7 @@ std::cout << "[1;31m# parse post-termination description '" << *arg << "'[0m" 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add all the attributes in the task to the filter.  All except uuid.
-void Context::constructFilter ()
+void Context::autoFilter ()
 {
   foreach (att, task)
   {

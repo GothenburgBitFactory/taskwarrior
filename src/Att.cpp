@@ -259,7 +259,6 @@ bool Att::validNameValue (
 
     std::string combined;
     join (combined, ", ", matches);
-    error += combined;
 
     throw error + combined;
   }
