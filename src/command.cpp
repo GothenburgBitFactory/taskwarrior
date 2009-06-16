@@ -201,7 +201,7 @@ std::string handleUndelete ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  context.tdb.load (tasks, context.filter);
+  context.tdb.loadPending (tasks, context.filter);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
@@ -211,7 +211,7 @@ std::string handleUndelete ()
     if (task->getStatus () == Task::deleted)
     {
       if (task->has ("recur"))
-        out << "Task does not support 'undo' for recurring tasks.\n";
+        out << "Task does not support 'undelete' for recurring tasks.\n";
 
       task->setStatus (Task::pending);
       task->remove ("end");
@@ -250,35 +250,49 @@ std::string handleUndelete ()
 std::string handleUndo ()
 {
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.allPendingT (all);
-  filterSequence (all, task);
 
-  foreach (t, all)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
-    if (t->getStatus () == T::completed)
+    if (task->getStatus () == Task::completed)
     {
-      if (t->has ("recur"))
+      if (task->has ("recur"))
         out << "Task does not support 'undo' for recurring tasks.\n";
 
-      t->setStatus (T::pending);
-      t->removeAttribute ("end");
-      tdb.modifyT (*t);
+      task->setStatus (Task::pending);
+      task->remove ("end");
+      context.tdb.update (*task);
 
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' successfully undone." << std::endl;
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' successfully undone.\n";
     }
     else
     {
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' is not done - therefore cannot be undone." << std::endl;
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' is not completed - therefore cannot be undone.\n";
     }
   }
 
-  out << std::endl
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  out << "\n"
       << "Please note that tasks can only be reliably undone if the undo "
       << "command is run immediately after the errant done command."
       << std::endl;
-*/
+
   return out.str ();
 }
 
