@@ -309,7 +309,7 @@ std::string handleInfo ()
     table.addCell (row, 0, "ID");
     table.addCell (row, 1, task->id);
 
-    std::string status = Task::statusToText (task->getStatus ());
+    std::string status = ucFirst (Task::statusToText (task->getStatus ()));
 
     if (task->has ("parent"))
       status += " (Recurring)";

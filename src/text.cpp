@@ -297,6 +297,17 @@ std::string upperCase (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string ucFirst (const std::string& input)
+{
+  std::string output = input;
+
+  if (output.length () > 0)
+    output[0] = ::toupper (output[0]);
+
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const char* optionalBlankLine ()
 {
   if (context.config.get ("blanklines", true) == true) // no i18n
