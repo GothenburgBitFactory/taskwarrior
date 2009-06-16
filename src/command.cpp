@@ -423,49 +423,53 @@ std::string handleVersion ()
 std::string handleDelete ()
 {
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.allPendingT (all);
-  filterSequence (all, task);
+
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
 
   // Determine the end date.
   char endTime[16];
   sprintf (endTime, "%u", (unsigned int) time (NULL));
 
-  foreach (t, all)
+  foreach (task, tasks)
   {
     std::stringstream question;
     question << "Permanently delete task "
-             << t->getId ()
+             << task->id
              << " '"
-             << t->getDescription ()
+             << task->get ("description")
              << "'?";
 
     if (!context.config.get (std::string ("confirmation"), false) || confirm (question.str ()))
     {
       // Check for the more complex case of a recurring task.  If this is a
       // recurring task, get confirmation to delete them all.
-      std::string parent = t->getAttribute ("parent");
+      std::string parent = task->get ("parent");
       if (parent != "")
       {
         if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
         {
           // Scan all pending tasks for siblings of this task, and the parent
           // itself, and delete them.
-          foreach (sibling, all)
+          foreach (sibling, tasks)
           {
-            if (sibling->getAttribute ("parent") == parent ||
-                sibling->getUUID ()              == parent)
+            if (sibling->get ("parent") == parent ||
+                sibling->get ("uuid")   == parent)
             {
-              sibling->setStatus (T::deleted);
-              sibling->setAttribute ("end", endTime);
-              tdb.modifyT (*sibling);
+              sibling->setStatus (Task::deleted);
+              sibling->set ("end", endTime);
+              context.tdb.update (*sibling);
 
               if (context.config.get ("echo.command", true))
                 out << "Deleting recurring task "
-                    << sibling->getId ()
+                    << sibling->id
                     << " '"
-                    << sibling->getDescription ()
+                    << sibling->get ("description")
                     << "'"
                     << std::endl;
             }
@@ -474,31 +478,31 @@ std::string handleDelete ()
         else
         {
           // Update mask in parent.
-          t->setStatus (T::deleted);
-          updateRecurrenceMask (tdb, all, *t);
+          task->setStatus (Task::deleted);
+          updateRecurrenceMask (tasks, *task);
 
-          t->setAttribute ("end", endTime);
-          tdb.modifyT (*t);
+          task->set ("end", endTime);
+          context.tdb.update (*task);
 
           out << "Deleting recurring task "
-              << t->getId ()
+              << task->id
               << " '"
-              << t->getDescription ()
+              << task->get ("description")
               << "'"
               << std::endl;
         }
       }
       else
       {
-        t->setStatus (T::deleted);
-        t->setAttribute ("end", endTime);
-        tdb.modifyT (*t);
+        task->setStatus (Task::deleted);
+        task->set ("end", endTime);
+        context.tdb.update (*task);
 
         if (context.config.get ("echo.command", true))
           out << "Deleting task "
-              << t->getId ()
+              << task->id
               << " '"
-              << t->getDescription ()
+              << task->get ("description")
               << "'"
               << std::endl;
       }
@@ -506,7 +510,10 @@ std::string handleDelete ()
     else
       out << "Task not deleted." << std::endl;
   }
-*/
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
   return out.str ();
 }
 
@@ -514,36 +521,48 @@ std::string handleDelete ()
 std::string handleStart ()
 {
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.pendingT (all);
-  filterSequence (all, task);
 
-  foreach (t, all)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
-    if (t->getAttribute ("start") == "")
+    if (! task->has ("start"))
     {
       char startTime[16];
       sprintf (startTime, "%u", (unsigned int) time (NULL));
-      t->setAttribute ("start", startTime);
+      task->set ("start", startTime);
 
-      tdb.modifyT (*t);
+      context.tdb.update (*task);
 
       if (context.config.get ("echo.command", true))
         out << "Started "
-            << t->getId ()
+            << task->id
             << " '"
-            << t->getDescription ()
+            << task->get ("description")
             << "'"
             << std::endl;
-      nag (tdb, task);
+      nag (*task);
     }
     else
     {
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' already started." << std::endl;
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' already started."
+          << std::endl;
     }
   }
-*/
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
   return out.str ();
 }
 

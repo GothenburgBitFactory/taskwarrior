@@ -32,7 +32,10 @@
 #include "util.h"
 #include "Date.h"
 #include "Duration.h"
+#include "Context.h"
 #include "Att.h"
+
+extern Context context;
 
 static const char* internalNames[] =
 {
@@ -42,6 +45,8 @@ static const char* internalNames[] =
   "mask",
   "imask",
 //  "limit",
+  "status",
+  "description",
 };
 
 static const char* modifiableNames[] =
@@ -347,18 +352,21 @@ bool Att::validNameValue (
       throw std::string ("The '") + name + "' attribute must be an integer.";
   }
 
-  // Some attributes are intended to be private.
-  else if (name == "entry" ||
-           name == "start" ||
-           name == "end"   ||
-           name == "mask"  ||
-           name == "imask" ||
-           name == "uuid"  ||
-           name == "status")
+  // Some attributes are intended to be private, unless the command is read-
+  // only, in which cased these are perfectly valid elements of a filter.
+  else if (name == "entry"       ||
+           name == "start"       ||
+           name == "end"         ||
+           name == "mask"        ||
+           name == "imask"       ||
+           name == "uuid"        ||
+           name == "status"      ||
+           name == "description")
   {
-    throw std::string ("\"") +
-          name               +
-          "\" is not an attribute you may modify directly.";
+    if (context.cmd.isWriteCommand ())
+      throw std::string ("\"") +
+            name               +
+            "\" is not an attribute you may modify directly.";
   }
 
   else

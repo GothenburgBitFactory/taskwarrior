@@ -186,9 +186,13 @@ std::string Context::dispatch ()
   else if (cmd.command == "done")              { out = handleDone            (); }
 /*
   else if (cmd.command == "undo")              { out = handleUndo            (); }
+*/
   else if (cmd.command == "delete")            { out = handleDelete          (); }
+/*
   else if (cmd.command == "undelete")          { out = handleUndelete        (); }
+*/
   else if (cmd.command == "start")             { out = handleStart           (); }
+/*
   else if (cmd.command == "stop")              { out = handleStop            (); }
 */
   else if (cmd.command == "export")            { out = handleExport          (); }
