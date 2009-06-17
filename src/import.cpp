@@ -181,8 +181,9 @@ static void decorateTask (Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
 {
-/*
   std::vector <std::string> failed;
+
+  context.tdb.lock (context.config.get ("locking", true));
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -229,7 +230,7 @@ static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
         throw "unrecoverable";
 
       // Build up this task ready for insertion.
-      T task;
+      Task task;
 
       // Handle the 12 fields.
       for (unsigned int f = 0; f < fields.size (); ++f)
@@ -237,14 +238,14 @@ static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
         switch (f)
         {
         case 0: // 'uuid'
-          task.setUUID (fields[f].substr (1, 36));
+          task.set ("uuid", fields[f].substr (1, 36));
           break;
 
         case 1: // 'status'
-               if (fields[f] == "'pending'")   task.setStatus (T::pending);
-          else if (fields[f] == "'recurring'") task.setStatus (T::recurring);
-          else if (fields[f] == "'deleted'")   task.setStatus (T::deleted);
-          else if (fields[f] == "'completed'") task.setStatus (T::completed);
+               if (fields[f] == "'pending'")   task.setStatus (Task::pending);
+          else if (fields[f] == "'recurring'") task.setStatus (Task::recurring);
+          else if (fields[f] == "'deleted'")   task.setStatus (Task::deleted);
+          else if (fields[f] == "'completed'") task.setStatus (Task::completed);
           break;
 
         case 2: // 'tags'
@@ -299,13 +300,12 @@ static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
 
         case 11: // 'description'
           if (fields[f].length () > 2)
-            task.setDescription (fields[f].substr (1, fields[f].length () - 2));
+            task.set ("description", fields[f].substr (1, fields[f].length () - 2));
           break;
         }
       }
 
-      if (! tdb.addT (task))
-        failed.push_back (*it);
+      context.tdb.add (task);
     }
 
     catch (...)
@@ -313,10 +313,11 @@ static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
       failed.push_back (*it);
     }
   }
-*/
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   std::stringstream out;
-/*
   out << "Imported "
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
@@ -330,15 +331,16 @@ static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
-*/
+
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
 {
-/*
   std::vector <std::string> failed;
+
+  context.tdb.lock (context.config.get ("locking", true));
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -385,7 +387,7 @@ static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
         throw "unrecoverable";
 
       // Build up this task ready for insertion.
-      T task;
+      Task task;
 
       // Handle the 13 fields.
       for (unsigned int f = 0; f < fields.size (); ++f)
@@ -393,14 +395,14 @@ static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
         switch (f)
         {
         case 0: // 'uuid'
-          task.setUUID (fields[f].substr (1, 36));
+          task.set ("uuid", fields[f].substr (1, 36));
           break;
 
         case 1: // 'status'
-               if (fields[f] == "'pending'")   task.setStatus (T::pending);
-          else if (fields[f] == "'recurring'") task.setStatus (T::recurring);
-          else if (fields[f] == "'deleted'")   task.setStatus (T::deleted);
-          else if (fields[f] == "'completed'") task.setStatus (T::completed);
+               if (fields[f] == "'pending'")   task.setStatus (Task::pending);
+          else if (fields[f] == "'recurring'") task.setStatus (Task::recurring);
+          else if (fields[f] == "'deleted'")   task.setStatus (Task::deleted);
+          else if (fields[f] == "'completed'") task.setStatus (Task::completed);
           break;
 
         case 2: // 'tags'
@@ -460,13 +462,12 @@ static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
 
         case 12: // 'description'
           if (fields[f].length () > 2)
-            task.setDescription (fields[f].substr (1, fields[f].length () - 2));
+            task.set ("description", fields[f].substr (1, fields[f].length () - 2));
           break;
         }
       }
 
-      if (! tdb.addT (task))
-        failed.push_back (*it);
+      context.tdb.add (task);
     }
 
     catch (...)
@@ -475,9 +476,10 @@ static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
     }
   }
 
-*/
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
   std::stringstream out;
-/*
   out << "Imported "
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
@@ -491,7 +493,6 @@ static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
-*/
 
   return out.str ();
 }
@@ -499,8 +500,9 @@ static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
 {
-/*
   std::vector <std::string> failed;
+
+  context.tdb.lock (context.config.get ("locking", true));
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -547,7 +549,7 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
         throw "unrecoverable";
 
       // Build up this task ready for insertion.
-      T task;
+      Task task;
 
       // Handle the 13 fields.
       for (unsigned int f = 0; f < fields.size (); ++f)
@@ -555,14 +557,14 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
         switch (f)
         {
         case 0: // 'uuid'
-          task.setUUID (fields[f].substr (1, 36));
+          task.set ("uuid", fields[f].substr (1, 36));
           break;
 
         case 1: // 'status'
-               if (fields[f] == "'pending'")   task.setStatus (T::pending);
-          else if (fields[f] == "'recurring'") task.setStatus (T::recurring);
-          else if (fields[f] == "'deleted'")   task.setStatus (T::deleted);
-          else if (fields[f] == "'completed'") task.setStatus (T::completed);
+               if (fields[f] == "'pending'")   task.setStatus (Task::pending);
+          else if (fields[f] == "'recurring'") task.setStatus (Task::recurring);
+          else if (fields[f] == "'deleted'")   task.setStatus (Task::deleted);
+          else if (fields[f] == "'completed'") task.setStatus (Task::completed);
           break;
 
         case 2: // 'tags'
@@ -622,13 +624,12 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
 
         case 12: // 'description'
           if (fields[f].length () > 2)
-            task.setDescription (fields[f].substr (1, fields[f].length () - 2));
+            task.set ("description", fields[f].substr (1, fields[f].length () - 2));
           break;
         }
       }
 
-      if (! tdb.addT (task))
-        failed.push_back (*it);
+      context.tdb.add (task);
     }
 
     catch (...)
@@ -636,10 +637,11 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
       failed.push_back (*it);
     }
   }
-*/
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   std::stringstream out;
-/*
   out << "Imported "
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
@@ -653,14 +655,13 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
-*/
+
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTaskCmdLine (const std::vector <std::string>& lines)
 {
-/*
   std::vector <std::string> failed;
 
   std::vector <std::string>::const_iterator it;
@@ -673,21 +674,21 @@ static std::string importTaskCmdLine (const std::vector <std::string>& lines)
       std::vector <std::string> args;
       split (args, std::string ("add ") + line, ' ');
 
-      T task;
-      std::string command;
-      parse (args, command, task);
+      context.task.clear ();
+      context.cmd.command = "";
+      context.parse ();
       handleAdd ();
+      context.clearMessages ();
     }
 
     catch (...)
     {
+      context.clearMessages ();
       failed.push_back (line);
     }
   }
-*/
 
   std::stringstream out;
-/*
   out << "Imported "
       << (lines.size () - failed.size ())
       << " tasks successfully, with "
@@ -701,7 +702,6 @@ static std::string importTaskCmdLine (const std::vector <std::string>& lines)
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
-*/
 
   return out.str ();
 }
@@ -709,8 +709,9 @@ static std::string importTaskCmdLine (const std::vector <std::string>& lines)
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
 {
-/*
   std::vector <std::string> failed;
+
+  context.tdb.lock (context.config.get ("locking", true));
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -780,37 +781,39 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
         }
       }
 
-      T task;
-      std::string command;
-      parse (args, command, task);
-      decorateTask (task);
+      context.task.clear ();
+      context.cmd.command = "";
+      context.parse ();
+      decorateTask (context.task);
 
       if (isPending)
       {
-        task.setStatus (T::pending);
+        context.task.setStatus (Task::pending);
       }
       else
       {
-        task.setStatus (T::completed);
+        context.task.setStatus (Task::completed);
 
         char end[16];
         sprintf (end, "%u", (unsigned int) endDate.toEpoch ());
-        task.set ("end", end);
+        context.task.set ("end", end);
       }
 
-      if (! tdb.addT (task))
-        failed.push_back (*it);
+      context.tdb.add (context.task);
+      context.clearMessages ();
     }
 
     catch (...)
     {
+      context.clearMessages ();
       failed.push_back (*it);
     }
   }
-*/
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   std::stringstream out;
-/*
   out << "Imported "
       << (lines.size () - failed.size ())
       << " tasks successfully, with "
@@ -824,16 +827,16 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
-*/
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importText (const std::vector <std::string>& lines)
 {
-/*
   std::vector <std::string> failed;
   int count = 0;
+
+  context.tdb.lock (context.config.get ("locking", true));
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -854,25 +857,27 @@ static std::string importText (const std::vector <std::string>& lines)
         std::vector <std::string> args;
         split (args, std::string ("add ") + line, ' ');
 
-        T task;
-        std::string command;
-        parse (args, command, task);
-        decorateTask (task);
+        context.task.clear ();
+        context.cmd.command = "";
+        context.parse ();
+        decorateTask (context.task);
 
-        if (! tdb.addT (task))
-          failed.push_back (*it);
+        context.tdb.add (context.task);
+        context.clearMessages ();
       }
 
       catch (...)
       {
+        context.clearMessages ();
         failed.push_back (line);
       }
     }
   }
-*/
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   std::stringstream out;
-/*
   out << "Imported "
       << count
       << " tasks successfully, with "
@@ -886,7 +891,6 @@ static std::string importText (const std::vector <std::string>& lines)
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
-*/
 
   return out.str ();
 }
@@ -894,8 +898,9 @@ static std::string importText (const std::vector <std::string>& lines)
 ////////////////////////////////////////////////////////////////////////////////
 static std::string importCSV (const std::vector <std::string>& lines)
 {
-/*
   std::vector <std::string> failed;
+
+  context.tdb.lock (context.config.get ("locking", true));
 
   // Set up mappings.  Assume no fields match.
   std::map <std::string, int> mapping;
@@ -1045,20 +1050,20 @@ static std::string importCSV (const std::vector <std::string>& lines)
       std::vector <std::string> fields;
       split (fields, *it, ',');
 
-      T task;
+      Task task;
 
       int f;
       if ((f = mapping["uuid"]) != -1)
-        task.setUUID (lowerCase (unquoteText (trim (fields[f]))));
+        task.set ("uuid", lowerCase (unquoteText (trim (fields[f]))));
 
       if ((f = mapping["status"]) != -1)
       {
         std::string value = lowerCase (unquoteText (trim (fields[f])));
 
-             if (value == "recurring") task.setStatus (T::recurring);
-        else if (value == "deleted")   task.setStatus (T::deleted);
-        else if (value == "completed") task.setStatus (T::completed);
-        else                           task.setStatus (T::pending);
+             if (value == "recurring") task.setStatus (Task::recurring);
+        else if (value == "deleted")   task.setStatus (Task::deleted);
+        else if (value == "completed") task.setStatus (Task::completed);
+        else                           task.setStatus (Task::pending);
       }
 
       if ((f = mapping["tags"]) != -1)
@@ -1102,10 +1107,9 @@ static std::string importCSV (const std::vector <std::string>& lines)
         task.set ("bg", lowerCase (unquoteText (trim (fields[f]))));
 
       if ((f = mapping["description"]) != -1)
-        task.setDescription (unquoteText (trim (fields[f])));
+        task.set ("description", unquoteText (trim (fields[f])));
 
-      if (! tdb.addT (task))
-        failed.push_back (*it);
+      context.tdb.add (task);
     }
 
     catch (...)
@@ -1113,10 +1117,11 @@ static std::string importCSV (const std::vector <std::string>& lines)
       failed.push_back (*it);
     }
   }
-*/
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   std::stringstream out;
-/*
   out << "Imported "
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
@@ -1130,7 +1135,6 @@ static std::string importCSV (const std::vector <std::string>& lines)
     join (bad, "\n", failed);
     return out.str () + "\nCould not import:\n\n" + bad;
   }
-*/
 
   return out.str ();
 }

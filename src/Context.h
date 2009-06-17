@@ -55,10 +55,12 @@ public:
   void header (const std::string&);    // Header sink
   void message (const std::string&);   // Message sink
   void footnote (const std::string&);  // Footnote sink
+  void clearMessages ();
+
+  void parse ();
 
 private:
   void loadCorrectConfigFile ();
-  void parse ();
   void autoFilter ();
 
 public:
