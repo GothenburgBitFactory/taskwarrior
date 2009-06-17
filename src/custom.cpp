@@ -116,7 +116,7 @@ std::string handleCustomReport (const std::string& report)
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (++row, columnCount, task->id);
+        table.addCell (row++, columnCount, task->id);
     }
 
     else if (*col == "uuid")
@@ -127,7 +127,7 @@ std::string handleCustomReport (const std::string& report)
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (++row, columnCount, task->get ("uuid"));
+        table.addCell (row++, columnCount, task->get ("uuid"));
     }
 
     else if (*col == "project")
@@ -138,7 +138,7 @@ std::string handleCustomReport (const std::string& report)
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (++row, columnCount, task->get ("project"));
+        table.addCell (row++, columnCount, task->get ("project"));
     }
 
     else if (*col == "priority")
@@ -149,7 +149,7 @@ std::string handleCustomReport (const std::string& report)
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (++row, columnCount, task->get ("priority"));
+        table.addCell (row++, columnCount, task->get ("priority"));
     }
 
     else if (*col == "entry")
@@ -167,7 +167,7 @@ std::string handleCustomReport (const std::string& report)
         {
           Date dt (::atoi (entered.c_str ()));
           entered = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-          table.addCell (++row, columnCount, entered);
+          table.addCell (row++, columnCount, entered);
         }
       }
     }
@@ -187,7 +187,7 @@ std::string handleCustomReport (const std::string& report)
         {
           Date dt (::atoi (started.c_str ()));
           started = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-          table.addCell (++row, columnCount, started);
+          table.addCell (row++, columnCount, started);
         }
       }
     }
@@ -207,7 +207,7 @@ std::string handleCustomReport (const std::string& report)
         {
           Date dt (::atoi (started.c_str ()));
           started = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-          table.addCell (++row, columnCount, started);
+          table.addCell (row++, columnCount, started);
         }
       }
     }
@@ -221,7 +221,7 @@ std::string handleCustomReport (const std::string& report)
       int row = 0;
       std::string due;
       foreach (task, tasks)
-        table.addCell (++row, columnCount, getDueDate (*task));
+        table.addCell (row++, columnCount, getDueDate (*task));
 
       dueColumn = columnCount;
     }
@@ -243,7 +243,7 @@ std::string handleCustomReport (const std::string& report)
         {
           Date dt (::atoi (created.c_str ()));
           age = formatSeconds ((time_t) (now - dt));
-          table.addCell (++row, columnCount, age);
+          table.addCell (row++, columnCount, age);
         }
       }
     }
@@ -265,7 +265,7 @@ std::string handleCustomReport (const std::string& report)
         {
           Date dt (::atoi (created.c_str ()));
           age = formatSecondsCompact ((time_t) (now - dt));
-          table.addCell (++row, columnCount, age);
+          table.addCell (row++, columnCount, age);
         }
       }
     }
@@ -279,7 +279,7 @@ std::string handleCustomReport (const std::string& report)
       int row = 0;
       foreach (task, tasks)
         if (task->get ("start") != "")
-          table.addCell (++row, columnCount, "*");
+          table.addCell (row++, columnCount, "*");
     }
 
     else if (*col == "tags")
@@ -295,7 +295,7 @@ std::string handleCustomReport (const std::string& report)
       {
         task->getTags (all);
         join (tags, " ", all);
-        table.addCell (++row, columnCount, tags);
+        table.addCell (row++, columnCount, tags);
       }
     }
 
@@ -307,7 +307,7 @@ std::string handleCustomReport (const std::string& report)
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (++row, columnCount, task->get ("description"));
+        table.addCell (row++, columnCount, task->get ("description"));
     }
 
     else if (*col == "description")
@@ -318,7 +318,7 @@ std::string handleCustomReport (const std::string& report)
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (++row, columnCount, getFullDescription (*task));
+        table.addCell (row++, columnCount, getFullDescription (*task));
     }
 
     else if (*col == "recur")
@@ -329,7 +329,7 @@ std::string handleCustomReport (const std::string& report)
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (++row, columnCount, task->get ("recur"));
+        table.addCell (row++, columnCount, task->get ("recur"));
     }
 
     else if (*col == "recurrence_indicator")
@@ -340,7 +340,7 @@ std::string handleCustomReport (const std::string& report)
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (++row, columnCount,
+        table.addCell (row++, columnCount,
                        task->get ("recur") != "" ? "R" : "");
     }
 
@@ -352,7 +352,7 @@ std::string handleCustomReport (const std::string& report)
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (++row, columnCount,
+        table.addCell (row++, columnCount,
                        task->getTagCount () ? "+" : "");
     }
 

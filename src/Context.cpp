@@ -100,6 +100,9 @@ void Context::initialize ()
       config.set ("color",  "off");
   }
 
+  if (config.get ("color", true))
+    initializeColorRules ();
+
   // Load appropriate stringtable as soon after the config file as possible, to
   // allow all subsequent messages to be localizable.
   std::string location = expandPath (config.get ("data.location"));
@@ -126,10 +129,11 @@ void Context::initialize ()
 ////////////////////////////////////////////////////////////////////////////////
 int Context::run ()
 {
+  std::string output;
   try
   {
-    parse ();                 // Parse command line.
-    std::cout << dispatch (); // Dispatch to command handlers.
+    parse ();             // Parse command line.
+    output = dispatch (); // Dispatch to command handlers.
   }
 
   catch (const std::string& error)
@@ -142,15 +146,23 @@ int Context::run ()
     message (stringtable.get (100, "Unknown error."));
   }
 
+  // Dump all headers.
+  foreach (h, headers)
+    std::cout << colorizeHeader (*h) << std::endl;
+
+  // Dump the report output.
+  std::cout << output;
+
   // Dump all messages.
   foreach (m, messages)
-    std::cout << *m << std::endl;
+    std::cout << colorizeMessage (*m) << std::endl;
 
+  // Dump all footnotes.
   if (footnotes.size ())
   {
     std::cout << std::endl;
     foreach (f, footnotes)
-      std::cout << *f << std::endl;
+      std::cout << colorizeFootnote (*f) << std::endl;
   }
 
   return 0;
@@ -347,10 +359,10 @@ void Context::parse ()
     {
       // The '--' argument shuts off all parsing - everything is an argument.
       if (*arg == "--")
-{
-std::cout << "[1;31m# parse terminator '" << *arg << "'[0m" << std::endl;
+      {
+        header ("parse terminator '" + *arg + "'");
         terminated = true;
-}
+      }
 
       // Sequence
       // Note: "add" doesn't require an ID
@@ -358,7 +370,7 @@ std::cout << "[1;31m# parse terminator '" << *arg << "'[0m" << std::endl;
                ! foundSomethingAfterSequence &&
                sequence.valid (*arg))
       {
-std::cout << "[1;31m# parse sequence '" << *arg << "'[0m" << std::endl;
+        header ("parse sequence '" + *arg + "'");
         sequence.parse (*arg);
         foundSequence = true;
       }
@@ -368,7 +380,7 @@ std::cout << "[1;31m# parse sequence '" << *arg << "'[0m" << std::endl;
                (*arg)[0] == '+'   &&
                validTag (*arg))
       {
-std::cout << "[1;31m# parse tag addition '" << *arg << "'[0m" << std::endl;
+        header ("parse tag addition '" + *arg + "'");
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -381,7 +393,7 @@ std::cout << "[1;31m# parse tag addition '" << *arg << "'[0m" << std::endl;
                (*arg)[0] == '-'   &&
                validTag (*arg))
       {
-std::cout << "[1;31m# parse tag removal '" << *arg << "'[0m" << std::endl;
+        header ("parse tag removal '" + *arg + "'");
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -395,7 +407,7 @@ std::cout << "[1;31m# parse tag removal '" << *arg << "'[0m" << std::endl;
       // Atributes - name[.mod]:[value]
       else if (attribute.valid (*arg))
       {
-std::cout << "[1;31m# parse attribute '" << *arg << "'[0m" << std::endl;
+        header ("parse attribute '" + *arg + "'");
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -419,7 +431,7 @@ std::cout << "[1;31m# parse attribute '" << *arg << "'[0m" << std::endl;
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
-std::cout << "[1;31m# parse subst '" << *arg << "'[0m" << std::endl;
+        header ("parse subst '" + *arg + "'");
         subst.parse (*arg);
       }
 
@@ -427,7 +439,7 @@ std::cout << "[1;31m# parse subst '" << *arg << "'[0m" << std::endl;
       else if (cmd.command == "" &&
                cmd.valid (*arg))
       {
-std::cout << "[1;31m# parse cmd '" << *arg << "'[0m" << std::endl;
+        header ("parse cmd '" + *arg + "'");
         cmd.parse (*arg);
 
         if (foundSequence)
@@ -437,7 +449,7 @@ std::cout << "[1;31m# parse cmd '" << *arg << "'[0m" << std::endl;
       // Anything else is just considered description.
       else
       {
-std::cout << "[1;31m# parse description '" << *arg << "'[0m" << std::endl;
+        header ("parse description '" + *arg + "'");
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -450,7 +462,7 @@ std::cout << "[1;31m# parse description '" << *arg << "'[0m" << std::endl;
     // terminated, therefore everything subsequently is a description.
     else
     {
-std::cout << "[1;31m# parse post-termination description '" << *arg << "'[0m" << std::endl;
+      header ("parse post-termination description '" + *arg + "'");
       if (foundSequence)
         foundSomethingAfterSequence = true;
 
@@ -480,7 +492,7 @@ std::cout << "[1;31m# parse post-termination description '" << *arg << "'[0m" 
       // Stuff the command line.
       args.clear ();
       split (args, defaultCommand, ' ');
-      std::cout << "[task " << defaultCommand << "]" << std::endl;
+      header ("[task " + defaultCommand + "]");
 
       // Reinitialize the context and recurse.
       initialize ();
@@ -503,7 +515,7 @@ void Context::autoFilter ()
       foreach (word, words)
       {
         filter.push_back (Att ("description", "has", *word));
-        std::cout << "[1;31m# auto filter: " << att->first << ".has:" << *word << "[0m" << std::endl;
+        header ("auto filter: " + att->first + ".has:" + *word);
       }
     }
 
@@ -511,7 +523,7 @@ void Context::autoFilter ()
     else if (att->first == "project")
     {
       filter.push_back (Att ("project", "startswith", att->second.value ()));
-        std::cout << "[1;31m# auto filter: " << att->first << ".startswith:" << att->second.value () << "[0m" << std::endl;
+        header ("auto filter: " + att->first + ".startswith:" + att->second.value ());
     }
 
     // TODO Don't create a uuid for every task?
@@ -523,7 +535,7 @@ void Context::autoFilter ()
              att->first != "project")
     {
       filter.push_back (att->second);
-      std::cout << "[1;31m# auto filter: " << att->first << ":" << att->second.value () << "[0m" << std::endl;
+      header ("auto filter: " + att->first + ":" + att->second.value ());
     }
   }
 
@@ -533,15 +545,21 @@ void Context::autoFilter ()
   foreach (tag, tagAdditions)
   {
     filter.push_back (Att ("tags", "has", *tag));
-    std::cout << "[1;31m# auto filter: +" << *tag << "[0m" << std::endl;
+    header ("auto filter: +" + *tag);
   }
 
   // Include tagRemovals.
   foreach (tag, tagRemovals)
   {
     filter.push_back (Att ("tags", "hasnt", *tag));
-    std::cout << "[1;31m# auto filter: -" << *tag << "[0m" << std::endl;
+    header ("auto filter: -" + *tag);
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::header (const std::string& input)
+{
+  headers.push_back (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

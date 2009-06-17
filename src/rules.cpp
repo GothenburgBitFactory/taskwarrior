@@ -236,4 +236,49 @@ void autoColorize (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string colorizeHeader (const std::string& input)
+{
+  if (gsFg["color.header"] != Text::nocolor ||
+      gsBg["color.header"] != Text::nocolor)
+  {
+    return Text::colorize (
+           gsFg["color.header"],
+           gsBg["color.header"],
+           input);
+  }
+
+  return input;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string colorizeMessage (const std::string& input)
+{
+  if (gsFg["color.message"] != Text::nocolor ||
+      gsBg["color.message"] != Text::nocolor)
+  {
+    return Text::colorize (
+           gsFg["color.message"],
+           gsBg["color.message"],
+           input);
+  }
+
+  return input;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string colorizeFootnote (const std::string& input)
+{
+  if (gsFg["color.footnote"] != Text::nocolor ||
+      gsBg["color.footnote"] != Text::nocolor)
+  {
+    return Text::colorize (
+           gsFg["color.footnote"],
+           gsBg["color.footnote"],
+           input);
+  }
+
+  return input;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 

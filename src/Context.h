@@ -52,6 +52,7 @@ public:
 
   int getWidth ();                     // determine terminal width
 
+  void header (const std::string&);    // Header sink
   void message (const std::string&);   // Message sink
   void footnote (const std::string&);  // Footnote sink
 
@@ -76,6 +77,7 @@ public:
   std::vector <std::string> tagRemovals;
 
 private:
+  std::vector <std::string> headers;
   std::vector <std::string> messages;
   std::vector <std::string> footnotes;
   bool                      inShadow;

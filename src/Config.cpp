@@ -147,6 +147,9 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "#color.project.garden=on_green\n");               // TODO i18n
         fprintf (out, "#color.keyword.car=on_blue\n");                   // TODO i18n
         fprintf (out, "#color.recurring=on_red\n");                      // TODO i18n
+        fprintf (out, "#color.header=bold_green\n");                     // TODO i18n
+        fprintf (out, "#color.footnote=bold_green\n");                   // TODO i18n
+        fprintf (out, "#color.message=bold_red\n");                      // TODO i18n
         fprintf (out, "#shadow.file=%s/shadow.txt\n", dataDir.c_str ()); // TODO i18n
         fprintf (out, "#shadow.command=list\n");                         // TODO i18n
         fprintf (out, "#shadow.notify=on\n");                            // TODO i18n
