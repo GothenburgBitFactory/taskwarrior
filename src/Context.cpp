@@ -192,9 +192,7 @@ std::string Context::dispatch ()
   else if (cmd.command == "" && task.getId ()) { out = handleModify          (); }
 */
   else if (cmd.command == "append")            { out = handleAppend          (); }
-/*
   else if (cmd.command == "annotate")          { out = handleAnnotate        (); }
-*/
   else if (cmd.command == "done")              { out = handleDone            (); }
   else if (cmd.command == "undo")              { out = handleUndo            (); }
   else if (cmd.command == "delete")            { out = handleDelete          (); }

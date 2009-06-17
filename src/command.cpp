@@ -1041,31 +1041,35 @@ std::string handleColor ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleAnnotate ()
 {
-/*
-  if (task.getDescription () == "")
+  if (!context.task.has ("description"))
     throw std::string ("Cannot apply a blank annotation.");
-*/
 
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.pendingT (all);
-  filterSequence (all, task);
 
-  foreach (t, all)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
-    t->addAnnotation (task.getDescription ());
-    tdb.modifyT (*t);
+    task->addAnnotation (context.task.get ("description"));
+    context.tdb.update (*task);
 
     if (context.config.get ("echo.command", true))
       out << "Annotated "
-          << t->getId ()
+          << task->id
           << " with '"
-          << t->getDescription ()
+          << task->get ("description")
           << "'"
           << std::endl;
   }
-*/
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
   return out.str ();
 }
 
