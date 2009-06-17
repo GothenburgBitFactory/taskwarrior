@@ -197,13 +197,9 @@ std::string Context::dispatch ()
   else if (cmd.command == "start")         { out = handleStart           (); }
   else if (cmd.command == "stop")          { out = handleStop            (); }
   else if (cmd.command == "export")        { out = handleExport          (); }
-/*
   else if (cmd.command == "import")        { out = handleImport          (); }
-*/
   else if (cmd.command == "duplicate")     { out = handleDuplicate       (); }
-/*
   else if (cmd.command == "edit")          { out = handleEdit            (); }
-*/
   else if (cmd.command == "" &&
            sequence.size ())               { out = handleModify          (); }
 

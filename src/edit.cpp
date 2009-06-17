@@ -92,21 +92,6 @@ static std::string findDate (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Obsolete - use Task::statusToText
-static std::string formatStatus (Task& task)
-{
-  switch (task.getStatus ())
-  {
-  case Task::pending:   return "Pending";   break;
-  case Task::completed: return "Completed"; break;
-  case Task::deleted:   return "Deleted";   break;
-  case Task::recurring: return "Recurring"; break;
-  }
-
-  return "";
-}
-
-////////////////////////////////////////////////////////////////////////////////
 static std::string formatDate (
   Task& task,
   const std::string& attribute)
@@ -143,12 +128,12 @@ static std::string formatTask (Task task)
          << "# Name               Editable details"                                     << std::endl
          << "# -----------------  ----------------------------------------------------" << std::endl
          << "# ID:                " << task.id                                          << std::endl
-         << "# UUID:              " << task.get ("uuid")                                  << std::endl
-         << "# Status:            " << formatStatus (task)                              << std::endl
-         << "# Mask:              " << task.get ("mask")                       << std::endl
-         << "# iMask:             " << task.get ("imask")                      << std::endl
-         << "  Project:           " << task.get ("project")                    << std::endl
-         << "  Priority:          " << task.get ("priority")                   << std::endl;
+         << "# UUID:              " << task.get ("uuid")                                << std::endl
+         << "# Status:            " << ucFirst (Task::statusToText (task.getStatus ())) << std::endl
+         << "# Mask:              " << task.get ("mask")                                << std::endl
+         << "# iMask:             " << task.get ("imask")                               << std::endl
+         << "  Project:           " << task.get ("project")                             << std::endl
+         << "  Priority:          " << task.get ("priority")                            << std::endl;
 
   std::vector <std::string> tags;
   task.getTags (tags);
@@ -158,28 +143,28 @@ static std::string formatTask (Task task)
          << "  Tags:              " << allTags                                          << std::endl
          << "# The description field is allowed to wrap and use multiple lines.  Task"  << std::endl
          << "# will combine them."                                                      << std::endl
-         << "  Description:       " << task.get ("description")                           << std::endl
+         << "  Description:       " << task.get ("description")                         << std::endl
          << "  Created:           " << formatDate (task, "entry")                       << std::endl
          << "  Started:           " << formatDate (task, "start")                       << std::endl
          << "  Ended:             " << formatDate (task, "end")                         << std::endl
          << "  Due:               " << formatDate (task, "due")                         << std::endl
          << "  Until:             " << formatDate (task, "until")                       << std::endl
-         << "  Recur:             " << task.get ("recur")                      << std::endl
-         << "  Parent:            " << task.get ("parent")                     << std::endl
-         << "  Foreground color:  " << task.get ("fg")                         << std::endl
-         << "  Background color:  " << task.get ("bg")                         << std::endl
+         << "  Recur:             " << task.get ("recur")                               << std::endl
+         << "  Parent:            " << task.get ("parent")                              << std::endl
+         << "  Foreground color:  " << task.get ("fg")                                  << std::endl
+         << "  Background color:  " << task.get ("bg")                                  << std::endl
          << "# Annotations look like this: <date> <text>, and there can be any number"  << std::endl
          << "# of them."                                                                << std::endl;
-/*
-  std::map <time_t, std::string> annotations;
+
+  std::vector <Att> annotations;
   task.getAnnotations (annotations);
   foreach (anno, annotations)
   {
-    Date dt (anno->first);
+    Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
     before << "  Annotation:        " << dt.toString (context.config.get ("dateformat", "m/d/Y"))
-           << " "                     << anno->second                                   << std::endl;
+           << " "                     << anno->value ()                                 << std::endl;
   }
-*/
+
   before << "  Annotation:        "                                                     << std::endl
          << "  Annotation:        "                                                     << std::endl
          << "# End"                                                                     << std::endl;
@@ -228,9 +213,7 @@ static void parseTask (Task& task, const std::string& after)
   value = findValue (after, "Tags:");
   std::vector <std::string> tags;
   split (tags, value, ' ');
-/*
-  task.removeTags ();
-*/
+  task.remove ("tags");
   task.addTags (tags);
 
   // description.
@@ -469,7 +452,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // Annotations
-  std::map <time_t, std::string> annotations;
+  std::vector <Att> annotations;
   std::string::size_type found = 0;
   while ((found = after.find ("Annotation:", found)) != std::string::npos)
   {
@@ -486,15 +469,15 @@ static void parseTask (Task& task, const std::string& after)
       if (gap != std::string::npos)
       {
         Date when (value.substr (0, gap));
+        std::stringstream name;
+        name << "annotation_" << when.toEpoch ();
         std::string text = trim (value.substr (gap, std::string::npos), "\t ");
-        annotations[when.toEpoch ()] = text;
+        annotations.push_back (Att (name.str (), text));
       }
     }
   }
 
-/*
   task.setAnnotations (annotations);
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -504,12 +487,16 @@ static void parseTask (Task& task, const std::string& after)
 std::string handleEdit ()
 {
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.allPendingT (all);
 
-  filterSequence (all, task);
-  foreach (seq, all)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
     // Check for file permissions.
     std::string dataLocation = expandPath (context.config.get ("data.location"));
@@ -518,14 +505,14 @@ std::string handleEdit ()
 
     // Create a temp file name in data.location.
     std::stringstream pattern;
-    pattern << dataLocation << "/task." << seq->getId () << ".XXXXXX";
+    pattern << dataLocation << "/task." << task->id << ".XXXXXX";
     char cpattern [PATH_MAX];
     strcpy (cpattern, pattern.str ().c_str ());
     mkstemp (cpattern);
     char* file = cpattern;
 
     // Format the contents, T -> text, write to a file.
-    std::string before = formatTask (*seq);
+    std::string before = formatTask (*task);
     spit (file, before);
 
     // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
@@ -550,11 +537,7 @@ ARE_THESE_REALLY_HARMFUL:
     std::string after;
     slurp (file, after, false);
 
-    // TODO Remove this debugging code.
-    //spit ("./before", before);
-    //spit ("./after",  after);
-
-    // Update seq based on what can be parsed back out of the file, but only
+    // Update task based on what can be parsed back out of the file, but only
     // if changes were made.
     if (before != after)
     {
@@ -564,8 +547,8 @@ ARE_THESE_REALLY_HARMFUL:
 
       try
       {
-        parseTask (*seq, after);
-        tdb.modifyT (*seq);
+        parseTask (*task, after);
+        context.tdb.update (*task);
       }
 
       catch (std::string& e)
@@ -593,7 +576,9 @@ ARE_THESE_REALLY_HARMFUL:
     unlink (file);
   }
 
-*/
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
   return out.str ();
 }
 
