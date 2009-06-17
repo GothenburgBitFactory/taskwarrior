@@ -204,7 +204,9 @@ std::string Context::dispatch ()
   else if (cmd.command == "export")            { out = handleExport          (); }
 /*
   else if (cmd.command == "import")            { out = handleImport          (); }
+*/
   else if (cmd.command == "duplicate")         { out = handleDuplicate       (); }
+/*
   else if (cmd.command == "edit")              { out = handleEdit            (); }
 */
 
@@ -449,7 +451,6 @@ void Context::parse ()
       // Anything else is just considered description.
       else
       {
-        header ("parse description '" + *arg + "'");
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -473,7 +474,10 @@ void Context::parse ()
   }
 
   if (descCandidate != "" && noVerticalSpace (descCandidate))
+  {
+    header ("parse description '" + descCandidate + "'");
     task.set ("description", descCandidate);
+  }
 
   // TODO task.validate () ?
 

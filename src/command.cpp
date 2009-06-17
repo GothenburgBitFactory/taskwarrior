@@ -880,58 +880,72 @@ std::string handleAppend ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleDuplicate ()
 {
-/*
-  int count = 0;
-*/
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.allPendingT (all);
+  int count = 0;
 
-  std::vector <T> filtered = all;
-  filterSequence (filtered, task);
-  foreach (seq, filtered)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
-    if (seq->getStatus () != T::recurring && seq->getAttribute ("parent") == "")
+    Task dup (*task);
+    dup.set ("uuid", uuid ());  // Needs a new UUID.
+    dup.setStatus (Task::pending);
+    dup.remove ("start");   // Does not inherit start date.
+    dup.remove ("end");     // Does not inherit end date.
+
+    // Recurring tasks are duplicated and downgraded to regular tasks.
+    if (task->getStatus () == Task::recurring)
     {
-      T dup (*seq);
-      dup.setUUID (uuid ());  // Needs a new UUID.
+      dup.remove ("parent");
+      dup.remove ("recur");
+      dup.remove ("until");
+      dup.remove ("imak");
+      dup.remove ("imask");
 
-      // Apply deltas.
-      deltaDescription   (dup, task);
-      deltaTags          (dup, task);
-      deltaAttributes    (dup, task);
-      deltaSubstitutions (dup, task);
-
-      // A New task needs a new entry time.
-      char entryTime[16];
-      sprintf (entryTime, "%u", (unsigned int) time (NULL));
-      dup.setAttribute ("entry", entryTime);
-
-      if (!tdb.addT (dup))
-        throw std::string ("Could not create new task.");
-
-      if (context.config.get ("echo.command", true))
-        out << "Duplicated "
-            << seq->getId ()
-            << " '"
-            << seq->getDescription ()
-            << "'"
-            << std::endl;
-      ++count;
-    }
-    else
-      out << "Task "
-          << seq->getId ()
-          << " '"
-          << seq->getDescription ()
-          << "' is a recurring task, and cannot be duplicated."
+      out << "Note: task "
+          << task->id
+          << " was a recurring task.  The new task is not."
           << std::endl;
+    }
+
+    // Apply deltas.
+    deltaDescription (dup);
+    context.task.remove ("description");
+
+    deltaTags (dup);
+    context.task.remove ("tags");
+
+    deltaAttributes (dup);
+    deltaSubstitutions (dup);
+
+    // A New task needs a new entry time.
+    char entryTime[16];
+    sprintf (entryTime, "%u", (unsigned int) time (NULL));
+    dup.set ("entry", entryTime);
+
+    context.tdb.add (dup);
+
+    if (context.config.get ("echo.command", true))
+      out << "Duplicated "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "'"
+          << std::endl;
+    ++count;
   }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   if (context.config.get ("echo.command", true))
     out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
-*/
+
   return out.str ();
 }
 
