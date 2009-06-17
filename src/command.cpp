@@ -761,57 +761,66 @@ std::string handleExport ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleModify ()
 {
-/*
   int count = 0;
-*/
   std::stringstream out;
-/*
-  std::vector <T> all;
-  tdb.allPendingT (all);
 
-  std::vector <T> filtered = all;
-  filterSequence (filtered, task);
-  foreach (seq, filtered)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.loadPending (tasks, context.filter);
+  handleRecurrence (tasks);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
     // Perform some logical consistency checks.
-    if (task.has ("recur") &&
-        !task.has ("due")  &&
-        !seq->has ("due"))
+    if (context.task.has ("recur") &&
+        !context.task.has ("due")  &&
+        !task->has ("due"))
       throw std::string ("You cannot specify a recurring task without a due date.");
 
-    if (task.has ("until")  &&
-        !task.has ("recur") &&
-        !seq->has ("recur"))
+    if (context.task.has ("until")  &&
+        !context.task.has ("recur") &&
+        !task->has ("recur"))
       throw std::string ("You cannot specify an until date for a non-recurring task.");
 
     // Make all changes.
     foreach (other, all)
     {
-      if (other->getId ()               == seq->getId ()                   || // Self
-          (seq->has ("parent") &&
-           seq->getAttribute ("parent") == other->getAttribute ("parent")) || // Sibling
-          other->getUUID ()             == seq->getAttribute ("parent"))      // Parent
+      if (other->id             == task->id               || // Self
+          (task->has ("parent") &&
+           task->get ("parent") == other->get ("parent")) || // Sibling
+          other->get ("uuid")   == task->get ("parent"))     // Parent
       {
         // A non-zero value forces a file write.
         int changes = 0;
 
         // Apply other deltas.
-        changes += deltaDescription   (*other, task);
-        changes += deltaTags          (*other, task);
-        changes += deltaAttributes    (*other, task);
-        changes += deltaSubstitutions (*other, task);
+        changes += deltaDescription (*other);
+        context.task.remove ("description");
+
+        changes += deltaTags (*other);
+        context.task.remove ("tags");
+
+        changes += deltaAttributes (*other);
+        changes += deltaSubstitutions (*other);
 
         if (changes)
-          tdb.modifyT (*other);
+          context.tdb.update (*other);
 
         ++count;
       }
     }
   }
 
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
   if (context.config.get ("echo.command", true))
     out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
-*/
+
   return out.str ();
 }
 

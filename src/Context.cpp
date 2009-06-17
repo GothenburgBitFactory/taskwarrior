@@ -175,45 +175,44 @@ std::string Context::dispatch ()
   std::string out;
 
   // TODO Just look at this thing.  It cries out for a dispatch table.
-       if (cmd.command == "projects")          { out = handleProjects        (); }
-  else if (cmd.command == "tags")              { out = handleTags            (); }
-  else if (cmd.command == "colors")            { out = handleColor           (); }
-  else if (cmd.command == "version")           { out = handleVersion         (); }
-  else if (cmd.command == "help")              { out = longUsage             (); }
-  else if (cmd.command == "stats")             { out = handleReportStats     (); }
-  else if (cmd.command == "info")              { out = handleInfo            (); }
-  else if (cmd.command == "history")           { out = handleReportHistory   (); }
-  else if (cmd.command == "ghistory")          { out = handleReportGHistory  (); }
-  else if (cmd.command == "summary")           { out = handleReportSummary   (); }
-  else if (cmd.command == "calendar")          { out = handleReportCalendar  (); }
-  else if (cmd.command == "timesheet")         { out = handleReportTimesheet (); }
-  else if (cmd.command == "add")               { out = handleAdd             (); }
+       if (cmd.command == "projects")      { out = handleProjects        (); }
+  else if (cmd.command == "tags")          { out = handleTags            (); }
+  else if (cmd.command == "colors")        { out = handleColor           (); }
+  else if (cmd.command == "version")       { out = handleVersion         (); }
+  else if (cmd.command == "help")          { out = longUsage             (); }
+  else if (cmd.command == "stats")         { out = handleReportStats     (); }
+  else if (cmd.command == "info")          { out = handleInfo            (); }
+  else if (cmd.command == "history")       { out = handleReportHistory   (); }
+  else if (cmd.command == "ghistory")      { out = handleReportGHistory  (); }
+  else if (cmd.command == "summary")       { out = handleReportSummary   (); }
+  else if (cmd.command == "calendar")      { out = handleReportCalendar  (); }
+  else if (cmd.command == "timesheet")     { out = handleReportTimesheet (); }
+  else if (cmd.command == "add")           { out = handleAdd             (); }
+  else if (cmd.command == "append")        { out = handleAppend          (); }
+  else if (cmd.command == "annotate")      { out = handleAnnotate        (); }
+  else if (cmd.command == "done")          { out = handleDone            (); }
+  else if (cmd.command == "undo")          { out = handleUndo            (); }
+  else if (cmd.command == "delete")        { out = handleDelete          (); }
+  else if (cmd.command == "undelete")      { out = handleUndelete        (); }
+  else if (cmd.command == "start")         { out = handleStart           (); }
+  else if (cmd.command == "stop")          { out = handleStop            (); }
+  else if (cmd.command == "export")        { out = handleExport          (); }
 /*
-  else if (cmd.command == "" && task.getId ()) { out = handleModify          (); }
+  else if (cmd.command == "import")        { out = handleImport          (); }
 */
-  else if (cmd.command == "append")            { out = handleAppend          (); }
-  else if (cmd.command == "annotate")          { out = handleAnnotate        (); }
-  else if (cmd.command == "done")              { out = handleDone            (); }
-  else if (cmd.command == "undo")              { out = handleUndo            (); }
-  else if (cmd.command == "delete")            { out = handleDelete          (); }
-  else if (cmd.command == "undelete")          { out = handleUndelete        (); }
-  else if (cmd.command == "start")             { out = handleStart           (); }
-  else if (cmd.command == "stop")              { out = handleStop            (); }
-  else if (cmd.command == "export")            { out = handleExport          (); }
+  else if (cmd.command == "duplicate")     { out = handleDuplicate       (); }
 /*
-  else if (cmd.command == "import")            { out = handleImport          (); }
+  else if (cmd.command == "edit")          { out = handleEdit            (); }
 */
-  else if (cmd.command == "duplicate")         { out = handleDuplicate       (); }
-/*
-  else if (cmd.command == "edit")              { out = handleEdit            (); }
-*/
+  else if (cmd.command == "" &&
+           sequence.size ())               { out = handleModify          (); }
 
   // Command that display IDs and therefore need TDB::gc first.
-  else if (cmd.command == "next")              { if (!inShadow) gcMod = tdb.gc (); out = handleReportNext    (); }
-  else if (cmd.validCustom (cmd.command))      { if (!inShadow) gcMod = tdb.gc (); out = handleCustomReport  (cmd.command); }
+  else if (cmd.command == "next")          { if (!inShadow) gcMod = tdb.gc (); out = handleReportNext    (); }
+  else if (cmd.validCustom (cmd.command))  { if (!inShadow) gcMod = tdb.gc (); out = handleCustomReport  (cmd.command); }
 
   // If the command is not recognized, display usage.
-  else                                         { out = shortUsage (); }
+  else                                     { out = shortUsage (); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
 // TODO
