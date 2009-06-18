@@ -36,6 +36,8 @@
 #include "TDB.h"
 #include "main.h"
 
+extern Context context;
+
 ////////////////////////////////////////////////////////////////////////////////
 //  The ctor/dtor do nothing.
 //  The lock/unlock methods hold the file open.
@@ -175,7 +177,7 @@ int TDB::load (std::vector <Task>& tasks, Filter& filter)
       numberStatusClauses != numberSimpleStatusClauses)
     loadCompleted (tasks, filter);
   else
-    std::cout << "[1;31m# TDB::load optimization short circuit[0m" << std::endl;
+    context.header ("load optimization short circuit");
 #else
   loadCompleted (tasks, filter);
 #endif

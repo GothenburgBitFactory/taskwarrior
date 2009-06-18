@@ -158,16 +158,15 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
-      int row = 0;
       std::string entered;
-      foreach (task, tasks)
+      for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        entered = task->get ("entry");
+        entered = tasks[row].get ("entry");
         if (entered.length ())
         {
           Date dt (::atoi (entered.c_str ()));
           entered = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-          table.addCell (row++, columnCount, entered);
+          table.addCell (row, columnCount, entered);
         }
       }
     }
@@ -178,16 +177,15 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
-      int row = 0;
       std::string started;
-      foreach (task, tasks)
+      for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        started = task->get ("start");
+        started = tasks[row].get ("start");
         if (started.length ())
         {
           Date dt (::atoi (started.c_str ()));
           started = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-          table.addCell (row++, columnCount, started);
+          table.addCell (row, columnCount, started);
         }
       }
     }
@@ -198,16 +196,15 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
-      int row = 0;
       std::string started;
-      foreach (task, tasks)
+      for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        started = task->get ("end");
+        started = tasks[row].get ("end");
         if (started.length ())
         {
           Date dt (::atoi (started.c_str ()));
           started = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-          table.addCell (row++, columnCount, started);
+          table.addCell (row, columnCount, started);
         }
       }
     }
@@ -232,18 +229,17 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
-      int row = 0;
       std::string created;
       std::string age;
       Date now;
-      foreach (task, tasks)
+      for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        created = task->get ("entry");
+        created = tasks[row].get ("entry");
         if (created.length ())
         {
           Date dt (::atoi (created.c_str ()));
           age = formatSeconds ((time_t) (now - dt));
-          table.addCell (row++, columnCount, age);
+          table.addCell (row, columnCount, age);
         }
       }
     }
@@ -254,18 +250,17 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
-      int row = 0;
       std::string created;
       std::string age;
       Date now;
-      foreach (task, tasks)
+      for (unsigned int row = 0; row < tasks.size(); ++row)
       {
-        created = task->get ("entry");
+        created = tasks[row].get ("entry");
         if (created.length ())
         {
           Date dt (::atoi (created.c_str ()));
           age = formatSecondsCompact ((time_t) (now - dt));
-          table.addCell (row++, columnCount, age);
+          table.addCell (row, columnCount, age);
         }
       }
     }
@@ -276,10 +271,9 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::left);
 
-      int row = 0;
-      foreach (task, tasks)
-        if (task->get ("start") != "")
-          table.addCell (row++, columnCount, "*");
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        if (tasks[row].has ("start"))
+          table.addCell (row, columnCount, "*");
     }
 
     else if (*col == "tags")
@@ -327,9 +321,12 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
-      int row = 0;
-      foreach (task, tasks)
-        table.addCell (row++, columnCount, task->get ("recur"));
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        std::string recur = tasks[row].get ("recur");
+        if (recur != "")
+          table.addCell (row, columnCount, recur);
+      }
     }
 
     else if (*col == "recurrence_indicator")
@@ -338,10 +335,9 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
-      int row = 0;
-      foreach (task, tasks)
-        table.addCell (row++, columnCount,
-                       task->get ("recur") != "" ? "R" : "");
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        if (tasks[row].has ("recur"))
+          table.addCell (row, columnCount, "R");
     }
 
     else if (*col == "tag_indicator")
@@ -350,10 +346,9 @@ std::string handleCustomReport (const std::string& report)
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
-      int row = 0;
-      foreach (task, tasks)
-        table.addCell (row++, columnCount,
-                       task->getTagCount () ? "+" : "");
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+        if (tasks[row].getTagCount ())
+          table.addCell (row, columnCount, "+");
     }
 
     // Common to all columns.

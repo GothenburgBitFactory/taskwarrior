@@ -343,13 +343,13 @@ bool Att::validNameValue (
            name == "until")
   {
     if (value != "")
-      Date (value);
+      value = Date (value).toEpochString ();
   }
 
   else if (name == "recur")
   {
     if (value != "")
-      Duration (value);
+      value = (std::string) Duration (value);
   }
 
   else if (name == "limit")

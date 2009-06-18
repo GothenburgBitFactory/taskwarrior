@@ -523,20 +523,16 @@ void Context::autoFilter ()
         header ("auto filter: " + att->first + ".startswith:" + att->second.value ());
     }
 
-    // TODO Don't create a uuid for every task?
     // Every task has a unique uuid by default, and it shouldn't be included.
     // The mechanism for filtering on tags is +/-<tag>, not tags:foo which
     // means that there can only be one tag, "foo".
     else if (att->first != "uuid" &&
-             att->first != "tags" &&
-             att->first != "project")
+             att->first != "tags")
     {
       filter.push_back (att->second);
       header ("auto filter: " + att->first + ":" + att->second.value ());
     }
   }
-
-  // TODO Include Annotations as part of the description?
 
   // Include tagAdditions.
   foreach (tag, tagAdditions)

@@ -44,6 +44,7 @@ public:
 
   void toEpoch (time_t&);
   time_t toEpoch ();
+  std::string toEpochString ();
   void toMDY (int&, int&, int&);
   const std::string toString (const std::string& format = "m/d/Y") const;
   static bool valid (const std::string&, const std::string& format = "m/d/Y");
