@@ -175,9 +175,9 @@ std::string handleTags ()
   }
 
   // Render a list of tag names from the map.
-  std::cout << optionalBlankLine ();
+  out << optionalBlankLine ();
   foreach (i, unique)
-    std::cout << i->first << std::endl;
+    out << i->first << std::endl;
 
   if (unique.size ())
     out << optionalBlankLine ()
