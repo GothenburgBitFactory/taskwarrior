@@ -26,7 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <iomanip>
-#include <string>
+#include <string.h>
 #include <main.h>
 #include <util.h>
 #include <text.h>
