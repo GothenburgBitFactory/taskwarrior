@@ -401,10 +401,10 @@ void nag (Task& task)
   {
     // Load all pending tasks.
     std::vector <Task> tasks;
-    context.tdb.lock (context.config.get ("locking", true));
     Filter filter;
+
+    // Piggy-back on existing locked TDB.
     context.tdb.loadPending (tasks, filter);
-    context.tdb.unlock ();
 
     // Counters.
     int overdue    = 0;

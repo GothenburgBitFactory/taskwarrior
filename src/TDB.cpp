@@ -196,6 +196,8 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
 
   try
   {
+    mPending.clear ();
+
     mId = 1;
     char line[T_LINE_MAX];
     foreach (location, mLocations)
@@ -370,6 +372,8 @@ void TDB::upgrade ()
 int TDB::gc ()
 {
   int count = 0;
+
+  context.header ("gc");
 
   // Set up a second TDB.
   Filter filter;

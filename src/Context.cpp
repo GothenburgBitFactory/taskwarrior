@@ -509,7 +509,7 @@ void Context::parse (
 
       // Reinitialize the context and recurse.
       initialize ();
-      parse ();
+      parse (args, cmd, task, sequence, subst, filter);
     }
   }
 }
