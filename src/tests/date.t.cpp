@@ -82,7 +82,7 @@ int main (int argc, char** argv)
     t.ok    (Date::leapYear (2008), "2008 is a leap year");
     t.notok (Date::leapYear (2007), "2007 is not a leap year");
     t.ok    (Date::leapYear (2000), "2000 is a leap year");
-    t.ok    (Date::leapYear (1900), "1900 is a leap year");
+    t.notok (Date::leapYear (1900), "1900 is not a leap year");
 
     // Days in month.
     t.is (Date::daysInMonth (2, 2008), 29, "29 days in February 2008");

@@ -303,9 +303,15 @@ bool Date::leapYear (int year)
 {
   bool ly = false;
 
-       if (!(year % 4))   ly = true;
-  else if (!(year % 400)) ly = true;
-  else if (!(year % 100)) ly = false;
+       if (!(year % 4))
+       {
+         ly = true;
+         if (!(year % 100))
+         {
+           ly = false;
+           if (!(year % 400)) ly =true;
+         }
+       }
 
   return ly;
 }
