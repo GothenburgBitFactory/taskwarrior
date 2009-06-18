@@ -148,6 +148,20 @@ std::string formatSecondsCompact (time_t delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Convert a quantity in seconds to a more readable format.
+std::string formatBytes (size_t bytes)
+{
+  char formatted[24];
+
+       if (bytes > 1000000000) sprintf (formatted, "%.1f GiB", (bytes / 1000000000.0));
+  else if (bytes >    1000000) sprintf (formatted, "%.1f MiB", (bytes /    1000000.0));
+  else if (bytes >       1000) sprintf (formatted, "%.1f KiB", (bytes /       1000.0));
+  else                         sprintf (formatted, "%d B", (int)bytes                );
+
+  return commify (formatted);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int autoComplete (
   const std::string& partial,
   const std::vector<std::string>& list,

@@ -29,6 +29,7 @@
 #include <sstream>
 #include <fstream>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -1594,6 +1595,21 @@ std::string handleReportStats ()
 {
   std::stringstream out;
 
+  // Go get the file sizes.
+  size_t dataSize = 0;
+
+  struct stat s;
+  std::string location = expandPath (context.config.get ("data.location"));
+  std::string file = location + "/pending.data";
+  if (!stat (file.c_str (), &s))
+    dataSize += s.st_size;
+
+  file = location + "/completed.data";
+  if (!stat (file.c_str (), &s))
+    dataSize += s.st_size;
+
+  // TODO Include transaction log?
+
   // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
@@ -1711,6 +1727,10 @@ std::string handleReportStats ()
   row = table.addRow ();
   table.addCell (row, 0, "Projects");
   table.addCell (row, 1, (int)allProjects.size ());
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Data size");
+  table.addCell (row, 1, formatBytes (dataSize));
 
   if (totalT)
   {
