@@ -344,14 +344,16 @@ bool Att::validNameValue (
   else if (name == "due" ||
            name == "until")
   {
+    // Validate and convert to epoch.
     if (value != "")
       value = Date (value).toEpochString ();
   }
 
   else if (name == "recur")
   {
+    // Just validate, don't convert to days.
     if (value != "")
-      value = (std::string) Duration (value);
+      Duration (value);
   }
 
   else if (name == "limit")
