@@ -340,6 +340,18 @@ void Context::loadCorrectConfigFile ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::parse ()
 {
+  parse (args, cmd, task, sequence, subst, filter);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::parse (
+  std::vector <std::string>& parseArgs,
+  Cmd& parseCmd,
+  Task& parseTask,
+  Sequence& parseSequence,
+  Subst& parseSubst,
+  Filter& parseFilter)
+{
   Att attribute;
   tagAdditions.clear ();
   tagRemovals.clear ();
@@ -348,7 +360,7 @@ void Context::parse ()
   bool foundSequence               = false;
   bool foundSomethingAfterSequence = false;
 
-  foreach (arg, args)
+  foreach (arg, parseArgs)
   {
     if (!terminated)
     {
@@ -361,12 +373,12 @@ void Context::parse ()
 
       // Sequence
       // Note: "add" doesn't require an ID
-      else if (cmd.command != "add"          &&
+      else if (parseCmd.command != "add"          &&
                ! foundSomethingAfterSequence &&
-               sequence.valid (*arg))
+               parseSequence.valid (*arg))
       {
         header ("parse sequence '" + *arg + "'");
-        sequence.parse (*arg);
+        parseSequence.parse (*arg);
         foundSequence = true;
       }
 
@@ -379,8 +391,12 @@ void Context::parse ()
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
+        if (arg->find (',') != std::string::npos)
+          throw stringtable.get (TAGS_NO_COMMA,
+                                 "Tags are not permitted to contain commas.");
+
         tagAdditions.push_back (arg->substr (1, std::string::npos));
-        task.addTag            (arg->substr (1, std::string::npos));
+        parseTask.addTag       (arg->substr (1, std::string::npos));
       }
 
       // Tags to remove begin with '-'.
@@ -417,25 +433,25 @@ void Context::parse ()
         attribute.mod (mod);
         attribute.value (value);
 
-        task[attribute.name ()] = attribute;
+        parseTask[attribute.name ()] = attribute;
       }
 
       // Substitution of description and/or annotation text.
-      else if (subst.valid (*arg))
+      else if (parseSubst.valid (*arg))
       {
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
         header ("parse subst '" + *arg + "'");
-        subst.parse (*arg);
+        parseSubst.parse (*arg);
       }
 
       // It might be a command if one has not already been found.
-      else if (cmd.command == "" &&
-               cmd.valid (*arg))
+      else if (parseCmd.command == "" &&
+               parseCmd.valid (*arg))
       {
         header ("parse cmd '" + *arg + "'");
-        cmd.parse (*arg);
+        parseCmd.parse (*arg);
 
         if (foundSequence)
           foundSomethingAfterSequence = true;
@@ -469,26 +485,26 @@ void Context::parse ()
   if (descCandidate != "" && noVerticalSpace (descCandidate))
   {
     header ("parse description '" + descCandidate + "'");
-    task.set ("description", descCandidate);
+    parseTask.set ("description", descCandidate);
   }
 
   // TODO task.validate () ?
 
   // Read-only command (reports, status, info ...) use filters.  Write commands
   // (add, done ...) do not.
-  if (cmd.isReadOnlyCommand ())
-    autoFilter ();
+  if (parseCmd.isReadOnlyCommand ())
+    autoFilter (parseTask, parseFilter);
 
   // If no command was specified, and there were no command line arguments
   // then invoke the default command.
-  if (cmd.command == "" && args.size () == 0)
+  if (parseCmd.command == "" && parseArgs.size () == 0)
   {
     std::string defaultCommand = config.get ("default.command");
     if (defaultCommand != "")
     {
       // Stuff the command line.
-      args.clear ();
-      split (args, defaultCommand, ' ');
+      parseArgs.clear ();
+      split (parseArgs, defaultCommand, ' ');
       header ("[task " + defaultCommand + "]");
 
       // Reinitialize the context and recurse.
@@ -500,9 +516,9 @@ void Context::parse ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add all the attributes in the task to the filter.  All except uuid.
-void Context::autoFilter ()
+void Context::autoFilter (Task& t, Filter& f)
 {
-  foreach (att, task)
+  foreach (att, t)
   {
     // Words are found in the description using the .has modifier.
     if (att->first == "description")
@@ -511,7 +527,7 @@ void Context::autoFilter ()
       split (words, att->second.value (), ' ');
       foreach (word, words)
       {
-        filter.push_back (Att ("description", "has", *word));
+        f.push_back (Att ("description", "has", *word));
         header ("auto filter: " + att->first + ".has:" + *word);
       }
     }
@@ -519,7 +535,7 @@ void Context::autoFilter ()
     // Projects are matched left-most.
     else if (att->first == "project")
     {
-      filter.push_back (Att ("project", "startswith", att->second.value ()));
+      f.push_back (Att ("project", "startswith", att->second.value ()));
         header ("auto filter: " + att->first + ".startswith:" + att->second.value ());
     }
 
@@ -529,7 +545,7 @@ void Context::autoFilter ()
     else if (att->first != "uuid" &&
              att->first != "tags")
     {
-      filter.push_back (att->second);
+      f.push_back (att->second);
       header ("auto filter: " + att->first + ":" + att->second.value ());
     }
   }
@@ -537,14 +553,14 @@ void Context::autoFilter ()
   // Include tagAdditions.
   foreach (tag, tagAdditions)
   {
-    filter.push_back (Att ("tags", "has", *tag));
+    f.push_back (Att ("tags", "has", *tag));
     header ("auto filter: +" + *tag);
   }
 
   // Include tagRemovals.
   foreach (tag, tagRemovals)
   {
-    filter.push_back (Att ("tags", "hasnt", *tag));
+    f.push_back (Att ("tags", "hasnt", *tag));
     header ("auto filter: -" + *tag);
   }
 }

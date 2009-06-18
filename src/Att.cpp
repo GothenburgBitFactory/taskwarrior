@@ -42,6 +42,8 @@ static const char* internalNames[] =
   "entry",
   "start",
   "end",
+  "parent",
+  "uuid",
   "mask",
   "imask",
   "limit",
@@ -378,8 +380,16 @@ bool Att::validNameValue (
             "\" is not a valid status.  Use 'pending', 'completed', 'deleted' or 'recurring'.";
   }
 
+  else if (name == "parent")
+  {
+  }
+
+  else if (name == "uuid")
+  {
+  }
+
   else
-    throw std::string ("'") + name + "' is an unrecognized attribute.";
+    throw std::string ("'") + name + "' is not a recognized attribute.";
 
   return true;
 }

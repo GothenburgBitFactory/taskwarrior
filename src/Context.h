@@ -58,10 +58,11 @@ public:
   void clearMessages ();
 
   void parse ();
+  void parse (std::vector <std::string>&, Cmd&, Task&, Sequence&, Subst&, Filter&);
 
 private:
   void loadCorrectConfigFile ();
-  void autoFilter ();
+  void autoFilter (Task&, Filter&);
 
 public:
   Config                    config;

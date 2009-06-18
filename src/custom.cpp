@@ -72,7 +72,7 @@ std::string handleCustomReport (const std::string& report)
     for (unsigned int i = 0; i < columns.size (); ++i)
       columnLabels[columns[i]] = labels[i];
 
-  std::string sortList   = context.config.get ("report." + report + ".sort");
+  std::string sortList = context.config.get ("report." + report + ".sort");
   std::vector <std::string> sortOrder;
   split (sortOrder, sortList, ',');
   validSortColumns (columns, sortOrder);
@@ -80,11 +80,23 @@ std::string handleCustomReport (const std::string& report)
   std::string filterList = context.config.get ("report." + report + ".filter");
   std::vector <std::string> filterArgs;
   split (filterArgs, filterList, ' ');
+  {
+    Cmd cmd (report);
+    Task task;
+    Sequence sequence;
+    Subst subst;
+    Filter filter;
+    context.parse (filterArgs, cmd, task, sequence, subst, filter);
+
+    context.sequence.combine (sequence);
+
+    foreach (att, filter)
+      context.filter.push_back (*att);
+  }
 
   // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  // TODO Include filter from custom report.
   context.tdb.load (tasks, context.filter);
   handleRecurrence (tasks);
   context.tdb.commit ();
