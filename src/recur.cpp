@@ -398,15 +398,17 @@ int getDueState (const std::string& due)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void nag (/*TDB& tdb,*/ Task& task)
+void nag (Task& task)
 {
-/*
-  std::string nagMessage = context.config.get ("nag", std::string (""));
+  std::string nagMessage = context.config.get ("nag", "");
   if (nagMessage != "")
   {
     // Load all pending tasks.
-    std::vector <T> pending;
-    tdb.allPendingT (pending);
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.get ("locking", true));
+    Filter filter;
+    context.tdb.loadPending (tasks, filter);
+    context.tdb.unlock ();
 
     // Counters.
     int overdue    = 0;
@@ -417,23 +419,23 @@ void nag (/*TDB& tdb,*/ Task& task)
     char pri       = ' ';
 
     // Scan all pending tasks.
-    foreach (t, pending)
+    foreach (t, tasks)
     {
-      if (t->getId () == task.getId ())
+      if (t->id == task.id)
       {
-        if (getDueState (t->getAttribute ("due")) == 2)
+        if (getDueState (t->get ("due")) == 2)
           isOverdue = true;
 
-        std::string priority = t->getAttribute ("priority");
+        std::string priority = t->get ("priority");
         if (priority.length ())
           pri = priority[0];
       }
-      else if (t->getStatus () == T::pending)
+      else if (t->getStatus () == Task::pending)
       {
-        if (getDueState (t->getAttribute ("due")) == 2)
+        if (getDueState (t->get ("due")) == 2)
           overdue++;
 
-        std::string priority = t->getAttribute ("priority");
+        std::string priority = t->get ("priority");
         if (priority.length ())
         {
           switch (priority[0])
@@ -454,9 +456,8 @@ void nag (/*TDB& tdb,*/ Task& task)
     if (pri == ' ' && !overdue && !high && !medium && !low) return;
 
     // All the excuses are made, all that remains is to nag the user.
-    std::cout << nagMessage << std::endl;
+    context.message (nagMessage);
   }
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
