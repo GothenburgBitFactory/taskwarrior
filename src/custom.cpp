@@ -87,6 +87,7 @@ std::string handleCustomReport (const std::string& report)
   // TODO Include filter from custom report.
   context.tdb.load (tasks, context.filter);
   handleRecurrence (tasks);
+  context.tdb.commit ();
   context.tdb.unlock ();
 
   // Filter sequence.

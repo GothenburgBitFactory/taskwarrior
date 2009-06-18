@@ -196,6 +196,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
 
   try
   {
+    mId = 1;
     char line[T_LINE_MAX];
     foreach (location, mLocations)
     {
@@ -423,6 +424,12 @@ int TDB::gc ()
   tdb.unlock ();
 
   return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int TDB::nextId ()
+{
+  return mId++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

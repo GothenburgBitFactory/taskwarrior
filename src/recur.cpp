@@ -55,13 +55,12 @@ extern Context context;
 // child tasks need to be generated to fill gaps.
 void handleRecurrence (std::vector <Task>& tasks)
 {
-/*
-  std::vector <T> modified;
+  std::vector <Task> modified;
 
   // Look at all tasks and find any recurring ones.
   foreach (t, tasks)
   {
-    if (t->getStatus () == T::recurring)
+    if (t->getStatus () == Task::recurring)
     {
       // Generate a list of due dates for this recurring task, regardless of
       // the mask.
@@ -69,22 +68,23 @@ void handleRecurrence (std::vector <Task>& tasks)
       if (!generateDueDates (*t, due))
       {
         std::cout << "Task "
-                  << t->getUUID ()
+                  << t->get ("uuid")
                   << " ("
-                  << trim (t->getDescription ())
-                  << ") is past its 'until' date, and has be deleted" << std::endl;
+                  << trim (t->get ("description"))
+                  << ") is past its 'until' date, and has been deleted"
+                  << std::endl;
 
         // Determine the end date.
         char endTime[16];
         sprintf (endTime, "%u", (unsigned int) time (NULL));
-        t->setAttribute ("end", endTime);
-        t->setStatus (T::deleted);
-        tdb.modifyT (*t);
+        t->set ("end", endTime);
+        t->setStatus (Task::deleted);
+        context.tdb.update (*t);
         continue;
       }
 
       // Get the mask from the parent task.
-      std::string mask = t->getAttribute ("mask");
+      std::string mask = t->get ("mask");
 
       // Iterate over the due dates, and check each against the mask.
       bool changed = false;
@@ -96,25 +96,25 @@ void handleRecurrence (std::vector <Task>& tasks)
           mask += '-';
           changed = true;
 
-          T rec (*t);                                 // Clone the parent.
-          rec.setId (tdb.nextId ());                  // Assign a unique id.
-          rec.setUUID (uuid ());                      // New UUID.
-          rec.setStatus (T::pending);                 // Shiny.
-          rec.setAttribute ("parent", t->getUUID ()); // Remember mom.
+          Task rec (*t);                         // Clone the parent.
+          rec.id = context.tdb.nextId ();        // Assign a unique id.
+          rec.set ("uuid", uuid ());             // New UUID.
+          rec.setStatus (Task::pending);         // Shiny.
+          rec.set ("parent", t->get ("uuid"));   // Remember mom.
 
           char dueDate[16];
           sprintf (dueDate, "%u", (unsigned int) d->toEpoch ());
-          rec.setAttribute ("due", dueDate);          // Store generated due date.
+          rec.set ("due", dueDate);              // Store generated due date.
 
           char indexMask[12];
           sprintf (indexMask, "%u", (unsigned int) i);
-          rec.setAttribute ("imask", indexMask);      // Store index into mask.
+          rec.set ("imask", indexMask);          // Store index into mask.
 
           // Add the new task to the vector, for immediate use.
           modified.push_back (rec);
 
           // Add the new task to the DB.
-          tdb.addT (rec);
+          context.tdb.add (rec);
         }
 
         ++i;
@@ -123,8 +123,8 @@ void handleRecurrence (std::vector <Task>& tasks)
       // Only modify the parent if necessary.
       if (changed)
       {
-        t->setAttribute ("mask", mask);
-        tdb.modifyT (*t);
+        t->set ("mask", mask);
+        context.tdb.update (*t);
       }
     }
     else
@@ -132,7 +132,6 @@ void handleRecurrence (std::vector <Task>& tasks)
   }
 
   tasks = modified;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -327,30 +326,28 @@ Date getNextRecurrence (Date& current, std::string& period)
 // When the status of a recurring child task changes, the parent task must
 // update it's mask.
 void updateRecurrenceMask (
-//  TDB& tdb,
   std::vector <Task>& all,
   Task& task)
 {
-/*
-  std::string parent = task.getAttribute ("parent");
+  std::string parent = task.get ("parent");
   if (parent != "")
   {
-    std::vector <T>::iterator it;
+    std::vector <Task>::iterator it;
     for (it = all.begin (); it != all.end (); ++it)
     {
-      if (it->getUUID () == parent)
+      if (it->get ("uuid") == parent)
       {
-        unsigned int index = atoi (task.getAttribute ("imask").c_str ());
-        std::string mask = it->getAttribute ("mask");
+        unsigned int index = ::atoi (task.get ("imask").c_str ());
+        std::string mask = it->get ("mask");
         if (mask.length () > index)
         {
-          mask[index] = (task.getStatus () == T::pending)   ? '-'
-                      : (task.getStatus () == T::completed) ? '+'
-                      : (task.getStatus () == T::deleted)   ? 'X'
-                      :                                       '?';
+          mask[index] = (task.getStatus () == Task::pending)   ? '-'
+                      : (task.getStatus () == Task::completed) ? '+'
+                      : (task.getStatus () == Task::deleted)   ? 'X'
+                      :                                          '?';
 
-          it->setAttribute ("mask", mask);
-          tdb.modifyT (*it);
+          it->set ("mask", mask);
+          context.tdb.update (*it);
         }
         else
         {
@@ -358,17 +355,16 @@ void updateRecurrenceMask (
           for (unsigned int i = 0; i < index; ++i)
             mask += "?";
 
-          mask += (task.getStatus () == T::pending)   ? '-'
-                : (task.getStatus () == T::completed) ? '+'
-                : (task.getStatus () == T::deleted)   ? 'X'
-                :                                       '?';
+          mask += (task.getStatus () == Task::pending)   ? '-'
+                : (task.getStatus () == Task::completed) ? '+'
+                : (task.getStatus () == Task::deleted)   ? 'X'
+                :                                          '?';
         }
 
         return;  // No point continuing the loop.
       }
     }
   }
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

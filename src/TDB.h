@@ -58,6 +58,7 @@ public:
   int   commit ();            // Write out all tasks
   void  upgrade ();           // Convert both files to FF4
   int   gc ();                // Clean up pending
+  int   nextId ();
 
 private:
   FILE* openAndLock (const std::string&);
