@@ -73,119 +73,114 @@ std::string shortUsage ()
 
   row = table.addRow ();
   table.addCell (row, 1, "task add [tags] [attrs] desc...");
-  table.addCell (row, 2, "Adds a new task");
+  table.addCell (row, 2, "Adds a new task.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task append [tags] [attrs] desc...");
-  table.addCell (row, 2, "Appends more description to an existing task");
+  table.addCell (row, 2, "Appends more description to an existing task.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task annotate ID desc...");
-  table.addCell (row, 2, "Adds an annotation to an existing task");
+  table.addCell (row, 2, "Adds an annotation to an existing task.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task ID [tags] [attrs] [desc...]");
-  table.addCell (row, 2, "Modifies the existing task with provided arguments");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task ID /from/to/");
-  table.addCell (row, 2, "Performs one substitution on the task description, for fixing mistakes");
+  table.addCell (row, 2, "Modifies the existing task with provided arguments.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task ID /from/to/g");
-  table.addCell (row, 2, "Performs all substitutions on the task description, for fixing mistakes");
+  table.addCell (row, 2, "Performs substitution on the task description and "
+                         "annotations.  The 'g' is optional, and causes "
+                         "substitutions for all matching text, not just the "
+                         "first occurrence.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task edit ID");
-  table.addCell (row, 2, "Launches an editor to let you modify all aspects of a task directly, therefore it is to be used carefully");
+  table.addCell (row, 2, "Launches an editor to let you modify all aspects of a task directly, therefore it is to be used carefully.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task duplicate ID [tags] [attrs] [desc...]");
-  table.addCell (row, 2, "Duplicates the specified task, and allows modifications");
+  table.addCell (row, 2, "Duplicates the specified task, and allows modifications.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task delete ID");
-  table.addCell (row, 2, "Deletes the specified task");
+  table.addCell (row, 2, "Deletes the specified task.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task undelete ID");
-  table.addCell (row, 2, "Undeletes the specified task, provided a report has not yet been run");
+  table.addCell (row, 2, "Undeletes the specified task, provided a report has not yet been run.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task info ID");
-  table.addCell (row, 2, "Shows all data, metadata for specified task");
+  table.addCell (row, 2, "Shows all data, metadata for specified task.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task start ID");
-  table.addCell (row, 2, "Marks specified task as started");
+  table.addCell (row, 2, "Marks specified task as started.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task stop ID");
-  table.addCell (row, 2, "Removes the 'start' time from a task");
+  table.addCell (row, 2, "Removes the 'start' time from a task.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task done ID [tags] [attrs] [desc...]");
-  table.addCell (row, 2, "Marks the specified task as completed");
+  table.addCell (row, 2, "Marks the specified task as completed.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task undo ID");
-  table.addCell (row, 2, "Marks the specified done task as pending, provided a report has not yet been run");
+  table.addCell (row, 2, "Marks the specified done task as pending, provided a report has not yet been run.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task projects");
-  table.addCell (row, 2, "Shows a list of all project names used, and how many tasks are in each");
+  table.addCell (row, 2, "Shows a list of all project names used, and how many tasks are in each.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task tags");
-  table.addCell (row, 2, "Shows a list of all tags used");
+  table.addCell (row, 2, "Shows a list of all tags used.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task summary");
-  table.addCell (row, 2, "Shows a report of task status by project");
+  table.addCell (row, 2, "Shows a report of task status by project.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task timesheet [weeks]");
-  table.addCell (row, 2, "Shows a weekly report of tasks completed and started");
+  table.addCell (row, 2, "Shows a weekly report of tasks completed and started.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task history");
-  table.addCell (row, 2, "Shows a report of task history, by month");
+  table.addCell (row, 2, "Shows a report of task history, by month.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task ghistory");
-  table.addCell (row, 2, "Shows a graphical report of task history, by month");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task next");
-  table.addCell (row, 2, "Shows the most important tasks for each project");
+  table.addCell (row, 2, "Shows a graphical report of task history, by month.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task calendar");
-  table.addCell (row, 2, "Shows a monthly calendar, with due tasks marked");
+  table.addCell (row, 2, "Shows a monthly calendar, with due tasks marked.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task stats");
-  table.addCell (row, 2, "Shows task database statistics");
+  table.addCell (row, 2, "Shows task database statistics.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task import");
-  table.addCell (row, 2, "Imports tasks from a variety of formats");
+  table.addCell (row, 2, "Imports tasks from a variety of formats.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task export");
-  table.addCell (row, 2, "Lists all tasks as a CSV file");
+  table.addCell (row, 2, "Lists all tasks as a CSV file.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task color");
-  table.addCell (row, 2, "Displays all possible colors");
+  table.addCell (row, 2, "Displays all possible colors.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task version");
-  table.addCell (row, 2, "Shows the task version number");
+  table.addCell (row, 2, "Shows the task version number.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task help");
-  table.addCell (row, 2, "Shows the long usage text");
+  table.addCell (row, 2, "Shows the long usage text.");
 
   // Add custom reports here...
   std::vector <std::string> all;
@@ -239,6 +234,7 @@ std::string longUsage ()
       << "  until:             Recurrence end date"                           << "\n"
       << "  fg:                Foreground color"                              << "\n"
       << "  bg:                Background color"                              << "\n"
+      << "  limit:             Desired number of rows in report"              << "\n"
       <<                                                                         "\n"
       << "The default .taskrc file can be overridden with:"                   << "\n"
       << "  task rc:<alternate file> ..."                                     << "\n"
@@ -255,6 +251,7 @@ std::string longUsage ()
       << "  task add escaped \\' quote"                                       << "\n"
       <<                                                                         "\n"
       << "The argument -- tells task to treat all other args as description." << "\n"
+      << "  task add -- project:Home needs scheduling"                        << "\n"
       <<                                                                         "\n"
       << "Many characters have special meaning to the shell, including:"      << "\n"
       << "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~"                    << "\n"
