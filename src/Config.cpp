@@ -162,8 +162,7 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "#         description_only\n");                                                           // TODO i18n
         fprintf (out, "# Description:   This report is ...\n");                                                  // TODO i18n
         fprintf (out, "# Sort:          due+,priority-,project+\n");                                             // TODO i18n
-        fprintf (out, "# Filter:        pro:x pri:H +bug\n");                                                    // TODO i18n
-        fprintf (out, "# Limit:         10\n");                                                                  // TODO i18n
+        fprintf (out, "# Filter:        pro:x pri:H +bug limit:10\n");                                           // TODO i18n
 
         fprintf (out, "report.long.description=Lists all task, all data, matching the specified criteria\n");    // TODO i18n
         fprintf (out, "report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description\n");   // TODO i18n

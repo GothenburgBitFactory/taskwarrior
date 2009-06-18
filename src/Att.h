@@ -44,7 +44,6 @@ public:
   ~Att ();
 
   bool valid (const std::string&) const;
-  static bool validName (const std::string&);
   static bool validModifiableName (const std::string&);
   static bool validNameValue (const std::string&, const std::string&, const std::string&);
   static bool validNameValue (std::string&, std::string&, std::string&);

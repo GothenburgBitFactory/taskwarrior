@@ -539,6 +539,12 @@ void Context::autoFilter (Task& t, Filter& f)
         header ("auto filter: " + att->first + ".startswith:" + att->second.value ());
     }
 
+    // The limit attribute does not participate in filtering, and needs to be
+    // specifically handled in handleCustomReport.
+    else if (att->first == "limit")
+    {
+    }
+
     // Every task has a unique uuid by default, and it shouldn't be included.
     // The mechanism for filtering on tags is +/-<tag>, not tags:foo which
     // means that there can only be one tag, "foo".

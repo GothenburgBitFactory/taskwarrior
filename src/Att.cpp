@@ -188,20 +188,6 @@ bool Att::valid (const std::string& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete
-bool Att::validName (const std::string& name)
-{
-  if (validModifiableName (name))
-    return true;
-
-  for (unsigned int i = 0; i < NUM_INTERNAL_NAMES; ++i)
-    if (name == internalNames[i])
-      return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Att::validModifiableName (const std::string& name)
 {
   for (unsigned int i = 0; i < NUM_MODIFIABLE_NAMES; ++i)
