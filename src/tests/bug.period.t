@@ -75,61 +75,61 @@ Confirmed:
 =cut
 
 my $output = qx{../task rc:period.rc add daily due:tomorrow recur:daily};
-like ($output, qr/^$/, 'recur:daily');
+unlike ($output, qr/was not recignized/, 'recur:daily');
 
 $output = qx{../task rc:period.rc add day due:tomorrow recur:day};
-like ($output, qr/^$/, 'recur:day');
+unlike ($output, qr/was not recignized/, 'recur:day');
 
 $output = qx{../task rc:period.rc add weekly due:tomorrow recur:weekly};
-like ($output, qr/^$/, 'recur:weekly');
+unlike ($output, qr/was not recignized/, 'recur:weekly');
 
 $output = qx{../task rc:period.rc add sennight due:tomorrow recur:sennight};
-like ($output, qr/^$/, 'recur:sennight');
+unlike ($output, qr/was not recignized/, 'recur:sennight');
 
 $output = qx{../task rc:period.rc add biweekly due:tomorrow recur:biweekly};
-like ($output, qr/^$/, 'recur:biweekly');
+unlike ($output, qr/was not recignized/, 'recur:biweekly');
 
 $output = qx{../task rc:period.rc add fortnight due:tomorrow recur:fortnight};
-like ($output, qr/^$/, 'recur:fortnight');
+unlike ($output, qr/was not recignized/, 'recur:fortnight');
 
 $output = qx{../task rc:period.rc add monthly due:tomorrow recur:monthly};
-like ($output, qr/^$/, 'recur:monthly');
+unlike ($output, qr/was not recignized/, 'recur:monthly');
 
 $output = qx{../task rc:period.rc add quarterly due:tomorrow recur:quarterly};
-like ($output, qr/^$/, 'recur:quarterly');
+unlike ($output, qr/was not recignized/, 'recur:quarterly');
 
 $output = qx{../task rc:period.rc add semiannual due:tomorrow recur:semiannual};
-like ($output, qr/^$/, 'recur:semiannual');
+unlike ($output, qr/was not recignized/, 'recur:semiannual');
 
 $output = qx{../task rc:period.rc add bimonthly due:tomorrow recur:bimonthly};
-like ($output, qr/^$/, 'recur:bimonthly');
+unlike ($output, qr/was not recignized/, 'recur:bimonthly');
 
 $output = qx{../task rc:period.rc add biannual due:tomorrow recur:biannual};
-like ($output, qr/^$/, 'recur:biannual');
+unlike ($output, qr/was not recignized/, 'recur:biannual');
 
 $output = qx{../task rc:period.rc add biyearly due:tomorrow recur:biyearly};
-like ($output, qr/^$/, 'recur:biyearly');
+unlike ($output, qr/was not recignized/, 'recur:biyearly');
 
 $output = qx{../task rc:period.rc add annual due:tomorrow recur:annual};
-like ($output, qr/^$/, 'recur:annual');
+unlike ($output, qr/was not recignized/, 'recur:annual');
 
 $output = qx{../task rc:period.rc add yearly due:tomorrow recur:yearly};
-like ($output, qr/^$/, 'recur:yearly');
+unlike ($output, qr/was not recignized/, 'recur:yearly');
 
 $output = qx{../task rc:period.rc add 2d due:tomorrow recur:2d};
-like ($output, qr/^$/, 'recur:2m');
+unlike ($output, qr/was not recignized/, 'recur:2m');
 
 $output = qx{../task rc:period.rc add 2w due:tomorrow recur:2w};
-like ($output, qr/^$/, 'recur:2q');
+unlike ($output, qr/was not recignized/, 'recur:2q');
 
 $output = qx{../task rc:period.rc add 2m due:tomorrow recur:2m};
-like ($output, qr/^$/, 'recur:2d');
+unlike ($output, qr/was not recignized/, 'recur:2d');
 
 $output = qx{../task rc:period.rc add 2q due:tomorrow recur:2q};
-like ($output, qr/^$/, 'recur:2w');
+unlike ($output, qr/was not recignized/, 'recur:2w');
 
 $output = qx{../task rc:period.rc add 2y due:tomorrow recur:2y};
-like ($output, qr/^$/, 'recur:2y');
+unlike ($output, qr/was not recignized/, 'recur:2y');
 
 # Verify that the recurring task instances get created.  One of each.
 $output = qx{../task rc:period.rc list};

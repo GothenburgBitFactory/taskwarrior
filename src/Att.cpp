@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <sstream>
 #include <stdlib.h>
 #include "text.h"
@@ -337,8 +338,9 @@ bool Att::validNameValue (
   else if (name == "recur")
   {
     // Just validate, don't convert to days.
+    Duration d;
     if (value != "")
-      Duration (value);
+      d.parse (value);
   }
 
   else if (name == "limit")
