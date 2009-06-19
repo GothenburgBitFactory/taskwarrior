@@ -39,20 +39,20 @@ if (open my $fh, '>', 'tag.rc')
 }
 
 # Add task with tags.
-my $output = qx{../task rc:tag.rc add +1 This +2 is a test +3; ../task rc:tag.rc info 1};
-like ($output, qr/^Tags\s+1 2 3\n/m, 'tags found');
+my $output = qx{../task rc:tag.rc add +one This +two is a test +three; ../task rc:tag.rc info 1};
+like ($output, qr/^Tags\s+one two three\n/m, 'tags found');
 
 # Remove tags.
-$output = qx{../task rc:tag.rc 1 -3 -2 -1; ../task rc:tag.rc info 1};
-unlike ($output, qr/^Tags/m, '-3 -2 -1 tag removed');
+$output = qx{../task rc:tag.rc 1 -three -two -one; ../task rc:tag.rc info 1};
+unlike ($output, qr/^Tags/m, '-three -two -one tag removed');
 
 # Add tags.
-$output = qx{../task rc:tag.rc 1 +4 +5 +6; ../task rc:tag.rc info 1};
-like ($output, qr/^Tags\s+4 5 6\n/m, 'tags found');
+$output = qx{../task rc:tag.rc 1 +four +five +six; ../task rc:tag.rc info 1};
+like ($output, qr/^Tags\s+four five six\n/m, 'tags found');
 
 # Remove tags.
-$output = qx{../task rc:tag.rc 1 -4 -5 -6; ../task rc:tag.rc info 1};
-unlike ($output, qr/^Tags/m, '-4 -5 -6 tag removed');
+$output = qx{../task rc:tag.rc 1 -four -five -six; ../task rc:tag.rc info 1};
+unlike ($output, qr/^Tags/m, '-four -five -six tag removed');
 
 # Add and remove tags.
 $output = qx{../task rc:tag.rc 1 +duplicate -duplicate; ../task rc:tag.rc info 1};
