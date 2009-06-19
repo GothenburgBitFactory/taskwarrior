@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream> // TODO Remove
+#include <algorithm>
 #include "Cmd.h"
 #include "Context.h"
 #include "util.h"
