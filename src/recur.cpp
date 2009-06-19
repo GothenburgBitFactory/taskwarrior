@@ -53,8 +53,12 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 // Scans all tasks, and for any recurring tasks, determines whether any new
 // child tasks need to be generated to fill gaps.
-void handleRecurrence (std::vector <Task>& tasks)
+void handleRecurrence ()
 {
+  std::vector <Task> tasks;
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
   std::vector <Task> modified;
 
   // Look at all tasks and find any recurring ones.
@@ -97,7 +101,6 @@ void handleRecurrence (std::vector <Task>& tasks)
           changed = true;
 
           Task rec (*t);                         // Clone the parent.
-          rec.id = context.tdb.nextId ();        // Assign a unique id.
           rec.set ("uuid", uuid ());             // New UUID.
           rec.setStatus (Task::pending);         // Shiny.
           rec.set ("parent", t->get ("uuid"));   // Remember mom.

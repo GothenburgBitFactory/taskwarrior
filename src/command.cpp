@@ -98,8 +98,8 @@ std::string handleProjects ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   int quantity = context.tdb.loadPending (tasks, context.filter);
-  handleRecurrence (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
 
@@ -157,8 +157,8 @@ std::string handleTags ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   int quantity = context.tdb.loadPending (tasks, context.filter);
-  handleRecurrence (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
 
@@ -455,8 +455,8 @@ std::string handleDelete ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   context.tdb.loadPending (tasks, context.filter);
-  handleRecurrence (tasks);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
@@ -553,8 +553,8 @@ std::string handleStart ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   context.tdb.loadPending (tasks, context.filter);
-  handleRecurrence (tasks);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
@@ -602,8 +602,8 @@ std::string handleStop ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   context.tdb.loadPending (tasks, context.filter);
-  handleRecurrence (tasks);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
@@ -648,8 +648,8 @@ std::string handleDone ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   context.tdb.loadPending (tasks, context.filter);
-  handleRecurrence (tasks);
 
   // Filter sequence.
   std::vector <Task> all = tasks;
@@ -736,8 +736,8 @@ std::string handleExport ()
   // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   context.tdb.loadPending (tasks, context.filter);
-  handleRecurrence (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
 
@@ -762,8 +762,8 @@ std::string handleModify ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   context.tdb.loadPending (tasks, context.filter);
-  handleRecurrence (tasks);
 
   // Filter sequence.
   std::vector <Task> all = tasks;
@@ -824,8 +824,8 @@ std::string handleAppend ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   context.tdb.loadPending (tasks, context.filter);
-  handleRecurrence (tasks);
 
   // Filter sequence.
   std::vector <Task> all = tasks;

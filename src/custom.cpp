@@ -101,8 +101,8 @@ std::string handleCustomReport (const std::string& report)
   // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   context.tdb.load (tasks, context.filter);
-  handleRecurrence (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
 

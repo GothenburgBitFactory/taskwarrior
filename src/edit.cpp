@@ -490,8 +490,8 @@ std::string handleEdit ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
   context.tdb.loadPending (tasks, context.filter);
-  handleRecurrence (tasks);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);

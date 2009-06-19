@@ -49,7 +49,7 @@ void gatherNextTasks (std::vector <Task>&, std::vector <int>&);
 void onChangeCallback ();
 
 // recur.cpp
-void handleRecurrence (std::vector <Task>&);
+void handleRecurrence ();
 Date getNextRecurrence (Date&, std::string&);
 bool generateDueDates (Task&, std::vector <Date>&);
 void updateRecurrenceMask (std::vector <Task>&, Task&);

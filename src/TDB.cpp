@@ -85,6 +85,7 @@ TDB::~TDB ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::clear ()
 {
+  mPending.clear ();
   mLocations.clear ();
   mLock = true;
 
@@ -196,32 +197,46 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
 
   try
   {
-    mPending.clear ();
-
-    mId = 1;
-    char line[T_LINE_MAX];
-    foreach (location, mLocations)
+    if (mPending.size () == 0)
     {
-      line_number = 1;
-      file = location->path + "/pending.data";
-
-      fseek (location->pending, 0, SEEK_SET);
-      while (fgets (line, T_LINE_MAX, location->pending))
+      mId = 1;
+      char line[T_LINE_MAX];
+      foreach (location, mLocations)
       {
-        int length = ::strlen (line);
-        if (length > 1)
+        line_number = 1;
+        file = location->path + "/pending.data";
+
+        fseek (location->pending, 0, SEEK_SET);
+        while (fgets (line, T_LINE_MAX, location->pending))
         {
-          // TODO Add hidden attribute indicating source?
-          Task task (line);
-          task.id = mId++;
+          int length = ::strlen (line);
+          if (length > 1)
+          {
+            // TODO Add hidden attribute indicating source?
+            Task task (line);
+            task.id = mId++;
 
-          mPending.push_back (task);
-          if (filter.pass (task))
-            tasks.push_back (task);
+            mPending.push_back (task);
+          }
+
+          ++line_number;
         }
-
-        ++line_number;
       }
+    }
+
+    // Now filter and return.
+    foreach (task, mPending)
+      if (filter.pass (*task))
+        tasks.push_back (*task);
+
+    // Hand back any accumulated additions, if TDB::loadPending is being called
+    // repeatedly.
+    int fakeId = mId;
+    foreach (task, mNew)
+    {
+      task->id = fakeId++;
+      if (filter.pass (*task))
+        tasks.push_back (*task);
     }
   }
 
@@ -267,7 +282,7 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
             line[length - 1] = '\0';
 
           Task task (line);
-          task.id = mId++;
+          // Note: no id is set for completed tasks.
 
           if (filter.pass (task))
             tasks.push_back (task);
@@ -294,6 +309,7 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 void TDB::add (const Task& task)
 {
   mNew.push_back (task);
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
