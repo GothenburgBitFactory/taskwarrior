@@ -147,9 +147,14 @@ void Cmd::load ()
         {
           report = report.substr (0, columns);
 
+
+          // Make sure a custom report does not clash with a built-in
+          // command.
+          if (std::find (commands.begin (), commands.end (), report) != commands.end ())
+            throw std::string ("Custom report '") + report +
+                  "' conflicts with built-in task command.";
+
           // A custom report is also a command.
-          // TODO Make sure a custom report does not clash with a built-in
-          //      command.
           customReports.push_back (report);
           commands.push_back (report);
         }
