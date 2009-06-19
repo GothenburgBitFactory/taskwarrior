@@ -333,7 +333,7 @@ bool Att::validNameValue (
   {
     // Validate and convert to epoch.
     if (value != "")
-      value = Date (value).toEpochString ();
+      value = Date (value, context.config.get ("dateformat", "m/d/Y")).toEpochString ();
   }
 
   else if (name == "recur")
