@@ -160,6 +160,30 @@ void Cmd::load ()
         }
       }
     }
+
+/*
+    // Now load the aliases.
+    foreach (i, all)
+    {
+      if (i->substr (0, 6) == "alias.")
+      {
+        std::string name = i->substr (6, std::string::npos);
+        std::string alias = context.config.get (name);
+
+        // Make sure a custom report does not clash with a built-in
+        // command.
+        if (std::find (commands.begin (), commands.end (), report) != commands.end ())
+          throw std::string ("Alias '") + name +
+                "' conflicts with built-in task command.";
+
+        if (std::find (customReports.begin (), customReports.end (), report) != customReports.end ())
+          throw std::string ("Alias '") + name +
+                "' conflicts with custom report.";
+
+        aliases[name] = alias;
+      }
+    }
+*/
   }
 }
 
