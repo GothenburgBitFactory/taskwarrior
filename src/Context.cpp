@@ -287,7 +287,7 @@ void Context::loadCorrectConfigFile ()
       if (access (file.c_str (), F_OK))
         throw std::string ("Could not read configuration file '") + file + "'";
 
-      message (std::string ("Using alternate .taskrc file ") + file); // TODO i18n
+      header (std::string ("Using alternate .taskrc file ") + file); // TODO i18n
       config.clear ();       // Dump current values.
       config.setDefaults (); // Add in the custom reports.
       config.load (file);    // Load new file.

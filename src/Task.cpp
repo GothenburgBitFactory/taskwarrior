@@ -331,7 +331,7 @@ std::string Task::composeCSV () const
 {
   std::stringstream out;
 
-  out << "'" << id               << "',";
+  out <<        id               <<  ",";
   out << "'" << get ("uuid")     << "',"; // No i18n
   out << "'" << get ("status")   << "',"; // No i18n
 
@@ -339,18 +339,43 @@ std::string Task::composeCSV () const
   std::vector <std::string> tags;
   getTags (tags);
   std::string allTags;
-  join (allTags, " ", tags); // No i18n
+  join (allTags, " ", tags);              // No i18n
   out << "'" << allTags          << "',"; // No i18n
 
-  out << "'" << get ("entry")    << "',"; // No i18n
-  out << "'" << get ("start")    << "',"; // No i18n
-  out << "'" << get ("due")      << "',"; // No i18n
-  out << "'" << get ("recur")    << "',"; // No i18n
-  out << "'" << get ("end")      << "',"; // No i18n
-  out << "'" << get ("project")  << "',"; // No i18n
-  out << "'" << get ("priority") << "',"; // No i18n
-  out << "'" << get ("fg")       << "',"; // No i18n
-  out << "'" << get ("bg")       << "',"; // No i18n
+  out <<        get ("entry")    <<  ","; // No i18n
+  out <<        get ("start")    <<  ","; // No i18n
+
+  if (has ("due"))
+    out << "'" << get ("due")      << "',"; // No i18n
+  else
+    out << ","; // No i18n
+
+  if (has ("recur"))
+    out << "'" << get ("recur")    << "',"; // No i18n
+  else
+    out << ","; // No i18n
+
+  out <<        get ("end")      <<  ","; // No i18n
+
+  if (has ("project"))
+    out << "'" << get ("project")  << "',"; // No i18n
+  else
+    out << ","; // No i18n
+
+  if (has ("priority"))
+    out << "'" << get ("priority") << "',"; // No i18n
+  else
+    out << ","; // No i18n
+
+  if (has ("fg"))
+    out << "'" << get ("fg")     << "',"; // No i18n
+  else
+    out << ","; // No i18n
+
+  if (has ("bg"))
+    out << "'" << get ("bg")     << "',"; // No i18n
+  else
+    out << ","; // No i18n
 
   // Convert single quotes to double quotes, because single quotes are used to
   // delimit the values that need it.
