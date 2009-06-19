@@ -46,21 +46,21 @@ like ($output, qr/Status\s+Pending\n/, 'Pending');
 
 $output = qx{../task rc:undelete.rc delete 1; ../task rc:undelete.rc info 1};
 like ($output, qr/Status\s+Deleted\n/, 'Deleted');
-ok (! -r 'completed.data', 'completed.data not created');
+ok (-r 'completed.data', 'completed.data created');
 
 $output = qx{../task rc:undelete.rc undelete 1; ../task rc:undelete.rc info 1};
 like ($output, qr/Status\s+Pending\n/, 'Pending');
-ok (! -r 'completed.data', 'completed.data not created');
+ok (-r 'completed.data', 'completed.data created');
 
 $output = qx{../task rc:undelete.rc delete 1; ../task rc:undelete.rc list};
-like ($output, qr/^No matches/, 'No matches');
+like ($output, qr/No matches./, 'No matches');
 ok (-r 'completed.data', 'completed.data created');
 
 $output = qx{../task rc:undelete.rc undelete 1};
 like ($output, qr/Task 1 not found/, 'Task 1 not found');
 
 $output = qx{../task rc:undelete.rc info 1};
-like ($output, qr/No matches./, 'no matches');
+like ($output, qr/Task 1 not found/, 'No matches');
 
 # Cleanup.
 ok (-r 'pending.data', 'Need to remove pending.data');

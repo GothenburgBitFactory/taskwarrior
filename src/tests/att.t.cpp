@@ -210,7 +210,7 @@ int main (int argc, char** argv)
   n = Nibbler ("name:");
   good = true;
   try {a7.parse (n);} catch (...) {good = false;}
-  t.notok (good, "Att::parse (name:)");
+  t.ok (good, "Att::parse (name:)");
 
   n = Nibbler ("name:\"value");
   good = true;

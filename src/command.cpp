@@ -661,11 +661,7 @@ std::string handleDone ()
     {
       // Apply deltas.
       deltaDescription (*task);
-      context.task.remove ("description");
-
       deltaTags (*task);
-      context.task.remove ("tags");
-
       deltaAttributes (*task);
       deltaSubstitutions (*task);
 
@@ -799,11 +795,7 @@ std::string handleModify ()
 
         // Apply other deltas.
         changes += deltaDescription (*other);
-        context.task.remove ("description");
-
         changes += deltaTags (*other);
-        context.task.remove ("tags");
-
         changes += deltaAttributes (*other);
         changes += deltaSubstitutions (*other);
 
@@ -853,11 +845,7 @@ std::string handleAppend ()
 
         // Apply other deltas.
         changes += deltaAppend (*other);
-        context.task.remove ("description");
-
         changes += deltaTags (*other);
-        context.task.remove ("tags");
-
         changes += deltaAttributes (*other);
 
         if (changes)
@@ -924,11 +912,7 @@ std::string handleDuplicate ()
 
     // Apply deltas.
     deltaDescription (dup);
-    context.task.remove ("description");
-
     deltaTags (dup);
-    context.task.remove ("tags");
-
     deltaAttributes (dup);
     deltaSubstitutions (dup);
 
@@ -1137,7 +1121,9 @@ int deltaAttributes (Task& task)
 
   foreach (att, context.task)
   {
-    if (att->first != "uuid")
+    if (att->first != "uuid"        &&
+        att->first != "description" &&
+        att->first != "tags")
     {
       if (att->second.value () == "")
         task.remove (att->first);

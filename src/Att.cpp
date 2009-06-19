@@ -239,7 +239,8 @@ bool Att::validNameValue (
   autoComplete (name, candidates, matches);
 
   if (matches.size () == 0)
-    throw std::string ("Unrecognized attribute '") + name + "'";
+//    throw std::string ("Unrecognized attribute '") + name + "'";
+    return false;
 
   else if (matches.size () != 1)
   {

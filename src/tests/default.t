@@ -34,7 +34,7 @@ use Test::More tests => 16;
 if (open my $fh, '>', 'default.rc')
 {
   print $fh "data.location=.\n",
-            "default.command=list\n",
+            "default.command=rc:default.rc list\n",
             "default.project=PROJECT\n",
             "default.priority=M\n";
   close $fh;

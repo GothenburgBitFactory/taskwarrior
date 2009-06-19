@@ -428,12 +428,26 @@ void Context::parse (
         std::string name = attribute.name ();
         std::string mod = attribute.mod ();
         std::string value = attribute.value ();
-        attribute.validNameValue (name, mod, value);
-        attribute.name (name);
-        attribute.mod (mod);
-        attribute.value (value);
+        if (attribute.validNameValue (name, mod, value))
+        {
+          attribute.name (name);
+          attribute.mod (mod);
+          attribute.value (value);
 
-        parseTask[attribute.name ()] = attribute;
+          parseTask[attribute.name ()] = attribute;
+        }
+
+        // *arg has the appearance of an attribute (foo:bar), but isn't
+        // recognized, so downgrade it to part of the description.
+        else
+        {
+          if (foundSequence)
+            foundSomethingAfterSequence = true;
+
+          if (descCandidate.length ())
+            descCandidate += " ";
+          descCandidate += *arg;
+        }
       }
 
       // Substitution of description and/or annotation text.

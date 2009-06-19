@@ -41,13 +41,13 @@ if (open my $fh, '>', 'basic.rc')
 # Test the usage command.
 my $output = qx{../task rc:basic.rc};
 like ($output, qr/Usage: task/, 'usage');
-like ($output, qr/http:\/\/www\.beckingham\.net\/task\.html/, 'usage - url');
+like ($output, qr/http:\/\/taskwarrior\.org/, 'usage - url');
 
 # Test the version command.
 $output = qx{../task rc:basic.rc version};
 like ($output, qr/task \d+\.\d+\.\d+/, 'version - task version number');
 like ($output, qr/ABSOLUTELY NO WARRANTY/, 'version - warranty');
-like ($output, qr/http:\/\/www\.beckingham\.net\/task\.html/, 'version - url');
+like ($output, qr/http:\/\/taskwarrior\.org/, 'version - url');
 
 # Cleanup.
 unlink 'basic.rc';
