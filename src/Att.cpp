@@ -188,6 +188,16 @@ bool Att::valid (const std::string& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Att::validInternalName (const std::string& name)
+{
+  for (unsigned int i = 0; i < NUM_INTERNAL_NAMES; ++i)
+    if (name == internalNames[i])
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Att::validModifiableName (const std::string& name)
 {
   for (unsigned int i = 0; i < NUM_MODIFIABLE_NAMES; ++i)
@@ -206,19 +216,7 @@ bool Att::validNameValue (
   std::string writableName  = name;
   std::string writableMod   = mod;
   std::string writableValue = value;
-  bool status = Att::validNameValue (writableName, writableMod, writableValue);
-/*
-  // TODO Is this even worth doing?
-  if (name != writableName)
-    throw std::string ("The attribute '") + name + "' was not fully qualified.";
-
-  if (mod != writableMod)
-    throw std::string ("The modifier '") + mod + "' was not fully qualified.";
-
-  if (value != writableValue)
-    throw std::string ("The value '") + value + "' was not fully qualified.";
-*/
-  return status;
+  return Att::validNameValue (writableName, writableMod, writableValue);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -369,15 +367,8 @@ bool Att::validNameValue (
             "\" is not a valid status.  Use 'pending', 'completed', 'deleted' or 'recurring'.";
   }
 
-  else if (name == "parent")
-  {
-  }
-
-  else if (name == "uuid")
-  {
-  }
-
-  else
+  else if (! validInternalName (name) &&
+           ! validModifiableName (name))
     throw std::string ("'") + name + "' is not a recognized attribute.";
 
   return true;

@@ -158,6 +158,7 @@ void Subst::apply (
           if ((pattern = description.find (mFrom)) != std::string::npos)
           {
             description.replace (pattern, mFrom.length (), mTo);
+            i->value (description);
             break;
           }
         }
