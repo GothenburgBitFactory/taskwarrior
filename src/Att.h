@@ -49,7 +49,7 @@ public:
   static bool validNameValue (const std::string&, const std::string&, const std::string&);
   static bool validNameValue (std::string&, std::string&, std::string&);
   static bool validMod (const std::string&);
-  static std::string type (const std::string&);
+  std::string type (const std::string&) const;
   void parse (const std::string&);
   void parse (Nibbler&);
   bool match (const Att&) const;

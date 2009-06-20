@@ -540,7 +540,7 @@ void Context::autoFilter (Task& t, Filter& f)
   foreach (att, t)
   {
     // Words are found in the description using the .has modifier.
-    if (att->first == "description")
+    if (att->first == "description" && att->second.mod () == "")
     {
       std::vector <std::string> words;
       split (words, att->second.value (), ' ');
@@ -552,7 +552,7 @@ void Context::autoFilter (Task& t, Filter& f)
     }
 
     // Projects are matched left-most.
-    else if (att->first == "project")
+    else if (att->first == "project" && att->second.mod () == "")
     {
       f.push_back (Att ("project", "startswith", att->second.value ()));
         debug ("auto filter: " + att->first + ".startswith:" + att->second.value ());
@@ -564,14 +564,27 @@ void Context::autoFilter (Task& t, Filter& f)
     {
     }
 
-    // Every task has a unique uuid by default, and it shouldn't be included.
-    // The mechanism for filtering on tags is +/-<tag>, not tags:foo which
-    // means that there can only be one tag, "foo".
-    else if (att->first != "uuid" &&
-             att->first != "tags")
+    // Every task has a unique uuid by default, and it shouldn't be included,
+    // because it is guaranteed to not match.
+    else if (att->first == "uuid")
+    {
+    }
+
+    // The mechanism for filtering on tags is +/-<tag>.
+    else if (att->first == "tags")
+    {
+    }
+
+    // Generic attribute matching.
+    else
     {
       f.push_back (att->second);
-      debug ("auto filter: " + att->first + ":" + att->second.value ());
+      debug ("auto filter: " +
+             att->first +
+             (att->second.mod () != "" ?
+               ("." + att->second.mod () + ":") :
+               ":") +
+             att->second.value ());
     }
   }
 

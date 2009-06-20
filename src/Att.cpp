@@ -66,16 +66,16 @@ static const char* modifiableNames[] =
 // Synonyms on the same line.
 static const char* modifierNames[] =
 {
-  "before", "under", "below",
-  "after",  "over",  "above",
+  "before",     "under",    "below",
+  "after",      "over",     "above",
   "none",
   "any",
-  "is",
-  "isnt",   "not",
-  "has",    "contains",
+  "is",         "equals",
+  "isnt",       "not",
+  "has",        "contains",
   "hasnt",
-  "startswith",
-  "endswith",
+  "startswith", "left",
+  "endswith",   "right",
 };
 
 #define NUM_INTERNAL_NAMES   (sizeof (internalNames)   / sizeof (internalNames[0]))
@@ -385,7 +385,7 @@ bool Att::validMod (const std::string& mod)
 
 ////////////////////////////////////////////////////////////////////////////////
 // The type of an attribute is useful for modifier evaluation.
-std::string type (const std::string& name)
+std::string Att::type (const std::string& name) const
 {
   if (name == "due" ||
       name == "until" ||
@@ -468,14 +468,17 @@ void Att::parse (Nibbler& n)
 // Record that does not have modifiers, but may have a value.
 bool Att::match (const Att& other) const
 {
-  // If there are no mods, just perform a straight compare on value.
-  if (mMod == "" && mValue != other.mValue)
-    return false;
+  // All matches are assumed to pass, any short-circuit on non-match.
 
-  // Assume a match, and short-circuit on mismatch.
+  // If there are no mods, just perform a straight compare on value.
+  if (mMod == "")
+  {
+    if (mValue != other.mValue)
+      return false;
+  }
 
   // is = equal.  Nop.
-  else if (mMod == "is") // TODO i18n
+  else if (mMod == "is" || mMod == "equals") // TODO i18n
   {
     if (mValue != other.mValue)
       return false;
@@ -503,7 +506,7 @@ bool Att::match (const Att& other) const
   }
 
   // startswith = first characters must match.
-  else if (mMod == "startswith") // TODO i18n
+  else if (mMod == "startswith" || mMod == "left") // TODO i18n
   {
     if (other.mValue.length () < mValue.length ())
       return false;
@@ -513,7 +516,7 @@ bool Att::match (const Att& other) const
   }
 
   // endswith = last characters must match.
-  else if (mMod == "endswith") // TODO i18n
+  else if (mMod == "endswith" || mMod == "right") // TODO i18n
   {
     if (other.mValue.length () < mValue.length ())
       return false;
@@ -541,15 +544,61 @@ bool Att::match (const Att& other) const
   // before = under = below = <
   else if (mMod == "before" || mMod == "under" || mMod == "below")
   {
-    // TODO Typed compare
-    return false;
+    std::string which = type (mName);
+    if (which == "duration")
+    {
+      Duration literal (mValue);
+      Duration variable ((time_t)::atoi (other.mValue.c_str ()));
+      if (!(variable < literal))
+        return false;
+    }
+    else if (which == "date")
+    {
+      Date literal (mValue);
+      Date variable ((time_t)::atoi (other.mValue.c_str ()));
+      if (! (variable < literal))
+        return false;
+    }
+    else if (which == "number")
+    {
+      if (::atoi (mValue.c_str ()) >= ::atoi (other.mValue.c_str ()))
+        return false;
+    }
+    else if (which == "text")
+    {
+      if (::strcmp (mValue.c_str (), other.mValue.c_str ()) <= 0)
+        return false;
+    }
   }
 
   // after = over = above = >
   else if (mMod == "after" || mMod == "over" || mMod == "above")
   {
-    // TODO Typed compare
-    return false;
+    std::string which = type (mName);
+    if (which == "duration")
+    {
+      Duration literal (mValue);
+      Duration variable ((time_t)::atoi (other.mValue.c_str ()));
+      if (! (variable > literal))
+        return false;
+    }
+    else if (which == "date")
+    {
+      Date literal (mValue);
+      Date variable ((time_t)::atoi (other.mValue.c_str ()));
+      if (! (variable > literal))
+        return false;
+    }
+    else if (which == "number")
+    {
+      if (::atoi (mValue.c_str ()) <= ::atoi (other.mValue.c_str ()))
+        return false;
+    }
+    else if (which == "text")
+    {
+      if (::strcmp (mValue.c_str (), other.mValue.c_str ()) >= 0)
+        return false;
+    }
   }
 
   return true;
