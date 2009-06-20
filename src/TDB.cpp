@@ -389,8 +389,6 @@ int TDB::gc ()
 {
   int count = 0;
 
-  context.header ("gc");
-
   // Set up a second TDB.
   Filter filter;
   TDB tdb;
@@ -443,6 +441,9 @@ int TDB::gc ()
   // Close files.
   tdb.unlock ();
 
+  std::stringstream s;
+  s << "gc " << count << " tasks";
+  context.debug (s.str ());
   return count;
 }
 

@@ -146,6 +146,11 @@ int Context::run ()
     message (stringtable.get (100, "Unknown error."));
   }
 
+  // Dump all debug messages.
+  if (config.get ("debug", true))
+    foreach (d, debugMessages)
+      std::cout << colorizeDebug (*d) << std::endl;
+
   // Dump all headers.
   foreach (h, headers)
     std::cout << colorizeHeader (*h) << std::endl;
@@ -367,7 +372,7 @@ void Context::parse (
       // The '--' argument shuts off all parsing - everything is an argument.
       if (*arg == "--")
       {
-        header ("parse terminator '" + *arg + "'");
+        debug ("parse terminator '" + *arg + "'");
         terminated = true;
       }
 
@@ -377,7 +382,7 @@ void Context::parse (
                ! foundSomethingAfterSequence &&
                parseSequence.valid (*arg))
       {
-        header ("parse sequence '" + *arg + "'");
+        debug ("parse sequence '" + *arg + "'");
         parseSequence.parse (*arg);
         foundSequence = true;
       }
@@ -387,7 +392,7 @@ void Context::parse (
                (*arg)[0] == '+'   &&
                validTag (*arg))
       {
-        header ("parse tag addition '" + *arg + "'");
+        debug ("parse tag addition '" + *arg + "'");
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -404,7 +409,7 @@ void Context::parse (
                (*arg)[0] == '-'   &&
                validTag (*arg))
       {
-        header ("parse tag removal '" + *arg + "'");
+        debug ("parse tag removal '" + *arg + "'");
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -418,7 +423,7 @@ void Context::parse (
       // Atributes - name[.mod]:[value]
       else if (attribute.valid (*arg))
       {
-        header ("parse attribute '" + *arg + "'");
+        debug ("parse attribute '" + *arg + "'");
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
@@ -456,7 +461,7 @@ void Context::parse (
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
-        header ("parse subst '" + *arg + "'");
+        debug ("parse subst '" + *arg + "'");
         parseSubst.parse (*arg);
       }
 
@@ -464,7 +469,7 @@ void Context::parse (
       else if (parseCmd.command == "" &&
                parseCmd.valid (*arg))
       {
-        header ("parse cmd '" + *arg + "'");
+        debug ("parse cmd '" + *arg + "'");
         parseCmd.parse (*arg);
 
         if (foundSequence)
@@ -486,7 +491,7 @@ void Context::parse (
     // terminated, therefore everything subsequently is a description.
     else
     {
-      header ("parse post-termination description '" + *arg + "'");
+      debug ("parse post-termination description '" + *arg + "'");
       if (foundSequence)
         foundSomethingAfterSequence = true;
 
@@ -498,7 +503,7 @@ void Context::parse (
 
   if (descCandidate != "" && noVerticalSpace (descCandidate))
   {
-    header ("parse description '" + descCandidate + "'");
+    debug ("parse description '" + descCandidate + "'");
     parseTask.set ("description", descCandidate);
   }
 
@@ -601,6 +606,12 @@ void Context::message (const std::string& input)
 void Context::footnote (const std::string& input)
 {
   footnotes.push_back (input);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::debug (const std::string& input)
+{
+  debugMessages.push_back (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

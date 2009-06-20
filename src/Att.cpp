@@ -63,21 +63,17 @@ static const char* modifiableNames[] =
   "until",
 };
 
+// Synonyms on the same line.
 static const char* modifierNames[] =
 {
-  "before",
-  "after",
-  "under",
-  "over",
-  "below",
-  "above",
+  "before", "under", "below",
+  "after",  "over",  "above",
   "none",
   "any",
   "is",
-  "isnt",
-  "has",
+  "isnt",   "not",
+  "has",    "contains",
   "hasnt",
-  "contains",
   "startswith",
   "endswith",
 };
@@ -486,7 +482,7 @@ bool Att::match (const Att& other) const
   }
 
   // isnt = not equal.
-  else if (mMod == "isnt") // TODO i18n
+  else if (mMod == "isnt" || mMod == "not") // TODO i18n
   {
     if (mValue == other.mValue)
       return false;

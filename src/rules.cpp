@@ -281,4 +281,19 @@ std::string colorizeFootnote (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string colorizeDebug (const std::string& input)
+{
+  if (gsFg["debug.footnote"] != Text::nocolor ||
+      gsBg["debug.footnote"] != Text::nocolor)
+  {
+    return Text::colorize (
+           gsFg["debug.footnote"],
+           gsBg["debug.footnote"],
+           input);
+  }
+
+  return input;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 

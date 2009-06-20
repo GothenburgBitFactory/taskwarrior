@@ -55,6 +55,7 @@ public:
   void header (const std::string&);    // Header sink
   void message (const std::string&);   // Message sink
   void footnote (const std::string&);  // Footnote sink
+  void debug (const std::string&);     // Debug message sink
   void clearMessages ();
 
   void parse ();
@@ -83,6 +84,7 @@ private:
   std::vector <std::string> headers;
   std::vector <std::string> messages;
   std::vector <std::string> footnotes;
+  std::vector <std::string> debugMessages;
   bool                      inShadow;
 };
 

@@ -105,6 +105,7 @@ void autoColorize (Task&, Text::color&, Text::color&);
 std::string colorizeHeader (const std::string&);
 std::string colorizeMessage (const std::string&);
 std::string colorizeFootnote (const std::string&);
+std::string colorizeDebug (const std::string&);
 
 // import.cpp
 std::string handleImport ();
