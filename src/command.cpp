@@ -83,6 +83,15 @@ std::string handleAdd ()
 
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.add (context.task);
+
+#ifdef FEATURE_NEW_ID
+  // All this, just for an id number.
+  std::vector <Task> all;
+  Filter none;
+  context.tdb.loadPending (all, none);
+  out << "Created task " << context.tdb.nextId () << std::endl;
+#endif
+
   context.tdb.commit ();
   context.tdb.unlock ();
 

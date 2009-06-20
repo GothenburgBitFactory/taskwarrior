@@ -25,9 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// TDB Optimization attempts to reduce the amount of I/O.
-#define FEATURE_TDB_OPT 1
-
+#define FEATURE_TDB_OPT 1   // TDB Optimization reduces file I/O.
+#define FEATURE_NEW_ID  1   // Echoes back new id.
 
 #include <string>
 #include <vector>

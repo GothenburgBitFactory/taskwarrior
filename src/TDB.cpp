@@ -210,7 +210,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
         while (fgets (line, T_LINE_MAX, location->pending))
         {
           int length = ::strlen (line);
-          if (length > 1)
+          if (length > 3) // []\n
           {
             // TODO Add hidden attribute indicating source?
             Task task (line);
@@ -274,7 +274,7 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
       while (fgets (line, T_LINE_MAX, location->completed))
       {
         int length = ::strlen (line);
-        if (length > 2)
+        if (length > 3) // []\n
         {
           // TODO Add hidden attribute indicating source?
 
