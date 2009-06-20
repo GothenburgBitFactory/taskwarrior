@@ -28,6 +28,7 @@
 #include <iostream> // TODO Remove
 #include <sstream>
 #include <stdlib.h>
+#include <string.h>
 #include "text.h"
 #include "color.h"
 #include "util.h"
