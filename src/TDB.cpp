@@ -178,7 +178,7 @@ int TDB::load (std::vector <Task>& tasks, Filter& filter)
       numberStatusClauses != numberSimpleStatusClauses)
     loadCompleted (tasks, filter);
   else
-    context.header ("load optimization short circuit");
+    context.debug ("load optimization short circuit");
 #else
   loadCompleted (tasks, filter);
 #endif

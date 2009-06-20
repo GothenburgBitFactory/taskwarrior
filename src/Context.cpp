@@ -547,7 +547,7 @@ void Context::autoFilter (Task& t, Filter& f)
       foreach (word, words)
       {
         f.push_back (Att ("description", "has", *word));
-        header ("auto filter: " + att->first + ".has:" + *word);
+        debug ("auto filter: " + att->first + ".has:" + *word);
       }
     }
 
@@ -555,7 +555,7 @@ void Context::autoFilter (Task& t, Filter& f)
     else if (att->first == "project")
     {
       f.push_back (Att ("project", "startswith", att->second.value ()));
-        header ("auto filter: " + att->first + ".startswith:" + att->second.value ());
+        debug ("auto filter: " + att->first + ".startswith:" + att->second.value ());
     }
 
     // The limit attribute does not participate in filtering, and needs to be
@@ -571,7 +571,7 @@ void Context::autoFilter (Task& t, Filter& f)
              att->first != "tags")
     {
       f.push_back (att->second);
-      header ("auto filter: " + att->first + ":" + att->second.value ());
+      debug ("auto filter: " + att->first + ":" + att->second.value ());
     }
   }
 
@@ -579,14 +579,14 @@ void Context::autoFilter (Task& t, Filter& f)
   foreach (tag, tagAdditions)
   {
     f.push_back (Att ("tags", "has", *tag));
-    header ("auto filter: +" + *tag);
+    debug ("auto filter: +" + *tag);
   }
 
   // Include tagRemovals.
   foreach (tag, tagRemovals)
   {
     f.push_back (Att ("tags", "hasnt", *tag));
-    header ("auto filter: -" + *tag);
+    debug ("auto filter: -" + *tag);
   }
 }
 

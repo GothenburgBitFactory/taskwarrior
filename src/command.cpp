@@ -390,14 +390,14 @@ std::string handleVersion ()
     " blanklines color color.active color.due color.overdue color.pri.H "
     "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
     "color.footnote color.header color.message color.debug confirmation curses "
-    "data.location dateformat default.command default.priority defaultwidth "
-    "displayweeknumber due echo.command locale locking monthsperline nag next "
-    "project shadow.command shadow.file shadow.notify weekstart editor "
-    "import.synonym.id import.synonym.uuid import.synonym.status "
-    "import.synonym.tags import.synonym.entry import.synonym.start "
-    "import.synonym.due import.synonym.recur import.synonym.end "
-    "import.synonym.project import.synonym.priority import.synonym.fg "
-    "import.synonym.bg import.synonym.description ";
+    "data.location dateformat debug default.command default.priority "
+    "defaultwidth displayweeknumber due echo.command locale locking "
+    "monthsperline nag next project shadow.command shadow.file shadow.notify "
+    "weekstart editor import.synonym.id import.synonym.uuid "
+    "import.synonym.status import.synonym.tags import.synonym.entry "
+    "import.synonym.start import.synonym.due import.synonym.recur "
+    "import.synonym.end import.synonym.project import.synonym.priority "
+    "import.synonym.fg import.synonym.bg import.synonym.description ";
 
   // This configuration variable is supported, but not documented.  It exists
   // so that unit tests can force color to be on even when the output from task
@@ -417,7 +417,8 @@ std::string handleVersion ()
       if (i->substr (0, 14) != "color.keyword." &&
           i->substr (0, 14) != "color.project." &&
           i->substr (0, 10) != "color.tag."     &&
-          i->substr (0,  7) != "report.")
+          i->substr (0,  7) != "report."        &&
+          i->substr (0,  6) != "alias.")
       {
         unrecognized.push_back (*i);
       }
