@@ -568,6 +568,7 @@ std::string handleStart ()
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
 
+  bool nagged = false;
   foreach (task, tasks)
   {
     if (! task->has ("start"))
@@ -585,7 +586,8 @@ std::string handleStart ()
             << task->get ("description")
             << "'"
             << std::endl;
-      nag (*task);
+      if (!nagged)
+        nagged = nag (*task);
     }
     else
     {
@@ -664,6 +666,7 @@ std::string handleDone ()
   std::vector <Task> all = tasks;
   context.filter.applySequence (tasks, context.sequence);
 
+  bool nagged = false;
   foreach (task, tasks)
   {
     if (task->getStatus () == Task::pending)
@@ -692,7 +695,8 @@ std::string handleDone ()
             << std::endl;
 
       updateRecurrenceMask (all, *task);
-      nag (*task);
+      if (!nagged)
+        nagged = nag (*task);
 
       ++count;
     }

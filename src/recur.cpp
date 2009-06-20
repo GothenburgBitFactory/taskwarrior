@@ -397,7 +397,7 @@ int getDueState (const std::string& due)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void nag (Task& task)
+bool nag (Task& task)
 {
   std::string nagMessage = context.config.get ("nag", "");
   if (nagMessage != "")
@@ -448,15 +448,18 @@ void nag (Task& task)
     }
 
     // General form is "if there are no more deserving tasks", suppress the nag.
-    if (isOverdue                                         ) return;
-    if (pri == 'H' && !overdue                            ) return;
-    if (pri == 'M' && !overdue && !high                   ) return;
-    if (pri == 'L' && !overdue && !high && !medium        ) return;
-    if (pri == ' ' && !overdue && !high && !medium && !low) return;
+    if (isOverdue                                         ) return false;
+    if (pri == 'H' && !overdue                            ) return false;
+    if (pri == 'M' && !overdue && !high                   ) return false;
+    if (pri == 'L' && !overdue && !high && !medium        ) return false;
+    if (pri == ' ' && !overdue && !high && !medium && !low) return false;
 
     // All the excuses are made, all that remains is to nag the user.
     context.message (nagMessage);
+    return true;
   }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
