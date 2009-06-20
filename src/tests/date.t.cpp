@@ -138,8 +138,8 @@ int main (int argc, char** argv)
 
     Date epoch (9, 8, 2001);
     t.ok ((int)epoch.toEpoch () < 1000000000, "9/8/2001 < 1,000,000,000");
-    epoch += 86400;
-    t.ok ((int)epoch.toEpoch () > 1000000000, "9/9/2001 > 1,000,000,000");
+    epoch += 172800;
+    t.ok ((int)epoch.toEpoch () > 1000000000, "9/10/2001 > 1,000,000,000");
 
     Date fromEpoch (epoch.toEpoch ());
     t.is (fromEpoch.toString (), epoch.toString (), "ctor (time_t)");
