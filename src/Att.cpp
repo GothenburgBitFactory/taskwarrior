@@ -478,6 +478,13 @@ bool Att::match (const Att& other) const
       return false;
   }
 
+  // has = contains as a substring.
+  else if (mMod == "has" || mMod == "contains") // TODO i18n
+  {
+    if (other.mValue.find (mValue) == std::string::npos)
+      return false;
+  }
+
   // is = equal.  Nop.
   else if (mMod == "is" || mMod == "equals") // TODO i18n
   {
@@ -525,13 +532,6 @@ bool Att::match (const Att& other) const
     if (mValue != other.mValue.substr (
                     other.mValue.length () - mValue.length (),
                     std::string::npos))
-      return false;
-  }
-
-  // has = contains as a substring.
-  else if (mMod == "has" || mMod == "contains") // TODO i18n
-  {
-    if (other.mValue.find (mValue) == std::string::npos)
       return false;
   }
 

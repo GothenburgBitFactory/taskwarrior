@@ -573,6 +573,11 @@ void Context::autoFilter (Task& t, Filter& f)
       {
         f.push_back (Att ("description", "has", *word));
         debug ("auto filter: " + att->first + ".has:" + *word);
+
+/*
+        f.push_back (Att ("annotation_*", "has", *word));
+        debug ("auto filter: annotation_*.has:" + *word);
+*/
       }
     }
 

@@ -38,19 +38,56 @@ bool Filter::pass (const Record& record) const
 {
   Record::const_iterator r;
 
-  // If record doesn't have the attribute, fail.  If it does have the attribute
-  // but it doesn't match, fail.
+  // First do description/annotation matches.
   foreach (att, (*this))
   {
-    // If the record doesn't have the attribute, match against a default one.
-    // This is because "att" may contain a modifier like "name.not:X".
-    if ((r = record.find (att->name ())) == record.end ())
+    // Descriptions have special handling.
+    if (att->name () == "description")
     {
-      if (! att->match (Att ()))
+      if ((r = record.find (att->name ())) != record.end ())
+      {
+        // A description match failure can be salvaged by an annotation match.
+        if (! att->match (r->second))
+        {
+          bool annoMatch = false;
+          foreach (ra, record)
+          {
+            if (ra->first.length () > 11 &&
+                ra->first.substr (0, 11) == "annotation_")
+            {
+              if (att->match (ra->second))
+              {
+                annoMatch = true;
+                break;
+              }
+            }
+          }
+
+          if (!annoMatch)
+            return false;
+        }
+      }
+      else if (! att->match (Att ()))
         return false;
     }
-    else if (! att->match (r->second))
-      return false;
+
+    // Annotations are skipped.
+    else if (att->name ().length () > 11 &&
+             att->name ().substr (0, 11) == "annotation_")
+    {
+    }
+
+    else
+    {
+      // An individual attribute match failure is enough to fail the filter.
+      if ((r = record.find (att->name ())) != record.end ())
+      {
+        if (! att->match (r->second))
+          return false;
+      }
+      else if (! att->match (Att ()))
+        return false;
+    }
   }
 
   return true;
