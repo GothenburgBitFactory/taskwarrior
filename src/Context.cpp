@@ -219,9 +219,8 @@ std::string Context::dispatch ()
   else                                     { out = shortUsage (); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
-// TODO
-//  if (cmd.isWriteCommand (cmd.command) && !inShadow))
-//    shadow ();
+  if (cmd.isWriteCommand () && !inShadow)
+    shadow ();
 
   return out;
 }
@@ -252,6 +251,8 @@ void Context::shadow ()
     config.set ("curses", "off");
     config.set ("color",  "off");
 
+    clear ();
+
     // Run report.  Use shadow.command, using default.command as a fallback
     // with "list" as a default.
     std::string command = config.get ("shadow.command",
@@ -261,7 +262,6 @@ void Context::shadow ()
     initialize ();
     parse ();
     std::string result = dispatch ();
-
     std::ofstream out (shadowFile.c_str ());
     if (out.good ())
     {
