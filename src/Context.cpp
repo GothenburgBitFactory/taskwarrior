@@ -67,13 +67,6 @@ Context::~Context ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::initialize (int argc, char** argv)
 {
-  // Set up randomness.
-#ifdef HAVE_SRANDOM
-  srandom (time (NULL));
-#else
-  srand (time (NULL));
-#endif
-
   // Capture the args.
   for (int i = 0; i < argc; ++i)
     if (i == 0)
@@ -87,6 +80,13 @@ void Context::initialize (int argc, char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 void Context::initialize ()
 {
+  // Set up randomness.
+#ifdef HAVE_SRANDOM
+  srandom (time (NULL));
+#else
+  srand (time (NULL));
+#endif
+
   // Load the configuration file from the home directory.  If the file cannot
   // be found, offer to create a sample one.
   loadCorrectConfigFile ();
@@ -205,6 +205,9 @@ std::string Context::dispatch ()
   else if (cmd.command == "import")        { out = handleImport          (); }
   else if (cmd.command == "duplicate")     { out = handleDuplicate       (); }
   else if (cmd.command == "edit")          { out = handleEdit            (); }
+#ifdef FEATURE_SHELL
+  else if (cmd.command == "shell")         {       handleShell           (); }
+#endif
   else if (cmd.command == "" &&
            sequence.size ())               { out = handleModify          (); }
 
@@ -534,6 +537,28 @@ void Context::parse (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Context::clear ()
+{
+//  Config                    config;
+  filter.clear ();
+//  Keymap                    keymap;
+  sequence.clear ();
+  subst.clear ();
+//  task.clear ();
+  task = Task ();
+  tdb.clear ();
+//  stringtable.clear ();
+  program = "";
+  args.clear ();
+  cmd.command = "";
+  tagAdditions.clear ();
+  tagRemovals.clear ();
+
+  clearMessages ();
+  inShadow = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Add all the attributes in the task to the filter.  All except uuid.
 void Context::autoFilter (Task& t, Filter& f)
 {
@@ -633,6 +658,7 @@ void Context::clearMessages ()
   headers.clear ();
   messages.clear ();
   footnotes.clear ();
+  debugMessages.clear ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

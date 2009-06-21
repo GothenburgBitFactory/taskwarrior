@@ -32,6 +32,7 @@
 #include "util.h"
 #include "text.h"
 #include "i18n.h"
+#include "main.h"
 
 extern Context context;
 
@@ -124,6 +125,9 @@ void Cmd::load ()
     commands.push_back (context.stringtable.get (CMD_INFO,      "info"));
     commands.push_back (context.stringtable.get (CMD_NEXT,      "next"));
     commands.push_back (context.stringtable.get (CMD_PROJECTS,  "projects"));
+#ifdef FEATURE_SHELL
+    commands.push_back (context.stringtable.get (CMD_SHELL,     "shell"));
+#endif
     commands.push_back (context.stringtable.get (CMD_START,     "start"));
     commands.push_back (context.stringtable.get (CMD_STATS,     "stats"));
     commands.push_back (context.stringtable.get (CMD_STOP,      "stop"));
@@ -207,6 +211,7 @@ bool Cmd::isReadOnlyCommand ()
       command == context.stringtable.get (CMD_INFO,      "info")      ||
       command == context.stringtable.get (CMD_NEXT,      "next")      ||
       command == context.stringtable.get (CMD_PROJECTS,  "projects")  ||
+      command == context.stringtable.get (CMD_SHELL,     "shell")     ||
       command == context.stringtable.get (CMD_STATS,     "stats")     ||
       command == context.stringtable.get (CMD_SUMMARY,   "summary")   ||
       command == context.stringtable.get (CMD_TAGS,      "tags")      ||

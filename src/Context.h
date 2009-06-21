@@ -60,6 +60,7 @@ public:
 
   void parse ();
   void parse (std::vector <std::string>&, Cmd&, Task&, Sequence&, Subst&, Filter&);
+  void clear ();
 
 private:
   void loadCorrectConfigFile ();

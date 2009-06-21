@@ -27,6 +27,7 @@
 
 #define FEATURE_TDB_OPT 1   // TDB Optimization reduces file I/O.
 #define FEATURE_NEW_ID  1   // Echoes back new id.
+#define FEATURE_SHELL   1   // Interactive shell.
 
 #include <string>
 #include <vector>
@@ -72,6 +73,9 @@ std::string handleUndo ();
 std::string handleColor ();
 std::string handleAnnotate ();
 std::string handleDuplicate ();
+#ifdef FEATURE_SHELL
+void handleShell ();
+#endif
 int deltaAppend (Task&);
 int deltaDescription (Task&);
 int deltaTags (Task&);

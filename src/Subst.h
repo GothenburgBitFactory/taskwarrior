@@ -42,6 +42,7 @@ public:
   bool valid (const std::string&) const;
   void parse (const std::string&);
   void apply (std::string&, std::vector <Att>&) const;
+  void clear ();
 
 public:
   std::string mFrom;

@@ -85,7 +85,6 @@ TDB::~TDB ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::clear ()
 {
-  mPending.clear ();
   mLocations.clear ();
   mLock = true;
 
@@ -93,6 +92,10 @@ void TDB::clear ()
     unlock ();
 
   mAllOpenAndLocked = false;
+  mId = 1;
+  mPending.clear ();
+  mNew.clear ();
+  mModified.clear ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

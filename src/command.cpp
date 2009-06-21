@@ -38,6 +38,7 @@
 #include "text.h"
 #include "util.h"
 #include "main.h"
+#include "../auto.h"
 
 #ifdef HAVE_LIBNCURSES
 #include <ncurses.h>
@@ -394,6 +395,9 @@ std::string handleVersion ()
     "defaultwidth displayweeknumber due echo.command locale locking "
     "monthsperline nag next project shadow.command shadow.file shadow.notify "
     "weekstart editor import.synonym.id import.synonym.uuid "
+#ifdef FEATURE_SHELL
+    "shell.prompt "
+#endif
     "import.synonym.status import.synonym.tags import.synonym.entry "
     "import.synonym.start import.synonym.due import.synonym.recur "
     "import.synonym.end import.synonym.project import.synonym.priority "
@@ -955,6 +959,79 @@ std::string handleDuplicate ()
 
   return out.str ();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+#ifdef FEATURE_SHELL
+void handleShell ()
+{
+  // Display some kind of welcome message.
+  std::cout << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+                 ? Text::colorize (Text::bold, Text::nocolor, PACKAGE)
+                 : PACKAGE)
+            << " shell"
+            << std::endl
+            << std::endl
+            << "Enter any task command (such as 'list'), or hit 'Enter'."
+            << std::endl
+            << "There is no need to include the 'task' command itself."
+            << std::endl
+            << std::endl;
+
+  // Preserve any special override arguments, and reapply them for each
+  // shell command.
+  std::vector <std::string> special;
+  foreach (arg, context.args)
+    if (arg->substr (0, 3) == "rc." ||
+        arg->substr (0, 3) == "rc:")
+      special.push_back (*arg);
+
+  std::string quit = "quit"; // TODO i18n
+  std::string command;
+  bool keepGoing = true;
+
+  do
+  {
+    std::cout << context.config.get ("shell.prompt", "task>") << " ";
+
+    command = "";
+    std::getline (std::cin, command);
+    command = lowerCase (trim (command));
+
+    if (command.length () > 0               &&
+        command.length () <= quit.length () &&
+        command == quit.substr (0, command.length ()))
+    {
+      keepGoing = false;
+    }
+    else
+    {
+      try
+      {
+        context.clear ();
+
+        std::vector <std::string> args;
+        split (args, command, ' ');
+        foreach (arg, special) context.args.push_back (*arg);
+        foreach (arg, args)    context.args.push_back (*arg);
+
+        context.initialize ();
+        context.run ();
+      }
+
+      catch (std::string& error)
+      {
+        std::cout << error << std::endl;
+      }
+
+      catch (...)
+      {
+        std::cerr << context.stringtable.get (100, "Unknown error.") << std::endl;
+      }
+    }
+  }
+  while (keepGoing);
+}
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string handleColor ()

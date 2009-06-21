@@ -99,6 +99,12 @@ std::string shortUsage ()
   table.addCell (row, 1, "task edit ID");
   table.addCell (row, 2, "Launches an editor to let you modify all aspects of a task directly, therefore it is to be used carefully.");
 
+#ifdef FEATURE_SHELL
+  row = table.addRow ();
+  table.addCell (row, 1, "task shell");
+  table.addCell (row, 2, "Launches an interactive shell.");
+#endif
+
   row = table.addRow ();
   table.addCell (row, 1, "task duplicate ID [tags] [attrs] [desc...]");
   table.addCell (row, 2, "Duplicates the specified task, and allows modifications.");

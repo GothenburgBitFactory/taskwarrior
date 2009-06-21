@@ -57,6 +57,7 @@
 226 undelete
 227 undo
 228 version
+229 shell
 
 # 3xx Attributes - must be sequential
 300 project
