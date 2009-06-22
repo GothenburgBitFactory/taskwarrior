@@ -31,6 +31,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <sys/file.h>
+#include <stdlib.h>
 #include "text.h"
 #include "util.h"
 #include "TDB.h"
