@@ -101,12 +101,10 @@ std::string formatSeconds (time_t delta)
     sprintf (formatted, "%d wk%s",   // TODO i18n
                         (int) (days / 7.0),
                         ((int) (days / 7.0) == 1 ? "" : "s"));   // TODO i18n
-  else if (days > 5.0)
+  else if (days > 1.0)
     sprintf (formatted, "%d day%s",   // TODO i18n
                         (int) days,
                         ((int) days == 1 ? "" : "s"));   // TODO i18n
-  else if (days > 1.0)
-    sprintf (formatted, "%.1f days", days);   // TODO i18n
   else if (days * 24 > 1.0)
     sprintf (formatted, "%d hr%s",   // TODO i18n
                         (int) (days * 24.0),
@@ -135,8 +133,7 @@ std::string formatSecondsCompact (time_t delta)
   if (days > 365)                sprintf (formatted, "%.1fy", (days / 365.2422));         // TODO i18n
   else if (days > 84)            sprintf (formatted, "%1dmo", (int) (days / 30.6));       // TODO i18n
   else if (days > 13)            sprintf (formatted, "%dwk", (int) (days / 7.0));         // TODO i18n
-  else if (days > 5.0)           sprintf (formatted, "%dd", (int) days);                  // TODO i18n
-  else if (days > 1.0)           sprintf (formatted, "%.1fd", days);                      // TODO i18n
+  else if (days > 1.0)           sprintf (formatted, "%dd", (int) days);                  // TODO i18n
   else if (days * 24 > 1.0)      sprintf (formatted, "%dh", (int) (days * 24.0));         // TODO i18n
   else if (days * 24 * 60 > 1)   sprintf (formatted, "%dm", (int) (days * 24 * 60));      // TODO i18n
   else if (days * 24 * 3600 > 1) sprintf (formatted, "%ds", (int) (days * 24 * 60 * 60)); // TODO i18n

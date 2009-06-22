@@ -1479,18 +1479,21 @@ std::string renderMonths (
           today.year ()  == years.at (mpl))
         table.setCellFg (row, thisCol, Text::cyan);
 
-      std::vector <Task>::iterator it;
-      for (it = all.begin (); it != all.end (); ++it)
+      foreach (task, all)
       {
-        Date due (::atoi (it->get ("due").c_str ()));
-
-        if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
-            due.day ()   == d             &&
-            due.month () == months.at (mpl) &&
-            due.year ()  == years.at (mpl))
+        if (task->getStatus () == Task::pending &&
+            task->has ("due"))
         {
-          table.setCellFg (row, thisCol, Text::black);
-          table.setCellBg (row, thisCol, due < today ? Text::on_red : Text::on_yellow);
+          Date due (::atoi (task->get ("due").c_str ()));
+
+          if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+              due.day ()   == d               &&
+              due.month () == months.at (mpl) &&
+              due.year ()  == years.at (mpl))
+          {
+            table.setCellFg (row, thisCol, Text::black);
+            table.setCellBg (row, thisCol, due < today ? Text::on_red : Text::on_yellow);
+          }
         }
       }
 
@@ -1532,12 +1535,15 @@ std::string handleReportCalendar ()
   Date newest;
   foreach (task, tasks)
   {
-    if (task->has ("due"))
+    if (task->getStatus () == Task::pending)
     {
-      Date d (::atoi (task->get ("due").c_str ()));
+      if (task->has ("due"))
+      {
+        Date d (::atoi (task->get ("due").c_str ()));
 
-      if (d < oldest) oldest = d;
-      if (d > newest) newest = d;
+        if (d < oldest) oldest = d;
+        if (d > newest) newest = d;
+      }
     }
   }
 
