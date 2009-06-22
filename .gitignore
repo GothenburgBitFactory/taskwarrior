@@ -12,4 +12,6 @@ Makefile.in
 configure
 config.log
 www.xls
+src/tests/all.log
+src/tests/*.data
 *~
