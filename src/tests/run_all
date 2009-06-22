@@ -9,9 +9,16 @@ done
 
 date >> all.log
 
+START=`head -1 all.log`
+STARTEPOCH=`date "+%s" -d "${START}"`
+END=`tail -1 all.log`
+ENDEPOCH=`date "+%s" -d "${END}"`
+RUNTIME=$(($ENDEPOCH-$STARTEPOCH))
+
 echo -n 'Pass: '
 grep ^ok all.log | wc -l
 
 echo -n 'Fail: '
 grep ^not all.log | wc -l
-
+echo -n 'Runtime: '
+echo $RUNTIME
