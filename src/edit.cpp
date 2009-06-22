@@ -150,6 +150,7 @@ static std::string formatTask (Task task)
          << "  Due:               " << formatDate (task, "due")                         << std::endl
          << "  Until:             " << formatDate (task, "until")                       << std::endl
          << "  Recur:             " << task.get ("recur")                               << std::endl
+         << "  Wait until:        " << task.get ("wait")                                << std::endl
          << "  Parent:            " << task.get ("parent")                              << std::endl
          << "  Foreground color:  " << task.get ("fg")                                  << std::endl
          << "  Background color:  " << task.get ("bg")                                  << std::endl
@@ -400,6 +401,36 @@ static void parseTask (Task& task, const std::string& after)
       task.remove ("until");
       task.remove ("mask");
       task.remove ("imask");
+    }
+  }
+
+  // wait
+  value = findDate (after, "Wait until:");
+  if (value != "")
+  {
+    Date edited (::atoi (value.c_str ()));
+
+    if (task.get ("wait") != "")
+    {
+      Date original (::atoi (task.get ("wait").c_str ()));
+      if (!original.sameDay (edited))
+      {
+        std::cout << "Wait date modified." << std::endl;
+        task.set ("wait", value);
+      }
+    }
+    else
+    {
+      std::cout << "Wait date modified." << std::endl;
+      task.set ("wait", value);
+    }
+  }
+  else
+  {
+    if (task.get ("wait") != "")
+    {
+      std::cout << "Wait date removed." << std::endl;
+      task.remove ("wait");
     }
   }
 

@@ -45,7 +45,7 @@ public:
   std::string composeCSV () const;
 
   // Status values.
-  enum status {pending, completed, deleted, recurring /* , retired, deferred */};
+  enum status {pending, completed, deleted, recurring, waiting};
 
   // Public data.
   int id;

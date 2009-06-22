@@ -76,7 +76,8 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "recurrence_indicator" &&
         *it != "tag_indicator"        &&
         *it != "description_only"     &&
-        *it != "description")
+        *it != "description"          &&
+        *it != "wait")
       bad.push_back (*it);
 
   if (bad.size ())

@@ -60,6 +60,8 @@ std::string handleAdd ()
     context.task.setStatus (Task::recurring);
     context.task.set ("mask", "");
   }
+  else if (context.task.has ("wait"))
+    context.task.setStatus (Task::waiting);
   else
     context.task.setStatus (Task::pending);
 
@@ -1216,6 +1218,15 @@ int deltaAttributes (Task& task)
         att->first != "description" &&
         att->first != "tags")
     {
+      // Modifying "wait" changes status.
+      if (att->first == "wait")
+      {
+        if (att->second.value () == "")
+          task.setStatus (Task::pending);
+        else
+          task.setStatus (Task::waiting);
+      }
+
       if (att->second.value () == "")
         task.remove (att->first);
       else

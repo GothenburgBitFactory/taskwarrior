@@ -347,6 +347,7 @@ void updateRecurrenceMask (
           mask[index] = (task.getStatus () == Task::pending)   ? '-'
                       : (task.getStatus () == Task::completed) ? '+'
                       : (task.getStatus () == Task::deleted)   ? 'X'
+                      : (task.getStatus () == Task::waiting)   ? 'W'
                       :                                          '?';
 
           it->set ("mask", mask);
@@ -361,6 +362,7 @@ void updateRecurrenceMask (
           mask += (task.getStatus () == Task::pending)   ? '-'
                 : (task.getStatus () == Task::completed) ? '+'
                 : (task.getStatus () == Task::deleted)   ? 'X'
+                : (task.getStatus () == Task::waiting)   ? 'W'
                 :                                          '?';
         }
 

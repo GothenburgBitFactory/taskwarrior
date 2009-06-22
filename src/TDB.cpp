@@ -168,7 +168,9 @@ int TDB::load (std::vector <Task>& tasks, Filter& filter)
     {
       ++numberStatusClauses;
 
-      if (att->mod () == "" && att->value () == "pending")
+      if (att->mod () == "" &&
+          (att->value () == "pending" ||
+           att->value () == "waiting"))
         ++numberSimpleStatusClauses;
     }
   }
@@ -391,6 +393,7 @@ void TDB::upgrade ()
 int TDB::gc ()
 {
   int count = 0;
+  Date now;
 
   // Set up a second TDB.
   Filter filter;
@@ -416,6 +419,15 @@ int TDB::gc ()
     {
       completed.push_back (*task);
       ++count;
+    }
+    else if (s == Task::waiting)
+    {
+      // Wake up tasks that are waiting.
+      Date wait_date (::atoi (task->get ("wait").c_str ()));
+      if (now > wait_date)
+        task->setStatus (Task::pending);
+
+      still_pending.push_back (*task);
     }
     else
       still_pending.push_back (*task);

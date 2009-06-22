@@ -93,6 +93,7 @@ Task::status Task::textToStatus (const std::string& input)
   else if (input == "completed") return Task::completed;  // TODO i18n
   else if (input == "deleted")   return Task::deleted;    // TODO i18n
   else if (input == "recurring") return Task::recurring;  // TODO i18n
+  else if (input == "waiting")   return Task::waiting;    // TODO i18n
 
   return Task::pending;
 }
@@ -104,6 +105,7 @@ std::string Task::statusToText (Task::status s)
   else if (s == Task::completed) return "completed";      // TODO i18n
   else if (s == Task::deleted)   return "deleted";        // TODO i18n
   else if (s == Task::recurring) return "recurring";      // TODO i18n
+  else if (s == Task::waiting)   return "waiting";        // TODO i18n
 
   return "pending";
 }
@@ -169,9 +171,9 @@ void Task::legacyParse (const std::string& line)
         set ("uuid", line.substr (0, 36));
 
         Task::status status = line[37] == '+' ? completed
-                          : line[37] == 'X' ? deleted
-                          : line[37] == 'r' ? recurring
-                          :                   pending;
+                            : line[37] == 'X' ? deleted
+                            : line[37] == 'r' ? recurring
+                            :                   pending;
 
         set ("status", statusToText (status)); // No i18n
 
@@ -226,9 +228,9 @@ void Task::legacyParse (const std::string& line)
         set ("uuid", line.substr (0, 36));
 
         Task::status status = line[37] == '+' ? completed
-                          : line[37] == 'X' ? deleted
-                          : line[37] == 'r' ? recurring
-                          :                   pending;
+                            : line[37] == 'X' ? deleted
+                            : line[37] == 'r' ? recurring
+                            :                   pending;
 
         set ("status", statusToText (status)); // No i18n
 

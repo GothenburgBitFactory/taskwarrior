@@ -62,6 +62,7 @@ static const char* modifiableNames[] =
   "due",
   "recur",
   "until",
+  "wait",
 };
 
 // Synonyms on the same line.
@@ -324,8 +325,9 @@ bool Att::validNameValue (
       Text::guessColor (value);
   }
 
-  else if (name == "due" ||
-           name == "until")
+  else if (name == "due"   ||
+           name == "until" ||
+           name == "wait")
   {
     // Validate and convert to epoch.
     if (value != "")
@@ -356,6 +358,7 @@ bool Att::validNameValue (
     candidates.push_back ("completed");
     candidates.push_back ("deleted");
     candidates.push_back ("recurring");
+    candidates.push_back ("waiting");
     autoComplete (value, candidates, matches);
 
     if (matches.size () == 1)
@@ -363,7 +366,7 @@ bool Att::validNameValue (
     else
       throw std::string ("\"") +
             value              +
-            "\" is not a valid status.  Use 'pending', 'completed', 'deleted' or 'recurring'.";
+            "\" is not a valid status.  Use 'pending', 'completed', 'deleted', 'recurring' or 'waiting'.";
   }
 
   else if (! validInternalName (name) &&
@@ -388,11 +391,12 @@ bool Att::validMod (const std::string& mod)
 // The type of an attribute is useful for modifier evaluation.
 std::string Att::type (const std::string& name) const
 {
-  if (name == "due" ||
+  if (name == "due"   ||
       name == "until" ||
       name == "start" ||
       name == "entry" ||
-      name == "end")
+      name == "end"   ||
+      name == "wait")
     return "date";
 
   else if (name == "recur")

@@ -218,6 +218,12 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "report.recurring.sort=due+,priority-,project+\n");                                        // TODO i18n
         fprintf (out, "report.recurring.filter=status:pending parent.any:\n");                                   // TODO i18n
 
+        fprintf (out, "report.waiting.description=Lists all waiting tasks matching the specified criteria\n");   // TODO i18n
+        fprintf (out, "report.waiting.columns=id,project,priority,wait,age,description\n");                      // TODO i18n
+        fprintf (out, "report.waiting.labels=ID,Project,Pri,Wait,Age,Description\n");                            // TODO i18n
+        fprintf (out, "report.waiting.sort=wait+,priority-,project+\n");                                         // TODO i18n
+        fprintf (out, "report.waiting.filter=status:waiting\n");                                                 // TODO i18n
+
         fclose (out);
 
         std::cout << "Done." << std::endl;                                                                       // TODO i18n
@@ -290,6 +296,12 @@ void Config::setDefaults ()
   set ("report.recurring.labels",      "ID,Project,Pri,Due,Recur,Active,Age,Description");                // TODO i18n
   set ("report.recurring.sort",        "due+,priority-,project+");                                        // TODO i18n
   set ("report.recurring.filter",      "status:pending parent.any:");                                     // TODO i18n
+
+  set ("report.waiting.description",   "Lists all waiting tasks matching the specified criteria");        // TODO i18n
+  set ("report.waiting.columns",       "id,project,priority,wait,age,description");                       // TODO i18n
+  set ("report.waiting.labels",        "ID,Project,Pri,Wait,Age,Description");                            // TODO i18n
+  set ("report.waiting.sort",          "wait+,priority-,project+");                                       // TODO i18n
+  set ("report.waiting.filter",        "status:waiting");                                                 // TODO i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////

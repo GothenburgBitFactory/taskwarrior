@@ -565,6 +565,7 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
           else if (fields[f] == "'recurring'") task.setStatus (Task::recurring);
           else if (fields[f] == "'deleted'")   task.setStatus (Task::deleted);
           else if (fields[f] == "'completed'") task.setStatus (Task::completed);
+          else if (fields[f] == "'waiting'")   task.setStatus (Task::waiting);
           break;
 
         case 2: // 'tags'
@@ -1063,6 +1064,7 @@ static std::string importCSV (const std::vector <std::string>& lines)
              if (value == "recurring") task.setStatus (Task::recurring);
         else if (value == "deleted")   task.setStatus (Task::deleted);
         else if (value == "completed") task.setStatus (Task::completed);
+        else if (value == "waiting")   task.setStatus (Task::waiting);
         else                           task.setStatus (Task::pending);
       }
 

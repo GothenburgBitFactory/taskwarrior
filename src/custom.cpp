@@ -368,6 +368,26 @@ std::string handleCustomReport (const std::string& report)
           table.addCell (row, columnCount, "+");
     }
 
+    else if (*col == "wait")
+    {
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Wait");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      int row = 0;
+      std::string wait;
+      foreach (task, tasks)
+      {
+        wait = task->get ("wait");
+        if (wait != "")
+        {
+          Date dt (::atoi (wait.c_str ()));
+          wait = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+          table.addCell (row++, columnCount, wait);
+        }
+      }
+    }
+
     // Common to all columns.
     // Add underline.
     if ((context.config.get (std::string ("color"), true) || context.config.get (std::string ("_forcecolor"), false)) &&
@@ -403,7 +423,8 @@ std::string handleCustomReport (const std::string& report)
                       Table::ascendingPriority :
                       Table::descendingPriority));
 
-    else if (column == "entry" || column == "start" || column == "due")
+    else if (column == "entry" || column == "start" || column == "due" ||
+             column == "wait")
       table.sortOn (columnIndex[column],
                     (direction == '+' ?
                       Table::ascendingDate :

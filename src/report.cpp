@@ -242,6 +242,7 @@ std::string longUsage ()
       << "  fg:                Foreground color"                              << "\n"
       << "  bg:                Background color"                              << "\n"
       << "  limit:             Desired number of rows in report"              << "\n"
+      << "  wait:              Date until task becomes pending"               << "\n"
       <<                                                                         "\n"
       << "Attribute modifiers improve filters.  Supported modifiers are:"     << "\n"
       << "  before     (synonyms under, below)"                               << "\n"
@@ -416,6 +417,15 @@ std::string handleInfo ()
       }
     }
 
+    // wait
+    if (task->has ("wait"))
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Waiting until");
+      Date dt (::atoi (task->get ("wait").c_str ()));
+      table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
+    }
+
     // start
     if (task->has ("start"))
     {
@@ -539,7 +549,8 @@ std::string handleReportSummary ()
     std::string project = task->get ("project");
     ++counter[project];
 
-    if (task->getStatus () == Task::pending)
+    if (task->getStatus () == Task::pending ||
+        task->getStatus () == Task::waiting)
     {
       ++countPending[project];
 
@@ -1646,6 +1657,7 @@ std::string handleReportStats ()
   int deletedT      = 0;
   int pendingT      = 0;
   int completedT    = 0;
+  int waitingT      = 0;
   int taggedT       = 0;
   int annotationsT  = 0;
   int recurringT    = 0;
@@ -1662,6 +1674,7 @@ std::string handleReportStats ()
     if (it->getStatus () == Task::pending)   ++pendingT;
     if (it->getStatus () == Task::completed) ++completedT;
     if (it->getStatus () == Task::recurring) ++recurringT;
+    if (it->getStatus () == Task::waiting)   ++waitingT;
 
     time_t entry = ::atoi (it->get ("entry").c_str ());
     if (entry < earliest) earliest = entry;
@@ -1720,6 +1733,10 @@ std::string handleReportStats ()
   int row = table.addRow ();
   table.addCell (row, 0, "Pending");
   table.addCell (row, 1, pendingT);
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Waiting");
+  table.addCell (row, 1, waitingT);
 
   row = table.addRow ();
   table.addCell (row, 0, "Recurring");
