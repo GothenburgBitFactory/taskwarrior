@@ -50,7 +50,7 @@ if (open my $fh, '>', 'import.txt')
 }
 
 my $output = qx{../task rc:import.rc import import.txt};
-is ($output, "Imported 3 tasks successfully, with 0 errors.\n", 'no errors');
+like ($output, qr/Imported 3 tasks successfully, with 0 errors./, 'no errors');
 
 $output = qx{../task rc:import.rc list};
 like ($output, qr/1.+project.+This is a test/, 't1');

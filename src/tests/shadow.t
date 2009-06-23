@@ -35,7 +35,7 @@ if (open my $fh, '>', 'shadow.rc')
 {
   print $fh "data.location=.\n",
             "shadow.file=./shadow.txt\n",
-            "shadow.command=stats\n",
+            "shadow.command=rc:shadow.rc stats\n",
             "shadow.notify=on\n";
   close $fh;
   ok (-r 'shadow.rc', 'Created shadow.rc');
