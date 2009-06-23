@@ -968,14 +968,16 @@ void handleShell ()
 {
   // Display some kind of welcome message.
   std::cout << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
-                 ? Text::colorize (Text::bold, Text::nocolor, PACKAGE)
-                 : PACKAGE)
+                 ? Text::colorize (Text::bold, Text::nocolor, PACKAGE_STRING)
+                 : PACKAGE_STRING)
             << " shell"
             << std::endl
             << std::endl
             << "Enter any task command (such as 'list'), or hit 'Enter'."
             << std::endl
             << "There is no need to include the 'task' command itself."
+            << std::endl
+            << "Enter 'quit' to end the session."
             << std::endl
             << std::endl;
 

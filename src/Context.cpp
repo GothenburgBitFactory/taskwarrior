@@ -147,7 +147,7 @@ int Context::run ()
   }
 
   // Dump all debug messages.
-  if (config.get ("debug", true))
+  if (config.get (std::string ("debug"), false))
     foreach (d, debugMessages)
       std::cout << colorizeDebug (*d) << std::endl;
 

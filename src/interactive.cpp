@@ -33,7 +33,7 @@
 //#include "text.h"
 //#include "util.h"
 //#include "main.h"
-//#include "i18n.h"
+#include "i18n.h"
 #include "../auto.h"
 
 #ifdef HAVE_LIBNCURSES
@@ -118,9 +118,9 @@ int Context::interactive ()
 
 #else
 
-  throw stringtable (INTERACTIVE_NO_NCURSES,
-                     "Interactive task is only available when built with ncurses "
-                     "support.");
+  throw stringtable.get (INTERACTIVE_NO_NCURSES,
+                         "Interactive task is only available when built with ncurses "
+                         "support.");
 
 #endif
 }
