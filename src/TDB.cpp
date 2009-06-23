@@ -35,6 +35,7 @@
 #include "text.h"
 #include "util.h"
 #include "TDB.h"
+#include "Timer.h"
 #include "main.h"
 
 extern Context context;
@@ -198,6 +199,8 @@ int TDB::load (std::vector <Task>& tasks, Filter& filter)
 //       multiple files.
 int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
 {
+  Timer t ("TDB::loadPending");
+
   std::string file;
   int line_number;
 
@@ -262,6 +265,8 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
 //       multiple files.
 int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 {
+  Timer t ("TDB::loadCompleted");
+
   std::string file;
   int line_number;
 
@@ -331,6 +336,8 @@ void TDB::update (const Task& task)
 // only modified by TDB::gc.
 int TDB::commit ()
 {
+  Timer t ("TDB::commit");
+
   int quantity = mNew.size () + mModified.size ();
 
   // This is an optimization.  If there are only new tasks, and none were
@@ -393,6 +400,8 @@ void TDB::upgrade ()
 // moves them to the completed.data file.  Returns a count of tasks moved.
 int TDB::gc ()
 {
+  Timer t ("TDB::gc");
+
   int count = 0;
   Date now;
 

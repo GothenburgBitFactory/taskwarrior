@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Context.h"
+#include "Timer.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"
@@ -80,6 +81,8 @@ void Context::initialize (int argc, char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 void Context::initialize ()
 {
+  Timer t ("Context::initialize");
+
   // Set up randomness.
 #ifdef HAVE_SRANDOM
   srandom (time (NULL));
@@ -129,6 +132,8 @@ void Context::initialize ()
 ////////////////////////////////////////////////////////////////////////////////
 int Context::run ()
 {
+  Timer t ("Context::run");
+
   std::string output;
   try
   {
@@ -176,6 +181,8 @@ int Context::run ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string Context::dispatch ()
 {
+  Timer t ("Context::dispatch");
+
   int gcMod = 0; // Change occurred by way of gc.
   std::string out;
 
@@ -360,6 +367,8 @@ void Context::parse (
   Subst& parseSubst,
   Filter& parseFilter)
 {
+  Timer t ("Context::parse");
+
   Att attribute;
   tagAdditions.clear ();
   tagRemovals.clear ();

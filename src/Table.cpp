@@ -46,9 +46,10 @@
 #include <iostream>
 #include <string.h>
 #include <assert.h>
-#include <Table.h>
-#include <Date.h>
-#include <Duration.h>
+#include "Table.h"
+#include "Date.h"
+#include "Duration.h"
+#include "Timer.h"
 #include "text.h"
 #include "util.h"
 
@@ -1040,6 +1041,8 @@ void Table::clean (std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 const std::string Table::render (int maximum /* = 0 */)
 {
+  Timer t ("Table::render");
+
   calculateColumnWidths ();
 
   // Print column headers in column order.
