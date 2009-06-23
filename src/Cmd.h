@@ -27,10 +27,8 @@
 #ifndef INCLUDED_CMD
 #define INCLUDED_CMD
 
-//#include <map>
 #include <vector>
 #include <string>
-#include "Cmd.h"
 
 class Cmd
 {
@@ -59,7 +57,6 @@ private:
 private:
   std::vector <std::string> commands;
   std::vector <std::string> customReports;
-//  std::map <std::string, std::string> aliases;
 };
 
 #endif
