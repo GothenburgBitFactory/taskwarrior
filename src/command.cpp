@@ -336,37 +336,41 @@ std::string handleVersion ()
     "and lively discussion.  New releases containing fixes and enhancements "
     "are made frequently.");
 
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
-  table.addColumn ("Config variable");
-  table.addColumn ("Value");
-
-  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::flexible);
-  table.setColumnJustification (0, Table::left);
-  table.setColumnJustification (1, Table::left);
-  table.sortOn (0, Table::ascendingCharacter);
-
   std::vector <std::string> all;
   context.config.all (all);
-  foreach (i, all)
+
+  // Create a table for output.
+  Table table;
+  if (context.config.get ("longversion", true))
   {
-    std::string value = context.config.get (*i);
-    if (value != "")
+    table.setTableWidth (width);
+    table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+    table.addColumn ("Config variable");
+    table.addColumn ("Value");
+
+    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     {
-      int row = table.addRow ();
-      table.addCell (row, 0, *i);
-      table.addCell (row, 1, value);
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
+    }
+    else
+      table.setTableDashedUnderline ();
+
+    table.setColumnWidth (0, Table::minimum);
+    table.setColumnWidth (1, Table::flexible);
+    table.setColumnJustification (0, Table::left);
+    table.setColumnJustification (1, Table::left);
+    table.sortOn (0, Table::ascendingCharacter);
+
+    foreach (i, all)
+    {
+      std::string value = context.config.get (*i);
+      if (value != "")
+      {
+        int row = table.addRow ();
+        table.addCell (row, 0, *i);
+        table.addCell (row, 1, value);
+      }
     }
   }
 
@@ -382,7 +386,7 @@ std::string handleVersion ()
       << std::endl
       << disclaimer.render ()
       << std::endl
-      << table.render ()
+      << (context.config.get ("longversion", true) ? table.render () : "")
       << link.render ()
       << std::endl;
 
@@ -397,6 +401,7 @@ std::string handleVersion ()
     "defaultwidth displayweeknumber due echo.command locale locking "
     "monthsperline nag next project shadow.command shadow.file shadow.notify "
     "weekstart editor import.synonym.id import.synonym.uuid "
+    "longversion "
 #ifdef FEATURE_SHELL
     "shell.prompt "
 #endif
