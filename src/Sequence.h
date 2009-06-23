@@ -39,9 +39,6 @@ public:
   Sequence (const std::string&);         // Parse
   ~Sequence ();                          // Destructor
 
-  Sequence (const Sequence&);
-  Sequence& operator= (const Sequence&);
-
   bool valid (const std::string&) const;
   void parse (const std::string&);
   void combine (const Sequence&);

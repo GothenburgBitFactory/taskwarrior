@@ -8,7 +8,7 @@ OBJECTS = ../TDB.o ../Task.o ../valid.o ../text.o ../Date.o ../Table.o         \
           ../Record.o ../StringTable.o ../Subst.o ../Nibbler.o ../Location.o   \
           ../Filter.o ../Context.o ../Keymap.o ../command.o ../interactive.o   \
           ../report.o ../Grid.o ../color.o ../rules.o ../recur.o ../custom.o   \
-          ../import.o ../edit.o
+          ../import.o ../edit.o ../Timer.o
 
 all: $(PROJECT)
 
