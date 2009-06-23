@@ -10,14 +10,24 @@ done
 date >> all.log
 
 START=`head -1 all.log`
-STARTEPOCH=`date "+%s" -d "${START}"`
 END=`tail -1 all.log`
-ENDEPOCH=`date "+%s" -d "${END}"`
-RUNTIME=$(($ENDEPOCH-$STARTEPOCH))
+OS=`uname`
+
+case $OS in
+  Darwin)
+    STARTEPOCH=`date -j -f "%a %b %d %T %Z %Y" "${START}" "+%s"`
+    ENDEPOCH=`date -j -f "%a %b %d %T %Z %Y" "${END}" "+%s"`
+    ;;
+  Linux)
+    STARTEPOCH=`date "+%s" -d "${START}"`
+    ENDEPOCH=`date "+%s" -d "${END}"`
+    ;;
+esac
+
+RUNTIME=$(($ENDEPOCH - $STARTEPOCH))
 
 echo -n 'Pass: '
 grep ^ok all.log | wc -l
-
 echo -n 'Fail: '
 grep ^not all.log | wc -l
 echo -n 'Runtime: '
