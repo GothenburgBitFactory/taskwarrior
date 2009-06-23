@@ -37,6 +37,9 @@ public:
   Config ();
   Config (const std::string&);
 
+  Config (const Config&);
+  Config& operator= (const Config&);
+
   bool load (const std::string&);
   void createDefault (const std::string&);
   void setDefaults ();

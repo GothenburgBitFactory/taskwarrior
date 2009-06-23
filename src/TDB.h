@@ -43,6 +43,9 @@ public:
   TDB ();  // Default constructor
   ~TDB (); // Destructor
 
+  TDB (const TDB&);
+  TDB& operator= (const TDB&);
+
   void  clear ();
   void  location (const std::string&);
 

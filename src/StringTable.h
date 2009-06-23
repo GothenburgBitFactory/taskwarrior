@@ -36,6 +36,9 @@ public:
   StringTable ();                                       // Default constructor
   ~StringTable ();                                      // Destructor
 
+  StringTable (const StringTable&);
+  StringTable& operator= (const StringTable&);
+
   void load (const std::string&);
   std::string get (int, const std::string&);
 };

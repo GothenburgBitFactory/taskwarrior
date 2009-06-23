@@ -43,6 +43,9 @@ public:
   Context ();                          // Default constructor
   ~Context ();                         // Destructor
 
+  Context (const Context&);
+  Context& operator= (const Context&);
+
   void initialize (int, char**);       // all startup
   void initialize ();                  // for reinitializing
   int run ();                          // task classic

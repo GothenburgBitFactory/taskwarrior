@@ -45,6 +45,9 @@ public:
     Cell (const double);
     Cell (const std::string&);
 
+    Cell (const Cell&);
+    Cell& operator= (const Cell&);
+
     operator bool () const;
     operator char () const;
     operator int () const;
@@ -71,6 +74,9 @@ public:
 public:
   Grid ();
   ~Grid ();
+
+  Grid (const Grid&);
+  Grid& operator= (const Grid&);
 
   void add (const unsigned int, const unsigned int, const bool);
   void add (const unsigned int, const unsigned int, const char);

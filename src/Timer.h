@@ -35,6 +35,8 @@ class Timer
 public:
   Timer (const std::string&);
   ~Timer ();
+  Timer (const Timer&);
+  Timer& operator= (const Timer&);
 
 private:
   std::string mDescription;

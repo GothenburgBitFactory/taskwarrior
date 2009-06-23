@@ -39,6 +39,9 @@ public:
   Cmd (const std::string&);    // Default constructor
   ~Cmd ();                     // Destructor
 
+  Cmd (const Cmd&);
+  Cmd& operator= (const Cmd&);
+
   bool valid            (const std::string&);
   bool validCustom      (const std::string&);
   void parse            (const std::string&);
