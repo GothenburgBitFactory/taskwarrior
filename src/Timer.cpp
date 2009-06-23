@@ -52,6 +52,7 @@ Timer::~Timer ()
     << mDescription
     << " "
     << std::setprecision (6)
+    << std::fixed
     << ((end.tv_sec - mStart.tv_sec) + ((end.tv_usec - mStart.tv_usec )
        / 1000000.0));
 
