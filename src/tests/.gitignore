@@ -15,4 +15,5 @@ subst.t
 filt.t
 cmd.t
 config.t
+util.t
 *.log

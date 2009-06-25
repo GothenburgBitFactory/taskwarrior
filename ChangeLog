@@ -24,6 +24,32 @@
    (thanks to Federico Hernandez).
  + Removed obsolete DEVELOPERS file.  The online support forums at
    http://taskwarrior.org will provide better information.
+ + Fixed bug that kept some deleted tasks showing up on the calendar report
+   (thanks to Federico Hernandez).
+ + Now asks the user to confirm large changes if configuration variable
+   'confirmation' is set to 'yes'.  A large change is one that completely
+   replaces a task description, or operates on a large number of tasks,
+   which defaults to 4 but is configurable via the 'bulk' configuration
+   variable  (thanks to John Florian).
+ + Now echoes back the new task ID on 'add' (thanks to Bruce Dillahunty).
+ + The new "shell" command provides an interactive shell for task.  All
+   commands are supported (thanks to Bruce Dillahunty, Federico Hernandez,
+   and John Florian).
+ + New "recurring" report to list all recurring tasks.
+ + New, more flexible, more consistent, grep-able file format.
+
+Add:
+  att mods
+  new custom reports
+  new custom report fields
+  aliases
+  limit:
+  wait:
+  report.waiting
+  report.all
+  debug mode
+  new colorization support
+  many, many new unit tests
 
 ------ old releases ------------------------------
 
@@ -358,7 +384,7 @@
   + Rules-based colorization.
 
 0.8.1 (1/28/2008) - 0.8.16 (3/13/2008)
-  + autoconf conversion (many builds).
+  + autoconf conversion
 
 0.8.0 Polish (1/25/2008)
   + Code cleanup, reorganization.

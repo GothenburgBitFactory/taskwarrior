@@ -31,6 +31,7 @@
 #include <vector>
 #include <map>
 #include <sys/types.h>
+#include "Task.h"
 #include "../auto.h"
 
 #ifndef min
@@ -58,7 +59,6 @@ std::string formatSecondsCompact (time_t);
 std::string formatBytes (size_t);
 int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&);
 const std::string uuid ();
-int convertDuration (const std::string&);
 std::string expandPath (const std::string&);
 
 #ifdef SOLARIS
@@ -73,6 +73,7 @@ std::string expandPath (const std::string&);
 bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
 bool slurp (const std::string&, std::string&, bool trimLines = false);
 void spit (const std::string&, const std::string&);
+std::string taskDiff (const Task&, const Task&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

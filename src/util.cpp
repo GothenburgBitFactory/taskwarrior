@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <string>
 #include <sys/types.h>
@@ -183,10 +184,10 @@ std::string formatBytes (size_t bytes)
 {
   char formatted[24];
 
-       if (bytes > 1000000000) sprintf (formatted, "%.1f GiB", (bytes / 1000000000.0));
-  else if (bytes >    1000000) sprintf (formatted, "%.1f MiB", (bytes /    1000000.0));
-  else if (bytes >       1000) sprintf (formatted, "%.1f KiB", (bytes /       1000.0));
-  else                         sprintf (formatted, "%d B", (int)bytes                );
+       if (bytes >= 1000000000) sprintf (formatted, "%.1f GiB", (bytes / 1000000000.0));
+  else if (bytes >=    1000000) sprintf (formatted, "%.1f MiB", (bytes /    1000000.0));
+  else if (bytes >=       1000) sprintf (formatted, "%.1f KiB", (bytes /       1000.0));
+  else                          sprintf (formatted, "%d B", (int)bytes                );
 
   return commify (formatted);
 }
@@ -423,6 +424,57 @@ void spit (const std::string& file, const std::string& contents)
   }
   else
     throw std::string ("Could not write file '") + file + "'"; // TODO i18n
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string taskDiff (const Task& before, const Task& after)
+{
+  // Attributes are all there is, so figure the different attribute names
+  // between before and after.
+  std::vector <std::string> beforeAtts;
+  foreach (att, before)
+    beforeAtts.push_back (att->first);
+
+  std::vector <std::string> afterAtts;
+  foreach (att, after)
+    afterAtts.push_back (att->first);
+
+  std::vector <std::string> beforeOnly;
+  std::vector <std::string> afterOnly;
+  listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
+
+  // Now start generating a description of the differences.
+  std::stringstream out;
+  foreach (name, beforeOnly)
+    out << *name
+        << " was deleted."
+        << std::endl;
+
+  foreach (name, afterOnly)
+    out << *name
+        << " was set to '"
+        << after.get (*name)
+        << "'."
+        << std::endl;
+
+  foreach (name, beforeAtts)
+    if (*name              != "uuid" &&
+        after.get (*name)  != ""     &&
+        before.get (*name) != after.get (*name))
+      out << *name
+          << " was changed from '"
+          << before.get (*name)
+          << "' to '"
+          << after.get (*name)
+          << "'."
+          << std::endl;
+
+  // Can't just say nothing.
+  if (out.str ().length () == 0)
+    out << "No changes were made."
+        << std::endl;
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
