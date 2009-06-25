@@ -144,12 +144,12 @@ int Context::run ()
 
   catch (const std::string& error)
   {
-    message (error);
+    footnote (error);
   }
 
   catch (...)
   {
-    message (stringtable.get (100, "Unknown error."));
+    footnote (stringtable.get (100, "Unknown error."));
   }
 
   // Dump all debug messages.
@@ -164,17 +164,9 @@ int Context::run ()
   // Dump the report output.
   std::cout << output;
 
-  // Dump all messages.
-  foreach (m, messages)
-    std::cout << colorizeMessage (*m) << std::endl;
-
   // Dump all footnotes.
-  if (footnotes.size ())
-  {
-    std::cout << std::endl;
-    foreach (f, footnotes)
-      std::cout << colorizeFootnote (*f) << std::endl;
-  }
+  foreach (f, footnotes)
+    std::cout << colorizeFootnote (*f) << std::endl;
 
   return 0;
 }
@@ -360,8 +352,8 @@ void Context::loadCorrectConfigFile ()
           n.getUntilEOS (value))
       {
         config.set (name, value);
-        message (std::string ("Configuration override ") +  // TODO i18n
-                 arg->substr (3, std::string::npos));
+        footnote (std::string ("Configuration override ") +  // TODO i18n
+                  arg->substr (3, std::string::npos));
       }
     }
     else
@@ -683,12 +675,6 @@ void Context::header (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Context::message (const std::string& input)
-{
-  messages.push_back (input);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void Context::footnote (const std::string& input)
 {
   footnotes.push_back (input);
@@ -704,7 +690,6 @@ void Context::debug (const std::string& input)
 void Context::clearMessages ()
 {
   headers.clear ();
-  messages.clear ();
   footnotes.clear ();
   debugMessages.clear ();
 }

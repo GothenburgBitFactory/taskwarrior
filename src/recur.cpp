@@ -457,7 +457,7 @@ bool nag (Task& task)
     if (pri == ' ' && !overdue && !high && !medium && !low) return false;
 
     // All the excuses are made, all that remains is to nag the user.
-    context.message (nagMessage);
+    context.footnote (nagMessage);
     return true;
   }
 
