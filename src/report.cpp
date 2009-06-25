@@ -1436,36 +1436,93 @@ std::string handleReportCalendar ()
 
   // Get all the tasks.
   std::vector <Task> tasks;
+  Filter filter;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  context.tdb.loadPending (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Find the oldest pending due date.
-  Date oldest;
-  Date newest;
-  foreach (task, tasks)
-  {
-    if (task->getStatus () == Task::pending)
-    {
-      if (task->has ("due"))
-      {
-        Date d (::atoi (task->get ("due").c_str ()));
+  Date today;
+  bool getpendingdate = false;
+  int monthsToDisplay;
+  int mFrom;
+  int yFrom;
+  int mTo;
+  int yTo;
 
-        if (d < oldest) oldest = d;
-        if (d > newest) newest = d;
-      }
+  // Determine what to do
+  int numberOfArgs = context.args.size();
+
+  if (numberOfArgs == 1 ) {
+    // task cal
+    monthsToDisplay = monthsPerLine;
+    mFrom = today.month();
+    yFrom = today.year();
+  }
+  else if (numberOfArgs == 2 ) {
+    if (context.args[1] == "y") {
+      // task cal y
+      monthsToDisplay = 12;
+      mFrom = today.month();
+      yFrom = today.year();
+    }
+    else if (context.args[1] == "due") {
+      // task cal due
+      monthsToDisplay = monthsPerLine;
+      getpendingdate = true;
+    }
+    else {
+      // task cal 2010
+      monthsToDisplay = 12;
+      mFrom = 1;
+      yFrom = ::atoi( context.args[1].data());
     }
   }
+  else if (numberOfArgs == 3 ) {
+    if (context.args[2] == "y") {
+      // task cal due y
+      monthsToDisplay = 12;
+      getpendingdate = true;
+    }
+    else {
+      // task cal 8 2010
+      monthsToDisplay = monthsPerLine;
+      mFrom = ::atoi( context.args[1].data());
+      yFrom = ::atoi( context.args[2].data());
+    }
+  }
+  else if (numberOfArgs == 4 ) {
+    // task cal 8 2010 y
+    monthsToDisplay = 12;
+    mFrom = ::atoi( context.args[1].data());
+    yFrom = ::atoi( context.args[2].data());
+  }
 
-  // Iterate from oldest due month, year to newest month, year.
-  Date today;
-  int mFrom = oldest.month ();
-  int yFrom = oldest.year ();
+  if (getpendingdate == true) {
+    // Find the oldest pending due date.
+    Date oldest (1,19,2038);
+    foreach (task, tasks)
+    {
+      if (task->getStatus () == Task::pending)
+      {
+        if (task->has ("due"))
+        {
+          Date d (::atoi (task->get ("due").c_str ()));
+          if (d < oldest) oldest = d;
+        }
+      }
+    }
+    mFrom = oldest.month();
+    yFrom = oldest.year();
+  }
 
-  int mTo = newest.month ();
-  int yTo = newest.year ();
+  mTo = mFrom + monthsToDisplay - 1;
+  yTo = yFrom;
+  if (mTo > 12) {
+    mTo -=12;
+    yTo++;
+  }
 
   std::stringstream out;
   out << std::endl;
