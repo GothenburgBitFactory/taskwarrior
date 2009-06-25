@@ -1436,9 +1436,10 @@ std::string handleReportCalendar ()
 
   // Get all the tasks.
   std::vector <Task> tasks;
+  Filter filter;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  context.tdb.loadPending (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
@@ -1455,7 +1456,6 @@ std::string handleReportCalendar ()
 
   if (numberOfArgs == 1 ) {
     // task cal
-    printf("Case 1\n");
     monthsToDisplay = monthsPerLine;
     mFrom = today.month();
     yFrom = today.year();
@@ -1463,20 +1463,17 @@ std::string handleReportCalendar ()
   else if (numberOfArgs == 2 ) {
     if (context.args[1] == "y") {
       // task cal y
-      printf("Case 2\n");
       monthsToDisplay = 12;
       mFrom = today.month();
       yFrom = today.year();
     }
     else if (context.args[1] == "due") {
       // task cal due
-      printf("Case 3\n");
       monthsToDisplay = monthsPerLine;
       getpendingdate = true;
     }
     else {
       // task cal 2010
-      printf("Case 5\n");
       monthsToDisplay = 12;
       mFrom = 1;
       yFrom = ::atoi( context.args[1].data());
@@ -1485,13 +1482,11 @@ std::string handleReportCalendar ()
   else if (numberOfArgs == 3 ) {
     if (context.args[2] == "y") {
       // task cal due y
-      printf("Case 4\n");
       monthsToDisplay = 12;
       getpendingdate = true;
     }
     else {
       // task cal 8 2010
-      printf("Case 6\n");
       monthsToDisplay = monthsPerLine;
       mFrom = ::atoi( context.args[1].data());
       yFrom = ::atoi( context.args[2].data());
@@ -1499,28 +1494,25 @@ std::string handleReportCalendar ()
   }
   else if (numberOfArgs == 4 ) {
     // task cal 8 2010 y
-      printf("Case 7\n");
-      monthsToDisplay = 12;
-      mFrom = ::atoi( context.args[1].data());
-      yFrom = ::atoi( context.args[2].data());
+    monthsToDisplay = 12;
+    mFrom = ::atoi( context.args[1].data());
+    yFrom = ::atoi( context.args[2].data());
   }
 
-  // Find the oldest pending due date.
-  Date oldest;
-  printf("Number of tasks %i\n",tasks.size());
-  foreach (task, tasks)
-  {
-    printf("ID %i\n",task->id);
-    if (task->getStatus () == Task::pending)
+  if (getpendingdate == true) {
+    // Find the oldest pending due date.
+    Date oldest (1,19,2038);
+    foreach (task, tasks)
     {
-      if (task->has ("due"))
+      if (task->getStatus () == Task::pending)
       {
-        Date d (::atoi (task->get ("due").c_str ()));
-        if (d < oldest) oldest = d;
+        if (task->has ("due"))
+        {
+          Date d (::atoi (task->get ("due").c_str ()));
+          if (d < oldest) oldest = d;
+        }
       }
     }
-  }
-  if (getpendingdate == true) {
     mFrom = oldest.month();
     yFrom = oldest.year();
   }
@@ -1531,12 +1523,6 @@ std::string handleReportCalendar ()
     mTo -=12;
     yTo++;
   }
-
-  printf("monthsToDisplay: %i\n",monthsToDisplay);
-  printf("mFrom: %i\n",mFrom);
-  printf("yFrom: %i\n",yFrom);
-  printf("mTo: %i\n",mTo);
-  printf("yTo: %i\n",yTo);
 
   std::stringstream out;
   out << std::endl;
