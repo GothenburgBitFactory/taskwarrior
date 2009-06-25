@@ -45,7 +45,7 @@ void validSortColumns (const std::vector <std::string>&, const std::vector <std:
 bool validTag (const std::string&);
 
 // task.cpp
-void gatherNextTasks (std::vector <Task>&, std::vector <int>&);
+void gatherNextTasks (std::vector <Task>&);
 void onChangeCallback ();
 
 // recur.cpp

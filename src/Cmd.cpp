@@ -147,11 +147,18 @@ void Cmd::load ()
       if (i->substr (0, 7) == "report.")
       {
         std::string report = i->substr (7, std::string::npos);
+
+        // Oh, what a massive hack.  Shame.  Shame.
+        // The "next" report is in limbo between being a built-in report and
+        // a custom report.  The projection is defined as a custom report, but
+        // the restriction is different.
+        if (report.substr (0, 4) == "next")
+          continue;
+
         std::string::size_type columns = report.find (".columns");
         if (columns != std::string::npos)
         {
           report = report.substr (0, columns);
-
 
           // Make sure a custom report does not clash with a built-in
           // command.
