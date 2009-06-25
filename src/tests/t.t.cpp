@@ -32,7 +32,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest test (34);
+  UnitTest test (36);
 
   test.is ((int)Task::textToStatus ("pending"),   (int)Task::pending,   "textToStatus pending");
   test.is ((int)Task::textToStatus ("completed"), (int)Task::completed, "textToStatus completed");
@@ -145,6 +145,13 @@ TODO Task::*Tag*
 TODO Task::*Annotation*
 
 */
+
+  // Task::operator==
+  Task left ("[one:1 two:2 three:3]");
+  Task right (left);
+  test.ok (left == right, "left == right -> true");
+  left.set ("one", "1.0");
+  test.notok (left == right, "left == right -> false");
 
   return 0;
 }

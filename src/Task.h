@@ -38,6 +38,7 @@ public:
   Task ();                       // Default constructor
   Task (const Task&);            // Copy constructor
   Task& operator= (const Task&); // Assignment operator
+  bool operator== (const Task&); // Comparison operator
   Task (const std::string&);     // Parse
   ~Task ();                      // Destructor
 

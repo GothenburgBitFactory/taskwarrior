@@ -60,6 +60,21 @@ Task& Task::operator= (const Task& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// The uuid and id attributes must be exempt for comparison.
+bool Task::operator== (const Task& other)
+{
+  if (size () != other.size ())
+    return false;
+
+  foreach (att, *this)
+    if (att->first != "uuid")
+      if (att->second.value () != other.get (att->first))
+        return false;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Record::parse, and in the event of an error
 // try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
 Task::Task (const std::string& input)
