@@ -101,6 +101,9 @@ std::string getDueDate (Task&);
 
 // custom.cpp
 std::string handleCustomReport (const std::string&);
+std::string runCustomReport (const std::string&, const std::string&,
+                             const std::string&, const std::string&,
+                             const std::string&, std::vector <Task>&);
 
 // rules.cpp
 void initializeColorRules ();
