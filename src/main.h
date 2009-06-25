@@ -45,7 +45,7 @@ void validSortColumns (const std::vector <std::string>&, const std::vector <std:
 bool validTag (const std::string&);
 
 // task.cpp
-void gatherNextTasks (std::vector <Task>&, std::vector <int>&);
+void gatherNextTasks (std::vector <Task>&);
 void onChangeCallback ();
 
 // recur.cpp
@@ -101,6 +101,9 @@ std::string getDueDate (Task&);
 
 // custom.cpp
 std::string handleCustomReport (const std::string&);
+std::string runCustomReport (const std::string&, const std::string&,
+                             const std::string&, const std::string&,
+                             const std::string&, std::vector <Task>&);
 
 // rules.cpp
 void initializeColorRules ();

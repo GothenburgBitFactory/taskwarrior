@@ -75,6 +75,40 @@ bool confirm (const std::string& question)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// 0 = no
+// 1 = yes
+// 2 = all
+int confirm3 (const std::string& question)
+{
+  std::vector <std::string> options;
+  options.push_back ("yes");
+  options.push_back ("no");
+  options.push_back ("all");
+
+  std::string answer;
+  std::vector <std::string> matches;
+
+  do
+  {
+    std::cout << question
+              << " ("
+              << options[0] << "/"
+              << options[1] << "/"
+              << options[2]
+              << ") ";
+
+    std::getline (std::cin, answer);
+    answer = trim (answer);
+    autoComplete (answer, options, matches);
+  }
+  while (matches.size () != 1);
+
+       if (matches[0] == "yes") return 1;
+  else if (matches[0] == "all") return 2;
+  else                          return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void delay (float f)
 {
   struct timeval t;

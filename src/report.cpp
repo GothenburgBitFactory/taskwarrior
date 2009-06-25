@@ -679,138 +679,50 @@ std::string handleReportSummary ()
 //
 std::string handleReportNext ()
 {
+  // Load report configuration.
+  std::string columnList = context.config.get ("report.next.columns");
+  std::string labelList  = context.config.get ("report.next.labels");
+  std::string sortList   = context.config.get ("report.next.sort");
+  std::string filterList = context.config.get ("report.next.filter");
+
+  std::vector <std::string> filterArgs;
+  split (filterArgs, filterList, ' ');
+  {
+    Cmd cmd ("next");
+    Task task;
+    Sequence sequence;
+    Subst subst;
+    Filter filter;
+    context.parse (filterArgs, cmd, task, sequence, subst, filter);
+
+    context.sequence.combine (sequence);
+
+    // Allow limit to be overridden by the command line.
+    if (!context.task.has ("limit") && task.has ("limit"))
+      context.task.set ("limit", task.get ("limit"));
+
+    foreach (att, filter)
+      context.filter.push_back (*att);
+  }
+
   // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
   // Restrict to matching subset.
-  std::vector <int> matching;
-  gatherNextTasks (tasks, matching);
+  gatherNextTasks (tasks);
 
-  initializeColorRules ();
-
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (context.getWidth ());
-  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
-  table.addColumn ("ID");
-  table.addColumn ("Project");
-  table.addColumn ("Pri");
-  table.addColumn ("Due");
-  table.addColumn ("Active");
-  table.addColumn ("Age");
-  table.addColumn ("Description");
-
-  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
-      context.config.get (std::string ("fontunderline"), "true"))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-    table.setColumnUnderline (4);
-    table.setColumnUnderline (5);
-    table.setColumnUnderline (6);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::minimum);
-  table.setColumnWidth (3, Table::minimum);
-  table.setColumnWidth (4, Table::minimum);
-  table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth (6, Table::flexible);
-
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (3, Table::right);
-  table.setColumnJustification (5, Table::right);
-
-  table.sortOn (3, Table::ascendingDate);
-  table.sortOn (2, Table::descendingPriority);
-  table.sortOn (1, Table::ascendingCharacter);
-
-  // Iterate over each task, and apply selection criteria.
-  foreach (i, matching)
-  {
-    Date now;
-
-    // Now format the matching task.
-    bool imminent = false;
-    bool overdue = false;
-    std::string due = tasks[*i].get ("due");
-    if (due.length ())
-    {
-      switch (getDueState (due))
-      {
-      case 2: overdue = true;  break;
-      case 1: imminent = true; break;
-      case 0:
-      default:                 break;
-      }
-
-      Date dt (::atoi (due.c_str ()));
-      due = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-    }
-
-    std::string active;
-    if (tasks[*i].has ("start"))
-      active = "*";
-
-    std::string age;
-    std::string created = tasks[*i].get ("entry");
-    if (created.length ())
-    {
-      Date dt (::atoi (created.c_str ()));
-      age = formatSeconds ((time_t) (now - dt));
-    }
-
-    // All criteria match, so add tasks[*i] to the output table.
-    int row = table.addRow ();
-    table.addCell (row, 0, tasks[*i].id);
-    table.addCell (row, 1, tasks[*i].get ("project"));
-    table.addCell (row, 2, tasks[*i].get ("priority"));
-    table.addCell (row, 3, due);
-    table.addCell (row, 4, active);
-    table.addCell (row, 5, age);
-    table.addCell (row, 6, getFullDescription (tasks[*i]));
-
-    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
-    {
-      Text::color fg = Text::colorCode (tasks[*i].get ("fg"));
-      Text::color bg = Text::colorCode (tasks[*i].get ("bg"));
-      autoColorize (tasks[*i], fg, bg);
-      table.setRowFg (row, fg);
-      table.setRowBg (row, bg);
-
-      if (fg == Text::nocolor)
-      {
-        if (overdue)
-          table.setCellFg (row, 3, Text::colorCode (context.config.get ("color.overdue", "red")));
-        else if (imminent)
-          table.setCellFg (row, 3, Text::colorCode (context.config.get ("color.due", "yellow")));
-      }
-    }
-  }
-
-  std::stringstream out;
-  if (table.rowCount ())
-    out << optionalBlankLine ()
-        << table.render ()
-        << optionalBlankLine ()
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No matches."
-        << std::endl;
-
-  return out.str ();
+  return runCustomReport (
+    "next",
+    columnList,
+    labelList,
+    sortList,
+    filterList,
+    tasks);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1919,34 +1831,33 @@ std::string handleReportStats ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void gatherNextTasks (
-  std::vector <Task>& tasks,
-  std::vector <int>& all)
+void gatherNextTasks (std::vector <Task>& tasks)
 {
   // For counting tasks by project.
   std::map <std::string, int> countByProject;
   std::map <int, bool> matching;
-
+  std::vector <Task> filtered;
   Date now;
 
   // How many items per project?  Default 3.
   int limit = context.config.get ("next", 3);
 
   // due:< 1wk, pri:*
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  foreach (task, tasks)
   {
-    if (tasks[i].getStatus () == Task::pending)
+    if (task->getStatus () == Task::pending)
     {
-      if (tasks[i].has ("due"))
+      if (task->has ("due"))
       {
-        Date d (::atoi (tasks[i].get ("due").c_str ()));
+        Date d (::atoi (task->get ("due").c_str ()));
         if (d < now + (7 * 24 * 60 * 60)) // if due:< 1wk
         {
-          std::string project = tasks[i].get ("project");
-          if (countByProject[project] < limit && matching.find (i) == matching.end ())
+          std::string project = task->get ("project");
+          if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
           {
             ++countByProject[project];
-            matching[i] = true;
+            matching[task->id] = true;
+            filtered.push_back (*task);
           }
         }
       }
@@ -1954,20 +1865,21 @@ void gatherNextTasks (
   }
 
   // due:*, pri:H
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  foreach (task, tasks)
   {
-    if (tasks[i].getStatus () == Task::pending)
+    if (task->getStatus () == Task::pending)
     {
-      if (tasks[i].has ("due"))
+      if (task->has ("due"))
       {
-        std::string priority = tasks[i].get ("priority");
+        std::string priority = task->get ("priority");
         if (priority == "H")
         {
-          std::string project = tasks[i].get ("project");
-          if (countByProject[project] < limit && matching.find (i) == matching.end ())
+          std::string project = task->get ("project");
+          if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
           {
             ++countByProject[project];
-            matching[i] = true;
+            matching[task->id] = true;
+            filtered.push_back (*task);
           }
         }
       }
@@ -1975,38 +1887,40 @@ void gatherNextTasks (
   }
 
   // pri:H
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  foreach (task, tasks)
   {
-    if (tasks[i].getStatus () == Task::pending)
+    if (task->getStatus () == Task::pending)
     {
-      std::string priority = tasks[i].get ("priority");
+      std::string priority = task->get ("priority");
       if (priority == "H")
       {
-        std::string project = tasks[i].get ("project");
-        if (countByProject[project] < limit && matching.find (i) == matching.end ())
+        std::string project = task->get ("project");
+        if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
         {
           ++countByProject[project];
-          matching[i] = true;
+          matching[task->id] = true;
+          filtered.push_back (*task);
         }
       }
     }
   }
 
   // due:*, pri:M
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  foreach (task, tasks)
   {
-    if (tasks[i].getStatus () == Task::pending)
+    if (task->getStatus () == Task::pending)
     {
-      if (tasks[i].has ("due"))
+      if (task->has ("due"))
       {
-        std::string priority = tasks[i].get ("priority");
+        std::string priority = task->get ("priority");
         if (priority == "M")
         {
-          std::string project = tasks[i].get ("project");
-          if (countByProject[project] < limit && matching.find (i) == matching.end ())
+          std::string project = task->get ("project");
+          if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
           {
             ++countByProject[project];
-            matching[i] = true;
+            matching[task->id] = true;
+            filtered.push_back (*task);
           }
         }
       }
@@ -2014,38 +1928,40 @@ void gatherNextTasks (
   }
 
   // pri:M
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  foreach (task, tasks)
   {
-    if (tasks[i].getStatus () == Task::pending)
+    if (task->getStatus () == Task::pending)
     {
-      std::string priority = tasks[i].get ("priority");
+      std::string priority = task->get ("priority");
       if (priority == "M")
       {
-        std::string project = tasks[i].get ("project");
-        if (countByProject[project] < limit && matching.find (i) == matching.end ())
+        std::string project = task->get ("project");
+        if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
         {
           ++countByProject[project];
-          matching[i] = true;
+          matching[task->id] = true;
+          filtered.push_back (*task);
         }
       }
     }
   }
 
   // due:*, pri:L
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  foreach (task, tasks)
   {
-    if (tasks[i].getStatus () == Task::pending)
+    if (task->getStatus () == Task::pending)
     {
-      if (tasks[i].has ("due"))
+      if (task->has ("due"))
       {
-        std::string priority = tasks[i].get ("priority");
+        std::string priority = task->get ("priority");
         if (priority == "L")
         {
-          std::string project = tasks[i].get ("project");
-          if (countByProject[project] < limit && matching.find (i) == matching.end ())
+          std::string project = task->get ("project");
+          if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
           {
             ++countByProject[project];
-            matching[i] = true;
+            matching[task->id] = true;
+            filtered.push_back (*task);
           }
         }
       }
@@ -2053,47 +1969,47 @@ void gatherNextTasks (
   }
 
   // pri:L
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  foreach (task, tasks)
   {
-    if (tasks[i].getStatus () == Task::pending)
+    if (task->getStatus () == Task::pending)
     {
-      std::string priority = tasks[i].get ("priority");
+      std::string priority = task->get ("priority");
       if (priority == "L")
       {
-        std::string project = tasks[i].get ("project");
-        if (countByProject[project] < limit && matching.find (i) == matching.end ())
+        std::string project = task->get ("project");
+        if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
         {
           ++countByProject[project];
-          matching[i] = true;
+          matching[task->id] = true;
+          filtered.push_back (*task);
         }
       }
     }
   }
 
   // due:, pri:
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  foreach (task, tasks)
   {
-    if (tasks[i].getStatus () == Task::pending)
+    if (task->getStatus () == Task::pending)
     {
-      if (tasks[i].has ("due"))
+      if (task->has ("due"))
       {
-        std::string priority = tasks[i].get ("priority");
+        std::string priority = task->get ("priority");
         if (priority == "")
         {
-          std::string project = tasks[i].get ("project");
-          if (countByProject[project] < limit && matching.find (i) == matching.end ())
+          std::string project = task->get ("project");
+          if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
           {
             ++countByProject[project];
-            matching[i] = true;
+            matching[task->id] = true;
+            filtered.push_back (*task);
           }
         }
       }
     }
   }
 
-  // Convert map to vector.
-  foreach (i, matching)
-    all.push_back (i->first);
+  tasks = filtered;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

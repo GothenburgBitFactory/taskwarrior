@@ -224,6 +224,17 @@ void Config::createDefault (const std::string& home)
         fprintf (out, "report.waiting.sort=wait+,priority-,project+\n");                                         // TODO i18n
         fprintf (out, "report.waiting.filter=status:waiting\n");                                                 // TODO i18n
 
+        fprintf (out, "report.all.description=Lists all tasks matching the specified criteria\n");               // TODO i18n
+        fprintf (out, "report.all.columns=id,project,priority,due,active,age,description\n");                    // TODO i18n
+        fprintf (out, "report.all.labels=ID,Project,Pri,Due,Active,Age,Description\n");                          // TODO i18n
+        fprintf (out, "report.all.sort=due+,priority-,project+\n");                                              // TODO i18n
+
+        fprintf (out, "report.next.description=Lists all tasks matching the specified criteria\n");              // TODO i18n
+        fprintf (out, "report.next.columns=id,project,priority,due,active,age,description\n");                   // TODO i18n
+        fprintf (out, "report.next.labels=ID,Project,Pri,Due,Active,Age,Description\n");                         // TODO i18n
+        fprintf (out, "report.next.sort=due+,priority-,project+\n");                                             // TODO i18n
+        fprintf (out, "report.next.filter=status:pending\n");                                                    // TODO i18n
+
         fclose (out);
 
         std::cout << "Done." << std::endl;                                                                       // TODO i18n
@@ -302,6 +313,17 @@ void Config::setDefaults ()
   set ("report.waiting.labels",        "ID,Project,Pri,Wait,Age,Description");                            // TODO i18n
   set ("report.waiting.sort",          "wait+,priority-,project+");                                       // TODO i18n
   set ("report.waiting.filter",        "status:waiting");                                                 // TODO i18n
+
+  set ("report.all.description",       "Lists all tasks matching the specified criteria");                // TODO i18n
+  set ("report.all.columns",           "id,project,priority,due,active,age,description");                 // TODO i18n
+  set ("report.all.labels",            "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
+  set ("report.all.sort",              "due+,priority-,project+");                                        // TODO i18n
+
+  set ("report.next.description",      "Lists all tasks matching the specified criteria");                // TODO i18n
+  set ("report.next.columns",          "id,project,priority,due,active,age,description");                 // TODO i18n
+  set ("report.next.labels",           "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
+  set ("report.next.sort",             "due+,priority-,project+");                                        // TODO i18n
+  set ("report.next.filter",           "status:pending");                                                 // TODO i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////

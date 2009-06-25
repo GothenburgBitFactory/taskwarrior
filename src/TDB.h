@@ -59,7 +59,6 @@ public:
   void  add (const Task&);    // Single task add to pending
   void  update (const Task&); // Single task update to pending
   int   commit ();            // Write out all tasks
-  void  upgrade ();           // Convert both files to FF4
   int   gc ();                // Clean up pending
   int   nextId ();
 

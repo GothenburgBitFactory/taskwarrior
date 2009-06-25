@@ -93,6 +93,7 @@ void Context::initialize ()
   // Load the configuration file from the home directory.  If the file cannot
   // be found, offer to create a sample one.
   loadCorrectConfigFile ();
+  loadAliases ();
 
   // When redirecting output to a file, do not use color, curses.
   if (!isatty (fileno (stdout)))
@@ -290,6 +291,24 @@ void Context::shadow ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Only allows aliases 10 deep.
+std::string Context::canonicalize (const std::string& input) const
+{
+  std::string canonical = input;
+
+  // Follow the chain.
+  int i = 10;  // Safety valve.
+  std::map <std::string, std::string>::const_iterator found;
+  while ((found = aliases.find (canonical)) != aliases.end () && i-- > 0)
+    canonical = found->second;
+
+ if (i < 1)
+   return input;
+
+ return canonical;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Context::loadCorrectConfigFile ()
 {
   bool needNewConfig = true;
@@ -350,6 +369,26 @@ void Context::loadCorrectConfigFile ()
   }
 
   args = filtered;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::loadAliases ()
+{
+  aliases.clear ();
+
+  std::vector <std::string> vars;
+  config.all (vars);
+  foreach (var, vars)
+  {
+    if (var->substr (0, 6) == "alias.")
+    {
+      std::string alias = var->substr (6, std::string::npos);
+      std::string canonical = config.get (*var);
+
+      aliases[alias] = canonical;
+      debug (std::string ("Alias ") + alias + " -> " + canonical);
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

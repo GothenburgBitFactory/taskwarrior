@@ -571,7 +571,7 @@ bool Att::match (const Att& other) const
     }
     else if (which == "text")
     {
-      if (::strcmp (mValue.c_str (), other.mValue.c_str ()) <= 0)
+      if (mValue <= other.mValue)
         return false;
     }
   }
@@ -601,7 +601,7 @@ bool Att::match (const Att& other) const
     }
     else if (which == "text")
     {
-      if (::strcmp (mValue.c_str (), other.mValue.c_str ()) >= 0)
+      if (mValue >= other.mValue)
         return false;
     }
   }

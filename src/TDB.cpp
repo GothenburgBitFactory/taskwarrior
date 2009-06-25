@@ -383,19 +383,6 @@ int TDB::commit ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO -> FF4
-void TDB::upgrade ()
-{
-  // TODO Read all pending
-  // TODO Write out all pending
-
-  // TODO Read all completed
-  // TODO Write out all completed
-
-  throw std::string ("unimplemented TDB::upgrade");
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Scans the pending tasks for any that are completed or deleted, and if so,
 // moves them to the completed.data file.  Returns a count of tasks moved.
 int TDB::gc ()
@@ -435,7 +422,10 @@ int TDB::gc ()
       // Wake up tasks that are waiting.
       Date wait_date (::atoi (task->get ("wait").c_str ()));
       if (now > wait_date)
+      {
         task->setStatus (Task::pending);
+        task->remove ("wait");
+      }
 
       still_pending.push_back (*task);
     }

@@ -147,11 +147,18 @@ void Cmd::load ()
       if (i->substr (0, 7) == "report.")
       {
         std::string report = i->substr (7, std::string::npos);
+
+        // Oh, what a massive hack.  Shame.  Shame.
+        // The "next" report is in limbo between being a built-in report and
+        // a custom report.  The projection is defined as a custom report, but
+        // the restriction is different.
+        if (report.substr (0, 4) == "next")
+          continue;
+
         std::string::size_type columns = report.find (".columns");
         if (columns != std::string::npos)
         {
           report = report.substr (0, columns);
-
 
           // Make sure a custom report does not clash with a built-in
           // command.
@@ -165,30 +172,6 @@ void Cmd::load ()
         }
       }
     }
-
-/*
-    // Now load the aliases.
-    foreach (i, all)
-    {
-      if (i->substr (0, 6) == "alias.")
-      {
-        std::string name = i->substr (6, std::string::npos);
-        std::string alias = context.config.get (name);
-
-        // Make sure a custom report does not clash with a built-in
-        // command.
-        if (std::find (commands.begin (), commands.end (), report) != commands.end ())
-          throw std::string ("Alias '") + name +
-                "' conflicts with built-in task command.";
-
-        if (std::find (customReports.begin (), customReports.end (), report) != customReports.end ())
-          throw std::string ("Alias '") + name +
-                "' conflicts with custom report.";
-
-        aliases[name] = alias;
-      }
-    }
-*/
   }
 }
 

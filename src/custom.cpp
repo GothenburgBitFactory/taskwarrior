@@ -55,29 +55,10 @@ std::string handleCustomReport (const std::string& report)
 {
   // Load report configuration.
   std::string columnList = context.config.get ("report." + report + ".columns");
-  std::vector <std::string> columns;
-  split (columns, columnList, ',');
-  validReportColumns (columns);
-
-  std::string labelList = context.config.get ("report." + report + ".labels");
-  std::vector <std::string> labels;
-  split (labels, labelList, ',');
-
-  if (columns.size () != labels.size () && labels.size () != 0)
-    throw std::string ("There are a different number of columns than labels ") +
-          "for report '" + report + "'.";
-
-  std::map <std::string, std::string> columnLabels;
-  if (labels.size ())
-    for (unsigned int i = 0; i < columns.size (); ++i)
-      columnLabels[columns[i]] = labels[i];
-
-  std::string sortList = context.config.get ("report." + report + ".sort");
-  std::vector <std::string> sortOrder;
-  split (sortOrder, sortList, ',');
-  validSortColumns (columns, sortOrder);
-
+  std::string labelList  = context.config.get ("report." + report + ".labels");
+  std::string sortList   = context.config.get ("report." + report + ".sort");
   std::string filterList = context.config.get ("report." + report + ".filter");
+
   std::vector <std::string> filterArgs;
   split (filterArgs, filterList, ' ');
   {
@@ -105,6 +86,68 @@ std::string handleCustomReport (const std::string& report)
   context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
   context.tdb.unlock ();
+
+  return runCustomReport (
+    report,
+    columnList,
+    labelList,
+    sortList,
+    filterList,
+    tasks);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// This report will eventually become the one report that many others morph into
+// via the .taskrc file.
+
+std::string runCustomReport (
+  const std::string& report,
+  const std::string& columnList,
+  const std::string& labelList,
+  const std::string& sortList,
+  const std::string& filterList,
+  std::vector <Task>& tasks)
+{
+  // Load report configuration.
+  std::vector <std::string> columns;
+  split (columns, columnList, ',');
+  validReportColumns (columns);
+
+  std::vector <std::string> labels;
+  split (labels, labelList, ',');
+
+  if (columns.size () != labels.size () && labels.size () != 0)
+    throw std::string ("There are a different number of columns than labels ") +
+          "for report '" + report + "'.";
+
+  std::map <std::string, std::string> columnLabels;
+  if (labels.size ())
+    for (unsigned int i = 0; i < columns.size (); ++i)
+      columnLabels[columns[i]] = labels[i];
+
+  std::vector <std::string> sortOrder;
+  split (sortOrder, sortList, ',');
+  validSortColumns (columns, sortOrder);
+
+  std::vector <std::string> filterArgs;
+  split (filterArgs, filterList, ' ');
+  {
+    Cmd cmd (report);
+    Task task;
+    Sequence sequence;
+    Subst subst;
+    Filter filter;
+    context.parse (filterArgs, cmd, task, sequence, subst, filter);
+
+    context.sequence.combine (sequence);
+
+    // Allow limit to be overridden by the command line.
+    if (!context.task.has ("limit") && task.has ("limit"))
+      context.task.set ("limit", task.get ("limit"));
+
+    foreach (att, filter)
+      context.filter.push_back (*att);
+  }
 
   // Filter sequence.
   if (context.sequence.size ())
