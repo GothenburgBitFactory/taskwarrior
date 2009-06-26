@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'basic.rc')
@@ -40,8 +40,7 @@ if (open my $fh, '>', 'basic.rc')
 
 # Test the usage command.
 my $output = qx{../task rc:basic.rc};
-like ($output, qr/Usage: task/, 'usage');
-like ($output, qr/http:\/\/taskwarrior\.org/, 'usage - url');
+like ($output, qr/You must specify a command, or a task ID to modify/, 'missing command and ID');
 
 # Test the version command.
 $output = qx{../task rc:basic.rc version};
