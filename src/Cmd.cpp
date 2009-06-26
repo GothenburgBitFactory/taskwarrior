@@ -97,8 +97,6 @@ void Cmd::parse (const std::string& input)
 
     std::string combined;
     join (combined, ", ", matches);
-    error += combined;
-
     throw error + combined;
   }
 }

@@ -63,6 +63,8 @@
 
 #define TAGS_NO_COMMA           115
 
+#define CMD_MISSING             116
+
 // 2xx Commands
 #define CMD_ACTIVE              200
 #define CMD_ADD                 201

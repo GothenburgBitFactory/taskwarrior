@@ -185,7 +185,6 @@ std::string guessColor (const std::string& name)
 
     std::string combined;
     join (combined, ", ", matches);
-    error += combined;
 
     throw error + combined;
   }
