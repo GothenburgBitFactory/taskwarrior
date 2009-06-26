@@ -236,7 +236,6 @@ bool Att::validNameValue (
   autoComplete (name, candidates, matches);
 
   if (matches.size () == 0)
-//    throw std::string ("Unrecognized attribute '") + name + "'";
     return false;
 
   else if (matches.size () != 1)
@@ -559,7 +558,7 @@ bool Att::match (const Att& other) const
     }
     else if (which == "date")
     {
-      Date literal (mValue);
+      Date literal ((time_t)::atoi (mValue.c_str ()));
       Date variable ((time_t)::atoi (other.mValue.c_str ()));
       if (! (variable < literal))
         return false;
@@ -589,7 +588,7 @@ bool Att::match (const Att& other) const
     }
     else if (which == "date")
     {
-      Date literal (mValue);
+      Date literal ((time_t)::atoi (mValue.c_str ()));
       Date variable ((time_t)::atoi (other.mValue.c_str ()));
       if (! (variable > literal))
         return false;

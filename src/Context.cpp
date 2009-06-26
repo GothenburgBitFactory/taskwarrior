@@ -552,12 +552,7 @@ void Context::parse (
 
   // At this point, either a sequence or a command should have been found.
   if (parseSequence.size () == 0 && parseCmd.command == "")
-  {
     parseCmd.parse (descCandidate);
-    throw stringtable.get (
-      CMD_MISSING,
-      "You must specify a command, or a task ID to modify");
-  }
 
   // Read-only command (reports, status, info ...) use filters.  Write commands
   // (add, done ...) do not.
@@ -580,6 +575,10 @@ void Context::parse (
       initialize ();
       parse (args, cmd, task, sequence, subst, filter);
     }
+    else
+      throw stringtable.get (
+        CMD_MISSING,
+        "You must specify a command, or a task ID to modify");
   }
 }
 
