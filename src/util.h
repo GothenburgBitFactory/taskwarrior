@@ -73,7 +73,8 @@ std::string expandPath (const std::string&);
 bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
 bool slurp (const std::string&, std::string&, bool trimLines = false);
 void spit (const std::string&, const std::string&);
-std::string taskDiff (const Task&, const Task&);
+bool taskDiff (const Task&, const Task&);
+std::string taskDifferences (const Task&, const Task&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

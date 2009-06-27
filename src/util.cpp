@@ -427,7 +427,37 @@ void spit (const std::string& file, const std::string& contents)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string taskDiff (const Task& before, const Task& after)
+bool taskDiff (const Task& before, const Task& after)
+{
+  // Attributes are all there is, so figure the different attribute names
+  // between before and after.
+  std::vector <std::string> beforeAtts;
+  foreach (att, before)
+    beforeAtts.push_back (att->first);
+
+  std::vector <std::string> afterAtts;
+  foreach (att, after)
+    afterAtts.push_back (att->first);
+
+  std::vector <std::string> beforeOnly;
+  std::vector <std::string> afterOnly;
+  listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
+
+  if (beforeOnly.size () ||
+      afterOnly.size ())
+    return true;
+
+  foreach (name, beforeAtts)
+    if (*name              != "uuid" &&
+        after.get (*name)  != ""     &&
+        before.get (*name) != after.get (*name))
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string taskDifferences (const Task& before, const Task& after)
 {
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
@@ -447,15 +477,13 @@ std::string taskDiff (const Task& before, const Task& after)
   std::stringstream out;
   foreach (name, beforeOnly)
     out << *name
-        << " was deleted."
-        << std::endl;
+        << " was deleted.  ";
 
   foreach (name, afterOnly)
     out << *name
         << " was set to '"
         << after.get (*name)
-        << "'."
-        << std::endl;
+        << "'.  ";
 
   foreach (name, beforeAtts)
     if (*name              != "uuid" &&
@@ -466,15 +494,15 @@ std::string taskDiff (const Task& before, const Task& after)
           << before.get (*name)
           << "' to '"
           << after.get (*name)
-          << "'."
-          << std::endl;
+          << "'.  ";
 
   // Can't just say nothing.
   if (out.str ().length () == 0)
-    out << "No changes were made."
-        << std::endl;
+    out << "No changes were made.  ";
 
-  return out.str ();
+  std::stringstream decorated;
+  decorated << "Task " << before.id << " was modified.  " << out.str ();
+  return decorated.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

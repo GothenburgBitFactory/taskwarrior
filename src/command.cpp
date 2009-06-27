@@ -35,6 +35,7 @@
 #include <pwd.h>
 #include <time.h>
 
+#include "Permission.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"
@@ -794,6 +795,10 @@ std::string handleModify ()
   std::vector <Task> all = tasks;
   context.filter.applySequence (tasks, context.sequence);
 
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+    permission.bigSequence ();
+
   foreach (task, tasks)
   {
     // Perform some logical consistency checks.
@@ -815,19 +820,30 @@ std::string handleModify ()
            task->get ("parent") == other->get ("parent")) || // Sibling
           other->get ("uuid")   == task->get ("parent"))     // Parent
       {
+        Task before (*other);
+
         // A non-zero value forces a file write.
         int changes = 0;
 
         // Apply other deltas.
-        changes += deltaDescription (*other);
+        if (deltaDescription (*other))
+        {
+          permission.bigChange ();
+          ++changes;
+        }
+
         changes += deltaTags (*other);
         changes += deltaAttributes (*other);
         changes += deltaSubstitutions (*other);
 
-        if (changes)
-          context.tdb.update (*other);
+        if (taskDiff (before, *other))
+        {
+          std::string question = taskDifferences (before, *other) + "Are you sure?";
+          if (changes && permission.confirmed (question))
+            context.tdb.update (*other);
 
-        ++count;
+          ++count;
+        }
       }
     }
   }
