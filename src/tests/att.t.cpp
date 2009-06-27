@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (67);
+  UnitTest t (95);
 
   Att a;
   t.notok (a.valid ("name"),            "Att::valid name         -> fail");
@@ -246,6 +246,40 @@ int main (int argc, char** argv)
   good = true;
   try {a7.parse (n);} catch (...) {good = false;}
   t.notok (good, "Att::parse (name.bogus:\"value\")");
+
+  // Att::type
+  t.is (a.type ("entry"),       "date",     "Att::type entry -> date");
+  t.is (a.type ("due"),         "date",     "Att::type due -> date");
+  t.is (a.type ("until"),       "date",     "Att::type until -> date");
+  t.is (a.type ("start"),       "date",     "Att::type start -> date");
+  t.is (a.type ("end"),         "date",     "Att::type end -> date");
+  t.is (a.type ("wait"),        "date",     "Att::type wait -> date");
+  t.is (a.type ("recur"),       "duration", "Att::type recur -> duration");
+  t.is (a.type ("limit"),       "number",   "Att::type limit -> number");
+  t.is (a.type ("description"), "text",     "Att::type description -> text");
+  t.is (a.type ("foo"),         "text",     "Att::type foo -> text");
+
+  // Att::validInternalName
+  t.ok (Att::validInternalName ("entry"),       "internal entry");
+  t.ok (Att::validInternalName ("start"),       "internal start");
+  t.ok (Att::validInternalName ("end"),         "internal end");
+  t.ok (Att::validInternalName ("parent"),      "internal parent");
+  t.ok (Att::validInternalName ("uuid"),        "internal uuid");
+  t.ok (Att::validInternalName ("mask"),        "internal mask");
+  t.ok (Att::validInternalName ("imask"),       "internal imask");
+  t.ok (Att::validInternalName ("limit"),       "internal limit");
+  t.ok (Att::validInternalName ("status"),      "internal status");
+  t.ok (Att::validInternalName ("description"), "internal description");
+
+  // Att::validModifiableName
+  t.ok (Att::validModifiableName ("project"),   "modifiable project");
+  t.ok (Att::validModifiableName ("priority"),  "modifiable priority");
+  t.ok (Att::validModifiableName ("fg"),        "modifiable fg");
+  t.ok (Att::validModifiableName ("bg"),        "modifiable bg");
+  t.ok (Att::validModifiableName ("due"),       "modifiable due");
+  t.ok (Att::validModifiableName ("recur"),     "modifiable recur");
+  t.ok (Att::validModifiableName ("until"),     "modifiable until");
+  t.ok (Att::validModifiableName ("wait"),      "modifiable wait");
 
   return 0;
 }
