@@ -71,7 +71,11 @@ void Context::initialize (int argc, char** argv)
   // Capture the args.
   for (int i = 0; i < argc; ++i)
     if (i == 0)
+    {
       program = argv[i];
+      if (program.find ("cal") != std::string::npos)
+        args.push_back ("calendar");
+    }
     else
       args.push_back (argv[i]);
 
