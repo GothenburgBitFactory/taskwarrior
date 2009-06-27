@@ -86,6 +86,12 @@ Is a number, defaulting to 2, which is the number of tasks for each project that
 command.
 
 .TP
+.B bulk=2
+Is a number, defaulting to 2.  When more than this number of tasks are modified in a single command, confirmation will be required, unless the
+.B confirmation
+variable is "no".
+
+.TP
 .B dateformat=m/d/Y
 This is a string of characters that define how task formats dates. The default value is: m/d/Y.
 The string should contain the characters
