@@ -1124,7 +1124,7 @@ std::string handleReportTimesheet ()
 
   // Roll back to midnight.
   start = Date (start.month (), start.day (), start.year ());
-  Date end = start + (7 * 86400) - 1;
+  Date end = start + (7 * 86400);
 
   // Determine how many reports to run.
   int quantity = 1;
@@ -1134,11 +1134,13 @@ std::string handleReportTimesheet ()
   std::stringstream out;
   for (int week = 0; week < quantity; ++week)
   {
+    Date endString (end);
+    endString -= 86400;
     out << std::endl
         << Text::colorize (Text::bold, Text::nocolor)
         << start.toString (context.config.get ("dateformat", "m/d/Y"))
         << " - "
-        << end.toString (context.config.get ("dateformat", "m/d/Y"))
+        << endString.toString (context.config.get ("dateformat", "m/d/Y"))
         << Text::colorize ()
         << std::endl;
 
