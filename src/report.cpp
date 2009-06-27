@@ -1501,7 +1501,7 @@ std::string handleReportCalendar ()
 
   if (getpendingdate == true) {
     // Find the oldest pending due date.
-    Date oldest (1,19,2038);
+    Date oldest (12,31,2037);
     foreach (task, tasks)
     {
       if (task->getStatus () == Task::pending)
