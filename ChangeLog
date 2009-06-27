@@ -37,6 +37,8 @@
    and John Florian).
  + New "recurring" report to list all recurring tasks.
  + New, more flexible, more consistent, grep-able file format.
+ + If task is renamed to "cal", or there is a symlink to task called "cal",
+   then task can act as a replacement for the Unix "cal" command.
 
 Add:
   att mods

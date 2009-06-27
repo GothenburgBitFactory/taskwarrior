@@ -560,7 +560,7 @@ bool Att::match (const Att& other) const
     {
       Date literal ((time_t)::atoi (mValue.c_str ()));
       Date variable ((time_t)::atoi (other.mValue.c_str ()));
-      if (! (variable < literal))
+      if (other.mValue == "" || ! (variable < literal))
         return false;
     }
     else if (which == "number")

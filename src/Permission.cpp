@@ -26,14 +26,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "Permission.h"
+#include "Context.h"
 #include "util.h"
 #include "i18n.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Permission::Permission ()
 : needConfirmation (false)
 , allConfirmed (false)
 {
+  // Turning confirmations off is the same as entering "all".
+  if (context.config.get ("confirmation", true) == false)
+    allConfirmed = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
