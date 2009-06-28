@@ -1172,18 +1172,31 @@ std::string handleAnnotate ()
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
 
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+    permission.bigSequence ();
+
   foreach (task, tasks)
   {
+    Task before (*task);
     task->addAnnotation (context.task.get ("description"));
-    context.tdb.update (*task);
 
-    if (context.config.get ("echo.command", true))
-      out << "Annotated "
-          << task->id
-          << " with '"
-          << task->get ("description")
-          << "'"
-          << std::endl;
+    if (taskDiff (before, *task))
+    {
+      std::string question = taskDifferences (before, *task) + "Are you sure?";
+      if (permission.confirmed (question))
+      {
+        context.tdb.update (*task);
+
+        if (context.config.get ("echo.command", true))
+          out << "Annotated "
+              << task->id
+              << " with '"
+              << task->get ("description")
+              << "'"
+              << std::endl;
+      }
+    }
   }
 
   context.tdb.commit ();
