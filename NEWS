@@ -1,4 +1,10 @@
-Welcome to Task 1.8.0.
+
+New Features in task 1.8.0
+
+  - Attribute modifiers, for precise queries
+  - Improved calendar feature
+
+  Please refer to the ChangeLog file for full details.
 
 Task has been built and tested on the following configurations:
 
@@ -7,40 +13,32 @@ Task has been built and tested on the following configurations:
   - Fedora Core 8
   - Fedora Core 9
   - Fedora Core 10
+  - Fedora Core 11
   - Ubuntu 7 Feisty Fawn
   - Ubuntu 8 Hardy Heron
   - Ubuntu 8.10 Intrepid Ibex
   - Ubuntu 9.04 Jaunty Jackalope
+  - OpenBSD 4.5
   - Arch Linux
   - Slackware 12.2
   - Solaris 8
   - Solaris 10
   - Cygwin 1.5.25-14
+  - Cygwin 1.7 beta
 
 While Task has undergone testing, bugs are sure to remain.  If you encounter a
 bug, please enter a new issue at:
 
   http://taskwarrior.org/projects/taskwarrior/issues/new
 
-You can also report the issue in the forums at:
+Or you can also report the issue in the forums at:
 
   http://taskwarrior.org/projects/taskwarrior/boards
 
-Finally, you can always contact us at support@taskwarrior.org.  Here is what you
-could do, in order of increasing effort (to you) and usefulness (to us):
+Or just send a message to:
 
-  - Do nothing.  Bug may not get fixed.
-
-  - Send an email to support@taskwarrior.org, explaining what you saw.  The bug
-    will be addressed, and a new release will be made.  You will be a hero.
-
-  - Send an email, and a reproducible test case in the form of the few commands
-    it takes to recreate the problem.  The bug will be addressed, and a new
-    release will be made.  You will be a hero.
-
-  - If you are a developer, send a patch that fixes the problem.  Your patch
-    will be applied and tested, and a new release will be made.  You will be a
-    hero.
+  support@taskwarrior.org
 
 Thank you.
 
+---
