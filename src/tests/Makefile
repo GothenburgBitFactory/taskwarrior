@@ -3,12 +3,12 @@ PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
           cmd.t util.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib -lncurses
-OBJECTS = ../TDB.o ../Task.o ../valid.o ../text.o ../Date.o ../Table.o         \
-          ../Duration.o ../util.o ../Config.o ../Sequence.o ../Att.o ../Cmd.o  \
-          ../Record.o ../StringTable.o ../Subst.o ../Nibbler.o ../Location.o   \
-          ../Filter.o ../Context.o ../Keymap.o ../command.o ../interactive.o   \
-          ../report.o ../Grid.o ../color.o ../rules.o ../recur.o ../custom.o   \
-          ../import.o ../edit.o ../Timer.o ../Permission.o
+OBJECTS = ../TDB.o ../Task.o ../text.o ../Date.o ../Table.o ../Duration.o      \
+          ../util.o ../Config.o ../Sequence.o ../Att.o ../Cmd.o ../Record.o    \
+          ../StringTable.o ../Subst.o ../Nibbler.o ../Location.o ../Filter.o   \
+          ../Context.o ../Keymap.o ../command.o ../interactive.o ../report.o   \
+          ../Grid.o ../color.o ../rules.o ../recur.o ../custom.o ../import.o   \
+          ../edit.o ../Timer.o ../Permission.o
 
 all: $(PROJECT)
 

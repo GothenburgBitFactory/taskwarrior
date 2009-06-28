@@ -39,11 +39,6 @@
 #include "color.h"
 #include "../auto.h"
 
-// valid.cpp
-void validReportColumns (const std::vector <std::string>&);
-void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
-bool validTag (const std::string&);
-
 // task.cpp
 void gatherNextTasks (std::vector <Task>&);
 void onChangeCallback ();
@@ -104,6 +99,8 @@ std::string handleCustomReport (const std::string&);
 std::string runCustomReport (const std::string&, const std::string&,
                              const std::string&, const std::string&,
                              const std::string&, std::vector <Task>&);
+void validReportColumns (const std::vector <std::string>&);
+void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 
 // rules.cpp
 void initializeColorRules ();

@@ -47,6 +47,7 @@
 #endif
 
 extern Context context;
+static std::vector <std::string> customReports;
 
 ////////////////////////////////////////////////////////////////////////////////
 // This report will eventually become the one report that many others morph into
@@ -550,4 +551,65 @@ std::string runCustomReport (
   return out.str ();
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+void validReportColumns (const std::vector <std::string>& columns)
+{
+  std::vector <std::string> bad;
+
+  std::vector <std::string>::const_iterator it;
+  for (it = columns.begin (); it != columns.end (); ++it)
+    if (*it != "id"                   &&
+        *it != "uuid"                 &&
+        *it != "project"              &&
+        *it != "priority"             &&
+        *it != "entry"                &&
+        *it != "start"                &&
+        *it != "end"                  &&
+        *it != "due"                  &&
+        *it != "age"                  &&
+        *it != "age_compact"          &&
+        *it != "active"               &&
+        *it != "tags"                 &&
+        *it != "recur"                &&
+        *it != "recurrence_indicator" &&
+        *it != "tag_indicator"        &&
+        *it != "description_only"     &&
+        *it != "description"          &&
+        *it != "wait")
+      bad.push_back (*it);
+
+  if (bad.size ())
+  {
+    std::string error;
+    join (error, ", ", bad);
+    throw std::string ("Unrecognized column name: ") + error;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void validSortColumns (
+  const std::vector <std::string>& columns,
+  const std::vector <std::string>& sortColumns)
+{
+  std::vector <std::string> bad;
+  std::vector <std::string>::const_iterator sc;
+  for (sc = sortColumns.begin (); sc != sortColumns.end (); ++sc)
+  {
+    std::vector <std::string>::const_iterator co;
+    for (co = columns.begin (); co != columns.end (); ++co)
+      if (sc->substr (0, sc->length () - 1) == *co)
+        break;
+
+    if (co == columns.end ())
+      bad.push_back (*sc);
+  }
+
+  if (bad.size ())
+  {
+    std::string error;
+    join (error, ", ", bad);
+    throw std::string ("Sort column is not part of the report: ") + error;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////

@@ -437,7 +437,7 @@ void Context::parse (
       // Tags to include begin with '+'.
       else if (arg->length () > 1 &&
                (*arg)[0] == '+'   &&
-               validTag (*arg))
+               noSpaces (*arg))
       {
         debug ("parse tag addition '" + *arg + "'");
         if (foundSequence)
@@ -454,7 +454,7 @@ void Context::parse (
       // Tags to remove begin with '-'.
       else if (arg->length () > 1 &&
                (*arg)[0] == '-'   &&
-               validTag (*arg))
+               noSpaces (*arg))
       {
         debug ("parse tag removal '" + *arg + "'");
         if (foundSequence)
