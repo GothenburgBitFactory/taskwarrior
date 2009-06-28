@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (19);
+  UnitTest t (21);
 
   // TODO bool confirm (const std::string&);
   // TODO int confirm3 (const std::string&);
@@ -45,7 +45,9 @@ int main (int argc, char** argv)
   // std::string formatBytes (size_t);
   t.is (formatBytes (0), "0 B", "0 -> 0 B");
 
-  t.is (formatBytes (999),  "999 B", "999 -> 999 B");
+  t.is (formatBytes (994),  "994 B", "994 -> 994 B");
+  t.is (formatBytes (995),  "1.0 KiB", "995 -> 1.0 KiB");
+  t.is (formatBytes (999),  "1.0 KiB", "999 -> 1.0 KiB");
   t.is (formatBytes (1000), "1.0 KiB", "1000 -> 1.0 KiB");
   t.is (formatBytes (1001), "1.0 KiB", "1001 -> 1.0 KiB");
 
