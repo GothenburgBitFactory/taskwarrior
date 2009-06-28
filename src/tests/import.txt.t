@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
@@ -63,6 +63,9 @@ ok (!-r 'import.txt', 'Removed import.txt');
 
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'import.rc';
 ok (!-r 'import.rc', 'Removed import.rc');

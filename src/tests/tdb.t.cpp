@@ -53,6 +53,7 @@ int main (int argc, char** argv)
     // Remove any residual test file.
     unlink ("./pending.data");
     unlink ("./completed.data");
+    unlink ("./undo.data");
 
     // Try reading an empty database.
     Filter filter;
@@ -153,6 +154,7 @@ int main (int argc, char** argv)
 
   unlink ("./pending.data");
   unlink ("./completed.data");
+  unlink ("./undo.data");
 
   return 0;
 }

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'custom.rc')
@@ -55,6 +55,9 @@ unlike ($output, qr/two/, 'custom filter excluded');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'custom.rc';
 ok (!-r 'custom.rc', 'Removed custom.rc');

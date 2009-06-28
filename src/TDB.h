@@ -30,9 +30,9 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <Location.h>
-#include <Filter.h>
-#include <Task.h>
+#include "Location.h"
+#include "Filter.h"
+#include "Task.h"
 
 // Length of longest line.
 #define T_LINE_MAX 32768

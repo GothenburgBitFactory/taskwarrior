@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'color.rc')
@@ -54,6 +54,9 @@ like ($output, qr/ \033\[32m        .* green   .* \033\[0m      /x, 'color.keywo
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'color.rc';
 ok (!-r 'color.rc', 'Removed color.rc');

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'due.rc')
@@ -59,6 +59,9 @@ like ($output, qr/\s+$almost\s+/, 'two not marked due');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'due.rc';
 ok (!-r 'due.rc', 'Removed due.rc');

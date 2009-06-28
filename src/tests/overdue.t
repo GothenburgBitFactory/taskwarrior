@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'due.rc')
@@ -52,6 +52,9 @@ unlike ($output, qr/three/, 'overdue: task 3 does not show up');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'due.rc';
 ok (!-r 'due.rc', 'Removed due.rc');

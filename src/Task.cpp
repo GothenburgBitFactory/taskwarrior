@@ -538,33 +538,23 @@ void Task::validate () const
     if (has ("until"))
     {
       Date until (::atoi (get ("until").c_str ()));
-      if (due >= until)
+      if (due > until)
         throw std::string ("An 'until' date must be after a 'due' date."); // TODO i18n
     }
 
     Date entry (::atoi (get ("entry").c_str ()));
 
-    if (entry >= due)
-      throw std::string ("An 'entry' date must be before a 'due' date."); // TODO i18n
-
-    if (has ("until"))
-    {
-      Date until (::atoi (get ("until").c_str ()));
-      if (entry >= until)
-        throw std::string ("An 'until' date must be after an 'entry' date."); // TODO i18n
-    }
-
     if (has ("start"))
     {
       Date start (::atoi (get ("start").c_str ()));
-      if (entry >= start)
+      if (entry > start)
         throw std::string ("A 'start' date must be after an 'entry' date."); // TODO i18n
     }
 
     if (has ("end"))
     {
       Date end (::atoi (get ("end").c_str ()));
-      if (entry >= end)
+      if (entry > end)
         throw std::string ("An 'end' date must be after an 'entry' date."); // TODO i18n
     }
   }
@@ -574,7 +564,7 @@ void Task::validate () const
   {
     Duration d;
     if (! d.valid (get ("recur")))
-      throw std::string ("An 'end' date must be after an 'entry' date."); // TODO i18n
+      throw std::string ("A recurrence value must be valid."); // TODO i18n
   }
 }
 

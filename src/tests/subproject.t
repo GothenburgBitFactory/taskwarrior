@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 # Create the rc file.
 if (open my $fh, '>', 'sp.rc')
@@ -65,6 +65,9 @@ like ($output, qr/No matches./, 'abc,ab,a,b | abcd -> nul');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'sp.rc';
 ok (!-r 'sp.rc', 'Removed sp.rc');

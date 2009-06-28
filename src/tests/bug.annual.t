@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 14;
 
 # Create the rc file.
 if (open my $fh, '>', 'annual.rc')
@@ -71,6 +71,9 @@ like ($output, qr/11\s+1\/1\/2009\s+-\s+foo/, 'synthetic 10 no creep');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'annual.rc';
 ok (!-r 'annual.rc', 'Removed annual.rc');

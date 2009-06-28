@@ -30,7 +30,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 35;
+use Test::More tests => 36;
 
 # Create the rc file.
 if (open my $fh, '>', 'cal.rc')
@@ -110,6 +110,9 @@ unlike ($output, qr/May 2010/,     'May 2010 is not displayed');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'cal.rc';
 ok (!-r 'cal.rc', 'Removed cal.rc');

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug_annotate.rc')
@@ -46,6 +46,9 @@ like ($output, qr/Cannot apply a blank annotation./, 'failed on blank annotation
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'bug_annotate.rc';
 ok (!-r 'bug_annotate.rc', 'Removed bug_annotate.rc');

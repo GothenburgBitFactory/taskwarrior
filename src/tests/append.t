@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'append.rc')
@@ -47,6 +47,9 @@ like ($output, qr/Description\s+foo\sbar\n/, 'append worked');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'append.rc';
 ok (!-r 'append.rc', 'Removed append.rc');

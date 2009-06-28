@@ -1617,9 +1617,11 @@ std::string handleReportStats ()
   if (!stat (file.c_str (), &s))
     dataSize += s.st_size;
 
+#ifdef FEADTURE_UNDO
   file = location + "/undo.data";
   if (!stat (file.c_str (), &s))
     dataSize += s.st_size;
+#endif
 
   // TODO Include transaction log?
 

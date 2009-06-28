@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 17;
 
 # Create the rc file.
 if (open my $fh, '>', 'undo.rc')
@@ -67,6 +67,10 @@ ok (!-r 'pending.data', 'Removed pending.data');
 ok (-r 'completed.data', 'Need to remove completed.data');
 unlink 'completed.data';
 ok (!-r 'completed.data', 'Removed completed.data');
+
+ok (-r 'undo.data', 'Need to remove undo.data');
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'undo.rc';
 ok (!-r 'undo.rc', 'Removed undo.rc');

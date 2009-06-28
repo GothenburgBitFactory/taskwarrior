@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'next.rc')
@@ -53,6 +53,9 @@ like ($output, qr/\s3\sB\s+H\s+-\sBH\n/, 'BH shown');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'next.rc';
 ok (!-r 'next.rc', 'Removed next.rc');

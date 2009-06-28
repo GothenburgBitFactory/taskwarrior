@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'tag.rc')
@@ -65,6 +65,9 @@ unlike ($output, qr/^Tags/m, '-missing NOP');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'tag.rc';
 ok (!-r 'tag.rc', 'Removed tag.rc');

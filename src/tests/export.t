@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'export.rc')
@@ -69,6 +69,9 @@ ok (!-r 'export.txt', 'Removed export.txt');
 
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'export.rc';
 ok (!-r 'export.rc', 'Removed export.rc');

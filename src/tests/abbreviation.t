@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 23;
 
 # Create the rc file.
 if (open my $fh, '>', 'abbrev.rc')
@@ -91,6 +91,9 @@ like ($output, qr/ABSOLUTELY NO WARRANTY/, 'v');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'abbrev.rc';
 ok (!-r 'abbrev.rc', 'Removed abbrev.rc');
