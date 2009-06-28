@@ -1617,6 +1617,10 @@ std::string handleReportStats ()
   if (!stat (file.c_str (), &s))
     dataSize += s.st_size;
 
+  file = location + "/undo.data";
+  if (!stat (file.c_str (), &s))
+    dataSize += s.st_size;
+
   // TODO Include transaction log?
 
   // Get all the tasks.

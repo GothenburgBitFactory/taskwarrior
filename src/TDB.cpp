@@ -361,32 +361,42 @@ int TDB::commit ()
   // The alternative is to potentially rewrite both files.
   else if (mNew.size () || mModified.size ())
   {
-    foreach (task, mPending)
+    // allPending is a copy of mPending, with all modifications included, and
+    // new tasks appended.
+    std::vector <Task> allPending;
+    allPending = mPending;
+    foreach (task, allPending)
       foreach (mtask, mModified)
         if (task->id == mtask->id)
           *task = *mtask;
 
-    mModified.clear ();
-
     foreach (task, mNew)
-      mPending.push_back (*task);
-
-    mNew.clear ();
+      allPending.push_back (*task);
 
     // Write out all pending.
     if (fseek (mLocations[0].pending, 0, SEEK_SET) == 0)
     {
       ftruncate (fileno (mLocations[0].pending), 0);
-      foreach (task, mPending)
+      foreach (task, allPending)
         fputs (task->composeF4 ().c_str (), mLocations[0].pending);
     }
 
-/*
     // Update the undo log.
-    fseek (mLocations[0].undo, 0, SEEK_END);
-    foreach (task, mPending)
-      writeUndo (*task, mLocations[0].undo);
-*/
+    if (fseek (mLocations[0].undo, 0, SEEK_END) == 0)
+    {
+      foreach (task, mPending)
+        foreach (mtask, mModified)
+          if (task->id == mtask->id)
+            writeUndo (*task, *mtask, mLocations[0].undo);
+
+      foreach (task, mNew)
+        writeUndo (*task, mLocations[0].undo);
+    }
+
+    mPending = allPending;
+
+    mModified.clear ();
+    mNew.clear ();
   }
 
   return quantity;
@@ -512,19 +522,22 @@ void TDB::writeUndo (const Task& after, FILE* file)
 {
   Timer t ("TDB::writeUndo");
 
-  // TODO Locate "before" task (match on uuid).
-
   fprintf (file,
-           "time %u\nnew %s\n---\n",
+           "time %u\nnew %s---\n",
            (unsigned int) time (NULL),
            after.composeF4 ().c_str ());
-/*
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::writeUndo (const Task& before, const Task& after, FILE* file)
+{
+  Timer t ("TDB::writeUndo");
+
   fprintf (file,
-           "time %u\nold %s\nnew %s\n---\n",
+           "time %u\nold %snew %s---\n",
            (unsigned int) time (NULL),
            before.composeF4 ().c_str (),
            after.composeF4 ().c_str ());
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
