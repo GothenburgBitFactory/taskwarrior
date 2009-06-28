@@ -117,11 +117,11 @@ void Table::setTableDashedUnderline ()
 int Table::addColumn (const std::string& col)
 {
   mSpecifiedWidth.push_back (minimum);
-  mMaxDataWidth.push_back (col.length ());
+  mMaxDataWidth.push_back (col == "" ? 1 : col.length ());
   mCalculatedWidth.push_back (0);
   mColumnPadding.push_back (0);
 
-  mColumns.push_back (col);
+  mColumns.push_back (col == "" ? " " : col);
   return mColumns.size () - 1;
 }
 
