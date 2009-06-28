@@ -856,9 +856,10 @@ std::string handleModify ()
         {
           std::string question = taskDifferences (before, *other) + "Are you sure?";
           if (changes && permission.confirmed (question))
+          {
             context.tdb.update (*other);
-
-          ++count;
+            ++count;
+          }
         }
       }
     }

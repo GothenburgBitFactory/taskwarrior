@@ -33,7 +33,8 @@ use Test::More tests => 6;
 # Create the rc file.
 if (open my $fh, '>', 'bug_concat.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=no\n";
   close $fh;
   ok (-r 'bug_concat.rc', 'Created bug_concat.rc');
 }

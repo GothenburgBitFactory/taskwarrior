@@ -165,6 +165,8 @@ static void decorateTask (Task& task)
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
   task.set ("entry", entryTime);
 
+  task.setStatus (Task::pending);
+
   // Override with default.project, if not specified.
   std::string defaultProject = context.config.get ("default.project", "");
   if (!task.has ("project") && defaultProject  != "")
@@ -672,8 +674,8 @@ static std::string importTaskCmdLine (const std::vector <std::string>& lines)
 
     try
     {
-      std::vector <std::string> args;
-      split (args, std::string ("add ") + line, ' ');
+      context.args.clear ();
+      split (context.args, std::string ("add ") + line, ' ');
 
       context.task.clear ();
       context.cmd.command = "";
@@ -719,8 +721,8 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
   {
     try
     {
-      std::vector <std::string> args;
-      args.push_back ("add");
+      context.args.clear ();
+      context.args.push_back ("add");
 
       bool isPending = true;
       Date endDate;
@@ -733,8 +735,8 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
         if (words[w].length () > 1 &&
             words[w][0] == '+')
         {
-          args.push_back (std::string ("project:") +
-                          words[w].substr (1, std::string::npos));
+          context.args.push_back (std::string ("project:") +
+                                  words[w].substr (1, std::string::npos));
         }
 
         // Convert "+aaa" to "project:aaa".
@@ -742,8 +744,8 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
         else if (words[w].length () > 1 &&
                  words[w][0] == '@')
         {
-          args.push_back (std::string ("+") +
-                          words[w].substr (1, std::string::npos));
+          context.args.push_back (std::string ("+") +
+                                  words[w].substr (1, std::string::npos));
         }
 
         // Convert "(A)" to "priority:H".
@@ -753,9 +755,9 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
                  words[w][0] == '('      &&
                  words[w][2] == ')')
         {
-               if (words[w][1] == 'A') args.push_back ("priority:H");
-          else if (words[w][1] == 'B') args.push_back ("priority:M");
-          else                         args.push_back ("priority:L");
+               if (words[w][1] == 'A') context.args.push_back ("priority:H");
+          else if (words[w][1] == 'B') context.args.push_back ("priority:M");
+          else                         context.args.push_back ("priority:L");
         }
 
         // Set status, if completed.
@@ -778,7 +780,7 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
         // Just an ordinary word.
         else
         {
-          args.push_back (words[w]);
+          context.args.push_back (words[w]);
         }
       }
 
@@ -855,8 +857,8 @@ static std::string importText (const std::vector <std::string>& lines)
       try
       {
         ++count;
-        std::vector <std::string> args;
-        split (args, std::string ("add ") + line, ' ');
+        context.args.clear ();
+        split (context.args, std::string ("add ") + line, ' ');
 
         context.task.clear ();
         context.cmd.command = "";
@@ -1057,6 +1059,7 @@ static std::string importCSV (const std::vector <std::string>& lines)
       if ((f = mapping["uuid"]) != -1)
         task.set ("uuid", lowerCase (unquoteText (trim (fields[f]))));
 
+      task.setStatus (Task::pending);
       if ((f = mapping["status"]) != -1)
       {
         std::string value = lowerCase (unquoteText (trim (fields[f])));
@@ -1065,7 +1068,6 @@ static std::string importCSV (const std::vector <std::string>& lines)
         else if (value == "deleted")   task.setStatus (Task::deleted);
         else if (value == "completed") task.setStatus (Task::completed);
         else if (value == "waiting")   task.setStatus (Task::waiting);
-        else                           task.setStatus (Task::pending);
       }
 
       if ((f = mapping["tags"]) != -1)
@@ -1183,7 +1185,7 @@ std::string handleImport ()
     case task_cmd_line: identifier = "This looks like task command line arguments.";            break;
     case todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                     break;
     case csv:           identifier = "This looks like a CSV file, but not a task export file."; break;
-    case text:          identifier = "This looks like a text file with one tasks per line.";    break;
+    case text:          identifier = "This looks like a text file with one task per line.";     break;
     case not_a_clue:
       throw std::string ("Task cannot determine which type of file this is, "
                          "and cannot proceed.");

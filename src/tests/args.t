@@ -33,7 +33,8 @@ use Test::More tests => 8;
 # Create the rc file.
 if (open my $fh, '>', 'args.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=no\n";
   close $fh;
   ok (-r 'args.rc', 'Created args.rc');
 }
