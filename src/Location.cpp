@@ -32,6 +32,7 @@ Location::Location ()
 : path ("")
 , pending (NULL)
 , completed (NULL)
+, undo (NULL)
 {
 }
 
@@ -47,6 +48,7 @@ Location::Location (const Location& other)
   path      = other.path;
   pending   = other.pending;
   completed = other.completed;
+  undo      = other.undo;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +59,7 @@ Location& Location::operator= (const Location& other)
     path      = other.path;
     pending   = other.pending;
     completed = other.completed;
+    undo      = other.undo;
   }
 
   return *this;

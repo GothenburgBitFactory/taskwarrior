@@ -64,6 +64,7 @@ public:
 
 private:
   FILE* openAndLock (const std::string&);
+  void writeUndo (const Task&, FILE*);
 
 private:
   std::vector <Location> mLocations;

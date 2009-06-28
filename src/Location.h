@@ -43,6 +43,7 @@ public:
   std::string path;
   FILE*       pending;
   FILE*       completed;
+  FILE*       undo;
 };
 
 #endif

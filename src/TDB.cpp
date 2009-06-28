@@ -124,6 +124,7 @@ void TDB::lock (bool lockFile /* = true */)
   {
     location->pending   = openAndLock (location->path + "/pending.data");
     location->completed = openAndLock (location->path + "/completed.data");
+    location->undo      = openAndLock (location->path + "/undo.data");
   }
 
   mAllOpenAndLocked = true;
@@ -146,6 +147,10 @@ void TDB::unlock ()
 
       fflush (location->completed);
       fclose (location->completed);
+      location->completed = NULL;
+
+      fflush (location->undo);
+      fclose (location->undo);
       location->completed = NULL;
     }
 
@@ -275,9 +280,6 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
     char line[T_LINE_MAX];
     foreach (location, mLocations)
     {
-      // TODO If the filter contains Status:x where x is not deleted or
-      //      completed, then this can be skipped.
-
       line_number = 1;
       file = location->path + "/completed.data";
 
@@ -315,7 +317,6 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Write to transaction log.
 // Note: mLocations[0] is where all tasks are written.
 void TDB::add (const Task& task)
 {
@@ -324,14 +325,12 @@ void TDB::add (const Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Write to transaction log.
 void TDB::update (const Task& task)
 {
   mModified.push_back (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Writes all, including comments
 // Interestingly, only the pending file gets written to.  The completed file is
 // only modified by TDB::gc.
 int TDB::commit ()
@@ -350,6 +349,10 @@ int TDB::commit ()
       mPending.push_back (*task);
       fputs (task->composeF4 ().c_str (), mLocations[0].pending);
     }
+
+    fseek (mLocations[0].undo, 0, SEEK_END);
+    foreach (task, mNew)
+      writeUndo (*task, mLocations[0].undo);
 
     mNew.clear ();
     return quantity;
@@ -377,6 +380,13 @@ int TDB::commit ()
       foreach (task, mPending)
         fputs (task->composeF4 ().c_str (), mLocations[0].pending);
     }
+
+/*
+    // Update the undo log.
+    fseek (mLocations[0].undo, 0, SEEK_END);
+    foreach (task, mPending)
+      writeUndo (*task, mLocations[0].undo);
+*/
   }
 
   return quantity;
@@ -495,6 +505,26 @@ FILE* TDB::openAndLock (const std::string& file)
     throw std::string ("Could not lock '") + file + "'.";
 
   return in;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::writeUndo (const Task& after, FILE* file)
+{
+  Timer t ("TDB::writeUndo");
+
+  // TODO Locate "before" task (match on uuid).
+
+  fprintf (file,
+           "time %u\nnew %s\n---\n",
+           (unsigned int) time (NULL),
+           after.composeF4 ().c_str ());
+/*
+  fprintf (file,
+           "time %u\nold %s\nnew %s\n---\n",
+           (unsigned int) time (NULL),
+           before.composeF4 ().c_str (),
+           after.composeF4 ().c_str ());
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
