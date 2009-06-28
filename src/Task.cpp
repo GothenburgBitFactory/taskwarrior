@@ -28,6 +28,8 @@
 #include <sstream>
 #include <algorithm>
 #include "Nibbler.h"
+#include "Date.h"
+#include "Duration.h"
 #include "Task.h"
 #include "text.h"
 #include "util.h"
@@ -519,17 +521,61 @@ void Task::removeTag (const std::string& tag)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::validate () const
 {
-  // TODO Every task needs an ID.
-
-  // TODO Every task needs an ID, entry and description attribute.
-
-
-  // TODO Verify until > due
-  // TODO Verify entry < until, due, start, end
-  // TODO If name == "recur", then Duration::valid (value).
+  // Every task needs an ID, entry and description attribute.
+  if (!has ("uuid")  ||
+      !has ("entry") ||
+      !has ("description"))
+    throw std::string ("A task must have a uuid, entry date and description in order to be valid."); // TODO i18n
 
   if (get ("description") == "") // No i18n
     throw std::string ("Cannot add a task that is blank, or contains <CR> or <LF> characters."); // TODO i18n
+
+  if (has ("due"))
+  {
+    Date due (::atoi (get ("due").c_str ()));
+
+    // Verify until > due
+    if (has ("until"))
+    {
+      Date until (::atoi (get ("until").c_str ()));
+      if (due >= until)
+        throw std::string ("An 'until' date must be after a 'due' date."); // TODO i18n
+    }
+
+    Date entry (::atoi (get ("entry").c_str ()));
+
+    if (entry >= due)
+      throw std::string ("An 'entry' date must be before a 'due' date."); // TODO i18n
+
+    if (has ("until"))
+    {
+      Date until (::atoi (get ("until").c_str ()));
+      if (entry >= until)
+        throw std::string ("An 'until' date must be after an 'entry' date."); // TODO i18n
+    }
+
+    if (has ("start"))
+    {
+      Date start (::atoi (get ("start").c_str ()));
+      if (entry >= start)
+        throw std::string ("A 'start' date must be after an 'entry' date."); // TODO i18n
+    }
+
+    if (has ("end"))
+    {
+      Date end (::atoi (get ("end").c_str ()));
+      if (entry >= end)
+        throw std::string ("An 'end' date must be after an 'entry' date."); // TODO i18n
+    }
+  }
+
+  // Recur durations must be valid.
+  if (has ("recur"))
+  {
+    Duration d;
+    if (! d.valid (get ("recur")))
+      throw std::string ("An 'end' date must be after an 'entry' date."); // TODO i18n
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
