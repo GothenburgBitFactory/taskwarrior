@@ -679,13 +679,21 @@ std::string handleDone ()
   std::vector <Task> all = tasks;
   context.filter.applySequence (tasks, context.sequence);
 
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+    permission.bigSequence ();
+
   bool nagged = false;
   foreach (task, tasks)
   {
     if (task->getStatus () == Task::pending)
     {
-      // Apply deltas.
-      deltaDescription (*task);
+      Task before (*task);
+
+      // Apply other deltas.
+      if (deltaDescription (*task))
+        permission.bigChange ();
+
       deltaTags (*task);
       deltaAttributes (*task);
       deltaSubstitutions (*task);
@@ -697,21 +705,29 @@ std::string handleDone ()
 
       // Change status.
       task->setStatus (Task::completed);
-      context.tdb.update (*task);
 
-      if (context.config.get ("echo.command", true))
-        out << "Completed "
-            << task->id
-            << " '"
-            << task->get ("description")
-            << "'"
-            << std::endl;
+      if (taskDiff (before, *task))
+      {
+        std::string question = taskDifferences (before, *task) + "Are you sure?";
+        if (permission.confirmed (question))
+        {
+          context.tdb.update (*task);
+
+          if (context.config.get ("echo.command", true))
+            out << "Completed "
+                << task->id
+                << " '"
+                << task->get ("description")
+                << "'"
+                << std::endl;
+
+          ++count;
+        }
+      }
 
       updateRecurrenceMask (all, *task);
       if (!nagged)
         nagged = nag (*task);
-
-      ++count;
     }
     else
       out << "Task "
