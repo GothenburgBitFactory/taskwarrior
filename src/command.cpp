@@ -872,6 +872,10 @@ std::string handleAppend ()
   std::vector <Task> all = tasks;
   context.filter.applySequence (tasks, context.sequence);
 
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+    permission.bigSequence ();
+
   foreach (task, tasks)
   {
     foreach (other, all)
@@ -881,6 +885,8 @@ std::string handleAppend ()
            task->get ("parent") == other->get ("parent")) || // Sibling
           other->get ("uuid")   == task->get ("parent"))     // Parent
       {
+        Task before (*other);
+
         // A non-zero value forces a file write.
         int changes = 0;
 
@@ -889,19 +895,23 @@ std::string handleAppend ()
         changes += deltaTags (*other);
         changes += deltaAttributes (*other);
 
-        if (changes)
+        if (taskDiff (before, *other))
         {
-          context.tdb.update (*other);
+          std::string question = taskDifferences (before, *other) + "Are you sure?";
+          if (changes && permission.confirmed (question))
+          {
+            context.tdb.update (*other);
 
-          if (context.config.get ("echo.command", true))
-            out << "Appended '"
-                << context.task.get ("description")
-                << "' to task "
-                << other->id
-                << std::endl;
+            if (context.config.get ("echo.command", true))
+              out << "Appended '"
+                  << context.task.get ("description")
+                  << "' to task "
+                  << other->id
+                  << std::endl;
+
+            ++count;
+          }
         }
-
-        ++count;
       }
     }
   }
