@@ -99,6 +99,10 @@ std::string shortUsage ()
   table.addCell (row, 1, "task edit ID");
   table.addCell (row, 2, "Launches an editor to let you modify all aspects of a task directly, therefore it is to be used carefully.");
 
+  row = table.addRow ();
+  table.addCell (row, 1, "task undo");
+  table.addCell (row, 2, "Reverts the most recent action.");
+
 #ifdef FEATURE_SHELL
   row = table.addRow ();
   table.addCell (row, 1, "task shell");
@@ -112,10 +116,6 @@ std::string shortUsage ()
   row = table.addRow ();
   table.addCell (row, 1, "task delete ID");
   table.addCell (row, 2, "Deletes the specified task.");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task undelete ID");
-  table.addCell (row, 2, "Undeletes the specified task, provided a report has not yet been run.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task info ID");
@@ -132,10 +132,6 @@ std::string shortUsage ()
   row = table.addRow ();
   table.addCell (row, 1, "task done ID [tags] [attrs] [desc...]");
   table.addCell (row, 2, "Marks the specified task as completed.");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task undo ID");
-  table.addCell (row, 2, "Marks the specified done task as pending, provided a report has not yet been run.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task projects");

@@ -61,15 +61,14 @@ std::string handleDone ();
 std::string handleModify ();
 std::string handleProjects ();
 std::string handleTags ();
-std::string handleUndelete ();
 std::string handleVersion ();
 std::string handleDelete ();
 std::string handleStart ();
 std::string handleStop ();
-std::string handleUndo ();
 std::string handleColor ();
 std::string handleAnnotate ();
 std::string handleDuplicate ();
+void handleUndo ();
 #ifdef FEATURE_SHELL
 void handleShell ();
 #endif

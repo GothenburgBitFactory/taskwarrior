@@ -61,6 +61,7 @@ public:
   int   commit ();            // Write out all tasks
   int   gc ();                // Clean up pending
   int   nextId ();
+  void  undo ();
 
 private:
   FILE* openAndLock (const std::string&);
