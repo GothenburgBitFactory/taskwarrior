@@ -29,15 +29,15 @@
 
 # 2xx Commands - must be sequential
 200 aktivt #active
-201 lägg till #add
+201 tillägg #add
 202 bifoga #append
 203 kommentera #annotate
 204 kalender #calendar
 205 färger #colors
 206 avslutad #completed
-207 ta bort #delete
+207 stryk #delete
 208 färdig #done
-209 dubblett #duplicate
+209 kopiera #duplicate
 210 redigera #edit
 211 exportera #export
 212 hjälp #help
@@ -86,9 +86,9 @@
 360 detta #this
 361 nästa #next
 362 är #is
-363 är inte #isnt
+363 ärinte #isnt
 364 har #has
-365 har inte #hasnt
+365 harinte #hasnt
 366 börjarmed #startswith
 367 slutarmed #endswith
 
