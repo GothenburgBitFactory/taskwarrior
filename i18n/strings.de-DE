@@ -86,11 +86,11 @@
 360 dieses #this
 361 nächste #next
 362 ist #is
-363 ist nicht #isnt
+363 istnicht #isnt
 364 hat #has
-365 hat nicht #hasnt
-366 beginnt mit #startswith
-367 endet mit #endswith
+365 hatnicht #hasnt
+366 beginntmit #startswith
+367 endetmit #endswith
 
 # 4xx Columns
 
