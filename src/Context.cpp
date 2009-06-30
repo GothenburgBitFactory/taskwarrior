@@ -180,10 +180,8 @@ std::string Context::dispatch ()
 {
   Timer t ("Context::dispatch");
 
-  int gcMod = 0; // Change occurred by way of gc.
-  std::string out;
-
   // TODO Just look at this thing.  It cries out for a dispatch table.
+  std::string out;
        if (cmd.command == "projects")      { out = handleProjects        (); }
   else if (cmd.command == "tags")          { out = handleTags            (); }
   else if (cmd.command == "colors")        { out = handleColor           (); }
@@ -215,8 +213,8 @@ std::string Context::dispatch ()
            sequence.size ())               { out = handleModify          (); }
 
   // Command that display IDs and therefore need TDB::gc first.
-  else if (cmd.command == "next")          { if (!inShadow) gcMod = tdb.gc (); out = handleReportNext    (); }
-  else if (cmd.validCustom (cmd.command))  { if (!inShadow) gcMod = tdb.gc (); out = handleCustomReport  (cmd.command); }
+  else if (cmd.command == "next")          { if (!inShadow) tdb.gc (); out = handleReportNext    (); }
+  else if (cmd.validCustom (cmd.command))  { if (!inShadow) tdb.gc (); out = handleCustomReport  (cmd.command); }
 
   // If the command is not recognized, display usage.
   else                                     { out = shortUsage (); }

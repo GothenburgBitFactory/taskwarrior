@@ -427,6 +427,20 @@ void spit (const std::string& file, const std::string& contents)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void spit (const std::string& file, const std::vector <std::string>& lines)
+{
+  std::ofstream out (file.c_str ());
+  if (out.good ())
+  {
+    foreach (line, lines)
+      out << *line;
+    out.close ();
+  }
+  else
+    throw std::string ("Could not write file '") + file + "'"; // TODO i18n
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool taskDiff (const Task& before, const Task& after)
 {
   // Attributes are all there is, so figure the different attribute names

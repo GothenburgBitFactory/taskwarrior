@@ -208,7 +208,9 @@ std::string handleTags ()
 ////////////////////////////////////////////////////////////////////////////////
 void handleUndo ()
 {
+  context.tdb.lock (context.config.get ("locking", true));
   context.tdb.undo ();
+  context.tdb.unlock ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -299,12 +301,11 @@ std::string handleVersion ()
   std::string recognized =
     " blanklines color color.active color.due color.overdue color.pri.H "
     "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
-    "color.footnote color.header color.message color.debug confirmation curses "
-    "data.location dateformat debug default.command default.priority "
-    "defaultwidth displayweeknumber due echo.command locale locking "
-    "monthsperline nag next project shadow.command shadow.file shadow.notify "
-    "weekstart editor import.synonym.id import.synonym.uuid "
-    "longversion "
+    "color.footnote color.header color.debug confirmation curses data.location "
+    "dateformat debug default.command default.priority defaultwidth due locale "
+    "displayweeknumber echo.command locking monthsperline nag next project "
+    "shadow.command shadow.file shadow.notify weekstart editor import.synonym.id "
+    "import.synonym.uuid longversion "
 #ifdef FEATURE_SHELL
     "shell.prompt "
 #endif
@@ -681,14 +682,13 @@ std::string handleExport ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
   foreach (task, tasks)
   {
-    if (task->getStatus () != Task::recurring &&
-        task->getStatus () != Task::deleted)
+    if (task->getStatus () != Task::recurring)
     {
       out << task->composeCSV ().c_str ();
       ++count;

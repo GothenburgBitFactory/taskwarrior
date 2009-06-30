@@ -61,7 +61,9 @@ extern Context context;
 //  |  |  +- TDB::update (T)
 //  |  |  |
 //  |  |  +- TDB::commit
-//  |  |      write all
+//  |  |  |   write all
+//  |  |  |
+//  |  |  +- TDB::undo
 //  |  |
 //  |  +- TDB::unlock
 //  |       [unlock]
@@ -491,6 +493,23 @@ int TDB::nextId ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::undo ()
 {
+  // TODO Load all undo.data
+
+  // TODO Load all pending.data
+  std::vector <Task> allPending;
+
+  // TODO Load all completed.data
+  std::vector <Task> allCompleted;
+
+  // TODO 'pop' last transaction
+  // TODO Locate 'new' task
+
+  // TODO Confirm
+  // TODO Overwrite 'old' task, or delete
+
+  // TODO Write all pending.data
+  // TODO Write all completed.data
+  // TODO Write all undo.data
 }
 
 ////////////////////////////////////////////////////////////////////////////////
