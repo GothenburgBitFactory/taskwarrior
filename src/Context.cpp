@@ -52,14 +52,6 @@ Context::Context ()
 , cmd ()
 , inShadow (false)
 {
-  // Set up randomness.
-/*
-#ifdef HAVE_SRANDOM
-  srandom (time (NULL));
-#else
-  srand (time (NULL));
-#endif
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
