@@ -32,6 +32,13 @@ Context context;
 
 int main (int argc, char** argv)
 {
+  // Set up randomness.
+#ifdef HAVE_SRANDOM
+  srandom (time (NULL));
+#else
+  srand (time (NULL));
+#endif
+
   int status = 0;
 
   try
