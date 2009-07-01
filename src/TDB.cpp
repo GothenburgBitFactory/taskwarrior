@@ -528,22 +528,25 @@ void TDB::undo ()
     u.pop_back ();
   }
 
+  Date lastChange (::atoi (when.c_str ()));
+  std::cout << std::endl
+            << "The last modification was made "
+            << lastChange.toString ()
+            << std::endl;
+
   // confirm
   if (prior != "")
   {
     Task priorTask (prior);
     Task currentTask (current);
-    std::cout << "The last modification was that "
-              << taskDifferences (prior, current)
-              << std::endl
+    std::cout << taskDifferences (prior, current)
               << std::endl;
   }
   else
-    std::cout << "This was a new task."
-              << std::endl
+    std::cout << "  - This was a new task"
               << std::endl;
 
-  if (!confirm ("The undo command is irreversible.  Are you sure you want to undo the last update?"))
+  if (!confirm ("The undo command is not reversible.  Are you sure you want to undo the last update?"))
     throw std::string ("No changes made.");
 
   // Extract identifying uuid.

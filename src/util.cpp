@@ -498,35 +498,33 @@ std::string taskDifferences (const Task& before, const Task& after)
   // Now start generating a description of the differences.
   std::stringstream out;
   foreach (name, beforeOnly)
-    out << *name
-        << " was deleted.  ";
+    out << "  - "
+        << *name
+        << " was deleted\n";
 
   foreach (name, afterOnly)
-    out << *name
+    out << "  - "
+        << *name
         << " was set to '"
         << after.get (*name)
-        << "'.  ";
+        << "'\n";
 
   foreach (name, beforeAtts)
     if (*name              != "uuid" &&
         after.get (*name)  != ""     &&
         before.get (*name) != after.get (*name))
-      out << *name
+      out << "  - "
+          << *name
           << " was changed from '"
           << before.get (*name)
           << "' to '"
           << after.get (*name)
-          << "'.  ";
+          << "'\n";
 
   // Can't just say nothing.
   if (out.str ().length () == 0)
-    out << "No changes were made.  ";
+    out << "  - No changes were made\n";
 
-/*
-  std::stringstream decorated;
-  decorated << "Task " << before.id << " was modified.  " << out.str ();
-  return decorated.str ();
-*/
   return out.str ();
 }
 
