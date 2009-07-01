@@ -137,7 +137,6 @@ std::string handleProjects ()
     }
 
     table.setColumnJustification (1, Table::right);
-    table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
     foreach (i, unique)
     {
@@ -177,27 +176,50 @@ std::string handleTags ()
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
-  std::map <std::string, std::string> unique;
+  std::map <std::string, int> unique;
   foreach (t, tasks)
   {
     std::vector <std::string> tags;
     t->getTags (tags);
 
     foreach (tag, tags)
-      unique[*tag] = "";
+      if (unique.find (*tag) != unique.end ())
+        unique[*tag]++;
+      else
+        unique[*tag] = 1;
   }
 
-  // Render a list of tag names from the map.
-  out << optionalBlankLine ();
-  foreach (i, unique)
-    out << i->first << std::endl;
-
   if (unique.size ())
+  {
+    // Render a list of tags names from the map.
+    Table table;
+    table.addColumn ("Tag");
+    table.addColumn ("Count");
+
+    if (context.config.get ("color", true) ||
+        context.config.get (std::string ("_forcecolor"), false))
+    {
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
+    }
+
+    table.setColumnJustification (1, Table::right);
+
+    foreach (i, unique)
+    {
+      int row = table.addRow ();
+      table.addCell (row, 0, i->first);
+      table.addCell (row, 1, i->second);
+    }
+
     out << optionalBlankLine ()
+        << table.render ()
+        << optionalBlankLine ()
         << unique.size ()
         << (unique.size () == 1 ? " tag" : " tags")
         << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")"
         << std::endl;
+  }
   else
     out << "No tags."
         << std::endl;

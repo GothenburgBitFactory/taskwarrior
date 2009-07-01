@@ -87,13 +87,6 @@ void Context::initialize ()
 {
   Timer t ("Context::initialize");
 
-  // Set up randomness.
-#ifdef HAVE_SRANDOM
-  srandom (time (NULL));
-#else
-  srand (time (NULL));
-#endif
-
   // Load the configuration file from the home directory.  If the file cannot
   // be found, offer to create a sample one.
   loadCorrectConfigFile ();
