@@ -536,7 +536,7 @@ std::string handleEdit ()
 
     // Create a temp file name in data.location.
     std::stringstream pattern;
-    pattern << dataLocation << "/task." << task->id << ".XXXXXX";
+    pattern << dataLocation << "/task." << task->id << ".XXXXXX.task";
     char cpattern [PATH_MAX];
     strcpy (cpattern, pattern.str ().c_str ());
     mkstemp (cpattern);
