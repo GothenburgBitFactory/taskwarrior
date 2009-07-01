@@ -543,7 +543,7 @@ void TDB::undo ()
               << std::endl
               << std::endl;
 
-  if (!confirm ("Are you sure you want to undo the last update?"))
+  if (!confirm ("The undo command is irreversible.  Are you sure you want to undo the last update?"))
     throw std::string ("No changes made.");
 
   // Extract identifying uuid.
@@ -563,6 +563,8 @@ void TDB::undo ()
   {
     if (task->find (uuid) != std::string::npos)
     {
+      context.debug ("TDB::undo - task found in pending.data");
+
       // Either revert if there was a prior state, or remove the task.
       if (prior != "")
       {
@@ -589,34 +591,30 @@ void TDB::undo ()
   // is 'current' in completed?
   foreach (task, c)
   {
-    std::cout << "# loop " << *task << std::endl;
-
     if (task->find (uuid) != std::string::npos)
     {
-      std::cout << "# found in completed" << std::endl;
+      context.debug ("TDB::undo - task found in completed.data");
 
       // If task now belongs back in pending.data
       if (prior.find ("status:\"pending\"")   != std::string::npos ||
           prior.find ("status:\"waiting\"")   != std::string::npos ||
           prior.find ("status:\"recurring\"") != std::string::npos)
       {
-        std::cout << "# task belongs in pending.data" << std::endl;
-
         c.erase (task);
         p.push_back (prior);
         spit (completedFile, c);
         spit (pendingFile, p);
         spit (undoFile, u);
         std::cout << "Modified task reverted." << std::endl;
+        context.debug ("TDB::undo - task belongs in pending.data");
       }
       else
       {
-        std::cout << "# task belongs in pending.data" << std::endl;
-
         *task = prior;
         spit (completedFile, c);
         spit (undoFile, u);
         std::cout << "Modified task reverted." << std::endl;
+        context.debug ("TDB::undo - task belongs in completed.data");
       }
 
       std::cout << "Undo complete." << std::endl;
