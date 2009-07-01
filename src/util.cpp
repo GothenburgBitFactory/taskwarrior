@@ -513,9 +513,12 @@ std::string taskDifferences (const Task& before, const Task& after)
   if (out.str ().length () == 0)
     out << "No changes were made.  ";
 
+/*
   std::stringstream decorated;
   decorated << "Task " << before.id << " was modified.  " << out.str ();
   return decorated.str ();
+*/
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

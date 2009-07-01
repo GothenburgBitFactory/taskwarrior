@@ -132,7 +132,6 @@ void Cmd::load ()
     commands.push_back (context.stringtable.get (CMD_SUMMARY,   "summary"));
     commands.push_back (context.stringtable.get (CMD_TAGS,      "tags"));
     commands.push_back (context.stringtable.get (CMD_TIMESHEET, "timesheet"));
-    commands.push_back (context.stringtable.get (CMD_UNDELETE,  "undelete"));
     commands.push_back (context.stringtable.get (CMD_UNDO,      "undo"));
     commands.push_back (context.stringtable.get (CMD_VERSION,   "version"));
 
@@ -218,7 +217,6 @@ bool Cmd::isWriteCommand ()
       command == context.stringtable.get (CMD_IMPORT,    "import")    ||
       command == context.stringtable.get (CMD_START,     "start")     ||
       command == context.stringtable.get (CMD_STOP,      "stop")      ||
-      command == context.stringtable.get (CMD_UNDELETE,  "undelete")  ||
       command == context.stringtable.get (CMD_UNDO,      "undo"))
     return true;
 

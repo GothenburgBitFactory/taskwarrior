@@ -92,7 +92,7 @@
 #define CMD_SUMMARY             223
 #define CMD_TAGS                224
 #define CMD_TIMESHEET           225
-#define CMD_UNDELETE            226
+
 #define CMD_UNDO                227
 #define CMD_VERSION             228
 #define CMD_SHELL               229

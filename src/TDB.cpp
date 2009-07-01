@@ -493,23 +493,131 @@ int TDB::nextId ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::undo ()
 {
-  // TODO Load all undo.data
+  std::string location = expandPath (context.config.get ("data.location"));
 
-  // TODO Load all pending.data
-  std::vector <Task> allPending;
+  std::string undoFile      = location + "/undo.data";
+  std::string pendingFile   = location + "/pending.data";
+  std::string completedFile = location + "/completed.data";
 
-  // TODO Load all completed.data
-  std::vector <Task> allCompleted;
+  // load undo.data
+  std::vector <std::string> u;
+  slurp (undoFile, u);
 
-  // TODO 'pop' last transaction
-  // TODO Locate 'new' task
+  if (u.size () < 3)
+    throw std::string ("There are no recorded transactions to undo.");
 
-  // TODO Confirm
-  // TODO Overwrite 'old' task, or delete
+  // pop last tx
+  u.pop_back ();
 
-  // TODO Write all pending.data
-  // TODO Write all completed.data
-  // TODO Write all undo.data
+  std::string current = u.back ().substr (4, std::string::npos);
+  u.pop_back ();
+
+  std::string prior;
+  std::string when;
+  if (u.back ().substr (0, 5) == "time ")
+  {
+    when = u.back ().substr (5, std::string::npos);
+    prior = "";
+  }
+  else
+  {
+    prior = u.back ().substr (4, std::string::npos);
+    u.pop_back ();
+    when = u.back ().substr (5, std::string::npos);
+    u.pop_back ();
+  }
+
+  // confirm
+  Task priorTask (prior);
+  Task currentTask (current);
+  std::cout << "The last modification was that "
+            << taskDifferences (prior, current)
+            << std::endl
+            << std::endl;
+
+  if (!confirm ("Are you sure you want to undo the last update?"))
+    throw std::string ("No changes made.");
+
+  // Extract identifying uuid.
+  std::string uuid;
+  std::string::size_type uuidAtt = current.find ("uuid:\"");
+  if (uuidAtt != std::string::npos)
+    uuid = current.substr (uuidAtt, 43); // 43 = uuid:"..."
+  else
+    throw std::string ("Cannot locate UUID in task to undo.");
+
+  std::cout << "# " << uuid << std::endl;
+
+  // load pending.data
+  std::vector <std::string> p;
+  slurp (pendingFile, p);
+
+  // is 'current' in pending?
+  foreach (task, p)
+  {
+    if (task->find (uuid) != std::string::npos)
+    {
+      // Either revert if there was a prior state, or remove the task.
+      if (prior != "")
+      {
+        *task = prior;
+        std::cout << "Modified task reverted." << std::endl;
+      }
+      else
+      {
+        p.erase (task);
+        std::cout << "Task removed." << std::endl;
+      }
+
+      // Rewrite files.
+      spit (pendingFile, p);
+      spit (undoFile, u);
+      return;
+    }
+  }
+
+  // load completed.data
+  std::vector <std::string> c;
+  slurp (pendingFile, p);
+
+  // is 'current' in completed?
+  foreach (task, c)
+  {
+    if (task->find (uuid) != std::string::npos)
+    {
+      // If task now belongs back in pending.data
+      if (prior.find ("status:\"pending\"")   != std::string::npos ||
+          prior.find ("status:\"waiting\"")   != std::string::npos ||
+          prior.find ("status:\"recurring\"") != std::string::npos)
+      {
+        c.erase (task);
+        p.push_back (prior);
+        spit (completedFile, c);
+        spit (pendingFile, p);
+        spit (undoFile, u);
+        std::cout << "Modified task reverted." << std::endl;
+      }
+      else
+      {
+        *task = prior;
+        spit (completedFile, c);
+        spit (undoFile, u);
+        std::cout << "Modified task reverted." << std::endl;
+      }
+
+      std::cout << "Undo complete." << std::endl;
+      return;
+    }
+  }
+
+  // Perhaps user hand-edited the data files?
+  // Perhaps the task was in completed.data, which was still in file format 3?
+  std::cout << "Task with UUID "
+            << uuid.substr (6, 36)
+            << " not found in data."
+            << std::endl
+            << "No undo possible."
+            << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
