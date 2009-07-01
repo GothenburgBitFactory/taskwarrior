@@ -427,13 +427,22 @@ void spit (const std::string& file, const std::string& contents)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void spit (const std::string& file, const std::vector <std::string>& lines)
+void spit (
+  const std::string& file,
+  const std::vector <std::string>& lines,
+  bool addNewlines /* = true */)
 {
   std::ofstream out (file.c_str ());
   if (out.good ())
   {
     foreach (line, lines)
+    {
       out << *line;
+
+      if (addNewlines)
+        out << "\n";
+    }
+
     out.close ();
   }
   else

@@ -507,7 +507,7 @@ void TDB::undo ()
     throw std::string ("There are no recorded transactions to undo.");
 
   // pop last tx
-  u.pop_back ();
+  u.pop_back (); // separator.
 
   std::string current = u.back ().substr (4, std::string::npos);
   u.pop_back ();
@@ -517,6 +517,7 @@ void TDB::undo ()
   if (u.back ().substr (0, 5) == "time ")
   {
     when = u.back ().substr (5, std::string::npos);
+    u.pop_back ();
     prior = "";
   }
   else
@@ -528,12 +529,19 @@ void TDB::undo ()
   }
 
   // confirm
-  Task priorTask (prior);
-  Task currentTask (current);
-  std::cout << "The last modification was that "
-            << taskDifferences (prior, current)
-            << std::endl
-            << std::endl;
+  if (prior != "")
+  {
+    Task priorTask (prior);
+    Task currentTask (current);
+    std::cout << "The last modification was that "
+              << taskDifferences (prior, current)
+              << std::endl
+              << std::endl;
+  }
+  else
+    std::cout << "This was a new task."
+              << std::endl
+              << std::endl;
 
   if (!confirm ("Are you sure you want to undo the last update?"))
     throw std::string ("No changes made.");
@@ -545,8 +553,6 @@ void TDB::undo ()
     uuid = current.substr (uuidAtt, 43); // 43 = uuid:"..."
   else
     throw std::string ("Cannot locate UUID in task to undo.");
-
-  std::cout << "# " << uuid << std::endl;
 
   // load pending.data
   std::vector <std::string> p;
@@ -578,18 +584,24 @@ void TDB::undo ()
 
   // load completed.data
   std::vector <std::string> c;
-  slurp (pendingFile, p);
+  slurp (completedFile, c);
 
   // is 'current' in completed?
   foreach (task, c)
   {
+    std::cout << "# loop " << *task << std::endl;
+
     if (task->find (uuid) != std::string::npos)
     {
+      std::cout << "# found in completed" << std::endl;
+
       // If task now belongs back in pending.data
       if (prior.find ("status:\"pending\"")   != std::string::npos ||
           prior.find ("status:\"waiting\"")   != std::string::npos ||
           prior.find ("status:\"recurring\"") != std::string::npos)
       {
+        std::cout << "# task belongs in pending.data" << std::endl;
+
         c.erase (task);
         p.push_back (prior);
         spit (completedFile, c);
@@ -599,6 +611,8 @@ void TDB::undo ()
       }
       else
       {
+        std::cout << "# task belongs in pending.data" << std::endl;
+
         *task = prior;
         spit (completedFile, c);
         spit (undoFile, u);
