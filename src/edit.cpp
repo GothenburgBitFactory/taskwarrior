@@ -535,16 +535,12 @@ std::string handleEdit ()
       throw std::string ("Your data.location directory is not writable.");
 
     // Create a temp file name in data.location.
-    std::stringstream pattern;
-    pattern << dataLocation << "/task." << task->id << ".XXXXXX.task";
-    char cpattern [PATH_MAX];
-    strcpy (cpattern, pattern.str ().c_str ());
-    mkstemp (cpattern);
-    char* file = cpattern;
+    std::stringstream file;
+    file << dataLocation << "/task." << getpid () << "." << task->id << ".task";
 
     // Format the contents, T -> text, write to a file.
     std::string before = formatTask (*task);
-    spit (file, before);
+    spit (file.str (), before);
 
     // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
     std::string editor = context.config.get ("editor", "");
@@ -556,7 +552,7 @@ std::string handleEdit ()
 
     // Complete the command line.
     editor += " ";
-    editor += file;
+    editor += file.str ();
 
 ARE_THESE_REALLY_HARMFUL:
     // Launch the editor.
@@ -566,7 +562,7 @@ ARE_THESE_REALLY_HARMFUL:
 
     // Slurp file.
     std::string after;
-    slurp (file, after, false);
+    slurp (file.str (), after, false);
 
     // Update task based on what can be parsed back out of the file, but only
     // if changes were made.
@@ -594,7 +590,7 @@ ARE_THESE_REALLY_HARMFUL:
 
         // Preserve the edits.
         before = after;
-        spit (file, before);
+        spit (file.str (), before);
 
         if (confirm ("Task couldn't handle your edits.  Would you like to try again?"))
           goto ARE_THESE_REALLY_HARMFUL;
@@ -604,7 +600,7 @@ ARE_THESE_REALLY_HARMFUL:
       std::cout << "No edits were detected." << std::endl;
 
     // Cleanup.
-    unlink (file);
+    unlink (file.str ().c_str ());
   }
 
   context.tdb.commit ();
