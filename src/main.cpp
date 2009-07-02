@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "Context.h"
+#include "../auto.h"
 
 Context context;
 

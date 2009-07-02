@@ -52,6 +52,7 @@ std::string handleAdd ()
 {
   std::stringstream out;
 
+  context.task.set ("uuid", uuid ());
   context.task.setEntry ();
 
   // Recurring tasks get a special status.
