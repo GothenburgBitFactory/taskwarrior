@@ -10,7 +10,7 @@ CXXFLAGS="${CXXFLAGS=}"
 # to the configure script (./configure --enable-debug)
 # Check if we have enable debug support.
 AC_MSG_CHECKING(whether to enable debugging)
-debug_default="yes"
+debug_default="no"
 AC_ARG_ENABLE(debug, [  --enable-debug=[no/yes] turn on debugging
                        [default=$debug_default]],, enable_debug=$debug_default)
 # Yes, shell scripts can be used
