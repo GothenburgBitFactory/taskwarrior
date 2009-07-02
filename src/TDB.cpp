@@ -297,7 +297,7 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
             line[length - 1] = '\0';
 
           Task task (line);
-          // Note: no id is set for completed tasks.
+          task.id = 0;  // Need a value, just not a valid value.
 
           if (filter.pass (task))
             tasks.push_back (task);
