@@ -119,8 +119,24 @@ std::string handleProjects ()
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
   std::map <std::string, int> unique;
+  std::map <std::string, int> high;
+  std::map <std::string, int> medium;
+  std::map <std::string, int> low;
+  std::map <std::string, int> none;
+  std::string project;
+  std::string priority;
   foreach (t, tasks)
-    unique[t->get ("project")] += 1;
+  {
+     project = t->get ("project");
+    priority = t->get ("priority");
+
+    unique[project] += 1;
+
+         if (priority == "H") high[project]   += 1;
+    else if (priority == "M") medium[project] += 1;
+    else if (priority == "L") low[project]    += 1;
+    else                      none[project]   += 1;
+  }
 
   if (unique.size ())
   {
@@ -128,21 +144,37 @@ std::string handleProjects ()
     Table table;
     table.addColumn ("Project");
     table.addColumn ("Tasks");
+    table.addColumn ("Pri:None");
+    table.addColumn ("Pri:L");
+    table.addColumn ("Pri:M");
+    table.addColumn ("Pri:H");
 
     if (context.config.get ("color", true) ||
         context.config.get (std::string ("_forcecolor"), false))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
+      table.setColumnUnderline (2);
+      table.setColumnUnderline (3);
+      table.setColumnUnderline (4);
+      table.setColumnUnderline (5);
     }
 
     table.setColumnJustification (1, Table::right);
+    table.setColumnJustification (2, Table::right);
+    table.setColumnJustification (3, Table::right);
+    table.setColumnJustification (4, Table::right);
+    table.setColumnJustification (5, Table::right);
 
     foreach (i, unique)
     {
       int row = table.addRow ();
       table.addCell (row, 0, i->first);
       table.addCell (row, 1, i->second);
+      table.addCell (row, 2, none[i->first]);
+      table.addCell (row, 3, low[i->first]);
+      table.addCell (row, 4, medium[i->first]);
+      table.addCell (row, 5, high[i->first]);
     }
 
     out << optionalBlankLine ()

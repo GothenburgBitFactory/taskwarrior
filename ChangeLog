@@ -40,6 +40,7 @@
  + If task is renamed to "cal", or there is a symlink to task called "cal",
    then task can act as a replacement for the Unix "cal" command.
  + The "tags" report now shows the tag usage count.
+ + The "projects" report now shows totals by project and priority.
 
 Add:
   att mods
