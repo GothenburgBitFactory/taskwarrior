@@ -177,7 +177,10 @@ std::string runCustomReport (
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (row++, columnCount, task->id);
+        if (task->id != 0)
+          table.addCell (row++, columnCount, task->id);
+        else
+          table.addCell (row++, columnCount, "-");
     }
 
     else if (*col == "uuid")
