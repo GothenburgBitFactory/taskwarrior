@@ -209,7 +209,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
   Timer t ("TDB::loadPending");
 
   std::string file;
-  int line_number;
+  int line_number = 1;
 
   try
   {

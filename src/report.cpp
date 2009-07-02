@@ -1443,9 +1443,9 @@ std::string handleReportCalendar ()
 
   Date today;
   bool getpendingdate = false;
-  int monthsToDisplay;
-  int mFrom;
-  int yFrom;
+  int monthsToDisplay = 1;
+  int mFrom = today.month ();
+  int yFrom = today.year ();
   int mTo;
   int yTo;
 
