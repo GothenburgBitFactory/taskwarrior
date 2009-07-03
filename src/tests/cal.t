@@ -50,6 +50,11 @@ my $prevmonth   = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","
 my $nextyear = $nyear + 1901;
 my $year     = $nyear + 1900;
 
+if ( $day <= 9)
+{
+  $day = " ".$day;
+}
+
 # task cal   and   task cal y
 my $output = qx{../task rc:cal.rc rc._forcecolor:on cal};
 like   ($output, qr/\[36m$day/,      'Current day is highlighted');
