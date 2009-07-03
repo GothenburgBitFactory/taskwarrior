@@ -146,6 +146,7 @@ int Context::getWidth ()
   else
     debug ("Context::getWidth: ncurses available but disabled.");
 #else
+  std::stringstream out;
   out << "Context::getWidth: no ncurses, using width of " << width << " characters";
   debug (out.str ());
 #endif
