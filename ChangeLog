@@ -41,25 +41,34 @@
    then task can act as a replacement for the Unix "cal" command.
  + The "tags" report now shows the tag usage count.
  + The "projects" report now shows totals by project and priority.
-
-Add:
-  att mods
-  new custom reports
-  new custom report fields
-  aliases
-  limit:
-  wait:
-  report.waiting
-  report.all
-  new colorization support
-  many, many new unit tests
-
+ + Now supports attribute modifiers that allow much finer control over report
+   filtering, for example "task list due.before:friday", or "task list
+   pri.not:H" and many more.
+ + Now supports new "age_compact" and "wait" custom report columns.
+ + Now supports colorization of the header and footnote messages that are
+   printed before and after report output, with the 'color.header' and
+   'color.footnote' configuration variables.
+ + Now supports the 'limit' attribute, to control the number of tasks that
+   are shown, for example: "task list limit:10".
  + Now supports a debug mode that can be used to generate helpful information
    when reporting a problem.  Just run the command with "task rc.debug:on ..."
    and diagnostics will be generated that will help pinpoint a problem.
  + The new "undo" command replaces the old "undo" and "undelete" command
    with a complete undo stack that can rollback all changes.
  + While waiting for a file lock, task states the reason for the delay.
+ + Many, many more unit tests, helping to maintain code quality.
+ + Now supports a 'waiting' state that causes tasks to not appear until
+   a certain date, for example "task <ID> wait:<date>".  The task
+   will then not show up on any report (except 'all') until that date.
+ + The "active", "completed", "overdue" and "next" reports are now custom
+   reports, and therefore modifiable.
+ + Now supports a 'waiting' custom report to list all waiting tasks.
+ + Now supports a 'recurring' custom report to list all recurring tasks.
+ + Now supports an 'all' report to list all tasks, including deleted
+   and completed tasks.
+
+Add:
+  aliases
 
 ------ old releases ------------------------------
 
