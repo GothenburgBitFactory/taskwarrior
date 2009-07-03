@@ -655,8 +655,12 @@ FILE* TDB::openAndLock (const std::string& file)
   // Lock if desired.  Try three times before failing.
   int retry = 0;
   if (mLock)
-    while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
-      delay (0.1);
+    while (flock (fileno (in), LOCK_NB | LOCK_EX) && ++retry <= 3)
+    {
+      std::cout << "Waiting for file lock..." << std::endl;
+      while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
+        delay (0.2);
+    }
 
   if (retry > 3)
     throw std::string ("Could not lock '") + file + "'.";
