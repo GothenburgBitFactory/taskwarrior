@@ -83,15 +83,15 @@ int main (int argc, char** argv)
   Task rightAgain (right);
 
   std::string output = taskDifferences (left, right);
-  t.ok (taskDiff (left, right),                                                  "Detected changes");
-  t.ok (output.find ("zero was changed from '0' to '00'.") != std::string::npos, "Detected change zero:0 -> zero:00");
-  t.ok (output.find ("one was deleted.")                   != std::string::npos, "Detected deletion one:1 ->");
-  t.ok (output.find ("two")                                == std::string::npos, "Detected no change two:2 -> two:2");
-  t.ok (output.find ("three was set to '3'.")              != std::string::npos, "Detected addition -> three:3");
+  t.ok (taskDiff (left, right),                                                 "Detected changes");
+  t.ok (output.find ("zero was changed from '0' to '00'") != std::string::npos, "Detected change zero:0 -> zero:00");
+  t.ok (output.find ("one was deleted")                   != std::string::npos, "Detected deletion one:1 ->");
+  t.ok (output.find ("two")                               == std::string::npos, "Detected no change two:2 -> two:2");
+  t.ok (output.find ("three was set to '3'")              != std::string::npos, "Detected addition -> three:3");
 
-  t.notok (taskDiff (right, rightAgain),                                         "No changes detected");
+  t.notok (taskDiff (right, rightAgain),                                        "No changes detected");
   output = taskDifferences (right, rightAgain);
-  t.ok (output.find ("No changes were made.")              != std::string::npos, "No changes detected");
+  t.ok (output.find ("No changes were made")              != std::string::npos, "No changes detected");
 
   return 0;
 }

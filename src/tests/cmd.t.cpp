@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (76);
+  UnitTest t (78);
 
   context.config.set ("report.foo.columns", "id");
 
@@ -106,6 +106,14 @@ int main (int argc, char** argv)
   t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand version");
   t.notok (cmd.isWriteCommand    (), "not isWriteCommand version");
 
+  cmd.command = "_projects";
+  t.ok    (cmd.isReadOnlyCommand (), "not isReadOnlyCommand _projects");
+  t.notok (cmd.isWriteCommand    (), "isWriteCommand _projects");
+
+  cmd.command = "_tags";
+  t.ok    (cmd.isReadOnlyCommand (), "not isReadOnlyCommand _tags");
+  t.notok (cmd.isWriteCommand    (), "isWriteCommand _tags");
+
   cmd.command = "add";
   t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand add");
   t.ok    (cmd.isWriteCommand    (), "isWriteCommand add");
@@ -145,10 +153,6 @@ int main (int argc, char** argv)
   cmd.command = "stop";
   t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand stop");
   t.ok    (cmd.isWriteCommand    (), "isWriteCommand stop");
-
-  cmd.command = "undelete";
-  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand undelete");
-  t.ok    (cmd.isWriteCommand    (), "isWriteCommand undelete");
 
   cmd.command = "undo";
   t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand undo");

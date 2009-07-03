@@ -51,7 +51,7 @@ $output = qx{../task rc:shadow.rc delete 1};
 like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\]/, 'shadow file updated on delete');
 
 $output = qx{../task rc:shadow.rc list};
-like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\]/, 'shadow file updated on list');
+unlike ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\]/, 'shadow file not updated on list');
 
 # Inspect the shadow file.
 my $file = slurp ('./shadow.txt');

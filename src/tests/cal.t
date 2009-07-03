@@ -43,7 +43,7 @@ if (open my $fh, '>', 'cal.rc')
   ok (-r 'cal.rc', 'Created cal.rc');
 }
 
-(my $day,my $nmon,my $nyear) = (localtime)[3,4,5];
+my ($day, $nmon, $nyear) = (localtime)[3,4,5];
 my $nextmonth   = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")[($nmon+1) % 12];
 my $month       = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")[($nmon) % 12];
 my $prevmonth   = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")[($nmon-1) % 12];

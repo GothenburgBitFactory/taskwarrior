@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 17;
+use Test::More tests => 15;
 
 # Create the rc file.
 if (open my $fh, '>', 'undo.rc')
@@ -48,16 +48,12 @@ $output = qx{../task rc:undo.rc do 1; ../task rc:undo.rc info 1};
 ok (-r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Completed\n/, 'Completed');
 
-$output = qx{../task rc:undo.rc undo 1; ../task rc:undo.rc info 1};
+$output = qx{echo 'y'|../task rc:undo.rc undo; ../task rc:undo.rc info 1};
 ok (-r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
 $output = qx{../task rc:undo.rc do 1; ../task rc:undo.rc list};
 like ($output, qr/No matches/, 'No matches');
-
-$output = qx{../task rc:undo.rc undo 1; ../task rc:undo.rc info 1};
-like ($output, qr/Task 1 not found/, 'Task 1 not found');
-like ($output, qr/Task 1 not found/, 'No matches');
 
 # Cleanup.
 ok (-r 'pending.data', 'Need to remove pending.data');

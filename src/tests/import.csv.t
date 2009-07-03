@@ -54,13 +54,7 @@ like ($output, qr/Imported 2 tasks successfully, with 0 errors./, 'no errors');
 
 $output = qx{../task rc:import.rc list};
 like ($output, qr/1.+H.+this is a test/, 't1');
-diag ("---");
-diag ($output);
-diag ("---");
 like ($output, qr/2.+another task/,      't2');
-diag ("---");
-diag ($output);
-diag ("---");
 
 # Cleanup.
 unlink 'import.txt';
