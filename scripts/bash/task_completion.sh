@@ -27,6 +27,7 @@
 # The routines will do completion of:
 #
 #    *) task subcommands
+#    *) project names
 #    *) tag names
 #
 # To use these routines:
@@ -47,6 +48,14 @@
 #       http://taskwarrior.org
 #
 
+_task_get_projects() {
+    task _projects
+}
+
+_task_get_tags() {
+    task _tags
+}
+
 _task() 
 {
     local cur prev opts base
@@ -57,14 +66,23 @@ _task()
 
     opts="active add annotate append calendar color completed delete done duplicate edit export ghistory help history import info list long ls newest next oldest overdue projects start stats stop summary tags timesheet undelete undo version"
 
-    case "${prev}" in
-      ls|list|long)
-        if [[ ${cur} == +* ]] ; then
-          local tags=$( task tags | egrep -v 'tags|^$'|sed 's/^/+/' )
-          COMPREPLY=( $(compgen -W "${tags}" -- ${cur}) )
-          return 0
-        fi
-        ;;
+    case "${cur}" in
+        pro*:*)
+            local projects=$(_task_get_projects)
+            local partial_project="${cur/*:/}"
+            COMPREPLY=( $(compgen -W "${projects}" -- ${partial_project}) )
+            return 0
+            ;;
+        +*)
+            local tags=$(_task_get_tags | sed 's/^/+/')
+            COMPREPLY=( $(compgen -W "${tags}" -- ${cur}) )
+            return 0
+            ;;
+        -*)
+            local tags=$(_task_get_tags | sed 's/^/-/')
+            COMPREPLY=( $(compgen -W "${tags}" -- ${cur}) )
+            return 0
+            ;;
     esac
       
     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
