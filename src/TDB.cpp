@@ -35,7 +35,9 @@
 #include "text.h"
 #include "util.h"
 #include "TDB.h"
+#include "Table.h"
 #include "Timer.h"
+#include "color.h"
 #include "main.h"
 
 extern Context context;
@@ -534,17 +536,91 @@ void TDB::undo ()
             << lastChange.toString ()
             << std::endl;
 
-  // confirm
+  // Attributes are all there is, so figure the different attribute names
+  // between before and after.
+  Table table;
+  table.setTableWidth (context.getWidth ());
+  table.setTableIntraPadding (2);
+  table.addColumn (" ");
+  table.addColumn ("Prior Values");
+  table.addColumn ("Current Values");
+  table.setColumnUnderline (1);
+  table.setColumnUnderline (2);
+  table.setColumnWidth (0, Table::minimum);
+  table.setColumnWidth (1, Table::flexible);
+  table.setColumnWidth (2, Table::flexible);
+
+  Task after (current);
+
   if (prior != "")
   {
-    Task priorTask (prior);
-    Task currentTask (current);
-    std::cout << taskDifferences (prior, current)
-              << std::endl;
+    Task before (prior);
+
+    std::vector <std::string> beforeAtts;
+    foreach (att, before)
+      beforeAtts.push_back (att->first);
+
+    std::vector <std::string> afterAtts;
+    foreach (att, after)
+      afterAtts.push_back (att->first);
+
+    std::vector <std::string> beforeOnly;
+    std::vector <std::string> afterOnly;
+    listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
+
+    int row;
+    foreach (name, beforeOnly)
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, *name);
+      table.addCell (row, 1, renderAttribute (*name, before.get (*name)));
+      table.setCellFg (row, 1, Text::red);
+    }
+
+    foreach (name, before)
+    {
+      std::string priorValue   = before.get (name->first);
+      std::string currentValue = after.get  (name->first);
+
+      if (currentValue != "")
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, name->first);
+        table.addCell (row, 1, renderAttribute (name->first, priorValue));
+        table.addCell (row, 2, renderAttribute (name->first, currentValue));
+
+        if (priorValue != currentValue)
+        {
+          table.setCellFg (row, 1, Text::red);
+          table.setCellFg (row, 2, Text::green);
+        }
+      }
+    }
+
+    foreach (name, afterOnly)
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, *name);
+      table.addCell (row, 2, renderAttribute (*name, after.get (*name)));
+      table.setCellFg (row, 2, Text::green);
+    }
   }
   else
-    std::cout << "  - This was a new task"
-              << std::endl;
+  {
+    int row;
+    foreach (name, after)
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, name->first);
+      table.addCell (row, 2, renderAttribute (name->first, after.get (name->first)));
+      table.setCellFg (row, 2, Text::green);
+    }
+  }
+
+  // Confirm.
+  std::cout << std::endl
+            << table.render ()
+            << std::endl;
 
   if (!confirm ("The undo command is not reversible.  Are you sure you want to undo the last update?"))
     throw std::string ("No changes made.");

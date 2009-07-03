@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.8.0 (6/30/2009)
+1.8.0 (7/7/2009)
  + Added zsh tab completion script (thanks to P.C. Shyamshankar).
  + Fixed bug that cause the _forcecolor configuration variable to be
    considered obsolete (thank to Bruce Dillahunty).
@@ -59,6 +59,7 @@ Add:
    and diagnostics will be generated that will help pinpoint a problem.
  + The new "undo" command replaces the old "undo" and "undelete" command
    with a complete undo stack that can rollback all changes.
+ + While waiting for a file lock, task states the reason for the delay.
 
 ------ old releases ------------------------------
 
