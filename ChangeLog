@@ -56,7 +56,6 @@
  + The new "undo" command replaces the old "undo" and "undelete" command
    with a complete undo stack that can rollback all changes.
  + While waiting for a file lock, task states the reason for the delay.
- + Many, many more unit tests, helping to maintain code quality.
  + Now supports a 'waiting' state that causes tasks to not appear until
    a certain date, for example "task <ID> wait:<date>".  The task
    will then not show up on any report (except 'all') until that date.
@@ -66,6 +65,7 @@
  + Now supports a 'recurring' custom report to list all recurring tasks.
  + Now supports an 'all' report to list all tasks, including deleted
    and completed tasks.
+ + Now over 1,500 unit tests, helping to maintain code quality.
 
 Add:
   aliases

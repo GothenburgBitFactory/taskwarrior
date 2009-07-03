@@ -3,28 +3,32 @@ New Features in task 1.8.0
 
   - Attribute modifiers, for precise queries
   - Improved calendar feature
+  - Full undo capability
+  - All reports now customizable
+  - Command aliases can now be created
+  - In addition to being a standard part of Fedora 10 and 11 (yum install task),
+    task is now also a standard part of Cygwin 1.5
+  - There are new demo movies on taskwarrior.org
 
-  Please refer to the ChangeLog file for full details.
+  Please refer to the ChangeLog file for full details.  There are too many to
+  list here.
 
 Task has been built and tested on the following configurations:
 
-  - OS X 10.4 Tiger
   - OS X 10.5 Leopard
-  - Fedora Core 8
-  - Fedora Core 9
-  - Fedora Core 10
-  - Fedora Core 11
-  - Ubuntu 7 Feisty Fawn
-  - Ubuntu 8 Hardy Heron
-  - Ubuntu 8.10 Intrepid Ibex
+  - OS X 10.4 Tiger
+  - Fedora Core 11 Leonidas
+  - Fedora Core 10 Cambridge
   - Ubuntu 9.04 Jaunty Jackalope
-  - OpenBSD 4.5
-  - Arch Linux
+  - Ubuntu 8.10 Intrepid Ibex
+  - Ubuntu 8.04 Hardy Heron
   - Slackware 12.2
-  - Solaris 8
+  - Arch Linux
   - Solaris 10
+  - Solaris 8
+  - OpenBSD 4.5
+  - FreeBSD
   - Cygwin 1.5.25-14
-  - Cygwin 1.7 beta
 
 While Task has undergone testing, bugs are sure to remain.  If you encounter a
 bug, please enter a new issue at:
