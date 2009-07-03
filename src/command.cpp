@@ -194,6 +194,31 @@ std::string handleProjects ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string handleCompletionProjects ()
+{
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Scan all the tasks for their project name, building a map using project
+  // names as keys.
+  std::map <std::string, int> unique;
+  foreach (t, tasks)
+    unique[t->get ("project")] = 0;
+
+  std::stringstream out;
+  foreach (project, unique)
+    if (project->first.length ())
+      out << project->first << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string handleTags ()
 {
   std::stringstream out;
@@ -256,6 +281,36 @@ std::string handleTags ()
   else
     out << "No tags."
         << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string handleCompletionTags ()
+{
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Scan all the tasks for their project name, building a map using project
+  // names as keys.
+  std::map <std::string, int> unique;
+  foreach (t, tasks)
+  {
+    std::vector <std::string> tags;
+    t->getTags (tags);
+
+    foreach (tag, tags)
+      unique[*tag] = 0;
+  }
+
+  std::stringstream out;
+  foreach (tag, unique)
+    out << tag->first << std::endl;
 
   return out.str ();
 }

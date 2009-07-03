@@ -106,6 +106,8 @@ void Cmd::load ()
 {
   if (commands.size () == 0)
   {
+    commands.push_back ("_projects");
+    commands.push_back ("_tags");
     commands.push_back (context.stringtable.get (CMD_ADD,       "add"));
     commands.push_back (context.stringtable.get (CMD_APPEND,    "append"));
     commands.push_back (context.stringtable.get (CMD_ANNOTATE,  "annotate"));
@@ -182,7 +184,9 @@ void Cmd::allCustomReports (std::vector <std::string>& all) const
 // Commands that do not directly modify the data files.
 bool Cmd::isReadOnlyCommand ()
 {
-  if (command == context.stringtable.get (CMD_CALENDAR,  "calendar")  ||
+  if (command == "_projects"                                          ||
+      command == "_tags"                                              ||
+      command == context.stringtable.get (CMD_CALENDAR,  "calendar")  ||
       command == context.stringtable.get (CMD_COLORS,    "colors")    ||
       command == context.stringtable.get (CMD_EXPORT,    "export")    ||
       command == context.stringtable.get (CMD_HELP,      "help")      ||

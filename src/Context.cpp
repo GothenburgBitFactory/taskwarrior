@@ -169,35 +169,37 @@ std::string Context::dispatch ()
 
   // TODO Just look at this thing.  It cries out for a dispatch table.
   std::string out;
-       if (cmd.command == "projects")      { out = handleProjects        (); }
-  else if (cmd.command == "tags")          { out = handleTags            (); }
-  else if (cmd.command == "colors")        { out = handleColor           (); }
-  else if (cmd.command == "version")       { out = handleVersion         (); }
-  else if (cmd.command == "help")          { out = longUsage             (); }
-  else if (cmd.command == "stats")         { out = handleReportStats     (); }
-  else if (cmd.command == "info")          { out = handleInfo            (); }
-  else if (cmd.command == "history")       { out = handleReportHistory   (); }
-  else if (cmd.command == "ghistory")      { out = handleReportGHistory  (); }
-  else if (cmd.command == "summary")       { out = handleReportSummary   (); }
-  else if (cmd.command == "calendar")      { out = handleReportCalendar  (); }
-  else if (cmd.command == "timesheet")     { out = handleReportTimesheet (); }
-  else if (cmd.command == "add")           { out = handleAdd             (); }
-  else if (cmd.command == "append")        { out = handleAppend          (); }
-  else if (cmd.command == "annotate")      { out = handleAnnotate        (); }
-  else if (cmd.command == "done")          { out = handleDone            (); }
-  else if (cmd.command == "delete")        { out = handleDelete          (); }
-  else if (cmd.command == "start")         { out = handleStart           (); }
-  else if (cmd.command == "stop")          { out = handleStop            (); }
-  else if (cmd.command == "export")        { out = handleExport          (); }
-  else if (cmd.command == "import")        { out = handleImport          (); }
-  else if (cmd.command == "duplicate")     { out = handleDuplicate       (); }
-  else if (cmd.command == "edit")          { out = handleEdit            (); }
+       if (cmd.command == "projects")      { out = handleProjects           (); }
+  else if (cmd.command == "tags")          { out = handleTags               (); }
+  else if (cmd.command == "colors")        { out = handleColor              (); }
+  else if (cmd.command == "version")       { out = handleVersion            (); }
+  else if (cmd.command == "help")          { out = longUsage                (); }
+  else if (cmd.command == "stats")         { out = handleReportStats        (); }
+  else if (cmd.command == "info")          { out = handleInfo               (); }
+  else if (cmd.command == "history")       { out = handleReportHistory      (); }
+  else if (cmd.command == "ghistory")      { out = handleReportGHistory     (); }
+  else if (cmd.command == "summary")       { out = handleReportSummary      (); }
+  else if (cmd.command == "calendar")      { out = handleReportCalendar     (); }
+  else if (cmd.command == "timesheet")     { out = handleReportTimesheet    (); }
+  else if (cmd.command == "add")           { out = handleAdd                (); }
+  else if (cmd.command == "append")        { out = handleAppend             (); }
+  else if (cmd.command == "annotate")      { out = handleAnnotate           (); }
+  else if (cmd.command == "done")          { out = handleDone               (); }
+  else if (cmd.command == "delete")        { out = handleDelete             (); }
+  else if (cmd.command == "start")         { out = handleStart              (); }
+  else if (cmd.command == "stop")          { out = handleStop               (); }
+  else if (cmd.command == "export")        { out = handleExport             (); }
+  else if (cmd.command == "import")        { out = handleImport             (); }
+  else if (cmd.command == "duplicate")     { out = handleDuplicate          (); }
+  else if (cmd.command == "edit")          { out = handleEdit               (); }
 #ifdef FEATURE_SHELL
-  else if (cmd.command == "shell")         {       handleShell           (); }
+  else if (cmd.command == "shell")         {       handleShell              (); }
 #endif
-  else if (cmd.command == "undo")          {       handleUndo            (); }
+  else if (cmd.command == "undo")          {       handleUndo               (); }
+  else if (cmd.command == "_projects")     { out = handleCompletionProjects (); }
+  else if (cmd.command == "_tags")         { out = handleCompletionTags     (); }
   else if (cmd.command == "" &&
-           sequence.size ())               { out = handleModify          (); }
+           sequence.size ())               { out = handleModify             (); }
 
   // Command that display IDs and therefore need TDB::gc first.
   else if (cmd.command == "next")          { if (!inShadow) tdb.gc (); out = handleReportNext    (); }
