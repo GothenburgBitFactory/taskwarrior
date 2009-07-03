@@ -1221,7 +1221,7 @@ std::string handleAnnotate ()
           out << "Annotated "
               << task->id
               << " with '"
-              << task->get ("description")
+              << context.task.get ("description")
               << "'"
               << std::endl;
       }
