@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 //#include <iostream>
+#include <sstream>
 //#include <pwd.h>
 //#include <stdlib.h>
 //#include <string.h>
@@ -130,13 +131,23 @@ int Context::getWidth ()
 {
   // Determine window size, and set table accordingly.
   int width = config.get ("defaultwidth", (int) 80);
+
 #ifdef HAVE_LIBNCURSES
   if (config.get ("curses", true))
   {
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
     endwin ();
+
+    std::stringstream out;
+    out << "Context::getWidth: ncurses determined width of " << width << " characters";
+    debug (out.str ());
   }
+  else
+    debug ("Context::getWidth: ncurses available but disabled.");
+#else
+  out << "Context::getWidth: no ncurses, using width of " << width << " characters";
+  debug (out.str ());
 #endif
 
   return width;

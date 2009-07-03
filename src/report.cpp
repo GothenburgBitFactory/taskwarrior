@@ -171,7 +171,7 @@ std::string shortUsage ()
 
   row = table.addRow ();
   table.addCell (row, 1, "task export");
-  table.addCell (row, 2, "Lists all tasks as a CSV file.");
+  table.addCell (row, 2, "Lists all tasks in CSV format.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task color");
