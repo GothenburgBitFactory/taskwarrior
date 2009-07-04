@@ -29,6 +29,7 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
