@@ -199,6 +199,7 @@ std::string Context::dispatch ()
   else if (cmd.command == "_projects")     { out = handleCompletionProjects (); }
   else if (cmd.command == "_tags")         { out = handleCompletionTags     (); }
   else if (cmd.command == "_commands")     { out = handleCompletionCommands (); }
+  else if (cmd.command == "_ids")          { out = handleCompletionIDs      (); }
   else if (cmd.command == "" &&
            sequence.size ())               { out = handleModify             (); }
 

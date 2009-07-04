@@ -331,6 +331,32 @@ std::string handleCompletionCommands ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string handleCompletionIDs ()
+{
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  std::vector <int> ids;
+  foreach (task, tasks)
+    if (task->getStatus () != Task::deleted &&
+        task->getStatus () != Task::completed)
+      ids.push_back (task->id);
+
+  std::sort (ids.begin (), ids.end ());
+
+  std::stringstream out;
+  foreach (id, ids)
+    out << *id << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void handleUndo ()
 {
   context.tdb.lock (context.config.get ("locking", true));
