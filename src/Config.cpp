@@ -95,161 +95,141 @@ bool Config::load (const std::string& file)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Config::createDefault (const std::string& home)
+void Config::createDefaultRC (const std::string& rc, const std::string& data)
 {
-  // Strip trailing slash off home directory, if necessary.
-  std::string terminatedHome = home;
-  if (home[home.length () - 1] == '/')
-    terminatedHome = home.substr (0, home.length () - 1);
+  // Create a sample .taskrc file.
+  std::stringstream contents;
 
-  // Determine default names of init file and task directory.
-  std::string rcFile  = terminatedHome + "/.taskrc"; // TODO i18n
-  std::string dataDir = terminatedHome + "/.task";   // TODO i18n
+  contents << "# ...\n"
+           << "\n"
+           << "data.location=" << data << "\n"
+           << "confirmation=yes\n"
+           << "echo.command=yes\n"
+           << "next=2\n"
+           << "bulk=2\n"
+           << "dateformat=m/d/Y\n"
+           << "#monthsperline=2\n"
+           << "#defaultwidth=80\n"
+           << "curses=on\n"
+           << "color=on\n"
+           << "due=7\n"
+           << "nag=You have higher priority tasks.\n"
+           << "locking=on\n"
+           << "#editor=vi\n"
+           << "weekstart=Sunday\n"
+           << "displayweeknumber=yes\n"
 
-  // If rcFile is not found, offer to create one.
-  if (-1 == access (rcFile.c_str (), F_OK))
-  {
-    if (confirm (
-          "A configuration file could not be found in " // TODO i18n
-        + rcFile
-        + "\n\n" // no i18n
-        + "Would you like a sample .taskrc created, so task can proceed?")) // TODO i18n
-    {
-      // Create a sample .taskrc file.
-      FILE* out;
-      if ((out = fopen (rcFile.c_str (), "w")))
-      {
-        fprintf (out, "data.location=%s\n", dataDir.c_str ());
-        fprintf (out, "confirmation=yes\n");
-        fprintf (out, "echo.command=yes\n");
-        fprintf (out, "next=2\n");
-        fprintf (out, "bulk=2\n");
-        fprintf (out, "dateformat=m/d/Y\n");
-        fprintf (out, "#monthsperline=2\n");
-        fprintf (out, "#defaultwidth=80\n");
-        fprintf (out, "curses=on\n");
-        fprintf (out, "color=on\n");
-        fprintf (out, "due=7\n");
-        fprintf (out, "nag=You have higher priority tasks.\n");
-        fprintf (out, "locking=on\n");
-        fprintf (out, "#editor=vi\n");
-        fprintf (out, "weekstart=Sunday\n");
-        fprintf (out, "displayweeknumber=yes\n");
+           << "color.overdue=bold_red\n"
+           << "color.due=bold_yellow\n"
+           << "color.pri.H=bold\n"
+           << "#color.pri.M=on_yellow\n"
+           << "#color.pri.L=on_green\n"
+           << "#color.pri.none=white on_blue\n"
+           << "color.active=bold_cyan\n"
+           << "color.tagged=yellow\n"
+           << "#color.tag.bug=yellow\n"
+           << "#color.project.garden=on_green\n"
+           << "#color.keyword.car=on_blue\n"
+           << "#color.recurring=on_red\n"
+           << "#color.header=bold_green\n"
+           << "#color.footnote=bold_green\n"
+           << "#color.message=bold_red\n"
+           << "\n"
+           << "# Shadow File Example\n"
+           << "#shadow.file=" << data << "/shadow.txt\n"
+           << "#shadow.command=list\n"
+           << "#shadow.notify=on\n"
+           << "\n"
+           << "#default.project=foo\n"
+           << "#default.priority=M\n"
+           << "default.command=list\n"
 
-        fprintf (out, "color.overdue=bold_red\n");
-        fprintf (out, "color.due=bold_yellow\n");
-        fprintf (out, "color.pri.H=bold\n");
-        fprintf (out, "#color.pri.M=on_yellow\n");
-        fprintf (out, "#color.pri.L=on_green\n");
-        fprintf (out, "#color.pri.none=white on_blue\n");
-        fprintf (out, "color.active=bold_cyan\n");
-        fprintf (out, "color.tagged=yellow\n");
-        fprintf (out, "#color.tag.bug=yellow\n");
-        fprintf (out, "#color.project.garden=on_green\n");
-        fprintf (out, "#color.keyword.car=on_blue\n");
-        fprintf (out, "#color.recurring=on_red\n");
-        fprintf (out, "#color.header=bold_green\n");
-        fprintf (out, "#color.footnote=bold_green\n");
-        fprintf (out, "#color.message=bold_red\n");
-        fprintf (out, "#shadow.file=%s/shadow.txt\n", dataDir.c_str ());
-        fprintf (out, "#shadow.command=list\n");
-        fprintf (out, "#shadow.notify=on\n");
-        fprintf (out, "#default.project=foo\n");
-        fprintf (out, "#default.priority=M\n");
-        fprintf (out, "default.command=list\n");
+           // Custom reports.
+           << "# Fields: id,uuid,project,priority,entry,start,due,recur,age,active,tags,description\n"
+           << "#         description_only\n"
+           << "# Description:   This report is ...\n"
+           << "# Sort:          due+,priority-,project+\n"
+           << "# Filter:        pro:x pri:H +bug limit:10\n"
 
-        // Custom reports.
-        fprintf (out, "# Fields: id,uuid,project,priority,entry,start,due,recur,age,active,tags,description\n"); // TODO i18n
-        fprintf (out, "#         description_only\n");                                                           // TODO i18n
-        fprintf (out, "# Description:   This report is ...\n");                                                  // TODO i18n
-        fprintf (out, "# Sort:          due+,priority-,project+\n");                                             // TODO i18n
-        fprintf (out, "# Filter:        pro:x pri:H +bug limit:10\n");                                           // TODO i18n
+           << "report.long.description=Lists all task, all data, matching the specified criteria\n"
+           << "report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description\n"
+           << "report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description\n"
+           << "report.long.sort=due+,priority-,project+\n"
+           << "report.long.filter=status:pending\n"
 
-        fprintf (out, "report.long.description=Lists all task, all data, matching the specified criteria\n");    // TODO i18n
-        fprintf (out, "report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description\n");   // TODO i18n
-        fprintf (out, "report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description\n");       // TODO i18n
-        fprintf (out, "report.long.sort=due+,priority-,project+\n");                                             // TODO i18n
-        fprintf (out, "report.long.filter=status:pending\n");                                                    // TODO i18n
+           << "report.list.description=Lists all tasks matching the specified criteria\n"
+           << "report.list.columns=id,project,priority,due,active,age,description\n"
+           << "report.list.labels=ID,Project,Pri,Due,Active,Age,Description\n"
+           << "report.list.sort=due+,priority-,project+\n"
+           << "report.list.filter=status:pending\n"
 
-        fprintf (out, "report.list.description=Lists all tasks matching the specified criteria\n");              // TODO i18n
-        fprintf (out, "report.list.columns=id,project,priority,due,active,age,description\n");                   // TODO i18n
-        fprintf (out, "report.list.labels=ID,Project,Pri,Due,Active,Age,Description\n");                         // TODO i18n
-        fprintf (out, "report.list.sort=due+,priority-,project+\n");                                             // TODO i18n
-        fprintf (out, "report.list.filter=status:pending\n");                                                    // TODO i18n
+           << "report.ls.description=Minimal listing of all tasks matching the specified criteria\n"
+           << "report.ls.columns=id,project,priority,description\n"
+           << "report.ls.labels=ID,Project,Pri,Description\n"
+           << "report.ls.sort=priority-,project+\n"
+           << "report.ls.filter=status:pending\n"
 
-        fprintf (out, "report.ls.description=Minimal listing of all tasks matching the specified criteria\n");   // TODO i18n
-        fprintf (out, "report.ls.columns=id,project,priority,description\n");                                    // TODO i18n
-        fprintf (out, "report.ls.labels=ID,Project,Pri,Description\n");                                          // TODO i18n
-        fprintf (out, "report.ls.sort=priority-,project+\n");                                                    // TODO i18n
-        fprintf (out, "report.ls.filter=status:pending\n");                                                      // TODO i18n
+           << "report.newest.description=Shows the newest tasks\n"
+           << "report.newest.columns=id,project,priority,due,active,age,description\n"
+           << "report.newest.labels=ID,Project,Pri,Due,Active,Age,Description\n"
+           << "report.newest.sort=id-\n"
+           << "report.newest.filter=status:pending limit:10\n"
 
-        fprintf (out, "report.newest.description=Shows the newest tasks\n");                                     // TODO i18n
-        fprintf (out, "report.newest.columns=id,project,priority,due,active,age,description\n");                 // TODO i18n
-        fprintf (out, "report.newest.labels=ID,Project,Pri,Due,Active,Age,Description\n");                       // TODO i18n
-        fprintf (out, "report.newest.sort=id-\n");                                                               // TODO i18n
-        fprintf (out, "report.newest.filter=status:pending limit:10\n");                                         // TODO i18n
+           << "report.oldest.description=Shows the oldest tasks\n"
+           << "report.oldest.columns=id,project,priority,due,active,age,description\n"
+           << "report.oldest.labels=ID,Project,Pri,Due,Active,Age,Description\n"
+           << "report.oldest.sort=id+\n"
+           << "report.oldest.filter=status:pending limit:10\n"
 
-        fprintf (out, "report.oldest.description=Shows the oldest tasks\n");                                     // TODO i18n
-        fprintf (out, "report.oldest.columns=id,project,priority,due,active,age,description\n");                 // TODO i18n
-        fprintf (out, "report.oldest.labels=ID,Project,Pri,Due,Active,Age,Description\n");                       // TODO i18n
-        fprintf (out, "report.oldest.sort=id+\n");                                                               // TODO i18n
-        fprintf (out, "report.oldest.filter=status:pending limit:10\n");                                         // TODO i18n
+           << "report.overdue.description=Lists overdue tasks matching the specified criteria\n"
+           << "report.overdue.columns=id,project,priority,due,active,age,description\n"
+           << "report.overdue.labels=ID,Project,Pri,Due,Active,Age,Description\n"
+           << "report.overdue.sort=due+,priority-,project+\n"
+           << "report.overdue.filter=status:pending due.before:today\n"
 
-        fprintf (out, "report.overdue.description=Lists overdue tasks matching the specified criteria\n");       // TODO i18n
-        fprintf (out, "report.overdue.columns=id,project,priority,due,active,age,description\n");                // TODO i18n
-        fprintf (out, "report.overdue.labels=ID,Project,Pri,Due,Active,Age,Description\n");                      // TODO i18n
-        fprintf (out, "report.overdue.sort=due+,priority-,project+\n");                                          // TODO i18n
-        fprintf (out, "report.overdue.filter=status:pending due.before:today\n");                                // TODO i18n
+           << "report.active.description=Lists active tasks matching the specified criteria\n"
+           << "report.active.columns=id,project,priority,due,active,age,description\n"
+           << "report.active.labels=ID,Project,Pri,Due,Active,Age,Description\n"
+           << "report.active.sort=due+,priority-,project+\n"
+           << "report.active.filter=status:pending start.any:\n"
 
-        fprintf (out, "report.active.description=Lists active tasks matching the specified criteria\n");         // TODO i18n
-        fprintf (out, "report.active.columns=id,project,priority,due,active,age,description\n");                 // TODO i18n
-        fprintf (out, "report.active.labels=ID,Project,Pri,Due,Active,Age,Description\n");                       // TODO i18n
-        fprintf (out, "report.active.sort=due+,priority-,project+\n");                                           // TODO i18n
-        fprintf (out, "report.active.filter=status:pending start.any:\n");                                       // TODO i18n
+           << "report.completed.description=Lists completed tasks matching the specified criteria\n"
+           << "report.completed.columns=end,project,priority,age,description\n"
+           << "report.completed.labels=Complete,Project,Pri,Age,Description\n"
+           << "report.completed.sort=end+,priority-,project+\n"
+           << "report.completed.filter=status:completed\n"
 
-        fprintf (out, "report.completed.description=Lists completed tasks matching the specified criteria\n");   // TODO i18n
-        fprintf (out, "report.completed.columns=end,project,priority,age,description\n");                        // TODO i18n
-        fprintf (out, "report.completed.labels=Complete,Project,Pri,Age,Description\n");                         // TODO i18n
-        fprintf (out, "report.completed.sort=end+,priority-,project+\n");                                        // TODO i18n
-        fprintf (out, "report.completed.filter=status:completed\n");                                             // TODO i18n
+           << "report.recurring.description=Lists recurring tasks matching the specified criteria\n"
+           << "report.recurring.columns=id,project,priority,due,recur,active,age,description\n"
+           << "report.recurring.labels=ID,Project,Pri,Due,Recur,Active,Age,Description\n"
+           << "report.recurring.sort=due+,priority-,project+\n"
+           << "report.recurring.filter=status:pending parent.any:\n"
 
-        fprintf (out, "report.recurring.description=Lists recurring tasks matching the specified criteria\n");   // TODO i18n
-        fprintf (out, "report.recurring.columns=id,project,priority,due,recur,active,age,description\n");        // TODO i18n
-        fprintf (out, "report.recurring.labels=ID,Project,Pri,Due,Recur,Active,Age,Description\n");              // TODO i18n
-        fprintf (out, "report.recurring.sort=due+,priority-,project+\n");                                        // TODO i18n
-        fprintf (out, "report.recurring.filter=status:pending parent.any:\n");                                   // TODO i18n
+           << "report.waiting.description=Lists all waiting tasks matching the specified criteria\n"
+           << "report.waiting.columns=id,project,priority,wait,age,description\n"
+           << "report.waiting.labels=ID,Project,Pri,Wait,Age,Description\n"
+           << "report.waiting.sort=wait+,priority-,project+\n"
+           << "report.waiting.filter=status:waiting\n"
 
-        fprintf (out, "report.waiting.description=Lists all waiting tasks matching the specified criteria\n");   // TODO i18n
-        fprintf (out, "report.waiting.columns=id,project,priority,wait,age,description\n");                      // TODO i18n
-        fprintf (out, "report.waiting.labels=ID,Project,Pri,Wait,Age,Description\n");                            // TODO i18n
-        fprintf (out, "report.waiting.sort=wait+,priority-,project+\n");                                         // TODO i18n
-        fprintf (out, "report.waiting.filter=status:waiting\n");                                                 // TODO i18n
+           << "report.all.description=Lists all tasks matching the specified criteria\n"
+           << "report.all.columns=id,project,priority,due,active,age,description\n"
+           << "report.all.labels=ID,Project,Pri,Due,Active,Age,Description\n"
+           << "report.all.sort=due+,priority-,project+\n"
 
-        fprintf (out, "report.all.description=Lists all tasks matching the specified criteria\n");               // TODO i18n
-        fprintf (out, "report.all.columns=id,project,priority,due,active,age,description\n");                    // TODO i18n
-        fprintf (out, "report.all.labels=ID,Project,Pri,Due,Active,Age,Description\n");                          // TODO i18n
-        fprintf (out, "report.all.sort=due+,priority-,project+\n");                                              // TODO i18n
+           << "report.next.description=Lists all tasks matching the specified criteria\n"
+           << "report.next.columns=id,project,priority,due,active,age,description\n"
+           << "report.next.labels=ID,Project,Pri,Due,Active,Age,Description\n"
+           << "report.next.sort=due+,priority-,project+\n"
+           << "report.next.filter=status:pending\n";
 
-        fprintf (out, "report.next.description=Lists all tasks matching the specified criteria\n");              // TODO i18n
-        fprintf (out, "report.next.columns=id,project,priority,due,active,age,description\n");                   // TODO i18n
-        fprintf (out, "report.next.labels=ID,Project,Pri,Due,Active,Age,Description\n");                         // TODO i18n
-        fprintf (out, "report.next.sort=due+,priority-,project+\n");                                             // TODO i18n
-        fprintf (out, "report.next.filter=status:pending\n");                                                    // TODO i18n
+  spit (rc, contents.str ());
+}
 
-        fclose (out);
-
-        std::cout << "Done." << std::endl;                                                                       // TODO i18n
-      }
-    }
-  }
-
-  this->load (rcFile);
-
-  // Get the data.location value from the (potentially newly created) .taskrc
-  // file.
-  dataDir = this->get ("data.location", dataDir); // no i18n
-  if (-1 == access (dataDir.c_str (), F_OK))
-    mkdir (dataDir.c_str (), S_IRWXU);
+////////////////////////////////////////////////////////////////////////////////
+void Config::createDefaultData (const std::string& data)
+{
+  if (access (data.c_str (), F_OK))
+    mkdir (data.c_str (), S_IRWXU);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

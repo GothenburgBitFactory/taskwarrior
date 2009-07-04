@@ -41,7 +41,8 @@ public:
   Config& operator= (const Config&);
 
   bool load (const std::string&);
-  void createDefault (const std::string&);
+  void createDefaultRC (const std::string&, const std::string&);
+  void createDefaultData (const std::string&);
   void setDefaults ();
 
   const std::string get (const char*);

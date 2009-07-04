@@ -293,38 +293,62 @@ std::string Context::canonicalize (const std::string& input) const
 ////////////////////////////////////////////////////////////////////////////////
 void Context::loadCorrectConfigFile ()
 {
-  bool needNewConfig = true;
+  // Set up default locations.
+  struct passwd* pw = getpwuid (getuid ());
+  if (!pw)
+    throw std::string (
+      stringtable.get (
+        SHELL_READ_PASSWD,
+        "Could not read home directory from the passwd file."));
 
+  std::string home = pw->pw_dir;
+  std::string rc   = home + "/.taskrc";
+  std::string data = home + "/.task";
+
+  // Is there an override for rc?
   foreach (arg, args)
-  {
     if (arg->substr (0, 3) == "rc:")
     {
-      std::string file = arg->substr (3, std::string::npos);
-      if (access (file.c_str (), F_OK))
-        throw std::string ("Could not read configuration file '") + file + "'";
-
-      header (std::string ("Using alternate .taskrc file ") + file); // TODO i18n
-      config.clear ();       // Dump current values.
-      config.setDefaults (); // Add in the custom reports.
-      config.load (file);    // Load new file.
-      needNewConfig = false;
-
-      // No need to handle it again.
+      rc = arg->substr (3, std::string::npos);
       args.erase (arg);
+      header ("Using alternate .taskrc file " + rc); // TODO i18n
       break;
     }
-  }
 
-  if (needNewConfig)
+  // Load rc file.
+  config.clear ();       // Dump current values.
+  config.setDefaults (); // Add in the custom reports.
+  config.load (rc);      // Load new file.
+
+  if (config.get ("data.location") != "")
+    data = config.get ("data.location");
+
+  // Is there an override for data?
+  foreach (arg, args)
+    if (arg->substr (0, 17) == "rc.data.location:")
+    {
+      data = arg->substr (17, std::string::npos);
+      header ("Using alternate data.location " + data); // TODO i18n
+      break;
+    }
+
+  // Do we need to create a default rc?
+  if (access (rc.c_str (), F_OK) &&
+      confirm ("A configuration file could not be found in " // TODO i18n
+             + home
+             + "\n\n"
+             + "Would you like a sample .taskrc created, so task can proceed?"))
   {
-    struct passwd* pw = getpwuid (getuid ());
-    if (!pw)
-      throw std::string (
-        stringtable.get (SHELL_READ_PASSWD,
-                         "Could not read home directory from the passwd file."));
-
-    config.createDefault (pw->pw_dir);
+    config.createDefaultRC (rc, data);
   }
+
+  // Create data location, if necessary.
+  config.createDefaultData (data);
+
+  // Load rc file.
+  config.clear ();       // Dump current values.
+  config.setDefaults (); // Add in the custom reports.
+  config.load (rc);      // Load new file.
 
   // Apply overrides of type: "rc.name:value"
   std::vector <std::string> filtered;
@@ -351,6 +375,7 @@ void Context::loadCorrectConfigFile ()
   }
 
   args = filtered;
+  exit (0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
