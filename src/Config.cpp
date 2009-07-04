@@ -107,7 +107,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "locking=on                             # Use file-level locking\n"
            << "\n"
            << "# Terminal\n"
-           << "curses=on                              # Use curses\n"
+           << "curses=on                              # Use ncurses library to determine terminal width\n"
            << "#defaultwidth=80                       # Without ncurses, assumed width\n"
            << "#editor=vi                             # Preferred text editor\n"
            << "\n"
