@@ -63,6 +63,7 @@ std::string handleProjects ();
 std::string handleCompletionProjects ();
 std::string handleTags ();
 std::string handleCompletionTags ();
+std::string handleCompletionCommands ();
 std::string handleVersion ();
 std::string handleDelete ();
 std::string handleStart ();

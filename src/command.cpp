@@ -316,6 +316,20 @@ std::string handleCompletionTags ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string handleCompletionCommands ()
+{
+  std::vector <std::string> commands;
+  context.cmd.allCommands (commands);
+  std::sort (commands.begin (), commands.end ());
+
+  std::stringstream out;
+  foreach (command, commands)
+    out << *command << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void handleUndo ()
 {
   context.tdb.lock (context.config.get ("locking", true));

@@ -44,6 +44,7 @@ public:
   bool validCustom      (const std::string&);
   void parse            (const std::string&);
   void allCustomReports (std::vector <std::string>&) const;
+  void allCommands      (std::vector <std::string>&) const;
 
   bool isReadOnlyCommand ();
   bool isWriteCommand ();
