@@ -61,7 +61,7 @@ bool Cmd::valid (const std::string& input)
   load ();
 
   std::vector <std::string> matches;
-  autoComplete (lowerCase (input), commands, matches);
+  autoComplete (lowerCase (context.canonicalize (input)), commands, matches);
   return matches.size () == 1 ? true : false;
 }
 
@@ -72,7 +72,7 @@ bool Cmd::validCustom (const std::string& input)
   load ();
 
   std::vector <std::string> matches;
-  autoComplete (lowerCase (input), customReports, matches);
+  autoComplete (lowerCase (context.canonicalize (input)), customReports, matches);
   return matches.size () == 1 ? true : false;
 }
 
@@ -81,7 +81,7 @@ void Cmd::parse (const std::string& input)
 {
   load ();
 
-  std::string candidate = lowerCase (input);
+  std::string candidate = lowerCase (context.canonicalize (input));
 
   std::vector <std::string> matches;
   autoComplete (candidate, commands, matches);
