@@ -65,11 +65,10 @@
  + Now supports a 'waiting' custom report to list all waiting tasks.
  + Now supports a 'recurring' custom report to list all recurring tasks.
  + Now supports an 'all' report to list all tasks, including deleted
+ + Supports command aliases - create an alias for any command by creating
+   a .taskrc entry like "alias.new_name=old_name".
    and completed tasks.
- + Now over 1,500 unit tests, helping to maintain code quality.
-
-Add:
-  aliases
+ + Now over 1,600 unit tests, helping to maintain code quality.
 
 ------ old releases ------------------------------
 
