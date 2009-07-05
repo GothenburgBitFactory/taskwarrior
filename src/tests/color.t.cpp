@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  char* colors[] =
+  const char* colors[] =
   {
     "off",
     "bold", "underline", "bold_underline",
