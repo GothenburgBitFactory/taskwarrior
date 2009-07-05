@@ -506,7 +506,7 @@ std::string taskDifferences (const Task& before, const Task& after)
     out << "  - "
         << *name
         << " was set to '"
-        << after.get (*name)
+        << renderAttribute (*name, after.get (*name))
         << "'\n";
 
   foreach (name, beforeAtts)
@@ -516,12 +516,12 @@ std::string taskDifferences (const Task& before, const Task& after)
       out << "  - "
           << *name
           << " was changed from '"
-          << before.get (*name)
+          << renderAttribute (*name, before.get (*name))
           << "' to '"
-          << after.get (*name)
+          << renderAttribute (*name, after.get (*name))
           << "'\n";
 
-  // Can't just say nothing.
+  // Shouldn't just say nothing.
   if (out.str ().length () == 0)
     out << "  - No changes were made\n";
 
