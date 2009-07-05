@@ -1613,13 +1613,16 @@ std::string handleReportStats ()
   if (!stat (file.c_str (), &s))
     dataSize += s.st_size;
 
-#ifdef FEADTURE_UNDO
   file = location + "/undo.data";
   if (!stat (file.c_str (), &s))
     dataSize += s.st_size;
-#endif
 
-  // TODO Include transaction log?
+  std::vector <std::string> undo;
+  slurp (file, undo, false);
+  int undoCount = 0;
+  foreach (tx, undo)
+    if (tx->substr (0, 3) == "---")
+      ++undoCount;
 
   // Get all the tasks.
   std::vector <Task> tasks;
@@ -1748,6 +1751,10 @@ std::string handleReportStats ()
   row = table.addRow ();
   table.addCell (row, 0, "Data size");
   table.addCell (row, 1, formatBytes (dataSize));
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Undo transactions");
+  table.addCell (row, 1, undoCount);
 
   if (totalT)
   {
