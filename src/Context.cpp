@@ -309,13 +309,17 @@ void Context::loadCorrectConfigFile ()
 
   // Is there an override for rc?
   foreach (arg, args)
-    if (arg->substr (0, 3) == "rc:")
+  {
+    if (*arg == "--")
+      break;
+    else if (arg->substr (0, 3) == "rc:")
     {
       rc = arg->substr (3, std::string::npos);
       args.erase (arg);
       header ("Using alternate .taskrc file " + rc); // TODO i18n
       break;
     }
+  }
 
   // Load rc file.
   config.clear ();       // Dump current values.
@@ -327,12 +331,16 @@ void Context::loadCorrectConfigFile ()
 
   // Is there an override for data?
   foreach (arg, args)
-    if (arg->substr (0, 17) == "rc.data.location:")
+  {
+    if (*arg == "--")
+      break;
+    else if (arg->substr (0, 17) == "rc.data.location:")
     {
       data = arg->substr (17, std::string::npos);
       header ("Using alternate data.location " + data); // TODO i18n
       break;
     }
+  }
 
   // Do we need to create a default rc?
   if (access (rc.c_str (), F_OK) &&
@@ -356,7 +364,9 @@ void Context::loadCorrectConfigFile ()
   std::vector <std::string> filtered;
   foreach (arg, args)
   {
-    if (arg->substr (0, 3) == "rc.")
+    if (*arg == "--")
+      break;
+    else if (arg->substr (0, 3) == "rc.")
     {
       std::string name;
       std::string value;
