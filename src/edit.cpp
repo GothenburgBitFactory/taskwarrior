@@ -557,7 +557,7 @@ std::string handleEdit ()
 ARE_THESE_REALLY_HARMFUL:
     // Launch the editor.
     std::cout << "Launching '" << editor << "' now..." << std::endl;
-    system (editor.c_str ());
+    (void)system (editor.c_str ());
     std::cout << "Editing complete." << std::endl;
 
     // Slurp file.

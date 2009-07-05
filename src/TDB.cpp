@@ -380,7 +380,7 @@ int TDB::commit ()
     // Write out all pending.
     if (fseek (mLocations[0].pending, 0, SEEK_SET) == 0)
     {
-      ftruncate (fileno (mLocations[0].pending), 0);
+      (void)ftruncate (fileno (mLocations[0].pending), 0);
       foreach (task, allPending)
         fputs (task->composeF4 ().c_str (), mLocations[0].pending);
     }
@@ -464,14 +464,14 @@ int TDB::gc ()
   {
     if (fseek (tdb.mLocations[0].pending, 0, SEEK_SET) == 0)
     {
-      ftruncate (fileno (tdb.mLocations[0].pending), 0);
+      (void)ftruncate (fileno (tdb.mLocations[0].pending), 0);
       foreach (task, pending)
         fputs (task->composeF4 ().c_str (), tdb.mLocations[0].pending);
     }
 
     if (fseek (tdb.mLocations[0].completed, 0, SEEK_SET) == 0)
     {
-      ftruncate (fileno (tdb.mLocations[0].completed), 0);
+      (void)ftruncate (fileno (tdb.mLocations[0].completed), 0);
       foreach (task, completed)
         fputs (task->composeF4 ().c_str (), tdb.mLocations[0].completed);
     }
