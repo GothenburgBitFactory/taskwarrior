@@ -280,16 +280,28 @@ std::string Context::canonicalize (const std::string& input) const
 {
   std::string canonical = input;
 
-  // Follow the chain.
-  int i = 10;  // Safety valve.
-  std::map <std::string, std::string>::const_iterator found;
-  while ((found = aliases.find (canonical)) != aliases.end () && i-- > 0)
-    canonical = found->second;
+  // First try to autocomplete the alias.
+  std::vector <std::string> options;
+  std::vector <std::string> matches;
+  foreach (name, aliases)
+    options.push_back (name->first);
 
- if (i < 1)
-   return input;
+  autoComplete (input, options, matches);
+  if (matches.size () == 1)
+  {
+    canonical = matches[0];
 
- return canonical;
+    // Follow the chain.
+    int i = 10;  // Safety valve.
+    std::map <std::string, std::string>::const_iterator found;
+    while ((found = aliases.find (canonical)) != aliases.end () && i-- > 0)
+      canonical = found->second;
+
+    if (i < 1)
+      return input;
+  }
+
+  return canonical;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -362,11 +374,13 @@ void Context::loadCorrectConfigFile ()
 
   // Apply overrides of type: "rc.name:value"
   std::vector <std::string> filtered;
+  bool foundTerminator = false;
   foreach (arg, args)
   {
     if (*arg == "--")
-      break;
-    else if (arg->substr (0, 3) == "rc.")
+      foundTerminator = true;
+    else if (!foundTerminator &&
+             arg->substr (0, 3) == "rc.")
     {
       std::string name;
       std::string value;
