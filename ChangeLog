@@ -39,6 +39,7 @@
  + New, more flexible, more consistent, grep-able file format.
  + If task is renamed to "cal", or there is a symlink to task called "cal",
    then task can act as a replacement for the Unix "cal" command.
+ + Supports arguments to the cal command like "month year", "year", etc.
  + The "tags" report now shows the tag usage count.
  + The "projects" report now shows totals by project and priority.
  + Now supports attribute modifiers that allow much finer control over report
