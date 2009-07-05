@@ -55,9 +55,9 @@ if (open my $fh, '<', './export.txt')
   close $fh;
 }
 
-my $line1 = qr/'id','uuid','status','tags','entry','start','due','recur','end','project','priority','fg','bg','description'\n/;
-my $line2 = qr/1,'.{8}-.{4}-.{4}-.{4}-.{12}','pending','',\d+,,,,,'A','H',,,'one'\n/;
-my $line3 = qr/2,'.{8}-.{4}-.{4}-.{4}-.{12}','pending','tag1 tag2',\d+,,,,,,,,,'two'\n/;
+my $line1 = qr/'uuid','status','tags','entry','start','due','recur','end','project','priority','fg','bg','description'\n/;
+my $line2 = qr/'.{8}-.{4}-.{4}-.{4}-.{12}','pending','',\d+,,,,,'A','H',,,'one'\n/;
+my $line3 = qr/'.{8}-.{4}-.{4}-.{4}-.{12}','pending','tag1 tag2',\d+,,,,,,,,,'two'\n/;
 
 like ($lines[0], $line1, "export line one");
 like ($lines[1], $line2, "export line two");
