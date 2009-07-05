@@ -350,7 +350,7 @@ std::string Task::composeCSV () const
 {
   std::stringstream out;
 
-  out <<        id               <<  ",";
+  // Deliberately no 'id'.
   out << "'" << get ("uuid")     << "',"; // No i18n
   out << "'" << get ("status")   << "',"; // No i18n
 

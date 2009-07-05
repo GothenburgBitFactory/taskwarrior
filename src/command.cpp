@@ -811,8 +811,8 @@ std::string handleExport ()
 {
   std::stringstream out;
 
-  out << "'id',"
-      << "'uuid',"
+  // Deliberately no 'id'.
+  out << "'uuid',"
       << "'status',"
       << "'tags',"
       << "'entry',"
