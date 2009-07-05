@@ -380,7 +380,9 @@ int TDB::commit ()
     // Write out all pending.
     if (fseek (mLocations[0].pending, 0, SEEK_SET) == 0)
     {
-      (void)ftruncate (fileno (mLocations[0].pending), 0);
+      if (ftruncate (fileno (mLocations[0].pending), 0))
+        throw std::string ("Failed to truncate pending.data file ");
+
       foreach (task, allPending)
         fputs (task->composeF4 ().c_str (), mLocations[0].pending);
     }
@@ -464,14 +466,18 @@ int TDB::gc ()
   {
     if (fseek (tdb.mLocations[0].pending, 0, SEEK_SET) == 0)
     {
-      (void)ftruncate (fileno (tdb.mLocations[0].pending), 0);
+      if (ftruncate (fileno (tdb.mLocations[0].pending), 0))
+        throw std::string ("Failed to truncate pending.data file ");
+
       foreach (task, pending)
         fputs (task->composeF4 ().c_str (), tdb.mLocations[0].pending);
     }
 
     if (fseek (tdb.mLocations[0].completed, 0, SEEK_SET) == 0)
     {
-      (void)ftruncate (fileno (tdb.mLocations[0].completed), 0);
+      if (ftruncate (fileno (tdb.mLocations[0].completed), 0))
+        throw std::string ("Failed to truncate completed.data file ");
+
       foreach (task, completed)
         fputs (task->composeF4 ().c_str (), tdb.mLocations[0].completed);
     }
