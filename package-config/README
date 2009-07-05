@@ -5,6 +5,7 @@ systems:
 * osx: binary packages for Mac OSX
 * fedora: rpm packages for Fedora (Linux)
 * ubuntu: deb packages for Ubuntu and (Linux)
+* cygwin_ bz2 packages for cygwin (windows)
 
 Please visit the corresponding operating systems homepage
 for instructions on how to build a binary package of task
@@ -17,7 +18,10 @@ http://fedoraproject.org/wiki/PackageMaintainers/CreatingPackageHowTo
 For Ubuntu deb packages you find instructions at
 https://wiki.ubuntu.com/PackagingGuide/Complete
 
-You might also ask in the forums of taskwarrior.org if you
+For Cygwin bz2 packages you find instructions at
+http://cygwin.com/setup.html
+
+You might also ask in the forums on taskwarrior.org if you
 have further questions.
 
 This file and the corresponding package build configuration files
