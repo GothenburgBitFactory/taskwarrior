@@ -158,8 +158,8 @@ std::string shortUsage ()
   table.addCell (row, 2, "Shows a graphical report of task history, by month.");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task calendar");
-  table.addCell (row, 2, "Shows a monthly calendar, with due tasks marked.");
+  table.addCell (row, 1, "task calendar [due|month year|year]");
+  table.addCell (row, 2, "Shows a calendar, with due tasks marked.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task stats");

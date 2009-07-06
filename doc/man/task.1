@@ -1,4 +1,4 @@
-.TH task 1 2009-05-30 "Task 1.8.0" "User Manuals"
+.TH task 1 2009-07-14 "Task 1.8.0" "User Manuals"
 
 .SH NAME
 task \- A command line todo manager.
@@ -27,21 +27,29 @@ task.
 Adds an annotation to an existing task.
 
 .TP
-.B completed [tags] [attrs] description
-Provides a chronological listing of all completed tasks matching specified
-criteria.
-
-.TP
 .B ID [tags] [attrs] [description]
 Modifies the existing task with provided information.
 
 .TP
 .B ID /from/to/
-Performs one substitution on task description for fixing mistakes.
+Performs one substitution on task description and annotation for fixing mistakes.
 
 .TP
 .B ID /from/to/g
-Performs all substitutions on task description for fixing mistakes.
+Performs all substitutions on task description and annotation for fixing mistakes.
+
+.TP
+.B edit ID
+Launches an editor to let you modify all aspects of a task directly.
+Use carefully.
+
+.TP
+.B undo
+Reverts the most recent action.
+
+.TP
+.B shell
+Launches an interactive shell with all the task commands available.
 
 .TP
 .B duplicate ID [tags] [attrs] [description]
@@ -50,10 +58,6 @@ Duplicates the specified task and allows modifications.
 .TP
 .B delete ID
 Deletes the specified task from task list.
-
-.TP
-.B undelete ID
-Undeletes the specified task, provided a report has not yet been run.
 
 .TP
 .B info ID
@@ -72,10 +76,6 @@ time from the specified task.
 .TP
 .B done ID [tags] [attrs] [description]
 Marks the specified task as done.
-
-.TP
-.B undo ID
-Marks the specified task as pending, provided a report has not yet been run.
 
 .TP
 .B projects
@@ -102,20 +102,8 @@ Shows a report of task history by month.
 Shows a graphical report of task status by month.
 
 .TP
-.B next
-Shows the most important pending tasks for each project.
-
-.TP
-.B calendar
+.B calendar [ y | due [y] | month year [y] | year ]
 Shows a monthly calendar with due tasks marked.
-
-.TP
-.B active
-Shows all tasks that are started but not completed.
-
-.TP
-.B overdue
-Shows all incomplete tasks that are beyond their due date.
 
 .TP
 .B stats
@@ -149,6 +137,20 @@ built-in reports currently in task. The output and sort behaviour of these
 subcommands can be configured in the configuration file.
 
 .TP
+.B active [tags] [attrs] [description]
+Shows all tasks matching the specified criteria
+that are started but not completed.
+
+.TP
+.B all [tags] [attrs] [description]
+Shows all tasks matching the specified criteria.
+
+.TP
+.B completed [tags] [attrs] [description]
+Shows all tasks matching the specified criteria
+that are completed.
+
+.TP
 .B ls [tags] [attrs] [description]
 Provides a minimal listing of tasks with specified criteria.
 
@@ -161,12 +163,25 @@ Provides a more detailed listing of tasks with specified criteria.
 Provides the most detailed listing of tasks with specified criteria.
 
 .TP
-.B newest [tags] [attrs] [description] | newest [limit]
+.B newest [tags] [attrs] [description]
 Shows the newest tasks with specified criteria.
 
 .TP
-.B oldest [tags] [attrs] [description] | oldest [limit]
+.B oldest [tags] [attrs] [description]
 Shows the oldest tasks with specified criteria
+
+.TP
+.B overdue [tags] [attrs] [description]
+Shows all incomplete tasks matching the specified criteria
+that are beyond their due date.
+
+.TP
+.B recurring [tags] [attrs] [description]
+Shows all recurring tasks matching the specified criteria.
+
+.TP
+.B waiting [tags] [attrs] [description]
+Shows all waiting tasks matching the specified criteria.
 
 .SH ATTRIBUTES AND METADATA
 
@@ -175,51 +190,78 @@ Shows the oldest tasks with specified criteria
 Tasks can be specified uniquely by IDs, which are simply the index of the
 task in a report. Be careful, as the IDs of tasks may change after a
 modification to the database. Always run a report to check you have the right
-ID for a task. IDs can be given to task as a sequence, for example,
+ID for a task. IDs can be given to task as a sequences, for example,
 .br
 .B
-task del 1 2 5-10,12
+task del 1,4-10,19
 
 .TP
 .B +tag|-tag
 Tags are arbitrary words associated with a task. Use + to add a tag and - to
-remove a tag from a task.
+remove a tag from a task. A task can have any quantity of tags
 
 .TP
 .B project:<project-name>
-Specify the project to which a task is related to.
+Specifies the project to which a task is related to.
 
 .TP
 .B priority:H|M|L|N
-Specify High, Medium, Low and No priority for a task.
+Specifies High, Medium, Low and No priority for a task.
 
 .TP
 .B due:<due-date>
-Specify the due-date of a task.
-
-.TP
-.B until:<end-date-of-recurrence>
-Specify the Recurrence end-date of a task.
+Specifies the due-date of a task.
 
 .TP
 .B recur:<frequency>
-Specify the frequency of recurrence of a task.
+Specifies the frequency of a recurrence of a task.
+
+.TP
+.B until:<end-date-of-recurrence>
+Specifies the Recurrence end-date of a task.
 
 .TP
 .B fg:<color-spec>
-Specify foreground color.
+Specifies foreground color.
 
 .TP
 .B bg:<color-spec>
-Specify background color.
+Specifies background color.
 
 .TP
-.B rc:<path>
-Specify alternate configuration file.
+.B limit
+Specifies the desired number of rows a report should have.
 
-.TP
-.B rc.<name>:<value>
-Specify individual configuration file overrides.
+.SH ATTRIBUTE MODIFIERS
+Attribute modifiers improve filters.  Supported modifiers are:
+
+.RS
+.B before     (synonyms under, below)
+.br
+.B  after      (synonyms over, above)
+.br
+.B  none
+.br
+.B  any
+.br
+.B  is         (synonym equals)
+.br
+.B  isnt       (synonym not)
+.br
+.B  has        (synonym contain)
+.br
+.B  hasnt
+.br
+.B  startswith (synonym left)
+.br
+.B  endswith   (synonym right)
+.RE
+
+For example:
+
+.RS
+task list due.before:eom priority.not:L
+.RE
 
 .SH SPECIFYING DATES AND FREQUENCIES
 
@@ -321,11 +363,50 @@ $ task l
 
 could be list, ls or long.
 
+.SH SPECIFYING DESCRIPTIONS
+Some task descriptions need to be escaped because of the shell
+and the special meaning of some characters to the shell. This can be
+done either by adding quotes to the description or escaping the special
+character:
+
+.RS
+$ task add "quoted ' quote"
+.br
+$ task add escaped \\' quote
+.RE
+
+The argument \-\- (a double dash) tells task to treat all other args
+as description:
+
+.RS
+$ task add -- project:Home needs scheduling
+.RE
+
+.SH CONFIGURATION FILE AND OVERRIDE OPTIONS
+Task stores its configuration in a file in the user's home directory:
+~/.taskrc . The default configuration file can be overriden with
+
+.TP
+.B task rc:<pathi-to-alternate-file>
+Specifies an alternate configuration file.
+
+.TP
+.B task rc.<name>:<value> ...
+Specifies individual configuration file overrides.
+
 .SH EXAMPLES
 
-For examples please see the online documentation at
-.br
+For examples please see the task tutorial man page at
+
+.RS
+man task-tutorial
+.RE
+
+or the online documentation starting at
+
+.RS
 <http://taskwarrior.org/wiki/taskwarrior/Simple>
+.RE
 
 .SH FILES
 
@@ -341,6 +422,9 @@ can be configured in the configuration file.
 
 .TP
 ~/.task/completed.data The file that contains the completed "done" tasks.
+
+.TP
+~/.task/undo.data The file that contains the information to the "undo" command.
 
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.

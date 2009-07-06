@@ -16,3 +16,4 @@ src/tests/all.log
 src/tests/*.data
 *~
 movie*
+.*.swp

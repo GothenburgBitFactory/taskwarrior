@@ -1,4 +1,4 @@
-.TH taskrc 5 2009-05-30 "Task 1.8.0" "User Manuals"
+.TH taskrc 5 2009-07-14 "Task 1.8.0" "User Manuals"
 
 .SH NAME
 taskrc \- Configuration file for the task(1) command
@@ -24,6 +24,14 @@ attribute when running task:
 
 .RS
 $ task rc:<directory-path>/.taskrc
+.RE
+
+Individual option can be overriden by using the
+.I rc.<name>: 
+attribute when running task:
+
+.RS
+$ task rc.<name>:<value> ...
 .RE
 
 If
@@ -53,8 +61,7 @@ and set a configuration variable to a certain value. The equal sign ("=") is use
 name from the value to be set.
 
 The hash mark, or pound sign ("#") is used as a "comment" character. It can be used to annotate the
-configuration file. It is placed at the beginning of a line and all text after the character to the
-end of the line is ignored.
+configuration file. All text after the character to the end of the line is ignored.
 
 .SH CONFIGURATION VARIABLES
 Valid variable names and their default values are:
