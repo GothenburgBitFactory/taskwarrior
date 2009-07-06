@@ -46,6 +46,7 @@ int main (int argc, char** argv)
 
   // Round-trip testing.
   Task t3;
+  t3.set ("name", "value");
   std::string before = t3.composeF4 ();
   t3.parse (before);
   std::string after = t3.composeF4 ();
