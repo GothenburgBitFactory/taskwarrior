@@ -26,7 +26,7 @@ attribute when running task:
 $ task rc:<directory-path>/.taskrc
 .RE
 
-Individual option can be overriden by using the
+Individual option can be overridden by using the
 .I rc.<name>: 
 attribute when running task:
 
@@ -113,7 +113,7 @@ May be "yes" or "no", and determines whether task will ask for confirmation befo
 
 .TP
 .B echo.command=yes
-May be "yes" or "no", and causes task to display the ID and description of any task when you run the start, stop, do, undo, delete and undelete commands. The default value is "yes". 
+May be "yes" or "no", and causes task to display the ID and description of any task when you run the start, stop, do, undo or delete commands. The default value is "yes". 
 
 .TP
 .B next=2
@@ -196,7 +196,7 @@ use dashes (-----) to underline column headings.
 
 .TP
 .B fontunderline=on
-Determines if font underlines or ascii dashes should be used to underline
+Determines if font underlines or ASCII dashes should be used to underline
 headers.
 
 Task has a number of coloration rules. They correspond to a particular attribute
@@ -375,7 +375,7 @@ The description for report X when running the "task help" command.
 .B report.X.columns
 The columns that will be used when generating the report X. Valid columns are:
 id, uuid, project, priority, entry, start, due, recur, recur_ind, age, age_compact,
-active, tags, description, description_only. The IDs are seperated by commas.
+active, tags, description, description_only. The IDs are separated by commas.
 
 .TP
 .B report.X.labels
@@ -385,7 +385,7 @@ are a comma separated list.
 .TP
 .B report.X.sort
 The sort order of the tasks in the generated report X. The sort order is specified
-by using the column ids postfixed by a "+" for ascending sort order or a "-" for
+by using the column ids post-fixed by a "+" for ascending sort order or a "-" for
 descending sort order. The sort IDs are separated by commas
 
 .TP
