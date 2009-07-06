@@ -133,8 +133,8 @@ Shows the long usage text.
 .SH REPORT SUBCOMMANDS
 
 A report is a listing of information from the task database. There are several
-built-in reports currently in task. The output and sort behaviour of these
-subcommands can be configured in the configuration file.
+reports currently predefined in task. The output and sort behaviour of these
+reports can be configured in the configuration file. See also the man page taskrc(5).
 
 .TP
 .B active [tags] [attrs] [description]
@@ -182,6 +182,10 @@ Shows all recurring tasks matching the specified criteria.
 .TP
 .B waiting [tags] [attrs] [description]
 Shows all waiting tasks matching the specified criteria.
+
+.TP
+.B next [tags] [attrs] [description]
+Shows all tasks with upcoming due dates matching the specified criteria.
 
 .SH ATTRIBUTES AND METADATA
 
