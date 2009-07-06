@@ -1,0 +1,31 @@
+The task data files (pending.data and completed.data) as well as edits made
+via commands like "task 1 edit" can be color-highlighted if you happen to use
+VIM as your preferred text editor.  For this to work, you need to first have
+syntax highlighting enabled when you use VIM.  This happens to be the default
+for most VIM installations, but it is usually quite simple if that doesn't
+happen to be so in your case.  Rather than repeat the excellent VIM
+documentation here, please see the appropriate VIM documentation itself.
+Generally this can be made seen by starting vim and issuing the following
+command:
+
+    :help syntax
+
+You may prefer to use your web browser via:
+
+    http://vimdoc.sourceforge.net/htmldoc/syntax.html#syntax
+
+
+Once you have VIM's syntax highlighting enabled and working with other file
+types properly, configuring it for use with task is simple.  Just extract
+these files into your home directory so that you have:
+
+~/.vim/ftdetect/task.vim
+~/.vim/syntax/taskdata.vim
+~/.vim/syntax/taskedit.vim
+
+
+You should then be ready to go.
+
+For more information regarding task, the official site may be referecend at
+
+    http://taskwarrior.org

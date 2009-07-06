@@ -13,5 +13,8 @@ nobase_dist_bashscripts_DATA = scripts/bash/task_completion.sh
 zshscriptsdir = $(docdir)
 nobase_dist_zshscripts_DATA = scripts/zsh/_task
 
+vimscriptsdir = $(docdir)
+nobase_dist_vimscripts_DATA = scripts/vim/README scripts/vim/ftdetect/task.vim scripts/vim/syntax/taskdata.vim scripts/vim/syntax/taskedit.vim
+
 i18ndir = $(docdir)
-nobase_dist_i18n_DATA = i18n/strings.de-DE i18n/strings.en-US i18n/strings.es-ES i18n/strings.fr-FR i18n/strings.nl-NL i18n/strings.sv-SE
+nobase_dist_i18n_DATA = i18n/strings.de-DE i18n/strings.en-US i18n/strings.es-ES i18n/strings.fr-FR i18n/strings.nl-NL i18n/strings.sv-SE i18n/tips.de-DE i18n/tips.en-US i18n/tips.sv-SE
