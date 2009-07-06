@@ -5,7 +5,7 @@ syntax highlighting enabled when you use VIM.  This happens to be the default
 for most VIM installations, but it is usually quite simple if that doesn't
 happen to be so in your case.  Rather than repeat the excellent VIM
 documentation here, please see the appropriate VIM documentation itself.
-Generally this can be made seen by starting vim and issuing the following
+Generally this can be made seen by starting vim/gvim and issuing the following
 command:
 
     :help syntax
@@ -25,7 +25,3 @@ these files into your home directory so that you have:
 
 
 You should then be ready to go.
-
-For more information regarding task, the official site may be referecend at
-
-    http://taskwarrior.org
