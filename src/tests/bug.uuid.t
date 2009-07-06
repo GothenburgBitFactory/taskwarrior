@@ -73,8 +73,13 @@ $output = qx{../task rc:uuid.rc 5 info};
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-is (scalar (@all_uuids), 5, '5 tasks created');
-is (scalar (keys %unique_uuids), 5, '5 unique UUIDs');
+$output = qx{../task rc:uuid.rc 6 info};
+($uuid) = $output =~ /UUID\s+(\S+)/;
+push @all_uuids, $uuid;
+$unique_uuids{$uuid} = undef;
+
+is (scalar (@all_uuids), 6, '6 tasks created');
+is (scalar (keys %unique_uuids), 6, '6 unique UUIDs');
 
 # Cleanup.
 unlink 'pending.data';
