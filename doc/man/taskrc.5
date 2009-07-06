@@ -66,10 +66,39 @@ configuration file. All text after the character to the end of the line is ignor
 .SH CONFIGURATION VARIABLES
 Valid variable names and their default values are:
 
+.SS FILES
+
 .TP
 .B data.location=$HOME/.task
 This is a path to the directory containing all the task files. By default, it is set up to be ~/.task,
-for example: /Users/paul/.task
+for example: /home/paul/.task
+
+.TP
+.B locking=on
+Determines whether task uses file locking when accessing the pending.data and completed.data files.
+Default to "on". Solaris users who store the task data files on an NFS mount may need to set locking
+to "off". Note that setting this value to "off" is dangerous. It means that another program may write
+to the task.pending file when task is attempting to do the same.
+
+.SS TERMINAL
+.TP
+.B curses=on
+Determines whether task uses ncurses to establish the size of the window you are
+using, for text wrapping.
+
+.TP
+.B defaultwidth=80
+The width of tables used when ncurses support is not available. Defaults to 80.
+
+.TP
+.B editor=vi
+Specifies which text editor you wish to use for when the
+.B task edit <ID>
+command is used. Task will first look for this configuration variable. If found, it is used.
+Otherwise task will look for the $VISUAL or $EDITOR environment variables, before it defaults
+to using "vi".
+
+.SS MISCELLANEOUS
 
 .TP
 .B locale=en-US
@@ -80,7 +109,7 @@ locale for which there is no strings file.
 
 .TP
 .B confirmation=yes
-May be "yes" or "no", and determines whether task will ask for confirmation before deleting a task. 
+May be "yes" or "no", and determines whether task will ask for confirmation before deleting a task or doing bulk changes.
 
 .TP
 .B echo.command=yes
@@ -97,6 +126,15 @@ command.
 Is a number, defaulting to 2.  When more than this number of tasks are modified in a single command, confirmation will be required, unless the
 .B confirmation
 variable is "no".
+
+.TP
+.B nag=You have higher priority tasks.
+This may be a string of text, or blank. It is used as a prompt when a task is completed
+that is not considered high priority. The "task next" command lists important tasks, and
+completing one of those does not generate this nagging. Default value is: You have higher
+priority tasks.
+
+.SS DATES
 
 .TP
 .B dateformat=m/d/Y
@@ -130,24 +168,13 @@ m-d-y  would output 07-24-09
 .RE
 
 .TP
-.B monthsperline=99
-Determines how many months the "task calendar" command renders across the screen.
-Defaults to however many will fit. If more months that will fit are specified,
-task will only show as many that will fit.
+.B weekstart=Sunday
+Determines the day a week starts. Valid values are Sunday or Monday only.
 
 .TP
-.B defaultwidth=80
-The width of tables used when ncurses support is not available. Defaults to 80.
-
-.TP
-.B curses=on
-Determines whether task uses ncurses to establish the size of the window you are
-using, for text wrapping.
-
-.TP
-.B fontunderline=on
-Determines if font underlines or ascii dashes should be used to underline
-headers.
+.B displayweeknumber=yes
+Determines if week numbers are displayed when using the "task calendar" command.
+The week number is dependent on the day a week starts.
 
 .TP
 .B due=7
@@ -155,31 +182,22 @@ This is the number of days into the future that define when a task is considered
 and is colored accordingly. Defaults to 7.
 
 .TP
-.B nag=You have higher priority tasks.
-This may be a string of text, or blank. It is used as a prompt when a task is completed
-that is not considered high priority. The "task next" command lists important tasks, and
-completing one of those does not generate this nagging. Default value is: You have higher
-priority tasks.
+.B monthsperline=2
+Determines how many months the "task calendar" command renders across the screen.
+Defaults to however many will fit. If more months that will fit are specified,
+task will only show as many that will fit.
 
-.TP
-.B locking=on
-Determines whether task uses file locking when accessing the pending.data and completed.data files.
-Default to "on". Solaris users who store the task data files on an NFS mount may need to set locking
-to "off". Note that setting this value to "off" is dangerous. It means that another program may write
-to the task.pending file when task is attempting to do the same.
-
-.TP
-.B editor=vi
-Specifies which text editor you wish to use for when the
-.B task edit <ID>
-command is used. Task will first look for this configuration variable. If found, it is used.
-Otherwise task will look for the $VISUAL or $EDITOR environment variables, before it defaults
-to using "vi".
+.SS COLOR CONTROLS
 
 .TP
 .B color=on
 May be "on" or "off". Determines whether task uses color. When "off", task will
 use dashes (-----) to underline column headings.
+
+.TP
+.B fontunderline=on
+Determines if font underlines or ascii dashes should be used to underline
+headers.
 
 Task has a number of coloration rules. They correspond to a particular attribute
 of a task, such as it being due, or being active, and specifies the automatic
@@ -197,22 +215,31 @@ The coloration rules and their defaults are:
 .RS
 .RS
 .B color.overdue=bold_red
+The color for overdue tasks.
 .br
 .B color.due=bold_yellow
+The color of due tasks.
 .br
 .B color.pri.H=bold
+The color of priority:H tasks.
 .br
 .B color.pri.M=on_yellow
+The color of priority:M tasks.
 .br
 .B color.pri.L=on_green
+The color of priority:L tasks.
 .br
 .B color.pri.none=white on_blue
+The color of priority: tasks.
 .br
 .B color.active=bold_cyan
+The color of active tasks.
 .br
 .B color.tagged=yellow
+The color of tagged tasks.
 .br
 .B color.recurring=on_red
+The color for recurring tasks.
 .RE
 .RE
 
@@ -257,6 +284,8 @@ Colors any of the messages printed after the report output.
 Colors any of the messages printed last.
 .RE
 
+.SS SHADOW FILE
+
 .TP
 .B
 shadow.file=$HOME/.task/shadow.txt
@@ -280,6 +309,8 @@ configuration variable. The format is identical to that of
 shadow.notify=on
 When this value is set to "on", task will display a message whenever the shadow
 file is updated by some task command.
+
+.SS DEFAULTS
 
 .TP
 .B
@@ -308,7 +339,7 @@ default.command=list project:foo
 .RE
 
 .RS
-Then task will run the "list project:foo" command if no command is specified. This means that
+then task will run the "list project:foo" command if no command is specified. This means that
 by merely typing
 .RE
 
@@ -326,105 +357,104 @@ ID Project Pri Description
 .RE
 .RE
 
-The built in reports can be customized by using the following configuration variables.
-The output columns, their labels and the sort order can be set using the corresponding
-variables for each report.
+.SS REPORTS
+
+The reports can be customized by using the following configuration variables.
+The output columns, their labels and the sort order can be set using the
+corresponding variables for each report. Each report name is used as a
+"command" name. For example
 
 .TP
-.B
-report.long.description
-Lists all task, all data, matching the specified criteria
+.B task overdue
 
 .TP
-.B
-report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description
-.RE
-.br
-.B
-report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description
-.br
-.B
-report.long.sort=due+,priority-,project+
+.B report.X.description
+The description for report X when running the "task help" command.
 
 .TP
-.B
-report.list.description
-Lists all tasks matching the specified criteria
+.B report.X.columns
+The columns that will be used when generating the report X. Valid columns are:
+id, uuid, project, priority, entry, start, due, recur, recur_ind, age, age_compact,
+active, tags, description, description_only. The IDs are seperated by commas.
 
 .TP
-.B
-report.list.labels=ID,Project,Pri,Due,Active,Age,Description
-.RE
-.br
-.B
-report.list.columns=id,project,priority,due,active,age,description
-.br
-.B
-report.list.sort=due+,priority-,project+
-
+.B report.X.labels
+The labels for each column that will be used when generating report X. The labels
+are a comma separated list.
 
 .TP
-.B
-report.ls.description
-Minimal listing of all tasks matching the specified criteria
+.B report.X.sort
+The sort order of the tasks in the generated report X. The sort order is specified
+by using the column ids postfixed by a "+" for ascending sort order or a "-" for
+descending sort order. The sort IDs are separated by commas
 
 .TP
-.B
-report.ls.labels=ID,Project,Pri,Description
-.RE
-.br
-.B
-report.ls.columns=id,project,priority,description
-.br
-.B
-report.ls.sort=priority-,project+
+.B report.X.filter
+This adds a filter to the report X so that only tasks matching the filter criteria
+are displayed in the generated report.
 
 .TP
-.B
-report.newest.description
-Shows the newest tasks
+.B report.X.limit
+An optional value to a report limiting the number of displayed tasks in the
+generated report.
 
 .TP
-.B
-report.newest.labels=ID,Project,Pri,Due,Active,Age,Description
-.RE
-.br
-.B
-report.newest.columns=id,project,priority,due,active,age,description
-.br
-.B
-report.newest.sort=id-
-.br
-.B
-report.newest.limit=10
-
+Task comes with a number of predefined reports in its default configuration file. These reports are:
 
 .TP
-.B
-report.oldest.description
-Shows the oldest tasks
+.B long
+Lists all task, all data, matching the specified criteria.
 
 .TP
-.B
-report.oldest.labels=ID,Project,Pri,Due,Active,Age,Description
-.RE
-.br
-.B
-report.oldest.columns=id,project,priority,due,active,age,description
-.br
-.B
-report.oldest.sort=id+
-.br
-.B
-report.oldest.limit=10
+.B list
+Lists all tasks matching the specified criteria.
+
+.TP
+.B ls
+Minimal listing of all tasks matching the specified criteria.
+
+.TP
+.B newest
+Shows the newest tasks.
+
+.TP
+.B oldest
+Shows the oldest tasks.
+
+.TP
+.B overdue
+Lists overdue tasks matching the specified criteria.
+
+.TP
+.B active
+Lists active tasks matching the specified criteria.
+
+.TP
+.B completed
+Lists completed tasks matching the specified criteria.
+
+.TP
+.B recurring
+Lists recurring tasks matching the specified criteria.
+
+.TP
+.B waiting
+Lists all waiting tasks matching the specified criteria.
+
+.TP
+.B all
+Lists all tasks matching the specified criteria.
+
+.TP
+.B next
+Lists all tasks with upcoming due dates matching the specified criteria.
 
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.
 .br
 Copyright (C) 2006 \- 2009 P. Beckingham
 
-This man page was originally written by Federico Hernandez. It is based on the task man page, which
-was originally written by P.C. Shyamshankar.
+This man page was originally written by Federico Hernandez.
 
 task is distributed under the GNU General Public License.  See
 http://www.gnu.org/licenses/gpl-2.0.txt for more information.
