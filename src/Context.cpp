@@ -378,7 +378,10 @@ void Context::loadCorrectConfigFile ()
   foreach (arg, args)
   {
     if (*arg == "--")
+    {
       foundTerminator = true;
+      filtered.push_back (*arg);
+    }
     else if (!foundTerminator &&
              arg->substr (0, 3) == "rc.")
     {
@@ -571,7 +574,7 @@ void Context::parse (
       }
     }
 
-    // terminated, therefore everything subsequently is a description.
+    // Command is terminated, therefore everything subsequently is a description.
     else
     {
       debug ("parse post-termination description '" + *arg + "'");
