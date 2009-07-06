@@ -83,7 +83,7 @@
 #define CMD_GHISTORY            214
 #define CMD_IMPORT              215
 #define CMD_INFO                216
-#define CMD_NEXT                217
+
 #define CMD_OVERDUE             218
 #define CMD_PROJECTS            219
 #define CMD_START               220
