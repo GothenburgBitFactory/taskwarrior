@@ -124,7 +124,6 @@ void Cmd::load ()
     commands.push_back (context.stringtable.get (CMD_GHISTORY,  "ghistory"));
     commands.push_back (context.stringtable.get (CMD_IMPORT,    "import"));
     commands.push_back (context.stringtable.get (CMD_INFO,      "info"));
-    commands.push_back (context.stringtable.get (CMD_NEXT,      "next"));
     commands.push_back (context.stringtable.get (CMD_PROJECTS,  "projects"));
 #ifdef FEATURE_SHELL
     commands.push_back (context.stringtable.get (CMD_SHELL,     "shell"));
@@ -147,14 +146,6 @@ void Cmd::load ()
       if (i->substr (0, 7) == "report.")
       {
         std::string report = i->substr (7, std::string::npos);
-
-        // Oh, what a massive hack.  Shame.  Shame.
-        // The "next" report is in limbo between being a built-in report and
-        // a custom report.  The projection is defined as a custom report, but
-        // the restriction is different.
-        if (report.substr (0, 4) == "next")
-          continue;
-
         std::string::size_type columns = report.find (".columns");
         if (columns != std::string::npos)
         {
@@ -205,7 +196,6 @@ bool Cmd::isReadOnlyCommand ()
       command == context.stringtable.get (CMD_HISTORY,   "history")   ||
       command == context.stringtable.get (CMD_GHISTORY,  "ghistory")  ||
       command == context.stringtable.get (CMD_INFO,      "info")      ||
-      command == context.stringtable.get (CMD_NEXT,      "next")      ||
       command == context.stringtable.get (CMD_PROJECTS,  "projects")  ||
       command == context.stringtable.get (CMD_SHELL,     "shell")     ||
       command == context.stringtable.get (CMD_STATS,     "stats")     ||

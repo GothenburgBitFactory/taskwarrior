@@ -535,6 +535,7 @@ std::string handleDelete ()
   context.tdb.loadPending (tasks, context.filter);
 
   // Filter sequence.
+  std::vector <Task> all = tasks;
   context.filter.applySequence (tasks, context.sequence);
 
   // Determine the end date.
@@ -561,7 +562,7 @@ std::string handleDelete ()
         {
           // Scan all pending tasks for siblings of this task, and the parent
           // itself, and delete them.
-          foreach (sibling, tasks)
+          foreach (sibling, all)
           {
             if (sibling->get ("parent") == parent ||
                 sibling->get ("uuid")   == parent)
@@ -584,7 +585,7 @@ std::string handleDelete ()
         {
           // Update mask in parent.
           task->setStatus (Task::deleted);
-          updateRecurrenceMask (tasks, *task);
+          updateRecurrenceMask (all, *task);
 
           task->set ("end", endTime);
           context.tdb.update (*task);

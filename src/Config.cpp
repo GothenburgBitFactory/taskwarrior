@@ -233,7 +233,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "report.all.sort=due+,priority-,project+\n"
            << "\n"
            << "# task next\n"
-           << "report.next.description=Lists all tasks matching the specified criteria\n"
+           << "report.next.description=Lists the most urgent tasks\n"
            << "report.next.columns=id,project,priority,due,active,age,description\n"
            << "report.next.labels=ID,Project,Pri,Due,Active,Age,Description\n"
            << "report.next.sort=due+,priority-,project+\n"
@@ -318,7 +318,7 @@ void Config::setDefaults ()
   set ("report.all.labels",            "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
   set ("report.all.sort",              "due+,priority-,project+");                                        // TODO i18n
 
-  set ("report.next.description",      "Lists all tasks matching the specified criteria");                // TODO i18n
+  set ("report.next.description",      "Lists the most urgent tasks");                                    // TODO i18n
   set ("report.next.columns",          "id,project,priority,due,active,age,description");                 // TODO i18n
   set ("report.next.labels",           "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
   set ("report.next.sort",             "due+,priority-,project+");                                        // TODO i18n
