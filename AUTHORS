@@ -1,13 +1,10 @@
-Principal Author:
-  Paul Beckingham
+The development of task was made possible by the significant contributions of the following people:
+  Paul Beckingham    (Principal Author)
+  Federico Hernandez (Package Maintainer & Contributing Author)
+  David J Patrick    (Designer)
+  John Florian       (Contributing Author)
 
-Package Maintainer & Contributing Author:
-  Federico Hernandez
-
-Designer:
-  David J Patrick
-
-Contributing Authors:
+The following submitted code, packages or analysis, and deserve special thanks:
   Damian Glenny
   Andy Lester
   H. İbrahim Güngör
@@ -20,9 +17,8 @@ Contributing Authors:
   P.C. Shyamshankar
   Johan Friis
   Steven de Brouwer
-  John Florian
 
-With thanks to:
+Thanks to the following, who submitted detailed bug reports and excellent suggestions:
   Eugene Kramer
   Srijith K
   Bruce Israel

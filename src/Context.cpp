@@ -67,7 +67,9 @@ void Context::initialize (int argc, char** argv)
     if (i == 0)
     {
       program = argv[i];
-      if (program.find ("cal") != std::string::npos)
+      std::string::size_type cal = program.find ("/cal");
+      if (program == "cal" ||
+          (cal != std::string::npos && program.length () == cal + 4))
         args.push_back ("calendar");
     }
     else

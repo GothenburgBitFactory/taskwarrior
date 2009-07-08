@@ -49,7 +49,10 @@ int main (int argc, char** argv)
   try
   {
     context.initialize (argc, argv);
-    if (context.program.find ("itask") != std::string::npos)
+
+    std::string::size_type itask = context.program.find ("/itask");
+    if (context.program == "itask" ||
+        (itask != std::string::npos && context.program.length () == itask + 5))
       status = context.interactive ();
     else
       status = context.run ();
