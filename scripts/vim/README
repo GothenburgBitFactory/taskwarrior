@@ -1,28 +1,51 @@
-The task data files (pending.data and completed.data) as well as edits made
-via commands like "task 1 edit" can be color-highlighted if you happen to use
-VIM as your preferred text editor.  For this to work, you need to first have
-syntax highlighting enabled when you use VIM.  This happens to be the default
-for most VIM installations, but it is usually quite simple if that doesn't
-happen to be so in your case.  Rather than repeat the excellent VIM
-documentation here, please see the appropriate VIM documentation itself.
-Generally this can be made seen by starting vim/gvim and issuing the following
-command:
+
+              Configure VIM for Syntax Highlighting of Task Data
+
+
+The task data files (pending.data, completed.data and undo.data) as well as
+edits made via commands like "task 1 edit" can be color-highlighted if you
+happen to use VIM as your preferred text editor. Eventually this will happen
+automatically in newer versions of VIM, but for now you have to do a little
+bit of file shuffling.
+
+
+                                Prerequisites
+
+For this to work, you need to first have syntax highlighting enabled when you
+use VIM. This happens to be the default for most VIM installations, but it is
+usually quite simple if that doesn't happen to be so in your case. Rather than
+repeat the excellent VIM documentation here, please see the appropriate VIM
+documentation itself. Generally this can be made seen by starting vim/gvim and
+issuing the following command:
 
     :help syntax
 
-You may prefer to use your web browser via:
-
+You may prefer instead to read the help online at:
     http://vimdoc.sourceforge.net/htmldoc/syntax.html#syntax
 
 
+                   Configuring VIM to Understand Task Data
+
 Once you have VIM's syntax highlighting enabled and working with other file
-types properly, configuring it for use with task is simple.  Just extract
-these files into your home directory so that you have:
+types properly, configuring it for use with task is simple. You simply need to
+copy some files that came with task into your home directory so that you have:
 
-~/.vim/ftdetect/task.vim
-~/.vim/syntax/taskdata.vim
-~/.vim/syntax/taskedit.vim
+    ~/.vim/ftdetect/task.vim
+    ~/.vim/syntax/taskdata.vim
+    ~/.vim/syntax/taskedit.vim
 
+The source of these files varies depending on how you installed task. If you
+installed task via a regular package (rpm or deb) you can find these files in
+/usr/share/doc/task-VERSION/scripts/vim/. If you built task yourself from the
+tarball (using the default configure options), these will be in
+/usr/local/share/doc/task-VERSION/scripts/vim/ instead. So you should be able
+to do one of the following:
+
+    cp -av /usr/share/doc/task-VERSION/scripts/vim/* ~/.vim/
+
+or
+
+    cp -av /usr/local/share/doc/task-VERSION/scripts/vim/* ~/.vim/
 
 You should then be ready to go.
 ---

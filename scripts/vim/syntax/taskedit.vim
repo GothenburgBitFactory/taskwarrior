@@ -1,6 +1,7 @@
 " Vim syntax file
 " Language:	support for 'task 42 edit'
 " Maintainer:	John Florian <jflorian@doubledog.org>
+" Updated:	Wed Jul  8 19:46:32 EDT 2009
 "
 " Copyright 2009 John Florian
 "
@@ -16,11 +17,11 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syn match taskeditHeading 	"^\s*#\s*Name\s\+Editable details\s*$" contained
-syn match taskeditHeading 	"^\s*#\s*-\+\s\+-\+\s*$" contained
-syn match taskeditReadOnly 	"^\s*#\s*\(UU\)\?ID:.*$" contained
-syn match taskeditReadOnly 	"^\s*#\s*Status:.*$" contained
-syn match taskeditReadOnly 	"^\s*#\s*i\?Mask:.*$" contained
+syn match taskeditHeading	"^\s*#\s*Name\s\+Editable details\s*$" contained
+syn match taskeditHeading	"^\s*#\s*-\+\s\+-\+\s*$" contained
+syn match taskeditReadOnly	"^\s*#\s*\(UU\)\?ID:.*$" contained
+syn match taskeditReadOnly	"^\s*#\s*Status:.*$" contained
+syn match taskeditReadOnly	"^\s*#\s*i\?Mask:.*$" contained
 syn match taskeditKey		"^ *.\{-}:" nextgroup=taskeditString
 syn match taskeditComment	"^\s*#.*$"
 			\	contains=taskeditReadOnly,taskeditHeading
@@ -31,7 +32,7 @@ syn match taskeditString	".*$" contained contains=@Spell
 hi def link taskeditComment	Comment
 hi def link taskeditHeading	Function
 hi def link taskeditKey		Statement
-hi def link taskeditReadOnly 	Special
+hi def link taskeditReadOnly	Special
 hi def link taskeditString	String
 
 let b:current_syntax = "taskedit"
