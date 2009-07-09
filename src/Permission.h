@@ -28,6 +28,7 @@
 #define INCLUDED_PERMISSION
 
 #include <string>
+#include "Task.h"
 
 class Permission
 {
@@ -38,7 +39,7 @@ public:
 
   void bigChange ()   { needConfirmation = true; }
   void bigSequence () { needConfirmation = true; }
-  bool confirmed (const std::string&);
+  bool confirmed (const Task&, const std::string&);
 
 private:
   bool needConfirmation;

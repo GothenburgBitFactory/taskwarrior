@@ -763,9 +763,7 @@ std::string handleDone ()
 
       if (taskDiff (before, *task))
       {
-        std::cout << "Task " << before.id << " \"" << before.get ("description") << "\"" << std::endl;
-        std::string question = taskDifferences (before, *task) + "Are you sure?";
-        if (permission.confirmed (question))
+        if (permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
         {
           context.tdb.update (*task);
 
@@ -909,9 +907,7 @@ std::string handleModify ()
 
         if (taskDiff (before, *other))
         {
-          std::cout << "Task " << before.id << " \"" << before.get ("description") << "\"" << std::endl;
-          std::string question = taskDifferences (before, *other) + "Are you sure?";
-          if (changes && permission.confirmed (question))
+          if (changes && permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
           {
             context.tdb.update (*other);
             ++count;
@@ -970,9 +966,7 @@ std::string handleAppend ()
 
         if (taskDiff (before, *other))
         {
-          std::cout << "Task " << before.id << " \"" << before.get ("description") << "\"" << std::endl;
-          std::string question = taskDifferences (before, *other) + "Are you sure?";
-          if (changes && permission.confirmed (question))
+          if (changes && permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
           {
             context.tdb.update (*other);
 
@@ -1257,9 +1251,7 @@ std::string handleAnnotate ()
 
     if (taskDiff (before, *task))
     {
-      std::cout << "Task " << before.id << " \"" << before.get ("description") << "\"" << std::endl;
-      std::string question = taskDifferences (before, *task) + "Are you sure?";
-      if (permission.confirmed (question))
+      if (permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
       {
         context.tdb.update (*task);
 

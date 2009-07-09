@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include "Permission.h"
 #include "Context.h"
 #include "util.h"
@@ -43,7 +44,7 @@ Permission::Permission ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Permission::confirmed (const std::string& question)
+bool Permission::confirmed (const Task& task, const std::string& question)
 {
   if (!needConfirmation)
     return true;
@@ -51,12 +52,21 @@ bool Permission::confirmed (const std::string& question)
   if (allConfirmed)
     return true;
 
+  std::cout << std::endl
+            << "Task "
+            << task.id
+            << " \""
+            << task.get ("description")
+            << "\""
+            << std::endl;
+
   int answer = confirm3 (question);
   if (answer == 2)
     allConfirmed = true;
 
   if (answer > 0)
     return true;
+
 
   return false;
 }
