@@ -120,7 +120,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
 
     // Double digit.
     case 'y':
-      if (i + 1 >= mdy.length () ||
+      if (i + 1 >= mdy.length ()   ||
           ! ::isdigit (mdy[i + 0]) ||
           ! ::isdigit (mdy[i + 1]))
       {
@@ -180,6 +180,9 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
       break;
     }
   }
+
+  if (i < mdy.length ())
+    throw std::string ("\"") + mdy + "\" is not a valid date in " + format + " format.";
 
   if (!valid (month, day, year))
     throw std::string ("\"") + mdy + "\" is not a valid date.";
