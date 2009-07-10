@@ -411,6 +411,7 @@ int TDB::commit ()
 ////////////////////////////////////////////////////////////////////////////////
 // Scans the pending tasks for any that are completed or deleted, and if so,
 // moves them to the completed.data file.  Returns a count of tasks moved.
+// Now reverts expired waiting tasks to pending.
 int TDB::gc ()
 {
   Timer t ("TDB::gc");
@@ -451,6 +452,7 @@ int TDB::gc ()
       {
         task->setStatus (Task::pending);
         task->remove ("wait");
+        ++count;
       }
 
       still_pending.push_back (*task);
