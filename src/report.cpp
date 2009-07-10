@@ -1836,26 +1836,23 @@ void gatherNextTasks (std::vector <Task>& tasks)
   std::vector <Task> filtered;
   Date now;
 
-  // How many items per project?  Default 3.
-  int limit = context.config.get ("next", 3);
+  // How many items per project?  Default 2.
+  int limit = context.config.get ("next", 2);
 
   // due:< 1wk, pri:*
   foreach (task, tasks)
   {
-    if (task->getStatus () == Task::pending)
+    if (task->has ("due"))
     {
-      if (task->has ("due"))
+      Date d (::atoi (task->get ("due").c_str ()));
+      if (d < now + (7 * 24 * 60 * 60)) // if due:< 1wk
       {
-        Date d (::atoi (task->get ("due").c_str ()));
-        if (d < now + (7 * 24 * 60 * 60)) // if due:< 1wk
+        std::string project = task->get ("project");
+        if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
         {
-          std::string project = task->get ("project");
-          if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
-          {
-            ++countByProject[project];
-            matching[task->id] = true;
-            filtered.push_back (*task);
-          }
+          ++countByProject[project];
+          matching[task->id] = true;
+          filtered.push_back (*task);
         }
       }
     }
@@ -1864,29 +1861,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   // due:*, pri:H
   foreach (task, tasks)
   {
-    if (task->getStatus () == Task::pending)
-    {
-      if (task->has ("due"))
-      {
-        std::string priority = task->get ("priority");
-        if (priority == "H")
-        {
-          std::string project = task->get ("project");
-          if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
-          {
-            ++countByProject[project];
-            matching[task->id] = true;
-            filtered.push_back (*task);
-          }
-        }
-      }
-    }
-  }
-
-  // pri:H
-  foreach (task, tasks)
-  {
-    if (task->getStatus () == Task::pending)
+    if (task->has ("due"))
     {
       std::string priority = task->get ("priority");
       if (priority == "H")
@@ -1902,32 +1877,26 @@ void gatherNextTasks (std::vector <Task>& tasks)
     }
   }
 
-  // due:*, pri:M
+  // pri:H
   foreach (task, tasks)
   {
-    if (task->getStatus () == Task::pending)
+    std::string priority = task->get ("priority");
+    if (priority == "H")
     {
-      if (task->has ("due"))
+      std::string project = task->get ("project");
+      if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
       {
-        std::string priority = task->get ("priority");
-        if (priority == "M")
-        {
-          std::string project = task->get ("project");
-          if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
-          {
-            ++countByProject[project];
-            matching[task->id] = true;
-            filtered.push_back (*task);
-          }
-        }
+        ++countByProject[project];
+        matching[task->id] = true;
+        filtered.push_back (*task);
       }
     }
   }
 
-  // pri:M
+  // due:*, pri:M
   foreach (task, tasks)
   {
-    if (task->getStatus () == Task::pending)
+    if (task->has ("due"))
     {
       std::string priority = task->get ("priority");
       if (priority == "M")
@@ -1943,32 +1912,26 @@ void gatherNextTasks (std::vector <Task>& tasks)
     }
   }
 
-  // due:*, pri:L
+  // pri:M
   foreach (task, tasks)
   {
-    if (task->getStatus () == Task::pending)
+    std::string priority = task->get ("priority");
+    if (priority == "M")
     {
-      if (task->has ("due"))
+      std::string project = task->get ("project");
+      if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
       {
-        std::string priority = task->get ("priority");
-        if (priority == "L")
-        {
-          std::string project = task->get ("project");
-          if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
-          {
-            ++countByProject[project];
-            matching[task->id] = true;
-            filtered.push_back (*task);
-          }
-        }
+        ++countByProject[project];
+        matching[task->id] = true;
+        filtered.push_back (*task);
       }
     }
   }
 
-  // pri:L
+  // due:*, pri:L
   foreach (task, tasks)
   {
-    if (task->getStatus () == Task::pending)
+    if (task->has ("due"))
     {
       std::string priority = task->get ("priority");
       if (priority == "L")
@@ -1984,25 +1947,50 @@ void gatherNextTasks (std::vector <Task>& tasks)
     }
   }
 
+  // pri:L
+  foreach (task, tasks)
+  {
+    std::string priority = task->get ("priority");
+    if (priority == "L")
+    {
+      std::string project = task->get ("project");
+      if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
+      {
+        ++countByProject[project];
+        matching[task->id] = true;
+        filtered.push_back (*task);
+      }
+    }
+  }
+
   // due:, pri:
   foreach (task, tasks)
   {
-    if (task->getStatus () == Task::pending)
+    if (task->has ("due"))
     {
-      if (task->has ("due"))
+      std::string priority = task->get ("priority");
+      if (priority == "")
       {
-        std::string priority = task->get ("priority");
-        if (priority == "")
+        std::string project = task->get ("project");
+        if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
         {
-          std::string project = task->get ("project");
-          if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
-          {
-            ++countByProject[project];
-            matching[task->id] = true;
-            filtered.push_back (*task);
-          }
+          ++countByProject[project];
+          matching[task->id] = true;
+          filtered.push_back (*task);
         }
       }
+    }
+  }
+
+  // Filler.
+  foreach (task, tasks)
+  {
+    std::string project = task->get ("project");
+    if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
+    {
+      ++countByProject[project];
+      matching[task->id] = true;
+      filtered.push_back (*task);
     }
   }
 
