@@ -670,8 +670,16 @@ void Context::autoFilter (Task& t, Filter& f)
     // Projects are matched left-most.
     else if (att->first == "project" && att->second.mod () == "")
     {
-      f.push_back (Att ("project", "startswith", att->second.value ()));
+      if (att->second.value () != "")
+      {
+        f.push_back (Att ("project", "startswith", att->second.value ()));
         debug ("auto filter: " + att->first + ".startswith:" + att->second.value ());
+      }
+      else
+      {
+        f.push_back (Att ("project", "is", att->second.value ()));
+        debug ("auto filter: " + att->first + ".is:" + att->second.value ());
+      }
     }
 
     // The limit attribute does not participate in filtering, and needs to be

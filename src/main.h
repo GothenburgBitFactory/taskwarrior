@@ -30,7 +30,7 @@
 #define FEATURE_TDB_OPT      1   // TDB Optimization reduces file I/O.
 #define FEATURE_NEW_ID       1   // Echoes back new id.
 #define FEATURE_SHELL        1   // Interactive shell.
-#define FEATURE_NCURSES_COLS 1 // Shortcut that avoids WINDOW.
+#define FEATURE_NCURSES_COLS 1   // Shortcut that avoids WINDOW.
 
 #include <string>
 #include <vector>
