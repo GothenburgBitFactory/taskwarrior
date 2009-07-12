@@ -5,7 +5,6 @@ date.t
 duration.t
 text.t
 autocomplete.t
-parse.t
 seq.t
 att.t
 record.t
