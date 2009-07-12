@@ -532,7 +532,8 @@ std::string handleDelete ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
   // Filter sequence.
   std::vector <Task> all = tasks;
@@ -631,7 +632,8 @@ std::string handleStart ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
@@ -682,7 +684,8 @@ std::string handleStop ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
@@ -728,7 +731,8 @@ std::string handleDone ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
   // Filter sequence.
   std::vector <Task> all = tasks;
@@ -858,7 +862,8 @@ std::string handleModify ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
   // Filter sequence.
   std::vector <Task> all = tasks;
@@ -907,7 +912,7 @@ std::string handleModify ()
 
         if (taskDiff (before, *other))
         {
-          if (changes && permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
           {
             context.tdb.update (*other);
             ++count;
@@ -935,7 +940,8 @@ std::string handleAppend ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
   // Filter sequence.
   std::vector <Task> all = tasks;
@@ -966,7 +972,7 @@ std::string handleAppend ()
 
         if (taskDiff (before, *other))
         {
-          if (changes && permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
           {
             context.tdb.update (*other);
 
@@ -1001,7 +1007,8 @@ std::string handleDuplicate ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  context.tdb.loadPending (tasks, context.filter);
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
@@ -1235,7 +1242,8 @@ std::string handleAnnotate ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  context.tdb.loadPending (tasks, context.filter);
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
