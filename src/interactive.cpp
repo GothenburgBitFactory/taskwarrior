@@ -28,6 +28,7 @@
 //#include <iostream>
 #include <sstream>
 //#include <pwd.h>
+//#include <stdio.h>
 //#include <stdlib.h>
 //#include <string.h>
 #include "Context.h"
@@ -57,9 +58,14 @@ int Context::interactive ()
 //  throw std::string ("unimplemented Context::interactive");
 
   // Fake interactive teaser...
+/*
   WINDOW* w = initscr ();
   int width  = w->_maxx + 1;
   int height = w->_maxy + 1;
+*/
+  initscr ();
+  int width = COLS;
+  int height = LINES;
 
   (void) nonl ();
   (void) cbreak ();
@@ -135,8 +141,12 @@ int Context::getWidth ()
 #ifdef HAVE_LIBNCURSES
   if (config.get ("curses", true))
   {
+/*
     WINDOW* w = initscr ();
     width = w->_maxx + 1;
+*/
+    initscr ();
+    width = COLS;
     endwin ();
 
     std::stringstream out;
