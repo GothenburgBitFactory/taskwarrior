@@ -58,14 +58,15 @@ int Context::interactive ()
 //  throw std::string ("unimplemented Context::interactive");
 
   // Fake interactive teaser...
-/*
-  WINDOW* w = initscr ();
-  int width  = w->_maxx + 1;
-  int height = w->_maxy + 1;
-*/
+#ifdef FEATURE_NCURSES_COLS
   initscr ();
   int width = COLS;
   int height = LINES;
+#else
+  WINDOW* w = initscr ();
+  int width  = w->_maxx + 1;
+  int height = w->_maxy + 1;
+#endif
 
   (void) nonl ();
   (void) cbreak ();
@@ -141,12 +142,13 @@ int Context::getWidth ()
 #ifdef HAVE_LIBNCURSES
   if (config.get ("curses", true))
   {
-/*
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-*/
+#ifdef FEATURE_NCURSES_COLS
     initscr ();
     width = COLS;
+#else
+    WINDOW* w = initscr ();
+    width = w->_maxx + 1;
+#endif
     endwin ();
 
     std::stringstream out;
