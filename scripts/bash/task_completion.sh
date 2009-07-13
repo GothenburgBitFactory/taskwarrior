@@ -56,6 +56,10 @@ _task_get_tags() {
     task _tags
 }
 
+_task_get_config() {
+    task _config
+}
+
 _task() 
 {
     local cur prev opts base
@@ -81,6 +85,11 @@ _task()
         -*)
             local tags=$(_task_get_tags | sed 's/^/-/')
             COMPREPLY=( $(compgen -W "${tags}" -- ${cur}) )
+            return 0
+            ;;
+        rc.*)
+            local config=$(_task_get_config | sed 's/^/rc\./')
+            COMPREPLY=( $(compgen -W "${config}" -- ${cur}) )
             return 0
             ;;
     esac
