@@ -200,8 +200,13 @@ std::string handleCompletionProjects ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
+
   Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  if (context.config.get (std::string ("complete.all.projects"), false))
+    context.tdb.load (tasks, filter);
+  else
+    context.tdb.loadPending (tasks, filter);
+
   context.tdb.commit ();
   context.tdb.unlock ();
 
@@ -292,8 +297,13 @@ std::string handleCompletionTags ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
+
   Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  if (context.config.get (std::string ("complete.all.tags"), false))
+    context.tdb.load (tasks, filter);
+  else
+    context.tdb.loadPending (tasks, filter);
+
   context.tdb.commit ();
   context.tdb.unlock ();
 
@@ -470,7 +480,7 @@ std::string handleVersion ()
     "dateformat debug default.command default.priority defaultwidth due locale "
     "displayweeknumber echo.command locking monthsperline nag next project "
     "shadow.command shadow.file shadow.notify weekstart editor import.synonym.id "
-    "import.synonym.uuid longversion "
+    "import.synonym.uuid longversion complete.all.projects complete.all.tags "
 #ifdef FEATURE_SHELL
     "shell.prompt "
 #endif
