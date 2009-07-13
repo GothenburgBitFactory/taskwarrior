@@ -331,6 +331,20 @@ std::string handleCompletionCommands ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string handleCompletionConfig ()
+{
+  std::vector <std::string> configs;
+  context.config.all (configs);
+  std::sort (configs.begin (), configs.end ());
+
+  std::stringstream out;
+  foreach (config, configs)
+    out << *config << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string handleCompletionIDs ()
 {
   std::vector <Task> tasks;

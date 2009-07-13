@@ -109,6 +109,7 @@ void Cmd::load ()
     commands.push_back ("_tags");
     commands.push_back ("_commands");
     commands.push_back ("_ids");
+    commands.push_back ("_config");
     commands.push_back (context.stringtable.get (CMD_ADD,       "add"));
     commands.push_back (context.stringtable.get (CMD_APPEND,    "append"));
     commands.push_back (context.stringtable.get (CMD_ANNOTATE,  "annotate"));
@@ -189,6 +190,7 @@ bool Cmd::isReadOnlyCommand ()
       command == "_tags"                                              ||
       command == "_commands"                                          ||
       command == "_ids"                                               ||
+      command == "_config"                                            ||
       command == context.stringtable.get (CMD_CALENDAR,  "calendar")  ||
       command == context.stringtable.get (CMD_COLORS,    "colors")    ||
       command == context.stringtable.get (CMD_EXPORT,    "export")    ||
