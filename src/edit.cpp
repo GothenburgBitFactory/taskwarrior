@@ -512,6 +512,84 @@ static void parseTask (Task& task, const std::string& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void editFile (Task& task)
+{
+  // Check for file permissions.
+  std::string dataLocation = expandPath (context.config.get ("data.location"));
+  if (access (dataLocation.c_str (), X_OK))
+    throw std::string ("Your data.location directory is not writable.");
+
+  // Create a temp file name in data.location.
+  std::stringstream file;
+  file << dataLocation << "/task." << getpid () << "." << task.id << ".task";
+
+  // Format the contents, T -> text, write to a file.
+  std::string before = formatTask (task);
+  spit (file.str (), before);
+
+  // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
+  std::string editor = context.config.get ("editor", "");
+  char* peditor = getenv ("VISUAL");
+  if (editor == "" && peditor) editor = std::string (peditor);
+  peditor = getenv ("EDITOR");
+  if (editor == "" && peditor) editor = std::string (peditor);
+  if (editor == "") editor = "vi";
+
+  // Complete the command line.
+  editor += " ";
+  editor += file.str ();
+
+ARE_THESE_REALLY_HARMFUL:
+  // Launch the editor.
+  std::cout << "Launching '" << editor << "' now..." << std::endl;
+  if (-1 == system (editor.c_str ()))
+    std::cout << "No editing performed." << std::endl;
+  else
+    std::cout << "Editing complete." << std::endl;
+
+  // Slurp file.
+  std::string after;
+  slurp (file.str (), after, false);
+
+  // Update task based on what can be parsed back out of the file, but only
+  // if changes were made.
+  if (before != after)
+  {
+    std::cout << "Edits were detected." << std::endl;
+    std::string problem = "";
+    bool oops = false;
+
+    try
+    {
+      parseTask (task, after);
+    }
+
+    catch (std::string& e)
+    {
+      problem = e;
+      oops = true;
+    }
+
+    if (oops)
+    {
+      std::cout << "Error: " << problem << std::endl;
+
+      // Preserve the edits.
+      before = after;
+      spit (file.str (), before);
+
+      if (confirm ("Task couldn't handle your edits.  Would you like to try again?"))
+        goto ARE_THESE_REALLY_HARMFUL;
+    }
+  }
+  else
+    std::cout << "No edits were detected." << std::endl;
+
+  // Cleanup.
+  unlink (file.str ().c_str ());
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Introducing the Silver Bullet.  This feature is the catch-all fixative for
 // various other ills.  This is like opening up the hood and going in with a
 // wrench.  To be used sparingly.
@@ -522,87 +600,38 @@ std::string handleEdit ()
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
   // Filter sequence.
+  std::vector <Task> all = tasks;
   context.filter.applySequence (tasks, context.sequence);
 
   foreach (task, tasks)
   {
-    // Check for file permissions.
-    std::string dataLocation = expandPath (context.config.get ("data.location"));
-    if (access (dataLocation.c_str (), X_OK))
-      throw std::string ("Your data.location directory is not writable.");
-
-    // Create a temp file name in data.location.
-    std::stringstream file;
-    file << dataLocation << "/task." << getpid () << "." << task->id << ".task";
-
-    // Format the contents, T -> text, write to a file.
-    std::string before = formatTask (*task);
-    spit (file.str (), before);
-
-    // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
-    std::string editor = context.config.get ("editor", "");
-    char* peditor = getenv ("VISUAL");
-    if (editor == "" && peditor) editor = std::string (peditor);
-    peditor = getenv ("EDITOR");
-    if (editor == "" && peditor) editor = std::string (peditor);
-    if (editor == "") editor = "vi";
-
-    // Complete the command line.
-    editor += " ";
-    editor += file.str ();
-
-ARE_THESE_REALLY_HARMFUL:
-    // Launch the editor.
-    std::cout << "Launching '" << editor << "' now..." << std::endl;
-    if (-1 == system (editor.c_str ()))
-      std::cout << "No editing performed." << std::endl;
-    else
-      std::cout << "Editing complete." << std::endl;
-
-    // Slurp file.
-    std::string after;
-    slurp (file.str (), after, false);
-
-    // Update task based on what can be parsed back out of the file, but only
-    // if changes were made.
-    if (before != after)
+    editFile (*task);
+    context.tdb.update (*task);
+/*
+    foreach (other, all)
     {
-      std::cout << "Edits were detected." << std::endl;
-      std::string problem = "";
-      bool oops = false;
-
-      try
+      if (other->id != task.id) // Don't edit the same task again.
       {
-        parseTask (*task, after);
-        context.tdb.update (*task);
-      }
-
-      catch (std::string& e)
-      {
-        problem = e;
-        oops = true;
-      }
-
-      if (oops)
-      {
-        std::cout << "Error: " << problem << std::endl;
-
-        // Preserve the edits.
-        before = after;
-        spit (file.str (), before);
-
-        if (confirm ("Task couldn't handle your edits.  Would you like to try again?"))
-          goto ARE_THESE_REALLY_HARMFUL;
+        if (task.has ("parent") && 
+        if (other is parent of task)
+        {
+          // Transfer everything but mask, imask, uuid, parent.
+        }
+        else if (task is parent of other)
+        {
+          // Transfer everything but mask, imask, uuid, parent.
+        }
+        else if (task and other are siblings)
+        {
+          // Transfer everything but mask, imask, uuid, parent.
+        }
       }
     }
-    else
-      std::cout << "No edits were detected." << std::endl;
-
-    // Cleanup.
-    unlink (file.str ().c_str ());
+*/
   }
 
   context.tdb.commit ();
