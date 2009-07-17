@@ -1208,9 +1208,14 @@ std::string handleReportTimesheet ()
     started.addColumn ("Due");
     started.addColumn ("Description");
 
-    started.setColumnUnderline (1);
-    started.setColumnUnderline (2);
-    started.setColumnUnderline (3);
+    if (color && context.config.get (std::string ("fontunderline"), "true"))
+    {
+      completed.setColumnUnderline (1);
+      completed.setColumnUnderline (2);
+      completed.setColumnUnderline (3);
+    }
+    else
+      completed.setTableDashedUnderline ();
 
     started.setColumnWidth (0, Table::minimum);
     started.setColumnWidth (1, Table::minimum);
