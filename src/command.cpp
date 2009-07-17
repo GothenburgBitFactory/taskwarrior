@@ -1163,7 +1163,7 @@ void handleShell ()
       }
     }
   }
-  while (keepGoing);
+  while (keepGoing && !std::cin.eof ());
 }
 #endif
 
