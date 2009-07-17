@@ -1127,17 +1127,19 @@ std::string handleReportTimesheet ()
   if (context.sequence.size () == 1)
     quantity = context.sequence[0];
 
+  bool color = context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false);
+
   std::stringstream out;
   for (int week = 0; week < quantity; ++week)
   {
     Date endString (end);
     endString -= 86400;
     out << std::endl
-        << Text::colorize (Text::bold, Text::nocolor)
+        << (color ? Text::colorize (Text::bold, Text::nocolor) : "")
         << start.toString (context.config.get ("dateformat", "m/d/Y"))
         << " - "
         << endString.toString (context.config.get ("dateformat", "m/d/Y"))
-        << Text::colorize ()
+        << (color ? Text::colorize () : "")
         << std::endl;
 
     // Render the completed table.
@@ -1148,9 +1150,14 @@ std::string handleReportTimesheet ()
     completed.addColumn ("Due");
     completed.addColumn ("Description");
 
-    completed.setColumnUnderline (1);
-    completed.setColumnUnderline (2);
-    completed.setColumnUnderline (3);
+    if (color && context.config.get (std::string ("fontunderline"), "true"))
+    {
+      completed.setColumnUnderline (1);
+      completed.setColumnUnderline (2);
+      completed.setColumnUnderline (3);
+    }
+    else
+      completed.setTableDashedUnderline ();
 
     completed.setColumnWidth (0, Table::minimum);
     completed.setColumnWidth (1, Table::minimum);
@@ -1175,7 +1182,7 @@ std::string handleReportTimesheet ()
           completed.addCell (row, 2, getDueDate (*task));
           completed.addCell (row, 3, getFullDescription (*task));
 
-          if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+          if (color)
           {
             Text::color fg = Text::colorCode (task->get ("fg"));
             Text::color bg = Text::colorCode (task->get ("bg"));
@@ -1228,7 +1235,7 @@ std::string handleReportTimesheet ()
           started.addCell (row, 2, getDueDate (*task));
           started.addCell (row, 3, getFullDescription (*task));
 
-          if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+          if (color)
           {
             Text::color fg = Text::colorCode (task->get ("fg"));
             Text::color bg = Text::colorCode (task->get ("bg"));
