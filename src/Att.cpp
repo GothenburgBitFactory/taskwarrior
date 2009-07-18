@@ -557,7 +557,7 @@ bool Att::match (const Att& other) const
     }
     else if (which == "date")
     {
-      Date literal ((time_t)::atoi (mValue.c_str ()));
+      Date literal (mValue.c_str (), context.config.get ("dateformat", "m/d/Y"));
       Date variable ((time_t)::atoi (other.mValue.c_str ()));
       if (other.mValue == "" || ! (variable < literal))
         return false;
@@ -587,7 +587,7 @@ bool Att::match (const Att& other) const
     }
     else if (which == "date")
     {
-      Date literal ((time_t)::atoi (mValue.c_str ()));
+      Date literal (mValue.c_str (), context.config.get ("dateformat", "m/d/Y"));
       Date variable ((time_t)::atoi (other.mValue.c_str ()));
       if (! (variable > literal))
         return false;

@@ -65,6 +65,10 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
   int day   = 0;
   int year  = 0;
 
+  // Perhaps it is an epoch date, in string form?
+  if (isEpoch (mdy))
+    return;
+
   // Before parsing according to "format", perhaps this is a relative date?
   if (isRelativeDate (mdy))
     return;
@@ -83,8 +87,8 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
-      if (i + 1 < mdy.length ()                                         &&
-          (mdy[i + 0] == '0' || mdy[i + 0] == '1')                      &&
+      if (i + 1 < mdy.length ()                    &&
+          (mdy[i + 0] == '0' || mdy[i + 0] == '1') &&
           ::isdigit (mdy[i + 1]))
       {
         month = ::atoi (mdy.substr (i, 2).c_str ());
@@ -541,6 +545,19 @@ Date& Date::operator-= (const int delta)
 time_t Date::operator- (const Date& rhs)
 {
   return mT - rhs.mT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Date::isEpoch (const std::string& input)
+{
+  if (digitsOnly (input) &&
+      input.length () > 8)
+  {
+    mT = (time_t) ::atoi (input.c_str ());
+    return true;
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
