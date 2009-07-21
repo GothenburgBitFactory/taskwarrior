@@ -37,14 +37,19 @@ public:
   Config ();
   Config (const std::string&);
 
+  Config (const Config&);
+  Config& operator= (const Config&);
+
   bool load (const std::string&);
-  void createDefault (const std::string&);
+  void createDefaultRC (const std::string&, const std::string&);
+  void createDefaultData (const std::string&);
+  void setDefaults ();
 
   const std::string get (const char*);
   const std::string get (const char*, const char*);
   const std::string get (const std::string&);
   const std::string get (const std::string&, const std::string&);
-  bool get (const std::string&, bool);
+  bool get (const std::string&, const bool);
   int get (const std::string&, const int);
   double get (const std::string&, const double);
   void set (const std::string&, const int);

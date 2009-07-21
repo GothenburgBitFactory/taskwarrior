@@ -1,14 +1,83 @@
 
 ------ current release ---------------------------
 
+1.8.0 (7/21/2009)
+ + Added zsh tab completion script (thanks to P.C. Shyamshankar).
+ + Fixed bug that cause the _forcecolor configuration variable to be
+   considered obsolete (thank to Bruce Dillahunty).
+ + Fixed documentation errors (thanks to Thomas@BIC).
+ + The 'weekstart' configuration variable now controls the 'calendar'
+   report (thanks to Federico Hernandez).
+ + The 'displayweeknumber' configuration variable now controls the display
+   of week number in the 'calendar' report (thanks to Federico Hernandez).
+ + Supports '--' argument to indicate that all subsequence arguments are
+   part of the description, despite what they otherwise might mean.
+ + Removed support for the obsolete task file format 1 (never released).
+ + Fixed bug that allowed blank annotations to be added (thanks to Bruce
+   Dillahunty).
+ + Supports negative tag filters, so that (task list +foo -bar) now filters
+   tasks that have the "foo" tag, but do not have the "bar" tag (thanks to
+   Chris Pride).
+ + Custom reports now support a more compact form of the "age" column,
+   called "age_compact" (thanks to T. Charles Yun).
+ + Supports 'rc.name:value' for a command line override to .taskrc data
+   (thanks to Federico Hernandez).
+ + Removed obsolete DEVELOPERS file.  The online support forums at
+   http://taskwarrior.org will provide better information.
+ + Fixed bug that kept some deleted tasks showing up on the calendar report
+   (thanks to Federico Hernandez).
+ + Now asks the user to confirm large changes if configuration variable
+   'confirmation' is set to 'yes'.  A large change is one that completely
+   replaces a task description, or operates on a large number of tasks,
+   which defaults to 4 but is configurable via the 'bulk' configuration
+   variable  (thanks to John Florian).
+ + Now echoes back the new task ID on 'add' (thanks to Bruce Dillahunty).
+ + The new "shell" command provides an interactive shell for task.  All
+   commands are supported (thanks to Bruce Dillahunty, Federico Hernandez,
+   and John Florian).
+ + New "recurring" report to list all recurring tasks.
+ + New, more flexible, more consistent, grep-able file format.
+ + If task is renamed to "cal", or there is a symlink to task called "cal",
+   then task can act as a replacement for the Unix "cal" command.
+ + Supports arguments to the cal command like "month year", "year", etc.
+ + The "tags" report now shows the tag usage count.
+ + The "projects" report now shows totals by project and priority.
+ + Now supports attribute modifiers that allow much finer control over report
+   filtering, for example "task list due.before:friday", or "task list
+   pri.not:H" and many more.
+ + Now supports new "age_compact" and "wait" custom report columns.
+ + Now supports colorization of the header and footnote messages that are
+   printed before and after report output, with the 'color.header' and
+   'color.footnote' configuration variables.
+ + Now supports the 'limit' attribute, to control the number of tasks that
+   are shown, for example: "task list limit:10".
+ + Now supports a debug mode that can be used to generate helpful information
+   when reporting a problem.  Just run the command with "task rc.debug:on ..."
+   and diagnostics will be generated that will help pinpoint a problem.
+ + The new "undo" command replaces the old "undo" and "undelete" command
+   with a complete undo stack that can rollback all changes.
+ + While waiting for a file lock, task states the reason for the delay.
+ + Now supports a 'waiting' state that causes tasks to not appear until
+   a certain date, for example "task <ID> wait:<date>".  The task
+   will then not show up on any report (except 'all') until that date.
+ + The "active", "completed", "overdue" and "next" reports are now custom
+   reports, and therefore modifiable.
+ + Now supports a 'waiting' custom report to list all waiting tasks.
+ + Now supports a 'recurring' custom report to list all recurring tasks.
+ + Now supports an 'all' report to list all tasks, including deleted
+ + Supports command aliases - create an alias for any command by creating
+   a .taskrc entry like "alias.new_name=old_name".
+   and completed tasks.
+ + Now over 1,600 unit tests, helping to maintain code quality.
+
+------ old releases ------------------------------
+
 1.7.1 (6/8/2009)
  + Fixed build failure on OpenBSD (thanks to Mike Adonay).
  + Took the opportunity of a patch release to update the various email
    addresses and URLs in the various documents.
 
------- old releases ------------------------------
-
-1.7.0 (5/14/2009)
+1.7.0 (5/14/2009) f6b8b39d8b4a85c30a457e9e78b582b74531bfe4
  + Improved the errors when parsing a corrupt or unrecognized pending.data
    or completed.data file (thanks to T. Charles Yun).
  + Added details to the "info" report about recurring tasks (thanks to T.
@@ -38,8 +107,8 @@
    to /usr/local/share/task (thanks to Federico Hernandez).
  + Applied patch to allow task to build on Arch Linux (thanks to Johan Friis).
  + Applied patch to fix a UUID bug on Solaris 8 (thanks to Steven de Brouwer).
- + The task man page is now installed.  Try "man task" (thanks to Federico
-   Hernandez and P.C. Shyamshankar).
+ + The task and taskrc man pages are here.  Try "man task", "man taskrc"
+   (thanks to Federico Hernandez and P.C. Shyamshankar).
  + Fixed bug that causes task to create a default .task directory, even if
    data.location specified otherwise (thanks to Federico Hernandez).
  + New "edit" command that fires up a text editor (uses 'editor' configuration
@@ -287,7 +356,7 @@
   + Made unit tests compile and run again.
   + Removed tests from distibution.
 
-0.9.6 (5/13/208)
+0.9.6 (5/13/2008)
   + Corrected wrong include file in Table.cpp.
   + Replaced color management code.
   + Improved color rules code.
@@ -334,7 +403,7 @@
   + Rules-based colorization.
 
 0.8.1 (1/28/2008) - 0.8.16 (3/13/2008)
-  + autoconf conversion (many builds).
+  + autoconf conversion
 
 0.8.0 Polish (1/25/2008)
   + Code cleanup, reorganization.

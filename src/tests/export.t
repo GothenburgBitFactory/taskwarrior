@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'export.rc')
@@ -41,16 +41,21 @@ if (open my $fh, '>', 'export.rc')
 # Add two tasks, export, examine result.
 qx{../task rc:export.rc add priority:H project:A one};
 qx{../task rc:export.rc add +tag1 +tag2 two};
-qx{../task rc:export.rc export ./export.txt};
+qx{../task rc:export.rc export > ./export.txt};
 
 my @lines;
 if (open my $fh, '<', './export.txt')
 {
-  @lines = <$fh>;
+  while (my $line = <$fh>)
+  {
+    next unless $line =~ /^['0-9]/;
+    push @lines, $line;
+  }
+
   close $fh;
 }
 
-my $line1 = qr/'id','uuid','status','tags','entry','start','due','recur','end','project','priority','fg','bg','description'\n/;
+my $line1 = qr/'uuid','status','tags','entry','start','due','recur','end','project','priority','fg','bg','description'\n/;
 my $line2 = qr/'.{8}-.{4}-.{4}-.{4}-.{12}','pending','',\d+,,,,,'A','H',,,'one'\n/;
 my $line3 = qr/'.{8}-.{4}-.{4}-.{4}-.{12}','pending','tag1 tag2',\d+,,,,,,,,,'two'\n/;
 
@@ -64,6 +69,9 @@ ok (!-r 'export.txt', 'Removed export.txt');
 
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'export.rc';
 ok (!-r 'export.rc', 'Removed export.rc');

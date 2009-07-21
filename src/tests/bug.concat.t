@@ -28,12 +28,13 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug_concat.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=no\n";
   close $fh;
   ok (-r 'bug_concat.rc', 'Created bug_concat.rc');
 }
@@ -69,6 +70,9 @@ like ($output, qr/Description\s+aaa bbb:ccc ddd\n/, 'properly concatenated');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'bug_concat.rc';
 ok (!-r 'bug_concat.rc', 'Removed bug_concat.rc');

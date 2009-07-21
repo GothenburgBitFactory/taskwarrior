@@ -1,0 +1,56 @@
+This package was debianized by:
+
+    Federico Hernandez <ultrafredde@gmail.com> on Thu, 11 Jun 2009 23:02:28 +0200
+
+It was downloaded from:
+
+    http://taskwarrior.org
+
+Upstream Authors:
+
+    Paul Beckingham <paul@beckingham.net>
+    Damian Glenny
+    Andy Lester
+    H. İbrahim Güngör
+    Stefan Dorn
+    Michael Greb
+    Benjamin Tegarden
+    Chris Pride
+    Richard Querin
+    Federico Hernandez
+    T. Charles Yun
+    David J Patrick
+    P.C. Shyamshankar
+    Johan Friis
+    Steven de Brouwer
+
+Copyright:
+
+    Copyright 2006 - 2009, Paul Beckingham
+    Copyright 2009 Federico Hernandez
+    Copyright 2009 P.C. Shyamshankar
+
+License:
+
+    This package is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This package is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this package; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+
+On Debian systems, the complete text of the GNU General
+Public License can be found in `/usr/share/common-licenses/GPL-2'.
+
+The Debian packaging is:
+
+    Copyright (C) 2009, Federico Hernandez <ultrafredde@gmail.com>
+
+and is licensed under the GPL, see above.

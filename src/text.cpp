@@ -27,7 +27,12 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "task.h"
+#include <ctype.h>
+#include "Context.h"
+#include "util.h"
+#include "text.h"
+
+extern Context context;
 
 static const char* newline = "\n";
 static const char* noline  = "";
@@ -292,12 +297,84 @@ std::string upperCase (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const char* optionalBlankLine (Config& conf)
+std::string ucFirst (const std::string& input)
 {
-  if (conf.get ("blanklines", true) == true)
+  std::string output = input;
+
+  if (output.length () > 0)
+    output[0] = ::toupper (output[0]);
+
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const char* optionalBlankLine ()
+{
+  if (context.config.get ("blanklines", true) == true) // no i18n
     return newline;
 
   return noline;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void guess (
+  const std::string& type,
+  std::vector<std::string>& options,
+  std::string& candidate)
+{
+  std::vector <std::string> matches;
+  autoComplete (candidate, options, matches);
+  if (1 == matches.size ())
+    candidate = matches[0];
+
+  else if (0 == matches.size ())
+    candidate = "";
+
+  else
+  {
+    std::string error = "Ambiguous "; // TODO i18n
+    error += type;
+    error += " '";
+    error += candidate;
+    error += "' - could be either of "; // TODO i18n
+    for (size_t i = 0; i < matches.size (); ++i)
+    {
+      if (i)
+        error += ", ";
+      error += matches[i];
+    }
+
+    throw error;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool digitsOnly (const std::string& input)
+{
+  for (size_t i = 0; i < input.length (); ++i)
+    if (!::isdigit (input[i]))
+      return false;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool noSpaces (const std::string& input)
+{
+  for (size_t i = 0; i < input.length (); ++i)
+    if (::isspace (input[i]))
+      return false;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool noVerticalSpace (const std::string& input)
+{
+  if (input.find_first_of ("\n\r\f") != std::string::npos)
+    return false;
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

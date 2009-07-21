@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 # Create the rc file.
 if (open my $fh, '>', 'date1.rc')
@@ -61,6 +61,9 @@ like ($output, qr/\b12\/1\/09\b/, 'date format m/d/y parsed');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'date1.rc';
 ok (!-r 'date1.rc', 'Removed date1.rc');

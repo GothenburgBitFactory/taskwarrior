@@ -5,4 +5,15 @@ date.t
 duration.t
 text.t
 autocomplete.t
-parse.t
+seq.t
+att.t
+record.t
+stringtable.t
+nibbler.t
+subst.t
+filt.t
+cmd.t
+config.t
+util.t
+color.t
+*.log

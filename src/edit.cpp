@@ -33,7 +33,13 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
-#include "task.h"
+#include "Date.h"
+#include "Duration.h"
+#include "text.h"
+#include "util.h"
+#include "main.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string findValue (
@@ -59,7 +65,6 @@ static std::string findValue (
 
 ////////////////////////////////////////////////////////////////////////////////
 static std::string findDate (
-  Config& conf,
   const std::string& text,
   const std::string& name)
 {
@@ -75,7 +80,7 @@ static std::string findDate (
 
       if (value != "")
       {
-        Date dt (value, conf.get ("dateformat", "m/d/Y"));
+        Date dt (value, context.config.get ("dateformat", "m/d/Y"));
         char epoch [16];
         sprintf (epoch, "%d", (int)dt.toEpoch ());
         return std::string (epoch);
@@ -87,37 +92,22 @@ static std::string findDate (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string formatStatus (Tt& task)
-{
-  switch (task.getStatus ())
-  {
-  case Tt::pending:   return "Pending";   break;
-  case Tt::completed: return "Completed"; break;
-  case Tt::deleted:   return "Deleted";   break;
-  case Tt::recurring: return "Recurring"; break;
-  }
-
-  return "";
-}
-
-////////////////////////////////////////////////////////////////////////////////
 static std::string formatDate (
-  Config& conf,
-  Tt& task,
+  Task& task,
   const std::string& attribute)
 {
-  std::string value = task.getAttribute (attribute);
+  std::string value = task.get (attribute);
   if (value.length ())
   {
     Date dt (::atoi (value.c_str ()));
-    value = dt.toString (conf.get ("dateformat", "m/d/Y"));
+    value = dt.toString (context.config.get ("dateformat", "m/d/Y"));
   }
 
   return value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string formatTask (Config& conf, Tt task)
+static std::string formatTask (Task task)
 {
   std::stringstream before;
   before << "# The 'task edit <id>' command allows you to modify all aspects of a task" << std::endl
@@ -137,13 +127,13 @@ static std::string formatTask (Config& conf, Tt task)
          << "#"                                                                         << std::endl
          << "# Name               Editable details"                                     << std::endl
          << "# -----------------  ----------------------------------------------------" << std::endl
-         << "# ID:                " << task.getId ()                                    << std::endl
-         << "# UUID:              " << task.getUUID ()                                  << std::endl
-         << "# Status:            " << formatStatus (task)                              << std::endl
-         << "# Mask:              " << task.getAttribute ("mask")                       << std::endl
-         << "# iMask:             " << task.getAttribute ("imask")                      << std::endl
-         << "  Project:           " << task.getAttribute ("project")                    << std::endl
-         << "  Priority:          " << task.getAttribute ("priority")                   << std::endl;
+         << "# ID:                " << task.id                                          << std::endl
+         << "# UUID:              " << task.get ("uuid")                                << std::endl
+         << "# Status:            " << ucFirst (Task::statusToText (task.getStatus ())) << std::endl
+         << "# Mask:              " << task.get ("mask")                                << std::endl
+         << "# iMask:             " << task.get ("imask")                               << std::endl
+         << "  Project:           " << task.get ("project")                             << std::endl
+         << "  Priority:          " << task.get ("priority")                            << std::endl;
 
   std::vector <std::string> tags;
   task.getTags (tags);
@@ -153,26 +143,27 @@ static std::string formatTask (Config& conf, Tt task)
          << "  Tags:              " << allTags                                          << std::endl
          << "# The description field is allowed to wrap and use multiple lines.  Task"  << std::endl
          << "# will combine them."                                                      << std::endl
-         << "  Description:       " << task.getDescription ()                           << std::endl
-         << "  Created:           " << formatDate (conf, task, "entry")                 << std::endl
-         << "  Started:           " << formatDate (conf, task, "start")                 << std::endl
-         << "  Ended:             " << formatDate (conf, task, "end")                   << std::endl
-         << "  Due:               " << formatDate (conf, task, "due")                   << std::endl
-         << "  Until:             " << formatDate (conf, task, "until")                 << std::endl
-         << "  Recur:             " << task.getAttribute ("recur")                      << std::endl
-         << "  Parent:            " << task.getAttribute ("parent")                     << std::endl
-         << "  Foreground color:  " << task.getAttribute ("fg")                         << std::endl
-         << "  Background color:  " << task.getAttribute ("bg")                         << std::endl
+         << "  Description:       " << task.get ("description")                         << std::endl
+         << "  Created:           " << formatDate (task, "entry")                       << std::endl
+         << "  Started:           " << formatDate (task, "start")                       << std::endl
+         << "  Ended:             " << formatDate (task, "end")                         << std::endl
+         << "  Due:               " << formatDate (task, "due")                         << std::endl
+         << "  Until:             " << formatDate (task, "until")                       << std::endl
+         << "  Recur:             " << task.get ("recur")                               << std::endl
+         << "  Wait until:        " << task.get ("wait")                                << std::endl
+         << "  Parent:            " << task.get ("parent")                              << std::endl
+         << "  Foreground color:  " << task.get ("fg")                                  << std::endl
+         << "  Background color:  " << task.get ("bg")                                  << std::endl
          << "# Annotations look like this: <date> <text>, and there can be any number"  << std::endl
          << "# of them."                                                                << std::endl;
 
-  std::map <time_t, std::string> annotations;
+  std::vector <Att> annotations;
   task.getAnnotations (annotations);
   foreach (anno, annotations)
   {
-    Date dt (anno->first);
-    before << "  Annotation:        " << dt.toString (conf.get ("dateformat", "m/d/Y"))
-           << " "                     << anno->second                                   << std::endl;
+    Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
+    before << "  Annotation:        " << dt.toString (context.config.get ("dateformat", "m/d/Y"))
+           << " "                     << anno->value ()                                 << std::endl;
   }
 
   before << "  Annotation:        "                                                     << std::endl
@@ -182,40 +173,40 @@ static std::string formatTask (Config& conf, Tt task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void parseTask (Config& conf, Tt& task, const std::string& after)
+static void parseTask (Task& task, const std::string& after)
 {
   // project
   std::string value = findValue (after, "Project:");
-  if (task.getAttribute ("project") != value)
+  if (task.get ("project") != value)
   {
     if (value != "")
     {
       std::cout << "Project modified." << std::endl;
-      task.setAttribute ("project", value);
+      task.set ("project", value);
     }
     else
     {
       std::cout << "Project deleted." << std::endl;
-      task.removeAttribute ("project");
+      task.remove ("project");
     }
   }
 
   // priority
   value = findValue (after, "Priority:");
-  if (task.getAttribute ("priority") != value)
+  if (task.get ("priority") != value)
   {
     if (value != "")
     {
-      if (validPriority (value))
+      if (Att::validNameValue ("priority", "", value))
       {
         std::cout << "Priority modified." << std::endl;
-        task.setAttribute ("priority", value);
+        task.set ("priority", value);
       }
     }
     else
     {
       std::cout << "Priority deleted." << std::endl;
-      task.removeAttribute ("priority");
+      task.remove ("priority");
     }
   }
 
@@ -223,177 +214,178 @@ static void parseTask (Config& conf, Tt& task, const std::string& after)
   value = findValue (after, "Tags:");
   std::vector <std::string> tags;
   split (tags, value, ' ');
-  task.removeTags ();
+  task.remove ("tags");
   task.addTags (tags);
 
   // description.
   value = findValue (after, "Description: ");
-  if (task.getDescription () != value)
+  if (task.get ("description") != value)
   {
     if (value != "")
     {
       std::cout << "Description modified." << std::endl;
-      task.setDescription (value);
+      task.set ("description", value);
     }
     else
       throw std::string ("Cannot remove description.");
   }
 
   // entry
-  value = findDate (conf, after, "Created:");
+  value = findDate (after, "Created:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
 
-    Date original (::atoi (task.getAttribute ("entry").c_str ()));
+    Date original (::atoi (task.get ("entry").c_str ()));
     if (!original.sameDay (edited))
     {
       std::cout << "Creation date modified." << std::endl;
-      task.setAttribute ("entry", value);
+      task.set ("entry", value);
     }
   }
   else
     throw std::string ("Cannot remove creation date");
 
   // start
-  value = findDate (conf, after, "Started:");
+  value = findDate (after, "Started:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
 
-    if (task.getAttribute ("start") != "")
+    if (task.get ("start") != "")
     {
-      Date original (::atoi (task.getAttribute ("start").c_str ()));
+      Date original (::atoi (task.get ("start").c_str ()));
       if (!original.sameDay (edited))
       {
         std::cout << "Start date modified." << std::endl;
-        task.setAttribute ("start", value);
+        task.set ("start", value);
       }
     }
     else
     {
       std::cout << "Start date modified." << std::endl;
-      task.setAttribute ("start", value);
+      task.set ("start", value);
     }
   }
   else
   {
-    if (task.getAttribute ("start") != "")
+    if (task.get ("start") != "")
     {
       std::cout << "Start date removed." << std::endl;
-      task.removeAttribute ("start");
+      task.remove ("start");
     }
   }
 
   // end
-  value = findDate (conf, after, "Ended:");
+  value = findDate (after, "Ended:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
 
-    if (task.getAttribute ("end") != "")
+    if (task.get ("end") != "")
     {
-      Date original (::atoi (task.getAttribute ("end").c_str ()));
+      Date original (::atoi (task.get ("end").c_str ()));
       if (!original.sameDay (edited))
       {
         std::cout << "Done date modified." << std::endl;
-        task.setAttribute ("end", value);
+        task.set ("end", value);
       }
     }
-    else if (task.getStatus () != Tt::deleted)
+    else if (task.getStatus () != Task::deleted)
       throw std::string ("Cannot set a done date on a pending task.");
   }
   else
   {
-    if (task.getAttribute ("end") != "")
+    if (task.get ("end") != "")
     {
       std::cout << "Done date removed." << std::endl;
-      task.setStatus (Tt::pending);
-      task.removeAttribute ("end");
+      task.setStatus (Task::pending);
+      task.remove ("end");
     }
   }
 
   // due
-  value = findDate (conf, after, "Due:");
+  value = findDate (after, "Due:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
 
-    if (task.getAttribute ("due") != "")
+    if (task.get ("due") != "")
     {
-      Date original (::atoi (task.getAttribute ("due").c_str ()));
+      Date original (::atoi (task.get ("due").c_str ()));
       if (!original.sameDay (edited))
       {
         std::cout << "Due date modified." << std::endl;
-        task.setAttribute ("due", value);
+        task.set ("due", value);
       }
     }
     else
     {
       std::cout << "Due date modified." << std::endl;
-      task.setAttribute ("due", value);
+      task.set ("due", value);
     }
   }
   else
   {
-    if (task.getAttribute ("due") != "")
+    if (task.get ("due") != "")
     {
-      if (task.getStatus () == Tt::recurring ||
-          task.getAttribute ("parent") != "")
+      if (task.getStatus () == Task::recurring ||
+          task.get ("parent") != "")
       {
         std::cout << "Cannot remove a due date from a recurring task." << std::endl;
       }
       else
       {
         std::cout << "Due date removed." << std::endl;
-        task.removeAttribute ("due");
+        task.remove ("due");
       }
     }
   }
 
   // until
-  value = findDate (conf, after, "Until:");
+  value = findDate (after, "Until:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
 
-    if (task.getAttribute ("until") != "")
+    if (task.get ("until") != "")
     {
-      Date original (::atoi (task.getAttribute ("until").c_str ()));
+      Date original (::atoi (task.get ("until").c_str ()));
       if (!original.sameDay (edited))
       {
         std::cout << "Until date modified." << std::endl;
-        task.setAttribute ("until", value);
+        task.set ("until", value);
       }
     }
     else
     {
       std::cout << "Until date modified." << std::endl;
-      task.setAttribute ("until", value);
+      task.set ("until", value);
     }
   }
   else
   {
-    if (task.getAttribute ("until") != "")
+    if (task.get ("until") != "")
     {
       std::cout << "Until date removed." << std::endl;
-      task.removeAttribute ("until");
+      task.remove ("until");
     }
   }
 
   // recur
   value = findValue (after, "Recur:");
-  if (value != task.getAttribute ("recur"))
+  if (value != task.get ("recur"))
   {
     if (value != "")
     {
-      if (validDuration (value))
+      Duration d;
+      if (d.valid (value))
       {
         std::cout << "Recurrence modified." << std::endl;
-        if (task.getAttribute ("due") != "")
+        if (task.get ("due") != "")
         {
-          task.setAttribute ("recur", value);
-          task.setStatus (Tt::recurring);
+          task.set ("recur", value);
+          task.setStatus (Task::recurring);
         }
         else
           throw std::string ("A recurring task must have a due date.");
@@ -404,64 +396,94 @@ static void parseTask (Config& conf, Tt& task, const std::string& after)
     else
     {
       std::cout << "Recurrence removed." << std::endl;
-      task.setStatus (Tt::pending);
-      task.removeAttribute ("recur");
-      task.removeAttribute ("until");
-      task.removeAttribute ("mask");
-      task.removeAttribute ("imask");
+      task.setStatus (Task::pending);
+      task.remove ("recur");
+      task.remove ("until");
+      task.remove ("mask");
+      task.remove ("imask");
+    }
+  }
+
+  // wait
+  value = findDate (after, "Wait until:");
+  if (value != "")
+  {
+    Date edited (::atoi (value.c_str ()));
+
+    if (task.get ("wait") != "")
+    {
+      Date original (::atoi (task.get ("wait").c_str ()));
+      if (!original.sameDay (edited))
+      {
+        std::cout << "Wait date modified." << std::endl;
+        task.set ("wait", value);
+      }
+    }
+    else
+    {
+      std::cout << "Wait date modified." << std::endl;
+      task.set ("wait", value);
+    }
+  }
+  else
+  {
+    if (task.get ("wait") != "")
+    {
+      std::cout << "Wait date removed." << std::endl;
+      task.remove ("wait");
     }
   }
 
   // parent
   value = findValue (after, "Parent:");
-  if (value != task.getAttribute ("parent"))
+  if (value != task.get ("parent"))
   {
     if (value != "")
     {
       std::cout << "Parent UUID modified." << std::endl;
-      task.setAttribute ("parent", value);
+      task.set ("parent", value);
     }
     else
     {
       std::cout << "Parent UUID removed." << std::endl;
-      task.removeAttribute ("parent");
+      task.remove ("parent");
     }
   }
 
   // fg
   value = findValue (after, "Foreground color:");
-  if (value != task.getAttribute ("fg"))
+  if (value != task.get ("fg"))
   {
     if (value != "")
     {
       std::cout << "Foreground color modified." << std::endl;
-      task.setAttribute ("fg", value);
+      task.set ("fg", value);
     }
     else
     {
       std::cout << "Foreground color removed." << std::endl;
-      task.removeAttribute ("fg");
+      task.remove ("fg");
     }
   }
 
   // bg
   value = findValue (after, "Background color:");
-  if (value != task.getAttribute ("bg"))
+  if (value != task.get ("bg"))
   {
     if (value != "")
     {
       std::cout << "Background color modified." << std::endl;
-      task.setAttribute ("bg", value);
+      task.set ("bg", value);
     }
     else
     {
       std::cout << "Background color removed." << std::endl;
-      task.removeAttribute ("bg");
+      task.remove ("bg");
     }
   }
 
   // Annotations
-  std::map <time_t, std::string> annotations;
+  std::vector <Att> annotations;
   std::string::size_type found = 0;
   while ((found = after.find ("Annotation:", found)) != std::string::npos)
   {
@@ -478,8 +500,10 @@ static void parseTask (Config& conf, Tt& task, const std::string& after)
       if (gap != std::string::npos)
       {
         Date when (value.substr (0, gap));
+        std::stringstream name;
+        name << "annotation_" << when.toEpoch ();
         std::string text = trim (value.substr (gap, std::string::npos), "\t ");
-        annotations[when.toEpoch ()] = text;
+        annotations.push_back (Att (name.str (), text));
       }
     }
   }
@@ -488,99 +512,130 @@ static void parseTask (Config& conf, Tt& task, const std::string& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void editFile (Task& task)
+{
+  // Check for file permissions.
+  std::string dataLocation = expandPath (context.config.get ("data.location"));
+  if (access (dataLocation.c_str (), X_OK))
+    throw std::string ("Your data.location directory is not writable.");
+
+  // Create a temp file name in data.location.
+  std::stringstream file;
+  file << dataLocation << "/task." << getpid () << "." << task.id << ".task";
+
+  // Format the contents, T -> text, write to a file.
+  std::string before = formatTask (task);
+  spit (file.str (), before);
+
+  // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
+  std::string editor = context.config.get ("editor", "");
+  char* peditor = getenv ("VISUAL");
+  if (editor == "" && peditor) editor = std::string (peditor);
+  peditor = getenv ("EDITOR");
+  if (editor == "" && peditor) editor = std::string (peditor);
+  if (editor == "") editor = "vi";
+
+  // Complete the command line.
+  editor += " ";
+  editor += file.str ();
+
+ARE_THESE_REALLY_HARMFUL:
+  // Launch the editor.
+  std::cout << "Launching '" << editor << "' now..." << std::endl;
+  if (-1 == system (editor.c_str ()))
+    std::cout << "No editing performed." << std::endl;
+  else
+    std::cout << "Editing complete." << std::endl;
+
+  // Slurp file.
+  std::string after;
+  slurp (file.str (), after, false);
+
+  // Update task based on what can be parsed back out of the file, but only
+  // if changes were made.
+  if (before != after)
+  {
+    std::cout << "Edits were detected." << std::endl;
+    std::string problem = "";
+    bool oops = false;
+
+    try
+    {
+      parseTask (task, after);
+    }
+
+    catch (std::string& e)
+    {
+      problem = e;
+      oops = true;
+    }
+
+    if (oops)
+    {
+      std::cout << "Error: " << problem << std::endl;
+
+      // Preserve the edits.
+      before = after;
+      spit (file.str (), before);
+
+      if (confirm ("Task couldn't handle your edits.  Would you like to try again?"))
+        goto ARE_THESE_REALLY_HARMFUL;
+    }
+  }
+  else
+    std::cout << "No edits were detected." << std::endl;
+
+  // Cleanup.
+  unlink (file.str ().c_str ());
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Introducing the Silver Bullet.  This feature is the catch-all fixative for
 // various other ills.  This is like opening up the hood and going in with a
 // wrench.  To be used sparingly.
-std::string handleEdit (TDB& tdb, Tt& task, Config& conf)
+std::string handleEdit ()
 {
   std::stringstream out;
-  std::vector <Tt> all;
-  tdb.allPendingT (all);
 
-  filterSequence (all, task);
-  foreach (seq, all)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
-    // Check for file permissions.
-    std::string dataLocation = expandPath (conf.get ("data.location"));
-    if (access (dataLocation.c_str (), X_OK))
-      throw std::string ("Your data.location directory is not writable.");
-
-    // Create a temp file name in data.location.
-    std::stringstream pattern;
-    pattern << dataLocation << "/task." << seq->getId () << ".XXXXXX";
-    char cpattern [PATH_MAX];
-    strcpy (cpattern, pattern.str ().c_str ());
-    mkstemp (cpattern);
-    char* file = cpattern;
-
-    // Format the contents, Tt -> text, write to a file.
-    std::string before = formatTask (conf, *seq);
-    spit (file, before);
-
-    // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
-    std::string editor = conf.get ("editor", "");
-    char* peditor = getenv ("VISUAL");
-    if (editor == "" && peditor) editor = std::string (peditor);
-    peditor = getenv ("EDITOR");
-    if (editor == "" && peditor) editor = std::string (peditor);
-    if (editor == "") editor = "vi";
-
-    // Complete the command line.
-    editor += " ";
-    editor += file;
-
-ARE_THESE_REALLY_HARMFUL:
-    // Launch the editor.
-    std::cout << "Launching '" << editor << "' now..." << std::endl;
-    system (editor.c_str ());
-    std::cout << "Editing complete." << std::endl;
-
-    // Slurp file.
-    std::string after;
-    slurp (file, after, false);
-
-    // TODO Remove this debugging code.
-    //spit ("./before", before);
-    //spit ("./after",  after);
-
-    // Update seq based on what can be parsed back out of the file, but only
-    // if changes were made.
-    if (before != after)
+    editFile (*task);
+    context.tdb.update (*task);
+/*
+    foreach (other, all)
     {
-      std::cout << "Edits were detected." << std::endl;
-      std::string problem = "";
-      bool oops = false;
-
-      try
+      if (other->id != task.id) // Don't edit the same task again.
       {
-        parseTask (conf, *seq, after);
-        tdb.modifyT (*seq);
-      }
-
-      catch (std::string& e)
-      {
-        problem = e;
-        oops = true;
-      }
-
-      if (oops)
-      {
-        std::cout << "Error: " << problem << std::endl;
-
-        // Preserve the edits.
-        before = after;
-        spit (file, before);
-
-        if (confirm ("Task couldn't handle your edits.  Would you like to try again?"))
-          goto ARE_THESE_REALLY_HARMFUL;
+        if (task.has ("parent") && 
+        if (other is parent of task)
+        {
+          // Transfer everything but mask, imask, uuid, parent.
+        }
+        else if (task is parent of other)
+        {
+          // Transfer everything but mask, imask, uuid, parent.
+        }
+        else if (task and other are siblings)
+        {
+          // Transfer everything but mask, imask, uuid, parent.
+        }
       }
     }
-    else
-      std::cout << "No edits were detected." << std::endl;
-
-    // Cleanup.
-    unlink (file);
+*/
   }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   return out.str ();
 }

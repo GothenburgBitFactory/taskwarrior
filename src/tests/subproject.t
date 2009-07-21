@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 # Create the rc file.
 if (open my $fh, '>', 'sp.rc')
@@ -60,11 +60,14 @@ $output = qx{../task rc:sp.rc list project:abc};
 like ($output, qr/\babc\s*$/m, 'abc,ab,a,b | a -> abc');
 
 $output = qx{../task rc:sp.rc list project:abcd};
-like ($output, qr/^No matches.$/, 'abc,ab,a,b | abcd -> nul');
+like ($output, qr/No matches./, 'abc,ab,a,b | abcd -> nul');
 
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'sp.rc';
 ok (!-r 'sp.rc', 'Removed sp.rc');

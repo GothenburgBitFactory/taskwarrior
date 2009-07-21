@@ -46,9 +46,12 @@
 #include <iostream>
 #include <string.h>
 #include <assert.h>
-#include <Table.h>
-#include <Date.h>
-#include <task.h>
+#include "Table.h"
+#include "Date.h"
+#include "Duration.h"
+#include "Timer.h"
+#include "text.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 Table::Table ()
@@ -114,11 +117,11 @@ void Table::setTableDashedUnderline ()
 int Table::addColumn (const std::string& col)
 {
   mSpecifiedWidth.push_back (minimum);
-  mMaxDataWidth.push_back (col.length ());
+  mMaxDataWidth.push_back (col == "" ? 1 : col.length ());
   mCalculatedWidth.push_back (0);
   mColumnPadding.push_back (0);
 
-  mColumns.push_back (col);
+  mColumns.push_back (col == "" ? " " : col);
   return mColumns.size () - 1;
 }
 
@@ -989,7 +992,7 @@ void Table::sort (std::vector <int>& order)
               break;
             else if ((std::string)*left != "" && (std::string)*right == "")
               SWAP
-            else if (convertDuration ((std::string)*left) > convertDuration ((std::string)*right))
+            else if (Duration ((std::string)*left) > Duration ((std::string)*right))
               SWAP
             break;
 
@@ -998,7 +1001,7 @@ void Table::sort (std::vector <int>& order)
               break;
             else if ((std::string)*left == "" && (std::string)*right != "")
               SWAP
-            else if (convertDuration ((std::string)*left) < convertDuration ((std::string)*right))
+            else if (Duration ((std::string)*left) < Duration ((std::string)*right))
               SWAP
             break;
           }
@@ -1038,6 +1041,8 @@ void Table::clean (std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 const std::string Table::render (int maximum /* = 0 */)
 {
+  Timer t ("Table::render");
+
   calculateColumnWidths ();
 
   // Print column headers in column order.

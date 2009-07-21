@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 27;
+use Test::More tests => 28;
 
 # Create the rc file.
 if (open my $fh, '>', 'seq.rc')
@@ -46,7 +46,8 @@ my $output = qx{../task rc:seq.rc info 1};
 like ($output, qr/Status\s+Completed/, 'sequence do 1');
 $output = qx{../task rc:seq.rc info 2};
 like ($output, qr/Status\s+Completed/, 'sequence do 2');
-qx{../task rc:seq.rc undo 1,2};
+qx{echo 'y'|../task rc:seq.rc undo};
+qx{echo 'y'|../task rc:seq.rc undo};
 $output = qx{../task rc:seq.rc info 1};
 like ($output, qr/Status\s+Pending/, 'sequence undo 1');
 $output = qx{../task rc:seq.rc info 2};
@@ -58,11 +59,12 @@ $output = qx{../task rc:seq.rc info 1};
 like ($output, qr/Status\s+Deleted/, 'sequence delete 1');
 $output = qx{../task rc:seq.rc info 2};
 like ($output, qr/Status\s+Deleted/, 'sequence delete 2');
-qx{../task rc:seq.rc undelete 1,2};
+qx{echo 'y'|../task rc:seq.rc undo};
+qx{echo 'y'|../task rc:seq.rc undo};
 $output = qx{../task rc:seq.rc info 1};
-like ($output, qr/Status\s+Pending/, 'sequence undelete 1');
+like ($output, qr/Status\s+Pending/, 'sequence undo 1');
 $output = qx{../task rc:seq.rc info 2};
-like ($output, qr/Status\s+Pending/, 'sequence undelete 2');
+like ($output, qr/Status\s+Pending/, 'sequence undo 2');
 
 # Test sequences in start/stop
 qx{../task rc:seq.rc start 1,2};
@@ -117,6 +119,9 @@ like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence annotate 2');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'seq.rc';
 ok (!-r 'seq.rc', 'Removed seq.rc');

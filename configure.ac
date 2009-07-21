@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(task, 1.7.1, support@taskwarrior.org)
+AC_INIT(task, 1.8.0, support@taskwarrior.org)
 
 CFLAGS="${CFLAGS=}"
 CXXFLAGS="${CXXFLAGS=}"
@@ -10,7 +10,7 @@ CXXFLAGS="${CXXFLAGS=}"
 # to the configure script (./configure --enable-debug)
 # Check if we have enable debug support.
 AC_MSG_CHECKING(whether to enable debugging)
-debug_default="yes"
+debug_default="no"
 AC_ARG_ENABLE(debug, [  --enable-debug=[no/yes] turn on debugging
                        [default=$debug_default]],, enable_debug=$debug_default)
 # Yes, shell scripts can be used
@@ -33,7 +33,7 @@ else
 fi
 
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([src/task.cpp])
+AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADER([auto.h])
 
 # Checks for programs.

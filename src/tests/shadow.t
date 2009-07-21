@@ -28,14 +28,14 @@
 
 use strict;
 use warnings;
-use Test::More tests => 21;
+use Test::More tests => 22;
 
 # Create the rc file.
 if (open my $fh, '>', 'shadow.rc')
 {
   print $fh "data.location=.\n",
             "shadow.file=./shadow.txt\n",
-            "shadow.command=stats\n",
+            "shadow.command=rc:shadow.rc stats\n",
             "shadow.notify=on\n";
   close $fh;
   ok (-r 'shadow.rc', 'Created shadow.rc');
@@ -51,7 +51,7 @@ $output = qx{../task rc:shadow.rc delete 1};
 like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\]/, 'shadow file updated on delete');
 
 $output = qx{../task rc:shadow.rc list};
-like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\]/, 'shadow file updated on list');
+unlike ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\]/, 'shadow file not updated on list');
 
 # Inspect the shadow file.
 my $file = slurp ('./shadow.txt');
@@ -74,6 +74,9 @@ ok (!-r 'pending.data', 'Removed pending.data');
 
 unlink 'completed.data';
 ok (!-r 'completed.data', 'Removed completed.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'shadow.rc';
 ok (!-r 'shadow.rc', 'Removed shadow.rc');

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
@@ -50,7 +50,7 @@ if (open my $fh, '>', 'import.txt')
 }
 
 my $output = qx{../task rc:import.rc import import.txt};
-is ($output, "Imported 3 tasks successfully, with 0 errors.\n", 'no errors');
+like ($output, qr/Imported 3 tasks successfully, with 0 errors./, 'no errors');
 
 $output = qx{../task rc:import.rc list};
 like ($output, qr/1.+Get milk, bread/, 't1');
@@ -63,6 +63,9 @@ ok (!-r 'import.txt', 'Removed import.txt');
 
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'import.rc';
 ok (!-r 'import.rc', 'Removed import.rc');

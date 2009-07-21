@@ -26,7 +26,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <iomanip>
-#include <Timer.h>
+#include <sstream>
+#include "Timer.h"
+#include "Context.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Timer starts when the object is constructed.
@@ -37,19 +41,23 @@ Timer::Timer (const std::string& description)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Timer stops when the object is desctructed.
+// Timer stops when the object is destructed.
 Timer::~Timer ()
 {
   struct timeval end;
   ::gettimeofday (&end, NULL);
 
-  std::cout << "Timer "
-            << mDescription
-            << " "
-            << std::setprecision (6)
-            << ((end.tv_sec - mStart.tv_sec) +
-               ((end.tv_usec - mStart.tv_usec ) / 1000000.0))
-            << std::endl;
+  std::stringstream s;
+  s << "Timer " // No i18n
+    << mDescription
+    << " "
+    << std::setprecision (6)
+    << std::fixed
+    << ((end.tv_sec - mStart.tv_sec) + ((end.tv_usec - mStart.tv_usec )
+       / 1000000.0))
+    << " sec";
+
+  context.debug (s.str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

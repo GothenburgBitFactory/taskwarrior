@@ -25,144 +25,108 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <string>
+#include "Context.h"
+#include "text.h"
+#include "util.h"
+#include "i18n.h"
 #include "color.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace Text
 {
 
+static struct
+{
+  color id;
+  int string_id;
+  std::string english_name;
+  std::string escape_sequence;
+} allColors[] =
+{
+//  Text::color             i18n.h                   English                   vt220?  xterm?
+  { nocolor,                0,                       "",                       ""             },
+  { off,                    COLOR_OFF,               "off",                    "[0m"        },
+
+  { bold,                   COLOR_BOLD,              "bold",                   "\033[1m"      },
+  { underline,              COLOR_UL,                "underline",              "\033[4m"      },
+  { bold_underline,         COLOR_B_UL,              "bold_underline",         "\033[1;4m"    },
+
+  { black,                  COLOR_BLACK,             "black",                  "\033[30m"     },
+  { red,                    COLOR_RED,               "red",                    "\033[31m"     },
+  { green,                  COLOR_GREEN,             "green",                  "\033[32m"     },
+  { yellow,                 COLOR_YELLOW,            "yellow",                 "\033[33m"     },
+  { blue,                   COLOR_BLUE,              "blue",                   "\033[34m"     },
+  { magenta,                COLOR_MAGENTA,           "magenta",                "\033[35m"     },
+  { cyan,                   COLOR_CYAN,              "cyan",                   "\033[36m"     },
+  { white,                  COLOR_WHITE,             "white",                  "\033[37m"     },
+
+  { bold_black,             COLOR_B_BLACK,           "bold_black",             "\033[90m"     },
+  { bold_red,               COLOR_B_RED,             "bold_red",               "\033[91m"     },
+  { bold_green,             COLOR_B_GREEN,           "bold_green",             "\033[92m"     },
+  { bold_yellow,            COLOR_B_YELLOW,          "bold_yellow",            "\033[93m"     },
+  { bold_blue,              COLOR_B_BLUE,            "bold_blue",              "\033[94m"     },
+  { bold_magenta,           COLOR_B_MAGENTA,         "bold_magenta",           "\033[95m"     },
+  { bold_cyan,              COLOR_B_CYAN,            "bold_cyan",              "\033[96m"     },
+  { bold_white,             COLOR_B_WHITE,           "bold_white",             "\033[97m"     },
+
+  { underline_black,        COLOR_UL_BLACK,          "underline_black",        "\033[4;30m"   },
+  { underline_red,          COLOR_UL_RED,            "underline_red",          "\033[4;31m"   },
+  { underline_green,        COLOR_UL_GREEN,          "underline_green",        "\033[4;32m"   },
+  { underline_yellow,       COLOR_UL_YELLOW,         "underline_yellow",       "\033[4;33m"   },
+  { underline_blue,         COLOR_UL_BLUE,           "underline_blue",         "\033[4;34m"   },
+  { underline_magenta,      COLOR_UL_MAGENTA,        "underline_magenta",      "\033[4;35m"   },
+  { underline_cyan,         COLOR_UL_CYAN,           "underline_cyan",         "\033[4;36m"   },
+  { underline_white,        COLOR_UL_WHITE,          "underline_white",        "\033[4;37m"   },
+
+  { bold_underline_black,   COLOR_B_UL_BLACK,        "bold_underline_black",   "\033[1;4;30m" },
+  { bold_underline_red,     COLOR_B_UL_RED,          "bold_underline_red",     "\033[1;4;31m" },
+  { bold_underline_green,   COLOR_B_UL_GREEN,        "bold_underline_green",   "\033[1;4;32m" },
+  { bold_underline_yellow,  COLOR_B_UL_YELLOW,       "bold_underline_yellow",  "\033[1;4;33m" },
+  { bold_underline_blue,    COLOR_B_UL_BLUE,         "bold_underline_blue",    "\033[1;4;34m" },
+  { bold_underline_magenta, COLOR_B_UL_MAGENTA,      "bold_underline_magenta", "\033[1;4;35m" },
+  { bold_underline_cyan,    COLOR_B_UL_CYAN,         "bold_underline_cyan",    "\033[1;4;36m" },
+  { bold_underline_white,   COLOR_B_UL_WHITE,        "bold_underline_white",   "\033[1;4;37m" },
+
+  { on_black,               COLOR_ON_BLACK,          "on_black",               "\033[40m"     },
+  { on_red,                 COLOR_ON_RED,            "on_red",                 "\033[41m"     },
+  { on_green,               COLOR_ON_GREEN,          "on_green",               "\033[42m"     },
+  { on_yellow,              COLOR_ON_YELLOW,         "on_yellow",              "\033[43m"     },
+  { on_blue,                COLOR_ON_BLUE,           "on_blue",                "\033[44m"     },
+  { on_magenta,             COLOR_ON_MAGENTA,        "on_magenta",             "\033[45m"     },
+  { on_cyan,                COLOR_ON_CYAN,           "on_cyan",                "\033[46m"     },
+  { on_white,               COLOR_ON_WHITE,          "on_white",               "\033[47m"     },
+
+  { on_bright_black,        COLOR_ON_BRIGHT_BLACK,   "on_bright_black",        "\033[100m"    },
+  { on_bright_red,          COLOR_ON_BRIGHT_RED,     "on_bright_red",          "\033[101m"    },
+  { on_bright_green,        COLOR_ON_BRIGHT_GREEN,   "on_bright_green",        "\033[102m"    },
+  { on_bright_yellow,       COLOR_ON_BRIGHT_YELLOW,  "on_bright_yellow",       "\033[103m"    },
+  { on_bright_blue,         COLOR_ON_BRIGHT_BLUE,    "on_bright_blue",         "\033[104m"    },
+  { on_bright_magenta,      COLOR_ON_BRIGHT_MAGENTA, "on_bright_magenta",      "\033[105m"    },
+  { on_bright_cyan,         COLOR_ON_BRIGHT_CYAN,    "on_bright_cyan",         "\033[106m"    },
+  { on_bright_white,        COLOR_ON_BRIGHT_WHITE,   "on_bright_white",        "\033[107m"    },
+};
+
+#define NUM_COLORS (sizeof (allColors) / sizeof (allColors[0]))
+
+////////////////////////////////////////////////////////////////////////////////
 std::string colorName (color c)
 {
-  switch (c)
-  {
-  case nocolor:                 return "";
-  case off:                     return "off";
+  for (unsigned int i = 0; i < NUM_COLORS; ++i)
+    if (allColors[i].id == c)
+      return allColors[i].english_name;
 
-  case bold:                    return "bold";
-  case underline:               return "underline";
-  case bold_underline:          return "bold_underline";
-
-  case black:                   return "black";
-  case red:                     return "red";
-  case green:                   return "green";
-  case yellow:                  return "yellow";
-  case blue:                    return "blue";
-  case magenta:                 return "magenta";
-  case cyan:                    return "cyan";
-  case white:                   return "white";
-
-  case bold_black:              return "bold_black";
-  case bold_red:                return "bold_red";
-  case bold_green:              return "bold_green";
-  case bold_yellow:             return "bold_yellow";
-  case bold_blue:               return "bold_blue";
-  case bold_magenta:            return "bold_magenta";
-  case bold_cyan:               return "bold_cyan";
-  case bold_white:              return "bold_white";
-
-  case underline_black:         return "underline_black";
-  case underline_red:           return "underline_red";
-  case underline_green:         return "underline_green";
-  case underline_yellow:        return "underline_yellow";
-  case underline_blue:          return "underline_blue";
-  case underline_magenta:       return "underline_magenta";
-  case underline_cyan:          return "underline_cyan";
-  case underline_white:         return "underline_white";
-
-  case bold_underline_black:    return "bold_underline_black";
-  case bold_underline_red:      return "bold_underline_red";
-  case bold_underline_green:    return "bold_underline_green";
-  case bold_underline_yellow:   return "bold_underline_yellow";
-  case bold_underline_blue:     return "bold_underline_blue";
-  case bold_underline_magenta:  return "bold_underline_magenta";
-  case bold_underline_cyan:     return "bold_underline_cyan";
-  case bold_underline_white:    return "bold_underline_white";
-
-  case on_black:                return "on_black";
-  case on_red:                  return "on_red";
-  case on_green:                return "on_green";
-  case on_yellow:               return "on_yellow";
-  case on_blue:                 return "on_blue";
-  case on_magenta:              return "on_magenta";
-  case on_cyan:                 return "on_cyan";
-  case on_white:                return "on_white";
-
-  case on_bright_black:         return "on_bright_black";
-  case on_bright_red:           return "on_bright_red";
-  case on_bright_green:         return "on_bright_green";
-  case on_bright_yellow:        return "on_bright_yellow";
-  case on_bright_blue:          return "on_bright_blue";
-  case on_bright_magenta:       return "on_bright_magenta";
-  case on_bright_cyan:          return "on_bright_cyan";
-  case on_bright_white:         return "on_bright_white";
-
-  default: throw "Unknown Text::color value";
-  }
-
+  throw context.stringtable.get (COLOR_UNKNOWN, "Unknown color value");
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 color colorCode (const std::string& c)
 {
-       if (c == "off")                     return off;
-  else if (c == "bold")                    return bold;
-  else if (c == "underline")               return underline;
-  else if (c == "bold_underline")          return bold_underline;
-
-  else if (c == "black")                   return black;
-  else if (c == "red")                     return red;
-  else if (c == "green")                   return green;
-  else if (c == "yellow")                  return yellow;
-  else if (c == "blue")                    return blue;
-  else if (c == "magenta")                 return magenta;
-  else if (c == "cyan")                    return cyan;
-  else if (c == "white")                   return white;
-
-  else if (c == "bold_black")              return bold_black;
-  else if (c == "bold_red")                return bold_red;
-  else if (c == "bold_green")              return bold_green;
-  else if (c == "bold_yellow")             return bold_yellow;
-  else if (c == "bold_blue")               return bold_blue;
-  else if (c == "bold_magenta")            return bold_magenta;
-  else if (c == "bold_cyan")               return bold_cyan;
-  else if (c == "bold_white")              return bold_white;
-
-  else if (c == "underline_black")         return underline_black;
-  else if (c == "underline_red")           return underline_red;
-  else if (c == "underline_green")         return underline_green;
-  else if (c == "underline_yellow")        return underline_yellow;
-  else if (c == "underline_blue")          return underline_blue;
-  else if (c == "underline_magenta")       return underline_magenta;
-  else if (c == "underline_cyan")          return underline_cyan;
-  else if (c == "underline_white")         return underline_white;
-
-  else if (c == "bold_underline_black")    return bold_underline_black;
-  else if (c == "bold_underline_red")      return bold_underline_red;
-  else if (c == "bold_underline_green")    return bold_underline_green;
-  else if (c == "bold_underline_yellow")   return bold_underline_yellow;
-  else if (c == "bold_underline_blue")     return bold_underline_blue;
-  else if (c == "bold_underline_magenta")  return bold_underline_magenta;
-  else if (c == "bold_underline_cyan")     return bold_underline_cyan;
-  else if (c == "bold_underline_white")    return bold_underline_white;
-
-  else if (c == "on_black")                return on_black;
-  else if (c == "on_red")                  return on_red;
-  else if (c == "on_green")                return on_green;
-  else if (c == "on_yellow")               return on_yellow;
-  else if (c == "on_blue")                 return on_blue;
-  else if (c == "on_magenta")              return on_magenta;
-  else if (c == "on_cyan")                 return on_cyan;
-  else if (c == "on_white")                return on_white;
-
-  else if (c == "on_bright_black")         return on_bright_black;
-  else if (c == "on_bright_red")           return on_bright_red;
-  else if (c == "on_bright_green")         return on_bright_green;
-  else if (c == "on_bright_yellow")        return on_bright_yellow;
-  else if (c == "on_bright_blue")          return on_bright_blue;
-  else if (c == "on_bright_magenta")       return on_bright_magenta;
-  else if (c == "on_bright_cyan")          return on_bright_cyan;
-  else if (c == "on_bright_white")         return on_bright_white;
+  for (unsigned int i = 0; i < NUM_COLORS; ++i)
+    if (context.stringtable.get (allColors[i].string_id, allColors[i].english_name) == c)
+      return allColors[i].id;
 
   return nocolor;
 }
@@ -170,72 +134,11 @@ color colorCode (const std::string& c)
 ////////////////////////////////////////////////////////////////////////////////
 std::string decode (color c)
 {
-  switch (c)
-  {
-  case nocolor:                 return "";
-  case off:                     return "\033[0m";
+  for (unsigned int i = 0; i < NUM_COLORS; ++i)
+    if (allColors[i].id == c)
+      return allColors[i].escape_sequence;
 
-  case bold:                    return "\033[1m";
-  case underline:               return "\033[4m";
-  case bold_underline:          return "\033[1;4m";
-
-  case black:                   return "\033[30m";
-  case red:                     return "\033[31m";
-  case green:                   return "\033[32m";
-  case yellow:                  return "\033[33m";
-  case blue:                    return "\033[34m";
-  case magenta:                 return "\033[35m";
-  case cyan:                    return "\033[36m";
-  case white:                   return "\033[37m";
-
-  case bold_black:              return "\033[90m";
-  case bold_red:                return "\033[91m";
-  case bold_green:              return "\033[92m";
-  case bold_yellow:             return "\033[93m";
-  case bold_blue:               return "\033[94m";
-  case bold_magenta:            return "\033[95m";
-  case bold_cyan:               return "\033[96m";
-  case bold_white:              return "\033[97m";
-
-  case underline_black:         return "\033[4;30m";
-  case underline_red:           return "\033[4;31m";
-  case underline_green:         return "\033[4;32m";
-  case underline_yellow:        return "\033[4;33m";
-  case underline_blue:          return "\033[4;34m";
-  case underline_magenta:       return "\033[4;35m";
-  case underline_cyan:          return "\033[4;36m";
-  case underline_white:         return "\033[4;37m";
-
-  case bold_underline_black:    return "\033[1;4;30m";
-  case bold_underline_red:      return "\033[1;4;31m";
-  case bold_underline_green:    return "\033[1;4;32m";
-  case bold_underline_yellow:   return "\033[1;4;33m";
-  case bold_underline_blue:     return "\033[1;4;34m";
-  case bold_underline_magenta:  return "\033[1;4;35m";
-  case bold_underline_cyan:     return "\033[1;4;36m";
-  case bold_underline_white:    return "\033[1;4;37m";
-
-  case on_black:                return "\033[40m";
-  case on_red:                  return "\033[41m";
-  case on_green:                return "\033[42m";
-  case on_yellow:               return "\033[43m";
-  case on_blue:                 return "\033[44m";
-  case on_magenta:              return "\033[45m";
-  case on_cyan:                 return "\033[46m";
-  case on_white:                return "\033[47m";
-
-  case on_bright_black:         return "\033[100m";
-  case on_bright_red:           return "\033[101m";
-  case on_bright_green:         return "\033[102m";
-  case on_bright_yellow:        return "\033[103m";
-  case on_bright_blue:          return "\033[104m";
-  case on_bright_magenta:       return "\033[105m";
-  case on_bright_cyan:          return "\033[106m";
-  case on_bright_white:         return "\033[107m";
-
-  default: throw "Unknown Text::color value";
-  }
-
+  throw context.stringtable.get (COLOR_UNKNOWN, "Unknown color value");
   return "";
 }
 
@@ -259,6 +162,34 @@ std::string colorize (color fg, color bg)
 std::string colorize ()
 {
   return decode (off);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string guessColor (const std::string& name)
+{
+  std::vector <std::string> all;
+  for (unsigned int i = 0; i < NUM_COLORS; ++i)
+    all.push_back (context.stringtable.get (
+                     allColors[i].string_id,
+                     allColors[i].english_name));
+
+  std::vector <std::string> matches;
+  autoComplete (name, all, matches);
+
+  if (matches.size () == 0)
+    throw std::string ("Unrecognized color '") + name + "'";
+
+  else if (matches.size () != 1)
+  {
+    std::string error = "Ambiguous color '" + name + "' - could be either of "; // TODO i18n
+
+    std::string combined;
+    join (combined, ", ", matches);
+
+    throw error + combined;
+  }
+
+  return matches[0];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

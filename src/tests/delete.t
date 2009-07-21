@@ -28,39 +28,36 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 # Create the rc file.
-if (open my $fh, '>', 'undelete.rc')
+if (open my $fh, '>', 'delete.rc')
 {
   print $fh "data.location=.\n",
             "echo.command=no\n";
   close $fh;
-  ok (-r 'undelete.rc', 'Created undelete.rc');
+  ok (-r 'delete.rc', 'Created delete.rc');
 }
 
 # Add a task, delete it, undelete it.
-my $output = qx{../task rc:undelete.rc add one; ../task rc:undelete.rc info 1};
+my $output = qx{../task rc:delete.rc add one; ../task rc:delete.rc info 1};
 ok (-r 'pending.data', 'pending.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
-$output = qx{../task rc:undelete.rc delete 1; ../task rc:undelete.rc info 1};
+$output = qx{../task rc:delete.rc delete 1; ../task rc:delete.rc info 1};
 like ($output, qr/Status\s+Deleted\n/, 'Deleted');
-ok (! -r 'completed.data', 'completed.data not created');
-
-$output = qx{../task rc:undelete.rc undelete 1; ../task rc:undelete.rc info 1};
-like ($output, qr/Status\s+Pending\n/, 'Pending');
-ok (! -r 'completed.data', 'completed.data not created');
-
-$output = qx{../task rc:undelete.rc delete 1; ../task rc:undelete.rc list};
-like ($output, qr/^No matches/, 'No matches');
 ok (-r 'completed.data', 'completed.data created');
 
-$output = qx{../task rc:undelete.rc undelete 1};
-like ($output, qr/Task 1 not found/, 'Task 1 not found');
+$output = qx{echo 'y' | ../task rc:delete.rc undo; ../task rc:delete.rc info 1};
+like ($output, qr/Status\s+Pending\n/, 'Pending');
+ok (-r 'completed.data', 'completed.data created');
 
-$output = qx{../task rc:undelete.rc info 1};
-like ($output, qr/No matches./, 'no matches');
+$output = qx{../task rc:delete.rc delete 1; ../task rc:delete.rc list};
+like ($output, qr/No matches./, 'No matches');
+ok (-r 'completed.data', 'completed.data created');
+
+$output = qx{../task rc:delete.rc info 1};
+like ($output, qr/Task 1 not found/, 'No matches');
 
 # Cleanup.
 ok (-r 'pending.data', 'Need to remove pending.data');
@@ -71,8 +68,12 @@ ok (-r 'completed.data', 'Need to remove completed.data');
 unlink 'completed.data';
 ok (!-r 'completed.data', 'Removed completed.data');
 
-unlink 'undelete.rc';
-ok (!-r 'undelete.rc', 'Removed undelete.rc');
+ok (-r 'undo.data', 'Need to remove undo.data');
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
+
+unlink 'delete.rc';
+ok (!-r 'delete.rc', 'Removed delete.rc');
 
 exit 0;
 

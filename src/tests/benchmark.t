@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'bench.rc')
@@ -95,6 +95,9 @@ ok (!-r 'pending.data', 'Removed pending.data');
 
 unlink 'completed.data';
 ok (!-r 'completed.data', 'Removed completed.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'bench.rc';
 ok (!-r 'bench.rc', 'Removed bench.rc');

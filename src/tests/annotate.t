@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 # Create the rc file.
 if (open my $fh, '>', 'annotate.rc')
@@ -66,6 +66,9 @@ like ($output, qr/2 tasks/, 'count');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'annotate.rc';
 ok (!-r 'annotate.rc', 'Removed annotate.rc');

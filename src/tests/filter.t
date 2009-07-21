@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 108;
+use Test::More tests => 130;
 
 # Create the rc file.
 if (open my $fh, '>', 'filter.rc')
@@ -110,6 +110,33 @@ like   ($output, qr/five/,  'g5');
 unlike ($output, qr/six/,   'g6');
 unlike ($output, qr/seven/, 'g7');
 
+$output = qx{../task rc:filter.rc list -tag};
+unlike ($output, qr/one/,   'g1');
+like   ($output, qr/two/,   'g2');
+like   ($output, qr/three/, 'g3');
+like   ($output, qr/four/,  'g4');
+unlike ($output, qr/five/,  'g5');
+like   ($output, qr/six/,   'g6');
+like   ($output, qr/seven/, 'g7');
+
+$output = qx{../task rc:filter.rc list -missing};
+like   ($output, qr/one/,   'g1');
+like   ($output, qr/two/,   'g2');
+like   ($output, qr/three/, 'g3');
+like   ($output, qr/four/,  'g4');
+like   ($output, qr/five/,  'g5');
+like   ($output, qr/six/,   'g6');
+like   ($output, qr/seven/, 'g7');
+
+$output = qx{../task rc:filter.rc list +tag -tag};
+unlike ($output, qr/one/,   'g1');
+unlike ($output, qr/two/,   'g2');
+unlike ($output, qr/three/, 'g3');
+unlike ($output, qr/four/,  'g4');
+unlike ($output, qr/five/,  'g5');
+unlike ($output, qr/six/,   'g6');
+unlike ($output, qr/seven/, 'g7');
+
 $output = qx{../task rc:filter.rc list project:A priority:H};
 like   ($output, qr/one/,   'h1');
 like   ($output, qr/two/,   'h2');
@@ -185,6 +212,9 @@ unlike ($output, qr/seven/, 'n7');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'filter.rc';
 ok (!-r 'filter.rc', 'Removed filter.rc');

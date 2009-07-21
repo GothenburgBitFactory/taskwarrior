@@ -1,0 +1,157 @@
+# This is an example strings.en-US file.
+#
+# The task program has a built-in set of default strings, which are UTF8 encoded
+# for the en-US locale.  A file such as this is used to override those defaults.
+# This means that a strings file is merely a delta applied to the built-in
+# strings, so an empty string file means you get en-US.
+#
+# To use another string file, add the following entry to your .taskrc file:
+#
+#   locale=sv-SE    # Swedish string set
+
+# 1xx task shell
+100 Okänt fel. #Unknown Error.
+101 Kunde inte läsa hemkatalogen från passwd filen. #Could not read home directory from the passwd file.
+102 (j/n) #(y/n)
+103 Ogiltig ID i sekvens #Invalid ID in sequence
+104 Ogiltig ID i spännvidd #Invalid ID in range
+105 Inverterad sekvens spännvidd hög-låg #Inverted sequence range high-low
+106 ID spännvidd för stor #ID Range too large
+107 Ingen sekvens. #Not a sequence.
+108 Interaktiv task är bara tillgänglig när den kompilerades med support för ncurses. #Interactive task is only available when built with ncurses support.
+109 Tom post i ingångsdata #Empty record in input
+110 Okänt tecknen på slutet av raden. #Unrecognized characters at end of line
+111 Post inte indentifierad som format 4 #Record not recognized as format 4
+112 Substitution av tom teckensträng är inte möjligt #Cannot substitute an empty string
+113 Pkänt tecken vid slutet av substitution #Unrecognized character(s) at end of substitution
+114 Ogiltig substitution #Malformed substitution
+115 Taggar får inte innehåller komman #Tags are not permitted to contain commas
+
+# 2xx Commands - must be sequential
+200 aktivt #active
+201 tillägg #add
+202 bifoga #append
+203 kommentera #annotate
+204 kalender #calendar
+205 färger #colors
+206 avslutad #completed
+207 stryk #delete
+208 färdig #done
+209 kopiera #duplicate
+210 redigera #edit
+211 exportera #export
+212 hjälp #help
+213 historia #history
+214 ghistoria #ghistory
+215 importera #import
+216 info #info
+
+218 försenad #overdue
+219 projekten #projects
+220 start #start
+221 statistik #stats
+222 stop #stop
+223 sammanfattning #summary
+224 taggar #tags
+225 tidsrapport #timesheet
+
+227 ångra #undo
+228 version #version
+
+# 3xx Attributes - must be sequential
+300 projekt #project
+301 prioritet #priority
+302 förgrund #fg
+303 bakgrund #bg
+304 väntad #due
+305 post #entry
+306 start #start
+307 slut #end
+308 periodirskt #recur
+309 innan #until
+310 mask #mask
+311 imask #imask
+
+# 35x Attribute modifiers - must be sequential
+350 före #before
+351 efter #after
+352 inte #not
+353 ingen #none
+354 några #any
+355 synth #synth
+356 under #under
+357 över #over
+358 första #first
+359 sista #last
+360 detta #this
+361 nästa #next
+362 är #is
+363 ärinte #isnt
+364 har #has
+365 harinte #hasnt
+366 börjarmed #startswith
+367 slutarmed #endswith
+
+# 4xx Columns
+
+# 5xx Colors
+500 fet #bold
+501 understrykt #underline
+502 fet_understrykt #bold_underline
+503 svart #black
+504 röd #red
+505 grön #green
+506 gul #yellow
+507 blå #blue
+508 magenta #magenta
+509 cyan #cyan
+510 vit #white
+511 fet_svart #bold_black
+512 fet_röd #bold_red
+513 fet_grön #bold_green
+514 fet_gul #bold_yellow
+515 fet_blå #bold_blue
+516 fet_magenta #bold_magenta
+517 fet_cyan #bold_cyan
+518 fet_vit #bold_white
+519 understrykt_svart #underline_black
+520 understrykt_röd #underline_red
+521 understrykt_grön #underline_green
+522 understrykt_gul #underline_yellow
+523 understrykt_blå #underline_blue
+524 understrykt_magenta #underline_magenta
+525 understrykt_cyan #underline_cyan
+526 understrykt_vit #underline_white
+527 fet_understrykt_svart #bold_underline_black
+528 fet_understrykt_röd #bold_underline_red
+529 fet_understrykt_grön #bold_underline_green
+530 fet_understrykt_gul #bold_underline_yellow
+531 fet_understrykt_blå #bold_underline_blue
+532 fet_understrykt_magenta #bold_underline_magenta
+533 fet_understrykt_cyan #bold_underline_cyan
+534 fet_understrykt_vit #bold_underline_white
+535 på_svart #on_black
+536 på_röd #on_red
+537 på_grön #on_green
+538 på_gul #on_yellow
+539 på_blå #on_blue
+540 på_magenta #on_magenta
+541 på_cyan #on_cyan
+542 på_vit #on_white
+543 på_ljust_svart #on_bright_black
+544 på_ljust_röd #on_bright_red
+545 på_ljust_grön #on_bright_green
+546 på_ljust_gul #on_bright_yellow
+547 på_ljust_blå #on_bright_blue
+548 på_ljust_magenta #on_bright_magenta
+549 på_ljust_cyan #on_bright_cyan
+550 på_ljust_vit #on_bright_white
+551 av #off
+552 Okänt färg namn #Unknown color name
+
+# 6xx Config
+
+# 7xx TDB
+
+# 8xx Reports
+

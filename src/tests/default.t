@@ -28,13 +28,13 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 # Create the rc file.
 if (open my $fh, '>', 'default.rc')
 {
   print $fh "data.location=.\n",
-            "default.command=list\n",
+            "default.command=rc:default.rc list\n",
             "default.project=PROJECT\n",
             "default.priority=M\n";
   close $fh;
@@ -75,6 +75,9 @@ like ($output, qr/1 PROJECT L .+ priority specified/, 'default command worked');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'default.rc';
 ok (!-r 'default.rc', 'Removed default.rc');

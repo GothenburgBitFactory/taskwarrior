@@ -25,11 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <sstream>
 #include <time.h>
 #include <assert.h>
 #include <stdlib.h>
-#include "task.h"
 #include "Date.h"
+#include "text.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Defaults to "now".
@@ -63,6 +65,10 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
   int day   = 0;
   int year  = 0;
 
+  // Perhaps it is an epoch date, in string form?
+  if (isEpoch (mdy))
+    return;
+
   // Before parsing according to "format", perhaps this is a relative date?
   if (isRelativeDate (mdy))
     return;
@@ -81,8 +87,8 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
-      if (i + 1 < mdy.length ()                                         &&
-          (mdy[i + 0] == '0' || mdy[i + 0] == '1')                      &&
+      if (i + 1 < mdy.length ()                    &&
+          (mdy[i + 0] == '0' || mdy[i + 0] == '1') &&
           ::isdigit (mdy[i + 1]))
       {
         month = ::atoi (mdy.substr (i, 2).c_str ());
@@ -118,7 +124,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
 
     // Double digit.
     case 'y':
-      if (i + 1 >= mdy.length () ||
+      if (i + 1 >= mdy.length ()   ||
           ! ::isdigit (mdy[i + 0]) ||
           ! ::isdigit (mdy[i + 1]))
       {
@@ -179,6 +185,9 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
     }
   }
 
+  if (i < mdy.length ())
+    throw std::string ("\"") + mdy + "\" is not a valid date in " + format + " format.";
+
   if (!valid (month, day, year))
     throw std::string ("\"") + mdy + "\" is not a valid date.";
 
@@ -206,6 +215,14 @@ Date::~Date ()
 time_t Date::toEpoch ()
 {
   return mT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Date::toEpochString ()
+{
+  std::stringstream epoch;
+  epoch << mT;
+  return epoch.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -254,6 +271,22 @@ const std::string Date::toString (const std::string& format /*= "m/d/Y" */) cons
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Date::valid (const std::string& input, const std::string& format)
+{
+  try
+  {
+    Date test (input, format);
+  }
+
+  catch (...)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Date::valid (const int m, const int d, const int y)
 {
   // Check that the year is valid.
@@ -277,9 +310,11 @@ bool Date::leapYear (int year)
 {
   bool ly = false;
 
-       if (!(year % 4))   ly = true;
-  else if (!(year % 400)) ly = true;
-  else if (!(year % 100)) ly = false;
+  // (year % 4 == 0) && (year % 100 !=0)  OR
+  // (year % 400 == 0)
+  // are leapyears
+
+  if (((!(year % 4)) && (year % 100)) || (!(year % 400))) ly = true;
 
   return ly;
 }
@@ -352,6 +387,28 @@ std::string Date::dayName (int dow)
   };
 
   return days[dow];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Date::weekOfYear (int weekStart) const
+{
+  struct tm* t = localtime (&mT);
+  char   weekStr[3];
+
+  if (weekStart == 0)
+    strftime(weekStr, sizeof(weekStr), "%U", t);
+  else if (weekStart == 1)
+    strftime(weekStr, sizeof(weekStr), "%V", t);
+  else
+    throw std::string ("The 'weekstart' configuration variable may "
+                       "only contain 'Sunday' or 'Monday'.");
+
+  int weekNumber = ::atoi (weekStr);
+
+  if (weekStart == 0)
+    weekNumber += 1;
+
+  return weekNumber;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -488,6 +545,19 @@ Date& Date::operator-= (const int delta)
 time_t Date::operator- (const Date& rhs)
 {
   return mT - rhs.mT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Date::isEpoch (const std::string& input)
+{
+  if (digitsOnly (input) &&
+      input.length () > 8)
+  {
+    mT = (time_t) ::atoi (input.c_str ());
+    return true;
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

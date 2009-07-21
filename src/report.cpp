@@ -29,508 +29,475 @@
 #include <sstream>
 #include <fstream>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
 #include <time.h>
 
-#include "Config.h"
+#include "Context.h"
 #include "Date.h"
 #include "Table.h"
-#include "TDB.h"
-#include "T.h"
-#include "task.h"
+#include "text.h"
+#include "util.h"
+#include "main.h"
 
 #ifdef HAVE_LIBNCURSES
 #include <ncurses.h>
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
-void filterSequence (std::vector<Tt>& all, Tt& task)
-{
-  std::vector <int> sequence = task.getAllIds ();
-
-  std::vector <Tt> filtered;
-  std::vector <Tt>::iterator t;
-  for (t = all.begin (); t != all.end (); ++t)
-  {
-    std::vector <int>::iterator s;
-    for (s = sequence.begin (); s != sequence.end (); ++s)
-      if (t->getId () == *s)
-        filtered.push_back (*t);
-  }
-
-  if (sequence.size () != filtered.size ())
-  {
-    std::vector <int> filteredSequence;
-    std::vector <Tt>::iterator fs;
-    for (fs = filtered.begin (); fs != filtered.end (); ++fs)
-      filteredSequence.push_back (fs->getId ());
-
-    std::vector <int> left;
-    std::vector <int> right;
-    listDiff (filteredSequence, sequence, left, right);
-    if (left.size ())
-      throw std::string ("Sequence filtering error - please report this error");
-
-    if (right.size ())
-    {
-      std::stringstream out;
-      out << "Task";
-
-      if (right.size () > 1) out << "s";
-
-      std::vector <int>::iterator s;
-      for (s = right.begin (); s != right.end (); ++s)
-        out << " " << *s;
-
-      out << " not found";
-      throw out.str ();
-    }
-  }
-
-  all = filtered;
-}
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-void filter (std::vector<Tt>& all, Tt& task)
+std::string shortUsage ()
 {
-  std::vector <Tt> filtered;
-
-  // Split any description specified into words.
-  std::vector <std::string> descWords;
-  split (descWords, lowerCase (task.getDescription ()), ' ');
-
-  // Get all the tags to match against.
-  std::vector <std::string> tagList;
-  task.getTags (tagList);
-
-  // Get all the attributes to match against.
-  std::map <std::string, std::string> attrList;
-  task.getAttributes (attrList);
-
-  // Iterate over each task, and apply selection criteria.
-  for (unsigned int i = 0; i < all.size (); ++i)
-  {
-    Tt refTask (all[i]);
-
-    // Apply description filter.
-    std::string desc = lowerCase (refTask.getDescription ());
-    unsigned int matches = 0;
-    for (unsigned int w = 0; w < descWords.size (); ++w)
-      if (desc.find (descWords[w]) != std::string::npos)
-        ++matches;
-
-    if (matches == descWords.size ())
-    {
-      // Apply attribute filter.
-      matches = 0;
-      foreach (a, attrList)
-      {
-        if (a->first == "project")
-        {
-          if (a->second.length () <= refTask.getAttribute (a->first).length ())
-            if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
-              ++matches;
-/*
-  TODO Attempt at allowing "pri:!H", thwarted by a lack of coffee and the
-       validation of "!H" as a priority value.  To be revisited soon.
-          {
-            if (a->second[0] == '!')  // Inverted search.
-            {
-              if (a->second.substr (1, std::string::npos) != refTask.getAttribute (a->first).substr (0, a->second.length ()))
-                ++matches;
-            }
-            else
-            {
-              if (a->second == refTask.getAttribute (a->first).substr (0, a->second.length ()))
-                ++matches;
-            }
-          }
-*/
-        }
-        else if (a->second == refTask.getAttribute (a->first))
-          ++matches;
-/*
-        else
-        {
-          if (a->second[0] == '!')  // Inverted search.
-          {
-            if (a->second.substr (1, std::string::npos) != refTask.getAttribute (a->first))
-              ++matches;
-          }
-          else
-          {
-            if (a->second == refTask.getAttribute (a->first))
-              ++matches;
-          }
-        }
-*/
-      }
-
-      if (matches == attrList.size ())
-      {
-        // Apply tag filter.
-        matches = 0;
-        for (unsigned int t = 0; t < tagList.size (); ++t)
-          if (refTask.hasTag (tagList[t]))
-            ++matches;
-
-        if (matches == tagList.size ())
-          filtered.push_back (refTask);
-      }
-    }
-  }
-
-  all = filtered;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Successively apply filters based on the task object built from the command
-// line.  Tasks that match all the specified criteria are listed.
-std::string handleCompleted (TDB& tdb, Tt& task, Config& conf)
-{
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Get the pending tasks.
-  std::vector <Tt> tasks;
-  tdb.completedT (tasks);
-  filter (tasks, task);
-
-  initializeColorRules (conf);
-
-  // Create a table for output.
   Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-  table.addColumn ("Done");
-  table.addColumn ("Project");
-  table.addColumn ("Description");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-  }
-  else
-    table.setTableDashedUnderline ();
+  table.addColumn (" ");
+  table.addColumn (" ");
+  table.addColumn (" ");
+
+  table.setColumnJustification (0, Table::left);
+  table.setColumnJustification (1, Table::left);
+  table.setColumnJustification (2, Table::left);
 
   table.setColumnWidth (0, Table::minimum);
   table.setColumnWidth (1, Table::minimum);
   table.setColumnWidth (2, Table::flexible);
+  table.setTableWidth (context.getWidth ());
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (1, Table::left);
-  table.setColumnJustification (2, Table::left);
+  int row = table.addRow ();
+  table.addCell (row, 0, "Usage:");
+  table.addCell (row, 1, "task");
 
-  // Note: There is deliberately no sorting.  The original sorting was on the
-  //       end date.  Tasks are appended to completed.data naturally sorted by
-  //       the end date, so that sequence is assumed to remain unchanged, and
-  //       relied upon here.
+  row = table.addRow ();
+  table.addCell (row, 1, "task add [tags] [attrs] desc...");
+  table.addCell (row, 2, "Adds a new task.");
 
-  // Iterate over each task, and apply selection criteria.
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  row = table.addRow ();
+  table.addCell (row, 1, "task append [tags] [attrs] desc...");
+  table.addCell (row, 2, "Appends more description to an existing task.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task annotate ID desc...");
+  table.addCell (row, 2, "Adds an annotation to an existing task.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task ID [tags] [attrs] [desc...]");
+  table.addCell (row, 2, "Modifies the existing task with provided arguments.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task ID /from/to/g");
+  table.addCell (row, 2, "Performs substitution on the task description and "
+                         "annotations.  The 'g' is optional, and causes "
+                         "substitutions for all matching text, not just the "
+                         "first occurrence.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task edit ID");
+  table.addCell (row, 2, "Launches an editor to let you modify all aspects of a task directly, therefore it is to be used carefully.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task undo");
+  table.addCell (row, 2, "Reverts the most recent action.");
+
+#ifdef FEATURE_SHELL
+  row = table.addRow ();
+  table.addCell (row, 1, "task shell");
+  table.addCell (row, 2, "Launches an interactive shell.");
+#endif
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task duplicate ID [tags] [attrs] [desc...]");
+  table.addCell (row, 2, "Duplicates the specified task, and allows modifications.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task delete ID");
+  table.addCell (row, 2, "Deletes the specified task.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task info ID");
+  table.addCell (row, 2, "Shows all data, metadata for specified task.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task start ID");
+  table.addCell (row, 2, "Marks specified task as started.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task stop ID");
+  table.addCell (row, 2, "Removes the 'start' time from a task.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task done ID [tags] [attrs] [desc...]");
+  table.addCell (row, 2, "Marks the specified task as completed.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task projects");
+  table.addCell (row, 2, "Shows a list of all project names used, and how many tasks are in each.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task tags");
+  table.addCell (row, 2, "Shows a list of all tags used.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task summary");
+  table.addCell (row, 2, "Shows a report of task status by project.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task timesheet [weeks]");
+  table.addCell (row, 2, "Shows a weekly report of tasks completed and started.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task history");
+  table.addCell (row, 2, "Shows a report of task history, by month.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task ghistory");
+  table.addCell (row, 2, "Shows a graphical report of task history, by month.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task calendar [due|month year|year]");
+  table.addCell (row, 2, "Shows a calendar, with due tasks marked.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task stats");
+  table.addCell (row, 2, "Shows task database statistics.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task import");
+  table.addCell (row, 2, "Imports tasks from a variety of formats.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task export");
+  table.addCell (row, 2, "Lists all tasks in CSV format.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task color");
+  table.addCell (row, 2, "Displays all possible colors.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task version");
+  table.addCell (row, 2, "Shows the task version number.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task help");
+  table.addCell (row, 2, "Shows the long usage text.");
+
+  // Add custom reports here...
+  std::vector <std::string> all;
+  context.cmd.allCustomReports (all);
+  foreach (report, all)
   {
-    Tt refTask (tasks[i]);
+    std::string command = std::string ("task ") + *report + std::string (" [tags] [attrs] desc...");
+    std::string description = context.config.get (
+      std::string ("report.") + *report + ".description", std::string ("(missing description)"));
 
-    // Now format the matching task.
-    Date end (::atoi (refTask.getAttribute ("end").c_str ()));
-
-    // All criteria match, so add refTask to the output table.
-    int row = table.addRow ();
-
-    table.addCell (row, 0, end.toString (conf.get ("dateformat", "m/d/Y")));
-    table.addCell (row, 1, refTask.getAttribute ("project"));
-
-    std::string description = refTask.getDescription ();
-    std::string when;
-    std::map <time_t, std::string> annotations;
-    refTask.getAnnotations (annotations);
-    foreach (anno, annotations)
-    {
-      Date dt (anno->first);
-      when = dt.toString (conf.get ("dateformat", "m/d/Y"));
-      description += "\n" + when + " " + anno->second;
-    }
+    row = table.addRow ();
+    table.addCell (row, 1, command);
     table.addCell (row, 2, description);
-
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-    {
-      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg, conf);
-      table.setRowFg (row, fg);
-      table.setRowBg (row, bg);
-    }
   }
 
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << optionalBlankLine (conf)
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No matches."
-        << std::endl;
+  std::stringstream out;
+  out << table.render ()
+      << std::endl
+      << "See http://taskwarrior.org/wiki/taskwarrior/Download for the latest "
+      << "releases and a full tutorial.  New releases containing fixes and "
+      << "enhancements are made frequently.  Join in the discussion of task, "
+      << "present and future, at http://taskwarrior.org"
+      << std::endl
+      << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string longUsage ()
+{
+  std::stringstream out;
+  out << shortUsage ()
+      << "ID is the numeric identifier displayed by the 'task list' command. "
+      << "You can specify multiple IDs for task commands, and multiple tasks "
+      << "will be affected.  To specify multiple IDs make sure you use one "
+      << "of these forms:"                                                    << "\n"
+      << "  task delete 1,2,3"                                                << "\n"
+      << "  task info 1-3"                                                    << "\n"
+      << "  task pri:H 1,2-5,19"                                              << "\n"
+      <<                                                                         "\n"
+      << "Tags are arbitrary words, any quantity:"                            << "\n"
+      << "  +tag               The + means add the tag"                       << "\n"
+      << "  -tag               The - means remove the tag"                    << "\n"
+      <<                                                                         "\n"
+      << "Attributes are:"                                                    << "\n"
+      << "  project:           Project name"                                  << "\n"
+      << "  priority:          Priority"                                      << "\n"
+      << "  due:               Due date"                                      << "\n"
+      << "  recur:             Recurrence frequency"                          << "\n"
+      << "  until:             Recurrence end date"                           << "\n"
+      << "  fg:                Foreground color"                              << "\n"
+      << "  bg:                Background color"                              << "\n"
+      << "  limit:             Desired number of rows in report"              << "\n"
+      << "  wait:              Date until task becomes pending"               << "\n"
+      <<                                                                         "\n"
+      << "Attribute modifiers improve filters.  Supported modifiers are:"     << "\n"
+      << "  before     (synonyms under, below)"                               << "\n"
+      << "  after      (synonyms over, above)"                                << "\n"
+      << "  none"                                                             << "\n"
+      << "  any"                                                              << "\n"
+      << "  is         (synonym equals)"                                      << "\n"
+      << "  isnt       (synonym not)"                                         << "\n"
+      << "  has        (synonym contain)"                                     << "\n"
+      << "  hasnt"                                                            << "\n"
+      << "  startswith (synonym left)"                                        << "\n"
+      << "  endswith   (synonym right)"                                       << "\n"
+      <<                                                                         "\n"
+      << "  For example:"                                                     << "\n"
+      << "    task list due.before:eom priority.not:L"                        << "\n"
+      <<                                                                         "\n"
+      << "The default .taskrc file can be overridden with:"                   << "\n"
+      << "  task rc:<alternate file> ..."                                     << "\n"
+      <<                                                                         "\n"
+      << "The values in .taskrc (or alternate) can be overridden with:"       << "\n"
+      << "  task ... rc.<name>:<value>"                                       << "\n"
+      <<                                                                         "\n"
+      << "Any command or attribute name may be abbreviated if still unique:"  << "\n"
+      << "  task list project:Home"                                           << "\n"
+      << "  task li       pro:Home"                                           << "\n"
+      <<                                                                         "\n"
+      << "Some task descriptions need to be escaped because of the shell:"    << "\n"
+      << "  task add \"quoted ' quote\""                                      << "\n"
+      << "  task add escaped \\' quote"                                       << "\n"
+      <<                                                                         "\n"
+      << "The argument -- tells task to treat all other args as description." << "\n"
+      << "  task add -- project:Home needs scheduling"                        << "\n"
+      <<                                                                         "\n"
+      << "Many characters have special meaning to the shell, including:"      << "\n"
+      << "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~"                    << "\n"
+      << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Display all information for the given task.
-std::string handleInfo (TDB& tdb, Tt& task, Config& conf)
+std::string handleInfo ()
 {
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
   // Get all the tasks.
-  std::vector <Tt> tasks;
-  tdb.allPendingT (tasks);
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  context.tdb.loadPending (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
 
   // Find the task.
-  int count = 0;
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  std::stringstream out;
+  foreach (task, tasks)
   {
-    Tt refTask (tasks[i]);
+    Table table;
+    table.setTableWidth (context.getWidth ());
+    table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
-    if (refTask.getId () == task.getId () || task.sequenceContains (refTask.getId ()))
+    table.addColumn ("Name");
+    table.addColumn ("Value");
+
+    if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+        context.config.get (std::string ("fontunderline"), "true"))
     {
-      ++count;
-
-      Table table;
-      table.setTableWidth (width);
-      table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-
-      table.addColumn ("Name");
-      table.addColumn ("Value");
-
-      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-      {
-        table.setColumnUnderline (0);
-        table.setColumnUnderline (1);
-      }
-      else
-        table.setTableDashedUnderline ();
-
-      table.setColumnWidth (0, Table::minimum);
-      table.setColumnWidth (1, Table::flexible);
-
-      table.setColumnJustification (0, Table::left);
-      table.setColumnJustification (1, Table::left);
-          Date now;
-
-      int row = table.addRow ();
-      table.addCell (row, 0, "ID");
-      table.addCell (row, 1, refTask.getId ());
-
-      std::string status = refTask.getStatus () == Tt::pending   ? "Pending"
-                         : refTask.getStatus () == Tt::completed ? "Completed"
-                         : refTask.getStatus () == Tt::deleted   ? "Deleted"
-                         : refTask.getStatus () == Tt::recurring ? "Recurring"
-                         : "";
-      if (refTask.getAttribute ("parent") != "")
-        status += " (Recurring)";
-
-      row = table.addRow ();
-      table.addCell (row, 0, "Status");
-      table.addCell (row, 1, status);
-
-      std::string description = refTask.getDescription ();
-      std::string when;
-      std::map <time_t, std::string> annotations;
-      refTask.getAnnotations (annotations);
-      foreach (anno, annotations)
-      {
-        Date dt (anno->first);
-        when = dt.toString (conf.get ("dateformat", "m/d/Y"));
-        description += "\n" + when + " " + anno->second;
-      }
-
-      row = table.addRow ();
-      table.addCell (row, 0, "Description");
-      table.addCell (row, 1, description);
-
-      if (refTask.getAttribute ("project") != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Project");
-        table.addCell (row, 1, refTask.getAttribute ("project"));
-      }
-
-      if (refTask.getAttribute ("priority") != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Priority");
-        table.addCell (row, 1, refTask.getAttribute ("priority"));
-      }
-
-      if (refTask.getStatus () == Tt::recurring ||
-          refTask.getAttribute ("parent") != "")
-      {
-        if (refTask.getAttribute ("recur") != "")
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Recurrence");
-          table.addCell (row, 1, refTask.getAttribute ("recur"));
-        }
-
-        if (refTask.getAttribute ("until") != "")
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Recur until");
-          table.addCell (row, 1, refTask.getAttribute ("until"));
-        }
-
-        if (refTask.getAttribute ("mask") != "")
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Mask");
-          table.addCell (row, 1, refTask.getAttribute ("mask"));
-        }
-
-        if (refTask.getAttribute ("parent") != "")
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Parent task");
-          table.addCell (row, 1, refTask.getAttribute ("parent"));
-        }
-
-        row = table.addRow ();
-        table.addCell (row, 0, "Mask Index");
-        table.addCell (row, 1, refTask.getAttribute ("imask"));
-      }
-
-      // due (colored)
-      bool imminent = false;
-      bool overdue = false;
-      std::string due = refTask.getAttribute ("due");
-      if (due != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Due");
-
-        Date dt (::atoi (due.c_str ()));
-        due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-        table.addCell (row, 1, due);
-
-        if (due.length ())
-        {
-          overdue = (dt < now) ? true : false;
-          Date nextweek = now + 7 * 86400;
-          imminent = dt < nextweek ? true : false;
-
-          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-          {
-            if (overdue)
-              table.setCellFg (row, 1, Text::colorCode (conf.get ("color.overdue", "red")));
-            else if (imminent)
-              table.setCellFg (row, 1, Text::colorCode (conf.get ("color.due", "yellow")));
-          }
-        }
-      }
-
-      // start
-      if (refTask.getAttribute ("start") != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Start");
-        Date dt (::atoi (refTask.getAttribute ("start").c_str ()));
-        table.addCell (row, 1, dt.toString (conf.get ("dateformat", "m/d/Y")));
-      }
-
-      // end
-      if (refTask.getAttribute ("end") != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "End");
-        Date dt (::atoi (refTask.getAttribute ("end").c_str ()));
-        table.addCell (row, 1, dt.toString (conf.get ("dateformat", "m/d/Y")));
-      }
-
-      // tags ...
-      std::vector <std::string> tags;
-      refTask.getTags (tags);
-      if (tags.size ())
-      {
-        std::string allTags;
-        join (allTags, " ", tags);
-
-        row = table.addRow ();
-        table.addCell (row, 0, "Tags");
-        table.addCell (row, 1, allTags);
-      }
-
-      // uuid
-      row = table.addRow ();
-      table.addCell (row, 0, "UUID");
-      table.addCell (row, 1, refTask.getUUID ());
-
-      // entry
-      row = table.addRow ();
-      table.addCell (row, 0, "Entered");
-      Date dt (::atoi (refTask.getAttribute ("entry").c_str ()));
-      std::string entry = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-      std::string age;
-      std::string created = refTask.getAttribute ("entry");
-      if (created.length ())
-      {
-        Date dt (::atoi (created.c_str ()));
-        formatTimeDeltaDays (age, (time_t) (now - dt));
-      }
-
-      table.addCell (row, 1, entry + " (" + age + ")");
-
-      // fg
-      std::string color = refTask.getAttribute ("fg");
-      if (color != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Foreground color");
-        table.addCell (row, 1, color);
-      }
-
-      // bg
-      color = refTask.getAttribute ("bg");
-      if (color != "")
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Background color");
-        table.addCell (row, 1, color);
-      }
-
-      out << optionalBlankLine (conf)
-          << table.render ()
-          << std::endl;
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
     }
+    else
+      table.setTableDashedUnderline ();
+
+    table.setColumnWidth (0, Table::minimum);
+    table.setColumnWidth (1, Table::flexible);
+
+    table.setColumnJustification (0, Table::left);
+    table.setColumnJustification (1, Table::left);
+    Date now;
+
+    int row = table.addRow ();
+    table.addCell (row, 0, "ID");
+    table.addCell (row, 1, task->id);
+
+    std::string status = ucFirst (Task::statusToText (task->getStatus ()));
+
+    if (task->has ("parent"))
+      status += " (Recurring)";
+
+    row = table.addRow ();
+    table.addCell (row, 0, "Status");
+    table.addCell (row, 1, status);
+
+    row = table.addRow ();
+    table.addCell (row, 0, "Description");
+    table.addCell (row, 1, getFullDescription (*task));
+
+    if (task->has ("project"))
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Project");
+      table.addCell (row, 1, task->get ("project"));
+    }
+
+    if (task->has ("priority"))
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Priority");
+      table.addCell (row, 1, task->get ("priority"));
+    }
+
+    if (task->getStatus () == Task::recurring ||
+        task->has ("parent"))
+    {
+      if (task->has ("recur"))
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Recurrence");
+        table.addCell (row, 1, task->get ("recur"));
+      }
+
+      if (task->has ("until"))
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Recur until");
+        table.addCell (row, 1, task->get ("until"));
+      }
+
+      if (task->has ("mask"))
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Mask");
+        table.addCell (row, 1, task->get ("mask"));
+      }
+
+      if (task->has ("parent"))
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Parent task");
+        table.addCell (row, 1, task->get ("parent"));
+      }
+
+      row = table.addRow ();
+      table.addCell (row, 0, "Mask Index");
+      table.addCell (row, 1, task->get ("imask"));
+    }
+
+    // due (colored)
+    bool imminent = false;
+    bool overdue = false;
+    if (task->has ("due"))
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Due");
+
+      Date dt (::atoi (task->get ("due").c_str ()));
+      std::string due = getDueDate (*task);
+      table.addCell (row, 1, due);
+
+      overdue = (dt < now) ? true : false;
+      Date nextweek = now + 7 * 86400;
+      imminent = dt < nextweek ? true : false;
+
+      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+      {
+        if (overdue)
+          table.setCellFg (row, 1, Text::colorCode (context.config.get ("color.overdue", "red")));
+        else if (imminent)
+          table.setCellFg (row, 1, Text::colorCode (context.config.get ("color.due", "yellow")));
+      }
+    }
+
+    // wait
+    if (task->has ("wait"))
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Waiting until");
+      Date dt (::atoi (task->get ("wait").c_str ()));
+      table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
+    }
+
+    // start
+    if (task->has ("start"))
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Start");
+      Date dt (::atoi (task->get ("start").c_str ()));
+      table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
+    }
+
+    // end
+    if (task->has ("end"))
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "End");
+      Date dt (::atoi (task->get ("end").c_str ()));
+      table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
+    }
+
+    // tags ...
+    std::vector <std::string> tags;
+    task->getTags (tags);
+    if (tags.size ())
+    {
+      std::string allTags;
+      join (allTags, " ", tags);
+
+      row = table.addRow ();
+      table.addCell (row, 0, "Tags");
+      table.addCell (row, 1, allTags);
+    }
+
+    // uuid
+    row = table.addRow ();
+    table.addCell (row, 0, "UUID");
+    table.addCell (row, 1, task->get ("uuid"));
+
+    // entry
+    row = table.addRow ();
+    table.addCell (row, 0, "Entered");
+    Date dt (::atoi (task->get ("entry").c_str ()));
+    std::string entry = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+
+    std::string age;
+    std::string created = task->get ("entry");
+    if (created.length ())
+    {
+      Date dt (::atoi (created.c_str ()));
+      age = formatSeconds ((time_t) (now - dt));
+    }
+
+    table.addCell (row, 1, entry + " (" + age + ")");
+
+    // fg
+    std::string color = task->get ("fg");
+    if (color != "")
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Foreground color");
+      table.addCell (row, 1, color);
+    }
+
+    // bg
+    color = task->get ("bg");
+    if (color != "")
+    {
+      row = table.addRow ();
+      table.addCell (row, 0, "Background color");
+      table.addCell (row, 1, color);
+    }
+
+    out << optionalBlankLine ()
+        << table.render ()
+        << std::endl;
   }
 
-  if (! count)
+  if (! tasks.size ())
     out << "No matches." << std::endl;
 
   return out.str ();
@@ -540,20 +507,21 @@ std::string handleInfo (TDB& tdb, Tt& task, Config& conf)
 // Project  Remaining  Avg Age  Complete  0%                  100%
 // A               12      13d       55%  XXXXXXXXXXXXX-----------
 // B              109   3d 12h       10%  XXX---------------------
-std::string handleReportSummary (TDB& tdb, Tt& task, Config& conf)
+std::string handleReportSummary ()
 {
-  std::stringstream out;
-
-  std::vector <Tt> tasks;
-  tdb.allT (tasks);
-  handleRecurrence (tdb, tasks);
-  filter (tasks, task);
+  // Scan the pending tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   // Generate unique list of project names from all pending tasks.
   std::map <std::string, bool> allProjects;
-  foreach (t, tasks)
-    if (t->getStatus () == Tt::pending)
-      allProjects[t->getAttribute ("project")] = false;
+  foreach (task, tasks)
+    if (task->getStatus () == Task::pending)
+      allProjects[task->get ("project")] = false;
 
   // Initialize counts, sum.
   std::map <std::string, int> countPending;
@@ -563,35 +531,36 @@ std::string handleReportSummary (TDB& tdb, Tt& task, Config& conf)
   time_t now = time (NULL);
 
   // Initialize counters.
-  foreach (i, allProjects)
+  foreach (project, allProjects)
   {
-    countPending   [i->first] = 0;
-    countCompleted [i->first] = 0;
-    sumEntry       [i->first] = 0.0;
-    counter        [i->first] = 0;
+    countPending   [project->first] = 0;
+    countCompleted [project->first] = 0;
+    sumEntry       [project->first] = 0.0;
+    counter        [project->first] = 0;
   }
 
   // Count the various tasks.
-  foreach (t, tasks)
+  foreach (task, tasks)
   {
-    std::string project = t->getAttribute ("project");
+    std::string project = task->get ("project");
     ++counter[project];
 
-    if (t->getStatus () == Tt::pending)
+    if (task->getStatus () == Task::pending ||
+        task->getStatus () == Task::waiting)
     {
       ++countPending[project];
 
-      time_t entry = ::atoi (t->getAttribute ("entry").c_str ());
+      time_t entry = ::atoi (task->get ("entry").c_str ());
       if (entry)
         sumEntry[project] = sumEntry[project] + (double) (now - entry);
     }
 
-    else if (t->getStatus () == Tt::completed)
+    else if (task->getStatus () == Task::completed)
     {
       ++countCompleted[project];
 
-      time_t entry = ::atoi (t->getAttribute ("entry").c_str ());
-      time_t end   = ::atoi (task.getAttribute ("end").c_str ());
+      time_t entry = ::atoi (task->get ("entry").c_str ());
+      time_t end   = ::atoi (task->get ("end").c_str ());
       if (entry && end)
         sumEntry[project] = sumEntry[project] + (double) (end - entry);
     }
@@ -605,7 +574,8 @@ std::string handleReportSummary (TDB& tdb, Tt& task, Config& conf)
   table.addColumn ("Complete");
   table.addColumn ("0%                        100%");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -620,7 +590,7 @@ std::string handleReportSummary (TDB& tdb, Tt& task, Config& conf)
   table.setColumnJustification (3, Table::right);
 
   table.sortOn (0, Table::ascendingCharacter);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
 
   int barWidth = 30;
   foreach (i, allProjects)
@@ -633,7 +603,7 @@ std::string handleReportSummary (TDB& tdb, Tt& task, Config& conf)
       if (counter[i->first])
       {
         std::string age;
-        formatTimeDeltaDays (age, (time_t) (sumEntry[i->first] / counter[i->first]));
+        age = formatSeconds ((time_t) (sumEntry[i->first] / counter[i->first]));
         table.addCell (row, 2, age);
       }
 
@@ -642,7 +612,7 @@ std::string handleReportSummary (TDB& tdb, Tt& task, Config& conf)
       int completedBar = (c * barWidth) / (c + p);
 
       std::string bar;
-      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
       {
         bar = "\033[42m";
         for (int b = 0; b < completedBar; ++b)
@@ -670,10 +640,11 @@ std::string handleReportSummary (TDB& tdb, Tt& task, Config& conf)
     }
   }
 
+  std::stringstream out;
   if (table.rowCount ())
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << table.rowCount ()
         << (table.rowCount () == 1 ? " project" : " projects")
         << std::endl;
@@ -702,173 +673,59 @@ std::string handleReportSummary (TDB& tdb, Tt& task, Config& conf)
 //
 // Make the "three" tasks a configurable number
 //
-std::string handleReportNext (TDB& tdb, Tt& task, Config& conf)
+std::string handleReportNext ()
 {
-  std::stringstream out;
+  // Load report configuration.
+  std::string columnList = context.config.get ("report.next.columns");
+  std::string labelList  = context.config.get ("report.next.labels");
+  std::string sortList   = context.config.get ("report.next.sort");
+  std::string filterList = context.config.get ("report.next.filter");
 
-  // Load all pending.
-  std::vector <Tt> pending;
-  tdb.allPendingT (pending);
-  handleRecurrence (tdb, pending);
-  filter (pending, task);
+  std::vector <std::string> filterArgs;
+  split (filterArgs, filterList, ' ');
+  {
+    Cmd cmd ("next");
+    Task task;
+    Sequence sequence;
+    Subst subst;
+    Filter filter;
+    context.parse (filterArgs, cmd, task, sequence, subst, filter);
+
+    context.sequence.combine (sequence);
+
+    // Allow limit to be overridden by the command line.
+    if (!context.task.has ("limit") && task.has ("limit"))
+      context.task.set ("limit", task.get ("limit"));
+
+    foreach (att, filter)
+      context.filter.push_back (*att);
+  }
+
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   // Restrict to matching subset.
-  std::vector <int> matching;
-  gatherNextTasks (tdb, task, conf, pending, matching);
+  gatherNextTasks (tasks);
 
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Get the pending tasks.
-  std::vector <Tt> tasks;
-  tdb.pendingT (tasks);
-  filter (tasks, task);
-
-  initializeColorRules (conf);
-
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-  table.addColumn ("ID");
-  table.addColumn ("Project");
-  table.addColumn ("Pri");
-  table.addColumn ("Due");
-  table.addColumn ("Active");
-  table.addColumn ("Age");
-  table.addColumn ("Description");
-
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-    table.setColumnUnderline (4);
-    table.setColumnUnderline (5);
-    table.setColumnUnderline (6);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::minimum);
-  table.setColumnWidth (3, Table::minimum);
-  table.setColumnWidth (4, Table::minimum);
-  table.setColumnWidth (5, Table::minimum);
-  table.setColumnWidth (6, Table::flexible);
-
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (3, Table::right);
-  table.setColumnJustification (5, Table::right);
-
-  table.sortOn (3, Table::ascendingDate);
-  table.sortOn (2, Table::descendingPriority);
-  table.sortOn (1, Table::ascendingCharacter);
-
-  // Iterate over each task, and apply selection criteria.
-  foreach (i, matching)
-  {
-    Tt refTask (pending[*i]);
-    Date now;
-
-    // Now format the matching task.
-    bool imminent = false;
-    bool overdue = false;
-    std::string due = refTask.getAttribute ("due");
-    if (due.length ())
-    {
-      switch (getDueState (due))
-      {
-      case 2: overdue = true;  break;
-      case 1: imminent = true; break;
-      case 0:
-      default:                 break;
-      }
-
-      Date dt (::atoi (due.c_str ()));
-      due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-    }
-
-    std::string active;
-    if (refTask.getAttribute ("start") != "")
-      active = "*";
-
-    std::string age;
-    std::string created = refTask.getAttribute ("entry");
-    if (created.length ())
-    {
-      Date dt (::atoi (created.c_str ()));
-      formatTimeDeltaDays (age, (time_t) (now - dt));
-    }
-
-    // All criteria match, so add refTask to the output table.
-    int row = table.addRow ();
-    table.addCell (row, 0, refTask.getId ());
-    table.addCell (row, 1, refTask.getAttribute ("project"));
-    table.addCell (row, 2, refTask.getAttribute ("priority"));
-    table.addCell (row, 3, due);
-    table.addCell (row, 4, active);
-    table.addCell (row, 5, age);
-
-    std::string description = refTask.getDescription ();
-    std::string when;
-    std::map <time_t, std::string> annotations;
-    refTask.getAnnotations (annotations);
-    foreach (anno, annotations)
-    {
-      Date dt (anno->first);
-      when = dt.toString (conf.get ("dateformat", "m/d/Y"));
-      description += "\n" + when + " " + anno->second;
-    }
-
-    table.addCell (row, 6, description);
-
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-    {
-      Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-      Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-      autoColorize (refTask, fg, bg, conf);
-      table.setRowFg (row, fg);
-      table.setRowBg (row, bg);
-
-      if (fg == Text::nocolor)
-      {
-        if (overdue)
-          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
-        else if (imminent)
-          table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
-      }
-    }
-  }
-
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << optionalBlankLine (conf)
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No matches."
-        << std::endl;
-
-  return out.str ();
+  return runCustomReport (
+    "next",
+    columnList,
+    labelList,
+    sortList,
+    filterList,
+    tasks);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Year Month    Added Completed Deleted
 // 2006 November    87        63      14
-// 2006 December    21         6       1
+//      December    21         6       1
+// 2007 January      3        12       0
 time_t monthlyEpoch (const std::string& date)
 {
   // Convert any date in epoch form to m/d/y, then convert back
@@ -887,100 +744,60 @@ time_t monthlyEpoch (const std::string& date)
   return 0;
 }
 
-std::string handleReportHistory (TDB& tdb, Tt& task, Config& conf)
+std::string handleReportHistory ()
 {
-  std::stringstream out;
-
-  std::map <time_t, int> groups;
-  std::map <time_t, int> addedGroup;
-  std::map <time_t, int> completedGroup;
-  std::map <time_t, int> deletedGroup;
+  std::map <time_t, int> groups;          // Represents any month with data
+  std::map <time_t, int> addedGroup;      // Additions by month
+  std::map <time_t, int> completedGroup;  // Completions by month
+  std::map <time_t, int> deletedGroup;    // Deletions by month
 
   // Scan the pending tasks.
-  std::vector <Tt> pending;
-  tdb.allPendingT (pending);
-  handleRecurrence (tdb, pending);
-  filter (pending, task);
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  foreach (task, tasks)
   {
-    Tt task (pending[i]);
-    time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
-    if (epoch)
+    time_t epoch = monthlyEpoch (task->get ("entry"));
+    groups[epoch] = 0;
+
+    // Every task has an entry date.
+    if (addedGroup.find (epoch) != addedGroup.end ())
+      addedGroup[epoch] = addedGroup[epoch] + 1;
+    else
+      addedGroup[epoch] = 1;
+
+    // All deleted tasks have an end date.
+    if (task->getStatus () == Task::deleted)
     {
+      epoch = monthlyEpoch (task->get ("end"));
       groups[epoch] = 0;
 
-      if (addedGroup.find (epoch) != addedGroup.end ())
-        addedGroup[epoch] = addedGroup[epoch] + 1;
+      if (deletedGroup.find (epoch) != deletedGroup.end ())
+        deletedGroup[epoch] = deletedGroup[epoch] + 1;
       else
-        addedGroup[epoch] = 1;
-
-      if (task.getStatus () == Tt::deleted)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
-
-        if (deletedGroup.find (epoch) != deletedGroup.end ())
-          deletedGroup[epoch] = deletedGroup[epoch] + 1;
-        else
-          deletedGroup[epoch] = 1;
-      }
-      else if (task.getStatus () == Tt::completed)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
-
-        if (completedGroup.find (epoch) != completedGroup.end ())
-          completedGroup[epoch] = completedGroup[epoch] + 1;
-        else
-          completedGroup[epoch] = 1;
-      }
+        deletedGroup[epoch] = 1;
     }
-  }
 
-  // Scan the completed tasks.
-  std::vector <Tt> completed;
-  tdb.allCompletedT (completed);
-  filter (completed, task);
-  for (unsigned int i = 0; i < completed.size (); ++i)
-  {
-    Tt task (completed[i]);
-    time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
-    if (epoch)
+    // All completed tasks have an end date.
+    else if (task->getStatus () == Task::completed)
     {
+      epoch = monthlyEpoch (task->get ("end"));
       groups[epoch] = 0;
 
-      if (addedGroup.find (epoch) != addedGroup.end ())
-        addedGroup[epoch] = addedGroup[epoch] + 1;
+      if (completedGroup.find (epoch) != completedGroup.end ())
+        completedGroup[epoch] = completedGroup[epoch] + 1;
       else
-        addedGroup[epoch] = 1;
-
-      epoch = monthlyEpoch (task.getAttribute ("end"));
-      if (task.getStatus () == Tt::deleted)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
-
-        if (deletedGroup.find (epoch) != deletedGroup.end ())
-          deletedGroup[epoch] = deletedGroup[epoch] + 1;
-        else
-          deletedGroup[epoch] = 1;
-      }
-      else if (task.getStatus () == Tt::completed)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
-
-        if (completedGroup.find (epoch) != completedGroup.end ())
-          completedGroup[epoch] = completedGroup[epoch] + 1;
-        else
-          completedGroup[epoch] = 1;
-      }
+        completedGroup[epoch] = 1;
     }
   }
 
   // Now build the table.
   Table table;
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Year");
   table.addColumn ("Month");
   table.addColumn ("Added");
@@ -988,7 +805,8 @@ std::string handleReportHistory (TDB& tdb, Tt& task, Config& conf)
   table.addColumn ("Deleted");
   table.addColumn ("Net");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1051,7 +869,7 @@ std::string handleReportHistory (TDB& tdb, Tt& task, Config& conf)
     }
 
     table.addCell (row, 5, net);
-    if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) && net)
+    if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) && net)
       table.setCellFg (row, 5, net > 0 ? Text::red: Text::green);
   }
 
@@ -1061,15 +879,16 @@ std::string handleReportHistory (TDB& tdb, Tt& task, Config& conf)
     row = table.addRow ();
 
     table.addCell (row, 1, "Average");
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) table.setRowFg (row, Text::bold);
-    table.addCell (row, 2, totalAdded / (table.rowCount () - 2));
+    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) table.setRowFg (row, Text::bold);
+    table.addCell (row, 2, totalAdded     / (table.rowCount () - 2));
     table.addCell (row, 3, totalCompleted / (table.rowCount () - 2));
-    table.addCell (row, 4, totalDeleted / (table.rowCount () - 2));
+    table.addCell (row, 4, totalDeleted   / (table.rowCount () - 2));
     table.addCell (row, 5, (totalAdded - totalCompleted - totalDeleted) / (table.rowCount () - 2));
   }
 
+  std::stringstream out;
   if (table.rowCount ())
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
         << std::endl;
   else
@@ -1079,117 +898,68 @@ std::string handleReportHistory (TDB& tdb, Tt& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportGHistory (TDB& tdb, Tt& task, Config& conf)
+std::string handleReportGHistory ()
 {
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-  int widthOfBar = width - 15;   // 15 == strlen ("2008 September ")
-
-  std::map <time_t, int> groups;
-  std::map <time_t, int> addedGroup;
-  std::map <time_t, int> completedGroup;
-  std::map <time_t, int> deletedGroup;
+  std::map <time_t, int> groups;          // Represents any month with data
+  std::map <time_t, int> addedGroup;      // Additions by month
+  std::map <time_t, int> completedGroup;  // Completions by month
+  std::map <time_t, int> deletedGroup;    // Deletions by month
 
   // Scan the pending tasks.
-  std::vector <Tt> pending;
-  tdb.allPendingT (pending);
-  handleRecurrence (tdb, pending);
-  filter (pending, task);
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  foreach (task, tasks)
   {
-    Tt task (pending[i]);
-    time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
-    if (epoch)
+    time_t epoch = monthlyEpoch (task->get ("entry"));
+    groups[epoch] = 0;
+
+    // Every task has an entry date.
+    if (addedGroup.find (epoch) != addedGroup.end ())
+      addedGroup[epoch] = addedGroup[epoch] + 1;
+    else
+      addedGroup[epoch] = 1;
+
+    // All deleted tasks have an end date.
+    if (task->getStatus () == Task::deleted)
     {
+      epoch = monthlyEpoch (task->get ("end"));
       groups[epoch] = 0;
 
-      if (addedGroup.find (epoch) != addedGroup.end ())
-        addedGroup[epoch] = addedGroup[epoch] + 1;
+      if (deletedGroup.find (epoch) != deletedGroup.end ())
+        deletedGroup[epoch] = deletedGroup[epoch] + 1;
       else
-        addedGroup[epoch] = 1;
+        deletedGroup[epoch] = 1;
+    }
 
-      if (task.getStatus () == Tt::deleted)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
+    // All completed tasks have an end date.
+    else if (task->getStatus () == Task::completed)
+    {
+      epoch = monthlyEpoch (task->get ("end"));
+      groups[epoch] = 0;
 
-        if (deletedGroup.find (epoch) != deletedGroup.end ())
-          deletedGroup[epoch] = deletedGroup[epoch] + 1;
-        else
-          deletedGroup[epoch] = 1;
-      }
-      else if (task.getStatus () == Tt::completed)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
-
-        if (completedGroup.find (epoch) != completedGroup.end ())
-          completedGroup[epoch] = completedGroup[epoch] + 1;
-        else
-          completedGroup[epoch] = 1;
-      }
+      if (completedGroup.find (epoch) != completedGroup.end ())
+        completedGroup[epoch] = completedGroup[epoch] + 1;
+      else
+        completedGroup[epoch] = 1;
     }
   }
 
-  // Scan the completed tasks.
-  std::vector <Tt> completed;
-  tdb.allCompletedT (completed);
-  filter (completed, task);
-  for (unsigned int i = 0; i < completed.size (); ++i)
-  {
-    Tt task (completed[i]);
-    time_t epoch = monthlyEpoch (task.getAttribute ("entry"));
-    if (epoch)
-    {
-      groups[epoch] = 0;
-
-      if (addedGroup.find (epoch) != addedGroup.end ())
-        addedGroup[epoch] = addedGroup[epoch] + 1;
-      else
-        addedGroup[epoch] = 1;
-
-      epoch = monthlyEpoch (task.getAttribute ("end"));
-      if (task.getStatus () == Tt::deleted)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
-
-        if (deletedGroup.find (epoch) != deletedGroup.end ())
-          deletedGroup[epoch] = deletedGroup[epoch] + 1;
-        else
-          deletedGroup[epoch] = 1;
-      }
-      else if (task.getStatus () == Tt::completed)
-      {
-        epoch = monthlyEpoch (task.getAttribute ("end"));
-        groups[epoch] = 0;
-
-        if (completedGroup.find (epoch) != completedGroup.end ())
-          completedGroup[epoch] = completedGroup[epoch] + 1;
-        else
-          completedGroup[epoch] = 1;
-      }
-    }
-  }
+  int widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
 
   // Now build the table.
   Table table;
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Year");
   table.addColumn ("Month");
   table.addColumn ("Number Added/Completed/Deleted");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1245,7 +1015,7 @@ std::string handleReportGHistory (TDB& tdb, Tt& task, Config& conf)
       unsigned int deletedBar   = (widthOfBar *   deletedGroup[i->first]) / maxLine;
 
       std::string bar = "";
-      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
       {
         char number[24];
         std::string aBar = "";
@@ -1298,20 +1068,21 @@ std::string handleReportGHistory (TDB& tdb, Tt& task, Config& conf)
     }
   }
 
+  std::stringstream out;
   if (table.rowCount ())
   {
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
         << std::endl;
 
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
       out << "Legend: "
           << Text::colorize (Text::black, Text::on_red, "added")
           << ", "
           << Text::colorize (Text::black, Text::on_green, "completed")
           << ", "
           << Text::colorize (Text::black, Text::on_yellow, "deleted")
-          << optionalBlankLine (conf)
+          << optionalBlankLine ()
           << std::endl;
     else
       out << "Legend: + added, X completed, - deleted" << std::endl;
@@ -1323,31 +1094,24 @@ std::string handleReportGHistory (TDB& tdb, Tt& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportTimesheet (TDB& tdb, Tt& task, Config& conf)
+std::string handleReportTimesheet ()
 {
-  std::stringstream out;
+  // Scan the pending tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Get all the tasks.
-  std::vector <Tt> tasks;
-  tdb.allT (tasks);
-  filter (tasks, task);
+  // Just do this once.
+  int width = context.getWidth ();
 
   // What day of the week does the user consider the first?
-  int weekStart = Date::dayOfWeek (conf.get ("weekstart", "Monday"));
-  if (weekStart == -1)
-    throw std::string ("The 'weekstart' configuration variable does "
-                       "not contain a day name, such as 'Monday'.");
+  int weekStart = Date::dayOfWeek (context.config.get ("weekstart", "Sunday"));
+  if (weekStart != 0 && weekStart != 1)
+    throw std::string ("The 'weekstart' configuration variable may "
+                       "only contain 'Sunday' or 'Monday'.");
 
   // Determine the date of the first day of the most recent report.
   Date today;
@@ -1356,22 +1120,26 @@ std::string handleReportTimesheet (TDB& tdb, Tt& task, Config& conf)
 
   // Roll back to midnight.
   start = Date (start.month (), start.day (), start.year ());
-  Date end = start + (7 * 86400) - 1;
+  Date end = start + (7 * 86400);
 
   // Determine how many reports to run.
   int quantity = 1;
-  std::vector <int> sequence = task.getAllIds ();
-  if (sequence.size () == 1)
-    quantity = sequence[0];
+  if (context.sequence.size () == 1)
+    quantity = context.sequence[0];
 
+  bool color = context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false);
+
+  std::stringstream out;
   for (int week = 0; week < quantity; ++week)
   {
+    Date endString (end);
+    endString -= 86400;
     out << std::endl
-        << Text::colorize (Text::bold, Text::nocolor)
-        << start.toString (conf.get ("dateformat", "m/d/Y"))
+        << (color ? Text::colorize (Text::bold, Text::nocolor) : "")
+        << start.toString (context.config.get ("dateformat", "m/d/Y"))
         << " - "
-        << end.toString (conf.get ("dateformat", "m/d/Y"))
-        << Text::colorize ()
+        << endString.toString (context.config.get ("dateformat", "m/d/Y"))
+        << (color ? Text::colorize () : "")
         << std::endl;
 
     // Render the completed table.
@@ -1382,9 +1150,14 @@ std::string handleReportTimesheet (TDB& tdb, Tt& task, Config& conf)
     completed.addColumn ("Due");
     completed.addColumn ("Description");
 
-    completed.setColumnUnderline (1);
-    completed.setColumnUnderline (2);
-    completed.setColumnUnderline (3);
+    if (color && context.config.get (std::string ("fontunderline"), "true"))
+    {
+      completed.setColumnUnderline (1);
+      completed.setColumnUnderline (2);
+      completed.setColumnUnderline (3);
+    }
+    else
+      completed.setTableDashedUnderline ();
 
     completed.setColumnWidth (0, Table::minimum);
     completed.setColumnWidth (1, Table::minimum);
@@ -1396,42 +1169,24 @@ std::string handleReportTimesheet (TDB& tdb, Tt& task, Config& conf)
     completed.setColumnJustification (2, Table::right);
     completed.setColumnJustification (3, Table::left);
 
-    foreach (t, tasks)
+    foreach (task, tasks)
     {
       // If task completed within range.
-      if (t->getStatus () == Tt::completed)
+      if (task->getStatus () == Task::completed)
       {
-        Date compDate (::atoi (t->getAttribute ("end").c_str ()));
+        Date compDate (::atoi (task->get ("end").c_str ()));
         if (compDate >= start && compDate < end)
         {
           int row = completed.addRow ();
-          completed.addCell (row, 1, t->getAttribute ("project"));
+          completed.addCell (row, 1, task->get ("project"));
+          completed.addCell (row, 2, getDueDate (*task));
+          completed.addCell (row, 3, getFullDescription (*task));
 
-          std::string due = t->getAttribute ("due");
-          if (due.length ())
+          if (color)
           {
-            Date d (::atoi (due.c_str ()));
-            due = d.toString (conf.get ("dateformat", "m/d/Y"));
-            completed.addCell (row, 2, due);
-          }
-
-          std::string description = t->getDescription ();
-          std::string when;
-          std::map <time_t, std::string> annotations;
-          t->getAnnotations (annotations);
-          foreach (anno, annotations)
-          {
-            Date dt (anno->first);
-            when = dt.toString (conf.get ("dateformat", "m/d/Y"));
-            description += "\n" + when + " " + anno->second;
-          }
-          completed.addCell (row, 3, description);
-
-          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-          {
-            Text::color fg = Text::colorCode (t->getAttribute ("fg"));
-            Text::color bg = Text::colorCode (t->getAttribute ("bg"));
-            autoColorize (*t, fg, bg, conf);
+            Text::color fg = Text::colorCode (task->get ("fg"));
+            Text::color bg = Text::colorCode (task->get ("bg"));
+            autoColorize (*task, fg, bg);
             completed.setRowFg (row, fg);
             completed.setRowBg (row, bg);
           }
@@ -1453,9 +1208,14 @@ std::string handleReportTimesheet (TDB& tdb, Tt& task, Config& conf)
     started.addColumn ("Due");
     started.addColumn ("Description");
 
-    started.setColumnUnderline (1);
-    started.setColumnUnderline (2);
-    started.setColumnUnderline (3);
+    if (color && context.config.get (std::string ("fontunderline"), "true"))
+    {
+      completed.setColumnUnderline (1);
+      completed.setColumnUnderline (2);
+      completed.setColumnUnderline (3);
+    }
+    else
+      completed.setTableDashedUnderline ();
 
     started.setColumnWidth (0, Table::minimum);
     started.setColumnWidth (1, Table::minimum);
@@ -1466,43 +1226,25 @@ std::string handleReportTimesheet (TDB& tdb, Tt& task, Config& conf)
     started.setColumnJustification (1, Table::left);
     started.setColumnJustification (2, Table::right);
     started.setColumnJustification (3, Table::left);
-    foreach (t, tasks)
+    foreach (task, tasks)
     {
       // If task started within range, but not completed withing range.
-      if (t->getStatus () == Tt::pending &&
-          t->getAttribute ("start") != "")
+      if (task->getStatus () == Task::pending &&
+          task->has ("start"))
       {
-        Date startDate (::atoi (t->getAttribute ("start").c_str ()));
+        Date startDate (::atoi (task->get ("start").c_str ()));
         if (startDate >= start && startDate < end)
         {
           int row = started.addRow ();
-          started.addCell (row, 1, t->getAttribute ("project"));
+          started.addCell (row, 1, task->get ("project"));
+          started.addCell (row, 2, getDueDate (*task));
+          started.addCell (row, 3, getFullDescription (*task));
 
-          std::string due = t->getAttribute ("due");
-          if (due.length ())
+          if (color)
           {
-            Date d (::atoi (due.c_str ()));
-            due = d.toString (conf.get ("dateformat", "m/d/Y"));
-            started.addCell (row, 2, due);
-          }
-
-          std::string description = t->getDescription ();
-          std::string when;
-          std::map <time_t, std::string> annotations;
-          t->getAnnotations (annotations);
-          foreach (anno, annotations)
-          {
-            Date dt (anno->first);
-            when = dt.toString (conf.get ("dateformat", "m/d/Y"));
-            description += "\n" + when + " " + anno->second;
-          }
-          started.addCell (row, 3, description);
-
-          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-          {
-            Text::color fg = Text::colorCode (t->getAttribute ("fg"));
-            Text::color bg = Text::colorCode (t->getAttribute ("bg"));
-            autoColorize (*t, fg, bg, conf);
+            Text::color fg = Text::colorCode (task->get ("fg"));
+            Text::color bg = Text::colorCode (task->get ("bg"));
+            autoColorize (*task, fg, bg);
             started.setRowFg (row, fg);
             started.setRowBg (row, bg);
           }
@@ -1530,26 +1272,46 @@ std::string renderMonths (
   int firstMonth,
   int firstYear,
   const Date& today,
-  std::vector <Tt>& all,
-  Config& conf,
+  std::vector <Task>& all,
   int monthsPerLine)
 {
   Table table;
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+
+  // What day of the week does the user consider the first?
+  int weekStart = Date::dayOfWeek (context.config.get ("weekstart", "Sunday"));
+  if (weekStart != 0 && weekStart != 1)
+    throw std::string ("The 'weekstart' configuration variable may "
+                       "only contain 'Sunday' or 'Monday'.");
 
   // Build table for the number of months to be displayed.
   for (int i = 0 ; i < (monthsPerLine * 8); i += 8)
   {
-    table.addColumn (" ");
-    table.addColumn ("Su");
-    table.addColumn ("Mo");
-    table.addColumn ("Tu");
-    table.addColumn ("We");
-    table.addColumn ("Th");
-    table.addColumn ("Fr");
-    table.addColumn ("Sa");
+    if (weekStart == 1)
+    {
+      table.addColumn (" ");
+      table.addColumn ("Mo");
+      table.addColumn ("Tu");
+      table.addColumn ("We");
+      table.addColumn ("Th");
+      table.addColumn ("Fr");
+      table.addColumn ("Sa");
+      table.addColumn ("Su");
+    }
+    else
+    {
+      table.addColumn (" ");
+      table.addColumn ("Su");
+      table.addColumn ("Mo");
+      table.addColumn ("Tu");
+      table.addColumn ("We");
+      table.addColumn ("Th");
+      table.addColumn ("Fr");
+      table.addColumn ("Sa");
+    }
 
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+        context.config.get (std::string ("fontunderline"), "true"))
     {
       table.setColumnUnderline (i + 1);
       table.setColumnUnderline (i + 2);
@@ -1570,6 +1332,9 @@ std::string renderMonths (
     table.setColumnJustification (i + 5, Table::right);
     table.setColumnJustification (i + 6, Table::right);
     table.setColumnJustification (i + 7, Table::right);
+
+    // This creates a nice gap between the months.
+    table.setColumnWidth (i + 0, 4);
   }
 
   // At most, we need 6 rows.
@@ -1604,44 +1369,61 @@ std::string renderMonths (
   int row = 0;
 
   // Loop through months to be added on this line.
-  for (int c = 0; c < monthsPerLine ; c++)
+  for (int mpl = 0; mpl < monthsPerLine ; mpl++)
   {
     // Reset row counter for subsequent months
-    if (c != 0)
+    if (mpl != 0)
       row = 0;
 
     // Loop through days in month and add to table.
-    for (int d = 1; d <= daysInMonth.at (c); ++d)
+    for (int d = 1; d <= daysInMonth.at (mpl); ++d)
     {
-      Date temp (months.at (c), d, years.at (c));
+      Date temp (months.at (mpl), d, years.at (mpl));
       int dow = temp.dayOfWeek ();
-      int thisCol = dow + 1 + (8 * c);
+      int woy = temp.weekOfYear (weekStart);
+
+      if (context.config.get ("displayweeknumber", true))
+        table.addCell (row, (8 * mpl), woy);
+
+      // Calculate column id.
+      int thisCol = dow +                       // 0 = Sunday
+                    (weekStart == 1 ? 0 : 1) +  // Offset for weekStart
+                    (8 * mpl);                  // Columns in 1 month
+
+      if (thisCol == (8 * mpl))
+        thisCol += 7;
 
       table.addCell (row, thisCol, d);
 
-      if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
+      if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
           today.day ()   == d              &&
-          today.month () == months.at (c)  &&
-          today.year ()  == years.at (c))
+          today.month () == months.at (mpl)  &&
+          today.year ()  == years.at (mpl))
         table.setCellFg (row, thisCol, Text::cyan);
 
-      std::vector <Tt>::iterator it;
-      for (it = all.begin (); it != all.end (); ++it)
+      foreach (task, all)
       {
-        Date due (::atoi (it->getAttribute ("due").c_str ()));
-
-        if ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false)) &&
-            due.day ()   == d             &&
-            due.month () == months.at (c) &&
-            due.year ()  == years.at (c))
+        if (task->getStatus () == Task::pending &&
+            task->has ("due"))
         {
-          table.setCellFg (row, thisCol, Text::black);
-          table.setCellBg (row, thisCol, due < today ? Text::on_red : Text::on_yellow);
+          Date due (::atoi (task->get ("due").c_str ()));
+
+          if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+              due.day ()   == d               &&
+              due.month () == months.at (mpl) &&
+              due.year ()  == years.at (mpl))
+          {
+            table.setCellFg (row, thisCol, Text::black);
+            table.setCellBg (row, thisCol, due < today ? Text::on_red : Text::on_yellow);
+          }
         }
       }
 
       // Check for end of week, and...
-      if (dow == 6 && d < daysInMonth.at (c))
+      int eow = 6;
+      if (weekStart == 1)
+        eow = 0;
+      if (dow == eow && d < daysInMonth.at (mpl))
         row++;
     }
   }
@@ -1650,59 +1432,109 @@ std::string renderMonths (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportCalendar (TDB& tdb, Tt& task, Config& conf)
+std::string handleReportCalendar ()
 {
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Each month requires 23 text columns width.  See how many will actually
+  // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
-  int preferredMonthsPerLine = (conf.get (std::string ("monthsperline"), 0));
-  int monthsThatFit = width / 23;
+  int width = context.getWidth ();
+  int preferredMonthsPerLine = (context.config.get (std::string ("monthsperline"), 0));
+  int monthsThatFit = width / 26;
 
   int monthsPerLine = monthsThatFit;
   if (preferredMonthsPerLine != 0 && preferredMonthsPerLine < monthsThatFit)
     monthsPerLine = preferredMonthsPerLine;
 
-  // Load all the pending tasks.
-  std::vector <Tt> pending;
-  tdb.allPendingT (pending);
-  handleRecurrence (tdb, pending);
-  filter (pending, task);
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  Filter filter;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  context.tdb.loadPending (tasks, filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
-  // Find the oldest pending due date.
-  Date oldest;
-  Date newest;
-  std::vector <Tt>::iterator it;
-  for (it = pending.begin (); it != pending.end (); ++it)
-  {
-    if (it->getAttribute ("due") != "")
-    {
-      Date d (::atoi (it->getAttribute ("due").c_str ()));
+  Date today;
+  bool getpendingdate = false;
+  int monthsToDisplay = 1;
+  int mFrom = today.month ();
+  int yFrom = today.year ();
+  int mTo;
+  int yTo;
 
-      if (d < oldest) oldest = d;
-      if (d > newest) newest = d;
+  // Determine what to do
+  int numberOfArgs = context.args.size();
+
+  if (numberOfArgs == 1 ) {
+    // task cal
+    monthsToDisplay = monthsPerLine;
+    mFrom = today.month();
+    yFrom = today.year();
+  }
+  else if (numberOfArgs == 2 ) {
+    if (context.args[1] == "y") {
+      // task cal y
+      monthsToDisplay = 12;
+      mFrom = today.month();
+      yFrom = today.year();
+    }
+    else if (context.args[1] == "due") {
+      // task cal due
+      monthsToDisplay = monthsPerLine;
+      getpendingdate = true;
+    }
+    else {
+      // task cal 2010
+      monthsToDisplay = 12;
+      mFrom = 1;
+      yFrom = ::atoi( context.args[1].data());
     }
   }
+  else if (numberOfArgs == 3 ) {
+    if (context.args[2] == "y") {
+      // task cal due y
+      monthsToDisplay = 12;
+      getpendingdate = true;
+    }
+    else {
+      // task cal 8 2010
+      monthsToDisplay = monthsPerLine;
+      mFrom = ::atoi( context.args[1].data());
+      yFrom = ::atoi( context.args[2].data());
+    }
+  }
+  else if (numberOfArgs == 4 ) {
+    // task cal 8 2010 y
+    monthsToDisplay = 12;
+    mFrom = ::atoi( context.args[1].data());
+    yFrom = ::atoi( context.args[2].data());
+  }
 
-  // Iterate from oldest due month, year to newest month, year.
-  Date today;
-  int mFrom = oldest.month ();
-  int yFrom = oldest.year ();
+  if (getpendingdate == true) {
+    // Find the oldest pending due date.
+    Date oldest (12,31,2037);
+    foreach (task, tasks)
+    {
+      if (task->getStatus () == Task::pending)
+      {
+        if (task->has ("due"))
+        {
+          Date d (::atoi (task->get ("due").c_str ()));
+          if (d < oldest) oldest = d;
+        }
+      }
+    }
+    mFrom = oldest.month();
+    yFrom = oldest.year();
+  }
 
-  int mTo = newest.month ();
-  int yTo = newest.year ();
+  mTo = mFrom + monthsToDisplay - 1;
+  yTo = yFrom;
+  if (mTo > 12) {
+    mTo -=12;
+    yTo++;
+  }
 
+  std::stringstream out;
   out << std::endl;
   std::string output;
 
@@ -1715,14 +1547,31 @@ std::string handleReportCalendar (TDB& tdb, Tt& task, Config& conf)
     for (int i = 0 ; i < monthsPerLine ; i++)
     {
       std::string month = Date::monthName (nextM);
-      int left = (18 - month.length ()) / 2 + 1;
-      int right = 18 - left - month.length ();
 
-      out << std::setw (left) << ' '
+      //    12345678901234567890123456 = 26 chars wide
+      //                ^^             = center
+      //    <------->                  = 13 - (month.length / 2) + 1
+      //                      <------> = 26 - above
+      //   +--------------------------+
+      //   |         July 2009        |
+      //   |     Mo Tu We Th Fr Sa Su |
+      //   |  27        1  2  3  4  5 |
+      //   |  28  6  7  8  9 10 11 12 |
+      //   |  29 13 14 15 16 17 18 19 |
+      //   |  30 20 21 22 23 24 25 26 |
+      //   |  31 27 28 29 30 31       |
+      //   +--------------------------+
+
+      int totalWidth = 26;
+      int labelWidth = month.length () + 5;  // 5 = " 2009"
+      int leftGap = (totalWidth / 2) - (labelWidth / 2);
+      int rightGap = totalWidth - leftGap - labelWidth;
+
+      out << std::setw (leftGap) << ' '
           << month
           << ' '
           << nextY
-          << std::setw (right) << ' ';
+          << std::setw (rightGap) << ' ';
 
       if (++nextM > 12)
       {
@@ -1732,8 +1581,8 @@ std::string handleReportCalendar (TDB& tdb, Tt& task, Config& conf)
     }
 
     out << std::endl
-        << optionalBlankLine (conf)
-        << renderMonths (mFrom, yFrom, today, pending, conf, monthsPerLine)
+        << optionalBlankLine ()
+        << renderMonths (mFrom, yFrom, today, tasks, monthsPerLine)
         << std::endl;
 
     mFrom += monthsPerLine;
@@ -1744,7 +1593,7 @@ std::string handleReportCalendar (TDB& tdb, Tt& task, Config& conf)
     }
   }
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     out << "Legend: "
         << Text::colorize (Text::cyan, Text::nocolor, "today")
         << ", "
@@ -1752,288 +1601,48 @@ std::string handleReportCalendar (TDB& tdb, Tt& task, Config& conf)
         << ", "
         << Text::colorize (Text::black, Text::on_red, "overdue")
         << "."
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportActive (TDB& tdb, Tt& task, Config& conf)
+std::string handleReportStats ()
 {
   std::stringstream out;
 
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
+  // Go get the file sizes.
+  size_t dataSize = 0;
+
+  struct stat s;
+  std::string location = expandPath (context.config.get ("data.location"));
+  std::string file = location + "/pending.data";
+  if (!stat (file.c_str (), &s))
+    dataSize += s.st_size;
+
+  file = location + "/completed.data";
+  if (!stat (file.c_str (), &s))
+    dataSize += s.st_size;
+
+  file = location + "/undo.data";
+  if (!stat (file.c_str (), &s))
+    dataSize += s.st_size;
+
+  std::vector <std::string> undo;
+  slurp (file, undo, false);
+  int undoCount = 0;
+  foreach (tx, undo)
+    if (tx->substr (0, 3) == "---")
+      ++undoCount;
 
   // Get all the tasks.
-  std::vector <Tt> tasks;
-  tdb.pendingT (tasks);
-  filter (tasks, task);
-
-  initializeColorRules (conf);
-
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-  table.addColumn ("ID");
-  table.addColumn ("Project");
-  table.addColumn ("Pri");
-  table.addColumn ("Due");
-  table.addColumn ("Description");
-
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-    table.setColumnUnderline (4);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::minimum);
-  table.setColumnWidth (3, Table::minimum);
-  table.setColumnWidth (4, Table::flexible);
-
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (3, Table::right);
-
-  table.sortOn (3, Table::ascendingDate);
-  table.sortOn (2, Table::descendingPriority);
-  table.sortOn (1, Table::ascendingCharacter);
-
-  // Iterate over each task, and apply selection criteria.
-  for (unsigned int i = 0; i < tasks.size (); ++i)
-  {
-    Tt refTask (tasks[i]);
-    if (refTask.getAttribute ("start") != "")
-    {
-      Date now;
-      bool imminent = false;
-      bool overdue = false;
-      std::string due = refTask.getAttribute ("due");
-      if (due.length ())
-      {
-        switch (getDueState (due))
-        {
-        case 2: overdue = true;  break;
-        case 1: imminent = true; break;
-        case 0:
-        default:                 break;
-        }
-
-        Date dt (::atoi (due.c_str ()));
-        due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-      }
-
-      // All criteria match, so add refTask to the output table.
-      int row = table.addRow ();
-      table.addCell (row, 0, refTask.getId ());
-      table.addCell (row, 1, refTask.getAttribute ("project"));
-      table.addCell (row, 2, refTask.getAttribute ("priority"));
-      table.addCell (row, 3, due);
-
-      std::string description = refTask.getDescription ();
-      std::string when;
-      std::map <time_t, std::string> annotations;
-      refTask.getAnnotations (annotations);
-      foreach (anno, annotations)
-      {
-        Date dt (anno->first);
-        when = dt.toString (conf.get ("dateformat", "m/d/Y"));
-        description += "\n" + when + " " + anno->second;
-      }
-
-      table.addCell (row, 4, description);
-
-      if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-      {
-        Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-        Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-        autoColorize (refTask, fg, bg, conf);
-        table.setRowFg (row, fg);
-        table.setRowBg (row, bg);
-
-        if (fg == Text::nocolor)
-        {
-          if (overdue)
-            table.setCellFg (row, 3, Text::colorCode (conf.get ("color.overdue", "red")));
-          else if (imminent)
-            table.setCellFg (row, 3, Text::colorCode (conf.get ("color.due", "yellow")));
-        }
-      }
-    }
-  }
-
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << optionalBlankLine (conf)
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No active tasks." << std::endl;
-
-  return out.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string handleReportOverdue (TDB& tdb, Tt& task, Config& conf)
-{
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Get all the tasks.
-  std::vector <Tt> tasks;
-  tdb.pendingT (tasks);
-  filter (tasks, task);
-
-  initializeColorRules (conf);
-
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-  table.addColumn ("ID");
-  table.addColumn ("Project");
-  table.addColumn ("Pri");
-  table.addColumn ("Due");
-  table.addColumn ("Description");
-
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-    table.setColumnUnderline (4);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::minimum);
-  table.setColumnWidth (3, Table::minimum);
-  table.setColumnWidth (4, Table::flexible);
-
-  table.setColumnJustification (0, Table::right);
-  table.setColumnJustification (3, Table::right);
-
-  table.sortOn (3, Table::ascendingDate);
-  table.sortOn (2, Table::descendingPriority);
-  table.sortOn (1, Table::ascendingCharacter);
-
-  Date now;
-
-  // Iterate over each task, and apply selection criteria.
-  for (unsigned int i = 0; i < tasks.size (); ++i)
-  {
-    Tt refTask (tasks[i]);
-    std::string due;
-    if ((due = refTask.getAttribute ("due")) != "")
-    {
-      if (due.length ())
-      {
-        Date dt (::atoi (due.c_str ()));
-        due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-
-        // If overdue.
-        if (dt < now)
-        {
-          // All criteria match, so add refTask to the output table.
-          int row = table.addRow ();
-          table.addCell (row, 0, refTask.getId ());
-          table.addCell (row, 1, refTask.getAttribute ("project"));
-          table.addCell (row, 2, refTask.getAttribute ("priority"));
-          table.addCell (row, 3, due);
-
-          std::string description = refTask.getDescription ();
-          std::string when;
-          std::map <time_t, std::string> annotations;
-          refTask.getAnnotations (annotations);
-          foreach (anno, annotations)
-          {
-            Date dt (anno->first);
-            when = dt.toString (conf.get ("dateformat", "m/d/Y"));
-            description += "\n" + when + " " + anno->second;
-          }
-
-          table.addCell (row, 4, description);
-
-          if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-          {
-            Text::color fg = Text::colorCode (refTask.getAttribute ("fg"));
-            Text::color bg = Text::colorCode (refTask.getAttribute ("bg"));
-            autoColorize (refTask, fg, bg, conf);
-            table.setRowFg (row, fg);
-            table.setRowBg (row, bg);
-
-            if (fg == Text::nocolor)
-              table.setCellFg (row, 3, Text::red);
-          }
-        }
-      }
-    }
-  }
-
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render ()
-        << optionalBlankLine (conf)
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No overdue tasks." << std::endl;
-
-  return out.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string handleReportStats (TDB& tdb, Tt& task, Config& conf)
-{
-  std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Get all the tasks.
-  std::vector <Tt> tasks;
-  tdb.allT (tasks);
-  filter (tasks, task);
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   Date now;
   time_t earliest   = time (NULL);
@@ -2042,6 +1651,7 @@ std::string handleReportStats (TDB& tdb, Tt& task, Config& conf)
   int deletedT      = 0;
   int pendingT      = 0;
   int completedT    = 0;
+  int waitingT      = 0;
   int taggedT       = 0;
   int annotationsT  = 0;
   int recurringT    = 0;
@@ -2050,31 +1660,34 @@ std::string handleReportStats (TDB& tdb, Tt& task, Config& conf)
   std::map <std::string, int> allTags;
   std::map <std::string, int> allProjects;
 
-  std::vector <Tt>::iterator it;
+  std::vector <Task>::iterator it;
   for (it = tasks.begin (); it != tasks.end (); ++it)
   {
     ++totalT;
-    if (it->getStatus () == Tt::deleted)   ++deletedT;
-    if (it->getStatus () == Tt::pending)   ++pendingT;
-    if (it->getStatus () == Tt::completed) ++completedT;
-    if (it->getStatus () == Tt::recurring) ++recurringT;
+    if (it->getStatus () == Task::deleted)   ++deletedT;
+    if (it->getStatus () == Task::pending)   ++pendingT;
+    if (it->getStatus () == Task::completed) ++completedT;
+    if (it->getStatus () == Task::recurring) ++recurringT;
+    if (it->getStatus () == Task::waiting)   ++waitingT;
 
-    time_t entry = ::atoi (it->getAttribute ("entry").c_str ());
+    time_t entry = ::atoi (it->get ("entry").c_str ());
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
-    if (it->getStatus () == Tt::completed)
+    if (it->getStatus () == Task::completed)
     {
-      time_t end = ::atoi (it->getAttribute ("end").c_str ());
+      time_t end = ::atoi (it->get ("end").c_str ());
       daysPending += (end - entry) / 86400.0;
     }
 
-    if (it->getStatus () == Tt::pending)
+    if (it->getStatus () == Task::pending)
       daysPending += (now - entry) / 86400.0;
 
-    descLength += it->getDescription ().length ();
+    descLength += it->get ("description").length ();
 
-    annotationsT += it->getAnnotationCount ();
+    std::vector <Att> annotations;
+    it->getAnnotations (annotations);
+    annotationsT += annotations.size ();
 
     std::vector <std::string> tags;
     it->getTags (tags);
@@ -2083,19 +1696,21 @@ std::string handleReportStats (TDB& tdb, Tt& task, Config& conf)
     foreach (t, tags)
       allTags[*t] = 0;
 
-    std::string project = it->getAttribute ("project");
+    std::string project = it->get ("project");
     if (project != "")
       allProjects[project] = 0;
   }
 
   // Create a table for output.
   Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+  table.setTableWidth (context.getWidth ());
+  table.setTableIntraPadding (2);
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
   table.addColumn ("Category");
   table.addColumn ("Data");
 
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+      context.config.get (std::string ("fontunderline"), "true"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -2112,6 +1727,10 @@ std::string handleReportStats (TDB& tdb, Tt& task, Config& conf)
   int row = table.addRow ();
   table.addCell (row, 0, "Pending");
   table.addCell (row, 1, pendingT);
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Waiting");
+  table.addCell (row, 1, waitingT);
 
   row = table.addRow ();
   table.addCell (row, 0, "Recurring");
@@ -2141,6 +1760,14 @@ std::string handleReportStats (TDB& tdb, Tt& task, Config& conf)
   table.addCell (row, 0, "Projects");
   table.addCell (row, 1, (int)allProjects.size ());
 
+  row = table.addRow ();
+  table.addCell (row, 0, "Data size");
+  table.addCell (row, 1, formatBytes (dataSize));
+
+  row = table.addRow ();
+  table.addCell (row, 0, "Undo transactions");
+  table.addCell (row, 1, undoCount);
+
   if (totalT)
   {
     row = table.addRow ();
@@ -2156,12 +1783,12 @@ std::string handleReportStats (TDB& tdb, Tt& task, Config& conf)
     Date e (earliest);
     row = table.addRow ();
     table.addCell (row, 0, "Oldest task");
-    table.addCell (row, 1, e.toString (conf.get ("dateformat", "m/d/Y")));
+    table.addCell (row, 1, e.toString (context.config.get ("dateformat", "m/d/Y")));
 
     Date l (latest);
     row = table.addRow ();
     table.addCell (row, 0, "Newest task");
-    table.addCell (row, 1, l.toString (conf.get ("dateformat", "m/d/Y")));
+    table.addCell (row, 1, l.toString (context.config.get ("dateformat", "m/d/Y")));
 
     row = table.addRow ();
     table.addCell (row, 0, "Task used for");
@@ -2205,667 +1832,211 @@ std::string handleReportStats (TDB& tdb, Tt& task, Config& conf)
     table.addCell (row, 1, value.str ());
   }
 
-  out << optionalBlankLine (conf)
+  out << optionalBlankLine ()
       << table.render ()
-      << optionalBlankLine (conf);
+      << optionalBlankLine ();
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void gatherNextTasks (
-  const TDB& tdb,
-  Tt& task,
-  Config& conf,
-  std::vector <Tt>& pending,
-  std::vector <int>& all)
+void gatherNextTasks (std::vector <Task>& tasks)
 {
   // For counting tasks by project.
   std::map <std::string, int> countByProject;
   std::map <int, bool> matching;
-
+  std::vector <Task> filtered;
   Date now;
 
-  // How many items per project?  Default 3.
-  int limit = conf.get ("next", 3);
+  // How many items per project?  Default 2.
+  int limit = context.config.get ("next", 2);
 
   // due:< 1wk, pri:*
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  foreach (task, tasks)
   {
-    if (pending[i].getStatus () == Tt::pending)
+    if (task->has ("due"))
     {
-      std::string due = pending[i].getAttribute ("due");
-      if (due != "")
+      Date d (::atoi (task->get ("due").c_str ()));
+      if (d < now + (7 * 24 * 60 * 60)) // if due:< 1wk
       {
-        Date d (::atoi (due.c_str ()));
-        if (d < now + (7 * 24 * 60 * 60)) // if due:< 1wk
+        std::string project = task->get ("project");
+        if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
         {
-          std::string project = pending[i].getAttribute ("project");
-          if (countByProject[project] < limit && matching.find (i) == matching.end ())
-          {
-            ++countByProject[project];
-            matching[i] = true;
-          }
+          ++countByProject[project];
+          matching[task->id] = true;
+          filtered.push_back (*task);
         }
       }
     }
   }
 
   // due:*, pri:H
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  foreach (task, tasks)
   {
-    if (pending[i].getStatus () == Tt::pending)
+    if (task->has ("due"))
     {
-      std::string due = pending[i].getAttribute ("due");
-      if (due != "")
+      std::string priority = task->get ("priority");
+      if (priority == "H")
       {
-        std::string priority = pending[i].getAttribute ("priority");
-        if (priority == "H")
+        std::string project = task->get ("project");
+        if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
         {
-          std::string project = pending[i].getAttribute ("project");
-          if (countByProject[project] < limit && matching.find (i) == matching.end ())
-          {
-            ++countByProject[project];
-            matching[i] = true;
-          }
+          ++countByProject[project];
+          matching[task->id] = true;
+          filtered.push_back (*task);
         }
       }
     }
   }
 
   // pri:H
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  foreach (task, tasks)
   {
-    if (pending[i].getStatus () == Tt::pending)
+    std::string priority = task->get ("priority");
+    if (priority == "H")
     {
-      std::string priority = pending[i].getAttribute ("priority");
-      if (priority == "H")
+      std::string project = task->get ("project");
+      if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
       {
-        std::string project = pending[i].getAttribute ("project");
-        if (countByProject[project] < limit && matching.find (i) == matching.end ())
-        {
-          ++countByProject[project];
-          matching[i] = true;
-        }
+        ++countByProject[project];
+        matching[task->id] = true;
+        filtered.push_back (*task);
       }
     }
   }
 
   // due:*, pri:M
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  foreach (task, tasks)
   {
-    if (pending[i].getStatus () == Tt::pending)
+    if (task->has ("due"))
     {
-      std::string due = pending[i].getAttribute ("due");
-      if (due != "")
+      std::string priority = task->get ("priority");
+      if (priority == "M")
       {
-        std::string priority = pending[i].getAttribute ("priority");
-        if (priority == "M")
+        std::string project = task->get ("project");
+        if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
         {
-          std::string project = pending[i].getAttribute ("project");
-          if (countByProject[project] < limit && matching.find (i) == matching.end ())
-          {
-            ++countByProject[project];
-            matching[i] = true;
-          }
+          ++countByProject[project];
+          matching[task->id] = true;
+          filtered.push_back (*task);
         }
       }
     }
   }
 
   // pri:M
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  foreach (task, tasks)
   {
-    if (pending[i].getStatus () == Tt::pending)
+    std::string priority = task->get ("priority");
+    if (priority == "M")
     {
-      std::string priority = pending[i].getAttribute ("priority");
-      if (priority == "M")
+      std::string project = task->get ("project");
+      if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
       {
-        std::string project = pending[i].getAttribute ("project");
-        if (countByProject[project] < limit && matching.find (i) == matching.end ())
-        {
-          ++countByProject[project];
-          matching[i] = true;
-        }
+        ++countByProject[project];
+        matching[task->id] = true;
+        filtered.push_back (*task);
       }
     }
   }
 
   // due:*, pri:L
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  foreach (task, tasks)
   {
-    if (pending[i].getStatus () == Tt::pending)
+    if (task->has ("due"))
     {
-      std::string due = pending[i].getAttribute ("due");
-      if (due != "")
+      std::string priority = task->get ("priority");
+      if (priority == "L")
       {
-        std::string priority = pending[i].getAttribute ("priority");
-        if (priority == "L")
+        std::string project = task->get ("project");
+        if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
         {
-          std::string project = pending[i].getAttribute ("project");
-          if (countByProject[project] < limit && matching.find (i) == matching.end ())
-          {
-            ++countByProject[project];
-            matching[i] = true;
-          }
+          ++countByProject[project];
+          matching[task->id] = true;
+          filtered.push_back (*task);
         }
       }
     }
   }
 
   // pri:L
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  foreach (task, tasks)
   {
-    if (pending[i].getStatus () == Tt::pending)
+    std::string priority = task->get ("priority");
+    if (priority == "L")
     {
-      std::string priority = pending[i].getAttribute ("priority");
-      if (priority == "L")
+      std::string project = task->get ("project");
+      if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
       {
-        std::string project = pending[i].getAttribute ("project");
-        if (countByProject[project] < limit && matching.find (i) == matching.end ())
-        {
-          ++countByProject[project];
-          matching[i] = true;
-        }
+        ++countByProject[project];
+        matching[task->id] = true;
+        filtered.push_back (*task);
       }
     }
   }
 
   // due:, pri:
-  for (unsigned int i = 0; i < pending.size (); ++i)
+  foreach (task, tasks)
   {
-    if (pending[i].getStatus () == Tt::pending)
+    if (task->has ("due"))
     {
-      std::string due = pending[i].getAttribute ("due");
-      if (due == "")
+      std::string priority = task->get ("priority");
+      if (priority == "")
       {
-        std::string priority = pending[i].getAttribute ("priority");
-        if (priority == "")
+        std::string project = task->get ("project");
+        if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
         {
-          std::string project = pending[i].getAttribute ("project");
-          if (countByProject[project] < limit && matching.find (i) == matching.end ())
-          {
-            ++countByProject[project];
-            matching[i] = true;
-          }
+          ++countByProject[project];
+          matching[task->id] = true;
+          filtered.push_back (*task);
         }
       }
     }
   }
 
-  // Convert map to vector.
-  foreach (i, matching)
-    all.push_back (i->first);
+  // Filler.
+  foreach (task, tasks)
+  {
+    std::string project = task->get ("project");
+    if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
+    {
+      ++countByProject[project];
+      matching[task->id] = true;
+      filtered.push_back (*task);
+    }
+  }
+
+  tasks = filtered;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// This report will eventually become the one report that many others morph into
-// via the .taskrc file.
-std::string handleCustomReport (
-  TDB& tdb,
-  Tt& task,
-  Config& conf,
-  const std::string& report)
+///////////////////////////////////////////////////////////////////////////////
+std::string getFullDescription (Task& task)
 {
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
+  std::string desc = task.get ("description");
+
+  std::vector <Att> annotations;
+  task.getAnnotations (annotations);
+  foreach (anno, annotations)
   {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
-
-  // Load report configuration.
-  std::string columnList = conf.get ("report." + report + ".columns");
-  std::vector <std::string> columns;
-  split (columns, columnList, ',');
-  validReportColumns (columns);
-
-  std::string labelList = conf.get ("report." + report + ".labels");
-  std::vector <std::string> labels;
-  split (labels, labelList, ',');
-
-  if (columns.size () != labels.size () && labels.size () != 0)
-    throw std::string ("There are a different number of columns than labels ") +
-          "for report '" + report + "'.  Please correct this.";
-
-  std::map <std::string, std::string> columnLabels;
-  if (labels.size ())
-    for (unsigned int i = 0; i < columns.size (); ++i)
-      columnLabels[columns[i]] = labels[i];
-
-  std::string sortList   = conf.get ("report." + report + ".sort");
-  std::vector <std::string> sortOrder;
-  split (sortOrder, sortList, ',');
-  validSortColumns (columns, sortOrder);
-
-  std::string filterList = conf.get ("report." + report + ".filter");
-  std::vector <std::string> filterArgs;
-  split (filterArgs, filterList, ' ');
-
-  // Load all pending tasks.
-  std::vector <Tt> tasks;
-  tdb.allPendingT (tasks);
-  handleRecurrence (tdb, tasks);
-
-  // Apply filters.
-  {
-    std::string ignore;
-    Tt filterTask;
-    parse (filterArgs, ignore, filterTask, conf);
-
-    filter (tasks, filterTask);  // Filter from custom report
-    filter (tasks, task);        // Filter from command line
+    Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
+    std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+    desc += "\n" + when + " " + anno->value ();
   }
 
-  // Initialize colorization for subsequent auto colorization.
-  initializeColorRules (conf);
-
-  Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-
-  for (unsigned int i = 0; i < tasks.size (); ++i)
-    table.addRow ();
-
-  int columnCount = 0;
-  int dueColumn = -1;
-  foreach (col, columns)
-  {
-    // Add each column individually.
-    if (*col == "id")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "ID");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].getId ());
-    }
-
-    else if (*col == "uuid")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "UUID");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].getUUID ());
-    }
-
-    else if (*col == "project")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Project");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].getAttribute ("project"));
-    }
-
-    else if (*col == "priority")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Pri");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].getAttribute ("priority"));
-    }
-
-    else if (*col == "entry")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Added");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string entered;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        entered = tasks[row].getAttribute ("entry");
-        if (entered.length ())
-        {
-          Date dt (::atoi (entered.c_str ()));
-          entered = dt.toString (conf.get ("dateformat", "m/d/Y"));
-          table.addCell (row, columnCount, entered);
-        }
-      }
-    }
-
-    else if (*col == "start")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Started");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string started;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        started = tasks[row].getAttribute ("start");
-        if (started.length ())
-        {
-          Date dt (::atoi (started.c_str ()));
-          started = dt.toString (conf.get ("dateformat", "m/d/Y"));
-          table.addCell (row, columnCount, started);
-        }
-      }
-    }
-
-    else if (*col == "due")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Due");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string due;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        due = tasks[row].getAttribute ("due");
-        if (due.length ())
-        {
-          Date dt (::atoi (due.c_str ()));
-          due = dt.toString (conf.get ("dateformat", "m/d/Y"));
-          table.addCell (row, columnCount, due);
-        }
-      }
-
-      dueColumn = columnCount;
-    }
-
-    else if (*col == "age")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Age");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string created;
-      std::string age;
-      Date now;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        created = tasks[row].getAttribute ("entry");
-        if (created.length ())
-        {
-          Date dt (::atoi (created.c_str ()));
-          formatTimeDeltaDays (age, (time_t) (now - dt));
-          table.addCell (row, columnCount, age);
-        }
-      }
-    }
-
-    else if (*col == "active")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Active");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-        if (tasks[row].getAttribute ("start") != "")
-          table.addCell (row, columnCount, "*");
-    }
-
-    else if (*col == "tags")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Tags");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      std::vector <std::string> all;
-      std::string tags;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        tasks[row].getTags (all);
-        join (tags, " ", all);
-        table.addCell (row, columnCount, tags);
-      }
-    }
-
-    else if (*col == "description_only")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Description");
-      table.setColumnWidth (columnCount, Table::flexible);
-      table.setColumnJustification (columnCount, Table::left);
-
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-        table.addCell (row, columnCount, tasks[row].getDescription ());
-    }
-
-    else if (*col == "description")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Description");
-      table.setColumnWidth (columnCount, Table::flexible);
-      table.setColumnJustification (columnCount, Table::left);
-
-      std::string description;
-      std::string when;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        description = tasks[row].getDescription ();
-        std::map <time_t, std::string> annotations;
-        tasks[row].getAnnotations (annotations);
-        foreach (anno, annotations)
-        {
-          Date dt (anno->first);
-          when = dt.toString (conf.get ("dateformat", "m/d/Y"));
-          description += "\n" + when + " " + anno->second;
-        }
-
-        table.addCell (row, columnCount, description);
-      }
-    }
-
-    else if (*col == "recur")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Recur");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      for (unsigned int row = 0; row < tasks.size (); ++row)
-        table.addCell (row, columnCount, tasks[row].getAttribute ("recur"));
-    }
-
-    else if (*col == "recurrence_indicator")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "R");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      for (unsigned int row = 0; row < tasks.size (); ++row)
-        table.addCell (row, columnCount,
-                       tasks[row].getAttribute ("recur") != "" ? "R" : "");
-    }
-
-    else if (*col == "tag_indicator")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "T");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      for (unsigned int row = 0; row < tasks.size (); ++row)
-        table.addCell (row, columnCount,
-                       tasks[row].getTagCount () ? "+" : "");
-    }
-
-    // Common to all columns.
-    // Add underline.
-    if (conf.get (std::string ("color"), true) || conf.get (std::string ("_forcecolor"), false))
-      table.setColumnUnderline (columnCount);
-    else
-      table.setTableDashedUnderline ();
-
-    ++columnCount;
-  }
-
-  // Dynamically add sort criteria.
-  // Build a map of column names -> index.
-  std::map <std::string, unsigned int> columnIndex;
-  for (unsigned int c = 0; c < columns.size (); ++c)
-    columnIndex[columns[c]] = c;
-
-  foreach (sortColumn, sortOrder)
-  {
-    // Separate column and direction.
-    std::string column = sortColumn->substr (0, sortColumn->length () - 1);
-    char direction = (*sortColumn)[sortColumn->length () - 1];
-
-    if (column == "id")
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingNumeric :
-                      Table::descendingNumeric));
-
-    else if (column == "priority")
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingPriority :
-                      Table::descendingPriority));
-
-    else if (column == "entry" || column == "start" || column == "due")
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingDate :
-                      Table::descendingDate));
-
-    else if (column == "recur")
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingPeriod :
-                      Table::descendingPeriod));
-
-    else
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingCharacter :
-                      Table::descendingCharacter));
-  }
-
-  // Now auto colorize all rows.
-  std::string due;
-  bool imminent;
-  bool overdue;
-  for (unsigned int row = 0; row < tasks.size (); ++row)
-  {
-    imminent = false;
-    overdue = false;
-    due = tasks[row].getAttribute ("due");
-    if (due.length ())
-    {
-      switch (getDueState (due))
-      {
-      case 2: overdue = true;  break;
-      case 1: imminent = true; break;
-      case 0:
-      default:                 break;
-      }
-    }
-
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
-    {
-      Text::color fg = Text::colorCode (tasks[row].getAttribute ("fg"));
-      Text::color bg = Text::colorCode (tasks[row].getAttribute ("bg"));
-      autoColorize (tasks[row], fg, bg, conf);
-      table.setRowFg (row, fg);
-      table.setRowBg (row, bg);
-
-      if (fg == Text::nocolor)
-      {
-        if (dueColumn != -1)
-        {
-          if (overdue)
-            table.setCellFg (row, columnCount, Text::colorCode (conf.get ("color.overdue", "red")));
-          else if (imminent)
-            table.setCellFg (row, columnCount, Text::colorCode (conf.get ("color.due", "yellow")));
-        }
-      }
-    }
-  }
-
-  // Limit the number of rows according to the report definition.
-  int maximum = conf.get (std::string ("report.") + report + ".limit", (int)0);
-
-  // If the custom report has a defined limit, then allow an override, which
-  // will show up as a single ID sequence.
-  if (conf.get (std::string ("report.") + report + ".limit", (int)0) != 0)
-  {
-    std::vector <int> sequence = task.getAllIds ();
-    if (sequence.size () == 1)
-      maximum = sequence[0];
-  }
-
-  std::stringstream out;
-  if (table.rowCount ())
-    out << optionalBlankLine (conf)
-        << table.render (maximum)
-        << optionalBlankLine (conf)
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks")
-        << std::endl;
-  else
-    out << "No matches."
-        << std::endl;
-
-  return out.str ();
+  return desc;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void validReportColumns (const std::vector <std::string>& columns)
+///////////////////////////////////////////////////////////////////////////////
+std::string getDueDate (Task& task)
 {
-  std::vector <std::string> bad;
-
-  std::vector <std::string>::const_iterator it;
-  for (it = columns.begin (); it != columns.end (); ++it)
-    if (*it != "id"                   &&
-        *it != "uuid"                 &&
-        *it != "project"              &&
-        *it != "priority"             &&
-        *it != "entry"                &&
-        *it != "start"                &&
-        *it != "due"                  &&
-        *it != "age"                  &&
-        *it != "active"               &&
-        *it != "tags"                 &&
-        *it != "recur"                &&
-        *it != "recurrence_indicator" &&
-        *it != "tag_indicator"        &&
-        *it != "description_only"     &&
-        *it != "description")
-      bad.push_back (*it);
-
-  if (bad.size ())
+  std::string due = task.get ("due");
+  if (due.length ())
   {
-    std::string error;
-    join (error, ", ", bad);
-    throw std::string ("Unrecognized column name: ") + error;
+    Date d (::atoi (due.c_str ()));
+    due = d.toString (context.config.get ("dateformat", "m/d/Y"));
   }
+
+  return due;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void validSortColumns (
-  const std::vector <std::string>& columns,
-  const std::vector <std::string>& sortColumns)
-{
-  std::vector <std::string> bad;
-  std::vector <std::string>::const_iterator sc;
-  for (sc = sortColumns.begin (); sc != sortColumns.end (); ++sc)
-  {
-    std::vector <std::string>::const_iterator co;
-    for (co = columns.begin (); co != columns.end (); ++co)
-      if (sc->substr (0, sc->length () - 1) == *co)
-        break;
-
-    if (co == columns.end ())
-      bad.push_back (*sc);
-  }
-
-  if (bad.size ())
-  {
-    std::string error;
-    join (error, ", ", bad);
-    throw std::string ("Sort column is not part of the report: ") + error;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////

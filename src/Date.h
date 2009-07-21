@@ -44,8 +44,10 @@ public:
 
   void toEpoch (time_t&);
   time_t toEpoch ();
+  std::string toEpochString ();
   void toMDY (int&, int&, int&);
   const std::string toString (const std::string& format = "m/d/Y") const;
+  static bool valid (const std::string&, const std::string& format = "m/d/Y");
   static bool valid (const int, const int, const int);
 
   static bool leapYear (int);
@@ -53,11 +55,13 @@ public:
   static std::string monthName (int);
   static void dayName (int, std::string&);
   static std::string dayName (int);
+  static int weekOfYear (const std::string&);
   static int dayOfWeek (const std::string&);
 
   int month () const;
   int day () const;
   int year () const;
+  int weekOfYear (int) const;
   int dayOfWeek () const;
 
   bool operator== (const Date&);
@@ -77,6 +81,7 @@ public:
   time_t operator- (const Date&);
 
 private:
+  bool isEpoch (const std::string&);
   bool isRelativeDate (const std::string&);
 
 protected:

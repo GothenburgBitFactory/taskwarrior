@@ -24,83 +24,120 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
 #include <time.h>
 
-#include "task.h"
+#include "Permission.h"
+#include "text.h"
+#include "util.h"
+#include "main.h"
+#include "../auto.h"
 
 #ifdef HAVE_LIBNCURSES
 #include <ncurses.h>
 #endif
 
+extern Context context;
+
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAdd (TDB& tdb, Tt& task, Config& conf)
+std::string handleAdd ()
 {
   std::stringstream out;
 
-  char entryTime[16];
-  sprintf (entryTime, "%u", (unsigned int) time (NULL));
-  task.setAttribute ("entry", entryTime);
-
-  std::map <std::string, std::string> atts;
-  task.getAttributes (atts);
-  foreach (i, atts)
-    if (i->second == "")
-      task.removeAttribute (i->first);
+  context.task.set ("uuid", uuid ());
+  context.task.setEntry ();
 
   // Recurring tasks get a special status.
-  if (task.getAttribute ("due")   != "" &&
-      task.getAttribute ("recur") != "")
+  if (context.task.has ("due") &&
+      context.task.has ("recur"))
   {
-    task.setStatus (Tt::recurring);
-    task.setAttribute ("mask", "");
+    context.task.setStatus (Task::recurring);
+    context.task.set ("mask", "");
   }
+  else if (context.task.has ("wait"))
+    context.task.setStatus (Task::waiting);
+  else
+    context.task.setStatus (Task::pending);
 
   // Override with default.project, if not specified.
-  if (task.getAttribute ("project") == "")
-    task.setAttribute ("project", conf.get ("default.project", ""));
+  if (context.task.get ("project") == "")
+    context.task.set ("project", context.config.get ("default.project", ""));
 
   // Override with default.priority, if not specified.
-  if (task.getAttribute ("priority") == "")
+  if (context.task.get ("priority") == "")
   {
-    std::string defaultPriority = conf.get ("default.priority", "");
-    if (validPriority (defaultPriority))
-      task.setAttribute ("priority", defaultPriority);
+    std::string defaultPriority = context.config.get ("default.priority", "");
+    if (Att::validNameValue ("priority", "", defaultPriority))
+      context.task.set ("priority", defaultPriority);
   }
 
-  // Disallow blank descriptions.
-  if (task.getDescription () == "")
-    throw std::string ("Cannot add a task that is blank, or contains <CR> or <LF> characters.");
+  // Include tags.
+  foreach (tag, context.tagAdditions)
+    context.task.addTag (*tag);
 
-  if (!tdb.addT (task))
-    throw std::string ("Could not create new task.");
+  // Only valid tasks can be added.
+  context.task.validate ();
+
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.add (context.task);
+
+#ifdef FEATURE_NEW_ID
+  // All this, just for an id number.
+  std::vector <Task> all;
+  Filter none;
+  context.tdb.loadPending (all, none);
+  out << "Created task " << context.tdb.nextId () << std::endl;
+#endif
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleProjects (TDB& tdb, Tt& task, Config& conf)
+std::string handleProjects ()
 {
   std::stringstream out;
 
-  // Get all the tasks, including deleted ones.
-  std::vector <Tt> tasks;
-  tdb.pendingT (tasks);
+  context.filter.push_back (Att ("status", "pending"));
+
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  int quantity = context.tdb.loadPending (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
   std::map <std::string, int> unique;
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  std::map <std::string, int> high;
+  std::map <std::string, int> medium;
+  std::map <std::string, int> low;
+  std::map <std::string, int> none;
+  std::string project;
+  std::string priority;
+  foreach (t, tasks)
   {
-    Tt task (tasks[i]);
-    unique[task.getAttribute ("project")] += 1;
+     project = t->get ("project");
+    priority = t->get ("priority");
+
+    unique[project] += 1;
+
+         if (priority == "H") high[project]   += 1;
+    else if (priority == "M") medium[project] += 1;
+    else if (priority == "L") low[project]    += 1;
+    else                      none[project]   += 1;
   }
 
   if (unique.size ())
@@ -109,28 +146,45 @@ std::string handleProjects (TDB& tdb, Tt& task, Config& conf)
     Table table;
     table.addColumn ("Project");
     table.addColumn ("Tasks");
+    table.addColumn ("Pri:None");
+    table.addColumn ("Pri:L");
+    table.addColumn ("Pri:M");
+    table.addColumn ("Pri:H");
 
-    if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+    if (context.config.get ("color", true) ||
+        context.config.get (std::string ("_forcecolor"), false))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
+      table.setColumnUnderline (2);
+      table.setColumnUnderline (3);
+      table.setColumnUnderline (4);
+      table.setColumnUnderline (5);
     }
 
     table.setColumnJustification (1, Table::right);
-    table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
+    table.setColumnJustification (2, Table::right);
+    table.setColumnJustification (3, Table::right);
+    table.setColumnJustification (4, Table::right);
+    table.setColumnJustification (5, Table::right);
 
     foreach (i, unique)
     {
       int row = table.addRow ();
       table.addCell (row, 0, i->first);
       table.addCell (row, 1, i->second);
+      table.addCell (row, 2, none[i->first]);
+      table.addCell (row, 3, low[i->first]);
+      table.addCell (row, 4, medium[i->first]);
+      table.addCell (row, 5, high[i->first]);
     }
 
-    out << optionalBlankLine (conf)
+    out << optionalBlankLine ()
         << table.render ()
-        << optionalBlankLine (conf)
+        << optionalBlankLine ()
         << unique.size ()
         << (unique.size () == 1 ? " project" : " projects")
+        << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")"
         << std::endl;
   }
   else
@@ -141,38 +195,95 @@ std::string handleProjects (TDB& tdb, Tt& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleTags (TDB& tdb, Tt& task, Config& conf)
+std::string handleCompletionProjects ()
 {
-  std::stringstream out;
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
 
-  // Get all the tasks.
-  std::vector <Tt> tasks;
-  tdb.pendingT (tasks);
+  Filter filter;
+  if (context.config.get (std::string ("complete.all.projects"), false))
+    context.tdb.load (tasks, filter);
+  else
+    context.tdb.loadPending (tasks, filter);
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
-  std::map <std::string, std::string> unique;
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  std::map <std::string, int> unique;
+  foreach (t, tasks)
+    unique[t->get ("project")] = 0;
+
+  std::stringstream out;
+  foreach (project, unique)
+    if (project->first.length ())
+      out << project->first << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string handleTags ()
+{
+  std::stringstream out;
+
+  context.filter.push_back (Att ("status", "pending"));
+
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  int quantity = context.tdb.loadPending (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Scan all the tasks for their project name, building a map using project
+  // names as keys.
+  std::map <std::string, int> unique;
+  foreach (t, tasks)
   {
-    Tt task (tasks[i]);
-
     std::vector <std::string> tags;
-    task.getTags (tags);
+    t->getTags (tags);
 
-    for (unsigned int t = 0; t < tags.size (); ++t)
-      unique[tags[t]] = "";
+    foreach (tag, tags)
+      if (unique.find (*tag) != unique.end ())
+        unique[*tag]++;
+      else
+        unique[*tag] = 1;
   }
 
-  // Render a list of tag names from the map.
-  std::cout << optionalBlankLine (conf);
-  foreach (i, unique)
-    std::cout << i->first << std::endl;
-
   if (unique.size ())
-    out << optionalBlankLine (conf)
+  {
+    // Render a list of tags names from the map.
+    Table table;
+    table.addColumn ("Tag");
+    table.addColumn ("Count");
+
+    if (context.config.get ("color", true) ||
+        context.config.get (std::string ("_forcecolor"), false))
+    {
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
+    }
+
+    table.setColumnJustification (1, Table::right);
+
+    foreach (i, unique)
+    {
+      int row = table.addRow ();
+      table.addCell (row, 0, i->first);
+      table.addCell (row, 1, i->second);
+    }
+
+    out << optionalBlankLine ()
+        << table.render ()
+        << optionalBlankLine ()
         << unique.size ()
         << (unique.size () == 1 ? " tag" : " tags")
+        << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")"
         << std::endl;
+  }
   else
     out << "No tags."
         << std::endl;
@@ -181,98 +292,109 @@ std::string handleTags (TDB& tdb, Tt& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// If a task is deleted, but is still in the pending file, then it may be
-// undeleted simply by changing it's status.
-std::string handleUndelete (TDB& tdb, Tt& task, Config& conf)
+std::string handleCompletionTags ()
 {
-  std::stringstream out;
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
 
-  std::vector <Tt> all;
-  tdb.allPendingT (all);
-  filterSequence (all, task);
+  Filter filter;
+  if (context.config.get (std::string ("complete.all.tags"), false))
+    context.tdb.load (tasks, filter);
+  else
+    context.tdb.loadPending (tasks, filter);
 
-  foreach (t, all)
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Scan all the tasks for their project name, building a map using project
+  // names as keys.
+  std::map <std::string, int> unique;
+  foreach (t, tasks)
   {
-    if (t->getStatus () == Tt::deleted)
-    {
-      if (t->getAttribute ("recur") != "")
-        out << "Task does not support 'undo' for recurring tasks.\n";
+    std::vector <std::string> tags;
+    t->getTags (tags);
 
-      t->setStatus (Tt::pending);
-      t->removeAttribute ("end");
-      tdb.modifyT (*t);
-
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' successfully undeleted.\n";
-    }
-    else
-    {
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' is not deleted - therefore cannot be undeleted.\n";
-    }
+    foreach (tag, tags)
+      unique[*tag] = 0;
   }
 
-  out << "\n"
-      << "Please note that tasks can only be reliably undeleted if the undelete "
-      << "command is run immediately after the errant delete command."
-      << std::endl;
+  std::stringstream out;
+  foreach (tag, unique)
+    out << tag->first << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// If a task is done, but is still in the pending file, then it may be undone
-// simply by changing it's status.
-std::string handleUndo (TDB& tdb, Tt& task, Config& conf)
+std::string handleCompletionCommands ()
 {
+  std::vector <std::string> commands;
+  context.cmd.allCommands (commands);
+  std::sort (commands.begin (), commands.end ());
+
   std::stringstream out;
-
-  std::vector <Tt> all;
-  tdb.allPendingT (all);
-  filterSequence (all, task);
-
-  foreach (t, all)
-  {
-    if (t->getStatus () == Tt::completed)
-    {
-      if (t->getAttribute ("recur") != "")
-        out << "Task does not support 'undo' for recurring tasks.\n";
-
-      t->setStatus (Tt::pending);
-      t->removeAttribute ("end");
-      tdb.modifyT (*t);
-
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' successfully undone." << std::endl;
-    }
-    else
-    {
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' is not done - therefore cannot be undone." << std::endl;
-    }
-  }
-
-  out << std::endl
-      << "Please note that tasks can only be reliably undone if the undo "
-      << "command is run immediately after the errant done command."
-      << std::endl;
+  foreach (command, commands)
+    out << *command << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleVersion (Config& conf)
+std::string handleCompletionConfig ()
+{
+  std::vector <std::string> configs;
+  context.config.all (configs);
+  std::sort (configs.begin (), configs.end ());
+
+  std::stringstream out;
+  foreach (config, configs)
+    out << *config << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string handleCompletionIDs ()
+{
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  std::vector <int> ids;
+  foreach (task, tasks)
+    if (task->getStatus () != Task::deleted &&
+        task->getStatus () != Task::completed)
+      ids.push_back (task->id);
+
+  std::sort (ids.begin (), ids.end ());
+
+  std::stringstream out;
+  foreach (id, ids)
+    out << *id << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void handleUndo ()
+{
+  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.undo ();
+  context.tdb.unlock ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string handleVersion ()
 {
   std::stringstream out;
-
-  // Determine window size, and set table accordingly.
-  int width = conf.get ("defaultwidth", (int) 80);
-#ifdef HAVE_LIBNCURSES
-  if (conf.get ("curses", true))
-  {
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-    endwin ();
-  }
-#endif
 
   // Create a table for the disclaimer.
+  int width = context.getWidth ();
   Table disclaimer;
   disclaimer.setTableWidth (width);
   disclaimer.addColumn (" ");
@@ -290,79 +412,87 @@ std::string handleVersion (Config& conf)
   link.setColumnWidth (0, Table::flexible);
   link.setColumnJustification (0, Table::left);
   link.addCell (link.addRow (), 0,
-    "See http://taskwarrior.org for the latest releases and a "
-    "full tutorial.  New releases containing fixes and enhancements are "
-    "made frequently.");
+    "See http://taskwarrior.org for the latest releases, online documentation "
+    "and lively discussion.  New releases containing fixes and enhancements "
+    "are made frequently.");
+
+  std::vector <std::string> all;
+  context.config.all (all);
 
   // Create a table for output.
   Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (conf.get ("dateformat", "m/d/Y"));
-  table.addColumn ("Config variable");
-  table.addColumn ("Value");
-
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if (context.config.get ("longversion", true))
   {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-  }
-  else
-    table.setTableDashedUnderline ();
+    table.setTableWidth (width);
+    table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+    table.addColumn ("Config variable");
+    table.addColumn ("Value");
 
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::flexible);
-  table.setColumnJustification (0, Table::left);
-  table.setColumnJustification (1, Table::left);
-  table.sortOn (0, Table::ascendingCharacter);
-
-  std::vector <std::string> all;
-  conf.all (all);
-  foreach (i, all)
-  {
-    std::string value = conf.get (*i);
-    if (value != "")
+    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     {
-      int row = table.addRow ();
-      table.addCell (row, 0, *i);
-      table.addCell (row, 1, value);
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
+    }
+    else
+      table.setTableDashedUnderline ();
+
+    table.setColumnWidth (0, Table::minimum);
+    table.setColumnWidth (1, Table::flexible);
+    table.setColumnJustification (0, Table::left);
+    table.setColumnJustification (1, Table::left);
+    table.sortOn (0, Table::ascendingCharacter);
+
+    foreach (i, all)
+    {
+      std::string value = context.config.get (*i);
+      if (value != "")
+      {
+        int row = table.addRow ();
+        table.addCell (row, 0, *i);
+        table.addCell (row, 1, value);
+      }
     }
   }
 
   out << "Copyright (C) 2006 - 2009, P. Beckingham."
       << std::endl
-      << ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
            ? Text::colorize (Text::bold, Text::nocolor, PACKAGE)
            : PACKAGE)
       << " "
-      << ((conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+      << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
            ? Text::colorize (Text::bold, Text::nocolor, VERSION)
            : VERSION)
       << std::endl
       << disclaimer.render ()
       << std::endl
-      << table.render ()
+      << (context.config.get ("longversion", true) ? table.render () : "")
       << link.render ()
       << std::endl;
 
   // Complain about configuration variables that are not recognized.
   // These are the regular configuration variables.
-  // Note that there is a leading and trailing space.
+  // Note that there is a leading and trailing space, to make searching easier.
   std::string recognized =
-    " blanklines color color.active color.due color.overdue color.pri.H "
+    " blanklines bulk color color.active color.due color.overdue color.pri.H "
     "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
-    "confirmation curses data.location dateformat default.command "
-    "default.priority defaultwidth due echo.command locking monthsperline nag "
-    "next project shadow.command shadow.file shadow.notify weekstart editor "
-    "import.synonym.id import.synonym.uuid import.synonym.status "
-    "import.synonym.tags import.synonym.entry import.synonym.start "
-    "import.synonym.due import.synonym.recur import.synonym.end "
-    "import.synonym.project import.synonym.priority import.synonym.fg "
-    "import.synonym.bg import.synonym.description ";
+    "color.footnote color.header color.debug confirmation curses data.location "
+    "dateformat debug default.command default.priority defaultwidth due locale "
+    "displayweeknumber echo.command locking monthsperline nag next project "
+    "shadow.command shadow.file shadow.notify weekstart editor import.synonym.id "
+    "import.synonym.uuid longversion complete.all.projects complete.all.tags "
+#ifdef FEATURE_SHELL
+    "shell.prompt "
+#endif
+    "import.synonym.status import.synonym.tags import.synonym.entry "
+    "import.synonym.start import.synonym.due import.synonym.recur "
+    "import.synonym.end import.synonym.project import.synonym.priority "
+    "import.synonym.fg import.synonym.bg import.synonym.description ";
 
   // This configuration variable is supported, but not documented.  It exists
   // so that unit tests can force color to be on even when the output from task
   // is redirected to a file, or stdout is not a tty.
-  recognized += " _forcecolor";
+  recognized += "_forcecolor ";
 
   std::vector <std::string> unrecognized;
   foreach (i, all)
@@ -374,10 +504,11 @@ std::string handleVersion (Config& conf)
     {
       // These are special configuration variables, because their name is
       // dynamic.
-      if (i->find ("color.keyword.") == std::string::npos &&
-          i->find ("color.project.") == std::string::npos &&
-          i->find ("color.tag.")     == std::string::npos &&
-          i->find ("report.")        == std::string::npos)
+      if (i->substr (0, 14) != "color.keyword." &&
+          i->substr (0, 14) != "color.project." &&
+          i->substr (0, 10) != "color.tag."     &&
+          i->substr (0,  7) != "report."        &&
+          i->substr (0,  6) != "alias.")
       {
         unrecognized.push_back (*i);
       }
@@ -403,12 +534,12 @@ std::string handleVersion (Config& conf)
         << std::endl;
   else
   {
-    if (conf.get ("data.location") == "")
+    if (context.config.get ("data.location") == "")
       out << "Configuration error: data.location not specified in .taskrc "
              "file."
           << std::endl;
 
-    if (access (expandPath (conf.get ("data.location")).c_str (), X_OK))
+    if (access (expandPath (context.config.get ("data.location")).c_str (), X_OK))
       out << "Configuration error: data.location contains a directory name"
              " that doesn't exist, or is unreadable."
           << std::endl;
@@ -418,32 +549,38 @@ std::string handleVersion (Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDelete (TDB& tdb, Tt& task, Config& conf)
+std::string handleDelete ()
 {
   std::stringstream out;
 
-  std::vector <Tt> all;
-  tdb.allPendingT (all);
-  filterSequence (all, task);
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
 
   // Determine the end date.
   char endTime[16];
   sprintf (endTime, "%u", (unsigned int) time (NULL));
 
-  foreach (t, all)
+  foreach (task, tasks)
   {
     std::stringstream question;
     question << "Permanently delete task "
-             << t->getId ()
+             << task->id
              << " '"
-             << t->getDescription ()
+             << task->get ("description")
              << "'?";
 
-    if (!conf.get (std::string ("confirmation"), false) || confirm (question.str ()))
+    if (!context.config.get (std::string ("confirmation"), false) || confirm (question.str ()))
     {
       // Check for the more complex case of a recurring task.  If this is a
       // recurring task, get confirmation to delete them all.
-      std::string parent = t->getAttribute ("parent");
+      std::string parent = task->get ("parent");
       if (parent != "")
       {
         if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
@@ -452,18 +589,18 @@ std::string handleDelete (TDB& tdb, Tt& task, Config& conf)
           // itself, and delete them.
           foreach (sibling, all)
           {
-            if (sibling->getAttribute ("parent") == parent ||
-                sibling->getUUID ()              == parent)
+            if (sibling->get ("parent") == parent ||
+                sibling->get ("uuid")   == parent)
             {
-              sibling->setStatus (Tt::deleted);
-              sibling->setAttribute ("end", endTime);
-              tdb.modifyT (*sibling);
+              sibling->setStatus (Task::deleted);
+              sibling->set ("end", endTime);
+              context.tdb.update (*sibling);
 
-              if (conf.get ("echo.command", true))
+              if (context.config.get ("echo.command", true))
                 out << "Deleting recurring task "
-                    << sibling->getId ()
+                    << sibling->id
                     << " '"
-                    << sibling->getDescription ()
+                    << sibling->get ("description")
                     << "'"
                     << std::endl;
             }
@@ -472,31 +609,31 @@ std::string handleDelete (TDB& tdb, Tt& task, Config& conf)
         else
         {
           // Update mask in parent.
-          t->setStatus (Tt::deleted);
-          updateRecurrenceMask (tdb, all, *t);
+          task->setStatus (Task::deleted);
+          updateRecurrenceMask (all, *task);
 
-          t->setAttribute ("end", endTime);
-          tdb.modifyT (*t);
+          task->set ("end", endTime);
+          context.tdb.update (*task);
 
           out << "Deleting recurring task "
-              << t->getId ()
+              << task->id
               << " '"
-              << t->getDescription ()
+              << task->get ("description")
               << "'"
               << std::endl;
         }
       }
       else
       {
-        t->setStatus (Tt::deleted);
-        t->setAttribute ("end", endTime);
-        tdb.modifyT (*t);
+        task->setStatus (Task::deleted);
+        task->set ("end", endTime);
+        context.tdb.update (*task);
 
-        if (conf.get ("echo.command", true))
+        if (context.config.get ("echo.command", true))
           out << "Deleting task "
-              << t->getId ()
+              << task->id
               << " '"
-              << t->getDescription ()
+              << task->get ("description")
               << "'"
               << std::endl;
       }
@@ -505,128 +642,188 @@ std::string handleDelete (TDB& tdb, Tt& task, Config& conf)
       out << "Task not deleted." << std::endl;
   }
 
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleStart (TDB& tdb, Tt& task, Config& conf)
+std::string handleStart ()
 {
   std::stringstream out;
 
-  std::vector <Tt> all;
-  tdb.pendingT (all);
-  filterSequence (all, task);
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
-  foreach (t, all)
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  bool nagged = false;
+  foreach (task, tasks)
   {
-    if (t->getAttribute ("start") == "")
+    if (! task->has ("start"))
     {
       char startTime[16];
       sprintf (startTime, "%u", (unsigned int) time (NULL));
-      t->setAttribute ("start", startTime);
+      task->set ("start", startTime);
 
-      tdb.modifyT (*t);
+      context.tdb.update (*task);
 
-      if (conf.get ("echo.command", true))
+      if (context.config.get ("echo.command", true))
         out << "Started "
-            << t->getId ()
+            << task->id
             << " '"
-            << t->getDescription ()
+            << task->get ("description")
             << "'"
             << std::endl;
-      nag (tdb, task, conf);
+      if (!nagged)
+        nagged = nag (*task);
     }
     else
     {
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' already started." << std::endl;
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' already started."
+          << std::endl;
     }
   }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleStop (TDB& tdb, Tt& task, Config& conf)
+std::string handleStop ()
 {
   std::stringstream out;
 
-  std::vector <Tt> all;
-  tdb.pendingT (all);
-  filterSequence (all, task);
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
-  foreach (t, all)
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
-    if (t->getAttribute ("start") != "")
+    if (task->has ("start"))
     {
-      t->removeAttribute ("start");
-      tdb.modifyT (*t);
+      task->remove ("start");
+      context.tdb.update (*task);
 
-      if (conf.get ("echo.command", true))
-        out << "Stopped " << t->getId () << " '" << t->getDescription () << "'" << std::endl;
+      if (context.config.get ("echo.command", true))
+        out << "Stopped "
+            << task->id
+            << " '"
+            << task->get ("description")
+            << "'"
+            << std::endl;
     }
     else
     {
-      out << "Task " << t->getId () << " '" << t->getDescription () << "' not started." << std::endl;
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' not started."
+          << std::endl;
     }
   }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDone (TDB& tdb, Tt& task, Config& conf)
+std::string handleDone ()
 {
   int count = 0;
   std::stringstream out;
-  std::vector <Tt> all;
-  tdb.allPendingT (all);
 
-  std::vector <Tt> filtered = all;
-  filterSequence (filtered, task);
-  foreach (seq, filtered)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+    permission.bigSequence ();
+
+  bool nagged = false;
+  foreach (task, tasks)
   {
-    if (seq->getStatus () == Tt::pending)
+    if (task->getStatus () == Task::pending)
     {
-      // Apply deltas.
-      deltaDescription   (*seq, task);
-      deltaTags          (*seq, task);
-      deltaAttributes    (*seq, task);
-      deltaSubstitutions (*seq, task);
+      Task before (*task);
+
+      // Apply other deltas.
+      if (deltaDescription (*task))
+        permission.bigChange ();
+
+      deltaTags (*task);
+      deltaAttributes (*task);
+      deltaSubstitutions (*task);
 
       // Add an end date.
       char entryTime[16];
       sprintf (entryTime, "%u", (unsigned int) time (NULL));
-      seq->setAttribute ("end", entryTime);
+      task->set ("end", entryTime);
 
       // Change status.
-      seq->setStatus (Tt::completed);
+      task->setStatus (Task::completed);
 
-      if (!tdb.modifyT (*seq))
-        throw std::string ("Could not mark task as completed.");
+      if (taskDiff (before, *task))
+      {
+        if (permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
+        {
+          context.tdb.update (*task);
 
-      if (conf.get ("echo.command", true))
-        out << "Completed "
-            << seq->getId ()
-            << " '"
-            << seq->getDescription ()
-            << "'"
-            << std::endl;
+          if (context.config.get ("echo.command", true))
+            out << "Completed "
+                << task->id
+                << " '"
+                << task->get ("description")
+                << "'"
+                << std::endl;
 
-      updateRecurrenceMask (tdb, all, *seq);
-      nag (tdb, *seq, conf);
+          ++count;
+        }
+      }
 
-      ++count;
+      updateRecurrenceMask (all, *task);
+      if (!nagged)
+        nagged = nag (*task);
     }
     else
       out << "Task "
-          << seq->getId ()
+          << task->id
           << " '"
-          << seq->getDescription ()
+          << task->get ("description")
           << "' is not pending"
           << std::endl;
   }
 
-  if (conf.get ("echo.command", true))
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  if (context.config.get ("echo.command", true))
     out << "Marked "
         << count
         << " task"
@@ -638,229 +835,345 @@ std::string handleDone (TDB& tdb, Tt& task, Config& conf)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleExport (TDB& tdb, Tt& task, Config& conf)
+std::string handleExport ()
 {
-  std::stringstream output;
+  std::stringstream out;
 
-  // Use the description as a file name, then clobber the description so the
-  // file name isn't used for filtering.
-  std::string file = trim (task.getDescription ());
-  task.setDescription ("");
+  // Deliberately no 'id'.
+  out << "'uuid',"
+      << "'status',"
+      << "'tags',"
+      << "'entry',"
+      << "'start',"
+      << "'due',"
+      << "'recur',"
+      << "'end',"
+      << "'project',"
+      << "'priority',"
+      << "'fg',"
+      << "'bg',"
+      << "'description'"
+      << "\n";
 
-  if (file.length () > 0)
+  int count = 0;
+
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  foreach (task, tasks)
   {
-    std::ofstream out (file.c_str ());
-    if (out.good ())
+    if (task->getStatus () != Task::recurring)
     {
-      out << "'id',"
-          << "'uuid',"
-          << "'status',"
-          << "'tags',"
-          << "'entry',"
-          << "'start',"
-          << "'due',"
-          << "'recur',"
-          << "'end',"
-          << "'project',"
-          << "'priority',"
-          << "'fg',"
-          << "'bg',"
-          << "'description'"
-          << "\n";
-
-      int count = 0;
-      std::vector <Tt> all;
-      tdb.allPendingT (all);
-      filter (all, task);
-      foreach (t, all)
-      {
-        if (t->getStatus () != Tt::recurring &&
-            t->getStatus () != Tt::deleted)
-        {
-          out << t->composeCSV ().c_str ();
-          ++count;
-        }
-      }
-      out.close ();
-
-      output << count << " tasks exported to '" << file << "'" << std::endl;
+      out << task->composeCSV ().c_str ();
+      ++count;
     }
-    else
-      throw std::string ("Could not write to export file.");
   }
-  else
-    throw std::string ("You must specify a file to write to.");
 
-  return output.str ();
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleModify (TDB& tdb, Tt& task, Config& conf)
+std::string handleModify ()
 {
   int count = 0;
   std::stringstream out;
-  std::vector <Tt> all;
-  tdb.allPendingT (all);
 
-  std::vector <Tt> filtered = all;
-  filterSequence (filtered, task);
-  foreach (seq, filtered)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+    permission.bigSequence ();
+
+  foreach (task, tasks)
   {
     // Perform some logical consistency checks.
-    if (task.getAttribute ("recur") != "" &&
-        task.getAttribute ("due")   == "" &&
-        seq->getAttribute ("due")   == "")
+    if (context.task.has ("recur") &&
+        !context.task.has ("due")  &&
+        !task->has ("due"))
       throw std::string ("You cannot specify a recurring task without a due date.");
 
-    if (task.getAttribute ("until") != "" &&
-        task.getAttribute ("recur") == "" &&
-        seq->getAttribute ("recur") == "")
+    if (context.task.has ("until")  &&
+        !context.task.has ("recur") &&
+        !task->has ("recur"))
       throw std::string ("You cannot specify an until date for a non-recurring task.");
 
     // Make all changes.
     foreach (other, all)
     {
-      if (other->getId ()               == seq->getId ()                   || // Self
-          (seq->getAttribute ("parent") != "" &&
-           seq->getAttribute ("parent") == other->getAttribute ("parent")) || // Sibling
-          other->getUUID ()             == seq->getAttribute ("parent"))      // Parent
+      if (other->id             == task->id               || // Self
+          (task->has ("parent") &&
+           task->get ("parent") == other->get ("parent")) || // Sibling
+          other->get ("uuid")   == task->get ("parent"))     // Parent
       {
+        Task before (*other);
+
         // A non-zero value forces a file write.
         int changes = 0;
 
         // Apply other deltas.
-        changes += deltaDescription   (*other, task);
-        changes += deltaTags          (*other, task);
-        changes += deltaAttributes    (*other, task);
-        changes += deltaSubstitutions (*other, task);
+        if (deltaDescription (*other))
+        {
+          permission.bigChange ();
+          ++changes;
+        }
 
-        if (changes)
-          tdb.modifyT (*other);
+        changes += deltaTags (*other);
+        changes += deltaAttributes (*other);
+        changes += deltaSubstitutions (*other);
 
-        ++count;
+        if (taskDiff (before, *other))
+        {
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
+          {
+            context.tdb.update (*other);
+            ++count;
+          }
+        }
       }
     }
   }
 
-  if (conf.get ("echo.command", true))
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  if (context.config.get ("echo.command", true))
     out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAppend (TDB& tdb, Tt& task, Config& conf)
+std::string handleAppend ()
 {
   int count = 0;
   std::stringstream out;
-  std::vector <Tt> all;
-  tdb.allPendingT (all);
 
-  std::vector <Tt> filtered = all;
-  filterSequence (filtered, task);
-  foreach (seq, filtered)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+    permission.bigSequence ();
+
+  foreach (task, tasks)
   {
     foreach (other, all)
     {
-      if (other->getId ()               == seq->getId ()                   || // Self
-          (seq->getAttribute ("parent") != "" &&
-           seq->getAttribute ("parent") == other->getAttribute ("parent")) || // Sibling
-          other->getUUID ()             == seq->getAttribute ("parent"))      // Parent
+      if (other->id             == task->id               || // Self
+          (task->has ("parent") &&
+           task->get ("parent") == other->get ("parent")) || // Sibling
+          other->get ("uuid")   == task->get ("parent"))     // Parent
       {
+        Task before (*other);
+
         // A non-zero value forces a file write.
         int changes = 0;
 
         // Apply other deltas.
-        changes += deltaAppend     (*other, task);
-        changes += deltaTags       (*other, task);
-        changes += deltaAttributes (*other, task);
+        changes += deltaAppend (*other);
+        changes += deltaTags (*other);
+        changes += deltaAttributes (*other);
 
-        if (changes)
+        if (taskDiff (before, *other))
         {
-          tdb.modifyT (*other);
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
+          {
+            context.tdb.update (*other);
 
-          if (conf.get ("echo.command", true))
-            out << "Appended '"
-                << task.getDescription ()
-                << "' to task "
-                << other->getId ()
-                << std::endl;
+            if (context.config.get ("echo.command", true))
+              out << "Appended '"
+                  << context.task.get ("description")
+                  << "' to task "
+                  << other->id
+                  << std::endl;
+
+            ++count;
+          }
         }
-
-        ++count;
       }
     }
   }
 
-  if (conf.get ("echo.command", true))
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  if (context.config.get ("echo.command", true))
     out << "Appended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDuplicate (TDB& tdb, Tt& task, Config& conf)
+std::string handleDuplicate ()
 {
-  int count = 0;
   std::stringstream out;
-  std::vector <Tt> all;
-  tdb.allPendingT (all);
+  int count = 0;
 
-  std::vector <Tt> filtered = all;
-  filterSequence (filtered, task);
-  foreach (seq, filtered)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  foreach (task, tasks)
   {
-    if (seq->getStatus () != Tt::recurring && seq->getAttribute ("parent") == "")
+    Task dup (*task);
+    dup.set ("uuid", uuid ());  // Needs a new UUID.
+    dup.setStatus (Task::pending);
+    dup.remove ("start");   // Does not inherit start date.
+    dup.remove ("end");     // Does not inherit end date.
+
+    // Recurring tasks are duplicated and downgraded to regular tasks.
+    if (task->getStatus () == Task::recurring)
     {
-      Tt dup (*seq);
-      dup.setUUID (uuid ());  // Needs a new UUID.
+      dup.remove ("parent");
+      dup.remove ("recur");
+      dup.remove ("until");
+      dup.remove ("imak");
+      dup.remove ("imask");
 
-      // Apply deltas.
-      deltaDescription   (dup, task);
-      deltaTags          (dup, task);
-      deltaAttributes    (dup, task);
-      deltaSubstitutions (dup, task);
-
-      // A New task needs a new entry time.
-      char entryTime[16];
-      sprintf (entryTime, "%u", (unsigned int) time (NULL));
-      dup.setAttribute ("entry", entryTime);
-
-      if (!tdb.addT (dup))
-        throw std::string ("Could not create new task.");
-
-      if (conf.get ("echo.command", true))
-        out << "Duplicated "
-            << seq->getId ()
-            << " '"
-            << seq->getDescription ()
-            << "'"
-            << std::endl;
-      ++count;
-    }
-    else
-      out << "Task "
-          << seq->getId ()
-          << " '"
-          << seq->getDescription ()
-          << "' is a recurring task, and cannot be duplicated."
+      out << "Note: task "
+          << task->id
+          << " was a recurring task.  The new task is not."
           << std::endl;
+    }
+
+    // Apply deltas.
+    deltaDescription (dup);
+    deltaTags (dup);
+    deltaAttributes (dup);
+    deltaSubstitutions (dup);
+
+    // A New task needs a new entry time.
+    char entryTime[16];
+    sprintf (entryTime, "%u", (unsigned int) time (NULL));
+    dup.set ("entry", entryTime);
+
+    context.tdb.add (dup);
+
+    if (context.config.get ("echo.command", true))
+      out << "Duplicated "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "'"
+          << std::endl;
+    ++count;
   }
 
-  if (conf.get ("echo.command", true))
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  if (context.config.get ("echo.command", true))
     out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleColor (Config& conf)
+#ifdef FEATURE_SHELL
+void handleShell ()
+{
+  // Display some kind of welcome message.
+  std::cout << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+                 ? Text::colorize (Text::bold, Text::nocolor, PACKAGE_STRING)
+                 : PACKAGE_STRING)
+            << " shell"
+            << std::endl
+            << std::endl
+            << "Enter any task command (such as 'list'), or hit 'Enter'."
+            << std::endl
+            << "There is no need to include the 'task' command itself."
+            << std::endl
+            << "Enter 'quit' to end the session."
+            << std::endl
+            << std::endl;
+
+  // Preserve any special override arguments, and reapply them for each
+  // shell command.
+  std::vector <std::string> special;
+  foreach (arg, context.args)
+    if (arg->substr (0, 3) == "rc." ||
+        arg->substr (0, 3) == "rc:")
+      special.push_back (*arg);
+
+  std::string quit = "quit"; // TODO i18n
+  std::string command;
+  bool keepGoing = true;
+
+  do
+  {
+    std::cout << context.config.get ("shell.prompt", "task>") << " ";
+
+    command = "";
+    std::getline (std::cin, command);
+    command = lowerCase (trim (command));
+
+    if (command.length () > 0               &&
+        command.length () <= quit.length () &&
+        command == quit.substr (0, command.length ()))
+    {
+      keepGoing = false;
+    }
+    else
+    {
+      try
+      {
+        context.clear ();
+
+        std::vector <std::string> args;
+        split (args, command, ' ');
+        foreach (arg, special) context.args.push_back (*arg);
+        foreach (arg, args)    context.args.push_back (*arg);
+
+        context.initialize ();
+        context.run ();
+      }
+
+      catch (std::string& error)
+      {
+        std::cout << error << std::endl;
+      }
+
+      catch (...)
+      {
+        std::cerr << context.stringtable.get (100, "Unknown error.") << std::endl;
+      }
+    }
+  }
+  while (keepGoing && !std::cin.eof ());
+}
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
+std::string handleColor ()
 {
   std::stringstream out;
-
-  if (conf.get ("color", true) || conf.get (std::string ("_forcecolor"), false))
+  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
   {
-    out << optionalBlankLine (conf) << "Foreground" << std::endl
+    out << optionalBlankLine () << "Foreground" << std::endl
         << "           "
                 << Text::colorize (Text::bold,                   Text::nocolor, "bold")                   << "          "
                 << Text::colorize (Text::underline,              Text::nocolor, "underline")              << "          "
@@ -907,86 +1220,97 @@ std::string handleColor (Config& conf)
                 << Text::colorize (Text::bold_underline_white,   Text::nocolor, "bold_underline_white")   << std::endl
 
         << std::endl << "Background" << std::endl
-        << "  " << Text::colorize (Text::nocolor, Text::on_black,          "on_black")               << "    "
-                << Text::colorize (Text::nocolor, Text::on_bright_black,   "on_bright_black")        << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_black,          "on_black")          << "    "
+                << Text::colorize (Text::nocolor, Text::on_bright_black,   "on_bright_black")   << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_red,            "on_red")                 << "      "
-                << Text::colorize (Text::nocolor, Text::on_bright_red,     "on_bright_red")          << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_red,            "on_red")            << "      "
+                << Text::colorize (Text::nocolor, Text::on_bright_red,     "on_bright_red")     << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_green,          "on_green")               << "    "
-                << Text::colorize (Text::nocolor, Text::on_bright_green,   "on_bright_green")        << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_green,          "on_green")          << "    "
+                << Text::colorize (Text::nocolor, Text::on_bright_green,   "on_bright_green")   << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_yellow,         "on_yellow")              << "   "
-                << Text::colorize (Text::nocolor, Text::on_bright_yellow,  "on_bright_yellow")       << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_yellow,         "on_yellow")         << "   "
+                << Text::colorize (Text::nocolor, Text::on_bright_yellow,  "on_bright_yellow")  << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_blue,           "on_blue")                << "     "
-                << Text::colorize (Text::nocolor, Text::on_bright_blue,    "on_bright_blue")         << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_blue,           "on_blue")           << "     "
+                << Text::colorize (Text::nocolor, Text::on_bright_blue,    "on_bright_blue")    << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_magenta,        "on_magenta")             << "  "
-                << Text::colorize (Text::nocolor, Text::on_bright_magenta, "on_bright_magenta")      << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_magenta,        "on_magenta")        << "  "
+                << Text::colorize (Text::nocolor, Text::on_bright_magenta, "on_bright_magenta") << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_cyan,           "on_cyan")                << "     "
-                << Text::colorize (Text::nocolor, Text::on_bright_cyan,    "on_bright_cyan")         << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_cyan,           "on_cyan")           << "     "
+                << Text::colorize (Text::nocolor, Text::on_bright_cyan,    "on_bright_cyan")    << std::endl
 
-        << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")               << "    "
-                << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")        << std::endl
+        << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")          << "    "
+                << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")   << std::endl
 
-        << optionalBlankLine (conf);
+        << optionalBlankLine ();
   }
   else
   {
-    out << "Color is currently turned off in your .taskrc file." << std::endl;
+    out << "Color is currently turned off in your .taskrc file.  "
+           "To enable color, create the entry 'color=on'."
+        << std::endl;
   }
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAnnotate (TDB& tdb, Tt& task, Config& conf)
+std::string handleAnnotate ()
 {
+  if (!context.task.has ("description"))
+    throw std::string ("Cannot apply a blank annotation.");
+
   std::stringstream out;
-  std::vector <Tt> all;
-  tdb.pendingT (all);
-  filterSequence (all, task);
 
-  foreach (t, all)
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+    permission.bigSequence ();
+
+  foreach (task, tasks)
   {
-    t->addAnnotation (task.getDescription ());
-    tdb.modifyT (*t);
+    Task before (*task);
+    task->addAnnotation (context.task.get ("description"));
 
-    if (conf.get ("echo.command", true))
-      out << "Annotated "
-          << t->getId ()
-          << " with '"
-          << t->getDescription ()
-          << "'"
-          << std::endl;
+    if (taskDiff (before, *task))
+    {
+      if (permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
+      {
+        context.tdb.update (*task);
+
+        if (context.config.get ("echo.command", true))
+          out << "Annotated "
+              << task->id
+              << " with '"
+              << context.task.get ("description")
+              << "'"
+              << std::endl;
+      }
+    }
   }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
   return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Tt findT (int id, const std::vector <Tt>& all)
+int deltaAppend (Task& task)
 {
-  std::vector <Tt>::const_iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
-    if (id == it->getId ())
-      return *it;
-
-  return Tt ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int deltaAppend (Tt& task, Tt& delta)
-{
-  if (delta.getDescription () != "")
+  if (context.task.has ("description"))
   {
-    task.setDescription (
-      task.getDescription () +
-      " " +
-      delta.getDescription ());
-
+    task.set ("description",
+              task.get ("description") + " " + context.task.get ("description"));
     return 1;
   }
 
@@ -994,11 +1318,11 @@ int deltaAppend (Tt& task, Tt& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaDescription (Tt& task, Tt& delta)
+int deltaDescription (Task& task)
 {
-  if (delta.getDescription () != "")
+  if (context.task.has ("description"))
   {
-    task.setDescription (delta.getDescription ());
+    task.set ("description", context.task.get ("description"));
     return 1;
   }
 
@@ -1006,31 +1330,22 @@ int deltaDescription (Tt& task, Tt& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaTags (Tt& task, Tt& delta)
+int deltaTags (Task& task)
 {
   int changes = 0;
 
   // Apply or remove tags, if any.
   std::vector <std::string> tags;
-  delta.getTags (tags);
-  for (unsigned int i = 0; i < tags.size (); ++i)
+  context.task.getTags (tags);
+  foreach (tag, tags)
   {
-    if (tags[i][0] == '+')
-      task.addTag (tags[i].substr (1, std::string::npos));
-    else
-      task.addTag (tags[i]);
-
+    task.addTag (*tag);
     ++changes;
   }
 
-  delta.getRemoveTags (tags);
-  for (unsigned int i = 0; i < tags.size (); ++i)
+  foreach (tag, context.tagRemovals)
   {
-    if (tags[i][0] == '-')
-      task.removeTag (tags[i].substr (1, std::string::npos));
-    else
-      task.removeTag (tags[i]);
-
+    task.removeTag (*tag);
     ++changes;
   }
 
@@ -1038,96 +1353,50 @@ int deltaTags (Tt& task, Tt& delta)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int deltaAttributes (Tt& task, Tt& delta)
+int deltaAttributes (Task& task)
 {
   int changes = 0;
 
-  std::map <std::string, std::string> attributes;
-  delta.getAttributes (attributes);
-  foreach (i, attributes)
+  foreach (att, context.task)
   {
-    if (i->second == "")
-      task.removeAttribute (i->first);
-    else
-      task.setAttribute (i->first, i->second);
-
-    ++changes;
-  }
-
-  return changes;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int deltaSubstitutions (Tt& task, Tt& delta)
-{
-  int changes = 0;
-  std::string from;
-  std::string to;
-  bool global;
-  delta.getSubstitution (from, to, global);
-
-  if (from != "")
-  {
-    std::string description = task.getDescription ();
-    size_t pattern;
-
-    if (global)
+    if (att->first != "uuid"        &&
+        att->first != "description" &&
+        att->first != "tags")
     {
-      // Perform all subs on description.
-      while ((pattern = description.find (from)) != std::string::npos)
+      // Modifying "wait" changes status.
+      if (att->first == "wait")
       {
-        description.replace (pattern, from.length (), to);
-        ++changes;
+        if (att->second.value () == "")
+          task.setStatus (Task::pending);
+        else
+          task.setStatus (Task::waiting);
       }
 
-      task.setDescription (description);
-
-      // Perform all subs on annotations.
-      std::map <time_t, std::string> annotations;
-      task.getAnnotations (annotations);
-      std::map <time_t, std::string>::iterator it;
-      for (it = annotations.begin (); it != annotations.end (); ++it)
-      {
-        while ((pattern = it->second.find (from)) != std::string::npos)
-        {
-          it->second.replace (pattern, from.length (), to);
-          ++changes;
-        }
-      }
-
-      task.setAnnotations (annotations);
-    }
-    else
-    {
-      // Perform first description substitution.
-      if ((pattern = description.find (from)) != std::string::npos)
-      {
-        description.replace (pattern, from.length (), to);
-        task.setDescription (description);
-        ++changes;
-      }
-      // Failing that, perform the first annotation substitution.
+      if (att->second.value () == "")
+        task.remove (att->first);
       else
-      {
-        std::map <time_t, std::string> annotations;
-        task.getAnnotations (annotations);
+        task.set (att->first, att->second.value ());
 
-        std::map <time_t, std::string>::iterator it;
-        for (it = annotations.begin (); it != annotations.end (); ++it)
-        {
-          if ((pattern = it->second.find (from)) != std::string::npos)
-          {
-            it->second.replace (pattern, from.length (), to);
-            ++changes;
-            break;
-          }
-        }
-
-        task.setAnnotations (annotations);
-      }
+      ++changes;
     }
   }
+
   return changes;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int deltaSubstitutions (Task& task)
+{
+  std::string description = task.get ("description");
+  std::vector <Att> annotations;
+  task.getAnnotations (annotations);
+
+  context.subst.apply (description, annotations);
+
+  task.set ("description", description);
+  task.setAnnotations (annotations);
+
+  return 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

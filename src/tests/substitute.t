@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'subst.rc')
@@ -71,6 +71,9 @@ like ($output, qr/aaa  ccc/, 'word deletion in description');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'subst.rc';
 ok (!-r 'subst.rc', 'Removed subst.rc');

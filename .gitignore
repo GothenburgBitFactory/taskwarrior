@@ -5,11 +5,14 @@ config.h.in
 config.status
 src/.deps
 src/Makefile
-*/task
+*/*task
 stamp-h1
 Makefile
+Makefile.in
 configure
 config.log
 www.xls
+src/tests/all.log
+src/tests/*.data
 *~
-Makefile.in
+.*.swp

@@ -38,3 +38,16 @@
     ok 3 - Removed completed.data
     ok 4 - Removed bench.rc
 
+6/18/2009
+  1.8.0:
+    1..4
+    ok 1 - Created bench.rc
+    # start=1245372501
+    # 1000 tasks added in 4 seconds
+    # 600 tasks altered in 45 seconds
+    # stop=1245372747
+    # total=246
+    ok 2 - Removed pending.data
+    ok 3 - Removed completed.data
+    ok 4 - Removed bench.rc
+

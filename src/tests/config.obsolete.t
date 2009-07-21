@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'obsolete.rc')
@@ -49,6 +49,9 @@ like ($output, qr/  foo\n/, 'unsupported configuration variable');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'obsolete.rc';
 ok (!-r 'obsolete.rc', 'Removed obsolete.rc');

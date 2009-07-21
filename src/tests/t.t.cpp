@@ -24,70 +24,141 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#include "../T.h"
-#include "../task.h"
+#include "main.h"
 #include "test.h"
+
+Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest test (10);
+  UnitTest test (37);
 
-  T t;
-  std::string s = t.compose ();
-  test.is ((int)s.length (), 49, "T::T (); T::compose ()");
-  test.diag (s);
+  test.is ((int)Task::textToStatus ("pending"),   (int)Task::pending,   "textToStatus pending");
+  test.is ((int)Task::textToStatus ("completed"), (int)Task::completed, "textToStatus completed");
+  test.is ((int)Task::textToStatus ("deleted"),   (int)Task::deleted,   "textToStatus deleted");
+  test.is ((int)Task::textToStatus ("recurring"), (int)Task::recurring, "textToStatus recurring");
 
-  t.setStatus (T::completed);
-  s = t.compose ();
-  test.is (s[37], '+', "T::setStatus (completed)");
-  test.diag (s);
+  test.is (Task::statusToText (Task::pending),   "pending",   "statusToText pending");
+  test.is (Task::statusToText (Task::completed), "completed", "statusToText completed");
+  test.is (Task::statusToText (Task::deleted),   "deleted",   "statusToText deleted");
+  test.is (Task::statusToText (Task::recurring), "recurring", "statusToText recurring");
 
-  t.setStatus (T::deleted);
-  s = t.compose ();
-  test.is (s[37], 'X', "T::setStatus (deleted)");
-  test.diag (s);
+  // Round-trip testing.
+  Task t3;
+  t3.set ("name", "value");
+  std::string before = t3.composeF4 ();
+  t3.parse (before);
+  std::string after = t3.composeF4 ();
+  t3.parse (after);
+  after = t3.composeF4 ();
+  t3.parse (after);
+  after = t3.composeF4 ();
+  test.is (before, after, "Task::composeF4 -> parse round trip 4 iterations");
 
-  t.setStatus (T::recurring);
-  s = t.compose ();
-  test.is (s[37], 'r', "T::setStatus (recurring)");
-  test.diag (s);
+  // Legacy Format 1
+  //   [tags] [attributes] description\n
+  //   X [tags] [attributes] description\n
+  std::string sample = "[tag1 tag2] [att1:value1 att2:value2] Description";
+  sample = "X "
+           "[one two] "
+           "[att1:value1 att2:value2] "
+           "Description";
+  bool good = true;
+  try { Task ff1 (sample); } catch (...) { good = false; }
+  test.notok (good, "Support for ff1 removed");
 
-  std::string format3 = "00000000-0000-0000-0000-000000000000 - [] [] [] Sample\n";
+  // Legacy Format 2
+  //   uuid status [tags] [attributes] description\n
+  sample = "00000000-0000-0000-0000-000000000000 "
+           "- "
+           "[tag1 tag2] "
+           "[att1:value1 att2:value2] "
+           "Description";
+  Task ff2 (sample);
+  std::string value = ff2.get ("uuid");
+  test.is (value, "00000000-0000-0000-0000-000000000000", "ff2 uuid");
+  value = ff2.get ("status");
+  test.is (value, "pending", "ff2 status");
+  test.ok (ff2.hasTag ("tag1"), "ff2 tag1");
+  test.ok (ff2.hasTag ("tag2"), "ff2 tag2");
+  test.is (ff2.getTagCount (), 2, "ff2 # tags");
+  value = ff2.get ("att1");
+  test.is (value, "value1", "ff2 att1");
+  value = ff2.get ("att2");
+  test.is (value, "value2", "ff2 att2");
+  value = ff2.get ("description");
+  test.is (value, "Description", "ff2 description");
 
-  // Format 1 Round trip test.
-  std::string sample = "[] [] Sample";
-  T tf1;
-  tf1.parse (sample);
-  test.is (tf1.compose ().substr (36, std::string::npos),
-           format3.substr (36, std::string::npos),
-           "T::parse format 1 -> T::compose round trip");
+  // Legacy Format 3
+  //   uuid status [tags] [attributes] [annotations] description\n
+  sample = "00000000-0000-0000-0000-000000000000 "
+           "- "
+           "[tag1 tag2] "
+           "[att1:value1 att2:value2] "
+           "[123:ann1 456:ann2] Description";
+  Task ff3 (sample);
+  value = ff2.get ("uuid");
+  test.is (value, "00000000-0000-0000-0000-000000000000", "ff3 uuid");
+  value = ff2.get ("status");
+  test.is (value, "pending", "ff3 status");
+  test.ok (ff2.hasTag ("tag1"), "ff3 tag1");
+  test.ok (ff2.hasTag ("tag2"), "ff3 tag2");
+  test.is (ff2.getTagCount (), 2, "ff3 # tags");
+  value = ff3.get ("att1");
+  test.is (value, "value1", "ff3 att1");
+  value = ff3.get ("att2");
+  test.is (value, "value2", "ff3 att2");
+  value = ff3.get ("description");
+  test.is (value, "Description", "ff3 description");
 
-  // Format 2 Round trip test.
-  sample = "00000000-0000-0000-0000-000000000000 - [] [] Sample";
-  T tf2;
-  tf2.parse (sample);
-  test.is (tf2.compose (), format3, "T::parse format 2 -> T::compose round trip");
+  // Current Format 4
+  //   [name:"value" ...]\n
+  sample = "["
+           "uuid:\"00000000-0000-0000-0000-000000000000\" "
+           "status:\"P\" "
+           "tags:\"tag1&commaltag2\" "
+           "att1:\"value1\" "
+           "att2:\"value2\" "
+           "description:\"Description\""
+           "]";
+  Task ff4 (sample);
+  value = ff2.get ("uuid");
+  test.is (value, "00000000-0000-0000-0000-000000000000", "ff4 uuid");
+  value = ff2.get ("status");
+  test.is (value, "pending", "ff4 status");
+  test.ok (ff2.hasTag ("tag1"), "ff4 tag1");
+  test.ok (ff2.hasTag ("tag2"), "ff4 tag2");
+  test.is (ff2.getTagCount (), 2, "ff4 # tags");
+  value = ff4.get ("att1");
+  test.is (value, "value1", "ff4 att1");
+  value = ff4.get ("att2");
+  test.is (value, "value2", "ff4 att2");
+  value = ff4.get ("description");
+  test.is (value, "Description", "ff4 description");
 
-  // Format 3 Round trip test.
-  sample = "00000000-0000-0000-0000-000000000000 - [] [] [] Sample";
-  T tf3;
-  tf3.parse (sample);
-  test.is (tf3.compose (), format3, "T::parse format 3 -> T::compose round trip");
+/*
 
-  // b10b3236-70d8-47bb-840a-b4c430758fb6 - [foo] [bar:baz] [1237865996:'woof'] sample\n
-  // ....:....|....:....|....:....|....:....|....:....|....:....|....:....|....:....|....:....|
-  // ^                                   ^                             ^
-  // 0                                   36                            66
-  t.setStatus (T::pending);
-  t.addTag ("foo");
-  t.setAttribute ("bar", "baz");
-  t.addAnnotation ("woof");
-  t.setDescription ("sample");
-  std::string format = t.compose ();
-  test.is (format.substr (36, 20), " - [foo] [bar:baz] [", "compose tag, attribute");
-  test.is (format.substr (66, 16), ":\"woof\"] sample\n",  "compose annotation");
-  test.is (t.getAnnotationCount (), 1,                     "annotation count");
+TODO Task::composeCSV
+TODO Task::id
+TODO Task::*Status
+TODO Task::*Tag*
+TODO Task::*Annotation*
+
+*/
+
+  // Task::operator==
+  Task left ("[one:1 two:2 three:3]");
+  Task right (left);
+  test.ok (left == right, "left == right -> true");
+  left.set ("one", "1.0");
+  test.notok (left == right, "left == right -> false");
+
+  // Task::validate
+  Task bad ("[entry:1000000001 start:1000000000]");
+  good = true;
+  try { bad.validate (); } catch (...) { good = false; }
+  test.notok (good, "Task::validate entry <= start");
 
   return 0;
 }

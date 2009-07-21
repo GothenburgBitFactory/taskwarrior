@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 # Create the rc file.
 if (open my $fh, '>', 'dup.rc')
@@ -58,6 +58,9 @@ like ($output, qr/Tags\s+tag/,        'duplicate added tag');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'dup.rc';
 ok (!-r 'dup.rc', 'Removed dup.rc');

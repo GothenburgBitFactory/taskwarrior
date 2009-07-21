@@ -25,13 +25,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <Context.h>
 #include <Date.h>
 #include <test.h>
+
+Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (100);
+  UnitTest t (102);
 
   try
   {
@@ -72,11 +75,14 @@ int main (int argc, char** argv)
     t.ok    (Date::valid (2, 29, 2008), "valid: 2/29/2008");
     t.notok (Date::valid (2, 29, 2007), "invalid: 2/29/2007");
 
+    t.ok    (Date::valid ("2/29/2008"), "valid: 2/29/2008");
+    t.notok (Date::valid ("2/29/2007"), "invalid: 2/29/2007");
+
     // Leap year.
     t.ok    (Date::leapYear (2008), "2008 is a leap year");
     t.notok (Date::leapYear (2007), "2007 is not a leap year");
     t.ok    (Date::leapYear (2000), "2000 is a leap year");
-    t.ok    (Date::leapYear (1900), "1900 is a leap year");
+    t.notok (Date::leapYear (1900), "1900 is not a leap year");
 
     // Days in month.
     t.is (Date::daysInMonth (2, 2008), 29, "29 days in February 2008");
@@ -132,8 +138,8 @@ int main (int argc, char** argv)
 
     Date epoch (9, 8, 2001);
     t.ok ((int)epoch.toEpoch () < 1000000000, "9/8/2001 < 1,000,000,000");
-    epoch += 86400;
-    t.ok ((int)epoch.toEpoch () > 1000000000, "9/9/2001 > 1,000,000,000");
+    epoch += 172800;
+    t.ok ((int)epoch.toEpoch () > 1000000000, "9/10/2001 > 1,000,000,000");
 
     Date fromEpoch (epoch.toEpoch ());
     t.is (fromEpoch.toString (), epoch.toString (), "ctor (time_t)");

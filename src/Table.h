@@ -52,6 +52,9 @@ public:
            Table ();
   virtual ~Table ();
 
+           Table (const Table&);
+           Table& operator= (const Table&);
+
            void setTableColor (Text::color, Text::color);
            void setTableFg (Text::color);
            void setTableBg (Text::color);

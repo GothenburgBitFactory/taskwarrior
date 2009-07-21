@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 55;
+use Test::More tests => 56;
 
 # Create the rc file.
 if (open my $fh, '>', 'oldest.rc')
@@ -78,7 +78,7 @@ like   ($output, qr/nine/,   'oldest: nine');
 like   ($output, qr/ten/,    'oldest: ten');
 unlike ($output, qr/eleven/, 'no: eleven');
 
-$output = qx{../task rc:oldest.rc oldest 3};
+$output = qx{../task rc:oldest.rc oldest limit:3};
 like   ($output, qr/one/,    'oldest: one');
 like   ($output, qr/two/,    'oldest: two');
 like   ($output, qr/three/,  'oldest: three');
@@ -104,7 +104,7 @@ like   ($output, qr/nine/,   'newest: nine');
 like   ($output, qr/ten/,    'newest: ten');
 like   ($output, qr/eleven/, 'newest: eleven');
 
-$output = qx{../task rc:oldest.rc newest 3};
+$output = qx{../task rc:oldest.rc newest limit:3};
 unlike ($output, qr/one/,    'no: one');
 unlike ($output, qr/two/,    'no: two');
 unlike ($output, qr/three/,  'no: three');
@@ -120,6 +120,9 @@ like   ($output, qr/eleven/, 'newest: eleven');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'oldest.rc';
 ok (!-r 'oldest.rc', 'Removed oldest.rc');

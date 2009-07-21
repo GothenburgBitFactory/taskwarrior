@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 13;
 
 # Create the rc file.
 if (open my $fh, '>', 'add.rc')
@@ -39,31 +39,33 @@ if (open my $fh, '>', 'add.rc')
 }
 
 # Test the add command.
-my $output = qx{../task rc:add.rc add This is a test; ../task rc:add.rc info 1};
+qx{../task rc:add.rc add This is a test};
+my $output = qx{../task rc:add.rc info 1};
 like ($output, qr/ID\s+1\n/, 'add ID');
 like ($output, qr/Description\s+This is a test\n/, 'add ID');
 like ($output, qr/Status\s+Pending\n/, 'add Pending');
 like ($output, qr/UUID\s+[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\n/, 'add UUID');
 
 # Test the /// modifier.
-$output = qx{../task rc:add.rc 1 /test/TEST/; ../task rc:add.rc 1 "/is //"; ../task rc:add.rc info 1};
+qx{../task rc:add.rc 1 /test/TEST/};
+qx{../task rc:add.rc 1 "/is //"};
+$output = qx{../task rc:add.rc info 1};
 like ($output, qr/ID\s+1\n/, 'add ID');
 like ($output, qr/Status\s+Pending\n/, 'add Pending');
 like ($output, qr/Description\s+This a TEST\n/, 'add ID');
 
 # Test delete.
-$output = qx{../task rc:add.rc delete 1; ../task rc:add.rc info 1};
+qx{../task rc:add.rc delete 1};
+$output = qx{../task rc:add.rc info 1};
 like ($output, qr/ID\s+1\n/, 'add ID');
 like ($output, qr/Status\s+Deleted\n/, 'add Deleted');
-
-# Test undelete.
-$output = qx{../task rc:add.rc undelete 1; ../task rc:add.rc info 1};
-like ($output, qr/ID\s+1\n/, 'add ID');
-like ($output, qr/Status\s+Pending\n/, 'add Pending');
 
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'add.rc';
 ok (!-r 'add.rc', 'Removed add.rc');

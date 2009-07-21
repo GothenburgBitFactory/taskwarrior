@@ -1,0 +1,469 @@
+.TH task 1 2009-07-14 "Task 1.8.0" "User Manuals"
+
+.SH NAME
+task \- A command line todo manager.
+
+.SH SYNOPSIS
+.B task [subcommand] [args]
+
+.SH DESCRIPTION
+Task is a command line todo list manager. It maintains a list of tasks that you
+want to do, allowing you to add/remove, and otherwise manipulate them.  Task
+has a rich list of subcommands that allow you to do various things with it.
+
+.SH SUBCOMMANDS
+
+.TP
+.B add [tags] [attrs] description
+Adds a new task to the task list.
+
+.TP
+.B append [tags] [attrs] description
+Appends more information to an existing
+task.
+
+.TP
+.B annotate ID description
+Adds an annotation to an existing task.
+
+.TP
+.B ID [tags] [attrs] [description]
+Modifies the existing task with provided information.
+
+.TP
+.B ID /from/to/
+Performs one substitution on task description and annotation for fixing mistakes.
+
+.TP
+.B ID /from/to/g
+Performs all substitutions on task description and annotation for fixing mistakes.
+
+.TP
+.B edit ID
+Launches an editor to let you modify all aspects of a task directly.
+Use carefully.
+
+.TP
+.B undo
+Reverts the most recent action.
+
+.TP
+.B shell
+Launches an interactive shell with all the task commands available.
+
+.TP
+.B duplicate ID [tags] [attrs] [description]
+Duplicates the specified task and allows modifications.
+
+.TP
+.B delete ID
+Deletes the specified task from task list.
+
+.TP
+.B info ID
+Shows all data and metadata for the specified task.
+
+.TP
+.B start ID
+Marks the specified task as started.
+
+.TP
+.B stop ID
+Removes the
+.I start
+time from the specified task.
+
+.TP
+.B done ID [tags] [attrs] [description]
+Marks the specified task as done.
+
+.TP
+.B projects
+Lists all project names used, and the number of tasks for each.
+
+.TP
+.B tags
+Show a list of all tags used.
+
+.TP
+.B summary
+Shows a report of task status by project.
+
+.TP
+.B timesheet [weeks]
+Shows a weekly report of tasks completed and started.
+
+.TP
+.B history
+Shows a report of task history by month.
+
+.TP
+.B ghistory
+Shows a graphical report of task status by month.
+
+.TP
+.B calendar [ y | due [y] | month year [y] | year ]
+Shows a monthly calendar with due tasks marked.
+
+.TP
+.B stats
+Shows task database statistics.
+
+.TP
+.B import \fIfile
+Imports tasks from a variety of formats.
+
+.TP
+.B export \fIfile
+Exports all tasks as a CSV file.
+
+.TP
+.B color
+Displays all possible colors.
+
+.TP
+.B version
+Shows the task version number and current settings in the task configuration
+file.
+
+.TP
+.B help
+Shows the long usage text.
+
+.SH REPORT SUBCOMMANDS
+
+A report is a listing of information from the task database. There are several
+reports currently predefined in task. The output and sort behavior of these
+reports can be configured in the configuration file. See also the man page taskrc(5).
+
+.TP
+.B active [tags] [attrs] [description]
+Shows all tasks matching the specified criteria
+that are started but not completed.
+
+.TP
+.B all [tags] [attrs] [description]
+Shows all tasks matching the specified criteria.
+
+.TP
+.B completed [tags] [attrs] [description]
+Shows all tasks matching the specified criteria
+that are completed.
+
+.TP
+.B ls [tags] [attrs] [description]
+Provides a minimal listing of tasks with specified criteria.
+
+.TP
+.B list [tags] [attrs] [description]
+Provides a more detailed listing of tasks with specified criteria.
+
+.TP
+.B long [tags] [attrs] [description]
+Provides the most detailed listing of tasks with specified criteria.
+
+.TP
+.B newest [tags] [attrs] [description]
+Shows the newest tasks with specified criteria.
+
+.TP
+.B oldest [tags] [attrs] [description]
+Shows the oldest tasks with specified criteria
+
+.TP
+.B overdue [tags] [attrs] [description]
+Shows all incomplete tasks matching the specified criteria
+that are beyond their due date.
+
+.TP
+.B recurring [tags] [attrs] [description]
+Shows all recurring tasks matching the specified criteria.
+
+.TP
+.B waiting [tags] [attrs] [description]
+Shows all waiting tasks matching the specified criteria.
+
+.TP
+.B next [tags] [attrs] [description]
+Shows all tasks with upcoming due dates matching the specified criteria.
+
+.SH ATTRIBUTES AND METADATA
+
+.TP
+.B ID
+Tasks can be specified uniquely by IDs, which are simply the index of the
+task in a report. Be careful, as the IDs of tasks may change after a
+modification to the database. Always run a report to check you have the right
+ID for a task. IDs can be given to task as a sequences, for example,
+.br
+.B
+task del 1,4-10,19
+
+.TP
+.B +tag|-tag
+Tags are arbitrary words associated with a task. Use + to add a tag and - to
+remove a tag from a task. A task can have any quantity of tags
+
+.TP
+.B project:<project-name>
+Specifies the project to which a task is related to.
+
+.TP
+.B priority:H|M|L|N
+Specifies High, Medium, Low and No priority for a task.
+
+.TP
+.B due:<due-date>
+Specifies the due-date of a task.
+
+.TP
+.B recur:<frequency>
+Specifies the frequency of a recurrence of a task.
+
+.TP
+.B until:<end-date-of-recurrence>
+Specifies the Recurrence end-date of a task.
+
+.TP
+.B fg:<color-spec>
+Specifies foreground color.
+
+.TP
+.B bg:<color-spec>
+Specifies background color.
+
+.TP
+.B limit:<number-of-rows>
+Specifies the desired number of rows a report should have.
+
+.TP
+.B wait:<wait-date>
+Date until task becomes pending.
+
+.SH ATTRIBUTE MODIFIERS
+Attribute modifiers improve filters.  Supported modifiers are:
+
+.RS
+.B before     (synonyms under, below)
+.br
+.B  after      (synonyms over, above)
+.br
+.B  none
+.br
+.B  any
+.br
+.B  is         (synonym equals)
+.br
+.B  isnt       (synonym not)
+.br
+.B  has        (synonym contain)
+.br
+.B  hasnt
+.br
+.B  startswith (synonym left)
+.br
+.B  endswith   (synonym right)
+.RE
+
+For example:
+
+.RS
+task list due.before:eom priority.not:L
+.RE
+
+.SH SPECIFYING DATES AND FREQUENCIES
+
+.SS DATES
+Task reads dates from the command line and displays dates in the
+reports.  The expected and desired date format is determined by the
+configuration variable
+.I dateformat
+in the task configuration file.
+
+.RS
+.TP
+Exact specification
+task ... due:7/14/2008
+
+.TP
+Relative wording
+task ... due:today
+.br
+task ... due:yesterday
+.br
+task ...  due:tomorrow
+
+.TP
+Day number with ordinal
+task ... due:23rd
+
+.TP
+End of week (Friday), month and year
+task ... due:eow
+.br
+task ... due:eom
+.br
+task ... due:eoy
+
+.TP
+Next occurring weekday
+task ... due:fri
+.RE
+
+.SS FREQUENCIES
+Recurrence periods. Task supports several ways of specifying the
+.I frequency
+of recurring tasks.
+
+.RS
+.TP
+daily, day, 1d, 2d, ...
+Every day or a number of days.
+
+.TP
+weekdays
+Mondays, Tuesdays, Wednesdays, Thursdays, Fridays and skipping weekend days.
+
+.TP
+weekly, 1w, 2w, ...
+Every week or a number of weeks.
+
+.TP
+biweekly, fortnight
+Every two weeks.
+
+.TP
+quarterly, 1q, 2q, ...
+Every three months, a quarter, or a number of quarters.
+
+.TP
+semiannual
+Every six months.
+
+.TP
+annual, yearly, 1y, 2y, ...
+Every year or a number of years.
+
+.TP
+biannual, biyearly, 2y
+Every two years.
+.RE
+
+
+.SH COMMAND ABBREVIATION
+All task commands may be abbreviated as long as a unique prefix is used. E.g.
+
+.RS
+$ task li
+.RE
+
+is an unambiguous abbreviation for
+
+.RS
+$ task list
+.RE
+
+but
+
+.RS
+$ task l
+.RE
+
+could be list, ls or long.
+
+.SH SPECIFYING DESCRIPTIONS
+Some task descriptions need to be escaped because of the shell
+and the special meaning of some characters to the shell. This can be
+done either by adding quotes to the description or escaping the special
+character:
+
+.RS
+$ task add "quoted ' quote"
+.br
+$ task add escaped \\' quote
+.RE
+
+The argument \-\- (a double dash) tells task to treat all other args
+as description:
+
+.RS
+$ task add -- project:Home needs scheduling
+.RE
+
+.SH CONFIGURATION FILE AND OVERRIDE OPTIONS
+Task stores its configuration in a file in the user's home directory:
+~/.taskrc . The default configuration file can be overridden with
+
+.TP
+.B task rc:<path-to-alternate-file>
+Specifies an alternate configuration file.
+
+.TP
+.B task rc.<name>:<value> ...
+Specifies individual configuration file overrides.
+
+.SH EXAMPLES
+
+For examples please see the task tutorial man page at
+
+.RS
+man task-tutorial
+.RE
+
+or the online documentation starting at
+
+.RS
+<http://taskwarrior.org/wiki/taskwarrior/Simple>
+.RE
+
+.SH FILES
+
+.TP
+~/.taskrc User configuration file - see also taskrc(5).
+
+.TP
+~/.task The default directory where task stores its data files. The location
+can be configured in the configuration file.
+
+.TP
+~/.task/pending.data The file that contains the tasks that are not yet done.
+
+.TP
+~/.task/completed.data The file that contains the completed "done" tasks.
+
+.TP
+~/.task/undo.data The file that contains the information to the "undo" command.
+
+.SH "CREDITS & COPYRIGHTS"
+task was written by P. Beckingham <paul@beckingham.net>.
+.br
+Copyright (C) 2006 \- 2009 P. Beckingham
+
+This man page was originally written by P.C. Shyamshankar, and has been modified
+and supplemented by Federico Hernandez.
+
+task is distributed under the GNU General Public License.  See
+http://www.gnu.org/licenses/gpl-2.0.txt for more information.
+
+.SH SEE ALSO
+.BR taskrc(5),
+.BR task-tutorial(5)
+
+For more information regarding task, the following may be referenced:
+
+.TP
+The official site at
+<http://taskwarrior.org>
+
+.TP
+The official code repository at
+<http://github.com/pbeckingham/task/>
+
+.TP
+You can contact the project by writing an email to
+<support@taskwarrior.org>
+
+.SH REPORTING BUGS
+.TP
+Bugs in task may be reported to the issue-tracker at
+<http://taskwarrior.org>

@@ -1,8 +1,14 @@
-PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t \
-          parse.t
+PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
+          config.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t \
+          cmd.t util.t color.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
-LFLAGS  = -L/usr/local/lib
-OBJECTS = ../TDB.o ../T.o ../parse.o ../text.o ../Date.o ../util.o ../Config.o
+LFLAGS  = -L/usr/local/lib -lncurses
+OBJECTS = ../TDB.o ../Task.o ../text.o ../Date.o ../Table.o ../Duration.o      \
+          ../util.o ../Config.o ../Sequence.o ../Att.o ../Cmd.o ../Record.o    \
+          ../StringTable.o ../Subst.o ../Nibbler.o ../Location.o ../Filter.o   \
+          ../Context.o ../Keymap.o ../command.o ../interactive.o ../report.o   \
+          ../Grid.o ../color.o ../rules.o ../recur.o ../custom.o ../import.o   \
+          ../edit.o ../Timer.o ../Permission.o
 
 all: $(PROJECT)
 
@@ -39,6 +45,36 @@ text.t: text.t.o $(OBJECTS) test.o
 autocomplete.t: autocomplete.t.o $(OBJECTS) test.o
 	g++ autocomplete.t.o $(OBJECTS) test.o $(LFLAGS) -o autocomplete.t
 
-parse.t: parse.t.o $(OBJECTS) test.o
-	g++ parse.t.o $(OBJECTS) test.o $(LFLAGS) -o parse.t
+seq.t: seq.t.o $(OBJECTS) test.o
+	g++ seq.t.o $(OBJECTS) test.o $(LFLAGS) -o seq.t
+
+record.t: record.t.o $(OBJECTS) test.o
+	g++ record.t.o $(OBJECTS) test.o $(LFLAGS) -o record.t
+
+att.t: att.t.o $(OBJECTS) test.o
+	g++ att.t.o $(OBJECTS) test.o $(LFLAGS) -o att.t
+
+stringtable.t: stringtable.t.o $(OBJECTS) test.o
+	g++ stringtable.t.o $(OBJECTS) test.o $(LFLAGS) -o stringtable.t
+
+subst.t: subst.t.o $(OBJECTS) test.o
+	g++ subst.t.o $(OBJECTS) test.o $(LFLAGS) -o subst.t
+
+nibbler.t: nibbler.t.o $(OBJECTS) test.o
+	g++ nibbler.t.o $(OBJECTS) test.o $(LFLAGS) -o nibbler.t
+
+filt.t: filt.t.o $(OBJECTS) test.o
+	g++ filt.t.o $(OBJECTS) test.o $(LFLAGS) -o filt.t
+
+cmd.t: cmd.t.o $(OBJECTS) test.o
+	g++ cmd.t.o $(OBJECTS) test.o $(LFLAGS) -o cmd.t
+
+config.t: config.t.o $(OBJECTS) test.o
+	g++ config.t.o $(OBJECTS) test.o $(LFLAGS) -o config.t
+
+util.t: util.t.o $(OBJECTS) test.o
+	g++ util.t.o $(OBJECTS) test.o $(LFLAGS) -o util.t
+
+color.t: color.t.o $(OBJECTS) test.o
+	g++ color.t.o $(OBJECTS) test.o $(LFLAGS) -o color.t
 
