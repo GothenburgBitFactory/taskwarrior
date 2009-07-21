@@ -1,49 +1,24 @@
-Thank you for taking a look at task.  Task is a GTD utility with a multitude of
-features, including:
 
-  - Tags
-  - Recurring tasks
-  - Colorful, tabular output
-  - Reports, graphs
-  - Annotated tasks
-  - Multi-user file locking
-  - Clean architecture allowing quick addition of new features
-  - Tab completion scripts
-  - Abbreviations for all commands, options
-  - Complex filtering
-  - Custom user-defined reports
-  - Packaged binaries
-  - Flexible import capabilities
-  - Shadow file support
-  - Robust C++ implementation
-  - much more
+Thank you for taking a look at task!
 
-You may want to watch the old task movie on YouTube:
+Task is a GTD, todo list, task management, command line utility with a multitude
+of features.  It is a portable, well supported, very active project, and it is
+Open Source.  Task has binary distributions, online documentation, demonstration
+movies, and you'll find all the details at the site:
 
-  http://www.youtube.com/watch?v=l68LCl6BYvs
+    http://taskwarrior.org
 
-or the new improved one:
+At the site you'll find a wiki, discussion forums, downloads, news and more.
 
-  http://www.youtube.com/watch?v=D2Kn4DMOVSw
 
-Although a little dated, Either will give you a fairly good idea of what task is
-capable of, and whether it fits in to your way of working.  As a command line
-application, task is not for everyone.  The movie or online tutorial file are
-the quickest way for you to make that decision.  The online tutorial can be
-found at:
+Your contributions are especially welcome.  Whether it comes in the form of
+code patches, ideas, discussion, bug reports or just encouragement, your input
+is needed.
 
-  http://taskwarrior.org/wiki/taskwarrior
+Please send your support questions and code patches to:
 
-All feedback is welcome, in addition to any bug reports or patches to:
+    support@taskwarrior.org
 
-  support@taskwarrior.org
+Consider joining taskwarrior.org and participating in the future of task.
 
-Or better yet, get involved in the discussion forums at
-
-  http://taskwarrior.org
-
-Got an idea for an enhancement?  Post a message!
-
-We have found that task makes us more productive and organized.
-We hope task can do the same for you.  
-
+---
