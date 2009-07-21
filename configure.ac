@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(task, 1.8.0.beta3, support@taskwarrior.org)
+AC_INIT(task, 1.8.0, support@taskwarrior.org)
 
 CFLAGS="${CFLAGS=}"
 CXXFLAGS="${CXXFLAGS=}"
