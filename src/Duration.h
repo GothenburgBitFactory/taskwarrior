@@ -40,7 +40,6 @@ public:
   bool operator> (const Duration&);
   ~Duration ();                          // Destructor
 
-  operator int ();
   operator time_t ();
   operator std::string ();
 
