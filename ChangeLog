@@ -1,7 +1,13 @@
 
 ------ current release ---------------------------
 
-1.8.0 (7/21/2009)
+1.8.1
+ + Fixed bug #231 that broke the build on OpenBSD 32-bit due to a time_t
+   and int collision (thanks to Pietro Cerutti).
+
+------ old releases ------------------------------
+
+1.8.0 (7/21/2009) 14977ef317bd004dae2f2c313e806af9f2a2140c
  + Added zsh tab completion script (thanks to P.C. Shyamshankar).
  + Fixed bug that cause the _forcecolor configuration variable to be
    considered obsolete (thank to Bruce Dillahunty).
@@ -70,9 +76,7 @@
    and completed tasks.
  + Now over 1,600 unit tests, helping to maintain code quality.
 
------- old releases ------------------------------
-
-1.7.1 (6/8/2009)
+1.7.1 (6/8/2009) 1422a15cbc470cff590bf06daad20d01fe1b05ef
  + Fixed build failure on OpenBSD (thanks to Mike Adonay).
  + Took the opportunity of a patch release to update the various email
    addresses and URLs in the various documents.
