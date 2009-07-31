@@ -113,7 +113,7 @@ _task()
                     return 0
                     ;;
                 rc.*)
-                    local config=$(_task_get_config | sed 's/^/rc\./')
+                    local config=$(_task_get_config | sed -e 's/^/rc\./' -e 's/$/:/')
                     COMPREPLY=( $(compgen -W "${config}" -- ${cur}) )
                     return 0
                     ;;
@@ -124,4 +124,4 @@ _task()
     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
     return 0
 }
-complete -F _task task
+complete -o nospace -F _task task
