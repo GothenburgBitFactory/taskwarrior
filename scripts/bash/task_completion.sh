@@ -48,16 +48,16 @@
 #       http://taskwarrior.org
 #
 
-_task_get_projects() {
-    task _projects
-}
-
 _task_get_tags() {
     task _tags
 }
 
 _task_get_config() {
     task _config
+}
+
+_task_offer_projects() {
+    COMPREPLY=( $(compgen -W "$(task _projects)" -- ${cur/*:/}) )
 }
 
 _task() 
@@ -67,30 +67,57 @@ _task()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
+    if [ ${#COMP_WORDS[*]} -gt 2 ]
+    then
+        prev2="${COMP_WORDS[COMP_CWORD-2]}"
+    else
+        prev2=""
+    fi
+#   echo -e "\ncur='$cur'"
+#   echo "prev='$prev'"
+#   echo "prev2='$prev2'"
 
     opts="$(task _commands) $(task _ids)"
 
-    case "${cur}" in
-        pro*:*)
-            local projects=$(_task_get_projects)
-            local partial_project="${cur/*:/}"
-            COMPREPLY=( $(compgen -W "${projects}" -- ${partial_project}) )
-            return 0
+    case "${prev}" in
+        :)
+            case "${prev2}" in
+                pro*)
+                    _task_offer_projects
+                    return 0
+                    ;;
+            esac
             ;;
-        +*)
-            local tags=$(_task_get_tags | sed 's/^/+/')
-            COMPREPLY=( $(compgen -W "${tags}" -- ${cur}) )
-            return 0
-            ;;
-        -*)
-            local tags=$(_task_get_tags | sed 's/^/-/')
-            COMPREPLY=( $(compgen -W "${tags}" -- ${cur}) )
-            return 0
-            ;;
-        rc.*)
-            local config=$(_task_get_config | sed 's/^/rc\./')
-            COMPREPLY=( $(compgen -W "${config}" -- ${cur}) )
-            return 0
+        *)
+            case "${cur}" in
+                pro*:*)
+                    _task_offer_projects
+                    return 0
+                    ;;
+                :)
+                    case "${prev}" in
+                        pro*)
+                            _task_offer_projects
+                            return 0
+                            ;;
+                    esac
+                    ;;
+                +*)
+                    local tags=$(_task_get_tags | sed 's/^/+/')
+                    COMPREPLY=( $(compgen -W "${tags}" -- ${cur}) )
+                    return 0
+                    ;;
+                -*)
+                    local tags=$(_task_get_tags | sed 's/^/-/')
+                    COMPREPLY=( $(compgen -W "${tags}" -- ${cur}) )
+                    return 0
+                    ;;
+                rc.*)
+                    local config=$(_task_get_config | sed 's/^/rc\./')
+                    COMPREPLY=( $(compgen -W "${config}" -- ${cur}) )
+                    return 0
+                    ;;
+            esac
             ;;
     esac
       
