@@ -94,6 +94,7 @@ std::string handleAdd ()
   // All this, just for an id number.
   std::vector <Task> all;
   Filter none;
+  handleRecurrence ();
   context.tdb.loadPending (all, none);
   out << "Created task " << context.tdb.nextId () << std::endl;
 #endif
