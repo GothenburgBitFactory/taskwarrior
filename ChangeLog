@@ -11,6 +11,8 @@
  + Fixed bug #242 that sometimes causes the ID echoed after a task is added
    to be incorrect (thanks to John Florian).
  + Fixed bug that allowed a recurring task to be added without a due date.
+ + Fixed bug #243 that caused exported due dates to be quoted, which then
+   confused a subsequent import (thanks to John Florian).
 
 ------ old releases ------------------------------
 

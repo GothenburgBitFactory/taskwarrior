@@ -363,12 +363,12 @@ std::string Task::composeCSV () const
   out <<        get ("start")    <<  ","; // No i18n
 
   if (has ("due"))
-    out << "'" << get ("due")      << "',"; // No i18n
+    out <<      get ("due")      <<  ","; // No i18n
   else
     out << ","; // No i18n
 
   if (has ("recur"))
-    out << "'" << get ("recur")    << "',"; // No i18n
+    out <<      get ("recur")    <<  ","; // No i18n
   else
     out << ","; // No i18n
 
