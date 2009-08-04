@@ -10,6 +10,7 @@
    Federico Hernandez).
  + Fixed bug #242 that sometimes causes the ID echoed after a task is added
    to be incorrect (thanks to John Florian).
+ + Fixed bug that allowed a recurring task to be added without a due date.
 
 ------ old releases ------------------------------
 

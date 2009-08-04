@@ -84,6 +84,15 @@ std::string handleAdd ()
   foreach (tag, context.tagAdditions)
     context.task.addTag (*tag);
 
+  // Perform some logical consistency checks.
+  if (context.task.has ("recur") &&
+      !context.task.has ("due"))
+    throw std::string ("You cannot specify a recurring task without a due date.");
+
+  if (context.task.has ("until")  &&
+      !context.task.has ("recur"))
+    throw std::string ("You cannot specify an until date for a non-recurring task.");
+
   // Only valid tasks can be added.
   context.task.validate ();
 
