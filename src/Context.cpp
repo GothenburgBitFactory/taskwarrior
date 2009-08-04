@@ -148,18 +148,27 @@ int Context::run ()
   // Dump all debug messages.
   if (config.get (std::string ("debug"), false))
     foreach (d, debugMessages)
-      std::cout << colorizeDebug (*d) << std::endl;
+      if (config.get ("color", true) || config.get (std::string ("_forcecolor"), false))
+        std::cout << colorizeDebug (*d) << std::endl;
+      else
+        std::cout << *d << std::endl;
 
   // Dump all headers.
   foreach (h, headers)
-    std::cout << colorizeHeader (*h) << std::endl;
+    if (config.get ("color", true) || config.get (std::string ("_forcecolor"), false))
+      std::cout << colorizeHeader (*h) << std::endl;
+    else
+      std::cout << *h << std::endl;
 
   // Dump the report output.
   std::cout << output;
 
   // Dump all footnotes.
   foreach (f, footnotes)
-    std::cout << colorizeFootnote (*f) << std::endl;
+    if (config.get ("color", true) || config.get (std::string ("_forcecolor"), false))
+      std::cout << colorizeFootnote (*f) << std::endl;
+    else
+      std::cout << *f << std::endl;
 
   return 0;
 }

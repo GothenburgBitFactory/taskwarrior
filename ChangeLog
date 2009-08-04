@@ -13,6 +13,8 @@
  + Fixed bug that allowed a recurring task to be added without a due date.
  + Fixed bug #243 that caused exported due dates to be quoted, which then
    confused a subsequent import (thanks to John Florian).
+ + Fixed bug #241 that caused redirected output to retain color control codes
+   for colored header and footnotes (thanks to John Florian).
 
 ------ old releases ------------------------------
 
