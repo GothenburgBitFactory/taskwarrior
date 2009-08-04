@@ -362,7 +362,9 @@ void Context::loadCorrectConfigFile ()
       confirm ("A configuration file could not be found in " // TODO i18n
              + home
              + "\n\n"
-             + "Would you like a sample .taskrc created, so task can proceed?"))
+             + "Would you like a sample "
+             + rc
+             + " created, so task can proceed?"))
   {
     config.createDefaultRC (rc, data);
   }

@@ -5,7 +5,9 @@
  + Fixed bug #231 that broke the build on OpenBSD 32-bit due to a time_t
    and int collision (thanks to Pietro Cerutti).
  + Fixed bug #241 that prevented bash's tab-completion of projects in Fedora 
-   11 and likely anything using bash-4 (John Florian)
+   11 and likely anything using bash-4 (thanks to John Florian).
+ + Fixed bug that displays the wrong .taskrc file name on override (thanks to
+   Federico Hernandez).
 
 ------ old releases ------------------------------
 
