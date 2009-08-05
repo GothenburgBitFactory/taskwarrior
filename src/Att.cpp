@@ -711,8 +711,11 @@ void Att::encode (std::string& value) const
   while ((i = value.find ('\t')) != std::string::npos)
     value.replace (i, 1, "&tab;"); // no i18n
 
+  while ((i = value.find ('\'')) != std::string::npos)
+    value.replace (i, 1, "&squot;"); // no i18n
+
   while ((i = value.find ('"')) != std::string::npos)
-    value.replace (i, 1, "&quot;"); // no i18n
+    value.replace (i, 1, "&dquot;"); // no i18n
 
   while ((i = value.find (',')) != std::string::npos)
     value.replace (i, 1, "&comma;"); // no i18n
@@ -730,7 +733,8 @@ void Att::encode (std::string& value) const
 ////////////////////////////////////////////////////////////////////////////////
 // Decode values after parse.
 //   \t <- &tab;
-//   "  <- &quot;
+//   "  <- &quot; or &dquot;
+//   '  <- &squot;
 //   ,  <- &comma;
 //   [  <- &open;
 //   ]  <- &close;
@@ -741,6 +745,12 @@ void Att::decode (std::string& value) const
 
   while ((i = value.find ("&tab;")) != std::string::npos) // no i18n
     value.replace (i, 5, "\t");
+
+  while ((i = value.find ("&dquot;")) != std::string::npos) // no i18n
+    value.replace (i, 7, "\"");
+
+  while ((i = value.find ("&squot;")) != std::string::npos) // no i18n
+    value.replace (i, 7, "'");
 
   while ((i = value.find ("&quot;")) != std::string::npos) // no i18n
     value.replace (i, 6, "\"");

@@ -15,6 +15,8 @@
    confused a subsequent import (thanks to John Florian).
  + Fixed bug #241 that caused redirected output to retain color control codes
    for colored header and footnotes (thanks to John Florian).
+ + Fixed bug #248 where single and double quotes are both stored as
+   ampersand-quot-semi (thanks to John Florian).
 
 ------ old releases ------------------------------
 
