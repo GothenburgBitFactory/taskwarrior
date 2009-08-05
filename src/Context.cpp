@@ -539,7 +539,12 @@ void Context::parse (
           attribute.mod (mod);
           attribute.value (value);
 
-          parseTask[attribute.name ()] = attribute;
+          // Preserve modifier in the key, to allow multiple modifiers on the
+          // same attribute.  Bug #252.
+          if (name != "" && mod != "")
+            parseTask[name + "." + mod] = attribute;
+          else
+            parseTask[name] = attribute;
         }
 
         // *arg has the appearance of an attribute (foo:bar), but isn't
@@ -668,46 +673,46 @@ void Context::autoFilter (Task& t, Filter& f)
   foreach (att, t)
   {
     // Words are found in the description using the .has modifier.
-    if (att->first == "description" && att->second.mod () == "")
+    if (att->second.name () == "description" && att->second.mod () == "")
     {
       std::vector <std::string> words;
       split (words, att->second.value (), ' ');
       foreach (word, words)
       {
         f.push_back (Att ("description", "has", *word));
-        debug ("auto filter: " + att->first + ".has:" + *word);
+        debug ("auto filter: " + att->second.name () + ".has:" + *word);
       }
     }
 
     // Projects are matched left-most.
-    else if (att->first == "project" && att->second.mod () == "")
+    else if (att->second.name () == "project" && att->second.mod () == "")
     {
       if (att->second.value () != "")
       {
         f.push_back (Att ("project", "startswith", att->second.value ()));
-        debug ("auto filter: " + att->first + ".startswith:" + att->second.value ());
+        debug ("auto filter: " + att->second.name () + ".startswith:" + att->second.value ());
       }
       else
       {
         f.push_back (Att ("project", "is", att->second.value ()));
-        debug ("auto filter: " + att->first + ".is:" + att->second.value ());
+        debug ("auto filter: " + att->second.name () + ".is:" + att->second.value ());
       }
     }
 
     // The limit attribute does not participate in filtering, and needs to be
     // specifically handled in handleCustomReport.
-    else if (att->first == "limit")
+    else if (att->second.name () == "limit")
     {
     }
 
     // Every task has a unique uuid by default, and it shouldn't be included,
     // because it is guaranteed to not match.
-    else if (att->first == "uuid")
+    else if (att->second.name () == "uuid")
     {
     }
 
     // The mechanism for filtering on tags is +/-<tag>.
-    else if (att->first == "tags")
+    else if (att->second.name () == "tags")
     {
     }
 
@@ -716,7 +721,7 @@ void Context::autoFilter (Task& t, Filter& f)
     {
       f.push_back (att->second);
       debug ("auto filter: " +
-             att->first +
+             att->second.name () +
              (att->second.mod () != "" ?
                ("." + att->second.mod () + ":") :
                ":") +

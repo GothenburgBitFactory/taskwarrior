@@ -42,7 +42,7 @@ if (open my $fh, '>', 'custom.rc')
   ok (-r 'custom.rc', 'Created custom.rc');
 }
 
-# Generate the usage screen, and locate the custom report on it.
+# Add a recurring and non-recurring task, look for the indicator.
 qx{../task rc:custom.rc add foo due:tomorrow recur:weekly};
 qx{../task rc:custom.rc add bar};
 my $output = qx{../task rc:custom.rc foo 2>&1};

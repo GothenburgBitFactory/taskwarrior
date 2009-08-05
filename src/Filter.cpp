@@ -70,7 +70,7 @@ bool Filter::pass (const Record& record) const
         return false;
     }
 
-    // Annotations are skipped.
+    // Annotations are skipped, because they are handled above.
     else if (att->name ().length () > 11 &&
              att->name ().substr (0, 11) == "annotation_")
     {

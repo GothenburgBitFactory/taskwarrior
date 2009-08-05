@@ -67,8 +67,8 @@ bool Task::operator== (const Task& other)
     return false;
 
   foreach (att, *this)
-    if (att->first != "uuid")
-      if (att->second.value () != other.get (att->first))
+    if (att->second.name () != "uuid")
+      if (att->second.value () != other.get (att->second.name ()))
         return false;
 
   return true;

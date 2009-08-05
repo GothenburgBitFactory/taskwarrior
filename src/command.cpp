@@ -103,7 +103,6 @@ std::string handleAdd ()
   // All this, just for an id number.
   std::vector <Task> all;
   Filter none;
-  handleRecurrence ();
   context.tdb.loadPending (all, none);
   out << "Created task " << context.tdb.nextId () << std::endl;
 #endif
@@ -123,7 +122,6 @@ std::string handleProjects ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
   int quantity = context.tdb.loadPending (tasks, context.filter);
   context.tdb.commit ();
   context.tdb.unlock ();
@@ -209,7 +207,6 @@ std::string handleCompletionProjects ()
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
 
   Filter filter;
   if (context.config.get (std::string ("complete.all.projects"), false))
@@ -243,7 +240,6 @@ std::string handleTags ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
   int quantity = context.tdb.loadPending (tasks, context.filter);
   context.tdb.commit ();
   context.tdb.unlock ();
@@ -306,7 +302,6 @@ std::string handleCompletionTags ()
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
 
   Filter filter;
   if (context.config.get (std::string ("complete.all.tags"), false))
@@ -369,7 +364,6 @@ std::string handleCompletionIDs ()
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
   Filter filter;
   context.tdb.loadPending (tasks, filter);
   context.tdb.commit ();
@@ -565,7 +559,6 @@ std::string handleDelete ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -665,7 +658,6 @@ std::string handleStart ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -717,7 +709,6 @@ std::string handleStop ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -764,7 +755,6 @@ std::string handleDone ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -895,7 +885,6 @@ std::string handleModify ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -973,7 +962,6 @@ std::string handleAppend ()
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
-  handleRecurrence ();
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -1369,12 +1357,12 @@ int deltaAttributes (Task& task)
 
   foreach (att, context.task)
   {
-    if (att->first != "uuid"        &&
-        att->first != "description" &&
-        att->first != "tags")
+    if (att->second.name () != "uuid"        &&
+        att->second.name () != "description" &&
+        att->second.name () != "tags")
     {
       // Modifying "wait" changes status.
-      if (att->first == "wait")
+      if (att->second.name () == "wait")
       {
         if (att->second.value () == "")
           task.setStatus (Task::pending);
@@ -1383,8 +1371,9 @@ int deltaAttributes (Task& task)
       }
 
       if (att->second.value () == "")
-        task.remove (att->first);
+        task.remove (att->second.name ());
       else
+        // One of the few places where the compound attribute name is used.
         task.set (att->first, att->second.value ());
 
       ++changes;

@@ -17,6 +17,9 @@
    for colored header and footnotes (thanks to John Florian).
  + Fixed bug #248 where single and double quotes are both stored as
    ampersand-quot-semi (thanks to John Florian).
+ + Fixed bug #252 that prevented use of attribute modifiers on dates to effect
+   a range, such as "task ls due.after:eom due.before:eoy" (thanks to John
+   Florian).
 
 ------ old releases ------------------------------
 
