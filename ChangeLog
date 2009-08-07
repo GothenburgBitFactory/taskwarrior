@@ -20,6 +20,8 @@
  + Fixed bug #252 that prevented use of attribute modifiers on dates to effect
    a range, such as "task ls due.after:eom due.before:eoy" (thanks to John
    Florian).
+  + Fixed bug #257 where an extant ~/.taskrc file prevented the override and
+    automatic creation of an alternate rc file (thanks to Zach Frazier).
 
 ------ old releases ------------------------------
 

@@ -339,6 +339,14 @@ void Context::loadCorrectConfigFile ()
     else if (arg->substr (0, 3) == "rc:")
     {
       rc = arg->substr (3, std::string::npos);
+
+      home = rc;
+      std::string::size_type last_slash = rc.rfind ("/");
+      if (last_slash != std::string::npos)
+        home = rc.substr (0, last_slash);
+      else
+        home = ".";
+
       args.erase (arg);
       header ("Using alternate .taskrc file " + rc); // TODO i18n
       break;
@@ -367,15 +375,19 @@ void Context::loadCorrectConfigFile ()
   }
 
   // Do we need to create a default rc?
-  if (access (rc.c_str (), F_OK) &&
-      confirm ("A configuration file could not be found in " // TODO i18n
-             + home
-             + "\n\n"
-             + "Would you like a sample "
-             + rc
-             + " created, so task can proceed?"))
+  if (access (rc.c_str (), F_OK))
   {
-    config.createDefaultRC (rc, data);
+    if (confirm ("A configuration file could not be found in " // TODO i18n
+               + home
+               + "\n\n"
+               + "Would you like a sample "
+               + rc
+               + " created, so task can proceed?"))
+    {
+      config.createDefaultRC (rc, data);
+    }
+    else
+      throw std::string ("Cannot proceed without rc file.");
   }
 
   // Create data location, if necessary.
