@@ -499,7 +499,7 @@ static void parseTask (Task& task, const std::string& after)
       std::string::size_type gap = value.find (" ");
       if (gap != std::string::npos)
       {
-        Date when (value.substr (0, gap));
+        Date when (value.substr (0, gap), context.config.get ("dateformat", "m/d/Y"));
         std::stringstream name;
         name << "annotation_" << when.toEpoch ();
         std::string text = trim (value.substr (gap, std::string::npos), "\t ");

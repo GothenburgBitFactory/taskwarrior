@@ -22,6 +22,8 @@
    Florian).
   + Fixed bug #257 where an extant ~/.taskrc file prevented the override and
     automatic creation of an alternate rc file (thanks to Zach Frazier).
+  + Fixed bug #250 whereby rc.dateformat was not observed when parsing the
+    creation date of an annotation (thanks to Federico Hernandez).
 
 ------ old releases ------------------------------
 
