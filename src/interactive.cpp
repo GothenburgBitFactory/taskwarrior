@@ -34,7 +34,7 @@
 #include "Context.h"
 //#include "text.h"
 //#include "util.h"
-//#include "main.h"
+#include "main.h"
 #include "i18n.h"
 #include "../auto.h"
 
