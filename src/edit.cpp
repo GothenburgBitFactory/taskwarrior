@@ -500,6 +500,12 @@ static void parseTask (Task& task, const std::string& after)
       if (gap != std::string::npos)
       {
         Date when (value.substr (0, gap), context.config.get ("dateformat", "m/d/Y"));
+
+        // This guarantees that if more than one annotation has the same date,
+        // that the seconds will be different, thus unique, thus not squashed.
+        // Bug #249
+        when += (const int) annotations.size ();
+
         std::stringstream name;
         name << "annotation_" << when.toEpoch ();
         std::string text = trim (value.substr (gap, std::string::npos), "\t ");
