@@ -408,6 +408,17 @@ std::string Att::type (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// The type of an attribute is useful for modifier evaluation.
+std::string Att::modType (const std::string& name) const
+{
+  if (name == "hasnt" ||
+      name == "isnt")
+    return "negative";
+
+  return "positive";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //
 // start --> name --> . --> mod --> : --> " --> value --> " --> end
 //            |                     ^
@@ -461,7 +472,7 @@ void Att::parse (Nibbler& n)
   else
     throw std::string ("Missing : after attribute name"); // TODO i18n
 
-/* TODO This might be too slow to include.  Test.
+/* TODO This might be too slow to include.  Test this assumption.
   validNameValue (mName, mMod, mValue);
 */
 }

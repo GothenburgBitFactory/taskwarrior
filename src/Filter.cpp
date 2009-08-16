@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <sstream>
 #include "Filter.h"
 #include "util.h"
@@ -40,34 +41,33 @@ bool Filter::pass (const Record& record) const
   // First do description/annotation matches.
   foreach (att, (*this))
   {
-    // Descriptions have special handling.
+    // Descriptions have special handling such that they are linked to
+    // annotations, and filtering on description implies identical filtering
+    // on annotations, and that both filter matches must succeed for the filter
+    // to succeed overall.
     if (att->name () == "description")
     {
+      bool description_result = true;
+      bool annotation_result = true;
+
       if ((r = record.find (att->name ())) != record.end ())
       {
-        // A description match failure can be salvaged by an annotation match.
-        if (! att->match (r->second))
-        {
-          bool annoMatch = false;
-          foreach (ra, record)
-          {
-            if (ra->first.length () > 11 &&
-                ra->first.substr (0, 11) == "annotation_")
-            {
-              if (att->match (ra->second))
-              {
-                annoMatch = true;
-                break;
-              }
-            }
-          }
+        description_result = att->match (r->second);
 
-          if (!annoMatch)
-            return false;
+        foreach (ra, record)
+        {
+          if (ra->first.length () > 11 &&
+              ra->first.substr (0, 11) == "annotation_")
+            annotation_result = annotation_result && att->match (ra->second);
         }
       }
       else if (! att->match (Att ()))
         return false;
+
+      if (att->modType (att->mod ()) == "positive")
+        return description_result && annotation_result;
+
+      return description_result || annotation_result;
     }
 
     // Annotations are skipped, because they are handled above.
