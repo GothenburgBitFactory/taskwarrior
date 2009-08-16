@@ -317,6 +317,18 @@ std::string Context::canonicalize (const std::string& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Context::disallowModification () const
+{
+  if (task.size ()         ||
+      subst.mFrom != ""    ||
+      tagAdditions.size () ||
+      tagRemovals.size ())
+    throw std::string ("The '")
+        + cmd.command
+        + "' command does not allow further modification of a task.";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Context::loadCorrectConfigFile ()
 {
   // Set up default locations.

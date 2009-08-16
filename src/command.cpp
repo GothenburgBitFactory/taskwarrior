@@ -387,6 +387,8 @@ std::string handleCompletionIDs ()
 ////////////////////////////////////////////////////////////////////////////////
 void handleUndo ()
 {
+  context.disallowModification ();
+
   context.tdb.lock (context.config.get ("locking", true));
   context.tdb.undo ();
   context.tdb.unlock ();
@@ -557,6 +559,8 @@ std::string handleDelete ()
 {
   std::stringstream out;
 
+  context.disallowModification ();
+
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   Filter filter;
@@ -656,6 +660,8 @@ std::string handleStart ()
 {
   std::stringstream out;
 
+  context.disallowModification ();
+
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
   Filter filter;
@@ -706,6 +712,8 @@ std::string handleStart ()
 std::string handleStop ()
 {
   std::stringstream out;
+
+  context.disallowModification ();
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));

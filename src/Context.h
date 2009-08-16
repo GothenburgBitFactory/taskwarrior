@@ -65,6 +65,7 @@ public:
   void clear ();
 
   std::string canonicalize (const std::string&) const;
+  void disallowModification () const;
 
 private:
   void loadCorrectConfigFile ();

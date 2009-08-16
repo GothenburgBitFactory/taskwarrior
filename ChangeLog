@@ -24,6 +24,9 @@
     automatic creation of an alternate rc file (thanks to Zach Frazier).
   + Fixed bug #250 whereby rc.dateformat was not observed when parsing the
     creation date of an annotation (thanks to Federico Hernandez).
+  + Fixed bug #260 whereby the start, stop and delete commands did not complain
+    when filter arguments were specified, even though they were ignored
+    (thanks to Charles T. Yun).
 
 ------ old releases ------------------------------
 
