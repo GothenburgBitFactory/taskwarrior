@@ -111,52 +111,25 @@ unlike ($output, qr/six/,   'g6');
 unlike ($output, qr/seven/, 'g7');
 
 $output = qx{../task rc:filter.rc list -tag};
-unlike ($output, qr/one/,   'g1');
-like   ($output, qr/two/,   'g2');
-like   ($output, qr/three/, 'g3');
-like   ($output, qr/four/,  'g4');
-unlike ($output, qr/five/,  'g5');
-like   ($output, qr/six/,   'g6');
-like   ($output, qr/seven/, 'g7');
+unlike ($output, qr/one/,   'h1');
+like   ($output, qr/two/,   'h2');
+like   ($output, qr/three/, 'h3');
+like   ($output, qr/four/,  'h4');
+unlike ($output, qr/five/,  'h5');
+like   ($output, qr/six/,   'h6');
+like   ($output, qr/seven/, 'h7');
 
 $output = qx{../task rc:filter.rc list -missing};
-like   ($output, qr/one/,   'g1');
-like   ($output, qr/two/,   'g2');
-like   ($output, qr/three/, 'g3');
-like   ($output, qr/four/,  'g4');
-like   ($output, qr/five/,  'g5');
-like   ($output, qr/six/,   'g6');
-like   ($output, qr/seven/, 'g7');
+like   ($output, qr/one/,   'i1');
+like   ($output, qr/two/,   'i2');
+like   ($output, qr/three/, 'i3');
+like   ($output, qr/four/,  'i4');
+like   ($output, qr/five/,  'i5');
+like   ($output, qr/six/,   'i6');
+like   ($output, qr/seven/, 'i7');
 
 $output = qx{../task rc:filter.rc list +tag -tag};
-unlike ($output, qr/one/,   'g1');
-unlike ($output, qr/two/,   'g2');
-unlike ($output, qr/three/, 'g3');
-unlike ($output, qr/four/,  'g4');
-unlike ($output, qr/five/,  'g5');
-unlike ($output, qr/six/,   'g6');
-unlike ($output, qr/seven/, 'g7');
-
-$output = qx{../task rc:filter.rc list project:A priority:H};
-like   ($output, qr/one/,   'h1');
-like   ($output, qr/two/,   'h2');
-unlike ($output, qr/three/, 'h3');
-unlike ($output, qr/four/,  'h4');
-unlike ($output, qr/five/,  'h5');
-unlike ($output, qr/six/,   'h6');
-unlike ($output, qr/seven/, 'h7');
-
-$output = qx{../task rc:filter.rc list project:A priority:};
-unlike ($output, qr/one/,   'i1');
-unlike ($output, qr/two/,   'i2');
-like   ($output, qr/three/, 'i3');
-unlike ($output, qr/four/,  'i4');
-unlike ($output, qr/five/,  'i5');
-unlike ($output, qr/six/,   'i6');
-unlike ($output, qr/seven/, 'i7');
-
-$output = qx{../task rc:filter.rc list project:A foo};
-like   ($output, qr/one/,   'j1');
+unlike ($output, qr/one/,   'j1');
 unlike ($output, qr/two/,   'j2');
 unlike ($output, qr/three/, 'j3');
 unlike ($output, qr/four/,  'j4');
@@ -164,25 +137,25 @@ unlike ($output, qr/five/,  'j5');
 unlike ($output, qr/six/,   'j6');
 unlike ($output, qr/seven/, 'j7');
 
-$output = qx{../task rc:filter.rc list project:A +tag};
+$output = qx{../task rc:filter.rc list project:A priority:H};
 like   ($output, qr/one/,   'k1');
-unlike ($output, qr/two/,   'k2');
+like   ($output, qr/two/,   'k2');
 unlike ($output, qr/three/, 'k3');
 unlike ($output, qr/four/,  'k4');
 unlike ($output, qr/five/,  'k5');
 unlike ($output, qr/six/,   'k6');
 unlike ($output, qr/seven/, 'k7');
 
-$output = qx{../task rc:filter.rc list project:A priority:H foo};
-like   ($output, qr/one/,   'l1');
+$output = qx{../task rc:filter.rc list project:A priority:};
+unlike ($output, qr/one/,   'l1');
 unlike ($output, qr/two/,   'l2');
-unlike ($output, qr/three/, 'l3');
+like   ($output, qr/three/, 'l3');
 unlike ($output, qr/four/,  'l4');
 unlike ($output, qr/five/,  'l5');
 unlike ($output, qr/six/,   'l6');
 unlike ($output, qr/seven/, 'l7');
 
-$output = qx{../task rc:filter.rc list project:A priority:H +tag};
+$output = qx{../task rc:filter.rc list project:A foo};
 like   ($output, qr/one/,   'm1');
 unlike ($output, qr/two/,   'm2');
 unlike ($output, qr/three/, 'm3');
@@ -191,7 +164,7 @@ unlike ($output, qr/five/,  'm5');
 unlike ($output, qr/six/,   'm6');
 unlike ($output, qr/seven/, 'm7');
 
-$output = qx{../task rc:filter.rc list project:A priority:H foo +tag};
+$output = qx{../task rc:filter.rc list project:A +tag};
 like   ($output, qr/one/,   'n1');
 unlike ($output, qr/two/,   'n2');
 unlike ($output, qr/three/, 'n3');
@@ -200,14 +173,41 @@ unlike ($output, qr/five/,  'n5');
 unlike ($output, qr/six/,   'n6');
 unlike ($output, qr/seven/, 'n7');
 
+$output = qx{../task rc:filter.rc list project:A priority:H foo};
+like   ($output, qr/one/,   'o1');
+unlike ($output, qr/two/,   'o2');
+unlike ($output, qr/three/, 'o3');
+unlike ($output, qr/four/,  'o4');
+unlike ($output, qr/five/,  'o5');
+unlike ($output, qr/six/,   'o6');
+unlike ($output, qr/seven/, 'o7');
+
+$output = qx{../task rc:filter.rc list project:A priority:H +tag};
+like   ($output, qr/one/,   'p1');
+unlike ($output, qr/two/,   'p2');
+unlike ($output, qr/three/, 'p3');
+unlike ($output, qr/four/,  'p4');
+unlike ($output, qr/five/,  'p5');
+unlike ($output, qr/six/,   'p6');
+unlike ($output, qr/seven/, 'p7');
+
+$output = qx{../task rc:filter.rc list project:A priority:H foo +tag};
+like   ($output, qr/one/,   'q1');
+unlike ($output, qr/two/,   'q2');
+unlike ($output, qr/three/, 'q3');
+unlike ($output, qr/four/,  'q4');
+unlike ($output, qr/five/,  'q5');
+unlike ($output, qr/six/,   'q6');
+unlike ($output, qr/seven/, 'q7');
+
 $output = qx{../task rc:filter.rc list project:A priority:H foo +tag baz};
-unlike ($output, qr/one/,   'n1');
-unlike ($output, qr/two/,   'n2');
-unlike ($output, qr/three/, 'n3');
-unlike ($output, qr/four/,  'n4');
-unlike ($output, qr/five/,  'n5');
-unlike ($output, qr/six/,   'n6');
-unlike ($output, qr/seven/, 'n7');
+unlike ($output, qr/one/,   'r1');
+unlike ($output, qr/two/,   'r2');
+unlike ($output, qr/three/, 'r3');
+unlike ($output, qr/four/,  'r4');
+unlike ($output, qr/five/,  'r5');
+unlike ($output, qr/six/,   'r6');
+unlike ($output, qr/seven/, 'r7');
 
 # Cleanup.
 unlink 'pending.data';

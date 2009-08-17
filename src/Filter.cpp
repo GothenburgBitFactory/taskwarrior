@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove
 #include <sstream>
 #include "Filter.h"
 #include "util.h"
@@ -48,7 +47,8 @@ bool Filter::pass (const Record& record) const
     if (att->name () == "description")
     {
       bool description_result = true;
-      bool annotation_result = true;
+      int annotation_pass_count = 0;
+      int annotation_fail_count = 0;
 
       if ((r = record.find (att->name ())) != record.end ())
       {
@@ -58,16 +58,30 @@ bool Filter::pass (const Record& record) const
         {
           if (ra->first.length () > 11 &&
               ra->first.substr (0, 11) == "annotation_")
-            annotation_result = annotation_result && att->match (ra->second);
+          {
+            if (att->match (ra->second))
+              ++annotation_pass_count;
+            else
+              ++annotation_fail_count;
+          }
         }
       }
       else if (! att->match (Att ()))
         return false;
 
+      // This innocuous little if-else took significantly more thinking and
+      // debugging than anything else in task.  Only change this code if you
+      // are willing to invest a week understanding and testing it.
       if (att->modType (att->mod ()) == "positive")
-        return description_result && annotation_result;
-
-      return description_result || annotation_result;
+      {
+        if (! (description_result || annotation_pass_count > 0))
+          return false;
+      }
+      else
+      {
+        if (!description_result || annotation_fail_count > 0)
+          return false;
+      }
     }
 
     // Annotations are skipped, because they are handled above.

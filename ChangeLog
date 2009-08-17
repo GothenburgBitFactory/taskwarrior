@@ -27,6 +27,8 @@
   + Fixed bug #260 whereby the start, stop and delete commands did not complain
     when filter arguments were specified, even though they were ignored
     (thanks to Charles T. Yun).
+  + Fixed bug #251 whereby the presence of annotations cause the .hasnt attribute
+    modifier to not work (thanks to John Florian).
 
 ------ old releases ------------------------------
 
