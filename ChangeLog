@@ -6,29 +6,33 @@
    and int collision (thanks to Pietro Cerutti).
  + Fixed bug #241 that prevented bash's tab-completion of projects in Fedora 
    11 and likely anything using bash-4 (thanks to John Florian).
- + Fixed bug that displays the wrong .taskrc file name on override (thanks to
-   Federico Hernandez).
  + Fixed bug #242 that sometimes causes the ID echoed after a task is added
    to be incorrect (thanks to John Florian).
- + Fixed bug that allowed a recurring task to be added without a due date.
- + Fixed bug #243 that caused exported due dates to be quoted, which then
-   confused a subsequent import (thanks to John Florian).
- + Fixed bug #241 that caused redirected output to retain color control codes
-   for colored header and footnotes (thanks to John Florian).
+ + Fixed bug #245 that quoted date fields on export, that were subsequently
+   improperly parsed on import (thanks to John Florian).
  + Fixed bug #248 where single and double quotes are both stored as
    ampersand-quot-semi (thanks to John Florian).
+ + Fixed bug #249 that caused annotations with the same date to be lost after
+   a "task edit" command (thanks to Federico Hernandez).
+ + Fixed bug #250 whereby rc.dateformat was not observed when parsing the
+   creation date of an annotation (thanks to Federico Hernandez).
+ + Fixed bug #251 whereby the presence of annotations cause the .hasnt attribute
+   modifier to not work (thanks to John Florian).
  + Fixed bug #252 that prevented use of attribute modifiers on dates to effect
    a range, such as "task ls due.after:eom due.before:eoy" (thanks to John
    Florian).
-  + Fixed bug #257 where an extant ~/.taskrc file prevented the override and
-    automatic creation of an alternate rc file (thanks to Zach Frazier).
-  + Fixed bug #250 whereby rc.dateformat was not observed when parsing the
-    creation date of an annotation (thanks to Federico Hernandez).
-  + Fixed bug #260 whereby the start, stop and delete commands did not complain
-    when filter arguments were specified, even though they were ignored
-    (thanks to Charles T. Yun).
-  + Fixed bug #251 whereby the presence of annotations cause the .hasnt attribute
-    modifier to not work (thanks to John Florian).
+ + Fixed bug #256 that allowed a recurring task with no due date.
+ + Fixed bug #257 where an extant ~/.taskrc file prevented the override and
+   automatic creation of an alternate rc file (thanks to Zach Frazier).
+ + Fixed bug #259 that cause a build failure on Snow Leopard 10a432.
+ + Fixed bug #260 whereby the start, stop and delete commands did not complain
+   when filter arguments were specified, even though they were ignored
+   (thanks to T. Charles Yun).
+ + Fixed bug that allowed a recurring task to be added without a due date.
+ + Fixed bug that displays the wrong .taskrc file name on override (thanks to
+   Federico Hernandez).
+ + Fixed bug that failed to suppress color control code in the header and footnote
+   when redirecting output to a file (thanks to John Florian).
 
 ------ old releases ------------------------------
 
