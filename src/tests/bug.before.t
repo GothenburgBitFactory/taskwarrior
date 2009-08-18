@@ -43,10 +43,10 @@ if (open my $fh, '>', 'before.rc')
 # Create some exampel data directly.
 if (open my $fh, '>', 'pending.data')
 {
-  # 1230000000 = 12/22/2008
+  # 1229947200 = 12/22/2008
   # 1240000000 = 4/17/2009
   print $fh <<EOF;
-[description:"foo" entry:"1230000000" start:"1230000000" status:"pending" uuid:"27097693-91c2-4cbe-ba89-ddcc87e5582c"]
+[description:"foo" entry:"1229947200" start:"1229947200" status:"pending" uuid:"27097693-91c2-4cbe-ba89-ddcc87e5582c"]
 [description:"bar" entry:"1240000000" start:"1240000000" status:"pending" uuid:"08f72d91-964c-424b-8fd5-556434648b6b"]
 EOF
 
