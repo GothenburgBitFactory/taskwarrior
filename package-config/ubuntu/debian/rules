@@ -31,8 +31,9 @@ binary-arch: install
 	dh_installchangelogs
 	dh_installdocs 
 	dh_installman
-	install -D -m644 task_completion.sh $(CURDIR)/debian/task/etc/bash_completion.d/task
-	rm -rf $(CURDIR)/debian/task/usr/share/doc/task-1.7.1 
+	dh_installexamples
+	install -D -m644 scripts/bash/task_completion.sh $(CURDIR)/debian/task/etc/bash_completion.d/task
+	rm -rf $(CURDIR)/debian/task/usr/share/doc/task-1.8.1
 	dh_strip
 	dh_compress
 	dh_fixperms

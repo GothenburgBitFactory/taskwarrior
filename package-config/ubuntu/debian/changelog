@@ -1,8 +1,32 @@
+task (1.8.1-0ubuntu1) jaunty; urgency=low
+
+  * Initial deb package for task bugfix release 1.8.1 
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Thu, 20 Aug 2009 20:26:33 +0200
+
 task (1.8.0-0ubuntu1) jaunty; urgency=low
 
   * Initial deb package for task release 1.8.0 
 
- -- Federico Hernandez <ultrafredde@gmail.com>  Thu, 11 Jun 2009 23:02:28 +0200
+ -- Federico Hernandez <ultrafredde@gmail.com>  Tue, 21 Jul 2009 15:26:33 +0200
+
+task (1.8.0-0ubuntu1~beta3) jaunty; urgency=low
+
+  * Initial deb package for task beta release 1.8.0.beta3 
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Mon, 13 Jul 2009 15:09:38 +0200
+
+task (1.8.0-0ubuntu1~beta2) jaunty; urgency=low
+
+  * Initial deb package for task beta release 1.8.0.beta2 
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Wed, 08 Jul 2009 15:40:50 +0200
+
+task (1.8.0-0ubuntu1~beta1) jaunty; urgency=low
+
+  * Initial deb package for task beta release 1.8.0.beta1 
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Tue, 07 Jul 2009 01:35:28 +0200
 
 task (1.7.1-0ubuntu1) jaunty; urgency=low
 

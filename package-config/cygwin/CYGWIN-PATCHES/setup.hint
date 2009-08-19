@@ -1,4 +1,4 @@
-# setup.hint for task 1.7.1-1
+# setup.hint for task 1.8.1-1
 category: Utils
 requires: libncurses9 cygwin 
 sdesc: A command-line to do list manager

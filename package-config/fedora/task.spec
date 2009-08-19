@@ -1,6 +1,6 @@
 Name:           task
-Version:        1.8.0
-Release:        0%{?dist}
+Version:        1.8.1
+Release:        1%{?dist}
 Summary:        A command-line to do list manager
 
 Group:          Applications/Productivity
@@ -40,18 +40,25 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS ChangeLog COPYING NEWS README scripts
+%doc AUTHORS ChangeLog COPYING NEWS README scripts i18n
 %{_bindir}/task
 %{_mandir}/man1/task.1.gz
 %{_mandir}/man5/taskrc.5.gz
 %{_mandir}/man5/task-tutorial.5.gz
-%{_sysconfdir}/bash_completion.d
+%config(noreplace) %{_sysconfdir}/bash_completion.d
 
 
 %changelog
-* Mon Jun 15 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.8.0-0
+* Thu Aug 20 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.8.1-1
+  Intial RPM for task bugfix release 1.8.1
+* Tue Jul 21 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.8.0-1
   Intial RPM for task release 1.8.0
-  Installs now bash_completion file
+* Mon Jul 13 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.8.0.beta3-1
+  Intial RPM for task beta release 1.8.0.beta3
+* Wed Jul 08 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.8.0.beta2-1
+  Intial RPM for task beta release 1.8.0.beta2
+* Tue Jul 07 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.8.0.beta1-1
+  Intial RPM for task beta release 1.8.0.beta1
 * Tue Jun 08 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.7.1-2
 - Fixed inclusion of manpages.
 * Tue Jun 08 2009 Federico Hernandez <ultrafredde@gmail.com> - 1.7.1-1

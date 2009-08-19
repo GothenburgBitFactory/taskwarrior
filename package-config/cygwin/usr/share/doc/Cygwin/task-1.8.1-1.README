@@ -1,4 +1,4 @@
-task 1.7.1-1
+task 1.8.1-1
 ------------------------------------------
 
 A command-line to do list manager that can be used
@@ -28,10 +28,10 @@ Language:
 ------------------------------------
 
 Build instructions:
-  unpack task-1.7.1-1-src.tar.bz2
+  unpack task-1.8.1-1-src.tar.bz2
     if you use setup to install this src package,
     it will be unpacked under /usr/src automatically
-  cd /usr/src/task-1.7.1-1
+  cd /usr/src/task-1.8.1-1
   ./configure --prefix=/usr
   make
   make install
@@ -42,4 +42,4 @@ task was packaged for cygwin by
 Federico Hernandez <ultrafredde@gmail.com> and
 is licensed under the GPL
 
----- task-1.7.1-1 -- 2009-06-17 ----
+---- task-1.8.1-1 -- 2009-08-20 ----

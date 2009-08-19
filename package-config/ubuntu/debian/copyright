@@ -1,6 +1,6 @@
 This package was debianized by:
 
-    Federico Hernandez <ultrafredde@gmail.com> on Thu, 11 Jun 2009 23:02:28 +0200
+    Federico Hernandez <ultrafredde@gmail.com> on  Thu, 20 Aug 2009 20:26:33 +0200
 
 It was downloaded from:
 
@@ -9,6 +9,9 @@ It was downloaded from:
 Upstream Authors:
 
     Paul Beckingham <paul@beckingham.net>
+    Federico Hernandez
+    David J Patrick
+    John Florian
     Damian Glenny
     Andy Lester
     H. İbrahim Güngör
@@ -17,18 +20,18 @@ Upstream Authors:
     Benjamin Tegarden
     Chris Pride
     Richard Querin
-    Federico Hernandez
     T. Charles Yun
-    David J Patrick
     P.C. Shyamshankar
     Johan Friis
     Steven de Brouwer
+    Pietro Cerutti
 
 Copyright:
 
     Copyright 2006 - 2009, Paul Beckingham
     Copyright 2009 Federico Hernandez
     Copyright 2009 P.C. Shyamshankar
+    Copyright 2009 John Florian
 
 License:
 
