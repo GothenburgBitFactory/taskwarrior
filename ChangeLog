@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.8.1
+1.8.1 (8/20/2009)
  + Fixed bug #231 that broke the build on OpenBSD 32-bit due to a time_t
    and int collision (thanks to Pietro Cerutti).
  + Fixed bug #241 that prevented bash's tab-completion of projects in Fedora 
