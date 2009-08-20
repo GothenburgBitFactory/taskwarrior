@@ -1,7 +1,12 @@
 
 ------ current release ---------------------------
 
-1.8.1 (8/20/2009)
+1.8.2
+
+
+------ old releases ------------------------------
+
+1.8.1 (8/20/2009) 35792e7874d2bb664abb1a0a67960b7fe7e0fccf
  + Fixed bug #231 that broke the build on OpenBSD 32-bit due to a time_t
    and int collision (thanks to Pietro Cerutti).
  + Fixed bug #241 that prevented bash's tab-completion of projects in Fedora 
@@ -33,8 +38,6 @@
    Federico Hernandez).
  + Fixed bug that failed to suppress color control code in the header and footnote
    when redirecting output to a file (thanks to John Florian).
-
------- old releases ------------------------------
 
 1.8.0 (7/21/2009) 14977ef317bd004dae2f2c313e806af9f2a2140c
  + Added zsh tab completion script (thanks to P.C. Shyamshankar).
