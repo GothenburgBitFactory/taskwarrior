@@ -5,6 +5,8 @@
  + Added feature #282 that returns useful exit codes to the shell.  Now a
    script can detect whether no tasks were returned by a report (thanks to
    Pietro Cerutti).
+ + Fixed bug #287 that causes color control codes to be written to shadow
+   files (thanks to Richard Querin).
 
 ------ old releases ------------------------------
 

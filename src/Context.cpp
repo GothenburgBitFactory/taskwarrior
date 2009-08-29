@@ -255,8 +255,6 @@ void Context::shadow ()
 
     std::string oldCurses = config.get ("curses");
     std::string oldColor  = config.get ("color");
-    config.set ("curses", "off");
-    config.set ("color",  "off");
 
     clear ();
 
@@ -267,6 +265,9 @@ void Context::shadow ()
     split (args, command, ' ');
 
     initialize ();
+    config.set ("curses", "off");
+    config.set ("color",  "off");
+
     parse ();
     std::string result;
     (void)dispatch (result);
