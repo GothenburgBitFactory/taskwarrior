@@ -666,6 +666,7 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
 static std::string importTaskCmdLine (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
+  std::string unused;
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -680,7 +681,7 @@ static std::string importTaskCmdLine (const std::vector <std::string>& lines)
       context.task.clear ();
       context.cmd.command = "";
       context.parse ();
-      handleAdd ();
+      (void)handleAdd (unused);
       context.clearMessages ();
     }
 
@@ -1144,7 +1145,7 @@ static std::string importCSV (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleImport ()
+int handleImport (std::string &outs)
 {
   std::stringstream out;
 
@@ -1212,7 +1213,8 @@ std::string handleImport ()
   else
     throw std::string ("You must specify a file to import.");
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -49,7 +49,7 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAdd ()
+int handleAdd (std::string &outs)
 {
   std::stringstream out;
 
@@ -110,12 +110,14 @@ std::string handleAdd ()
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleProjects ()
+int handleProjects (std::string &outs)
 {
+  int rc = 0;
   std::stringstream out;
 
   context.filter.push_back (Att ("status", "pending"));
@@ -195,15 +197,18 @@ std::string handleProjects ()
         << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")"
         << std::endl;
   }
-  else
+  else {
     out << "No projects."
         << std::endl;
+    rc = 1;
+  }
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleCompletionProjects ()
+int handleCompletionProjects (std::string &outs)
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
@@ -228,12 +233,14 @@ std::string handleCompletionProjects ()
     if (project->first.length ())
       out << project->first << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleTags ()
+int handleTags (std::string &outs)
 {
+  int rc = 0;
   std::stringstream out;
 
   context.filter.push_back (Att ("status", "pending"));
@@ -290,15 +297,19 @@ std::string handleTags ()
         << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")"
         << std::endl;
   }
-  else
+  else {
     out << "No tags."
         << std::endl;
+    rc = 1;
+  }
 
-  return out.str ();
+  outs = out.str ();
+
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleCompletionTags ()
+int handleCompletionTags (std::string &outs)
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
@@ -328,11 +339,12 @@ std::string handleCompletionTags ()
   foreach (tag, unique)
     out << tag->first << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleCompletionCommands ()
+int handleCompletionCommands (std::string &outs)
 {
   std::vector <std::string> commands;
   context.cmd.allCommands (commands);
@@ -342,11 +354,12 @@ std::string handleCompletionCommands ()
   foreach (command, commands)
     out << *command << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleCompletionConfig ()
+int handleCompletionConfig (std::string &outs)
 {
   std::vector <std::string> configs;
   context.config.all (configs);
@@ -356,11 +369,12 @@ std::string handleCompletionConfig ()
   foreach (config, configs)
     out << *config << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleCompletionIDs ()
+int handleCompletionIDs (std::string &outs)
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
@@ -381,7 +395,8 @@ std::string handleCompletionIDs ()
   foreach (id, ids)
     out << *id << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -395,8 +410,9 @@ void handleUndo ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleVersion ()
+int handleVersion (std::string &outs)
 {
+  int rc = 0;
   std::stringstream out;
 
   // Create a table for the disclaimer.
@@ -524,7 +540,7 @@ std::string handleVersion ()
   if (unrecognized.size ())
   {
     out << "Your .taskrc file contains these unrecognized variables:"
-        << std::endl;
+         << std::endl;
 
     foreach (i, unrecognized)
       out << "  " << *i << std::endl;
@@ -535,9 +551,11 @@ std::string handleVersion ()
   // Verify installation.  This is mentioned in the documentation as the way to
   // ensure everything is properly installed.
 
-  if (all.size () == 0)
+  if (all.size () == 0) {
     out << "Configuration error: .taskrc contains no entries"
         << std::endl;
+    rc = 1;
+  }
   else
   {
     if (context.config.get ("data.location") == "")
@@ -551,12 +569,14 @@ std::string handleVersion ()
           << std::endl;
   }
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDelete ()
+int handleDelete (std::string &outs)
 {
+  int rc = 0;
   std::stringstream out;
 
   context.disallowModification ();
@@ -645,19 +665,23 @@ std::string handleDelete ()
               << std::endl;
       }
     }
-    else
+    else {
       out << "Task not deleted." << std::endl;
+      rc  = 1;
+    }
   }
 
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleStart ()
+int handleStart (std::string &outs)
 {
+  int rc = 0;
   std::stringstream out;
 
   context.disallowModification ();
@@ -699,18 +723,21 @@ std::string handleStart ()
           << task->get ("description")
           << "' already started."
           << std::endl;
+      rc = 1;
     }
   }
 
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleStop ()
+int handleStop (std::string &outs)
 {
+  int rc = 0;
   std::stringstream out;
 
   context.disallowModification ();
@@ -746,18 +773,21 @@ std::string handleStop ()
           << task->get ("description")
           << "' not started."
           << std::endl;
+      rc = 1;
     }
   }
 
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDone ()
+int handleDone (std::string &outs)
 {
+  int rc = 0;
   int count = 0;
   std::stringstream out;
 
@@ -826,6 +856,7 @@ std::string handleDone ()
           << task->get ("description")
           << "' is not pending"
           << std::endl;
+      rc = 1;
   }
 
   context.tdb.commit ();
@@ -839,11 +870,12 @@ std::string handleDone ()
         << " as done"
         << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleExport ()
+int handleExport (std::string &outs)
 {
   std::stringstream out;
 
@@ -882,11 +914,12 @@ std::string handleExport ()
     }
   }
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleModify ()
+int handleModify (std::string &outs)
 {
   int count = 0;
   std::stringstream out;
@@ -959,11 +992,12 @@ std::string handleModify ()
   if (context.config.get ("echo.command", true))
     out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAppend ()
+int handleAppend (std::string &outs)
 {
   int count = 0;
   std::stringstream out;
@@ -1026,11 +1060,12 @@ std::string handleAppend ()
   if (context.config.get ("echo.command", true))
     out << "Appended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleDuplicate ()
+int handleDuplicate (std::string &outs)
 {
   std::stringstream out;
   int count = 0;
@@ -1095,7 +1130,8 @@ std::string handleDuplicate ()
   if (context.config.get ("echo.command", true))
     out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1174,8 +1210,9 @@ void handleShell ()
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleColor ()
+int handleColor (std::string &outs)
 {
+  int rc = 0;
   std::stringstream out;
   if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
   {
@@ -1257,13 +1294,15 @@ std::string handleColor ()
     out << "Color is currently turned off in your .taskrc file.  "
            "To enable color, create the entry 'color=on'."
         << std::endl;
+    rc = 1;
   }
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleAnnotate ()
+int handleAnnotate (std::string &outs)
 {
   if (!context.task.has ("description"))
     throw std::string ("Cannot apply a blank annotation.");
@@ -1307,7 +1346,8 @@ std::string handleAnnotate ()
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

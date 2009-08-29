@@ -52,7 +52,7 @@ static std::vector <std::string> customReports;
 ////////////////////////////////////////////////////////////////////////////////
 // This report will eventually become the one report that many others morph into
 // via the .taskrc file.
-std::string handleCustomReport (const std::string& report)
+int handleCustomReport (const std::string& report, std::string &outs)
 {
   // Load report configuration.
   std::string columnList = context.config.get ("report." + report + ".columns");
@@ -94,21 +94,24 @@ std::string handleCustomReport (const std::string& report)
     labelList,
     sortList,
     filterList,
-    tasks);
+    tasks,
+    outs);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // This report will eventually become the one report that many others morph into
 // via the .taskrc file.
 
-std::string runCustomReport (
+int runCustomReport (
   const std::string& report,
   const std::string& columnList,
   const std::string& labelList,
   const std::string& sortList,
   const std::string& filterList,
-  std::vector <Task>& tasks)
+  std::vector <Task>& tasks,
+  std::string &outs)
 {
+  int rc = 0;
   // Load report configuration.
   std::vector <std::string> columns;
   split (columns, columnList, ',');
@@ -547,11 +550,14 @@ std::string runCustomReport (
         << table.rowCount ()
         << (table.rowCount () == 1 ? " task" : " tasks")
         << std::endl;
-  else
+  else {
     out << "No matches."
         << std::endl;
+    rc = 1;
+  }
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

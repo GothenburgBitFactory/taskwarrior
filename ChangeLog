@@ -2,7 +2,9 @@
 ------ current release ---------------------------
 
 1.8.2
-
+ + Added feature #282 that returns useful exit codes to the shell.  Now a
+   script can detect whether no tasks were returned by a report (thanks to
+   Pietro Cerutti).
 
 ------ old releases ------------------------------
 

@@ -55,25 +55,25 @@ int getDueState (const std::string&);
 bool nag (Task&);
 
 // command.cpp
-std::string handleAdd ();
-std::string handleAppend ();
-std::string handleExport ();
-std::string handleDone ();
-std::string handleModify ();
-std::string handleProjects ();
-std::string handleCompletionProjects ();
-std::string handleTags ();
-std::string handleCompletionTags ();
-std::string handleCompletionCommands ();
-std::string handleCompletionIDs ();
-std::string handleCompletionConfig ();
-std::string handleVersion ();
-std::string handleDelete ();
-std::string handleStart ();
-std::string handleStop ();
-std::string handleColor ();
-std::string handleAnnotate ();
-std::string handleDuplicate ();
+int handleAdd (std::string &);
+int handleAppend (std::string &);
+int handleExport (std::string &);
+int handleDone (std::string &);
+int handleModify (std::string &);
+int handleProjects (std::string &);
+int handleCompletionProjects (std::string &);
+int handleTags (std::string &);
+int handleCompletionTags (std::string &);
+int handleCompletionCommands (std::string &);
+int handleCompletionIDs (std::string &);
+int handleCompletionConfig (std::string &);
+int handleVersion (std::string &);
+int handleDelete (std::string &);
+int handleStart (std::string &);
+int handleStop (std::string &);
+int handleColor (std::string &);
+int handleAnnotate (std::string &);
+int handleDuplicate (std::string &);
 void handleUndo ();
 #ifdef FEATURE_SHELL
 void handleShell ();
@@ -85,27 +85,28 @@ int deltaAttributes (Task&);
 int deltaSubstitutions (Task&);
 
 // edit.cpp
-std::string handleEdit ();
+int handleEdit (std::string &);
 
 // report.cpp
-std::string shortUsage ();
-std::string longUsage ();
-std::string handleInfo ();
-std::string handleReportSummary ();
-std::string handleReportNext ();
-std::string handleReportHistory ();
-std::string handleReportGHistory ();
-std::string handleReportCalendar ();
-std::string handleReportStats ();
-std::string handleReportTimesheet ();
+int shortUsage (std::string &);
+int longUsage (std::string &);
+int handleInfo (std::string &);
+int handleReportSummary (std::string &);
+int handleReportNext (std::string &);
+int handleReportHistory (std::string &);
+int handleReportGHistory (std::string &);
+int handleReportCalendar (std::string &);
+int handleReportStats (std::string &);
+int handleReportTimesheet (std::string &);
 std::string getFullDescription (Task&);
 std::string getDueDate (Task&);
 
 // custom.cpp
-std::string handleCustomReport (const std::string&);
-std::string runCustomReport (const std::string&, const std::string&,
-                             const std::string&, const std::string&,
-                             const std::string&, std::vector <Task>&);
+int handleCustomReport (const std::string&, std::string &);
+int runCustomReport (const std::string&, const std::string&,
+                     const std::string&, const std::string&,
+                     const std::string&, std::vector <Task>&,
+		     std::string&);
 void validReportColumns (const std::vector <std::string>&);
 void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 
@@ -118,7 +119,7 @@ std::string colorizeFootnote (const std::string&);
 std::string colorizeDebug (const std::string&);
 
 // import.cpp
-std::string handleImport ();
+int handleImport (std::string&);
 
 // list template
 ///////////////////////////////////////////////////////////////////////////////

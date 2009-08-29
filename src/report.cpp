@@ -50,7 +50,7 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string shortUsage ()
+int shortUsage (std::string &outs)
 {
   Table table;
 
@@ -209,14 +209,19 @@ std::string shortUsage ()
       << std::endl
       << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string longUsage ()
+int longUsage (std::string &outs)
 {
+  std::string shortUsageString;
   std::stringstream out;
-  out << shortUsage ()
+
+  (void)shortUsage(shortUsageString);
+
+  out << shortUsageString
       << "ID is the numeric identifier displayed by the 'task list' command. "
       << "You can specify multiple IDs for task commands, and multiple tasks "
       << "will be affected.  To specify multiple IDs make sure you use one "
@@ -276,13 +281,15 @@ std::string longUsage ()
       << "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~"                    << "\n"
       << std::endl;
 
-  return out.str ();
+  outs = out.str();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Display all information for the given task.
-std::string handleInfo ()
+int handleInfo (std::string &outs)
 {
+  int rc = 0;
   // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
@@ -497,18 +504,22 @@ std::string handleInfo ()
         << std::endl;
   }
 
-  if (! tasks.size ())
+  if (! tasks.size ()) {
     out << "No matches." << std::endl;
+    rc = 1;
+  }
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Project  Remaining  Avg Age  Complete  0%                  100%
 // A               12      13d       55%  XXXXXXXXXXXXX-----------
 // B              109   3d 12h       10%  XXX---------------------
-std::string handleReportSummary ()
+int handleReportSummary (std::string &outs)
 {
+  int rc = 0;
   // Scan the pending tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.get ("locking", true));
@@ -648,10 +659,13 @@ std::string handleReportSummary ()
         << table.rowCount ()
         << (table.rowCount () == 1 ? " project" : " projects")
         << std::endl;
-  else
+  else {
     out << "No projects." << std::endl;
+    rc = 1;
+  }
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -673,7 +687,7 @@ std::string handleReportSummary ()
 //
 // Make the "three" tasks a configurable number
 //
-std::string handleReportNext ()
+int handleReportNext (std::string &outs)
 {
   // Load report configuration.
   std::string columnList = context.config.get ("report.next.columns");
@@ -718,7 +732,8 @@ std::string handleReportNext ()
     labelList,
     sortList,
     filterList,
-    tasks);
+    tasks,
+    outs);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -744,8 +759,9 @@ time_t monthlyEpoch (const std::string& date)
   return 0;
 }
 
-std::string handleReportHistory ()
+int handleReportHistory (std::string &outs)
 {
+  int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
   std::map <time_t, int> addedGroup;      // Additions by month
   std::map <time_t, int> completedGroup;  // Completions by month
@@ -891,15 +907,19 @@ std::string handleReportHistory ()
     out << optionalBlankLine ()
         << table.render ()
         << std::endl;
-  else
+  else {
     out << "No tasks." << std::endl;
+    rc = 1;
+  }
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportGHistory ()
+int handleReportGHistory (std::string &outs)
 {
+  int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
   std::map <time_t, int> addedGroup;      // Additions by month
   std::map <time_t, int> completedGroup;  // Completions by month
@@ -1087,14 +1107,17 @@ std::string handleReportGHistory ()
     else
       out << "Legend: + added, X completed, - deleted" << std::endl;
   }
-  else
+  else {
     out << "No tasks." << std::endl;
+    rc = 1;
+  }
 
-  return out.str ();
+  outs = out.str ();
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportTimesheet ()
+int handleReportTimesheet (std::string &outs)
 {
   // Scan the pending tasks.
   std::vector <Task> tasks;
@@ -1264,7 +1287,8 @@ std::string handleReportTimesheet ()
     end   -= 7 * 86400;
   }
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1432,7 +1456,7 @@ std::string renderMonths (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportCalendar ()
+int handleReportCalendar (std::string &outs)
 {
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
@@ -1604,11 +1628,12 @@ std::string handleReportCalendar ()
         << optionalBlankLine ()
         << std::endl;
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string handleReportStats ()
+int handleReportStats (std::string &outs)
 {
   std::stringstream out;
 
@@ -1836,7 +1861,8 @@ std::string handleReportStats ()
       << table.render ()
       << optionalBlankLine ();
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

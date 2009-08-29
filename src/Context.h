@@ -50,7 +50,7 @@ public:
   void initialize ();                  // for reinitializing
   int run ();                          // task classic
   int interactive ();                  // task interactive (not implemented)
-  std::string dispatch ();             // command handler dispatch
+  int dispatch (std::string&);         // command handler dispatch
   void shadow ();                      // shadow file update
 
   int getWidth ();                     // determine terminal width

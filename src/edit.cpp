@@ -599,7 +599,7 @@ ARE_THESE_REALLY_HARMFUL:
 // Introducing the Silver Bullet.  This feature is the catch-all fixative for
 // various other ills.  This is like opening up the hood and going in with a
 // wrench.  To be used sparingly.
-std::string handleEdit ()
+int handleEdit (std::string &outs)
 {
   std::stringstream out;
 
@@ -643,7 +643,8 @@ std::string handleEdit ()
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  return out.str ();
+  outs = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
