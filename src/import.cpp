@@ -790,6 +790,8 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
       context.parse ();
       decorateTask (context.task);
 
+      context.task.set ("uuid", uuid ());
+
       if (isPending)
       {
         context.task.setStatus (Task::pending);
