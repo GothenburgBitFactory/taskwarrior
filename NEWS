@@ -16,20 +16,16 @@ New Features in task 1.8
 
 Task has been built and tested on the following configurations:
 
-  - OS X 10.5 Leopard
-  - OS X 10.4 Tiger
-  - Fedora Core 11 Leonidas
-  - Fedora Core 10 Cambridge
-  - Ubuntu 9.04 Jaunty Jackalope
-  - Ubuntu 8.10 Intrepid Ibex
-  - Ubuntu 8.04 Hardy Heron
+  - OS X 10.6 Snow Leopard and 10.5 Leopard
+  - Fedora 11 Leonidas and 10 Cambridge
+  - Ubuntu 9.04 Jaunty Jackalope and 8.10 Intrepid Ibex
   - Slackware 12.2
   - Arch Linux
-  - Solaris 10
-  - Solaris 8
+  - Gentoo Linux
+  - Solaris 10 and 8
   - OpenBSD 4.5
   - FreeBSD
-  - Cygwin 1.5.25-14
+  - Cygwin 1.5
 
 While Task has undergone testing, bugs are sure to remain.  If you encounter a
 bug, please enter a new issue at:
