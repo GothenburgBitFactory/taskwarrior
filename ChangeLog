@@ -9,6 +9,8 @@
    files (thanks to Richard Querin).
  + Fixed bug #289 which imported task from todo.sh without valid uuids
    (thanks to Ben Jackson).
+ + Fixed bug #291 which generated a false warning about an unrecognized
+   variable when enabling default.projects in .taskrc (thanks to Thomas@BIC)
 
 ------ old releases ------------------------------
 
