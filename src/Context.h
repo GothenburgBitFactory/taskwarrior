@@ -83,6 +83,7 @@ public:
   StringTable               stringtable;
   std::string               program;
   std::vector <std::string> args;
+  std::string               overrides;
   Cmd                       cmd;
   std::map <std::string, std::string> aliases;
   std::vector <std::string> tagAdditions;

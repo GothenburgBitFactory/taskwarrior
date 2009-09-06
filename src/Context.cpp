@@ -49,6 +49,7 @@ Context::Context ()
 , tdb ()
 , stringtable ()
 , program ("")
+, overrides ("")
 , cmd ()
 , inShadow (false)
 {
@@ -438,6 +439,7 @@ void Context::loadCorrectConfigFile ()
           n.getUntilEOS (value))
       {
         config.set (name, value);
+        overrides += " " + *arg;
         footnote (std::string ("Configuration override ") +  // TODO i18n
                   arg->substr (3, std::string::npos));
       }
@@ -654,12 +656,13 @@ void Context::parse (
   // then invoke the default command.
   if (parseCmd.command == "" && parseArgs.size () == 0)
   {
-    std::string defaultCommand = config.get ("default.command");
+    // Apply overrides, if any.
+    std::string defaultCommand = config.get ("default.command") + overrides;
     if (defaultCommand != "")
     {
       // Stuff the command line.
-      parseArgs.clear ();
-      split (parseArgs, defaultCommand, ' ');
+      args.clear ();
+      split (args, defaultCommand, ' ');
       header ("[task " + defaultCommand + "]");
 
       // Reinitialize the context and recurse.
