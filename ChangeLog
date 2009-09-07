@@ -1,6 +1,10 @@
 
 ------ current release ---------------------------
 
+1.9.0 ()
+
+------ old releases ------------------------------
+
 1.8.2 (9/7/2009) f243f0ed443ecd7dde779de8a6525222591024db
  + Added feature #282 that returns useful exit codes to the shell.  Now a
    script can detect whether no tasks were returned by a report (thanks to
@@ -13,8 +17,6 @@
    variable when enabling default.projects in .taskrc (thanks to Thomas@BIC).
  + Fixed bug #288 which failed to propagate rc file overrides on the command
    line to the default command (thanks to Zach Frazier).
-
------- old releases ------------------------------
 
 1.8.1 (8/20/2009) 35792e7874d2bb664abb1a0a67960b7fe7e0fccf
  + Fixed bug #231 that broke the build on OpenBSD 32-bit due to a time_t
