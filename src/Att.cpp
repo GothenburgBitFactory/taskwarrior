@@ -319,8 +319,8 @@ bool Att::validNameValue (
 
   else if (name == "fg" || name == "bg")
   {
-    if (value != "")
-      Text::guessColor (value);
+    // TODO Determine whether color abbreviations are supported, and if so,
+    //      modify 'value' here accordingly.
   }
 
   else if (name == "due"   ||

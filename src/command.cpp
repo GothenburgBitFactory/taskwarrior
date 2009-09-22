@@ -476,14 +476,16 @@ int handleVersion (std::string &outs)
     }
   }
 
+  Color bold ("bold");
+
   out << "Copyright (C) 2006 - 2009, P. Beckingham."
       << std::endl
       << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
-           ? Text::colorize (Text::bold, Text::nocolor, PACKAGE)
+           ? bold.colorize (PACKAGE)
            : PACKAGE)
       << " "
       << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
-           ? Text::colorize (Text::bold, Text::nocolor, VERSION)
+           ? bold.colorize (VERSION)
            : VERSION)
       << std::endl
       << disclaimer.render ()
@@ -1139,8 +1141,9 @@ int handleDuplicate (std::string &outs)
 void handleShell ()
 {
   // Display some kind of welcome message.
+  Color bold (Color::nocolor, Color::nocolor, false, true, false);
   std::cout << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
-                 ? Text::colorize (Text::bold, Text::nocolor, PACKAGE_STRING)
+                 ? bold.colorize (PACKAGE_STRING)
                  : PACKAGE_STRING)
             << " shell"
             << std::endl
@@ -1216,77 +1219,8 @@ int handleColor (std::string &outs)
   std::stringstream out;
   if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
   {
-    out << optionalBlankLine () << "Foreground" << std::endl
-        << "           "
-                << Text::colorize (Text::bold,                   Text::nocolor, "bold")                   << "          "
-                << Text::colorize (Text::underline,              Text::nocolor, "underline")              << "          "
-                << Text::colorize (Text::bold_underline,         Text::nocolor, "bold_underline")         << std::endl
-
-        << "  " << Text::colorize (Text::black,                  Text::nocolor, "black")                  << "    "
-                << Text::colorize (Text::bold_black,             Text::nocolor, "bold_black")             << "    "
-                << Text::colorize (Text::underline_black,        Text::nocolor, "underline_black")        << "    "
-                << Text::colorize (Text::bold_underline_black,   Text::nocolor, "bold_underline_black")   << std::endl
-
-        << "  " << Text::colorize (Text::red,                    Text::nocolor, "red")                    << "      "
-                << Text::colorize (Text::bold_red,               Text::nocolor, "bold_red")               << "      "
-                << Text::colorize (Text::underline_red,          Text::nocolor, "underline_red")          << "      "
-                << Text::colorize (Text::bold_underline_red,     Text::nocolor, "bold_underline_red")     << std::endl
-
-        << "  " << Text::colorize (Text::green,                  Text::nocolor, "green")                  << "    "
-                << Text::colorize (Text::bold_green,             Text::nocolor, "bold_green")             << "    "
-                << Text::colorize (Text::underline_green,        Text::nocolor, "underline_green")        << "    "
-                << Text::colorize (Text::bold_underline_green,   Text::nocolor, "bold_underline_green")   << std::endl
-
-        << "  " << Text::colorize (Text::yellow,                 Text::nocolor, "yellow")                 << "   "
-                << Text::colorize (Text::bold_yellow,            Text::nocolor, "bold_yellow")            << "   "
-                << Text::colorize (Text::underline_yellow,       Text::nocolor, "underline_yellow")       << "   "
-                << Text::colorize (Text::bold_underline_yellow,  Text::nocolor, "bold_underline_yellow")  << std::endl
-
-        << "  " << Text::colorize (Text::blue,                   Text::nocolor, "blue")                   << "     "
-                << Text::colorize (Text::bold_blue,              Text::nocolor, "bold_blue")              << "     "
-                << Text::colorize (Text::underline_blue,         Text::nocolor, "underline_blue")         << "     "
-                << Text::colorize (Text::bold_underline_blue,    Text::nocolor, "bold_underline_blue")    << std::endl
-
-        << "  " << Text::colorize (Text::magenta,                Text::nocolor, "magenta")                << "  "
-                << Text::colorize (Text::bold_magenta,           Text::nocolor, "bold_magenta")           << "  "
-                << Text::colorize (Text::underline_magenta,      Text::nocolor, "underline_magenta")      << "  "
-                << Text::colorize (Text::bold_underline_magenta, Text::nocolor, "bold_underline_magenta") << std::endl
-
-        << "  " << Text::colorize (Text::cyan,                   Text::nocolor, "cyan")                   << "     "
-                << Text::colorize (Text::bold_cyan,              Text::nocolor, "bold_cyan")              << "     "
-                << Text::colorize (Text::underline_cyan,         Text::nocolor, "underline_cyan")         << "     "
-                << Text::colorize (Text::bold_underline_cyan,    Text::nocolor, "bold_underline_cyan")    << std::endl
-
-        << "  " << Text::colorize (Text::white,                  Text::nocolor, "white")                  << "    "
-                << Text::colorize (Text::bold_white,             Text::nocolor, "bold_white")             << "    "
-                << Text::colorize (Text::underline_white,        Text::nocolor, "underline_white")        << "    "
-                << Text::colorize (Text::bold_underline_white,   Text::nocolor, "bold_underline_white")   << std::endl
-
-        << std::endl << "Background" << std::endl
-        << "  " << Text::colorize (Text::nocolor, Text::on_black,          "on_black")          << "    "
-                << Text::colorize (Text::nocolor, Text::on_bright_black,   "on_bright_black")   << std::endl
-
-        << "  " << Text::colorize (Text::nocolor, Text::on_red,            "on_red")            << "      "
-                << Text::colorize (Text::nocolor, Text::on_bright_red,     "on_bright_red")     << std::endl
-
-        << "  " << Text::colorize (Text::nocolor, Text::on_green,          "on_green")          << "    "
-                << Text::colorize (Text::nocolor, Text::on_bright_green,   "on_bright_green")   << std::endl
-
-        << "  " << Text::colorize (Text::nocolor, Text::on_yellow,         "on_yellow")         << "   "
-                << Text::colorize (Text::nocolor, Text::on_bright_yellow,  "on_bright_yellow")  << std::endl
-
-        << "  " << Text::colorize (Text::nocolor, Text::on_blue,           "on_blue")           << "     "
-                << Text::colorize (Text::nocolor, Text::on_bright_blue,    "on_bright_blue")    << std::endl
-
-        << "  " << Text::colorize (Text::nocolor, Text::on_magenta,        "on_magenta")        << "  "
-                << Text::colorize (Text::nocolor, Text::on_bright_magenta, "on_bright_magenta") << std::endl
-
-        << "  " << Text::colorize (Text::nocolor, Text::on_cyan,           "on_cyan")           << "     "
-                << Text::colorize (Text::nocolor, Text::on_bright_cyan,    "on_bright_cyan")    << std::endl
-
-        << "  " << Text::colorize (Text::nocolor, Text::on_white,          "on_white")          << "    "
-                << Text::colorize (Text::nocolor, Text::on_bright_white,   "on_bright_white")   << std::endl
-
+    out
+        // TODO Add new "color" command here.
         << optionalBlankLine ();
   }
   else

@@ -61,6 +61,8 @@ public:
   std::string colorize (const std::string&);
   std::string colorize (const std::string&, const std::string&);
 
+  bool nontrivial ();
+
 private:
   int find (const std::string&);
   std::string fg ();

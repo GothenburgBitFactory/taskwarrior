@@ -70,22 +70,9 @@ Table::~Table ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::setTableColor (Text::color fg, Text::color bg)
+void Table::setTableColor (const Color& c)
 {
-  mFg["table"] = Text::colorName (fg);
-  mBg["table"] = Text::colorName (bg);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Table::setTableFg (Text::color c)
-{
-  mFg["table"] = Text::colorName (c);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Table::setTableBg (Text::color c)
-{
-  mBg["table"] = Text::colorName (c);
+  mColor["table"] = c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -126,28 +113,11 @@ int Table::addColumn (const std::string& col)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::setColumnColor (int column, Text::color fg, Text::color bg)
+void Table::setColumnColor (int column, const Color& c)
 {
   char id[12];
   sprintf (id, "col:%d", column);
-  mFg[id] = Text::colorName (fg);
-  mBg[id] = Text::colorName (bg);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Table::setColumnFg (int column, Text::color c)
-{
-  char id[12];
-  sprintf (id, "col:%d", column);
-  mFg[id] = Text::colorName (c);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Table::setColumnBg (int column, Text::color c)
-{
-  char id[12];
-  sprintf (id, "col:%d", column);
-  mBg[id] = Text::colorName (c);
+  mColor[id] = c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +125,7 @@ void Table::setColumnUnderline (int column)
 {
   char id[12];
   sprintf (id, "col:%d", column);
-  mUnderline[id] = Text::underline;
+  mUnderline[id] = Color (Color::nocolor, Color::nocolor, true, false, false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -203,28 +173,11 @@ int Table::addRow ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::setRowColor (const int row, const Text::color fg, const Text::color bg)
+void Table::setRowColor (const int row, const Color& c)
 {
   char id[12];
   sprintf (id, "row:%d", row);
-  mFg[id] = Text::colorName (fg);
-  mBg[id] = Text::colorName (bg);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Table::setRowFg (const int row, const Text::color c)
-{
-  char id[12];
-  sprintf (id, "row:%d", row);
-  mFg[id] = Text::colorName (c);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Table::setRowBg (const int row, const Text::color c)
-{
-  char id[12];
-  sprintf (id, "row:%d", row);
-  mBg[id] = Text::colorName (c);
+  mColor[id] = c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -336,28 +289,11 @@ void Table::addCell (const int row, const int col, const double data)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Table::setCellColor (const int row, const int col, const Text::color fg, const Text::color bg)
+void Table::setCellColor (const int row, const int col, const Color& c)
 {
   char id[24];
   sprintf (id, "cell:%d,%d", row, col);
-  mFg[id] = Text::colorName (fg);
-  mBg[id] = Text::colorName (bg);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Table::setCellFg (const int row, const int col, const Text::color c)
-{
-  char id[24];
-  sprintf (id, "cell:%d,%d", row, col);
-  mFg[id] = Text::colorName (c);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Table::setCellBg (const int row, const int col, const Text::color c)
-{
-  char id[24];
-  sprintf (id, "cell:%d,%d", row, col);
-  mBg[id] = Text::colorName (c);
+  mColor[id] = c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -371,83 +307,48 @@ std::string Table::getCell (const int row, const int col)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Text::color Table::getFg (const int row, const int col)
+Color Table::getColor (const int row, const int col)
 {
   char idCell[24];
   sprintf (idCell, "cell:%d,%d", row, col);
-  if (mFg.find (idCell) != mFg.end ())
-    return Text::colorCode (mFg[idCell]);
+  if (mColor.find (idCell) != mColor.end ())
+    return mColor[idCell];
 
   char idRow[12];
   sprintf (idRow, "row:%d", row);
-  if (mFg.find (idRow) != mFg.end ())
-    return Text::colorCode (mFg[idRow]);
+  if (mColor.find (idRow) != mColor.end ())
+    return mColor[idRow];
 
   char idCol[12];
   sprintf (idCol, "col:%d", col);
-  if (mFg.find (idCol) != mFg.end ())
-    return Text::colorCode (mFg[idCol]);
+  if (mColor.find (idCol) != mColor.end ())
+    return mColor[idCol];
 
-  if (mFg.find ("table") != mFg.end ())
-    return Text::colorCode (mFg["table"]);
+  if (mColor.find ("table") != mColor.end ())
+    return mColor["table"];
 
-  return Text::nocolor;
+  return Color ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Text::color Table::getHeaderFg (int col)
+Color Table::getHeaderColor (int col)
 {
   char idCol[12];
   sprintf (idCol,  "col:%d",          col);
 
-  return mFg.find (idCol)   != mFg.end () ? Text::colorCode (mFg[idCol])
-       : mFg.find ("table") != mFg.end () ? Text::colorCode (mFg["table"])
-       : Text::nocolor;
+  return mColor.find (idCol)   != mColor.end () ? mColor[idCol]
+       : mColor.find ("table") != mColor.end () ? mColor["table"]
+       : Color ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Text::color Table::getBg (const int row, const int col)
-{
-  char idCell[24];
-  sprintf (idCell, "cell:%d,%d", row, col);
-  if (mBg.find (idCell) != mBg.end ())
-    return Text::colorCode (mBg[idCell]);
-
-  char idRow[12];
-  sprintf (idRow, "row:%d", row);
-  if (mBg.find (idRow) != mBg.end ())
-    return Text::colorCode (mBg[idRow]);
-
-  char idCol[12];
-  sprintf (idCol, "col:%d", col);
-  if (mBg.find (idCol) != mBg.end ())
-    return Text::colorCode (mBg[idCol]);
-
-  if (mBg.find ("table") != mBg.end ())
-    return Text::colorCode (mBg["table"]);
-
-  return Text::nocolor;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Text::color Table::getHeaderBg (int col)
+Color Table::getHeaderUnderline (int col)
 {
   char idCol[12];
   sprintf (idCol,  "col:%d",          col);
 
-  return mBg.find (idCol)   != mBg.end () ? Text::colorCode (mBg[idCol])
-       : mBg.find ("table") != mBg.end () ? Text::colorCode (mBg["table"])
-       : Text::nocolor;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Text::color Table::getHeaderUnderline (int col)
-{
-  char idCol[12];
-  sprintf (idCol,  "col:%d",          col);
-
-  return mUnderline.find (idCol) != mUnderline.end () ? Text::underline
-       : Text::nocolor;
+  return mUnderline.find (idCol) != mUnderline.end () ? mUnderline[idCol]
+       : Color ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -584,10 +485,9 @@ const std::string Table::formatHeader (
 {
   assert (width > 0);
 
-  Text::color fg         = getHeaderFg (col);
-  Text::color bg         = getHeaderBg (col);
-  std::string data       = mColumns[col];
-  Text::color decoration = getHeaderUnderline (col);
+  Color c = getHeaderColor (col);
+  std::string data = mColumns[col];
+  c.blend (getHeaderUnderline (col));
 
   std::string pad      = "";
   std::string intraPad = "";
@@ -609,11 +509,7 @@ const std::string Table::formatHeader (
     for (int i = 0; i < getIntraPadding (); ++i)
       intraPad += " ";
 
-  return Text::colorize (
-           fg, bg,
-           Text::colorize (
-             decoration, Text::nocolor,
-             pad + preJust + data + postJust + pad) + intraPad);
+  return c.colorize (pad + preJust + data + postJust + pad) + intraPad;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -638,9 +534,8 @@ const std::string Table::formatHeaderDashedUnderline (
 {
   assert (width > 0);
 
-  Text::color fg         = getHeaderFg (col);
-  Text::color bg         = getHeaderBg (col);
-  Text::color decoration = getHeaderUnderline (col);
+  Color c = getHeaderColor (col);
+  c.blend (getHeaderUnderline (col));
 
   std::string data     = "";
   for (int i = 0; i < width; ++i)
@@ -659,11 +554,7 @@ const std::string Table::formatHeaderDashedUnderline (
     for (int i = 0; i < getIntraPadding (); ++i)
       intraPad += " ";
 
-  return Text::colorize (
-           fg, bg,
-           Text::colorize (
-             decoration, Text::nocolor,
-             pad + data + pad) + intraPad);
+  return c.colorize (pad + data + pad) + intraPad;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -677,8 +568,7 @@ void Table::formatCell (
 {
   assert (width > 0);
 
-  Text::color fg     = getFg (row, col);
-  Text::color bg     = getBg (row, col);
+  Color c            = getColor (row, col);
   just justification = getJustification (row, col);
   std::string data   = getCell (row, col);
 
@@ -722,8 +612,7 @@ void Table::formatCell (
         postJust += " ";
     }
 
-    lines.push_back (
-      Text::colorize (fg, bg, pad + preJust + chunks[chunk] + postJust + pad + intraPad));
+    lines.push_back (c.colorize (pad + preJust + chunks[chunk] + postJust + pad + intraPad));
   }
 
   // The blank is used to vertically pad cells that have blank lines.
@@ -731,7 +620,7 @@ void Table::formatCell (
   for (int i = 0; i < width; ++i)
     pad += " ";
 
-  blank = Text::colorize (fg, bg, pad + intraPad);
+  blank = c.colorize (pad + intraPad);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

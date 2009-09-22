@@ -472,6 +472,15 @@ std::string Color::colorize (const std::string& input, const std::string& spec)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Color::nontrivial ()
+{
+  if (value != (_COLOR_NOFG | _COLOR_NOBG))
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Color::find (const std::string& input)
 {
   for (unsigned int i = 0; i < NUM_COLORS; ++i)

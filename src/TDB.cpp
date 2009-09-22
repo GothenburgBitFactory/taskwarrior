@@ -582,7 +582,7 @@ void TDB::undo ()
       row = table.addRow ();
       table.addCell (row, 0, *name);
       table.addCell (row, 1, renderAttribute (*name, before.get (*name)));
-      table.setCellFg (row, 1, Text::red);
+      table.setCellColor (row, 1, Color (Color::red));
     }
 
     foreach (name, before)
@@ -599,8 +599,8 @@ void TDB::undo ()
 
         if (priorValue != currentValue)
         {
-          table.setCellFg (row, 1, Text::red);
-          table.setCellFg (row, 2, Text::green);
+          table.setCellColor (row, 1, Color (Color::red));
+          table.setCellColor (row, 2, Color (Color::green));
         }
       }
     }
@@ -610,7 +610,7 @@ void TDB::undo ()
       row = table.addRow ();
       table.addCell (row, 0, *name);
       table.addCell (row, 2, renderAttribute (*name, after.get (*name)));
-      table.setCellFg (row, 2, Text::green);
+      table.setCellColor (row, 2, Color (Color::green));
     }
   }
   else
@@ -621,7 +621,7 @@ void TDB::undo ()
       row = table.addRow ();
       table.addCell (row, 0, name->first);
       table.addCell (row, 2, renderAttribute (name->first, after.get (name->first)));
-      table.setCellFg (row, 2, Text::green);
+      table.setCellColor (row, 2, Color (Color::green));
     }
   }
 

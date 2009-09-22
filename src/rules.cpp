@@ -35,34 +35,7 @@
 
 extern Context context;
 
-static std::map <std::string, Text::color> gsFg;
-static std::map <std::string, Text::color> gsBg;
-
-////////////////////////////////////////////////////////////////////////////////
-// There are three supported variants:
-//   1) "fg"
-//   2) "bg"
-//   3) "fg bg"
-static void parseColorRule (
-  const std::string& rule,
-  Text::color& fg,
-  Text::color& bg)
-{
-  fg = Text::nocolor;
-  bg = Text::nocolor;
-
-  std::vector <std::string> words;
-  split (words, rule, ' ');
-
-  std::vector <std::string>::iterator it;
-  for (it = words.begin (); it != words.end (); ++it)
-  {
-    if (it->substr (0, 3) == "on_")
-      bg = Text::colorCode (*it);
-    else
-      fg = Text::colorCode (*it);
-  }
-}
+static std::map <std::string, Color> gsColor;
 
 ////////////////////////////////////////////////////////////////////////////////
 void initializeColorRules ()
@@ -73,131 +46,80 @@ void initializeColorRules ()
   {
     if (it->substr (0, 6) == "color.")
     {
-      Text::color fg;
-      Text::color bg;
-      parseColorRule (context.config.get (*it), fg, bg);
-      gsFg[*it] = fg;
-      gsBg[*it] = bg;
+      Color c (context.config.get (*it));
+      gsColor[*it] = c;
     }
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void autoColorize (
-  Task& task,
-  Text::color& fg,
-  Text::color& bg)
+void autoColorize (Task& task, Color& c)
 {
   // Note: fg, bg already contain colors specifically assigned via command.
   // Note: These rules form a hierarchy - the last rule is King.
 
   // Colorization of the tagged.
-  if (gsFg["color.tagged"] != Text::nocolor ||
-      gsBg["color.tagged"] != Text::nocolor)
-  {
+  if (gsColor["color.tagged"].nontrivial ())
     if (task.getTagCount ())
-    {
-      fg = gsFg["color.tagged"];
-      bg = gsBg["color.tagged"];
-    }
-  }
+      c.blend (gsColor["color.tagged"]);
 
   // Colorization of the low priority.
-  if (gsFg["color.pri.L"] != Text::nocolor ||
-      gsBg["color.pri.L"] != Text::nocolor)
-  {
+  if (gsColor["color.pri.L"].nontrivial ())
     if (task.get ("priority") == "L")
-    {
-      fg = gsFg["color.pri.L"];
-      bg = gsBg["color.pri.L"];
-    }
-  }
+      c.blend (gsColor["color.pri.L"]);
 
   // Colorization of the medium priority.
-  if (gsFg["color.pri.M"] != Text::nocolor ||
-      gsBg["color.pri.M"] != Text::nocolor)
-  {
+  if (gsColor["color.pri.M"].nontrivial ())
     if (task.get ("priority") == "M")
-    {
-      fg = gsFg["color.pri.M"];
-      bg = gsBg["color.pri.M"];
-    }
-  }
+      c.blend (gsColor["color.pri.M"]);
 
   // Colorization of the high priority.
-  if (gsFg["color.pri.H"] != Text::nocolor ||
-      gsBg["color.pri.H"] != Text::nocolor)
-  {
+  if (gsColor["color.pri.H"].nontrivial ())
     if (task.get ("priority") == "H")
-    {
-      fg = gsFg["color.pri.H"];
-      bg = gsBg["color.pri.H"];
-    }
-  }
+      c.blend (gsColor["color.pri.H"]);
 
   // Colorization of the priority-less.
-  if (gsFg["color.pri.none"] != Text::nocolor ||
-      gsBg["color.pri.none"] != Text::nocolor)
-  {
+  if (gsColor["color.pri.none"].nontrivial ())
     if (task.get ("priority") == "")
-    {
-      fg = gsFg["color.pri.none"];
-      bg = gsBg["color.pri.none"];
-    }
-  }
+      c.blend (gsColor["color.pri.none"]);
 
   // Colorization of the active.
-  if (gsFg["color.active"] != Text::nocolor ||
-      gsBg["color.active"] != Text::nocolor)
-  {
+  if (gsColor["color.active"].nontrivial ())
     if (task.has ("start"))
-    {
-      fg = gsFg["color.active"];
-      bg = gsBg["color.active"];
-    }
-  }
+      c.blend (gsColor["color.active"]);
 
   // Colorization by tag value.
-  std::map <std::string, Text::color>::iterator it;
-  for (it = gsFg.begin (); it != gsFg.end (); ++it)
+  std::map <std::string, Color>::iterator it;
+  for (it = gsColor.begin (); it != gsColor.end (); ++it)
   {
     if (it->first.substr (0, 10) == "color.tag.")
     {
       std::string value = it->first.substr (10, std::string::npos);
       if (task.hasTag (value))
-      {
-        fg = gsFg[it->first];
-        bg = gsBg[it->first];
-      }
+        c.blend (it->second);
     }
   }
 
   // Colorization by project name.
-  for (it = gsFg.begin (); it != gsFg.end (); ++it)
+  for (it = gsColor.begin (); it != gsColor.end (); ++it)
   {
     if (it->first.substr (0, 14) == "color.project.")
     {
       std::string value = it->first.substr (14, std::string::npos);
       if (task.get ("project") == value)
-      {
-        fg = gsFg[it->first];
-        bg = gsBg[it->first];
-      }
+        c.blend (it->second);
     }
   }
 
   // Colorization by keyword.
-  for (it = gsFg.begin (); it != gsFg.end (); ++it)
+  for (it = gsColor.begin (); it != gsColor.end (); ++it)
   {
     if (it->first.substr (0, 14) == "color.keyword.")
     {
       std::string value = lowerCase (it->first.substr (14, std::string::npos));
       std::string desc  = lowerCase (task.get ("description"));
       if (desc.find (value) != std::string::npos)
-      {
-        fg = gsFg[it->first];
-        bg = gsBg[it->first];
-      }
+        c.blend (it->second);
     }
   }
 
@@ -208,13 +130,11 @@ void autoColorize (
     switch (getDueState (due))
     {
     case 1: // imminent
-      fg = gsFg["color.due"];
-      bg = gsBg["color.due"];
+      c.blend (gsColor["color.due"]);
       break;
 
     case 2: // overdue
-      fg = gsFg["color.overdue"];
-      bg = gsBg["color.overdue"];
+      c.blend (gsColor["color.overdue"]);
       break;
 
     case 0: // not due at all
@@ -224,28 +144,16 @@ void autoColorize (
   }
 
   // Colorization of the recurring.
-  if (gsFg["color.recurring"] != Text::nocolor ||
-      gsBg["color.recurring"] != Text::nocolor)
-  {
+  if (gsColor["color.recurring"].nontrivial ())
     if (task.has ("recur"))
-    {
-      fg = gsFg["color.recurring"];
-      bg = gsBg["color.recurring"];
-    }
-  }
+      c.blend (gsColor["color.recurring"]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string colorizeHeader (const std::string& input)
 {
-  if (gsFg["color.header"] != Text::nocolor ||
-      gsBg["color.header"] != Text::nocolor)
-  {
-    return Text::colorize (
-           gsFg["color.header"],
-           gsBg["color.header"],
-           input);
-  }
+  if (gsColor["color.header"].nontrivial ())
+    return gsColor["color.header"].colorize (input);
 
   return input;
 }
@@ -253,14 +161,8 @@ std::string colorizeHeader (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 std::string colorizeMessage (const std::string& input)
 {
-  if (gsFg["color.message"] != Text::nocolor ||
-      gsBg["color.message"] != Text::nocolor)
-  {
-    return Text::colorize (
-           gsFg["color.message"],
-           gsBg["color.message"],
-           input);
-  }
+  if (gsColor["color.message"].nontrivial ())
+    return gsColor["color.message"].colorize (input);
 
   return input;
 }
@@ -268,14 +170,8 @@ std::string colorizeMessage (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 std::string colorizeFootnote (const std::string& input)
 {
-  if (gsFg["color.footnote"] != Text::nocolor ||
-      gsBg["color.footnote"] != Text::nocolor)
-  {
-    return Text::colorize (
-           gsFg["color.footnote"],
-           gsBg["color.footnote"],
-           input);
-  }
+  if (gsColor["color.footnote"].nontrivial ())
+    return gsColor["color.footnote"].colorize (input);
 
   return input;
 }
@@ -283,14 +179,8 @@ std::string colorizeFootnote (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 std::string colorizeDebug (const std::string& input)
 {
-  if (gsFg["color.debug"] != Text::nocolor ||
-      gsBg["color.debug"] != Text::nocolor)
-  {
-    return Text::colorize (
-           gsFg["color.debug"],
-           gsBg["color.debug"],
-           input);
-  }
+  if (gsColor["color.debug"].nontrivial ())
+    return gsColor["color.debug"].colorize (input);
 
   return input;
 }

@@ -414,9 +414,9 @@ int handleInfo (std::string &outs)
       if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
       {
         if (overdue)
-          table.setCellFg (row, 1, Text::colorCode (context.config.get ("color.overdue", "red")));
+          table.setCellColor (row, 1, Color (context.config.get ("color.overdue", "red")));
         else if (imminent)
-          table.setCellFg (row, 1, Text::colorCode (context.config.get ("color.due", "yellow")));
+          table.setCellColor (row, 1, Color (context.config.get ("color.due", "yellow")));
       }
     }
 
@@ -886,7 +886,8 @@ int handleReportHistory (std::string &outs)
 
     table.addCell (row, 5, net);
     if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) && net)
-      table.setCellFg (row, 5, net > 0 ? Text::red: Text::green);
+      table.setCellColor (row, 5, net > 0 ? Color (Color::red) :
+                                            Color (Color::green));
   }
 
   if (table.rowCount ())
@@ -895,7 +896,8 @@ int handleReportHistory (std::string &outs)
     row = table.addRow ();
 
     table.addCell (row, 1, "Average");
-    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) table.setRowFg (row, Text::bold);
+    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+      table.setRowColor (row, Color (Color::nocolor, Color::nocolor, false, true, false));
     table.addCell (row, 2, totalAdded     / (table.rowCount () - 2));
     table.addCell (row, 3, totalCompleted / (table.rowCount () - 2));
     table.addCell (row, 4, totalDeleted   / (table.rowCount () - 2));
@@ -987,6 +989,10 @@ int handleReportGHistory (std::string &outs)
   else
     table.setTableDashedUnderline ();
 
+  Color color_added     (Color::black, Color::red);
+  Color color_completed (Color::black, Color::green);
+  Color color_deleted   (Color::black, Color::yellow);
+
   // Determine the longest line, and the longest "added" line.
   int maxAddedLine = 0;
   int maxRemovedLine = 0;
@@ -1000,7 +1006,6 @@ int handleReportGHistory (std::string &outs)
   }
 
   int maxLine = maxAddedLine + maxRemovedLine;
-
   if (maxLine > 0)
   {
     unsigned int leftOffset = (widthOfBar * maxAddedLine) / maxLine;
@@ -1068,9 +1073,9 @@ int handleReportGHistory (std::string &outs)
         while (bar.length () < leftOffset - aBar.length ())
           bar += " ";
 
-        bar += Text::colorize (Text::black, Text::on_red,    aBar);
-        bar += Text::colorize (Text::black, Text::on_green,  cBar);
-        bar += Text::colorize (Text::black, Text::on_yellow, dBar);
+        bar += color_added.colorize     (aBar);
+        bar += color_completed.colorize (cBar);
+        bar += color_deleted.colorize   (dBar);
       }
       else
       {
@@ -1097,11 +1102,11 @@ int handleReportGHistory (std::string &outs)
 
     if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
       out << "Legend: "
-          << Text::colorize (Text::black, Text::on_red, "added")
+          << color_added.colorize ("added")
           << ", "
-          << Text::colorize (Text::black, Text::on_green, "completed")
+          << color_completed.colorize ("completed")
           << ", "
-          << Text::colorize (Text::black, Text::on_yellow, "deleted")
+          << color_deleted.colorize ("deleted")
           << optionalBlankLine ()
           << std::endl;
     else
@@ -1157,13 +1162,15 @@ int handleReportTimesheet (std::string &outs)
   {
     Date endString (end);
     endString -= 86400;
-    out << std::endl
-        << (color ? Text::colorize (Text::bold, Text::nocolor) : "")
-        << start.toString (context.config.get ("dateformat", "m/d/Y"))
-        << " - "
-        << endString.toString (context.config.get ("dateformat", "m/d/Y"))
-        << (color ? Text::colorize () : "")
-        << std::endl;
+
+    std::string title = start.toString (context.config.get ("dateformat", "m/d/Y"))
+                        + " - "
+                        + endString.toString (context.config.get ("dateformat", "m/d/Y"));
+
+    Color bold (Color::nocolor, Color::nocolor, false, true, false);
+    std::cout << std::endl
+              << (color ? bold.colorize (title) : title)
+              << std::endl;
 
     // Render the completed table.
     Table completed;
@@ -1207,11 +1214,9 @@ int handleReportTimesheet (std::string &outs)
 
           if (color)
           {
-            Text::color fg = Text::colorCode (task->get ("fg"));
-            Text::color bg = Text::colorCode (task->get ("bg"));
-            autoColorize (*task, fg, bg);
-            completed.setRowFg (row, fg);
-            completed.setRowBg (row, bg);
+            Color c (task->get ("fg") + " " + task->get ("bg"));
+            autoColorize (*task, c);
+            completed.setRowColor (row, c);
           }
         }
       }
@@ -1265,11 +1270,9 @@ int handleReportTimesheet (std::string &outs)
 
           if (color)
           {
-            Text::color fg = Text::colorCode (task->get ("fg"));
-            Text::color bg = Text::colorCode (task->get ("bg"));
-            autoColorize (*task, fg, bg);
-            started.setRowFg (row, fg);
-            started.setRowBg (row, bg);
+            Color c (task->get ("fg") + " " + task->get ("bg"));
+            autoColorize (*task, c);
+            started.setRowColor (row, c);
           }
         }
       }
@@ -1423,7 +1426,7 @@ std::string renderMonths (
           today.day ()   == d              &&
           today.month () == months.at (mpl)  &&
           today.year ()  == years.at (mpl))
-        table.setCellFg (row, thisCol, Text::cyan);
+        table.setCellColor (row, thisCol, Color (Color::cyan));
 
       foreach (task, all)
       {
@@ -1437,8 +1440,8 @@ std::string renderMonths (
               due.month () == months.at (mpl) &&
               due.year ()  == years.at (mpl))
           {
-            table.setCellFg (row, thisCol, Text::black);
-            table.setCellBg (row, thisCol, due < today ? Text::on_red : Text::on_yellow);
+            Color c (Color::black, (due < today ? Color::red : Color::yellow));
+            table.setCellColor (row, thisCol, c);
           }
         }
       }
@@ -1617,13 +1620,17 @@ int handleReportCalendar (std::string &outs)
     }
   }
 
+  Color color_today   (Color::cyan);
+  Color color_due     (Color::black, Color::yellow);
+  Color color_overdue (Color::black, Color::red);
+
   if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     out << "Legend: "
-        << Text::colorize (Text::cyan, Text::nocolor, "today")
+        << color_today.colorize ("today")
         << ", "
-        << Text::colorize (Text::black, Text::on_yellow, "due")
+        << color_due.colorize ("due")
         << ", "
-        << Text::colorize (Text::black, Text::on_red, "overdue")
+        << color_overdue.colorize ("overdue")
         << "."
         << optionalBlankLine ()
         << std::endl;

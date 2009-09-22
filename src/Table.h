@@ -55,18 +55,14 @@ public:
            Table (const Table&);
            Table& operator= (const Table&);
 
-           void setTableColor (Text::color, Text::color);
-           void setTableFg (Text::color);
-           void setTableBg (Text::color);
+           void setTableColor (const Color&);
            void setTablePadding (int);
            void setTableIntraPadding (int);
            void setTableWidth (int);
            void setTableDashedUnderline ();
 
            int addColumn (const std::string&);
-           void setColumnColor (int, Text::color, Text::color);
-           void setColumnFg (int, Text::color);
-           void setColumnBg (int, Text::color);
+           void setColumnColor (int, const Color&);
            void setColumnUnderline (int);
            void setColumnPadding (int, int);
            void setColumnWidth (int, int);
@@ -76,18 +72,14 @@ public:
            void sortOn (int, order);
 
            int addRow ();
-           void setRowColor (int, Text::color, Text::color);
-           void setRowFg (int, Text::color);
-           void setRowBg (int, Text::color);
+           void setRowColor (int, const Color&);
 
            void addCell (int, int, const std::string&);
            void addCell (int, int, char);
            void addCell (int, int, int);
            void addCell (int, int, float);
            void addCell (int, int, double);
-           void setCellColor (int, int, Text::color, Text::color);
-           void setCellFg (int, int, Text::color);
-           void setCellBg (int, int, Text::color);
+           void setCellColor (int, int, const Color&);
 
            void suppressWS ();
            void setDateFormat (const std::string&);
@@ -98,11 +90,9 @@ public:
 
 private:
            std::string getCell (const int, const int);
-           Text::color getFg (const int, const int);
-           Text::color getHeaderFg (const int);
-           Text::color getBg (const int, const int);
-           Text::color getHeaderBg (const int);
-           Text::color getHeaderUnderline (const int);
+           Color getColor (const int, const int);
+           Color getHeaderColor (const int);
+           Color getHeaderUnderline (const int);
            int getPadding (const int);
            int getIntraPadding ();
            void calculateColumnWidths ();
@@ -119,9 +109,8 @@ private:
   std::vector <std::string> mColumns;
   int mRows;
   int mIntraPadding;
-  std::map <std::string, std::string> mFg;
-  std::map <std::string, std::string> mBg;
-  std::map <std::string, std::string> mUnderline;
+  std::map <std::string, Color> mColor;
+  std::map <std::string, Color> mUnderline;
   bool mDashedUnderline;
 
   // Padding...

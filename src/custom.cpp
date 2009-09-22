@@ -494,6 +494,9 @@ int runCustomReport (
   }
 
   // Now auto colorize all rows.
+  Color color_due     (context.config.get ("color.due",     "yellow"));
+  Color color_overdue (context.config.get ("color.overdue", "red"));
+
   std::string due;
   bool imminent;
   bool overdue;
@@ -515,21 +518,14 @@ int runCustomReport (
 
     if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     {
-      Text::color fg = Text::colorCode (tasks[row].get ("fg"));
-      Text::color bg = Text::colorCode (tasks[row].get ("bg"));
-      autoColorize (tasks[row], fg, bg);
-      table.setRowFg (row, fg);
-      table.setRowBg (row, bg);
+      Color c (tasks[row].get ("fg") + " " + tasks[row].get ("bg"));
+      autoColorize (tasks[row], c);
+      table.setRowColor (row, c);
 
-      if (fg == Text::nocolor)
+      if (dueColumn != -1)
       {
-        if (dueColumn != -1)
-        {
-          if (overdue)
-            table.setCellFg (row, columnCount, Text::colorCode (context.config.get ("color.overdue", "red")));
-          else if (imminent)
-            table.setCellFg (row, columnCount, Text::colorCode (context.config.get ("color.due", "yellow")));
-        }
+        c.blend (overdue ? color_overdue : color_due);
+        table.setCellColor (row, columnCount, c);
       }
     }
   }
