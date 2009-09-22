@@ -29,17 +29,15 @@
 
 #include <string>
 
-
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Define how these bits are used.
-#define COLOR_256       0x00200000
-#define COLOR_NOBG      0x00100000
-#define COLOR_NOFG      0x00080000
-#define COLOR_UNDERLINE 0x00040000
-#define COLOR_BOLD      0x00020000
-#define COLOR_BRIGHT    0x00010000
-#define COLOR_BG        0x0000FF00
-#define COLOR_FG        0x000000FF
+#define _COLOR_256       0x00200000  // 256-color mode.
+#define _COLOR_NOBG      0x00100000  // No background color (all values taken).
+#define _COLOR_NOFG      0x00080000  // No foreground color (all values taken).
+#define _COLOR_UNDERLINE 0x00040000  // General underline attribute.
+#define _COLOR_BOLD      0x00020000  // 16-color bold attribute.
+#define _COLOR_BRIGHT    0x00010000  // 16-color bright background attribute.
+#define _COLOR_BG        0x0000FF00  // 8-bit background color index.
+#define _COLOR_FG        0x000000FF  // 8-bit foreground color index.
 
 class Color
 {
@@ -50,6 +48,8 @@ public:
   Color (const Color&);
   Color (unsigned int);                         // 256 | UNDERLINE | BOLD | BRIGHT | (BG << 8) | FG
   Color (const std::string&);                   // "red on bright black"
+  Color (color_id);                             // fg.
+  Color (color_id, color_id);                   // fg, bg.
   Color (color_id, color_id, bool, bool, bool); // fg, bg, underline, bold, bright
   ~Color ();
   Color& operator= (const Color&);
