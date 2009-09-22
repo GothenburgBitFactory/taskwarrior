@@ -37,7 +37,7 @@
 #include "TDB.h"
 #include "Table.h"
 #include "Timer.h"
-#include "color.h"
+#include "Color.h"
 #include "main.h"
 
 extern Context context;

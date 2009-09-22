@@ -39,7 +39,7 @@
 #include "Context.h"
 #include "Table.h"
 #include "Date.h"
-#include "color.h"
+#include "Color.h"
 #include "../auto.h"
 
 // task.cpp

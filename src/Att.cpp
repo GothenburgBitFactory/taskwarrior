@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "text.h"
-#include "color.h"
+#include "Color.h"
 #include "util.h"
 #include "Date.h"
 #include "Duration.h"

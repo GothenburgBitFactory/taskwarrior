@@ -30,8 +30,8 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <color.h>
-#include <Grid.h>
+#include "Color.h"
+#include "Grid.h"
 
 class Table
 {
