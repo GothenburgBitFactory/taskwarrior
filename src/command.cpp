@@ -1219,9 +1219,95 @@ int handleColor (std::string &outs)
   std::stringstream out;
   if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
   {
-    out
-        // TODO Add new "color" command here.
-        << optionalBlankLine ();
+    Color c0 ("white on black");
+    Color c1 ("white on red");
+    Color c2 ("white on blue");
+    Color c3 ("white on green");
+    Color c4 ("white on magenta");
+    Color c5 ("black on cyan");
+    Color c6 ("black on yellow");
+    Color c7 ("black on white");
+    out << std::endl
+        << "Basic color:"
+        << std::endl
+        << " " << c0.colorize (" black ")
+        << " " << c1.colorize (" red ")
+        << " " << c2.colorize (" blue ")
+        << " " << c3.colorize (" green ")
+        << " " << c4.colorize (" magenta ")
+        << " " << c5.colorize (" cyan ")
+        << " " << c6.colorize (" yellow ")
+        << " " << c7.colorize (" white ")
+        << std::endl
+        << std::endl;
+
+    Color text ("red on black");
+    Color bold ("bold red on black");
+    Color underline ("underline on blue");
+    Color unbright ("white on green");
+    Color bright ("white on bright green");
+    out << "Effects:"
+        << std::endl
+        << " " << text.colorize (" text ")
+        << " " << bold.colorize (" bold text ")
+        << " " << underline.colorize (" underline text ")
+        << " " << unbright.colorize (" green ")
+        << " " << bright.colorize (" bright green ")
+        << std::endl
+        << std::endl;
+
+    // 16 system colors.
+    out << "color0 - color15:" << std::endl;
+    for (int r = 0; r < 2; ++r)
+    {
+      out << "  ";
+      for (int c = 0; c < 8; ++c)
+      {
+        std::stringstream s;
+        s << "on color" << (r*8 + c);
+        Color c (s.str ());
+        out << c.colorize ("  ");
+      }
+
+      out << std::endl;
+    }
+
+    out << std::endl;
+
+    // Color cube.
+    out << "Color cube rgb000 - rgb555:" << std::endl;
+    for (int g = 0; g < 6; ++g)
+    {
+      out << "  ";
+      for (int r = 0; r < 6; ++r)
+      {
+        for (int b = 0; b < 6; ++b)
+        {
+          std::stringstream s;
+          s << "on rgb" << r << g << b;
+          Color c (s.str ());
+          out << c.colorize ("  ");
+        }
+
+        out << " ";
+      }
+
+      out << std::endl;
+    }
+
+    out << std::endl;
+
+    // Grey ramp.
+    out << "Gray ramp gray0 - gray23:" << std::endl << "  ";
+    for (int g = 0; g < 24; ++g)
+    {
+      std::stringstream s;
+      s << "on gray" << g;
+      Color c (s.str ());
+      out << c.colorize ("  ");
+    }
+
+    out << std::endl << std::endl;
   }
   else
   {
