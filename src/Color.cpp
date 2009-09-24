@@ -166,6 +166,8 @@ Color::Color (const std::string& spec)
       }
 
       value |= _COLOR_256;
+      value &= ~_COLOR_BOLD;
+      value &= ~_COLOR_BRIGHT;
     }
 
     // rgbRGB, where 0 <= R,G,B <= 5.
@@ -197,6 +199,8 @@ Color::Color (const std::string& spec)
       }
 
       value |= _COLOR_256;
+      value &= ~_COLOR_BOLD;
+      value &= ~_COLOR_BRIGHT;
     }
 
     // colorN, where 0 <= N <= 255.
@@ -218,6 +222,8 @@ Color::Color (const std::string& spec)
       }
 
       value |= _COLOR_256;
+      value &= ~_COLOR_BOLD;
+      value &= ~_COLOR_BRIGHT;
     }
     else
       throw std::string ("The color '") + *it + "' is not recognized.";
