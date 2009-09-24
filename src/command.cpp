@@ -1275,7 +1275,7 @@ int handleColor (std::string &outs)
     out << std::endl;
 
     // Color cube.
-    out << "Color cube rgb000 - rgb555:" << std::endl;
+    out << "Color cube rgb000 - rgb555 (also color16 - color231):" << std::endl;
     for (int g = 0; g < 6; ++g)
     {
       out << "  ";
@@ -1298,7 +1298,7 @@ int handleColor (std::string &outs)
     out << std::endl;
 
     // Grey ramp.
-    out << "Gray ramp gray0 - gray23:" << std::endl << "  ";
+    out << "Gray ramp gray0 - gray23 (also color232 - color255):" << std::endl << "  ";
     for (int g = 0; g < 24; ++g)
     {
       std::stringstream s;
