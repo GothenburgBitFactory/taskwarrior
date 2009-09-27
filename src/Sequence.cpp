@@ -153,7 +153,7 @@ bool Sequence::validId (const std::string& input) const
     return false;
 
   for (size_t i = 0; i < input.length (); ++i)
-    if (!::isdigit (input[i]))
+    if (!isdigit (input[i]))
       return false;
 
   return true;

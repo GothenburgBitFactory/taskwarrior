@@ -876,7 +876,7 @@ void Table::sort (std::vector <int>& order)
     if (gap > 1)
     {
       gap = (int) ((float)gap / 1.3);
-      if (gap == 10 or gap == 9)
+      if (gap == 10 || gap == 9)
         gap = 11;
     }
 
