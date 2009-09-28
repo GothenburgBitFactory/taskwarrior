@@ -42,7 +42,7 @@
 class Color
 {
 public:
-  enum color_id {nocolor = 0, black, red, blue, green, magenta, cyan, yellow, white};
+  enum color_id {nocolor = 0, black, red, green, yellow, blue, magenta, cyan, white};
 
   Color ();
   Color (const Color&);
@@ -53,9 +53,10 @@ public:
   Color (color_id, color_id, bool, bool, bool); // fg, bg, underline, bold, bright
   ~Color ();
   Color& operator= (const Color&);
-  operator std::string ();
-  operator int ();
+  operator std::string () const;
+  operator int () const;
 
+  void upgrade ();
   void blend (const Color&);
 
   std::string colorize (const std::string&);
@@ -65,8 +66,8 @@ public:
 
 private:
   int find (const std::string&);
-  std::string fg ();
-  std::string bg ();
+  std::string fg () const;
+  std::string bg () const;
 
 private:
   unsigned int value;

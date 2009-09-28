@@ -166,8 +166,6 @@ Color::Color (const std::string& spec)
       }
 
       value |= _COLOR_256;
-      value &= ~_COLOR_BOLD;
-      value &= ~_COLOR_BRIGHT;
     }
 
     // rgbRGB, where 0 <= R,G,B <= 5.
@@ -199,8 +197,6 @@ Color::Color (const std::string& spec)
       }
 
       value |= _COLOR_256;
-      value &= ~_COLOR_BOLD;
-      value &= ~_COLOR_BRIGHT;
     }
 
     // colorN, where 0 <= N <= 255.
@@ -222,8 +218,6 @@ Color::Color (const std::string& spec)
       }
 
       value |= _COLOR_256;
-      value &= ~_COLOR_BOLD;
-      value &= ~_COLOR_BRIGHT;
     }
     else
       throw std::string ("The color '") + *it + "' is not recognized.";
@@ -294,7 +288,7 @@ Color& Color::operator= (const Color& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Color::operator std::string ()
+Color::operator std::string () const
 {
   std::string description;
   if (value & _COLOR_BOLD) description += "bold";
@@ -319,85 +313,88 @@ Color::operator std::string ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Color::operator int ()
+Color::operator int () const
 {
   return (int) value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // If 'other' has styles that are compatible, merge them into this.  Colors in
-// other overwrite.
+// other take precedence.
 void Color::blend (const Color& other)
 {
-  // Matching 256-color specifications.  Merge all relevant bits.
-  if (value       & _COLOR_256 &&
-      other.value & _COLOR_256)
+  Color c (other);
+  value |= (c.value & _COLOR_UNDERLINE);    // Always inherit underline.
+
+  // 16 <-- 16.
+  if (!(value       & _COLOR_256) &&
+      !(c.value & _COLOR_256))
   {
-    if (!(other.value & _COLOR_NOBG))
+    value |= (c.value & _COLOR_BOLD);       // Inherit bold.
+    value |= (c.value & _COLOR_BRIGHT);     // Inherit bright.
+
+    if (!(c.value & _COLOR_NOFG))
     {
-      value &= ~_COLOR_BG;                      // Remove previous color.
-      value |= (other.value & _COLOR_BG);       // Apply new color.
-      value &= ~_COLOR_NOBG;                    // Now have a color.
+      value &= ~_COLOR_NOFG;                // There is now a color.
+      value &= ~_COLOR_FG;                  // Remove previous color.
+      value |= (c.value & _COLOR_FG);       // Apply other color.
     }
 
-    if (!(other.value & _COLOR_NOFG))
+    if (!(c.value & _COLOR_NOBG))
     {
-      value &= ~_COLOR_FG;                      // Remove previous color.
-      value |= (other.value & _COLOR_FG);       // Apply new color.
-      value &= ~_COLOR_NOFG;                    // Now have a color.
+      value &= ~_COLOR_NOBG;                // There is now a color.
+      value &= ~_COLOR_BG;                  // Remove previous color.
+      value |= (c.value & _COLOR_BG);       // Apply other color.
     }
+
+    return;
   }
 
-  // Matching 16-color specifications.  Merge all relevant bits.
-  else if (!(value       & _COLOR_256) &&
-           !(other.value & _COLOR_256))
+  // Upgrade either color, if necessary.
+  if (!(value & _COLOR_256)) upgrade ();
+  if (!(value & _COLOR_256)) c.upgrade ();
+
+  // 256 <-- 256.
+  if (!(c.value & _COLOR_NOFG))
   {
-    value |= (other.value & _COLOR_BOLD);       // Inherit boldness.
-    value |= (other.value & _COLOR_BRIGHT);     // Inherit brightness.
-
-    if (!(other.value & _COLOR_NOBG))
-    {
-      value &= ~_COLOR_BG;                      // Remove previous color.
-      value |= (other.value & _COLOR_BG);       // Apply new color.
-      value &= ~_COLOR_NOBG;                    // Now have a color.
-    }
-
-    if (!(other.value & _COLOR_NOFG))
-    {
-      value &= ~_COLOR_FG;                      // Remove previous color.
-      value |= (other.value & _COLOR_FG);       // Apply new color.
-      value &= ~_COLOR_NOFG;                    // Now have a color.
-    }
+    value &= ~_COLOR_NOFG;                  // There is now a color.
+    value &= ~_COLOR_FG;                    // Remove previous color.
+    value |= (c.value & _COLOR_FG);         // Apply other color.
   }
 
-  // If a 16-color is blended with a 256-color, then the 16-color is upgraded.
-  else if (!(value & _COLOR_256) &&
-           other.value & _COLOR_256)
+  if (!(c.value & _COLOR_NOBG))
   {
-    value |= _COLOR_256;                        // Upgrade to 256-color.
-    value &= ~_COLOR_BOLD;                      // Ignore boldness.
-    value &= ~_COLOR_BRIGHT;                    // Ignore brightness.
-    value &= ~_COLOR_FG;                        // Ignore original 16-color.
-    value &= ~_COLOR_BG;                        // Ignore original 16-color.
-    value |= _COLOR_NOFG;                       // No fg.
-    value |= _COLOR_NOBG;                       // No bg.
-
-    if (!(other.value & _COLOR_NOBG))
-    {
-      value &= ~_COLOR_BG;                      // Remove previous color.
-      value |= (other.value & _COLOR_BG);       // Apply new color.
-      value &= ~_COLOR_NOBG;                    // Now have a color.
-    }
-
-    if (!(other.value & _COLOR_NOFG))
-    {
-      value &= ~_COLOR_FG;                      // Remove previous color.
-      value |= (other.value & _COLOR_FG);       // Apply new color.
-      value &= ~_COLOR_NOFG;                    // Now have a color.
-    }
+    value &= ~_COLOR_NOBG;                  // There is now a color.
+    value &= ~_COLOR_BG;                    // Remove previous color.
+    value |= (c.value & _COLOR_BG);         // Apply other color.
   }
+}
 
-  value |= (other.value & _COLOR_UNDERLINE);    // Always inherit underline.
+////////////////////////////////////////////////////////////////////////////////
+void Color::upgrade ()
+{
+  if (!(value & _COLOR_256))
+  {
+    if (!(value & _COLOR_NOFG))
+    {
+      bool bold = value & _COLOR_BOLD;
+      unsigned int fg = value & _COLOR_FG;
+      value &= ~_COLOR_FG;
+      value &= ~_COLOR_BOLD;
+      value |= (bold ? fg + 7 : fg - 1);
+    }
+
+    if (!(value & _COLOR_NOBG))
+    {
+      bool bright = value & _COLOR_BRIGHT;
+      unsigned int bg = (value & _COLOR_BG) >> 8;
+      value &= ~_COLOR_BG;
+      value &= ~_COLOR_BRIGHT;
+      value |= (bright ? bg + 7 : bg - 1) << 8;
+    }
+
+    value |= _COLOR_256;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -514,7 +511,7 @@ int Color::find (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Color::fg ()
+std::string Color::fg () const
 {
   int index = value & _COLOR_FG;
 
@@ -538,7 +535,7 @@ std::string Color::fg ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Color::bg ()
+std::string Color::bg () const
 {
   int index = (value & _COLOR_BG) >> 8;
 
