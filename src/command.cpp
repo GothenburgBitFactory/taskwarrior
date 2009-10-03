@@ -500,11 +500,12 @@ int handleVersion (std::string &outs)
   std::string recognized =
     " blanklines bulk color color.active color.due color.overdue color.pri.H "
     "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
-    "color.footnote color.header color.debug confirmation curses data.location "
-    "dateformat debug default.command default.priority default.project defaultwidth "
-    "due locale displayweeknumber echo.command locking monthsperline nag next project "
-    "shadow.command shadow.file shadow.notify weekstart editor import.synonym.id "
-    "import.synonym.uuid longversion complete.all.projects complete.all.tags "
+    "color.footnote color.header color.debug color.alternate confirmation "
+    "curses data.location dateformat debug default.command default.priority "
+    "default.project defaultwidth due locale displayweeknumber echo.command "
+    "locking monthsperline nag next project shadow.command shadow.file "
+    "shadow.notify weekstart editor import.synonym.id import.synonym.uuid "
+    "longversion complete.all.projects complete.all.tags "
 #ifdef FEATURE_SHELL
     "shell.prompt "
 #endif
@@ -1222,13 +1223,13 @@ int handleColor (std::string &outs)
     Color c0 ("white on black");
     Color c1 ("white on red");
     Color c2 ("white on blue");
-    Color c3 ("white on green");
-    Color c4 ("white on magenta");
+    Color c3 ("black on green");
+    Color c4 ("black on magenta");
     Color c5 ("black on cyan");
     Color c6 ("black on yellow");
     Color c7 ("black on white");
     out << std::endl
-        << "Basic color:"
+        << "Basic colors"
         << std::endl
         << " " << c0.colorize (" black ")
         << " " << c1.colorize (" red ")
@@ -1244,9 +1245,9 @@ int handleColor (std::string &outs)
     Color text ("red on black");
     Color bold ("bold red on black");
     Color underline ("underline on blue");
-    Color unbright ("white on green");
-    Color bright ("white on bright green");
-    out << "Effects:"
+    Color unbright ("black on green");
+    Color bright ("black on bright green");
+    out << "Effects"
         << std::endl
         << " " << text.colorize (" text ")
         << " " << bold.colorize (" bold text ")
@@ -1257,7 +1258,7 @@ int handleColor (std::string &outs)
         << std::endl;
 
     // 16 system colors.
-    out << "color0 - color15:" << std::endl;
+    out << "color0 - color15" << std::endl;
     for (int r = 0; r < 2; ++r)
     {
       out << "  ";
@@ -1275,7 +1276,7 @@ int handleColor (std::string &outs)
     out << std::endl;
 
     // Color cube.
-    out << "Color cube rgb000 - rgb555 (also color16 - color231):" << std::endl;
+    out << "Color cube rgb000 - rgb555 (also color16 - color231)" << std::endl;
     for (int g = 0; g < 6; ++g)
     {
       out << "  ";
@@ -1298,7 +1299,7 @@ int handleColor (std::string &outs)
     out << std::endl;
 
     // Grey ramp.
-    out << "Gray ramp gray0 - gray23 (also color232 - color255):" << std::endl << "  ";
+    out << "Gray ramp gray0 - gray23 (also color232 - color255)" << std::endl << "  ";
     for (int g = 0; g < 24; ++g)
     {
       std::stringstream s;
