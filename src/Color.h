@@ -31,8 +31,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #define _COLOR_256       0x00200000  // 256-color mode.
-#define _COLOR_NOBG      0x00100000  // No background color (all values taken).
-#define _COLOR_NOFG      0x00080000  // No foreground color (all values taken).
+#define _COLOR_HASBG     0x00100000  // Has background color (all values taken).
+#define _COLOR_HASFG     0x00080000  // Has foreground color (all values taken).
 #define _COLOR_UNDERLINE 0x00040000  // General underline attribute.
 #define _COLOR_BOLD      0x00020000  // 16-color bold attribute.
 #define _COLOR_BRIGHT    0x00010000  // 16-color bright background attribute.

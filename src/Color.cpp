@@ -59,7 +59,7 @@ static struct
 
 ////////////////////////////////////////////////////////////////////////////////
 Color::Color ()
-: value (_COLOR_NOFG | _COLOR_NOBG)
+: value (0)
 {
 }
 
@@ -71,13 +71,13 @@ Color::Color (const Color& other)
 
 ////////////////////////////////////////////////////////////////////////////////
 Color::Color (unsigned int c)
-: value (_COLOR_NOFG | _COLOR_NOBG)
+: value (0)
 {
-  if (!(c & _COLOR_FG)) value &= ~_COLOR_FG;
-  if (!(c & _COLOR_BG)) value &= ~_COLOR_BG;
+  if (!(c & _COLOR_HASFG)) value &= ~_COLOR_FG;
+  if (!(c & _COLOR_HASBG)) value &= ~_COLOR_BG;
 
-  value = c & (_COLOR_256 | _COLOR_UNDERLINE | _COLOR_BOLD | _COLOR_BRIGHT |
-               _COLOR_BG | _COLOR_FG);
+  value = c & (_COLOR_256 | _COLOR_HASBG | _COLOR_HASFG |_COLOR_UNDERLINE |
+               _COLOR_BOLD | _COLOR_BRIGHT | _COLOR_BG | _COLOR_FG);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ Color::Color (unsigned int c)
 //   colorN 0 <= N <= 255      fg 38;5;N                    bg 48;5;N
 //   rgbRGB 0 <= R,G,B <= 5    fg 38;5;16 + R*36 + G*6 + B  bg 48;5;16 + R*36 + G*6 + B
 Color::Color (const std::string& spec)
-: value (_COLOR_NOFG | _COLOR_NOBG)
+: value (0)
 {
   // By converting underscores to spaces, we inherently support the old "on_red"
   // style of specifying background colors.
@@ -136,12 +136,12 @@ Color::Color (const std::string& spec)
     {
       if (bg)
       {
-        value &= ~_COLOR_NOBG;
+        value |= _COLOR_HASBG;
         value |= index << 8;
       }
       else
       {
-        value &= ~_COLOR_NOFG;
+        value |= _COLOR_HASFG;
         value |= index;
       }
     }
@@ -156,12 +156,12 @@ Color::Color (const std::string& spec)
 
       if (bg)
       {
-        value &= ~_COLOR_NOBG;
+        value |= _COLOR_HASBG;
         value |= (index + 232) << 8;
       }
       else
       {
-        value &= ~_COLOR_NOFG;
+        value |= _COLOR_HASFG;
         value |= index + 232;
       }
 
@@ -187,12 +187,12 @@ Color::Color (const std::string& spec)
       index = 16 + r*36 + g*6 + b;
       if (bg)
       {
-        value &= ~_COLOR_NOBG;
+        value |= _COLOR_HASBG;
         value |= index << 8;
       }
       else
       {
-        value &= ~_COLOR_NOFG;
+        value |= _COLOR_HASFG;
         value |= index;
       }
 
@@ -208,12 +208,12 @@ Color::Color (const std::string& spec)
 
       if (bg)
       {
-        value &= ~_COLOR_NOBG;
+        value |= _COLOR_HASBG;
         value |= index << 8;
       }
       else
       {
-        value &= ~_COLOR_NOFG;
+        value |= _COLOR_HASFG;
         value |= index;
       }
 
@@ -226,35 +226,35 @@ Color::Color (const std::string& spec)
 
 ////////////////////////////////////////////////////////////////////////////////
 Color::Color (color_id fg)
-: value (_COLOR_NOFG | _COLOR_NOBG)
+: value (0)
 {
   if (fg != Color::nocolor)
   {
-    value &= ~_COLOR_NOFG;
+    value |= _COLOR_HASFG;
     value |= fg;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Color::Color (color_id fg, color_id bg)
-: value (_COLOR_NOFG | _COLOR_NOBG)
+: value (0)
 {
   if (bg != Color::nocolor)
   {
-    value &= ~_COLOR_NOBG;
+    value |= _COLOR_HASFG;
     value |= (bg << 8);
   }
 
   if (fg != Color::nocolor)
   {
-    value &= ~_COLOR_NOFG;
+    value |= _COLOR_HASFG;
     value |= fg;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Color::Color (color_id fg, color_id bg, bool underline, bool bold, bool bright)
-: value (_COLOR_NOFG | _COLOR_NOBG)
+: value (0)
 {
   value |= ((underline ? 1 : 0) << 18)
         |  ((bold      ? 1 : 0) << 17)
@@ -262,13 +262,13 @@ Color::Color (color_id fg, color_id bg, bool underline, bool bold, bool bright)
 
   if (bg != Color::nocolor)
   {
-    value &= ~_COLOR_NOBG;
+    value |= _COLOR_HASBG;
     value |= (bg << 8);
   }
 
   if (fg != Color::nocolor)
   {
-    value &= ~_COLOR_NOFG;
+    value |= _COLOR_HASFG;
     value |= fg;
   }
 }
@@ -296,10 +296,10 @@ Color::operator std::string () const
   if (value & _COLOR_UNDERLINE)
     description += std::string (description.length () ? " " : "") + "underline";
 
-  if (!(value & _COLOR_NOFG))
+  if (value & _COLOR_HASFG)
     description += std::string (description.length () ? " " : "") + fg ();
 
-  if (!(value & _COLOR_NOBG))
+  if (value & _COLOR_HASBG)
   {
     description += std::string (description.length () ? " " : "") + "on";
 
@@ -333,16 +333,16 @@ void Color::blend (const Color& other)
     value |= (c.value & _COLOR_BOLD);       // Inherit bold.
     value |= (c.value & _COLOR_BRIGHT);     // Inherit bright.
 
-    if (!(c.value & _COLOR_NOFG))
+    if (c.value & _COLOR_HASFG)
     {
-      value &= ~_COLOR_NOFG;                // There is now a color.
+      value |= _COLOR_HASFG;                // There is now a color.
       value &= ~_COLOR_FG;                  // Remove previous color.
       value |= (c.value & _COLOR_FG);       // Apply other color.
     }
 
-    if (!(c.value & _COLOR_NOBG))
+    if (c.value & _COLOR_HASBG)
     {
-      value &= ~_COLOR_NOBG;                // There is now a color.
+      value |= _COLOR_HASBG;                // There is now a color.
       value &= ~_COLOR_BG;                  // Remove previous color.
       value |= (c.value & _COLOR_BG);       // Apply other color.
     }
@@ -355,16 +355,16 @@ void Color::blend (const Color& other)
   if (!(value & _COLOR_256)) c.upgrade ();
 
   // 256 <-- 256.
-  if (!(c.value & _COLOR_NOFG))
+  if (c.value & _COLOR_HASFG)
   {
-    value &= ~_COLOR_NOFG;                  // There is now a color.
+    value |= _COLOR_HASFG;                  // There is now a color.
     value &= ~_COLOR_FG;                    // Remove previous color.
     value |= (c.value & _COLOR_FG);         // Apply other color.
   }
 
-  if (!(c.value & _COLOR_NOBG))
+  if (c.value & _COLOR_HASBG)
   {
-    value &= ~_COLOR_NOBG;                  // There is now a color.
+    value |= _COLOR_HASBG;                  // There is now a color.
     value &= ~_COLOR_BG;                    // Remove previous color.
     value |= (c.value & _COLOR_BG);         // Apply other color.
   }
@@ -375,7 +375,7 @@ void Color::upgrade ()
 {
   if (!(value & _COLOR_256))
   {
-    if (!(value & _COLOR_NOFG))
+    if (value & _COLOR_HASFG)
     {
       bool bold = value & _COLOR_BOLD;
       unsigned int fg = value & _COLOR_FG;
@@ -384,7 +384,7 @@ void Color::upgrade ()
       value |= (bold ? fg + 7 : fg - 1);
     }
 
-    if (!(value & _COLOR_NOBG))
+    if (value & _COLOR_HASBG)
     {
       bool bright = value & _COLOR_BRIGHT;
       unsigned int bg = (value & _COLOR_BG) >> 8;
@@ -429,13 +429,13 @@ std::string Color::colorize (const std::string& input)
       needTerminator = true;
     }
 
-    if (!(value & _COLOR_NOFG))
+    if (value & _COLOR_HASFG)
     {
       result << "\033[38;5;" << (value & _COLOR_FG) << "m";
       needTerminator = true;
     }
 
-    if (!(value & _COLOR_NOBG))
+    if (value & _COLOR_HASBG)
     {
       result << "\033[48;5;" << ((value & _COLOR_BG) >> 8) << "m";
       needTerminator = true;
@@ -449,7 +449,7 @@ std::string Color::colorize (const std::string& input)
   }
 
   // 16 color
-  if (value != (_COLOR_NOFG | _COLOR_NOBG))
+  if (value != 0)
   {
     result << "\033[";
 
@@ -465,13 +465,13 @@ std::string Color::colorize (const std::string& input)
       result << "4";
     }
 
-    if (!(value & _COLOR_NOBG))
+    if (value & _COLOR_HASBG)
     {
       if (count++) result << ";";
       result << ((value & _COLOR_BRIGHT ? 99 : 39) + ((value & _COLOR_BG) >> 8));
     }
 
-    if (!(value & _COLOR_NOFG))
+    if (value & _COLOR_HASFG)
     {
       if (count++) result << ";";
       result << (29 + (value & _COLOR_FG));
@@ -494,10 +494,7 @@ std::string Color::colorize (const std::string& input, const std::string& spec)
 ////////////////////////////////////////////////////////////////////////////////
 bool Color::nontrivial ()
 {
-  if (value != (_COLOR_NOFG | _COLOR_NOBG))
-    return true;
-
-  return false;
+  return value != 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -517,7 +514,7 @@ std::string Color::fg () const
 
   if (value & _COLOR_256)
   {
-    if (!(value & _COLOR_NOFG))
+    if (value & _COLOR_HASFG)
     {
       std::stringstream s;
       s << "color" << (value & _COLOR_FG);
@@ -541,7 +538,7 @@ std::string Color::bg () const
 
   if (value & _COLOR_256)
   {
-    if (!(value & _COLOR_NOBG))
+    if (value & _COLOR_HASBG)
     {
       std::stringstream s;
       s << "color" << ((value & _COLOR_BG) >> 8);
