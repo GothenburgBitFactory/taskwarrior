@@ -101,7 +101,6 @@ int handleCustomReport (const std::string& report, std::string &outs)
 ////////////////////////////////////////////////////////////////////////////////
 // This report will eventually become the one report that many others morph into
 // via the .taskrc file.
-
 int runCustomReport (
   const std::string& report,
   const std::string& columnList,
@@ -529,6 +528,11 @@ int runCustomReport (
       }
     }
   }
+
+  // If an alternating row color is specified, notify the table.
+  Color alternate (context.config.get ("color.alternate", ""));
+  if (alternate.nontrivial ())
+    table.setTableAlternateColor (alternate);
 
   // Limit the number of rows according to the report definition.
   int maximum = context.config.get (std::string ("report.") + report + ".limit", (int)0);

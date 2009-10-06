@@ -56,6 +56,7 @@ public:
            Table& operator= (const Table&);
 
            void setTableColor (const Color&);
+           void setTableAlternateColor (const Color&);
            void setTablePadding (int);
            void setTableIntraPadding (int);
            void setTableWidth (int);

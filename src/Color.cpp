@@ -43,7 +43,7 @@ static struct
 } allColors[] =
 {
   // Color.h enum    i18n.h         English     Index
-  { Color::nocolor,  0,             "",         0},
+  { Color::nocolor,  0,             "none",     0},
   { Color::black,    COLOR_BLACK,   "black",    1}, // fg 29+0  bg 39+0
   { Color::red,      COLOR_RED,     "red",      2},
   { Color::green,    COLOR_GREEN,   "green",    3},
@@ -110,7 +110,7 @@ Color::Color (const std::string& spec)
   std::vector <std::string>::iterator it;
   for (it = words.begin (); it != words.end (); ++it)
   {
-    word = lowerCase (*it);
+    word = lowerCase (trim (*it));
 
     if (word == "bold")
     {
@@ -219,7 +219,7 @@ Color::Color (const std::string& spec)
 
       value |= _COLOR_256;
     }
-    else
+    else if (word != "")
       throw std::string ("The color '") + *it + "' is not recognized.";
   }
 }

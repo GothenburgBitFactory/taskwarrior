@@ -76,6 +76,12 @@ void Table::setTableColor (const Color& c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Table::setTableAlternateColor (const Color& c)
+{
+  mColor["alternate"] = c;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Table::setTablePadding (int padding)
 {
   mTablePadding = padding;
@@ -177,7 +183,7 @@ void Table::setRowColor (const int row, const Color& c)
 {
   char id[12];
   sprintf (id, "row:%d", row);
-  mColor[id] = c;
+  mColor[id].blend (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -568,7 +574,7 @@ void Table::formatCell (
 {
   assert (width > 0);
 
-  Color c            = getColor (row, col);
+  Color c = getColor (row, col);
   just justification = getJustification (row, col);
   std::string data   = getCell (row, col);
 
@@ -963,6 +969,13 @@ const std::string Table::render (int maximum /* = 0 */)
   // Only sort if necessary.
   if (mSortColumns.size ())
     sort (order);
+
+  // Now blend in the alternate row color.
+  Color alternate = mColor["alternate"];
+  if (alternate.nontrivial ())
+    for (unsigned int row = 0; row < order.size (); ++row)
+      if (row % 2)
+        setRowColor (order[row], alternate);
 
   // If a non-zero maximum is specified, then it limits the number of rows of
   // the table that are rendered.
