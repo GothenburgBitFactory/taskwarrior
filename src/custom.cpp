@@ -530,9 +530,12 @@ int runCustomReport (
   }
 
   // If an alternating row color is specified, notify the table.
-  Color alternate (context.config.get ("color.alternate", ""));
-  if (alternate.nontrivial ())
-    table.setTableAlternateColor (alternate);
+  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+  {
+    Color alternate (context.config.get ("color.alternate", ""));
+    if (alternate.nontrivial ())
+      table.setTableAlternateColor (alternate);
+  }
 
   // Limit the number of rows according to the report definition.
   int maximum = context.config.get (std::string ("report.") + report + ".limit", (int)0);
