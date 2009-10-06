@@ -886,8 +886,8 @@ int handleReportHistory (std::string &outs)
 
     table.addCell (row, 5, net);
     if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) && net)
-      table.setCellColor (row, 5, net > 0 ? Color (Color::red) :
-                                            Color (Color::green));
+      table.setCellColor (row, 5, net > 0 ? Color (Color::red, Color::nocolor, false, false, false) :
+                                            Color (Color::green, Color::nocolor, false, false, false));
   }
 
   if (table.rowCount ())
@@ -989,9 +989,9 @@ int handleReportGHistory (std::string &outs)
   else
     table.setTableDashedUnderline ();
 
-  Color color_added     (Color::black, Color::red);
-  Color color_completed (Color::black, Color::green);
-  Color color_deleted   (Color::black, Color::yellow);
+  Color color_added     (Color::black, Color::red,    false, false, false);
+  Color color_completed (Color::black, Color::green,  false, false, false);
+  Color color_deleted   (Color::black, Color::yellow, false, false, false);
 
   // Determine the longest line, and the longest "added" line.
   int maxAddedLine = 0;
@@ -1426,7 +1426,7 @@ std::string renderMonths (
           today.day ()   == d              &&
           today.month () == months.at (mpl)  &&
           today.year ()  == years.at (mpl))
-        table.setCellColor (row, thisCol, Color (Color::cyan));
+        table.setCellColor (row, thisCol, Color (Color::cyan, Color::nocolor, false, false, false));
 
       foreach (task, all)
       {
@@ -1440,7 +1440,7 @@ std::string renderMonths (
               due.month () == months.at (mpl) &&
               due.year ()  == years.at (mpl))
           {
-            Color c (Color::black, (due < today ? Color::red : Color::yellow));
+            Color c (Color::black, (due < today ? Color::red : Color::yellow), false, false, false);
             table.setCellColor (row, thisCol, c);
           }
         }
@@ -1620,9 +1620,9 @@ int handleReportCalendar (std::string &outs)
     }
   }
 
-  Color color_today   (Color::cyan);
-  Color color_due     (Color::black, Color::yellow);
-  Color color_overdue (Color::black, Color::red);
+  Color color_today   (Color::cyan,  Color::nocolor, false, false, false);
+  Color color_due     (Color::black, Color::yellow,  false, false, false);
+  Color color_overdue (Color::black, Color::red,     false, false, false);
 
   if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     out << "Legend: "
