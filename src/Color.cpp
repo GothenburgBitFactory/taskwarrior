@@ -70,7 +70,6 @@ Color::Color (const Color& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
 Color::Color (unsigned int c)
 : value (0)
 {
@@ -80,7 +79,6 @@ Color::Color (unsigned int c)
   value = c & (_COLOR_256 | _COLOR_HASBG | _COLOR_HASFG |_COLOR_UNDERLINE |
                _COLOR_BOLD | _COLOR_BRIGHT | _COLOR_BG | _COLOR_FG);
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Supports the following constructs:
@@ -227,7 +225,6 @@ Color::Color (const std::string& spec)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
 Color::Color (color_id fg)
 : value (0)
 {
@@ -237,7 +234,6 @@ Color::Color (color_id fg)
     value |= fg;
   }
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 Color::Color (color_id fg, color_id bg)
@@ -245,7 +241,7 @@ Color::Color (color_id fg, color_id bg)
 {
   if (bg != Color::nocolor)
   {
-    value |= _COLOR_HASFG;
+    value |= _COLOR_HASBG;
     value |= (bg << 8);
   }
 

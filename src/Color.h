@@ -46,9 +46,9 @@ public:
 
   Color ();
   Color (const Color&);
-//  Color (unsigned int);                         // 256 | UNDERLINE | BOLD | BRIGHT | (BG << 8) | FG
+  Color (unsigned int);                         // 256 | UNDERLINE | BOLD | BRIGHT | (BG << 8) | FG
   Color (const std::string&);                   // "red on bright black"
-//  Color (color_id);                             // fg.
+  Color (color_id);                             // fg.
   Color (color_id, color_id);                   // fg, bg.
   Color (color_id, color_id, bool, bool, bool); // fg, bg, underline, bold, bright
   ~Color ();
