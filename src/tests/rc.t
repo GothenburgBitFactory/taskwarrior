@@ -29,11 +29,23 @@
 use strict;
 use warnings;
 use File::Path;
-use Test::More tests => 4;
+use Test::More tests => 8;
 
-# Create the rc file.
+# Create the rc file, using rc.name:value.
 unlink 'foo.rc';
 rmtree 'foo', 0, 0;
+qx{echo 'y'|../task rc:foo.rc rc.data.location:foo};
+
+ok (-r 'foo.rc', 'Created default rc file');
+ok (-d 'foo', 'Created default data directory');
+
+rmtree 'foo', 0, 0;
+ok (!-r 'foo', 'Removed foo');
+
+unlink 'foo.rc';
+ok (!-r 'foo.rc', 'Removed foo.rc');
+
+# Do it all again, with rc.name=value.
 qx{echo 'y'|../task rc:foo.rc rc.data.location:foo};
 
 ok (-r 'foo.rc', 'Created default rc file');
