@@ -60,7 +60,7 @@ public:
   void blend (const Color&);
 
   std::string colorize (const std::string&);
-  std::string colorize (const std::string&, const std::string&);
+  static std::string colorize (const std::string&, const std::string&);
 
   bool nontrivial ();
 

@@ -1220,40 +1220,35 @@ int handleColor (std::string &outs)
   std::stringstream out;
   if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
   {
-    Color c0 ("white on black");
-    Color c1 ("white on red");
-    Color c2 ("white on blue");
-    Color c3 ("black on green");
-    Color c4 ("black on magenta");
-    Color c5 ("black on cyan");
-    Color c6 ("black on yellow");
-    Color c7 ("black on white");
     out << std::endl
         << "Basic colors"
         << std::endl
-        << " " << c0.colorize (" black ")
-        << " " << c1.colorize (" red ")
-        << " " << c2.colorize (" blue ")
-        << " " << c3.colorize (" green ")
-        << " " << c4.colorize (" magenta ")
-        << " " << c5.colorize (" cyan ")
-        << " " << c6.colorize (" yellow ")
-        << " " << c7.colorize (" white ")
+        << " " << Color::colorize (" black ",   "black")
+        << " " << Color::colorize (" red ",     "red")
+        << " " << Color::colorize (" blue ",    "blue")
+        << " " << Color::colorize (" green ",   "green")
+        << " " << Color::colorize (" magenta ", "magenta")
+        << " " << Color::colorize (" cyan ",    "cyan")
+        << " " << Color::colorize (" yellow ",  "yellow")
+        << " " << Color::colorize (" white ",   "white")
         << std::endl
+        << " " << Color::colorize (" black ",   "white on black")
+        << " " << Color::colorize (" red ",     "white on red")
+        << " " << Color::colorize (" blue ",    "white on blue")
+        << " " << Color::colorize (" green ",   "black on green")
+        << " " << Color::colorize (" magenta ", "black on magenta")
+        << " " << Color::colorize (" cyan ",    "black on cyan")
+        << " " << Color::colorize (" yellow ",  "black on yellow")
+        << " " << Color::colorize (" white ",   "black on white")
         << std::endl;
 
-    Color text ("red on black");
-    Color bold ("bold red on black");
-    Color underline ("underline on blue");
-    Color unbright ("black on green");
-    Color bright ("black on bright green");
     out << "Effects"
         << std::endl
-        << " " << text.colorize (" text ")
-        << " " << bold.colorize (" bold text ")
-        << " " << underline.colorize (" underline text ")
-        << " " << unbright.colorize (" green ")
-        << " " << bright.colorize (" bright green ")
+        << " " << Color::colorize (" red ",               "red")
+        << " " << Color::colorize (" bold red ",          "bold red")
+        << " " << Color::colorize (" underline on blue ", "underline on blue")
+        << " " << Color::colorize (" on green ",          "black on green")
+        << " " << Color::colorize (" on bright green ",   "black on bright green")
         << std::endl
         << std::endl;
 
@@ -1266,8 +1261,7 @@ int handleColor (std::string &outs)
       {
         std::stringstream s;
         s << "on color" << (r*8 + c);
-        Color c (s.str ());
-        out << c.colorize ("  ");
+        out << Color::colorize ("  ", s.str ());
       }
 
       out << std::endl;
@@ -1286,8 +1280,7 @@ int handleColor (std::string &outs)
         {
           std::stringstream s;
           s << "on rgb" << r << g << b;
-          Color c (s.str ());
-          out << c.colorize ("  ");
+          out << Color::colorize ("  ", s.str ());
         }
 
         out << " ";
@@ -1304,16 +1297,15 @@ int handleColor (std::string &outs)
     {
       std::stringstream s;
       s << "on gray" << g;
-      Color c (s.str ());
-      out << c.colorize ("  ");
+      out << Color::colorize ("  ", s.str ());
     }
 
     out << std::endl << std::endl;
   }
   else
   {
-    out << "Color is currently turned off in your .taskrc file.  "
-           "To enable color, create the entry 'color=on'."
+    out << "Color is currently turned off in your .taskrc file.  To enable "
+           "color, remove the line 'color=off', or change the 'off' to 'on'."
         << std::endl;
     rc = 1;
   }
