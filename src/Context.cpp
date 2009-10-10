@@ -384,7 +384,8 @@ void Context::loadCorrectConfigFile ()
   {
     if (*arg == "--")
       break;
-    else if (arg->substr (0, 17) == "rc.data.location:")
+    else if (arg->substr (0, 17) == "rc.data.location:" ||
+             arg->substr (0, 17) == "rc.data.location=")
     {
       data = arg->substr (17, std::string::npos);
       header ("Using alternate data.location " + data); // TODO i18n
@@ -416,7 +417,7 @@ void Context::loadCorrectConfigFile ()
   config.setDefaults (); // Add in the custom reports.
   config.load (rc);      // Load new file.
 
-  // Apply overrides of type: "rc.name:value"
+  // Apply overrides of type: "rc.name:value", or "rc.name=value".
   std::vector <std::string> filtered;
   bool foundTerminator = false;
   foreach (arg, args)
@@ -432,10 +433,10 @@ void Context::loadCorrectConfigFile ()
       std::string name;
       std::string value;
       Nibbler n (*arg);
-      if (n.getUntil ('.', name) &&
-          n.skip ('.')           &&
-          n.getUntil (':', name) &&
-          n.skip (':')           &&
+      if (n.getUntil ('.', name)       &&
+          n.skip ('.')                 &&
+          n.getUntilOneOf (":=", name) &&
+          n.skipN (1)                  &&
           n.getUntilEOS (value))
       {
         config.set (name, value);
