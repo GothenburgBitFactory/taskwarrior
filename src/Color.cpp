@@ -465,16 +465,16 @@ std::string Color::colorize (const std::string& input)
       result << "4";
     }
 
-    if (value & _COLOR_HASBG)
-    {
-      if (count++) result << ";";
-      result << ((value & _COLOR_BRIGHT ? 99 : 39) + ((value & _COLOR_BG) >> 8));
-    }
-
     if (value & _COLOR_HASFG)
     {
       if (count++) result << ";";
       result << (29 + (value & _COLOR_FG));
+    }
+
+    if (value & _COLOR_HASBG)
+    {
+      if (count++) result << ";";
+      result << ((value & _COLOR_BRIGHT ? 99 : 39) + ((value & _COLOR_BG) >> 8));
     }
 
     result << "m" << input << "\033[0m";
