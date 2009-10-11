@@ -30,5 +30,5 @@ echo -n 'Pass: '
 grep ^ok all.log | wc -l
 echo -n 'Fail: '
 grep ^not all.log | wc -l
-echo -n 'Runtime: '
+echo -n 'Runtime:   '
 echo $RUNTIME

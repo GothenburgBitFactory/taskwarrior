@@ -26,7 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <Context.h>
-#include <color.h>
+#include <Color.h>
 #include <test.h>
 
 Context context;
@@ -34,6 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
+/*
   const char* colors[] =
   {
     "off",
@@ -63,7 +64,7 @@ int main (int argc, char** argv)
 
   t.is (Text::colorName (Text::nocolor), "", "nocolor == \'\'");
   t.is (Text::colorCode (""), Text::nocolor, "\'\' == nocolor");
-
+*/
   return 0;
 }
 
