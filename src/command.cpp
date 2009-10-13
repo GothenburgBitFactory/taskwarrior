@@ -1240,6 +1240,7 @@ int handleColor (std::string &outs)
         << " " << Color::colorize (" cyan ",    "black on cyan")
         << " " << Color::colorize (" yellow ",  "black on yellow")
         << " " << Color::colorize (" white ",   "black on white")
+        << std::endl
         << std::endl;
 
     out << "Effects"
