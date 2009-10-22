@@ -1,10 +1,12 @@
 
 ------ current release ---------------------------
 
-1.8.3 (10/21/2009) bcdcbeeea0d92f21c3565aebfaf6332b959f4025
- + Added support for Haiku R1/alpha1
+1.8.4 ()
 
 ------ old releases ------------------------------
+
+1.8.3 (10/21/2009) bcdcbeeea0d92f21c3565aebfaf6332b959f4025
+ + Added support for Haiku R1/alpha1
 
 1.8.2 (9/7/2009) f243f0ed443ecd7dde779de8a6525222591024db
  + Added feature #282 that returns useful exit codes to the shell.  Now a
