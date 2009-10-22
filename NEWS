@@ -26,6 +26,7 @@ Task has been built and tested on the following configurations:
   - OpenBSD 4.5
   - FreeBSD
   - Cygwin 1.5
+  - Haiku R1/alpha1
 
 While Task has undergone testing, bugs are sure to remain.  If you encounter a
 bug, please enter a new issue at:

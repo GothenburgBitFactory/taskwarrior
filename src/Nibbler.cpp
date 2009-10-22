@@ -243,7 +243,7 @@ bool Nibbler::getInt (int& result)
       ++i;
   }
 
-  while (i < mInput.length () && ::isdigit (mInput[i]))
+  while (i < mInput.length () && isdigit (mInput[i]))
     ++i;
 
   if (i > mCursor)
@@ -260,7 +260,7 @@ bool Nibbler::getInt (int& result)
 bool Nibbler::getUnsignedInt (int& result)
 {
   std::string::size_type i = mCursor;
-  while (i < mInput.length () && ::isdigit (mInput[i]))
+  while (i < mInput.length () && isdigit (mInput[i]))
     ++i;
 
   if (i > mCursor)

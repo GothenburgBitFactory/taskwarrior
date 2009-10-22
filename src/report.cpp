@@ -1403,9 +1403,9 @@ std::string renderMonths (
       row = 0;
 
     // Loop through days in month and add to table.
-    for (int d = 1; d <= daysInMonth.at (mpl); ++d)
+    for (int d = 1; d <= daysInMonth[mpl]; ++d)
     {
-      Date temp (months.at (mpl), d, years.at (mpl));
+      Date temp (months[mpl], d, years[mpl]);
       int dow = temp.dayOfWeek ();
       int woy = temp.weekOfYear (weekStart);
 
@@ -1423,7 +1423,7 @@ std::string renderMonths (
       table.addCell (row, thisCol, d);
 
       if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
-          today.day ()   == d              &&
+          today.day ()   == d                &&
           today.month () == months.at (mpl)  &&
           today.year ()  == years.at (mpl))
         table.setCellColor (row, thisCol, Color (Color::cyan));
@@ -1437,8 +1437,8 @@ std::string renderMonths (
 
           if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
               due.day ()   == d               &&
-              due.month () == months.at (mpl) &&
-              due.year ()  == years.at (mpl))
+              due.month () == months[mpl] &&
+              due.year ()  == years[mpl])
           {
             Color c (Color::black, (due < today ? Color::red : Color::yellow));
             table.setCellColor (row, thisCol, c);
@@ -1450,7 +1450,7 @@ std::string renderMonths (
       int eow = 6;
       if (weekStart == 1)
         eow = 0;
-      if (dow == eow && d < daysInMonth.at (mpl))
+      if (dow == eow && d < daysInMonth[mpl])
         row++;
     }
   }

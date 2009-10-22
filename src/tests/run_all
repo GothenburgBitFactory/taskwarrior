@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 date > all.log
 
@@ -14,7 +14,7 @@ END=`tail -1 all.log`
 OS=`uname`
 
 case $OS in
-  Darwin)
+  Darwin | FreeBSD)
     STARTEPOCH=`date -j -f "%a %b %d %T %Z %Y" "${START}" "+%s"`
     ENDEPOCH=`date -j -f "%a %b %d %T %Z %Y" "${END}" "+%s"`
     ;;

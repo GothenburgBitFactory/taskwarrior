@@ -30,6 +30,7 @@
 #include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "Context.h"
 #include "Timer.h"
 #include "text.h"

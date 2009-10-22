@@ -29,6 +29,7 @@
 #include <time.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "Date.h"
 #include "text.h"
 #include "util.h"
@@ -82,14 +83,14 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
     // Single or double digit.
     case 'm':
       if (i >= mdy.length () ||
-          ! ::isdigit (mdy[i]))
+          ! isdigit (mdy[i]))
       {
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
       if (i + 1 < mdy.length ()                    &&
           (mdy[i + 0] == '0' || mdy[i + 0] == '1') &&
-          ::isdigit (mdy[i + 1]))
+          isdigit (mdy[i + 1]))
       {
         month = ::atoi (mdy.substr (i, 2).c_str ());
         i += 2;
@@ -103,14 +104,14 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
 
     case 'd':
       if (i >= mdy.length () ||
-          ! ::isdigit (mdy[i]))
+          ! isdigit (mdy[i]))
       {
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
       if (i + 1 < mdy.length ()                                                              &&
           (mdy[i + 0] == '0' || mdy[i + 0] == '1' || mdy[i + 0] == '2' || mdy[i + 0] == '3') &&
-          ::isdigit (mdy[i + 1]))
+          isdigit (mdy[i + 1]))
       {
         day = ::atoi (mdy.substr (i, 2).c_str ());
         i += 2;
@@ -125,8 +126,8 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
     // Double digit.
     case 'y':
       if (i + 1 >= mdy.length ()   ||
-          ! ::isdigit (mdy[i + 0]) ||
-          ! ::isdigit (mdy[i + 1]))
+          ! isdigit (mdy[i + 0]) ||
+          ! isdigit (mdy[i + 1]))
       {
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
@@ -137,8 +138,8 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
 
     case 'M':
       if (i + 1 >= mdy.length () ||
-          ! ::isdigit (mdy[i + 0]) ||
-          ! ::isdigit (mdy[i + 1]))
+          ! isdigit (mdy[i + 0]) ||
+          ! isdigit (mdy[i + 1]))
       {
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
@@ -149,8 +150,8 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
 
     case 'D':
       if (i + 1 >= mdy.length () ||
-          ! ::isdigit (mdy[i + 0]) ||
-          ! ::isdigit (mdy[i + 1]))
+          ! isdigit (mdy[i + 0]) ||
+          ! isdigit (mdy[i + 1]))
       {
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
@@ -162,10 +163,10 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
     // Quadruple digit.
     case 'Y':
       if (i + 3 >= mdy.length () ||
-          ! ::isdigit (mdy[i + 0]) ||
-          ! ::isdigit (mdy[i + 1]) ||
-          ! ::isdigit (mdy[i + 2]) ||
-          ! ::isdigit (mdy[i + 3]))
+          ! isdigit (mdy[i + 0]) ||
+          ! isdigit (mdy[i + 1]) ||
+          ! isdigit (mdy[i + 2]) ||
+          ! isdigit (mdy[i + 3]))
       {
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }

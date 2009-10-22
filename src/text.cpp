@@ -209,7 +209,7 @@ std::string commify (const std::string& data)
   int i;
   for (int i = 0; i < (int) data.length (); ++i)
   {
-    if (::isdigit (data[i]))
+    if (isdigit (data[i]))
       end = i;
 
     if (data[i] == '.')
@@ -227,11 +227,11 @@ std::string commify (const std::string& data)
     int consecutiveDigits = 0;
     for (; i >= 0; --i)
     {
-      if (::isdigit (data[i]))
+      if (isdigit (data[i]))
       {
         result += data[i];
 
-        if (++consecutiveDigits == 3 && i && ::isdigit (data[i - 1]))
+        if (++consecutiveDigits == 3 && i && isdigit (data[i - 1]))
         {
           result += ',';
           consecutiveDigits = 0;
@@ -251,11 +251,11 @@ std::string commify (const std::string& data)
     int consecutiveDigits = 0;
     for (; i >= 0; --i)
     {
-      if (::isdigit (data[i]))
+      if (isdigit (data[i]))
       {
         result += data[i];
 
-        if (++consecutiveDigits == 3 && i && ::isdigit (data[i - 1]))
+        if (++consecutiveDigits == 3 && i && isdigit (data[i - 1]))
         {
           result += ',';
           consecutiveDigits = 0;
@@ -279,8 +279,8 @@ std::string lowerCase (const std::string& input)
 {
   std::string output = input;
   for (int i = 0; i < (int) input.length (); ++i)
-    if (::isupper (input[i]))
-      output[i] = ::tolower (input[i]);
+    if (isupper (input[i]))
+      output[i] = tolower (input[i]);
 
   return output;
 }
@@ -290,8 +290,8 @@ std::string upperCase (const std::string& input)
 {
   std::string output = input;
   for (int i = 0; i < (int) input.length (); ++i)
-    if (::islower (input[i]))
-      output[i] = ::toupper (input[i]);
+    if (islower (input[i]))
+      output[i] = toupper (input[i]);
 
   return output;
 }
@@ -302,7 +302,7 @@ std::string ucFirst (const std::string& input)
   std::string output = input;
 
   if (output.length () > 0)
-    output[0] = ::toupper (output[0]);
+    output[0] = toupper (output[0]);
 
   return output;
 }
@@ -352,7 +352,7 @@ void guess (
 bool digitsOnly (const std::string& input)
 {
   for (size_t i = 0; i < input.length (); ++i)
-    if (!::isdigit (input[i]))
+    if (!isdigit (input[i]))
       return false;
 
   return true;
@@ -362,7 +362,7 @@ bool digitsOnly (const std::string& input)
 bool noSpaces (const std::string& input)
 {
   for (size_t i = 0; i < input.length (); ++i)
-    if (::isspace (input[i]))
+    if (isspace (input[i]))
       return false;
 
   return true;
