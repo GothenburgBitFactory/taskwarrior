@@ -64,7 +64,7 @@ bool confirm (const std::string& question)
               << " ";
 
     std::getline (std::cin, answer);
-    answer = lowerCase (trim (answer));
+    answer = std::cin.eof() ? "no" : lowerCase (trim (answer));
   }
   while (answer != "y"   && // TODO i18n
          answer != "ye"  && // TODO i18n

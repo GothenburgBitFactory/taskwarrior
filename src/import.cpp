@@ -106,16 +106,16 @@ static fileType determineFileType (const std::vector <std::string>& lines)
     {
       if (           lines[i][0] == 'x' &&
                      lines[i][1] == ' ' &&
-          ::isdigit (lines[i][2]) &&
-          ::isdigit (lines[i][3]) &&
-          ::isdigit (lines[i][4]) &&
-          ::isdigit (lines[i][5]) &&
+          isdigit (lines[i][2]) &&
+          isdigit (lines[i][3]) &&
+          isdigit (lines[i][4]) &&
+          isdigit (lines[i][5]) &&
                      lines[i][6] == '-' &&
-          ::isdigit (lines[i][7]) &&
-          ::isdigit (lines[i][8]) &&
+          isdigit (lines[i][7]) &&
+          isdigit (lines[i][8]) &&
                      lines[i][9] == '-' &&
-          ::isdigit (lines[i][10]) &&
-          ::isdigit (lines[i][11]))
+          isdigit (lines[i][10]) &&
+          isdigit (lines[i][11]))
         return todo_sh_2_0;
     }
 
@@ -126,13 +126,13 @@ static fileType determineFileType (const std::vector <std::string>& lines)
       // +project
       if (words[w].length () > 1 &&
           words[w][0] == '+'     &&
-          ::isalnum (words[w][1]))
+          isalnum (words[w][1]))
         return todo_sh_2_0;
 
       // @context
       if (words[w].length () > 1 &&
           words[w][0] == '@'     &&
-          ::isalnum (words[w][1]))
+          isalnum (words[w][1]))
         return todo_sh_2_0;
     }
   }
