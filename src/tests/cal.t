@@ -58,7 +58,7 @@ if ( $day <= 9)
 # task cal   and   task cal y
 my $output = qx{../task rc:cal.rc rc._forcecolor:on cal};
 like   ($output, qr/\[36m$day/,      'Current day is highlighted');
-like   ($output, qr/$month.* $year/, 'Current month and year are displayed');
+like   ($output, qr/$month\w+?\s+?$year/, 'Current month and year are displayed');
 qx{../task rc:cal.rc add zero};
 unlike ($output, qr/\[41m\d+/,       'No overdue tasks are present');
 unlike ($output, qr/\[43m\d+/,       'No due tasks are present');
@@ -67,9 +67,9 @@ like   ($output, qr/Su Mo Tu/,     'Week starts on Sunday');
 $output = qx{../task rc:cal.rc rc.weekstart:Monday cal};
 like   ($output, qr/Fr Sa Su/,     'Week starts on Monday'); 
 $output = qx{../task rc:cal.rc cal y};
-like   ($output, qr/$month.* $year/,         'Current month and year are displayed');
-like   ($output, qr/$prevmonth.* $nextyear/, 'Month and year one year ahead are displayed');
-unlike ($output, qr/$month.* $nextyear/,     'Current month and year ahead are not displayed');
+like   ($output, qr/$month\w+?\s+?$year/,         'Current month and year are displayed');
+like   ($output, qr/$prevmonth\w+?\s+?$nextyear/, 'Month and year one year ahead are displayed');
+unlike ($output, qr/$month\w+?\s+?$nextyear/,     'Current month and year ahead are not displayed');
 
 # task cal due   and   task cal due y
 qx{../task rc:cal.rc add due:20190515 one};
