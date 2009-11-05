@@ -4,6 +4,7 @@
 1.9.0 ()
  + Added feature #292 that permits alternate line coloration in reports
    (thanks to Richard Querin).
+ + The 'delete' command is now aliased to 'rm' (thanks to Ivo Jimenez).
 
 ------ old releases ------------------------------
 

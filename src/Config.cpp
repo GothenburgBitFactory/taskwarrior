@@ -150,6 +150,8 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "#default.priority=M                    # Unless otherwise specified\n"
            << "default.command=list                   # Unless otherwise specified\n"
            << "\n"
+           << "alias.rm=delete\n"
+           << "\n"
            << "# Fields: id,uuid,project,priority,entry,start,due,recur,recur_ind,age,\n"
            << "#          age_compact,active,tags,description,description_only\n"
            << "# Description:   This report is ...\n"
@@ -323,6 +325,8 @@ void Config::setDefaults ()
   set ("report.next.labels",           "ID,Project,Pri,Due,Active,Age,Description");                      // TODO i18n
   set ("report.next.sort",             "due+,priority-,project+");                                        // TODO i18n
   set ("report.next.filter",           "status:pending");                                                 // TODO i18n
+
+  set ("alias.rm",                     "delete");                                                         // TODO i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////
