@@ -78,9 +78,9 @@ $output = qx{../task rc:cal.rc rc._forcecolor:on cal due};
 unlike ($output, qr/April 2019/,   'April 2019 is not displayed');
 like   ($output, qr/May 2019/,     'May 2019 is displayed');
 unlike ($output, qr/January 2020/, 'January 2020 is not displayed');
-like   ($output, qr/\[43m15/,      'Task 1 is color-coded due');
+like   ($output, qr/43m15/,      'Task 1 is color-coded due');
 $output = qx{../task rc:cal.rc rc._forcecolor:on cal due y};
-like   ($output, qr/\[43m23/,      'Task 2 is color-coded due');
+like   ($output, qr/43m23/,      'Task 2 is color-coded due');
 like   ($output, qr/April 2020/,   'April 2020 is displayed');
 unlike ($output, qr/May 2020/,     'May 2020 is not displayed');
 qx{../task rc:cal.rc ls};
@@ -88,7 +88,7 @@ qx{../task rc:cal.rc del 1-3};
 qx{../task rc:cal.rc add due:20080408 three};
 $output = qx{../task rc:cal.rc rc._forcecolor:on cal due};
 like   ($output, qr/April 2008/,  'April 2008 is displayed');
-like   ($output, qr/\[41m 8/,     'Task 3 is color-coded overdue');
+like   ($output, qr/41m 8/,     'Task 3 is color-coded overdue');
 
 # task cal 2016
 $output = qx{../task rc:cal.rc rc.weekstart:Monday cal 2016};
