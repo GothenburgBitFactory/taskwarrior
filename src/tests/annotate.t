@@ -33,10 +33,12 @@ use Test::More tests => 9;
 # Create the rc file.
 if (open my $fh, '>', 'annotate.rc')
 {
+  # Note: Use 'rrr' to guarantee a unique report name.  Using 'r' conflicts
+  #       with 'recurring'.
   print $fh "data.location=.\n",
-            "report.r.description=r\n",
-            "report.r.columns=id,description\n",
-            "report.r.sort=id+\n";
+            "report.rrr.description=rrr\n",
+            "report.rrr.columns=id,description\n",
+            "report.rrr.sort=id+\n";
   close $fh;
   ok (-r 'annotate.rc', 'Created annotate.rc');
 }
@@ -47,7 +49,7 @@ qx{../task rc:annotate.rc add two};
 qx{../task rc:annotate.rc annotate 1 foo};
 sleep 2;
 qx{../task rc:annotate.rc annotate 1 bar};
-my $output = qx{../task rc:annotate.rc r};
+my $output = qx{../task rc:annotate.rc rrr};
 
 # ID Description                    
 # -- -------------------------------
