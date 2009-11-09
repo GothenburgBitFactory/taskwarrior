@@ -2,6 +2,8 @@
 ------ current release ---------------------------
 
 1.8.4 ()
+ + Fixed bug that caused wait: dates to not be properly rendered in a
+   readable and preferred format with the "edit" command.
 
 ------ old releases ------------------------------
 

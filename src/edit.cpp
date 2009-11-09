@@ -150,7 +150,7 @@ static std::string formatTask (Task task)
          << "  Due:               " << formatDate (task, "due")                         << std::endl
          << "  Until:             " << formatDate (task, "until")                       << std::endl
          << "  Recur:             " << task.get ("recur")                               << std::endl
-         << "  Wait until:        " << task.get ("wait")                                << std::endl
+         << "  Wait until:        " << formatDate (task, "wait")                        << std::endl
          << "  Parent:            " << task.get ("parent")                              << std::endl
          << "  Foreground color:  " << task.get ("fg")                                  << std::endl
          << "  Background color:  " << task.get ("bg")                                  << std::endl
