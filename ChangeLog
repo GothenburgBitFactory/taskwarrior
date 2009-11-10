@@ -4,6 +4,8 @@
 1.8.4 ()
  + Fixed bug that caused wait: dates to not be properly rendered in a
    readable and preferred format with the "edit" command.
+ + Fixed bug that caused a hang on cygwin, when a task with multiple
+   annotations was edited (thanks to Joe Pulliam).
 
 ------ old releases ------------------------------
 
