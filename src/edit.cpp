@@ -543,7 +543,7 @@ void editFile (Task& task)
 
   // Complete the command line.
   editor += " ";
-  editor += file.str ();
+  editor += "\"" + file.str () + "\"";
 
 ARE_THESE_REALLY_HARMFUL:
   // Launch the editor.

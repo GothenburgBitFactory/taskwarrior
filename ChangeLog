@@ -6,6 +6,8 @@
    readable and preferred format with the "edit" command.
  + Fixed bug that caused a hang on cygwin, when a task with multiple
    annotations was edited (thanks to Joe Pulliam).
+ + Fixed bug #314 where the edit command fails when data.location includes
+   directories containing spaces (thanks to Cory Donnelly).
 
 ------ old releases ------------------------------
 
