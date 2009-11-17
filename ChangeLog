@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.8.4 ()
+1.8.4 (11/17/2009)
  + Fixed bug that caused wait: dates to not be properly rendered in a
    readable and preferred format with the "edit" command.
  + Fixed bug that caused a hang on cygwin, when a task with multiple
