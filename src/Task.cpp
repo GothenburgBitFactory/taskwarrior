@@ -134,7 +134,7 @@ void Task::setEntry ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Task::status Task::getStatus ()
+Task::status Task::getStatus () const
 {
   return textToStatus (get ("status")); // No i18n
 }

@@ -8,6 +8,9 @@
    annotations was edited (thanks to Joe Pulliam).
  + Fixed bug #314 where the edit command fails when data.location includes
    directories containing spaces (thanks to Cory Donnelly).
+ + Added a warning (issue #312) when modifying recurring tasks, that all
+   instances of that task may be modified.  When task confirms a bulk edit
+   the recurrence is again indicated (thanks to Cory Donnelly).
 
 ------ old releases ------------------------------
 
