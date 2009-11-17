@@ -57,7 +57,7 @@ public:
 
   void setEntry ();
 
-  status getStatus ();
+  status getStatus () const;
   void setStatus (status);
 
   int getTagCount ();
