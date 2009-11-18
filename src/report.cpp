@@ -1168,9 +1168,9 @@ int handleReportTimesheet (std::string &outs)
                         + endString.toString (context.config.get ("dateformat", "m/d/Y"));
 
     Color bold (Color::nocolor, Color::nocolor, false, true, false);
-    std::cout << std::endl
-              << (color ? bold.colorize (title) : title)
-              << std::endl;
+    out << std::endl
+        << (color ? bold.colorize (title) : title)
+        << std::endl;
 
     // Render the completed table.
     Table completed;

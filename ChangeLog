@@ -7,6 +7,8 @@
  + The 'delete' command is now aliased to 'rm' (thanks to Ivo Jimenez).
  + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
    was run, and there are no tasks with due dates.
+ + Fixed bug #316 which caused the timesheet report to display an oddly sorted
+   list.
 
 ------ old releases ------------------------------
 
