@@ -562,20 +562,20 @@ bool Att::match (const Att& other) const
     if (which == "duration")
     {
       Duration literal (mValue);
-      Duration variable ((time_t)::atoi (other.mValue.c_str ()));
+      Duration variable ((time_t)atoi (other.mValue.c_str ()));
       if (!(variable < literal))
         return false;
     }
     else if (which == "date")
     {
       Date literal (mValue.c_str (), context.config.get ("dateformat", "m/d/Y"));
-      Date variable ((time_t)::atoi (other.mValue.c_str ()));
+      Date variable ((time_t)atoi (other.mValue.c_str ()));
       if (other.mValue == "" || ! (variable < literal))
         return false;
     }
     else if (which == "number")
     {
-      if (::atoi (mValue.c_str ()) >= ::atoi (other.mValue.c_str ()))
+      if (atoi (mValue.c_str ()) >= atoi (other.mValue.c_str ()))
         return false;
     }
     else if (which == "text")
@@ -592,20 +592,20 @@ bool Att::match (const Att& other) const
     if (which == "duration")
     {
       Duration literal (mValue);
-      Duration variable ((time_t)::atoi (other.mValue.c_str ()));
+      Duration variable ((time_t)atoi (other.mValue.c_str ()));
       if (! (variable > literal))
         return false;
     }
     else if (which == "date")
     {
       Date literal (mValue.c_str (), context.config.get ("dateformat", "m/d/Y"));
-      Date variable ((time_t)::atoi (other.mValue.c_str ()));
+      Date variable ((time_t)atoi (other.mValue.c_str ()));
       if (! (variable > literal))
         return false;
     }
     else if (which == "number")
     {
-      if (::atoi (mValue.c_str ()) <= ::atoi (other.mValue.c_str ()))
+      if (atoi (mValue.c_str ()) <= atoi (other.mValue.c_str ()))
         return false;
     }
     else if (which == "text")
@@ -678,7 +678,7 @@ void Att::value (const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 int Att::value_int () const
 {
-  return ::atoi (mValue.c_str ());
+  return atoi (mValue.c_str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

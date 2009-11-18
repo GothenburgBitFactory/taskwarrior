@@ -152,7 +152,7 @@ int Record::get_int (const std::string& name) const
 {
   Record::const_iterator i = this->find (name);
   if (i != this->end ())
-    return ::atoi (i->second.value ().c_str ());
+    return atoi (i->second.value ().c_str ());
 
   return 0;
 }

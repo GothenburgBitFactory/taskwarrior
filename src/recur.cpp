@@ -340,7 +340,7 @@ void updateRecurrenceMask (
     {
       if (it->get ("uuid") == parent)
       {
-        unsigned int index = ::atoi (task.get ("imask").c_str ());
+        unsigned int index = atoi (task.get ("imask").c_str ());
         std::string mask = it->get ("mask");
         if (mask.length () > index)
         {

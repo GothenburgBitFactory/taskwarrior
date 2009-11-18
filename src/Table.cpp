@@ -261,7 +261,7 @@ void Table::addCell (const int row, const int col, const int data)
     mData.add (row, col, value);
 
   // Automatically maintain max width.
-  mMaxDataWidth[col] = max (mMaxDataWidth[col], (signed) ::strlen (value));
+  mMaxDataWidth[col] = max (mMaxDataWidth[col], (signed) strlen (value));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -276,7 +276,7 @@ void Table::addCell (const int row, const int col, const float data)
     mData.add (row, col, value);
 
   // Automatically maintain max width.
-  mMaxDataWidth[col] = max (mMaxDataWidth[col], (signed) ::strlen (value));
+  mMaxDataWidth[col] = max (mMaxDataWidth[col], (signed) strlen (value));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -291,7 +291,7 @@ void Table::addCell (const int row, const int col, const double data)
     mData.add (row, col, value);
 
   // Automatically maintain max width.
-  mMaxDataWidth[col] = max (mMaxDataWidth[col], (signed) ::strlen (value));
+  mMaxDataWidth[col] = max (mMaxDataWidth[col], (signed) strlen (value));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

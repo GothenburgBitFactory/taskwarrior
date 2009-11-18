@@ -98,7 +98,7 @@ void Sequence::parse (const std::string& input)
         if (! validId (range[0]))
           throw context.stringtable.get (SEQUENCE_BAD_SEQ, "Invalid ID in sequence");
 
-        int id = ::atoi (range[0].c_str ());
+        int id = atoi (range[0].c_str ());
         this->push_back (id);
       }
       break;
@@ -109,8 +109,8 @@ void Sequence::parse (const std::string& input)
             ! validId (range[1]))
           throw context.stringtable.get (SEQUENCE_BAD_SEQ, "Invalid ID in range");
 
-        int low  = ::atoi (range[0].c_str ());
-        int high = ::atoi (range[1].c_str ());
+        int low  = atoi (range[0].c_str ());
+        int high = atoi (range[1].c_str ());
         if (low > high)
           throw context.stringtable.get (SEQUENCE_INVERTED, "Inverted sequence range high-low");
 

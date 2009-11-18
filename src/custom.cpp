@@ -543,7 +543,7 @@ int runCustomReport (
   // If the custom report has a defined limit, then allow a numeric override.
   // This is an integer specified as a filter (limit:10).
   if (context.task.has ("limit"))
-    maximum = ::atoi (context.task.get ("limit").c_str ());
+    maximum = atoi (context.task.get ("limit").c_str ());
 
   std::stringstream out;
   if (table.rowCount ())

@@ -72,7 +72,7 @@ void StringTable::load (const std::string& file)
         std::string::size_type equal = line.find (" "); // no i18n
         if (equal != std::string::npos)
         {
-          int key = ::atoi (trim (line.substr (0, equal), " \t").c_str ()); // no i18n
+          int key = atoi (trim (line.substr (0, equal), " \t").c_str ()); // no i18n
           std::string value = trim (line.substr (equal+1, line.length () - equal), " \t"); // no i18n
           (*this)[key] = value;
         }

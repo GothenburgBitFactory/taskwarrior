@@ -248,7 +248,7 @@ bool Nibbler::getInt (int& result)
 
   if (i > mCursor)
   {
-    result = ::atoi (mInput.substr (mCursor, i - mCursor).c_str ());
+    result = atoi (mInput.substr (mCursor, i - mCursor).c_str ());
     mCursor = i;
     return true;
   }
@@ -265,7 +265,7 @@ bool Nibbler::getUnsignedInt (int& result)
 
   if (i > mCursor)
   {
-    result = ::atoi (mInput.substr (mCursor, i - mCursor).c_str ());
+    result = atoi (mInput.substr (mCursor, i - mCursor).c_str ());
     mCursor = i;
     return true;
   }

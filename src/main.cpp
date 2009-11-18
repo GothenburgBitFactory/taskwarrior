@@ -37,7 +37,7 @@ int main (int argc, char** argv)
 {
   // Set up randomness.
   struct timeval tv;
-  ::gettimeofday (&tv, NULL);
+  gettimeofday (&tv, NULL);
 #ifdef HAVE_SRANDOM
   srandom (tv.tv_usec);
 #else

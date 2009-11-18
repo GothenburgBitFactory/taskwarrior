@@ -178,7 +178,7 @@ void Duration::parse (const std::string& input)
       if (! isdigit (lower_input[i]) &&
           i == length - 1)
       {
-        int number = ::atoi (lower_input.substr (0, i).c_str ());
+        int number = atoi (lower_input.substr (0, i).c_str ());
 
         switch (lower_input[length - 1])
         {

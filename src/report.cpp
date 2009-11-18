@@ -403,7 +403,7 @@ int handleInfo (std::string &outs)
       row = table.addRow ();
       table.addCell (row, 0, "Due");
 
-      Date dt (::atoi (task->get ("due").c_str ()));
+      Date dt (atoi (task->get ("due").c_str ()));
       std::string due = getDueDate (*task);
       table.addCell (row, 1, due);
 
@@ -425,7 +425,7 @@ int handleInfo (std::string &outs)
     {
       row = table.addRow ();
       table.addCell (row, 0, "Waiting until");
-      Date dt (::atoi (task->get ("wait").c_str ()));
+      Date dt (atoi (task->get ("wait").c_str ()));
       table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
     }
 
@@ -434,7 +434,7 @@ int handleInfo (std::string &outs)
     {
       row = table.addRow ();
       table.addCell (row, 0, "Start");
-      Date dt (::atoi (task->get ("start").c_str ()));
+      Date dt (atoi (task->get ("start").c_str ()));
       table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
     }
 
@@ -443,7 +443,7 @@ int handleInfo (std::string &outs)
     {
       row = table.addRow ();
       table.addCell (row, 0, "End");
-      Date dt (::atoi (task->get ("end").c_str ()));
+      Date dt (atoi (task->get ("end").c_str ()));
       table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
     }
 
@@ -468,14 +468,14 @@ int handleInfo (std::string &outs)
     // entry
     row = table.addRow ();
     table.addCell (row, 0, "Entered");
-    Date dt (::atoi (task->get ("entry").c_str ()));
+    Date dt (atoi (task->get ("entry").c_str ()));
     std::string entry = dt.toString (context.config.get ("dateformat", "m/d/Y"));
 
     std::string age;
     std::string created = task->get ("entry");
     if (created.length ())
     {
-      Date dt (::atoi (created.c_str ()));
+      Date dt (atoi (created.c_str ()));
       age = formatSeconds ((time_t) (now - dt));
     }
 
@@ -561,7 +561,7 @@ int handleReportSummary (std::string &outs)
     {
       ++countPending[project];
 
-      time_t entry = ::atoi (task->get ("entry").c_str ());
+      time_t entry = atoi (task->get ("entry").c_str ());
       if (entry)
         sumEntry[project] = sumEntry[project] + (double) (now - entry);
     }
@@ -570,8 +570,8 @@ int handleReportSummary (std::string &outs)
     {
       ++countCompleted[project];
 
-      time_t entry = ::atoi (task->get ("entry").c_str ());
-      time_t end   = ::atoi (task->get ("end").c_str ());
+      time_t entry = atoi (task->get ("entry").c_str ());
+      time_t end   = atoi (task->get ("end").c_str ());
       if (entry && end)
         sumEntry[project] = sumEntry[project] + (double) (end - entry);
     }
@@ -747,7 +747,7 @@ time_t monthlyEpoch (const std::string& date)
   // to epoch form for the date m/1/y.
   if (date.length ())
   {
-    Date d1 (::atoi (date.c_str ()));
+    Date d1 (atoi (date.c_str ()));
     int m, d, y;
     d1.toMDY (m, d, y);
     Date d2 (m, 1, y);
@@ -1204,7 +1204,7 @@ int handleReportTimesheet (std::string &outs)
       // If task completed within range.
       if (task->getStatus () == Task::completed)
       {
-        Date compDate (::atoi (task->get ("end").c_str ()));
+        Date compDate (atoi (task->get ("end").c_str ()));
         if (compDate >= start && compDate < end)
         {
           int row = completed.addRow ();
@@ -1260,7 +1260,7 @@ int handleReportTimesheet (std::string &outs)
       if (task->getStatus () == Task::pending &&
           task->has ("start"))
       {
-        Date startDate (::atoi (task->get ("start").c_str ()));
+        Date startDate (atoi (task->get ("start").c_str ()));
         if (startDate >= start && startDate < end)
         {
           int row = started.addRow ();
@@ -1433,7 +1433,7 @@ std::string renderMonths (
         if (task->getStatus () == Task::pending &&
             task->has ("due"))
         {
-          Date due (::atoi (task->get ("due").c_str ()));
+          Date due (atoi (task->get ("due").c_str ()));
 
           if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
               due.day ()   == d               &&
@@ -1513,7 +1513,7 @@ int handleReportCalendar (std::string &outs)
       // task cal 2010
       monthsToDisplay = 12;
       mFrom = 1;
-      yFrom = ::atoi( context.args[1].data());
+      yFrom = atoi( context.args[1].data());
     }
   }
   else if (numberOfArgs == 3 ) {
@@ -1525,15 +1525,15 @@ int handleReportCalendar (std::string &outs)
     else {
       // task cal 8 2010
       monthsToDisplay = monthsPerLine;
-      mFrom = ::atoi( context.args[1].data());
-      yFrom = ::atoi( context.args[2].data());
+      mFrom = atoi( context.args[1].data());
+      yFrom = atoi( context.args[2].data());
     }
   }
   else if (numberOfArgs == 4 ) {
     // task cal 8 2010 y
     monthsToDisplay = 12;
-    mFrom = ::atoi( context.args[1].data());
-    yFrom = ::atoi( context.args[2].data());
+    mFrom = atoi( context.args[1].data());
+    yFrom = atoi( context.args[2].data());
   }
 
   if (getpendingdate == true) {
@@ -1545,7 +1545,7 @@ int handleReportCalendar (std::string &outs)
       {
         if (task->has ("due"))
         {
-          Date d (::atoi (task->get ("due").c_str ()));
+          Date d (atoi (task->get ("due").c_str ()));
           if (d < oldest) oldest = d;
         }
       }
@@ -1702,13 +1702,13 @@ int handleReportStats (std::string &outs)
     if (it->getStatus () == Task::recurring) ++recurringT;
     if (it->getStatus () == Task::waiting)   ++waitingT;
 
-    time_t entry = ::atoi (it->get ("entry").c_str ());
+    time_t entry = atoi (it->get ("entry").c_str ());
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
     if (it->getStatus () == Task::completed)
     {
-      time_t end = ::atoi (it->get ("end").c_str ());
+      time_t end = atoi (it->get ("end").c_str ());
       daysPending += (end - entry) / 86400.0;
     }
 
@@ -1889,7 +1889,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   {
     if (task->has ("due"))
     {
-      Date d (::atoi (task->get ("due").c_str ()));
+      Date d (atoi (task->get ("due").c_str ()));
       if (d < now + (7 * 24 * 60 * 60)) // if due:< 1wk
       {
         std::string project = task->get ("project");
@@ -2051,7 +2051,7 @@ std::string getFullDescription (Task& task)
   task.getAnnotations (annotations);
   foreach (anno, annotations)
   {
-    Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
+    Date dt (atoi (anno->name ().substr (11, std::string::npos).c_str ()));
     std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
     desc += "\n" + when + " " + anno->value ();
   }
@@ -2065,7 +2065,7 @@ std::string getDueDate (Task& task)
   std::string due = task.get ("due");
   if (due.length ())
   {
-    Date d (::atoi (due.c_str ()));
+    Date d (atoi (due.c_str ()));
     due = d.toString (context.config.get ("dateformat", "m/d/Y"));
   }
 

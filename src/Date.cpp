@@ -92,12 +92,12 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
           (mdy[i + 0] == '0' || mdy[i + 0] == '1') &&
           isdigit (mdy[i + 1]))
       {
-        month = ::atoi (mdy.substr (i, 2).c_str ());
+        month = atoi (mdy.substr (i, 2).c_str ());
         i += 2;
       }
       else
       {
-        month = ::atoi (mdy.substr (i, 1).c_str ());
+        month = atoi (mdy.substr (i, 1).c_str ());
         ++i;
       }
       break;
@@ -113,12 +113,12 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
           (mdy[i + 0] == '0' || mdy[i + 0] == '1' || mdy[i + 0] == '2' || mdy[i + 0] == '3') &&
           isdigit (mdy[i + 1]))
       {
-        day = ::atoi (mdy.substr (i, 2).c_str ());
+        day = atoi (mdy.substr (i, 2).c_str ());
         i += 2;
       }
       else
       {
-        day = ::atoi (mdy.substr (i, 1).c_str ());
+        day = atoi (mdy.substr (i, 1).c_str ());
         ++i;
       }
       break;
@@ -132,7 +132,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
-      year = ::atoi (mdy.substr (i, 2).c_str ()) + 2000;
+      year = atoi (mdy.substr (i, 2).c_str ()) + 2000;
       i += 2;
       break;
 
@@ -144,7 +144,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
-      month = ::atoi (mdy.substr (i, 2).c_str ());
+      month = atoi (mdy.substr (i, 2).c_str ());
       i += 2;
       break;
 
@@ -156,7 +156,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
-      day = ::atoi (mdy.substr (i, 2).c_str ());
+      day = atoi (mdy.substr (i, 2).c_str ());
       i += 2;
       break;
 
@@ -171,7 +171,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
         throw std::string ("\"") + mdy + "\" is not a valid date.";
       }
 
-      year = ::atoi (mdy.substr (i, 4).c_str ());
+      year = atoi (mdy.substr (i, 4).c_str ());
       i += 4;
       break;
 
@@ -404,7 +404,7 @@ int Date::weekOfYear (int weekStart) const
     throw std::string ("The 'weekstart' configuration variable may "
                        "only contain 'Sunday' or 'Monday'.");
 
-  int weekNumber = ::atoi (weekStr);
+  int weekNumber = atoi (weekStr);
 
   if (weekStart == 0)
     weekNumber += 1;
@@ -554,7 +554,7 @@ bool Date::isEpoch (const std::string& input)
   if (digitsOnly (input) &&
       input.length () > 8)
   {
-    mT = (time_t) ::atoi (input.c_str ());
+    mT = (time_t) atoi (input.c_str ());
     return true;
   }
 
@@ -670,12 +670,12 @@ bool Date::isRelativeDate (const std::string& input)
 
     if (isdigit (input[1]))
     {
-      number = ::atoi (input.substr (0, 2).c_str ());
+      number = atoi (input.substr (0, 2).c_str ());
       ordinal = lowerCase (input.substr (2, std::string::npos));
     }
     else
     {
-      number = ::atoi (input.substr (0, 2).c_str ());
+      number = atoi (input.substr (0, 2).c_str ());
       ordinal = lowerCase (input.substr (1, std::string::npos));
     }
 

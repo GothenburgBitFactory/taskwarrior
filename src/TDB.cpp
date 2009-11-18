@@ -227,7 +227,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
         fseek (location->pending, 0, SEEK_SET);
         while (fgets (line, T_LINE_MAX, location->pending))
         {
-          int length = ::strlen (line);
+          int length = strlen (line);
           if (length > 3) // []\n
           {
             // TODO Add hidden attribute indicating source?
@@ -290,7 +290,7 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
       fseek (location->completed, 0, SEEK_SET);
       while (fgets (line, T_LINE_MAX, location->completed))
       {
-        int length = ::strlen (line);
+        int length = strlen (line);
         if (length > 3) // []\n
         {
           // TODO Add hidden attribute indicating source?
@@ -447,7 +447,7 @@ int TDB::gc ()
     else if (s == Task::waiting)
     {
       // Wake up tasks that are waiting.
-      Date wait_date (::atoi (task->get ("wait").c_str ()));
+      Date wait_date (atoi (task->get ("wait").c_str ()));
       if (now > wait_date)
       {
         task->setStatus (Task::pending);
@@ -538,7 +538,7 @@ void TDB::undo ()
     u.pop_back ();
   }
 
-  Date lastChange (::atoi (when.c_str ()));
+  Date lastChange (atoi (when.c_str ()));
   std::cout << std::endl
             << "The last modification was made "
             << lastChange.toString ()

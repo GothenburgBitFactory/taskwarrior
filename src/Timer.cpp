@@ -37,7 +37,7 @@ extern Context context;
 Timer::Timer (const std::string& description)
 : mDescription (description)
 {
-  ::gettimeofday (&mStart, NULL);
+  gettimeofday (&mStart, NULL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ Timer::Timer (const std::string& description)
 Timer::~Timer ()
 {
   struct timeval end;
-  ::gettimeofday (&end, NULL);
+  gettimeofday (&end, NULL);
 
   std::stringstream s;
   s << "Timer " // No i18n

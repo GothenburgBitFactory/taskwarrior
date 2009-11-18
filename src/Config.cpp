@@ -392,7 +392,7 @@ bool Config::get (const std::string& key, const bool default_value)
 int Config::get (const std::string& key, const int default_value)
 {
   if ((*this).find (key) != (*this).end ())
-    return ::atoi ((*this)[key].c_str ());
+    return atoi ((*this)[key].c_str ());
 
   return default_value;
 }
@@ -401,7 +401,7 @@ int Config::get (const std::string& key, const int default_value)
 double Config::get (const std::string& key, const double default_value)
 {
   if ((*this).find (key) != (*this).end ())
-    return ::atof ((*this)[key].c_str ());
+    return atof ((*this)[key].c_str ());
 
   return default_value;
 }

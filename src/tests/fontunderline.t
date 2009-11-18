@@ -52,7 +52,7 @@ if (open my $fh, '>', 'font.rc')
 #       1*           1              0  dashes
 #       1*           1              1  underline
 #
-# * When ::isatty (fileno (stdout)) is false, color is automatically disabled.
+# * When isatty (fileno (stdout)) is false, color is automatically disabled.
 
 qx{../task rc:font.rc add foo};
 my $output = qx{../task 1 info rc:font.rc rc.color:off rc._forcecolor:off rc.fontunderline:off};
