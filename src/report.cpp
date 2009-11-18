@@ -1536,6 +1536,7 @@ int handleReportCalendar (std::string &outs)
     yFrom = atoi( context.args[2].data());
   }
 
+  int countDueDates = 0;
   if (getpendingdate == true) {
     // Find the oldest pending due date.
     Date oldest (12,31,2037);
@@ -1545,6 +1546,7 @@ int handleReportCalendar (std::string &outs)
       {
         if (task->has ("due"))
         {
+          ++countDueDates;
           Date d (atoi (task->get ("due").c_str ()));
           if (d < oldest) oldest = d;
         }
@@ -1553,6 +1555,11 @@ int handleReportCalendar (std::string &outs)
     mFrom = oldest.month();
     yFrom = oldest.year();
   }
+
+  // If there are no tasks with due dates, then prevent showing a calendar from
+  // the year 2037.
+  if (countDueDates == 0)
+    throw std::string ("There are no tasks that have due dates.");
 
   mTo = mFrom + monthsToDisplay - 1;
   yTo = yFrom;
