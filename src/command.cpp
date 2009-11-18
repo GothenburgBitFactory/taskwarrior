@@ -551,6 +551,32 @@ int handleVersion (std::string &outs)
     out << std::endl;
   }
 
+  // Complain about colors that still use underscores.
+  int countDeprecatedColors = 0;
+  std::vector <std::string> deprecatedColors;
+  foreach (i, all)
+  {
+    if (i->find ("color.") != std::string::npos)
+    {
+      std::string value = context.config.get (*i);
+      if (value.find ("_") != std::string::npos)
+      {
+        ++countDeprecatedColors;
+        deprecatedColors.push_back (*i);
+      }
+    }
+  }
+
+  if (countDeprecatedColors)
+  {
+    out << "Your .taskrc file contains color settings that use deprecated "
+        << "underscores.  Please check:"
+        << std::endl;
+
+    foreach (i, deprecatedColors)
+      out << "  " << *i << std::endl;
+  }
+
   // Verify installation.  This is mentioned in the documentation as the way to
   // ensure everything is properly installed.
 
