@@ -134,7 +134,7 @@ void Task::setEntry ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Task::status Task::getStatus ()
+Task::status Task::getStatus () const
 {
   return textToStatus (get ("status")); // No i18n
 }
@@ -441,10 +441,14 @@ void Task::addAnnotation (const std::string& description)
 void Task::removeAnnotations ()
 {
   // Erase old annotations.
-  Record::iterator i;
-  for (i = this->begin (); i != this->end (); ++i)
+  Record::iterator i = this->begin ();
+  while (i != this->end ())
+  {
     if (i->first.substr (0, 11) == "annotation_") // No i18n
-      this->erase (i);
+      this->erase (i++);
+    else
+      i++;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

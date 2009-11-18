@@ -987,6 +987,13 @@ int handleModify (std::string &outs)
            task->get ("parent") == other->get ("parent")) || // Sibling
           other->get ("uuid")   == task->get ("parent"))     // Parent
       {
+        if (task->has ("parent"))
+          std::cout << "Task "
+                    << task->id
+                    << " is a recurring task, and all other instances of this"
+                    << " task may be modified."
+                    << std::endl;
+
         Task before (*other);
 
         // A non-zero value forces a file write.

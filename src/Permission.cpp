@@ -57,8 +57,15 @@ bool Permission::confirmed (const Task& task, const std::string& question)
             << task.id
             << " \""
             << task.get ("description")
-            << "\""
-            << std::endl;
+            << "\"";
+
+  if (task.getStatus () == Task::recurring ||
+      task.has ("parent"))
+  {
+    std::cout << " (Recurring)";
+  }
+
+  std::cout << std::endl;
 
   int answer = confirm3 (question);
   if (answer == 2)

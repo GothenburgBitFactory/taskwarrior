@@ -12,6 +12,17 @@
 
 ------ old releases ------------------------------
 
+1.8.4 (11/17/2009) 12c4983936d27317df100f05da8244139dd06a3f
+ + Fixed bug that caused wait: dates to not be properly rendered in a
+   readable and preferred format with the "edit" command.
+ + Fixed bug that caused a hang on cygwin, when a task with multiple
+   annotations was edited (thanks to Joe Pulliam).
+ + Fixed bug #314 where the edit command fails when data.location includes
+   directories containing spaces (thanks to Cory Donnelly).
+ + Added a warning (issue #312) when modifying recurring tasks, that all
+   instances of that task may be modified.  When task confirms a bulk edit
+   the recurrence is again indicated (thanks to Cory Donnelly).
+
 1.8.3 (10/21/2009) bcdcbeeea0d92f21c3565aebfaf6332b959f4025
  + Added support for Haiku R1/alpha1
 
