@@ -96,7 +96,8 @@ Color::Color (const std::string& spec)
 : value (0)
 {
   // By converting underscores to spaces, we inherently support the old "on_red"
-  // style of specifying background colors.
+  // style of specifying background colors.  We consider underscores to be
+  // deprecated.
   std::string modifiable_spec = spec;
   std::replace (modifiable_spec.begin (), modifiable_spec.end (), '_', ' ');
 
@@ -112,24 +113,10 @@ Color::Color (const std::string& spec)
   {
     word = lowerCase (trim (*it));
 
-    if (word == "bold")
-    {
-      value |= _COLOR_BOLD;
-      value &= ~_COLOR_256;
-    }
-    else if (word == "bright")
-    {
-      value |= _COLOR_BRIGHT;
-      value &= ~_COLOR_256;
-    }
-    else if (word == "underline")
-    {
-      value |= _COLOR_UNDERLINE;
-    }
-    else if (word == "on")
-    {
-      bg = true;
-    }
+         if (word == "bold")      value |= _COLOR_BOLD;
+    else if (word == "bright")    value |= _COLOR_BRIGHT;
+    else if (word == "underline") value |= _COLOR_UNDERLINE;
+    else if (word == "on")        bg = true;
 
     // X where X is one of black, red, blue ...
     else if ((index = find (word)) != -1)
@@ -153,6 +140,8 @@ Color::Color (const std::string& spec)
       index = atoi (word.substr (4, std::string::npos).c_str ());
       if (index < 0 || index > 23)
         throw std::string ("The color '") + *it + "' is not recognized.";
+
+      upgrade ();
 
       if (bg)
       {
@@ -185,6 +174,9 @@ Color::Color (const std::string& spec)
         throw std::string ("The color '") + *it + "' is not recognized.";
 
       index = 16 + r*36 + g*6 + b;
+
+      upgrade ();
+
       if (bg)
       {
         value |= _COLOR_HASBG;
@@ -205,6 +197,8 @@ Color::Color (const std::string& spec)
       index = atoi (word.substr (5, std::string::npos).c_str ());
       if (index < 0 || index > 255)
         throw std::string ("The color '") + *it + "' is not recognized.";
+
+      upgrade ();
 
       if (bg)
       {
@@ -327,7 +321,7 @@ void Color::blend (const Color& other)
   value |= (c.value & _COLOR_UNDERLINE);    // Always inherit underline.
 
   // 16 <-- 16.
-  if (!(value       & _COLOR_256) &&
+  if (!(value   & _COLOR_256) &&
       !(c.value & _COLOR_256))
   {
     value |= (c.value & _COLOR_BOLD);       // Inherit bold.
@@ -351,8 +345,8 @@ void Color::blend (const Color& other)
   }
 
   // Upgrade either color, if necessary.
-  if (!(value & _COLOR_256)) upgrade ();
-  if (!(value & _COLOR_256)) c.upgrade ();
+  if (!(value   & _COLOR_256)) upgrade ();
+  if (!(c.value & _COLOR_256)) c.upgrade ();
 
   // 256 <-- 256.
   if (c.value & _COLOR_HASFG)
