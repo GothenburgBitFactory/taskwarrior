@@ -474,7 +474,7 @@ int runCustomReport (
                       Table::descendingPriority));
 
     else if (column == "entry" || column == "start" || column == "due" ||
-             column == "wait")
+             column == "wait"  || column == "until" || column == "end")
       table.sortOn (columnIndex[column],
                     (direction == '+' ?
                       Table::ascendingDate :

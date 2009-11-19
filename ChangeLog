@@ -2,6 +2,7 @@
 ------ current release ---------------------------
 
 1.8.5 ()
+ + Fixed bug that was causing the 'completed' report to sort incorrectly.
 
 ------ old releases ------------------------------
 
