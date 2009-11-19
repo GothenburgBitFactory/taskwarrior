@@ -9,6 +9,10 @@
    was run, and there are no tasks with due dates.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted
    list.
+ + Fixed bug #317 which colored tasks in the 'completed' report according to
+   due dates, which are no longer relevant to a completed task (thanks to
+   Cory Donnelly).
+ + Fixed bug that was causing the 'completed' report to sort incorrectly.
 
 ------ old releases ------------------------------
 

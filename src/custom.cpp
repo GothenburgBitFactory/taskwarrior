@@ -460,6 +460,7 @@ int runCustomReport (
     std::string column = sortColumn->substr (0, sortColumn->length () - 1);
     char direction = (*sortColumn)[sortColumn->length () - 1];
 
+    // TODO This code should really be using Att::type.
     if (column == "id")
       table.sortOn (columnIndex[column],
                     (direction == '+' ?
@@ -473,7 +474,7 @@ int runCustomReport (
                       Table::descendingPriority));
 
     else if (column == "entry" || column == "start" || column == "due" ||
-             column == "wait")
+             column == "wait"  || column == "until" || column == "end")
       table.sortOn (columnIndex[column],
                     (direction == '+' ?
                       Table::ascendingDate :
