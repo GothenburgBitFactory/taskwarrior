@@ -82,7 +82,7 @@ bool confirm (const std::string& question)
 int confirm3 (const std::string& question)
 {
   std::vector <std::string> options;
-  options.push_back ("yes");
+  options.push_back ("Yes");
   options.push_back ("no");
   options.push_back ("all");
 
@@ -104,9 +104,47 @@ int confirm3 (const std::string& question)
   }
   while (matches.size () != 1);
 
-       if (matches[0] == "yes") return 1;
+       if (matches[0] == "Yes") return 1;
   else if (matches[0] == "all") return 2;
   else                          return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// 0 = no
+// 1 = yes
+// 2 = all
+// 3 = quit
+int confirm4 (const std::string& question)
+{
+  std::vector <std::string> options;
+  options.push_back ("Yes");
+  options.push_back ("no");
+  options.push_back ("all");
+  options.push_back ("quit");
+
+  std::string answer;
+  std::vector <std::string> matches;
+
+  do
+  {
+    std::cout << question
+              << " ("
+              << options[0] << "/"
+              << options[1] << "/"
+              << options[2] << "/"
+              << options[3]
+              << ") ";
+
+    std::getline (std::cin, answer);
+    answer = trim (answer);
+    autoComplete (answer, options, matches);
+  }
+  while (matches.size () != 1);
+
+       if (matches[0] == "Yes")  return 1;
+  else if (matches[0] == "all")  return 2;
+  else if (matches[0] == "quit") return 3;
+  else                           return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -500,12 +538,12 @@ std::string taskDifferences (const Task& before, const Task& after)
   foreach (name, beforeOnly)
     out << "  - "
         << *name
-        << " was deleted\n";
+        << " will be deleted\n";
 
   foreach (name, afterOnly)
     out << "  - "
         << *name
-        << " was set to '"
+        << " will be set to '"
         << renderAttribute (*name, after.get (*name))
         << "'\n";
 
@@ -515,7 +553,7 @@ std::string taskDifferences (const Task& before, const Task& after)
         before.get (*name) != after.get (*name))
       out << "  - "
           << *name
-          << " was changed from '"
+          << " will be changed from '"
           << renderAttribute (*name, before.get (*name))
           << "' to '"
           << renderAttribute (*name, after.get (*name))
@@ -523,7 +561,7 @@ std::string taskDifferences (const Task& before, const Task& after)
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
-    out << "  - No changes were made\n";
+    out << "  - No changes will be made\n";
 
   return out.str ();
 }

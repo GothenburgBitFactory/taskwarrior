@@ -37,6 +37,7 @@ extern Context context;
 Permission::Permission ()
 : needConfirmation (false)
 , allConfirmed (false)
+, quit (false)
 {
   // Turning confirmations off is the same as entering "all".
   if (context.config.get ("confirmation", true) == false)
@@ -46,6 +47,9 @@ Permission::Permission ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Permission::confirmed (const Task& task, const std::string& question)
 {
+  if (quit)
+    return false;
+
   if (!needConfirmation)
     return true;
 
@@ -67,13 +71,15 @@ bool Permission::confirmed (const Task& task, const std::string& question)
 
   std::cout << std::endl;
 
-  int answer = confirm3 (question);
+  int answer = confirm4 (question);
   if (answer == 2)
     allConfirmed = true;
 
-  if (answer > 0)
+  if (answer == 1 || answer == 2)
     return true;
 
+  if (answer == 3)
+    quit = true;
 
   return false;
 }

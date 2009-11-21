@@ -3,6 +3,8 @@
 
 1.8.5 ()
  + Fixed bug that was causing the 'completed' report to sort incorrectly.
+ + Added feature to allow the user to quit when asked to confirm multiple
+   changes.  Now task asks "Proceed with change? (Yes/no/all/quit)".
 
 ------ old releases ------------------------------
 

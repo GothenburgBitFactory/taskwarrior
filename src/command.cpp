@@ -829,7 +829,7 @@ int handleDone (std::string &outs)
 
       if (taskDiff (before, *task))
       {
-        if (permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
+        if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
         {
           context.tdb.update (*task);
 
@@ -983,7 +983,7 @@ int handleModify (std::string &outs)
 
         if (taskDiff (before, *other))
         {
-          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
           {
             context.tdb.update (*other);
             ++count;
@@ -1043,7 +1043,7 @@ int handleAppend (std::string &outs)
 
         if (taskDiff (before, *other))
         {
-          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
           {
             context.tdb.update (*other);
 
@@ -1335,7 +1335,7 @@ int handleAnnotate (std::string &outs)
 
     if (taskDiff (before, *task))
     {
-      if (permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
+      if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
       {
         context.tdb.update (*task);
 
