@@ -1178,11 +1178,11 @@ void handleShell ()
 
     command = "";
     std::getline (std::cin, command);
-    command = lowerCase (trim (command));
+    command = trim (command);
 
-    if (command.length () > 0               &&
-        command.length () <= quit.length () &&
-        command == quit.substr (0, command.length ()))
+    if (command.length ()   >  0              &&
+        command.length ()   <= quit.length () &&
+        lowerCase (command) == quit.substr (0, command.length ()))
     {
       keepGoing = false;
     }

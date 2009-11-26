@@ -5,6 +5,8 @@
  + Fixed bug that was causing the 'completed' report to sort incorrectly.
  + Added feature to allow the user to quit when asked to confirm multiple
    changes.  Now task asks "Proceed with change? (Yes/no/all/quit)".
+ + Fixed bug #321 where all shell input was converted to lower case (thanks
+   to Juergen Daubert).
 
 ------ old releases ------------------------------
 
