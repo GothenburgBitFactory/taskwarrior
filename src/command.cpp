@@ -950,6 +950,15 @@ int handleModify (std::string &outs)
         !task->has ("recur"))
       throw std::string ("You cannot specify an until date for a non-recurring task.");
 
+    if (task->has ("due")         &&
+        !context.task.has ("due") &&
+        context.task.has ("recur"))
+      throw std::string ("You cannot remove the due date from a recurring task.");
+
+    if (task->has ("recur") &&
+        !context.task.has ("recur"))
+      throw std::string ("You cannot remove the recurrence from a recurring task.");
+
     // Make all changes.
     foreach (other, all)
     {

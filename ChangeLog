@@ -7,6 +7,8 @@
    changes.  Now task asks "Proceed with change? (Yes/no/all/quit)".
  + Fixed bug #321 where all shell input was converted to lower case (thanks
    to Juergen Daubert).
+ + Fixed bug #327 that allowed the removal of a due date from a recurring
+   task.
 
 ------ old releases ------------------------------
 
