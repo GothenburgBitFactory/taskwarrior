@@ -1219,6 +1219,9 @@ void handleShell ()
     }
   }
   while (keepGoing && !std::cin.eof ());
+
+  // No need to repeat any overrides after the shell quits.
+  context.clearMessages ();
 }
 #endif
 

@@ -14,6 +14,7 @@
    Cory Donnelly).
  + Fixed bug that was causing the 'completed' report to sort incorrectly.
  + Fixed bug #322 which failed to propagate rc overrides to shell commands.
+ + Fixed redundant messages when exiting shell mode.
 
 ------ old releases ------------------------------
 
