@@ -9,6 +9,10 @@
    to Juergen Daubert).
  + Fixed bug #327 that allowed the removal of a due date from a recurring
    task.
+ + Fixed bug #317 which colored tasks in the 'completed' report according to
+   due dates, which are no longer relevant to a completed task (thanks to
+   Cory Donnelly).
+ + Fixed bug that was causing the 'completed' report to sort incorrectly.
 
 ------ old releases ------------------------------
 

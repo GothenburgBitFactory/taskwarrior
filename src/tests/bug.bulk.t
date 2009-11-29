@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 15;
 
 # Create the rc file.
 if (open my $fh, '>', 'bulk.rc')
@@ -49,13 +49,13 @@ qx{../task rc:bulk.rc add t4              due:thursday};
 qx{../task rc:bulk.rc add t5              due:friday};
 qx{../task rc:bulk.rc add t6              due:saturday};
 
-my $output = qx{yes|../task rc:bulk.rc pro:p1 pri:M 4 5 6};
+my $output = qx{echo "quit"|../task rc:bulk.rc pro:p1 pri:M 4 5 6};
+like ($output, qr/Modified 0 tasks/, '"quit" prevents any further modifications');
+
+my $output = qx{echo "all"|../task rc:bulk.rc pro:p1 pri:M 4 5 6};
 unlike ($output, qr/Task 4 "t4"\n  - No changes were made/, 'Task 4 modified');
 unlike ($output, qr/Task 5 "t5"\n  - No changes were made/, 'Task 5 modified');
 unlike ($output, qr/Task 6 "t6"\n  - No changes were made/, 'Task 6 modified');
-#diag ("---");
-#diag ($output);
-#diag ("---");
 
 $output = qx{../task rc:bulk.rc info 4};
 like ($output, qr/Project\s+p1/, 'project applied to 4');
