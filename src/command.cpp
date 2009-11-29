@@ -1169,13 +1169,9 @@ void handleShell ()
             << std::endl
             << std::endl;
 
-  // Preserve any special override arguments, and reapply them for each
-  // shell command.
-  std::vector <std::string> special;
-  foreach (arg, context.args)
-    if (arg->substr (0, 3) == "rc." ||
-        arg->substr (0, 3) == "rc:")
-      special.push_back (*arg);
+  // Make a copy because context.clear will delete them.
+  std::string permanentOverrides = " " + context.file_override
+                                 + " " + context.var_overrides;
 
   std::string quit = "quit"; // TODO i18n
   std::string command;
@@ -1187,8 +1183,10 @@ void handleShell ()
 
     command = "";
     std::getline (std::cin, command);
-    command = trim (command);
+    std::string decoratedCommand = trim (command + permanentOverrides);
 
+    // When looking for the 'quit' command, use 'command', not
+    // 'decoratedCommand'.
     if (command.length ()   >  0              &&
         command.length ()   <= quit.length () &&
         lowerCase (command) == quit.substr (0, command.length ()))
@@ -1202,8 +1200,7 @@ void handleShell ()
         context.clear ();
 
         std::vector <std::string> args;
-        split (args, command, ' ');
-        foreach (arg, special) context.args.push_back (*arg);
+        split (args, decoratedCommand, ' ');
         foreach (arg, args)    context.args.push_back (*arg);
 
         context.initialize ();

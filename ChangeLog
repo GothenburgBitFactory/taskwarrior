@@ -13,6 +13,7 @@
    due dates, which are no longer relevant to a completed task (thanks to
    Cory Donnelly).
  + Fixed bug that was causing the 'completed' report to sort incorrectly.
+ + Fixed bug #322 which failed to propagate rc overrides to shell commands.
 
 ------ old releases ------------------------------
 
