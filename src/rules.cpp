@@ -91,6 +91,8 @@ void autoColorize (
   // Note: fg, bg already contain colors specifically assigned via command.
   // Note: These rules form a hierarchy - the last rule is King.
 
+  Task::status status = task.getStatus ();
+
   // Colorization of the tagged.
   if (gsFg["color.tagged"] != Text::nocolor ||
       gsBg["color.tagged"] != Text::nocolor)
@@ -146,9 +148,11 @@ void autoColorize (
     }
   }
 
-  // Colorization of the active.
-  if (gsFg["color.active"] != Text::nocolor ||
-      gsBg["color.active"] != Text::nocolor)
+  // Colorization of the active, if not completed/deleted.
+  if ((gsFg["color.active"] != Text::nocolor ||
+      gsBg["color.active"] != Text::nocolor) &&
+      status != Task::completed &&
+      status != Task::deleted)
   {
     if (task.has ("start"))
     {
@@ -202,7 +206,9 @@ void autoColorize (
   }
 
   // Colorization of the due and overdue.
-  if (task.has ("due"))
+  if (task.has ("due")          &&
+      status != Task::completed &&
+      status != Task::deleted)
   {
     std::string due = task.get ("due");
     switch (getDueState (due))

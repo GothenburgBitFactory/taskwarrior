@@ -461,6 +461,7 @@ int runCustomReport (
     std::string column = sortColumn->substr (0, sortColumn->length () - 1);
     char direction = (*sortColumn)[sortColumn->length () - 1];
 
+    // TODO This code should really be using Att::type.
     if (column == "id")
       table.sortOn (columnIndex[column],
                     (direction == '+' ?

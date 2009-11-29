@@ -57,14 +57,16 @@ void wrapText (
 void split (
   std::vector<std::string>& results,
   const std::string& input,
-  const char delimiter)
+  const char delimiter,
+  bool nontrivial /* = true */)
 {
   results.clear ();
   std::string::size_type start = 0;
   std::string::size_type i;
   while ((i = input.find (delimiter, start)) != std::string::npos)
   {
-    results.push_back (input.substr (start, i - start));
+    if (!nontrivial || i != start)
+      results.push_back (input.substr (start, i - start));
     start = i + 1;
   }
 
@@ -76,7 +78,8 @@ void split (
 void split (
   std::vector<std::string>& results,
   const std::string& input,
-  const std::string& delimiter)
+  const std::string& delimiter,
+  bool nontrivial /* = true */)
 {
   results.clear ();
   std::string::size_type length = delimiter.length ();
@@ -85,7 +88,8 @@ void split (
   std::string::size_type i;
   while ((i = input.find (delimiter, start)) != std::string::npos)
   {
-    results.push_back (input.substr (start, i - start));
+    if (!nontrivial || i != start)
+      results.push_back (input.substr (start, i - start));
     start = i + length;
   }
 
