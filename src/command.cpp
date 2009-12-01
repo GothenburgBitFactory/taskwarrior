@@ -1140,11 +1140,20 @@ int handleDuplicate (std::string &outs)
     ++count;
   }
 
+  if (context.config.get ("echo.command", true))
+  {
+    out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+#ifdef FEATURE_NEW_ID
+    // All this, just for an id number.
+    std::vector <Task> all;
+    Filter none;
+    context.tdb.loadPending (all, none);
+    out << "Created task " << context.tdb.nextId () << std::endl;
+#endif
+  }
+
   context.tdb.commit ();
   context.tdb.unlock ();
-
-  if (context.config.get ("echo.command", true))
-    out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   outs = out.str ();
   return 0;
