@@ -21,6 +21,9 @@
    column was invalid.  It was misnamed in the documentation, which should
    have read 'recurrence_indicator'.  Also, the 'tag_indicator' column was
    not mentioned anywhere (thanks to T. Charles Yun).
+ + Fixed bug #319 that caused task to not properly detect the removal of a
+   tag when obtaining confirmation from the user fora bulk modification
+   (thanks to Cory Donnelly).
 
 ------ old releases ------------------------------
 

@@ -549,7 +549,6 @@ std::string taskDifferences (const Task& before, const Task& after)
 
   foreach (name, beforeAtts)
     if (*name              != "uuid" &&
-        after.get (*name)  != ""     &&
         before.get (*name) != after.get (*name))
       out << "  - "
           << *name
