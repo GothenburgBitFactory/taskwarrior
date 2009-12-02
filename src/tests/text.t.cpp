@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (109);
+  UnitTest t (117);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -114,7 +114,7 @@ int main (int argc, char** argv)
   t.is (items[0], "",              "split '-' '-' -> [0] ''");
   t.is (items[1], "",              "split '-' '-' -> [1] ''");
 
-  split (items, unsplit, '-');
+  split_minimal (items, unsplit, '-');
   t.is (items.size (), (size_t) 1, "split '-' '-' -> '-'");
 
   unsplit = "-a-bc-def";
@@ -125,7 +125,7 @@ int main (int argc, char** argv)
   t.is (items[2], "bc",            "split '-a-bc-def' '-' -> [2] 'bc'");
   t.is (items[3], "def",           "split '-a-bc-def' '-' -> [3] 'def'");
 
-  split (items, unsplit, '-');
+  split_minimal (items, unsplit, '-');
   t.is (items.size (), (size_t) 3, "split '-a-bc-def' '-' -> 'a' 'bc' 'def'");
   t.is (items[0], "a",             "split '-a-bc-def' '-' -> [1] 'a'");
   t.is (items[1], "bc",            "split '-a-bc-def' '-' -> [2] 'bc'");
@@ -136,9 +136,8 @@ int main (int argc, char** argv)
   split (items, unsplit, "--");
   t.is (items.size (), (size_t) 0, "split '' '--' -> 0 items");
 
-  split (items, unsplit, "--");
-  t.is (items.size (), (size_t) 1, "split '' '--' -> 1");
-  t.is (items[0], "",              "split '' '--' -> [1] ''");
+  split_minimal (items, unsplit, "--");
+  t.is (items.size (), (size_t) 0, "split '' '--' -> 0");
 
   unsplit = "a";
   split (items, unsplit, "--");
