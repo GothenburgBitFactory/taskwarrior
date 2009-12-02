@@ -15,6 +15,12 @@
  + Fixed bug that was causing the 'completed' report to sort incorrectly.
  + Fixed bug #322 which failed to propagate rc overrides to shell commands.
  + Fixed redundant messages when exiting shell mode.
+ + Fixed bug #333 which failed to display the ID of a duplicated task (thanks
+   to Cory Donnelly).
+ + Fixed bug #332 where task complained that the 'recur_ind' custom report
+   column was invalid.  It was misnamed in the documentation, which should
+   have read 'recurrence_indicator'.  Also, the 'tag_indicator' column was
+   not mentioned anywhere (thanks to T. Charles Yun).
 
 ------ old releases ------------------------------
 
