@@ -24,6 +24,9 @@
  + Fixed bug #319 that caused task to not properly detect the removal of a
    tag when obtaining confirmation from the user fora bulk modification
    (thanks to Cory Donnelly).
+ + Added feature - #310 that simplified and make clearer an error message
+   that complained about things that were beyond user control (thanks to
+   John Florian).
 
 ------ old releases ------------------------------
 
