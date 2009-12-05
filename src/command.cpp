@@ -574,7 +574,7 @@ int handleVersion (std::string &outs)
         << std::endl;
 
     foreach (i, deprecatedColors)
-      out << "  " << *i << std::endl;
+      out << "  " << *i << "=" << context.config.get (*i) << std::endl;
   }
 
   // Verify installation.  This is mentioned in the documentation as the way to
