@@ -100,7 +100,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
   // Create a sample .taskrc file.
   std::stringstream contents;
   contents << "# Task program configuration file.\n"
-           << "# For more documentation, see http://taskwarrior.org\n"
+           << "# For more documentation, see http://taskwarrior.org or try 'man task' and 'man taskrc'\n"
            << "\n"
            << "# Files\n"
            << "data.location=" << data << "\n"

@@ -2,16 +2,22 @@
 ------ current release ---------------------------
 
 1.8.5 ()
- + Fixed bug that was causing the 'completed' report to sort incorrectly.
  + Added feature to allow the user to quit when asked to confirm multiple
    changes.  Now task asks "Proceed with change? (Yes/no/all/quit)".
+ + Added feature #341 that makes explicit references to the task and taskrc
+   man pages, both in the auto-generated .taskrc file and the version command
+   output (thanks to Cory Donnelly).
+ + Added feature - #310 that simplified and make clearer an error message
+   that complained about things that were beyond user control (thanks to
+   John Florian).
+ + Fixed bug that was causing the 'completed' report to sort incorrectly.
  + Fixed bug #321 where all shell input was converted to lower case (thanks
    to Juergen Daubert).
  + Fixed bug #327 that allowed the removal of a due date from a recurring
    task.
- + Fixed bug #317 which colored tasks in the 'completed' report according to
-   due dates, which are no longer relevant to a completed task (thanks to
-   Cory Donnelly).
+ + Fixed bug #317 which colored tasks in the 'completed' report according
+   to due dates, which are no longer relevant to a completed task (thanks
+   to Cory Donnelly).
  + Fixed bug that was causing the 'completed' report to sort incorrectly.
  + Fixed bug #322 which failed to propagate rc overrides to shell commands.
  + Fixed redundant messages when exiting shell mode.
@@ -24,9 +30,6 @@
  + Fixed bug #319 that caused task to not properly detect the removal of a
    tag when obtaining confirmation from the user fora bulk modification
    (thanks to Cory Donnelly).
- + Added feature - #310 that simplified and make clearer an error message
-   that complained about things that were beyond user control (thanks to
-   John Florian).
 
 ------ old releases ------------------------------
 
