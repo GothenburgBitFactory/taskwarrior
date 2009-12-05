@@ -199,6 +199,7 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "timesheet")     { rc = handleReportTimesheet    (out); }
   else if (cmd.command == "add")           { rc = handleAdd                (out); }
   else if (cmd.command == "append")        { rc = handleAppend             (out); }
+  else if (cmd.command == "prepend")       { rc = handlePrepend            (out); }
   else if (cmd.command == "annotate")      { rc = handleAnnotate           (out); }
   else if (cmd.command == "done")          { rc = handleDone               (out); }
   else if (cmd.command == "delete")        { rc = handleDelete             (out); }

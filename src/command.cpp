@@ -1101,6 +1101,74 @@ int handleAppend (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int handlePrepend (std::string &outs)
+{
+  int count = 0;
+  std::stringstream out;
+
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.get ("locking", true));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+    permission.bigSequence ();
+
+  foreach (task, tasks)
+  {
+    foreach (other, all)
+    {
+      if (other->id             == task->id               || // Self
+          (task->has ("parent") &&
+           task->get ("parent") == other->get ("parent")) || // Sibling
+          other->get ("uuid")   == task->get ("parent"))     // Parent
+      {
+        Task before (*other);
+
+        // A non-zero value forces a file write.
+        int changes = 0;
+
+        // Apply other deltas.
+        changes += deltaPrepend (*other);
+        changes += deltaTags (*other);
+        changes += deltaAttributes (*other);
+
+        if (taskDiff (before, *other))
+        {
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
+          {
+            context.tdb.update (*other);
+
+            if (context.config.get ("echo.command", true))
+              out << "Prepended '"
+                  << context.task.get ("description")
+                  << "' to task "
+                  << other->id
+                  << std::endl;
+
+            ++count;
+          }
+        }
+      }
+    }
+  }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  if (context.config.get ("echo.command", true))
+    out << "Appended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+
+  outs = out.str ();
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int handleDuplicate (std::string &outs)
 {
   std::stringstream out;
@@ -1404,6 +1472,19 @@ int deltaAppend (Task& task)
   {
     task.set ("description",
               task.get ("description") + " " + context.task.get ("description"));
+    return 1;
+  }
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int deltaPrepend (Task& task)
+{
+  if (context.task.has ("description"))
+  {
+    task.set ("description",
+              context.task.get ("description") + " " + task.get ("description"));
     return 1;
   }
 

@@ -81,6 +81,10 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Appends more description to an existing task.");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task prepend [tags] [attrs] desc...");
+  table.addCell (row, 2, "Prepends more description to an existing task.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task annotate ID desc...");
   table.addCell (row, 2, "Adds an annotation to an existing task.");
 

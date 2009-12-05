@@ -57,6 +57,7 @@ bool nag (Task&);
 // command.cpp
 int handleAdd (std::string &);
 int handleAppend (std::string &);
+int handlePrepend (std::string &);
 int handleExport (std::string &);
 int handleDone (std::string &);
 int handleModify (std::string &);
@@ -79,6 +80,7 @@ void handleUndo ();
 void handleShell ();
 #endif
 int deltaAppend (Task&);
+int deltaPrepend (Task&);
 int deltaDescription (Task&);
 int deltaTags (Task&);
 int deltaAttributes (Task&);
