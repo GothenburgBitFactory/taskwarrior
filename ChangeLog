@@ -5,6 +5,11 @@
  + Added feature #292 that permits alternate line coloration in reports
    (thanks to Richard Querin).
  + The 'delete' command is now aliased to 'rm' (thanks to Ivo Jimenez).
+ + Added feature #336 which gives task a 'prepend' command for symmetry
+   with the 'append' command.
+ + Added feature #341 that makes explicit references to the task and taskrc
+   man pages, both in the auto-generated .taskrc file and the version command
+   output (thanks to Cory Donnelly).
  + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
    was run, and there are no tasks with due dates.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted
@@ -13,8 +18,6 @@
    due dates, which are no longer relevant to a completed task (thanks to
    Cory Donnelly).
  + Fixed bug that was causing the 'completed' report to sort incorrectly.
- + Added feature #336 which gives task a 'prepend' command for symmetry
-   with the 'append' command.
 
 ------ old releases ------------------------------
 

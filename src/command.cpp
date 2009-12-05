@@ -436,7 +436,7 @@ int handleVersion (std::string &outs)
   link.addCell (link.addRow (), 0,
     "See http://taskwarrior.org for the latest releases, online documentation "
     "and lively discussion.  New releases containing fixes and enhancements "
-    "are made frequently.");
+    "are made frequently.  Don't forget the man pages 'man task' and 'man taskrc'.");
 
   std::vector <std::string> all;
   context.config.all (all);
