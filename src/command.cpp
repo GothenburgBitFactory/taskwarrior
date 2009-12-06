@@ -858,7 +858,7 @@ int handleDone (std::string &outs)
 
       if (taskDiff (before, *task))
       {
-        if (permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
+        if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
         {
           context.tdb.update (*task);
 
@@ -979,6 +979,15 @@ int handleModify (std::string &outs)
         !task->has ("recur"))
       throw std::string ("You cannot specify an until date for a non-recurring task.");
 
+    if (task->has ("due")         &&
+        !context.task.has ("due") &&
+        context.task.has ("recur"))
+      throw std::string ("You cannot remove the due date from a recurring task.");
+
+    if (task->has ("recur") &&
+        !context.task.has ("recur"))
+      throw std::string ("You cannot remove the recurrence from a recurring task.");
+
     // Make all changes.
     foreach (other, all)
     {
@@ -1012,7 +1021,7 @@ int handleModify (std::string &outs)
 
         if (taskDiff (before, *other))
         {
-          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
           {
             context.tdb.update (*other);
             ++count;
@@ -1072,7 +1081,7 @@ int handleAppend (std::string &outs)
 
         if (taskDiff (before, *other))
         {
-          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
           {
             context.tdb.update (*other);
 
@@ -1228,11 +1237,20 @@ int handleDuplicate (std::string &outs)
     ++count;
   }
 
+  if (context.config.get ("echo.command", true))
+  {
+    out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+#ifdef FEATURE_NEW_ID
+    // All this, just for an id number.
+    std::vector <Task> all;
+    Filter none;
+    context.tdb.loadPending (all, none);
+    out << "Created task " << context.tdb.nextId () << std::endl;
+#endif
+  }
+
   context.tdb.commit ();
   context.tdb.unlock ();
-
-  if (context.config.get ("echo.command", true))
-    out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   outs = out.str ();
   return 0;
@@ -1258,13 +1276,9 @@ void handleShell ()
             << std::endl
             << std::endl;
 
-  // Preserve any special override arguments, and reapply them for each
-  // shell command.
-  std::vector <std::string> special;
-  foreach (arg, context.args)
-    if (arg->substr (0, 3) == "rc." ||
-        arg->substr (0, 3) == "rc:")
-      special.push_back (*arg);
+  // Make a copy because context.clear will delete them.
+  std::string permanentOverrides = " " + context.file_override
+                                 + " " + context.var_overrides;
 
   std::string quit = "quit"; // TODO i18n
   std::string command;
@@ -1276,11 +1290,13 @@ void handleShell ()
 
     command = "";
     std::getline (std::cin, command);
-    command = lowerCase (trim (command));
+    std::string decoratedCommand = trim (command + permanentOverrides);
 
-    if (command.length () > 0               &&
-        command.length () <= quit.length () &&
-        command == quit.substr (0, command.length ()))
+    // When looking for the 'quit' command, use 'command', not
+    // 'decoratedCommand'.
+    if (command.length ()   >  0              &&
+        command.length ()   <= quit.length () &&
+        lowerCase (command) == quit.substr (0, command.length ()))
     {
       keepGoing = false;
     }
@@ -1291,8 +1307,7 @@ void handleShell ()
         context.clear ();
 
         std::vector <std::string> args;
-        split (args, command, ' ');
-        foreach (arg, special) context.args.push_back (*arg);
+        split (args, decoratedCommand, ' ');
         foreach (arg, args)    context.args.push_back (*arg);
 
         context.initialize ();
@@ -1311,6 +1326,9 @@ void handleShell ()
     }
   }
   while (keepGoing && !std::cin.eof ());
+
+  // No need to repeat any overrides after the shell quits.
+  context.clearMessages ();
 }
 #endif
 
@@ -1443,7 +1461,7 @@ int handleAnnotate (std::string &outs)
 
     if (taskDiff (before, *task))
     {
-      if (permission.confirmed (before, taskDifferences (before, *task) + "Are you sure?"))
+      if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
       {
         context.tdb.update (*task);
 

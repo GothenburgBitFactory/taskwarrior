@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (109);
+  UnitTest t (117);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -104,11 +104,18 @@ int main (int argc, char** argv)
   t.is (items.size (), (size_t) 1, "split 'a' '-' -> 1 item");
   t.is (items[0], "a",             "split 'a' '-' -> 'a'");
 
+  split (items, unsplit, '-');
+  t.is (items.size (), (size_t) 1, "split 'a' '-' -> 1 item");
+  t.is (items[0], "a",             "split 'a' '-' -> 'a'");
+
   unsplit = "-";
   split (items, unsplit, '-');
   t.is (items.size (), (size_t) 2, "split '-' '-' -> '' ''");
   t.is (items[0], "",              "split '-' '-' -> [0] ''");
   t.is (items[1], "",              "split '-' '-' -> [1] ''");
+
+  split_minimal (items, unsplit, '-');
+  t.is (items.size (), (size_t) 1, "split '-' '-' -> '-'");
 
   unsplit = "-a-bc-def";
   split (items, unsplit, '-');
@@ -118,10 +125,19 @@ int main (int argc, char** argv)
   t.is (items[2], "bc",            "split '-a-bc-def' '-' -> [2] 'bc'");
   t.is (items[3], "def",           "split '-a-bc-def' '-' -> [3] 'def'");
 
+  split_minimal (items, unsplit, '-');
+  t.is (items.size (), (size_t) 3, "split '-a-bc-def' '-' -> 'a' 'bc' 'def'");
+  t.is (items[0], "a",             "split '-a-bc-def' '-' -> [1] 'a'");
+  t.is (items[1], "bc",            "split '-a-bc-def' '-' -> [2] 'bc'");
+  t.is (items[2], "def",           "split '-a-bc-def' '-' -> [3] 'def'");
+
   // void split (std::vector<std::string>& results, const std::string& input, const std::string& delimiter)
   unsplit = "";
   split (items, unsplit, "--");
   t.is (items.size (), (size_t) 0, "split '' '--' -> 0 items");
+
+  split_minimal (items, unsplit, "--");
+  t.is (items.size (), (size_t) 0, "split '' '--' -> 0");
 
   unsplit = "a";
   split (items, unsplit, "--");

@@ -40,6 +40,8 @@ std::string unquoteText (const std::string&);
 void extractLine (std::string&, std::string&, int);
 void split (std::vector<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const std::string&);
+void split_minimal (std::vector<std::string>&, const std::string&, const char);
+void split_minimal (std::vector<std::string>&, const std::string&, const std::string&);
 void join (std::string&, const std::string&, const std::vector<std::string>&);
 std::string commify (const std::string&);
 std::string lowerCase (const std::string&);

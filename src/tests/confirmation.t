@@ -49,10 +49,10 @@ if (open my $fh, '>', 'response.txt')
 
 qx{../task rc:confirm.rc add foo} for 1 .. 10;
 
-# Test the various forms of "yes".
-my $output = qx{echo "yes" | ../task rc:confirm.rc del 1};
-like ($output, qr/Permanently delete task 1 'foo'\? \(y\/n\)/, 'confirmation - yes works');
-unlike ($output, qr/Task not deleted\./, 'confirmation - yes works');
+# Test the various forms of "Yes".
+my $output = qx{echo "Yes" | ../task rc:confirm.rc del 1};
+like ($output, qr/Permanently delete task 1 'foo'\? \(y\/n\)/, 'confirmation - Yes works');
+unlike ($output, qr/Task not deleted\./, 'confirmation - Yes works');
 
 $output = qx{echo "ye" | ../task rc:confirm.rc del 2};
 like ($output, qr/Permanently delete task 2 'foo'\? \(y\/n\)/, 'confirmation - ye works');

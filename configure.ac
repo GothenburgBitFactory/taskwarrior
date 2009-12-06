@@ -6,6 +6,7 @@ AC_INIT(task, 1.9.0, support@taskwarrior.org)
 
 CFLAGS="${CFLAGS=}"
 CXXFLAGS="${CXXFLAGS=}"
+
 # this macro is used to get the arguments supplied
 # to the configure script (./configure --enable-debug)
 # Check if we have enable debug support.

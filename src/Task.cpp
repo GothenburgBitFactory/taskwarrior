@@ -527,7 +527,7 @@ void Task::validate () const
   if (!has ("uuid")  ||
       !has ("entry") ||
       !has ("description"))
-    throw std::string ("A task must have a uuid, entry date and description in order to be valid."); // TODO i18n
+    throw std::string ("A task must have a description in order to be valid."); // TODO i18n
 
   if (get ("description") == "") // No i18n
     throw std::string ("Cannot add a task that is blank, or contains <CR> or <LF> characters."); // TODO i18n

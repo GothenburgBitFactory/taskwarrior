@@ -50,7 +50,8 @@ Context::Context ()
 , tdb ()
 , stringtable ()
 , program ("")
-, overrides ("")
+, file_override ("")
+, var_overrides ("")
 , cmd ()
 , inShadow (false)
 {
@@ -66,6 +67,7 @@ void Context::initialize (int argc, char** argv)
 {
   // Capture the args.
   for (int i = 0; i < argc; ++i)
+  {
     if (i == 0)
     {
       program = argv[i];
@@ -76,6 +78,7 @@ void Context::initialize (int argc, char** argv)
     }
     else
       args.push_back (argv[i]);
+  }
 
   initialize ();
 }
@@ -351,13 +354,14 @@ void Context::loadCorrectConfigFile ()
   std::string rc   = home + "/.taskrc";
   std::string data = home + "/.task";
 
-  // Is there an override for rc?
+  // Is there an file_override for rc:?
   foreach (arg, args)
   {
     if (*arg == "--")
       break;
     else if (arg->substr (0, 3) == "rc:")
     {
+      file_override = *arg;
       rc = arg->substr (3, std::string::npos);
 
       home = rc;
@@ -381,7 +385,7 @@ void Context::loadCorrectConfigFile ()
   if (config.get ("data.location") != "")
     data = config.get ("data.location");
 
-  // Is there an override for data?
+  // Are there any var_overrides for data.location?
   foreach (arg, args)
   {
     if (*arg == "--")
@@ -442,7 +446,7 @@ void Context::loadCorrectConfigFile ()
           n.getUntilEOS (value))
       {
         config.set (name, value);
-        overrides += " " + *arg;
+        var_overrides += " " + *arg;
         footnote (std::string ("Configuration override ") +  // TODO i18n
                   arg->substr (3, std::string::npos));
       }
@@ -660,15 +664,21 @@ void Context::parse (
   if (parseCmd.command == "" && parseArgs.size () == 0)
   {
     // Apply overrides, if any.
-    std::string defaultCommand = config.get ("default.command") + overrides;
+    std::string defaultCommand = config.get ("default.command");
     if (defaultCommand != "")
     {
+      // Add on the overrides.
+      defaultCommand += " " + file_override + " " + var_overrides;
+
       // Stuff the command line.
       args.clear ();
       split (args, defaultCommand, ' ');
       header ("[task " + defaultCommand + "]");
 
       // Reinitialize the context and recurse.
+      file_override = "";
+      var_overrides = "";
+      footnotes.clear ();
       initialize ();
       parse (args, cmd, task, sequence, subst, filter);
     }
@@ -693,6 +703,8 @@ void Context::clear ()
 //  stringtable.clear ();
   program = "";
   args.clear ();
+  file_override = "";
+  var_overrides = "";
   cmd.command = "";
   tagAdditions.clear ();
   tagRemovals.clear ();

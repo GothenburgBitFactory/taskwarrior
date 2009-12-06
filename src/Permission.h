@@ -44,6 +44,7 @@ public:
 private:
   bool needConfirmation;
   bool allConfirmed;
+  bool quit;
 };
 
 #endif

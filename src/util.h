@@ -53,6 +53,7 @@ for (typeof (c) *foreach_p = & (c);                                \
 // util.cpp
 bool confirm (const std::string&);
 int confirm3 (const std::string&);
+int confirm4 (const std::string&);
 void delay (float);
 std::string formatSeconds (time_t);
 std::string formatSecondsCompact (time_t);
