@@ -1489,19 +1489,19 @@ int handleReportCalendar (std::string &outs)
   int monthsToDisplay = 1;
   int mFrom = today.month ();
   int yFrom = today.year ();
-  int mTo;
-  int yTo;
+  int mTo = mFrom;
+  int yTo = yFrom;
 
   // Determine what to do
   int numberOfArgs = context.args.size();
 
-  if (numberOfArgs == 1 ) {
+  if (numberOfArgs == 1) {
     // task cal
     monthsToDisplay = monthsPerLine;
     mFrom = today.month();
     yFrom = today.year();
   }
-  else if (numberOfArgs == 2 ) {
+  else if (numberOfArgs == 2) {
     if (context.args[1] == "y") {
       // task cal y
       monthsToDisplay = 12;
@@ -1520,7 +1520,7 @@ int handleReportCalendar (std::string &outs)
       yFrom = atoi( context.args[1].data());
     }
   }
-  else if (numberOfArgs == 3 ) {
+  else if (numberOfArgs == 3) {
     if (context.args[2] == "y") {
       // task cal due y
       monthsToDisplay = 12;
@@ -1533,7 +1533,7 @@ int handleReportCalendar (std::string &outs)
       yFrom = atoi( context.args[2].data());
     }
   }
-  else if (numberOfArgs == 4 ) {
+  else if (numberOfArgs == 4) {
     // task cal 8 2010 y
     monthsToDisplay = 12;
     mFrom = atoi( context.args[1].data());
@@ -1559,11 +1559,6 @@ int handleReportCalendar (std::string &outs)
     mFrom = oldest.month();
     yFrom = oldest.year();
   }
-
-  // If there are no tasks with due dates, then prevent showing a calendar from
-  // the year 2037.
-  if (countDueDates == 0)
-    throw std::string ("There are no tasks that have due dates.");
 
   mTo = mFrom + monthsToDisplay - 1;
   yTo = yFrom;

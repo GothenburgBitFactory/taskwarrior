@@ -2,7 +2,7 @@
 ################################################################################
 ## task - a command line task list manager.
 ##
-## Copyright 2006 - 2009, Paul Beckingham.
+## Copyright 2006 - 2009, Paul Beckingham, Federico Hernandez.
 ## All rights reserved.
 ##
 ## Unit test cal.t originally writen by Federico Hernandez
@@ -42,11 +42,11 @@ if (open my $fh, '>', 'cal.rc')
   close $fh;
   ok (-r 'cal.rc', 'Created cal.rc');
 }
-
+my @months = qw(Jan Fev Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
 my ($day, $nmon, $nyear) = (localtime)[3,4,5];
-my $nextmonth   = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")[($nmon+1) % 12];
-my $month       = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")[($nmon) % 12];
-my $prevmonth   = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")[($nmon-1) % 12];
+my $nextmonth   = $months[($nmon+1) % 12];
+my $month       = $months[($nmon) % 12];
+my $prevmonth   = $months[($nmon-1) % 12];
 my $nextyear = $nyear + 1901;
 my $year     = $nyear + 1900;
 
@@ -59,7 +59,7 @@ if ( $day <= 9)
 my $output = qx{../task rc:cal.rc rc._forcecolor:on cal};
 like   ($output, qr/\[36m$day/,      'Current day is highlighted');
 like   ($output, qr/$month\w+?\s+?$year/, 'Current month and year are displayed');
-qx{../task rc:cal.rc add zero};
+$output = qx{../task rc:cal.rc add zero};
 unlike ($output, qr/\[41m\d+/,       'No overdue tasks are present');
 unlike ($output, qr/\[43m\d+/,       'No due tasks are present');
 $output = qx{../task rc:cal.rc rc.weekstart:Sunday cal};
