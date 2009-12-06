@@ -10,6 +10,8 @@
  + Added feature #341 that makes explicit references to the task and taskrc
    man pages, both in the auto-generated .taskrc file and the version command
    output (thanks to Cory Donnelly).
+ + Added special 'nonag' tag that suppresses nag messages for a task.
+ + Added special 'nocolor' tag that suppresses colorization rules for a task.
  + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
    was run, and there are no tasks with due dates.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted
