@@ -55,6 +55,10 @@ void initializeColorRules ()
 ////////////////////////////////////////////////////////////////////////////////
 void autoColorize (Task& task, Color& c)
 {
+  // The special tag 'nocolor' overrides all auto colorization.
+  if (task.hasTag ("nocolor"))
+    return;
+
   // Note: fg, bg already contain colors specifically assigned via command.
   // Note: These rules form a hierarchy - the last rule is King.
 
