@@ -244,6 +244,8 @@ int autoComplete (
   {
     foreach (item, list)
     {
+      // An exact match is a special case.  Assume there is only one exact match
+      // and return immediately.
       if (partial == *item)
       {
         matches.clear ();
