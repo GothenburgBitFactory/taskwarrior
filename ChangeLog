@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.8.5 (12/05/2009)
+1.8.5 (12/05/2009) a6c7236ff34e5eee3ef1693b97cb1367e6e3c607
  + Added feature to allow the user to quit when asked to confirm multiple
    changes.  Now task asks "Proceed with change? (Yes/no/all/quit)".
  + Added feature #341 that makes explicit references to the task and taskrc
