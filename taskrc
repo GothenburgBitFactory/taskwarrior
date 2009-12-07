@@ -1,0 +1,348 @@
+# Sample .taskrc file to be auto-generated.
+
+### header
+title
+# .taskrc - taskwarrior configuration file
+
+date/ version of taskwarrior
+# Nov 23 - 1.8.4
+
+cautions
+# back up this file, if making significant changes
+# use a text editor, not a word processor
+# spaces or special charachters must be escaped "/" or contained in quotes "
+
+instructions
+# name=value
+# replace "foo"
+# respect processing order (downward)
+# comment character
+# using folding in vim
+
+where to look for help
+# task version command displays current settings
+# taskwarrior.org/rc
+
+### applications 
+browser=elinks
+editor=vim 
+emailclient=sup
+printer=lpr
+terminal=xterm
+
+### colors.panels
+# alternate.colors.panels=bright  #over-rides the following
+# panel.border.width=0   # pixels
+# color.panel.border=
+color.panel.appname=
+color.panel.clock=
+color.panel.completed=
+color.panel.date=
+color.panel.header=
+color.panel.included=
+color.panel.keys=
+color.panel.listing=
+color.panel.notify=
+color.panel.pending=
+color.panel.prompt=
+color.panel.searchstring=
+color.panel.showing=
+
+### colors.16.dark  (used for curses interactive)
+# alternate.colors.16.dark=bold16   #over-rides the following
+color.active=
+color.alternate.bg=
+color.due=
+color.footnote=
+color.header=
+color.history.add=
+color.history.delete=
+color.history.done=
+# color.keyword.foo=
+color.message=
+color.overdue=
+color.pri.H=
+color.pri.L=
+color.pri.M=
+color.pri.none=
+# color.project.foo=
+color.recurring=
+color.shell.bg=
+color.shell.prompt=
+# color.tag.foo=
+# color.tagged=
+
+### colors.16.light  (used for curses interactive)
+# alternate.colors.16.light=bright16   #over-rides the following
+color.active=
+color.alternate.bg=
+color.due=
+color.footnote=
+color.header=
+color.history.add=
+color.history.delete=
+color.history.done=
+# color.keyword.foo=
+color.message=
+color.overdue=
+color.pri.H=
+color.pri.L=
+color.pri.M=
+color.pri.none=
+# color.project.foo=
+color.recurring=
+color.shell.bg=
+color.shell.prompt=
+# color.tag.foo=
+# color.tagged=
+
+### colors.256.dark (used for cli)
+# alternate.colors.256.dark=zen   #over-rides the following
+color.ui.active=
+color.ui.alternate.bg=
+color.ui.due=
+color.ui.footnote=
+color.ui.header=
+color.ui.history.add=
+color.ui.history.delete=
+color.ui.history.done=
+# color.ui.keyword.foo=
+color.ui.message=
+color.ui.overdue=
+color.ui.pri.H=
+color.ui.pri.L=
+color.ui.pri.M=
+color.ui.pri.none=
+# color.ui.project.foo=
+color.ui.recurring=
+color.ui.shell.bg=
+color.ui.shell.prompt=
+# color.ui.tag.foo=
+# color.ui.tagged=
+
+### colors.256.light (used for cli)
+# alternate.colors.256.light=zen-lite   #over-rides the following
+color.ui.active=
+color.ui.alternate.bg=
+color.ui.due=
+color.ui.footnote=
+color.ui.header=
+color.ui.history.add=
+color.ui.history.delete=
+color.ui.history.done=
+# color.ui.keyword.foo=
+color.ui.message=
+color.ui.overdue=
+color.ui.pri.H=
+color.ui.pri.L=
+color.ui.pri.M=
+color.ui.pri.none=
+# color.ui.project.foo=
+color.ui.recurring=
+color.ui.shell.bg=
+color.ui.shell.prompt=
+# color.ui.tag.foo=
+# color.ui.tagged=
+
+### command aliases
+alias.rm=delete
+
+### contexts (@ key - interactive)
+@home
+@phone
+@shopping
+@work
+
+### completion
+complete.all.projects=no
+complete.all.tags=no
+# complete.all.desc=no
+# complete.desc.file=~/.task/complete.description.txt
+
+### data locations
+.taskrc.global=/etc/
+.taskrc.local=~/
+.taskrc.alternate=~/alternate/
+data.files=~/.task/
+note.files=~/.task/notes/
+plug-ins=~/.task/plug-ins/
+searches=~/.task/search/
+shared.files=~/.task/share/
+themes=~/.task/colors/
+
+### dates
+dateformat=YYYY/MM/DD
+due=7   (how manu days from now = due)
+weeknumber=yes
+weekstart=mon
+
+### defaults
+bulk=2   (number of tasks processed without confirmation)
+# command=interactive   (when run with no arguments) 
+locking=on
+priority=M
+project=
+rating=3
+prompt.default.action=Y   # Y,N,A,Q or blank, for none
+term.color=dark   #dark, light
+# use.terminal.title=yes
+
+### dialogs
+confirmation=yes
+nag=do more !
+ui.confirm.quit=no  
+
+### display
+alternating.bg=yes
+blanklines=on
+annotations=all   # all, flag, newest, none
+cal=full   #brief
+color=on
+color.keyword=word   #line, word
+color.project=word   #line, word
+color.tag=word   #line, word
+curses=on
+default.width=100
+echo.command=yes
+# _forcecolor=on 
+initial.ui.screen=report.next
+monthsperline=2
+notes=flag   # all, 1row, flag
+pager=on   # iftoolong, off
+rating=*   # character, number
+
+### exclusions (will be hidden from most reports)
+# due:+2m
+# proj:movies
+# rating:1
+status=waiting
+status=completed
+# tag.has:personal
+
+### export
+
+### fullscreen - f11 (hidden panels)
+keys
+tips
+title
+clock
+date
+stats
+
+### history
+
+### import
+bg=
+description=
+due=
+end=
+entry=
+fg=
+id=
+priority=
+project=
+recur=
+start=
+status=
+tags=
+uuid=
+
+### next
+limit=5 
+
+### reports  (map to f2 - f10)
+# Fields: id,uuid,project,priority,entry,start,due,recur,age,active,tags,description
+#         description_only
+# Description:   This report is ...
+# Sort:          due+,priority-,project+
+# Filter:        pro:x pri:H +bug
+# Limit:         10
+
+# long
+report.long.description=Lists all task, all data, matching the specified criteria
+report.long.columns=id,priority,project,description,tags,entry,start,due,recur,age
+report.long.labels=ID,Pri,Project,Description,Tags,Added,Started,Due,Recur,Age
+report.long.sort=due+,priority-,project+
+report.long.filter=status:pending
+
+# list
+report.list.description=Lists all tasks matching the specified criteria
+report.list.columns=id,priority,description,project,tags,due
+report.list.labels=ID,Pir,Description,Project,Tags,Due
+report.list.sort=due+,priority-,project+
+report.list.filter=status:pending
+
+# ls
+report.ls.description=Minimal listing of all tasks matching the specified criteria
+report.ls.columns=id,project,priority,description
+report.ls.labels=ID,Project,Pri,Description
+report.ls.sort=priority-,project+
+report.ls.filter=status:pending
+
+# newest
+report.newest.description=Shows the newest tasks
+report.newest.columns=id,project,priority,due,active,age,description
+report.newest.labels=ID,Project,Pri,Due,Active,Age,Description
+report.newest.sort=id-
+report.newest.filter=status:pending limit:10
+
+# oldest
+report.oldest.description=Shows the oldest tasks
+report.oldest.columns=id,project,priority,due,active,age,description
+report.oldest.labels=ID,Project,Pri,Due,Active,Age,Description
+report.oldest.sort=id+
+report.oldest.filter=status:pending limit:10
+
+# overdue
+report.overdue.description=Lists overdue tasks matching the specified criteria
+report.overdue.columns=id,project,priority,due,active,age,description
+report.overdue.labels=ID,Project,Pri,Due,Active,Age,Description
+report.overdue.sort=due+,priority-,project+
+report.overdue.filter=status:pending due.before:today
+
+# active
+report.active.description=Lists active tasks matching the specified criteria
+report.active.columns=id,project,priority,due,active,age,description
+report.active.labels=ID,Project,Pri,Due,Active,Age,Description
+report.active.sort=due+,priority-,project+
+report.active.filter=status:pending start.any:
+
+# completed
+report.completed.description=Lists completed tasks matching the specified criteria
+report.completed.columns=end,project,priority,age,description
+report.completed.labels=Complete,Project,Pri,Age,Description
+report.completed.sort=end+,priority-,project+
+report.completed.filter=status:completed
+
+# recurring
+report.recurring.description=Lists recurring tasks matching the specified criteria
+report.recurring.columns=id,project,priority,due,recur,active,age,description
+report.recurring.labels=ID,Project,Pri,Due,Recur,Active,Age,Description
+report.recurring.sort=due+,priority-,project+
+report.recurring.filter=status:pending parent.any:
+
+# pcal
+report.pcal.description=Format suitable for pcal
+report.pcal.labels=Due,ID,Description
+report.pcal.columns=due,id,description_only
+report.pcal.sort=due+
+report.pcal.filter=due.any: status:pending 
+
+### review
+review.pri.none
+review.due.none
+review.overdue   
+review.oldest
+
+### shadow file
+shadow.file= 
+shadow.command=
+shadow.notify=
+
+### statistics
+# stats.exclude=proj.foo
+
+### verbosity
+verbosity=chatty   #mute, quiet, chatty, exhaustive
+verbosity.tips=~/.task/fortune.txt
+
