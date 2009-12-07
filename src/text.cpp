@@ -420,3 +420,45 @@ bool noVerticalSpace (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//          Input: hello, world
+// Result for pos: y......y....
+bool isWordStart (const std::string& input, std::string::size_type pos)
+{
+  // Short circuit: no input means no word start.
+  if (input.length () == 0)
+    return false;
+
+  // If pos is the first alphanumeric character of the string.
+  if (pos == 0 && isalnum (input[pos]))
+    return true;
+
+  // If pos is not the first alphanumeric character, but there is a preceding
+  // non-alphanumeric character.
+  if (pos > 0 && isalnum (input[pos]) && !isalnum (input[pos - 1]))
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//          Input: hello, world
+// Result for pos: ....y......y
+bool isWordEnd (const std::string& input, std::string::size_type pos)
+{
+  // Short circuit: no input means no word start.
+  if (input.length () == 0)
+    return false;
+
+  // If pos is the last alphanumeric character of the string.
+  if (pos == input.length () - 1 && isalnum (input[pos]))
+    return true;
+
+  // If pos is not the last alphanumeric character, but there is a following
+  // non-alphanumeric character.
+  if (pos < input.length () - 1 && isalnum (input[pos]) && !isalnum (input[pos + 1]))
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////

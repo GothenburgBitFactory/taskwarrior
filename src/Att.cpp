@@ -77,6 +77,8 @@ static const char* modifierNames[] =
   "hasnt",
   "startswith", "left",
   "endswith",   "right",
+  "word",
+  "noword"
 };
 
 #define NUM_INTERNAL_NAMES   (sizeof (internalNames)   / sizeof (internalNames[0]))
@@ -375,7 +377,7 @@ bool Att::validNameValue (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete
+// TODO Deprecated - remove.
 bool Att::validMod (const std::string& mod)
 {
   for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
@@ -412,7 +414,8 @@ std::string Att::type (const std::string& name) const
 std::string Att::modType (const std::string& name) const
 {
   if (name == "hasnt" ||
-      name == "isnt")
+      name == "isnt"  ||
+      name == "noword")
     return "negative";
 
   return "positive";
@@ -612,6 +615,35 @@ bool Att::match (const Att& other) const
     {
       if (mValue >= other.mValue)
         return false;
+    }
+  }
+
+  // word = contains as a substring, with word boundaries.
+  else if (mMod == "word") // TODO i18n
+  {
+    // Fail if the substring is not found.
+    std::string::size_type sub = other.mValue.find (mValue);
+    if (sub == std::string::npos)
+      return false;
+
+    // Also fail if there is no word boundary at beginning and end.
+    if (!isWordStart (other.mValue, sub))
+      return false;
+
+    if (!isWordEnd (other.mValue, sub + mValue.length () - 1))
+      return false;
+  }
+
+  // noword = does not contain as a substring, with word boundaries.
+  else if (mMod == "noword") // TODO i18n
+  {
+    // Fail if the substring is not found.
+    std::string::size_type sub = other.mValue.find (mValue);
+    if (sub != std::string::npos &&
+        isWordStart (other.mValue, sub) &&
+        isWordEnd (other.mValue, sub + mValue.length () - 1))
+    {
+      return false;
     }
   }
 

@@ -65,8 +65,8 @@ qx{../task rc:utf8.rc add project:Çirçös utf8 in project};
 $output = qx{../task rc:utf8.rc ls project:Çirçös};
 like ($output, qr/Çirçös.+utf8 in project/, 'utf8 in project works');
 
-qx{../task rc:utf8.rc add utf8 in tag +☺};
-$output = qx{../task rc:utf8.rc ls +☺};
+qx{../task rc:utf8.rc add utf8 in tag +Zwölf};
+$output = qx{../task rc:utf8.rc ls +Zwölf};
 like ($output, qr/utf8 in tag/, 'utf8 in tag works');
 
 # Cleanup.

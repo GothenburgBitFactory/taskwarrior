@@ -52,6 +52,8 @@ void guess (const std::string&, std::vector<std::string>&, std::string&);
 bool digitsOnly (const std::string&);
 bool noSpaces (const std::string&);
 bool noVerticalSpace (const std::string&);
+bool isWordStart (const std::string&, std::string::size_type);
+bool isWordEnd (const std::string&, std::string::size_type);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

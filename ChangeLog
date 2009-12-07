@@ -10,6 +10,11 @@
  + Added feature #341 that makes explicit references to the task and taskrc
    man pages, both in the auto-generated .taskrc file and the version command
    output (thanks to Cory Donnelly).
+ + Added new attribute modifiers 'word' and 'noword' which find the existence
+   of whole words, or prove the non-existence of whole words.  If a task has
+   the description "Pay the bill", then "description.word:the" will match, but
+   "description.word:th" will not.  For partial word matches, there is still
+   "description.contains:th".
  + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
    was run, and there are no tasks with due dates.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted

@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest test (14);
+  UnitTest test (20);
 
   // Create a filter consisting of two Att criteria.
   Filter f;
@@ -66,6 +66,7 @@ int main (int argc, char** argv)
   // Modifiers.
   Task mods;
   mods.set ("name", "value");
+  mods.set ("description", "hello, world.");
 
   Att a ("name", "is", "value");
   f.clear ();
@@ -123,6 +124,42 @@ int main (int argc, char** argv)
 "above"
 "below"
 */
+
+  a = Att ("description", "word", "hello");
+  f.clear ();
+  f.push_back (a);
+  test.ok (f.pass (mods), "description:hello, world. -> description.word:hello = match");
+  // TODO test inverse.
+
+  a = Att ("description", "word", "world");
+  f.clear ();
+  f.push_back (a);
+  test.ok (f.pass (mods), "description:hello, world. -> description.word:world = match");
+  // TODO test inverse.
+
+  a = Att ("description", "word", "pig");
+  f.clear ();
+  f.push_back (a);
+  test.notok (f.pass (mods), "description:hello, world. -> description.word:pig = no match");
+  // TODO test inverse.
+
+  a = Att ("description", "noword", "hello");
+  f.clear ();
+  f.push_back (a);
+  test.notok (f.pass (mods), "description:hello, world. -> description.noword:hello = no match");
+  // TODO test inverse.
+
+  a = Att ("description", "noword", "world");
+  f.clear ();
+  f.push_back (a);
+  test.notok (f.pass (mods), "description:hello, world. -> description.noword:world = no match");
+  // TODO test inverse.
+
+  a = Att ("description", "noword", "pig");
+  f.clear ();
+  f.push_back (a);
+  test.ok (f.pass (mods), "description:hello, world. -> description.noword:pig = match");
+  // TODO test inverse.
 
   return 0;
 }

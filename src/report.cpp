@@ -260,6 +260,8 @@ int longUsage (std::string &outs)
       << "  hasnt"                                                            << "\n"
       << "  startswith (synonym left)"                                        << "\n"
       << "  endswith   (synonym right)"                                       << "\n"
+      << "  word"                                                             << "\n"
+      << "  noword"                                                           << "\n"
       <<                                                                         "\n"
       << "  For example:"                                                     << "\n"
       << "    task list due.before:eom priority.not:L"                        << "\n"

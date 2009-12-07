@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (95);
+  UnitTest t (97);
 
   Att a;
   t.notok (a.valid ("name"),            "Att::valid name         -> fail");
@@ -145,6 +145,14 @@ int main (int argc, char** argv)
   good = true;
   try {a6.mod ("endswith");} catch (...) {good = false;}
   t.ok (good, "Att::mod (endswith)");
+
+  good = true;
+  try {a6.mod ("word");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (word)");
+
+  good = true;
+  try {a6.mod ("noword");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (noword)");
 
   good = true;
   try {a6.mod ("fartwizzle");} catch (...) {good = false;}

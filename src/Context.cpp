@@ -690,6 +690,9 @@ void Context::parse (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Note: The reason some of these are commented out is because the ::clear
+// method is not really "clear" but "clear_some".  Some members do not need to
+// be initialized.  That makes this method something of a misnomer.  So be it.
 void Context::clear ()
 {
 //  Config                    config;
@@ -759,6 +762,7 @@ void Context::autoFilter (Task& t, Filter& f)
     }
 
     // The mechanism for filtering on tags is +/-<tag>.
+    // Do not handle here - see below.
     else if (att->second.name () == "tags")
     {
     }
@@ -776,17 +780,22 @@ void Context::autoFilter (Task& t, Filter& f)
     }
   }
 
+  // This is now a correct implementation of a filter on the presence or absence
+  // of a tag.  The prior code provided the illusion of leftmost partial tag
+  // matches, but was really using the 'contains' and 'nocontains' attribute
+  // modifiers.  See bug #293.
+
   // Include tagAdditions.
   foreach (tag, tagAdditions)
   {
-    f.push_back (Att ("tags", "has", *tag));
+    f.push_back (Att ("tags", "word", *tag));
     debug ("auto filter: +" + *tag);
   }
 
   // Include tagRemovals.
   foreach (tag, tagRemovals)
   {
-    f.push_back (Att ("tags", "hasnt", *tag));
+    f.push_back (Att ("tags", "noword", *tag));
     debug ("auto filter: -" + *tag);
   }
 }
