@@ -58,8 +58,16 @@ Config::Config (const std::string& file)
 // Read the Configuration file and populate the *this map.  The file format is
 // simply lines with name=value pairs.  Whitespace between name, = and value is
 // not tolerated, but blank lines and comments starting with # are allowed.
-bool Config::load (const std::string& file)
+//
+// Nested files are now supported, with the following construct:
+//   include /absolute/path/to/file
+//
+bool Config::load (const std::string& file, int nest /* = 1 */)
 {
+  if (nest > 10)
+    throw std::string ("Configuration file nested to more than 10 levels deep"
+                       " - this has to be a mistake.");
+
   std::ifstream in;
   in.open (file.c_str (), std::ifstream::in);
   if (in.good ())
@@ -82,8 +90,28 @@ bool Config::load (const std::string& file)
         {
           std::string key   = trim (line.substr (0, equal), " \t"); // no i18n
           std::string value = trim (line.substr (equal+1, line.length () - equal), " \t"); // no i18n
+
           (*this)[key] = value;
           sequence.push_back (key);
+        }
+        else
+        {
+          std::string::size_type include = line.find ("include"); // no i18n.
+          if (include != std::string::npos)
+          {
+            std::string included = expandPath ( trim ( line.substr (include + 7, std::string::npos), " \t"));
+            if (isAbsolutePath (included))
+            {
+              if (!access (included.c_str (), F_OK | R_OK))
+                this->load (included, nest + 1);
+              else
+                throw std::string ("Could not read include file '") + included + "'";
+            }
+            else
+              throw std::string ("Can only include files with absolute paths, not '") + included + "'";
+          }
+          else
+            throw std::string ("Malformed entry in ") + file + ": '" + line + "'";
         }
       }
     }

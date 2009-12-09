@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (67);
+  UnitTest t (74);
 
   // TODO bool confirm (const std::string&);
   // TODO int confirm3 (const std::string&);
@@ -113,6 +113,15 @@ int main (int argc, char** argv)
   // std::string expandPath (const std::string&);
   t.ok (expandPath ("foo") == "foo", "expandPath nop");
   t.ok (expandPath ("~/")  != "~/",  "expandPath ~/");
+  t.ok (expandPath ("~")   != "~",   "expandPath ~");
+
+  // bool isAbsolutePath (const std::string&);
+  t.notok (isAbsolutePath ("."),               "isAbsolutePath .");
+  t.notok (isAbsolutePath ("~"),               "isAbsolutePath ~");
+  t.ok    (isAbsolutePath (expandPath ("~")),  "isAbsolutePath (expandPath ~)");
+  t.ok    (isAbsolutePath (expandPath ("~/")), "isAbsolutePath (expandPath ~/)");
+  t.ok    (isAbsolutePath ("/"),               "isAbsolutePath /");
+  t.ok    (isAbsolutePath ("/tmp"),            "isAbsolutePath /tmp");
 
   // TODO bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
   // TODO bool slurp (const std::string&, std::string&, bool trimLines = false);

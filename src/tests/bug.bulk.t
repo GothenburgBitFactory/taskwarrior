@@ -52,7 +52,7 @@ qx{../task rc:bulk.rc add t6              due:saturday};
 my $output = qx{echo "quit"|../task rc:bulk.rc pro:p1 pri:M 4 5 6};
 like ($output, qr/Modified 0 tasks/, '"quit" prevents any further modifications');
 
-my $output = qx{echo "all"|../task rc:bulk.rc pro:p1 pri:M 4 5 6};
+$output = qx{echo "All"|../task rc:bulk.rc pro:p1 pri:M 4 5 6};
 unlike ($output, qr/Task 4 "t4"\n  - No changes were made/, 'Task 4 modified');
 unlike ($output, qr/Task 5 "t5"\n  - No changes were made/, 'Task 5 modified');
 unlike ($output, qr/Task 6 "t6"\n  - No changes were made/, 'Task 6 modified');

@@ -105,6 +105,11 @@ int main (int argc, char** argv)
   // 22 default report setting created in Config::Config.
   t.ok (all.size () >= 8, "Config::all");
 
+  // TODO Test includes
+  // TODO Test included nesting limit
+  // TODO Test included absolute vs relative
+  // TODO Test included missing file
+
   return 0;
 }
 

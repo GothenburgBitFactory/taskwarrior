@@ -40,7 +40,7 @@ public:
   Config (const Config&);
   Config& operator= (const Config&);
 
-  bool load (const std::string&);
+  bool load (const std::string&, int nest = 1);
   void createDefaultRC (const std::string&, const std::string&);
   void createDefaultData (const std::string&);
   void setDefaults ();

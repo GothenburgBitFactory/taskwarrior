@@ -356,6 +356,13 @@ std::string expandPath (const std::string& in)
   }
   else if ((tilde = copy.find ("~")) != std::string::npos)
   {
+    struct passwd* pw = getpwuid (getuid ());
+    std::string home = pw->pw_dir;
+    home += "/";
+    copy.replace (tilde, 1, home);
+  }
+  else if ((tilde = copy.find ("~")) != std::string::npos)
+  {
     std::string::size_type slash;
     if ((slash = copy.find  ("/", tilde)) != std::string::npos)
     {
@@ -367,6 +374,15 @@ std::string expandPath (const std::string& in)
   }
 
   return copy;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool isAbsolutePath (const std::string& in)
+{
+  if (in.length () && in[0] == '/')
+    return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
