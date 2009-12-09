@@ -44,6 +44,7 @@ public:
   void createDefaultRC (const std::string&, const std::string&);
   void createDefaultData (const std::string&);
   void setDefaults ();
+  void clear ();
 
   const std::string get (const char*);
   const std::string get (const char*, const char*);
@@ -56,6 +57,13 @@ public:
   void set (const std::string&, const double);
   void set (const std::string&, const std::string&);
   void all (std::vector <std::string>&);
+  void getSequence (std::vector<std::string>&);
+
+  std::string checkForDuplicates ();
+  std::string checkForDeprecatedColor ();
+
+private:
+  std::vector <std::string> sequence;
 };
 
 #endif

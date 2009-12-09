@@ -15,6 +15,8 @@
    the description "Pay the bill", then "description.word:the" will match, but
    "description.word:th" will not.  For partial word matches, there is still
    "description.contains:th".
+ + The 'version' command now complains about use of deprecated color names and
+   duplicate entries.
  + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
    was run, and there are no tasks with due dates.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted

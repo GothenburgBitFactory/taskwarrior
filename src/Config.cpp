@@ -83,6 +83,7 @@ bool Config::load (const std::string& file)
           std::string key   = trim (line.substr (0, equal), " \t"); // no i18n
           std::string value = trim (line.substr (equal+1, line.length () - equal), " \t"); // no i18n
           (*this)[key] = value;
+          sequence.push_back (key);
         }
       }
     }
@@ -330,6 +331,13 @@ void Config::setDefaults ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Config::clear ()
+{
+  std::map <std::string, std::string>::clear ();
+  sequence.clear ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Return the configuration value given the specified key.
 const std::string Config::get (const char* key)
 {
@@ -434,6 +442,74 @@ void Config::all (std::vector<std::string>& items)
 {
   foreach (i, *this)
     items.push_back (i->first);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Config::getSequence (std::vector<std::string>& items)
+{
+  items = sequence;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Config::checkForDuplicates ()
+{
+  std::vector <std::string> duplicates;
+  std::map <std::string, int> unique;
+
+  foreach (i, sequence)
+  {
+    if (unique.find (*i) != unique.end ())
+      duplicates.push_back (*i);
+    else
+      unique[*i] = 0;
+  }
+
+  std::stringstream out;
+  if (duplicates.size ())
+  {
+    out << "Found duplicate entries for:" << std::endl;
+
+    foreach (i, duplicates)
+      out << "  " << *i << std::endl;
+
+    out << std::endl;
+  }
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Config::checkForDeprecatedColor ()
+{
+  int count = 0;
+  std::vector <std::string> deprecated;
+  foreach (i, *this)
+  {
+    if (i->first.find ("color.") != std::string::npos)
+    {
+      std::string value = get (i->first);
+      if (value.find ("_") != std::string::npos)
+      {
+        ++count;
+        deprecated.push_back (i->first);
+      }
+    }
+  }
+
+  std::stringstream out;
+  if (count)
+  {
+    out << "Your .taskrc file contains color settings that use deprecated "
+        << "underscores.  Please check:"
+        << std::endl;
+
+    foreach (i, deprecated)
+      out << "  " << *i << "=" << get (*i) << std::endl;
+
+    out << std::endl;
+  }
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
