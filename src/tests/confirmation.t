@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 27;
+use Test::More tests => 47;
 
 # Create the rc file.
 if (open my $fh, '>', 'confirm.rc')
@@ -90,6 +90,38 @@ like ($output, qr/Task not deleted\./, 'confirmation - NO works');
 $output = qx{echo "N" | ../task rc:confirm.rc del 7};
 like ($output, qr/Permanently delete task 7 'foo'\? \(y\/n\)/, 'confirmation - N works');
 like ($output, qr/Task not deleted\./, 'confirmation - N works');
+
+# Test Yes for multiple changes
+$output = qx{echo -e "y\nY\nY\nY\nY" | ../task rc:confirm.rc 7-10 +bar};
+like ($output, qr/Proceed with change\? \(Yes\/no\/All\/quit\)/, 'multiple confirmations - Y works');
+like ($output, qr/Task 7 "foo"/,     'multiple confirmations - Y works');
+like ($output, qr/Task 8 "foo"/,     'multiple confirmations - Y works');
+like ($output, qr/Task 9 "foo"/,     'multiple confirmations - Y works');
+like ($output, qr/Task 10 "foo"/,    'multiple confirmations - Y works');
+like ($output, qr/Modified 4 tasks/, 'multiple confirmations - Y works');
+
+# Test no for multiple changes
+$output = qx{echo -e "N\nn\nn\nn\nn" | ../task rc:confirm.rc 7-10 -bar};
+like ($output, qr/Proceed with change\? \(Yes\/no\/All\/quit\)/, 'multiple confirmations - n works');
+like ($output, qr/Task 7 "foo"/,     'multiple confirmations - n works');
+like ($output, qr/Task 8 "foo"/,     'multiple confirmations - n works');
+like ($output, qr/Task 9 "foo"/,     'multiple confirmations - n works');
+like ($output, qr/Task 10 "foo"/,    'multiple confirmations - n works');
+like ($output, qr/Modified 0 tasks/, 'multiple confirmations - n works');
+
+# Test All for multiple changes
+$output = qx{echo -e "a\nA" | ../task rc:confirm.rc 7-10 -bar};
+like ($output, qr/Proceed with change\? \(Yes\/no\/All\/quit\)/, 'multiple confirmations - A works');
+like ($output,   qr/Task 7 "foo"/,     'multiple confirmations - A works');
+unlike ($output, qr/Task 8 "foo"/,     'multiple confirmations - A works');
+like ($output,   qr/Modified 4 tasks/, 'multiple confirmations - A works');
+
+# Test quit for multiple changes
+$output = qx{echo "q" | ../task rc:confirm.rc 7-10 +bar};
+like ($output, qr/Proceed with change\? \(Yes\/no\/All\/quit\)/, 'multiple confirmations - q works');
+like ($output,   qr/Task 7 "foo"/,     'multiple confirmations - q works');
+unlike ($output, qr/Task 8 "foo"/,     'multiple confirmations - q works');
+like ($output,   qr/Modified 0 tasks/, 'multiple confirmations - q works');
 
 # Test newlines.
 $output = qx{cat response.txt | ../task rc:confirm.rc del 7};
