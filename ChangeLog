@@ -28,6 +28,7 @@
  + Fixed bug that was causing the 'completed' report to sort incorrectly.
  + Fixed bug #347 which used only a lowercase "all" to confirm multiple changes
    instead of an uppercase "All" like the "Yes" answer.
+ + Added feature #307 that provides vim with syntax highlighting for taskrc.
 
 ------ old releases ------------------------------
 
