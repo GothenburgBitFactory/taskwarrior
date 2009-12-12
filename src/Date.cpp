@@ -272,6 +272,19 @@ const std::string Date::toString (const std::string& format /*= "m/d/Y" */) cons
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string Date::toStringWithTime (const std::string& format /*= "m/d/Y" */) const
+{
+  // Format as above.
+  std::string formatted = toString (format);
+
+  char buffer[12];
+  sprintf (buffer, " %d:%02d:%02d", hour (), minute (), second ());
+  formatted += buffer;
+
+  return formatted;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Date::valid (const std::string& input, const std::string& format)
 {
   try
@@ -454,6 +467,27 @@ int Date::year () const
 {
   struct tm* t = localtime (&mT);
   return t->tm_year + 1900;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Date::hour () const
+{
+  struct tm* t = localtime (&mT);
+  return t->tm_hour;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Date::minute () const
+{
+  struct tm* t = localtime (&mT);
+  return t->tm_min;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Date::second () const
+{
+  struct tm* t = localtime (&mT);
+  return t->tm_sec;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

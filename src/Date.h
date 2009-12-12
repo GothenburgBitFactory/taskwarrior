@@ -47,6 +47,7 @@ public:
   std::string toEpochString ();
   void toMDY (int&, int&, int&);
   const std::string toString (const std::string& format = "m/d/Y") const;
+  const std::string toStringWithTime (const std::string& format = "m/d/Y") const;
   static bool valid (const std::string&, const std::string& format = "m/d/Y");
   static bool valid (const int, const int, const int);
 
@@ -63,6 +64,9 @@ public:
   int year () const;
   int weekOfYear (int) const;
   int dayOfWeek () const;
+  int hour () const;
+  int minute () const;
+  int second () const;
 
   bool operator== (const Date&);
   bool operator!= (const Date&);

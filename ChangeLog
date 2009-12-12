@@ -18,6 +18,9 @@
  + The 'version' command now complains about use of deprecated color names and
    duplicate entries.
  + Task now supports nested .taskrc files using the "include /path" directive.
+ + The 'entry', 'start' and 'end' columns now have equivalents that include the
+   time, and are called 'entry_time', 'start_time', and 'end_time', for use in
+   custom reports.
  + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
    was run, and there are no tasks with due dates.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted

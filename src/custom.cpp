@@ -237,6 +237,25 @@ int runCustomReport (
       }
     }
 
+    else if (*col == "entry_time")
+    {
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Added");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string entered;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        entered = tasks[row].get ("entry");
+        if (entered.length ())
+        {
+          Date dt (::atoi (entered.c_str ()));
+          entered = dt.toStringWithTime (context.config.get ("dateformat", "m/d/Y"));
+          table.addCell (row, columnCount, entered);
+        }
+      }
+    }
+
     else if (*col == "start")
     {
       table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Started");
@@ -256,6 +275,25 @@ int runCustomReport (
       }
     }
 
+    else if (*col == "start_time")
+    {
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Started");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string started;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        started = tasks[row].get ("start");
+        if (started.length ())
+        {
+          Date dt (::atoi (started.c_str ()));
+          started = dt.toStringWithTime (context.config.get ("dateformat", "m/d/Y"));
+          table.addCell (row, columnCount, started);
+        }
+      }
+    }
+
     else if (*col == "end")
     {
       table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Completed");
@@ -270,6 +308,25 @@ int runCustomReport (
         {
           Date dt (::atoi (started.c_str ()));
           started = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+          table.addCell (row, columnCount, started);
+        }
+      }
+    }
+
+    else if (*col == "end_time")
+    {
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Completed");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::right);
+
+      std::string started;
+      for (unsigned int row = 0; row < tasks.size(); ++row)
+      {
+        started = tasks[row].get ("end");
+        if (started.length ())
+        {
+          Date dt (::atoi (started.c_str ()));
+          started = dt.toStringWithTime (context.config.get ("dateformat", "m/d/Y"));
           table.addCell (row, columnCount, started);
         }
       }
@@ -576,8 +633,11 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "project"              &&
         *it != "priority"             &&
         *it != "entry"                &&
+        *it != "entry_time"           &&
         *it != "start"                &&
+        *it != "start_time"           &&
         *it != "end"                  &&
+        *it != "end_time"             &&
         *it != "due"                  &&
         *it != "age"                  &&
         *it != "age_compact"          &&
