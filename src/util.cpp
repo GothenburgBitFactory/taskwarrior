@@ -174,22 +174,22 @@ std::string formatSeconds (time_t delta)
     sprintf (formatted, "%d wk%s",   // TODO i18n
                         (int) (days / 7.0),
                         ((int) (days / 7.0) == 1 ? "" : "s"));   // TODO i18n
-  else if (days >= 1.0)
+  else if (delta >= 86400)
     sprintf (formatted, "%d day%s",   // TODO i18n
                         (int) days,
                         ((int) days == 1 ? "" : "s"));   // TODO i18n
-  else if (days * 24 >= 1.0)
+  else if (delta >= 3600)
     sprintf (formatted, "%d hr%s",   // TODO i18n
-                        (int) (days * 24.0),
-                        ((int) (days * 24) == 1 ? "" : "s"));   // TODO i18n
-  else if (days * 24 * 60 >= 1)
+                        (int) (delta / 3600),
+                        ((int) (delta / 3600) == 1 ? "" : "s"));   // TODO i18n
+  else if (delta >= 60)
     sprintf (formatted, "%d min%s",   // TODO i18n
-                        (int) (days * 24 * 60),
-                        ((int) (days * 24 * 60) == 1 ? "" : "s"));   // TODO i18n
-  else if (days * 24 * 60 * 60 >= 1)
+                        (int) (delta / 60),
+                        ((int) (delta / 60) == 1 ? "" : "s"));   // TODO i18n
+  else if (delta >= 1)
     sprintf (formatted, "%d sec%s",   // TODO i18n
-                        (int) (days * 24 * 60 * 60),
-                        ((int) (days * 24 * 60 * 60) == 1 ? "" : "s"));   // TODO i18n
+                        (int) delta,
+                        ((int) delta == 1 ? "" : "s"));   // TODO i18n
   else
     strcpy (formatted, "-"); // no i18n
 
@@ -203,15 +203,14 @@ std::string formatSecondsCompact (time_t delta)
   char formatted[24];
   float days = (float) delta / 86400.0;
 
-  if (days >= 365)                sprintf (formatted, "%.1fy", (days / 365.2422));         // TODO i18n
-  else if (days > 84)             sprintf (formatted, "%1dmo", (int) (days / 30.6));       // TODO i18n
-  else if (days > 13)             sprintf (formatted, "%dwk", (int) (days / 7.0));         // TODO i18n
-  else if (days >= 1.0)           sprintf (formatted, "%dd", (int) days);                  // TODO i18n
-  else if (days * 24 >= 1.0)      sprintf (formatted, "%dh", (int) (days * 24.0));         // TODO i18n
-  else if (days * 24 * 60 >= 1)   sprintf (formatted, "%dm", (int) (days * 24 * 60));      // TODO i18n
-  else if (days * 24 * 3600 >= 1) sprintf (formatted, "%ds", (int) (days * 24 * 60 * 60)); // TODO i18n
-  else
-    strcpy (formatted, "-"); // no i18n
+       if (days >= 365)    sprintf (formatted, "%.1fy", (days / 365.2422));    // TODO i18n
+  else if (days > 84)      sprintf (formatted, "%1dmo", (int) (days / 30.6));  // TODO i18n
+  else if (days > 13)      sprintf (formatted, "%dwk",  (int) (days / 7.0));   // TODO i18n
+  else if (delta >= 86400) sprintf (formatted, "%dd",   (int) days);           // TODO i18n
+  else if (delta >= 3600)  sprintf (formatted, "%dh",   (int) (delta / 3600)); // TODO i18n
+  else if (delta >= 60)    sprintf (formatted, "%dm",   (int) (delta / 60));   // TODO i18n
+  else if (delta >= 1)     sprintf (formatted, "%ds",   (int) delta);          // TODO i18n
+  else                     strcpy (formatted, "-");
 
   return std::string (formatted);
 }
@@ -225,7 +224,7 @@ std::string formatBytes (size_t bytes)
        if (bytes >=  995000000) sprintf (formatted, "%.1f GiB", (bytes / 1000000000.0));
   else if (bytes >=     995000) sprintf (formatted, "%.1f MiB", (bytes /    1000000.0));
   else if (bytes >=        995) sprintf (formatted, "%.1f KiB", (bytes /       1000.0));
-  else                          sprintf (formatted, "%d B", (int)bytes                );
+  else                          sprintf (formatted, "%d B",     (int)bytes            );
 
   return commify (formatted);
 }

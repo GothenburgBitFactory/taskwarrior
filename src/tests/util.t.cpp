@@ -62,7 +62,7 @@ int main (int argc, char** argv)
   t.is (formatSeconds (85 * 86400 - 1),  "2 mths",  "85 days - 1 sec -> 2 mths");
   t.is (formatSeconds (85 * 86400),      "2 mths",  "85 days -> 2 mths");
   t.is (formatSeconds (85 * 86400 + 1),  "2 mths",  "85 days + 1 sec -> 2 mths");
-  t.is (formatSeconds (365 * 86400 - 1), "1.0 yrs", "365 days - 1 sec -> 1.0 yrs");
+  t.is (formatSeconds (365 * 86400 - 1), "11 mths", "365 days - 1 sec -> 11 mths");
   t.is (formatSeconds (365 * 86400),     "1.0 yrs", "365 days -> 1.0 yrs");
   t.is (formatSeconds (365 * 86400 + 1), "1.0 yrs", "365 days + 1 sec -> 1.0 yrs");
 
@@ -87,7 +87,7 @@ int main (int argc, char** argv)
   t.is (formatSecondsCompact (85 * 86400 - 1),  "2mo",  "85 days - 1 sec -> 2mo");
   t.is (formatSecondsCompact (85 * 86400),      "2mo",  "85 days -> 2mo");
   t.is (formatSecondsCompact (85 * 86400 + 1),  "2mo",  "85 days + 1 sec -> 2mo");
-  t.is (formatSecondsCompact (365 * 86400 - 1), "1.0y", "365 days - 1 sec -> 1.0y");
+  t.is (formatSecondsCompact (365 * 86400 - 1), "11mo", "365 days - 1 sec -> 11mo");
   t.is (formatSecondsCompact (365 * 86400),     "1.0y", "365 days -> 1.0y");
   t.is (formatSecondsCompact (365 * 86400 + 1), "1.0y", "365 days + 1 sec -> 1.0y");
 
