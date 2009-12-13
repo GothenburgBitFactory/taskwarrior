@@ -2059,7 +2059,7 @@ std::string getFullDescription (Task& task)
   task.getAnnotations (annotations);
   foreach (anno, annotations)
   {
-    Date dt (atoi (anno->name ().substr (11, std::string::npos).c_str ()));
+    Date dt (atoi (anno->name ().substr (11).c_str ()));
     std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
     desc += "\n" + when + " " + anno->value ();
   }

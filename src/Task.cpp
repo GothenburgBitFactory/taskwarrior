@@ -220,7 +220,7 @@ void Task::legacyParse (const std::string& line)
                 set (pair[0], pair[1]);
             }
 
-            set ("description", line.substr (closeAttrBracket + 2, std::string::npos)); // No i18n
+            set ("description", line.substr (closeAttrBracket + 2)); // No i18n
           }
           else
             throw std::string ("Missing attribute brackets"); // TODO i18n
@@ -321,7 +321,7 @@ void Task::legacyParse (const std::string& line)
                 }
               }
 
-              set ("description", line.substr (closeAnnoBracket + 2, std::string::npos)); // No i18n
+              set ("description", line.substr (closeAnnoBracket + 2)); // No i18n
             }
             else
               throw std::string ("Missing annotation brackets."); // TODO i18n

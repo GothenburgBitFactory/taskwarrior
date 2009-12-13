@@ -69,7 +69,7 @@ void split (
   }
 
   if (input.length ())
-    results.push_back (input.substr (start, std::string::npos));
+    results.push_back (input.substr (start));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ void split_minimal (
   }
 
   if (input.length ())
-    results.push_back (input.substr (start, std::string::npos));
+    results.push_back (input.substr (start));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +110,7 @@ void split (
   }
 
   if (input.length ())
-    results.push_back (input.substr (start, std::string::npos));
+    results.push_back (input.substr (start));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,7 +132,7 @@ void split_minimal (
   }
 
   if (input.length ())
-    results.push_back (input.substr (start, std::string::npos));
+    results.push_back (input.substr (start));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -198,7 +198,7 @@ void extractLine (std::string& text, std::string& line, int length)
   if (eol != std::string::npos && eol < (unsigned) length)
   {
     line = text.substr (0, eol); // strip \n
-    text = text.substr (eol + 1, std::string::npos);
+    text = text.substr (eol + 1);
     return;
   }
 
@@ -222,7 +222,7 @@ void extractLine (std::string& text, std::string& line, int length)
   if (eol)
   {
     line = text.substr (0, eol);
-    text = text.substr (eol + 1, std::string::npos);
+    text = text.substr (eol + 1);
   }
 
   // If no space was found, hyphenate.
@@ -231,12 +231,12 @@ void extractLine (std::string& text, std::string& line, int length)
     if (length > 1)
     {
       line = text.substr (0, length - 1) + "-";
-      text = text.substr (length - 1, std::string::npos);
+      text = text.substr (length - 1);
     }
     else
     {
       line = text.substr (0, 1);
-      text = text.substr (length, std::string::npos);
+      text = text.substr (length);
     }
   }
 }

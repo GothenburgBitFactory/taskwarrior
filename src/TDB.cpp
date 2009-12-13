@@ -519,22 +519,22 @@ void TDB::undo ()
   // pop last tx
   u.pop_back (); // separator.
 
-  std::string current = u.back ().substr (4, std::string::npos);
+  std::string current = u.back ().substr (4);
   u.pop_back ();
 
   std::string prior;
   std::string when;
   if (u.back ().substr (0, 5) == "time ")
   {
-    when = u.back ().substr (5, std::string::npos);
+    when = u.back ().substr (5);
     u.pop_back ();
     prior = "";
   }
   else
   {
-    prior = u.back ().substr (4, std::string::npos);
+    prior = u.back ().substr (4);
     u.pop_back ();
-    when = u.back ().substr (5, std::string::npos);
+    when = u.back ().substr (5);
     u.pop_back ();
   }
 

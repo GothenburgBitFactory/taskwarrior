@@ -88,7 +88,7 @@ bool Nibbler::getUntil (char c, std::string& result)
     }
     else
     {
-      result = mInput.substr (mCursor, std::string::npos);
+      result = mInput.substr (mCursor);
       mCursor = mInput.length ();
     }
 
@@ -111,7 +111,7 @@ bool Nibbler::getUntil (const std::string& terminator, std::string& result)
     }
     else
     {
-      result = mInput.substr (mCursor, std::string::npos);
+      result = mInput.substr (mCursor);
       mCursor = mInput.length ();
     }
 
@@ -134,7 +134,7 @@ bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
     }
     else
     {
-      result = mInput.substr (mCursor, std::string::npos);
+      result = mInput.substr (mCursor);
       mCursor = mInput.length ();
     }
 
@@ -284,7 +284,7 @@ bool Nibbler::getUntilEOS (std::string& result)
 {
   if (mCursor < mInput.length ())
   {
-    result = mInput.substr (mCursor, std::string::npos);
+    result = mInput.substr (mCursor);
     mCursor = mInput.length ();
     return true;
   }

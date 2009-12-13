@@ -116,7 +116,7 @@ bool Duration::valid (const std::string& input) const
     if (! isdigit (lower_input[i]) &&
         i == length - 1)
     {
-      std::string type = lower_input.substr (length - 1, std::string::npos);
+      std::string type = lower_input.substr (length - 1);
       if (type == "d" ||   // TODO i18n
           type == "w" ||   // TODO i18n
           type == "m" ||   // TODO i18n

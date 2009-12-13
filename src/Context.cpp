@@ -362,7 +362,7 @@ void Context::loadCorrectConfigFile ()
     else if (arg->substr (0, 3) == "rc:")
     {
       file_override = *arg;
-      rc = arg->substr (3, std::string::npos);
+      rc = arg->substr (3);
 
       home = rc;
       std::string::size_type last_slash = rc.rfind ("/");
@@ -393,7 +393,7 @@ void Context::loadCorrectConfigFile ()
     else if (arg->substr (0, 17) == "rc.data.location:" ||
              arg->substr (0, 17) == "rc.data.location=")
     {
-      data = arg->substr (17, std::string::npos);
+      data = arg->substr (17);
       header ("Using alternate data.location " + data); // TODO i18n
       break;
     }
@@ -448,7 +448,7 @@ void Context::loadCorrectConfigFile ()
         config.set (name, value);
         var_overrides += " " + *arg;
         footnote (std::string ("Configuration override ") +  // TODO i18n
-                  arg->substr (3, std::string::npos));
+                  arg->substr (3));
       }
     }
     else
@@ -469,7 +469,7 @@ void Context::loadAliases ()
   {
     if (var->substr (0, 6) == "alias.")
     {
-      std::string alias = var->substr (6, std::string::npos);
+      std::string alias = var->substr (6);
       std::string canonical = config.get (*var);
 
       aliases[alias] = canonical;
@@ -538,8 +538,8 @@ void Context::parse (
           throw stringtable.get (TAGS_NO_COMMA,
                                  "Tags are not permitted to contain commas.");
 
-        tagAdditions.push_back (arg->substr (1, std::string::npos));
-        parseTask.addTag       (arg->substr (1, std::string::npos));
+        tagAdditions.push_back (arg->substr (1));
+        parseTask.addTag       (arg->substr (1));
       }
 
       // Tags to remove begin with '-'.
@@ -555,7 +555,7 @@ void Context::parse (
           throw stringtable.get (TAGS_NO_COMMA,
                                  "Tags are not permitted to contain commas.");
 
-        tagRemovals.push_back (arg->substr (1, std::string::npos));
+        tagRemovals.push_back (arg->substr (1));
       }
 
       // Atributes - name[.mod]:[value]

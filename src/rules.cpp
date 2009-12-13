@@ -98,7 +98,7 @@ void autoColorize (Task& task, Color& c)
   {
     if (it->first.substr (0, 10) == "color.tag.")
     {
-      std::string value = it->first.substr (10, std::string::npos);
+      std::string value = it->first.substr (10);
       if (task.hasTag (value))
         c.blend (it->second);
     }
@@ -109,7 +109,7 @@ void autoColorize (Task& task, Color& c)
   {
     if (it->first.substr (0, 14) == "color.project.")
     {
-      std::string value = it->first.substr (14, std::string::npos);
+      std::string value = it->first.substr (14);
       if (task.get ("project") == value)
         c.blend (it->second);
     }
@@ -120,7 +120,7 @@ void autoColorize (Task& task, Color& c)
   {
     if (it->first.substr (0, 14) == "color.keyword.")
     {
-      std::string value = lowerCase (it->first.substr (14, std::string::npos));
+      std::string value = lowerCase (it->first.substr (14));
       std::string desc  = lowerCase (task.get ("description"));
       if (desc.find (value) != std::string::npos)
         c.blend (it->second);

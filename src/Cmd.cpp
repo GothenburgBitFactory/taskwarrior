@@ -147,7 +147,7 @@ void Cmd::load ()
     {
       if (i->substr (0, 7) == "report.")
       {
-        std::string report = i->substr (7, std::string::npos);
+        std::string report = i->substr (7);
         std::string::size_type columns = report.find (".columns");
         if (columns != std::string::npos)
         {

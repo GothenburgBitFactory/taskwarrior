@@ -137,7 +137,7 @@ Color::Color (const std::string& spec)
     else if (word.substr (0, 4) == "grey" ||
              word.substr (0, 4) == "gray")
     {
-      index = atoi (word.substr (4, std::string::npos).c_str ());
+      index = atoi (word.substr (4).c_str ());
       if (index < 0 || index > 23)
         throw std::string ("The color '") + *it + "' is not recognized.";
 
@@ -160,7 +160,7 @@ Color::Color (const std::string& spec)
     // rgbRGB, where 0 <= R,G,B <= 5.
     else if (word.substr (0, 3) == "rgb")
     {
-      index = atoi (word.substr (3, std::string::npos).c_str ());
+      index = atoi (word.substr (3).c_str ());
       if (word.length () != 6 ||
           index < 0 || index > 555)
         throw std::string ("The color '") + *it + "' is not recognized.";
@@ -194,7 +194,7 @@ Color::Color (const std::string& spec)
     // colorN, where 0 <= N <= 255.
     else if (word.substr (0, 5) == "color")
     {
-      index = atoi (word.substr (5, std::string::npos).c_str ());
+      index = atoi (word.substr (5).c_str ());
       if (index < 0 || index > 255)
         throw std::string ("The color '") + *it + "' is not recognized.";
 

@@ -736,8 +736,7 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
         if (words[w].length () > 1 &&
             words[w][0] == '+')
         {
-          context.args.push_back (std::string ("project:") +
-                                  words[w].substr (1, std::string::npos));
+          context.args.push_back (std::string ("project:") + words[w].substr (1));
         }
 
         // Convert "+aaa" to "project:aaa".
@@ -745,8 +744,7 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
         else if (words[w].length () > 1 &&
                  words[w][0] == '@')
         {
-          context.args.push_back (std::string ("+") +
-                                  words[w].substr (1, std::string::npos));
+          context.args.push_back (std::string ("+") + words[w].substr (1));
         }
 
         // Convert "(A)" to "priority:H".

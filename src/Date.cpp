@@ -705,12 +705,12 @@ bool Date::isRelativeDate (const std::string& input)
     if (isdigit (input[1]))
     {
       number = atoi (input.substr (0, 2).c_str ());
-      ordinal = lowerCase (input.substr (2, std::string::npos));
+      ordinal = lowerCase (input.substr (2));
     }
     else
     {
       number = atoi (input.substr (0, 2).c_str ());
-      ordinal = lowerCase (input.substr (1, std::string::npos));
+      ordinal = lowerCase (input.substr (1));
     }
 
     // Sanity check.

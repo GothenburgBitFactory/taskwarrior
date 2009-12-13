@@ -99,7 +99,7 @@ bool Config::load (const std::string& file, int nest /* = 1 */)
           std::string::size_type include = line.find ("include"); // no i18n.
           if (include != std::string::npos)
           {
-            std::string included = expandPath ( trim ( line.substr (include + 7, std::string::npos), " \t"));
+            std::string included = expandPath ( trim ( line.substr (include + 7), " \t"));
             if (isAbsolutePath (included))
             {
               if (!access (included.c_str (), F_OK | R_OK))

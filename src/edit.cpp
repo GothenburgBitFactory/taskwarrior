@@ -161,7 +161,7 @@ static std::string formatTask (Task task)
   task.getAnnotations (annotations);
   foreach (anno, annotations)
   {
-    Date dt (::atoi (anno->name ().substr (11, std::string::npos).c_str ()));
+    Date dt (::atoi (anno->name ().substr (11).c_str ()));
     before << "  Annotation:        " << dt.toString (context.config.get ("dateformat", "m/d/Y"))
            << " "                     << anno->value ()                                 << std::endl;
   }
@@ -508,7 +508,7 @@ static void parseTask (Task& task, const std::string& after)
 
         std::stringstream name;
         name << "annotation_" << when.toEpoch ();
-        std::string text = trim (value.substr (gap, std::string::npos), "\t ");
+        std::string text = trim (value.substr (gap), "\t ");
         annotations.push_back (Att (name.str (), text));
       }
     }
