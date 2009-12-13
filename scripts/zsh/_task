@@ -27,10 +27,7 @@
 #
 
 typeset -g _task_cmds
-_task_cmds=($(task rubbish-command | sed -n -e 's/^\s\+task \(\w\+\) .*/\1/p' | grep -v ID))
-
-# As of task 1.7.0, 
-# _task_cmds=(add append annotate completed edit duplicate delete undelete info start stop done undo projects tags summary timesheet history ghistory next calendar active overdue stats import export color version help list long ls newest oldest)
+_task_cmds=($(task _commands))
 
 _task() {
     _arguments -s -S \
