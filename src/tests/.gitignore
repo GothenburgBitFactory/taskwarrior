@@ -16,4 +16,5 @@ cmd.t
 config.t
 util.t
 color.t
+list.t
 *.log
