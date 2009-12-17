@@ -1148,7 +1148,7 @@ int handlePrepend (std::string &outs)
   context.tdb.unlock ();
 
   if (context.config.get ("echo.command", true))
-    out << "Appended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+    out << "Prepended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   outs = out.str ();
   return 0;
