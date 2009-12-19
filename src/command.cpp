@@ -433,9 +433,8 @@ int handleVersion (std::string &outs)
   disclaimer.setColumnWidth (0, Table::flexible);
   disclaimer.setColumnJustification (0, Table::left);
   disclaimer.addCell (disclaimer.addRow (), 0,
-    "Task comes with ABSOLUTELY NO WARRANTY; for details read the COPYING file "
-    "included.  This is free software, and you are welcome to redistribute it "
-    "under certain conditions; again, see the COPYING file for details.");
+      "Task may be copied only under the terms of the GNU General Public "
+      "License, which may be found in the task source kit.");
 
   // Create a table for the URL.
   Table link;
@@ -444,9 +443,8 @@ int handleVersion (std::string &outs)
   link.setColumnWidth (0, Table::flexible);
   link.setColumnJustification (0, Table::left);
   link.addCell (link.addRow (), 0,
-    "See http://taskwarrior.org for the latest releases, online documentation "
-    "and lively discussion.  New releases containing fixes and enhancements "
-    "are made frequently.  Don't forget the man pages 'man task' and 'man taskrc'.");
+    "Documentation for task can be found using 'man task' and 'man taskrc', or "
+    "at http://taskwarrior.org");
 
   std::vector <std::string> all;
   context.config.all (all);
@@ -488,8 +486,7 @@ int handleVersion (std::string &outs)
 
   Color bold ("bold");
 
-  out << "Copyright (C) 2006 - 2009, P. Beckingham."
-      << std::endl
+  out << std::endl
       << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
            ? bold.colorize (PACKAGE)
            : PACKAGE)
@@ -497,9 +494,39 @@ int handleVersion (std::string &outs)
       << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
            ? bold.colorize (VERSION)
            : VERSION)
+      << " built for "
+
+#if defined (DARWIN)
+      << "darwin"
+#elif defined (SOLARIS)
+      << "solaris"
+#elif defined (CYGWIN)
+      << "cygwin"
+#elif defined (OPENBSD)
+      << "openbsd"
+#elif defined (HAIKU)
+      << "haiku"
+#else
+      << "linux"
+#endif
+// TODO Include: FreeBSD?
+
+#ifdef HAVE_LIBNCURSES
+      << "-ncurses"
+#endif
+
+#ifdef HAVE_LIBREADLINE
+      << "-readline"
+#endif
+
+#ifdef HAVE_LIBLUA
+      << "-lua"
+#endif
+
+      << std::endl
+      << "Copyright (C) 2006 - 2009, P. Beckingham."
       << std::endl
       << disclaimer.render ()
-      << std::endl
       << (context.config.get ("longversion", true) ? table.render () : "")
       << link.render ()
       << std::endl;

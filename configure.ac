@@ -24,13 +24,25 @@ else
 fi
 
 # Check for OS.
-OS=`uname|sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+OS=`uname|sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'|cut -c 1-5`
 if test "$OS" = "sunos"; then
   AC_MSG_NOTICE([OS Solaris detected])
   AC_DEFINE([SOLARIS], [], [Compiling on Solaris])
+elif test "$OS" = "darwi"; then
+  AC_MSG_NOTICE([OS Darwin detected])
+  AC_DEFINE([DARWIN], [], [Compiling on Darwin])
+elif test "$OS" = "cygwi"; then
+  AC_MSG_NOTICE([OS Cygwin detected])
+  AC_DEFINE([CYGWIN], [], [Compiling on Cygwin])
+elif test "$OS" = "openb"; then
+  AC_MSG_NOTICE([OS OpenBSD detected])
+  AC_DEFINE([OPENBSD], [], [Compiling on OpenBSD])
+elif test "$OS" = "haiku"; then
+  AC_MSG_NOTICE([OS Haiku detected])
+  AC_DEFINE([HAIKU], [], [Compiling on Haiku])
 else
-  AC_MSG_NOTICE([OS Non-Solaris detected])
-  AC_DEFINE([LINUX], [], [Compiling on Non-Solaris])
+  AC_MSG_NOTICE([OS Linux detected])
+  AC_DEFINE([LINUX], [], [Compiling on Linux])
 fi
 
 AM_INIT_AUTOMAKE
