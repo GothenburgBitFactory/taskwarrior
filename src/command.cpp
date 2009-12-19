@@ -374,6 +374,16 @@ int handleCompletionConfig (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// A simple version display for use by completion scripts and the task-update
+// script.
+int handleCompletionVersion (std::string &outs)
+{
+  outs = VERSION;
+  outs += "\n";
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int handleCompletionIDs (std::string &outs)
 {
   std::vector <Task> tasks;

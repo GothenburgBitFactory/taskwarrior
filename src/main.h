@@ -68,6 +68,7 @@ int handleCompletionTags (std::string &);
 int handleCompletionCommands (std::string &);
 int handleCompletionIDs (std::string &);
 int handleCompletionConfig (std::string &);
+int handleCompletionVersion (std::string &);
 int handleVersion (std::string &);
 int handleDelete (std::string &);
 int handleStart (std::string &);
