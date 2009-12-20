@@ -45,7 +45,7 @@ like ($output, qr/You must specify a command, or a task ID to modify/m, 'missing
 # Test the version command.
 $output = qx{../task rc:basic.rc version};
 like ($output, qr/task \d+\.\d+\.\d+/, 'version - task version number');
-like ($output, qr/ABSOLUTELY NO WARRANTY/, 'version - warranty');
+like ($output, qr/GNU General Public License/, 'version - license');
 like ($output, qr/http:\/\/taskwarrior\.org/, 'version - url');
 
 # Cleanup.

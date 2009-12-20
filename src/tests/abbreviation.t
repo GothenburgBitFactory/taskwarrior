@@ -68,25 +68,25 @@ unlike ($output, qr/\bwithout\b/, 'pri:H without');
 
 # Test the version command abbreviations.
 $output = qx{../task rc:abbrev.rc version};
-like ($output, qr/ABSOLUTELY NO WARRANTY/, 'version');
+like ($output, qr/GNU General Public License/, 'version');
 
 $output = qx{../task rc:abbrev.rc versio};
-like ($output, qr/ABSOLUTELY NO WARRANTY/, 'versio');
+like ($output, qr/GNU General Public License/, 'versio');
 
 $output = qx{../task rc:abbrev.rc versi};
-like ($output, qr/ABSOLUTELY NO WARRANTY/, 'versi');
+like ($output, qr/GNU General Public License/, 'versi');
 
 $output = qx{../task rc:abbrev.rc vers};
-like ($output, qr/ABSOLUTELY NO WARRANTY/, 'vers');
+like ($output, qr/GNU General Public License/, 'vers');
 
 $output = qx{../task rc:abbrev.rc ver};
-like ($output, qr/ABSOLUTELY NO WARRANTY/, 'ver');
+like ($output, qr/GNU General Public License/, 'ver');
 
 $output = qx{../task rc:abbrev.rc ve};
-like ($output, qr/ABSOLUTELY NO WARRANTY/, 've');
+like ($output, qr/GNU General Public License/, 've');
 
 $output = qx{../task rc:abbrev.rc v};
-like ($output, qr/ABSOLUTELY NO WARRANTY/, 'v');
+like ($output, qr/GNU General Public License/, 'v');
 
 # Cleanup.
 unlink 'pending.data';
