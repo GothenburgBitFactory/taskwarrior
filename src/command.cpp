@@ -506,10 +506,11 @@ int handleVersion (std::string &outs)
       << "openbsd"
 #elif defined (HAIKU)
       << "haiku"
+#elif defined (FREEBSD)
+      << "freebsd"
 #else
       << "linux"
 #endif
-// TODO Include: FreeBSD?
 
 #ifdef HAVE_LIBNCURSES
       << "-ncurses"
@@ -590,6 +591,8 @@ int handleVersion (std::string &outs)
 
   out << context.config.checkForDeprecatedColor ();
   out << context.config.checkForDuplicates ();
+  // TODO Check for referenced but missing theme files.
+  // TODO Check for referenced but missing string files.
 
   // Verify installation.  This is mentioned in the documentation as the way to
   // ensure everything is properly installed.

@@ -40,6 +40,9 @@ elif test "$OS" = "openb"; then
 elif test "$OS" = "haiku"; then
   AC_MSG_NOTICE([OS Haiku detected])
   AC_DEFINE([HAIKU], [], [Compiling on Haiku])
+elif test "$OS" = "freeb"; then
+  AC_MSG_NOTICE([OS FreeBSD detected])
+  AC_DEFINE([FREEBSD], [], [Compiling on FreeBSD])
 else
   AC_MSG_NOTICE([OS Linux detected])
   AC_DEFINE([LINUX], [], [Compiling on Linux])
