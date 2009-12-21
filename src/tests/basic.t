@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'basic.rc')
@@ -38,15 +38,22 @@ if (open my $fh, '>', 'basic.rc')
   ok (-r 'basic.rc', 'Created basic.rc');
 }
 
+# Get the version number from configure.ac
+my $version = slurp ('../../configure.ac');
+
 # Test the usage command.
 my $output = qx{../task rc:basic.rc};
 like ($output, qr/You must specify a command, or a task ID to modify/m, 'missing command and ID');
 
 # Test the version command.
 $output = qx{../task rc:basic.rc version};
-like ($output, qr/task \d+\.\d+\.\d+/, 'version - task version number');
+like ($output, qr/task $version/, 'version - task version number');
 like ($output, qr/GNU General Public License/, 'version - license');
 like ($output, qr/http:\/\/taskwarrior\.org/, 'version - url');
+
+# Test the _version command.
+$output = qx{../task rc:basic.rc _version};
+like ($output, qr/$version/, '_version - task version number');
 
 # Cleanup.
 unlink 'basic.rc';
@@ -54,3 +61,21 @@ ok (!-r 'basic.rc', 'Removed basic.rc');
 
 exit 0;
 
+################################################################################
+sub slurp
+{
+  my ($file) = @_;
+  if (open my $fh, '<', $file)
+  {
+    while (<$fh>) {
+      if (/AC_INIT/) {
+        chomp;
+        s/^AC_INIT\(task, //;
+        s/, support.*$//;
+        close  $fh;
+        return $_;
+      }  
+    }
+  }
+  '';
+}
