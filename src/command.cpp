@@ -508,8 +508,10 @@ int handleVersion (std::string &outs)
       << "haiku"
 #elif defined (FREEBSD)
       << "freebsd"
-#else
+#elif defined (LINUX)
       << "linux"
+#else
+      << "unknown"
 #endif
 
 #ifdef HAVE_LIBNCURSES

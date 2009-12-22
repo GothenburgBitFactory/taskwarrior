@@ -43,9 +43,12 @@ elif test "$OS" = "haiku"; then
 elif test "$OS" = "freeb"; then
   AC_MSG_NOTICE([OS FreeBSD detected])
   AC_DEFINE([FREEBSD], [], [Compiling on FreeBSD])
-else
+elif test "$OS" = "linux"; then
   AC_MSG_NOTICE([OS Linux detected])
   AC_DEFINE([LINUX], [], [Compiling on Linux])
+else
+  AC_MSG_NOTICE([OS not detected])
+  AC_DEFINE([UNKNOWN], [], [Compiling on Unknown])
 fi
 
 AM_INIT_AUTOMAKE
