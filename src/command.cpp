@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2009, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -527,7 +527,7 @@ int handleVersion (std::string &outs)
 #endif
 
       << std::endl
-      << "Copyright (C) 2006 - 2009, P. Beckingham."
+      << "Copyright (C) 2006 - 2010, P. Beckingham."
       << std::endl
       << disclaimer.render ()
       << (context.config.get ("longversion", true) ? table.render () : "")
