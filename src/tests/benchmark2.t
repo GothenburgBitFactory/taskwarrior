@@ -48,8 +48,13 @@ my $description = 'This is a medium-sized description with no special characters
 
 my $output;
 
-# Add 10 tasks.
-add (10);
+# Add 1 task.
+add (1);
+$output = qx{../task rc:bench2.rc list};
+report ('run-1', $output);
+
+# Add 9 more tasks.
+add (9);
 $output = qx{../task rc:bench2.rc list};
 report ('run-10', $output);
 
