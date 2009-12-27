@@ -52,7 +52,12 @@ Timer::~Timer ()
     << mDescription
     << " "
     << std::setprecision (6)
-//    << std::fixed
+
+#ifndef HAIKU
+    // Haiku fails on this - don't know why.
+    << std::fixed
+#endif
+
     << ((end.tv_sec - mStart.tv_sec) + ((end.tv_usec - mStart.tv_usec )
        / 1000000.0))
     << " sec";
