@@ -16,11 +16,14 @@
    "description.word:th" will not.  For partial word matches, there is still
    "description.contains:th".
  + The 'version' command now complains about use of deprecated color names and
-   duplicate entries.
+   duplicate entries in .taskrc.
  + Task now supports nested .taskrc files using the "include /path" directive.
  + The 'entry', 'start' and 'end' columns now have equivalents that include the
    time, and are called 'entry_time', 'start_time', and 'end_time', for use in
    custom reports.
+ + Added feature #307 that provides vim with syntax highlighting for .taskrc.
+ + Task now support .taskrc command line overrides using rc.name:value and
+   the new rc.name=value to accommodate a frequent mistake.
  + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
    was run, and there are no tasks with due dates.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted
@@ -31,7 +34,6 @@
  + Fixed bug that was causing the 'completed' report to sort incorrectly.
  + Fixed bug #347 which used only a lowercase "all" to confirm multiple changes
    instead of an uppercase "All" like the "Yes" answer.
- + Added feature #307 that provides vim with syntax highlighting for taskrc.
 
 ------ old releases ------------------------------
 
