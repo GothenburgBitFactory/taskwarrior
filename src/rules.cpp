@@ -109,8 +109,9 @@ void autoColorize (Task& task, Color& c)
   {
     if (it->first.substr (0, 14) == "color.project.")
     {
-      std::string value = it->first.substr (14);
-      if (task.get ("project") == value)
+      std::string value = lowerCase (it->first.substr (14));
+      std::string project  = lowerCase (task.get ("project"));
+      if (project.find (value) == 0)
         c.blend (it->second);
     }
   }

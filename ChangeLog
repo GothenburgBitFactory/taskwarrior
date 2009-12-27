@@ -24,6 +24,8 @@
  + Added feature #307 that provides vim with syntax highlighting for .taskrc.
  + Task now support .taskrc command line overrides using rc.name:value and
    the new rc.name=value to accommodate a frequent mistake.
+ + The color rules for projects (color.project.foo) now matches on partial
+   project names, the same way as filters.
  + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
    was run, and there are no tasks with due dates.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted
