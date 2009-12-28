@@ -3,7 +3,7 @@
 " Maintainer:	John Florian <jflorian@doubledog.org>
 " Updated:	Wed Nov 25 12:19:43 EST 2009
 "
-" Copyright 2009 John Florian
+" Copyright 2009-2010 John Florian
 "
 " This file is available under the GNU Public License version 2 or later.
 " For the full text of this license, see COPYING.

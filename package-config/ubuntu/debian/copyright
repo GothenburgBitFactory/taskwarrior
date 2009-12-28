@@ -1,6 +1,6 @@
 This package was debianized by:
 
-    Federico Hernandez <ultrafredde@gmail.com> on  Thu, 20 Aug 2009 20:26:33 +0200
+    Federico Hernandez <ultrafredde@gmail.com> on  Sat, 05 Dec 2009 23:58:36 +0100
 
 It was downloaded from:
 
@@ -25,13 +25,14 @@ Upstream Authors:
     Johan Friis
     Steven de Brouwer
     Pietro Cerutti
+    Cory Donnelly
 
 Copyright:
 
-    Copyright 2006 - 2009, Paul Beckingham
-    Copyright 2009 Federico Hernandez
+    Copyright 2006 - 2010, Paul Beckingham
+    Copyright 2009 - 2010  Federico Hernandez
+    Copyright 2009 - 2010  John Florian
     Copyright 2009 P.C. Shyamshankar
-    Copyright 2009 John Florian
 
 License:
 
@@ -54,6 +55,6 @@ Public License can be found in `/usr/share/common-licenses/GPL-2'.
 
 The Debian packaging is:
 
-    Copyright (C) 2009, Federico Hernandez <ultrafredde@gmail.com>
+    Copyright (C) 2009 - 2010, Federico Hernandez <ultrafredde@gmail.com>
 
 and is licensed under the GPL, see above.

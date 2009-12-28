@@ -1,4 +1,11 @@
 #compdef task
+#
+# This script is currently unmaintained and was released for an earlier version
+# of task. We welcome any zsh user that wants to contribute to task to take a
+# look at this script and either confirm its working status or improve it.
+# Please contact us at support@taskwarrior.org if you have further questions on
+# how to contribute to task.
+#
 # zsh completion for task
 #
 # Copyright 2009 P.C. Shyamshankar

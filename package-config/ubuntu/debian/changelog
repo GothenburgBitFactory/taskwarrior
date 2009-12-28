@@ -1,3 +1,39 @@
+task (1.8.5-1ubuntu2) karmic; urgency=low
+
+  * Fixed wrong ChangeLog file
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Sat, 05 Dec 2009 23:58:36 +0100
+
+task (1.8.5-1ubuntu1) karmic; urgency=low
+
+  * Initial deb package for task bugfix release 1.8.5 
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Sat, 05 Dec 2009 23:56:36 +0100
+
+task (1.8.4-1ubuntu1) karmic; urgency=low
+
+  * Initial deb package for task bugfix release 1.8.4 on karmic koala
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Tue, 17 Nov 2009 13:12:28 +0100
+
+task (1.8.3-1ubuntu1) karmic; urgency=low
+
+  * Initial deb package for task bugfix release 1.8.3 on karmic koala
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Sat, 31 Oct 2009 22:45:10 +0100
+
+task (1.8.3-0ubuntu1) jaunty; urgency=low
+
+  * Initial deb package for task bugfix release 1.8.3 
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Wed, 21 Oct 2009 23:22:25 +0200
+
+task (1.8.2-0ubuntu1) jaunty; urgency=low
+
+  * Initial deb package for task bugfix release 1.8.2 
+
+ -- Federico Hernandez <ultrafredde@gmail.com>  Mon, 07 Sep 2009 11:35:22 +0200
+
 task (1.8.1-0ubuntu1) jaunty; urgency=low
 
   * Initial deb package for task bugfix release 1.8.1 

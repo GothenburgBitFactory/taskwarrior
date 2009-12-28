@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Federico Hernandez <ultrafredde@gmail.com>
 XSBC-Original-Maintainer: Federico Hernandez <ultrafredde@gmail.com>
 Build-Depends: debhelper (>= 7), autotools-dev, libncurses5-dev
-Standards-Version: 3.8.0.1
+Standards-Version: 3.8.3
 Homepage: http://taskwarrior.org
 
 Package: task
