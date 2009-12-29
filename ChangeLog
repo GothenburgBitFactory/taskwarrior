@@ -15,7 +15,10 @@
    the description "Pay the bill", then "description.word:the" will match, but
    "description.word:th" will not.  For partial word matches, there is still
    "description.contains:th".
- + The 'version' command now complains about use of deprecated color names and
+ + Added new 'config' command to display the configuration settings of task.
+   As a consequence 'version' now only shows the version number and legal
+   information.
+ + The 'config' command now complains about use of deprecated color names and
    duplicate entries in .taskrc.
  + Task now supports nested .taskrc files using the "include /path" directive.
  + The 'entry', 'start' and 'end' columns now have equivalents that include the
