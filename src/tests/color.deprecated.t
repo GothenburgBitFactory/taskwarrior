@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'color.rc')
@@ -41,9 +41,8 @@ if (open my $fh, '>', 'color.rc')
 }
 
 # Test the add command.
-my $output = qx{../task rc:color.rc rc.longversion:off version};
-like   ($output, qr/color\.pri\.M/ms,  'Deprecated color detected');
-unlike ($output, qr/color\.pri\.H/ms, 'Non-deprecated color ignored');
+my $output = qx{../task rc:color.rc config};
+like   ($output, qr/that use deprecated underscores/ms,  'Deprecated color detected');
 
 # Cleanup.
 unlink 'pending.data';

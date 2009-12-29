@@ -446,44 +446,6 @@ int handleVersion (std::string &outs)
     "Documentation for task can be found using 'man task' and 'man taskrc', or "
     "at http://taskwarrior.org");
 
-  std::vector <std::string> all;
-  context.config.all (all);
-
-  // Create a table for output.
-  Table table;
-  if (context.config.get ("longversion", true))
-  {
-    table.setTableWidth (width);
-    table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
-    table.addColumn ("Config variable");
-    table.addColumn ("Value");
-
-    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
-    {
-      table.setColumnUnderline (0);
-      table.setColumnUnderline (1);
-    }
-    else
-      table.setTableDashedUnderline ();
-
-    table.setColumnWidth (0, Table::minimum);
-    table.setColumnWidth (1, Table::flexible);
-    table.setColumnJustification (0, Table::left);
-    table.setColumnJustification (1, Table::left);
-    table.sortOn (0, Table::ascendingCharacter);
-
-    foreach (i, all)
-    {
-      std::string value = context.config.get (*i);
-      if (value != "")
-      {
-        int row = table.addRow ();
-        table.addCell (row, 0, *i);
-        table.addCell (row, 1, value);
-      }
-    }
-  }
-
   Color bold ("bold");
 
   out << std::endl
@@ -530,8 +492,59 @@ int handleVersion (std::string &outs)
       << "Copyright (C) 2006 - 2010, P. Beckingham."
       << std::endl
       << disclaimer.render ()
-      << (context.config.get ("longversion", true) ? table.render () : "")
       << link.render ()
+      << std::endl;
+
+  outs = out.str ();
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int handleConfig (std::string &outs)
+{
+  int rc = 0;
+  std::stringstream out;
+  int width = context.getWidth ();
+
+  std::vector <std::string> all;
+  context.config.all (all);
+
+  // Create a table for output.
+  Table table;
+  table.setTableWidth (width);
+  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+  table.addColumn ("Config variable");
+  table.addColumn ("Value");
+
+  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+  }
+  else
+    table.setTableDashedUnderline ();
+
+  table.setColumnWidth (0, Table::minimum);
+  table.setColumnWidth (1, Table::flexible);
+  table.setColumnJustification (0, Table::left);
+  table.setColumnJustification (1, Table::left);
+  table.sortOn (0, Table::ascendingCharacter);
+
+  foreach (i, all)
+  {
+    std::string value = context.config.get (*i);
+    if (value != "")
+    {
+      int row = table.addRow ();
+      table.addCell (row, 0, *i);
+      table.addCell (row, 1, value);
+    }
+  }
+
+  Color bold ("bold");
+
+  out << std::endl
+      << table.render ()
       << std::endl;
 
   // Complain about configuration variables that are not recognized.
@@ -545,7 +558,7 @@ int handleVersion (std::string &outs)
     "default.project defaultwidth due locale displayweeknumber echo.command "
     "locking monthsperline nag next project shadow.command shadow.file "
     "shadow.notify weekstart editor import.synonym.id import.synonym.uuid "
-    "longversion complete.all.projects complete.all.tags "
+    "complete.all.projects complete.all.tags "
 #ifdef FEATURE_SHELL
     "shell.prompt "
 #endif

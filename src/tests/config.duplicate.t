@@ -41,7 +41,7 @@ if (open my $fh, '>', 'duplicate.rc')
 }
 
 # Test the add command.
-my $output = qx{../task rc:duplicate.rc rc.longversion:off version};
+my $output = qx{../task rc:duplicate.rc config};
 like   ($output, qr/data\.location/ms,  'Duplicate entry detected');
 unlike ($output, qr/colorl/ms, 'Single entry not ignored');
 

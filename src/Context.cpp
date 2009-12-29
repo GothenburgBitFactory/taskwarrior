@@ -192,6 +192,7 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "tags")          { rc = handleTags               (out); }
   else if (cmd.command == "colors")        { rc = handleColor              (out); }
   else if (cmd.command == "version")       { rc = handleVersion            (out); }
+  else if (cmd.command == "config")        { rc = handleConfig             (out); }
   else if (cmd.command == "help")          { rc = longUsage                (out); }
   else if (cmd.command == "stats")         { rc = handleReportStats        (out); }
   else if (cmd.command == "info")          { rc = handleInfo               (out); }

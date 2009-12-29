@@ -186,6 +186,10 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Shows the task version number.");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task config");
+  table.addCell (row, 2, "Shows the task configuration.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task help");
   table.addCell (row, 2, "Shows the long usage text.");
 

@@ -40,7 +40,7 @@ if (open my $fh, '>', 'obsolete.rc')
 }
 
 # Test the add command.
-my $output = qx{../task rc:obsolete.rc version};
+my $output = qx{../task rc:obsolete.rc config};
 
 like ($output, qr/Your .taskrc file contains these unrecognized variables:\n/,
                'unsupported configuration variable');

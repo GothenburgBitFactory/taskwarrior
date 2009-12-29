@@ -96,6 +96,7 @@
 #define CMD_UNDO                227
 #define CMD_VERSION             228
 #define CMD_SHELL               229
+#define CMD_CONFIG              230
 
 // 3xx Attributes
 #define ATT_PROJECT             300

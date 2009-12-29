@@ -116,6 +116,7 @@ void Cmd::load ()
     commands.push_back (context.stringtable.get (CMD_ANNOTATE,  "annotate"));
     commands.push_back (context.stringtable.get (CMD_CALENDAR,  "calendar"));
     commands.push_back (context.stringtable.get (CMD_COLORS,    "colors"));
+    commands.push_back (context.stringtable.get (CMD_CONFIG,    "config"));
     commands.push_back (context.stringtable.get (CMD_DELETE,    "delete"));
     commands.push_back (context.stringtable.get (CMD_DONE,      "done"));
     commands.push_back (context.stringtable.get (CMD_DUPLICATE, "duplicate"));
@@ -196,6 +197,7 @@ bool Cmd::isReadOnlyCommand ()
       command == "_version"                                           ||
       command == context.stringtable.get (CMD_CALENDAR,  "calendar")  ||
       command == context.stringtable.get (CMD_COLORS,    "colors")    ||
+      command == context.stringtable.get (CMD_CONFIG,    "config")    ||
       command == context.stringtable.get (CMD_EXPORT,    "export")    ||
       command == context.stringtable.get (CMD_HELP,      "help")      ||
       command == context.stringtable.get (CMD_HISTORY,   "history")   ||

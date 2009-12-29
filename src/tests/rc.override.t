@@ -39,10 +39,10 @@ if (open my $fh, '>', 'rc.rc')
   ok (-r 'rc.rc', 'Created rc.rc');
 }
 
-my $output = qx{../task rc:rc.rc version};
+my $output = qx{../task rc:rc.rc config};
 like ($output, qr/\sfoo\s+bar/, 'unmodified');
 
-$output = qx{../task rc:rc.rc rc.foo:baz version};
+$output = qx{../task rc:rc.rc rc.foo:baz config};
 like ($output, qr/\sfoo\s+baz/, 'overridden');
 
 unlink 'rc.rc';
