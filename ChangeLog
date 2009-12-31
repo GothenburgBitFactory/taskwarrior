@@ -21,6 +21,8 @@
  + The 'entry', 'start' and 'end' columns now have equivalents that include the
    time, and are called 'entry_time', 'start_time', and 'end_time', for use in
    custom reports.
+ + The new 'priority_long' field can be shown in custom reports, and will
+   display 'High' rather than the abbreviated 'H'.
  + Added feature #307 that provides vim with syntax highlighting for .taskrc.
  + Task now support .taskrc command line overrides using rc.name:value and
    the new rc.name=value to accommodate a frequent mistake.

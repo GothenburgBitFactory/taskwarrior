@@ -218,6 +218,26 @@ int runCustomReport (
         table.addCell (row++, columnCount, task->get ("priority"));
     }
 
+    else if (*col == "priority_long")
+    {
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Pri");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      int row = 0;
+      std::string pri;
+      foreach (task, tasks)
+      {
+        pri = task->get ("priority");
+
+             if (pri == "H") pri = "High";   // TODO i18n
+        else if (pri == "M") pri = "Medium"; // TODO i18n
+        else if (pri == "L") pri = "Low";    // TODO i18n
+
+        table.addCell (row++, columnCount, pri);
+      }
+    }
+
     else if (*col == "entry")
     {
       table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Added");
@@ -632,6 +652,7 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "uuid"                 &&
         *it != "project"              &&
         *it != "priority"             &&
+        *it != "priority_long"        &&
         *it != "entry"                &&
         *it != "entry_time"           &&
         *it != "start"                &&
