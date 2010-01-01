@@ -47,7 +47,7 @@ qx{../task rc:bug.rc 2 due:};
 # Result: Somehow the due date is incremented and wraps around to 12/31/1969,
 # then keeps going back to today.
 my $output = qx{../task rc:bug.rc li};
-like ($output, qr/^1 task$/ms, 'Should only be one task');
+unlike ($output, qr/1969/ms, 'Should not display 12/31/1969');
 
 # Cleanup.
 unlink 'pending.data';

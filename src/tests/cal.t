@@ -42,7 +42,7 @@ if (open my $fh, '>', 'cal.rc')
   close $fh;
   ok (-r 'cal.rc', 'Created cal.rc');
 }
-my @months = qw(Jan Fev Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
 my ($day, $nmon, $nyear) = (localtime)[3,4,5];
 my $nextmonth   = $months[($nmon+1) % 12];
 my $month       = $months[($nmon) % 12];
@@ -68,7 +68,15 @@ $output = qx{../task rc:cal.rc rc.weekstart:Monday cal};
 like   ($output, qr/Fr Sa Su/,     'Week starts on Monday'); 
 $output = qx{../task rc:cal.rc cal y};
 like   ($output, qr/$month\w+?\s+?$year/,         'Current month and year are displayed');
+if ( $month eq "Jan")
+{
+  $nextyear = $nextyear - 1;
+}
 like   ($output, qr/$prevmonth\w+?\s+?$nextyear/, 'Month and year one year ahead are displayed');
+if ( $month eq "Jan")
+{
+  $nextyear = $nextyear + 1;
+}
 unlike ($output, qr/$month\w+?\s+?$nextyear/,     'Current month and year ahead are not displayed');
 
 # task cal due   and   task cal due y
