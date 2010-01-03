@@ -6,7 +6,7 @@ task-tutorial \- A tutorial for the task(1) command line todo manager.
 .SH DESCRIPTION
 Task is a command line TODO list manager. It maintains a list of tasks that you
 want to do, allowing you to add/remove, and otherwise manipulate them.  Task
-has a rich list of subcommands that allow you to do various things with it.
+has a rich list of commands that allow you to do various things with it.
 
 .SH 30 second tutorial
 
@@ -53,7 +53,8 @@ $ task ls
 No matches
 .RE
 
-Easy. But now consider checking out what task can really do...
+That's how easy managing your task list can be.  But now consider learning what
+task can really do...
 
 .SH Simple usage of task
 Let us begin by adding some tasks:
@@ -68,8 +69,8 @@ $ task add Reserve a rental car
 $ task add Reserve a hotel room
 .RE
 
-That's it. You'll notice immediately that task has a very minimalist
-interface. Let us take a look at those tasks:
+You'll notice immediately that task has a very minimalist interface. Let us take
+a look at those tasks:
 .br
 .RS
 $ task ls
@@ -96,18 +97,18 @@ $ task 2 delete
 Permanently delete task? (y/n) y
 .RE
 
-Task wants you to confirm deletions. To remove the confirmation, edit
-your .taskrc file and change the line:
+Task wants you to confirm deletions. To suppress the confirmation, edit your
+.taskrc file and change the line:
 .br
 .RS
 confirmation=yes
 .RE
 .br
-to have a value of "no".
+to have a value of "no".  If the entry is not there, then add it.
 
-While the use of projects and priorities are not essential to benefiting
-from task, they can be very useful when the list of tasks grows large.
-Let's assign a project to these tasks:
+While the use of projects and priorities are not essential, they can be very
+useful when the list of tasks grows large.  Let's assign projects to these
+tasks:
 .br
 .RS
 $ task 1 project:Wedding
@@ -153,8 +154,8 @@ ID Project           Pri Description
  1 Wedding               Book plane ticket
 .RE
 
-Task matches the leftmost part of the project when searching, so projects may
-be abbreviated:
+Task matches the leftmost part of the project when searching, so projects may be
+abbreviated:
 .br
 .RS
 $ task ls project:Wedding.Tra
@@ -240,18 +241,35 @@ ID Project Pri Description
  2 Wedding M   Reserve a rental car
 .RE
 
-Notice that task supports the abbreviation of words such as priority,
-project. Priority can be abbreviated to pri, but not pr, because it
-is ambiguous. Now that tasks have been prioritized, you can see that
-the tasks are being sorted by priority, with the highest priority
-tasks at the top.
+Notice that task supports the abbreviation of words such as priority and
+project. Priority can be abbreviated to pri, but not pr, because it is
+ambiguous. Now that tasks have been prioritized, you can see that the tasks are
+being sorted by priority, with the highest priority tasks at the top.
 
-These attributes can all be provided when the task is added, instead of
-applying them afterwards, as shown. The following command shows how to
-set all the attributes at once:
+These attributes can all be provided when the task is added, instead of applying
+them afterwards, as shown. The following command shows how to set all the
+attributes at once:
 .br
 .RS
 $ task add project:Wedding priority:H Book plane ticket
+.RE
+
+The sequence of those arguments is not important, so you could have entered the
+following command instead:
+.br
+.RS
+$ task project:Wedding add Book plane priority:H ticket
+.RE
+
+This is because task knows what attributes look like (name:value), knows what
+commands it supports (add, ...), and just assumes the rest is part of the
+description.  Incidentally, if you wanted 'priority:H' to be part of your task
+description, you need to fool task into ignoring it as an attribute.  That can
+be done in two ways:
+.br
+.RS
+$ task add "quoting makes task consider priority:H part of one big argument"
+$ task add -- the hyphens make task treat everything after it as description
 .RE
 
 The 'ls' command provides the least information for each task. The 'list'
@@ -295,11 +313,11 @@ file, and change the line to one of these alternatives:
 .RS
 color.due=red
 .br
-color.due=on_blue
+color.due=on blue
 .br
-color.due=red on_blue
+color.due=red on blue
 .br
-color.due=bold_red on_blue
+color.due=bold red on blue
 .RE
 
 Where color is one of the following:
@@ -357,8 +375,8 @@ $ task 3 \-john
 .RE
 
 .SH Advanced usage of task
-Advanced examples of the usage of task can be found at
-the official site at <http://taskwarrior.org>
+Advanced examples of the usage of task can be found at the official site at
+<http://taskwarrior.org>
 
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.
