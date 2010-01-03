@@ -742,7 +742,8 @@ void Att::dequote (std::string& value) const
 ////////////////////////////////////////////////////////////////////////////////
 // Encode values prior to serialization.
 //   \t -> &tab;
-//   "  -> &quot;
+//   '  -> &squot;
+//   "  -> &dquot;
 //   ,  -> &comma;
 //   [  -> &open;
 //   ]  -> &close;
