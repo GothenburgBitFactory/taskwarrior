@@ -178,8 +178,8 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Lists all tasks in CSV format.");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task color");
-  table.addCell (row, 2, "Displays all possible colors.");
+  table.addCell (row, 1, "task color [sample]");
+  table.addCell (row, 2, "Displays all possible colors, or a sample.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task version");

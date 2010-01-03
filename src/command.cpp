@@ -1369,90 +1369,130 @@ int handleColor (std::string &outs)
 {
   int rc = 0;
   std::stringstream out;
+
   if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
   {
-    out << std::endl
-        << "Basic colors"
-        << std::endl
-        << " " << Color::colorize (" black ",   "black")
-        << " " << Color::colorize (" red ",     "red")
-        << " " << Color::colorize (" blue ",    "blue")
-        << " " << Color::colorize (" green ",   "green")
-        << " " << Color::colorize (" magenta ", "magenta")
-        << " " << Color::colorize (" cyan ",    "cyan")
-        << " " << Color::colorize (" yellow ",  "yellow")
-        << " " << Color::colorize (" white ",   "white")
-        << std::endl
-        << " " << Color::colorize (" black ",   "white on black")
-        << " " << Color::colorize (" red ",     "white on red")
-        << " " << Color::colorize (" blue ",    "white on blue")
-        << " " << Color::colorize (" green ",   "black on green")
-        << " " << Color::colorize (" magenta ", "black on magenta")
-        << " " << Color::colorize (" cyan ",    "black on cyan")
-        << " " << Color::colorize (" yellow ",  "black on yellow")
-        << " " << Color::colorize (" white ",   "black on white")
-        << std::endl
-        << std::endl;
-
-    out << "Effects"
-        << std::endl
-        << " " << Color::colorize (" red ",               "red")
-        << " " << Color::colorize (" bold red ",          "bold red")
-        << " " << Color::colorize (" underline on blue ", "underline on blue")
-        << " " << Color::colorize (" on green ",          "black on green")
-        << " " << Color::colorize (" on bright green ",   "black on bright green")
-        << std::endl
-        << std::endl;
-
-    // 16 system colors.
-    out << "color0 - color15" << std::endl;
-    for (int r = 0; r < 2; ++r)
+    // If there is something in the description, then assume that is a color,
+    // and display it as a sample.
+    std::string description = context.task.get ("description");
+    if (description != "")
     {
-      out << "  ";
-      for (int c = 0; c < 8; ++c)
-      {
-        std::stringstream s;
-        s << "on color" << (r*8 + c);
-        out << Color::colorize ("  ", s.str ());
-      }
+      Color one    ("black on bright yellow");
+      Color two    ("underline cyan on bright blue");
+      Color three  ("color214 on color202");
+      Color four   ("rgb150 on rgb020");
+      Color five   ("underline grey10 on grey3");
+      Color six    ("red on color173");
+      Color sample (description);
 
-      out << std::endl;
+      out << std::endl
+          << "Use this command to see how colors are displayed by your terminal."  << std::endl
+                                                                                   << std::endl
+          << "16-color usage (supports underline, bold text, bright background):"  << std::endl
+          << "  " << one.colorize ("task color black on bright yellow")            << std::endl
+          << "  " << two.colorize ("task color underline cyan on bright blue")     << std::endl
+                                                                                   << std::endl
+          << "256-color usage (supports underline):"                               << std::endl
+          << "  " << three.colorize ("task color color214 on color202")            << std::endl
+          << "  " << four.colorize ("task color rgb150 on rgb020")                 << std::endl
+          << "  " << five.colorize ("task color underline grey10 on grey3")        << std::endl
+          << "  " << six.colorize ("task color red on color173")                   << std::endl
+                                                                                   << std::endl
+          << "Your sample:"                                                        << std::endl
+          << "  " << sample.colorize ("task color " + description)                 << std::endl
+                                                                                   << std::endl;
     }
 
-    out << std::endl;
-
-    // Color cube.
-    out << "Color cube rgb000 - rgb555 (also color16 - color231)" << std::endl;
-    for (int g = 0; g < 6; ++g)
+    // Show all supported colors.  Possibly show some unsupported ones too.
+    else
     {
-      out << "  ";
-      for (int r = 0; r < 6; ++r)
+      out << std::endl
+          << "Basic colors"
+          << std::endl
+          << " " << Color::colorize (" black ",   "black")
+          << " " << Color::colorize (" red ",     "red")
+          << " " << Color::colorize (" blue ",    "blue")
+          << " " << Color::colorize (" green ",   "green")
+          << " " << Color::colorize (" magenta ", "magenta")
+          << " " << Color::colorize (" cyan ",    "cyan")
+          << " " << Color::colorize (" yellow ",  "yellow")
+          << " " << Color::colorize (" white ",   "white")
+          << std::endl
+          << " " << Color::colorize (" black ",   "white on black")
+          << " " << Color::colorize (" red ",     "white on red")
+          << " " << Color::colorize (" blue ",    "white on blue")
+          << " " << Color::colorize (" green ",   "black on green")
+          << " " << Color::colorize (" magenta ", "black on magenta")
+          << " " << Color::colorize (" cyan ",    "black on cyan")
+          << " " << Color::colorize (" yellow ",  "black on yellow")
+          << " " << Color::colorize (" white ",   "black on white")
+          << std::endl
+          << std::endl;
+
+      out << "Effects"
+          << std::endl
+          << " " << Color::colorize (" red ",               "red")
+          << " " << Color::colorize (" bold red ",          "bold red")
+          << " " << Color::colorize (" underline on blue ", "underline on blue")
+          << " " << Color::colorize (" on green ",          "black on green")
+          << " " << Color::colorize (" on bright green ",   "black on bright green")
+          << std::endl
+          << std::endl;
+
+      // 16 system colors.
+      out << "color0 - color15" << std::endl;
+      for (int r = 0; r < 2; ++r)
       {
-        for (int b = 0; b < 6; ++b)
+        out << "  ";
+        for (int c = 0; c < 8; ++c)
         {
           std::stringstream s;
-          s << "on rgb" << r << g << b;
+          s << "on color" << (r*8 + c);
           out << Color::colorize ("  ", s.str ());
         }
 
-        out << " ";
+        out << std::endl;
       }
 
       out << std::endl;
+
+      // Color cube.
+      out << "Color cube rgb000 - rgb555 (also color16 - color231)" << std::endl;
+      for (int g = 0; g < 6; ++g)
+      {
+        out << "  ";
+        for (int r = 0; r < 6; ++r)
+        {
+          for (int b = 0; b < 6; ++b)
+          {
+            std::stringstream s;
+            s << "on rgb" << r << g << b;
+            out << Color::colorize ("  ", s.str ());
+          }
+
+          out << " ";
+        }
+
+        out << std::endl;
+      }
+
+      out << std::endl;
+
+      // Grey ramp.
+      out << "Gray ramp gray0 - gray23 (also color232 - color255)" << std::endl << "  ";
+      for (int g = 0; g < 24; ++g)
+      {
+        std::stringstream s;
+        s << "on gray" << g;
+        out << Color::colorize ("  ", s.str ());
+      }
+
+      out << std::endl
+          << std::endl
+          << "Try running 'task color white on red'"
+          << std::endl
+          << std::endl;
     }
-
-    out << std::endl;
-
-    // Grey ramp.
-    out << "Gray ramp gray0 - gray23 (also color232 - color255)" << std::endl << "  ";
-    for (int g = 0; g < 24; ++g)
-    {
-      std::stringstream s;
-      s << "on gray" << g;
-      out << Color::colorize ("  ", s.str ());
-    }
-
-    out << std::endl << std::endl;
   }
   else
   {
