@@ -42,13 +42,15 @@ if (open my $fh, '>', 'cal.rc')
   close $fh;
   ok (-r 'cal.rc', 'Created cal.rc');
 }
+
 my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
-my ($day, $nmon, $nyear) = (localtime)[3,4,5];
-my $nextmonth   = $months[($nmon+1) % 12];
-my $month       = $months[($nmon) % 12];
+my ($nday, $nmon, $nyear) = (localtime)[3,4,5];
+my $day         = $nday;
 my $prevmonth   = $months[($nmon-1) % 12];
-my $nextyear = $nyear + 1901;
-my $year     = $nyear + 1900;
+my $month       = $months[($nmon) % 12];
+my $nextmonth   = $months[($nmon+1) % 12];
+my $year        = $nyear + 1900;
+my $nextyear    = $nyear + 1901;
 
 if ( $day <= 9)
 {
@@ -123,11 +125,79 @@ unlike ($output, qr/May 2010/,     'May 2010 is not displayed');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
-
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');
-
 unlink 'cal.rc';
 ok (!-r 'cal.rc', 'Removed cal.rc');
+
+# Create the rc file.
+if (open my $fh, '>', 'details.rc')
+{
+  print $fh "data.location=.\n",
+            "dateformat=YMD\n",
+            "calendar.details=yes\n",
+            "calendar.details.report=list\n",
+            "color=on\n",
+            "confirmation=no\n";
+  close $fh;
+  ok (-r 'details.rc', 'Created details.rc');
+}
+
+# task calendar details
+qx{../task rc:details.rc add due:20150105 one};
+qx{../task rc:details.rc add due:20150110 two};
+qx{../task rc:details.rc add due:20150210 three};
+qx{../task rc:details.rc add due:20150410 four};
+qx{../task rc:details.rc add due:20151225 five};
+qx{../task rc:details.rc add due:20141231 six};
+qx{../task rc:details.rc add due:20160101 seven};
+qx{../task rc:details.rc add due:20081231 eight};
+
+$output = qx{../task rc:details.rc cal rc.monthsperline:3 1 2015};
+like   ($output, qr/January 2015/, 'January 2015 is displayed');
+like   ($output, qr/20150105/,     'Due date 20150105 is displayed');
+like   ($output, qr/20150110/,     'Due date 20150110 is displayed');
+like   ($output, qr/20150210/,     'Due date 20150210 is displayed');
+unlike ($output, qr/20141231/,     'Due date 20141231 is not displayed');
+unlike ($output, qr/20150410/,     'Due date 20150410 is not displayed');
+like   ($output, qr/3 tasks/,      '3 due tasks are displayed');
+
+$output = qx{../task rc:details.rc cal due};
+like   ($output, qr/December 2008/, 'December 2008 is displayed');
+like   ($output, qr/20081231/,      'Due date 20081231 is displayed');
+like   ($output, qr/1 task/,        '1 due task is displayed');
+
+$output = qx{../task rc:details.rc cal 2015};
+like   ($output, qr/January 2015/,  'January 2015 is displayed');
+like   ($output, qr/December 2015/, 'December 2015 is displayed');
+unlike ($output, qr/20141231/,      'Due date 20141231 is not displayed');
+unlike ($output, qr/20160101/,      'Due date 20160101 is not displayed');
+like   ($output, qr/5 tasks/,       '5 due tasks are displayed');
+
+$day = $nday;
+if ( $day <= 9)
+{
+  $day = "0".$day;
+}
+my $mon = $nmon + 1;
+if ( $mon <= 9)
+{
+  $mon = "0".$mon;
+}
+my $duedate = $year.$mon.$day;
+
+qx{../task rc:details.rc add due:$duedate rc.monthsperline:1 nine};
+$output = qx{../task rc:details.rc cal};
+like   ($output, qr/$month\w+?\s+?$year/, 'Current month and year are displayed');
+like   ($output, qr/$duedate/,            'Due date on current day is displayed');
+like   ($output, qr/1 task/,              '1 due task is displayed');
+
+# Cleanup.
+unlink 'pending.data';
+ok (!-r 'pending.data', 'Removed pending.data');
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
+unlink 'details.rc';
+ok (!-r 'details.rc', 'Removed details.rc');
 
 exit 0;

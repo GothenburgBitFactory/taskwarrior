@@ -4,12 +4,13 @@
 1.9.0 ()
  + Added feature #292 that permits alternate line coloration in reports
    (thanks to Richard Querin).
- + The 'delete' command is now aliased to 'rm' (thanks to Ivo Jimenez).
+ + Added feature #307 that provides vim with syntax highlighting for .taskrc.
  + Added feature #336 which gives task a 'prepend' command for symmetry
    with the 'append' command.
  + Added feature #341 that makes explicit references to the task and taskrc
    man pages, both in the auto-generated .taskrc file and the version command
    output (thanks to Cory Donnelly).
+ + The 'delete' command is now aliased to 'rm' (thanks to Ivo Jimenez).
  + Added new attribute modifiers 'word' and 'noword' which find the existence
    of whole words, or prove the non-existence of whole words.  If a task has
    the description "Pay the bill", then "description.word:the" will match, but
@@ -26,23 +27,25 @@
    custom reports.
  + The new 'priority_long' field can be shown in custom reports, and will
    display 'High' rather than the abbreviated 'H'.
- + Added feature #307 that provides vim with syntax highlighting for .taskrc.
  + Task now supports .taskrc command line overrides using rc.name:value and
    the new rc.name=value to accommodate a frequent mistake.
  + The color rules for projects (color.project.foo) now matches on partial
    project names, the same way as filters.
  + The color command now takes a color as an argument, and displays that color
    with sample text.
- + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
-   was run, and there are no tasks with due dates.
+ + Added 2 new configuration variables to display the details of tasks with due
+   dates when doing a 'task cal' for the corresponding months:
+   'calendar.details' and 'calendar.details.report'
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted
    list.
  + Fixed bug #317 which colored tasks in the 'completed' report according to
    due dates, which are no longer relevant to a completed task (thanks to
    Cory Donnelly).
- + Fixed bug that was causing the 'completed' report to sort incorrectly.
  + Fixed bug #347 which used only a lowercase "all" to confirm multiple changes
    instead of an uppercase "All" like the "Yes" answer.
+ + Fixed bug that was causing the 'completed' report to sort incorrectly.
+ + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
+   was run, and there are no tasks with due dates.
 
 ------ old releases ------------------------------
 

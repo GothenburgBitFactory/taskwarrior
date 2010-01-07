@@ -152,6 +152,8 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "weekstart=Sunday                       # Sunday or Monday only\n"
            << "displayweeknumber=yes                  # Show week numbers on calendar\n"
            << "due=7                                  # Task is considered due in 7 days\n"
+           << "#calendar.details=yes                  # Calendar shows information for tasks w/due dates\n"
+           << "#calendar.details.report=list          # Report to use when showing task information in cal\n"
            << "#monthsperline=2                       # Number of calendar months on a line\n"
            << "\n"
            << "# Color controls.\n"

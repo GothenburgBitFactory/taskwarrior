@@ -1571,9 +1571,11 @@ int handleReportCalendar (std::string &outs)
     yTo++;
   }
 
+  int details_yFrom = yFrom;
+  int details_mFrom = mFrom;
+
   std::stringstream out;
   out << std::endl;
-  std::string output;
 
   while (yFrom < yTo || (yFrom == yTo && mFrom <= mTo))
   {
@@ -1644,6 +1646,44 @@ int handleReportCalendar (std::string &outs)
         << "."
         << optionalBlankLine ()
         << std::endl;
+
+  if (context.config.get (std::string ("calendar.details"), false))
+  {
+    --details_mFrom;
+    if (details_mFrom == 0)
+    {
+      details_mFrom = 12;
+      --details_yFrom;
+    }
+    int details_dFrom = Date::daysInMonth (details_mFrom, details_yFrom);
+
+    ++mTo;
+    if (mTo == 13)
+    {
+      mTo = 1;
+      ++yTo;
+    }
+
+    Date date_after (details_mFrom, details_dFrom, details_yFrom);
+    std::string after = date_after.toString (context.config.get ("dateformat", "m/d/Y"));
+    
+    Date date_before (mTo, 1, yTo);
+    std::string before = date_before.toString (context.config.get ("dateformat", "m/d/Y"));
+
+    std::string report = context.config.get ("calendar.details.report", "list");
+    std::string report_filter = context.config.get ("report." + report + ".filter");
+
+    report_filter += " due.after:" + after + " due.before:" + before;
+    context.config.set ("report." + report + ".filter", report_filter);
+
+    context.args.clear ();
+    context.filter.clear ();
+    context.sequence.clear ();
+
+    std::string output;
+    handleCustomReport (report, output);
+    out << output;
+  }
 
   outs = out.str ();
   return 0;

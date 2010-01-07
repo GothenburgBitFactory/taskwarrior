@@ -551,10 +551,10 @@ int handleConfig (std::string &outs)
   // These are the regular configuration variables.
   // Note that there is a leading and trailing space, to make searching easier.
   std::string recognized =
-    " blanklines bulk color color.active color.due color.overdue color.pri.H "
-    "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
-    "color.footnote color.header color.debug color.alternate confirmation "
-    "curses data.location dateformat debug default.command default.priority "
+    " blanklines bulk calendar.details calendar.details.report color color.active "
+    "color.due color.overdue color.pri.H color.pri.L color.pri.M color.pri.none "
+    "color.recurring color.tagged color.footnote color.header color.debug color.alternate "
+    "confirmation curses data.location dateformat debug default.command default.priority "
     "default.project defaultwidth due locale displayweeknumber echo.command "
     "locking monthsperline nag next project shadow.command shadow.file "
     "shadow.notify weekstart editor import.synonym.id import.synonym.uuid "
