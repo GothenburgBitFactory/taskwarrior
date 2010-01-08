@@ -30,7 +30,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 36;
+use Test::More tests => 58;
 
 # Create the rc file.
 if (open my $fh, '>', 'cal.rc')

@@ -1430,11 +1430,15 @@ std::string renderMonths (
 
       table.addCell (row, thisCol, d);
 
+      Color color_today   (context.config.get ("color.calendar.today", "cyan"));
+      Color color_due     (context.config.get ("color.calendar.due", "black on yellow"));
+      Color color_overdue (context.config.get ("color.calendar.overdue", "black on red"));
+
       if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
           today.day ()   == d                &&
           today.month () == months.at (mpl)  &&
           today.year ()  == years.at (mpl))
-        table.setCellColor (row, thisCol, Color (Color::cyan));
+        table.setCellColor (row, thisCol, color_today);
 
       foreach (task, all)
       {
@@ -1447,10 +1451,7 @@ std::string renderMonths (
               due.day ()   == d               &&
               due.month () == months[mpl] &&
               due.year ()  == years[mpl])
-          {
-            Color c (Color::black, (due < today ? Color::red : Color::yellow));
-            table.setCellColor (row, thisCol, c);
-          }
+            table.setCellColor (row, thisCol, (due < today ? color_overdue : color_due));
         }
       }
 
@@ -1632,9 +1633,9 @@ int handleReportCalendar (std::string &outs)
     }
   }
 
-  Color color_today   (Color::cyan);
-  Color color_due     (Color::black, Color::yellow);
-  Color color_overdue (Color::black, Color::red);
+  Color color_today   (context.config.get ("color.calendar.today", "cyan"));
+  Color color_due     (context.config.get ("color.calendar.due", "black on yellow"));
+  Color color_overdue (context.config.get ("color.calendar.overdue", "black on red"));
 
   if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     out << "Legend: "
