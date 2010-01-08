@@ -416,15 +416,16 @@ int handleInfo (std::string &outs)
       table.addCell (row, 1, due);
 
       overdue = (dt < now) ? true : false;
-      Date nextweek = now + 7 * 86400;
-      imminent = dt < nextweek ? true : false;
+      int imminentperiod = context.config.get ("due", 7);
+      Date imminentDay = now + imminentperiod * 86400;
+      imminent = dt < imminentDay ? true : false;
 
       if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
       {
         if (overdue)
           table.setCellColor (row, 1, Color (context.config.get ("color.overdue", "red")));
         else if (imminent)
-          table.setCellColor (row, 1, Color (context.config.get ("color.due", "yellow")));
+          table.setCellColor (row, 1, Color (context.config.get ("color.due", "green")));
       }
     }
 

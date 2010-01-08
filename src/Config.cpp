@@ -172,6 +172,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "#color.recurring=on_red                # Color of recur.any: tasks\n"
            << "#color.header=bold_green               # Color of header messages\n"
            << "#color.footnote=bold_green             # Color of footnote messages\n"
+           << "#color.alternate=on_rgb253             # Alternate color for line coloring\n"
            << "color.calendar.today=black on cyan     # Color of today in calendar\n"
            << "color.calendar.due=black on green      # Color of days with due tasks in calendar\n"
            << "color.calendar.overdue=black on red    # Color of days with overdue tasks in calendar\n"

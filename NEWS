@@ -8,6 +8,7 @@ New Features in task 1.9
   - New columns that include the time as well as date
   - New attribute modifiers
   - Improved .taskrc validation
+  - Improved calendar report with custom coloring and optional task details output
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
