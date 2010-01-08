@@ -1430,15 +1430,21 @@ std::string renderMonths (
 
       table.addCell (row, thisCol, d);
 
-      Color color_today   (context.config.get ("color.calendar.today", "cyan"));
-      Color color_due     (context.config.get ("color.calendar.due", "black on yellow"));
+      Color color_today   (context.config.get ("color.calendar.today",   "black on cyan"));
+      Color color_due     (context.config.get ("color.calendar.due",     "black on green"));
       Color color_overdue (context.config.get ("color.calendar.overdue", "black on red"));
+      Color color_weekend (context.config.get ("color.calendar.weekend", "black on white"));
 
-      if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
-          today.day ()   == d                &&
-          today.month () == months.at (mpl)  &&
-          today.year ()  == years.at (mpl))
-        table.setCellColor (row, thisCol, color_today);
+      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+      {
+        if (dow == 0 || dow == 6)
+          table.setCellColor (row, thisCol, color_weekend);
+
+        if (today.day   () == d                &&
+            today.month () == months.at (mpl)  &&
+            today.year  () == years.at  (mpl))
+          table.setCellColor (row, thisCol, color_today);
+      }
 
       foreach (task, all)
       {
@@ -1633,9 +1639,10 @@ int handleReportCalendar (std::string &outs)
     }
   }
 
-  Color color_today   (context.config.get ("color.calendar.today", "cyan"));
-  Color color_due     (context.config.get ("color.calendar.due", "black on yellow"));
+  Color color_today   (context.config.get ("color.calendar.today",   "black on cyan"));
+  Color color_due     (context.config.get ("color.calendar.due",     "black on green"));
   Color color_overdue (context.config.get ("color.calendar.overdue", "black on red"));
+  Color color_weekend (context.config.get ("color.calendar.weekend", "black on white"));
 
   if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
     out << "Legend: "
@@ -1644,6 +1651,8 @@ int handleReportCalendar (std::string &outs)
         << color_due.colorize ("due")
         << ", "
         << color_overdue.colorize ("overdue")
+        << ", "
+        << color_weekend.colorize ("weekend")
         << "."
         << optionalBlankLine ()
         << std::endl;

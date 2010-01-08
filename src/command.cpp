@@ -554,7 +554,7 @@ int handleConfig (std::string &outs)
     " blanklines bulk calendar.details calendar.details.report color color.active "
     "color.due color.overdue color.pri.H color.pri.L color.pri.M color.pri.none "
     "color.recurring color.tagged color.footnote color.header color.debug color.alternate "
-    "color.calendar.today color.calendar.due color.calendar.overdue "
+    "color.calendar.today color.calendar.due color.calendar.overdue color.calendar.weekend "
     "confirmation curses data.location dateformat debug default.command default.priority "
     "default.project defaultwidth due locale displayweeknumber echo.command "
     "locking monthsperline nag next project shadow.command shadow.file "
