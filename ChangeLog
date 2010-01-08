@@ -40,6 +40,8 @@
    days with overdue tasks and weekend days in the calendar:
    'calendar.color.today', 'color.calendar.due',
    'calendar.calendar.overdue' and 'color.calendar.weekend'.
+ + The coloring of due tasks in reports can now be enabled for all tasks, and not
+    only the imminent ones, by setting the configuration variable due=0.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted
    list.
  + Fixed bug #317 which colored tasks in the 'completed' report according to

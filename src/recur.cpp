@@ -385,13 +385,18 @@ int getDueState (const std::string& due)
 
     // rightNow is the current date + time.
     Date rightNow;
-    Date midnight (rightNow.month (), rightNow.day (), rightNow.year ());
+    Date thisDay (rightNow.month (), rightNow.day (), rightNow.year ());
 
-    if (dt < midnight)
+    if (dt < thisDay)
       return 2;
 
-    Date nextweek = midnight + context.config.get ("due", 7) * 86400;
-    if (dt < nextweek)
+    int imminentperiod = context.config.get ("due", 7);
+
+    if (imminentperiod == 0)
+      return 1;
+
+    Date imminentDay = thisDay + imminentperiod * 86400;
+    if (dt < imminentDay)
       return 1;
   }
 

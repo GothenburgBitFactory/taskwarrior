@@ -1686,6 +1686,9 @@ int handleReportCalendar (std::string &outs)
     report_filter += " due.after:" + after + " due.before:" + before;
     context.config.set ("report." + report + ".filter", report_filter);
 
+    // Display all due task in the report colorized not only the imminet ones
+    context.config.set ("due", 0);
+
     context.args.clear ();
     context.filter.clear ();
     context.sequence.clear ();
