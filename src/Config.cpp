@@ -217,6 +217,13 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "report.ls.sort=priority-,project+\n"
            << "report.ls.filter=status:pending\n"
            << "\n"
+           << "# task minimal\n"
+           << "report.minimal.description=A really minimal listing\n"
+           << "report.minimal.columns=id,project,description\n"
+           << "report.minimal.labels=ID,Project,Description\n"
+           << "report.minimal.sort=project+,description+\n"
+           << "report.minimal.filter=status:pending\n"
+           << "\n"
            << "# task newest\n"
            << "report.newest.description=Shows the newest tasks\n"
            << "report.newest.columns=id,project,priority,due,active,age,description\n"
@@ -305,11 +312,17 @@ void Config::setDefaults ()
   set ("report.list.sort",             "due+,priority-,project+");                                        // TODO i18n
   set ("report.list.filter",           "status:pending");                                                 // TODO i18n
 
-  set ("report.ls.description",        "Minimal listing of all tasks matching the specified criteria");   // TODO i18n
+  set ("report.ls.description",        "Short listing of all tasks matching the specified criteria");   // TODO i18n
   set ("report.ls.columns",            "id,project,priority,description");                                // TODO i18n
   set ("report.ls.labels",             "ID,Project,Pri,Description");                                     // TODO i18n
   set ("report.ls.sort",               "priority-,project+");                                             // TODO i18n
   set ("report.ls.filter",             "status:pending");                                                 // TODO i18n
+
+  set ("report.minimal.description",   "A really minimal listing");                                       // TODO i18n
+  set ("report.minimal.columns",       "id,project,description");                                         // TODO i18n
+  set ("report.minimal.labels",        "ID,Project,Description");                                         // TODO i18n
+  set ("report.minimal.sort",          "project+,description+");                                          // TODO i18n
+  set ("report.minimal.filter",        "status:pending");                                                 // TODO i18n
 
   set ("report.newest.description",    "Shows the newest tasks");                                         // TODO i18n
   set ("report.newest.columns",        "id,project,priority,due,active,age,description");                 // TODO i18n
