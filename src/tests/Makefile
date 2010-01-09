@@ -1,6 +1,6 @@
 PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
           config.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t \
-          cmd.t util.t color.t list.t
+          cmd.t util.t color.t list.t path.t file.t directory.t
 CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib -lncurses
 OBJECTS = ../TDB.o ../Task.o ../text.o ../Date.o ../Table.o ../Duration.o      \
@@ -8,7 +8,8 @@ OBJECTS = ../TDB.o ../Task.o ../text.o ../Date.o ../Table.o ../Duration.o      \
           ../StringTable.o ../Subst.o ../Nibbler.o ../Location.o ../Filter.o   \
           ../Context.o ../Keymap.o ../command.o ../interactive.o ../report.o   \
           ../Grid.o ../Color.o ../rules.o ../recur.o ../custom.o ../import.o   \
-          ../edit.o ../Timer.o ../Permission.o
+          ../edit.o ../Timer.o ../Permission.o ../Path.o ../File.o             \
+          ../Directory.o
 
 all: $(PROJECT)
 
@@ -80,4 +81,13 @@ color.t: color.t.o $(OBJECTS) test.o
 
 list.t: list.t.o $(OBJECTS) test.o
 	g++ list.t.o $(OBJECTS) test.o $(LFLAGS) -o list.t
+
+path.t: path.t.o $(OBJECTS) test.o
+	g++ path.t.o $(OBJECTS) test.o $(LFLAGS) -o path.t
+
+file.t: file.t.o $(OBJECTS) test.o
+	g++ file.t.o $(OBJECTS) test.o $(LFLAGS) -o file.t
+
+directory.t: directory.t.o $(OBJECTS) test.o
+	g++ directory.t.o $(OBJECTS) test.o $(LFLAGS) -o directory.t
 

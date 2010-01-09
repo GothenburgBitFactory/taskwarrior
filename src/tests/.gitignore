@@ -17,4 +17,7 @@ config.t
 util.t
 color.t
 list.t
+path.t
+file.t
+directory.t
 *.log

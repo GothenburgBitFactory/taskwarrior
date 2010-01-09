@@ -1,11 +1,14 @@
 bin_PROGRAMS = task
-task_SOURCES = Att.cpp Cmd.cpp Config.cpp Context.cpp Date.cpp Duration.cpp   \
-               Filter.cpp Grid.cpp Keymap.cpp Location.cpp Nibbler.cpp        \
-               Record.cpp Sequence.cpp StringTable.cpp Subst.cpp Task.cpp     \
-               TDB.cpp Table.cpp Timer.cpp Permission.cpp Color.cpp edit.cpp  \
-               command.cpp import.cpp interactive.cpp recur.cpp report.cpp    \
-               custom.cpp rules.cpp main.cpp text.cpp util.cpp                \
-               Att.h Cmd.h Config.h Context.h Date.h Duration.h Filter.h      \
-               Grid.h Keymap.h Location.h Nibbler.h Record.h Sequence.h       \
-               StringTable.h Subst.h Task.h TDB.h Table.h Timer.h             \
-               Permission.h Color.h i18n.h main.h text.h util.h
+task_SOURCES = Att.cpp Cmd.cpp Color.cpp Config.cpp Context.cpp Date.cpp      \
+               Directory.cpp Duration.cpp File.cpp Filter.cpp Grid.cpp        \
+               Keymap.cpp Location.cpp Nibbler.cpp Path.cpp Permission.cpp    \
+               Record.cpp Sequence.cpp StringTable.cpp Subst.cpp TDB.cpp      \
+               Table.cpp Task.cpp Timer.cpp command.cpp custom.cpp edit.cpp   \
+               import.cpp interactive.cpp main.cpp recur.cpp report.cpp       \
+               rules.cpp text.cpp util.cpp                                    \
+               Att.h Cmd.h Color.h Config.h Context.h Date.h Directory.h      \
+               Duration.h File.h Filter.h Grid.h Keymap.h Location.h          \
+               Nibbler.h Path.h Permission.h Record.h Sequence.h              \
+               StringTable.h Subst.h TDB.h Table.h Task.h Timer.h i18n.h      \
+               main.h text.h util.h
+
