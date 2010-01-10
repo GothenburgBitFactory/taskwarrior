@@ -17,7 +17,16 @@ format, and if you are careful not to break the format, there is no reason not
 to edit it.  But task provides a rich command set to do that manipulation for
 you, so it is probably best to leave those files alone.
 
+.TP
+.B How do I restore my .taskrc file to defaults?
+If you delete (or rename) your .taskrc file, task will offer to create a default
+one for you.  Another way to do this is with the command:
 
+    $ task rc:new-file version
+
+Task will create 'new-file' if it doesn't already exist.  Note that this is a
+good way to learn about new configuration settings, if your .taskrc file was
+created by an older version of task.
 
 
 
@@ -51,7 +60,7 @@ The official site at
 
 .TP
 The official code repository at
-<http://github.com/pbeckingham/task/>
+<git://tasktools.org/task.git/>
 
 .TP
 You can contact the project by writing an email to
