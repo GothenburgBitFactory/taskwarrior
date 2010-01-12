@@ -12,8 +12,8 @@ At the site you'll find a wiki, discussion forums, downloads, news and more.
 
 
 Your contributions are especially welcome.  Whether it comes in the form of
-code patches, ideas, discussion, bug reports or just encouragement, your input
-is needed.
+code patches, ideas, discussion, bug reports, encouragement or criticism, your
+input is needed.
 
 Please send your support questions and code patches to:
 
