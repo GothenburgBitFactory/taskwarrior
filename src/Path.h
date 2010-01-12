@@ -44,6 +44,7 @@ public:
   std::string extension () const;
   bool exists () const;
   bool is_directory () const;
+  bool is_absolute () const;
   bool readable () const;
   bool writable () const;
   bool executable () const;

@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
+#include "Path.h"
 #include "Config.h"
 #include "text.h"
 #include "util.h"
@@ -99,16 +100,16 @@ bool Config::load (const std::string& file, int nest /* = 1 */)
           std::string::size_type include = line.find ("include"); // no i18n.
           if (include != std::string::npos)
           {
-            std::string included = expandPath ( trim ( line.substr (include + 7), " \t"));
-            if (isAbsolutePath (included))
+            Path included (trim (line.substr (include + 7), " \t"));
+            if (included.is_absolute ())
             {
-              if (!access (included.c_str (), F_OK | R_OK))
-                this->load (included, nest + 1);
+              if (included.readable ())
+                this->load (included.data, nest + 1);
               else
-                throw std::string ("Could not read include file '") + included + "'";
+                throw std::string ("Could not read include file '") + included.data + "'";
             }
             else
-              throw std::string ("Can only include files with absolute paths, not '") + included + "'";
+              throw std::string ("Can only include files with absolute paths, not '") + included.data + "'";
           }
           else
             throw std::string ("Malformed entry in ") + file + ": '" + line + "'";
@@ -294,7 +295,8 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
 ////////////////////////////////////////////////////////////////////////////////
 void Config::createDefaultData (const std::string& data)
 {
-  if (access (data.c_str (), F_OK))
+  Path p (data);
+  if (! p.exists ())
     mkdir (data.c_str (), S_IRWXU);
 }
 

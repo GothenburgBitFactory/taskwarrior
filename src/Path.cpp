@@ -122,6 +122,15 @@ bool Path::is_directory () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Path::is_absolute () const
+{
+  if (data.length () && data.substr (0, 1) == "/")
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Path::readable () const
 {
   return access (data.c_str (), R_OK) ? false : true;
