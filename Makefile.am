@@ -14,8 +14,6 @@ zshscriptsdir = $(docdir)
 nobase_dist_zshscripts_DATA = scripts/zsh/_task
 
 vimscriptsdir = $(docdir)
-nobase_dist_vimscripts_DATA = scripts/vim/README scripts/vim/ftdetect/task.vim scripts/vim/syntax/taskdata.vim scripts/vim/syntax/taskedit.vim
-
 nobase_dist_vimscripts_DATA = scripts/vim/README scripts/vim/ftdetect/task.vim scripts/vim/syntax/taskdata.vim scripts/vim/syntax/taskedit.vim scripts/vim/syntax/taskrc.vim
 
 i18ndir = $(docdir)
