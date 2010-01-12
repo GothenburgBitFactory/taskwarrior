@@ -33,7 +33,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (26);
+  UnitTest t (31);
 
   // Path ();
   Path p0;
@@ -100,6 +100,13 @@ int main (int argc, char** argv)
   out = Path::glob ("/[s-u]mp");
   t.ok (out.size () == 1, "/[s-u]mp -> 1 result");
   t.is (out[0], "/tmp", "/[s-u]mp -> /tmp");
+
+  // bool is_absolute () const;
+  t.notok (p0.is_absolute (), "'' !is_absolute");
+  t.notok (p1.is_absolute (), "foo !is_absolute");
+  t.ok    (p2.is_absolute (), "~ is_absolute (after expansion)");
+  t.ok    (p3.is_absolute (), "/tmp is_absolute");
+  t.ok    (p4.is_absolute (), "/a/b/c/file.ext is_absolute");
 
   return 0;
 }
