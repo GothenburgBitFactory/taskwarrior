@@ -41,11 +41,13 @@ public:
                ascendingCharacter,
                ascendingPriority,
                ascendingDate,
+               ascendingDueDate,
                ascendingPeriod,
                descendingNumeric,
                descendingCharacter,
                descendingPriority,
                descendingDate,
+               descendingDueDate,
                descendingPeriod};
   enum sizing {minimum = -1, flexible = 0};
 

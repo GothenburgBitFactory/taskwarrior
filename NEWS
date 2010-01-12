@@ -7,6 +7,7 @@ New Features in task 1.9
   - Supports nested .taskrc files with the new "include" statement"
   - New columns that include the time as well as date
   - New attribute modifiers
+  - New date format for reports
   - Improved .taskrc validation
   - Improved calendar report with custom coloring and optional task details output
 

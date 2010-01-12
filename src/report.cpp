@@ -412,7 +412,7 @@ int handleInfo (std::string &outs)
       table.addCell (row, 0, "Due");
 
       Date dt (atoi (task->get ("due").c_str ()));
-      std::string due = getDueDate (*task);
+      std::string due = getDueDate (*task, context.config.get("reportdateformat", context.config.get("dateformat","m/d/Y")));
       table.addCell (row, 1, due);
 
       overdue = (dt < now) ? true : false;
@@ -1218,7 +1218,7 @@ int handleReportTimesheet (std::string &outs)
         {
           int row = completed.addRow ();
           completed.addCell (row, 1, task->get ("project"));
-          completed.addCell (row, 2, getDueDate (*task));
+          completed.addCell (row, 2, getDueDate (*task,context.config.get("dateformat","m/d/Y")));
           completed.addCell (row, 3, getFullDescription (*task));
 
           if (color)
@@ -1274,7 +1274,7 @@ int handleReportTimesheet (std::string &outs)
         {
           int row = started.addRow ();
           started.addCell (row, 1, task->get ("project"));
-          started.addCell (row, 2, getDueDate (*task));
+          started.addCell (row, 2, getDueDate (*task,context.config.get("dateformat","m/d/Y")));
           started.addCell (row, 3, getFullDescription (*task));
 
           if (color)
@@ -2124,13 +2124,15 @@ std::string getFullDescription (Task& task)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-std::string getDueDate (Task& task)
+std::string getDueDate (Task& task, const std::string& format)
 {
   std::string due = task.get ("due");
   if (due.length ())
   {
     Date d (atoi (due.c_str ()));
-    due = d.toString (context.config.get ("dateformat", "m/d/Y"));
+    due = d.toString (format);
+    //due = d.toString (context.config.get ("dateformat", "m/d/Y"));
+    //due = d.toString (context.config.get ("reportdateformat", context.config.get ("dateformat", "m/d/Y")));
   }
 
   return due;

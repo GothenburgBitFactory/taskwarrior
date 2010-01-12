@@ -52,6 +52,9 @@
 #include "Timer.h"
 #include "text.h"
 #include "util.h"
+#include "Context.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Table::Table ()
@@ -862,6 +865,46 @@ void Table::sort (std::vector <int>& order)
               {
                 Date dl ((std::string)*left, mDateFormat);
                 Date dr ((std::string)*right, mDateFormat);
+                if (dl < dr)
+                  SWAP
+              }
+            }
+            break;
+
+          case ascendingDueDate:
+            {
+              if ((std::string)*left != "" && (std::string)*right == "")
+                break;
+
+              else if ((std::string)*left == "" && (std::string)*right != "")
+                SWAP
+
+              else
+              {
+                Date dl ((std::string)*left,  context.config.get("reportdateformat",
+                                                                 context.config.get("dateformat","m/d/Y")));
+                Date dr ((std::string)*right, context.config.get("reportdateformat",
+                                                                 context.config.get("dateformat","m/d/Y")));
+                if (dl > dr)
+                  SWAP
+              }
+            }
+            break;
+
+          case descendingDueDate:
+            {
+              if ((std::string)*left != "" && (std::string)*right == "")
+                break;
+
+              else if ((std::string)*left == "" && (std::string)*right != "")
+                SWAP
+
+              else
+              {
+                Date dl ((std::string)*left,  context.config.get("reportdateformat",
+                                                                 context.config.get("dateformat","m/d/Y")));
+                Date dr ((std::string)*right, context.config.get("reportdateformat",
+                                                                 context.config.get("dateformat","m/d/Y")));
                 if (dl < dr)
                   SWAP
               }

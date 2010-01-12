@@ -33,6 +33,9 @@
 #include "Date.h"
 #include "text.h"
 #include "util.h"
+#include "Context.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Defaults to "now".
@@ -85,7 +88,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
       if (i >= mdy.length () ||
           ! isdigit (mdy[i]))
       {
-        throw std::string ("\"") + mdy + "\" is not a valid date.";
+        throw std::string ("\"") + mdy + "\" is not a valid date (m).";
       }
 
       if (i + 1 < mdy.length ()                    &&
@@ -106,7 +109,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
       if (i >= mdy.length () ||
           ! isdigit (mdy[i]))
       {
-        throw std::string ("\"") + mdy + "\" is not a valid date.";
+        throw std::string ("\"") + mdy + "\" is not a valid date (d).";
       }
 
       if (i + 1 < mdy.length ()                                                              &&
@@ -125,11 +128,11 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
 
     // Double digit.
     case 'y':
-      if (i + 1 >= mdy.length ()   ||
+      if (i + 1 >= mdy.length () ||
           ! isdigit (mdy[i + 0]) ||
           ! isdigit (mdy[i + 1]))
       {
-        throw std::string ("\"") + mdy + "\" is not a valid date.";
+        throw std::string ("\"") + mdy + "\" is not a valid date (y).";
       }
 
       year = atoi (mdy.substr (i, 2).c_str ()) + 2000;
@@ -141,7 +144,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
           ! isdigit (mdy[i + 0]) ||
           ! isdigit (mdy[i + 1]))
       {
-        throw std::string ("\"") + mdy + "\" is not a valid date.";
+        throw std::string ("\"") + mdy + "\" is not a valid date (M).";
       }
 
       month = atoi (mdy.substr (i, 2).c_str ());
@@ -153,10 +156,21 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
           ! isdigit (mdy[i + 0]) ||
           ! isdigit (mdy[i + 1]))
       {
-        throw std::string ("\"") + mdy + "\" is not a valid date.";
+        throw std::string ("\"") + mdy + "\" is not a valid date (D).";
       }
 
       day = atoi (mdy.substr (i, 2).c_str ());
+      i += 2;
+      break;
+
+    case 'V':
+      if (i + 1 >= mdy.length () ||
+          ! isdigit (mdy[i + 0]) ||
+          ! isdigit (mdy[i + 1]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date (V).";
+      }
+
       i += 2;
       break;
 
@@ -168,18 +182,70 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
           ! isdigit (mdy[i + 2]) ||
           ! isdigit (mdy[i + 3]))
       {
-        throw std::string ("\"") + mdy + "\" is not a valid date.";
+        throw std::string ("\"") + mdy + "\" is not a valid date (Y).";
       }
 
       year = atoi (mdy.substr (i, 4).c_str ());
       i += 4;
       break;
 
+    // Short names with 3 characters
+    case 'a':
+      if (i + 2 >= mdy.length () ||
+          isdigit (mdy[i + 0]) ||
+          isdigit (mdy[i + 1]) ||
+          isdigit (mdy[i + 2]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date (a).";
+      }
+
+      i += 3;
+      break;
+
+    case 'b':
+      if (i + 2 >= mdy.length () ||
+          isdigit (mdy[i + 0]) ||
+          isdigit (mdy[i + 1]) ||
+          isdigit (mdy[i + 2]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date (b).";
+      }
+
+      month = Date::monthOfYear (mdy.substr (i, 3).c_str());
+      i += 3;
+      break;
+
+    // Long names
+    case 'A':
+      if (i + 2 >= mdy.length () ||
+          isdigit (mdy[i + 0]) ||
+          isdigit (mdy[i + 1]) ||
+          isdigit (mdy[i + 2]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date (A).";
+      }
+
+      i += Date::dayName( Date::dayOfWeek (mdy.substr (i, 3).c_str()) ).size();
+      break;
+
+    case 'B':
+      if (i + 2 >= mdy.length () ||
+          isdigit (mdy[i + 0]) ||
+          isdigit (mdy[i + 1]) ||
+          isdigit (mdy[i + 2]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date (B).";
+      }
+
+      month = Date::monthOfYear (mdy.substr (i, 3).c_str());
+      i += Date::monthName(month).size();
+      break;
+
     default:
       if (i >= mdy.length () ||
           mdy[i] != format[f])
       {
-        throw std::string ("\"") + mdy + "\" is not a valid date.";
+        throw std::string ("\"") + mdy + "\" is not a valid date (DEFAULT).";
       }
       ++i;
       break;
@@ -190,7 +256,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
     throw std::string ("\"") + mdy + "\" is not a valid date in " + format + " format.";
 
   if (!valid (month, day, year))
-    throw std::string ("\"") + mdy + "\" is not a valid date.";
+    throw std::string ("\"") + mdy + "\" is not a valid date (VALID).";
 
   // Duplicate Date::Date (const int, const int, const int);
   struct tm t = {0};
@@ -256,13 +322,18 @@ const std::string Date::toString (const std::string& format /*= "m/d/Y" */) cons
     char c = localFormat[i];
     switch (c)
     {
-    case 'm': sprintf (buffer, "%d",   this->month ());      break;
-    case 'M': sprintf (buffer, "%02d", this->month ());      break;
-    case 'd': sprintf (buffer, "%d",   this->day ());        break;
-    case 'D': sprintf (buffer, "%02d", this->day ());        break;
-    case 'y': sprintf (buffer, "%02d", this->year () % 100); break;
-    case 'Y': sprintf (buffer, "%d",   this->year ());       break;
-    default:  sprintf (buffer, "%c",   c);                   break;
+    case 'm': sprintf (buffer, "%d",   this->month ());                      break;
+    case 'M': sprintf (buffer, "%02d", this->month ());                      break;
+    case 'd': sprintf (buffer, "%d",   this->day ());                        break;
+    case 'D': sprintf (buffer, "%02d", this->day ());                        break;
+    case 'y': sprintf (buffer, "%02d", this->year () % 100);                 break;
+    case 'Y': sprintf (buffer, "%d",   this->year ());                       break;
+    case 'a': sprintf (buffer, "%.3s", Date::dayName(dayOfWeek()).c_str() ); break;
+    case 'A': sprintf (buffer, "%s",   Date::dayName(dayOfWeek()).c_str() ); break;
+    case 'b': sprintf (buffer, "%.3s", Date::monthName(month()).c_str() );   break;
+    case 'B': sprintf (buffer, "%.9s", Date::monthName(month()).c_str() );   break;
+    case 'V': sprintf (buffer, "%02d", Date::weekOfYear(Date::dayOfWeek(context.config.get ("weekstart", "Sunday")))); break;
+    default:  sprintf (buffer, "%c",   c);                                   break;
     }
 
     formatted += buffer;
@@ -437,13 +508,34 @@ int Date::dayOfWeek (const std::string& input)
 {
   std::string in = lowerCase (input);
 
-  if (in == "sunday")     return 0;
-  if (in == "monday")     return 1;
-  if (in == "tuesday")    return 2;
-  if (in == "wednesday")  return 3;
-  if (in == "thursday")   return 4;
-  if (in == "friday")     return 5;
-  if (in == "saturday")   return 6;
+  if (in == "sunday"    || in == "sun")   return 0;
+  if (in == "monday"    || in == "mon")   return 1;
+  if (in == "tuesday"   || in == "tue")   return 2;
+  if (in == "wednesday" || in == "wed")   return 3;
+  if (in == "thursday"  || in == "thu")   return 4;
+  if (in == "friday"    || in == "fri")   return 5;
+  if (in == "saturday"  || in == "sat")   return 6;
+
+  return -1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Date::monthOfYear (const std::string& input)
+{
+  std::string in = lowerCase (input);
+
+  if (in == "january"   || in == "jan")     return  1;
+  if (in == "february"  || in == "feb")     return  2;
+  if (in == "march"     || in == "mar")     return  3;
+  if (in == "april"     || in == "apr")     return  4;
+  if (in == "may"       || in == "may")     return  5;
+  if (in == "june"      || in == "jun")     return  6;
+  if (in == "july"      || in == "jul")     return  7;
+  if (in == "august"    || in == "aug")     return  8;
+  if (in == "september" || in == "sep")     return  9;
+  if (in == "october"   || in == "oct")     return 10;
+  if (in == "november"  || in == "nov")     return 11;
+  if (in == "december"  || in == "dec")     return 12;
 
   return -1;
 }

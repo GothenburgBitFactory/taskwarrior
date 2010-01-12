@@ -148,33 +148,59 @@ tag names you have used, or just the ones used in active tasks.
 
 .TP
 .B dateformat=m/d/Y
-This is a string of characters that define how task formats dates. The default value is: m/d/Y.
-The string should contain the characters
+.TP
+.B reportdateformat=m/d/Y
+This is a string of characters that define how task formats dates. If
+.B reportdateformat
+is set it will be used for the due date in the output of reports and "task info".
+
+The default value is: m/d/Y.  The string should contain the characters
 
 .RS
-m  minimal-digit month, for example 1 or 12
+m  minimal-digit month,   for example 1 or 12
 .br
-d  minimal-digit day,   for example 1 or 30
+d  minimal-digit day,     for example 1 or 30
 .br
-y  two-digit year,      for example 09
+y  two-digit year,        for example 09
 .br
-D  two-digit day,       for example 01 or 30
+D  two-digit day,         for example 01 or 30
 .br
-M  two-digit month,     for example 01 or 12
+M  two-digit month,       for example 01 or 12
 .br
-Y  four-digit year,     for example 2009
+Y  four-digit year,       for example 2009
+.br
+a  short name of weekday, for example Mon or Wed
+.br
+A  long name of weekday,  for example Monday or Wednesday
+.br
+b  short name of month,   for example Jan or Aug
+.br
+B  long name of month,    for example January or August
+.br
+V  weeknumber,            for example 03 or 37
 .RE
 
 The string may also contain other characters to act as spacers, or formatting. Examples for other
-variable values:
+values of dateformat:
 
 .RS
 .br
-d/m/Y  would output 24/7/2009
+d/m/Y  would use for input and output 24/7/2009
 .br
-YMD    would output 20090724
+yMD    would use for input and output 090724
 .br
-m-d-y  would output 07-24-09
+M-D-Y  would use for input and output 07-24-2009
+.RE
+
+Examples for other values of reportdateformat:
+
+.RS
+.br
+a D b Y (V)  would do an output as "Fri 24 Jul 2009 (30)"
+.br
+A, B D, Y    would do an output as "Friday, July 24, 2009"
+.br
+vV a Y-M-D   would do an output as "v30 Fri 2009-07.24"
 .RE
 
 .TP

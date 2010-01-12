@@ -356,12 +356,15 @@ int runCustomReport (
     {
       table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Due");
       table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
+      table.setColumnJustification (columnCount, Table::left);
 
       int row = 0;
       std::string due;
       foreach (task, tasks)
-        table.addCell (row++, columnCount, getDueDate (*task));
+        table.addCell (row++, columnCount,
+                              getDueDate (*task,
+                                          context.config.get ("reportdateformat",
+                                                              context.config.get ("dateformat", "m/d/Y"))));
 
       dueColumn = columnCount;
     }
@@ -550,12 +553,18 @@ int runCustomReport (
                       Table::ascendingPriority :
                       Table::descendingPriority));
 
-    else if (column == "entry" || column == "start" || column == "due" ||
-             column == "wait"  || column == "until" || column == "end")
+    else if (column == "entry" || column == "start" || column == "wait" ||
+             column == "until" || column == "end")
       table.sortOn (columnIndex[column],
                     (direction == '+' ?
                       Table::ascendingDate :
                       Table::descendingDate));
+
+    else if (column == "due")
+      table.sortOn (columnIndex[column],
+                    (direction == '+' ?
+                      Table::ascendingDueDate :
+                      Table::descendingDueDate));
 
     else if (column == "recur")
       table.sortOn (columnIndex[column],
@@ -571,10 +580,10 @@ int runCustomReport (
   }
 
   // Now auto colorize all rows.
-  Color color_due     (context.config.get ("color.due",     "yellow"));
+  std::string due;
+  Color color_due     (context.config.get ("color.due",     "green"));
   Color color_overdue (context.config.get ("color.overdue", "red"));
 
-  std::string due;
   bool imminent;
   bool overdue;
   for (unsigned int row = 0; row < tasks.size (); ++row)

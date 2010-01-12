@@ -103,7 +103,7 @@ int handleReportCalendar (std::string &);
 int handleReportStats (std::string &);
 int handleReportTimesheet (std::string &);
 std::string getFullDescription (Task&);
-std::string getDueDate (Task&);
+std::string getDueDate (Task&, const std::string&);
 
 // custom.cpp
 int handleCustomReport (const std::string&, std::string &);

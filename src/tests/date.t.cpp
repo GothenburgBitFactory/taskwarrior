@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (102);
+  UnitTest t (111);
 
   try
   {
@@ -179,6 +179,21 @@ int main (int argc, char** argv)
     t.is (fromString7.month (),   1, "ctor (std::string) -> m");
     t.is (fromString7.day (),     1, "ctor (std::string) -> d");
     t.is (fromString7.year (), 2008, "ctor (std::string) -> y");
+
+    Date fromString8 ("Tue 01 Jan 2008 (01)", "a D b Y (V)");
+    t.is (fromString8.month (),   1, "ctor (std::string) -> m");
+    t.is (fromString8.day (),     1, "ctor (std::string) -> d");
+    t.is (fromString8.year (), 2008, "ctor (std::string) -> y");
+
+    Date fromString9 ("Tuesday, January 1, 2008", "A, B d, Y");
+    t.is (fromString9.month (),   1, "ctor (std::string) -> m");
+    t.is (fromString9.day (),     1, "ctor (std::string) -> d");
+    t.is (fromString9.year (), 2008, "ctor (std::string) -> y");
+
+    Date fromString10 ("v01 Tue 2008-01-01", "vV a Y-M-D");
+    t.is (fromString10.month (),   1, "ctor (std::string) -> m");
+    t.is (fromString10.day (),     1, "ctor (std::string) -> d");
+    t.is (fromString10.year (), 2008, "ctor (std::string) -> y");
 
     // Relative dates.
     Date r1 ("today");

@@ -149,6 +149,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "\n"
            << "# Dates\n"
            << "dateformat=m/d/Y                       # Preferred input and display date format\n"
+           << "#reportdateformat=m/d/Y                # Preferred input and display date format\n"
            << "weekstart=Sunday                       # Sunday or Monday only\n"
            << "displayweeknumber=yes                  # Show week numbers on calendar\n"
            << "due=7                                  # Task is considered due in 7 days\n"
