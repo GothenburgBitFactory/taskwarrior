@@ -2,11 +2,13 @@
 ------ current release ---------------------------
 
 1.9.0 ()
- + Added feature #292 that permits alternate line coloration in reports
-   (thanks to Richard Querin).
+ + Added feature #283 that makes it possible to control the verbosity
+   of the output of annotations.
  + Added feature #254 (#295) which gives task a second date format to be
    used in the reports with more conversion sequences like weekday name
    or weeknumber. The date format is set with variable "reportdateformat".
+ + Added feature #292 that permits alternate line coloration in reports
+   (thanks to Richard Querin).
  + Added feature #307 that provides vim with syntax highlighting for .taskrc.
  + Added feature #336 which gives task a 'prepend' command for symmetry
    with the 'append' command.

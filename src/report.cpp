@@ -2113,12 +2113,32 @@ std::string getFullDescription (Task& task)
 
   std::vector <Att> annotations;
   task.getAnnotations (annotations);
-  foreach (anno, annotations)
-  {
-    Date dt (atoi (anno->name ().substr (11).c_str ()));
-    std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-    desc += "\n" + when + " " + anno->value ();
-  }
+
+  if (annotations.size () != 0)
+    switch (context.config.get("annotation.details",2))
+    {
+    case 0:
+      desc = "+" + desc;
+      break;
+    case 1:
+      {
+        if (annotations.size () > 1)
+          desc = "+" + desc;
+        Att anno (annotations.back());
+        Date dt (atoi (anno.name ().substr (11).c_str ()));
+        std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+        desc += "\n" + when + " " + anno.value ();
+      }
+      break;
+    case 2:
+      foreach (anno, annotations)
+      {
+        Date dt (atoi (anno->name ().substr (11).c_str ()));
+        std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+        desc += "\n" + when + " " + anno->value ();
+      }
+      break; 
+    }
 
   return desc;
 }

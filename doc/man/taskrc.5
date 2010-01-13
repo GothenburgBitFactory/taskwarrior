@@ -116,6 +116,10 @@ May be "yes" or "no", and determines whether task will ask for confirmation befo
 May be "yes" or "no", and causes task to display the ID and description of any task when you run the start, stop, do, undo or delete commands. The default value is "yes". 
 
 .TP
+.B annotation.details=2
+Controls the output of annotations in reports. Defaults to 2 - all annotations are displayed. Set to 1 only the last (youngest) annotation is displayed and if there are more than one present for a task a "+" sign is added to the description. Set to 0 the output of annotations is disabled and a "+" sign will be added if there are any annotations present.
+
+.TP
 .B next=2
 Is a number, defaulting to 2, which is the number of tasks for each project that are shown in the 
 .B task next
