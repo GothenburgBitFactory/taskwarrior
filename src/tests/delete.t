@@ -34,6 +34,7 @@ use Test::More tests => 17;
 if (open my $fh, '>', 'delete.rc')
 {
   print $fh "data.location=.\n",
+            "confirmation=no\n",
             "echo.command=no\n";
   close $fh;
   ok (-r 'delete.rc', 'Created delete.rc');

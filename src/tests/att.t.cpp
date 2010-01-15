@@ -155,8 +155,8 @@ int main (int argc, char** argv)
   t.ok (good, "Att::mod (noword)");
 
   good = true;
-  try {a6.mod ("fartwizzle");} catch (...) {good = false;}
-  t.notok (good, "Att::mod (fartwizzle)");
+  try {a6.mod ("unrecognized");} catch (...) {good = false;}
+  t.notok (good, "Att::mod (unrecognized)");
 
   // Att::parse
   Nibbler n ("");

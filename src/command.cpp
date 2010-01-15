@@ -606,7 +606,6 @@ int handleConfig (std::string &outs)
   }
 
   out << context.config.checkForDeprecatedColor ();
-  out << context.config.checkForDuplicates ();
   // TODO Check for referenced but missing theme files.
   // TODO Check for referenced but missing string files.
 

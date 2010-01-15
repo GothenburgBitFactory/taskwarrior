@@ -36,6 +36,7 @@ if (open my $fh, '>', 'annotate.rc')
   # Note: Use 'rrr' to guarantee a unique report name.  Using 'r' conflicts
   #       with 'recurring'.
   print $fh "data.location=.\n",
+            "confirmation=off\n",
             "report.rrr.description=rrr\n",
             "report.rrr.columns=id,description\n",
             "report.rrr.sort=id+\n";

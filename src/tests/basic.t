@@ -33,7 +33,8 @@ use Test::More tests => 7;
 # Create the rc file.
 if (open my $fh, '>', 'basic.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "default.command=\n";
   close $fh;
   ok (-r 'basic.rc', 'Created basic.rc');
 }

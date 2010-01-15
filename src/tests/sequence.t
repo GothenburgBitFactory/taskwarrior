@@ -33,7 +33,8 @@ use Test::More tests => 28;
 # Create the rc file.
 if (open my $fh, '>', 'seq.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=off\n";
   close $fh;
   ok (-r 'seq.rc', 'Created seq.rc');
 }

@@ -34,6 +34,7 @@ use Test::More tests => 22;
 if (open my $fh, '>', 'shadow.rc')
 {
   print $fh "data.location=.\n",
+            "confirmation=off\n",
             "shadow.file=./shadow.txt\n",
             "shadow.command=rc:shadow.rc stats\n",
             "shadow.notify=on\n";
