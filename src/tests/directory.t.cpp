@@ -33,7 +33,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (20);
+  UnitTest t (21);
 
   // Directory (const File&);
   // Directory (const Path&);
@@ -54,6 +54,9 @@ int main (int argc, char** argv)
   // Directory& operator= (const Directory&);
   Directory d5 = d4;
   t.is (d5.data, "/tmp/test_directory", "Directory::operator=");
+
+  // operator (std::string) const;
+  t.is ((std::string) d3, "/tmp", "Directory::operator (std::string) const");
 
   // virtual bool create ();
   t.ok (d5.create (), "Directory::create /tmp/test_directory");

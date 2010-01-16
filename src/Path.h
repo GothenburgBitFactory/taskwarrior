@@ -39,6 +39,8 @@ public:
   virtual ~Path ();
 
   Path& operator= (const Path&);
+  operator std::string () const;
+
   std::string name () const;
   std::string parent () const;
   std::string extension () const;

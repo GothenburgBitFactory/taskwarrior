@@ -125,7 +125,7 @@ void Context::initialize ()
   // init TDB.
   tdb.clear ();
   std::vector <std::string> all;
-  split (all, location.data, ',');
+  split (all, location, ',');
   foreach (path, all)
     tdb.location (*path);
 }
@@ -372,7 +372,7 @@ void Context::loadCorrectConfigFile ()
       file_override = *arg;
       rc = File (arg->substr (3));
 
-      home = rc.data;
+      home = rc;
       std::string::size_type last_slash = rc.data.rfind ("/");
       if (last_slash != std::string::npos)
         home = rc.data.substr (0, last_slash);
@@ -387,7 +387,7 @@ void Context::loadCorrectConfigFile ()
 
   // Load rc file.
   config.clear ();       // Dump current values.
-  config.load (rc.data); // Load new file.
+  config.load  (rc);     // Load new file.
 
   if (config.get ("data.location") != "")
     data = Directory (config.get ("data.location"));
@@ -416,20 +416,20 @@ void Context::loadCorrectConfigFile ()
                + rc.data
                + " created, so task can proceed?"))
     {
-      config.createDefaultRC (rc.data, data.data);
+      config.createDefaultRC (rc, data);
     }
     else
       throw std::string ("Cannot proceed without rc file.");
   }
 
   // Create data location, if necessary.
-  config.createDefaultData (data.data);
+  config.createDefaultData (data);
 
   // TODO find out why this was done twice - see tw #355
   // Load rc file.
   //config.clear ();       // Dump current values.
   //config.setDefaults (); // Add in the custom reports.
-  //config.load (rc.data); // Load new file.
+  //config.load (rc);      // Load new file.
 
   // Apply overrides of type: "rc.name:value", or "rc.name=value".
   std::vector <std::string> filtered;

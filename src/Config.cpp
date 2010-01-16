@@ -62,17 +62,17 @@ std::string Config::defaults =
   "annotation.details=2                   # Level of verbosity for annotations in reports\n"
   "next=2                                 # How many tasks per project in next report\n"
   "bulk=2                                 # > 2 tasks considered 'a lot', for confirmation\n"
-  "nag=You have higher priority tasks.    # Nag message to keep you honest\n"
+  "nag=You have higher priority tasks.    # Nag message to keep you honest\n"                      // TODO
   "\n"
   "# Dates\n"
   "dateformat=m/d/Y                       # Preferred input and display date format\n"
-  "#reportdateformat=m/d/Y                # Preferred input and display date format\n"
-  "weekstart=Sunday                       # Sunday or Monday only\n"
-  "displayweeknumber=yes                  # Show week numbers on calendar\n"
+  "#reportdateformat=m/d/Y                # Preferred display date format for repors\n"
+  "weekstart=Sunday                       # Sunday or Monday only\n"                               // TODO
+  "displayweeknumber=yes                  # Show week numbers on calendar\n"                       // TODO
   "due=7                                  # Task is considered due in 7 days\n"
   "#calendar.details=yes                  # Calendar shows information for tasks w/due dates\n"
-  "#calendar.details.report=list          # Report to use when showing task information in cal\n"
-  "#monthsperline=3                       # Number of calendar months on a line\n"
+  "#calendar.details.report=list          # Report to use when showing task information in cal\n"  // TODO
+  "#monthsperline=3                       # Number of calendar months on a line\n"                 // TODO
   "\n"
   "# Color controls.\n"
   "color=on                               # Enable color\n"
@@ -101,21 +101,22 @@ std::string Config::defaults =
   "color.history.delete=on yellow         # Color of deleted tasks in the history reports\n"
   "color.history.done=on green            # Color of completed tasks in the history reports\n"
   "\n"
+  "# Shadow file support\n"
   "#shadow.file=/tmp/shadow.txt           # Location of shadow file\n"
   "#shadow.command=list                   # Task command for shadow file\n"
   "#shadow.notify=on                      # Footnote when updated\n"
   "\n"
   "#default.project=foo                   # Default project for 'add' command\n"
   "#default.priority=M                    # Default priority for 'add' command\n"
-  "default.command=list                   # When no arguments are specified\n"
+  "default.command=list                   # When no arguments are specified\n"                     // TODO
   "\n"
   "_forcecolor=no                         # Forces color to be on, even for non TTY output\n"
   "blanklines=true                        # Use more whitespace in output\n"
-  "complete.all.projects=no               # Include old project names in 'projects' command\n"
-  "complete.all.tags=no                   # Include old tag names in 'tags' command\n"
+  "complete.all.projects=no               # Include old project names in 'projects' command\n"     // TODO
+  "complete.all.tags=no                   # Include old tag names in 'tags' command\n"             // TODO
   "debug=no                               # Display diagnostics\n"
   "fontunderline=yes                      # Uses underlines rather than -------\n"
-  "shell.prompt=task>                     # Prompt used by the shell command\n"
+  "shell.prompt=task>                     # Prompt used by the shell command\n"                    // TODO
   "\n"
   "# Import heuristics - alternate names for fields (comma-separated list of names)\n"
   "#import.synonym.bg=?\n"
@@ -133,12 +134,13 @@ std::string Config::defaults =
   "#import.synonym.tags=?\n"
   "#import.synonym.uuid=?\n"
   "\n"
+  "# Aliases - alternate names for commands\n"
   "alias.rm=delete                        # Alias for the delete command\n"
   "\n"
-  "# Fields: id,uuid,project,priority,priority_long,entry,entry_time,\n"
-  "#         start,entry_time,due,recur,recurrence_indicator,age,\n"
-  "#         age_compact,active,tags,tag_indicator,description,\n"
-  "#         description_only,end,end_time\n"
+  "# Fields: id,uuid,project,priority,priority_long,entry,entry_time,\n"                           // TODO
+  "#         start,entry_time,due,recur,recurrence_indicator,age,\n"                               // TODO
+  "#         age_compact,active,tags,tag_indicator,description,\n"                                 // TODO
+  "#         description_only,end,end_time\n"                                                      // TODO
   "# Description:   This report is ...\n"
   "# Sort:          due+,priority-,project+\n"
   "# Filter:        pro:x pri:H +bug limit:10\n"
@@ -321,7 +323,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
           if (included.is_absolute ())
           {
             if (included.readable ())
-              this->load (included.data, nest + 1);
+              this->load (included, nest + 1);
             else
               throw std::string ("Could not read include file '") + included.data + "'";
           }

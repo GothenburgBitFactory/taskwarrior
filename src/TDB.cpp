@@ -114,7 +114,7 @@ void TDB::location (const std::string& path)
           path +
           "' does not exist, or is not readable and writable.";
 
-  mLocations.push_back (Location (d.data));
+  mLocations.push_back (Location (d));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
