@@ -352,7 +352,7 @@ std::string ucFirst (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 const char* optionalBlankLine ()
 {
-  if (context.config.get ("blanklines", true) == true) // no i18n
+  if (context.config.getBoolean ("blanklines") == true) // no i18n
     return newline;
 
   return noline;

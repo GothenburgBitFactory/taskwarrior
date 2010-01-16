@@ -390,7 +390,7 @@ int getDueState (const std::string& due)
     if (dt < thisDay)
       return 2;
 
-    int imminentperiod = context.config.get ("due", 7);
+    int imminentperiod = context.config.getInteger ("due");
 
     if (imminentperiod == 0)
       return 1;
@@ -406,7 +406,7 @@ int getDueState (const std::string& due)
 ////////////////////////////////////////////////////////////////////////////////
 bool nag (Task& task)
 {
-  std::string nagMessage = context.config.get ("nag", "");
+  std::string nagMessage = context.config.get ("nag");
   if (nagMessage != "")
   {
     // Load all pending tasks.

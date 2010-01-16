@@ -80,7 +80,7 @@ static std::string findDate (
 
       if (value != "")
       {
-        Date dt (value, context.config.get ("dateformat", "m/d/Y"));
+        Date dt (value, context.config.get ("dateformat"));
         char epoch [16];
         sprintf (epoch, "%d", (int)dt.toEpoch ());
         return std::string (epoch);
@@ -100,7 +100,7 @@ static std::string formatDate (
   if (value.length ())
   {
     Date dt (::atoi (value.c_str ()));
-    value = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+    value = dt.toString (context.config.get ("dateformat"));
   }
 
   return value;
@@ -162,7 +162,7 @@ static std::string formatTask (Task task)
   foreach (anno, annotations)
   {
     Date dt (::atoi (anno->name ().substr (11).c_str ()));
-    before << "  Annotation:        " << dt.toString (context.config.get ("dateformat", "m/d/Y"))
+    before << "  Annotation:        " << dt.toString (context.config.get ("dateformat"))
            << " "                     << anno->value ()                                 << std::endl;
   }
 
@@ -499,7 +499,7 @@ static void parseTask (Task& task, const std::string& after)
       std::string::size_type gap = value.find (" ");
       if (gap != std::string::npos)
       {
-        Date when (value.substr (0, gap), context.config.get ("dateformat", "m/d/Y"));
+        Date when (value.substr (0, gap), context.config.get ("dateformat"));
 
         // This guarantees that if more than one annotation has the same date,
         // that the seconds will be different, thus unique, thus not squashed.
@@ -534,7 +534,7 @@ void editFile (Task& task)
   spit (file.str (), before);
 
   // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
-  std::string editor = context.config.get ("editor", "");
+  std::string editor = context.config.get ("editor");
   char* peditor = getenv ("VISUAL");
   if (editor == "" && peditor) editor = std::string (peditor);
   peditor = getenv ("EDITOR");
@@ -604,7 +604,7 @@ int handleEdit (std::string &outs)
   std::stringstream out;
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   Filter filter;
   context.tdb.loadPending (tasks, filter);

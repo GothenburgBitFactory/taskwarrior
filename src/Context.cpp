@@ -98,11 +98,11 @@ void Context::initialize ()
   {
     config.set ("curses", "off");
 
-    if (! config.get (std::string ("_forcecolor"), false))
+    if (! config.getBoolean ("_forcecolor"))
       config.set ("color",  "off");
   }
 
-  if (config.get ("color", true))
+  if (config.getBoolean ("color"))
     initializeColorRules ();
 
   // Load appropriate stringtable as soon after the config file as possible, to
@@ -154,16 +154,16 @@ int Context::run ()
   }
 
   // Dump all debug messages.
-  if (config.get (std::string ("debug"), false))
+  if (config.getBoolean ("debug"))
     foreach (d, debugMessages)
-      if (config.get ("color", true) || config.get (std::string ("_forcecolor"), false))
+      if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
         std::cout << colorizeDebug (*d) << std::endl;
       else
         std::cout << *d << std::endl;
 
   // Dump all headers.
   foreach (h, headers)
-    if (config.get ("color", true) || config.get (std::string ("_forcecolor"), false))
+    if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
       std::cout << colorizeHeader (*h) << std::endl;
     else
       std::cout << *h << std::endl;
@@ -173,7 +173,7 @@ int Context::run ()
 
   // Dump all footnotes.
   foreach (f, footnotes)
-    if (config.get ("color", true) || config.get (std::string ("_forcecolor"), false))
+    if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
       std::cout << colorizeFootnote (*f) << std::endl;
     else
       std::cout << *f << std::endl;
@@ -268,8 +268,10 @@ void Context::shadow ()
 
     // Run report.  Use shadow.command, using default.command as a fallback
     // with "list" as a default.
-    std::string command = config.get ("shadow.command",
-                            config.get ("default.command", "list"));
+    std::string command = config.get ("shadow.command");
+    if (command == "")
+      command = config.get ("default.command");
+
     split (args, command, ' ');
 
     initialize ();
@@ -292,7 +294,7 @@ void Context::shadow ()
     config.set ("color",  oldColor);
 
     // Optionally display a notification that the shadow file was updated.
-    if (config.get (std::string ("shadow.notify"), false))
+    if (config.getBoolean ("shadow.notify"))
       footnote (std::string ("[Shadow file '") + shadowFile + "' updated]");
 
     inShadow = false;

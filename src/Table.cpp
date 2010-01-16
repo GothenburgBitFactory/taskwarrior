@@ -881,10 +881,12 @@ void Table::sort (std::vector <int>& order)
 
               else
               {
-                Date dl ((std::string)*left,  context.config.get("reportdateformat",
-                                                                 context.config.get("dateformat","m/d/Y")));
-                Date dr ((std::string)*right, context.config.get("reportdateformat",
-                                                                 context.config.get("dateformat","m/d/Y")));
+                std::string format = context.config.get ("reportdateformat");
+                if (format == "")
+                  format = context.config.get ("dateformat");
+
+                Date dl ((std::string)*left,  format);
+                Date dr ((std::string)*right, format);
                 if (dl > dr)
                   SWAP
               }
@@ -901,10 +903,12 @@ void Table::sort (std::vector <int>& order)
 
               else
               {
-                Date dl ((std::string)*left,  context.config.get("reportdateformat",
-                                                                 context.config.get("dateformat","m/d/Y")));
-                Date dr ((std::string)*right, context.config.get("reportdateformat",
-                                                                 context.config.get("dateformat","m/d/Y")));
+                std::string format = context.config.get ("reportdateformat");
+                if (format == "")
+                  format = context.config.get ("dateformat");
+
+                Date dl ((std::string)*left,  format);
+                Date dr ((std::string)*right, format);
                 if (dl < dr)
                   SWAP
               }

@@ -137,10 +137,10 @@ int Context::interactive ()
 int Context::getWidth ()
 {
   // Determine window size, and set table accordingly.
-  int width = config.get ("defaultwidth", (int) 80);
+  int width = config.getInteger ("defaultwidth");
 
 #ifdef HAVE_LIBNCURSES
-  if (config.get ("curses", true))
+  if (config.getBoolean ("curses"))
   {
 #ifdef FEATURE_NCURSES_COLS
     initscr ();

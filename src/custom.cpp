@@ -82,7 +82,7 @@ int handleCustomReport (const std::string& report, std::string &outs)
 
   // Get all the tasks.
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
@@ -161,7 +161,7 @@ int runCustomReport (
 
   Table table;
   table.setTableWidth (context.getWidth ());
-  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat"));
 
   foreach (task, tasks)
     table.addRow ();
@@ -251,7 +251,7 @@ int runCustomReport (
         if (entered.length ())
         {
           Date dt (::atoi (entered.c_str ()));
-          entered = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+          entered = dt.toString (context.config.get ("dateformat"));
           table.addCell (row, columnCount, entered);
         }
       }
@@ -270,7 +270,7 @@ int runCustomReport (
         if (entered.length ())
         {
           Date dt (::atoi (entered.c_str ()));
-          entered = dt.toStringWithTime (context.config.get ("dateformat", "m/d/Y"));
+          entered = dt.toStringWithTime (context.config.get ("dateformat"));
           table.addCell (row, columnCount, entered);
         }
       }
@@ -289,7 +289,7 @@ int runCustomReport (
         if (started.length ())
         {
           Date dt (::atoi (started.c_str ()));
-          started = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+          started = dt.toString (context.config.get ("dateformat"));
           table.addCell (row, columnCount, started);
         }
       }
@@ -308,7 +308,7 @@ int runCustomReport (
         if (started.length ())
         {
           Date dt (::atoi (started.c_str ()));
-          started = dt.toStringWithTime (context.config.get ("dateformat", "m/d/Y"));
+          started = dt.toStringWithTime (context.config.get ("dateformat"));
           table.addCell (row, columnCount, started);
         }
       }
@@ -327,7 +327,7 @@ int runCustomReport (
         if (started.length ())
         {
           Date dt (::atoi (started.c_str ()));
-          started = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+          started = dt.toString (context.config.get ("dateformat"));
           table.addCell (row, columnCount, started);
         }
       }
@@ -339,6 +339,8 @@ int runCustomReport (
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::right);
 
+      std::string format = context.config.get ("dateformat");
+
       std::string started;
       for (unsigned int row = 0; row < tasks.size(); ++row)
       {
@@ -346,7 +348,7 @@ int runCustomReport (
         if (started.length ())
         {
           Date dt (::atoi (started.c_str ()));
-          started = dt.toStringWithTime (context.config.get ("dateformat", "m/d/Y"));
+          started = dt.toStringWithTime (format);
           table.addCell (row, columnCount, started);
         }
       }
@@ -358,13 +360,14 @@ int runCustomReport (
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::left);
 
+      std::string format = context.config.get ("reportdateformat");
+      if (format == "")
+        format = context.config.get ("dateformat");
+
       int row = 0;
       std::string due;
       foreach (task, tasks)
-        table.addCell (row++, columnCount,
-                              getDueDate (*task,
-                                          context.config.get ("reportdateformat",
-                                                              context.config.get ("dateformat", "m/d/Y"))));
+        table.addCell (row++, columnCount, getDueDate (*task, format));
 
       dueColumn = columnCount;
     }
@@ -511,7 +514,7 @@ int runCustomReport (
         if (wait != "")
         {
           Date dt (::atoi (wait.c_str ()));
-          wait = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+          wait = dt.toString (context.config.get ("dateformat"));
           table.addCell (row++, columnCount, wait);
         }
       }
@@ -519,8 +522,8 @@ int runCustomReport (
 
     // Common to all columns.
     // Add underline.
-    if ((context.config.get (std::string ("color"), true) || context.config.get (std::string ("_forcecolor"), false)) &&
-        context.config.get (std::string ("fontunderline"), "true"))
+    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+        context.config.getBoolean ("fontunderline"))
       table.setColumnUnderline (columnCount);
     else
       table.setTableDashedUnderline ();
@@ -581,8 +584,8 @@ int runCustomReport (
 
   // Now auto colorize all rows.
   std::string due;
-  Color color_due     (context.config.get ("color.due",     "green"));
-  Color color_overdue (context.config.get ("color.overdue", "red"));
+  Color color_due     (context.config.get ("color.due"));
+  Color color_overdue (context.config.get ("color.overdue"));
 
   bool imminent;
   bool overdue;
@@ -602,7 +605,7 @@ int runCustomReport (
       }
     }
 
-    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
     {
       Color c (tasks[row].get ("fg") + " " + tasks[row].get ("bg"));
       autoColorize (tasks[row], c);
@@ -617,15 +620,15 @@ int runCustomReport (
   }
 
   // If an alternating row color is specified, notify the table.
-  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
   {
-    Color alternate (context.config.get ("color.alternate", ""));
+    Color alternate (context.config.get ("color.alternate"));
     if (alternate.nontrivial ())
       table.setTableAlternateColor (alternate);
   }
 
   // Limit the number of rows according to the report definition.
-  int maximum = context.config.get (std::string ("report.") + report + ".limit", (int)0);
+  int maximum = context.config.getInteger (std::string ("report.") + report + ".limit");
 
   // If the custom report has a defined limit, then allow a numeric override.
   // This is an integer specified as a filter (limit:10).

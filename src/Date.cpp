@@ -322,18 +322,18 @@ const std::string Date::toString (const std::string& format /*= "m/d/Y" */) cons
     char c = localFormat[i];
     switch (c)
     {
-    case 'm': sprintf (buffer, "%d",   this->month ());                      break;
-    case 'M': sprintf (buffer, "%02d", this->month ());                      break;
-    case 'd': sprintf (buffer, "%d",   this->day ());                        break;
-    case 'D': sprintf (buffer, "%02d", this->day ());                        break;
-    case 'y': sprintf (buffer, "%02d", this->year () % 100);                 break;
-    case 'Y': sprintf (buffer, "%d",   this->year ());                       break;
-    case 'a': sprintf (buffer, "%.3s", Date::dayName(dayOfWeek()).c_str() ); break;
-    case 'A': sprintf (buffer, "%s",   Date::dayName(dayOfWeek()).c_str() ); break;
-    case 'b': sprintf (buffer, "%.3s", Date::monthName(month()).c_str() );   break;
-    case 'B': sprintf (buffer, "%.9s", Date::monthName(month()).c_str() );   break;
-    case 'V': sprintf (buffer, "%02d", Date::weekOfYear(Date::dayOfWeek(context.config.get ("weekstart", "Sunday")))); break;
-    default:  sprintf (buffer, "%c",   c);                                   break;
+    case 'm': sprintf (buffer, "%d",   this->month ());                        break;
+    case 'M': sprintf (buffer, "%02d", this->month ());                        break;
+    case 'd': sprintf (buffer, "%d",   this->day ());                          break;
+    case 'D': sprintf (buffer, "%02d", this->day ());                          break;
+    case 'y': sprintf (buffer, "%02d", this->year () % 100);                   break;
+    case 'Y': sprintf (buffer, "%d",   this->year ());                         break;
+    case 'a': sprintf (buffer, "%.3s", Date::dayName (dayOfWeek ()).c_str ()); break;
+    case 'A': sprintf (buffer, "%s",   Date::dayName (dayOfWeek ()).c_str ()); break;
+    case 'b': sprintf (buffer, "%.3s", Date::monthName (month ()).c_str ());   break;
+    case 'B': sprintf (buffer, "%.9s", Date::monthName (month ()).c_str ());   break;
+    case 'V': sprintf (buffer, "%02d", Date::weekOfYear (Date::dayOfWeek (context.config.get ("weekstart")))); break;
+    default:  sprintf (buffer, "%c",   c);                                     break;
     }
 
     formatted += buffer;

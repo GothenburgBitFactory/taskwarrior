@@ -373,43 +373,31 @@ void Config::clear ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Return the configuration value given the specified key.
-const std::string Config::get (const char* key)
-{
-  return this->get (std::string (key));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Return the configuration value given the specified key.  If a default_value
-// is present, it will be the returned value in the event of a missing key.
-const std::string Config::get (
-  const char* key,
-  const char* default_value)
-{
-  return this->get (std::string (key), std::string (default_value));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Return the configuration value given the specified key.
 const std::string Config::get (const std::string& key)
 {
   return (*this)[key];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Return the configuration value given the specified key.  If a default_value
-// is present, it will be the returned value in the event of a missing key.
-const std::string Config::get (
-  const std::string& key,
-  const std::string& default_value)
+const int Config::getInteger (const std::string& key)
 {
   if ((*this).find (key) != (*this).end ())
-    return (*this)[key];
+    return atoi ((*this)[key].c_str ());
 
-  return default_value;
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Config::get (const std::string& key, const bool default_value)
+const double Config::getReal (const std::string& key)
+{
+  if ((*this).find (key) != (*this).end ())
+    return atof ((*this)[key].c_str ());
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const bool Config::getBoolean (const std::string& key)
 {
   if ((*this).find (key) != (*this).end ())
   {
@@ -424,29 +412,9 @@ bool Config::get (const std::string& key, const bool default_value)
         value == "enable" ||  // TODO i18n
         value == "enabled")   // TODO i18n
       return true;
-
-    return false;
   }
 
-  return default_value;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int Config::get (const std::string& key, const int default_value)
-{
-  if ((*this).find (key) != (*this).end ())
-    return atoi ((*this)[key].c_str ());
-
-  return default_value;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-double Config::get (const std::string& key, const double default_value)
-{
-  if ((*this).find (key) != (*this).end ())
-    return atof ((*this)[key].c_str ());
-
-  return default_value;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

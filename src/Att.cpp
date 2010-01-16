@@ -331,7 +331,7 @@ bool Att::validNameValue (
   {
     // Validate and convert to epoch.
     if (value != "")
-      value = Date (value, context.config.get ("dateformat", "m/d/Y")).toEpochString ();
+      value = Date (value, context.config.get ("dateformat")).toEpochString ();
   }
 
   else if (name == "recur")
@@ -571,7 +571,7 @@ bool Att::match (const Att& other) const
     }
     else if (which == "date")
     {
-      Date literal (mValue.c_str (), context.config.get ("dateformat", "m/d/Y"));
+      Date literal (mValue.c_str (), context.config.get ("dateformat"));
       Date variable ((time_t)atoi (other.mValue.c_str ()));
       if (other.mValue == "" || ! (variable < literal))
         return false;
@@ -601,7 +601,7 @@ bool Att::match (const Att& other) const
     }
     else if (which == "date")
     {
-      Date literal (mValue.c_str (), context.config.get ("dateformat", "m/d/Y"));
+      Date literal (mValue.c_str (), context.config.get ("dateformat"));
       Date variable ((time_t)atoi (other.mValue.c_str ()));
       if (! (variable > literal))
         return false;

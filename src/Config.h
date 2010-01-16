@@ -48,21 +48,10 @@ public:
   void setDefaults ();
   void clear ();
 
-/*
   const std::string get        (const std::string&);
-  const std::string getInteger (const std::string&);
-  const std::string getReal    (const std::string&);
-  const std::string getBoolean (const std::string&);
-*/
-// <OBSOLETE>
-  const std::string get (const char*);
-  const std::string get (const char*, const char*);
-  const std::string get (const std::string&);
-  const std::string get (const std::string&, const std::string&);
-  bool get (const std::string&, const bool);
-  int get (const std::string&, const int);
-  double get (const std::string&, const double);
-// </OBSOLETE>
+  const int         getInteger (const std::string&);
+  const double      getReal    (const std::string&);
+  const bool        getBoolean (const std::string&);
 
   void set (const std::string&, const int);
   void set (const std::string&, const double);
