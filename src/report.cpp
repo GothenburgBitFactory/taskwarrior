@@ -1535,7 +1535,7 @@ int handleReportCalendar (std::string &outs)
       // task cal 2010
       monthsToDisplay = 12;
       mFrom = 1;
-      yFrom = atoi( context.args[1].data());
+      yFrom = atoi (context.args[1].c_str ());
     }
   }
   else if (numberOfArgs == 3) {
@@ -1547,15 +1547,15 @@ int handleReportCalendar (std::string &outs)
     else {
       // task cal 8 2010
       monthsToDisplay = monthsPerLine;
-      mFrom = atoi( context.args[1].data());
-      yFrom = atoi( context.args[2].data());
+      mFrom = atoi (context.args[1].c_str ());
+      yFrom = atoi (context.args[2].c_str ());
     }
   }
   else if (numberOfArgs == 4) {
     // task cal 8 2010 y
     monthsToDisplay = 12;
-    mFrom = atoi( context.args[1].data());
-    yFrom = atoi( context.args[2].data());
+    mFrom = atoi (context.args[1].c_str ());
+    yFrom = atoi (context.args[2].c_str ());
   }
 
   int countDueDates = 0;
@@ -1728,7 +1728,7 @@ int handleReportStats (std::string &outs)
   dataSize += undo.size ();
 
   std::vector <std::string> undoTxns;
-  slurp (undo.data, undoTxns, false);
+  slurp (undo, undoTxns, false);
   int undoCount = 0;
   foreach (tx, undoTxns)
     if (tx->substr (0, 3) == "---")

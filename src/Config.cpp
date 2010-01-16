@@ -321,7 +321,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
           if (included.is_absolute ())
           {
             if (included.readable ())
-              this->load (included.data, nest + 1);
+              this->load (included, nest + 1);
             else
               throw std::string ("Could not read include file '") + included.data + "'";
           }
