@@ -37,13 +37,50 @@ good way to learn about new configuration settings, if your .taskrc file was
 created by an older version of task.
 
 .TP
+.B Q: Do I need to back up my task data?
+Yes.  You should back up your ~/.task directory, and probably your ~/.taskrc
+file too.
+
+.TP
 .B Q: Can I share my tasks between different machines?
 
 .TP
 .B Q: The undo.data file gets very large - do I need it?
+You need it if you want the undo capability.  But if it gets large, you can
+certainly truncate it to save space, just be careful to delete lines from the
+top of the file, up to and including a separator '---'.  Note that it does not
+slow down task, because task never reads it until you want to undo.  Otherwise
+task only appends to the file.
 
 .TP
 .B Q: How do I know whether my terminal support 256 colors?
+The easiest way is to just try it!  With task 1.9 or later, you simply run
+
+    $ task color
+
+and a full color palette is displayed, if you look at it and see lots of
+different colors, then your terminal supports 256 colors.  If you see only
+8 or 16 colors, many of them repeated, with blank areas then your terminal
+does not support 256 colors.  xterm does.  iTerm does.
+
+.TP
+.B Q: How can I make task put the command in the terminal window title?
+You cannot.  But you can make the shell do it, and you can make the shell
+call the task program.  Here is a Bash script that does this:
+
+    #! /bin/bash
+
+    printf "\033]0;task $*\a"
+    /usr/local/bin/task $*
+
+You just need to run the script, and let the script run task.  Here is a Bash
+function that does the same thing:
+
+    t ()
+    {
+      printf "\033]0;task $*\a"
+      /usr/local/bin/task $*
+    }
 
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.
