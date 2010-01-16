@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <Context.h>
 #include <Directory.h>
 #include <test.h>
@@ -70,12 +71,14 @@ int main (int argc, char** argv)
 
   // std::vector <std::string> list ();
   std::vector <std::string> files = d5.list ();
+  std::sort (files.begin (), files.end ());
   t.is ((int)files.size (), 2, "Directory::list 1 file");
   t.is (files[0], "/tmp/test_directory/dir", "file[0] is /tmp/test_directory/dir");
   t.is (files[1], "/tmp/test_directory/f0", "file[1] is /tmp/test_directory/f0");
 
   // std::vector <std::string> listRecursive ();
   files = d5.listRecursive ();
+  std::sort (files.begin (), files.end ());
   t.is ((int)files.size (), 2, "Directory::list 1 file");
   t.is (files[0], "/tmp/test_directory/dir/f1", "file is /tmp/test_directory/dir/f1");
   t.is (files[1], "/tmp/test_directory/f0", "file is /tmp/test_directory/f0");
