@@ -514,10 +514,6 @@ int main (int argc, char** argv)
 
   // TODO const std::string uuid ();
 
-  // TODO bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
-  // TODO bool slurp (const std::string&, std::string&, bool trimLines = false);
-  // TODO void spit (const std::string&, const std::string&);
-
   // std::string taskDiff (const Task&, const Task&);
   Task left;
   left.set ("zero", "0");

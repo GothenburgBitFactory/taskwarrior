@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <Context.h>
 #include <StringTable.h>
+#include <File.h>
 #include <util.h>
 #include <test.h>
 
@@ -39,7 +40,7 @@ int main (int argc, char** argv)
 
   // Create a string file.
   std::string file = "./strings.xx-XX";
-  spit (file, "# comment\n1 found");
+  File::write (file, "# comment\n1 found");
   t.is (access (file.c_str (), F_OK), 0, "strings.xx-XX created.");
 
   // Load the string file.

@@ -28,6 +28,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <unistd.h>
+#include "File.h"
 #include "Date.h"
 #include "text.h"
 #include "util.h"
@@ -1155,7 +1156,7 @@ int handleImport (std::string &outs)
   {
     // Load the file.
     std::vector <std::string> all;
-    slurp (file, all, true);
+    File::read (file, all);
 
     std::vector <std::string> lines;
     std::vector <std::string>::iterator it;

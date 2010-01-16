@@ -36,6 +36,7 @@
 #include "util.h"
 #include "TDB.h"
 #include "Directory.h"
+#include "File.h"
 #include "Table.h"
 #include "Timer.h"
 #include "Color.h"
@@ -513,7 +514,7 @@ void TDB::undo ()
 
   // load undo.data
   std::vector <std::string> u;
-  slurp (undoFile, u);
+  File::read (undoFile, u);
 
   if (u.size () < 3)
     throw std::string ("There are no recorded transactions to undo.");
@@ -645,7 +646,7 @@ void TDB::undo ()
 
   // load pending.data
   std::vector <std::string> p;
-  slurp (pendingFile, p);
+  File::read (pendingFile, p);
 
   // is 'current' in pending?
   foreach (task, p)
@@ -667,15 +668,15 @@ void TDB::undo ()
       }
 
       // Rewrite files.
-      spit (pendingFile, p);
-      spit (undoFile, u);
+      File::write (pendingFile, p);
+      File::write (undoFile, u);
       return;
     }
   }
 
   // load completed.data
   std::vector <std::string> c;
-  slurp (completedFile, c);
+  File::read (completedFile, c);
 
   // is 'current' in completed?
   foreach (task, c)
@@ -691,17 +692,17 @@ void TDB::undo ()
       {
         c.erase (task);
         p.push_back (prior);
-        spit (completedFile, c);
-        spit (pendingFile, p);
-        spit (undoFile, u);
+        File::write (completedFile, c);
+        File::write (pendingFile, p);
+        File::write (undoFile, u);
         std::cout << "Modified task reverted." << std::endl;
         context.debug ("TDB::undo - task belongs in pending.data");
       }
       else
       {
         *task = prior;
-        spit (completedFile, c);
-        spit (undoFile, u);
+        File::write (completedFile, c);
+        File::write (undoFile, u);
         std::cout << "Modified task reverted." << std::endl;
         context.debug ("TDB::undo - task belongs in completed.data");
       }

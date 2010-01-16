@@ -533,7 +533,7 @@ void editFile (Task& task)
 
   // Format the contents, T -> text, write to a file.
   std::string before = formatTask (task);
-  spit (file.str (), before);
+  File::write (file.str (), before);
 
   // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
   std::string editor = context.config.get ("editor");
@@ -557,7 +557,7 @@ ARE_THESE_REALLY_HARMFUL:
 
   // Slurp file.
   std::string after;
-  slurp (file.str (), after, false);
+  File::read (file.str (), after);
 
   // Update task based on what can be parsed back out of the file, but only
   // if changes were made.
@@ -584,7 +584,7 @@ ARE_THESE_REALLY_HARMFUL:
 
       // Preserve the edits.
       before = after;
-      spit (file.str (), before);
+      File::write (file.str (), before);
 
       if (confirm ("Task couldn't handle your edits.  Would you like to try again?"))
         goto ARE_THESE_REALLY_HARMFUL;

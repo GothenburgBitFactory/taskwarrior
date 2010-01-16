@@ -1728,7 +1728,7 @@ int handleReportStats (std::string &outs)
   dataSize += undo.size ();
 
   std::vector <std::string> undoTxns;
-  slurp (undo, undoTxns, false);
+  File::read (undo, undoTxns);
   int undoCount = 0;
   foreach (tx, undoTxns)
     if (tx->substr (0, 3) == "---")

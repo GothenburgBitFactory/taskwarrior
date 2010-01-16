@@ -70,10 +70,6 @@ const std::string uuid ();
   int flock (int, int);
 #endif
 
-bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
-bool slurp (const std::string&, std::string&, bool trimLines = false);
-void spit (const std::string&, const std::string&);
-void spit (const std::string&, const std::vector <std::string>&, bool addNewlines = true);
 bool taskDiff (const Task&, const Task&);
 std::string taskDifferences (const Task&, const Task&);
 std::string renderAttribute (const std::string&, const std::string&);
