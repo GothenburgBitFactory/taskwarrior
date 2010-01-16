@@ -37,6 +37,7 @@
 #include <time.h>
 
 #include "Permission.h"
+#include "Directory.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"
@@ -619,12 +620,14 @@ int handleConfig (std::string &outs)
   }
   else
   {
-    if (context.config.get ("data.location") == "")
+    Directory location (context.config.get ("data.location"));
+
+    if (location.data == "")
       out << "Configuration error: data.location not specified in .taskrc "
              "file."
           << std::endl;
 
-    if (access (expandPath (context.config.get ("data.location")).c_str (), X_OK))
+    if (! location.exists ())
       out << "Configuration error: data.location contains a directory name"
              " that doesn't exist, or is unreadable."
           << std::endl;

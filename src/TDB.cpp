@@ -35,6 +35,7 @@
 #include "text.h"
 #include "util.h"
 #include "TDB.h"
+#include "Directory.h"
 #include "Table.h"
 #include "Timer.h"
 #include "Color.h"
@@ -107,12 +108,13 @@ void TDB::clear ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::location (const std::string& path)
 {
-  if (access (expandPath (path).c_str (), F_OK))
+  Directory d (path);
+  if (!d.exists ())
     throw std::string ("Data location '") +
           path +
           "' does not exist, or is not readable and writable.";
 
-  mLocations.push_back (Location (path));
+  mLocations.push_back (Location (d.data));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -503,11 +505,11 @@ int TDB::nextId ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::undo ()
 {
-  std::string location = expandPath (context.config.get ("data.location"));
+  Directory location (context.config.get ("data.location"));
 
-  std::string undoFile      = location + "/undo.data";
-  std::string pendingFile   = location + "/pending.data";
-  std::string completedFile = location + "/completed.data";
+  std::string undoFile      = location.data + "/undo.data";
+  std::string pendingFile   = location.data + "/pending.data";
+  std::string completedFile = location.data + "/completed.data";
 
   // load undo.data
   std::vector <std::string> u;
@@ -725,9 +727,10 @@ FILE* TDB::openAndLock (const std::string& file)
   // TODO Need provision here for read-only locations.
 
   // Check for access.
-  bool exists = access (file.c_str (), F_OK) ? false : true;
+  File f (file);
+  bool exists = f.exists ();
   if (exists)
-    if (access (file.c_str (), R_OK | W_OK))
+    if (!f.readable () || !f.writable ())
       throw std::string ("Task does not have the correct permissions for '") +
             file + "'.";
 
@@ -755,8 +758,6 @@ FILE* TDB::openAndLock (const std::string& file)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::writeUndo (const Task& after, FILE* file)
 {
-  Timer t ("TDB::writeUndo");
-
   fprintf (file,
            "time %u\nnew %s---\n",
            (unsigned int) time (NULL),
@@ -766,8 +767,6 @@ void TDB::writeUndo (const Task& after, FILE* file)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::writeUndo (const Task& before, const Task& after, FILE* file)
 {
-  Timer t ("TDB::writeUndo");
-
   fprintf (file,
            "time %u\nold %snew %s---\n",
            (unsigned int) time (NULL),

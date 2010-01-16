@@ -32,6 +32,8 @@
 #include <string.h>
 #include <unistd.h>
 #include "Context.h"
+#include "Directory.h"
+#include "File.h"
 #include "Timer.h"
 #include "text.h"
 #include "util.h"
@@ -107,7 +109,7 @@ void Context::initialize ()
 
   // Load appropriate stringtable as soon after the config file as possible, to
   // allow all subsequent messages to be localizable.
-  std::string location = expandPath (config.get ("data.location"));
+  Directory location (config.get ("data.location"));
   std::string locale = config.get ("locale");
 
   // If there is a locale variant (en-US.<variant>), then strip it.
@@ -116,16 +118,16 @@ void Context::initialize ()
     locale = locale.substr (0, period);
 
   if (locale != "")
-    stringtable.load (location + "/strings." + locale);
+    stringtable.load (location.data + "/strings." + locale);
 
   // TODO Handle "--version, -v" right here?
 
   // init TDB.
   tdb.clear ();
   std::vector <std::string> all;
-  split (all, location, ',');
+  split (all, location.data, ',');
   foreach (path, all)
-    tdb.location (expandPath (*path));
+    tdb.location (*path);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -244,8 +246,8 @@ int Context::dispatch (std::string &out)
 void Context::shadow ()
 {
   // Determine if shadow file is enabled.
-  std::string shadowFile = expandPath (config.get ("shadow.file"));
-  if (shadowFile != "")
+  File shadowFile (config.get ("shadow.file"));
+  if (shadowFile.data != "")
   {
     inShadow = true;  // Prevents recursion in case shadow command writes.
 
@@ -281,21 +283,21 @@ void Context::shadow ()
     parse ();
     std::string result;
     (void)dispatch (result);
-    std::ofstream out (shadowFile.c_str ());
+    std::ofstream out (shadowFile.data.c_str ());
     if (out.good ())
     {
       out << result;
       out.close ();
     }
     else
-      throw std::string ("Could not write file '") + shadowFile + "'";
+      throw std::string ("Could not write file '") + shadowFile.data + "'";
 
     config.set ("curses", oldCurses);
     config.set ("color",  oldColor);
 
     // Optionally display a notification that the shadow file was updated.
     if (config.getBoolean ("shadow.notify"))
-      footnote (std::string ("[Shadow file '") + shadowFile + "' updated]");
+      footnote (std::string ("[Shadow file '") + shadowFile.data + "' updated]");
 
     inShadow = false;
   }
@@ -355,8 +357,10 @@ void Context::loadCorrectConfigFile ()
         "Could not read home directory from the passwd file."));
 
   std::string home = pw->pw_dir;
-  std::string rc   = home + "/.taskrc";
-  std::string data = home + "/.task";
+//  std::string rc   = home + "/.taskrc";
+//  std::string data = home + "/.task";
+  File      rc   (home + "/.taskrc");
+  Directory data (home + "./task");
 
   // Is there an file_override for rc:?
   foreach (arg, args)
@@ -366,17 +370,17 @@ void Context::loadCorrectConfigFile ()
     else if (arg->substr (0, 3) == "rc:")
     {
       file_override = *arg;
-      rc = arg->substr (3);
+      rc = File (arg->substr (3));
 
-      home = rc;
-      std::string::size_type last_slash = rc.rfind ("/");
+      home = rc.data;
+      std::string::size_type last_slash = rc.data.rfind ("/");
       if (last_slash != std::string::npos)
-        home = rc.substr (0, last_slash);
+        home = rc.data.substr (0, last_slash);
       else
         home = ".";
 
       args.erase (arg);
-      header ("Using alternate .taskrc file " + rc); // TODO i18n
+      header ("Using alternate .taskrc file " + rc.data); // TODO i18n
       break;
     }
   }
@@ -384,10 +388,10 @@ void Context::loadCorrectConfigFile ()
   // Load rc file.
   config.clear ();       // Dump current values.
   config.setDefaults (); // Add in the custom reports.
-  config.load (rc);      // Load new file.
+  config.load (rc.data); // Load new file.
 
   if (config.get ("data.location") != "")
-    data = config.get ("data.location");
+    data = Directory (config.get ("data.location"));
 
   // Are there any var_overrides for data.location?
   foreach (arg, args)
@@ -397,35 +401,35 @@ void Context::loadCorrectConfigFile ()
     else if (arg->substr (0, 17) == "rc.data.location:" ||
              arg->substr (0, 17) == "rc.data.location=")
     {
-      data = arg->substr (17);
-      header ("Using alternate data.location " + data); // TODO i18n
+      data = Directory (arg->substr (17));
+      header ("Using alternate data.location " + data.data); // TODO i18n
       break;
     }
   }
 
   // Do we need to create a default rc?
-  if (access (rc.c_str (), F_OK))
+  if (! rc.exists ())
   {
     if (confirm ("A configuration file could not be found in " // TODO i18n
                + home
                + "\n\n"
                + "Would you like a sample "
-               + rc
+               + rc.data
                + " created, so task can proceed?"))
     {
-      config.createDefaultRC (rc, data);
+      config.createDefaultRC (rc.data, data.data);
     }
     else
       throw std::string ("Cannot proceed without rc file.");
   }
 
   // Create data location, if necessary.
-  config.createDefaultData (data);
+  config.createDefaultData (data.data);
 
   // Load rc file.
   config.clear ();       // Dump current values.
   config.setDefaults (); // Add in the custom reports.
-  config.load (rc);      // Load new file.
+  config.load (rc.data); // Load new file.
 
   // Apply overrides of type: "rc.name:value", or "rc.name=value".
   std::vector <std::string> filtered;

@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+#include "Directory.h"
 #include "Date.h"
 #include "Duration.h"
 #include "text.h"
@@ -521,13 +522,13 @@ static void parseTask (Task& task, const std::string& after)
 void editFile (Task& task)
 {
   // Check for file permissions.
-  std::string dataLocation = expandPath (context.config.get ("data.location"));
-  if (access (dataLocation.c_str (), X_OK))
+  Directory location (context.config.get ("data.location"));
+  if (! location.writable ())
     throw std::string ("Your data.location directory is not writable.");
 
   // Create a temp file name in data.location.
   std::stringstream file;
-  file << dataLocation << "/task." << getpid () << "." << task.id << ".task";
+  file << location.data << "/task." << getpid () << "." << task.id << ".task";
 
   // Format the contents, T -> text, write to a file.
   std::string before = formatTask (task);

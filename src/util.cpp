@@ -342,49 +342,6 @@ const std::string uuid ()
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-// no i18n
-std::string expandPath (const std::string& in)
-{
-  std::string copy = in;
-  std::string::size_type tilde;
-
-  if ((tilde = copy.find ("~/")) != std::string::npos)
-  {
-    struct passwd* pw = getpwuid (getuid ());
-    copy.replace (tilde, 1, pw->pw_dir);
-  }
-  else if ((tilde = copy.find ("~")) != std::string::npos)
-  {
-    struct passwd* pw = getpwuid (getuid ());
-    std::string home = pw->pw_dir;
-    home += "/";
-    copy.replace (tilde, 1, home);
-  }
-  else if ((tilde = copy.find ("~")) != std::string::npos)
-  {
-    std::string::size_type slash;
-    if ((slash = copy.find  ("/", tilde)) != std::string::npos)
-    {
-      std::string name = copy.substr (tilde + 1, slash - tilde - 1);
-      struct passwd* pw = getpwnam (name.c_str ());
-      if (pw)
-        copy.replace (tilde, slash - tilde, pw->pw_dir);
-    }
-  }
-
-  return copy;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool isAbsolutePath (const std::string& in)
-{
-  if (in.length () && in[0] == '/')
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // On Solaris no flock function exists.
 #ifdef SOLARIS
 int flock (int fd, int operation)

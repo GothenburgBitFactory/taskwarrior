@@ -29,7 +29,6 @@
 #include <sstream>
 #include <fstream>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -37,6 +36,8 @@
 #include <time.h>
 
 #include "Context.h"
+#include "Directory.h"
+#include "File.h"
 #include "Date.h"
 #include "Table.h"
 #include "text.h"
@@ -1716,24 +1717,20 @@ int handleReportStats (std::string &outs)
   // Go get the file sizes.
   size_t dataSize = 0;
 
-  struct stat s;
-  std::string location = expandPath (context.config.get ("data.location"));
-  std::string file = location + "/pending.data";
-  if (!stat (file.c_str (), &s))
-    dataSize += s.st_size;
+  Directory location (context.config.get ("data.location"));
+  File pending (location.data + "/pending.data");
+  dataSize += pending.size ();
 
-  file = location + "/completed.data";
-  if (!stat (file.c_str (), &s))
-    dataSize += s.st_size;
+  File completed (location.data + "/completed.data");
+  dataSize += completed.size ();
 
-  file = location + "/undo.data";
-  if (!stat (file.c_str (), &s))
-    dataSize += s.st_size;
+  File undo (location.data + "/undo.data");
+  dataSize += undo.size ();
 
-  std::vector <std::string> undo;
-  slurp (file, undo, false);
+  std::vector <std::string> undoTxns;
+  slurp (undo.data, undoTxns, false);
   int undoCount = 0;
-  foreach (tx, undo)
+  foreach (tx, undoTxns)
     if (tx->substr (0, 3) == "---")
       ++undoCount;
 

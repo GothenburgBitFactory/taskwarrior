@@ -33,7 +33,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
-#include "Path.h"
+#include "Directory.h"
 #include "File.h"
 #include "Config.h"
 #include "text.h"
@@ -354,9 +354,9 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
 ////////////////////////////////////////////////////////////////////////////////
 void Config::createDefaultData (const std::string& data)
 {
-  Path p (data);
-  if (! p.exists ())
-    mkdir (data.c_str (), S_IRWXU);
+  Directory d (data);
+  if (! d.exists ())
+    d.create ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
