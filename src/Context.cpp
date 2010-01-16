@@ -387,8 +387,7 @@ void Context::loadCorrectConfigFile ()
 
   // Load rc file.
   config.clear ();       // Dump current values.
-  config.setDefaults (); // Add in the custom reports.
-  config.load (rc); // Load new file.
+  config.load  (rc);     // Load new file.
 
   if (config.get ("data.location") != "")
     data = Directory (config.get ("data.location"));
@@ -426,10 +425,11 @@ void Context::loadCorrectConfigFile ()
   // Create data location, if necessary.
   config.createDefaultData (data);
 
+  // TODO find out why this was done twice - see tw #355
   // Load rc file.
-  config.clear ();       // Dump current values.
-  config.setDefaults (); // Add in the custom reports.
-  config.load (rc);      // Load new file.
+  //config.clear ();       // Dump current values.
+  //config.setDefaults (); // Add in the custom reports.
+  //config.load (rc);      // Load new file.
 
   // Apply overrides of type: "rc.name:value", or "rc.name=value".
   std::vector <std::string> filtered;
