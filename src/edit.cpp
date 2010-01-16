@@ -34,6 +34,7 @@
 #include <limits.h>
 #include <string.h>
 #include "Directory.h"
+#include "File.h"
 #include "Date.h"
 #include "Duration.h"
 #include "text.h"
@@ -593,7 +594,7 @@ ARE_THESE_REALLY_HARMFUL:
     std::cout << "No edits were detected." << std::endl;
 
   // Cleanup.
-  unlink (file.str ().c_str ());
+  File::remove (file.str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
