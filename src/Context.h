@@ -36,6 +36,7 @@
 #include "Task.h"
 #include "TDB.h"
 #include "StringTable.h"
+#include "Hooks.h"
 
 class Context
 {
@@ -89,6 +90,7 @@ public:
   std::map <std::string, std::string> aliases;
   std::vector <std::string> tagAdditions;
   std::vector <std::string> tagRemovals;
+  Hooks                     hooks;
 
 private:
   std::vector <std::string> headers;

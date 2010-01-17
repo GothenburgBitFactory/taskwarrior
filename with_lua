@@ -1,0 +1,6 @@
+# This is currently what is required to build with Lua.
+
+#./configure --enable-lua=yes --with-lua --with-lua-inc=/usr/local/include --with-lua-lib=/usr/local/lib
+#./configure --enable-lua     --with-lua --with-lua-inc=/usr/local/include --with-lua-lib=/usr/local/lib
+ ./configure --enable-lua                --with-lua-inc=/usr/local/include --with-lua-lib=/usr/local/lib
+

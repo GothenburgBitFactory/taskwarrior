@@ -51,6 +51,41 @@ else
   AC_DEFINE([UNKNOWN], [], [Compiling on Unknown])
 fi
 
+# Check for Lua.
+echo '----------------------------------------------------------'
+
+AC_ARG_ENABLE(lua,   [--disable-lua       Turn off building of Lua library  (default=compiled if found)],enable_lua=$enableval,enable_lua=yes)
+AC_ARG_WITH(lua-inc, [--with-lua-inc=DIR, Lua include files are in DIR],lua_inc=$withval,lua_inc='')
+AC_ARG_WITH(lua-lib, [--with-lua-lib=DIR, Lua library files are in DIR],lua_lib=$withval,lua_lib='')
+
+if test "x$enable_lua" = "xyes" ; then
+    ac_save_CPPFLAGS="$CPPFLAGS"
+    ac_save_CFLAGS="$CFLAGS"
+    ac_save_LDFLAGS="$LDFLAGS"
+
+    LUA_CFLAGS=""
+    LUA_LFLAGS=""
+
+    if test -n "$lua_inc"; then
+       CFLAGS="$CFLAGS -I$lua_inc"
+       CPPFLAGS="$CPPFLAGS -I$lua_inc"
+    fi
+    if test -n "$lua_lib"; then
+       LDFLAGS="$LDFLAGS -L$lua_lib"
+       LUA_LFLAGS="-llua"
+    fi
+fi
+
+if test "x$enable_lua" = "xyes" ; then
+    AC_SUBST(LUA_CFLAGS)
+    AC_SUBST(LUA_LFLAGS)
+    AC_DEFINE([HAVE_LIBLUA], [1], [Building with Lua support])
+fi
+
+AM_CONDITIONAL(HAVE_LIBLUA, test "$enable_lua" = "yes")
+
+echo '----------------------------------------------------------'
+
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADER([auto.h])
