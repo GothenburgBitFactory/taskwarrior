@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 14;
 
 # Create the rc file.
 if (open my $fh, '>', 'date1.rc')
@@ -47,6 +47,16 @@ if (open my $fh, '>', 'date2.rc')
   ok (-r 'date2.rc', 'Created date2.rc');
 }
 
+if (open my $fh, '>', 'date3.rc')
+{
+  print $fh "data.location=.\n",
+            "dateformat=m/d/y\n",
+            "weekstart=Monday\n",
+            "reportdateformat=A D B Y (vV)\n";
+  close $fh;
+  ok (-r 'date3.rc', 'Created date3.rc');
+}
+
 qx{../task rc:date1.rc add foo due:20091231};
 my $output = qx{../task rc:date1.rc info 1};
 like ($output, qr/\b20091231\b/, 'date format YMD parsed');
@@ -58,6 +68,15 @@ qx{../task rc:date2.rc add foo due:12/1/09};
 $output = qx{../task rc:date2.rc info 1};
 like ($output, qr/\b12\/1\/09\b/, 'date format m/d/y parsed');
 
+unlink 'pending.data';
+ok (!-r 'pending.data', 'Removed pending.data');
+
+qx{../task rc:date3.rc add foo due:4/8/10};
+$output = qx{../task rc:date3.rc list};
+like ($output, qr/Thursday 08 April 2010 \(v14\)/, 'date format A D B Y (vV) parsed');
+$output = qx{../task rc:date3.rc rc.reportdateformat:"D b Y - a" list};
+like ($output, qr/08 Apr 2010 - Thu/, 'date format D b Y - a parsed');
+                  
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
@@ -70,6 +89,9 @@ ok (!-r 'date1.rc', 'Removed date1.rc');
 
 unlink 'date2.rc';
 ok (!-r 'date2.rc', 'Removed date2.rc');
+
+unlink 'date3.rc';
+ok (!-r 'date3.rc', 'Removed date3.rc');
 
 exit 0;
 

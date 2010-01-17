@@ -28,6 +28,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <unistd.h>
+#include "File.h"
 #include "Date.h"
 #include "text.h"
 #include "util.h"
@@ -168,12 +169,12 @@ static void decorateTask (Task& task)
   task.setStatus (Task::pending);
 
   // Override with default.project, if not specified.
-  std::string defaultProject = context.config.get ("default.project", "");
+  std::string defaultProject = context.config.get ("default.project");
   if (!task.has ("project") && defaultProject  != "")
     task.set ("project", defaultProject);
 
   // Override with default.priority, if not specified.
-  std::string defaultPriority = context.config.get ("default.priority", "");
+  std::string defaultPriority = context.config.get ("default.priority");
   if (!task.has ("priority") &&
       defaultPriority != "" &&
       Att::validNameValue ("priority", "", defaultPriority))
@@ -185,7 +186,7 @@ static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
 
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -342,7 +343,7 @@ static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
 
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -504,7 +505,7 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
 
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -715,7 +716,7 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
 
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -840,7 +841,7 @@ static std::string importText (const std::vector <std::string>& lines)
   std::vector <std::string> failed;
   int count = 0;
 
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -904,7 +905,7 @@ static std::string importCSV (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
 
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
 
   // Set up mappings.  Assume no fields match.
   std::map <std::string, int> mapping;
@@ -1155,7 +1156,7 @@ int handleImport (std::string &outs)
   {
     // Load the file.
     std::vector <std::string> all;
-    slurp (file, all, true);
+    File::read (file, all);
 
     std::vector <std::string> lines;
     std::vector <std::string>::iterator it;

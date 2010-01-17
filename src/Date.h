@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -58,6 +58,7 @@ public:
   static std::string dayName (int);
   static int weekOfYear (const std::string&);
   static int dayOfWeek (const std::string&);
+  static int monthOfYear (const std::string&);
 
   int month () const;
   int day () const;

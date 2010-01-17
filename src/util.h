@@ -60,8 +60,6 @@ std::string formatSecondsCompact (time_t);
 std::string formatBytes (size_t);
 int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&);
 const std::string uuid ();
-std::string expandPath (const std::string&);
-bool isAbsolutePath (const std::string&);
 
 #ifdef SOLARIS
   #define LOCK_SH 1
@@ -72,10 +70,6 @@ bool isAbsolutePath (const std::string&);
   int flock (int, int);
 #endif
 
-bool slurp (const std::string&, std::vector <std::string>&, bool trimLines = false);
-bool slurp (const std::string&, std::string&, bool trimLines = false);
-void spit (const std::string&, const std::string&);
-void spit (const std::string&, const std::vector <std::string>&, bool addNewlines = true);
 bool taskDiff (const Task&, const Task&);
 std::string taskDifferences (const Task&, const Task&);
 std::string renderAttribute (const std::string&, const std::string&);

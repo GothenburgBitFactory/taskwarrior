@@ -2,6 +2,11 @@
 ------ current release ---------------------------
 
 1.9.0 ()
+ + Added feature #283 that makes it possible to control the verbosity
+   of the output of annotations.
+ + Added feature #254 (#295) which gives task a second date format to be
+   used in the reports with more conversion sequences like weekday name
+   or weeknumber. The date format is set with variable "reportdateformat".
  + Added feature #292 that permits alternate line coloration in reports
    (thanks to Richard Querin).
  + Added feature #307 that provides vim with syntax highlighting for .taskrc.
@@ -19,8 +24,11 @@
  + Added new 'config' command to display the configuration settings of task.
    As a consequence 'version' now only shows the version number and legal
    information.
- + The 'config' command now complains about use of deprecated color names and
-   duplicate entries in .taskrc.
+ + The 'config' command now complains about use of deprecated color names in
+   your .taskrc file.
+ + Added feature #296, that allows the 'config' command to modify your .taskrc
+   settings directly, with the command 'task config <name> <value>', or
+   'task config <name>' to remove the setting.
  + Task now supports nested .taskrc files using the "include /path" directive.
  + The 'entry', 'start' and 'end' columns now have equivalents that include the
    time, and are called 'entry_time', 'start_time', and 'end_time', for use in

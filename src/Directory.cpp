@@ -29,6 +29,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <string.h>
 #include "Directory.h"
 
 ////////////////////////////////////////////////////////////////////////////////

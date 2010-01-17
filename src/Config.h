@@ -30,6 +30,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include "File.h"
 
 class Config : public std::map <std::string, std::string>
 {
@@ -40,30 +41,31 @@ public:
   Config (const Config&);
   Config& operator= (const Config&);
 
-  bool load (const std::string&, int nest = 1);
+  void load (const std::string&, int nest = 1);
+  void parse (const std::string&, int nest = 1);
+
   void createDefaultRC (const std::string&, const std::string&);
   void createDefaultData (const std::string&);
   void setDefaults ();
   void clear ();
 
-  const std::string get (const char*);
-  const std::string get (const char*, const char*);
-  const std::string get (const std::string&);
-  const std::string get (const std::string&, const std::string&);
-  bool get (const std::string&, const bool);
-  int get (const std::string&, const int);
-  double get (const std::string&, const double);
+  const std::string get        (const std::string&);
+  const int         getInteger (const std::string&);
+  const double      getReal    (const std::string&);
+  const bool        getBoolean (const std::string&);
+
   void set (const std::string&, const int);
   void set (const std::string&, const double);
   void set (const std::string&, const std::string&);
   void all (std::vector <std::string>&);
-  void getSequence (std::vector<std::string>&);
 
-  std::string checkForDuplicates ();
   std::string checkForDeprecatedColor ();
 
+public:
+  File original_file;
+
 private:
-  std::vector <std::string> sequence;
+  static std::string defaults;
 };
 
 #endif

@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <Context.h>
 #include <Directory.h>
 #include <test.h>
@@ -33,7 +34,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (20);
+  UnitTest t (21);
 
   // Directory (const File&);
   // Directory (const Path&);
@@ -55,6 +56,9 @@ int main (int argc, char** argv)
   Directory d5 = d4;
   t.is (d5.data, "/tmp/test_directory", "Directory::operator=");
 
+  // operator (std::string) const;
+  t.is ((std::string) d3, "/tmp", "Directory::operator (std::string) const");
+
   // virtual bool create ();
   t.ok (d5.create (), "Directory::create /tmp/test_directory");
   t.ok (d5.exists (), "Directory::exists /tmp/test_directory");
@@ -67,12 +71,14 @@ int main (int argc, char** argv)
 
   // std::vector <std::string> list ();
   std::vector <std::string> files = d5.list ();
+  std::sort (files.begin (), files.end ());
   t.is ((int)files.size (), 2, "Directory::list 1 file");
   t.is (files[0], "/tmp/test_directory/dir", "file[0] is /tmp/test_directory/dir");
   t.is (files[1], "/tmp/test_directory/f0", "file[1] is /tmp/test_directory/f0");
 
   // std::vector <std::string> listRecursive ();
   files = d5.listRecursive ();
+  std::sort (files.begin (), files.end ());
   t.is ((int)files.size (), 2, "Directory::list 1 file");
   t.is (files[0], "/tmp/test_directory/dir/f1", "file is /tmp/test_directory/dir/f1");
   t.is (files[1], "/tmp/test_directory/f0", "file is /tmp/test_directory/f0");

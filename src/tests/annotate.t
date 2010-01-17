@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 37;
 
 # Create the rc file.
 if (open my $fh, '>', 'annotate.rc')
@@ -36,6 +36,7 @@ if (open my $fh, '>', 'annotate.rc')
   # Note: Use 'rrr' to guarantee a unique report name.  Using 'r' conflicts
   #       with 'recurring'.
   print $fh "data.location=.\n",
+            "confirmation=off\n",
             "report.rrr.description=rrr\n",
             "report.rrr.columns=id,description\n",
             "report.rrr.sort=id+\n";
@@ -43,27 +44,76 @@ if (open my $fh, '>', 'annotate.rc')
   ok (-r 'annotate.rc', 'Created annotate.rc');
 }
 
-# Add two tasks, annotate one twice.
+# Add four tasks, annotate one three times, one twice, one just once and one none.
 qx{../task rc:annotate.rc add one};
 qx{../task rc:annotate.rc add two};
-qx{../task rc:annotate.rc annotate 1 foo};
-sleep 2;
-qx{../task rc:annotate.rc annotate 1 bar};
+qx{../task rc:annotate.rc add three};
+qx{../task rc:annotate.rc add four};
+qx{../task rc:annotate.rc annotate 1 foo1};
+sleep 1;
+qx{../task rc:annotate.rc annotate 1 foo2};
+sleep 1;
+qx{../task rc:annotate.rc annotate 1 foo3};
+sleep 1;
+qx{../task rc:annotate.rc annotate 2 bar1};
+sleep 1;
+qx{../task rc:annotate.rc annotate 2 bar2};
+sleep 1;
+qx{../task rc:annotate.rc annotate 3 baz1};
+
 my $output = qx{../task rc:annotate.rc rrr};
 
 # ID Description                    
 # -- -------------------------------
 #  1 one
-#    3/24/2009 foo
-#    3/24/2009 bar
+#    3/24/2009 foo1
+#    3/24/2009 foo2
+#    3/24/2009 foo3
 #  2 two
+#    3/24/2009 bar1
+#    3/24/2009 bar2
+#  3 three
+#    3/24/2009 baz1
+#  4 four
 # 
-# 2 tasks
+# 4 tasks
 like ($output, qr/1 one/,   'task 1');
 like ($output, qr/2 two/,   'task 2');
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo/ms, 'first annotation');
-like ($output, qr/foo.+\d{1,2}\/\d{1,2}\/\d{4} bar/ms, 'second annotation');
-like ($output, qr/2 tasks/, 'count');
+like ($output, qr/3 three/, 'task 3');
+like ($output, qr/4 four/,  'task 4');
+like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo1/ms,  'first  annotation task 1');
+like ($output, qr/foo1.+\d{1,2}\/\d{1,2}\/\d{4} foo2/ms, 'second annotation task 1');
+like ($output, qr/foo2.+\d{1,2}\/\d{1,2}\/\d{4} foo3/ms, 'third  annotation task 1');
+like ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar1/ms,  'first  annotation task 2');
+like ($output, qr/bar1.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms, 'second annotation task 2');
+like ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms,'first  annotation task 3');
+like ($output, qr/4 tasks/, 'count');
+
+$output = qx{../task rc:annotate.rc rc.annotation.details:1 rrr};
+like   ($output, qr/1 \+one/, 'task 1');
+like   ($output, qr/2 \+two/, 'task 2');
+like   ($output, qr/3 three/, 'task 3');
+like   ($output, qr/4 four/,  'task 4');
+unlike ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo1/ms,   'first  annotation task 1');
+unlike ($output, qr/foo1.+\d{1,2}\/\d{1,2}\/\d{4} foo2/ms,  'second annotation task 1');
+like   ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo3/ms,   'third  annotation task 1');
+unlike ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar1/ms,   'first  annotation task 2');
+like   ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms,   'second annotation task 2');
+like   ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms, 'third  annotation task 3');
+like   ($output, qr/4 tasks/, 'count');
+
+$output = qx{../task rc:annotate.rc rc.annotation.details:0 rrr};
+like   ($output, qr/1 \+one/,   'task 1');
+like   ($output, qr/2 \+two/,   'task 2');
+like   ($output, qr/3 \+three/, 'task 3');
+like   ($output, qr/4 four/,    'task 4');
+unlike ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo1/ms,  'first  annotation task 1');
+unlike ($output, qr/foo1.+\d{1,2}\/\d{1,2}\/\d{4} foo2/ms,  'second annotation task 1');
+unlike ($output, qr/foo2.+\d{1,2}\/\d{1,2}\/\d{4} foo3/ms,  'third  annotation task 1');
+unlike ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar1/ms,   'first  annotation task 2');
+unlike ($output, qr/bar1.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms,  'second annotation task 2');
+unlike ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms, 'third  annotation task 3');
+like ($output, qr/4 tasks/, 'count');
 
 # Cleanup.
 unlink 'pending.data';

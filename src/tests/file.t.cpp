@@ -33,13 +33,16 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (5);
+  UnitTest t (6);
 
   File::write ("/tmp/file.t.txt", "This is a test\n");
   File f6 ("/tmp/file.t.txt");
 	t.ok (f6.size () == 15, "File::size /tmp/file.t.txt good");
   t.ok (f6.mode () & S_IRUSR, "File::mode /tmp/file.t.txt good");
   t.ok (File::remove ("/tmp/file.t.txt"), "File::remove /tmp/file.t.txt good");
+
+  // operator (std::string) const;
+  t.is ((std::string) f6, "/tmp/file.t.txt", "File::operator (std::string) const");
 
   t.ok (File::create ("/tmp/file.t.create"), "File::create /tmp/file.t.create good");
   t.ok (File::remove ("/tmp/file.t.create"), "File::remove /tmp/file.t.create good");

@@ -1,24 +1,32 @@
 .TH task-faq 5 2010-01-03 "task 1.9.0" "User Manuals"
 
+.SH NAME
+task-faq \- A FAQ for the task(1) command line todo manager.
+
+.SH DESCRIPTION
+Task is a command line TODO list manager. It maintains a list of tasks that you
+want to do, allowing you to add/remove, and otherwise manipulate them.  Task
+has a rich list of commands that allow you to do various things with it.
+
 .SH WELCOME
 Welcome to the task FAQ.  If you have would like to see a question answered
 here, please send us a note at <support@taskwarrior.org>.
 
 .TP
-.B Where does task store the data?
+.B Q: Where does task store the data?
 By default, task creates a .taskrc file in your home directory and populates it
 with defaults.  Task also creates a .task directory in your home directory and
 puts data files there.
 
 .TP
-.B Can I edit that data?
+.B Q: Can I edit that data?
 Of course you can.  It is a simple text file, and looks somewhat like the JSON
 format, and if you are careful not to break the format, there is no reason not
 to edit it.  But task provides a rich command set to do that manipulation for
 you, so it is probably best to leave those files alone.
 
 .TP
-.B How do I restore my .taskrc file to defaults?
+.B Q: How do I restore my .taskrc file to defaults?
 If you delete (or rename) your .taskrc file, task will offer to create a default
 one for you.  Another way to do this is with the command:
 
@@ -28,14 +36,51 @@ Task will create 'new-file' if it doesn't already exist.  Note that this is a
 good way to learn about new configuration settings, if your .taskrc file was
 created by an older version of task.
 
+.TP
+.B Q: Do I need to back up my task data?
+Yes.  You should back up your ~/.task directory, and probably your ~/.taskrc
+file too.
 
+.TP
+.B Q: Can I share my tasks between different machines?
 
+.TP
+.B Q: The undo.data file gets very large - do I need it?
+You need it if you want the undo capability.  But if it gets large, you can
+certainly truncate it to save space, just be careful to delete lines from the
+top of the file, up to and including a separator '---'.  Note that it does not
+slow down task, because task never reads it until you want to undo.  Otherwise
+task only appends to the file.
 
+.TP
+.B Q: How do I know whether my terminal support 256 colors?
+The easiest way is to just try it!  With task 1.9 or later, you simply run
 
+    $ task color
 
+and a full color palette is displayed, if you look at it and see lots of
+different colors, then your terminal supports 256 colors.  If you see only
+8 or 16 colors, many of them repeated, with blank areas then your terminal
+does not support 256 colors.  xterm does.  iTerm does.
 
+.TP
+.B Q: How can I make task put the command in the terminal window title?
+You cannot.  But you can make the shell do it, and you can make the shell
+call the task program.  Here is a Bash script that does this:
 
+    #! /bin/bash
 
+    printf "\033]0;task $*\a"
+    /usr/local/bin/task $*
+
+You just need to run the script, and let the script run task.  Here is a Bash
+function that does the same thing:
+
+    t ()
+    {
+      printf "\033]0;task $*\a"
+      /usr/local/bin/task $*
+    }
 
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.

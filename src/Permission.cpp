@@ -40,7 +40,7 @@ Permission::Permission ()
 , quit (false)
 {
   // Turning confirmations off is the same as entering "all".
-  if (context.config.get ("confirmation", true) == false)
+  if (context.config.getBoolean ("confirmation") == false)
     allConfirmed = true;
 }
 

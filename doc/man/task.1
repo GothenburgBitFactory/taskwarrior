@@ -1,4 +1,4 @@
-.TH task 1 2009-09-07 "task 1.9.0" "User Manuals"
+.TH task 1 2010-01-03 "task 1.9.0" "User Manuals"
 
 .SH NAME
 task \- A command line todo manager.
@@ -129,8 +129,22 @@ Displays all possible colors, or a sample.
 Shows the task version number
 
 .TP
-.B config
-Shows the current settings in the task configuration file.
+.B config [name [value | '']]
+Shows the current settings in the task configuration file.  Also supports
+directly modifying the .taskrc file.  This command either modifies
+the 'name' setting with a new value of 'value', or adds a new entry that
+is equivalent to 'name=value':
+
+    task config name value
+
+This command sets a blank value.  This has the effect of suppressing any
+default value:
+
+    task config name ''
+
+Finally, this command removes any 'name=...' entry from the .taskrc file:
+
+    task config name
 
 .TP
 .B help
@@ -157,8 +171,12 @@ Shows all tasks matching the specified criteria
 that are completed.
 
 .TP
-.B ls [tags] [attrs] [description]
+.B minimal [tags] [attrs] [description]
 Provides a minimal listing of tasks with specified criteria.
+
+.TP
+.B ls [tags] [attrs] [description]
+Provides a short listing of tasks with specified criteria.
 
 .TP
 .B list [tags] [attrs] [description]

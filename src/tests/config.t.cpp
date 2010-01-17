@@ -33,69 +33,47 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (18);
+  UnitTest t (11);
 
-  // void set (const std::string&, const int);
-  // int get (const std::string&, const int);
   Config c;
-  c.set ("int1", 0);
-  t.is (c.get ("int1", 9), 0, "Config::set/get int");
-
-  c.set ("int2", 3);
-  t.is (c.get ("int2", 9), 3, "Config::set/get int");
-
-  c.set ("int3", -9);
-  t.is (c.get ("int3", 9), -9, "Config::set/get int");
-
-  // void set (const std::string&, const double);
-  // double get (const std::string&, const double);
-  c.set ("double1", 0.0);
-  t.is (c.get ("double1", 9.0), 0.0, "Config::set/get double");
-
-  c.set ("double2", 3.0);
-  t.is (c.get ("double2", 9.0), 3.0, "Config::set/get double");
-
-  c.set ("double3", -9.0);
-  t.is (c.get ("double3", 9.0), -9.0, "Config::set/get double");
 
   // void set (const std::string&, const std::string&);
-  c.set ("str1", "one");
-  t.is (c.get ("str1", ""), "one", "Config::set/get std::string");
-
-  c.set ("str1", "");
-  t.is (c.get ("str1", "no"), "", "Config::set/get std::string");
-
-  // const std::string get (const char*);
-  c.set ("str1", "one");
-  t.is (c.get ((char*) "str1"), (char*)"one", "Config::set/get char*");
-
-  // const std::string get (const char*, const char*);
-  c.set ("str1", "one");
-  t.is (c.get ((char*)"str1", (char*)""), "one", "Config::set/get char*");
-
-  c.set ("str1", "");
-  t.is (c.get ((char*)"str1", (char*)"no"), "", "Config::set/get char*");
-
   // const std::string get (const std::string&);
   c.set ("str1", "one");
-  t.is (c.get (std::string ("str1")), "one", "Config::set/get std::string");
+  t.is (c.get ("str1"), "one", "Config::set/get std::string");
 
   c.set ("str1", "");
-  t.is (c.get (std::string ("str1")), "", "Config::set/get std::string");
+  t.is (c.get ("str1"), "", "Config::set/get std::string");
 
-  // const std::string get (const std::string&, const std::string&);
-  c.set ("str1", "one");
-  t.is (c.get (std::string ("str1"), std::string ("no")), "one", "Config::set/get std::string");
+  // void set (const std::string&, const int);
+  // const int getInteger (const std::string&);
+  c.set ("int1", 1);
+  t.is (c.getInteger ("int1"), 1, "Config::set/get int");
 
-  c.set ("str1", "");
-  t.is (c.get (std::string ("str1"), std::string ("no")), "", "Config::set/get std::string");
+  c.set ("int2", 3);
+  t.is (c.getInteger ("int2"), 3, "Config::set/get int");
 
-  // bool get (const std::string&, const bool);
+  c.set ("int3", -9);
+  t.is (c.getInteger ("int3"), -9, "Config::set/get int");
+
+  // void set (const std::string&, const double);
+  // const double getReal (const std::string&);
+  c.set ("double1", 1.0);
+  t.is (c.getReal ("double1"), 1.0, "Config::set/get double");
+
+  c.set ("double2", 3.0);
+  t.is (c.getReal ("double2"), 3.0, "Config::set/get double");
+
+  c.set ("double3", -9.0);
+  t.is (c.getReal ("double3"), -9.0, "Config::set/get double");
+
+  // void set (const std::string&, const bool);
+  // const bool getBoolean (const std::string&);
   c.set ("bool1", false);
-  t.is (c.get (std::string ("bool1"), (bool)true), false, "Config::set/get bool");
+  t.is (c.getBoolean ("bool1"), false, "Config::set/get bool");
 
   c.set ("bool1", true);
-  t.is (c.get (std::string ("bool1"), (bool)false), true, "Config::set/get bool");
+  t.is (c.getBoolean ("bool1"), true, "Config::set/get bool");
 
   // void all (std::vector <std::string>&);
   std::vector <std::string> all;

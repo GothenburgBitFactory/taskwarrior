@@ -342,49 +342,6 @@ const std::string uuid ()
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-// no i18n
-std::string expandPath (const std::string& in)
-{
-  std::string copy = in;
-  std::string::size_type tilde;
-
-  if ((tilde = copy.find ("~/")) != std::string::npos)
-  {
-    struct passwd* pw = getpwuid (getuid ());
-    copy.replace (tilde, 1, pw->pw_dir);
-  }
-  else if ((tilde = copy.find ("~")) != std::string::npos)
-  {
-    struct passwd* pw = getpwuid (getuid ());
-    std::string home = pw->pw_dir;
-    home += "/";
-    copy.replace (tilde, 1, home);
-  }
-  else if ((tilde = copy.find ("~")) != std::string::npos)
-  {
-    std::string::size_type slash;
-    if ((slash = copy.find  ("/", tilde)) != std::string::npos)
-    {
-      std::string name = copy.substr (tilde + 1, slash - tilde - 1);
-      struct passwd* pw = getpwnam (name.c_str ());
-      if (pw)
-        copy.replace (tilde, slash - tilde, pw->pw_dir);
-    }
-  }
-
-  return copy;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool isAbsolutePath (const std::string& in)
-{
-  if (in.length () && in[0] == '/')
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // On Solaris no flock function exists.
 #ifdef SOLARIS
 int flock (int fd, int operation)
@@ -417,92 +374,6 @@ int flock (int fd, int operation)
   return fcntl (fd, (operation & LOCK_NB) ? F_SETLK : F_SETLKW, &fl);
 }
 #endif
-
-////////////////////////////////////////////////////////////////////////////////
-bool slurp (
-  const std::string& file,
-  std::vector <std::string>& contents,
-  bool trimLines /* = false */)
-{
-  contents.clear ();
-
-  std::ifstream in (file.c_str ());
-  if (in.good ())
-  {
-    std::string line;
-    while (getline (in, line))
-    {
-      if (trimLines) line = trim (line);
-      contents.push_back (line);
-    }
-
-    in.close ();
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool slurp (
-  const std::string& file,
-  std::string& contents,
-  bool trimLines /* = false */)
-{
-  contents = "";
-
-  std::ifstream in (file.c_str ());
-  if (in.good ())
-  {
-    std::string line;
-    while (getline (in, line))
-    {
-      if (trimLines) line = trim (line);
-      contents += line + "\n";
-    }
-
-    in.close ();
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void spit (const std::string& file, const std::string& contents)
-{
-  std::ofstream out (file.c_str ());
-  if (out.good ())
-  {
-    out << contents;
-    out.close ();
-  }
-  else
-    throw std::string ("Could not write file '") + file + "'"; // TODO i18n
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void spit (
-  const std::string& file,
-  const std::vector <std::string>& lines,
-  bool addNewlines /* = true */)
-{
-  std::ofstream out (file.c_str ());
-  if (out.good ())
-  {
-    foreach (line, lines)
-    {
-      out << *line;
-
-      if (addNewlines)
-        out << "\n";
-    }
-
-    out.close ();
-  }
-  else
-    throw std::string ("Could not write file '") + file + "'"; // TODO i18n
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 bool taskDiff (const Task& before, const Task& after)
@@ -589,7 +460,7 @@ std::string renderAttribute (const std::string& name, const std::string& value)
   if (a.type (name) == "date")
   {
     Date d ((time_t)::atoi (value.c_str ()));
-    return d.toString (context.config.get ("dateformat", "m/d/Y"));
+    return d.toString (context.config.get ("dateformat"));
   }
 
   return value;

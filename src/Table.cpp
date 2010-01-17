@@ -52,6 +52,9 @@
 #include "Timer.h"
 #include "text.h"
 #include "util.h"
+#include "Context.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Table::Table ()
@@ -862,6 +865,50 @@ void Table::sort (std::vector <int>& order)
               {
                 Date dl ((std::string)*left, mDateFormat);
                 Date dr ((std::string)*right, mDateFormat);
+                if (dl < dr)
+                  SWAP
+              }
+            }
+            break;
+
+          case ascendingDueDate:
+            {
+              if ((std::string)*left != "" && (std::string)*right == "")
+                break;
+
+              else if ((std::string)*left == "" && (std::string)*right != "")
+                SWAP
+
+              else
+              {
+                std::string format = context.config.get ("reportdateformat");
+                if (format == "")
+                  format = context.config.get ("dateformat");
+
+                Date dl ((std::string)*left,  format);
+                Date dr ((std::string)*right, format);
+                if (dl > dr)
+                  SWAP
+              }
+            }
+            break;
+
+          case descendingDueDate:
+            {
+              if ((std::string)*left != "" && (std::string)*right == "")
+                break;
+
+              else if ((std::string)*left == "" && (std::string)*right != "")
+                SWAP
+
+              else
+              {
+                std::string format = context.config.get ("reportdateformat");
+                if (format == "")
+                  format = context.config.get ("dateformat");
+
+                Date dl ((std::string)*left,  format);
+                Date dr ((std::string)*right, format);
                 if (dl < dr)
                   SWAP
               }

@@ -29,7 +29,7 @@
 use strict;
 use warnings;
 use File::Path;
-use Test::More tests => 8;
+use Test::More tests => 12;
 
 # Create the rc file, using rc.name:value.
 unlink 'foo.rc';
@@ -50,6 +50,23 @@ qx{echo 'y'|../task rc:foo.rc rc.data.location:foo};
 
 ok (-r 'foo.rc', 'Created default rc file');
 ok (-d 'foo', 'Created default data directory');
+
+# Add a setting.
+qx{echo 'y'|../task rc:foo.rc config must_be_unique old};
+my $output = qx{../task rc:foo.rc config};
+like ($output, qr/^must_be_unique\s+old$/ms, 'config setting a new value');
+
+qx{echo 'y'|../task rc:foo.rc config must_be_unique new};
+$output = qx{../task rc:foo.rc config};
+like ($output, qr/^must_be_unique\s+new$/ms, 'config overwriting an existing value');
+
+qx{echo 'y'|../task rc:foo.rc config must_be_unique ''};
+$output = qx{../task rc:foo.rc config};
+like ($output, qr/^must_be_unique$/ms, 'config setting a blank value');
+
+qx{echo 'y'|../task rc:foo.rc config must_be_unique};
+$output = qx{../task rc:foo.rc config};
+unlike ($output, qr/^must_be_unique/ms, 'config removing a value');
 
 rmtree 'foo', 0, 0;
 ok (!-r 'foo', 'Removed foo');

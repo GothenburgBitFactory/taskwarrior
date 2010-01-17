@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -37,6 +37,7 @@
 #include <time.h>
 
 #include "Permission.h"
+#include "Directory.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"
@@ -70,12 +71,12 @@ int handleAdd (std::string &outs)
 
   // Override with default.project, if not specified.
   if (context.task.get ("project") == "")
-    context.task.set ("project", context.config.get ("default.project", ""));
+    context.task.set ("project", context.config.get ("default.project"));
 
   // Override with default.priority, if not specified.
   if (context.task.get ("priority") == "")
   {
-    std::string defaultPriority = context.config.get ("default.priority", "");
+    std::string defaultPriority = context.config.get ("default.priority");
     if (Att::validNameValue ("priority", "", defaultPriority))
       context.task.set ("priority", defaultPriority);
   }
@@ -96,7 +97,7 @@ int handleAdd (std::string &outs)
   // Only valid tasks can be added.
   context.task.validate ();
 
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   context.tdb.add (context.task);
 
 #ifdef FEATURE_NEW_ID
@@ -123,7 +124,7 @@ int handleProjects (std::string &outs)
   context.filter.push_back (Att ("status", "pending"));
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   int quantity = context.tdb.loadPending (tasks, context.filter);
   context.tdb.commit ();
   context.tdb.unlock ();
@@ -161,8 +162,8 @@ int handleProjects (std::string &outs)
     table.addColumn ("Pri:M");
     table.addColumn ("Pri:H");
 
-    if (context.config.get ("color", true) ||
-        context.config.get (std::string ("_forcecolor"), false))
+    if (context.config.getBoolean ("color") ||
+        context.config.getBoolean ("_forcecolor"))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
@@ -211,10 +212,10 @@ int handleProjects (std::string &outs)
 int handleCompletionProjects (std::string &outs)
 {
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
 
   Filter filter;
-  if (context.config.get (std::string ("complete.all.projects"), false))
+  if (context.config.getBoolean ("complete.all.projects"))
     context.tdb.load (tasks, filter);
   else
     context.tdb.loadPending (tasks, filter);
@@ -246,7 +247,7 @@ int handleTags (std::string &outs)
   context.filter.push_back (Att ("status", "pending"));
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   int quantity = context.tdb.loadPending (tasks, context.filter);
   context.tdb.commit ();
   context.tdb.unlock ();
@@ -273,8 +274,8 @@ int handleTags (std::string &outs)
     table.addColumn ("Tag");
     table.addColumn ("Count");
 
-    if (context.config.get ("color", true) ||
-        context.config.get (std::string ("_forcecolor"), false))
+    if (context.config.getBoolean ("color") ||
+        context.config.getBoolean ("_forcecolor"))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
@@ -312,10 +313,10 @@ int handleTags (std::string &outs)
 int handleCompletionTags (std::string &outs)
 {
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
 
   Filter filter;
-  if (context.config.get (std::string ("complete.all.tags"), false))
+  if (context.config.getBoolean ("complete.all.tags"))
     context.tdb.load (tasks, filter);
   else
     context.tdb.loadPending (tasks, filter);
@@ -387,7 +388,7 @@ int handleCompletionVersion (std::string &outs)
 int handleCompletionIDs (std::string &outs)
 {
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   Filter filter;
   context.tdb.loadPending (tasks, filter);
   context.tdb.commit ();
@@ -414,7 +415,7 @@ void handleUndo ()
 {
   context.disallowModification ();
 
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   context.tdb.undo ();
   context.tdb.unlock ();
 }
@@ -449,11 +450,11 @@ int handleVersion (std::string &outs)
   Color bold ("bold");
 
   out << std::endl
-      << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+      << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
            ? bold.colorize (PACKAGE)
            : PACKAGE)
       << " "
-      << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+      << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
            ? bold.colorize (VERSION)
            : VERSION)
       << " built for "
@@ -489,7 +490,7 @@ int handleVersion (std::string &outs)
 #endif
 
       << std::endl
-      << "Copyright (C) 2006 - 2010, P. Beckingham."
+      << "Copyright (C) 2006 - 2010, P. Beckingham, F. Hernandez."
       << std::endl
       << disclaimer.render ()
       << link.render ()
@@ -504,6 +505,101 @@ int handleConfig (std::string &outs)
 {
   int rc = 0;
   std::stringstream out;
+
+  // Support:
+  //   task config name value    # set name to value
+  //   task config name ""       # set name to blank
+  //   task config name          # remove name
+  if (context.args.size () >= 2)
+  {
+    std::string name = context.args[1];
+    std::string value = "";
+
+    if (context.args.size () >= 3)
+      value = context.args[2];
+
+    if (name != "")
+    {
+      bool change = false;
+
+      // Read .taskrc (or equivalent)
+      std::string contents;
+      File::read (context.config.original_file, contents);
+
+      // task config name value
+      // task config name ""
+      if (context.args.size () >= 3)
+      {
+        // Find existing entry & overwrite
+        std::string::size_type pos = contents.find (name + "=");
+        if (pos != std::string::npos)
+        {
+          std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
+          if (eol == std::string::npos)
+            throw std::string ("Cannot find EOL after entry '") + name + "'";
+
+          if (confirm (std::string ("Are you sure you want to overwrite the value of '") + name + "' with '" + value + "'?"))
+          {
+            contents = contents.substr (0, pos)
+                     + name + "=" + value
+                     + contents.substr (eol);
+            change = true;
+          }
+        }
+
+        // Not found, so append instead.
+        else
+        {
+          if (confirm (std::string ("Are you sure you want to add '") + name + "' with a value of '" + value + "'?"))
+          {
+            contents = contents
+                     + "\n"
+                     + name + "=" + value
+                     + "\n";
+            change = true;
+          }
+        }
+      }
+
+      // task config name
+      else
+      {
+        // Remove name
+        std::string::size_type pos = contents.find (name + "=");
+        if (pos == std::string::npos)
+          throw std::string ("No entry named '") + name + "' found";
+
+        std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
+        if (eol == std::string::npos)
+          throw std::string ("Cannot find EOL after entry '") + name + "'";
+
+        if (confirm (std::string ("Are you sure you want to remove '") + name + "'?"))
+        {
+          contents = contents.substr (0, pos) + contents.substr (eol + 1);
+          change = true;
+        }
+      }
+
+      // Write .taskrc (or equivalent)
+      if (change)
+      {
+        File::write (context.config.original_file, contents);
+        out << "Config file "
+            << context.config.original_file.data
+            << " modified."
+            << std::endl;
+      }
+      else
+        out << "No changes made." << std::endl;
+    }
+    else
+      throw std::string ("Specify the name of a config variable to modify.");
+
+    outs = out.str ();
+    return rc;
+  }
+
+  // No arguments - display config values instead.
   int width = context.getWidth ();
 
   std::vector <std::string> all;
@@ -512,11 +608,11 @@ int handleConfig (std::string &outs)
   // Create a table for output.
   Table table;
   table.setTableWidth (width);
-  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat"));
   table.addColumn ("Config variable");
   table.addColumn ("Value");
 
-  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -533,12 +629,9 @@ int handleConfig (std::string &outs)
   foreach (i, all)
   {
     std::string value = context.config.get (*i);
-    if (value != "")
-    {
-      int row = table.addRow ();
-      table.addCell (row, 0, *i);
-      table.addCell (row, 1, value);
-    }
+    int row = table.addRow ();
+    table.addCell (row, 0, *i);
+    table.addCell (row, 1, value);
   }
 
   Color bold ("bold");
@@ -551,13 +644,13 @@ int handleConfig (std::string &outs)
   // These are the regular configuration variables.
   // Note that there is a leading and trailing space, to make searching easier.
   std::string recognized =
-    " blanklines bulk calendar.details calendar.details.report color color.active "
-    "color.due color.overdue color.pri.H color.pri.L color.pri.M color.pri.none "
+    " annotation.details blanklines bulk calendar.details calendar.details.report color "
+    "color.active color.due color.overdue color.pri.H color.pri.L color.pri.M color.pri.none "
     "color.recurring color.tagged color.footnote color.header color.debug color.alternate "
     "color.calendar.today color.calendar.due color.calendar.overdue color.calendar.weekend "
-    "confirmation curses data.location dateformat debug default.command default.priority "
-    "default.project defaultwidth due locale displayweeknumber echo.command "
-    "locking monthsperline nag next project shadow.command shadow.file "
+    "confirmation curses data.location dateformat reportdateformat debug default.command "
+    "default.priority default.project defaultwidth due locale displayweeknumber "
+    "echo.command locking monthsperline nag next project shadow.command shadow.file "
     "shadow.notify weekstart editor import.synonym.id import.synonym.uuid "
     "complete.all.projects complete.all.tags "
 #ifdef FEATURE_SHELL
@@ -606,7 +699,6 @@ int handleConfig (std::string &outs)
   }
 
   out << context.config.checkForDeprecatedColor ();
-  out << context.config.checkForDuplicates ();
   // TODO Check for referenced but missing theme files.
   // TODO Check for referenced but missing string files.
 
@@ -620,12 +712,14 @@ int handleConfig (std::string &outs)
   }
   else
   {
-    if (context.config.get ("data.location") == "")
+    Directory location (context.config.get ("data.location"));
+
+    if (location.data == "")
       out << "Configuration error: data.location not specified in .taskrc "
              "file."
           << std::endl;
 
-    if (access (expandPath (context.config.get ("data.location")).c_str (), X_OK))
+    if (! location.exists ())
       out << "Configuration error: data.location contains a directory name"
              " that doesn't exist, or is unreadable."
           << std::endl;
@@ -644,7 +738,7 @@ int handleDelete (std::string &outs)
   context.disallowModification ();
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -665,7 +759,7 @@ int handleDelete (std::string &outs)
              << task->get ("description")
              << "'?";
 
-    if (!context.config.get (std::string ("confirmation"), false) || confirm (question.str ()))
+    if (!context.config.getBoolean ("confirmation") || confirm (question.str ()))
     {
       // Check for the more complex case of a recurring task.  If this is a
       // recurring task, get confirmation to delete them all.
@@ -685,7 +779,7 @@ int handleDelete (std::string &outs)
               sibling->set ("end", endTime);
               context.tdb.update (*sibling);
 
-              if (context.config.get ("echo.command", true))
+              if (context.config.getBoolean ("echo.command"))
                 out << "Deleting recurring task "
                     << sibling->id
                     << " '"
@@ -718,7 +812,7 @@ int handleDelete (std::string &outs)
         task->set ("end", endTime);
         context.tdb.update (*task);
 
-        if (context.config.get ("echo.command", true))
+        if (context.config.getBoolean ("echo.command"))
           out << "Deleting task "
               << task->id
               << " '"
@@ -749,7 +843,7 @@ int handleStart (std::string &outs)
   context.disallowModification ();
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -767,7 +861,7 @@ int handleStart (std::string &outs)
 
       context.tdb.update (*task);
 
-      if (context.config.get ("echo.command", true))
+      if (context.config.getBoolean ("echo.command"))
         out << "Started "
             << task->id
             << " '"
@@ -805,7 +899,7 @@ int handleStop (std::string &outs)
   context.disallowModification ();
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -819,7 +913,7 @@ int handleStop (std::string &outs)
       task->remove ("start");
       context.tdb.update (*task);
 
-      if (context.config.get ("echo.command", true))
+      if (context.config.getBoolean ("echo.command"))
         out << "Stopped "
             << task->id
             << " '"
@@ -854,7 +948,7 @@ int handleDone (std::string &outs)
   std::stringstream out;
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -863,7 +957,7 @@ int handleDone (std::string &outs)
   context.filter.applySequence (tasks, context.sequence);
 
   Permission permission;
-  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
   bool nagged = false;
@@ -895,7 +989,7 @@ int handleDone (std::string &outs)
         {
           context.tdb.update (*task);
 
-          if (context.config.get ("echo.command", true))
+          if (context.config.getBoolean ("echo.command"))
             out << "Completed "
                 << task->id
                 << " '"
@@ -924,7 +1018,7 @@ int handleDone (std::string &outs)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  if (context.config.get ("echo.command", true))
+  if (context.config.getBoolean ("echo.command"))
     out << "Marked "
         << count
         << " task"
@@ -961,7 +1055,7 @@ int handleExport (std::string &outs)
 
   // Get all the tasks.
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
@@ -987,7 +1081,7 @@ int handleModify (std::string &outs)
   std::stringstream out;
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -996,7 +1090,7 @@ int handleModify (std::string &outs)
   context.filter.applySequence (tasks, context.sequence);
 
   Permission permission;
-  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
   foreach (task, tasks)
@@ -1067,7 +1161,7 @@ int handleModify (std::string &outs)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  if (context.config.get ("echo.command", true))
+  if (context.config.getBoolean ("echo.command"))
     out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   outs = out.str ();
@@ -1081,7 +1175,7 @@ int handleAppend (std::string &outs)
   std::stringstream out;
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -1090,7 +1184,7 @@ int handleAppend (std::string &outs)
   context.filter.applySequence (tasks, context.sequence);
 
   Permission permission;
-  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
   foreach (task, tasks)
@@ -1118,7 +1212,7 @@ int handleAppend (std::string &outs)
           {
             context.tdb.update (*other);
 
-            if (context.config.get ("echo.command", true))
+            if (context.config.getBoolean ("echo.command"))
               out << "Appended '"
                   << context.task.get ("description")
                   << "' to task "
@@ -1135,7 +1229,7 @@ int handleAppend (std::string &outs)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  if (context.config.get ("echo.command", true))
+  if (context.config.getBoolean ("echo.command"))
     out << "Appended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   outs = out.str ();
@@ -1149,7 +1243,7 @@ int handlePrepend (std::string &outs)
   std::stringstream out;
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -1158,7 +1252,7 @@ int handlePrepend (std::string &outs)
   context.filter.applySequence (tasks, context.sequence);
 
   Permission permission;
-  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
   foreach (task, tasks)
@@ -1186,7 +1280,7 @@ int handlePrepend (std::string &outs)
           {
             context.tdb.update (*other);
 
-            if (context.config.get ("echo.command", true))
+            if (context.config.getBoolean ("echo.command"))
               out << "Prepended '"
                   << context.task.get ("description")
                   << "' to task "
@@ -1203,7 +1297,7 @@ int handlePrepend (std::string &outs)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  if (context.config.get ("echo.command", true))
+  if (context.config.getBoolean ("echo.command"))
     out << "Prepended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 
   outs = out.str ();
@@ -1217,7 +1311,7 @@ int handleDuplicate (std::string &outs)
   int count = 0;
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -1260,7 +1354,7 @@ int handleDuplicate (std::string &outs)
 
     context.tdb.add (dup);
 
-    if (context.config.get ("echo.command", true))
+    if (context.config.getBoolean ("echo.command"))
       out << "Duplicated "
           << task->id
           << " '"
@@ -1270,7 +1364,7 @@ int handleDuplicate (std::string &outs)
     ++count;
   }
 
-  if (context.config.get ("echo.command", true))
+  if (context.config.getBoolean ("echo.command"))
   {
     out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
 #ifdef FEATURE_NEW_ID
@@ -1295,7 +1389,7 @@ void handleShell ()
 {
   // Display some kind of welcome message.
   Color bold (Color::nocolor, Color::nocolor, false, true, false);
-  std::cout << ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+  std::cout << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
                  ? bold.colorize (PACKAGE_STRING)
                  : PACKAGE_STRING)
             << " shell"
@@ -1319,7 +1413,7 @@ void handleShell ()
 
   do
   {
-    std::cout << context.config.get ("shell.prompt", "task>") << " ";
+    std::cout << context.config.get ("shell.prompt") << " ";
 
     command = "";
     std::getline (std::cin, command);
@@ -1371,7 +1465,7 @@ int handleColor (std::string &outs)
   int rc = 0;
   std::stringstream out;
 
-  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
   {
     // If there is something in the description, then assume that is a color,
     // and display it as a sample.
@@ -1516,7 +1610,7 @@ int handleAnnotate (std::string &outs)
   std::stringstream out;
 
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   Filter filter;
   context.tdb.loadPending (tasks, filter);
 
@@ -1524,7 +1618,7 @@ int handleAnnotate (std::string &outs)
   context.filter.applySequence (tasks, context.sequence);
 
   Permission permission;
-  if (context.sequence.size () > (size_t) context.config.get ("bulk", 2))
+  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
   foreach (task, tasks)
@@ -1538,7 +1632,7 @@ int handleAnnotate (std::string &outs)
       {
         context.tdb.update (*task);
 
-        if (context.config.get ("echo.command", true))
+        if (context.config.getBoolean ("echo.command"))
           out << "Annotated "
               << task->id
               << " with '"

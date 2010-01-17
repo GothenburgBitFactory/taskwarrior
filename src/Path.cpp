@@ -66,6 +66,12 @@ Path& Path::operator= (const Path& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Path::operator std::string () const
+{
+  return data;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string Path::name () const
 {
   if (data.length ())
@@ -116,6 +122,15 @@ bool Path::is_directory () const
   struct stat s = {0};
   if (! stat (data.c_str (), &s) &&
       s.st_mode & S_IFDIR)
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::is_absolute () const
+{
+  if (data.length () && data.substr (0, 1) == "/")
     return true;
 
   return false;
@@ -187,7 +202,7 @@ std::vector <std::string> Path::glob (const std::string& pattern)
 
   glob_t g;
   if (!::glob (pattern.c_str (), GLOB_ERR | GLOB_BRACE | GLOB_TILDE, NULL, &g))
-    for (int i = 0; i < g.gl_matchc; ++i)
+    for (int i = 0; i < (int) g.gl_pathc; ++i)
       results.push_back (g.gl_pathv[i]);
 
   globfree (&g);

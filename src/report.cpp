@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -29,7 +29,6 @@
 #include <sstream>
 #include <fstream>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -37,6 +36,8 @@
 #include <time.h>
 
 #include "Context.h"
+#include "Directory.h"
+#include "File.h"
 #include "Date.h"
 #include "Table.h"
 #include "text.h"
@@ -66,7 +67,7 @@ int shortUsage (std::string &outs)
   table.setColumnWidth (1, Table::minimum);
   table.setColumnWidth (2, Table::flexible);
   table.setTableWidth (context.getWidth ());
-  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat"));
 
   int row = table.addRow ();
   table.addCell (row, 0, "Usage:");
@@ -186,8 +187,8 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Shows the task version number.");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task config");
-  table.addCell (row, 2, "Shows the task configuration.");
+  table.addCell (row, 1, "task config [name [value | '']]");
+  table.addCell (row, 2, "Shows the task configuration, or can add, modify and remove settings.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task help");
@@ -199,8 +200,9 @@ int shortUsage (std::string &outs)
   foreach (report, all)
   {
     std::string command = std::string ("task ") + *report + std::string (" [tags] [attrs] desc...");
-    std::string description = context.config.get (
-      std::string ("report.") + *report + ".description", std::string ("(missing description)"));
+    std::string description = context.config.get (std::string ("report.") + *report + ".description");
+    if (description == "")
+      description = "(missing description)";
 
     row = table.addRow ();
     table.addCell (row, 1, command);
@@ -300,7 +302,7 @@ int handleInfo (std::string &outs)
   int rc = 0;
   // Get all the tasks.
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   context.tdb.loadPending (tasks, context.filter);
   context.tdb.commit ();
@@ -315,13 +317,13 @@ int handleInfo (std::string &outs)
   {
     Table table;
     table.setTableWidth (context.getWidth ());
-    table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+    table.setDateFormat (context.config.get ("dateformat"));
 
     table.addColumn ("Name");
     table.addColumn ("Value");
 
-    if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
-        context.config.get (std::string ("fontunderline"), "true"))
+    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+        context.config.getBoolean ("fontunderline"))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
@@ -412,20 +414,24 @@ int handleInfo (std::string &outs)
       table.addCell (row, 0, "Due");
 
       Date dt (atoi (task->get ("due").c_str ()));
-      std::string due = getDueDate (*task);
+      std::string format = context.config.get ("reportdateformat");
+      if (format == "")
+        format = context.config.get ("dateformat");
+
+      std::string due = getDueDate (*task, format);
       table.addCell (row, 1, due);
 
       overdue = (dt < now) ? true : false;
-      int imminentperiod = context.config.get ("due", 7);
+      int imminentperiod = context.config.getInteger ("due");
       Date imminentDay = now + imminentperiod * 86400;
       imminent = dt < imminentDay ? true : false;
 
-      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
       {
         if (overdue)
-          table.setCellColor (row, 1, Color (context.config.get ("color.overdue", "red")));
+          table.setCellColor (row, 1, Color (context.config.get ("color.overdue")));
         else if (imminent)
-          table.setCellColor (row, 1, Color (context.config.get ("color.due", "green")));
+          table.setCellColor (row, 1, Color (context.config.get ("color.due")));
       }
     }
 
@@ -435,7 +441,7 @@ int handleInfo (std::string &outs)
       row = table.addRow ();
       table.addCell (row, 0, "Waiting until");
       Date dt (atoi (task->get ("wait").c_str ()));
-      table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
+      table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
     // start
@@ -444,7 +450,7 @@ int handleInfo (std::string &outs)
       row = table.addRow ();
       table.addCell (row, 0, "Start");
       Date dt (atoi (task->get ("start").c_str ()));
-      table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
+      table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
     // end
@@ -453,7 +459,7 @@ int handleInfo (std::string &outs)
       row = table.addRow ();
       table.addCell (row, 0, "End");
       Date dt (atoi (task->get ("end").c_str ()));
-      table.addCell (row, 1, dt.toString (context.config.get ("dateformat", "m/d/Y")));
+      table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
     // tags ...
@@ -478,7 +484,7 @@ int handleInfo (std::string &outs)
     row = table.addRow ();
     table.addCell (row, 0, "Entered");
     Date dt (atoi (task->get ("entry").c_str ()));
-    std::string entry = dt.toString (context.config.get ("dateformat", "m/d/Y"));
+    std::string entry = dt.toString (context.config.get ("dateformat"));
 
     std::string age;
     std::string created = task->get ("entry");
@@ -531,7 +537,7 @@ int handleReportSummary (std::string &outs)
   int rc = 0;
   // Scan the pending tasks.
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
@@ -594,8 +600,8 @@ int handleReportSummary (std::string &outs)
   table.addColumn ("Complete");
   table.addColumn ("0%                        100%");
 
-  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
-      context.config.get (std::string ("fontunderline"), "true"))
+  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+      context.config.getBoolean ("fontunderline"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -610,7 +616,7 @@ int handleReportSummary (std::string &outs)
   table.setColumnJustification (3, Table::right);
 
   table.sortOn (0, Table::ascendingCharacter);
-  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat"));
 
   int barWidth = 30;
   foreach (i, allProjects)
@@ -632,7 +638,7 @@ int handleReportSummary (std::string &outs)
       int completedBar = (c * barWidth) / (c + p);
 
       std::string bar;
-      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
       {
         bar = "\033[42m";
         for (int b = 0; b < completedBar; ++b)
@@ -726,7 +732,7 @@ int handleReportNext (std::string &outs)
 
   // Get all the tasks.
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
@@ -778,7 +784,7 @@ int handleReportHistory (std::string &outs)
 
   // Scan the pending tasks.
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
@@ -822,7 +828,7 @@ int handleReportHistory (std::string &outs)
 
   // Now build the table.
   Table table;
-  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat"));
   table.addColumn ("Year");
   table.addColumn ("Month");
   table.addColumn ("Added");
@@ -830,8 +836,8 @@ int handleReportHistory (std::string &outs)
   table.addColumn ("Deleted");
   table.addColumn ("Net");
 
-  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
-      context.config.get (std::string ("fontunderline"), "true"))
+  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+      context.config.getBoolean ("fontunderline"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -894,7 +900,7 @@ int handleReportHistory (std::string &outs)
     }
 
     table.addCell (row, 5, net);
-    if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) && net)
+    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) && net)
       table.setCellColor (row, 5, net > 0 ? Color (Color::red) :
                                             Color (Color::green));
   }
@@ -905,7 +911,7 @@ int handleReportHistory (std::string &outs)
     row = table.addRow ();
 
     table.addCell (row, 1, "Average");
-    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
       table.setRowColor (row, Color (Color::nocolor, Color::nocolor, false, true, false));
     table.addCell (row, 2, totalAdded     / (table.rowCount () - 2));
     table.addCell (row, 3, totalCompleted / (table.rowCount () - 2));
@@ -938,7 +944,7 @@ int handleReportGHistory (std::string &outs)
 
   // Scan the pending tasks.
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
@@ -984,13 +990,13 @@ int handleReportGHistory (std::string &outs)
 
   // Now build the table.
   Table table;
-  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat"));
   table.addColumn ("Year");
   table.addColumn ("Month");
   table.addColumn ("Number Added/Completed/Deleted");
 
-  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
-      context.config.get (std::string ("fontunderline"), "true"))
+  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+      context.config.getBoolean ("fontunderline"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1049,7 +1055,7 @@ int handleReportGHistory (std::string &outs)
       unsigned int deletedBar   = (widthOfBar *   deletedGroup[i->first]) / maxLine;
 
       std::string bar = "";
-      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
       {
         char number[24];
         std::string aBar = "";
@@ -1109,7 +1115,7 @@ int handleReportGHistory (std::string &outs)
         << table.render ()
         << std::endl;
 
-    if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
       out << "Legend: "
           << color_added.colorize ("added")
           << ", "
@@ -1135,7 +1141,7 @@ int handleReportTimesheet (std::string &outs)
 {
   // Scan the pending tasks.
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
@@ -1145,7 +1151,7 @@ int handleReportTimesheet (std::string &outs)
   int width = context.getWidth ();
 
   // What day of the week does the user consider the first?
-  int weekStart = Date::dayOfWeek (context.config.get ("weekstart", "Sunday"));
+  int weekStart = Date::dayOfWeek (context.config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
     throw std::string ("The 'weekstart' configuration variable may "
                        "only contain 'Sunday' or 'Monday'.");
@@ -1164,7 +1170,7 @@ int handleReportTimesheet (std::string &outs)
   if (context.sequence.size () == 1)
     quantity = context.sequence[0];
 
-  bool color = context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false);
+  bool color = context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor");
 
   std::stringstream out;
   for (int week = 0; week < quantity; ++week)
@@ -1172,9 +1178,9 @@ int handleReportTimesheet (std::string &outs)
     Date endString (end);
     endString -= 86400;
 
-    std::string title = start.toString (context.config.get ("dateformat", "m/d/Y"))
+    std::string title = start.toString (context.config.get ("dateformat"))
                         + " - "
-                        + endString.toString (context.config.get ("dateformat", "m/d/Y"));
+                        + endString.toString (context.config.get ("dateformat"));
 
     Color bold (Color::nocolor, Color::nocolor, false, true, false);
     out << std::endl
@@ -1189,7 +1195,7 @@ int handleReportTimesheet (std::string &outs)
     completed.addColumn ("Due");
     completed.addColumn ("Description");
 
-    if (color && context.config.get (std::string ("fontunderline"), "true"))
+    if (color && context.config.getBoolean ("fontunderline"))
     {
       completed.setColumnUnderline (1);
       completed.setColumnUnderline (2);
@@ -1218,7 +1224,7 @@ int handleReportTimesheet (std::string &outs)
         {
           int row = completed.addRow ();
           completed.addCell (row, 1, task->get ("project"));
-          completed.addCell (row, 2, getDueDate (*task));
+          completed.addCell (row, 2, getDueDate (*task, context.config.get("dateformat")));
           completed.addCell (row, 3, getFullDescription (*task));
 
           if (color)
@@ -1245,7 +1251,7 @@ int handleReportTimesheet (std::string &outs)
     started.addColumn ("Due");
     started.addColumn ("Description");
 
-    if (color && context.config.get (std::string ("fontunderline"), "true"))
+    if (color && context.config.getBoolean ("fontunderline"))
     {
       completed.setColumnUnderline (1);
       completed.setColumnUnderline (2);
@@ -1274,7 +1280,7 @@ int handleReportTimesheet (std::string &outs)
         {
           int row = started.addRow ();
           started.addCell (row, 1, task->get ("project"));
-          started.addCell (row, 2, getDueDate (*task));
+          started.addCell (row, 2, getDueDate (*task, context.config.get ("dateformat")));
           started.addCell (row, 3, getFullDescription (*task));
 
           if (color)
@@ -1312,10 +1318,10 @@ std::string renderMonths (
   int monthsPerLine)
 {
   Table table;
-  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat"));
 
   // What day of the week does the user consider the first?
-  int weekStart = Date::dayOfWeek (context.config.get ("weekstart", "Sunday"));
+  int weekStart = Date::dayOfWeek (context.config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
     throw std::string ("The 'weekstart' configuration variable may "
                        "only contain 'Sunday' or 'Monday'.");
@@ -1346,8 +1352,8 @@ std::string renderMonths (
       table.addColumn ("Sa");
     }
 
-    if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
-        context.config.get (std::string ("fontunderline"), "true"))
+    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+        context.config.getBoolean ("fontunderline"))
     {
       table.setColumnUnderline (i + 1);
       table.setColumnUnderline (i + 2);
@@ -1418,7 +1424,7 @@ std::string renderMonths (
       int dow = temp.dayOfWeek ();
       int woy = temp.weekOfYear (weekStart);
 
-      if (context.config.get ("displayweeknumber", true))
+      if (context.config.getBoolean ("displayweeknumber"))
         table.addCell (row, (8 * mpl), woy);
 
       // Calculate column id.
@@ -1431,12 +1437,12 @@ std::string renderMonths (
 
       table.addCell (row, thisCol, d);
 
-      Color color_today   (context.config.get ("color.calendar.today",   "black on cyan"));
-      Color color_due     (context.config.get ("color.calendar.due",     "black on green"));
-      Color color_overdue (context.config.get ("color.calendar.overdue", "black on red"));
-      Color color_weekend (context.config.get ("color.calendar.weekend", "black on white"));
+      Color color_today   (context.config.get ("color.calendar.today"));
+      Color color_due     (context.config.get ("color.calendar.due"));
+      Color color_overdue (context.config.get ("color.calendar.overdue"));
+      Color color_weekend (context.config.get ("color.calendar.weekend"));
 
-      if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
       {
         if (dow == 0 || dow == 6)
           table.setCellColor (row, thisCol, color_weekend);
@@ -1454,7 +1460,7 @@ std::string renderMonths (
         {
           Date due (atoi (task->get ("due").c_str ()));
 
-          if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
+          if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
               due.day ()   == d               &&
               due.month () == months[mpl] &&
               due.year ()  == years[mpl])
@@ -1480,7 +1486,7 @@ int handleReportCalendar (std::string &outs)
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
   int width = context.getWidth ();
-  int preferredMonthsPerLine = (context.config.get (std::string ("monthsperline"), 0));
+  int preferredMonthsPerLine = (context.config.getInteger ("monthsperline"));
   int monthsThatFit = width / 26;
 
   int monthsPerLine = monthsThatFit;
@@ -1490,7 +1496,7 @@ int handleReportCalendar (std::string &outs)
   // Get all the tasks.
   std::vector <Task> tasks;
   Filter filter;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   context.tdb.loadPending (tasks, filter);
   context.tdb.commit ();
@@ -1529,7 +1535,7 @@ int handleReportCalendar (std::string &outs)
       // task cal 2010
       monthsToDisplay = 12;
       mFrom = 1;
-      yFrom = atoi( context.args[1].data());
+      yFrom = atoi (context.args[1].c_str ());
     }
   }
   else if (numberOfArgs == 3) {
@@ -1541,15 +1547,15 @@ int handleReportCalendar (std::string &outs)
     else {
       // task cal 8 2010
       monthsToDisplay = monthsPerLine;
-      mFrom = atoi( context.args[1].data());
-      yFrom = atoi( context.args[2].data());
+      mFrom = atoi (context.args[1].c_str ());
+      yFrom = atoi (context.args[2].c_str ());
     }
   }
   else if (numberOfArgs == 4) {
     // task cal 8 2010 y
     monthsToDisplay = 12;
-    mFrom = atoi( context.args[1].data());
-    yFrom = atoi( context.args[2].data());
+    mFrom = atoi (context.args[1].c_str ());
+    yFrom = atoi (context.args[2].c_str ());
   }
 
   int countDueDates = 0;
@@ -1640,12 +1646,12 @@ int handleReportCalendar (std::string &outs)
     }
   }
 
-  Color color_today   (context.config.get ("color.calendar.today",   "black on cyan"));
-  Color color_due     (context.config.get ("color.calendar.due",     "black on green"));
-  Color color_overdue (context.config.get ("color.calendar.overdue", "black on red"));
-  Color color_weekend (context.config.get ("color.calendar.weekend", "black on white"));
+  Color color_today   (context.config.get ("color.calendar.today"));
+  Color color_due     (context.config.get ("color.calendar.due"));
+  Color color_overdue (context.config.get ("color.calendar.overdue"));
+  Color color_weekend (context.config.get ("color.calendar.weekend"));
 
-  if (context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false))
+  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
     out << "Legend: "
         << color_today.colorize ("today")
         << ", "
@@ -1658,7 +1664,7 @@ int handleReportCalendar (std::string &outs)
         << optionalBlankLine ()
         << std::endl;
 
-  if (context.config.get (std::string ("calendar.details"), false))
+  if (context.config.getBoolean ("calendar.details"))
   {
     --details_mFrom;
     if (details_mFrom == 0)
@@ -1676,12 +1682,12 @@ int handleReportCalendar (std::string &outs)
     }
 
     Date date_after (details_mFrom, details_dFrom, details_yFrom);
-    std::string after = date_after.toString (context.config.get ("dateformat", "m/d/Y"));
-    
-    Date date_before (mTo, 1, yTo);
-    std::string before = date_before.toString (context.config.get ("dateformat", "m/d/Y"));
+    std::string after = date_after.toString (context.config.get ("dateformat"));
 
-    std::string report = context.config.get ("calendar.details.report", "list");
+    Date date_before (mTo, 1, yTo);
+    std::string before = date_before.toString (context.config.get ("dateformat"));
+
+    std::string report = context.config.get ("calendar.details.report");
     std::string report_filter = context.config.get ("report." + report + ".filter");
 
     report_filter += " due.after:" + after + " due.before:" + before;
@@ -1711,30 +1717,26 @@ int handleReportStats (std::string &outs)
   // Go get the file sizes.
   size_t dataSize = 0;
 
-  struct stat s;
-  std::string location = expandPath (context.config.get ("data.location"));
-  std::string file = location + "/pending.data";
-  if (!stat (file.c_str (), &s))
-    dataSize += s.st_size;
+  Directory location (context.config.get ("data.location"));
+  File pending (location.data + "/pending.data");
+  dataSize += pending.size ();
 
-  file = location + "/completed.data";
-  if (!stat (file.c_str (), &s))
-    dataSize += s.st_size;
+  File completed (location.data + "/completed.data");
+  dataSize += completed.size ();
 
-  file = location + "/undo.data";
-  if (!stat (file.c_str (), &s))
-    dataSize += s.st_size;
+  File undo (location.data + "/undo.data");
+  dataSize += undo.size ();
 
-  std::vector <std::string> undo;
-  slurp (file, undo, false);
+  std::vector <std::string> undoTxns;
+  File::read (undo, undoTxns);
   int undoCount = 0;
-  foreach (tx, undo)
+  foreach (tx, undoTxns)
     if (tx->substr (0, 3) == "---")
       ++undoCount;
 
   // Get all the tasks.
   std::vector <Task> tasks;
-  context.tdb.lock (context.config.get ("locking", true));
+  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
   context.tdb.load (tasks, context.filter);
   context.tdb.commit ();
@@ -1801,12 +1803,12 @@ int handleReportStats (std::string &outs)
   Table table;
   table.setTableWidth (context.getWidth ());
   table.setTableIntraPadding (2);
-  table.setDateFormat (context.config.get ("dateformat", "m/d/Y"));
+  table.setDateFormat (context.config.get ("dateformat"));
   table.addColumn ("Category");
   table.addColumn ("Data");
 
-  if ((context.config.get ("color", true) || context.config.get (std::string ("_forcecolor"), false)) &&
-      context.config.get (std::string ("fontunderline"), "true"))
+  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+      context.config.getBoolean ("fontunderline"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1879,12 +1881,12 @@ int handleReportStats (std::string &outs)
     Date e (earliest);
     row = table.addRow ();
     table.addCell (row, 0, "Oldest task");
-    table.addCell (row, 1, e.toString (context.config.get ("dateformat", "m/d/Y")));
+    table.addCell (row, 1, e.toString (context.config.get ("dateformat")));
 
     Date l (latest);
     row = table.addRow ();
     table.addCell (row, 0, "Newest task");
-    table.addCell (row, 1, l.toString (context.config.get ("dateformat", "m/d/Y")));
+    table.addCell (row, 1, l.toString (context.config.get ("dateformat")));
 
     row = table.addRow ();
     table.addCell (row, 0, "Task used for");
@@ -1946,7 +1948,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   Date now;
 
   // How many items per project?  Default 2.
-  int limit = context.config.get ("next", 2);
+  int limit = context.config.getInteger ("next");
 
   // due:< 1wk, pri:*
   foreach (task, tasks)
@@ -2113,24 +2115,44 @@ std::string getFullDescription (Task& task)
 
   std::vector <Att> annotations;
   task.getAnnotations (annotations);
-  foreach (anno, annotations)
-  {
-    Date dt (atoi (anno->name ().substr (11).c_str ()));
-    std::string when = dt.toString (context.config.get ("dateformat", "m/d/Y"));
-    desc += "\n" + when + " " + anno->value ();
-  }
+
+  if (annotations.size () != 0)
+    switch (context.config.getInteger ("annotation.details"))
+    {
+    case 0:
+      desc = "+" + desc;
+      break;
+    case 1:
+      {
+        if (annotations.size () > 1)
+          desc = "+" + desc;
+        Att anno (annotations.back());
+        Date dt (atoi (anno.name ().substr (11).c_str ()));
+        std::string when = dt.toString (context.config.get ("dateformat"));
+        desc += "\n" + when + " " + anno.value ();
+      }
+      break;
+    case 2:
+      foreach (anno, annotations)
+      {
+        Date dt (atoi (anno->name ().substr (11).c_str ()));
+        std::string when = dt.toString (context.config.get ("dateformat"));
+        desc += "\n" + when + " " + anno->value ();
+      }
+      break; 
+    }
 
   return desc;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-std::string getDueDate (Task& task)
+std::string getDueDate (Task& task, const std::string& format)
 {
   std::string due = task.get ("due");
   if (due.length ())
   {
     Date d (atoi (due.c_str ()));
-    due = d.toString (context.config.get ("dateformat", "m/d/Y"));
+    due = d.toString (format);
   }
 
   return due;

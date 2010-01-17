@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2009, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +33,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (26);
+  UnitTest t (32);
 
   // Path ();
   Path p0;
@@ -53,6 +53,9 @@ int main (int argc, char** argv)
   // Path& operator= (const Path&);
   Path p3_copy (p3);
   t.is (p3.data, p3_copy.data, "Path::Path (Path&)");
+
+  // operator (std::string) const;
+  t.is ((std::string) p3, "/tmp", "Path::operator (std::string) const");
 
   // std::string name () const;
   Path p4 ("/a/b/c/file.ext");
@@ -100,6 +103,13 @@ int main (int argc, char** argv)
   out = Path::glob ("/[s-u]mp");
   t.ok (out.size () == 1, "/[s-u]mp -> 1 result");
   t.is (out[0], "/tmp", "/[s-u]mp -> /tmp");
+
+  // bool is_absolute () const;
+  t.notok (p0.is_absolute (), "'' !is_absolute");
+  t.notok (p1.is_absolute (), "foo !is_absolute");
+  t.ok    (p2.is_absolute (), "~ is_absolute (after expansion)");
+  t.ok    (p3.is_absolute (), "/tmp is_absolute");
+  t.ok    (p4.is_absolute (), "/a/b/c/file.ext is_absolute");
 
   return 0;
 }

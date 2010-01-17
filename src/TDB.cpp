@@ -35,6 +35,8 @@
 #include "text.h"
 #include "util.h"
 #include "TDB.h"
+#include "Directory.h"
+#include "File.h"
 #include "Table.h"
 #include "Timer.h"
 #include "Color.h"
@@ -107,12 +109,13 @@ void TDB::clear ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::location (const std::string& path)
 {
-  if (access (expandPath (path).c_str (), F_OK))
+  Directory d (path);
+  if (!d.exists ())
     throw std::string ("Data location '") +
           path +
           "' does not exist, or is not readable and writable.";
 
-  mLocations.push_back (Location (path));
+  mLocations.push_back (Location (d));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -503,15 +506,15 @@ int TDB::nextId ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::undo ()
 {
-  std::string location = expandPath (context.config.get ("data.location"));
+  Directory location (context.config.get ("data.location"));
 
-  std::string undoFile      = location + "/undo.data";
-  std::string pendingFile   = location + "/pending.data";
-  std::string completedFile = location + "/completed.data";
+  std::string undoFile      = location.data + "/undo.data";
+  std::string pendingFile   = location.data + "/pending.data";
+  std::string completedFile = location.data + "/completed.data";
 
   // load undo.data
   std::vector <std::string> u;
-  slurp (undoFile, u);
+  File::read (undoFile, u);
 
   if (u.size () < 3)
     throw std::string ("There are no recorded transactions to undo.");
@@ -643,7 +646,7 @@ void TDB::undo ()
 
   // load pending.data
   std::vector <std::string> p;
-  slurp (pendingFile, p);
+  File::read (pendingFile, p);
 
   // is 'current' in pending?
   foreach (task, p)
@@ -665,15 +668,15 @@ void TDB::undo ()
       }
 
       // Rewrite files.
-      spit (pendingFile, p);
-      spit (undoFile, u);
+      File::write (pendingFile, p);
+      File::write (undoFile, u);
       return;
     }
   }
 
   // load completed.data
   std::vector <std::string> c;
-  slurp (completedFile, c);
+  File::read (completedFile, c);
 
   // is 'current' in completed?
   foreach (task, c)
@@ -689,17 +692,17 @@ void TDB::undo ()
       {
         c.erase (task);
         p.push_back (prior);
-        spit (completedFile, c);
-        spit (pendingFile, p);
-        spit (undoFile, u);
+        File::write (completedFile, c);
+        File::write (pendingFile, p);
+        File::write (undoFile, u);
         std::cout << "Modified task reverted." << std::endl;
         context.debug ("TDB::undo - task belongs in pending.data");
       }
       else
       {
         *task = prior;
-        spit (completedFile, c);
-        spit (undoFile, u);
+        File::write (completedFile, c);
+        File::write (undoFile, u);
         std::cout << "Modified task reverted." << std::endl;
         context.debug ("TDB::undo - task belongs in completed.data");
       }
@@ -725,9 +728,10 @@ FILE* TDB::openAndLock (const std::string& file)
   // TODO Need provision here for read-only locations.
 
   // Check for access.
-  bool exists = access (file.c_str (), F_OK) ? false : true;
+  File f (file);
+  bool exists = f.exists ();
   if (exists)
-    if (access (file.c_str (), R_OK | W_OK))
+    if (!f.readable () || !f.writable ())
       throw std::string ("Task does not have the correct permissions for '") +
             file + "'.";
 
@@ -755,8 +759,6 @@ FILE* TDB::openAndLock (const std::string& file)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::writeUndo (const Task& after, FILE* file)
 {
-  Timer t ("TDB::writeUndo");
-
   fprintf (file,
            "time %u\nnew %s---\n",
            (unsigned int) time (NULL),
@@ -766,8 +768,6 @@ void TDB::writeUndo (const Task& after, FILE* file)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::writeUndo (const Task& before, const Task& after, FILE* file)
 {
-  Timer t ("TDB::writeUndo");
-
   fprintf (file,
            "time %u\nold %snew %s---\n",
            (unsigned int) time (NULL),
