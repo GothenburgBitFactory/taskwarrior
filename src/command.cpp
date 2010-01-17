@@ -505,6 +505,101 @@ int handleConfig (std::string &outs)
 {
   int rc = 0;
   std::stringstream out;
+
+  // Support:
+  //   task config name value    # set name to value
+  //   task config name ""       # set name to blank
+  //   task config name          # remove name
+  if (context.args.size () >= 2)
+  {
+    std::string name = context.args[1];
+    std::string value = "";
+
+    if (context.args.size () >= 3)
+      value = context.args[2];
+
+    if (name != "")
+    {
+      bool change = false;
+
+      // Read .taskrc (or equivalent)
+      std::string contents;
+      File::read (context.config.original_file, contents);
+
+      // task config name value
+      // task config name ""
+      if (context.args.size () >= 3)
+      {
+        // Find existing entry & overwrite
+        std::string::size_type pos = contents.find (name + "=");
+        if (pos != std::string::npos)
+        {
+          std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
+          if (eol == std::string::npos)
+            throw std::string ("Cannot find EOL after entry '") + name + "'";
+
+          if (confirm (std::string ("Are you sure you want to overwrite the value of '") + name + "' with '" + value + "'?"))
+          {
+            contents = contents.substr (0, pos)
+                     + name + "=" + value
+                     + contents.substr (eol);
+            change = true;
+          }
+        }
+
+        // Not found, so append instead.
+        else
+        {
+          if (confirm (std::string ("Are you sure you want to add '") + name + "' with a value of '" + value + "'?"))
+          {
+            contents = contents
+                     + "\n"
+                     + name + "=" + value
+                     + "\n";
+            change = true;
+          }
+        }
+      }
+
+      // task config name
+      else
+      {
+        // Remove name
+        std::string::size_type pos = contents.find (name + "=");
+        if (pos == std::string::npos)
+          throw std::string ("No entry named '") + name + "' found";
+
+        std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
+        if (eol == std::string::npos)
+          throw std::string ("Cannot find EOL after entry '") + name + "'";
+
+        if (confirm (std::string ("Are you sure you want to remove '") + name + "'?"))
+        {
+          contents = contents.substr (0, pos) + contents.substr (eol + 1);
+          change = true;
+        }
+      }
+
+      // Write .taskrc (or equivalent)
+      if (change)
+      {
+        File::write (context.config.original_file, contents);
+        out << "Config file "
+            << context.config.original_file.data
+            << " modified."
+            << std::endl;
+      }
+      else
+        out << "No changes made." << std::endl;
+    }
+    else
+      throw std::string ("Specify the name of a config variable to modify.");
+
+    outs = out.str ();
+    return rc;
+  }
+
+  // No arguments - display config values instead.
   int width = context.getWidth ();
 
   std::vector <std::string> all;
@@ -534,12 +629,9 @@ int handleConfig (std::string &outs)
   foreach (i, all)
   {
     std::string value = context.config.get (*i);
-    if (value != "")
-    {
-      int row = table.addRow ();
-      table.addCell (row, 0, *i);
-      table.addCell (row, 1, value);
-    }
+    int row = table.addRow ();
+    table.addCell (row, 0, *i);
+    table.addCell (row, 1, value);
   }
 
   Color bold ("bold");

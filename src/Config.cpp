@@ -271,7 +271,10 @@ void Config::load (const std::string& file, int nest /* = 1 */)
 
   // First time in, load the default values.
   if (nest == 1)
+  {
     setDefaults ();
+    original_file = File (file);
+  }
 
   // Read the file, then parse the contents.
   std::string contents;

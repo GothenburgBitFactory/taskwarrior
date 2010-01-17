@@ -26,6 +26,9 @@
    information.
  + The 'config' command now complains about use of deprecated color names in
    your .taskrc file.
+ + Added feature #296, that allows the 'config' command to modify your .taskrc
+   settings directly, with the command 'task config <name> <value>', or
+   'task config <name>' to remove the setting.
  + Task now supports nested .taskrc files using the "include /path" directive.
  + The 'entry', 'start' and 'end' columns now have equivalents that include the
    time, and are called 'entry_time', 'start_time', and 'end_time', for use in

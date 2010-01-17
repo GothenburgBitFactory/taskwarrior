@@ -30,6 +30,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include "File.h"
 
 class Config : public std::map <std::string, std::string>
 {
@@ -59,6 +60,9 @@ public:
   void all (std::vector <std::string>&);
 
   std::string checkForDeprecatedColor ();
+
+public:
+  File original_file;
 
 private:
   static std::string defaults;
