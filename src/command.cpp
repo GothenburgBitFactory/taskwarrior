@@ -490,8 +490,12 @@ int handleVersion (std::string &outs)
 #endif
 
       << std::endl
-      << "Copyright (C) 2006 - 2010, P. Beckingham, F. Hernandez."
+      << "Copyright (C) 2006 - 2010 P. Beckingham, F. Hernandez."
       << std::endl
+#ifdef HAVE_LIBLUA
+      << "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio."
+      << std::endl
+#endif
       << disclaimer.render ()
       << link.render ()
       << std::endl;

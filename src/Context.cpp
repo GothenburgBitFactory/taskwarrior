@@ -83,6 +83,11 @@ void Context::initialize (int argc, char** argv)
   }
 
   initialize ();
+
+  // Hook system init, plus post-start event occurring at the first possible
+  // moment after hook initialization.
+  hooks.initialize ();
+  hooks.trigger ("post-start");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -180,6 +185,7 @@ int Context::run ()
     else
       std::cout << *f << std::endl;
 
+  hooks.trigger ("pre-exit");
   return rc;
 }
 

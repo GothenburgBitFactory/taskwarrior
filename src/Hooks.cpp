@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include "Hooks.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +36,93 @@ Hooks::Hooks ()
 ////////////////////////////////////////////////////////////////////////////////
 Hooks::~Hooks ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Hooks::initialize ()
+{
+  api.initialize ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Hooks::trigger (const std::string& event)
+{
+  // TODO Look up scripts/functions hooking this event.
+  // TODO Load the scripts if necessary.
+
+  // TODO Call each function.
+  std::string type;
+  if (eventType (event, type))
+  {
+         if (type == "program") return triggerProgramEvent (event);
+    else if (type == "list")    return triggerListEvent    (event);
+    else if (type == "task")    return triggerTaskEvent    (event);
+    else if (type == "field")   return triggerFieldEvent   (event);
+  }
+  else
+    throw std::string ("Unrecognized hook event '") + event + "'";
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Hooks::eventType (const std::string& event, std::string& type)
+{
+  if (event == "post-start" ||
+      event == "pre-exit")
+  {
+    type = "program";
+    return true;
+  }
+  else if (event == "?")
+  {
+    type = "list";
+    return true;
+  }
+  else if (event == "?")
+  {
+    type = "task";
+    return true;
+  }
+  else if (event == "?")
+  {
+    type = "field";
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Hooks::triggerProgramEvent (const std::string& event)
+{
+  std::cout << "Hooks::triggerProgramEvent " << event << std::endl;
+
+  // TODO Is this event hooked?
+  // TODO Is the associated script loaded?
+  // TODO Call the function
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Hooks::triggerListEvent (const std::string& event)
+{
+  std::cout << "Hooks::triggerListEvent " << event << std::endl;
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Hooks::triggerTaskEvent (const std::string& event)
+{
+  std::cout << "Hooks::triggerTaskEvent " << event << std::endl;
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Hooks::triggerFieldEvent (const std::string& event)
+{
+  std::cout << "Hooks::triggerFieldEvent " << event << std::endl;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

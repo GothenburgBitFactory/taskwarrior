@@ -27,16 +27,31 @@
 #ifndef INCLUDED_HOOKS
 #define INCLUDED_HOOKS
 
+#include <vector>
+#include <string>
+#include "API.h"
+
 class Hooks
 {
 public:
-  Hooks ();                      // Default constructor
-  ~Hooks ();                     // Destructor
+  Hooks ();                        // Default constructor
+  ~Hooks ();                       // Destructor
+  Hooks (const Hooks&);            // Deliberately unimplemented
+  Hooks& operator= (const Hooks&); // Deliberately unimplemented
 
-  Hooks (const Hooks&);
-  Hooks& operator= (const Hooks&);
+  void initialize ();
+  bool trigger (const std::string&);
+  bool eventType (const std::string&, std::string&);
 
 private:
+  bool triggerProgramEvent (const std::string&);
+  bool triggerListEvent (const std::string&);
+  bool triggerTaskEvent (const std::string&);
+  bool triggerFieldEvent (const std::string&);
+
+private:
+  API api;
+  std::vector <std::string> scripts;
 };
 
 #endif
