@@ -538,7 +538,12 @@ int handleConfig (std::string &outs)
           if (eol == std::string::npos)
             throw std::string ("Cannot find EOL after entry '") + name + "'";
 
-          if (confirm (std::string ("Are you sure you want to overwrite the value of '") + name + "' with '" + value + "'?"))
+          if (confirm (std::string ("Are you sure you want to change the value of '")
+                         + name
+                         + "' from '"
+                         + context.config.get(name)
+                         + "' to '"
+                         + value + "'?"))
           {
             contents = contents.substr (0, pos)
                      + name + "=" + value
