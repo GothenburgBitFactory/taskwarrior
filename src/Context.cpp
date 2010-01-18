@@ -139,8 +139,6 @@ void Context::initialize ()
 int Context::run ()
 {
   int rc;
-  Timer t ("Context::run");
-
   std::string output;
   try
   {
@@ -193,7 +191,11 @@ int Context::run ()
 int Context::dispatch (std::string &out)
 {
   int rc = 0;
+
   Timer t ("Context::dispatch");
+
+  if (! hooks.trigger ("pre-dispatch"))
+    return rc;
 
   // TODO Just look at this thing.  It cries out for a dispatch table.
        if (cmd.command == "projects")      { rc = handleProjects           (out); }
@@ -245,6 +247,7 @@ int Context::dispatch (std::string &out)
   if (cmd.isWriteCommand () && !inShadow)
     shadow ();
 
+  hooks.trigger ("post-dispatch");
   return rc;
 }
 

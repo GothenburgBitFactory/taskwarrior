@@ -47,7 +47,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
+#include "Context.h"
 #include "API.h"
+
+extern Context context;
 
 #ifdef HAVE_LIBLUA
 
@@ -464,6 +468,113 @@ void API::initialize ()
   lua_pushcfunction (L, api_task_set_until);             lua_setglobal (L, "api_task_set_until");
   lua_pushcfunction (L, api_task_set_wait);              lua_setglobal (L, "api_task_set_wait");
 */
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool API::callProgramHook (
+  const std::string& file,
+  const std::string& function)
+{
+  loadFile (file);
+
+  // Get function.
+  lua_getglobal (L, function.c_str ());
+  if (!lua_isfunction (L, -1))
+  {
+    lua_pop (L, 1);
+    throw std::string ("The Lua function '") + function + "' was not found.";
+  }
+
+  // Make call.
+  if (lua_pcall (L, 0, 2, 0) != 0)
+    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1);
+
+  // Call successful - get return values.
+  // 0, nil    -> success
+  // 0, string -> warning
+  // 1, string -> error
+  if (!lua_isnumber (L, -2)) throw std::string ("Error: '") + function + "' did not return a success indicator";
+//  if (!lua_isstring (L, -1)) throw std::string ("Error: '") + function + "' did not return a message";
+
+  int rc              = lua_tointeger (L, -2);
+  const char* message = lua_tostring  (L, -1);
+
+  if (rc == 0)
+  {
+    if (message)
+      context.footnote (std::string ("Warning: ") + message);
+  }
+  else
+  {
+    if (message)
+      throw std::string ("Error: ") + message;
+  }
+
+  lua_pop (L, 1);
+  return rc == 0 ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool API::callListHook (
+  const std::string& file,
+  const std::string& function/*,
+  iterator i*/)
+{
+  loadFile (file);
+
+  // TODO Get function.
+  // TODO Prepare args.
+  // TODO Make call.
+  // TODO Get exit status.
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool API::callTaskHook (
+  const std::string& file,
+  const std::string& function,
+  int id)
+{
+  loadFile (file);
+
+  // TODO Get function.
+  // TODO Prepare args.
+  // TODO Make call.
+  // TODO Get exit status.
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool API::callFieldHook (
+  const std::string& file,
+  const std::string& function,
+  const std::string& field,
+  const std::string& value)
+{
+  loadFile (file);
+
+  // TODO Get function.
+  // TODO Prepare args.
+  // TODO Make call.
+  // TODO Get exit status.
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void API::loadFile (const std::string& file)
+{
+  if (std::find (loaded.begin (), loaded.end (), file) == loaded.end ())
+  {
+    // Load the file, if possible.
+    if (luaL_loadfile (L, file.c_str ()) || lua_pcall (L, 0, 0, 0))
+      throw std::string ("Error: ") + std::string (lua_tostring (L, -1));
+
+    // Mark this as loaded, so as to not bother again.
+    loaded.push_back (file);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

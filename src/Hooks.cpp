@@ -26,7 +26,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include "Context.h"
 #include "Hooks.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Hooks::Hooks ()
@@ -42,26 +45,75 @@ Hooks::~Hooks ()
 void Hooks::initialize ()
 {
   api.initialize ();
+
+  // TODO Enumerate all hooks, and tell API about the script files it must load
+  //      in order to call them.  Note that API will perform a deferred read,
+  //      which means that if it isn't called, a script will not be loaded.
+
+  std::vector <std::string> vars;
+  context.config.all (vars);
+
+  std::vector <std::string>::iterator it;
+  for (it = vars.begin (); it != vars.end (); ++it)
+  {
+    std::string type;
+    std::string name;
+    std::string value;
+
+    // "<type>.<name>"
+    Nibbler n (*it);
+    if (n.getUntil ('.', type) &&
+        type == "hook"         &&
+        n.skip ('.')           &&
+        n.getUntilEOS (name))
+    {
+      std::string value = context.config.get (*it);
+      Nibbler n (value);
+
+      // <path>:<function> [, ...]
+      while (!n.depleted ())
+      {
+        std::string file;
+        std::string function;
+        if (n.getUntil (':', file) &&
+            n.skip (':')           &&
+            n.getUntil (',', function))
+        {
+          context.debug (std::string ("Event '") + name + "' hooked by " + file + ", function " + function);
+          Hook h (name, Path::expand (file), function);
+          all.push_back (h);
+
+          (void) n.skip (',');
+        }
+        else
+          throw std::string ("Malformed hook definition '") + *it + "'";
+      }
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Hooks::trigger (const std::string& event)
 {
 #ifdef HAVE_LIBLUA
-  // TODO Look up scripts/functions hooking this event.
-  // TODO Load the scripts if necessary.
-
-  // TODO Call each function.
-  std::string type;
-  if (eventType (event, type))
+  std::vector <Hook>::iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
   {
-         if (type == "program") return triggerProgramEvent (event);
-    else if (type == "list")    return triggerListEvent    (event);
-    else if (type == "task")    return triggerTaskEvent    (event);
-    else if (type == "field")   return triggerFieldEvent   (event);
+    if (it->event == event)
+    {
+      std::string type;
+      if (eventType (event, type))
+      {
+        // TODO Figure out where to get the calling-context info from.
+             if (type == "program") return api.callProgramHook (it->file, it->function);
+        else if (type == "list")    return api.callListHook    (it->file, it->function/*, tasks*/);
+        else if (type == "task")    return api.callTaskHook    (it->file, it->function, 0);
+        else if (type == "field")   return api.callFieldHook   (it->file, it->function, "field", "value");
+      }
+      else
+        throw std::string ("Unrecognized hook event '") + event + "'";
+    }
   }
-  else
-    throw std::string ("Unrecognized hook event '") + event + "'";
 #endif
 
   return true;
@@ -70,8 +122,9 @@ bool Hooks::trigger (const std::string& event)
 ////////////////////////////////////////////////////////////////////////////////
 bool Hooks::eventType (const std::string& event, std::string& type)
 {
-  if (event == "post-start" ||
-      event == "pre-exit")
+  if (event == "post-start"   ||
+      event == "pre-exit"     ||
+      event == "pre-dispatch" || event == "post-dispatch")
   {
     type = "program";
     return true;
@@ -95,39 +148,4 @@ bool Hooks::eventType (const std::string& event, std::string& type)
   return false;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-#ifdef HAVE_LIBLUA
-
-bool Hooks::triggerProgramEvent (const std::string& event)
-{
-  std::cout << "Hooks::triggerProgramEvent " << event << std::endl;
-
-  // TODO Is this event hooked?
-  // TODO Is the associated script loaded?
-  // TODO Call the function
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Hooks::triggerListEvent (const std::string& event)
-{
-  std::cout << "Hooks::triggerListEvent " << event << std::endl;
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Hooks::triggerTaskEvent (const std::string& event)
-{
-  std::cout << "Hooks::triggerTaskEvent " << event << std::endl;
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Hooks::triggerFieldEvent (const std::string& event)
-{
-  std::cout << "Hooks::triggerFieldEvent " << event << std::endl;
-  return true;
-}
-
-#endif
 ////////////////////////////////////////////////////////////////////////////////

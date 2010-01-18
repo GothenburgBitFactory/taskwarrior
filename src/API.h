@@ -30,6 +30,7 @@
 #include "auto.h"
 #ifdef HAVE_LIBLUA
 
+#include <vector>
 #include <string>
 extern "C"
 {
@@ -47,9 +48,17 @@ public:
   ~API ();
 
   void initialize ();
+  bool callProgramHook (const std::string&, const std::string&);
+  bool callListHook    (const std::string&, const std::string& /*, iterator */);
+  bool callTaskHook    (const std::string&, const std::string&, int);
+  bool callFieldHook   (const std::string&, const std::string&, const std::string&, const std::string&);
+
+private:
+  void loadFile (const std::string&);
 
 public:
   lua_State* L;
+  std::vector <std::string> loaded;
 };
 
 #endif
