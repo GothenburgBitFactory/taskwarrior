@@ -363,8 +363,6 @@ void Context::loadCorrectConfigFile ()
         "Could not read home directory from the passwd file."));
 
   std::string home = pw->pw_dir;
-//  std::string rc   = home + "/.taskrc";
-//  std::string data = home + "/.task";
   File      rc   (home + "/.taskrc");
   Directory data (home + "./task");
 
