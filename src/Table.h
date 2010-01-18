@@ -86,6 +86,7 @@ public:
 
            void suppressWS ();
            void setDateFormat (const std::string&);
+           void setReportName (const std::string&);
 
            int rowCount ();
            int columnCount ();
@@ -135,6 +136,7 @@ private:
   // Misc...
   bool mSuppressWS;
   std::string mDateFormat;
+  std::string mReportName;
 };
 
 #endif

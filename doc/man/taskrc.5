@@ -154,9 +154,14 @@ tag names you have used, or just the ones used in active tasks.
 .B dateformat=m/d/Y
 .TP
 .B reportdateformat=m/d/Y
-This is a string of characters that define how task formats dates. If
-.B reportdateformat
-is set it will be used for the due date in the output of reports and "task info".
+.TP
+.B report.X.dateformat=m/d/Y
+This is a string of characters that define how task formats dates. The precedence order
+for the configuration variable is report.X.dateformat then reportdateformat then dateformat.
+While report.X.dateformat only formats the due date in reports, does reportdateformat format
+the due date both in reports and "task info". If both of these are not set then dateformat
+will be applied to the due date. Input dates as well as all other dates in reports are formatted
+according to dateformat.
 
 The default value is: m/d/Y.  The string should contain the characters
 
@@ -457,6 +462,13 @@ descending sort order. The sort IDs are separated by commas
 .B report.X.filter
 This adds a filter to the report X so that only tasks matching the filter criteria
 are displayed in the generated report.
+
+.TP
+.B report.X.dateformat
+This adds a dateformat to the report X that will be used by the "due date" column. If
+it is not set then reportdateformat and dateformat will be used in this order. See the
+.B DATES
+section for details on the sequence placeholders.
 
 .TP
 .B report.X.limit

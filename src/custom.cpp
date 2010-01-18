@@ -162,6 +162,7 @@ int runCustomReport (
   Table table;
   table.setTableWidth (context.getWidth ());
   table.setDateFormat (context.config.get ("dateformat"));
+  table.setReportName (report);
 
   foreach (task, tasks)
     table.addRow ();
@@ -360,7 +361,9 @@ int runCustomReport (
       table.setColumnWidth (columnCount, Table::minimum);
       table.setColumnJustification (columnCount, Table::left);
 
-      std::string format = context.config.get ("reportdateformat");
+      std::string format = context.config.get ("report." + report + ".dateformat");
+      if (format == "")
+        format = context.config.get ("reportdateformat");
       if (format == "")
         format = context.config.get ("dateformat");
 

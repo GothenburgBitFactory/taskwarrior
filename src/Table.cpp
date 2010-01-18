@@ -645,6 +645,12 @@ void Table::setDateFormat (const std::string& dateFormat)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Table::setReportName (const std::string& reportName)
+{
+  mReportName = reportName;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Table::rowCount ()
 {
   return mRows;
@@ -881,7 +887,9 @@ void Table::sort (std::vector <int>& order)
 
               else
               {
-                std::string format = context.config.get ("reportdateformat");
+                std::string format = context.config.get ("report." + mReportName + ".dateformat");
+                if (format == "")
+                  format = context.config.get ("reportdateformat");
                 if (format == "")
                   format = context.config.get ("dateformat");
 
@@ -903,7 +911,9 @@ void Table::sort (std::vector <int>& order)
 
               else
               {
-                std::string format = context.config.get ("reportdateformat");
+                std::string format = context.config.get ("report." + mReportName + ".dateformat");
+                if (format == "")
+                  format = context.config.get ("reportdateformat");
                 if (format == "")
                   format = context.config.get ("dateformat");
 
