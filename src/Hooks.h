@@ -30,6 +30,7 @@
 #include <vector>
 #include <string>
 #include "API.h"
+#include "auto.h"
 
 class Hooks
 {
@@ -44,13 +45,17 @@ public:
   bool eventType (const std::string&, std::string&);
 
 private:
+#ifdef HAVE_LIBLUA
   bool triggerProgramEvent (const std::string&);
   bool triggerListEvent (const std::string&);
   bool triggerTaskEvent (const std::string&);
   bool triggerFieldEvent (const std::string&);
+#endif
 
 private:
+#ifdef HAVE_LIBLUA
   API api;
+#endif
   std::vector <std::string> scripts;
 };
 

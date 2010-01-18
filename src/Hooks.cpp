@@ -47,6 +47,7 @@ void Hooks::initialize ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Hooks::trigger (const std::string& event)
 {
+#ifdef HAVE_LIBLUA
   // TODO Look up scripts/functions hooking this event.
   // TODO Load the scripts if necessary.
 
@@ -61,8 +62,9 @@ bool Hooks::trigger (const std::string& event)
   }
   else
     throw std::string ("Unrecognized hook event '") + event + "'";
+#endif
 
-  return false;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,6 +96,8 @@ bool Hooks::eventType (const std::string& event, std::string& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+#ifdef HAVE_LIBLUA
+
 bool Hooks::triggerProgramEvent (const std::string& event)
 {
   std::cout << "Hooks::triggerProgramEvent " << event << std::endl;
@@ -101,28 +105,29 @@ bool Hooks::triggerProgramEvent (const std::string& event)
   // TODO Is this event hooked?
   // TODO Is the associated script loaded?
   // TODO Call the function
-  return false;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Hooks::triggerListEvent (const std::string& event)
 {
   std::cout << "Hooks::triggerListEvent " << event << std::endl;
-  return false;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Hooks::triggerTaskEvent (const std::string& event)
 {
   std::cout << "Hooks::triggerTaskEvent " << event << std::endl;
-  return false;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Hooks::triggerFieldEvent (const std::string& event)
 {
   std::cout << "Hooks::triggerFieldEvent " << event << std::endl;
-  return false;
+  return true;
 }
 
+#endif
 ////////////////////////////////////////////////////////////////////////////////
