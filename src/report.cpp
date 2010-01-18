@@ -353,7 +353,7 @@ int handleInfo (std::string &outs)
 
     row = table.addRow ();
     table.addCell (row, 0, "Description");
-    table.addCell (row, 1, getFullDescription (*task));
+    table.addCell (row, 1, getFullDescription (*task, "info"));
 
     if (task->has ("project"))
     {
@@ -1223,9 +1223,12 @@ int handleReportTimesheet (std::string &outs)
         if (compDate >= start && compDate < end)
         {
           int row = completed.addRow ();
+          std::string format = context.config.get ("reportdateformat");
+          if (format == "")
+            format = context.config.get ("dateformat");
           completed.addCell (row, 1, task->get ("project"));
-          completed.addCell (row, 2, getDueDate (*task, context.config.get("dateformat")));
-          completed.addCell (row, 3, getFullDescription (*task));
+          completed.addCell (row, 2, getDueDate (*task, format));
+          completed.addCell (row, 3, getFullDescription (*task, "timesheet"));
 
           if (color)
           {
@@ -1279,9 +1282,12 @@ int handleReportTimesheet (std::string &outs)
         if (startDate >= start && startDate < end)
         {
           int row = started.addRow ();
+          std::string format = context.config.get ("reportdateformat");
+          if (format == "")
+            format = context.config.get ("dateformat");
           started.addCell (row, 1, task->get ("project"));
-          started.addCell (row, 2, getDueDate (*task, context.config.get ("dateformat")));
-          started.addCell (row, 3, getFullDescription (*task));
+          started.addCell (row, 2, getDueDate (*task, format));
+          started.addCell (row, 3, getFullDescription (*task, "timesheet"));
 
           if (color)
           {
@@ -2109,38 +2115,43 @@ void gatherNextTasks (std::vector <Task>& tasks)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-std::string getFullDescription (Task& task)
+std::string getFullDescription (Task& task, const std::string& report)
 {
   std::string desc = task.get ("description");
+  std::string annotationDetails;
 
   std::vector <Att> annotations;
   task.getAnnotations (annotations);
 
   if (annotations.size () != 0)
-    switch (context.config.getInteger ("annotation.details"))
+  {
+    std::string annotationDetails = context.config.get ("report." + report + ".annotations");
+    if (annotationDetails == "")
+      annotationDetails = context.config.get ("annotations");
+    if (report == "info")
+      annotationDetails = "full";
+
+    if (annotationDetails == "none")
     {
-    case 0:
       desc = "+" + desc;
-      break;
-    case 1:
-      {
-        if (annotations.size () > 1)
-          desc = "+" + desc;
-        Att anno (annotations.back());
-        Date dt (atoi (anno.name ().substr (11).c_str ()));
-        std::string when = dt.toString (context.config.get ("dateformat"));
-        desc += "\n" + when + " " + anno.value ();
-      }
-      break;
-    case 2:
+    }
+    else if (annotationDetails == "sparse")
+    {
+      if (annotations.size () > 1)
+        desc = "+" + desc;
+      Att anno (annotations.back());
+      Date dt (atoi (anno.name ().substr (11).c_str ()));
+      std::string when = dt.toString (context.config.get ("dateformat"));
+      desc += "\n" + when + " " + anno.value ();
+    }
+    else
       foreach (anno, annotations)
       {
         Date dt (atoi (anno->name ().substr (11).c_str ()));
         std::string when = dt.toString (context.config.get ("dateformat"));
         desc += "\n" + when + " " + anno->value ();
       }
-      break; 
-    }
+  }
 
   return desc;
 }

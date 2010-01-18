@@ -464,7 +464,7 @@ int runCustomReport (
 
       int row = 0;
       foreach (task, tasks)
-        table.addCell (row++, columnCount, getFullDescription (*task));
+        table.addCell (row++, columnCount, getFullDescription (*task, report));
     }
 
     else if (*col == "recur")
