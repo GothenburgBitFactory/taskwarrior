@@ -116,8 +116,10 @@ May be "yes" or "no", and determines whether task will ask for confirmation befo
 May be "yes" or "no", and causes task to display the ID and description of any task when you run the start, stop, do, undo or delete commands. The default value is "yes". 
 
 .TP
-.B annotation.details=2
-Controls the output of annotations in reports. Defaults to 2 - all annotations are displayed. Set to 1 only the last (youngest) annotation is displayed and if there are more than one present for a task a "+" sign is added to the description. Set to 0 the output of annotations is disabled and a "+" sign will be added if there are any annotations present.
+.B annotations=full
+.TP
+.B report.X.annotations=full
+Controls the output of annotations in reports. Defaults to full - all annotations are displayed. Set to "sparse" only the last (youngest) annotation is displayed and if there are more than one present for a task a "+" sign is added to the description. Set to "none" the output of annotations is disabled and a "+" sign will be added if there are any annotations present.
 
 .TP
 .B next=2
@@ -469,6 +471,13 @@ This adds a dateformat to the report X that will be used by the "due date" colum
 it is not set then reportdateformat and dateformat will be used in this order. See the
 .B DATES
 section for details on the sequence placeholders.
+
+.TP
+.B report.X.annotations
+GThis adds the possibility to control the output of annotations for a task in a report. See
+the
+.B annotations
+variable for details on the possible values.
 
 .TP
 .B report.X.limit

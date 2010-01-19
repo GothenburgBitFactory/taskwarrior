@@ -89,7 +89,7 @@ like ($output, qr/bar1.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms, 'second annotation task
 like ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms,'first  annotation task 3');
 like ($output, qr/4 tasks/, 'count');
 
-$output = qx{../task rc:annotate.rc rc.annotation.details:1 rrr};
+$output = qx{../task rc:annotate.rc rc.annotations:sparse rrr};
 like   ($output, qr/1 \+one/, 'task 1');
 like   ($output, qr/2 \+two/, 'task 2');
 like   ($output, qr/3 three/, 'task 3');
@@ -102,7 +102,7 @@ like   ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms,   'second annotation t
 like   ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms, 'third  annotation task 3');
 like   ($output, qr/4 tasks/, 'count');
 
-$output = qx{../task rc:annotate.rc rc.annotation.details:0 rrr};
+$output = qx{../task rc:annotate.rc rc.annotations:none rrr};
 like   ($output, qr/1 \+one/,   'task 1');
 like   ($output, qr/2 \+two/,   'task 2');
 like   ($output, qr/3 \+three/, 'task 3');
