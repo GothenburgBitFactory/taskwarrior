@@ -101,17 +101,22 @@ bool Hooks::trigger (const std::string& event)
   {
     if (it->event == event)
     {
+      bool rc = true;
       std::string type;
       if (eventType (event, type))
       {
         // TODO Figure out where to get the calling-context info from.
-             if (type == "program") return api.callProgramHook (it->file, it->function);
-        else if (type == "list")    return api.callListHook    (it->file, it->function/*, tasks*/);
-        else if (type == "task")    return api.callTaskHook    (it->file, it->function, 0);
-        else if (type == "field")   return api.callFieldHook   (it->file, it->function, "field", "value");
+             if (type == "program") rc = api.callProgramHook (it->file, it->function);
+        else if (type == "list")    rc = api.callListHook    (it->file, it->function/*, tasks*/);
+        else if (type == "task")    rc = api.callTaskHook    (it->file, it->function, 0);
+        else if (type == "field")   rc = api.callFieldHook   (it->file, it->function, "field", "value");
       }
       else
         throw std::string ("Unrecognized hook event '") + event + "'";
+
+      // If any hook returns false, stop.
+      if (!rc)
+        return false;
     }
   }
 #endif

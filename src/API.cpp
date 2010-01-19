@@ -490,10 +490,9 @@ bool API::callProgramHook (
     throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1);
 
   // Call successful - get return values.
-  // 0, nil    -> success
-  // 0, string -> warning
-  // 1, string -> error
   if (!lua_isnumber (L, -2)) throw std::string ("Error: '") + function + "' did not return a success indicator";
+
+// TODO This doesn't seem to know that 'nil' was returned instead of a string.
 //  if (!lua_isstring (L, -1)) throw std::string ("Error: '") + function + "' did not return a message";
 
   int rc              = lua_tointeger (L, -2);
@@ -507,7 +506,7 @@ bool API::callProgramHook (
   else
   {
     if (message)
-      throw std::string ("Error: ") + message;
+      throw std::string (message);
   }
 
   lua_pop (L, 1);

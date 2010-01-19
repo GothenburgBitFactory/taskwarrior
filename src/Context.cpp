@@ -194,8 +194,7 @@ int Context::dispatch (std::string &out)
 
   Timer t ("Context::dispatch");
 
-  if (! hooks.trigger ("pre-dispatch"))
-    return rc;
+  hooks.trigger ("pre-dispatch");
 
   // TODO Just look at this thing.  It cries out for a dispatch table.
        if (cmd.command == "projects")      { rc = handleProjects           (out); }
