@@ -681,7 +681,7 @@ void Context::parse (
       // Stuff the command line.
       args.clear ();
       split (args, defaultCommand, ' ');
-      header ("[task " + defaultCommand + "]");
+      header ("[task " + trim (defaultCommand) + "]");
 
       // Reinitialize the context and recurse.
       file_override = "";
