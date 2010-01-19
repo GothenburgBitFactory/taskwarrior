@@ -35,6 +35,9 @@ int main (int argc, char** argv)
 {
   UnitTest t (78);
 
+  // Without Context::initialize, there is no set of defaults loaded into
+  // Context::Config.
+  context.initialize ();
   context.config.set ("report.foo.columns", "id");
 
   Cmd cmd;
