@@ -343,6 +343,7 @@ void TDB::update (const Task& task)
 int TDB::commit ()
 {
   Timer t ("TDB::commit");
+  context.hooks.trigger ("pre-gc");
 
   int quantity = mNew.size () + mModified.size ();
 
@@ -362,6 +363,7 @@ int TDB::commit ()
       writeUndo (*task, mLocations[0].undo);
 
     mNew.clear ();
+    context.hooks.trigger ("post-gc");
     return quantity;
   }
 
@@ -408,6 +410,7 @@ int TDB::commit ()
     mNew.clear ();
   }
 
+  context.hooks.trigger ("post-gc");
   return quantity;
 }
 
@@ -506,6 +509,7 @@ int TDB::nextId ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::undo ()
 {
+  context.hooks.trigger ("pre-undo");
   Directory location (context.config.get ("data.location"));
 
   std::string undoFile      = location.data + "/undo.data";
@@ -670,6 +674,7 @@ void TDB::undo ()
       // Rewrite files.
       File::write (pendingFile, p);
       File::write (undoFile, u);
+      context.hooks.trigger ("post-undo");
       return;
     }
   }
@@ -708,6 +713,7 @@ void TDB::undo ()
       }
 
       std::cout << "Undo complete." << std::endl;
+      context.hooks.trigger ("post-undo");
       return;
     }
   }

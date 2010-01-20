@@ -52,6 +52,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int handleAdd (std::string &outs)
 {
+  context.hooks.trigger ("pre-add-command");
   std::stringstream out;
 
   context.task.set ("uuid", uuid ());
@@ -112,6 +113,7 @@ int handleAdd (std::string &outs)
   context.tdb.unlock ();
 
   outs = out.str ();
+  context.hooks.trigger ("post-add-command");
   return 0;
 }
 

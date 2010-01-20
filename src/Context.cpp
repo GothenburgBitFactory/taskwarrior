@@ -159,29 +159,37 @@ int Context::run ()
   }
 
   // Dump all debug messages.
+  hooks.trigger ("pre-debug");
   if (config.getBoolean ("debug"))
     foreach (d, debugMessages)
       if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
         std::cout << colorizeDebug (*d) << std::endl;
       else
         std::cout << *d << std::endl;
+  hooks.trigger ("post-debug");
 
   // Dump all headers.
+  hooks.trigger ("pre-header");
   foreach (h, headers)
     if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
       std::cout << colorizeHeader (*h) << std::endl;
     else
       std::cout << *h << std::endl;
+  hooks.trigger ("post-header");
 
   // Dump the report output.
+  hooks.trigger ("pre-output");
   std::cout << output;
+  hooks.trigger ("post-output");
 
   // Dump all footnotes.
+  hooks.trigger ("pre-footnote");
   foreach (f, footnotes)
     if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
       std::cout << colorizeFootnote (*f) << std::endl;
     else
       std::cout << *f << std::endl;
+  hooks.trigger ("post-footnote");
 
   hooks.trigger ("pre-exit");
   return rc;
