@@ -1,0 +1,274 @@
+.TH task-color 5 2010-01-20 "task 1.9.0" "User Manuals"
+
+.SH NAME
+task-color \- A color tutorial for the task(1) command line todo manager.
+
+.SH SETUP
+The first thing you need is a terminal program that supports color.  All
+terminal programs support color, but only a few support lots of colors.  First
+tell your terminal program to use color by specifying the TERM environment
+variable like this:
+
+    TERM=xterm-color
+
+In this example, xterm-color is used - a common value, and one that doesn't
+require that you use xterm.  This works for most setups.  This setting belongs
+in your shell profile (~/.bash_profile, ~/.bashrc, ~/.cshrc etc, depending on
+which shell you use).  If this is a new setting, you will need to either run
+that profile script, or close and reopen the terminal window (which does the
+same thing).
+
+Now tell task that you want to use color.  This is the default for task, so
+the following step may be unnecessary.
+
+    $ task config color on
+
+This command will make sure there is an entry in your ~/.taskrc file that looks
+like:
+
+    color=on
+
+Now task is ready.
+
+.SH AUTOMATIC MONOCHROME
+It should be mentioned that task is aware of whether it's output is going to a
+terminal, or to a file or through a pipe.  When task output goes to a terminal,
+color is desirable, but consider the following command:
+
+    $ task list > file.txt
+
+Do we really want all those color control codes in the file?  Task assumes that
+you do not, and temporarily sets color to 'off' while generating the output.
+This explains the output from the following command:
+
+    $ task config | grep '^color '
+    color                        off
+
+it always returns 'off', no matter what the setting.
+
+The reason is that the task output gets piped into grep, and the color is
+disabled.  If you wanted those color codes, you can override this behavior by
+setting the _forcecolor variable to on, like this:
+
+    $ task config _forcecolor on
+    $ task config | grep '^color '
+    color                        on
+
+or by temporarily overriding it like this:
+
+    $ task rc._forcecolor=on config | grep '^color '
+    color                        on
+
+.SH AVAILABLE COLORS
+Task has a 'color' command that will show all the colors it is capable of
+displaying.  Try this:
+
+    $ task color
+
+The output cannot be replicated here in a man page, but you should see a set of
+color samples.  How many you see depends on your terminal program's ability to
+render them.
+
+You should at least see the Basic colors and Effects - if you do, then you have
+16-color support.  If your terminal supports 256 colors, you'll know it!
+
+.SH 16-COLOR SUPPORT
+The basic color support is provided through named colors:
+
+    black, red, blue, green, magenta, cyan, yellow, white
+
+Foreground color (for text) is simply specified as one of the above colors, or
+not specified at all to use the default terminal text color.
+
+Background color is specified by using the word 'on', and one of the above
+colors.  Some examples:
+
+    green                 # green text, default background color
+    green on yellow       # green text, yellow background
+    on yellow             # default text color, yellow background
+
+These colors can be modified further, by making the foreground bold, or by
+making the background bright.  Some examples:
+
+    bold green
+    bold white on bright red
+    on bright cyan
+
+The order of the words is not important, so the following are equivalent:
+
+    bold green
+    green bold
+
+But the 'on' is important - colors before the 'on' are foreground, and colors
+after 'on' are background.
+
+There is an additional 'underline' attribute that may be used:
+
+    underline bright red on black
+
+Task has a command that helps you visualize these color combinations.  Try this:
+
+    $ task color underline bright red on black
+
+You can use this command to see how the various color combinations work.  You
+will also see some sample colors displayed, like the ones above, in addition to
+the sample requested.
+
+Some combinations look very nice, some look terrible.  Different terminal
+programs do implement slightly different versions of 'red', for example, so you
+may see some unwanted variation due to the program.  The brightness of your
+display is also a factor.
+
+.SH 256-COLOR SUPPORT
+
+Using 256 colors follows the same form, but the names are different, and some
+colors can be referenced in different ways.  First there is by color ordinal,
+which is like this:
+
+    color0
+    color1
+    color2
+    ...
+    color255
+
+This gives you access to all 256 colors, but doesn't help you much.  This range
+is a combination of 8 basic colors (color0 - color7), then 8 brighter variations
+(color8 - color15).  Then a block of 216 colors (color16 - color231).  Then a
+block of 24 gray colors (color232 - color255).
+
+The large block of 216 colors (6x6x6 = 216) represents a color cube, which can
+be addressed via RGB values from 0 to 5 for each component color.  A value of 0
+means none of this component color, and a value of 5 means the most intense
+component color.  For example, a bright red is specified as:
+
+    rgb500
+
+And a darker red would be:
+
+    rgb300
+
+Note that the three digits represent the three component values, so in this
+example the 5, 0 and 0 represent red=5, green=0, blue=0.  Combining intense red
+with no green and no blue yields red.  Similarly, blue and green are:
+
+    rgb005
+    rgb050
+
+Another example - bright yellow - is a mix of bright red and bright green, but
+no blue component, so bright yellow is addressed as:
+
+    rgb550
+
+A soft pink would be addressed as:
+
+    rgb515
+
+See if you agree, by running:
+
+    $ task color black on rgb515
+
+You may notice that the large color block is represented as 6 squares.  All
+colors in the first square have a red value of 0.  All colors in the 6th square
+have a red value of 5.  Within each square, blue ranges from 0 to 5 left to
+right, and within each square green ranges from 0 to 5, top to bottom.  This
+scheme takes some getting used to.
+
+The block of 24 gray colors can also be accessed as gray0 - gray23, in a
+continuous ramp from black to white.
+
+.SH MIXING 16- AND 256-COLORS
+
+If you specify 16-colors, and view on a 256-color terminal, no problem.  If you
+try the reverse, specifying 256-colors and viewing on a 16-color terminal, you
+will be disappointed, perhaps even appalled.
+
+There is some limited color mapping - for example, if you were to specify this
+combination:
+
+    red on gray3
+
+you are mixing a 16-color and 256-color specification.  Task will map red to
+color1, and proceed.  Note that red and color1 are not quite the same.
+
+Note also that there is no bold or bright attributes when dealing with 256
+colors, but there is still underline available.
+
+.SH RULES
+Task supports colorization rules.  These are configuration values that specify
+a color, and the conditions under which that color is used.  By example, let's
+add a few tasks:
+
+    $ task add project:Home priority:H pay the bills               (1)
+    $ task add project:Home            clean the rug               (2)
+    $ task add project:Garden          clean out the garage        (3)
+
+We can add a color rule that uses a blue background for all tasks in the Home
+project:
+
+    $ task config color.project.Home on blue
+
+We use quotes around "on blue" because there are two words, but they represent
+one value in the .taskrc file.  Now suppose we which to use a bold yellow text
+color for all cleaning work:
+
+    $ task config color.keyword.clean bold yellow
+
+Now what happens to task 2, which belongs to project Home (blue background), and
+is also a cleaning task (bold yellow foreground)?  The colors are combined, and
+the task is shown as "bold yellow on blue".
+
+Color rules can be applied by project and description keyword, as shown, and
+also by priority (or lack of priority), by active status, by being due or
+overdue, by being tagged, or having a specific tag (perhaps the most useful
+rule) or by being a recurring task.
+
+It is possible to create a very colorful mix of rules.  With 256-color support,
+those colors can be made subtle, and complementary, but without care, this can
+be a visual mess.  Beware!
+
+.SH THEMES
+Task supports themes.  What this really means is that with the ability to
+include other files into the .taskrc file, different sets of color rules can
+be included.
+
+To get a good idea of what a color theme looks like, try adding this entry to
+your .taskrc file:
+
+    include /usr/local/share/doc/task-1.9.0/themes/dark-256.theme
+
+Better yet, create your own, and share it.
+
+.SH "CREDITS & COPYRIGHTS"
+task was written by P. Beckingham <paul@beckingham.net>.
+.br
+Copyright (C) 2006 \- 2010 P. Beckingham
+
+This man page was originally written by Paul Beckingham.
+
+task is distributed under the GNU General Public License. See
+http://www.gnu.org/licenses/gpl-2.0.txt for more information.
+
+.SH SEE ALSO
+.BR task(1),
+.BR taskrc(5),
+.BR task-faq(5)
+.BR task-tutorial(5)
+
+For more information regarding task, the following may be referenced:
+
+.TP
+The official site at
+<http://taskwarrior.org>
+
+.TP
+The official code repository at
+<git://tasktools.org/task.git/>
+
+.TP
+You can contact the project by writing an email to
+<support@taskwarrior.org>
+
+.SH REPORTING BUGS
+.TP
+Bugs in task may be reported to the issue-tracker at
+<http://taskwarrior.org>
