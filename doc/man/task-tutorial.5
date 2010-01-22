@@ -306,30 +306,8 @@ ID Project Pri Due       Active Age    Description
  2 Wedding M                    7 mins Reserve a rental car
 .RE
 
-If today's date is 6/23/2008, then task 3 is due in 2 days. It will be colored
-yellow if your terminal supports color. To change this color, edit your .taskrc
-file, and change the line to one of these alternatives:
-.br
-.RS
-color.due=red
-.br
-color.due=on blue
-.br
-color.due=red on blue
-.br
-color.due=bold red on blue
-.RE
-
-Where color is one of the following:
-
-.br
-.RS
-black, blue, red, green, cyan, magenta, yellow or white
-.RE
-
-All colors are specified in this way. Take a look in .taskrc for all the other
-color rules that you control, and run 'task color' to see samples of all
-supported colors.
+Note that due tasks may be colored to highlight the importance.  See the
+task-color(5) man page for full details.
 
 Tagging tasks is a good way to group them, aside from specifying a project.
 To add a tag to a task:
@@ -393,6 +371,7 @@ http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 .BR task(1),
 .BR taskrc(5),
 .BR task-faq(5)
+.BR task-color(5)
 
 For more information regarding task, the following may be referenced:
 

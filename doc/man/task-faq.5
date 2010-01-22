@@ -54,14 +54,21 @@ task only appends to the file.
 
 .TP
 .B Q: How do I know whether my terminal support 256 colors?
-The easiest way is to just try it!  With task 1.9 or later, you simply run
+You will need to make sure your TERM environment variable is set to xterm-color,
+otherwise the easiest way is to just try it!  With task 1.9 or later, you simply
+run
 
     $ task color
 
-and a full color palette is displayed, if you look at it and see lots of
-different colors, then your terminal supports 256 colors.  If you see only
-8 or 16 colors, many of them repeated, with blank areas then your terminal
-does not support 256 colors.  xterm does.  iTerm does.
+and a full color palette is displayed.  If you see only 8 or 16 colors, perhaps
+with those colors repeated, then your terminal does not support 256 colors.
+
+We have had success with xterm, and iTerm for the Mac.
+
+.TP
+.B Q: How do I make use of all these colors?
+See the task-color(5) man page for an in-depth explanation of the task color
+rules.
 
 .TP
 .B Q: How can I make task put the command in the terminal window title?
@@ -96,6 +103,7 @@ http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 .BR task(1),
 .BR taskrc(5),
 .BR task-tutorial(5)
+.BR task-color(5)
 
 For more information regarding task, the following may be referenced:
 
