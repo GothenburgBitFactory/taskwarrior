@@ -44,10 +44,12 @@
  + Added 2 new configuration variables to display the details of tasks with due
    dates when doing a 'task cal' for the corresponding months:
    'calendar.details' and 'calendar.details.report'
- + Added 4 new color configuration variables to colorize today, days with due tasks,
-   days with overdue tasks and weekend days in the calendar:
-   'calendar.color.today', 'color.calendar.due',
-   'calendar.calendar.overdue' and 'color.calendar.weekend'.
+ + Added 5 new color configuration variables to colorize today, days with due tasks,
+   days with overdue tasks, weekend days and weeknumbers in the calendar:
+   'calendar.color.today', 'color.calendar.due', 'calendar.calendar.overdue',
+   'color.calendar.weekend'and 'color.calendar.weeknumber'.
+ + Added support for holidays in the calendar by using calendar.holidays
+   and the corresponding holiday.X.name and holiday.X.date variables.
  + The coloring of due tasks in reports can now be enabled for all tasks, and not
     only the imminent ones, by setting the configuration variable due=0.
  + Added a new 'task-faq' man page for common questions and answers.
