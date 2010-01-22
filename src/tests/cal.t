@@ -30,7 +30,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 60;
+use Test::More tests => 75;
 
 # Create the rc file.
 if (open my $fh, '>', 'cal.rc')
@@ -65,9 +65,9 @@ $output = qx{../task rc:cal.rc add zero};
 unlike ($output, qr/\[41m\d+/,       'No overdue tasks are present');
 unlike ($output, qr/\[43m\d+/,       'No due tasks are present');
 $output = qx{../task rc:cal.rc rc.weekstart:Sunday cal};
-like   ($output, qr/Su Mo Tu/,     'Week starts on Sunday'); 
+like   ($output, qr/Su Mo Tu/,       'Week starts on Sunday'); 
 $output = qx{../task rc:cal.rc rc.weekstart:Monday cal};
-like   ($output, qr/Fr Sa Su/,     'Week starts on Monday'); 
+like   ($output, qr/Fr Sa Su/,       'Week starts on Monday'); 
 $output = qx{../task rc:cal.rc cal y};
 like   ($output, qr/$month\w+?\s+?$year/,         'Current month and year are displayed');
 if ( $month eq "Jan")
@@ -85,22 +85,23 @@ unlike ($output, qr/$month\w+?\s+?$nextyear/,     'Current month and year ahead 
 qx{../task rc:cal.rc add due:20190515 one};
 qx{../task rc:cal.rc add due:20200123 two};
 $output = qx{../task rc:cal.rc rc._forcecolor:on cal due};
-unlike ($output, qr/April 2019/,   'April 2019 is not displayed');
-like   ($output, qr/May 2019/,     'May 2019 is displayed');
-unlike ($output, qr/January 2020/, 'January 2020 is not displayed');
+unlike ($output, qr/April 2019/,    'April 2019 is not displayed');
+like   ($output, qr/May 2019/,      'May 2019 is displayed');
+unlike ($output, qr/January 2020/,  'January 2020 is not displayed');
 like   ($output, qr/30;42m15/,      'Task 1 is color-coded due');
 $output = qx{../task rc:cal.rc rc._forcecolor:on cal due y};
 like   ($output, qr/30;42m23/,      'Task 2 is color-coded due');
-like   ($output, qr/April 2020/,   'April 2020 is displayed');
-unlike ($output, qr/May 2020/,     'May 2020 is not displayed');
+like   ($output, qr/April 2020/,    'April 2020 is displayed');
+unlike ($output, qr/May 2020/,      'May 2020 is not displayed');
 qx{../task rc:cal.rc ls};
 qx{../task rc:cal.rc del 1-3};
 qx{../task rc:cal.rc add due:20080408 three};
 $output = qx{../task rc:cal.rc rc._forcecolor:on cal due};
-like   ($output, qr/April 2008/, 'April 2008 is displayed');
-like   ($output, qr/41m 8/,      'Task 3 is color-coded overdue');
-like   ($output, qr/30;47m19/,   'Saturday April 19, 2008 is color-coded');
-like   ($output, qr/30;47m20/,   'Sunday April 20, 2008 is color-coded');
+like   ($output, qr/April 2008/,     'April 2008 is displayed');
+like   ($output, qr/41m 8/,          'Task 3 is color-coded overdue');
+like   ($output, qr/37;100m19/,      'Saturday April 19, 2008 is color-coded');
+like   ($output, qr/37;100m20/,      'Sunday April 20, 2008 is color-coded');
+like   ($output, qr/30;47m  1/,      'Weeknumbers are color-coded');
 
 # task cal 2016
 $output = qx{../task rc:cal.rc rc.weekstart:Monday cal 2016};
@@ -120,9 +121,9 @@ unlike ($output, qr/53/,             'Weeknumbers are not displayed');
 
 # task cal 4 2010
 $output = qx{../task rc:cal.rc rc.monthsperline:1 cal 4 2010};
-unlike ($output, qr/March 2010/,   'March 2010 is not displayed');
-like   ($output, qr/April 2010/,   'April 2010 is displayed');
-unlike ($output, qr/May 2010/,     'May 2010 is not displayed');
+unlike ($output, qr/March 2010/,     'March 2010 is not displayed');
+like   ($output, qr/April 2010/,     'April 2010 is displayed');
+unlike ($output, qr/May 2010/,       'May 2010 is not displayed');
 
 # Cleanup.
 unlink 'pending.data';
@@ -137,10 +138,17 @@ if (open my $fh, '>', 'details.rc')
 {
   print $fh "data.location=.\n",
             "dateformat=YMD\n",
-            "calendar.details=yes\n",
+            "calendar.details=full\n",
             "calendar.details.report=list\n",
+            "calendar.holidays=full\n",
             "color=on\n",
-            "confirmation=no\n";
+            "confirmation=no\n",
+            "holiday.AAAA.name=AAAA\n",
+            "holiday.AAAA.date=20150101\n",
+            "holiday.BBBBBB.name=BBBBBB\n",
+            "holiday.BBBBBB.date=20150115\n",
+            "holiday.åäö.name=åäö\n",
+            "holiday.åäö.date=20150125\n";
   close $fh;
   ok (-r 'details.rc', 'Created details.rc');
 }
@@ -154,6 +162,9 @@ qx{../task rc:details.rc add due:20151225 five};
 qx{../task rc:details.rc add due:20141231 six};
 qx{../task rc:details.rc add due:20160101 seven};
 qx{../task rc:details.rc add due:20081231 eight};
+
+$output = qx{../task rc:details.rc rc.calendar.legend:no cal};
+unlike ($output, qr/Legend:/,      'Legend is not displayed');
 
 $output = qx{../task rc:details.rc cal rc.monthsperline:3 1 2015};
 like   ($output, qr/January 2015/, 'January 2015 is displayed');
@@ -193,6 +204,23 @@ $output = qx{../task rc:details.rc cal};
 like   ($output, qr/$month\w+?\s+?$year/, 'Current month and year are displayed');
 like   ($output, qr/$duedate/,            'Due date on current day is displayed');
 like   ($output, qr/1 task/,              '1 due task is displayed');
+
+$output = qx{../task rc:details.rc cal rc.monthsperline:1 1 2015};
+like   ($output, qr/Date/,         'Word Date is displayed');
+like   ($output, qr/Holiday/,      'Word Holiday is displayed');
+like   ($output, qr/20150101/,     'Holiday 20150101 is displayed');
+like   ($output, qr/20150115/,     'Holiday 20150115 is displayed');
+like   ($output, qr/20150125/,     'Holiday 20150125 is displayed');
+like   ($output, qr/AAAA/,         'Holiday name AAAA is displayed');
+like   ($output, qr/BBBBBB/,       'Holiday name BBBBBB is displayed');
+like   ($output, qr/åäö/,          'Holiday name åäö is displayed');
+
+$output = qx{../task rc:details.rc cal rc._forcecolor:on rc.monthsperline:1 rc.calendar.details:sparse rc.calendar.holidays:sparse 1 2015};
+unlike ($output, qr/Date/,         'Word Date is not displayed');
+unlike ($output, qr/Holiday/,      'Word Holiday is not displayed');
+like   ($output, qr/30;103m 1/,    'Holiday AAAA is color-coded');
+like   ($output, qr/30;103m15/,    'Holiday BBBBBB is color-coded');
+like   ($output, qr/30;103m25/,    'Holiday åäö is color-coded');
 
 # Cleanup.
 unlink 'pending.data';

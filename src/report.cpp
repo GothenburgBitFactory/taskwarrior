@@ -1416,6 +1416,13 @@ std::string renderMonths (
 
   int row = 0;
 
+  Color color_today      (context.config.get ("color.calendar.today"));
+  Color color_due        (context.config.get ("color.calendar.due"));
+  Color color_overdue    (context.config.get ("color.calendar.overdue"));
+  Color color_weekend    (context.config.get ("color.calendar.weekend"));
+  Color color_holiday    (context.config.get ("color.calendar.holiday"));
+  Color color_weeknumber (context.config.get ("color.calendar.weeknumber"));
+
   // Loop through months to be added on this line.
   for (int mpl = 0; mpl < monthsPerLine ; mpl++)
   {
@@ -1431,7 +1438,11 @@ std::string renderMonths (
       int woy = temp.weekOfYear (weekStart);
 
       if (context.config.getBoolean ("displayweeknumber"))
+      {
         table.addCell (row, (8 * mpl), woy);
+        if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+          table.setCellColor (row, (8 * mpl), color_weeknumber);
+      }
 
       // Calculate column id.
       int thisCol = dow +                       // 0 = Sunday
@@ -1443,35 +1454,52 @@ std::string renderMonths (
 
       table.addCell (row, thisCol, d);
 
-      Color color_today   (context.config.get ("color.calendar.today"));
-      Color color_due     (context.config.get ("color.calendar.due"));
-      Color color_overdue (context.config.get ("color.calendar.overdue"));
-      Color color_weekend (context.config.get ("color.calendar.weekend"));
-
       if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
       {
+
+        // colorize weekends
         if (dow == 0 || dow == 6)
           table.setCellColor (row, thisCol, color_weekend);
 
+        // colorize holidays
+        if (context.config.get ("calendar.holidays") != "none")
+        {
+          std::vector <std::string> holidays;
+          context.config.all (holidays);
+          foreach (hol, holidays)
+            if (hol->substr (0, 8) == "holiday.")
+              if (hol->substr (hol->size () - 4) == "date")
+              {
+                std::string value = context.config.get (*hol);
+                Date holDate (value.c_str (), context.config.get ("dateformat"));
+                if (holDate.day   () == d           &&
+                    holDate.month () == months[mpl] &&
+                    holDate.year  () == years[mpl])
+                  table.setCellColor (row, thisCol, color_holiday);
+              }
+        }
+
+        // colorize today
         if (today.day   () == d                &&
             today.month () == months.at (mpl)  &&
             today.year  () == years.at  (mpl))
           table.setCellColor (row, thisCol, color_today);
-      }
 
-      foreach (task, all)
-      {
-        if (task->getStatus () == Task::pending &&
-            task->has ("due"))
-        {
-          Date due (atoi (task->get ("due").c_str ()));
+        // colorize due tasks
+        if (context.config.get ("calendar.details") != "none")
+          foreach (task, all)
+          {
+            if (task->getStatus () == Task::pending &&
+                task->has ("due"))
+            {
+              Date due (atoi (task->get ("due").c_str ()));
 
-          if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-              due.day ()   == d               &&
-              due.month () == months[mpl] &&
-              due.year ()  == years[mpl])
-            table.setCellColor (row, thisCol, (due < today ? color_overdue : color_due));
-        }
+              if (due.day   () == d           &&
+                  due.month () == months[mpl] &&
+                  due.year  () == years[mpl])
+                table.setCellColor (row, thisCol, (due < today ? color_overdue : color_due));
+            }
+          }
       }
 
       // Check for end of week, and...
@@ -1652,12 +1680,15 @@ int handleReportCalendar (std::string &outs)
     }
   }
 
-  Color color_today   (context.config.get ("color.calendar.today"));
-  Color color_due     (context.config.get ("color.calendar.due"));
-  Color color_overdue (context.config.get ("color.calendar.overdue"));
-  Color color_weekend (context.config.get ("color.calendar.weekend"));
+  Color color_today      (context.config.get ("color.calendar.today"));
+  Color color_due        (context.config.get ("color.calendar.due"));
+  Color color_overdue    (context.config.get ("color.calendar.overdue"));
+  Color color_weekend    (context.config.get ("color.calendar.weekend"));
+  Color color_holiday    (context.config.get ("color.calendar.holiday"));
+  Color color_weeknumber (context.config.get ("color.calendar.weeknumber"));
 
-  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+      context.config.getBoolean ("calendar.legend"))
     out << "Legend: "
         << color_today.colorize ("today")
         << ", "
@@ -1666,11 +1697,15 @@ int handleReportCalendar (std::string &outs)
         << color_overdue.colorize ("overdue")
         << ", "
         << color_weekend.colorize ("weekend")
+        << ", "
+        << color_holiday.colorize ("holiday")
+        << ", "
+        << color_weeknumber.colorize ("weeknumber")
         << "."
         << optionalBlankLine ()
         << std::endl;
 
-  if (context.config.getBoolean ("calendar.details"))
+  if (context.config.get ("calendar.details") == "full" || context.config.get ("calendar.holidays") == "full")
   {
     --details_mFrom;
     if (details_mFrom == 0)
@@ -1693,22 +1728,80 @@ int handleReportCalendar (std::string &outs)
     Date date_before (mTo, 1, yTo);
     std::string before = date_before.toString (context.config.get ("dateformat"));
 
-    std::string report = context.config.get ("calendar.details.report");
-    std::string report_filter = context.config.get ("report." + report + ".filter");
+    // Table with due date information
+    if (context.config.get ("calendar.details") == "full")
+    {
+      std::string report = context.config.get ("calendar.details.report");
+      std::string report_filter = context.config.get ("report." + report + ".filter");
 
-    report_filter += " due.after:" + after + " due.before:" + before;
-    context.config.set ("report." + report + ".filter", report_filter);
+      report_filter += " due.after:" + after + " due.before:" + before;
+      context.config.set ("report." + report + ".filter", report_filter);
 
-    // Display all due task in the report colorized not only the imminet ones
-    context.config.set ("due", 0);
+      // Display all due task in the report colorized not only the imminet ones
+      context.config.set ("due", 0);
 
-    context.args.clear ();
-    context.filter.clear ();
-    context.sequence.clear ();
+      context.args.clear ();
+      context.filter.clear ();
+      context.sequence.clear ();
 
-    std::string output;
-    handleCustomReport (report, output);
-    out << output;
+      std::string output;
+      handleCustomReport (report, output);
+      out << output;
+    }
+
+    // Table with holiday information
+    if (context.config.get ("calendar.holidays") == "full")
+    {
+      std::vector <std::string> holidays;
+      context.config.all (holidays);
+
+      Table holTable;
+      holTable.setTableWidth (context.getWidth ());
+      holTable.addColumn ("Date");
+      holTable.addColumn ("Holiday");
+
+      if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+          context.config.getBoolean ("fontunderline"))
+      {
+        holTable.setColumnUnderline (0);
+        holTable.setColumnUnderline (1);
+      }
+      else
+        holTable.setTableDashedUnderline ();
+
+      holTable.setColumnWidth (0, Table::minimum);
+      holTable.setColumnWidth (1, Table::flexible);
+
+      holTable.setColumnJustification (0, Table::left);
+      holTable.setColumnJustification (1, Table::left);
+
+      foreach (hol, holidays)
+        if (hol->substr (0, 8) == "holiday.")
+          if (hol->substr (hol->size () - 4) == "name")
+          {
+            std::string holName = context.config.get ("holiday." + hol->substr (8, hol->size () - 13) + ".name");
+            std::string holDate = context.config.get ("holiday." + hol->substr (8, hol->size () - 13) + ".date");
+            Date hDate (holDate.c_str (), context.config.get ("dateformat"));
+
+            if (date_after < hDate && hDate < date_before)
+            {
+              std::string format = context.config.get ("report." +
+                                                       context.config.get ("calendar.details.report") +
+                                                       ".dateformat");
+              if (format == "")
+                format = context.config.get ("reportdateformat");
+              if (format == "")
+                format = context.config.get ("dateformat");
+
+              int row = holTable.addRow ();
+              holTable.addCell (row, 0, hDate.toString (format));
+              holTable.addCell (row, 1, holName);
+            }
+          }
+      out << optionalBlankLine ()
+          << holTable.render ()
+          << std::endl;
+    }
   }
 
   outs = out.str ();

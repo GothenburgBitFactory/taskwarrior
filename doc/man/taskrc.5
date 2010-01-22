@@ -168,6 +168,7 @@ according to dateformat.
 The default value is: m/d/Y.  The string should contain the characters
 
 .RS
+.RS
 m  minimal-digit month,   for example 1 or 12
 .br
 d  minimal-digit day,     for example 1 or 30
@@ -190,10 +191,14 @@ B  long name of month,    for example January or August
 .br
 V  weeknumber,            for example 03 or 37
 .RE
+.RE
 
+.RS
 The string may also contain other characters to act as spacers, or formatting. Examples for other
 values of dateformat:
+.RE
 
+.RS
 .RS
 .br
 d/m/Y  would use for input and output 24/7/2009
@@ -202,9 +207,13 @@ yMD    would use for input and output 090724
 .br
 M-D-Y  would use for input and output 07-24-2009
 .RE
+.RE
 
+.RS
 Examples for other values of reportdateformat:
+.RE
 
+.RS
 .RS
 .br
 a D b Y (V)  would do an output as "Fri 24 Jul 2009 (30)"
@@ -212,6 +221,7 @@ a D b Y (V)  would do an output as "Fri 24 Jul 2009 (30)"
 A, B D, Y    would do an output as "Friday, July 24, 2009"
 .br
 vV a Y-M-D   would do an output as "v30 Fri 2009-07.24"
+.RE
 .RE
 
 .TP
@@ -228,13 +238,47 @@ The week number is dependent on the day a week starts.
 This is the number of days into the future that define when a task is considered due,
 and is colored accordingly. Defaults to 7.
 
-.TP calendar.details=no
-If set to yes running "task calendar" will display the details of tasks with due dates
-that fall into the calendar period.
+.TP
+.B calendar.details=sparse
+If set to full running "task calendar" will display the details of tasks with due dates
+that fall into the calendar period. The corresponding days will be color-coded in the
+calendar. If set to sparse only the corresponding days will be color coded and no details
+will be displayed. The displaying of due dates with details is turned off by setting the
+variable to none.
 
-.TP calendar.details.report=list
+.TP
+.B calendar.details.report=list
 The report to run when displaying the details of tasks with due date when running the
 "task calendar" command.
+
+.TP
+.B calendar.holidays=full
+If set to full running "task calendar" will display holidays in the calendar by color-coding
+the corresponding days. A detailed list with the dates and names of the holidays is also shown.
+If set to sparse only the days are color-coded and no details on the holidays will be
+displayed. The displaying of holidays is turned off by setting the variable to none.
+
+.TP
+.B Holidays
+Holidays are entered either directly in the .taskrc file or via an include file that is specified
+in .taskrc. For each holiday the name and the date is required to be given:
+
+.RS
+.RS
+.br
+holiday.towel.name=Day of the towel
+.br
+holiday.towel.date=20100525
+.br
+holiday.sysadmin.name=System Administrator Appreciation Day
+.br
+holiday.sysadmin.date=20100730
+.RE
+.RE
+
+.RS
+Dates are to be entered according to the setting in the dateformat variable.
+.RE
 
 .TP
 .B monthsperline=2
@@ -351,8 +395,16 @@ Color of days with due tasks in calendar.
 Color of days with overdue tasks in calendar.
 
 .TP
-.B color.calendar.weekend=black on white
+.B color.calendar.weekend=bright white on black
 Color of weekend days in calendar.
+
+.TP
+.B color.calendar.holiday=black on bright yellow
+Color of holidays in calendar.
+
+.TP
+.B color.calendar.weeknumber=black on white
+Color of weeknumbers in calendar.
 .RE
 
 .SS SHADOW FILE
