@@ -27,12 +27,15 @@
 
 #include <sstream>
 #include <algorithm>
+#include "Context.h"
 #include "Nibbler.h"
 #include "Date.h"
 #include "Duration.h"
 #include "Task.h"
 #include "text.h"
 #include "util.h"
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task ()

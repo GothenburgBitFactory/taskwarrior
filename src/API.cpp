@@ -539,12 +539,44 @@ bool API::callTaskHook (
 {
   loadFile (file);
 
-  // TODO Get function.
-  // TODO Prepare args.
-  // TODO Make call.
-  // TODO Get exit status.
+  // Get function.
+  lua_getglobal (L, function.c_str ());
+  if (!lua_isfunction (L, -1))
+  {
+    lua_pop (L, 1);
+    throw std::string ("The Lua function '") + function + "' was not found.";
+  }
 
-  return true;
+  // Prepare args.
+  lua_pushnumber (L, id);
+
+  // Make call.
+  if (lua_pcall (L, 1, 2, 0) != 0)
+    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1);
+
+  // Call successful - get return values.
+  if (!lua_isnumber (L, -2))
+    throw std::string ("Error: '") + function + "' did not return a success indicator";
+
+  if (!lua_isstring (L, -1) && !lua_isnil (L, -1))
+    throw std::string ("Error: '") + function + "' did not return a message or nil";
+
+  int rc              = lua_tointeger (L, -2);
+  const char* message = lua_tostring  (L, -1);
+
+  if (rc == 0)
+  {
+    if (message)
+      context.footnote (std::string ("Warning: ") + message);
+  }
+  else
+  {
+    if (message)
+      throw std::string (message);
+  }
+
+  lua_pop (L, 1);
+  return rc == 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -567,6 +599,7 @@ bool API::callFieldHook (
 ////////////////////////////////////////////////////////////////////////////////
 void API::loadFile (const std::string& file)
 {
+  // If the file is not loaded.
   if (std::find (loaded.begin (), loaded.end (), file) == loaded.end ())
   {
     // Load the file, if possible.

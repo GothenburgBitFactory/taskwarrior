@@ -1701,20 +1701,29 @@ int deltaDescription (Task& task)
 int deltaTags (Task& task)
 {
   int changes = 0;
+  context.hooks.setTaskId (task.id);
 
   // Apply or remove tags, if any.
   std::vector <std::string> tags;
   context.task.getTags (tags);
   foreach (tag, tags)
   {
-    task.addTag (*tag);
-    ++changes;
+    if (context.hooks.trigger ("pre-tag"))
+    {
+      task.addTag (*tag);
+      ++changes;
+      context.hooks.trigger ("post-tag");
+    }
   }
 
   foreach (tag, context.tagRemovals)
   {
-    task.removeTag (*tag);
-    ++changes;
+    if (context.hooks.trigger ("pre-detag"))
+    {
+      task.removeTag (*tag);
+      ++changes;
+      context.hooks.trigger ("post-detag");
+    }
   }
 
   return changes;

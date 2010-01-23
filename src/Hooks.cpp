@@ -32,6 +32,43 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
+Hook::Hook ()
+: event ("")
+, file ("")
+, function ("")
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Hook::Hook (const std::string& e, const std::string& f, const std::string& fn)
+: event (e)
+, file (f)
+, function (fn)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Hook::Hook (const Hook& other)
+{
+  event = other.event;
+  file = other.file;
+  function = other.function;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Hook& Hook::operator= (const Hook& other)
+{
+  if (this != &other)
+  {
+    event = other.event;
+    file = other.file;
+    function = other.function;
+  }
+
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Hooks::Hooks ()
 {
 }
@@ -93,6 +130,14 @@ void Hooks::initialize ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Hooks::setTaskId (int id)
+{
+#ifdef HAVE_LIBLUA
+  task_id = id;
+#endif
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Hooks::trigger (const std::string& event)
 {
 #ifdef HAVE_LIBLUA
@@ -105,10 +150,10 @@ bool Hooks::trigger (const std::string& event)
       std::string type;
       if (eventType (event, type))
       {
-        // TODO Figure out where to get the calling-context info from.
+        // Figure out where to get the calling-context info from.
              if (type == "program") rc = api.callProgramHook (it->file, it->function);
         else if (type == "list")    rc = api.callListHook    (it->file, it->function/*, tasks*/);
-        else if (type == "task")    rc = api.callTaskHook    (it->file, it->function, 0);
+        else if (type == "task")    rc = api.callTaskHook    (it->file, it->function, task_id);
         else if (type == "field")   rc = api.callFieldHook   (it->file, it->function, "field", "value");
       }
       else
@@ -136,6 +181,8 @@ bool Hooks::eventType (const std::string& event, std::string& type)
       event == "pre-dispatch"    || event == "post-dispatch"    ||
       event == "pre-gc"          || event == "post-gc"          ||
       event == "pre-undo"        || event == "post-undo"        ||
+      event == "pre-file-lock"   || event == "post-file-lock"   ||
+      event == "pre-file-unlock" || event == "post-file-unlock" ||
       event == "pre-add-command" || event == "post-add-command")
   {
     type = "program";
@@ -146,7 +193,8 @@ bool Hooks::eventType (const std::string& event, std::string& type)
     type = "list";
     return true;
   }
-  else if (event == "?")
+  else if (event == "pre-tag"   || event == "post-tag"   ||
+           event == "pre-detag" || event == "post-detag")
   {
     type = "task";
     return true;

@@ -32,42 +32,14 @@
 #include "API.h"
 #include "auto.h"
 
-// Hook class representing a single hook.
+// Hook class representing a single hook, which is just a three-way map.
 class Hook
 {
 public:
-  Hook ()
-  : event ("")
-  , file ("")
-  , function ("")
-  {
-  }
-
-  Hook (const std::string& e, const std::string& f, const std::string& fn)
-  : event (e)
-  , file (f)
-  , function (fn)
-  {
-  }
-
-  Hook (const Hook& other)
-  {
-    event = other.event;
-    file = other.file;
-    function = other.function;
-  }
-
-  Hook& operator= (const Hook& other)
-  {
-    if (this != &other)
-    {
-      event = other.event;
-      file = other.file;
-      function = other.function;
-    }
-
-    return *this;
-  }
+  Hook ();
+  Hook (const std::string&, const std::string&, const std::string&);
+  Hook (const Hook&);
+  Hook& operator= (const Hook&);
 
 public:
   std::string event;
@@ -85,7 +57,13 @@ public:
   Hooks& operator= (const Hooks&);  // Deliberately unimplemented
 
   void initialize ();
+
+  void setTaskId (int);
+//  void setField (const std::string&, const std::string&);
+//  void setTaskList (const std::vector <int>&);
   bool trigger (const std::string&);
+
+private:
   bool eventType (const std::string&, std::string&);
 
 private:
@@ -93,6 +71,9 @@ private:
   API api;
 #endif
   std::vector <Hook> all;           // All current hooks.
+#ifdef HAVE_LIBLUA
+  int task_id;
+#endif
 };
 
 #endif

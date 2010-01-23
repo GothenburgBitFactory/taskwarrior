@@ -121,26 +121,30 @@ void TDB::location (const std::string& path)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::lock (bool lockFile /* = true */)
 {
-  mLock = lockFile;
-
-  mPending.clear ();
-  mNew.clear ();
-  mPending.clear ();
-
-  foreach (location, mLocations)
+  if (context.hooks.trigger ("pre-file-lock"))
   {
-    location->pending   = openAndLock (location->path + "/pending.data");
-    location->completed = openAndLock (location->path + "/completed.data");
-    location->undo      = openAndLock (location->path + "/undo.data");
-  }
+    mLock = lockFile;
 
-  mAllOpenAndLocked = true;
+    mPending.clear ();
+    mNew.clear ();
+    mPending.clear ();
+
+    foreach (location, mLocations)
+    {
+      location->pending   = openAndLock (location->path + "/pending.data");
+      location->completed = openAndLock (location->path + "/completed.data");
+      location->undo      = openAndLock (location->path + "/undo.data");
+    }
+
+    mAllOpenAndLocked = true;
+    context.hooks.trigger ("post-file-lock");
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::unlock ()
 {
-  if (mAllOpenAndLocked)
+  if (mAllOpenAndLocked && context.hooks.trigger ("pre-file-unlock"))
   {
     mPending.clear ();
     mNew.clear ();
@@ -162,6 +166,7 @@ void TDB::unlock ()
     }
 
     mAllOpenAndLocked = false;
+    context.hooks.trigger ("post-file-unlock");
   }
 }
 
