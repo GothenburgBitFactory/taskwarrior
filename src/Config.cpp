@@ -59,7 +59,7 @@ std::string Config::defaults =
   "# Miscellaneous\n"
   "confirmation=yes                       # Confirmation on delete, big changes\n"
   "echo.command=yes                       # Details on command just run\n"
-  "annotations=full                       # Level of verbosity for annotations in reports\n"
+  "annotations=full                       # Level of verbosity for annotations: full, sparse or none\n"
   "next=2                                 # How many tasks per project in next report\n"
   "bulk=2                                 # > 2 tasks considered 'a lot', for confirmation\n"
   "nag=You have higher priority tasks.    # Nag message to keep you honest\n"                      // TODO

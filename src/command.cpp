@@ -708,6 +708,27 @@ int handleConfig (std::string &outs)
   // TODO Check for referenced but missing theme files.
   // TODO Check for referenced but missing string files.
 
+  // Check for bad values in rc.annotations.
+  std::string annotations = context.config.get ("annotations");
+  if (annotations != "full"   &&
+      annotations != "sparse" &&
+      annotations != "none")
+    out << "Configuration error: annotations contains an unrecognized value '"
+        << annotations
+        << "'."
+        << std::endl;
+
+  // Check for bad values in rc.default.priority.
+  std::string defaultPriority = context.config.get ("default.priority");
+  if (defaultPriority != "H" &&
+      defaultPriority != "M" &&
+      defaultPriority != "L" &&
+      defaultPriority != "")
+    out << "Configuration error: default.priority contains an unrecognized value '"
+        << defaultPriority
+        << "'."
+        << std::endl;
+
   // Verify installation.  This is mentioned in the documentation as the way to
   // ensure everything is properly installed.
 
