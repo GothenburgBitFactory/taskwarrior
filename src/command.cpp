@@ -742,104 +742,116 @@ int handleConfig (std::string &outs)
 int handleDelete (std::string &outs)
 {
   int rc = 0;
-  std::stringstream out;
 
-  context.disallowModification ();
-
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
-
-  // Filter sequence.
-  std::vector <Task> all = tasks;
-  context.filter.applySequence (tasks, context.sequence);
-
-  // Determine the end date.
-  char endTime[16];
-  sprintf (endTime, "%u", (unsigned int) time (NULL));
-
-  foreach (task, tasks)
+  if (context.hooks.trigger ("pre-delete-command"))
   {
-    std::stringstream question;
-    question << "Permanently delete task "
-             << task->id
-             << " '"
-             << task->get ("description")
-             << "'?";
+    std::stringstream out;
 
-    if (!context.config.getBoolean ("confirmation") || confirm (question.str ()))
+    context.disallowModification ();
+
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    Filter filter;
+    context.tdb.loadPending (tasks, filter);
+
+    // Filter sequence.
+    std::vector <Task> all = tasks;
+    context.filter.applySequence (tasks, context.sequence);
+
+    // Determine the end date.
+    char endTime[16];
+    sprintf (endTime, "%u", (unsigned int) time (NULL));
+
+    foreach (task, tasks)
     {
-      // Check for the more complex case of a recurring task.  If this is a
-      // recurring task, get confirmation to delete them all.
-      std::string parent = task->get ("parent");
-      if (parent != "")
+      context.hooks.setTaskId (task->id);
+      if (context.hooks.trigger ("pre-delete"))
       {
-        if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
-        {
-          // Scan all pending tasks for siblings of this task, and the parent
-          // itself, and delete them.
-          foreach (sibling, all)
-          {
-            if (sibling->get ("parent") == parent ||
-                sibling->get ("uuid")   == parent)
-            {
-              sibling->setStatus (Task::deleted);
-              sibling->set ("end", endTime);
-              context.tdb.update (*sibling);
+        std::stringstream question;
+        question << "Permanently delete task "
+                 << task->id
+                 << " '"
+                 << task->get ("description")
+                 << "'?";
 
-              if (context.config.getBoolean ("echo.command"))
-                out << "Deleting recurring task "
-                    << sibling->id
-                    << " '"
-                    << sibling->get ("description")
-                    << "'"
-                    << std::endl;
+        if (!context.config.getBoolean ("confirmation") || confirm (question.str ()))
+        {
+          // Check for the more complex case of a recurring task.  If this is a
+          // recurring task, get confirmation to delete them all.
+          std::string parent = task->get ("parent");
+          if (parent != "")
+          {
+            if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
+            {
+              // Scan all pending tasks for siblings of this task, and the parent
+              // itself, and delete them.
+              foreach (sibling, all)
+              {
+                if (sibling->get ("parent") == parent ||
+                    sibling->get ("uuid")   == parent)
+                {
+                  sibling->setStatus (Task::deleted);
+                  sibling->set ("end", endTime);
+                  context.tdb.update (*sibling);
+
+                  if (context.config.getBoolean ("echo.command"))
+                    out << "Deleting recurring task "
+                        << sibling->id
+                        << " '"
+                        << sibling->get ("description")
+                        << "'"
+                        << std::endl;
+                }
+              }
+            }
+            else
+            {
+              // Update mask in parent.
+              task->setStatus (Task::deleted);
+              updateRecurrenceMask (all, *task);
+
+              task->set ("end", endTime);
+              context.tdb.update (*task);
+
+              out << "Deleting recurring task "
+                  << task->id
+                  << " '"
+                  << task->get ("description")
+                  << "'"
+                  << std::endl;
             }
           }
+          else
+          {
+            task->setStatus (Task::deleted);
+            task->set ("end", endTime);
+            context.tdb.update (*task);
+
+            if (context.config.getBoolean ("echo.command"))
+              out << "Deleting task "
+                  << task->id
+                  << " '"
+                  << task->get ("description")
+                  << "'"
+                  << std::endl;
+          }
         }
-        else
-        {
-          // Update mask in parent.
-          task->setStatus (Task::deleted);
-          updateRecurrenceMask (all, *task);
-
-          task->set ("end", endTime);
-          context.tdb.update (*task);
-
-          out << "Deleting recurring task "
-              << task->id
-              << " '"
-              << task->get ("description")
-              << "'"
-              << std::endl;
+        else {
+          out << "Task not deleted." << std::endl;
+          rc  = 1;
         }
-      }
-      else
-      {
-        task->setStatus (Task::deleted);
-        task->set ("end", endTime);
-        context.tdb.update (*task);
 
-        if (context.config.getBoolean ("echo.command"))
-          out << "Deleting task "
-              << task->id
-              << " '"
-              << task->get ("description")
-              << "'"
-              << std::endl;
+        context.hooks.trigger ("post-delete");
       }
     }
-    else {
-      out << "Task not deleted." << std::endl;
-      rc  = 1;
-    }
+
+    context.tdb.commit ();
+    context.tdb.unlock ();
+
+    outs = out.str ();
+    context.hooks.trigger ("post-delete-command");
   }
 
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  outs = out.str ();
   return rc;
 }
 

@@ -174,17 +174,18 @@ bool Hooks::trigger (const std::string& event)
 ////////////////////////////////////////////////////////////////////////////////
 bool Hooks::eventType (const std::string& event, std::string& type)
 {
-  if (event == "post-start"      ||
-      event == "pre-exit"        ||
-      event == "pre-debug"       || event == "post-debug"       ||
-      event == "pre-header"      || event == "post-header"      ||
-      event == "pre-footnote"    || event == "post-footnote"    ||
-      event == "pre-output"      || event == "post-output"      ||
-      event == "pre-dispatch"    || event == "post-dispatch"    ||
-      event == "pre-gc"          || event == "post-gc"          ||
-      event == "pre-undo"        || event == "post-undo"        ||
-      event == "pre-file-lock"   || event == "post-file-lock"   ||
-      event == "pre-add-command" || event == "post-add-command")
+  if (event == "post-start"         ||
+      event == "pre-exit"           ||
+      event == "pre-debug"          || event == "post-debug"          ||
+      event == "pre-header"         || event == "post-header"         ||
+      event == "pre-footnote"       || event == "post-footnote"       ||
+      event == "pre-output"         || event == "post-output"         ||
+      event == "pre-dispatch"       || event == "post-dispatch"       ||
+      event == "pre-gc"             || event == "post-gc"             ||
+      event == "pre-undo"           || event == "post-undo"           ||
+      event == "pre-file-lock"      || event == "post-file-lock"      ||
+      event == "pre-add-command"    || event == "post-add-command"    ||
+      event == "pre-delete-command" || event == "post-delete-command")
   {
     type = "program";
     return true;
@@ -196,6 +197,7 @@ bool Hooks::eventType (const std::string& event, std::string& type)
   }
   else if (event == "pre-tag"       || event == "post-tag"       ||
            event == "pre-detag"     || event == "post-detag"     ||
+           event == "pre-delete"    || event == "post-delete"    ||
            event == "pre-completed" || event == "post-completed")
   {
     type = "task";
