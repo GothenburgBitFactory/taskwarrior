@@ -144,30 +144,26 @@ void TDB::lock (bool lockFile /* = true */)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::unlock ()
 {
-  if (mAllOpenAndLocked && context.hooks.trigger ("pre-file-unlock"))
+  mPending.clear ();
+  mNew.clear ();
+  mModified.clear ();
+
+  foreach (location, mLocations)
   {
-    mPending.clear ();
-    mNew.clear ();
-    mModified.clear ();
+    fflush (location->pending);
+    fclose (location->pending);
+    location->pending = NULL;
 
-    foreach (location, mLocations)
-    {
-      fflush (location->pending);
-      fclose (location->pending);
-      location->pending = NULL;
+    fflush (location->completed);
+    fclose (location->completed);
+    location->completed = NULL;
 
-      fflush (location->completed);
-      fclose (location->completed);
-      location->completed = NULL;
-
-      fflush (location->undo);
-      fclose (location->undo);
-      location->completed = NULL;
-    }
-
-    mAllOpenAndLocked = false;
-    context.hooks.trigger ("post-file-unlock");
+    fflush (location->undo);
+    fclose (location->undo);
+    location->completed = NULL;
   }
+
+  mAllOpenAndLocked = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

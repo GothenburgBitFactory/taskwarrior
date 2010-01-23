@@ -994,20 +994,28 @@ int handleDone (std::string &outs)
 
       if (taskDiff (before, *task))
       {
-        if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
+        context.hooks.setTaskId (task->id);
+        if (context.hooks.trigger ("pre-completed"))
         {
-          context.tdb.update (*task);
+          if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
+          {
+            context.tdb.update (*task);
 
-          if (context.config.getBoolean ("echo.command"))
-            out << "Completed "
-                << task->id
-                << " '"
-                << task->get ("description")
-                << "'"
-                << std::endl;
+            if (context.config.getBoolean ("echo.command"))
+              out << "Completed "
+                  << task->id
+                  << " '"
+                  << task->get ("description")
+                  << "'"
+                  << std::endl;
 
-          ++count;
+            ++count;
+          }
+
+          context.hooks.trigger ("post-completed");
         }
+        else
+          continue;
       }
 
       updateRecurrenceMask (all, *task);
@@ -1024,7 +1032,9 @@ int handleDone (std::string &outs)
       rc = 1;
   }
 
-  context.tdb.commit ();
+  if (count)
+    context.tdb.commit ();
+
   context.tdb.unlock ();
 
   if (context.config.getBoolean ("echo.command"))

@@ -150,6 +150,8 @@ bool Hooks::trigger (const std::string& event)
       std::string type;
       if (eventType (event, type))
       {
+        context.debug (std::string ("Event ") + event + " triggered");
+
         // Figure out where to get the calling-context info from.
              if (type == "program") rc = api.callProgramHook (it->file, it->function);
         else if (type == "list")    rc = api.callListHook    (it->file, it->function/*, tasks*/);
@@ -182,7 +184,6 @@ bool Hooks::eventType (const std::string& event, std::string& type)
       event == "pre-gc"          || event == "post-gc"          ||
       event == "pre-undo"        || event == "post-undo"        ||
       event == "pre-file-lock"   || event == "post-file-lock"   ||
-      event == "pre-file-unlock" || event == "post-file-unlock" ||
       event == "pre-add-command" || event == "post-add-command")
   {
     type = "program";
@@ -193,8 +194,9 @@ bool Hooks::eventType (const std::string& event, std::string& type)
     type = "list";
     return true;
   }
-  else if (event == "pre-tag"   || event == "post-tag"   ||
-           event == "pre-detag" || event == "post-detag")
+  else if (event == "pre-tag"       || event == "post-tag"       ||
+           event == "pre-detag"     || event == "post-detag"     ||
+           event == "pre-completed" || event == "post-completed")
   {
     type = "task";
     return true;
