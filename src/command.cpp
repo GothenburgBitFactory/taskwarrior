@@ -52,68 +52,71 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int handleAdd (std::string &outs)
 {
-  context.hooks.trigger ("pre-add-command");
-  std::stringstream out;
-
-  context.task.set ("uuid", uuid ());
-  context.task.setEntry ();
-
-  // Recurring tasks get a special status.
-  if (context.task.has ("due") &&
-      context.task.has ("recur"))
+  if (context.hooks.trigger ("pre-add-command"))
   {
-    context.task.setStatus (Task::recurring);
-    context.task.set ("mask", "");
-  }
-  else if (context.task.has ("wait"))
-    context.task.setStatus (Task::waiting);
-  else
-    context.task.setStatus (Task::pending);
+    std::stringstream out;
 
-  // Override with default.project, if not specified.
-  if (context.task.get ("project") == "")
-    context.task.set ("project", context.config.get ("default.project"));
+    context.task.set ("uuid", uuid ());
+    context.task.setEntry ();
 
-  // Override with default.priority, if not specified.
-  if (context.task.get ("priority") == "")
-  {
-    std::string defaultPriority = context.config.get ("default.priority");
-    if (Att::validNameValue ("priority", "", defaultPriority))
-      context.task.set ("priority", defaultPriority);
-  }
+    // Recurring tasks get a special status.
+    if (context.task.has ("due") &&
+        context.task.has ("recur"))
+    {
+      context.task.setStatus (Task::recurring);
+      context.task.set ("mask", "");
+    }
+    else if (context.task.has ("wait"))
+      context.task.setStatus (Task::waiting);
+    else
+      context.task.setStatus (Task::pending);
 
-  // Include tags.
-  foreach (tag, context.tagAdditions)
-    context.task.addTag (*tag);
+    // Override with default.project, if not specified.
+    if (context.task.get ("project") == "")
+      context.task.set ("project", context.config.get ("default.project"));
 
-  // Perform some logical consistency checks.
-  if (context.task.has ("recur") &&
-      !context.task.has ("due"))
-    throw std::string ("You cannot specify a recurring task without a due date.");
+    // Override with default.priority, if not specified.
+    if (context.task.get ("priority") == "")
+    {
+      std::string defaultPriority = context.config.get ("default.priority");
+      if (Att::validNameValue ("priority", "", defaultPriority))
+        context.task.set ("priority", defaultPriority);
+    }
 
-  if (context.task.has ("until")  &&
-      !context.task.has ("recur"))
-    throw std::string ("You cannot specify an until date for a non-recurring task.");
+    // Include tags.
+    foreach (tag, context.tagAdditions)
+      context.task.addTag (*tag);
 
-  // Only valid tasks can be added.
-  context.task.validate ();
+    // Perform some logical consistency checks.
+    if (context.task.has ("recur") &&
+        !context.task.has ("due"))
+      throw std::string ("You cannot specify a recurring task without a due date.");
 
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.add (context.task);
+    if (context.task.has ("until")  &&
+        !context.task.has ("recur"))
+      throw std::string ("You cannot specify an until date for a non-recurring task.");
+
+    // Only valid tasks can be added.
+    context.task.validate ();
+
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    context.tdb.add (context.task);
 
 #ifdef FEATURE_NEW_ID
-  // All this, just for an id number.
-  std::vector <Task> all;
-  Filter none;
-  context.tdb.loadPending (all, none);
-  out << "Created task " << context.tdb.nextId () << std::endl;
+    // All this, just for an id number.
+    std::vector <Task> all;
+    Filter none;
+    context.tdb.loadPending (all, none);
+    out << "Created task " << context.tdb.nextId () << std::endl;
 #endif
 
-  context.tdb.commit ();
-  context.tdb.unlock ();
+    context.tdb.commit ();
+    context.tdb.unlock ();
 
-  outs = out.str ();
-  context.hooks.trigger ("post-add-command");
+    outs = out.str ();
+    context.hooks.trigger ("post-add-command");
+  }
+
   return 0;
 }
 

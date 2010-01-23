@@ -185,7 +185,8 @@ bool Hooks::eventType (const std::string& event, std::string& type)
       event == "pre-undo"           || event == "post-undo"           ||
       event == "pre-file-lock"      || event == "post-file-lock"      ||
       event == "pre-add-command"    || event == "post-add-command"    ||
-      event == "pre-delete-command" || event == "post-delete-command")
+      event == "pre-delete-command" || event == "post-delete-command" ||
+      event == "pre-info-command"   || event == "post-info-command")
   {
     type = "program";
     return true;

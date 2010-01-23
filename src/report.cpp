@@ -300,231 +300,237 @@ int longUsage (std::string &outs)
 int handleInfo (std::string &outs)
 {
   int rc = 0;
-  // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
-  context.tdb.commit ();
-  context.tdb.unlock ();
 
-  // Filter sequence.
-  context.filter.applySequence (tasks, context.sequence);
-
-  // Find the task.
-  std::stringstream out;
-  foreach (task, tasks)
+  if (context.hooks.trigger ("pre-info-command"))
   {
-    Table table;
-    table.setTableWidth (context.getWidth ());
-    table.setDateFormat (context.config.get ("dateformat"));
+    // Get all the tasks.
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    handleRecurrence ();
+    context.tdb.loadPending (tasks, context.filter);
+    context.tdb.commit ();
+    context.tdb.unlock ();
 
-    table.addColumn ("Name");
-    table.addColumn ("Value");
+    // Filter sequence.
+    context.filter.applySequence (tasks, context.sequence);
 
-    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-        context.config.getBoolean ("fontunderline"))
+    // Find the task.
+    std::stringstream out;
+    foreach (task, tasks)
     {
-      table.setColumnUnderline (0);
-      table.setColumnUnderline (1);
-    }
-    else
-      table.setTableDashedUnderline ();
+      Table table;
+      table.setTableWidth (context.getWidth ());
+      table.setDateFormat (context.config.get ("dateformat"));
 
-    table.setColumnWidth (0, Table::minimum);
-    table.setColumnWidth (1, Table::flexible);
+      table.addColumn ("Name");
+      table.addColumn ("Value");
 
-    table.setColumnJustification (0, Table::left);
-    table.setColumnJustification (1, Table::left);
-    Date now;
-
-    int row = table.addRow ();
-    table.addCell (row, 0, "ID");
-    table.addCell (row, 1, task->id);
-
-    std::string status = ucFirst (Task::statusToText (task->getStatus ()));
-
-    if (task->has ("parent"))
-      status += " (Recurring)";
-
-    row = table.addRow ();
-    table.addCell (row, 0, "Status");
-    table.addCell (row, 1, status);
-
-    row = table.addRow ();
-    table.addCell (row, 0, "Description");
-    table.addCell (row, 1, getFullDescription (*task));
-
-    if (task->has ("project"))
-    {
-      row = table.addRow ();
-      table.addCell (row, 0, "Project");
-      table.addCell (row, 1, task->get ("project"));
-    }
-
-    if (task->has ("priority"))
-    {
-      row = table.addRow ();
-      table.addCell (row, 0, "Priority");
-      table.addCell (row, 1, task->get ("priority"));
-    }
-
-    if (task->getStatus () == Task::recurring ||
-        task->has ("parent"))
-    {
-      if (task->has ("recur"))
+      if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+          context.config.getBoolean ("fontunderline"))
       {
-        row = table.addRow ();
-        table.addCell (row, 0, "Recurrence");
-        table.addCell (row, 1, task->get ("recur"));
+        table.setColumnUnderline (0);
+        table.setColumnUnderline (1);
       }
+      else
+        table.setTableDashedUnderline ();
 
-      if (task->has ("until"))
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Recur until");
-        table.addCell (row, 1, task->get ("until"));
-      }
+      table.setColumnWidth (0, Table::minimum);
+      table.setColumnWidth (1, Table::flexible);
 
-      if (task->has ("mask"))
-      {
-        row = table.addRow ();
-        table.addCell (row, 0, "Mask");
-        table.addCell (row, 1, task->get ("mask"));
-      }
+      table.setColumnJustification (0, Table::left);
+      table.setColumnJustification (1, Table::left);
+      Date now;
+
+      int row = table.addRow ();
+      table.addCell (row, 0, "ID");
+      table.addCell (row, 1, task->id);
+
+      std::string status = ucFirst (Task::statusToText (task->getStatus ()));
 
       if (task->has ("parent"))
+        status += " (Recurring)";
+
+      row = table.addRow ();
+      table.addCell (row, 0, "Status");
+      table.addCell (row, 1, status);
+
+      row = table.addRow ();
+      table.addCell (row, 0, "Description");
+      table.addCell (row, 1, getFullDescription (*task));
+
+      if (task->has ("project"))
       {
         row = table.addRow ();
-        table.addCell (row, 0, "Parent task");
-        table.addCell (row, 1, task->get ("parent"));
+        table.addCell (row, 0, "Project");
+        table.addCell (row, 1, task->get ("project"));
       }
 
-      row = table.addRow ();
-      table.addCell (row, 0, "Mask Index");
-      table.addCell (row, 1, task->get ("imask"));
-    }
-
-    // due (colored)
-    bool imminent = false;
-    bool overdue = false;
-    if (task->has ("due"))
-    {
-      row = table.addRow ();
-      table.addCell (row, 0, "Due");
-
-      Date dt (atoi (task->get ("due").c_str ()));
-      std::string format = context.config.get ("reportdateformat");
-      if (format == "")
-        format = context.config.get ("dateformat");
-
-      std::string due = getDueDate (*task, format);
-      table.addCell (row, 1, due);
-
-      overdue = (dt < now) ? true : false;
-      int imminentperiod = context.config.getInteger ("due");
-      Date imminentDay = now + imminentperiod * 86400;
-      imminent = dt < imminentDay ? true : false;
-
-      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+      if (task->has ("priority"))
       {
-        if (overdue)
-          table.setCellColor (row, 1, Color (context.config.get ("color.overdue")));
-        else if (imminent)
-          table.setCellColor (row, 1, Color (context.config.get ("color.due")));
+        row = table.addRow ();
+        table.addCell (row, 0, "Priority");
+        table.addCell (row, 1, task->get ("priority"));
       }
-    }
 
-    // wait
-    if (task->has ("wait"))
-    {
+      if (task->getStatus () == Task::recurring ||
+          task->has ("parent"))
+      {
+        if (task->has ("recur"))
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Recurrence");
+          table.addCell (row, 1, task->get ("recur"));
+        }
+
+        if (task->has ("until"))
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Recur until");
+          table.addCell (row, 1, task->get ("until"));
+        }
+
+        if (task->has ("mask"))
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Mask");
+          table.addCell (row, 1, task->get ("mask"));
+        }
+
+        if (task->has ("parent"))
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "Parent task");
+          table.addCell (row, 1, task->get ("parent"));
+        }
+
+        row = table.addRow ();
+        table.addCell (row, 0, "Mask Index");
+        table.addCell (row, 1, task->get ("imask"));
+      }
+
+      // due (colored)
+      bool imminent = false;
+      bool overdue = false;
+      if (task->has ("due"))
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Due");
+
+        Date dt (atoi (task->get ("due").c_str ()));
+        std::string format = context.config.get ("reportdateformat");
+        if (format == "")
+          format = context.config.get ("dateformat");
+
+        std::string due = getDueDate (*task, format);
+        table.addCell (row, 1, due);
+
+        overdue = (dt < now) ? true : false;
+        int imminentperiod = context.config.getInteger ("due");
+        Date imminentDay = now + imminentperiod * 86400;
+        imminent = dt < imminentDay ? true : false;
+
+        if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+        {
+          if (overdue)
+            table.setCellColor (row, 1, Color (context.config.get ("color.overdue")));
+          else if (imminent)
+            table.setCellColor (row, 1, Color (context.config.get ("color.due")));
+        }
+      }
+
+      // wait
+      if (task->has ("wait"))
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Waiting until");
+        Date dt (atoi (task->get ("wait").c_str ()));
+        table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+      }
+
+      // start
+      if (task->has ("start"))
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Start");
+        Date dt (atoi (task->get ("start").c_str ()));
+        table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+      }
+
+      // end
+      if (task->has ("end"))
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "End");
+        Date dt (atoi (task->get ("end").c_str ()));
+        table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+      }
+
+      // tags ...
+      std::vector <std::string> tags;
+      task->getTags (tags);
+      if (tags.size ())
+      {
+        std::string allTags;
+        join (allTags, " ", tags);
+
+        row = table.addRow ();
+        table.addCell (row, 0, "Tags");
+        table.addCell (row, 1, allTags);
+      }
+
+      // uuid
       row = table.addRow ();
-      table.addCell (row, 0, "Waiting until");
-      Date dt (atoi (task->get ("wait").c_str ()));
-      table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
-    }
+      table.addCell (row, 0, "UUID");
+      table.addCell (row, 1, task->get ("uuid"));
 
-    // start
-    if (task->has ("start"))
-    {
+      // entry
       row = table.addRow ();
-      table.addCell (row, 0, "Start");
-      Date dt (atoi (task->get ("start").c_str ()));
-      table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+      table.addCell (row, 0, "Entered");
+      Date dt (atoi (task->get ("entry").c_str ()));
+      std::string entry = dt.toString (context.config.get ("dateformat"));
+
+      std::string age;
+      std::string created = task->get ("entry");
+      if (created.length ())
+      {
+        Date dt (atoi (created.c_str ()));
+        age = formatSeconds ((time_t) (now - dt));
+      }
+
+      table.addCell (row, 1, entry + " (" + age + ")");
+
+      // fg
+      std::string color = task->get ("fg");
+      if (color != "")
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Foreground color");
+        table.addCell (row, 1, color);
+      }
+
+      // bg
+      color = task->get ("bg");
+      if (color != "")
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Background color");
+        table.addCell (row, 1, color);
+      }
+
+      out << optionalBlankLine ()
+          << table.render ()
+          << std::endl;
     }
 
-    // end
-    if (task->has ("end"))
-    {
-      row = table.addRow ();
-      table.addCell (row, 0, "End");
-      Date dt (atoi (task->get ("end").c_str ()));
-      table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+    if (! tasks.size ()) {
+      out << "No matches." << std::endl;
+      rc = 1;
     }
 
-    // tags ...
-    std::vector <std::string> tags;
-    task->getTags (tags);
-    if (tags.size ())
-    {
-      std::string allTags;
-      join (allTags, " ", tags);
-
-      row = table.addRow ();
-      table.addCell (row, 0, "Tags");
-      table.addCell (row, 1, allTags);
-    }
-
-    // uuid
-    row = table.addRow ();
-    table.addCell (row, 0, "UUID");
-    table.addCell (row, 1, task->get ("uuid"));
-
-    // entry
-    row = table.addRow ();
-    table.addCell (row, 0, "Entered");
-    Date dt (atoi (task->get ("entry").c_str ()));
-    std::string entry = dt.toString (context.config.get ("dateformat"));
-
-    std::string age;
-    std::string created = task->get ("entry");
-    if (created.length ())
-    {
-      Date dt (atoi (created.c_str ()));
-      age = formatSeconds ((time_t) (now - dt));
-    }
-
-    table.addCell (row, 1, entry + " (" + age + ")");
-
-    // fg
-    std::string color = task->get ("fg");
-    if (color != "")
-    {
-      row = table.addRow ();
-      table.addCell (row, 0, "Foreground color");
-      table.addCell (row, 1, color);
-    }
-
-    // bg
-    color = task->get ("bg");
-    if (color != "")
-    {
-      row = table.addRow ();
-      table.addCell (row, 0, "Background color");
-      table.addCell (row, 1, color);
-    }
-
-    out << optionalBlankLine ()
-        << table.render ()
-        << std::endl;
+    outs = out.str ();
+    context.hooks.trigger ("post-info-command");
   }
 
-  if (! tasks.size ()) {
-    out << "No matches." << std::endl;
-    rc = 1;
-  }
-
-  outs = out.str ();
   return rc;
 }
 
