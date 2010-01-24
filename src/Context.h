@@ -70,7 +70,8 @@ public:
 private:
   void loadCorrectConfigFile ();
   void loadAliases ();
-  void autoFilter (Task&, Filter&);
+  void autoFilter (Att&, Filter&);
+  void autoFilter (Filter&);
 
 public:
   Config                    config;

@@ -66,7 +66,10 @@
  + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
    was run, and there are no tasks with due dates.
  + Fixed bug #360 which prevented certain modifications to recurring tasks
-   (thanks to John Flrorian).
+   (thanks to John Florian).
+ + Fixed bug #299 which prevented excluding multiple projects from a report,
+   by using "task list project.isnt:foo project.isnt:bar" (thanks to John
+   Florian).
 
 ------ old releases ------------------------------
 
