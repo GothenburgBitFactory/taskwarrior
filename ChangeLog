@@ -63,6 +63,8 @@
  + Fixed bug that was causing the 'completed' report to sort incorrectly.
  + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
    was run, and there are no tasks with due dates.
+ + Fixed bug #360 which prevented certain modifications to recurring tasks
+   (thanks to John Flrorian).
 
 ------ old releases ------------------------------
 
