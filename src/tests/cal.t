@@ -138,6 +138,8 @@ if (open my $fh, '>', 'details.rc')
 {
   print $fh "data.location=.\n",
             "dateformat=YMD\n",
+            "dateformat.holiday=YMD\n",
+            "dateformat.report=YMD\n",
             "calendar.details=full\n",
             "calendar.details.report=list\n",
             "calendar.holidays=full\n",

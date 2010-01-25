@@ -155,7 +155,9 @@ tag names you have used, or just the ones used in active tasks.
 .TP
 .B dateformat=m/d/Y
 .TP
-.B reportdateformat=m/d/Y
+.B dateformat.report=m/d/Y
+.TP
+.B dateformat.holiday=YMD
 .TP
 .B report.X.dateformat=m/d/Y
 This is a string of characters that define how task formats dates. The precedence order
@@ -277,7 +279,7 @@ holiday.sysadmin.date=20100730
 .RE
 
 .RS
-Dates are to be entered according to the setting in the dateformat variable.
+Dates are to be entered according to the setting in the dateformat.holiday variable.
 .RE
 
 .TP

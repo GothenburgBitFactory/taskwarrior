@@ -889,7 +889,7 @@ void Table::sort (std::vector <int>& order)
               {
                 std::string format = context.config.get ("report." + mReportName + ".dateformat");
                 if (format == "")
-                  format = context.config.get ("reportdateformat");
+                  format = context.config.get ("dateformat.report");
                 if (format == "")
                   format = context.config.get ("dateformat");
 
@@ -913,7 +913,7 @@ void Table::sort (std::vector <int>& order)
               {
                 std::string format = context.config.get ("report." + mReportName + ".dateformat");
                 if (format == "")
-                  format = context.config.get ("reportdateformat");
+                  format = context.config.get ("dateformat.report");
                 if (format == "")
                   format = context.config.get ("dateformat");
 

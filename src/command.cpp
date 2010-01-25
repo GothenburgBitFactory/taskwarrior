@@ -654,10 +654,10 @@ int handleConfig (std::string &outs)
     "color.pri.M color.pri.none color.recurring color.tagged color.footnote color.header "
     "color.debug color.alternate color.calendar.today color.calendar.due color.calendar.overdue "
     "color.calendar.weekend color.calendar.holiday color.calendar.weeknumber confirmation "
-    "curses data.location dateformat reportdateformat debug default.command default.priority "
-    "default.project defaultwidth due locale displayweeknumber echo.command fontunderline "
-    "locking monthsperline nag next project shadow.command shadow.file shadow.notify weekstart "
-    "editor import.synonym.id import.synonym.uuid complete.all.projects complete.all.tags "
+    "curses data.location dateformat dateformat.holiday dateformat.report debug default.command "
+    "default.priority default.project defaultwidth due locale displayweeknumber echo.command "
+    "fontunderline locking monthsperline nag next project shadow.command shadow.file shadow.notify "
+    "weekstart editor import.synonym.id import.synonym.uuid complete.all.projects complete.all.tags "
 #ifdef FEATURE_SHELL
     "shell.prompt "
 #endif
@@ -715,6 +715,26 @@ int handleConfig (std::string &outs)
       annotations != "none")
     out << "Configuration error: annotations contains an unrecognized value '"
         << annotations
+        << "'."
+        << std::endl;
+
+  // Check for bad values in rc.calendar.details.
+  std::string calendardetails = context.config.get ("calendar.details");
+  if (calendardetails != "full"   &&
+      calendardetails != "sparse" &&
+      calendardetails != "none")
+    out << "Configuration error: calendar.details contains an unrecognized value '"
+        << calendardetails
+        << "'."
+        << std::endl;
+
+  // Check for bad values in rc.calendar.holidays.
+  std::string calendarholidays = context.config.get ("calendar.holidays");
+  if (calendarholidays != "full"   &&
+      calendarholidays != "sparse" &&
+      calendarholidays != "none")
+    out << "Configuration error: calendar.holidays contains an unrecognized value '"
+        << calendarholidays
         << "'."
         << std::endl;
 

@@ -34,7 +34,8 @@ use Test::More tests => 14;
 if (open my $fh, '>', 'date1.rc')
 {
   print $fh "data.location=.\n",
-            "dateformat=YMD\n";
+            "dateformat=YMD\n",
+            "dateformat.report=YMD\n";
   close $fh;
   ok (-r 'date1.rc', 'Created date1.rc');
 }
@@ -42,7 +43,8 @@ if (open my $fh, '>', 'date1.rc')
 if (open my $fh, '>', 'date2.rc')
 {
   print $fh "data.location=.\n",
-            "dateformat=m/d/y\n";
+            "dateformat=m/d/y\n",
+            "dateformat.report=m/d/y\n";
   close $fh;
   ok (-r 'date2.rc', 'Created date2.rc');
 }
@@ -51,8 +53,9 @@ if (open my $fh, '>', 'date3.rc')
 {
   print $fh "data.location=.\n",
             "dateformat=m/d/y\n",
+            "dateformat=m/d/y\n",
             "weekstart=Monday\n",
-            "reportdateformat=A D B Y (vV)\n";
+            "dateformat.report=A D B Y (vV)\n";
   close $fh;
   ok (-r 'date3.rc', 'Created date3.rc');
 }
@@ -74,7 +77,7 @@ ok (!-r 'pending.data', 'Removed pending.data');
 qx{../task rc:date3.rc add foo due:4/8/10};
 $output = qx{../task rc:date3.rc list};
 like ($output, qr/Thursday 08 April 2010 \(v14\)/, 'date format A D B Y (vV) parsed');
-$output = qx{../task rc:date3.rc rc.reportdateformat:"D b Y - a" list};
+$output = qx{../task rc:date3.rc rc.dateformat.report:"D b Y - a" list};
 like ($output, qr/08 Apr 2010 - Thu/, 'date format D b Y - a parsed');
                   
 # Cleanup.

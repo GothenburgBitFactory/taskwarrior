@@ -414,7 +414,7 @@ int handleInfo (std::string &outs)
       table.addCell (row, 0, "Due");
 
       Date dt (atoi (task->get ("due").c_str ()));
-      std::string format = context.config.get ("reportdateformat");
+      std::string format = context.config.get ("dateformat.report");
       if (format == "")
         format = context.config.get ("dateformat");
 
@@ -1223,7 +1223,7 @@ int handleReportTimesheet (std::string &outs)
         if (compDate >= start && compDate < end)
         {
           int row = completed.addRow ();
-          std::string format = context.config.get ("reportdateformat");
+          std::string format = context.config.get ("dateformat.report");
           if (format == "")
             format = context.config.get ("dateformat");
           completed.addCell (row, 1, task->get ("project"));
@@ -1282,7 +1282,7 @@ int handleReportTimesheet (std::string &outs)
         if (startDate >= start && startDate < end)
         {
           int row = started.addRow ();
-          std::string format = context.config.get ("reportdateformat");
+          std::string format = context.config.get ("dateformat.report");
           if (format == "")
             format = context.config.get ("dateformat");
           started.addCell (row, 1, task->get ("project"));
@@ -1471,7 +1471,7 @@ std::string renderMonths (
               if (hol->substr (hol->size () - 4) == "date")
               {
                 std::string value = context.config.get (*hol);
-                Date holDate (value.c_str (), context.config.get ("dateformat"));
+                Date holDate (value.c_str (), context.config.get ("dateformat.holiday"));
                 if (holDate.day   () == d           &&
                     holDate.month () == months[mpl] &&
                     holDate.year  () == years[mpl])
@@ -1759,6 +1759,7 @@ int handleReportCalendar (std::string &outs)
       holTable.setTableWidth (context.getWidth ());
       holTable.addColumn ("Date");
       holTable.addColumn ("Holiday");
+      holTable.sortOn (0, Table::ascendingDueDate);
 
       if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
           context.config.getBoolean ("fontunderline"))
@@ -1781,7 +1782,7 @@ int handleReportCalendar (std::string &outs)
           {
             std::string holName = context.config.get ("holiday." + hol->substr (8, hol->size () - 13) + ".name");
             std::string holDate = context.config.get ("holiday." + hol->substr (8, hol->size () - 13) + ".date");
-            Date hDate (holDate.c_str (), context.config.get ("dateformat"));
+            Date hDate (holDate.c_str (), context.config.get ("dateformat.holiday"));
 
             if (date_after < hDate && hDate < date_before)
             {
@@ -1789,7 +1790,7 @@ int handleReportCalendar (std::string &outs)
                                                        context.config.get ("calendar.details.report") +
                                                        ".dateformat");
               if (format == "")
-                format = context.config.get ("reportdateformat");
+                format = context.config.get ("dateformat.report");
               if (format == "")
                 format = context.config.get ("dateformat");
 

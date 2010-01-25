@@ -363,7 +363,7 @@ int runCustomReport (
 
       std::string format = context.config.get ("report." + report + ".dateformat");
       if (format == "")
-        format = context.config.get ("reportdateformat");
+        format = context.config.get ("dateformat.report");
       if (format == "")
         format = context.config.get ("dateformat");
 
