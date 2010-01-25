@@ -6,7 +6,7 @@
    of the output of annotations.
  + Added feature #254 (#295) which gives task a second date format to be
    used in the reports with more conversion sequences like weekday name
-   or weeknumber. The date format is set with variable "reportdateformat".
+   or weeknumber. The date format is set with variable "dateformat.report".
  + Added feature #292 that permits alternate line coloration in reports
    (thanks to Richard Querin).
  + Added feature #307 that provides vim with syntax highlighting for .taskrc.
@@ -50,6 +50,7 @@
    'color.calendar.weekend'and 'color.calendar.weeknumber'.
  + Added support for holidays in the calendar by using calendar.holidays
    and the corresponding holiday.X.name and holiday.X.date variables.
+   The default dateformat being YMD (20101224) set by dateformat.holiday.
  + The coloring of due tasks in reports can now be enabled for all tasks, and not
     only the imminent ones, by setting the configuration variable due=0.
  + Added a new 'task-faq' man page for common questions and answers.
