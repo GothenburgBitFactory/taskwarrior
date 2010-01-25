@@ -591,6 +591,8 @@ void Context::parse (
             parseTask[name + "." + mod] = attribute;
           else
             parseTask[name] = attribute;
+
+          autoFilter (attribute, parseFilter);
         }
 
         // *arg has the appearance of an attribute (foo:bar), but isn't
@@ -656,6 +658,19 @@ void Context::parse (
   {
     debug ("parse description '" + descCandidate + "'");
     parseTask.set ("description", descCandidate);
+
+    // Now convert the description to a filter on each word, if necessary.
+    if (parseCmd.isReadOnlyCommand ())
+    {
+      std::vector <std::string> words;
+      split (words, descCandidate, ' ');
+      std::vector <std::string>::iterator it;
+      for (it = words.begin (); it != words.end (); ++it)
+      {
+        Att a ("description", "contains", *it);
+        autoFilter (a, parseFilter);
+      }
+    }
   }
 
   // At this point, either a sequence or a command should have been found.
@@ -663,9 +678,10 @@ void Context::parse (
     parseCmd.parse (descCandidate);
 
   // Read-only command (reports, status, info ...) use filters.  Write commands
-  // (add, done ...) do not.
+  // (add, done ...) do not.  The filter was constructed iteratively above, but
+  // tags were omitted, so they are added now.
   if (parseCmd.isReadOnlyCommand ())
-    autoFilter (parseTask, parseFilter);
+    autoFilter (parseFilter);
 
   // If no command was specified, and there were no command line arguments
   // then invoke the default command.
@@ -726,68 +742,70 @@ void Context::clear ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add all the attributes in the task to the filter.  All except uuid.
-void Context::autoFilter (Task& t, Filter& f)
+void Context::autoFilter (Att& a, Filter& f)
 {
-  foreach (att, t)
+  // Words are found in the description using the .has modifier.
+  if (a.name () == "description" && a.mod () == "")
   {
-    // Words are found in the description using the .has modifier.
-    if (att->second.name () == "description" && att->second.mod () == "")
+    std::vector <std::string> words;
+    split (words, a.value (), ' ');
+    foreach (word, words)
     {
-      std::vector <std::string> words;
-      split (words, att->second.value (), ' ');
-      foreach (word, words)
-      {
-        f.push_back (Att ("description", "has", *word));
-        debug ("auto filter: " + att->second.name () + ".has:" + *word);
-      }
-    }
-
-    // Projects are matched left-most.
-    else if (att->second.name () == "project" && att->second.mod () == "")
-    {
-      if (att->second.value () != "")
-      {
-        f.push_back (Att ("project", "startswith", att->second.value ()));
-        debug ("auto filter: " + att->second.name () + ".startswith:" + att->second.value ());
-      }
-      else
-      {
-        f.push_back (Att ("project", "is", att->second.value ()));
-        debug ("auto filter: " + att->second.name () + ".is:" + att->second.value ());
-      }
-    }
-
-    // The limit attribute does not participate in filtering, and needs to be
-    // specifically handled in handleCustomReport.
-    else if (att->second.name () == "limit")
-    {
-    }
-
-    // Every task has a unique uuid by default, and it shouldn't be included,
-    // because it is guaranteed to not match.
-    else if (att->second.name () == "uuid")
-    {
-    }
-
-    // The mechanism for filtering on tags is +/-<tag>.
-    // Do not handle here - see below.
-    else if (att->second.name () == "tags")
-    {
-    }
-
-    // Generic attribute matching.
-    else
-    {
-      f.push_back (att->second);
-      debug ("auto filter: " +
-             att->second.name () +
-             (att->second.mod () != "" ?
-               ("." + att->second.mod () + ":") :
-               ":") +
-             att->second.value ());
+      f.push_back (Att ("description", "has", *word));
+      debug ("auto filter: " + a.name () + ".has:" + *word);
     }
   }
 
+  // Projects are matched left-most.
+  else if (a.name () == "project" && a.mod () == "")
+  {
+    if (a.value () != "")
+    {
+      f.push_back (Att ("project", "startswith", a.value ()));
+      debug ("auto filter: " + a.name () + ".startswith:" + a.value ());
+    }
+    else
+    {
+      f.push_back (Att ("project", "is", a.value ()));
+      debug ("auto filter: " + a.name () + ".is:" + a.value ());
+    }
+  }
+
+  // The limit attribute does not participate in filtering, and needs to be
+  // specifically handled in handleCustomReport.
+  else if (a.name () == "limit")
+  {
+  }
+
+  // Every task has a unique uuid by default, and it shouldn't be included,
+  // because it is guaranteed to not match.
+  else if (a.name () == "uuid")
+  {
+  }
+
+  // The mechanism for filtering on tags is +/-<tag>.
+  // Do not handle here - see below.
+  else if (a.name () == "tags")
+  {
+  }
+
+  // Generic attribute matching.
+  else
+  {
+    f.push_back (a);
+    debug ("auto filter: " +
+           a.name () +
+           (a.mod () != "" ?
+             ("." + a.mod () + ":") :
+             ":") +
+           a.value ());
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Add all the tags in the task to the filter.
+void Context::autoFilter (Filter& f)
+{
   // This is now a correct implementation of a filter on the presence or absence
   // of a tag.  The prior code provided the illusion of leftmost partial tag
   // matches, but was really using the 'contains' and 'nocontains' attribute
