@@ -10,7 +10,7 @@ New Features in task 1.9
   - New date format for reports
   - Improved .taskrc validation
   - Improved calendar report with custom coloring and optional task details output
-  - Holidays are now supported in the calendar
+  - Holidays are now supported in the calendar report
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.

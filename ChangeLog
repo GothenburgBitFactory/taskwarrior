@@ -45,7 +45,7 @@
    dates when doing a 'task cal' for the corresponding months:
    'calendar.details' and 'calendar.details.report'
  + Added 5 new color configuration variables to colorize today, days with due tasks,
-   days with overdue tasks, weekend days and weeknumbers in the calendar:
+   days with overdue tasks, weekend days and week numbers in the calendar:
    'calendar.color.today', 'color.calendar.due', 'calendar.calendar.overdue',
    'color.calendar.weekend'and 'color.calendar.weeknumber'.
  + Added support for holidays in the calendar by using calendar.holidays
