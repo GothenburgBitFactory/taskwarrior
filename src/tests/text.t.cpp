@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (178);
+  UnitTest t (180);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -342,6 +342,7 @@ int main (int argc, char** argv)
 
   // Test case-sensitive.
   t.is ((int) find ("foo", "xx", true), (int) std::string::npos, "foo !contains xx");
+  t.is ((int) find ("foo", "oo", true), 1,                       "foo contains oo");
 
   t.is ((int) find ("foo", "fo", true), 0,                       "foo contains fo");
   t.is ((int) find ("foo", "FO", true), (int) std::string::npos, "foo !contains fo");
@@ -350,6 +351,7 @@ int main (int argc, char** argv)
 
   // Test case-insensitive.
   t.is ((int) find ("foo", "xx", false),  (int) std::string::npos, "foo !contains xx (caseless)");
+  t.is ((int) find ("foo", "oo", false),  1,                       "foo contains oo (caseless)");
 
   t.is ((int) find ("foo", "fo", false),  0, "foo contains fo (caseless)");
   t.is ((int) find ("foo", "FO", false),  0, "foo contains FO (caseless)");

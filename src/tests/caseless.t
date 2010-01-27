@@ -35,72 +35,89 @@ if (open my $fh, '>', 'caseless.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'append.rc', 'Created append.rc');
+  ok (-r 'caseless.rc', 'Created caseless.rc');
 }
 
 # Attempt case-sensitive and case-insensitive substitutions and filters.
-qx{../task add one two three};
-qx{../task 1 annotate four five six};
+qx{../task rc:caseless.rc add one two three};
+qx{../task rc:caseless.rc 1 annotate four five six};
+my $output;
 
 # Description substitution.
-qx{../task rc.search.case.sensitive=yes 1 /One/ONE/};
-my $output = qx{../task info 1};
+# 2
+qx{../task rc:caseless.rc rc.search.case.sensitive:yes 1 /One/ONE/};
+$output = qx{../task rc:caseless.rc info 1};
 unlike ($output, qr/One two three/, 'one two three\nfour five six -> /One/ONE/ = fail');
 
-qx{../task rc.search.case.sensitive=no 1 /One/ONE/};
-$output = qx{../task info 1};
+# 3
+qx{../task rc:caseless.rc rc.search.case.sensitive:no 1 /One/ONE/};
+$output = qx{../task rc:caseless.rc info 1};
 like ($output, qr/ONE two three/, 'one two three\nfour five six -> /One/ONE/ = caseless succeed');
 
-qx{../task rc.search.case.sensitive=yes 1 /one/One/};
-$output = qx{../task info 1};
+# 4
+qx{../task rc:caseless.rc rc.search.case.sensitive:yes 1 /one/One/};
+$output = qx{../task rc:caseless.rc info 1};
 unlike ($output, qr/One two three/, 'ONE two three\nfour five six -> /one/ONE/ = fail');
 
-qx{../task rc.search.case.sensitive=no 1 /one/one/};
-$output = qx{../task info 1};
+# 5
+qx{../task rc:caseless.rc rc.search.case.sensitive:no 1 /one/one/};
+$output = qx{../task rc:caseless.rc info 1};
 like ($output, qr/one two three/, 'ONE two three\nfour five six -> /one/one/ = caseless succeed');
 
 # Annotation substitution.
-qx{../task rc.search.case.sensitive=yes 1 /Five/FIVE/};
-$output = qx{../task info 1};
-unlike ($output, qr/four five six/, 'one two three\nfour five six -> /Five/FIVE/ = fail');
+# 6
+qx{../task rc:caseless.rc rc.search.case.sensitive:yes 1 /Five/FIVE/};
+$output = qx{../task rc:caseless.rc info 1};
+unlike ($output, qr/four FIVE six/, 'one two three\nfour five six -> /Five/FIVE/ = fail');
 
-qx{../task rc.search.case.sensitive=no 1 /Five/FIVE/};
-$output = qx{../task info 1};
+# 7
+qx{../task rc:caseless.rc rc.search.case.sensitive:no 1 /Five/FIVE/};
+$output = qx{../task rc:caseless.rc info 1};
 like ($output, qr/four FIVE six/, 'one two three\nfour five six -> /Five/FIVE/ = caseless succeed');
 
-qx{../task rc.search.case.sensitive=yes 1 /five/Five/};
-$output = qx{../task info 1};
-unlike ($output, qr/four five six/, 'one two three\nfour FIVE six -> /five/Five/ = fail');
+# 8
+qx{../task rc:caseless.rc rc.search.case.sensitive:yes 1 /five/Five/};
+$output = qx{../task rc:caseless.rc info 1};
+unlike ($output, qr/four Five six/, 'one two three\nfour FIVE six -> /five/Five/ = fail');
 
-qx{../task rc.search.case.sensitive=no 1 /five/five/};
-$output = qx{../task info 1};
-like ($output, qr/four FIVE six/, 'one two three\nfour FIVE six -> /five/five/ = caseless succeed');
+# 9
+qx{../task rc:caseless.rc rc.search.case.sensitive:no 1 /five/five/};
+$output = qx{../task rc:caseless.rc info 1};
+like ($output, qr/four five six/, 'one two three\nfour FIVE six -> /five/five/ = caseless succeed');
 
 # Description filter.
-$output = qx{../task rc.search.case.sensitive=yes ls One};
-unlike ($output, qr/one two three/, 'one two three\bfour five six -> ls One = fail');
+# 10
+$output = qx{../task rc:caseless.rc rc.search.case.sensitive:yes ls One};
+unlike ($output, qr/one two three/, 'one two three\nfour five six -> ls One = fail');
 
-$output = qx{../task rc.search.case.sensitive=no ls One};
-like ($output, qr/one two three/, 'one two three\bfour five six -> ls One caseless = succeed');
+# 11
+$output = qx{../task rc:caseless.rc rc.search.case.sensitive:no ls One};
+like ($output, qr/one two three/, 'one two three\nfour five six -> ls One caseless = succeed');
 
-$output = qx{../task rc.search.case.sensitive=yes ls Five};
-unlike ($output, qr/four five six/, 'one two three\bfour five six -> ls Five = fail');
+# 12
+$output = qx{../task rc:caseless.rc rc.search.case.sensitive:yes ls Five};
+unlike ($output, qr/four five six/, 'one two three\nfour five six -> ls Five = fail');
 
-$output = qx{../task rc.search.case.sensitive=no ls Five};
-like ($output, qr/four five six/, 'one two three\bfour five six -> ls Five caseless = succeed');
+# 13
+$output = qx{../task rc:caseless.rc rc.search.case.sensitive:no ls Five};
+like ($output, qr/four five six/, 'one two three\nfour five six -> ls Five caseless = succeed');
 
 # Annotation filter.
-$output = qx{../task rc.search.case.sensitive=yes ls description.contains:Three};
-unlike ($output, qr/one two three/, 'one two three\bfour five six -> ls description.contains:Three = fail');
+# 14
+$output = qx{../task rc:caseless.rc rc.search.case.sensitive:yes ls description.contains:Three};
+unlike ($output, qr/one two three/, 'one two three\nfour five six -> ls description.contains:Three = fail');
 
-$output = qx{../task rc.search.case.sensitive=no ls description.contains:Three};
-like ($output, qr/one two three/, 'one two three\bfour five six -> ls description.contains:Three caseless = succeed');
+# 15
+$output = qx{../task rc:caseless.rc rc.search.case.sensitive:no ls description.contains:Three};
+like ($output, qr/one two three/, 'one two three\nfour five six -> ls description.contains:Three caseless = succeed');
 
-$output = qx{../task rc.search.case.sensitive=yes ls description.contains:Six};
-unlike ($output, qr/four five six/, 'one two three\bfour five six -> ls description.contains:Six = fail');
+# 16
+$output = qx{../task rc:caseless.rc rc.search.case.sensitive:yes ls description.contains:Six};
+unlike ($output, qr/four five six/, 'one two three\nfour five six -> ls description.contains:Six = fail');
 
-$output = qx{../task rc.search.case.sensitive=no ls description.contains:Six};
-like ($output, qr/four five six/, 'one two three\bfour five six -> ls description.contains:Six caseless = succeed');
+# 17
+$output = qx{../task rc:caseless.rc rc.search.case.sensitive:no ls description.contains:Six};
+like ($output, qr/four five six/, 'one two three\nfour five six -> ls description.contains:Six caseless = succeed');
 
 # Cleanup.
 unlink 'pending.data';
@@ -112,8 +129,8 @@ ok (!-r 'completed.data', 'Removed completed.data');
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');
 
-unlink 'append.rc';
-ok (!-r 'append.rc', 'Removed append.rc');
+unlink 'caseless.rc';
+ok (!-r 'caseless.rc', 'Removed caseless.rc');
 
 exit 0;
 

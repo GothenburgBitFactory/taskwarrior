@@ -497,7 +497,7 @@ std::string::size_type find (
     const char* start = t;
     const char* end = start + text.size ();
 
-    for (; t < end - len; ++t)
+    for (; t <= end - len; ++t)
     {
       int diff;
       for (size_t i = 0; i < len; ++i)
@@ -544,7 +544,7 @@ std::string::size_type find (
     const char* t = start + begin;
     const char* end = start + text.size ();
 
-    for (; t < end - len; ++t)
+    for (; t <= end - len; ++t)
     {
       int diff;
       for (size_t i = 0; i < len; ++i)
