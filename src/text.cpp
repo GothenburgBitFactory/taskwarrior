@@ -466,10 +466,10 @@ bool isWordEnd (const std::string& input, std::string::size_type pos)
 bool compare (
   const std::string& left,
   const std::string& right,
-  bool caseless /*= false*/)
+  bool sensitive /*= true*/)
 {
   // Use strcasecmp if required.
-  if (caseless)
+  if (!sensitive)
     return strcasecmp (left.c_str (), right.c_str ()) == 0 ? true : false;
 
   // Otherwise, just use std::string::operator==.
@@ -480,11 +480,11 @@ bool compare (
 std::string::size_type find (
   const std::string& text,
   const std::string& pattern,
-  bool caseless /*= false*/)
+  bool sensitive /*= true*/)
 {
-  // Implement a caseless find, which is really just a loop withing a loop,
+  // Implement a sensitive find, which is really just a loop withing a loop,
   // comparing lower-case versions of each character in turn.
-  if (caseless)
+  if (!sensitive)
   {
     // Handle empty pattern.
     const char* p = pattern.c_str ();
