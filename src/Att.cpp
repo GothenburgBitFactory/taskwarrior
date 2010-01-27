@@ -104,7 +104,7 @@ Att::Att (const std::string& name, const std::string& mod, const std::string& va
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const std::string& name, const std::string& mod, int value)
 {
-  mName  = name;
+  mName = name;
 
   std::stringstream s;
   s << value;
@@ -124,7 +124,7 @@ Att::Att (const std::string& name, const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const std::string& name, int value)
 {
-  mName  = name;
+  mName = name;
 
   std::stringstream s;
   s << value;
@@ -415,6 +415,7 @@ std::string Att::modType (const std::string& name) const
 {
   if (name == "hasnt" ||
       name == "isnt"  ||
+      name == "not"   ||  // TODO Verify this.
       name == "noword")
     return "negative";
 
@@ -486,32 +487,33 @@ void Att::parse (Nibbler& n)
 bool Att::match (const Att& other) const
 {
   // All matches are assumed to pass, any short-circuit on non-match.
+  bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
 
   // If there are no mods, just perform a straight compare on value.
   if (mMod == "")
   {
-    if (mValue != other.mValue)
+    if (!compare (mValue, other.mValue, (bool) case_sensitive))
       return false;
   }
 
   // has = contains as a substring.
   else if (mMod == "has" || mMod == "contains") // TODO i18n
   {
-    if (other.mValue.find (mValue) == std::string::npos)
+    if (find (other.mValue, mValue, (bool) case_sensitive) == std::string::npos)
       return false;
   }
 
   // is = equal.  Nop.
   else if (mMod == "is" || mMod == "equals") // TODO i18n
   {
-    if (mValue != other.mValue)
+    if (!compare (mValue, other.mValue, (bool) case_sensitive))
       return false;
   }
 
   // isnt = not equal.
   else if (mMod == "isnt" || mMod == "not") // TODO i18n
   {
-    if (mValue == other.mValue)
+    if (compare (mValue, other.mValue, (bool) case_sensitive))
       return false;
   }
 
@@ -535,7 +537,7 @@ bool Att::match (const Att& other) const
     if (other.mValue.length () < mValue.length ())
       return false;
 
-    if (mValue != other.mValue.substr (0, mValue.length ()))
+      if (!compare (mValue, other.mValue.substr (0, mValue.length ())))
       return false;
   }
 
@@ -545,16 +547,16 @@ bool Att::match (const Att& other) const
     if (other.mValue.length () < mValue.length ())
       return false;
 
-    if (mValue != other.mValue.substr (
+    if (!compare (mValue, other.mValue.substr (
                     other.mValue.length () - mValue.length (),
-                    std::string::npos))
+                    std::string::npos), (bool) case_sensitive))
       return false;
   }
 
   // hasnt = does not contain as a substring.
   else if (mMod == "hasnt") // TODO i18n
   {
-    if (other.mValue.find (mValue) != std::string::npos)
+    if (find (other.mValue, mValue, (bool) case_sensitive) != std::string::npos)
       return false;
   }
 
@@ -622,7 +624,7 @@ bool Att::match (const Att& other) const
   else if (mMod == "word") // TODO i18n
   {
     // Fail if the substring is not found.
-    std::string::size_type sub = other.mValue.find (mValue);
+    std::string::size_type sub = find (other.mValue, mValue, (bool) case_sensitive);
     if (sub == std::string::npos)
       return false;
 
@@ -638,7 +640,7 @@ bool Att::match (const Att& other) const
   else if (mMod == "noword") // TODO i18n
   {
     // Fail if the substring is not found.
-    std::string::size_type sub = other.mValue.find (mValue);
+    std::string::size_type sub = find (other.mValue, mValue);
     if (sub != std::string::npos &&
         isWordStart (other.mValue, sub) &&
         isWordEnd (other.mValue, sub + mValue.length () - 1))

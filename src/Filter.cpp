@@ -42,17 +42,22 @@ bool Filter::pass (const Record& record) const
   {
     // Descriptions have special handling such that they are linked to
     // annotations, and filtering on description implies identical filtering
-    // on annotations, and that both filter matches must succeed for the filter
-    // to succeed overall.
+    // on annotations.
+    //
+    // For positive modifiers (has, is ...) either the description or the
+    // annotation filter must succeed.
+    //
+    // For negative modifiers (hasnt, isnt ...) both the description and the
+    // annotation filter must succeed.
     if (att->name () == "description")
     {
-      bool description_result = true;
+      bool pass = true;
       int annotation_pass_count = 0;
       int annotation_fail_count = 0;
 
       if ((r = record.find (att->name ())) != record.end ())
       {
-        description_result = att->match (r->second);
+        pass = att->match (r->second);
 
         foreach (ra, record)
         {
@@ -66,6 +71,8 @@ bool Filter::pass (const Record& record) const
           }
         }
       }
+
+      // Missing attribute implies failure.
       else if (! att->match (Att ()))
         return false;
 
@@ -74,12 +81,12 @@ bool Filter::pass (const Record& record) const
       // are willing to invest a week understanding and testing it.
       if (att->modType (att->mod ()) == "positive")
       {
-        if (! (description_result || annotation_pass_count > 0))
+        if (! (pass || annotation_pass_count))
           return false;
       }
       else
       {
-        if (!description_result || annotation_fail_count > 0)
+        if (! (pass && annotation_fail_count == 0))
           return false;
       }
     }
