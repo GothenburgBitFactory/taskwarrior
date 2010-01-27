@@ -28,6 +28,7 @@
 #include "Subst.h"
 #include "Nibbler.h"
 #include "Context.h"
+#include "text.h"
 #include "i18n.h"
 
 extern Context context;
@@ -121,31 +122,48 @@ void Subst::apply (
   std::vector <Att>& annotations) const
 {
   std::string::size_type pattern;
+  bool sensitive = context.config.getBoolean ("search.case.sensitive");
 
   if (mFrom != "")
   {
     if (mGlobal)
     {
       // Perform all subs on description.
-      while ((pattern = description.find (mFrom)) != std::string::npos)
+      int counter = 0;
+      pattern = 0;
+
+      while ((pattern = find (description, mFrom, pattern, sensitive)) != std::string::npos)
+      {
         description.replace (pattern, mFrom.length (), mTo);
+        pattern += mTo.length ();
+
+        if (++counter > 1000)
+          throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
+      }
 
       // Perform all subs on annotations.
+      counter = 0;
+      pattern = 0;
       std::vector <Att>::iterator i;
       for (i = annotations.begin (); i != annotations.end (); ++i)
       {
-        std::string description = i->value ();
-        while ((pattern = description.find (mFrom)) != std::string::npos)
+        std::string annotation = i->value ();
+        while ((pattern = find (annotation, mFrom, pattern, sensitive)) != std::string::npos)
         {
-          description.replace (pattern, mFrom.length (), mTo);
-          i->value (description);
+          annotation.replace (pattern, mFrom.length (), mTo);
+          pattern += mTo.length ();
+
+          i->value (annotation);
+
+          if (++counter > 1000)
+            throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
         }
       }
     }
     else
     {
       // Perform first description substitution.
-      if ((pattern = description.find (mFrom)) != std::string::npos)
+      if ((pattern = find (description, mFrom, sensitive)) != std::string::npos)
         description.replace (pattern, mFrom.length (), mTo);
 
       // Failing that, perform the first annotation substitution.
@@ -154,11 +172,11 @@ void Subst::apply (
         std::vector <Att>::iterator i;
         for (i = annotations.begin (); i != annotations.end (); ++i)
         {
-          std::string description = i->value ();
-          if ((pattern = description.find (mFrom)) != std::string::npos)
+          std::string annotation = i->value ();
+          if ((pattern = find (annotation, mFrom, sensitive)) != std::string::npos)
           {
-            description.replace (pattern, mFrom.length (), mTo);
-            i->value (description);
+            annotation.replace (pattern, mFrom.length (), mTo);
+            i->value (annotation);
             break;
           }
         }

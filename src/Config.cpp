@@ -63,6 +63,7 @@ std::string Config::defaults =
   "next=2                                 # How many tasks per project in next report\n"
   "bulk=2                                 # > 2 tasks considered 'a lot', for confirmation\n"
   "nag=You have higher priority tasks.    # Nag message to keep you honest\n"                      // TODO
+  "search.case.sensitive=yes              # Setting to no allows case insensitive searches\n"
   "\n"
   "# Dates\n"
   "dateformat=m/d/Y                       # Preferred input and display date format\n"
@@ -71,6 +72,8 @@ std::string Config::defaults =
   "weekstart=Sunday                       # Sunday or Monday only\n"
   "displayweeknumber=yes                  # Show week numbers on calendar\n"
   "due=7                                  # Task is considered due in 7 days\n"
+  "\n"
+  "# Calendar controls\n"
   "calendar.legend=yes                    # Display the legend on calendar\n"
   "calendar.details=sparse                # Calendar shows information for tasks w/due dates: full, sparse or none\n"
   "calendar.details.report=list           # Report to use when showing task information in cal\n"

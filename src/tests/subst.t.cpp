@@ -34,10 +34,12 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (15);
+  UnitTest t (19);
 
   Task task;
   task.set ("description", "one two three four");
+
+  context.config.set ("search.case.sensitive", "yes");
 
   Subst s;
   t.ok (s.valid ("/a/b/x"),         "valid /a/b/x");
@@ -90,6 +92,43 @@ int main (int argc, char** argv)
     t.fail ("failed to parse '/e /E /g'");
   }
 
+  // Now repeat the last two tests with a case-insensitive setting.
+  context.config.set ("search.case.sensitive", "no");
+  good = true;
+  try { s.parse ("/tWo/TWO/"); } catch (...) { good = false; }
+  t.ok (good, "parsed /tWo/TWO/ (rc.search.case.sensitive=no)");
+  if (good)
+  {
+    std::string description = task.get ("description");
+    std::vector <Att> annotations;
+    task.getAnnotations (annotations);
+
+    s.apply (description, annotations);
+    t.is (description, "one TWO three four", "single word subst (rc.search.case.sensitive=no)");
+  }
+  else
+  {
+    t.fail ("failed to parse '/tWo/TWO/' (rc.search.case.sensitive=no)");
+  }
+
+  good = true;
+  try { s.parse ("/E /E /g"); } catch (...) { good = false; }
+  t.ok (good, "parsed /E /E /g (rc.search.case.sensitive=no)");
+  if (good)
+  {
+    std::string description = task.get ("description");
+    std::vector <Att> annotations;
+    task.getAnnotations (annotations);
+
+    s.apply (description, annotations);
+    t.is (description, "onE two threE four", "multiple word subst (rc.search.case.sensitive=no)");
+  }
+  else
+  {
+    t.fail ("failed to parse '/E /E /g' (rc.search.case.sensitive=no)");
+  }
+
+  context.config.set ("search.case.sensitive", "yes");
   good = true;
   try { s.parse ("/from/to/g"); } catch (...) { good = false; }
   t.ok (good, "parsed /from/to/g");
