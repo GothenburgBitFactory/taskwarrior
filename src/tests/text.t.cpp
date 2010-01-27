@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (176);
+  UnitTest t (178);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -356,6 +356,9 @@ int main (int argc, char** argv)
   t.is ((int) find ("FOO", "fo", false),  0, "FOO contains fo (caseless)");
   t.is ((int) find ("FOO", "FO", false),  0, "FOO contains FO (caseless)");
 
+  // Test start offset.
+  t.is ((int) find ("one two three", "e",  3, true), (int) 11, "offset obeyed");
+  t.is ((int) find ("one two three", "e", 11, true), (int) 11, "offset obeyed");
   return 0;
 }
 
