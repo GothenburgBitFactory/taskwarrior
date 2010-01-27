@@ -27,6 +27,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <strings.h>
 #include <ctype.h>
 #include "Context.h"
 #include "util.h"
@@ -459,6 +460,62 @@ bool isWordEnd (const std::string& input, std::string::size_type pos)
     return true;
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool compare (
+  const std::string& left,
+  const std::string& right,
+  bool caseless /*= false*/)
+{
+  // Use strcasecmp if required.
+  if (caseless)
+    return strcasecmp (left.c_str (), right.c_str ()) == 0 ? true : false;
+
+  // Otherwise, just use std::string::operator==.
+  return left == right;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string::size_type find (
+  const std::string& text,
+  const std::string& pattern,
+  bool caseless /*= false*/)
+{
+  // Implement a caseless find, which is really just a loop withing a loop,
+  // comparing lower-case versions of each character in turn.
+  if (caseless)
+  {
+    // Handle empty pattern.
+    const char* p = pattern.c_str ();
+    size_t len = pattern.length ();
+    if (len == 0)
+      return 0;
+
+    // Evaluate these once, for performance reasons.
+    const char* t = text.c_str ();
+    const char* start = t;
+    const char* end = start + text.size ();
+
+    for (; t < end - len; ++t)
+    {
+      int diff;
+      for (size_t i = 0; i < len; ++i)
+        if ((diff = tolower (t[i]) - tolower (p[i])))
+          break;
+
+      // diff == 0 means there was no break from the loop, which only occurs
+      // when a difference is detected.  Therefore, the loop terminated, and
+      // diff is zero.
+      if (diff == 0)
+        return t - start;
+    }
+
+    return std::string::npos;
+  }
+
+  // Otherwise, just use std::string::find.
+  return text.find (pattern);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

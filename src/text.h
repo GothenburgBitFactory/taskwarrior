@@ -54,6 +54,8 @@ bool noSpaces (const std::string&);
 bool noVerticalSpace (const std::string&);
 bool isWordStart (const std::string&, std::string::size_type);
 bool isWordEnd (const std::string&, std::string::size_type);
+bool compare (const std::string&, const std::string&, bool caseless = false);
+std::string::size_type find (const std::string&, const std::string&, bool caseless = false);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

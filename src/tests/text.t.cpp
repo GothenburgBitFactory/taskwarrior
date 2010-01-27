@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (147);
+  UnitTest t (176);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -305,8 +305,58 @@ int main (int argc, char** argv)
   t.ok    (isWordEnd (text, 11),                  "isWordEnd (\"Hello, world.\", 11) -> true");
   t.notok (isWordEnd (text, 12),                  "isWordEnd (\"Hello, world.\", 12) -> false");
 
+  // bool compare (const std::string&, const std::string&, bool caseless = false);
+  // Make sure degenerate cases are handled.
+  t.ok    (compare ("", ""),    "'' == ''");
+  t.notok (compare ("foo", ""), "foo != ''");
+  t.notok (compare ("", "foo"), "'' != foo");
+
+  // Make sure the default is case-sensitive.
+  t.ok    (compare ("foo", "foo"), "foo == foo");
+  t.notok (compare ("foo", "FOO"), "foo != foo");
+
+  // Test case-sensitive.
+  t.notok (compare ("foo", "xx", false),  "foo != xx");
+
+  t.ok    (compare ("foo", "foo", false), "foo == foo");
+  t.notok (compare ("foo", "FOO", false), "foo != FOO");
+  t.notok (compare ("FOO", "foo", false), "FOO != foo");
+  t.ok    (compare ("FOO", "FOO", false), "FOO == FOO");
+
+  // Test case-insensitive.
+  t.notok (compare ("foo", "xx", true),   "foo != foo (caseless)");
+
+  t.ok    (compare ("foo", "foo", true),  "foo == foo (caseless)");
+  t.ok    (compare ("foo", "FOO", true),  "foo == FOO (caseless)");
+  t.ok    (compare ("FOO", "foo", true),  "FOO == foo (caseless)");
+  t.ok    (compare ("FOO", "FOO", true),  "FOO == FOO (caseless)");
+
+  // std::string::size_type find (const std::string&, const std::string&, bool caseless = false);
+  // Make sure degenerate cases are handled.
+  t.is ((int) find ("foo", ""), (int) 0,                 "foo !contains ''");
+  t.is ((int) find ("", "foo"), (int) std::string::npos, "'' !contains foo");
+
+  // Make sure the default is case-sensitive.
+  t.is ((int) find ("foo", "fo"), 0,                       "foo contains fo");
+  t.is ((int) find ("foo", "FO"), (int) std::string::npos, "foo !contains fo");
+
+  // Test case-sensitive.
+  t.is ((int) find ("foo", "xx", false), (int) std::string::npos, "foo !contains xx");
+
+  t.is ((int) find ("foo", "fo", false), 0,                       "foo contains fo");
+  t.is ((int) find ("foo", "FO", false), (int) std::string::npos, "foo !contains fo");
+  t.is ((int) find ("FOO", "fo", false), (int) std::string::npos, "foo !contains fo");
+  t.is ((int) find ("FOO", "FO", false), 0,                       "foo contains fo");
+
+  // Test case-insensitive.
+  t.is ((int) find ("foo", "xx", true),  (int) std::string::npos, "foo !contains xx (caseless)");
+
+  t.is ((int) find ("foo", "fo", true),  0, "foo contains fo (caseless)");
+  t.is ((int) find ("foo", "FO", true),  0, "foo contains FO (caseless)");
+  t.is ((int) find ("FOO", "fo", true),  0, "FOO contains fo (caseless)");
+  t.is ((int) find ("FOO", "FO", true),  0, "FOO contains FO (caseless)");
+
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
