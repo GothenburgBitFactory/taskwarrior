@@ -536,12 +536,12 @@ std::string::size_type find (
       return 0;
 
     // Handle bad begin.
-    if (begin >= len)
+    if (begin >= text.length ())
       return std::string::npos;
 
     // Evaluate these once, for performance reasons.
-    const char* t = text.c_str ();
-    const char* start = t + begin;
+    const char* start = text.c_str ();
+    const char* t = start + begin;
     const char* end = start + text.size ();
 
     for (; t < end - len; ++t)
