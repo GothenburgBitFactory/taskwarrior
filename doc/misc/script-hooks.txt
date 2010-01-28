@@ -1,0 +1,33 @@
+$
+$ # Task now has Lua 5.1.4 built in.
+$
+$ task version
+$ cat > hooks.lua
+function foo ()
+  print ("Hello from Lua")
+  return 0, nil
+end
+^D
+$
+$ # Task can call into Lua at many points during execution.
+$ # This one is called immediately before task quits.
+$
+$ task rc.hook.pre-exit=~/hooks.lua:foo version
+$
+$ # While task is calling Lua code, the Lua can also call
+$ # back into a task API, for information.
+$
+$ cat > hooks.lua
+function foo ()
+  print "Lua version is " .. task_lua_version ())
+  print "Task version is " .. task_version ())
+  return 0, nil
+end
+^D
+$
+$ cat >> .taskrc
+hook.pre-exit=~/hooks.lua:foo
+^D
+$
+$ task version
+
