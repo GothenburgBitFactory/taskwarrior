@@ -56,6 +56,8 @@
  + Added a new 'task-faq' man page for common questions and answers.
  + Added a new 'task-color' man page detailing how to set up and use color in
    task.
+ + Added feature #176, which allows for configurable case-sensitivity for keyword
+   searches and substitutions (thanks to John Florian).
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted
    list.
  + Fixed bug #317 which colored tasks in the 'completed' report according to

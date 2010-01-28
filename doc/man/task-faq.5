@@ -89,6 +89,24 @@ function that does the same thing:
       /usr/local/bin/task $*
     }
 
+.TP
+.B Q: Task searches in a case-sensitive fashion - can I change that?
+You can.  Just set the following value in your .taskrc file:
+
+    search.case.sensitive=no
+
+This will affect searching for keywords:
+
+    $ task list Document
+
+task will perform a caseless search in the description and any annotations for
+the keyword 'Document'.  It also affects description and annotation
+substitutions:
+
+    $ task 1 /teh/the/
+
+The pattern on the left will now be a caseless search term.
+
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.
 .br
