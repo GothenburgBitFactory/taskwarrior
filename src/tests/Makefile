@@ -1,15 +1,16 @@
 PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
           config.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t \
           cmd.t util.t color.t list.t path.t file.t directory.t
-CFLAGS  = -I. -I.. -Wall -pedantic -ggdb3 -fno-rtti
+CFLAGS  = -I. -I.. -I../.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib -lncurses
-OBJECTS = ../TDB.o ../Task.o ../text.o ../Date.o ../Table.o ../Duration.o      \
-          ../util.o ../Config.o ../Sequence.o ../Att.o ../Cmd.o ../Record.o    \
-          ../StringTable.o ../Subst.o ../Nibbler.o ../Location.o ../Filter.o   \
-          ../Context.o ../Keymap.o ../command.o ../interactive.o ../report.o   \
-          ../Grid.o ../Color.o ../rules.o ../recur.o ../custom.o ../import.o   \
-          ../edit.o ../Timer.o ../Permission.o ../Path.o ../File.o             \
-          ../Directory.o
+OBJECTS = ../t-TDB.o ../t-Task.o ../t-text.o ../t-Date.o ../t-Table.o          \
+          ../t-Duration.o ../t-util.o ../t-Config.o ../t-Sequence.o ../t-Att.o \
+          ../t-Cmd.o ../t-Record.o ../t-StringTable.o ../t-Subst.o             \
+          ../t-Nibbler.o ../t-Location.o ../t-Filter.o ../t-Context.o          \
+          ../t-Keymap.o ../t-command.o ../t-interactive.o ../t-report.o        \
+          ../t-Grid.o ../t-Color.o ../t-rules.o ../t-recur.o ../t-custom.o     \
+          ../t-import.o ../t-edit.o ../t-Timer.o ../t-Permission.o ../t-Path.o \
+          ../t-File.o ../t-Directory.o ../t-Hooks.o ../t-API.o
 
 all: $(PROJECT)
 

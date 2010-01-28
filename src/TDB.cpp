@@ -121,48 +121,49 @@ void TDB::location (const std::string& path)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::lock (bool lockFile /* = true */)
 {
-  mLock = lockFile;
-
-  mPending.clear ();
-  mNew.clear ();
-  mPending.clear ();
-
-  foreach (location, mLocations)
+  if (context.hooks.trigger ("pre-file-lock"))
   {
-    location->pending   = openAndLock (location->path + "/pending.data");
-    location->completed = openAndLock (location->path + "/completed.data");
-    location->undo      = openAndLock (location->path + "/undo.data");
-  }
+    mLock = lockFile;
 
-  mAllOpenAndLocked = true;
+    mPending.clear ();
+    mNew.clear ();
+    mPending.clear ();
+
+    foreach (location, mLocations)
+    {
+      location->pending   = openAndLock (location->path + "/pending.data");
+      location->completed = openAndLock (location->path + "/completed.data");
+      location->undo      = openAndLock (location->path + "/undo.data");
+    }
+
+    mAllOpenAndLocked = true;
+    context.hooks.trigger ("post-file-lock");
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::unlock ()
 {
-  if (mAllOpenAndLocked)
+  mPending.clear ();
+  mNew.clear ();
+  mModified.clear ();
+
+  foreach (location, mLocations)
   {
-    mPending.clear ();
-    mNew.clear ();
-    mModified.clear ();
+    fflush (location->pending);
+    fclose (location->pending);
+    location->pending = NULL;
 
-    foreach (location, mLocations)
-    {
-      fflush (location->pending);
-      fclose (location->pending);
-      location->pending = NULL;
+    fflush (location->completed);
+    fclose (location->completed);
+    location->completed = NULL;
 
-      fflush (location->completed);
-      fclose (location->completed);
-      location->completed = NULL;
-
-      fflush (location->undo);
-      fclose (location->undo);
-      location->completed = NULL;
-    }
-
-    mAllOpenAndLocked = false;
+    fflush (location->undo);
+    fclose (location->undo);
+    location->completed = NULL;
   }
+
+  mAllOpenAndLocked = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -343,6 +344,7 @@ void TDB::update (const Task& task)
 int TDB::commit ()
 {
   Timer t ("TDB::commit");
+  context.hooks.trigger ("pre-gc");
 
   int quantity = mNew.size () + mModified.size ();
 
@@ -362,6 +364,7 @@ int TDB::commit ()
       writeUndo (*task, mLocations[0].undo);
 
     mNew.clear ();
+    context.hooks.trigger ("post-gc");
     return quantity;
   }
 
@@ -408,6 +411,7 @@ int TDB::commit ()
     mNew.clear ();
   }
 
+  context.hooks.trigger ("post-gc");
   return quantity;
 }
 
@@ -506,6 +510,7 @@ int TDB::nextId ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::undo ()
 {
+  context.hooks.trigger ("pre-undo");
   Directory location (context.config.get ("data.location"));
 
   std::string undoFile      = location.data + "/undo.data";
@@ -670,6 +675,7 @@ void TDB::undo ()
       // Rewrite files.
       File::write (pendingFile, p);
       File::write (undoFile, u);
+      context.hooks.trigger ("post-undo");
       return;
     }
   }
@@ -708,6 +714,7 @@ void TDB::undo ()
       }
 
       std::cout << "Undo complete." << std::endl;
+      context.hooks.trigger ("post-undo");
       return;
     }
   }

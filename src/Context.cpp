@@ -83,6 +83,11 @@ void Context::initialize (int argc, char** argv)
   }
 
   initialize ();
+
+  // Hook system init, plus post-start event occurring at the first possible
+  // moment after hook initialization.
+  hooks.initialize ();
+  hooks.trigger ("post-start");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,8 +139,6 @@ void Context::initialize ()
 int Context::run ()
 {
   int rc;
-  Timer t ("Context::run");
-
   std::string output;
   try
   {
@@ -156,30 +159,39 @@ int Context::run ()
   }
 
   // Dump all debug messages.
+  hooks.trigger ("pre-debug");
   if (config.getBoolean ("debug"))
     foreach (d, debugMessages)
       if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
         std::cout << colorizeDebug (*d) << std::endl;
       else
         std::cout << *d << std::endl;
+  hooks.trigger ("post-debug");
 
   // Dump all headers.
+  hooks.trigger ("pre-header");
   foreach (h, headers)
     if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
       std::cout << colorizeHeader (*h) << std::endl;
     else
       std::cout << *h << std::endl;
+  hooks.trigger ("post-header");
 
   // Dump the report output.
+  hooks.trigger ("pre-output");
   std::cout << output;
+  hooks.trigger ("post-output");
 
   // Dump all footnotes.
+  hooks.trigger ("pre-footnote");
   foreach (f, footnotes)
     if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
       std::cout << colorizeFootnote (*f) << std::endl;
     else
       std::cout << *f << std::endl;
+  hooks.trigger ("post-footnote");
 
+  hooks.trigger ("pre-exit");
   return rc;
 }
 
@@ -187,7 +199,10 @@ int Context::run ()
 int Context::dispatch (std::string &out)
 {
   int rc = 0;
+
   Timer t ("Context::dispatch");
+
+  hooks.trigger ("pre-dispatch");
 
   // TODO Just look at this thing.  It cries out for a dispatch table.
        if (cmd.command == "projects")      { rc = handleProjects           (out); }
@@ -239,6 +254,7 @@ int Context::dispatch (std::string &out)
   if (cmd.isWriteCommand () && !inShadow)
     shadow ();
 
+  hooks.trigger ("post-dispatch");
   return rc;
 }
 
@@ -357,8 +373,6 @@ void Context::loadCorrectConfigFile ()
         "Could not read home directory from the passwd file."));
 
   std::string home = pw->pw_dir;
-//  std::string rc   = home + "/.taskrc";
-//  std::string data = home + "/.task";
   File      rc   (home + "/.taskrc");
   Directory data (home + "./task");
 

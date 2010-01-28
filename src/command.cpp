@@ -52,66 +52,71 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int handleAdd (std::string &outs)
 {
-  std::stringstream out;
-
-  context.task.set ("uuid", uuid ());
-  context.task.setEntry ();
-
-  // Recurring tasks get a special status.
-  if (context.task.has ("due") &&
-      context.task.has ("recur"))
+  if (context.hooks.trigger ("pre-add-command"))
   {
-    context.task.setStatus (Task::recurring);
-    context.task.set ("mask", "");
-  }
-  else if (context.task.has ("wait"))
-    context.task.setStatus (Task::waiting);
-  else
-    context.task.setStatus (Task::pending);
+    std::stringstream out;
 
-  // Override with default.project, if not specified.
-  if (context.task.get ("project") == "")
-    context.task.set ("project", context.config.get ("default.project"));
+    context.task.set ("uuid", uuid ());
+    context.task.setEntry ();
 
-  // Override with default.priority, if not specified.
-  if (context.task.get ("priority") == "")
-  {
-    std::string defaultPriority = context.config.get ("default.priority");
-    if (Att::validNameValue ("priority", "", defaultPriority))
-      context.task.set ("priority", defaultPriority);
-  }
+    // Recurring tasks get a special status.
+    if (context.task.has ("due") &&
+        context.task.has ("recur"))
+    {
+      context.task.setStatus (Task::recurring);
+      context.task.set ("mask", "");
+    }
+    else if (context.task.has ("wait"))
+      context.task.setStatus (Task::waiting);
+    else
+      context.task.setStatus (Task::pending);
 
-  // Include tags.
-  foreach (tag, context.tagAdditions)
-    context.task.addTag (*tag);
+    // Override with default.project, if not specified.
+    if (context.task.get ("project") == "")
+      context.task.set ("project", context.config.get ("default.project"));
 
-  // Perform some logical consistency checks.
-  if (context.task.has ("recur") &&
-      !context.task.has ("due"))
-    throw std::string ("You cannot specify a recurring task without a due date.");
+    // Override with default.priority, if not specified.
+    if (context.task.get ("priority") == "")
+    {
+      std::string defaultPriority = context.config.get ("default.priority");
+      if (Att::validNameValue ("priority", "", defaultPriority))
+        context.task.set ("priority", defaultPriority);
+    }
 
-  if (context.task.has ("until")  &&
-      !context.task.has ("recur"))
-    throw std::string ("You cannot specify an until date for a non-recurring task.");
+    // Include tags.
+    foreach (tag, context.tagAdditions)
+      context.task.addTag (*tag);
 
-  // Only valid tasks can be added.
-  context.task.validate ();
+    // Perform some logical consistency checks.
+    if (context.task.has ("recur") &&
+        !context.task.has ("due"))
+      throw std::string ("You cannot specify a recurring task without a due date.");
 
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.add (context.task);
+    if (context.task.has ("until")  &&
+        !context.task.has ("recur"))
+      throw std::string ("You cannot specify an until date for a non-recurring task.");
+
+    // Only valid tasks can be added.
+    context.task.validate ();
+
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    context.tdb.add (context.task);
 
 #ifdef FEATURE_NEW_ID
-  // All this, just for an id number.
-  std::vector <Task> all;
-  Filter none;
-  context.tdb.loadPending (all, none);
-  out << "Created task " << context.tdb.nextId () << std::endl;
+    // All this, just for an id number.
+    std::vector <Task> all;
+    Filter none;
+    context.tdb.loadPending (all, none);
+    out << "Created task " << context.tdb.nextId () << std::endl;
 #endif
 
-  context.tdb.commit ();
-  context.tdb.unlock ();
+    context.tdb.commit ();
+    context.tdb.unlock ();
 
-  outs = out.str ();
+    outs = out.str ();
+    context.hooks.trigger ("post-add-command");
+  }
+
   return 0;
 }
 
@@ -490,8 +495,12 @@ int handleVersion (std::string &outs)
 #endif
 
       << std::endl
-      << "Copyright (C) 2006 - 2010, P. Beckingham, F. Hernandez."
+      << "Copyright (C) 2006 - 2010 P. Beckingham, F. Hernandez."
       << std::endl
+#ifdef HAVE_LIBLUA
+      << "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio."
+      << std::endl
+#endif
       << disclaimer.render ()
       << link.render ()
       << std::endl;
@@ -711,6 +720,7 @@ int handleConfig (std::string &outs)
   out << context.config.checkForDeprecatedColor ();
   // TODO Check for referenced but missing theme files.
   // TODO Check for referenced but missing string files.
+  // TODO Check for referenced but missing hook scripts.
 
   // Check for bad values in rc.annotations.
   std::string annotations = context.config.get ("annotations");
@@ -784,104 +794,116 @@ int handleConfig (std::string &outs)
 int handleDelete (std::string &outs)
 {
   int rc = 0;
-  std::stringstream out;
 
-  context.disallowModification ();
-
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
-
-  // Filter sequence.
-  std::vector <Task> all = tasks;
-  context.filter.applySequence (tasks, context.sequence);
-
-  // Determine the end date.
-  char endTime[16];
-  sprintf (endTime, "%u", (unsigned int) time (NULL));
-
-  foreach (task, tasks)
+  if (context.hooks.trigger ("pre-delete-command"))
   {
-    std::stringstream question;
-    question << "Permanently delete task "
-             << task->id
-             << " '"
-             << task->get ("description")
-             << "'?";
+    std::stringstream out;
 
-    if (!context.config.getBoolean ("confirmation") || confirm (question.str ()))
+    context.disallowModification ();
+
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    Filter filter;
+    context.tdb.loadPending (tasks, filter);
+
+    // Filter sequence.
+    std::vector <Task> all = tasks;
+    context.filter.applySequence (tasks, context.sequence);
+
+    // Determine the end date.
+    char endTime[16];
+    sprintf (endTime, "%u", (unsigned int) time (NULL));
+
+    foreach (task, tasks)
     {
-      // Check for the more complex case of a recurring task.  If this is a
-      // recurring task, get confirmation to delete them all.
-      std::string parent = task->get ("parent");
-      if (parent != "")
+      context.hooks.setTaskId (task->id);
+      if (context.hooks.trigger ("pre-delete"))
       {
-        if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
-        {
-          // Scan all pending tasks for siblings of this task, and the parent
-          // itself, and delete them.
-          foreach (sibling, all)
-          {
-            if (sibling->get ("parent") == parent ||
-                sibling->get ("uuid")   == parent)
-            {
-              sibling->setStatus (Task::deleted);
-              sibling->set ("end", endTime);
-              context.tdb.update (*sibling);
+        std::stringstream question;
+        question << "Permanently delete task "
+                 << task->id
+                 << " '"
+                 << task->get ("description")
+                 << "'?";
 
-              if (context.config.getBoolean ("echo.command"))
-                out << "Deleting recurring task "
-                    << sibling->id
-                    << " '"
-                    << sibling->get ("description")
-                    << "'"
-                    << std::endl;
+        if (!context.config.getBoolean ("confirmation") || confirm (question.str ()))
+        {
+          // Check for the more complex case of a recurring task.  If this is a
+          // recurring task, get confirmation to delete them all.
+          std::string parent = task->get ("parent");
+          if (parent != "")
+          {
+            if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
+            {
+              // Scan all pending tasks for siblings of this task, and the parent
+              // itself, and delete them.
+              foreach (sibling, all)
+              {
+                if (sibling->get ("parent") == parent ||
+                    sibling->get ("uuid")   == parent)
+                {
+                  sibling->setStatus (Task::deleted);
+                  sibling->set ("end", endTime);
+                  context.tdb.update (*sibling);
+
+                  if (context.config.getBoolean ("echo.command"))
+                    out << "Deleting recurring task "
+                        << sibling->id
+                        << " '"
+                        << sibling->get ("description")
+                        << "'"
+                        << std::endl;
+                }
+              }
+            }
+            else
+            {
+              // Update mask in parent.
+              task->setStatus (Task::deleted);
+              updateRecurrenceMask (all, *task);
+
+              task->set ("end", endTime);
+              context.tdb.update (*task);
+
+              out << "Deleting recurring task "
+                  << task->id
+                  << " '"
+                  << task->get ("description")
+                  << "'"
+                  << std::endl;
             }
           }
+          else
+          {
+            task->setStatus (Task::deleted);
+            task->set ("end", endTime);
+            context.tdb.update (*task);
+
+            if (context.config.getBoolean ("echo.command"))
+              out << "Deleting task "
+                  << task->id
+                  << " '"
+                  << task->get ("description")
+                  << "'"
+                  << std::endl;
+          }
         }
-        else
-        {
-          // Update mask in parent.
-          task->setStatus (Task::deleted);
-          updateRecurrenceMask (all, *task);
-
-          task->set ("end", endTime);
-          context.tdb.update (*task);
-
-          out << "Deleting recurring task "
-              << task->id
-              << " '"
-              << task->get ("description")
-              << "'"
-              << std::endl;
+        else {
+          out << "Task not deleted." << std::endl;
+          rc  = 1;
         }
-      }
-      else
-      {
-        task->setStatus (Task::deleted);
-        task->set ("end", endTime);
-        context.tdb.update (*task);
 
-        if (context.config.getBoolean ("echo.command"))
-          out << "Deleting task "
-              << task->id
-              << " '"
-              << task->get ("description")
-              << "'"
-              << std::endl;
+        context.hooks.trigger ("post-delete");
       }
     }
-    else {
-      out << "Task not deleted." << std::endl;
-      rc  = 1;
-    }
+
+    context.tdb.commit ();
+    context.tdb.unlock ();
+
+    outs = out.str ();
+    context.hooks.trigger ("post-delete-command");
   }
 
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  outs = out.str ();
   return rc;
 }
 
@@ -1036,20 +1058,28 @@ int handleDone (std::string &outs)
 
       if (taskDiff (before, *task))
       {
-        if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
+        context.hooks.setTaskId (task->id);
+        if (context.hooks.trigger ("pre-completed"))
         {
-          context.tdb.update (*task);
+          if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
+          {
+            context.tdb.update (*task);
 
-          if (context.config.getBoolean ("echo.command"))
-            out << "Completed "
-                << task->id
-                << " '"
-                << task->get ("description")
-                << "'"
-                << std::endl;
+            if (context.config.getBoolean ("echo.command"))
+              out << "Completed "
+                  << task->id
+                  << " '"
+                  << task->get ("description")
+                  << "'"
+                  << std::endl;
 
-          ++count;
+            ++count;
+          }
+
+          context.hooks.trigger ("post-completed");
         }
+        else
+          continue;
       }
 
       updateRecurrenceMask (all, *task);
@@ -1066,7 +1096,9 @@ int handleDone (std::string &outs)
       rc = 1;
   }
 
-  context.tdb.commit ();
+  if (count)
+    context.tdb.commit ();
+
   context.tdb.unlock ();
 
   if (context.config.getBoolean ("echo.command"))
@@ -1744,20 +1776,29 @@ int deltaDescription (Task& task)
 int deltaTags (Task& task)
 {
   int changes = 0;
+  context.hooks.setTaskId (task.id);
 
   // Apply or remove tags, if any.
   std::vector <std::string> tags;
   context.task.getTags (tags);
   foreach (tag, tags)
   {
-    task.addTag (*tag);
-    ++changes;
+    if (context.hooks.trigger ("pre-tag"))
+    {
+      task.addTag (*tag);
+      ++changes;
+      context.hooks.trigger ("post-tag");
+    }
   }
 
   foreach (tag, context.tagRemovals)
   {
-    task.removeTag (*tag);
-    ++changes;
+    if (context.hooks.trigger ("pre-detag"))
+    {
+      task.removeTag (*tag);
+      ++changes;
+      context.hooks.trigger ("post-detag");
+    }
   }
 
   return changes;
