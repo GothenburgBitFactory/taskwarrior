@@ -47,8 +47,17 @@ if (open my $fh, '>', 'hook')
 }
 
 # Test the hook.
-my $output = qx{../task rc:hook.rc _version};
-like ($output, qr/\n\d\.\d+\.\d+\nmarker\n$/ms, 'Found marker after output');
+my $output = qx{../task rc:hook.rc version};
+if ($output =~ /PUC-Rio/)
+{
+  # Test the hook.
+  $output = qx{../task rc:hook.rc _version};
+  like ($output, qr/\n\d\.\d+\.\d+\nmarker\n$/ms, 'Found marker after output');
+}
+else
+{
+  pass ('Found marker after output - skipping: no Lua support');
+}
 
 # Cleanup.
 unlink 'pending.data';
