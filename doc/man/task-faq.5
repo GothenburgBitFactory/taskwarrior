@@ -43,6 +43,13 @@ file too.
 
 .TP
 .B Q: Can I share my tasks between different machines?
+Yes, you can.  Most people have success with a DropBox - a free and secure file
+synching tool.  Simply configure task to store it's data in a dropbox folder, by
+modifying the:
+
+    data.location=...
+
+configuration variable.  Check out DropBox at http://www.dropbox.com.
 
 .TP
 .B Q: The undo.data file gets very large - do I need it?
@@ -106,6 +113,30 @@ substitutions:
     $ task 1 /teh/the/
 
 The pattern on the left will now be a caseless search term.
+
+.TP
+.B Q: Why do the task ID numbers change?
+Task does this to always show you the smallest numbers it can.  The idea is that
+if your tasks are numbered 1 - 33, for example, those are easy to type in.  If
+instead task kept a rolling sequence number, after a while your tasks might be
+numbered 481 - 513, which makes it more likely to enter one incorrectly, because
+there are more digits.
+
+When you run a report (such as "list"), task assigns the numbers before it
+displays them.  Those numbers are good until the next report.  For example, you
+can do this:
+
+    $ task list
+    $ task do 12
+    $ task add Pay the rent
+    $ task delete 31
+
+Those id numbers are good until the next report is run.  This is because task
+performs a garbage-collect operation on the pending tasks file when a report is
+run.  This keeps the pending tasks file small, and therefore keeps task fast.
+The completed data file is the one that grows unbounded with use, but that one
+isn't accessed as much, so it doesn't matter as much.  So in all, the ID number
+resequencing is about efficiency.
 
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.
