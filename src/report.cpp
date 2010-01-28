@@ -383,7 +383,14 @@ int handleInfo (std::string &outs)
         {
           row = table.addRow ();
           table.addCell (row, 0, "Recur until");
-          table.addCell (row, 1, task->get ("until"));
+
+          Date dt (atoi (task->get ("until").c_str ()));
+          std::string format = context.config.get ("reportdateformat");
+          if (format == "")
+            format = context.config.get ("dateformat");
+
+          std::string until = getDueDate (*task, format);
+          table.addCell (row, 1, until);
         }
 
         if (task->has ("mask"))

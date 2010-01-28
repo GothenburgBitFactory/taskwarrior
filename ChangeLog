@@ -73,6 +73,8 @@
  + Fixed bug #299 which prevented excluding multiple projects from a report,
    by using "task list project.isnt:foo project.isnt:bar" (thanks to John
    Florian).
+ + Fixed bug #368 which caused recurring tasks 'until' dates to be rendered as
+   epoch numbers instead of dates (thanks to Cory Donnelly).
 
 ------ old releases ------------------------------
 
