@@ -166,15 +166,6 @@ std::string colorizeHeader (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string colorizeMessage (const std::string& input)
-{
-  if (gsColor["color.message"].nontrivial ())
-    return gsColor["color.message"].colorize (input);
-
-  return input;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 std::string colorizeFootnote (const std::string& input)
 {
   if (gsColor["color.footnote"].nontrivial ())

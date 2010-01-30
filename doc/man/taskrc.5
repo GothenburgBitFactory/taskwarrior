@@ -36,11 +36,13 @@ $ task rc.<name>:<value> ...
 
 If
 .B task
-is run without an existing configuration file it will ask if it should create a default, sample
+is run without an existing configuration file it will ask if it should create a
+default, sample
 .I .taskrc
 file in the user's home directory.
 
-The task configuration file consists of a series of "assignments" in each line. The "assignments" have the syntax:
+The task configuration file consists of a series of "assignments" in each line.
+The "assignments" have the syntax:
 
 .RS
 <name-of-configuration-variable>=<value-to-be-set>
@@ -57,11 +59,46 @@ is one of the variables described below
 is the value the variable is to be set to.
 .RE
 
-and set a configuration variable to a certain value. The equal sign ("=") is used to separate the variable
-name from the value to be set.
+and set a configuration variable to a certain value. The equal sign ("=") is
+used to separate the variable name from the value to be set.
 
-The hash mark, or pound sign ("#") is used as a "comment" character. It can be used to annotate the
-configuration file. All text after the character to the end of the line is ignored.
+The hash mark, or pound sign ("#") is used as a "comment" character. It can be
+used to annotate the configuration file. All text after the character to the end
+of the line is ignored.
+
+Note that task is flexible about the values used to represent Boolean items.
+You can use "on", "yes", "y", "1", "true", "t", "+", "enabled".  Anything else
+means "off".
+
+.SH EDITING
+You can edit your .taskrc file by hand if you wish, or you can use the 'config'
+command.  To permanently set a value in your .taskrc file, use this command:
+
+.RS
+$ task config nag "You have higher priority tasks!"
+.RE
+
+To delete an entry, use this command:
+
+.RS
+$ task config nag
+.RE
+
+Task will then use the default value.  To explicitly set a value to blank, and
+therefore avoid using the default value, use this command:
+
+.RS
+$ task config nag ""
+.RE
+
+Task will also display all your settings with this command:
+
+.RS
+$ task config
+.RE
+
+and in addition, will also perform a check of all the values in the file,
+warning you of anything it finds amiss.
 
 .SH CONFIGURATION VARIABLES
 Valid variable names and their default values are:
@@ -70,15 +107,20 @@ Valid variable names and their default values are:
 
 .TP
 .B data.location=$HOME/.task
-This is a path to the directory containing all the task files. By default, it is set up to be ~/.task,
-for example: /home/paul/.task
+This is a path to the directory containing all the task files. By default, it is
+set up to be ~/.task, for example: /home/paul/.task
+
+Note that you can use the
+.B ~
+shell meta character, which will be properly expanded.
 
 .TP
 .B locking=on
-Determines whether task uses file locking when accessing the pending.data and completed.data files.
-Default to "on". Solaris users who store the task data files on an NFS mount may need to set locking
-to "off". Note that setting this value to "off" is dangerous. It means that another program may write
-to the task.pending file when task is attempting to do the same.
+Determines whether task uses file locking when accessing the pending.data and
+completed.data files.  Defaults to "on". Solaris users who store the task data
+files on an NFS mount may need to set locking to "off". Note that there is
+danger in setting this value to "off" - another program (or another instance of
+task) may write to the task.pending file at the same time.
 
 .SS TERMINAL
 .TP
@@ -94,9 +136,9 @@ The width of tables used when ncurses support is not available. Defaults to 80.
 .B editor=vi
 Specifies which text editor you wish to use for when the
 .B task edit <ID>
-command is used. Task will first look for this configuration variable. If found, it is used.
-Otherwise task will look for the $VISUAL or $EDITOR environment variables, before it defaults
-to using "vi".
+command is used. Task will first look for this configuration variable. If found,
+it is used.  Otherwise task will look for the $VISUAL or $EDITOR environment
+variables, before it defaults to using "vi".
 
 .SS MISCELLANEOUS
 
@@ -109,51 +151,106 @@ locale for which there is no strings file.
 
 .TP
 .B confirmation=yes
-May be "yes" or "no", and determines whether task will ask for confirmation before deleting a task or doing bulk changes.
+May be "yes" or "no", and determines whether task will ask for confirmation
+before deleting a task or doing bulk changes.  The default value is "yes".
 
 .TP
 .B echo.command=yes
-May be "yes" or "no", and causes task to display the ID and description of any task when you run the start, stop, do, undo or delete commands. The default value is "yes". 
+May be "yes" or "no", and causes task to display the ID and description of any
+task when you run the start, stop, do, undo or delete commands. The default
+value is "yes".
 
 .TP
 .B annotations=full
 .TP
 .B report.X.annotations=full
-Controls the output of annotations in reports. Defaults to full - all annotations are displayed. Set to "sparse" only the last (youngest) annotation is displayed and if there are more than one present for a task a "+" sign is added to the description. Set to "none" the output of annotations is disabled and a "+" sign will be added if there are any annotations present.
+Controls the display of annotations in reports. Defaults to full - all
+annotations are displayed. Set to "sparse" only the last (newest) annotation
+is displayed and if there are more than one present for a task a "+" sign is
+added to the description. Set to "none" the output of annotations is disabled
+and a "+" sign will be added if there are any annotations present.  The default
+value is "full".
 
 .TP
 .B next=2
-Is a number, defaulting to 2, which is the number of tasks for each project that are shown in the 
+Is a number, defaulting to 2, which is the number of tasks for each project that
+are shown in the
 .B task next
 command.
 
 .TP
 .B bulk=2
-Is a number, defaulting to 2.  When more than this number of tasks are modified in a single command, confirmation will be required, unless the
+Is a number, defaulting to 2.  When more than this number of tasks are modified
+in a single command, confirmation will be required, unless the
 .B confirmation
 variable is "no".
 
+This is useful for preventing large-scale unintended changes.
+
 .TP
 .B nag=You have higher priority tasks.
-This may be a string of text, or blank. It is used as a prompt when a task is completed
-that is not considered high priority. The "task next" command lists important tasks, and
-completing one of those does not generate this nagging. Default value is: You have higher
-priority tasks.
+This may be a string of text, or blank. It is used as a prompt when a task is
+started or completed that is not considered high priority. The "task next"
+command lists important tasks, and completing one of those does not generate
+this nagging. Default value is: You have higher priority tasks.  It is a gentle
+reminder that you are contradicting your own priority settings.
 
 .TP
 .B complete.all.projects=yes
-May be yes or no, and determines whether the tab completion scripts consider all the
-project names you have used, or just the ones used in active tasks.
+May be yes or no, and determines whether the tab completion scripts consider all
+the project names you have used, or just the ones used in active tasks.  The
+default value is "no".
 
 .TP
 .B complete.all.tags=yes
-May be yes or no, and determines whether the tab completion scripts consider all the
-tag names you have used, or just the ones used in active tasks.
+May be yes or no, and determines whether the tab completion scripts consider all
+the tag names you have used, or just the ones used in active tasks.  The default
+value is "no".
 
 .TP
 .B search.case.sensitive=yes
 May be yes or no, and determines whether keyword lookup and substitutions on the
 description and annotations are done in a case sensitive way.  Defaults to yes.
+
+.TP
+.B _forcecolor=no
+Task shuts off color automatically when the output is not sent directly to a
+a TTY.  For example, this command:
+
+.RS
+.RS
+$ task list > file
+.RE
+
+will not use any color.  To override this, use:
+
+.RS
+$ task rc._forcecolor=yes list > file
+.RE
+.RE
+
+.TP
+.B blanklines=yes
+Turning this value off causes task to generate a more vertically compact output.
+
+.TP
+.B shell.prompt=task>
+The task shell command uses this value as a prompt.  You can change it to any
+string you like.
+
+.TP
+.B debug=off
+Task has a debug mode that causes diagnostic output to be displayed.  Typically
+this is not something anyone would want, but when reporting a bug, debug output
+can be useful.  It can also help explain how the command line is being parsed,
+but the information is displayed in a developer-friendly, not a user-friendly
+way.
+
+.TP
+.B alias.rm=delete
+Task supports command aliases.  This alias provides an alternate name (rm) for
+the delete command.  You can use aliases to provide alternate names for any of
+task's commands.
 
 .SS DATES
 
@@ -165,14 +262,15 @@ description and annotations are done in a case sensitive way.  Defaults to yes.
 .B dateformat.holiday=YMD
 .TP
 .B report.X.dateformat=m/d/Y
-This is a string of characters that define how task formats dates. The precedence order
-for the configuration variable is report.X.dateformat then reportdateformat then dateformat.
-While report.X.dateformat only formats the due date in reports, does reportdateformat format
-the due date both in reports and "task info". If both of these are not set then dateformat
-will be applied to the due date. Input dates as well as all other dates in reports are formatted
-according to dateformat.
+This is a string of characters that define how task formats date values. The
+precedence order for the configuration variable is report.X.dateformat then
+reportdateformat then dateformat.  While report.X.dateformat only formats the
+due date in reports, reportdateformat formats the due date both in reports
+and "task info".  If both of these are not set then dateformat will be applied
+to the due date.  Entered dates as well as all other displayed dates in reports
+are formatted according to dateformat.
 
-The default value is: m/d/Y.  The string should contain the characters
+The default value is: m/d/Y.  The string should contain the characters:
 
 .RS
 .RS
@@ -201,8 +299,8 @@ V  weeknumber,            for example 03 or 37
 .RE
 
 .RS
-The string may also contain other characters to act as spacers, or formatting. Examples for other
-values of dateformat:
+The string may also contain other characters to act as spacers, or formatting.
+Examples for other values of dateformat:
 .RE
 
 .RS
@@ -233,42 +331,47 @@ vV a Y-M-D   would do an output as "v30 Fri 2009-07.24"
 
 .TP
 .B weekstart=Sunday
-Determines the day a week starts. Valid values are Sunday or Monday only.
+Determines the day a week starts. Valid values are Sunday or Monday only. The
+default value is "Sunday".
 
 .TP
 .B displayweeknumber=yes
 Determines if week numbers are displayed when using the "task calendar" command.
-The week number is dependent on the day a week starts.
+The week number is dependent on the day a week starts.  The default value is
+"yes".
 
 .TP
 .B due=7
-This is the number of days into the future that define when a task is considered due,
-and is colored accordingly. Defaults to 7.
+This is the number of days into the future that define when a task is
+considered due, and is colored accordingly.  The default value is 7.
 
 .TP
 .B calendar.details=sparse
-If set to full running "task calendar" will display the details of tasks with due dates
-that fall into the calendar period. The corresponding days will be color-coded in the
-calendar. If set to sparse only the corresponding days will be color coded and no details
-will be displayed. The displaying of due dates with details is turned off by setting the
-variable to none.
+If set to full running "task calendar" will display the details of tasks with
+due dates that fall into the calendar period.  The corresponding days will be
+color-coded in the calendar.  If set to sparse only the corresponding days will
+be color coded and no details will be displayed.  The displaying of due dates
+with details is turned off by setting the variable to none.  The default value
+is "sparse".
 
 .TP
 .B calendar.details.report=list
-The report to run when displaying the details of tasks with due date when running the
-"task calendar" command.
+The report to run when displaying the details of tasks with due date when
+running the "task calendar" command.  The default value is "list".
 
 .TP
 .B calendar.holidays=full
-If set to full running "task calendar" will display holidays in the calendar by color-coding
-the corresponding days. A detailed list with the dates and names of the holidays is also shown.
-If set to sparse only the days are color-coded and no details on the holidays will be
-displayed. The displaying of holidays is turned off by setting the variable to none.
+If set to full running "task calendar" will display holidays in the calendar by
+color-coding the corresponding days.  A detailed list with the dates and names
+of the holidays is also shown.  If set to sparse only the days are color-coded
+and no details on the holidays will be displayed. The displaying of holidays is
+turned off by setting the variable to none.  The default value is "none".
 
 .TP
 .B Holidays
-Holidays are entered either directly in the .taskrc file or via an include file that is specified
-in .taskrc. For each holiday the name and the date is required to be given:
+Holidays are entered either directly in the .taskrc file or via an include file
+that is specified in .taskrc.  For each holiday the name and the date is
+required to be given:
 
 .RS
 .RS
@@ -284,14 +387,15 @@ holiday.sysadmin.date=20100730
 .RE
 
 .RS
-Dates are to be entered according to the setting in the dateformat.holiday variable.
+Dates are to be entered according to the setting in the dateformat.holiday
+variable.
 .RE
 
 .TP
-.B monthsperline=2
-Determines how many months the "task calendar" command renders across the screen.
-Defaults to however many will fit. If more months that will fit are specified,
-task will only show as many that will fit.
+.B monthsperline=3
+Determines how many months the "task calendar" command renders across the
+screen.  Defaults to however many will fit.  If more months than will fit are
+specified, task will only show as many that will fit.
 
 .SS COLOR CONTROLS
 
@@ -303,12 +407,12 @@ use dashes (-----) to underline column headings.
 .TP
 .B fontunderline=on
 Determines if font underlines or ASCII dashes should be used to underline
-headers.
+headers, even when color is enabled.
 
-Task has a number of coloration rules. They correspond to a particular attribute
-of a task, such as it being due, or being active, and specifies the automatic
-coloring of that task. A list of valid color, depending on your terminal, can be
-obtained by running the command
+Task has a number of coloration rules.  They correspond to a particular
+attribute of a task, such as it being due, or being active, and specifies the
+automatic coloring of that task.  A list of valid colors, depending on your
+terminal, can be obtained by running the command:
 
 .RS
 .B task color
@@ -320,48 +424,42 @@ The coloration rules and their defaults are:
 
 .RS
 .RS
-.B color.overdue=bold_red
+.B color.overdue=bold red
 The color for overdue tasks.
 .br
-.B color.due=bold_yellow
+.B color.due=bold yellow
 The color of due tasks.
 .br
 .B color.pri.H=bold
 The color of priority:H tasks.
 .br
-.B color.pri.M=on_yellow
-The color of priority:M tasks.
+.B color.pri.M=on yellow
+The color of priority:M tasks.  No default value.
 .br
-.B color.pri.L=on_green
-The color of priority:L tasks.
+.B color.pri.L=on green
+The color of priority:L tasks.  No default value.
 .br
-.B color.pri.none=white on_blue
-The color of priority: tasks.
+.B color.pri.none=white on blue
+The color of priority: tasks.  No default value.
 .br
-.B color.active=bold_cyan
+.B color.active=bold cyan
 The color of active tasks.
 .br
 .B color.tagged=yellow
 The color of tagged tasks.
 .br
-.B color.recurring=on_red
+.B color.recurring=on red
 The color for recurring tasks.
 .RE
 .RE
 
 .RS
-The value for the coloration rules may be one optional foreground color and one optional
-color. For example, the value may be
+See the task-color(5) man pages for color details.
 .RE
 
 .RS
-.RS
-bold_red on_bright_yellow
-.RE
-.RE
-
-.RS
-Certain attributes like tags, projects and keywords can also have their own coloration rules.
+Certain attributes like tags, projects and keywords can have their own
+coloration rules.
 .RE
 
 .RS
@@ -370,20 +468,16 @@ Certain attributes like tags, projects and keywords can also have their own colo
 Colors any task that has the tag X.
 
 .TP
-.B color.project.X=on_green
+.B color.project.X=on green
 Colors any task assigned to project X.
 
 .TP
-.B color.keyword.X=on_blue
-Colors any task where the description contains X.
+.B color.keyword.X=on blue
+Colors any task where the description or any annotation contains X.
 
 .TP
 .B color.header=green
 Colors any of the messages printed prior to the report output.
-
-.TP
-.B color.message=green
-Colors any of the messages printed after the report output.
 
 .TP
 .B color.footnote=green
@@ -419,11 +513,12 @@ Color of weeknumbers in calendar.
 .TP
 .B
 shadow.file=$HOME/.task/shadow.txt
-If specified, designates a file path that will be automatically written to by task,
-whenever the task database changes. In other words, it is automatically kept up to date.
-The shadow.command configuration variable is used to determine which report is written
-to the shadow file. There is no color used in the shadow file. This feature can be useful
-in maintaining a current file for use by programs like GeekTool, Conky or Samurize.
+If specified, designates a file path that will be automatically written to by
+task, whenever the task database changes.  In other words, it is automatically
+kept up to date.  The shadow.command configuration variable is used to determine
+which report is written to the shadow file.  There is no color used in the
+shadow file. This feature can be useful in maintaining a current file for use by
+programs like GeekTool, Conky or Samurize.
 
 .TP
 .B
@@ -447,20 +542,20 @@ file is updated by some task command.
 default.project=foo
 Provides a default project name for the
 .I task add
-command.
+command, if you don't specify one.  The default is blank.
 
 .TP
 .B
 default.priority=M
 Provides a default priority for the
 .I task add
-command.
+command, if you don't specify one.  The default is blank.
 
 .TP
 .B
 default.command=list
-Provides a default command that is run every time task is invoked with no arguments.
-For example, if set to:
+Provides a default command that is run every time task is invoked with no
+arguments.  For example, if set to:
 
 .RS
 .RS
@@ -469,8 +564,8 @@ default.command=list project:foo
 .RE
 
 .RS
-then task will run the "list project:foo" command if no command is specified. This means that
-by merely typing
+then task will run the "list project:foo" command if no command is specified.
+This means that by merely typing
 .RE
 
 .RS
@@ -510,31 +605,32 @@ The IDs are separated by commas.
 
 .TP
 .B report.X.labels
-The labels for each column that will be used when generating report X. The labels
-are a comma separated list.
+The labels for each column that will be used when generating report X. The
+labels are a comma separated list.
 
 .TP
 .B report.X.sort
-The sort order of the tasks in the generated report X. The sort order is specified
-by using the column ids post-fixed by a "+" for ascending sort order or a "-" for
-descending sort order. The sort IDs are separated by commas
+The sort order of the tasks in the generated report X. The sort order is
+specified by using the column ids post-fixed by a "+" for ascending sort order
+or a "-" for descending sort order. The sort IDs are separated by commas
 
 .TP
 .B report.X.filter
-This adds a filter to the report X so that only tasks matching the filter criteria
-are displayed in the generated report.
+This adds a filter to the report X so that only tasks matching the filter
+criteria are displayed in the generated report.
 
 .TP
 .B report.X.dateformat
-This adds a dateformat to the report X that will be used by the "due date" column. If
-it is not set then reportdateformat and dateformat will be used in this order. See the
+This adds a dateformat to the report X that will be used by the "due date"
+column. If it is not set then reportdateformat and dateformat will be used in
+this order. See the
 .B DATES
 section for details on the sequence placeholders.
 
 .TP
 .B report.X.annotations
-GThis adds the possibility to control the output of annotations for a task in a report. See
-the
+This adds the possibility to control the output of annotations for a task in a
+report. See the
 .B annotations
 variable for details on the possible values.
 
@@ -544,7 +640,8 @@ An optional value to a report limiting the number of displayed tasks in the
 generated report.
 
 .TP
-Task comes with a number of predefined reports in its default configuration file. These reports are:
+Task comes with a number of predefined reports in its default configuration
+file. These reports are:
 
 .TP
 .B long
@@ -556,6 +653,10 @@ Lists all tasks matching the specified criteria.
 
 .TP
 .B ls
+Short listing of all tasks matching the specified criteria.
+
+.TP
+.B minimal
 Minimal listing of all tasks matching the specified criteria.
 
 .TP

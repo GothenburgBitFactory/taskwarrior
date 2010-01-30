@@ -78,7 +78,7 @@ std::string Config::defaults =
   "calendar.details=sparse                # Calendar shows information for tasks w/due dates: full, sparse or none\n"
   "calendar.details.report=list           # Report to use when showing task information in cal\n"
   "calendar.holidays=none                 # Show public holidays on calendar:full, sparse or none\n"
-  "#monthsperline=3                       # Number of calendar months on a line\n"                 // TODO
+  "#monthsperline=3                       # Number of calendar months on a line\n"
   "\n"
   "# Color controls.\n"
   "color=on                               # Enable color\n"

@@ -118,7 +118,6 @@ void validSortColumns (const std::vector <std::string>&, const std::vector <std:
 void initializeColorRules ();
 void autoColorize (Task&, Color&);
 std::string colorizeHeader (const std::string&);
-std::string colorizeMessage (const std::string&);
 std::string colorizeFootnote (const std::string&);
 std::string colorizeDebug (const std::string&);
 
