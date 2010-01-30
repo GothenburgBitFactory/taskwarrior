@@ -119,6 +119,7 @@ std::string Config::defaults =
   "complete.all.projects=no               # Include old project names in 'projects' command\n"     // TODO
   "complete.all.tags=no                   # Include old tag names in 'tags' command\n"             // TODO
   "debug=no                               # Display diagnostics\n"
+  "hooks=off                              # Hook system master switch\n"
   "fontunderline=yes                      # Uses underlines rather than -------\n"
   "shell.prompt=task>                     # Prompt used by the shell command\n"                    // TODO
   "\n"

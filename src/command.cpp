@@ -671,7 +671,7 @@ int handleConfig (std::string &outs)
     "displayweeknumber echo.command fontunderline locking monthsperline nag "
     "next project shadow.command shadow.file shadow.notify weekstart editor "
     "import.synonym.id import.synonym.uuid complete.all.projects "
-    "complete.all.tags search.case.sensitive "
+    "complete.all.tags search.case.sensitive hooks "
 #ifdef FEATURE_SHELL
     "shell.prompt "
 #endif
@@ -700,7 +700,8 @@ int handleConfig (std::string &outs)
           i->substr (0, 10) != "color.tag."     &&
           i->substr (0,  8) != "holiday."       &&
           i->substr (0,  7) != "report."        &&
-          i->substr (0,  6) != "alias.")
+          i->substr (0,  6) != "alias."         &&
+          i->substr (0,  5) != "hook.")
       {
         unrecognized.push_back (*i);
       }

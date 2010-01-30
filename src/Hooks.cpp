@@ -89,46 +89,53 @@ void Hooks::initialize ()
   api.initialize ();
 #endif
 
-  std::vector <std::string> vars;
-  context.config.all (vars);
-
-  std::vector <std::string>::iterator it;
-  for (it = vars.begin (); it != vars.end (); ++it)
+  // Allow a master switch to turn the whole thing off.
+  bool big_red_switch = context.config.getBoolean ("hooks");
+  if (big_red_switch)
   {
-    std::string type;
-    std::string name;
-    std::string value;
+    std::vector <std::string> vars;
+    context.config.all (vars);
 
-    // "<type>.<name>"
-    Nibbler n (*it);
-    if (n.getUntil ('.', type) &&
-        type == "hook"         &&
-        n.skip ('.')           &&
-        n.getUntilEOS (name))
+    std::vector <std::string>::iterator it;
+    for (it = vars.begin (); it != vars.end (); ++it)
     {
-      std::string value = context.config.get (*it);
-      Nibbler n (value);
+      std::string type;
+      std::string name;
+      std::string value;
 
-      // <path>:<function> [, ...]
-      while (!n.depleted ())
+      // "<type>.<name>"
+      Nibbler n (*it);
+      if (n.getUntil ('.', type) &&
+          type == "hook"         &&
+          n.skip ('.')           &&
+          n.getUntilEOS (name))
       {
-        std::string file;
-        std::string function;
-        if (n.getUntil (':', file) &&
-            n.skip (':')           &&
-            n.getUntil (',', function))
-        {
-          context.debug (std::string ("Event '") + name + "' hooked by " + file + ", function " + function);
-          Hook h (name, Path::expand (file), function);
-          all.push_back (h);
+        std::string value = context.config.get (*it);
+        Nibbler n (value);
 
-          (void) n.skip (',');
+        // <path>:<function> [, ...]
+        while (!n.depleted ())
+        {
+          std::string file;
+          std::string function;
+          if (n.getUntil (':', file) &&
+              n.skip (':')           &&
+              n.getUntil (',', function))
+          {
+            context.debug (std::string ("Event '") + name + "' hooked by " + file + ", function " + function);
+            Hook h (name, Path::expand (file), function);
+            all.push_back (h);
+
+            (void) n.skip (',');
+          }
+          else
+            throw std::string ("Malformed hook definition '") + *it + "'";
         }
-        else
-          throw std::string ("Malformed hook definition '") + *it + "'";
       }
     }
   }
+  else
+    context.debug ("Hooks::initialize - hook system shut off");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
