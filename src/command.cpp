@@ -38,6 +38,7 @@
 
 #include "Permission.h"
 #include "Directory.h"
+#include "Nibbler.h"
 #include "text.h"
 #include "util.h"
 #include "main.h"
@@ -720,7 +721,48 @@ int handleConfig (std::string &outs)
   out << context.config.checkForDeprecatedColor ();
   // TODO Check for referenced but missing theme files.
   // TODO Check for referenced but missing string files.
-  // TODO Check for referenced but missing hook scripts.
+  // TODO Check for referenced but missing tips files.
+
+  // Check for referenced but missing hook scripts.
+#ifdef HAVE_LIBLUA
+  std::vector <std::string> missing_scripts;
+  foreach (i, all)
+  {
+    if (i->substr (0, 5) == "hook.")
+    {
+      std::string value = context.config.get (*i);
+      Nibbler n (value);
+
+      // <path>:<function> [, ...]
+      while (!n.depleted ())
+      {
+        std::string file;
+        std::string function;
+        if (n.getUntil (':', file) &&
+            n.skip (':')           &&
+            n.getUntil (',', function))
+        {
+          Path script (file);
+          if (!script.exists () || !script.readable ())
+            missing_scripts.push_back (file);
+
+          (void) n.skip (',');
+        }
+      }
+    }
+  }
+
+  if (missing_scripts.size ())
+  {
+    out << "Your .taskrc file contains these missing or unreadable hook scripts:"
+         << std::endl;
+
+    foreach (i, missing_scripts)
+      out << "  " << *i << std::endl;
+
+    out << std::endl;
+  }
+#endif
 
   // Check for bad values in rc.annotations.
   std::string annotations = context.config.get ("annotations");
