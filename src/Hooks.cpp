@@ -28,6 +28,7 @@
 #include <iostream>
 #include "Context.h"
 #include "Hooks.h"
+#include "Timer.h"
 
 extern Context context;
 
@@ -79,15 +80,14 @@ Hooks::~Hooks ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Enumerate all hooks, and tell API about the script files it must load in
+// order to call them.  Note that API will perform a deferred read, which means
+// that if it isn't called, a script will not be loaded.
 void Hooks::initialize ()
 {
 #ifdef HAVE_LIBLUA
   api.initialize ();
 #endif
-
-  // TODO Enumerate all hooks, and tell API about the script files it must load
-  //      in order to call them.  Note that API will perform a deferred read,
-  //      which means that if it isn't called, a script will not be loaded.
 
   std::vector <std::string> vars;
   context.config.all (vars);
@@ -148,6 +148,8 @@ bool Hooks::trigger (const std::string& event)
   {
     if (it->event == event)
     {
+      Timer timer (std::string ("Hooks::trigger ") + event);
+
       bool rc = true;
       std::string type;
       if (eventType (event, type))
