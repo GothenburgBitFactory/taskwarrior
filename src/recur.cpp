@@ -404,8 +404,15 @@ int getDueState (const std::string& due)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Returns a Boolean indicator as to whether a nag message was generated, so
+// that commands can control the number of nag messages displayed (ie one is
+// enough).
 bool nag (Task& task)
 {
+  // Special tag overrides nagging.
+  if (task.hasTag ("nonag"))
+    return false;
+
   std::string nagMessage = context.config.get ("nag");
   if (nagMessage != "")
   {
