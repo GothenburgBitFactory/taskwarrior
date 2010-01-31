@@ -1148,74 +1148,81 @@ static std::string importCSV (const std::vector <std::string>& lines)
 ////////////////////////////////////////////////////////////////////////////////
 int handleImport (std::string &outs)
 {
-  std::stringstream out;
+  int rc = 0;
 
-  // Use the description as a file name.
-  std::string file = trim (context.task.get ("description"));
-  if (file.length () > 0)
+  if (context.hooks.trigger ("pre-import-command"))
   {
-    // Load the file.
-    std::vector <std::string> all;
-    File::read (file, all);
+    std::stringstream out;
 
-    std::vector <std::string> lines;
-    std::vector <std::string>::iterator it;
-    for (it = all.begin (); it != all.end (); ++it)
+    // Use the description as a file name.
+    std::string file = trim (context.task.get ("description"));
+    if (file.length () > 0)
     {
-      std::string line = *it;
+      // Load the file.
+      std::vector <std::string> all;
+      File::read (file, all);
 
-      // Strip comments
-      std::string::size_type pound = line.find ("#");
-      if (pound != std::string::npos)
-        line = line.substr (0, pound);
+      std::vector <std::string> lines;
+      std::vector <std::string>::iterator it;
+      for (it = all.begin (); it != all.end (); ++it)
+      {
+        std::string line = *it;
 
-      trim (line);
+        // Strip comments
+        std::string::size_type pound = line.find ("#");
+        if (pound != std::string::npos)
+          line = line.substr (0, pound);
 
-      // Skip blank lines
-      if (line.length () > 0)
-        lines.push_back (line);
+        trim (line);
+
+        // Skip blank lines
+        if (line.length () > 0)
+          lines.push_back (line);
+      }
+
+      // Take a guess at the file type.
+      fileType type = determineFileType (lines);
+      std::string identifier;
+      switch (type)
+      {
+      case task_1_4_3:    identifier = "This looks like an older task export file.";              break;
+      case task_1_5_0:    identifier = "This looks like a recent task export file.";              break;
+      case task_1_6_0:    identifier = "This looks like a current task export file.";             break;
+      case task_cmd_line: identifier = "This looks like task command line arguments.";            break;
+      case todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                     break;
+      case csv:           identifier = "This looks like a CSV file, but not a task export file."; break;
+      case text:          identifier = "This looks like a text file with one task per line.";     break;
+      case not_a_clue:
+        throw std::string ("Task cannot determine which type of file this is, "
+                           "and cannot proceed.");
+      }
+
+      // For tty users, confirm the import, as it is destructive.
+      if (isatty (fileno (stdout)))
+        if (! confirm (identifier + "  Okay to proceed?"))
+          throw std::string ("Task will not import any data.");
+
+      // Determine which type it might be, then attempt an import.
+      switch (type)
+      {
+      case task_1_4_3:    out << importTask_1_4_3  (lines); break;
+      case task_1_5_0:    out << importTask_1_5_0  (lines); break;
+      case task_1_6_0:    out << importTask_1_6_0  (lines); break;
+      case task_cmd_line: out << importTaskCmdLine (lines); break;
+      case todo_sh_2_0:   out << importTodoSh_2_0  (lines); break;
+      case csv:           out << importCSV         (lines); break;
+      case text:          out << importText        (lines); break;
+      case not_a_clue:    /* to stop the compiler from complaining. */ break;
+      }
     }
+    else
+      throw std::string ("You must specify a file to import.");
 
-    // Take a guess at the file type.
-    fileType type = determineFileType (lines);
-    std::string identifier;
-    switch (type)
-    {
-    case task_1_4_3:    identifier = "This looks like an older task export file.";              break;
-    case task_1_5_0:    identifier = "This looks like a recent task export file.";              break;
-    case task_1_6_0:    identifier = "This looks like a current task export file.";             break;
-    case task_cmd_line: identifier = "This looks like task command line arguments.";            break;
-    case todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                     break;
-    case csv:           identifier = "This looks like a CSV file, but not a task export file."; break;
-    case text:          identifier = "This looks like a text file with one task per line.";     break;
-    case not_a_clue:
-      throw std::string ("Task cannot determine which type of file this is, "
-                         "and cannot proceed.");
-    }
-
-    // For tty users, confirm the import, as it is destructive.
-    if (isatty (fileno (stdout)))
-      if (! confirm (identifier + "  Okay to proceed?"))
-        throw std::string ("Task will not import any data.");
-
-    // Determine which type it might be, then attempt an import.
-    switch (type)
-    {
-    case task_1_4_3:    out << importTask_1_4_3  (lines); break;
-    case task_1_5_0:    out << importTask_1_5_0  (lines); break;
-    case task_1_6_0:    out << importTask_1_6_0  (lines); break;
-    case task_cmd_line: out << importTaskCmdLine (lines); break;
-    case todo_sh_2_0:   out << importTodoSh_2_0  (lines); break;
-    case csv:           out << importCSV         (lines); break;
-    case text:          out << importText        (lines); break;
-    case not_a_clue:    /* to stop the compiler from complaining. */ break;
-    }
+    outs = out.str ();
+    context.hooks.trigger ("post-import-command");
   }
-  else
-    throw std::string ("You must specify a file to import.");
 
-  outs = out.str ();
-  return 0;
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

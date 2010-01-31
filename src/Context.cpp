@@ -248,7 +248,9 @@ int Context::dispatch (std::string &out)
   else if (cmd.validCustom (cmd.command))  { if (!inShadow) tdb.gc (); rc = handleCustomReport  (cmd.command, out); }
 
   // If the command is not recognized, display usage.
-  else                                     { rc = shortUsage (out); }
+  else                                     { hooks.trigger ("pre-usage-command");
+                                             rc = shortUsage (out);
+                                             hooks.trigger ("post-usage-command"); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
   if (cmd.isWriteCommand () && !inShadow)

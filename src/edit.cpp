@@ -603,50 +603,57 @@ ARE_THESE_REALLY_HARMFUL:
 // wrench.  To be used sparingly.
 int handleEdit (std::string &outs)
 {
-  std::stringstream out;
+  int rc = 0;
 
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
-
-  // Filter sequence.
-  std::vector <Task> all = tasks;
-  context.filter.applySequence (tasks, context.sequence);
-
-  foreach (task, tasks)
+  if (context.hooks.trigger ("pre-edit-command"))
   {
-    editFile (*task);
-    context.tdb.update (*task);
-/*
-    foreach (other, all)
+    std::stringstream out;
+
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    handleRecurrence ();
+    Filter filter;
+    context.tdb.loadPending (tasks, filter);
+
+    // Filter sequence.
+    std::vector <Task> all = tasks;
+    context.filter.applySequence (tasks, context.sequence);
+
+    foreach (task, tasks)
     {
-      if (other->id != task.id) // Don't edit the same task again.
+      editFile (*task);
+      context.tdb.update (*task);
+/*
+      foreach (other, all)
       {
-        if (task.has ("parent") && 
-        if (other is parent of task)
+        if (other->id != task.id) // Don't edit the same task again.
         {
-          // Transfer everything but mask, imask, uuid, parent.
-        }
-        else if (task is parent of other)
-        {
-          // Transfer everything but mask, imask, uuid, parent.
-        }
-        else if (task and other are siblings)
-        {
-          // Transfer everything but mask, imask, uuid, parent.
+          if (task.has ("parent") && 
+          if (other is parent of task)
+          {
+            // Transfer everything but mask, imask, uuid, parent.
+          }
+          else if (task is parent of other)
+          {
+            // Transfer everything but mask, imask, uuid, parent.
+          }
+          else if (task and other are siblings)
+          {
+            // Transfer everything but mask, imask, uuid, parent.
+          }
         }
       }
-    }
 */
+    }
+
+    context.tdb.commit ();
+    context.tdb.unlock ();
+
+    outs = out.str ();
+    context.hooks.trigger ("post-edit-command");
   }
 
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  outs = out.str ();
-  return 0;
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
