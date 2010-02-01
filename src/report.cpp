@@ -348,9 +348,14 @@ int handleInfo (std::string &outs)
       table.setColumnJustification (1, Table::left);
       Date now;
 
+      char svalue[12];
+      std::string value;
       int row = table.addRow ();
       table.addCell (row, 0, "ID");
-      table.addCell (row, 1, task->id);
+      sprintf (svalue, "%d", (int) task->id);
+      value = svalue;
+      context.hooks.trigger ("format-id", "id", value);
+      table.addCell (row, 1, value);
 
       std::string status = ucFirst (Task::statusToText (task->getStatus ()));
 
@@ -373,7 +378,9 @@ int handleInfo (std::string &outs)
       {
         row = table.addRow ();
         table.addCell (row, 0, "Priority");
-        table.addCell (row, 1, task->get ("priority"));
+        value = task->get ("priority");
+        context.hooks.trigger ("format-priority", "priority", value);
+        table.addCell (row, 1, value);
       }
 
       if (task->getStatus () == Task::recurring ||
@@ -477,7 +484,9 @@ int handleInfo (std::string &outs)
       // uuid
       row = table.addRow ();
       table.addCell (row, 0, "UUID");
-      table.addCell (row, 1, task->get ("uuid"));
+      value = task->get ("uuid");
+      context.hooks.trigger ("format-uuid", "uuid", value);
+      table.addCell (row, 1, value);
 
       // entry
       row = table.addRow ();

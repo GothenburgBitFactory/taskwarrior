@@ -34,6 +34,7 @@ use Test::More tests => 7;
 if (open my $fh, '>', 'hook.rc')
 {
   print $fh "data.location=.\n",
+            "hooks=on\n",
             "hook.post-start=" . $ENV{'PWD'} . "/hook:test\n";
   close $fh;
   ok (-r 'hook.rc', 'Created hook.rc');

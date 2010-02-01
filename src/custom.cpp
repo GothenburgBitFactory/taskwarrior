@@ -182,12 +182,24 @@ int runCustomReport (
         table.setColumnWidth (columnCount, Table::minimum);
         table.setColumnJustification (columnCount, Table::right);
 
+        char s[16];
+        std::string value;
         int row = 0;
         foreach (task, tasks)
+        {
           if (task->id != 0)
-            table.addCell (row++, columnCount, task->id);
+          {
+            sprintf (s, "%d", (int) task->id);
+            value = s;
+          }
           else
-            table.addCell (row++, columnCount, "-");
+          {
+            value = "-";
+          }
+
+          context.hooks.trigger ("format-id", "id", value);
+          table.addCell (row++, columnCount, value);
+        }
       }
 
       else if (*col == "uuid")
@@ -196,9 +208,14 @@ int runCustomReport (
         table.setColumnWidth (columnCount, Table::minimum);
         table.setColumnJustification (columnCount, Table::left);
 
+        std::string value;
         int row = 0;
         foreach (task, tasks)
-          table.addCell (row++, columnCount, task->get ("uuid"));
+        {
+          value = task->get ("uuid");
+          context.hooks.trigger ("format-uuid", "uuid", value);
+          table.addCell (row++, columnCount, value);
+        }
       }
 
       else if (*col == "project")
@@ -220,7 +237,11 @@ int runCustomReport (
 
         int row = 0;
         foreach (task, tasks)
-          table.addCell (row++, columnCount, task->get ("priority"));
+        {
+          std::string value = task->get ("priority");
+          context.hooks.trigger ("format-priority", "priority", value);
+          table.addCell (row++, columnCount, value);
+        }
       }
 
       else if (*col == "priority_long")
@@ -239,6 +260,7 @@ int runCustomReport (
           else if (pri == "M") pri = "Medium"; // TODO i18n
           else if (pri == "L") pri = "Low";    // TODO i18n
 
+          context.hooks.trigger ("format-priority_long", "priority", pri);
           table.addCell (row++, columnCount, pri);
         }
       }

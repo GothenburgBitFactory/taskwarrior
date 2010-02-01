@@ -58,22 +58,22 @@ public:
 
   void initialize ();
 
-  void setTaskId (int);
-//  void setField (const std::string&, const std::string&);
-//  void setTaskList (const std::vector <int>&);
-  bool trigger (const std::string&);
+  bool trigger (const std::string&);                                   // Program
+  bool trigger (const std::string&, std::vector <Task>&);              // List
+  bool trigger (const std::string&, Task&);                            // Task
+  bool trigger (const std::string&, const std::string&, std::string&); // Field
 
 private:
-  bool eventType (const std::string&, std::string&);
+  bool validProgramEvent (const std::string&);
+  bool validListEvent (const std::string&);
+  bool validTaskEvent (const std::string&);
+  bool validFieldEvent (const std::string&);
 
 private:
 #ifdef HAVE_LIBLUA
   API api;
 #endif
   std::vector <Hook> all;           // All current hooks.
-#ifdef HAVE_LIBLUA
-  int task_id;
-#endif
 };
 
 #endif

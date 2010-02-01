@@ -29,7 +29,7 @@
 use strict;
 use warnings;
 use File::Path;
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 # Create the rc file, using rc.name:value.
 unlink 'foo.rc';
@@ -67,6 +67,12 @@ like ($output, qr/^must_be_unique$/ms, 'config setting a blank value');
 qx{echo 'y'|../task rc:foo.rc config must_be_unique};
 $output = qx{../task rc:foo.rc config};
 unlike ($output, qr/^must_be_unique/ms, 'config removing a value');
+
+# 'report.:b' is designed to get past the config command checks for recognized
+# names.
+qx{echo 'y'|../task rc:foo.rc config -- report.:b +c};
+$output = qx{../task rc:foo.rc config};
+like ($output, qr/^report\.:b\s+\+c/ms, 'the -- operator is working');
 
 rmtree 'foo', 0, 0;
 ok (!-r 'foo', 'Removed foo');

@@ -28,36 +28,45 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'hook.rc')
 {
   print $fh "data.location=.\n",
-            "hooks=on\n",
-            "hook.pre-exit=" . $ENV{'PWD'} . "/hook:test\n";
+            "hooks=on\n";
   close $fh;
   ok (-r 'hook.rc', 'Created hook.rc');
 }
 
+# Create the hook functions.
 if (open my $fh, '>', 'hook')
 {
-  print $fh "function test () print ('marker') return 0, nil end\n";
+  print $fh "function good () print ('marker') return 0, nil end\n",
+            "function  bad () print ('marker') return 1, 'disallowed' end\n";
   close $fh;
   ok (-r 'hook', 'Created hook');
 }
 
-# Test the hook.
 my $output = qx{../task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  # Test the hook.
-  $output = qx{../task rc:hook.rc _version};
-  like ($output, qr/\n\d\.\d+\.\d+\nmarker\n$/ms, 'Found marker after output');
+  my $good = $ENV{'PWD'} . '/hook:good';
+  my $bad  = $ENV{'PWD'} . '/hook:bad';
+
+  qx{echo 'y'|../task rc:hook.rc config -- hook.pre-completed "$bad"};
+  qx{../task rc:hook.rc add foo};
+  $output = qx{../task rc:hook.rc done 1};
+  like ($output, qr/disallowed/, 'pre-completed hook rejected completion');
+
+  qx{echo 'y'|../task rc:hook.rc config -- hook.pre-completed "$good"};
+  $output = qx{../task rc:hook.rc done 1};
+  like ($output, qr/Marked 1 task as done/, 'pre-completed hook allowed completion');
 }
 else
 {
-  pass ('Found marker after output - skipping: no Lua support');
+  pass ('pre-complete hook rejected completion - skip: no Lua support');
+  pass ('pre-complete hook allowed completion - skip: no Lua support');
 }
 
 # Cleanup.

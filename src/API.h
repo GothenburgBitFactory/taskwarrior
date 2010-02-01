@@ -32,6 +32,8 @@
 
 #include <vector>
 #include <string>
+#include "Task.h"
+
 extern "C"
 {
   #include "lua.h"
@@ -49,9 +51,9 @@ public:
 
   void initialize ();
   bool callProgramHook (const std::string&, const std::string&);
-  bool callListHook    (const std::string&, const std::string& /*, iterator */);
-  bool callTaskHook    (const std::string&, const std::string&, int);
-  bool callFieldHook   (const std::string&, const std::string&, const std::string&, const std::string&);
+  bool callListHook    (const std::string&, const std::string&, std::vector <Task>&);
+  bool callTaskHook    (const std::string&, const std::string&, Task&);
+  bool callFieldHook   (const std::string&, const std::string&, const std::string&, std::string&);
 
 private:
   void loadFile (const std::string&);
@@ -59,6 +61,12 @@ private:
 public:
   lua_State* L;
   std::vector <std::string> loaded;
+
+  // Context for the API.
+//  std::vector <Task> all;
+  Task current;
+//  std::string& name;
+//  std::string& value;
 };
 
 #endif

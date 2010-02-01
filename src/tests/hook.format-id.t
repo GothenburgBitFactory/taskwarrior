@@ -28,36 +28,43 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'hook.rc')
 {
   print $fh "data.location=.\n",
             "hooks=on\n",
-            "hook.pre-exit=" . $ENV{'PWD'} . "/hook:test\n";
+            "hook.format-id=" . $ENV{'PWD'} . "/hook:priority\n";
   close $fh;
   ok (-r 'hook.rc', 'Created hook.rc');
 }
 
+# Create the hook functions.
 if (open my $fh, '>', 'hook')
 {
-  print $fh "function test () print ('marker') return 0, nil end\n";
+  print $fh "function priority (name, value)\n",
+            "  value = '(' .. value .. ')'\n",
+            "  return value, 0, nil\n",
+            "end\n";
   close $fh;
   ok (-r 'hook', 'Created hook');
 }
 
-# Test the hook.
 my $output = qx{../task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  # Test the hook.
-  $output = qx{../task rc:hook.rc _version};
-  like ($output, qr/\n\d\.\d+\.\d+\nmarker\n$/ms, 'Found marker after output');
+  qx{../task rc:hook.rc add foo};
+  qx{../task rc:hook.rc add bar};
+  $output = qx{../task rc:hook.rc ls};
+
+  like ($output, qr/\(1\)\s+foo/, 'format-id hook 1 -> (1)');
+  like ($output, qr/\(2\)\s+bar/, 'format-id hook 2 -> (2)');
 }
 else
 {
-  pass ('Found marker after output - skipping: no Lua support');
+  pass ('format-id hook 1 -> (1) - skip: no Lua support');
+  pass ('format-id hook 2 -> (2) - skip: no Lua support');
 }
 
 # Cleanup.

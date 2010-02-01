@@ -545,17 +545,22 @@ int handleConfig (std::string &outs)
   {
     std::stringstream out;
 
+    // Obtain the arguments from the description.  That way, things like '--'
+    // have already been handled.
+    std::vector <std::string> args;
+    split (args, context.task.get ("description"), ' ');
+
     // Support:
     //   task config name value    # set name to value
     //   task config name ""       # set name to blank
     //   task config name          # remove name
-    if (context.args.size () >= 2)
+    if (args.size () > 0)
     {
-      std::string name = context.args[1];
+      std::string name = args[0];
       std::string value = "";
 
-      if (context.args.size () >= 3)
-        value = context.args[2];
+      if (args.size () > 1)
+        value = args[1];
 
       if (name != "")
       {
@@ -567,7 +572,8 @@ int handleConfig (std::string &outs)
 
         // task config name value
         // task config name ""
-        if (context.args.size () >= 3)
+        if (args.size () > 1 ||
+            context.args[context.args.size () - 1] == "")
         {
           // Find existing entry & overwrite
           std::string::size_type pos = contents.find (name + "=");
@@ -891,8 +897,7 @@ int handleDelete (std::string &outs)
 
     foreach (task, tasks)
     {
-      context.hooks.setTaskId (task->id);
-      if (context.hooks.trigger ("pre-delete"))
+      if (context.hooks.trigger ("pre-delete", *task))
       {
         std::stringstream question;
         question << "Permanently delete task "
@@ -968,7 +973,7 @@ int handleDelete (std::string &outs)
           rc  = 1;
         }
 
-        context.hooks.trigger ("post-delete");
+        context.hooks.trigger ("post-delete", *task);
       }
     }
 
@@ -1148,8 +1153,7 @@ int handleDone (std::string &outs)
 
         if (taskDiff (before, *task))
         {
-          context.hooks.setTaskId (task->id);
-          if (context.hooks.trigger ("pre-completed"))
+          if (context.hooks.trigger ("pre-completed", *task))
           {
             if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
             {
@@ -1164,9 +1168,8 @@ int handleDone (std::string &outs)
                     << std::endl;
 
               ++count;
+              context.hooks.trigger ("post-completed", *task);
             }
-
-            context.hooks.trigger ("post-completed");
           }
           else
             continue;
@@ -1914,28 +1917,27 @@ int deltaDescription (Task& task)
 int deltaTags (Task& task)
 {
   int changes = 0;
-  context.hooks.setTaskId (task.id);
 
   // Apply or remove tags, if any.
   std::vector <std::string> tags;
   context.task.getTags (tags);
   foreach (tag, tags)
   {
-    if (context.hooks.trigger ("pre-tag"))
+    if (context.hooks.trigger ("pre-tag", task))
     {
       task.addTag (*tag);
       ++changes;
-      context.hooks.trigger ("post-tag");
+      context.hooks.trigger ("post-tag", task);
     }
   }
 
   foreach (tag, context.tagRemovals)
   {
-    if (context.hooks.trigger ("pre-detag"))
+    if (context.hooks.trigger ("pre-detag", task))
     {
       task.removeTag (*tag);
       ++changes;
-      context.hooks.trigger ("post-detag");
+      context.hooks.trigger ("post-detag", task);
     }
   }
 

@@ -35,29 +35,33 @@ if (open my $fh, '>', 'hook.rc')
 {
   print $fh "data.location=.\n",
             "hooks=on\n",
-            "hook.pre-exit=" . $ENV{'PWD'} . "/hook:test\n";
+            "hook.format-uuid=" . $ENV{'PWD'} . "/hook:uuid\n";
   close $fh;
   ok (-r 'hook.rc', 'Created hook.rc');
 }
 
+# Create the hook functions.
 if (open my $fh, '>', 'hook')
 {
-  print $fh "function test () print ('marker') return 0, nil end\n";
+  print $fh "function uuid (name, value)\n",
+            "  value = '<' .. value .. '>'\n",
+            "  return value, 0, nil\n",
+            "end\n";
   close $fh;
   ok (-r 'hook', 'Created hook');
 }
 
-# Test the hook.
 my $output = qx{../task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  # Test the hook.
-  $output = qx{../task rc:hook.rc _version};
-  like ($output, qr/\n\d\.\d+\.\d+\nmarker\n$/ms, 'Found marker after output');
+  qx{../task rc:hook.rc add foo};
+  $output = qx{../task rc:hook.rc info 1};
+
+  like ($output, qr/UUID\s+<[0-9a-f-]+>/, 'format-uuid hook uuid -> <uuid>');
 }
 else
 {
-  pass ('Found marker after output - skipping: no Lua support');
+  pass ('format-uuid hook uuid -> <uuid> - skip: no Lua support');
 }
 
 # Cleanup.

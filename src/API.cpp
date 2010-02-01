@@ -516,10 +516,12 @@ bool API::callProgramHook (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO No intention of implementing this before task 2.0.  Why?  Because we
+//      need to implement a Lua iterator, in C++, to iterate over a std::vector.
 bool API::callListHook (
   const std::string& file,
-  const std::string& function/*,
-  iterator i*/)
+  const std::string& function,
+  std::vector <Task>& all)
 {
   loadFile (file);
 
@@ -535,9 +537,12 @@ bool API::callListHook (
 bool API::callTaskHook (
   const std::string& file,
   const std::string& function,
-  int id)
+  Task& task)
 {
   loadFile (file);
+
+  // Save the task for reference via the API.
+  current = task;
 
   // Get function.
   lua_getglobal (L, function.c_str ());
@@ -548,7 +553,7 @@ bool API::callTaskHook (
   }
 
   // Prepare args.
-  lua_pushnumber (L, id);
+  lua_pushnumber (L, current.id);
 
   // Make call.
   if (lua_pcall (L, 1, 2, 0) != 0)
@@ -583,17 +588,57 @@ bool API::callTaskHook (
 bool API::callFieldHook (
   const std::string& file,
   const std::string& function,
-  const std::string& field,
-  const std::string& value)
+  const std::string& name,
+  std::string& value)
 {
   loadFile (file);
 
-  // TODO Get function.
-  // TODO Prepare args.
-  // TODO Make call.
-  // TODO Get exit status.
+  // Get function.
+  lua_getglobal (L, function.c_str ());
+  if (!lua_isfunction (L, -1))
+  {
+    lua_pop (L, 1);
+    throw std::string ("The Lua function '") + function + "' was not found.";
+  }
 
-  return true;
+  // Prepare args.
+  lua_pushstring (L, name.c_str ());
+  lua_pushstring (L, value.c_str ());
+
+  // Make call.
+  if (lua_pcall (L, 2, 3, 0) != 0)
+    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1);
+
+  // Call successful - get return values.
+  if (!lua_isstring (L, -3))
+    throw std::string ("Error: '") + function + "' did not return a modified value";
+
+  if (!lua_isnumber (L, -2))
+    throw std::string ("Error: '") + function + "' did not return a success indicator";
+
+  if (!lua_isstring (L, -1) && !lua_isnil (L, -1))
+    throw std::string ("Error: '") + function + "' did not return a message or nil";
+
+  const char* new_value = lua_tostring  (L, -3);
+  int rc                = lua_tointeger (L, -2);
+  const char* message   = lua_tostring  (L, -1);
+
+  if (rc == 0)
+  {
+    // Overwrite with the modified value.
+    value = new_value;
+
+    if (message)
+      context.footnote (std::string ("Warning: ") + message);
+  }
+  else
+  {
+    if (message)
+      throw std::string (message);
+  }
+
+  lua_pop (L, 1);
+  return rc == 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
