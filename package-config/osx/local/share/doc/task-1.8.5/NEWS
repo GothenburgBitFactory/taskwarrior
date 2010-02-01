@@ -1,0 +1,48 @@
+
+New Features in task 1.8
+
+  - Attribute modifiers, for precise queries
+  - Improved calendar feature
+  - Full undo capability
+  - All reports now customizable
+  - Command aliases can now be created
+  - In addition to being a standard part of Fedora 10 and 11 (yum install task),
+    task is now also a standard part of Cygwin 1.5
+  - There are new demo movies on taskwarrior.org
+  - Shell-friendly exit codes
+
+  Please refer to the ChangeLog file for full details.  There are too many to
+  list here.
+
+Task has been built and tested on the following configurations:
+
+  * OS X 10.6 Snow Leopard and 10.5 Leopard
+  * Fedora 12 Constantine and 11 Leonidas
+  * Ubuntu 9.10 Karmic Koala and 9.04 Jaunty Jackalope
+  * Slackware 12.2
+  * Arch Linux
+  * Gentoo Linux
+  * SliTaz Linux
+  * CRUX Linux
+  * Solaris 10 and 8
+  * OpenBSD 4.5
+  * FreeBSD
+  * Cygwin 1.5
+  * Haiku R1/alpha1
+
+While Task has undergone testing, bugs are sure to remain.  If you encounter a
+bug, please enter a new issue at:
+
+  http://taskwarrior.org/projects/taskwarrior/issues/new
+
+Or you can also report the issue in the forums at:
+
+  http://taskwarrior.org/projects/taskwarrior/boards
+
+Or just send a message to:
+
+  support@taskwarrior.org
+
+Thank you.
+
+---

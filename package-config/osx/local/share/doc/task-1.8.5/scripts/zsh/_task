@@ -1,0 +1,58 @@
+#compdef task
+# zsh completion for task
+#
+# Copyright 2009 P.C. Shyamshankar
+# All rights reserved.
+#
+# This script is part of the task project.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+
+typeset -g _task_cmds
+_task_cmds=($(task rubbish-command | sed -n -e 's/^\s\+task \(\w\+\) .*/\1/p' | grep -v ID))
+
+# As of task 1.7.0, 
+# _task_cmds=(add append annotate completed edit duplicate delete undelete info start stop done undo projects tags summary timesheet history ghistory next calendar active overdue stats import export color version help list long ls newest oldest)
+
+_task() {
+    _arguments -s -S \
+        "*::task command:_task_commands"
+    return 0
+}
+
+
+(( $+functions[_task_commands] )) ||
+_task_commands() {
+    local cmd ret=1
+    if (( CURRENT == 1 )); then
+        _describe -t commands 'task command' _task_cmds
+    else
+        local curcontext="${curcontext}"
+        cmd="${_task_cmds[(r)$words[1]:*]%%:*}"
+        if (( $#cmd )); then
+            curcontext="${curcontext%:*:*}:task-${cmd}"
+            _call_function ret _task_${cmd} || _message "No command remaining."
+        else
+            _message "Unknown subcommand ${cmd}"
+        fi
+        return ret
+    fi
+}
