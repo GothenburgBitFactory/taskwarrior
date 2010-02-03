@@ -21,14 +21,21 @@ syn match taskrcVal	".\{-}$" 		contains=taskrcComment
 syn match taskrcEqual	"="
 syn match taskrcKey	"^\s*.\{-}="he=e-1	contains=taskrcEqual
 
-syn keyword taskrcGoodKey	locking curses confirmation next bulk nag dateformat weekstart displayweeknumber due defaultwidth editor monthsperline
+syn keyword taskrcGoodKey	locking curses confirmation next bulk nag dateformat weekstart displayweeknumber defaultwidth editor monthsperline annotations _forcecolor blanklines debug hooks fontunderline 
 
-syn match taskrcGoodKey	"color\(\.\(overdue\|due\|pri\.\([HML]\|none\)\|active\|tagged\|recurring\|header\|footnote\|\(\(tag\|project\|keyword\)\.\S\{-}\)\)\)\?="he=e-1
+syn match taskrcGoodKey	"alias\.\S\{-}="he=e-1
+syn match taskrcGoodKey	"calendar\.\(legend\|holidays\|details\(report\)\?\)"
+syn match taskrcGoodKey	"color\(\.\(alternate\|overdue\|due\|pri\.\([HML]\|none\)\|active\|tagged\|recurring\|header\|footnote\|\(\(tag\|project\|keyword\)\.\S\{-}\)\|debug\|\(calendar\.\(today\|due\|overdue\|weekend\|holiday\|weeknumber\)\)\)\)\?="he=e-1
+syn match taskrcGoodKey	"complete\.all\.\(projects\|tags\)"
 syn match taskrcGoodKey	"data\.location"
 syn match taskrcGoodKey	"default\.\(command\|project\|priority\)"
+syn match taskrcGoodKey	"due="he=e-1
 syn match taskrcGoodKey	"echo\.command"
-syn match taskrcGoodKey	"report\.\S\{-}\.\(description\|columns\|labels\|sort\|filter\)="he=e-1
+syn match taskrcGoodKey	"import\.synonym\.\(bg\|description\|due\|end\|entry\|fg\|id\|priority\|project\|recur\|start\|status\|tags\|uuid\)"
+syn match taskrcGoodKey	"report\.\S\{-}\.\(description\|columns\|labels\|sort\|filter\|dateformat\|annotations\)="he=e-1
+syn match taskrcGoodKey	"search\.case\.sensitive"
 syn match taskrcGoodKey	"shadow\.\(file\|command\|notify\)"
+syn match taskrcGoodKey	"shell\.prompt"
 
 syn match taskrcComment	"#.*$"
 
