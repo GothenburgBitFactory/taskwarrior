@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:	support for editing task configuration file
 " Maintainer:	John Florian <jflorian@doubledog.org>
-" Updated:	Wed Nov 25 12:19:43 EST 2009
+" Updated:	Wed Feb  3 13:29:19 EST 2010
 "
 " Copyright 2009-2010 John Florian
 "
@@ -21,13 +21,14 @@ syn match taskrcVal	".\{-}$" 		contains=taskrcComment
 syn match taskrcEqual	"="
 syn match taskrcKey	"^\s*.\{-}="he=e-1	contains=taskrcEqual
 
-syn keyword taskrcGoodKey	locking curses confirmation next bulk nag dateformat weekstart displayweeknumber defaultwidth editor monthsperline annotations _forcecolor blanklines debug hooks fontunderline 
+syn keyword taskrcGoodKey	locking curses confirmation next bulk nag weekstart displayweeknumber defaultwidth editor monthsperline annotations _forcecolor blanklines debug hooks fontunderline 
 
 syn match taskrcGoodKey	"alias\.\S\{-}="he=e-1
-syn match taskrcGoodKey	"calendar\.\(legend\|holidays\|details\(report\)\?\)"
+syn match taskrcGoodKey	"calendar\.\(legend\|holidays\|details\(\.report\)\?\)"
 syn match taskrcGoodKey	"color\(\.\(alternate\|overdue\|due\|pri\.\([HML]\|none\)\|active\|tagged\|recurring\|header\|footnote\|\(\(tag\|project\|keyword\)\.\S\{-}\)\|debug\|\(calendar\.\(today\|due\|overdue\|weekend\|holiday\|weeknumber\)\)\)\)\?="he=e-1
 syn match taskrcGoodKey	"complete\.all\.\(projects\|tags\)"
 syn match taskrcGoodKey	"data\.location"
+syn match taskrcGoodKey	"dateformat\(\.\(holiday\|report\)\)\?"
 syn match taskrcGoodKey	"default\.\(command\|project\|priority\)"
 syn match taskrcGoodKey	"due="he=e-1
 syn match taskrcGoodKey	"echo\.command"
