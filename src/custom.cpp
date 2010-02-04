@@ -224,9 +224,14 @@ int runCustomReport (
         table.setColumnWidth (columnCount, Table::minimum);
         table.setColumnJustification (columnCount, Table::left);
 
+        std::string value;
         int row = 0;
         foreach (task, tasks)
-          table.addCell (row++, columnCount, task->get ("project"));
+        {
+          value = task->get ("project");
+          context.hooks.trigger ("format-project", "project", value);
+          table.addCell (row++, columnCount, value);
+        }
       }
 
       else if (*col == "priority")
@@ -417,6 +422,7 @@ int runCustomReport (
           {
             Date dt (::atoi (created.c_str ()));
             age = formatSeconds ((time_t) (now - dt));
+            context.hooks.trigger ("format-age", "age", age);
             table.addCell (row, columnCount, age);
           }
         }
@@ -438,6 +444,7 @@ int runCustomReport (
           {
             Date dt (::atoi (created.c_str ()));
             age = formatSecondsCompact ((time_t) (now - dt));
+            context.hooks.trigger ("format-age_compact", "age_compact", age);
             table.addCell (row, columnCount, age);
           }
         }
@@ -467,6 +474,7 @@ int runCustomReport (
         {
           task->getTags (all);
           join (tags, " ", all);
+          context.hooks.trigger ("format-tags", "tags", tags);
           table.addCell (row++, columnCount, tags);
         }
       }
@@ -477,9 +485,14 @@ int runCustomReport (
         table.setColumnWidth (columnCount, Table::flexible);
         table.setColumnJustification (columnCount, Table::left);
 
+        std::string desc;
         int row = 0;
         foreach (task, tasks)
-          table.addCell (row++, columnCount, task->get ("description"));
+        {
+          desc = task->get ("description");
+          context.hooks.trigger ("format-description_only", "description_only", desc);
+          table.addCell (row++, columnCount, desc);
+        }
       }
 
       else if (*col == "description")
@@ -488,9 +501,14 @@ int runCustomReport (
         table.setColumnWidth (columnCount, Table::flexible);
         table.setColumnJustification (columnCount, Table::left);
 
+        std::string desc;
         int row = 0;
         foreach (task, tasks)
-          table.addCell (row++, columnCount, getFullDescription (*task, report));
+        {
+          desc = getFullDescription (*task, report);
+          context.hooks.trigger ("format-description", "description", desc);
+          table.addCell (row++, columnCount, desc);
+        }
       }
 
       else if (*col == "recur")
