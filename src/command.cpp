@@ -1750,7 +1750,10 @@ int handleColor (std::string &outs)
             << std::endl;
 
         // 16 system colors.
-        out << "color0 - color15" << std::endl;
+        out << "color0 - color15"
+            << std::endl
+            << "  0 1 2 . . ."
+            << std::endl;
         for (int r = 0; r < 2; ++r)
         {
           out << "  ";
@@ -1764,13 +1767,41 @@ int handleColor (std::string &outs)
           out << std::endl;
         }
 
-        out << std::endl;
+        out << "          . . . 15"
+            << std::endl
+            << std::endl;
 
         // Color cube.
-        out << "Color cube rgb000 - rgb555 (also color16 - color231)" << std::endl;
+        out << "Color cube rgb"
+            << Color::colorize ("0", "bold red")
+            << Color::colorize ("0", "bold green")
+            << Color::colorize ("0", "bold blue")
+            << " - rgb"
+            << Color::colorize ("5", "bold red")
+            << Color::colorize ("5", "bold green")
+            << Color::colorize ("5", "bold blue")
+            << " (also color16 - color231)"
+            << std::endl
+            << "  " << Color::colorize ("0            "
+                                        "1            "
+                                        "2            "
+                                        "3            "
+                                        "4            "
+                                        "5", "bold red")
+            << std::endl
+            << "  " << Color::colorize ("0 1 2 3 4 5  "
+                                        "0 1 2 3 4 5  "
+                                        "0 1 2 3 4 5  "
+                                        "0 1 2 3 4 5  "
+                                        "0 1 2 3 4 5  "
+                                        "0 1 2 3 4 5", "bold blue")
+            << std::endl;
+
+        char label [12];
         for (int g = 0; g < 6; ++g)
         {
-          out << "  ";
+          sprintf (label, " %d", g);
+          out << Color::colorize (label, "bold green");
           for (int r = 0; r < 6; ++r)
           {
             for (int b = 0; b < 6; ++b)
@@ -1789,7 +1820,11 @@ int handleColor (std::string &outs)
         out << std::endl;
 
         // Grey ramp.
-        out << "Gray ramp gray0 - gray23 (also color232 - color255)" << std::endl << "  ";
+        out << "Gray ramp gray0 - gray23 (also color232 - color255)"
+            << std::endl
+            << "  0 1 2 . . .                             . . . 23"
+            << std::endl
+            << "  ";
         for (int g = 0; g < 24; ++g)
         {
           std::stringstream s;
