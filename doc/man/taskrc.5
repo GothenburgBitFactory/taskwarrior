@@ -454,6 +454,14 @@ The color for recurring tasks.
 .RE
 
 .RS
+To disable a coloration rule for which there is a default, set the value to
+nothing, for example:
+.RS
+.B color.tagged=
+.RE
+.RE
+
+.RS
 See the task-color(5) man pages for color details.
 .RE
 
@@ -506,6 +514,16 @@ Color of holidays in calendar.
 .TP
 .B color.calendar.weeknumber=black on white
 Color of weeknumbers in calendar.
+.RE
+
+.RS
+It is possible to apply a specific color to every other task in a report,
+which can make it easier to visually separate tasks.  This is especially
+useful when tasks are displayed over multiple lines due to long descriptions
+or annotations.
+.TP
+.B color.alternate=on rgb253
+Color of alternate tasks.
 .RE
 
 .SS SHADOW FILE
