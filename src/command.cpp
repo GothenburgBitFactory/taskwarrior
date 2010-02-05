@@ -560,7 +560,15 @@ int handleConfig (std::string &outs)
       std::string value = "";
 
       if (args.size () > 1)
-        value = args[1];
+      {
+        for (unsigned int i = 1; i < args.size (); ++i)
+        {
+          if (i > 1)
+            value += " ";
+
+          value += args[i];
+        }
+      }
 
       if (name != "")
       {

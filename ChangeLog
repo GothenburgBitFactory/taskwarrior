@@ -75,6 +75,8 @@
    Florian).
  + Fixed bug #368 which caused recurring tasks 'until' dates to be rendered as
    epoch numbers instead of dates (thanks to Cory Donnelly).
+ + Fixed bug #369 which prevented the config command from setting quoted or
+   unquoted multi-word values (thanks to Richard Querin).
 
 ------ old releases ------------------------------
 

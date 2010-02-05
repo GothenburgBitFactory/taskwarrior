@@ -29,7 +29,7 @@
 use strict;
 use warnings;
 use File::Path;
-use Test::More tests => 13;
+use Test::More tests => 15;
 
 # Create the rc file, using rc.name:value.
 unlink 'foo.rc';
@@ -73,6 +73,15 @@ unlike ($output, qr/^must_be_unique/ms, 'config removing a value');
 qx{echo 'y'|../task rc:foo.rc config -- report.:b +c};
 $output = qx{../task rc:foo.rc config};
 like ($output, qr/^report\.:b\s+\+c/ms, 'the -- operator is working');
+
+# Make sure the value is accepted if it has multiple words.
+qx{echo 'y'|../task rc:foo.rc config must_be_unique 'one two three'};
+$output = qx{../task rc:foo.rc config};
+like ($output, qr/^must_be_unique\s+one two three$/ms, 'config allows multi-word quoted values');
+
+qx{echo 'y'|../task rc:foo.rc config must_be_unique one two three};
+$output = qx{../task rc:foo.rc config};
+like ($output, qr/^must_be_unique\s+one two three$/ms, 'config allows multi-word unquoted values');
 
 rmtree 'foo', 0, 0;
 ok (!-r 'foo', 'Removed foo');
