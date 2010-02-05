@@ -77,6 +77,9 @@
    epoch numbers instead of dates (thanks to Cory Donnelly).
  + Fixed bug #369 which prevented the config command from setting quoted or
    unquoted multi-word values (thanks to Richard Querin).
+ + Fixed bug #370 which prevented the removal of a due date from a task,
+   mis-identifying the task as recurring just because it had a due date
+   (thanks to John Florian).
 
 ------ old releases ------------------------------
 

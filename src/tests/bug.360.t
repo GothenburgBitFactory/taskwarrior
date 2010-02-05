@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -52,6 +52,17 @@ unlike ($output, qr/You cannot remove the recurrence from a recurring task./ms, 
 # doing what it should?
 $output = qx{../task rc:bug.rc 2 recur:};
 like ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'Recurrence removal error');
+
+# Prevent removal of the due date from a recurring task.
+$output = qx{../task rc:bug.rc 2 due:};
+like ($output, qr/You cannot remove the due date from a recurring task./ms, 'Cannot remove due date from a recurring task');
+
+# Allow removal of the due date from a non-recurring task.
+qx{../task rc:bug.rc add nonrecurring};
+$output = qx{../task rc:bug.rc ls};
+my ($id) = $output =~ /(\d+)\s+nonrecurring/;
+$output = qx{../task rc:bug.rc $id due:};
+unlike ($output, qr/You cannot remove the due date from a recurring task./ms, 'Can remove due date from a non-recurring task');
 
 # Cleanup.
 unlink 'pending.data';
