@@ -1,0 +1,40 @@
+$ # Q: What is a formatting hook?
+$ # A: Lua code that modifies task output at run time.
+$
+$ cat > hooks.lua
+
+-- Make ID not show up
+function id (name, value)
+  return "(shhh - it's a secret)", 0, nil
+end
+
+-- Decorate the UUID
+function uuid (name, value)
+  return '<<<' .. value .. '>>>', 0, nil
+end
+
+^D
+
+$ # Q: What is a command hook?
+$ # A: Lua code that changes the way commands work.
+$
+$ cat >> hooks.lua
+
+-- Disable tags
+function notags ()
+  return 1, 'Tags have been disabled'
+end
+
+^D
+
+$
+$ task config -- hook.format-id ~/demo/hooks.lua:id
+$ task config -- hook.format-uuid ~/demo/hooks.lua:uuid
+$ task config -- hook.pre-tag ~/demo/hooks.lua:notags
+$ task list
+$ task add Demonstrate formatting hooks
+$ task 1 info
+$ task config hooks on
+$ task 1 info
+$ task 1 +try_to_tag
+
