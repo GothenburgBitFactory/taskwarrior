@@ -45,7 +45,8 @@
 // 2) It is parsed and used as default values for all Config.get calls.
 std::string Config::defaults =
   "# Task program configuration file.\n"
-  "# For more documentation, see http://taskwarrior.org or try 'man task' and 'man taskrc'\n"
+  "# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-faq',\n"
+  "# 'man task-tutorial', 'man task-color' or 'man taskrc'\n"
   "\n"
   "# Files\n"
   "data.location=~/.task\n"

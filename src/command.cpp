@@ -474,7 +474,8 @@ int handleVersion (std::string &outs)
     link.setColumnJustification (0, Table::left);
     link.addCell (link.addRow (), 0,
       "Documentation for task can be found using 'man task', 'man taskrc', "
-      "'man task-tutorial', 'man task-faq' or at http://taskwarrior.org");
+      "'man task-tutorial', 'man task-color', 'man task-faq' or at "
+      "http://taskwarrior.org");
 
     Color bold ("bold");
 

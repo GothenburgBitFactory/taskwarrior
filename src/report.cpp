@@ -213,7 +213,8 @@ int shortUsage (std::string &outs)
   out << table.render ()
       << std::endl
       << "Documentation for task can be found using 'man task', 'man taskrc', "
-      << "'man task-tutorial', 'man task-faq' or at http://taskwarrior.org"
+      << "'man task-tutorial', 'man task-color', 'man task-faq' or at "
+      << "http://taskwarrior.org"
       << std::endl
       << std::endl;
 
