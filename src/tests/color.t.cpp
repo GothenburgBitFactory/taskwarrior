@@ -102,7 +102,7 @@ int main (int argc, char** argv)
   t.is (Color::colorize ("foo", "white"),              std::string ("\033[37mfoo\033[0m"),       "white              -> ^[[37m");
 
   // 16-color backgrounds.
-  t.is (Color::colorize ("foo", "on bright black"),    std::string ("\033[90mfoo\033[0m"),       "on bright black    -> ^[[90m");
+  t.is (Color::colorize ("foo", "on bright black"),    std::string ("\033[100mfoo\033[0m"),      "on bright black    -> ^[[100m");
 
   t.is (Color::colorize ("foo", "on black"),           std::string ("\033[40mfoo\033[0m"),       "on black           -> ^[[40m");
   t.is (Color::colorize ("foo", "on red"),             std::string ("\033[41mfoo\033[0m"),       "on red             -> ^[[41m");

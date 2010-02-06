@@ -105,6 +105,12 @@ Color::Color (const std::string& spec)
   std::vector <std::string> words;
   split (words, modifiable_spec, ' ');
 
+  // Construct the color as two separate colors, then blend them later.  This
+  // make it possible to declare a color such as "color1 on black", and have
+  // the upgrade work properly.
+  unsigned int fg_value = 0;
+  unsigned int bg_value = 0;
+
   bool bg = false;
   int index;
   std::string word;
@@ -113,9 +119,9 @@ Color::Color (const std::string& spec)
   {
     word = lowerCase (trim (*it));
 
-         if (word == "bold")      value |= _COLOR_BOLD;
-    else if (word == "bright")    value |= _COLOR_BRIGHT;
-    else if (word == "underline") value |= _COLOR_UNDERLINE;
+         if (word == "bold")      fg_value |= _COLOR_BOLD;
+    else if (word == "bright")    bg_value |= _COLOR_BRIGHT;
+    else if (word == "underline") fg_value |= _COLOR_UNDERLINE;
     else if (word == "on")        bg = true;
 
     // X where X is one of black, red, blue ...
@@ -123,13 +129,13 @@ Color::Color (const std::string& spec)
     {
       if (bg)
       {
-        value |= _COLOR_HASBG;
-        value |= index << 8;
+        bg_value |= _COLOR_HASBG;
+        bg_value |= index << 8;
       }
       else
       {
-        value |= _COLOR_HASFG;
-        value |= index;
+        fg_value |= _COLOR_HASFG;
+        fg_value |= index;
       }
     }
 
@@ -141,20 +147,18 @@ Color::Color (const std::string& spec)
       if (index < 0 || index > 23)
         throw std::string ("The color '") + *it + "' is not recognized.";
 
-      upgrade ();
-
       if (bg)
       {
-        value |= _COLOR_HASBG;
-        value |= (index + 232) << 8;
+        bg_value |= _COLOR_HASBG;
+        bg_value |= (index + 232) << 8;
+        bg_value |= _COLOR_256;
       }
       else
       {
-        value |= _COLOR_HASFG;
-        value |= index + 232;
+        fg_value |= _COLOR_HASFG;
+        fg_value |= index + 232;
+        fg_value |= _COLOR_256;
       }
-
-      value |= _COLOR_256;
     }
 
     // rgbRGB, where 0 <= R,G,B <= 5.
@@ -175,20 +179,18 @@ Color::Color (const std::string& spec)
 
       index = 16 + r*36 + g*6 + b;
 
-      upgrade ();
-
       if (bg)
       {
-        value |= _COLOR_HASBG;
-        value |= index << 8;
+        bg_value |= _COLOR_HASBG;
+        bg_value |= index << 8;
+        bg_value |= _COLOR_256;
       }
       else
       {
-        value |= _COLOR_HASFG;
-        value |= index;
+        fg_value |= _COLOR_HASFG;
+        fg_value |= index;
+        fg_value |= _COLOR_256;
       }
-
-      value |= _COLOR_256;
     }
 
     // colorN, where 0 <= N <= 255.
@@ -202,20 +204,24 @@ Color::Color (const std::string& spec)
 
       if (bg)
       {
-        value |= _COLOR_HASBG;
-        value |= index << 8;
+        bg_value |= _COLOR_HASBG;
+        bg_value |= index << 8;
+        bg_value |= _COLOR_256;
       }
       else
       {
-        value |= _COLOR_HASFG;
-        value |= index;
+        fg_value |= _COLOR_HASFG;
+        fg_value |= index;
+        fg_value |= _COLOR_256;
       }
-
-      value |= _COLOR_256;
     }
     else if (word != "")
       throw std::string ("The color '") + *it + "' is not recognized.";
   }
+
+  // Now combine the fg and bg into a single color.
+  value = fg_value;
+  blend (Color (bg_value));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -392,18 +398,17 @@ void Color::upgrade ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
-  red                  \033[31m
-  bold red             \033[91m
-  underline red        \033[4;31m
-  bold underline red   \033[1;4;31m
-
-  on red               \033[41m
-  on bright red        \033[101m
-
-  256 fg               \033[38;5;Nm
-  256 bg               \033[48;5;Nm
-*/
+// Sample color codes:
+//   red                  \033[31m
+//   bold red             \033[91m
+//   underline red        \033[4;31m
+//   bold underline red   \033[1;4;31m
+//
+//   on red               \033[41m
+//   on bright red        \033[101m
+//
+//   256 fg               \033[38;5;Nm
+//   256 bg               \033[48;5;Nm
 std::string Color::colorize (const std::string& input)
 {
   if (value == 0)

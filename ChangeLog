@@ -83,6 +83,8 @@
  + Fixed bug #371 which caused task to mis-apply certain color rules, like
    color.alternate, which was (a) not applied first, and (b) not blended
    with the other color rules (thanks to Richard Querin).
+ + Fixed bug #372 which incorrectly mapped 16-color backgrounds into the
+   256-color space.
 
 ------ old releases ------------------------------
 
