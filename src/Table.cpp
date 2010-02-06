@@ -73,15 +73,17 @@ Table::~Table ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+/*
 void Table::setTableColor (const Color& c)
 {
   mColor["table"] = c;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void Table::setTableAlternateColor (const Color& c)
 {
-  mColor["alternate"] = c;
+  alternate = c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,12 +124,15 @@ int Table::addColumn (const std::string& col)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete - this call is not used.  Consider removal.
+/*
 void Table::setColumnColor (int column, const Color& c)
 {
   char id[12];
   sprintf (id, "col:%d", column);
   mColor[id] = c;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void Table::setColumnUnderline (int column)
@@ -316,38 +321,65 @@ std::string Table::getCell (const int row, const int col)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Color Table::getColor (const int row, const int col)
+Color Table::getColor (const int index, const int row, const int col)
 {
-  char idCell[24];
-  sprintf (idCell, "cell:%d,%d", row, col);
-  if (mColor.find (idCell) != mColor.end ())
-    return mColor[idCell];
+  // Color defaults to trivial.
+  Color c;
 
-  char idRow[12];
-  sprintf (idRow, "row:%d", row);
-  if (mColor.find (idRow) != mColor.end ())
-    return mColor[idRow];
+  // For alternating rows, use Table::alternate.
+  std::map <std::string, Color>::iterator i;
+  char id[24];
 
-  char idCol[12];
-  sprintf (idCol, "col:%d", col);
-  if (mColor.find (idCol) != mColor.end ())
-    return mColor[idCol];
+  if (index % 2)
+    c = alternate;
 
-  if (mColor.find ("table") != mColor.end ())
-    return mColor["table"];
+/*
+  // TODO Obsolete - this is not used.  Consider removal.
+  // Blend with a table color, if specified.
+  if ((i = mColor.find ("table")) != mColor.end ())
+    c.blend (i->second);
 
-  return Color ();
+  // Blend with a column color, if specified.
+  sprintf (id, "col:%d", col);
+  if ((i = mColor.find (id)) != mColor.end ())
+    c.blend (i->second);
+*/
+
+  // Blend with a row color, if specified.
+  sprintf (id, "row:%d", row);
+  if ((i = mColor.find (id)) != mColor.end ())
+    c.blend (i->second);
+
+  // Blend with a cell color, if specified.
+  sprintf (id, "cell:%d,%d", row, col);
+  if ((i = mColor.find (id)) != mColor.end ())
+    c.blend (i->second);
+
+  return c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete - this is not used.  Consider removal.
 Color Table::getHeaderColor (int col)
 {
-  char idCol[12];
-  sprintf (idCol,  "col:%d",          col);
+  // Color defaults to trivial.
+  Color c;
 
-  return mColor.find (idCol)   != mColor.end () ? mColor[idCol]
-       : mColor.find ("table") != mColor.end () ? mColor["table"]
-       : Color ();
+/*
+  std::map <std::string, Color>::iterator i;
+  char id[24];
+
+  // Blend with a table color, if specified.
+  if ((i = mColor.find ("table")) != mColor.end ())
+    c.blend (i->second);
+
+  // Blend with a column color, if specified.
+  sprintf (id, "col:%d", col);
+  if ((i = mColor.find (id)) != mColor.end ())
+    c.blend (i->second);
+*/
+
+  return c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -568,6 +600,7 @@ const std::string Table::formatHeaderDashedUnderline (
 
 ////////////////////////////////////////////////////////////////////////////////
 void Table::formatCell (
+  const int index,
   const int row,
   const int col,
   const int width,
@@ -577,7 +610,7 @@ void Table::formatCell (
 {
   assert (width > 0);
 
-  Color c = getColor (row, col);
+  Color c = getColor (index, row, col);
   just justification = getJustification (row, col);
   std::string data   = getCell (row, col);
 
@@ -1027,13 +1060,6 @@ const std::string Table::render (int maximum /* = 0 */)
   if (mSortColumns.size ())
     sort (order);
 
-  // Now blend in the alternate row color.
-  Color alternate = mColor["alternate"];
-  if (alternate.nontrivial ())
-    for (unsigned int row = 0; row < order.size (); ++row)
-      if (row % 2)
-        setRowColor (order[row], alternate);
-
   // If a non-zero maximum is specified, then it limits the number of rows of
   // the table that are rendered.
   int limit = mRows;
@@ -1052,6 +1078,7 @@ const std::string Table::render (int maximum /* = 0 */)
       std::vector <std::string> lines;
       std::string blank;
       formatCell (
+        row,
         order[row],
         col,
         mCalculatedWidth[col],

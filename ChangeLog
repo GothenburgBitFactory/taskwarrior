@@ -80,6 +80,9 @@
  + Fixed bug #370 which prevented the removal of a due date from a task,
    mis-identifying the task as recurring just because it had a due date
    (thanks to John Florian).
+ + Fixed bug #371 which caused task to mis-apply certain color rules, like
+   color.alternate, which was (a) not applied first, and (b) not blended
+   with the other color rules (thanks to Richard Querin).
 
 ------ old releases ------------------------------
 
