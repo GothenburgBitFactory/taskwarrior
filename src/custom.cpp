@@ -169,7 +169,10 @@ int runCustomReport (
     table.setReportName (report);
 
     foreach (task, tasks)
+    {
       table.addRow ();
+      context.hooks.trigger ("pre-display", *task);
+    }
 
     int columnCount = 0;
     int dueColumn = -1;

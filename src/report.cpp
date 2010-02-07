@@ -349,6 +349,9 @@ int handleInfo (std::string &outs)
       table.setColumnJustification (1, Table::left);
       Date now;
 
+      context.hooks.trigger ("pre-display", *task);
+
+      // id
       char svalue[12];
       std::string value;
       int row = table.addRow ();
@@ -360,14 +363,17 @@ int handleInfo (std::string &outs)
 
       std::string status = ucFirst (Task::statusToText (task->getStatus ()));
 
+      // description
       row = table.addRow ();
       table.addCell (row, 0, "Description");
       table.addCell (row, 1, getFullDescription (*task, "info"));
 
+      // status
       row = table.addRow ();
       table.addCell (row, 0, "Status");
       table.addCell (row, 1, status);
 
+      // project
       if (task->has ("project"))
       {
         row = table.addRow ();
@@ -375,6 +381,7 @@ int handleInfo (std::string &outs)
         table.addCell (row, 1, task->get ("project"));
       }
 
+      // priority
       if (task->has ("priority"))
       {
         row = table.addRow ();
@@ -387,6 +394,7 @@ int handleInfo (std::string &outs)
       if (task->getStatus () == Task::recurring ||
           task->has ("parent"))
       {
+        // recur
         if (task->has ("recur"))
         {
           row = table.addRow ();
@@ -394,6 +402,7 @@ int handleInfo (std::string &outs)
           table.addCell (row, 1, task->get ("recur"));
         }
 
+        // until
         if (task->has ("until"))
         {
           row = table.addRow ();
@@ -408,6 +417,7 @@ int handleInfo (std::string &outs)
           table.addCell (row, 1, until);
         }
 
+        // mask
         if (task->has ("mask"))
         {
           row = table.addRow ();
@@ -415,6 +425,7 @@ int handleInfo (std::string &outs)
           table.addCell (row, 1, task->get ("mask"));
         }
 
+        // parent
         if (task->has ("parent"))
         {
           row = table.addRow ();
@@ -422,6 +433,7 @@ int handleInfo (std::string &outs)
           table.addCell (row, 1, task->get ("parent"));
         }
 
+        // imask
         row = table.addRow ();
         table.addCell (row, 0, "Mask Index");
         table.addCell (row, 1, task->get ("imask"));
@@ -1255,6 +1267,8 @@ int handleReportTimesheet (std::string &outs)
         // If task completed within range.
         if (task->getStatus () == Task::completed)
         {
+          context.hooks.trigger ("pre-display", *task);
+
           Date compDate (atoi (task->get ("end").c_str ()));
           if (compDate >= start && compDate < end)
           {
@@ -1314,6 +1328,8 @@ int handleReportTimesheet (std::string &outs)
         if (task->getStatus () == Task::pending &&
             task->has ("start"))
         {
+          context.hooks.trigger ("pre-display", *task);
+
           Date startDate (atoi (task->get ("start").c_str ()));
           if (startDate >= start && startDate < end)
           {

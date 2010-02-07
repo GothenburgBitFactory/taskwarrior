@@ -1255,6 +1255,8 @@ int handleExport (std::string &outs)
 
     foreach (task, tasks)
     {
+      context.hooks.trigger ("pre-display", *task);
+
       if (task->getStatus () != Task::recurring)
       {
         out << task->composeCSV ().c_str ();
