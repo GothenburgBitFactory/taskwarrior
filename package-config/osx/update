@@ -8,6 +8,8 @@ mkdir -p local/share/doc/task-1.9.0/scripts/zsh
 mkdir -p local/share/man/man1
 mkdir -p local/share/man/man5
 
+cp ../../README                 README.txt
+cp ../../COPYING                COPYING.txt
 
 cp ../../src/task               local/bin/
 
@@ -18,7 +20,7 @@ cp ../../NEWS                   local/share/doc/task-1.9.0/
 cp ../../README                 local/share/doc/task-1.9.0/
 
 cp ../../scripts/bash/*         local/share/doc/task-1.9.0/scripts/bash
-cp ../../scripts/vim/*          local/share/doc/task-1.9.0/scripts/vim
+cp ../../scripts/vim/README     local/share/doc/task-1.9.0/scripts/vim
 cp ../../scripts/vim/ftdetect/* local/share/doc/task-1.9.0/scripts/vim/ftdetect
 cp ../../scripts/vim/syntax/*   local/share/doc/task-1.9.0/scripts/vim/syntax
 cp ../../scripts/zsh/*          local/share/doc/task-1.9.0/scripts/zsh
