@@ -1,0 +1,28 @@
+#!/bin/bash
+
+mkdir -p local/bin
+mkdir -p local/share/doc/task-1.9.0/scripts/bash
+mkdir -p local/share/doc/task-1.9.0/scripts/vim/ftdetect
+mkdir -p local/share/doc/task-1.9.0/scripts/vim/syntax
+mkdir -p local/share/doc/task-1.9.0/scripts/zsh
+mkdir -p local/share/man/man1
+mkdir -p local/share/man/man5
+
+
+cp ../../src/task               local/bin/
+
+cp ../../AUTHORS                local/share/doc/task-1.9.0/
+cp ../../ChangeLog              local/share/doc/task-1.9.0/
+cp ../../COPYING                local/share/doc/task-1.9.0/
+cp ../../NEWS                   local/share/doc/task-1.9.0/
+cp ../../README                 local/share/doc/task-1.9.0/
+
+cp ../../scripts/bash/*         local/share/doc/task-1.9.0/scripts/bash
+cp ../../scripts/vim/*          local/share/doc/task-1.9.0/scripts/vim
+cp ../../scripts/vim/ftdetect/* local/share/doc/task-1.9.0/scripts/vim/ftdetect
+cp ../../scripts/vim/syntax/*   local/share/doc/task-1.9.0/scripts/vim/syntax
+cp ../../scripts/zsh/*          local/share/doc/task-1.9.0/scripts/zsh
+
+cp ../../doc/man/*.1            local/share/man/man1
+cp ../../doc/man/*.5            local/share/man/man5
+
