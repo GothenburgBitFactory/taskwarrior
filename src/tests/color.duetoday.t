@@ -34,7 +34,7 @@ use Test::More tests => 6;
 if (open my $fh, '>', 'color.rc')
 {
   print $fh "data.location=.\n",
-            "color.due=red\n",
+            "color.due.today=red\n",
             "_forcecolor=1\n";
   close $fh;
   ok (-r 'color.rc', 'Created color.rc');
@@ -42,11 +42,11 @@ if (open my $fh, '>', 'color.rc')
 
 # Test the add command.
 qx{../task rc:color.rc add due:12/31/2037 nothing};
-qx{../task rc:color.rc add due:tomorrow red};
+qx{../task rc:color.rc add due:today red};
 my $output = qx{../task rc:color.rc list};
 
 like ($output, qr/ (?!<\033\[\d\dm) \d{1,2}\/\d{1,2}\/\d{4} (?!>\033\[0m) .* nothing /x, 'none');
-like ($output, qr/ \033\[31m        .* red .* \033\[0m/x, 'color.due');
+like ($output, qr/ \033\[31m        .* red .* \033\[0m/x, 'color.due.today');
 
 # Cleanup.
 unlink 'pending.data';

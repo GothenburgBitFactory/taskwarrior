@@ -704,10 +704,10 @@ int handleConfig (std::string &outs)
     // Note that there is a leading and trailing space, to make searching easier.
     std::string recognized =
       " annotations blanklines bulk calendar.details calendar.details.report "
-      "calendar.holidays calendar.legend color color.active color.due "
+      "calendar.holidays calendar.legend color color.active color.due color.due.today "
       "color.overdue color.pri.H color.pri.L color.pri.M color.pri.none "
       "color.recurring color.tagged color.footnote color.header color.debug "
-      "color.alternate color.calendar.today color.calendar.due "
+      "color.alternate color.calendar.today color.calendar.due color.calendar.due.today "
       "color.calendar.overdue color.calendar.weekend color.calendar.holiday "
       "color.calendar.weeknumber confirmation curses data.location dateformat "
       "dateformat.holiday dateformat.report debug default.command "

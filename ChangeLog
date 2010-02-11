@@ -53,6 +53,8 @@
    The default dateformat being YMD (20101224) set by dateformat.holiday.
  + The coloring of due tasks in reports can now be enabled for all tasks, and not
     only the imminent ones, by setting the configuration variable due=0.
+ + Tasks due on the current day ("today") can now have their own color setting
+   color.due.today and color.calendar.due.today.
  + Added a new 'task-faq' man page for common questions and answers.
  + Added a new 'task-color' man page detailing how to set up and use color in
    task.

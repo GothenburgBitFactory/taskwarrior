@@ -1473,6 +1473,7 @@ std::string renderMonths (
 
   Color color_today      (context.config.get ("color.calendar.today"));
   Color color_due        (context.config.get ("color.calendar.due"));
+  Color color_duetoday   (context.config.get ("color.calendar.due.today"));
   Color color_overdue    (context.config.get ("color.calendar.overdue"));
   Color color_weekend    (context.config.get ("color.calendar.weekend"));
   Color color_holiday    (context.config.get ("color.calendar.holiday"));
@@ -1542,19 +1543,44 @@ std::string renderMonths (
 
         // colorize due tasks
         if (context.config.get ("calendar.details") != "none")
+        {
+          context.config.set ("due", 0);
           foreach (task, all)
           {
+
+
             if (task->getStatus () == Task::pending &&
                 task->has ("due"))
             {
-              Date due (atoi (task->get ("due").c_str ()));
+              std::string due = task->get ("due");
+              Date duedmy (atoi(due.c_str()));
 
-              if (due.day   () == d           &&
-                  due.month () == months[mpl] &&
-                  due.year  () == years[mpl])
-                table.setCellColor (row, thisCol, (due < today ? color_overdue : color_due));
+              if (duedmy.day   () == d           &&
+                  duedmy.month () == months[mpl] &&
+                  duedmy.year  () == years[mpl])
+              {
+                switch (getDueState (due))
+                {
+                  case 1: // imminent
+                    table.setCellColor (row, thisCol, color_due);
+                    break;
+            
+                  case 2: // today
+                    table.setCellColor (row, thisCol, color_duetoday);
+                    break;
+            
+                  case 3: // overdue
+                    table.setCellColor (row, thisCol, color_overdue);
+                    break;
+            
+                  case 0: // not due at all
+                  default:
+                    break;
+                }
+              }
             }
           }
+        }
       }
 
       // Check for end of week, and...
@@ -1741,6 +1767,7 @@ int handleReportCalendar (std::string &outs)
 
     Color color_today      (context.config.get ("color.calendar.today"));
     Color color_due        (context.config.get ("color.calendar.due"));
+    Color color_duetoday   (context.config.get ("color.calendar.due.today"));
     Color color_overdue    (context.config.get ("color.calendar.overdue"));
     Color color_weekend    (context.config.get ("color.calendar.weekend"));
     Color color_holiday    (context.config.get ("color.calendar.holiday"));
@@ -1752,6 +1779,8 @@ int handleReportCalendar (std::string &outs)
           << color_today.colorize ("today")
           << ", "
           << color_due.colorize ("due")
+          << ", "
+          << color_duetoday.colorize ("due-today")
           << ", "
           << color_overdue.colorize ("overdue")
           << ", "

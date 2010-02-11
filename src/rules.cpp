@@ -144,7 +144,11 @@ void autoColorize (Task& task, Color& c)
       c.blend (gsColor["color.due"]);
       break;
 
-    case 2: // overdue
+    case 2: // today
+      c.blend (gsColor["color.due.today"]);
+      break;
+
+    case 3: // overdue
       c.blend (gsColor["color.overdue"]);
       break;
 

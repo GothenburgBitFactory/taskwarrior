@@ -388,6 +388,9 @@ int getDueState (const std::string& due)
     Date thisDay (rightNow.month (), rightNow.day (), rightNow.year ());
 
     if (dt < thisDay)
+      return 3;
+
+    if (dt == thisDay)
       return 2;
 
     int imminentperiod = context.config.getInteger ("due");
@@ -436,7 +439,7 @@ bool nag (Task& task)
     {
       if (t->id == task.id)
       {
-        if (getDueState (t->get ("due")) == 2)
+        if (getDueState (t->get ("due")) == 3)
           isOverdue = true;
 
         std::string priority = t->get ("priority");
@@ -445,7 +448,7 @@ bool nag (Task& task)
       }
       else if (t->getStatus () == Task::pending)
       {
-        if (getDueState (t->get ("due")) == 2)
+        if (getDueState (t->get ("due")) == 3)
           overdue++;
 
         std::string priority = t->get ("priority");
