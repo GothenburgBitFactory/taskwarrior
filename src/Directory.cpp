@@ -121,10 +121,19 @@ void Directory::list (
           !strcmp (de->d_name, ".."))
         continue;
 
+#ifdef SOLARIS
+      struct stat s;
+      stat (de->d_name, &s);
+      if (recursive && s.st_mode & S_IFDIR)
+        list (base + "/" + de->d_name, results, recursive);
+      else
+        results.push_back (base + "/" + de->d_name);
+#else
       if (recursive && de->d_type == DT_DIR)
         list (base + "/" + de->d_name, results, recursive);
       else
         results.push_back (base + "/" + de->d_name);
+#endif
     }
 
     closedir (dp);
