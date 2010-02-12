@@ -1,6 +1,14 @@
 # This is currently what is required to build with Lua.
 
 # OSX:
-rm auto.h
-./configure --enable-lua --with-lua-inc=/usr/local/include --with-lua-lib=/usr/local/lib
+autoreconf -f
+./configure --with-lua
+
+# Cygwin 1.5:
+#autoreconf -f
+#./configure
+
+# Cygwin 1.7:
+#autoreconf -f
+#./configure --with-ncurses --with-ncurses-inc=/usr/include/ncurses
 
