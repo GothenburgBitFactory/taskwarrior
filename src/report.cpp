@@ -1512,10 +1512,11 @@ std::string renderMonths (
 
       if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
       {
+        Color cellColor;
 
         // colorize weekends
         if (dow == 0 || dow == 6)
-          table.setCellColor (row, thisCol, color_weekend);
+          cellColor.blend (color_weekend);
 
         // colorize holidays
         if (context.config.get ("calendar.holidays") != "none")
@@ -1531,7 +1532,7 @@ std::string renderMonths (
                 if (holDate.day   () == d           &&
                     holDate.month () == months[mpl] &&
                     holDate.year  () == years[mpl])
-                  table.setCellColor (row, thisCol, color_holiday);
+                  cellColor.blend (color_holiday);
               }
         }
 
@@ -1539,7 +1540,7 @@ std::string renderMonths (
         if (today.day   () == d                &&
             today.month () == months.at (mpl)  &&
             today.year  () == years.at  (mpl))
-          table.setCellColor (row, thisCol, color_today);
+          cellColor.blend (color_today);
 
         // colorize due tasks
         if (context.config.get ("calendar.details") != "none")
@@ -1547,8 +1548,6 @@ std::string renderMonths (
           context.config.set ("due", 0);
           foreach (task, all)
           {
-
-
             if (task->getStatus () == Task::pending &&
                 task->has ("due"))
             {
@@ -1562,15 +1561,15 @@ std::string renderMonths (
                 switch (getDueState (due))
                 {
                   case 1: // imminent
-                    table.setCellColor (row, thisCol, color_due);
+                    cellColor.blend (color_due);
                     break;
             
                   case 2: // today
-                    table.setCellColor (row, thisCol, color_duetoday);
+                    cellColor.blend (color_duetoday);
                     break;
             
                   case 3: // overdue
-                    table.setCellColor (row, thisCol, color_overdue);
+                    cellColor.blend (color_overdue);
                     break;
             
                   case 0: // not due at all
@@ -1581,6 +1580,7 @@ std::string renderMonths (
             }
           }
         }
+      table.setCellColor (row, thisCol, cellColor);
       }
 
       // Check for end of week, and...
