@@ -409,6 +409,56 @@ int runCustomReport (
         dueColumn = columnCount;
       }
 
+      else if (*col == "countdown")
+      {
+        table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Countdown");
+        table.setColumnWidth (columnCount, Table::minimum);
+        table.setColumnJustification (columnCount, Table::right);
+
+        std::string due;
+        std::string countdown;
+        Date now;
+        for (unsigned int row = 0; row < tasks.size(); ++row)
+        {
+          due = tasks[row].get ("due");
+          if (due.length ())
+          {
+            Date dt (::atoi (due.c_str ()));
+            time_t cntdwn = (time_t) (now - dt);
+            countdown = formatSeconds ( cntdwn < 0 ? cntdwn * -1 : cntdwn );
+            if ( cntdwn < 0 )
+              countdown = std::string("- ") + countdown;
+            context.hooks.trigger ("format-countdown", "countdown", countdown);
+            table.addCell (row, columnCount, countdown);
+          }
+        }
+      }
+
+      else if (*col == "countdown_compact")
+      {
+        table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Countdown");
+        table.setColumnWidth (columnCount, Table::minimum);
+        table.setColumnJustification (columnCount, Table::right);
+
+        std::string due;
+        std::string countdown;
+        Date now;
+        for (unsigned int row = 0; row < tasks.size(); ++row)
+        {
+          due = tasks[row].get ("due");
+          if (due.length ())
+          {
+            Date dt (::atoi (due.c_str ()));
+            time_t cntdwn = (time_t) (now - dt);
+            countdown = formatSecondsCompact ( cntdwn < 0 ? cntdwn * -1 : cntdwn );
+            if ( cntdwn < 0 )
+              countdown = std::string("- ") + countdown;
+            context.hooks.trigger ("format-countdown_compact", "countdown_compact", countdown);
+            table.addCell (row, columnCount, countdown);
+          }
+        }
+      }
+
       else if (*col == "age")
       {
         table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Age");
@@ -700,6 +750,8 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "end"                  &&
         *it != "end_time"             &&
         *it != "due"                  &&
+        *it != "countdown"            &&
+        *it != "countdown_compact"    &&
         *it != "age"                  &&
         *it != "age_compact"          &&
         *it != "active"               &&

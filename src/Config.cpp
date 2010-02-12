@@ -153,7 +153,7 @@ std::string Config::defaults =
   "# Fields: id,uuid,project,priority,priority_long,entry,entry_time,\n"                           // TODO
   "#         start,entry_time,due,recur,recurrence_indicator,age,\n"                               // TODO
   "#         age_compact,active,tags,tag_indicator,description,\n"                                 // TODO
-  "#         description_only,end,end_time\n"                                                      // TODO
+  "#         description_only,end,end_time,countdown,countdown_compact\n"                          // TODO
   "# Description:   This report is ...\n"
   "# Sort:          due+,priority-,project+\n"
   "# Filter:        pro:x pri:H +bug limit:10\n"
@@ -161,8 +161,8 @@ std::string Config::defaults =
   "\n"
   "# task long\n"
   "report.long.description=Lists all task, all data, matching the specified criteria\n"
-  "report.long.columns=id,project,priority,entry,start,due,recur,age,tags,description\n"
-  "report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Age,Tags,Description\n"
+  "report.long.columns=id,project,priority,entry,start,due,recur,countdown,age,tags,description\n"
+  "report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Countdown,Age,Tags,Description\n"
   "report.long.sort=due+,priority-,project+\n"
   "report.long.filter=status:pending\n"
   "#report.long.dateformat=m/d/Y\n"

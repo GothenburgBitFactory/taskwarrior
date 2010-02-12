@@ -33,6 +33,9 @@
  + The 'entry', 'start' and 'end' columns now have equivalents that include the
    time, and are called 'entry_time', 'start_time', and 'end_time', for use in
    custom reports.
+ + 2 new columns have been added to the reports: countdown and countdown_compact.
+   They show the days left until a task is due or how many days a task has been
+   overdue.
  + The new 'priority_long' field can be shown in custom reports, and will
    display 'High' rather than the abbreviated 'H'.
  + Task now supports .taskrc command line overrides using rc.name:value and

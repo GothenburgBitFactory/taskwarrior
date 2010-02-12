@@ -361,6 +361,8 @@ bool Hooks::validFieldEvent (const std::string& event)
       event == "format-end"                  ||
       event == "format-end_time"             ||
       event == "format-due"                  ||
+      event == "format-countdown"            ||
+      event == "format-countdown_compact"    ||
       event == "format-age"                  ||
       event == "format-age_compact"          ||
       event == "format-active"               ||
