@@ -33,9 +33,9 @@
  + The 'entry', 'start' and 'end' columns now have equivalents that include the
    time, and are called 'entry_time', 'start_time', and 'end_time', for use in
    custom reports.
- + 2 new columns have been added to the reports: countdown and countdown_compact.
-   They show the days left until a task is due or how many days a task has been
-   overdue.
+ + 2 new columns have been added to the reports: countdown and
+   countdown_compact.  They show the days left until a task is due or how many
+   days a task has been overdue.
  + The new 'priority_long' field can be shown in custom reports, and will
    display 'High' rather than the abbreviated 'H'.
  + Task now supports .taskrc command line overrides using rc.name:value and
@@ -47,22 +47,32 @@
  + Added 2 new configuration variables to display the details of tasks with due
    dates when doing a 'task cal' for the corresponding months:
    'calendar.details' and 'calendar.details.report'
- + Added 5 new color configuration variables to colorize today, days with due tasks,
-   days with overdue tasks, weekend days and week numbers in the calendar:
+ + Added 5 new color configuration variables to colorize today, days with due
+   tasks, days with overdue tasks, weekend days and week numbers in the
+   calendar:
    'calendar.color.today', 'color.calendar.due', 'calendar.calendar.overdue',
    'color.calendar.weekend'and 'color.calendar.weeknumber'.
  + Added support for holidays in the calendar by using calendar.holidays
    and the corresponding holiday.X.name and holiday.X.date variables.
    The default dateformat being YMD (20101224) set by dateformat.holiday.
- + The coloring of due tasks in reports can now be enabled for all tasks, and not
-    only the imminent ones, by setting the configuration variable due=0.
+ + The coloring of due tasks in reports can now be enabled for all tasks, and
+   not only the imminent ones, by setting the configuration variable due=0.
  + Tasks due on the current day ("today") can now have their own color setting
    color.due.today and color.calendar.due.today.
  + Added a new 'task-faq' man page for common questions and answers.
  + Added a new 'task-color' man page detailing how to set up and use color in
    task.
- + Added feature #176, which allows for configurable case-sensitivity for keyword
+ + Added feature #176, which allows for configurable case-sensitivity for
+   keyword
    searches and substitutions (thanks to John Florian).
+ + Task can now use an alternate tag indicator by setting the tag.indicator
+   configuration variable to something other than the default of +.
+ + Task can now use an alternate active indicator by setting the
+   active.indicator configuration variable to something other than the default
+   of *.
+ + Task can now use an alternate recurrence indicator by setting the
+   recurrence.indicator configuration variable to something other than the
+   default of R.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted
    list.
  + Fixed bug #317 which colored tasks in the 'completed' report according to
@@ -180,8 +190,8 @@
  + Fixed bug that allowed a recurring task to be added without a due date.
  + Fixed bug that displays the wrong .taskrc file name on override (thanks to
    Federico Hernandez).
- + Fixed bug that failed to suppress color control code in the header and footnote
-   when redirecting output to a file (thanks to John Florian).
+ + Fixed bug that failed to suppress color control code in the header and
+   footnote when redirecting output to a file (thanks to John Florian).
 
 1.8.0 (7/21/2009) 14977ef317bd004dae2f2c313e806af9f2a2140c
  + Added zsh tab completion script (thanks to P.C. Shyamshankar).
@@ -498,7 +508,8 @@
   + Bug: configure.ac does not properly determine ncurses availability.
   + Bug: Cannot seem to use the percent character in a task description.
   + Bug: New installation "task stats" reports newest task 12/31/1969.
-  + Bug: New installation task projects displays header but no data - should short-circuit.
+  + Bug: New installation task projects displays header but no data - should
+         short-circuit.
   + Bug: incorrect color specification in sample .taskrc file.
   + Bug: when run without arguments, task dumps core on Solaris 10.
   + "task calendar" now reports all months with due pending tasks.

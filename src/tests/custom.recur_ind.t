@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 # Create the rc file.
 if (open my $fh, '>', 'custom.rc')
@@ -49,6 +49,10 @@ my $output = qx{../task rc:custom.rc foo 2>&1};
 like ($output,   qr/ID R/,   'Recurrence indicator heading');
 like ($output,   qr/3\s+R/, 'Recurrence indicator t1');
 unlike ($output, qr/2\s+R/, 'No recurrence indicator t2');
+
+$output = qx{../task rc:custom.rc foo rc.recurrence.indicator=RE 2>&1};
+like ($output,   qr/3\s+RE/, 'Custom recurrence indicator t1');
+unlike ($output, qr/2\s+RE/, 'No custom recurrence indicator t2');
 
 # Cleanup.
 unlink 'pending.data';

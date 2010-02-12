@@ -511,7 +511,7 @@ int runCustomReport (
 
         for (unsigned int row = 0; row < tasks.size(); ++row)
           if (tasks[row].has ("start"))
-            table.addCell (row, columnCount, "*");
+            table.addCell (row, columnCount, context.config.get ("active.indicator"));
       }
 
       else if (*col == "tags")
@@ -586,7 +586,7 @@ int runCustomReport (
 
         for (unsigned int row = 0; row < tasks.size(); ++row)
           if (tasks[row].has ("recur"))
-            table.addCell (row, columnCount, "R");
+            table.addCell (row, columnCount, context.config.get ("recurrence.indicator"));
       }
 
       else if (*col == "tag_indicator")
@@ -597,7 +597,7 @@ int runCustomReport (
 
         for (unsigned int row = 0; row < tasks.size(); ++row)
           if (tasks[row].getTagCount ())
-            table.addCell (row, columnCount, "+");
+            table.addCell (row, columnCount, context.config.get ("tag.indicator"));
       }
 
       else if (*col == "wait")

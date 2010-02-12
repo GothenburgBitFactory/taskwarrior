@@ -715,7 +715,8 @@ int handleConfig (std::string &outs)
       "displayweeknumber echo.command fontunderline locking monthsperline nag "
       "next project shadow.command shadow.file shadow.notify weekstart editor "
       "import.synonym.id import.synonym.uuid complete.all.projects "
-      "complete.all.tags search.case.sensitive hooks "
+      "complete.all.tags search.case.sensitive hooks active.indicator tag.indicator "
+      "recurrence.indicator "
 #ifdef FEATURE_SHELL
       "shell.prompt "
 #endif

@@ -65,6 +65,9 @@ std::string Config::defaults =
   "bulk=2                                 # > 2 tasks considered 'a lot', for confirmation\n"
   "nag=You have higher priority tasks.    # Nag message to keep you honest\n"                      // TODO
   "search.case.sensitive=yes              # Setting to no allows case insensitive searches\n"
+  "active.indicator=*                     # What to show as an active task indicator\n"
+  "tag.indicator=+                        # What to show as a tag indicator\n"
+  "recurrence.indicator=R                 # What to show as a task recurrence indicator\n"
   "\n"
   "# Dates\n"
   "dateformat=m/d/Y                       # Preferred input and display date format\n"
