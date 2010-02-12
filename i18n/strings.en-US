@@ -99,57 +99,20 @@
 # 5xx Colors
 500 bold
 501 underline
-502 bold_underline
-503 black
-504 red
-505 green
-506 yellow
-507 blue
-508 magenta
-509 cyan
-510 white
-511 bold_black
-512 bold_red
-513 bold_green
-514 bold_yellow
-515 bold_blue
-516 bold_magenta
-517 bold_cyan
-518 bold_white
-519 underline_black
-520 underline_red
-521 underline_green
-522 underline_yellow
-523 underline_blue
-524 underline_magenta
-525 underline_cyan
-526 underline_white
-527 bold_underline_black
-528 bold_underline_red
-529 bold_underline_green
-530 bold_underline_yellow
-531 bold_underline_blue
-532 bold_underline_magenta
-533 bold_underline_cyan
-534 bold_underline_white
-535 on_black
-536 on_red
-537 on_green
-538 on_yellow
-539 on_blue
-540 on_magenta
-541 on_cyan
-542 on_white
-543 on_bright_black
-544 on_bright_red
-545 on_bright_green
-546 on_bright_yellow
-547 on_bright_blue
-548 on_bright_magenta
-549 on_bright_cyan
-550 on_bright_white
-551 off
-552 Unknown color name
+502 on
+503 bright
+
+504 black
+505 red
+506 green
+507 yellow
+508 blue
+509 magenta
+510 cyan
+511 white
+
+520 off
+521 Unknown color name
 
 # 6xx Config
 
