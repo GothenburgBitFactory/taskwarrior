@@ -499,7 +499,7 @@ std::string::size_type find (
 
     for (; t <= end - len; ++t)
     {
-      int diff;
+      int diff = 0;
       for (size_t i = 0; i < len; ++i)
         if ((diff = tolower (t[i]) - tolower (p[i])))
           break;
@@ -546,7 +546,7 @@ std::string::size_type find (
 
     for (; t <= end - len; ++t)
     {
-      int diff;
+      int diff = 0;
       for (size_t i = 0; i < len; ++i)
         if ((diff = tolower (t[i]) - tolower (p[i])))
           break;

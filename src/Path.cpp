@@ -32,6 +32,7 @@
 #include <pwd.h>
 #include <unistd.h>
 #include "Path.h"
+#include "../auto.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 Path::Path ()
@@ -201,7 +202,11 @@ std::vector <std::string> Path::glob (const std::string& pattern)
   std::vector <std::string> results;
 
   glob_t g;
+#ifdef SOLARIS
+  if (!::glob (pattern.c_str (), GLOB_ERR, NULL, &g))
+#else
   if (!::glob (pattern.c_str (), GLOB_ERR | GLOB_BRACE | GLOB_TILDE, NULL, &g))
+#endif
     for (int i = 0; i < (int) g.gl_pathc; ++i)
       results.push_back (g.gl_pathv[i]);
 

@@ -31,6 +31,7 @@
 #include <dirent.h>
 #include <string.h>
 #include "Directory.h"
+#include "../auto.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 Directory::Directory ()
