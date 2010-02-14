@@ -44,7 +44,7 @@ if (open my $fh, '>', 'cal.rc')
 }
 
 my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
-my ($nday, $nmon, $nyear) = (localtime)[3,4,5];
+my ($nday, $nmon, $nyear, $wday) = (localtime)[3,4,5,6];
 my $day         = $nday;
 my $prevmonth   = $months[($nmon-1) % 12];
 my $month       = $months[($nmon) % 12];
@@ -59,7 +59,14 @@ if ( $day <= 9)
 
 # task cal   and   task cal y
 my $output = qx{../task rc:cal.rc rc._forcecolor:on cal};
-like   ($output, qr/\[30;46m$day/,      'Current day is highlighted');
+if ( $wday == 6 || $wday == 0)
+{
+  like   ($output, qr/\[30;106m$day/,      'Current day is highlighted');
+}
+else
+{
+  like   ($output, qr/\[30;46m$day/,      'Current day is highlighted');
+}
 like   ($output, qr/$month\w+?\s+?$year/, 'Current month and year are displayed');
 $output = qx{../task rc:cal.rc add zero};
 unlike ($output, qr/\[41m\d+/,       'No overdue tasks are present');
