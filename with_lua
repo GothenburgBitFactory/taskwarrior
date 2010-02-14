@@ -1,14 +1,20 @@
 # This is currently what is required to build with Lua.
 
 # OSX:
-autoreconf -f
+# Command:
 ./configure --with-lua
 
 # Cygwin 1.5:
-#autoreconf -f
+# Command:
 #./configure
 
 # Cygwin 1.7:
-#autoreconf -f
+# Command:
 #./configure --with-ncurses --with-ncurses-inc=/usr/include/ncurses
+
+# Ubuntu 9.10:
+#   sudo apt-get install lualib5.1-0-dev
+#   The library name is also liblua5.1.a, with no symlink to liblua.a.
+# Command:
+# ./configure --with-lua --with-lua-inc=/usr/include/lua5.1
 
