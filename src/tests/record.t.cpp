@@ -97,7 +97,7 @@ int main (int argc, char** argv)
   // Record::get_ulong
   record.set ("two", "4294967295");
   t.is (record.composeF4 (), "[name:\"value\" one:\"1\" two:\"4294967295\"]\n", "Record::set");
-  t.is (record.get_ulong ("two"), 4294967295, "Record::get_ulong");
+  t.is ((size_t)record.get_ulong ("two"), (size_t)4294967295, "Record::get_ulong");
 
   // Record::remove
   record.remove ("one");
