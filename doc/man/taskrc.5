@@ -439,6 +439,9 @@ The coloration rules and their defaults are:
 .B color.overdue=bold red
 The color for overdue tasks.
 .br
+.B color.due.today=bold magenta
+The color of tasks due today.
+.br
 .B color.due=bold yellow
 The color of due tasks.
 .br
@@ -510,6 +513,10 @@ Color of today in calendar.
 .TP
 .B color.calendar.due=black on green
 Color of days with due tasks in calendar.
+
+.TP
+.B color.calendar.due.today=black on magenta
+Color of today with due tasks in calendar.
 
 .TP
 .B color.calendar.overdue=black on red
@@ -630,7 +637,8 @@ The description for report X when running the "task help" command.
 .B report.X.columns
 The columns that will be used when generating the report X. Valid columns are:
 id, uuid, project, priority, entry, start, due, recur, recur_indicator, age,
-age_compact, active, tags, tag_indicator, description, description_only.
+age_compact, active, tags, tag_indicator, description, description_only,
+countdown, countdown_compact.
 The IDs are separated by commas.
 
 .TP
