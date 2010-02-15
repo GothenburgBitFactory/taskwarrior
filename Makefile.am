@@ -2,7 +2,7 @@ SUBDIRS = src
 
 dist_man_MANS = doc/man/task.1 doc/man/taskrc.5 doc/man/task-tutorial.5 doc/man/task-faq.5 doc/man/task-color.5
 
-docdir = $(datadir)/doc/${PACKAGE}-${VERSION}
+#docdir = $(datadir)/doc/${PACKAGE}-${VERSION}
 doc_DATA = AUTHORS ChangeLog COPYING NEWS README
 
 EXTRA_DIST = INSTALL README.build
@@ -19,6 +19,6 @@ nobase_dist_vimscripts_DATA = scripts/vim/README scripts/vim/ftdetect/task.vim s
 i18ndir = $(docdir)
 nobase_dist_i18n_DATA = i18n/strings.de-DE i18n/strings.en-US i18n/strings.es-ES i18n/strings.fr-FR i18n/strings.nl-NL i18n/strings.sv-SE i18n/tips.de-DE i18n/tips.en-US i18n/tips.sv-SE
 
-rcfiledir = $(docdir)
-nobase_dist_rcfile_DATA = doc/rc/holidays-US.rc doc/rc/holidays-SE.rc doc/rc/dark-16.theme doc/rc/dark-256.theme doc/rc/light-16.theme doc/rc/light-256.theme
+rcfiledir = $(docdir)/rc
+dist_rcfile_DATA = doc/rc/holidays-US.rc doc/rc/holidays-SE.rc doc/rc/dark-16.theme doc/rc/dark-256.theme doc/rc/light-16.theme doc/rc/light-256.theme
 

@@ -1,10 +1,10 @@
 #!/bin/bash
 
 mkdir -p local/bin
-mkdir -p local/share/doc/task-1.9.0/scripts/bash
-mkdir -p local/share/doc/task-1.9.0/scripts/vim/ftdetect
-mkdir -p local/share/doc/task-1.9.0/scripts/vim/syntax
-mkdir -p local/share/doc/task-1.9.0/scripts/zsh
+mkdir -p local/share/doc/task/scripts/bash
+mkdir -p local/share/doc/task/scripts/vim/ftdetect
+mkdir -p local/share/doc/task/scripts/vim/syntax
+mkdir -p local/share/doc/task/scripts/zsh
 mkdir -p local/share/man/man1
 mkdir -p local/share/man/man5
 
@@ -13,17 +13,17 @@ cp ../../COPYING                COPYING.txt
 
 cp ../../src/task               local/bin/
 
-cp ../../AUTHORS                local/share/doc/task-1.9.0/
-cp ../../ChangeLog              local/share/doc/task-1.9.0/
-cp ../../COPYING                local/share/doc/task-1.9.0/
-cp ../../NEWS                   local/share/doc/task-1.9.0/
-cp ../../README                 local/share/doc/task-1.9.0/
+cp ../../AUTHORS                local/share/doc/task/
+cp ../../ChangeLog              local/share/doc/task/
+cp ../../COPYING                local/share/doc/task/
+cp ../../NEWS                   local/share/doc/task/
+cp ../../README                 local/share/doc/task/
 
-cp ../../scripts/bash/*         local/share/doc/task-1.9.0/scripts/bash
-cp ../../scripts/vim/README     local/share/doc/task-1.9.0/scripts/vim
-cp ../../scripts/vim/ftdetect/* local/share/doc/task-1.9.0/scripts/vim/ftdetect
-cp ../../scripts/vim/syntax/*   local/share/doc/task-1.9.0/scripts/vim/syntax
-cp ../../scripts/zsh/*          local/share/doc/task-1.9.0/scripts/zsh
+cp ../../scripts/bash/*         local/share/doc/task/scripts/bash
+cp ../../scripts/vim/README     local/share/doc/task/scripts/vim
+cp ../../scripts/vim/ftdetect/* local/share/doc/task/scripts/vim/ftdetect
+cp ../../scripts/vim/syntax/*   local/share/doc/task/scripts/vim/syntax
+cp ../../scripts/zsh/*          local/share/doc/task/scripts/zsh
 
 cp ../../doc/man/*.1            local/share/man/man1
 cp ../../doc/man/*.5            local/share/man/man5
