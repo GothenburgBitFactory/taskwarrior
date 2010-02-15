@@ -1,0 +1,94 @@
+
+Task Build Notes
+----------------
+
+Task 1.9 has dependencies that are detected by the configure program in almost
+all cases, but there are situations and operating systems that mean you will
+need to offer configure a little help.
+
+If task will not build on your system, first take a look at the Operating System
+notes below.  If this doesn't help, then go to the Troubleshooting section,
+which includes instructions on how to contact us for help.
+
+
+
+Operating System Notes
+----------------------
+
+Cygwin 1.7
+  Building task on Cygwin 1.7 requires a configure option:
+
+    ./configure --with-ncurses-inc=/usr/include/ncurses
+
+  This is because the ncurses include files are in a different location to
+  Cygwin 1.5.
+
+
+Haiku Alpha/R1
+  There are problems building task beta3 with Haiku that are not yet addressed.
+  This should be resolved before the release of task 1.9.0.
+
+
+Troubleshooting
+---------------
+
+In most cases, it is sufficient to run the configure program like this:
+
+  $ ./configure
+
+Configure will run and locate all the necessary pieces for the build, and create
+a Makefile.  There may be errors and warnings when running configure, or there
+may be compiler errors and warnings when running 'make'.  Sometimes you will run
+configure with no reported problems, and the build will fail later.  This is
+almost always because configure is mistaken about some assumption.
+
+The configure program can accept several options that help with its ability to
+locate and use the ncurses library.  They are:
+
+  --with-ncurses
+
+    This option tells configure that no matter what it thinks, ncurses is
+    definitely on this system and should be enabled.  If needed, this option
+    probable needs to be accompanied by the next two options.
+
+  --with-ncurses-inc=/usr/include
+
+    If configure cannot find ncurses header files, this option will tell it
+    exactly where to look.  The path specified in this example is the default,
+    so that probably won't help you.  The path should be the directory in which
+    the file 'ncurses.h' resides.  Here are some possible values to try:
+
+      /usr/include                    (the default shown above)
+      /usr/include/ncurses
+      /usr/local/include
+      /usr/local/include/ncurses
+
+    This should cover most systems, but new variations keeps cropping up.
+
+  --with-ncurses-lib=/usr/lib
+
+    If configure cannot find the ncurses library, this option will tell it
+    exactly where to look.  The path specified in this example is the default,
+    so that probably won't help you.  The path should be the directory in which
+    the file 'libncurses.a' (or your system's equivalent) resides.  Here are
+    some possible values to try:
+
+      /usr/lib
+      /usr/local/lib
+
+    This should cover most systems, but new variations keeps cropping up.
+
+  --without-ncurses
+
+    This disables ncurses support in task, and should really be used as a last
+    resort.  We know of no systems where this is needed.
+
+If trying these options does not succeed, please send the contents of the
+'config.log' files to support@taskwarrior.org, or post a message in the support
+forums at taskwarrior.org along with the information.
+
+If configure runs, but task does not build, when ideally you would send both the
+contents of config.log, and a transcript from the build, which is not written to
+a file, and must be captured from the terminal.
+
+---

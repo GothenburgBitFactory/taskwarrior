@@ -73,6 +73,8 @@
  + Task can now use an alternate recurrence indicator by setting the
    recurrence.indicator configuration variable to something other than the
    default of R.
+ + Added a new file, README.build, which provides assistance troubleshooting
+   build-related problems on different operating systems and environments.
  + Fixed bug #316 which caused the timesheet report to display an oddly sorted
    list.
  + Fixed bug #317 which colored tasks in the 'completed' report according to
