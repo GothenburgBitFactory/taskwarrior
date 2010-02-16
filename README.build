@@ -25,8 +25,12 @@ Cygwin 1.7
 
 
 Haiku Alpha/R1
-  There are problems building task beta3 with Haiku that are not yet addressed.
-  This should be resolved before the release of task 1.9.0.
+  Task must be built with gcc version 4.x, so make sure you run:
+
+    $ setgcc gcc4
+
+  To switch from gcc 2.95 to gcc 4.x.
+
 
 
 Troubleshooting

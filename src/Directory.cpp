@@ -122,7 +122,7 @@ void Directory::list (
           !strcmp (de->d_name, ".."))
         continue;
 
-#ifdef SOLARIS
+#if defined (SOLARIS) || defined (HAIKU)
       struct stat s;
       stat (de->d_name, &s);
       if (recursive && s.st_mode & S_IFDIR)
