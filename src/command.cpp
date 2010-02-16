@@ -664,41 +664,6 @@ int handleConfig (std::string &outs)
     std::vector <std::string> all;
     context.config.all (all);
 
-    // Create a table for output.
-    Table table;
-    table.setTableWidth (width);
-    table.setDateFormat (context.config.get ("dateformat"));
-    table.addColumn ("Config variable");
-    table.addColumn ("Value");
-
-    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-    {
-      table.setColumnUnderline (0);
-      table.setColumnUnderline (1);
-    }
-    else
-      table.setTableDashedUnderline ();
-
-    table.setColumnWidth (0, Table::minimum);
-    table.setColumnWidth (1, Table::flexible);
-    table.setColumnJustification (0, Table::left);
-    table.setColumnJustification (1, Table::left);
-    table.sortOn (0, Table::ascendingCharacter);
-
-    foreach (i, all)
-    {
-      std::string value = context.config.get (*i);
-      int row = table.addRow ();
-      table.addCell (row, 0, *i);
-      table.addCell (row, 1, value);
-    }
-
-    Color bold ("bold");
-
-    out << std::endl
-        << table.render ()
-        << std::endl;
-
     // Complain about configuration variables that are not recognized.
     // These are the regular configuration variables.
     // Note that there is a leading and trailing space, to make searching easier.
@@ -753,13 +718,58 @@ int handleConfig (std::string &outs)
       }
     }
 
+    // Create a table for output.
+    Table table;
+    table.setTableWidth (width);
+    table.setDateFormat (context.config.get ("dateformat"));
+    table.addColumn ("Config variable");
+    table.addColumn ("Value");
+
+    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+    {
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
+    }
+    else
+      table.setTableDashedUnderline ();
+
+    table.setColumnWidth (0, Table::minimum);
+    table.setColumnWidth (1, Table::flexible);
+    table.setColumnJustification (0, Table::left);
+    table.setColumnJustification (1, Table::left);
+    table.sortOn (0, Table::ascendingCharacter);
+
+    Color error ("bold white on red");
+    foreach (i, all)
+    {
+      std::string value = context.config.get (*i);
+      int row = table.addRow ();
+      table.addCell (row, 0, *i);
+      table.addCell (row, 1, value);
+
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+        if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
+          table.setRowColor (row, error);
+    }
+
+    Color bold ("bold");
+
+    out << std::endl
+        << table.render ()
+        << std::endl;
+
+    // Display the unrecognized variables.
     if (unrecognized.size ())
     {
       out << "Your .taskrc file contains these unrecognized variables:"
-           << std::endl;
+          << std::endl;
 
       foreach (i, unrecognized)
         out << "  " << *i << std::endl;
+
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+        out << std::endl
+            << "  These are highlighted in " << error.colorize ("color") << " above.";
 
       out << std::endl;
     }
