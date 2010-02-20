@@ -55,9 +55,10 @@ configuration variable.  Check out DropBox at http://www.dropbox.com.
 .B Q: The undo.data file gets very large - do I need it?
 You need it if you want the undo capability.  But if it gets large, you can
 certainly truncate it to save space, just be careful to delete lines from the
-top of the file, up to and including a separator '---'.  Note that it does not
-slow down task, because task never reads it until you want to undo.  Otherwise
-task only appends to the file.
+top of the file, up to and including a separator '---'.  The simplest way is to
+simply delete the undo.data file.  Note that it does not slow down task, because
+task never reads it until you want to undo.  Otherwise task only appends to the
+file.
 
 .TP
 .B Q: How do I know whether my terminal support 256 colors?
@@ -70,7 +71,7 @@ run
 and a full color palette is displayed.  If you see only 8 or 16 colors, perhaps
 with those colors repeated, then your terminal does not support 256 colors.
 
-We have had success with xterm, and iTerm for the Mac.
+See the task-color(5) man page for more details.
 
 .TP
 .B Q: How do I make use of all these colors?
@@ -123,20 +124,20 @@ numbered 481 - 513, which makes it more likely to enter one incorrectly, because
 there are more digits.
 
 When you run a report (such as "list"), task assigns the numbers before it
-displays them.  Those numbers are good until the next report.  For example, you
-can do this:
+displays them.  For example, you can do this:
 
     $ task list
     $ task do 12
     $ task add Pay the rent
     $ task delete 31
 
-Those id numbers are good until the next report is run.  This is because task
-performs a garbage-collect operation on the pending tasks file when a report is
-run.  This keeps the pending tasks file small, and therefore keeps task fast.
-The completed data file is the one that grows unbounded with use, but that one
-isn't accessed as much, so it doesn't matter as much.  So in all, the ID number
-resequencing is about efficiency.
+Those id numbers are then good until the next report is run.  This is because
+task performs a garbage-collect operation on the pending tasks file when a
+report is run, which moves the deleted and completed tasks from the pending.data
+file to the completed.data file.  This keeps the pending tasks file small, and
+therefore keeps task fast.  The completed data file is the one that grows
+unbounded with use, but that one isn't accessed as much, so it doesn't matter as
+much.  So in all, the ID number resequencing is about efficiency.
 
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.
