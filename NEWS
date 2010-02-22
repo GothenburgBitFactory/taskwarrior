@@ -15,6 +15,7 @@ New Features in task 1.9
       task list project.not:foo project.not:bar
   - Ability to do case-sensitive or case-insensitive search for keywords, and
     substitutions in the description and annotations.
+  - Task is now part of Debian
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -24,6 +25,7 @@ Task has been built and tested on the following configurations:
   * OS X 10.6 Snow Leopard and 10.5 Leopard
   * Fedora 12 Constantine and 11 Leonidas
   * Ubuntu 9.10 Karmic Koala and 9.04 Jaunty Jackalope
+  * Debian Sid
   * Slackware 12.2
   * Arch Linux
   * Gentoo Linux
