@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.9.0 (2/22/2010)
+1.9.0 (2/22/2010) dd758f8b33de110a633e2ff3ebdac73232b8ff44
  + Added feature #283 that makes it possible to control the verbosity
    of the output of annotations.
  + Added feature #254 (#295) which gives task a second date format to be
