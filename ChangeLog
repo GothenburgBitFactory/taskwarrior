@@ -1,6 +1,10 @@
 
 ------ current release ---------------------------
 
+1.9.1 ()
+
+------ old releases ------------------------------
+
 1.9.0 (2/22/2010) dd758f8b33de110a633e2ff3ebdac73232b8ff44
  + Added feature #283 that makes it possible to control the verbosity
    of the output of annotations.
@@ -102,8 +106,6 @@
    with the other color rules (thanks to Richard Querin).
  + Fixed bug #372 which incorrectly mapped 16-color backgrounds into the
    256-color space.
-
------- old releases ------------------------------
 
 1.8.5 (12/05/2009) a6c7236ff34e5eee3ef1693b97cb1367e6e3c607
  + Added feature to allow the user to quit when asked to confirm multiple
