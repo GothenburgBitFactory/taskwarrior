@@ -20,4 +20,5 @@ list.t
 path.t
 file.t
 directory.t
+grid.t
 *.log
