@@ -1,11 +1,9 @@
 
 ------ current release ---------------------------
-2.0.0 ()
- + The 'config' command now highlights problems in color.
-
------- old releases ------------------------------
 
 1.9.1 ()
+ + Fixed bugg #382 in which the annotate command didn't returned an
+   error message if called without an ID.
 
 ------ old releases ------------------------------
 

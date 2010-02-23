@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug_annotate.rc')
@@ -42,6 +42,10 @@ if (open my $fh, '>', 'bug_annotate.rc')
 qx{../task rc:bug_annotate.rc add foo};
 my $output = qx{../task rc:bug_annotate.rc 1 annotate};
 like ($output, qr/Cannot apply a blank annotation./, 'failed on blank annotation');
+
+# Attempt an annotation without ID
+$output = qx{../task rc:bug_annotate.rc annotate bar};
+like ($output, qr/ID needed to apply an annotation./, 'failed on annotation without ID');
 
 # Cleanup.
 unlink 'pending.data';
