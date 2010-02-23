@@ -1887,7 +1887,7 @@ int handleAnnotate (std::string &outs)
     if (!context.task.has ("description"))
       throw std::string ("Cannot apply a blank annotation.");
 
-    if (!context.task.has ("id"))
+    if (context.sequence.size () == 0)
       throw std::string ("ID needed to apply an annotation.");
 
     std::stringstream out;
