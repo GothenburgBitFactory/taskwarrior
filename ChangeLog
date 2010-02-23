@@ -1,5 +1,9 @@
 
 ------ current release ---------------------------
+2.0.0 ()
+ + The 'config' command now highlights problems in color.
+
+------ old releases ------------------------------
 
 1.9.1 ()
 
