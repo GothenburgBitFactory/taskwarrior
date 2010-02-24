@@ -36,18 +36,18 @@ int main (int argc, char** argv)
   UnitTest ut (30);
 
   Grid g;
-  ut.is (g.width (), 0, "Zero width for uninitialized grid");
-  ut.is (g.height (), 0, "Zero height for uninitialized grid");
+  ut.is ((int) g.width (), 0, "Zero width for uninitialized grid");
+  ut.is ((int) g.height (), 0, "Zero height for uninitialized grid");
 
   g.add (2, 2, false);
-  ut.is (g.width (), 3, "Width of 3 columns");
-  ut.is (g.height (), 3, "Height of 3 rows");
+  ut.is ((int) g.width (), 3, "Width of 3 columns");
+  ut.is ((int) g.height (), 3, "Height of 3 rows");
 
   Grid g2;
   g2.add (0, 1, "value");
   g2.add (1, 0, "value");
-  ut.is (g2.width (), 2, "Width of 2 columns");
-  ut.is (g2.height (), 2, "Height of 2 rows");
+  ut.is ((int) g2.width (), 2, "Width of 2 columns");
+  ut.is ((int) g2.height (), 2, "Height of 2 rows");
   ut.is (g2.byRow (0, 0), NULL, "Gap at 0,0");
   ut.ok (g2.byRow (0, 1), "Cell at 0,0");
   ut.ok (g2.byRow (1, 0), "Cell at 0,0");
