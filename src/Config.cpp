@@ -34,10 +34,12 @@
 #include <stdlib.h>
 #include <pwd.h>
 #include "Directory.h"
+#include "Date.h"
 #include "File.h"
 #include "Config.h"
 #include "text.h"
 #include "util.h"
+#include "../auto.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // This string is used in two ways:
@@ -395,12 +397,19 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
   std::string::size_type loc = defaults.find ("data.location=~/.task");
   //                                      loc+0^          +14^   +21^
 
-  std::string contents = defaults.substr (0, loc + 14) +
-                         data +
-                         defaults.substr (loc + 21, std::string::npos);
+  Date now;
+  std::stringstream contents;
+  contents << "# [Created by "
+           << PACKAGE_STRING
+           << " "
+           << now.toStringWithTime ()
+           << "]\n"
+           << defaults.substr (0, loc + 14)
+           << data
+           << defaults.substr (loc + 21);
 
   // Write out the new file.
-  if (! File::write (rc, contents))
+  if (! File::write (rc, contents.str ()))
     throw std::string ("Could not write to '") + rc + "'";
 }
 
