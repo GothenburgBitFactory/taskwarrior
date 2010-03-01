@@ -26,9 +26,7 @@ esac
 
 RUNTIME=$(($ENDEPOCH - $STARTEPOCH))
 
-echo -n 'Pass: '
-grep ^ok all.log | wc -l
-echo -n 'Fail: '
-grep ^not all.log | wc -l
-echo -n 'Runtime:   '
-echo $RUNTIME
+printf "Pass:    %5d\n" $(grep ^ok all.log | wc -l)
+printf "Fail:    %5d\n" $(grep ^not all.log | wc -l)
+printf "Skipped: %5d\n" $(grep ^skip all.log | wc -l)
+printf "Runtime: %5d\n" $RUNTIME
