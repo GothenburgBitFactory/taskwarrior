@@ -1,8 +1,12 @@
 # This is currently what is required to build with Lua.
 
-# OSX:
-# Command:
-./configure --with-lua
+OS=`uname`
+
+case $OS in
+  Darwin)
+    ./configure --with-lua
+    ;;
+esac
 
 # Cygwin 1.5:
 # Command:
