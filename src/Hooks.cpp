@@ -372,7 +372,8 @@ bool Hooks::validFieldEvent (const std::string& event)
       event == "format-tag_indicator"        ||
       event == "format-description_only"     ||
       event == "format-description"          ||
-      event == "format-wait")
+      event == "format-wait"                 ||
+      event == "format-prompt")
     return true;
 
   return false;

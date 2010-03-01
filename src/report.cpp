@@ -399,7 +399,9 @@ int handleInfo (std::string &outs)
         {
           row = table.addRow ();
           table.addCell (row, 0, "Recurrence");
-          table.addCell (row, 1, task->get ("recur"));
+          value = task->get ("recur");
+          context.hooks.trigger ("format-recur", "recur", value);
+          table.addCell (row, 1, value);
         }
 
         // until
@@ -445,13 +447,13 @@ int handleInfo (std::string &outs)
         row = table.addRow ();
         table.addCell (row, 0, "Due");
 
-        Date dt (atoi (task->get ("due").c_str ()));
         std::string format = context.config.get ("reportdateformat");
         if (format == "")
           format = context.config.get ("dateformat");
 
-        std::string due = getDueDate (*task, format);
-        table.addCell (row, 1, due);
+        value = getDueDate (*task, format);
+        context.hooks.trigger ("format-due", "due", value);
+        table.addCell (row, 1, value);
       }
 
       // wait
@@ -460,7 +462,9 @@ int handleInfo (std::string &outs)
         row = table.addRow ();
         table.addCell (row, 0, "Waiting until");
         Date dt (atoi (task->get ("wait").c_str ()));
-        table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+        value = dt.toString (context.config.get ("dateformat"));
+        context.hooks.trigger ("format-wait", "wait", value);
+        table.addCell (row, 1, value);
       }
 
       // start
@@ -469,7 +473,10 @@ int handleInfo (std::string &outs)
         row = table.addRow ();
         table.addCell (row, 0, "Start");
         Date dt (atoi (task->get ("start").c_str ()));
-        table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+
+        value = dt.toString (context.config.get ("dateformat"));
+        context.hooks.trigger ("format-due", "due", value);
+        table.addCell (row, 1, value);
       }
 
       // end
@@ -478,7 +485,9 @@ int handleInfo (std::string &outs)
         row = table.addRow ();
         table.addCell (row, 0, "End");
         Date dt (atoi (task->get ("end").c_str ()));
-        table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+        value = dt.toString (context.config.get ("dateformat"));
+        context.hooks.trigger ("format-end", "end", value);
+        table.addCell (row, 1, value);
       }
 
       // tags ...
@@ -515,6 +524,7 @@ int handleInfo (std::string &outs)
         age = formatSeconds ((time_t) (now - dt));
       }
 
+      context.hooks.trigger ("format-entry", "entry", entry);
       table.addCell (row, 1, entry + " (" + age + ")");
 
       // fg

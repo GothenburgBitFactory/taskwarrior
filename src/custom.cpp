@@ -287,6 +287,7 @@ int runCustomReport (
           {
             Date dt (::atoi (entered.c_str ()));
             entered = dt.toString (context.config.get ("dateformat"));
+            context.hooks.trigger ("format-entry", "entry", entered);
             table.addCell (row, columnCount, entered);
           }
         }
@@ -306,6 +307,7 @@ int runCustomReport (
           {
             Date dt (::atoi (entered.c_str ()));
             entered = dt.toStringWithTime (context.config.get ("dateformat"));
+            context.hooks.trigger ("format-entry_time", "entry_time", entered);
             table.addCell (row, columnCount, entered);
           }
         }
@@ -325,6 +327,7 @@ int runCustomReport (
           {
             Date dt (::atoi (started.c_str ()));
             started = dt.toString (context.config.get ("dateformat"));
+            context.hooks.trigger ("format-start", "start", started);
             table.addCell (row, columnCount, started);
           }
         }
@@ -344,6 +347,7 @@ int runCustomReport (
           {
             Date dt (::atoi (started.c_str ()));
             started = dt.toStringWithTime (context.config.get ("dateformat"));
+            context.hooks.trigger ("format-start_time", "start_time", started);
             table.addCell (row, columnCount, started);
           }
         }
@@ -355,15 +359,16 @@ int runCustomReport (
         table.setColumnWidth (columnCount, Table::minimum);
         table.setColumnJustification (columnCount, Table::right);
 
-        std::string started;
+        std::string ended;
         for (unsigned int row = 0; row < tasks.size(); ++row)
         {
-          started = tasks[row].get ("end");
-          if (started.length ())
+          ended = tasks[row].get ("end");
+          if (ended.length ())
           {
-            Date dt (::atoi (started.c_str ()));
-            started = dt.toString (context.config.get ("dateformat"));
-            table.addCell (row, columnCount, started);
+            Date dt (::atoi (ended.c_str ()));
+            ended = dt.toString (context.config.get ("dateformat"));
+            context.hooks.trigger ("format-end", "end", ended);
+            table.addCell (row, columnCount, ended);
           }
         }
       }
@@ -376,15 +381,16 @@ int runCustomReport (
 
         std::string format = context.config.get ("dateformat");
 
-        std::string started;
+        std::string ended;
         for (unsigned int row = 0; row < tasks.size(); ++row)
         {
-          started = tasks[row].get ("end");
-          if (started.length ())
+          ended = tasks[row].get ("end");
+          if (ended.length ())
           {
-            Date dt (::atoi (started.c_str ()));
-            started = dt.toStringWithTime (format);
-            table.addCell (row, columnCount, started);
+            Date dt (::atoi (ended.c_str ()));
+            ended = dt.toStringWithTime (format);
+            context.hooks.trigger ("format-end_time", "end_time", ended);
+            table.addCell (row, columnCount, ended);
           }
         }
       }
@@ -404,7 +410,11 @@ int runCustomReport (
         int row = 0;
         std::string due;
         foreach (task, tasks)
-          table.addCell (row++, columnCount, getDueDate (*task, format));
+        {
+          std::string value = getDueDate (*task, format);
+          context.hooks.trigger ("format-due", "due", value);
+          table.addCell (row++, columnCount, value);
+        }
 
         dueColumn = columnCount;
       }
@@ -574,7 +584,10 @@ int runCustomReport (
         {
           std::string recur = tasks[row].get ("recur");
           if (recur != "")
+          {
+            context.hooks.trigger ("format-recur", "recur", recur);
             table.addCell (row, columnCount, recur);
+          }
         }
       }
 
@@ -615,6 +628,7 @@ int runCustomReport (
           {
             Date dt (::atoi (wait.c_str ()));
             wait = dt.toString (context.config.get ("dateformat"));
+            context.hooks.trigger ("format-wait", "wait", wait);
             table.addCell (row++, columnCount, wait);
           }
         }
