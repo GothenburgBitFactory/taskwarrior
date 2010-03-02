@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (19);
+  UnitTest t (21);
 
   // (blank)
   bool good = true;
@@ -94,8 +94,14 @@ int main (int argc, char** argv)
   t.is (record.composeF4 (), "[name:\"value\" one:\"1\"]\n", "Record::set");
   t.is (record.get_int ("one"), 1, "Record::get_int");
 
+  // Record::get_ulong
+  record.set ("two", "4294967295");
+  t.is (record.composeF4 (), "[name:\"value\" one:\"1\" two:\"4294967295\"]\n", "Record::set");
+  t.is (record.get_int ("two"), 4294967295, "Record::get_ulong");
+
   // Record::remove
   record.remove ("one");
+  record.remove ("two");
   t.is (record.composeF4 (), "[name:\"value\"]\n", "Record::remove");
 
   // Record::all

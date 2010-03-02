@@ -321,49 +321,117 @@ static int api_task_get_status (lua_State* L)
   return 1;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+static int api_task_get_due (lua_State* L)
+{
+  if (the_task != NULL)
+  {
+    unsigned int value = (unsigned int) the_task->get_ulong ("due");
+    if (value)
+    {
+      lua_pushinteger (L, value);
+      return 1;
+    }
+  }
+
+  lua_pushnil (L);
+  return 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static int api_task_get_entry (lua_State* L)
+{
+  if (the_task != NULL)
+  {
+    unsigned int value = (unsigned int) the_task->get_ulong ("entry");
+    if (value)
+    {
+      lua_pushinteger (L, value);
+      return 1;
+    }
+  }
+
+  lua_pushnil (L);
+  return 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static int api_task_get_start (lua_State* L)
+{
+  if (the_task != NULL)
+  {
+    unsigned int value = (unsigned int) the_task->get_ulong ("start");
+    if (value)
+    {
+      lua_pushinteger (L, value);
+      return 1;
+    }
+  }
+
+  lua_pushnil (L);
+  return 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static int api_task_get_end (lua_State* L)
+{
+  if (the_task != NULL)
+  {
+    unsigned int value = (unsigned int) the_task->get_ulong ("end");
+    if (value)
+    {
+      lua_pushinteger (L, value);
+      return 1;
+    }
+  }
+
+  lua_pushnil (L);
+  return 1;
+}
+
 /*
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_due (id)
-{
-  return task.due_date
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_entry (id)
-{
-  return task.entry_date
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_start (id)
-{
-  return task.start_date
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_end (id)
-{
-  return task.end_date
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 static int api_task_get_recur (id)
 {
   return task.recur
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_until (id)
+static int api_task_get_until (lua_State* L)
 {
-  return task.until_date
+  if (the_task != NULL)
+  {
+    unsigned int value = (unsigned int) the_task->get_ulong ("until");
+    if (value)
+    {
+      lua_pushinteger (L, value);
+      return 1;
+    }
+  }
+
+  lua_pushnil (L);
+  return 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_wait (id)
+static int api_task_get_wait (lua_State* L)
 {
-  return task.wait_date
+  if (the_task != NULL)
+  {
+    unsigned int value = (unsigned int) the_task->get_ulong ("wait");
+    if (value)
+    {
+      lua_pushinteger (L, value);
+      return 1;
+    }
+  }
+
+  lua_pushnil (L);
+  return 1;
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 -- 'id' is the task id passed to the hook function.  Date attributes are
 -- expected as numeric epoch offsets.  Tags and annotations are expected
@@ -496,14 +564,16 @@ void API::initialize ()
   lua_pushcfunction (L, api_task_get_tags);              lua_setglobal (L, "task_get_tags");
 */
   lua_pushcfunction (L, api_task_get_status);            lua_setglobal (L, "task_get_status");
-/*
   lua_pushcfunction (L, api_task_get_due);               lua_setglobal (L, "task_get_due");
   lua_pushcfunction (L, api_task_get_entry);             lua_setglobal (L, "task_get_entry");
   lua_pushcfunction (L, api_task_get_start);             lua_setglobal (L, "task_get_start");
   lua_pushcfunction (L, api_task_get_end);               lua_setglobal (L, "task_get_end");
+/*
   lua_pushcfunction (L, api_task_get_recur);             lua_setglobal (L, "task_get_recur");
+*/
   lua_pushcfunction (L, api_task_get_until);             lua_setglobal (L, "task_get_until");
   lua_pushcfunction (L, api_task_get_wait);              lua_setglobal (L, "task_get_wait");
+/*
   lua_pushcfunction (L, api_task_set_description);       lua_setglobal (L, "task_set_description");
   lua_pushcfunction (L, api_task_set_annotations);       lua_setglobal (L, "task_set_annotations");
   lua_pushcfunction (L, api_task_set_project);           lua_setglobal (L, "task_set_project");

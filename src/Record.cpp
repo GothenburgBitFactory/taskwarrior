@@ -158,6 +158,16 @@ int Record::get_int (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+unsigned long Record::get_ulong (const std::string& name) const
+{
+  Record::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return strtoul (i->second.value ().c_str (), NULL, 10);
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Record::set (const std::string& name, const std::string& value)
 {
   (*this)[name] = Att (name, value);
