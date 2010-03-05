@@ -437,7 +437,7 @@ int runCustomReport (
             time_t cntdwn = (time_t) (now - dt);
             countdown = formatSeconds ( cntdwn < 0 ? cntdwn * -1 : cntdwn );
             if ( cntdwn < 0 )
-              countdown = std::string("- ") + countdown;
+              countdown = std::string("-") + countdown;
             context.hooks.trigger ("format-countdown", "countdown", countdown);
             table.addCell (row, columnCount, countdown);
           }
