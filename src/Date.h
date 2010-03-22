@@ -38,6 +38,7 @@ public:
            Date ();
            Date (time_t);
            Date (const int, const int, const int);
+           Date (const int, const int, const int, const int, const int, const int);
            Date (const std::string&, const std::string& format = "m/d/Y");
            Date (const Date&);
   virtual ~Date ();
@@ -49,6 +50,7 @@ public:
   const std::string toString (const std::string& format = "m/d/Y") const;
   const std::string toStringWithTime (const std::string& format = "m/d/Y") const;
   static bool valid (const std::string&, const std::string& format = "m/d/Y");
+  static bool valid (const int, const int, const int, const int, const int, const int);
   static bool valid (const int, const int, const int);
 
   static bool leapYear (int);
@@ -75,6 +77,7 @@ public:
   bool operator>  (const Date&);
   bool operator<= (const Date&);
   bool operator>= (const Date&);
+  bool sameHour   (const Date&);
   bool sameDay    (const Date&);
   bool sameMonth  (const Date&);
   bool sameYear   (const Date&);
