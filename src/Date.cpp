@@ -55,9 +55,27 @@ Date::Date (const int m, const int d, const int y)
 {
   // Error if not valid.
   struct tm t = {0};
-  t.tm_mday = d;
-  t.tm_mon = m - 1;
-  t.tm_year = y - 1900;
+  t.tm_isdst = -1;   // Requests that mktime determine summer time effect.
+  t.tm_mday  = d;
+  t.tm_mon   = m - 1;
+  t.tm_year  = y - 1900;
+
+  mT = mktime (&t);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Date::Date (const int m,  const int d,  const int y,
+            const int hr, const int mi, const int se)
+{
+  // Error if not valid.
+  struct tm t = {0};
+  t.tm_isdst = -1;   // Requests that mktime determine summer time effect.
+  t.tm_mday  = d;
+  t.tm_mon   = m - 1;
+  t.tm_year  = y - 1900;
+  t.tm_hour  = hr;
+  t.tm_min   = mi;
+  t.tm_sec   = se;
 
   mT = mktime (&t);
 }
@@ -65,9 +83,12 @@ Date::Date (const int m, const int d, const int y)
 ////////////////////////////////////////////////////////////////////////////////
 Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
 {
-  int month = 0;
-  int day   = 0;
-  int year  = 0;
+  int month  = 0;
+  int day    = 0;
+  int year   = 0;
+  int hour   = 0;
+  int minute = 0;
+  int second = 0;
 
   // Perhaps it is an epoch date, in string form?
   if (isEpoch (mdy))
@@ -241,6 +262,64 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
       i += Date::monthName(month).size();
       break;
 
+    // Single or double digit.
+    case 'h':
+      if (i >= mdy.length () ||
+          ! isdigit (mdy[i]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date (h).";
+      }
+
+      if (i + 1 < mdy.length ()                    &&
+          (mdy[i + 0] == '0' || mdy[i + 0] == '1' || mdy[i + 0] == '2') &&
+          isdigit (mdy[i + 1]))
+      {
+        hour = atoi (mdy.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else
+      {
+        hour = atoi (mdy.substr (i, 1).c_str ());
+        ++i;
+      }
+      break;
+
+    case 'H':
+      if (i + 1 >= mdy.length () ||
+          ! isdigit (mdy[i + 0]) ||
+          ! isdigit (mdy[i + 1]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date (H).";
+      }
+
+      hour = atoi (mdy.substr (i, 2).c_str ());
+      i += 2;
+      break;
+
+    case 'N':
+      if (i + 1 >= mdy.length () ||
+          ! isdigit (mdy[i + 0]) ||
+          ! isdigit (mdy[i + 1]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date (N).";
+      }
+
+      minute = atoi (mdy.substr (i, 2).c_str ());
+      i += 2;
+      break;
+
+    case 'S':
+      if (i + 1 >= mdy.length () ||
+          ! isdigit (mdy[i + 0]) ||
+          ! isdigit (mdy[i + 1]))
+      {
+        throw std::string ("\"") + mdy + "\" is not a valid date (S).";
+      }
+
+      second = atoi (mdy.substr (i, 2).c_str ());
+      i += 2;
+      break;
+
     default:
       if (i >= mdy.length () ||
           mdy[i] != format[f])
@@ -258,11 +337,15 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
   if (!valid (month, day, year))
     throw std::string ("\"") + mdy + "\" is not a valid date (VALID).";
 
-  // Duplicate Date::Date (const int, const int, const int);
+  // Convert to epoch.
   struct tm t = {0};
-  t.tm_mday = day;
-  t.tm_mon = month - 1;
-  t.tm_year = year - 1900;
+  t.tm_isdst = -1;   // Requests that mktime determine summer time effect.
+  t.tm_mday  = day;
+  t.tm_mon   = month - 1;
+  t.tm_year  = year - 1900;
+  t.tm_hour  = hour;
+  t.tm_min   = minute;
+  t.tm_sec   = second;
 
   mT = mktime (&t);
 }
@@ -333,6 +416,10 @@ const std::string Date::toString (const std::string& format /*= "m/d/Y" */) cons
     case 'b': sprintf (buffer, "%.3s", Date::monthName (month ()).c_str ());   break;
     case 'B': sprintf (buffer, "%.9s", Date::monthName (month ()).c_str ());   break;
     case 'V': sprintf (buffer, "%02d", Date::weekOfYear (Date::dayOfWeek (context.config.get ("weekstart")))); break;
+    case 'h': sprintf (buffer, "%d",   this->hour ());                         break;
+    case 'H': sprintf (buffer, "%02d", this->hour ());                         break;
+    case 'N': sprintf (buffer, "%02d", this->minute ());                       break;
+    case 'S': sprintf (buffer, "%02d", this->second ());                       break;
     default:  sprintf (buffer, "%c",   c);                                     break;
     }
 
@@ -369,6 +456,22 @@ bool Date::valid (const std::string& input, const std::string& format)
   }
 
   return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Date::valid (const int m, const int d, const int y, const int hr,
+                  const int mi, const int se)
+{
+  if (hr < 0 || hr > 23)
+    return false;
+
+  if (mi < 0 || mi > 59)
+    return false;
+
+  if (se < 0 || se > 59)
+    return false;
+
+  return Date::valid (m, d, y);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -616,6 +719,18 @@ bool Date::operator<= (const Date& rhs)
 bool Date::operator>= (const Date& rhs)
 {
   return mT >= rhs.mT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Date::sameHour (const Date& rhs)
+{
+  if (this->year ()  == rhs.year ()  &&
+      this->month () == rhs.month () &&
+      this->day ()   == rhs.day ()   &&
+      this->hour ()  == rhs.hour ())
+    return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

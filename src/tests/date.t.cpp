@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (111);
+  UnitTest t (135);
 
   try
   {
@@ -77,6 +77,12 @@ int main (int argc, char** argv)
 
     t.ok    (Date::valid ("2/29/2008"), "valid: 2/29/2008");
     t.notok (Date::valid ("2/29/2007"), "invalid: 2/29/2007");
+
+    // Time validity.
+    t.ok    (Date::valid (2, 28, 2010,  0,  0,  0), "valid 2/28/2010 0:00:00");
+    t.ok    (Date::valid (2, 28, 2010, 23, 59, 59), "valid 2/28/2010 23:59:59");
+    t.notok (Date::valid (2, 28, 2010, 24, 59, 59), "valid 2/28/2010 24:59:59");
+    t.notok (Date::valid (2, 28, 2010, -1,  0,  0), "valid 2/28/2010 -1:00:00");
 
     // Leap year.
     t.ok    (Date::leapYear (2008), "2008 is a leap year");
@@ -195,6 +201,30 @@ int main (int argc, char** argv)
     t.is (fromString10.day (),     1, "ctor (std::string) -> d");
     t.is (fromString10.year (), 2008, "ctor (std::string) -> y");
 
+    Date fromString11 ("6/7/2010 1:23:45",  "m/d/Y h:N:S");
+    t.is (fromString11.month (),     6, "ctor (std::string) -> m");
+    t.is (fromString11.day (),       7, "ctor (std::string) -> d");
+    t.is (fromString11.year (),   2010, "ctor (std::string) -> Y");
+    t.is (fromString11.hour (),      1, "ctor (std::string) -> h");
+    t.is (fromString11.minute (),   23, "ctor (std::string) -> N");
+    t.is (fromString11.second (),   45, "ctor (std::string) -> S");
+
+    Date fromString12 ("6/7/2010 01:23:45", "m/d/Y H:N:S");
+    t.is (fromString12.month (),     6, "ctor (std::string) -> m");
+    t.is (fromString12.day (),       7, "ctor (std::string) -> d");
+    t.is (fromString12.year (),   2010, "ctor (std::string) -> Y");
+    t.is (fromString12.hour (),      1, "ctor (std::string) -> h");
+    t.is (fromString12.minute (),   23, "ctor (std::string) -> N");
+    t.is (fromString12.second (),   45, "ctor (std::string) -> S");
+
+    Date fromString13 ("6/7/2010 12:34:56", "m/d/Y H:N:S");
+    t.is (fromString13.month (),     6, "ctor (std::string) -> m");
+    t.is (fromString13.day (),       7, "ctor (std::string) -> d");
+    t.is (fromString13.year (),   2010, "ctor (std::string) -> Y");
+    t.is (fromString13.hour (),     12, "ctor (std::string) -> h");
+    t.is (fromString13.minute (),   34, "ctor (std::string) -> N");
+    t.is (fromString13.second (),   56, "ctor (std::string) -> S");
+
     // Relative dates.
     Date r1 ("today");
     t.ok (r1.sameDay (now), "today = now");
@@ -255,6 +285,14 @@ int main (int argc, char** argv)
 
     Date r13 ("eoy");
     t.ok (r13.sameYear (now), "eoy in same year as now");
+
+    // Date::sameHour
+    Date r14 ("6/7/2010 01:00:00", "m/d/Y H:N:S");
+    Date r15 ("6/7/2010 01:59:59", "m/d/Y H:N:S");
+    t.ok (r14.sameHour (r15), "two dates within the same hour");
+
+    Date r16 ("6/7/2010 00:59:59", "m/d/Y H:N:S");
+    t.notok (r14.sameHour (r16), "two dates not within the same hour");
   }
 
   catch (std::string& e)
