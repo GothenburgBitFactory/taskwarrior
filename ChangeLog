@@ -2,8 +2,8 @@
 ------ current release ---------------------------
 
 1.9.1 ()
- + Fixed bugg #382 in which the annotate command didn't returned an
-   error message if called without an ID.
+ + Fixed bug #382 in which the annotate command didn't return an error
+   message when called without an ID.
 
 ------ old releases ------------------------------
 
