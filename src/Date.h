@@ -30,6 +30,8 @@
 #include <stdio.h>
 #include <string>
 
+time_t easter (int year);
+
 class Date;
 
 class Date

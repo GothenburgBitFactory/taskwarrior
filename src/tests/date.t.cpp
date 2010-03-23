@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (135);
+  UnitTest t (143);
 
   try
   {
@@ -224,6 +224,24 @@ int main (int argc, char** argv)
     t.is (fromString13.hour (),     12, "ctor (std::string) -> h");
     t.is (fromString13.minute (),   34, "ctor (std::string) -> N");
     t.is (fromString13.second (),   56, "ctor (std::string) -> S");
+
+    // Easter
+    Date e1 (easter(1980));
+    t.is (e1.toString (), "4/6/1980", "Easter 4/6/1980");
+    Date e2 (easter(1995));
+    t.is (e2.toString (), "4/16/1995", "Easter 4/16/1995");
+    Date e3 (easter(2000));
+    t.is (e3.toString (), "4/23/2000", "Easter 4/23/2000");
+    Date e4 (easter(2009));
+    t.is (e4.toString (), "4/12/2009", "Easter 4/12/2009");
+    Date e5 (easter(2010));
+    t.is (e5.toString (), "4/4/2010", "Easter 4/4/2010");
+    Date e6 (easter(2011));
+    t.is (e6.toString (), "4/24/2011", "Easter 4/24/2011");
+    Date e7 (easter(2012));
+    t.is (e7.toString (), "4/8/2012", "Easter 4/8/2012");
+    Date e8 (easter(2020));
+    t.is (e8.toString (), "4/12/2020", "Easter 4/12/2020");
 
     // Relative dates.
     Date r1 ("today");
