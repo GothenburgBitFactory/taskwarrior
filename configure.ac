@@ -80,7 +80,7 @@ AC_ARG_WITH([ncurses-lib],
             [ncurses_lib=$withval],
             [ncurses_lib=''])
 
-if test "x$with_ncurses" == "xyes" ; then
+if test "x$with_ncurses" = "xyes" ; then
   AC_DEFINE([HAVE_LIBNCURSES], [1], [Defined if you have libncurses])
   if test -n "$ncurses_inc"; then
     CFLAGS="$CFLAGS -I$ncurses_inc"
@@ -111,7 +111,7 @@ fi
 #            [readline_lib=$withval],
 #            [readline_lib=''])
 #
-#if test "x$with_readline" == "xyes" ; then
+#if test "x$with_readline" = "xyes" ; then
 #  AC_DEFINE([HAVE_LIBREADLINE], [1], [Defined if you have libreadline])
 #  if test -n "$readline_inc"; then
 #    CFLAGS="$CFLAGS -I$readline_inc"
@@ -142,7 +142,7 @@ AC_ARG_WITH([lua-lib],
             [lua_lib=$withval],
             [lua_lib=''])
 
-if test "x$with_lua" == "xyes" ; then
+if test "x$with_lua" = "xyes" ; then
   AC_DEFINE([HAVE_LIBLUA], [1], [Defined if you have liblua])
   if test -n "$lua_inc"; then
     CFLAGS="$CFLAGS -I$lua_inc"

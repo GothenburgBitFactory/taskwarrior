@@ -6,6 +6,7 @@
    message when called without an ID.
  + Summary report bar colors can now be specified with color.summary.bar
    and color.summary.background configuration variables.
+ + The configure script is more portable (thanks to Emil Sköldberg).
 
 ------ old releases ------------------------------
 
