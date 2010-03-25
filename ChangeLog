@@ -4,6 +4,8 @@
 1.9.1 ()
  + Fixed bug #382 in which the annotate command didn't return an error
    message when called without an ID.
+ + Summary report bar colors can now be specified with color.summary.bar
+   and color.summary.background configuration variables.
 
 ------ old releases ------------------------------
 

@@ -655,6 +655,9 @@ int handleReportSummary (std::string &outs)
     table.sortOn (0, Table::ascendingCharacter);
     table.setDateFormat (context.config.get ("dateformat"));
 
+    Color bar_color (context.config.get ("color.summary.bar"));
+    Color bg_color  (context.config.get ("color.summary.background"));
+
     int barWidth = 30;
     foreach (i, allProjects)
     {
@@ -675,17 +678,19 @@ int handleReportSummary (std::string &outs)
         int completedBar = (c * barWidth) / (c + p);
 
         std::string bar;
+        std::string subbar;
         if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
         {
-          bar = "\033[42m";
           for (int b = 0; b < completedBar; ++b)
-            bar += " ";
+            subbar += " ";
 
-          bar += "\033[40m";
+          bar += bar_color.colorize (subbar);
+          subbar = "";
+
           for (int b = 0; b < barWidth - completedBar; ++b)
-            bar += " ";
+            subbar += " ";
 
-          bar += "\033[0m";
+          bar += bg_color.colorize (subbar);
         }
         else
         {
