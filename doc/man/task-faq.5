@@ -85,7 +85,7 @@ call the task program.  Here is a Bash script that does this:
 
     #! /bin/bash
 
-    printf "\033]0;task $*\a"
+    printf "\\033]0;task $*\a"
     /usr/local/bin/task $*
 
 You just need to run the script, and let the script run task.  Here is a Bash
@@ -93,7 +93,7 @@ function that does the same thing:
 
     t ()
     {
-      printf "\033]0;task $*\a"
+      printf "\\033]0;task $*\a"
       /usr/local/bin/task $*
     }
 
