@@ -139,6 +139,28 @@ therefore keeps task fast.  The completed data file is the one that grows
 unbounded with use, but that one isn't accessed as much, so it doesn't matter as
 much.  So in all, the ID number resequencing is about efficiency.
 
+.TP
+.B Q: How do I list tasks that are either priority 'H' or 'M', but not 'L'?
+Task's filters are all combined with and implicit logical AND operator, so if
+you were to try this:
+
+    $ task list priority:H priority:M
+
+There would be no results, because the priority could not simultaneously be 'H'
+AND 'M'.  What is required is some way to use OR instead of an AND operator. The
+solution is to invert the filter in this way:
+
+    $ task list priority.not:L priority.any:
+
+This filter states that the priority must not be 'L', AND there must be a
+priority assigned.  This filter then properly lists tasks that are 'H' or 'M',
+because the two logical restrictions are not mutually exclusive as in the
+original filter.
+
+Some of you may be familiar with DeMorgan's laws of formal logic that relate
+the AND and OR operators in terms of each other via negation, which can be used
+to construct task filters.
+
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.
 .br
