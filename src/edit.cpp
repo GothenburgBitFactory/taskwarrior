@@ -168,9 +168,11 @@ static std::string formatTask (Task task)
            << " "                     << anno->value ()                                 << std::endl;
   }
 
-  before << "  Annotation:        "                                                     << std::endl
-         << "  Annotation:        "                                                     << std::endl
+  Date now;
+  before << "  Annotation:        " << now.toString (context.config.get ("dateformat")) << " " << std::endl
+         << "  Annotation:        " << now.toString (context.config.get ("dateformat")) << " " << std::endl
          << "# End"                                                                     << std::endl;
+
   return before.str ();
 }
 

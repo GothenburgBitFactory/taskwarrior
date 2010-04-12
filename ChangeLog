@@ -7,6 +7,9 @@
  + Summary report bar colors can now be specified with color.summary.bar
    and color.summary.background configuration variables.
  + The configure script is more portable (thanks to Emil Sköldberg).
+ + Updated task-faq.5 man page.
+ + The 'edit' command now conveniently fills in the current date for new
+   annotations.
 
 ------ old releases ------------------------------
 
