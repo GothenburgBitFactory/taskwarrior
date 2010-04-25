@@ -943,7 +943,12 @@ int handleDelete (std::string &outs)
                     sibling->get ("uuid")   == parent)
                 {
                   sibling->setStatus (Task::deleted);
-                  sibling->set ("end", endTime);
+
+                  // Don't want a 'delete' to clobber the end date that may have
+                  // been written by a 'done' command.
+                  if (! sibling->has ("end"))
+                    sibling->set ("end", endTime);
+
                   context.tdb.update (*sibling);
 
                   if (context.config.getBoolean ("echo.command"))
@@ -962,7 +967,11 @@ int handleDelete (std::string &outs)
               task->setStatus (Task::deleted);
               updateRecurrenceMask (all, *task);
 
-              task->set ("end", endTime);
+              // Don't want a 'delete' to clobber the end date that may have
+              // been written by a 'done' command.
+              if (! task->has ("end"))
+                task->set ("end", endTime);
+
               context.tdb.update (*task);
 
               out << "Deleting recurring task "
@@ -976,7 +985,12 @@ int handleDelete (std::string &outs)
           else
           {
             task->setStatus (Task::deleted);
-            task->set ("end", endTime);
+
+            // Don't want a 'delete' to clobber the end date that may have
+            // been written by a 'done' command.
+            if (! task->has ("end"))
+              task->set ("end", endTime);
+
             context.tdb.update (*task);
 
             if (context.config.getBoolean ("echo.command"))

@@ -10,6 +10,8 @@
  + Updated task-faq.5 man page.
  + The 'edit' command now conveniently fills in the current date for new
    annotations.
+ + Deleting a task no longer clobbers any recorded end date (thanks to
+   Seneca Cunningham).
 
 ------ old releases ------------------------------
 
