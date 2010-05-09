@@ -12,6 +12,8 @@
    annotations.
  + Deleting a task no longer clobbers any recorded end date (thanks to
    Seneca Cunningham).
+ + Fixed bug #402 which failed compilation on Arch Linux (thanks to
+   Johannes Schlatow).
 
 ------ old releases ------------------------------
 
