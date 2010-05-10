@@ -100,6 +100,17 @@ $ task config
 and in addition, will also perform a check of all the values in the file,
 warning you of anything it finds amiss.
 
+.SH NESTING CONFIGURATION FILES
+The .taskrc can include other files containing configuration settings by using the
+.B include
+statement:
+
+.RS
+include <path/to/the/configuration/file/to/be/included>
+.RE
+
+By using include files you can divide your main configuration file into several ones containing just the relevant configuration data like colors, etc.
+
 .SH CONFIGURATION VARIABLES
 Valid variable names and their default values are:
 
