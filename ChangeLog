@@ -2,16 +2,20 @@
 ------ current release ---------------------------
 
 1.9.1 ()
- + Fixed bug #382 in which the annotate command didn't return an error
-   message when called without an ID.
  + Summary report bar colors can now be specified with color.summary.bar
    and color.summary.background configuration variables.
- + The configure script is more portable (thanks to Emil Sköldberg).
- + Updated task-faq.5 man page.
  + The 'edit' command now conveniently fills in the current date for new
    annotations.
  + Deleting a task no longer clobbers any recorded end date (thanks to
    Seneca Cunningham).
+ + Following holidays are now computed automatically:
+   Good Friday (goodfriday), Easter (easter), Easter monday (eastermonday),
+   Ascension (ascension), Pentecost (pentecost)
+   The date is configured with the given keyword.
+ + The configure script is more portable (thanks to Emil Sköldberg).
+ + Updated task-faq.5 man page.
+ + Fixed bug #382 in which the annotate command didn't return an error
+   message when called without an ID.
  + Fixed bug #402 which failed compilation on Arch Linux (thanks to
    Johannes Schlatow).
 

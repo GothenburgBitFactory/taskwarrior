@@ -792,7 +792,7 @@ bool Date::sameYear (const Date& rhs)
 ////////////////////////////////////////////////////////////////////////////////
 Date Date::operator+ (const int delta)
 {
-  return Date (mT + delta);
+  return Date::Date (mT + delta);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -862,6 +862,13 @@ bool Date::isRelativeDate (const std::string& input)
   supported.push_back ("eow");
   supported.push_back ("eom");
   supported.push_back ("eoy");
+  supported.push_back ("goodfriday");
+  supported.push_back ("easter");
+  supported.push_back ("eastermonday");
+  supported.push_back ("ascension");
+  supported.push_back ("pentecost");
+  supported.push_back ("midsommar");
+  supported.push_back ("midsommarafton");
 
   std::vector <std::string> matches;
   if (autoComplete (in, supported, matches) == 1)
@@ -925,6 +932,60 @@ bool Date::isRelativeDate (const std::string& input)
       Date then (12, 31, today.year ());
       mT = then.mT;
       return true;
+    }
+    else if (found == "goodfriday")
+    {
+      Date then (Date::easter(today.year()));
+      mT = then.mT - 86400*2;
+      return true;
+    }
+    else if (found == "easter")
+    {
+      Date then (Date::easter(today.year()));
+      mT = then.mT;
+      return true;
+    }
+    else if (found == "eastermonday")
+    {
+      Date then (Date::easter(today.year()));
+      mT = then.mT + 86400;
+      return true;
+    }
+    else if (found == "ascension")
+    {
+      Date then (Date::easter(today.year()));
+      mT = then.mT + 86400*39;
+      return true;
+    }
+    else if (found == "pentecost")
+    {
+      Date then (Date::easter(today.year()));
+      mT = then.mT + 86400*49;
+      return true;
+    }
+    else if (found == "midsommar")
+    {
+      for (int midsommar = 20; midsommar <= 26; midsommar++)
+      {
+        Date then (6, midsommar, today.year ());
+        if (6 == then.dayOfWeek ())
+        {
+          mT = then.mT;
+          return true;
+        }
+      }
+    }
+    else if (found == "midsommarafton")
+    {
+      for (int midsommar = 19; midsommar <= 25; midsommar++)
+      {
+        Date then (6, midsommar, today.year ());
+        if (5 == then.dayOfWeek ())
+        {
+          mT = then.mT;
+          return true;
+        }
+      }
     }
   }
 
