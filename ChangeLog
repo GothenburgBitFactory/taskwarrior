@@ -8,9 +8,10 @@
    annotations.
  + Deleting a task no longer clobbers any recorded end date (thanks to
    Seneca Cunningham).
- + Following holidays are now computed automatically:
-   Good Friday (goodfriday), Easter (easter), Easter monday (eastermonday),
-   Ascension (ascension), Pentecost (pentecost)
+ + The following holidays are now computed automatically and can be used
+   in the definitions for the calendar holidays:
+   Good Friday (goodfriday), Easter (easter), Easter monday
+   (eastermonday), Ascension (ascension), Pentecost (pentecost)
    The date is configured with the given keyword.
  + The configure script is more portable (thanks to Emil Sköldberg).
  + Updated task-faq.5 man page.
