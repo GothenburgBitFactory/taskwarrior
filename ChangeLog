@@ -18,6 +18,8 @@
    message when called without an ID.
  + Fixed bug #402 which failed compilation on Arch Linux (thanks to
    Johannes Schlatow).
+ + Fixed bug #401 that ignored the search.case.sensitive configuration
+   setting when filtering on project names (thank to John Florian).
 
 ------ old releases ------------------------------
 
@@ -83,8 +85,7 @@
  + Added a new 'task-color' man page detailing how to set up and use color in
    task.
  + Added feature #176, which allows for configurable case-sensitivity for
-   keyword
-   searches and substitutions (thanks to John Florian).
+   keyword searches and substitutions (thanks to John Florian).
  + Task can now use an alternate tag indicator by setting the tag.indicator
    configuration variable to something other than the default of +.
  + Task can now use an alternate active indicator by setting the

@@ -537,7 +537,7 @@ bool Att::match (const Att& other) const
     if (other.mValue.length () < mValue.length ())
       return false;
 
-      if (!compare (mValue, other.mValue.substr (0, mValue.length ())))
+      if (!compare (mValue, other.mValue.substr (0, mValue.length ()), (bool) case_sensitive))
       return false;
   }
 
