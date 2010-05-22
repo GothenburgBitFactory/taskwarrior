@@ -57,7 +57,7 @@ if ($output =~ /PUC-Rio/)
   qx{../task rc:hook.rc add foo due:eom};
   $output = qx{../task rc:hook.rc long};
 
-  like ($output, qr/<(?:- )?\d+.+>/, 'format-countdown hook countdown -> <countdown>');
+  like ($output, qr/<-?\d+\s\D+>/, 'format-countdown hook countdown -> <countdown>');
 }
 else
 {
