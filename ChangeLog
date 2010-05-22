@@ -20,7 +20,9 @@
  + Fixed bug #402 which failed compilation on Arch Linux (thanks to
    Johannes Schlatow).
  + Fixed bug #401 that ignored the search.case.sensitive configuration
-   setting when filtering on project names (thank to John Florian).
+   setting when filtering on project names (thanks to John Florian).
+ + Fixed bug #395 that prevented the upgrade of a pending task to a
+   recurring task (thanks to T. Charles Yun).
 
 ------ old releases ------------------------------
 

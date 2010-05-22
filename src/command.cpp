@@ -1359,6 +1359,21 @@ int handleModify (std::string &outs)
         // A non-zero value forces a file write.
         int changes = 0;
 
+        // If a task is being made recurring, there are other cascading
+        // changes.
+        if (!task->has ("recur") &&
+            context.task.has ("recur"))
+        {
+          other->setStatus (Task::recurring);
+          other->set ("mask", "");
+          ++changes;
+
+          std::cout << "Task "
+                    << other->id
+                    << " is now a recurring task."
+                    << std::endl;
+        }
+
         // Apply other deltas.
         if (deltaDescription (*other))
         {
