@@ -1,6 +1,10 @@
 
 ------ current release ---------------------------
 
+1.9.2 ()
+
+------ old releases ------------------------------
+
 1.9.1 (5/22/2010) 60a99725b858be134ad538cb7c1a32c98de70e67
  + Summary report bar colors can now be specified with color.summary.bar
    and color.summary.background configuration variables.
@@ -23,8 +27,6 @@
    setting when filtering on project names (thanks to John Florian).
  + Fixed bug #395 that prevented the upgrade of a pending task to a
    recurring task (thanks to T. Charles Yun).
-
------- old releases ------------------------------
 
 1.9.0 (2/22/2010) dd758f8b33de110a633e2ff3ebdac73232b8ff44
  + Added feature #283 that makes it possible to control the verbosity
