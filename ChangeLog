@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.9.1 (5/22/2010)
+1.9.1 (5/22/2010) 60a99725b858be134ad538cb7c1a32c98de70e67
  + Summary report bar colors can now be specified with color.summary.bar
    and color.summary.background configuration variables.
  + The 'edit' command now conveniently fills in the current date for new
