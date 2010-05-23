@@ -2,7 +2,7 @@
 
 config.status: configure
 	dh_testdir
-	./configure $(CROSS) --prefix=/usr --docdir=$(DATADIR)/doc/task
+	./configure $(CROSS) --prefix=/usr
 
 build: build-stamp
 
@@ -31,9 +31,7 @@ binary-arch: install
 	dh_installchangelogs
 	dh_installdocs 
 	dh_installman
-	dh_installexamples
 	install -D -m644 scripts/bash/task_completion.sh $(CURDIR)/debian/task/etc/bash_completion.d/task
-	rm -rf $(CURDIR)/debian/task/usr/share/doc/task-1.8.5
 	dh_strip
 	dh_compress
 	dh_fixperms
