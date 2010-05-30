@@ -526,6 +526,7 @@ void Context::parse (
   bool terminated                  = false;
   bool foundSequence               = false;
   bool foundSomethingAfterSequence = false;
+  bool foundNonSequence            = false;
 
   foreach (arg, parseArgs)
   {
@@ -540,7 +541,7 @@ void Context::parse (
 
       // Sequence
       // Note: "add" doesn't require an ID
-      else if (parseCmd.command != "add"          &&
+      else if (parseCmd.command != "add"     &&
                ! foundSomethingAfterSequence &&
                parseSequence.valid (*arg))
       {
@@ -557,6 +558,8 @@ void Context::parse (
         debug ("parse tag addition '" + *arg + "'");
         if (foundSequence)
           foundSomethingAfterSequence = true;
+
+        foundNonSequence = true;
 
         if (arg->find (',') != std::string::npos)
           throw stringtable.get (TAGS_NO_COMMA,
@@ -575,6 +578,8 @@ void Context::parse (
         if (foundSequence)
           foundSomethingAfterSequence = true;
 
+        foundNonSequence = true;
+
         if (arg->find (',') != std::string::npos)
           throw stringtable.get (TAGS_NO_COMMA,
                                  "Tags are not permitted to contain commas.");
@@ -588,6 +593,8 @@ void Context::parse (
         debug ("parse attribute '" + *arg + "'");
         if (foundSequence)
           foundSomethingAfterSequence = true;
+
+        foundNonSequence = true;
 
         attribute.parse (*arg);
 
@@ -618,6 +625,8 @@ void Context::parse (
           if (foundSequence)
             foundSomethingAfterSequence = true;
 
+          foundNonSequence = true;
+
           if (descCandidate.length ())
             descCandidate += " ";
           descCandidate += *arg;
@@ -629,6 +638,8 @@ void Context::parse (
       {
         if (foundSequence)
           foundSomethingAfterSequence = true;
+
+        foundNonSequence = true;
 
         debug ("parse subst '" + *arg + "'");
         parseSubst.parse (*arg);
@@ -643,6 +654,8 @@ void Context::parse (
 
         if (foundSequence)
           foundSomethingAfterSequence = true;
+
+        foundNonSequence = true;
       }
 
       // Anything else is just considered description.
@@ -650,6 +663,8 @@ void Context::parse (
       {
         if (foundSequence)
           foundSomethingAfterSequence = true;
+
+        foundNonSequence = true;
 
         if (descCandidate.length ())
           descCandidate += " ";
@@ -674,6 +689,8 @@ void Context::parse (
   {
     debug ("parse description '" + descCandidate + "'");
     parseTask.set ("description", descCandidate);
+
+    foundNonSequence = true;
 
     // Now convert the description to a filter on each word, if necessary.
     if (parseCmd.isReadOnlyCommand ())
@@ -730,10 +747,10 @@ void Context::parse (
           "You must specify a command, or a task ID to modify");
     }
 
-    // If the command "task 123" is entered, then the actual command is assumed
-    // to be "info".
-    else if (parseTask.id != 0 ||
-             parseSequence.size () != 0)
+    // If the command "task 123" is entered, but with no modifier arguments,
+    // then the actual command is assumed to be "info".
+    else if (!foundNonSequence &&
+             (parseTask.id != 0 || parseSequence.size () != 0))
     {
       std::cout << "No command - assuming 'info'." << std::endl;
       parseCmd.command = "info";

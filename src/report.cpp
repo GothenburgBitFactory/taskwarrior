@@ -101,6 +101,10 @@ int shortUsage (std::string &outs)
                          "first occurrence.");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task ID");
+  table.addCell (row, 2, "Specifying an ID without a command invokes the 'info' command.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task edit ID");
   table.addCell (row, 2, "Launches an editor to let you modify all aspects of a task directly, therefore it is to be used carefully.");
 
