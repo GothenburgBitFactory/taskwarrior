@@ -161,6 +161,8 @@ std::string Config::defaults =
   "\n"
   "# Aliases - alternate names for commands\n"
   "alias.rm=delete                        # Alias for the delete command\n"
+  "alias.history=history.monthly          # Prefer monthly history reports\n"
+  "alias.ghistory=ghistory.monthly        # Prefer monthly graphical history reports\n"
   "\n"
   "# Fields: id,uuid,project,priority,priority_long,entry,entry_time,\n"                           // TODO
   "#         start,entry_time,due,recur,recurrence_indicator,age,\n"                               // TODO

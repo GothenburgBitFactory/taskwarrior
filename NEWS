@@ -16,6 +16,7 @@ New Features in task 1.9
   - Ability to do case-sensitive or case-insensitive search for keywords, and
     substitutions in the description and annotations.
   - New 'log' command to add tasks that are already completed.
+  - New annual history and ghistory command variations.
   - Task is now part of Debian
 
   Please refer to the ChangeLog file for full details.  There are too many to

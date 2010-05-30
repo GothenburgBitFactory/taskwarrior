@@ -164,11 +164,19 @@ int shortUsage (std::string &outs)
 
   row = table.addRow ();
   table.addCell (row, 1, "task history");
-  table.addCell (row, 2, "Shows a report of task history, by month.");
+  table.addCell (row, 2, "Shows a report of task history, by month.  Alias to history.monthly.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task history.annual");
+  table.addCell (row, 2, "Shows a report of task history, by year.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task ghistory");
-  table.addCell (row, 2, "Shows a graphical report of task history, by month.");
+  table.addCell (row, 2, "Shows a graphical report of task history, by month.  Alias to ghistory.monthly.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task ghistory.annual");
+  table.addCell (row, 2, "Shows a graphical report of task history, by year.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task calendar [due|month year|year]");
@@ -827,7 +835,25 @@ time_t monthlyEpoch (const std::string& date)
   return 0;
 }
 
-int handleReportHistory (std::string &outs)
+time_t yearlyEpoch (const std::string& date)
+{
+  // Convert any date in epoch form to m/d/y, then convert back
+  // to epoch form for the date 1/1/y.
+  if (date.length ())
+  {
+    Date d1 (atoi (date.c_str ()));
+    int m, d, y;
+    d1.toMDY (m, d, y);
+    Date d2 (1, 1, y);
+    time_t epoch;
+    d2.toEpoch (epoch);
+    return epoch;
+ }
+
+  return 0;
+}
+
+int handleReportHistoryMonthly (std::string &outs)
 {
   int rc = 0;
 
@@ -993,8 +1019,171 @@ int handleReportHistory (std::string &outs)
   return rc;
 }
 
+int handleReportHistoryAnnual (std::string &outs)
+{
+  int rc = 0;
+
+  if (context.hooks.trigger ("pre-history-command"))
+  {
+    std::map <time_t, int> groups;          // Represents any month with data
+    std::map <time_t, int> addedGroup;      // Additions by month
+    std::map <time_t, int> completedGroup;  // Completions by month
+    std::map <time_t, int> deletedGroup;    // Deletions by month
+
+    // Scan the pending tasks.
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    handleRecurrence ();
+    context.tdb.load (tasks, context.filter);
+    context.tdb.commit ();
+    context.tdb.unlock ();
+
+    foreach (task, tasks)
+    {
+      time_t epoch = yearlyEpoch (task->get ("entry"));
+      groups[epoch] = 0;
+
+      // Every task has an entry date.
+      if (addedGroup.find (epoch) != addedGroup.end ())
+        addedGroup[epoch] = addedGroup[epoch] + 1;
+      else
+        addedGroup[epoch] = 1;
+
+      // All deleted tasks have an end date.
+      if (task->getStatus () == Task::deleted)
+      {
+        epoch = yearlyEpoch (task->get ("end"));
+        groups[epoch] = 0;
+
+        if (deletedGroup.find (epoch) != deletedGroup.end ())
+          deletedGroup[epoch] = deletedGroup[epoch] + 1;
+        else
+          deletedGroup[epoch] = 1;
+      }
+
+      // All completed tasks have an end date.
+      else if (task->getStatus () == Task::completed)
+      {
+        epoch = yearlyEpoch (task->get ("end"));
+        groups[epoch] = 0;
+
+        if (completedGroup.find (epoch) != completedGroup.end ())
+          completedGroup[epoch] = completedGroup[epoch] + 1;
+        else
+          completedGroup[epoch] = 1;
+      }
+    }
+
+    // Now build the table.
+    Table table;
+    table.setDateFormat (context.config.get ("dateformat"));
+    table.addColumn ("Year");
+    table.addColumn ("Added");
+    table.addColumn ("Completed");
+    table.addColumn ("Deleted");
+    table.addColumn ("Net");
+
+    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+        context.config.getBoolean ("fontunderline"))
+    {
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
+      table.setColumnUnderline (2);
+      table.setColumnUnderline (3);
+      table.setColumnUnderline (4);
+    }
+    else
+      table.setTableDashedUnderline ();
+
+    table.setColumnJustification (1, Table::right);
+    table.setColumnJustification (2, Table::right);
+    table.setColumnJustification (3, Table::right);
+    table.setColumnJustification (4, Table::right);
+
+    int totalAdded     = 0;
+    int totalCompleted = 0;
+    int totalDeleted   = 0;
+
+    int priorYear = 0;
+    int row = 0;
+    foreach (i, groups)
+    {
+      row = table.addRow ();
+
+      totalAdded     += addedGroup     [i->first];
+      totalCompleted += completedGroup [i->first];
+      totalDeleted   += deletedGroup   [i->first];
+
+      Date dt (i->first);
+      int m, d, y;
+      dt.toMDY (m, d, y);
+
+      if (y != priorYear)
+      {
+        table.addCell (row, 0, y);
+        priorYear = y;
+      }
+
+      int net = 0;
+
+      if (addedGroup.find (i->first) != addedGroup.end ())
+      {
+        table.addCell (row, 1, addedGroup[i->first]);
+        net +=addedGroup[i->first];
+      }
+
+      if (completedGroup.find (i->first) != completedGroup.end ())
+      {
+        table.addCell (row, 2, completedGroup[i->first]);
+        net -= completedGroup[i->first];
+      }
+
+      if (deletedGroup.find (i->first) != deletedGroup.end ())
+      {
+        table.addCell (row, 3, deletedGroup[i->first]);
+        net -= deletedGroup[i->first];
+      }
+
+      table.addCell (row, 4, net);
+      if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) && net)
+        table.setCellColor (row, 4, net > 0 ? Color (Color::red) :
+                                              Color (Color::green));
+    }
+
+    if (table.rowCount ())
+    {
+      table.addRow ();
+      row = table.addRow ();
+
+      table.addCell (row, 0, "Average");
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+        table.setRowColor (row, Color (Color::nocolor, Color::nocolor, false, true, false));
+      table.addCell (row, 1, totalAdded     / (table.rowCount () - 2));
+      table.addCell (row, 2, totalCompleted / (table.rowCount () - 2));
+      table.addCell (row, 3, totalDeleted   / (table.rowCount () - 2));
+      table.addCell (row, 4, (totalAdded - totalCompleted - totalDeleted) / (table.rowCount () - 2));
+    }
+
+    std::stringstream out;
+    if (table.rowCount ())
+      out << optionalBlankLine ()
+          << table.render ()
+          << std::endl;
+    else
+    {
+      out << "No tasks." << std::endl;
+      rc = 1;
+    }
+
+    outs = out.str ();
+    context.hooks.trigger ("post-history-command");
+  }
+
+  return rc;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportGHistory (std::string &outs)
+int handleReportGHistoryMonthly (std::string &outs)
 {
   int rc = 0;
 
@@ -1168,6 +1357,213 @@ int handleReportGHistory (std::string &outs)
         }
 
         table.addCell (row, 2, bar);
+      }
+    }
+
+    std::stringstream out;
+    if (table.rowCount ())
+    {
+      out << optionalBlankLine ()
+          << table.render ()
+          << std::endl;
+
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+        out << "Legend: "
+            << color_added.colorize ("added")
+            << ", "
+            << color_completed.colorize ("completed")
+            << ", "
+            << color_deleted.colorize ("deleted")
+            << optionalBlankLine ()
+            << std::endl;
+      else
+        out << "Legend: + added, X completed, - deleted" << std::endl;
+    }
+    else
+    {
+      out << "No tasks." << std::endl;
+      rc = 1;
+    }
+
+    outs = out.str ();
+    context.hooks.trigger ("post-ghistory-command");
+  }
+
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int handleReportGHistoryAnnual (std::string &outs)
+{
+  int rc = 0;
+
+  if (context.hooks.trigger ("pre-ghistory-command"))
+  {
+    std::map <time_t, int> groups;          // Represents any month with data
+    std::map <time_t, int> addedGroup;      // Additions by month
+    std::map <time_t, int> completedGroup;  // Completions by month
+    std::map <time_t, int> deletedGroup;    // Deletions by month
+
+    // Scan the pending tasks.
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    handleRecurrence ();
+    context.tdb.load (tasks, context.filter);
+    context.tdb.commit ();
+    context.tdb.unlock ();
+
+    foreach (task, tasks)
+    {
+      time_t epoch = yearlyEpoch (task->get ("entry"));
+      groups[epoch] = 0;
+
+      // Every task has an entry date.
+      if (addedGroup.find (epoch) != addedGroup.end ())
+        addedGroup[epoch] = addedGroup[epoch] + 1;
+      else
+        addedGroup[epoch] = 1;
+
+      // All deleted tasks have an end date.
+      if (task->getStatus () == Task::deleted)
+      {
+        epoch = yearlyEpoch (task->get ("end"));
+        groups[epoch] = 0;
+
+        if (deletedGroup.find (epoch) != deletedGroup.end ())
+          deletedGroup[epoch] = deletedGroup[epoch] + 1;
+        else
+          deletedGroup[epoch] = 1;
+      }
+
+      // All completed tasks have an end date.
+      else if (task->getStatus () == Task::completed)
+      {
+        epoch = yearlyEpoch (task->get ("end"));
+        groups[epoch] = 0;
+
+        if (completedGroup.find (epoch) != completedGroup.end ())
+          completedGroup[epoch] = completedGroup[epoch] + 1;
+        else
+          completedGroup[epoch] = 1;
+      }
+    }
+
+    int widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
+
+    // Now build the table.
+    Table table;
+    table.setDateFormat (context.config.get ("dateformat"));
+    table.addColumn ("Year");
+    table.addColumn ("Number Added/Completed/Deleted");
+
+    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+        context.config.getBoolean ("fontunderline"))
+    {
+      table.setColumnUnderline (0);
+    }
+    else
+      table.setTableDashedUnderline ();
+
+    Color color_added     (Color::black, Color::red);
+    Color color_completed (Color::black, Color::green);
+    Color color_deleted   (Color::black, Color::yellow);
+
+    // Determine the longest line, and the longest "added" line.
+    int maxAddedLine = 0;
+    int maxRemovedLine = 0;
+    foreach (i, groups)
+    {
+      if (completedGroup[i->first] + deletedGroup[i->first] > maxRemovedLine)
+        maxRemovedLine = completedGroup[i->first] + deletedGroup[i->first];
+
+      if (addedGroup[i->first] > maxAddedLine)
+        maxAddedLine = addedGroup[i->first];
+    }
+
+    int maxLine = maxAddedLine + maxRemovedLine;
+    if (maxLine > 0)
+    {
+      unsigned int leftOffset = (widthOfBar * maxAddedLine) / maxLine;
+
+      int totalAdded     = 0;
+      int totalCompleted = 0;
+      int totalDeleted   = 0;
+
+      int priorYear = 0;
+      int row = 0;
+      foreach (i, groups)
+      {
+        row = table.addRow ();
+
+        totalAdded     += addedGroup[i->first];
+        totalCompleted += completedGroup[i->first];
+        totalDeleted   += deletedGroup[i->first];
+
+        Date dt (i->first);
+        int m, d, y;
+        dt.toMDY (m, d, y);
+
+        if (y != priorYear)
+        {
+          table.addCell (row, 0, y);
+          priorYear = y;
+        }
+
+        unsigned int addedBar     = (widthOfBar *     addedGroup[i->first]) / maxLine;
+        unsigned int completedBar = (widthOfBar * completedGroup[i->first]) / maxLine;
+        unsigned int deletedBar   = (widthOfBar *   deletedGroup[i->first]) / maxLine;
+
+        std::string bar = "";
+        if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+        {
+          char number[24];
+          std::string aBar = "";
+          if (addedGroup[i->first])
+          {
+            sprintf (number, "%d", addedGroup[i->first]);
+            aBar = number;
+            while (aBar.length () < addedBar)
+              aBar = " " + aBar;
+          }
+
+          std::string cBar = "";
+          if (completedGroup[i->first])
+          {
+            sprintf (number, "%d", completedGroup[i->first]);
+            cBar = number;
+            while (cBar.length () < completedBar)
+              cBar = " " + cBar;
+          }
+
+          std::string dBar = "";
+          if (deletedGroup[i->first])
+          {
+            sprintf (number, "%d", deletedGroup[i->first]);
+            dBar = number;
+            while (dBar.length () < deletedBar)
+              dBar = " " + dBar;
+          }
+
+          while (bar.length () < leftOffset - aBar.length ())
+            bar += " ";
+
+          bar += color_added.colorize     (aBar);
+          bar += color_completed.colorize (cBar);
+          bar += color_deleted.colorize   (dBar);
+        }
+        else
+        {
+          std::string aBar = ""; while (aBar.length () < addedBar)     aBar += "+";
+          std::string cBar = ""; while (cBar.length () < completedBar) cBar += "X";
+          std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += "-";
+
+          while (bar.length () < leftOffset - aBar.length ())
+            bar += " ";
+
+          bar += aBar + cBar + dBar;
+        }
+
+        table.addCell (row, 1, bar);
       }
     }
 

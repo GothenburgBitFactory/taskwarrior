@@ -111,36 +111,38 @@ void Cmd::load ()
     commands.push_back ("_ids");
     commands.push_back ("_config");
     commands.push_back ("_version");
-    commands.push_back (context.stringtable.get (CMD_ADD,       "add"));
-    commands.push_back (context.stringtable.get (CMD_APPEND,    "append"));
-    commands.push_back (context.stringtable.get (CMD_ANNOTATE,  "annotate"));
-    commands.push_back (context.stringtable.get (CMD_CALENDAR,  "calendar"));
-    commands.push_back (context.stringtable.get (CMD_COLORS,    "colors"));
-    commands.push_back (context.stringtable.get (CMD_CONFIG,    "config"));
-    commands.push_back (context.stringtable.get (CMD_DELETE,    "delete"));
-    commands.push_back (context.stringtable.get (CMD_DONE,      "done"));
-    commands.push_back (context.stringtable.get (CMD_DUPLICATE, "duplicate"));
-    commands.push_back (context.stringtable.get (CMD_EDIT,      "edit"));
-    commands.push_back (context.stringtable.get (CMD_EXPORT,    "export"));
-    commands.push_back (context.stringtable.get (CMD_HELP,      "help"));
-    commands.push_back (context.stringtable.get (CMD_HISTORY,   "history"));
-    commands.push_back (context.stringtable.get (CMD_GHISTORY,  "ghistory"));
-    commands.push_back (context.stringtable.get (CMD_IMPORT,    "import"));
-    commands.push_back (context.stringtable.get (CMD_INFO,      "info"));
-    commands.push_back (context.stringtable.get (CMD_LOG,       "log"));
-    commands.push_back (context.stringtable.get (CMD_PREPEND,   "prepend"));
-    commands.push_back (context.stringtable.get (CMD_PROJECTS,  "projects"));
+    commands.push_back (context.stringtable.get (CMD_ADD,              "add"));
+    commands.push_back (context.stringtable.get (CMD_APPEND,           "append"));
+    commands.push_back (context.stringtable.get (CMD_ANNOTATE,         "annotate"));
+    commands.push_back (context.stringtable.get (CMD_CALENDAR,         "calendar"));
+    commands.push_back (context.stringtable.get (CMD_COLORS,           "colors"));
+    commands.push_back (context.stringtable.get (CMD_CONFIG,           "config"));
+    commands.push_back (context.stringtable.get (CMD_DELETE,           "delete"));
+    commands.push_back (context.stringtable.get (CMD_DONE,             "done"));
+    commands.push_back (context.stringtable.get (CMD_DUPLICATE,        "duplicate"));
+    commands.push_back (context.stringtable.get (CMD_EDIT,             "edit"));
+    commands.push_back (context.stringtable.get (CMD_EXPORT,           "export"));
+    commands.push_back (context.stringtable.get (CMD_HELP,             "help"));
+    commands.push_back (context.stringtable.get (CMD_HISTORY_MONTHLY,  "history.monthly"));
+    commands.push_back (context.stringtable.get (CMD_HISTORY_ANNUAL,   "history.annual"));
+    commands.push_back (context.stringtable.get (CMD_GHISTORY_MONTHLY, "ghistory.monthly"));
+    commands.push_back (context.stringtable.get (CMD_GHISTORY_ANNUAL,  "ghistory.annual"));
+    commands.push_back (context.stringtable.get (CMD_IMPORT,           "import"));
+    commands.push_back (context.stringtable.get (CMD_INFO,             "info"));
+    commands.push_back (context.stringtable.get (CMD_LOG,              "log"));
+    commands.push_back (context.stringtable.get (CMD_PREPEND,          "prepend"));
+    commands.push_back (context.stringtable.get (CMD_PROJECTS,         "projects"));
 #ifdef FEATURE_SHELL
-    commands.push_back (context.stringtable.get (CMD_SHELL,     "shell"));
+    commands.push_back (context.stringtable.get (CMD_SHELL,            "shell"));
 #endif
-    commands.push_back (context.stringtable.get (CMD_START,     "start"));
-    commands.push_back (context.stringtable.get (CMD_STATS,     "stats"));
-    commands.push_back (context.stringtable.get (CMD_STOP,      "stop"));
-    commands.push_back (context.stringtable.get (CMD_SUMMARY,   "summary"));
-    commands.push_back (context.stringtable.get (CMD_TAGS,      "tags"));
-    commands.push_back (context.stringtable.get (CMD_TIMESHEET, "timesheet"));
-    commands.push_back (context.stringtable.get (CMD_UNDO,      "undo"));
-    commands.push_back (context.stringtable.get (CMD_VERSION,   "version"));
+    commands.push_back (context.stringtable.get (CMD_START,            "start"));
+    commands.push_back (context.stringtable.get (CMD_STATS,            "stats"));
+    commands.push_back (context.stringtable.get (CMD_STOP,             "stop"));
+    commands.push_back (context.stringtable.get (CMD_SUMMARY,          "summary"));
+    commands.push_back (context.stringtable.get (CMD_TAGS,             "tags"));
+    commands.push_back (context.stringtable.get (CMD_TIMESHEET,        "timesheet"));
+    commands.push_back (context.stringtable.get (CMD_UNDO,             "undo"));
+    commands.push_back (context.stringtable.get (CMD_VERSION,          "version"));
 
     // Now load the custom reports.
     std::vector <std::string> all;
@@ -190,27 +192,29 @@ void Cmd::allCommands (std::vector <std::string>& all) const
 // Commands that do not directly modify the data files.
 bool Cmd::isReadOnlyCommand ()
 {
-  if (command == "_projects"                                          ||
-      command == "_tags"                                              ||
-      command == "_commands"                                          ||
-      command == "_ids"                                               ||
-      command == "_config"                                            ||
-      command == "_version"                                           ||
-      command == context.stringtable.get (CMD_CALENDAR,  "calendar")  ||
-      command == context.stringtable.get (CMD_COLORS,    "colors")    ||
-      command == context.stringtable.get (CMD_CONFIG,    "config")    ||
-      command == context.stringtable.get (CMD_EXPORT,    "export")    ||
-      command == context.stringtable.get (CMD_HELP,      "help")      ||
-      command == context.stringtable.get (CMD_HISTORY,   "history")   ||
-      command == context.stringtable.get (CMD_GHISTORY,  "ghistory")  ||
-      command == context.stringtable.get (CMD_INFO,      "info")      ||
-      command == context.stringtable.get (CMD_PROJECTS,  "projects")  ||
-      command == context.stringtable.get (CMD_SHELL,     "shell")     ||
-      command == context.stringtable.get (CMD_STATS,     "stats")     ||
-      command == context.stringtable.get (CMD_SUMMARY,   "summary")   ||
-      command == context.stringtable.get (CMD_TAGS,      "tags")      ||
-      command == context.stringtable.get (CMD_TIMESHEET, "timesheet") ||
-      command == context.stringtable.get (CMD_VERSION,   "version")   ||
+  if (command == "_projects"                                                        ||
+      command == "_tags"                                                            ||
+      command == "_commands"                                                        ||
+      command == "_ids"                                                             ||
+      command == "_config"                                                          ||
+      command == "_version"                                                         ||
+      command == context.stringtable.get (CMD_CALENDAR,         "calendar")         ||
+      command == context.stringtable.get (CMD_COLORS,           "colors")           ||
+      command == context.stringtable.get (CMD_CONFIG,           "config")           ||
+      command == context.stringtable.get (CMD_EXPORT,           "export")           ||
+      command == context.stringtable.get (CMD_HELP,             "help")             ||
+      command == context.stringtable.get (CMD_HISTORY_MONTHLY,  "history.monthly")  ||
+      command == context.stringtable.get (CMD_HISTORY_ANNUAL,   "history.annual")   ||
+      command == context.stringtable.get (CMD_GHISTORY_MONTHLY, "ghistory.monthly") ||
+      command == context.stringtable.get (CMD_GHISTORY_ANNUAL,  "ghistory.annual")  ||
+      command == context.stringtable.get (CMD_INFO,             "info")             ||
+      command == context.stringtable.get (CMD_PROJECTS,         "projects")         ||
+      command == context.stringtable.get (CMD_SHELL,            "shell")            ||
+      command == context.stringtable.get (CMD_STATS,            "stats")            ||
+      command == context.stringtable.get (CMD_SUMMARY,          "summary")          ||
+      command == context.stringtable.get (CMD_TAGS,             "tags")             ||
+      command == context.stringtable.get (CMD_TIMESHEET,        "timesheet")        ||
+      command == context.stringtable.get (CMD_VERSION,          "version")          ||
       validCustom (command))
     return true;
 

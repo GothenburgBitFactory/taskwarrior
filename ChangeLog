@@ -6,6 +6,8 @@
    implicit "task info 123" command (thanks to John Florian).
  + Added feature #326, allowing tasks to be added in the completed state,
    by using the 'log' command in place of 'add' (thanks to Cory Donnelly).
+ + Added features #36 and #37, providing annual versions of the 'history'
+   and 'ghistory' command as 'history.annual' and 'ghistory.annual'.
 
 ------ old releases ------------------------------
 

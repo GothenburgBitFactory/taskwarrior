@@ -205,53 +205,55 @@ int Context::dispatch (std::string &out)
   hooks.trigger ("pre-dispatch");
 
   // TODO Just look at this thing.  It cries out for a dispatch table.
-       if (cmd.command == "projects")      { rc = handleProjects           (out); }
-  else if (cmd.command == "tags")          { rc = handleTags               (out); }
-  else if (cmd.command == "colors")        { rc = handleColor              (out); }
-  else if (cmd.command == "version")       { rc = handleVersion            (out); }
-  else if (cmd.command == "config")        { rc = handleConfig             (out); }
-  else if (cmd.command == "help")          { rc = longUsage                (out); }
-  else if (cmd.command == "stats")         { rc = handleReportStats        (out); }
-  else if (cmd.command == "info")          { rc = handleInfo               (out); }
-  else if (cmd.command == "history")       { rc = handleReportHistory      (out); }
-  else if (cmd.command == "ghistory")      { rc = handleReportGHistory     (out); }
-  else if (cmd.command == "summary")       { rc = handleReportSummary      (out); }
-  else if (cmd.command == "calendar")      { rc = handleReportCalendar     (out); }
-  else if (cmd.command == "timesheet")     { rc = handleReportTimesheet    (out); }
-  else if (cmd.command == "add")           { rc = handleAdd                (out); }
-  else if (cmd.command == "log")           { rc = handleLog                (out); }
-  else if (cmd.command == "append")        { rc = handleAppend             (out); }
-  else if (cmd.command == "prepend")       { rc = handlePrepend            (out); }
-  else if (cmd.command == "annotate")      { rc = handleAnnotate           (out); }
-  else if (cmd.command == "done")          { rc = handleDone               (out); }
-  else if (cmd.command == "delete")        { rc = handleDelete             (out); }
-  else if (cmd.command == "start")         { rc = handleStart              (out); }
-  else if (cmd.command == "stop")          { rc = handleStop               (out); }
-  else if (cmd.command == "export")        { rc = handleExport             (out); }
-  else if (cmd.command == "import")        { rc = handleImport             (out); }
-  else if (cmd.command == "duplicate")     { rc = handleDuplicate          (out); }
-  else if (cmd.command == "edit")          { rc = handleEdit               (out); }
+       if (cmd.command == "projects")         { rc = handleProjects              (out); }
+  else if (cmd.command == "tags")             { rc = handleTags                  (out); }
+  else if (cmd.command == "colors")           { rc = handleColor                 (out); }
+  else if (cmd.command == "version")          { rc = handleVersion               (out); }
+  else if (cmd.command == "config")           { rc = handleConfig                (out); }
+  else if (cmd.command == "help")             { rc = longUsage                   (out); }
+  else if (cmd.command == "stats")            { rc = handleReportStats           (out); }
+  else if (cmd.command == "info")             { rc = handleInfo                  (out); }
+  else if (cmd.command == "history.monthly")  { rc = handleReportHistoryMonthly  (out); }
+  else if (cmd.command == "history.annual")   { rc = handleReportHistoryAnnual   (out); }
+  else if (cmd.command == "ghistory.monthly") { rc = handleReportGHistoryMonthly (out); }
+  else if (cmd.command == "ghistory.annual")  { rc = handleReportGHistoryAnnual  (out); }
+  else if (cmd.command == "summary")          { rc = handleReportSummary         (out); }
+  else if (cmd.command == "calendar")         { rc = handleReportCalendar        (out); }
+  else if (cmd.command == "timesheet")        { rc = handleReportTimesheet       (out); }
+  else if (cmd.command == "add")              { rc = handleAdd                   (out); }
+  else if (cmd.command == "log")              { rc = handleLog                   (out); }
+  else if (cmd.command == "append")           { rc = handleAppend                (out); }
+  else if (cmd.command == "prepend")          { rc = handlePrepend               (out); }
+  else if (cmd.command == "annotate")         { rc = handleAnnotate              (out); }
+  else if (cmd.command == "done")             { rc = handleDone                  (out); }
+  else if (cmd.command == "delete")           { rc = handleDelete                (out); }
+  else if (cmd.command == "start")            { rc = handleStart                 (out); }
+  else if (cmd.command == "stop")             { rc = handleStop                  (out); }
+  else if (cmd.command == "export")           { rc = handleExport                (out); }
+  else if (cmd.command == "import")           { rc = handleImport                (out); }
+  else if (cmd.command == "duplicate")        { rc = handleDuplicate             (out); }
+  else if (cmd.command == "edit")             { rc = handleEdit                  (out); }
 #ifdef FEATURE_SHELL
-  else if (cmd.command == "shell")         {      handleShell              (   ); }
+  else if (cmd.command == "shell")            {      handleShell                 (   ); }
 #endif
-  else if (cmd.command == "undo")          {      handleUndo               (   ); }
-  else if (cmd.command == "_projects")     { rc = handleCompletionProjects (out); }
-  else if (cmd.command == "_tags")         { rc = handleCompletionTags     (out); }
-  else if (cmd.command == "_commands")     { rc = handleCompletionCommands (out); }
-  else if (cmd.command == "_ids")          { rc = handleCompletionIDs      (out); }
-  else if (cmd.command == "_config")       { rc = handleCompletionConfig   (out); }
-  else if (cmd.command == "_version")      { rc = handleCompletionVersion  (out); }
+  else if (cmd.command == "undo")             {      handleUndo                  (   ); }
+  else if (cmd.command == "_projects")        { rc = handleCompletionProjects    (out); }
+  else if (cmd.command == "_tags")            { rc = handleCompletionTags        (out); }
+  else if (cmd.command == "_commands")        { rc = handleCompletionCommands    (out); }
+  else if (cmd.command == "_ids")             { rc = handleCompletionIDs         (out); }
+  else if (cmd.command == "_config")          { rc = handleCompletionConfig      (out); }
+  else if (cmd.command == "_version")         { rc = handleCompletionVersion     (out); }
   else if (cmd.command == "" &&
-           sequence.size ())               { rc = handleModify             (out); }
+           sequence.size ())                  { rc = handleModify                (out); }
 
   // Command that display IDs and therefore need TDB::gc first.
-  else if (cmd.command == "next")          { if (!inShadow) tdb.gc (); rc = handleReportNext (out); }
-  else if (cmd.validCustom (cmd.command))  { if (!inShadow) tdb.gc (); rc = handleCustomReport  (cmd.command, out); }
+  else if (cmd.command == "next")             { if (!inShadow) tdb.gc (); rc = handleReportNext (out); }
+  else if (cmd.validCustom (cmd.command))     { if (!inShadow) tdb.gc (); rc = handleCustomReport  (cmd.command, out); }
 
   // If the command is not recognized, display usage.
-  else                                     { hooks.trigger ("pre-usage-command");
-                                             rc = shortUsage (out);
-                                             hooks.trigger ("post-usage-command"); }
+  else                                        { hooks.trigger ("pre-usage-command");
+                                                rc = shortUsage (out);
+                                                hooks.trigger ("post-usage-command"); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
   if (cmd.isWriteCommand () && !inShadow)

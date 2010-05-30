@@ -42,8 +42,8 @@
 210 edit
 211 export
 212 help
-213 history
-214 ghistory
+213 history.monthly
+214 ghistory.monthly
 215 import
 216 info
 217 prepend
@@ -59,6 +59,9 @@
 227 undo
 228 version
 229 shell
+230 config
+231 history.annual
+232 ghistory.annual
 
 # 3xx Attributes - must be sequential
 300 project

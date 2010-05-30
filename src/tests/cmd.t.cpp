@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (78);
+  UnitTest t (84);
 
   // Without Context::initialize, there is no set of defaults loaded into
   // Context::Config.
@@ -65,13 +65,21 @@ int main (int argc, char** argv)
   t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand help");
   t.notok (cmd.isWriteCommand    (), "not isWriteCommand help");
 
-  cmd.command = "history";
-  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand history");
-  t.notok (cmd.isWriteCommand    (), "not isWriteCommand history");
+  cmd.command = "history.monthly";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand history.monthly");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand history.monthly");
 
-  cmd.command = "ghistory";
-  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand ghistory");
-  t.notok (cmd.isWriteCommand    (), "not isWriteCommand ghistory");
+  cmd.command = "history.annual";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand history.annual");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand history.annual");
+
+  cmd.command = "ghistory.monthly";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand ghistory.monthly");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand ghistory.monthly");
+
+  cmd.command = "ghistory.annual";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand ghistory.annual");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand ghistory.annual");
 
   cmd.command = "info";
   t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand info");
@@ -120,6 +128,10 @@ int main (int argc, char** argv)
   cmd.command = "add";
   t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand add");
   t.ok    (cmd.isWriteCommand    (), "isWriteCommand add");
+
+  cmd.command = "log";
+  t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand log");
+  t.ok    (cmd.isWriteCommand    (), "isWriteCommand log");
 
   cmd.command = "append";
   t.notok (cmd.isReadOnlyCommand (), "not isReadOnlyCommand append");
