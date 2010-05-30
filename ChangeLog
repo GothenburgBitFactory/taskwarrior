@@ -4,6 +4,8 @@
 1.9.2 ()
  + Added feature #320, so the command "task 123" is interpreted as an
    implicit "task info 123" command (thanks to John Florian).
+ + Added feature #326, allowing tasks to be added in the completed state,
+   by using the 'log' command in place of 'add' (thanks to Cory Donnelly).
 
 ------ old releases ------------------------------
 

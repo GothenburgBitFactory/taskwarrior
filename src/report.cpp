@@ -78,6 +78,10 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Adds a new task.");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task log [tags] [attrs] desc...");
+  table.addCell (row, 2, "Adds a new task that is already completed.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task append [tags] [attrs] desc...");
   table.addCell (row, 2, "Appends more description to an existing task.");
 

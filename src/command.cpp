@@ -124,6 +124,62 @@ int handleAdd (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int handleLog (std::string &outs)
+{
+  int rc = 0;
+
+  if (context.hooks.trigger ("pre-log-command"))
+  {
+    std::stringstream out;
+
+    context.task.setStatus (Task::completed);
+    context.task.set ("uuid", uuid ());
+    context.task.setEntry ();
+
+    // Add an end date.
+    char entryTime[16];
+    sprintf (entryTime, "%u", (unsigned int) time (NULL));
+    context.task.set ("end", entryTime);
+
+    // Recurring tasks get a special status.
+    if (context.task.has ("recur"))
+      throw std::string ("You cannot log recurring tasks.");
+
+    if (context.task.has ("wait"))
+      throw std::string ("You cannot log waiting tasks.");
+
+    // Override with default.project, if not specified.
+    if (context.task.get ("project") == "")
+      context.task.set ("project", context.config.get ("default.project"));
+
+    // Override with default.priority, if not specified.
+    if (context.task.get ("priority") == "")
+    {
+      std::string defaultPriority = context.config.get ("default.priority");
+      if (Att::validNameValue ("priority", "", defaultPriority))
+        context.task.set ("priority", defaultPriority);
+    }
+
+    // Include tags.
+    foreach (tag, context.tagAdditions)
+      context.task.addTag (*tag);
+
+    // Only valid tasks can be added.
+    context.task.validate ();
+
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    context.tdb.add (context.task);
+    context.tdb.commit ();
+    context.tdb.unlock ();
+
+    outs = out.str ();
+    context.hooks.trigger ("post-log-command");
+  }
+
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int handleProjects (std::string &outs)
 {
   int rc = 0;

@@ -127,6 +127,7 @@ void Cmd::load ()
     commands.push_back (context.stringtable.get (CMD_GHISTORY,  "ghistory"));
     commands.push_back (context.stringtable.get (CMD_IMPORT,    "import"));
     commands.push_back (context.stringtable.get (CMD_INFO,      "info"));
+    commands.push_back (context.stringtable.get (CMD_LOG,       "log"));
     commands.push_back (context.stringtable.get (CMD_PREPEND,   "prepend"));
     commands.push_back (context.stringtable.get (CMD_PROJECTS,  "projects"));
 #ifdef FEATURE_SHELL
@@ -228,6 +229,7 @@ bool Cmd::isWriteCommand ()
       command == context.stringtable.get (CMD_DUPLICATE, "duplicate") ||
       command == context.stringtable.get (CMD_EDIT,      "edit")      ||
       command == context.stringtable.get (CMD_IMPORT,    "import")    ||
+      command == context.stringtable.get (CMD_LOG,       "log")       ||
       command == context.stringtable.get (CMD_PREPEND,   "prepend")   ||
       command == context.stringtable.get (CMD_START,     "start")     ||
       command == context.stringtable.get (CMD_STOP,      "stop")      ||

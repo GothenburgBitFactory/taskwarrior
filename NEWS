@@ -15,6 +15,7 @@ New Features in task 1.9
       task list project.not:foo project.not:bar
   - Ability to do case-sensitive or case-insensitive search for keywords, and
     substitutions in the description and annotations.
+  - New 'log' command to add tasks that are already completed.
   - Task is now part of Debian
 
   Please refer to the ChangeLog file for full details.  There are too many to

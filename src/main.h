@@ -56,6 +56,7 @@ bool nag (Task&);
 
 // command.cpp
 int handleAdd (std::string &);
+int handleLog (std::string &);
 int handleAppend (std::string &);
 int handlePrepend (std::string &);
 int handleExport (std::string &);
