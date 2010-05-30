@@ -2,6 +2,8 @@
 ------ current release ---------------------------
 
 1.9.2 ()
+ + Added feature #320, so the command "task 123" is interpreted as an
+   implicit "task info 123" command (thanks to John Florian).
 
 ------ old releases ------------------------------
 

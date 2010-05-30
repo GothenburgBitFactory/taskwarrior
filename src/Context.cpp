@@ -701,31 +701,43 @@ void Context::parse (
 
   // If no command was specified, and there were no command line arguments
   // then invoke the default command.
-  if (parseCmd.command == "" && parseArgs.size () == 0)
+  if (parseCmd.command == "")
   {
-    // Apply overrides, if any.
-    std::string defaultCommand = config.get ("default.command");
-    if (defaultCommand != "")
+    if (parseArgs.size () == 0)
     {
-      // Add on the overrides.
-      defaultCommand += " " + file_override + " " + var_overrides;
+      // Apply overrides, if any.
+      std::string defaultCommand = config.get ("default.command");
+      if (defaultCommand != "")
+      {
+        // Add on the overrides.
+        defaultCommand += " " + file_override + " " + var_overrides;
 
-      // Stuff the command line.
-      args.clear ();
-      split (args, defaultCommand, ' ');
-      header ("[task " + trim (defaultCommand) + "]");
+        // Stuff the command line.
+        args.clear ();
+        split (args, defaultCommand, ' ');
+        header ("[task " + trim (defaultCommand) + "]");
 
-      // Reinitialize the context and recurse.
-      file_override = "";
-      var_overrides = "";
-      footnotes.clear ();
-      initialize ();
-      parse (args, cmd, task, sequence, subst, filter);
+        // Reinitialize the context and recurse.
+        file_override = "";
+        var_overrides = "";
+        footnotes.clear ();
+        initialize ();
+        parse (args, cmd, task, sequence, subst, filter);
+      }
+      else
+        throw stringtable.get (
+          CMD_MISSING,
+          "You must specify a command, or a task ID to modify");
     }
-    else
-      throw stringtable.get (
-        CMD_MISSING,
-        "You must specify a command, or a task ID to modify");
+
+    // If the command "task 123" is entered, then the actual command is assumed
+    // to be "info".
+    else if (parseTask.id != 0 ||
+             parseSequence.size () != 0)
+    {
+      std::cout << "No command - assuming 'info'." << std::endl;
+      parseCmd.command = "info";
+    }
   }
 }
 
