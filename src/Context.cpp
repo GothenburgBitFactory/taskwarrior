@@ -272,17 +272,15 @@ void Context::shadow ()
   {
     inShadow = true;  // Prevents recursion in case shadow command writes.
 
-    // TODO Reinstate these checks.
-/*
     // Check for silly shadow file settings.
-    if (shadowFile == dataLocation + "/pending.data")
+    std::string dataLocation = config.get ("data.location");
+    if (shadowFile.data == dataLocation + "/pending.data")
       throw std::string ("Configuration variable 'shadow.file' is set to "
                          "overwrite your pending tasks.  Please change it.");
 
-    if (shadowFile == dataLocation + "/completed.data")
+    if (shadowFile.data == dataLocation + "/completed.data")
       throw std::string ("Configuration variable 'shadow.file' is set to "
                          "overwrite your completed tasks.  Please change it.");
-*/
 
     std::string oldCurses = config.get ("curses");
     std::string oldColor  = config.get ("color");
