@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <time.h>
 #include <assert.h>
@@ -373,6 +374,25 @@ std::string Date::toEpochString ()
   std::stringstream epoch;
   epoch << mT;
   return epoch.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// 19980119T070000Z =  YYYYMMDDThhmmssZ
+std::string Date::toISO ()
+{
+  struct tm* t = gmtime (&mT);
+
+  std::stringstream iso;
+  iso << std::setw (4) << std::setfill ('0') << t->tm_year + 1900
+      << std::setw (2) << std::setfill ('0') << t->tm_mon + 1
+      << std::setw (2) << std::setfill ('0') << t->tm_mday
+      << "T"
+      << std::setw (2) << std::setfill ('0') << t->tm_hour
+      << std::setw (2) << std::setfill ('0') << t->tm_min
+      << std::setw (2) << std::setfill ('0') << t->tm_sec
+      << "Z";
+
+  return iso.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

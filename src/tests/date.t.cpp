@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (143);
+  UnitTest t (144);
 
   try
   {
@@ -149,6 +149,9 @@ int main (int argc, char** argv)
 
     Date fromEpoch (epoch.toEpoch ());
     t.is (fromEpoch.toString (), epoch.toString (), "ctor (time_t)");
+
+    Date iso (1000000000);
+    t.is (iso.toISO (), "20010909T014640Z", "1,000,000,000 -> 20010909T014640Z");
 
     // Date parsing.
     Date fromString1 ("1/1/2008");

@@ -47,6 +47,7 @@ public:
   void toEpoch (time_t&);
   time_t toEpoch ();
   std::string toEpochString ();
+  std::string toISO ();
   void toMDY (int&, int&, int&);
   const std::string toString (const std::string& format = "m/d/Y") const;
   const std::string toStringWithTime (const std::string& format = "m/d/Y") const;
