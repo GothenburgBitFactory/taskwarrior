@@ -192,7 +192,11 @@ int shortUsage (std::string &outs)
 
   row = table.addRow ();
   table.addCell (row, 1, "task export");
-  table.addCell (row, 2, "Lists all tasks in CSV format.");
+  table.addCell (row, 2, "Lists all tasks in CSV format.  Alias to export.csv");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task export.ical");
+  table.addCell (row, 2, "Lists all tasks in iCalendar format.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task color [sample]");

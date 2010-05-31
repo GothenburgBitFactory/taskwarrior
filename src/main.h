@@ -59,7 +59,6 @@ int handleAdd (std::string &);
 int handleLog (std::string &);
 int handleAppend (std::string &);
 int handlePrepend (std::string &);
-int handleExport (std::string &);
 int handleDone (std::string &);
 int handleModify (std::string &);
 int handleProjects (std::string &);
@@ -126,6 +125,10 @@ std::string colorizeDebug (const std::string&);
 
 // import.cpp
 int handleImport (std::string&);
+
+// export.cpp
+int handleExportCSV (std::string &);
+int handleExportiCal (std::string &);
 
 // list template
 ///////////////////////////////////////////////////////////////////////////////

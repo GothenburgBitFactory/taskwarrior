@@ -9,8 +9,9 @@ OBJECTS = ../t-TDB.o ../t-Task.o ../t-text.o ../t-Date.o ../t-Table.o          \
           ../t-Nibbler.o ../t-Location.o ../t-Filter.o ../t-Context.o          \
           ../t-Keymap.o ../t-command.o ../t-interactive.o ../t-report.o        \
           ../t-Grid.o ../t-Color.o ../t-rules.o ../t-recur.o ../t-custom.o     \
-          ../t-import.o ../t-edit.o ../t-Timer.o ../t-Permission.o ../t-Path.o \
-          ../t-File.o ../t-Directory.o ../t-Hooks.o ../t-API.o
+          ../t-export.o ../t-import.o ../t-edit.o ../t-Timer.o                 \
+          ../t-Permission.o ../t-Path.o ../t-File.o ../t-Directory.o           \
+          ../t-Hooks.o ../t-API.o
 
 all: $(PROJECT)
 

@@ -159,10 +159,14 @@ std::string Config::defaults =
   "#import.synonym.tags=?\n"
   "#import.synonym.uuid=?\n"
   "\n"
+  "# Export Controls\n"
+  "export.ical.class=PRIVATE              # Could be PUBLIC, PRIVATE or CONFIDENTIAL\n"
+  "\n"
   "# Aliases - alternate names for commands\n"
   "alias.rm=delete                        # Alias for the delete command\n"
-  "alias.history=history.monthly          # Prefer monthly history reports\n"
-  "alias.ghistory=ghistory.monthly        # Prefer monthly graphical history reports\n"
+  "alias.history=history.monthly          # Prefer monthly over annual history reports\n"
+  "alias.ghistory=ghistory.monthly        # Prefer monthly graphical over annual history reports\n"
+  "alias.export=export.csv                # Prefer CSV over iCal export\n"
   "\n"
   "# Fields: id,uuid,project,priority,priority_long,entry,entry_time,\n"                           // TODO
   "#         start,entry_time,due,recur,recurrence_indicator,age,\n"                               // TODO

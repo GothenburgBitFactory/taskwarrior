@@ -77,10 +77,9 @@
 #define CMD_DONE                208
 #define CMD_DUPLICATE           209
 #define CMD_EDIT                210
-#define CMD_EXPORT              211
+
 #define CMD_HELP                212
-#define CMD_HISTORY_MONTHLY     213
-#define CMD_GHISTORY_MONTHLY    214
+
 #define CMD_IMPORT              215
 #define CMD_INFO                216
 #define CMD_PREPEND             217
@@ -97,8 +96,6 @@
 #define CMD_VERSION             228
 #define CMD_SHELL               229
 #define CMD_CONFIG              230
-#define CMD_HISTORY_ANNUAL      231
-#define CMD_GHISTORY_ANNUAL     232
 
 // 3xx Attributes
 #define ATT_PROJECT             300

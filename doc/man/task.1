@@ -133,8 +133,14 @@ Shows task database statistics.
 Imports tasks from a variety of formats.
 
 .TP
-.B export \fIfile
-Exports all tasks as a CSV file.
+.B export
+Exports all tasks in CSV format.  This command is an alias to the export.csv command.
+Redirect the output to a file, if you wish to save it, or pipe it to another command.
+
+.TP
+.B export.ical
+Exports all tasks in iCalendar format.
+Redirect the output to a file, if you wish to save it, or pipe it to another command.
 
 .TP
 .B color [sample]

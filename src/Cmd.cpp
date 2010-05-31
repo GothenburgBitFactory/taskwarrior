@@ -105,12 +105,21 @@ void Cmd::load ()
 {
   if (commands.size () == 0)
   {
+    // Commands whose names are not localized.
     commands.push_back ("_projects");
     commands.push_back ("_tags");
     commands.push_back ("_commands");
     commands.push_back ("_ids");
     commands.push_back ("_config");
     commands.push_back ("_version");
+    commands.push_back ("export.csv");
+    commands.push_back ("export.ical");
+    commands.push_back ("history.monthly");
+    commands.push_back ("history.annual");
+    commands.push_back ("ghistory.monthly");
+    commands.push_back ("ghistory.annual");
+
+    // Commands whose names are localized.
     commands.push_back (context.stringtable.get (CMD_ADD,              "add"));
     commands.push_back (context.stringtable.get (CMD_APPEND,           "append"));
     commands.push_back (context.stringtable.get (CMD_ANNOTATE,         "annotate"));
@@ -121,12 +130,7 @@ void Cmd::load ()
     commands.push_back (context.stringtable.get (CMD_DONE,             "done"));
     commands.push_back (context.stringtable.get (CMD_DUPLICATE,        "duplicate"));
     commands.push_back (context.stringtable.get (CMD_EDIT,             "edit"));
-    commands.push_back (context.stringtable.get (CMD_EXPORT,           "export"));
     commands.push_back (context.stringtable.get (CMD_HELP,             "help"));
-    commands.push_back (context.stringtable.get (CMD_HISTORY_MONTHLY,  "history.monthly"));
-    commands.push_back (context.stringtable.get (CMD_HISTORY_ANNUAL,   "history.annual"));
-    commands.push_back (context.stringtable.get (CMD_GHISTORY_MONTHLY, "ghistory.monthly"));
-    commands.push_back (context.stringtable.get (CMD_GHISTORY_ANNUAL,  "ghistory.annual"));
     commands.push_back (context.stringtable.get (CMD_IMPORT,           "import"));
     commands.push_back (context.stringtable.get (CMD_INFO,             "info"));
     commands.push_back (context.stringtable.get (CMD_LOG,              "log"));
@@ -198,15 +202,16 @@ bool Cmd::isReadOnlyCommand ()
       command == "_ids"                                                             ||
       command == "_config"                                                          ||
       command == "_version"                                                         ||
+      command == "export.csv"                                                       ||
+      command == "export.ical"                                                      ||
+      command == "history.monthly"                                                  ||
+      command == "history.annual"                                                   ||
+      command == "ghistory.monthly"                                                 ||
+      command == "ghistory.annual"                                                  ||
       command == context.stringtable.get (CMD_CALENDAR,         "calendar")         ||
       command == context.stringtable.get (CMD_COLORS,           "colors")           ||
       command == context.stringtable.get (CMD_CONFIG,           "config")           ||
-      command == context.stringtable.get (CMD_EXPORT,           "export")           ||
       command == context.stringtable.get (CMD_HELP,             "help")             ||
-      command == context.stringtable.get (CMD_HISTORY_MONTHLY,  "history.monthly")  ||
-      command == context.stringtable.get (CMD_HISTORY_ANNUAL,   "history.annual")   ||
-      command == context.stringtable.get (CMD_GHISTORY_MONTHLY, "ghistory.monthly") ||
-      command == context.stringtable.get (CMD_GHISTORY_ANNUAL,  "ghistory.annual")  ||
       command == context.stringtable.get (CMD_INFO,             "info")             ||
       command == context.stringtable.get (CMD_PROJECTS,         "projects")         ||
       command == context.stringtable.get (CMD_SHELL,            "shell")            ||

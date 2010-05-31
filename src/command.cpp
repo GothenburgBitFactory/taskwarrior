@@ -1307,59 +1307,6 @@ int handleDone (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleExport (std::string &outs)
-{
-  int rc = 0;
-
-  if (context.hooks.trigger ("pre-export-command"))
-  {
-    std::stringstream out;
-
-    // Deliberately no 'id'.
-    out << "'uuid',"
-        << "'status',"
-        << "'tags',"
-        << "'entry',"
-        << "'start',"
-        << "'due',"
-        << "'recur',"
-        << "'end',"
-        << "'project',"
-        << "'priority',"
-        << "'fg',"
-        << "'bg',"
-        << "'description'"
-        << "\n";
-
-    int count = 0;
-
-    // Get all the tasks.
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    context.tdb.load (tasks, context.filter);
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    foreach (task, tasks)
-    {
-      context.hooks.trigger ("pre-display", *task);
-
-      if (task->getStatus () != Task::recurring)
-      {
-        out << task->composeCSV ().c_str ();
-        ++count;
-      }
-    }
-
-    outs = out.str ();
-    context.hooks.trigger ("post-export-command");
-  }
-
-  return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int handleModify (std::string &outs)
 {
   int count = 0;
