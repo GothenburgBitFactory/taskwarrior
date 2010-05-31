@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (84);
+  UnitTest t (86);
 
   // Without Context::initialize, there is no set of defaults loaded into
   // Context::Config.
@@ -57,9 +57,13 @@ int main (int argc, char** argv)
   t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand completed");
   t.notok (cmd.isWriteCommand    (), "not isWriteCommand completed");
 
-  cmd.command = "export";
-  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand export");
-  t.notok (cmd.isWriteCommand    (), "not isWriteCommand export");
+  cmd.command = "export.csv";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand export.csv");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand export.csv");
+
+  cmd.command = "export.ical";
+  t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand export.ical");
+  t.notok (cmd.isWriteCommand    (), "not isWriteCommand export.ical");
 
   cmd.command = "help";
   t.ok    (cmd.isReadOnlyCommand (), "isReadOnlyCommand help");
