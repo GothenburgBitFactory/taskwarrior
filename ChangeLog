@@ -8,6 +8,8 @@
    by using the 'log' command in place of 'add' (thanks to Cory Donnelly).
  + Added features #36 and #37, providing annual versions of the 'history'
    and 'ghistory' command as 'history.annual' and 'ghistory.annual'.
+ + Fixed bug #406 so that task now includes command aliases in the _commands
+   helper command used by shell completion scripts.
 
 ------ old releases ------------------------------
 

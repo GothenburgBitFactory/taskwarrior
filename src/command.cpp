@@ -424,8 +424,15 @@ int handleCompletionTags (std::string &outs)
 ////////////////////////////////////////////////////////////////////////////////
 int handleCompletionCommands (std::string &outs)
 {
+  // Get a list of all commands.
   std::vector <std::string> commands;
   context.cmd.allCommands (commands);
+
+  // Concatenate a list of all aliases.
+  foreach (name, context.aliases)
+    commands.push_back (name->first);
+
+  // Sort alphabetically.
   std::sort (commands.begin (), commands.end ());
 
   std::stringstream out;
