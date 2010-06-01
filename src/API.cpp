@@ -188,27 +188,34 @@ static int api_task_get_footnote_messages ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_debug_messages ()
-{
-  return {}
-}
-
-////////////////////////////////////////////////////////////////////////////////
--- Records additional messages, for subsequent display.
-static int api_task_header_message (text)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_footnote_message (text)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_debug_message (text)
+static int api_task_get_debug_messages (lua_State* L)
 {
 }
 */
+
+////////////////////////////////////////////////////////////////////////////////
+static int api_task_header_message (lua_State* L)
+{
+  std::string message = luaL_checkstring (L, 1);
+  context.header (message);
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static int api_task_footnote_message (lua_State* L)
+{
+  std::string message = luaL_checkstring (L, 1);
+  context.footnote (message);
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static int api_task_debug_message (lua_State* L)
+{
+  std::string message = luaL_checkstring (L, 1);
+  context.debug (message);
+  return 0;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Causes the shell or interactive mode task to exit.  Ordinarily this does not
@@ -542,10 +549,10 @@ void API::initialize ()
   lua_pushcfunction (L, api_task_get_header_messages);   lua_setglobal (L, "task_get_header_messages");
   lua_pushcfunction (L, api_task_get_footnote_messages); lua_setglobal (L, "task_get_footnote_messages");
   lua_pushcfunction (L, api_task_get_debug_messages);    lua_setglobal (L, "task_get_debug_messages");
+*/
   lua_pushcfunction (L, api_task_header_message);        lua_setglobal (L, "task_header_message");
   lua_pushcfunction (L, api_task_footnote_message);      lua_setglobal (L, "task_footnote_message");
   lua_pushcfunction (L, api_task_debug_message);         lua_setglobal (L, "task_debug_message");
-*/
   lua_pushcfunction (L, api_task_exit);                  lua_setglobal (L, "task_exit");
 /*
   lua_pushcfunction (L, api_task_inhibit_further_hooks); lua_setglobal (L, "task_inhibit_further_hooks");
