@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <stdlib.h>
 
 #include "Att.h"
 #include "text.h"
