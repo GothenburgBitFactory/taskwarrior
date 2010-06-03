@@ -738,7 +738,7 @@ int handleConfig (std::string &outs)
       "color.alternate color.calendar.today color.calendar.due color.calendar.due.today "
       "color.calendar.overdue color.calendar.weekend color.calendar.holiday "
       "color.calendar.weeknumber confirmation curses data.location dateformat "
-      "dateformat.holiday dateformat.report debug default.command "
+      "dateformat.holiday dateformat.report dateformat.annotation debug default.command "
       "default.priority default.project defaultwidth due locale "
       "displayweeknumber echo.command fontunderline locking monthsperline nag "
       "next project shadow.command shadow.file shadow.notify weekstart editor "

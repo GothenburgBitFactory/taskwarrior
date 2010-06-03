@@ -164,13 +164,12 @@ static std::string formatTask (Task task)
   foreach (anno, annotations)
   {
     Date dt (::atoi (anno->name ().substr (11).c_str ()));
-    before << "  Annotation:        " << dt.toString (context.config.get ("dateformat"))
+    before << "  Annotation:        " << dt.toString (context.config.get ("dateformat.annotation"))
            << " "                     << anno->value ()                                 << std::endl;
   }
 
   Date now;
-  before << "  Annotation:        " << now.toString (context.config.get ("dateformat")) << " " << std::endl
-         << "  Annotation:        " << now.toString (context.config.get ("dateformat")) << " " << std::endl
+  before << "  Annotation:        " << now.toString (context.config.get ("dateformat.annotation")) << " " << std::endl
          << "# End"                                                                     << std::endl;
 
   return before.str ();
@@ -503,7 +502,7 @@ static void parseTask (Task& task, const std::string& after)
       std::string::size_type gap = value.find (" ");
       if (gap != std::string::npos)
       {
-        Date when (value.substr (0, gap), context.config.get ("dateformat"));
+        Date when (value.substr (0, gap), context.config.get ("dateformat.annotation"));
 
         // This guarantees that if more than one annotation has the same date,
         // that the seconds will be different, thus unique, thus not squashed.

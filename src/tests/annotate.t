@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 37;
+use Test::More tests => 50;
 
 # Create the rc file.
 if (open my $fh, '>', 'annotate.rc')
@@ -77,16 +77,17 @@ my $output = qx{../task rc:annotate.rc rrr};
 #  4 four
 # 
 # 4 tasks
+
 like ($output, qr/1 one/,   'task 1');
 like ($output, qr/2 two/,   'task 2');
 like ($output, qr/3 three/, 'task 3');
 like ($output, qr/4 four/,  'task 4');
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo1/ms,  'first  annotation task 1');
-like ($output, qr/foo1.+\d{1,2}\/\d{1,2}\/\d{4} foo2/ms, 'second annotation task 1');
-like ($output, qr/foo2.+\d{1,2}\/\d{1,2}\/\d{4} foo3/ms, 'third  annotation task 1');
-like ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar1/ms,  'first  annotation task 2');
-like ($output, qr/bar1.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms, 'second annotation task 2');
-like ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms,'first  annotation task 3');
+like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo1/ms,  'full - first  annotation task 1');
+like ($output, qr/foo1.+\d{1,2}\/\d{1,2}\/\d{4} foo2/ms, 'full - second annotation task 1');
+like ($output, qr/foo2.+\d{1,2}\/\d{1,2}\/\d{4} foo3/ms, 'full - third  annotation task 1');
+like ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar1/ms,  'full - first  annotation task 2');
+like ($output, qr/bar1.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms, 'full - second annotation task 2');
+like ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms,'full - first  annotation task 3');
 like ($output, qr/4 tasks/, 'count');
 
 $output = qx{../task rc:annotate.rc rc.annotations:sparse rrr};
@@ -94,12 +95,12 @@ like   ($output, qr/1 \+one/, 'task 1');
 like   ($output, qr/2 \+two/, 'task 2');
 like   ($output, qr/3 three/, 'task 3');
 like   ($output, qr/4 four/,  'task 4');
-unlike ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo1/ms,   'first  annotation task 1');
-unlike ($output, qr/foo1.+\d{1,2}\/\d{1,2}\/\d{4} foo2/ms,  'second annotation task 1');
-like   ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo3/ms,   'third  annotation task 1');
-unlike ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar1/ms,   'first  annotation task 2');
-like   ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms,   'second annotation task 2');
-like   ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms, 'third  annotation task 3');
+unlike ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo1/ms,   'sparse - first  annotation task 1');
+unlike ($output, qr/foo1.+\d{1,2}\/\d{1,2}\/\d{4} foo2/ms,  'sparse - second annotation task 1');
+like   ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo3/ms,   'sparse - third  annotation task 1');
+unlike ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar1/ms,   'sparse - first  annotation task 2');
+like   ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms,   'sparse - second annotation task 2');
+like   ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms, 'sparse - third  annotation task 3');
 like   ($output, qr/4 tasks/, 'count');
 
 $output = qx{../task rc:annotate.rc rc.annotations:none rrr};
@@ -107,12 +108,39 @@ like   ($output, qr/1 \+one/,   'task 1');
 like   ($output, qr/2 \+two/,   'task 2');
 like   ($output, qr/3 \+three/, 'task 3');
 like   ($output, qr/4 four/,    'task 4');
-unlike ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo1/ms,  'first  annotation task 1');
-unlike ($output, qr/foo1.+\d{1,2}\/\d{1,2}\/\d{4} foo2/ms,  'second annotation task 1');
-unlike ($output, qr/foo2.+\d{1,2}\/\d{1,2}\/\d{4} foo3/ms,  'third  annotation task 1');
-unlike ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar1/ms,   'first  annotation task 2');
-unlike ($output, qr/bar1.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms,  'second annotation task 2');
-unlike ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms, 'third  annotation task 3');
+unlike ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} foo1/ms,   'none - first  annotation task 1');
+unlike ($output, qr/foo1.+\d{1,2}\/\d{1,2}\/\d{4} foo2/ms,  'none - second annotation task 1');
+unlike ($output, qr/foo2.+\d{1,2}\/\d{1,2}\/\d{4} foo3/ms,  'none - third  annotation task 1');
+unlike ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar1/ms,   'none - first  annotation task 2');
+unlike ($output, qr/bar1.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms,  'none - second annotation task 2');
+unlike ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms, 'none - third  annotation task 3');
+like ($output, qr/4 tasks/, 'count');
+
+if (open my $fh, '>', 'annotate2.rc')
+{
+  # Note: Use 'rrr' to guarantee a unique report name.  Using 'r' conflicts
+  #       with 'recurring'.
+  print $fh "data.location=.\n",
+            "confirmation=off\n",
+            "report.rrr.description=rrr\n",
+            "report.rrr.columns=id,description\n",
+            "report.rrr.sort=id+\n",
+	    "dateformat.annotation=yMD HNS\n";
+  close $fh;
+  ok (-r 'annotate2.rc', 'Created annotate2.rc');
+}
+
+$output = qx{../task rc:annotate2.rc rrr};
+like ($output, qr/1 one/,   'task 1');
+like ($output, qr/2 two/,   'task 2');
+like ($output, qr/3 three/, 'task 3');
+like ($output, qr/4 four/,  'task 4');
+like ($output, qr/one.+\d{1,6} \d{1,6} foo1/ms,  'dateformat - first  annotation task 1');
+like ($output, qr/foo1.+\d{1,6} \d{1,6} foo2/ms, 'dateformat - second annotation task 1');
+like ($output, qr/foo2.+\d{1,6} \d{1,6} foo3/ms, 'dateformat - third  annotation task 1');
+like ($output, qr/two.+\d{1,6} \d{1,6} bar1/ms,  'dateformat - first  annotation task 2');
+like ($output, qr/bar1.+\d{1,6} \d{1,6} bar2/ms, 'dateformat - second annotation task 2');
+like ($output, qr/three.+\d{1,6} \d{1,6} baz1/ms,'dateformat - first  annotation task 3');
 like ($output, qr/4 tasks/, 'count');
 
 # Cleanup.
@@ -124,6 +152,8 @@ ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'annotate.rc';
 ok (!-r 'annotate.rc', 'Removed annotate.rc');
+unlink 'annotate2.rc';
+ok (!-r 'annotatei2.rc', 'Removed annotate2.rc');
 
 exit 0;
 

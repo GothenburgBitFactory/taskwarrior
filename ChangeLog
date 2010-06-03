@@ -10,6 +10,8 @@
    and 'ghistory' command as 'history.annual' and 'ghistory.annual'.
  + Added feature #363 supporting iCalendar export via the 'export.ical'
    command.
+ + Added feature #390, an extra dateformat for annotations (thanks to Cory
+   Donnelly).
  + Fixed bug #406 so that task now includes command aliases in the _commands
    helper command used by shell completion scripts.
  + Fixed bug #211 - it was unclear which commands modify a task description.
