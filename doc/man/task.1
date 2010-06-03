@@ -22,37 +22,16 @@ Adds a new task to the task list.
 Adds a new task that is already completed, to the task list.
 
 .TP
-.B append [tags] [attrs] description
-Appends information to an existing task.
-
-.TP
-.B prepend [tags] [attrs] description
-Prepends information to an existing task.
-
-.TP
 .B annotate ID description
 Adds an annotation to an existing task.
 
 .TP
-.B ID [tags] [attrs] [description]
-Modifies the existing task with provided information.
-
-.TP
-.B ID /from/to/
-Performs one substitution on task description and annotation for fixing mistakes.
-
-.TP
-.B ID /from/to/g
-Performs all substitutions on task description and annotation for fixing mistakes.
+.B info ID
+Shows all data and metadata for the specified task.
 
 .TP
 .B ID
 With an ID but no specific command, task runs the "info" command.
-
-.TP
-.B edit ID
-Launches an editor to let you modify all aspects of a task directly.
-Use carefully.
 
 .TP
 .B undo
@@ -69,10 +48,6 @@ Duplicates the specified task and allows modifications.
 .TP
 .B delete ID
 Deletes the specified task from task list.
-
-.TP
-.B info ID
-Shows all data and metadata for the specified task.
 
 .TP
 .B start ID
@@ -151,6 +126,10 @@ Displays all possible colors, or a sample.
 Shows the task version number
 
 .TP
+.B help
+Shows the long usage text.
+
+.TP
 .B config [name [value | '']]
 Shows the current settings in the task configuration file.  Also supports
 directly modifying the .taskrc file.  This command either modifies
@@ -168,9 +147,32 @@ Finally, this command removes any 'name=...' entry from the .taskrc file:
 
     task config name
 
+.SH MODIFYING SUBCOMMANDS
+
 .TP
-.B help
-Shows the long usage text.
+.B ID [tags] [attrs] [description]
+Modifies the existing task with provided information.
+
+.TP
+.B ID /from/to/
+Performs one substitution on task description and annotation for fixing mistakes.
+
+.TP
+.B ID /from/to/g
+Performs all substitutions on task description and annotation for fixing mistakes.
+
+.TP
+.B edit ID
+Launches an editor to let you modify all aspects of a task directly.
+Use carefully.
+
+.TP
+.B append [tags] [attrs] description
+Appends information to an existing task.
+
+.TP
+.B prepend [tags] [attrs] description
+Prepends information to an existing task.
 
 .SH REPORT SUBCOMMANDS
 
