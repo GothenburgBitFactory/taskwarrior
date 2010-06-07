@@ -207,8 +207,12 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Shows the task version number.");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task show [section-name]");
+  table.addCell (row, 2, "Shows the task entire configuration or a specific section.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task config [name [value | '']]");
-  table.addCell (row, 2, "Shows the task configuration, or can add, modify and remove settings.");
+  table.addCell (row, 2, "Add, modify and remove settings in the task configuration.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task help");

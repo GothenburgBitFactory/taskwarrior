@@ -59,6 +59,7 @@
 228 version
 229 shell
 230 config
+231 show
 
 # 3xx Attributes - must be sequential
 300 project

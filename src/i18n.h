@@ -96,6 +96,7 @@
 #define CMD_VERSION             228
 #define CMD_SHELL               229
 #define CMD_CONFIG              230
+#define CMD_SHOW                231
 
 // 3xx Attributes
 #define ATT_PROJECT             300

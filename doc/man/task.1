@@ -129,12 +129,16 @@ Shows the task version number
 .B help
 Shows the long usage text.
 
+.TP show
+Shows the current settings in the task configuration file. If a section-name is
+specified just the settings for the particular section will be displayed.
+Section-names are: alias, calendar, color, general, holiday, report.
+
 .TP
 .B config [name [value | '']]
-Shows the current settings in the task configuration file.  Also supports
-directly modifying the .taskrc file.  This command either modifies
-the 'name' setting with a new value of 'value', or adds a new entry that
-is equivalent to 'name=value':
+Add, modify and remove settings directly in the task configuration.
+This command either modifies the 'name' setting with a new value of 'value',
+or adds a new entry that is equivalent to 'name=value':
 
     task config name value
 
