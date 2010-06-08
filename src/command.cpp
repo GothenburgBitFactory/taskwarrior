@@ -728,6 +728,7 @@ int handleShow (std::string &outs)
 
     out << std::endl
         << table.render ()
+	<< (table.rowCount () == 0 ? "No matching configuration variables\n" : "")
         << std::endl;
 
     // Display the unrecognized variables.
