@@ -614,6 +614,9 @@ int handleShow (std::string &outs)
     std::vector <std::string> args;
     split (args, context.task.get ("description"), ' ');
 
+    if (args.size () > 1)
+      throw std::string ("The show command takes zero or one option.");
+
     int width = context.getWidth ();
 
     std::vector <std::string> all;
@@ -696,21 +699,29 @@ int handleShow (std::string &outs)
     table.sortOn (0, Table::ascendingCharacter);
 
     Color error ("bold white on red");
+
+    std::string section;
+
+    if (args.size () == 1)
+      section = args[0];
+
+    if (section == "all")
+      section = "";
+
     foreach (i, all)
     {
-      std::string value = context.config.get (*i);
+      std::string::size_type loc = i->find (section, 0);
 
-      // TODO Add configuration variables and names to output table
-      // TODO depending on argument to the show command
-      // TODO alias, calendar, color, general, holiday, report
+      if (loc != std::string::npos)
+      {
+        int row = table.addRow ();
+        table.addCell (row, 0, *i);
+        table.addCell (row, 1, context.config.get (*i));
 
-      int row = table.addRow ();
-      table.addCell (row, 0, *i);
-      table.addCell (row, 1, value);
-
-      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-        if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
-          table.setRowColor (row, error);
+        if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+          if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
+            table.setRowColor (row, error);
+      }
     }
 
     Color bold ("bold");

@@ -1,25 +1,11 @@
 
 New Features in task 1.9
 
-  - 256-color support
-  - Support for coloring alternate lines of output.  Remember that old green
-    and white fan-fold printer paper?
-  - Supports nested .taskrc files with the new "include" statement"
-  - New columns that include the time as well as date
-  - New attribute modifiers
-  - New date format for reports
-  - Improved .taskrc validation
-  - Improved calendar report with custom coloring and optional task details output
-  - Holidays are now supported in the calendar report
-  - Ability to use multiple, similar filter terms, like:
-      task list project.not:foo project.not:bar
-  - Ability to do case-sensitive or case-insensitive search for keywords, and
-    substitutions in the description and annotations.
   - New 'log' command to add tasks that are already completed.
   - New annual history and ghistory command variations.
   - Alias support in shell completion scripts.
   - New iCalendar export format.
-  - Task is now part of Debian
+  - New 'show' command to display configuration settings.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.

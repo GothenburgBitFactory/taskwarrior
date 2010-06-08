@@ -207,8 +207,8 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Shows the task version number.");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task show [section-name]");
-  table.addCell (row, 2, "Shows the task entire configuration or a specific section.");
+  table.addCell (row, 1, "task show [all | substring]");
+  table.addCell (row, 2, "Shows the entire task configuration variables or the ones containing substring.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task config [name [value | '']]");

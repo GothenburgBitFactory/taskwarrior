@@ -12,6 +12,9 @@
    command.
  + Added feature #390, an extra dateformat for annotations (thanks to Cory
    Donnelly).
+ + Added feature #407, a new 'task show' command to display the current
+   configuration settings or just the ones matching a search string.
+   'task config' is now only used to set new configuration values.
  + Fixed bug #406 so that task now includes command aliases in the _commands
    helper command used by shell completion scripts.
  + Fixed bug #211 - it was unclear which commands modify a task description.
