@@ -699,6 +699,11 @@ int handleShow (std::string &outs)
     foreach (i, all)
     {
       std::string value = context.config.get (*i);
+
+      // TODO Add configuration variables and names to output table
+      // TODO depending on argument to the show command
+      // TODO alias, calendar, color, general, holiday, report
+
       int row = table.addRow ();
       table.addCell (row, 0, *i);
       table.addCell (row, 1, value);
