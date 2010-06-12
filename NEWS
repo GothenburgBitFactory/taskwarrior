@@ -13,8 +13,8 @@ New Features in task 1.9
 Task has been built and tested on the following configurations:
 
   * OS X 10.6 Snow Leopard and 10.5 Leopard
-  * Fedora 13 Goddard, 12 Constantine and 11 Leonidas
-  * Ubuntu 10.04 Lucid Lynx, 9.10 Karmic Koala and 9.04 Jaunty Jackalope
+  * Fedora 13 Goddard, 12 Constantine
+  * Ubuntu 10.04 Lucid Lynx, 9.10 Karmic Koala
   * Debian Sid
   * Slackware 12.2
   * Arch Linux
