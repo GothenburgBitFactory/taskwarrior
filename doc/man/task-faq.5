@@ -161,6 +161,17 @@ Some of you may be familiar with DeMorgan's laws of formal logic that relate
 the AND and OR operators in terms of each other via negation, which can be used
 to construct task filters.
 
+.TP
+.B Q: How do I delete an annotation?
+Task currently lacks a good command for deleting annotations.  In the meantime,
+use the 'edit' command:
+
+    $ task 123 edit
+
+This will invoke your text editor, and you will be able to directly edit the
+task details.  Delete the line that contains the annotation you wish to remove,
+then save and quit the editor.
+
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.
 .br
