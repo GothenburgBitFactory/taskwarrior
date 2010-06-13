@@ -262,6 +262,13 @@ The character or string to show in the tag_indicator column.  Defaults to +.
 The character or string to show in the recurrence_indicator column.  Defaults to R.
 
 .TP
+.B recurrence.limit=1
+The number of future recurring tasks to show.  Defaults to 1.  For example, if a
+weekly recurring task is added with a due date of tomorrow, and recurrence.limit
+is set to 2, then a report will list 2 pending recurring tasks, one for tomorrow,
+and one for a week from tomorrow.
+
+.TP
 .B debug=off
 Task has a debug mode that causes diagnostic output to be displayed.  Typically
 this is not something anyone would want, but when reporting a bug, debug output
