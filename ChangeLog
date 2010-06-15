@@ -17,6 +17,8 @@
  + Fixed bug #406 so that task now includes command aliases in the _commands
    helper command used by shell completion scripts.
  + Fixed bug #211 - it was unclear which commands modify a task description.
+ + Fixed bug #411, clarifying that the 'projects' command only lists projects
+   for which there are pending tasks (thanks to Dirk Deimeke).
 
 ------ old releases ------------------------------
 
