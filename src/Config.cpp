@@ -75,6 +75,7 @@ std::string Config::defaults =
   "active.indicator=*                     # What to show as an active task indicator\n"
   "tag.indicator=+                        # What to show as a tag indicator\n"
   "recurrence.indicator=R                 # What to show as a task recurrence indicator\n"
+  "recurrence.limit=1                     # Number of future recurring pending tasks\n"
   "\n"
   "# Dates\n"
   "dateformat=m/d/Y                       # Preferred input and display date format\n"
