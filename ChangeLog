@@ -21,6 +21,9 @@
    Controlled by the 'list.all.projects' and 'list.all.tags' configuration
    variables (thanks to Dirk Deimeke).
  + Improvements to the man pages (thanks to T. Charles Yun).
+ + Added feature #408, making it possible to delete annotations with the new
+   denotate command and the provided description (thanks to Dirk Deimeke).
+>>>>>>> denotate
  + Fixed bug #406 so that task now includes command aliases in the _commands
    helper command used by shell completion scripts.
  + Fixed bug #211 - it was unclear which commands modify a task description.

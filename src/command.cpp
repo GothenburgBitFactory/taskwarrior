@@ -2024,6 +2024,99 @@ int handleAnnotate (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int handleDenotate (std::string &outs)
+{
+  int rc = 0;
+
+  if (context.hooks.trigger ("pre-denotate-command"))
+  {
+    if (!context.task.has ("description"))
+      throw std::string ("Description needed to delete an annotation.");
+
+    if (context.sequence.size () == 0)
+      throw std::string ("A task ID is needed to delete an annotation.");
+
+    std::stringstream out;
+
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    Filter filter;
+    context.tdb.loadPending (tasks, filter);
+
+    context.filter.applySequence (tasks, context.sequence);
+
+    Permission permission;
+    if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
+      permission.bigSequence ();
+
+    foreach (task, tasks)
+    {
+      Task before (*task);
+      std::string desc = context.task.get ("description");
+      std::vector <Att> annotations;
+      task->getAnnotations (annotations);
+
+      if (annotations.size () == 0)
+        throw std::string ("The specified task has no annotations that can be deleted.");
+
+      std::vector <Att>::iterator i;
+      std::string anno;
+      bool match = false;;
+      for (i = annotations.begin (); i != annotations.end (); ++i)
+      {
+        anno = i->value ();
+	if (anno == desc)
+	{
+	  match = true;
+	  annotations.erase (i);
+          task->setAnnotations (annotations);
+	  break;
+	}
+      }
+      if (!match)
+      {
+        for (i = annotations.begin (); i != annotations.end (); ++i)
+        {
+	  anno = i->value ();
+	  std::string::size_type loc = anno.find (desc, 0);
+	  if (loc != std::string::npos && loc == 0)
+	  {
+	    match = true;
+	    annotations.erase (i);
+            task->setAnnotations (annotations);
+	    break;
+	  }  
+        }
+      }
+      if (taskDiff (before, *task))
+      {
+        if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
+        {
+          context.tdb.update (*task);
+          if (context.config.getBoolean ("echo.command"))
+            out << "Found annotation '"
+                << anno
+                << "' and deleted it."
+                << std::endl;
+        }
+      }
+      else
+        out << "Did not find any matching annotation to be deleted for '"
+	    << desc
+	    << "'."
+	    << std::endl;
+    }
+
+    context.tdb.commit ();
+    context.tdb.unlock ();
+
+    outs = out.str ();
+    context.hooks.trigger ("post-denotate-command");
+  }
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int deltaAppend (Task& task)
 {
   if (context.task.has ("description"))

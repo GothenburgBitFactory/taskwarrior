@@ -6,6 +6,7 @@ New Features in task 1.9
   - Alias support in shell completion scripts.
   - New iCalendar export format.
   - New 'show' command to display configuration settings.
+  - New 'denotate' command to delete annotations.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.

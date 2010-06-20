@@ -280,6 +280,7 @@ bool Hooks::validProgramEvent (const std::string& event)
       event == "pre-shell-prompt"          || event == "post-shell-prompt"          ||
       event == "pre-add-command"           || event == "post-add-command"           ||
       event == "pre-annotate-command"      || event == "post-annotate-command"      ||
+      event == "pre-denotate-command"      || event == "post-denotate-command"      ||
       event == "pre-append-command"        || event == "post-append-command"        ||
       event == "pre-calendar-command"      || event == "post-calendar-command"      ||
       event == "pre-color-command"         || event == "post-color-command"         ||
