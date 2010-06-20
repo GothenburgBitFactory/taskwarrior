@@ -26,6 +26,13 @@ Adds a new task that is already completed, to the task list.
 Adds an annotation to an existing task.
 
 .TP
+.B denotate ID description
+Deletes an annotation for the specified task. If the provided description matches an
+annotation exactly, the corresponding annotation is deleted. If the provided description
+matches an annotation partly (from the beginning), the first partly matched annotation
+is deleted.
+
+.TP
 .B info ID
 Shows all data and metadata for the specified task.
 

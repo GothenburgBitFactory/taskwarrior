@@ -77,6 +77,7 @@
 #define CMD_DONE                208
 #define CMD_DUPLICATE           209
 #define CMD_EDIT                210
+#define CMD_DENOTATE		211
 
 #define CMD_HELP                212
 

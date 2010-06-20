@@ -15,7 +15,9 @@
    configuration settings or just the ones matching a search string.
    'task config' is now only used to set new configuration values.
  + Added feature #298, supporting a configurable number of future recurring
-   tasks that are generated. 
+   tasks that are generated.
+ + Added feature #408, making it possible to delete annotations with the new
+   denotate command and the provided description (thanks to Dirk Deimeke).
  + Fixed bug #406 so that task now includes command aliases in the _commands
    helper command used by shell completion scripts.
  + Fixed bug #211 - it was unclear which commands modify a task description.

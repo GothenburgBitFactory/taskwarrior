@@ -123,6 +123,7 @@ void Cmd::load ()
     commands.push_back (context.stringtable.get (CMD_ADD,              "add"));
     commands.push_back (context.stringtable.get (CMD_APPEND,           "append"));
     commands.push_back (context.stringtable.get (CMD_ANNOTATE,         "annotate"));
+    commands.push_back (context.stringtable.get (CMD_DENOTATE,         "denotate"));
     commands.push_back (context.stringtable.get (CMD_CALENDAR,         "calendar"));
     commands.push_back (context.stringtable.get (CMD_COLORS,           "colors"));
     commands.push_back (context.stringtable.get (CMD_CONFIG,           "config"));
@@ -235,6 +236,7 @@ bool Cmd::isWriteCommand ()
   if (command == context.stringtable.get (CMD_ADD,       "add")       ||
       command == context.stringtable.get (CMD_APPEND,    "append")    ||
       command == context.stringtable.get (CMD_ANNOTATE,  "annotate")  ||
+      command == context.stringtable.get (CMD_DENOTATE,  "denotate")  ||
       command == context.stringtable.get (CMD_DELETE,    "delete")    ||
       command == context.stringtable.get (CMD_DONE,      "done")      ||
       command == context.stringtable.get (CMD_DUPLICATE, "duplicate") ||

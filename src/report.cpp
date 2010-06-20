@@ -94,6 +94,10 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Adds an annotation to an existing task.");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task denotate ID desc...");
+  table.addCell (row, 2, "Deletes an annotation of an existing task.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task ID [tags] [attrs] [desc...]");
   table.addCell (row, 2, "Modifies the existing task with provided arguments.");
 
