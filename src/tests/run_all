@@ -2,10 +2,28 @@
 
 date > all.log
 
+VRAMSTEG=/usr/local/bin/vramsteg
+BAR=0
+if [ -x $VRAMSTEG ]; then
+  BAR=1
+  COUNT=0
+  TOTAL=$(ls *.t | wc -l)
+  START=$($VRAMSTEG --now)
+fi
+
 for i in *.t
 do
+  if [ $BAR == 1 ]; then
+    $VRAMSTEG --label 'All tests' --min 0 --max $TOTAL --current $COUNT --percentage --start $START --estimate
+    COUNT=$[COUNT + 1]
+  fi
+
   ./$i >> all.log 2>&1
 done
+
+if [ $BAR == 1 ]; then
+  $VRAMSTEG --remove
+fi
 
 date >> all.log
 
