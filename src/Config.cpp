@@ -138,12 +138,14 @@ std::string Config::defaults =
   "\n"
   "_forcecolor=no                         # Forces color to be on, even for non TTY output\n"
   "blanklines=true                        # Use more whitespace in output\n"
-  "complete.all.projects=no               # Include old project names in 'projects' command\n"     // TODO
-  "complete.all.tags=no                   # Include old tag names in 'tags' command\n"             // TODO
+  "complete.all.projects=no               # Include old project names in '_projects' command\n"
+  "complete.all.tags=no                   # Include old tag names in '_ags' command\n"
+  "list.all.projects=no                   # Include old project names in 'projects' command\n"
+  "list.all.tags=no                       # Include old tag names in 'tags' command\n"
   "debug=no                               # Display diagnostics\n"
   "hooks=off                              # Hook system master switch\n"
   "fontunderline=yes                      # Uses underlines rather than -------\n"
-  "shell.prompt=task>                     # Prompt used by the shell command\n"                    // TODO
+  "shell.prompt=task>                     # Prompt used by the shell command\n"
   "\n"
   "# Import heuristics - alternate names for fields (comma-separated list of names)\n"
   "#import.synonym.bg=?\n"

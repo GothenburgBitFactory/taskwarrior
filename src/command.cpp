@@ -187,11 +187,15 @@ int handleProjects (std::string &outs)
   if (context.hooks.trigger ("pre-projects-command"))
   {
     std::stringstream out;
-    context.filter.push_back (Att ("status", "pending"));
 
     std::vector <Task> tasks;
     context.tdb.lock (context.config.getBoolean ("locking"));
-    int quantity = context.tdb.loadPending (tasks, context.filter);
+    int quantity;
+    if (context.config.getBoolean ("list.all.projects"))
+      quantity = context.tdb.load (tasks, context.filter);
+    else
+      quantity = context.tdb.loadPending (tasks, context.filter);
+
     context.tdb.commit ();
     context.tdb.unlock ();
 
@@ -318,11 +322,14 @@ int handleTags (std::string &outs)
   {
     std::stringstream out;
 
-    context.filter.push_back (Att ("status", "pending"));
-
     std::vector <Task> tasks;
     context.tdb.lock (context.config.getBoolean ("locking"));
-    int quantity = context.tdb.loadPending (tasks, context.filter);
+    int quantity = 0;
+    if (context.config.getBoolean ("list.all.tags"))
+      quantity += context.tdb.load (tasks, context.filter);
+    else
+      quantity += context.tdb.loadPending (tasks, context.filter);
+
     context.tdb.commit ();
     context.tdb.unlock ();
 
