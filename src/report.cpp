@@ -283,7 +283,7 @@ int longUsage (std::string &outs)
         << "  until:             Recurrence end date"                           << "\n"
         << "  fg:                Foreground color"                              << "\n"
         << "  bg:                Background color"                              << "\n"
-        << "  limit:             Desired number of rows in report"              << "\n"
+        << "  limit:             Desired number of rows in report, or 'page'"   << "\n"
         << "  wait:              Date until task becomes pending"               << "\n"
         <<                                                                         "\n"
         << "Attribute modifiers improve filters.  Supported modifiers are:"     << "\n"
@@ -1994,15 +1994,15 @@ std::string renderMonths (
                   case 1: // imminent
                     cellColor.blend (color_due);
                     break;
-            
+
                   case 2: // today
                     cellColor.blend (color_duetoday);
                     break;
-            
+
                   case 3: // overdue
                     cellColor.blend (color_overdue);
                     break;
-            
+
                   case 0: // not due at all
                   default:
                     break;
@@ -2318,6 +2318,7 @@ int handleReportCalendar (std::string &outs)
                 holTable.addCell (row, 1, holName);
               }
             }
+
         out << optionalBlankLine ()
             << holTable.render ()
             << std::endl;

@@ -117,6 +117,7 @@ int runCustomReport (const std::string&, const std::string&,
 		     std::string&);
 void validReportColumns (const std::vector <std::string>&);
 void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
+void getLimits (const std::string&, int&, int&);
 
 // rules.cpp
 void initializeColorRules ();

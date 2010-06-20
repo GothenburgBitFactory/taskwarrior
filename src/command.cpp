@@ -647,7 +647,7 @@ int handleShow (std::string &outs)
       "next project shadow.command shadow.file shadow.notify weekstart editor "
       "import.synonym.id import.synonym.uuid complete.all.projects "
       "complete.all.tags search.case.sensitive hooks active.indicator tag.indicator "
-      "recurrence.indicator recurrence.limit "
+      "recurrence.indicator recurrence.limit list.all.projects list.all.tags "
 #ifdef FEATURE_SHELL
       "shell.prompt "
 #endif
@@ -735,7 +735,7 @@ int handleShow (std::string &outs)
 
     out << std::endl
         << table.render ()
-	<< (table.rowCount () == 0 ? "No matching configuration variables\n" : "")
+	      << (table.rowCount () == 0 ? "No matching configuration variables\n" : "")
         << std::endl;
 
     // Display the unrecognized variables.

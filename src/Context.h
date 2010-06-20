@@ -55,6 +55,7 @@ public:
   void shadow ();                      // shadow file update
 
   int getWidth ();                     // determine terminal width
+  int getHeight ();                    // determine terminal height
 
   void header (const std::string&);    // Header message sink
   void footnote (const std::string&);  // Footnote message sink
@@ -93,7 +94,6 @@ public:
   std::vector <std::string> tagRemovals;
   Hooks                     hooks;
 
-private:
   std::vector <std::string> headers;
   std::vector <std::string> footnotes;
   std::vector <std::string> debugMessages;

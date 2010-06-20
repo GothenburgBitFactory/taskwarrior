@@ -344,8 +344,8 @@ bool Att::validNameValue (
 
   else if (name == "limit")
   {
-    if (value == "" || !digitsOnly (value))
-      throw std::string ("The '") + name + "' attribute must be an integer.";
+    if (value == "" || (value != "page" && !digitsOnly (value)))
+      throw std::string ("The '") + name + "' attribute must be an integer, or the value 'page'.";
   }
 
   else if (name == "status")

@@ -715,23 +715,37 @@ int runCustomReport (
         table.setTableAlternateColor (alternate);
     }
 
-    // Limit the number of rows according to the report definition.
-    int maximum = context.config.getInteger (std::string ("report.") + report + ".limit");
+    // Report output can be limited by rows or lines.
+    int maxrows = 0;
+    int maxlines = 0;
+    getLimits (report, maxrows, maxlines);
 
-    // If the custom report has a defined limit, then allow a numeric override.
-    // This is an integer specified as a filter (limit:10).
-    if (context.task.has ("limit"))
-      maximum = atoi (context.task.get ("limit").c_str ());
+    // Adjust for fluff in the output.
+    if (maxlines)
+      maxlines -= (context.config.getBoolean ("blanklines") ? 2 : 0)
+                + 1
+                + context.headers.size ()
+                + context.footnotes.size ();
 
     std::stringstream out;
     if (table.rowCount ())
+    {
       out << optionalBlankLine ()
-          << table.render (maximum)
+          << table.render (maxrows, maxlines)
           << optionalBlankLine ()
           << table.rowCount ()
-          << (table.rowCount () == 1 ? " task" : " tasks")
-          << std::endl;
-    else {
+          << (table.rowCount () == 1 ? " task" : " tasks");
+
+      if (maxrows)
+        out << ", " << maxrows << " shown";
+
+      if (maxlines)
+        out << ", truncated to " << maxlines-1 << " lines";
+
+      out << std::endl;
+    }
+    else
+    {
       out << "No matches."
         << std::endl;
       rc = 1;
@@ -809,6 +823,47 @@ void validSortColumns (
     std::string error;
     join (error, ", ", bad);
     throw std::string ("Sort column is not part of the report: ") + error;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// A value of zero mean unlimited.
+// A value of 'page' means however many screen lines there are.
+// A value of a positive integer is a row limit.
+void getLimits (const std::string& report, int& rows, int& lines)
+{
+  rows = 0;
+  lines = 0;
+
+  int screenheight = 0;
+
+  // If a report has a stated limit, use it.
+  if (report != "")
+  {
+    std::string name = "report." + report + ".limit";
+    if (context.config.get (name) == "page")
+      lines = screenheight = context.getHeight ();
+    else
+      rows = context.config.getInteger (name);
+  }
+
+  // If the custom report has a defined limit, then allow a numeric override.
+  // This is an integer specified as a filter (limit:10).
+  if (context.task.has ("limit"))
+  {
+    if (context.task.get ("limit") == "page")
+    {
+      if (screenheight == 0)
+        screenheight = context.getHeight ();
+
+      rows = 0;
+      lines = screenheight;
+    }
+    else
+    {
+      rows = atoi (context.task.get ("limit").c_str ());
+      lines = 0;
+    }
   }
 }
 

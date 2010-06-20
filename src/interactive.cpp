@@ -167,3 +167,36 @@ int Context::getWidth ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int Context::getHeight ()
+{
+  // Determine window size, and set table accordingly.
+  int height = 25; // TODO Is there a better number?
+
+#ifdef HAVE_LIBNCURSES
+  if (config.getBoolean ("curses"))
+  {
+#ifdef FEATURE_NCURSES_COLS
+    initscr ();
+    height = LINES;
+#else
+    WINDOW* w = initscr ();
+    height = w->_maxy + 1;
+#endif
+    endwin ();
+
+    std::stringstream out;
+    out << "Context::getHeight: ncurses determined height of " << height << " characters";
+    debug (out.str ());
+  }
+  else
+    debug ("Context::getHeight: ncurses available but disabled.");
+#else
+  std::stringstream out;
+  out << "Context::getHeight: no ncurses, using height of " << height << " characters";
+  debug (out.str ());
+#endif
+
+  return height;
+}
+
+////////////////////////////////////////////////////////////////////////////////

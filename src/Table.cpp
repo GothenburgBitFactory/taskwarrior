@@ -1024,9 +1024,12 @@ void Table::clean (std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string Table::render (int maximum /* = 0 */)
+const std::string Table::render (int maxrows /* = 0 */, int maxlines /* = 0 */)
 {
   Timer t ("Table::render");
+
+  // May not exceed maxlines, if non-zero.
+  int renderedlines = 0;
 
   calculateColumnWidths ();
 
@@ -1048,8 +1051,12 @@ const std::string Table::render (int maximum /* = 0 */)
   }
 
   output += "\n";
+  ++renderedlines;
   if (underline.length ())
+  {
     output += underline + "\n";
+    ++renderedlines;
+  }
 
   // Determine row order, according to sort options.
   std::vector <int> order;
@@ -1060,14 +1067,17 @@ const std::string Table::render (int maximum /* = 0 */)
   if (mSortColumns.size ())
     sort (order);
 
-  // If a non-zero maximum is specified, then it limits the number of rows of
+  // If a non-zero maxrows is specified, then it limits the number of rows of
   // the table that are rendered.
-  int limit = mRows;
-  if (maximum != 0)
-    limit = min (maximum, mRows);
+  int limitrows = mRows;
+  if (maxrows != 0)
+    limitrows = min (maxrows, mRows);
+
+  // If a non-zero maxlines is specified, then it limits the number of lines
+  // of output from the table that are rendered.
 
   // Print all rows.
-  for (int row = 0; row < limit; ++row)
+  for (int row = 0; row < limitrows; ++row)
   {
     std::vector <std::vector <std::string> > columns;
     std::vector <std::string> blanks;
@@ -1105,6 +1115,11 @@ const std::string Table::render (int maximum /* = 0 */)
         // Trim right.
         output.erase (output.find_last_not_of (" ") + 1);
         output += "\n";
+
+        ++renderedlines;
+
+        if (maxlines != 0 && renderedlines >= maxlines)
+          break;
       }
     }
     else
@@ -1113,6 +1128,9 @@ const std::string Table::render (int maximum /* = 0 */)
       output.erase (output.find_last_not_of (" ") + 1);
       output += "\n";
     }
+
+    if (maxlines != 0 && renderedlines >= maxlines)
+      break;
   }
 
   optimize (output);

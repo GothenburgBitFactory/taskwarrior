@@ -20,7 +20,11 @@
    list all used projects/tags, not just the ones used in current pending tasks.
    Controlled by the 'list.all.projects' and 'list.all.tags' configuration
    variables (thanks to Dirk Deimeke).
+ + Added feature #415, which supports displaying just a single page of tasks,
+   by specifying either 'limit:page' to a command, or 'report.xxx.limit:page'
+   in a report specification (thanks to T. Charles Yun).
  + Improvements to the man pages (thanks to T. Charles Yun).
+ + Modified the 'next' report to only display a page, by default.
  + Added feature #408, making it possible to delete annotations with the new
    denotate command and the provided description (thanks to Dirk Deimeke).
  + Fixed bug #406 so that task now includes command aliases in the _commands

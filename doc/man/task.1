@@ -302,7 +302,10 @@ Specifies background color.
 
 .TP
 .B limit:<number-of-rows>
-Specifies the desired number of rows a report should have.
+Specifies the desired number of tasks a report should show, if a positive
+integer is given.  The value 'page' may also be used, and will limit the
+report output to as many lines of text as will fit on screen.  This defaults
+to 25 lines, if ncurses is not installed or enabled.
 
 .TP
 .B wait:<wait-date>
