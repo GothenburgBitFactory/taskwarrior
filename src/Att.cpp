@@ -744,12 +744,12 @@ void Att::dequote (std::string& value) const
 ////////////////////////////////////////////////////////////////////////////////
 // Encode values prior to serialization.
 //   \t -> &tab;
-//   '  -> &squot;
+//   '  -> &squot;  <-- deprecated, no need to encode/decod single quotes.
 //   "  -> &dquot;
-//   ,  -> &comma;
+//   ,  -> &comma;  <-- deprecated, no need to encode/decode commas.
 //   [  -> &open;
 //   ]  -> &close;
-//   :  -> &colon;
+//   :  -> &colon;  <-- deprecated, no need to encode/decode colons.
 void Att::encode (std::string& value) const
 {
   std::string::size_type i;
@@ -757,23 +757,14 @@ void Att::encode (std::string& value) const
   while ((i = value.find ('\t')) != std::string::npos)
     value.replace (i, 1, "&tab;"); // no i18n
 
-  while ((i = value.find ('\'')) != std::string::npos)
-    value.replace (i, 1, "&squot;"); // no i18n
-
   while ((i = value.find ('"')) != std::string::npos)
     value.replace (i, 1, "&dquot;"); // no i18n
-
-  while ((i = value.find (',')) != std::string::npos)
-    value.replace (i, 1, "&comma;"); // no i18n
 
   while ((i = value.find ('[')) != std::string::npos)
     value.replace (i, 1, "&open;"); // no i18n
 
   while ((i = value.find (']')) != std::string::npos)
     value.replace (i, 1, "&close;"); // no i18n
-
-  while ((i = value.find (':')) != std::string::npos)
-    value.replace (i, 1, "&colon;"); // no i18n
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -789,28 +780,32 @@ void Att::decode (std::string& value) const
 {
   std::string::size_type i;
 
-  while ((i = value.find ("&tab;")) != std::string::npos) // no i18n
+  // Supported encodings.
+  while ((i = value.find ("&tab;")) != std::string::npos)
     value.replace (i, 5, "\t");
 
-  while ((i = value.find ("&dquot;")) != std::string::npos) // no i18n
+  while ((i = value.find ("&dquot;")) != std::string::npos)
     value.replace (i, 7, "\"");
 
-  while ((i = value.find ("&squot;")) != std::string::npos) // no i18n
-    value.replace (i, 7, "'");
-
-  while ((i = value.find ("&quot;")) != std::string::npos) // no i18n
+  while ((i = value.find ("&quot;")) != std::string::npos)
     value.replace (i, 6, "\"");
 
-  while ((i = value.find ("&comma;")) != std::string::npos) // no i18n
-    value.replace (i, 7, ",");
-
-  while ((i = value.find ("&open;")) != std::string::npos) // no i18n
+  while ((i = value.find ("&open;")) != std::string::npos)
     value.replace (i, 6, "[");
 
-  while ((i = value.find ("&close;")) != std::string::npos) // no i18n
+  while ((i = value.find ("&close;")) != std::string::npos)
     value.replace (i, 7, "]");
 
-  while ((i = value.find ("&colon;")) != std::string::npos) // no i18n
+  // Support for deprecated encodings.  These cannot be removed or old files
+  // will not be parsable.  Not just old files - completed.data can contain
+  // tasks formatted/encoded using these.
+  while ((i = value.find ("&squot;")) != std::string::npos)
+    value.replace (i, 7, "'");
+
+  while ((i = value.find ("&comma;")) != std::string::npos)
+    value.replace (i, 7, ",");
+
+  while ((i = value.find ("&colon;")) != std::string::npos)
     value.replace (i, 7, ":");
 }
 

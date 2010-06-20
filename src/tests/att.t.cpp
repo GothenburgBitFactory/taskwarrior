@@ -77,7 +77,7 @@ int main (int argc, char** argv)
   a5.value ("\"");
   t.is (a5.composeF4 (), "name:\"&dquot;\"", "Att::composeF4 encoded \"");
   a5.value ("\t\",[]:");
-  t.is (a5.composeF4 (), "name:\"&tab;&dquot;&comma;&open;&close;&colon;\"", "Att::composeF4 fully encoded \\t\",[]:");
+  t.is (a5.composeF4 (), "name:\"&tab;&dquot;,&open;&close;:\"", "Att::composeF4 fully encoded \\t\",[]:");
 
   Att a6 ("name", 6);
   t.is (a6.value_int (), 6, "Att::value_int get");
@@ -187,8 +187,8 @@ int main (int argc, char** argv)
 
   n = Nibbler ("name:\"&tab;&quot;&comma;&open;&close;&colon;\"");
   a7.parse (n);
-  t.is (a7.composeF4 (), "name:\"&tab;&dquot;&comma;&open;&close;&colon;\"",
-             "Att::parse (name:\"&tab;&quot;&comma;&open;&close;&colon;\")");
+  t.is (a7.composeF4 (), "name:\"&tab;&dquot;,&open;&close;:\"",
+             "Att::parse (name:\"&tab;&quot;,&open;&close;:\")");
 
   n = Nibbler ("total gibberish");
   good = true;
