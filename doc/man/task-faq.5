@@ -163,14 +163,26 @@ to construct task filters.
 
 .TP
 .B Q: How do I delete an annotation?
-Task currently lacks a good command for deleting annotations.  In the meantime,
-use the 'edit' command:
+Task now has a 'denotate' command to remove annotations.  First here is an
+example task:
 
-    $ task 123 edit
+    $ task add Original task
+    $ task 1 annotate foo
+    $ task 1 annotate bar
+    $ task 1 annotate foo bar
 
-This will invoke your text editor, and you will be able to directly edit the
-task details.  Delete the line that contains the annotation you wish to remove,
-then save and quit the editor.
+Now to delete the first annotation, use:
+
+    $ task 1 denotate foo
+
+This takes the fragment 'foo' and compares it to each of the annotations. In
+this example, it will remove the first annotation, not the third, because it is
+an exact match.  If there are no exact matches, it will remove the first
+non-exact match:
+
+    $ task 1 denotate ar
+
+This will remove the second annotation - the first non-exact match.
 
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.

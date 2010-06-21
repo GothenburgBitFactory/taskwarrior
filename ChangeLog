@@ -8,7 +8,8 @@
    using the 'log' command in place of 'add' (thanks to Cory Donnelly).
  + Added features #36 and #37, providing annual versions of the 'history' and
    'ghistory' command as 'history.annual' and 'ghistory.annual'.
- + Added feature #363 supporting iCalendar export via the 'export.ical' command.
+ + Added feature #363 supporting iCalendar/vcalendar (RFC-2445, RFC-5545,
+   RFC-5546) export via the 'export.ical' command.
  + Added feature #390, an extra dateformat for annotations (thanks to Cory
    Donnelly).
  + Added feature #407, a new 'task show' command to display the current
