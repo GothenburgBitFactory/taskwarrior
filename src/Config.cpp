@@ -171,6 +171,7 @@ std::string Config::defaults =
   "alias.history=history.monthly          # Prefer monthly over annual history reports\n"
   "alias.ghistory=ghistory.monthly        # Prefer monthly graphical over annual history reports\n"
   "alias.export=export.csv                # Prefer CSV over iCal export\n"
+  "alias.export.vcalendar=export.ical     # They are the same\n"
   "\n"
   "# Fields: id,uuid,project,priority,priority_long,entry,entry_time,\n"                           // TODO
   "#         start,entry_time,due,recur,recurrence_indicator,age,\n"                               // TODO
