@@ -735,7 +735,7 @@ int handleShow (std::string &outs)
 
     out << std::endl
         << table.render ()
-	      << (table.rowCount () == 0 ? "No matching configuration variables\n" : "")
+        << (table.rowCount () == 0 ? "No matching configuration variables\n" : "")
         << std::endl;
 
     // Display the unrecognized variables.
@@ -2036,6 +2036,8 @@ int handleDenotate (std::string &outs)
     if (context.sequence.size () == 0)
       throw std::string ("A task ID is needed to delete an annotation.");
 
+    bool sensitive = context.config.getBoolean ("search.case.sensitive");
+
     std::stringstream out;
 
     std::vector <Task> tasks;
@@ -2065,29 +2067,31 @@ int handleDenotate (std::string &outs)
       for (i = annotations.begin (); i != annotations.end (); ++i)
       {
         anno = i->value ();
-	if (anno == desc)
-	{
-	  match = true;
-	  annotations.erase (i);
+        if (anno == desc)
+        {
+          match = true;
+          annotations.erase (i);
           task->setAnnotations (annotations);
-	  break;
-	}
+          break;
+        }
       }
       if (!match)
       {
         for (i = annotations.begin (); i != annotations.end (); ++i)
         {
-	  anno = i->value ();
-	  std::string::size_type loc = anno.find (desc, 0);
-	  if (loc != std::string::npos && loc == 0)
-	  {
-	    match = true;
-	    annotations.erase (i);
+          anno = i->value ();
+          std::string::size_type loc = find (anno, desc, sensitive);
+
+          if (loc != std::string::npos && loc == 0)
+          {
+            match = true;
+            annotations.erase (i);
             task->setAnnotations (annotations);
-	    break;
-	  }  
+            break;
+          }
         }
       }
+
       if (taskDiff (before, *task))
       {
         if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
@@ -2102,9 +2106,9 @@ int handleDenotate (std::string &outs)
       }
       else
         out << "Did not find any matching annotation to be deleted for '"
-	    << desc
-	    << "'."
-	    << std::endl;
+            << desc
+            << "'."
+            << std::endl;
     }
 
     context.tdb.commit ();
@@ -2113,6 +2117,7 @@ int handleDenotate (std::string &outs)
     outs = out.str ();
     context.hooks.trigger ("post-denotate-command");
   }
+
   return rc;
 }
 
