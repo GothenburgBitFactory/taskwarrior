@@ -32,6 +32,8 @@
  + Fixed bug #211 - it was unclear which commands modify a task description.
  + Fixed bug #411, clarifying that the 'projects' command only lists projects
    for which there are pending tasks (thanks to Dirk Deimeke).
+ + Fixed bug #414, that caused filtering on the presence or absence of tags
+   containing Unicode characters to fail (thanks to Michal Josífko).
 
 ------ old releases ------------------------------
 

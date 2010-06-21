@@ -429,13 +429,14 @@ bool isWordStart (const std::string& input, std::string::size_type pos)
   if (input.length () == 0)
     return false;
 
-  // If pos is the first alphanumeric character of the string.
-  if (pos == 0 && isalnum (input[pos]))
+  // If pos is the first non space/punct character of the string.
+  if (pos == 0 && !isspace (input[pos]) && !ispunct (input[pos]))
     return true;
 
   // If pos is not the first alphanumeric character, but there is a preceding
-  // non-alphanumeric character.
-  if (pos > 0 && isalnum (input[pos]) && !isalnum (input[pos - 1]))
+  // space/punct character.
+  if (pos > 0 && !isspace (input[pos]) && !ispunct (input[pos])
+              && (isspace (input[pos - 1]) || ispunct (input[pos - 1])))
     return true;
 
   return false;
@@ -451,12 +452,13 @@ bool isWordEnd (const std::string& input, std::string::size_type pos)
     return false;
 
   // If pos is the last alphanumeric character of the string.
-  if (pos == input.length () - 1 && isalnum (input[pos]))
+  if (pos == input.length () - 1 && !isspace (input[pos]) && !ispunct (input[pos]))
     return true;
 
   // If pos is not the last alphanumeric character, but there is a following
   // non-alphanumeric character.
-  if (pos < input.length () - 1 && isalnum (input[pos]) && !isalnum (input[pos + 1]))
+  if (pos < input.length () - 1 && !isspace (input[pos]) && !ispunct (input[pos])
+                                && (isspace (input[pos + 1]) || ispunct (input[pos + 1])))
     return true;
 
   return false;

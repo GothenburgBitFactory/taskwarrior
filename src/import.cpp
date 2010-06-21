@@ -127,13 +127,13 @@ static fileType determineFileType (const std::vector <std::string>& lines)
       // +project
       if (words[w].length () > 1 &&
           words[w][0] == '+'     &&
-          isalnum (words[w][1]))
+          !isspace (words[w][1]))
         return todo_sh_2_0;
 
       // @context
       if (words[w].length () > 1 &&
           words[w][0] == '@'     &&
-          isalnum (words[w][1]))
+          !isspace (words[w][1]))
         return todo_sh_2_0;
     }
   }
