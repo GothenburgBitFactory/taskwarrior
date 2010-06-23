@@ -2082,7 +2082,7 @@ int handleDenotate (std::string &outs)
           anno = i->value ();
           std::string::size_type loc = find (anno, desc, sensitive);
 
-          if (loc != std::string::npos && loc == 0)
+          if (loc != std::string::npos)
           {
             match = true;
             annotations.erase (i);
