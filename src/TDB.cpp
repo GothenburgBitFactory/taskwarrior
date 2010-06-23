@@ -219,6 +219,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
 
   try
   {
+    // Only load if not already loaded.
     if (mPending.size () == 0)
     {
       mId = 1;
@@ -247,18 +248,37 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
     }
 
     // Now filter and return.
-    foreach (task, mPending)
-      if (filter.pass (*task))
+    if (filter.size ())
+    {
+      foreach (task, mPending)
+        if (filter.pass (*task))
+          tasks.push_back (*task);
+    }
+    else
+    {
+      foreach (task, mPending)
         tasks.push_back (*task);
+    }
 
     // Hand back any accumulated additions, if TDB::loadPending is being called
     // repeatedly.
     int fakeId = mId;
-    foreach (task, mNew)
+    if (filter.size ())
     {
-      task->id = fakeId++;
-      if (filter.pass (*task))
+      foreach (task, mNew)
+      {
+        task->id = fakeId++;
+        if (filter.pass (*task))
+          tasks.push_back (*task);
+      }
+    }
+    else
+    {
+      foreach (task, mNew)
+      {
+        task->id = fakeId++;
         tasks.push_back (*task);
+      }
     }
   }
 
@@ -281,36 +301,48 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
   Timer t ("TDB::loadCompleted");
 
   std::string file;
-  int line_number;
+  int line_number = 1;
 
   try
   {
-    char line[T_LINE_MAX];
-    foreach (location, mLocations)
+    if (mCompleted.size () == 0)
     {
-      line_number = 1;
-      file = location->path + "/completed.data";
-
-      fseek (location->completed, 0, SEEK_SET);
-      while (fgets (line, T_LINE_MAX, location->completed))
+      char line[T_LINE_MAX];
+      foreach (location, mLocations)
       {
-        int length = strlen (line);
-        if (length > 3) // []\n
+        line_number = 1;
+        file = location->path + "/completed.data";
+
+        fseek (location->completed, 0, SEEK_SET);
+        while (fgets (line, T_LINE_MAX, location->completed))
         {
-          // TODO Add hidden attribute indicating source?
+          int length = strlen (line);
+          if (length > 3) // []\n
+          {
+            // TODO Add hidden attribute indicating source?
 
-          if (line[length - 1] == '\n')
-            line[length - 1] = '\0';
+            Task task (line);
+            task.id = 0;  // Need a value, just not a valid value.
 
-          Task task (line);
-          task.id = 0;  // Need a value, just not a valid value.
+            mCompleted.push_back (task);
+          }
 
-          if (filter.pass (task))
-            tasks.push_back (task);
+          ++line_number;
         }
-
-        ++line_number;
       }
+    }
+
+    // Now filter and return.
+    if (filter.size ())
+    {
+      foreach (task, mCompleted)
+        if (filter.pass (*task))
+          tasks.push_back (*task);
+    }
+    else
+    {
+      foreach (task, mCompleted)
+        tasks.push_back (*task);
     }
   }
 
@@ -329,7 +361,6 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 void TDB::add (const Task& task)
 {
   mNew.push_back (task);
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -344,7 +375,7 @@ void TDB::update (const Task& task)
 int TDB::commit ()
 {
   Timer t ("TDB::commit");
-  context.hooks.trigger ("pre-gc");
+  context.hooks.trigger ("pre-commit");
 
   int quantity = mNew.size () + mModified.size ();
 
@@ -364,7 +395,7 @@ int TDB::commit ()
       writeUndo (*task, mLocations[0].undo);
 
     mNew.clear ();
-    context.hooks.trigger ("post-gc");
+    context.hooks.trigger ("post-commit");
     return quantity;
   }
 
@@ -375,10 +406,20 @@ int TDB::commit ()
     // new tasks appended.
     std::vector <Task> allPending;
     allPending = mPending;
-    foreach (task, allPending)
-      foreach (mtask, mModified)
+    foreach (mtask, mModified)
+    {
+      foreach (task, allPending)
+      {
         if (task->id == mtask->id)
+        {
           *task = *mtask;
+          goto next_mod;
+        }
+      }
+
+    next_mod:
+      ;
+    }
 
     foreach (task, mNew)
       allPending.push_back (*task);
@@ -396,10 +437,20 @@ int TDB::commit ()
     // Update the undo log.
     if (fseek (mLocations[0].undo, 0, SEEK_END) == 0)
     {
-      foreach (task, mPending)
-        foreach (mtask, mModified)
+      foreach (mtask, mModified)
+      {
+        foreach (task, mPending)
+        {
           if (task->id == mtask->id)
+          {
             writeUndo (*task, *mtask, mLocations[0].undo);
+            goto next_mod2;
+          }
+        }
+
+      next_mod2:
+        ;
+      }
 
       foreach (task, mNew)
         writeUndo (*task, mLocations[0].undo);
@@ -411,7 +462,7 @@ int TDB::commit ()
     mNew.clear ();
   }
 
-  context.hooks.trigger ("post-gc");
+  context.hooks.trigger ("post-commit");
   return quantity;
 }
 
@@ -423,43 +474,45 @@ int TDB::gc ()
 {
   Timer t ("TDB::gc");
 
-  int count = 0;
+  int count_pending_changes = 0;
+  int count_completed_changes = 0;
   Date now;
 
-  // Set up a second TDB.
+  if (mNew.size ())
+    throw std::string ("Unexpected new tasks found during gc.");
+
+  if (mModified.size ())
+    throw std::string ("Unexpected modified tasks found during gc.");
+
+  lock ();
+
   Filter filter;
-  TDB tdb;
-  tdb.location (mLocations[0].path);
-  tdb.lock ();
-
-  std::vector <Task> pending;
-  tdb.loadPending (pending, filter);
-
-  std::vector <Task> completed;
-  tdb.loadCompleted (completed, filter);
+  std::vector <Task> ignore;
+  loadPending (ignore, filter);
 
   // Now move completed and deleted tasks from the pending list to the
   // completed list.  Isn't garbage collection easy?
   std::vector <Task> still_pending;
-  foreach (task, pending)
+  std::vector <Task> newly_completed;
+  foreach (task, mPending)
   {
-    std::string st = task->get ("status");
     Task::status s = task->getStatus ();
     if (s == Task::completed ||
         s == Task::deleted)
     {
-      completed.push_back (*task);
-      ++count;
+      newly_completed.push_back (*task);
+      ++count_pending_changes;    // removal
+      ++count_completed_changes;  // addition
     }
     else if (s == Task::waiting)
     {
-      // Wake up tasks that are waiting.
+      // Wake up tasks that need to be woken.
       Date wait_date (atoi (task->get ("wait").c_str ()));
       if (now > wait_date)
       {
         task->setStatus (Task::pending);
         task->remove ("wait");
-        ++count;
+        ++count_pending_changes;  // modification
       }
 
       still_pending.push_back (*task);
@@ -468,37 +521,38 @@ int TDB::gc ()
       still_pending.push_back (*task);
   }
 
-  pending = still_pending;
-
   // No commit - all updates performed manually.
-  if (count > 0)
+  if (count_pending_changes > 0)
   {
-    if (fseek (tdb.mLocations[0].pending, 0, SEEK_SET) == 0)
+    if (fseek (mLocations[0].pending, 0, SEEK_SET) == 0)
     {
-      if (ftruncate (fileno (tdb.mLocations[0].pending), 0))
+      if (ftruncate (fileno (mLocations[0].pending), 0))
         throw std::string ("Failed to truncate pending.data file ");
 
-      foreach (task, pending)
-        fputs (task->composeF4 ().c_str (), tdb.mLocations[0].pending);
-    }
+      foreach (task, still_pending)
+        fputs (task->composeF4 ().c_str (), mLocations[0].pending);
 
-    if (fseek (tdb.mLocations[0].completed, 0, SEEK_SET) == 0)
-    {
-      if (ftruncate (fileno (tdb.mLocations[0].completed), 0))
-        throw std::string ("Failed to truncate completed.data file ");
-
-      foreach (task, completed)
-        fputs (task->composeF4 ().c_str (), tdb.mLocations[0].completed);
+      // Update cached copy.
+      mPending = still_pending;
     }
   }
 
+  // Append the new_completed tasks to completed.data.  No need to write out the
+  // whole list.
+  if (count_completed_changes > 0)
+  {
+    fseek (mLocations[0].completed, 0, SEEK_END);
+    foreach (task, newly_completed)
+      fputs (task->composeF4 ().c_str (), mLocations[0].completed);
+  }
+
   // Close files.
-  tdb.unlock ();
+  unlock ();
 
   std::stringstream s;
-  s << "gc " << count << " tasks";
+  s << "gc " << (count_pending_changes + count_completed_changes) << " tasks";
   context.debug (s.str ());
-  return count;
+  return count_pending_changes + count_completed_changes;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

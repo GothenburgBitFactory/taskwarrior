@@ -55,6 +55,7 @@ public:
 
 private:
   std::string mInput;
+  std::string::size_type mLength;
   std::string::size_type mCursor;
 };
 

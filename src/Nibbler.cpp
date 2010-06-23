@@ -26,12 +26,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include "Nibbler.h"
+
+const char* c_digits = "0123456789";
 
 ////////////////////////////////////////////////////////////////////////////////
 Nibbler::Nibbler ()
 : mInput ("")
+, mLength (0)
 , mCursor (0)
 {
 }
@@ -39,6 +43,7 @@ Nibbler::Nibbler ()
 ////////////////////////////////////////////////////////////////////////////////
 Nibbler::Nibbler (const char* input)
 : mInput (input)
+, mLength (strlen (input))
 , mCursor (0)
 {
 }
@@ -46,6 +51,7 @@ Nibbler::Nibbler (const char* input)
 ////////////////////////////////////////////////////////////////////////////////
 Nibbler::Nibbler (const std::string& input)
 : mInput (input)
+, mLength (input.length ())
 , mCursor (0)
 {
 }
@@ -54,6 +60,7 @@ Nibbler::Nibbler (const std::string& input)
 Nibbler::Nibbler (const Nibbler& other)
 {
   mInput  = other.mInput;
+  mLength = other.mLength;
   mCursor = other.mCursor;
 }
 
@@ -63,6 +70,7 @@ Nibbler& Nibbler::operator= (const Nibbler& other)
   if (this != &other)
   {
     mInput  = other.mInput;
+    mLength = other.mLength;
     mCursor = other.mCursor;
   }
 
@@ -78,7 +86,7 @@ Nibbler::~Nibbler ()
 // Extract up until the next c, or EOS.
 bool Nibbler::getUntil (char c, std::string& result)
 {
-  if (mCursor < mInput.length ())
+  if (mCursor < mLength)
   {
     std::string::size_type i = mInput.find (c, mCursor);
     if (i != std::string::npos)
@@ -89,7 +97,7 @@ bool Nibbler::getUntil (char c, std::string& result)
     else
     {
       result = mInput.substr (mCursor);
-      mCursor = mInput.length ();
+      mCursor = mLength;
     }
 
     return true;
@@ -101,7 +109,7 @@ bool Nibbler::getUntil (char c, std::string& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUntil (const std::string& terminator, std::string& result)
 {
-  if (mCursor < mInput.length ())
+  if (mCursor < mLength)
   {
     std::string::size_type i = mInput.find (terminator, mCursor);
     if (i != std::string::npos)
@@ -112,7 +120,7 @@ bool Nibbler::getUntil (const std::string& terminator, std::string& result)
     else
     {
       result = mInput.substr (mCursor);
-      mCursor = mInput.length ();
+      mCursor = mLength;
     }
 
     return true;
@@ -124,7 +132,7 @@ bool Nibbler::getUntil (const std::string& terminator, std::string& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
 {
-  if (mCursor < mInput.length ())
+  if (mCursor < mLength)
   {
     std::string::size_type i = mInput.find_first_of (chars, mCursor);
     if (i != std::string::npos)
@@ -135,7 +143,7 @@ bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
     else
     {
       result = mInput.substr (mCursor);
-      mCursor = mInput.length ();
+      mCursor = mLength;
     }
 
     return true;
@@ -147,10 +155,10 @@ bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipN (const int quantity /* = 1 */)
 {
-  if (mCursor >= mInput.length ())
+  if (mCursor >= mLength)
     return false;
 
-  if (mCursor <= mInput.length () - quantity)
+  if (mCursor <= mLength - quantity)
   {
     mCursor += quantity;
     return true;
@@ -162,7 +170,7 @@ bool Nibbler::skipN (const int quantity /* = 1 */)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skip (char c)
 {
-  if (mCursor < mInput.length () &&
+  if (mCursor < mLength &&
       mInput[mCursor] == c)
   {
     ++mCursor;
@@ -175,13 +183,17 @@ bool Nibbler::skip (char c)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipAll (char c)
 {
-  std::string::size_type i = mCursor;
-  while (i < mInput.length () && mInput[i] == c)
-    ++i;
-
-  if (i != mCursor)
+  if (mCursor < mLength)
   {
-    mCursor = i;
+    std::string::size_type i = mInput.find_first_not_of (c, mCursor);
+    if (i == mCursor)
+      return false;
+
+    if (i == std::string::npos)
+      mCursor = mLength;  // Yes, off the end.
+    else
+      mCursor = i;
+
     return true;
   }
 
@@ -191,14 +203,14 @@ bool Nibbler::skipAll (char c)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipAllOneOf (const std::string& chars)
 {
-  if (mCursor < mInput.length ())
+  if (mCursor < mLength)
   {
     std::string::size_type i = mInput.find_first_not_of (chars, mCursor);
     if (i == mCursor)
       return false;
 
     if (i == std::string::npos)
-      mCursor = mInput.length ();  // Yes, off the end.
+      mCursor = mLength;  // Yes, off the end.
     else
       mCursor = i;
 
@@ -212,10 +224,10 @@ bool Nibbler::skipAllOneOf (const std::string& chars)
 bool Nibbler::getQuoted (char c, std::string& result)
 {
   std::string::size_type start = mCursor;
-  if (start < mInput.length () && mInput[start] == c)
+  if (start < mLength && mInput[start] == c)
   {
     ++start;
-    if (start < mInput.length ())
+    if (start < mLength)
     {
       std::string::size_type end = mInput.find (c, start);
       if (end != std::string::npos)
@@ -235,7 +247,7 @@ bool Nibbler::getInt (int& result)
 {
   std::string::size_type i = mCursor;
 
-  if (i < mInput.length ())
+  if (i < mLength)
   {
     if (mInput[i] == '-')
       ++i;
@@ -243,7 +255,8 @@ bool Nibbler::getInt (int& result)
       ++i;
   }
 
-  while (i < mInput.length () && isdigit (mInput[i]))
+  // TODO Potential for use of find_first_not_of
+  while (i < mLength && isdigit (mInput[i]))
     ++i;
 
   if (i > mCursor)
@@ -260,7 +273,8 @@ bool Nibbler::getInt (int& result)
 bool Nibbler::getUnsignedInt (int& result)
 {
   std::string::size_type i = mCursor;
-  while (i < mInput.length () && isdigit (mInput[i]))
+  // TODO Potential for use of find_first_not_of
+  while (i < mLength && isdigit (mInput[i]))
     ++i;
 
   if (i > mCursor)
@@ -282,10 +296,10 @@ bool Nibbler::getUntilEOL (std::string& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUntilEOS (std::string& result)
 {
-  if (mCursor < mInput.length ())
+  if (mCursor < mLength)
   {
     result = mInput.substr (mCursor);
-    mCursor = mInput.length ();
+    mCursor = mLength;
     return true;
   }
 
@@ -295,7 +309,7 @@ bool Nibbler::getUntilEOS (std::string& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::depleted ()
 {
-  if (mCursor >= mInput.length ())
+  if (mCursor >= mLength)
     return true;
 
   return false;

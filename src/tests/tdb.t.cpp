@@ -71,17 +71,19 @@ int main (int argc, char** argv)
     Task task ("[name:\"value\"]");
     tdb.add (task);
     tdb.unlock ();
+// P0 C0 N1 M0
 
     pending.clear ();
     completed.clear ();
     get (pending, completed);
+
     t.ok (pending.size () == 0, "TDB add -> no commit -> empty");
     t.ok (completed.size () == 0, "TDB add -> no commit -> empty");
 
     // Add with commit.
     tdb.lock ();
-    tdb.add (task);
-    tdb.commit ();
+    tdb.add (task);                                                  // P0 C0 N1 M0
+    tdb.commit ();                                                   // P1 C0 N0 M0
     tdb.unlock ();
 
     get (pending, completed);
@@ -91,36 +93,40 @@ int main (int argc, char** argv)
     t.ok (completed.size () == 0, "TDB add -> commit -> saved");
 
     // Update with commit.
-    tdb.lock ();
     pending.clear ();
     completed.clear ();
+
+    tdb.lock ();
     tdb.load (all, context.filter);
     all[0].set ("name", "value2");
-    tdb.update (all[0]);
-    tdb.commit ();
+    tdb.update (all[0]);                                             // P1 C0 N0 M1
+    tdb.commit ();                                                   // P1 C0 N0 M0
     tdb.unlock ();
 
     pending.clear ();
     completed.clear ();
     get (pending, completed);
+
     t.ok (all.size () == 1, "TDB update -> commit -> saved");
     t.is (all[0].get ("name"), "value2", "TDB load name=value2");
     t.is (all[0].id, 1, "TDB load verification id=1");
 
     // GC.
-    tdb.lock ();
     all.clear ();
+
+    tdb.lock ();
     tdb.loadPending (all, context.filter);
     all[0].setStatus (Task::completed);
-    tdb.update (all[0]);
+    tdb.update (all[0]);                                             // P1 C0 N0 M1
     Task t2 ("[foo:\"bar\" status:\"pending\"]");
-    tdb.add (t2);
+    tdb.add (t2);                                                    // P1 C0 N1 M1
     tdb.commit ();
     tdb.unlock ();
 
     pending.clear ();
     completed.clear ();
     get (pending, completed);
+
     t.is (pending.size (), (size_t)2,               "TDB before gc pending #2");
     t.is (pending[0].id, 1,                         "TDB before gc pending id 1");
     t.is (pending[0].getStatus (), Task::completed, "TDB before gc pending status completed");
@@ -128,11 +134,12 @@ int main (int argc, char** argv)
     t.is (pending[1].getStatus (), Task::pending,   "TDB before gc pending status pending");
     t.is (completed.size (), (size_t)0,             "TDB before gc completed 0");
 
-    tdb.gc ();
+    tdb.gc ();                                                       // P1 C1 N0 M0
 
     pending.clear ();
     completed.clear ();
     get (pending, completed);
+
     t.is (pending.size (), (size_t)1,                 "TDB after gc pending #1");
     t.is (pending[0].id, 1,                           "TDB after gc pending id 2");
     t.is (pending[0].getStatus (), Task::pending,     "TDB after gc pending status pending");
