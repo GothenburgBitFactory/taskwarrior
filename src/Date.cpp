@@ -86,7 +86,7 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
 {
   int month  = 0;
   int day    = 0;
-  int year   = 0;
+  int year   = -1;   // So we can check later.
   int hour   = 0;
   int minute = 0;
   int second = 0;
@@ -330,6 +330,14 @@ Date::Date (const std::string& mdy, const std::string& format /* = "m/d/Y" */)
       ++i;
       break;
     }
+  }
+
+  // Default the year to the current year, for formats that lack Y/y.
+  if (year == -1)
+  {
+    time_t now = time (NULL);
+    struct tm* default_year = localtime (&now);
+    year = default_year->tm_year + 1900;
   }
 
   if (i < mdy.length ())
