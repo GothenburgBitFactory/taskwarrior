@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -41,22 +41,40 @@ public:
 
   bool getUntil (char, std::string&);
   bool getUntil (const std::string&, std::string&);
+  bool getUntilRx (const std::string&, std::string&);
   bool getUntilOneOf (const std::string&, std::string&);
+  bool getUntilWS (std::string&);
+  bool getUntilEOL (std::string&);
+  bool getUntilEOS (std::string&);
+
+  bool getQuoted (char, std::string&);
+  bool getInt (int&);
+  bool getUnsignedInt (int&);
+  bool getLiteral (const std::string&);
+  bool getRx (const std::string&, std::string&);
+
   bool skipN (const int quantity = 1);
   bool skip (char);
   bool skipAll (char);
   bool skipAllOneOf (const std::string&);
-  bool getQuoted (char, std::string&);
-  bool getInt (int&);
-  bool getUnsignedInt (int&i);
-  bool getUntilEOL (std::string&);
-  bool getUntilEOS (std::string&);
+  bool skipWS ();
+  bool skipRx (const std::string&);
+
+  char next ();
+  std::string next (const int quantity);
+
+  void save ();
+  void restore ();
+
   bool depleted ();
+
+  std::string dump ();
 
 private:
   std::string mInput;
   std::string::size_type mLength;
   std::string::size_type mCursor;
+  std::string::size_type mSaved;
 };
 
 #endif

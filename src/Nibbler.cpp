@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -29,6 +29,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "Nibbler.h"
+#include "rx.h"
 
 const char* c_digits = "0123456789";
 
@@ -37,6 +38,7 @@ Nibbler::Nibbler ()
 : mInput ("")
 , mLength (0)
 , mCursor (0)
+, mSaved (0)
 {
 }
 
@@ -83,7 +85,7 @@ Nibbler::~Nibbler ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Extract up until the next c, or EOS.
+// Extract up until the next c (but not including) or EOS.
 bool Nibbler::getUntil (char c, std::string& result)
 {
   if (mCursor < mLength)
@@ -130,6 +132,36 @@ bool Nibbler::getUntil (const std::string& terminator, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getUntilRx (const std::string& regex, std::string& result)
+{
+  if (mCursor < mLength)
+  {
+    std::string modified_regex;
+    if (regex[0] != '(')
+      modified_regex = "(" + regex + ")";
+    else
+      modified_regex = regex;
+
+    std::vector <int> start;
+    std::vector <int> end;
+    if (regexMatch (start, end, mInput.substr (mCursor), modified_regex, true))
+    {
+      result = mInput.substr (mCursor, start[0]);
+      mCursor += start[0];
+    }
+    else
+    {
+      result = mInput.substr (mCursor);
+      mCursor = mLength;
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
 {
   if (mCursor < mLength)
@@ -153,67 +185,24 @@ bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::skipN (const int quantity /* = 1 */)
+bool Nibbler::getUntilWS (std::string& result)
 {
-  if (mCursor >= mLength)
-    return false;
-
-  if (mCursor <= mLength - quantity)
-  {
-    mCursor += quantity;
-    return true;
-  }
-
-  return false;
+  return this->getUntilOneOf (" \t\r\n\f", result);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::skip (char c)
+bool Nibbler::getUntilEOL (std::string& result)
 {
-  if (mCursor < mLength &&
-      mInput[mCursor] == c)
-  {
-    ++mCursor;
-    return true;
-  }
-
-  return false;
+  return getUntil ('\n', result);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::skipAll (char c)
+bool Nibbler::getUntilEOS (std::string& result)
 {
   if (mCursor < mLength)
   {
-    std::string::size_type i = mInput.find_first_not_of (c, mCursor);
-    if (i == mCursor)
-      return false;
-
-    if (i == std::string::npos)
-      mCursor = mLength;  // Yes, off the end.
-    else
-      mCursor = i;
-
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::skipAllOneOf (const std::string& chars)
-{
-  if (mCursor < mLength)
-  {
-    std::string::size_type i = mInput.find_first_not_of (chars, mCursor);
-    if (i == mCursor)
-      return false;
-
-    if (i == std::string::npos)
-      mCursor = mLength;  // Yes, off the end.
-    else
-      mCursor = i;
-
+    result = mInput.substr (mCursor);
+    mCursor = mLength;
     return true;
   }
 
@@ -288,22 +277,173 @@ bool Nibbler::getUnsignedInt (int& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getUntilEOL (std::string& result)
+bool Nibbler::getLiteral (const std::string& literal)
 {
-  return getUntil ('\n', result);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getUntilEOS (std::string& result)
-{
-  if (mCursor < mLength)
+  if (mCursor < mLength &&
+      mInput.find (literal, mCursor) == mCursor)
   {
-    result = mInput.substr (mCursor);
-    mCursor = mLength;
+    mCursor += literal.length ();
     return true;
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getRx (const std::string& regex, std::string& result)
+{
+  if (mCursor < mLength)
+  {
+    // Regex may be anchored to the beginning and include capturing parentheses,
+    // otherwise they are added.
+    std::string modified_regex;
+    if (regex.substr (0, 2) != "^(")
+      modified_regex = "^(" + regex + ")";
+    else
+      modified_regex = regex;
+
+    std::vector <std::string> results;
+    if (regexMatch (results, mInput.substr (mCursor), modified_regex, true))
+    {
+      result = results[0];
+      mCursor += result.length ();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::skipN (const int quantity /* = 1 */)
+{
+  if (mCursor >= mLength)
+    return false;
+
+  if (mCursor <= mLength - quantity)
+  {
+    mCursor += quantity;
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::skip (char c)
+{
+  if (mCursor < mLength &&
+      mInput[mCursor] == c)
+  {
+    ++mCursor;
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::skipAll (char c)
+{
+  if (mCursor < mLength)
+  {
+    std::string::size_type i = mInput.find_first_not_of (c, mCursor);
+    if (i == mCursor)
+      return false;
+
+    if (i == std::string::npos)
+      mCursor = mLength;  // Yes, off the end.
+    else
+      mCursor = i;
+
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::skipWS ()
+{
+  return this->skipAllOneOf (" \t\n\r\f");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::skipRx (const std::string& regex)
+{
+  if (mCursor < mLength)
+  {
+    // Regex may be anchored to the beginning and include capturing parentheses,
+    // otherwise they are added.
+    std::string modified_regex;
+    if (regex.substr (0, 2) != "^(")
+      modified_regex = "^(" + regex + ")";
+    else
+      modified_regex = regex;
+
+    std::vector <std::string> results;
+    if (regexMatch (results, mInput.substr (mCursor), modified_regex, true))
+    {
+      mCursor += results[0].length ();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::skipAllOneOf (const std::string& chars)
+{
+  if (mCursor < mLength)
+  {
+    std::string::size_type i = mInput.find_first_not_of (chars, mCursor);
+    if (i == mCursor)
+      return false;
+
+    if (i == std::string::npos)
+      mCursor = mLength;  // Yes, off the end.
+    else
+      mCursor = i;
+
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Peeks ahead - does not move cursor.
+char Nibbler::next ()
+{
+  if (mCursor < mLength)
+    return mInput[mCursor];
+
+  return '\0';
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Peeks ahead - does not move cursor.
+std::string Nibbler::next (const int quantity)
+{
+  if (           mCursor  <  mLength &&
+      (unsigned) quantity <= mLength &&
+                 mCursor  <= mLength - quantity)
+    return mInput.substr (mCursor, quantity);
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Nibbler::save ()
+{
+  mSaved = mCursor;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Nibbler::restore ()
+{
+  mCursor = mSaved;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -313,6 +453,14 @@ bool Nibbler::depleted ()
     return true;
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Nibbler::dump ()
+{
+  return std::string ("Nibbler ‹")
+         + mInput.substr (mCursor)
+         + "›";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
