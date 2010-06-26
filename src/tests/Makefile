@@ -1,6 +1,6 @@
 PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
           config.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t \
-          cmd.t util.t color.t list.t path.t file.t directory.t grid.t
+          cmd.t util.t color.t list.t path.t file.t directory.t grid.t rx.t
 CFLAGS  = -I. -I.. -I../.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib -lncurses -llua
 OBJECTS = ../t-TDB.o ../t-Task.o ../t-text.o ../t-Date.o ../t-Table.o          \
@@ -11,7 +11,7 @@ OBJECTS = ../t-TDB.o ../t-Task.o ../t-text.o ../t-Date.o ../t-Table.o          \
           ../t-Grid.o ../t-Color.o ../t-rules.o ../t-recur.o ../t-custom.o     \
           ../t-export.o ../t-import.o ../t-edit.o ../t-Timer.o                 \
           ../t-Permission.o ../t-Path.o ../t-File.o ../t-Directory.o           \
-          ../t-Hooks.o ../t-API.o
+          ../t-Hooks.o ../t-API.o ../t-rx.o
 
 all: $(PROJECT)
 
@@ -95,4 +95,7 @@ directory.t: directory.t.o $(OBJECTS) test.o
 
 grid.t: grid.t.o $(OBJECTS) test.o
 	g++ grid.t.o $(OBJECTS) test.o $(LFLAGS) -o grid.t
+
+rx.t: rx.t.o $(OBJECTS) test.o
+	g++ rx.t.o $(OBJECTS) test.o $(LFLAGS) -o rx.t
 

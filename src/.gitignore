@@ -1,2 +1,3 @@
 *.o
 Makefile.in
+*_test

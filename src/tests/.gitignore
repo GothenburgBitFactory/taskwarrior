@@ -21,4 +21,5 @@ path.t
 file.t
 directory.t
 grid.t
+rx.t
 *.log
