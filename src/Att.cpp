@@ -744,12 +744,9 @@ void Att::dequote (std::string& value) const
 ////////////////////////////////////////////////////////////////////////////////
 // Encode values prior to serialization.
 //   \t -> &tab;
-//   '  -> &squot;  <-- deprecated, no need to encode/decod single quotes.
 //   "  -> &dquot;
-//   ,  -> &comma;  <-- deprecated, no need to encode/decode commas.
 //   [  -> &open;
 //   ]  -> &close;
-//   :  -> &colon;  <-- deprecated, no need to encode/decode colons.
 void Att::encode (std::string& value) const
 {
   std::string::size_type i;

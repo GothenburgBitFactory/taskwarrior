@@ -78,25 +78,9 @@ bool Task::operator== (const Task& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Attempt an FF4 parse first, using Record::parse, and in the event of an error
-// try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
 Task::Task (const std::string& input)
 {
-  std::string copy;
-  if (input[input.length () - 1] == '\n')
-    copy = input.substr (0, input.length () - 1);
-  else
-    copy = input;
-
-  try
-  {
-    Record::parse (copy);
-  }
-
-  catch (std::string& e)
-  {
-    legacyParse (copy);
-  }
+  parse (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -149,6 +133,8 @@ void Task::setStatus (Task::status status)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Attempt an FF4 parse first, using Record::parse, and in the event of an error
+// try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
 void Task::parse (const std::string& line)
 {
   std::string copy;

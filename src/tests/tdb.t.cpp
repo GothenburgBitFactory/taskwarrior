@@ -69,9 +69,8 @@ int main (int argc, char** argv)
     tdb.location (".");
     tdb.lock ();
     Task task ("[name:\"value\"]");
-    tdb.add (task);
+    tdb.add (task);                                                  // P0 C0 N1 M0
     tdb.unlock ();
-// P0 C0 N1 M0
 
     pending.clear ();
     completed.clear ();
