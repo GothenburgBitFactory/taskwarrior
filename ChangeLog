@@ -41,6 +41,8 @@
    included in the dateformat (thanks to Michelle Crane).
  + Fixed bug #417, which caused sorting on countdown fields to be wrong
    (thanks to Michell Crane).
+ + Fixed bug #418, which caused the attribute modifier 'due.before' to fail
+   if the year was not included in the dateformat (thanks to Michelle Crane).
 
 ------ old releases ------------------------------
 
