@@ -472,6 +472,7 @@ use dashes (-----) to underline column headings.
 .B fontunderline=on
 Determines if font underlines or ASCII dashes should be used to underline
 headers, even when color is enabled.
+.RE
 
 Task has a number of coloration rules.  They correspond to a particular
 attribute of a task, such as it being due, or being active, and specifies the
@@ -486,7 +487,6 @@ terminal, can be obtained by running the command:
 The coloration rules and their defaults are:
 .RE
 
-.RS
 .RS
 .B color.overdue=bold red
 The color for overdue tasks.
@@ -528,82 +528,91 @@ nothing, for example:
 .RE
 .RE
 
-.RS
 See the task-color(5) man pages for color details.
 .RE
 
-.RS
 Certain attributes like tags, projects and keywords can have their own
 coloration rules.
 .RE
 
-.RS
 .TP
 .B color.tag.X=yellow
 Colors any task that has the tag X.
+.RE
 
 .TP
 .B color.project.X=on green
 Colors any task assigned to project X.
+.RE
 
 .TP
 .B color.keyword.X=on blue
 Colors any task where the description or any annotation contains X.
+.RE
 
 .TP
 .B color.header=green
 Colors any of the messages printed prior to the report output.
+.RE
 
 .TP
 .B color.footnote=green
 Colors any of the messages printed last.
+.RE
 
 .TP
 .B color.summary.bar=on green
 Colors the summary progress bar.  Should include both a foreground and a
 background color.
+.RE
 
 .TP
 .B color.summary.background=on black
 Colors the summary progress bar.  Should include at least a background color.
+.RE
 
 .TP
 .B color.calendar.today=black on cyan
 Color of today in calendar.
+.RE
 
 .TP
 .B color.calendar.due=black on green
 Color of days with due tasks in calendar.
+.RE
 
 .TP
 .B color.calendar.due.today=black on magenta
 Color of today with due tasks in calendar.
+.RE
 
 .TP
 .B color.calendar.overdue=black on red
 Color of days with overdue tasks in calendar.
+.RE
 
 .TP
 .B color.calendar.weekend=bright white on black
 Color of weekend days in calendar.
+.RE
 
 .TP
 .B color.calendar.holiday=black on bright yellow
 Color of holidays in calendar.
+.RE
 
 .TP
 .B color.calendar.weeknumber=black on white
 Color of weeknumbers in calendar.
 .RE
 
-.RS
-It is possible to apply a specific color to every other task in a report,
-which can make it easier to visually separate tasks.  This is especially
-useful when tasks are displayed over multiple lines due to long descriptions
-or annotations.
 .TP
 .B color.alternate=on rgb253
 Color of alternate tasks.
+This is to apply a specific color to every other task in a report,
+which can make it easier to visually separate tasks.  This is especially
+useful when tasks are displayed over multiple lines due to long descriptions
+or annotations.
 .RE
 
 .SS SHADOW FILE
