@@ -43,6 +43,8 @@
    (thanks to Michell Crane).
  + Fixed bug #418, which caused the attribute modifier 'due.before' to fail
    if the year was not included in the dateformat (thanks to Michelle Crane).
+ + Fixed bug #132, which failed to set a sort order so that active tasks sort
+   higher than inactive tasks, all things being equal.
 
 ------ old releases ------------------------------
 
