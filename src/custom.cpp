@@ -37,6 +37,7 @@
 
 #include "Context.h"
 #include "Date.h"
+#include "Duration.h"
 #include "Table.h"
 #include "text.h"
 #include "util.h"
@@ -435,9 +436,13 @@ int runCustomReport (
           {
             Date dt (::atoi (due.c_str ()));
             time_t cntdwn = (time_t) (now - dt);
-            countdown = formatSeconds ( cntdwn < 0 ? cntdwn * -1 : cntdwn );
-            if ( cntdwn < 0 )
-              countdown = std::string("-") + countdown;
+            Duration du (cntdwn < 0 ? -cntdwn : cntdwn);
+
+            if (cntdwn < 0)
+              countdown = std::string ("-") + du.format ();
+            else
+              countdown = du.format ();
+
             context.hooks.trigger ("format-countdown", "countdown", countdown);
             table.addCell (row, columnCount, countdown);
           }
@@ -460,9 +465,13 @@ int runCustomReport (
           {
             Date dt (::atoi (due.c_str ()));
             time_t cntdwn = (time_t) (now - dt);
-            countdown = formatSecondsCompact ( cntdwn < 0 ? cntdwn * -1 : cntdwn );
-            if ( cntdwn < 0 )
-              countdown = std::string("-") + countdown;
+            Duration du (cntdwn < 0 ? -cntdwn : cntdwn);
+
+            if (cntdwn < 0)
+              countdown = std::string ("-") + du.formatCompact ();
+            else
+              countdown = du.formatCompact ();
+
             context.hooks.trigger ("format-countdown_compact", "countdown_compact", countdown);
             table.addCell (row, columnCount, countdown);
           }
@@ -484,7 +493,7 @@ int runCustomReport (
           if (created.length ())
           {
             Date dt (::atoi (created.c_str ()));
-            age = formatSeconds ((time_t) (now - dt));
+            age = Duration (now - dt).format ();
             context.hooks.trigger ("format-age", "age", age);
             table.addCell (row, columnCount, age);
           }
@@ -506,7 +515,8 @@ int runCustomReport (
           if (created.length ())
           {
             Date dt (::atoi (created.c_str ()));
-            age = formatSecondsCompact ((time_t) (now - dt));
+            age = Duration (now - dt).formatCompact ();
+
             context.hooks.trigger ("format-age_compact", "age_compact", age);
             table.addCell (row, columnCount, age);
           }

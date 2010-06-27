@@ -35,14 +35,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration ()
-: mDays (0)
+: mSecs (0)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration (time_t input)
 {
-  mDays = input;
+  mSecs = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,27 +54,92 @@ Duration::Duration (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 Duration::operator time_t ()
 {
-  return mDays;
+  return mSecs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration::operator std::string ()
 {
   std::stringstream s;
-  s << mDays;
+  s << mSecs;
   return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Duration& Duration::operator= (const Duration& other)
+{
+  if (this != &other)
+    mSecs = other.mSecs;
+
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Duration::format () const
+{
+  char formatted[24];
+  float days = (float) mSecs / 86400.0;
+
+  if (mSecs >= 86400 * 365)
+    sprintf (formatted, "%.1f yrs", (days / 365));
+  else if (mSecs > 86400 * 84)
+    sprintf (formatted, "%1d mth%s",
+                         (int) (float) (days / 30.6),
+                        ((int) (float) (days / 30.6) == 1 ? "" : "s"));
+  else if (mSecs > 86400 * 13)
+    sprintf (formatted, "%d wk%s",
+                         (int) (float) (days / 7.0),
+                        ((int) (float) (days / 7.0) == 1 ? "" : "s"));
+  else if (mSecs >= 86400)
+    sprintf (formatted, "%d day%s",
+                         (int) days,
+                        ((int) days == 1 ? "" : "s"));
+  else if (mSecs >= 3600)
+    sprintf (formatted, "%d hr%s",
+                         (int) (float) (mSecs / 3600),
+                        ((int) (float) (mSecs / 3600) == 1 ? "" : "s"));
+  else if (mSecs >= 60)
+    sprintf (formatted, "%d min%s",
+                         (int) (float) (mSecs / 60),
+                        ((int) (float) (mSecs / 60) == 1 ? "" : "s"));
+  else if (mSecs >= 1)
+    sprintf (formatted, "%d sec%s",
+                         (int) mSecs,
+                        ((int) mSecs == 1 ? "" : "s"));
+  else
+    strcpy (formatted, "-"); // no i18n
+
+  return std::string (formatted);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Duration::formatCompact () const
+{
+  char formatted[24];
+  float days = (float) mSecs / 86400.0;
+
+       if (mSecs >= 86400 * 365) sprintf (formatted, "%.1fy", (days / 365));
+  else if (mSecs >= 86400 * 84)  sprintf (formatted, "%1dmo", (int) (float) (days / 30.6));
+  else if (mSecs >= 86400 * 13)  sprintf (formatted, "%dwk",  (int) (float) (days / 7.0));
+  else if (mSecs >= 86400)       sprintf (formatted, "%dd",   (int) days);
+  else if (mSecs >= 3600)        sprintf (formatted, "%dh",   (int) (float) (mSecs / 3600));
+  else if (mSecs >= 60)          sprintf (formatted, "%dm",   (int) (float) (mSecs / 60));
+  else if (mSecs >= 1)           sprintf (formatted, "%ds",   (int) mSecs);
+  else                           strcpy (formatted, "-");
+
+  return std::string (formatted);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator< (const Duration& other)
 {
-  return mDays < other.mDays;
+  return mSecs < other.mSecs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator> (const Duration& other)
 {
-  return mDays > other.mDays;
+  return mSecs > other.mSecs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -182,16 +247,16 @@ void Duration::parse (const std::string& input)
   {
     std::string found = matches[0];
 
-         if (found == "daily"    || found == "day")       mDays = 1;      // TODO i18n
-    else if (found == "weekdays")                         mDays = 1;      // TODO i18n
-    else if (found == "weekly"   || found == "sennight")  mDays = 7;      // TODO i18n
-    else if (found == "biweekly" || found == "fortnight") mDays = 14;     // TODO i18n
-    else if (found == "monthly")                          mDays = 30;     // TODO i18n
-    else if (found == "bimonthly")                        mDays = 61;     // TODO i18n
-    else if (found == "quarterly")                        mDays = 91;     // TODO i18n
-    else if (found == "semiannual")                       mDays = 183;    // TODO i18n
-    else if (found == "yearly"   || found == "annual")    mDays = 365;    // TODO i18n
-    else if (found == "biannual" || found == "biyearly")  mDays = 730;    // TODO i18n
+         if (found == "daily"    || found == "day")       mSecs = 86400 * 1;   // TODO i18n
+    else if (found == "weekdays")                         mSecs = 86400 * 1;   // TODO i18n
+    else if (found == "weekly"   || found == "sennight")  mSecs = 86400 * 7;   // TODO i18n
+    else if (found == "biweekly" || found == "fortnight") mSecs = 86400 * 14;  // TODO i18n
+    else if (found == "monthly")                          mSecs = 86400 * 30;  // TODO i18n
+    else if (found == "bimonthly")                        mSecs = 86400 * 61;  // TODO i18n
+    else if (found == "quarterly")                        mSecs = 86400 * 91;  // TODO i18n
+    else if (found == "semiannual")                       mSecs = 86400 * 183; // TODO i18n
+    else if (found == "yearly"   || found == "annual")    mSecs = 86400 * 365; // TODO i18n
+    else if (found == "biannual" || found == "biyearly")  mSecs = 86400 * 730; // TODO i18n
   }
 
   // Support \d+ \s? s|secs?|m|mins?|h|hrs?|d|days?|wks?|mo|mths?|y|yrs?|-
@@ -205,43 +270,43 @@ void Duration::parse (const std::string& input)
     {
       n.skip (' ');
 
-           if (n.getLiteral ("yrs")  && n.depleted ()) mDays = value * 365;
-      else if (n.getLiteral ("yr")   && n.depleted ()) mDays = value * 365;
-      else if (n.getLiteral ("y")    && n.depleted ()) mDays = value * 365;
+           if (n.getLiteral ("yrs")  && n.depleted ()) mSecs = value * 86400 * 365;
+      else if (n.getLiteral ("yr")   && n.depleted ()) mSecs = value * 86400 * 365;
+      else if (n.getLiteral ("y")    && n.depleted ()) mSecs = value * 86400 * 365;
 
-      else if (n.getLiteral ("qtrs") && n.depleted ()) mDays = value * 91;
-      else if (n.getLiteral ("qtr")  && n.depleted ()) mDays = value * 91;
-      else if (n.getLiteral ("q")    && n.depleted ()) mDays = value * 91;
+      else if (n.getLiteral ("qtrs") && n.depleted ()) mSecs = value * 86400 * 91;
+      else if (n.getLiteral ("qtr")  && n.depleted ()) mSecs = value * 86400 * 91;
+      else if (n.getLiteral ("q")    && n.depleted ()) mSecs = value * 86400 * 91;
 
-      else if (n.getLiteral ("mths") && n.depleted ()) mDays = value * 30;
-      else if (n.getLiteral ("mth")  && n.depleted ()) mDays = value * 30;
-      else if (n.getLiteral ("mo")   && n.depleted ()) mDays = value * 30;
+      else if (n.getLiteral ("mths") && n.depleted ()) mSecs = value * 86400 * 30;
+      else if (n.getLiteral ("mth")  && n.depleted ()) mSecs = value * 86400 * 30;
+      else if (n.getLiteral ("mo")   && n.depleted ()) mSecs = value * 86400 * 30;
 
-      else if (n.getLiteral ("wks")  && n.depleted ()) mDays = value * 7;
-      else if (n.getLiteral ("wk")   && n.depleted ()) mDays = value * 7;
-      else if (n.getLiteral ("w")    && n.depleted ()) mDays = value * 7;
+      else if (n.getLiteral ("wks")  && n.depleted ()) mSecs = value * 86400 * 7;
+      else if (n.getLiteral ("wk")   && n.depleted ()) mSecs = value * 86400 * 7;
+      else if (n.getLiteral ("w")    && n.depleted ()) mSecs = value * 86400 * 7;
 
-      else if (n.getLiteral ("days") && n.depleted ()) mDays = value * 1;
-      else if (n.getLiteral ("day")  && n.depleted ()) mDays = value * 1;
-      else if (n.getLiteral ("d")    && n.depleted ()) mDays = value * 1;
+      else if (n.getLiteral ("days") && n.depleted ()) mSecs = value * 86400;
+      else if (n.getLiteral ("day")  && n.depleted ()) mSecs = value * 86400;
+      else if (n.getLiteral ("d")    && n.depleted ()) mSecs = value * 86400;
 
-      else if (n.getLiteral ("hrs")  && n.depleted ()) mDays = 0;
-      else if (n.getLiteral ("hr")   && n.depleted ()) mDays = 0;
-      else if (n.getLiteral ("h")    && n.depleted ()) mDays = 0;
+      else if (n.getLiteral ("hrs")  && n.depleted ()) mSecs = value * 3600;
+      else if (n.getLiteral ("hr")   && n.depleted ()) mSecs = value * 3600;
+      else if (n.getLiteral ("h")    && n.depleted ()) mSecs = value * 3600;
 
-      else if (n.getLiteral ("mins") && n.depleted ()) mDays = 0;
-      else if (n.getLiteral ("min")  && n.depleted ()) mDays = 0;
-      else if (n.getLiteral ("m")    && n.depleted ()) mDays = 0;
+      else if (n.getLiteral ("mins") && n.depleted ()) mSecs = value * 60;
+      else if (n.getLiteral ("min")  && n.depleted ()) mSecs = value * 60;
+      else if (n.getLiteral ("m")    && n.depleted ()) mSecs = value * 60;
 
-      else if (n.getLiteral ("secs") && n.depleted ()) mDays = 0;
-      else if (n.getLiteral ("sec")  && n.depleted ()) mDays = 0;
-      else if (n.getLiteral ("s")    && n.depleted ()) mDays = 0;
+      else if (n.getLiteral ("secs") && n.depleted ()) mSecs = value;
+      else if (n.getLiteral ("sec")  && n.depleted ()) mSecs = value;
+      else if (n.getLiteral ("s")    && n.depleted ()) mSecs = value;
 
-      else if (n.getLiteral ("-")    && n.depleted ()) mDays = 0;
+      else if (n.getLiteral ("-")    && n.depleted ()) mSecs = 0;
     }
   }
 
-  if (mDays == 0)
+  if (mSecs == 0)
     throw std::string ("The duration '") + input + "' was not recognized.";  // TODO i18n
 }
 

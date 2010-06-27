@@ -38,16 +38,20 @@ public:
   Duration (const std::string&);         // Parse
   bool operator< (const Duration&);
   bool operator> (const Duration&);
+  Duration& operator= (const Duration&);
   ~Duration ();                          // Destructor
 
   operator time_t ();
   operator std::string ();
 
+  std::string format () const;
+  std::string formatCompact () const;
+
   bool valid (const std::string&) const;
   void parse (const std::string&);
 
 private:
-  time_t mDays;
+  time_t mSecs;
 };
 
 #endif

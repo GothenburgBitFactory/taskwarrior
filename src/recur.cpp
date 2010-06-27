@@ -323,11 +323,11 @@ Date getNextRecurrence (Date& current, std::string& period)
   }
 
   // If the period is an 'easy' one, add it to current, and we're done.
-  int days = 0;
-  try { Duration du (period); days = du; }
-  catch (...) { days = 0; }
+  int secs = 0;
+  try { Duration du (period); secs = du; }
+  catch (...) { secs = 0; }
 
-  return current + (days * 86400);
+  return current + secs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -39,6 +39,7 @@
 #include "Directory.h"
 #include "File.h"
 #include "Date.h"
+#include "Duration.h"
 #include "Table.h"
 #include "text.h"
 #include "util.h"
@@ -549,7 +550,7 @@ int handleInfo (std::string &outs)
       if (created.length ())
       {
         Date dt (atoi (created.c_str ()));
-        age = formatSeconds ((time_t) (now - dt));
+        age = Duration (now - dt).format ();
       }
 
       context.hooks.trigger ("format-entry", "entry", entry);
@@ -695,11 +696,7 @@ int handleReportSummary (std::string &outs)
         table.addCell (row, 0, (i->first == "" ? "(none)" : i->first));
         table.addCell (row, 1, countPending[i->first]);
         if (counter[i->first])
-        {
-          std::string age;
-          age = formatSeconds ((time_t) (sumEntry[i->first] / counter[i->first]));
-          table.addCell (row, 2, age);
-        }
+          table.addCell (row, 2, Duration (sumEntry[i->first] / counter[i->first]).format ());
 
         int c = countCompleted[i->first];
         int p = countPending[i->first];
@@ -2517,35 +2514,35 @@ int handleReportStats (std::string &outs)
 
       row = table.addRow ();
       table.addCell (row, 0, "Task used for");
-      table.addCell (row, 1, formatSeconds (latest - earliest));
+      table.addCell (row, 1, Duration (latest - earliest).format ());
     }
 
     if (totalT)
     {
       row = table.addRow ();
       table.addCell (row, 0, "Task added every");
-      table.addCell (row, 1, formatSeconds ((latest - earliest) / totalT));
+      table.addCell (row, 1, Duration (((latest - earliest) / totalT)).format ());
     }
 
     if (completedT)
     {
       row = table.addRow ();
       table.addCell (row, 0, "Task completed every");
-      table.addCell (row, 1, formatSeconds ((latest - earliest) / completedT));
+      table.addCell (row, 1, Duration ((latest - earliest) / completedT).format ());
     }
 
     if (deletedT)
     {
       row = table.addRow ();
       table.addCell (row, 0, "Task deleted every");
-      table.addCell (row, 1, formatSeconds ((latest - earliest) / deletedT));
+      table.addCell (row, 1, Duration ((latest - earliest) / deletedT).format ());
     }
 
     if (pendingT || completedT)
     {
       row = table.addRow ();
       table.addCell (row, 0, "Average time pending");
-      table.addCell (row, 1, formatSeconds ((int) ((daysPending / (pendingT + completedT)) * 86400)));
+      table.addCell (row, 1, Duration ((int) ((daysPending / (pendingT + completedT)) * 86400)).format ());
     }
 
     if (totalT)

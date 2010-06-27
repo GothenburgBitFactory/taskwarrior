@@ -117,7 +117,7 @@ sub report
                     $data{'Context::initialize'},
                     $data{'Context::parse'},
                     $data{'TDB::loadPending'},
-                    $data{'TDB::loadCompleted'},
+                    $data{'TDB::loadCompleted'} || 0,
                     $data{'TDB::gc'},
                     $data{'TDB::commit'},
                     $data{'Table::render'};

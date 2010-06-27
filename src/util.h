@@ -55,8 +55,6 @@ bool confirm (const std::string&);
 int confirm3 (const std::string&);
 int confirm4 (const std::string&);
 void delay (float);
-std::string formatSeconds (time_t);
-std::string formatSecondsCompact (time_t);
 std::string formatBytes (size_t);
 int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&);
 const std::string uuid ();
