@@ -108,22 +108,48 @@ bool Duration::valid (const std::string& input) const
   if (autoComplete (lower_input, supported, matches) == 1)
     return true;
 
-  // Support \d+ d|w|m|q|y
-  // Verify all digits followed by d, w, m, q, or y.
-  unsigned int length = lower_input.length ();
-  for (unsigned int i = 0; i < length; ++i)
+  // Support \d+ \s? s|secs?|m|mins?|h|hrs?|d|days?|wks?|mo|mths?|y|yrs?|-
+  // Note: Does not support a sign character.  That must be external to
+  // Duration.
+  Nibbler n (lower_input);
+  int value;
+  if (n.getUnsignedInt (value))
   {
-    if (! isdigit (lower_input[i]) &&
-        i == length - 1)
-    {
-      std::string type = lower_input.substr (length - 1);
-      if (type == "d" ||   // TODO i18n
-          type == "w" ||   // TODO i18n
-          type == "m" ||   // TODO i18n
-          type == "q" ||   // TODO i18n
-          type == "y")     // TODO i18n
-        return true;
-    }
+    n.skip (' ');
+
+         if (n.getLiteral ("yrs")  && n.depleted ()) return true;
+    else if (n.getLiteral ("yr")   && n.depleted ()) return true;
+    else if (n.getLiteral ("y")    && n.depleted ()) return true;
+
+    else if (n.getLiteral ("qtrs") && n.depleted ()) return true;
+    else if (n.getLiteral ("qtr")  && n.depleted ()) return true;
+    else if (n.getLiteral ("q")    && n.depleted ()) return true;
+
+    else if (n.getLiteral ("mths") && n.depleted ()) return true;
+    else if (n.getLiteral ("mth")  && n.depleted ()) return true;
+    else if (n.getLiteral ("mo")   && n.depleted ()) return true;
+
+    else if (n.getLiteral ("wks")  && n.depleted ()) return true;
+    else if (n.getLiteral ("wk")   && n.depleted ()) return true;
+    else if (n.getLiteral ("w")    && n.depleted ()) return true;
+
+    else if (n.getLiteral ("days") && n.depleted ()) return true;
+    else if (n.getLiteral ("day")  && n.depleted ()) return true;
+    else if (n.getLiteral ("d")    && n.depleted ()) return true;
+
+    else if (n.getLiteral ("hrs")  && n.depleted ()) return true;
+    else if (n.getLiteral ("hr")   && n.depleted ()) return true;
+    else if (n.getLiteral ("h")    && n.depleted ()) return true;
+
+    else if (n.getLiteral ("mins") && n.depleted ()) return true;
+    else if (n.getLiteral ("min")  && n.depleted ()) return true;
+    else if (n.getLiteral ("m")    && n.depleted ()) return true;
+
+    else if (n.getLiteral ("secs") && n.depleted ()) return true;
+    else if (n.getLiteral ("sec")  && n.depleted ()) return true;
+    else if (n.getLiteral ("s")    && n.depleted ()) return true;
+
+    else if (n.getLiteral ("-")    && n.depleted ()) return true;
   }
 
   return false;
@@ -168,27 +194,50 @@ void Duration::parse (const std::string& input)
     else if (found == "biannual" || found == "biyearly")  mDays = 730;    // TODO i18n
   }
 
-  // Support \d+ d|w|m|q|y
+  // Support \d+ \s? s|secs?|m|mins?|h|hrs?|d|days?|wks?|mo|mths?|y|yrs?|-
+  // Note: Does not support a sign character.  That must be external to
+  // Duration.
   else
   {
-    // Verify all digits followed by d, w, m, q, or y.
-    unsigned int length = lower_input.length ();
-    for (unsigned int i = 0; i < length; ++i)
+    Nibbler n (lower_input);
+    int value;
+    if (n.getUnsignedInt (value))
     {
-      if (! isdigit (lower_input[i]) &&
-          i == length - 1)
-      {
-        int number = atoi (lower_input.substr (0, i).c_str ());
+      n.skip (' ');
 
-        switch (lower_input[length - 1])
-        {
-        case 'd': mDays = number *   1; break;   // TODO i18n
-        case 'w': mDays = number *   7; break;   // TODO i18n
-        case 'm': mDays = number *  30; break;   // TODO i18n
-        case 'q': mDays = number *  91; break;   // TODO i18n
-        case 'y': mDays = number * 365; break;   // TODO i18n
-        }
-      }
+           if (n.getLiteral ("yrs")  && n.depleted ()) mDays = value * 365;
+      else if (n.getLiteral ("yr")   && n.depleted ()) mDays = value * 365;
+      else if (n.getLiteral ("y")    && n.depleted ()) mDays = value * 365;
+
+      else if (n.getLiteral ("qtrs") && n.depleted ()) mDays = value * 91;
+      else if (n.getLiteral ("qtr")  && n.depleted ()) mDays = value * 91;
+      else if (n.getLiteral ("q")    && n.depleted ()) mDays = value * 91;
+
+      else if (n.getLiteral ("mths") && n.depleted ()) mDays = value * 30;
+      else if (n.getLiteral ("mth")  && n.depleted ()) mDays = value * 30;
+      else if (n.getLiteral ("mo")   && n.depleted ()) mDays = value * 30;
+
+      else if (n.getLiteral ("wks")  && n.depleted ()) mDays = value * 7;
+      else if (n.getLiteral ("wk")   && n.depleted ()) mDays = value * 7;
+      else if (n.getLiteral ("w")    && n.depleted ()) mDays = value * 7;
+
+      else if (n.getLiteral ("days") && n.depleted ()) mDays = value * 1;
+      else if (n.getLiteral ("day")  && n.depleted ()) mDays = value * 1;
+      else if (n.getLiteral ("d")    && n.depleted ()) mDays = value * 1;
+
+      else if (n.getLiteral ("hrs")  && n.depleted ()) mDays = 0;
+      else if (n.getLiteral ("hr")   && n.depleted ()) mDays = 0;
+      else if (n.getLiteral ("h")    && n.depleted ()) mDays = 0;
+
+      else if (n.getLiteral ("mins") && n.depleted ()) mDays = 0;
+      else if (n.getLiteral ("min")  && n.depleted ()) mDays = 0;
+      else if (n.getLiteral ("m")    && n.depleted ()) mDays = 0;
+
+      else if (n.getLiteral ("secs") && n.depleted ()) mDays = 0;
+      else if (n.getLiteral ("sec")  && n.depleted ()) mDays = 0;
+      else if (n.getLiteral ("s")    && n.depleted ()) mDays = 0;
+
+      else if (n.getLiteral ("-")    && n.depleted ()) mDays = 0;
     }
   }
 
