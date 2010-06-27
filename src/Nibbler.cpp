@@ -212,22 +212,16 @@ bool Nibbler::getUntilEOS (std::string& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getQuoted (char c, std::string& result)
 {
-  std::string::size_type start = mCursor;
-  if (start < mLength && mInput[start] == c)
+  std::string::size_type backup = mCursor;
+
+  if (skip (c) &&
+      getUntil (c, result) &&
+      skip (c))
   {
-    ++start;
-    if (start < mLength)
-    {
-      std::string::size_type end = mInput.find (c, start);
-      if (end != std::string::npos)
-      {
-        result = mInput.substr (start, end - start);
-        mCursor = end + 1;
-        return true;
-      }
-    }
+    return true;
   }
 
+  mCursor = backup;
   return false;
 }
 
@@ -317,10 +311,8 @@ bool Nibbler::getRx (const std::string& regex, std::string& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipN (const int quantity /* = 1 */)
 {
-  if (mCursor >= mLength)
-    return false;
-
-  if (mCursor <= mLength - quantity)
+  if (mCursor < mLength &&
+      mCursor <= mLength - quantity)
   {
     mCursor += quantity;
     return true;
