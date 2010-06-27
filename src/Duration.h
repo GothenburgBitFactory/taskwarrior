@@ -52,6 +52,7 @@ public:
 
 private:
   time_t mSecs;
+  bool mNegative;
 };
 
 #endif

@@ -36,13 +36,23 @@
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration ()
 : mSecs (0)
+, mNegative (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration (time_t input)
 {
-  mSecs = input;
+  if (input < 0)
+  {
+    mSecs = -input;
+    mNegative = true;
+  }
+  else
+  {
+    mSecs = input;
+    mNegative = false;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +71,7 @@ Duration::operator time_t ()
 Duration::operator std::string ()
 {
   std::stringstream s;
-  s << mSecs;
+  s << (mNegative ? -mSecs : mSecs);
   return s.str ();
 }
 
@@ -69,7 +79,10 @@ Duration::operator std::string ()
 Duration& Duration::operator= (const Duration& other)
 {
   if (this != &other)
-    mSecs = other.mSecs;
+  {
+    mSecs     = other.mSecs;
+    mNegative = other.mNegative;
+  }
 
   return *this;
 }
@@ -81,30 +94,30 @@ std::string Duration::format () const
   float days = (float) mSecs / 86400.0;
 
   if (mSecs >= 86400 * 365)
-    sprintf (formatted, "%.1f yrs", (days / 365));
+    sprintf (formatted, "%s%.1f yrs", (mNegative ? "-" : ""), (days / 365));
   else if (mSecs > 86400 * 84)
-    sprintf (formatted, "%1d mth%s",
-                         (int) (float) (days / 30.6),
+    sprintf (formatted, "%s%1d mth%s",
+                        (mNegative ? "-" : ""),  (int) (float) (days / 30.6),
                         ((int) (float) (days / 30.6) == 1 ? "" : "s"));
   else if (mSecs > 86400 * 13)
-    sprintf (formatted, "%d wk%s",
-                         (int) (float) (days / 7.0),
+    sprintf (formatted, "%s%d wk%s",
+                        (mNegative ? "-" : ""),  (int) (float) (days / 7.0),
                         ((int) (float) (days / 7.0) == 1 ? "" : "s"));
   else if (mSecs >= 86400)
-    sprintf (formatted, "%d day%s",
-                         (int) days,
+    sprintf (formatted, "%s%d day%s",
+                        (mNegative ? "-" : ""),  (int) days,
                         ((int) days == 1 ? "" : "s"));
   else if (mSecs >= 3600)
-    sprintf (formatted, "%d hr%s",
-                         (int) (float) (mSecs / 3600),
+    sprintf (formatted, "%s%d hr%s",
+                        (mNegative ? "-" : ""),  (int) (float) (mSecs / 3600),
                         ((int) (float) (mSecs / 3600) == 1 ? "" : "s"));
   else if (mSecs >= 60)
-    sprintf (formatted, "%d min%s",
-                         (int) (float) (mSecs / 60),
+    sprintf (formatted, "%s%d min%s",
+                        (mNegative ? "-" : ""),  (int) (float) (mSecs / 60),
                         ((int) (float) (mSecs / 60) == 1 ? "" : "s"));
   else if (mSecs >= 1)
-    sprintf (formatted, "%d sec%s",
-                         (int) mSecs,
+    sprintf (formatted, "%s%d sec%s",
+                        (mNegative ? "-" : ""),  (int) mSecs,
                         ((int) mSecs == 1 ? "" : "s"));
   else
     strcpy (formatted, "-"); // no i18n
@@ -118,13 +131,13 @@ std::string Duration::formatCompact () const
   char formatted[24];
   float days = (float) mSecs / 86400.0;
 
-       if (mSecs >= 86400 * 365) sprintf (formatted, "%.1fy", (days / 365));
-  else if (mSecs >= 86400 * 84)  sprintf (formatted, "%1dmo", (int) (float) (days / 30.6));
-  else if (mSecs >= 86400 * 13)  sprintf (formatted, "%dwk",  (int) (float) (days / 7.0));
-  else if (mSecs >= 86400)       sprintf (formatted, "%dd",   (int) days);
-  else if (mSecs >= 3600)        sprintf (formatted, "%dh",   (int) (float) (mSecs / 3600));
-  else if (mSecs >= 60)          sprintf (formatted, "%dm",   (int) (float) (mSecs / 60));
-  else if (mSecs >= 1)           sprintf (formatted, "%ds",   (int) mSecs);
+       if (mSecs >= 86400 * 365) sprintf (formatted, "%s%.1fy", (mNegative ? "-" : ""), (days / 365));
+  else if (mSecs >= 86400 * 84)  sprintf (formatted, "%s%1dmo", (mNegative ? "-" : ""), (int) (float) (days / 30.6));
+  else if (mSecs >= 86400 * 13)  sprintf (formatted, "%s%dwk",  (mNegative ? "-" : ""), (int) (float) (days / 7.0));
+  else if (mSecs >= 86400)       sprintf (formatted, "%s%dd",   (mNegative ? "-" : ""), (int) days);
+  else if (mSecs >= 3600)        sprintf (formatted, "%s%dh",   (mNegative ? "-" : ""), (int) (float) (mSecs / 3600));
+  else if (mSecs >= 60)          sprintf (formatted, "%s%dm",   (mNegative ? "-" : ""), (int) (float) (mSecs / 60));
+  else if (mSecs >= 1)           sprintf (formatted, "%s%ds",   (mNegative ? "-" : ""), (int) mSecs);
   else                           strcpy (formatted, "-");
 
   return std::string (formatted);
@@ -133,13 +146,19 @@ std::string Duration::formatCompact () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator< (const Duration& other)
 {
-  return mSecs < other.mSecs;
+  long left  = (long) (      mNegative ?       -mSecs :       mSecs);
+  long right = (long) (other.mNegative ? -other.mSecs : other.mSecs);
+
+  return left < right;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator> (const Duration& other)
 {
-  return mSecs > other.mSecs;
+  long left  = (long) (      mNegative ?       -mSecs :       mSecs);
+  long right = (long) (other.mNegative ? -other.mSecs : other.mSecs);
+
+  return left > right;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -173,14 +192,18 @@ bool Duration::valid (const std::string& input) const
   if (autoComplete (lower_input, supported, matches) == 1)
     return true;
 
-  // Support \d+ \s? s|secs?|m|mins?|h|hrs?|d|days?|wks?|mo|mths?|y|yrs?|-
+  // Support \s+ -? \d+ \s? s|secs?|m|mins?|h|hrs?|d|days?|wks?|mo|mths?|y|yrs?|-
   // Note: Does not support a sign character.  That must be external to
   // Duration.
   Nibbler n (lower_input);
   int value;
+
+  n.skipAll (' ');
+  n.skip ('-');
+
   if (n.getUnsignedInt (value))
   {
-    n.skip (' ');
+    n.skipAll (' ');
 
          if (n.getLiteral ("yrs")  && n.depleted ()) return true;
     else if (n.getLiteral ("yr")   && n.depleted ()) return true;
@@ -259,16 +282,22 @@ void Duration::parse (const std::string& input)
     else if (found == "biannual" || found == "biyearly")  mSecs = 86400 * 730; // TODO i18n
   }
 
-  // Support \d+ \s? s|secs?|m|mins?|h|hrs?|d|days?|wks?|mo|mths?|y|yrs?|-
+  // Support -? \d+ \s? s|secs?|m|mins?|h|hrs?|d|days?|wks?|mo|mths?|y|yrs?|-
   // Note: Does not support a sign character.  That must be external to
   // Duration.
   else
   {
     Nibbler n (lower_input);
+
+    n.skipAll (' ');
+    mNegative = false;
+    if (n.skip ('-'))
+      mNegative = true;
+
     int value;
     if (n.getUnsignedInt (value))
     {
-      n.skip (' ');
+      n.skipAll (' ');
 
            if (n.getLiteral ("yrs")  && n.depleted ()) mSecs = value * 86400 * 365;
       else if (n.getLiteral ("yr")   && n.depleted ()) mSecs = value * 86400 * 365;

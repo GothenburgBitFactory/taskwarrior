@@ -435,14 +435,7 @@ int runCustomReport (
           if (due.length ())
           {
             Date dt (::atoi (due.c_str ()));
-            time_t cntdwn = (time_t) (now - dt);
-            Duration du (cntdwn < 0 ? -cntdwn : cntdwn);
-
-            if (cntdwn < 0)
-              countdown = std::string ("-") + du.format ();
-            else
-              countdown = du.format ();
-
+            countdown = Duration (now - dt).format ();
             context.hooks.trigger ("format-countdown", "countdown", countdown);
             table.addCell (row, columnCount, countdown);
           }
@@ -464,14 +457,7 @@ int runCustomReport (
           if (due.length ())
           {
             Date dt (::atoi (due.c_str ()));
-            time_t cntdwn = (time_t) (now - dt);
-            Duration du (cntdwn < 0 ? -cntdwn : cntdwn);
-
-            if (cntdwn < 0)
-              countdown = std::string ("-") + du.formatCompact ();
-            else
-              countdown = du.formatCompact ();
-
+            countdown = Duration (now - dt).formatCompact ();
             context.hooks.trigger ("format-countdown_compact", "countdown_compact", countdown);
             table.addCell (row, columnCount, countdown);
           }
@@ -698,6 +684,12 @@ int runCustomReport (
                       (direction == '+' ?
                         Table::ascendingPeriod :
                         Table::descendingPeriod));
+
+      else if (column == "countdown" || column == "countdown_compact")
+        table.sortOn (columnIndex[column],
+                      (direction == '+' ?
+                        Table::descendingPeriod :   // Yes, these are flipped.
+                        Table::ascendingPeriod));   // Yes, these are flipped.
 
       else
         table.sortOn (columnIndex[column],

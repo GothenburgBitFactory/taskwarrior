@@ -25,9 +25,11 @@
    by specifying either 'limit:page' to a command, or 'report.xxx.limit:page'
    in a report specification (thanks to T. Charles Yun).
  + Improvements to the man pages (thanks to T. Charles Yun).
- + Modified the 'next' report to only display a page, by default.
+ + Modified the 'next' report to only display one page, by default.
  + Added feature #408, making it possible to delete annotations with the new
    denotate command and the provided description (thanks to Dirk Deimeke).
+ + Added support for more varied durations when specifying recurring tasks,
+   such as '3 mths' or '24 hrs'.
  + Fixed bug #406 so that task now includes command aliases in the _commands
    helper command used by shell completion scripts.
  + Fixed bug #211 - it was unclear which commands modify a task description.
@@ -37,6 +39,8 @@
    containing Unicode characters to fail (thanks to Michal Josífko).
  + Fixed bug #416, which caused sorting on a date to fail if the year was not
    included in the dateformat (thanks to Michelle Crane).
+ + Fixed bug #417, which caused sorting on countdown fields to be wrong
+   (thanks to Michell Crane).
 
 ------ old releases ------------------------------
 
