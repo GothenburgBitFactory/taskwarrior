@@ -39,8 +39,8 @@
    containing Unicode characters to fail (thanks to Michal Josífko).
  + Fixed bug #416, which caused sorting on a date to fail if the year was not
    included in the dateformat (thanks to Michelle Crane).
- + Fixed bug #417, which caused sorting on countdown fields to be wrong
-   (thanks to Michell Crane).
+ + Fixed bug #417, which caused sorting on countdown and age fields to be
+   wrong (thanks to Michell Crane).
  + Fixed bug #418, which caused the attribute modifier 'due.before' to fail
    if the year was not included in the dateformat (thanks to Michelle Crane).
  + Fixed bug #132, which failed to set a sort order so that active tasks sort

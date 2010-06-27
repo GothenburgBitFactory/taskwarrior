@@ -679,7 +679,7 @@ int runCustomReport (
                         Table::ascendingDueDate :
                         Table::descendingDueDate));
 
-      else if (column == "recur")
+      else if (column == "recur" || column == "age" || column == "age_compact")
         table.sortOn (columnIndex[column],
                       (direction == '+' ?
                         Table::ascendingPeriod :
