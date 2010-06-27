@@ -492,8 +492,24 @@ bool Att::match (const Att& other) const
   // If there are no mods, just perform a straight compare on value.
   if (mMod == "")
   {
-    if (!compare (mValue, other.mValue, (bool) case_sensitive))
-      return false;
+    // Exact matches on dates should only compare m/d/y, not h:m:s.  This allows
+    // Comapisons like "task list due:today" (bug #405).
+    std::string which = type (mName);
+    if (which == "date")
+    {
+      Date left (mValue);
+      Date right (other.mValue);
+
+      if (left.year ()  != right.year ()  ||
+          left.month () != right.month () ||
+          left.day ()   != right.day ())
+        return false;
+    }
+    else
+    {
+      if (!compare (mValue, other.mValue, (bool) case_sensitive))
+        return false;
+    }
   }
 
   // has = contains as a substring.

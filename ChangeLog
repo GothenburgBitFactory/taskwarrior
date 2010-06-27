@@ -45,6 +45,9 @@
    if the year was not included in the dateformat (thanks to Michelle Crane).
  + Fixed bug #132, which failed to set a sort order so that active tasks sort
    higher than inactive tasks, all things being equal.
+ + Fixed bug #405, which incorrectly compared dates on tasks created by
+   versions earlier than 1.9.1 to those created by 1.9.1 or later (thanks to
+   Ivo Jimenez).
 
 ------ old releases ------------------------------
 
