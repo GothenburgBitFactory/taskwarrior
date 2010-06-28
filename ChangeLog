@@ -48,6 +48,7 @@
  + Fixed bug #405, which incorrectly compared dates on tasks created by
    versions earlier than 1.9.1 to those created by 1.9.1 or later (thanks to
    Ivo Jimenez).
+ + Fixed bug that prevented 'task list priority.above:L' from working.
 
 ------ old releases ------------------------------
 

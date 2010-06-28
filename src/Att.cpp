@@ -405,6 +405,9 @@ std::string Att::type (const std::string& name) const
   else if (name == "limit")
     return "number";
 
+  else if (name == "priority")
+    return "priority";
+
   else
     return "text";
 }
@@ -604,6 +607,14 @@ bool Att::match (const Att& other) const
       if (mValue <= other.mValue)
         return false;
     }
+    else if (which == "priority")
+    {
+      if (mValue == "" ||
+          other.mValue == "H" ||
+          mValue == other.mValue ||
+          (mValue == "L" && other.mValue == "M"))
+        return false;
+    }
   }
 
   // after = over = above = >
@@ -632,6 +643,14 @@ bool Att::match (const Att& other) const
     else if (which == "text")
     {
       if (mValue >= other.mValue)
+        return false;
+    }
+    else if (which == "priority")
+    {
+      if (mValue == "H" ||
+          other.mValue == "" ||
+          mValue == other.mValue ||
+          (mValue == "M" && other.mValue == "L"))
         return false;
     }
   }
