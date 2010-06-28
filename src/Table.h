@@ -57,8 +57,6 @@ public:
            Table (const Table&);
            Table& operator= (const Table&);
 
-// TODO Obsolete - this is not used.  Consider removal.
-//           void setTableColor (const Color&);
            void setTableAlternateColor (const Color&);
            void setTablePadding (int);
            void setTableIntraPadding (int);
@@ -66,8 +64,6 @@ public:
            void setTableDashedUnderline ();
 
            int addColumn (const std::string&);
-// TODO Obsolete - this is not used.  Consider removal.
-//           void setColumnColor (int, const Color&);
            void setColumnUnderline (int);
            void setColumnPadding (int, int);
            void setColumnWidth (int, int);
@@ -97,7 +93,6 @@ public:
 private:
            std::string getCell (const int, const int);
            Color getColor (const int, const int, const int);
-           Color getHeaderColor (const int);
            Color getHeaderUnderline (const int);
            int getPadding (const int);
            int getIntraPadding ();
@@ -109,7 +104,6 @@ private:
            void formatCell (const int, const int, const int, const int, const int, std::vector <std::string>&, std::string&);
            void sort (std::vector <int>&);
            void clean (std::string&);
-           void optimize (std::string&) const;
 
 private:
   std::vector <std::string> mColumns;

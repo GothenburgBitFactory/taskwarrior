@@ -73,14 +73,6 @@ Table::~Table ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
-void Table::setTableColor (const Color& c)
-{
-  mColor["table"] = c;
-}
-*/
-
-////////////////////////////////////////////////////////////////////////////////
 void Table::setTableAlternateColor (const Color& c)
 {
   alternate = c;
@@ -122,17 +114,6 @@ int Table::addColumn (const std::string& col)
   mColumns.push_back (col == "" ? " " : col);
   return mColumns.size () - 1;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete - this call is not used.  Consider removal.
-/*
-void Table::setColumnColor (int column, const Color& c)
-{
-  char id[12];
-  sprintf (id, "col:%d", column);
-  mColor[id] = c;
-}
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void Table::setColumnUnderline (int column)
@@ -359,30 +340,6 @@ Color Table::getColor (const int index, const int row, const int col)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete - this is not used.  Consider removal.
-Color Table::getHeaderColor (int col)
-{
-  // Color defaults to trivial.
-  Color c;
-
-/*
-  std::map <std::string, Color>::iterator i;
-  char id[24];
-
-  // Blend with a table color, if specified.
-  if ((i = mColor.find ("table")) != mColor.end ())
-    c.blend (i->second);
-
-  // Blend with a column color, if specified.
-  sprintf (id, "col:%d", col);
-  if ((i = mColor.find (id)) != mColor.end ())
-    c.blend (i->second);
-*/
-
-  return c;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Color Table::getHeaderUnderline (int col)
 {
   char idCol[12];
@@ -526,9 +483,8 @@ const std::string Table::formatHeader (
 {
   assert (width > 0);
 
-  Color c = getHeaderColor (col);
   std::string data = mColumns[col];
-  c.blend (getHeaderUnderline (col));
+  Color c = getHeaderUnderline (col);
 
   std::string pad      = "";
   std::string intraPad = "";
@@ -575,8 +531,7 @@ const std::string Table::formatHeaderDashedUnderline (
 {
   assert (width > 0);
 
-  Color c = getHeaderColor (col);
-  c.blend (getHeaderUnderline (col));
+  Color c = getHeaderUnderline (col);
 
   std::string data     = "";
   for (int i = 0; i < width; ++i)
@@ -693,79 +648,6 @@ int Table::rowCount ()
 int Table::columnCount ()
 {
   return mColumns.size ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Removes extraneous output characters, such as:
-//   - removal of redundant color codes:
-//       ^[[31mName^[[0m ^[[31mValue^[[0m -> ^[[31mName Value^[[0m
-//
-// This method is a work in progress.
-void Table::optimize (std::string& output) const
-{
-//  int start = output.length ();
-
-/*
-  Well, how about that!
-
-  The benchmark.t unit test adds a 1000 tasks, fiddles with some of them, then
-  runs a series of reports.  The results are timed, and look like this:
-
-    1000 tasks added      in  3 seconds
-    600 tasks altered     in 32 seconds
-    'task ls'             in 26 seconds
-    'task list'           in 17 seconds
-    'task list pri:H'     in 19 seconds
-    'task list +tag'      in  0 seconds
-    'task list project_A' in  0 seconds
-    'task long'           in 29 seconds
-    'task completed'      in  2 seconds
-    'task history'        in  0 seconds
-    'task ghistory'       in  0 seconds
-
-  This performance is terrible.  To identify the worst offender, Various Timer
-  objects were added in Table::render, assuming that table sorting is the major
-  bottleneck. But no, it is Table::optimize that is the problem.  After
-  commenting out this method, the results are now:
-
-    1000 tasks added      in  3 seconds
-    600 tasks altered     in 29 seconds
-    'task ls'             in  0 seconds
-    'task list'           in  0 seconds
-    'task list pri:H'     in  1 seconds
-    'task list +tag'      in  0 seconds
-    'task list project_A' in  0 seconds
-    'task long'           in  0 seconds
-    'task completed'      in  0 seconds
-    'task history'        in  0 seconds
-    'task ghistory'       in  0 seconds
-
-  Much better.
-*/
-
-    char patterns[5][16] =
-    {
-      "        \n",
-      "    \n",
-      "  \n",
-      " \n",
-    };
-
-    std::string::size_type trailing;
-
-    for (int i = 0; i < 4; i++)
-    {
-      do
-      {
-        trailing = output.find (patterns[i]);
-        if (trailing != std::string::npos)
-          output.replace (trailing, strlen (patterns[i]), "\n");
-      }
-      while (trailing != std::string::npos);
-    }
-
-//  std::cout << int ((100 * (start - output.length ()) / start))
-//            << "%" << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1133,7 +1015,6 @@ const std::string Table::render (int maxrows /* = 0 */, int maxlines /* = 0 */)
       break;
   }
 
-  optimize (output);
   return output;
 }
 
