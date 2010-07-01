@@ -1028,6 +1028,7 @@ int handleReportHistoryMonthly (std::string &outs)
   return rc;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 int handleReportHistoryAnnual (std::string &outs)
 {
   int rc = 0;
@@ -1457,7 +1458,7 @@ int handleReportGHistoryAnnual (std::string &outs)
       }
     }
 
-    int widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
+    int widthOfBar = context.getWidth () - 5;   // 5 == strlen ("2008 ")
 
     // Now build the table.
     Table table;
