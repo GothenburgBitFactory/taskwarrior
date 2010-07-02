@@ -112,6 +112,7 @@ void Cmd::load ()
     commands.push_back ("_ids");
     commands.push_back ("_config");
     commands.push_back ("_version");
+    commands.push_back ("_merge");
     commands.push_back ("export.csv");
     commands.push_back ("export.ical");
     commands.push_back ("history.monthly");
@@ -233,7 +234,8 @@ bool Cmd::isReadOnlyCommand ()
 // Commands that directly modify the data files.
 bool Cmd::isWriteCommand ()
 {
-  if (command == context.stringtable.get (CMD_ADD,       "add")       ||
+  if (command == "_merge"                                             ||
+      command == context.stringtable.get (CMD_ADD,       "add")       ||
       command == context.stringtable.get (CMD_APPEND,    "append")    ||
       command == context.stringtable.get (CMD_ANNOTATE,  "annotate")  ||
       command == context.stringtable.get (CMD_DENOTATE,  "denotate")  ||

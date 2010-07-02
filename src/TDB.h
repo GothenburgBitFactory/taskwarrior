@@ -62,6 +62,7 @@ public:
   int   gc ();                // Clean up pending
   int   nextId ();
   void  undo ();
+  void  merge (const std::string&);
 
 private:
   FILE* openAndLock (const std::string&);

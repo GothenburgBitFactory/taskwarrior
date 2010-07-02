@@ -41,6 +41,7 @@ public:
   Att (const std::string&, int);
   Att (const Att&);
   Att& operator= (const Att&);
+  bool operator== (const Att&) const;
   ~Att ();
 
   bool valid (const std::string&) const;

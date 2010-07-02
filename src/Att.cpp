@@ -155,6 +155,14 @@ Att& Att::operator= (const Att& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Att::operator== (const Att& other) const
+{
+  return mName  == other.mName &&
+         mMod   == other.mMod  &&
+         mValue == other.mValue;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Att::~Att ()
 {
 }

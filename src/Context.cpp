@@ -240,6 +240,7 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "shell")            {      handleShell                 (   ); }
 #endif
   else if (cmd.command == "undo")             {      handleUndo                  (   ); }
+  else if (cmd.command == "_merge")           {      handleMerge                 (out); }
   else if (cmd.command == "_projects")        { rc = handleCompletionProjects    (out); }
   else if (cmd.command == "_tags")            { rc = handleCompletionTags        (out); }
   else if (cmd.command == "_commands")        { rc = handleCompletionCommands    (out); }

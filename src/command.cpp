@@ -517,6 +517,25 @@ void handleUndo ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void handleMerge (std::string& outs)
+{
+  if (context.hooks.trigger ("pre-merge-command"))
+  {
+    std::string file = trim (context.task.get ("description"));
+    if (file.length () > 0)
+    {
+      context.tdb.lock (context.config.getBoolean ("locking"));
+      context.tdb.merge (file);
+      context.tdb.unlock ();
+
+      context.hooks.trigger ("post-merge-command");
+    }
+    else
+      throw std::string ("You must specify a file to merge.");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int handleVersion (std::string &outs)
 {
   int rc = 0;

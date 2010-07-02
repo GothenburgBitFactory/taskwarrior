@@ -80,6 +80,7 @@ int handleAnnotate (std::string &);
 int handleDenotate (std::string &);
 int handleDuplicate (std::string &);
 void handleUndo ();
+void handleMerge (std::string&);
 #ifdef FEATURE_SHELL
 void handleShell ();
 #endif

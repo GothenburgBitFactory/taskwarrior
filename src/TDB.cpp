@@ -27,6 +27,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <set>
+#include <list>
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
@@ -42,7 +44,68 @@
 #include "Color.h"
 #include "main.h"
 
+#define NDEBUG
+#include "assert.h"
+#include "Taskmod.h"
+
+#define DEBUG_OUTPUT 0
+
+#if DEBUG_OUTPUT > 0
+  #define DEBUG_STR(str)       std::cout << "DEBUG: " << str << std::endl; std::cout.flush()
+  #define DEBUG_STR_PART(str)  std::cout << "DEBUG: " << str; std::cout.flush()
+  #define DEBUG_STR_END(str)   std::cout << str << std::endl; std::cout.flush()
+#else
+  #define DEBUG_STR(str)
+  #define DEBUG_STR_PART(str)
+  #define DEBUG_STR_END(str)
+#endif
+
 extern Context context;
+
+////////////////////////////////////////////////////////////////////////////////
+// Helper function for TDB::merge
+void readTaskmods (std::vector <std::string> &input,
+                   std::vector <std::string>::iterator &start,
+                   std::list<Taskmod> &list)
+{
+  std::string line;
+  Taskmod tmod_tmp;
+
+  DEBUG_STR("reading taskmods from file: ");
+
+  for (;start != input.end(); ++start) {
+    line = *start;
+
+    if (line.substr (0, 4) == "time") {
+      std::stringstream stream(line.substr(5));
+      long ts;
+      stream >> ts;
+
+      if (stream.fail()) {
+        throw std::string ("Failed to convert \"" + stream.str() + "\" to integer: " + tmod_tmp.getTimeStr());
+      }
+
+      // 'time' is the first line of a modification
+      // thus we will (re)set the taskmod object
+      tmod_tmp.reset(ts);
+
+    } else if (line.substr (0, 3) == "old") {
+      tmod_tmp.setBefore(Task(line.substr(4)));
+
+    } else if (line.substr (0, 3) == "new") {
+      tmod_tmp.setAfter(Task(line.substr(4)));
+
+      // 'new' is the last line of a modification,
+      // thus we can push to the list
+      list.push_back(tmod_tmp);
+
+      assert(tmod_tmp.isValid());
+      DEBUG_STR("  taskmod complete");
+    }
+  }
+
+  DEBUG_STR ("DONE");
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //  The ctor/dtor do nothing.
@@ -781,6 +844,439 @@ void TDB::undo ()
             << std::endl
             << "No undo possible."
             << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB::merge (const std::string& mergeFile)
+{
+  // list of modifications that we want to add to the local database
+  std::list<Taskmod> mods;
+
+  // list of modifications on the local database
+  // has to be merged with mods to create the new undo.data
+  std::list<Taskmod> lmods;
+
+  // will contain the NEW undo.data
+  std::vector <std::string> undo;
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // initialize the files
+  /////////////////////////////////////////////////////////////////////////////////////////
+
+  // load merge file (undo file of right/remote branch)
+  std::vector <std::string> r;
+  if (! File::read (mergeFile, r))
+    throw std::string ("Could not read '") + mergeFile + "'.";
+
+  // file has to contain at least one entry
+  if (r.size () < 3)
+    throw std::string ("There are no transactions to apply.");
+
+  // load undo file (left/local branch)
+  Directory location (context.config.get ("data.location"));
+  std::string undoFile = location.data + "/undo.data";
+
+  std::vector <std::string> l;
+  if (! File::read (undoFile, l))
+    throw std::string ("Could not read '") + undoFile + "'.";
+
+  std::string rline, lline;
+  std::vector <std::string>::iterator rit, lit;
+
+  // read first line
+  rit = r.begin();
+  lit = l.begin();
+
+  rline = *rit;
+  lline = *lit;
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // find the branch-off point
+  /////////////////////////////////////////////////////////////////////////////////////////
+
+  // first lines are not equal => assuming mergeFile starts at a later point in time
+  if (lline.compare(rline) != 0)
+  {
+    // iterate in local file to find rline
+    for (; lit != l.end(); ++lit)
+    {
+      lline = *lit;
+
+      // push the line to the new undo.data
+      undo.push_back(lline);
+
+      // found first matching lines?
+      if (lline.compare(rline) == 0)
+        break;
+    }
+  }
+
+  // at this point we can assume: (lline==rline) || (lit == l.end())
+  // thus we search for the first non-equal lines or the EOF
+  bool found = false;
+  for (; (lit != l.end()) && (rit != r.end()); ++lit, ++rit)
+  {
+    lline = *lit;
+    rline = *rit;
+
+    // found first non-matching lines?
+    if (lline.compare(rline) != 0) {
+      found = true;
+      break;
+    } else {
+      // push the line to the new undo.data
+      undo.push_back(lline + "\n");
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // branch-off point found
+  /////////////////////////////////////////////////////////////////////////////////////////
+
+  if (found)
+  {
+    DEBUG_STR_PART("Branch-off point found at: ");
+    DEBUG_STR_END(lline);
+
+    std::list<Taskmod> rmods;
+
+    // helper lists
+    std::set<std::string> uuid_new, uuid_left;
+
+    // ------ 1. read tasmods out of the remaining lines
+    readTaskmods(l, lit, lmods);
+    readTaskmods(r, rit, rmods);
+
+    // ------ 2. move new uuids into mods
+
+    DEBUG_STR_PART("adding new uuids (left) to skip list...");
+
+    // modifications on the left side are already in the database
+    // we just need them to merge conflicts, so we add new the mods for
+    // new uuids to the skip-list 'uuid_left'
+    std::list<Taskmod>::iterator lmod_it;
+    for (lmod_it = lmods.begin(); lmod_it != lmods.end(); lmod_it++) {
+      if ((*lmod_it).isNew()) {
+        std::cout << "Skipping the new local task        " << (*lmod_it).getUuid() << std::endl;
+        uuid_left.insert((*lmod_it).getUuid());
+      }
+    }
+
+    DEBUG_STR_END("done");
+    DEBUG_STR_PART("move new uuids (right) to redo list...");
+
+    // new items on the right side need to be inserted into the
+    // local database
+    std::list<Taskmod>::iterator rmod_it;
+    for (rmod_it = rmods.begin(); rmod_it != rmods.end();) {
+      // we have to save and increment the iterator because we may want to delete
+      // the object from the list
+      std::list<Taskmod>::iterator current = rmod_it++;
+      Taskmod tmod = *current;
+
+      // new uuid?
+      if (tmod.isNew()) {
+        std::cout << "Adding the new remote task         " << tmod.getUuid() << std::endl;
+        uuid_new.insert(tmod.getUuid());
+        mods.push_back(tmod);
+        rmods.erase(current);
+      }
+      else if (uuid_new.find(tmod.getUuid()) != uuid_new.end()) { // uuid of modification was new
+        mods.push_back(tmod);
+        rmods.erase(current);
+      }
+    }
+
+    DEBUG_STR_END("done");
+
+    DEBUG_STR("Merging modifications:");
+
+    // ------ 3. merge modifications
+    // we iterate backwards to resolve conflicts by timestamps (newest one wins)
+    std::list<Taskmod>::reverse_iterator lmod_rit;
+    std::list<Taskmod>::reverse_iterator rmod_rit;
+    for (lmod_rit = lmods.rbegin(); lmod_rit != lmods.rend(); ++lmod_rit) {
+      Taskmod tmod_l = *lmod_rit;
+      std::string uuid = tmod_l.getUuid();
+
+      DEBUG_STR("  left uuid: " + uuid);
+
+      // skip if uuid had already been merged
+      if (uuid_left.find(uuid) == uuid_left.end()) {
+
+        bool rwin = false;
+        bool lwin = false;
+        for (rmod_rit = rmods.rbegin(); rmod_rit != rmods.rend(); rmod_rit++) {
+          Taskmod tmod_r = *rmod_rit;
+
+          DEBUG_STR("    right uuid: " + tmod_r.getUuid());
+          if (tmod_r.getUuid() == uuid) {
+            DEBUG_STR("    uuid match found for " + uuid);
+
+            // we already decided to take the mods from the right side
+            // but we have to find the first modification newer than
+            // the one on the left side to merge the history too
+            if (rwin) {
+              DEBUG_STR("    scanning right side");
+              if (tmod_r > tmod_l) {
+                mods.push_front(tmod_r);
+              }
+
+              std::list<Taskmod>::iterator tmp_it = rmod_rit.base();
+              rmods.erase(--tmp_it);
+              rmod_rit--;
+            }
+            else if (lwin) {
+              DEBUG_STR("    cleaning up right side");
+
+              std::list<Taskmod>::iterator tmp_it = rmod_rit.base();
+              rmods.erase(--tmp_it);
+              rmod_rit--;
+            }
+            else {
+              // which one is newer?
+              if (tmod_r > tmod_l) {
+                std::cout << "Applying remote changes for uuid   " << uuid << std::endl;
+
+                mods.push_front(tmod_r);
+
+                // delete tmod from right side
+                std::list<Taskmod>::iterator tmp_it = rmod_rit.base();
+                rmods.erase(--tmp_it);
+                rmod_rit--;
+
+                rwin = true;
+              }
+              else {
+                std::cout << "Rejecting remote changes for uuid  " << uuid << std::endl;
+                // inserting right mod into history of local database
+                // so that it can be restored later
+
+                // TODO feature: make rejected changes on the remote branch restorable
+//                Taskmod reverse_tmod;
+//
+//                tmod_r.setBefore((*lmod_rit).getAfter());
+//                tmod_r.setTimestamp((*lmod_rit).getTimestamp()+1);
+//
+//                reverse_tmod.setAfter(tmod_r.getBefore());
+//                reverse_tmod.setBefore(tmod_r.getAfter());
+//                reverse_tmod.setTimestamp(tmod_r.getTimestamp());
+//
+//                mods.push_back(tmod_r);
+//                mods.push_back(reverse_tmod);
+
+                // delete tmod from right side
+                std::list<Taskmod>::iterator tmp_it = rmod_rit.base();
+                rmods.erase(--tmp_it);
+                rmod_rit--;
+
+                // mark this uuid as merged
+                uuid_left.insert(uuid);
+                lwin = true;
+              }
+            }
+          }
+        } // for
+
+        if (rwin) {
+          DEBUG_STR("  concat the first match to left branch");
+          // concat the oldest (but still newer) modification on the right
+          // to the endpoint on the left
+          mods.front().setBefore(tmod_l.getBefore());
+        }
+      }
+    } // for
+
+    DEBUG_STR("adding non-conflicting changes from the right branch");
+    mods.splice(mods.begin(), rmods);
+
+    DEBUG_STR("sorting taskmod list");
+    mods.sort();
+
+  }
+  else if (rit == r.end())
+  {
+    // nothing happend on the remote branch
+    // local branch is up-to-date
+    throw std::string ("Database is already up-to-date.");
+  }
+  else // lit == undo.end()
+  {
+    // nothing happend on the local branch
+    std::cout << "No changes were made on the local database. Appending changes..." << std::endl;
+
+    // add remaining lines (remote branch) to the list of modifications
+    readTaskmods(r, rit, mods);
+  }
+
+  ////////////////////////////////////////////////////////////
+  // redo command
+  ////////////////////////////////////////////////////////////
+
+  if (!mods.empty()) {
+    std::cout << "Running redo routine..." << std::endl;
+
+    std::string pendingFile = location.data + "/pending.data";
+    std::vector <std::string> pending;
+
+    std::string completedFile = location.data + "/completed.data";
+    std::vector <std::string> completed;
+
+    if (! File::read (pendingFile, pending))
+      throw std::string ("Could not read '") + pendingFile + "'.";
+
+    if (! File::read(completedFile, completed))
+      throw std::string ("Could not read '") + completedFile + "'.";
+
+    // iterate over taskmod list
+    std::list<Taskmod>::iterator it;
+    for (it = mods.begin(); it != mods.end();) {
+      std::list<Taskmod>::iterator current = it++;
+      Taskmod tmod = *current;
+
+      // Modification to an existing task.
+      if (!tmod.isNew()) {
+        std::string uuid = tmod.getUuid();
+        Task::status statusBefore = tmod.getBefore().getStatus();
+        Task::status statusAfter  = tmod.getAfter().getStatus();
+
+        std::vector <std::string>::iterator it;
+
+        bool found = false;
+        if ( (statusBefore == Task::completed)
+          || (statusBefore == Task::deleted) ) {
+
+          // Find the same uuid in completed data
+          for (it = completed.begin (); it != completed.end (); ++it)
+          {
+            if (it->find (uuid) != std::string::npos)
+            {
+              // Update the completed record.
+              std::cout << "Modifying            " << uuid << std::endl;
+
+              // remove the \n from composeF4() string
+              std::string newline = tmod.getAfter().composeF4();
+              newline = newline.substr(0, newline.length()-1);
+
+              // does the tasks move to pending data?
+              // this taskmod will not arise from
+              // normal usage of task, but those kinds of
+              // taskmods may be constructed to merge databases
+              if ( (statusAfter != Task::completed)
+                && (statusAfter != Task::deleted) ) {
+                // insert task into pending data
+                pending.push_back(newline);
+
+                // remove task from completed data
+                completed.erase(it);
+
+              } else {
+                // replace the current line
+                *it = newline;
+              }
+
+              found = true;
+              break;
+            }
+          }
+        } else {
+
+          // Find the same uuid in the pending data.
+          for (it = pending.begin (); it != pending.end (); ++it)
+          {
+            if (it->find (uuid) != std::string::npos)
+            {
+              // Update the pending record.
+              std::cout << "Modifying            " << uuid << std::endl;
+
+              // remove the \n from composeF4() string
+              // which will replace the current line
+              std::string newline = tmod.getAfter().composeF4();
+              newline = newline.substr(0, newline.length()-1);
+
+              // does the tasks move to completed data
+              if ( (statusAfter == Task::completed)
+                || (statusAfter == Task::deleted) ) {
+                // insert task into completed data
+                completed.push_back(newline);
+
+                // remove task from pending data
+                pending.erase(it);
+
+              } else {
+                // replace the current line
+                *it = newline;
+              }
+
+              found = true;
+              break;
+            }
+          }
+        }
+
+        if (!found) {
+          std::cout << "Missing              " << uuid << std::endl;
+          mods.erase(current);
+        }
+
+      }
+      else {
+        // Check for dups.
+        std::string uuid = tmod.getAfter().get("uuid");
+
+        // Find the same uuid in the pending data.
+        bool found = false;
+        std::vector <std::string>::iterator pit;
+        for (pit = pending.begin (); pit != pending.end (); ++pit)
+        {
+          if (pit->find (uuid) != std::string::npos)
+          {
+            found = true;
+            break;
+          }
+        }
+
+        if (!found)
+        {
+          std::cout << "Adding               " << uuid << std::endl;
+          pending.push_back (tmod.getAfter().composeF4());
+        }
+        else
+          std::cout << "Not adding duplicate " << uuid << std::endl;
+          mods.erase(current);
+      }
+    }
+
+    // write pending file
+    if (! File::write (pendingFile, pending))
+      throw std::string ("Could not write '") + pendingFile + "'.";
+
+    // write completed file
+    if (! File::write (completedFile, completed))
+      throw std::string ("Could not write '") + completedFile + "'.";
+
+    // at this point undo contains the lines up to the branch-off point
+    // now we merge mods (new modifications from mergefile)
+    // with lmods (part of old undo.data)
+    mods.merge(lmods);
+
+    // generate undo.data format
+    for (it = mods.begin(); it != mods.end(); it++) {
+      undo.push_back(it->toString());
+    }
+
+    // write undo file
+    if (! File::write (undoFile, undo, false))
+      throw std::string ("Could not write '") + undoFile + "'.";
+  }
+  else // nothing to be done
+  {
+    std::cout << "nothing to be done" << std::endl;
+  }
+
+  // delete objects
+  lmods.clear();
+  mods.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
