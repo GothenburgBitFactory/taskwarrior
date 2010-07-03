@@ -281,6 +281,12 @@ is set to 2, then a report will list 2 pending recurring tasks, one for tomorrow
 and one for a week from tomorrow.
 
 .TP
+.B undo.style=side
+When the 'undo' command is run, task presents a before and after comparison of the
+data.  This can be in either the 'side' style, which compares values side-by-side
+in a table, or 'diff' style, which uses a format similar to the 'diff' command.
+
+.TP
 .B debug=off
 Task has a debug mode that causes diagnostic output to be displayed.  Typically
 this is not something anyone would want, but when reporting a bug, debug output
@@ -626,6 +632,16 @@ or annotations.
 .RS
 Colors the bars on the ghistory report graphs.  Defaults to red, green and
 yellow bars.
+.RE
+
+.TP
+.B color.undo.before=red
+.RE
+.br
+.B color.undo.after=green
+.RS
+Colors used by the undo command, to indicate the values both before and after
+a change that is to be reverted.
 .RE
 
 .SS SHADOW FILE

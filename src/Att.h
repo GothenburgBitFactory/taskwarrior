@@ -70,6 +70,8 @@ public:
   int value_int () const;
   void value_int (int);
 
+  static void allNames (std::vector <std::string>&);
+
 private:
   void enquote (std::string&) const;
   void dequote (std::string&) const;

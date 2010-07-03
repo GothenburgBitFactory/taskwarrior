@@ -659,8 +659,8 @@ int handleShow (std::string &outs)
       "color.alternate color.calendar.today color.calendar.due color.calendar.due.today "
       "color.calendar.overdue color.calendar.weekend color.calendar.holiday "
       "color.calendar.weeknumber color.summary.background color.summary.bar "
-      "color.history.add color.history.done color.history.delete "
-      "confirmation curses data.location dateformat dateformat.holiday "
+      "color.history.add color.history.done color.history.delete color.undo.before "
+      "color.undo.after confirmation curses data.location dateformat dateformat.holiday "
       "dateformat.report dateformat.annotation debug default.command "
       "default.priority default.project defaultwidth due locale displayweeknumber "
       "export.ical.class echo.command fontunderline locking monthsperline nag "
@@ -668,6 +668,7 @@ int handleShow (std::string &outs)
       "import.synonym.id import.synonym.uuid complete.all.projects "
       "complete.all.tags search.case.sensitive hooks active.indicator tag.indicator "
       "recurrence.indicator recurrence.limit list.all.projects list.all.tags "
+      "undo.style "
 #ifdef FEATURE_SHELL
       "shell.prompt "
 #endif

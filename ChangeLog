@@ -32,6 +32,8 @@
    such as '3 mths' or '24 hrs'.
  + The ghistory graph bars can now be colored with 'color.history.add',
    'color.history.done' and 'color.history.delete' configuration variables.
+ + Added feature #156, so that task supports both a 'side' and 'diff' style
+   of undo.
  + Fixed bug #406 so that task now includes command aliases in the _commands
    helper command used by shell completion scripts.
  + Fixed bug #211 - it was unclear which commands modify a task description.

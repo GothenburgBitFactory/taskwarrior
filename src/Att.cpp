@@ -50,6 +50,7 @@ static const char* internalNames[] =
   "limit",
   "status",
   "description",
+  // Note that annotations are not listed.
 };
 
 static const char* modifiableNames[] =
@@ -756,6 +757,19 @@ void Att::value (const std::string& value)
 int Att::value_int () const
 {
   return atoi (mValue.c_str ());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Att::allNames (std::vector <std::string>& all)
+{
+  all.clear ();
+
+  unsigned int i;
+  for (i = 0; i < NUM_INTERNAL_NAMES; ++i)
+    all.push_back (internalNames[i]);
+
+  for (i = 0; i < NUM_MODIFIABLE_NAMES; ++i)
+    all.push_back (modifiableNames[i]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

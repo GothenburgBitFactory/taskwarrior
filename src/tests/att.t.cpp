@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (97);
+  UnitTest t (99);
 
   Att a;
   t.notok (a.valid ("name"),            "Att::valid name         -> fail");
@@ -288,6 +288,16 @@ int main (int argc, char** argv)
   t.ok (Att::validModifiableName ("recur"),     "modifiable recur");
   t.ok (Att::validModifiableName ("until"),     "modifiable until");
   t.ok (Att::validModifiableName ("wait"),      "modifiable wait");
+
+  // Att::allNames
+  std::vector <std::string> all;
+  Att::allNames (all);
+
+  std::vector <std::string>::iterator it;
+  it = std::find (all.begin (), all.end (), "uuid");
+  t.ok (it != all.end (), "internal name 'uuid' found in Att::allNames");
+  it = std::find (all.begin (), all.end (), "project");
+  t.ok (it != all.end (), "modifiable name 'project' found in Att::allNames");
 
   return 0;
 }

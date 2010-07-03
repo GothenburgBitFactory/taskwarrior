@@ -664,97 +664,236 @@ void TDB::undo ()
   }
 
   Date lastChange (atoi (when.c_str ()));
-  std::cout << std::endl
-            << "The last modification was made "
-            << lastChange.toString ()
-            << std::endl;
 
-  // Attributes are all there is, so figure the different attribute names
-  // between before and after.
-  Table table;
-  table.setTableWidth (context.getWidth ());
-  table.setTableIntraPadding (2);
-  table.addColumn (" ");
-  table.addColumn ("Prior Values");
-  table.addColumn ("Current Values");
-  table.setColumnUnderline (1);
-  table.setColumnUnderline (2);
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::flexible);
-  table.setColumnWidth (2, Table::flexible);
+  // Set the colors.
+  Color color_red   (context.config.get ("color.undo.before"));
+  Color color_green (context.config.get ("color.undo.after"));
 
-  Task after (current);
-
-  if (prior != "")
+  if (context.config.get ("undo.style") == "side")
   {
-    Task before (prior);
+    std::cout << std::endl
+              << "The last modification was made "
+              << lastChange.toString ()
+              << std::endl;
 
-    std::vector <std::string> beforeAtts;
-    foreach (att, before)
-      beforeAtts.push_back (att->first);
+    // Attributes are all there is, so figure the different attribute names
+    // between before and after.
+    Table table;
+    table.setTableWidth (context.getWidth ());
+    table.setTableIntraPadding (2);
+    table.addColumn (" ");
+    table.addColumn ("Prior Values");
+    table.addColumn ("Current Values");
+    table.setColumnUnderline (1);
+    table.setColumnUnderline (2);
+    table.setColumnWidth (0, Table::minimum);
+    table.setColumnWidth (1, Table::flexible);
+    table.setColumnWidth (2, Table::flexible);
 
-    std::vector <std::string> afterAtts;
-    foreach (att, after)
-      afterAtts.push_back (att->first);
+    Task after (current);
 
-    std::vector <std::string> beforeOnly;
-    std::vector <std::string> afterOnly;
-    listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
-
-    int row;
-    foreach (name, beforeOnly)
+    if (prior != "")
     {
-      row = table.addRow ();
-      table.addCell (row, 0, *name);
-      table.addCell (row, 1, renderAttribute (*name, before.get (*name)));
-      table.setCellColor (row, 1, Color (Color::red));
+      Task before (prior);
+
+      std::vector <std::string> beforeAtts;
+      foreach (att, before)
+        beforeAtts.push_back (att->first);
+
+      std::vector <std::string> afterAtts;
+      foreach (att, after)
+        afterAtts.push_back (att->first);
+
+      std::vector <std::string> beforeOnly;
+      std::vector <std::string> afterOnly;
+      listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
+
+      int row;
+      foreach (name, beforeOnly)
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, *name);
+        table.addCell (row, 1, renderAttribute (*name, before.get (*name)));
+        table.setCellColor (row, 1, color_red);
+      }
+
+      foreach (name, before)
+      {
+        std::string priorValue   = before.get (name->first);
+        std::string currentValue = after.get  (name->first);
+
+        if (currentValue != "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, name->first);
+          table.addCell (row, 1, renderAttribute (name->first, priorValue));
+          table.addCell (row, 2, renderAttribute (name->first, currentValue));
+
+          if (priorValue != currentValue)
+          {
+            table.setCellColor (row, 1, color_red);
+            table.setCellColor (row, 2, color_green);
+          }
+        }
+      }
+
+      foreach (name, afterOnly)
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, *name);
+        table.addCell (row, 2, renderAttribute (*name, after.get (*name)));
+        table.setCellColor (row, 2, color_green);
+      }
     }
-
-    foreach (name, before)
+    else
     {
-      std::string priorValue   = before.get (name->first);
-      std::string currentValue = after.get  (name->first);
-
-      if (currentValue != "")
+      int row;
+      foreach (name, after)
       {
         row = table.addRow ();
         table.addCell (row, 0, name->first);
-        table.addCell (row, 1, renderAttribute (name->first, priorValue));
-        table.addCell (row, 2, renderAttribute (name->first, currentValue));
+        table.addCell (row, 2, renderAttribute (name->first, after.get (name->first)));
+        table.setCellColor (row, 2, color_green);
+      }
+    }
 
-        if (priorValue != currentValue)
+    std::cout << std::endl
+              << table.render ()
+              << std::endl;
+  }
+
+  // This style looks like this:
+  //  --- before    2009-07-04 00:00:25.000000000 +0200
+  //  +++ after    2009-07-04 00:00:45.000000000 +0200
+  //
+  // - name: old           // att deleted
+  // + name:
+  //
+  // - name: old           // att changed
+  // + name: new
+  //
+  // - name:
+  // + name: new           // att added
+  //
+  else if (context.config.get ("undo.style") == "diff")
+  {
+    // Create reference tasks.
+    Task before;
+    if (prior != "")
+      before.parse (prior);
+
+    Task after (current);
+
+    // Generate table header.
+    Table table;
+    table.setTableWidth (context.getWidth ());
+    table.setTableIntraPadding (2);
+    table.addColumn (" ");
+    table.addColumn (" ");
+    table.setColumnWidth (0, Table::minimum);
+    table.setColumnWidth (1, Table::flexible);
+    table.setColumnJustification (0, Table::right);
+    table.setColumnJustification (1, Table::left);
+
+    int row = table.addRow ();
+    table.addCell (row, 0, "--- before");
+    table.addCell (row, 1, "Previous state that undo will restore");
+    table.setRowColor (row, color_red);
+
+    row = table.addRow ();
+    table.addCell (row, 0, "+++ after ");  // Note trailing space.
+    table.addCell (row, 1, "Change made: " + lastChange.toStringWithTime (context.config.get ("dateformat")));
+    table.setRowColor (row, color_green);
+
+    table.addRow ();
+
+    // Add rows to table showing diffs.
+    std::vector <std::string> all;
+    Att::allNames (all);
+
+    // Now factor in the annotation attributes.
+    Task::iterator it;
+    for (it = before.begin (); it != before.end (); ++it)
+      if (it->first.substr (0, 11) == "annotation_")
+        all.push_back (it->first);
+
+    for (it = after.begin (); it != after.end (); ++it)
+      if (it->first.substr (0, 11) == "annotation_")
+        all.push_back (it->first);
+
+    // Now render all the attributes.
+    std::sort (all.begin (), all.end ());
+
+    std::string before_att;
+    std::string after_att;
+    std::string last_att;
+    foreach (a, all)
+    {
+      if (*a != last_att)  // Skip duplicates.
+      {
+        last_att = *a;
+
+        before_att = before.get (*a);
+        after_att  = after.get (*a);
+
+        // Don't report different uuid.
+        // Show nothing if values are the unchanged.
+        if (*a == "uuid" ||
+            before_att == after_att)
         {
-          table.setCellColor (row, 1, Color (Color::red));
-          table.setCellColor (row, 2, Color (Color::green));
+          row = table.addRow ();
+          table.addCell (row, 0, *a + ":");
+          table.addCell (row, 1, before_att);
+        }
+
+        // Attribute deleted.
+        else if (before_att != "" && after_att == "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "-" + *a + ":");
+          table.addCell (row, 1, before_att);
+          table.setRowColor (row, color_red);
+
+          row = table.addRow ();
+          table.addCell (row, 0, "+" + *a + ":");
+          table.setRowColor (row, color_green);
+        }
+
+        // Attribute added.
+        else if (before_att == "" && after_att != "")
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "-" + *a + ":");
+          table.setRowColor (row, color_red);
+
+          row = table.addRow ();
+          table.addCell (row, 0, "+" + *a + ":");
+          table.addCell (row, 1, after_att);
+          table.setRowColor (row, color_green);
+        }
+
+        // Attribute changed.
+        else
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "-" + *a + ":");
+          table.addCell (row, 1, before_att);
+          table.setRowColor (row, color_red);
+
+          row = table.addRow ();
+          table.addCell (row, 0, "+" + *a + ":");
+          table.addCell (row, 1, after_att);
+          table.setRowColor (row, color_green);
         }
       }
     }
 
-    foreach (name, afterOnly)
-    {
-      row = table.addRow ();
-      table.addCell (row, 0, *name);
-      table.addCell (row, 2, renderAttribute (*name, after.get (*name)));
-      table.setCellColor (row, 2, Color (Color::green));
-    }
-  }
-  else
-  {
-    int row;
-    foreach (name, after)
-    {
-      row = table.addRow ();
-      table.addCell (row, 0, name->first);
-      table.addCell (row, 2, renderAttribute (name->first, after.get (name->first)));
-      table.setCellColor (row, 2, Color (Color::green));
-    }
+    std::cout << std::endl
+              << table.render ()
+              << std::endl;
   }
 
-  // Confirm.
-  std::cout << std::endl
-            << table.render ()
-            << std::endl;
-
+  // Output displayed, now confirm.
   if (!confirm ("The undo command is not reversible.  Are you sure you want to undo the last update?"))
     throw std::string ("No changes made.");
 
