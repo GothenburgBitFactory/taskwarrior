@@ -27,6 +27,7 @@
 #include <Context.h>
 #include <Att.h>
 #include <test.h>
+#include <algorithm>
 
 Context context;
 
