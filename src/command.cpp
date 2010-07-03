@@ -1424,7 +1424,7 @@ int handleModify (std::string &outs)
           std::cout << "Task "
                     << task->id
                     << " is a recurring task, and all other instances of this"
-                    << " task may be modified."
+                    << " task will be modified."
                     << std::endl;
 
         Task before (*other);

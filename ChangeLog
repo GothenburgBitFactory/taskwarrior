@@ -56,6 +56,8 @@
  + Fixed bug that prevented 'task list priority.above:L' from working.
  + Fixed bug that miscalculated terminal width for the ghistory.annual
    report.
+ + Fixed wording (support issue #383) when modifying a recurring task (thanks
+   to T. Charles Yun).
 
 ------ old releases ------------------------------
 
