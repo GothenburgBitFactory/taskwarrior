@@ -991,6 +991,10 @@ void TDB::undo ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::merge (const std::string& mergeFile)
 {
+  ///////////////////////////////////////
+  // Copyright 2010, Johannes Schlatow.
+  ///////////////////////////////////////
+
   // list of modifications that we want to add to the local database
   std::list<Taskmod> mods;
 
@@ -1224,7 +1228,7 @@ void TDB::merge (const std::string& mergeFile)
           DEBUG_STR("  concat the first match to left branch");
           // concat the oldest (but still newer) modification on the right
           // to the endpoint on the left
-          mods.front().setBefore(tmod_l.getBefore());
+          mods.front().setBefore(tmod_l.getAfter());
         }
       }
     } // for
