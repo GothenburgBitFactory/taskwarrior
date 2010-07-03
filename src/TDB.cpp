@@ -796,13 +796,13 @@ void TDB::undo ()
     table.setColumnJustification (1, Table::left);
 
     int row = table.addRow ();
-    table.addCell (row, 0, "--- before");
-    table.addCell (row, 1, "Previous state that undo will restore");
+    table.addCell (row, 0, "--- previous state");
+    table.addCell (row, 1, "Undo will restore this state");
     table.setRowColor (row, color_red);
 
     row = table.addRow ();
-    table.addCell (row, 0, "+++ after ");  // Note trailing space.
-    table.addCell (row, 1, "Change made: " + lastChange.toStringWithTime (context.config.get ("dateformat")));
+    table.addCell (row, 0, "+++ current state ");  // Note trailing space.
+    table.addCell (row, 1, "Change made " + lastChange.toStringWithTime (context.config.get ("dateformat")));
     table.setRowColor (row, color_green);
 
     table.addRow ();
@@ -841,9 +841,11 @@ void TDB::undo ()
         if (*a == "uuid" ||
             before_att == after_att)
         {
-          row = table.addRow ();
-          table.addCell (row, 0, *a + ":");
-          table.addCell (row, 1, before_att);
+          // Show nothing - no point displaying that which did not change.
+
+          // row = table.addRow ();
+          // table.addCell (row, 0, *a + ":");
+          // table.addCell (row, 1, before_att);
         }
 
         // Attribute deleted.
@@ -894,7 +896,7 @@ void TDB::undo ()
   }
 
   // Output displayed, now confirm.
-  if (!confirm ("The undo command is not reversible.  Are you sure you want to undo the last update?"))
+  if (!confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
     throw std::string ("No changes made.");
 
   // Extract identifying uuid.
