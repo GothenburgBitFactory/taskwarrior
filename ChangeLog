@@ -30,6 +30,8 @@
    denotate command and the provided description (thanks to Dirk Deimeke).
  + Added support for more varied durations when specifying recurring tasks,
    such as '3 mths' or '24 hrs'.
+ + The ghistory graph bars can now be colored with 'color.history.add',
+   'color.history.done' and 'color.history.delete' configuration variables.
  + Fixed bug #406 so that task now includes command aliases in the _commands
    helper command used by shell completion scripts.
  + Fixed bug #211 - it was unclear which commands modify a task description.

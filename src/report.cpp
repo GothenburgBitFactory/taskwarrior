@@ -1266,9 +1266,9 @@ int handleReportGHistoryMonthly (std::string &outs)
     else
       table.setTableDashedUnderline ();
 
-    Color color_added     (Color::black, Color::red);
-    Color color_completed (Color::black, Color::green);
-    Color color_deleted   (Color::black, Color::yellow);
+    Color color_add    (context.config.get ("color.history.add"));
+    Color color_done   (context.config.get ("color.history.done"));
+    Color color_delete (context.config.get ("color.history.delete"));
 
     // Determine the longest line, and the longest "added" line.
     int maxAddedLine = 0;
@@ -1350,9 +1350,9 @@ int handleReportGHistoryMonthly (std::string &outs)
           while (bar.length () < leftOffset - aBar.length ())
             bar += " ";
 
-          bar += color_added.colorize     (aBar);
-          bar += color_completed.colorize (cBar);
-          bar += color_deleted.colorize   (dBar);
+          bar += color_add.colorize    (aBar);
+          bar += color_done.colorize   (cBar);
+          bar += color_delete.colorize (dBar);
         }
         else
         {
@@ -1379,11 +1379,11 @@ int handleReportGHistoryMonthly (std::string &outs)
 
       if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
         out << "Legend: "
-            << color_added.colorize ("added")
+            << color_add.colorize ("added")
             << ", "
-            << color_completed.colorize ("completed")
+            << color_done.colorize ("completed")
             << ", "
-            << color_deleted.colorize ("deleted")
+            << color_delete.colorize ("deleted")
             << optionalBlankLine ()
             << std::endl;
       else
@@ -1474,9 +1474,9 @@ int handleReportGHistoryAnnual (std::string &outs)
     else
       table.setTableDashedUnderline ();
 
-    Color color_added     (Color::black, Color::red);
-    Color color_completed (Color::black, Color::green);
-    Color color_deleted   (Color::black, Color::yellow);
+    Color color_add    (context.config.get ("color.history.add"));
+    Color color_done   (context.config.get ("color.history.done"));
+    Color color_delete (context.config.get ("color.history.delete"));
 
     // Determine the longest line, and the longest "added" line.
     int maxAddedLine = 0;
@@ -1557,9 +1557,9 @@ int handleReportGHistoryAnnual (std::string &outs)
           while (bar.length () < leftOffset - aBar.length ())
             bar += " ";
 
-          bar += color_added.colorize     (aBar);
-          bar += color_completed.colorize (cBar);
-          bar += color_deleted.colorize   (dBar);
+          bar += color_add.colorize    (aBar);
+          bar += color_done.colorize   (cBar);
+          bar += color_delete.colorize (dBar);
         }
         else
         {
@@ -1586,11 +1586,11 @@ int handleReportGHistoryAnnual (std::string &outs)
 
       if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
         out << "Legend: "
-            << color_added.colorize ("added")
+            << color_add.colorize ("added")
             << ", "
-            << color_completed.colorize ("completed")
+            << color_done.colorize ("completed")
             << ", "
-            << color_deleted.colorize ("deleted")
+            << color_delete.colorize ("deleted")
             << optionalBlankLine ()
             << std::endl;
       else

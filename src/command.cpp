@@ -659,6 +659,7 @@ int handleShow (std::string &outs)
       "color.alternate color.calendar.today color.calendar.due color.calendar.due.today "
       "color.calendar.overdue color.calendar.weekend color.calendar.holiday "
       "color.calendar.weeknumber color.summary.background color.summary.bar "
+      "color.history.add color.history.done color.history.delete "
       "confirmation curses data.location dateformat dateformat.holiday "
       "dateformat.report dateformat.annotation debug default.command "
       "default.priority default.project defaultwidth due locale displayweeknumber "
