@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 #include <set>
 #include <list>
 #include <unistd.h>
