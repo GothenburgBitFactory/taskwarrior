@@ -1,3 +1,5 @@
+calendar.holidays=sparse
+
 holiday.nyårsdagen.name=Nyårsdagen
 holiday.nyårsdagen.date=20100101
 holiday.trettondedagjul.name=Trettondedag jul

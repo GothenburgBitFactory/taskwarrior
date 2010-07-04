@@ -1,3 +1,5 @@
+calendar.holidays=sparse
+
 holiday.newyearsday.name=New Years Day
 holiday.newyearsday.date=20100101
 holiday.martinlutherkingday.name=Martin Luther King Day
