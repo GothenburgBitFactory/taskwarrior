@@ -25,7 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "regex.h"
+#include <stdlib.h>
+#include <regex.h>
 #include "rx.h"
 
 //#define _POSIX_C_SOURCE 1
