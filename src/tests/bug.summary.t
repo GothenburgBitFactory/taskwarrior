@@ -47,11 +47,11 @@ qx{../task rc:summary.rc add project:A three};
 qx{../task rc:summary.rc do 1};
 qx{../task rc:summary.rc delete 2};
 my $output = qx{../task rc:summary.rc summary};
-like ($output, qr/A\s+1\s+-\s+50%/, 'summary correctly shows 50% before report');
+like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, 'summary correctly shows 50% before report');
 
 qx{../task rc:summary.rc list};
 $output = qx{../task rc:summary.rc summary};
-like ($output, qr/A\s+1\s+-\s+50%/, 'summary correctly shows 50% after report');
+like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, 'summary correctly shows 50% after report');
 
 # Cleanup.
 unlink 'pending.data';
