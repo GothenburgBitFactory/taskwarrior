@@ -35,6 +35,7 @@
  + Added feature #156, so that task supports both a 'side' and 'diff' style
    of undo.
  + Distribution now includes 7 theme files, for 16- and 256-color terminals.
+ + Task now defaults to using the equivalent to the dark-16.theme.
  + Fixed bug #406 so that task now includes command aliases in the _commands
    helper command used by shell completion scripts.
  + Fixed bug #211 - it was unclear which commands modify a task description.
