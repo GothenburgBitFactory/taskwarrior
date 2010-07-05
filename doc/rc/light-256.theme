@@ -1,1 +1,37 @@
-# Sample task 1.9 (or later) color theme
+# Sample task 1.9 (or later) light 256-color theme
+
+color=on
+color.header=color4
+color.footnote=color4
+color.debug=color4
+
+color.summary.bar=on rgb141
+color.summary.background=on color0
+
+color.history.add=color0 on rgb500
+color.history.done=color0 on rgb050
+color.history.delete=color0 on rgb550
+
+color.undo.before=color1
+color.undo.after=color2
+
+color.calendar.today=color0 on rgb053
+color.calendar.due=color0 on color9
+color.calendar.due.today=color15 on color1
+color.calendar.overdue=color0 on color1
+color.calendar.weekend=on color253
+color.calendar.holiday=color0 on color11
+color.calendar.weeknumber=rgb013
+
+color.recurring=rgb013
+color.overdue=color1
+color.due.today=rgb400
+color.due=color9
+color.active=rgb555 on rgb520
+color.pri.none=
+color.pri.H=color232
+color.pri.M=color237
+color.pri.L=color242
+color.tagged=rgb020
+color.alternate=on color254
+

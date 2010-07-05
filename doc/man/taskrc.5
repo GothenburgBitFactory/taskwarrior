@@ -111,6 +111,18 @@ include <path/to/the/configuration/file/to/be/included>
 
 By using include files you can divide your main configuration file into several ones containing just the relevant configuration data like colors, etc.
 
+There are two excellent uses of includes in your .taskrc, shown here:
+
+.RS
+include /usr/local/share/doc/task/rc/holidays-US.rc
+.br
+include /usr/local/share/doc/task/rc/dark-16.theme
+.RE
+
+This includes two standard files that are distributed with task, which define a
+set of US holidays, and set up a 16-color theme for task to use, to color the
+reports and calendar.
+
 .SH CONFIGURATION VARIABLES
 Valid variable names and their default values are:
 
@@ -461,6 +473,16 @@ holiday.eastersunday.date=easter
 .RE
 .RE
 
+Note that the task distribution contains example holiday files that can be
+included like this:
+
+.RS
+.RS
+.br
+include /usr/local/share/doc/task/rc/holidays-US.rc
+.RE
+.RE
+
 .TP
 .B monthsperline=3
 Determines how many months the "task calendar" command renders across the
@@ -568,13 +590,12 @@ Colors any of the messages printed last.
 
 .TP
 .B color.summary.bar=on green
-Colors the summary progress bar.  Should include both a foreground and a
-background color.
+Colors the summary progress bar.  Should consist of a background color.
 .RE
 
 .TP
 .B color.summary.background=on black
-Colors the summary progress bar.  Should include at least a background color.
+Colors the summary progress bar.  Should consist of a background color.
 .RE
 
 .TP

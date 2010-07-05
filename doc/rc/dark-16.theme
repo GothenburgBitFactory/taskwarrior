@@ -1,4 +1,4 @@
-# Sample task 1.9 (or later) dark color theme
+# Sample task 1.9 (or later) dark 16-color theme
 
 color=on
 color.header=yellow
@@ -25,7 +25,7 @@ color.calendar.weeknumber=bold blue
 
 color.recurring=magenta
 color.overdue=bold red
-color.due.today=bold red on bright black
+color.due.today=red
 color.due=red
 color.active=black on bright green
 color.pri.none=

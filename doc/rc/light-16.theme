@@ -1,1 +1,37 @@
-# Sample task 1.9 (or later) color theme
+# Sample task 1.9 (or later) light 16-color theme
+
+color=on
+color.header=blue
+color.footnote=blue
+color.debug=blue
+
+color.summary.bar=on green
+color.summary.background=on black
+
+color.history.add=black on red
+color.history.done=black on green
+color.history.delete=black on yellow
+
+color.undo.before=red
+color.undo.after=green
+
+color.calendar.today=black on cyan
+color.calendar.due=white on red
+color.calendar.due.today=bold white on red
+color.calendar.overdue=black on bright red
+color.calendar.weekend=white on bright black
+color.calendar.holiday=black on bright yellow
+color.calendar.weeknumber=bright blue
+
+color.recurring=blue
+color.overdue=bold red
+color.due.today=red
+color.due=red
+color.active=black on green
+color.pri.none=
+color.pri.H=bold black
+color.pri.M=black
+color.pri.L=
+color.tagged=green
+color.alternate=
+

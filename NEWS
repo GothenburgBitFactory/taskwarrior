@@ -7,6 +7,7 @@ New Features in task 1.9.2
   - New iCalendar/vcalendar export format (RFC-2445, RFC-5545, RFC-5546).
   - New 'show' command to display configuration settings.
   - New 'denotate' command to delete annotations.
+  - New 16-color and 256-color themes included.
   - New limit:page filter to show only one page of tasks.
   - Performance enhancements.
 
