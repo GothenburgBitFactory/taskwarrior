@@ -1,0 +1,37 @@
+# Sample task 1.9 (or later) dark color theme, featuring blue.
+
+color=on
+color.header=rgb013
+color.footnote=rgb013
+color.debug=rgb013
+
+color.summary.bar=on rgb003
+color.summary.background=on color0
+
+color.history.add=color0 on rgb015
+color.history.done=color0 on rgb025
+color.history.delete=color0 on rgb035
+
+color.undo.before=rgb013
+color.undo.after=rgb035
+
+color.calendar.today=color255 on rgb115
+color.calendar.due=color0 on color249
+color.calendar.due.today=color0 on color252
+color.calendar.overdue=color0 on color255
+color.calendar.weekend=on color235
+color.calendar.holiday=color255 on rgb013
+color.calendar.weeknumber=rgb015
+
+color.recurring=rgb115
+color.overdue=color255
+color.due.today=color252
+color.due=color249
+color.active=rgb045 on rgb015
+color.pri.none=
+color.pri.H=rgb035
+color.pri.M=rgb025
+color.pri.L=rgb015
+color.tagged=color246
+color.alternate=on color233
+
