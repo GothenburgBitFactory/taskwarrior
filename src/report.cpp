@@ -2009,7 +2009,7 @@ std::string renderMonths (
             }
           }
         }
-      table.setCellColor (row, thisCol, cellColor);
+        table.setCellColor (row, thisCol, cellColor);
       }
 
       // Check for end of week, and...
