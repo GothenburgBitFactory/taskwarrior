@@ -20,7 +20,7 @@ color.calendar.due=white on red
 color.calendar.due.today=bold white on red
 color.calendar.overdue=black on bright red
 color.calendar.weekend=white on bright black
-color.calendar.holiday=black on bright yellow
+color.calendar.holiday=black on yellow
 color.calendar.weeknumber=bright blue
 
 color.recurring=blue

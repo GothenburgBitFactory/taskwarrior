@@ -20,7 +20,7 @@ color.calendar.due=color0 on color9
 color.calendar.due.today=color15 on color1
 color.calendar.overdue=color0 on color1
 color.calendar.weekend=on color253
-color.calendar.holiday=color0 on color11
+color.calendar.holiday=color0 on color3
 color.calendar.weeknumber=rgb013
 
 color.recurring=rgb013

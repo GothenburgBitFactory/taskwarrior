@@ -15,7 +15,7 @@ color.history.delete=color0 on rgb035
 color.undo.before=rgb013
 color.undo.after=rgb035
 
-color.calendar.today=color255 on rgb115
+color.calendar.today=color0 on rgb115
 color.calendar.due=color0 on color249
 color.calendar.due.today=color0 on color252
 color.calendar.overdue=color0 on color255
