@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (180);
+  UnitTest t (185);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -361,6 +361,14 @@ int main (int argc, char** argv)
   // Test start offset.
   t.is ((int) find ("one two three", "e",  3, true), (int) 11, "offset obeyed");
   t.is ((int) find ("one two three", "e", 11, true), (int) 11, "offset obeyed");
+
+  // int strippedLength (const std::string&);
+  t.is (strippedLength (std::string ("")),                                  0, "strippedLength                              -> 0");
+  t.is (strippedLength (std::string ("abc")),                               3, "strippedLength abc                          -> 3");
+  t.is (strippedLength (std::string ("one\033[5;38;255mtwo\033[0mthree")), 11, "strippedLength one^[[5;38;255mtwo^[[0mthree -> 11");
+  t.is (strippedLength (std::string ("\033[0m")),                           0, "strippedLength ^[[0m                        -> 0");
+  t.is (strippedLength (std::string ("\033[1m\033[0m")),                    0, "strippedLength ^[[1m^[[0m                   -> 0");
+
   return 0;
 }
 

@@ -57,6 +57,7 @@ bool isWordEnd (const std::string&, std::string::size_type);
 bool compare (const std::string&, const std::string&, bool sensitive = true);
 std::string::size_type find (const std::string&, const std::string&, bool sensitive = true);
 std::string::size_type find (const std::string&, const std::string&, std::string::size_type, bool sensitive = true);
+int strippedLength (const std::string&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////
