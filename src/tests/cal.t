@@ -38,6 +38,10 @@ if (open my $fh, '>', 'cal.rc')
   print $fh "data.location=.\n",
             "dateformat=YMD\n",
             "color=on\n",
+            "color.calendar.today=black on cyan\n",
+            "color.calendar.due=black on green\n",
+            "color.calendar.weeknumber=black on white\n",
+            "color.calendar.overdue=black on red\n",
             "confirmation=no\n";
   close $fh;
   ok (-r 'cal.rc', 'Created cal.rc');
@@ -52,14 +56,14 @@ my $nextmonth   = $months[($nmon+1) % 12];
 my $year        = $nyear + 1900;
 my $nextyear    = $nyear + 1901;
 
-if ( $day <= 9)
+if ($day <= 9)
 {
   $day = " ".$day;
 }
 
 # task cal   and   task cal y
 my $output = qx{../task rc:cal.rc rc._forcecolor:on cal};
-if ( $wday == 6 || $wday == 0)
+if ($wday == 6 || $wday == 0)
 {
   like   ($output, qr/\[30;106m$day/,      'Current day is highlighted');
 }
@@ -72,17 +76,17 @@ $output = qx{../task rc:cal.rc add zero};
 unlike ($output, qr/\[41m\d+/,       'No overdue tasks are present');
 unlike ($output, qr/\[43m\d+/,       'No due tasks are present');
 $output = qx{../task rc:cal.rc rc.weekstart:Sunday cal};
-like   ($output, qr/Su Mo Tu/,       'Week starts on Sunday'); 
+like   ($output, qr/Su Mo Tu/,       'Week starts on Sunday');
 $output = qx{../task rc:cal.rc rc.weekstart:Monday cal};
-like   ($output, qr/Fr Sa Su/,       'Week starts on Monday'); 
+like   ($output, qr/Fr Sa Su/,       'Week starts on Monday');
 $output = qx{../task rc:cal.rc cal y};
 like   ($output, qr/$month\S*?\s+?$year/,         'Current month and year are displayed');
-if ( $month eq "Jan")
+if ($month eq "Jan")
 {
   $nextyear = $nextyear - 1;
 }
 like   ($output, qr/$prevmonth\S*?\s+?$nextyear/, 'Month and year one year ahead are displayed');
-if ( $month eq "Jan")
+if ($month eq "Jan")
 {
   $nextyear = $nextyear + 1;
 }
