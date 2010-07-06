@@ -82,7 +82,6 @@ public:
            void addCell (int, int, double);
            void setCellColor (int, int, const Color&);
 
-           void suppressWS ();
            void setDateFormat (const std::string&);
            void setReportName (const std::string&);
 
@@ -103,7 +102,6 @@ private:
            const std::string formatHeaderDashedUnderline (const int, const int, const int);
            void formatCell (const int, const int, const int, const int, const int, std::vector <std::string>&, std::string&);
            void sort (std::vector <int>&);
-           void clean (std::string&);
 
 private:
   std::vector <std::string> mColumns;
@@ -131,7 +129,6 @@ private:
   std::map <int, order> mSortOrder;
 
   // Misc...
-  bool mSuppressWS;
   std::string mDateFormat;
   std::string mReportName;
 };

@@ -63,7 +63,6 @@ Table::Table ()
   , mDashedUnderline (false)
   , mTablePadding (0)
   , mTableWidth (0)
-  , mSuppressWS (false)
 {
 }
 
@@ -180,50 +179,23 @@ void Table::addCell (const int row, const int col, const std::string& data)
 {
   unsigned int length = 0;
 
-  if (mSuppressWS)
+  if (mCommify.find (col) != mCommify.end ())
+    mData.add (row, col, commify (data));
+  else
+    mData.add (row, col, data);
+
+  // For multi-line cells, find the longest line.
+  if (data.find ("\n") != std::string::npos)
   {
-    std::string data2;
-    if (mCommify.find (col) != mCommify.end ())
-      data2 = commify (data);
-    else
-      data2 = data;
-
-    clean (data2);
-    // For multi-line cells, find the longest line.
-    if (data2.find ("\n") != std::string::npos)
-    {
-      length = 0;
-      std::vector <std::string> lines;
-      split (lines, data2, "\n");
-      for (unsigned int i = 0; i < lines.size (); ++i)
-        if (lines[i].length () > length)
-          length = lines[i].length ();
-    }
-    else
-      length = data2.length ();
-
-    mData.add (row, col, data2);
+    length = 0;
+    std::vector <std::string> lines;
+    split (lines, data, "\n");
+    for (unsigned int i = 0; i < lines.size (); ++i)
+      if (lines[i].length () > length)
+        length = lines[i].length ();
   }
   else
-  {
-    if (mCommify.find (col) != mCommify.end ())
-      mData.add (row, col, commify (data));
-    else
-      mData.add (row, col, data);
-
-    // For multi-line cells, find the longest line.
-    if (data.find ("\n") != std::string::npos)
-    {
-      length = 0;
-      std::vector <std::string> lines;
-      split (lines, data, "\n");
-      for (unsigned int i = 0; i < lines.size (); ++i)
-        if (lines[i].length () > length)
-          length = lines[i].length ();
-    }
-    else
-      length = data.length ();
-  }
+    length = data.length ();
 
   // Automatically maintain max width.
   mMaxDataWidth[col] = max (mMaxDataWidth[col], (int)length);
@@ -485,28 +457,22 @@ const std::string Table::formatHeader (
 
   std::string data = mColumns[col];
   Color c = getHeaderUnderline (col);
+  int gap = width - strippedLength (data);
 
-  std::string pad      = "";
-  std::string intraPad = "";
-  std::string preJust  = "";
-  std::string attrOn   = "";
-  std::string attrOff  = "";
+  std::string pad = std::string (padding, ' ');
+
+  // TODO When the following is replaced by:
+  //      std::string postJust = std::string (gap, ' ');
+  //      two unit tests fail.
   std::string postJust = "";
-
-  for (int i = 0; i < padding; ++i)
-    pad += " ";
-
-  // Place the value within the available space - justify.
-  int gap = width - data.length ();
-
   for (int i = 0; i < gap; ++i)
     postJust += " ";
 
+  std::string intraPad = "";
   if (col < (signed) mColumns.size () - 1)
-    for (int i = 0; i < getIntraPadding (); ++i)
-      intraPad += " ";
+    intraPad = std::string (getIntraPadding (), ' ');
 
-  return c.colorize (pad + preJust + data + postJust + pad) + intraPad;
+  return c.colorize (pad + data + postJust + pad) + intraPad;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -533,22 +499,13 @@ const std::string Table::formatHeaderDashedUnderline (
 
   Color c = getHeaderUnderline (col);
 
-  std::string data     = "";
-  for (int i = 0; i < width; ++i)
-    data += '-';
-
-  std::string pad      = "";
+  std::string data = std::string (width, '-');
+  std::string pad = std::string (padding, ' ');
   std::string intraPad = "";
-  std::string attrOn   = "";
-  std::string attrOff  = "";
-
-  for (int i = 0; i < padding; ++i)
-    pad += " ";
 
   // Place the value within the available space - justify.
   if (col < (signed) mColumns.size () - 1)
-    for (int i = 0; i < getIntraPadding (); ++i)
-      intraPad += " ";
+    intraPad = std::string (getIntraPadding (), ' ');
 
   return c.colorize (pad + data + pad) + intraPad;
 }
@@ -569,15 +526,11 @@ void Table::formatCell (
   just justification = getJustification (row, col);
   std::string data   = getCell (row, col);
 
-  std::string pad      = "";
+  std::string pad = std::string (padding, ' ');
   std::string intraPad = "";
 
-  for (int i = 0; i < padding; ++i)
-    pad += " ";
-
   if (col < (signed) mColumns.size () - 1)
-    for (int i = 0; i < getIntraPadding (); ++i)
-      intraPad += " ";
+    intraPad = std::string (getIntraPadding (), ' ');
 
   // Break the text into chunks of width characters.
   std::string preJust;
@@ -593,37 +546,24 @@ void Table::formatCell (
     postJust = "";
 
     if (justification == left)
-      for (int i = 0; i < gap; ++i)
-        postJust += " ";
+      postJust = std::string (gap, ' ');
 
     else if (justification == right)
-      for (int i = 0; i < gap; ++i)
-        preJust += " ";
+      preJust = std::string (gap, ' ');
 
     else if (justification == center)
     {
-      for (int i = 0; i < gap / 2; ++i)
-        preJust += " ";
-
-      for (size_t i = 0; i < gap - preJust.length (); ++i)
-        postJust += " ";
+      preJust = std::string (gap / 2, ' ');
+      postJust = std::string (gap - preJust.length (), ' ');
     }
 
     lines.push_back (c.colorize (pad + preJust + chunks[chunk] + postJust + pad + intraPad));
   }
 
   // The blank is used to vertically pad cells that have blank lines.
-  pad = "";
-  for (int i = 0; i < width; ++i)
-    pad += " ";
+  pad = std::string (width, ' ');
 
   blank = c.colorize (pad + intraPad);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Table::suppressWS ()
-{
-  mSuppressWS = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -877,31 +817,6 @@ void Table::sort (std::vector <int>& order)
 
       ++r;
     }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Table::clean (std::string& value)
-{
-  size_t start = 0;
-  size_t pos;
-  while ((pos = value.find ('\t', start)) != std::string::npos)
-  {
-    value.replace (pos, 1, " ");
-    start = pos;  // Not pos + 1, because we have a destructive operation, and
-                  // this is ultimately safer.
-  }
-
-  while ((pos = value.find ('\r', start)) != std::string::npos)
-  {
-    value.replace (pos, 1, " ");
-    start = pos;
-  }
-
-  while ((pos = value.find ('\n', start)) != std::string::npos)
-  {
-    value.replace (pos, 1, " ");
-    start = pos;
   }
 }
 

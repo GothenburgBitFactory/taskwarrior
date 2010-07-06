@@ -706,24 +706,13 @@ int handleReportSummary (std::string &outs)
         std::string subbar;
         if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
         {
-          for (int b = 0; b < completedBar; ++b)
-            subbar += " ";
-
-          bar += bar_color.colorize (subbar);
-          subbar = "";
-
-          for (int b = 0; b < barWidth - completedBar; ++b)
-            subbar += " ";
-
-          bar += bg_color.colorize (subbar);
+          bar += bar_color.colorize (std::string (           completedBar, ' '));
+          bar += bg_color.colorize  (std::string (barWidth - completedBar, ' '));
         }
         else
         {
-          for (int b = 0; b < completedBar; ++b)
-            bar += "=";
-
-          for (int b = 0; b < barWidth - completedBar; ++b)
-            bar += " ";
+          bar += std::string (           completedBar, '=')
+              +  std::string (barWidth - completedBar, ' ');
         }
         table.addCell (row, 4, bar);
 
@@ -1347,8 +1336,7 @@ int handleReportGHistoryMonthly (std::string &outs)
               dBar = " " + dBar;
           }
 
-          while (bar.length () < leftOffset - aBar.length ())
-            bar += " ";
+          bar += std::string (leftOffset - aBar.length (), ' ');
 
           bar += color_add.colorize    (aBar);
           bar += color_done.colorize   (cBar);
@@ -1360,9 +1348,7 @@ int handleReportGHistoryMonthly (std::string &outs)
           std::string cBar = ""; while (cBar.length () < completedBar) cBar += "X";
           std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += "-";
 
-          while (bar.length () < leftOffset - aBar.length ())
-            bar += " ";
-
+          bar += std::string (leftOffset - aBar.length (), ' ');
           bar += aBar + cBar + dBar;
         }
 
@@ -1554,9 +1540,7 @@ int handleReportGHistoryAnnual (std::string &outs)
               dBar = " " + dBar;
           }
 
-          while (bar.length () < leftOffset - aBar.length ())
-            bar += " ";
-
+          bar += std::string (leftOffset - aBar.length (), ' ');
           bar += color_add.colorize    (aBar);
           bar += color_done.colorize   (cBar);
           bar += color_delete.colorize (dBar);
@@ -1567,9 +1551,7 @@ int handleReportGHistoryAnnual (std::string &outs)
           std::string cBar = ""; while (cBar.length () < completedBar) cBar += "X";
           std::string dBar = ""; while (dBar.length () < deletedBar)   dBar += "-";
 
-          while (bar.length () < leftOffset - aBar.length ())
-            bar += " ";
-
+          bar += std::string (leftOffset - aBar.length (), ' ');
           bar += aBar + cBar + dBar;
         }
 
