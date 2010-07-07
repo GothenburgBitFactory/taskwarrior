@@ -15,13 +15,13 @@ color.history.delete=black on yellow
 color.undo.before=red
 color.undo.after=green
 
-color.calendar.today=black on cyan
+color.calendar.today=black on bright blue
 color.calendar.due=white on red
 color.calendar.due.today=bold white on red
 color.calendar.overdue=black on bright red
 color.calendar.weekend=white on bright black
 color.calendar.holiday=black on yellow
-color.calendar.weeknumber=bright blue
+color.calendar.weeknumber=bold blue
 
 color.recurring=blue
 color.overdue=bold red

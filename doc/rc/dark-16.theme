@@ -15,7 +15,7 @@ color.history.delete=black on yellow
 color.undo.before=red
 color.undo.after=green
 
-color.calendar.today=black on green
+color.calendar.today=bold white on bright blue
 color.calendar.due=white on red
 color.calendar.due.today=bold white on red
 color.calendar.overdue=black on bright red
