@@ -54,15 +54,15 @@ ok (-d 'foo', 'Created default data directory');
 # Add a setting.
 qx{echo 'y'|../task rc:foo.rc config must_be_unique old};
 my $output = qx{../task rc:foo.rc show};
-like ($output, qr/^must_be_unique\s+old$/ms, 'config setting a new value');
+like ($output, qr/^must_be_unique\s+old/ms, 'config setting a new value');
 
 qx{echo 'y'|../task rc:foo.rc config must_be_unique new};
 $output = qx{../task rc:foo.rc show};
-like ($output, qr/^must_be_unique\s+new$/ms, 'config overwriting an existing value');
+like ($output, qr/^must_be_unique\s+new/ms, 'config overwriting an existing value');
 
 qx{echo 'y'|../task rc:foo.rc config must_be_unique ''};
 $output = qx{../task rc:foo.rc show};
-like ($output, qr/^must_be_unique$/ms, 'config setting a blank value');
+like ($output, qr/^must_be_unique/ms, 'config setting a blank value');
 
 qx{echo 'y'|../task rc:foo.rc config must_be_unique};
 $output = qx{../task rc:foo.rc show};
@@ -77,11 +77,11 @@ like ($output, qr/^report\.:b\s+\+c/ms, 'the -- operator is working');
 # Make sure the value is accepted if it has multiple words.
 qx{echo 'y'|../task rc:foo.rc config must_be_unique 'one two three'};
 $output = qx{../task rc:foo.rc show};
-like ($output, qr/^must_be_unique\s+one two three$/ms, 'config allows multi-word quoted values');
+like ($output, qr/^must_be_unique\s+one two three/ms, 'config allows multi-word quoted values');
 
 qx{echo 'y'|../task rc:foo.rc config must_be_unique one two three};
 $output = qx{../task rc:foo.rc show};
-like ($output, qr/^must_be_unique\s+one two three$/ms, 'config allows multi-word unquoted values');
+like ($output, qr/^must_be_unique\s+one two three/ms, 'config allows multi-word unquoted values');
 
 rmtree 'foo', 0, 0;
 ok (!-r 'foo', 'Removed foo');
