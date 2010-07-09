@@ -35,6 +35,9 @@ if (open my $fh, '>', 'special.rc')
 {
   print $fh "data.location=.\n",
             "color.keyword.red=red\n",
+            "color.alternate=\n",
+            "color.tagged=\n",
+            "color.pri.H=\n",
             "nag=NAG\n",
             "_forcecolor=1\n";
   close $fh;

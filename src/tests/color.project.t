@@ -35,6 +35,7 @@ if (open my $fh, '>', 'color.rc')
 {
   print $fh "data.location=.\n",
             "color.project.x=red\n",
+            "color.alternate=\n",
             "_forcecolor=1\n";
   close $fh;
   ok (-r 'color.rc', 'Created color.rc');
