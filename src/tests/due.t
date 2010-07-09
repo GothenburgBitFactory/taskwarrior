@@ -37,6 +37,7 @@ if (open my $fh, '>', 'due.rc')
             "due=4\n",
             "color=on\n",
             "color.due=red\n",
+            "color.alternate=\n",
             "_forcecolor=on\n",
             "dateformat=m/d/Y\n";
   close $fh;

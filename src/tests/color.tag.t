@@ -34,6 +34,8 @@ use Test::More tests => 7;
 if (open my $fh, '>', 'color.rc')
 {
   print $fh "data.location=.\n",
+            "color.tagged=\n",
+            "color.alternate=\n",
             "color.tag.red=red\n",
             "color.tag.green=green\n",
             "_forcecolor=1\n";

@@ -38,6 +38,7 @@ if (open my $fh, '>', 'color.rc')
             "color.pri.M=green\n",
             "color.pri.L=blue\n",
             "color.pri.none=yellow\n",
+            "color.alternate=\n",
             "_forcecolor=1\n";
   close $fh;
   ok (-r 'color.rc', 'Created color.rc');

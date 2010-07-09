@@ -155,6 +155,7 @@ if (open my $fh, '>', 'details.rc')
             "calendar.details.report=list\n",
             "calendar.holidays=full\n",
             "color=on\n",
+            "color.alternate=\n",
             "confirmation=no\n",
             "holiday.AAAA.name=AAAA\n",
             "holiday.AAAA.date=20150101\n",
