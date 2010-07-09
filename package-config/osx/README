@@ -33,7 +33,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
   2.2 Making sure you have the right version of the code.  This assumes you are
     building task 1.9.2, but any version number is interchangeable.  Check out
     the correct branch, and make sure it is sitting at the correct commit, via
-    a tag.
+    a tag.  Note that while 1.9.2 is a branch name, v1.9.2 is a tag name.
 
     $ git checkout 1.9.2
     $ git reset --hard v1.9.2
@@ -147,14 +147,14 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
     Click on "Read Me", and on the right hand side, under "Read Me Panel", click
     on "File" and select the file:
 
-      ~/task-package.git/package-config/osx/README.txt
+      /Users/<your-account>/task-package.git/package-config/osx/README.txt
 
     <figure 5>
 
     Click on "License", and on the right hand side, under "License Panel", click
     on "File" and select the file:
 
-      ~/task-package.git/package-config/osx/COPYING.txt
+      /Users/<your-account>/task-package.git/package-config/osx/COPYING.txt
 
     <figure 6>
 
@@ -166,7 +166,8 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
 
   6.6 Back in the "task.pmdoc" window, click on the "Requirements" tab/button,
     then click on the "+" button, and add a requirement rule as shown in the
-    figure.
+    figure.  The minimum system should be 10.5.0 or 10.6.0, depending on which
+    package is being built.
 
     <figure 8>
 
@@ -192,7 +193,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
   6.10 Click on the blue folder on the left, which is labelled "local", and has
     a path of "/usr/local".  Click on the "Configuration" tab/button.
 
-    - Change the "Install" to ~/task-package.git/package-config/osx/local
+    - Change the "Install" to /Users/<your-account>/task-package.git/package-config/osx/local
     - Make sure the "Destination" is "/usr/local"
     - Make sure "Allow custom location" is checked
     - Make sure the "Package Identifier is "com.beckingham.task192.local.pkg"
