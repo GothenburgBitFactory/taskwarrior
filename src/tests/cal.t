@@ -157,6 +157,8 @@ if (open my $fh, '>', 'details.rc')
             "calendar.holidays=full\n",
             "color=on\n",
             "color.alternate=\n",
+            "color.calendar.weekend=\n",
+            "color.calendar.holidays=black on bright yellow\n",
             "confirmation=no\n",
             "holiday.AAAA.name=AAAA\n",
             "holiday.AAAA.date=20150101\n",
