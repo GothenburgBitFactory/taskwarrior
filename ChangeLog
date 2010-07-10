@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.9.2 ()
+1.9.2 (7/10/2010)
  + Added feature #320, so the command "task 123" is interpreted as an implicit
    "task info 123" command (thanks to John Florian).
  + Added feature #326, allowing tasks to be added in the completed state, by
