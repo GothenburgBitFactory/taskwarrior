@@ -62,8 +62,6 @@ int handleExportCSV (std::string &outs)
         << "'description'"
         << "\n";
 
-    int count = 0;
-
     // Get all the tasks.
     std::vector <Task> tasks;
     context.tdb.lock (context.config.getBoolean ("locking"));
@@ -77,10 +75,7 @@ int handleExportCSV (std::string &outs)
       context.hooks.trigger ("pre-display", *task);
 
       if (task->getStatus () != Task::recurring)
-      {
         out << task->composeCSV ().c_str ();
-        ++count;
-      }
     }
 
     outs = out.str ();
@@ -105,8 +100,6 @@ int handleExportiCal (std::string &outs)
     out << "BEGIN:VCALENDAR\n"
         << "VERSION:2.0\n"
         << "PRODID:-//GBF//" << PACKAGE_STRING << "//EN\n";
-
-    int count = 0;
 
     // Get all the tasks.
     std::vector <Task> tasks;
@@ -214,11 +207,43 @@ int handleExportiCal (std::string &outs)
           out << "COMMENT:" << anno->value () << "\n";
 
         out << "END:VTODO\n";
-        ++count;
       }
     }
 
     out << "END:VCALENDAR\n";
+
+    outs = out.str ();
+    context.hooks.trigger ("post-export-command");
+  }
+
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int handleExportYAML (std::string &outs)
+{
+  int rc = 0;
+
+  if (context.hooks.trigger ("pre-export-command"))
+  {
+    // YAML header.
+    std::stringstream out;
+    out << "%YAML 1.1\n"
+        << "---\n";
+
+    // Get all the tasks.
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    handleRecurrence ();
+    context.tdb.load (tasks, context.filter);
+    context.tdb.commit ();
+    context.tdb.unlock ();
+
+    foreach (task, tasks)
+    {
+      context.hooks.trigger ("pre-display", *task);
+      out << task->composeYAML ().c_str ();
+    }
 
     outs = out.str ();
     context.hooks.trigger ("post-export-command");

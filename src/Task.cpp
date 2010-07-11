@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -388,6 +388,33 @@ std::string Task::composeCSV () const
   std::string clean = get ("description"); // No i18n
   std::replace (clean.begin (), clean.end (), '\'', '"'); // No i18n
   out << "'" << clean            << "'\n";
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Task::composeYAML () const
+{
+  std::stringstream out;
+
+  // Task header.
+  out << "  task:\n";
+
+  // Get all the supported attribute names.
+  std::vector <std::string> names;
+  Att::allNames (names);
+  std::sort (names.begin (), names.end ());
+
+  foreach (name, names)
+    out << "    " << *name << ": " << get (*name) << "\n";
+
+  // Now the annotations, which are not listed by the Att::allNames call.
+  std::vector <Att> annotations;
+  getAnnotations (annotations);
+  foreach (a, annotations)
+    out << "    annotation:\n"
+        << "      entry: "       << a->name().substr (12) << "\n"
+        << "      description: " << a->value ()           << "\n";
 
   return out.str ();
 }

@@ -133,6 +133,7 @@ int handleImport (std::string&);
 // export.cpp
 int handleExportCSV (std::string &);
 int handleExportiCal (std::string &);
+int handleExportYAML (std::string &);
 
 // list template
 ///////////////////////////////////////////////////////////////////////////////

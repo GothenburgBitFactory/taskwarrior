@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // task - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -44,6 +44,7 @@ public:
 
   void parse (const std::string&);
   std::string composeCSV () const;
+  std::string composeYAML () const;
 
   // Status values.
   enum status {pending, completed, deleted, recurring, waiting};
