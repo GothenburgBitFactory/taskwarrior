@@ -251,8 +251,7 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "" &&
            sequence.size ())                  { rc = handleModify                (out); }
 
-  // Command that display IDs and therefore need TDB::gc first.
-  else if (cmd.command == "next")             { if (!inShadow) tdb.gc (); rc = handleReportNext (out); }
+  // Commands that display IDs and therefore need TDB::gc first.
   else if (cmd.validCustom (cmd.command))     { if (!inShadow) tdb.gc (); rc = handleCustomReport  (cmd.command, out); }
 
   // If the command is not recognized, display usage.

@@ -99,7 +99,6 @@ int shortUsage (std::string &);
 int longUsage (std::string &);
 int handleInfo (std::string &);
 int handleReportSummary (std::string &);
-int handleReportNext (std::string &);
 int handleReportHistoryMonthly (std::string &);
 int handleReportHistoryAnnual (std::string &);
 int handleReportGHistoryMonthly (std::string &);
