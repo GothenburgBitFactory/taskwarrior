@@ -1,4 +1,4 @@
-.TH taskrc 5 2010-07-10 "task 1.9.3" "User Manuals"
+.TH taskrc 5 2010-05-22 "task 1.9.2" "User Manuals"
 
 .SH NAME
 taskrc \- Configuration file for the task(1) command
@@ -756,9 +756,9 @@ The description for report X when running the "task help" command.
 .TP
 .B report.X.columns
 The columns that will be used when generating the report X. Valid columns are:
-id, uuid, project, priority, entry, start, due, recur, recur_indicator, age,
-age_compact, active, tags, tag_indicator, description, description_only,
-countdown, countdown_compact.
+id, uuid, project, priority, priority_long, entry, entry_time, start, start_time,
+end, end_time, due, countdown, countdown_compact, age, age_compact, active, tags,
+description_only, description, recur, recurrence_indicator, tag_indicator and wait.
 The IDs are separated by commas.
 
 .TP
@@ -770,7 +770,10 @@ labels are a comma separated list.
 .B report.X.sort
 The sort order of the tasks in the generated report X. The sort order is
 specified by using the column ids post-fixed by a "+" for ascending sort order
-or a "-" for descending sort order. The sort IDs are separated by commas
+or a "-" for descending sort order. The sort IDs are separated by commas.
+For example:
+
+    report.list.sort=due+,priority-,active-,project+
 
 .TP
 .B report.X.filter
