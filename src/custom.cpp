@@ -55,74 +55,23 @@ static std::vector <std::string> customReports;
 // via the .taskrc file.
 int handleCustomReport (const std::string& report, std::string &outs)
 {
-  // Load report configuration.
-  std::string columnList = context.config.get ("report." + report + ".columns");
-  std::string labelList  = context.config.get ("report." + report + ".labels");
-  std::string sortList   = context.config.get ("report." + report + ".sort");
-  std::string filterList = context.config.get ("report." + report + ".filter");
-
-  std::vector <std::string> filterArgs;
-  split (filterArgs, filterList, ' ');
-  {
-    Cmd cmd (report);
-    Task task;
-    Sequence sequence;
-    Subst subst;
-    Filter filter;
-    context.parse (filterArgs, cmd, task, sequence, subst, filter);
-
-    context.sequence.combine (sequence);
-
-    // Allow limit to be overridden by the command line.
-    if (!context.task.has ("limit") && task.has ("limit"))
-      context.task.set ("limit", task.get ("limit"));
-
-    foreach (att, filter)
-      context.filter.push_back (*att);
-  }
-
-  // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  return runCustomReport (
-    report,
-    columnList,
-    labelList,
-    sortList,
-    filterList,
-    tasks,
-    outs);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// This report will eventually become the one report that many others morph into
-// via the .taskrc file.
-int runCustomReport (
-  const std::string& report,
-  const std::string& columnList,
-  const std::string& labelList,
-  const std::string& sortList,
-  const std::string& filterList,
-  std::vector <Task>& tasks,
-  std::string &outs)
-{
   int rc = 0;
 
   if (context.hooks.trigger ("pre-custom-report-command") &&
       context.hooks.trigger (std::string ("pre-") + report + "-command"))
   {
     // Load report configuration.
+    std::string reportColumns = context.config.get ("report." + report + ".columns");
+    std::string reportLabels  = context.config.get ("report." + report + ".labels");
+    std::string reportSort    = context.config.get ("report." + report + ".sort");
+    std::string reportFilter  = context.config.get ("report." + report + ".filter");
+
     std::vector <std::string> columns;
-    split (columns, columnList, ',');
+    split (columns, reportColumns, ',');
     validReportColumns (columns);
 
     std::vector <std::string> labels;
-    split (labels, labelList, ',');
+    split (labels, reportLabels, ',');
 
     if (columns.size () != labels.size () && labels.size () != 0)
       throw std::string ("There are a different number of columns than labels ") +
@@ -134,28 +83,40 @@ int runCustomReport (
         columnLabels[columns[i]] = labels[i];
 
     std::vector <std::string> sortOrder;
-    split (sortOrder, sortList, ',');
+    split (sortOrder, reportSort, ',');
     validSortColumns (columns, sortOrder);
 
+    // Apply rc overrides.
     std::vector <std::string> filterArgs;
-    split (filterArgs, filterList, ' ');
+    std::vector <std::string> filteredArgs;
+    split (filterArgs, reportFilter, ' ');
+    context.applyOverrides (filterArgs, filteredArgs);
+
     {
       Cmd cmd (report);
       Task task;
       Sequence sequence;
       Subst subst;
       Filter filter;
-      context.parse (filterArgs, cmd, task, sequence, subst, filter);
+      context.parse (filteredArgs, cmd, task, sequence, subst, filter);
 
       context.sequence.combine (sequence);
 
-      // Allow limit to be overridden by the command line.
+      // Special case: Allow limit to be overridden by the command line.
       if (!context.task.has ("limit") && task.has ("limit"))
         context.task.set ("limit", task.get ("limit"));
 
       foreach (att, filter)
         context.filter.push_back (*att);
     }
+
+    // Get all the tasks.
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    handleRecurrence ();
+    context.tdb.load (tasks, context.filter);
+    context.tdb.commit ();
+    context.tdb.unlock ();
 
     // Filter sequence.
     if (context.sequence.size ())

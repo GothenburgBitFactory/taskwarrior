@@ -68,6 +68,7 @@ public:
 
   std::string canonicalize (const std::string&) const;
   void disallowModification () const;
+  void applyOverrides (const std::vector <std::string>&, std::vector <std::string>&);
 
 private:
   void loadCorrectConfigFile ();

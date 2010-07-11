@@ -111,10 +111,6 @@ std::string getDueDate (Task&, const std::string&);
 
 // custom.cpp
 int handleCustomReport (const std::string&, std::string &);
-int runCustomReport (const std::string&, const std::string&,
-                     const std::string&, const std::string&,
-                     const std::string&, std::vector <Task>&,
-		     std::string&);
 void validReportColumns (const std::vector <std::string>&);
 void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 void getLimits (const std::string&, int&, int&);

@@ -252,7 +252,8 @@ int Context::dispatch (std::string &out)
            sequence.size ())                  { rc = handleModify                (out); }
 
   // Commands that display IDs and therefore need TDB::gc first.
-  else if (cmd.validCustom (cmd.command))     { if (!inShadow) tdb.gc (); rc = handleCustomReport  (cmd.command, out); }
+  else if (cmd.validCustom (cmd.command))     { if (!inShadow) tdb.gc ();
+                                                rc = handleCustomReport (cmd.command, out); }
 
   // If the command is not recognized, display usage.
   else                                        { hooks.trigger ("pre-usage-command");
@@ -369,6 +370,44 @@ void Context::disallowModification () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Takes a vector of args (foo, rc.name:value, bar), extracts any rc.name:value
+// args and sets the name/value in context.config, returning only the plain args
+// (foo, bar) as output.
+void Context::applyOverrides (
+  const std::vector <std::string>& input,
+  std::vector <std::string>& output)
+{
+  bool foundTerminator = false;
+  foreach (in, input)
+  {
+    if (*in == "--")
+    {
+      foundTerminator = true;
+      output.push_back (*in);
+    }
+    else if (!foundTerminator && in->substr (0, 3) == "rc.")
+    {
+      std::string name;
+      std::string value;
+      Nibbler n (*in);
+      if (n.getUntil ('.', name)       &&
+          n.skip ('.')                 &&
+          n.getUntilOneOf (":=", name) &&
+          n.skipN (1)                  &&
+          n.getUntilEOS (value))
+      {
+        config.set (name, value);
+        var_overrides += " " + *in;
+        footnote (std::string ("Configuration override ") +  // TODO i18n
+                  in->substr (3));
+      }
+    }
+    else
+      output.push_back (*in);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Context::loadCorrectConfigFile ()
 {
   // Set up default locations.
@@ -418,8 +457,8 @@ void Context::loadCorrectConfigFile ()
   {
     if (*arg == "--")
       break;
-    else if (arg->substr (0, 17) == "rc.data.location:" ||
-             arg->substr (0, 17) == "rc.data.location=")
+    else if (arg->substr (0, 16) == "rc.data.location" &&
+             ((*arg)[16] == ':' || (*arg)[16] == '='))
     {
       data = Directory (arg->substr (17));
       header ("Using alternate data.location " + data.data); // TODO i18n
@@ -430,60 +469,23 @@ void Context::loadCorrectConfigFile ()
   // Do we need to create a default rc?
   if (! rc.exists ())
   {
-    if (confirm ("A configuration file could not be found in " // TODO i18n
-               + home
-               + "\n\n"
-               + "Would you like a sample "
-               + rc.data
-               + " created, so task can proceed?"))
-    {
-      config.createDefaultRC (rc, data);
-    }
-    else
+    if (!confirm ("A configuration file could not be found in " // TODO i18n
+                + home
+                + "\n\n"
+                + "Would you like a sample "
+                + rc.data
+                + " created, so task can proceed?"))
       throw std::string ("Cannot proceed without rc file.");
+
+    config.createDefaultRC (rc, data);
   }
 
   // Create data location, if necessary.
   config.createDefaultData (data);
 
-  // TODO find out why this was done twice - see tw #355
-  // Load rc file.
-  //config.clear ();       // Dump current values.
-  //config.setDefaults (); // Add in the custom reports.
-  //config.load (rc);      // Load new file.
-
-  // Apply overrides of type: "rc.name:value", or "rc.name=value".
+  // Apply rc overrides.
   std::vector <std::string> filtered;
-  bool foundTerminator = false;
-  foreach (arg, args)
-  {
-    if (*arg == "--")
-    {
-      foundTerminator = true;
-      filtered.push_back (*arg);
-    }
-    else if (!foundTerminator &&
-             arg->substr (0, 3) == "rc.")
-    {
-      std::string name;
-      std::string value;
-      Nibbler n (*arg);
-      if (n.getUntil ('.', name)       &&
-          n.skip ('.')                 &&
-          n.getUntilOneOf (":=", name) &&
-          n.skipN (1)                  &&
-          n.getUntilEOS (value))
-      {
-        config.set (name, value);
-        var_overrides += " " + *arg;
-        footnote (std::string ("Configuration override ") +  // TODO i18n
-                  arg->substr (3));
-      }
-    }
-    else
-      filtered.push_back (*arg);
-  }
-
+  applyOverrides (args, filtered);
   args = filtered;
 }
 
