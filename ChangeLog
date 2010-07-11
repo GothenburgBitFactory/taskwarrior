@@ -2,8 +2,8 @@
 ------ current release ---------------------------
 
 1.9.3 ()
+ + Added feature #423, now custom report filters allow rc overrides.
  + Improved man pages (thanks to Andy Lester).
- + Fixed bug #423, and custom report filters now allow rc overrides.
 
 ------ old releases ------------------------------
 
