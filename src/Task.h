@@ -73,6 +73,11 @@ public:
   void addAnnotation (const std::string&);
   void removeAnnotations ();
 
+  void addDependency (int);
+  void removeDependency (int);
+  void getDependencies (std::vector <int>&) const;
+  void getDependencies (std::vector <std::string>&) const;
+
   void validate () const;
 
 private:

@@ -64,6 +64,9 @@ public:
   void  undo ();
   void  merge (const std::string&);
 
+  std::string uuid (int) const;
+  int id (const std::string&) const;
+
 private:
   FILE* openAndLock (const std::string&);
   void writeUndo (const Task&, FILE*);
@@ -79,6 +82,9 @@ private:
   std::vector <Task> mCompleted; // Contents of pending.data
   std::vector <Task> mNew;       // Uncommitted new tasks
   std::vector <Task> mModified;  // Uncommitted modified tasks
+
+  std::map <int, std::string> mI2U; // ID -> UUID map
+  std::map <std::string, int> mU2I; // UUID -> ID map
 };
 
 #endif

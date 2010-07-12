@@ -304,6 +304,10 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
             task.id = mId++;
 
             mPending.push_back (task);
+
+            // Maintain mapping for ease of link/dependency resolution.
+            mI2U[task.id] = task.get ("uuid");
+            mU2I[task.get ("uuid")] = task.id;
           }
 
           ++line_number;
@@ -425,6 +429,8 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
 void TDB::add (const Task& task)
 {
   mNew.push_back (task);
+  mI2U[task.id] = task.get ("uuid");
+  mU2I[task.get ("uuid")] = task.id;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1423,6 +1429,26 @@ void TDB::merge (const std::string& mergeFile)
   // delete objects
   lmods.clear();
   mods.clear();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string TDB::uuid (int id) const
+{
+  std::map <int, std::string>::const_iterator i;
+  if ((i = mI2U.find (id)) != mI2U.end ())
+    return i->second;
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int TDB::id (const std::string& uuid) const
+{
+  std::map <std::string, int>::const_iterator i;
+  if ((i = mU2I.find (uuid)) != mU2I.end ())
+    return i->second;
+
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

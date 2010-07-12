@@ -99,6 +99,8 @@ int handleAdd (std::string &outs)
         !context.task.has ("recur"))
       throw std::string ("You cannot specify an until date for a non-recurring task.");
 
+    // TODO Resolve dependencies.
+
     // Only valid tasks can be added.
     context.task.validate ();
 
@@ -163,6 +165,8 @@ int handleLog (std::string &outs)
     // Include tags.
     foreach (tag, context.tagAdditions)
       context.task.addTag (*tag);
+
+    // TODO Resolve dependencies.
 
     // Only valid tasks can be added.
     context.task.validate ();
@@ -2231,7 +2235,25 @@ int deltaAttributes (Task& task)
           task.setStatus (Task::waiting);
       }
 
-      if (att->second.value () == "")
+      // Modifying dependencies requires adding/removing uuids.
+      else if (att->second.name () == "depends")
+      {
+        std::vector <std::string> deps;
+        split (deps, att->second.value (), ',');
+
+        std::vector <std::string>::iterator i;
+        for (i = deps.begin (); i != deps.end (); i++)
+        {
+          int id = atoi (i->c_str ());
+          if (id < 0)
+            task.removeDependency (-id);
+          else
+            task.addDependency (id);
+        }
+      }
+
+      // Now the generalized handling.
+      else if (att->second.value () == "")
         task.remove (att->second.name ());
       else
         // One of the few places where the compound attribute name is used.

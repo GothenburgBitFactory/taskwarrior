@@ -468,6 +468,72 @@ void Task::removeAnnotations ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Task::addDependency (int id)
+{
+  std::string uuid = context.tdb.uuid (id);
+  if (uuid == "")
+  {
+    std::stringstream s;
+    s << "Could not create a dependency on task " << id << " - not found.";
+    throw s.str ();
+  }
+
+  std::string depends = get ("depends");
+  if (depends.length ())
+  {
+    if (depends.find (uuid) == std::string::npos)
+      set ("depends", depends + "," + uuid);
+  }
+  else
+    set ("depends", uuid);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::removeDependency (int id)
+{
+  std::string uuid = context.tdb.uuid (id);
+  if (uuid == "")
+  {
+    std::stringstream s;
+    s << "Could not find a UUID for id " << id << ".";
+    throw s.str ();
+  }
+
+  std::vector <std::string> deps;
+  split (deps, get ("depends"), ',');
+
+  std::vector <std::string>::iterator i;
+  i = std::find (deps.begin (), deps.end (), uuid);
+  if (i != deps.end ())
+  {
+    deps.erase (i);
+    std::string combined;
+    join (combined, ",", deps);
+    set ("depends", combined);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::getDependencies (std::vector <int>& all) const
+{
+  std::vector <std::string> deps;
+  split (deps, get ("depends"), ',');
+
+  all.clear ();
+
+  std::vector <std::string>::iterator i;
+  for (i = deps.begin (); i != deps.end (); ++i)
+    all.push_back (context.tdb.id (*i));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::getDependencies (std::vector <std::string>& all) const
+{
+  all.clear ();
+  split (all, get ("depends"), ',');
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Task::getTagCount ()
 {
   std::vector <std::string> tags;

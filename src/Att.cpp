@@ -63,6 +63,7 @@ static const char* modifiableNames[] =
   "recur",
   "until",
   "wait",
+  "depends",
 };
 
 // Synonyms on the same line.
