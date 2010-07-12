@@ -35,7 +35,7 @@ if (open my $fh, '>', 'hook.rc')
 {
   print $fh "data.location=.\n",
             "report.long.columns=id,project,priority,entry,start_time,due,",
-              "recur,countdown_compact,age,tags,description\n",
+              "recur,countdown_compact,age,depends,tags,description\n",
             "hooks=on\n",
             "hook.format-countdown_compact=" . $ENV{'PWD'} . "/hook:countdown_compact\n";
   close $fh;

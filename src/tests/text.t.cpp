@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (185);
+  UnitTest t (191);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -177,6 +177,24 @@ int main (int argc, char** argv)
   join (joined, "-", unjoined);
   t.is (joined.length (), (size_t) 9,  "join '' - 'a' - 'bc' - 'def' -> length 9");
   t.is (joined,           "-a-bc-def", "join '' - 'a' - 'bc' - 'def' -> '-a-bc-def'");
+
+  // void join (std::string& result, const std::string& separator, const std::vector<int>& items)
+  std::vector <int> unjoined2;
+
+  join (joined, "", unjoined2);
+  t.is (joined.length (), (size_t) 0, "join -> length 0");
+  t.is (joined,           "",         "join -> ''");
+
+  unjoined2.push_back (0);
+  unjoined2.push_back (1);
+  unjoined2.push_back (2);
+  join (joined, "", unjoined2);
+  t.is (joined.length (), (size_t) 3, "join 0 1 2 -> length 3");
+  t.is (joined,           "012",      "join 0 1 2 -> '012'");
+
+  join (joined, "-", unjoined2);
+  t.is (joined.length (), (size_t) 5, "join 0 1 2 -> length 5");
+  t.is (joined,           "0-1-2",    "join 0 1 2 -> '0-1-2'");
 
   // std::string trimLeft (const std::string& in, const std::string& t /*= " "*/)
   t.is (trimLeft (""),                     "",            "trimLeft '' -> ''");

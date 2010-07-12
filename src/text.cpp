@@ -24,7 +24,9 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <string>
 #include <strings.h>
@@ -142,14 +144,34 @@ void join (
   const std::string& separator,
   const std::vector<std::string>& items)
 {
-  result = "";
+  std::stringstream s;
   unsigned int size = items.size ();
   for (unsigned int i = 0; i < size; ++i)
   {
-    result += items[i];
+    s << items[i];
     if (i < size - 1)
-      result += separator;
+      s << separator;
   }
+
+  result = s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void join (
+  std::string& result,
+  const std::string& separator,
+  const std::vector<int>& items)
+{
+  std::stringstream s;
+  unsigned int size = items.size ();
+  for (unsigned int i = 0; i < size; ++i)
+  {
+    s << items[i];
+    if (i < size - 1)
+      s << separator;
+  }
+
+  result = s.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

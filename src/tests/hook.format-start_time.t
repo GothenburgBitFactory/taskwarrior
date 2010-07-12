@@ -34,7 +34,7 @@ use Test::More tests => 7;
 if (open my $fh, '>', 'hook.rc')
 {
   print $fh "data.location=.\n",
-            "report.long.columns=id,project,priority,entry,start_time,due,recur,countdown,age,tags,description\n",
+            "report.long.columns=id,project,priority,entry,start_time,due,recur,countdown,age,depends,tags,description\n",
             "hooks=on\n",
             "hook.format-start_time=" . $ENV{'PWD'} . "/hook:start_time\n";
   close $fh;
