@@ -55,6 +55,8 @@ std::string Config::defaults =
   "#   variable=      -- By specifying no value, this means no default\n"
   "#   #variable=foo  -- By commenting out the line, this uses the default\n"
   "\n"
+  "# Use the command 'task show' to see all defaults and overrides\n"
+  "\n"
   "# Files\n"
   "data.location=~/.task\n"
   "locking=on                                    # Use file-level locking\n"
@@ -472,7 +474,13 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "]\n"
            << defaults.substr (0, loc + 14)
            << data
-           << defaults.substr (loc + 21);
+           << "\n\n# Color theme\n"
+#ifdef LINUX
+           << "include /usr/local/share/doc/task/rc/dark-256.theme"
+#else
+           << "include /usr/local/share/doc/task/rc/dark-16.theme"
+#endif
+           << "\n\n";
 
   // Write out the new file.
   if (! File::write (rc, contents.str ()))
