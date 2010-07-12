@@ -474,13 +474,15 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "]\n"
            << defaults.substr (0, loc + 14)
            << data
-           << "\n\n# Color theme\n"
-#ifdef LINUX
-           << "include /usr/local/share/doc/task/rc/dark-256.theme"
-#else
-           << "include /usr/local/share/doc/task/rc/dark-16.theme"
-#endif
-           << "\n\n";
+           << "\n\n# Color theme (uncomment one to use)\n"
+           << "#include /usr/local/share/doc/task/rc/light-16.theme\n"
+           << "#include /usr/local/share/doc/task/rc/light-256.theme\n"
+           << "#include /usr/local/share/doc/task/rc/dark-16.theme\n"
+           << "#include /usr/local/share/doc/task/rc/dark-256.theme\n"
+           << "#include /usr/local/share/doc/task/rc/dark-red-256.theme\n"
+           << "#include /usr/local/share/doc/task/rc/dark-green-256.theme\n"
+           << "#include /usr/local/share/doc/task/rc/dark-blue-256.theme\n"
+           << "\n";
 
   // Write out the new file.
   if (! File::write (rc, contents.str ()))
