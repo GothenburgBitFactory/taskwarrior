@@ -140,10 +140,18 @@ int main (int argc, char** argv)
 /*
 
 TODO Task::composeCSV
+TODO Task::composeYAML
 TODO Task::id
 TODO Task::*Status
 TODO Task::*Tag*
 TODO Task::*Annotation*
+
+TODO Task::addDependency
+TODO Task::addDependency
+TODO Task::removeDependency
+TODO Task::removeDependency
+TODO Task::getDependencies
+TODO Task::getDependencies
 
 */
 

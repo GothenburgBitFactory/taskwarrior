@@ -591,6 +591,24 @@ int handleCustomReport (const std::string& report, std::string &outs)
         }
       }
 
+      else if (*col == "depends")
+      {
+        table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Deps");
+        table.setColumnWidth (columnCount, Table::minimum);
+        table.setColumnJustification (columnCount, Table::left);
+
+        int row = 0;
+        std::vector <int> all;
+        std::string deps;
+        foreach (task, tasks)
+        {
+          task->getDependencies (all);
+          join (deps, " ", all);
+          context.hooks.trigger ("format-depends", "depends", deps);
+          table.addCell (row++, columnCount, deps);
+        }
+      }
+
       // Common to all columns.
       // Add underline.
       if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
@@ -752,7 +770,8 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "tag_indicator"        &&
         *it != "description_only"     &&
         *it != "description"          &&
-        *it != "wait")
+        *it != "wait"                 &&
+        *it != "depends")
       bad.push_back (*it);
 
   if (bad.size ())
