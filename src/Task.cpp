@@ -470,6 +470,9 @@ void Task::removeAnnotations ()
 ////////////////////////////////////////////////////////////////////////////////
 void Task::addDependency (int id)
 {
+  if (id == this->id)
+    throw std::string ("A task cannot be dependent on itself.");
+
   std::string uuid = context.tdb.uuid (id);
   if (uuid == "")
   {
