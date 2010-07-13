@@ -603,7 +603,7 @@ int handleCustomReport (const std::string& report, std::string &outs)
         foreach (task, tasks)
         {
           task->getDependencies (all);
-          join (deps, " ", all);
+          join (deps, ", ", all);
           context.hooks.trigger ("format-depends", "depends", deps);
           table.addCell (row++, columnCount, deps);
         }

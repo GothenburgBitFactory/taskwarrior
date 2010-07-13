@@ -28,6 +28,7 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 #include <sys/types.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -418,6 +419,40 @@ int handleInfo (std::string &outs)
         value = task->get ("priority");
         context.hooks.trigger ("format-priority", "priority", value);
         table.addCell (row, 1, value);
+      }
+
+      // dependencies: blocked
+      row = table.addRow ();
+      table.addCell (row, 0, "This task blocked by");
+      if (task->has ("depends"))
+      {
+        std::string depends = task->get ("depends");
+        const std::vector <Task>& rpending = context.tdb.getAllPending ();
+
+        std::stringstream blocked;
+        std::vector <Task>::const_iterator it;
+        for (it = rpending.begin (); it != rpending.end (); ++it)
+          if (depends.find (it->get ("uuid")) != std::string::npos)
+            blocked << it->id << " " << it->get ("description") << "\n";
+
+        table.addCell (row, 1, blocked.str ());
+      }
+
+      // dependencies: blocking
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "This task is blocking");
+
+        std::string uuid = task->get ("uuid");
+        const std::vector <Task>& rpending = context.tdb.getAllPending ();
+
+        std::stringstream blocked;
+        std::vector <Task>::const_iterator it;
+        for (it = rpending.begin (); it != rpending.end (); ++it)
+          if (it->get ("depends").find (uuid) != std::string::npos)
+            blocked << it->id << " " << it->get ("description") << "\n";
+
+        table.addCell (row, 1, blocked.str ());
       }
 
       if (task->getStatus () == Task::recurring ||
