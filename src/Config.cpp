@@ -351,7 +351,7 @@ std::string Config::defaults =
   "report.next.columns=id,project,priority,due,active,age,description\n"
   "report.next.labels=ID,Project,Pri,Due,Active,Age,Description\n"
   "report.next.sort=due+,priority-,active-,project+\n"
-  "report.next.filter=status:pending limit:page\n"
+  "report.next.filter=status:pending limit:page depends.none:\n"
   "#report.next.dateformat=m/d/Y\n"
   "#report.next.annotations=full\n"
   "\n"
