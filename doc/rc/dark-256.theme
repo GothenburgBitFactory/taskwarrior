@@ -33,5 +33,6 @@ color.pri.H=color255
 color.pri.M=color250
 color.pri.L=color245
 color.tagged=rgb031
+color.blocked=black on white           # placeholder color
 color.alternate=on color233
 

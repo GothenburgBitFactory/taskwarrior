@@ -137,8 +137,9 @@ std::string Config::defaults =
   "color.pri.H=rgb255                            # [9]  Color of priority:H tasks\n"
   "color.pri.M=rgb250                            # [9]  Color of priority:M tasks\n"
   "color.pri.L=rgb245                            # [9]  Color of priority:L tasks\n"
-  "color.tagged=rgb031                           # [10]  Color of tagged tasks\n"
-  "color.alternate=on color233                   # [11] Alternate color for line coloring\n"
+  "color.tagged=rgb031                           # [10] Color of tagged tasks\n"
+  "color.blocked=black on white                  # [11] Color of blocked tasks\n"
+  "color.alternate=on color233                   # [12] Alternate color for line coloring\n"
 #else
   "color.header=yellow                           # Color of header messages\n"
   "color.footnote=yellow                         # Color of footnote messages\n"
@@ -179,7 +180,8 @@ std::string Config::defaults =
   "color.pri.M=white                             # [9]  Color of priority:M tasks\n"
   "color.pri.L=                                  # [9]  Color of priority:L tasks\n"
   "color.tagged=green                            # [10]  Color of tagged tasks\n"
-  "color.alternate=                              # [11] Alternate color for line coloring\n"
+  "color.blocked=black on white                  # [11] Color of blocked tasks\n"
+  "color.alternate=                              # [12] Alternate color for line coloring\n"
 #endif
   "\n"
   "# Shadow file support\n"

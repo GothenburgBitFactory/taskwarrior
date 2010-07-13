@@ -64,6 +64,11 @@ void autoColorize (Task& task, Color& c)
 
   Task::status status = task.getStatus ();
 
+  // Colorization of the blocked.
+  if (gsColor["color.blocked"].nontrivial ())
+    if (task.get ("depends") != "")
+      c.blend (gsColor["color.blocked"]);
+
   // Colorization of the tagged.
   if (gsColor["color.tagged"].nontrivial ())
     if (task.getTagCount ())
