@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <algorithm>
 #include "Context.h"
 #include "Hooks.h"
 #include "Timer.h"
@@ -72,6 +73,179 @@ Hook& Hook::operator= (const Hook& other)
 ////////////////////////////////////////////////////////////////////////////////
 Hooks::Hooks ()
 {
+  validProgramEvents.push_back ("post-start");
+  validProgramEvents.push_back ("pre-fatal-error");
+  validProgramEvents.push_back ("pre-exit");
+  validProgramEvents.push_back ("pre-command-line");
+  validProgramEvents.push_back ("post-command-line");
+  validProgramEvents.push_back ("pre-command-line-override");
+  validProgramEvents.push_back ("post-command-line-override");
+  validProgramEvents.push_back ("pre-config-create");
+  validProgramEvents.push_back ("post-config-create");
+  validProgramEvents.push_back ("pre-config-read");
+  validProgramEvents.push_back ("post-config-read");
+  validProgramEvents.push_back ("pre-config-value-read");
+  validProgramEvents.push_back ("post-config-value-read");
+  validProgramEvents.push_back ("pre-config-value-write");
+  validProgramEvents.push_back ("post-config-value-write");
+  validProgramEvents.push_back ("pre-file-lock");
+  validProgramEvents.push_back ("post-file-lock");
+  validProgramEvents.push_back ("pre-file-unlock");
+  validProgramEvents.push_back ("post-file-unlock");
+  validProgramEvents.push_back ("pre-file-read");
+  validProgramEvents.push_back ("post-file-read");
+  validProgramEvents.push_back ("pre-file-write");
+  validProgramEvents.push_back ("post-file-write");
+  validProgramEvents.push_back ("pre-output");
+  validProgramEvents.push_back ("post-output");
+  validProgramEvents.push_back ("pre-debug");
+  validProgramEvents.push_back ("post-debug");
+  validProgramEvents.push_back ("pre-header");
+  validProgramEvents.push_back ("post-header");
+  validProgramEvents.push_back ("pre-footnote");
+  validProgramEvents.push_back ("post-footnote");
+  validProgramEvents.push_back ("pre-dispatch");
+  validProgramEvents.push_back ("post-dispatch");
+  validProgramEvents.push_back ("pre-gc");
+  validProgramEvents.push_back ("post-gc");
+  validProgramEvents.push_back ("pre-archive");
+  validProgramEvents.push_back ("post-archive");
+  validProgramEvents.push_back ("pre-purge");
+  validProgramEvents.push_back ("post-purge");
+  validProgramEvents.push_back ("pre-recurrence");
+  validProgramEvents.push_back ("post-recurrence");
+  validProgramEvents.push_back ("pre-interactive");
+  validProgramEvents.push_back ("post-interactive");
+  validProgramEvents.push_back ("pre-undo");
+  validProgramEvents.push_back ("post-undo");
+  validProgramEvents.push_back ("pre-confirm");
+  validProgramEvents.push_back ("post-confirm");
+  validProgramEvents.push_back ("pre-shell-prompt");
+  validProgramEvents.push_back ("post-shell-prompt");
+  validProgramEvents.push_back ("pre-add-command");
+  validProgramEvents.push_back ("post-add-command");
+  validProgramEvents.push_back ("pre-annotate-command");
+  validProgramEvents.push_back ("post-annotate-command");
+  validProgramEvents.push_back ("pre-denotate-command");
+  validProgramEvents.push_back ("post-denotate-command");
+  validProgramEvents.push_back ("pre-append-command");
+  validProgramEvents.push_back ("post-append-command");
+  validProgramEvents.push_back ("pre-calendar-command");
+  validProgramEvents.push_back ("post-calendar-command");
+  validProgramEvents.push_back ("pre-color-command");
+  validProgramEvents.push_back ("post-color-command");
+  validProgramEvents.push_back ("pre-config-command");
+  validProgramEvents.push_back ("post-config-command");
+  validProgramEvents.push_back ("pre-custom-report-command");
+  validProgramEvents.push_back ("post-custom-report-command");
+  validProgramEvents.push_back ("pre-default-command");
+  validProgramEvents.push_back ("post-default-command");
+  validProgramEvents.push_back ("pre-delete-command");
+  validProgramEvents.push_back ("post-delete-command");
+  validProgramEvents.push_back ("pre-done-command");
+  validProgramEvents.push_back ("post-done-command");
+  validProgramEvents.push_back ("pre-duplicate-command");
+  validProgramEvents.push_back ("post-duplicate-command");
+  validProgramEvents.push_back ("pre-edit-command");
+  validProgramEvents.push_back ("post-edit-command");
+  validProgramEvents.push_back ("pre-export-command");
+  validProgramEvents.push_back ("post-export-command");
+  validProgramEvents.push_back ("pre-ghistory-command");
+  validProgramEvents.push_back ("post-ghistory-command");
+  validProgramEvents.push_back ("pre-history-command");
+  validProgramEvents.push_back ("post-history-command");
+  validProgramEvents.push_back ("pre-import-command");
+  validProgramEvents.push_back ("post-import-command");
+  validProgramEvents.push_back ("pre-info-command");
+  validProgramEvents.push_back ("post-info-command");
+  validProgramEvents.push_back ("pre-prepend-command");
+  validProgramEvents.push_back ("post-prepend-command");
+  validProgramEvents.push_back ("pre-projects-command");
+  validProgramEvents.push_back ("post-projects-command");
+  validProgramEvents.push_back ("pre-shell-command");
+  validProgramEvents.push_back ("post-shell-command");
+  validProgramEvents.push_back ("pre-start-command");
+  validProgramEvents.push_back ("post-start-command");
+  validProgramEvents.push_back ("pre-stats-command");
+  validProgramEvents.push_back ("post-stats-command");
+  validProgramEvents.push_back ("pre-stop-command");
+  validProgramEvents.push_back ("post-stop-command");
+  validProgramEvents.push_back ("pre-summary-command");
+  validProgramEvents.push_back ("post-summary-command");
+  validProgramEvents.push_back ("pre-tags-command");
+  validProgramEvents.push_back ("post-tags-command");
+  validProgramEvents.push_back ("pre-timesheet-command");
+  validProgramEvents.push_back ("post-timesheet-command");
+  validProgramEvents.push_back ("pre-undo-command");
+  validProgramEvents.push_back ("post-undo-command");
+  validProgramEvents.push_back ("pre-usage-command");
+  validProgramEvents.push_back ("post-usage-command");
+  validProgramEvents.push_back ("pre-version-command");
+  validProgramEvents.push_back ("post-version-command");
+
+  validListEvents.push_back ("pre-filter");
+  validListEvents.push_back ("post-filter");
+
+  validTaskEvents.push_back ("pre-display");
+  validTaskEvents.push_back ("pre-modification");
+  validTaskEvents.push_back ("post-modification");
+  validTaskEvents.push_back ("pre-delete");
+  validTaskEvents.push_back ("post-delete");
+  validTaskEvents.push_back ("pre-add");
+  validTaskEvents.push_back ("post-add");
+  validTaskEvents.push_back ("pre-undo");
+  validTaskEvents.push_back ("post-undo");
+  validTaskEvents.push_back ("pre-wait");
+  validTaskEvents.push_back ("post-wait");
+  validTaskEvents.push_back ("pre-unwait");
+  validTaskEvents.push_back ("post-unwait");
+  validTaskEvents.push_back ("pre-completed");
+  validTaskEvents.push_back ("post-completed");
+  validTaskEvents.push_back ("pre-priority-change");
+  validTaskEvents.push_back ("post-priority-change");
+  validTaskEvents.push_back ("pre-project-change");
+  validTaskEvents.push_back ("post-project-change");
+  validTaskEvents.push_back ("pre-substitution");
+  validTaskEvents.push_back ("post-substitution");
+  validTaskEvents.push_back ("pre-annotation");
+  validTaskEvents.push_back ("post-annotation");
+  validTaskEvents.push_back ("pre-tag");
+  validTaskEvents.push_back ("post-tag");
+  validTaskEvents.push_back ("pre-detag");
+  validTaskEvents.push_back ("post-detag");
+  validTaskEvents.push_back ("pre-colorization");
+  validTaskEvents.push_back ("post-colorization");
+
+  validFieldEvents.push_back ("format-number");
+  validFieldEvents.push_back ("format-date");
+  validFieldEvents.push_back ("format-duration");
+  validFieldEvents.push_back ("format-text");
+  validFieldEvents.push_back ("format-id");
+  validFieldEvents.push_back ("format-uuid");
+  validFieldEvents.push_back ("format-project");
+  validFieldEvents.push_back ("format-priority");
+  validFieldEvents.push_back ("format-priority_long");
+  validFieldEvents.push_back ("format-entry");
+  validFieldEvents.push_back ("format-entry_time");
+  validFieldEvents.push_back ("format-start");
+  validFieldEvents.push_back ("format-start_time");
+  validFieldEvents.push_back ("format-end");
+  validFieldEvents.push_back ("format-end_time");
+  validFieldEvents.push_back ("format-due");
+  validFieldEvents.push_back ("format-countdown");
+  validFieldEvents.push_back ("format-countdown_compact");
+  validFieldEvents.push_back ("format-age");
+  validFieldEvents.push_back ("format-age_compact");
+  validFieldEvents.push_back ("format-active");
+  validFieldEvents.push_back ("format-tags");
+  validFieldEvents.push_back ("format-recur");
+  validFieldEvents.push_back ("format-recurrence_indicator");
+  validFieldEvents.push_back ("format-tag_indicator");
+  validFieldEvents.push_back ("format-description_only");
+  validFieldEvents.push_back ("format-description");
+  validFieldEvents.push_back ("format-wait");
+  validFieldEvents.push_back ("format-prompt");
+  validFieldEvents.push_back ("format-depends");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -252,62 +426,7 @@ bool Hooks::trigger (
 ////////////////////////////////////////////////////////////////////////////////
 bool Hooks::validProgramEvent (const std::string& event)
 {
-  if (event == "post-start"                ||
-      event == "pre-fatal-error"           ||
-      event == "pre-exit"                  ||
-      event == "pre-command-line"          || event == "post-command-line"          ||
-      event == "pre-command-line-override" || event == "post-command-line-override" ||
-      event == "pre-config-create"         || event == "post-config-create"         ||
-      event == "pre-config-read"           || event == "post-config-read"           ||
-      event == "pre-config-value-read"     || event == "post-config-value-read"     ||
-      event == "pre-config-value-write"    || event == "post-config-value-write"    ||
-      event == "pre-file-lock"             || event == "post-file-lock"             ||
-      event == "pre-file-unlock"           || event == "post-file-unlock"           ||
-      event == "pre-file-read"             || event == "post-file-read"             ||
-      event == "pre-file-write"            || event == "post-file-write"            ||
-      event == "pre-output"                || event == "post-output"                ||
-      event == "pre-debug"                 || event == "post-debug"                 ||
-      event == "pre-header"                || event == "post-header"                ||
-      event == "pre-footnote"              || event == "post-footnote"              ||
-      event == "pre-dispatch"              || event == "post-dispatch"              ||
-      event == "pre-gc"                    || event == "post-gc"                    ||
-      event == "pre-archive"               || event == "post-archive"               ||
-      event == "pre-purge"                 || event == "post-purge"                 ||
-      event == "pre-recurrence"            || event == "post-recurrence"            ||
-      event == "pre-interactive"           || event == "post-interactive"           ||
-      event == "pre-undo"                  || event == "post-undo"                  ||
-      event == "pre-confirm"               || event == "post-confirm"               ||
-      event == "pre-shell-prompt"          || event == "post-shell-prompt"          ||
-      event == "pre-add-command"           || event == "post-add-command"           ||
-      event == "pre-annotate-command"      || event == "post-annotate-command"      ||
-      event == "pre-denotate-command"      || event == "post-denotate-command"      ||
-      event == "pre-append-command"        || event == "post-append-command"        ||
-      event == "pre-calendar-command"      || event == "post-calendar-command"      ||
-      event == "pre-color-command"         || event == "post-color-command"         ||
-      event == "pre-config-command"        || event == "post-config-command"        ||
-      event == "pre-custom-report-command" || event == "post-custom-report-command" ||
-      event == "pre-default-command"       || event == "post-default-command"       ||
-      event == "pre-delete-command"        || event == "post-delete-command"        ||
-      event == "pre-done-command"          || event == "post-done-command"          ||
-      event == "pre-duplicate-command"     || event == "post-duplicate-command"     ||
-      event == "pre-edit-command"          || event == "post-edit-command"          ||
-      event == "pre-export-command"        || event == "post-export-command"        ||
-      event == "pre-ghistory-command"      || event == "post-ghistory-command"      ||
-      event == "pre-history-command"       || event == "post-history-command"       ||
-      event == "pre-import-command"        || event == "post-import-command"        ||
-      event == "pre-info-command"          || event == "post-info-command"          ||
-      event == "pre-prepend-command"       || event == "post-prepend-command"       ||
-      event == "pre-projects-command"      || event == "post-projects-command"      ||
-      event == "pre-shell-command"         || event == "post-shell-command"         ||
-      event == "pre-start-command"         || event == "post-start-command"         ||
-      event == "pre-stats-command"         || event == "post-stats-command"         ||
-      event == "pre-stop-command"          || event == "post-stop-command"          ||
-      event == "pre-summary-command"       || event == "post-summary-command"       ||
-      event == "pre-tags-command"          || event == "post-tags-command"          ||
-      event == "pre-timesheet-command"     || event == "post-timesheet-command"     ||
-      event == "pre-undo-command"          || event == "post-undo-command"          ||
-      event == "pre-usage-command"         || event == "post-usage-command"         ||
-      event == "pre-version-command"       || event == "post-version-command")
+  if (std::find (validProgramEvents.begin (), validProgramEvents.end (), event) != validProgramEvents.end ())
     return true;
 
   return false;
@@ -315,7 +434,7 @@ bool Hooks::validProgramEvent (const std::string& event)
 
 bool Hooks::validListEvent (const std::string& event)
 {
-  if (event == "pre-filter" || event == "post-filter")
+  if (std::find (validListEvents.begin (), validListEvents.end (), event) != validListEvents.end ())
     return true;
 
   return false;
@@ -323,21 +442,7 @@ bool Hooks::validListEvent (const std::string& event)
 
 bool Hooks::validTaskEvent (const std::string& event)
 {
-  if (event == "pre-display"         ||
-      event == "pre-modification"    || event == "post-modification"    ||
-      event == "pre-delete"          || event == "post-delete"          ||
-      event == "pre-add"             || event == "post-add"             ||
-      event == "pre-undo"            || event == "post-undo"            ||
-      event == "pre-wait"            || event == "post-wait"            ||
-      event == "pre-unwait"          || event == "post-unwait"          ||
-      event == "pre-completed"       || event == "post-completed"       ||
-      event == "pre-priority-change" || event == "post-priority-change" ||
-      event == "pre-project-change"  || event == "post-project-change"  ||
-      event == "pre-substitution"    || event == "post-substitution"    ||
-      event == "pre-annotation"      || event == "post-annotation"      ||
-      event == "pre-tag"             || event == "post-tag"             ||
-      event == "pre-detag"           || event == "post-detag"           ||
-      event == "pre-colorization"    || event == "post-colorization")
+  if (std::find (validTaskEvents.begin (), validTaskEvents.end (), event) != validTaskEvents.end ())
     return true;
 
   return false;
@@ -345,36 +450,7 @@ bool Hooks::validTaskEvent (const std::string& event)
 
 bool Hooks::validFieldEvent (const std::string& event)
 {
-  if (
-      event == "format-number"               ||
-      event == "format-date"                 ||
-      event == "format-duration"             ||
-      event == "format-text"                 ||
-      event == "format-id"                   ||
-      event == "format-uuid"                 ||
-      event == "format-project"              ||
-      event == "format-priority"             ||
-      event == "format-priority_long"        ||
-      event == "format-entry"                ||
-      event == "format-entry_time"           ||
-      event == "format-start"                ||
-      event == "format-start_time"           ||
-      event == "format-end"                  ||
-      event == "format-end_time"             ||
-      event == "format-due"                  ||
-      event == "format-countdown"            ||
-      event == "format-countdown_compact"    ||
-      event == "format-age"                  ||
-      event == "format-age_compact"          ||
-      event == "format-active"               ||
-      event == "format-tags"                 ||
-      event == "format-recur"                ||
-      event == "format-recurrence_indicator" ||
-      event == "format-tag_indicator"        ||
-      event == "format-description_only"     ||
-      event == "format-description"          ||
-      event == "format-wait"                 ||
-      event == "format-prompt")
+  if (std::find (validFieldEvents.begin (), validFieldEvents.end (), event) != validFieldEvents.end ())
     return true;
 
   return false;

@@ -74,6 +74,11 @@ private:
   API api;
 #endif
   std::vector <Hook> all;           // All current hooks.
+
+  std::vector <std::string> validProgramEvents;
+  std::vector <std::string> validListEvents;
+  std::vector <std::string> validTaskEvents;
+  std::vector <std::string> validFieldEvents;
 };
 
 #endif
