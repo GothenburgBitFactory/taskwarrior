@@ -99,19 +99,40 @@ int handleAdd (std::string &outs)
         !context.task.has ("recur"))
       throw std::string ("You cannot specify an until date for a non-recurring task.");
 
-    // TODO Resolve dependencies.
+    // Must load pending to resolve dependencies, and to provide a new ID.
+    context.tdb.lock (context.config.getBoolean ("locking"));
+
+    std::vector <Task> all;
+    Filter none;
+    context.tdb.loadPending (all, none);
+
+    // Resolve dependencies.
+    if (context.task.has ("depends"))
+    {
+      // Convert ID to UUID.
+      std::vector <std::string> deps;
+      split (deps, context.task.get ("depends"), ',');
+
+      // Eliminate the ID-based set.
+      context.task.set ("depends", "");
+
+      std::vector <std::string>::iterator i;
+      for (i = deps.begin (); i != deps.end (); i++)
+      {
+        int id = atoi (i->c_str ());
+        if (id < 0)
+          context.task.removeDependency (-id);
+        else
+          context.task.addDependency (id);
+      }
+    }
 
     // Only valid tasks can be added.
     context.task.validate ();
 
-    context.tdb.lock (context.config.getBoolean ("locking"));
     context.tdb.add (context.task);
 
 #ifdef FEATURE_NEW_ID
-    // All this, just for an id number.
-    std::vector <Task> all;
-    Filter none;
-    context.tdb.loadPending (all, none);
     out << "Created task " << context.tdb.nextId () << std::endl;
 #endif
 
