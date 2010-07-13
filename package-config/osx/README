@@ -111,7 +111,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
 
   6.1 Launch the package manager.
 
-    $ open -a /Developer/Applications/Utilies/PackageManager.app   
+    $ open -a /Developer/Applications/Utilities/PackageManager.app   
 
   6.2 Close the 'Untitled' window that opens - we will be using a different
     file.  Note that PackageManager is still running - it just has no windows.
