@@ -150,6 +150,10 @@ int handleLog (std::string &outs)
     if (context.task.has ("wait"))
       throw std::string ("You cannot log waiting tasks.");
 
+    // It makes no sense to add dependencies to an already-completed task.
+    if (context.task.get ("depends") != "")
+      throw std::string ("You cannot specify dependencies on a completed task.");
+
     // Override with default.project, if not specified.
     if (context.task.get ("project") == "")
       context.task.set ("project", context.config.get ("default.project"));
@@ -165,8 +169,6 @@ int handleLog (std::string &outs)
     // Include tags.
     foreach (tag, context.tagAdditions)
       context.task.addTag (*tag);
-
-    // TODO Resolve dependencies.
 
     // Only valid tasks can be added.
     context.task.validate ();
