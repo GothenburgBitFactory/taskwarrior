@@ -56,6 +56,11 @@ public:
   int   loadPending (std::vector <Task>&, Filter&);
   int   loadCompleted (std::vector <Task>&, Filter&);
 
+  const std::vector <Task>& getAllPending ();
+  const std::vector <Task>& getAllNew ();
+  const std::vector <Task>& getAllCompleted ();
+  const std::vector <Task>& getAllModified ();
+
   void  add (const Task&);    // Single task add to pending
   void  update (const Task&); // Single task update to pending
   int   commit ();            // Write out all tasks

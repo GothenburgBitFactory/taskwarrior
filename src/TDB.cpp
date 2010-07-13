@@ -167,6 +167,7 @@ void TDB::clear ()
   mId = 1;
   mPending.clear ();
   mNew.clear ();
+  mCompleted.clear ();
   mModified.clear ();
 }
 
@@ -191,7 +192,8 @@ void TDB::lock (bool lockFile /* = true */)
 
     mPending.clear ();
     mNew.clear ();
-    mPending.clear ();
+    mCompleted.clear ();
+    mModified.clear ();
 
     foreach (location, mLocations)
     {
@@ -208,9 +210,10 @@ void TDB::lock (bool lockFile /* = true */)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::unlock ()
 {
-  mPending.clear ();
-  mNew.clear ();
-  mModified.clear ();
+  // Do not clear out these items, as they may be used in a read-only fashion.
+  // mPending.clear ();
+  // mNew.clear ();
+  // mModified.clear ();
 
   foreach (location, mLocations)
   {
@@ -306,6 +309,8 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
             mPending.push_back (task);
 
             // Maintain mapping for ease of link/dependency resolution.
+            // Note that this mapping is not restricted by the filter, and is
+            // therefore a complete set.
             mI2U[task.id] = task.get ("uuid");
             mU2I[task.get ("uuid")] = task.id;
           }
@@ -422,6 +427,30 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
   }
 
   return tasks.size ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <Task>& TDB::getAllPending ()
+{
+  return mPending;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <Task>& TDB::getAllNew ()
+{
+  return mNew;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <Task>& TDB::getAllCompleted ()
+{
+  return mCompleted;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <Task>& TDB::getAllModified ()
+{
+  return mModified;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
