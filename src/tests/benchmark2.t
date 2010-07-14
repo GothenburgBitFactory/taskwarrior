@@ -35,6 +35,7 @@ if (open my $fh, '>', 'bench2.rc')
 {
   print $fh "data.location=.\n",
             "_forcecolor=1\n",
+            "color.debug=\n",
             "debug=on\n";
   close $fh;
   ok (-r 'bench2.rc', 'Created bench2.rc');

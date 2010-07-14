@@ -50,7 +50,7 @@ like ($output,   qr/ID T/,   'Tag indicator heading');
 like ($output,   qr/1\s+\+/, 'Tag indicator t1');
 unlike ($output, qr/2\s+\+/, 'No tag indicator t2');
 
-my $output = qx{../task rc:custom.rc foo rc.tag.indicator=TAG 2>&1};
+$output = qx{../task rc:custom.rc foo rc.tag.indicator=TAG 2>&1};
 like ($output,   qr/1\s+TAG/, 'Custom ag indicator t1');
 unlike ($output, qr/2\s+TAG/, 'No custom tag indicator t2');
 

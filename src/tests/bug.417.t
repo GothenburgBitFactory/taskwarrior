@@ -33,7 +33,8 @@ use Test::More tests => 7;
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "defaultwidth=100\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }
