@@ -3,6 +3,8 @@
 
 1.9.3 ()
  + Added feature #423, now custom report filters allow rc overrides.
+ + Added feature #429, which improves the 'all' report to exclude deleted
+   tasks, provide a new sort order and include the 'end' column.
  + New 'depends' column for custom reports.
  + New 'blocked' report for showing blocked tasks.
  + Improved man pages (thanks to Andy Lester).
