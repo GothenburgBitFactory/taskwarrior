@@ -43,16 +43,16 @@ if (open my $fh, '>', 'shadow.rc')
 }
 
 my $output = qx{../task rc:shadow.rc add one};
-like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\]/, 'shadow file updated on add');
+like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file updated on add');
 
 $output = qx{../task rc:shadow.rc list};
-unlike ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\]/, 'shadow file not updated on list');
+unlike ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file not updated on list');
 
 $output = qx{../task rc:shadow.rc delete 1};
-like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\]/, 'shadow file updated on delete');
+like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file updated on delete');
 
 $output = qx{../task rc:shadow.rc list};
-unlike ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\]/, 'shadow file not updated on list');
+unlike ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file not updated on list');
 
 # Inspect the shadow file.
 my $file = slurp ('./shadow.txt');

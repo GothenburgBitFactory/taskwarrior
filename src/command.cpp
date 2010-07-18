@@ -133,7 +133,7 @@ int handleAdd (std::string &outs)
     context.tdb.add (context.task);
 
 #ifdef FEATURE_NEW_ID
-    out << "Created task " << context.tdb.nextId () << std::endl;
+    out << "Created task " << context.tdb.nextId () << "." << std::endl;
 #endif
 
     context.tdb.commit ();
@@ -715,7 +715,7 @@ int handleShow (std::string &outs)
     std::vector <std::string> unrecognized;
     foreach (i, all)
     {
-      // Disallow partial matches by tacking a leading an trailing space on each
+      // Disallow partial matches by tacking a leading and trailing space on each
       // variable name.
       std::string pattern = " " + *i + " ";
       if (recognized.find (pattern) == std::string::npos)
@@ -786,7 +786,7 @@ int handleShow (std::string &outs)
 
     out << std::endl
         << table.render ()
-        << (table.rowCount () == 0 ? "No matching configuration variables\n" : "")
+        << (table.rowCount () == 0 ? "No matching configuration variables.\n" : "")
         << std::endl;
 
     // Display the unrecognized variables.
@@ -897,7 +897,7 @@ int handleShow (std::string &outs)
 
     if (all.size () == 0)
     {
-      out << "Configuration error: .taskrc contains no entries"
+      out << "Configuration error: .taskrc contains no entries."
           << std::endl;
       rc = 1;
     }
@@ -975,7 +975,7 @@ int handleConfig (std::string &outs)
           {
             std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
             if (eol == std::string::npos)
-              throw std::string ("Cannot find EOL after entry '") + name + "'";
+              throw std::string ("Cannot find EOL after entry '") + name + "'.";
 
             if (confirm (std::string ("Are you sure you want to change the value of '")
                            + name
@@ -1011,11 +1011,11 @@ int handleConfig (std::string &outs)
           // Remove name
           std::string::size_type pos = contents.find (name + "=");
           if (pos == std::string::npos)
-            throw std::string ("No entry named '") + name + "' found";
+            throw std::string ("No entry named '") + name + "' found.";
 
           std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
           if (eol == std::string::npos)
-            throw std::string ("Cannot find EOL after entry '") + name + "'";
+            throw std::string ("Cannot find EOL after entry '") + name + "'.";
 
           if (confirm (std::string ("Are you sure you want to remove '") + name + "'?"))
           {
@@ -1112,7 +1112,7 @@ int handleDelete (std::string &outs)
                         << sibling->id
                         << " '"
                         << sibling->get ("description")
-                        << "'"
+                        << "'."
                         << std::endl;
                 }
               }
@@ -1134,7 +1134,7 @@ int handleDelete (std::string &outs)
                   << task->id
                   << " '"
                   << task->get ("description")
-                  << "'"
+                  << "'."
                   << std::endl;
             }
           }
@@ -1154,7 +1154,7 @@ int handleDelete (std::string &outs)
                   << task->id
                   << " '"
                   << task->get ("description")
-                  << "'"
+                  << "'."
                   << std::endl;
           }
         }
@@ -1212,7 +1212,7 @@ int handleStart (std::string &outs)
               << task->id
               << " '"
               << task->get ("description")
-              << "'"
+              << "'."
               << std::endl;
         if (!nagged)
           nagged = nag (*task);
@@ -1270,7 +1270,7 @@ int handleStop (std::string &outs)
               << task->id
               << " '"
               << task->get ("description")
-              << "'"
+              << "'."
               << std::endl;
       }
       else
@@ -1354,7 +1354,7 @@ int handleDone (std::string &outs)
                     << task->id
                     << " '"
                     << task->get ("description")
-                    << "'"
+                    << "'."
                     << std::endl;
 
               ++count;
@@ -1374,7 +1374,7 @@ int handleDone (std::string &outs)
             << task->id
             << " '"
             << task->get ("description")
-            << "' is not pending"
+            << "' is not pending."
             << std::endl;
         rc = 1;
     }
@@ -1389,7 +1389,7 @@ int handleDone (std::string &outs)
           << count
           << " task"
           << (count == 1 ? "" : "s")
-          << " as done"
+          << " as done."
           << std::endl;
 
     outs = out.str ();
@@ -1504,7 +1504,7 @@ int handleModify (std::string &outs)
   context.tdb.unlock ();
 
   if (context.config.getBoolean ("echo.command"))
-    out << "Modified " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+    out << "Modified " << count << " task" << (count == 1 ? "." : "s.") << std::endl;
 
   outs = out.str ();
   return 0;
@@ -1563,6 +1563,7 @@ int handleAppend (std::string &outs)
                     << context.task.get ("description")
                     << "' to task "
                     << other->id
+                    << "."
                     << std::endl;
 
               ++count;
@@ -1576,7 +1577,7 @@ int handleAppend (std::string &outs)
     context.tdb.unlock ();
 
     if (context.config.getBoolean ("echo.command"))
-      out << "Appended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+      out << "Appended " << count << " task" << (count == 1 ? "." : "s.") << std::endl;
 
     outs = out.str ();
     context.hooks.trigger ("post-append-command");
@@ -1638,6 +1639,7 @@ int handlePrepend (std::string &outs)
                     << context.task.get ("description")
                     << "' to task "
                     << other->id
+                    << "."
                     << std::endl;
 
               ++count;
@@ -1651,7 +1653,7 @@ int handlePrepend (std::string &outs)
     context.tdb.unlock ();
 
     if (context.config.getBoolean ("echo.command"))
-      out << "Prepended " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+      out << "Prepended " << count << " task" << (count == 1 ? "." : "s.") << std::endl;
 
     outs = out.str ();
     context.hooks.trigger ("post-prepend-command");
@@ -1719,20 +1721,20 @@ int handleDuplicate (std::string &outs)
             << task->id
             << " '"
             << task->get ("description")
-            << "'"
+            << "'."
             << std::endl;
       ++count;
     }
 
     if (context.config.getBoolean ("echo.command"))
     {
-      out << "Duplicated " << count << " task" << (count == 1 ? "" : "s") << std::endl;
+      out << "Duplicated " << count << " task" << (count == 1 ? "." : "s.") << std::endl;
 #ifdef FEATURE_NEW_ID
       // All this, just for an id number.
       std::vector <Task> all;
       Filter none;
       context.tdb.loadPending (all, none);
-      out << "Created task " << context.tdb.nextId () << std::endl;
+      out << "Created task " << context.tdb.nextId () << "." << std::endl;
 #endif
     }
 
@@ -1995,7 +1997,7 @@ int handleColor (std::string &outs)
 
         out << std::endl
             << std::endl
-            << "Try running 'task color white on red'"
+            << "Try running 'task color white on red'."
             << std::endl
             << std::endl;
       }
@@ -2058,7 +2060,7 @@ int handleAnnotate (std::string &outs)
                 << task->id
                 << " with '"
                 << context.task.get ("description")
-                << "'"
+                << "'."
                 << std::endl;
         }
       }

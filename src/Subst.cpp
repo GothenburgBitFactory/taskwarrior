@@ -105,15 +105,15 @@ void Subst::parse (const std::string& input)
 
     if (mFrom == "")
       throw context.stringtable.get (SUBST_EMPTY,
-                                     "Cannot substitute an empty string");
+                                     "Cannot substitute an empty string.");
 
     if (!n.depleted ())
       throw context.stringtable.get (SUBST_BAD_CHARS,
-                                     "Unrecognized character(s) at end of substitution");
+                                     "Unrecognized character(s) at end of substitution.");
   }
   else
     throw context.stringtable.get (SUBST_MALFORMED,
-                                   "Malformed substitution");
+                                   "Malformed substitution.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

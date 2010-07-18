@@ -321,7 +321,7 @@ void Context::shadow ()
 
     // Optionally display a notification that the shadow file was updated.
     if (config.getBoolean ("shadow.notify"))
-      footnote (std::string ("[Shadow file '") + shadowFile.data + "' updated]");
+      footnote (std::string ("[Shadow file '") + shadowFile.data + "' updated.]");
 
     inShadow = false;
   }
@@ -751,7 +751,7 @@ void Context::parse (
       else
         throw stringtable.get (
           CMD_MISSING,
-          "You must specify a command, or a task ID to modify");
+          "You must specify a command, or a task ID to modify.");
     }
 
     // If the command "task 123" is entered, but with no modifier arguments,

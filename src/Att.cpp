@@ -256,7 +256,7 @@ bool Att::validNameValue (
     std::string combined;
     join (combined, ", ", matches);
 
-    throw error + combined;
+    throw error + combined + ".";
   }
 
   name = matches[0];
@@ -272,7 +272,7 @@ bool Att::validNameValue (
     autoComplete (mod, candidates, matches);
 
     if (matches.size () == 0)
-      throw std::string ("Unrecognized modifier '") + mod + "'";
+      throw std::string ("Unrecognized modifier '") + mod + "'.";
 
     else if (matches.size () != 1)
     {
@@ -282,7 +282,7 @@ bool Att::validNameValue (
       join (combined, ", ", matches);
       error += combined;
 
-      throw error + combined;
+      throw error + combined + ".";
     }
 
     mod = matches[0];
@@ -467,10 +467,10 @@ void Att::parse (Nibbler& n)
         if (validMod (mod))
           mMod = mod;
         else
-          throw std::string ("The name '") + mod + "' is not a valid modifier"; // TODO i18n
+          throw std::string ("The name '") + mod + "' is not a valid modifier."; // TODO i18n
       }
       else
-        throw std::string ("Missing . or : after modifier"); // TODO i18n
+        throw std::string ("Missing . or : after modifier."); // TODO i18n
     }
 
     if (n.skip (':'))
@@ -484,10 +484,10 @@ void Att::parse (Nibbler& n)
       }
     }
     else
-      throw std::string ("Missing : after attribute name"); // TODO i18n
+      throw std::string ("Missing : after attribute name."); // TODO i18n
   }
   else
-    throw std::string ("Missing : after attribute name"); // TODO i18n
+    throw std::string ("Missing : after attribute name."); // TODO i18n
 
 /* TODO This might be too slow to include.  Test this assumption.
   validNameValue (mName, mMod, mValue);
@@ -719,7 +719,7 @@ std::string Att::composeF4 () const
 void Att::mod (const std::string& input)
 {
   if (input != "" && !validMod (input))
-    throw std::string ("The name '") + input + "' is not a valid modifier"; // TODO i18n
+    throw std::string ("The name '") + input + "' is not a valid modifier."; // TODO i18n
 
   mMod = input;
 }

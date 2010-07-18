@@ -75,7 +75,7 @@ void handleRecurrence ()
                   << t->get ("uuid")
                   << " ("
                   << trim (t->get ("description"))
-                  << ") is past its 'until' date, and has been deleted"
+                  << ") has past its 'until' date, and has been deleted."
                   << std::endl;
 
         // Determine the end date.

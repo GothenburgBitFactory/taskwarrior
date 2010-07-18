@@ -368,14 +368,14 @@ std::string taskDifferences (const Task& before, const Task& after)
   foreach (name, beforeOnly)
     out << "  - "
         << *name
-        << " will be deleted\n";
+        << " will be deleted.\n";
 
   foreach (name, afterOnly)
     out << "  - "
         << *name
         << " will be set to '"
         << renderAttribute (*name, after.get (*name))
-        << "'\n";
+        << "'.\n";
 
   foreach (name, beforeAtts)
     if (*name              != "uuid" &&
@@ -386,11 +386,11 @@ std::string taskDifferences (const Task& before, const Task& after)
           << renderAttribute (*name, before.get (*name))
           << "' to '"
           << renderAttribute (*name, after.get (*name))
-          << "'\n";
+          << "'.\n";
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
-    out << "  - No changes will be made\n";
+    out << "  - No changes will be made.\n";
 
   return out.str ();
 }

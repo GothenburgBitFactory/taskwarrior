@@ -247,7 +247,7 @@ static void parseTask (Task& task, const std::string& after)
     }
   }
   else
-    throw std::string ("Cannot remove creation date");
+    throw std::string ("Cannot remove creation date.");
 
   // start
   value = findDate (after, "Started:");

@@ -12,6 +12,7 @@
  + Improved man pages (thanks to Andy Lester).
  + Default .taskrc files are now largely empty, and rely almost completed
    on default values.
+ + Fixed bug #433, making task command output more consistent.
 
 ------ old releases ------------------------------
 

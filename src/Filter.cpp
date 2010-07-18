@@ -132,7 +132,7 @@ void Filter::applySequence (std::vector<Task>& all, Sequence& sequence)
     std::vector <int> right;
     listDiff (filteredSequence, (std::vector <int>&)sequence, left, right);
     if (left.size ())
-      throw std::string ("Sequence filtering error - please report this error to support@taskwarrior.org");
+      throw std::string ("Sequence filtering error - please report this error to support@taskwarrior.org.");
 
     if (right.size ())
     {

@@ -612,14 +612,14 @@ bool API::callProgramHook (
 
   // Make call.
   if (lua_pcall (L, 0, 2, 0) != 0)
-    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1);
+    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1) + ".";
 
   // Call successful - get return values.
   if (!lua_isnumber (L, -2))
-    throw std::string ("Error: '") + function + "' did not return a success indicator";
+    throw std::string ("Error: '") + function + "' did not return a success indicator.";
 
   if (!lua_isstring (L, -1) && !lua_isnil (L, -1))
-    throw std::string ("Error: '") + function + "' did not return a message or nil";
+    throw std::string ("Error: '") + function + "' did not return a message or nil.";
 
   int rc              = lua_tointeger (L, -2);
   const char* message = lua_tostring  (L, -1);
@@ -684,17 +684,17 @@ bool API::callTaskHook (
 
   // Make call.
   if (lua_pcall (L, 1, 2, 0) != 0)
-    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1);
+    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1) + ".";
 
   // Hide the task.
   the_task = NULL;
 
   // Call successful - get return values.
   if (!lua_isnumber (L, -2))
-    throw std::string ("Error: '") + function + "' did not return a success indicator";
+    throw std::string ("Error: '") + function + "' did not return a success indicator.";
 
   if (!lua_isstring (L, -1) && !lua_isnil (L, -1))
-    throw std::string ("Error: '") + function + "' did not return a message or nil";
+    throw std::string ("Error: '") + function + "' did not return a message or nil.";
 
   int rc              = lua_tointeger (L, -2);
   const char* message = lua_tostring  (L, -1);
@@ -737,17 +737,17 @@ bool API::callFieldHook (
 
   // Make call.
   if (lua_pcall (L, 2, 3, 0) != 0)
-    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1);
+    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1) + ".";
 
   // Call successful - get return values.
   if (!lua_isstring (L, -3))
-    throw std::string ("Error: '") + function + "' did not return a modified value";
+    throw std::string ("Error: '") + function + "' did not return a modified value.";
 
   if (!lua_isnumber (L, -2))
-    throw std::string ("Error: '") + function + "' did not return a success indicator";
+    throw std::string ("Error: '") + function + "' did not return a success indicator.";
 
   if (!lua_isstring (L, -1) && !lua_isnil (L, -1))
-    throw std::string ("Error: '") + function + "' did not return a message or nil";
+    throw std::string ("Error: '") + function + "' did not return a message or nil.";
 
   const char* new_value = lua_tostring  (L, -3);
   int rc                = lua_tointeger (L, -2);

@@ -778,7 +778,7 @@ void validReportColumns (const std::vector <std::string>& columns)
   {
     std::string error;
     join (error, ", ", bad);
-    throw std::string ("Unrecognized column name: ") + error;
+    throw std::string ("Unrecognized column name: ") + error + ".";
   }
 }
 
@@ -804,7 +804,7 @@ void validSortColumns (
   {
     std::string error;
     join (error, ", ", bad);
-    throw std::string ("Sort column is not part of the report: ") + error;
+    throw std::string ("Sort column is not part of the report: ") + error + ".";
   }
 }
 

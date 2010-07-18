@@ -303,7 +303,7 @@ void Hooks::initialize ()
             (void) n.skip (',');
           }
           else
-            throw std::string ("Malformed hook definition '") + *it + "'";
+            throw std::string ("Malformed hook definition '") + *it + "'.";
         }
       }
     }
@@ -331,7 +331,7 @@ bool Hooks::trigger (const std::string& event)
           return false;
       }
       else
-        throw std::string ("Unrecognized hook event '") + event + "'";
+        throw std::string ("Unrecognized hook event '") + event + "'.";
     }
   }
 #endif
@@ -358,7 +358,7 @@ bool Hooks::trigger (const std::string& event, std::vector <Task>& tasks)
           return false;
       }
       else
-        throw std::string ("Unrecognized hook event '") + event + "'";
+        throw std::string ("Unrecognized hook event '") + event + "'.";
     }
   }
 #endif
@@ -385,7 +385,7 @@ bool Hooks::trigger (const std::string& event, Task& task)
           return false;
       }
       else
-        throw std::string ("Unrecognized hook event '") + event + "'";
+        throw std::string ("Unrecognized hook event '") + event + "'.";
     }
   }
 #endif
@@ -415,7 +415,7 @@ bool Hooks::trigger (
           return false;
       }
       else
-        throw std::string ("Unrecognized hook event '") + event + "'";
+        throw std::string ("Unrecognized hook event '") + event + "'.";
     }
   }
 #endif

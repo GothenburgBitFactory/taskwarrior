@@ -83,7 +83,7 @@ void readTaskmods (std::vector <std::string> &input,
       stream >> ts;
 
       if (stream.fail()) {
-        throw std::string ("Failed to convert \"" + stream.str() + "\" to integer: " + tmod_tmp.getTimeStr());
+        throw std::string ("Failed to convert \"" + stream.str() + "\" to integer: " + tmod_tmp.getTimeStr() + ".");
       }
 
       // 'time' is the first line of a modification
@@ -1452,7 +1452,7 @@ void TDB::merge (const std::string& mergeFile)
   }
   else // nothing to be done
   {
-    std::cout << "nothing to be done" << std::endl;
+    std::cout << "Nothing to be done." << std::endl;
   }
 
   // delete objects

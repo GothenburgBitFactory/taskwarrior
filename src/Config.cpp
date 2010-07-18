@@ -457,13 +457,13 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
             if (included.readable ())
               this->load (included, nest + 1);
             else
-              throw std::string ("Could not read include file '") + included.data + "'";
+              throw std::string ("Could not read include file '") + included.data + "'.";
           }
           else
             throw std::string ("Can only include files with absolute paths, not '") + included.data + "'";
         }
         else
-          throw std::string ("Malformed entry '") + line + "'";
+          throw std::string ("Malformed entry '") + line + "'.";
       }
     }
   }
@@ -497,7 +497,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
 
   // Write out the new file.
   if (! File::write (rc, contents.str ()))
-    throw std::string ("Could not write to '") + rc + "'";
+    throw std::string ("Could not write to '") + rc + "'.";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
