@@ -1321,7 +1321,7 @@ int handleDone (std::string &outs)
     bool nagged = false;
     foreach (task, tasks)
     {
-      if (task->getStatus () == Task::pending)
+      if ((task->getStatus () == Task::pending) || (task->getStatus () == Task::waiting))
       {
         Task before (*task);
 
@@ -1374,7 +1374,7 @@ int handleDone (std::string &outs)
             << task->id
             << " '"
             << task->get ("description")
-            << "' is not pending."
+            << "' is neither pending nor waiting."
             << std::endl;
         rc = 1;
     }
