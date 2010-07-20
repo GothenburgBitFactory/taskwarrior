@@ -12,6 +12,8 @@
  + Improved man pages (thanks to Andy Lester).
  + Default .taskrc files are now largely empty, and rely almost completed
    on default values.
+ + Fixed bug #427, preventing the task edit command to parse annotation
+   dates with spaces.
  + Fixed bug #433, making task command output more consistent.
  + Fixed bug #434, allowing users to complete tasks with status 'waiting'
 
