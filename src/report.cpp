@@ -2712,7 +2712,10 @@ std::string getFullDescription (Task& task, const std::string& report)
         desc = "+" + desc;
       Att anno (annotations.back());
       Date dt (atoi (anno.name ().substr (11).c_str ()));
-      std::string when = dt.toString (context.config.get ("dateformat"));
+      std::string format = context.config.get ("dateformat.annotation");
+      if (format == "")
+        format = context.config.get ("dateformat");
+      std::string when = dt.toString (format);
       desc += "\n" + when + " " + anno.value ();
     }
     else
