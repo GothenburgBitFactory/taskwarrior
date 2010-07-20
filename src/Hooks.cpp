@@ -226,11 +226,8 @@ Hooks::Hooks ()
   validFieldEvents.push_back ("format-priority");
   validFieldEvents.push_back ("format-priority_long");
   validFieldEvents.push_back ("format-entry");
-  validFieldEvents.push_back ("format-entry_time");
   validFieldEvents.push_back ("format-start");
-  validFieldEvents.push_back ("format-start_time");
   validFieldEvents.push_back ("format-end");
-  validFieldEvents.push_back ("format-end_time");
   validFieldEvents.push_back ("format-due");
   validFieldEvents.push_back ("format-countdown");
   validFieldEvents.push_back ("format-countdown_compact");

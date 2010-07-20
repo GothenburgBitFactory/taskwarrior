@@ -698,6 +698,9 @@ void Table::sort (std::vector <int>& order)
 
           case ascendingDate:
             {
+              if (*left == *right)
+                break;
+
               if ((std::string)*left != "" && (std::string)*right == "")
                 break;
 
@@ -716,6 +719,9 @@ void Table::sort (std::vector <int>& order)
 
           case descendingDate:
             {
+              if (*left == *right)
+                break;
+
               if ((std::string)*left != "" && (std::string)*right == "")
                 break;
 

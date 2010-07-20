@@ -486,7 +486,6 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
   contents << "# [Created by "
            << PACKAGE_STRING
            << " "
-//           << now.toStringWithTime ()
            << now.toString ("m/d/Y H:N:S")
            << "]\n"
            << defaults.substr (0, loc + 14)
@@ -641,12 +640,16 @@ std::string Config::checkForDeprecatedColumns ()
     if (i->first.find ("report") == 0)
     {
       std::string value = get (i->first);
-      if (value.find ("entry_time") != std::string::npos)
+      if (value.find ("entry_time") != std::string::npos ||
+          value.find ("start_time") != std::string::npos ||
+          value.find ("end_time")   != std::string::npos)
         deprecated.push_back (i->first);
     }
   }
 
   std::stringstream out;
+  out << std::endl;
+
   if (deprecated.size ())
   {
     out << "Your .taskrc file contains reports with deprecated columns.  "

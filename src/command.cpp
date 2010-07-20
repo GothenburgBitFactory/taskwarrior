@@ -776,13 +776,12 @@ int handleShow (std::string &outs)
         table.addCell (row, 0, *i);
         table.addCell (row, 1, context.config.get (*i));
 
+        // Look for unrecognized.
         if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
           if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
             table.setRowColor (row, error);
       }
     }
-
-    Color bold ("bold");
 
     out << std::endl
         << table.render ()
@@ -806,6 +805,7 @@ int handleShow (std::string &outs)
     }
 
     out << context.config.checkForDeprecatedColor ();
+    out << context.config.checkForDeprecatedColumns ();
     // TODO Check for referenced but missing theme files.
     // TODO Check for referenced but missing string files.
     // TODO Check for referenced but missing tips files.

@@ -838,7 +838,7 @@ void TDB::undo ()
 
     row = table.addRow ();
     table.addCell (row, 0, "+++ current state ");  // Note trailing space.
-    table.addCell (row, 1, "Change made " + lastChange.toStringWithTime (context.config.get ("dateformat")));
+    table.addCell (row, 1, "Change made " + lastChange.toString (context.config.get ("dateformat")));
     table.setRowColor (row, color_green);
 
     table.addRow ();

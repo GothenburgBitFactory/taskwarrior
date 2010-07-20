@@ -17,6 +17,14 @@ New configuration options in task 1.9.3
   - journal.time, journal.time.start.annotation, journal.time.stop.annotation
   -
 
+Newly deprecated features in task 1.9.3
+
+  - entry_time, start_time and end_time are now synonyms for the entry, start
+    and end fields.  Recent enhancements to date formatting render these fields
+    obsolete.  The 'task show' command warns of the use of these deprecated
+    fields.  The synonyms will be removed in a future version of task.
+
+
 ---
 
 Task has been built and tested on the following configurations:

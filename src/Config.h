@@ -60,6 +60,7 @@ public:
   void all (std::vector <std::string>&);
 
   std::string checkForDeprecatedColor ();
+  std::string checkForDeprecatedColumns ();
 
 public:
   File original_file;

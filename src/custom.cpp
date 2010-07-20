@@ -235,7 +235,7 @@ int handleCustomReport (const std::string& report, std::string &outs)
         }
       }
 
-      else if (*col == "entry")
+      else if (*col == "entry" || *col == "entry_time")
       {
         table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Added");
         table.setColumnWidth (columnCount, Table::minimum);
@@ -255,27 +255,7 @@ int handleCustomReport (const std::string& report, std::string &outs)
         }
       }
 
-      else if (*col == "entry_time")
-      {
-        table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Added");
-        table.setColumnWidth (columnCount, Table::minimum);
-        table.setColumnJustification (columnCount, Table::right);
-
-        std::string entered;
-        for (unsigned int row = 0; row < tasks.size(); ++row)
-        {
-          entered = tasks[row].get ("entry");
-          if (entered.length ())
-          {
-            Date dt (::atoi (entered.c_str ()));
-            entered = dt.toStringWithTime (context.config.get ("dateformat"));
-            context.hooks.trigger ("format-entry_time", "entry_time", entered);
-            table.addCell (row, columnCount, entered);
-          }
-        }
-      }
-
-      else if (*col == "start")
+      else if (*col == "start" || *col == "start_time")
       {
         table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Started");
         table.setColumnWidth (columnCount, Table::minimum);
@@ -295,27 +275,7 @@ int handleCustomReport (const std::string& report, std::string &outs)
         }
       }
 
-      else if (*col == "start_time")
-      {
-        table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Started");
-        table.setColumnWidth (columnCount, Table::minimum);
-        table.setColumnJustification (columnCount, Table::right);
-
-        std::string started;
-        for (unsigned int row = 0; row < tasks.size(); ++row)
-        {
-          started = tasks[row].get ("start");
-          if (started.length ())
-          {
-            Date dt (::atoi (started.c_str ()));
-            started = dt.toStringWithTime (context.config.get ("dateformat"));
-            context.hooks.trigger ("format-start_time", "start_time", started);
-            table.addCell (row, columnCount, started);
-          }
-        }
-      }
-
-      else if (*col == "end")
+      else if (*col == "end" || *col == "end_time")
       {
         table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Completed");
         table.setColumnWidth (columnCount, Table::minimum);
@@ -330,28 +290,6 @@ int handleCustomReport (const std::string& report, std::string &outs)
             Date dt (::atoi (ended.c_str ()));
             ended = dt.toString (context.config.get ("dateformat"));
             context.hooks.trigger ("format-end", "end", ended);
-            table.addCell (row, columnCount, ended);
-          }
-        }
-      }
-
-      else if (*col == "end_time")
-      {
-        table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Completed");
-        table.setColumnWidth (columnCount, Table::minimum);
-        table.setColumnJustification (columnCount, Table::right);
-
-        std::string format = context.config.get ("dateformat");
-
-        std::string ended;
-        for (unsigned int row = 0; row < tasks.size(); ++row)
-        {
-          ended = tasks[row].get ("end");
-          if (ended.length ())
-          {
-            Date dt (::atoi (ended.c_str ()));
-            ended = dt.toStringWithTime (format);
-            context.hooks.trigger ("format-end_time", "end_time", ended);
             table.addCell (row, columnCount, ended);
           }
         }
@@ -645,8 +583,9 @@ int handleCustomReport (const std::string& report, std::string &outs)
                         Table::ascendingPriority :
                         Table::descendingPriority));
 
-      else if (column == "entry" || column == "start" || column == "wait" ||
-               column == "until" || column == "end")
+      else if (column == "entry"      || column == "start"    || column == "wait"       ||
+               column == "until"      || column == "end"      || column == "entry_time" ||
+               column == "start_time" || column == "end_time")
         table.sortOn (columnIndex[column],
                       (direction == '+' ?
                         Table::ascendingDate :
@@ -753,11 +692,11 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "priority"             &&
         *it != "priority_long"        &&
         *it != "entry"                &&
-        *it != "entry_time"           &&
+        *it != "entry_time"           &&  // TODO Deprecated
         *it != "start"                &&
-        *it != "start_time"           &&
+        *it != "start_time"           &&  // TODO Deprecated
         *it != "end"                  &&
-        *it != "end_time"             &&
+        *it != "end_time"             &&  // TODO Deprecated
         *it != "due"                  &&
         *it != "countdown"            &&
         *it != "countdown_compact"    &&
