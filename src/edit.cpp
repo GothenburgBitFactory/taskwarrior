@@ -156,8 +156,8 @@ static std::string formatTask (Task task)
          << "  Parent:            " << task.get ("parent")                              << std::endl
          << "  Foreground color:  " << task.get ("fg")                                  << std::endl
          << "  Background color:  " << task.get ("bg")                                  << std::endl
-         << "# Annotations look like this: <date> <text>, and there can be any number"  << std::endl
-         << "# of them."                                                                << std::endl;
+         << "# Annotations look like this: <date> -- <text> and there can be any number of them"  << std::endl
+         << "# ' -- ' is the separator between the date and text field. It should not be removed" << std::endl;
 
   std::vector <Att> annotations;
   task.getAnnotations (annotations);
@@ -165,11 +165,11 @@ static std::string formatTask (Task task)
   {
     Date dt (::atoi (anno->name ().substr (11).c_str ()));
     before << "  Annotation:        " << dt.toString (context.config.get ("dateformat.annotation"))
-           << " "                     << anno->value ()                                 << std::endl;
+           << " -- "                  << anno->value ()                                 << std::endl;
   }
 
   Date now;
-  before << "  Annotation:        " << now.toString (context.config.get ("dateformat.annotation")) << " " << std::endl
+  before << "  Annotation:        " << now.toString (context.config.get ("dateformat.annotation")) << " -- " << std::endl
          << "# End"                                                                     << std::endl;
 
   return before.str ();
@@ -499,7 +499,7 @@ static void parseTask (Task& task, const std::string& after)
         found,
         eol - found), "\t ");
 
-      std::string::size_type gap = value.find (" ");
+      std::string::size_type gap = value.find (" -- ");
       if (gap != std::string::npos)
       {
         Date when (value.substr (0, gap), context.config.get ("dateformat.annotation"));
@@ -511,7 +511,7 @@ static void parseTask (Task& task, const std::string& after)
 
         std::stringstream name;
         name << "annotation_" << when.toEpoch ();
-        std::string text = trim (value.substr (gap), "\t ");
+        std::string text = trim (value.substr (gap + 4), "\t ");
         annotations.push_back (Att (name.str (), text));
       }
     }
