@@ -7,6 +7,7 @@
    tasks, provide a new sort order and include the 'end' column.
  + Added feature #431, which improves feedback after running the 'log'
    command.
+ + Added feature #428, preparing the new structure for the NEWS file.
  + New 'depends' column for custom reports.
  + New 'blocked' report for showing blocked tasks.
  + Improved man pages (thanks to Andy Lester).

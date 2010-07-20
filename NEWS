@@ -1,18 +1,23 @@
 
-New Features in task 1.9.2
+New Features in task 1.9.3
 
-  - New 'log' command to add tasks that are already completed.
-  - New annual history and ghistory command variations.
-  - Alias support in shell completion scripts.
-  - New iCalendar/vcalendar export format (RFC-2445, RFC-5545, RFC-5546).
-  - New 'show' command to display configuration settings.
-  - New 'denotate' command to delete annotations.
-  - New 16-color and 256-color themes included.
-  - New limit:page filter to show only one page of tasks.
-  - Performance enhancements.
+  -
+  -
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
+
+New commands in task 1.9.3
+
+  -
+  -
+
+New configuration options in task 1.9.3
+
+  -
+  -
+
+---
 
 Task has been built and tested on the following configurations:
 
@@ -31,6 +36,8 @@ Task has been built and tested on the following configurations:
   * Cygwin 1.7 and 1.5
   * Haiku R1/alpha1
 
+---
+
 While Task has undergone testing, bugs are sure to remain.  If you encounter a
 bug, please enter a new issue at:
 
@@ -45,5 +52,3 @@ Or just send a message to:
   support@taskwarrior.org
 
 Thank you.
-
----
