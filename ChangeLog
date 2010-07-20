@@ -5,7 +5,7 @@
  + Added feature #189, that records the start and stop times
    as an annotation for a task.
  + Added feature #423, now custom report filters allow rc overrides.
- + Added feature #429, which improves the 'all' report to exclude deleted
+ + Added feature #429, which improves the 'all' report to exclude deleted.
    tasks, provide a new sort order and include the 'end' column.
  + Added feature #431, which improves feedback after running the 'log'
    command.
@@ -18,7 +18,8 @@
  + Fixed bug #427, preventing the task edit command to parse annotation
    dates with spaces.
  + Fixed bug #433, making task command output more consistent.
- + Fixed bug #434, allowing users to complete tasks with status 'waiting'
+ + Fixed bug #434, allowing users to complete tasks with status 'waiting'.
+ + Fixed bug #439, which ignored dateformat.annotation for sparse annotations.
 
 ------ old releases ------------------------------
 
