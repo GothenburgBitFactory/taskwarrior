@@ -28,11 +28,12 @@
 #include <sstream>
 #include <stdio.h>
 #include <unistd.h>
-#include "File.h"
-#include "Date.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
+#include <Nibbler.h>
+#include <File.h>
+#include <Date.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
 
 extern Context context;
 
@@ -46,6 +47,7 @@ enum fileType
   task_cmd_line,
   todo_sh_2_0,
   csv,
+  yaml,
   text
 };
 
@@ -151,6 +153,13 @@ static fileType determineFileType (const std::vector <std::string>& lines)
   }
   if (commas_on_every_line)
     return csv;
+
+  if (lines.size () > 2 &&
+      lines[0] == "% YAML 1.1\n" &&
+      lines[1] == "---\n")
+  {
+    return yaml;
+  }
 
   // Looks like 'text' is the default case, if there is any data at all.
   if (lines.size () > 1)
@@ -1191,6 +1200,7 @@ int handleImport (std::string &outs)
       case task_cmd_line: identifier = "This looks like task command line arguments.";            break;
       case todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                     break;
       case csv:           identifier = "This looks like a CSV file, but not a task export file."; break;
+      case yaml:          identifier = "This looks like a YAML file.";                            break;
       case text:          identifier = "This looks like a text file with one task per line.";     break;
       case not_a_clue:
         throw std::string ("Task cannot determine which type of file this is, "
@@ -1211,6 +1221,7 @@ int handleImport (std::string &outs)
       case task_cmd_line: out << importTaskCmdLine (lines); break;
       case todo_sh_2_0:   out << importTodoSh_2_0  (lines); break;
       case csv:           out << importCSV         (lines); break;
+      case yaml:          throw std::string ("import.yaml not implemented.");
       case text:          out << importText        (lines); break;
       case not_a_clue:    /* to stop the compiler from complaining. */ break;
       }

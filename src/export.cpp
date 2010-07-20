@@ -245,6 +245,8 @@ int handleExportYAML (std::string &outs)
       out << task->composeYAML ().c_str ();
     }
 
+    out << "...\n";
+
     outs = out.str ();
     context.hooks.trigger ("post-export-command");
   }
