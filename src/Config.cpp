@@ -97,7 +97,7 @@ std::string Config::defaults =
   "#monthsperline=3                              # Number of calendar months on a line\n"
   "\n"
   "# Journal controls\n"
-  "journal.time=no                               # Record the invoking of the start/stop command as annotation\n"
+  "journal.time=no                               # Record start/stop commands as annotation\n"
   "journal.time.start.annotation=Started task    # Annotation description for the start journal entry\n"
   "journal.time.stop.annotation=Stopped task     # Annotation description for the stop  journal entry\n"
   "\n"
@@ -235,10 +235,10 @@ std::string Config::defaults =
   "alias.export=export.csv                       # Prefer CSV over iCal export\n"
   "alias.export.vcalendar=export.ical            # They are the same\n"
   "\n"
-  "# Fields: id, uuid, project, priority, priority_long, entry, entry_time,\n"
-  "#         start, start_time, end, end_time, due, countdown, countdown_compact,\n"
-  "#         age, age_compact, active, tags, depends, description_only,\n"
-  "#         description, recur, recurrence_indicator, tag_indicator, wait.\n"
+  "# Fields: id, uuid, project, priority, priority_long, entry, start, end, due\n"
+  "#         countdown, countdown_compact, age, age_compact, active, tags,\n"
+  "#         depends, description_only, description, recur, recurrence_indicator,\n"
+  "#         tag_indicator, wait.\n"
   "# Description:   This report is ...\n"
   "# Sort:          due+,priority-,project+\n"
   "# Filter:        pro:x pri:H +bug limit:10\n"
@@ -486,7 +486,8 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
   contents << "# [Created by "
            << PACKAGE_STRING
            << " "
-           << now.toStringWithTime ()
+//           << now.toStringWithTime ()
+           << now.toString ("m/d/Y H:N:S")
            << "]\n"
            << defaults.substr (0, loc + 14)
            << data
@@ -604,7 +605,6 @@ void Config::all (std::vector<std::string>& items)
 ////////////////////////////////////////////////////////////////////////////////
 std::string Config::checkForDeprecatedColor ()
 {
-  int count = 0;
   std::vector <std::string> deprecated;
   foreach (i, *this)
   {
@@ -612,15 +612,12 @@ std::string Config::checkForDeprecatedColor ()
     {
       std::string value = get (i->first);
       if (value.find ("_") != std::string::npos)
-      {
-        ++count;
         deprecated.push_back (i->first);
-      }
     }
   }
 
   std::stringstream out;
-  if (count)
+  if (deprecated.size ())
   {
     out << "Your .taskrc file contains color settings that use deprecated "
         << "underscores.  Please check:"
@@ -628,6 +625,36 @@ std::string Config::checkForDeprecatedColor ()
 
     foreach (i, deprecated)
       out << "  " << *i << "=" << get (*i) << std::endl;
+
+    out << std::endl;
+  }
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Config::checkForDeprecatedColumns ()
+{
+  std::vector <std::string> deprecated;
+  foreach (i, *this)
+  {
+    if (i->first.find ("report") == 0)
+    {
+      std::string value = get (i->first);
+      if (value.find ("entry_time") != std::string::npos)
+        deprecated.push_back (i->first);
+    }
+  }
+
+  std::stringstream out;
+  if (deprecated.size ())
+  {
+    out << "Your .taskrc file contains reports with deprecated columns.  "
+        << "Please check for entry_time, start_time or end_time in:"
+        << std::endl;
+
+    foreach (i, deprecated)
+      out << "  " << *i << std::endl;
 
     out << std::endl;
   }
