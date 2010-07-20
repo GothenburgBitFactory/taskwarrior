@@ -436,8 +436,23 @@ of the holidays is also shown.  If set to sparse only the days are color-coded
 and no details on the holidays will be displayed. The displaying of holidays is
 turned off by setting the variable to none.  The default value is "none".
 
+.SS Journal entries
+
 .TP
-.B Holidays
+.B journal.time=no
+May be yes or no, and determines whether the 'start' and 'stop' commands should
+record an annotation when being executed. The default value is "no". The text of
+the corresponding annotations is controlled by
+
+.TP journal.time.start.annotation=Started task
+The text of the annotation that is recorded when executing the start command and
+having set journal.time.
+
+.TP journal.time.stop.annotation=Stopped task
+The text of the annotation that is recorded when executing the stop command and
+having set journal.time.
+
+.SS Holidays
 Holidays are entered either directly in the .taskrc file or via an include file
 that is specified in .taskrc.  For each holiday the name and the date is
 required to be given:

@@ -693,12 +693,12 @@ int handleShow (std::string &outs)
       "color.undo.after confirmation curses data.location dateformat dateformat.holiday "
       "dateformat.report dateformat.annotation debug default.command "
       "default.priority default.project defaultwidth due locale displayweeknumber "
-      "export.ical.class echo.command fontunderline locking monthsperline nag "
-      "next project shadow.command shadow.file shadow.notify weekstart editor "
-      "import.synonym.id import.synonym.uuid complete.all.projects "
-      "complete.all.tags search.case.sensitive hooks active.indicator tag.indicator "
-      "recurrence.indicator recurrence.limit list.all.projects list.all.tags "
-      "undo.style "
+      "export.ical.class echo.command fontunderline locking monthsperline nag next "
+      "journal.time journal.time.start.annotation journal.time.stop.annotation "
+      "project shadow.command shadow.file shadow.notify weekstart editor "
+      "import.synonym.id import.synonym.uuid complete.all.projects complete.all.tags "
+      "search.case.sensitive hooks active.indicator tag.indicator recurrence.indicator "
+      "recurrence.limit list.all.projects list.all.tags undo.style "
 #ifdef FEATURE_SHELL
       "shell.prompt "
 #endif
@@ -1203,7 +1203,11 @@ int handleStart (std::string &outs)
       {
         char startTime[16];
         sprintf (startTime, "%u", (unsigned int) time (NULL));
+
         task->set ("start", startTime);
+
+        if (context.config.getBoolean ("journal.time"))
+          task->addAnnotation (context.config.get ("journal.time.start.annotation"));
 
         context.tdb.update (*task);
 
@@ -1263,6 +1267,10 @@ int handleStop (std::string &outs)
       if (task->has ("start"))
       {
         task->remove ("start");
+
+        if (context.config.getBoolean ("journal.time"))
+          task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
+
         context.tdb.update (*task);
 
         if (context.config.getBoolean ("echo.command"))

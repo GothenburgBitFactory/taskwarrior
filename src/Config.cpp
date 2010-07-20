@@ -96,6 +96,11 @@ std::string Config::defaults =
   "calendar.holidays=none                        # Show public holidays on calendar:full, sparse or none\n"
   "#monthsperline=3                              # Number of calendar months on a line\n"
   "\n"
+  "# Journal controls\n"
+  "journal.time=no                               # Record the invoking of the start/stop command as annotation\n"
+  "journal.time.start.annotation=Started task    # Annotation description for the start journal entry\n"
+  "journal.time.stop.annotation=Stopped task     # Annotation description for the stop  journal entry\n"
+  "\n"
   "# Color controls.\n"
   "color=on                                      # Enable color\n"
 #ifdef LINUX

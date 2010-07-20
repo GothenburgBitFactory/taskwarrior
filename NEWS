@@ -1,7 +1,7 @@
 
 New Features in task 1.9.3
 
-  -
+  - Start and stop times for a task can now be recorded as annotations.
   -
 
   Please refer to the ChangeLog file for full details.  There are too many to
@@ -14,7 +14,7 @@ New commands in task 1.9.3
 
 New configuration options in task 1.9.3
 
-  -
+  - journal.time, journal.time.start.annotation, journal.time.stop.annotation
   -
 
 ---
