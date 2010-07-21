@@ -101,6 +101,10 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
 
   unsigned int i = 0; // Index into input.
 
+  // Format may include: mMdDyYVaAbBhHNS
+  //
+  // Note that the format should never include T or Z, as that interferes with
+  // the potential parsing for ISO dates constructed from the above format.
   for (unsigned int f = 0; f < format.length (); ++f)
   {
     switch (format[f])
