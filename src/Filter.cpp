@@ -144,7 +144,7 @@ void Filter::applySequence (std::vector<Task>& all, Sequence& sequence)
       foreach (r, right)
         out << " " << *r;
 
-      out << " not found";
+      out << " not found.";
       throw out.str ();
     }
   }
