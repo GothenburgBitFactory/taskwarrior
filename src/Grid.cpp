@@ -369,15 +369,11 @@ Grid::Cell::operator std::string () const
   switch (mType)
   {
   case CELL_BOOL:   return mBool ? "true" : "false"; // TODO i18n
-  case CELL_CHAR:   sprintf (s, "%c", mChar);
-                    return std::string (s);
-  case CELL_INT:    sprintf (s, "%d", mInt);
-                    return std::string (s);
-  case CELL_FLOAT:  sprintf (s, "%f", mFloat);
-                    return std::string (s);
-  case CELL_DOUBLE: sprintf (s, "%f", mDouble);
-                    return std::string (s);
-  case CELL_STRING: return mString;
+  case CELL_CHAR:   sprintf (s, "%c", mChar);   return std::string (s);
+  case CELL_INT:    sprintf (s, "%d", mInt);    return std::string (s);
+  case CELL_FLOAT:  sprintf (s, "%f", mFloat);  return std::string (s);
+  case CELL_DOUBLE: sprintf (s, "%f", mDouble); return std::string (s);
+  case CELL_STRING:                             return mString;
   }
 
   return std::string ("");

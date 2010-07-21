@@ -35,6 +35,8 @@
 
 class Table
 {
+  friend bool sort_compare (int, int);
+
 public:
   enum just   {left, center, right};
   enum order  {ascendingNumeric,
@@ -101,7 +103,6 @@ private:
            const std::string formatHeader (const int, const int, const int);
            const std::string formatHeaderDashedUnderline (const int, const int, const int);
            void formatCell (const int, const int, const int, const int, const int, std::vector <std::string>&, std::string&);
-           void sort (std::vector <int>&);
 
 private:
   std::vector <std::string> mColumns;

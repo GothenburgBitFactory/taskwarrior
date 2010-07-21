@@ -55,6 +55,7 @@
 #include "Context.h"
 
 extern Context context;
+Table* table = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////
 Table::Table ()
@@ -591,239 +592,192 @@ int Table::columnCount ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Combsort11, with O(n log n) average, O(n log n) worst case performance.
-//
-// function combsort11(array input)
-//     gap := input.size
-//
-//     loop until gap <= 1 and swaps = 0
-//         if gap > 1
-//             gap := gap / 1.3
-//             if gap = 10 or gap = 9
-//                 gap := 11
-//             end if
-//         end if
-//
-//         i := 0
-//         swaps := 0
-//
-//         loop until i + gap >= input.size
-//             if input[i] > input[i+gap]
-//                 swap(input[i], input[i+gap])
-//                 swaps := 1
-//             end if
-//             i := i + 1
-//         end loop
-//
-//     end loop
-// end function
-
-#define SWAP \
-   { \
-     int temp = order[r]; \
-     order[r] = order[r + gap]; \
-     order[r + gap] = temp; \
-     swaps = 1; \
-   }
-void Table::sort (std::vector <int>& order)
+// Essentially a static implementation of a dynamic operator<.
+bool sort_compare (int left, int right)
 {
-  int gap = order.size ();
-  int swaps = 1;
-
-  while (gap > 1 || swaps > 0)
+  for (size_t c = 0; c < table->mSortColumns.size (); ++c)
   {
-    if (gap > 1)
-    {
-      gap = (int) ((float)gap / 1.3);
-      if (gap == 10 || gap == 9)
-        gap = 11;
-    }
+    int column = table->mSortColumns[c];
+    Table::order sort_type = table->mSortOrder[column];
 
-    int r = 0;
-    swaps = 0;
+    Grid::Cell* cell_left  = table->mData.byRow (left,  column);
+    Grid::Cell* cell_right = table->mData.byRow (right, column);
 
-    while (r + gap < (int) order.size ())
+    // nothing < something.
+    if (cell_left == NULL && cell_right != NULL)
+      return (sort_type == Table::ascendingNumeric ||
+              sort_type == Table::ascendingCharacter ||
+              sort_type == Table::ascendingPriority ||
+              sort_type == Table::ascendingDate ||
+              sort_type == Table::ascendingDueDate ||
+              sort_type == Table::ascendingPeriod) ? true : false;
+
+    // something > nothing.
+    if (cell_left != NULL && cell_right == NULL)
+      return (sort_type == Table::ascendingNumeric ||
+              sort_type == Table::ascendingCharacter ||
+              sort_type == Table::ascendingPriority ||
+              sort_type == Table::ascendingDate ||
+              sort_type == Table::ascendingDueDate ||
+              sort_type == Table::ascendingPeriod) ? false : true;
+
+    // Equally NULL - next column.
+    if (cell_left == NULL && cell_right == NULL)
+      continue;
+
+    // Equal - next column
+    if (cell_left && cell_right && *cell_left == *cell_right)
+      continue;
+
+    // Differing data - do a proper comparison.
+    if (cell_left && cell_right)
     {
-      bool keepScanning = true;
-      for (size_t c = 0; keepScanning && c < mSortColumns.size (); ++c)
+      switch (sort_type)
       {
-        keepScanning = false;
+      case Table::ascendingNumeric:
+        return (float)*cell_left < (float)*cell_right ? true : false;
+        break;
 
-        Grid::Cell* left  = mData.byRow (order[r],       mSortColumns[c]);
-        Grid::Cell* right = mData.byRow (order[r + gap], mSortColumns[c]);
+      case Table::descendingNumeric:
+        return (float)*cell_left < (float)*cell_right ? false : true;
+        break;
 
-        // Data takes precedence over missing data.
-        if (left == NULL && right != NULL)
+      case Table::ascendingCharacter:
+        return (std::string)*cell_left < (std::string)*cell_right ? true : false;
+        break;
+
+      case Table::descendingCharacter:
+        return (std::string)*cell_left < (std::string)*cell_right ? false : true;
+        break;
+
+      case Table::ascendingDate:
         {
-          SWAP
-          break;
-        }
+          // something > nothing.
+          if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
+            return false;
 
-        // No data - try comparing the next column.
-        else if (left == NULL && right == NULL)
-        {
-          keepScanning = true;
-        }
+          // nothing < something.
+          else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
+            return true;
 
-        // Identical data - try comparing the next column.
-        else if (left && right && *left == *right)
-        {
-          keepScanning = true;
-        }
-
-        // Differing data - do a proper comparison.
-        else if (left && right && *left != *right)
-        {
-          switch (mSortOrder[mSortColumns[c]])
+          else
           {
-          case ascendingNumeric:
-            if ((float)*left > (float)*right)
-              SWAP
-            break;
-
-          case descendingNumeric:
-            if ((float)*left < (float)*right)
-              SWAP
-            break;
-
-          case ascendingCharacter:
-            if ((std::string)*left > (std::string)*right)
-              SWAP
-            break;
-
-          case descendingCharacter:
-            if ((std::string)*left < (std::string)*right)
-              SWAP
-            break;
-
-          case ascendingDate:
-            {
-              if (*left == *right)
-                break;
-
-              if ((std::string)*left != "" && (std::string)*right == "")
-                break;
-
-              else if ((std::string)*left == "" && (std::string)*right != "")
-                SWAP
-
-              else
-              {
-                Date dl ((std::string)*left, mDateFormat);
-                Date dr ((std::string)*right, mDateFormat);
-                if (dl > dr)
-                  SWAP
-              }
-            }
-            break;
-
-          case descendingDate:
-            {
-              if (*left == *right)
-                break;
-
-              if ((std::string)*left != "" && (std::string)*right == "")
-                break;
-
-              else if ((std::string)*left == "" && (std::string)*right != "")
-                SWAP
-
-              else
-              {
-                Date dl ((std::string)*left, mDateFormat);
-                Date dr ((std::string)*right, mDateFormat);
-                if (dl < dr)
-                  SWAP
-              }
-            }
-            break;
-
-          case ascendingDueDate:
-            {
-              if ((std::string)*left != "" && (std::string)*right == "")
-                break;
-
-              else if ((std::string)*left == "" && (std::string)*right != "")
-                SWAP
-
-              else
-              {
-                std::string format = context.config.get ("report." + mReportName + ".dateformat");
-                if (format == "")
-                  format = context.config.get ("dateformat.report");
-                if (format == "")
-                  format = context.config.get ("dateformat");
-
-                Date dl ((std::string)*left,  format);
-                Date dr ((std::string)*right, format);
-                if (dl > dr)
-                  SWAP
-              }
-            }
-            break;
-
-          case descendingDueDate:
-            {
-              if ((std::string)*left != "" && (std::string)*right == "")
-                break;
-
-              else if ((std::string)*left == "" && (std::string)*right != "")
-                SWAP
-
-              else
-              {
-                std::string format = context.config.get ("report." + mReportName + ".dateformat");
-                if (format == "")
-                  format = context.config.get ("dateformat.report");
-                if (format == "")
-                  format = context.config.get ("dateformat");
-
-                Date dl ((std::string)*left,  format);
-                Date dr ((std::string)*right, format);
-                if (dl < dr)
-                  SWAP
-              }
-            }
-            break;
-
-          case ascendingPriority:
-            if (((std::string)*left == ""  && (std::string)*right  != "")  ||
-                ((std::string)*left == "M" && (std::string)*right  == "L") ||
-                ((std::string)*left == "H" && ((std::string)*right == "L"  || (std::string)*right == "M")))
-              SWAP
-            break;
-
-          case descendingPriority:
-            if (((std::string)*left == ""  && (std::string)*right  != "")                                 ||
-                ((std::string)*left == "L" && ((std::string)*right == "M" || (std::string)*right == "H")) ||
-                ((std::string)*left == "M" && (std::string)*right  == "H"))
-              SWAP
-            break;
-
-          case ascendingPeriod:
-            if ((std::string)*left == "" && (std::string)*right != "")
-              break;
-            else if ((std::string)*left != "" && (std::string)*right == "")
-              SWAP
-            else if (Duration ((std::string)*left) > Duration ((std::string)*right))
-              SWAP
-            break;
-
-          case descendingPeriod:
-            if ((std::string)*left != "" && (std::string)*right == "")
-              break;
-            else if ((std::string)*left == "" && (std::string)*right != "")
-              SWAP
-            else if (Duration ((std::string)*left) < Duration ((std::string)*right))
-              SWAP
-            break;
+            Date dl ((std::string)*cell_left, table->mDateFormat);
+            Date dr ((std::string)*cell_right, table->mDateFormat);
+            return dl < dr ? true : false;
           }
         }
-      }
+        break;
 
-      ++r;
+      case Table::descendingDate:
+        {
+          // something > nothing.
+          if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
+            return true;
+
+          // nothing < something.
+          else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
+            return false;
+
+          else
+          {
+            Date dl ((std::string)*cell_left, table->mDateFormat);
+            Date dr ((std::string)*cell_right, table->mDateFormat);
+            return dl < dr ? false : true;
+          }
+        }
+        break;
+
+      case Table::ascendingDueDate:
+        {
+          // something > nothing.
+          if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
+            return false;
+
+          // nothing < something.
+          else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
+            return true;
+
+          else
+          {
+            std::string format = context.config.get ("report." + table->mReportName + ".dateformat");
+            if (format == "")
+              format = context.config.get ("dateformat.report");
+            if (format == "")
+              format = context.config.get ("dateformat");
+
+            Date dl ((std::string)*cell_left,  format);
+            Date dr ((std::string)*cell_right, format);
+            return dl < dr ? true : false;
+          }
+        }
+        break;
+
+      case Table::descendingDueDate:
+        {
+          // something > nothing.
+          if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
+            return true;
+
+          // nothing < something.
+          else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
+            return false;
+
+          else
+          {
+            std::string format = context.config.get ("report." + table->mReportName + ".dateformat");
+            if (format == "")
+              format = context.config.get ("dateformat.report");
+            if (format == "")
+              format = context.config.get ("dateformat");
+
+            Date dl ((std::string)*cell_left,  format);
+            Date dr ((std::string)*cell_right, format);
+            return dl < dr ? false : true;
+          }
+        }
+        break;
+
+      case Table::ascendingPriority:
+         if (((std::string)*cell_left == ""  && (std::string)*cell_right  != "")                                      ||
+            ((std::string)*cell_left  == "L" && ((std::string)*cell_right == "M" || (std::string)*cell_right == "H")) ||
+            ((std::string)*cell_left  == "M" && (std::string)*cell_right  == "H"))
+          return true;
+        else
+          return false;
+        break;
+
+      case Table::descendingPriority:
+        if (((std::string)*cell_left == ""  && (std::string)*cell_right  != "")  ||
+            ((std::string)*cell_left == "M" && (std::string)*cell_right  == "L") ||
+            ((std::string)*cell_left == "H" && ((std::string)*cell_right == "L"  || (std::string)*cell_right == "M")))
+         return true;
+        else
+          return false;
+        break;
+
+      case Table::ascendingPeriod:
+        if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
+          return true;
+        else if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
+          return false;
+        else if (Duration ((std::string)*cell_left) < Duration ((std::string)*cell_right))
+          return true;
+        break;
+
+      case Table::descendingPeriod:
+        if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
+          return false;
+        else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
+          return true;
+        else if (Duration ((std::string)*cell_left) < Duration ((std::string)*cell_right))
+          return false;
+        break;
+      }
     }
   }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -868,7 +822,10 @@ const std::string Table::render (int maxrows /* = 0 */, int maxlines /* = 0 */)
 
   // Only sort if necessary.
   if (mSortColumns.size ())
-    sort (order);
+  {
+    table = this;  // Substitute for 'this' in the static 'sort_compare'.
+    std::sort (order.begin (), order.end (), sort_compare);
+  }
 
   // If a non-zero maxrows is specified, then it limits the number of rows of
   // the table that are rendered.
