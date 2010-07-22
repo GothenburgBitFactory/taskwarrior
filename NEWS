@@ -2,7 +2,7 @@
 New Features in task 1.9.3
 
   - Start and stop times for a task can now be recorded as annotations.
-  -
+  - Special tags 'nocolor' and 'nonag'.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.

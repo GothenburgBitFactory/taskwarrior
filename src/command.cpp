@@ -378,6 +378,9 @@ int handleTags (std::string &outs)
           unique[*tag] = 1;
     }
 
+    bool use_color = context.config.getBoolean ("color") ||
+                     context.config.getBoolean ("_forcecolor");
+
     if (unique.size ())
     {
       // Render a list of tags names from the map.
@@ -385,8 +388,7 @@ int handleTags (std::string &outs)
       table.addColumn ("Tag");
       table.addColumn ("Count");
 
-      if (context.config.getBoolean ("color") ||
-          context.config.getBoolean ("_forcecolor"))
+      if (use_color)
       {
         table.setColumnUnderline (0);
         table.setColumnUnderline (1);
@@ -394,11 +396,19 @@ int handleTags (std::string &outs)
 
       table.setColumnJustification (1, Table::right);
 
+      Color bold ("bold");
       foreach (i, unique)
       {
         int row = table.addRow ();
         table.addCell (row, 0, i->first);
         table.addCell (row, 1, i->second);
+
+        // Highlight the special tags.
+        if (use_color && (i->first == "nocolor" ||
+                          i->first == "nonag"))
+        {
+          table.setRowColor (row, bold);
+        }
       }
 
       out << optionalBlankLine ()

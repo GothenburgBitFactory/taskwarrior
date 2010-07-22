@@ -84,7 +84,7 @@ number of tasks for each.
 
 .TP
 .B tags
-Show a list of all tags used.
+Show a list of all tags used.  Any special tags used are highlighted.
 
 .TP
 .B summary
@@ -269,7 +269,14 @@ task del 1,4-10,19
 .TP
 .B +tag|-tag
 Tags are arbitrary words associated with a task. Use + to add a tag and - to
-remove a tag from a task. A task can have any quantity of tags
+remove a tag from a task. A task can have any quantity of tags.
+
+Certain tags (called 'special tags'), can be used to affect the way tasks are
+treated.  For example, is a task has the special tag 'nocolor', then it is
+exempt from all color rules.  The supported special tags are:
+
+    +nocolor     Disable color rules processing for this task.
+    +nonag       Completion of this task suppresses all nag messages.
 
 .TP
 .B project:<project-name>
