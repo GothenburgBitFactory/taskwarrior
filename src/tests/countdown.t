@@ -46,15 +46,15 @@ if (open my $fh, '>', 'countdown.rc')
 # Create a variety of pending tasks with increasingly higher due dates
 # and ensure sort order.
 
-my @timeArray = localtime(time);
-my $now     = time ();
+# The -1 guarantees that no duration will be rendered as '-'.
+my $now = time () - 1;
 
-my $nowminusone   =  $now - 3600;
-my $nowplusone   =  $now + 3600;
-my $nowplusseven   =  $now + 7 * 3600;
-my $nowplustwelve   =  $now + 12 * 3600;
-my $nowplusthirtysix   =  $now + 36 * 3600;
-my $nowplusseventytwo   =  $now + 72 * 3600;
+my $nowminusone       =  $now -      3600;
+my $nowplusone        =  $now +      3600;
+my $nowplusseven      =  $now +  7 * 3600;
+my $nowplustwelve     =  $now + 12 * 3600;
+my $nowplusthirtysix  =  $now + 36 * 3600;
+my $nowplusseventytwo =  $now + 72 * 3600;
 
 if (open my $fh, '>', 'pending.data')
 {
@@ -73,12 +73,12 @@ EOF
 }
 
 my $output = qx{../task rc:countdown.rc countdown};
-like ($output, qr/\s-3 days\s.*\s-1 day\s/s, 'countdown - oldest first');
-like ($output, qr/\s-1 day\s.*\s-12 hrs\s/s, 'countdown - next second oldest');
-like ($output, qr/\s-12 hrs\s.*\s-7 hrs\s/s, 'countdown - next third oldest');
-like ($output, qr/\s-7 hrs\s.*\s-1 hr\s/s, 'countdown - next fourth oldest');
-like ($output, qr/\s-1 hr\s.*\s- Due now\s/s, 'countdown - next fifth oldest');
-like ($output, qr/\s- Due now\s.*\s1 hr\s/s, 'countdown - next sixth oldest');
+like ($output, qr/-2 days.+-1 day/s,    'countdown - oldest first');
+like ($output, qr/-1 day.+-11 hrs/s,    'countdown - next second oldest');
+like ($output, qr/-11 hrs.+-6 hrs/s,    'countdown - next third oldest');
+like ($output, qr/-6 hrs.+-59 mins/s,   'countdown - next fourth oldest');
+like ($output, qr/-59 mins.+ Due now/s, 'countdown - next fifth oldest');
+like ($output, qr/ Due now.+1 hr/s,     'countdown - next sixth oldest');
 
 # Cleanup.
 unlink 'pending.data';
