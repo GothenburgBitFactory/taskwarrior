@@ -1927,6 +1927,7 @@ std::string renderMonths (
           foreach (task, all)
           {
             if (task->getStatus () == Task::pending &&
+                !task->hasTag ("nocal")             &&
                 task->has ("due"))
             {
               std::string due = task->get ("due");
@@ -2063,7 +2064,8 @@ int handleReportCalendar (std::string &outs)
       {
         if (task->getStatus () == Task::pending)
         {
-          if (task->has ("due"))
+          if (task->has ("due") &&
+              !task->hasTag ("nocal"))
           {
             ++countDueDates;
             Date d (atoi (task->get ("due").c_str ()));
