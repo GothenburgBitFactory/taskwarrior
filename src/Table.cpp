@@ -605,20 +605,20 @@ bool sort_compare (int left, int right)
 
     // nothing < something.
     if (cell_left == NULL && cell_right != NULL)
-      return (sort_type == Table::ascendingNumeric ||
+      return (sort_type == Table::ascendingNumeric   ||
               sort_type == Table::ascendingCharacter ||
-              sort_type == Table::ascendingPriority ||
-              sort_type == Table::ascendingDate ||
-              sort_type == Table::ascendingDueDate ||
+              sort_type == Table::ascendingPriority  ||
+              sort_type == Table::ascendingDate      ||
+              sort_type == Table::ascendingDueDate   ||
               sort_type == Table::ascendingPeriod) ? true : false;
 
     // something > nothing.
     if (cell_left != NULL && cell_right == NULL)
-      return (sort_type == Table::ascendingNumeric ||
+      return (sort_type == Table::ascendingNumeric   ||
               sort_type == Table::ascendingCharacter ||
-              sort_type == Table::ascendingPriority ||
-              sort_type == Table::ascendingDate ||
-              sort_type == Table::ascendingDueDate ||
+              sort_type == Table::ascendingPriority  ||
+              sort_type == Table::ascendingDate      ||
+              sort_type == Table::ascendingDueDate   ||
               sort_type == Table::ascendingPeriod) ? false : true;
 
     // Equally NULL - next column.
