@@ -46,6 +46,7 @@
 #include <iostream>
 #include <string.h>
 #include <assert.h>
+#include <algorithm>
 #include "Table.h"
 #include "Date.h"
 #include "Duration.h"
