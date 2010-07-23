@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 30;
+use Test::More tests => 31;
 
 # Create the rc file.
 if (open my $fh, '>', 'dep.rc')
@@ -38,8 +38,10 @@ if (open my $fh, '>', 'dep.rc')
   print $fh "report.depreport.columns=id,depends,description\n";
   print $fh "report.depreport.labels=ID,Depends,Description\n";
   print $fh "report.depreport.filter=status:pending\n";
-  print $fh "report.depreport.sort=depends+";
+  print $fh "report.depreport.sort=depends+\n";
+  print $fh "nag=NAG";
   close $fh;
+
   ok (-r 'dep.rc', 'Created dep.rc');
 }
 
@@ -142,6 +144,8 @@ qx{../task rc:dep.rc 2 dep:1; ../task rc:dep.rc 3 dep:2; ../task rc:dep.rc 4 dep
 $output = qx{echo y | ../task rc:dep.rc do 2};
 like ($output, qr/fixed/, 'dependencies - user prompted to fix broken chain after completing a blocked task');
 
+like ($output, qr/NAG/, 'dependencies - user nagged for completing a blocked task');
+
 $output = qx{echo y | ../task rc:dep.rc do 1};
 unlike ($output, qr/fixed/, 'dependencies - user not prompted to fix broken chain when the head of the chain is marked as complete');
 
@@ -174,7 +178,7 @@ like ($output, qr/\s1\s+One\s*\n\s2\s+1\s+Four\s*\n\s3\s+2\s+Five/, 'dependencie
 
 qx{../task rc:dep.rc 2 dep:-1}; 
 $output = qx{../task rc:dep.rc depreport};
-like ($output, qr/\s1\s+One\s*\n\s2\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - chain not automatically repaird after manually removing a dependency');
+like ($output, qr/\s1\s+One\s*\n\s2\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - chain should not be automatically repaired after manually removing a dependency');
 
 # TODO - test dependency.confirm config variable
 # TODO - test undo on backing out chain gap repair
@@ -183,7 +187,7 @@ like ($output, qr/\s1\s+One\s*\n\s2\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - 
 # TODO - test depend.any and depend.none report filters
 
 # Cleanup.
-#unlink 'pending.data';
+unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
 
 unlink 'undo.data';
