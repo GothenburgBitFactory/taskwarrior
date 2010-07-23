@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 19;
+use Test::More tests => 30;
 
 # Create the rc file.
 if (open my $fh, '>', 'dep.rc')
@@ -37,7 +37,8 @@ if (open my $fh, '>', 'dep.rc')
   print $fh "dependency.confirm=yes\n";
   print $fh "report.depreport.columns=id,depends,description\n";
   print $fh "report.depreport.labels=ID,Depends,Description\n";
-  print $fh "report.depreport.filter=status:pending";
+  print $fh "report.depreport.filter=status:pending\n";
+  print $fh "report.depreport.sort=depends+";
   close $fh;
   ok (-r 'dep.rc', 'Created dep.rc');
 }
@@ -111,18 +112,78 @@ like ($output, qr/This task blocked by\nThis task is blocking/, 'dependencies - 
 $output = qx{../task rc:dep.rc depreport};
 like ($output, qr/\s1\s+One\s+/, 'dependencies - depends report column reflects completed dependencies');
 
+unlink 'pending.data';
+ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
+
+qx{../task rc:dep.rc add One};
+qx{../task rc:dep.rc add Two};
+qx{../task rc:dep.rc add Three};
+qx{../task rc:dep.rc add Four};
+
+qx{../task rc:dep.rc 1 dep:3,4};
+qx{../task rc:dep.rc do 2};
+
+$output = qx{../task rc:dep.rc depreport};
+like ($output, qr/\s1\s+2, 3\s+One\s+/, 'dependencies - depends report column reflects changed IDs');
+
+$output = qx{../task rc:dep.rc depreport};
+like ($output, qr/\s1\s+One\s+/, 'dependencies - depends report column reflects completed dependencies');
+
+unlink 'pending.data';
+ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
+
+qx{../task rc:dep.rc add One};
+qx{../task rc:dep.rc add Two};
+qx{../task rc:dep.rc add Three};
+qx{../task rc:dep.rc add Four};
+
+qx{../task rc:dep.rc 2 dep:1; ../task rc:dep.rc 3 dep:2; ../task rc:dep.rc 4 dep:3};
+
+$output = qx{echo y | ../task rc:dep.rc do 2};
+like ($output, qr/fixed/, 'dependencies - user prompted to fix broken chain after completing a blocked task');
+
+$output = qx{echo y | ../task rc:dep.rc do 1};
+unlike ($output, qr/fixed/, 'dependencies - user not prompted to fix broken chain when the head of the chain is marked as complete');
+
+$output = qx{echo y | ../task rc:dep.rc del 4};
+unlike ($output, qr/fixed/, 'dependencies - user not prompted to fix broken chain when the tail of the chain is deleted');
+
+unlink 'pending.data';
+ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
+
+qx{../task rc:dep.rc add One};
+qx{../task rc:dep.rc add Two};
+qx{../task rc:dep.rc add Three};
+qx{../task rc:dep.rc add Four};
+qx{../task rc:dep.rc add Five};
+
+qx{../task rc:dep.rc 2 dep:1};
+qx{../task rc:dep.rc 3 dep:2};
+qx{../task rc:dep.rc 4 dep:3};
+qx{../task rc:dep.rc 5 dep:4};
+
+qx{echo y | ../task rc:dep.rc do 2};
+$output = qx{../task rc:dep.rc depreport};
+
+like ($output, qr/\s1\s+One\s*\n\s2\s+1\s+Three\s*\n\s3\s+2\s+Four\s*\n\s4\s+3\s+Five/, 'dependencies - fixed chain after completing a blocked task');
+
+# TODO TODO TODO - Need to echo Y Y (once for delete confirmation, again for repair prompt)
+qx{echo y | ../task rc:dep.rc del 2}; 
+$output = qx{../task rc:dep.rc depreport};
+like ($output, qr/\s1\s+One\s*\n\s2\s+1\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - fixed chain after deleting a blocked task');
+
+qx{../task rc:dep.rc 2 dep:-1}; 
+$output = qx{../task rc:dep.rc depreport};
+like ($output, qr/\s1\s+One\s*\n\s2\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - chain not automatically repaird after manually removing a dependency');
+
 # TODO - test dependency.confirm config variable
-# TODO - test dependency chain gap repair on delete
-# TODO - test dependency chain gap repair on complete
-# TODO - test dependency chain gap repair on dependency removal
-# TODO - test for absence of dependency chain gap repair prompt on delete/complete/dependency removal when item is the first or last in the chain
 # TODO - test undo on backing out chain gap repair
 # TODO - test undo on backing out choice to not perform chain gap repair
 # TODO - test blocked task completion nag
 # TODO - test depend.any and depend.none report filters
 
 # Cleanup.
-unlink 'pending.data';
+#unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
 
 unlink 'undo.data';
