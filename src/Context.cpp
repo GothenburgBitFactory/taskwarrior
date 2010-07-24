@@ -594,6 +594,18 @@ void Context::parse (
         tagRemovals.push_back (arg->substr (1));
       }
 
+      // Substitution of description and/or annotation text.
+      else if (parseSubst.valid (*arg))
+      {
+        if (foundSequence)
+          foundSomethingAfterSequence = true;
+
+        foundNonSequence = true;
+
+        debug ("parse subst '" + *arg + "'");
+        parseSubst.parse (*arg);
+      }
+
       // Atributes - name[.mod]:[value]
       else if (attribute.valid (*arg))
       {
@@ -638,18 +650,6 @@ void Context::parse (
             descCandidate += " ";
           descCandidate += *arg;
         }
-      }
-
-      // Substitution of description and/or annotation text.
-      else if (parseSubst.valid (*arg))
-      {
-        if (foundSequence)
-          foundSomethingAfterSequence = true;
-
-        foundNonSequence = true;
-
-        debug ("parse subst '" + *arg + "'");
-        parseSubst.parse (*arg);
       }
 
       // It might be a command if one has not already been found.
