@@ -604,6 +604,14 @@ bool sort_compare (int left, int right)
     Grid::Cell* cell_left  = table->mData.byRow (left,  column);
     Grid::Cell* cell_right = table->mData.byRow (right, column);
 
+    // Equally NULL - next column.
+    if (cell_left == NULL && cell_right == NULL)
+      continue;
+
+    // Equal - next column
+    if (cell_left && cell_right && *cell_left == *cell_right)
+      continue;
+
     // nothing < something.
     if (cell_left == NULL && cell_right != NULL)
       return (sort_type == Table::ascendingNumeric   ||
@@ -621,14 +629,6 @@ bool sort_compare (int left, int right)
               sort_type == Table::ascendingDate      ||
               sort_type == Table::ascendingDueDate   ||
               sort_type == Table::ascendingPeriod) ? false : true;
-
-    // Equally NULL - next column.
-    if (cell_left == NULL && cell_right == NULL)
-      continue;
-
-    // Equal - next column
-    if (cell_left && cell_right && *cell_left == *cell_right)
-      continue;
 
     // Differing data - do a proper comparison.
     if (cell_left && cell_right)
