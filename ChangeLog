@@ -27,6 +27,8 @@
  + Fixed bug #439, which ignored dateformat.annotation for sparse annotations.
  + Fixed bug #441, which misparsed '/a/a:/' as an attribute, rather than a
    substitution (thanks to Michelle Crane).
+ + Fixed problem with command line configuration overrides that had no
+   values. 
 
 ------ old releases ------------------------------
 

@@ -390,17 +390,18 @@ void Context::applyOverrides (
       std::string name;
       std::string value;
       Nibbler n (*in);
-      if (n.getUntil ('.', name)       &&
-          n.skip ('.')                 &&
-          n.getUntilOneOf (":=", name) &&
-          n.skipN (1)                  &&
-          n.getUntilEOS (value))
+      if (n.getLiteral ("rc.")         &&  // rc.
+          n.getUntilOneOf (":=", name) &&  //    xxx
+          n.skipN (1))                     //       :
       {
+        n.getUntilEOS (value);  // Don't care if it's blank.
+
         config.set (name, value);
         var_overrides += " " + *in;
-        footnote (std::string ("Configuration override ") +  // TODO i18n
-                  in->substr (3));
+        footnote ("Configuration override " + in->substr (3));
       }
+      else
+        footnote ("Problem with override: " + *in);
     }
     else
       output.push_back (*in);
