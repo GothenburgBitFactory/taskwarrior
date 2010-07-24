@@ -609,6 +609,14 @@ int handleInfo (std::string &outs)
         table.addCell (row, 1, color);
       }
 
+      // If an alternating row color is specified, notify the table.
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+      {
+        Color alternate (context.config.get ("color.alternate"));
+        if (alternate.nontrivial ())
+          table.setTableAlternateColor (alternate);
+      }
+
       out << optionalBlankLine ()
           << table.render ()
           << std::endl;
@@ -2504,6 +2512,14 @@ int handleReportStats (std::string &outs)
       std::stringstream value;
       value << (int) (descLength / totalT) << " characters";
       table.addCell (row, 1, value.str ());
+    }
+
+    // If an alternating row color is specified, notify the table.
+    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+    {
+      Color alternate (context.config.get ("color.alternate"));
+      if (alternate.nontrivial ())
+        table.setTableAlternateColor (alternate);
     }
 
     out << optionalBlankLine ()

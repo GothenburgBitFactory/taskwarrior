@@ -17,6 +17,7 @@
    on default values.
  + Special tags 'nocal', 'nocolor' and 'nonag' are implemented.
  + The 'tags' command highlights special tags.
+ + The 'stats' and 'info' reports not obey color.alternate.
  + Fixed bug #427, preventing the task edit command to parse annotation
    dates with spaces.
  + Fixed bug #433, making task command output more consistent.
