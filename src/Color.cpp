@@ -349,24 +349,26 @@ void Color::blend (const Color& other)
 
     return;
   }
-
-  // Upgrade either color, if necessary.
-  if (!(value   & _COLOR_256)) upgrade ();
-  if (!(c.value & _COLOR_256)) c.upgrade ();
-
-  // 256 <-- 256.
-  if (c.value & _COLOR_HASFG)
+  else
   {
-    value |= _COLOR_HASFG;                  // There is now a color.
-    value &= ~_COLOR_FG;                    // Remove previous color.
-    value |= (c.value & _COLOR_FG);         // Apply other color.
-  }
+    // Upgrade either color, if necessary.
+    if (!(value   & _COLOR_256)) upgrade ();
+    if (!(c.value & _COLOR_256)) c.upgrade ();
 
-  if (c.value & _COLOR_HASBG)
-  {
-    value |= _COLOR_HASBG;                  // There is now a color.
-    value &= ~_COLOR_BG;                    // Remove previous color.
-    value |= (c.value & _COLOR_BG);         // Apply other color.
+    // 256 <-- 256.
+    if (c.value & _COLOR_HASFG)
+    {
+      value |= _COLOR_HASFG;                  // There is now a color.
+      value &= ~_COLOR_FG;                    // Remove previous color.
+      value |= (c.value & _COLOR_FG);         // Apply other color.
+    }
+
+    if (c.value & _COLOR_HASBG)
+    {
+      value |= _COLOR_HASBG;                  // There is now a color.
+      value &= ~_COLOR_BG;                    // Remove previous color.
+      value |= (c.value & _COLOR_BG);         // Apply other color.
+    }
   }
 }
 
