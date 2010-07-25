@@ -818,14 +818,17 @@ const std::string Table::render (int maxrows /* = 0 */, int maxlines /* = 0 */)
 
   // Determine row order, according to sort options.
   std::vector <int> order;
-  for (int row = 0; row < mRows; ++row)
-    order.push_back (row);
-
-  // Only sort if necessary.
-  if (mSortColumns.size ())
   {
-    table = this;  // Substitute for 'this' in the static 'sort_compare'.
-    std::sort (order.begin (), order.end (), sort_compare);
+    Timer t ("Table::render/sort");
+    for (int row = 0; row < mRows; ++row)
+      order.push_back (row);
+
+    // Only sort if necessary.
+    if (mSortColumns.size ())
+    {
+      table = this;  // Substitute for 'this' in the static 'sort_compare'.
+      std::sort (order.begin (), order.end (), sort_compare);
+    }
   }
 
   // If a non-zero maxrows is specified, then it limits the number of rows of
@@ -838,6 +841,7 @@ const std::string Table::render (int maxrows /* = 0 */, int maxlines /* = 0 */)
   // of output from the table that are rendered.
 
   // Print all rows.
+  Timer t2 ("Table::render/compose");
   for (int row = 0; row < limitrows; ++row)
   {
     std::vector <std::vector <std::string> > columns;
