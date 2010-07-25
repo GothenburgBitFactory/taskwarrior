@@ -24,6 +24,7 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -205,8 +206,9 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Lists all tasks in iCalendar format.");
 
   row = table.addRow ();
-  table.addCell (row, 1, "task color [sample]");
-  table.addCell (row, 2, "Displays all possible colors, or a sample.");
+  table.addCell (row, 1, "task color [sample | legend]");
+  table.addCell (row, 2, "Displays all possible colors, a named sample, or a "
+                         "legend containing all currently defined colors.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task version");

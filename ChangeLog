@@ -4,6 +4,9 @@
 1.9.3 ()
  + Added feature #189, that records the start and stop times
    as an annotation for a task.
+ + Added feature #391, now the 'task color legend' command will show
+   samples of all the defined colors and color rules from your .taskrc
+   and theme.
  + Added feature #423, now custom report filters allow rc overrides.
  + Added feature #428, preparing the new structure for the NEWS file.
  + Added feature #429, which improves the 'all' report to exclude deleted.

@@ -9,7 +9,8 @@ New Features in task 1.9.3
 
 New commands in task 1.9.3
 
-  -
+  - New 'task color legend' command will show samples of all the defined colors
+    and color rules from your .taskrc and theme.
   -
 
 New configuration options in task 1.9.3

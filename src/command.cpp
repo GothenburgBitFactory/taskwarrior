@@ -1863,10 +1863,36 @@ int handleColor (std::string &outs)
 
     if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
     {
+      // If the description contains 'legend', show all the colors currently in
+      // use.
+      std::string description = context.task.get ("description");
+      if (description.find ("legend") != std::string::npos)
+      {
+        out << std::endl
+            << "Here are the colors currently in use:"
+            << std::endl;
+
+        std::vector <std::string> all;
+        context.config.all (all);
+        foreach (item, all)
+        {
+          if (*item != "_forcecolor" &&
+              *item != "color"       &&
+              item->find ("color") != std::string::npos)
+          {
+            out << "  "
+                << Color::colorize (" " + *item + " ",
+                                    context.config.get (*item))
+                << std::endl;
+          }
+        }
+
+        out << std::endl;
+      }
+
       // If there is something in the description, then assume that is a color,
       // and display it as a sample.
-      std::string description = context.task.get ("description");
-      if (description != "")
+      else if (description != "")
       {
         Color one    ("black on bright yellow");
         Color two    ("underline cyan on bright blue");
