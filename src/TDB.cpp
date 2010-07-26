@@ -1504,7 +1504,7 @@ FILE* TDB::openAndLock (const std::string& file)
     while (flock (fileno (in), LOCK_NB | LOCK_EX) && ++retry <= 3)
     {
       std::cout << "Waiting for file lock..." << std::endl;
-      while (flock (fileno (in), LOCK_EX) && ++retry <= 3)
+      while (flock (fileno (in), LOCK_NB | LOCK_EX) && ++retry <= 3)
         delay (0.2);
     }
 
