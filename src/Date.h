@@ -85,6 +85,7 @@ public:
   bool sameYear   (const Date&);
 
   Date operator+  (const int);
+  Date operator-  (const int);
   Date& operator+= (const int);
   Date& operator-= (const int);
 

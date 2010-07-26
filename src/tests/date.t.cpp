@@ -314,6 +314,8 @@ int main (int argc, char** argv)
 
     Date r16 ("6/7/2010 00:59:59", "m/d/Y H:N:S");
     t.notok (r14.sameHour (r16), "two dates not within the same hour");
+
+    // TODO Date::operator-
   }
 
   catch (std::string& e)

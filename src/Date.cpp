@@ -24,7 +24,6 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <time.h>
@@ -138,7 +137,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
         throw std::string ("\"") + input + "\" is not a valid date (d).";
       }
 
-      if (i + 1 < input.length ()                                                              &&
+      if (i + 1 < input.length ()                                                                    &&
           (input[i + 0] == '0' || input[i + 0] == '1' || input[i + 0] == '2' || input[i + 0] == '3') &&
           isdigit (input[i + 1]))
       {
@@ -806,6 +805,12 @@ bool Date::sameYear (const Date& rhs)
     return true;
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Date Date::operator- (const int delta)
+{
+  return Date (mT - delta);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
