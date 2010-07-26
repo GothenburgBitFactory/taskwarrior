@@ -335,7 +335,7 @@ Attribute modifiers improve filters.  Supported modifiers are:
 .br
 .B  isnt       (synonym not)
 .br
-.B  has        (synonym contain)
+.B  has        (synonym contains)
 .br
 .B  hasnt
 .br
@@ -374,11 +374,17 @@ task ... due:today
 .br
 task ... due:yesterday
 .br
-task ...  due:tomorrow
+task ... due:tomorrow
 
 .TP
 Day number with ordinal
 task ... due:23rd
+.br
+task ... due:3wks
+.br
+task ... due:1day
+.br
+task ... due:9hrs
 
 .TP
 End of week (Friday), month and year

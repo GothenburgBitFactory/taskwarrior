@@ -2,6 +2,10 @@
 ------ current release ---------------------------
 
 1.9.3 ()
+ + Added feature #43, now task supports relative dates like '3wks',
+   '1 month', '4d' for 'due', 'wait' and 'until' dates.  Essentially
+   durations are now allowed where dates are expected, and are treated
+   as relative to the current date/time.
  + Added feature #189, that records the start and stop times
    as an annotation for a task.
  + Added feature #391, now the 'task color legend' command will show
