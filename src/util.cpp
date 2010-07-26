@@ -195,8 +195,8 @@ int autoComplete (
       }
 
       // Maintain a list of partial matches.
-      if (length <= item->length () &&
-          partial == item->substr (0, length))
+      else if (length <= item->length () &&
+               partial == item->substr (0, length))
         matches.push_back (*item);
     }
   }

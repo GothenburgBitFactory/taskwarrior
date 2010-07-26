@@ -35,11 +35,71 @@
 #include "util.h"
 #include "Duration.h"
 
+static const char* durations[] =
+{
+  "annual",
+  "biannual",
+  "bimonthly",
+  "biweekly",
+  "biyearly",
+  "daily",
+  "days",
+  "day",
+  "d",
+  "fortnight",
+  "hours",
+  "hrs",
+  "h",
+  "minutes",
+  "mins",
+  "min",
+  "m",
+
+  "mnths",
+  "monthly",
+  "months",
+  "month",
+  "mos",
+  "mo",
+  "mths",
+
+  "quarterly",
+  "quarters",
+  "qrtrs",
+  "qtrs",
+  "q",
+  "seconds",
+  "secs",
+  "sec",
+  "s",
+  "semiannual",
+  "sennight",
+  "weekdays",
+  "weekly",
+  "weeks",
+  "wks",
+  "w",
+  "yearly",
+  "years",
+  "yrs",
+  "y",
+  "-",
+};
+
+#define NUM_DURATIONS   (sizeof (durations)   / sizeof (durations[0]))
+
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration ()
 : mSecs (0)
 , mNegative (false)
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Duration::Duration (const Duration& other)
+{
+  mSecs     = other.mSecs;
+  mNegative = other.mNegative;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +119,8 @@ Duration::Duration (time_t input)
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration (const std::string& input)
+: mSecs (0)
+, mNegative (false)
 {
   parse (input);
 }
@@ -73,7 +135,7 @@ Duration::operator time_t ()
 Duration::operator std::string ()
 {
   std::stringstream s;
-  s << (mNegative ? -mSecs : mSecs);
+  s << (mNegative ? - (long) mSecs : (long) mSecs);
   return s.str ();
 }
 
@@ -169,78 +231,37 @@ Duration::~Duration ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Duration::negative () const
+{
+  return mNegative;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Duration::valid (const std::string& input) const
 {
   std::string lower_input = lowerCase (input);
 
+  // Assume the ordinal is 1, but look for an integer, just in case.
+  int value = 1;
+  Nibbler n (lower_input);
+  n.skipAll (' ');
+  n.getInt (value);
+  n.skipAll (' ');
+
+  if (value < 0)
+    value = -value;
+
+  std::string units;
+  n.getUntilEOS (units);
+
+  // Auto complete against all supported durations.
   std::vector <std::string> supported;
-  supported.push_back ("daily");       // TODO i18n
-  supported.push_back ("day");         // TODO i18n
-  supported.push_back ("weekly");      // TODO i18n
-  supported.push_back ("weekdays");    // TODO i18n
-  supported.push_back ("sennight");    // TODO i18n
-  supported.push_back ("biweekly");    // TODO i18n
-  supported.push_back ("fortnight");   // TODO i18n
-  supported.push_back ("monthly");     // TODO i18n
-  supported.push_back ("bimonthly");   // TODO i18n
-  supported.push_back ("quarterly");   // TODO i18n
-  supported.push_back ("biannual");    // TODO i18n
-  supported.push_back ("biyearly");    // TODO i18n
-  supported.push_back ("annual");      // TODO i18n
-  supported.push_back ("semiannual");  // TODO i18n
-  supported.push_back ("yearly");      // TODO i18n
+  for (unsigned int i = 0; i < NUM_DURATIONS; ++i)
+    supported.push_back (durations[i]);
 
   std::vector <std::string> matches;
-  if (autoComplete (lower_input, supported, matches) == 1)
+  if (autoComplete (units, supported, matches) == 1)
     return true;
-
-  // Support \s+ -? \d+ \s? s|secs?|m|mins?|h|hrs?|d|days?|wks?|mo|mths?|y|yrs?|-
-  // Note: Does not support a sign character.  That must be external to
-  // Duration.
-  Nibbler n (lower_input);
-  int value;
-
-  n.skipAll (' ');
-  n.skip ('-');
-
-  if (n.getUnsignedInt (value))
-  {
-    n.skipAll (' ');
-
-         if (n.getLiteral ("yrs")  && n.depleted ()) return true;
-    else if (n.getLiteral ("yr")   && n.depleted ()) return true;
-    else if (n.getLiteral ("y")    && n.depleted ()) return true;
-
-    else if (n.getLiteral ("qtrs") && n.depleted ()) return true;
-    else if (n.getLiteral ("qtr")  && n.depleted ()) return true;
-    else if (n.getLiteral ("q")    && n.depleted ()) return true;
-
-    else if (n.getLiteral ("mths") && n.depleted ()) return true;
-    else if (n.getLiteral ("mth")  && n.depleted ()) return true;
-    else if (n.getLiteral ("mo")   && n.depleted ()) return true;
-
-    else if (n.getLiteral ("wks")  && n.depleted ()) return true;
-    else if (n.getLiteral ("wk")   && n.depleted ()) return true;
-    else if (n.getLiteral ("w")    && n.depleted ()) return true;
-
-    else if (n.getLiteral ("days") && n.depleted ()) return true;
-    else if (n.getLiteral ("day")  && n.depleted ()) return true;
-    else if (n.getLiteral ("d")    && n.depleted ()) return true;
-
-    else if (n.getLiteral ("hrs")  && n.depleted ()) return true;
-    else if (n.getLiteral ("hr")   && n.depleted ()) return true;
-    else if (n.getLiteral ("h")    && n.depleted ()) return true;
-
-    else if (n.getLiteral ("mins") && n.depleted ()) return true;
-    else if (n.getLiteral ("min")  && n.depleted ()) return true;
-    else if (n.getLiteral ("m")    && n.depleted ()) return true;
-
-    else if (n.getLiteral ("secs") && n.depleted ()) return true;
-    else if (n.getLiteral ("sec")  && n.depleted ()) return true;
-    else if (n.getLiteral ("s")    && n.depleted ()) return true;
-
-    else if (n.getLiteral ("-")    && n.depleted ()) return true;
-  }
 
   return false;
 }
@@ -250,95 +271,98 @@ void Duration::parse (const std::string& input)
 {
   std::string lower_input = lowerCase (input);
 
-  std::vector <std::string> supported;
-  supported.push_back ("daily");        // TODO i18n
-  supported.push_back ("day");          // TODO i18n
-  supported.push_back ("weekly");       // TODO i18n
-  supported.push_back ("weekdays");     // TODO i18n
-  supported.push_back ("sennight");     // TODO i18n
-  supported.push_back ("biweekly");     // TODO i18n
-  supported.push_back ("fortnight");    // TODO i18n
-  supported.push_back ("monthly");      // TODO i18n
-  supported.push_back ("bimonthly");    // TODO i18n
-  supported.push_back ("quarterly");    // TODO i18n
-  supported.push_back ("biannual");     // TODO i18n
-  supported.push_back ("biyearly");     // TODO i18n
-  supported.push_back ("annual");       // TODO i18n
-  supported.push_back ("semiannual");   // TODO i18n
-  supported.push_back ("yearly");       // TODO i18n
+  // Assume the ordinal is 1, but look for an integer, just in case.
+  int value = 1;
+  Nibbler n (lower_input);
+  n.skipAll (' ');
+  n.getInt (value);
 
-  std::vector <std::string> matches;
-  if (autoComplete (lower_input, supported, matches) == 1)
+  n.skipAll (' ');
+
+  if (value < 0)
   {
-    std::string found = matches[0];
-
-         if (found == "daily"    || found == "day")       mSecs = 86400 * 1;   // TODO i18n
-    else if (found == "weekdays")                         mSecs = 86400 * 1;   // TODO i18n
-    else if (found == "weekly"   || found == "sennight")  mSecs = 86400 * 7;   // TODO i18n
-    else if (found == "biweekly" || found == "fortnight") mSecs = 86400 * 14;  // TODO i18n
-    else if (found == "monthly")                          mSecs = 86400 * 30;  // TODO i18n
-    else if (found == "bimonthly")                        mSecs = 86400 * 61;  // TODO i18n
-    else if (found == "quarterly")                        mSecs = 86400 * 91;  // TODO i18n
-    else if (found == "semiannual")                       mSecs = 86400 * 183; // TODO i18n
-    else if (found == "yearly"   || found == "annual")    mSecs = 86400 * 365; // TODO i18n
-    else if (found == "biannual" || found == "biyearly")  mSecs = 86400 * 730; // TODO i18n
+    mNegative = true;
+    value = -value;
   }
-
-  // Support -? \d+ \s? s|secs?|m|mins?|h|hrs?|d|days?|wks?|mo|mths?|y|yrs?|-
-  // Note: Does not support a sign character.  That must be external to
-  // Duration.
   else
-  {
-    Nibbler n (lower_input);
-
-    n.skipAll (' ');
     mNegative = false;
-    if (n.skip ('-'))
-      mNegative = true;
 
-    int value;
-    if (n.getUnsignedInt (value))
-    {
-      n.skipAll (' ');
+  std::string units;
+  n.getUntilEOS (units);
 
-           if (n.getLiteral ("yrs")  && n.depleted ()) mSecs = value * 86400 * 365;
-      else if (n.getLiteral ("yr")   && n.depleted ()) mSecs = value * 86400 * 365;
-      else if (n.getLiteral ("y")    && n.depleted ()) mSecs = value * 86400 * 365;
+  // Auto complete against all supported durations.
+  std::vector <std::string> supported;
+  for (unsigned int i = 0; i < NUM_DURATIONS; ++i)
+    supported.push_back (durations[i]);
 
-      else if (n.getLiteral ("qtrs") && n.depleted ()) mSecs = value * 86400 * 91;
-      else if (n.getLiteral ("qtr")  && n.depleted ()) mSecs = value * 86400 * 91;
-      else if (n.getLiteral ("q")    && n.depleted ()) mSecs = value * 86400 * 91;
+  mSecs = 0;
+  std::vector <std::string> matches;
+  if (autoComplete (units, supported, matches) == 1)
+  {
+    std::string match = matches[0];
 
-      else if (n.getLiteral ("mths") && n.depleted ()) mSecs = value * 86400 * 30;
-      else if (n.getLiteral ("mth")  && n.depleted ()) mSecs = value * 86400 * 30;
-      else if (n.getLiteral ("mo")   && n.depleted ()) mSecs = value * 86400 * 30;
+         if (match == "biannual")                         mSecs = value * 86400 * 730;
+    else if (match == "biyearly")                         mSecs = value * 86400 * 730;
 
-      else if (n.getLiteral ("wks")  && n.depleted ()) mSecs = value * 86400 * 7;
-      else if (n.getLiteral ("wk")   && n.depleted ()) mSecs = value * 86400 * 7;
-      else if (n.getLiteral ("w")    && n.depleted ()) mSecs = value * 86400 * 7;
+    else if (match == "yearly")                           mSecs = value * 86400 * 365;
+    else if (match == "annual")                           mSecs = value * 86400 * 365;
+    else if (match == "years")                            mSecs = value * 86400 * 365;
+    else if (match == "yrs")                              mSecs = value * 86400 * 365;
+    else if (match == "y")                                mSecs = value * 86400 * 365;
+    else if (match == "yearly")                           mSecs = value * 86400 * 365;
+    else if (match == "annual")                           mSecs = value * 86400 * 365;
 
-      else if (n.getLiteral ("days") && n.depleted ()) mSecs = value * 86400;
-      else if (n.getLiteral ("day")  && n.depleted ()) mSecs = value * 86400;
-      else if (n.getLiteral ("d")    && n.depleted ()) mSecs = value * 86400;
+    else if (match == "semiannual")                       mSecs = value * 86400 * 183;
 
-      else if (n.getLiteral ("hrs")  && n.depleted ()) mSecs = value * 3600;
-      else if (n.getLiteral ("hr")   && n.depleted ()) mSecs = value * 3600;
-      else if (n.getLiteral ("h")    && n.depleted ()) mSecs = value * 3600;
+    else if (match == "bimonthly")                        mSecs = value * 86400 * 61;
+    else if (match == "quarterly")                        mSecs = value * 86400 * 91;
+    else if (match == "quarters")                         mSecs = value * 86400 * 91;
+    else if (match == "qrtrs")                            mSecs = value * 86400 * 91;
+    else if (match == "qtrs")                             mSecs = value * 86400 * 91;
+    else if (match == "q")                                mSecs = value * 86400 * 91;
 
-      else if (n.getLiteral ("mins") && n.depleted ()) mSecs = value * 60;
-      else if (n.getLiteral ("min")  && n.depleted ()) mSecs = value * 60;
-      else if (n.getLiteral ("m")    && n.depleted ()) mSecs = value * 60;
+    else if (match == "monthly")                          mSecs = value * 86400 * 30;
+    else if (match == "month")                            mSecs = value * 86400 * 30;
+    else if (match == "months")                           mSecs = value * 86400 * 30;
+    else if (match == "mnths")                            mSecs = value * 86400 * 30;
+    else if (match == "mos")                              mSecs = value * 86400 * 30;
+    else if (match == "mo")                               mSecs = value * 86400 * 30;
+    else if (match == "mths")                             mSecs = value * 86400 * 30;
 
-      else if (n.getLiteral ("secs") && n.depleted ()) mSecs = value;
-      else if (n.getLiteral ("sec")  && n.depleted ()) mSecs = value;
-      else if (n.getLiteral ("s")    && n.depleted ()) mSecs = value;
+    else if (match == "biweekly")                         mSecs = value * 86400 * 14;
+    else if (match == "fortnight")                        mSecs = value * 86400 * 14;
 
-      else if (n.getLiteral ("-")    && n.depleted ()) mSecs = 0;
-    }
+    else if (match == "weekly")                           mSecs = value * 86400 * 7;
+    else if (match == "sennight")                         mSecs = value * 86400 * 7;
+    else if (match == "weeks")                            mSecs = value * 86400 * 7;
+    else if (match == "wks")                              mSecs = value * 86400 * 7;
+    else if (match == "w")                                mSecs = value * 86400 * 7;
+
+    else if (match == "daily")                            mSecs = value * 86400 * 1;
+    else if (match == "day")                              mSecs = value * 86400 * 1;
+    else if (match == "weekdays")                         mSecs = value * 86400 * 1;
+    else if (match == "days")                             mSecs = value * 86400 * 1;
+    else if (match == "d")                                mSecs = value * 86400 * 1;
+
+    else if (match == "hours")                            mSecs = value * 3600;
+    else if (match == "hrs")                              mSecs = value * 3600;
+    else if (match == "h")                                mSecs = value * 3600;
+
+    else if (match == "minutes")                          mSecs = value * 60;
+    else if (match == "mins")                             mSecs = value * 60;
+    else if (match == "min")                              mSecs = value * 60;
+    else if (match == "m")                                mSecs = value * 60;
+
+    else if (match == "seconds")                          mSecs = value;
+    else if (match == "secs")                             mSecs = value;
+    else if (match == "sec")                              mSecs = value;
+    else if (match == "s")                                mSecs = value;
+
+    else if (match == "-")                                mSecs = 0;
   }
 
   if (mSecs == 0)
-    throw std::string ("The duration '") + input + "' was not recognized.";  // TODO i18n
+    throw std::string ("The duration '") + input + "' was not recognized.";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
