@@ -335,13 +335,45 @@ bool Att::validNameValue (
     //      modify 'value' here accordingly.
   }
 
+  // Dates can now be either a date, or a duration that is added as an offset
+  // to the current date.
   else if (name == "due"   ||
            name == "until" ||
            name == "wait")
   {
     // Validate and convert to epoch.
     if (value != "")
-      value = Date (value, context.config.get ("dateformat")).toEpochString ();
+    {
+      // Try parsing as a duration.  If unsuccessful, try again, as a date.
+      try
+      {
+        Date now;
+        Duration dur (value);
+
+        if (dur.negative ())
+          value = (now - (time_t)dur).toEpochString ();
+        else
+          value = (now + (time_t)dur).toEpochString ();
+      }
+
+      // If the date parsing failed, try parsing as a duration.  If successful,
+      // add the duration to the current date.  If unsuccessful, propagate the
+      // original date parse error.
+
+      // Try parsing as a date.  If unsuccessfull, throw.
+      catch (...)
+      {
+        try
+        {
+          value = Date (value, context.config.get ("dateformat")).toEpochString ();
+        }
+
+        catch (std::string& e)
+        {
+          throw e;
+        }
+      }
+    }
   }
 
   else if (name == "recur")

@@ -2365,7 +2365,7 @@ int handleReportStats (std::string &outs)
       }
 
       if (it->getStatus () == Task::pending)
-        daysPending += (now - entry) / 86400.0;
+        daysPending += (now.toEpoch () - entry) / 86400.0;
 
       descLength += it->get ("description").length ();
 
