@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (144);
+  UnitTest t (147);
 
   try
   {
@@ -307,13 +307,22 @@ int main (int argc, char** argv)
     Date r13 ("eoy");
     t.ok (r13.sameYear (now), "eoy in same year as now");
 
-    // Date::sameHour
-    Date r14 ("6/7/2010 01:00:00", "m/d/Y H:N:S");
-    Date r15 ("6/7/2010 01:59:59", "m/d/Y H:N:S");
-    t.ok (r14.sameHour (r15), "two dates within the same hour");
+    Date r14 ("sow");
+    t.ok (r14 < now + (8 * 86400), "sow < 7 days away");
 
-    Date r16 ("6/7/2010 00:59:59", "m/d/Y H:N:S");
-    t.notok (r14.sameHour (r16), "two dates not within the same hour");
+    Date r15 ("som");
+    t.ok (r15.sameMonth (now), "eom in same month as now");
+
+    Date r16 ("soy");
+    t.ok (r16.sameYear (now), "eoy in same year as now");
+
+    // Date::sameHour
+    Date r17 ("6/7/2010 01:00:00", "m/d/Y H:N:S");
+    Date r18 ("6/7/2010 01:59:59", "m/d/Y H:N:S");
+    t.ok (r17.sameHour (r18), "two dates within the same hour");
+
+    Date r19 ("6/7/2010 00:59:59", "m/d/Y H:N:S");
+    t.notok (r17.sameHour (r19), "two dates not within the same hour");
 
     // TODO Date::operator-
   }

@@ -887,6 +887,9 @@ bool Date::isRelativeDate (const std::string& input)
   supported.push_back ("eow");
   supported.push_back ("eom");
   supported.push_back ("eoy");
+  supported.push_back ("sow");
+  supported.push_back ("som");
+  supported.push_back ("soy");
   supported.push_back ("goodfriday");
   supported.push_back ("easter");
   supported.push_back ("eastermonday");
@@ -903,10 +906,15 @@ bool Date::isRelativeDate (const std::string& input)
     // If day name.
     int dow;
     if ((dow = Date::dayOfWeek (found)) != -1 ||
-        found == "eow")
+        found == "eow"  ||
+        found == "eocw" ||
+        found == "sow")
     {
       if (found == "eow")
         dow = 5;
+
+      if (found == "sow")
+        dow =Date::dayOfWeek (context.config.get ("weekstart"));
 
       if (today.dayOfWeek () >= dow)
         today += (dow - today.dayOfWeek () + 7) * 86400;
@@ -955,6 +963,20 @@ bool Date::isRelativeDate (const std::string& input)
     else if (found == "eoy")
     {
       Date then (12, 31, today.year ());
+      mT = then.mT;
+      return true;
+    }
+    else if (found == "som")
+    {
+      Date then (today.month (),
+                 1,
+                 today.year ());
+      mT = then.mT;
+      return true;
+    }
+    else if (found == "soy")
+    {
+      Date then (1, 1, today.year ());
       mT = then.mT;
       return true;
     }

@@ -6,6 +6,7 @@ New Features in task 1.9.3
   - Now supports durations in dates, such as:
       $ task ... due:4d
       $ task ... due:3wks
+  - Now supports the beginning of the week, month and year in dates.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -18,6 +19,7 @@ New commands in task 1.9.3
 New configuration options in task 1.9.3
 
   - journal.time, journal.time.start.annotation, journal.time.stop.annotation
+  - 'sow', 'som' and 'soy' are now accepted in dates
 
 Newly deprecated features in task 1.9.3
 
