@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (149);
+  UnitTest t (150);
 
   try
   {
@@ -330,7 +330,9 @@ int main (int argc, char** argv)
     Date r19 ("6/7/2010 00:59:59", "m/d/Y H:N:S");
     t.notok (r17.sameHour (r19), "two dates not within the same hour");
 
-    // TODO Date::operator-
+    // Date::operator-
+    Date r22 (1234567890);
+    t.is ((r22 - 1).toEpoch (), 1234567889, "1234567890 - 1 = 1234567889");
   }
 
   catch (std::string& e)
