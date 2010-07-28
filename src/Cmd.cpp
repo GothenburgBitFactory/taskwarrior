@@ -25,13 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <algorithm>
-#include "Cmd.h"
-#include "Context.h"
-#include "util.h"
-#include "text.h"
-#include "i18n.h"
-#include "main.h"
+#include <Cmd.h>
+#include <Context.h>
+#include <util.h>
+#include <text.h>
+#include <i18n.h>
+#include <main.h>
 
 extern Context context;
 
@@ -94,6 +95,7 @@ void Cmd::parse (const std::string& input)
   {
     std::string error = "Ambiguous command '" + candidate + "' - could be either of "; // TODO i18n
 
+    std::sort (matches.begin (), matches.end ());
     std::string combined;
     join (combined, ", ", matches);
     throw error + combined;

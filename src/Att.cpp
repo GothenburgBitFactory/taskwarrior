@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <sstream>
 #include <stdlib.h>
 #include <string.h>
@@ -253,6 +254,7 @@ bool Att::validNameValue (
   {
     std::string error = "Ambiguous attribute '" + name + "' - could be either of "; // TODO i18n
 
+    std::sort (matches.begin (), matches.end ());
     std::string combined;
     join (combined, ", ", matches);
 
@@ -278,6 +280,7 @@ bool Att::validNameValue (
     {
       std::string error = "Ambiguous modifier '" + mod + "' - could be either of "; // TODO i18n
 
+      std::sort (matches.begin (), matches.end ());
       std::string combined;
       join (combined, ", ", matches);
       error += combined;

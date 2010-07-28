@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -397,6 +398,8 @@ void guess (
 
   else
   {
+    std::sort (matches.begin (), matches.end ());
+
     std::string error = "Ambiguous "; // TODO i18n
     error += type;
     error += " '";
