@@ -20,6 +20,9 @@ New configuration options in task 1.9.3
 
   - journal.time, journal.time.start.annotation, journal.time.stop.annotation
   - 'sow', 'som' and 'soy' are now accepted in dates
+    'soww' and 'eoww' are now synonyms for 'sow' and 'eow' (ww = working week)
+    'socw' and 'eocw' refer to the calendar week (starting Sunday/Monday and
+    ending Saturday/Sunday)
 
 Newly deprecated features in task 1.9.3
 
