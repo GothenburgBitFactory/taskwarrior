@@ -38,6 +38,8 @@
    substitution (thanks to Michelle Crane).
  + Fixed problem with command line configuration overrides that had no
    values. 
+ + Fixed bug #444, which made task shell unusable after canceling out of an
+   undo command.
 
 ------ old releases ------------------------------
 
