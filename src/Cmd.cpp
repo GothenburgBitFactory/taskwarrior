@@ -56,44 +56,64 @@ Cmd::~Cmd ()
 ////////////////////////////////////////////////////////////////////////////////
 // Determines whether the string represents a unique command name or custom
 // report name.
+//
+// To be a valid command:
+//   1. 'input' should autocomplete to one of 'commands'.
 bool Cmd::valid (const std::string& input)
 {
   load ();
 
   std::vector <std::string> matches;
-  autoComplete (lowerCase (context.canonicalize (input)), commands, matches);
-  return matches.size () == 1 ? true : false;
+  autoComplete (lowerCase (input), commands, matches);
+  if (matches.size () == 1)
+    return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Determines whether the string represents a valid custom report name.
+//
+// To be a valid custom command:
+//   1. 'input' should autocomplete to one of 'commands'.
+//   2. the result, canonicalized, should autocomplete to one of 'customreports'.
 bool Cmd::validCustom (const std::string& input)
 {
   load ();
 
   std::vector <std::string> matches;
-  autoComplete (lowerCase (context.canonicalize (input)), customReports, matches);
-  return matches.size () == 1 ? true : false;
+  autoComplete (lowerCase (input), commands, matches);
+  if (matches.size () == 1)
+  {
+    std::string canonical = context.canonicalize (matches[0]);
+    matches.clear ();
+    autoComplete (canonical, customReports, matches);
+    if (matches.size () == 1)
+      return true;
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// To be a valid custom command:
+//   1. 'input' should autocomplete to one of 'commands'.
+//   2. the result may then canonicalize to another command.
 void Cmd::parse (const std::string& input)
 {
   load ();
 
-  std::string candidate = lowerCase (context.canonicalize (input));
-
   std::vector <std::string> matches;
-  autoComplete (candidate, commands, matches);
+  autoComplete (input, commands, matches);
   if (1 == matches.size ())
-    command = matches[0];
+    command = context.canonicalize (matches[0]);
 
   else if (0 == matches.size ())
     command = "";
 
   else
   {
-    std::string error = "Ambiguous command '" + candidate + "' - could be either of "; // TODO i18n
+    std::string error = "Ambiguous command '" + input + "' - could be either of "; // TODO i18n
 
     std::sort (matches.begin (), matches.end ());
     std::string combined;
@@ -124,35 +144,35 @@ void Cmd::load ()
     commands.push_back ("ghistory.annual");
 
     // Commands whose names are localized.
-    commands.push_back (context.stringtable.get (CMD_ADD,              "add"));
-    commands.push_back (context.stringtable.get (CMD_APPEND,           "append"));
-    commands.push_back (context.stringtable.get (CMD_ANNOTATE,         "annotate"));
-    commands.push_back (context.stringtable.get (CMD_DENOTATE,         "denotate"));
-    commands.push_back (context.stringtable.get (CMD_CALENDAR,         "calendar"));
-    commands.push_back (context.stringtable.get (CMD_COLORS,           "colors"));
-    commands.push_back (context.stringtable.get (CMD_CONFIG,           "config"));
-    commands.push_back (context.stringtable.get (CMD_SHOW,             "show"));
-    commands.push_back (context.stringtable.get (CMD_DELETE,           "delete"));
-    commands.push_back (context.stringtable.get (CMD_DONE,             "done"));
-    commands.push_back (context.stringtable.get (CMD_DUPLICATE,        "duplicate"));
-    commands.push_back (context.stringtable.get (CMD_EDIT,             "edit"));
-    commands.push_back (context.stringtable.get (CMD_HELP,             "help"));
-    commands.push_back (context.stringtable.get (CMD_IMPORT,           "import"));
-    commands.push_back (context.stringtable.get (CMD_INFO,             "info"));
-    commands.push_back (context.stringtable.get (CMD_LOG,              "log"));
-    commands.push_back (context.stringtable.get (CMD_PREPEND,          "prepend"));
-    commands.push_back (context.stringtable.get (CMD_PROJECTS,         "projects"));
+    commands.push_back (context.stringtable.get (CMD_ADD,       "add"));
+    commands.push_back (context.stringtable.get (CMD_APPEND,    "append"));
+    commands.push_back (context.stringtable.get (CMD_ANNOTATE,  "annotate"));
+    commands.push_back (context.stringtable.get (CMD_DENOTATE,  "denotate"));
+    commands.push_back (context.stringtable.get (CMD_CALENDAR,  "calendar"));
+    commands.push_back (context.stringtable.get (CMD_COLORS,    "colors"));
+    commands.push_back (context.stringtable.get (CMD_CONFIG,    "config"));
+    commands.push_back (context.stringtable.get (CMD_SHOW,      "show"));
+    commands.push_back (context.stringtable.get (CMD_DELETE,    "delete"));
+    commands.push_back (context.stringtable.get (CMD_DONE,      "done"));
+    commands.push_back (context.stringtable.get (CMD_DUPLICATE, "duplicate"));
+    commands.push_back (context.stringtable.get (CMD_EDIT,      "edit"));
+    commands.push_back (context.stringtable.get (CMD_HELP,      "help"));
+    commands.push_back (context.stringtable.get (CMD_IMPORT,    "import"));
+    commands.push_back (context.stringtable.get (CMD_INFO,      "info"));
+    commands.push_back (context.stringtable.get (CMD_LOG,       "log"));
+    commands.push_back (context.stringtable.get (CMD_PREPEND,   "prepend"));
+    commands.push_back (context.stringtable.get (CMD_PROJECTS,  "projects"));
 #ifdef FEATURE_SHELL
-    commands.push_back (context.stringtable.get (CMD_SHELL,            "shell"));
+    commands.push_back (context.stringtable.get (CMD_SHELL,     "shell"));
 #endif
-    commands.push_back (context.stringtable.get (CMD_START,            "start"));
-    commands.push_back (context.stringtable.get (CMD_STATS,            "stats"));
-    commands.push_back (context.stringtable.get (CMD_STOP,             "stop"));
-    commands.push_back (context.stringtable.get (CMD_SUMMARY,          "summary"));
-    commands.push_back (context.stringtable.get (CMD_TAGS,             "tags"));
-    commands.push_back (context.stringtable.get (CMD_TIMESHEET,        "timesheet"));
-    commands.push_back (context.stringtable.get (CMD_UNDO,             "undo"));
-    commands.push_back (context.stringtable.get (CMD_VERSION,          "version"));
+    commands.push_back (context.stringtable.get (CMD_START,     "start"));
+    commands.push_back (context.stringtable.get (CMD_STATS,     "stats"));
+    commands.push_back (context.stringtable.get (CMD_STOP,      "stop"));
+    commands.push_back (context.stringtable.get (CMD_SUMMARY,   "summary"));
+    commands.push_back (context.stringtable.get (CMD_TAGS,      "tags"));
+    commands.push_back (context.stringtable.get (CMD_TIMESHEET, "timesheet"));
+    commands.push_back (context.stringtable.get (CMD_UNDO,      "undo"));
+    commands.push_back (context.stringtable.get (CMD_VERSION,   "version"));
 
     // Now load the custom reports.
     std::vector <std::string> all;
@@ -180,6 +200,10 @@ void Cmd::load ()
         }
       }
     }
+
+    // Now load the aliases.
+    foreach (i, context.aliases)
+      commands.push_back (i->first);
   }
 }
 
@@ -202,32 +226,32 @@ void Cmd::allCommands (std::vector <std::string>& all) const
 // Commands that do not directly modify the data files.
 bool Cmd::isReadOnlyCommand ()
 {
-  if (command == "_projects"                                                        ||
-      command == "_tags"                                                            ||
-      command == "_commands"                                                        ||
-      command == "_ids"                                                             ||
-      command == "_config"                                                          ||
-      command == "_version"                                                         ||
-      command == "export.csv"                                                       ||
-      command == "export.ical"                                                      ||
-      command == "export.yaml"                                                      ||
-      command == "history.monthly"                                                  ||
-      command == "history.annual"                                                   ||
-      command == "ghistory.monthly"                                                 ||
-      command == "ghistory.annual"                                                  ||
-      command == context.stringtable.get (CMD_CALENDAR,         "calendar")         ||
-      command == context.stringtable.get (CMD_COLORS,           "colors")           ||
-      command == context.stringtable.get (CMD_CONFIG,           "config")           ||
-      command == context.stringtable.get (CMD_SHOW,             "show")             ||
-      command == context.stringtable.get (CMD_HELP,             "help")             ||
-      command == context.stringtable.get (CMD_INFO,             "info")             ||
-      command == context.stringtable.get (CMD_PROJECTS,         "projects")         ||
-      command == context.stringtable.get (CMD_SHELL,            "shell")            ||
-      command == context.stringtable.get (CMD_STATS,            "stats")            ||
-      command == context.stringtable.get (CMD_SUMMARY,          "summary")          ||
-      command == context.stringtable.get (CMD_TAGS,             "tags")             ||
-      command == context.stringtable.get (CMD_TIMESHEET,        "timesheet")        ||
-      command == context.stringtable.get (CMD_VERSION,          "version")          ||
+  if (command == "_projects"                                                 ||
+      command == "_tags"                                                     ||
+      command == "_commands"                                                 ||
+      command == "_ids"                                                      ||
+      command == "_config"                                                   ||
+      command == "_version"                                                  ||
+      command == "export.csv"                                                ||
+      command == "export.ical"                                               ||
+      command == "export.yaml"                                               ||
+      command == "history.monthly"                                           ||
+      command == "history.annual"                                            ||
+      command == "ghistory.monthly"                                          ||
+      command == "ghistory.annual"                                           ||
+      command == context.stringtable.get (CMD_CALENDAR,  "calendar")         ||
+      command == context.stringtable.get (CMD_COLORS,    "colors")           ||
+      command == context.stringtable.get (CMD_CONFIG,    "config")           ||
+      command == context.stringtable.get (CMD_SHOW,      "show")             ||
+      command == context.stringtable.get (CMD_HELP,      "help")             ||
+      command == context.stringtable.get (CMD_INFO,      "info")             ||
+      command == context.stringtable.get (CMD_PROJECTS,  "projects")         ||
+      command == context.stringtable.get (CMD_SHELL,     "shell")            ||
+      command == context.stringtable.get (CMD_STATS,     "stats")            ||
+      command == context.stringtable.get (CMD_SUMMARY,   "summary")          ||
+      command == context.stringtable.get (CMD_TAGS,      "tags")             ||
+      command == context.stringtable.get (CMD_TIMESHEET, "timesheet")        ||
+      command == context.stringtable.get (CMD_VERSION,   "version")          ||
       validCustom (command))
     return true;
 
