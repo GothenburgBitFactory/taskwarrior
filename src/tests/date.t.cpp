@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (147);
+  UnitTest t (149);
 
   try
   {
@@ -301,6 +301,9 @@ int main (int argc, char** argv)
     Date r11 ("eow");
     t.ok (r11 < now + (8 * 86400), "eow < 7 days away");
 
+    Date r20 ("eocw");
+    t.ok (r20 < now + (8 * 86400), "eocw < 7 days away");
+
     Date r12 ("eom");
     t.ok (r12.sameMonth (now), "eom in same month as now");
 
@@ -310,11 +313,14 @@ int main (int argc, char** argv)
     Date r14 ("sow");
     t.ok (r14 < now + (8 * 86400), "sow < 7 days away");
 
+    Date r21 ("socw");
+    t.ok (r21 < now + (8 * 86400), "sow < 7 days away");
+
     Date r15 ("som");
-    t.ok (r15.sameMonth (now), "eom in same month as now");
+    t.notok (r15.sameMonth (now), "som not in same month as now");
 
     Date r16 ("soy");
-    t.ok (r16.sameYear (now), "eoy in same year as now");
+    t.notok (r16.sameYear (now), "soy not in same year as now");
 
     // Date::sameHour
     Date r17 ("6/7/2010 01:00:00", "m/d/Y H:N:S");

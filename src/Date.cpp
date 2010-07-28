@@ -885,9 +885,13 @@ bool Date::isRelativeDate (const std::string& input)
   supported.push_back ("tomorrow");
   supported.push_back ("yesterday");
   supported.push_back ("eow");
+  supported.push_back ("eoww");
+  supported.push_back ("eocw");
   supported.push_back ("eom");
   supported.push_back ("eoy");
   supported.push_back ("sow");
+  supported.push_back ("soww");
+  supported.push_back ("socw");
   supported.push_back ("som");
   supported.push_back ("soy");
   supported.push_back ("goodfriday");
@@ -907,14 +911,23 @@ bool Date::isRelativeDate (const std::string& input)
     int dow;
     if ((dow = Date::dayOfWeek (found)) != -1 ||
         found == "eow"  ||
+        found == "eoww" ||
         found == "eocw" ||
-        found == "sow")
+        found == "sow"  ||
+        found == "soww" ||
+        found == "socw")
     {
-      if (found == "eow")
+      if (found == "eow" || found == "eoww")
         dow = 5;
 
-      if (found == "sow")
-        dow =Date::dayOfWeek (context.config.get ("weekstart"));
+      if (found == "eocw")
+        dow = (Date::dayOfWeek (context.config.get ("weekstart")) + 6) % 7;
+
+      if (found == "sow" || found == "soww")
+        dow = 1;
+
+      if (found == "socw")
+        dow = Date::dayOfWeek (context.config.get ("weekstart"));
 
       if (today.dayOfWeek () >= dow)
         today += (dow - today.dayOfWeek () + 7) * 86400;
@@ -968,15 +981,20 @@ bool Date::isRelativeDate (const std::string& input)
     }
     else if (found == "som")
     {
-      Date then (today.month (),
-                 1,
-                 today.year ());
+      int m = today.month () + 1;
+      int y = today.year ();
+      if (m > 12)
+      {
+        m -=12;
+        y++;
+      }
+      Date then (m, 1, y);
       mT = then.mT;
       return true;
     }
     else if (found == "soy")
     {
-      Date then (1, 1, today.year ());
+      Date then (1, 1, today.year () + 1);
       mT = then.mT;
       return true;
     }
