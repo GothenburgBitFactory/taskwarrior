@@ -48,7 +48,7 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (577);
+  UnitTest t (579);
 
   Duration d;
 
@@ -700,7 +700,9 @@ int main (int argc, char** argv)
   catch (const std::string& e) { t.diag (e); }
   catch (...) { t.diag ("Unknown error"); }
 
-  // TODO Duration::negative
+  // Duration::negative
+  t.ok (  Duration ("-1day").negative (), "-1day is negative");
+  t.ok (! Duration ("1day").negative (),  "1day is not negative");
 
   return 0;
 }
