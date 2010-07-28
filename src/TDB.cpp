@@ -933,7 +933,11 @@ void TDB::undo ()
 
   // Output displayed, now confirm.
   if (!confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
-    throw std::string ("No changes made.");
+  {
+    std::cout << "No changes made." << std::endl;
+    context.hooks.trigger ("post-undo");
+    return;
+  }
 
   // Extract identifying uuid.
   std::string uuid;
