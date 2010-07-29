@@ -1075,6 +1075,7 @@ static std::string importCSV (const std::vector <std::string>& lines)
       {
         std::string value = lowerCase (unquoteText (trim (fields[f])));
 
+        // TODO What happened to "pending"?
              if (value == "recurring") task.setStatus (Task::recurring);
         else if (value == "deleted")   task.setStatus (Task::deleted);
         else if (value == "completed") task.setStatus (Task::completed);

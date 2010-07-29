@@ -69,8 +69,12 @@ int handleAdd (std::string &outs)
       context.task.setStatus (Task::recurring);
       context.task.set ("mask", "");
     }
+
+    // Tasks with a wait: date get a special status.
     else if (context.task.has ("wait"))
       context.task.setStatus (Task::waiting);
+
+    // By default, tasks are pending.
     else
       context.task.setStatus (Task::pending);
 
@@ -1335,7 +1339,8 @@ int handleDone (std::string &outs)
     bool nagged = false;
     foreach (task, tasks)
     {
-      if ((task->getStatus () == Task::pending) || (task->getStatus () == Task::waiting))
+      if (task->getStatus () == Task::pending ||
+          task->getStatus () == Task::waiting)
       {
         Task before (*task);
 
@@ -2298,9 +2303,15 @@ int deltaAttributes (Task& task)
       if (att->second.name () == "wait")
       {
         if (att->second.value () == "")
+        {
+          task.remove (att->first);
           task.setStatus (Task::pending);
+        }
         else
+        {
+          task.set (att->first, att->second.value ());
           task.setStatus (Task::waiting);
+        }
       }
 
       // Modifying dependencies requires adding/removing uuids.

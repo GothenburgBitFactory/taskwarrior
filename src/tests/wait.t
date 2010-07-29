@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 13;
 
 # Create the rc file.
 if (open my $fh, '>', 'wait.rc')
@@ -41,15 +41,25 @@ if (open my $fh, '>', 'wait.rc')
 }
 
 # Add a waiting task, check it is not there, wait, then check it is.
-qx{../task rc:wait.rc add -- yeswait};
-qx{../task rc:wait.rc add -- nowait};
-qx{../task rc:wait.rc 1 wait:1s};
+qx{../task rc:wait.rc add yeswait wait:2s};
+qx{../task rc:wait.rc add nowait};
 
 my $output = qx{../task rc:wait.rc ls};
 like ($output, qr/nowait/ms, 'non-waiting task visible');
 unlike ($output, qr/yeswait/ms, 'waiting task invisible');
 
-sleep 2;
+sleep 3;
+
+$output = qx{../task rc:wait.rc ls};
+like ($output, qr/nowait/ms, 'non-waiting task still visible');
+like ($output, qr/yeswait/ms, 'waiting task now visible');
+
+qx{../task rc:wait.rc 1 wait:2s};
+$output = qx{../task rc:wait.rc ls};
+like ($output, qr/nowait/ms, 'non-waiting task visible');
+unlike ($output, qr/yeswait/ms, 'waiting task invisible');
+
+sleep 3;
 
 $output = qx{../task rc:wait.rc ls};
 like ($output, qr/nowait/ms, 'non-waiting task still visible');

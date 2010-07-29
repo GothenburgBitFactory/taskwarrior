@@ -43,6 +43,8 @@
    values. 
  + Fixed bug #444, which made task shell unusable after canceling out of an
    undo command.
+ + Fixed bug #449, so the wait: attribute can be applied to a task at any
+   time, not just on add.
 
 ------ old releases ------------------------------
 
