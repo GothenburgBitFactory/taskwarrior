@@ -393,7 +393,7 @@ int getDueState (const std::string& due)
     Date rightNow;
     Date thisDay (rightNow.month (), rightNow.day (), rightNow.year ());
 
-    if (dt < thisDay)
+    if (dt < rightNow)
       return 3;
 
     if (dt == thisDay)
