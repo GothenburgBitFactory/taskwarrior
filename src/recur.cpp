@@ -381,7 +381,8 @@ void updateRecurrenceMask (
 // Determines whether a task is overdue.  Returns
 //   0 = not due at all
 //   1 = imminent
-//   2 = overdue
+//   2 = today
+//   3 = overdue
 int getDueState (const std::string& due)
 {
   if (due.length ())
