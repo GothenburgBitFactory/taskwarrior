@@ -749,7 +749,7 @@ bool sort_compare (int left, int right)
         break;
 
       case Table::descendingPriority:
-        if (((std::string)*cell_left == ""  && (std::string)*cell_right  != "")  ||
+        if (((std::string)*cell_left != ""  && (std::string)*cell_right  == "")  ||
             ((std::string)*cell_left == "M" && (std::string)*cell_right  == "L") ||
             ((std::string)*cell_left == "H" && ((std::string)*cell_right == "L"  || (std::string)*cell_right == "M")))
          return true;
