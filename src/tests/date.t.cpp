@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (150);
+  UnitTest t (154);
 
   try
   {
@@ -48,6 +48,13 @@ int main (int argc, char** argv)
     t.ok    (yesterday != now,       "yesterday != now");
     t.ok    (now       >= yesterday, "now >= yesterday");
     t.ok    (now       >  yesterday, "now > yesterday");
+
+    // Date::Date ("now")
+    Date relative_now ("now");
+    t.ok (relative_now.sameHour (now),  "Date ().sameHour (Date (now))");
+    t.ok (relative_now.sameDay (now),   "Date ().sameDay (Date (now))");
+    t.ok (relative_now.sameMonth (now), "Date ().sameMonth (Date (now))");
+    t.ok (relative_now.sameYear (now),  "Date ().sameYear (Date (now))");
 
     // Loose comparisons.
     Date left ("7/4/2008");

@@ -868,6 +868,7 @@ bool Date::isEpoch (const std::string& input)
 //   eow         (end of week)
 //   eom         (end of month)
 //   eoy         (end of year)
+//   now
 bool Date::isRelativeDate (const std::string& input)
 {
   std::string in (lowerCase (input));
@@ -901,6 +902,7 @@ bool Date::isRelativeDate (const std::string& input)
   supported.push_back ("pentecost");
   supported.push_back ("midsommar");
   supported.push_back ("midsommarafton");
+  supported.push_back ("now");
 
   std::vector <std::string> matches;
   if (autoComplete (in, supported, matches) == 1)
@@ -1051,6 +1053,11 @@ bool Date::isRelativeDate (const std::string& input)
           return true;
         }
       }
+    }
+    else if (found == "now")
+    {
+      mT = time (NULL);
+      return true;
     }
   }
 

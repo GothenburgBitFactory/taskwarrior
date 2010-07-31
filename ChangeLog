@@ -37,14 +37,16 @@
  + Fixed bug #439, which ignored dateformat.annotation for sparse annotations.
  + Fixed bug #441, which misparsed '/a/a:/' as an attribute, rather than a
    substitution (thanks to Michelle Crane).
- + Fixed bug #445, which caused task to not notice that the command 'h' is
-   ambiguous.
- + Fixed problem with command line configuration overrides that had no
-   values. 
  + Fixed bug #444, which made task shell unusable after canceling out of an
    undo command.
+ + Fixed bug #445, which caused task to not notice that the command 'h' is
+   ambiguous.
  + Fixed bug #449, so the wait: attribute can be applied to a task at any
    time, not just on add.
+ + Fixed bug #452, which defines a higher resolution division between due
+   and overdue.
+ + Fixed problem with command line configuration overrides that had no
+   values. 
 
 ------ old releases ------------------------------
 

@@ -303,7 +303,7 @@ std::string Config::defaults =
   "report.overdue.columns=id,project,priority,due,active,age,description\n"
   "report.overdue.labels=ID,Project,Pri,Due,Active,Age,Description\n"
   "report.overdue.sort=due+,priority-,active-,project+\n"
-  "report.overdue.filter=status:pending due.before:today\n"
+  "report.overdue.filter=status:pending due.before:now\n"
   "#report.overdue.dateformat=m/d/Y\n"
   "#report.overdue.annotations=full\n"
   "\n"
