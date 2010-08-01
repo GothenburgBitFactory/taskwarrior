@@ -100,6 +100,7 @@ private:
            void calculateColumnWidths ();
            just getJustification (const int, const int);
            just getHeaderJustification (const int);
+           int getCharLength (const std::string&);
            const std::string formatHeader (const int, const int, const int);
            const std::string formatHeaderDashedUnderline (const int, const int, const int);
            void formatCell (const int, const int, const int, const int, const int, std::vector <std::string>&, std::string&);
