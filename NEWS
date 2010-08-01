@@ -39,7 +39,7 @@ Newly deprecated features in task 1.9.3
 
 Task has been built and tested on the following configurations:
 
-  * OS X 10.6 Snow Leopard and 10.5 Leopard
+  * OS X 10.6 Snow Leopard, 10.5 Leopard, and 10.4 Tiger
   * Fedora 13 Goddard, 12 Constantine
   * Ubuntu 10.04 Lucid Lynx, 9.10 Karmic Koala
   * Debian Sid
