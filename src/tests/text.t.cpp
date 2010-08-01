@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (191);
+  UnitTest t (194);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -386,6 +386,11 @@ int main (int argc, char** argv)
   t.is (strippedLength (std::string ("one\033[5;38;255mtwo\033[0mthree")), 11, "strippedLength one^[[5;38;255mtwo^[[0mthree -> 11");
   t.is (strippedLength (std::string ("\033[0m")),                           0, "strippedLength ^[[0m                        -> 0");
   t.is (strippedLength (std::string ("\033[1m\033[0m")),                    0, "strippedLength ^[[1m^[[0m                   -> 0");
+
+  // int characters (const std::string&);
+  t.is (characters ("Çirçös"),            6, "characters (Çirçös) == 6");
+  t.is (characters ("ツネナラム"),        5, "characters (ツネナラム) == 6");
+  t.is (characters ("Zwölf Boxkämpfer"), 16, "characters (Zwölf Boxkämpfer) == 6");
 
   return 0;
 }

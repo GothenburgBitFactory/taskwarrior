@@ -31,7 +31,7 @@
 #include <vector>
 #include "../auto.h"
 
-// text.cpp
+// text.cpp, Non-UTF-8 aware.
 void wrapText (std::vector <std::string>&, const std::string&, const int);
 std::string trimLeft (const std::string& in, const std::string& t = " ");
 std::string trimRight (const std::string& in, const std::string& t = " ");
@@ -59,6 +59,9 @@ bool compare (const std::string&, const std::string&, bool sensitive = true);
 std::string::size_type find (const std::string&, const std::string&, bool sensitive = true);
 std::string::size_type find (const std::string&, const std::string&, std::string::size_type, bool sensitive = true);
 int strippedLength (const std::string&);
+
+// UTF-8 aware.
+int characters (const std::string&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

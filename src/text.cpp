@@ -620,3 +620,22 @@ int strippedLength (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int characters (const std::string& str)
+{
+  int byteLength = str.length ();
+  int charLength = byteLength;
+  const char* data = str.data ();
+
+  // decrement the number of bytes for each byte that matches 0b10??????
+  // this way only the first byte of any utf8 sequence is counted
+  for (int i = 0; i < byteLength; i++)
+  {
+    // extract the two MSB and check whether they are 10
+    if ((data[i] & 0xC0) == 0x80)
+      charLength--;
+  }
+
+  return charLength;
+}
+
+////////////////////////////////////////////////////////////////////////////////

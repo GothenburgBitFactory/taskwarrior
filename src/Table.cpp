@@ -108,7 +108,7 @@ void Table::setTableDashedUnderline ()
 int Table::addColumn (const std::string& col)
 {
   mSpecifiedWidth.push_back (minimum);
-  mMaxDataWidth.push_back (col == "" ? 1 : getCharLength (col));
+  mMaxDataWidth.push_back (col == "" ? 1 : characters (col));
   mCalculatedWidth.push_back (0);
   mColumnPadding.push_back (0);
 
@@ -193,11 +193,11 @@ void Table::addCell (const int row, const int col, const std::string& data)
     std::vector <std::string> lines;
     split (lines, data, "\n");
     for (unsigned int i = 0; i < lines.size (); ++i)
-      if (getCharLength (lines[i]) > length)
-        length = getCharLength (lines[i]);
+      if (characters (lines[i]) > length)
+        length = characters (lines[i]);
   }
   else
-    length = getCharLength (data);
+    length = characters (data);
 
   // Automatically maintain max width.
   mMaxDataWidth[col] = max (mMaxDataWidth[col], length);
@@ -436,25 +436,6 @@ Table::just Table::getHeaderJustification (int col)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Table::getCharLength (const std::string& str)
-{
-	int byteLength = str.length ();
-	int charLength = byteLength;
-	const char* data = str.data ();
-
-	// decrement the number of bytes for each byte that matches 0b10??????
-	// this way only the first byte of any utf8 sequence is counted
-	for (int i = 0; i < byteLength; i++)
-  {
-		// extract the two MSB and check whether they are 10
-		if ((data[i] & 0xC0) == 0x80)
-			charLength--;
-	}
-
-	return charLength;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // data            One    Data to be rendered
 // width           8      Max data width for column/specified width
 // padding         1      Extra padding around data
@@ -478,7 +459,7 @@ const std::string Table::formatHeader (
 
   std::string data = mColumns[col];
   Color c = getHeaderUnderline (col);
-  int gap = width - strippedLength (data);  // TODO Does this need Table::getCharLength too?
+  int gap = width - strippedLength (data);  // TODO Does this need characters () too?
 
   std::string pad = std::string (padding, ' ');
 
@@ -561,7 +542,7 @@ void Table::formatCell (
   for (size_t chunk = 0; chunk < chunks.size (); ++chunk)
   {
     // Place the data within the available space - justify.
-    int gap = width - getCharLength (chunks[chunk]);
+    int gap = width - characters (chunks[chunk]);
 
     preJust = "";
     postJust = "";
