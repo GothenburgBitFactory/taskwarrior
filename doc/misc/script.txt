@@ -68,7 +68,6 @@ task 3 fg:
 
 task colors                              There are many combinations to choose from
 
-(Slashes!!!)
 task 1 due:6/8/2008                      Let's add a due date
 date
 
