@@ -32,7 +32,7 @@ use Test::More tests => 31;
 
 # Create the rc file.
 if (open my $fh, '>', 'dep.rc')
-{  
+{
   print $fh "data.location=.\n";
   print $fh "dependency.confirm=yes\n";
   print $fh "report.depreport.columns=id,depends,description\n";
@@ -189,6 +189,9 @@ like ($output, qr/\s1\s+One\s*\n\s2\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - 
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

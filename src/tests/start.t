@@ -68,8 +68,8 @@ unlike ($output, qr/two/, 'two deleted');
 # Create the rc file.
 if (open my $fh, '>', 'start2.rc')
 {
-  print $fh "data.location=.\n";
-  print $fh "journal.time=on\n";
+  print $fh "data.location=.\n",
+            "journal.time=on\n";
   close $fh;
   ok (-r 'start2.rc', 'Created start2.rc');
 }
@@ -85,21 +85,21 @@ like ($output, qr/Stopped task/, 'one stopped and annotated');
 # Create the rc file.
 if (open my $fh, '>', 'start3.rc')
 {
-  print $fh "data.location=.\n";
-  print $fh "journal.time=on\n";
-  print $fh "journal.time.start.annotation=Nu kör vi\n";
-  print $fh "journal.time.stop.annotation=Nu stannar vi\n";
+  print $fh "data.location=.\n",
+            "journal.time=on\n",
+            "journal.time.start.annotation=Nu kör vi\n",
+            "journal.time.stop.annotation=Nu stannar vi\n";
   close $fh;
   ok (-r 'start3.rc', 'Created start3.rc');
 }
 
 qx{../task rc:start3.rc start 1};
 $output = qx{../task rc:start3.rc list};
-like ($output, qr/Nu kör vi/, 'one start and annotated with custom description');
+like ($output, qr/Nu.+kör.+vi/ms, 'one start and annotated with custom description');
 
 qx{../task rc:start3.rc stop 1};
 $output = qx{../task rc:start3.rc list};
-like ($output, qr/Nu stannar vi/, 'one stopped and annotated with custom description');
+like ($output, qr/Nu.+stannar.+vi/ms, 'one stopped and annotated with custom description');
 
 # Cleanup.
 ok (-r 'pending.data', 'Need to remove pending.data');

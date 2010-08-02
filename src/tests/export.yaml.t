@@ -49,7 +49,6 @@ if (open my $fh, '<', './export.txt')
   @lines = <$fh>;
   close $fh;
 }
-
 like ($lines[0],  qr/^%YAML 1.1$/,            'export.yaml line 0');
 like ($lines[1],  qr/^---$/,                  'export.yaml line 1');
 like ($lines[2],  qr/^  task:$/,              'export.yaml line 2');
