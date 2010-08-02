@@ -702,8 +702,11 @@ void TDB::undo ()
   Date lastChange (atoi (when.c_str ()));
 
   // Set the colors.
-  Color color_red   (context.config.get ("color.undo.before"));
-  Color color_green (context.config.get ("color.undo.after"));
+  bool useColor = context.config.getBoolean ("color") ||
+                  context.config.getBoolean ("_forcecolor") ? true : false;
+
+  Color color_red   (useColor ? context.config.get ("color.undo.before") : "");
+  Color color_green (useColor ? context.config.get ("color.undo.after") : "");
 
   if (context.config.get ("undo.style") == "side")
   {
