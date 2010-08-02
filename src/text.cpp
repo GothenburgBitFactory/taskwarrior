@@ -228,7 +228,7 @@ void extractLine (std::string& text, std::string& line, int length)
 
   // Special case: no \n, and less than length characters total.
   // special case: text.find ("\n") == std::string::npos && text.length () < length
-  if (eol == std::string::npos && text.length () <= (unsigned) length)
+  if (eol == std::string::npos && characters (text) <= (unsigned) length)
   {
     line = text;
     text = "";
