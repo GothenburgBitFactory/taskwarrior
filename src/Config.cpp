@@ -232,7 +232,7 @@ std::string Config::defaults =
   "alias.rm=delete                               # Alias for the delete command\n"
   "alias.history=history.monthly                 # Prefer monthly over annual history reports\n"
   "alias.ghistory=ghistory.monthly               # Prefer monthly graphical over annual history reports\n"
-  "alias.export=export.csv                       # Prefer CSV over iCal export\n"
+  "alias.export=export.yaml                      # Prefer YAML over CSV or iCal export\n"
   "alias.export.vcalendar=export.ical            # They are the same\n"
   "\n"
   "# Fields: id, uuid, project, priority, priority_long, entry, start, end, due\n"

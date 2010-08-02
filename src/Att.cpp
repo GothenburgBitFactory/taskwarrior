@@ -51,6 +51,7 @@ static const char* internalNames[] =
   "limit",
   "status",
   "description",
+  "tags",
   // Note that annotations are not listed.
 };
 

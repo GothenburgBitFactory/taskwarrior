@@ -79,6 +79,13 @@ static fileType determineFileType (const std::vector <std::string>& lines)
       return task_1_4_3;
   }
 
+  if (lines.size () > 2 &&
+      lines[0] == "%YAML 1.1" &&
+      lines[1] == "---")
+  {
+    return yaml;
+  }
+
   // A task command line might include a priority or project.
   for (unsigned int i = 0; i < lines.size (); ++i)
   {
@@ -153,13 +160,6 @@ static fileType determineFileType (const std::vector <std::string>& lines)
   }
   if (commas_on_every_line)
     return csv;
-
-  if (lines.size () > 2 &&
-      lines[0] == "% YAML 1.1\n" &&
-      lines[1] == "---\n")
-  {
-    return yaml;
-  }
 
   // Looks like 'text' is the default case, if there is any data at all.
   if (lines.size () > 1)
@@ -1156,6 +1156,79 @@ static std::string importCSV (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+static std::string importYAML (const std::vector <std::string>& lines)
+{
+  int count = 0;
+
+  context.tdb.lock (context.config.getBoolean ("locking"));
+
+  Task t;
+
+  std::string name;
+  std::string value;
+
+  bool inAnno = false;
+  std::string annoEntry;
+
+  std::vector <std::string>::const_iterator it;
+  for (it = lines.begin (); it != lines.end (); ++it)
+  {
+    name = "";
+    value = "";
+
+    Nibbler n (*it);
+    n.skipWS ();
+    n.getUntil (':', name);
+    n.skip (':');
+    n.skipWS ();
+    n.getUntilEOL (value);
+
+    if (name == "%YAML 1.1")
+      ;
+
+    else if (name == "---")
+      ;
+
+    else if (name == "task" || name == "...")
+    {
+      if (t.size ())
+      {
+        context.tdb.add (t);
+        t.clear ();
+        ++count;
+      }
+    }
+
+    else if (name == "annotation")
+      inAnno = true;
+
+    else if (name == "entry" && inAnno)
+      annoEntry = value;
+
+    else if (name == "description" && inAnno)
+    {
+      t.set ("annotation_" + annoEntry, value);
+      annoEntry = "";
+      inAnno = false;
+    }
+
+    else if (name != "" && value != "")
+      t.set (name, value);
+  }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  std::stringstream out;
+  out << "Imported "
+      << count
+      << " tasks successfully."
+      << std::endl;
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int handleImport (std::string &outs)
 {
   int rc = 0;
@@ -1177,12 +1250,6 @@ int handleImport (std::string &outs)
       for (it = all.begin (); it != all.end (); ++it)
       {
         std::string line = *it;
-
-        // Strip comments
-        std::string::size_type pound = line.find ("#");
-        if (pound != std::string::npos)
-          line = line.substr (0, pound);
-
         trim (line);
 
         // Skip blank lines
@@ -1222,7 +1289,7 @@ int handleImport (std::string &outs)
       case task_cmd_line: out << importTaskCmdLine (lines); break;
       case todo_sh_2_0:   out << importTodoSh_2_0  (lines); break;
       case csv:           out << importCSV         (lines); break;
-      case yaml:          throw std::string ("import.yaml not implemented.");
+      case yaml:          out << importYAML        (lines); break;
       case text:          out << importText        (lines); break;
       case not_a_clue:    /* to stop the compiler from complaining. */ break;
       }

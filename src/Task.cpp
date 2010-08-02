@@ -405,15 +405,18 @@ std::string Task::composeYAML () const
   Att::allNames (names);
   std::sort (names.begin (), names.end ());
 
+  // Only include non-trivial attributes.
+  std::string value;
   foreach (name, names)
-    out << "    " << *name << ": " << get (*name) << "\n";
+    if ((value = get (*name)) != "")
+      out << "    " << *name << ": " << value << "\n";
 
   // Now the annotations, which are not listed by the Att::allNames call.
   std::vector <Att> annotations;
   getAnnotations (annotations);
   foreach (a, annotations)
     out << "    annotation:\n"
-        << "      entry: "       << a->name().substr (12) << "\n"
+        << "      entry: "       << a->name().substr (11) << "\n"
         << "      description: " << a->value ()           << "\n";
 
   return out.str ();
