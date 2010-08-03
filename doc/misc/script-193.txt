@@ -22,7 +22,7 @@ http://taskwarrior.org                   Hello, and welcome to this task version
 
                                          Let's get started.  We're planning a party, and there is a
                                          lot of work to do, so let's capture these tasks.
-task add Select a good day in August     First decide 'when'.
+task add Select a free weekend in August First decide 'when'.
 task add Select and book a venue         Then decide 'where'.
 task add Come up with a guest list       Then decide 'who'.
 task add Mail invitations                Let's send out nice invitations.
@@ -183,6 +183,11 @@ task undo                                Let's just revert those changes, to cle
 task config default.priority
 task config default.project
 
+---------------------------------------- Aliases ---------------------------------------------------
+
+task config alias.zzz=list               You can create aliases to effectively rename task commands.
+task zzz
+
 ---------------------------------------- Color -----------------------------------------------------
 
 task config color on                     All the examples so far have been shown with color turned
@@ -210,17 +215,20 @@ task color legend                        Or samples of all the active color sett
 
                                          A blue theme.
 
-vi ~/.taskrc # include /usr/local/share/doc/task/rc/dark-blue-256.theme
+# include /usr/local/share/doc/task/rc/dark-blue-256.theme
+vi ~/.taskrc
 task color legend
 task list
                                          A red theme.
 
-vi ~/.taskrc # include /usr/local/share/doc/task/rc/dark-red-256.theme
+# include /usr/local/share/doc/task/rc/dark-red-256.theme
+vi ~/.taskrc
 task color legend
 task list
                                          A general dark theme.
 
-vi ~/.taskrc # include /usr/local/share/doc/task/rc/dark-256.theme
+# include /usr/local/share/doc/task/rc/dark-256.theme
+vi ~/.taskrc
 task list
 
                                          Here is a color rule that specifies a dark blue
@@ -235,23 +243,66 @@ man task-color                           There is a man page with a writeup of a
 
 ---------------------------------------- Active tasks ----------------------------------------------
 
-  start/stop
-  active
+task 2 start                             I'm selecting a venue, so let's indicate that task 2 is
+task list                                active by starting it.  See how active tasks are affected
+                                         by the color rules.
+
+task active                              There is an active report that shows only active tasks, and
+task 2 stop                              you can mark any active task as inactive, by stopping it.
 
 ---------------------------------------- Due dates -------------------------------------------------
 
-  due dates - relative
+task 1 due:7/31/2010                     Due dates can be specified as dates...
+task 1 due:2wks                          as some distance into the future...
+task 1 due:-2wks                         or past...
+task 1 due:eom                           or by mnemonic (end of month)...
+task 2 due:8th                           or by ordinal...
+task 2 due:sunday                        or by day...
+task 5 due:eow                           
+task list                                Some of these dates are in the past, so now you see there
+task overdue                             are overdue tasks.  Due dates have different colors for
+                                         due, imminent, today and overdue values.
+
+task rc.dateformat.report:Y-M-DTH:N:SZ list
+                                         You can also choose the format - for input and output.
 
 ---------------------------------------- Calendar --------------------------------------------------
 
-  calendar
-  holidays
-  calendar + report
+task calendar                            When tasks have due dates, you can see them on the calendar.
+
+vi ~/.taskrc
+# include /usr/local/share/doc/task/rc/holidays-US.rc
+task calendar
+                                         Task comes with sample holiday files.  You can create your
+                                         own, or use one of the samples to show holidays on the
+                                         calendar.
+
+task cal 2010                            You can see the whole year.
+task rc.calendar.details:full cal        You can see the tasks with due dates also.
+task rc.calendar.holidays:full cal       And you can see the holidays.
 
 ---------------------------------------- Recurrence ------------------------------------------------
 
-  recurring task
-  task recurring
+task 7 info                              Remember the task we added to pay the rent?  We're going to
+task 7 due:eom recur:monthly             need to do that every month.  Recurring tasks allow us to
+task 7                                   set up a single task that keeps coming back, jsut as you'd
+                                         expect.
+
+task 7 until:eoy                         You can also limit the extent of the recurrence.  Let's make
+                                         sure the task doesn't recur after the lease ends.
+
+task recurring                           And there is a recurring report that shows you only the
+                                         recurring tasks.
+
+                                         To illustrate a point, let's set up a recurring annual task
+                                         as a reminder to pay taxes, and put the due date in the past.
+                                         This will cause task to fill in the gaps, and create a series
+                                         of severely overdue tasks.
+task add Pay taxes due:4/15/2007 recur:yearly
+task long
+
+task 11 delete    # y y                  Deletions to recurring tasks can be escalated to include all
+task list                                the recurrences of a task.
 
 ---------------------------------------- Shell -----------------------------------------------------
 
@@ -263,7 +314,23 @@ man task-color                           There is a man page with a writeup of a
 
 ---------------------------------------- Waiting ---------------------------------------------------
 
-  task wait: / task waiting
+task add Look for new apartment due:eoy  When you have a task with a due date that is far out into
+task list                                the future, you may want to hide that task for a while.
+
+task 10 wait:12/1/2010                   You can provide a wait date for a task, and it will remain
+task list                                hidden until that date.  It will no longer be cluttering
+task waiting                             your task list, but it is still there, and visible using
+                                         the 'waiting' report.  When the wait date comes, the task
+                                         will just pop back into the list.
+
+
+task add Do something in a few seconds   To illustrate this, let's set up a task with a very short
+task 11 wait:5s                          wait time of five seconds.
+
+task list                                It's gone.
+sleep 5
+task list                                And it's back.
+task 11 rc.confirmation:no delete        And now it's deleted.
 
 ---------------------------------------- Dependencies ----------------------------------------------
 
@@ -271,18 +338,21 @@ man task-color                           There is a man page with a writeup of a
 
 ---------------------------------------- Reports ---------------------------------------------------
 
-  minimal
-  ls
-  list
-  long
-  all
-  completed
-  overdue
-  recurring
-  blocked
-  oldest/newest
-  minimal
-  next
+task minimal                             Task has a good many reports.  There is the bare minimum.
+task ls                                  The simple.
+task list                                The standard.
+task long                                The kitchen sink.
+task all                                 The packrat.
+task completed                           Nostalgia.
+task recurring                           Groundhog day.
+task waiting                             Secrets.
+task blocked                             Wedged.
+task oldest                              Ancient history.
+task newest                              Contemporary.
+task timesheet                           Corporate.
+task next                                And "what should I work on next?"  This one can be useful
+                                         because it pulls a few of the highest priority tasks from
+                                         all the projects.  It's the report we should all be using.
 
 ---------------------------------------- Custom Report ---------------------------------------------
 
@@ -293,27 +363,29 @@ man task-color                           There is a man page with a writeup of a
                                          and the description.  I can specify the labels for those
                                          columns, the sort order of the report, and I can filter.
 
-  cat >> ~/.taskrc
-  report.foo.description=My own report
-  report.foo.columns=id,entry,description
-  report.foo.labels=ID,Entered,Description
-  report.foo.sort=entry+,description+
-  report.foo.filter=status:pending
+cat >> ~/.taskrc
+report.foo.description=My own report
+report.foo.columns=id,entry,description
+report.foo.labels=ID,Entered,Description
+report.foo.sort=entry+,description+
+report.foo.filter=status:pending
 
-  task help | grep foo                   Custom reports also show up on the help output.
+task help | grep foo                     Custom reports also show up on the help output.
 
-  task show report.foo                   You can inspect the configuration.
+task show report.foo                     I can inspect the configuration.
 
-  task foo                               And they can be run just like the other reports.
+task foo                                 And they can be run just like the other reports.
 
 ---------------------------------------- Charts ----------------------------------------------------
 
-  history
-  history.annual
-  ghistory
-  ghistory.annual
-  timesheet
-  summary
+task history                             The history report gives monthly totals of task added,
+task history.annual                      completed and deleted.  There is also an annual version.
+
+task ghistory                            There is a graphical monthly...
+task ghistory.annual                     and annual version.
+
+task summary                             There is a project summary report that shows progress in
+                                         all the projects.
 
 ---------------------------------------- Advanced Filters ------------------------------------------
 
