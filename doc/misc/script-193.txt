@@ -307,7 +307,11 @@ task list                                the recurrences of a task.
 
 ---------------------------------------- Shell -----------------------------------------------------
 
-  shell
+task rc:x shell                          You can use the shell command to create a more immersive
+task> projects                           environment.  Any task command you run outside the shell
+task> tags                               can also be run inside the shell, without the need to prefix
+task> list                               every command with "task".
+task> quit
 
 ---------------------------------------- Special Tags ----------------------------------------------
 
@@ -389,9 +393,36 @@ task summary                             There is a project summary report that 
 
 ---------------------------------------- Advanced Filters ------------------------------------------
 
-  filters
-  limit:3
-  attribute modifiers
+task list                                Filters are a very powerful tool.  First here is an
+task list invit                          unfiltered list, which shows all tasks.  Now again, but with
+                                         the text 'invit', which acts as a filter on the description
+                                         field.
+
+task list description.contains:invit     This is the equivalent form using attribute modifiers.  In
+                                         this example we are filtering on descriptions that contain
+                                         the work fragment.  Here we are using the 'contains'
+                                         modifier, but there are many others.
+
+task list pro:party                      Here list all tasks in the 'party' project.
+task list pro.is:party                   And the full equivalent.
+task list pro.not:party                  Here list tasks that are not in the 'party' project.  I
+                                         could have also used 'isnt' here - there are several
+                                         synonyms for modifiers, so that the filter can be written
+                                         so that it reads naturally.
+
+task list pro:party pri.over:L           Here the 'over' modifier is filtering on priorities that
+                                         sort higher than 'Low', and also filtering on the 'party'
+                                         project.  There are two terms in this filter.
+
+task list pro:party limit:2              Same again, but only show me the first two tasks.
+task list limit:page                     Now all tasks, but just show the first page of tasks.  I
+                                         don't have a page full of tasks here, but you get the idea.
+
+task all status:pending                  Now you can see how some of the built-in reports work.  The
+                                         'list' report is just all tasks, filtered so that only the
+                                         pending tasks are shown.
+
+task all status:waiting                  The 'waiting' report is similarly defined.
 
 ---------------------------------------- Import/Export ---------------------------------------------
 

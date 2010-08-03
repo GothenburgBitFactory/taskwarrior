@@ -168,6 +168,11 @@ task rc:x list
 
 # Shell
 echo Shell
+#task rc:x shell
+#> projects
+#> tags
+#> list
+#> quit
 
 # Special tags
 echo Special tags
@@ -226,6 +231,17 @@ task rc:x rc.color.summary.background:"on gray3" summary
 
 # Advanced filters
 echo Advanced filters
+task rc:x list
+task rc:x list invit
+task rc:x list description.contains:invit
+task rc:x list pro:party
+task rc:x list pro.is:party
+task rc:x list pro.not:party
+task rc:x list pro:party priority.over:L
+task rc:x list pro:party limit:2
+task rc:x list limit:page
+task rc:x all status:pending
+task rc:x all status:waiting
 
 # Import/export
 echo Import/export
