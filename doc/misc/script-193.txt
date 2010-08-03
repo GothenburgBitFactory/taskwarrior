@@ -131,7 +131,7 @@ task undo                                could also have just deleted the task, 
 
 task 1 info                              During that undo operation, task displayed metadata that
                                          is associated with the task.  You can display this with the
-task 1                                   info command, and it's shortcut.
+task 1                                   info command, and its shortcut.
 
 task stats                               There are also statistics that task gathers, which I can
                                          display.
@@ -285,7 +285,7 @@ task rc.calendar.holidays:full cal       And you can see the holidays.
 
 task 7 info                              Remember the task we added to pay the rent?  We're going to
 task 7 due:eom recur:monthly             need to do that every month.  Recurring tasks allow us to
-task 7                                   set up a single task that keeps coming back, jsut as you'd
+task 7                                   set up a single task that keeps coming back, just as you'd
                                          expect.
 
 task 7 until:eoy                         You can also limit the extent of the recurrence.  Let's make
@@ -298,6 +298,7 @@ task recurring                           And there is a recurring report that sh
                                          as a reminder to pay taxes, and put the due date in the past.
                                          This will cause task to fill in the gaps, and create a series
                                          of severely overdue tasks.
+
 task add Pay taxes due:4/15/2007 recur:yearly
 task long
 
@@ -322,7 +323,6 @@ task list                                hidden until that date.  It will no lon
 task waiting                             your task list, but it is still there, and visible using
                                          the 'waiting' report.  When the wait date comes, the task
                                          will just pop back into the list.
-
 
 task add Do something in a few seconds   To illustrate this, let's set up a task with a very short
 task 11 wait:5s                          wait time of five seconds.
@@ -378,7 +378,7 @@ task foo                                 And they can be run just like the other
 
 ---------------------------------------- Charts ----------------------------------------------------
 
-task history                             The history report gives monthly totals of task added,
+task history                             The history report gives monthly totals of tasks added,
 task history.annual                      completed and deleted.  There is also an annual version.
 
 task ghistory                            There is a graphical monthly...
