@@ -42,7 +42,7 @@ if (open my $fh, '>', 'color.rc')
 
 # Test the add command.
 qx{../task rc:color.rc add due:12/31/2037 nothing};
-qx{../task rc:color.rc add due:today red};
+qx{../task rc:color.rc add due:1hr red};
 my $output = qx{../task rc:color.rc list};
 
 like ($output, qr/ (?!<\033\[\d\dm) \d{1,2}\/\d{1,2}\/\d{4} (?!>\033\[0m) .* nothing /x, 'none');
