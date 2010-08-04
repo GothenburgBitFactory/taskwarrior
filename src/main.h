@@ -130,6 +130,11 @@ int handleExportCSV (std::string &);
 int handleExportiCal (std::string &);
 int handleExportYAML (std::string &);
 
+// dependency.cpp
+bool dependencyIsBlocked (Task&);
+bool dependencyIsBlocking (Task&);
+bool dependencyCheckCircular (Task&);
+
 // list template
 ///////////////////////////////////////////////////////////////////////////////
 template <class T> bool listDiff (const T& left, const T& right)

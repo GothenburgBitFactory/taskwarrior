@@ -29,14 +29,55 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-// bool dependencyCheckCircular ();
 // void dependencyCheckDangling ();
-// bool dependencyIsBlocked ();
-// bool dependencyIsBlocking ();
 // bool dependencyRepairNeeded ();
 // void dependencyRepairChain ();
 // bool dependencyRepairConfirm ();
 // void dependencyNag ();
 
 ////////////////////////////////////////////////////////////////////////////////
+// All it takes to be blocked is to depend on another task.
+bool dependencyIsBlocked (Task& task)
+{
+  return task.has ("depends");
+}
 
+////////////////////////////////////////////////////////////////////////////////
+// To be a blocking task, there must be at least one other task that depends on
+// this task, that is either pending or waiting.
+bool dependencyIsBlocking (Task& task)
+{
+  std::string uuid = task.get ("uuid");
+
+  const std::vector <Task>& all = context.tdb.getAllPending ();
+  std::vector <Task>::const_iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+    if ((it->getStatus () == Task::pending  ||
+         it->getStatus () == Task::waiting) &&
+        it->has ("depends")                 &&
+        it->get ("depends").find (uuid) != std::string::npos)
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Follow each of the given task's dependencies to the end of the chain, and if
+// any duplicates show up, or the chain length exceeds N, stop.
+bool dependencyCheckCircular (Task& task)
+{
+  int maximum = 100;
+  std::vector <std::string> all;
+
+  // Must include self if checking for circular.
+  all.push_back (task.get ("uuid"));
+
+  // TODO foreach dependency
+    // TODO is uuid in all?
+      // TODO y: circular!
+      // TODO n: add uuid to all.
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
