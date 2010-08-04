@@ -75,6 +75,7 @@ public:
 
   void addDependency (int);
   void removeDependency (int);
+  void removeDependency (const std::string&);
   void getDependencies (std::vector <int>&) const;
   void getDependencies (std::vector <std::string>&) const;
 

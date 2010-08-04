@@ -495,16 +495,8 @@ void Task::addDependency (int id)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::removeDependency (int id)
+void Task::removeDependency (const std::string& uuid)
 {
-  std::string uuid = context.tdb.uuid (id);
-  if (uuid == "")
-  {
-    std::stringstream s;
-    s << "Could not find a UUID for id " << id << ".";
-    throw s.str ();
-  }
-
   std::vector <std::string> deps;
   split (deps, get ("depends"), ',');
 
@@ -516,6 +508,20 @@ void Task::removeDependency (int id)
     std::string combined;
     join (combined, ",", deps);
     set ("depends", combined);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::removeDependency (int id)
+{
+  std::string uuid = context.tdb.uuid (id);
+  if (uuid != "")
+    removeDependency (uuid);
+  else
+  {
+    std::stringstream s;
+    s << "Could not find a UUID for id " << id << ".";
+    throw s.str ();
   }
 }
 

@@ -569,6 +569,7 @@ int TDB::commit ()
 // Scans the pending tasks for any that are completed or deleted, and if so,
 // moves them to the completed.data file.  Returns a count of tasks moved.
 // Now reverts expired waiting tasks to pending.
+// Now cleans up dangling dependencies.
 int TDB::gc ()
 {
   Timer t ("TDB::gc");
@@ -588,6 +589,27 @@ int TDB::gc ()
   Filter filter;
   std::vector <Task> ignore;
   loadPending (ignore, filter);
+
+  // Search for dangling dependencies.  These are dependencies whose uuid cannot
+  // be converted to an id by TDB.
+  std::vector <std::string> deps;
+  foreach (task, mPending)
+  {
+    if (task->has ("depends"))
+    {
+      deps.clear ();
+      task->getDependencies (deps);
+      foreach (dep, deps)
+        if (id (*dep) == 0)
+        {
+          task->removeDependency (*dep);
+          context.debug ("GC: Removed dangling dependency "
+                          + *dep
+                          + " from "
+                          + task->get ("uuid"));
+        }
+    }
+  }
 
   // Now move completed and deleted tasks from the pending list to the
   // completed list.  Isn't garbage collection easy?
