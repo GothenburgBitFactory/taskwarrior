@@ -74,6 +74,7 @@ Hook& Hook::operator= (const Hook& other)
 Hooks::Hooks ()
 {
   validProgramEvents.push_back ("post-start");
+  validProgramEvents.push_back ("post-commit");
   validProgramEvents.push_back ("pre-fatal-error");
   validProgramEvents.push_back ("pre-exit");
   validProgramEvents.push_back ("pre-command-line");
@@ -158,6 +159,8 @@ Hooks::Hooks ()
   validProgramEvents.push_back ("post-import-command");
   validProgramEvents.push_back ("pre-info-command");
   validProgramEvents.push_back ("post-info-command");
+  validProgramEvents.push_back ("pre-modify-command");
+  validProgramEvents.push_back ("post-modify-command");
   validProgramEvents.push_back ("pre-prepend-command");
   validProgramEvents.push_back ("post-prepend-command");
   validProgramEvents.push_back ("pre-projects-command");

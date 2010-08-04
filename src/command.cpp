@@ -1421,6 +1421,8 @@ int handleDone (std::string &outs)
 ////////////////////////////////////////////////////////////////////////////////
 int handleModify (std::string &outs)
 {
+  context.hooks.trigger ("pre-modify-command");
+
   int count = 0;
   std::stringstream out;
 
@@ -1526,6 +1528,7 @@ int handleModify (std::string &outs)
     out << "Modified " << count << " task" << (count == 1 ? "." : "s.") << std::endl;
 
   outs = out.str ();
+  context.hooks.trigger ("post-modify-command");
   return 0;
 }
 
