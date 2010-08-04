@@ -46,7 +46,7 @@ qx{../task rc:color.rc add due:1hr red};
 my $output = qx{../task rc:color.rc list};
 
 like ($output, qr/ (?!<\033\[\d\dm) \d{1,2}\/\d{1,2}\/\d{4} (?!>\033\[0m) .* nothing /x, 'none');
-like ($output, qr/ \033\[31m        .* red .* \033\[0m/x, 'color.due.today');
+like ($output, qr/ (?:\033\[31m|\033\[38;5;9m)        .* red .* \033\[0m/x, 'color.due.today');
 
 # Cleanup.
 unlink 'pending.data';
