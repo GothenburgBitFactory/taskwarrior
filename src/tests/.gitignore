@@ -22,4 +22,5 @@ file.t
 directory.t
 grid.t
 rx.t
+taskmod.t
 *.log
