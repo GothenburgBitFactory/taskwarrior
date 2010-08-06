@@ -81,6 +81,8 @@ public:
 
   void validate () const;
 
+  float urgency ();
+
 private:
   int determineVersion (const std::string&);
   void legacyParse (const std::string&);

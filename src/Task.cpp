@@ -34,6 +34,7 @@
 #include "Task.h"
 #include "text.h"
 #include "util.h"
+#include "main.h"
 
 extern Context context;
 
@@ -735,6 +736,174 @@ int Task::determineVersion (const std::string& line)
 
   // Zero means 'no idea'.
   return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Urgency is defined as a polynomial, the value of which is calculated in this
+// function, according to:
+//
+//   U = A.t  + B.t  + C.t  ...
+//          a      b      c
+//
+//   U       = urgency
+//   A       = coefficient for term a
+//   t sub a = numeric scale from 0 -> 1, with 1 being the highest
+//             urgency, derived from one task attribute and mapped
+//             to the numeric scale
+//
+// See rfc31-urgency.txt for full details.
+//
+float Task::urgency ()
+{
+  float urgency = 0.0;
+
+  // urgency.priority.coefficient
+  float coefficient = (float) context.config.getReal ("urgency.priority.coefficient");
+  float term;
+
+  std::string value = get ("priority");
+       if (value == "H") term = 1.0;
+  else if (value == "M") term = 0.65;
+  else if (value == "L") term = 0.3;
+  else                   term = 0.0;
+
+  urgency += term * coefficient;
+
+  // urgency.project.coefficient
+  coefficient = (float) context.config.getReal ("urgency.project.coefficient");
+
+  value = get ("project");
+  if (value != "") term = 1.0;
+  else             term = 0.0;
+
+  urgency += term * coefficient;
+
+  // urgency.active.coefficient
+  coefficient = (float) context.config.getReal ("urgency.active.coefficient");
+
+  value = get ("start");
+  if (value != "") term = 1.0;
+  else             term = 0.0;
+
+  urgency += term * coefficient;
+
+  // urgency.waiting.coefficient
+  coefficient = (float) context.config.getReal ("urgency.waiting.coefficient");
+
+  value = get ("status");
+       if (value == "pending") term = 1.0;
+  else if (value == "waiting") term = 0.0;
+
+  urgency += term * coefficient;
+
+  // urgency.blocked.coefficient
+  coefficient = (float) context.config.getReal ("urgency.blocked.coefficient");
+
+  value = get ("depends");
+  if (value != "") term = 0.0;
+  else             term = 1.0;
+
+  urgency += term * coefficient;
+
+  // urgency.annotations.coefficient
+  coefficient = (float) context.config.getReal ("urgency.annotations.coefficient");
+
+  std::vector <Att> annos;
+  getAnnotations (annos);
+       if (annos.size () >= 3) term = 1.0;
+  else if (annos.size () == 2) term = 0.9;
+  else if (annos.size () == 1) term = 0.8;
+  else                         term = 0.0;
+
+  urgency += term * coefficient;
+
+  // urgency.tags.coefficient
+  coefficient = (float) context.config.getReal ("urgency.tags.coefficient");
+
+  int count = getTagCount ();
+       if (count >= 3) term = 1.0;
+  else if (count == 2) term = 0.9;
+  else if (count == 1) term = 0.8;
+  else                 term = 0.0;
+
+  urgency += term * coefficient;
+
+  // urgency.next.coefficient
+  coefficient = (float) context.config.getReal ("urgency.next.coefficient");
+
+  if (hasTag ("next")) term = 1.0;
+  else                 term = 0.0;
+
+  urgency += term * coefficient;
+
+  // urgency.due.coefficient
+  //   days overdue, capped at 7     ->  0.8 - 1.0
+  //   due today                     ->  0.7
+  //   days until due, capped at 14  ->  0.4 - 0.6
+  //   has due date                  ->  0.3
+  //   no due date                   ->  0.0
+  coefficient = (float) context.config.getReal ("urgency.due.coefficient");
+  if (has ("due"))
+  {
+    Date now;
+    Date due (get ("due"));
+    int days_overdue = (now - due) / 86400;
+
+         if (days_overdue > 7)   term = 1.0;
+    else if (days_overdue > 0)   term = (0.2 * days_overdue / 7.0) + 0.8;
+    else if (due.sameDay (now))  term = 0.7;
+    else if (days_overdue < -14) term = 0.4;
+    else if (days_overdue < 0)   term = (0.2 * days_overdue / 14.0) + 0.6;
+    else                         term = 0.3;
+  }
+  else
+    term = 0.0;
+
+  urgency += term * coefficient;
+
+  // Tag- and project-specific coefficients.
+  std::vector <std::string> all;
+  context.config.all (all);
+
+  foreach (var, all)
+  {
+    if (var->substr (0, 13) == "urgency.user.")
+    {
+      // urgency.user.project.<project>.coefficient
+      std::string::size_type end = std::string::npos;
+      if (var->substr (13, 8) == "project." &&
+          (end = var->find (".coefficient")) != std::string::npos)
+      {
+        std::string project = var->substr (21, end - 21);
+        coefficient = (float) context.config.getReal (*var);
+
+        if (get ("project").find (project) == 0)
+          urgency += coefficient;
+      }
+
+    // urgency.user.tag.<tag>.coefficient
+      if (var->substr (13, 4) == "tag." &&
+          (end = var->find (".coefficient")) != std::string::npos)
+      {
+        std::string tag = var->substr (17, end - 17);
+        coefficient = (float) context.config.getReal (*var);
+
+        if (hasTag (tag))
+          urgency += coefficient;
+      }
+    }
+  }
+
+  // urgency.blocking.coefficient
+  coefficient = (float) context.config.getReal ("urgency.blocking.coefficient");
+
+  if (dependencyIsBlocking (*this)) term = 1.0;
+  else                              term = 0.0;
+
+  urgency += term * coefficient;
+
+  // Return the sum of all terms.
+  return urgency;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

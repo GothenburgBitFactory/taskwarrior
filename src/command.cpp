@@ -516,6 +516,36 @@ int handleCompletionVersion (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Temporary command to display urgency for a task.
+int handleUrgency (std::string &outs)
+{
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.loadPending (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+
+  // Find the task(s).
+  std::stringstream out;
+  foreach (task, tasks)
+  {
+    out << "task "
+        << task->id
+        << " urgency "
+        << task->urgency ()
+        << "\n";
+  }
+
+  outs = out.str ();
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int handleCompletionIDs (std::string &outs)
 {
   std::vector <Task> tasks;
@@ -715,7 +745,12 @@ int handleShow (std::string &outs)
       "import.synonym.status import.synonym.tags import.synonym.entry "
       "import.synonym.start import.synonym.due import.synonym.recur "
       "import.synonym.end import.synonym.project import.synonym.priority "
-      "import.synonym.fg import.synonym.bg import.synonym.description ";
+      "import.synonym.fg import.synonym.bg import.synonym.description "
+
+      "urgency.next.coefficient urgency.blocking.coefficient urgency.blocked.coefficient "
+      "urgency.due.coefficient urgency.priority.coefficient urgency.waiting.coefficient "
+      "urgency.active.coefficient urgency.project.coefficient urgency.tags.coefficient "
+      "urgency.annotations.coefficient ";
 
     // This configuration variable is supported, but not documented.  It exists
     // so that unit tests can force color to be on even when the output from task
@@ -732,13 +767,15 @@ int handleShow (std::string &outs)
       {
         // These are special configuration variables, because their name is
         // dynamic.
-        if (i->substr (0, 14) != "color.keyword." &&
-            i->substr (0, 14) != "color.project." &&
-            i->substr (0, 10) != "color.tag."     &&
-            i->substr (0,  8) != "holiday."       &&
-            i->substr (0,  7) != "report."        &&
-            i->substr (0,  6) != "alias."         &&
-            i->substr (0,  5) != "hook.")
+        if (i->substr (0, 14) != "color.keyword."        &&
+            i->substr (0, 14) != "color.project."        &&
+            i->substr (0, 10) != "color.tag."            &&
+            i->substr (0,  8) != "holiday."              &&
+            i->substr (0,  7) != "report."               &&
+            i->substr (0,  6) != "alias."                &&
+            i->substr (0,  5) != "hook."                 &&
+            i->substr (0, 21) != "urgency.user.project." &&
+            i->substr (0, 17) != "urgency.user.tag.")
         {
           unrecognized.push_back (*i);
         }

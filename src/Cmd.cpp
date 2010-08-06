@@ -135,6 +135,7 @@ void Cmd::load ()
     commands.push_back ("_config");
     commands.push_back ("_version");
     commands.push_back ("_merge");
+    commands.push_back ("_urgency");
     commands.push_back ("export.csv");
     commands.push_back ("export.ical");
     commands.push_back ("export.yaml");
@@ -232,6 +233,7 @@ bool Cmd::isReadOnlyCommand ()
       command == "_ids"                                                      ||
       command == "_config"                                                   ||
       command == "_version"                                                  ||
+      command == "_urgency"                                                  ||
       command == "export.csv"                                                ||
       command == "export.ical"                                               ||
       command == "export.yaml"                                               ||
