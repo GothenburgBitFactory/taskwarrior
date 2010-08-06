@@ -659,7 +659,7 @@ int handleCustomReport (const std::string& report, std::string &outs)
       if (maxrows)
         out << ", " << maxrows << " shown";
 
-      if (maxlines)
+      if (maxlines < table.rowCount ())
         out << ", truncated to " << maxlines-1 << " lines";
 
       out << std::endl;

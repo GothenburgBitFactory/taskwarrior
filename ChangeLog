@@ -47,6 +47,8 @@
    time, not just on add.
  + Fixed bug #452, which defines a higher resolution division between due
    and overdue.
+ + Fixed bug #459, which showed a confusing message when 'limit:page' was
+   used, with few tasks.
  + Fixed problem with command line configuration overrides that had no
    values. 
  + Fixed problem with the 'undo' command not observing the rc.color or the
