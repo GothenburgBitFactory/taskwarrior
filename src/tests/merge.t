@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 40;
+use Test::More tests => 42;
 use File::Copy;
 
 use constant false => 0;
@@ -132,22 +132,20 @@ sleep(1);
 # make new remote modifications
 qx{../task rc:remote.rc 4 +gym};         # right_newer
 
-# invoke gc
-qx{../task rc:local.rc};
-qx{../task rc:remote.rc};
-
 # merge remote into local
 my $output_l = qx{../task rc:local.rc _merge remote/undo.data};
 
 #check output
-unlike ($output_l,   qr/Missing/, "local-merge: no missing entry");
+like   ($output_l,   qr/Running redo/,         "local-merge finished");
+unlike ($output_l,   qr/Missing/,              "local-merge: no missing entry");
 unlike ($output_l,   qr/Not adding duplicate/, "local-merge: no duplicates");
 
 # merge local into remote
 my $output_r = qx{../task rc:remote.rc _merge local/undo.data};
 
 # check output
-unlike ($output_r,   qr/Missing/, "remote-merge: no missing entry");
+like   ($output_r,   qr/Running redo/,         "remote-merge finished");
+unlike ($output_r,   qr/Missing/,              "remote-merge: no missing entry");
 unlike ($output_r,   qr/Not adding duplicate/, "remote-merge: no duplicates");
 
 # check reports
