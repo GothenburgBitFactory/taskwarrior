@@ -611,6 +611,11 @@ int handleInfo (std::string &outs)
         table.addCell (row, 1, color);
       }
 
+      // Task::urgency
+      row = table.addRow ();
+      table.addCell (row, 0, "Urgency");
+      table.addCell (row, 1, task->urgency ());
+
       // If an alternating row color is specified, notify the table.
       if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
       {
