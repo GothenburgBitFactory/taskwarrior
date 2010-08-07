@@ -98,6 +98,7 @@
 #define CMD_SHELL               229
 #define CMD_CONFIG              230
 #define CMD_SHOW                231
+#define CMD_MERGE               232
 
 // 3xx Attributes
 #define ATT_PROJECT             300

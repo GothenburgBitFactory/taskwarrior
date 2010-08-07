@@ -134,7 +134,6 @@ void Cmd::load ()
     commands.push_back ("_ids");
     commands.push_back ("_config");
     commands.push_back ("_version");
-    commands.push_back ("_merge");
     commands.push_back ("_urgency");
     commands.push_back ("export.csv");
     commands.push_back ("export.ical");
@@ -174,6 +173,7 @@ void Cmd::load ()
     commands.push_back (context.stringtable.get (CMD_TIMESHEET, "timesheet"));
     commands.push_back (context.stringtable.get (CMD_UNDO,      "undo"));
     commands.push_back (context.stringtable.get (CMD_VERSION,   "version"));
+    commands.push_back (context.stringtable.get (CMD_MERGE,     "merge"));
 
     // Now load the custom reports.
     std::vector <std::string> all;
@@ -264,7 +264,7 @@ bool Cmd::isReadOnlyCommand ()
 // Commands that directly modify the data files.
 bool Cmd::isWriteCommand ()
 {
-  if (command == "_merge"                                             ||
+  if (command == context.stringtable.get (CMD_MERGE,     "merge")     ||
       command == context.stringtable.get (CMD_ADD,       "add")       ||
       command == context.stringtable.get (CMD_APPEND,    "append")    ||
       command == context.stringtable.get (CMD_ANNOTATE,  "annotate")  ||

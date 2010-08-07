@@ -154,6 +154,24 @@ modifying the:
 configuration variable.  Check out DropBox at http://www.dropbox.com.
 
 .TP
+.B Q: I don't like dropbox. Is there another way to synchronize my tasks?
+Of course. Especially if you want to modify tasks offline on both machines and 
+synchronize them later on. For this purpose task provides a 'merge' command which
+is able to insert the modifications you made to one of your task databases into a 
+second database.
+
+Here is a basic example of the procedure:
+    
+    $ rsync myremotehost:.task/undo.data /tmp/undo_remote.data
+    $ task merge /tmp/undo_remote.data
+    $ rsync ${HOME}/.task/*.data myremotehost:.task/
+
+First you need to get the undo.data file from the remote system with a network
+protocol of your choice or a removable medium as well. When task finished the merge
+command you should copy all the local .data files to the remote system. This way you
+ensure that both systems are fully synchronized.
+
+.TP
 .B Q: The undo.data file gets very large - do I need it?
 You need it if you want the undo capability.  But if it gets large, you can
 certainly truncate it to save space, just be careful to delete lines from the
@@ -285,6 +303,7 @@ non-exact match:
     $ task 1 denotate ar
 
 This will remove the second annotation - the first non-exact match.
+
 
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.

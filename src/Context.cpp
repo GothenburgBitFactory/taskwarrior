@@ -241,7 +241,7 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "shell")            {      handleShell                 (   ); }
 #endif
   else if (cmd.command == "undo")             {      handleUndo                  (   ); }
-  else if (cmd.command == "_merge")           { tdb.gc ();
+  else if (cmd.command == "merge")            { tdb.gc ();
 	                                                  handleMerge                 (out); }
   else if (cmd.command == "_projects")        { rc = handleCompletionProjects    (out); }
   else if (cmd.command == "_tags")            { rc = handleCompletionTags        (out); }
