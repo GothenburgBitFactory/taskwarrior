@@ -424,10 +424,11 @@ int handleInfo (std::string &outs)
       }
 
       // dependencies: blocked
-      row = table.addRow ();
-      table.addCell (row, 0, "This task blocked by");
       if (task->has ("depends"))
       {
+        row = table.addRow ();
+        table.addCell (row, 0, "This task blocked by");
+
         std::string depends = task->get ("depends");
         const std::vector <Task>& rpending = context.tdb.getAllPending ();
 
@@ -442,9 +443,6 @@ int handleInfo (std::string &outs)
 
       // dependencies: blocking
       {
-        row = table.addRow ();
-        table.addCell (row, 0, "This task is blocking");
-
         std::string uuid = task->get ("uuid");
         const std::vector <Task>& rpending = context.tdb.getAllPending ();
 
@@ -454,7 +452,12 @@ int handleInfo (std::string &outs)
           if (it->get ("depends").find (uuid) != std::string::npos)
             blocked << it->id << " " << it->get ("description") << "\n";
 
-        table.addCell (row, 1, blocked.str ());
+        if (blocked.str().length ())
+        {
+          row = table.addRow ();
+          table.addCell (row, 0, "This task is blocking");
+          table.addCell (row, 1, blocked.str ());
+        }
       }
 
       if (task->getStatus () == Task::recurring ||
