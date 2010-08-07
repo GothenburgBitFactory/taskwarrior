@@ -134,7 +134,7 @@ sleep(1);
 qx{../task rc:remote.rc 4 +gym};         # right_newer
 
 # merge remote into local
-my $output_l = qx{../task rc:local.rc _merge remote/undo.data};
+my $output_l = qx{../task rc:local.rc merge remote/undo.data};
 
 #check output
 like   ($output_l,   qr/Running redo/,         "local-merge finished");
@@ -142,7 +142,7 @@ unlike ($output_l,   qr/Missing/,              "local-merge: no missing entry");
 unlike ($output_l,   qr/Not adding duplicate/, "local-merge: no duplicates");
 
 # merge local into remote
-my $output_r = qx{../task rc:remote.rc _merge local/undo.data};
+my $output_r = qx{../task rc:remote.rc merge local/undo.data};
 
 # check output
 like   ($output_r,   qr/Running redo/,         "remote-merge finished");
