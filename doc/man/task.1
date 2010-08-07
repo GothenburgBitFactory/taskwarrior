@@ -143,6 +143,11 @@ Exports all tasks in YAML 1.1 format.
 Redirect the output to a file, if you wish to save it, or pipe it to another command.
 
 .TP
+.B merge path/to/remote/undo.data
+Merges two task databases by comparing the modifications that are stored in the
+undo.data files. The location of the second undo.data file must be passed on as argument.
+
+.TP
 .B color [sample | legend]
 Displays all possible colors, a named sample, or a legend containing all
 currently defined colors.
