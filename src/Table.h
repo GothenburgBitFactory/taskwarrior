@@ -126,6 +126,8 @@ private:
   std::map <int, just> mJustification;
   std::map <int, bool> mCommify;
   Grid mData;
+
+  // Sorting...
   std::vector <int> mSortColumns;
   std::map <int, order> mSortOrder;
 

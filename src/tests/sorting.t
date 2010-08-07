@@ -40,137 +40,139 @@ if (open my $fh, '>', 'sorting.rc')
 
 # Test assorted sort orders.
 
+qx{../task rc:sorting.rc add                                    zero};
 qx{../task rc:sorting.rc add priority:H project:A due:yesterday one};
 qx{../task rc:sorting.rc add priority:M project:B due:today     two};
 qx{../task rc:sorting.rc add priority:L project:C due:tomorrow  three};
 qx{../task rc:sorting.rc add priority:H project:C due:today     four};
 
-qx{../task rc:sorting.rc start 1};
-qx{../task rc:sorting.rc start 3};
+qx{../task rc:sorting.rc start 2};
+qx{../task rc:sorting.rc start 4};
 
 # pri:H pro:C   due:today     four
 # pri:H pro:A * due:yesterday one
 # pri:M pro:B   due:today     two
 # pri:L pro:C * due:tomorrow  three
+#                             zero
 
 my %tests =
 (
   # Single sort column.
-  'priority-'                       => '(?:one.+four|four.+one).+two.+three',
-  'priority+'                       => 'three.+two.+(?:one.+four|four.+one)',
-  'project-'                        => '(?:three.+four|four.+three).+two.+one',
-  'project+'                        => 'one.+two.+(?:three.+four|four.+three)',
-  'active-'                         => '(?:one.+three|three.+one).+(?:two.+four|four.+two)',
-  'active+'                         => '(?:two.+four|four.+two).+(?:one.+three|three.+one)',
-  'due-'                            => 'three.+(?:two.+four|four.+two).+one',
-  'due+'                            => 'one.+(?:two.+four|four.+two).+three',
-  'description-'                    => 'two.+three.+one.+four',
-  'description+'                    => 'four.+one.+three.+two',
+  'priority-'                       => '(?:one.+four|four.+one).+two.+three.+zero',
+  'priority+'                       => 'zero.+three.+two.+(?:one.+four|four.+one)',
+  'project-'                        => '(?:three.+four|four.+three).+two.+one.+zero',
+  'project+'                        => 'zero.+one.+two.+(?:three.+four|four.+three)',
+  'active-'                         => '(?:one.+three|three.+one).+(?:zero.+two.+four|zero.+four.+two|two.+zero.+four|two.+four.+zero|four.+zero.+two|four.+two.+zero)',
+  'active+'                         => '(?:zero.+two.+four|zero.+four.+two|two.+zero.+four|two.+four.+zero|four.+zero.+two|four.+two.+zero).+(?:one.+three|three.+one)',
+  'due-'                            => 'three.+(?:two.+four|four.+two).+one.+zero',
+  'due+'                            => 'one.+(?:two.+four|four.+two).+three.+zero',
+  'description-'                    => 'zero.+two.+three.+one.+four',
+  'description+'                    => 'four.+one.+three.+two.+zero',
 
   # Two sort columns.
-  'priority-,project-'              => 'four.+one.+two.+three',
-  'priority-,project+'              => 'one.+four.+two.+three',
-  'priority+,project-'              => 'three.+two.+four.+one',
-  'priority+,project+'              => 'three.+two.+one.+four',
+  'priority-,project-'              => 'four.+one.+two.+three.+zero',
+  'priority-,project+'              => 'one.+four.+two.+three.+zero',
+  'priority+,project-'              => 'zero.+three.+two.+four.+one',
+  'priority+,project+'              => 'zero.+three.+two.+one.+four',
 
-  'priority-,active-'               => 'one.+four.+two.+three',
-  'priority-,active+'               => 'four.+one.+two.+three',
-  'priority+,active-'               => 'three.+two.+one.+four',
-  'priority+,active+'               => 'three.+two.+four.+one',
+  'priority-,active-'               => 'one.+four.+two.+three.+zero',
+  'priority-,active+'               => 'four.+one.+two.+three.+zero',
+  'priority+,active-'               => 'zero.+three.+two.+one.+four',
+  'priority+,active+'               => 'zero.+three.+two.+four.+one',
 
-  'priority-,due-'                  => 'four.+one.+two.+three',
-  'priority-,due+'                  => 'one.+four.+two.+three',
-  'priority+,due-'                  => 'three.+two.+four.+one',
-  'priority+,due+'                  => 'three.+two.+one.+four',
+  'priority-,due-'                  => 'four.+one.+two.+three.+zero',
+  'priority-,due+'                  => 'one.+four.+two.+three.+zero',
+  'priority+,due-'                  => 'zero.+three.+two.+four.+one',
+  'priority+,due+'                  => 'zero.+three.+two.+one.+four',
 
-  'priority-,description-'          => 'one.+four.+two.+three',
-  'priority-,description+'          => 'four.+one.+two.+three',
-  'priority+,description-'          => 'three.+two.+one.+four',
-  'priority+,description+'          => 'three.+two.+four.+one',
+  'priority-,description-'          => 'one.+four.+two.+three.+zero',
+  'priority-,description+'          => 'four.+one.+two.+three.+zero',
+  'priority+,description-'          => 'zero.+three.+two.+one.+four',
+  'priority+,description+'          => 'zero.+three.+two.+four.+one',
 
-  'project-,priority-'              => 'four.+three.+two.+one',
-  'project-,priority+'              => 'three.+four.+two.+one',
-  'project+,priority-'              => 'one.+two.+four.+three',
-  'project+,priority+'              => 'one.+two.+three.+four',
+  'project-,priority-'              => 'four.+three.+two.+one.+zero',
+  'project-,priority+'              => 'three.+four.+two.+one.+zero',
+  'project+,priority-'              => 'zero.+one.+two.+four.+three',
+  'project+,priority+'              => 'zero.+one.+two.+three.+four',
 
-  'project-,active-'                => 'three.+four.+two.+one',
-  'project-,active+'                => 'four.+three.+two.+one',
-  'project+,active-'                => 'one.+two.+three.+four',
-  'project+,active+'                => 'one.+two.+four.+three',
+  'project-,active-'                => 'three.+four.+two.+one.+zero',
+  'project-,active+'                => 'four.+three.+two.+one.+zero',
+  'project+,active-'                => 'zero.+one.+two.+three.+four',
+  'project+,active+'                => 'zero.+one.+two.+four.+three',
 
-  'project-,due-'                   => 'three.+four.+two.+one',
-  'project-,due+'                   => 'four.+three.+two.+one',
-  'project+,due-'                   => 'one.+two.+three.+four',
-  'project+,due+'                   => 'one.+two.+four.+three',
+  'project-,due-'                   => 'three.+four.+two.+one.+zero',
+  'project-,due+'                   => 'four.+three.+two.+one.+zero',
+  'project+,due-'                   => 'zero.+one.+two.+three.+four',
+  'project+,due+'                   => 'zero.+one.+two.+four.+three',
 
-  'project-,description-'           => 'three.+four.+two.+one',
-  'project-,description+'           => 'four.+three.+two.+one',
-  'project+,description-'           => 'one.+two.+three.+four',
-  'project+,description+'           => 'one.+two.+four.+three',
+  'project-,description-'           => 'three.+four.+two.+one.+zero',
+  'project-,description+'           => 'four.+three.+two.+one.+zero',
+  'project+,description-'           => 'zero.+one.+two.+three.+four',
+  'project+,description+'           => 'zero.+one.+two.+four.+three',
 
-  'active-,priority-'               => 'one.+three.+four.+two',
-  'active-,priority+'               => 'three.+one.+two.+four',
-  'active+,priority-'               => 'four.+two.+one.+three',
-  'active+,priority+'               => 'two.+four.+three.+one',
+  'active-,priority-'               => 'one.+three.+four.+two.+zero',
+  'active-,priority+'               => 'three.+one.+zero.+two.+four',
+  'active+,priority-'               => 'four.+two.+zero.+one.+three',
+  'active+,priority+'               => 'zero.+two.+four.+three.+one',
 
-  'active-,project-'                => 'three.+one.+four.+two',
-  'active-,project+'                => 'one.+three.+two.+four',
-  'active+,project-'                => 'four.+two.+three.+one',
-  'active+,project+'                => 'two.+four.+one.+three',
+  'active-,project-'                => 'three.+one.+four.+two.+zero',
+  'active-,project+'                => 'one.+three.+zero.+two.+four',
+  'active+,project-'                => 'four.+two.+zero.+three.+one',
+  'active+,project+'                => 'zero.+two.+four.+one.+three',
 
-  'active-,due-'                    => 'three.+one.+(?:four.+two|two.+four)',
-  'active-,due+'                    => 'one.+three.+(?:four.+two|two.+four)',
-  'active+,due-'                    => '(?:four.+two|two.+four).+three.+one',
-  'active+,due+'                    => '(?:four.+two|two.+four).+one.+three',
+  'active-,due-'                    => 'three.+one.+(?:four.+two|two.+four).+zero',
+  'active-,due+'                    => 'one.+three.+(?:four.+two|two.+four).+zero',
+  'active+,due-'                    => '(?:four.+two|two.+four).+zero.+three.+one',
+  'active+,due+'                    => '(?:four.+two|two.+four).+zero.+one.+three',
 
-  'active-,description-'            => 'three.+one.+two.+four',
-  'active-,description+'            => 'one.+three.+four.+two',
-  'active+,description-'            => 'two.+four.+three.+one',
-  'active+,description+'            => 'four.+two.+one.+three',
+  'active-,description-'            => 'three.+one.+zero.+two.+four',
+  'active-,description+'            => 'one.+three.+four.+two.+zero',
+  'active+,description-'            => 'zero.+two.+four.+three.+one',
+  'active+,description+'            => 'four.+two.+zero.+one.+three',
 
-  'due-,priority-'                  => 'three.+four.+two.+one',
-  'due-,priority+'                  => 'three.+two.+four.+one',
-  'due+,priority-'                  => 'one.+four.+two.+three',
-  'due+,priority+'                  => 'one.+two.+four.+three',
+  'due-,priority-'                  => 'three.+four.+two.+one.+zero',
+  'due-,priority+'                  => 'three.+two.+four.+one.+zero',
+  'due+,priority-'                  => 'one.+four.+two.+three.+zero',
+  'due+,priority+'                  => 'one.+two.+four.+three.+zero',
 
-  'due-,project-'                   => 'three.+four.+two.+one',
-  'due-,project+'                   => 'three.+two.+four.+one',
-  'due+,project-'                   => 'one.+four.+two.+three',
-  'due+,project+'                   => 'one.+two.+four.+three',
+  'due-,project-'                   => 'three.+four.+two.+one.+zero',
+  'due-,project+'                   => 'three.+two.+four.+one.+zero',
+  'due+,project-'                   => 'one.+four.+two.+three.+zero',
+  'due+,project+'                   => 'one.+two.+four.+three.+zero',
 
-  'due-,active-'                    => 'three.+(?:four.+two|two.+four).+one',
-  'due-,active+'                    => 'three.+(?:four.+two|two.+four).+one',
-  'due+,active-'                    => 'one.+(?:four.+two|two.+four).+three',
-  'due+,active+'                    => 'one.+(?:four.+two|two.+four).+three',
+  'due-,active-'                    => 'three.+(?:four.+two|two.+four).+one.+zero',
+  'due-,active+'                    => 'three.+(?:four.+two|two.+four).+one.+zero',
+  'due+,active-'                    => 'one.+(?:four.+two|two.+four).+three.+zero',
+  'due+,active+'                    => 'one.+(?:four.+two|two.+four).+three.+zero',
 
-  'due-,description-'               => 'three.+two.+four.+one',
-  'due-,description+'               => 'three.+four.+two.+one',
-  'due+,description-'               => 'one.+two.+four.+three',
-  'due+,description+'               => 'one.+four.+two.+three',
+  'due-,description-'               => 'three.+two.+four.+one.+zero',
+  'due-,description+'               => 'three.+four.+two.+one.+zero',
+  'due+,description-'               => 'one.+two.+four.+three.+zero',
+  'due+,description+'               => 'one.+four.+two.+three.+zero',
 
-  'description-,priority-'          => 'two.+three.+one.+four',
-  'description-,priority+'          => 'two.+three.+one.+four',
-  'description+,priority-'          => 'four.+one.+three.+two',
-  'description+,priority+'          => 'four.+one.+three.+two',
+  'description-,priority-'          => 'zero.+two.+three.+one.+four',
+  'description-,priority+'          => 'zero.+two.+three.+one.+four',
+  'description+,priority-'          => 'four.+one.+three.+two.+zero',
+  'description+,priority+'          => 'four.+one.+three.+two.+zero',
 
-  'description-,project-'           => 'two.+three.+one.+four',
-  'description-,project+'           => 'two.+three.+one.+four',
-  'description+,project-'           => 'four.+one.+three.+two',
-  'description+,project+'           => 'four.+one.+three.+two',
+  'description-,project-'           => 'zero.+two.+three.+one.+four',
+  'description-,project+'           => 'zero.+two.+three.+one.+four',
+  'description+,project-'           => 'four.+one.+three.+two.+zero',
+  'description+,project+'           => 'four.+one.+three.+two.+zero',
 
-  'description-,active-'            => 'two.+three.+one.+four',
-  'description-,active+'            => 'two.+three.+one.+four',
-  'description+,active-'            => 'four.+one.+three.+two',
-  'description+,active+'            => 'four.+one.+three.+two',
+  'description-,active-'            => 'zero.+two.+three.+one.+four',
+  'description-,active+'            => 'zero.+two.+three.+one.+four',
+  'description+,active-'            => 'four.+one.+three.+two.+zero',
+  'description+,active+'            => 'four.+one.+three.+two.+zero',
 
-  'description-,due-'               => 'two.+three.+one.+four',
-  'description-,due+'               => 'two.+three.+one.+four',
-  'description+,due-'               => 'four.+one.+three.+two',
-  'description+,due+'               => 'four.+one.+three.+two',
+  'description-,due-'               => 'zero.+two.+three.+one.+four',
+  'description-,due+'               => 'zero.+two.+three.+one.+four',
+  'description+,due-'               => 'four.+one.+three.+two.+zero',
+  'description+,due+'               => 'four.+one.+three.+two.+zero',
 
   # Four sort columns.
-  'active+,project+,due+,priority+' => 'two.+four.+one.+three',
-  'project+,due+,priority+,active+' => 'one.+two.+four.+three',
+  'active+,project+,due+,priority+' => 'zero.+two.+four.+one.+three',
+  'project+,due+,priority+,active+' => 'zero.+one.+two.+four.+three',
 );
 
 for my $sort (sort keys %tests)
