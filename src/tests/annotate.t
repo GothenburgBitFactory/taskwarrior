@@ -50,6 +50,7 @@ qx{../task rc:annotate.rc add two};
 qx{../task rc:annotate.rc add three};
 qx{../task rc:annotate.rc add four};
 qx{../task rc:annotate.rc annotate 1 foo1};
+diag ("5 second delay");
 sleep 1;
 qx{../task rc:annotate.rc annotate 1 foo2};
 sleep 1;

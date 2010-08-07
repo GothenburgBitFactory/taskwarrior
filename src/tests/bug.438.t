@@ -46,6 +46,7 @@ if (open my $fh, '>', 'bug.rc')
 
 # Ensure the two tasks have a 1 second delta in entry.
 qx{../task rc:bug.rc add older};
+diag ("1 second delay");
 sleep 1;
 qx{../task rc:bug.rc add newer};
 
@@ -57,6 +58,7 @@ like ($output, qr/newer.+older/ms, 'sort:entry- -> newer older');
 
 # Ensure the two tasks have a 1 second delta in start.
 qx{../task rc:bug.rc start 1};
+diag ("1 second delay");
 sleep 1;
 qx{../task rc:bug.rc start 2};
 
@@ -68,6 +70,7 @@ like ($output, qr/newer.+older/ms, 'sort:start- -> newer older');
 
 # Ensure the two tasks have a 1 second delta in end.
 qx{../task rc:bug.rc done 1};
+diag ("1 second delay");
 sleep 1;
 qx{../task rc:bug.rc done 2};
 

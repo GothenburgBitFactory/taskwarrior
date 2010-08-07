@@ -56,6 +56,7 @@ my $output = qx{../task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
   qx{../task rc:hook.rc add foo};
+  diag ("1 second delay");
   sleep 1;
   $output = qx{../task rc:hook.rc list};
 

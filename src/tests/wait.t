@@ -48,6 +48,7 @@ my $output = qx{../task rc:wait.rc ls};
 like ($output, qr/nowait/ms, 'non-waiting task visible');
 unlike ($output, qr/yeswait/ms, 'waiting task invisible');
 
+diag ("3 second delay");
 sleep 3;
 
 $output = qx{../task rc:wait.rc ls};
@@ -59,6 +60,7 @@ $output = qx{../task rc:wait.rc ls};
 like ($output, qr/nowait/ms, 'non-waiting task visible');
 unlike ($output, qr/yeswait/ms, 'waiting task invisible');
 
+diag ("3 second delay");
 sleep 3;
 
 $output = qx{../task rc:wait.rc ls};

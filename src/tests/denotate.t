@@ -47,6 +47,7 @@ if (open my $fh, '>', 'denotate.rc')
 # Add four tasks, annotate one three times, one twice, one just once and one none.
 qx{../task rc:denotate.rc add one};
 qx{../task rc:denotate.rc annotate 1 Ernie};
+diag ("6 second delay");
 sleep 1;
 qx{../task rc:denotate.rc annotate 1 Bert};
 sleep 1;

@@ -69,6 +69,7 @@ if (open my $fh, '>', 'remote.rc')
 
 # Create some basic tasks on both sides
 qx{../task rc:local.rc add left_modified};
+diag ("25 second delay");
 sleep(1);
 qx{../task rc:local.rc add right_modified};
 sleep(1);

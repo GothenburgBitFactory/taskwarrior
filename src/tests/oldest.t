@@ -39,10 +39,13 @@ if (open my $fh, '>', 'oldest.rc')
 }
 
 # Add 11 tasks.  Oldest should show 1-10, newest should show 2-11.
-diag ("Adding 3 tasks - takes 2 seconds");
-qx{../task rc:oldest.rc add one; sleep 1};
-qx{../task rc:oldest.rc add two; sleep 1};
-qx{../task rc:oldest.rc add three; sleep 1};
+qx{../task rc:oldest.rc add one};
+diag ("3 second delay");
+sleep 1;
+qx{../task rc:oldest.rc add two};
+sleep 1;
+qx{../task rc:oldest.rc add three};
+sleep 1;
 my $output = qx{../task rc:oldest.rc oldest};
 like ($output, qr/one/,               'oldest: one');
 like ($output, qr/two/,               'oldest: two');
@@ -55,14 +58,21 @@ like ($output, qr/two/,               'newest: two');
 like ($output, qr/one/,               'newest: one');
 like ($output, qr/three.*two.*one/ms, 'newest: sort');
 
-diag ("Adding 8 tasks - takes 7 seconds");
-qx{../task rc:oldest.rc add four; sleep 1};
-qx{../task rc:oldest.rc add five; sleep 1};
-qx{../task rc:oldest.rc add six; sleep 1};
-qx{../task rc:oldest.rc add seven; sleep 1};
-qx{../task rc:oldest.rc add eight; sleep 1};
-qx{../task rc:oldest.rc add nine; sleep 1};
-qx{../task rc:oldest.rc add ten; sleep 1};
+qx{../task rc:oldest.rc add four};
+diag ("7 second delay");
+sleep 1;
+qx{../task rc:oldest.rc add five};
+sleep 1;
+qx{../task rc:oldest.rc add six};
+sleep 1;
+qx{../task rc:oldest.rc add seven};
+sleep 1;
+qx{../task rc:oldest.rc add eight};
+sleep 1;
+qx{../task rc:oldest.rc add nine};
+sleep 1;
+qx{../task rc:oldest.rc add ten};
+sleep 1;
 qx{../task rc:oldest.rc add eleven};
 
 $output = qx{../task rc:oldest.rc oldest};
