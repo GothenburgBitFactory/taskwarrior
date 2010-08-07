@@ -81,7 +81,7 @@ public:
 
   void validate () const;
 
-  float urgency ();
+  double urgency ();
 
 private:
   int determineVersion (const std::string&);

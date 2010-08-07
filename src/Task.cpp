@@ -753,13 +753,13 @@ int Task::determineVersion (const std::string& line)
 //
 // See rfc31-urgency.txt for full details.
 //
-float Task::urgency ()
+double Task::urgency ()
 {
-  float urgency = 0.0;
+  double urgency = 0.0;
 
   // urgency.priority.coefficient
-  float coefficient = (float) context.config.getReal ("urgency.priority.coefficient");
-  float term;
+  double coefficient = context.config.getReal ("urgency.priority.coefficient");
+  double term;
 
   std::string value = get ("priority");
        if (value == "H") term = 1.0;
@@ -770,7 +770,7 @@ float Task::urgency ()
   urgency += term * coefficient;
 
   // urgency.project.coefficient
-  coefficient = (float) context.config.getReal ("urgency.project.coefficient");
+  coefficient = context.config.getReal ("urgency.project.coefficient");
 
   value = get ("project");
   if (value != "") term = 1.0;
@@ -779,7 +779,7 @@ float Task::urgency ()
   urgency += term * coefficient;
 
   // urgency.active.coefficient
-  coefficient = (float) context.config.getReal ("urgency.active.coefficient");
+  coefficient = context.config.getReal ("urgency.active.coefficient");
 
   value = get ("start");
   if (value != "") term = 1.0;
@@ -788,7 +788,7 @@ float Task::urgency ()
   urgency += term * coefficient;
 
   // urgency.waiting.coefficient
-  coefficient = (float) context.config.getReal ("urgency.waiting.coefficient");
+  coefficient = context.config.getReal ("urgency.waiting.coefficient");
 
   value = get ("status");
        if (value == "pending") term = 1.0;
@@ -797,7 +797,7 @@ float Task::urgency ()
   urgency += term * coefficient;
 
   // urgency.blocked.coefficient
-  coefficient = (float) context.config.getReal ("urgency.blocked.coefficient");
+  coefficient = context.config.getReal ("urgency.blocked.coefficient");
 
   value = get ("depends");
   if (value != "") term = 0.0;
@@ -806,7 +806,7 @@ float Task::urgency ()
   urgency += term * coefficient;
 
   // urgency.annotations.coefficient
-  coefficient = (float) context.config.getReal ("urgency.annotations.coefficient");
+  coefficient = context.config.getReal ("urgency.annotations.coefficient");
 
   std::vector <Att> annos;
   getAnnotations (annos);
@@ -818,7 +818,7 @@ float Task::urgency ()
   urgency += term * coefficient;
 
   // urgency.tags.coefficient
-  coefficient = (float) context.config.getReal ("urgency.tags.coefficient");
+  coefficient = context.config.getReal ("urgency.tags.coefficient");
 
   int count = getTagCount ();
        if (count >= 3) term = 1.0;
@@ -829,7 +829,7 @@ float Task::urgency ()
   urgency += term * coefficient;
 
   // urgency.next.coefficient
-  coefficient = (float) context.config.getReal ("urgency.next.coefficient");
+  coefficient = context.config.getReal ("urgency.next.coefficient");
 
   if (hasTag ("next")) term = 1.0;
   else                 term = 0.0;
@@ -837,24 +837,58 @@ float Task::urgency ()
   urgency += term * coefficient;
 
   // urgency.due.coefficient
-  //   days overdue, capped at 7     ->  0.8 - 1.0
-  //   due today                     ->  0.7
-  //   days until due, capped at 14  ->  0.4 - 0.6
-  //   has due date                  ->  0.3
-  //   no due date                   ->  0.0
-  coefficient = (float) context.config.getReal ("urgency.due.coefficient");
+  // overdue days 7 -> 1.0
+  //              6 -> 0.96
+  //              5 -> 0.92
+  //              5 -> 0.88
+  //              5 -> 0.84
+  //              5 -> 0.80
+  //              5 -> 0.76
+  //              0 -> 0.72
+  //             -1 -> 0.68
+  //             -2 -> 0.64
+  //             -3 -> 0.60
+  //             -4 -> 0.56
+  //             -5 -> 0.52
+  //             -6 -> 0.48
+  //             -7 -> 0.44
+  //             -8 -> 0.40
+  //             -9 -> 0.36
+  //            -10 -> 0.32
+  //            -11 -> 0.28
+  //            -12 -> 0.24
+  //            -13 -> 0.20
+  //            -14 -> 0.16
+  //    no due date -> 0.0
+  coefficient = context.config.getReal ("urgency.due.coefficient");
   if (has ("due"))
   {
     Date now;
     Date due (get ("due"));
     int days_overdue = (now - due) / 86400;
 
-         if (days_overdue > 7)   term = 1.0;
-    else if (days_overdue > 0)   term = (0.2 * days_overdue / 7.0) + 0.8;
-    else if (due.sameDay (now))  term = 0.7;
-    else if (days_overdue < -14) term = 0.4;
-    else if (days_overdue < 0)   term = (0.2 * days_overdue / 14.0) + 0.6;
-    else                         term = 0.3;
+         if (days_overdue >=  7)  term = 1.0;
+    else if (days_overdue >=  6)  term = 0.96;
+    else if (days_overdue >=  5)  term = 0.92;
+    else if (days_overdue >=  4)  term = 0.88;
+    else if (days_overdue >=  3)  term = 0.84;
+    else if (days_overdue >=  2)  term = 0.80;
+    else if (days_overdue >=  1)  term = 0.76;
+    else if (days_overdue >=  0)  term = 0.72;
+    else if (days_overdue >= -1)  term = 0.68;
+    else if (days_overdue >= -2)  term = 0.64;
+    else if (days_overdue >= -3)  term = 0.60;
+    else if (days_overdue >= -4)  term = 0.56;
+    else if (days_overdue >= -5)  term = 0.52;
+    else if (days_overdue >= -6)  term = 0.48;
+    else if (days_overdue >= -7)  term = 0.44;
+    else if (days_overdue >= -8)  term = 0.40;
+    else if (days_overdue >= -9)  term = 0.36;
+    else if (days_overdue >= -10) term = 0.32;
+    else if (days_overdue >= -11) term = 0.28;
+    else if (days_overdue >= -12) term = 0.24;
+    else if (days_overdue >= -13) term = 0.20;
+    else                          term = 0.16;
   }
   else
     term = 0.0;
@@ -875,7 +909,7 @@ float Task::urgency ()
           (end = var->find (".coefficient")) != std::string::npos)
       {
         std::string project = var->substr (21, end - 21);
-        coefficient = (float) context.config.getReal (*var);
+        coefficient = context.config.getReal (*var);
 
         if (get ("project").find (project) == 0)
           urgency += coefficient;
@@ -886,7 +920,7 @@ float Task::urgency ()
           (end = var->find (".coefficient")) != std::string::npos)
       {
         std::string tag = var->substr (17, end - 17);
-        coefficient = (float) context.config.getReal (*var);
+        coefficient = context.config.getReal (*var);
 
         if (hasTag (tag))
           urgency += coefficient;
@@ -895,7 +929,7 @@ float Task::urgency ()
   }
 
   // urgency.blocking.coefficient
-  coefficient = (float) context.config.getReal ("urgency.blocking.coefficient");
+  coefficient = context.config.getReal ("urgency.blocking.coefficient");
 
   if (dependencyIsBlocking (*this)) term = 1.0;
   else                              term = 0.0;
