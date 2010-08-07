@@ -117,6 +117,14 @@ _task()
                     COMPREPLY=( $(compgen -W "${config}" -- ${cur}) )
                     return 0
                     ;;
+						 *)
+ 						  case "${prev}" in
+							  merge)
+						  	    COMPREPLY=( $(compgen -o "default" -- ${cur}) )
+						       return 0
+						       ;;
+						  esac
+						  ;;
             esac
             ;;
     esac
