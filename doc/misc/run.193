@@ -73,7 +73,11 @@ task rc:x 1 annotate the 12th looks good
 sleep 1
 task rc:x 1 annotate or the 13th
 task rc:x list
+task rc:x list rc.annotations:full
+task rc:x list rc.annotations:sparse
+task rc:x list rc.annotations:none
 task rc:x 1 denotate 13th
+task rc:x list
 
 # Configuration
 echo Configuration
@@ -97,7 +101,7 @@ echo 'y' | task rc:x config default.project
 
 # Aliases
 echo Aliases
-echo 'y' | task rc:x config alias.zzz=list
+echo 'y' | task rc:x config alias.zzz list
 taks rc:x zzz
 
 # Color
@@ -177,6 +181,10 @@ echo Shell
 # Special tags
 echo Special tags
 
+
+
+
+
 # Waiting
 echo Waiting
 task rc:x add Look for new apartment due:eoy
@@ -193,6 +201,10 @@ task rc:x 11 rc.confirmation:no delete
 
 # Dependencies
 echo Dependencies
+
+
+
+
 
 # Reports
 echo Reports
@@ -246,17 +258,19 @@ task rc:x all status:waiting
 # Import/export
 echo Import/export
 
+
+
+
+
 # Help
 echo Help
 
-exit  # <------------------------------------
-
 task rc:x help
-man task
-man taskrc
-man task-color
-man task-tutorial
-man task-faq
+#man task
+#man taskrc
+#man task-color
+#man task-tutorial
+#man task-faq
 
 # Wrap up
 echo Wrap up

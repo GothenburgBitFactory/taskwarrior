@@ -1,3 +1,4 @@
+[Make window 116x32]
 
 Although currently incomplete, this is the script from which a 1.9.3-specific
 movie will be made.  On the left are the typed commands, and on the right is the
@@ -130,8 +131,8 @@ task undo                                could also have just deleted the task, 
 ---------------------------------------- Info ------------------------------------------------------
 
 task 1 info                              During that undo operation, task displayed metadata that
-                                         is associated with the task.  You can display this with the
-task 1                                   info command, and its shortcut.
+task 1                                   is associated with the task.  You can display this with the
+                                         info command, and its shortcut.
 
 task stats                               There are also statistics that task gathers, which I can
                                          display.
@@ -141,8 +142,12 @@ task stats                               There are also statistics that task gat
 task 1 annotate the 12th looks good      Annotations are little notes that can be added to a task.
 task 1 annotate or the 13th              There can be any number, and each has a time stamp.
 task list
+task list rc.annotations:full            You can choose to display annotations in different ways.
+task list rc.annotations:sparse
+task list rc.annotations:none
 
 task 1 denotate 13th                     Annotations can be removed by providing a matching pattern.
+task list
 
 ---------------------------------------- Configuration ---------------------------------------------
 
@@ -185,7 +190,7 @@ task config default.project
 
 ---------------------------------------- Aliases ---------------------------------------------------
 
-task config alias.zzz=list               You can create aliases to effectively rename task commands.
+task config alias.zzz list               You can create aliases to effectively rename task commands.
 task zzz
 
 ---------------------------------------- Color -----------------------------------------------------
@@ -436,7 +441,9 @@ task help                                You'll find a quick reference page buil
 man task                                 or perhaps you'll want to take a look at the several man
 man taskrc                               pages installed with task.
 man task-color
-man task-tutorial
+
+man task-tutorial                        This screencast is a recording of me going through the
+                                         tutorial.
 man task-faq
 
 ---------------------------------------- Wrap up ---------------------------------------------------
