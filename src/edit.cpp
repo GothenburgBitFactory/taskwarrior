@@ -530,10 +530,12 @@ void editFile (Task& task)
 
   // Create a temp file name in data.location.
   std::stringstream file;
-  file << location.data << "/task." << getpid () << "." << task.id << ".task";
+  file << "task." << getpid () << "." << task.id << ".task";
+  std::string path = location.data + "/" + file.str ();
 
   // Format the contents, T -> text, write to a file.
   std::string before = formatTask (task);
+  chdir (location.data.c_str ());
   File::write (file.str (), before);
 
   // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
