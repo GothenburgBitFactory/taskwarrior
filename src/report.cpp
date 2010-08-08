@@ -202,6 +202,10 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Lists all tasks in CSV format.  Alias to export.csv");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task merge FILE");
+  table.addCell (row, 2, "Merges the specified undo.data file with the local data files.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task export.ical");
   table.addCell (row, 2, "Lists all tasks in iCalendar format.");
 
