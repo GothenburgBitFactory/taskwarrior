@@ -30,7 +30,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 75;
+use Test::More tests => 76;
 
 # Create the rc file.
 if (open my $fh, '>', 'cal.rc')
@@ -242,8 +242,13 @@ like   ($output, qr/30;103m25/,    'Holiday åäö is color-coded');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
+
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');
+
 unlink 'details.rc';
 ok (!-r 'details.rc', 'Removed details.rc');
 

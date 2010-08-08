@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 47;
+use Test::More tests => 48;
 
 # Create the rc file.
 if (open my $fh, '>', 'confirm.rc')
@@ -130,6 +130,9 @@ like ($output, qr/(Permanently delete task 7 'foo'\? \(y\/n\)) \1 \1/, 'confirma
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

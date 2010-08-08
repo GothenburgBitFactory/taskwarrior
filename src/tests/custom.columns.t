@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'custom.rc')
@@ -49,6 +49,9 @@ like ($output, qr/Unrecognized column name: foo\.\n/, 'custom report spotted inv
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

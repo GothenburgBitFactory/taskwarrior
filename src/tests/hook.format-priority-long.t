@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'hook.rc')
@@ -81,6 +81,9 @@ else
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

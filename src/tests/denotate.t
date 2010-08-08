@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 29;
+use Test::More tests => 30;
 
 # Create the rc file.
 if (open my $fh, '>', 'denotate.rc')
@@ -110,6 +110,9 @@ unlike ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'Del
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

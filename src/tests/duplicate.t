@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 16;
 
 # Create the rc file.
 if (open my $fh, '>', 'dup.rc')
@@ -64,6 +64,9 @@ like ($output, qr/Created\s+task\s+4/,     'duplicate output of new task id');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

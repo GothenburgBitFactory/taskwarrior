@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 130;
+use Test::More tests => 131;
 
 # Create the rc file.
 if (open my $fh, '>', 'filter.rc')
@@ -212,6 +212,9 @@ unlike ($output, qr/seven/, 'r7');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

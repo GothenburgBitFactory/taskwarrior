@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 23;
+use Test::More tests => 25;
 
 # Create the rc file.
 if (open my $fh, '>', 'start.rc')
@@ -105,6 +105,10 @@ like ($output, qr/Nu.+stannar.+vi/ms, 'one stopped and annotated with custom des
 ok (-r 'pending.data', 'Need to remove pending.data');
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+ok (-r 'completed.data', 'Need to remove completed.data');
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 ok (-r 'undo.data', 'Need to remove undo.data');
 unlink 'undo.data';

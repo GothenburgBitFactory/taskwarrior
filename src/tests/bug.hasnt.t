@@ -40,7 +40,6 @@ if (open my $fh, '>', 'hasnt.rc')
 }
 
 # 1
-diag ("Initialization taskes 6 seconds");
 qx{../task rc:hasnt.rc add foo};
 
 # 2

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 31;
+use Test::More tests => 32;
 
 # Create the rc file.
 if (open my $fh, '>', 'dep.rc')

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 56;
+use Test::More tests => 57;
 
 # Create the rc file.
 if (open my $fh, '>', 'oldest.rc')
@@ -130,6 +130,9 @@ like   ($output, qr/eleven/, 'newest: eleven');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

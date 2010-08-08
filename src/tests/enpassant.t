@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 # Create the rc file.
 if (open my $fh, '>', 'enp.rc')
@@ -56,6 +56,9 @@ like ($output, qr/Tags\s+tag/,            'en passant 2 description change');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

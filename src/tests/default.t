@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 17;
+use Test::More tests => 18;
 
 # Create the rc file.
 if (open my $fh, '>', 'default.rc')
@@ -75,6 +75,9 @@ like ($output, qr/1 PROJECT L .+ priority specified/, 'default command worked');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

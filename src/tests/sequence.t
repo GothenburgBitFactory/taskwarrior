@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 28;
+use Test::More tests => 29;
 
 # Create the rc file.
 if (open my $fh, '>', 'seq.rc')
@@ -120,6 +120,9 @@ like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence annotate 2');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');

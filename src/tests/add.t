@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 14;
 
 # Create the rc file.
 if (open my $fh, '>', 'add.rc')
@@ -64,6 +64,9 @@ like ($output, qr/Status\s+Deleted\n/, 'add Deleted');
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');
