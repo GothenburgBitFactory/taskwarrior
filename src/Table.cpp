@@ -612,43 +612,24 @@ bool sort_compare (int left, int right)
     if (cell_left && cell_right && *cell_left == *cell_right)
       continue;
 
+    // Note: Table::ascendingDueDate is not represented here because it is not
+    //       possible to have a NULL due date, only a blank "".
+
     // nothing < something.
     if (cell_left == NULL && cell_right != NULL)
-    {
-      if (sort_type == Table::ascendingDueDate)
-        return true;
-
-      else if (sort_type == Table::descendingDueDate)
-        return false;
-
-      else if (sort_type == Table::ascendingNumeric   ||
-               sort_type == Table::ascendingCharacter ||
-               sort_type == Table::ascendingPriority  ||
-               sort_type == Table::ascendingDate      ||
-               sort_type == Table::ascendingPeriod)
-        return true;
-
-      return false;
-    }
+      return (sort_type == Table::ascendingNumeric   ||
+              sort_type == Table::ascendingCharacter ||
+              sort_type == Table::ascendingPriority  ||
+              sort_type == Table::ascendingDate      ||
+              sort_type == Table::ascendingPeriod) ? true : false;
 
     // something > nothing.
     if (cell_left != NULL && cell_right == NULL)
-    {
-      if (sort_type == Table::ascendingDueDate)
-        return false;
-
-      else if (sort_type == Table::descendingDueDate)
-        return true;
-
-      else if (sort_type == Table::ascendingNumeric   ||
-               sort_type == Table::ascendingCharacter ||
-               sort_type == Table::ascendingPriority  ||
-               sort_type == Table::ascendingDate      ||
-               sort_type == Table::ascendingPeriod)
-        return false;
-
-      return true;
-    }
+      return (sort_type == Table::ascendingNumeric   ||
+              sort_type == Table::ascendingCharacter ||
+              sort_type == Table::ascendingPriority  ||
+              sort_type == Table::ascendingDate      ||
+              sort_type == Table::ascendingPeriod) ? false : true;
 
     // Differing data - do a proper comparison.
     if (cell_left && cell_right)
