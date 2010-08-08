@@ -1610,6 +1610,7 @@ int handleAppend (std::string &outs)
           changes += deltaAppend (*other);
           changes += deltaTags (*other);
           changes += deltaAttributes (*other);
+          changes += deltaSubstitutions (*other);
 
           if (taskDiff (before, *other))
           {
@@ -1686,6 +1687,7 @@ int handlePrepend (std::string &outs)
           changes += deltaPrepend (*other);
           changes += deltaTags (*other);
           changes += deltaAttributes (*other);
+          changes += deltaSubstitutions (*other);
 
           if (taskDiff (before, *other))
           {
