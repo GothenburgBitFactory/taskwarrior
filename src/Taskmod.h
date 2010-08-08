@@ -31,11 +31,10 @@
 #include <Task.h>
 
 class Taskmod {
-
 public:
-  Taskmod();
-  Taskmod(const Taskmod& other);
-  ~Taskmod();
+  Taskmod ();
+  Taskmod (const Taskmod& other);
+  ~Taskmod ();
 
   // operators
   bool operator< (const Taskmod& compare);
@@ -45,25 +44,25 @@ public:
   Taskmod& operator= (const Taskmod& other);
 
   // helper
-  void reset(long timestamp=0);
-  bool isNew();
-  bool issetBefore();
-  bool issetAfter();
-  bool isValid();
+  void reset (long timestamp=0);
+  bool isNew ();
+  bool issetBefore ();
+  bool issetAfter ();
+  bool isValid ();
 
-  std::string getUuid();
-  std::string toString();
+  std::string getUuid ();
+  std::string toString ();
 
   // setter
-  void setAfter(const Task& after);
-  void setBefore(const Task& before);
-  void setTimestamp(long timestamp);
+  void setAfter (const Task& after);
+  void setBefore (const Task& before);
+  void setTimestamp (long timestamp);
 
   // getter
-  Task& getAfter();
-  Task& getBefore();
-  long getTimestamp() const;
-  std::string getTimeStr() const;
+  Task& getAfter ();
+  Task& getBefore ();
+  long getTimestamp () const;
+  std::string getTimeStr () const;
 
 protected:
   Task after;

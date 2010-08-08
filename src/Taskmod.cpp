@@ -30,154 +30,175 @@
 #include <assert.h>
 #include "Taskmod.h"
 
-Taskmod::Taskmod()
+////////////////////////////////////////////////////////////////////////////////
+Taskmod::Taskmod ()
 {
   timestamp = 0;
   bAfterSet = false;
   bBeforeSet = false;
 }
 
-Taskmod::Taskmod(const Taskmod& other)
+////////////////////////////////////////////////////////////////////////////////
+Taskmod::Taskmod (const Taskmod& other)
 {
-  this->before = other.before;
-  this->after  = other.after;
-  this->timestamp = other.timestamp;
-  this->bAfterSet = other.bAfterSet;
+  this->before     = other.before;
+  this->after      = other.after;
+  this->timestamp  = other.timestamp;
+  this->bAfterSet  = other.bAfterSet;
   this->bBeforeSet = other.bBeforeSet;
 }
 
-Taskmod::~Taskmod()
+////////////////////////////////////////////////////////////////////////////////
+Taskmod::~Taskmod ()
 {
 }
 
-// OPERATORS
+////////////////////////////////////////////////////////////////////////////////
 bool Taskmod::operator< (const Taskmod &compare)
 {
-  return (timestamp < compare.getTimestamp());
+  return (timestamp < compare.getTimestamp ());
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool Taskmod::operator> (const Taskmod &compare)
 {
-  return (timestamp > compare.getTimestamp());
+  return (timestamp > compare.getTimestamp ());
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool Taskmod::operator== (const Taskmod& compare)
 {
-  return ( (compare.after == this->after)
-        && (compare.before == this->before)
+  return ( (compare.after     == this->after)
+        && (compare.before    == this->before)
         && (compare.timestamp == this->timestamp) );
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool Taskmod::operator!= (const Taskmod& compare)
 {
-  return !this->operator ==(compare);
+  return !this->operator== (compare);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 Taskmod& Taskmod::operator= (const Taskmod& other)
 {
-  if (this != &other) {
-    this->before = other.before;
-    this->after = other.after;
-    this->timestamp = other.timestamp;
-    this->bAfterSet = other.bAfterSet;
+  if (this != &other)
+  {
+    this->before     = other.before;
+    this->after      = other.after;
+    this->timestamp  = other.timestamp;
+    this->bAfterSet  = other.bAfterSet;
     this->bBeforeSet = other.bBeforeSet;
   }
 
   return *this;
 }
 
-// HELPER
-void Taskmod::reset(long timestamp)
+////////////////////////////////////////////////////////////////////////////////
+void Taskmod::reset (long timestamp)
 {
-  this->bAfterSet = false;
+  this->bAfterSet  = false;
   this->bBeforeSet = false;
-  this->timestamp = timestamp;
+  this->timestamp  = timestamp;
 }
 
-bool Taskmod::isNew()
+////////////////////////////////////////////////////////////////////////////////
+bool Taskmod::isNew ()
 {
   return !bBeforeSet;
 }
 
-bool Taskmod::issetAfter()
+////////////////////////////////////////////////////////////////////////////////
+bool Taskmod::issetAfter ()
 {
   return bAfterSet;
 }
 
-bool Taskmod::issetBefore()
+////////////////////////////////////////////////////////////////////////////////
+bool Taskmod::issetBefore ()
 {
   return bBeforeSet;
 }
 
-bool Taskmod::isValid()
+////////////////////////////////////////////////////////////////////////////////
+bool Taskmod::isValid ()
 {
   return (timestamp > 0) && (bAfterSet);
 }
 
-std::string Taskmod::getUuid()
+////////////////////////////////////////////////////////////////////////////////
+std::string Taskmod::getUuid ()
 {
-  if (!bAfterSet) {
-    throw std::string("Taskmod::getUuid(): Task object not initialized.");
+  if (!bAfterSet)
+  {
+    throw std::string ("Taskmod::getUuid(): Task object not initialized.");
   }
 
-  return after.get("uuid");
+  return after.get ("uuid");
 }
 
-std::string Taskmod::toString()
+////////////////////////////////////////////////////////////////////////////////
+std::string Taskmod::toString ()
 {
-  assert(bAfterSet);
+  assert (bAfterSet);
 
   std::stringstream stream;
   stream << "time " << timestamp << "\n";
 
-  if (bBeforeSet) {
+  if (bBeforeSet)
+  {
     stream << "old " << before.composeF4();
   }
 
   stream << "new " << after.composeF4();
   stream << "---\n";
 
-  return stream.str();
+  return stream.str ();
 }
 
-// SETTER
-void Taskmod::setAfter(const Task& after)
+////////////////////////////////////////////////////////////////////////////////
+void Taskmod::setAfter (const Task& after)
 {
-  this->after = after;
-  bAfterSet = true;
+  this->after     = after;
+  this->bAfterSet = true;
 }
 
-void Taskmod::setBefore(const Task& before)
+////////////////////////////////////////////////////////////////////////////////
+void Taskmod::setBefore (const Task& before)
 {
-  this->before = before;
-  bBeforeSet = true;
+  this->before     = before;
+  this->bBeforeSet = true;
 }
 
-void Taskmod::setTimestamp(long timestamp)
+////////////////////////////////////////////////////////////////////////////////
+void Taskmod::setTimestamp (long timestamp)
 {
   this->timestamp = timestamp;
 }
 
-// GETTER
-Task& Taskmod::getAfter()
+////////////////////////////////////////////////////////////////////////////////
+Task& Taskmod::getAfter ()
 {
   return after;
 }
 
-Task& Taskmod::getBefore()
+////////////////////////////////////////////////////////////////////////////////
+Task& Taskmod::getBefore ()
 {
   return before;
 }
 
-long Taskmod::getTimestamp() const
+////////////////////////////////////////////////////////////////////////////////
+long Taskmod::getTimestamp () const
 {
   return timestamp;
 }
 
-std::string Taskmod::getTimeStr() const
+////////////////////////////////////////////////////////////////////////////////
+std::string Taskmod::getTimeStr () const
 {
   std::stringstream sstream;
   sstream << timestamp;
-  return sstream.str();
-}
 
+  return sstream.str ();
+}
