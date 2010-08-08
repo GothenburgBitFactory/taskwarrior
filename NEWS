@@ -11,6 +11,7 @@ New Features in task 1.9.3
   - Now defines an overdue task as being one second after the due date,
     instead of the day after the due date.
   - Import and export of YAML 1.1, including round-trip capability.
+  - New merge capability for syncing task data files.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -21,6 +22,8 @@ New commands in task 1.9.3
     and color rules from your .taskrc and theme.
   - New 'task export.yaml' command will export YAML 1.1, which can then be
     imported via 'task import <file>'.
+  - New 'task merge <file>' command that can merge the local and an undo.data
+    file from another task user, to sync across machines, for example.
 
 New configuration options in task 1.9.3
 
