@@ -56,6 +56,7 @@
    values. 
  + Fixed problem with the 'undo' command not observing the rc.color or the
    rc._forcecolor settings.
+ + Fixed problem with extra blank line in the ghistory reports.
 
 ------ old releases ------------------------------
 

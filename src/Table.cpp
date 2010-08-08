@@ -809,6 +809,7 @@ const std::string Table::render (int maxrows /* = 0 */, int maxlines /* = 0 */)
                      mColumnPadding[col]);
   }
 
+  output.erase (output.find_last_not_of (" ") + 1);
   output += "\n";
   ++renderedlines;
   if (underline.length ())
