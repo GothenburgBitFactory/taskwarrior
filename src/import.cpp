@@ -114,16 +114,16 @@ static fileType determineFileType (const std::vector <std::string>& lines)
     // All done tasks begin with "x YYYY-MM-DD".
     if (lines[i].length () > 12)
     {
-      if (           lines[i][0] == 'x' &&
-                     lines[i][1] == ' ' &&
+      if (lines[i][0] == 'x' &&
+          lines[i][1] == ' ' &&
           isdigit (lines[i][2]) &&
           isdigit (lines[i][3]) &&
           isdigit (lines[i][4]) &&
           isdigit (lines[i][5]) &&
-                     lines[i][6] == '-' &&
+          lines[i][6] == '-' &&
           isdigit (lines[i][7]) &&
           isdigit (lines[i][8]) &&
-                     lines[i][9] == '-' &&
+          lines[i][9] == '-' &&
           isdigit (lines[i][10]) &&
           isdigit (lines[i][11]))
         return todo_sh_2_0;
@@ -162,7 +162,7 @@ static fileType determineFileType (const std::vector <std::string>& lines)
     return csv;
 
   // Looks like 'text' is the default case, if there is any data at all.
-  if (lines.size () > 1)
+  if (lines.size () >= 1)
     return text;
 
   return not_a_clue;
