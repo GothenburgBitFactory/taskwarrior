@@ -193,6 +193,8 @@ task config default.project
 task config alias.zzz list               You can create aliases to effectively rename task commands.
 task zzz
 
+task z                                   You can abbreviate those, too.
+
 ---------------------------------------- Color -----------------------------------------------------
 
 task config color on                     All the examples so far have been shown with color turned
@@ -416,8 +418,14 @@ task list invit                          unfiltered list, which shows all tasks.
 
 task list description.contains:invit     This is the equivalent form using attribute modifiers.  In
                                          this example we are filtering on descriptions that contain
-                                         the work fragment.  Here we are using the 'contains'
+                                         the word fragment.  Here we are using the 'contains'
                                          modifier, but there are many others.
+
+task list desc.word:the                  All tasks containing the whole word 'the'.  See how
+                                         annotations are also searched?
+
+task list desc.noword:invitations        Here is a list of all tasks that do not contain the whole
+                                         word 'invitations'.
 
 task list pro:party                      Here list all tasks in the 'party' project.
 task list pro.is:party                   And the full equivalent.
@@ -442,9 +450,21 @@ task all status:waiting                  The 'waiting' report is similarly defin
 
 ---------------------------------------- Import/Export ---------------------------------------------
 
-  import
-  export.yaml
-  export.csv
+task export.csv                          You can export your tasks.  Here you see all tasks being
+                                         exported in CSV format.
+
+task export.csv venue                    Let's just export one task in CSV format...
+task export.vcalendar venue              Or in VCalendar format...
+task export.yaml venue                   Or YAML.
+
+cat file.text                            Task can also import.  Here I am importing simple lines
+task import file.text                    of text.  Task recognizes the format and confirms.
+
+cat file.yaml                            Here is a YAML example.  Task can read several formats,
+task import file.yaml                    including old versions task data.  Using YAML, you can
+                                         round-trip the data without loss.
+
+task new limit:2                         Here are the imported tasks.
 
 ---------------------------------------- Help ------------------------------------------------------
 

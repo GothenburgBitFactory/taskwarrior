@@ -246,6 +246,8 @@ echo Advanced filters
 task rc:x list
 task rc:x list invit
 task rc:x list description.contains:invit
+task rc:x list desc.word:the
+task rc:x list desc.noword:invitations
 task rc:x list pro:party
 task rc:x list pro.is:party
 task rc:x list pro.not:party
@@ -257,10 +259,33 @@ task rc:x all status:waiting
 
 # Import/export
 echo Import/export
+task rc:x export.csv
+task rc:x export.csv venue
+task rc:x export.vcalendar venue
+task rc:x export.yaml venue
 
+cat <<EOF >file.text
+Remember to read the task man page
+EOF
+cat file.text
+printf "y\n" | task rc:x import file.text
 
-
-
+cat <<EOF >file.yaml
+%YAML 1.1
+---
+  task:
+    description: Visit http://taskwarrior.org
+    due: 1281844800
+    entry: 1281289630
+    priority: H
+    project: work
+    status: pending
+    uuid: 23afada0-a446-8d5a-c213-30d99d52c4b0
+...
+EOF
+cat file.yaml
+printf "y\n" | task rc:x import file.yaml
+task rc:x new limit:2
 
 # Help
 echo Help
