@@ -14,7 +14,7 @@ task-tutorial.5 man page.
 http://taskwarrior.org                   Hello, and welcome to this task version 1.9.3 demo.
                                          I'm going to show you over 100 features, so don't blink, or
                                          you'll miss some.  Even experienced task users are going to
-                                         learn something.
+                                         learn *something*.
 
                                          I will start off with basic usage, and proceed to more
                                          sophisticated commands as we go along.
@@ -320,7 +320,18 @@ task> quit
 
 ---------------------------------------- Special Tags ----------------------------------------------
 
-  special tags
+task rc:x 6 +nocolor                     You've seen tags, but there are also 'special tags' that
+task rc:x list                           have effects on individual tasks.  The 'nocolor' special
+                                         tag causes the color rules to be bypassed.
+
+task rc:x tags                           Special tags are highlighted by the 'tags' command.
+
+task rc:x 6 -nocolor                     There are others - the 'nonag' special tag prevents task
+                                         from generating nag messages when you work on low priority
+                                         tasks when there are higher priority tasks.
+
+                                         The 'nocal' special tag will prevent a task from appearing
+                                         on the calendar.
 
 ---------------------------------------- Waiting ---------------------------------------------------
 
@@ -439,11 +450,12 @@ task all status:waiting                  The 'waiting' report is similarly defin
 
 task help                                You'll find a quick reference page built into task itself,
 man task                                 or perhaps you'll want to take a look at the several man
-man taskrc                               pages installed with task.
-man task-color
+man taskrc                               pages installed with task.  This demo has superficially
+man task-color                           shown many features which have more capability and depth
+                                         which you can find in the man pages, and online.
 
-man task-tutorial                        This screencast is a recording of me going through the
-                                         tutorial.
+man task-tutorial                        This screencast is actually just a recording of me going
+                                         through the tutorial.
 man task-faq
 
 ---------------------------------------- Wrap up ---------------------------------------------------

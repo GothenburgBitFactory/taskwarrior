@@ -180,10 +180,10 @@ echo Shell
 
 # Special tags
 echo Special tags
-
-
-
-
+task rc:x 6 +nocolor
+task rc:x list
+task rc:x tags
+task rc:x 6 -nocolor
 
 # Waiting
 echo Waiting
