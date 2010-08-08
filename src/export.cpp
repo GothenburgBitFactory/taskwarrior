@@ -80,6 +80,9 @@ int handleExportCSV (std::string &outs)
 
     outs = out.str ();
     context.hooks.trigger ("post-export-command");
+
+    // Prevent messages from cluttering the export output.
+    context.headers.clear ();
   }
 
   return rc;
@@ -214,6 +217,9 @@ int handleExportiCal (std::string &outs)
 
     outs = out.str ();
     context.hooks.trigger ("post-export-command");
+
+    // Prevent messages from cluttering the export output.
+    context.headers.clear ();
   }
 
   return rc;
@@ -249,6 +255,9 @@ int handleExportYAML (std::string &outs)
 
     outs = out.str ();
     context.hooks.trigger ("post-export-command");
+
+    // Prevent messages from cluttering the export output.
+    context.headers.clear ();
   }
 
   return rc;
