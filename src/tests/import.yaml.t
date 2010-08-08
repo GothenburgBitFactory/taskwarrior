@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 14;
 
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
@@ -49,15 +49,18 @@ if (open my $fh, '>', 'import.txt')
     description: zero
     project: A
     status: pending
+    entry: 1234567889
   task:
     uuid: 11111111-1111-1111-1111-111111111111
     description: one
     project: B
     status: pending
+    entry: 1234567889
   task:
     uuid: 22222222-2222-2222-2222-222222222222
     description: two
     status: completed
+    entry: 1234567889
     end: 1234567890
 ...
 EOF
@@ -68,13 +71,30 @@ EOF
 
 my $output = qx{../task rc:import.rc import import.txt};
 like ($output, qr/Imported 3 tasks successfully./, 'no errors');
+# Imported 3 tasks successfully.
 
 $output = qx{../task rc:import.rc list};
-like ($output, qr/1.+A.+zero/, 't1');
-like ($output, qr/2.+B.+one/,   't2');
+# ID Project Pri Due Active Age     Description
+# -- ------- --- --- ------ ------- -----------
+#  1 A                      1.5 yrs zero
+#  2 B                      1.5 yrs one
+# 
+# 2 tasks
+
+like   ($output, qr/1.+A.+zero/, 't1 present');
+like   ($output, qr/2.+B.+one/,  't2 present');
+unlike ($output, qr/3.+two/,     't3 missing');
 
 $output = qx{../task rc:import.rc completed};
-like ($output, qr/2\/13\/2009.+two/,  't3');
+# Complete  Project Pri Age     Description
+# --------- ------- --- ------- -----------
+# 2/13/2009             1.5 yrs two
+# 
+# 1 task
+
+unlike ($output, qr/1.+A.+zero/,       't1 missing');
+unlike ($output, qr/2.+B.+one/,        't2 missing');
+like   ($output, qr/2\/13\/2009.+two/, 't3 present');
 
 # Cleanup.
 unlink 'import.txt';

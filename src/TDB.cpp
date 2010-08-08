@@ -457,9 +457,18 @@ const std::vector <Task>& TDB::getAllModified ()
 // Note: mLocations[0] is where all tasks are written.
 void TDB::add (const Task& task)
 {
-  mNew.push_back (task);
-  mI2U[task.id] = task.get ("uuid");
-  mU2I[task.get ("uuid")] = task.id;
+  Task t (task);
+  if (task.get ("uuid") == "")
+  {
+    std::string unique = ::uuid ();
+    t.set ("uuid", unique);
+  }
+  else
+   t.set ("uuid", task.get ("uuid"));
+
+  mNew.push_back (t);
+  mI2U[task.id] = t.get ("uuid");
+  mU2I[task.get ("uuid")] = t.id;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

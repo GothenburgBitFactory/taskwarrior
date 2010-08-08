@@ -171,9 +171,12 @@ static fileType determineFileType (const std::vector <std::string>& lines)
 ////////////////////////////////////////////////////////////////////////////////
 static void decorateTask (Task& task)
 {
-  char entryTime[16];
-  sprintf (entryTime, "%u", (unsigned int) time (NULL));
-  task.set ("entry", entryTime);
+  if (!task.has ("entry"))
+  {
+    char entryTime[16];
+    sprintf (entryTime, "%u", (unsigned int) time (NULL));
+    task.set ("entry", entryTime);
+  }
 
   task.setStatus (Task::pending);
 
@@ -798,6 +801,10 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
       context.parse ();
       decorateTask (context.task);
 
+      // Override the Task::pending that decorateTask applies.
+      if (!isPending)
+        context.task.setStatus (Task::completed);
+
       context.task.set ("uuid", uuid ());
 
       if (isPending)
@@ -1169,6 +1176,7 @@ static std::string importYAML (const std::vector <std::string>& lines)
 
   bool inAnno = false;
   std::string annoEntry;
+  Task::status status = Task::pending;
 
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
@@ -1193,10 +1201,29 @@ static std::string importYAML (const std::vector <std::string>& lines)
     {
       if (t.size ())
       {
+        // Generate a UUID if not present.
+        if (t.get ("uuid") == "")
+          t.set ("uuid", uuid ());
+
+        // Add defaults.
+        decorateTask (t);
+        t.setStatus (status);
+
+        // TODO Fail on UUID collision.
+
         context.tdb.add (t);
         t.clear ();
         ++count;
       }
+    }
+
+    else if (name == "status")
+    {
+           if (value == "waiting")   status = Task::waiting;
+      else if (value == "completed") status = Task::completed;
+      else if (value == "deleted")   status = Task::deleted;
+      else if (value == "recurring") status = Task::recurring;
+      else                           status = Task::pending;
     }
 
     else if (name == "annotation")
