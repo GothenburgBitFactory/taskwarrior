@@ -1,4 +1,4 @@
-.TH task-faq 5 2010-07-10 "task 1.9.3" "User Manuals"
+.TH task-faq 5 2010-08-08 "task 1.9.3" "User Manuals"
 
 .SH NAME
 task-faq \- A FAQ for the task(1) command line todo manager.
@@ -11,11 +11,6 @@ has a rich list of commands that allow you to do various things with it.
 .SH WELCOME
 Welcome to the task FAQ.  If you have would like to see a question answered
 here, please send us a note at <support@taskwarrior.org>.
-
-
-
-
-
 
 .TP
 .B Q: When I redirect the output of task to a file, I lose all the colors.  How do I fix this?
@@ -85,8 +80,9 @@ Note that there are binary packages that all include this capability.
 
 .TP
 .B Q: How do I build task under Cygwin?
-A: Task is built the same way everywhere. But under Cygwin, you'll need to make
-sure you have the following packages available first:
+A: Take a look at the README.build file, where the latest information on build
+issues is kept.  Task is built the same way everywhere. But under Cygwin, you'll
+need to make sure you have the following packages available first:
 
     gcc
     make
@@ -112,6 +108,8 @@ If you run the command:
 
 Task will display all the colors it can use, and you will see which ones you can use.
 
+Note that if you install the 'mintty' shell in Cygwin, then you can use 256 colors.
+
 See the 'man task-color' for more details on which colors can be used.
 
 .TP
@@ -134,9 +132,17 @@ one for you.  Another way to do this is with the command:
 
     $ task rc:new-file version
 
-Task will create 'new-file' if it doesn't already exist.  Note that this is a
-good way to learn about new configuration settings, if your .taskrc file was
-created by an older version of task.
+Task will create 'new-file' if it doesn't already exist.  There will not be
+much in it though - task relies heavily on default values, which can be seen
+with this command:
+
+    $ task show
+
+which lists all the currently known settings.  If you have just created
+new-file, then this command lists only the defaults.
+
+Note that this is a good way to learn about new configuration settings,
+particularly if your .taskrc file was created by an older version of task.
 
 .TP
 .B Q: Do I need to back up my task data?
@@ -173,12 +179,12 @@ ensure that both systems are fully synchronized.
 
 .TP
 .B Q: The undo.data file gets very large - do I need it?
-You need it if you want the undo capability.  But if it gets large, you can
-certainly truncate it to save space, just be careful to delete lines from the
-top of the file, up to and including a separator '---'.  The simplest way is to
-simply delete the undo.data file.  Note that it does not slow down task, because
-task never reads it until you want to undo.  Otherwise task only appends to the
-file.
+You need it if you want the undo capability, or the merge capability mentioned
+above.  But if it gets large, you can certainly truncate it to save space, just
+be careful to delete lines from the top of the file, up to and including a
+separator '---'.  The simplest way is to simply delete the undo.data file.  Note
+that it does not slow down task, because task never reads it until you want to
+undo.  Otherwise task only appends to the file.
 
 .TP
 .B Q: How do I know whether my terminal support 256 colors?
@@ -195,6 +201,9 @@ See the task-color(5) man page for more details.
 
 .TP
 .B Q: How do I make use of all these colors?
+Use one of our provided color themes, or create your own - after all, they are
+just collections of color settings.
+
 See the task-color(5) man page for an in-depth explanation of the task color
 rules.
 
@@ -304,6 +313,18 @@ non-exact match:
 
 This will remove the second annotation - the first non-exact match.
 
+.TP
+.B Q: How can I help?
+There are lots of ways.  Here are some:
+
+ - Provide feedback on what works, what does not
+ - Tell us how task does or does not fit your workflow
+ - Tell people about task
+ - Report bugs when you see them
+ - Contribute to our Wiki
+ - Suggest features
+ - Write unit tests
+ - Fix bugs
 
 .SH "CREDITS & COPYRIGHTS"
 task was written by P. Beckingham <paul@beckingham.net>.
