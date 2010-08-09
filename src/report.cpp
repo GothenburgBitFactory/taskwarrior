@@ -2030,54 +2030,103 @@ int handleReportCalendar (std::string &outs)
     int mTo = mFrom;
     int yTo = yFrom;
 
-    // Determine what to do
-    int numberOfArgs = context.args.size();
+    // Defaults.
+    monthsToDisplay = monthsPerLine;
+    mFrom = today.month ();
+    yFrom = today.year ();
 
-    if (numberOfArgs == 1) {
-      // task cal
-      monthsToDisplay = monthsPerLine;
-      mFrom = today.month();
-      yFrom = today.year();
-    }
-    else if (numberOfArgs == 2) {
-      if (context.args[1] == "y") {
-        // task cal y
-        monthsToDisplay = 12;
-        mFrom = today.month();
-        yFrom = today.year();
-      }
-      else if (context.args[1] == "due") {
-        // task cal due
-        monthsToDisplay = monthsPerLine;
+    // Set up a vector of commands (1), for autoComplete.
+    std::vector <std::string> commandNames;
+    commandNames.push_back ("calendar");
+
+    // Set up a vector of keywords, for autoComplete.
+    std::vector <std::string> keywordNames;
+    keywordNames.push_back ("due");
+
+    // Set up a vector of months, for autoComplete.
+    std::vector <std::string> monthNames;
+    monthNames.push_back ("january");
+    monthNames.push_back ("february");
+    monthNames.push_back ("march");
+    monthNames.push_back ("april");
+    monthNames.push_back ("may");
+    monthNames.push_back ("june");
+    monthNames.push_back ("july");
+    monthNames.push_back ("august");
+    monthNames.push_back ("september");
+    monthNames.push_back ("october");
+    monthNames.push_back ("november");
+    monthNames.push_back ("december");
+
+    // For autoComplete results.
+    std::vector <std::string> matches;
+
+    // Look at all args, regardless of sequence.
+    int argMonth = 0;
+    int argYear = 0;
+    bool argWholeYear = false;
+    foreach (arg, context.args)
+    {
+      // Some version of "calendar".
+      if (autoComplete (lowerCase (*arg), commandNames, matches) == 1)
+        continue;
+
+      // "due".
+      else if (autoComplete (lowerCase (*arg), keywordNames, matches) == 1)
         getpendingdate = true;
+
+      // "y".
+      else if (lowerCase (*arg) == "y")
+        argWholeYear = true;
+
+      // YYYY.
+      else if (digitsOnly (*arg) && arg->length () == 4)
+        argYear = atoi (arg->c_str ());
+
+      // MM.
+      else if (digitsOnly (*arg) && arg->length () <= 2)
+      {
+        argMonth = atoi (arg->c_str ());
+        if (argMonth < 1 || argMonth > 12)
+          throw std::string ("Argument '") + *arg + "' is not a valid month.";
       }
-      else {
-        // task cal 2010
-        monthsToDisplay = 12;
-        mFrom = 1;
-        yFrom = atoi (context.args[1].c_str ());
+
+      // "January" etc.
+      else if (autoComplete (lowerCase (*arg), monthNames, matches) == 1)
+      {
+        argMonth = Date::monthOfYear (matches[0]);
+        if (argMonth == -1)
+          throw std::string ("Argument '") + *arg + "' is not a valid month.";
       }
+
+      else
+        throw std::string ("Could not recognize argument '") + *arg + "'.";
     }
-    else if (numberOfArgs == 3) {
-      if (context.args[2] == "y") {
-        // task cal due y
-        monthsToDisplay = 12;
-        getpendingdate = true;
-      }
-      else {
-        // task cal 8 2010
-        monthsToDisplay = monthsPerLine;
-        mFrom = atoi (context.args[1].c_str ());
-        yFrom = atoi (context.args[2].c_str ());
-      }
-    }
-    else if (numberOfArgs == 4) {
-      // task cal 8 2010 y
+
+    // Supported combinations:
+    //
+    //   Command line  monthsToDisplay  mFrom  yFrom  getpendingdate
+    //   ------------  ---------------  -----  -----  --------------
+    //   cal             monthsPerLine  today  today           false
+    //   cal y                      12  today  today           false
+    //   cal due         monthsPerLine  today  today            true
+    //   cal YYYY                   12      1    arg           false
+    //   cal due y                  12  today  today            true
+    //   cal MM YYYY     monthsPerLine    arg    arg           false
+    //   cal MM YYYY y              12    arg    arg           false
+
+    if (argWholeYear || (argYear && !argMonth && !argWholeYear))
       monthsToDisplay = 12;
-      mFrom = atoi (context.args[1].c_str ());
-      yFrom = atoi (context.args[2].c_str ());
-    }
 
+    if (!argMonth && argYear)
+      mFrom = 1;
+    else if (argMonth && argYear)
+      mFrom = argMonth;
+
+    if (argYear)
+      yFrom = argYear;
+
+    // Now begin the data subset and rendering.
     int countDueDates = 0;
     if (getpendingdate == true) {
       // Find the oldest pending due date.
