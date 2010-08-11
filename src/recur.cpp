@@ -396,7 +396,7 @@ int getDueState (const std::string& due)
     if (dt < rightNow)
       return 3;
 
-    if (dt == thisDay)
+    if (rightNow.sameDay (dt))
       return 2;
 
     int imminentperiod = context.config.getInteger ("due");
