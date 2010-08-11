@@ -535,7 +535,8 @@ void editFile (Task& task)
 
   // Format the contents, T -> text, write to a file.
   std::string before = formatTask (task);
-  chdir (location.data.c_str ());
+  int ignored = chdir (location.data.c_str ());
+  ++ignored; // Keep compiler quiet.
   File::write (file.str (), before);
 
   // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
