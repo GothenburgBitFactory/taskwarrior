@@ -27,7 +27,7 @@ $ task rc:<directory-path>/.taskrc
 .RE
 
 Individual option can be overridden by using the
-.I rc.<name>: 
+.I rc.<name>:
 attribute when running task:
 
 .RS
@@ -109,7 +109,8 @@ statement:
 include <path/to/the/configuration/file/to/be/included>
 .RE
 
-By using include files you can divide your main configuration file into several ones containing just the relevant configuration data like colors, etc.
+By using include files you can divide your main configuration file into several
+ones containing just the relevant configuration data like colors, etc.
 
 There are two excellent uses of includes in your .taskrc, shown here:
 
@@ -171,6 +172,10 @@ The locale is a combination of ISO 639-1 language code and ISO 3166 country
 code.  If not specified, task will assume en-US.  If specified, task will locate
 the correct file of localized strings and proceed.  It is an error to specify a
 locale for which there is no strings file.
+
+.TP
+.B verbose=yes
+Controls some of the verbosity of task.
 
 .TP
 .B confirmation=yes
@@ -476,7 +481,9 @@ variable.
 .RE
 
 .RS
-The following holidays are computed automatically: Good Friday (goodfriday), Easter (easter), Easter monday (eastermonday), Ascension (ascension), Pentecost (pentecost). The date for these holidays is the given keyword:
+The following holidays are computed automatically: Good Friday (goodfriday),
+Easter (easter), Easter monday (eastermonday), Ascension (ascension), Pentecost
+(pentecost). The date for these holidays is the given keyword:
 .RE
 
 .RS

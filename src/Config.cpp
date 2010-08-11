@@ -67,6 +67,7 @@ std::string Config::defaults =
   "#editor=vi                                    # Preferred text editor\n"
   "\n"
   "# Miscellaneous\n"
+  "verbose=yes                                   # Provide extra feedback\n"
   "confirmation=yes                              # Confirmation on delete, big changes\n"
   "echo.command=yes                              # Details on command just run\n"
   "annotations=full                              # Level of verbosity for annotations: full, sparse or none\n"
