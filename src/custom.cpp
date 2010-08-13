@@ -730,6 +730,12 @@ void validSortColumns (
   std::vector <std::string>::const_iterator sc;
   for (sc = sortColumns.begin (); sc != sortColumns.end (); ++sc)
   {
+    char direction = (*sc)[sc->length () - 1];
+    if (direction != '-' && direction != '+')
+      throw std::string ("Sort column '") +
+            *sc +
+            "' does not have a +/- ascending/descending indicator.";
+
     std::vector <std::string>::const_iterator co;
     for (co = columns.begin (); co != columns.end (); ++co)
       if (sc->substr (0, sc->length () - 1) == *co)
