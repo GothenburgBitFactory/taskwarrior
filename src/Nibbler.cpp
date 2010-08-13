@@ -210,18 +210,71 @@ bool Nibbler::getUntilEOS (std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getQuoted (char c, std::string& result)
+bool Nibbler::getQuoted (
+  char c,
+  std::string& result,
+  bool unescape /* = true */,
+  bool quote /* = false */)
 {
-  std::string::size_type backup = mCursor;
-
-  if (skip (c) &&
-      getUntil (c, result) &&
-      skip (c))
+  if (mCursor < mLength)
   {
-    return true;
+    if (mInput[mCursor] != c)
+      return false;
+
+    result = "";
+    bool inquote = false;
+    char current = 0;
+    char previous = 0;
+
+    // '"'
+    // p c
+    // - -
+    //   '
+    // ' "
+    // " '
+    for (std::string::size_type i = mCursor; i < mLength; ++i)
+    {
+      previous = current;
+      current = mInput[i];
+
+      if (current == c)
+      {
+        if (previous == '\\')
+        {
+           if (!unescape)
+             result += previous;
+
+           result += current;
+        }
+        else
+        {
+          if (!inquote)
+          {
+            inquote = true;
+            if (quote)
+              result += current;
+          }
+          else
+          {
+            if (quote)
+              result += current;
+
+            mCursor = i + 1;
+            return true;
+          }
+        }
+      }
+      else if (current == '\\')
+      {
+        // NOP
+      }
+      else
+      {
+        result += current;
+      }
+    }
   }
 
-  mCursor = backup;
   return false;
 }
 

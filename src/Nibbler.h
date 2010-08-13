@@ -47,7 +47,7 @@ public:
   bool getUntilEOL (std::string&);
   bool getUntilEOS (std::string&);
 
-  bool getQuoted (char, std::string&);
+  bool getQuoted (char, std::string&, bool unescape = true, bool quote = false);
   bool getInt (int&);
   bool getUnsignedInt (int&);
   bool getLiteral (const std::string&);
