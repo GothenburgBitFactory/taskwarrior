@@ -32,6 +32,7 @@
  + Special tags 'nocal', 'nocolor' and 'nonag' are implemented.
  + The 'tags' command highlights special tags.
  + The 'stats' and 'info' reports not obey color.alternate.
+ + New fish shell tab completion script (thanks to Mick Koch).
  + Fixed bug #427, preventing the task edit command to parse annotation
    dates with spaces.
  + Fixed bug #433, making task command output more consistent.
