@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 32;
+use Test::More tests => 35;
 
 # Create the rc file.
 if (open my $fh, '>', 'dep.rc')
@@ -59,10 +59,12 @@ like ($output, qr/Task 99 not found\./, 'dependencies - add dependency to nonexi
 
 # t 1 dep:2; t info 1 => blocked by 2
 $output = qx{../task rc:dep.rc 1 dep:2; ../task rc:dep.rc info 1};
-like ($output, qr/This task blocked by\s+2 Two\nThis task is blocking/, 'dependencies - trivial blocked');
+like ($output, qr/This task blocked by\s+2 Two\nUUID/, 'dependencies - trivial blocked');
+unlike ($output, qr/This task is blocking\n/,          'dependencies - trivial blocked');
 
 # t info 2 => blocking 1
 $output = qx{../task rc:dep.rc info 2};
+unlike ($output, qr/This task blocked by/,              'dependencies - trivial blocking');
 like ($output, qr/This task is blocking\s+1 One\nUUID/, 'dependencies - trivial blocking');
 
 # t 1 dep:2 (again)
@@ -109,7 +111,8 @@ $output = qx{../task rc:dep.rc 1 dep:2,3,4; ../task rc:dep.rc 1 dep:-2,-4,5; ../
 like ($output, qr/This task blocked by\s+3 Three\n\s+5 Five\nThis task is blocking/, 'dependencies - multiple dependencies modified');
 
 $output = qx{../task rc:dep.rc do 3,5; ../task rc:dep.rc info 1};
-like ($output, qr/This task blocked by\nThis task is blocking/, 'dependencies - task info reflects completed dependencies');
+unlike ($output, qr/This task blocked by/, 'dependencies - task info reflects completed dependencies');
+unlike ($output, qr/This task is blocking/, 'dependencies - task info reflects completed dependencies');
 
 $output = qx{../task rc:dep.rc depreport};
 like ($output, qr/\s1\s+One\s+/, 'dependencies - depends report column reflects completed dependencies');
@@ -171,8 +174,7 @@ $output = qx{../task rc:dep.rc depreport};
 
 like ($output, qr/\s1\s+One\s*\n\s2\s+1\s+Three\s*\n\s3\s+2\s+Four\s*\n\s4\s+3\s+Five/, 'dependencies - fixed chain after completing a blocked task');
 
-# TODO TODO TODO - Need to echo Y Y (once for delete confirmation, again for repair prompt)
-qx{echo y | ../task rc:dep.rc del 2}; 
+qx{printf "Y\nY\n" | ../task rc:dep.rc del 2}; 
 $output = qx{../task rc:dep.rc depreport};
 like ($output, qr/\s1\s+One\s*\n\s2\s+1\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - fixed chain after deleting a blocked task');
 

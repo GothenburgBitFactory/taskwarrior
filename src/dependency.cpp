@@ -64,18 +64,33 @@ bool dependencyIsBlocking (Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 // Follow each of the given task's dependencies to the end of the chain, and if
 // any duplicates show up, or the chain length exceeds N, stop.
-bool dependencyCheckCircular (Task& task)
+
+/*
+  Linear:
+   1->2
+
+   1->2->3->4
+       `->5->6
+           `->7
+
+  Circular:
+   1->1
+
+   1->2->1
+
+   1->2->3
+       `->1
+
+   Algorithm:
+     1. Generate a subset of all task that have dependencies
+     2. Find the heads of all the chains
+     3. For each unique chain head
+     3.1 Walk the chain recording IDs
+     3.2 Duplicate ID => circular
+*/
+bool dependencyIsCircular (Task& task)
 {
-  int maximum = 100;
-  std::vector <std::string> all;
 
-  // Must include self if checking for circular.
-  all.push_back (task.get ("uuid"));
-
-  // TODO foreach dependency
-    // TODO is uuid in all?
-      // TODO y: circular!
-      // TODO n: add uuid to all.
 
   return false;
 }
