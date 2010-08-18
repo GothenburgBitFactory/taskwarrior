@@ -127,15 +127,18 @@ Color::Color (const std::string& spec)
     // X where X is one of black, red, blue ...
     else if ((index = find (word)) != -1)
     {
-      if (bg)
+      if (index)
       {
-        bg_value |= _COLOR_HASBG;
-        bg_value |= index << 8;
-      }
-      else
-      {
-        fg_value |= _COLOR_HASFG;
-        fg_value |= index;
+        if (bg)
+        {
+          bg_value |= _COLOR_HASBG;
+          bg_value |= index << 8;
+        }
+        else
+        {
+          fg_value |= _COLOR_HASFG;
+          fg_value |= index;
+        }
       }
     }
 
