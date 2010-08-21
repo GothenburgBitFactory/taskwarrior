@@ -140,6 +140,8 @@ int handleAdd (std::string &outs)
     out << "Created task " << context.tdb.nextId () << "." << std::endl;
 #endif
 
+    out << onProjectChange (context.task);
+
     context.tdb.commit ();
     context.tdb.unlock ();
 
@@ -205,6 +207,8 @@ int handleLog (std::string &outs)
 
     if (context.config.getBoolean ("echo.command"))
       out << "Logged task."  << std::endl;
+
+    out << onProjectChange (context.task);
 
     outs = out.str ();
     context.hooks.trigger ("post-log-command");
@@ -720,7 +724,8 @@ int handleShow (std::string &outs)
 
     // Complain about configuration variables that are not recognized.
     // These are the regular configuration variables.
-    // Note that there is a leading and trailing space, to make searching easier.
+    // Note that there is a leading and trailing space, to make it easier to
+    // search for whole words.
     std::string recognized =
       " annotations blanklines bulk calendar.details calendar.details.report "
       "calendar.holidays calendar.legend color color.active color.due color.due.today "
@@ -1183,6 +1188,8 @@ int handleDelete (std::string &outs)
                   << task->get ("description")
                   << "'."
                   << std::endl;
+
+              out << onProjectChange (*task);
             }
           }
           else
@@ -1203,6 +1210,8 @@ int handleDelete (std::string &outs)
                   << task->get ("description")
                   << "'."
                   << std::endl;
+
+            out << onProjectChange (*task);
           }
         }
         else {
@@ -1413,6 +1422,8 @@ int handleDone (std::string &outs)
                     << "'."
                     << std::endl;
 
+              out << onProjectChange (*task, false);
+
               ++count;
               context.hooks.trigger ("post-completed", *task);
             }
@@ -1551,6 +1562,10 @@ int handleModify (std::string &outs)
           if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
           {
             context.tdb.update (*other);
+
+            if (before.get ("project") != other->get ("project"))
+              out << onProjectChange (before, *other);
+
             ++count;
           }
         }
@@ -1625,6 +1640,9 @@ int handleAppend (std::string &outs)
                     << other->id
                     << "."
                     << std::endl;
+
+              if (before.get ("project") != other->get ("project"))
+                out << onProjectChange (before, *other);
 
               ++count;
             }
@@ -1702,6 +1720,9 @@ int handlePrepend (std::string &outs)
                     << other->id
                     << "."
                     << std::endl;
+
+              if (before.get ("project") != other->get ("project"))
+                out << onProjectChange (before, *other);
 
               ++count;
             }
@@ -1784,6 +1805,9 @@ int handleDuplicate (std::string &outs)
             << task->get ("description")
             << "'."
             << std::endl;
+
+      out << onProjectChange (dup);
+
       ++count;
     }
 

@@ -24,6 +24,8 @@
  + Added feature #446, task supports now 'sow', 'som' and 'soy' as dates
    for 'due', 'wait' and 'until' (thanks to T. Charles Yun).
    Added as well synonyms soww/eoww plus new socw/eocw for calendar weeks.
+ + Added feature #471, which makes greater use of projects by reporting
+   changes to the completion percentage when it changes.
  + New 'depends' column for custom reports.
  + New 'blocked' report for showing blocked tasks.
  + Improved man pages (thanks to Andy Lester).

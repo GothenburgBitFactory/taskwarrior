@@ -42,10 +42,6 @@
 #include "Color.h"
 #include "../auto.h"
 
-// task.cpp
-void gatherNextTasks (std::vector <Task>&);
-void onChangeCallback ();
-
 // recur.cpp
 void handleRecurrence ();
 Date getNextRecurrence (Date&, std::string&);
@@ -107,8 +103,11 @@ int handleReportGHistoryAnnual (std::string &);
 int handleReportCalendar (std::string &);
 int handleReportStats (std::string &);
 int handleReportTimesheet (std::string &);
+void gatherNextTasks (std::vector <Task>&);
 std::string getFullDescription (Task&, const std::string&);
 std::string getDueDate (Task&, const std::string&);
+std::string onProjectChange (Task&, bool scope = true);
+std::string onProjectChange (Task&, Task&);
 
 // custom.cpp
 int handleCustomReport (const std::string&, std::string &);

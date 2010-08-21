@@ -7,11 +7,12 @@ New Features in task 1.9.3
       $ task ... due:4d
       $ task ... due:3wks
   - Now supports the beginning of the week, month and year in dates.
-  - Now supports 'now' as a date.
+  - Now supports 'now' as a date/time.
   - Now defines an overdue task as being one second after the due date,
     instead of the day after the due date.
   - Import and export of YAML 1.1, including round-trip capability.
   - New merge capability for syncing task data files.
+  - When completing or modifying a task, the project status is displayed.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
