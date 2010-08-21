@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// task - a command line task list manager.
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
@@ -46,7 +46,7 @@
 // 1) It is used to create a new .taskrc file, by copying it directly to disk.
 // 2) It is parsed and used as default values for all Config.get calls.
 std::string Config::defaults =
-  "# Task program configuration file.\n"
+  "# Taskwarrior program configuration file.\n"
   "# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-faq',\n"
   "# 'man task-tutorial', 'man task-color' or 'man taskrc'\n"
   "\n"

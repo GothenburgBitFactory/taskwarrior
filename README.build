@@ -1,14 +1,14 @@
 
-Task Build Notes
+Taskwarrior Build Notes
 ----------------
 
-Task 1.9 has dependencies that are detected by the configure program in almost
-all cases, but there are situations and operating systems that mean you will
-need to offer configure a little help.
+Taskwarrior 1.9 has dependencies that are detected by the configure program in
+almost all cases, but there are situations and operating systems that mean you
+will need to offer configure a little help.
 
-If task will not build on your system, first take a look at the Operating System
-notes below.  If this doesn't help, then go to the Troubleshooting section,
-which includes instructions on how to contact us for help.
+If taskwarrior will not build on your system, first take a look at the Operating
+System notes below.  If this doesn't help, then go to the Troubleshooting
+section, which includes instructions on how to contact us for help.
 
 
 
@@ -16,7 +16,7 @@ Operating System Notes
 ----------------------
 
 Cygwin 1.7
-  Building task on Cygwin 1.7 requires a configure option:
+  Building taskwarrior on Cygwin 1.7 requires a configure option:
 
     ./configure --with-ncurses-inc=/usr/include/ncurses
 
@@ -25,7 +25,7 @@ Cygwin 1.7
 
 
 Haiku Alpha/R1
-  Task must be built with gcc version 4.x, so make sure you run:
+  Taskwarrior must be built with gcc version 4.x, so make sure you run:
 
     $ setgcc gcc4
 
@@ -84,15 +84,15 @@ locate and use the ncurses library.  They are:
 
   --without-ncurses
 
-    This disables ncurses support in task, and should really be used as a last
-    resort.  We know of no systems where this is needed.
+    This disables ncurses support in taskwarrior, and should really be used as a
+    last resort.  We know of no systems where this is needed.
 
 If trying these options does not succeed, please send the contents of the
 'config.log' files to support@taskwarrior.org, or post a message in the support
 forums at taskwarrior.org along with the information.
 
-If configure runs, but task does not build, when ideally you would send both the
-contents of config.log, and a transcript from the build, which is not written to
-a file, and must be captured from the terminal.
+If configure runs, but taskwarrior does not build, when ideally you would send
+both the contents of config.log, and a transcript from the build, which is not
+written to a file, and must be captured from the terminal.
 
 ---

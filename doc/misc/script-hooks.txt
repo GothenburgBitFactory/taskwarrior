@@ -1,5 +1,5 @@
 $
-$ # Task now has Lua 5.1.4 built in.
+$ # Taskwarrior now has Lua 5.1.4 built in.
 $
 $ task version
 $ cat > hooks.lua
@@ -9,18 +9,18 @@ function foo ()
 end
 ^D
 $
-$ # Task can call into Lua at many points during execution.
-$ # This one is called immediately before task quits.
+$ # Taskwarrior can call into Lua at many points during execution.
+$ # This one is called immediately before taskwarrior quits.
 $
 $ task rc.hook.pre-exit=~/hooks.lua:foo version
 $
-$ # While task is calling Lua code, the Lua can also call
-$ # back into a task API, for information.
+$ # While taskwarrior is calling Lua code, the Lua can also call
+$ # back into a taskwarrior API, for information.
 $
 $ cat > hooks.lua
 function foo ()
   print "Lua version is " .. task_lua_version ())
-  print "Task version is " .. task_version ())
+  print "Taskwarrior version is " .. task_version ())
   return 0, nil
 end
 ^D

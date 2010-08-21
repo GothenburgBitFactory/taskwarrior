@@ -18,8 +18,8 @@ which shell you use).  If this is a new setting, you will need to either run
 that profile script, or close and reopen the terminal window (which does the
 same thing).
 
-Now tell task that you want to use color.  This is the default for task, so
-the following step may be unnecessary.
+Now tell taskwarrior that you want to use color.  This is the default for
+taskwarrior, so the following step may be unnecessary.
 
     $ task config color on
 
@@ -28,25 +28,25 @@ like:
 
     color=on
 
-Now task is ready.
+Now taskwarrior is ready.
 
 .SH AUTOMATIC MONOCHROME
-It should be mentioned that task is aware of whether it's output is going to a
-terminal, or to a file or through a pipe.  When task output goes to a terminal,
-color is desirable, but consider the following command:
+It should be mentioned that taskwarrior is aware of whether its output is going
+to a terminal, or to a file or through a pipe.  When taskwarrior output goes to
+a terminal, color is desirable, but consider the following command:
 
     $ task list > file.txt
 
-Do we really want all those color control codes in the file?  Task assumes that
-you do not, and temporarily sets color to 'off' while generating the output.
-This explains the output from the following command:
+Do we really want all those color control codes in the file?  Taskwarrior
+assumes that you do not, and temporarily sets color to 'off' while generating
+the output.  This explains the output from the following command:
 
     $ task config | grep '^color '
     color                        off
 
 it always returns 'off', no matter what the setting.
 
-The reason is that the task output gets piped into grep, and the color is
+The reason is that the taskwarrior output gets piped into grep, and the color is
 disabled.  If you wanted those color codes, you can override this behavior by
 setting the _forcecolor variable to on, like this:
 
@@ -60,7 +60,7 @@ or by temporarily overriding it like this:
     color                        on
 
 .SH AVAILABLE COLORS
-Task has a 'color' command that will show all the colors it is capable of
+Taskwarrior has a 'color' command that will show all the colors it is capable of
 displaying.  Try this:
 
     $ task color
@@ -106,7 +106,8 @@ There is an additional 'underline' attribute that may be used:
 
     underline bright red on black
 
-Task has a command that helps you visualize these color combinations.  Try this:
+Taskwarrior has a command that helps you visualize these color combinations.
+Try this:
 
     $ task color underline bright red on black
 
@@ -187,15 +188,15 @@ combination:
 
     red on gray3
 
-you are mixing a 16-color and 256-color specification.  Task will map red to
-color1, and proceed.  Note that red and color1 are not quite the same.
+you are mixing a 16-color and 256-color specification.  Taskwarrior will map red
+to color1, and proceed.  Note that red and color1 are not quite the same.
 
 Note also that there is no bold or bright attributes when dealing with 256
 colors, but there is still underline available.
 
 .SH LEGEND
-Task will show examples of all defined colors used in your .taskrc, or theme,
-if you run this command:
+Taskwarrior will show examples of all defined colors used in your .taskrc, or
+theme, if you run this command:
 
     $ task color legend
 
@@ -203,9 +204,9 @@ This gives you an example of each of the colors, so you can see the effect,
 without necessarily creating a set of tasks that meet each of the rule criteria.
 
 .SH RULES
-Task supports colorization rules.  These are configuration values that specify
-a color, and the conditions under which that color is used.  By example, let's
-add a few tasks:
+Taskwarrior supports colorization rules.  These are configuration values that
+specify a color, and the conditions under which that color is used.  By example,
+let's add a few tasks:
 
     $ task add project:Home priority:H pay the bills               (1)
     $ task add project:Home            clean the rug               (2)
@@ -236,7 +237,7 @@ those colors can be made subtle, and complementary, but without care, this can
 be a visual mess.  Beware!
 
 .SH THEMES
-Task supports themes.  What this really means is that with the ability to
+Taskwarrior supports themes.  What this really means is that with the ability to
 include other files into the .taskrc file, different sets of color rules can
 be included.
 
@@ -247,7 +248,7 @@ your .taskrc file:
 include /usr/local/share/doc/task/rc/dark-256.theme
 .RE
 
-You can use any of the standard task themes:
+You can use any of the standard taskwarrior themes:
 
 .RS
 light-16.theme
@@ -269,13 +270,13 @@ Better yet, create your own, and share it.  We will gladly host the theme file
 on <http://taskwarrior.org>.
 
 .SH "CREDITS & COPYRIGHTS"
-task was written by P. Beckingham <paul@beckingham.net>.
+Taskwarrior was written by P. Beckingham <paul@beckingham.net>.
 .br
 Copyright (C) 2006 \- 2010 P. Beckingham
 
 This man page was originally written by Paul Beckingham.
 
-task is distributed under the GNU General Public License. See
+Taskwarrior is distributed under the GNU General Public License. See
 http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 
 .SH SEE ALSO
@@ -284,7 +285,7 @@ http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 .BR task-faq(5)
 .BR task-tutorial(5)
 
-For more information regarding task, the following may be referenced:
+For more information regarding taskwarrior, the following may be referenced:
 
 .TP
 The official site at
@@ -300,5 +301,5 @@ You can contact the project by writing an email to
 
 .SH REPORTING BUGS
 .TP
-Bugs in task may be reported to the issue-tracker at
+Bugs in taskwarrior may be reported to the issue-tracker at
 <http://taskwarrior.org>

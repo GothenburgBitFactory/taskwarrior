@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 ################################################################################
-## task - a command line task list manager.
+## taskwarrior - a command line task list manager.
 ##
 ## Copyright 2006 - 2010, Paul Beckingham.
 ## All rights reserved.
@@ -68,25 +68,25 @@ unlike ($output, qr/\bwithout\b/, 'pri:H without');
 
 # Test the version command abbreviations.
 $output = qx{../task rc:abbrev.rc version};
-like ($output, qr/GNU General Public License/, 'version');
+like ($output, qr/GNU\s+General\s+Public\s+License/, 'version');
 
 $output = qx{../task rc:abbrev.rc versio};
-like ($output, qr/GNU General Public License/, 'versio');
+like ($output, qr/GNU\s+General\s+Public\s+License/, 'versio');
 
 $output = qx{../task rc:abbrev.rc versi};
-like ($output, qr/GNU General Public License/, 'versi');
+like ($output, qr/GNU\s+General\s+Public\s+License/, 'versi');
 
 $output = qx{../task rc:abbrev.rc vers};
-like ($output, qr/GNU General Public License/, 'vers');
+like ($output, qr/GNU\s+General\s+Public\s+License/, 'vers');
 
 $output = qx{../task rc:abbrev.rc ver};
-like ($output, qr/GNU General Public License/, 'ver');
+like ($output, qr/GNU\s+General\s+Public\s+License/, 'ver');
 
 $output = qx{../task rc:abbrev.rc ve};
-like ($output, qr/GNU General Public License/, 've');
+like ($output, qr/GNU\s+General\s+Public\s+License/, 've');
 
 $output = qx{../task rc:abbrev.rc v};
-like ($output, qr/GNU General Public License/, 'v');
+like ($output, qr/GNU\s+General\s+Public\s+License/, 'v');
 
 # Cleanup.
 unlink 'pending.data';

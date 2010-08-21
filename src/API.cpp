@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Task Lua API
+// Taskwarrior Lua API
 //
 // Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
@@ -57,7 +57,8 @@ Task* the_task = NULL;
 #ifdef HAVE_LIBLUA
 
 ////////////////////////////////////////////////////////////////////////////////
-// Returns a string representing the task version number, such as '1.9.0'.
+// Returns a string representing the taskwarrior version number, such as
+// '1.9.0'.
 static int api_task_version (lua_State* L)
 {
   lua_pushstring (L, PACKAGE_VERSION);

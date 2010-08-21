@@ -4,26 +4,26 @@
 task-faq \- A FAQ for the task(1) command line todo manager.
 
 .SH DESCRIPTION
-Task is a command line TODO list manager. It maintains a list of tasks that you
-want to do, allowing you to add/remove, and otherwise manipulate them.  Task
-has a rich list of commands that allow you to do various things with it.
+Taskwarrior is a command line TODO list manager. It maintains a list of tasks
+that you want to do, allowing you to add/remove, and otherwise manipulate them.
+Taskwarrior has a rich list of commands that allow you to do various things with it.
 
 .SH WELCOME
-Welcome to the task FAQ.  If you have would like to see a question answered
+Welcome to the taskwarrior FAQ.  If you have would like to see a question answered
 here, please send us a note at <support@taskwarrior.org>.
 
 .TP
-.B Q: When I redirect the output of task to a file, I lose all the colors.  How do I fix this?
-A: Task knows (or thinks it knows) when the output is not going directly to a
-terminal, and strips out all the color control characters.  This is based on
-the assumption that the color control codes are not wanted in the file.  Prevent
-this with the following entry in your .taskrc file:
+.B Q: When I redirect the output to a file, I lose all the colors.  How do I fix this?
+A: Taskwarrior knows (or thinks it knows) when the output is not going directly
+to a terminal, and strips out all the color control characters.  This is based
+on the assumption that the color control codes are not wanted in the file.
+Prevent this with the following entry in your .taskrc file:
 
    _forcecolor=on
 
 .TP
-.B Q: How do I backup my task data files? Where are they?
-A: Task writes all pending tasks to the file
+.B Q: How do I backup my taskwarrior data files? Where are they?
+A: Taskwarrior writes all pending tasks to the file
 
     ~/.task/pending.data
 
@@ -33,8 +33,8 @@ and all completed and deleted tasks to
 
 They are text files, so they can just be copied to another location for
 safekeeping.  Don't forget there is also the ~/.taskrc file that contains your
-task configuration data.  To be sure, and to future-proof your backup, consider
-backing up all the files in the ~/.task directory.
+taskwarrior configuration data.  To be sure, and to future-proof your backup,
+consider backing up all the files in the ~/.task directory.
 
 .TP
 .B Q: How can I separate my work tasks from my home tasks? Specifically, can I keep them completely separate?
@@ -50,39 +50,39 @@ This gives you two commands, 'wtask' and 'htask' that operate using two
 different sets of task data files.
 
 .TP
-.B Q: Can I revert to a previous version of task? How?
+.B Q: Can I revert to a previous version of taskwarrior? How?
 A: Yes, you can revert to a previous version of task, simply by downloading an
 older version and installing it. If you find a bug in task, then this may be the
 only way to work around the bug, until a patch release is made.
 
-Note that it is possible that the task file format will change. For example, the
-format changed between versions 1.5.0 and 1.6.0. Task will automatically upgrade
-the file but if you need to revert to a previous version of task, there is the
-file format to consider. This is yet another good reason to back up your task
-data files!
+Note that it is possible that the taskwarrior file format will change. For
+example, the format changed between versions 1.5.0 and 1.6.0. Taskwarrior will
+automatically upgrade the file but if you need to revert to a previous version
+of taskwarrior, there is the file format to consider. This is yet another good
+reason to back up your task data files!
 
 .TP
-.B Q: I'm using Ubuntu 9.04, and I want task to word-wrap descriptions. How do I do this?
+.B Q: I'm using Ubuntu 9.04, and I want to word-wrap descriptions. How do I do this?
 A: You need to install ncurses, by doing this:
 
     % sudo apt-get install libncurses5-dev
 
-Then you need to rebuild task from scratch, starting with
+Then you need to rebuild taskwarrior from scratch, starting with
 
     % cd task-X.X.X
     % ./configure
     ...
 
-The result should be a task program that knows the width of the terminal window,
-and wraps accordingly.
+The result should be a taskwarrior program that knows the width of the terminal
+window, and wraps accordingly.
 
-Note that there are binary packages that all include this capability.
+Note that all the binary packages include this capability.
 
 .TP
-.B Q: How do I build task under Cygwin?
+.B Q: How do I build taskwarrior under Cygwin?
 A: Take a look at the README.build file, where the latest information on build
-issues is kept.  Task is built the same way everywhere. But under Cygwin, you'll
-need to make sure you have the following packages available first:
+issues is kept.  Taskwarrior is built the same way everywhere. But under Cygwin,
+you'll need to make sure you have the following packages available first:
 
     gcc
     make
@@ -90,8 +90,8 @@ need to make sure you have the following packages available first:
     libncurses8
 
 The gcc and make packages allow you to compile the code, and are therefore
-required, but the ncurses packages are optional. Ncurses will allow task to
-determine the width of the window, and therefore use the whole width and wrap
+required, but the ncurses packages are optional. Ncurses will allow taskwarrior
+to determine the width of the window, and therefore use the whole width and wrap
 text accordingly, for a more aesthetically pleasing display.
 
 Note that there are binary packages that all include this capability.
@@ -106,35 +106,37 @@ If you run the command:
 
     % task colors
 
-Task will display all the colors it can use, and you will see which ones you can use.
+Taskwarrior will display all the colors it can use, and you will see which ones
+you can use.
 
-Note that if you install the 'mintty' shell in Cygwin, then you can use 256 colors.
+Note that if you install the 'mintty' shell in Cygwin, then you can use 256
+colors.
 
 See the 'man task-color' for more details on which colors can be used.
 
 .TP
-.B Q: Where does task store the data?
-By default, task creates a .taskrc file in your home directory and populates it
-with defaults.  Task also creates a .task directory in your home directory and
-puts data files there.
+.B Q: Where does taskwarrior store the data?
+By default, taskwarrior creates a .taskrc file in your home directory and
+populates it with defaults.  Taskwarrior also creates a .task directory in your
+home directory and puts data files there.
 
 .TP
 .B Q: Can I edit that data?
 Of course you can.  It is a simple text file, and looks somewhat like the JSON
 format, and if you are careful not to break the format, there is no reason not
-to edit it.  But task provides a rich command set to do that manipulation for
-you, so it is probably best to leave those files alone.
+to edit it.  But taskwarrior provides a rich command set to do that manipulation
+for you, so it is probably best to leave those files alone.
 
 .TP
 .B Q: How do I restore my .taskrc file to defaults?
-If you delete (or rename) your .taskrc file, task will offer to create a default
-one for you.  Another way to do this is with the command:
+If you delete (or rename) your .taskrc file, taskwarrior will offer to create a
+default one for you.  Another way to do this is with the command:
 
     $ task rc:new-file version
 
-Task will create 'new-file' if it doesn't already exist.  There will not be
-much in it though - task relies heavily on default values, which can be seen
-with this command:
+Taskwarrior will create 'new-file' if it doesn't already exist.  There will not
+be much in it though - taskwarrior relies heavily on default values, which can
+be seen with this command:
 
     $ task show
 
@@ -142,18 +144,18 @@ which lists all the currently known settings.  If you have just created
 new-file, then this command lists only the defaults.
 
 Note that this is a good way to learn about new configuration settings,
-particularly if your .taskrc file was created by an older version of task.
+particularly if your .taskrc file was created by an older version.
 
 .TP
-.B Q: Do I need to back up my task data?
+.B Q: Do I need to back up my taskwarrior data?
 Yes.  You should back up your ~/.task directory, and probably your ~/.taskrc
 file too.
 
 .TP
 .B Q: Can I share my tasks between different machines?
 Yes, you can.  Most people have success with a DropBox - a free and secure file
-synching tool.  Simply configure task to store it's data in a dropbox folder, by
-modifying the:
+synching tool.  Simply configure taskwarrior to store it's data in a dropbox
+folder, by modifying the:
 
     data.location=...
 
@@ -161,21 +163,21 @@ configuration variable.  Check out DropBox at http://www.dropbox.com.
 
 .TP
 .B Q: I don't like dropbox. Is there another way to synchronize my tasks?
-Of course. Especially if you want to modify tasks offline on both machines and 
-synchronize them later on. For this purpose task provides a 'merge' command which
-is able to insert the modifications you made to one of your task databases into a 
-second database.
+Of course. Especially if you want to modify tasks offline on both machines and
+synchronize them later on. For this purpose there is a 'merge' command which is
+is able to insert the modifications you made to one of your task databases into
+a second database.
 
 Here is a basic example of the procedure:
-    
+
     $ rsync myremotehost:.task/undo.data /tmp/undo_remote.data
     $ task merge /tmp/undo_remote.data
     $ rsync ${HOME}/.task/*.data myremotehost:.task/
 
-First you need to get the undo.data file from the remote system with a network
-protocol of your choice or a removable medium as well. When task finished the merge
-command you should copy all the local .data files to the remote system. This way you
-ensure that both systems are fully synchronized.
+First you need to get the undo.data file from the remote system, or removable
+media.  When the merge command completes, you should copy all the local .data
+files to the remote system. This way you ensure that both systems are fully
+synchronized.
 
 .TP
 .B Q: The undo.data file gets very large - do I need it?
@@ -183,14 +185,14 @@ You need it if you want the undo capability, or the merge capability mentioned
 above.  But if it gets large, you can certainly truncate it to save space, just
 be careful to delete lines from the top of the file, up to and including a
 separator '---'.  The simplest way is to simply delete the undo.data file.  Note
-that it does not slow down task, because task never reads it until you want to
-undo.  Otherwise task only appends to the file.
+that it does not slow down taskwarrior, because it is never read until you want
+to undo.  Otherwise taskwarrior only appends to the file.
 
 .TP
 .B Q: How do I know whether my terminal support 256 colors?
 You will need to make sure your TERM environment variable is set to xterm-color,
-otherwise the easiest way is to just try it!  With task 1.9 or later, you simply
-run
+otherwise the easiest way is to just try it!  With version 1.9 or later, you
+simply run
 
     $ task color
 
@@ -204,11 +206,10 @@ See the task-color(5) man page for more details.
 Use one of our provided color themes, or create your own - after all, they are
 just collections of color settings.
 
-See the task-color(5) man page for an in-depth explanation of the task color
-rules.
+See the task-color(5) man page for an in-depth explanation of the color rules.
 
 .TP
-.B Q: How can I make task put the command in the terminal window title?
+.B Q: How can I make taskwarrior put the command in the terminal window title?
 You cannot.  But you can make the shell do it, and you can make the shell
 call the task program.  Here is a Bash script that does this:
 
@@ -227,7 +228,7 @@ function that does the same thing:
     }
 
 .TP
-.B Q: Task searches in a case-sensitive fashion - can I change that?
+.B Q: Taskwarrior searches in a case-sensitive fashion - can I change that?
 You can.  Just set the following value in your .taskrc file:
 
     search.case.sensitive=no
@@ -236,24 +237,24 @@ This will affect searching for keywords:
 
     $ task list Document
 
-task will perform a caseless search in the description and any annotations for
-the keyword 'Document'.  It also affects description and annotation
-substitutions:
+taskwarrior will perform a caseless search in the description and any
+annotations for the keyword 'Document'.  It also affects description and
+annotation substitutions:
 
     $ task 1 /teh/the/
 
 The pattern on the left will now be a caseless search term.
 
 .TP
-.B Q: Why do the task ID numbers change?
-Task does this to always show you the smallest numbers it can.  The idea is that
-if your tasks are numbered 1 - 33, for example, those are easy to type in.  If
-instead task kept a rolling sequence number, after a while your tasks might be
-numbered 481 - 513, which makes it more likely to enter one incorrectly, because
-there are more digits.
+.B Q: Why do the ID numbers change?
+Taskwarrior does this to always show you the smallest numbers it can.  The idea
+is that if your tasks are numbered 1 - 33, for example, those are easy to type
+in.  If instead task kept a rolling sequence number, after a while your tasks
+might be numbered 481 - 513, which makes it more likely to enter one
+incorrectly, because there are more digits.
 
-When you run a report (such as "list"), task assigns the numbers before it
-displays them.  For example, you can do this:
+When you run a report (such as "list"), the numbers are assigned before display.
+For example, you can do this:
 
     $ task list
     $ task do 12
@@ -261,17 +262,18 @@ displays them.  For example, you can do this:
     $ task delete 31
 
 Those id numbers are then good until the next report is run.  This is because
-task performs a garbage-collect operation on the pending tasks file when a
-report is run, which moves the deleted and completed tasks from the pending.data
-file to the completed.data file.  This keeps the pending tasks file small, and
-therefore keeps task fast.  The completed data file is the one that grows
-unbounded with use, but that one isn't accessed as much, so it doesn't matter as
-much.  So in all, the ID number resequencing is about efficiency.
+taskwarrior performs a garbage-collect operation on the pending tasks file when
+a report is run, which moves the deleted and completed tasks from the
+pending.data file to the completed.data file.  This keeps the pending tasks file
+small, and therefore keeps taskwarrior fast.  The completed data file is the one
+that grows unbounded with use, but that one isn't accessed as much, so it
+doesn't matter as much.  So in all, the ID number resequencing is about
+efficiency.
 
 .TP
 .B Q: How do I list tasks that are either priority 'H' or 'M', but not 'L'?
-Task's filters are all combined with and implicit logical AND operator, so if
-you were to try this:
+Taskwarriors filters are all combined with and implicit logical AND operator, so
+if you were to try this:
 
     $ task list priority:H priority:M
 
@@ -292,8 +294,8 @@ to construct task filters.
 
 .TP
 .B Q: How do I delete an annotation?
-Task now has a 'denotate' command to remove annotations.  First here is an
-example task:
+Taskwarrior now has a 'denotate' command to remove annotations.  Here is an
+example:
 
     $ task add Original task
     $ task 1 annotate foo
@@ -327,13 +329,13 @@ There are lots of ways.  Here are some:
  - Fix bugs
 
 .SH "CREDITS & COPYRIGHTS"
-task was written by P. Beckingham <paul@beckingham.net>.
+Taskwarrior was written by P. Beckingham <paul@beckingham.net>.
 .br
 Copyright (C) 2006 \- 2010 P. Beckingham
 
 This man page was originally written by P. Beckingham.
 
-task is distributed under the GNU General Public License.  See
+Taskwarrior is distributed under the GNU General Public License.  See
 http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 
 .SH SEE ALSO
@@ -358,5 +360,5 @@ You can contact the project by writing an email to
 
 .SH REPORTING BUGS
 .TP
-Bugs in task may be reported to the issue-tracker at
+Bugs in taskwarrior may be reported to the issue-tracker at
 <http://taskwarrior.org>

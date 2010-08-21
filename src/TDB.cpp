@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// task - a command line task list manager.
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
@@ -1261,7 +1261,7 @@ void TDB::merge (const std::string& mergeFile)
               DEBUG_STR ("    scanning right side");
               if (tmod_r > tmod_l)
                 mods.push_front (tmod_r);
-              
+
               std::list<Taskmod>::iterator tmp_it = rmod_rit.base ();
               rmods.erase (--tmp_it);
               rmod_rit--;

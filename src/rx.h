@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// task - a command line task list manager.
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.

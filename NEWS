@@ -1,5 +1,5 @@
 
-New Features in task 1.9.3
+New Features in taskwarrior 1.9.3
 
   - Start and stop times for a task can now be recorded as annotations.
   - Special tags 'nocolor', 'nocal' and 'nonag'.
@@ -18,16 +18,16 @@ New Features in task 1.9.3
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
 
-New commands in task 1.9.3
+New commands in taskwarrior 1.9.3
 
   - New 'task color legend' command will show samples of all the defined colors
     and color rules from your .taskrc and theme.
   - New 'task export.yaml' command will export YAML 1.1, which can then be
     imported via 'task import <file>'.
   - New 'task merge <file>' command that can merge the local and an undo.data
-    file from another task user, to sync across machines, for example.
+    file from another taskwarrior user, to sync across machines, for example.
 
-New configuration options in task 1.9.3
+New configuration options in taskwarrior 1.9.3
 
   - journal.time, journal.time.start.annotation, journal.time.stop.annotation
   - 'sow', 'som' and 'soy' are now accepted in dates
@@ -35,17 +35,17 @@ New configuration options in task 1.9.3
     'socw' and 'eocw' refer to the calendar week (starting Sunday/Monday and
     ending Saturday/Sunday)
 
-Newly deprecated features in task 1.9.3
+Newly deprecated features in taskwarrior 1.9.3
 
   - entry_time, start_time and end_time are now synonyms for the entry, start
     and end fields.  Recent enhancements to date formatting render these fields
     obsolete.  The 'task show' command warns of the use of these deprecated
-    fields.  The synonyms will be removed in a future version of task.
+    fields.  The synonyms will be removed in a future version of taskwarrior.
 
 
 ---
 
-Task has been built and tested on the following configurations:
+Taskwarrior has been built and tested on the following configurations:
 
   * OS X 10.6 Snow Leopard and 10.5 Leopard
   * Fedora 13 Goddard, 12 Constantine
@@ -64,8 +64,8 @@ Task has been built and tested on the following configurations:
 
 ---
 
-While Task has undergone testing, bugs are sure to remain.  If you encounter a
-bug, please enter a new issue at:
+While Taskwarrior has undergone testing, bugs are sure to remain.  If you
+encounter a bug, please enter a new issue at:
 
   http://taskwarrior.org/projects/taskwarrior/issues/new
 

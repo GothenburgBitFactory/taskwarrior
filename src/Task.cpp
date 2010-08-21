@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// task - a command line task list manager.
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
@@ -164,7 +164,7 @@ void Task::legacyParse (const std::string& line)
   {
   // File format version 1, from 2006.11.27 - 2007.12.31
   case 1:
-    throw std::string ("Task no longer supports file format 1, originally used "
+    throw std::string ("Taskwarrior no longer supports file format 1, originally used "
                        "between 27 November 2006 and 31 December 2007.");  // TODO i18n
     break;
 
@@ -328,7 +328,7 @@ void Task::legacyParse (const std::string& line)
     break;
 
   default:
-    throw std::string ("Unrecognized task file format."); // TODO i18n
+    throw std::string ("Unrecognized taskwarrior file format."); // TODO i18n
     break;
   }
 }

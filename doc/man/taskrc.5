@@ -9,7 +9,7 @@ taskrc \- Configuration file for the task(1) command
 .B task rc:<directory-path>/.taskrc
 
 .SH DESCRIPTION
-.B task
+.B taskwarrior
 obtains its configuration data from a file called
 .I .taskrc
 \&. This file is normally located in the user's home directory:
@@ -35,14 +35,14 @@ $ task rc.<name>:<value> ...
 .RE
 
 If
-.B task
+.B taskwarrior
 is run without an existing configuration file it will ask if it should create a
 default, sample
 .I .taskrc
 file in the user's home directory.
 
-The task configuration file consists of a series of "assignments" in each line.
-The "assignments" have the syntax:
+The taskwarrior configuration file consists of a series of "assignments" in each
+line.  The "assignments" have the syntax:
 
 .RS
 <name-of-configuration-variable>=<value-to-be-set>
@@ -66,9 +66,9 @@ The hash mark, or pound sign ("#") is used as a "comment" character. It can be
 used to annotate the configuration file. All text after the character to the end
 of the line is ignored.
 
-Note that task is flexible about the values used to represent Boolean items.
-You can use "on", "yes", "y", "1", "true", "t", "+", "enabled".  Anything else
-means "off".
+Note that taskwarrior is flexible about the values used to represent Boolean
+items.  You can use "on", "yes", "y", "1", "true", "t", "+", "enabled".
+Anything else means "off".
 
 .SH EDITING
 You can edit your .taskrc file by hand if you wish, or you can use the 'config'
@@ -84,14 +84,14 @@ To delete an entry, use this command:
 $ task config nag
 .RE
 
-Task will then use the default value.  To explicitly set a value to blank, and
-therefore avoid using the default value, use this command:
+Taskwarrior will then use the default value.  To explicitly set a value to
+blank, and therefore avoid using the default value, use this command:
 
 .RS
 $ task config nag ""
 .RE
 
-Task will also display all your settings with this command:
+Taskwarrior will also display all your settings with this command:
 
 .RS
 $ task config
@@ -120,8 +120,8 @@ include /usr/local/share/doc/task/rc/holidays-US.rc
 include /usr/local/share/doc/task/rc/dark-16.theme
 .RE
 
-This includes two standard files that are distributed with task, which define a
-set of US holidays, and set up a 16-color theme for task to use, to color the
+This includes two standard files that are distributed with taskwarrior, which
+define a set of US holidays, and set up a 16-color theme to use, to color the
 reports and calendar.
 
 .SH CONFIGURATION VARIABLES
@@ -131,8 +131,8 @@ Valid variable names and their default values are:
 
 .TP
 .B data.location=$HOME/.task
-This is a path to the directory containing all the task files. By default, it is
-set up to be ~/.task, for example: /home/paul/.task
+This is a path to the directory containing all the taskwarrior files. By
+default, it is set up to be ~/.task, for example: /home/paul/.task
 
 Note that you can use the
 .B ~
@@ -140,8 +140,8 @@ shell meta character, which will be properly expanded.
 
 .TP
 .B locking=on
-Determines whether task uses file locking when accessing the pending.data and
-completed.data files.  Defaults to "on". Solaris users who store the task data
+Determines whether to use file locking when accessing the pending.data and
+completed.data files.  Defaults to "on". Solaris users who store the data
 files on an NFS mount may need to set locking to "off". Note that there is
 danger in setting this value to "off" - another program (or another instance of
 task) may write to the task.pending file at the same time.
@@ -149,7 +149,7 @@ task) may write to the task.pending file at the same time.
 .SS TERMINAL
 .TP
 .B curses=on
-Determines whether task uses ncurses to establish the size of the window you are
+Determines whether to use ncurses to establish the size of the window you are
 using, for text wrapping.
 
 .TP
@@ -160,31 +160,32 @@ The width of tables used when ncurses support is not available. Defaults to 80.
 .B editor=vi
 Specifies which text editor you wish to use for when the
 .B task edit <ID>
-command is used. Task will first look for this configuration variable. If found,
-it is used.  Otherwise task will look for the $VISUAL or $EDITOR environment
-variables, before it defaults to using "vi".
+command is used. Taskwarrior will first look for this configuration variable. If
+found, it is used.  Otherwise it will look for the $VISUAL or $EDITOR
+environment variables, before it defaults to using "vi".
 
 .SS MISCELLANEOUS
 
 .TP
 .B locale=en-US
 The locale is a combination of ISO 639-1 language code and ISO 3166 country
-code.  If not specified, task will assume en-US.  If specified, task will locate
-the correct file of localized strings and proceed.  It is an error to specify a
-locale for which there is no strings file.
+code.  If not specified, will assume en-US.  If specified, taskwarrior will
+locate the correct file of localized strings and proceed.  It is an error to
+specify a locale for which there is no strings file.
 
 .TP
 .B verbose=yes
-Controls some of the verbosity of task.
+Controls some of the verbosity of taskwarrior.
 
 .TP
 .B confirmation=yes
-May be "yes" or "no", and determines whether task will ask for confirmation
-before deleting a task or doing bulk changes.  The default value is "yes".
+May be "yes" or "no", and determines whether taskwarrior will ask for
+confirmation before deleting a task or doing bulk changes.  The default value
+is "yes".
 
 .TP
 .B echo.command=yes
-May be "yes" or "no", and causes task to display the ID and description of any
+May be "yes" or "no", and causes the display of the ID and description of any
 task when you run the start, stop, do, undo or delete commands. The default
 value is "yes".
 
@@ -254,8 +255,8 @@ description and annotations are done in a case sensitive way.  Defaults to yes.
 
 .TP
 .B _forcecolor=no
-Task shuts off color automatically when the output is not sent directly to a
-a TTY.  For example, this command:
+Taskwarrior shuts off color automatically when the output is not sent directly
+to a TTY.  For example, this command:
 
 .RS
 .RS
@@ -271,7 +272,8 @@ $ task rc._forcecolor=yes list > file
 
 .TP
 .B blanklines=yes
-Turning this value off causes task to generate a more vertically compact output.
+Turning this value off causes taskwarrior to generate a more vertically compact
+output.
 
 .TP
 .B shell.prompt=task>
@@ -299,24 +301,25 @@ and one for a week from tomorrow.
 
 .TP
 .B undo.style=side
-When the 'undo' command is run, task presents a before and after comparison of the
-data.  This can be in either the 'side' style, which compares values side-by-side
-in a table, or 'diff' style, which uses a format similar to the 'diff' command.
+When the 'undo' command is run, taskwarrior presents a before and after
+comparison of the data.  This can be in either the 'side' style, which compares
+values side-by-side in a table, or 'diff' style, which uses a format similar to
+the 'diff' command.
 
 .TP
 .B debug=off
-Task has a debug mode that causes diagnostic output to be displayed.  Typically
-this is not something anyone would want, but when reporting a bug, debug output
-can be useful.  It can also help explain how the command line is being parsed,
-but the information is displayed in a developer-friendly, not a user-friendly
-way.
+Taskwarrior has a debug mode that causes diagnostic output to be displayed.
+Typically this is not something anyone would want, but when reporting a bug,
+debug output can be useful.  It can also help explain how the command line is
+being parsed, but the information is displayed in a developer-friendly, not a
+user-friendly way.
 
 .TP
 .B alias.rm=delete
-Task supports command aliases.  This alias provides an alternate name (rm) for
-the delete command.  You can use aliases to provide alternate names for any of
-task's commands.  Several commands you may use are actually aliases - 'history',
-for example, or 'export'.
+Taskwarrior supports command aliases.  This alias provides an alternate name
+(rm) for the delete command.  You can use aliases to provide alternate names for
+any of the commands.  Several commands you may use are actually aliases -
+the 'history' report, for example, or 'export'.
 
 .SS DATES
 
@@ -330,8 +333,8 @@ for example, or 'export'.
 .B dateformat.annotation=m/d/Y
 .TP
 .B report.X.dateformat=m/d/Y
-This is a string of characters that define how task formats date values. The
-precedence order for the configuration variable is report.X.dateformat then
+This is a string of characters that define how taskwarrior formats date values.
+The precedence order for the configuration variable is report.X.dateformat then
 reportdateformat then dateformat.  While report.X.dateformat only formats the
 due date in reports, reportdateformat formats the due date both in reports
 and "task info".  If both of these are not set then dateformat will be applied
@@ -495,8 +498,8 @@ holiday.eastersunday.date=easter
 .RE
 .RE
 
-Note that the task distribution contains example holiday files that can be
-included like this:
+Note that the taskwarrior distribution contains example holiday files that can
+be included like this:
 
 .RS
 .RS
@@ -509,14 +512,14 @@ include /usr/local/share/doc/task/rc/holidays-US.rc
 .B monthsperline=3
 Determines how many months the "task calendar" command renders across the
 screen.  Defaults to however many will fit.  If more months than will fit are
-specified, task will only show as many that will fit.
+specified, taskwarrior will only show as many that will fit.
 
 .SS COLOR CONTROLS
 
 .TP
 .B color=on
-May be "on" or "off". Determines whether task uses color. When "off", task will
-use dashes (-----) to underline column headings.
+May be "on" or "off". Determines whether taskwarrior uses color. When "off",
+will use dashes (-----) to underline column headings.
 
 .TP
 .B fontunderline=on
@@ -524,7 +527,7 @@ Determines if font underlines or ASCII dashes should be used to underline
 headers, even when color is enabled.
 .RE
 
-Task has a number of coloration rules.  They correspond to a particular
+Taskwarrior has a number of coloration rules.  They correspond to a particular
 attribute of a task, such as it being due, or being active, and specifies the
 automatic coloring of that task.  A list of valid colors, depending on your
 terminal, can be obtained by running the command:
@@ -693,11 +696,11 @@ a change that is to be reverted.
 .B
 shadow.file=$HOME/.task/shadow.txt
 If specified, designates a file path that will be automatically written to by
-task, whenever the task database changes.  In other words, it is automatically
-kept up to date.  The shadow.command configuration variable is used to determine
-which report is written to the shadow file.  There is no color used in the
-shadow file. This feature can be useful in maintaining a current file for use by
-programs like GeekTool, Conky or Samurize.
+taskwarrior, whenever the task database changes.  In other words, it is
+automatically kept up to date.  The shadow.command configuration variable is
+used to determine which report is written to the shadow file.  There is no color
+used in the shadow file. This feature can be useful in maintaining a current
+file for use by programs like GeekTool, Conky or Samurize.
 
 .TP
 .B
@@ -711,8 +714,8 @@ configuration variable. The format is identical to that of
 .TP
 .B
 shadow.notify=on
-When this value is set to "on", task will display a message whenever the shadow
-file is updated by some task command.
+When this value is set to "on", taskwarrior will display a message whenever the
+shadow file is updated by some task command.
 
 .SS DEFAULTS
 
@@ -733,7 +736,7 @@ command, if you don't specify one.  The default is blank.
 .TP
 .B
 default.command=list
-Provides a default command that is run every time task is invoked with no
+Provides a default command that is run every time taskwarrior is invoked with no
 arguments.  For example, if set to:
 
 .RS
@@ -743,8 +746,8 @@ default.command=list project:foo
 .RE
 
 .RS
-then task will run the "list project:foo" command if no command is specified.
-This means that by merely typing
+then taskwarrior will run the "list project:foo" command if no command is
+specified.  This means that by merely typing
 .RE
 
 .RS
@@ -823,8 +826,8 @@ An optional value to a report limiting the number of displayed tasks in the
 generated report.
 
 .TP
-Task comes with a number of predefined reports in its default configuration
-file. These reports are:
+Taskwarrior comes with a number of predefined reports in its default
+configuration file. These reports are:
 
 .TP
 .B long
@@ -879,13 +882,13 @@ Lists all tasks matching the specified criteria.
 Lists all tasks with upcoming due dates matching the specified criteria.
 
 .SH "CREDITS & COPYRIGHTS"
-task was written by P. Beckingham <paul@beckingham.net>.
+Taskwarrior was written by P. Beckingham <paul@beckingham.net>.
 .br
 Copyright (C) 2006 \- 2010 P. Beckingham
 
 This man page was originally written by Federico Hernandez.
 
-task is distributed under the GNU General Public License.  See
+Taskwarrior is distributed under the GNU General Public License.  See
 http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 
 .SH SEE ALSO
@@ -894,7 +897,7 @@ http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 .BR task-faq(5)
 .BR task-color(5)
 
-For more information regarding task, the following may be referenced:
+For more information regarding taskwarrior, the following may be referenced:
 
 .TP
 The official site at
@@ -910,5 +913,5 @@ You can contact the project by writing an email to
 
 .SH REPORTING BUGS
 .TP
-Bugs in task may be reported to the issue-tracker at
+Bugs in taskwarrior may be reported to the issue-tracker at
 <http://taskwarrior.org>

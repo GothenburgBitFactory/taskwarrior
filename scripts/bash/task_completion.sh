@@ -1,9 +1,9 @@
-# bash completion support for task
+# bash completion support for taskwarrior
 #
 # Copyright 2009-2010 Federico Hernandez
 # All rights reserved.
 #
-# This script is part of the task project.
+# This script is part of the taskwarrior project.
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software

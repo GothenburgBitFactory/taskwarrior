@@ -31,9 +31,10 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
     $ cd ~/task-package.git
 
   2.2 Making sure you have the right version of the code.  This assumes you are
-    building task 1.9.2, but any version number is interchangeable.  Check out
-    the correct branch, and make sure it is sitting at the correct commit, via
-    a tag.  Note that while 1.9.2 is a branch name, v1.9.2 is a tag name.
+    building taskwarrior 1.9.2, but any version number is interchangeable.
+    Check out the correct branch, and make sure it is sitting at the correct
+    commit, via a tag.  Note that while 1.9.2 is a branch name, v1.9.2 is a tag
+    name.
 
     $ git checkout 1.9.2
     $ git reset --hard v1.9.2
@@ -41,7 +42,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
     If there is an error in this step, stop, capture the output, and report the
     errors.
 
-3. Build task
+3. Build taskwarrior
 
   3.1 First build the task binary.  Note the "-j 2" tells make to use both cores
     in your dual-core Intel CPU, which means faster compiles.  If you own a quad
@@ -61,9 +62,9 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
 
 4. Build the test suite
 
-  4.1 The test suite exists to prove that we do not break task features from one
-    release to the next.  While this is not a perfect solution, it has saved us
-    many times from releasing code that is inferior.
+  4.1 The test suite exists to prove that we do not break taskwarrior features
+    from one release to the next.  While this is not a perfect solution, it has
+    saved us many times from releasing code that is inferior.
 
     The first step is to modify the test suite Makefile to remove the Lua line.
     This is because we do not yet have dynamic detection of the Lua library for
@@ -123,13 +124,13 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
     <figure 1>
 
     This is the file from the last time a package was created.  It needs some
-    adjustments.  Start by clicking on the "Task x.x.x Distribution" with a
-    package icon in the top left part of the window.
+    adjustments.  Start by clicking on the "Taskwarrior x.x.x Distribution" with
+    a package icon in the top left part of the window.
 
   6.4 Click on the "Configuration" button/tab.
 
-    - Change the "Title" to "Task 1.9.2"
-    - Change the "Description" to "Task 1.9.2 install for Snow Leopard"
+    - Change the "Title" to "Taskwarrior 1.9.2"
+    - Change the "Description" to "Taskwarrior 1.9.2 install for Snow Leopard"
 
     <figure 2>
 
@@ -203,7 +204,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
       one
     - Make sure "Restart Action" is "None"
     - Make sure "Require admin authentication" is checked
-    - Make sure "PAckage Location" is "Self-Contained"
+    - Make sure "Package Location" is "Self-Contained"
 
     <figure 12>
 
@@ -238,8 +239,8 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
 
 8. Test the package
 
-  8.1 Double-click on the package you just created, and install task.  You
-    should see the README file in the UI, and the COPYING file on another
+  8.1 Double-click on the package you just created, and install taskwarrior.
+    You should see the README file in the UI, and the COPYING file on another
     page.  It should succeed.
 
   <figure 14>
@@ -257,12 +258,13 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
 
   task 1.9.2 built for darwin-ncurses
   Copyright (C) 2006 - 2010 P. Beckingham, F. Hernandez.
-                                                                                                                     
-  Task may be copied only under the terms of the GNU General Public License,
-  which may be found in the task source kit.
 
-  Documentation for task can be found using 'man task', 'man taskrc', 'man
-  task-tutorial', 'man task-color', 'man task-faq' or at http://taskwarrior.org
+  Taskwarrior may be copied only under the terms of the GNU General Public
+  License, which may be found in the taskwarrior source kit.
+
+  Documentation for taskwarrior can be found using 'man task', 'man taskrc',
+  'man task-tutorial', 'man task-color', 'man task-faq' or at
+  http://taskwarrior.org
 
   $ man task
   ...

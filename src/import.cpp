@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// task - a command line task list manager.
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
@@ -1289,23 +1289,23 @@ int handleImport (std::string &outs)
       std::string identifier;
       switch (type)
       {
-      case task_1_4_3:    identifier = "This looks like an older task export file.";              break;
-      case task_1_5_0:    identifier = "This looks like a recent task export file.";              break;
-      case task_1_6_0:    identifier = "This looks like a current task export file.";             break;
-      case task_cmd_line: identifier = "This looks like task command line arguments.";            break;
-      case todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                     break;
-      case csv:           identifier = "This looks like a CSV file, but not a task export file."; break;
-      case yaml:          identifier = "This looks like a YAML file.";                            break;
-      case text:          identifier = "This looks like a text file with one task per line.";     break;
+      case task_1_4_3:    identifier = "This looks like an older taskwarrior export file.";              break;
+      case task_1_5_0:    identifier = "This looks like a recent taskwarrior export file.";              break;
+      case task_1_6_0:    identifier = "This looks like a current taskwarrior export file.";             break;
+      case task_cmd_line: identifier = "This looks like taskwarrior command line arguments.";            break;
+      case todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                            break;
+      case csv:           identifier = "This looks like a CSV file, but not a taskwarrior export file."; break;
+      case yaml:          identifier = "This looks like a YAML file.";                                   break;
+      case text:          identifier = "This looks like a text file with one task per line.";            break;
       case not_a_clue:
-        throw std::string ("Task cannot determine which type of file this is, "
-                           "and cannot proceed.");
+        throw std::string ("Taskwarrior cannot determine which type of file "
+                           "this is, and cannot proceed.");
       }
 
       // For tty users, confirm the import, as it is destructive.
       if (isatty (fileno (stdout)))
         if (! confirm (identifier + "  Okay to proceed?"))
-          throw std::string ("Task will not import any data.");
+          throw std::string ("Taskwarrior will not import any data.");
 
       // Determine which type it might be, then attempt an import.
       switch (type)

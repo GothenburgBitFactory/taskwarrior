@@ -1,5 +1,5 @@
 
-              Configure VIM for Syntax Highlighting of Task Data
+          Configure VIM for Syntax Highlighting of Taskwarrior Data
 
 
 The task data files (pending.data, completed.data and undo.data),
@@ -24,12 +24,12 @@ You may prefer instead to read the help online at:
     http://vimdoc.sourceforge.net/htmldoc/syntax.html#syntax
 
 
-                   Configuring VIM to Understand Task Data
+              Configuring VIM to Understand Taskwarrior Data
 
 Once you have VIM's syntax highlighting enabled and working with other file
-types properly, configuring it for use with task is simple.  You simply need
-to copy some files that came with task into your home directory so that you
-have:
+types properly, configuring it for use with taskwarrior is simple.  You simply
+need to copy some files that came with taskwarrior into your home directory so
+that you have:
 
     ~/.vim/ftdetect/task.vim
     ~/.vim/syntax/taskdata.vim

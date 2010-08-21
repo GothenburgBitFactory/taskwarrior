@@ -1,5 +1,5 @@
 $ # Q: What is a formatting hook?
-$ # A: Lua code that modifies task output at run time.
+$ # A: Lua code that modifies taskwarrior output at run time.
 $
 $ cat > hooks.lua
 

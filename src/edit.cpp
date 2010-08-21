@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// task - a command line task list manager.
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
@@ -115,17 +115,17 @@ static std::string formatTask (Task task)
   before << "# The 'task edit <id>' command allows you to modify all aspects of a task" << std::endl
          << "# using a text editor.  What is shown below is a representation of the"    << std::endl
          << "# task in all it's detail.  Modify what you wish, and if you save and"     << std::endl
-         << "# quit your editor, task will read this file and try to make sense of"     << std::endl
-         << "# what changed, and apply those changes.  If you quit your editor without" << std::endl
-         << "# saving or making any modifications, task will do nothing."               << std::endl
+         << "# quit your editor, taskwarrior will read this file and try to make sense" << std::endl
+         << "# of what changed, and apply those changes.  If you quit your editor"      << std::endl
+         << "# without saving or making any modifications, taskwarrior will do nothing."<< std::endl
          << "#"                                                                         << std::endl
          << "# Lines that begin with # represent data you cannot change, like ID."      << std::endl
-         << "# If you get too 'creative' with your editing, task will dump you back "   << std::endl
-         << "# into the editor to try again."                                           << std::endl
+         << "# If you get too 'creative' with your editing, taskwarrior will dump you"  << std::endl
+         << "# back into the editor to try again."                                      << std::endl
          << "#"                                                                         << std::endl
          << "# Should you find yourself in an endless Groundhog Day loop, editing and"  << std::endl
          << "# editing the same file, just quit the editor without making any changes." << std::endl
-         << "# Task will notice this and stop the editing."                             << std::endl
+         << "# Taskwarrior will notice this and stop the editing."                      << std::endl
          << "#"                                                                         << std::endl
          << "# Name               Editable details"                                     << std::endl
          << "# -----------------  ----------------------------------------------------" << std::endl
@@ -590,7 +590,7 @@ ARE_THESE_REALLY_HARMFUL:
       before = after;
       File::write (file.str (), before);
 
-      if (confirm ("Task couldn't handle your edits.  Would you like to try again?"))
+      if (confirm ("Taskwarrior couldn't handle your edits.  Would you like to try again?"))
         goto ARE_THESE_REALLY_HARMFUL;
     }
   }

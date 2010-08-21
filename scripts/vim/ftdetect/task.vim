@@ -1,4 +1,4 @@
-" Vim support file to detect Task Warrior data and configuration files and 
+" Vim support file to detect Taskwarrior data and configuration files and 
 " single task edits
 "
 " Maintainer:   John Florian <jflorian@doubledog.org>
@@ -10,13 +10,13 @@
 " For the full text of this license, see COPYING.
 
 
-" Task Warrior data files
+" Taskwarrior data files
 au BufRead,BufNewFile {pending,completed,undo}.data	set filetype=taskdata
 
-" Task Warrior configuration file
+" Taskwarrior configuration file
 au BufRead,BufNewFile .taskrc				set filetype=taskrc
 
-" Task Warrior handling of 'task 42 edit'
+" Taskwarrior handling of 'task 42 edit'
 au BufRead,BufNewFile *.task				set filetype=taskedit
 
 " vim:noexpandtab

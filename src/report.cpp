@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// task - a command line task list manager.
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
@@ -250,9 +250,9 @@ int shortUsage (std::string &outs)
   std::stringstream out;
   out << table.render ()
       << std::endl
-      << "Documentation for task can be found using 'man task', 'man taskrc', "
-      << "'man task-tutorial', 'man task-color', 'man task-faq' or at "
-      << "http://taskwarrior.org"
+      << "Documentation for taskwarrior can be found using 'man task', "
+      << "'man taskrc', 'man task-tutorial', 'man task-color', 'man task-faq' "
+      << "or at http://taskwarrior.org"
       << std::endl
       << std::endl;
 
@@ -327,7 +327,7 @@ int longUsage (std::string &outs)
         << "  task add \"quoted ' quote\""                                      << "\n"
         << "  task add escaped \\' quote"                                       << "\n"
         <<                                                                         "\n"
-        << "The argument -- tells task to treat all other args as description." << "\n"
+        << "The argument -- tells taskwarrior to treat all other args as description." << "\n"
         << "  task add -- project:Home needs scheduling"                        << "\n"
         <<                                                                         "\n"
         << "Many characters have special meaning to the shell, including:"      << "\n"

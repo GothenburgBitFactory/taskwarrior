@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Tegelsten - building blocks for UI
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.

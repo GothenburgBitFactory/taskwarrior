@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// task - a command line task list manager.
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
@@ -626,8 +626,8 @@ int handleVersion (std::string &outs)
     disclaimer.setColumnWidth (0, Table::flexible);
     disclaimer.setColumnJustification (0, Table::left);
     disclaimer.addCell (disclaimer.addRow (), 0,
-        "Task may be copied only under the terms of the GNU General Public "
-        "License, which may be found in the task source kit.");
+        "Taskwarrior may be copied only under the terms of the GNU General Public "
+        "License, which may be found in the taskwarrior source kit.");
 
     // Create a table for the URL.
     Table link;
@@ -636,7 +636,7 @@ int handleVersion (std::string &outs)
     link.setColumnWidth (0, Table::flexible);
     link.setColumnJustification (0, Table::left);
     link.addCell (link.addRow (), 0,
-      "Documentation for task can be found using 'man task', 'man taskrc', "
+      "Documentation for taskwarrior can be found using 'man task', 'man taskrc', "
       "'man task-tutorial', 'man task-color', 'man task-faq' or at "
       "http://taskwarrior.org");
 

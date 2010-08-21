@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// task - a command line task list manager.
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
@@ -479,7 +479,7 @@ void Context::loadCorrectConfigFile ()
                 + "\n\n"
                 + "Would you like a sample "
                 + rc.data
-                + " created, so task can proceed?"))
+                + " created, so taskwarrior can proceed?"))
       throw std::string ("Cannot proceed without rc file.");
 
     config.createDefaultRC (rc, data);

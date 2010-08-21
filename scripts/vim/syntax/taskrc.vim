@@ -1,5 +1,5 @@
 " Vim syntax file
-" Language:	support for editing task configuration file
+" Language:	support for editing taskwarrior configuration file
 " Maintainer:	John Florian <jflorian@doubledog.org>
 " Updated:	Sat Feb 20 14:14:44 EST 2010
 "

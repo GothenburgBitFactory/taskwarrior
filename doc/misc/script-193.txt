@@ -11,10 +11,10 @@ task-tutorial.5 man page.
 
 ---------------------------------------- Intro -----------------------------------------------------
 
-http://taskwarrior.org                   Hello, and welcome to this task version 1.9.3 demo.
+http://taskwarrior.org                   Hello, and welcome to this taskwarrior version 1.9.3 demo.
                                          I'm going to show you over 100 features, so don't blink, or
-                                         you'll miss some.  Even experienced task users are going to
-                                         learn *something*.
+                                         you'll miss some.  Even experienced users are going to learn
+                                         *something*.
 
                                          I will start off with basic usage, and proceed to more
                                          sophisticated commands as we go along.
@@ -46,10 +46,10 @@ task 3 done                              That looks good - but now I think of it
 task list                                guest list, so I can mark that one as done.
 
                                          And that's basic usage, and you already know enough to be
-                                         productive using task.  If you stopped here, you would be
-                                         perfectly able to manage your task list.
+                                         productive using taskwarrior.  If you stopped here, you
+                                         would be perfectly able to manage your task list.
 
-                                         But if you want to see what task can really do, keep watching...
+                                         But if you want to see what it can really do, keep watching...
 
 ---------------------------------------- Projects --------------------------------------------------
 
@@ -63,9 +63,9 @@ task 7 project:home                      We can now use projects to separate hom
                                          project.
 
 task 1-6 project:party                   And we will put those first six tasks in the 'party'
-                                         project.  See how we specify a range of tasks?  Task will
-                                         want to confirm bulk changes like this, but we'll accept
-                                         all changes here.
+                                         project.  See how we specify a range of tasks?  Taskwarrior
+                                         will want to confirm bulk changes like this, but we'll
+                                         accept all changes here.
 
 task projects                            Now that we have multiple projects, as shown here, we can
 task list project:home                   use project as a filter for the list report.  You can see
@@ -76,8 +76,8 @@ task li pro:par                          again that we can abbreviate 'list' and
 ---------------------------------------- Priorities ------------------------------------------------
 
 task 1-3,5 priority:H                    Priorities are another way to organize tasks.  You can use
-task list                                priority values of high, medium and low, and task knows
-                                         these as H, M or L.
+task list                                priority values of high, medium and low, and taskwarrior
+                                         knows these as H, M or L.
 
 task 3 pri:                              You can remove priorities by specifying a blank value.
 
@@ -116,26 +116,27 @@ task add Hire a band?    <---            Sometimes the command will confuse the 
 task add Hire a band\?   <---            escape the wildcard...
 task add "Hire a band?"  <---            or quote the whole description...
 
-task add -- Hire a band\? +dj            You can also use the minus minus operator which tells task
-                                         to stop being clever and interpret the rest of the arguments
-                                         as a task description.  Otherwise, that +dj would be
-                                         interpreted as a tag.
+task add -- Hire a band\? +dj            You can also use the minus minus operator which tells
+                                         taskwarrior to stop being clever and interpret the rest
+                                         of the arguments as a task description.  Otherwise, that
+                                         +dj would be interpreted as a tag.
 
 task undo                                We don't need a band, so the easiest way to get rid of that
-                                         task is to undo the last change.  Task has a complete undo
-                                         stack, so you can undo all the way back to the beginning.
+                                         task is to undo the last change.  Taskwarrior has a
+                                         complete undo stack, so you can undo all the way back to
+                                         the beginning.
 task 1 delete                            The undo operation gets rid of the task completely, but I
 task undo                                could also have just deleted the task, then the deletion
                                          itself would be tracked, and also undoable.
 
 ---------------------------------------- Info ------------------------------------------------------
 
-task 1 info                              During that undo operation, task displayed metadata that
-task 1                                   is associated with the task.  You can display this with the
-                                         info command, and its shortcut.
+task 1 info                              During that undo operation, taskwarrior displayed metadata
+task 1                                   that is associated with the task.  You can display this
+                                         with the info command, and its shortcut.
 
-task stats                               There are also statistics that task gathers, which I can
-                                         display.
+task stats                               There are also statistics that taskwarrior gathers, which
+                                         I can display.
 
 ---------------------------------------- Annotations -----------------------------------------------
 
@@ -151,7 +152,7 @@ task list
 
 ---------------------------------------- Configuration ---------------------------------------------
 
-task show                                Task has a 'show' command, that is used to display the
+task show                                There is a 'show' command, that is used to display the
                                          active configuration.  There are hundreds of settings that
                                          can be changed, and every one has a sensible default.
 
@@ -163,7 +164,7 @@ task config answer 42                    The 'config' command is used to modify 
                                          value of 42.
 
 task show answer                         The 'show' command indicates that the value was changed,
-task config answer                       and also that the variable is meaningless to task.  The show
+task config answer                       and also that the variable is unrecognized.  The show
                                          command performs a detailed check on your configuration, and
                                          alerts you to several kinds of problem.  The config command
                                          can also remove a value.
@@ -175,9 +176,9 @@ task rc.report.list.sort=description+ list
 
 ---------------------------------------- Defaults --------------------------------------------------
 
-task config default.command list         Task has a default command, which can be set to anything,
+task config default.command list         There is a default command, which can be set to anything,
 task                                     in this case it is set to the 'list' report.  Then running
-                                         task with no command name runs the default command.
+                                         taskwarrior with no command name runs the default command.
 
 task config default.priority H           I can also specify a default priority and project, which
 task config default.project Work         means that any tasks added will use them, unless an
@@ -190,7 +191,7 @@ task config default.project
 
 ---------------------------------------- Aliases ---------------------------------------------------
 
-task config alias.zzz list               You can create aliases to effectively rename task commands.
+task config alias.zzz list               You can create aliases to effectively rename commands.
 task zzz
 
 task z                                   You can abbreviate those, too.
@@ -209,10 +210,10 @@ task list                                rules where a specific task is given a 
 task 1 bg:                               Note that the quotes are necessary, otherwise the shell
                                          will consider "bg:on" and "red" to be separate arugments.
 
-task color                               Task supports 256 colors on certain terminal emulators,
-                                         and this shows the range of colors available.
+task color                               Taskwarrior supports 256 colors on certain terminal
+                                         emulators, and this shows the range of colors available.
 
-task color white on red                  Task can also show a sample of a color.
+task color white on red                  This is how to show a color sample.
 
 task color legend                        Or samples of all the active color settings.
 
@@ -280,8 +281,8 @@ task calendar                            When tasks have due dates, you can see 
 vi ~/.taskrc
 # include /usr/local/share/doc/task/rc/holidays-US.rc
 task calendar
-                                         Task comes with sample holiday files.  You can create your
-                                         own, or use one of the samples to show holidays on the
+                                         Taskwarrior provides sample holiday files.  You can create
+                                         your own, or use one of the samples to show holidays on the
                                          calendar.
 
 task cal 2010                            You can see the whole year.
@@ -328,9 +329,9 @@ task rc:x list                           have effects on individual tasks.  The 
 
 task rc:x tags                           Special tags are highlighted by the 'tags' command.
 
-task rc:x 6 -nocolor                     There are others - the 'nonag' special tag prevents task
-                                         from generating nag messages when you work on low priority
-                                         tasks when there are higher priority tasks.
+task rc:x 6 -nocolor                     There are others - the 'nonag' special tag prevents the
+                                         generation of nag messages when you work on low priority
+                                         tasks when there are more important ones.
 
                                          The 'nocal' special tag will prevent a task from appearing
                                          on the calendar.
@@ -360,7 +361,7 @@ task 11 rc.confirmation:no delete        And now it's deleted.
 
 ---------------------------------------- Reports ---------------------------------------------------
 
-task minimal                             Task has a good many reports.  There is the bare minimum.
+task minimal                             Taskwarrior has a good many reports.  There is the bare minimum.
 task ls                                  The simple.
 task list                                The standard.
 task long                                The kitchen sink.
@@ -457,22 +458,22 @@ task export.csv venue                    Let's just export one task in CSV forma
 task export.vcalendar venue              Or in VCalendar format...
 task export.yaml venue                   Or YAML.
 
-cat file.text                            Task can also import.  Here I am importing simple lines
-task import file.text                    of text.  Task recognizes the format and confirms.
+cat file.text                            I can also import.  Here I am importing simple lines of
+task import file.text                    text.  Taskwarrior recognizes the format and confirms.
 
-cat file.yaml                            Here is a YAML example.  Task can read several formats,
-task import file.yaml                    including old versions task data.  Using YAML, you can
-                                         round-trip the data without loss.
+cat file.yaml                            Here is a YAML example.  Taskwarrior can read several
+task import file.yaml                    formats, including old versions task data.  Using YAML,
+                                         you can round-trip the data without loss.
 
 task new limit:2                         Here are the imported tasks.
 
 ---------------------------------------- Help ------------------------------------------------------
 
-task help                                You'll find a quick reference page built into task itself,
-man task                                 or perhaps you'll want to take a look at the several man
-man taskrc                               pages installed with task.  This demo has superficially
-man task-color                           shown many features which have more capability and depth
-                                         which you can find in the man pages, and online.
+task help                                You'll find a quick reference page built in, with the 'help'
+man task                                 command, or perhaps you'll want to take a look at the several
+man taskrc                               man pages installed.  This demo has superficially shown
+man task-color                           many features which have more capability and depth which you
+                                         can find in the man pages, and online.
 
 man task-tutorial                        This screencast is actually just a recording of me going
                                          through the tutorial.

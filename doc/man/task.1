@@ -7,17 +7,17 @@ task \- A command line todo manager.
 .B task [subcommand] [args]
 
 .SH DESCRIPTION
-Task is a command line todo list manager. It maintains a list of tasks that you
-want to do, allowing you to add/remove, and otherwise manipulate them.  Task
-has a rich list of subcommands that allow you to do various things with it.
+Taskwarrior is a command line todo list manager. It maintains a list of tasks
+that you want to do, allowing you to add/remove, and otherwise manipulate them.
+Task has a rich list of subcommands that allow you to do various things with it.
 
-At the core, task is a list processing program. You add text and additional
-related parameters and task redisplays the information in a nice way.  It turns
-into a todo list program when you add due dates and recurrence. It turns into an
-organized todo list program when you add priorities, tags (one word descriptors),
-project groups, etc.  Task turns into an organized to do list program when you
-modify the configuration file to have the output displayed the way you want to
-see it.
+At the core, taskwarrior is a list processing program. You add text and
+additional related parameters and redisplay the information in a nice way.  It
+turns into a todo list program when you add due dates and recurrence. It turns
+into an organized todo list program when you add priorities, tags (one word
+descriptors), project groups, etc.  Taskwarrior turns into an organized to do
+list program when you modify the configuration file to have the output displayed
+the way you want to see it.
 
 .SH SUBCOMMANDS
 
@@ -45,7 +45,7 @@ Shows all data and metadata for the specified task.
 
 .TP
 .B ID
-With an ID but no specific command, task runs the "info" command.
+With an ID but no specific command, taskwarrior runs the "info" command.
 
 .TP
 .B undo
@@ -154,7 +154,7 @@ currently defined colors.
 
 .TP
 .B version
-Shows the task version number
+Shows the taskwarrior version number
 
 .TP
 .B help
@@ -162,12 +162,13 @@ Shows the long usage text.
 
 .TP 
 .B show [all | substring]"
-Shows all the current settings in the task configuration file. If a substring
-is specified just the settings containing that substring will be displayed.
+Shows all the current settings in the taskwarrior configuration file. If a
+substring is specified just the settings containing that substring will be
+displayed.
 
 .TP
 .B config [name [value | '']]
-Add, modify and remove settings directly in the task configuration.
+Add, modify and remove settings directly in the taskwarrior configuration.
 This command either modifies the 'name' setting with a new value of 'value',
 or adds a new entry that is equivalent to 'name=value':
 
@@ -212,8 +213,9 @@ Prepends information to an existing task.
 .SH REPORT SUBCOMMANDS
 
 A report is a listing of information from the task database. There are several
-reports currently predefined in task. The output and sort behavior of these
-reports can be configured in the configuration file. See also the man page taskrc(5).
+reports currently predefined in taskwarrior. The output and sort behavior of
+these reports can be configured in the configuration file. See also the man page
+taskrc(5).
 
 .TP
 .B active [tags] [attrs] [description]
@@ -372,11 +374,11 @@ task list due.before:eom priority.not:L
 .SH SPECIFYING DATES AND FREQUENCIES
 
 .SS DATES
-Task reads dates from the command line and displays dates in the
+Taskwarrior reads dates from the command line and displays dates in the
 reports.  The expected and desired date format is determined by the
 configuration variable
 .I dateformat
-in the task configuration file.
+in the taskwarrior configuration file.
 
 .RS
 .TP
@@ -433,7 +435,7 @@ task ... due:fri
 .RE
 
 .SS FREQUENCIES
-Recurrence periods. Task supports several ways of specifying the
+Recurrence periods. Taskwarrior supports several ways of specifying the
 .I frequency
 of recurring tasks.
 
@@ -473,7 +475,7 @@ Every two years.
 
 
 .SH COMMAND ABBREVIATION
-All task commands may be abbreviated as long as a unique prefix is used. E.g.
+All taskwarrior commands may be abbreviated as long as a unique prefix is used. E.g.
 
 .RS
 $ task li
@@ -505,7 +507,7 @@ $ task add "quoted ' quote"
 $ task add escaped \\' quote
 .RE
 
-The argument \-\- (a double dash) tells task to treat all other args
+The argument \-\- (a double dash) tells taskwarrior to treat all other args
 as description:
 
 .RS
@@ -513,7 +515,7 @@ $ task add -- project:Home needs scheduling
 .RE
 
 .SH CONFIGURATION FILE AND OVERRIDE OPTIONS
-Task stores its configuration in a file in the user's home directory:
+Taskwarrior stores its configuration in a file in the user's home directory:
 ~/.taskrc . The default configuration file can be overridden with
 
 .TP
@@ -557,7 +559,7 @@ can be configured in the configuration file.
 ~/.task/undo.data The file that contains the information to the "undo" command.
 
 .SH "CREDITS & COPYRIGHTS"
-task was written by P. Beckingham <paul@beckingham.net>.
+Taskwarrior was written by P. Beckingham <paul@beckingham.net>.
 .br
 Copyright (C) 2006 \- 2010 P. Beckingham
 
@@ -566,7 +568,7 @@ and supplemented by Federico Hernandez.
 
 Thank also to T. Charles Yun.
 
-task is distributed under the GNU General Public License.  See
+Taskwarrior is distributed under the GNU General Public License.  See
 http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 
 .SH SEE ALSO
@@ -575,7 +577,7 @@ http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 .BR task-faq(5)
 .BR task-color(5)
 
-For more information regarding task, the following may be referenced:
+For more information regarding taskwarrior, the following may be referenced:
 
 .TP
 The official site at
@@ -591,5 +593,5 @@ You can contact the project by writing an email to
 
 .SH REPORTING BUGS
 .TP
-Bugs in task may be reported to the issue-tracker at
+Bugs in taskwarrior may be reported to the issue-tracker at
 <http://taskwarrior.org>

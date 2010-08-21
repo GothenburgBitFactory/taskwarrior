@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 ################################################################################
-## task - a command line task list manager.
+## taskwarrior - a command line task list manager.
 ##
 ## Copyright 2006 - 2010, Paul Beckingham.
 ## All rights reserved.
@@ -49,7 +49,7 @@ like ($output, qr/You must specify a command, or a task ID to modify/m, 'missing
 # Test the version command.
 $output = qx{../task rc:basic.rc version};
 like ($output, qr/task $version/, 'version - task version number');
-like ($output, qr/GNU General Public License/, 'version - license');
+like ($output, qr/GNU\s+General\s+Public\s+License/, 'version - license');
 like ($output, qr/http:\/\/taskwarrior\.org/, 'version - url');
 
 # Test the _version command.

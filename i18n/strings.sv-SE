@@ -1,9 +1,9 @@
 # This is an example strings.en-US file.
 #
-# The task program has a built-in set of default strings, which are UTF8 encoded
-# for the en-US locale.  A file such as this is used to override those defaults.
-# This means that a strings file is merely a delta applied to the built-in
-# strings, so an empty string file means you get en-US.
+# The taskwarrior program has a built-in set of default strings, which are UTF8
+# encoded for the en-US locale.  A file such as this is used to override those
+# default.  This means that a strings file is merely a delta applied to the
+# built-in strings, so an empty string file means you get en-US.
 #
 # To use another string file, add the following entry to your .taskrc file:
 #

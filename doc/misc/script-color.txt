@@ -1,5 +1,5 @@
                                          Hello.  This is a demonstration of the
-                                         task program color capabilities coming
+                                         taskwarrior color capabilities coming
                                          in version 1.9.
 
 task color                               The color command shows the various

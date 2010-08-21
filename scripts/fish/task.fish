@@ -1,4 +1,4 @@
-# Task <http://taskwarrior.org> tab completions for the Fish shell
+# Taskwarrior <http://taskwarrior.org> tab completions for the Fish shell
 # <http://fishshell.org>.
 #
 # Copy this script to ~/.config/fish/completions/task.fish, open a new shell,

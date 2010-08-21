@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// task - a command line task list manager.
+// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
@@ -82,7 +82,7 @@ int Context::interactive ()
   while (command != "quit")
   {
     // Render title.
-    std::string title = "task 2.0.0";
+    std::string title = "taskwarrior 3.0.0";
     while ((int) title.length () < width)
       title += " ";
 
@@ -91,8 +91,8 @@ int Context::interactive ()
 
     bkgdset (COLOR_PAIR (2));
     int line = height / 2;
-    mvprintw (line,     width / 2 - 16, " I n t e r a c t i v e   t a s k ");
-    mvprintw (line + 1, width / 2 - 16, "     Coming in version 2.0.0     ");
+    mvprintw (line,     width / 2 - 24, " I n t e r a c t i v e   t a s k w a r r i o r ");
+    mvprintw (line + 1, width / 2 - 24, "            Coming in version 3.0.0            ");
 
     std::string footer = "Press 'q' to quit.";
     while ((int) footer.length () < width)
@@ -127,8 +127,8 @@ int Context::interactive ()
 #else
 
   throw stringtable.get (INTERACTIVE_NO_NCURSES,
-                         "Interactive task is only available when built with ncurses "
-                         "support.");
+                         "Interactive taskwarrior is only available when built "
+                         "with ncurses support.");
 
 #endif
 }

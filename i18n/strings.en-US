@@ -1,9 +1,9 @@
 # This is an example strings.en-US file.
 #
-# The task program has a built-in set of default strings, which are UTF8 encoded
-# for the en-US locale.  A file such as this is used to override those defaults.
-# This means that a strings file is merely a delta applied to the built-in
-# strings, so an empty string file means you get en-US.
+# The taskwarrior program has a built-in set of default strings, which are UTF8
+# encoded for the en-US locale.  A file such as this is used to override those
+# defaults.  This means that a strings file is merely a delta applied to the
+# built-in strings, so an empty string file means you get en-US.
 #
 # To use another string file, add the following entry to your .taskrc file:
 #
@@ -18,7 +18,7 @@
 105 Inverted sequence range high-low
 106 ID Range too large
 107 Not a sequence.
-108 Interactive task is only available when built with ncurses support.
+108 Interactive mode is only available when built with ncurses support.
 109 Empty record in input
 110 Unrecognized characters at end of line
 111 Record not recognized as format 4
