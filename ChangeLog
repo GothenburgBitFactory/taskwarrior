@@ -26,6 +26,8 @@
    Added as well synonyms soww/eoww plus new socw/eocw for calendar weeks.
  + Added feature #471, which makes greater use of projects by reporting
    changes to the completion percentage when it changes.
+ + Added feature #478, which uses the colorization rules in the 'info'
+   report.
  + New 'depends' column for custom reports.
  + New 'blocked' report for showing blocked tasks.
  + Improved man pages (thanks to Andy Lester).

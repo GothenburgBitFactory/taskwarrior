@@ -406,6 +406,10 @@ int handleInfo (std::string &outs)
       table.addCell (row, 0, "Description");
       table.addCell (row, 1, getFullDescription (*task, "info"));
 
+      Color c;
+      autoColorize (*task, c);
+      table.setCellColor (row, 1, c);
+
       // status
       row = table.addRow ();
       table.addCell (row, 0, "Status");

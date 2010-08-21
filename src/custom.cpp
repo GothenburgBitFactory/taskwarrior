@@ -122,9 +122,6 @@ int handleCustomReport (const std::string& report, std::string &outs)
     if (context.sequence.size ())
       context.filter.applySequence (tasks, context.sequence);
 
-    // Initialize colorization for subsequent auto colorization.
-    initializeColorRules ();
-
     Table table;
     table.setTableWidth (context.getWidth ());
     table.setDateFormat (context.config.get ("dateformat"));
