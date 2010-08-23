@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 15;
 
 # Create the rc file.
 if (open my $fh, '>', 'wait.rc')
@@ -66,6 +66,13 @@ sleep 3;
 $output = qx{../task rc:wait.rc ls};
 like ($output, qr/nowait/ms, 'non-waiting task still visible');
 like ($output, qr/yeswait/ms, 'waiting task now visible');
+
+qx{../task rc:wait.rc add wait:tomorrow tomorrow};
+$output = qx{../task rc:wait.rc ls};
+unlike ($output, qr/tomorrow/ms, 'waiting task invisible');
+
+$output = qx{../task rc:wait.rc ls wait:tomorrow};
+like ($output, qr/tomorrow/ms, 'waiting task visible when specifically asked for it');
 
 # Cleanup.
 unlink 'pending.data';
