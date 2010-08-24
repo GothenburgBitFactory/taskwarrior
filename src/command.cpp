@@ -743,7 +743,7 @@ int handleShow (std::string &outs)
       "project shadow.command shadow.file shadow.notify weekstart editor "
       "import.synonym.id import.synonym.uuid complete.all.projects complete.all.tags "
       "search.case.sensitive hooks active.indicator tag.indicator recurrence.indicator "
-      "recurrence.limit list.all.projects list.all.tags undo.style "
+      "recurrence.limit list.all.projects list.all.tags undo.style verbose "
 #ifdef FEATURE_SHELL
       "shell.prompt "
 #endif
@@ -1941,20 +1941,37 @@ int handleColor (std::string &outs)
 
         std::vector <std::string> all;
         context.config.all (all);
+
+        Table table;
+        table.addColumn ("Color");
+        table.addColumn ("Definition");
+
+        if (context.config.getBoolean ("color") ||
+            context.config.getBoolean ("_forcecolor"))
+        {
+          table.setColumnUnderline (0);
+          table.setColumnUnderline (1);
+        }
+
         foreach (item, all)
         {
+          // Skip items with 'color' in their name, that are not referring to
+          // actual colors.
           if (*item != "_forcecolor" &&
               *item != "color"       &&
               item->find ("color") != std::string::npos)
           {
-            out << "  "
-                << Color::colorize (" " + *item + " ",
-                                    context.config.get (*item))
-                << std::endl;
+            int row = table.addRow ();
+            table.addCell (row, 0, *item);
+            table.addCell (row, 1, context.config.get (*item));
+            table.setRowColor (row, context.config.get (*item));
           }
         }
 
-        out << std::endl;
+        out << optionalBlankLine ()
+            << table.render ()
+            << optionalBlankLine ()
+            << std::endl;
       }
 
       // If there is something in the description, then assume that is a color,
