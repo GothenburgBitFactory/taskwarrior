@@ -55,6 +55,7 @@ bool noSpaces (const std::string&);
 bool noVerticalSpace (const std::string&);
 bool isWordStart (const std::string&, std::string::size_type);
 bool isWordEnd (const std::string&, std::string::size_type);
+bool isPunctuation (char);
 bool compare (const std::string&, const std::string&, bool sensitive = true);
 std::string::size_type find (const std::string&, const std::string&, bool sensitive = true);
 std::string::size_type find (const std::string&, const std::string&, std::string::size_type, bool sensitive = true);

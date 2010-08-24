@@ -14,6 +14,7 @@ New Features in taskwarrior 1.9.3
   - New merge capability for syncing task data files.
   - When completing or modifying a task, the project status is displayed.
   - The 'info' report is now colorized.
+  - Certain characters (#, $, @) are now supported for use in tags.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
