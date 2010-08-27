@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 #include <Context.h>
 #include <text.h>
 
@@ -150,13 +151,16 @@ bool dependencyChainBroken (Task& task)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Generate a nag message if a dependency chain is being violated.
-void dependencyNag (Task& task)
+std::string dependencyNag (Task& task)
 {
-  std::cout << "# dependencyNag "
-            << task.id
-            << " "
-            << task.get ("uuid")
-            << "\n";
+  std::stringstream out;
+  out << "# dependencyNag "
+      << task.id
+      << " "
+      << task.get ("uuid")
+      << "\n";
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -1189,6 +1189,7 @@ int handleDelete (std::string &outs)
                   << "'."
                   << std::endl;
 
+              out << dependencyNag (*task);
               out << onProjectChange (*task);
             }
           }
@@ -1211,6 +1212,7 @@ int handleDelete (std::string &outs)
                   << "'."
                   << std::endl;
 
+            out << dependencyNag (*task);
             out << onProjectChange (*task);
           }
         }
@@ -1276,6 +1278,8 @@ int handleStart (std::string &outs)
               << std::endl;
         if (!nagged)
           nagged = nag (*task);
+
+        out << dependencyNag (*task);
       }
       else
       {
@@ -1422,6 +1426,7 @@ int handleDone (std::string &outs)
                     << "'."
                     << std::endl;
 
+              out << dependencyNag (*task);
               out << onProjectChange (*task, false);
 
               ++count;

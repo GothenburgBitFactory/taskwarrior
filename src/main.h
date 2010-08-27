@@ -135,7 +135,7 @@ bool dependencyIsBlocked (Task&);
 bool dependencyIsBlocking (Task&);
 bool dependencyIsCircular (Task&);
 bool dependencyChainBroken (Task&);
-void dependencyNag (Task&);
+std::string dependencyNag (Task&);
 
 // list template
 ///////////////////////////////////////////////////////////////////////////////
