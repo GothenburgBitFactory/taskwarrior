@@ -134,6 +134,8 @@ int handleExportYAML (std::string &);
 bool dependencyIsBlocked (Task&);
 bool dependencyIsBlocking (Task&);
 bool dependencyIsCircular (Task&);
+bool dependencyChainBroken (Task&);
+void dependencyNag (Task&);
 
 // list template
 ///////////////////////////////////////////////////////////////////////////////

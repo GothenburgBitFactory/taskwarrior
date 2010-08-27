@@ -33,11 +33,6 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-// void dependencyCheckDangling ();
-// bool dependencyRepairNeeded ();
-// void dependencyRepairChain ();
-// bool dependencyRepairConfirm ();
-// void dependencyNag ();
 static bool followUpstream (const Task&, const Task&, const std::vector <Task>&, std::vector <std::string>&);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,13 +68,9 @@ bool dependencyIsBlocking (Task& task)
 //   Tail   if a --> b, then a is the tail
 //
 // Algorithm:
-//   Find all tails, ie tasks that have dependencies, with no other tasks that
-//   are dependent on them.
-//
-//   For each tail:
-//     follow the chain, recording all linkages, ie a --> b, b --> c.  If a
-//     linkage appears that has already occurred in this chain => circularity.
-//
+//   Keep walking the chain, recording the links (a --> b, b --> c, ...) until
+//   either the end of the chain is found (therefore not circular), or the chain
+//   loops and a repeat link is spotted (therefore circular).
 bool dependencyIsCircular (Task& task)
 {
   std::vector <std::string> links;
@@ -89,7 +80,8 @@ bool dependencyIsCircular (Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// To follow dependencies upstream, follow the heads.
+// Returns true if a task is encountered twice in a chain walk, and therefore
+// indicates circularity.  Recursive.
 static bool followUpstream (
   const Task& task,
   const Task& original,
@@ -105,6 +97,9 @@ static bool followUpstream (
     for (outer = uuids.begin (); outer != uuids.end (); ++outer)
     {
       // Check that link has not already been seen.
+
+      // This is the actual circularity check - the rest of this function is
+      // just chain-walking.
       std::string link = task.get ("uuid") + " -> " + *outer;
       if (std::find (links.begin (), links.end (), link) != links.end ())
         return true;
@@ -117,6 +112,8 @@ static bool followUpstream (
       {
         if (*outer == inner->get ("uuid"))
         {
+          // Use the newly modified "task", not "*inner", which is the old
+          // unmodified version.
           if (*outer == original.get ("uuid"))
           {
             if (followUpstream (task, original, all, links))
@@ -135,6 +132,31 @@ static bool followUpstream (
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Determine whether a dependency chain is being broken, assuming that 'task' is
+// either completed or deleted.
+bool dependencyChainBroken (Task& task)
+{
+  if (task.has ("depends"))
+  {
+    std::cout << "# chain broken\n";
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Generate a nag message if a dependency chain is being violated.
+void dependencyNag (Task& task)
+{
+  std::cout << "# dependencyNag "
+            << task.id
+            << " "
+            << task.get ("uuid")
+            << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

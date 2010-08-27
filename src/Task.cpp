@@ -477,6 +477,7 @@ void Task::addDependency (int id)
   if (id == this->id)
     throw std::string ("A task cannot be dependent on itself.");
 
+  // Check for extant dependency.
   std::string uuid = context.tdb.uuid (id);
   if (uuid == "")
   {
@@ -485,15 +486,23 @@ void Task::addDependency (int id)
     throw s.str ();
   }
 
+  // Store the dependency.
   std::string depends = get ("depends");
   if (depends.length ())
   {
     if (depends.find (uuid) == std::string::npos)
       set ("depends", depends + "," + uuid);
+    else
+    {
+      std::stringstream out;
+      out << "Task " << this->id << " already depends on task " << id << ".";
+      throw out.str ();
+    }
   }
   else
     set ("depends", uuid);
 
+  // Prevent circular dependencies.
   if (dependencyIsCircular (*this))
     throw std::string ("Circular dependency detected and disallowed.");
 }

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 37;
+use Test::More tests => 39;
 
 # Create the rc file.
 if (open my $fh, '>', 'dep.rc')
@@ -69,7 +69,12 @@ like ($output, qr/This task is blocking\s+1 One\nUUID/, 'dependencies - trivial 
 
 # t 1 dep:2 (again)
 $output = qx{../task rc:dep.rc 1 dep:2};
-like ($output, qr/Modified 0 tasks\./, 'dependencies - add already existing dependency');
+like ($output, qr/Task 1 already depends on task 2\./, 'dependencies - add already existing dependency');
+
+# t 1 dep:1 => error
+$output = qx{../task rc:dep.rc 1 dep:1};
+like   ($output, qr/A task cannot be dependent on itself\./, 'dependencies - cannot depend on self');
+unlike ($output, qr/Modified 1 task\./,                      'dependencies - cannot depend on self');
 
 # t 1 dep:2; t 2 dep:1 => error
 $output = qx{../task rc:dep.rc 2 dep:1};
