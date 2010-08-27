@@ -493,6 +493,9 @@ void Task::addDependency (int id)
   }
   else
     set ("depends", uuid);
+
+  if (dependencyIsCircular (*this))
+    throw std::string ("Circular dependency detected and disallowed.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

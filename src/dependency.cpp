@@ -24,7 +24,11 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
+#include <algorithm>
+#include <iostream>
 #include <Context.h>
+#include <text.h>
 
 extern Context context;
 
@@ -34,6 +38,7 @@ extern Context context;
 // void dependencyRepairChain ();
 // bool dependencyRepairConfirm ();
 // void dependencyNag ();
+static bool followUpstream (const Task&, const Task&, const std::vector <Task>&, std::vector <std::string>&);
 
 ////////////////////////////////////////////////////////////////////////////////
 // All it takes to be blocked is to depend on another task.
@@ -62,35 +67,72 @@ bool dependencyIsBlocking (Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Follow each of the given task's dependencies to the end of the chain, and if
-// any duplicates show up, or the chain length exceeds N, stop.
-
-/*
-  Linear:
-   1->2
-
-   1->2->3->4
-       `->5->6
-           `->7
-
-  Circular:
-   1->1
-
-   1->2->1
-
-   1->2->3
-       `->1
-
-   Algorithm:
-     1. Generate a subset of all task that have dependencies
-     2. Find the heads of all the chains
-     3. For each unique chain head
-     3.1 Walk the chain recording IDs
-     3.2 Duplicate ID => circular
-*/
+// Terminology:
+//   -->    if a depends on b, then it can be said that a --> b
+//   Head   if a --> b, then b is the head
+//   Tail   if a --> b, then a is the tail
+//
+// Algorithm:
+//   Find all tails, ie tasks that have dependencies, with no other tasks that
+//   are dependent on them.
+//
+//   For each tail:
+//     follow the chain, recording all linkages, ie a --> b, b --> c.  If a
+//     linkage appears that has already occurred in this chain => circularity.
+//
 bool dependencyIsCircular (Task& task)
 {
+  std::vector <std::string> links;
+  const std::vector <Task>& all = context.tdb.getAllPending ();
 
+  return followUpstream (task, task, all, links);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// To follow dependencies upstream, follow the heads.
+static bool followUpstream (
+  const Task& task,
+  const Task& original,
+  const std::vector <Task>& all,
+  std::vector <std::string>& links)
+{
+  if (task.has ("depends"))
+  {
+    std::vector <std::string> uuids;
+    split (uuids, task.get ("depends"), ',');
+
+    std::vector <std::string>::iterator outer;
+    for (outer = uuids.begin (); outer != uuids.end (); ++outer)
+    {
+      // Check that link has not already been seen.
+      std::string link = task.get ("uuid") + " -> " + *outer;
+      if (std::find (links.begin (), links.end (), link) != links.end ())
+        return true;
+
+      links.push_back (link);
+
+      // Recurse up the chain.
+      std::vector <Task>::const_iterator inner;
+      for (inner = all.begin (); inner != all.end (); ++inner)
+      {
+        if (*outer == inner->get ("uuid"))
+        {
+          if (*outer == original.get ("uuid"))
+          {
+            if (followUpstream (task, original, all, links))
+              return true;
+          }
+          else
+          {
+            if (followUpstream (*inner, original, all, links))
+              return true;
+          }
+
+          break;
+        }
+      }
+    }
+  }
 
   return false;
 }

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 35;
+use Test::More tests => 37;
 
 # Create the rc file.
 if (open my $fh, '>', 'dep.rc')
@@ -73,7 +73,8 @@ like ($output, qr/Modified 0 tasks\./, 'dependencies - add already existing depe
 
 # t 1 dep:2; t 2 dep:1 => error
 $output = qx{../task rc:dep.rc 2 dep:1};
-unlike ($output, qr/Modified 1 task\./, 'dependencies - trivial circular');
+like   ($output, qr/Circular dependency detected and disallowed\./, 'dependencies - trivial circular');
+unlike ($output, qr/Modified 1 task\./,                             'dependencies - trivial circular');
 
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
@@ -88,7 +89,8 @@ qx{../task rc:dep.rc 5 dep:4; ../task rc:dep.rc 4 dep:3; ../task rc:dep.rc 3 dep
 
 # 5 dep 4 dep 3 dep 2 dep 1 dep 5 => error
 $output = qx{../task rc:dep.rc 1 dep:5};
-unlike ($output, qr/Modified 1 task\./, 'dependencies - nontrivial circular');
+like   ($output, qr/Circular dependency detected and disallowed\./, 'dependencies - nontrivial circular');
+unlike ($output, qr/Modified 1 task\./,                             'dependencies - nontrivial circular');
 
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
