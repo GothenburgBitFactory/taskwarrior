@@ -759,7 +759,7 @@ int handleReportSummary (std::string &outs)
         table.addCell (row, 0, (i->first == "" ? "(none)" : i->first));
         table.addCell (row, 1, countPending[i->first]);
         if (counter[i->first])
-          table.addCell (row, 2, Duration ((int) sumEntry[i->first] / counter[i->first]).format ());
+          table.addCell (row, 2, Duration ((int) (sumEntry[i->first] / (double)counter[i->first])).format ());
 
         int c = countCompleted[i->first];
         int p = countPending[i->first];
