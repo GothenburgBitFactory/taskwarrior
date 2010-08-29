@@ -536,40 +536,50 @@ terminal, can be obtained by running the command:
 .B task color
 .RE
 
+
 .RS
-The coloration rules and their defaults are:
+The coloration rules are:
 .RE
 
 .RS
-.B color.overdue=bold red
-The color for overdue tasks.
+.B color.due.today
+Task is due today
 .br
-.B color.due.today=bold magenta
-The color of tasks due today.
+.B color.active
+Task is started, therefore active.
 .br
-.B color.due=bold yellow
-The color of due tasks.
+.B color.blocked
+Task is blocked by a dependency.
 .br
-.B color.pri.H=bold
-The color of priority:H tasks.
+.B color.overdue
+Task is overdue (due some time prior to now).
 .br
-.B color.pri.M=on yellow
-The color of priority:M tasks.  No default value.
+.B color.due
+Task is coming due.
 .br
-.B color.pri.L=on green
-The color of priority:L tasks.  No default value.
+.B color.project.none
+Task does not have an assigned project.
 .br
-.B color.pri.none=white on blue
-The color of priority: tasks.  No default value.
+.B color.tag.none
+Task has no tags.
 .br
-.B color.active=bold cyan
-The color of active tasks.
+.B color.tagged
+Task has at least one tag.
 .br
-.B color.tagged=yellow
-The color of tagged tasks.
+.B color.recurring
+Task is recurring.
 .br
-.B color.recurring=on red
-The color for recurring tasks.
+.B color.pri.H
+Task has priority H.
+.br
+.B color.pri.M
+Task has priority M.
+.br
+.B color.pri.L
+Task has priority L.
+.br
+.B color.pri.none
+Task has no priority.
 .RE
 .RE
 
@@ -688,6 +698,15 @@ yellow bars.
 .RS
 Colors used by the undo command, to indicate the values both before and after
 a change that is to be reverted.
+.RE
+
+.TP
+.B rule.precedence.color=overdue,tag,project,keyword,active,...
+.RS
+This setting specifies the precedence of the color rules, from highest to
+lowest.  Note that the prefix 'color.' is omitted (for brevity), and that any
+wildcard values (color.tag.XXX) is shortened to 'tag', which places all specific
+tag rules at the same precedence, again for brevity.
 .RE
 
 .SS SHADOW FILE

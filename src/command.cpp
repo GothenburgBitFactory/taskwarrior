@@ -744,6 +744,7 @@ int handleShow (std::string &outs)
       "import.synonym.id import.synonym.uuid complete.all.projects complete.all.tags "
       "search.case.sensitive hooks active.indicator tag.indicator recurrence.indicator "
       "recurrence.limit list.all.projects list.all.tags undo.style verbose "
+      "rule.precedence.color "
 #ifdef FEATURE_SHELL
       "shell.prompt "
 #endif

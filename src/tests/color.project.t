@@ -35,6 +35,7 @@ if (open my $fh, '>', 'color.rc')
 {
   print $fh "data.location=.\n",
             "color.project.x=red\n",
+            "color.project.none=green\n",
             "color.alternate=\n",
             "_forcecolor=1\n";
   close $fh;
@@ -46,7 +47,7 @@ qx{../task rc:color.rc add nothing};
 qx{../task rc:color.rc add project:x red};
 my $output = qx{../task rc:color.rc list};
 
-like ($output, qr/ (?!<\033\[\d\dm) .* nothing .* (?!>\033\[0m) /x, 'none');
+like ($output, qr/ \033\[32m        .* nothing .* \033\[0m /x, 'color.project.none');
 like ($output, qr/ \033\[31m        .* red     .* \033\[0m /x, 'color.project.red');
 
 # Cleanup.

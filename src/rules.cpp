@@ -36,137 +36,251 @@
 extern Context context;
 
 static std::map <std::string, Color> gsColor;
+static std::vector <std::string> gsPrecedence;
 
 ////////////////////////////////////////////////////////////////////////////////
 void initializeColorRules ()
 {
-  std::vector <std::string> ruleNames;
-  context.config.all (ruleNames);
-  foreach (it, ruleNames)
+  gsColor.clear ();
+  gsPrecedence.clear ();
+
+  // Load all the configuration values, filter to only the ones that begin with
+  // "color.", then store name/value in gsColor, and name in rules.
+  std::vector <std::string> rules;
+  std::vector <std::string> variables;
+  context.config.all (variables);
+  foreach (it, variables)
   {
     if (it->substr (0, 6) == "color.")
     {
       Color c (context.config.get (*it));
       gsColor[*it] = c;
+
+      rules.push_back (*it);
+    }
+  }
+
+  // Load the rule.precedence.color list, split it, then autocomplete against
+  // the 'rules' vector loaded above.
+  std::vector <std::string> results;
+  std::vector <std::string> precedence;
+  split (precedence, context.config.get ("rule.precedence.color"), ',');
+
+  foreach (it, precedence)
+  {
+    // Add the leading "color." string.
+    std::string rule = "color." + *it;
+    autoComplete (rule, rules, results);
+
+    foreach (r, results)
+      gsPrecedence.push_back (*r);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeBlocked (Task& task, const std::string& rule, Color& c)
+{
+  if (gsColor[rule].nontrivial ())
+    if (task.get ("depends") != "")
+      c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeTagged (Task& task, const std::string& rule, Color& c)
+{
+  if (gsColor[rule].nontrivial ())
+    if (task.getTagCount ())
+      c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizePriorityL (Task& task, const std::string& rule, Color& c)
+{
+  if (gsColor[rule].nontrivial ())
+    if (task.get ("priority") == "L")
+      c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizePriorityM (Task& task, const std::string& rule, Color& c)
+{
+  if (gsColor[rule].nontrivial ())
+    if (task.get ("priority") == "M")
+      c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizePriorityH (Task& task, const std::string& rule, Color& c)
+{
+  if (gsColor[rule].nontrivial ())
+    if (task.get ("priority") == "H")
+      c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizePriorityNone (Task& task, const std::string& rule, Color& c)
+{
+  if (gsColor[rule].nontrivial ())
+    if (task.get ("priority") == "")
+      c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeActive (Task& task, const std::string& rule, Color& c)
+{
+  Task::status status = task.getStatus ();
+
+  if (gsColor[rule].nontrivial () &&
+      status != Task::completed   &&
+      status != Task::deleted     &&
+      task.has ("start"))
+    c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeTag (Task& task, const std::string& rule, Color& c)
+{
+  if (task.hasTag (rule.substr (10)))
+    c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeProject (Task& task, const std::string& rule, Color& c)
+{
+  // Observe the case sensitivity setting.
+  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+
+  if (compare (task.get ("project"), rule.substr (14), sensitive))
+    c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeProjectNone (Task& task, const std::string& rule, Color& c)
+{
+  if (task.get ("project") == "")
+    c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeTagNone (Task& task, const std::string& rule, Color& c)
+{
+  if (task.getTagCount () == 0)
+    c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeKeyword (Task& task, const std::string& rule, Color& c)
+{
+  // Observe the case sensitivity setting.
+  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+
+  // The easiest thing to check is the description, because it is just one
+  // attribute.
+  if (find (task.get ("description"), rule.substr (14), sensitive) != std::string::npos)
+    c.blend (gsColor[rule]);
+
+  // Failing the description check, look at all annotations, returning on the
+  // first match.
+  else
+  {
+    Task::iterator it;
+    for (it = task.begin (); it != task.end (); ++it)
+    {
+      if (it->first.substr (0, 11) == "annotation_" &&
+          find (it->second.value (), rule.substr (14), sensitive) != std::string::npos)
+      {
+        c.blend (gsColor[rule]);
+        return;
+      }
     }
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void autoColorize (Task& task, Color& c)
+static void colorizeDue (Task& task, const std::string& rule, Color& c)
 {
-  // The special tag 'nocolor' overrides all auto colorization.
-  if (task.hasTag ("nocolor"))
-    return;
-
-  // Note: fg, bg already contain colors specifically assigned via command.
-  // Note: These rules form a hierarchy - the last rule is King.
-
   Task::status status = task.getStatus ();
 
-  // Colorization of the blocked.
-  if (gsColor["color.blocked"].nontrivial ())
-    if (task.get ("depends") != "")
-      c.blend (gsColor["color.blocked"]);
-
-  // Colorization of the tagged.
-  if (gsColor["color.tagged"].nontrivial ())
-    if (task.getTagCount ())
-      c.blend (gsColor["color.tagged"]);
-
-  // Colorization of the low priority.
-  if (gsColor["color.pri.L"].nontrivial ())
-    if (task.get ("priority") == "L")
-      c.blend (gsColor["color.pri.L"]);
-
-  // Colorization of the medium priority.
-  if (gsColor["color.pri.M"].nontrivial ())
-    if (task.get ("priority") == "M")
-      c.blend (gsColor["color.pri.M"]);
-
-  // Colorization of the high priority.
-  if (gsColor["color.pri.H"].nontrivial ())
-    if (task.get ("priority") == "H")
-      c.blend (gsColor["color.pri.H"]);
-
-  // Colorization of the priority-less.
-  if (gsColor["color.pri.none"].nontrivial ())
-    if (task.get ("priority") == "")
-      c.blend (gsColor["color.pri.none"]);
-
-  // Colorization of the active, if not completed/deleted.
-  if (gsColor["color.active"].nontrivial () &&
-      status != Task::completed &&
-      status != Task::deleted)
-    if (task.has ("start"))
-      c.blend (gsColor["color.active"]);
-
-  // Colorization by tag value.
-  std::map <std::string, Color>::iterator it;
-  for (it = gsColor.begin (); it != gsColor.end (); ++it)
-  {
-    if (it->first.substr (0, 10) == "color.tag.")
-    {
-      std::string value = it->first.substr (10);
-      if (task.hasTag (value))
-        c.blend (it->second);
-    }
-  }
-
-  // Colorization by project name.
-  for (it = gsColor.begin (); it != gsColor.end (); ++it)
-  {
-    if (it->first.substr (0, 14) == "color.project.")
-    {
-      std::string value = lowerCase (it->first.substr (14));
-      std::string project  = lowerCase (task.get ("project"));
-      if (project.find (value) == 0)
-        c.blend (it->second);
-    }
-  }
-
-  // Colorization by keyword.
-  for (it = gsColor.begin (); it != gsColor.end (); ++it)
-  {
-    if (it->first.substr (0, 14) == "color.keyword.")
-    {
-      std::string value = lowerCase (it->first.substr (14));
-      std::string desc  = lowerCase (task.get ("description"));
-      if (desc.find (value) != std::string::npos)
-        c.blend (it->second);
-    }
-  }
-
-  // Colorization of the due and overdue.
   if (task.has ("due")          &&
       status != Task::completed &&
       status != Task::deleted)
   {
-    std::string due = task.get ("due");
-    switch (getDueState (due))
-    {
-    case 1: // imminent
-      c.blend (gsColor["color.due"]);
-      break;
+    if (getDueState (task.get ("due")) == 1)
+      c.blend (gsColor[rule]);
+  }
+}
 
-    case 2: // today
-      c.blend (gsColor["color.due.today"]);
-      break;
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeDueToday (Task& task, const std::string& rule, Color& c)
+{
+  Task::status status = task.getStatus ();
 
-    case 3: // overdue
-      c.blend (gsColor["color.overdue"]);
-      break;
+  if (task.has ("due")          &&
+      status != Task::completed &&
+      status != Task::deleted)
+  {
+    if (getDueState (task.get ("due")) == 2)
+      c.blend (gsColor[rule]);
+  }
+}
 
-    case 0: // not due at all
-    default:
-      break;
-    }
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeOverdue (Task& task, const std::string& rule, Color& c)
+{
+  Task::status status = task.getStatus ();
+
+  if (task.has ("due")          &&
+      status != Task::completed &&
+      status != Task::deleted)
+  {
+    if (getDueState (task.get ("due")) == 3)
+      c.blend (gsColor[rule]);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeRecurring (Task& task, const std::string& rule, Color& c)
+{
+  if (gsColor[rule].nontrivial ())
+    if (task.has ("recur"))
+      c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void autoColorize (Task& task, Color& c)
+{
+  // The special tag 'nocolor' overrides all auto and specific colorization.
+  if (task.hasTag ("nocolor"))
+  {
+    c = Color ();
+    return;
   }
 
-  // Colorization of the recurring.
-  if (gsColor["color.recurring"].nontrivial ())
-    if (task.has ("recur"))
-      c.blend (gsColor["color.recurring"]);
+  // Note: c already contains colors specifically assigned via command.
+  // Note: These rules form a hierarchy - the last rule is King, hence the
+  //       reverse iterator.
+  std::vector <std::string>::reverse_iterator r;
+  for (r = gsPrecedence.rbegin (); r != gsPrecedence.rend (); ++r)
+  {
+         if (*r == "color.blocked")                colorizeBlocked      (task, *r, c);
+    else if (*r == "color.tagged")                 colorizeTagged       (task, *r, c);
+    else if (*r == "color.pri.L")                  colorizePriorityL    (task, *r, c);
+    else if (*r == "color.pri.M")                  colorizePriorityM    (task, *r, c);
+    else if (*r == "color.pri.H")                  colorizePriorityH    (task, *r, c);
+    else if (*r == "color.pri.none")               colorizePriorityNone (task, *r, c);
+    else if (*r == "color.active")                 colorizeActive       (task, *r, c);
+    else if (*r == "color.project.none")           colorizeProjectNone  (task, *r, c);
+    else if (*r == "color.tag.none")               colorizeTagNone      (task, *r, c);
+    else if (*r == "color.due")                    colorizeDue          (task, *r, c);
+    else if (*r == "color.due.today")              colorizeDueToday     (task, *r, c);
+    else if (*r == "color.overdue")                colorizeOverdue      (task, *r, c);
+    else if (*r == "color.recurring")              colorizeRecurring    (task, *r, c);
+
+    // Wildcards
+    else if (r->substr (0,  9) == "color.tag")     colorizeTag          (task, *r, c);
+    else if (r->substr (0, 13) == "color.project") colorizeProject      (task, *r, c);
+    else if (r->substr (0, 13) == "color.keyword") colorizeKeyword      (task, *r, c);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

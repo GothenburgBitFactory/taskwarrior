@@ -28,6 +28,8 @@
    changes to the completion percentage when it changes.
  + Added feature #478, which uses the colorization rules in the 'info'
    report.
+ + Added feature #481, allowing for user control of the color rule order
+   of precedence via the 'rule.precedence.color' configuration variable.
  + New 'depends' column for custom reports.
  + New 'blocked' report for showing blocked tasks.
  + Improved man pages (thanks to Andy Lester).
@@ -37,6 +39,8 @@
  + The 'tags' command highlights special tags.
  + The 'stats' and 'info' reports not obey color.alternate.
  + New fish shell tab completion script (thanks to Mick Koch).
+ + Color rules now obey the rc.search.case.sensitive configuration option.
+ + The color.keyword.XXX color rule now applies to annotations too.
  + Fixed bug #427, preventing the task edit command to parse annotation
    dates with spaces.
  + Fixed bug #433, making task command output more consistent.

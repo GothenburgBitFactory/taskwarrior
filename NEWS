@@ -6,6 +6,9 @@ New Features in taskwarrior 1.9.3
   - Now supports durations in dates, such as:
       $ task ... due:4d
       $ task ... due:3wks
+  - 'sow', 'som' and 'soy' are now accepted in dates.  'soww' and 'eoww' are
+    now synonyms for 'sow' and 'eow' (ww = working week) 'socw' and 'eocw'
+    refer to the calendar week (starting Sunday/Monday and
   - Now supports the beginning of the week, month and year in dates.
   - Now supports 'now' as a date/time.
   - Now defines an overdue task as being one second after the due date,
@@ -15,6 +18,7 @@ New Features in taskwarrior 1.9.3
   - When completing or modifying a task, the project status is displayed.
   - The 'info' report is now colorized.
   - Certain characters (#, $, @) are now supported for use in tags.
+  - User-controlled color rule precedence.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -31,10 +35,10 @@ New commands in taskwarrior 1.9.3
 New configuration options in taskwarrior 1.9.3
 
   - journal.time, journal.time.start.annotation, journal.time.stop.annotation
-  - 'sow', 'som' and 'soy' are now accepted in dates
-    'soww' and 'eoww' are now synonyms for 'sow' and 'eow' (ww = working week)
-    'socw' and 'eocw' refer to the calendar week (starting Sunday/Monday and
-    ending Saturday/Sunday)
+    ending Saturday/Sunday).
+  - Color rule precedence can now be explicitly set with the configuration
+    variable rule.precedence.color.  Try "task show rule.pre" to show the
+    default settings.
 
 Newly deprecated features in taskwarrior 1.9.3
 
