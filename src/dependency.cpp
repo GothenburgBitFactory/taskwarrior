@@ -154,11 +154,15 @@ bool dependencyChainBroken (Task& task)
 std::string dependencyNag (Task& task)
 {
   std::stringstream out;
-  out << "# dependencyNag "
-      << task.id
-      << " "
-      << task.get ("uuid")
-      << "\n";
+
+  if (task.has ("depends"))
+  {
+    out << "# dependencyNag "
+        << task.id
+        << " "
+        << task.get ("uuid")
+        << "\n";
+  }
 
   return out.str ();
 }
