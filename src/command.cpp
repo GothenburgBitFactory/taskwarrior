@@ -1965,7 +1965,7 @@ int handleColor (std::string &outs)
           // actual colors.
           if (*item != "_forcecolor" &&
               *item != "color"       &&
-              item->find ("color") != std::string::npos)
+              item->find ("color") == 0)
           {
             int row = table.addRow ();
             table.addCell (row, 0, *item);

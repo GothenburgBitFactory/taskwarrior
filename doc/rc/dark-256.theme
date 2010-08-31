@@ -60,6 +60,8 @@ color.pri.H=color255
 color.pri.M=color250
 color.pri.L=color245
 color.tagged=rgb031
-color.blocked=black on white           # placeholder color
+color.blocked=on gray4
+color.project.none=
+color.tag.none=
 color.alternate=on color233
 
