@@ -71,8 +71,8 @@ qx{../task rc:wait.rc add wait:tomorrow tomorrow};
 $output = qx{../task rc:wait.rc ls};
 unlike ($output, qr/tomorrow/ms, 'waiting task invisible');
 
-$output = qx{../task rc:wait.rc ls wait:tomorrow};
-like ($output, qr/tomorrow/ms, 'waiting task visible when specifically asked for it');
+$output = qx{../task rc:wait.rc all status:waiting wait:tomorrow};
+like ($output, qr/tomorrow/ms, 'waiting task visible when specifically queried');
 
 # Cleanup.
 unlink 'pending.data';

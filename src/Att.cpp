@@ -415,7 +415,7 @@ bool Att::validNameValue (
             "\" is not a valid status.  Use 'pending', 'completed', 'deleted', 'recurring' or 'waiting'.";
   }
 
-  else if (! validInternalName (name) &&
+  else if (! validInternalName   (name) &&
            ! validModifiableName (name))
     throw std::string ("'") + name + "' is not a recognized attribute.";
 
@@ -438,11 +438,11 @@ bool Att::validMod (const std::string& mod)
 std::string Att::type (const std::string& name) const
 {
   if (name == "due"   ||
+      name == "wait"  ||
       name == "until" ||
       name == "start" ||
       name == "entry" ||
-      name == "end"   ||
-      name == "wait")
+      name == "end")
     return "date";
 
   else if (name == "recur")
@@ -542,16 +542,17 @@ bool Att::match (const Att& other) const
   if (mMod == "")
   {
     // Exact matches on dates should only compare m/d/y, not h:m:s.  This allows
-    // Comapisons like "task list due:today" (bug #405).
+    // comparisons like "task list due:today" (bug #405).
     std::string which = type (mName);
     if (which == "date")
     {
+      if (other.mValue == "")
+        return false;
+
       Date left (mValue);
       Date right (other.mValue);
 
-      if (left.year ()  != right.year ()  ||
-          left.month () != right.month () ||
-          left.day ()   != right.day ())
+      if (! left.sameDay (right))
         return false;
     }
     else

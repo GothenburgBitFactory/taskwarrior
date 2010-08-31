@@ -61,6 +61,8 @@
    and overdue.
  + Fixed bug #459, which showed a confusing message when 'limit:page' was
    used, with few tasks.
+ + Fixed bug #461, in which the filter 'due:today' failed, but 'due.is:today'
+   worked.
  + Fixed bug #466, which gave the wrong error message when a custom report
    was missing a direction indicator for the sort order.
  + Fixed bug #470, which caused task to not support the color 'none'.
