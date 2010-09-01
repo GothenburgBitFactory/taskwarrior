@@ -1111,8 +1111,10 @@ void TDB::merge (const std::string& mergeFile)
   rit = r.begin ();
   lit = l.begin ();
 
-  rline = *rit;
-  lline = *lit;
+	if (rit != r.end())
+		rline = *rit;
+	if (lit != l.end())		
+		lline = *lit;
 
   ///////////////////////////////////////
   // find the branch-off point:
