@@ -11,7 +11,8 @@ OBJECTS = ../t-TDB.o ../t-Task.o ../t-text.o ../t-Date.o ../t-Table.o          \
           ../t-Grid.o ../t-Color.o ../t-rules.o ../t-recur.o ../t-custom.o     \
           ../t-export.o ../t-import.o ../t-edit.o ../t-Timer.o                 \
           ../t-Permission.o ../t-Path.o ../t-File.o ../t-Directory.o           \
-          ../t-Hooks.o ../t-API.o ../t-rx.o ../t-Taskmod.o ../t-dependency.o
+          ../t-Hooks.o ../t-API.o ../t-rx.o ../t-Taskmod.o ../t-dependency.o   \
+			 ../t-Transport.o ../t-TransportSSH.o
 
 all: $(PROJECT)
 
