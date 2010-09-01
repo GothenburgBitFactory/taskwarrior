@@ -470,49 +470,45 @@ int handleInfo (std::string &outs)
         }
       }
 
-      if (task->getStatus () == Task::recurring ||
-          task->has ("parent"))
+      // recur
+      if (task->has ("recur"))
       {
-        // recur
-        if (task->has ("recur"))
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Recurrence");
-          value = task->get ("recur");
-          context.hooks.trigger ("format-recur", "recur", value);
-          table.addCell (row, 1, value);
-        }
+        row = table.addRow ();
+        table.addCell (row, 0, "Recurrence");
+        value = task->get ("recur");
+        context.hooks.trigger ("format-recur", "recur", value);
+        table.addCell (row, 1, value);
+      }
 
-        // until
-        if (task->has ("until"))
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Recur until");
+      // until
+      if (task->has ("until"))
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Recur until");
 
-          Date dt (atoi (task->get ("until").c_str ()));
-          std::string format = context.config.get ("reportdateformat");
-          if (format == "")
-            format = context.config.get ("dateformat");
+        Date dt (atoi (task->get ("until").c_str ()));
+        std::string format = context.config.get ("reportdateformat");
+        if (format == "")
+          format = context.config.get ("dateformat");
 
-          std::string until = getDueDate (*task, format);
-          table.addCell (row, 1, until);
-        }
+        std::string until = getDueDate (*task, format);
+        table.addCell (row, 1, until);
+      }
 
-        // mask
-        if (task->has ("mask"))
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Mask");
-          table.addCell (row, 1, task->get ("mask"));
-        }
+      // mask
+      if (task->getStatus () == Task::recurring)
+      {
+        row = table.addRow ();
+        table.addCell (row, 0, "Mask");
+        table.addCell (row, 1, task->get ("mask"));
+      }
 
+      if (task->has ("parent"))
+      {
         // parent
-        if (task->has ("parent"))
-        {
-          row = table.addRow ();
-          table.addCell (row, 0, "Parent task");
-          table.addCell (row, 1, task->get ("parent"));
-        }
+        row = table.addRow ();
+        table.addCell (row, 0, "Parent task");
+        table.addCell (row, 1, task->get ("parent"));
 
         // imask
         row = table.addRow ();
