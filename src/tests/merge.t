@@ -45,6 +45,7 @@ if (open my $fh, '>', 'local.rc')
 {
   print $fh "data.location=./local\n",
             "confirmation=no\n",
+				"merge.autopush=no\n",
             "report.list.description=DESC\n",
 				"report.list.columns=id,project,active,priority,description,tags\n",
 				"report.list.labels=id,pro,a,pri,d,t\n",
@@ -58,6 +59,7 @@ if (open my $fh, '>', 'remote.rc')
 {
   print $fh "data.location=./remote\n",
             "confirmation=no\n",
+				"merge.autopush=no\n",
             "report.list.description=DESC\n",
 				"report.list.columns=id,project,active,priority,description,tags\n",
 				"report.list.labels=id,pro,a,pri,d,t\n",

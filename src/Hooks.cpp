@@ -159,12 +159,16 @@ Hooks::Hooks ()
   validProgramEvents.push_back ("post-import-command");
   validProgramEvents.push_back ("pre-info-command");
   validProgramEvents.push_back ("post-info-command");
+	validProgramEvents.push_back ("pre-merge-command");
+	validProgramEvents.push_back ("post-merge-command");
   validProgramEvents.push_back ("pre-modify-command");
   validProgramEvents.push_back ("post-modify-command");
   validProgramEvents.push_back ("pre-prepend-command");
   validProgramEvents.push_back ("post-prepend-command");
   validProgramEvents.push_back ("pre-projects-command");
   validProgramEvents.push_back ("post-projects-command");
+	validProgramEvents.push_back ("pre-push-command");
+	validProgramEvents.push_back ("post-push-command");
   validProgramEvents.push_back ("pre-shell-command");
   validProgramEvents.push_back ("post-shell-command");
   validProgramEvents.push_back ("pre-start-command");

@@ -78,6 +78,7 @@ int handleDenotate (std::string &);
 int handleDuplicate (std::string &);
 void handleUndo ();
 void handleMerge (std::string&);
+void handlePush (std::string&);
 #ifdef FEATURE_SHELL
 void handleShell ();
 #endif

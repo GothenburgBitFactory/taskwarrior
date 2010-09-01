@@ -80,6 +80,7 @@ std::string Config::defaults =
   "recurrence.indicator=R                        # What to show as a task recurrence indicator\n"
   "recurrence.limit=1                            # Number of future recurring pending tasks\n"
   "undo.style=side                               # Undo style - can be 'side', or 'diff'\n"
+	"merge.autopush=ask                            # Push database to remote origin after merge: yes, no, ask\n"
   "\n"
   "# Dates\n"
   "dateformat=m/d/Y                              # Preferred input and display date format\n"

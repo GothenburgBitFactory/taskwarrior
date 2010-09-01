@@ -173,6 +173,7 @@ void Cmd::load ()
     commands.push_back (context.stringtable.get (CMD_UNDO,      "undo"));
     commands.push_back (context.stringtable.get (CMD_VERSION,   "version"));
     commands.push_back (context.stringtable.get (CMD_MERGE,     "merge"));
+		commands.push_back (context.stringtable.get (CMD_PUSH,      "push"));
 
     // Now load the custom reports.
     std::vector <std::string> all;
@@ -247,12 +248,13 @@ bool Cmd::isReadOnlyCommand ()
       command == context.stringtable.get (CMD_HELP,      "help")             ||
       command == context.stringtable.get (CMD_INFO,      "info")             ||
       command == context.stringtable.get (CMD_PROJECTS,  "projects")         ||
+			command == context.stringtable.get (CMD_PUSH,      "push")             ||
       command == context.stringtable.get (CMD_SHELL,     "shell")            ||
       command == context.stringtable.get (CMD_STATS,     "stats")            ||
       command == context.stringtable.get (CMD_SUMMARY,   "summary")          ||
       command == context.stringtable.get (CMD_TAGS,      "tags")             ||
       command == context.stringtable.get (CMD_TIMESHEET, "timesheet")        ||
-      command == context.stringtable.get (CMD_VERSION,   "version")          ||
+      command == context.stringtable.get (CMD_VERSION,   "version")          ||			
       validCustom (command))
     return true;
 
@@ -276,7 +278,7 @@ bool Cmd::isWriteCommand ()
       command == context.stringtable.get (CMD_LOG,       "log")       ||
       command == context.stringtable.get (CMD_PREPEND,   "prepend")   ||
       command == context.stringtable.get (CMD_START,     "start")     ||
-      command == context.stringtable.get (CMD_STOP,      "stop")      ||
+      command == context.stringtable.get (CMD_STOP,      "stop")      ||			
       command == context.stringtable.get (CMD_UNDO,      "undo"))
     return true;
 
