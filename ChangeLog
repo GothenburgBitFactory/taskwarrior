@@ -28,6 +28,8 @@
    changes to the completion percentage when it changes.
  + Added feature #478, which uses the colorization rules in the 'info'
    report.
+ + Added feature #481, allowing for user control of the color rule order
+   of precedence via the 'rule.precedence.color' configuration variable.
  + New 'depends' column for custom reports.
  + New 'blocked' report for showing blocked tasks.
  + Improved man pages (thanks to Andy Lester).
@@ -37,6 +39,8 @@
  + The 'tags' command highlights special tags.
  + The 'stats' and 'info' reports not obey color.alternate.
  + New fish shell tab completion script (thanks to Mick Koch).
+ + Color rules now obey the rc.search.case.sensitive configuration option.
+ + The color.keyword.XXX color rule now applies to annotations too.
  + Fixed bug #427, preventing the task edit command to parse annotation
    dates with spaces.
  + Fixed bug #433, making task command output more consistent.
@@ -57,6 +61,8 @@
    and overdue.
  + Fixed bug #459, which showed a confusing message when 'limit:page' was
    used, with few tasks.
+ + Fixed bug #461, in which the filter 'due:today' failed, but 'due.is:today'
+   worked.
  + Fixed bug #466, which gave the wrong error message when a custom report
    was missing a direction indicator for the sort order.
  + Fixed bug #470, which caused task to not support the color 'none'.
@@ -67,6 +73,7 @@
  + Fixed problem with the 'undo' command not observing the rc.color or the
    rc._forcecolor settings.
  + Fixed problem with extra blank line in the ghistory reports.
+ + Fixed a precision problem with average age on the summary report.
  + Clarified the documentation regarding the project name (taskwarrior) and
    the program name (task).
 

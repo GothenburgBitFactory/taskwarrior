@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 # Create the rc file.
 if (open my $fh, '>', 'due.rc')
@@ -56,6 +56,13 @@ qx{../task rc:due.rc add two due:$almost};
 my $output = qx{../task rc:due.rc list};
 like ($output, qr/\[31m.+$just.+\[0m/, 'one marked due');
 like ($output, qr/\s+$almost\s+/, 'two not marked due');
+
+qx{../task rc:due.rc add three due:today};
+$output = qx{../task rc:due.rc list due:today};
+like ($output, qr/three/, 'due:today works as a filter');
+
+$output = qx{../task rc:due.rc list due.is:today};
+like ($output, qr/three/, 'due.is:today works as a filter');
 
 # Cleanup.
 unlink 'pending.data';

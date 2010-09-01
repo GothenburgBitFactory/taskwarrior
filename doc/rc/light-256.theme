@@ -59,6 +59,8 @@ color.pri.H=color232
 color.pri.M=color237
 color.pri.L=color242
 color.tagged=rgb020
-color.blocked=black on white           # placeholder color
+color.blocked=on gray4
+color.project.none=
+color.tag.none=
 color.alternate=on color254
 

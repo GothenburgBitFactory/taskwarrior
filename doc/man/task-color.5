@@ -236,6 +236,20 @@ It is possible to create a very colorful mix of rules.  With 256-color support,
 those colors can be made subtle, and complementary, but without care, this can
 be a visual mess.  Beware!
 
+The precedence for the color rules is determined by the configuration variable
+'rule.precedence.color', which by default contains:
+
+    due.today,active,blocked,overdue,due,keyword,project,tag,recurring,pri,tagged
+
+These are just the color rules with the 'color.' prefix removed.  The rule
+'color.due.today' is the highest precedence, and 'color.tagged' is the lowest.
+
+The keyword rule shown here as 'keyword' corresponds to a wildcard pattern,
+meaning 'color.keyword.*', or in other words all the keyword rules.  Similarly
+for the 'color.tag.*' and 'color.project.*' rules.
+
+There is also 'color.project.none', 'color.tag.none' and 'color.pri.none'.
+
 .SH THEMES
 Taskwarrior supports themes.  What this really means is that with the ability to
 include other files into the .taskrc file, different sets of color rules can
@@ -265,6 +279,10 @@ dark-green-256.theme
 .br
 dark-blue-256.theme
 .RE
+
+You can also see how the theme will color the various tasks with the command:
+
+    $ task color legend
 
 Better yet, create your own, and share it.  We will gladly host the theme file
 on <http://taskwarrior.org>.

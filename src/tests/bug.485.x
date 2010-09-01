@@ -28,27 +28,27 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 # Create the rc file.
-if (open my $fh, '>', 'color.rc')
+if (open my $fh, '>', 'bug.rc')
 {
-  print $fh "data.location=.\n",
-            "color.project.x=red\n",
-            "color.project.none=green\n",
-            "color.alternate=\n",
-            "_forcecolor=1\n";
+  print $fh "data.location=.\n";
+
   close $fh;
-  ok (-r 'color.rc', 'Created color.rc');
+  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
-# Test the add command.
-qx{../task rc:color.rc add nothing};
-qx{../task rc:color.rc add project:x red};
-my $output = qx{../task rc:color.rc list};
+# Bug #485 - 'task list recur:month' doesn't list monthly tasks
+qx{../task rc:bug.rc add one due:tomorrow recur:monthly};
+qx{../task rc:bug.rc add two due:tomorrow recur:month};
+my $output = qx{../task rc:bug.rc list recur:monthly};
+like ($output, qr/one/, 'monthly -> monthly');
+like ($output, qr/two/, 'month   -> monthly');
 
-like ($output, qr/ \033\[32m        .* nothing .* \033\[0m /x, 'color.project.none');
-like ($output, qr/ \033\[31m        .* red     .* \033\[0m /x, 'color.project.red');
+$output = qx{../task rc:bug.rc list recur:month};
+like ($output, qr/one/, 'monthly -> month');
+like ($output, qr/two/, 'month   -> month');
 
 # Cleanup.
 unlink 'pending.data';
@@ -60,8 +60,7 @@ ok (!-r 'completed.data', 'Removed completed.data');
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');
 
-unlink 'color.rc';
-ok (!-r 'color.rc', 'Removed color.rc');
+unlink 'bug.rc';
+ok (!-r 'bug.rc', 'Removed bug.rc');
 
 exit 0;
-

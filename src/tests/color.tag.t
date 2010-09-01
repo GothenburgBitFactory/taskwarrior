@@ -36,6 +36,7 @@ if (open my $fh, '>', 'color.rc')
   print $fh "data.location=.\n",
             "color.tagged=\n",
             "color.alternate=\n",
+            "color.tag.none=yellow\n",
             "color.tag.red=red\n",
             "color.tag.green=green\n",
             "_forcecolor=1\n";
@@ -49,7 +50,7 @@ qx{../task rc:color.rc add +red red};
 qx{../task rc:color.rc add +green green};
 my $output = qx{../task rc:color.rc list};
 
-like ($output, qr/ (?!<\033\[\d\dm) .* nothing .* (?!>\033\[0m) /x, 'none');
+like ($output, qr/ \033\[33m        .* nothing .* \033\[0m /x, 'color.tag.none');
 like ($output, qr/ \033\[31m        .* red     .* \033\[0m /x, 'color.tag.red');
 like ($output, qr/ \033\[32m        .* green   .* \033\[0m /x, 'color.tag.green');
 

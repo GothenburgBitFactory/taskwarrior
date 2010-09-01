@@ -114,6 +114,8 @@ void handleRecurrence ()
           sprintf (indexMask, "%u", (unsigned int) i);
           rec.set ("imask", indexMask);          // Store index into mask.
 
+          rec.remove ("mask");                   // Remove the mask of the parent.
+
           // Add the new task to the vector, for immediate use.
           modified.push_back (rec);
 

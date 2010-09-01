@@ -125,8 +125,6 @@ void Context::initialize ()
   if (locale != "")
     stringtable.load (location.data + "/strings." + locale);
 
-  // TODO Handle "--version, -v" right here?
-
   // init TDB.
   tdb.clear ();
   std::vector <std::string> all;
