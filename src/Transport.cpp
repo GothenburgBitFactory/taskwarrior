@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham, Johannes Schlatow.
+// Copyright 2010, Johannes Schlatow.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -46,7 +46,7 @@ Transport::Transport (const std::string& host, const std::string& path, const st
 Transport::Transport (const std::string& uri)
 {
   executable = "";
-	
+
 	parseUri(uri);
 }
 
@@ -58,18 +58,18 @@ Transport::~Transport ()
 ////////////////////////////////////////////////////////////////////////////////
 void Transport::parseUri(std::string uri)
 {
-  std::string::size_type pos;	
+  std::string::size_type pos;
 	std::string uripart;
-	
+
 	user = "";
 	port = "";
-	
+
 	// skip ^.*://
   if ((pos = uri.find ("://")) != std::string::npos)
 	{
 		uri = uri.substr (pos+3);
 	}
-	
+
 	// get host part
 	if ((pos = uri.find ("/")) != std::string::npos)
 	{
@@ -80,14 +80,14 @@ void Transport::parseUri(std::string uri)
 	{
 		throw std::string ("Could not parse \""+uri+"\"");
 	}
-	
+
 	// parse host
 	if ((pos = host.find ("@")) != std::string::npos)
 	{
 		user = host.substr (0, pos);
 		host = host.substr (pos+1);
 	}
-	
+
 	if ((pos = host.find (":")) != std::string::npos)
 	{
 		port = host.substr (pos+1);
@@ -101,54 +101,57 @@ Transport* Transport::getTransport(const std::string& uri)
 	if (uri.find("ssh://") == 0) {
 			return new TransportSSH(uri);
 	}
-	
+
 	return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Transport::execute()
 {
-	if (executable == "") 
+	if (executable == "")
 		return -1;
-		
+
 	pid_t child_pid = fork();
-	
+
 	if (child_pid == 0)
 	{
-		// this is done by the child process		
+		// this is done by the child process
 		char shell[] = "sh";
 		char opt[]   = "-c";
-	
+
 		std::string cmdline = executable;
-		
+
 		std::vector <std::string>::iterator it;
 		for (it = arguments.begin(); it != arguments.end(); ++it)
 		{
 			std::string tmp = *it;
-			cmdline += " " + tmp;			
+			cmdline += " " + tmp;
 		}
-		
+
 		char** argv = new char*[4];
 		argv[0] = shell;                  // sh
 		argv[1] = opt;                    // -c
 		argv[2] = (char*)cmdline.c_str();	// e.g. scp undo.data user@host:.task/
 		argv[3] = NULL;                   // required by execv
 
-		int ret = execvp("sh", argv);	
+		int ret = execvp("sh", argv);
 		delete[] argv;
-		
+
 		exit(ret);
 	}
 	else
 	{
 		// this is done by the parent process
 		int child_status;
-		
+
 		pid_t pid = waitpid(child_pid, &child_status, 0);
-		
+
 		if (pid == -1)
 			return -1;
 		else
 			return child_status;
 	}
 }
+
+////////////////////////////////////////////////////////////////////////////////
+

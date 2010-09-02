@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham, Johannes Schlatow.
+// Copyright 2010, Johannes Schlatow.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -35,8 +35,8 @@ TransportSSH::TransportSSH(const std::string& uri) : Transport(uri)
 
 ////////////////////////////////////////////////////////////////////////////////
 TransportSSH::TransportSSH(
-	const std::string& host, 
-	const std::string& path, 
+	const std::string& host,
+	const std::string& path,
 	const std::string& user,
 	const std::string& port) : Transport (host,path,user,port)
 {
@@ -49,7 +49,7 @@ void TransportSSH::send(const std::string& source)
 	if (host == "") {
 		throw std::string ("Hostname is empty");
 	}
-	
+
 	// Is there more than one file to transfer?
 	// Then path has to end with a '/'
 	if ( (source.find ("*") != std::string::npos)
@@ -57,23 +57,23 @@ void TransportSSH::send(const std::string& source)
 		|| (source.find (" ") != std::string::npos) )
 	{
 		std::string::size_type pos;
-		
+
 		pos = path.find_last_of ("/");
 		if (pos != path.length()-1)
 		{
 			path = path.substr (0, pos+1);
 		}
 	}
-	
-	// cmd line is: scp [-p port] [user@]host:path	
+
+	// cmd line is: scp [-p port] [user@]host:path
 	if (port != "")
 	{
 		arguments.push_back ("-P");
 		arguments.push_back (port);
 	}
-	
+
 	arguments.push_back (source);
-		
+
 	if (user != "")
 	{
 		arguments.push_back (user + "@" + host + ":" + path);
@@ -82,38 +82,38 @@ void TransportSSH::send(const std::string& source)
 	{
 		arguments.push_back (host + ":" + path);
 	}
-	
+
 	if (execute())
 		throw std::string ("Failed to run scp!");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::recv(std::string target)
-{	
+{
 	if (host == "") {
 		throw std::string ("Hostname is empty");
 	}
-	
+
 	// Is there more than one file to transfer?
 	// Then target has to end with a '/'
 	if ( (path.find ("*") != std::string::npos)
 		|| (path.find ("?") != std::string::npos) )
 	{
-		std::string::size_type pos;	
+		std::string::size_type pos;
 		pos = target.find_last_of ("/");
 		if (pos != target.length()-1)
 		{
 			target = target.substr( 0, pos+1);
 		}
 	}
-	
-	// cmd line is: scp [-p port] [user@]host:path	
+
+	// cmd line is: scp [-p port] [user@]host:path
 	if (port != "")
 	{
 		arguments.push_back ("-P");
 		arguments.push_back (port);
 	}
-		
+
 	if (user != "")
 	{
 		arguments.push_back (user + "@" + host + ":" + path);
@@ -122,9 +122,11 @@ void TransportSSH::recv(std::string target)
 	{
 		arguments.push_back (host + ":" + path);
 	}
-	
+
 	arguments.push_back (target);
-	
+
 	if (execute())
 		throw std::string ("Failed to run scp!");
 }
+
+////////////////////////////////////////////////////////////////////////////////

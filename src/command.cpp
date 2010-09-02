@@ -598,50 +598,50 @@ void handleMerge (std::string& outs)
   {
     std::string file = trim (context.task.get ("description"));
 		std::string tmpfile = "";
-		
+
     if (file.length () > 0)
     {
-			Directory location (context.config.get ("data.location"));			
-						
+			Directory location (context.config.get ("data.location"));
+
 			// add undo.data to path if necessary
 			if (file.find ("undo.data") == std::string::npos)
 			{
 				if (file[file.length()-1] != '/')
 					file += "/";
-				
+
 				file += "undo.data";
 			}
-			
+
 			Transport* transport;
 			if ((transport = Transport::getTransport (file)) != NULL )
 			{
 				tmpfile = location.data + "/undo_remote.data";
 				transport->recv (tmpfile);
 				delete transport;
-				
+
 				file = tmpfile;
 			}
-			
-      context.tdb.lock (context.config.getBoolean ("locking"));					
+
+      context.tdb.lock (context.config.getBoolean ("locking"));
       context.tdb.merge (file);
       context.tdb.unlock ();
-			
+
 			context.hooks.trigger ("post-merge-command");
 
 			if (tmpfile != "")
 			{
-				remove (tmpfile.c_str());		
-			
+				remove (tmpfile.c_str());
+
 				std::string autopush = context.config.get ("merge.autopush");
-				
+
 				if ( ((autopush == "ask") && (confirm ("Do you want to push the changes to the database you merged from?")) )
 					|| (autopush == "yes") )
 				{
 					std::string out;
 					handlePush(out);
 				}
-				
-			}     
+
+			}
     }
     else	// TODO : get default source from config file
       throw std::string ("You must specify a file to merge.");
@@ -654,11 +654,11 @@ void handlePush (std::string& outs)
   if (context.hooks.trigger ("pre-push-command"))
   {
     std::string file = trim (context.task.get ("description"));
-		
+
     if (file.length () > 0)
     {
-			Directory location (context.config.get ("data.location"));			
-			
+			Directory location (context.config.get ("data.location"));
+
 			Transport* transport;
 			if ((transport = Transport::getTransport (file)) != NULL )
 			{
@@ -796,23 +796,25 @@ int handleShow (std::string &outs)
     // search for whole words.
     std::string recognized =
       " annotations blanklines bulk calendar.details calendar.details.report "
-      "calendar.holidays calendar.legend color color.active color.due color.due.today "
-      "color.blocked color.overdue color.pri.H color.pri.L color.pri.M color.pri.none "
-      "color.recurring color.tagged color.footnote color.header color.debug "
-      "color.alternate color.calendar.today color.calendar.due color.calendar.due.today "
-      "color.calendar.overdue color.calendar.weekend color.calendar.holiday "
-      "color.calendar.weeknumber color.summary.background color.summary.bar "
-      "color.history.add color.history.done color.history.delete color.undo.before "
-      "color.undo.after confirmation curses data.location dateformat dateformat.holiday "
-      "dateformat.report dateformat.annotation debug default.command "
-      "default.priority default.project defaultwidth due locale displayweeknumber "
-      "export.ical.class echo.command fontunderline locking monthsperline nag next "
-      "journal.time journal.time.start.annotation journal.time.stop.annotation "
-      "project shadow.command shadow.file shadow.notify weekstart editor "
-      "import.synonym.id import.synonym.uuid complete.all.projects complete.all.tags "
-      "search.case.sensitive hooks active.indicator tag.indicator recurrence.indicator "
-      "recurrence.limit list.all.projects list.all.tags undo.style verbose "
-      "rule.precedence.color "
+      "calendar.holidays calendar.legend color color.active color.due "
+      "color.due.today color.blocked color.overdue color.pri.H color.pri.L "
+      "color.pri.M color.pri.none color.recurring color.tagged color.footnote "
+      "color.header color.debug color.alternate color.calendar.today "
+      "color.calendar.due color.calendar.due.today color.calendar.overdue "
+      "color.calendar.weekend color.calendar.holiday color.calendar.weeknumber "
+      "color.summary.background color.summary.bar color.history.add "
+      "color.history.done color.history.delete color.undo.before "
+      "color.undo.after confirmation curses data.location dateformat "
+      "dateformat.holiday dateformat.report dateformat.annotation debug "
+      "default.command default.priority default.project defaultwidth due "
+      "locale displayweeknumber export.ical.class echo.command fontunderline "
+      "locking monthsperline nag next journal.time "
+      "journal.time.start.annotation journal.time.stop.annotation project "
+      "shadow.command shadow.file shadow.notify weekstart editor "
+      "import.synonym.id import.synonym.uuid complete.all.projects "
+      "complete.all.tags search.case.sensitive hooks active.indicator "
+      "tag.indicator recurrence.indicator recurrence.limit list.all.projects "
+      "list.all.tags undo.style verbose rule.precedence.color merge.autopush "
 #ifdef FEATURE_SHELL
       "shell.prompt "
 #endif
@@ -821,10 +823,11 @@ int handleShow (std::string &outs)
       "import.synonym.end import.synonym.project import.synonym.priority "
       "import.synonym.fg import.synonym.bg import.synonym.description "
 
-      "urgency.next.coefficient urgency.blocking.coefficient urgency.blocked.coefficient "
-      "urgency.due.coefficient urgency.priority.coefficient urgency.waiting.coefficient "
-      "urgency.active.coefficient urgency.project.coefficient urgency.tags.coefficient "
-      "urgency.annotations.coefficient ";
+      "urgency.next.coefficient urgency.blocking.coefficient "
+      "urgency.blocked.coefficient urgency.due.coefficient "
+      "urgency.priority.coefficient urgency.waiting.coefficient "
+      "urgency.active.coefficient urgency.project.coefficient "
+      "urgency.tags.coefficient urgency.annotations.coefficient ";
 
     // This configuration variable is supported, but not documented.  It exists
     // so that unit tests can force color to be on even when the output from task
