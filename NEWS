@@ -15,6 +15,7 @@ New Features in taskwarrior 1.9.3
     instead of the day after the due date.
   - Import and export of YAML 1.1, including round-trip capability.
   - New merge capability for syncing task data files.
+  - New push capability for distributing merged changes.
   - When completing or modifying a task, the project status is displayed.
   - The 'info' report is now colorized.
   - Certain characters (#, $, @) are now supported for use in tags.
@@ -29,8 +30,9 @@ New commands in taskwarrior 1.9.3
     and color rules from your .taskrc and theme.
   - New 'task export.yaml' command will export YAML 1.1, which can then be
     imported via 'task import <file>'.
-  - New 'task merge <file>' command that can merge the local and an undo.data
+  - New 'task merge <url>' command that can merge the local and an undo.data
     file from another taskwarrior user, to sync across machines, for example.
+  - New 'task push <url>' command to distribute merged changes.
 
 New configuration options in taskwarrior 1.9.3
 
@@ -39,6 +41,7 @@ New configuration options in taskwarrior 1.9.3
   - Color rule precedence can now be explicitly set with the configuration
     variable rule.precedence.color.  Try "task show rule.pre" to show the
     default settings.
+  - merge.autopush to control whether pushing after merging is automated.
 
 Newly deprecated features in taskwarrior 1.9.3
 
