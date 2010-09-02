@@ -66,6 +66,8 @@
  + Fixed bug #466, which gave the wrong error message when a custom report
    was missing a direction indicator for the sort order.
  + Fixed bug #470, which caused task to not support the color 'none'.
+ + Fixed bug #476, so that task now issues a warning when a wait date falls
+   after a due date.
  + Fixed bug #480, which didn't properly support @ characters in tags.  This
    also now supports $ and #.
  + Fixed problem with command line configuration overrides that had no

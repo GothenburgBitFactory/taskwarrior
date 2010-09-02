@@ -96,6 +96,11 @@ int handleAdd (std::string &outs)
       context.task.addTag (*tag);
 
     // Perform some logical consistency checks.
+    if (context.task.has ("wait") &&
+        context.task.has ("due") &&
+        Date (context.task.get ("due")) < Date (context.task.get ("wait")))
+      context.footnote ("Warning: the wait date falls after the due date.");
+
     if (context.task.has ("recur") &&
         !context.task.has ("due"))
       throw std::string ("You cannot specify a recurring task without a due date.");
@@ -1587,6 +1592,11 @@ int handleModify (std::string &outs)
         context.task.has ("recur") &&
         context.task.get ("recur") == "")
       throw std::string ("You cannot remove the recurrence from a recurring task.");
+
+    if ((task->has ("wait") && context.task.has ("due") && Date (context.task.get ("due")) < Date (task->get ("wait"))) ||
+        (context.task.has ("wait") && task->has ("due") && Date (task->get ("due")) < Date (context.task.get ("wait"))) ||
+        (task->has ("wait") && task->has ("due") && Date (task->get ("due")) < Date (task->get ("wait"))))
+      context.footnote ("Warning: the wait date falls after the due date.");
 
     // Make all changes.
     foreach (other, all)
