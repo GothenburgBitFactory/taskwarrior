@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 15;
 
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
@@ -95,6 +95,10 @@ $output = qx{../task rc:import.rc completed};
 unlike ($output, qr/1.+A.+zero/,       't1 missing');
 unlike ($output, qr/2.+B.+one/,        't2 missing');
 like   ($output, qr/2\/13\/2009.+two/, 't3 present');
+
+# Make sure that a duplicate task cannot be imported.
+$output = qx{../task rc:import.rc import import.txt};
+like ($output, qr/Cannot add task because the uuid .+ is not unique\./, 'error on duplicate uuid');
 
 # Cleanup.
 unlink 'import.txt';

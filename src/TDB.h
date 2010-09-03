@@ -76,6 +76,8 @@ private:
   FILE* openAndLock (const std::string&);
   void writeUndo (const Task&, FILE*);
   void writeUndo (const Task&, const Task&, FILE*);
+  bool uuidAlreadyUsed (const std::string&);
+  bool uuidAlreadyUsed (const std::string&, const std::vector <Task>&);
 
 private:
   std::vector <Location> mLocations;

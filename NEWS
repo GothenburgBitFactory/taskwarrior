@@ -13,7 +13,8 @@ New Features in taskwarrior 1.9.3
   - Now supports 'now' as a date/time.
   - Now defines an overdue task as being one second after the due date,
     instead of the day after the due date.
-  - Import and export of YAML 1.1, including round-trip capability.
+  - Import and export of YAML 1.1, including round-trip capability, and
+    detection of duplicate imports.
   - New merge capability for syncing task data files.
   - New push capability for distributing merged changes.
   - When completing or modifying a task, the project status is displayed.

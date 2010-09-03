@@ -41,6 +41,7 @@
  + New fish shell tab completion script (thanks to Mick Koch).
  + Color rules now obey the rc.search.case.sensitive configuration option.
  + The color.keyword.XXX color rule now applies to annotations too.
+ + Importing the same YAML twice now generates an error.
  + Fixed bug #427, preventing the task edit command to parse annotation
    dates with spaces.
  + Fixed bug #433, making task command output more consistent.

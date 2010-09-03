@@ -463,17 +463,25 @@ const std::vector <Task>& TDB::getAllModified ()
 // Note: mLocations[0] is where all tasks are written.
 void TDB::add (const Task& task)
 {
+  std::string unique;
   Task t (task);
   if (task.get ("uuid") == "")
-  {
-    std::string unique = ::uuid ();
-    t.set ("uuid", unique);
-  }
+    unique = ::uuid ();
   else
-   t.set ("uuid", task.get ("uuid"));
+    unique = task.get ("uuid");
+
+  t.set ("uuid", unique);
+
+  // If the tasks are loaded, then verify that this uuid is not already in
+  // the file.
+  if (uuidAlreadyUsed (unique, mNew)      ||
+      uuidAlreadyUsed (unique, mModified) ||
+      uuidAlreadyUsed (unique, mPending)  ||
+      uuidAlreadyUsed (unique, mCompleted))
+    throw std::string ("Cannot add task because the uuid '") + unique + "' is not unique.";
 
   mNew.push_back (t);
-  mI2U[task.id] = t.get ("uuid");
+  mI2U[task.id] = unique;
   mU2I[task.get ("uuid")] = t.id;
 }
 
@@ -1607,6 +1615,19 @@ void TDB::writeUndo (const Task& before, const Task& after, FILE* file)
            (unsigned int) time (NULL),
            before.composeF4 ().c_str (),
            after.composeF4 ().c_str ());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool TDB::uuidAlreadyUsed (
+  const std::string& uuid,
+  const std::vector <Task>& all)
+{
+  std::vector <Task>::const_iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+    if (it->get ("uuid") == uuid)
+      return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

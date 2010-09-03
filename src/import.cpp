@@ -1169,6 +1169,11 @@ static std::string importYAML (const std::vector <std::string>& lines)
 
   context.tdb.lock (context.config.getBoolean ("locking"));
 
+  // Load all the tasks so that the uuid uniqueness can be checked.
+  std::vector <Task> tasks;
+  Filter filter;
+  context.tdb.load (tasks, filter);
+
   Task t;
 
   std::string name;
