@@ -1,5 +1,14 @@
 %
-första tips
+För bash användare, med 'alias t=task' kan du spara på nedslagningar på tangentbordet.
 %
-andra tips
+Har du försökt att använda 'task edit 1' för att ändra alla aspekter av task 1 i din texteditor?
+%
+Med 'task 1 wait:eom' kan du göma task 1 fram till slutet av månaden. För att se
+alla task som väntar kan du använda 'task waiting'.
+%
+Visste du att 'task 1 wait:' återställa en väntande task till "peding" igen?
+%
+Skriv 'default.command=list project:home' i din .taskrc fil. När du sen använder
+'task' körs det en 'task list project:home' istäälet för dig. Spara på nedslagningar
+på tangetbordet.
 %
