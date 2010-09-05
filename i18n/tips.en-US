@@ -55,4 +55,15 @@ priority.above:L'?
 %
 The http://tasktools.org/latest URL can tell you which is the latest version.
 %
+To make your task list clear and actionable, always describe it starting with a
+verb, like "call" or "clean" or "get".
+%
+Don't like the name of a command?  Create an alias.
+%
+You can choose whether your searches are case sensitive or not, by setting
+'task config search.case.sensitive yes'
+%
+Back up your data files by making copies of the ~/.taskrc file and ~/.task
+directory.
+%
 
