@@ -169,6 +169,10 @@ AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADER([auto.h])
 
 
+# Checks for libraries.
+AC_CHECK_LIB(pthread,pthread_create)
+
+
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h sys/file.h sys/stat.h sys/time.h unistd.h])
