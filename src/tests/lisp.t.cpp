@@ -42,10 +42,10 @@ int main (int argc, char** argv)
   //   -> no child nodes
   Lisp l;
   Tree* t = l.parse ("(one)");
-  // TODO When tegelsten/Tree is merged in, uncomment this.
-  t->dump ();
+  //t->dump ();
+
   test.is (t->branches (), 1,       "(one) -> 1 node under root");
-  test.is ((*t)[0]->tags (), 0,     "(one) -> 0 tags");
+  test.is ((*t)[0]->tags (), 1,     "(one) -> 1 tag");
   test.is ((*t)[0]->branches (), 0, "(one) -> 0 child nodes");
   delete t;
 
@@ -53,10 +53,10 @@ int main (int argc, char** argv)
   // t -> "one" (tag: "two")
   //   -> no child nodes
   t = l.parse ("(one two)");
-  // TODO When tegelsten/Tree is merged in, uncomment this.
-  t->dump ();
+  //t->dump ();
+
   test.is (t->branches (), 1,       "(one two) -> 1 node under root");
-  test.is ((*t)[0]->tags (), 1,     "(one) -> 1 tag");
+  test.is ((*t)[0]->tags (), 2,     "(one) -> 2 tags");
   test.is ((*t)[0]->branches (), 0, "(one two) -> 0 child nodes");
   delete t;
 
