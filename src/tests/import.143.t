@@ -43,7 +43,7 @@ if (open my $fh, '>', 'import.txt')
 {
   print $fh "'id','status','tags','entry','start','due','end','project','priority','fg','bg','description'\n",
             "'7f7a4191-c2f2-487f-8855-7a1eb378c267','pending','',1238037947,,,,'A','M',,,'foo bar'\n",
-            "'7f7a4191-c2f2-487f-8855-7a1eb378c267','pending','',1238037947,,,,'A','M',,,'foo, bar'\n",
+            "'7f7a4191-c2f2-487f-8855-7a1eb378c268','pending','',1238037947,,,,'A','M',,,'foo, bar'\n",
             "\n";
   close $fh;
   ok (-r 'import.txt', 'Created sample import data');
