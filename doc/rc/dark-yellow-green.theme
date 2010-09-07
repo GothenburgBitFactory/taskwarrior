@@ -1,0 +1,67 @@
+################################################################################
+# Sample taskwarrior 1.9 (or later) dark-yellow-green 256-color theme
+#
+# taskwarrior - a command line task list manager.
+#
+# Copyright 2010, Kathryn Andersen
+# All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+################################################################################
+
+color=on
+color.header=rgb031
+color.footnote=rgb031
+color.debug=rgb031
+
+color.summary.bar=on rgb030
+color.summary.background=on color0
+
+color.history.add=color0 on rgb010
+color.history.done=color0 on rgb030
+color.history.delete=color0 on rgb050
+
+color.undo.before=rgb031
+color.undo.after=rgb053
+
+color.calendar.today=color15 on rgb110
+color.calendar.due=color0 on rgb430
+color.calendar.due.today=color0 on rgb410
+color.calendar.overdue=color0 on rgb400
+color.calendar.weekend=on color235
+color.calendar.holiday=rgb151 on rgb020
+color.calendar.weeknumber=rgb110
+
+color.recurring=rgb343
+color.overdue=rgb400
+color.due.today=rgb410
+color.due=rgb420
+color.active=rgb451 on rgb310
+color.pri.none=
+color.pri.H=rgb450
+color.pri.M=rgb030
+color.pri.L=rgb010
+color.tagged=rgb342
+color.blocked=on gray4
+color.project.none=
+color.tag.none=
+color.alternate=on gray0
+
