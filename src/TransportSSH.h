@@ -33,7 +33,7 @@
 class TransportSSH : public Transport {
 public:
   TransportSSH (const std::string&);
-	TransportSSH (const std::string&, const std::string&, const std::string&, const std::string&);
+  TransportSSH (const std::string&, const std::string&, const std::string&, const std::string&);
 	
   virtual void send (const std::string&);
   virtual void recv (std::string);

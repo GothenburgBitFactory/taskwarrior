@@ -33,23 +33,23 @@
 class Transport {
 public:
   Transport (const std::string&, const std::string&, const std::string&, const std::string&);
-	Transport (const std::string&);
+  Transport (const std::string&);
   ~Transport ();
 	
-	static Transport* getTransport(const std::string&);
+  static Transport* getTransport(const std::string&);
 	
-	void parseUri (std::string);
+  void parseUri (std::string);
   virtual void send (const std::string&) = 0;
   virtual void recv (std::string) = 0;
 
 protected:
-	std::string executable;
-	std::vector<std::string> arguments;
+  std::string executable;
+  std::vector<std::string> arguments;
 	
-	std::string host;
-	std::string path;
-	std::string port;
-	std::string user;
+  std::string host;
+  std::string path;
+  std::string port;
+  std::string user;
 
   int execute();
 };
