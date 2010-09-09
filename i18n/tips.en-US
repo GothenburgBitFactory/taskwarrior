@@ -66,4 +66,7 @@ You can choose whether your searches are case sensitive or not, by setting
 Back up your data files by making copies of the ~/.taskrc file and ~/.task
 directory.
 %
+Accidentally changed a task? The undo command makes it a breeze to recover from
+any inadvertent change -- even a deletion!
+%
 
