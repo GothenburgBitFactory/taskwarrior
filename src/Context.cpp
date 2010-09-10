@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -839,11 +839,8 @@ void Context::autoFilter (Att& a, Filter& f)
   {
   }
 
-  // The mechanism for filtering on tags is +/-<tag>.
-  // Do not handle here - see below.
-  else if (a.name () == "tags")
-  {
-  }
+  // Note: Tags are handled via the +/-<tag> syntax, but also via attribute
+  // modifiers.
 
   // Generic attribute matching.
   else

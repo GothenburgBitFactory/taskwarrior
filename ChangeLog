@@ -72,6 +72,7 @@
    after a due date (thanks to T. Charles Yun).
  + Fixed bug #480, which didn't properly support @ characters in tags.  This
    also now supports $ and #.
+ + Fixed bug #489, which caused the filter 'tags.none:' to fail.
  + Fixed problem with command line configuration overrides that had no
    values. 
  + Fixed problem with the 'undo' command not observing the rc.color or the
