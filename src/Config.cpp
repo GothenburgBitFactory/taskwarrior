@@ -53,7 +53,7 @@ std::string Config::defaults =
   "# Here is an example of entries that use the default, override and blank values\n"
   "#   variable=foo   -- By specifying a value, this overrides the default\n"
   "#   variable=      -- By specifying no value, this means no default\n"
-  "#   #variable=foo  -- By commenting out the line, this uses the default\n"
+  "#   #variable=foo  -- By commenting out the line, or deleting it, this uses the default\n"
   "\n"
   "# Use the command 'task show' to see all defaults and overrides\n"
   "\n"
@@ -519,6 +519,8 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "#include /usr/local/share/doc/task/rc/dark-red-256.theme\n"
            << "#include /usr/local/share/doc/task/rc/dark-green-256.theme\n"
            << "#include /usr/local/share/doc/task/rc/dark-blue-256.theme\n"
+           << "#include /usr/local/share/doc/task/rc/dark-violets-256.theme\n"
+           << "#include /usr/local/share/doc/task/rc/dark-yellow-green.theme\n"
            << "\n";
 
   // Write out the new file.
