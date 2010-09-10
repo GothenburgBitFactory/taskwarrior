@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2009, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -121,6 +121,16 @@ size_t File::size () const
   struct stat s;
   if (!stat (data.c_str (), &s))
     return s.st_size;
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+time_t File::mtime () const
+{
+  struct stat s;
+  if (!stat (data.c_str (), &s))
+    return s.st_mtime;
 
   return 0;
 }

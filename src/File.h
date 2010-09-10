@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2009, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -62,6 +62,7 @@ public:
 
   virtual mode_t mode ();
   virtual size_t size () const;
+  virtual time_t mtime () const;
 
   static bool create (const std::string&);
   static std::string read (const std::string&);
