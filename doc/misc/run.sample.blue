@@ -8,7 +8,7 @@ rm pending.data completed.data undo.data
 echo 'data.location=.' > x
 echo '_forcecolor=on' >> x
 echo 'defaultwidth=120' >> x
-echo 'include /usr/local/share/doc/task/rc/dark-red-256.theme' >> x
+echo 'include /usr/local/share/doc/task/rc/dark-blue-256.theme' >> x
 echo 'color.alternate=' >> x
 
 echo 'report.list.columns=id,project,priority_long,start,due,recur,age_compact,tags,description' >> x

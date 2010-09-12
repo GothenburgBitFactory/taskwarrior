@@ -1,0 +1,19 @@
+#! /bin/bash
+
+# Small script to create a fragment of output for display on the front page
+# of taskwarrior.org, as a teaser.
+
+rm pending.data completed.data undo.data
+
+echo 'data.location=.' > x
+echo '_forcecolor=on' >> x
+echo 'include /usr/local/share/doc/task/rc/dark-green-256.theme' >> x
+
+
+# Now the visible part.
+echo
+echo '$ task color'
+task rc:x color
+
+exit
+
