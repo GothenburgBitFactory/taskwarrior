@@ -133,7 +133,9 @@ int handleExportYAML (std::string &);
 
 // dependency.cpp
 bool dependencyIsBlocked (Task&);
+void dependencyGetBlocked (Task&, std::vector <Task>&);
 bool dependencyIsBlocking (Task&);
+void dependencyGetBlocking (Task&, std::vector <Task>&);
 bool dependencyIsCircular (Task&);
 bool dependencyChainBroken (Task&);
 std::string dependencyNag (Task&);

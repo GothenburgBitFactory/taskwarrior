@@ -440,37 +440,33 @@ int handleInfo (std::string &outs)
       // dependencies: blocked
       if (task->has ("depends"))
       {
+        std::vector <Task> blocked;
+        dependencyGetBlocked (*task, blocked);
+
+        std::stringstream message;
+        std::vector <Task>::const_iterator it;
+        for (it = blocked.begin (); it != blocked.end (); ++it)
+          message << it->id << " " << it->get ("description") << "\n";
+
         row = table.addRow ();
         table.addCell (row, 0, "This task blocked by");
-
-        std::string depends = task->get ("depends");
-        const std::vector <Task>& rpending = context.tdb.getAllPending ();
-
-        std::stringstream blocked;
-        std::vector <Task>::const_iterator it;
-        for (it = rpending.begin (); it != rpending.end (); ++it)
-          if (depends.find (it->get ("uuid")) != std::string::npos)
-            blocked << it->id << " " << it->get ("description") << "\n";
-
-        table.addCell (row, 1, blocked.str ());
+        table.addCell (row, 1, message.str ());
       }
 
       // dependencies: blocking
       {
-        std::string uuid = task->get ("uuid");
-        const std::vector <Task>& rpending = context.tdb.getAllPending ();
-
-        std::stringstream blocked;
-        std::vector <Task>::const_iterator it;
-        for (it = rpending.begin (); it != rpending.end (); ++it)
-          if (it->get ("depends").find (uuid) != std::string::npos)
-            blocked << it->id << " " << it->get ("description") << "\n";
-
-        if (blocked.str().length ())
+        std::vector <Task> blocking;
+        dependencyGetBlocking (*task, blocking);
+        if (blocking.size ())
         {
+          std::stringstream message;
+          std::vector <Task>::const_iterator it;
+          for (it = blocking.begin (); it != blocking.end (); ++it)
+            message << it->id << " " << it->get ("description") << "\n";
+
           row = table.addRow ();
           table.addCell (row, 0, "This task is blocking");
-          table.addCell (row, 1, blocked.str ());
+          table.addCell (row, 1, message.str ());
         }
       }
 

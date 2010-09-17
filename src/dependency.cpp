@@ -37,11 +37,40 @@ extern Context context;
 static bool followUpstream (const Task&, const Task&, const std::vector <Task>&, std::vector <std::string>&);
 
 ////////////////////////////////////////////////////////////////////////////////
-// All it takes to be blocked is to depend on another task.
+// A task is blocked if it depends on tasks that are pending or waiting.
 bool dependencyIsBlocked (Task& task)
 {
-  return task.has ("depends");
+  if (task.has ("depends"))
+  {
+    std::string depends = task.get ("depends");
+    const std::vector <Task>& all = context.tdb.getAllPending ();
+    std::vector <Task>::const_iterator it;
+    for (it = all.begin (); it != all.end (); ++it)
+      if ((it->getStatus () == Task::pending  ||
+           it->getStatus () == Task::waiting) &&
+          depends.find (it->get ("uuid")) != std::string::npos)
+        return true;
+  }
+
+  return false;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void dependencyGetBlocked (Task& task, std::vector <Task>& blocked)
+{
+  std::string depends = task.get ("depends");
+  if (depends != "")
+  {
+    const std::vector <Task>& all = context.tdb.getAllPending ();
+    std::vector <Task>::const_iterator it;
+    for (it = all.begin (); it != all.end (); ++it)
+      if ((it->getStatus () == Task::pending  ||
+           it->getStatus () == Task::waiting) &&
+          depends.find (it->get ("uuid")) != std::string::npos)
+        blocked.push_back (*it);
+  }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // To be a blocking task, there must be at least one other task that depends on
@@ -60,6 +89,21 @@ bool dependencyIsBlocking (Task& task)
       return true;
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void dependencyGetBlocking (Task& task, std::vector <Task>& blocking)
+{
+  std::string uuid = task.get ("uuid");
+
+  const std::vector <Task>& all = context.tdb.getAllPending ();
+  std::vector <Task>::const_iterator it;
+  for (it = all.begin (); it != all.end (); ++it)
+    if ((it->getStatus () == Task::pending  ||
+         it->getStatus () == Task::waiting) &&
+        it->has ("depends")                 &&
+        it->get ("depends").find (uuid) != std::string::npos)
+      blocking.push_back (*it);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
