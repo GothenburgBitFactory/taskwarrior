@@ -29,30 +29,7 @@
 
 calendar.holidays=sparse
 
-holiday.nyårsdagen.name=Nyårsdagen
-holiday.nyårsdagen.date=20100101
-holiday.trettondedagjul.name=Trettondedag jul
-holiday.trettondedagjul.date=20100106
-holiday.långfredagen.name=Långfredagen
-holiday.långfredagen.date=20100402
-holiday.påskdagen.name=Påskdagen
-holiday.påskdagen.date=20100404
-holiday.annandagpåsk.name=Annandag påsk
-holiday.annandagpåsk.date=20100405
-holiday.valborgmässoafton.name=Valborgmässoafton
-holiday.valborgmässoafton.date=20100430
-holiday.förstamaj.name=Första maj
-holiday.förstamaj.date=20100501
-holiday.kristihimmelfärdsdag.name=Kristi Himmelsfärdsdag
-holiday.kristihimmelfärdsdag.date=20100513
-holiday.pingstdagen.name=Pingstdagen
-holiday.pingstdagen.date=20100523
-holiday.nationaldagen.name=Nationaldagen
-holiday.nationaldagen.date=20100606
-holiday.midsommarafton.name=Midsommarafton
-holiday.midsommarafton.date=20100625
-holiday.midsommardagen.name=Midsommardagen
-holiday.midsommardagen.date=20100626
+# 2010
 holiday.allahelgonsdag.name=Alla Helgons Dag
 holiday.allahelgonsdag.date=20101106
 holiday.julafton.name=Julafton
@@ -63,3 +40,41 @@ holiday.annandagjul.name=Annandag jul
 holiday.annandagjul.date=20101226
 holiday.nyårsafton.name=Nyårsafton
 holiday.nyårsafton.date=20101231
+
+# 2011
+holiday.nyårsdagen.name=Nyårsdagen
+holiday.nyårsdagen.date=20110101
+holiday.trettondedagjul.name=Trettondedag jul
+holiday.trettondedagjul.date=20110106
+holiday.långfredagen.name=Långfredagen
+holiday.långfredagen.date=20110422
+holiday.påskdagen.name=Påskdagen
+holiday.påskdagen.date=20110404
+holiday.annandagpåsk.name=Annandag påsk
+holiday.annandagpåsk.date=20110405
+holiday.valborgmässoafton.name=Valborgmässoafton
+holiday.valborgmässoafton.date=20110430
+holiday.förstamaj.name=Första maj
+holiday.förstamaj.date=20110501
+holiday.kristihimmelfärdsdag.name=Kristi Himmelsfärdsdag
+holiday.kristihimmelfärdsdag.date=20110513
+holiday.pingstdagen.name=Pingstdagen
+holiday.pingstdagen.date=20110523
+holiday.nationaldagen.name=Nationaldagen
+holiday.nationaldagen.date=20110606
+holiday.midsommarafton.name=Midsommarafton
+holiday.midsommarafton.date=20110625
+holiday.midsommardagen.name=Midsommardagen
+holiday.midsommardagen.date=20110626
+
+# holiday.allahelgonsdag.name=Alla Helgons Dag
+# holiday.allahelgonsdag.date=20111106
+# holiday.julafton.name=Julafton
+# holiday.julafton.date=20111224
+# holiday.juldagen.name=Juldagen
+# holiday.juldagen.date=20111225
+# holiday.annandagjul.name=Annandag jul
+# holiday.annandagjul.date=20111226
+# holiday.nyårsafton.name=Nyårsafton
+# holiday.nyårsafton.date=20111231
+
