@@ -1,0 +1,62 @@
+################################################################################
+# Sample calendar for France
+#
+# taskwarrior - a command line task list manager.
+#
+# Copyright 2010, Federico Hernandez.
+# All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+################################################################################
+
+calendar.holidays=sparse
+
+# 2010
+holiday.toussaint.name=La Toussaint
+holiday.toussaint.date=20101101
+holiday.armistice.name=Jour d'armistice
+holiday.armistice.date=20101111
+holiday.noël.name=Noël
+holiday.noël.date=20101225
+
+# 2011
+holiday.jourdelan.name=Jour de l'an
+holiday.jourdelan.date=20110101
+holiday.travail.name=Fête du premier mai
+holiday.travail.date=20110501
+holiday.victoire.name=la Fête de Victoire 45
+holiday.victoire.date=20110508
+holiday.ascencion.name=l'Ascencion
+holiday.ascencion.date=20110602
+holiday.pentecôte.name=la Pentecôte
+holiday.pentecôte.date=20110612
+holiday.bastille.name=Fête nationale
+holiday.bastille.date=20110714
+holiday.assomption.name=Assomption
+holiday.assomption.date=20110815
+
+#holiday.toussaint.name=La Toussaint
+#holiday.toussaint.date=20111101
+#holiday.armistice.name=Jour d'armistice
+#holiday.armistice.date=20111111
+#holiday.noël.name=Noël
+#holiday.noël.date=20111225
+
