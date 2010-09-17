@@ -313,7 +313,7 @@ void Hooks::initialize ()
     }
   }
   else
-    context.debug ("Hooks::initialize - hook system shut off");
+    context.debug ("Hooks::initialize - hook system off");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
