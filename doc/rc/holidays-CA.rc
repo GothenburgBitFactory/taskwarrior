@@ -1,9 +1,9 @@
 ################################################################################
-# Sample calendar for the US
+# Sample calendar for Canada
 #
 # taskwarrior - a command line task list manager.
 #
-# Copyright 2010, Federico Hernandez.
+# Copyright 2010, Cory Donnelly.
 # All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -30,43 +30,45 @@
 calendar.holidays=sparse
 
 # 2010
-holiday.laborday.name=Labor Day
-holiday.laborday.date=20100906
-holiday.columbusday.name=Columbus Day
-holiday.columbusday.date=20101011
-holiday.veteransdays.name=Veterans Day
-holiday.veteransdays.date=20101111
+holiday.labourday.name=Labour Day
+holiday.labourday.date=20100906
 holiday.thanksgiving.name=Thanksgiving Day
-holiday.thanksgiving.date=20101125
+holiday.thanksgiving.date=20101011
+holiday.remembranceday.name=Remembrance Day
+holiday.remembranceday.date=20101111
 holiday.christmasday.name=Christmas Day
 holiday.christmasday.date=20101225
+holiday.boxingday.name=Boxing Day
+holiday.boxingday.date=20101226
 holiday.newyearseve.name=New Years Eve
 holiday.newyearseve.date=20101231
 
 # 2011
 holiday.newyearsday.name=New Years Day
 holiday.newyearsday.date=20110101
-holiday.martinlutherkingday.name=Martin Luther King Day
-holiday.martinlutherkingday.date=20110117
-holiday.presidentsday.name=Presidents Day
-holiday.presidentsday.date=20110221
-holiday.patriotsday.name=Patriots Day
-holiday.patriotsday.date=20110419
-holiday.memorialday.name=Memorial Day
-holiday.memorialday.date=20110530
-holiday.independenceday.name=Independence Day
-holiday.independenceday.date=20110704
+holiday.familyday.name=Family Day
+holiday.familyday.date=20110117
+holiday.goodfriday.name=Good Friday
+holiday.goodfriday.date=20110422
+holiday.eastermonday.name=Easter Monday
+holiday.eastermonday.date=20110425
+holiday.canadaday.name=Canada Day
+holiday.canadaday.date=20110701
+holiday.firstmondayofaugust.name=First Monday of August
+holiday.firstmondayofaugust.date=20110801
 
-# holiday.laborday.name=Labor Day
-# holiday.laborday.date=20110905
-# holiday.columbusday.name=Columbus Day
-# holiday.columbusday.date=20111010
-# holiday.veteransdays.name=Veterans Day
-# holiday.veteransdays.date=20111111
-# holiday.thanksgiving.name=Thanksgiving Day
-# holiday.thanksgiving.date=20111124
-# holiday.christmasday.name=Christmas Day
-# holiday.christmasday.date=20111225
-# holiday.newyearseve.name=New Years Eve
-# holiday.newyearseve.date=20111231
+# Commented out to prevent collision with names of 2010 holidays
+# that haven't happened yet
 
+#holiday.labourday.name=Labour Day
+#holiday.labourday.date=20110905
+#holiday.thanksgiving.name=Thanksgiving Day
+#holiday.thanksgiving.date=20111010
+#holiday.remembranceday.name=Remembrance Day
+#holiday.remembranceday.date=20111111
+#holiday.christmasday.name=Christmas Day
+#holiday.christmasday.date=20111225
+#holiday.boxingday.name=Boxing Day
+#holiday.boxingday.date=20111226
+#holiday.newyearseve.name=New Years Eve
+#holiday.newyearseve.date=20111231
