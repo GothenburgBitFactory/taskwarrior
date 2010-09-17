@@ -199,7 +199,8 @@ std::string dependencyNag (Task& task)
 {
   std::stringstream out;
 
-  if (task.has ("depends"))
+  if (context.config.getBoolean ("dependency.reminder") &&
+      task.has ("depends"))
   {
     out << "# dependencyNag "
         << task.id
