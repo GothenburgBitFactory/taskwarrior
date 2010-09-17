@@ -657,6 +657,9 @@ int TDB::gc ()
         task->setStatus (Task::pending);
         task->remove ("wait");
         ++count_pending_changes;  // modification
+
+        context.debug (std::string ("TDB::gc waiting -> pending for ") +
+                       task->get ("uuid"));
       }
 
       still_pending.push_back (*task);
