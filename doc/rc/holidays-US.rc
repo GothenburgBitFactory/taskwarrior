@@ -40,17 +40,17 @@ holiday.thanksgiving.name=Thanksgiving Day
 holiday.thanksgiving.date=20101125
 holiday.christmasday.name=Christmas Day
 holiday.christmasday.date=20101225
-holiday.newyearseve.name=New Years Eve
+holiday.newyearseve.name=New Year's Eve
 holiday.newyearseve.date=20101231
 
 # 2011
-holiday.newyearsday.name=New Years Day
+holiday.newyearsday.name=New Year's Day
 holiday.newyearsday.date=20110101
-holiday.martinlutherkingday.name=Martin Luther King Day
+holiday.martinlutherkingday.name=Birthday of Martin Luther King, Jr.
 holiday.martinlutherkingday.date=20110117
-holiday.presidentsday.name=Presidents Day
+holiday.presidentsday.name=Washington's Birthday
 holiday.presidentsday.date=20110221
-holiday.patriotsday.name=Patriots Day
+holiday.patriotsday.name=Patriots' Day
 holiday.patriotsday.date=20110419
 holiday.memorialday.name=Memorial Day
 holiday.memorialday.date=20110530
@@ -67,6 +67,6 @@ holiday.independenceday.date=20110704
 # holiday.thanksgiving.date=20111124
 # holiday.christmasday.name=Christmas Day
 # holiday.christmasday.date=20111225
-# holiday.newyearseve.name=New Years Eve
+# holiday.newyearseve.name=New Year's Eve
 # holiday.newyearseve.date=20111231
 

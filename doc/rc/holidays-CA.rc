@@ -40,11 +40,11 @@ holiday.christmasday.name=Christmas Day
 holiday.christmasday.date=20101225
 holiday.boxingday.name=Boxing Day
 holiday.boxingday.date=20101226
-holiday.newyearseve.name=New Years Eve
+holiday.newyearseve.name=New Year's Eve
 holiday.newyearseve.date=20101231
 
 # 2011
-holiday.newyearsday.name=New Years Day
+holiday.newyearsday.name=New Year's Day
 holiday.newyearsday.date=20110101
 holiday.familyday.name=Family Day
 holiday.familyday.date=20110117
@@ -72,5 +72,5 @@ holiday.firstmondayofaugust.date=20110801
 #holiday.christmasday.date=20111225
 #holiday.boxingday.name=Boxing Day
 #holiday.boxingday.date=20111226
-#holiday.newyearseve.name=New Years Eve
+#holiday.newyearseve.name=New Year's Eve
 #holiday.newyearseve.date=20111231
