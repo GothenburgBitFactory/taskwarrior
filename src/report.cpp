@@ -1708,12 +1708,12 @@ int handleReportTimesheet (std::string &outs)
 
       if (color && context.config.getBoolean ("fontunderline"))
       {
-        completed.setColumnUnderline (1);
-        completed.setColumnUnderline (2);
-        completed.setColumnUnderline (3);
+        started.setColumnUnderline (1);
+        started.setColumnUnderline (2);
+        started.setColumnUnderline (3);
       }
       else
-        completed.setTableDashedUnderline ();
+        started.setTableDashedUnderline ();
 
       started.setColumnWidth (0, Table::minimum);
       started.setColumnWidth (1, Table::minimum);
