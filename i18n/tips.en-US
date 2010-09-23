@@ -60,7 +60,7 @@ verb, like "call" or "clean" or "get".
 %
 Don't like the name of a command?  Create an alias.
 %
-You can choose whether your searches are case sensitive or not, by setting
+You can choose whether your searches are case sensitive or not, by running
 'task config search.case.sensitive yes'
 %
 Back up your data files by making copies of the ~/.taskrc file and ~/.task

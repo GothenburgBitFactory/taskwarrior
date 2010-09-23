@@ -34,7 +34,8 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool followUpstream (const Task&, const Task&, const std::vector <Task>&, std::vector <std::string>&);
+static bool followUpstream (const Task&, const Task&, const std::vector <Task>&,
+                            std::vector <std::string>&);
 
 ////////////////////////////////////////////////////////////////////////////////
 // A task is blocked if it depends on tasks that are pending or waiting.
@@ -182,11 +183,36 @@ static bool followUpstream (
 ////////////////////////////////////////////////////////////////////////////////
 // Determine whether a dependency chain is being broken, assuming that 'task' is
 // either completed or deleted.
+//
+//   [1] --> 2         Chain broken
+//                     Nag message generated
+//                     Repair offered:  1 dep:-2
+//
+//   [1] --> 2         Chain broken
+//       --> 3         Nag message generated
+//                     Repair offered:  1 dep:-2,-3
+//
+//   1 --> [2]         -
+//
+//   1 --> [2]         -
+//   3 -->
+//
+//   1 --> [2] --> 3   Chain broken
+//                     Nag message generated
+//                     Repair offered:  2 dep:-3
+//                                      1 dep:-2,3
+//
+//   1 --> [2] --> 3   Chain broken
+//   4 -->     --> 5   Nag message generated
+//                     Repair offered:  2 dep:-3,-5
+//                                      1 dep:3,5
+//                                      4 dep:3,5
+//
 bool dependencyChainBroken (Task& task)
 {
   if (task.has ("depends"))
   {
-    std::cout << "# chain broken\n";
+    std::cout << "# chain broken?\n";
     return true;
   }
 
