@@ -27,6 +27,7 @@ task rc:x add Get stationery supplies proj:office pri:H due:sat +@mall +@weekend
 echo
 echo '$ task annotate 1 Remember to get batteries'
 task rc:x annotate 1 Remember to get batteries
+sleep 2
 
 echo
 echo '$ task annotate 1 I wonder if they have that antique fanfold computer paper'
