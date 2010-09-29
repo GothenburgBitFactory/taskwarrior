@@ -137,8 +137,9 @@ void dependencyGetBlocked (Task&, std::vector <Task>&);
 bool dependencyIsBlocking (Task&);
 void dependencyGetBlocking (Task&, std::vector <Task>&);
 bool dependencyIsCircular (Task&);
-bool dependencyChainBroken (Task&);
-std::string dependencyNag (Task&);
+void dependencyChainOnComplete (Task&);
+void dependencyChainOnStart (Task&);
+void dependencyChainOnModify (Task&, Task&);
 
 // list template
 ///////////////////////////////////////////////////////////////////////////////

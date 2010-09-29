@@ -1266,7 +1266,7 @@ int handleDelete (std::string &outs)
                   << "'."
                   << std::endl;
 
-              out << dependencyNag (*task);
+              dependencyChainOnComplete (*task);
               out << onProjectChange (*task);
             }
           }
@@ -1289,7 +1289,7 @@ int handleDelete (std::string &outs)
                   << "'."
                   << std::endl;
 
-            out << dependencyNag (*task);
+            dependencyChainOnComplete (*task);
             out << onProjectChange (*task);
           }
         }
@@ -1356,7 +1356,7 @@ int handleStart (std::string &outs)
         if (!nagged)
           nagged = nag (*task);
 
-        out << dependencyNag (*task);
+        dependencyChainOnStart (*task);
       }
       else
       {
@@ -1503,7 +1503,7 @@ int handleDone (std::string &outs)
                     << "'."
                     << std::endl;
 
-              out << dependencyNag (*task);
+              dependencyChainOnComplete (*task);
               out << onProjectChange (*task, false);
 
               ++count;
@@ -1648,6 +1648,13 @@ int handleModify (std::string &outs)
         {
           if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
           {
+            // TODO Are dependencies being explicitly removed?
+            //      Either we scan context.task for negative IDs "depends:-n"
+            //      or we ask deltaAttributes (above) to record dependency
+            //      removal.
+            if (1)
+              dependencyChainOnModify (before, *other);
+
             context.tdb.update (*other);
 
             if (before.get ("project") != other->get ("project"))

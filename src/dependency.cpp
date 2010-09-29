@@ -30,6 +30,7 @@
 #include <sstream>
 #include <Context.h>
 #include <text.h>
+#include <util.h>
 
 extern Context context;
 
@@ -183,59 +184,95 @@ static bool followUpstream (
 ////////////////////////////////////////////////////////////////////////////////
 // Determine whether a dependency chain is being broken, assuming that 'task' is
 // either completed or deleted.
+//           
+//   blocked task blocking action
+//   ------- ---- -------- -----------------------------
+//           [1]  2        Chain broken
+//                         Nag message generated
+//                         Repair offered:  1 dep:-2
 //
-//   [1] --> 2         Chain broken
-//                     Nag message generated
-//                     Repair offered:  1 dep:-2
+//           [1]  2        Chain broken
+//                3        Nag message generated
+//                         Repair offered:  1 dep:-2,-3
 //
-//   [1] --> 2         Chain broken
-//       --> 3         Nag message generated
-//                     Repair offered:  1 dep:-2,-3
+//   1       [2]           -
 //
-//   1 --> [2]         -
+//   1,3     [2]           -
 //
-//   1 --> [2]         -
-//   3 -->
+//   1       [2]  3        Chain broken
+//                         Nag message generated
+//                         Repair offered:  2 dep:-3
+//                                          1 dep:-2,3
 //
-//   1 --> [2] --> 3   Chain broken
-//                     Nag message generated
-//                     Repair offered:  2 dep:-3
-//                                      1 dep:-2,3
+//   1,4     [2]  3,5      Chain broken
+//                         Nag message generated
+//                         Repair offered:  2 dep:-3,-5
+//                                          1 dep:3,5
+//                                          4 dep:3,5
 //
-//   1 --> [2] --> 3   Chain broken
-//   4 -->     --> 5   Nag message generated
-//                     Repair offered:  2 dep:-3,-5
-//                                      1 dep:3,5
-//                                      4 dep:3,5
-//
-bool dependencyChainBroken (Task& task)
+void dependencyChainOnComplete (Task& task)
 {
-  if (task.has ("depends"))
-  {
-    std::cout << "# chain broken?\n";
-    return true;
-  }
+  std::vector <Task> blocking;
+  dependencyGetBlocking (task, blocking);
 
-  return false;
+  std::cout << "# Task " << task.id << "\n";
+  foreach (t, blocking)
+    std::cout << "#  blocking " << t->id << " " << t->get ("uuid") << "\n";
+
+  // If the task is anything but the tail end of a dependency chain.
+  if (blocking.size ())
+  {
+    std::vector <Task> blocked;
+    dependencyGetBlocked (task, blocked);
+
+    foreach (t, blocked)
+      std::cout << "#  blocked by " << t->id << " " << t->get ("uuid") << "\n";
+
+    // If there are both blocking and blocked tasks, the chain is broken.
+    if (blocked.size ())
+    {
+      // TODO Nag about broken chain.
+      std::cout << "# Chain broken - offer to repair\n";
+
+      // TODO Confirm that the chain should be repaired.
+
+      // Repair the chain - everything in blocked should now depend on
+      // everything in blocking, instead of task.id.
+      foreach (left, blocked)
+      {
+        left->removeDependency (task.id);
+
+        foreach (right, blocking)
+          left->addDependency (right->id);
+      }
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Generate a nag message if a dependency chain is being violated.
-std::string dependencyNag (Task& task)
+void dependencyChainOnStart (Task& task)
 {
   std::stringstream out;
 
-  if (context.config.getBoolean ("dependency.reminder") &&
-      task.has ("depends"))
+  if (context.config.getBoolean ("dependency.reminder") /* &&
+       TODO check that task is actually blocked */)
   {
-    out << "# dependencyNag "
+    out << "# dependencyChainScan nag! "
         << task.id
         << " "
         << task.get ("uuid")
         << "\n";
-  }
 
-  return out.str ();
+    context.footnote (out.str ());
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void dependencyChainOnModify (Task& before, Task& after)
+{
+  // TODO Iff a dependency is being removed, is there anything to do.
+
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////

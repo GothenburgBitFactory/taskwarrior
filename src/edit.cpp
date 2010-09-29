@@ -172,6 +172,8 @@ static std::string formatTask (Task task)
   before << "  Annotation:        " << now.toString (context.config.get ("dateformat.annotation")) << " -- " << std::endl
          << "# End"                                                                     << std::endl;
 
+  // TODO Add dependencies here.
+
   return before.str ();
 }
 
@@ -518,6 +520,8 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   task.setAnnotations (annotations);
+
+  // TODO Dependencies
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -628,6 +632,9 @@ int handleEdit (std::string &outs)
       editFile (*task);
       context.tdb.update (*task);
 /*
+      TODO Figure out what this is.  I can't remember, but don't want to remove
+           it until I do.
+
       foreach (other, all)
       {
         if (other->id != task.id) // Don't edit the same task again.
