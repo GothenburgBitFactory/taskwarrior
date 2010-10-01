@@ -52,9 +52,9 @@
 #define DEBUG_OUTPUT 0
 
 #if DEBUG_OUTPUT > 0
-  #define DEBUG_STR(str)       std::cout << "DEBUG: " << str << std::endl; std::cout.flush()
+  #define DEBUG_STR(str)       std::cout << "DEBUG: " << str << "\n"; std::cout.flush()
   #define DEBUG_STR_PART(str)  std::cout << "DEBUG: " << str; std::cout.flush()
-  #define DEBUG_STR_END(str)   std::cout << str << std::endl; std::cout.flush()
+  #define DEBUG_STR_END(str)   std::cout << str << "\n"; std::cout.flush()
 #else
   #define DEBUG_STR(str)
   #define DEBUG_STR_PART(str)
@@ -613,6 +613,9 @@ int TDB::gc ()
   std::vector <Task> ignore;
   loadPending (ignore, filter);
 
+  // TODO This whole idea of removing dangling dependencies is suspect.  I'm not
+  //      sure it should be included.
+
   // Search for dangling dependencies.  These are dependencies whose uuid cannot
   // be converted to an id by TDB.
   std::vector <std::string> deps;
@@ -758,10 +761,10 @@ void TDB::undo ()
 
   if (context.config.get ("undo.style") == "side")
   {
-    std::cout << std::endl
+    std::cout << "\n"
               << "The last modification was made "
               << lastChange.toString ()
-              << std::endl;
+              << "\n";
 
     // Attributes are all there is, so figure the different attribute names
     // between before and after.
@@ -844,9 +847,9 @@ void TDB::undo ()
       }
     }
 
-    std::cout << std::endl
+    std::cout << "\n"
               << table.render ()
-              << std::endl;
+              << "\n";
   }
 
   // This style looks like this:
@@ -977,15 +980,15 @@ void TDB::undo ()
       }
     }
 
-    std::cout << std::endl
+    std::cout << "\n"
               << table.render ()
-              << std::endl;
+              << "\n";
   }
 
   // Output displayed, now confirm.
   if (!confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
   {
-    std::cout << "No changes made." << std::endl;
+    std::cout << "No changes made.\n";
     context.hooks.trigger ("post-undo");
     return;
   }
@@ -1013,12 +1016,12 @@ void TDB::undo ()
       if (prior != "")
       {
         *task = prior;
-        std::cout << "Modified task reverted." << std::endl;
+        std::cout << "Modified task reverted.\n";
       }
       else
       {
         p.erase (task);
-        std::cout << "Task removed." << std::endl;
+        std::cout << "Task removed.\n";
       }
 
       // Rewrite files.
@@ -1050,7 +1053,7 @@ void TDB::undo ()
         File::write (completedFile, c);
         File::write (pendingFile, p);
         File::write (undoFile, u);
-        std::cout << "Modified task reverted." << std::endl;
+        std::cout << "Modified task reverted.\n";
         context.debug ("TDB::undo - task belongs in pending.data");
       }
       else
@@ -1058,11 +1061,11 @@ void TDB::undo ()
         *task = prior;
         File::write (completedFile, c);
         File::write (undoFile, u);
-        std::cout << "Modified task reverted." << std::endl;
+        std::cout << "Modified task reverted.\n";
         context.debug ("TDB::undo - task belongs in completed.data");
       }
 
-      std::cout << "Undo complete." << std::endl;
+      std::cout << "Undo complete.\n";
       context.hooks.trigger ("post-undo");
       return;
     }
@@ -1072,10 +1075,8 @@ void TDB::undo ()
   // Perhaps the task was in completed.data, which was still in file format 3?
   std::cout << "Task with UUID "
             << uuid.substr (6, 36)
-            << " not found in data."
-            << std::endl
-            << "No undo possible."
-            << std::endl;
+            << " not found in data.\n"
+            << "No undo possible.\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1199,7 +1200,7 @@ void TDB::merge (const std::string& mergeFile)
       {
         std::cout << "Skipping the new local task        "
                   << (*lmod_it).getUuid()
-                  << std::endl;
+                  << "\n";
 
         uuid_left.insert ( (*lmod_it).getUuid ());
       }
@@ -1223,7 +1224,7 @@ void TDB::merge (const std::string& mergeFile)
       {
         std::cout << "Adding the new remote task         "
                   << tmod.getUuid()
-                  << std::endl;
+                  << "\n";
         uuid_new.insert (tmod.getUuid ());
         mods.push_back (tmod);
         rmods.erase (current);
@@ -1292,7 +1293,7 @@ void TDB::merge (const std::string& mergeFile)
               // which one is newer?
               if (tmod_r > tmod_l)
               {
-                std::cout << "Applying remote changes for uuid   " << uuid << std::endl;
+                std::cout << "Applying remote changes for uuid   " << uuid << "\n";
 
                 mods.push_front(tmod_r);
 
@@ -1305,7 +1306,7 @@ void TDB::merge (const std::string& mergeFile)
               }
               else
               {
-                std::cout << "Rejecting remote changes for uuid  " << uuid << std::endl;
+                std::cout << "Rejecting remote changes for uuid  " << uuid << "\n";
                 // inserting right mod into history of local database
                 // so that it can be restored later
 
@@ -1361,7 +1362,7 @@ void TDB::merge (const std::string& mergeFile)
   else // lit == undo.end ()
   {
     // nothing happend on the local branch
-    std::cout << "No changes were made on the local database. Appending changes..." << std::endl;
+    std::cout << "No changes were made on the local database. Appending changes...\n";
 
     // add remaining lines (remote branch) to the list of modifications
     readTaskmods (r, rit, mods);
@@ -1372,7 +1373,7 @@ void TDB::merge (const std::string& mergeFile)
 
   if (!mods.empty ())
   {
-    std::cout << "Running redo routine..." << std::endl;
+    std::cout << "Running redo routine...\n";
 
     std::string pendingFile   = location.data + "/pending.data";
     std::vector <std::string> pending;
@@ -1411,7 +1412,7 @@ void TDB::merge (const std::string& mergeFile)
             if (it->find (uuid) != std::string::npos)
             {
               // Update the completed record.
-              std::cout << "Modifying            " << uuid << std::endl;
+              std::cout << "Modifying            " << uuid << "\n";
 
               // remove the \n from composeF4() string
               std::string newline = tmod.getAfter ().composeF4 ();
@@ -1449,7 +1450,7 @@ void TDB::merge (const std::string& mergeFile)
             if (it->find (uuid) != std::string::npos)
             {
               // Update the pending record.
-              std::cout << "Modifying            " << uuid << std::endl;
+              std::cout << "Modifying            " << uuid << "\n";
 
               // remove the \n from composeF4() string
               // which will replace the current line
@@ -1481,7 +1482,7 @@ void TDB::merge (const std::string& mergeFile)
 
         if (!found)
         {
-          std::cout << "Missing              " << uuid << std::endl;
+          std::cout << "Missing              " << uuid << "\n";
           mods.erase (current);
         }
 
@@ -1505,11 +1506,11 @@ void TDB::merge (const std::string& mergeFile)
 
         if (!found)
         {
-          std::cout << "Adding               " << uuid << std::endl;
+          std::cout << "Adding               " << uuid << "\n";
           pending.push_back (tmod.getAfter ().composeF4 ());
         }
         else
-          std::cout << "Not adding duplicate " << uuid << std::endl;
+          std::cout << "Not adding duplicate " << uuid << "\n";
           mods.erase (current);
       }
     }
@@ -1539,7 +1540,7 @@ void TDB::merge (const std::string& mergeFile)
   }
   else // nothing to be done
   {
-    std::cout << "Nothing to be done." << std::endl;
+    std::cout << "Nothing to be done.\n";
   }
 
   // delete objects
@@ -1590,7 +1591,7 @@ FILE* TDB::openAndLock (const std::string& file)
   if (mLock)
     while (flock (fileno (in), LOCK_NB | LOCK_EX) && ++retry <= 3)
     {
-      std::cout << "Waiting for file lock..." << std::endl;
+      std::cout << "Waiting for file lock...\n";
       while (flock (fileno (in), LOCK_NB | LOCK_EX) && ++retry <= 3)
         delay (0.2);
     }

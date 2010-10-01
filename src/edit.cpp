@@ -112,52 +112,52 @@ static std::string formatDate (
 static std::string formatTask (Task task)
 {
   std::stringstream before;
-  before << "# The 'task edit <id>' command allows you to modify all aspects of a task" << std::endl
-         << "# using a text editor.  What is shown below is a representation of the"    << std::endl
-         << "# task in all it's detail.  Modify what you wish, and if you save and"     << std::endl
-         << "# quit your editor, taskwarrior will read this file and try to make sense" << std::endl
-         << "# of what changed, and apply those changes.  If you quit your editor"      << std::endl
-         << "# without saving or making any modifications, taskwarrior will do nothing."<< std::endl
-         << "#"                                                                         << std::endl
-         << "# Lines that begin with # represent data you cannot change, like ID."      << std::endl
-         << "# If you get too 'creative' with your editing, taskwarrior will dump you"  << std::endl
-         << "# back into the editor to try again."                                      << std::endl
-         << "#"                                                                         << std::endl
-         << "# Should you find yourself in an endless Groundhog Day loop, editing and"  << std::endl
-         << "# editing the same file, just quit the editor without making any changes." << std::endl
-         << "# Taskwarrior will notice this and stop the editing."                      << std::endl
-         << "#"                                                                         << std::endl
-         << "# Name               Editable details"                                     << std::endl
-         << "# -----------------  ----------------------------------------------------" << std::endl
-         << "# ID:                " << task.id                                          << std::endl
-         << "# UUID:              " << task.get ("uuid")                                << std::endl
-         << "# Status:            " << ucFirst (Task::statusToText (task.getStatus ())) << std::endl
-         << "# Mask:              " << task.get ("mask")                                << std::endl
-         << "# iMask:             " << task.get ("imask")                               << std::endl
-         << "  Project:           " << task.get ("project")                             << std::endl
-         << "  Priority:          " << task.get ("priority")                            << std::endl;
+  before << "# The 'task edit <id>' command allows you to modify all aspects of a task\n"
+         << "# using a text editor.  What is shown below is a representation of the\n"
+         << "# task in all it's detail.  Modify what you wish, and if you save and\n"
+         << "# quit your editor, taskwarrior will read this file and try to make sense\n"
+         << "# of what changed, and apply those changes.  If you quit your editor\n"
+         << "# without saving or making any modifications, taskwarrior will do nothing.\n"
+         << "#\n"
+         << "# Lines that begin with # represent data you cannot change, like ID.\n"
+         << "# If you get too 'creative' with your editing, taskwarrior will dump you\n"
+         << "# back into the editor to try again.\n"
+         << "#\n"
+         << "# Should you find yourself in an endless Groundhog Day loop, editing and\n"
+         << "# editing the same file, just quit the editor without making any changes.\n"
+         << "# Taskwarrior will notice this and stop the editing.\n"
+         << "#\n"
+         << "# Name               Editable details\n"
+         << "# -----------------  ----------------------------------------------------\n"
+         << "# ID:                " << task.id                                          << "\n"
+         << "# UUID:              " << task.get ("uuid")                                << "\n"
+         << "# Status:            " << ucFirst (Task::statusToText (task.getStatus ())) << "\n"
+         << "# Mask:              " << task.get ("mask")                                << "\n"
+         << "# iMask:             " << task.get ("imask")                               << "\n"
+         << "  Project:           " << task.get ("project")                             << "\n"
+         << "  Priority:          " << task.get ("priority")                            << "\n";
 
   std::vector <std::string> tags;
   task.getTags (tags);
   std::string allTags;
   join (allTags, " ", tags);
-  before << "# Separate the tags with spaces, like this: tag1 tag2"                     << std::endl
-         << "  Tags:              " << allTags                                          << std::endl
-         << "# The description field is allowed to wrap and use multiple lines.  Task"  << std::endl
-         << "# will combine them."                                                      << std::endl
-         << "  Description:       " << task.get ("description")                         << std::endl
-         << "  Created:           " << formatDate (task, "entry")                       << std::endl
-         << "  Started:           " << formatDate (task, "start")                       << std::endl
-         << "  Ended:             " << formatDate (task, "end")                         << std::endl
-         << "  Due:               " << formatDate (task, "due")                         << std::endl
-         << "  Until:             " << formatDate (task, "until")                       << std::endl
-         << "  Recur:             " << task.get ("recur")                               << std::endl
-         << "  Wait until:        " << formatDate (task, "wait")                        << std::endl
-         << "  Parent:            " << task.get ("parent")                              << std::endl
-         << "  Foreground color:  " << task.get ("fg")                                  << std::endl
-         << "  Background color:  " << task.get ("bg")                                  << std::endl
-         << "# Annotations look like this: <date> -- <text> and there can be any number of them"  << std::endl
-         << "# ' -- ' is the separator between the date and text field. It should not be removed" << std::endl;
+  before << "# Separate the tags with spaces, like this: tag1 tag2\n"
+         << "  Tags:              " << allTags                                          << "\n"
+         << "# The description field is allowed to wrap and use multiple lines.  Task\n"
+         << "# will combine them.\n"
+         << "  Description:       " << task.get ("description")                         << "\n"
+         << "  Created:           " << formatDate (task, "entry")                       << "\n"
+         << "  Started:           " << formatDate (task, "start")                       << "\n"
+         << "  Ended:             " << formatDate (task, "end")                         << "\n"
+         << "  Due:               " << formatDate (task, "due")                         << "\n"
+         << "  Until:             " << formatDate (task, "until")                       << "\n"
+         << "  Recur:             " << task.get ("recur")                               << "\n"
+         << "  Wait until:        " << formatDate (task, "wait")                        << "\n"
+         << "  Parent:            " << task.get ("parent")                              << "\n"
+         << "  Foreground color:  " << task.get ("fg")                                  << "\n"
+         << "  Background color:  " << task.get ("bg")                                  << "\n"
+         << "# Annotations look like this: <date> -- <text> and there can be any number of them\n"
+         << "# ' -- ' is the separator between the date and text field. It should not be removed\n";
 
   std::vector <Att> annotations;
   task.getAnnotations (annotations);
@@ -165,12 +165,12 @@ static std::string formatTask (Task task)
   {
     Date dt (::atoi (anno->name ().substr (11).c_str ()));
     before << "  Annotation:        " << dt.toString (context.config.get ("dateformat.annotation"))
-           << " -- "                  << anno->value ()                                 << std::endl;
+           << " -- "                  << anno->value ()                                 << "\n";
   }
 
   Date now;
-  before << "  Annotation:        " << now.toString (context.config.get ("dateformat.annotation")) << " -- " << std::endl
-         << "# End"                                                                     << std::endl;
+  before << "  Annotation:        " << now.toString (context.config.get ("dateformat.annotation")) << " -- \n"
+         << "# End\n";
 
   // TODO Add dependencies here.
 
@@ -186,12 +186,12 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      std::cout << "Project modified." << std::endl;
+      std::cout << "Project modified.\n";
       task.set ("project", value);
     }
     else
     {
-      std::cout << "Project deleted." << std::endl;
+      std::cout << "Project deleted.\n";
       task.remove ("project");
     }
   }
@@ -204,13 +204,13 @@ static void parseTask (Task& task, const std::string& after)
     {
       if (Att::validNameValue ("priority", "", value))
       {
-        std::cout << "Priority modified." << std::endl;
+        std::cout << "Priority modified.\n";
         task.set ("priority", value);
       }
     }
     else
     {
-      std::cout << "Priority deleted." << std::endl;
+      std::cout << "Priority deleted.\n";
       task.remove ("priority");
     }
   }
@@ -228,7 +228,7 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      std::cout << "Description modified." << std::endl;
+      std::cout << "Description modified.\n";
       task.set ("description", value);
     }
     else
@@ -244,7 +244,7 @@ static void parseTask (Task& task, const std::string& after)
     Date original (::atoi (task.get ("entry").c_str ()));
     if (!original.sameDay (edited))
     {
-      std::cout << "Creation date modified." << std::endl;
+      std::cout << "Creation date modified.\n";
       task.set ("entry", value);
     }
   }
@@ -262,13 +262,13 @@ static void parseTask (Task& task, const std::string& after)
       Date original (::atoi (task.get ("start").c_str ()));
       if (!original.sameDay (edited))
       {
-        std::cout << "Start date modified." << std::endl;
+        std::cout << "Start date modified.\n";
         task.set ("start", value);
       }
     }
     else
     {
-      std::cout << "Start date modified." << std::endl;
+      std::cout << "Start date modified.\n";
       task.set ("start", value);
     }
   }
@@ -276,7 +276,7 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (task.get ("start") != "")
     {
-      std::cout << "Start date removed." << std::endl;
+      std::cout << "Start date removed.\n";
       task.remove ("start");
     }
   }
@@ -292,7 +292,7 @@ static void parseTask (Task& task, const std::string& after)
       Date original (::atoi (task.get ("end").c_str ()));
       if (!original.sameDay (edited))
       {
-        std::cout << "Done date modified." << std::endl;
+        std::cout << "Done date modified.\n";
         task.set ("end", value);
       }
     }
@@ -303,7 +303,7 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (task.get ("end") != "")
     {
-      std::cout << "Done date removed." << std::endl;
+      std::cout << "Done date removed.\n";
       task.setStatus (Task::pending);
       task.remove ("end");
     }
@@ -320,13 +320,13 @@ static void parseTask (Task& task, const std::string& after)
       Date original (::atoi (task.get ("due").c_str ()));
       if (!original.sameDay (edited))
       {
-        std::cout << "Due date modified." << std::endl;
+        std::cout << "Due date modified.\n";
         task.set ("due", value);
       }
     }
     else
     {
-      std::cout << "Due date modified." << std::endl;
+      std::cout << "Due date modified.\n";
       task.set ("due", value);
     }
   }
@@ -337,11 +337,11 @@ static void parseTask (Task& task, const std::string& after)
       if (task.getStatus () == Task::recurring ||
           task.get ("parent") != "")
       {
-        std::cout << "Cannot remove a due date from a recurring task." << std::endl;
+        std::cout << "Cannot remove a due date from a recurring task.\n";
       }
       else
       {
-        std::cout << "Due date removed." << std::endl;
+        std::cout << "Due date removed.\n";
         task.remove ("due");
       }
     }
@@ -358,13 +358,13 @@ static void parseTask (Task& task, const std::string& after)
       Date original (::atoi (task.get ("until").c_str ()));
       if (!original.sameDay (edited))
       {
-        std::cout << "Until date modified." << std::endl;
+        std::cout << "Until date modified.\n";
         task.set ("until", value);
       }
     }
     else
     {
-      std::cout << "Until date modified." << std::endl;
+      std::cout << "Until date modified.\n";
       task.set ("until", value);
     }
   }
@@ -372,7 +372,7 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (task.get ("until") != "")
     {
-      std::cout << "Until date removed." << std::endl;
+      std::cout << "Until date removed.\n";
       task.remove ("until");
     }
   }
@@ -386,7 +386,7 @@ static void parseTask (Task& task, const std::string& after)
       Duration d;
       if (d.valid (value))
       {
-        std::cout << "Recurrence modified." << std::endl;
+        std::cout << "Recurrence modified.\n";
         if (task.get ("due") != "")
         {
           task.set ("recur", value);
@@ -400,7 +400,7 @@ static void parseTask (Task& task, const std::string& after)
     }
     else
     {
-      std::cout << "Recurrence removed." << std::endl;
+      std::cout << "Recurrence removed.\n";
       task.setStatus (Task::pending);
       task.remove ("recur");
       task.remove ("until");
@@ -420,13 +420,13 @@ static void parseTask (Task& task, const std::string& after)
       Date original (::atoi (task.get ("wait").c_str ()));
       if (!original.sameDay (edited))
       {
-        std::cout << "Wait date modified." << std::endl;
+        std::cout << "Wait date modified.\n";
         task.set ("wait", value);
       }
     }
     else
     {
-      std::cout << "Wait date modified." << std::endl;
+      std::cout << "Wait date modified.\n";
       task.set ("wait", value);
     }
   }
@@ -434,7 +434,7 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (task.get ("wait") != "")
     {
-      std::cout << "Wait date removed." << std::endl;
+      std::cout << "Wait date removed.\n";
       task.remove ("wait");
     }
   }
@@ -445,12 +445,12 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      std::cout << "Parent UUID modified." << std::endl;
+      std::cout << "Parent UUID modified.\n";
       task.set ("parent", value);
     }
     else
     {
-      std::cout << "Parent UUID removed." << std::endl;
+      std::cout << "Parent UUID removed.\n";
       task.remove ("parent");
     }
   }
@@ -461,12 +461,12 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      std::cout << "Foreground color modified." << std::endl;
+      std::cout << "Foreground color modified.\n";
       task.set ("fg", value);
     }
     else
     {
-      std::cout << "Foreground color removed." << std::endl;
+      std::cout << "Foreground color removed.\n";
       task.remove ("fg");
     }
   }
@@ -477,12 +477,12 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      std::cout << "Background color modified." << std::endl;
+      std::cout << "Background color modified.\n";
       task.set ("bg", value);
     }
     else
     {
-      std::cout << "Background color removed." << std::endl;
+      std::cout << "Background color removed.\n";
       task.remove ("bg");
     }
   }
@@ -557,11 +557,11 @@ void editFile (Task& task)
 
 ARE_THESE_REALLY_HARMFUL:
   // Launch the editor.
-  std::cout << "Launching '" << editor << "' now..." << std::endl;
+  std::cout << "Launching '" << editor << "' now...\n";
   if (-1 == system (editor.c_str ()))
-    std::cout << "No editing performed." << std::endl;
+    std::cout << "No editing performed.\n";
   else
-    std::cout << "Editing complete." << std::endl;
+    std::cout << "Editing complete.\n";
 
   // Slurp file.
   std::string after;
@@ -571,7 +571,7 @@ ARE_THESE_REALLY_HARMFUL:
   // if changes were made.
   if (before != after)
   {
-    std::cout << "Edits were detected." << std::endl;
+    std::cout << "Edits were detected.\n";
     std::string problem = "";
     bool oops = false;
 
@@ -588,7 +588,7 @@ ARE_THESE_REALLY_HARMFUL:
 
     if (oops)
     {
-      std::cout << "Error: " << problem << std::endl;
+      std::cout << "Error: " << problem << "\n";
 
       // Preserve the edits.
       before = after;
@@ -599,7 +599,7 @@ ARE_THESE_REALLY_HARMFUL:
     }
   }
   else
-    std::cout << "No edits were detected." << std::endl;
+    std::cout << "No edits were detected.\n";
 
   // Cleanup.
   File::remove (file.str ());

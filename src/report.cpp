@@ -253,12 +253,12 @@ int shortUsage (std::string &outs)
 
   std::stringstream out;
   out << table.render ()
-      << std::endl
+      << "\n"
       << "Documentation for taskwarrior can be found using 'man task', "
       << "'man taskrc', 'man task-tutorial', 'man task-color', 'man task-faq' "
       << "or at http://taskwarrior.org"
-      << std::endl
-      << std::endl;
+      << "\n"
+      << "\n";
 
   outs = out.str ();
   return 0;
@@ -336,7 +336,7 @@ int longUsage (std::string &outs)
         <<                                                                         "\n"
         << "Many characters have special meaning to the shell, including:"      << "\n"
         << "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~"                    << "\n"
-        << std::endl;
+        << "\n";
 
     outs = out.str();
     context.hooks.trigger ("post-usage-command");
@@ -438,19 +438,20 @@ int handleInfo (std::string &outs)
       }
 
       // dependencies: blocked
-      if (task->has ("depends"))
       {
         std::vector <Task> blocked;
         dependencyGetBlocked (*task, blocked);
+        if (blocked.size ())
+        {
+          std::stringstream message;
+          std::vector <Task>::const_iterator it;
+          for (it = blocked.begin (); it != blocked.end (); ++it)
+            message << it->id << " " << it->get ("description") << "\n";
 
-        std::stringstream message;
-        std::vector <Task>::const_iterator it;
-        for (it = blocked.begin (); it != blocked.end (); ++it)
-          message << it->id << " " << it->get ("description") << "\n";
-
-        row = table.addRow ();
-        table.addCell (row, 0, "This task blocked by");
-        table.addCell (row, 1, message.str ());
+          row = table.addRow ();
+          table.addCell (row, 0, "This task blocked by");
+          table.addCell (row, 1, message.str ());
+        }
       }
 
       // dependencies: blocking
@@ -635,11 +636,11 @@ int handleInfo (std::string &outs)
 
       out << optionalBlankLine ()
           << table.render ()
-          << std::endl;
+          << "\n";
     }
 
     if (! tasks.size ()) {
-      out << "No matches." << std::endl;
+      out << "No matches.\n";
       rc = 1;
     }
 
@@ -788,9 +789,9 @@ int handleReportSummary (std::string &outs)
           << optionalBlankLine ()
           << table.rowCount ()
           << (table.rowCount () == 1 ? " project" : " projects")
-          << std::endl;
+          << "\n";
     else {
-      out << "No projects." << std::endl;
+      out << "No projects.\n";
       rc = 1;
     }
 
@@ -994,10 +995,10 @@ int handleReportHistoryMonthly (std::string &outs)
     if (table.rowCount ())
       out << optionalBlankLine ()
           << table.render ()
-          << std::endl;
+          << "\n";
     else
     {
-      out << "No tasks." << std::endl;
+      out << "No tasks.\n";
       rc = 1;
     }
 
@@ -1158,10 +1159,10 @@ int handleReportHistoryAnnual (std::string &outs)
     if (table.rowCount ())
       out << optionalBlankLine ()
           << table.render ()
-          << std::endl;
+          << "\n";
     else
     {
-      out << "No tasks." << std::endl;
+      out << "No tasks.\n";
       rc = 1;
     }
 
@@ -1352,7 +1353,7 @@ int handleReportGHistoryMonthly (std::string &outs)
     {
       out << optionalBlankLine ()
           << table.render ()
-          << std::endl;
+          << "\n";
 
       if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
         out << "Legend: "
@@ -1362,13 +1363,13 @@ int handleReportGHistoryMonthly (std::string &outs)
             << ", "
             << color_delete.colorize ("deleted")
             << optionalBlankLine ()
-            << std::endl;
+            << "\n";
       else
-        out << "Legend: + added, X completed, - deleted" << std::endl;
+        out << "Legend: + added, X completed, - deleted\n";
     }
     else
     {
-      out << "No tasks." << std::endl;
+      out << "No tasks.\n";
       rc = 1;
     }
 
@@ -1555,7 +1556,7 @@ int handleReportGHistoryAnnual (std::string &outs)
     {
       out << optionalBlankLine ()
           << table.render ()
-          << std::endl;
+          << "\n";
 
       if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
         out << "Legend: "
@@ -1565,13 +1566,13 @@ int handleReportGHistoryAnnual (std::string &outs)
             << ", "
             << color_delete.colorize ("deleted")
             << optionalBlankLine ()
-            << std::endl;
+            << "\n";
       else
-        out << "Legend: + added, X completed, - deleted" << std::endl;
+        out << "Legend: + added, X completed, - deleted\n";
     }
     else
     {
-      out << "No tasks." << std::endl;
+      out << "No tasks.\n";
       rc = 1;
     }
 
@@ -1633,9 +1634,9 @@ int handleReportTimesheet (std::string &outs)
                           + endString.toString (context.config.get ("dateformat"));
 
       Color bold (Color::nocolor, Color::nocolor, false, true, false);
-      out << std::endl
+      out << "\n"
           << (color ? bold.colorize (title) : title)
-          << std::endl;
+          << "\n";
 
       // Render the completed table.
       Table completed;
@@ -1692,11 +1693,11 @@ int handleReportTimesheet (std::string &outs)
         }
       }
 
-      out << "  Completed (" << completed.rowCount () << " tasks)" << std::endl;
+      out << "  Completed (" << completed.rowCount () << " tasks)\n";
 
       if (completed.rowCount ())
         out << completed.render ()
-            << std::endl;
+            << "\n";
 
       // Now render the started table.
       Table started;
@@ -1753,12 +1754,11 @@ int handleReportTimesheet (std::string &outs)
         }
       }
 
-      out << "  Started (" << started.rowCount () << " tasks)" << std::endl;
+      out << "  Started (" << started.rowCount () << " tasks)\n";
 
       if (started.rowCount ())
         out << started.render ()
-            << std::endl
-            << std::endl;
+            << "\n\n";
 
       // Prior week.
       start -= 7 * 86400;
@@ -2161,7 +2161,7 @@ int handleReportCalendar (std::string &outs)
     int details_mFrom = mFrom;
 
     std::stringstream out;
-    out << std::endl;
+    out << "\n";
 
     while (yFrom < yTo || (yFrom == yTo && mFrom <= mTo))
     {
@@ -2205,10 +2205,10 @@ int handleReportCalendar (std::string &outs)
         }
       }
 
-      out << std::endl
+      out << "\n"
           << optionalBlankLine ()
           << renderMonths (mFrom, yFrom, today, tasks, monthsPerLine)
-          << std::endl;
+          << "\n";
 
       mFrom += monthsPerLine;
       if (mFrom > 12)
@@ -2244,7 +2244,7 @@ int handleReportCalendar (std::string &outs)
           << color_weeknumber.colorize ("weeknumber")
           << "."
           << optionalBlankLine ()
-          << std::endl;
+          << "\n";
 
     if (context.config.get ("calendar.details") == "full" || context.config.get ("calendar.holidays") == "full")
     {
@@ -2343,7 +2343,7 @@ int handleReportCalendar (std::string &outs)
 
         out << optionalBlankLine ()
             << holTable.render ()
-            << std::endl;
+            << "\n";
       }
     }
 

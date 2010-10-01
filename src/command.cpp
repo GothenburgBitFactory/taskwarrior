@@ -143,7 +143,7 @@ int handleAdd (std::string &outs)
     context.tdb.add (context.task);
 
 #ifdef FEATURE_NEW_ID
-    out << "Created task " << context.tdb.nextId () << "." << std::endl;
+    out << "Created task " << context.tdb.nextId () << ".\n";
 #endif
 
     out << onProjectChange (context.task);
@@ -212,7 +212,7 @@ int handleLog (std::string &outs)
     context.tdb.unlock ();
 
     if (context.config.getBoolean ("echo.command"))
-      out << "Logged task."  << std::endl;
+      out << "Logged task.\n";
 
     out << onProjectChange (context.task);
 
@@ -309,14 +309,11 @@ int handleProjects (std::string &outs)
           << optionalBlankLine ()
           << unique.size ()
           << (unique.size () == 1 ? " project" : " projects")
-          << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")"
-          << std::endl;
+          << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")\n";
     }
     else
     {
-      out << "No projects."
-          << std::endl;
-
+      out << "No projects.\n";
       rc = 1;
     }
 
@@ -351,7 +348,7 @@ int handleCompletionProjects (std::string &outs)
   std::stringstream out;
   foreach (project, unique)
     if (project->first.length ())
-      out << project->first << std::endl;
+      out << project->first << "\n";
 
   outs = out.str ();
   return 0;
@@ -430,13 +427,11 @@ int handleTags (std::string &outs)
           << optionalBlankLine ()
           << unique.size ()
           << (unique.size () == 1 ? " tag" : " tags")
-          << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")"
-          << std::endl;
+          << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")\n";
     }
     else
     {
-      out << "No tags."
-          << std::endl;
+      out << "No tags.\n";
       rc = 1;
     }
 
@@ -476,7 +471,7 @@ int handleCompletionTags (std::string &outs)
 
   std::stringstream out;
   foreach (tag, unique)
-    out << tag->first << std::endl;
+    out << tag->first << "\n";
 
   outs = out.str ();
   return 0;
@@ -494,7 +489,7 @@ int handleCompletionCommands (std::string &outs)
 
   std::stringstream out;
   foreach (command, commands)
-    out << *command << std::endl;
+    out << *command << "\n";
 
   outs = out.str ();
   return 0;
@@ -509,7 +504,7 @@ int handleCompletionConfig (std::string &outs)
 
   std::stringstream out;
   foreach (config, configs)
-    out << *config << std::endl;
+    out << *config << "\n";
 
   outs = out.str ();
   return 0;
@@ -575,7 +570,7 @@ int handleCompletionIDs (std::string &outs)
 
   std::stringstream out;
   foreach (id, ids)
-    out << *id << std::endl;
+    out << *id << "\n";
 
   outs = out.str ();
   return 0;
@@ -715,7 +710,7 @@ int handleVersion (std::string &outs)
 
     Color bold ("bold");
 
-    out << std::endl
+    out << "\n"
         << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
              ? bold.colorize (PACKAGE)
              : PACKAGE)
@@ -755,16 +750,14 @@ int handleVersion (std::string &outs)
         << "-lua"
 #endif
 
-        << std::endl
-        << "Copyright (C) 2006 - 2010 P. Beckingham, F. Hernandez."
-        << std::endl
+        << "\n"
+        << "Copyright (C) 2006 - 2010 P. Beckingham, F. Hernandez.\n"
 #ifdef HAVE_LIBLUA
-        << "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio."
-        << std::endl
+        << "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio.\n"
 #endif
         << disclaimer.render ()
         << link.render ()
-        << std::endl;
+        << "\n";
 
     outs = out.str ();
     context.hooks.trigger ("post-version-command");
@@ -912,25 +905,22 @@ int handleShow (std::string &outs)
       }
     }
 
-    out << std::endl
+    out << "\n"
         << table.render ()
-        << (table.rowCount () == 0 ? "No matching configuration variables.\n" : "")
-        << std::endl;
+        << (table.rowCount () == 0 ? "No matching configuration variables.\n\n" : "\n");
 
     // Display the unrecognized variables.
     if (unrecognized.size ())
     {
-      out << "Your .taskrc file contains these unrecognized variables:"
-          << std::endl;
+      out << "Your .taskrc file contains these unrecognized variables:\n";
 
       foreach (i, unrecognized)
-        out << "  " << *i << std::endl;
+        out << "  " << *i << "\n";
 
       if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-        out << std::endl
-            << "  These are highlighted in " << error.colorize ("color") << " above.";
+        out << "\n  These are highlighted in " << error.colorize ("color") << " above.";
 
-      out << std::endl;
+      out << "\n";
     }
 
     out << context.config.checkForDeprecatedColor ();
@@ -970,13 +960,12 @@ int handleShow (std::string &outs)
 
     if (missing_scripts.size ())
     {
-      out << "Your .taskrc file contains these missing or unreadable hook scripts:"
-           << std::endl;
+      out << "Your .taskrc file contains these missing or unreadable hook scripts:\n";
 
       foreach (i, missing_scripts)
-        out << "  " << *i << std::endl;
+        out << "  " << *i << "\n";
 
-      out << std::endl;
+      out << "\n";
     }
 #endif
 
@@ -987,8 +976,7 @@ int handleShow (std::string &outs)
         annotations != "none")
       out << "Configuration error: annotations contains an unrecognized value '"
           << annotations
-          << "'."
-          << std::endl;
+          << "'.\n";
 
     // Check for bad values in rc.calendar.details.
     std::string calendardetails = context.config.get ("calendar.details");
@@ -997,8 +985,7 @@ int handleShow (std::string &outs)
         calendardetails != "none")
       out << "Configuration error: calendar.details contains an unrecognized value '"
           << calendardetails
-          << "'."
-          << std::endl;
+          << "'.\n";
 
     // Check for bad values in rc.calendar.holidays.
     std::string calendarholidays = context.config.get ("calendar.holidays");
@@ -1007,8 +994,7 @@ int handleShow (std::string &outs)
         calendarholidays != "none")
       out << "Configuration error: calendar.holidays contains an unrecognized value '"
           << calendarholidays
-          << "'."
-          << std::endl;
+          << "'.\n";
 
     // Check for bad values in rc.default.priority.
     std::string defaultPriority = context.config.get ("default.priority");
@@ -1018,16 +1004,14 @@ int handleShow (std::string &outs)
         defaultPriority != "")
       out << "Configuration error: default.priority contains an unrecognized value '"
           << defaultPriority
-          << "'."
-          << std::endl;
+          << "'.\n";
 
     // Verify installation.  This is mentioned in the documentation as the way
     // to ensure everything is properly installed.
 
     if (all.size () == 0)
     {
-      out << "Configuration error: .taskrc contains no entries."
-          << std::endl;
+      out << "Configuration error: .taskrc contains no entries.\n";
       rc = 1;
     }
     else
@@ -1036,13 +1020,11 @@ int handleShow (std::string &outs)
 
       if (location.data == "")
         out << "Configuration error: data.location not specified in .taskrc "
-               "file."
-            << std::endl;
+               "file.\n";
 
       if (! location.exists ())
         out << "Configuration error: data.location contains a directory name"
-               " that doesn't exist, or is unreadable."
-            << std::endl;
+               " that doesn't exist, or is unreadable.\n";
     }
 
     outs = out.str ();
@@ -1159,11 +1141,10 @@ int handleConfig (std::string &outs)
           File::write (context.config.original_file, contents);
           out << "Config file "
               << context.config.original_file.data
-              << " modified."
-              << std::endl;
+              << " modified.\n";
         }
         else
-          out << "No changes made." << std::endl;
+          out << "No changes made.\n";
       }
       else
         throw std::string ("Specify the name of a config variable to modify.");
@@ -1241,8 +1222,7 @@ int handleDelete (std::string &outs)
                         << sibling->id
                         << " '"
                         << sibling->get ("description")
-                        << "'."
-                        << std::endl;
+                        << "'.\n";
                 }
               }
             }
@@ -1263,8 +1243,7 @@ int handleDelete (std::string &outs)
                   << task->id
                   << " '"
                   << task->get ("description")
-                  << "'."
-                  << std::endl;
+                  << "'.\n";
 
               dependencyChainOnComplete (*task);
               out << onProjectChange (*task);
@@ -1286,15 +1265,14 @@ int handleDelete (std::string &outs)
                   << task->id
                   << " '"
                   << task->get ("description")
-                  << "'."
-                  << std::endl;
+                  << "'.\n";
 
             dependencyChainOnComplete (*task);
             out << onProjectChange (*task);
           }
         }
         else {
-          out << "Task not deleted." << std::endl;
+          out << "Task not deleted.\n";
           rc  = 1;
         }
 
@@ -1351,8 +1329,7 @@ int handleStart (std::string &outs)
               << task->id
               << " '"
               << task->get ("description")
-              << "'."
-              << std::endl;
+              << "'.\n";
         if (!nagged)
           nagged = nag (*task);
 
@@ -1364,8 +1341,7 @@ int handleStart (std::string &outs)
             << task->id
             << " '"
             << task->get ("description")
-            << "' already started."
-            << std::endl;
+            << "' already started.\n";
         rc = 1;
       }
     }
@@ -1415,8 +1391,7 @@ int handleStop (std::string &outs)
               << task->id
               << " '"
               << task->get ("description")
-              << "'."
-              << std::endl;
+              << "'.\n";
       }
       else
       {
@@ -1424,8 +1399,7 @@ int handleStop (std::string &outs)
             << task->id
             << " '"
             << task->get ("description")
-            << "' not started."
-            << std::endl;
+            << "' not started.\n";
         rc = 1;
       }
     }
@@ -1500,8 +1474,7 @@ int handleDone (std::string &outs)
                     << task->id
                     << " '"
                     << task->get ("description")
-                    << "'."
-                    << std::endl;
+                    << "'.\n";
 
               dependencyChainOnComplete (*task);
               out << onProjectChange (*task, false);
@@ -1523,8 +1496,7 @@ int handleDone (std::string &outs)
             << task->id
             << " '"
             << task->get ("description")
-            << "' is neither pending nor waiting."
-            << std::endl;
+            << "' is neither pending nor waiting.\n";
         rc = 1;
     }
 
@@ -1538,8 +1510,7 @@ int handleDone (std::string &outs)
           << count
           << " task"
           << (count == 1 ? "" : "s")
-          << " as done."
-          << std::endl;
+          << " as done.\n";
 
     outs = out.str ();
     context.hooks.trigger ("post-done-command");
@@ -1610,8 +1581,7 @@ int handleModify (std::string &outs)
           std::cout << "Task "
                     << task->id
                     << " is a recurring task, and all other instances of this"
-                    << " task will be modified."
-                    << std::endl;
+                    << " task will be modified.\n";
 
         Task before (*other);
 
@@ -1629,8 +1599,7 @@ int handleModify (std::string &outs)
 
           std::cout << "Task "
                     << other->id
-                    << " is now a recurring task."
-                    << std::endl;
+                    << " is now a recurring task.\n";
         }
 
         // Apply other deltas.
@@ -1671,7 +1640,7 @@ int handleModify (std::string &outs)
   context.tdb.unlock ();
 
   if (context.config.getBoolean ("echo.command"))
-    out << "Modified " << count << " task" << (count == 1 ? "." : "s.") << std::endl;
+    out << "Modified " << count << " task" << (count == 1 ? ".\n" : "s.\n");
 
   outs = out.str ();
   context.hooks.trigger ("post-modify-command");
@@ -1732,8 +1701,7 @@ int handleAppend (std::string &outs)
                     << context.task.get ("description")
                     << "' to task "
                     << other->id
-                    << "."
-                    << std::endl;
+                    << ".\n";
 
               if (before.get ("project") != other->get ("project"))
                 out << onProjectChange (before, *other);
@@ -1749,7 +1717,7 @@ int handleAppend (std::string &outs)
     context.tdb.unlock ();
 
     if (context.config.getBoolean ("echo.command"))
-      out << "Appended " << count << " task" << (count == 1 ? "." : "s.") << std::endl;
+      out << "Appended " << count << " task" << (count == 1 ? ".\n" : "s.\n");
 
     outs = out.str ();
     context.hooks.trigger ("post-append-command");
@@ -1812,8 +1780,7 @@ int handlePrepend (std::string &outs)
                     << context.task.get ("description")
                     << "' to task "
                     << other->id
-                    << "."
-                    << std::endl;
+                    << ".\n";
 
               if (before.get ("project") != other->get ("project"))
                 out << onProjectChange (before, *other);
@@ -1829,7 +1796,7 @@ int handlePrepend (std::string &outs)
     context.tdb.unlock ();
 
     if (context.config.getBoolean ("echo.command"))
-      out << "Prepended " << count << " task" << (count == 1 ? "." : "s.") << std::endl;
+      out << "Prepended " << count << " task" << (count == 1 ? ".\n" : "s.\n");
 
     outs = out.str ();
     context.hooks.trigger ("post-prepend-command");
@@ -1875,8 +1842,7 @@ int handleDuplicate (std::string &outs)
 
         out << "Note: task "
             << task->id
-            << " was a recurring task.  The new task is not."
-            << std::endl;
+            << " was a recurring task.  The new task is not.\n";
       }
 
       // Apply deltas.
@@ -1897,8 +1863,7 @@ int handleDuplicate (std::string &outs)
             << task->id
             << " '"
             << task->get ("description")
-            << "'."
-            << std::endl;
+            << "'.\n";
 
       out << onProjectChange (dup);
 
@@ -1907,13 +1872,13 @@ int handleDuplicate (std::string &outs)
 
     if (context.config.getBoolean ("echo.command"))
     {
-      out << "Duplicated " << count << " task" << (count == 1 ? "." : "s.") << std::endl;
+      out << "Duplicated " << count << " task" << (count == 1 ? ".\n" : "s.\n");
 #ifdef FEATURE_NEW_ID
       // All this, just for an id number.
       std::vector <Task> all;
       Filter none;
       context.tdb.loadPending (all, none);
-      out << "Created task " << context.tdb.nextId () << "." << std::endl;
+      out << "Created task " << context.tdb.nextId () << ".\n";
 #endif
     }
 
@@ -1938,16 +1903,10 @@ void handleShell ()
     std::cout << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
                    ? bold.colorize (PACKAGE_STRING)
                    : PACKAGE_STRING)
-              << " shell"
-              << std::endl
-              << std::endl
-              << "Enter any task command (such as 'list'), or hit 'Enter'."
-              << std::endl
-              << "There is no need to include the 'task' command itself."
-              << std::endl
-              << "Enter 'quit' to end the session."
-              << std::endl
-              << std::endl;
+              << " shell\n\n"
+              << "Enter any task command (such as 'list'), or hit 'Enter'.\n"
+              << "There is no need to include the 'task' command itself.\n"
+              << "Enter 'quit' to end the session.\n\n";
 
     // Make a copy because context.clear will delete them.
     std::string permanentOverrides = " " + context.file_override
@@ -1995,12 +1954,12 @@ void handleShell ()
 
         catch (std::string& error)
         {
-          std::cout << error << std::endl;
+          std::cout << error << "\n";
         }
 
         catch (...)
         {
-          std::cerr << context.stringtable.get (100, "Unknown error.") << std::endl;
+          std::cerr << context.stringtable.get (100, "Unknown error.") << "\n";
         }
       }
     }
@@ -2029,9 +1988,7 @@ int handleColor (std::string &outs)
       std::string description = context.task.get ("description");
       if (description.find ("legend") != std::string::npos)
       {
-        out << std::endl
-            << "Here are the colors currently in use:"
-            << std::endl;
+        out << "\nHere are the colors currently in use:\n";
 
         std::vector <std::string> all;
         context.config.all (all);
@@ -2065,7 +2022,7 @@ int handleColor (std::string &outs)
         out << optionalBlankLine ()
             << table.render ()
             << optionalBlankLine ()
-            << std::endl;
+            << "\n";
       }
 
       // If there is something in the description, then assume that is a color,
@@ -2080,30 +2037,29 @@ int handleColor (std::string &outs)
         Color six    ("red on color173");
         Color sample (description);
 
-        out << std::endl
-            << "Use this command to see how colors are displayed by your terminal."  << std::endl
-                                                                                     << std::endl
-            << "16-color usage (supports underline, bold text, bright background):"  << std::endl
-            << "  " << one.colorize ("task color black on bright yellow")            << std::endl
-            << "  " << two.colorize ("task color underline cyan on bright blue")     << std::endl
-                                                                                     << std::endl
-            << "256-color usage (supports underline):"                               << std::endl
-            << "  " << three.colorize ("task color color214 on color202")            << std::endl
-            << "  " << four.colorize ("task color rgb150 on rgb020")                 << std::endl
-            << "  " << five.colorize ("task color underline grey10 on grey3")        << std::endl
-            << "  " << six.colorize ("task color red on color173")                   << std::endl
-                                                                                     << std::endl
-            << "Your sample:"                                                        << std::endl
-            << "  " << sample.colorize ("task color " + description)                 << std::endl
-                                                                                     << std::endl;
+        out << "\n"
+            << "Use this command to see how colors are displayed by your terminal.\n\n"
+            << "\n"
+            << "16-color usage (supports underline, bold text, bright background):\n"
+            << "  " << one.colorize ("task color black on bright yellow")            << "\n"
+            << "  " << two.colorize ("task color underline cyan on bright blue")     << "\n"
+            << "\n"
+            << "256-color usage (supports underline):\n"
+            << "  " << three.colorize ("task color color214 on color202")            << "\n"
+            << "  " << four.colorize ("task color rgb150 on rgb020")                 << "\n"
+            << "  " << five.colorize ("task color underline grey10 on grey3")        << "\n"
+            << "  " << six.colorize ("task color red on color173")                   << "\n"
+            << "\n"
+            << "Your sample:"                                                        << "\n"
+            << "  " << sample.colorize ("task color " + description)                 << "\n\n";
       }
 
       // Show all supported colors.  Possibly show some unsupported ones too.
       else
       {
-        out << std::endl
+        out << "\n"
             << "Basic colors"
-            << std::endl
+            << "\n"
             << " " << Color::colorize (" black ",   "black")
             << " " << Color::colorize (" red ",     "red")
             << " " << Color::colorize (" blue ",    "blue")
@@ -2112,7 +2068,7 @@ int handleColor (std::string &outs)
             << " " << Color::colorize (" cyan ",    "cyan")
             << " " << Color::colorize (" yellow ",  "yellow")
             << " " << Color::colorize (" white ",   "white")
-            << std::endl
+            << "\n"
             << " " << Color::colorize (" black ",   "white on black")
             << " " << Color::colorize (" red ",     "white on red")
             << " " << Color::colorize (" blue ",    "white on blue")
@@ -2121,24 +2077,21 @@ int handleColor (std::string &outs)
             << " " << Color::colorize (" cyan ",    "black on cyan")
             << " " << Color::colorize (" yellow ",  "black on yellow")
             << " " << Color::colorize (" white ",   "black on white")
-            << std::endl
-            << std::endl;
+            << "\n\n";
 
         out << "Effects"
-            << std::endl
+            << "\n"
             << " " << Color::colorize (" red ",               "red")
             << " " << Color::colorize (" bold red ",          "bold red")
             << " " << Color::colorize (" underline on blue ", "underline on blue")
             << " " << Color::colorize (" on green ",          "black on green")
             << " " << Color::colorize (" on bright green ",   "black on bright green")
-            << std::endl
-            << std::endl;
+            << "\n\n";
 
         // 16 system colors.
         out << "color0 - color15"
-            << std::endl
-            << "  0 1 2 . . ."
-            << std::endl;
+            << "\n"
+            << "  0 1 2 . . .\n";
         for (int r = 0; r < 2; ++r)
         {
           out << "  ";
@@ -2149,12 +2102,10 @@ int handleColor (std::string &outs)
             out << Color::colorize ("  ", s.str ());
           }
 
-          out << std::endl;
+          out << "\n";
         }
 
-        out << "          . . . 15"
-            << std::endl
-            << std::endl;
+        out << "          . . . 15\n\n";
 
         // Color cube.
         out << "Color cube rgb"
@@ -2166,21 +2117,21 @@ int handleColor (std::string &outs)
             << Color::colorize ("5", "bold green")
             << Color::colorize ("5", "bold blue")
             << " (also color16 - color231)"
-            << std::endl
+            << "\n"
             << "  " << Color::colorize ("0            "
                                         "1            "
                                         "2            "
                                         "3            "
                                         "4            "
                                         "5", "bold red")
-            << std::endl
+            << "\n"
             << "  " << Color::colorize ("0 1 2 3 4 5  "
                                         "0 1 2 3 4 5  "
                                         "0 1 2 3 4 5  "
                                         "0 1 2 3 4 5  "
                                         "0 1 2 3 4 5  "
                                         "0 1 2 3 4 5", "bold blue")
-            << std::endl;
+            << "\n";
 
         char label [12];
         for (int g = 0; g < 6; ++g)
@@ -2199,16 +2150,14 @@ int handleColor (std::string &outs)
             out << " ";
           }
 
-          out << std::endl;
+          out << "\n";
         }
 
-        out << std::endl;
+        out << "\n";
 
         // Grey ramp.
-        out << "Gray ramp gray0 - gray23 (also color232 - color255)"
-            << std::endl
-            << "  0 1 2 . . .                             . . . 23"
-            << std::endl
+        out << "Gray ramp gray0 - gray23 (also color232 - color255)\n"
+            << "  0 1 2 . . .                             . . . 23\n"
             << "  ";
         for (int g = 0; g < 24; ++g)
         {
@@ -2217,18 +2166,13 @@ int handleColor (std::string &outs)
           out << Color::colorize ("  ", s.str ());
         }
 
-        out << std::endl
-            << std::endl
-            << "Try running 'task color white on red'."
-            << std::endl
-            << std::endl;
+        out << "\n\nTry running 'task color white on red'.\n\n";
       }
     }
     else
     {
       out << "Color is currently turned off in your .taskrc file.  To enable "
-             "color, remove the line 'color=off', or change the 'off' to 'on'."
-          << std::endl;
+             "color, remove the line 'color=off', or change the 'off' to 'on'.\n";
       rc = 1;
     }
 
@@ -2282,8 +2226,7 @@ int handleAnnotate (std::string &outs)
                 << task->id
                 << " with '"
                 << context.task.get ("description")
-                << "'."
-                << std::endl;
+                << "'.\n";
         }
       }
     }
@@ -2375,15 +2318,13 @@ int handleDenotate (std::string &outs)
           if (context.config.getBoolean ("echo.command"))
             out << "Found annotation '"
                 << anno
-                << "' and deleted it."
-                << std::endl;
+                << "' and deleted it.\n";
         }
       }
       else
         out << "Did not find any matching annotation to be deleted for '"
             << desc
-            << "'."
-            << std::endl;
+            << "'.\n";
     }
 
     context.tdb.commit ();
