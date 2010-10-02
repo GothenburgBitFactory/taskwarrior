@@ -161,9 +161,9 @@ int Context::run ()
   if (config.getBoolean ("debug"))
     foreach (d, debugMessages)
       if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
-        std::cout << colorizeDebug (*d) << std::endl;
+        std::cout << colorizeDebug (*d) << "\n";
       else
-        std::cout << *d << std::endl;
+        std::cout << *d << "\n";
   hooks.trigger ("post-debug");
 
   // Dump all headers.
@@ -171,9 +171,9 @@ int Context::run ()
   if (config.getBoolean ("verbose"))
     foreach (h, headers)
       if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
-        std::cout << colorizeHeader (*h) << std::endl;
+        std::cout << colorizeHeader (*h) << "\n";
       else
-        std::cout << *h << std::endl;
+        std::cout << *h << "\n";
   hooks.trigger ("post-header");
 
   // Dump the report output.
@@ -186,9 +186,9 @@ int Context::run ()
   if (config.getBoolean ("verbose"))
     foreach (f, footnotes)
       if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
-        std::cout << colorizeFootnote (*f) << std::endl;
+        std::cout << colorizeFootnote (*f) << "\n";
       else
-        std::cout << *f << std::endl;
+        std::cout << *f << "\n";
   hooks.trigger ("post-footnote");
 
   hooks.trigger ("pre-exit");
@@ -763,7 +763,7 @@ void Context::parse (
     else if (!foundNonSequence &&
              (parseTask.id != 0 || parseSequence.size () != 0))
     {
-      std::cout << "No command - assuming 'info'." << std::endl;
+      std::cout << "No command - assuming 'info'.\n";
       parseCmd.command = "info";
     }
   }

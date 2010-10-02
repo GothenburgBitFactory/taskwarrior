@@ -74,8 +74,7 @@ void handleRecurrence ()
       {
         std::cout << "Task ("
                   << trim (t->get ("description"))
-                  << ") has past its 'until' date, and has been deleted."
-                  << std::endl;
+                  << ") has past its 'until' date, and has been deleted.\n";
 
         // Determine the end date.
         char endTime[16];

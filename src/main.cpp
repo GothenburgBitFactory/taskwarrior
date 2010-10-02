@@ -76,13 +76,13 @@ int main (int argc, char** argv)
 
   catch (std::string& error)
   {
-    std::cout << error << std::endl;
+    std::cout << error << "\n";
     return -1;
   }
 
   catch (...)
   {
-    std::cerr << context.stringtable.get (100, "Unknown error.") << std::endl;
+    std::cerr << context.stringtable.get (100, "Unknown error.") << "\n";
     return -2;
   }
 

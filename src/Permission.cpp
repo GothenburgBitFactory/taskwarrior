@@ -56,8 +56,7 @@ bool Permission::confirmed (const Task& task, const std::string& question)
   if (allConfirmed)
     return true;
 
-  std::cout << std::endl
-            << "Task "
+  std::cout << "\nTask "
             << task.id
             << " \""
             << task.get ("description")
@@ -69,7 +68,7 @@ bool Permission::confirmed (const Task& task, const std::string& question)
     std::cout << " (Recurring)";
   }
 
-  std::cout << std::endl;
+  std::cout << std::endl;  // Flush.
 
   int answer = confirm4 (question);
   if (answer == 2)

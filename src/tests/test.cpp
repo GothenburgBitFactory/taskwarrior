@@ -50,7 +50,7 @@ UnitTest::UnitTest (int planned)
 , mFailed (0)
 , mSkipped (0)
 {
-  std::cout << "1.." << mPlanned << std::endl;
+  std::cout << "1.." << mPlanned << "\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -66,8 +66,7 @@ UnitTest::~UnitTest ()
               << mCounter
               << " tests, out of a planned "
               << mPlanned
-              << " were run."
-              << std::endl;
+              << " were run.\n";
     mSkipped += mPlanned - mCounter;
   }
 
@@ -76,8 +75,7 @@ UnitTest::~UnitTest ()
               << mCounter
               << " tests were run, but only "
               << mPlanned
-              << " were planned."
-              << std::endl;
+              << " were planned.\n";
 
   std::cout << "# "
             << mPassed
@@ -87,8 +85,7 @@ UnitTest::~UnitTest ()
             << mSkipped
             << " skipped. "
             << std::setprecision (3) << percentPassed
-            << "% passed."
-            << std::endl;
+            << "% passed.\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -100,14 +97,14 @@ void UnitTest::plan (int planned)
   mFailed = 0;
   mSkipped = 0;
 
-  std::cout << "1.." << mPlanned << std::endl;
+  std::cout << "1.." << mPlanned << "\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 void UnitTest::planMore (int extra)
 {
   mPlanned += extra;
-  std::cout << "1.." << mPlanned << std::endl;
+  std::cout << "1.." << mPlanned << "\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -122,7 +119,7 @@ void UnitTest::ok (bool expression, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
   else
   {
@@ -131,7 +128,7 @@ void UnitTest::ok (bool expression, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
 }
 
@@ -147,7 +144,7 @@ void UnitTest::notok (bool expression, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
   else
   {
@@ -156,7 +153,7 @@ void UnitTest::notok (bool expression, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
 }
 
@@ -171,7 +168,7 @@ void UnitTest::is (bool actual, bool expected, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
   else
   {
@@ -180,13 +177,11 @@ void UnitTest::is (bool actual, bool expected, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl
-              << "# expected: "
+              << "\n# expected: "
               << expected
-              << std::endl
-              << "#      got: "
+              << "\n#      got: "
               << actual
-              << std::endl;
+              << "\n";
   }
 }
 
@@ -201,7 +196,7 @@ void UnitTest::is (size_t actual, size_t expected, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
   else
   {
@@ -210,13 +205,11 @@ void UnitTest::is (size_t actual, size_t expected, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl
-              << "# expected: "
+              << "\n# expected: "
               << expected
-              << std::endl
-              << "#      got: "
+              << "\n#      got: "
               << actual
-              << std::endl;
+              << "\n";
   }
 }
 
@@ -231,7 +224,7 @@ void UnitTest::is (int actual, int expected, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
   else
   {
@@ -240,13 +233,11 @@ void UnitTest::is (int actual, int expected, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl
-              << "# expected: "
+              << "\n# expected: "
               << expected
-              << std::endl
-              << "#      got: "
+              << "\n#      got: "
               << actual
-              << std::endl;
+              << "\n";
   }
 }
 
@@ -261,7 +252,7 @@ void UnitTest::is (double actual, double expected, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
   else
   {
@@ -270,13 +261,11 @@ void UnitTest::is (double actual, double expected, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl
-              << "# expected: "
+              << "\n# expected: "
               << expected
-              << std::endl
-              << "#      got: "
+              << "\n#      got: "
               << actual
-              << std::endl;
+              << "\n";
   }
 }
 
@@ -291,7 +280,7 @@ void UnitTest::is (char actual, char expected, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
   else
   {
@@ -300,13 +289,11 @@ void UnitTest::is (char actual, char expected, const std::string& name)
               << mCounter
               << " - "
               << name
-              << std::endl
-              << "# expected: "
+              << "\n# expected: "
               << expected
-              << std::endl
-              << "#      got: "
+              << "\n#      got: "
               << actual
-              << std::endl;
+              << "\n";
   }
 }
 
@@ -324,7 +311,7 @@ void UnitTest::is (
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
   else
   {
@@ -333,15 +320,12 @@ void UnitTest::is (
               << mCounter
               << " - "
               << name
-              << std::endl
-              << "# expected: '"
+              << "\n# expected: '"
               << expected
               << "'"
-              << std::endl
-              << "#      got: '"
+              << "\n#      got: '"
               << actual
-              << "'"
-              << std::endl;
+              << "'\n";
   }
 }
 
@@ -359,7 +343,7 @@ void UnitTest::is (
               << mCounter
               << " - "
               << name
-              << std::endl;
+              << "\n";
   }
   else
   {
@@ -368,15 +352,12 @@ void UnitTest::is (
               << mCounter
               << " - "
               << name
-              << std::endl
-              << "# expected: '"
+              << "\n# expected: '"
               << expected
               << "'"
-              << std::endl
-              << "#      got: '"
+              << "\n#      got: '"
               << actual
-              << "'"
-              << std::endl;
+              << "'\n";
   }
 }
 
@@ -385,7 +366,7 @@ void UnitTest::diag (const std::string& text)
 {
   std::string trimmed = trim (text, " \t\n\r\f");
 
-  std::cout << "# " << trimmed << std::endl;
+  std::cout << "# " << trimmed << "\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -397,7 +378,7 @@ void UnitTest::pass (const std::string& text)
             << mCounter
             << " "
             << text
-            << std::endl;
+            << "\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -409,7 +390,7 @@ void UnitTest::fail (const std::string& text)
             << mCounter
             << " "
             << text
-            << std::endl;
+            << "\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -421,7 +402,7 @@ void UnitTest::skip (const std::string& text)
             << mCounter
             << " "
             << text
-            << std::endl;
+            << "\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
