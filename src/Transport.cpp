@@ -31,6 +31,7 @@
 #include <sys/wait.h>
 #include "Transport.h"
 #include "TransportSSH.h"
+#include "TransportRSYNC.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 Transport::Transport (const std::string& host, const std::string& path, const std::string& user="", const std::string& port="")
@@ -60,6 +61,7 @@ void Transport::parseUri(std::string uri)
 {
   std::string::size_type pos;
 	std::string uripart;
+	std::string pathDelimiter = "/";
 
 	user = "";
 	port = "";
@@ -67,11 +69,20 @@ void Transport::parseUri(std::string uri)
 	// skip ^.*://
   if ((pos = uri.find ("://")) != std::string::npos)
 	{
+		protocol = uri.substr(0, pos);
 		uri = uri.substr (pos+3);
+		// standard syntax: protocol://[user@]host.xz[:port]/path/to/undo.data
+		pathDelimiter = "/";
+	}
+	else
+	{
+		protocol = "ssh";
+		// scp-like syntax: [user@]host.xz:path/to/undo.data
+		pathDelimiter = ":";
 	}
 
 	// get host part
-	if ((pos = uri.find ("/")) != std::string::npos)
+	if ((pos = uri.find (pathDelimiter)) != std::string::npos)
 	{
 		host = uri.substr (0, pos);
 		path = uri.substr (pos+1);
@@ -88,6 +99,8 @@ void Transport::parseUri(std::string uri)
 		host = host.substr (pos+1);
 	}
 
+	// remark: this find() will never be != npos for scp-like syntax
+	// because we found pathDelimiter, which is ":", before
 	if ((pos = host.find (":")) != std::string::npos)
 	{
 		port = host.substr (pos+1);
@@ -99,7 +112,15 @@ void Transport::parseUri(std::string uri)
 Transport* Transport::getTransport(const std::string& uri)
 {
 	if (uri.find("ssh://") == 0) {
-			return new TransportSSH(uri);
+		return new TransportSSH(uri);
+	}
+	else if (uri.find("rsync://") == 0) {
+		return new TransportRSYNC(uri);
+	}
+	else if ( (uri.find(":")   != std::string::npos) 
+			   && (uri.find("://") == std::string::npos) )
+	{
+		return new TransportSSH(uri);
 	}
 
 	return NULL;

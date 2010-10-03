@@ -170,14 +170,14 @@ a second database.
 
 Here is a basic example of the procedure:
 
-    $ rsync myremotehost:.task/undo.data /tmp/undo_remote.data
-    $ task merge /tmp/undo_remote.data
-    $ rsync ${HOME}/.task/*.data myremotehost:.task/
+    $ task merge ssh://user@myremotehost/.task/
+    $ task push ssh://user@myremotehost/.task/
 
-First you need to get the undo.data file from the remote system, or removable
-media.  When the merge command completes, you should copy all the local .data
-files to the remote system. This way you ensure that both systems are fully
-synchronized.
+The first command fetches the undo.data file from the remote system, reads the
+changes made and updates the local database. When this merge command completes,
+you should copy all the local .data files to the remote system either by using
+the push command explicitly or by activating the merge.autopush feature in the 
+~/.taskrc file. This way you ensure that both systems are fully synchronized.
 
 .TP
 .B Q: The undo.data file gets very large - do I need it?

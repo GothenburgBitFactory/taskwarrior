@@ -209,7 +209,11 @@ int shortUsage (std::string &outs)
 
   row = table.addRow ();
   table.addCell (row, 1, "task push URL");
-  table.addCell (row, 2, "Pushes the local undo.data files to the URL.");
+  table.addCell (row, 2, "Pushes the local *.data files to the URL.");
+	
+	row = table.addRow ();
+  table.addCell (row, 1, "task pull URL");
+  table.addCell (row, 2, "Overwrites the local *.data files with those found at the URL.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task export.ical");

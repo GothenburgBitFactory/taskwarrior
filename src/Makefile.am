@@ -11,7 +11,8 @@ task_SOURCES = API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h     \
                StringTable.h Subst.cpp Subst.h TDB.cpp TDB.h Table.cpp Table.h \
                Task.cpp Task.h Taskmod.cpp Taskmod.h Thread.cpp Thread.h       \
                Timer.cpp Timer.h Transport.cpp Transport.h TransportSSH.cpp    \
-               TransportSSH.h Tree.cpp Tree.h command.cpp custom.cpp           \
+               TransportSSH.h TransportRSYNC.cpp TransportRSYNC.h              \
+               Tree.cpp Tree.h command.cpp custom.cpp                          \
                dependency.cpp edit.cpp export.cpp i18n.h import.cpp            \
                interactive.cpp main.cpp main.h recur.cpp report.cpp rules.cpp  \
                rx.cpp rx.h text.cpp text.h util.cpp util.h

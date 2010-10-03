@@ -79,6 +79,7 @@ int handleDuplicate (std::string &);
 void handleUndo ();
 void handleMerge (std::string&);
 void handlePush (std::string&);
+void handlePull (std::string&);
 #ifdef FEATURE_SHELL
 void handleShell ();
 #endif

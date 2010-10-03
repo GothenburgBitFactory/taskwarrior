@@ -17,6 +17,7 @@ New Features in taskwarrior 1.9.3
     detection of duplicate imports.
   - New merge capability for syncing task data files.
   - New push capability for distributing merged changes.
+  - New pull capability for copying data files from a remote location.
   - When completing or modifying a task, the project status is displayed.
   - The 'info' report is now colorized.
   - Certain characters (#, $, @) are now supported for use in tags.
@@ -36,6 +37,7 @@ New commands in taskwarrior 1.9.3
   - New 'task merge <url>' command that can merge the local and an undo.data
     file from another taskwarrior user, to sync across machines, for example.
   - New 'task push <url>' command to distribute merged changes.
+  - New 'task pull <url>' command to copy data files from a remote location.
 
 New configuration options in taskwarrior 1.9.3
 
@@ -45,6 +47,10 @@ New configuration options in taskwarrior 1.9.3
     variable rule.precedence.color.  Try "task show rule.pre" to show the
     default settings.
   - merge.autopush to control whether pushing after merging is automated.
+  - merge.*.uri to configure source locations for the merge command
+    (e.g. merge.default.uri).
+  - push.*.uri to configure target locations for the push command.
+  - pull.*.uri to configure source locations for the pull command.
 
 Newly deprecated features in taskwarrior 1.9.3
 

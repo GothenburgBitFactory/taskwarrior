@@ -42,6 +42,7 @@ class TransportTest : public Transport
       std::string getPath() { return path; };
 		std::string getUser() { return user; };
 		std::string getPort() { return port; };             
+		std::string getProt() { return protocol; };             
 
 	   virtual void recv(std::string) {};
 		virtual void send(const std::string&) {};
@@ -50,31 +51,35 @@ class TransportTest : public Transport
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (16);
+  UnitTest t (20);
 
   TransportTest tport1 ("asfd://user@host/folder/");
   t.is (tport1.getUser (), "user",    "Transport::parseUri() : asfd://user@host/folder/");
   t.is (tport1.getHost (), "host",    "Transport::parseUri() : asfd://user@host/folder/");
   t.is (tport1.getPort (), "",        "Transport::parseUri() : asfd://user@host/folder/");
   t.is (tport1.getPath (), "folder/", "Transport::parseUri() : asfd://user@host/folder/");
+  t.is (tport1.getProt (), "asfd",    "Transport::parseUri() : asfd://user@host/folder/");
 
-  TransportTest tport2 ("user@host:22/folder/file.test");
+  TransportTest tport2 ("user@host:folder/file.test");
   t.is (tport2.getUser (), "user",             "Transport::parseUri() : user@host:22/folder/file.test");
   t.is (tport2.getHost (), "host",             "Transport::parseUri() : user@host:22/folder/file.test");
-  t.is (tport2.getPort (), "22",               "Transport::parseUri() : user@host:22/folder/file.test");
+  t.is (tport2.getPort (), "",                 "Transport::parseUri() : user@host:22/folder/file.test");
   t.is (tport2.getPath (), "folder/file.test", "Transport::parseUri() : user@host:22/folder/file.test");
+  t.is (tport2.getProt (), "ssh",              "Transport::parseUri() : user@host:22/folder/file.test");
 
-  TransportTest tport3 ("hostname.abc.de/file.test");
+  TransportTest tport3 ("rsync://hostname.abc.de:1234/file.test");
   t.is (tport3.getUser (), "",                "Transport::parseUri() : hostname.abc.de/file.test");
   t.is (tport3.getHost (), "hostname.abc.de", "Transport::parseUri() : hostname.abc.de/file.test");
-  t.is (tport3.getPort (), "",                "Transport::parseUri() : hostname.abc.de/file.test");
+  t.is (tport3.getPort (), "1234",            "Transport::parseUri() : hostname.abc.de/file.test");
   t.is (tport3.getPath (), "file.test",       "Transport::parseUri() : hostname.abc.de/file.test");
+  t.is (tport3.getProt (), "rsync",           "Transport::parseUri() : hostname.abc.de/file.test");
 
-  TransportTest tport4 ("hostname/");
+  TransportTest tport4 ("hostname:");
   t.is (tport4.getUser (), "",         "Transport::parseUri() : hostname/");
   t.is (tport4.getHost (), "hostname", "Transport::parseUri() : hostname/");
   t.is (tport4.getPort (), "",         "Transport::parseUri() : hostname/");
   t.is (tport4.getPath (), "",         "Transport::parseUri() : hostname/");
+  t.is (tport4.getProt (), "ssh",      "Transport::parseUri() : hostname/");
 
   return 0;
 }

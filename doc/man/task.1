@@ -143,9 +143,33 @@ Exports all tasks in YAML 1.1 format.
 Redirect the output to a file, if you wish to save it, or pipe it to another command.
 
 .TP
-.B merge path/to/second/undo.data
+.B merge URL
 Merges two task databases by comparing the modifications that are stored in the
-undo.data files. The location of the second undo.data file must be passed on as argument.
+undo.data files. The location of the second undo.data file must be passed on as argument. URL may have the following syntaxes:
+
+
+	ssh://[user@]host.xz[:port]/path/to/undo.data
+
+	rsync://[user@]host.xz[:port]/path/to/undo.data
+
+	[user@]host.xz:path/to/undo.data
+
+	/path/to/local/undo.data
+
+You can set aliases for frequently used URLs in the .taskrc.
+
+.TP
+.B push URL
+Pushes the task database to a remote another location for distributing the
+changes made by the merge command.
+
+(See annotations above for valid URL syntaxes.)
+
+.TP
+.B pull URL
+Overwrites the task database with those files found at the URL.
+
+(See annotations above for valid URL syntaxes.)
 
 .TP
 .B color [sample | legend]

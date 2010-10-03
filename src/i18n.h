@@ -100,6 +100,7 @@
 #define CMD_SHOW                231
 #define CMD_MERGE               232
 #define CMD_PUSH                233
+#define CMD_PULL                234
 
 // 3xx Attributes
 #define ATT_PROJECT             300

@@ -167,6 +167,8 @@ Hooks::Hooks ()
   validProgramEvents.push_back ("post-prepend-command");
   validProgramEvents.push_back ("pre-projects-command");
   validProgramEvents.push_back ("post-projects-command");
+	validProgramEvents.push_back ("pre-pull-command");
+	validProgramEvents.push_back ("post-pull-command");
 	validProgramEvents.push_back ("pre-push-command");
 	validProgramEvents.push_back ("post-push-command");
   validProgramEvents.push_back ("pre-shell-command");
