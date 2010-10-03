@@ -13,6 +13,9 @@
  + Added feature #391, now the 'task color legend' command will show
    samples of all the defined colors and color rules from your .taskrc
    and theme.
+ + Added feature #410, and now task supports dependencies between tasks
+   with the syntax 'task 1 depends:2' to add a dependency, or 'task 1
+   depends:-2' to remove a dependency.
  + Added feature #421, and now task can sync data files from two sources
    via the 'merge' command.
  + Added feature #423, now custom report filters allow rc overrides.

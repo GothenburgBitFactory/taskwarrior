@@ -444,7 +444,7 @@ int handleInfo (std::string &outs)
       // dependencies: blocked
       {
         std::vector <Task> blocked;
-        dependencyGetBlocked (*task, blocked);
+        dependencyGetBlocking (*task, blocked);
         if (blocked.size ())
         {
           std::stringstream message;
@@ -461,7 +461,7 @@ int handleInfo (std::string &outs)
       // dependencies: blocking
       {
         std::vector <Task> blocking;
-        dependencyGetBlocking (*task, blocking);
+        dependencyGetBlocked (*task, blocking);
         if (blocking.size ())
         {
           std::stringstream message;
@@ -2629,6 +2629,22 @@ void gatherNextTasks (std::vector <Task>& tasks)
           matching[task->id] = true;
           filtered.push_back (*task);
         }
+      }
+    }
+  }
+
+  // blocking, not blocked
+  foreach (task, tasks)
+  {
+    if (dependencyIsBlocking (*task) &&
+        ! dependencyIsBlocked (*task))
+    {
+      std::string project = task->get ("project");
+      if (countByProject[project] < limit && matching.find (task->id) == matching.end ())
+      {
+        ++countByProject[project];
+        matching[task->id] = true;
+        filtered.push_back (*task);
       }
     }
   }

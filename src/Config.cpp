@@ -104,6 +104,7 @@ std::string Config::defaults =
   "\n"
   "# Dependency controls\n"
   "dependency.reminder=on                         # Nags on dependency chain violations\n"
+  "dependency.confirmation=on                     # Should dependency chain repair be confirmed?\n"
   "\n"
   "# Urgency Coefficients\n"
   "urgency.next.coefficient=10.0                  # Urgency coefficients for 'next' special tag\n"
