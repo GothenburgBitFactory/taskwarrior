@@ -120,7 +120,21 @@ _task()
 						 *)
  						  case "${prev}" in
 							  merge)
-						  	    COMPREPLY=( $(compgen -o "default" -- ${cur}) )
+								 local servers=$(_task_get_config | grep merge | grep uri | sed 's/^merge\.\(.*\)\.uri/\1/')
+								 COMPREPLY=( $(compgen -W "${servers}" -- ${cur}) )
+								 _known_hosts_real -a "$cur"
+						       return 0
+						       ;;
+							  push)
+								 local servers=$(_task_get_config | grep push | grep uri | sed 's/^push\.\(.*\)\.uri/\1/')
+								 COMPREPLY=( $(compgen -W "${servers}" -- ${cur}) )
+								 _known_hosts_real -a "$cur"
+						       return 0
+						       ;;
+							  pull)
+								 local servers=$(_task_get_config | grep pull | grep uri | sed 's/^pull\.\(.*\)\.uri/\1/')
+								 COMPREPLY=( $(compgen -W "${servers}" -- ${cur}) )
+								 _known_hosts_real -a "$cur"
 						       return 0
 						       ;;
 						  esac
