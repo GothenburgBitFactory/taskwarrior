@@ -81,7 +81,7 @@ void initializeColorRules ()
 static void colorizeBlocked (Task& task, const std::string& rule, Color& c)
 {
   if (gsColor[rule].nontrivial ())
-    if (task.get ("depends") != "")
+    if (dependencyIsBlocked (task))
       c.blend (gsColor[rule]);
 }
 
