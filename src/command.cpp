@@ -598,6 +598,20 @@ void handleMerge (std::string& outs)
   {
     std::string file = trim (context.task.get ("description"));
 		std::string tmpfile = "";
+		
+		if (file.length () == 0)
+		{
+			// get default target from config
+			file = context.config.get ("merge.default.uri");
+		}
+		else
+		{
+			// replace argument with uri from config
+			std::string tmp = context.config.get ("merge." + file + ".uri");
+			
+			if (tmp != "")
+				file = tmp;
+		}
 
     if (file.length () > 0)
     {
@@ -654,6 +668,20 @@ void handlePush (std::string& outs)
   if (context.hooks.trigger ("pre-push-command"))
   {
     std::string file = trim (context.task.get ("description"));
+		
+		if (file.length () == 0)
+		{
+			// get default target from config
+			file = context.config.get ("push.default.uri");
+		}
+		else
+		{
+			// replace argument with uri from config
+			std::string tmp = context.config.get ("push." + file + ".uri");
+			
+			if (tmp != "")
+				file = tmp;
+		}
 
     if (file.length () > 0)
     {
@@ -671,6 +699,58 @@ void handlePush (std::string& outs)
 			}
 
       context.hooks.trigger ("post-push-command");
+    }
+    else // TODO : get default target from config file			
+      throw std::string ("You must specify a target.");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void handlePull (std::string& outs)
+{
+  if (context.hooks.trigger ("pre-pull-command"))
+  {
+    std::string file = trim (context.task.get ("description"));
+		
+		if (file.length () == 0)
+		{
+			// get default target from config
+			file = context.config.get ("pull.default.uri");
+		}
+		else
+		{
+			// replace argument with uri from config
+			std::string tmp = context.config.get ("pull." + file + ".uri");
+			
+			if (tmp != "")
+				file = tmp;
+		}
+
+    if (file.length () > 0)
+    {
+			Directory location (context.config.get ("data.location"));
+			
+			// add *.data to path if necessary
+			if (file.find ("*.data") == std::string::npos)
+			{
+				if (file[file.length()-1] != '/')
+					file += "/";
+
+				file += "*.data";
+			}
+
+			Transport* transport;
+			if ((transport = Transport::getTransport (file)) != NULL )
+			{
+				transport->recv (location.data + "/");
+				delete transport;
+			}
+			else
+			{
+				throw std::string ("Pull failed");
+			}
+
+      context.hooks.trigger ("post-pull-command");
     }
     else // TODO : get default target from config file
       throw std::string ("You must specify a target.");
