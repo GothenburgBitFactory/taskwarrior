@@ -31,6 +31,8 @@
 #define FEATURE_NEW_ID       1   // Echoes back new id.
 #define FEATURE_SHELL        1   // Interactive shell.
 #define FEATURE_NCURSES_COLS 1   // Shortcut that avoids WINDOW.
+#define FEATURE_URL          1   // URL support for import.
+                                 // (always enabled for merge/push/pull)
 
 #include <string>
 #include <vector>

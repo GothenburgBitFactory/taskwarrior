@@ -24,35 +24,20 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_TRANSPORT
-#define INCLUDED_TRANSPORT
+#ifndef INCLUDED_TRANSPORTCURL
+#define INCLUDED_TRANSPORTCURL
 
 #include <string>
-#include <vector>
+#include <Transport.h>
 
-class Transport {
+class TransportCurl : public Transport {
 public:
-  Transport (const std::string&, const std::string&, const std::string&, const std::string&);
-  Transport (const std::string&);
-  ~Transport ();
+  TransportCurl (const std::string&);
+  TransportCurl (const std::string&, const std::string&, const std::string&, const std::string&);
 	
-  static Transport* getTransport(const std::string&);
+  virtual void send (const std::string&);
+  virtual void recv (std::string);
 	
-  void parseUri (std::string);
-  virtual void send (const std::string&) = 0;
-  virtual void recv (std::string) = 0;
-
-protected:
-  std::string executable;
-  std::string protocol;	
-  std::vector<std::string> arguments;
-  
-  std::string host;
-  std::string path;
-  std::string port;
-  std::string user;
-
-  int execute();
 };
 
 #endif
