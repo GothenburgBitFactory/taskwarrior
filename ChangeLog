@@ -46,7 +46,8 @@
  + The color.keyword.XXX color rule now applies to annotations too.
  + Importing the same YAML twice now generates an error.
  + Two new color themes (thanks to Kathryn Andersen).
- + More localized holiday files for US, CA, SE, DE, FR and UK.
+ + More localized holiday files for US, CA, SE, DE, FR, UK and NL (thanks
+   to T. Charles Yun).
  + Fixed bug #427, preventing the task edit command to parse annotation
    dates with spaces.
  + Fixed bug #433, making task command output more consistent.
