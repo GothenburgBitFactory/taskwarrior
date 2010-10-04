@@ -1,0 +1,101 @@
+################################################################################
+# Sample calendar for the Netherlands
+#
+# taskwarrior - a command line task list manager.
+#
+# Copyright 2010, Charles T. Yun
+# All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+################################################################################
+
+calendar.holidays=sparse
+
+# 2010
+holiday.sinterklaas.name=Sinterklaas
+holiday.sinterklaas.date=20101205
+holiday.koninkrijksdag.name=Koninkrijksdag
+holiday.koninkrijksdag.date=20101215
+holiday.kerstmis.name=Kerstmis
+holiday.kerstmis.date=20101225
+holiday.kerstmis.name=Tweede Kerstdag
+holiday.kerstmis.date=20101226
+
+# 2011
+holiday.nieuwjaar.name=Nieuwjaar
+holiday.nieuwjaar.date=20110101
+holiday.goedevrijdag.name=Goede Vrijdag
+holiday.goedevrijdag.date=20110422
+holiday.pasen.name=Pasen
+holiday.pasen.date=20110424
+holiday.pasen.name=Tweede Paasdag
+holiday.pasen.date=20100425
+holiday.koninginnedag.name=Koninginnedag
+holiday.koninginnedag.date=20110430
+holiday.dodenherdenking.name=Dodenherdenking
+holiday.dodenherdenking.date=20110504
+holiday.bevrijdingsdag.name=Bevrijdingsdag
+holiday.bevrijdingsdag.date=20110505
+holiday.hemelvaartsdag.name=Hemelvaartsdag
+holiday.hemelvaartsdag.date=20110602
+holiday.pinksteren.name= Pinksteren
+holiday.pinksteren.date=20110612
+holiday.pinksteren.name=Tweede Pinksterdag
+holiday.pinksteren.date=20110613
+#holiday.sinterklaas.name=Sinterklaas
+#holiday.sinterklaas.date=20111205
+#holiday.koninkrijksdag.name=Koninkrijksdag
+#holiday.koninkrijksdag.date=20111215
+#holiday.kerstmis.name=Kerstmis
+#holiday.kerstmis.date=20111225
+#holiday.kerstmis.name=Tweede Kerstdag
+#holiday.kerstmis.date=20111226
+
+# 2012
+#holiday.nieuwjaar.name=Nieuwjaar
+#holiday.nieuwjaar.date=20120101
+#holiday.goedevrijdag.name=Goede Vrijdag
+#holiday.goedevrijdag.date=20120406
+#holiday.pasen.name=Pasen
+#holiday.pasen.date=20120408
+#holiday.pasen.name=Tweede Pasdag
+#holiday.pasen.date=20120409
+#holiday.koninginnedag.name=Koninginnedag
+#holiday.koninginnedag.date=20120430
+#holiday.dodenherdenking.name=Dodenherdenking
+#holiday.dodenherdenking.date=20120504
+#holiday.bevrijdingsdag.name=Bevrijdingsdag
+#holiday.bevrijdingsdag.date=20120505
+#holiday.hemelvaartsdag.name=Hemelvaartsdag
+#holiday.hemelvaartsdag.date=20120617
+#holiday.pinksteren.name= Pinksteren
+#holiday.pinksteren.date=20120627
+#holiday.pinksteren.name=Tweede Pinksterdag
+#holiday.pinksteren.date=20120628
+#holiday.sinterklaas.name=Sinterklaas
+#holiday.sinterklaas.date=20121205
+#holiday.koninkrijksdag.name=Koninkrijksdag
+#holiday.koninkrijksdag.date=20121215
+#holiday.kerstmis.name=Kerstmis
+#holiday.kerstmis.date=20121225
+#holiday.kerstmis.name=Tweede Kerstdag
+#holiday.kerstmis.date=20121226
+
