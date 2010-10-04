@@ -104,6 +104,7 @@ std::string Config::defaults =
   "\n"
   "# Dependency controls\n"
   "dependency.reminder=on                         # Nags on dependency chain violations\n"
+  "dependency.confirmation=on                     # Should dependency chain repair be confirmed?\n"
   "\n"
   "# Urgency Coefficients\n"
   "urgency.next.coefficient=10.0                  # Urgency coefficients for 'next' special tag\n"
@@ -649,13 +650,12 @@ std::string Config::checkForDeprecatedColor ()
   if (deprecated.size ())
   {
     out << "Your .taskrc file contains color settings that use deprecated "
-        << "underscores.  Please check:"
-        << std::endl;
+        << "underscores.  Please check:\n";
 
     foreach (i, deprecated)
-      out << "  " << *i << "=" << get (*i) << std::endl;
+      out << "  " << *i << "=" << get (*i) << "\n";
 
-    out << std::endl;
+    out << "\n";
   }
 
   return out.str ();
@@ -678,18 +678,17 @@ std::string Config::checkForDeprecatedColumns ()
   }
 
   std::stringstream out;
-  out << std::endl;
+  out << "\n";
 
   if (deprecated.size ())
   {
     out << "Your .taskrc file contains reports with deprecated columns.  "
-        << "Please check for entry_time, start_time or end_time in:"
-        << std::endl;
+        << "Please check for entry_time, start_time or end_time in:\n";
 
     foreach (i, deprecated)
-      out << "  " << *i << std::endl;
+      out << "  " << *i << "\n";
 
-    out << std::endl;
+    out << "\n";
   }
 
   return out.str ();

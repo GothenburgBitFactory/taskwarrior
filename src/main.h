@@ -135,11 +135,11 @@ int handleExportiCal (std::string &);
 int handleExportYAML (std::string &);
 
 // dependency.cpp
-bool dependencyIsBlocked (Task&);
-void dependencyGetBlocked (Task&, std::vector <Task>&);
-bool dependencyIsBlocking (Task&);
-void dependencyGetBlocking (Task&, std::vector <Task>&);
-bool dependencyIsCircular (Task&);
+bool dependencyIsBlocked (const Task&);
+void dependencyGetBlocked (const Task&, std::vector <Task>&);
+bool dependencyIsBlocking (const Task&);
+void dependencyGetBlocking (const Task&, std::vector <Task>&);
+bool dependencyIsCircular (const Task&);
 void dependencyChainOnComplete (Task&);
 void dependencyChainOnStart (Task&);
 void dependencyChainOnModify (Task&, Task&);

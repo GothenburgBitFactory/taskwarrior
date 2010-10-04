@@ -51,6 +51,10 @@ New configuration options in taskwarrior 1.9.3
     (e.g. merge.default.uri).
   - push.*.uri to configure target locations for the push command.
   - pull.*.uri to configure source locations for the pull command.
+  - dependency.confirm controls whether dependency chain repair needs to be
+    confirmed.
+  - dependency.reminder controls whether the user is nagged about dependency
+    chain violations.
 
 Newly deprecated features in taskwarrior 1.9.3
 

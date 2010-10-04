@@ -533,12 +533,19 @@ int handleCustomReport (const std::string& report, std::string &outs)
         table.setColumnJustification (columnCount, Table::left);
 
         int row = 0;
-        std::vector <int> all;
+        std::vector <Task> blocked;
+        std::vector <int> blocked_ids;
         std::string deps;
         foreach (task, tasks)
         {
-          task->getDependencies (all);
-          join (deps, ", ", all);
+          dependencyGetBlocking (*task, blocked);
+          foreach (b, blocked)
+            blocked_ids.push_back (b->id);
+
+          join (deps, ",", blocked_ids);
+          blocked_ids.clear ();
+          blocked.clear ();
+
           context.hooks.trigger ("format-depends", "depends", deps);
           table.addCell (row++, columnCount, deps);
         }

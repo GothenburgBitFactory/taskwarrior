@@ -314,7 +314,7 @@ void Tree::dumpNode (Tree* t, int depth)
   if (tags.length ())
     std::cout << " \033[32m" << tags << "\033[0m";
 
-  std::cout << std::endl;
+  std::cout << "\n";
 
   // Recurse for branches.
   for (int i = 0; i < t->branches (); ++i)
@@ -324,7 +324,7 @@ void Tree::dumpNode (Tree* t, int depth)
 ////////////////////////////////////////////////////////////////////////////////
 void Tree::dump ()
 {
-  std::cout << "Tree (" << count () << " nodes)" << std::endl;
+  std::cout << "Tree (" << count () << " nodes)\n";
   dumpNode (this, 1);
 }
 

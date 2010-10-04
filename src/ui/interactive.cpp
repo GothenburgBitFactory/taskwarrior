@@ -68,10 +68,10 @@ int Context::handleInteractive ()
   }
 
   // TODO Integrate regular task error handling, using Context::debug.
-  catch (int e)          { std::cout << e << std::endl; }
-  catch (const char* e)  { std::cout << e << std::endl; }
-  catch (std::string& e) { std::cout << e << std::endl; }
-  catch (...)            { std::cout << "Unknown error." << std::endl; }
+  catch (int e)          { std::cout << e << "\n"; }
+  catch (const char* e)  { std::cout << e << "\n"; }
+  catch (std::string& e) { std::cout << e << "\n"; }
+  catch (...)            { std::cout << "Unknown error.\n"; }
 
   logWrite ("---");
 

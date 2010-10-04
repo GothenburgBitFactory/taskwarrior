@@ -416,7 +416,7 @@ void Table::calculateColumnWidths ()
   }
 
   // Try again, treating minimum columns as flexible.
-//  std::cout << "# no flexible columns.  Now what?" << std::endl;
+//  std::cout << "# no flexible columns.  Now what?\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

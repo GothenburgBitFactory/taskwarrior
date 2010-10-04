@@ -50,7 +50,7 @@ int main (int argc, char** argv)
   std::ofstream one ("./sensor.foo", std::ios_base::out | std::ios_base::app);
   if (one.good ())
   {
-    one << "touch" << std::endl;
+    one << "touch\n";
     one.close ();
   }
 
@@ -65,7 +65,7 @@ int main (int argc, char** argv)
   std::ofstream two ("./sensor.foo", std::ios_base::out | std::ios_base::app);
   if (two.good ())
   {
-    two << "touch" << std::endl;
+    two << "touch\n";
     two.close ();
   }
 

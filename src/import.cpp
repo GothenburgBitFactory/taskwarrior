@@ -338,8 +338,7 @@ static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
       << failed.size ()
-      << " errors."
-      << std::endl;
+      << " errors.\n";
 
   if (failed.size ())
   {
@@ -500,8 +499,7 @@ static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
       << failed.size ()
-      << " errors."
-      << std::endl;
+      << " errors.\n";
 
   if (failed.size ())
   {
@@ -663,8 +661,7 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
       << failed.size ()
-      << " errors."
-      << std::endl;
+      << " errors.\n";
 
   if (failed.size ())
   {
@@ -711,8 +708,7 @@ static std::string importTaskCmdLine (const std::vector <std::string>& lines)
       << (lines.size () - failed.size ())
       << " tasks successfully, with "
       << failed.size ()
-      << " errors."
-      << std::endl;
+      << " errors.\n";
 
   if (failed.size ())
   {
@@ -840,8 +836,7 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
       << (lines.size () - failed.size ())
       << " tasks successfully, with "
       << failed.size ()
-      << " errors."
-      << std::endl;
+      << " errors.\n";
 
   if (failed.size ())
   {
@@ -904,8 +899,7 @@ static std::string importText (const std::vector <std::string>& lines)
       << count
       << " tasks successfully, with "
       << failed.size ()
-      << " errors."
-      << std::endl;
+      << " errors.\n";
 
   if (failed.size ())
   {
@@ -1150,8 +1144,7 @@ static std::string importCSV (const std::vector <std::string>& lines)
       << (lines.size () - failed.size () - 1)
       << " tasks successfully, with "
       << failed.size ()
-      << " errors."
-      << std::endl;
+      << " errors.\n";
 
   if (failed.size ())
   {
@@ -1255,8 +1248,7 @@ static std::string importYAML (const std::vector <std::string>& lines)
   std::stringstream out;
   out << "Imported "
       << count
-      << " tasks successfully."
-      << std::endl;
+      << " tasks successfully.\n";
 
   return out.str ();
 }
