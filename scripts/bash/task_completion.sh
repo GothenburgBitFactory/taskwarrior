@@ -137,6 +137,10 @@ _task()
 								 _known_hosts_real -a "$cur"
 						       return 0
 						       ;;
+							  import)
+								 COMPREPLY=( $(compgen -o "default" -- ${cur}) )
+								 return 0
+								 ;;
 						  esac
 						  ;;
             esac

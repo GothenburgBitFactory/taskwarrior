@@ -43,7 +43,7 @@
 #include "util.h"
 #include "main.h"
 #include "../auto.h"
-#include "TransportSSH.h"
+#include "Transport.h"
 
 #ifdef HAVE_LIBNCURSES
 #include <ncurses.h>
@@ -597,65 +597,65 @@ void handleMerge (std::string& outs)
   if (context.hooks.trigger ("pre-merge-command"))
   {
     std::string file = trim (context.task.get ("description"));
-		std::string tmpfile = "";
-		
-		if (file.length () == 0)
-		{
-			// get default target from config
-			file = context.config.get ("merge.default.uri");
-		}
-		else
-		{
-			// replace argument with uri from config
-			std::string tmp = context.config.get ("merge." + file + ".uri");
-			
-			if (tmp != "")
-				file = tmp;
-		}
+    std::string tmpfile = "";
+
+    if (file.length () == 0)
+    {
+      // get default target from config
+      file = context.config.get ("merge.default.uri");
+    }
+    else
+    {
+      // replace argument with uri from config
+      std::string tmp = context.config.get ("merge." + file + ".uri");
+      
+      if (tmp != "")
+        file = tmp;
+    }
 
     if (file.length () > 0)
     {
-			Directory location (context.config.get ("data.location"));
+      Directory location (context.config.get ("data.location"));
 
-			// add undo.data to path if necessary
-			if (file.find ("undo.data") == std::string::npos)
-			{
-				if (file[file.length()-1] != '/')
-					file += "/";
+      // add undo.data to path if necessary
+      if (file.find ("undo.data") == std::string::npos)
+      {
+        if (file[file.length()-1] != '/')
+          file += "/";
 
-				file += "undo.data";
-			}
+        file += "undo.data";
+      }
 
-			Transport* transport;
-			if ((transport = Transport::getTransport (file)) != NULL )
-			{
-				tmpfile = location.data + "/undo_remote.data";
-				transport->recv (tmpfile);
-				delete transport;
+      Transport* transport;
+      if ((transport = Transport::getTransport (file)) != NULL )
+      {
+        tmpfile = location.data + "/undo_remote.data";
+        transport->recv (tmpfile);
+        delete transport;
 
-				file = tmpfile;
-			}
+        file = tmpfile;
+      }
 
       context.tdb.lock (context.config.getBoolean ("locking"));
       context.tdb.merge (file);
       context.tdb.unlock ();
 
-			context.hooks.trigger ("post-merge-command");
+      context.hooks.trigger ("post-merge-command");
 
-			if (tmpfile != "")
-			{
-				remove (tmpfile.c_str());
+      if (tmpfile != "")
+      {
+        remove (tmpfile.c_str());
 
-				std::string autopush = context.config.get ("merge.autopush");
+        std::string autopush = context.config.get ("merge.autopush");
 
-				if ( ((autopush == "ask") && (confirm ("Do you want to push the changes to the database you merged from?")) )
-					|| (autopush == "yes") )
-				{
-					std::string out;
-					handlePush(out);
-				}
+        if ( ((autopush == "ask") && (confirm ("Do you want to push the changes to the database you merged from?")) )
+           || (autopush == "yes") )
+        {
+          std::string out;
+          handlePush(out);
+        }
+      }
 
-			}
     }
     else	// TODO : get default source from config file
       throw std::string ("You must specify a file to merge.");
