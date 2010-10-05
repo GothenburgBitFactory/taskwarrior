@@ -30,31 +30,58 @@
 calendar.holidays=sparse
 
 # 2010
-holiday.einheit.name=Tag der Deutschen Einheit
-holiday.einheit.date=20101003
+holiday.reformationstag.name=Reformationstag (BB,MV,SN,ST,TH)
+holiday.reformationstag.date=20101031
+holiday.allerheiligen.name=Allerheiligen (BW,BY,NRW,RP,SL)
+holiday.allerheiligen.date=20101101
+holiday.bussundbettag.name=Buss und Bettag (SN)
+holiday.bussundbettag.date=20101117
+holiday.heiligabend.name=Heilig Abend
+holiday.heiligabend.date=20101224
 holiday.weihnachtstag.name=Weihnachtstag
 holiday.weihnachtstag.date=20101225
-holiday.zweiterweihnachtsfeiertag.name=Zweiter Weihnachtsfeiertag
-holiday.zweiterweihnachtsfeiertag.date=20101226
+holiday.zweiterweihnachtstag.name=Zweiter Weihnachtstag
+holiday.zweiterweihnachtstag.date=20101226
+holiday.sylvester.name=Sylvester
+holiday.sylvester.date=20101231
 
 # 2011
-holiday.neujahrstag.name=Neujahrstag
-holiday.neujahrstag.date=20110101
+holiday.neujahr.name=Neujahr
+holiday.neujahr.date=20110101
+holiday.heiligedreikonige.name=Heilige drei Könige (BW,BY,ST)
+holiday.heiligedreikonige.date=20110106
 holiday.karfreitag.name=Karfreitag
 holiday.karfreitag.date=20110422
+holiday.ostern.name=Ostern
+holiday.ostern.date=20110424
 holiday.ostermontag.name=Ostermontag
 holiday.ostermontag.date=20110425
-holiday.arbeit.name=Tag der Arbeit
-holiday.arbeit.date=20110501
+holiday.maifeiertag.name=Erster Maifeiertag
+holiday.maifeiertag.date=20110501
 holiday.christihimmelfahrt.name=Christi Himmelfahrt
 holiday.christihimmelfahrt.date=20110602
+holiday.pfingstsonntag.name=Pfingstsonntag
+holiday.pfingstsonntag.date=20110612
 holiday.pfingstmontag.name=Pfingstmontag
 holiday.pfingstmontag.date=20110613
+holiday.fronleichnam.name=Fronleichnam (BW,BY,HE,NRW,RP,SL,(SN,TH))
+holiday.fronleichnam.date=20110623
+holiday.mariahimmelfahrt.name=Mariä Himmelfahrt (SL)
+holiday.mariahimmelfahrt.date=20110815
+holiday.einheit.name=Tag der Deutschen Einheit
+holiday.einheit.date=20111003
 
-#holiday.einheit.name=Tag der Deutschen Einheit
-#holiday.einheit.date=20111003
+#holiday.reformationstag.name=Reformationstag (BB,MV,SN,ST,TH)
+#holiday.reformationstag.date=20111031
+#holiday.allerheiligen.name=Allerheiligen (BW,BY,NRW,RP,SL)
+#holiday.allerheiligen.date=20111101
+#holiday.bussundbettag.name=Buss und Bettag (SN)
+#holiday.bussundbettag.date=20111116
+#holiday.heiligabend.name=Heilig Abend
+#holiday.heiligabend.date=20111224
 #holiday.weihnachtstag.name=Weihnachtstag
 #holiday.weihnachtstag.date=20111225
-#holiday.zweiterweihnachtsfeiertag.name=Zweiter Weihnachtsfeiertag
-#holiday.zweiterweihnachtsfeiertag.date=20111226
-
+#holiday.zweiterweihnachtstag.name=Zweiter Weihnachtstag
+#holiday.zweiterweihnachtstag.date=20111226
+#holiday.sylvester.name=Sylvester
+#holiday.sylvester.date=20111231
