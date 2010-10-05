@@ -169,11 +169,17 @@ static std::string formatTask (Task task)
   }
 
   Date now;
-  before << "  Annotation:        " << now.toString (context.config.get ("dateformat.annotation")) << " -- \n"
-         << "# End\n";
+  before << "  Annotation:        " << now.toString (context.config.get ("dateformat.annotation")) << " -- \n";
 
-  // TODO Add dependencies here.
+  // Add dependencies here.
+  std::vector <int> dependencies;
+  task.getDependencies (dependencies);
+  std::string allDeps;
+  join (allDeps, ",", dependencies);
+  before << "# Dependencies should be a comma-separated list of task IDs, with no spaces.\n"
+         << "  Dependencies:      " << allDeps << "\n";
 
+  before << "# End\n";
   return before.str ();
 }
 
@@ -521,7 +527,18 @@ static void parseTask (Task& task, const std::string& after)
 
   task.setAnnotations (annotations);
 
-  // TODO Dependencies
+  // Dependencies
+  value = findValue (after, "Dependencies:");
+  std::vector <std::string> dependencies;
+  split (dependencies, value, ",");
+
+  task.remove ("depends");
+  foreach (dep, dependencies)
+  {
+    int id = atoi (dep->c_str ());
+    if (id)
+      task.addDependency (id);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
