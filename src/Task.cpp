@@ -634,21 +634,21 @@ void Task::validate () const
   if (!has ("uuid")  ||
       !has ("entry") ||
       !has ("description"))
-    throw std::string ("A task must have a description in order to be valid."); // TODO i18n
+    throw std::string ("A task must have a description in order to be valid.");
 
   if (get ("description") == "") // No i18n
-    throw std::string ("Cannot add a task that is blank, or contains <CR> or <LF> characters."); // TODO i18n
+    throw std::string ("Cannot add a task that is blank, or contains <CR> or <LF> characters.");
 
   if (has ("due"))
   {
     Date due (::atoi (get ("due").c_str ()));
 
-    // Verify until > due
-    if (has ("until"))
+    // Verify wait < due
+    if (has ("wait"))
     {
-      Date until (::atoi (get ("until").c_str ()));
-      if (due > until)
-        throw std::string ("An 'until' date must be after a 'due' date."); // TODO i18n
+      Date wait (::atoi (get ("wait").c_str ()));
+      if (wait > due)
+        throw std::string ("A 'wait' date must be after a 'due' date.");
     }
 
     Date entry (::atoi (get ("entry").c_str ()));
@@ -657,24 +657,36 @@ void Task::validate () const
     {
       Date start (::atoi (get ("start").c_str ()));
       if (entry > start)
-        throw std::string ("A 'start' date must be after an 'entry' date."); // TODO i18n
+        throw std::string ("A 'start' date must be after an 'entry' date.");
     }
 
     if (has ("end"))
     {
       Date end (::atoi (get ("end").c_str ()));
       if (entry > end)
-        throw std::string ("An 'end' date must be after an 'entry' date."); // TODO i18n
+        throw std::string ("An 'end' date must be after an 'entry' date.");
     }
   }
+  else
+  {
+    if (has ("recur"))
+      throw std::string ("You cannot specify a recurring task without a due date.");
+  }
+
+  if (has ("until") && !has ("recur"))
+    throw std::string ("You cannot specify an until date for a non-recurring task.");
 
   // Recur durations must be valid.
   if (has ("recur"))
   {
     Duration d;
     if (! d.valid (get ("recur")))
-      throw std::string ("A recurrence value must be valid."); // TODO i18n
+      throw std::string ("A recurrence value must be valid.");
   }
+
+  if (has ("wait") &&
+      getStatus () == Task::recurring)
+    throw std::string ("You cannot create a task that is both waiting and recurring.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

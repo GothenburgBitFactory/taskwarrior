@@ -76,7 +76,7 @@ like ($output, qr/tomorrow/ms, 'waiting task visible when specifically queried')
 
 # Message is 'Warning: the wait date falls after the due date.'
 $output = qx{../task rc:wait.rc add Complain due:today wait:tomorrow};
-like ($output, qr/wait\sdate\sfalls/ms, 'warning on wait after due');
+like ($output, qr/A 'wait' date must be after a 'due' date\./, 'error on wait after due');
 
 # Cleanup.
 unlink 'pending.data';

@@ -95,20 +95,6 @@ int handleAdd (std::string &outs)
     foreach (tag, context.tagAdditions)
       context.task.addTag (*tag);
 
-    // Perform some logical consistency checks.
-    if (context.task.has ("wait") &&
-        context.task.has ("due") &&
-        Date (context.task.get ("due")) < Date (context.task.get ("wait")))
-      context.footnote ("Warning: the wait date falls after the due date.");
-
-    if (context.task.has ("recur") &&
-        !context.task.has ("due"))
-      throw std::string ("You cannot specify a recurring task without a due date.");
-
-    if (context.task.has ("until")  &&
-        !context.task.has ("recur"))
-      throw std::string ("You cannot specify an until date for a non-recurring task.");
-
     // Must load pending to resolve dependencies, and to provide a new ID.
     context.tdb.lock (context.config.getBoolean ("locking"));
 
@@ -608,7 +594,7 @@ void handleMerge (std::string& outs)
     {
       // replace argument with uri from config
       std::string tmp = context.config.get ("merge." + file + ".uri");
-      
+
       if (tmp != "")
         file = tmp;
     }
@@ -648,6 +634,7 @@ void handleMerge (std::string& outs)
 
         std::string autopush = context.config.get ("merge.autopush");
 
+        // TODO Task accepts many different values for "yes".  Try Config::getBoolean.
         if ( ((autopush == "ask") && (confirm ("Do you want to push the changes to the database you merged from?")) )
            || (autopush == "yes") )
         {
@@ -668,7 +655,7 @@ void handlePush (std::string& outs)
   if (context.hooks.trigger ("pre-push-command"))
   {
     std::string file = trim (context.task.get ("description"));
-		
+
 		if (file.length () == 0)
 		{
 			// get default target from config
@@ -678,7 +665,7 @@ void handlePush (std::string& outs)
 		{
 			// replace argument with uri from config
 			std::string tmp = context.config.get ("push." + file + ".uri");
-			
+
 			if (tmp != "")
 				file = tmp;
 		}
@@ -711,7 +698,7 @@ void handlePull (std::string& outs)
   if (context.hooks.trigger ("pre-pull-command"))
   {
     std::string file = trim (context.task.get ("description"));
-		
+
 		if (file.length () == 0)
 		{
 			// get default target from config
@@ -721,7 +708,7 @@ void handlePull (std::string& outs)
 		{
 			// replace argument with uri from config
 			std::string tmp = context.config.get ("pull." + file + ".uri");
-			
+
 			if (tmp != "")
 				file = tmp;
 		}
@@ -729,7 +716,7 @@ void handlePull (std::string& outs)
     if (file.length () > 0)
     {
 			Directory location (context.config.get ("data.location"));
-			
+
 			// add *.data to path if necessary
 			if (file.find ("*.data") == std::string::npos)
 			{
@@ -893,7 +880,7 @@ int handleShow (std::string &outs)
       "complete.all.projects complete.all.tags search.case.sensitive hooks "
       "active.indicator tag.indicator recurrence.indicator recurrence.limit "
       "list.all.projects list.all.tags undo.style verbose rule.precedence.color "
-      "merge.autopush "
+      "merge.autopush merge.default.uri pull.default.uri "
 #ifdef FEATURE_SHELL
       "shell.prompt "
 #endif
@@ -1542,6 +1529,9 @@ int handleDone (std::string &outs)
         // Change status.
         task->setStatus (Task::completed);
 
+        // Only allow valid tasks.
+        task->validate ();
+
         if (taskDiff (before, *task))
         {
           if (context.hooks.trigger ("pre-completed", *task))
@@ -1696,6 +1686,9 @@ int handleModify (std::string &outs)
 
         if (taskDiff (before, *other))
         {
+          // Only allow valid tasks.
+          other->validate ();
+
           if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
           {
             // TODO Are dependencies being explicitly removed?
@@ -1773,6 +1766,9 @@ int handleAppend (std::string &outs)
 
           if (taskDiff (before, *other))
           {
+            // Only allow valid tasks.
+            other->validate ();
+
             if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
             {
               context.tdb.update (*other);
@@ -1852,6 +1848,9 @@ int handlePrepend (std::string &outs)
 
           if (taskDiff (before, *other))
           {
+            // Only allow valid tasks.
+            other->validate ();
+
             if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
             {
               context.tdb.update (*other);
@@ -1936,6 +1935,9 @@ int handleDuplicate (std::string &outs)
       char entryTime[16];
       sprintf (entryTime, "%u", (unsigned int) time (NULL));
       dup.set ("entry", entryTime);
+
+      // Only allow valid tasks.
+      dup.validate ();
 
       context.tdb.add (dup);
 
@@ -2298,6 +2300,9 @@ int handleAnnotate (std::string &outs)
 
       if (taskDiff (before, *task))
       {
+        // Only allow valid tasks.
+        task->validate ();
+
         if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
         {
           context.tdb.update (*task);
@@ -2393,6 +2398,9 @@ int handleDenotate (std::string &outs)
 
       if (taskDiff (before, *task))
       {
+        // Only allow valid tasks.
+        task->validate ();
+
         if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
         {
           context.tdb.update (*task);
