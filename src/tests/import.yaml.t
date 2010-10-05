@@ -60,8 +60,8 @@ if (open my $fh, '>', 'import.txt')
     uuid: 22222222-2222-2222-2222-222222222222
     description: two
     status: completed
-    entry: 1234567889
-    end: 1234567890
+    entry: 1234524689
+    end: 1234524690
 ...
 EOF
 
