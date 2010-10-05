@@ -163,7 +163,7 @@ std::string Config::defaults =
   "color.pri.M=rgb250                             # Color of priority:M tasks\n"
   "color.pri.L=rgb245                             # Color of priority:L tasks\n"
   "color.tagged=rgb031                            # Color of tagged tasks\n"
-  "color.blocked=black on white                   # Color of blocked tasks\n"
+  "color.blocked=white on color8                  # Color of blocked tasks\n"
 #else
   "color.header=yellow                            # Color of header messages\n"
   "color.footnote=yellow                          # Color of footnote messages\n"
