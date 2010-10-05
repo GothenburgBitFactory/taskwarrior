@@ -1535,7 +1535,7 @@ void TDB::merge (const std::string& mergeFile)
     }
 
     // write undo file
-    if (! File::write (undoFile, undo, false))
+    if (! File::write (undoFile, undo, true))
       throw std::string ("Could not write '") + undoFile + "'.";
   }
   else // nothing to be done
