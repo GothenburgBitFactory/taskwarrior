@@ -136,7 +136,9 @@ sleep(1);
 qx{../task rc:remote.rc 4 +gym};         # right_newer
 
 # merge remote into local
+copy("local/undo.data", "local/undo.save") or fail("copy local/undo.data to local/undo.save");
 my $output_l = qx{../task rc:local.rc merge remote/undo.data};
+rename("local/undo.save", "local/undo.data") or fail("rename local/undo.save in local/undo.data");
 
 #check output
 like   ($output_l,   qr/Running redo/,         "local-merge finished");

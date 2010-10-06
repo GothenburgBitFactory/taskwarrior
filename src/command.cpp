@@ -583,17 +583,27 @@ void handleMerge (std::string& outs)
   if (context.hooks.trigger ("pre-merge-command"))
   {
     std::string file = trim (context.task.get ("description"));
+    std::string pushfile = "";
     std::string tmpfile = "";
+    
+    std::string sAutopush = context.config.get       ("merge.autopush");
+    bool        bAutopush = context.config.getBoolean("merge.autopush");
 
     if (file.length () == 0)
     {
       // get default target from config
       file = context.config.get ("merge.default.uri");
+      
+      if (sAutopush == "ask")      
+        pushfile = context.config.get ("push.default.uri");      
     }
     else
     {
       // replace argument with uri from config
       std::string tmp = context.config.get ("merge." + file + ".uri");
+      
+      if (sAutopush == "ask")
+        pushfile = context.config.get ("push." + file + ".uri");
 
       if (tmp != "")
         file = tmp;
@@ -631,20 +641,17 @@ void handleMerge (std::string& outs)
       if (tmpfile != "")
       {
         remove (tmpfile.c_str());
-
-        std::string autopush = context.config.get ("merge.autopush");
-
-        // TODO Task accepts many different values for "yes".  Try Config::getBoolean.
-        if ( ((autopush == "ask") && (confirm ("Do you want to push the changes to the database you merged from?")) )
-           || (autopush == "yes") )
-        {
-          std::string out;
-          handlePush(out);
-        }
+      }      
+      
+      if ( ((sAutopush == "ask") && (confirm ("Do you want to push the changes to \'" + pushfile + "\'?")) )
+         || (bAutopush) )
+      {
+        std::string out;
+        handlePush(out);
       }
-
+      
     }
-    else	// TODO : get default source from config file
+    else
       throw std::string ("You must specify a file to merge.");
   }
 }
@@ -663,7 +670,7 @@ void handlePush (std::string& outs)
 		}
 		else
 		{
-			// replace argument with uri from config
+			// try to replace argument with uri from config
 			std::string tmp = context.config.get ("push." + file + ".uri");
 
 			if (tmp != "")
@@ -682,12 +689,16 @@ void handlePush (std::string& outs)
 			}
 			else
 			{
-				throw std::string ("Push failed");
+        // TODO copy files
+        //std::ifstream ifile (location.data + "/undo.data", std::ios_base::binary);
+        //std::ofstream ofile (location.data + "/undo.data", std::ios_base::binary);
+        
+				throw std::string ("Push to local targets is not (yet) supported.");
 			}
 
       context.hooks.trigger ("post-push-command");
     }
-    else // TODO : get default target from config file			
+    else			
       throw std::string ("You must specify a target.");
   }
 }
@@ -739,7 +750,7 @@ void handlePull (std::string& outs)
 
       context.hooks.trigger ("post-pull-command");
     }
-    else // TODO : get default target from config file
+    else
       throw std::string ("You must specify a target.");
   }
 }

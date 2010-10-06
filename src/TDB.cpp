@@ -1141,7 +1141,7 @@ void TDB::merge (const std::string& mergeFile)
       lline = *lit;
 
       // push the line to the new undo.data
-      undo.push_back (lline);
+      undo.push_back (lline + "\n");
 
       // found first matching lines?
       if (lline.compare (rline) == 0)
@@ -1389,7 +1389,8 @@ void TDB::merge (const std::string& mergeFile)
 
     // iterate over taskmod list
     std::list<Taskmod>::iterator it;
-    for (it = mods.begin (); it != mods.end (); ) {
+    for (it = mods.begin (); it != mods.end (); )
+    {
       std::list<Taskmod>::iterator current = it++;
       Taskmod tmod = *current;
 
@@ -1507,11 +1508,16 @@ void TDB::merge (const std::string& mergeFile)
         if (!found)
         {
           std::cout << "Adding               " << uuid << "\n";
-          pending.push_back (tmod.getAfter ().composeF4 ());
+          // remove the \n from composeF4() string
+          std::string newline = tmod.getAfter ().composeF4 ();
+          newline = newline.substr (0, newline.length ()-1);
+          pending.push_back (newline);
         }
         else
+        {
           std::cout << "Not adding duplicate " << uuid << "\n";
           mods.erase (current);
+        }        
       }
     }
 
@@ -1535,7 +1541,7 @@ void TDB::merge (const std::string& mergeFile)
     }
 
     // write undo file
-    if (! File::write (undoFile, undo, true))
+    if (! File::write (undoFile, undo, false))
       throw std::string ("Could not write '") + undoFile + "'.";
   }
   else // nothing to be done
