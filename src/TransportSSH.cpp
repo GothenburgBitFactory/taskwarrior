@@ -42,18 +42,8 @@ void TransportSSH::send(const std::string& source)
 
 	// Is there more than one file to transfer?
 	// Then path has to end with a '/'
-	if ( (source.find ("*") != std::string::npos)
-		|| (source.find ("?") != std::string::npos)
-		|| (source.find (" ") != std::string::npos) )
-	{
-		std::string::size_type pos;
-
-		pos = uri.path.find_last_of ("/");
-		if (pos != uri.path.length()-1)
-		{
-			uri.path = uri.path.substr (0, pos+1);
-		}
-	}
+	if (is_filelist(source) && !uri.is_directory())
+    throw std::string ("'" + uri.path + "' is not a directory!");
 
 	// cmd line is: scp [-p port] [user@]host:path
 	if (uri.port != "")
@@ -86,16 +76,8 @@ void TransportSSH::recv(std::string target)
 
 	// Is there more than one file to transfer?
 	// Then target has to end with a '/'
-	if ( (uri.path.find ("*") != std::string::npos)
-		|| (uri.path.find ("?") != std::string::npos) )
-	{
-		std::string::size_type pos;
-		pos = target.find_last_of ("/");
-		if (pos != target.length()-1)
-		{
-			target = target.substr( 0, pos+1);
-		}
-	}
+	if (is_filelist(uri.path) && !is_directory(target))
+    throw std::string ("'" + target + "' is not a directory!");
 
 	// cmd line is: scp [-p port] [user@]host:path
 	if (uri.port != "")

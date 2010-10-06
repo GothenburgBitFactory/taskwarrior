@@ -26,6 +26,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "TransportCurl.h"
+#include "text.h"
+#include "util.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 TransportCurl::TransportCurl(const Uri& uri) : Transport(uri)
@@ -38,19 +40,44 @@ void TransportCurl::send(const std::string& source)
 {
 	if (uri.host == "") {
 		throw std::string ("Hostname is empty");
-	}
-
-	// Wildcards arent supported
-	if ( (source.find ("*") != std::string::npos)
-		|| (source.find ("?") != std::string::npos) )
-	{
-		throw std::string ("Failed to use curl with wildcards!");
-	}
+	}    
+      
+	if (is_filelist(source))
+  {
+    std::string::size_type pos;
+    pos = source.find("{");
+    
+    if (pos == std::string::npos)
+      throw std::string ("Curl does not support wildcards!");
+      
+    if (!uri.is_directory())
+      throw std::string ("'" + uri.path + "' is not a directory!");
+      
+    std::string toSplit;
+    std::string suffix;
+    std::string prefix;
+    std::vector<std::string> splitted;
+    
+    prefix  = source.substr (0, pos);
+    toSplit = source.substr (pos+1); 
+    
+    pos     = toSplit.find ("}");
+    suffix  = toSplit.substr (pos+1);
+    split (splitted, toSplit.substr(0, pos), ',');
+    
+    foreach (file, splitted)
+    {
+      arguments.push_back ("-T");
+      arguments.push_back (prefix + *file + suffix);
+    }
+  }
+  else
+  {
+    arguments.push_back ("-T");
+    arguments.push_back (source);
+  }
 
 	// cmd line is: curl -T source protocol://host:port/path
-	arguments.push_back ("-T");
-	arguments.push_back (source);
-
 	if (uri.port != "")
 	{
 		arguments.push_back (uri.protocol + "://" + uri.host + ":" + uri.port + "/" + uri.path);
@@ -70,13 +97,37 @@ void TransportCurl::recv(std::string target)
 	if (uri.host == "") {
 		throw std::string ("Hostname is empty");
 	}
-
-	// Wildcards arent supported
-	if ( (uri.path.find ("*") != std::string::npos)
-		|| (uri.path.find ("?") != std::string::npos) )
-	{
-		throw std::string ("Failed to use curl with wildcards!");
-	}
+  
+  if (is_filelist(uri.path))
+  {
+    std::string::size_type pos;
+    pos = uri.path.find("{");
+    
+    if (pos == std::string::npos)
+      throw std::string ("Curl does not support wildcards!");
+      
+    if (!is_directory(target))
+      throw std::string ("'" + target + "' is not a directory!");
+      
+    std::string toSplit;
+    std::string suffix;
+    std::string prefix = target;
+    std::vector<std::string> splitted;
+    toSplit = uri.path.substr (pos+1);
+    pos = toSplit.find ("}");
+    suffix = toSplit.substr (pos+1);
+    split (splitted, toSplit.substr(0, pos), ',');
+    
+    target = "";
+    foreach (file, splitted)
+    {
+      target += " -o " + prefix + *file + suffix;
+    }
+  }
+  else
+  {
+    target = "-o " + target;
+  }
 	
 	// cmd line is: curl protocol://host:port/path/to/source/file -o path/to/target/file
 	if (uri.port != "")
@@ -87,8 +138,7 @@ void TransportCurl::recv(std::string target)
 	{
 		arguments.push_back (uri.protocol + "://" + uri.host + "/" + uri.path);
 	}
-	
-	arguments.push_back ("-o");
+  
 	arguments.push_back (target);
 
 	if (execute())

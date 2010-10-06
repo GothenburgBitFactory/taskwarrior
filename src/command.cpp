@@ -658,18 +658,27 @@ void handlePush (std::string& outs)
 
 			Transport* transport;
 			if ((transport = Transport::getTransport (uri)) != NULL )
-			{
-        // TODO specify data files
-				transport->send (location.data + "/*.data");
+			{        
+				transport->send (location.data + "/{pending,undo,completed}.data");
 				delete transport;
 			}
 			else
 			{
-        // TODO copy files
-        //std::ifstream ifile (location.data + "/undo.data", std::ios_base::binary);
-        //std::ofstream ofile (location.data + "/undo.data", std::ios_base::binary);
+        // copy files locally
+        if (!uri.is_directory())
+          throw std::string ("'" + uri.path + "' is not a directory!");
         
-				throw std::string ("Push to local targets is not (yet) supported.");
+        std::ifstream ifile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
+        std::ofstream ofile1 ((uri.path      +  "undo.data").c_str(), std::ios_base::binary);        
+        ofile1 << ifile1.rdbuf();
+        
+        std::ifstream ifile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
+        std::ofstream ofile2 ((uri.path      +  "pending.data").c_str(), std::ios_base::binary);        
+        ofile2 << ifile2.rdbuf();
+        
+        std::ifstream ifile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
+        std::ofstream ofile3 ((uri.path      +  "completed.data").c_str(), std::ios_base::binary);        
+        ofile3 << ifile3.rdbuf();
 			}
 
       context.hooks.trigger ("post-push-command");
@@ -693,7 +702,8 @@ void handlePull (std::string& outs)
     {
 			Directory location (context.config.get ("data.location"));
 
-			uri.append ("*.data");
+			if (!uri.append ("{pending,undo,completed}.data"))
+        throw std::string ("'" + uri.path + "' is not a directory!");
 
 			Transport* transport;
 			if ((transport = Transport::getTransport (uri)) != NULL )
@@ -702,9 +712,34 @@ void handlePull (std::string& outs)
 				delete transport;
 			}
 			else
-			{
-        // TODO copy files
-				throw std::string ("Pull failed");
+			{        
+        // copy files locally
+        
+        // remove {pending,undo,completed}.data
+        uri.path = uri.parent();     
+        
+        Path path1 (uri.path + "undo.data");
+        Path path2 (uri.path + "pending.data");
+        Path path3 (uri.path + "completed.data");
+        
+        if (path1.exists() && path2.exists() && path3.exists())
+        {
+          std::ofstream ofile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
+          std::ifstream ifile1 (path1.data.c_str()                    , std::ios_base::binary);        
+          ofile1 << ifile1.rdbuf();
+          
+          std::ofstream ofile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
+          std::ifstream ifile2 (path2.data.c_str()                    , std::ios_base::binary);            
+          ofile2 << ifile2.rdbuf();
+          
+          std::ofstream ofile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
+          std::ifstream ifile3 (path3.data.c_str()                    , std::ios_base::binary);          
+          ofile3 << ifile3.rdbuf();
+        }
+        else
+        {
+          throw std::string ("At least one of the database files in '" + uri.path + "' is not present.");
+        }       
 			}
 
       context.hooks.trigger ("post-pull-command");

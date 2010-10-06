@@ -104,7 +104,7 @@ std::string Uri::parent () const
   {
     std::string::size_type slash = path.rfind ('/');
     if (slash != std::string::npos)
-      return path.substr (0, slash);
+      return path.substr (0, slash+1);
   }
 
   return "";

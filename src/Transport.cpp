@@ -95,7 +95,7 @@ int Transport::execute()
     argv[1] = opt;                    // -c
     argv[2] = (char*)cmdline.c_str();	// e.g. scp undo.data user@host:.task/
     argv[3] = NULL;                   // required by execv
-
+    
     int ret = execvp("sh", argv);
     delete[] argv;
 
@@ -113,6 +113,21 @@ int Transport::execute()
     else
       return child_status;
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Transport::is_directory(const std::string& path)
+{
+  return path[path.length()-1] == '/';
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+bool Transport::is_filelist(const std::string& path)
+{
+  return (path.find ("*") != std::string::npos)
+      || (path.find ("?") != std::string::npos)
+      || (path.find ("{") != std::string::npos);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

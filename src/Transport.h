@@ -40,6 +40,9 @@ public:
 	
   virtual void send (const std::string&) = 0;
   virtual void recv (std::string) = 0;
+  
+  static bool is_directory(const std::string&);
+  static bool is_filelist(const std::string&);
 
 protected:
   std::string executable;
