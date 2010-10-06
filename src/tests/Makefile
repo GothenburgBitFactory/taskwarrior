@@ -1,7 +1,7 @@
 PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
           config.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t \
           cmd.t util.t color.t list.t path.t file.t directory.t grid.t rx.t    \
-          taskmod.t sensor.t rectangle.t tree.t tree2.t lisp.t transport.t
+          taskmod.t sensor.t rectangle.t tree.t tree2.t lisp.t uri.t
 CFLAGS  = -I. -I.. -I../.. -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib -lpthread -lncurses -llua
 OBJECTS = ../t-TDB.o ../t-Task.o ../t-text.o ../t-Date.o ../t-Table.o          \
@@ -15,7 +15,7 @@ OBJECTS = ../t-TDB.o ../t-Task.o ../t-text.o ../t-Date.o ../t-Table.o          \
           ../t-Hooks.o ../t-API.o ../t-rx.o ../t-Taskmod.o ../t-dependency.o   \
           ../t-Transport.o ../t-TransportSSH.o ../t-Sensor.o ../t-Thread.o     \
           ../t-Lisp.o ../t-Rectangle.o ../t-Tree.o ../t-TransportRSYNC.o       \
-          ../t-TransportCurl.o
+          ../t-TransportCurl.o ../t-Uri.o
 
 all: $(PROJECT)
 
@@ -106,9 +106,6 @@ rx.t: rx.t.o $(OBJECTS) test.o
 taskmod.t: taskmod.t.o $(OBJECTS) test.o
 	g++ taskmod.t.o $(OBJECTS) test.o $(LFLAGS) -o taskmod.t
 
-transport.t: transport.t.o $(OBJECTS) test.o
-	g++ transport.t.o $(OBJECTS) test.o $(LFLAGS) -o transport.t
-
 lisp.t: lisp.t.o $(OBJECTS) test.o
 	g++ lisp.t.o $(OBJECTS) test.o $(LFLAGS) -o lisp.t
 
@@ -123,4 +120,7 @@ tree.t: tree.t.o $(OBJECTS) test.o
 
 tree2.t: tree2.t.o $(OBJECTS) test.o
 	g++ tree2.t.o $(OBJECTS) test.o $(LFLAGS) -o tree2.t
+
+uri.t: uri.t.o $(OBJECTS) test.o
+	g++ uri.t.o $(OBJECTS) test.o $(LFLAGS) -o uri.t
 

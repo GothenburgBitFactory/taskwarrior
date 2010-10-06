@@ -35,21 +35,10 @@
 #include "TransportCurl.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-Transport::Transport (const std::string& host, const std::string& path, const std::string& user="", const std::string& port="")
+Transport::Transport (const Uri& uri)
 {
   executable = "";
-	this->host = host;
-	this->path = path;
-	this->user = user;
-	this->port = port;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Transport::Transport (const std::string& uri)
-{
-  executable = "";
-
-	parseUri(uri);
+  this->uri = uri;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,79 +47,22 @@ Transport::~Transport ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Transport::parseUri(std::string uri)
+Transport* Transport::getTransport(const Uri& uri)
 {
-  std::string::size_type pos;
-	std::string uripart;
-	std::string pathDelimiter = "/";
-
-	user = "";
-	port = "";
-
-	// skip ^.*://
-  if ((pos = uri.find ("://")) != std::string::npos)
-	{
-		protocol = uri.substr(0, pos);
-		uri = uri.substr (pos+3);
-		// standard syntax: protocol://[user@]host.xz[:port]/path/to/undo.data
-		pathDelimiter = "/";
-	}
-	else
-	{
-		protocol = "ssh";
-		// scp-like syntax: [user@]host.xz:path/to/undo.data
-		pathDelimiter = ":";
-	}
-
-	// get host part
-	if ((pos = uri.find (pathDelimiter)) != std::string::npos)
-	{
-		host = uri.substr (0, pos);
-		path = uri.substr (pos+1);
-	}
-	else
-	{
-		throw std::string ("Could not parse \""+uri+"\"");
-	}
-
-	// parse host
-	if ((pos = host.find ("@")) != std::string::npos)
-	{
-		user = host.substr (0, pos);
-		host = host.substr (pos+1);
-	}
-
-	// remark: this find() will never be != npos for scp-like syntax
-	// because we found pathDelimiter, which is ":", before
-	if ((pos = host.find (":")) != std::string::npos)
-	{
-		port = host.substr (pos+1);
-		host = host.substr (0,pos);
-	}
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Transport* Transport::getTransport(const std::string& uri)
-{
-  if (uri.find("ssh://") == 0)
+  if (uri.protocol == "ssh")
   {
     return new TransportSSH(uri);
   }
-  else if (uri.find("rsync://") == 0)
+  else if (uri.protocol == "rsync")
   {
     return new TransportRSYNC(uri);
   }
-  else if ( (uri.find("http://")  == 0)
-         || (uri.find("https://") == 0)
-         || (uri.find("ftp://")   == 0) )
+  else if ( (uri.protocol == "http")
+         || (uri.protocol == "https")
+         || (uri.protocol == "ftp") )
   {
     return new TransportCurl(uri);		
-  }
-  else if ( (uri.find(":")   != std::string::npos) 
-         && (uri.find("://") == std::string::npos) )
-  {
-    return new TransportSSH(uri);
-  }
+  }  
 
   return NULL;
 }

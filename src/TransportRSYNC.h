@@ -32,8 +32,7 @@
 
 class TransportRSYNC : public Transport {
 public:
-  TransportRSYNC (const std::string&);
-  TransportRSYNC (const std::string&, const std::string&, const std::string&, const std::string&);
+  TransportRSYNC (const Uri&);  
 	
   virtual void send (const std::string&);
   virtual void recv (std::string);

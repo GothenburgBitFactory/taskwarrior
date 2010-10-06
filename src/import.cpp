@@ -1267,8 +1267,11 @@ int handleImport (std::string &outs)
 		
 #if FEATURE_URL > 0
     std::string tmpfile = "";
+    Uri uri (file);
+    uri.parse ();
+    
     Transport* transport;
-    if ((transport = Transport::getTransport (file)) != NULL )
+    if ((transport = Transport::getTransport (uri)) != NULL )
     {
       std::string location (context.config.get ("data.location"));
       tmpfile = location + "/import.data";

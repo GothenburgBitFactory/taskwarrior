@@ -588,42 +588,26 @@ void handleMerge (std::string& outs)
     
     std::string sAutopush = context.config.get       ("merge.autopush");
     bool        bAutopush = context.config.getBoolean("merge.autopush");
-
-    if (file.length () == 0)
+    
+    Uri uri (file, "merge");
+    uri.parse();
+    
+    if (sAutopush == "ask")
     {
-      // get default target from config
-      file = context.config.get ("merge.default.uri");
-      
-      if (sAutopush == "ask")      
-        pushfile = context.config.get ("push.default.uri");      
-    }
-    else
-    {
-      // replace argument with uri from config
-      std::string tmp = context.config.get ("merge." + file + ".uri");
-      
-      if (sAutopush == "ask")
-        pushfile = context.config.get ("push." + file + ".uri");
-
-      if (tmp != "")
-        file = tmp;
+      // expand uri
+      Uri push (file, "push");
+      pushfile = push.data;
     }
 
-    if (file.length () > 0)
+    if (uri.data.length ())
     {
       Directory location (context.config.get ("data.location"));
-
-      // add undo.data to path if necessary
-      if (file.find ("undo.data") == std::string::npos)
-      {
-        if (file[file.length()-1] != '/')
-          file += "/";
-
-        file += "undo.data";
-      }
+      
+      // be sure that uri points to a file
+      uri.append("undo.data");
 
       Transport* transport;
-      if ((transport = Transport::getTransport (file)) != NULL )
+      if ((transport = Transport::getTransport (uri)) != NULL )
       {
         tmpfile = location.data + "/undo_remote.data";
         transport->recv (tmpfile);
@@ -631,6 +615,8 @@ void handleMerge (std::string& outs)
 
         file = tmpfile;
       }
+      else
+        file = uri.path;
 
       context.tdb.lock (context.config.getBoolean ("locking"));
       context.tdb.merge (file);
@@ -641,7 +627,7 @@ void handleMerge (std::string& outs)
       if (tmpfile != "")
       {
         remove (tmpfile.c_str());
-      }      
+      }     
       
       if ( ((sAutopush == "ask") && (confirm ("Do you want to push the changes to \'" + pushfile + "\'?")) )
          || (bAutopush) )
@@ -662,28 +648,18 @@ void handlePush (std::string& outs)
   if (context.hooks.trigger ("pre-push-command"))
   {
     std::string file = trim (context.task.get ("description"));
+    
+    Uri uri (file, "push");
+    uri.parse ();
 
-		if (file.length () == 0)
-		{
-			// get default target from config
-			file = context.config.get ("push.default.uri");
-		}
-		else
-		{
-			// try to replace argument with uri from config
-			std::string tmp = context.config.get ("push." + file + ".uri");
-
-			if (tmp != "")
-				file = tmp;
-		}
-
-    if (file.length () > 0)
+    if (uri.data.length ())
     {
 			Directory location (context.config.get ("data.location"));
 
 			Transport* transport;
-			if ((transport = Transport::getTransport (file)) != NULL )
+			if ((transport = Transport::getTransport (uri)) != NULL )
 			{
+        // TODO specify data files
 				transport->send (location.data + "/*.data");
 				delete transport;
 			}
@@ -709,42 +685,25 @@ void handlePull (std::string& outs)
   if (context.hooks.trigger ("pre-pull-command"))
   {
     std::string file = trim (context.task.get ("description"));
+    
+    Uri uri (file, "pull");
+    uri.parse ();
 
-		if (file.length () == 0)
-		{
-			// get default target from config
-			file = context.config.get ("pull.default.uri");
-		}
-		else
-		{
-			// replace argument with uri from config
-			std::string tmp = context.config.get ("pull." + file + ".uri");
-
-			if (tmp != "")
-				file = tmp;
-		}
-
-    if (file.length () > 0)
+    if (uri.data.length ())
     {
 			Directory location (context.config.get ("data.location"));
 
-			// add *.data to path if necessary
-			if (file.find ("*.data") == std::string::npos)
-			{
-				if (file[file.length()-1] != '/')
-					file += "/";
-
-				file += "*.data";
-			}
+			uri.append ("*.data");
 
 			Transport* transport;
-			if ((transport = Transport::getTransport (file)) != NULL )
+			if ((transport = Transport::getTransport (uri)) != NULL )
 			{
 				transport->recv (location.data + "/");
 				delete transport;
 			}
 			else
 			{
+        // TODO copy files
 				throw std::string ("Pull failed");
 			}
 

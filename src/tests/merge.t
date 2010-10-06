@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 42;
+use Test::More tests => 43;
 use File::Copy;
 
 use constant false => 0;
@@ -137,8 +137,7 @@ qx{../task rc:remote.rc 4 +gym};         # right_newer
 
 # merge remote into local
 copy("local/undo.data", "local/undo.save") or fail("copy local/undo.data to local/undo.save");
-my $output_l = qx{../task rc:local.rc merge remote/undo.data};
-rename("local/undo.save", "local/undo.data") or fail("rename local/undo.save in local/undo.data");
+my $output_l = qx{../task rc:local.rc merge remote/};
 
 #check output
 like   ($output_l,   qr/Running redo/,         "local-merge finished");
@@ -146,7 +145,7 @@ unlike ($output_l,   qr/Missing/,              "local-merge: no missing entry");
 unlike ($output_l,   qr/Not adding duplicate/, "local-merge: no duplicates");
 
 # merge local into remote
-my $output_r = qx{../task rc:remote.rc merge local/undo.data};
+my $output_r = qx{../task rc:remote.rc merge local/undo.save};
 
 # check output
 like   ($output_r,   qr/Running redo/,         "remote-merge finished");
@@ -239,6 +238,9 @@ ok (!-r 'local/completed.data', 'Removed local/completed.data');
 
 unlink 'local/undo.data';
 ok (!-r 'local/undo.data', 'Removed local/undo.data');
+
+unlink 'local/undo.save';
+ok (!-r 'local/undo.save', 'Removed local/undo.save');
 
 unlink 'local.rc';
 ok (!-r 'local.rc', 'Removed local.rc');

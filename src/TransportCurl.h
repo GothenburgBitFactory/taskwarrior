@@ -32,8 +32,7 @@
 
 class TransportCurl : public Transport {
 public:
-  TransportCurl (const std::string&);
-  TransportCurl (const std::string&, const std::string&, const std::string&, const std::string&);
+  TransportCurl (const Uri&);  
 	
   virtual void send (const std::string&);
   virtual void recv (std::string);

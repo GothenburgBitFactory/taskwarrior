@@ -28,17 +28,7 @@
 #include "TransportRSYNC.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-TransportRSYNC::TransportRSYNC(const std::string& uri) : Transport(uri)
-{
-	executable = "rsync";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-TransportRSYNC::TransportRSYNC(
-	const std::string& host,
-	const std::string& path,
-	const std::string& user,
-	const std::string& port) : Transport (host,path,user,port)
+TransportRSYNC::TransportRSYNC(const Uri& uri) : Transport(uri)
 {
 	executable = "rsync";
 }
@@ -46,7 +36,7 @@ TransportRSYNC::TransportRSYNC(
 ////////////////////////////////////////////////////////////////////////////////
 void TransportRSYNC::send(const std::string& source)
 {
-	if (host == "") {
+	if (uri.host == "") {
 		throw std::string ("Hostname is empty");
 	}
 
@@ -58,28 +48,28 @@ void TransportRSYNC::send(const std::string& source)
 	{
 		std::string::size_type pos;
 
-		pos = path.find_last_of ("/");
-		if (pos != path.length()-1)
+		pos = uri.path.find_last_of ("/");
+		if (pos != uri.path.length()-1)
 		{
-			path = path.substr (0, pos+1);
+			uri.path = uri.path.substr (0, pos+1);
 		}
 	}
 
 	// cmd line is: rsync [--port=PORT] source [user@]host::path
-	if (port != "")
+	if (uri.port != "")
 	{
-		arguments.push_back ("--port=" + port);		
+		arguments.push_back ("--port=" + uri.port);		
 	}
 
 	arguments.push_back (source);
 
-	if (user != "")
+	if (uri.user != "")
 	{
-		arguments.push_back (user + "@" + host + "::" + path);
+		arguments.push_back (uri.user + "@" + uri.host + "::" + uri.path);
 	}
 	else
 	{
-		arguments.push_back (host + "::" + path);
+		arguments.push_back (uri.host + "::" + uri.path);
 	}
 
 	if (execute())
@@ -89,14 +79,14 @@ void TransportRSYNC::send(const std::string& source)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportRSYNC::recv(std::string target)
 {
-	if (host == "") {
+	if (uri.host == "") {
 		throw std::string ("Hostname is empty");
 	}
 
 	// Is there more than one file to transfer?
 	// Then target has to end with a '/'
-	if ( (path.find ("*") != std::string::npos)
-		|| (path.find ("?") != std::string::npos) )
+	if ( (uri.path.find ("*") != std::string::npos)
+		|| (uri.path.find ("?") != std::string::npos) )
 	{
 		std::string::size_type pos;
 		pos = target.find_last_of ("/");
@@ -107,18 +97,18 @@ void TransportRSYNC::recv(std::string target)
 	}
 	
 	// cmd line is: rsync [--port=PORT] [user@]host::path target
-	if (port != "")
+	if (uri.port != "")
 	{
-		arguments.push_back ("--port=" + port);		
+		arguments.push_back ("--port=" + uri.port);		
 	}
 
-	if (user != "")
+	if (uri.user != "")
 	{
-		arguments.push_back (user + "@" + host + "::" + path);
+		arguments.push_back (uri.user + "@" + uri.host + "::" + uri.path);
 	}
 	else
 	{
-		arguments.push_back (host + "::" + path);
+		arguments.push_back (uri.host + "::" + uri.path);
 	}
 
 	arguments.push_back (target);

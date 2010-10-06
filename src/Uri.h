@@ -24,31 +24,45 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_TRANSPORT
-#define INCLUDED_TRANSPORT
+#ifndef INCLUDED_URI
+#define INCLUDED_URI
 
-#include <string>
 #include <vector>
-#include "Uri.h"
+#include <string>
 
-class Transport {
+// supports the following syntaxes:
+// protocol://[user@]host.tld[:port]/path
+// [user@]host:path
+// path/to/local/file.ext
+// alias (e.g. merge.alias.uri)
+class Uri
+{
 public:
-  Transport (const Uri&);
-  ~Transport ();
-	
-  static Transport* getTransport(const Uri&);
-	
-  virtual void send (const std::string&) = 0;
-  virtual void recv (std::string) = 0;
+  Uri ();
+  Uri (const Uri&);
+  Uri (const std::string&, const std::string& configPrefix="");
+  virtual ~Uri ();
 
-protected:
-  std::string executable;
-  std::vector<std::string> arguments;
-  
-  Uri uri;
+  Uri& operator= (const Uri&);
+  operator std::string () const;
 
-  int execute();
+  std::string name () const;
+  std::string parent () const;
+  std::string extension () const;
+  bool is_directory () const;
+  bool is_local () const;
+  bool append (const std::string&);
+  bool expand (const std::string&);
+  void parse ();
+
+public:
+  std::string data;
+  std::string path;
+  std::string host;
+  std::string port;
+  std::string user;
+  std::string protocol;
 };
 
 #endif
-
+////////////////////////////////////////////////////////////////////////////////

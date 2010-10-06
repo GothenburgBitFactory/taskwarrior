@@ -28,31 +28,15 @@
 #include "TransportCurl.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-TransportCurl::TransportCurl(const std::string& uri) : Transport(uri)
+TransportCurl::TransportCurl(const Uri& uri) : Transport(uri)
 {
 	executable = "curl";
-	
-	if (protocol == "")
-		protocol = "http";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-TransportCurl::TransportCurl(
-	const std::string& host,
-	const std::string& path,
-	const std::string& user,
-	const std::string& port) : Transport (host,path,user,port)
-{
-	executable = "curl";
-	
-	if (protocol == "")
-		protocol = "http";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportCurl::send(const std::string& source)
 {
-	if (host == "") {
+	if (uri.host == "") {
 		throw std::string ("Hostname is empty");
 	}
 
@@ -67,13 +51,13 @@ void TransportCurl::send(const std::string& source)
 	arguments.push_back ("-T");
 	arguments.push_back (source);
 
-	if (port != "")
+	if (uri.port != "")
 	{
-		arguments.push_back (protocol + "://" + host + ":" + port + "/" + path);
+		arguments.push_back (uri.protocol + "://" + uri.host + ":" + uri.port + "/" + uri.path);
 	}
 	else
 	{
-		arguments.push_back (protocol + "://" + host + "/" + path);
+		arguments.push_back (uri.protocol + "://" + uri.host + "/" + uri.path);
 	}
 
 	if (execute())
@@ -83,25 +67,25 @@ void TransportCurl::send(const std::string& source)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportCurl::recv(std::string target)
 {
-	if (host == "") {
+	if (uri.host == "") {
 		throw std::string ("Hostname is empty");
 	}
 
 	// Wildcards arent supported
-	if ( (path.find ("*") != std::string::npos)
-		|| (path.find ("?") != std::string::npos) )
+	if ( (uri.path.find ("*") != std::string::npos)
+		|| (uri.path.find ("?") != std::string::npos) )
 	{
 		throw std::string ("Failed to use curl with wildcards!");
 	}
 	
 	// cmd line is: curl protocol://host:port/path/to/source/file -o path/to/target/file
-	if (port != "")
+	if (uri.port != "")
 	{
-		arguments.push_back (protocol + "://" + host + ":" + port + "/" + path);
+		arguments.push_back (uri.protocol + "://" + uri.host + ":" + uri.port + "/" + uri.path);
 	}
 	else
 	{
-		arguments.push_back (protocol + "://" + host + "/" + path);
+		arguments.push_back (uri.protocol + "://" + uri.host + "/" + uri.path);
 	}
 	
 	arguments.push_back ("-o");

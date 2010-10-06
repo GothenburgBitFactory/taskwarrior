@@ -28,17 +28,7 @@
 #include "TransportSSH.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-TransportSSH::TransportSSH(const std::string& uri) : Transport(uri)
-{
-	executable = "scp";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-TransportSSH::TransportSSH(
-	const std::string& host,
-	const std::string& path,
-	const std::string& user,
-	const std::string& port) : Transport (host,path,user,port)
+TransportSSH::TransportSSH(const Uri& uri) : Transport(uri)
 {
 	executable = "scp";
 }
@@ -46,7 +36,7 @@ TransportSSH::TransportSSH(
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::send(const std::string& source)
 {
-	if (host == "") {
+	if (uri.host == "") {
 		throw std::string ("Hostname is empty");
 	}
 
@@ -58,29 +48,29 @@ void TransportSSH::send(const std::string& source)
 	{
 		std::string::size_type pos;
 
-		pos = path.find_last_of ("/");
-		if (pos != path.length()-1)
+		pos = uri.path.find_last_of ("/");
+		if (pos != uri.path.length()-1)
 		{
-			path = path.substr (0, pos+1);
+			uri.path = uri.path.substr (0, pos+1);
 		}
 	}
 
 	// cmd line is: scp [-p port] [user@]host:path
-	if (port != "")
+	if (uri.port != "")
 	{
 		arguments.push_back ("-P");
-		arguments.push_back (port);
+		arguments.push_back (uri.port);
 	}
 
 	arguments.push_back (source);
 
-	if (user != "")
+	if (uri.user != "")
 	{
-		arguments.push_back (user + "@" + host + ":" + path);
+		arguments.push_back (uri.user + "@" + uri.host + ":" + uri.path);
 	}
 	else
 	{
-		arguments.push_back (host + ":" + path);
+		arguments.push_back (uri.host + ":" + uri.path);
 	}
 
 	if (execute())
@@ -90,14 +80,14 @@ void TransportSSH::send(const std::string& source)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::recv(std::string target)
 {
-	if (host == "") {
+	if (uri.host == "") {
 		throw std::string ("Hostname is empty");
 	}
 
 	// Is there more than one file to transfer?
 	// Then target has to end with a '/'
-	if ( (path.find ("*") != std::string::npos)
-		|| (path.find ("?") != std::string::npos) )
+	if ( (uri.path.find ("*") != std::string::npos)
+		|| (uri.path.find ("?") != std::string::npos) )
 	{
 		std::string::size_type pos;
 		pos = target.find_last_of ("/");
@@ -108,19 +98,19 @@ void TransportSSH::recv(std::string target)
 	}
 
 	// cmd line is: scp [-p port] [user@]host:path
-	if (port != "")
+	if (uri.port != "")
 	{
 		arguments.push_back ("-P");
-		arguments.push_back (port);
+		arguments.push_back (uri.port);
 	}
 
-	if (user != "")
+	if (uri.user != "")
 	{
-		arguments.push_back (user + "@" + host + ":" + path);
+		arguments.push_back (uri.user + "@" + uri.host + ":" + uri.path);
 	}
 	else
 	{
-		arguments.push_back (host + ":" + path);
+		arguments.push_back (uri.host + ":" + uri.path);
 	}
 
 	arguments.push_back (target);
