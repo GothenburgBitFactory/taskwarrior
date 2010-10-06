@@ -29,4 +29,5 @@ text.t
 transport.t
 tree.t
 tree2.t
+uri.t
 util.t
