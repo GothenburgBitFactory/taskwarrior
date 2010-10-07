@@ -32,12 +32,12 @@
 
 class TransportCurl : public Transport {
 public:
-  TransportCurl (const Uri&);  
-	
+  TransportCurl (const Uri&);
+
   virtual void send (const std::string&);
   virtual void recv (std::string);
-	
 };
 
 #endif
+
 

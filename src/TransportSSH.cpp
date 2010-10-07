@@ -36,14 +36,13 @@ TransportSSH::TransportSSH(const Uri& uri) : Transport(uri)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::send(const std::string& source)
 {
-	if (uri.host == "") {
-		throw std::string ("Hostname is empty");
-	}
+	if (uri.host == "")
+		throw std::string ("when using the 'ssh' protocol, the uri must contain a hostname.");
 
 	// Is there more than one file to transfer?
 	// Then path has to end with a '/'
 	if (is_filelist(source) && !uri.is_directory())
-    throw std::string ("'" + uri.path + "' is not a directory!");
+    throw std::string ("The uri '"); + uri.path + "' does not appear to be a directory.";
 
 	// cmd line is: scp [-p port] [user@]host:path
 	if (uri.port != "")
@@ -64,20 +63,19 @@ void TransportSSH::send(const std::string& source)
 	}
 
 	if (execute())
-		throw std::string ("Failed to run scp!");
+    throw std::string ("Could not run scp.  Is it installed, and available in $PATH?");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::recv(std::string target)
 {
-	if (uri.host == "") {
-		throw std::string ("Hostname is empty");
-	}
+	if (uri.host == "")
+		throw std::string ("when using the 'ssh' protocol, the uri must contain a hostname.");
 
 	// Is there more than one file to transfer?
 	// Then target has to end with a '/'
 	if (is_filelist(uri.path) && !is_directory(target))
-    throw std::string ("'" + target + "' is not a directory!");
+    throw std::string ("The uri '"); + target + "' does not appear to be a directory.";
 
 	// cmd line is: scp [-p port] [user@]host:path
 	if (uri.port != "")
@@ -98,7 +96,7 @@ void TransportSSH::recv(std::string target)
 	arguments.push_back (target);
 
 	if (execute())
-		throw std::string ("Failed to run scp!");
+    throw std::string ("Could not run scp.  Is it installed, and available in $PATH?");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

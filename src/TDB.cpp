@@ -1106,7 +1106,7 @@ void TDB::merge (const std::string& mergeFile)
 
   // file has to contain at least one entry
   if (r.size () < 3)
-    throw std::string ("There are no transactions to apply.");
+    throw std::string ("There are no changes to merge.");
 
   // load undo file (left/local branch)
   Directory location (context.config.get ("data.location"));
@@ -1125,7 +1125,7 @@ void TDB::merge (const std::string& mergeFile)
 
 	if (rit != r.end())
 		rline = *rit;
-	if (lit != l.end())		
+	if (lit != l.end())
 		lline = *lit;
 
   ///////////////////////////////////////
@@ -1198,7 +1198,7 @@ void TDB::merge (const std::string& mergeFile)
     {
       if ( (*lmod_it).isNew ())
       {
-        std::cout << "Skipping the new local task        "
+        std::cout << "Skipping new local task            "
                   << (*lmod_it).getUuid()
                   << "\n";
 
@@ -1222,7 +1222,7 @@ void TDB::merge (const std::string& mergeFile)
       // new uuid?
       if (tmod.isNew ())
       {
-        std::cout << "Adding the new remote task         "
+        std::cout << "Adding new remote task             "
                   << tmod.getUuid()
                   << "\n";
         uuid_new.insert (tmod.getUuid ());
@@ -1357,12 +1357,12 @@ void TDB::merge (const std::string& mergeFile)
   {
     // nothing happend on the remote branch
     // local branch is up-to-date
-    throw std::string ("Database is already up-to-date.");
+    throw std::string ("Database is up to date.");
   }
   else // lit == undo.end ()
   {
     // nothing happend on the local branch
-    std::cout << "No changes were made on the local database. Appending changes...\n";
+    std::cout << "No changes were made on the local database.  Adding remote changes...\n";
 
     // add remaining lines (remote branch) to the list of modifications
     readTaskmods (r, rit, mods);
@@ -1515,9 +1515,9 @@ void TDB::merge (const std::string& mergeFile)
         }
         else
         {
-          std::cout << "Not adding duplicate " << uuid << "\n";
+          std::cout << "Skipping duplicate   " << uuid << "\n";
           mods.erase (current);
-        }        
+        }
       }
     }
 
@@ -1546,7 +1546,7 @@ void TDB::merge (const std::string& mergeFile)
   }
   else // nothing to be done
   {
-    std::cout << "Nothing to be done.\n";
+    std::cout << "No merge required.\n";
   }
 
   // delete objects

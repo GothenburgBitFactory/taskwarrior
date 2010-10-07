@@ -32,11 +32,11 @@
 
 class TransportSSH : public Transport {
 public:
-  TransportSSH (const Uri&);  
-	
+  TransportSSH (const Uri&);
+
   virtual void send (const std::string&);
   virtual void recv (std::string);
-	
+
 };
 
 #endif

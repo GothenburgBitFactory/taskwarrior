@@ -157,20 +157,20 @@ bool Uri::expand (const std::string& configPrefix )
   if (data.length ())
   {
     // try to replace argument with uri from config
-    tmp = context.config.get (configPrefix + "." + data + ".uri");    
-  }  
+    tmp = context.config.get (configPrefix + "." + data + ".uri");
+  }
   else
   {
     // get default target from config
     tmp = context.config.get (configPrefix + ".default.uri");
   }
-  
+
   if (tmp != "")
   {
     data = tmp;
     return true;
   }
-    
+
   return false;
 }
 
@@ -181,8 +181,8 @@ void Uri::parse ()
   {
     path = data;
     return;
-  }  
-  
+  }
+
   std::string::size_type pos;
 	std::string uripart;
 	std::string pathDelimiter = "/";
@@ -213,7 +213,7 @@ void Uri::parse ()
 	}
 	else
 	{
-		throw std::string ("Could not parse \""+data+"\"");
+    throw std::string ("The uri '") + data + "' is not in the expected format.";
 	}
 
 	// parse host

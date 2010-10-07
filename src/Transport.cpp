@@ -61,8 +61,8 @@ Transport* Transport::getTransport(const Uri& uri)
          || (uri.protocol == "https")
          || (uri.protocol == "ftp") )
   {
-    return new TransportCurl(uri);		
-  }  
+    return new TransportCurl(uri);
+  }
 
   return NULL;
 }
@@ -95,7 +95,7 @@ int Transport::execute()
     argv[1] = opt;                    // -c
     argv[2] = (char*)cmdline.c_str();	// e.g. scp undo.data user@host:.task/
     argv[3] = NULL;                   // required by execv
-    
+
     int ret = execvp("sh", argv);
     delete[] argv;
 

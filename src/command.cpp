@@ -585,13 +585,13 @@ void handleMerge (std::string& outs)
     std::string file = trim (context.task.get ("description"));
     std::string pushfile = "";
     std::string tmpfile = "";
-    
-    std::string sAutopush = context.config.get       ("merge.autopush");
-    bool        bAutopush = context.config.getBoolean("merge.autopush");
-    
+
+    std::string sAutopush = lowerCase (context.config.get        ("merge.autopush"));
+    bool        bAutopush =            context.config.getBoolean ("merge.autopush");
+
     Uri uri (file, "merge");
     uri.parse();
-    
+
     if (sAutopush == "ask")
     {
       // expand uri
@@ -602,7 +602,7 @@ void handleMerge (std::string& outs)
     if (uri.data.length ())
     {
       Directory location (context.config.get ("data.location"));
-      
+
       // be sure that uri points to a file
       uri.append("undo.data");
 
@@ -625,20 +625,19 @@ void handleMerge (std::string& outs)
       context.hooks.trigger ("post-merge-command");
 
       if (tmpfile != "")
-      {
         remove (tmpfile.c_str());
-      }     
-      
-      if ( ((sAutopush == "ask") && (confirm ("Do you want to push the changes to \'" + pushfile + "\'?")) )
+
+      if ( ((sAutopush == "ask") && (confirm ("Would you like to push the changes to \'" + pushfile + "\'?")) )
          || (bAutopush) )
       {
         std::string out;
         handlePush(out);
       }
-      
     }
     else
-      throw std::string ("You must specify a file to merge.");
+      throw std::string ("No uri was specified for the merge.  Either specify "
+                         "the uri of a remote .task directory, or create a "
+                         "'merge.default.uri' entry in your .taskrc file.");
   }
 }
 
@@ -648,7 +647,7 @@ void handlePush (std::string& outs)
   if (context.hooks.trigger ("pre-push-command"))
   {
     std::string file = trim (context.task.get ("description"));
-    
+
     Uri uri (file, "push");
     uri.parse ();
 
@@ -658,7 +657,7 @@ void handlePush (std::string& outs)
 
 			Transport* transport;
 			if ((transport = Transport::getTransport (uri)) != NULL )
-			{        
+			{
 				transport->send (location.data + "/{pending,undo,completed}.data");
 				delete transport;
 			}
@@ -666,25 +665,27 @@ void handlePush (std::string& outs)
 			{
         // copy files locally
         if (!uri.is_directory())
-          throw std::string ("'" + uri.path + "' is not a directory!");
-        
+          throw std::string ("The uri '"); + uri.path + "' does not appear to be a directory.";
+
         std::ifstream ifile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
-        std::ofstream ofile1 ((uri.path      +  "undo.data").c_str(), std::ios_base::binary);        
+        std::ofstream ofile1 ((uri.path      +  "undo.data").c_str(), std::ios_base::binary);
         ofile1 << ifile1.rdbuf();
-        
+
         std::ifstream ifile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
-        std::ofstream ofile2 ((uri.path      +  "pending.data").c_str(), std::ios_base::binary);        
+        std::ofstream ofile2 ((uri.path      +  "pending.data").c_str(), std::ios_base::binary);
         ofile2 << ifile2.rdbuf();
-        
+
         std::ifstream ifile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
-        std::ofstream ofile3 ((uri.path      +  "completed.data").c_str(), std::ios_base::binary);        
+        std::ofstream ofile3 ((uri.path      +  "completed.data").c_str(), std::ios_base::binary);
         ofile3 << ifile3.rdbuf();
 			}
 
       context.hooks.trigger ("post-push-command");
     }
-    else			
-      throw std::string ("You must specify a target.");
+    else
+      throw std::string ("No uri was specified for the push.  Either specify "
+                         "the uri of a remote .task directory, or create a "
+                         "'push.default.uri' entry in your .taskrc file.");
   }
 }
 
@@ -694,7 +695,7 @@ void handlePull (std::string& outs)
   if (context.hooks.trigger ("pre-pull-command"))
   {
     std::string file = trim (context.task.get ("description"));
-    
+
     Uri uri (file, "pull");
     uri.parse ();
 
@@ -703,49 +704,51 @@ void handlePull (std::string& outs)
 			Directory location (context.config.get ("data.location"));
 
 			if (!uri.append ("{pending,undo,completed}.data"))
-        throw std::string ("'" + uri.path + "' is not a directory!");
+        throw std::string ("The uri '"); + uri.path + "' does not appear to be a directory.";
 
 			Transport* transport;
-			if ((transport = Transport::getTransport (uri)) != NULL )
+			if ((transport = Transport::getTransport (uri)) != NULL)
 			{
 				transport->recv (location.data + "/");
 				delete transport;
 			}
 			else
-			{        
+			{
         // copy files locally
-        
+
         // remove {pending,undo,completed}.data
-        uri.path = uri.parent();     
-        
+        uri.path = uri.parent();
+
         Path path1 (uri.path + "undo.data");
         Path path2 (uri.path + "pending.data");
         Path path3 (uri.path + "completed.data");
-        
+
         if (path1.exists() && path2.exists() && path3.exists())
         {
           std::ofstream ofile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
-          std::ifstream ifile1 (path1.data.c_str()                    , std::ios_base::binary);        
+          std::ifstream ifile1 (path1.data.c_str()                    , std::ios_base::binary);
           ofile1 << ifile1.rdbuf();
-          
+
           std::ofstream ofile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
-          std::ifstream ifile2 (path2.data.c_str()                    , std::ios_base::binary);            
+          std::ifstream ifile2 (path2.data.c_str()                    , std::ios_base::binary);
           ofile2 << ifile2.rdbuf();
-          
+
           std::ofstream ofile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
-          std::ifstream ifile3 (path3.data.c_str()                    , std::ios_base::binary);          
+          std::ifstream ifile3 (path3.data.c_str()                    , std::ios_base::binary);
           ofile3 << ifile3.rdbuf();
         }
         else
         {
           throw std::string ("At least one of the database files in '" + uri.path + "' is not present.");
-        }       
+        }
 			}
 
       context.hooks.trigger ("post-pull-command");
     }
     else
-      throw std::string ("You must specify a target.");
+      throw std::string ("No uri was specified for the pull.  Either specify "
+                         "the uri of a remote .task directory, or create a "
+                         "'pull.default.uri' entry in your .taskrc file.");
   }
 }
 

@@ -32,11 +32,11 @@
 
 class TransportRSYNC : public Transport {
 public:
-  TransportRSYNC (const Uri&);  
-	
+  TransportRSYNC (const Uri&);
+
   virtual void send (const std::string&);
   virtual void recv (std::string);
-	
+
 };
 
 #endif
