@@ -1,0 +1,58 @@
+#! /bin/bash
+
+# Small script to create a fragment of output for display on the front page
+# of taskwarrior.org, as a teaser.
+
+rm pending.data completed.data undo.data
+
+echo 'data.location=.' > x
+echo '_forcecolor=on' >> x
+echo 'defaultwidth=120' >> x
+echo 'include /usr/local/share/doc/task/rc/dark-violets-256.theme' >> x
+echo 'include /usr/local/share/doc/task/rc/holidays-US.rc' >> x
+echo 'color.alternate=' >> x
+
+echo 'report.list.columns=id,project,priority_long,start,due,recur,age_compact,tags,description' >> x
+echo 'report.list.labels=ID,Project,Pri,Started,Due,Recur,Age,Tags,Description' >> x
+echo 'report.list.sort=due+,priority_long-,project+' >> x
+
+# Now the visible part.
+
+echo
+echo $ task add project:Cake Buy the ingredients
+task rc:x add project:Cake Buy the ingredients
+
+echo
+echo $ task add project:Cake Warm the oven depends:1
+task rc:x add project:Cake Warm the oven depends:1
+
+echo
+echo $ task add project:Cake Mix the ingredients depends:2
+task rc:x add project:Cake Mix the ingredients depends:2
+
+echo
+echo $ task add project:Cake Bake the cake depends:3
+task rc:x add project:Cake Bake the cake depends:3
+
+echo
+echo $ task add project:Cake Eat the cake depends:3
+task rc:x add project:Cake Eat the cake depends:3
+
+echo
+echo $ task long
+task rc:x long
+
+echo
+echo $ task 5 depends:4,-3
+task rc:x 5 depends:4,-3
+
+echo
+echo $ task blocked
+task rc:x blocked
+
+echo
+echo $ task 2 info
+task rc:x 2 info
+
+exit
+

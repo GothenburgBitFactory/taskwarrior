@@ -1,0 +1,71 @@
+#! /bin/bash
+
+# Small script to create a fragment of output for display on the front page
+# of taskwarrior.org, as a teaser.
+
+rm pending.data completed.data undo.data
+
+echo 'data.location=.' > x
+echo '_forcecolor=on' >> x
+echo 'defaultwidth=120' >> x
+echo 'include /usr/local/share/doc/task/rc/dark-violets-256.theme' >> x
+echo 'include /usr/local/share/doc/task/rc/holidays-US.rc' >> x
+echo 'color.alternate=' >> x
+
+echo 'report.list.columns=id,project,priority_long,start,due,recur,age_compact,tags,description' >> x
+echo 'report.list.labels=ID,Project,Pri,Started,Due,Recur,Age,Tags,Description' >> x
+echo 'report.list.sort=due+,priority_long-,project+' >> x
+
+# Import tasks with old timestamps
+cat <<EOF >file.yaml
+%YAML 1.1
+---
+  task:
+    description: Try out the color themes
+    entry: 1281914800
+    start: 1282044800
+    project: software
+    status: pending
+    uuid: 13afada0-a446-8d5a-c213-30d99d52c4b0
+  task:
+    description: Visit http://taskwarrior.org
+    entry: 1281089630
+    tags: www
+    priority: H
+    project: software
+    status: pending
+    uuid: 23afada0-a446-8d5a-c213-30d99d52c4b0
+  task:
+    description: Review task list
+    entry: 1281289630
+    due: 1282844800
+    recur: weekly
+    project: gtd
+    status: pending
+    uuid: 33afada0-a446-8d5a-c213-30d99d52c4b0
+  task:
+    description: Try out latest FireFox beta
+    entry: 1281289630
+    project: software
+    status: pending
+    uuid: 43afada0-a446-8d5a-c213-30d99d52c4b0
+...
+EOF
+
+printf "y\n" | task rc:x import file.yaml
+
+# Now the visible part.
+echo
+echo '$ task calendar sep 2010'
+task rc:x calendar sep 2010
+
+echo
+echo '$ task calendar'
+task rc:x calendar
+
+echo
+echo '$ task overdue'
+task rc:x 2 done
+
+exit
+
