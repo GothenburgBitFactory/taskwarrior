@@ -665,7 +665,7 @@ void handlePush (std::string& outs)
 			{
         // copy files locally
         if (!uri.is_directory())
-          throw std::string ("The uri '"); + uri.path + "' does not appear to be a directory.";
+          throw std::string ("The uri '") + uri.path + "' does not appear to be a directory.";
 
         std::ifstream ifile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
         std::ofstream ofile1 ((uri.path      +  "undo.data").c_str(), std::ios_base::binary);
@@ -704,7 +704,7 @@ void handlePull (std::string& outs)
 			Directory location (context.config.get ("data.location"));
 
 			if (!uri.append ("{pending,undo,completed}.data"))
-        throw std::string ("The uri '"); + uri.path + "' does not appear to be a directory.";
+        throw std::string ("The uri '") + uri.path + "' does not appear to be a directory.";
 
 			Transport* transport;
 			if ((transport = Transport::getTransport (uri)) != NULL)

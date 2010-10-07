@@ -42,7 +42,7 @@ void TransportSSH::send(const std::string& source)
 	// Is there more than one file to transfer?
 	// Then path has to end with a '/'
 	if (is_filelist(source) && !uri.is_directory())
-    throw std::string ("The uri '"); + uri.path + "' does not appear to be a directory.";
+    throw std::string ("The uri '") + uri.path + "' does not appear to be a directory.";
 
 	// cmd line is: scp [-p port] [user@]host:path
 	if (uri.port != "")
@@ -75,7 +75,7 @@ void TransportSSH::recv(std::string target)
 	// Is there more than one file to transfer?
 	// Then target has to end with a '/'
 	if (is_filelist(uri.path) && !is_directory(target))
-    throw std::string ("The uri '"); + target + "' does not appear to be a directory.";
+    throw std::string ("The uri '") + target + "' does not appear to be a directory.";
 
 	// cmd line is: scp [-p port] [user@]host:path
 	if (uri.port != "")

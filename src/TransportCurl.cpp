@@ -50,7 +50,7 @@ void TransportCurl::send(const std::string& source)
       throw std::string ("When using the 'curl' protocol, wildcards are not supported.");
 
     if (!uri.is_directory())
-      throw std::string ("The uri '"); + uri.path + "' does not appear to be a directory.";
+      throw std::string ("The uri '") + uri.path + "' does not appear to be a directory.";
 
     std::string toSplit;
     std::string suffix;
@@ -105,7 +105,7 @@ void TransportCurl::recv(std::string target)
       throw std::string ("When using the 'curl' protocol, wildcards are not supported.");
 
     if (!is_directory(target))
-      throw std::string ("The uri '"); + target + "' does not appear to be a directory.";
+      throw std::string ("The uri '") + target + "' does not appear to be a directory.";
 
     std::string toSplit;
     std::string suffix;
