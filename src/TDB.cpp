@@ -85,8 +85,7 @@ void readTaskmods (std::vector <std::string> &input,
       stream >> ts;
 
       if (stream.fail ())
-        throw std::string ("Failed to convert \"" + stream.str ()
-                         + "\" to integer: " + tmod_tmp.getTimeStr () + ".");
+        throw std::string ("There was a problem reading the timestamp from the undo.data file.");
 
       // 'time' is the first line of a modification
       // thus we will (re)set the taskmod object
