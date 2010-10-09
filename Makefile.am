@@ -1,6 +1,6 @@
 SUBDIRS = src
 
-dist_man_MANS = doc/man/task.1 doc/man/taskrc.5 doc/man/task-tutorial.5 doc/man/task-faq.5 doc/man/task-color.5
+dist_man_MANS = doc/man/task.1 doc/man/taskrc.5 doc/man/task-tutorial.5 doc/man/task-faq.5 doc/man/task-color.5 doc/man/task-sync.5
 
 #docdir = $(datadir)/doc/${PACKAGE}-${VERSION}
 doc_DATA = AUTHORS ChangeLog COPYING NEWS README
