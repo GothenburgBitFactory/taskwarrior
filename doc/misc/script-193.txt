@@ -351,13 +351,42 @@ task add Do something in a few seconds   To illustrate this, let's set up a task
 task 11 wait:5s                          wait time of five seconds.
 
 task list                                It's gone.
-sleep 5
+(sleep 5)                                We wait for 5 seconds...
 task list                                And it's back.
 task 11 rc.confirmation:no delete        And now it's deleted.
 
 ---------------------------------------- Dependencies ----------------------------------------------
 
-  dependencies
+task list pro:party                      Taskwarrior supports dependencies.  Let's take a look at the
+                                         party planning tasks, and assign dependencies.
+
+task 3 depends:6                         Let's see.  I can't mail invitations until they are printed.
+task 6 dep:5                             I can't print them until I design them.
+task 2 dep:1                             I need to select a weekend before a location.
+task 5 dep:1,2                           Design depends on location and weekend.
+task 4 dep:1                             And the caterer needs to know where.
+
+task long pro:party                      All my tasks are blocked except task 1.  That makes sense.
+
+task 5 dep:-1                            Hmm, that double dependency isn't right.
+
+task blocked                             Here are the blocked tasks.
+task unblocked                           and the opposite, the unblocked tasks.
+
+task 1 info                              If we look at task 1 closely, we can see that it is blocking
+task 2 info                               2 and 4.  And if we look at task 2, we see that it is
+                                         blocked by 1, and blocking 5.
+
+                                         This is called a dependency chain, which is a string of tasks
+                                         that are all connected not only by their project, but by
+                                         dependencies.
+
+                                         Now we understand that task 1 should be done first, but you
+                                         may still violate the laws of physics if you wish. Let's
+                                         complete task 2 and see what happens.
+
+task 2 done  (y)                         Taskwarrior realizes what you are doing, and offers to fix
+task 1 info                              the dependency chain to reflect what you have done.
 
 ---------------------------------------- Reports ---------------------------------------------------
 
@@ -368,8 +397,9 @@ task long                                The kitchen sink.
 task all                                 The packrat.
 task completed                           Nostalgia.
 task recurring                           Groundhog day.
-task waiting                             Secrets.
+task waiting                             Surprises.
 task blocked                             Wedged.
+task unblocked                           Unencumbered.
 task oldest                              Ancient history.
 task newest                              Contemporary.
 task timesheet                           Corporate.
@@ -477,7 +507,13 @@ man task-color                           many features which have more capabilit
 
 man task-tutorial                        This screencast is actually just a recording of me going
                                          through the tutorial.
-man task-faq
+
+man task-faq                             Some frequently asked questions are answered here.
+
+man task-sync                            You've patiently watched this whole movie, so here's your
+                                         reward - taskwarrior 1.9.3 has network synchronization
+                                         features, for sharing tasks across computers.  But this is
+                                         just a teaser - synch will be shown in the next movie.
 
 ---------------------------------------- Wrap up ---------------------------------------------------
 
