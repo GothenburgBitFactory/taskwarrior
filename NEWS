@@ -24,6 +24,8 @@ New Features in taskwarrior 1.9.3
   - User-controlled color rule precedence.
   - Two new color themes.
   - New holiday files for US, SE, DE, CA, FR, UK, ES and NL localizations.
+  - Task dependencies, and new 'blocked' and 'unblocked' reports for list
+    those tasks.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.

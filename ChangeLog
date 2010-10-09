@@ -35,6 +35,7 @@
    of precedence via the 'rule.precedence.color' configuration variable.
  + New 'depends' column for custom reports.
  + New 'blocked' report for showing blocked tasks.
+ + New 'unblocked' report for showing tasks that are not blocked.
  + Improved man pages (thanks to Andy Lester).
  + Default .taskrc files are now largely empty, and rely almost completed
    on default values.
