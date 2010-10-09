@@ -399,6 +399,14 @@ std::string Config::defaults =
   "report.blocked.sort=due+,priority-,active-,project+\n"
   "report.blocked.filter=status:pending depends.any:\n"
   "#report.blocked.dateformat=m/d/Y\n"
+  "\n"
+  "# task unblocked\n"
+  "report.unblocked.description=Lists all tasks matching the specified criteria\n"
+  "report.unblocked.columns=id,depends,project,priority,due,active,age,description\n"
+  "report.unblocked.labels=ID,Deps,Project,Pri,Due,Active,Age,Description\n"
+  "report.unblocked.sort=due+,priority-,active-,project+\n"
+  "report.unblocked.filter=status:pending depends.none:\n"
+  "#report.unblocked.dateformat=m/d/Y\n"
   "\n";
 
 ////////////////////////////////////////////////////////////////////////////////
