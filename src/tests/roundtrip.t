@@ -45,14 +45,12 @@ qx{../task rc:roundtrip.rc add +tag1 +tag2 two};
 
 # trip 1.
 qx{../task rc:roundtrip.rc export.yaml > ./roundtrip.txt};
-qx{../task rc:roundtrip.rc 1,2 delete};
-qx{../task rc:roundtrip.rc ls};
+unlink 'pending.data', 'completed.data', 'undo.data';
 qx{../task rc:roundtrip.rc import ./roundtrip.txt};
 
 # trip 2.
 qx{../task rc:roundtrip.rc export.yaml > ./roundtrip.txt};
-qx{../task rc:roundtrip.rc 1,2 delete};
-qx{../task rc:roundtrip.rc ls};
+unlink 'pending.data', 'completed.data', 'undo.data';
 qx{../task rc:roundtrip.rc import ./roundtrip.txt};
 
 # Exammine.
