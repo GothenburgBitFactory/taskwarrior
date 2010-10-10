@@ -1,293 +1,300 @@
 #! /bin/bash
 
-rm pending.data completed.data undo.data
+rm -f /Users/paul/.task/pending.data /Users/paul/.task/completed.data /Users/paul/.task/undo.data
 
-echo 'data.location=.' > x
-echo 'color=off' >> x
-echo 'color.summary.background=on gray3' >> x
+echo 'data.location=~/.task' > /Users/paul/.taskrc
+echo 'color=off' >> /Users/paul/.taskrc
+echo 'color.summary.background=on gray3' >> /Users/paul/.taskrc
+echo '#include /usr/local/share/doc/task/rc/dark-blue-256.theme' >> /Users/paul/.taskrc
+echo '#include /usr/local/share/doc/task/rc/dark-red-256.theme' >> /Users/paul/.taskrc
+echo '#include /usr/local/share/doc/task/rc/dark-256.theme' >> /Users/paul/.taskrc
 
-# Basic usage
+# 2 Basic usage
 echo Basic usage --------------------------------------------------------------
-echo task rc:x add Select a free weekend in November
-task rc:x add Select a free weekend in November
-echo task rc:x add Select and book a venue
-task rc:x add Select and book a venue
-echo task rc:x add Come up with a guest list
-task rc:x add Come up with a guest list
-echo task rc:x add Mail invitations
-task rc:x add Mail invitations
-echo task rc:x add Select a caterer
-task rc:x add Select a caterer
-echo task rc:x list
-task rc:x list
-echo task rc:x log Order a special cake
-task rc:x log Order a special cake
-echo task rc:x 4 duplicate /Mail/Design/
-task rc:x 4 duplicate /Mail/Design/
-echo task rc:x 4 duplicate /Mail/Print/
-task rc:x 4 duplicate /Mail/Print/
-echo task rc:x list
-task rc:x list
-echo task rc:x 3 done
-task rc:x 3 done
-echo task rc:x list
-task rc:x list
+echo $ task add Select a free weekend in November
+task add Select a free weekend in November
+echo $ task add Select and book a venue
+task add Select and book a venue
+echo $ task add Come up with a guest list
+task add Come up with a guest list
+echo $ task add Mail invitations
+task add Mail invitations
+echo $ task add Select a caterer
+task add Select a caterer
+echo $ task list
+task list
+echo $ task log Order a special cake
+task log Order a special cake
+echo $ task 4 duplicate /Mail/Design/
+task 4 duplicate /Mail/Design/
+echo $ task 4 duplicate /Mail/Print/
+task 4 duplicate /Mail/Print/
+echo $ task list
+task list
+echo $ task 3 done
+task 3 done
+echo $ task list
+task list
 
-# Projects
+exit # TODO move this line down
+
+# 3 Projects
 echo Projects --------------------------------------------------------------
-echo task rc:x add Pay teh rent on teh 31st
-task rc:x add Pay teh rent on teh 31st
-echo task rc:x 7 /teh/the/g
-task rc:x 7 /teh/the/g
-echo task rc:x list
-task rc:x list
-echo task rc:x 7 project:home
-task rc:x 7 project:home
-echo task rc:x 1-6 project:party
-echo 'All' | task rc:x 1-6 project:party
-echo task rc:x projects
-task rc:x projects
-echo task rc:x list project:home
-task rc:x list project:home
-echo task rc:x li pro:par
-task rc:x li pro:par
+echo $ task add Pay teh rent on teh 31st
+task add Pay teh rent on teh 31st
+echo $ task 7 /teh/the/g
+task 7 /teh/the/g
+echo $ task list
+task list
+echo $ task 7 project:home
+task 7 project:home
+echo $ task 1-6 project:party
+echo 'All' | task 1-6 project:party
+echo $ task projects
+task projects
+echo $ task list project:home
+task list project:home
+echo $ task li pro:par
+task li pro:par
 
-# Priorities
+# 4 Priorities
 echo Priorities --------------------------------------------------------------
-echo task rc:x 1-3,5 priority:H
-echo 'All' | task rc:x 1-3,5 priority:H
-echo task rc:x list
-task rc:x list
-echo task rc:x 3 pri:
-task rc:x 3 pri:
+echo $ task 1-3,5 priority:H
+echo 'All' | task 1-3,5 priority:H
+echo $ task list
+task list
+echo $ task 3 pri:
+task 3 pri:
 
-# Tags
+# 5 Tags
 echo Tags --------------------------------------------------------------
-echo task rc:x list
-task rc:x list
-echo task rc:x 3,5,6 +mall
-echo 'All' | task rc:x 3,5,6 +mall
-echo task rc:x long
-task rc:x long
-echo task rc:x list +mall
-task rc:x list +mall
-echo task rc:x 3 -mall
-task rc:x 3 -mall
+echo $ task list
+task list
+echo $ task 3,5,6 +mall
+echo 'All' | task 3,5,6 +mall
+echo $ task long
+task long
+echo $ task list +mall
+task list +mall
+echo $ task 3 -mall
+task 3 -mall
 
-# Modifications
+# 6 Modifications
 echo Modifications --------------------------------------------------------------
-echo task rc:x 7 Pay rent at the end of the month
-echo 'Yes' | task rc:x 7 Pay rent at the end of the month
-echo task rc:x add music
-task rc:x add music
-echo task rc:x 8 prepend Select some
-task rc:x 8 prepend Select some
-echo task rc:x 8 append for after dinner
-task rc:x 8 append for after dinner
-echo task rc:x list
-task rc:x list
-echo task rc:x edit
-#task rc:x edit
-echo task rc:x add Hire a band?
-#task rc:x add Hire a band?
-echo task rc:x add Hire a band\?
-#task rc:x add Hire a band\?
-echo task rc:x add "Hire a band?"
-#task rc:x add "Hire a band?"
-echo task rc:x add -- Hire a band\? +dj
-task rc:x add -- Hire a band\? +dj
-echo task rc:x undo
-echo 'y' | task rc:x undo
-echo task rc:x 1 delete
-echo 'y' | task rc:x 1 delete
-echo task rc:x undo
-echo 'y' | task rc:x undo
+echo $ task 7 Pay rent at the end of the month
+echo 'Yes' | task 7 Pay rent at the end of the month
+echo $ task add music
+task add music
+echo $ task 8 prepend Select some
+task 8 prepend Select some
+echo $ task 8 append for after dinner
+task 8 append for after dinner
+echo $ task list
+task list
+echo $ task edit
+#task edit
+echo $ task add Hire a band?
+#task add Hire a band?
+echo $ task add Hire a band\?
+#task add Hire a band\?
+echo $ task add "Hire a band?"
+#task add "Hire a band?"
+echo $ task add -- Hire a band\? +dj
+task add -- Hire a band\? +dj
+echo $ task undo
+echo 'y' | task undo
+echo $ task 1 delete
+echo 'y' | task 1 delete
+echo $ task undo
+echo 'y' | task undo
 
-# Info
+# 7 Info
 echo Info --------------------------------------------------------------
-echo task rc:x 1 info
-task rc:x 1 info
-echo task rc:x stats
-task rc:x stats
+echo $ task 1 info
+task 1 info
+echo $ task stats
+task stats
 
-# Annotations
+# 8 Annotations
 echo Annotations --------------------------------------------------------------
-echo task rc:x 1 annotate the 13 looks good
-task rc:x 1 annotate the 13 looks good
+echo $ task 1 annotate the 13 looks good
+task 1 annotate the 13 looks good
 sleep 1
-echo task rc:x 1 annotate or the 14th
-task rc:x 1 annotate or the 14th
-echo task rc:x list
-task rc:x list
-echo task rc:x list rc.annotations:full
-task rc:x list rc.annotations:full
-echo task rc:x list rc.annotations:sparse
-task rc:x list rc.annotations:sparse
-echo task rc:x list rc.annotations:none
-task rc:x list rc.annotations:none
-echo task rc:x 1 denotate 14th
-task rc:x 1 denotate 14th
-echo task rc:x list
-task rc:x list
+echo $ task 1 annotate or the 14th
+task 1 annotate or the 14th
+echo $ task list
+task list
+echo $ task list rc.annotations:full
+task list rc.annotations:full
+echo $ task list rc.annotations:sparse
+task list rc.annotations:sparse
+echo $ task list rc.annotations:none
+task list rc.annotations:none
+echo $ task 1 denotate 14th
+task 1 denotate 14th
+echo $ task list
+task list
 
-# Configuration
+# 9 Configuration
 echo Configuration --------------------------------------------------------------
-echo task rc:x show
-task rc:x show
-echo task rc:x config answer 42
-echo 'y' | task rc:x config answer 42
-echo task rc:x show answer
-task rc:x show answer
-echo task rc:x config answer
-echo 'y' | task rc:x config answer
-echo task rc:x rc.report.list.sort=description+ list
-task rc:x rc.report.list.sort=description+ list
+echo $ task show
+task show
+echo $ task config answer forty-two
+echo 'y' | task config answer forty-two
+echo $ task show answer
+task show answer
+echo $ task config answer
+echo 'y' | task config answer
+echo $ task rc.report.list.sort=description+ list
+task rc.report.list.sort=description+ list
 
-# Defaults
+# 10 Defaults
 echo Defaults --------------------------------------------------------------
-echo task rc:x config default.command list
-echo 'y' | task rc:x config default.command list
-echo task rc:x
-task rc:x
-echo task rc:x config default.priority H
-echo 'y' | task rc:x config default.priority H
-echo task rc:x config default.project Work
-echo 'y' | task rc:x config default.project Work
-echo task rc:x add New task
-task rc:x add New task
-echo task rc:x list
-task rc:x list
-echo task rc:x undo
-echo 'y' | task rc:x undo
-echo task rc:x config default.priority
-echo 'y' | task rc:x config default.priority
-echo task rc:x config default.project
-echo 'y' | task rc:x config default.project
+echo $ task config default.command list
+echo 'y' | task config default.command list
+echo $ task 
+task 
+echo $ task config default.priority H
+echo 'y' | task config default.priority H
+echo $ task config default.project Work
+echo 'y' | task config default.project Work
+echo $ task add New task
+task add New task
+echo $ task list
+task list
+echo $ task undo
+echo 'y' | task undo
+echo $ task config default.priority
+echo 'y' | task config default.priority
+echo $ task config default.project
+echo 'y' | task config default.project
 
-# Aliases
+# 11 Aliases
 echo Aliases --------------------------------------------------------------
-echo task rc:x config alias.zzz list
-echo 'y' | task rc:x config alias.zzz list
-echo task rc:x zzz
-task rc:x zzz
+echo $ task config alias.zzz list
+echo 'y' | task config alias.zzz list
+echo $ task zzz
+task zzz
+echo $ task z
+task z
 
-# Color
+# 12 Color
 echo Color --------------------------------------------------------------
-echo task rc:x config color on
-echo 'y' | task rc:x config color on
-echo task rc:x list
-task rc:x list
-echo task rc:x 1 bg:on_red
-task rc:x 1 bg:on_red
-echo task rc:x list
-task rc:x list
-echo task rc:x 1 bg:
-task rc:x 1 bg:
-echo task rc:x color
-task rc:x color
-echo task rc:x color white on red
-task rc:x color white on red
-echo task rc:x color legend
-task rc:x color legend
+echo $ task config color on
+echo 'y' | task config color on
+echo $ task list
+task list
+echo $ task 1 bg:on_red
+task 1 bg:on_red
+echo $ task list
+task list
+echo $ task 1 bg:
+task 1 bg:
+echo $ task color
+task color
+echo $ task color white on red
+task color white on red
+echo $ task color legend
+task color legend
 echo vi ~/.taskrc # include /usr/local/share/doc/task/rc/dark-blue-256.theme
 #vi ~/.taskrc # include /usr/local/share/doc/task/rc/dark-blue-256.theme
 echo 'include /usr/local/share/doc/task/rc/dark-blue-256.theme' >> x
-echo task rc:x color legend
-task rc:x color legend
-echo task rc:x list
-task rc:x list
+echo $ task color legend
+task color legend
+echo $ task list
+task list
 echo vi ~/.taskrc # include /usr/local/share/doc/task/rc/dark-red-256.theme
 #vi ~/.taskrc # include /usr/local/share/doc/task/rc/dark-red-256.theme
 sed 's/blue/red/' x >x2 && mv x2 x
-echo task rc:x color legend
-task rc:x color legend
-echo task rc:x list
-task rc:x list
+echo $ task color legend
+task color legend
+echo $ task list
+task list
 echo vi ~/.taskrc # include /usr/local/share/doc/task/rc/dark-256.theme
 #vi ~/.taskrc # include /usr/local/share/doc/task/rc/dark-256.theme
 sed 's/red-//' x >x2 && mv x2 x
-echo task rc:x list
-task rc:x list
-echo task rc:x "rc.color.project.party=on rgb001" rc.color.keyword.invit=bold list
-task rc:x "rc.color.project.party=on rgb001" rc.color.keyword.invit=bold list
-echo man task-color
+echo $ task list
+task list
+echo $ task "rc.color.project.party=on rgb001" rc.color.keyword.invit=bold list
+task "rc.color.project.party=on rgb001" rc.color.keyword.invit=bold list
+echo $ man task-color
 #man task-color
 
-# Active tasks
+# 13 Active tasks
 echo Active tasks --------------------------------------------------------------
-echo task rc:x 2 start
-task rc:x 2 start
-echo task rc:x list
-task rc:x list
-echo task rc:x active
-task rc:x active
-echo task rc:x 2 stop
-task rc:x 2 stop
+echo $ task 2 start
+task 2 start
+echo $ task list
+task list
+echo $ task active
+task active
+echo $ task 2 stop
+task 2 stop
 
-# Due dates
+# 14 Due dates
 echo Due dates --------------------------------------------------------------
-echo task rc:x 1 due:7/31/2010
-task rc:x 1 due:7/31/2010
-echo task rc:x 1 due:2wks
-task rc:x 1 due:2wks
-echo task rc:x 1 due:-2wks
-task rc:x 1 due:-2wks
-echo task rc:x 1 due:eom
-task rc:x 1 due:eom
-echo task rc:x 2 due:8th
-task rc:x 2 due:8th
-echo task rc:x 2 due:sunday
-task rc:x 2 due:sunday
-echo task rc:x 5 due:eow
-task rc:x 5 due:eow
-echo task rc:x list
-task rc:x list
-echo task rc:x overdue
-task rc:x overdue
-echo task rc:x rc.dateformat.report:Y-M-DTH:N:SZ list
-task rc:x rc.dateformat.report:Y-M-DTH:N:SZ list
+echo $ task 1 due:7/31/2010
+task 1 due:7/31/2010
+echo $ task 1 due:2wks
+task 1 due:2wks
+echo $ task 1 due:-2wks
+task 1 due:-2wks
+echo $ task 1 due:eom
+task 1 due:eom
+echo $ task 2 due:8th
+task 2 due:8th
+echo $ task 2 due:sunday
+task 2 due:sunday
+echo $ task 5 due:eow
+task 5 due:eow
+echo $ task list
+task list
+echo $ task overdue
+task overdue
+echo $ task rc.dateformat.report:Y-M-DTH:N:SZ list
+task rc.dateformat.report:Y-M-DTH:N:SZ list
 
-# Calendar
+# 15 Calendar
 echo Calendar --------------------------------------------------------------
-echo task rc:x calendar
-task rc:x calendar
-echo vi ~/.taskrc # include /usr/local/share/doc/task/rc/holidays-US.rc
+echo $ task calendar
+task calendar
+echo $ vi ~/.taskrc # include /usr/local/share/doc/task/rc/holidays-US.rc
 #vi ~/.taskrc # include /usr/local/share/doc/task/rc/holidays-US.rc
 echo 'include /usr/local/share/doc/task/rc/holidays-US.rc' >> x
-echo task rc:x calendar
-task rc:x calendar
-echo task rc:x cal 2010
-task rc:x cal 2010
-echo task rc:x rc.calendar.details:full cal
-task rc:x rc.calendar.details:full cal
-echo task rc:x rc.calendar.holidays:full cal
-task rc:x rc.calendar.holidays:full cal
+echo $ task calendar
+task calendar
+echo $ task cal 2010
+task cal 2010
+echo $ task rc.calendar.details:full cal
+task rc.calendar.details:full cal
+echo $ task rc.calendar.holidays:full cal
+task rc.calendar.holidays:full cal
 
-# Recurrence
+# 16 Recurrence
 echo Recurrence --------------------------------------------------------------
-echo task rc:x 7 info
-task rc:x 7 info
-echo task rc:x 7 due:eom recur:monthly
-task rc:x 7 due:eom recur:monthly
-echo task rc:x 7
-task rc:x 7
-echo task rc:x 7 until:eoy
-task rc:x 7 until:eoy
-echo task rc:x recurring
-task rc:x recurring
-echo task rc:x add Pay taxes due:4/15/2007 recur:yearly
-task rc:x add Pay taxes due:4/15/2007 recur:yearly
-echo task rc:x long
-task rc:x long
-echo task rc:x 11 delete
-printf "y\ny\n" | task rc:x 11 delete      # y, y
-echo task rc:x list
-task rc:x list
+echo $ task 7 info
+task 7 info
+echo $ task 7 due:eom recur:monthly
+task 7 due:eom recur:monthly
+echo $ task 7
+task 7
+echo $ task 7 until:eoy
+task 7 until:eoy
+echo $ task recurring
+task recurring
+echo $ task add Pay taxes due:4/15/2007 recur:yearly
+task add Pay taxes due:4/15/2007 recur:yearly
+echo $ task long
+task long
+echo $ task 11 delete
+printf "y\ny\n" | task 11 delete      # y, y
+echo $ task list
+task list
 
-# Shell
+# 17 Shell
 echo Shell --------------------------------------------------------------
-echo task rc:x shell
-#task rc:x shell
+echo $ task shell
+#task shell
 echo '> projects'
 #> projects
 echo '> tags'
@@ -297,103 +304,102 @@ echo '> list'
 echo '> quit'
 #> quit
 
-# Special tags
+# 18 Special tags
 echo Special tags --------------------------------------------------------------
-echo task rc:x 6 +nocolor
-task rc:x 6 +nocolor
-echo task rc:x list
-task rc:x list
-echo task rc:x tags
-task rc:x tags
-echo task rc:x 6 -nocolor
-task rc:x 6 -nocolor
+echo $ task 6 +nocolor
+task 6 +nocolor
+echo $ task list
+task list
+echo $ task tags
+task tags
+echo $ task 6 -nocolor
+task 6 -nocolor
 
-# Waiting
+# 19 Waiting
 echo Waiting --------------------------------------------------------------
-echo task rc:x add Look for new apartment due:eoy
-task rc:x add Look for new apartment due:eoy
-echo task rc:x list
-task rc:x list
-echo task rc:x 10 wait:12/1/2010
-task rc:x 10 wait:12/1/2010
-echo task rc:x list
-task rc:x list
-echo task rc:x waiting
-task rc:x waiting
-echo task rc:x add Do something in a few seconds
-task rc:x add Do something in a few seconds
-echo task rc:x 11 wait:5s
-task rc:x 11 wait:5s
-echo task rc:x list
-task rc:x list
+echo $ task add Look for new apartment due:eoy
+task add Look for new apartment due:eoy
+echo $ task list
+task list
+echo $ task 10 wait:12/1/2010
+task 10 wait:12/1/2010
+echo $ task list
+task list
+echo $ task waiting
+task waiting
+echo $ task add Do something in a few seconds
+task add Do something in a few seconds
+echo $ task 11 wait:5s
+task 11 wait:5s
+echo $ task list
+task list
 sleep 5
-echo task rc:x list
-task rc:x list
-echo task rc:x 11 rc.confirmation:no delete
-task rc:x 11 rc.confirmation:no delete
+echo $ task list
+task list
+echo $ task 11 rc.confirmation:no delete
+task 11 rc.confirmation:no delete
 
-# Dependencies
+# 20 Dependencies
 echo Dependencies --------------------------------------------------------------
+echo $ task list pro:party
+task list pro:party
+echo $ task 3 depends:6
+task 3 depends:6
+echo $ task 6 dep:5
+task 6 dep:5
+echo $ task 2 dep:1
+task 2 dep:1
+echo $ task 5 dep:1,2
+task 5 dep:1,2
+echo $ task 4 dep:1
+task 4 dep:1
+echo $ task long pro:party
+task long pro:party
+echo $ task 5 dep:-1
+task 5 dep:-1
+echo $ task blocked
+task blocked
+echo $ task unblocked
+task  unblocked
+echo $ task 1 info
+task  1 info
+echo $ task 2 info
+task  2 info
+echo $ task 2 done
+echo 'y' | task  2 done
+echo $ task 1 info
+task  1 info
 
-echo task rc:x list pro:party
-task rc:x list pro:party
-echo task rc:x 3 depends:6
-task rc:x 3 depends:6
-echo task rc:x 6 dep:5
-task rc:x 6 dep:5
-echo task rc:x 2 dep:1
-task rc:x 2 dep:1
-echo task rc:x 5 dep:1,2
-task rc:x 5 dep:1,2
-echo task rc:x 4 dep:1
-task rc:x 4 dep:1
-echo task rc:x long pro:party
-task rc:x long pro:party
-echo task rc:x 5 dep:-1
-task rc:x 5 dep:-1
-echo task rc:x blocked
-task rc:x blocked
-echo task rc:x unblocked
-task rc:x unblocked
-echo task rc:x 1 info
-task rc:x 1 info
-echo task rc:x 2 info
-task rc:x 2 info
-echo task rc:x 2 done
-echo 'y' | task rc:x 2 done
-echo task rc:x 1 info
-task rc:x 1 info
-
-# Reports
+# 21 Reports
 echo Reports --------------------------------------------------------------
-echo task rc:x minimal
-task rc:x minimal
-echo task rc:x ls
-task rc:x ls
-echo task rc:x list
-task rc:x list
-echo task rc:x long
-task rc:x long
-echo task rc:x all
-task rc:x all
-echo task rc:x completed
-task rc:x completed
-echo task rc:x recurring
-task rc:x recurring
-echo task rc:x waiting
-task rc:x waiting
-echo task rc:x blocked
-task rc:x blocked
-echo task rc:x oldest
-task rc:x oldest
-echo task rc:x newest
-task rc:x newest
-echo task rc:x timesheet
-task rc:x timesheet
-echo task rc:x next
-task rc:x next
+echo $ task minimal
+task  minimal
+echo $ task ls
+task  ls
+echo $ task list
+task  list
+echo $ task long
+task  long
+echo $ task all
+task  all
+echo $ task completed
+task  completed
+echo $ task recurring
+task  recurring
+echo $ task waiting
+task  waiting
+echo $ task blocked
+task  blocked
+echo $ task oldest
+task  oldest
+echo $ task newest
+task  newest
+echo $ task timesheet
+task  timesheet
+echo $ task next
+task  next
 
-# Custom report
+# 22 Custom report
 echo Custom report --------------------------------------------------------------
 echo 'report.foo.description=My own report'     >> x
 echo 'report.foo.columns=id,entry,description'  >> x
@@ -401,71 +407,71 @@ echo 'report.foo.labels=ID,Entered,Description' >> x
 echo 'report.foo.sort=entry+,description+'      >> x
 echo 'report.foo.filter=status:pending'         >> x
 echo 'task help | grep foo'
-task rc:x help | grep foo
-echo task rc:x show report.foo
-task rc:x show report.foo
-echo task rc:x foo
-task rc:x foo
+task  help | grep foo
+echo $ task show report.foo
+task  show report.foo
+echo $ task foo
+task  foo
 
-# Charts
+# 23 Charts
 echo Charts --------------------------------------------------------------
-echo task rc:x history
-task rc:x history
-echo task rc:x history.annual
-task rc:x history.annual
-echo task rc:x ghistory
-task rc:x ghistory
-echo task rc:x ghistory.annual
-task rc:x ghistory.annual
-echo task rc:x rc.color.summary.background:"on gray3" summary
-task rc:x rc.color.summary.background:"on gray3" summary
+echo $ task history
+task  history
+echo $ task history.annual
+task  history.annual
+echo $ task ghistory
+task  ghistory
+echo $ task ghistory.annual
+task  ghistory.annual
+echo $ task rc.color.summary.background:"on gray3" summary
+task  rc.color.summary.background:"on gray3" summary
 
-# Advanced filters
+# 24 Advanced filters
 echo Advanced filters --------------------------------------------------------------
-echo task rc:x list
-task rc:x list
-echo task rc:x list invit
-task rc:x list invit
-echo task rc:x list description.contains:invit
-task rc:x list description.contains:invit
-echo task rc:x list desc.word:the
-task rc:x list desc.word:the
-echo task rc:x list desc.noword:invitations
-task rc:x list desc.noword:invitations
-echo task rc:x list pro:party
-task rc:x list pro:party
-echo task rc:x list pro.is:party
-task rc:x list pro.is:party
-echo task rc:x list pro.not:party
-task rc:x list pro.not:party
-echo task rc:x list pro:party priority.over:L
-task rc:x list pro:party priority.over:L
-echo task rc:x list pro:party limit:2
-task rc:x list pro:party limit:2
-echo task rc:x list limit:page
-task rc:x list limit:page
-echo task rc:x all status:pending
-task rc:x all status:pending
-echo task rc:x all status:waiting
-task rc:x all status:waiting
+echo $ task list
+task  list
+echo $ task list invit
+task  list invit
+echo $ task list description.contains:invit
+task  list description.contains:invit
+echo $ task list desc.word:the
+task  list desc.word:the
+echo $ task list desc.noword:invitations
+task  list desc.noword:invitations
+echo $ task list pro:party
+task  list pro:party
+echo $ task list pro.is:party
+task  list pro.is:party
+echo $ task list pro.not:party
+task  list pro.not:party
+echo $ task list pro:party priority.over:L
+task  list pro:party priority.over:L
+echo $ task list pro:party limit:2
+task  list pro:party limit:2
+echo $ task list limit:page
+task  list limit:page
+echo $ task all status:pending
+task  all status:pending
+echo $ task all status:waiting
+task  all status:waiting
 
-# Import/export
+# 25 Import/export
 echo Import/export --------------------------------------------------------------
-echo task rc:x export.csv
-task rc:x export.csv
-echo task rc:x export.csv venue
-task rc:x export.csv venue
-task rc:x export.vcalendar venue
-task rc:x export.vcalendar venue
-task rc:x export.yaml venue
-task rc:x export.yaml venue
+echo $ task export.csv
+task  export.csv
+echo $ task export.csv venue
+task  export.csv venue
+echo $ task export.vcalendar venue
+task  export.vcalendar venue
+echo $ task export.yaml venue
+task  export.yaml venue
 
 cat <<EOF >file.text
 Remember to read the task man page
 EOF
 cat file.text
-echo task rc:x import file.text
-printf "y\n" | task rc:x import file.text
+echo $ task import file.text
+printf "y\n" | task  import file.text
 
 cat <<EOF >file.yaml
 %YAML 1.1
@@ -481,32 +487,32 @@ cat <<EOF >file.yaml
 ...
 EOF
 cat file.yaml
-echo task rc:x import file.yaml
-printf "y\n" | task rc:x import file.yaml
-echo task rc:x new limit:2
-task rc:x new limit:2
+echo $ task import file.yaml
+printf "y\n" | task  import file.yaml
+echo $ task new limit:2
+task  new limit:2
 
-# Help
+# 26 Help
 echo Help --------------------------------------------------------------
-echo task rc:x help
-task rc:x help
-echo man task
+echo $ task help
+task  help
+echo $ man task
 #man task
-echo man taskrc
+echo $ man taskrc
 #man taskrc
-echo man task-color
+echo $ man task-color
 #man task-color
-echo man task-tutorial
+echo $ man task-tutorial
 #man task-tutorial
-echo man task-faq
+echo $ man task-faq
 #man task-faq
-echo man task-sync
+echo $ man task-sync
 #man task-sync
 
-# Wrap up
+# 27 Wrap up
 echo Wrap up --------------------------------------------------------------
-echo task rc:x version
-task rc:x version
+echo $ task version
+task  version
 
 exit
 
