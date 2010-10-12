@@ -33,6 +33,8 @@
    report.
  + Added feature #481, allowing for user control of the color rule order
    of precedence via the 'rule.precedence.color' configuration variable.
+ + Added feature #499, giving an extra line in the message output when
+   doing bulk done changes (thanks to T. Charles Yun).
  + New 'depends' column for custom reports.
  + New 'blocked' report for showing blocked tasks.
  + New 'unblocked' report for showing tasks that are not blocked.
