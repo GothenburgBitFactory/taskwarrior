@@ -347,102 +347,141 @@ active task as inactive, by stopping it.
     $ task active
     $ task 2 stop
 
----------------------------------------- Due dates -------------------------------------------------
+.SH DUE DATES
+Due dates can be specified as dates, durations into the future or past, by
+mnemonic, ordinal of day of week.
 
-task 1 due:7/31/2010                     Due dates can be specified as dates...
-task 1 due:2wks                          as some distance into the future...
-task 1 due:-2wks                         or past...
-task 1 due:eom                           or by mnemonic (end of month)...
-task 2 due:8th                           or by ordinal...
-task 2 due:sunday                        or by day...
-task 5 due:eow
-task list                                Some of these dates are in the past, so now you see there
-task overdue                             are overdue tasks.  Due dates have different colors for
-                                         due, imminent, today and overdue values.
 
-task rc.dateformat.report:Y-M-DTH:N:SZ list
-                                         You can also choose the format - for input and output.
+Some of these dates are in the past, so now you see there are overdue tasks.
+Due dates have different colors for due, imminent, today and overdue values.
 
----------------------------------------- Calendar --------------------------------------------------
+    $ task 1 due:7/31/2010
+    $ task 1 due:2wks
+    $ task 1 due:-2wks
+    $ task 1 due:eom
+    $ task 2 due:8th
+    $ task 2 due:sunday
+    $ task 5 due:eow
 
-task calendar                            When tasks have due dates, you can see them on the calendar.
+You can also choose the format - for input and output.
 
-vi ~/.taskrc
-# include /usr/local/share/doc/task/rc/holidays-US.rc
-task calendar
-                                         Taskwarrior provides sample holiday files.  You can create
-                                         your own, or use one of the samples to show holidays on the
-                                         calendar.
+    $ task rc.dateformat.report:Y-M-DTH:N:SZ list
 
-task cal 2010                            You can see the whole year.
-task rc.calendar.details:full cal        You can see the tasks with due dates also.
-task rc.calendar.holidays:full cal       And you can see the holidays.
+.SH CALENDAR
+When tasks have due dates, you can see them on the calendar.
 
----------------------------------------- Recurrence ------------------------------------------------
+    $ task calendar
 
-task 7 info                              Remember the task we added to pay the rent?  We're going to
-task 7 due:eom recur:monthly             need to do that every month.  Recurring tasks allow us to
-task 7                                   set up a single task that keeps coming back, just as you'd
-                                         expect.
+Taskwarrior provides sample holiday files.  You can create your own, or use one
+of the samples to show holidays on the calendar.
 
-task 7 until:eoy                         You can also limit the extent of the recurrence.  Let's make
-                                         sure the task doesn't recur after the lease ends.
+Try adding this line to your ~/.taskrc file:
 
-task recurring                           And there is a recurring report that shows you only the
-                                         recurring tasks.
+    include /usr/local/share/doc/task/rc/holidays-US.rc
 
-                                         To illustrate a point, let's set up a recurring annual task
-                                         as a reminder to pay taxes, and put the due date in the past.
-                                         This will cause task to fill in the gaps, and create a series
-                                         of severely overdue tasks.
+Then:
 
-task add Pay taxes due:4/15/2007 recur:yearly
-task long
+    $ task calendar
 
-task 11 delete    # y y                  Deletions to recurring tasks can be escalated to include all
-task list                                the recurrences of a task.
+You can see the whole year, see due tasks as well, and see the holidays:
 
----------------------------------------- Shell -----------------------------------------------------
+    $ task cal 2010
+    $ task rc.calendar.details:full cal
+    $ task rc.calendar.holidays:full cal
 
-task shell                               You can use the shell command to create a more immersive
-task> projects                           environment.  Any task command you run outside the shell
-task> tags                               can also be run inside the shell, without the need to prefix
-task> list                               every command with "task".
-task> quit
+.SH RECURRENCE
+Remember the task we added to pay the rent?  We're going to need to do that
+every month.  Recurring tasks allow us to set up a single task that keeps coming
+back, just as you'd expect.
 
----------------------------------------- Special Tags ----------------------------------------------
+    $ task 7 info
+    $ task 7 due:eom recur:monthly
+    $ task 7
 
-task 6 +nocolor                          You've seen tags, but there are also 'special tags' that
-task list                                have effects on individual tasks.  The 'nocolor' special
-                                         tag causes the color rules to be bypassed.
 
-task tags                                Special tags are highlighted by the 'tags' command.
+You can also limit the extent of the recurrence.  Let's make sure the task
+doesn't recur after the lease ends.
 
-task 6 -nocolor                          There are others - the 'nonag' special tag prevents the
-                                         generation of nag messages when you work on low priority
-                                         tasks when there are more important ones.
+    $ task 7 until:eoy
 
-                                         The 'nocal' special tag will prevent a task from appearing
-                                         on the calendar.
+And there is a recurring report that shows you only the recurring tasks.
 
----------------------------------------- Waiting ---------------------------------------------------
+    $ task recurring
 
-task add Look for new apartment due:eoy  When you have a task with a due date that is far out into
-task list                                the future, you may want to hide that task for a while.
+To illustrate a point, let's set up a recurring annual task as a reminder to pay
+taxes, and put the due date in the past.  This will cause task to fill in the
+gaps, and create a series of severely overdue tasks.
 
-task 10 wait:12/1/2010                   You can provide a wait date for a task, and it will remain
-task list                                hidden until that date.  It will no longer be cluttering
-task waiting                             your task list, but it is still there, and visible using
-                                         the 'waiting' report.  When the wait date comes, the task
-                                         will just pop back into the list.
+    $ task add Pay taxes due:4/15/2007 recur:yearly
+    $ task long
 
-task add Do something in a few seconds   To illustrate this, let's set up a task with a very short
-task 11 wait:5s                          wait time of five seconds.
+Deletions to recurring tasks can be escalated to include all the recurrences of
+a task.
 
-task list                                It's gone.
-(sleep 5)                                We wait for 5 seconds...
-task list                                And it's back.
-task 11 rc.confirmation:no delete        And now it's deleted.
+    $ task 11 delete # y y
+    $ task list
+
+.SH SHELL
+You can use the shell command to create a more immersive environment.  Any task
+command you run outside the shell can also be run inside the shell, without the
+need to prefix every command with "task".
+
+    $ task shell
+    task> projects
+    task> tags
+    task> list
+    task> quit
+
+.SH SPECIAL TAGS
+You've seen tags, but there are also 'special tags' that have effects on
+individual tasks.  The 'nocolor' special tag causes the color rules to be
+bypassed.
+
+    $ task 6 +nocolor
+    $ task list
+
+Special tags are highlighted by the 'tags' command.
+
+    $ task tags
+
+There are others - the 'nonag' special tag prevents the generation of nag
+messages when you work on low priority tasks when there are more important ones.
+
+    $ task 6 -nocolor
+
+The 'nocal' special tag will prevent a task from appearing on the calendar.
+
+.SH WAITING
+When you have a task with a due date that is far out into
+the future, you may want to hide that task for a while.
+
+    $ task add Look for new apartment due:eoy
+    $ task list
+
+You can provide a wait date for a task, and it will remain hidden until that
+date.  It will no longer be cluttering your task list, but it is still there,
+and visible using the 'waiting' report.  When the wait date comes, the task
+will just pop back into the list.
+
+    $ task 10 wait:12/1/2010
+    $ task list
+    $ task waiting
+
+To illustrate this, let's set up a task with a very short wait time of five
+seconds.
+
+    $ task add Do something in a few seconds
+    $ task 11 wait:5s
+    $ task list
+
+It's gone.
+
+    (wait 5 seconds)
+    $ task list
+
+And it's back.  Now we delete it.
+
+    $ task 11 rc.confirmation:no delete
 
 ---------------------------------------- Dependencies ----------------------------------------------
 
