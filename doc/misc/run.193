@@ -9,6 +9,8 @@ echo '#include /usr/local/share/doc/task/rc/dark-blue-256.theme' >> /Users/paul/
 echo '#include /usr/local/share/doc/task/rc/dark-red-256.theme' >> /Users/paul/.taskrc
 echo '#include /usr/local/share/doc/task/rc/dark-256.theme' >> /Users/paul/.taskrc
 
+# 1 Intro
+
 # 2 Basic usage
 echo Basic usage --------------------------------------------------------------
 echo $ task add Select a free weekend in November
@@ -35,8 +37,6 @@ echo $ task 3 done
 task 3 done
 echo $ task list
 task list
-
-exit # TODO move this line down
 
 # 3 Projects
 echo Projects --------------------------------------------------------------
@@ -416,15 +416,15 @@ task  foo
 # 23 Charts
 echo Charts --------------------------------------------------------------
 echo $ task history
-task  history
+task history
 echo $ task history.annual
-task  history.annual
+task history.annual
 echo $ task ghistory
-task  ghistory
+task ghistory
 echo $ task ghistory.annual
-task  ghistory.annual
-echo $ task rc.color.summary.background:"on gray3" summary
-task  rc.color.summary.background:"on gray3" summary
+task ghistory.annual
+echo $ task summary
+task summary
 
 # 24 Advanced filters
 echo Advanced filters --------------------------------------------------------------
