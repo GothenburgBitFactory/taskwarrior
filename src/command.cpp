@@ -1592,8 +1592,6 @@ int handleDone (std::string &outs)
           << " as done.\n";
 
     outs = out.str ();
-    if (count > context.config.getInteger ("bulk"))
-      outs = "\n" + outs;
     context.hooks.trigger ("post-done-command");
   }
 

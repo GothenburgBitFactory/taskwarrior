@@ -71,6 +71,8 @@ bool Permission::confirmed (const Task& task, const std::string& question)
   std::cout << std::endl;  // Flush.
 
   int answer = confirm4 (question);
+  std::cout << "\n";       // #499
+
   if (answer == 2)
     allConfirmed = true;
 
