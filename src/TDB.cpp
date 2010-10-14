@@ -612,9 +612,6 @@ int TDB::gc ()
   std::vector <Task> ignore;
   loadPending (ignore, filter);
 
-  // TODO This whole idea of removing dangling dependencies is suspect.  I'm not
-  //      sure it should be included.
-
   // Search for dangling dependencies.  These are dependencies whose uuid cannot
   // be converted to an id by TDB.
   std::vector <std::string> deps;
@@ -625,14 +622,17 @@ int TDB::gc ()
       deps.clear ();
       task->getDependencies (deps);
       foreach (dep, deps)
+      {
         if (id (*dep) == 0)
         {
           task->removeDependency (*dep);
+          ++count_pending_changes;
           context.debug ("GC: Removed dangling dependency "
-                          + *dep
-                          + " from "
-                          + task->get ("uuid"));
+                          + task->get ("uuid")
+                          + " -> "
+                          + *dep);
         }
+      }
     }
   }
 
