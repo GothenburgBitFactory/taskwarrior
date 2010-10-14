@@ -1356,9 +1356,14 @@ void TDB::merge (const std::string& mergeFile)
   {
     // nothing happend on the remote branch
     // local branch is up-to-date
-    throw std::string ("Database is up to date.");
+
+    // nothing happend on the local branch either
+    if (lit == l.end())
+		 throw std::string ("Database is up to date.");
+	 else
+		 std::cout << "No changes were made on the remote database.\n";
   }
-  else // lit == undo.end ()
+  else // lit == l.end ()
   {
     // nothing happend on the local branch
     std::cout << "No changes were made on the local database.  Adding remote changes...\n";
@@ -1542,10 +1547,6 @@ void TDB::merge (const std::string& mergeFile)
     // write undo file
     if (! File::write (undoFile, undo, false))
       throw std::string ("Could not write '") + undoFile + "'.";
-  }
-  else // nothing to be done
-  {
-    std::cout << "No merge required.\n";
   }
 
   // delete objects
