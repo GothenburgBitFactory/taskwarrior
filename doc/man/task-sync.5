@@ -259,11 +259,11 @@ This time the URI is determined automatically, and after the merge the files are
 pushed back to the remote machine.  In a similar way, the remote machine can
 also be configured to merge from the local machine and push back to it.  Then it
 is just a matter of Alice remembering to merge now and then, from either
-machine, to have her data in two places.
+machine, to have her data in two (or even more) places.
 
 .SH CONFIGURATION
 By setting these configuration variables, it is possible to simplify the
-synchronization commands, by relying on the defaults.
+synchronization commands, by relying on the defaults or alias names.
 
 .br
 .B merge.autopush=yes|no|ask
@@ -276,22 +276,28 @@ performed, or whether the user is asked every time.  The default value is 'ask'.
 .B merge.default.uri=<uri>
 .RS
 Sets a default URI so that just the 'task merge' command be run without the
-need to retype the URI every time.
+need to retype the URI every time. You can also use this configuration scheme
+to set alias names, e.g. set merge.desktop.uri and run 'task merge desktop'.
 .RE
 
 .br
 .B push.default.uri=<uri>
 .RS
 Sets a default URI so that just the 'task push' command be run without the
-need to retype the URI every time.
+need to retype the URI every time. You can also use this configuration scheme
+to set alias names, e.g. set push.desktop.uri and run 'task push desktop'.
 .RE
 
 .br
 .B pull.default.uri=<uri>
 .RS
 Sets a default URI so that just the 'task pull' command be run without the
-need to retype the URI every time.
+need to retype the URI every time. You can also use this configuration scheme
+to set alias names, e.g. set pull.desktop.uri and run 'task pull desktop'.
 .RE
+
+Note that, when using SSH/scp, hostnames will be expanded due to the ssh 
+configuration file ~/.ssh/config.
 
 .SH EXTERNAL DEPENDENCIES
 Depending on the URI protocols used, the utilities 'scp', 'rsync' and 'curl'
@@ -317,7 +323,8 @@ http://www.gnu.org/licenses/gpl-2.0.txt for more information.
 .BR taskrc(5),
 .BR task-faq(5),
 .BR task-color(5),
-.BR task-tutorial(5)
+.BR task-tutorial(5),
+.BR ssh_config(5)
 
 For more information regarding task, the following may be referenced:
 

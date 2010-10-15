@@ -38,10 +38,16 @@ TransportCurl::TransportCurl(const Uri& uri) : Transport(uri)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportCurl::send(const std::string& source)
 {
-	if (uri.host == "")
-		throw std::string ("when using the 'curl' protocol, the uri must contain a hostname.");
+  if (uri.host == "")
+    throw std::string ("when using the 'curl' protocol, the uri must contain a hostname.");
 
-	if (is_filelist(source))
+  if (uri.user != "")
+  {
+    arguments.push_back("--user");
+    arguments.push_back(uri.user);
+  }
+
+  if (is_filelist(source))
   {
     std::string::size_type pos;
     pos = source.find("{");
@@ -76,25 +82,32 @@ void TransportCurl::send(const std::string& source)
     arguments.push_back (source);
   }
 
-	// cmd line is: curl -T source protocol://host:port/path
-	if (uri.port != "")
-	{
-		arguments.push_back (uri.protocol + "://" + uri.host + ":" + uri.port + "/" + uri.path);
-	}
-	else
-	{
-		arguments.push_back (uri.protocol + "://" + uri.host + "/" + uri.path);
-	}
+  // cmd line is: curl -T source protocol://host:port/path
+  if (uri.port != "")
+  {
+    arguments.push_back (uri.protocol + "://" + uri.host + ":" + uri.port + "/" + uri.path);
+  }
+  else
+  {
+    arguments.push_back (uri.protocol + "://" + uri.host + "/" + uri.path);
+  }
 
-	if (execute())
+  if (execute())
     throw std::string ("Could not run curl.  Is it installed, and available in $PATH?");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportCurl::recv(std::string target)
 {
-	if (uri.host == "")
-		throw std::string ("when using the 'curl' protocol, the uri must contain a hostname.");
+  if (uri.host == "")
+    throw std::string ("when using the 'curl' protocol, the uri must contain a hostname.");
+
+  if (uri.user != "")
+  {
+    arguments.push_back("--user");
+    arguments.push_back(uri.user);
+  }
+
 
   if (is_filelist(uri.path))
   {
@@ -127,20 +140,20 @@ void TransportCurl::recv(std::string target)
     target = "-o " + target;
   }
 
-	// cmd line is: curl protocol://host:port/path/to/source/file -o path/to/target/file
-	if (uri.port != "")
-	{
-		arguments.push_back (uri.protocol + "://" + uri.host + ":" + uri.port + "/" + uri.path);
-	}
-	else
-	{
-		arguments.push_back (uri.protocol + "://" + uri.host + "/" + uri.path);
-	}
+  // cmd line is: curl protocol://host:port/path/to/source/file -o path/to/target/file
+  if (uri.port != "")
+  {
+    arguments.push_back (uri.protocol + "://" + uri.host + ":" + uri.port + "/" + uri.path);
+  }
+  else
+  {
+    arguments.push_back (uri.protocol + "://" + uri.host + "/" + uri.path);
+  }
 
-	arguments.push_back (target);
+  arguments.push_back (target);
 
-	if (execute())
-    throw std::string ("Could not run curl.  Is it installed, and available in $PATH?");
+  if (execute())
+     throw std::string ("Could not run curl.  Is it installed, and available in $PATH?");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
