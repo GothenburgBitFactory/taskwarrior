@@ -518,44 +518,93 @@ task 1 info                              the dependency chain to reflect what yo
 
 ---------------------------------------- Reports ---------------------------------------------------
 
-task minimal                             Taskwarrior has a good many reports.  There is the bare minimum.
-task ls                                  The simple.
-task list                                The standard.
-task long                                The kitchen sink.
-task all                                 The packrat.
-task completed                           Nostalgia.
-task recurring                           Groundhog day.
-task waiting                             Surprises.
-task blocked                             Wedged.
-task unblocked                           Unencumbered.
-task oldest                              Ancient history.
-task newest                              Contemporary.
-task timesheet                           Corporate.
-task next                                And "what should I work on next?"  This one can be useful
-                                         because it pulls a few of the highest priority tasks from
-                                         all the projects.  It's the report we should all be using.
+.SH REPORTS
+Taskwarrior has a good many reports.  There is a report with minimal
+information:
 
----------------------------------------- Custom Report ---------------------------------------------
+    $ task minimal
 
-                                         You can even define your own custom report.  Let's quickly
-                                         create a custom report - we'll call it foo - and I can
-                                         choose from a long list of fields to include in the report,
-                                         but I want to see the ID, the date when I entered the task,
-                                         and the description.  I can specify the labels for those
-                                         columns, the sort order of the report, and I can filter.
+There is the basic report:
 
-cat >> ~/.taskrc
-report.foo.description=My own report
-report.foo.columns=id,entry,description
-report.foo.labels=ID,Entered,Description
-report.foo.sort=entry+,description+
-report.foo.filter=status:pending
+    $ task ls
 
-task help | grep foo                     Custom reports also show up on the help output.
+There is the most common report:
 
-task show report.foo                     I can inspect the configuration.
+    $ task list
 
-task foo                                 And they can be run just like the other reports.
+There is a report with most of the data shown:
+
+    $ task long
+
+There is a report containing all tasks, old and new:
+
+    $ task all
+
+There is a report showing completed work:
+
+    $ task completed
+
+There is a report showing recurring tasks only:
+
+    $ task recurring
+
+There is a repot to show all the waiting tasks:
+
+    $ task waiting
+
+There is a report showing all the tasks that are blocked via dependencies by
+other tasks:
+
+    $ task blocked
+
+There is a report showing tasks that are not blocked by dependencies:
+
+    $ task unblocked
+
+There is a report showing the oldest tasks:
+
+    $ task oldest
+
+There is a report showing the newest tasks:
+
+    $ task newest
+
+There is a report showing the completed and started tasks, by week:
+
+    $ task timesheet
+
+And "what should I work on next?"  This one can be useful because it pulls a few
+of the highest priority tasks from all the projects.  It's the report we should
+all be using.
+
+    $ task next
+
+.SH CUSTOM REPORTS
+You can even define your own custom report.  Let's quickly create a custom
+report - we'll call it foo - and I can choose from a long list of fields to
+include in the report, but I want to see the ID, the date when I entered the
+task, and the description.  I can specify the labels for those columns, the
+sort order of the report, and I can filter.
+
+    $ cat >> ~/.taskrc
+    report.foo.description=My own report
+    report.foo.columns=id,entry,description
+    report.foo.labels=ID,Entered,Description
+    report.foo.sort=entry+,description+
+    report.foo.filter=status:pending
+    ^D
+
+Custom reports also show up on the help output.
+
+    $ task help | grep foo
+
+I can inspect the configuration.
+
+    $ task show report.foo
+
+And they can be run just like the other reports.
+
+    $ task foo
 
 ---------------------------------------- Charts ----------------------------------------------------
 
