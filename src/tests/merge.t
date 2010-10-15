@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 43;
+use Test::More tests => 41;
 use File::Copy;
 
 use constant false => 0;
@@ -140,7 +140,6 @@ copy("local/undo.data", "local/undo.save") or fail("copy local/undo.data to loca
 my $output_l = qx{../task rc:local.rc merge remote/};
 
 #check output
-like   ($output_l,   qr/Running redo/,         "local-merge finished");
 unlike ($output_l,   qr/Missing/,              "local-merge: no missing entry");
 unlike ($output_l,   qr/Not adding duplicate/, "local-merge: no duplicates");
 
@@ -148,7 +147,6 @@ unlike ($output_l,   qr/Not adding duplicate/, "local-merge: no duplicates");
 my $output_r = qx{../task rc:remote.rc merge local/undo.save};
 
 # check output
-like   ($output_r,   qr/Running redo/,         "remote-merge finished");
 unlike ($output_r,   qr/Missing/,              "remote-merge: no missing entry");
 unlike ($output_r,   qr/Not adding duplicate/, "remote-merge: no duplicates");
 

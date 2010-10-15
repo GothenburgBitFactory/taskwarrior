@@ -877,6 +877,7 @@ int handleShow (std::string &outs)
       "color.calendar.weekend color.calendar.holiday color.calendar.weeknumber "
       "color.summary.background color.summary.bar color.history.add "
       "color.history.done color.history.delete color.undo.before "
+      "color.sync.added color.sync.changed color.sync.rejected "
       "color.undo.after confirmation curses data.location dateformat "
       "dateformat.holiday dateformat.report dateformat.annotation debug "
       "default.command default.priority default.project defaultwidth due "
