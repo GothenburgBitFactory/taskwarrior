@@ -25,11 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "Subst.h"
-#include "Nibbler.h"
-#include "Context.h"
-#include "text.h"
-#include "i18n.h"
+#include <Subst.h>
+#include <Nibbler.h>
+#include <Directory.h>
+#include <Context.h>
+#include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -74,6 +75,9 @@ Subst::~Subst ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// A Path and a Subst may look similar, and so the rule is that if a Subst looks
+// like a path, it must also not exist in the file system in order to actually
+// be a Subst.
 bool Subst::valid (const std::string& input) const
 {
   std::string ignored;
@@ -85,7 +89,8 @@ bool Subst::valid (const std::string& input) const
       n.skip     ('/'))
   {
     n.skip ('g');
-    return true;
+    if (n.depleted ())
+      return ! Directory (input).exists ();
   }
 
   return false;
