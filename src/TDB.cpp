@@ -1372,8 +1372,6 @@ void TDB::merge (const std::string& mergeFile)
 
   if (!mods.empty ())
   {
-    std::cout << "Running redo routine...\n";
-
     std::string pendingFile   = location.data + "/pending.data";
     std::vector <std::string> pending;
 
