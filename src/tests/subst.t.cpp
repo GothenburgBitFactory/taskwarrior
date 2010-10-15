@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (19);
+  UnitTest t (18);
 
   Task task;
   task.set ("description", "one two three four");
@@ -42,7 +42,6 @@ int main (int argc, char** argv)
   context.config.set ("search.case.sensitive", "yes");
 
   Subst s;
-  t.ok (s.valid ("/a/b/x"),         "valid /a/b/x");
   t.ok (s.valid ("/a/b/"),          "valid /a/b/");
   t.ok (s.valid ("/two/TWO/"),      "valid /two/TWO/");
   t.ok (s.valid ("/e /E /g"),       "valid /e /E /g");
