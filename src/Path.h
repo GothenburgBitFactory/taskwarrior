@@ -39,6 +39,7 @@ public:
   virtual ~Path ();
 
   Path& operator= (const Path&);
+  bool operator== (const Path&);
   operator std::string () const;
 
   std::string name () const;

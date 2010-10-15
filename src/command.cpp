@@ -631,7 +631,7 @@ void handleMerge (std::string& outs)
          || (bAutopush) )
       {
         std::string out;
-        handlePush(out);
+        handlePush (out);
       }
     }
     else
@@ -642,6 +642,8 @@ void handleMerge (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Transfers the local data (from rc.location.data) to the remote path.  Because
+// this is potentially on another machine, no checking can be performed.
 void handlePush (std::string& outs)
 {
   if (context.hooks.trigger ("pre-push-command"))
@@ -663,9 +665,14 @@ void handlePush (std::string& outs)
 			}
 			else
 			{
+        // Verify that files are not being copied from rc.data.location to the
+        // same place.
+        if (Directory (uri.path) == Directory (context.config.get ("data.location")))
+          throw std::string ("Cannot push files when the source and destination are the same.");
+
         // copy files locally
-        if (!uri.is_directory())
-          throw std::string ("The uri '") + uri.path + "' does not appear to be a directory.";
+        if (! Path (uri.data).is_directory ())
+          throw std::string ("The uri '") + uri.path + "' is not a local directory.";
 
         std::ifstream ifile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
         std::ofstream ofile1 ((uri.path      +  "undo.data").c_str(), std::ios_base::binary);
@@ -703,8 +710,9 @@ void handlePull (std::string& outs)
     {
 			Directory location (context.config.get ("data.location"));
 
-			if (!uri.append ("{pending,undo,completed}.data"))
-        throw std::string ("The uri '") + uri.path + "' does not appear to be a directory.";
+			if (! uri.append ("{pending,undo,completed}.data") ||
+          ! Path (uri.data).is_directory ())
+        throw std::string ("The uri '") + uri.path + "' is not a local directory.";
 
 			Transport* transport;
 			if ((transport = Transport::getTransport (uri)) != NULL)
@@ -714,6 +722,11 @@ void handlePull (std::string& outs)
 			}
 			else
 			{
+        // Verify that files are not being copied from rc.data.location to the
+        // same place.
+        if (Directory (uri.path) == Directory (context.config.get ("data.location")))
+          throw std::string ("Cannot pull files when the source and destination are the same.");
+
         // copy files locally
 
         // remove {pending,undo,completed}.data
@@ -725,17 +738,20 @@ void handlePull (std::string& outs)
 
         if (path1.exists() && path2.exists() && path3.exists())
         {
-          std::ofstream ofile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
-          std::ifstream ifile1 (path1.data.c_str()                    , std::ios_base::binary);
-          ofile1 << ifile1.rdbuf();
+ //         if (confirm ("xxxxxxxxxxxxx"))
+//          {
+            std::ofstream ofile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
+            std::ifstream ifile1 (path1.data.c_str()                    , std::ios_base::binary);
+            ofile1 << ifile1.rdbuf();
 
-          std::ofstream ofile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
-          std::ifstream ifile2 (path2.data.c_str()                    , std::ios_base::binary);
-          ofile2 << ifile2.rdbuf();
+            std::ofstream ofile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
+            std::ifstream ifile2 (path2.data.c_str()                    , std::ios_base::binary);
+            ofile2 << ifile2.rdbuf();
 
-          std::ofstream ofile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
-          std::ifstream ifile3 (path3.data.c_str()                    , std::ios_base::binary);
-          ofile3 << ifile3.rdbuf();
+            std::ofstream ofile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
+            std::ifstream ifile3 (path3.data.c_str()                    , std::ios_base::binary);
+            ofile3 << ifile3.rdbuf();
+//          }
         }
         else
         {
