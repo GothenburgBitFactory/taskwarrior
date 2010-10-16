@@ -773,8 +773,16 @@ void TDB::undo ()
     table.addColumn (" ");
     table.addColumn ("Prior Values");
     table.addColumn ("Current Values");
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
+
+    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+        context.config.getBoolean ("fontunderline"))
+    {
+      table.setColumnUnderline (1);
+      table.setColumnUnderline (2);
+    }
+    else
+      table.setTableDashedUnderline ();
+
     table.setColumnWidth (0, Table::minimum);
     table.setColumnWidth (1, Table::flexible);
     table.setColumnWidth (2, Table::flexible);
