@@ -2107,12 +2107,14 @@ int handleColor (std::string &outs)
         table.addColumn ("Color");
         table.addColumn ("Definition");
 
-        if (context.config.getBoolean ("color") ||
-            context.config.getBoolean ("_forcecolor"))
+        if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+            context.config.getBoolean ("fontunderline"))
         {
           table.setColumnUnderline (0);
           table.setColumnUnderline (1);
         }
+        else
+          table.setTableDashedUnderline ();
 
         foreach (item, all)
         {
