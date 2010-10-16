@@ -5,13 +5,17 @@ task-tutorial \- A tutorial for the task(1) command line todo manager.
 
 .SH DESCRIPTION
 This tutorial contains a narrative and a series of commands that lead you
-through different scenarios and illustrate the capabiliries of taskwarrior.
+through different scenarios and illustrate the capabilities of taskwarrior.
 We will begin with basic usage, and progress to the more powerful features.
 It is recommended that you work through these examples alongside this tutorial.
 
+Make your terminal window as wide as you can, to properly see the formatted
+output of this page.
+
 Taskwarrior has many features and you will probably not use them all, but there
 are likely to be several capabilities that work well with your style of managing
-tasks.  Everyone has different usage patterns.
+tasks.  Everyone has different usage patterns.  This is therefore a complete
+list of capabilities, and you should choose accordingly.
 
 .SH BASIC USAGE
 Let's get started.  We're planning a party, and there is a lot of work to do, so
@@ -20,13 +24,23 @@ let's capture these tasks, by using the 'add' command.
 .RS
 $ task add Select a free weekend in November
 .br
+Created task 1.
+.br
 $ task add Select and book a venue
+.br
+Created task 2.
 .br
 $ task add Come up with a guest list
 .br
+Created task 3.
+.br
 $ task add Mail invitations
 .br
+Created task 4.
+.br
 $ task add Select a caterer
+.br
+Created task 5.
 .RE
 
 The '$' prompt shows that these are commands that you type (don't include the
@@ -35,6 +49,26 @@ taskwarrior.  Let's take a look at our tasks so far.
 
 .RS
 $ task list
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ---------------------------------
+.br
+ 1                          1 min Select a free weekend in November
+.br
+ 2                        55 secs Select and book a venue
+.br
+ 3                        49 secs Come up with a guest list
+.br
+ 4                        40 secs Mail invitations
+.br
+ 5                        33 secs Select a caterer
+.br
+
+.br
+5 tasks
 .RE
 
 Now I've already ordered a cake, so rather than 'add' this, I'm going to 'log'
@@ -43,6 +77,8 @@ done it.  It saves me a step.
 
 .RS
 $ task log Order a special cake
+.br
+Logged task.
 .RE
 
 As for those invitations, I'm going to need to design them first.  And I'm also
@@ -53,7 +89,19 @@ still unique.
 .RS
 $ task 4 duplicate /Mail/Design/
 .br
+Duplicated 4 'Mail invitations'.
+.br
+Duplicated 1 task.
+.br
+Created task 7.
+.br
 $ task 4 dup /Mail/Print/
+.br
+Duplicated 4 'Mail invitations'.
+.br
+Duplicated 1 task.
+.br
+Created task 8.
 .br
 $ task list
 .RE
@@ -64,7 +112,33 @@ mark that one as done.
 .RS
 $ task 3 done
 .br
+Completed 3 'Come up with a guest list'.
+.br
+Marked 1 task as done.
+.br
 $ task list
+.br
+
+.br
+ID Project Pri Due Active Age    Description
+.br
+-- ------- --- --- ------ ------ ---------------------------------
+.br
+ 1                        8 mins Select a free weekend in November
+.br
+ 2                        7 mins Select and book a venue
+.br
+ 3                        6 mins Mail invitations
+.br
+ 4                        6 mins Select a caterer
+.br
+ 5                        4 mins Design invitations
+.br
+ 6                        4 mins Print invitations
+.br
+
+.br
+6 tasks
 .RE
 
 And that's basic usage, and you already know enough to be productive using
@@ -78,14 +152,44 @@ Remember to pay the rent at the end of the month.
 
 .RS
 $ task add Pay teh rent on teh 31st
+.br
+Created task 7.
 .RE
 
-Oh, that was sloppy, but it can be fixed with a global substitution.
+Oh, that was sloppy, but it can be fixed with a global substitution, represented
+by the 'g' at the end.  You could omit the 'g', and it would only make the first
+substitution.
 
 .RS
-$ task 7 /teh/teh/g
+$ task 7 /teh/the/g
+.br
+Modified 1 task.
 .br
 $ task list
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ---------------------------------
+.br
+ 1                        12 mins Select a free weekend in November
+.br
+ 2                        12 mins Select and book a venue
+.br
+ 3                        11 mins Mail invitations
+.br
+ 4                        11 mins Select a caterer
+.br
+ 5                         9 mins Design invitations
+.br
+ 6                         9 mins Print invitations
+.br
+ 7                        37 secs Pay the rent on the 31st
+.br
+
+.br
+7 tasks
 .RE
 
 We can now use projects to separate home chores from the party preparation.
@@ -94,6 +198,10 @@ belong to one project.
 
 .RS
 $ task 7 project:home
+.br
+The scope of project 'home' has changed.  Project 'home' is 0% complete (1 of 1 tasks remaining).
+.br
+Modified 1 task.
 .RE
 
 And we will put those first six tasks in the 'party' project.  See how we
@@ -102,6 +210,30 @@ this, but we'll accept all changes here.
 
 .RS
 $ task 1-6 project:party
+.br
+
+.br
+Task 1 "Select a free weekend in November"
+.br
+  - project will be set to 'party'.
+.br
+Proceed with change? (Yes/no/All/quit) A
+.br
+
+.br
+The scope of project 'party' has changed.  Project 'party' is 0% complete (1 of 1 tasks remaining).
+.br
+The scope of project 'party' has changed.  Project 'party' is 0% complete (2 of 2 tasks remaining).
+.br
+The scope of project 'party' has changed.  Project 'party' is 0% complete (3 of 3 tasks remaining).
+.br
+The scope of project 'party' has changed.  Project 'party' is 0% complete (4 of 4 tasks remaining).
+.br
+The scope of project 'party' has changed.  Project 'party' is 0% complete (5 of 5 tasks remaining).
+.br
+The scope of project 'party' has changed.  Project 'party' is 0% complete (6 of 6 tasks remaining).
+.br
+Modified 6 tasks.
 .RE
 
 Now that we have multiple projects, as shown here, we can use project as a
@@ -112,9 +244,57 @@ that begin with 'par'.
 .RS
 $ task projects
 .br
+
+.br
+Project Tasks Pri:None Pri:L Pri:M Pri:H
+.br
+------- ----- -------- ----- ----- -----
+.br
+home        1        1     0     0     0
+.br
+party       6        6     0     0     0
+.br
+
+.br
+2 projects (7 tasks)
+.br
 $ task list project:home
 .br
+
+.br
+ID Project Pri Due Active Age    Description
+.br
+-- ------- --- --- ------ ------ ------------------------
+.br
+ 7 home                   5 mins Pay the rent on the 31st
+.br
+
+.br
+1 task
+.br
 $ task li pro:par
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ---------------------------------
+.br
+ 1 party                  18 mins Select a free weekend in November
+.br
+ 2 party                  17 mins Select and book a venue
+.br
+ 3 party                  17 mins Mail invitations
+.br
+ 4 party                  17 mins Select a caterer
+.br
+ 5 party                  15 mins Design invitations
+.br
+ 6 party                  15 mins Print invitations
+.br
+
+.br
+6 tasks
 .RE
 
 .SH PRIORITIES
@@ -124,40 +304,126 @@ high, medium and low, and taskwarrior knows these as H, M or L.
 .RS
 $ task 1-3,5 priority:H
 .br
+
+.br
+Task 1 "Select a free weekend in November"
+.br
+  - priority will be set to 'H'.
+.br
+Proceed with change? (Yes/no/All/quit) A
+.br
+
+.br
+Modified 4 tasks.
+.br
+
+.br
 $ task list
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ---------------------------------
+.br
+ 1 party   H              24 mins Select a free weekend in November
+.br
+ 2 party   H              23 mins Select and book a venue
+.br
+ 3 party   H              23 mins Mail invitations
+.br
+ 5 party   H              21 mins Design invitations
+.br
+ 7 home                   12 mins Pay the rent on the 31st
+.br
+ 4 party                  23 mins Select a caterer
+.br
+ 6 party                  21 mins Print invitations
+.br
+
+.br
+7 tasks
 .RE
 
 You can remove priorities by specifying a blank value.
 
 .RS
 $ task 3 pri:
+.br
+Modified 1 task.
 .RE
 
 .SH TAGS
 A task may only have one project, but it may have any number of tags, which are
-just single words associated with the task.
-
-.RS
-$ task list
-.RE
-
-I can go to the print shop at the mall, and do all the invitation tasks, so
-let's tag them all.
+just single words associated with the task.  I can go to the print shop at the
+mall, and do all the invitation tasks, so let's tag them all.
 
 .RS
 $ task 3,5,6 +mall
+.br
+
+.br
+Task 3 "Mail invitations"
+.br
+  - tags will be set to 'mall'.
+.br
+Proceed with change? (Yes/no/All/quit) A
+.br
+
+.br
+Modified 3 tasks.
 .RE
 
 The long report shows tags, too,
 
 .RS
 $ task long
+.br
+
+.br
+ID Project Pri Added      Started Due Recur Countdown Age     Deps Tags Description
+.br
+-- ------- --- ---------- ------- --- ----- --------- ------- ---- ---- ---------------------------------
+.br
+ 1 party   H   10/16/2010                             27 mins           Select a free weekend in November
+.br
+ 2 party   H   10/16/2010                             26 mins           Select and book a venue
+.br
+ 5 party   H   10/16/2010                             23 mins      mall Design invitations
+.br
+ 7 home        10/16/2010                             14 mins           Pay the rent on the 31st
+.br
+ 3 party       10/16/2010                             25 mins      mall Mail invitations
+.br
+ 4 party       10/16/2010                             25 mins           Select a caterer
+.br
+ 6 party       10/16/2010                             23 mins      mall Print invitations
+.br
+
+.br
+7 tasks
 .RE
 
 and I can use tags as a filter to any report too.
 
 .RS
 $ task list +mall
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ------------------
+.br
+ 5 party   H              24 mins Design invitations
+.br
+ 3 party                  26 mins Mail invitations
+.br
+ 6 party                  24 mins Print invitations
+.br
+
+.br
+3 tasks
 .RE
 
 I made a mistake - I can't mail out the invitations at the mall, so let's remove
@@ -165,6 +431,8 @@ that tag.
 
 .RS
 $ task 3 -mall
+.br
+Modified 1 task.
 .RE
 
 .SH MODIFICATIONS
@@ -174,9 +442,21 @@ confirmation.
 
 .RS
 $ task 7 Pay rent at the end of the month
+.br
+
+.br
+Task 7 "Pay the rent on the 31st"
+.br
+  - description will be changed from 'Pay the rent on the 31st' to 'Pay rent at the end of the month'.
+.br
+Proceed with change? (Yes/no/All/quit) Y
+.br
+
+.br
+Modified 1 task.
 .RE
 
-We'll need music.  I can prepend to that.  I can append to that.
+We'll need music.  I can prepend, and I can append to a task.
 
 .RS
 $ task add music
@@ -185,24 +465,40 @@ $ task 8 prepend Select some
 .br
 $ task 8 append for after dinner
 .br
-$ task list
+$ task list dinner
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ----------------------------------
+.br
+ 8                        34 secs Select some Music for after dinner
+.br
+
+.br
+1 task
 .RE
 
-I can also go straight into an editor and modify anything.
+I can also go straight into an editor and modify anything.  The task is
+formatted and you can edit anything you like, and the changes will be
+detected and made to the task.
 
 .RS
-$ task edit
+$ task 5 edit
+.br
+[Your $EDITOR is invoked]
 .RE
 
-Sometimes the command will confuse the shell.  In this case, what would happen
-if there was a file named 'bands' in the current directory?
+Sometimes the command line will confuse the shell.  In this case, what would
+happen if there was a file named 'bands' in the current directory?
 
 .RS
 $ task add Hire a band?
 .RE
 
-The shell would expand that wildcard, so to avoid that, you can escape the
-wildcard, or quote the whole description.
+The shell might expand that wild-card, so to avoid that, you can escape the
+wild-card, or quote the whole description.
 
 .RS
 $ task add Hire a band\\?
@@ -216,14 +512,40 @@ Otherwise, that +dj would be interpreted as a tag.
 
 .RS
 $ task add -- Hire a band\\? +dj
+.br
+Created task 9.
 .RE
 
-We don't need a band, so the easiest way to get rid of that task is to undo the
-last change.  Taskwarrior has a complete undo stack, so you can undo all the way
-back to the beginning.
+We don't really need a band, so the easiest way to get rid of that task is to
+undo the last change.  Taskwarrior has a complete undo stack, so you can undo
+all the way back to the beginning.
 
 .RS
 $ task undo
+.br
+
+.br
+The last modification was made 10/16/2010
+.br
+
+.br
+             Prior Values  Current Values
+.br
+             ------------  ------------------------------------
+.br
+description                Hire a band? +dj
+.br
+entry                      10/16/2010
+.br
+status                     pending
+.br
+uuid                       599c7598-069d-4598-8d94-0c919c4213ec
+.br
+
+.br
+The undo command is not reversible.  Are you sure you want to revert to the previous state? (y/n) y
+.br
+Task removed.
 .RE
 
 The undo operation gets rid of the task completely, but I could also have just
@@ -232,7 +554,43 @@ deleted the task, then the deletion itself would be tracked, and also undo-able.
 .RS
 $ task 1 delete
 .br
+Permanently delete task 1 'Select a free weekend in November'? (y/n) y
+.br
+Deleting task 1 'Select a free weekend in November'.
+.br
+The scope of project 'party' has changed.  Project 'party' is 0% complete (5 of 5 tasks remaining).
+.br
 $ task undo
+.br
+
+.br
+The last modification was made 10/16/2010
+.br
+
+.br
+             Prior Values                          Current Values
+.br
+             ------------------------------------  ------------------------------------
+.br
+description  Select a free weekend in November     Select a free weekend in November
+.br
+entry        10/16/2010                            10/16/2010
+.br
+priority     H                                     H
+.br
+project      party                                 party
+.br
+status       pending                               deleted
+.br
+uuid         3a6881bb-628b-4f90-93d7-4da563b83d54  3a6881bb-628b-4f90-93d7-4da563b83d54
+.br
+end                                                10/16/2010
+.br
+
+.br
+The undo command is not reversible.  Are you sure you want to revert to the previous state? (y/n) y
+.br
+Modified task reverted.
 .RE
 
 .SH INFO
@@ -242,13 +600,99 @@ with the task.  You can display this with the info command, and its shortcut.
 .RS
 $ task 1 info
 .br
+
+.br
+Name        Value
+.br
+----------- ------------------------------------
+.br
+ID          1
+.br
+Description Select a free weekend in November
+.br
+Status      Pending
+.br
+Project     party
+.br
+Priority    H
+.br
+UUID        3a6881bb-628b-4f90-93d7-4da563b83d54
+.br
+Entered     10/16/2010 (44 mins)
+.br
+
+.br
 $ task 1
+.br
+
+.br
+Name        Value
+.br
+----------- ------------------------------------
+.br
+ID          1
+.br
+Description Select a free weekend in November
+.br
+Status      Pending
+.br
+Project     party
+.br
+Priority    H
+.br
+UUID        3a6881bb-628b-4f90-93d7-4da563b83d54
+.br
+Entered     10/16/2010 (44 mins)
 .RE
 
 There are also statistics that taskwarrior gathers, which I can display.
 
 .RS
 $ task stats
+.br
+
+.br
+Category              Data
+.br
+--------------------  -------------
+.br
+Pending               8
+.br
+Waiting               0
+.br
+Recurring             0
+.br
+Completed             2
+.br
+Deleted               0
+.br
+Total                 10
+.br
+Annotations           0
+.br
+Unique tags           1
+.br
+Projects              2
+.br
+Data size             9.3 KiB
+.br
+Undo transactions     32
+.br
+Tasks tagged          20%
+.br
+Oldest task           10/16/2010
+.br
+Newest task           10/16/2010
+.br
+Task used for         29 mins
+.br
+Task added every      2 mins
+.br
+Task completed every  14 mins
+.br
+Average time pending  31 mins
+.br
+Average desc length   23 characters
 .RE
 
 .SH ANNOTATIONS
@@ -256,11 +700,44 @@ Annotations are little notes that can be added to a task.  There can be any
 number, and each has a time stamp.
 
 .RS
-$ task 1 annotate the 12th looks good
+$ task 1 annotate the 13th looks good
 .br
-$ task 1 annotate or the 13th
+Annotated 1 with 'the 13th looks good'.
+.br
+$ task 1 annotate or the 14th
+Annotated 1 with 'or the 14th'
 .br
 $ task list
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ----------------------------------
+.br
+ 1 party   H              48 mins Select a free weekend in November
+.br
+                                  10/16/2010 the 13th looks good
+.br
+                                  10/16/2010 or the 14th
+.br
+ 2 party   H              47 mins Select and book a venue
+.br
+ 5 party   H              44 mins Design invitations
+.br
+ 8                        19 mins Select some Music for after dinner
+.br
+ 7 home                   35 mins Pay rent at the end of the month
+.br
+ 3 party                  47 mins Mail invitations
+.br
+ 4 party                  47 mins Select a caterer
+.br
+ 6 party                  44 mins Print invitations
+.br
+
+.br
+8 tasks
 .RE
 
 You can choose to display annotations in different ways.
@@ -268,17 +745,65 @@ You can choose to display annotations in different ways.
 .RS
 $ task list rc.annotations:full
 .br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ---------------------------------
+.br
+ 1 party   H              49 mins Select a free weekend in November
+.br
+                                  10/16/2010 the 13th looks good
+.br
+                                  10/16/2010 or the 14th
+.br
+
+.br
+1 task
+.br
+Configuration override annotations:full
+.br
 $ task list rc.annotations:sparse
 .br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ----------------------------------
+.br
+ 1 party   H              49 mins +Select a free weekend in November
+.br
+                                  10/16/2010 or the 14th
+.br
+
+.br
+1 task
+.br
+Configuration override annotations:sparse
+.br
 $ task list rc.annotations:none
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ----------------------------------
+.br
+ 1 party   H              49 mins +Select a free weekend in November
+.br
+
+.br
+1 task
+.br
+Configuration override annotations:none
 .RE
 
 Annotations can be removed by providing a matching pattern.
 
 .RS
-$ task 1 denotate 13th
+$ task 1 denotate 14th
 .br
-$ task list
+Found annotation 'or the 14th' and deleted it.
 .RE
 
 .SH CONFIGURATION
@@ -288,6 +813,32 @@ default.
 
 .RS
 $ task show
+.br
+
+.br
+Config variable                 Value
+.br
+------------------------------- ----------------
+.br
+_forcecolor                     no
+.br
+active.indicator                *
+.br
+alias.export                    export.yaml
+.br
+alias.export.vcalendar          export.ical
+.br
+alias.ghistory                  ghistory.monthly
+.br
+alias.history                   history.monthly
+.br
+alias.rm                        delete
+.br
+annotations                     full
+.br
+ ...
+.br
+weekstart                       Sunday
 .RE
 
 If you want a complete list of all the settings and their meanings, read the man
@@ -302,6 +853,10 @@ configuration variable 'answer' is given the value of forty-two.
 
 .RS
 $ task config answer forty-two
+.br
+Are you sure you want to add 'answer' with a value of 'forty-two'? (y/n) y
+.br
+Config file .taskrc modified.
 .RE
 
 The 'show' command indicates that the value was changed, and also that the
@@ -312,7 +867,27 @@ can also remove a value.
 .RS
 $ task show answer
 .br
+
+.br
+Config variable Value
+.br
+--------------- ---------
+.br
+answer          forty-two
+.br
+
+.br
+Your .taskrc file contains these unrecognized variables:
+.br
+  answer
+.br
+
+.br
 $ task config answer
+.br
+Are you sure you want to remove 'answer'? (y/n) y
+.br
+Config file .taskrc modified.
 .RE
 
 A very powerful feature is the ability to override the configuration variables
@@ -321,7 +896,40 @@ only.
 
 .RS
 $ task rc.report.list.sort=description+ list
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ----------------------------------
+.br
+ 5 party   H              51 mins Design invitations
+.br
+ 3 party                  53 mins Mail invitations
+.br
+ 7 home                   42 mins Pay rent at the end of the month
+.br
+ 6 party                  51 mins Print invitations
+.br
+ 4 party                  53 mins Select a caterer
+.br
+ 1 party   H              54 mins Select a free weekend in November
+.br
+                                  10/16/2010 the 13th looks good
+.br
+ 2 party   H              53 mins Select and book a venue
+.br
+ 8                        25 mins Select some Music for after dinner
+.br
+
+.br
+8 tasks
+.br
+Configuration override report.list.sort=description+
 .RE
+
+The value in the configuration file is prefixed with 'rc.' to identify its
+namespace.
 
 .SH DEFAULTS
 There is a default command, which can be set to anything, in this case it is set
@@ -331,7 +939,39 @@ default command.
 .RS
 $ task config default.command list
 .br
+Are you sure you want to add 'default.command' with a value of 'list'? (y/n) y
+.br
+Config file .taskrc modified.
+.br
 $ task
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ----------------------------------
+.br
+ 1 party   H              55 mins Select a free weekend in November
+.br
+                                  10/16/2010 the 13th looks good
+.br
+ 2 party   H              54 mins Select and book a venue
+.br
+ 5 party   H              52 mins Design invitations
+.br
+ 8                        26 mins Select some Music for after dinner
+.br
+ 7 home                   43 mins Pay rent at the end of the month
+.br
+ 3 party                  54 mins Mail invitations
+.br
+ 4 party                  54 mins Select a caterer
+.br
+ 6 party                  52 mins Print invitations
+.br
+
+.br
+8 tasks
 .RE
 
 I can also specify a default priority and project, which means that any tasks
@@ -340,11 +980,33 @@ added will use them, unless an alternative is provided.
 .RS
 $ task config default.priority H
 .br
-$ task config default.project Work
+Are you sure you want to add 'default.priority' with a value of 'H'? (y/n) y
+.br
+Config file .taskrc modified.
+.br
+$ task config default.project work
+.br
+Are you sure you want to add 'default.project' with a value of 'work'? (y/n) y
+.br
+Config file .taskrc modified.
 .br
 $ task add New task
 .br
-$ task list
+Created task 9.
+.br
+$ task list New task
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- -----------
+.br
+ 9 work    H              12 secs New task
+.br
+
+.br
+1 task
 .RE
 
 Let's just revert those changes, to clean up.
@@ -352,9 +1014,45 @@ Let's just revert those changes, to clean up.
 .RS
 $ task undo
 .br
+
+.br
+The last modification was made 10/16/2010
+.br
+
+.br
+             Prior Values  Current Values
+.br
+             ------------  ------------------------------------
+.br
+description                New task
+.br
+entry                      10/16/2010
+.br
+priority                   H
+.br
+project                    work
+.br
+status                     pending
+.br
+uuid                       0f44f9dd-79db-4098-b95b-4c3aa97d575a
+.br
+
+.br
+The undo command is not reversible.  Are you sure you want to revert to the previous state? (y/n) y
+.br
+Task removed.
+.br
 $ task config default.priority
 .br
+Are you sure you want to remove 'default.priority'? (y/n) y
+.br
+Config file .taskrc modified.
+.br
 $ task config default.project
+.br
+Are you sure you want to remove 'default.project'? (y/n) y
+.br
+Config file .taskrc modified.
 .RE
 
 .SH ALIASES
@@ -363,18 +1061,79 @@ You can create aliases to effectively rename commands.
 .RS
 $ task config alias.zzz list
 .br
+Are you sure you want to add 'alias.zzz' with a value of 'list'? (y/n) y
+.br
+Config file .taskrc modified.
+.br
 $ task zzz
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ----------------------------------
+.br
+ 1 party   H                 1 hr Select a free weekend in November
+.br
+                                  10/16/2010 the 13th looks good
+.br
+ 2 party   H              59 mins Select and book a venue
+.br
+ 5 party   H              56 mins Design invitations
+.br
+ 8                        30 mins Select some Music for after dinner
+.br
+ 7 home                   47 mins Pay rent at the end of the month
+.br
+ 3 party                  59 mins Mail invitations
+.br
+ 4 party                  58 mins Select a caterer
+.br
+ 6 party                  56 mins Print invitations
+.br
+
+.br
+8 tasks
 .RE
 
 You can abbreviate those, too.
 
 .RS
 $ task z
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ----------------------------------
+.br
+ 1 party   H                 1 hr Select a free weekend in November
+.br
+                                  10/16/2010 the 13th looks good
+.br
+ 2 party   H              59 mins Select and book a venue
+.br
+ 5 party   H              56 mins Design invitations
+.br
+ 8                        30 mins Select some Music for after dinner
+.br
+ 7 home                   47 mins Pay rent at the end of the month
+.br
+ 3 party                  59 mins Mail invitations
+.br
+ 4 party                  58 mins Select a caterer
+.br
+ 6 party                  56 mins Print invitations
+.br
+
+.br
+8 tasks
 .RE
 
 .SH COLOR
 [Note that you will see color in your terminal as you work through this
-tutorial, but you wil not see the color in the man page.]
+tutorial, but you will not see the color in the man page.  This is a limitation
+of man pages in general.  The text shown (without color) is included here.]
 
 All the examples so far have been shown with color turned off.  How about some
 color?
@@ -382,11 +1141,43 @@ color?
 .RS
 $ task config color on
 .br
+Are you sure you want to change the value of 'color' from 'off' to 'on'? (y/n) y
+.br
+Config file .taskrc modified.
+.br
 $ task list
+.br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ----------------------------------
+.br
+ 1 party   H                 1 hr Select a free weekend in November
+.br
+                                  10/16/2010 the 13th looks good
+.br
+ 2 party   H                 1 hr Select and book a venue
+.br
+ 5 party   H              59 mins Design invitations
+.br
+ 8                        33 mins Select some Music for after dinner
+.br
+ 7 home                   50 mins Pay rent at the end of the month
+.br
+ 3 party                     1 hr Mail invitations
+.br
+ 4 party                     1 hr Select a caterer
+.br
+ 6 party                  59 mins Print invitations
+.br
+
+.br
+8 tasks
 .RE
 
 What you see is the result of a set of color rules being applied to the tasks.
-There is a hierarchy of color rules that colorize a task based on the metadata
+There is a hierarchy of color rules that colorize a task based on the metadata.
 
 Here is an example of an explicit override to the color rules where a specific
 task is given a red background.
@@ -394,28 +1185,224 @@ task is given a red background.
 .RS
 $ task 1 bg:on_red
 .br
+modified 1 task.
+.br
 $ task list
 .br
+
+.br
+ID Project Pri Due Active Age     Description
+.br
+-- ------- --- --- ------ ------- ----------------------------------
+.br
+ 1 party   H                 1 hr Select a free weekend in November
+.br
+                                  10/16/2010 the 13th looks good
+.br
+ 2 party   H                 1 hr Select and book a venue
+.br
+ 5 party   H              59 mins Design invitations
+.br
+ 8                        33 mins Select some Music for after dinner
+.br
+ 7 home                   50 mins Pay rent at the end of the month
+.br
+ 3 party                     1 hr Mail invitations
+.br
+ 4 party                     1 hr Select a caterer
+.br
+ 6 party                  59 mins Print invitations
+.br
+
+.br
+8 tasks
+.br
 $ task 1 bg:
+.br
+Modified 1 task.
 .RE
 
 Taskwarrior supports 256 colors on certain terminal emulators, and this shows
-the range of colors available.
+the range of colors available.  Note that your terminal may show fewer colors.
 
 .RS
 $ task color
+.br
+
+.br
+Basic colors
+.br
+  black   red   blue   green   magenta   cyan   yellow   white
+.br
+  black   red   blue   green   magenta   cyan   yellow   white
+.br
+
+.br
+Effects
+.br
+  red   bold red   underline on blue   on green   on bright green
+.br
+
+.br
+color0 - color15
+.br
+  0 1 2 . . .
+.br
+
+.br
+
+.br
+          . . . 15
+.br
+
+.br
+Color cube rgb000 - rgb555 (also color16 - color231)
+.br
+  0            1            2            3            4            5
+.br
+  0 1 2 3 4 5  0 1 2 3 4 5  0 1 2 3 4 5  0 1 2 3 4 5  0 1 2 3 4 5  0 1 2 3 4 5
+.br
+ 0
+.br
+ 1
+.br
+ 2
+.br
+ 3
+.br
+ 4
+.br
+ 5
+.br
+
+.br
+Gray ramp gray0 - gray23 (also color232 - color255)
+.br
+  0 1 2 . . .                             . . . 23
+.br
+
+.br
+
+.br
+Try running 'task color white on red'.
 .RE
 
 This is how to show a color sample.
 
 .RS
 $ task color white on red
+.br
+
+.br
+Use this command to see how colors are displayed by your terminal.
+.br
+
+.br
+
+.br
+16-color usage (supports underline, bold text, bright background):
+.br
+  task color black on bright yellow
+.br
+  task color underline cyan on bright blue
+.br
+
+.br
+256-color usage (supports underline):
+.br
+  task color color214 on color202
+.br
+  task color rgb150 on rgb020
+.br
+  task color underline grey10 on grey3
+.br
+  task color red on color173
+.br
+
+.br
+Your sample:
+.br
+  task color white on red
 .RE
 
 Or samples of all the active color settings.
 
 .RS
 $ task color legend
+.br
+
+.br
+Here are the colors currently in use:
+.br
+
+.br
+Color                     Definition
+.br
+------------------------- -------------------------
+.br
+color.active              black on bright green
+.br
+color.alternate
+.br
+color.blocked             black on white
+.br
+color.calendar.due        white on red
+.br
+color.calendar.due.today  bold white on red
+.br
+color.calendar.holiday    black on bright yellow
+.br
+color.calendar.overdue    black on bright red
+.br
+color.calendar.today      bold white on bright blue
+.br
+color.calendar.weekend    white on bright black
+.br
+color.calendar.weeknumber bold blue
+.br
+color.debug               yellow
+.br
+color.due                 red
+.br
+color.due.today           red
+.br
+color.footnote            yellow
+.br
+color.header              yellow
+.br
+color.history.add         black on red
+.br
+color.history.delete      black on yellow
+.br
+color.history.done        black on green
+.br
+color.overdue             bold red
+.br
+color.pri.H               bold white
+.br
+color.pri.L
+.br
+color.pri.M               white
+.br
+color.pri.none
+.br
+color.recurring           magenta
+.br
+color.summary.background  on gray3
+.br
+color.summary.bar         on green
+.br
+color.sync.added          green
+.br
+color.sync.changed        yellow
+.br
+color.sync.rejected       red
+.br
+color.tagged              green
+.br
+color.undo.after          green
+.br
+color.undo.before         red
 .RE
 
 Themes are a simple way to use coordinated color schemes so by including a color
@@ -438,12 +1425,14 @@ For a general dark theme:
 include /usr/local/share/doc/task/rc/dark-256.theme
 .RE
 
-Here is a color rule that specifies a dark blue background for all tasks that
-are part of the 'party' project, and uses bold to identify any tasks with the
-keyword 'invitations' in the description.
+Here are two color rules that specifies a dark blue background for all tasks
+that are part of the 'party' project, and uses bold to identify any tasks with
+the keyword 'invitations' in the description.
 
 .RS
 $ task "rc.color.project.party=on rgb001" rc.color.keyword.invit=bold list
+.br
+ ...
 .RE
 
 There is a man page with a writeup of all the color capabilities.
@@ -459,7 +1448,7 @@ See how active tasks are affected by the color rules.
 .RS
 $ task 2 start
 .br
-$ task list
+Started 2 'Select and book a venue'.
 .RE
 
 There is an active report that shows only active tasks, and you can mark any
@@ -468,36 +1457,156 @@ active task as inactive, by stopping it.
 .RS
 $ task active
 .br
+
+.br
+ID Project Pri Due Active Age  Description
+.br
+-- ------- --- --- ------ ---- -----------------------
+.br
+ 2 party   H       *      1 hr Select and book a venue
+.br
+
+.br
+1 task
+.br
 $ task 2 stop
+.br
+Stopped 2 'Select and book a venue'.
+.RE
+
+There is a journalling feature that records the start and stop times as
+annotations.
+
+.RS
+$ task config journal.time on
+.br
+Are you sure you want to add 'journal.time' with a value of 'on'? (y/n) y
+.br
+Config file .taskrc modified.
+.br
+$ task config dateformat.annotation 'Y/m/d H:N'
+.br
+Are you sure you want to add 'dateformat.annotation' with a value of 'Y/m/d H:N'? (y/n) y
+.br
+Config file .taskrc modified.
+.br
+$ task 2 start
+.br
+Started 2 'Select and book a venue'.
+.br
+$ task list venue
+.br
+
+.br
+ID Project Pri Due Active Age  Description
+.br
+-- ------- --- --- ------ ---- -----------------------------
+.br
+ 2 party   H       *      1 hr Select and book a venue
+.br
+                               2010/10/16 11:20 Started task
+.br
+
+.br
+1 task
+.br
+$ task 2 stop
+.br
+Stopped 2 'Select and book a venue'.
+.br
+$ task list venue
+.br
+
+.br
+ID Project Pri Due Active Age  Description
+.br
+-- ------- --- --- ------ ---- -----------------------------
+.br
+ 2 party   H       *      1 hr Select and book a venue
+.br
+                               2010/10/16 11:20 Started task
+.br
+                               2010/10/16 11:21 Stopped task
+.br
+
+.br
+1 task
 .RE
 
 .SH DUE DATES
 Due dates can be specified as dates, durations into the future or past, by
 mnemonic, ordinal of day of week.
 
-Some of these dates are in the past, so now you see there are overdue tasks.
-Due dates have different colors for due, imminent, today and overdue values.
-
 .RS
 $ task 1 due:7/31/2010
 .br
+Modified 1 task.
+.br
 $ task 1 due:2wks
+.br
+Modified 1 task.
 .br
 $ task 1 due:-2wks
 .br
+Modified 1 task.
+.br
 $ task 1 due:eom
+.br
+Modified 1 task.
 .br
 $ task 2 due:8th
 .br
+Modified 1 task.
+.br
 $ task 2 due:sunday
 .br
+Modified 1 task.
+.br
 $ task 5 due:eow
+.br
+Modified 1 task.
 .RE
 
+Some of these dates are in the past, so now you see there are overdue tasks.
+Due dates have different colors for due, imminent, today and overdue values.
 You can also choose the format - for input and output.
 
 .RS
 $ task rc.dateformat.report:Y-M-DTH:N:SZ list
+.br
+
+.br
+ID Project Pri Due                  Active Age  Description
+.br
+-- ------- --- -------------------- ------ ---- ------------------------------------
+.br
+ 2 party   H   2010-10-17T00:00:00Z        1 hr Select and book a venue
+.br
+                                                2010/10/16 11:20 Started task
+.br
+                                                2010/10/16 11:21 Stopped task
+.br
+ 5 party   H   2010-10-22T00:00:00Z        1 hr Design invitations
+.br
+ 1 party   H   2010-10-31T00:00:00Z        1 hr Select a free weekend in November
+.br
+                                                2010/10/16 00:00 the 13th looks good
+.br
+ 8                                         1 hr Select some Music for after dinner
+.br
+ 7 home                                    1 hr Pay rent at the end of the month
+.br
+ 3 party                                   1 hr Mail invitations
+.br
+ 4 party                                   1 hr Select a caterer
+.br
+ 6 party                                   1 hr Print invitations
+.br
+
+.br
+8 tasks
+.br
+Configuration override dateformat.report:Y-M-DTH:N:SZ
 .RE
 
 .SH CALENDAR
@@ -507,9 +1616,9 @@ When tasks have due dates, you can see them on the calendar.
 $ task calendar
 .RE
 
-Taskwarrior provides sample holiday files.  You can create your own, or use one
-of the samples to show holidays on the calendar.  Try adding this line to
-your ~/.taskrc file:
+Taskwarrior provides sample holiday files for countries where taskwarrior is
+used most.  You can create your own, or use one of the samples to show holidays
+on the calendar.  Try adding this line to your ~/.taskrc file:
 
 .RS
 include /usr/local/share/doc/task/rc/holidays-US.rc
@@ -519,16 +1628,210 @@ Then:
 
 .RS
 $ task calendar
+.br
+
+.br
+       October 2010              November 2010             December 2010
+.br
+
+.br
+     Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa
+.br
+  40                 1  2   45     1  2  3  4  5  6   49           1  2  3  4
+.br
+  41  3  4  5  6  7  8  9   46  7  8  9 10 11 12 13   50  5  6  7  8  9 10 11
+.br
+  42 10 11 12 13 14 15 16   47 14 15 16 17 18 19 20   51 12 13 14 15 16 17 18
+.br
+  43 17 18 19 20 21 22 23   48 21 22 23 24 25 26 27   52 19 20 21 22 23 24 25
+.br
+  44 24 25 26 27 28 29 30   49 28 29 30               53 26 27 28 29 30 31
+.br
+  45 31
+.br
+
+.br
+Legend: today, due, due-today, overdue, weekend, holiday, weeknumber.
 .RE
+
+There are holiday files for CA, DE, ES, FR, NL, SE, UK and US.
 
 You can see the whole year, see due tasks as well, and see the holidays:
 
 .RS
 $ task cal 2010
 .br
+
+.br
+       January 2010              February 2010              March 2010                April 2010
+.br
+
+.br
+     Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa
+.br
+   1                 1  2    6     1  2  3  4  5  6   10     1  2  3  4  5  6   14              1  2  3
+.br
+   2  3  4  5  6  7  8  9    7  7  8  9 10 11 12 13   11  7  8  9 10 11 12 13   15  4  5  6  7  8  9 10
+.br
+   3 10 11 12 13 14 15 16    8 14 15 16 17 18 19 20   12 14 15 16 17 18 19 20   16 11 12 13 14 15 16 17
+.br
+   4 17 18 19 20 21 22 23    9 21 22 23 24 25 26 27   13 21 22 23 24 25 26 27   17 18 19 20 21 22 23 24
+.br
+   5 24 25 26 27 28 29 30   10 28                     14 28 29 30 31            18 25 26 27 28 29 30
+.br
+   6 31
+.br
+
+.br
+         May 2010                  June 2010                 July 2010                August 2010
+.br
+
+.br
+     Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa
+.br
+  18                    1   23        1  2  3  4  5   27              1  2  3   32  1  2  3  4  5  6  7
+.br
+  19  2  3  4  5  6  7  8   24  6  7  8  9 10 11 12   28  4  5  6  7  8  9 10   33  8  9 10 11 12 13 14
+.br
+  20  9 10 11 12 13 14 15   25 13 14 15 16 17 18 19   29 11 12 13 14 15 16 17   34 15 16 17 18 19 20 21
+.br
+  21 16 17 18 19 20 21 22   26 20 21 22 23 24 25 26   30 18 19 20 21 22 23 24   35 22 23 24 25 26 27 28
+.br
+  22 23 24 25 26 27 28 29   27 27 28 29 30            31 25 26 27 28 29 30 31   36 29 30 31
+.br
+  23 30 31
+.br
+
+.br
+      September 2010             October 2010              November 2010             December 2010
+.br
+
+.br
+     Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa
+.br
+  36           1  2  3  4   40                 1  2   45     1  2  3  4  5  6   49           1  2  3  4
+.br
+  37  5  6  7  8  9 10 11   41  3  4  5  6  7  8  9   46  7  8  9 10 11 12 13   50  5  6  7  8  9 10 11
+.br
+  38 12 13 14 15 16 17 18   42 10 11 12 13 14 15 16   47 14 15 16 17 18 19 20   51 12 13 14 15 16 17 18
+.br
+  39 19 20 21 22 23 24 25   43 17 18 19 20 21 22 23   48 21 22 23 24 25 26 27   52 19 20 21 22 23 24 25
+.br
+  40 26 27 28 29 30         44 24 25 26 27 28 29 30   49 28 29 30               53 26 27 28 29 30 31
+.br
+                            45 31
+.br
+
+.br
+Legend: today, due, due-today, overdue, weekend, holiday, weeknumber.
+.br
+
+.br
 $ task rc.calendar.details:full cal
 .br
+
+.br
+       October 2010              November 2010             December 2010             January 2011
+.br
+
+.br
+     Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa
+.br
+  40                 1  2   45     1  2  3  4  5  6   49           1  2  3  4    1                    1
+.br
+  41  3  4  5  6  7  8  9   46  7  8  9 10 11 12 13   50  5  6  7  8  9 10 11    2  2  3  4  5  6  7  8
+.br
+  42 10 11 12 13 14 15 16   47 14 15 16 17 18 19 20   51 12 13 14 15 16 17 18    3  9 10 11 12 13 14 15
+.br
+  43 17 18 19 20 21 22 23   48 21 22 23 24 25 26 27   52 19 20 21 22 23 24 25    4 16 17 18 19 20 21 22
+.br
+  44 24 25 26 27 28 29 30   49 28 29 30               53 26 27 28 29 30 31       5 23 24 25 26 27 28 29
+.br
+  45 31                                                                          6 30 31
+.br
+
+.br
+Legend: today, due, due-today, overdue, weekend, holiday, weeknumber.
+.br
+
+.br
+
+.br
+ID Project Pri Due        Active Age  Description
+.br
+-- ------- --- ---------- ------ ---- ------------------------------------
+.br
+ 2 party   H   10/17/2010        1 hr Select and book a venue
+.br
+                                      2010/10/16 11:20 Started task
+.br
+                                      2010/10/16 11:21 Stopped task
+.br
+ 5 party   H   10/22/2010        1 hr Design invitations
+.br
+ 1 party   H   10/31/2010        1 hr Select a free weekend in November
+.br
+                                      2010/10/16 00:00 the 13th looks good
+.br
+
+.br
+3 tasks
+.br
+Configuration override calendar.details:full
+.br
 $ task rc.calendar.holidays:full cal
+.br
+
+.br
+       October 2010              November 2010             December 2010
+.br
+
+.br
+     Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa      Su Mo Tu We Th Fr Sa
+.br
+  40                 1  2   45     1  2  3  4  5  6   49           1  2  3  4
+.br
+  41  3  4  5  6  7  8  9   46  7  8  9 10 11 12 13   50  5  6  7  8  9 10 11
+.br
+  42 10 11 12 13 14 15 16   47 14 15 16 17 18 19 20   51 12 13 14 15 16 17 18
+.br
+  43 17 18 19 20 21 22 23   48 21 22 23 24 25 26 27   52 19 20 21 22 23 24 25
+.br
+  44 24 25 26 27 28 29 30   49 28 29 30               53 26 27 28 29 30 31
+.br
+  45 31
+.br
+
+.br
+Legend: today, due, due-today, overdue, weekend, holiday, weeknumber.
+.br
+
+.br
+
+.br
+Date       Holiday
+.br
+---------- -----------------------------------
+.br
+10/11/2010 Columbus Day
+.br
+11/11/2010 Veterans Day
+.br
+11/25/2010 Thanksgiving Day
+.br
+12/25/2010 Christmas Day
+.br
+12/31/2010 New Year's Eve
+.br
+1/1/2011   New Year's Day
+.br
+1/17/2011  Birthday of Martin Luther King, Jr.
+.br
+2/21/2011  Washington's Birthday
+.br
+
+.br
+Configuration override calendar.holidays:full
 .RE
 
 .SH RECURRENCE
@@ -537,11 +1840,37 @@ every month.  Recurring tasks allow us to set up a single task that keeps coming
 back, just as you'd expect.
 
 .RS
-$ task 7 info
-.br
 $ task 7 due:eom recur:monthly
 .br
+Task 7 is now a recurring task.
+.br
+Modified 1 task.
+.br
 $ task 7
+.br
+
+.br
+Name        Value
+.br
+----------- ------------------------------------
+.br
+ID          7
+.br
+Description Pay rent at the end of the month
+.br
+Status      Recurring
+.br
+Project     home
+.br
+Recurrence  monthly
+.br
+Mask
+.br
+Due         10/31/2010
+.br
+UUID        f79123aa-3377-43fd-8f50-d14ab3c1577b
+.br
+Entered     10/16/2010 (1 hr)
 .RE
 
 You can also limit the extent of the recurrence.  Let's make sure the task
@@ -549,12 +1878,26 @@ doesn't recur after the lease ends.
 
 .RS
 $ task 7 until:eoy
+.br
+Modified 1 task.
 .RE
 
 And there is a recurring report that shows you only the recurring tasks.
 
 .RS
 $ task recurring
+.br
+
+.br
+ID Project Pri Due        Recur   Active Age  Description
+.br
+-- ------- --- ---------- ------- ------ ---- --------------------------------
+.br
+ 9 home        10/31/2010 monthly        1 hr Pay rent at the end of the month
+.br
+
+.br
+1 task
 .RE
 
 To illustrate a point, let's set up a recurring annual task as a reminder to pay
@@ -564,16 +1907,74 @@ gaps, and create a series of severely overdue tasks.
 .RS
 $ task add Pay taxes due:4/15/2007 recur:yearly
 .br
+Created task 10.
+.br
 $ task long
+.br
+
+.br
+ID Project Pri Added      Started Due        Recur   Countdown Age    Deps Tags Description
+.br
+-- ------- --- ---------- ------- ---------- ------- --------- ------ ---- ---- ------------------------------------
+.br
+11             10/16/2010         4/15/2007   yearly   3.5 yrs 2 secs           Pay taxes
+.br
+12             10/16/2010         4/15/2008   yearly   2.5 yrs 2 secs           Pay taxes
+.br
+13             10/16/2010         4/15/2009   yearly   1.5 yrs 2 secs           Pay taxes
+.br
+14             10/16/2010         4/15/2010   yearly    6 mths 2 secs           Pay taxes
+.br
+ 2 party   H   10/16/2010         10/17/2010           -11 hrs  2 hrs           Select and book a venue
+.br
+                                                                                2010/10/16 11:20 Started task
+.br
+                                                                                2010/10/16 11:21 Stopped task
+.br
+ 5 party   H   10/16/2010         10/22/2010           -5 days  2 hrs      mall Design invitations
+.br
+ 1 party   H   10/16/2010         10/31/2010            -2 wks  2 hrs           Select a free weekend in November
+.br
+                                                                                2010/10/16 00:00 the 13th looks good
+.br
+ 9 home        10/16/2010         10/31/2010 monthly    -2 wks   1 hr           Pay rent at the end of the month
+.br
+15             10/16/2010         4/15/2011   yearly   -5 mths 2 secs           Pay taxes
+.br
+ 8             10/16/2010                                        1 hr           Select some Music for after dinner
+.br
+ 3 party       10/16/2010                                       2 hrs           Mail invitations
+.br
+ 4 party       10/16/2010                                       2 hrs           Select a caterer
+.br
+ 6 party       10/16/2010                                       2 hrs      mall Print invitations
+.br
+
+.br
+13 tasks
 .RE
 
 Deletions to recurring tasks can be escalated to include all the recurrences of
 a task.
 
 .RS
-$ task 11 delete # y y
+$ task 11 delete
 .br
-$ task list
+Permanently delete task 11 'Pay taxes'? (y/n) y
+.br
+This is a recurring task.  Do you want to delete all pending recurrences of this same task? (y/n) y
+.br
+Deleting recurring task 10 'Pay taxes'.
+.br
+Deleting recurring task 11 'Pay taxes'.
+.br
+Deleting recurring task 12 'Pay taxes'.
+.br
+Deleting recurring task 13 'Pay taxes'.
+.br
+Deleting recurring task 14 'Pay taxes'.
+.br
+Deleting recurring task 15 'Pay taxes'.
 .RE
 
 .SH SHELL
@@ -583,11 +1984,84 @@ need to prefix every command with "task".
 
 .RS
 $ task shell
+.br
+task 1.9.3 shell
+.br
+
+.br
+Enter any task command (such as 'list'), or hit 'Enter'.
+.br
+There is no need to include the 'task' command itself.
+.br
+Enter 'quit' to end the session.
+.br
+
+.br
+task>
+.br
 task> projects
+.br
+
+.br
+Project Tasks Pri:None Pri:L Pri:M Pri:H
+.br
+------- ----- -------- ----- ----- -----
+.br
+            7        7     0     0     0
+.br
+home        2        2     0     0     0
+.br
+party       6        3     0     0     3
+.br
+
+.br
+3 projects (15 tasks)
 .br
 task> tags
 .br
+
+.br
+Tag  Count
+.br
+mall     2
+.br
+
+.br
+1 tag (15 tasks)
+.br
 task> list
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 2 party   H   10/17/2010        2 hrs Select and book a venue
+.br
+                                       2010/10/16 11:20 Started task
+.br
+                                       2010/10/16 11:21 Stopped task
+.br
+ 5 party   H   10/22/2010        2 hrs Design invitations
+.br
+ 1 party   H   10/31/2010        2 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+ 9 home        10/31/2010         1 hr Pay rent at the end of the month
+.br
+ 8                                1 hr Select some Music for after dinner
+.br
+ 3 party                         2 hrs Mail invitations
+.br
+ 4 party                         2 hrs Select a caterer
+.br
+ 6 party                         2 hrs Print invitations
+.br
+
+.br
+8 tasks
 .br
 task> quit
 .RE
@@ -600,13 +2074,27 @@ bypassed.
 .RS
 $ task 6 +nocolor
 .br
-$ task list
+Modified 1 task.
 .RE
 
 Special tags are highlighted by the 'tags' command.
 
 .RS
 $ task tags
+.br
+
+.br
+Tag     Count
+.br
+------- -----
+.br
+mall        2
+.br
+nocolor     1
+.br
+
+.br
+2 tags (9 tasks)
 .RE
 
 There are others - the 'nonag' special tag prevents the generation of nag
@@ -614,6 +2102,8 @@ messages when you work on low priority tasks when there are more important ones.
 
 .RS
 $ task 6 -nocolor
+.br
+Modified 1 task.
 .RE
 
 The 'nocal' special tag will prevent a task from appearing on the calendar.
@@ -625,20 +2115,66 @@ the future, you may want to hide that task for a while.
 .RS
 $ task add Look for new apartment due:eoy
 .br
-$ task list
+Created task 10.
 .RE
 
 You can provide a wait date for a task, and it will remain hidden until that
 date.  It will no longer be cluttering your task list, but it is still there,
 and visible using the 'waiting' report.  When the wait date comes, the task
-will just pop back into the list.
+will just reappear in the list.
 
 .RS
 $ task 10 wait:12/1/2010
 .br
+Modified 1 task.
+.br
 $ task list
 .br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 2 party   H   10/17/2010        2 hrs Select and book a venue
+.br
+                                       2010/10/16 11:20 Started task
+.br
+                                       2010/10/16 11:21 Stopped task
+.br
+ 5 party   H   10/22/2010        2 hrs Design invitations
+.br
+ 1 party   H   10/31/2010        2 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+ 9 home        10/31/2010        2 hrs Pay rent at the end of the month
+.br
+ 8                                1 hr Select some Music for after dinner
+.br
+ 3 party                         2 hrs Mail invitations
+.br
+ 4 party                         2 hrs Select a caterer
+.br
+ 6 party                         2 hrs Print invitations
+.br
+
+.br
+8 tasks
+.br
 $ task waiting
+.br
+
+.br
+ID Project Pri Wait      Age   Description
+.br
+-- ------- --- --------- ----- ----------------------
+.br
+10             12/1/2010 1 min Look for new apartment
+.br
+
+.br
+1 task
 .RE
 
 To illustrate this, let's set up a task with a very short wait time of five
@@ -647,22 +2183,93 @@ seconds.
 .RS
 $ task add Do something in a few seconds
 .br
+Created task 11.
+.br
 $ task 11 wait:5s
 .br
+Modified 1 task.
+.br
 $ task list
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 2 party   H   10/17/2010        2 hrs Select and book a venue
+.br
+                                       2010/10/16 11:20 Started task
+.br
+                                       2010/10/16 11:21 Stopped task
+.br
+ 5 party   H   10/22/2010        2 hrs Design invitations
+.br
+ 1 party   H   10/31/2010        2 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+ 9 home        10/31/2010        2 hrs Pay rent at the end of the month
+.br
+ 8                                1 hr Select some Music for after dinner
+.br
+ 3 party                         2 hrs Mail invitations
+.br
+ 4 party                         2 hrs Select a caterer
+.br
+ 6 party                         2 hrs Print invitations
+.br
+
+.br
+8 tasks
 .RE
 
-It's gone.
+It's gone.  Now we wait five seconds, then:
 
 .RS
-(wait 5 seconds)
 $ task list
+.br
+
+.br
+ID Project Pri Due        Active Age     Description
+.br
+-- ------- --- ---------- ------ ------- ------------------------------------
+.br
+ 2 party   H   10/17/2010          2 hrs Select and book a venue
+.br
+                                         2010/10/16 11:20 Started task
+.br
+                                         2010/10/16 11:21 Stopped task
+.br
+ 5 party   H   10/22/2010          2 hrs Design invitations
+.br
+ 1 party   H   10/31/2010          2 hrs Select a free weekend in November
+.br
+                                         2010/10/16 00:00 the 13th looks good
+.br
+ 9 home        10/31/2010          2 hrs Pay rent at the end of the month
+.br
+ 8                                  1 hr Select some Music for after dinner
+.br
+11                               18 secs Do something in a few seconds
+.br
+ 3 party                           2 hrs Mail invitations
+.br
+ 4 party                           2 hrs Select a caterer
+.br
+ 6 party                           2 hrs Print invitations
+.br
+
+.br
+9 tasks
 .RE
 
 And it's back.  Now we delete it.
 
 .RS
 $ task 11 rc.confirmation:no delete
+.br
+Deleting task 11 'Do something in a few seconds'.
 .RE
 
 .SH DEPENDENCIES
@@ -671,48 +2278,116 @@ tasks, and assign dependencies.
 
 .RS
 $ task list pro:party
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 2 party   H   10/17/2010        3 hrs Select and book a venue
+.br
+                                       2010/10/16 11:20 Started task
+.br
+                                       2010/10/16 11:21 Stopped task
+.br
+ 5 party   H   10/22/2010        3 hrs Design invitations
+.br
+ 1 party   H   10/31/2010        3 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+ 3 party                         3 hrs Mail invitations
+.br
+ 4 party                         3 hrs Select a caterer
+.br
+ 6 party                         3 hrs Print invitations
+.br
+
+.br
+6 tasks
 .RE
 
 Let's see.  I can't mail invitations until they are printed.
 
 .RS
 $ task 3 depends:6
+.br
+Modified 1 task.
 .RE
 
 I can't print them until I design them.
 
 .RS
 $ task 6 dep:5
+.br
+Modified 1 task.
 .RE
 
 I need to select a weekend before a location.
 
 .RS
 $ task 2 dep:1
+.br
+Modified 1 task.
 .RE
 
 Design depends on location and weekend.
 
 .RS
 $ task 5 dep:1,2
+.br
+Modified 1 task.
 .RE
 
 And the caterer needs to know where.
 
 .RS
 $ task 4 dep:1
+.br
+Modified 1 task.
 .RE
 
 Let's take a look.  All my tasks are blocked except task 1.  That makes sense.
 
 .RS
 $ task long pro:party
+.br
+
+.br
+ID Project Pri Added      Started Due        Recur Countdown Age   Deps Tags Description
+.br
+-- ------- --- ---------- ------- ---------- ----- --------- ----- ---- ---- ------------------------------------
+.br
+ 2 party   H   10/16/2010         10/17/2010         -10 hrs 3 hrs 1         Select and book a venue
+.br
+                                                                             2010/10/16 11:20 Started task
+.br
+                                                                             2010/10/16 11:21 Stopped task
+.br
+ 5 party   H   10/16/2010         10/22/2010         -5 days 3 hrs 1,2  mall Design invitations
+.br
+ 1 party   H   10/16/2010         10/31/2010          -2 wks 3 hrs           Select a free weekend in November
+.br
+                                                                             2010/10/16 00:00 the 13th looks good
+.br
+ 3 party       10/16/2010                                    3 hrs 6         Mail invitations
+.br
+ 4 party       10/16/2010                                    3 hrs 1         Select a caterer
+.br
+ 6 party       10/16/2010                                    3 hrs 5    mall Print invitations
+.br
+
+.br
+6 tasks
 .RE
 
 Hmm, that double dependency isn't right.
 
 .RS
 $ task 5 dep:-1
+.br
+Modified 1 task.
 .RE
 
 Here are the blocked tasks, and the opposite, the unblocked tasks.
@@ -720,19 +2395,119 @@ Here are the blocked tasks, and the opposite, the unblocked tasks.
 .RS
 $ task blocked
 .br
+
+.br
+ID Deps Project Pri Due        Active Age   Description
+.br
+-- ---- ------- --- ---------- ------ ----- -----------------------------
+.br
+ 2 1    party   H   10/17/2010        3 hrs Select and book a venue
+.br
+                                            2010/10/16 11:20 Started task
+.br
+                                            2010/10/16 11:21 Stopped task
+.br
+ 5 2    party   H   10/22/2010        3 hrs Design invitations
+.br
+ 3 6    party                         3 hrs Mail invitations
+.br
+ 4 1    party                         3 hrs Select a caterer
+.br
+ 6 5    party                         3 hrs Print invitations
+.br
+
+.br
+5 tasks
+.br
 $ task unblocked
+.br
+
+.br
+ID Deps Project Pri Due        Active Age   Description
+.br
+-- ---- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 1      party   H   10/31/2010        3 hrs Select a free weekend in November
+.br
+                                            2010/10/16 00:00 the 13th looks good
+.br
+ 9      home        10/31/2010        3 hrs Pay rent at the end of the month
+.br
+ 8                                    3 hrs Select some Music for after dinner
+.br
+
+.br
+3 tasks
 .RE
 
 If we look at task 1 closely, we can see that it is blocking 2 and 4.
 
 .RS
 $ task 1 info
+.br
+
+.br
+Name                  Value
+.br
+--------------------- ------------------------------------
+.br
+ID                    1
+.br
+Description           Select a free weekend in November
+.br
+                      2010/10/16 00:00 the 13th looks good
+.br
+Status                Pending
+.br
+Project               party
+.br
+Priority              H
+.br
+This task is blocking 2 Select and book a venue
+.br
+                      4 Select a caterer
+.br
+Due                   10/31/2010
+.br
+UUID                  3a6881bb-628b-4f90-93d7-4da563b83d54
+.br
+Entered               10/16/2010 (3 hrs)
 .RE
 
 And if we look at task 2, we see that it is blocked by 1, and blocking 5.
 
 .RS
 $ task 2 info
+.br
+
+.br
+Name                  Value
+.br
+--------------------- ------------------------------------
+.br
+ID                    2
+.br
+Description           Select and book a venue
+.br
+                      2010/10/16 11:20 Started task
+.br
+                      2010/10/16 11:21 Stopped task
+.br
+Status                Pending
+.br
+Project               party
+.br
+Priority              H
+.br
+This task blocked by  1 Select a free weekend in November
+.br
+This task is blocking 5 Design invitations
+.br
+Due                   10/17/2010
+.br
+UUID                  773c2b02-919e-4527-95f0-814c19dd198a
+.br
+Entered               10/16/2010 (3 hrs)
 .RE
 
 This is called a dependency chain, which is a string of tasks that are all
@@ -746,7 +2521,53 @@ to reflect what you have done.
 .RS
 $ task 2 done
 .br
+
+.br
+Task 2 is blocked by:
+.br
+  1 Select a free weekend in November
+.br
+and is blocking:
+.br
+  5 Design invitations
+.br
+Would you like the dependency chain fixed? (y/n) y
+.br
+Completed 2 'Select and book a venue'.
+.br
+Project 'party' is 12% complete (7 of 8 tasks remaining).
+.br
+Marked 1 task as done.
+.br
 $ task 1 info
+.br
+
+.br
+Name                  Value
+.br
+--------------------- ------------------------------------
+.br
+ID                    1
+.br
+Description           Select a free weekend in November
+.br
+                      2010/10/16 00:00 the 13th looks good
+.br
+Status                Pending
+.br
+Project               party
+.br
+Priority              H
+.br
+This task is blocking 4 Select a caterer
+.br
+                      5 Design invitations
+.br
+Due                   10/31/2010
+.br
+UUID                  3a6881bb-628b-4f90-93d7-4da563b83d54
+.br
+Entered               10/16/2010 (3 hrs)
 .RE
 
 .SH REPORTS
@@ -755,48 +2576,204 @@ information:
 
 .RS
 $ task minimal
+.br
+
+.br
+ID Project Description
+.br
+-- ------- ------------------------------------
+.br
+ 7         Select some Music for after dinner
+.br
+ 8 home    Pay rent at the end of the month
+.br
+ 4 party   Design invitations
+.br
+ 2 party   Mail invitations
+.br
+ 5 party   Print invitations
+.br
+ 3 party   Select a caterer
+.br
+ 1 party   Select a free weekend in November
+.br
+           2010/10/16 00:00 the 13th looks good
 .RE
 
 There is the basic report:
 
 .RS
 $ task ls
+.br
+
+.br
+ID Project Pri Description
+.br
+-- ------- --- ------------------------------------
+.br
+ 1 party   H   Select a free weekend in November
+.br
+               2010/10/16 00:00 the 13th looks good
+.br
+ 4 party   H   Design invitations
+.br
+ 7             Select some Music for after dinner
+.br
+ 8 home        Pay rent at the end of the month
+.br
+ 2 party       Mail invitations
+.br
+ 3 party       Select a caterer
+.br
+ 5 party       Print invitations
 .RE
 
 There is the most common report:
 
 .RS
 $ task list
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 4 party   H   10/22/2010        5 hrs Design invitations
+.br
+ 1 party   H   10/31/2010        6 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+ 8 home        10/31/2010        5 hrs Pay rent at the end of the month
+.br
+ 7                               5 hrs Select some Music for after dinner
+.br
+ 2 party                         5 hrs Mail invitations
+.br
+ 3 party                         5 hrs Select a caterer
+.br
+ 5 party                         5 hrs Print invitations
 .RE
 
 There is a report with most of the data shown:
 
 .RS
 $ task long
+.br
+
+.br
+ID Project Pri Added      Started Due        Recur   Countdown Age   Deps Tags Description
+.br
+-- ------- --- ---------- ------- ---------- ------- --------- ----- ---- ---- ------------------------------------
+.br
+ 4 party   H   10/16/2010         10/22/2010           -5 days 5 hrs 1    mall Design invitations
+.br
+ 1 party   H   10/16/2010         10/31/2010            -2 wks 6 hrs           Select a free weekend in November
+.br
+                                                                               2010/10/16 00:00 the 13th looks good
+.br
+ 8 home        10/16/2010         10/31/2010 monthly    -2 wks 5 hrs           Pay rent at the end of the month
+.br
+ 7             10/16/2010                                      5 hrs           Select some Music for after dinner
+.br
+ 2 party       10/16/2010                                      5 hrs 5         Mail invitations
+.br
+ 3 party       10/16/2010                                      5 hrs 1         Select a caterer
+.br
+ 5 party       10/16/2010                                      5 hrs 4    mall Print invitations
 .RE
 
 There is a report containing all tasks, old and new:
 
 .RS
 $ task all
+.br
+
+.br
+ID Project Pri Due        Completed  Active Age   Description
+.br
+-- ------- --- ---------- ---------- ------ ----- ------------------------------------
+.br
+ 9             12/31/2010                   3 hrs Look for new apartment
+.br
+ 7                                          5 hrs Select some Music for after dinner
+.br
+ -                        10/16/2010        6 hrs Come up with a guest list
+.br
+ -                        10/16/2010        5 hrs Order a special cake
+.br
+ 6 home        10/31/2010                   5 hrs Pay rent at the end of the month
+.br
+ 8 home        10/31/2010                   5 hrs Pay rent at the end of the month
+.br
+ - party   H   10/17/2010 10/16/2010        6 hrs Select and book a venue
+.br
+                                                  2010/10/16 11:20 Started task
+.br
+                                                  2010/10/16 11:21 Stopped task
+.br
+ 4 party   H   10/22/2010                   5 hrs Design invitations
+.br
+ 1 party   H   10/31/2010                   6 hrs Select a free weekend in November
+.br
+                                                  2010/10/16 00:00 the 13th looks good
+.br
+ 2 party                                    6 hrs Mail invitations
+.br
+ 5 party                                    5 hrs Print invitations
+.br
+ 3 party                                    6 hrs Select a caterer
 .RE
 
 There is a report showing completed work:
 
 .RS
 $ task completed
+.br
+
+.br
+Complete   Project Pri Age   Description
+.br
+---------- ------- --- ----- -----------------------------
+.br
+10/16/2010 party   H   6 hrs Select and book a venue
+.br
+                             2010/10/16 11:20 Started task
+.br
+                             2010/10/16 11:21 Stopped task
+.br
+10/16/2010             6 hrs Come up with a guest list
+.br
+10/16/2010             5 hrs Order a special cake
 .RE
 
 There is a report showing recurring tasks only:
 
 .RS
 $ task recurring
+.br
+
+.br
+ID Project Pri Due        Recur   Active Age   Description
+.br
+-- ------- --- ---------- ------- ------ ----- --------------------------------
+.br
+ 8 home        10/31/2010 monthly        5 hrs Pay rent at the end of the month
 .RE
 
-There is a repot to show all the waiting tasks:
+There is a report to show all the waiting tasks:
 
 .RS
 $ task waiting
+.br
+
+.br
+ID Project Pri Wait      Age   Description
+.br
+-- ------- --- --------- ----- ----------------------
+.br
+ 9             12/1/2010 3 hrs Look for new apartment
 .RE
 
 There is a report showing all the tasks that are blocked via dependencies by
@@ -804,38 +2781,127 @@ other tasks:
 
 .RS
 $ task blocked
+.br
+
+.br
+ID Deps Project Pri Due        Active Age   Description
+.br
+-- ---- ------- --- ---------- ------ ----- ------------------
+.br
+ 4 1    party   H   10/22/2010        5 hrs Design invitations
+.br
+ 2 5    party                         6 hrs Mail invitations
+.br
+ 3 1    party                         6 hrs Select a caterer
+.br
+ 5 4    party                         5 hrs Print invitations
 .RE
 
 There is a report showing tasks that are not blocked by dependencies:
 
 .RS
 $ task unblocked
+.br
+
+.br
+ID Deps Project Pri Due        Active Age   Description
+.br
+-- ---- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 1      party   H   10/31/2010        6 hrs Select a free weekend in November
+.br
+                                            2010/10/16 00:00 the 13th looks good
+.br
+ 8      home        10/31/2010        5 hrs Pay rent at the end of the month
+.br
+ 7                                    5 hrs Select some Music for after dinner
 .RE
 
 There is a report showing the oldest tasks:
 
 .RS
-$ task oldest
+$ task oldest limit:3
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 1 party   H   10/31/2010        6 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+ 2 party                         6 hrs Mail invitations
+.br
+ 3 party                         6 hrs Select a caterer
 .RE
 
 There is a report showing the newest tasks:
 
 .RS
-$ task newest
+$ task newest limit:3
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ----------------------------------
+.br
+ 8 home        10/31/2010        5 hrs Pay rent at the end of the month
+.br
+ 7                               5 hrs Select some Music for after dinner
+.br
+ 5 party                         6 hrs Print invitations
 .RE
 
 There is a report showing the completed and started tasks, by week:
 
 .RS
 $ task timesheet
+.br
+
+.br
+10/10/2010 - 10/16/2010
+.br
+  Completed (3 tasks)
+.br
+    Project Due        Description
+.br
+                       Come up with a guest list
+.br
+                       Order a special cake
+.br
+    party   10/17/2010 Select and book a venue
+.br
+                       2010/10/16 11:20 Started task
+.br
+                       2010/10/16 11:21 Stopped task
+.br
+
+.br
+  Started (0 tasks)
 .RE
 
 And "what should I work on next?"  This one can be useful because it pulls a few
-of the highest priority tasks from all the projects.  It's the report we should
-all be using.
+of the highest priority tasks from all the projects.
 
 .RS
 $ task next
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 1 party   H   10/31/2010        6 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+ 8 home        10/31/2010        5 hrs Pay rent at the end of the month
+.br
+ 7                               5 hrs Select some Music for after dinner
 .RE
 
 .SH CUSTOM REPORTS
@@ -865,18 +2931,62 @@ Custom reports also show up on the help output.
 
 .RS
 $ task help | grep foo
+.br
+       task foo [tags] [attrs] desc...            My own report
 .RE
 
 I can inspect the configuration.
 
 .RS
 $ task show report.foo
+.br
+
+.br
+Config variable        Value
+.br
+---------------------- ----------------------
+.br
+report.foo.columns     id,entry,description
+.br
+report.foo.description My own report
+.br
+report.foo.filter      status:pending
+.br
+report.foo.labels      ID,Entered,Description
+.br
+report.foo.sort        entry+,description+
 .RE
 
 And they can be run just like the other reports.
 
 .RS
 $ task foo
+.br
+
+.br
+ID Entered    Description
+.br
+-- ---------- ------------------------------------
+.br
+ 4 10/16/2010 Design invitations
+.br
+ 2 10/16/2010 Mail invitations
+.br
+ 8 10/16/2010 Pay rent at the end of the month
+.br
+ 5 10/16/2010 Print invitations
+.br
+ 3 10/16/2010 Select a caterer
+.br
+ 1 10/16/2010 Select a free weekend in November
+.br
+              2010/10/16 00:00 the 13th looks good
+.br
+ 7 10/16/2010 Select some Music for after dinner
+.br
+
+.br
+7 tasks
 .RE
 
 .SH CHARTS
@@ -886,40 +2996,149 @@ There is also an annual version.
 .RS
 $ task history
 .br
+
+.br
+Year Month   Added Completed Deleted Net
+.br
+---- ------- ----- --------- ------- ---
+.br
+2010 October    19         3       7   9
+.br
+
+.br
+     Average    19         3       7   9
+.br
+
+.br
 $ task history.annual
+.br
+
+.br
+Year    Added Completed Deleted Net
+.br
+------- ----- --------- ------- ---
+.br
+2010       19         3       7   9
+.br
+
+.br
+Average    19         3       7   9
 .RE
 
 There is a graphical monthly and annual version.
+[These charts do not show up in a man page]
 
 .RS
 $ task ghistory
 .br
+ ...
+.br
 $ task ghistory.annual
+.br
+ ...
 .RE
 
 There is a project summary report that shows progress in all the projects.
 
 .RS
 $ task summary
+.br
+
+.br
+Project Remaining Avg age Complete 0%                        100%
+.br
+------- --------- ------- -------- ------------------------------
+.br
+(none)          2 59 mins      50% ===============
+.br
+home            1   3 hrs       0%
+.br
+party           5   6 hrs      16% =====
+.br
+
+.br
+3 projects
 .RE
 
 .SH ADVANCED FILTERS
 Filters are a very powerful tool.  First here is an unfiltered list, which
-shows all tasks.  Now again, but with the text 'invit', which acts as a filter
-on the description field.
+shows all tasks.
 
 .RS
 $ task list
 .br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 4 party   H   10/22/2010        6 hrs Design invitations
+.br
+ 1 party   H   10/31/2010        6 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+ 8 home        10/31/2010        6 hrs Pay rent at the end of the month
+.br
+ 7                               6 hrs Select some Music for after dinner
+.br
+ 2 party                         6 hrs Mail invitations
+.br
+ 3 party                         6 hrs Select a caterer
+.br
+ 5 party                         6 hrs Print invitations
+.br
+
+.br
+7 tasks
+.RE
+
+Now again, but with the text 'invit', which acts as a filter on the description
+field.
+
+.RS
 $ task list invit
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------
+.br
+ 4 party   H   10/22/2010        6 hrs Design invitations
+.br
+ 2 party                         6 hrs Mail invitations
+.br
+ 5 party                         6 hrs Print invitations
+.br
+
+.br
+3 tasks
 .RE
 
 This is the equivalent form using attribute modifiers.  In this example we are
 filtering on descriptions that contain the word fragment.  Here we are using
-the'contains' modifier, but there are many others.
+the 'contains' modifier, but there are many others.
 
 .RS
 $ task list description.contains:invit
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------
+.br
+ 4 party   H   10/22/2010        6 hrs Design invitations
+.br
+ 2 party                         6 hrs Mail invitations
+.br
+ 5 party                         6 hrs Print invitations
+.br
+
+.br
+3 tasks
 .RE
 
 All tasks containing the whole word 'the'.  See how annotations are also
@@ -927,12 +3146,48 @@ searched?
 
 .RS
 $ task list desc.word:the
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 1 party   H   10/31/2010        6 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+ 8 home        10/31/2010        6 hrs Pay rent at the end of the month
+.br
+
+.br
+2 tasks
 .RE
 
 Here is a list of all tasks that do not contain the whole word 'invitations'.
 
 .RS
 $ task list desc.noword:invitations
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 1 party   H   10/31/2010        6 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+ 8 home        10/31/2010        6 hrs Pay rent at the end of the month
+.br
+ 7                               6 hrs Select some Music for after dinner
+.br
+ 3 party                         6 hrs Select a caterer
+.br
+
+.br
+4 tasks
 .RE
 
 Here list all tasks in the 'party' project.  And the full equivalent.  Here list
@@ -953,6 +3208,22 @@ and also filtering on the 'party' project.  There are two terms in this filter.
 
 .RS
 $ task list pro:party pri.over:L
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 4 party   H   10/22/2010        6 hrs Design invitations
+.br
+ 1 party   H   10/31/2010        6 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+
+.br
+2 tasks
 .RE
 
 Same again, but only show me the first two tasks.  Now all tasks, but just show
@@ -962,7 +3233,39 @@ the idea.
 .RS
 $ task list pro:party limit:2
 .br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 4 party   H   10/22/2010        6 hrs Design invitations
+.br
+ 1 party   H   10/31/2010        6 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+
+.br
+2 tasks, 2 shown
+.br
 $ task list limit:page
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+ 4 party   H   10/22/2010        6 hrs Design invitations
+.br
+ 1 party   H   10/31/2010        6 hrs Select a free weekend in November
+.br
+                                       2010/10/16 00:00 the 13th looks good
+.br
+
+.br
+2 tasks
 .RE
 
 Now you can see how some of the built-in reports work.  The 'list' report is
@@ -970,12 +3273,14 @@ just all tasks, filtered so that only the pending tasks are shown.
 
 .RS
 $ task all status:pending
+ ...
 .RE
 
 The 'waiting' report is similarly defined.
 
 .RS
 $ task all status:waiting
+ ...
 .RE
 
 .SH IMPORT/EXPORT
@@ -983,48 +3288,181 @@ You can export your tasks.  Here you see all tasks being exported in CSV format.
 
 .RS
 $ task export.csv
+.br
+\'uuid','status','tags','entry','start','due','recur','end','project','priority','fg','bg','description'
+.br
+\'3a6881bb-628b-4f90-93d7-4da563b83d54','pending','',1287237300,,1288497600,,,'party','H',,,'Select a free weekend in November'
+.br
+\'4a1de9aa-9b00-41ec-8d00-e0d0131e0e0d','pending','',1287237365,,,,,'party',,,,'Mail invitations'
+.br
+\'2a65e922-ff18-4db1-b867-dbe745b9626a','pending','',1287237372,,,,,'party',,,,'Select a caterer'
+.br
+ ...
 .RE
 
 Let's just export one task in CSV format...
 
 .RS
 $ task export.csv venue
+.br
+\'uuid','status','tags','entry','start','due','recur','end','project','priority','fg','bg','description'
+.br
+\'773c2b02-919e-4527-95f0-814c19dd198a','completed','',1287237350,,1287288000,,1287250285,'party','H',,,'Select and book a venue'
 .RE
 
 Or in VCalendar format...
 
 .RS
 $ task export.vcalendar venue
+.br
+BEGIN:VCALENDAR
+.br
+VERSION:2.0
+.br
+PRODID:-//GBF//task 1.9.3.beta1//EN
+.br
+BEGIN:VTODO
+.br
+UID:773c2b02-919e-4527-95f0-814c19dd198a
+.br
+DTSTAMP:20101016T135550Z
+.br
+DUE:20101017T040000Z
+.br
+COMPLETED:20101016T173125Z
+.br
+SUMMARY:Select and book a venue
+.br
+CLASS:PRIVATE
+.br
+PRIORITY:1
+.br
+STATUS:COMPLETED
+.br
+COMMENT:Started task
+.br
+COMMENT:Stopped task
+.br
+END:VTODO
+.br
+END:VCALENDAR
 .RE
 
 Or YAML.
 
 .RS
 $ task export.yaml venue
+.br
+%YAML 1.1
+.br
+---
+.br
+  task:
+.br
+    depends: 3a6881bb-628b-4f90-93d7-4da563b83d54
+.br
+    description: Select and book a venue
+.br
+    due: 1287288000
+.br
+    end: 1287250285
+.br
+    entry: 1287237350
+.br
+    priority: H
+.br
+    project: party
+.br
+    status: completed
+.br
+    uuid: 773c2b02-919e-4527-95f0-814c19dd198a
+.br
+    annotation:
+.br
+      entry: 1287242411
+.br
+      description: Started task
+.br
+    annotation:
+.br
+      entry: 1287242506
+.br
+      description: Stopped task
+.br
+ ...
 .RE
 
 I can also import.  Here I am importing simple lines of text.  Taskwarrior
-recognizes the format and confirms.
+recognizes the format by looking inside the file and making a guess, then
+confirms.
 
 .RS
 $ cat file.text
 .br
+Remember to read the task man page
+.br
 $ task import file.text
+.br
+This looks like a text file with one task per line.  Okay to proceed? (y/n) y
+.br
+Imported 1 tasks successfully, with 0 errors.
 .RE
 
 Here is a YAML example.  Taskwarrior can read several formats, including old
-versions task data.  Using YAML, you can round-trip the data without loss.
+versions task data.  Using YAML, you can round-trip the data without loss, which
+means you can export and import without any missing information.  This also
+means that 'export.yaml' is good for making a backup copy of your tasks.
 
 .RS
 $ cat file.yaml
 .br
+%YAML 1.1
+.br
+---
+.br
+  task:
+.br
+    description: Visit http://taskwarrior.org
+.br
+    due: 1281844800
+.br
+    entry: 1281289630
+.br
+    priority: H
+.br
+    project: work
+.br
+    status: pending
+.br
+    uuid: 23afada0-a446-8d5a-c213-30d99d52c4b0
+.br
+ ...
+.br
 $ task import file.yaml
+.br
+This looks like a YAML file.  Okay to proceed? (y/n) y
+.br
+Imported 1 tasks successfully.
 .RE
 
 Here are the imported tasks.
 
 .RS
 $ task new limit:2
+.br
+
+.br
+ID Project Pri Due        Active Age   Description
+.br
+-- ------- --- ---------- ------ ----- ------------------------------------
+.br
+11 work    H   8/15/2010         9 wks Visit http://taskwarrior.org
+.br
+10                               1 min Remember to read the task man page
+.br
+
+.br
+9 tasks, 2 shown
 .RE
 
 .SH HELP
@@ -1033,6 +3471,7 @@ you'll want to take a look at the several man pages installed.
 
 .RS
 $ task help
+ ...
 .RE
 
 .SH "CREDITS & COPYRIGHTS"

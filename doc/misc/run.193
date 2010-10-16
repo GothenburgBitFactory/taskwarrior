@@ -231,6 +231,21 @@ task active
 echo $ task 2 stop
 task 2 stop
 
+echo $ task config journal.time on
+task config journal.time on
+echo $ task config rc.dateformat.xxx xxx
+task config rc.dateformat.xxx xxx
+echo $ task config dateformat.annotation 'Y/m/d H:N'
+task config dateformat.annotation 'Y/m/d H:N'
+echo $ task 2 start
+task 2 start
+echo $ task list venue
+task list venue
+echo $ task 2 stop
+task 2 stop
+echo $ task list venue
+task list venue
+
 # 14 Due dates
 echo Due dates --------------------------------------------------------------
 echo $ task 1 due:7/31/2010

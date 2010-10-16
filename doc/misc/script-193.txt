@@ -257,6 +257,15 @@ task list                                active by starting it.  See how active 
 task active                              There is an active report that shows only active tasks, and
 task 2 stop                              you can mark any active task as inactive, by stopping it.
 
+task config journal.time on (y)          There is a journalling feature that records the start and
+
+task config dateformat.annotation 'Y/m/d H:N' (y)
+
+task 2 start                             stop times as annotations.  We'll turn that on, and add
+task list venue                          the time to the annotation date format.
+task 2 stop
+task list venue
+
 ---------------------------------------- Due dates -------------------------------------------------
 
 task 1 due:7/31/2010                     Due dates can be specified as dates...
