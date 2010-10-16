@@ -53,31 +53,31 @@ int getDueState (const std::string&);
 bool nag (Task&);
 
 // command.cpp
-int handleAdd (std::string &);
-int handleLog (std::string &);
-int handleAppend (std::string &);
-int handlePrepend (std::string &);
-int handleDone (std::string &);
-int handleModify (std::string &);
-int handleProjects (std::string &);
-int handleCompletionProjects (std::string &);
-int handleTags (std::string &);
-int handleCompletionTags (std::string &);
-int handleCompletionCommands (std::string &);
-int handleCompletionIDs (std::string &);
-int handleCompletionConfig (std::string &);
-int handleCompletionVersion (std::string &);
-int handleUrgency (std::string &);
-int handleVersion (std::string &);
-int handleConfig (std::string &);
-int handleShow (std::string &);
-int handleDelete (std::string &);
-int handleStart (std::string &);
-int handleStop (std::string &);
-int handleColor (std::string &);
-int handleAnnotate (std::string &);
-int handleDenotate (std::string &);
-int handleDuplicate (std::string &);
+int handleAdd (std::string&);
+int handleLog (std::string&);
+int handleAppend (std::string&);
+int handlePrepend (std::string&);
+int handleDone (std::string&);
+int handleModify (std::string&);
+int handleProjects (std::string&);
+int handleCompletionProjects (std::string&);
+int handleTags (std::string&);
+int handleCompletionTags (std::string&);
+int handleCompletionCommands (std::string&);
+int handleCompletionIDs (std::string&);
+int handleCompletionConfig (std::string&);
+int handleCompletionVersion (std::string&);
+int handleUrgency (std::string&);
+int handleVersion (std::string&);
+int handleConfig (std::string&);
+int handleShow (std::string&);
+int handleDelete (std::string&);
+int handleStart (std::string&);
+int handleStop (std::string&);
+int handleColor (std::string&);
+int handleAnnotate (std::string&);
+int handleDenotate (std::string&);
+int handleDuplicate (std::string&);
 void handleUndo ();
 void handleMerge (std::string&);
 void handlePush (std::string&);
@@ -93,20 +93,20 @@ int deltaAttributes (Task&);
 int deltaSubstitutions (Task&);
 
 // edit.cpp
-int handleEdit (std::string &);
+int handleEdit (std::string&);
 
 // report.cpp
-int shortUsage (std::string &);
-int longUsage (std::string &);
-int handleInfo (std::string &);
-int handleReportSummary (std::string &);
-int handleReportHistoryMonthly (std::string &);
-int handleReportHistoryAnnual (std::string &);
-int handleReportGHistoryMonthly (std::string &);
-int handleReportGHistoryAnnual (std::string &);
-int handleReportCalendar (std::string &);
-int handleReportStats (std::string &);
-int handleReportTimesheet (std::string &);
+int shortUsage (std::string&);
+int longUsage (std::string&);
+int handleInfo (std::string&);
+int handleReportSummary (std::string&);
+int handleReportHistoryMonthly (std::string&);
+int handleReportHistoryAnnual (std::string&);
+int handleReportGHistoryMonthly (std::string&);
+int handleReportGHistoryAnnual (std::string&);
+int handleReportCalendar (std::string&);
+int handleReportStats (std::string&);
+int handleReportTimesheet (std::string&);
 void gatherNextTasks (std::vector <Task>&);
 std::string getFullDescription (Task&, const std::string&);
 std::string getDueDate (Task&, const std::string&);
@@ -114,7 +114,7 @@ std::string onProjectChange (Task&, bool scope = true);
 std::string onProjectChange (Task&, Task&);
 
 // custom.cpp
-int handleCustomReport (const std::string&, std::string &);
+int handleCustomReport (const std::string&, std::string&);
 void validReportColumns (const std::vector <std::string>&);
 void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
 void getLimits (const std::string&, int&, int&);
@@ -130,9 +130,9 @@ std::string colorizeDebug (const std::string&);
 int handleImport (std::string&);
 
 // export.cpp
-int handleExportCSV (std::string &);
-int handleExportiCal (std::string &);
-int handleExportYAML (std::string &);
+int handleExportCSV (std::string&);
+int handleExportiCal (std::string&);
+int handleExportYAML (std::string&);
 
 // dependency.cpp
 bool dependencyIsBlocked (const Task&);

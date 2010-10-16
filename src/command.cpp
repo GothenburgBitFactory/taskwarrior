@@ -262,8 +262,8 @@ int handleProjects (std::string &outs)
       table.addColumn ("Pri:M");
       table.addColumn ("Pri:H");
 
-      if (context.config.getBoolean ("color") ||
-          context.config.getBoolean ("_forcecolor"))
+      if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+          context.config.getBoolean ("fontunderline"))
       {
         table.setColumnUnderline (0);
         table.setColumnUnderline (1);
@@ -272,6 +272,8 @@ int handleProjects (std::string &outs)
         table.setColumnUnderline (4);
         table.setColumnUnderline (5);
       }
+      else
+        table.setTableDashedUnderline ();
 
       table.setColumnJustification (1, Table::right);
       table.setColumnJustification (2, Table::right);
