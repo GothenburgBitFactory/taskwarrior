@@ -17,7 +17,6 @@ tasks.  Everyone has different usage patterns.
 Let's get started.  We're planning a party, and there is a lot of work to do, so
 let's capture these tasks, by using the 'add' command.
 
-.br
 .RS
 $ task add Select a free weekend in November
 .br
@@ -34,7 +33,6 @@ The '$' prompt shows that these are commands that you type (don't include the
 $ symbol yourself), and lines without the prompt are those displayed by
 taskwarrior.  Let's take a look at our tasks so far.
 
-.br
 .RS
 $ task list
 .RE
@@ -43,7 +41,6 @@ Now I've already ordered a cake, so rather than 'add' this, I'm going to 'log'
 it.  This just means that I want to keep track of the task, but I've already
 done it.  It saves me a step.
 
-.br
 .RS
 $ task log Order a special cake
 .RE
@@ -53,7 +50,6 @@ going to need print them.  Here we are duplicating a task and making a
 substitution.  Notice how the commands can be abbreviated, provided they are
 still unique.
 
-.br
 .RS
 $ task 4 duplicate /Mail/Design/
 .br
@@ -65,8 +61,11 @@ $ task list
 That looks good - but now I think of it, I already have my guest list, so I can
 mark that one as done.
 
-    $ task 3 done
-    $ task list
+.RS
+$ task 3 done
+.br
+$ task list
+.RE
 
 And that's basic usage, and you already know enough to be productive using
 taskwarrior.  If you stopped here, you would be perfectly able to manage your
@@ -77,215 +76,314 @@ But if you want to see what it can really do, keep reading...
 .SH PROJECTS
 Remember to pay the rent at the end of the month.
 
-    $ task add Pay teh rent on teh 31st
+.RS
+$ task add Pay teh rent on teh 31st
+.RE
 
 Oh, that was sloppy, but it can be fixed with a global substitution.
 
-    $ task 7 /teh/teh/g
-    $ task list
+.RS
+$ task 7 /teh/teh/g
+.br
+$ task list
+.RE
 
 We can now use projects to separate home chores from the party preparation.
 Let's assign that last task to the 'home' project.  Note that a task may only
 belong to one project.
 
-    $ task 7 project:home
+.RS
+$ task 7 project:home
+.RE
 
 And we will put those first six tasks in the 'party' project.  See how we
 specify a range of tasks?  Taskwarrior will want to confirm bulk changes like
 this, but we'll accept all changes here.
 
-    $ task 1-6 project:party
+.RS
+$ task 1-6 project:party
+.RE
 
 Now that we have multiple projects, as shown here, we can use project as a
 filter for the list report.  You can see again that we can abbreviate 'list'
 and 'project', but when we abbreviate 'party', we are filtering all the projects
 that begin with 'par'.
 
-    $ task projects
-    $ task list project:home
-    $ task li pro:par
+.RS
+$ task projects
+.br
+$ task list project:home
+.br
+$ task li pro:par
+.RE
 
 .SH PRIORITIES
 Priorities are another way to organize tasks.  You can use priority values of
 high, medium and low, and taskwarrior knows these as H, M or L.
 
-    $ task 1-3,5 priority:H
-    $ task list
+.RS
+$ task 1-3,5 priority:H
+.br
+$ task list
+.RE
 
 You can remove priorities by specifying a blank value.
 
-    $ task 3 pri:
+.RS
+$ task 3 pri:
+.RE
 
 .SH TAGS
 A task may only have one project, but it may have any number of tags, which are
 just single words associated with the task.
 
-    $ task list
+.RS
+$ task list
+.RE
 
 I can go to the print shop at the mall, and do all the invitation tasks, so
 let's tag them all.
 
-    $ task 3,5,6 +mall
+.RS
+$ task 3,5,6 +mall
+.RE
 
 The long report shows tags, too,
 
-    $ task long
+.RS
+$ task long
+.RE
 
 and I can use tags as a filter to any report too.
 
-    $ task list +mall
+.RS
+$ task list +mall
+.RE
 
 I made a mistake - I can't mail out the invitations at the mall, so let's remove
 that tag.
 
-    $ task 3 -mall
+.RS
+$ task 3 -mall
+.RE
 
 .SH MODIFICATIONS
 Task 7 is not worded correctly, so I can modify that by specifying a task ID
 and a new description.  This is also considered a bulk change, and so requires
 confirmation.
 
-    $ task 7 Pay rent at the end of the month
+.RS
+$ task 7 Pay rent at the end of the month
+.RE
 
 We'll need music.  I can prepend to that.  I can append to that.
 
-    $ task add music
-    $ task 8 prepend Select some
-    $ task 8 append for after dinner
-    $ task list
+.RS
+$ task add music
+.br
+$ task 8 prepend Select some
+.br
+$ task 8 append for after dinner
+.br
+$ task list
+.RE
 
 I can also go straight into an editor and modify anything.
 
-    $ task edit
+.RS
+$ task edit
+.RE
 
 Sometimes the command will confuse the shell.  In this case, what would happen
 if there was a file named 'bands' in the current directory?
 
-    $ task add Hire a band?
+.RS
+$ task add Hire a band?
+.RE
 
 The shell would expand that wildcard, so to avoid that, you can escape the
 wildcard, or quote the whole description.
 
-    $ task add Hire a band\\?
-    $ task add "Hire a band?"
+.RS
+$ task add Hire a band\\?
+.br
+$ task add "Hire a band?"
+.RE
 
 You can also use the minus minus operator which tells taskwarrior to stop being
 clever and interpret the rest of the arguments as a task description.
 Otherwise, that +dj would be interpreted as a tag.
 
-    $ task add -- Hire a band\\? +dj
+.RS
+$ task add -- Hire a band\\? +dj
+.RE
 
 We don't need a band, so the easiest way to get rid of that task is to undo the
 last change.  Taskwarrior has a complete undo stack, so you can undo all the way
 back to the beginning.
 
-    $ task undo
+.RS
+$ task undo
+.RE
 
 The undo operation gets rid of the task completely, but I could also have just
 deleted the task, then the deletion itself would be tracked, and also undo-able.
 
-    $ task 1 delete
-    $ task undo
+.RS
+$ task 1 delete
+.br
+$ task undo
+.RE
 
 .SH INFO
 During that undo operation, taskwarrior displayed metadata that is associated
 with the task.  You can display this with the info command, and its shortcut.
 
-    $ task 1 info
-    $ task 1
+.RS
+$ task 1 info
+.br
+$ task 1
+.RE
 
 There are also statistics that taskwarrior gathers, which I can display.
 
-    $ task stats
+.RS
+$ task stats
+.RE
 
 .SH ANNOTATIONS
 Annotations are little notes that can be added to a task.  There can be any
 number, and each has a time stamp.
 
-    $ task 1 annotate the 12th looks good
-    $ task 1 annotate or the 13th
-    $ task list
+.RS
+$ task 1 annotate the 12th looks good
+.br
+$ task 1 annotate or the 13th
+.br
+$ task list
+.RE
 
 You can choose to display annotations in different ways.
 
-    $ task list rc.annotations:full
-    $ task list rc.annotations:sparse
-    $ task list rc.annotations:none
+.RS
+$ task list rc.annotations:full
+.br
+$ task list rc.annotations:sparse
+.br
+$ task list rc.annotations:none
+.RE
 
 Annotations can be removed by providing a matching pattern.
 
-    $ task 1 denotate 13th
-    $ task list
+.RS
+$ task 1 denotate 13th
+.br
+$ task list
+.RE
 
 .SH CONFIGURATION
 There is a 'show' command, that is used to display the active configuration.
 There are hundreds of settings that can be changed, and every one has a sensible
 default.
 
-    $ task show
+.RS
+$ task show
+.RE
 
 If you want a complete list of all the settings and their meanings, read the man
 page.
 
-    $ man taskrc
+.RS
+$ man taskrc
+.RE
 
 The 'config' command is used to modify the settings, and in this case the
 configuration variable 'answer' is given the value of forty-two.
 
-    $ task config answer forty-two
+.RS
+$ task config answer forty-two
+.RE
 
 The 'show' command indicates that the value was changed, and also that the
 variable is unrecognized.  The show command performs a detailed check on your
 configuration, and alerts you to several kinds of problem.  The config command
 can also remove a value.
 
-    $ task show answer
-    $ task config answer
+.RS
+$ task show answer
+.br
+$ task config answer
+.RE
 
 A very powerful feature is the ability to override the configuration variables
 temporarily.  Here I am requesting an ascending sort on the description field
 only.
 
-    $ task rc.report.list.sort=description+ list
+.RS
+$ task rc.report.list.sort=description+ list
+.RE
 
 .SH DEFAULTS
 There is a default command, which can be set to anything, in this case it is set
 to the 'list' report.  Then running taskwarrior with no command name runs the
 default command.
 
-    $ task config default.command list
-    $ task
+.RS
+$ task config default.command list
+.br
+$ task
+.RE
 
 I can also specify a default priority and project, which means that any tasks
 added will use them, unless an alternative is provided.
 
-    $ task config default.priority H
-    $ task config default.project Work
-    $ task add New task
-    $ task list
+.RS
+$ task config default.priority H
+.br
+$ task config default.project Work
+.br
+$ task add New task
+.br
+$ task list
+.RE
 
 Let's just revert those changes, to clean up.
 
-    $ task undo
-    $ task config default.priority
-    $ task config default.project
+.RS
+$ task undo
+.br
+$ task config default.priority
+.br
+$ task config default.project
+.RE
 
 .SH ALIASES
 You can create aliases to effectively rename commands.
 
-    $ task config alias.zzz list
-    $ task zzz
+.RS
+$ task config alias.zzz list
+.br
+$ task zzz
+.RE
 
 You can abbreviate those, too.
 
-    $ task z
+.RS
+$ task z
+.RE
 
 .SH COLOR
+[Note that you will see color in your terminal as you work through this
+tutorial, but you wil not see the color in the man page.]
+
 All the examples so far have been shown with color turned off.  How about some
 color?
 
-    $ task config color on
-    $ task list
+.RS
+$ task config color on
+.br
+$ task list
+.RE
 
 What you see is the result of a set of color rules being applied to the tasks.
 There is a hierarchy of color rules that colorize a task based on the metadata
@@ -293,161 +391,230 @@ There is a hierarchy of color rules that colorize a task based on the metadata
 Here is an example of an explicit override to the color rules where a specific
 task is given a red background.
 
-    $ task 1 bg:on_red
-    $ task list
-    $ task 1 bg:
+.RS
+$ task 1 bg:on_red
+.br
+$ task list
+.br
+$ task 1 bg:
+.RE
 
 Taskwarrior supports 256 colors on certain terminal emulators, and this shows
 the range of colors available.
 
-    $ task color
+.RS
+$ task color
+.RE
 
 This is how to show a color sample.
 
-   $ task color white on red
+.RS
+$ task color white on red
+.RE
 
 Or samples of all the active color settings.
 
-    $ task color legend
+.RS
+$ task color legend
+.RE
 
 Themes are a simple way to use coordinated color schemes so by including a color
 theme into the configuration file, you can see some striking effects.  For a
 blue theme, add this line to your .taskrc file:
 
-    include /usr/local/share/doc/task/rc/dark-blue-256.theme
+.RS
+include /usr/local/share/doc/task/rc/dark-blue-256.theme
+.RE
 
 For a red theme:
 
-    include /usr/local/share/doc/task/rc/dark-red-256.theme
+.RS
+include /usr/local/share/doc/task/rc/dark-red-256.theme
+.RE
 
 For a general dark theme:
 
-    include /usr/local/share/doc/task/rc/dark-256.theme
+.RS
+include /usr/local/share/doc/task/rc/dark-256.theme
+.RE
 
 Here is a color rule that specifies a dark blue background for all tasks that
 are part of the 'party' project, and uses bold to identify any tasks with the
 keyword 'invitations' in the description.
 
-    $ task "rc.color.project.party=on rgb001" rc.color.keyword.invit=bold list
+.RS
+$ task "rc.color.project.party=on rgb001" rc.color.keyword.invit=bold list
+.RE
 
 There is a man page with a writeup of all the color capabilities.
 
-    $ man task-color
+.RS
+$ man task-color
+.RE
 
 .SH ACTIVE TASKS
 I'm selecting a venue, so let's indicate that task 2 is active by starting it.
 See how active tasks are affected by the color rules.
 
-    $ task 2 start
-    $ task list
+.RS
+$ task 2 start
+.br
+$ task list
+.RE
 
 There is an active report that shows only active tasks, and you can mark any
 active task as inactive, by stopping it.
 
-    $ task active
-    $ task 2 stop
+.RS
+$ task active
+.br
+$ task 2 stop
+.RE
 
 .SH DUE DATES
 Due dates can be specified as dates, durations into the future or past, by
 mnemonic, ordinal of day of week.
 
-
 Some of these dates are in the past, so now you see there are overdue tasks.
 Due dates have different colors for due, imminent, today and overdue values.
 
-    $ task 1 due:7/31/2010
-    $ task 1 due:2wks
-    $ task 1 due:-2wks
-    $ task 1 due:eom
-    $ task 2 due:8th
-    $ task 2 due:sunday
-    $ task 5 due:eow
+.RS
+$ task 1 due:7/31/2010
+.br
+$ task 1 due:2wks
+.br
+$ task 1 due:-2wks
+.br
+$ task 1 due:eom
+.br
+$ task 2 due:8th
+.br
+$ task 2 due:sunday
+.br
+$ task 5 due:eow
+.RE
 
 You can also choose the format - for input and output.
 
-    $ task rc.dateformat.report:Y-M-DTH:N:SZ list
+.RS
+$ task rc.dateformat.report:Y-M-DTH:N:SZ list
+.RE
 
 .SH CALENDAR
 When tasks have due dates, you can see them on the calendar.
 
-    $ task calendar
+.RS
+$ task calendar
+.RE
 
 Taskwarrior provides sample holiday files.  You can create your own, or use one
-of the samples to show holidays on the calendar.
+of the samples to show holidays on the calendar.  Try adding this line to
+your ~/.taskrc file:
 
-Try adding this line to your ~/.taskrc file:
-
-    include /usr/local/share/doc/task/rc/holidays-US.rc
+.RS
+include /usr/local/share/doc/task/rc/holidays-US.rc
+.RE
 
 Then:
 
-    $ task calendar
+.RS
+$ task calendar
+.RE
 
 You can see the whole year, see due tasks as well, and see the holidays:
 
-    $ task cal 2010
-    $ task rc.calendar.details:full cal
-    $ task rc.calendar.holidays:full cal
+.RS
+$ task cal 2010
+.br
+$ task rc.calendar.details:full cal
+.br
+$ task rc.calendar.holidays:full cal
+.RE
 
 .SH RECURRENCE
 Remember the task we added to pay the rent?  We're going to need to do that
 every month.  Recurring tasks allow us to set up a single task that keeps coming
 back, just as you'd expect.
 
-    $ task 7 info
-    $ task 7 due:eom recur:monthly
-    $ task 7
-
+.RS
+$ task 7 info
+.br
+$ task 7 due:eom recur:monthly
+.br
+$ task 7
+.RE
 
 You can also limit the extent of the recurrence.  Let's make sure the task
 doesn't recur after the lease ends.
 
-    $ task 7 until:eoy
+.RS
+$ task 7 until:eoy
+.RE
 
 And there is a recurring report that shows you only the recurring tasks.
 
-    $ task recurring
+.RS
+$ task recurring
+.RE
 
 To illustrate a point, let's set up a recurring annual task as a reminder to pay
 taxes, and put the due date in the past.  This will cause task to fill in the
 gaps, and create a series of severely overdue tasks.
 
-    $ task add Pay taxes due:4/15/2007 recur:yearly
-    $ task long
+.RS
+$ task add Pay taxes due:4/15/2007 recur:yearly
+.br
+$ task long
+.RE
 
 Deletions to recurring tasks can be escalated to include all the recurrences of
 a task.
 
-    $ task 11 delete # y y
-    $ task list
+.RS
+$ task 11 delete # y y
+.br
+$ task list
+.RE
 
 .SH SHELL
 You can use the shell command to create a more immersive environment.  Any task
 command you run outside the shell can also be run inside the shell, without the
 need to prefix every command with "task".
 
-    $ task shell
-    task> projects
-    task> tags
-    task> list
-    task> quit
+.RS
+$ task shell
+task> projects
+.br
+task> tags
+.br
+task> list
+.br
+task> quit
+.RE
 
 .SH SPECIAL TAGS
 You've seen tags, but there are also 'special tags' that have effects on
 individual tasks.  The 'nocolor' special tag causes the color rules to be
 bypassed.
 
-    $ task 6 +nocolor
-    $ task list
+.RS
+$ task 6 +nocolor
+.br
+$ task list
+.RE
 
 Special tags are highlighted by the 'tags' command.
 
-    $ task tags
+.RS
+$ task tags
+.RE
 
 There are others - the 'nonag' special tag prevents the generation of nag
 messages when you work on low priority tasks when there are more important ones.
 
-    $ task 6 -nocolor
+.RS
+$ task 6 -nocolor
+.RE
 
 The 'nocal' special tag will prevent a task from appearing on the calendar.
 
@@ -455,129 +622,221 @@ The 'nocal' special tag will prevent a task from appearing on the calendar.
 When you have a task with a due date that is far out into
 the future, you may want to hide that task for a while.
 
-    $ task add Look for new apartment due:eoy
-    $ task list
+.RS
+$ task add Look for new apartment due:eoy
+.br
+$ task list
+.RE
 
 You can provide a wait date for a task, and it will remain hidden until that
 date.  It will no longer be cluttering your task list, but it is still there,
 and visible using the 'waiting' report.  When the wait date comes, the task
 will just pop back into the list.
 
-    $ task 10 wait:12/1/2010
-    $ task list
-    $ task waiting
+.RS
+$ task 10 wait:12/1/2010
+.br
+$ task list
+.br
+$ task waiting
+.RE
 
 To illustrate this, let's set up a task with a very short wait time of five
 seconds.
 
-    $ task add Do something in a few seconds
-    $ task 11 wait:5s
-    $ task list
+.RS
+$ task add Do something in a few seconds
+.br
+$ task 11 wait:5s
+.br
+$ task list
+.RE
 
 It's gone.
 
-    (wait 5 seconds)
-    $ task list
+.RS
+(wait 5 seconds)
+$ task list
+.RE
 
 And it's back.  Now we delete it.
 
-    $ task 11 rc.confirmation:no delete
+.RS
+$ task 11 rc.confirmation:no delete
+.RE
 
----------------------------------------- Dependencies ----------------------------------------------
+.SH DEPENDENCIES
+Taskwarrior supports dependencies.  Let's take a look at the party planning
+tasks, and assign dependencies.
 
-task list pro:party                      Taskwarrior supports dependencies.  Let's take a look at the
-                                         party planning tasks, and assign dependencies.
+.RS
+$ task list pro:party
+.RE
 
-task 3 depends:6                         Let's see.  I can't mail invitations until they are printed.
-task 6 dep:5                             I can't print them until I design them.
-task 2 dep:1                             I need to select a weekend before a location.
-task 5 dep:1,2                           Design depends on location and weekend.
-task 4 dep:1                             And the caterer needs to know where.
+Let's see.  I can't mail invitations until they are printed.
 
-task long pro:party                      All my tasks are blocked except task 1.  That makes sense.
+.RS
+$ task 3 depends:6
+.RE
 
-task 5 dep:-1                            Hmm, that double dependency isn't right.
+I can't print them until I design them.
 
-task blocked                             Here are the blocked tasks.
-task unblocked                           and the opposite, the unblocked tasks.
+.RS
+$ task 6 dep:5
+.RE
 
-task 1 info                              If we look at task 1 closely, we can see that it is blocking
-task 2 info                               2 and 4.  And if we look at task 2, we see that it is
-                                         blocked by 1, and blocking 5.
+I need to select a weekend before a location.
 
-                                         This is called a dependency chain, which is a string of tasks
-                                         that are all connected not only by their project, but by
-                                         dependencies.
+.RS
+$ task 2 dep:1
+.RE
 
-                                         Now we understand that task 1 should be done first, but you
-                                         may still violate the laws of physics if you wish. Let's
-                                         complete task 2 and see what happens.
+Design depends on location and weekend.
 
-task 2 done  (y)                         Taskwarrior realizes what you are doing, and offers to fix
-task 1 info                              the dependency chain to reflect what you have done.
+.RS
+$ task 5 dep:1,2
+.RE
 
----------------------------------------- Reports ---------------------------------------------------
+And the caterer needs to know where.
+
+.RS
+$ task 4 dep:1
+.RE
+
+Let's take a look.  All my tasks are blocked except task 1.  That makes sense.
+
+.RS
+$ task long pro:party
+.RE
+
+Hmm, that double dependency isn't right.
+
+.RS
+$ task 5 dep:-1
+.RE
+
+Here are the blocked tasks, and the opposite, the unblocked tasks.
+
+.RS
+$ task blocked
+.br
+$ task unblocked
+.RE
+
+If we look at task 1 closely, we can see that it is blocking 2 and 4.
+
+.RS
+$ task 1 info
+.RE
+
+And if we look at task 2, we see that it is blocked by 1, and blocking 5.
+
+.RS
+$ task 2 info
+.RE
+
+This is called a dependency chain, which is a string of tasks that are all
+connected not only by their project, but by dependencies.  Now we understand
+that task 1 should be done first, but you may still violate the laws of physics
+if you wish. Let's complete task 2 and see what happens.
+
+Taskwarrior realizes what you are doing, and offers to fix the dependency chain
+to reflect what you have done.
+
+.RS
+$ task 2 done
+.br
+$ task 1 info
+.RE
 
 .SH REPORTS
 Taskwarrior has a good many reports.  There is a report with minimal
 information:
 
-    $ task minimal
+.RS
+$ task minimal
+.RE
 
 There is the basic report:
 
-    $ task ls
+.RS
+$ task ls
+.RE
 
 There is the most common report:
 
-    $ task list
+.RS
+$ task list
+.RE
 
 There is a report with most of the data shown:
 
-    $ task long
+.RS
+$ task long
+.RE
 
 There is a report containing all tasks, old and new:
 
-    $ task all
+.RS
+$ task all
+.RE
 
 There is a report showing completed work:
 
-    $ task completed
+.RS
+$ task completed
+.RE
 
 There is a report showing recurring tasks only:
 
-    $ task recurring
+.RS
+$ task recurring
+.RE
 
 There is a repot to show all the waiting tasks:
 
-    $ task waiting
+.RS
+$ task waiting
+.RE
 
 There is a report showing all the tasks that are blocked via dependencies by
 other tasks:
 
-    $ task blocked
+.RS
+$ task blocked
+.RE
 
 There is a report showing tasks that are not blocked by dependencies:
 
-    $ task unblocked
+.RS
+$ task unblocked
+.RE
 
 There is a report showing the oldest tasks:
 
-    $ task oldest
+.RS
+$ task oldest
+.RE
 
 There is a report showing the newest tasks:
 
-    $ task newest
+.RS
+$ task newest
+.RE
 
 There is a report showing the completed and started tasks, by week:
 
-    $ task timesheet
+.RS
+$ task timesheet
+.RE
 
 And "what should I work on next?"  This one can be useful because it pulls a few
 of the highest priority tasks from all the projects.  It's the report we should
 all be using.
 
-    $ task next
+.RS
+$ task next
+.RE
 
 .SH CUSTOM REPORTS
 You can even define your own custom report.  Let's quickly create a custom
@@ -586,101 +845,192 @@ include in the report, but I want to see the ID, the date when I entered the
 task, and the description.  I can specify the labels for those columns, the
 sort order of the report, and I can filter.
 
-    $ cat >> ~/.taskrc
-    report.foo.description=My own report
-    report.foo.columns=id,entry,description
-    report.foo.labels=ID,Entered,Description
-    report.foo.sort=entry+,description+
-    report.foo.filter=status:pending
-    ^D
+.RS
+$ cat >> ~/.taskrc
+.br
+report.foo.description=My own report
+.br
+report.foo.columns=id,entry,description
+.br
+report.foo.labels=ID,Entered,Description
+.br
+report.foo.sort=entry+,description+
+.br
+report.foo.filter=status:pending
+.br
+^D
+.RE
 
 Custom reports also show up on the help output.
 
-    $ task help | grep foo
+.RS
+$ task help | grep foo
+.RE
 
 I can inspect the configuration.
 
-    $ task show report.foo
+.RS
+$ task show report.foo
+.RE
 
 And they can be run just like the other reports.
 
-    $ task foo
+.RS
+$ task foo
+.RE
 
----------------------------------------- Charts ----------------------------------------------------
+.SH CHARTS
+The history report gives monthly totals of tasks added, completed and deleted.
+There is also an annual version.
 
-task history                             The history report gives monthly totals of tasks added,
-task history.annual                      completed and deleted.  There is also an annual version.
+.RS
+$ task history
+.br
+$ task history.annual
+.RE
 
-task ghistory                            There is a graphical monthly...
-task ghistory.annual                     and annual version.
+There is a graphical monthly and annual version.
 
-task summary                             There is a project summary report that shows progress in
-                                         all the projects.
+.RS
+$ task ghistory
+.br
+$ task ghistory.annual
+.RE
 
----------------------------------------- Advanced Filters ------------------------------------------
+There is a project summary report that shows progress in all the projects.
 
-task list                                Filters are a very powerful tool.  First here is an
-task list invit                          unfiltered list, which shows all tasks.  Now again, but with
-                                         the text 'invit', which acts as a filter on the description
-                                         field.
+.RS
+$ task summary
+.RE
 
-task list description.contains:invit     This is the equivalent form using attribute modifiers.  In
-                                         this example we are filtering on descriptions that contain
-                                         the word fragment.  Here we are using the 'contains'
-                                         modifier, but there are many others.
+.SH ADVANCED FILTERS
+Filters are a very powerful tool.  First here is an unfiltered list, which
+shows all tasks.  Now again, but with the text 'invit', which acts as a filter
+on the description field.
 
-task list desc.word:the                  All tasks containing the whole word 'the'.  See how
-                                         annotations are also searched?
+.RS
+$ task list
+.br
+$ task list invit
+.RE
 
-task list desc.noword:invitations        Here is a list of all tasks that do not contain the whole
-                                         word 'invitations'.
+This is the equivalent form using attribute modifiers.  In this example we are
+filtering on descriptions that contain the word fragment.  Here we are using
+the'contains' modifier, but there are many others.
 
-task list pro:party                      Here list all tasks in the 'party' project.
-task list pro.is:party                   And the full equivalent.
-task list pro.not:party                  Here list tasks that are not in the 'party' project.  I
-                                         could have also used 'isnt' here - there are several
-                                         synonyms for modifiers, so that the filter can be written
-                                         so that it reads naturally.
+.RS
+$ task list description.contains:invit
+.RE
 
-task list pro:party pri.over:L           Here the 'over' modifier is filtering on priorities that
-                                         sort higher than 'Low', and also filtering on the 'party'
-                                         project.  There are two terms in this filter.
+All tasks containing the whole word 'the'.  See how annotations are also
+searched?
 
-task list pro:party limit:2              Same again, but only show me the first two tasks.
-task list limit:page                     Now all tasks, but just show the first page of tasks.  I
-                                         don't have a page full of tasks here, but you get the idea.
+.RS
+$ task list desc.word:the
+.RE
 
-task all status:pending                  Now you can see how some of the built-in reports work.  The
-                                         'list' report is just all tasks, filtered so that only the
-                                         pending tasks are shown.
+Here is a list of all tasks that do not contain the whole word 'invitations'.
 
-task all status:waiting                  The 'waiting' report is similarly defined.
+.RS
+$ task list desc.noword:invitations
+.RE
 
----------------------------------------- Import/Export ---------------------------------------------
+Here list all tasks in the 'party' project.  And the full equivalent.  Here list
+tasks that are not in the 'party' project.  I could have also used 'isnt' here -
+there are several synonyms for modifiers, so that the filter can be written so
+that it reads naturally.
 
-task export.csv                          You can export your tasks.  Here you see all tasks being
-                                         exported in CSV format.
+.RS
+$ task list pro:party
+.br
+$ task list pro.is:party
+.br
+$ task list pro.not:party
+.RE
 
-task export.csv venue                    Let's just export one task in CSV format...
-task export.vcalendar venue              Or in VCalendar format...
-task export.yaml venue                   Or YAML.
+Here the 'over' modifier is filtering on priorities that sort higher than 'Low',
+and also filtering on the 'party' project.  There are two terms in this filter.
 
-cat file.text                            I can also import.  Here I am importing simple lines of
-task import file.text                    text.  Taskwarrior recognizes the format and confirms.
+.RS
+$ task list pro:party pri.over:L
+.RE
 
-cat file.yaml                            Here is a YAML example.  Taskwarrior can read several
-task import file.yaml                    formats, including old versions task data.  Using YAML,
-                                         you can round-trip the data without loss.
+Same again, but only show me the first two tasks.  Now all tasks, but just show
+the first page of tasks.  I don't have a page full of tasks here, but you get
+the idea.
 
-task new limit:2                         Here are the imported tasks.
+.RS
+$ task list pro:party limit:2
+.br
+$ task list limit:page
+.RE
 
----------------------------------------- Help ------------------------------------------------------
+Now you can see how some of the built-in reports work.  The 'list' report is
+just all tasks, filtered so that only the pending tasks are shown.
+
+.RS
+$ task all status:pending
+.RE
+
+The 'waiting' report is similarly defined.
+
+.RS
+$ task all status:waiting
+.RE
+
+.SH IMPORT/EXPORT
+You can export your tasks.  Here you see all tasks being exported in CSV format.
+
+.RS
+$ task export.csv
+.RE
+
+Let's just export one task in CSV format...
+
+.RS
+$ task export.csv venue
+.RE
+
+Or in VCalendar format...
+
+.RS
+$ task export.vcalendar venue
+.RE
+
+Or YAML.
+
+.RS
+$ task export.yaml venue
+.RE
+
+I can also import.  Here I am importing simple lines of text.  Taskwarrior
+recognizes the format and confirms.
+
+.RS
+$ cat file.text
+.br
+$ task import file.text
+.RE
+
+Here is a YAML example.  Taskwarrior can read several formats, including old
+versions task data.  Using YAML, you can round-trip the data without loss.
+
+.RS
+$ cat file.yaml
+.br
+$ task import file.yaml
+.RE
+
+Here are the imported tasks.
+
+.RS
+$ task new limit:2
+.RE
 
 .SH HELP
 You'll find a quick reference page built in, with the 'help' command, or perhaps
 you'll want to take a look at the several man pages installed.
 
-.br
 .RS
 $ task help
 .RE
