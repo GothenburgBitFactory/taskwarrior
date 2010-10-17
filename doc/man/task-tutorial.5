@@ -1425,9 +1425,9 @@ For a general dark theme:
 include /usr/local/share/doc/task/rc/dark-256.theme
 .RE
 
-Here are two color rules that specifies a dark blue background for all tasks
-that are part of the 'party' project, and uses bold to identify any tasks with
-the keyword 'invitations' in the description.
+Here are two color rules that specify a dark blue background for all tasks that
+are part of the 'party' project, and uses bold to identify any tasks with the
+keyword 'invitations' in the description.
 
 .RS
 $ task "rc.color.project.party=on rgb001" rc.color.keyword.invit=bold list
@@ -1534,8 +1534,8 @@ ID Project Pri Due Active Age  Description
 .RE
 
 .SH DUE DATES
-Due dates can be specified as dates, durations into the future or past, by
-mnemonic, ordinal of day of week.
+Due dates can be specified as dates, durations into the future or past,
+mnemonic, ordinal or day of week.
 
 .RS
 $ task 1 due:7/31/2010
@@ -3409,9 +3409,10 @@ Imported 1 tasks successfully, with 0 errors.
 .RE
 
 Here is a YAML example.  Taskwarrior can read several formats, including old
-versions task data.  Using YAML, you can round-trip the data without loss, which
-means you can export and import without any missing information.  This also
-means that 'export.yaml' is good for making a backup copy of your tasks.
+versions of its data files.  Using YAML, you can round-trip the data without
+loss, which means you can export and import without any missing information.
+This also means that 'export.yaml' is good for making a backup copy of your
+tasks.
 
 .RS
 $ cat file.yaml

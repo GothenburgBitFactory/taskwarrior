@@ -238,7 +238,7 @@ task list
 vi ~/.taskrc
 task list
 
-                                         Here is a color rule that specifies a dark blue
+                                         Here is are two color rules that specify a dark blue
                                          background for all tasks that are part of the 'party'
                                          project, and uses bold to identify any tasks with the
                                          keyword 'invitations' in the description.
@@ -273,7 +273,7 @@ task 1 due:2wks                          as some distance into the future...
 task 1 due:-2wks                         or past...
 task 1 due:eom                           or by mnemonic (end of month)...
 task 2 due:8th                           or by ordinal...
-task 2 due:sunday                        or by day...
+task 2 due:sunday                        or by day of week...
 task 5 due:eow                           
 task list                                Some of these dates are in the past, so now you see there
 task overdue                             are overdue tasks.  Due dates have different colors for
@@ -500,8 +500,8 @@ cat file.text                            I can also import.  Here I am importing
 task import file.text                    text.  Taskwarrior recognizes the format and confirms.
 
 cat file.yaml                            Here is a YAML example.  Taskwarrior can read several
-task import file.yaml                    formats, including old versions task data.  Using YAML,
-                                         you can round-trip the data without loss.
+task import file.yaml                    formats, including old versions of its data files.  Using
+                                         YAML, you can round-trip the data without loss.
 
 task new limit:2                         Here are the imported tasks.
 
