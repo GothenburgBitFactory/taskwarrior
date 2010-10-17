@@ -1198,7 +1198,7 @@ void TDB::merge (const std::string& mergeFile)
     // helper lists
     std::set<std::string> uuid_new, uuid_left;
 
-    // 1. read tasmods out of the remaining lines
+    // 1. read taskmods out of the remaining lines
     readTaskmods (l, lit, lmods);
     readTaskmods (r, rit, rmods);
 
@@ -1213,9 +1213,11 @@ void TDB::merge (const std::string& mergeFile)
     {
       if (lmod_it->isNew ())
       {
-        std::cout << "Skipping new local task            "
-                  << lmod_it->getUuid()
+/*
+        std::cout << "New local task                     "
+                  << (useColor ? colorAdded.colorize (lmod_it->getUuid ()) : lmod_it->getUuid ())
                   << "\n";
+*/
 
         uuid_left.insert (lmod_it->getUuid ());
       }
@@ -1237,9 +1239,11 @@ void TDB::merge (const std::string& mergeFile)
       // new uuid?
       if (tmod.isNew ())
       {
+/*
         std::cout << "Adding new remote task             "
                   << (useColor ? colorAdded.colorize (tmod.getUuid ()) : tmod.getUuid ())
                   << "\n";
+*/
 
         uuid_new.insert (tmod.getUuid ());
         mods.push_back (tmod);
@@ -1270,8 +1274,8 @@ void TDB::merge (const std::string& mergeFile)
       DEBUG_STR ("  left uuid: " + uuid);
 
       // skip if uuid had already been merged
-      if (uuid_left.find (uuid) == uuid_left.end ()) {
-
+      if (uuid_left.find (uuid) == uuid_left.end ())
+      {
         bool rwin = false;
         bool lwin = false;
         for (rmod_rit = rmods.rbegin (); rmod_rit != rmods.rend (); rmod_rit++)
@@ -1309,7 +1313,7 @@ void TDB::merge (const std::string& mergeFile)
               // which one is newer?
               if (tmod_r > tmod_l)
               {
-                std::cout << "Applying remote changes for uuid   "
+                std::cout << "Found remote change to             "
                           << (useColor ? colorChanged.colorize (uuid) : uuid)
                           << "\n";
 
@@ -1324,7 +1328,7 @@ void TDB::merge (const std::string& mergeFile)
               }
               else
               {
-                std::cout << "Rejecting remote changes for uuid  "
+                std::cout << "Retaining local changes to        "
                           << (useColor ? colorRejected.colorize (uuid) : uuid)
                           << "\n";
 
@@ -1372,7 +1376,6 @@ void TDB::merge (const std::string& mergeFile)
 
     DEBUG_STR ("sorting taskmod list");
     mods.sort ();
-
   }
   else if (rit == r.end ())
   {
@@ -1380,21 +1383,27 @@ void TDB::merge (const std::string& mergeFile)
     // local branch is up-to-date
 
     // nothing happend on the local branch either
-    if (lit == l.end())
-      throw std::string ("Database is up to date.");
-    else
-      std::cout << "No changes were made on the remote database.\n";
+/*
+    if (lit != l.end ())
+      std::cout << "No remote changes detected.\n";
+*/
   }
   else // lit == l.end ()
   {
     // nothing happend on the local branch
-    std::cout << "No changes were made on the local database.  Adding remote changes...\n";
+/*
+    std::cout << "No local changes detected.\n";
+*/
 
     // add remaining lines (remote branch) to the list of modifications
+/*
+    std::cout << "Remote changes detected.\n";
+*/
     readTaskmods (r, rit, mods);
   }
 
   ///////////////////////////////////////
+  // Now apply the changes.
   // redo command:
 
   if (!mods.empty ())
@@ -1429,17 +1438,19 @@ void TDB::merge (const std::string& mergeFile)
 
         bool found = false;
         if ( (statusBefore == Task::completed)
-          || (statusBefore == Task::deleted) ) {
-
+          || (statusBefore == Task::deleted) )
+        {
           // Find the same uuid in completed data
           for (it = completed.begin (); it != completed.end (); ++it)
           {
             if (it->find (uuid) != std::string::npos)
             {
               // Update the completed record.
+/*
               std::cout << "Modifying                          "
                         << (useColor ? colorChanged.colorize (uuid) : uuid)
                         << "\n";
+*/
 
               // remove the \n from composeF4() string
               std::string newline = tmod.getAfter ().composeF4 ();
@@ -1478,7 +1489,7 @@ void TDB::merge (const std::string& mergeFile)
             if (it->find (uuid) != std::string::npos)
             {
               // Update the pending record.
-              std::cout << "Modifying                          "
+              std::cout << "Found remote change to             "
                         << (useColor ? colorChanged.colorize (uuid) : uuid)
                         << "\n";
 
@@ -1537,7 +1548,7 @@ void TDB::merge (const std::string& mergeFile)
 
         if (!found)
         {
-          std::cout << "Adding                             "
+          std::cout << "Merging new remote task            "
                     << (useColor ? colorAdded.colorize (uuid) : uuid)
                     << "\n";
 
@@ -1548,13 +1559,10 @@ void TDB::merge (const std::string& mergeFile)
         }
         else
         {
-          std::cout << "Skipping duplicate                 " << uuid << "\n";
           mods.erase (current);
         }
       }
     }
-
-    std::cout << "\n";
 
     // write pending file
     if (! File::write (pendingFile, pending))
@@ -1571,9 +1579,7 @@ void TDB::merge (const std::string& mergeFile)
 
     // generate undo.data format
     for (it = mods.begin (); it != mods.end (); it++)
-    {
       undo.push_back(it->toString ());
-    }
 
     // write undo file
     if (! File::write (undoFile, undo, false))

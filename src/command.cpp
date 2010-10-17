@@ -606,7 +606,7 @@ void handleMerge (std::string& outs)
       Directory location (context.config.get ("data.location"));
 
       // be sure that uri points to a file
-      uri.append("undo.data");
+      uri.append ("undo.data");
 
       Transport* transport;
       if ((transport = Transport::getTransport (uri)) != NULL )
@@ -624,12 +624,14 @@ void handleMerge (std::string& outs)
       context.tdb.merge (file);
       context.tdb.unlock ();
 
+      std::cout << "Merge complete.\n";
+
       context.hooks.trigger ("post-merge-command");
 
       if (tmpfile != "")
-        remove (tmpfile.c_str());
+        remove (tmpfile.c_str ());
 
-      if ( ((sAutopush == "ask") && (confirm ("Would you like to push the changes to \'" + pushfile + "\'?")) )
+      if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + pushfile + "\'?")) )
          || (bAutopush) )
       {
         std::string out;
@@ -677,17 +679,19 @@ void handlePush (std::string& outs)
           throw std::string ("The uri '") + uri.path + "' is not a local directory.";
 
         std::ifstream ifile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
-        std::ofstream ofile1 ((uri.path      +  "undo.data").c_str(), std::ios_base::binary);
+        std::ofstream ofile1 ((uri.path      + "/undo.data").c_str(), std::ios_base::binary);
         ofile1 << ifile1.rdbuf();
 
         std::ifstream ifile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
-        std::ofstream ofile2 ((uri.path      +  "pending.data").c_str(), std::ios_base::binary);
+        std::ofstream ofile2 ((uri.path      + "/pending.data").c_str(), std::ios_base::binary);
         ofile2 << ifile2.rdbuf();
 
         std::ifstream ifile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
-        std::ofstream ofile3 ((uri.path      +  "completed.data").c_str(), std::ios_base::binary);
+        std::ofstream ofile3 ((uri.path      + "/completed.data").c_str(), std::ios_base::binary);
         ofile3 << ifile3.rdbuf();
 			}
+
+      std::cout << "Local tasks transferred to " << uri.data << "\n";
 
       context.hooks.trigger ("post-push-command");
     }
@@ -740,7 +744,7 @@ void handlePull (std::string& outs)
 
         if (path1.exists() && path2.exists() && path3.exists())
         {
- //         if (confirm ("xxxxxxxxxxxxx"))
+//          if (confirm ("xxxxxxxxxxxxx"))
 //          {
             std::ofstream ofile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
             std::ifstream ifile1 (path1.data.c_str()                    , std::ios_base::binary);
@@ -760,6 +764,8 @@ void handlePull (std::string& outs)
           throw std::string ("At least one of the database files in '" + uri.path + "' is not present.");
         }
 			}
+
+      std::cout << "Tasks transferred from " << uri.data << "\n";
 
       context.hooks.trigger ("post-pull-command");
     }

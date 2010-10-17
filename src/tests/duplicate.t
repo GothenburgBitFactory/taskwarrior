@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 15;
 
 # Create the rc file.
 if (open my $fh, '>', 'dup.rc')
@@ -58,7 +58,6 @@ like ($output, qr/Tags\s+tag/,        'duplicate added tag');
 # Test the output of the duplicate command - returning id of duplicated task
 $output = qx{../task rc:dup.rc duplicate 1};
 like ($output, qr/Duplicated\s+1\s+'foo'/, 'duplicate output task id and description');
-like ($output, qr/Duplicated\s+1\s+task/,  'duplicate output number of tasks duplicated');
 like ($output, qr/Created\s+task\s+4/,     'duplicate output of new task id');
 
 # Cleanup.
