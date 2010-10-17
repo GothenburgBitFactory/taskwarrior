@@ -913,7 +913,7 @@ int handleShow (std::string &outs)
       "complete.all.projects complete.all.tags search.case.sensitive hooks "
       "active.indicator tag.indicator recurrence.indicator recurrence.limit "
       "list.all.projects list.all.tags undo.style verbose rule.precedence.color "
-      "merge.autopush merge.default.uri pull.default.uri "
+      "merge.autopush merge.default.uri pull.default.uri push.default.uri "
 #ifdef FEATURE_SHELL
       "shell.prompt "
 #endif
