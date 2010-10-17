@@ -1982,7 +1982,6 @@ int handleDuplicate (std::string &outs)
 
     if (context.config.getBoolean ("echo.command"))
     {
-      out << "Duplicated " << count << " task" << (count == 1 ? ".\n" : "s.\n");
 #ifdef FEATURE_NEW_ID
       // All this, just for an id number.
       std::vector <Task> all;
