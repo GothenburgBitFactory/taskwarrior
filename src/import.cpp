@@ -344,7 +344,7 @@ static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
   {
     std::string bad;
     join (bad, "\n", failed);
-    return out.str () + "\nCould not import:\n\n" + bad;
+    return out.str () + "\nCould not import:\n\n" + bad + "\n";
   }
 
   return out.str ();
@@ -505,7 +505,7 @@ static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
   {
     std::string bad;
     join (bad, "\n", failed);
-    return out.str () + "\nCould not import:\n\n" + bad;
+    return out.str () + "\nCould not import:\n\n" + bad + "\n";
   }
 
   return out.str ();
@@ -667,7 +667,7 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
   {
     std::string bad;
     join (bad, "\n", failed);
-    return out.str () + "\nCould not import:\n\n" + bad;
+    return out.str () + "\nCould not import:\n\n" + bad + "\n";
   }
 
   return out.str ();
@@ -714,7 +714,7 @@ static std::string importTaskCmdLine (const std::vector <std::string>& lines)
   {
     std::string bad;
     join (bad, "\n", failed);
-    return out.str () + "\nCould not import:\n\n" + bad;
+    return out.str () + "\nCould not import:\n\n" + bad + "\n";
   }
 
   return out.str ();
@@ -842,7 +842,7 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
   {
     std::string bad;
     join (bad, "\n", failed);
-    return out.str () + "\nCould not import:\n\n" + bad;
+    return out.str () + "\nCould not import:\n\n" + bad + "\n";
   }
   return out.str ();
 }
@@ -905,7 +905,7 @@ static std::string importText (const std::vector <std::string>& lines)
   {
     std::string bad;
     join (bad, "\n", failed);
-    return out.str () + "\nCould not import:\n\n" + bad;
+    return out.str () + "\nCould not import:\n\n" + bad + "\n";
   }
 
   return out.str ();
@@ -1150,7 +1150,7 @@ static std::string importCSV (const std::vector <std::string>& lines)
   {
     std::string bad;
     join (bad, "\n", failed);
-    return out.str () + "\nCould not import:\n\n" + bad;
+    return out.str () + "\nCould not import:\n\n" + bad + "\n";
   }
 
   return out.str ();
