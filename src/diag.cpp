@@ -30,9 +30,11 @@
 #include <sstream>
 #include <algorithm>
 #include <string>
+#include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 
+#include <rx.h>
 #include <File.h>
 #include <main.h>
 #include <util.h>
@@ -192,6 +194,51 @@ void handleDiagnostics (std::string& outs)
             << std::setbase (8)
             << location.mode ()
             << "\n\n";
+
+  // External commands.
+  std::cout << "[1mExternal Utilities[0m\n";
+  {
+    std::vector <std::string> matches;
+    char buffer [1024] = {0};
+    FILE* fp;
+    if ((fp = popen ("scp 2>&1", "r")))
+    {
+      fgets (buffer, 1023, fp);
+      pclose (fp);
+
+      std::cout << "       scp: "
+                << (regexMatch (buffer, "usage") ? "found" : "n/a")
+                << "\n";
+    }
+
+    if ((fp = popen ("rsync --version", "r")))
+    {
+      fgets (buffer, 1023, fp);
+      pclose (fp);
+
+      // rsync  version 2.6.9  protocol version 29
+      matches.clear ();
+      regexMatch (matches, buffer, "version ([0-9]+\\.[0-9]+\\.[0-9]+)");
+      std::cout << "     rsync: "
+                << (matches.size () ? matches[0] : "n/a")
+                << "\n";
+    }
+
+    if ((fp = popen ("curl --version", "r")))
+    {
+      fgets (buffer, 1023, fp);
+      pclose (fp);
+
+      // curl 7.19.7 (universal-apple-darwin10.0) libcurl/7.19.7 OpenSSL/0.9.8l zlib/1.2.3
+      matches.clear ();
+      regexMatch (matches, buffer, "curl ([0-9]+\\.[0-9]+\\.[0-9]+)");
+      std::cout << "      curl: "
+                << (matches.size () ? matches[0] : "n/a")
+                << "\n";
+    }
+
+    std::cout << "\n";
+  }
 
   // Generate 1000 UUIDs and verify they are all unique.
   std::cout << "[1mTests[0m\n";
