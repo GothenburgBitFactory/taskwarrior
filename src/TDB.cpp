@@ -1313,8 +1313,9 @@ void TDB::merge (const std::string& mergeFile)
               // which one is newer?
               if (tmod_r > tmod_l)
               {
-                std::cout << "Found remote change to             "
+                std::cout << "Found remote change to        "
                           << (useColor ? colorChanged.colorize (uuid) : uuid)
+                          << "  \"" << cutOff (tmod_r.getBefore ().get ("description"), 10) << "\""
                           << "\n";
 
                 mods.push_front(tmod_r);
@@ -1328,8 +1329,9 @@ void TDB::merge (const std::string& mergeFile)
               }
               else
               {
-                std::cout << "Retaining local changes to        "
+                std::cout << "Retaining local changes to    "
                           << (useColor ? colorRejected.colorize (uuid) : uuid)
+                          << "  \"" << cutOff (tmod_l.getBefore ().get ("description"), 10) << "\""
                           << "\n";
 
                 // inserting right mod into history of local database
@@ -1383,10 +1385,15 @@ void TDB::merge (const std::string& mergeFile)
     // local branch is up-to-date
 
     // nothing happend on the local branch either
-/*
+
+    // break, to suppress autopush
     if (lit != l.end ())
-      std::cout << "No remote changes detected.\n";
-*/
+    {
+      mods.clear ();
+      lmods.clear ();
+      throw std::string ("Database is up-to-date, no merge required.");
+    }
+
   }
   else // lit == l.end ()
   {
@@ -1447,7 +1454,7 @@ void TDB::merge (const std::string& mergeFile)
             {
               // Update the completed record.
 /*
-              std::cout << "Modifying                          "
+              std::cout << "Modifying                     "
                         << (useColor ? colorChanged.colorize (uuid) : uuid)
                         << "\n";
 */
@@ -1489,8 +1496,9 @@ void TDB::merge (const std::string& mergeFile)
             if (it->find (uuid) != std::string::npos)
             {
               // Update the pending record.
-              std::cout << "Found remote change to             "
+              std::cout << "Found remote change to        "
                         << (useColor ? colorChanged.colorize (uuid) : uuid)
+                        << "  \"" << cutOff (tmod.getBefore ().get ("description"), 10) << "\""
                         << "\n";
 
               // remove the \n from composeF4() string
@@ -1523,8 +1531,9 @@ void TDB::merge (const std::string& mergeFile)
 
         if (!found)
         {
-          std::cout << "Missing                            "
+          std::cout << "Missing                       "
                     << (useColor ? colorRejected.colorize (uuid) : uuid)
+                    << "  \"" << cutOff (tmod.getBefore ().get ("description"), 10) << "\""
                     << "\n";
           mods.erase (current);
         }
@@ -1548,8 +1557,9 @@ void TDB::merge (const std::string& mergeFile)
 
         if (!found)
         {
-          std::cout << "Merging new remote task            "
+          std::cout << "Merging new remote task       "
                     << (useColor ? colorAdded.colorize (uuid) : uuid)
+                    << "  \"" << cutOff (tmod.getBefore ().get ("description"), 10) << "\""
                     << "\n";
 
           // remove the \n from composeF4() string

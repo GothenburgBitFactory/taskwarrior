@@ -654,3 +654,18 @@ int characters (const std::string& str)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string cutOff (const std::string& str, std::string::size_type len)
+{
+  if (str.length () > len)
+  {
+    return (str.substr(0,len-2) + "..");
+  }
+  else
+  {
+    std::string res = str;
+    res.resize (len, ' ');
+    return res;
+  }  
+}
+
+////////////////////////////////////////////////////////////////////////////////
