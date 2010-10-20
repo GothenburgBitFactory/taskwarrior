@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -75,7 +75,8 @@ bool Cmd::valid (const std::string& input)
 //
 // To be a valid custom command:
 //   1. 'input' should autocomplete to one of 'commands'.
-//   2. the result, canonicalized, should autocomplete to one of 'customreports'.
+//   2. the result, canonicalized, should autocomplete to one of
+//      'customreports'.
 bool Cmd::validCustom (const std::string& input)
 {
   load ();
@@ -143,38 +144,39 @@ void Cmd::load ()
     commands.push_back ("ghistory.annual");
 
     // Commands whose names are localized.
-    commands.push_back (context.stringtable.get (CMD_ADD,       "add"));
-    commands.push_back (context.stringtable.get (CMD_APPEND,    "append"));
-    commands.push_back (context.stringtable.get (CMD_ANNOTATE,  "annotate"));
-    commands.push_back (context.stringtable.get (CMD_DENOTATE,  "denotate"));
-    commands.push_back (context.stringtable.get (CMD_CALENDAR,  "calendar"));
-    commands.push_back (context.stringtable.get (CMD_COLORS,    "colors"));
-    commands.push_back (context.stringtable.get (CMD_CONFIG,    "config"));
-    commands.push_back (context.stringtable.get (CMD_SHOW,      "show"));
-    commands.push_back (context.stringtable.get (CMD_DELETE,    "delete"));
-    commands.push_back (context.stringtable.get (CMD_DONE,      "done"));
-    commands.push_back (context.stringtable.get (CMD_DUPLICATE, "duplicate"));
-    commands.push_back (context.stringtable.get (CMD_EDIT,      "edit"));
-    commands.push_back (context.stringtable.get (CMD_HELP,      "help"));
-    commands.push_back (context.stringtable.get (CMD_IMPORT,    "import"));
-    commands.push_back (context.stringtable.get (CMD_INFO,      "info"));
-    commands.push_back (context.stringtable.get (CMD_LOG,       "log"));
-    commands.push_back (context.stringtable.get (CMD_PREPEND,   "prepend"));
-    commands.push_back (context.stringtable.get (CMD_PROJECTS,  "projects"));
+    commands.push_back (context.stringtable.get (CMD_ADD,         "add"));
+    commands.push_back (context.stringtable.get (CMD_APPEND,      "append"));
+    commands.push_back (context.stringtable.get (CMD_ANNOTATE,    "annotate"));
+    commands.push_back (context.stringtable.get (CMD_DENOTATE,    "denotate"));
+    commands.push_back (context.stringtable.get (CMD_CALENDAR,    "calendar"));
+    commands.push_back (context.stringtable.get (CMD_COLORS,      "colors"));
+    commands.push_back (context.stringtable.get (CMD_CONFIG,      "config"));
+    commands.push_back (context.stringtable.get (CMD_SHOW,        "show"));
+    commands.push_back (context.stringtable.get (CMD_DELETE,      "delete"));
+    commands.push_back (context.stringtable.get (CMD_DIAGNOSTICS, "diagnostics"));
+    commands.push_back (context.stringtable.get (CMD_DONE,        "done"));
+    commands.push_back (context.stringtable.get (CMD_DUPLICATE,   "duplicate"));
+    commands.push_back (context.stringtable.get (CMD_EDIT,        "edit"));
+    commands.push_back (context.stringtable.get (CMD_HELP,        "help"));
+    commands.push_back (context.stringtable.get (CMD_IMPORT,      "import"));
+    commands.push_back (context.stringtable.get (CMD_INFO,        "info"));
+    commands.push_back (context.stringtable.get (CMD_LOG,         "log"));
+    commands.push_back (context.stringtable.get (CMD_PREPEND,     "prepend"));
+    commands.push_back (context.stringtable.get (CMD_PROJECTS,    "projects"));
 #ifdef FEATURE_SHELL
-    commands.push_back (context.stringtable.get (CMD_SHELL,     "shell"));
+    commands.push_back (context.stringtable.get (CMD_SHELL,       "shell"));
 #endif
-    commands.push_back (context.stringtable.get (CMD_START,     "start"));
-    commands.push_back (context.stringtable.get (CMD_STATS,     "stats"));
-    commands.push_back (context.stringtable.get (CMD_STOP,      "stop"));
-    commands.push_back (context.stringtable.get (CMD_SUMMARY,   "summary"));
-    commands.push_back (context.stringtable.get (CMD_TAGS,      "tags"));
-    commands.push_back (context.stringtable.get (CMD_TIMESHEET, "timesheet"));
-    commands.push_back (context.stringtable.get (CMD_UNDO,      "undo"));
-    commands.push_back (context.stringtable.get (CMD_VERSION,   "version"));
-    commands.push_back (context.stringtable.get (CMD_MERGE,     "merge"));
-    commands.push_back (context.stringtable.get (CMD_PUSH,      "push"));
-    commands.push_back (context.stringtable.get (CMD_PULL,      "pull"));		
+    commands.push_back (context.stringtable.get (CMD_START,       "start"));
+    commands.push_back (context.stringtable.get (CMD_STATS,       "stats"));
+    commands.push_back (context.stringtable.get (CMD_STOP,        "stop"));
+    commands.push_back (context.stringtable.get (CMD_SUMMARY,     "summary"));
+    commands.push_back (context.stringtable.get (CMD_TAGS,        "tags"));
+    commands.push_back (context.stringtable.get (CMD_TIMESHEET,   "timesheet"));
+    commands.push_back (context.stringtable.get (CMD_UNDO,        "undo"));
+    commands.push_back (context.stringtable.get (CMD_VERSION,     "version"));
+    commands.push_back (context.stringtable.get (CMD_MERGE,       "merge"));
+    commands.push_back (context.stringtable.get (CMD_PUSH,        "push"));
+    commands.push_back (context.stringtable.get (CMD_PULL,        "pull"));
 
     // Now load the custom reports.
     std::vector <std::string> all;
@@ -242,20 +244,21 @@ bool Cmd::isReadOnlyCommand ()
       command == "history.annual"                                            ||
       command == "ghistory.monthly"                                          ||
       command == "ghistory.annual"                                           ||
-      command == context.stringtable.get (CMD_CALENDAR,  "calendar")         ||
-      command == context.stringtable.get (CMD_COLORS,    "colors")           ||
-      command == context.stringtable.get (CMD_CONFIG,    "config")           ||
-      command == context.stringtable.get (CMD_SHOW,      "show")             ||
-      command == context.stringtable.get (CMD_HELP,      "help")             ||
-      command == context.stringtable.get (CMD_INFO,      "info")             ||
-      command == context.stringtable.get (CMD_PROJECTS,  "projects")         ||
-			command == context.stringtable.get (CMD_PUSH,      "push")             ||
-      command == context.stringtable.get (CMD_SHELL,     "shell")            ||
-      command == context.stringtable.get (CMD_STATS,     "stats")            ||
-      command == context.stringtable.get (CMD_SUMMARY,   "summary")          ||
-      command == context.stringtable.get (CMD_TAGS,      "tags")             ||
-      command == context.stringtable.get (CMD_TIMESHEET, "timesheet")        ||
-      command == context.stringtable.get (CMD_VERSION,   "version")          ||			
+      command == context.stringtable.get (CMD_CALENDAR,    "calendar")       ||
+      command == context.stringtable.get (CMD_COLORS,      "colors")         ||
+      command == context.stringtable.get (CMD_DIAGNOSTICS, "diagnostics")    ||
+      command == context.stringtable.get (CMD_CONFIG,      "config")         ||
+      command == context.stringtable.get (CMD_SHOW,        "show")           ||
+      command == context.stringtable.get (CMD_HELP,        "help")           ||
+      command == context.stringtable.get (CMD_INFO,        "info")           ||
+      command == context.stringtable.get (CMD_PROJECTS,    "projects")       ||
+			command == context.stringtable.get (CMD_PUSH,        "push")           ||
+      command == context.stringtable.get (CMD_SHELL,       "shell")          ||
+      command == context.stringtable.get (CMD_STATS,       "stats")          ||
+      command == context.stringtable.get (CMD_SUMMARY,     "summary")        ||
+      command == context.stringtable.get (CMD_TAGS,        "tags")           ||
+      command == context.stringtable.get (CMD_TIMESHEET,   "timesheet")      ||
+      command == context.stringtable.get (CMD_VERSION,     "version")        ||
       validCustom (command))
     return true;
 
@@ -280,7 +283,7 @@ bool Cmd::isWriteCommand ()
       command == context.stringtable.get (CMD_PREPEND,   "prepend")   ||
       command == context.stringtable.get (CMD_PULL,      "pull")      ||
       command == context.stringtable.get (CMD_START,     "start")     ||
-      command == context.stringtable.get (CMD_STOP,      "stop")      ||			
+      command == context.stringtable.get (CMD_STOP,      "stop")      ||
       command == context.stringtable.get (CMD_UNDO,      "undo"))
     return true;
 

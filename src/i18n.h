@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -101,6 +101,7 @@
 #define CMD_MERGE               232
 #define CMD_PUSH                233
 #define CMD_PULL                234
+#define CMD_DIAGNOSTICS         235
 
 // 3xx Attributes
 #define ATT_PROJECT             300

@@ -56,7 +56,7 @@ static void countTasks (const std::vector <Task>&, const std::string&, const std
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-int shortUsage (std::string &outs)
+int shortUsage (std::string& outs)
 {
   Table table;
 
@@ -237,6 +237,10 @@ int shortUsage (std::string &outs)
   table.addCell (row, 2, "Add, modify and remove settings in the task configuration.");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task diagnostics");
+  table.addCell (row, 2, "Information needed when reporting a problem.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task help");
   table.addCell (row, 2, "Shows the long usage text.");
 
@@ -269,7 +273,7 @@ int shortUsage (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int longUsage (std::string &outs)
+int longUsage (std::string& outs)
 {
   int rc = 0;
 
@@ -351,7 +355,7 @@ int longUsage (std::string &outs)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Display all information for the given task.
-int handleInfo (std::string &outs)
+int handleInfo (std::string& outs)
 {
   int rc = 0;
 
@@ -660,7 +664,7 @@ int handleInfo (std::string &outs)
 // Project  Remaining  Avg Age  Complete  0%                  100%
 // A               12      13d       55%  XXXXXXXXXXXXX-----------
 // B              109   3d 12h       10%  XXX---------------------
-int handleReportSummary (std::string &outs)
+int handleReportSummary (std::string& outs)
 {
   int rc = 0;
 
@@ -848,7 +852,7 @@ time_t yearlyEpoch (const std::string& date)
   return 0;
 }
 
-int handleReportHistoryMonthly (std::string &outs)
+int handleReportHistoryMonthly (std::string& outs)
 {
   int rc = 0;
 
@@ -1015,7 +1019,7 @@ int handleReportHistoryMonthly (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportHistoryAnnual (std::string &outs)
+int handleReportHistoryAnnual (std::string& outs)
 {
   int rc = 0;
 
@@ -1179,7 +1183,7 @@ int handleReportHistoryAnnual (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportGHistoryMonthly (std::string &outs)
+int handleReportGHistoryMonthly (std::string& outs)
 {
   int rc = 0;
 
@@ -1386,7 +1390,7 @@ int handleReportGHistoryMonthly (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportGHistoryAnnual (std::string &outs)
+int handleReportGHistoryAnnual (std::string& outs)
 {
   int rc = 0;
 
@@ -1589,7 +1593,7 @@ int handleReportGHistoryAnnual (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportTimesheet (std::string &outs)
+int handleReportTimesheet (std::string& outs)
 {
   int rc = 0;
 
@@ -2004,7 +2008,7 @@ std::string renderMonths (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportCalendar (std::string &outs)
+int handleReportCalendar (std::string& outs)
 {
   int rc = 0;
 
@@ -2360,7 +2364,7 @@ int handleReportCalendar (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportStats (std::string &outs)
+int handleReportStats (std::string& outs)
 {
   int rc = 0;
 

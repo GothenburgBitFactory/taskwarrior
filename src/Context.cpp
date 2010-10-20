@@ -245,6 +245,7 @@ int Context::dispatch (std::string &out)
                                                      handleMerge                 (out); }
   else if (cmd.command == "push")             {      handlePush                  (out); }
   else if (cmd.command == "pull")             {      handlePull                  (out); }
+  else if (cmd.command == "diagnostics")      {      handleDiagnostics           (out); }
   else if (cmd.command == "_projects")        { rc = handleCompletionProjects    (out); }
   else if (cmd.command == "_tags")            { rc = handleCompletionTags        (out); }
   else if (cmd.command == "_commands")        { rc = handleCompletionCommands    (out); }

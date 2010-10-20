@@ -51,6 +51,7 @@
  + Two new color themes (thanks to Kathryn Andersen).
  + More localized holiday files for US, CA, SE, DE, FR, UK, ES and NL
    (thanks to T. Charles Yun).
+ + Added new 'diagnostics' command to help with bug submission, testing.
  + Fixed bug #427, preventing the task edit command to parse annotation
    dates with spaces.
  + Fixed bug #433, making task command output more consistent.

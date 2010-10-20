@@ -38,7 +38,7 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleExportCSV (std::string &outs)
+int handleExportCSV (std::string& outs)
 {
   int rc = 0;
 
@@ -92,7 +92,7 @@ int handleExportCSV (std::string &outs)
 // http://tools.ietf.org/html/rfc5545
 //
 // Note: Recurring tasks could be included in more detail.
-int handleExportiCal (std::string &outs)
+int handleExportiCal (std::string& outs)
 {
   int rc = 0;
 
@@ -226,7 +226,7 @@ int handleExportiCal (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleExportYAML (std::string &outs)
+int handleExportYAML (std::string& outs)
 {
   int rc = 0;
 

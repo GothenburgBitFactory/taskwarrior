@@ -13,9 +13,10 @@ task_SOURCES = API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h     \
                Timer.cpp Timer.h Transport.cpp Transport.h TransportSSH.cpp    \
                TransportSSH.h TransportRSYNC.cpp TransportRSYNC.h              \
                TransportCurl.cpp TransportCurl.h Tree.cpp Tree.h command.cpp   \
-               custom.cpp dependency.cpp edit.cpp export.cpp i18n.h import.cpp \
-               interactive.cpp main.cpp main.h recur.cpp report.cpp rules.cpp  \
-               rx.cpp rx.h text.cpp text.h util.cpp util.h Uri.cpp Uri.h
+               custom.cpp dependency.cpp diag.cpp edit.cpp export.cpp i18n.h   \
+               import.cpp interactive.cpp main.cpp main.h recur.cpp report.cpp \
+               rules.cpp rx.cpp rx.h text.cpp text.h util.cpp util.h Uri.cpp   \
+               Uri.h
 task_CPPFLAGS=$(LUA_CFLAGS)
 task_LDFLAGS=$(LUA_LFLAGS)
 

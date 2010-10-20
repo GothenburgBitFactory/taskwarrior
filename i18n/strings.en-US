@@ -61,6 +61,8 @@
 230 config
 231 show
 
+235 diagnostics
+
 # 3xx Attributes - must be sequential
 300 project
 301 priority

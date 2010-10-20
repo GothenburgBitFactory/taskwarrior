@@ -52,7 +52,7 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleAdd (std::string &outs)
+int handleAdd (std::string& outs)
 {
   int rc = 0;
 
@@ -145,7 +145,7 @@ int handleAdd (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleLog (std::string &outs)
+int handleLog (std::string& outs)
 {
   int rc = 0;
 
@@ -210,7 +210,7 @@ int handleLog (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleProjects (std::string &outs)
+int handleProjects (std::string& outs)
 {
   int rc = 0;
 
@@ -313,7 +313,7 @@ int handleProjects (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleCompletionProjects (std::string &outs)
+int handleCompletionProjects (std::string& outs)
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -343,7 +343,7 @@ int handleCompletionProjects (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleTags (std::string &outs)
+int handleTags (std::string& outs)
 {
   int rc = 0;
 
@@ -431,7 +431,7 @@ int handleTags (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleCompletionTags (std::string &outs)
+int handleCompletionTags (std::string& outs)
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -466,7 +466,7 @@ int handleCompletionTags (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleCompletionCommands (std::string &outs)
+int handleCompletionCommands (std::string& outs)
 {
   // Get a list of all commands.
   std::vector <std::string> commands;
@@ -484,7 +484,7 @@ int handleCompletionCommands (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleCompletionConfig (std::string &outs)
+int handleCompletionConfig (std::string& outs)
 {
   std::vector <std::string> configs;
   context.config.all (configs);
@@ -501,7 +501,7 @@ int handleCompletionConfig (std::string &outs)
 ////////////////////////////////////////////////////////////////////////////////
 // A simple version display for use by completion scripts and the task-update
 // script.
-int handleCompletionVersion (std::string &outs)
+int handleCompletionVersion (std::string& outs)
 {
   outs = VERSION;
   outs += "\n";
@@ -510,7 +510,7 @@ int handleCompletionVersion (std::string &outs)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Temporary command to display urgency for a task.
-int handleUrgency (std::string &outs)
+int handleUrgency (std::string& outs)
 {
   // Get all the tasks.
   std::vector <Task> tasks;
@@ -539,7 +539,7 @@ int handleUrgency (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleCompletionIDs (std::string &outs)
+int handleCompletionIDs (std::string& outs)
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -777,7 +777,7 @@ void handlePull (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleVersion (std::string &outs)
+int handleVersion (std::string& outs)
 {
   int rc = 0;
 
@@ -866,7 +866,7 @@ int handleVersion (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleShow (std::string &outs)
+int handleShow (std::string& outs)
 {
   int rc = 0;
 
@@ -1135,7 +1135,7 @@ int handleShow (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleConfig (std::string &outs)
+int handleConfig (std::string& outs)
 {
   int rc = 0;
 
@@ -1259,7 +1259,7 @@ int handleConfig (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleDelete (std::string &outs)
+int handleDelete (std::string& outs)
 {
   int rc = 0;
 
@@ -1392,7 +1392,7 @@ int handleDelete (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleStart (std::string &outs)
+int handleStart (std::string& outs)
 {
   int rc = 0;
 
@@ -1458,7 +1458,7 @@ int handleStart (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleStop (std::string &outs)
+int handleStop (std::string& outs)
 {
   int rc = 0;
 
@@ -1516,7 +1516,7 @@ int handleStop (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleDone (std::string &outs)
+int handleDone (std::string& outs)
 {
   int rc = 0;
 
@@ -1624,7 +1624,7 @@ int handleDone (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleModify (std::string &outs)
+int handleModify (std::string& outs)
 {
   context.hooks.trigger ("pre-modify-command");
 
@@ -1755,7 +1755,7 @@ int handleModify (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleAppend (std::string &outs)
+int handleAppend (std::string& outs)
 {
   int rc = 0;
 
@@ -1837,7 +1837,7 @@ int handleAppend (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handlePrepend (std::string &outs)
+int handlePrepend (std::string& outs)
 {
   int rc = 0;
 
@@ -1919,7 +1919,7 @@ int handlePrepend (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleDuplicate (std::string &outs)
+int handleDuplicate (std::string& outs)
 {
   int rc = 0;
 
@@ -2088,7 +2088,7 @@ void handleShell ()
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleColor (std::string &outs)
+int handleColor (std::string& outs)
 {
   int rc = 0;
 
@@ -2301,7 +2301,7 @@ int handleColor (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleAnnotate (std::string &outs)
+int handleAnnotate (std::string& outs)
 {
   int rc = 0;
 
@@ -2362,7 +2362,7 @@ int handleAnnotate (std::string &outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleDenotate (std::string &outs)
+int handleDenotate (std::string& outs)
 {
   int rc = 0;
 

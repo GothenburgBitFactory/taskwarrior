@@ -53,7 +53,7 @@ static std::vector <std::string> customReports;
 ////////////////////////////////////////////////////////////////////////////////
 // This report will eventually become the one report that many others morph into
 // via the .taskrc file.
-int handleCustomReport (const std::string& report, std::string &outs)
+int handleCustomReport (const std::string& report, std::string& outs)
 {
   int rc = 0;
 

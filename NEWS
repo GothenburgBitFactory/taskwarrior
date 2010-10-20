@@ -40,6 +40,7 @@ New commands in taskwarrior 1.9.3
     file from another taskwarrior user, to sync across machines, for example.
   - New 'task push <url>' command to distribute merged changes.
   - New 'task pull <url>' command to copy data files from a remote location.
+  - New 'diagnostics' command to aid bug reporting.
 
 New configuration options in taskwarrior 1.9.3
 
@@ -65,14 +66,13 @@ Newly deprecated features in taskwarrior 1.9.3
     obsolete.  The 'task show' command warns of the use of these deprecated
     fields.  The synonyms will be removed in a future version of taskwarrior.
 
-
 ---
 
 Taskwarrior has been built and tested on the following configurations:
 
   * OS X 10.6 Snow Leopard and 10.5 Leopard
   * Fedora 13 Goddard, 12 Constantine
-  * Ubuntu 10.04 Lucid Lynx, 9.10 Karmic Koala
+  * Ubuntu 10.10 Maverick Meerkat, 10.04 Lucid Lynx
   * Debian Sid
   * Slackware 12.2
   * Arch Linux

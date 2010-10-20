@@ -1254,7 +1254,7 @@ static std::string importYAML (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleImport (std::string &outs)
+int handleImport (std::string& outs)
 {
   int rc = 0;
 

@@ -626,7 +626,7 @@ ARE_THESE_REALLY_HARMFUL:
 // Introducing the Silver Bullet.  This feature is the catch-all fixative for
 // various other ills.  This is like opening up the hood and going in with a
 // wrench.  To be used sparingly.
-int handleEdit (std::string &outs)
+int handleEdit (std::string& outs)
 {
   int rc = 0;
 
