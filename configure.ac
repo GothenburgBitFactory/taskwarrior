@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(task, 1.9.3.beta1, support@taskwarrior.org)
+AC_INIT(task, 1.9.3.beta2, support@taskwarrior.org)
 
 
 # Source type.
