@@ -211,7 +211,7 @@ void handleDiagnostics (std::string& outs)
                 << "\n";
     }
 
-    if ((fp = popen ("rsync --version", "r")))
+    if ((fp = popen ("rsync --version 2>&1", "r")))
     {
       fgets (buffer, 1023, fp);
       pclose (fp);
@@ -224,7 +224,7 @@ void handleDiagnostics (std::string& outs)
                 << "\n";
     }
 
-    if ((fp = popen ("curl --version", "r")))
+    if ((fp = popen ("curl --version 2>&1", "r")))
     {
       fgets (buffer, 1023, fp);
       pclose (fp);
