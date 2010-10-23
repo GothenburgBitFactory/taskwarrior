@@ -95,17 +95,31 @@ void handleRecurrence ()
       {
         if (mask.length () <= i)
         {
-          mask += '-';
           changed = true;
 
           Task rec (*t);                         // Clone the parent.
           rec.set ("uuid", uuid ());             // New UUID.
-          rec.setStatus (Task::pending);         // Shiny.
           rec.set ("parent", t->get ("uuid"));   // Remember mom.
 
           char dueDate[16];
           sprintf (dueDate, "%u", (unsigned int) d->toEpoch ());
           rec.set ("due", dueDate);              // Store generated due date.
+
+          if (t->get ("wait").size())
+          {
+            Date old_wait (atoi (t->get ("wait").c_str ()));
+            Date old_due (atoi (t->get ("due").c_str ()));
+            Date due (*d);
+            sprintf (dueDate, "%u", (unsigned int) (due + (old_wait - old_due)).toEpoch ());
+            rec.set ("wait", dueDate);
+            rec.setStatus (Task::waiting);
+            mask += 'W';
+          }
+          else
+          {
+            mask += '-';
+            rec.setStatus (Task::pending);
+          }
 
           char indexMask[12];
           sprintf (indexMask, "%u", (unsigned int) i);

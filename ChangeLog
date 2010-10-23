@@ -8,8 +8,9 @@
    as relative to the current date/time.
  + Added feature #189, that records the start and stop times as an
    annotation for a task.
- + Added features #244, #272, #274 and #275, which support import and
-   export of YAML 1.1.  YAML is now the default export format for task.
+ + Added features #244, #272, #273, #274, #275 and #279, which support
+   import and export of YAML 1.1.  YAML is now the default export format
+   for task.
  + Added feature #391, now the 'task color legend' command will show
    samples of all the defined colors and color rules from your .taskrc
    and theme.

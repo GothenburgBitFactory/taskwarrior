@@ -647,7 +647,7 @@ void Task::validate () const
     if (has ("wait"))
     {
       Date wait (::atoi (get ("wait").c_str ()));
-      if (wait > due)
+      if (wait < due)
         throw std::string ("A 'wait' date must be after a 'due' date.");
     }
 
