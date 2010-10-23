@@ -8,8 +8,9 @@
    as relative to the current date/time.
  + Added feature #189, that records the start and stop times as an
    annotation for a task.
- + Added features #244, #272, #274 and #275, which support import and
-   export of YAML 1.1.  YAML is now the default export format for task.
+ + Added features #244, #272, #273, #274, #275 and #279, which support
+   import and export of YAML 1.1.  YAML is now the default export format
+   for task.
  + Added feature #391, now the 'task color legend' command will show
    samples of all the defined colors and color rules from your .taskrc
    and theme.
@@ -76,12 +77,15 @@
    worked.
  + Fixed bug #466, which gave the wrong error message when a custom report
    was missing a direction indicator for the sort order.
+ + Fixed bug #467, where recurring tasks were not honoring wait values.
  + Fixed bug #470, which caused task to not support the color 'none'.
  + Fixed bug #476, so that task now issues a warning when a wait date falls
    after a due date (thanks to T. Charles Yun).
  + Fixed bug #480, which didn't properly support @ characters in tags.  This
    also now supports $ and #.
  + Fixed bug #489, which caused the filter 'tags.none:' to fail.
+ + Fixed bug $493, which made waiting, recurring tasks invisible (thanks to
+   Alexander Schremmer).
  + Fixed bug #494, causing imported text files to ultimately lack uuids
    (thanks to Elizabeth Maxson).
  + Fixed problem with command line configuration overrides that had no
