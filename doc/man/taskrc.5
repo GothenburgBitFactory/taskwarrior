@@ -335,8 +335,8 @@ the 'history' report, for example, or 'export'.
 .B report.X.dateformat=m/d/Y
 This is a string of characters that define how taskwarrior formats date values.
 The precedence order for the configuration variable is report.X.dateformat then
-reportdateformat then dateformat.  While report.X.dateformat only formats the
-due date in reports, reportdateformat formats the due date both in reports
+dateformat.report then dateformat.  While report.X.dateformat only formats the
+due date in reports, dateformat.report formats the due date both in reports
 and "task info".  If both of these are not set then dateformat will be applied
 to the due date.  Entered dates as well as all other displayed dates in reports
 are formatted according to dateformat.
@@ -392,7 +392,7 @@ M-D-Y  would use for input and output 07-24-2009
 .RE
 
 .RS
-Examples for other values of reportdateformat:
+Examples for other values of dateformat.report:
 .RE
 
 .RS
@@ -850,7 +850,7 @@ criteria are displayed in the generated report.
 .TP
 .B report.X.dateformat
 This adds a dateformat to the report X that will be used by the "due date"
-column. If it is not set then reportdateformat and dateformat will be used in
+column. If it is not set then dateformat.report and dateformat will be used in
 this order. See the
 .B DATES
 section for details on the sequence placeholders.
