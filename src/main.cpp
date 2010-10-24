@@ -27,7 +27,7 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include <sys/time.h>
+#include <time.h>
 #include "Context.h"
 #include "../auto.h"
 
@@ -36,12 +36,10 @@ Context context;
 int main (int argc, char** argv)
 {
   // Set up randomness.
-  struct timeval tv;
-  gettimeofday (&tv, NULL);
 #ifdef HAVE_SRANDOM
-  srandom (tv.tv_usec);
+  srandom (time (NULL));
 #else
-  srand (tv.tv_usec);
+  srand (time (NULL));
 #endif
 
   int status = 0;
