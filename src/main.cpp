@@ -27,7 +27,13 @@
 
 #include <iostream>
 #include <stdlib.h>
+
+#ifdef CYGWIN
 #include <time.h>
+#else
+#include <sys/time.h>
+#endif
+
 #include "Context.h"
 #include "../auto.h"
 
@@ -36,10 +42,20 @@ Context context;
 int main (int argc, char** argv)
 {
   // Set up randomness.
-#ifdef HAVE_SRANDOM
+#ifdef CYGWIN
+  #ifdef HAVE_SRANDOM
   srandom (time (NULL));
-#else
+  #else
   srand (time (NULL));
+  #endif
+#else
+  #ifdef HAVE_SRANDOM
+  struct timeval tv;
+  gettimeofday (&tv, NULL);
+  srandom (tv.tv_usec);
+  #else
+  srand (tv.tv_usec);
+  #endif
 #endif
 
   int status = 0;
