@@ -1387,7 +1387,7 @@ void TDB::merge (const std::string& mergeFile)
     // nothing happend on the local branch either
 
     // break, to suppress autopush
-    if (lit != l.end ())
+    if (lit == l.end ())
     {
       mods.clear ();
       lmods.clear ();
