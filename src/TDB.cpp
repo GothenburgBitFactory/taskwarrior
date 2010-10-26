@@ -1559,7 +1559,7 @@ void TDB::merge (const std::string& mergeFile)
         {
           std::cout << "Merging new remote task       "
                     << (useColor ? colorAdded.colorize (uuid) : uuid)
-                    << "  \"" << cutOff (tmod.getBefore ().get ("description"), 10) << "\""
+                    << "  \"" << cutOff (tmod.getAfter ().get ("description"), 10) << "\""
                     << "\n";
 
           // remove the \n from composeF4() string
