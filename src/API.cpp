@@ -48,6 +48,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <iostream>
 #include "Context.h"
 #include "API.h"
 
@@ -223,7 +224,8 @@ static int api_task_debug_message (lua_State* L)
 static int api_task_exit (lua_State* L)
 {
   // TODO Is this the correct exception?  How does the shell handle this?
-  throw std::string ("Exiting.");
+  std::cout << "Exiting." << std::endl;
+  exit (0); 
   return 0;
 }
 
