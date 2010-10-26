@@ -105,7 +105,7 @@ void handleRecurrence ()
           sprintf (dueDate, "%u", (unsigned int) d->toEpoch ());
           rec.set ("due", dueDate);              // Store generated due date.
 
-          if (t->get ("wait").size())
+          if (t->has ("wait"))
           {
             Date old_wait (atoi (t->get ("wait").c_str ()));
             Date old_due (atoi (t->get ("due").c_str ()));
