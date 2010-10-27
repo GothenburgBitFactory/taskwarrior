@@ -23,7 +23,7 @@ New Features in taskwarrior 1.9.3
   - Certain characters (#, $, @) are now supported for use in tags.
   - User-controlled color rule precedence.
   - Two new color themes.
-  - New holiday files for US, SE, DE, CA, FR, UK, ES and NL localizations.
+  - New holiday files for US, SE, DE, CA, FR, UK, ES, NL and NO localizations.
   - Task dependencies, and new 'blocked' and 'unblocked' reports for list
     those tasks.
 
