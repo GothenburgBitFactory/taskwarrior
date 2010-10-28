@@ -2863,7 +2863,7 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
   if (project != "")
   {
     if (scope)
-      msg << "The scope of project '"
+      msg << "The project '"
           << project
           << "' has changed.  ";
 
