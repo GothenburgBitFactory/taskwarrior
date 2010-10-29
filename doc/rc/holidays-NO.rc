@@ -1,0 +1,113 @@
+################################################################################
+# Sample calendar for Norway
+#
+# taskwarrior - a command line task list manager.
+#
+# Copyright 2010, Jostein Berntsen
+# All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+################################################################################
+
+calendar.holidays=sparse
+
+# 2010
+holiday.julaften.name=Julaften
+holiday.julaften.date=20101224
+holiday.juledag.name=Juledag
+holiday.juledag.date=20101225
+holiday.juledag2.name=Juledag
+holiday.juledag2.date=20101226
+holiday.nyttårsaften.name=Nyttårsaften
+holiday.nyttårsaften.date=20101231
+
+# 2011
+holiday.nyttårsdag.name=Nyttårsdag
+holiday.nyttårsdag.date=20110101
+holiday.fastelavn.name=Fastelavn
+holiday.fastelavn.date=20110306
+holiday.palmesøndag.name=Palmesøndag
+holiday.palmesøndag.date=20110417
+holiday.skjærtorsdag.name=Skjærtorsdag
+holiday.skjærtorsdag.date=20110421
+holiday.langfredag.name=Langfredag
+holiday.langfredag.date=20110422
+holiday.påskedag.name=Påskedag
+holiday.påskedag.date=20110424
+holiday.påskedag2.name=Påskedag
+holiday.påskedag2.date=20110425
+holiday.offentlighøytidsdag.name=Offentlig Høytidsdag
+holiday.offentlighøytidsdag.date=20110501
+holiday.frigjøringsdag.name=Frigjøringsdag 1945
+holiday.frigjøringsdag.date=20110508
+holiday.grunnlovsdag.name=Grunnlovsdag
+holiday.grunnlovsdag.date=20110517
+holiday.KristiHimmelfartsdag.name=Kristi Himmelfartsdag
+holiday.KristiHimmelfartsdag.date=20110602
+holiday.pinsedag.name=Pinsedag
+holiday.pinsedag.date=20110612
+holiday.pinsedag2.name=Pinsedag
+holiday.pinsedag2.date=20110613
+#holiday.julaften.name=Julaften
+#holiday.julaften.date=20111224
+#holiday.juledag.name=Juledag
+#holiday.juledag.date=20111225
+#holiday.juledag2.name=Juledag
+#holiday.juledag2.date=20111226
+#holiday.nyttårsaften.name=Nyttårsaften
+#holiday.nyttårsaften.date=20111231
+
+# 2012
+#holiday.nyttårsdag.name=Nyttårsdag
+#holiday.nyttårsdag.date=20120101
+#holiday.fastelavn.name=Fastelavn
+#holiday.fastelavn.date=20120219
+#holiday.palmesøndag.name=Palmesøndag
+#holiday.palmesøndag.date=20120401
+#holiday.skjærtorsdag.name=Skjærtorsdag
+#holiday.skjærtorsdag.date=20120405
+#holiday.langfredag.name=Langfredag
+#holiday.langfredag.date=20120406
+#holiday.påskedag.name=Påskedag
+#holiday.påskedag.date=20120408
+#holiday.påskedag2.name=Påskedag
+#holiday.påskedag2.date=20120409
+#holiday.offentlighøytidsdag.name=Offentlig Høytidsdag
+#holiday.offentlighøytidsdag.date=20120501
+#holiday.frigjøringsdag.name=Frigjøringsdag 1945
+#holiday.frigjøringsdag.date=20120508
+#holiday.grunnlovsdag.name=Grunnlovsdag
+#holiday.grunnlovsdag.date=20120517
+#holiday.KristiHimmelfartsdag.name=Kristi Himmelfartsdag
+#holiday.KristiHimmelfartsdag.date=20120517
+#holiday.pinsedag.name=Pinsedag
+#holiday.pinsedag.date=20120527
+#holiday.pinsedag2.name=Pinsedag
+#holiday.pinsedag2.date=20120528
+#holiday.julaften.name=Julaften
+#holiday.julaften.date=20121224
+#holiday.juledag.name=Juledag
+#holiday.juledag.date=20121225
+#holiday.juledag2.name=Juledag
+#holiday.juledag2.date=20121226
+#holiday.nyttårsaften.name=Nyttårsaften
+#holiday.nyttårsaften.date=20121231
+
