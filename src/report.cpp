@@ -204,20 +204,28 @@ int shortUsage (std::string& outs)
   table.addCell (row, 2, "Lists all tasks in CSV format.  Alias to export.csv");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task export.csv");
+  table.addCell (row, 2, "Lists all tasks in CSV format.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task export.ical");
+  table.addCell (row, 2, "Lists all tasks in iCalendar format.");
+
+  row = table.addRow ();
+  table.addCell (row, 1, "task export.yaml");
+  table.addCell (row, 2, "Lists all tasks in YAML format.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task merge URL");
   table.addCell (row, 2, "Merges the specified undo.data file with the local data files.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task push URL");
   table.addCell (row, 2, "Pushes the local *.data files to the URL.");
-	
+
 	row = table.addRow ();
   table.addCell (row, 1, "task pull URL");
   table.addCell (row, 2, "Overwrites the local *.data files with those found at the URL.");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task export.ical");
-  table.addCell (row, 2, "Lists all tasks in iCalendar format.");
 
   row = table.addRow ();
   table.addCell (row, 1, "task color [sample | legend]");
