@@ -804,7 +804,7 @@ int handleVersion (std::string& outs)
     link.setColumnJustification (0, Table::left);
     link.addCell (link.addRow (), 0,
       "Documentation for taskwarrior can be found using 'man task', 'man taskrc', "
-      "'man task-tutorial', 'man task-color', 'man task-faq' or at "
+      "'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' or at "
       "http://taskwarrior.org");
 
     Color bold ("bold");
@@ -1728,8 +1728,7 @@ int handleModify (std::string& outs)
             //      Either we scan context.task for negative IDs "depends:-n"
             //      or we ask deltaAttributes (above) to record dependency
             //      removal.
-            if (1)
-              dependencyChainOnModify (before, *other);
+            dependencyChainOnModify (before, *other);
 
             context.tdb.update (*other);
 
