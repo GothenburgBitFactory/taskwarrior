@@ -371,22 +371,62 @@ std::string taskDifferences (const Task& before, const Task& after)
         << " will be deleted.\n";
 
   foreach (name, afterOnly)
-    out << "  - "
-        << *name
-        << " will be set to '"
-        << renderAttribute (*name, after.get (*name))
-        << "'.\n";
+  {
+    if (*name == "depends")
+    {
+      std::vector <int> deps_after;
+      after.getDependencies (deps_after);
+      std::string to;
+      join (to, ",", deps_after);
+
+      out << "  - "
+          << *name
+          << " will be set to '"
+          << to
+          << "'.\n";
+    }
+    else
+      out << "  - "
+          << *name
+          << " will be set to '"
+          << renderAttribute (*name, after.get (*name))
+          << "'.\n";
+  }
 
   foreach (name, beforeAtts)
     if (*name              != "uuid" &&
         before.get (*name) != after.get (*name))
-      out << "  - "
-          << *name
-          << " will be changed from '"
-          << renderAttribute (*name, before.get (*name))
-          << "' to '"
-          << renderAttribute (*name, after.get (*name))
-          << "'.\n";
+    {
+      if (*name == "depends")
+      {
+        std::vector <int> deps_before;
+        before.getDependencies (deps_before);
+        std::string from;
+        join (from, ",", deps_before);
+
+        std::vector <int> deps_after;
+        after.getDependencies (deps_after);
+        std::string to;
+        join (to, ",", deps_after);
+
+        out << "  - "
+            << *name
+            << " will be changed from '"
+            << from
+            << "' to '"
+            << to
+            << "'.\n";
+      }
+      else
+        out << "  - "
+            << *name
+            << " will be changed from '"
+            << renderAttribute (*name, before.get (*name))
+            << "' to '"
+            << renderAttribute (*name, after.get (*name))
+            << "'.\n";
+    }
+
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
