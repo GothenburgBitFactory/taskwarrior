@@ -1669,7 +1669,8 @@ int handleModify (std::string& outs)
       throw std::string ("You cannot remove the recurrence from a recurring task.");
 
     if ((task->has ("wait") && context.task.has ("due") && Date (context.task.get ("due")) < Date (task->get ("wait"))) ||
-        (context.task.has ("wait") && task->has ("due") && Date (task->get ("due")) < Date (context.task.get ("wait"))) ||
+        (context.task.has ("wait") && !context.task.has ("due") && task->has ("due") && Date (task->get ("due")) < Date (context.task.get ("wait"))) ||
+        (context.task.has ("wait") && context.task.has ("due") && Date (context.task.get ("due")) < Date (context.task.get ("wait"))) ||
         (task->has ("wait") && task->has ("due") && Date (task->get ("due")) < Date (task->get ("wait"))))
       context.footnote ("Warning: the wait date falls after the due date.");
 
