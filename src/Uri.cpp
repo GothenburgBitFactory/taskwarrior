@@ -126,9 +126,12 @@ std::string Uri::extension () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Uri::is_directory () const
 {
-  return (path == ".")
-      || (path == "")
-      || (path[path.length()-1] == '/');
+  if (is_local ())
+    return Path (this->data).is_directory ();
+  else
+    return (path == ".")
+        || (path == "")
+        || (path[path.length()-1] == '/');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
