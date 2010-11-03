@@ -62,6 +62,7 @@ public:
   std::string port;
   std::string user;
   std::string protocol;
+  bool parsed;
 };
 
 #endif

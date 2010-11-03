@@ -33,6 +33,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 Uri::Uri ()
 {
+  parsed = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +47,7 @@ Uri::Uri (const Uri& other)
     user = other.user;
     port = other.port;
     protocol = other.protocol;
+    parsed = other.parsed;
   }
 }
 
@@ -53,6 +55,7 @@ Uri::Uri (const Uri& other)
 Uri::Uri (const std::string& in, const std::string& configPrefix)
 {
   data = in;
+  parsed = false;
   if (configPrefix != "")
     expand(configPrefix);
 }
@@ -73,6 +76,7 @@ Uri& Uri::operator= (const Uri& other)
     this->user = other.user;
     this->port = other.port;
     this->protocol = other.protocol;
+	 this->parsed = other.parsed;
   }
 
   return *this;
@@ -126,9 +130,9 @@ std::string Uri::extension () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Uri::is_directory () const
 {
-  if (is_local ())
+  if (is_local ()) {
     return Path (this->data).is_directory ();
-  else
+  } else
     return (path == ".")
         || (path == "")
         || (path[path.length()-1] == '/');
@@ -137,8 +141,11 @@ bool Uri::is_directory () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Uri::is_local () const
 {
-  return ( (data.find("://") == std::string::npos)
-        && (data.find(":")   == std::string::npos) );
+  if (parsed)
+    return (protocol == "");
+  else
+    return ( (data.find("://") == std::string::npos)
+          && (data.find(":")   == std::string::npos) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -180,9 +187,13 @@ bool Uri::expand (const std::string& configPrefix )
 ////////////////////////////////////////////////////////////////////////////////
 void Uri::parse ()
 {
+  if (parsed)
+    return;
+
   if (is_local ())
   {
     path = data;
+    parsed = true;
     return;
   }
 
@@ -233,6 +244,8 @@ void Uri::parse ()
 		port = host.substr (pos+1);
 		host = host.substr (0,pos);
 	}
+
+  parsed = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
