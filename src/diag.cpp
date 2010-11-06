@@ -203,38 +203,45 @@ void handleDiagnostics (std::string& outs)
     FILE* fp;
     if ((fp = popen ("scp 2>&1", "r")))
     {
-      fgets (buffer, 1023, fp);
+      char* p = fgets (buffer, 1023, fp);
       pclose (fp);
 
-      std::cout << "       scp: "
-                << (regexMatch (buffer, "usage") ? "found" : "n/a")
-                << "\n";
+      if (p)
+        std::cout << "       scp: "
+                  << (regexMatch (buffer, "usage") ? "found" : "n/a")
+                  << "\n";
     }
 
     if ((fp = popen ("rsync --version 2>&1", "r")))
     {
-      fgets (buffer, 1023, fp);
+      char* p = fgets (buffer, 1023, fp);
       pclose (fp);
 
       // rsync  version 2.6.9  protocol version 29
-      matches.clear ();
-      regexMatch (matches, buffer, "version ([0-9]+\\.[0-9]+\\.[0-9]+)");
-      std::cout << "     rsync: "
-                << (matches.size () ? matches[0] : "n/a")
-                << "\n";
+      if (p)
+      {
+        matches.clear ();
+        regexMatch (matches, buffer, "version ([0-9]+\\.[0-9]+\\.[0-9]+)");
+        std::cout << "     rsync: "
+                  << (matches.size () ? matches[0] : "n/a")
+                  << "\n";
+      }
     }
 
     if ((fp = popen ("curl --version 2>&1", "r")))
     {
-      fgets (buffer, 1023, fp);
+      char* p = fgets (buffer, 1023, fp);
       pclose (fp);
 
       // curl 7.19.7 (universal-apple-darwin10.0) libcurl/7.19.7 OpenSSL/0.9.8l zlib/1.2.3
-      matches.clear ();
-      regexMatch (matches, buffer, "curl ([0-9]+\\.[0-9]+\\.[0-9]+)");
-      std::cout << "      curl: "
-                << (matches.size () ? matches[0] : "n/a")
-                << "\n";
+      if (p)
+      {
+        matches.clear ();
+        regexMatch (matches, buffer, "curl ([0-9]+\\.[0-9]+\\.[0-9]+)");
+        std::cout << "      curl: "
+                  << (matches.size () ? matches[0] : "n/a")
+                  << "\n";
+      }
     }
 
     std::cout << "\n";
