@@ -28,12 +28,15 @@
  + Added feature #446, task supports now 'sow', 'som' and 'soy' as dates
    for 'due', 'wait' and 'until' (thanks to T. Charles Yun).
    Added as well synonyms soww/eoww plus new socw/eocw for calendar weeks.
+ + Fixed bug #467, where recurring tasks were not honoring wait values.
  + Added feature #471, which makes greater use of projects by reporting
    changes to the completion percentage when it changes.
  + Added feature #478, which uses the colorization rules in the 'info'
    report.
  + Added feature #481, allowing for user control of the color rule order
    of precedence via the 'rule.precedence.color' configuration variable.
+ + Fixed bug #493, which made waiting, recurring tasks invisible (thanks to
+   Alexander Schremmer).
  + Added feature #499, giving an extra line in the message output when
    doing bulk done changes (thanks to T. Charles Yun).
  + New 'depends' column for custom reports.

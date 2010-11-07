@@ -132,7 +132,7 @@ int handleAdd (std::string& outs)
     out << "Created task " << context.tdb.nextId () << ".\n";
 #endif
 
-    out << onProjectChange (context.task);
+    context.footnote (onProjectChange (context.task));
 
     context.tdb.commit ();
     context.tdb.unlock ();
@@ -200,7 +200,7 @@ int handleLog (std::string& outs)
     if (context.config.getBoolean ("echo.command"))
       out << "Logged task.\n";
 
-    out << onProjectChange (context.task);
+    context.footnote (onProjectChange (context.task));
 
     outs = out.str ();
     context.hooks.trigger ("post-log-command");
@@ -1346,7 +1346,7 @@ int handleDelete (std::string& outs)
                   << "'.\n";
 
               dependencyChainOnComplete (*task);
-              out << onProjectChange (*task);
+              context.footnote (onProjectChange (*task));
             }
           }
           else
@@ -1368,7 +1368,7 @@ int handleDelete (std::string& outs)
                   << "'.\n";
 
             dependencyChainOnComplete (*task);
-            out << onProjectChange (*task);
+            context.footnote (onProjectChange (*task));
           }
         }
         else {
@@ -1580,7 +1580,7 @@ int handleDone (std::string& outs)
                     << "'.\n";
 
               dependencyChainOnComplete (*task);
-              out << onProjectChange (*task, false);
+              context.footnote (onProjectChange (*task, false));
 
               ++count;
               context.hooks.trigger ("post-completed", *task);
@@ -1667,25 +1667,50 @@ int handleModify (std::string& outs)
         context.task.get ("recur") == "")
       throw std::string ("You cannot remove the recurrence from a recurring task.");
 
-    if ((task->has ("wait") && context.task.has ("due") && Date (context.task.get ("due")) < Date (task->get ("wait"))) ||
-        (context.task.has ("wait") && !context.task.has ("due") && task->has ("due") && Date (task->get ("due")) < Date (context.task.get ("wait"))) ||
-        (context.task.has ("wait") && context.task.has ("due") && Date (context.task.get ("due")) < Date (context.task.get ("wait"))) ||
-        (task->has ("wait") && task->has ("due") && Date (task->get ("due")) < Date (task->get ("wait"))))
+    // This looks unnecessarily complex, but isn't.  "due" and "wait" are
+    // independent and may exist without the other, but if both exist then wait
+    // must be before due.
+    if ((task->has ("wait")       &&
+         context.task.has ("due") &&
+         Date (context.task.get ("due")) < Date (task->get ("wait")))
+        ||
+        (context.task.has ("wait") &&
+         !context.task.has ("due") &&
+         task->has ("due")         &&
+         Date (task->get ("due")) < Date (context.task.get ("wait")))
+        ||
+        (context.task.has ("wait") &&
+         context.task.has ("due")  &&
+         Date (context.task.get ("due")) < Date (context.task.get ("wait")))
+        ||
+        (task->has ("wait") &&
+         task->has ("due")  &&
+         Date (task->get ("due")) < Date (task->get ("wait"))))
+    {
       context.footnote ("Warning: the wait date falls after the due date.");
+    }
 
     // Make all changes.
+    bool warned = false;
     foreach (other, all)
     {
+      // Skip wait: modification to a parent task, and other child tasks.  Too
+      // difficult to achieve properly without losing 'waiting' as a status.
+      // Soon...
       if (other->id             == task->id               || // Self
-          (task->has ("parent") &&
+          (! context.task.has ("wait") &&                    // skip waits
+           task->has ("parent") &&                           // is recurring
            task->get ("parent") == other->get ("parent")) || // Sibling
           other->get ("uuid")   == task->get ("parent"))     // Parent
       {
-        if (task->has ("parent"))
+        if (task->has ("parent") && !warned)
+        {
+          warned = true;
           std::cout << "Task "
                     << task->id
                     << " is a recurring task, and all other instances of this"
                     << " task will be modified.\n";
+        }
 
         Task before (*other);
 
@@ -1733,7 +1758,7 @@ int handleModify (std::string& outs)
             context.tdb.update (*other);
 
             if (before.get ("project") != other->get ("project"))
-              out << onProjectChange (before, *other);
+              context.footnote (onProjectChange (before, *other));
 
             ++count;
           }
@@ -1813,7 +1838,7 @@ int handleAppend (std::string& outs)
                     << ".\n";
 
               if (before.get ("project") != other->get ("project"))
-                out << onProjectChange (before, *other);
+                context.footnote (onProjectChange (before, *other));
 
               ++count;
             }
@@ -1895,7 +1920,7 @@ int handlePrepend (std::string& outs)
                     << ".\n";
 
               if (before.get ("project") != other->get ("project"))
-                out << onProjectChange (before, *other);
+                context.footnote (onProjectChange (before, *other));
 
               ++count;
             }
@@ -1980,7 +2005,7 @@ int handleDuplicate (std::string& outs)
             << task->get ("description")
             << "'.\n";
 
-      out << onProjectChange (dup);
+      context.footnote (onProjectChange (dup));
 
       ++count;
     }
@@ -2539,8 +2564,15 @@ int deltaAttributes (Task& task)
         att->second.name () != "description" &&
         att->second.name () != "tags")
     {
-      // Modifying "wait" changes status.
-      if (att->second.name () == "wait")
+      // Some things don't propagate to the parent task.
+      if (att->second.name () == "wait" &&
+          task.getStatus () == Task::recurring)
+      {
+        // NOP
+      }
+
+      // Modifying "wait" changes status, but not for recurring parent tasks.
+      else if (att->second.name () == "wait")
       {
         if (att->second.value () == "")
         {
