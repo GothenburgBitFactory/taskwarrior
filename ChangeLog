@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.9.3 ()
+1.9.3 (11/08/2010)
  + Added feature #43, now task supports relative dates like '3wks',
    '1 month', '4d' for 'due', 'wait' and 'until' dates.  Essentially
    durations are now allowed where dates are expected, and are treated
