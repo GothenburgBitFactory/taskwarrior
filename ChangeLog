@@ -1,7 +1,11 @@
 
 ------ current release ---------------------------
 
-1.9.3 (11/08/2010)
+1.9.4 ()
+
+------ old releases ------------------------------
+
+1.9.3 (11/08/2010) bf36b47593a33e6347425d47a36477b627310e65
  + Added feature #43, now task supports relative dates like '3wks',
    '1 month', '4d' for 'due', 'wait' and 'until' dates.  Essentially
    durations are now allowed where dates are expected, and are treated
@@ -96,8 +100,6 @@
  + Fixed a precision problem with average age on the summary report.
  + Clarified the documentation regarding the project name (taskwarrior) and
    the program name (task).
-
------- old releases ------------------------------
 
 1.9.2 (7/10/2010) a13989f18eb34b3363f433c965084b6491425b9f
  + Added feature #320, so the command "task 123" is interpreted as an implicit
