@@ -368,6 +368,12 @@ to 25 lines, if ncurses is not installed or enabled.
 .B wait:<wait-date>
 Date until task becomes pending.
 
+.TP
+.B depends:<id1,id2 ...>
+Declares this task to be dependent on id1 and id2.  This means that the tasks
+id1 and id2 should be completed before this task.  Consequently, this task will
+then show up on the 'blocked' report.
+
 .SH ATTRIBUTE MODIFIERS
 Attribute modifiers improve filters.  Supported modifiers are:
 

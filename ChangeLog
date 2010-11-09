@@ -2,6 +2,8 @@
 ------ current release ---------------------------
 
 1.9.4 ()
+ + Fixed bug #529, where the 'depends' attribute was not mentioned in the
+   task man page (thanks to Dirk Deimeke).
 
 ------ old releases ------------------------------
 
@@ -39,8 +41,6 @@
    report.
  + Added feature #481, allowing for user control of the color rule order
    of precedence via the 'rule.precedence.color' configuration variable.
- + Fixed bug #493, which made waiting, recurring tasks invisible (thanks to
-   Alexander Schremmer).
  + Added feature #499, giving an extra line in the message output when
    doing bulk done changes (thanks to T. Charles Yun).
  + New 'depends' column for custom reports.
@@ -90,6 +90,8 @@
  + Fixed bug #480, which didn't properly support @ characters in tags.  This
    also now supports $ and #.
  + Fixed bug #489, which caused the filter 'tags.none:' to fail.
+ + Fixed bug #493, which made waiting, recurring tasks invisible (thanks to
+   Alexander Schremmer).
  + Fixed bug #494, causing imported text files to ultimately lack uuids
    (thanks to Elizabeth Maxson).
  + Fixed problem with command line configuration overrides that had no
