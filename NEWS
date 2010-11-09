@@ -1,70 +1,22 @@
 
-New Features in taskwarrior 1.9.3
+New Features in taskwarrior 1.9.4
 
-  - Start and stop times for a task can now be recorded as annotations.
-  - Special tags 'nocolor', 'nocal' and 'nonag'.
-  - Now supports durations in dates, such as:
-      $ task ... due:4d
-      $ task ... due:3wks
-  - 'sow', 'som' and 'soy' are now accepted in dates.  'soww' and 'eoww' are
-    now synonyms for 'sow' and 'eow' (ww = working week) 'socw' and 'eocw'
-    refer to the calendar week (starting Sunday/Monday and
-  - Now supports the beginning of the week, month and year in dates.
-  - Now supports 'now' as a date/time.
-  - Now defines an overdue task as being one second after the due date,
-    instead of the day after the due date.
-  - Import and export of YAML 1.1, including round-trip capability, and
-    detection of duplicate imports.
-  - New merge capability for syncing task data files.
-  - New push capability for distributing merged changes.
-  - New pull capability for copying data files from a remote location.
-  - When completing or modifying a task, the project status is displayed.
-  - The 'info' report is now colorized.
-  - Certain characters (#, $, @) are now supported for use in tags.
-  - User-controlled color rule precedence.
-  - Two new color themes.
-  - New holiday files for US, SE, DE, CA, FR, UK, ES, NL and NO localizations.
-  - Task dependencies, and new 'blocked' and 'unblocked' reports for list
-    those tasks.
+  - 
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
 
-New commands in taskwarrior 1.9.3
+New commands in taskwarrior 1.9.4
 
-  - New 'task color legend' command will show samples of all the defined colors
-    and color rules from your .taskrc and theme.
-  - New 'task export.yaml' command will export YAML 1.1, which can then be
-    imported via 'task import <file>'.
-  - New 'task merge <url>' command that can merge the local and an undo.data
-    file from another taskwarrior user, to sync across machines, for example.
-  - New 'task push <url>' command to distribute merged changes.
-  - New 'task pull <url>' command to copy data files from a remote location.
-  - New 'diagnostics' command to aid bug reporting.
+  -
 
-New configuration options in taskwarrior 1.9.3
+New configuration options in taskwarrior 1.9.4
 
-  - journal.time, journal.time.start.annotation, journal.time.stop.annotation
-    ending Saturday/Sunday).
-  - Color rule precedence can now be explicitly set with the configuration
-    variable rule.precedence.color.  Try "task show rule.pre" to show the
-    default settings.
-  - merge.autopush to control whether pushing after merging is automated.
-  - merge.*.uri to configure source locations for the merge command
-    (e.g. merge.default.uri).
-  - push.*.uri to configure target locations for the push command.
-  - pull.*.uri to configure source locations for the pull command.
-  - dependency.confirm controls whether dependency chain repair needs to be
-    confirmed.
-  - dependency.reminder controls whether the user is nagged about dependency
-    chain violations.
+  -
 
-Newly deprecated features in taskwarrior 1.9.3
+Newly deprecated features in taskwarrior 1.9.4
 
-  - entry_time, start_time and end_time are now synonyms for the entry, start
-    and end fields.  Recent enhancements to date formatting render these fields
-    obsolete.  The 'task show' command warns of the use of these deprecated
-    fields.  The synonyms will be removed in a future version of taskwarrior.
+  -
 
 ---
 
