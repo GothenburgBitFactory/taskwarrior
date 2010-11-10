@@ -4,6 +4,8 @@
 1.9.4 ()
  + Fixed bug #529, where the 'depends' attribute was not mentioned in the
    task man page (thanks to Dirk Deimeke).
+ + Fixed bug #535 which omitted the holidays-NO.rc file from the packages
+   (thanks to Jostein Berntsen).
 
 ------ old releases ------------------------------
 
