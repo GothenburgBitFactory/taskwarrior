@@ -109,9 +109,9 @@ All the other URIs allow access to remote machines.  The first uses SSH and scp
 
 .br
 .RS
-ssh://[user@]host[:port]:path/to/undo.data
+ssh://[user@]host[:port]/path/to/undo.data
 .br
-[user@]host[:port]:/path/
+[user@]host:/path/
 .RE
 
 Rsync is another supported protocol that minimizes network traffic, by a clever
@@ -131,7 +131,7 @@ http://host[:port]/path/to/undo.data
 .br
 https://host[:port]/path/to/undo.data
 .br
-ftp://user@host[:port]/path/to/undo.data
+ftp://[user@]host[:port]/path/to/undo.data
 .RE
 
 .SH CONFLICTS

@@ -8,6 +8,7 @@
    (thanks to Jostein Berntsen).
  + Fixed but #539, where the man page task-color(5) contained a line that
    began with a ' and was not displayed.
+ + Fixed bug #537, where the man page task-sync(5) misspecified some URIs
 
 ------ old releases ------------------------------
 
