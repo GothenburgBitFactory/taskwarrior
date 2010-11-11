@@ -6,6 +6,8 @@
    task man page (thanks to Dirk Deimeke).
  + Fixed bug #535 which omitted the holidays-NO.rc file from the packages
    (thanks to Jostein Berntsen).
+ + Fixed but #539, where the man page task-color(5) contained a line that
+   began with a ' and was not displayed.
 
 ------ old releases ------------------------------
 
