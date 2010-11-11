@@ -32,8 +32,8 @@ color.header=yellow
 color.footnote=yellow
 color.debug=yellow
 
-color.summary.bar=on green
-color.summary.background=on black
+color.summary.bar=black on green
+color.summary.background=white on black
 
 color.history.add=black on red
 color.history.done=black on green

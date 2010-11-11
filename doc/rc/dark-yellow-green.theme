@@ -32,8 +32,8 @@ color.header=rgb031
 color.footnote=rgb031
 color.debug=rgb031
 
-color.summary.bar=on rgb030
-color.summary.background=on color0
+color.summary.bar=white on rgb030
+color.summary.background=white on color0
 
 color.history.add=color0 on rgb010
 color.history.done=color0 on rgb030
