@@ -48,7 +48,7 @@
 std::string Config::defaults =
   "# Taskwarrior program configuration file.\n"
   "# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-faq',\n"
-  "# 'man task-tutorial', 'man task-color' or 'man taskrc'\n"
+  "# 'man task-tutorial', 'man task-color', 'man task-sync' or 'man taskrc'\n"
   "\n"
   "# Here is an example of entries that use the default, override and blank values\n"
   "#   variable=foo   -- By specifying a value, this overrides the default\n"
