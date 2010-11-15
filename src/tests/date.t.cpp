@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (154);
+  UnitTest t (158);
 
   try
   {
@@ -159,6 +159,13 @@ int main (int argc, char** argv)
 
     Date iso (1000000000);
     t.is (iso.toISO (), "20010909T014640Z", "1,000,000,000 -> 20010909T014640Z");
+
+    // Quantization.
+    Date quant (1234567890);
+    t.is (quant.startOfDay ().toString ("YMDHNS"),   "20090213000000", "1234567890 -> 2/13/2009 18:31:30 -> 2/13/2009 0:00:00");
+    t.is (quant.startOfWeek ().toString ("YMDHNS"),  "20090208000000", "1234567890 -> 2/13/2009 18:31:30 -> 2/8/2009 0:00:00");
+    t.is (quant.startOfMonth ().toString ("YMDHNS"), "20090201000000", "1234567890 -> 2/13/2009 18:31:30 -> 2/1/2009 0:00:00");
+    t.is (quant.startOfYear ().toString ("YMDHNS"),  "20090101000000", "1234567890 -> 2/13/2009 18:31:30 -> 1/1/2009 0:00:00");
 
     // Date parsing.
     Date fromString1 ("1/1/2008");

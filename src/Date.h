@@ -50,6 +50,12 @@ public:
   std::string toISO ();
   void toMDY (int&, int&, int&);
   const std::string toString (const std::string& format = "m/d/Y") const;
+
+  Date startOfDay () const;
+  Date startOfWeek () const;
+  Date startOfMonth () const;
+  Date startOfYear () const;
+
   static bool valid (const std::string&, const std::string& format = "m/d/Y");
   static bool valid (const int, const int, const int, const int, const int, const int);
   static bool valid (const int, const int, const int);
