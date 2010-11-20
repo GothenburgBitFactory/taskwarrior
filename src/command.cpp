@@ -195,12 +195,12 @@ int handleLog (std::string& outs)
     context.tdb.lock (context.config.getBoolean ("locking"));
     context.tdb.add (context.task);
     context.tdb.commit ();
-    context.tdb.unlock ();
 
     if (context.config.getBoolean ("echo.command"))
       out << "Logged task.\n";
 
     context.footnote (onProjectChange (context.task));
+    context.tdb.unlock ();
 
     outs = out.str ();
     context.hooks.trigger ("post-log-command");

@@ -10,6 +10,8 @@
  + Fixed bug #538, where some color legend items were not readable.
  + Fixed bug #539, where the man page task-color(5) contained a line that
    began with a ' and was not displayed.
+ + Fixed bug #555, which caused a segfault when logging a task with a project
+   (thanks to Itay Perl).
 
 ------ old releases ------------------------------
 
