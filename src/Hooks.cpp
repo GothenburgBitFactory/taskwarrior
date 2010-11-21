@@ -155,6 +155,8 @@ Hooks::Hooks ()
   validProgramEvents.push_back ("post-ghistory-command");
   validProgramEvents.push_back ("pre-history-command");
   validProgramEvents.push_back ("post-history-command");
+  validProgramEvents.push_back ("pre-burndown-command");
+  validProgramEvents.push_back ("post-burndown-command");
   validProgramEvents.push_back ("pre-import-command");
   validProgramEvents.push_back ("post-import-command");
   validProgramEvents.push_back ("pre-info-command");

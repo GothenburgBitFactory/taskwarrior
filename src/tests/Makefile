@@ -15,7 +15,8 @@ OBJECTS = ../t-TDB.o ../t-Task.o ../t-text.o ../t-Date.o ../t-Table.o          \
           ../t-Hooks.o ../t-API.o ../t-rx.o ../t-Taskmod.o ../t-dependency.o   \
           ../t-Transport.o ../t-TransportSSH.o ../t-Sensor.o ../t-Thread.o     \
           ../t-Lisp.o ../t-Rectangle.o ../t-Tree.o ../t-TransportRSYNC.o       \
-          ../t-TransportCurl.o ../t-Uri.o ../t-diag.o
+          ../t-TransportCurl.o ../t-Uri.o ../t-diag.o ../t-burndown.o          \
+          ../t-history.o
 
 all: $(PROJECT)
 

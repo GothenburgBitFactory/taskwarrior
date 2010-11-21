@@ -103,10 +103,6 @@ int shortUsage (std::string&);
 int longUsage (std::string&);
 int handleInfo (std::string&);
 int handleReportSummary (std::string&);
-int handleReportHistoryMonthly (std::string&);
-int handleReportHistoryAnnual (std::string&);
-int handleReportGHistoryMonthly (std::string&);
-int handleReportGHistoryAnnual (std::string&);
 int handleReportCalendar (std::string&);
 int handleReportStats (std::string&);
 int handleReportTimesheet (std::string&);
@@ -115,6 +111,17 @@ std::string getFullDescription (Task&, const std::string&);
 std::string getDueDate (Task&, const std::string&);
 std::string onProjectChange (Task&, bool scope = true);
 std::string onProjectChange (Task&, Task&);
+
+// burndown.cpp
+int handleReportBurndownDaily (std::string&);
+int handleReportBurndownWeekly (std::string&);
+int handleReportBurndownMonthly (std::string&);
+
+// history.cpp
+int handleReportHistoryMonthly (std::string&);
+int handleReportHistoryAnnual (std::string&);
+int handleReportGHistoryMonthly (std::string&);
+int handleReportGHistoryAnnual (std::string&);
 
 // custom.cpp
 int handleCustomReport (const std::string&, std::string&);

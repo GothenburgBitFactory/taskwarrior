@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (158);
+  UnitTest t (162);
 
   try
   {
@@ -347,6 +347,24 @@ int main (int argc, char** argv)
     // Date::operator-
     Date r22 (1234567890);
     t.is ((r22 - 1).toEpoch (), 1234567889, "1234567890 - 1 = 1234567889");
+
+    // Date::operator--
+    Date r23 (11, 7, 2010, 23, 59, 59);
+    r23--;
+    t.is (r23.toString ("YMDHNS"), "20101106235959", "decrement across fall DST boundary");
+
+    Date r24 (3, 14, 2010, 23, 59, 59);
+    r24--;
+    t.is (r24.toString ("YMDHNS"), "20100313235959", "decrement across spring DST boundary");
+
+    // Date::operator++
+    Date r25 (11, 6, 2010, 23, 59, 59);
+    r25++;
+    t.is (r25.toString ("YMDHNS"), "20101107235959", "increment across fall DST boundary");
+
+    Date r26 (3, 13, 2010, 23, 59, 59);
+    r26++;
+    t.is (r26.toString ("YMDHNS"), "20100314235959", "increment across spring DST boundary");
   }
 
   catch (std::string& e)

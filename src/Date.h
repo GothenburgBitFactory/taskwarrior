@@ -97,6 +97,11 @@ public:
 
   time_t operator- (const Date&);
 
+  void operator-- ();    // Prefix
+  void operator-- (int); // Postfix
+  void operator++ ();    // Prefix
+  void operator++ (int); // Postfix
+
 private:
   bool isEpoch (const std::string&);
   bool isRelativeDate (const std::string&);

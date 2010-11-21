@@ -142,6 +142,9 @@ void Cmd::load ()
     commands.push_back ("history.annual");
     commands.push_back ("ghistory.monthly");
     commands.push_back ("ghistory.annual");
+    commands.push_back ("burndown.daily");
+    commands.push_back ("burndown.weekly");
+    commands.push_back ("burndown.monthly");
 
     // Commands whose names are localized.
     commands.push_back (context.stringtable.get (CMD_ADD,         "add"));

@@ -1,14 +1,15 @@
 
 New Features in taskwarrior 1.9.4
 
-  - 
+  - New burndown charts.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
 
 New commands in taskwarrior 1.9.4
 
-  -
+  - 'burndown.daily', 'burndown.weekly', 'burndown.monthly', also with
+    'burndown' that is an alias to burndown.weekly.
 
 New configuration options in taskwarrior 1.9.4
 

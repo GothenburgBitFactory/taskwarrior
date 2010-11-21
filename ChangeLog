@@ -2,6 +2,7 @@
 ------ current release ---------------------------
 
 1.9.4 ()
+ + Added burndown charts - burndown.daily, burndown.weekly, burndown.monthly.
  + Fixed bug #529, where the 'depends' attribute was not mentioned in the
    task man page (thanks to Dirk Deimeke).
  + Fixed bug #535 which omitted the holidays-NO.rc file from the packages

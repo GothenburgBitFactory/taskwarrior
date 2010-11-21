@@ -463,7 +463,7 @@ const std::string Date::toString (const std::string& format /*= "m/d/Y" */) cons
 ////////////////////////////////////////////////////////////////////////////////
 Date Date::startOfDay () const
 {
-  return Date (month (), day (), year ());
+  return Date (month (), day (), year (), 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -471,19 +471,19 @@ Date Date::startOfWeek () const
 {
   Date sow (mT);
   sow -= (dayOfWeek () * 86400);
-  return Date (sow.month (), sow.day (), sow.year ());
+  return Date (sow.month (), sow.day (), sow.year (), 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date Date::startOfMonth () const
 {
-  return Date (month (), 1, year ());
+  return Date (month (), 1, year (), 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date Date::startOfYear () const
 {
-  return Date (1, 1, year ());
+  return Date (1, 1, year (), 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -863,6 +863,62 @@ Date& Date::operator-= (const int delta)
 time_t Date::operator- (const Date& rhs)
 {
   return mT - rhs.mT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Prefix decrement by one day.
+void Date::operator-- ()
+{
+  Date yesterday = startOfDay () - 1;
+  yesterday = Date (yesterday.month (),
+                    yesterday.day (),
+                    yesterday.year (),
+                    hour (),
+                    minute (),
+                    second ());
+  mT = yesterday.mT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Postfix decrement by one day.
+void Date::operator-- (int)
+{
+  Date yesterday = startOfDay () - 1;
+  yesterday = Date (yesterday.month (),
+                    yesterday.day (),
+                    yesterday.year (),
+                    hour (),
+                    minute (),
+                    second ());
+  mT = yesterday.mT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Prefix increment by one day.
+void Date::operator++ ()
+{
+  Date tomorrow = (startOfDay () + 90001).startOfDay ();
+  tomorrow = Date (tomorrow.month (),
+                   tomorrow.day (),
+                   tomorrow.year (),
+                   hour (),
+                   minute (),
+                   second ());
+  mT = tomorrow.mT;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Postfix increment by one day.
+void Date::operator++ (int)
+{
+  Date tomorrow = (startOfDay () + 90001).startOfDay ();
+  tomorrow = Date (tomorrow.month (),
+                   tomorrow.day (),
+                   tomorrow.year (),
+                   hour (),
+                   minute (),
+                   second ());
+  mT = tomorrow.mT;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
