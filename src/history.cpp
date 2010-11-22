@@ -25,30 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-//#include <iostream>
-//#include <iomanip>
 #include <sstream>
-//#include <fstream>
-//#include <sys/types.h>
-//#include <stdio.h>
-//#include <unistd.h>
-//#include <stdlib.h>
-//#include <pwd.h>
-//#include <time.h>
 
-#include "Context.h"
-//#include "Directory.h"
-//#include "File.h"
-//#include "Date.h"
-//#include "Duration.h"
-#include "Table.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
-
-//#ifdef HAVE_LIBNCURSES
-//#include <ncurses.h>
-//#endif
+#include <Context.h>
+#include <Table.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
 
 extern Context context;
 
@@ -84,21 +67,14 @@ int handleReportHistoryMonthly (std::string& outs)
       groups[epoch] = 0;
 
       // Every task has an entry date.
-      if (addedGroup.find (epoch) != addedGroup.end ())
-        addedGroup[epoch] = addedGroup[epoch] + 1;
-      else
-        addedGroup[epoch] = 1;
+      ++addedGroup[epoch];
 
       // All deleted tasks have an end date.
       if (task->getStatus () == Task::deleted)
       {
         epoch = end.startOfMonth ().toEpoch ();
         groups[epoch] = 0;
-
-        if (deletedGroup.find (epoch) != deletedGroup.end ())
-          deletedGroup[epoch] = deletedGroup[epoch] + 1;
-        else
-          deletedGroup[epoch] = 1;
+        ++deletedGroup[epoch];
       }
 
       // All completed tasks have an end date.
@@ -106,11 +82,7 @@ int handleReportHistoryMonthly (std::string& outs)
       {
         epoch = end.startOfMonth ().toEpoch ();
         groups[epoch] = 0;
-
-        if (completedGroup.find (epoch) != completedGroup.end ())
-          completedGroup[epoch] = completedGroup[epoch] + 1;
-        else
-          completedGroup[epoch] = 1;
+        ++completedGroup[epoch];
       }
     }
 
@@ -257,21 +229,14 @@ int handleReportHistoryAnnual (std::string& outs)
       groups[epoch] = 0;
 
       // Every task has an entry date.
-      if (addedGroup.find (epoch) != addedGroup.end ())
-        addedGroup[epoch] = addedGroup[epoch] + 1;
-      else
-        addedGroup[epoch] = 1;
+      ++addedGroup[epoch];
 
       // All deleted tasks have an end date.
       if (task->getStatus () == Task::deleted)
       {
         epoch = end.startOfYear ().toEpoch ();
         groups[epoch] = 0;
-
-        if (deletedGroup.find (epoch) != deletedGroup.end ())
-          deletedGroup[epoch] = deletedGroup[epoch] + 1;
-        else
-          deletedGroup[epoch] = 1;
+        ++deletedGroup[epoch];
       }
 
       // All completed tasks have an end date.
@@ -279,11 +244,7 @@ int handleReportHistoryAnnual (std::string& outs)
       {
         epoch = end.startOfYear ().toEpoch ();
         groups[epoch] = 0;
-
-        if (completedGroup.find (epoch) != completedGroup.end ())
-          completedGroup[epoch] = completedGroup[epoch] + 1;
-        else
-          completedGroup[epoch] = 1;
+        ++completedGroup[epoch];
       }
     }
 
@@ -427,21 +388,14 @@ int handleReportGHistoryMonthly (std::string& outs)
       groups[epoch] = 0;
 
       // Every task has an entry date.
-      if (addedGroup.find (epoch) != addedGroup.end ())
-        addedGroup[epoch] = addedGroup[epoch] + 1;
-      else
-        addedGroup[epoch] = 1;
+      ++addedGroup[epoch];
 
       // All deleted tasks have an end date.
       if (task->getStatus () == Task::deleted)
       {
         epoch = end.startOfMonth ().toEpoch ();
         groups[epoch] = 0;
-
-        if (deletedGroup.find (epoch) != deletedGroup.end ())
-          deletedGroup[epoch] = deletedGroup[epoch] + 1;
-        else
-          deletedGroup[epoch] = 1;
+        ++deletedGroup[epoch];
       }
 
       // All completed tasks have an end date.
@@ -449,11 +403,7 @@ int handleReportGHistoryMonthly (std::string& outs)
       {
         epoch = end.startOfMonth ().toEpoch ();
         groups[epoch] = 0;
-
-        if (completedGroup.find (epoch) != completedGroup.end ())
-          completedGroup[epoch] = completedGroup[epoch] + 1;
-        else
-          completedGroup[epoch] = 1;
+        ++completedGroup[epoch];
       }
     }
 
@@ -640,21 +590,14 @@ int handleReportGHistoryAnnual (std::string& outs)
       groups[epoch] = 0;
 
       // Every task has an entry date.
-      if (addedGroup.find (epoch) != addedGroup.end ())
-        addedGroup[epoch] = addedGroup[epoch] + 1;
-      else
-        addedGroup[epoch] = 1;
+      ++addedGroup[epoch];
 
       // All deleted tasks have an end date.
       if (task->getStatus () == Task::deleted)
       {
         epoch = end.startOfYear ().toEpoch ();
         groups[epoch] = 0;
-
-        if (deletedGroup.find (epoch) != deletedGroup.end ())
-          deletedGroup[epoch] = deletedGroup[epoch] + 1;
-        else
-          deletedGroup[epoch] = 1;
+        ++deletedGroup[epoch];
       }
 
       // All completed tasks have an end date.
@@ -662,11 +605,7 @@ int handleReportGHistoryAnnual (std::string& outs)
       {
         epoch = end.startOfYear ().toEpoch ();
         groups[epoch] = 0;
-
-        if (completedGroup.find (epoch) != completedGroup.end ())
-          completedGroup[epoch] = completedGroup[epoch] + 1;
-        else
-          completedGroup[epoch] = 1;
+        ++completedGroup[epoch];
       }
     }
 
