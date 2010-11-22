@@ -58,23 +58,8 @@ void TransportCurl::send(const std::string& source)
     if (!uri.is_directory())
       throw std::string ("The uri '") + uri.path + "' does not appear to be a directory.";
 
-    std::string toSplit;
-    std::string suffix;
-    std::string prefix;
-    std::vector<std::string> splitted;
-
-    prefix  = source.substr (0, pos);
-    toSplit = source.substr (pos+1);
-
-    pos     = toSplit.find ("}");
-    suffix  = toSplit.substr (pos+1);
-    split (splitted, toSplit.substr(0, pos), ',');
-
-    foreach (file, splitted)
-    {
-      arguments.push_back ("-T");
-      arguments.push_back (prefix + *file + suffix);
-    }
+    arguments.push_back ("-T");
+    arguments.push_back ("\"" + source + "\"");
   }
   else
   {
@@ -92,8 +77,14 @@ void TransportCurl::send(const std::string& source)
     arguments.push_back (uri.protocol + "://" + uri.host + "/" + uri.path);
   }
 
-  if (execute())
-    throw std::string ("Could not run curl.  Is it installed, and available in $PATH?");
+  int result = execute();
+  if (result)
+  {
+    if (result == 127) // command not found
+      throw std::string ("Could not run curl.  Is it installed, and available in $PATH?");
+    else
+      throw std::string ("Curl failed, see output above.");
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,8 +143,15 @@ void TransportCurl::recv(std::string target)
 
   arguments.push_back (target);
 
-  if (execute())
-     throw std::string ("Could not run curl.  Is it installed, and available in $PATH?");
+  int result = execute();
+  if (result)
+  {
+    if (result == 127) // command not found
+      throw std::string ("Could not run curl.  Is it installed, and available in $PATH?");
+    else
+      throw std::string ("Curl failed, see output above.");
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// vim: ts=2 sw=2 et
