@@ -138,10 +138,11 @@ class Chart
 {
 public:
   Chart (char);
-  Chart (const Chart&);
-  Chart& operator= (const Chart&);
+  Chart (const Chart&);              // Unimplemented
+  Chart& operator= (const Chart&);   // Unimplemented
   ~Chart ();
 
+  void description (const std::string&);
   void scan (std::vector <Task>&);
   std::string render ();
 
@@ -156,24 +157,25 @@ private:
   void yLabels (std::vector <int>&);
 
 public:
-  int width;
-  int height;
-  int graph_width;
-  int graph_height;
-  int max_value;
-  int max_label;
-  std::vector <int> labels;
-  int estimated_bars;
-  int actual_bars;
-  std::map <time_t, Bar> bars;
-  Date earliest;
-  int carryover_done;
-  char period;                   // D, W, M.
-  std::string grid;
+  int width;                     // Terminal width
+  int height;                    // Terminal height
+  int graph_width;               // Width of plot area
+  int graph_height;              // Height of plot area
+  int max_value;                 // Largest combined bar value
+  int max_label;                 // Longest y-axis label
+  std::vector <int> labels;      // Y-axis labels
+  int estimated_bars;            // Estimated bar count
+  int actual_bars;               // Calculated bar count
+  std::map <time_t, Bar> bars;   // Epoch-indexed set of bars
+  Date earliest;                 // Date of earliest estimated bar
+  int carryover_done;            // Number of 'done' tasks prior to chart range
+  char period;                   // D, W, M
+  std::string title;             // Additional description
+  std::string grid;              // String representing grid of characters
 
-  float find_rate;
-  float fix_rate;
-  std::string completion;
+  float find_rate;               // Calculated find rate
+  float fix_rate;                // Calculated fix rate
+  std::string completion;        // Estimated completion date
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -216,41 +218,14 @@ Chart::Chart (char type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Chart::Chart (const Chart& other)
-{
-  *this = other;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Chart& Chart::operator= (const Chart& other)
-{
-  if (this != &other)
-  {
-    width          = other.width;
-    height         = other.height;
-    graph_width    = other.graph_width;
-    graph_height   = other.graph_height;
-    max_value      = other.max_value;
-    max_label      = other.max_label;
-    labels         = other.labels;
-    estimated_bars = other.estimated_bars;
-    actual_bars    = other.actual_bars;
-    bars           = other.bars;
-    earliest       = other.earliest;
-    carryover_done = other.carryover_done;
-    period         = other.period;
-    grid           = other.grid;
-    find_rate      = other.find_rate;
-    fix_rate       = other.fix_rate;
-    completion     = other.completion;
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Chart::~Chart ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Chart::description (const std::string& value)
+{
+  title = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -442,11 +417,43 @@ std::string Chart::render ()
     return "Terminal window too small to draw a graph.\n";
   }
 
+  if (max_value == 0)
+    return "No matches.\n";
+
   // Create a grid, folded into a string.
   // TODO Upgrade grid to a vector of strings, for simpler optimization.
   grid = "";
   for (int i = 0; i < height; ++i)
     grid += std::string (width, ' ') + "\n";
+
+  // Title.
+  std::string full_title;
+  switch (period)
+  {
+  case 'D': full_title = "Daily";   break;
+  case 'W': full_title = "Weekly";  break;
+  case 'M': full_title = "Monthly"; break;
+  }
+
+  full_title += " Burndown";
+
+  if (title.length ())
+  {
+    if (full_title.length () + 1 + title.length () < (unsigned) width)
+    {
+      full_title += " " + title;
+      grid.replace (LOC (0, (width - full_title.length ()) / 2), full_title.length (), full_title);
+    }
+    else
+    {
+      grid.replace (LOC (0, (width - full_title.length ()) / 2), full_title.length (), full_title);
+      grid.replace (LOC (1, (width - title.length ()) / 2), title.length (), title);
+    }
+  }
+  else
+  {
+    grid.replace (LOC (0, (width - full_title.length ()) / 2), full_title.length (), full_title);
+  }
 
   // Legend.
   grid.replace (LOC (graph_height / 2 - 1, width - 10), 10, "dd Done   ");
@@ -980,6 +987,29 @@ int handleReportBurndownMonthly (std::string& outs)
 
     // Create a chart, scan the tasks, then render.
     Chart chart ('M');
+
+    // Use any filter as a title.
+    if (context.filter.size ())
+    {
+      std::string combined = "(";
+
+      for (unsigned int i = 0; i < context.filter.size (); ++i)
+      {
+        if (i)
+          combined += " ";
+
+        combined += context.filter[i].name ();
+
+        if (context.filter[i].mod ().length ())
+          combined += "." + context.filter[i].mod ();
+
+        combined += ":" + context.filter[i].value ();
+      }
+
+      combined += ")";
+      chart.description (combined);
+    }
+
     chart.scan (tasks);
     std::map <time_t, Bar>::iterator it;
     for (it = chart.bars.begin (); it != chart.bars.end (); ++it)

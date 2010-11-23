@@ -247,6 +247,9 @@ bool Cmd::isReadOnlyCommand ()
       command == "history.annual"                                            ||
       command == "ghistory.monthly"                                          ||
       command == "ghistory.annual"                                           ||
+      command == "burndown.daily"                                            ||
+      command == "burndown.weekly"                                           ||
+      command == "burndown.monthly"                                          ||
       command == context.stringtable.get (CMD_CALENDAR,    "calendar")       ||
       command == context.stringtable.get (CMD_COLORS,      "colors")         ||
       command == context.stringtable.get (CMD_DIAGNOSTICS, "diagnostics")    ||
