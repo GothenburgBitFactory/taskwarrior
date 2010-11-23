@@ -2,7 +2,9 @@
 ------ current release ---------------------------
 
 1.9.4 ()
- + Added burndown charts - burndown.daily, burndown.weekly, burndown.monthly.
+ + Added burndown charts - burndown.daily, burndown.weekly, burndown.monthly,
+   that use color.burndown.pending, color.burndown.started and
+   color.burndown.done colors.
  + Fixed bug #529, where the 'depends' attribute was not mentioned in the
    task man page (thanks to Dirk Deimeke).
  + Fixed bug #535 which omitted the holidays-NO.rc file from the packages

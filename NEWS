@@ -13,7 +13,8 @@ New commands in taskwarrior 1.9.4
 
 New configuration options in taskwarrior 1.9.4
 
-  -
+  - color.burndown.pending, color.burndown.started and color.burndown.done
+    control the color of the burndown charts.
 
 Newly deprecated features in taskwarrior 1.9.4
 
