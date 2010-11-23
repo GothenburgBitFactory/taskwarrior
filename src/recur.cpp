@@ -100,6 +100,7 @@ void handleRecurrence ()
           Task rec (*t);                         // Clone the parent.
           rec.set ("uuid", uuid ());             // New UUID.
           rec.set ("parent", t->get ("uuid"));   // Remember mom.
+          rec.setEntry ();                       // New entry date.
 
           char dueDate[16];
           sprintf (dueDate, "%u", (unsigned int) d->toEpoch ());
