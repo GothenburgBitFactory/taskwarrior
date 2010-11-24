@@ -15,6 +15,8 @@ New configuration options in taskwarrior 1.9.4
 
   - color.burndown.pending, color.burndown.started and color.burndown.done
     control the color of the burndown charts.
+  - burndown.bias, which is a tweakable control for the completion estimation
+    for the burndown charts, and is documented in taskrc(5).
 
 Newly deprecated features in taskwarrior 1.9.4
 

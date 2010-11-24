@@ -891,11 +891,12 @@ int handleShow (std::string& outs)
     // Note that there is a leading and trailing space, to make it easier to
     // search for whole words.
     std::string recognized =
-      " annotations blanklines bulk calendar.details calendar.details.report "
-      "calendar.holidays calendar.legend color color.active color.due "
-      "color.due.today color.blocked color.overdue color.pri.H color.pri.L "
-      "color.pri.M color.pri.none color.recurring color.tagged color.footnote "
-      "color.header color.debug color.alternate color.calendar.today "
+      " annotations blanklines bulk burndown.bias calendar.details "
+      "calendar.details.report calendar.holidays calendar.legend color "
+      "color.active color.due color.due.today color.blocked color.burndown.done "
+      "color.burndown.pending color.burndown.started color.overdue color.pri.H "
+      "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
+      "color.footnote color.header color.debug color.alternate color.calendar.today "
       "color.calendar.due color.calendar.due.today color.calendar.overdue "
       "color.calendar.weekend color.calendar.holiday color.calendar.weeknumber "
       "color.summary.background color.summary.bar color.history.add "
