@@ -32,6 +32,7 @@
 
 #include <Context.h>
 #include <Date.h>
+#include <Duration.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -54,9 +55,9 @@ public:
   int offset;                    // from left of chart
   std::string major;             // x-axis label, major (year/-/month)
   std::string minor;             // x-axis label, minor (month/week/day)
-  int pending;                   // Number of pending task in period
-  int started;                   // Number of started task in period
-  int done;                      // Number of done task in period
+  int pending;                   // Number of pending tasks in period
+  int started;                   // Number of started tasks in period
+  int done;                      // Number of done tasks in period
   int added;                     // Number added in period
   int removed;                   // Number removed in period
 };
@@ -85,14 +86,14 @@ Bar& Bar::operator= (const Bar& other)
 {
   if (this != &other)
   {
-    offset  = other.offset;
-    major   = other.major;
-    minor   = other.minor;
-    pending = other.pending;
-    started = other.started;
-    done    = other.done;
-    added   = other.added;
-    removed = other.removed;
+    offset      = other.offset;
+    major       = other.major;
+    minor       = other.minor;
+    pending     = other.pending;
+    started     = other.started;
+    done        = other.done;
+    added       = other.added;
+    removed     = other.removed;
   }
 
   return *this;
@@ -155,6 +156,7 @@ private:
   Date decrement (const Date&);
   void maxima ();
   void yLabels (std::vector <int>&);
+  void calculateRates (std::vector <time_t>&);
 
 public:
   int width;                     // Terminal width
@@ -185,32 +187,18 @@ Chart::Chart (char type)
   // maximum space, and the width drives various other parameters.
   width = context.getWidth ();
   height = context.getHeight () - 1;  // Allow for new line with prompt.
-  std::cout << "# width " << width << "\n";
-  std::cout << "# height " << height << "\n";
-
   max_value = 0;
-  std::cout << "# max_value " << max_value << "\n";
   max_label = 1;
-  std::cout << "# max_label " << max_label << "\n";
-
   graph_height = height - 7;
-  std::cout << "# graph_height " << graph_height << "\n";
   graph_width = width - max_label - 14;
-  std::cout << "# graph_width " << graph_width << "\n";
 
   // Estimate how many 'bars' can be dsplayed.  This will help subset a
   // potentially enormous data set.
   estimated_bars = (width - 1 - 14) / 3;
-  std::cout << "# estimated_bars " << estimated_bars << "\n";
 
   actual_bars = 0;
-  std::cout << "# actual_bars " << actual_bars << "\n";
-
   period = type;
-  std::cout << "# period " << period << "\n";
-
   carryover_done = 0;
-  std::cout << "# carryover_done " << carryover_done << "\n";
 
   // Rates are calculated last.
   find_rate = 0.0;
@@ -529,70 +517,23 @@ std::string Chart::render ()
   }
 
   // Draw rates.
-/*
-      // Calculate and render the rates.
-      // Calculate 30-day average.
-      int totalAdded30 = 0;
-      int totalRemoved30 = 0;
-      d = (Date () - 30 * 86400).startOfDay ();
-      for (unsigned int i = 0; i < 30; i++)
-      {
-        epoch = d.toEpoch ();
-
-        totalAdded30   += addGroup[epoch];
-        totalRemoved30 += removeGroup[epoch];
-
-        d++;
-      }
-
-      float find_rate30 = 1.0 * totalAdded30   / x_axis.size ();
-      float fix_rate30  = 1.0 * totalRemoved30 / x_axis.size ();
-
-      // Calculate 7-day average.
-      int totalAdded7 = 0;
-      int totalRemoved7 = 0;
-      d = (Date () - 7 * 86400).startOfDay ();
-      for (unsigned int i = 0; i < 7; i++)
-      {
-        epoch = d.toEpoch ();
-
-        totalAdded7   += addGroup[epoch];
-        totalRemoved7 += removeGroup[epoch];
-
-        d++;
-      }
-
-      float find_rate7 = 1.0 * totalAdded7   / x_axis.size ();
-      float fix_rate7  = 1.0 * totalRemoved7 / x_axis.size ();
-
-*/
+  calculateRates (bars_in_sequence);
   char rate[12];
-  sprintf (rate, "%.1f", find_rate);
-  grid.replace (LOC (height - 2, max_label + 3), 13 + strlen (rate), std::string ("Find rate: ") + rate + "/d");
+  if (find_rate != 0.0)
+    sprintf (rate, "%.1f/d", find_rate);
+  else
+    strcpy (rate, "-");
 
-  sprintf (rate, "%.1f", fix_rate);
-  grid.replace (LOC (height - 1, max_label + 3), 13 + strlen (rate), std::string ("Fix rate:  ") + rate + "/d");
+  grid.replace (LOC (height - 2, max_label + 3), 11 + strlen (rate), std::string ("Find rate: ") + rate);
+
+  if (fix_rate != 0.0)
+    sprintf (rate, "%.1f/d", fix_rate);
+  else
+    strcpy (rate, "-");
+
+  grid.replace (LOC (height - 1, max_label + 3), 11 + strlen (rate), std::string ("Fix rate:  ") + rate);
 
   // Draw completion date.
-/*
-      if (last_pending == 0)
-      {
-        ; // Do not render an estimated completion date.
-      }
-      else if (find_rate7 < fix_rate7)
-      {
-        int current_pending = pendingGroup[Date ().startOfDay ().toEpoch ()];
-        float days = 2.0 * current_pending / (fix_rate30 + fix_rate7);
-        Date end;
-        end += (int) (days * 86400);
-        std::string formatted = end.toString (context.config.get ("dateformat"));
-        grid.replace (LOC (height - 2, max_label + 27), 22 + formatted.length (), "Estimated completion: " + formatted);
-      }
-      else
-      {
-        grid.replace (LOC (height - 2, max_label + 27), 36, "Estimated completion: No convergence");
-      }
-*/
   if (completion.length ())
     grid.replace (LOC (height - 2, max_label + 27), 22 + completion.length (), "Estimated completion: " + completion);
 
@@ -803,9 +744,6 @@ void Chart::generateBars ()
     // Move to the previous period.
     cursor = decrement (cursor);
   }
-
-  std::cout << "# Bar count " << bars.size () << "\n";
-  std::cout << "# earliest " << earliest.toString ("YMD") << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -835,11 +773,6 @@ void Chart::maxima ()
   // How many bars can be shown?
   actual_bars = (width - max_label - 14) / 3;
   graph_width = width - max_label - 14;
-
-  std::cout << "# max_value "   << max_value   << "\n";
-  std::cout << "# max_label "   << max_label   << "\n";
-  std::cout << "# actual_bars " << actual_bars << "\n";
-  std::cout << "# graph_width " << graph_width << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -897,6 +830,137 @@ void Chart::yLabels (std::vector <int>& labels)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Chart::calculateRates (std::vector <time_t>& sequence)
+{
+  // If there are no current pending tasks, then it is meaningless to find
+  // rates or estimated completion date.
+  if (bars[sequence[sequence.size () - 1]].pending == 0)
+    return;
+
+  // Calculate how many items we have.
+  int quantity = (int) sequence.size ();
+  int half     = quantity / 2;
+  int quarter  = quantity / 4;
+
+  // If the half and quarter indexes match, then there are too few data points
+  // to generate any meaningful rates.
+  if (half == quantity || half == 0 || quarter == 0)
+  {
+    context.debug ("Chart::calculateRates Insufficient data for rate calc");
+    return;
+  }
+
+  // How many days do these sums represent?
+  int half_days = 1;
+  int quarter_days = 1;
+  switch (period)
+  {
+  case 'D':
+    half_days = half;
+    quarter_days = quarter;
+    break;
+
+  case 'W':
+    half_days = half * 7;
+    quarter_days = quarter * 7;
+    break;
+
+  case 'M':
+    half_days = half * 30;
+    quarter_days = quarter * 30;
+    break;
+  }
+
+  int total_added_50 = 0;
+  int total_added_75 = 0;
+  int total_removed_50 = 0;
+  int total_removed_75 = 0;
+
+  for (unsigned int i = half; i < sequence.size (); ++i)
+  {
+    total_added_50 += bars[sequence[i]].added;
+    total_removed_50 += bars[sequence[i]].removed;
+  }
+
+  for (unsigned int i = half + quarter; i < sequence.size (); ++i)
+  {
+    total_added_75 += bars[sequence[i]].added;
+    total_removed_75 += bars[sequence[i]].removed;
+  }
+
+  float find_rate_50 = 1.0 * total_added_50 / half_days;
+  float find_rate_75 = 1.0 * total_added_75 / quarter_days;
+  float fix_rate_50 = 1.0 * total_removed_50 / half_days;
+  float fix_rate_75 = 1.0 * total_removed_75 / quarter_days;
+
+  // TODO Make configurable.
+  float bias = 0.666;
+
+  find_rate = (find_rate_50 * (1.0 - bias) + find_rate_75 * bias);
+  fix_rate  = (fix_rate_50  * (1.0 - bias) + fix_rate_75 * bias);
+
+  // find rate = ((N added / N days) + 2 * (N added / N days)) / 3.0
+  // fix rate = ((N removed / N days) + 2 * (N removed / N days)) / 3.0
+  std::stringstream rates;
+  rates << "Chart::calculateRates find rate: "
+        << "("
+        << total_added_50
+        << " added / "
+        << half_days
+        << " days) + 2 * ("
+        << total_added_75
+        << " added / "
+        << quarter_days
+        << " days)) / 3.0 = "
+        << find_rate
+        << "\nChart::calculateRates fix rate: "
+        << "("
+        << total_removed_50
+        << " removed / "
+        << half_days
+        << " days) + 2 * ("
+        << total_removed_75
+        << " added / "
+        << quarter_days
+        << " days)) / 3.0 = "
+        << fix_rate;
+  context.debug (rates.str ());
+
+  // Estimate completion
+  if (fix_rate > find_rate)
+  {
+    int current_pending = bars[sequence[sequence.size () - 1]].pending;
+    int remaining_days = (int) (current_pending / (fix_rate - find_rate));
+
+    Date now;
+    Duration delta (remaining_days * 86400);
+    now += delta;
+
+    completion = now.toString (context.config.get ("dateformat"))
+               + " ("
+               + delta.format ()
+               + ")";
+
+    std::stringstream est;
+    est << "Chart::calculateRates Completion: "
+         << current_pending
+         << " tasks / ("
+         << fix_rate
+         << " - "
+         << find_rate
+         << ") = "
+         << remaining_days
+         << " days = "
+         << completion;
+    context.debug (est.str ());
+  }
+  else
+  {
+    completion = "No convergence";
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int handleReportBurndownDaily (std::string& outs)
 {
   int rc = 0;
@@ -913,18 +977,30 @@ int handleReportBurndownDaily (std::string& outs)
 
     // Create a chart, scan the tasks, then render.
     Chart chart ('D');
-    chart.scan (tasks);
-    std::map <time_t, Bar>::iterator it;
-    for (it = chart.bars.begin (); it != chart.bars.end (); ++it)
-      std::cout << "# " << Date (it->first).toString ("YMD")
-                << " ["  << it->second.offset << "] "
-                << it->second.major   << "/" << it->second.minor << " "
-                << it->second.pending << "p "
-                << it->second.started << "s "
-                << it->second.done    << "d "
-                << it->second.added   << "a "
-                << it->second.removed << "r\n";
 
+    // Use any filter as a title.
+    if (context.filter.size ())
+    {
+      std::string combined = "(";
+
+      for (unsigned int i = 0; i < context.filter.size (); ++i)
+      {
+        if (i)
+          combined += " ";
+
+        combined += context.filter[i].name ();
+
+        if (context.filter[i].mod ().length ())
+          combined += "." + context.filter[i].mod ();
+
+        combined += ":" + context.filter[i].value ();
+      }
+
+      combined += ")";
+      chart.description (combined);
+    }
+
+    chart.scan (tasks);
     outs = chart.render ();
 
     context.hooks.trigger ("post-burndown-command");
@@ -950,18 +1026,30 @@ int handleReportBurndownWeekly (std::string& outs)
 
     // Create a chart, scan the tasks, then render.
     Chart chart ('W');
-    chart.scan (tasks);
-    std::map <time_t, Bar>::iterator it;
-    for (it = chart.bars.begin (); it != chart.bars.end (); ++it)
-      std::cout << "# " << Date (it->first).toString ("YMD")
-                << " ["  << it->second.offset << "] "
-                << it->second.major   << "/" << it->second.minor << " "
-                << it->second.pending << "p "
-                << it->second.started << "s "
-                << it->second.done    << "d "
-                << it->second.added   << "a "
-                << it->second.removed << "r\n";
 
+    // Use any filter as a title.
+    if (context.filter.size ())
+    {
+      std::string combined = "(";
+
+      for (unsigned int i = 0; i < context.filter.size (); ++i)
+      {
+        if (i)
+          combined += " ";
+
+        combined += context.filter[i].name ();
+
+        if (context.filter[i].mod ().length ())
+          combined += "." + context.filter[i].mod ();
+
+        combined += ":" + context.filter[i].value ();
+      }
+
+      combined += ")";
+      chart.description (combined);
+    }
+
+    chart.scan (tasks);
     outs = chart.render ();
 
     context.hooks.trigger ("post-burndown-command");
@@ -1011,17 +1099,6 @@ int handleReportBurndownMonthly (std::string& outs)
     }
 
     chart.scan (tasks);
-    std::map <time_t, Bar>::iterator it;
-    for (it = chart.bars.begin (); it != chart.bars.end (); ++it)
-      std::cout << "# " << Date (it->first).toString ("YMD")
-                << " ["  << it->second.offset << "] "
-                << it->second.major   << "/" << it->second.minor << " "
-                << it->second.pending << "p "
-                << it->second.started << "s "
-                << it->second.done    << "d "
-                << it->second.added   << "a "
-                << it->second.removed << "r\n";
-
     outs = chart.render ();
 
     context.hooks.trigger ("post-burndown-command");
