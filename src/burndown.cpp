@@ -28,6 +28,7 @@
 #include <sstream>
 #include <algorithm>
 #include <math.h>
+#include <string.h>
 
 #include <Context.h>
 #include <Date.h>
@@ -52,8 +53,8 @@ public:
 
 public:
   int offset;                    // from left of chart
-  std::string major;             // x-axis label, major (year/-/month)
-  std::string minor;             // x-axis label, minor (month/week/day)
+  std::string major_label;       // x-axis label, major (year/-/month)
+  std::string minor_label;       // x-axis label, minor (month/week/day)
   int pending;                   // Number of pending tasks in period
   int started;                   // Number of started tasks in period
   int done;                      // Number of done tasks in period
@@ -64,8 +65,8 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 Bar::Bar ()
 : offset (0)
-, major ("")
-, minor ("")
+, major_label ("")
+, minor_label ("")
 , pending (0)
 , started (0)
 , done (0)
@@ -86,8 +87,8 @@ Bar& Bar::operator= (const Bar& other)
   if (this != &other)
   {
     offset      = other.offset;
-    major       = other.major;
-    minor       = other.minor;
+    major_label = other.major_label;
+    minor_label = other.minor_label;
     pending     = other.pending;
     started     = other.started;
     done        = other.done;
@@ -474,7 +475,7 @@ std::string Chart::render ()
 
   std::sort (bars_in_sequence.begin (), bars_in_sequence.end ());
   std::vector <time_t>::iterator seq;
-  std::string major;
+  std::string major_label;
   for (seq = bars_in_sequence.begin (); seq != bars_in_sequence.end (); ++seq)
   {
     Bar bar = bars[*seq];
@@ -482,12 +483,12 @@ std::string Chart::render ()
     // If it fits within the allowed space.
     if (bar.offset < actual_bars)
     {
-      grid.replace (LOC (height - 5, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), bar.minor.length (), bar.minor);
+      grid.replace (LOC (height - 5, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), bar.minor_label.length (), bar.minor_label);
 
-      if (major != bar.major)
-        grid.replace (LOC (height - 4, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), bar.major.length (), bar.major);
+      if (major_label != bar.major_label)
+        grid.replace (LOC (height - 4, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), bar.major_label.length (), bar.major_label);
 
-      major = bar.major;
+      major_label = bar.major_label;
     }
   }
 
@@ -709,27 +710,27 @@ void Chart::generateBars ()
     case 'D': // month/day
       {
         std::string month = Date::monthName (cursor.month ());
-        bar.major = month.substr (0, 3);
+        bar.major_label = month.substr (0, 3);
 
         sprintf (str, "%02d", cursor.day ());
-        bar.minor = str;
+        bar.minor_label = str;
       }
       break;
 
     case 'W': // year/week
       sprintf (str, "%d", cursor.year ());
-      bar.major = str;
+      bar.major_label = str;
 
       sprintf (str, "%02d", cursor.weekOfYear (0));
-      bar.minor = str;
+      bar.minor_label = str;
       break;
 
     case 'M': // year/month
       sprintf (str, "%d", cursor.year ());
-      bar.major = str;
+      bar.major_label = str;
 
       sprintf (str, "%02d", cursor.month ());
-      bar.minor = str;
+      bar.minor_label = str;
       break;
     }
 
