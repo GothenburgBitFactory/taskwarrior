@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>  // TODO Remove
 #include <sstream>
 #include <algorithm>
 #include <math.h>
@@ -409,7 +408,6 @@ std::string Chart::render ()
     return "No matches.\n";
 
   // Create a grid, folded into a string.
-  // TODO Upgrade grid to a vector of strings, for simpler optimization.
   grid = "";
   for (int i = 0; i < height; ++i)
     grid += std::string (width, ' ') + "\n";
@@ -893,36 +891,45 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
   float fix_rate_50 = 1.0 * total_removed_50 / half_days;
   float fix_rate_75 = 1.0 * total_removed_75 / quarter_days;
 
-  // TODO Make configurable.
-  float bias = 0.666;
+  // Make configurable.
+  float bias = (float) context.config.getReal ("burndown.bias");
 
   find_rate = (find_rate_50 * (1.0 - bias) + find_rate_75 * bias);
   fix_rate  = (fix_rate_50  * (1.0 - bias) + fix_rate_75 * bias);
 
-  // find rate = ((N added / N days) + 2 * (N added / N days)) / 3.0
-  // fix rate = ((N removed / N days) + 2 * (N removed / N days)) / 3.0
+  // Q: Why is this equation written out as a debug message?
+  // A: People are going to want to know how the rates and the completion date
+  //    are calculated.  This may also help debugging.
   std::stringstream rates;
   rates << "Chart::calculateRates find rate: "
         << "("
         << total_added_50
         << " added / "
         << half_days
-        << " days) + 2 * ("
+        << " days) * (1.0 - "
+        << bias
+        << ") + ("
         << total_added_75
         << " added / "
         << quarter_days
-        << " days)) / 3.0 = "
+        << " days) * "
+        << bias
+        << ") = "
         << find_rate
         << "\nChart::calculateRates fix rate: "
         << "("
         << total_removed_50
         << " removed / "
         << half_days
-        << " days) + 2 * ("
+        << " days) * (1.0 - "
+        << bias
+        << ") + ("
         << total_removed_75
         << " added / "
         << quarter_days
-        << " days)) / 3.0 = "
+        << " days) * "
+        << bias
+        << ") = "
         << fix_rate;
   context.debug (rates.str ());
 

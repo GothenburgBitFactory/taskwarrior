@@ -80,6 +80,7 @@ std::string Config::defaults =
   "recurrence.indicator=R                         # What to show as a task recurrence indicator\n"
   "recurrence.limit=1                             # Number of future recurring pending tasks\n"
   "undo.style=side                                # Undo style - can be 'side', or 'diff'\n"
+  "burndown.bias=0.666                            # Weighted mean bias toward recent data\n"
   "\n"
   "# Dates\n"
   "dateformat=m/d/Y                               # Preferred input and display date format\n"
