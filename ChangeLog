@@ -5,6 +5,8 @@
  + Added burndown charts - burndown.daily, burndown.weekly, burndown.monthly,
    that use color.burndown.pending, color.burndown.started and
    color.burndown.done colors.
+ + Added feature #247, providing infinite width reports when redirecting output
+   to a file, by setting defaultwidth to 0.
  + Added feature #546, which is a 'count' command that counts tasks, and is
    intended to help scripts that manipulate task output.
  + Fixed bug #515, which displayed an incorrect message after duplicating a

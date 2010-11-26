@@ -163,6 +163,10 @@ int Context::getWidth ()
   debug (out.str ());
 #endif
 
+  // A zero width value means 'infinity', which is approximated here by 2^16.
+  if (width == 0)
+    width = 65536;
+
   return width;
 }
 

@@ -155,6 +155,8 @@ using, for text wrapping.
 .TP
 .B defaultwidth=80
 The width of tables used when ncurses support is not available. Defaults to 80.
+If set to 0, is interpreted as infinite width, therefore with no word-wrapping;
+useful when redirecting report output to a file for subsequent manipulation.
 
 .TP
 .B editor=vi
