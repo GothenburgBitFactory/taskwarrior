@@ -223,7 +223,7 @@ Date getNextRecurrence (Date& current, std::string& period)
     return Date (m, d, y);
   }
 
-  if (period == "weekdays")
+  else if (period == "weekdays")
   {
     int dow = current.dayOfWeek ();
     int days;
@@ -235,7 +235,7 @@ Date getNextRecurrence (Date& current, std::string& period)
     return current + (days * 86400);
   }
 
-  if (isdigit (period[0]) && period[period.length () - 1] == 'm')
+  else if (isdigit (period[0]) && period[period.length () - 1] == 'm')
   {
     std::string numeric = period.substr (0, period.length () - 1);
     int increment = atoi (numeric.c_str ());
@@ -338,9 +338,10 @@ Date getNextRecurrence (Date& current, std::string& period)
   }
 
   // If the period is an 'easy' one, add it to current, and we're done.
+  // If it throws an error, the duration was not recognized.
   int secs = 0;
-  try { Duration du (period); secs = du; }
-  catch (...) { secs = 0; }
+  Duration du (period);
+  secs = du;
 
   return current + secs;
 }

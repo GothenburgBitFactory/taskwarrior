@@ -11,6 +11,8 @@
    non-existent task (thanks to Peter De Poorter).
  + Fixed bug #529, where the 'depends' attribute was not mentioned in the
    task man page (thanks to Dirk Deimeke).
+ + Fixed bug #530, where unrecognized periods on recurring tasks were not
+   being properly handled (thanks to T. Charles Yun).
  + Fixed bug #535 which omitted the holidays-NO.rc file from the packages
    (thanks to Jostein Berntsen).
  + Fixed bug #537, where the man page task-sync(5) mis-specified some URIs.
