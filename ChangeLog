@@ -7,6 +7,8 @@
    color.burndown.done colors.
  + Added feature #546, which is a 'count' command that counts tasks, and is
    intended to help scripts that manipulate task output.
+ + Fixed bug #515, which displayed an incorrect message after duplicating a
+   non-existent task (thanks to Peter De Poorter).
  + Fixed bug #529, where the 'depends' attribute was not mentioned in the
    task man page (thanks to Dirk Deimeke).
  + Fixed bug #535 which omitted the holidays-NO.rc file from the packages

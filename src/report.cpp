@@ -672,7 +672,8 @@ int handleInfo (std::string& outs)
           << "\n";
     }
 
-    if (! tasks.size ()) {
+    if (! tasks.size ())
+    {
       out << "No matches.\n";
       rc = 1;
     }

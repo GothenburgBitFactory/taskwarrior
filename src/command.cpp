@@ -2011,7 +2011,12 @@ int handleDuplicate (std::string& outs)
       ++count;
     }
 
-    if (context.config.getBoolean ("echo.command"))
+    if (tasks.size () == 0)
+    {
+      out << "No matches.\n";
+      rc = 1;
+    }
+    else if (context.config.getBoolean ("echo.command"))
     {
 #ifdef FEATURE_NEW_ID
       // All this, just for an id number.
