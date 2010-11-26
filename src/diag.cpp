@@ -193,6 +193,14 @@ void handleDiagnostics (std::string& outs)
             << ", mode "
             << std::setbase (8)
             << location.mode ()
+            << "\n";
+
+  std::cout << "   Locking: "
+            << (context.config.getBoolean ("locking") ? "Enabled" : "Disabled")
+            << "\n";
+
+  std::cout << "     Regex: "
+            << (context.config.getBoolean ("regex") ? "Enabled" : "Disabled")
             << "\n\n";
 
   // External commands.
