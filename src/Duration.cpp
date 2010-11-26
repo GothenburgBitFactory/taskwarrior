@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham.
+// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -242,13 +242,13 @@ bool Duration::valid (const std::string& input) const
   std::string lower_input = lowerCase (input);
 
   // Assume the ordinal is 1, but look for an integer, just in case.
-  int value = 1;
+  double value = 1;
   Nibbler n (lower_input);
   n.skipAll (' ');
-  n.getInt (value);
+  n.getNumber (value);
   n.skipAll (' ');
 
-  if (value < 0)
+  if (value < 0.0)
     value = -value;
 
   std::string units;
@@ -272,14 +272,14 @@ void Duration::parse (const std::string& input)
   std::string lower_input = lowerCase (input);
 
   // Assume the ordinal is 1, but look for an integer, just in case.
-  int value = 1;
+  double value = 1;
   Nibbler n (lower_input);
   n.skipAll (' ');
-  n.getInt (value);
+  n.getNumber (value);
 
   n.skipAll (' ');
 
-  if (value < 0)
+  if (value < 0.0)
   {
     mNegative = true;
     value = -value;
@@ -301,62 +301,62 @@ void Duration::parse (const std::string& input)
   {
     std::string match = matches[0];
 
-         if (match == "biannual")                         mSecs = value * 86400 * 730;
-    else if (match == "biyearly")                         mSecs = value * 86400 * 730;
+         if (match == "biannual")                         mSecs = (int) (value * 86400 * 730);
+    else if (match == "biyearly")                         mSecs = (int) (value * 86400 * 730);
 
-    else if (match == "yearly")                           mSecs = value * 86400 * 365;
-    else if (match == "annual")                           mSecs = value * 86400 * 365;
-    else if (match == "years")                            mSecs = value * 86400 * 365;
-    else if (match == "yrs")                              mSecs = value * 86400 * 365;
-    else if (match == "y")                                mSecs = value * 86400 * 365;
-    else if (match == "yearly")                           mSecs = value * 86400 * 365;
-    else if (match == "annual")                           mSecs = value * 86400 * 365;
+    else if (match == "yearly")                           mSecs = (int) (value * 86400 * 365);
+    else if (match == "annual")                           mSecs = (int) (value * 86400 * 365);
+    else if (match == "years")                            mSecs = (int) (value * 86400 * 365);
+    else if (match == "yrs")                              mSecs = (int) (value * 86400 * 365);
+    else if (match == "y")                                mSecs = (int) (value * 86400 * 365);
+    else if (match == "yearly")                           mSecs = (int) (value * 86400 * 365);
+    else if (match == "annual")                           mSecs = (int) (value * 86400 * 365);
 
-    else if (match == "semiannual")                       mSecs = value * 86400 * 183;
+    else if (match == "semiannual")                       mSecs = (int) (value * 86400 * 183);
 
-    else if (match == "bimonthly")                        mSecs = value * 86400 * 61;
-    else if (match == "quarterly")                        mSecs = value * 86400 * 91;
-    else if (match == "quarters")                         mSecs = value * 86400 * 91;
-    else if (match == "qrtrs")                            mSecs = value * 86400 * 91;
-    else if (match == "qtrs")                             mSecs = value * 86400 * 91;
-    else if (match == "q")                                mSecs = value * 86400 * 91;
+    else if (match == "bimonthly")                        mSecs = (int) (value * 86400 * 61);
+    else if (match == "quarterly")                        mSecs = (int) (value * 86400 * 91);
+    else if (match == "quarters")                         mSecs = (int) (value * 86400 * 91);
+    else if (match == "qrtrs")                            mSecs = (int) (value * 86400 * 91);
+    else if (match == "qtrs")                             mSecs = (int) (value * 86400 * 91);
+    else if (match == "q")                                mSecs = (int) (value * 86400 * 91);
 
-    else if (match == "monthly")                          mSecs = value * 86400 * 30;
-    else if (match == "month")                            mSecs = value * 86400 * 30;
-    else if (match == "months")                           mSecs = value * 86400 * 30;
-    else if (match == "mnths")                            mSecs = value * 86400 * 30;
-    else if (match == "mos")                              mSecs = value * 86400 * 30;
-    else if (match == "mo")                               mSecs = value * 86400 * 30;
-    else if (match == "mths")                             mSecs = value * 86400 * 30;
+    else if (match == "monthly")                          mSecs = (int) (value * 86400 * 30);
+    else if (match == "month")                            mSecs = (int) (value * 86400 * 30);
+    else if (match == "months")                           mSecs = (int) (value * 86400 * 30);
+    else if (match == "mnths")                            mSecs = (int) (value * 86400 * 30);
+    else if (match == "mos")                              mSecs = (int) (value * 86400 * 30);
+    else if (match == "mo")                               mSecs = (int) (value * 86400 * 30);
+    else if (match == "mths")                             mSecs = (int) (value * 86400 * 30);
 
-    else if (match == "biweekly")                         mSecs = value * 86400 * 14;
-    else if (match == "fortnight")                        mSecs = value * 86400 * 14;
+    else if (match == "biweekly")                         mSecs = (int) (value * 86400 * 14);
+    else if (match == "fortnight")                        mSecs = (int) (value * 86400 * 14);
 
-    else if (match == "weekly")                           mSecs = value * 86400 * 7;
-    else if (match == "sennight")                         mSecs = value * 86400 * 7;
-    else if (match == "weeks")                            mSecs = value * 86400 * 7;
-    else if (match == "wks")                              mSecs = value * 86400 * 7;
-    else if (match == "w")                                mSecs = value * 86400 * 7;
+    else if (match == "weekly")                           mSecs = (int) (value * 86400 * 7);
+    else if (match == "sennight")                         mSecs = (int) (value * 86400 * 7);
+    else if (match == "weeks")                            mSecs = (int) (value * 86400 * 7);
+    else if (match == "wks")                              mSecs = (int) (value * 86400 * 7);
+    else if (match == "w")                                mSecs = (int) (value * 86400 * 7);
 
-    else if (match == "daily")                            mSecs = value * 86400 * 1;
-    else if (match == "day")                              mSecs = value * 86400 * 1;
-    else if (match == "weekdays")                         mSecs = value * 86400 * 1;
-    else if (match == "days")                             mSecs = value * 86400 * 1;
-    else if (match == "d")                                mSecs = value * 86400 * 1;
+    else if (match == "daily")                            mSecs = (int) (value * 86400 * 1);
+    else if (match == "day")                              mSecs = (int) (value * 86400 * 1);
+    else if (match == "weekdays")                         mSecs = (int) (value * 86400 * 1);
+    else if (match == "days")                             mSecs = (int) (value * 86400 * 1);
+    else if (match == "d")                                mSecs = (int) (value * 86400 * 1);
 
-    else if (match == "hours")                            mSecs = value * 3600;
-    else if (match == "hrs")                              mSecs = value * 3600;
-    else if (match == "h")                                mSecs = value * 3600;
+    else if (match == "hours")                            mSecs = (int) (value * 3600);
+    else if (match == "hrs")                              mSecs = (int) (value * 3600);
+    else if (match == "h")                                mSecs = (int) (value * 3600);
 
-    else if (match == "minutes")                          mSecs = value * 60;
-    else if (match == "mins")                             mSecs = value * 60;
-    else if (match == "min")                              mSecs = value * 60;
-    else if (match == "m")                                mSecs = value * 60;
+    else if (match == "minutes")                          mSecs = (int) (value * 60);
+    else if (match == "mins")                             mSecs = (int) (value * 60);
+    else if (match == "min")                              mSecs = (int) (value * 60);
+    else if (match == "m")                                mSecs = (int) (value * 60);
 
-    else if (match == "seconds")                          mSecs = value;
-    else if (match == "secs")                             mSecs = value;
-    else if (match == "sec")                              mSecs = value;
-    else if (match == "s")                                mSecs = value;
+    else if (match == "seconds")                          mSecs = (int) value;
+    else if (match == "secs")                             mSecs = (int) value;
+    else if (match == "sec")                              mSecs = (int) value;
+    else if (match == "s")                                mSecs = (int) value;
 
     else if (match == "-")                                mSecs = 0;
   }

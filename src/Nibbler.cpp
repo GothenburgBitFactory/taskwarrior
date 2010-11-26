@@ -324,6 +324,78 @@ bool Nibbler::getUnsignedInt (int& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// number:
+//   int frac? exp?
+// 
+// int:
+//   -? digit+
+// 
+// frac:
+//   . digit+
+// 
+// exp:
+//   e digit+
+// 
+// e:
+//   e|E (+|-)?
+// 
+bool Nibbler::getNumber (double& result)
+{
+  std::string::size_type i = mCursor;
+
+  // [+-]?
+  if (i < mLength && mInput[i] == '-')
+    ++i;
+
+  // digit+
+  if (i < mLength && isdigit (mInput[i]))
+  {
+    ++i;
+
+    while (i < mLength && isdigit (mInput[i]))
+      ++i;
+
+    // ( . digit+ )?
+    if (i < mLength && mInput[i] == '.')
+    {
+      ++i;
+
+      while (i < mLength && isdigit (mInput[i]))
+        ++i;
+    }
+
+    // ( [eE] [+-]? digit+ )?
+    if (i < mLength && (mInput[i] == 'e' || mInput[i] == 'E'))
+    {
+      ++i;
+
+      if (i < mLength && (mInput[i] == '+' || mInput[i] == '-'))
+        ++i;
+
+      if (i < mLength && isdigit (mInput[i]))
+      {
+        ++i;
+
+        while (i < mLength && isdigit (mInput[i]))
+          ++i;
+
+        result = atof (mInput.substr (mCursor, i - mCursor).c_str ());
+        mCursor = i;
+        return true;
+      }
+
+      return false;
+    }
+
+    result = atof (mInput.substr (mCursor, i - mCursor).c_str ());
+    mCursor = i;
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getLiteral (const std::string& literal)
 {
   if (mCursor < mLength &&

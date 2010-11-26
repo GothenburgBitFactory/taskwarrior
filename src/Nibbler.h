@@ -50,6 +50,7 @@ public:
   bool getQuoted (char, std::string&, bool unescape = true, bool quote = false);
   bool getInt (int&);
   bool getUnsignedInt (int&);
+  bool getNumber (double&);
   bool getLiteral (const std::string&);
   bool getRx (const std::string&, std::string&);
 

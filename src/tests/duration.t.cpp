@@ -48,7 +48,7 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (579);
+  UnitTest t (606);
 
   Duration d;
 
@@ -531,6 +531,10 @@ int main (int argc, char** argv)
   t.ok (d.valid ("10 yrs"),     "valid duration 10 yrs");
   t.ok (d.valid ("10 yr"),      "valid duration 10 yr");
   t.ok (d.valid ("10y"),        "valid duration 10y");
+  t.ok (d.valid ("1.1 yrs"),    "valid duration 1.1 yrs");
+  t.ok (d.valid ("-1.1 yrs"),   "valid duration -1.1 yrs");
+  t.ok (d.valid ("1.1y"),       "valid duration 1.1y");
+  t.ok (d.valid ("-1.1y"),      "valid duration -1.1y");
 
   t.ok (d.valid ("0 qtrs"),     "valid duration 0 qtrs");
   t.ok (d.valid ("0 qtr"),      "valid duration 0 qtr");
@@ -542,15 +546,20 @@ int main (int argc, char** argv)
   t.ok (d.valid ("10 qtr"),     "valid duration 10 qtr");
   t.ok (d.valid ("10q"),        "valid duration 10q");
 
-  t.ok (d.valid ("0 mnths"),     "valid duration 0 mths");
-  t.ok (d.valid ("0 mnth"),      "valid duration 0 mth");
+  t.ok (d.valid ("0 mnths"),    "valid duration 0 mnths");
+  t.ok (d.valid ("0 mnth"),     "valid duration 0 mnth");
   t.ok (d.valid ("0mo"),        "valid duration 0mo");
-  t.ok (d.valid ("1 mnths"),     "valid duration 1 mths");
-  t.ok (d.valid ("1 mth"),      "valid duration 1 mth");
+  t.ok (d.valid ("1 mnths"),    "valid duration 1 mnths");
+  t.ok (d.valid ("1 mnth"),     "valid duration 1 mnth");
   t.ok (d.valid ("1mo"),        "valid duration 1mo");
-  t.ok (d.valid ("10 mnths"),    "valid duration 10 mths");
-  t.ok (d.valid ("10 mnth"),     "valid duration 10 mth");
+  t.ok (d.valid ("10 mnths"),   "valid duration 10 mnths");
+  t.ok (d.valid ("10 mnth"),    "valid duration 10 mnth");
   t.ok (d.valid ("10mo"),       "valid duration 10mo");
+  t.ok (d.valid ("-1 mnths"),   "valid duration -1 mnths");
+  t.ok (d.valid ("-1 mnth"),    "valid duration -1 mnth");
+  t.ok (d.valid ("-1 mths"),    "valid duration -1 mths");
+  t.ok (d.valid ("-1 mth"),     "valid duration -1 mth");
+  t.ok (d.valid ("-1mo"),       "valid duration -1mo");
 
   t.ok (d.valid ("0 wks"),      "valid duration 0 wks");
   t.ok (d.valid ("0 wk"),       "valid duration 0 wk");
@@ -561,6 +570,10 @@ int main (int argc, char** argv)
   t.ok (d.valid ("10 wks"),     "valid duration 10 wks");
   t.ok (d.valid ("10 wk"),      "valid duration 10 wk");
   t.ok (d.valid ("10w"),        "valid duration 10w");
+  t.ok (d.valid ("-1 wks"),     "valid duration -1 wks");
+  t.ok (d.valid ("-1 wk"),      "valid duration -1 wk");
+  t.ok (d.valid ("-1wk"),       "valid duration -1wk");
+  t.ok (d.valid ("-1w"),        "valid duration -1w");
 
   t.ok (d.valid ("0 days"),     "valid duration 0 days");
   t.ok (d.valid ("0 day"),      "valid duration 0 day");
@@ -571,6 +584,9 @@ int main (int argc, char** argv)
   t.ok (d.valid ("10 days"),    "valid duration 10 days");
   t.ok (d.valid ("10 day"),     "valid duration 10 day");
   t.ok (d.valid ("10d"),        "valid duration 10d");
+  t.ok (d.valid ("-1 days"),    "valid duration -1 days");
+  t.ok (d.valid ("-1 day"),     "valid duration -1 day");
+  t.ok (d.valid ("-1d"),        "valid duration -1d");
 
   t.ok (d.valid ("0 hrs"),      "valid duration 0 hrs");
   t.ok (d.valid ("0 hr"),       "valid duration 0 hr");
@@ -581,6 +597,9 @@ int main (int argc, char** argv)
   t.ok (d.valid ("10 hrs"),     "valid duration 10 hrs");
   t.ok (d.valid ("10 hr"),      "valid duration 10 hr");
   t.ok (d.valid ("10h"),        "valid duration 10h");
+  t.ok (d.valid ("-1 hrs"),     "valid duration -1 hrs");
+  t.ok (d.valid ("-1 hr"),      "valid duration -1 hr");
+  t.ok (d.valid ("-1h"),        "valid duration -1h");
 
   t.ok (d.valid ("0 mins"),     "valid duration 0 mins");
   t.ok (d.valid ("0 min"),      "valid duration 0 min");
@@ -591,6 +610,9 @@ int main (int argc, char** argv)
   t.ok (d.valid ("10 mins"),    "valid duration 10 mins");
   t.ok (d.valid ("10 min"),     "valid duration 10 min");
   t.ok (d.valid ("10m"),        "valid duration 10m");
+  t.ok (d.valid ("-1 mins"),    "valid duration -1 mins");
+  t.ok (d.valid ("-1 min"),     "valid duration -1 min");
+  t.ok (d.valid ("-1m"),        "valid duration -1m");
 
   t.ok (d.valid ("0 secs"),     "valid duration 0 secs");
   t.ok (d.valid ("0 sec"),      "valid duration 0 sec");
@@ -601,6 +623,9 @@ int main (int argc, char** argv)
   t.ok (d.valid ("10 secs"),    "valid duration 10 secs");
   t.ok (d.valid ("10 sec"),     "valid duration 10 sec");
   t.ok (d.valid ("10s"),        "valid duration 10s");
+  t.ok (d.valid ("-1 secs"),    "valid duration -1 secs");
+  t.ok (d.valid ("-1 sec"),     "valid duration -1 sec");
+  t.ok (d.valid ("-1s"),        "valid duration -1s");
 
   t.notok (d.valid ("woof"),   "valid duration woof = fail");
 
@@ -685,6 +710,8 @@ int main (int argc, char** argv)
     left = Duration ("1mo");    right = Duration ("1q");     t.ok (left < right, "duration 1mo < 1q");
     left = Duration ("1q");     right = Duration ("1y");     t.ok (left < right, "duration 1q < 1y");
 
+    left = Duration ("-3s");    right = Duration ("-6s");    t.ok (right < left, "duration -6s < -3s");
+
     // operator>
     left = Duration ("2secs");  right = Duration ("1sec");   t.ok (left > right, "2sec > 1secs");
     left = Duration ("-1sec");  right = Duration ("-2secs"); t.ok (left > right, "-1secs > -2sec");
@@ -695,6 +722,8 @@ int main (int argc, char** argv)
     left = Duration ("1mo");    right = Duration ("1w");     t.ok (left > right, "1mo > 1w");
     left = Duration ("1q");     right = Duration ("1mo");    t.ok (left > right, "1q > 1mo");
     left = Duration ("1y");     right = Duration ("1q");     t.ok (left > right, "1y > 1q");
+
+    left = Duration ("-3s");    right = Duration ("-6s");    t.ok (left > right, "duration -3s > -6s");
   }
 
   catch (const std::string& e) { t.diag (e); }

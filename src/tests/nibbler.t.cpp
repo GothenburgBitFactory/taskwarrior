@@ -33,13 +33,14 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (149);
+  UnitTest t (155);
 
   try
   {
     Nibbler n;
     std::string s;
     int i;
+    double d;
 
     // Make sure the nibbler behaves itself with trivial input.
     t.diag ("Test all nibbler calls given empty input");
@@ -227,6 +228,16 @@ int main (int argc, char** argv)
     t.ok    (n.getUnsignedInt (i),    "       '4' : getUnsignedInt ()       -> true");
     t.is    (i, 4,                    "       '4' : getUnsignedInt ()       -> '4'");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
+
+    // bool getNumber (double&);
+    t.diag ("Nibbler::getNumber");
+    n = Nibbler ("-1.234 2.3e4");
+    t.ok    (n.getNumber (d),         "'-1.234 2.3e4' : getNumber ()       -> true");
+    t.is    (d, -1.234,               "'-1.234 2.3e4' : getNumber ()       -> '-1.234'");
+    t.ok    (n.skip (' '),            "      ' 2.3e4' : skip (' ')         -> true");
+    t.ok    (n.getNumber (d),         "       '2.3e4' : getNumber ()       -> true");
+    t.is    (d, 2.3e4,                "       '2.3e4' : getNumber ()       -> '2.3e4'");
+    t.ok    (n.depleted (),           "            '' : depleted ()        -> true");
 
     // bool getLiteral (const std::string&);
     t.diag ("Nibbler::getLiteral");

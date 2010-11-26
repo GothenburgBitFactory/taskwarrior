@@ -763,8 +763,8 @@ bool sort_compare (int left, int right)
           return true;
         else if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
           return false;
-        else if (Duration ((std::string)*cell_left) < Duration ((std::string)*cell_right))
-          return true;
+        else
+          return Duration ((std::string)*cell_left) < Duration ((std::string)*cell_right) ? true : false;
         break;
 
       case Table::descendingPeriod:
@@ -772,8 +772,8 @@ bool sort_compare (int left, int right)
           return false;
         else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
           return true;
-        else if (Duration ((std::string)*cell_left) < Duration ((std::string)*cell_right))
-          return false;
+        else
+          return Duration ((std::string)*cell_left) < Duration ((std::string)*cell_right) ? false : true;
         break;
       }
     }
