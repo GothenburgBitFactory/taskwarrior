@@ -78,6 +78,7 @@ int handleColor (std::string&);
 int handleAnnotate (std::string&);
 int handleDenotate (std::string&);
 int handleDuplicate (std::string&);
+int handleCount (std::string&);
 void handleUndo ();
 void handleMerge (std::string&);
 void handlePush (std::string&);

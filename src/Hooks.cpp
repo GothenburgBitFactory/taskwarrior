@@ -147,6 +147,8 @@ Hooks::Hooks ()
   validProgramEvents.push_back ("post-done-command");
   validProgramEvents.push_back ("pre-duplicate-command");
   validProgramEvents.push_back ("post-duplicate-command");
+  validProgramEvents.push_back ("pre-count-command");
+  validProgramEvents.push_back ("post-count-command");
   validProgramEvents.push_back ("pre-edit-command");
   validProgramEvents.push_back ("post-edit-command");
   validProgramEvents.push_back ("pre-export-command");

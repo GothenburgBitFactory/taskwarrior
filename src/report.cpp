@@ -245,6 +245,10 @@ int shortUsage (std::string& outs)
                          "legend containing all currently defined colors.");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task count [filter]");
+  table.addCell (row, 2, "Shows only the number of matching tasks.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task version");
   table.addCell (row, 2, "Shows the task version number.");
 
