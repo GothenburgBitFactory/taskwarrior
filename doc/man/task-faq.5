@@ -316,6 +316,26 @@ non-exact match:
 This will remove the second annotation - the first non-exact match.
 
 .TP
+.B Q: Does task support searching using regular expressions?
+Yes, taskwarrior supports IEEE Std 1003.2 (POSIX.2) regular expressions, but not
+by default.  You must enable this feature with the following command:
+
+    $ task config regex on
+
+Once enabled, all searches are considered regular expressions, for example:
+
+    $ task list ^the
+
+will list all tasks whose description or annotations start with "the".
+Substitutions also support regular expressions:
+
+    $ task 1 /^the/The/
+
+Note that regular expressions work in conjunction with the
+.B search.case.sensitive
+configuration setting.
+
+.TP
 .B Q: How can I help?
 There are lots of ways.  Here are some:
 

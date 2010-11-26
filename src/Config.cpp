@@ -81,6 +81,7 @@ std::string Config::defaults =
   "recurrence.limit=1                             # Number of future recurring pending tasks\n"
   "undo.style=side                                # Undo style - can be 'side', or 'diff'\n"
   "burndown.bias=0.666                            # Weighted mean bias toward recent data\n"
+  "regex=no                                       # Assume all search/filter strings are regexes\n"
   "\n"
   "# Dates\n"
   "dateformat=m/d/Y                               # Preferred input and display date format\n"

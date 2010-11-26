@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (99);
+  UnitTest t (117);
 
   Att a;
   t.notok (a.valid ("name"),            "Att::valid name         -> fail");
@@ -86,8 +86,83 @@ int main (int argc, char** argv)
   t.is (a6.value_int (), 7, "Att::value_int set/get");
   t.is (a6.value (), "7", "Att::value 7");
 
-  // Att::mod
+  // Att::mod - straight comparisons.
   bool good = true;
+  try {a6.mod ("is");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (is)");
+
+  good = true;
+  try {a6.mod ("before");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (before)");
+
+  good = true;
+  try {a6.mod ("after");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (after)");
+
+  good = true;
+  try {a6.mod ("none");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (none)");
+
+  good = true;
+  try {a6.mod ("any");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (any)");
+
+  good = true;
+  try {a6.mod ("over");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (over)");
+
+  good = true;
+  try {a6.mod ("under");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (under)");
+
+  good = true;
+  try {a6.mod ("above");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (above)");
+
+  good = true;
+  try {a6.mod ("below");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (below)");
+
+  good = true;
+  try {a6.mod ("isnt");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (isnt)");
+
+  good = true;
+  try {a6.mod ("has");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (has)");
+
+  good = true;
+  try {a6.mod ("contains");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (contains)");
+
+  good = true;
+  try {a6.mod ("hasnt");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (hasnt)");
+
+  good = true;
+  try {a6.mod ("startswith");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (startswith)");
+
+  good = true;
+  try {a6.mod ("endswith");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (endswith)");
+
+  good = true;
+  try {a6.mod ("word");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (word)");
+
+  good = true;
+  try {a6.mod ("noword");} catch (...) {good = false;}
+  t.ok (good, "Att::mod (noword)");
+
+  good = true;
+  try {a6.mod ("unrecognized");} catch (...) {good = false;}
+  t.notok (good, "Att::mod (unrecognized)");
+
+  // Att::mod - regex comparisons.
+  context.config.set ("regex", "on");
+
+  good = true;
   try {a6.mod ("is");} catch (...) {good = false;}
   t.ok (good, "Att::mod (is)");
 

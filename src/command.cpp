@@ -897,7 +897,7 @@ int handleShow (std::string& outs)
       "color.burndown.pending color.burndown.started color.overdue color.pri.H "
       "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
       "color.footnote color.header color.debug color.alternate color.calendar.today "
-      "color.calendar.due color.calendar.due.today color.calendar.overdue "
+      "color.calendar.due color.calendar.due.today color.calendar.overdue regex "
       "color.calendar.weekend color.calendar.holiday color.calendar.weeknumber "
       "color.summary.background color.summary.bar color.history.add "
       "color.history.done color.history.delete color.undo.before "

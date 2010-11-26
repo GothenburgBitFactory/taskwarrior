@@ -30,6 +30,7 @@
 #include <Directory.h>
 #include <Context.h>
 #include <text.h>
+#include <rx.h>
 #include <i18n.h>
 
 extern Context context;
@@ -131,58 +132,112 @@ void Subst::apply (
 
   if (mFrom != "")
   {
-    if (mGlobal)
+    if (context.config.getBoolean ("regex"))
     {
+      // Insert capturing parentheses, if necessary.
+      std::string pattern;
+      if (mFrom.find ('(') != std::string::npos)
+        pattern = mFrom;
+      else
+        pattern = "(" + mFrom + ")";
+
+      std::vector <int> start;
+      std::vector <int> end;
+
       // Perform all subs on description.
       int counter = 0;
-      pattern = 0;
-
-      while ((pattern = find (description, mFrom, pattern, sensitive)) != std::string::npos)
+      if (regexMatch (start, end, description, pattern, sensitive))
       {
-        description.replace (pattern, mFrom.length (), mTo);
-        pattern += mTo.length ();
-
-        if (++counter > 1000)
-          throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
-      }
-
-      // Perform all subs on annotations.
-      counter = 0;
-      pattern = 0;
-      std::vector <Att>::iterator i;
-      for (i = annotations.begin (); i != annotations.end (); ++i)
-      {
-        std::string annotation = i->value ();
-        while ((pattern = find (annotation, mFrom, pattern, sensitive)) != std::string::npos)
+        for (unsigned int i = 0; i < start.size (); ++i)
         {
-          annotation.replace (pattern, mFrom.length (), mTo);
-          pattern += mTo.length ();
-
-          i->value (annotation);
+          description.replace (start[i], end[i] - start[i], mTo);
+          if (!mGlobal)
+            break;
 
           if (++counter > 1000)
             throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
         }
       }
+
+      // Perform all subs on annotations.
+      counter = 0;
+      std::vector <Att>::iterator i;
+      for (i = annotations.begin (); i != annotations.end (); ++i)
+      {
+        std::string annotation = i->value ();
+        start.clear ();
+        end.clear ();
+
+        if (regexMatch (start, end, annotation, pattern, sensitive))
+        {
+          for (unsigned int match = 0; match < start.size (); ++match)
+          {
+            annotation.replace (start[match], end[match] - start[match], mTo);
+            i->value (annotation);
+            if (!mGlobal)
+              break;
+
+            if (++counter > 1000)
+              throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
+          }
+        }
+      }
     }
     else
     {
-      // Perform first description substitution.
-      if ((pattern = find (description, mFrom, sensitive)) != std::string::npos)
-        description.replace (pattern, mFrom.length (), mTo);
-
-      // Failing that, perform the first annotation substitution.
-      else
+      if (mGlobal)
       {
+        // Perform all subs on description.
+        int counter = 0;
+        pattern = 0;
+
+        while ((pattern = find (description, mFrom, pattern, sensitive)) != std::string::npos)
+        {
+          description.replace (pattern, mFrom.length (), mTo);
+          pattern += mTo.length ();
+
+          if (++counter > 1000)
+            throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
+        }
+
+        // Perform all subs on annotations.
+        counter = 0;
+        pattern = 0;
         std::vector <Att>::iterator i;
         for (i = annotations.begin (); i != annotations.end (); ++i)
         {
           std::string annotation = i->value ();
-          if ((pattern = find (annotation, mFrom, sensitive)) != std::string::npos)
+          while ((pattern = find (annotation, mFrom, pattern, sensitive)) != std::string::npos)
           {
             annotation.replace (pattern, mFrom.length (), mTo);
+            pattern += mTo.length ();
+
             i->value (annotation);
-            break;
+
+            if (++counter > 1000)
+              throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
+          }
+        }
+      }
+      else
+      {
+        // Perform first description substitution.
+        if ((pattern = find (description, mFrom, sensitive)) != std::string::npos)
+          description.replace (pattern, mFrom.length (), mTo);
+
+        // Failing that, perform the first annotation substitution.
+        else
+        {
+          std::vector <Att>::iterator i;
+          for (i = annotations.begin (); i != annotations.end (); ++i)
+          {
+            std::string annotation = i->value ();
+            if ((pattern = find (annotation, mFrom, sensitive)) != std::string::npos)
+            {
+              annotation.replace (pattern, mFrom.length (), mTo);
+              i->value (annotation);
+              break;
+            }
           }
         }
       }

@@ -29,13 +29,14 @@
 #include <sstream>
 #include <stdlib.h>
 #include <string.h>
-#include "text.h"
-#include "Color.h"
-#include "util.h"
-#include "Date.h"
-#include "Duration.h"
-#include "Context.h"
-#include "Att.h"
+#include <text.h>
+#include <rx.h>
+#include <Color.h>
+#include <util.h>
+#include <Date.h>
+#include <Duration.h>
+#include <Context.h>
+#include <Att.h>
 
 extern Context context;
 
@@ -533,10 +534,21 @@ void Att::parse (Nibbler& n)
 ////////////////////////////////////////////////////////////////////////////////
 // "this" is the attribute that has modifiers.  "other" is the attribute from a
 // Record that does not have modifiers, but may have a value.
+//
+// In other words, the filter:
+//   task list description.contains:foo
+//
+// Is represented with:
+//   this  = filter (description.contains:foo)
+//   other = actual task data to be matched
+//
 bool Att::match (const Att& other) const
 {
   // All matches are assumed to pass, any short-circuit on non-match.
   bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
+
+  // Are regular expressions being used in place of string comparison?
+  bool regex = context.config.getBoolean ("regex");
 
   // If there are no mods, just perform a straight compare on value.
   if (mMod == "")
@@ -557,7 +569,13 @@ bool Att::match (const Att& other) const
     }
     else
     {
-      if (!compare (mValue, other.mValue, (bool) case_sensitive))
+      if (regex)
+      {
+        std::string pattern = "^" + mValue + "$";
+        if (!regexMatch (other.mValue, pattern, case_sensitive))
+          return false;
+      }
+      else if (!compare (mValue, other.mValue, (bool) case_sensitive))
         return false;
     }
   }
@@ -565,21 +583,38 @@ bool Att::match (const Att& other) const
   // has = contains as a substring.
   else if (mMod == "has" || mMod == "contains") // TODO i18n
   {
-    if (find (other.mValue, mValue, (bool) case_sensitive) == std::string::npos)
+    if (regex)
+    {
+      if (!regexMatch (other.mValue, mValue, case_sensitive))
+        return false;
+    }
+    else if (find (other.mValue, mValue, (bool) case_sensitive) == std::string::npos)
       return false;
   }
 
   // is = equal.  Nop.
   else if (mMod == "is" || mMod == "equals") // TODO i18n
   {
-    if (!compare (mValue, other.mValue, (bool) case_sensitive))
+    if (regex)
+    {
+      std::string pattern = "^" + mValue + "$";
+      if (!regexMatch (other.mValue, pattern, case_sensitive))
+        return false;
+    }
+    else if (!compare (mValue, other.mValue, (bool) case_sensitive))
       return false;
   }
 
   // isnt = not equal.
   else if (mMod == "isnt" || mMod == "not") // TODO i18n
   {
-    if (compare (mValue, other.mValue, (bool) case_sensitive))
+    if (regex)
+    {
+      std::string pattern = "^" + mValue + "$";
+      if (!regexMatch (other.mValue, pattern, case_sensitive))
+        return false;
+    }
+    else if (compare (mValue, other.mValue, (bool) case_sensitive))
       return false;
   }
 
@@ -600,29 +635,52 @@ bool Att::match (const Att& other) const
   // startswith = first characters must match.
   else if (mMod == "startswith" || mMod == "left") // TODO i18n
   {
-    if (other.mValue.length () < mValue.length ())
-      return false;
+    if (regex)
+    {
+      std::string pattern = "^" + mValue;
+      if (!regexMatch (other.mValue, pattern, case_sensitive))
+        return false;
+    }
+    else
+    {
+      if (other.mValue.length () < mValue.length ())
+        return false;
 
       if (!compare (mValue, other.mValue.substr (0, mValue.length ()), (bool) case_sensitive))
-      return false;
+        return false;
+    }
   }
 
   // endswith = last characters must match.
   else if (mMod == "endswith" || mMod == "right") // TODO i18n
   {
-    if (other.mValue.length () < mValue.length ())
-      return false;
+    if (regex)
+    {
+      std::string pattern = mValue + "$";
+      if (!regexMatch (other.mValue, pattern, case_sensitive))
+        return false;
+    }
+    else
+    {
+      if (other.mValue.length () < mValue.length ())
+        return false;
 
-    if (!compare (mValue, other.mValue.substr (
-                    other.mValue.length () - mValue.length (),
-                    std::string::npos), (bool) case_sensitive))
-      return false;
+      if (!compare (mValue, other.mValue.substr (
+                      other.mValue.length () - mValue.length (),
+                      std::string::npos), (bool) case_sensitive))
+        return false;
+    }
   }
 
   // hasnt = does not contain as a substring.
   else if (mMod == "hasnt") // TODO i18n
   {
-    if (find (other.mValue, mValue, (bool) case_sensitive) != std::string::npos)
+    if (regex)
+    {
+      if (regexMatch (other.mValue, mValue, case_sensitive))
+        return false;
+    }
+    else if (find (other.mValue, mValue, (bool) case_sensitive) != std::string::npos)
       return false;
   }
 
@@ -705,29 +763,57 @@ bool Att::match (const Att& other) const
   // word = contains as a substring, with word boundaries.
   else if (mMod == "word") // TODO i18n
   {
-    // Fail if the substring is not found.
-    std::string::size_type sub = find (other.mValue, mValue, (bool) case_sensitive);
-    if (sub == std::string::npos)
-      return false;
+    if (regex)
+    {
+      std::vector <int> start;
+      std::vector <int> end;
+      if (!regexMatch (start, end, other.mValue, mValue, case_sensitive))
+        return false;
 
-    // Also fail if there is no word boundary at beginning and end.
-    if (!isWordStart (other.mValue, sub))
-      return false;
+      if (!isWordStart (other.mValue, start[0]))
+        return false;
 
-    if (!isWordEnd (other.mValue, sub + mValue.length () - 1))
-      return false;
+      if (!isWordEnd (other.mValue, end[0]))
+        return false;
+    }
+    else
+    {
+      // Fail if the substring is not found.
+      std::string::size_type sub = find (other.mValue, mValue, (bool) case_sensitive);
+      if (sub == std::string::npos)
+        return false;
+
+      // Also fail if there is no word boundary at beginning and end.
+      if (!isWordStart (other.mValue, sub))
+        return false;
+
+      if (!isWordEnd (other.mValue, sub + mValue.length () - 1))
+        return false;
+    }
   }
 
   // noword = does not contain as a substring, with word boundaries.
   else if (mMod == "noword") // TODO i18n
   {
-    // Fail if the substring is not found.
-    std::string::size_type sub = find (other.mValue, mValue);
-    if (sub != std::string::npos &&
-        isWordStart (other.mValue, sub) &&
-        isWordEnd (other.mValue, sub + mValue.length () - 1))
+    if (regex)
     {
-      return false;
+      std::vector <int> start;
+      std::vector <int> end;
+      if (regexMatch (start, end, other.mValue, mValue, case_sensitive) &&
+          isWordStart (other.mValue, start[0])                     &&
+          isWordEnd (other.mValue, end[0]))
+        return false;
+    }
+    else
+    {
+      // Fail if the substring is not found.
+      std::string::size_type sub = find (other.mValue, mValue);
+      if (sub != std::string::npos &&
+          isWordStart (other.mValue, sub) &&
+          isWordEnd (other.mValue, sub + mValue.length () - 1))
+      {
+        return false;
+      }
     }
   }
 
