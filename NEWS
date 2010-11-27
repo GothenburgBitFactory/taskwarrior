@@ -7,6 +7,7 @@ New Features in taskwarrior 1.9.4
   - Regular expression support in filters and substitutions.
   - Added highlighting for the show command that indicates which values differ
     from the defaults.
+  - Added change log display to the 'info' command.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -29,6 +30,8 @@ New configuration options in taskwarrior 1.9.4
   - regex=on enables regular expression searches for filters (task list a...e
     matches 'above') and substitutions (task <id> /a...e/over/ changes 'above'
     to 'over').  Default is off, as this is an advanced feature.
+  - journal.info controls whether a change log for each task is displayed by
+    the 'info' command.
 
 Newly deprecated features in taskwarrior 1.9.4
 

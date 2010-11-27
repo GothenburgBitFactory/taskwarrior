@@ -103,6 +103,7 @@ std::string Config::defaults =
   "journal.time=no                                # Record start/stop commands as annotation\n"
   "journal.time.start.annotation=Started task     # Annotation description for the start journal entry\n"
   "journal.time.stop.annotation=Stopped task      # Annotation description for the stop  journal entry\n"
+  "journal.info=on                                # Display task journal with info command\n"
   "\n"
   "# Dependency controls\n"
   "dependency.reminder=on                         # Nags on dependency chain violations\n"

@@ -907,7 +907,7 @@ int handleShow (std::string& outs)
       "default.command default.priority default.project defaultwidth due "
       "dependency.confirmation dependency.reminder locale displayweeknumber "
       "export.ical.class echo.command fontunderline locking monthsperline nag "
-      "next journal.time journal.time.start.annotation "
+      "next journal.time journal.time.start.annotation journal.info "
       "journal.time.stop.annotation project shadow.command shadow.file "
       "shadow.notify weekstart editor import.synonym.id import.synonym.uuid "
       "complete.all.projects complete.all.tags search.case.sensitive hooks "

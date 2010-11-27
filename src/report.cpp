@@ -37,15 +37,15 @@
 #include <pwd.h>
 #include <time.h>
 
-#include "Context.h"
-#include "Directory.h"
-#include "File.h"
-#include "Date.h"
-#include "Duration.h"
-#include "Table.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
+#include <Context.h>
+#include <Directory.h>
+#include <File.h>
+#include <Date.h>
+#include <Duration.h>
+#include <Table.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
 
 #ifdef HAVE_LIBNCURSES
 #include <ncurses.h>
@@ -396,6 +396,15 @@ int handleInfo (std::string& outs)
     // Filter sequence.
     context.filter.applySequence (tasks, context.sequence);
 
+    // Read the undo file.
+    std::vector <std::string> undo;
+    if (context.config.getBoolean ("journal.info"))
+    {
+      Directory location (context.config.get ("data.location"));
+      std::string undoFile = location.data + "/undo.data";
+      File::read (undoFile, undo);
+    }
+
     // Find the task.
     std::stringstream out;
     foreach (task, tasks)
@@ -614,7 +623,7 @@ int handleInfo (std::string& outs)
       // uuid
       row = table.addRow ();
       table.addCell (row, 0, "UUID");
-      value = task->get ("uuid");
+      std::string uuid = value = task->get ("uuid");
       context.hooks.trigger ("format-uuid", "uuid", value);
       table.addCell (row, 1, value);
 
@@ -659,17 +668,82 @@ int handleInfo (std::string& outs)
       //table.addCell (row, 0, "Urgency");
       //table.addCell (row, 1, task->urgency ());
 
+      Table journal;
+
       // If an alternating row color is specified, notify the table.
       if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
       {
         Color alternate (context.config.get ("color.alternate"));
         if (alternate.nontrivial ())
+        {
           table.setTableAlternateColor (alternate);
+          journal.setTableAlternateColor (alternate);
+        }
       }
 
       out << optionalBlankLine ()
           << table.render ()
           << "\n";
+
+      journal.setTableWidth (context.getWidth ());
+      journal.setDateFormat (context.config.get ("dateformat"));
+
+      journal.addColumn ("Date");
+      journal.addColumn ("Modification");
+
+      if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+          context.config.getBoolean ("fontunderline"))
+      {
+        journal.setColumnUnderline (0);
+        journal.setColumnUnderline (1);
+      }
+      else
+        journal.setTableDashedUnderline ();
+
+      journal.setColumnWidth (0, Table::minimum);
+      journal.setColumnWidth (1, Table::flexible);
+
+      journal.setColumnJustification (0, Table::left);
+      journal.setColumnJustification (1, Table::left);
+
+      if (context.config.getBoolean ("journal.info") &&
+          undo.size () > 3)
+      {
+        // Scan the undo data for entries matching this task.
+        std::string when;
+        std::string previous;
+        std::string current;
+        unsigned int i = 0;
+        while (i < undo.size ())
+        {
+          when = undo[i++];
+          previous = "";
+          if (undo[i].substr (0, 3) == "old")
+            previous = undo[i++];
+
+          current = undo[i++];
+          i++; // Separator
+
+          if (current.find ("uuid:\"" + uuid) != std::string::npos)
+          {
+            if (previous != "")
+            {
+              int row = journal.addRow ();
+
+              Date timestamp (atoi (when.substr (5).c_str ()));
+              journal.addCell (row, 0, timestamp.toString (context.config.get ("dateformat")));
+
+              Task before (previous.substr (4));
+              Task after (current.substr (4));
+              journal.addCell (row, 1, taskInfoDifferences (before, after));
+            }
+          }
+        }
+
+        if (journal.rowCount () > 0)
+          out << journal.render ()
+              << "\n";
+      }
     }
 
     if (! tasks.size ())

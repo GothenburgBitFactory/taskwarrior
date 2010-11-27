@@ -474,7 +474,7 @@ turned off by setting the variable to none.  The default value is "none".
 .B journal.time=no
 May be yes or no, and determines whether the 'start' and 'stop' commands should
 record an annotation when being executed. The default value is "no". The text of
-the corresponding annotations is controlled by
+the corresponding annotations is controlled by:
 
 .TP journal.time.start.annotation=Started task
 The text of the annotation that is recorded when executing the start command and
@@ -483,6 +483,10 @@ having set journal.time.
 .TP journal.time.stop.annotation=Stopped task
 The text of the annotation that is recorded when executing the stop command and
 having set journal.time.
+
+.TP journal.info=on
+When enabled, this setting causes a change log of each task to be displayed by
+the 'info' command.  Default value is "on".
 
 .SS Holidays
 Holidays are entered either directly in the .taskrc file or via an include file

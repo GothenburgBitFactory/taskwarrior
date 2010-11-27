@@ -436,6 +436,124 @@ std::string taskDifferences (const Task& before, const Task& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string taskInfoDifferences (const Task& before, const Task& after)
+{
+  // Attributes are all there is, so figure the different attribute names
+  // between before and after.
+  std::vector <std::string> beforeAtts;
+  foreach (att, before)
+    beforeAtts.push_back (att->first);
+
+  std::vector <std::string> afterAtts;
+  foreach (att, after)
+    afterAtts.push_back (att->first);
+
+  std::vector <std::string> beforeOnly;
+  std::vector <std::string> afterOnly;
+  listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
+
+  // Now start generating a description of the differences.
+  std::stringstream out;
+  foreach (name, beforeOnly)
+  {
+    if (*name == "depends")
+    {
+        std::vector <int> deps_before;
+        before.getDependencies (deps_before);
+        std::string from;
+        join (from, ",", deps_before);
+
+        out << "dependencies '"
+            << from
+            << "' deleted\n";
+    }
+    else if (name->substr (0, 11) == "annotation_")
+    {
+      out << "annotation '"
+          << before.get (*name)
+          << "' deleted";
+    }
+    else
+    {
+      out << *name
+          << " deleted\n";
+    }
+  }
+
+  foreach (name, afterOnly)
+  {
+    if (*name == "depends")
+    {
+      std::vector <int> deps_after;
+      after.getDependencies (deps_after);
+      std::string to;
+      join (to, ",", deps_after);
+
+      out << *name
+          << " set to '"
+          << to
+          << "'\n";
+    }
+    else if (name->substr (0, 11) == "annotation_")
+    {
+      out << "annotation added '"
+          << after.get (*name)
+          << "'";
+    }
+    else
+      out << *name
+          << " set to '"
+          << renderAttribute (*name, after.get (*name))
+          << "'\n";
+  }
+
+  foreach (name, beforeAtts)
+    if (*name              != "uuid" &&
+        before.get (*name) != after.get (*name))
+    {
+      if (*name == "depends")
+      {
+        std::vector <int> deps_before;
+        before.getDependencies (deps_before);
+        std::string from;
+        join (from, ",", deps_before);
+
+        std::vector <int> deps_after;
+        after.getDependencies (deps_after);
+        std::string to;
+        join (to, ",", deps_after);
+
+        out << *name
+            << " changed from '"
+            << from
+            << "' to '"
+            << to
+            << "'\n";
+      }
+      else if (name->substr (0, 11) == "annotation_")
+      {
+        out << "annotation '"
+            << after.get (*name)
+            << "'";
+      }
+      else
+        out << *name
+            << " changed from '"
+            << renderAttribute (*name, before.get (*name))
+            << "' to '"
+            << renderAttribute (*name, after.get (*name))
+            << "'\n";
+    }
+
+
+  // Shouldn't just say nothing.
+  if (out.str ().length () == 0)
+    out << "No changes made.\n";
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string renderAttribute (const std::string& name, const std::string& value)
 {
   Att a;
