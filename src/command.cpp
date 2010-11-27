@@ -958,6 +958,15 @@ int handleShow (std::string& outs)
       }
     }
 
+    // Find all the values that match the defaults, for highlighting.
+    std::vector <std::string> default_values;
+    Config default_config;
+    default_config.setDefaults ();
+
+    foreach (i, all)
+      if (context.config.get (*i) != default_config.get (*i))
+        default_values.push_back (*i);
+
     // Create a table for output.
     Table table;
     table.setTableWidth (width);
@@ -980,6 +989,7 @@ int handleShow (std::string& outs)
     table.sortOn (0, Table::ascendingCharacter);
 
     Color error ("bold white on red");
+    Color warning ("black on yellow");
 
     std::string section;
 
@@ -1001,8 +1011,13 @@ int handleShow (std::string& outs)
 
         // Look for unrecognized.
         if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+        {
           if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
             table.setRowColor (row, error);
+
+          else if (std::find (default_values.begin (), default_values.end (), *i) != default_values.end ())
+            table.setRowColor (row, warning);
+        }
       }
     }
 
@@ -1021,7 +1036,15 @@ int handleShow (std::string& outs)
       if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
         out << "\n  These are highlighted in " << error.colorize ("color") << " above.";
 
-      out << "\n";
+      out << "\n\n";
+    }
+
+    if (default_values.size ())
+    {
+      out << "Some of your .taskrc variables differ from the default values.";
+
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+        out << "  These are highlighted in " << warning.colorize ("color") << " above.";
     }
 
     out << context.config.checkForDeprecatedColor ();

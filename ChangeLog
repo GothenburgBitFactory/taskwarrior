@@ -5,6 +5,8 @@
  + Added burndown charts - burndown.daily, burndown.weekly, burndown.monthly,
    that use color.burndown.pending, color.burndown.started and
    color.burndown.done colors.
+ + Added highlighting for the show command that indicates which values differ
+   from the defaults.
  + Added feature #158, regular expression support for filters and substitutions.
  + Added feature #247, providing infinite width reports when redirecting output
    to a file, by setting defaultwidth to 0.
