@@ -2105,13 +2105,17 @@ void handleShell ()
               << " shell\n\n"
               << "Enter any task command (such as 'list'), or hit 'Enter'.\n"
               << "There is no need to include the 'task' command itself.\n"
-              << "Enter 'quit' to end the session.\n\n";
+              << "Enter 'quit' (or 'bye', 'exit') to end the session.\n\n";
 
     // Make a copy because context.clear will delete them.
     std::string permanentOverrides = " " + context.file_override
                                    + " " + context.var_overrides;
 
-    std::string quit = "quit"; // TODO i18n
+    std::vector <std::string> quit_commands;
+    quit_commands.push_back ("quit");
+    quit_commands.push_back ("exit");
+    quit_commands.push_back ("bye");
+
     std::string command;
     bool keepGoing = true;
 
@@ -2131,9 +2135,7 @@ void handleShell ()
 
       // When looking for the 'quit' command, use 'command', not
       // 'decoratedCommand'.
-      if (command.length ()   >  0              &&
-          command.length ()   <= quit.length () &&
-          lowerCase (command) == quit.substr (0, command.length ()))
+      if (std::find (quit_commands.begin (), quit_commands.end (), lowerCase (command)) != quit_commands.end ())
       {
         keepGoing = false;
       }
