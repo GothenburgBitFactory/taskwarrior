@@ -146,6 +146,13 @@ files on an NFS mount may need to set locking to "off". Note that there is
 danger in setting this value to "off" - another program (or another instance of
 task) may write to the task.pending file at the same time.
 
+.TP
+.B gc=on
+Can be used to temporarily suspend garbage collection (gc), so that task IDs
+don't change.  Note that this should be used in the form of a command line
+override (task rc.gc=off ...), and not permanently used in the .taskrc file,
+as this significantly affects performance.
+
 .SS TERMINAL
 .TP
 .B curses=on
