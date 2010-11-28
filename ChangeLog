@@ -11,6 +11,9 @@
    'journal.info' configuration setting.
  + Added 'description+' to all reports with duplicate sort keys, to stabilize
    the sequence.
+ + Added ability to temporarily suspend GC (rc.gc:0) for a given command, which
+   helps scriptwriters implement shadow files externally (thanks to Sander
+   Marechal).
  + Added feature #158, regular expression support for filters and substitutions.
  + Added feature #247, providing infinite width reports when redirecting output
    to a file, by setting defaultwidth to 0.

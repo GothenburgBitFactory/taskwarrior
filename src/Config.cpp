@@ -60,6 +60,7 @@ std::string Config::defaults =
   "# Files\n"
   "data.location=~/.task\n"
   "locking=on                                     # Use file-level locking\n"
+  "gc=on                                          # Garbage-collect data files - DO NOT CHANGE unless you are sure\n"
   "\n"
   "# Terminal\n"
   "curses=on                                      # Use ncurses library to determine terminal width\n"

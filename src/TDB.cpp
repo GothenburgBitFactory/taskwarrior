@@ -596,6 +596,10 @@ int TDB::gc ()
 {
   Timer t ("TDB::gc");
 
+  // Allowed as a temporary override.
+  if (!context.config.getBoolean ("gc"))
+    return 0;
+
   int count_pending_changes = 0;
   int count_completed_changes = 0;
   Date now;

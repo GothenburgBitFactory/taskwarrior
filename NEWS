@@ -32,6 +32,8 @@ New configuration options in taskwarrior 1.9.4
     to 'over').  Default is off, as this is an advanced feature.
   - journal.info controls whether a change log for each task is displayed by
     the 'info' command.
+  - gc=off can be used, temporarily, to defer GC until later commands, which
+    eliminates problems with task ID numbers for script writers.
 
 Newly deprecated features in taskwarrior 1.9.4
 
