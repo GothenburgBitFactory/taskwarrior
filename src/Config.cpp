@@ -657,23 +657,25 @@ void Config::set (const std::string& key, const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Provide a vector of all configuration keys.
-void Config::all (std::vector<std::string>& items)
+void Config::all (std::vector<std::string>& items) const
 {
-  foreach (i, *this)
-    items.push_back (i->first);
+  std::map <std::string, std::string>::const_iterator it;
+  for (it = this->begin (); it != this->end (); ++it)
+    items.push_back (it->first);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Config::checkForDeprecatedColor ()
 {
   std::vector <std::string> deprecated;
-  foreach (i, *this)
+  std::map <std::string, std::string>::const_iterator it;
+  for (it = this->begin (); it != this->end (); ++it)
   {
-    if (i->first.find ("color.") != std::string::npos)
+    if (it->first.find ("color.") != std::string::npos)
     {
-      std::string value = get (i->first);
+      std::string value = get (it->first);
       if (value.find ("_") != std::string::npos)
-        deprecated.push_back (i->first);
+        deprecated.push_back (it->first);
     }
   }
 
@@ -683,8 +685,9 @@ std::string Config::checkForDeprecatedColor ()
     out << "Your .taskrc file contains color settings that use deprecated "
         << "underscores.  Please check:\n";
 
-    foreach (i, deprecated)
-      out << "  " << *i << "=" << get (*i) << "\n";
+    std::vector <std::string>::iterator it2;
+    for (it2 = deprecated.begin (); it2 != deprecated.end (); ++it2)
+      out << "  " << *it2 << "=" << get (*it2) << "\n";
 
     out << "\n";
   }
@@ -696,15 +699,16 @@ std::string Config::checkForDeprecatedColor ()
 std::string Config::checkForDeprecatedColumns ()
 {
   std::vector <std::string> deprecated;
-  foreach (i, *this)
+  std::map <std::string, std::string>::const_iterator it;
+  for (it = this->begin (); it != this->end (); ++it)
   {
-    if (i->first.find ("report") == 0)
+    if (it->first.find ("report") == 0)
     {
-      std::string value = get (i->first);
+      std::string value = get (it->first);
       if (value.find ("entry_time") != std::string::npos ||
           value.find ("start_time") != std::string::npos ||
           value.find ("end_time")   != std::string::npos)
-        deprecated.push_back (i->first);
+        deprecated.push_back (it->first);
     }
   }
 
@@ -716,8 +720,9 @@ std::string Config::checkForDeprecatedColumns ()
     out << "Your .taskrc file contains reports with deprecated columns.  "
         << "Please check for entry_time, start_time or end_time in:\n";
 
-    foreach (i, deprecated)
-      out << "  " << *i << "\n";
+    std::vector <std::string>::iterator it2;
+    for (it2 = deprecated.begin (); it2 != deprecated.end (); ++it2)
+      out << "  " << *it2 << "=" << get (*it2) << "\n";
 
     out << "\n";
   }

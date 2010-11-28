@@ -135,13 +135,17 @@ void Sequence::combine (const Sequence& other)
   // Create a map using the sequence elements as keys.  This will create a
   // unique list, with no duplicates.
   std::map <int, int> both;
-  foreach (i, *this) both[*i] = 0;
-  foreach (i, other) both[*i] = 0;
+  std::vector <int>::iterator i1;
+  for (i1 = this->begin (); i1 != this->end (); ++i1) both[*i1] = 0;
+
+  std::vector <int>::const_iterator i2;
+  for (i2 = other.begin (); i2 != other.end (); ++i2) both[*i2] = 0;
 
   // Now make a sequence out of the keys of the map.
   this->clear ();
-  foreach (i, both)
-    this->push_back (i->first);
+  std::map <int, int>::iterator i3;
+  for (i3 = both.begin (); i3 != both.end (); ++i3)
+    this->push_back (i3->first);
 
   std::sort (this->begin (), this->end ());
 }

@@ -161,7 +161,8 @@ static std::string formatTask (Task task)
 
   std::vector <Att> annotations;
   task.getAnnotations (annotations);
-  foreach (anno, annotations)
+  std::vector <Att>::iterator anno;
+  for (anno = annotations.begin (); anno != annotations.end (); ++anno)
   {
     Date dt (::atoi (anno->name ().substr (11).c_str ()));
     before << "  Annotation:        " << dt.toString (context.config.get ("dateformat.annotation"))
@@ -533,7 +534,8 @@ static void parseTask (Task& task, const std::string& after)
   split (dependencies, value, ",");
 
   task.remove ("depends");
-  foreach (dep, dependencies)
+  std::vector <std::string>::iterator dep;
+  for (dep = dependencies.begin (); dep != dependencies.end (); ++dep)
   {
     int id = atoi (dep->c_str ());
     if (id)
@@ -644,7 +646,8 @@ int handleEdit (std::string& outs)
     std::vector <Task> all = tasks;
     context.filter.applySequence (tasks, context.sequence);
 
-    foreach (task, tasks)
+    std::vector <Task>::iterator task;
+    for (task = tasks.begin (); task != tasks.end (); ++task)
     {
       editFile (*task);
       context.tdb.update (*task);
@@ -652,7 +655,8 @@ int handleEdit (std::string& outs)
       TODO Figure out what this is.  I can't remember, but don't want to remove
            it until I do.
 
-      foreach (other, all)
+      std::vector <Task>::iterator other;
+      for (other = all.begin (); other != all.end (); ++other)
       {
         if (other->id != task.id) // Don't edit the same task again.
         {

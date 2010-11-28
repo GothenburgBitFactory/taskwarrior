@@ -49,14 +49,15 @@ void initializeColorRules ()
   std::vector <std::string> rules;
   std::vector <std::string> variables;
   context.config.all (variables);
-  foreach (it, variables)
+  std::vector <std::string>::iterator v;
+  for (v = variables.begin (); v != variables.end (); ++v)
   {
-    if (it->substr (0, 6) == "color.")
+    if (v->substr (0, 6) == "color.")
     {
-      Color c (context.config.get (*it));
-      gsColor[*it] = c;
+      Color c (context.config.get (*v));
+      gsColor[*v] = c;
 
-      rules.push_back (*it);
+      rules.push_back (*v);
     }
   }
 
@@ -66,13 +67,15 @@ void initializeColorRules ()
   std::vector <std::string> precedence;
   split (precedence, context.config.get ("rule.precedence.color"), ',');
 
-  foreach (it, precedence)
+  std::vector <std::string>::iterator p;
+  for (p = precedence.begin (); p != precedence.end (); ++p)
   {
     // Add the leading "color." string.
-    std::string rule = "color." + *it;
+    std::string rule = "color." + *p;
     autoComplete (rule, rules, results);
 
-    foreach (r, results)
+    std::vector <std::string>::iterator r;
+    for (r = results.begin (); r != results.end (); ++r)
       gsPrecedence.push_back (*r);
   }
 }

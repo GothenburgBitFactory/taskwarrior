@@ -57,7 +57,7 @@ public:
   void set (const std::string&, const int);
   void set (const std::string&, const double);
   void set (const std::string&, const std::string&);
-  void all (std::vector <std::string>&);
+  void all (std::vector <std::string>&) const;
 
   std::string checkForDeprecatedColor ();
   std::string checkForDeprecatedColumns ();

@@ -152,7 +152,8 @@ void ReportStats::gatherStats ()
   std::vector <std::string> undo;
   File::read (file, undo);
   int undoCount = 0;
-  foreach (tx, undo)
+  std::vector <std::string>::iterator tx;
+  for (tx = undo.begin (); tx != undo.end (); ++tx)
     if (tx->substr (0, 3) == "---")
       ++undoCount;
 
@@ -213,7 +214,8 @@ void ReportStats::gatherStats ()
     it->getTags (tags);
     if (tags.size ()) ++taggedT;
 
-    foreach (t, tags)
+    std::vector <std::string>::iterator t;
+    for (t = tags.begin (); t != tags.end (); ++t)
       allTags[*t] = 0;
 
     std::string project = it->get ("project");

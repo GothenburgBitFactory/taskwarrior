@@ -131,8 +131,9 @@ bool Record::has (const std::string& name) const
 std::vector <Att> Record::all ()
 {
   std::vector <Att> all;
-  foreach (a, (*this))
-    all.push_back (a->second);
+  std::map <std::string, Att>::iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+    all.push_back (i->second);
 
   return all;
 }
