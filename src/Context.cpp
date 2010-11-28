@@ -296,6 +296,10 @@ void Context::shadow ()
       throw std::string ("Configuration variable 'shadow.file' is set to "
                          "overwrite your completed tasks.  Please change it.");
 
+    if (shadowFile.data == dataLocation + "/undo.data")
+      throw std::string ("Configuration variable 'shadow.file' is set to "
+                         "overwrite your undo log.  Please change it.");
+
     std::string oldCurses = config.get ("curses");
     std::string oldColor  = config.get ("color");
 
