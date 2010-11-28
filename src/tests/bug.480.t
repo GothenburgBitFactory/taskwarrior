@@ -65,7 +65,7 @@ qx{../task rc:bug.rc add one   +t1};
 qx{../task rc:bug.rc add two   +t2};
 qx{../task rc:bug.rc add three +t3};
 
-my $output = qx{../task rc:bug.rc list -t1};
+$output = qx{../task rc:bug.rc list -t1};
 unlike ($output, qr/one/,   'Single: no t1');
 like   ($output, qr/two/,   'Single: yes t2');
 like   ($output, qr/three/, 'Single: yes t3');
