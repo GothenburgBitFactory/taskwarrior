@@ -36,7 +36,8 @@ if (open my $fh, '>', 'hook.rc')
   print $fh "data.location=.\n",
             "hooks=on\n",
             "hook.format-description_only=" . $ENV{'PWD'} . "/hook:description_only\n",
-            "report.ls.columns=id,project,priority,description_only\n";
+            "report.ls.columns=id,project,priority,description_only\n",
+            "report.ls.sort=priority-,project+\n";
   close $fh;
   ok (-r 'hook.rc', 'Created hook.rc');
 }
