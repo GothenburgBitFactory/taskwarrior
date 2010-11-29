@@ -55,6 +55,9 @@ int main (int argc, char** argv)
     unlink ("./completed.data");
     unlink ("./undo.data");
 
+    // Set the context to allow GC.
+    context.config.set ("gc", "on");
+
     // Try reading an empty database.
     Filter filter;
     std::vector <Task> all;
