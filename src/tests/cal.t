@@ -30,7 +30,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 76;
+use Test::More tests => 87;
 
 # Create the rc file.
 if (open my $fh, '>', 'cal.rc')
@@ -54,6 +54,7 @@ my $day         = $nday;
 my $prevmonth   = $months[($nmon-1) % 12];
 my $month       = $months[($nmon) % 12];
 my $nextmonth   = $months[($nmon+1) % 12];
+my $prevyear    = $nyear + 1899;
 my $year        = $nyear + 1900;
 my $nextyear    = $nyear + 1901;
 
@@ -136,6 +137,23 @@ $output = qx{../task rc:cal.rc rc.monthsperline:1 cal 4 2010};
 unlike ($output, qr/March 2010/,     'March 2010 is not displayed');
 like   ($output, qr/April 2010/,     'April 2010 is displayed');
 unlike ($output, qr/May 2010/,       'May 2010 is not displayed');
+
+# calendar offsets
+$output = qx{../task rc:cal.rc rc.calendar.offset:on rc.monthsperline:1 cal 1 2011};
+unlike ($output, qr/November 2010/,  'November 2010 is not displayed');
+like   ($output, qr/December 2010/,  'December 2010 is displayed');
+unlike ($output, qr/January 2011/,   'January  2011 is not displayed');
+$output = qx{../task rc:cal.rc rc.calendar.offset:on rc.calendar.offset.value:2 rc.monthsperline:1 cal 1 2011};
+unlike ($output, qr/January 2011/,   'January  2011 is not displayed');
+unlike ($output, qr/February 2011/,  'February 2011 is not displayed');
+like   ($output, qr/March 2011/,     'March 2011 is displayed');
+unlike ($output, qr/April 2011/,     'April 2011 is not displayed');
+$output = qx{../task rc:cal.rc rc.calendar.offset:on rc.calendar.offset.value:-12 rc.monthsperline:1 cal};
+like   ($output, qr/$month\S*?\s+?$prevyear/, 'Current month and year ahead are displayed');
+unlike ($output, qr/$month\S*?\s+?$year/,     'Current month and year are not displayed');
+$output = qx{../task rc:cal.rc rc.calendar.offset:on rc.calendar.offset.value:12 rc.monthsperline:1 cal};
+unlike ($output, qr/$month\S*?\s+?$year/,     'Current month and year are not displayed');
+like   ($output, qr/$month\S*?\s+?$nextyear/, 'Current month and year ahead are displayed');
 
 # Cleanup.
 unlink 'pending.data';

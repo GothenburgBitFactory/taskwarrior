@@ -1477,10 +1477,29 @@ int handleReportCalendar (std::string& outs)
       yFrom = oldest.year();
     }
 
+    if (context.config.getBoolean ("calendar.offset"))
+    {
+      int moffset = context.config.getInteger ("calendar.offset.value") % 12;
+      int yoffset = context.config.getInteger ("calendar.offset.value") / 12;
+      mFrom += moffset;
+      yFrom += yoffset;
+      if (mFrom < 1)
+      {
+        mFrom += 12;
+        yFrom--;
+      }
+      else if (mFrom > 12)
+      {
+        mFrom -= 12;
+        yFrom++;
+      }
+    }
+
     mTo = mFrom + monthsToDisplay - 1;
     yTo = yFrom;
-    if (mTo > 12) {
-      mTo -=12;
+    if (mTo > 12)
+    {
+      mTo -= 12;
       yTo++;
     }
 

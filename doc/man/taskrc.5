@@ -468,6 +468,16 @@ The report to run when displaying the details of tasks with due date when
 running the "task calendar" command.  The default value is "list".
 
 .TP
+.B calendar.offset=off
+If "on" the first month in the calendar report is effectively changed by the
+offset value specified in calendar.offset.value. It defaults to "off".
+
+.TP
+.B calendar.offset.value=-1
+The offset value to apply to the first month in the calendar report. The default
+value is "-1".
+
+.TP
 .B calendar.holidays=full
 If set to full running "task calendar" will display holidays in the calendar by
 color-coding the corresponding days.  A detailed list with the dates and names

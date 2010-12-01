@@ -97,6 +97,8 @@ std::string Config::defaults =
   "calendar.legend=yes                            # Display the legend on calendar\n"
   "calendar.details=sparse                        # Calendar shows information for tasks w/due dates: full, sparse or none\n"
   "calendar.details.report=list                   # Report to use when showing task information in cal\n"
+  "calendar.offset=no                             # Apply an offset value to control the first month of the calendar\n"
+  "calendar.offset.value=-1                       # The number of months the first month of the calendar is moved\n"
   "calendar.holidays=none                         # Show public holidays on calendar:full, sparse or none\n"
   "#monthsperline=3                               # Number of calendar months on a line\n"
   "\n"

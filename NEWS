@@ -8,6 +8,8 @@ New Features in taskwarrior 1.9.4
   - Added highlighting for the show command that indicates which values differ
     from the defaults.
   - Added change log display to the 'info' command.
+  - The first month in the calendar report can now be changed with an offset
+    value.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -34,6 +36,8 @@ New configuration options in taskwarrior 1.9.4
     the 'info' command.
   - gc=off can be used, temporarily, to defer GC until later commands, which
     eliminates problems with task ID numbers for script writers.
+  - calendar.offset=off and calendar.offset.value=-1 to apply an offset value
+    to change the effective first month in the calendar report.
 
 Newly deprecated features in taskwarrior 1.9.4
 
@@ -44,7 +48,7 @@ Newly deprecated features in taskwarrior 1.9.4
 Taskwarrior has been built and tested on the following configurations:
 
   * OS X 10.6 Snow Leopard and 10.5 Leopard
-  * Fedora 13 Goddard, 12 Constantine
+  * Fedora 14 Laughlin, 13 Goddard
   * Ubuntu 10.10 Maverick Meerkat, 10.04 Lucid Lynx
   * Debian Sid
   * Slackware 12.2
