@@ -78,7 +78,7 @@ int Transport::execute()
   if (child_pid == 0)
   {
     // this is done by the child process
-    char shell[] = "sh";
+    char shell[] = "bash";
     char opt[]   = "-c";
 
     std::string cmdline = executable;
