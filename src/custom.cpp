@@ -43,10 +43,6 @@
 #include "util.h"
 #include "main.h"
 
-#ifdef HAVE_LIBNCURSES
-#include <ncurses.h>
-#endif
-
 extern Context context;
 static std::vector <std::string> customReports;
 

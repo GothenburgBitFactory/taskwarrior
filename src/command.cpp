@@ -45,10 +45,6 @@
 #include "../auto.h"
 #include "Transport.h"
 
-#ifdef HAVE_LIBNCURSES
-#include <ncurses.h>
-#endif
-
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -834,10 +830,6 @@ int handleVersion (std::string& outs)
         << "linux"
 #else
         << "unknown"
-#endif
-
-#ifdef HAVE_LIBNCURSES
-        << "-ncurses"
 #endif
 
 #ifdef HAVE_LIBREADLINE

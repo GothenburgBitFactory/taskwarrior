@@ -28,7 +28,8 @@
 //#include <iostream>
 #include <sstream>
 //#include <pwd.h>
-//#include <stdio.h>
+#include <stdio.h>
+#include <sys/ioctl.h>
 //#include <stdlib.h>
 //#include <string.h>
 #include "Context.h"
@@ -38,134 +39,41 @@
 #include "i18n.h"
 #include "../auto.h"
 
-#ifdef HAVE_LIBNCURSES
-#include <ncurses.h>
-#endif
-
 ////////////////////////////////////////////////////////////////////////////////
 int Context::interactive ()
 {
-#ifdef HAVE_LIBNCURSES
-
-  // TODO init ncurses
-  // TODO create worker thread
-  // TODO create refresh thread
-
-  // TODO join refresh thread
-  // TODO join worker thread
-  // TODO take down ncurses
-
-//  throw std::string ("unimplemented Context::interactive");
-
-  // Fake interactive teaser...
-#ifdef FEATURE_NCURSES_COLS
-  initscr ();
-  int width = COLS;
-  int height = LINES;
-#else
-  WINDOW* w = initscr ();
-  int width  = w->_maxx + 1;
-  int height = w->_maxy + 1;
-#endif
-
-  (void) nonl ();
-  (void) cbreak ();
-
-  start_color ();
-  init_pair (1, COLOR_WHITE, COLOR_BLUE);
-  init_pair (2, COLOR_WHITE, COLOR_RED);
-  init_pair (3, COLOR_CYAN, COLOR_BLUE);
-
-  // Process commands.
-  std::string command = "";
-  int c;
-  while (command != "quit")
-  {
-    // Render title.
-    std::string title = "taskwarrior 3.0.0";
-    while ((int) title.length () < width)
-      title += " ";
-
-    bkgdset (COLOR_PAIR (1));
-    mvprintw (0, 0, title.c_str ());
-
-    bkgdset (COLOR_PAIR (2));
-    int line = height / 2;
-    mvprintw (line,     width / 2 - 24, " I n t e r a c t i v e   t a s k w a r r i o r ");
-    mvprintw (line + 1, width / 2 - 24, "            Coming in version 3.0.0            ");
-
-    std::string footer = "Press 'q' to quit.";
-    while ((int) footer.length () < width)
-      footer = " " + footer;
-
-    bkgdset (COLOR_PAIR (3));
-    mvprintw (height - 1, 0, footer.c_str ());
-
-    move (1, 0);
-    refresh ();
-
-    if ((c = getch ()) != ERR)
-    {
-      // 'Esc' and 'Enter' clear the accumulated commands.
-      // TODO Looks like \n is not preserved by getch.
-      if (c == 033 || c == '\n')
-      {
-        command = "";
-      }
-
-      else if (c == 'q')
-      {
-        command = "quit";
-        break;
-      }
-    }
-  }
-
-  endwin ();
   return 0;
-
-#else
-
-  throw stringtable.get (INTERACTIVE_NO_NCURSES,
-                         "Interactive taskwarrior is only available when built "
-                         "with ncurses support.");
-
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Context::getWidth ()
 {
-  // Determine window size, and set table accordingly.
+  // Determine window size.
   int width = config.getInteger ("defaultwidth");
-
-#ifdef HAVE_LIBNCURSES
-  if (config.getBoolean ("curses"))
-  {
-#ifdef FEATURE_NCURSES_COLS
-    initscr ();
-    width = COLS;
-#else
-    WINDOW* w = initscr ();
-    width = w->_maxx + 1;
-#endif
-    endwin ();
-
-    std::stringstream out;
-    out << "Context::getWidth: ncurses determined width of " << width << " characters";
-    debug (out.str ());
-  }
-  else
-    debug ("Context::getWidth: ncurses available but disabled.");
-#else
-  std::stringstream out;
-  out << "Context::getWidth: no ncurses, using width of " << width << " characters";
-  debug (out.str ());
-#endif
 
   // A zero width value means 'infinity', which is approximated here by 2^16.
   if (width == 0)
-    width = 65536;
+    return 65536;
+
+  if (config.getBoolean ("curses"))
+  {
+    if (terminal_width == 0 &&
+        terminal_height == 0)
+    {
+      unsigned short buff[4];
+      if (ioctl (fileno(stdout), TIOCGWINSZ, &buff) != -1)
+      {
+        terminal_height = buff[0];
+        terminal_width = buff[1];
+
+        std::stringstream out;
+        out << "Context::getWidth: determined width of " << width << " characters";
+        debug (out.str ());
+      }
+    }
+
+    width = terminal_width;
+  }
 
   return width;
 }
@@ -173,32 +81,27 @@ int Context::getWidth ()
 ////////////////////////////////////////////////////////////////////////////////
 int Context::getHeight ()
 {
-  // Determine window size, and set table accordingly.
-  int height = 25; // TODO Is there a better number?
+  int height = 24;
 
-#ifdef HAVE_LIBNCURSES
   if (config.getBoolean ("curses"))
   {
-#ifdef FEATURE_NCURSES_COLS
-    initscr ();
-    height = LINES;
-#else
-    WINDOW* w = initscr ();
-    height = w->_maxy + 1;
-#endif
-    endwin ();
+    if (terminal_width == 0 &&
+        terminal_height == 0)
+    {
+      unsigned short buff[4];
+      if (ioctl (fileno(stdout), TIOCGWINSZ, &buff) != -1)
+      {
+        terminal_height = buff[0];
+        terminal_width = buff[1];
 
-    std::stringstream out;
-    out << "Context::getHeight: ncurses determined height of " << height << " characters";
-    debug (out.str ());
+        std::stringstream out;
+        out << "Context::getWidth: determined height of " << terminal_height << " characters";
+        debug (out.str ());
+      }
+    }
+
+    height = terminal_height;
   }
-  else
-    debug ("Context::getHeight: ncurses available but disabled.");
-#else
-  std::stringstream out;
-  out << "Context::getHeight: no ncurses, using height of " << height << " characters";
-  debug (out.str ());
-#endif
 
   return height;
 }

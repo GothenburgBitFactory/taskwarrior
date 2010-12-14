@@ -47,10 +47,6 @@ extern "C"
 }
 #endif
 
-#ifdef HAVE_LIBNCURSES
-#include <ncurses.h>
-#endif
-
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -117,18 +113,6 @@ void handleDiagnostics (std::string& outs)
             << "\n\n";
 
   std::cout << "[1mLibraries[0m\n";
-
-  // NCurses.
-  std::cout << "   NCurses: "
-#ifdef HAVE_LIBNCURSES
-            << NCURSES_VERSION
-            << " ("
-            << NCURSES_VERSION_PATCH
-            << ")"
-#else
-            << "n/a"
-#endif
-            << "\n";
 
   std::cout << "  Readline: "
 #ifdef HAVE_LIBREADLINE

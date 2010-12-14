@@ -10,6 +10,7 @@ New Features in taskwarrior 1.9.4
   - Added change log display to the 'info' command.
   - The first month in the calendar report can now be changed with an offset
     value.
+  - No more dependency on ncurses.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.

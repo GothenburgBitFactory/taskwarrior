@@ -64,37 +64,6 @@ else
 fi
 
 
-# ncurses enabled by default.
-AC_ARG_WITH([ncurses],
-            [AS_HELP_STRING([--without-ncurses], [disable support for ncurses])],
-            [with_ncurses=no],
-            [with_ncurses=yes])
-
-AC_ARG_WITH([ncurses-inc],
-            [AS_HELP_STRING ([--with-ncurses-inc=DIR], [ncurses include files are in DIR])],
-            [ncurses_inc=$withval],
-            [ncurses_inc=''])
-
-AC_ARG_WITH([ncurses-lib],
-            [AS_HELP_STRING ([--with-ncurses-lib=DIR], [ncurses lib files are in DIR])],
-            [ncurses_lib=$withval],
-            [ncurses_lib=''])
-
-if test "x$with_ncurses" = "xyes" ; then
-  AC_DEFINE([HAVE_LIBNCURSES], [1], [Defined if you have libncurses])
-  if test -n "$ncurses_inc"; then
-    CFLAGS="$CFLAGS -I$ncurses_inc"
-    CXXFLAGS="$CXXFLAGS -I$ncurses_inc"
-  fi
-
-  if test -n "$ncurses_lib"; then
-    LDFLAGS="$LDFLAGS -L$ncurses_lib"
-  fi
-
-  AC_CHECK_LIB([ncurses],[main])
-fi
-
-
 # Readline enabled by default.
 #AC_ARG_WITH([readline],
 #            [AS_HELP_STRING([--without-readline], [disable support for readline])],

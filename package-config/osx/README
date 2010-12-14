@@ -75,11 +75,11 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
 
     Any text editor will do, but look for this line (line 5):
 
-      LFLAGS  = -L/usr/local/lib -lncurses -llua
+      LFLAGS  = -L/usr/local/lib -llua
 
     and change it to:
 
-      LFLAGS  = -L/usr/local/lib -lncurses
+      LFLAGS  = -L/usr/local/lib
 
     Now build the unit tests:
 
@@ -256,7 +256,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
 
   $ /usr/local/bin/task version
 
-  task 1.9.2 built for darwin-ncurses
+  task 1.9.2 built for darwin
   Copyright (C) 2006 - 2010 P. Beckingham, F. Hernandez.
 
   Taskwarrior may be copied only under the terms of the GNU General Public

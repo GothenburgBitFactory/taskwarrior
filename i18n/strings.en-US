@@ -18,7 +18,7 @@
 105 Inverted sequence range high-low
 106 ID Range too large
 107 Not a sequence.
-108 Interactive mode is only available when built with ncurses support.
+
 109 Empty record in input
 110 Unrecognized characters at end of line
 111 Record not recognized as format 4

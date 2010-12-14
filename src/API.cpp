@@ -115,13 +115,6 @@ static int api_task_feature (lua_State* L)
 #endif
   }
 
-  else if (name == "ncurses")
-  {
-#ifdef HAVE_NCURSES
-     value = true;
-#endif
-  }
-
   else if (name == "lua")
     value = true;
 

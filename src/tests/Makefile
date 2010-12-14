@@ -3,7 +3,7 @@ PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
           cmd.t util.t color.t list.t path.t file.t directory.t grid.t rx.t    \
           taskmod.t sensor.t rectangle.t tree.t tree2.t lisp.t uri.t
 CFLAGS  = -I. -I.. -I../.. -Wall -pedantic -ggdb3 -fno-rtti
-LFLAGS  = -L/usr/local/lib -lpthread -lncurses -llua
+LFLAGS  = -L/usr/local/lib -lpthread -llua
 OBJECTS = ../t-TDB.o ../t-Task.o ../t-text.o ../t-Date.o ../t-Table.o          \
           ../t-Duration.o ../t-util.o ../t-Config.o ../t-Sequence.o ../t-Att.o \
           ../t-Cmd.o ../t-Record.o ../t-StringTable.o ../t-Subst.o             \

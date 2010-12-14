@@ -62,23 +62,6 @@ of taskwarrior, there is the file format to consider. This is yet another good
 reason to back up your task data files!
 
 .TP
-.B Q: I'm using Ubuntu 9.04, and I want to word-wrap descriptions. How do I do this?
-A: You need to install ncurses, by doing this:
-
-    % sudo apt-get install libncurses5-dev
-
-Then you need to rebuild taskwarrior from scratch, starting with
-
-    % cd task-X.X.X
-    % ./configure
-    ...
-
-The result should be a taskwarrior program that knows the width of the terminal
-window, and wraps accordingly.
-
-Note that all the binary packages include this capability.
-
-.TP
 .B Q: How do I build taskwarrior under Cygwin?
 A: Take a look at the README.build file, where the latest information on build
 issues is kept.  Taskwarrior is built the same way everywhere. But under Cygwin,
@@ -86,15 +69,9 @@ you'll need to make sure you have the following packages available first:
 
     gcc
     make
-    libncurses-devel
-    libncurses8
 
 The gcc and make packages allow you to compile the code, and are therefore
-required, but the ncurses packages are optional. Ncurses will allow taskwarrior
-to determine the width of the window, and therefore use the whole width and wrap
-text accordingly, for a more aesthetically pleasing display.
-
-Note that there are binary packages that all include this capability.
+required.
 
 .TP
 .B Q: Do colors work under Cygwin?

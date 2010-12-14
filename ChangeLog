@@ -21,6 +21,7 @@
    intended to help scripts that manipulate task output.
  + Added feature #567, which makes it possible to apply an offset to the first
    month to be displayed in the calendar report (thanks to Michelle Crane)
+ + Eliminated dependency on ncurses.
  + Fixed bug #515, which displayed an incorrect message after duplicating a
    non-existent task (thanks to Peter De Poorter).
  + Fixed bug #529, where the 'depends' attribute was not mentioned in the

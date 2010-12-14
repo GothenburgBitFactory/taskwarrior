@@ -19,11 +19,6 @@ strip the trailing \n characters from the end of the file.
 If you must edit your pending.data file, make sure that your text editor doesn't
 convert from a Unix to a DOS file encoding.
 %
-Did you build task from source?  If you didn't have ncurses installed at the
-time, then you're missing out on text wrapping and task cannot take advantage of
-the full terminal width.  Consider rebuilding with ncurses installed, or install
-from a pre-built package for your OS.
-%
 Do you have the latest version of task installed?  Check http://taskwarrior.org
 periodically for news of updates.  That feature you wanted might be ready...
 %

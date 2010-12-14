@@ -15,15 +15,6 @@ section, which includes instructions on how to contact us for help.
 Operating System Notes
 ----------------------
 
-Cygwin 1.7
-  Building taskwarrior on Cygwin 1.7 requires a configure option:
-
-    ./configure --with-ncurses-inc=/usr/include/ncurses
-
-  This is because the ncurses include files are in a different location to
-  Cygwin 1.5.
-
-
 Haiku Alpha/R1
   Taskwarrior must be built with gcc version 4.x, so make sure you run:
 
@@ -46,53 +37,12 @@ may be compiler errors and warnings when running 'make'.  Sometimes you will run
 configure with no reported problems, and the build will fail later.  This is
 almost always because configure is mistaken about some assumption.
 
-The configure program can accept several options that help with its ability to
-locate and use the ncurses library.  They are:
-
-  --with-ncurses
-
-    This option tells configure that no matter what it thinks, ncurses is
-    definitely on this system and should be enabled.  If needed, this option
-    probable needs to be accompanied by the next two options.
-
-  --with-ncurses-inc=/usr/include
-
-    If configure cannot find ncurses header files, this option will tell it
-    exactly where to look.  The path specified in this example is the default,
-    so that probably won't help you.  The path should be the directory in which
-    the file 'ncurses.h' resides.  Here are some possible values to try:
-
-      /usr/include                    (the default shown above)
-      /usr/include/ncurses
-      /usr/local/include
-      /usr/local/include/ncurses
-
-    This should cover most systems, but new variations keeps cropping up.
-
-  --with-ncurses-lib=/usr/lib
-
-    If configure cannot find the ncurses library, this option will tell it
-    exactly where to look.  The path specified in this example is the default,
-    so that probably won't help you.  The path should be the directory in which
-    the file 'libncurses.a' (or your system's equivalent) resides.  Here are
-    some possible values to try:
-
-      /usr/lib
-      /usr/local/lib
-
-    This should cover most systems, but new variations keeps cropping up.
-
-  --without-ncurses
-
-    This disables ncurses support in taskwarrior, and should really be used as a
-    last resort.  We know of no systems where this is needed.
-
-If trying these options does not succeed, please send the contents of the
-'config.log' files to support@taskwarrior.org, or post a message in the support
-forums at taskwarrior.org along with the information.
+If a build does not succeed, please send the contents of the 'config.log' file
+to support@taskwarrior.org, or post a message in the support forums at
+taskwarrior.org along with the information.
 
 If configure runs, but taskwarrior does not build, when ideally you would send
 both the contents of config.log, and a transcript from the build, which is not
-written to a file, and must be captured from the terminal.
+written to a file and must be captured from the terminal.
 
 ---

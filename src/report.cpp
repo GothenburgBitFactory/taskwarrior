@@ -47,10 +47,6 @@
 #include <util.h>
 #include <main.h>
 
-#ifdef HAVE_LIBNCURSES
-#include <ncurses.h>
-#endif
-
 static void countTasks (const std::vector <Task>&, const std::string&, const std::string&, int&, int&);
 
 extern Context context;

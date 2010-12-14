@@ -56,6 +56,8 @@ Context::Context ()
 , var_overrides ("")
 , cmd ()
 , inShadow (false)
+, terminal_width (0)
+, terminal_height (0)
 {
 }
 

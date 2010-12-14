@@ -44,10 +44,6 @@
 #include "util.h"
 #include "main.h"
 
-#ifdef HAVE_LIBNCURSES
-#include <ncurses.h>
-#endif
-
 // Global context for use by all.
 extern Context context;
 

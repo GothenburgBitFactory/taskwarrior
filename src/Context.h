@@ -99,6 +99,9 @@ public:
   std::vector <std::string> footnotes;
   std::vector <std::string> debugMessages;
   bool                      inShadow;
+
+  int                       terminal_width;
+  int                       terminal_height;
 };
 
 #endif
