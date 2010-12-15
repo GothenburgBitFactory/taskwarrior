@@ -1,0 +1,89 @@
+################################################################################
+# Sample calendar for Denmark
+#
+# taskwarrior - a command line task list manager.
+#
+# Copyright 2010, Irfan Siddiqui.
+# All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+################################################################################
+
+calendar.holidays=sparse
+
+# 2010
+holiday.juledag.name=Juledag
+holiday.juledag.date=20101225
+holiday.andenjuledag.name=Anden juledag
+holiday.andenjuledag.date=20101226
+
+# 2011
+holiday.nytårsdag.name=Nytårsdag
+holiday.nytårsdag.date=20110101
+holiday.palmesøndag.name=Palmesøndag
+holiday.palmesøndag.date=20110417
+holiday.skærtorsdag.name=Skærtorsdag
+holiday.skærtorsdag.date=20110421
+holiday.langfredag.name=Langfredag
+holiday.langfredag.date=20110422
+holiday.påskedag.name=Påskedag
+holiday.påskedag.date=20110424
+holiday.andenpåskedag.name=Anden påskedag
+holiday.andenpåskedag.date=20110425
+holiday.storebededag.name=Store bededag
+holiday.storebededag.date=20110520
+holiday.kristihimmelfartsdag.name=Kristi himmelfartsdag
+holiday.kristihimmelfartsdag.date=20110602
+holiday.pinsedag.name=Pinsedag
+holiday.pinsedag.date=20110612
+holiday.andenpinsedag.name=Anden pinsedag
+holiday.andenpinsedag.date=20110613
+
+#holiday.juledag.name=Juledag
+#holiday.juledag.date=20111225
+#holiday.andenjuledag.name=Anden juledag
+#holiday.andenjuledag.date=20111226
+
+# 2012
+#holiday.nytårsdag.name=Nytårsdag
+#holiday.nytårsdag.date=20120101
+#holiday.palmesøndag.name=Palmesøndag
+#holiday.palmesøndag.date=20120401
+#holiday.skærtorsdag.name=Skærtorsdag
+#holiday.skærtorsdag.date=20120405
+#holiday.langfredag.name=Langfredag
+#holiday.langfredag.date=20120406
+#holiday.påskedag.name=Påskedag
+#holiday.påskedag.date=20120408
+#holiday.andenpåskedag.name=Anden påskedag
+#holiday.andenpåskedag.date=20120409
+#holiday.storebededag.name=Store bededag
+#holiday.storebededag.date=20120504
+#holiday.kristihimmelfartsdag.name=Kristi himmelfartsdag
+#holiday.kristihimmelfartsdag.date=20120517
+#holiday.pinsedag.name=Pinsedag
+#holiday.pinsedag.date=20120527
+#holiday.andenpinsedag.name=Anden pinsedag
+#holiday.andenpinsedag.date=20120528
+#holiday.juledag.name=Juledag
+#holiday.juledag.date=20121225
+#holiday.andenjuledag.name=Anden juledag
+#holiday.andenjuledag.date=20121226
