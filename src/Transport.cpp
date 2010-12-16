@@ -96,7 +96,7 @@ int Transport::execute()
     argv[2] = (char*)cmdline.c_str();	// e.g. scp undo.data user@host:.task/
     argv[3] = NULL;                   // required by execv
 
-    int ret = execvp("sh", argv);
+    int ret = execvp(shell, argv);
     delete[] argv;
 
     exit(ret);
