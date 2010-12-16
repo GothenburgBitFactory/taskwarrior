@@ -259,6 +259,16 @@ void handleDiagnostics (std::string& outs)
 
     if (uuids.size () >= 1000)
       std::cout << "1000 unique UUIDs generated.\n";
+
+    // Determine terminal details.
+    const char* term = getenv ("TERM");
+    std::cout << "     $TERM: "
+              << (term ? term : "-none=")
+              << " ("
+              << context.getWidth ()
+              << "x"
+              << context.getHeight ()
+              << ")\n";
   }
   std::cout << "\n";
 }
