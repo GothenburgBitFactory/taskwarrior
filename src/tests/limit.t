@@ -80,7 +80,7 @@ $output = qx{../task rc:limit.rc ls limit:3};
 like ($output, qr/^30 tasks, 3 shown$/ms, 'limited to 3');
 
 $output = qx{../task rc:limit.rc ls limit:page};
-like ($output, qr/^30 tasks, truncated to 20 lines$/ms, 'limited to page');
+like ($output, qr/^30 tasks, truncated to 17 tasks$/ms, 'limited to page');
 
 # Cleanup.
 unlink 'pending.data';

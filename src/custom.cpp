@@ -635,6 +635,14 @@ int handleCustomReport (const std::string& report, std::string& outs)
         table.setTableAlternateColor (alternate);
     }
 
+    // How many lines taken up by table header?
+    int table_header;
+    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+        context.config.getBoolean ("fontunderline"))
+      table_header = 1;  // Underlining doesn't use extra line.
+    else
+      table_header = 2;  // Dashes use an extra line.
+
     // Report output can be limited by rows or lines.
     int maxrows = 0;
     int maxlines = 0;
@@ -643,7 +651,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
     // Adjust for fluff in the output.
     if (maxlines)
       maxlines -= (context.config.getBoolean ("blanklines") ? 2 : 0)
-                + 1
+                + table_header
                 + context.headers.size ()
                 + context.footnotes.size ();
 
@@ -656,11 +664,11 @@ int handleCustomReport (const std::string& report, std::string& outs)
           << table.rowCount ()
           << (table.rowCount () == 1 ? " task" : " tasks");
 
-      if (maxrows)
+      if (maxrows && maxrows < table.rowCount ())
         out << ", " << maxrows << " shown";
 
       if (maxlines && maxlines < table.rowCount ())
-        out << ", truncated to " << maxlines - 1 << " lines";
+        out << ", truncated to " << maxlines - table_header << " tasks";
 
       out << std::endl;
     }

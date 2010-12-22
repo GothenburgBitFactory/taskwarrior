@@ -39,6 +39,8 @@
    Michelle Crane).
  + Fixed bug #555, which caused a segfault when logging a task with a project
    (thanks to Itay Perl).
+ + Fixed bug #579, which displayed incorrect counts when using the 'limit:N'
+   filter (thanks to Thomas Sattler).
 
 ------ old releases ------------------------------
 
