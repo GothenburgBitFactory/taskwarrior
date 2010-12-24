@@ -123,7 +123,7 @@ if test "x$with_lua" = "xyes" ; then
     LDFLAGS="$LDFLAGS -L$lua_lib"
   fi
 
-#  AC_CHECK_LIB([lua],[main])
+  AC_CHECK_LIB([lua],[main])
 
 # The following code should replace the one line above, but is not working.
 # Anyone know why?
