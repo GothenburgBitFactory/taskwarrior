@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 22;
 
 # Create the rc file.
 if (open my $fh, '>', 'default.rc')
@@ -36,7 +36,8 @@ if (open my $fh, '>', 'default.rc')
   print $fh "data.location=.\n",
             "default.command=list\n",
             "default.project=PROJECT\n",
-            "default.priority=M\n";
+            "default.priority=M\n",
+            "default.due=eom\n";
   close $fh;
   ok (-r 'default.rc', 'Created default.rc');
 }
@@ -47,13 +48,15 @@ my $output = qx{../task rc:default.rc list};
 like ($output, qr/ all defaults/, 'task added');
 like ($output, qr/ PROJECT /,     'default project added');
 like ($output, qr/ M /,           'default priority added');
+like ($output, qr/\//,            'default due added');
 unlink 'pending.data';
 
-qx{../task rc:default.rc add project:specific priority:L all specified};
+qx{../task rc:default.rc add project:specific priority:L due:eoy all specified};
 $output = qx{../task rc:default.rc list};
 like ($output, qr/ all specified/, 'task added');
 like ($output, qr/ specific /,     'project specified');
 like ($output, qr/ L /,            'priority specified');
+like ($output, qr/\//,             'due specified');
 unlink 'pending.data';
 
 qx{../task rc:default.rc add project:specific project specified};
@@ -61,6 +64,7 @@ $output = qx{../task rc:default.rc list};
 like ($output, qr/ project specified/, 'task added');
 like ($output, qr/ specific /,         'project specified');
 like ($output, qr/ M /,                'default priority added');
+like ($output, qr/\//,                 'default due added');
 unlink 'pending.data';
 
 qx{../task rc:default.rc add priority:L priority specified};
@@ -68,6 +72,7 @@ $output = qx{../task rc:default.rc list};
 like ($output, qr/ priority specified/, 'task added');
 like ($output, qr/ PROJECT /,           'default project added');
 like ($output, qr/ L /,                 'priority specified');
+like ($output, qr/\//,                  'default due added');
 
 $output = qx{../task rc:default.rc};
 like ($output, qr/1 PROJECT L .+ priority specified/, 'default command worked');

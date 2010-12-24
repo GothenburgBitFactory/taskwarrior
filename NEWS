@@ -40,6 +40,8 @@ New configuration options in taskwarrior 1.9.4
     eliminates problems with task ID numbers for script writers.
   - calendar.offset=off and calendar.offset.value=-1 to apply an offset value
     to change the effective first month in the calendar report.
+  - default.due can be specified, and adds a default due date to all added
+    and imported tasks that don't otherwise have a due date.
 
 Newly deprecated features in taskwarrior 1.9.4
 

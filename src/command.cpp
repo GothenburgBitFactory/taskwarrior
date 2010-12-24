@@ -87,6 +87,15 @@ int handleAdd (std::string& outs)
         context.task.set ("priority", defaultPriority);
     }
 
+    // Override with default.due, if not specified.
+    if (context.task.get ("due") == "")
+    {
+      std::string defaultDue = context.config.get ("default.due");
+      if (defaultDue != "" &&
+          Att::validNameValue ("due", "", defaultDue))
+        context.task.set ("due", defaultDue);
+    }
+
     // Include tags.
     foreach (tag, context.tagAdditions)
       context.task.addTag (*tag);
@@ -179,6 +188,15 @@ int handleLog (std::string& outs)
       std::string defaultPriority = context.config.get ("default.priority");
       if (Att::validNameValue ("priority", "", defaultPriority))
         context.task.set ("priority", defaultPriority);
+    }
+
+    // Override with default.due, if not specified.
+    if (context.task.get ("due") == "")
+    {
+      std::string defaultDue = context.config.get ("default.due");
+      if (defaultDue != "" &&
+          Att::validNameValue ("due", "", defaultDue))
+        context.task.set ("due", defaultDue);
     }
 
     // Include tags.
@@ -890,7 +908,7 @@ int handleShow (std::string& outs)
       "color.sync.added color.sync.changed color.sync.rejected "
       "color.undo.after confirmation curses data.location dateformat "
       "dateformat.holiday dateformat.report dateformat.annotation debug "
-      "default.command default.priority default.project defaultwidth due "
+      "default.command default.due default.priority default.project defaultwidth due "
       "dependency.confirmation dependency.reminder locale displayweeknumber "
       "export.ical.class echo.command fontunderline gc locking monthsperline "
       "nag next journal.time journal.time.start.annotation journal.info "

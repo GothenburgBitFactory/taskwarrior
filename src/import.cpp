@@ -192,6 +192,13 @@ static void decorateTask (Task& task)
       defaultPriority != "" &&
       Att::validNameValue ("priority", "", defaultPriority))
     task.set ("priority", defaultPriority);
+
+  // Override with default.due, if not specified.
+  std::string defaultDue = context.config.get ("default.due");
+  if (!task.has ("due") &&
+      defaultDue != "" &&
+      Att::validNameValue ("due", "", defaultDue))
+    task.set ("due", defaultDue);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
