@@ -91,6 +91,22 @@ static const char* modifierNames[] =
 #define NUM_MODIFIER_NAMES   (sizeof (modifierNames)   / sizeof (modifierNames[0]))
 
 ////////////////////////////////////////////////////////////////////////////////
+static inline std::string& str_replace (
+  std::string &str,
+  const std::string& search,
+  const std::string& replacement)
+{
+  std::string::size_type pos = 0;
+  while ((pos = str.find (search, pos)) != std::string::npos)
+  {
+    str.replace (pos, search.length (), replacement);
+    pos += replacement.length ();
+  }
+
+  return str;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Att::Att ()
 : mName ("")
 , mValue ("")
@@ -917,9 +933,7 @@ void Att::enquote (std::string& value) const
 // that hand-editing the pending.data file could cause.
 void Att::dequote (std::string& value) const
 {
-  std::string::size_type quote;
-  while ((quote = value.find ('"')) != std::string::npos)
-    value.replace (quote, 1, "");
+  str_replace (value, "\"", "");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -928,21 +942,14 @@ void Att::dequote (std::string& value) const
 //   "  -> &dquot;
 //   [  -> &open;
 //   ]  -> &close;
+//   \  -> \\               (extra chars to disambiguate multi-line comment)
 void Att::encode (std::string& value) const
 {
-  std::string::size_type i;
-
-  while ((i = value.find ('\t')) != std::string::npos)
-    value.replace (i, 1, "&tab;"); // no i18n
-
-  while ((i = value.find ('"')) != std::string::npos)
-    value.replace (i, 1, "&dquot;"); // no i18n
-
-  while ((i = value.find ('[')) != std::string::npos)
-    value.replace (i, 1, "&open;"); // no i18n
-
-  while ((i = value.find (']')) != std::string::npos)
-    value.replace (i, 1, "&close;"); // no i18n
+  str_replace (value, "\t", "&tab;");
+  str_replace (value, "\"", "&dquot;");
+  str_replace (value, "[",  "&open;");
+  str_replace (value, "]",  "&close;");
+  str_replace (value, "\\", "\\\\");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -956,35 +963,19 @@ void Att::encode (std::string& value) const
 //   :  <- &colon;
 void Att::decode (std::string& value) const
 {
-  std::string::size_type i;
-
   // Supported encodings.
-  while ((i = value.find ("&tab;")) != std::string::npos)
-    value.replace (i, 5, "\t");
-
-  while ((i = value.find ("&dquot;")) != std::string::npos)
-    value.replace (i, 7, "\"");
-
-  while ((i = value.find ("&quot;")) != std::string::npos)
-    value.replace (i, 6, "\"");
-
-  while ((i = value.find ("&open;")) != std::string::npos)
-    value.replace (i, 6, "[");
-
-  while ((i = value.find ("&close;")) != std::string::npos)
-    value.replace (i, 7, "]");
+  str_replace (value, "&tab;",   "\t");
+  str_replace (value, "&dquot;", "\"");
+  str_replace (value, "&quot;",  "'");
+  str_replace (value, "&open;",  "[");
+  str_replace (value, "&close;", "]");
 
   // Support for deprecated encodings.  These cannot be removed or old files
   // will not be parsable.  Not just old files - completed.data can contain
   // tasks formatted/encoded using these.
-  while ((i = value.find ("&squot;")) != std::string::npos)
-    value.replace (i, 7, "'");
-
-  while ((i = value.find ("&comma;")) != std::string::npos)
-    value.replace (i, 7, ",");
-
-  while ((i = value.find ("&colon;")) != std::string::npos)
-    value.replace (i, 7, ":");
+  str_replace (value, "&squot;", "'");
+  str_replace (value, "&comma;", ",");
+  str_replace (value, "&colon;", ":");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
