@@ -41,6 +41,8 @@
    (thanks to Itay Perl).
  + Fixed bug #579, which displayed incorrect counts when using the 'limit:N'
    filter (thanks to Thomas Sattler).
+ + Applied patch to fix bug #581, in which backslashes in annotations and
+   descriptions caused problems (thanks to Itay Perl).
 
 ------ old releases ------------------------------
 

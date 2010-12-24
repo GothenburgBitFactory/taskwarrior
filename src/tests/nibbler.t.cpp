@@ -190,23 +190,23 @@ int main (int argc, char** argv)
     t.notok (n.getQuoted ('\'', s),   "       'x' :      getQuoted (''')    -> false");
 
     n = Nibbler ("\"one\\\"two\"");
-    t.notok (n.getQuoted ('\'', s),   "\"one\\\"two\" :      getQuoted (''')    -> false");                    // 86
+    t.notok (n.getQuoted ('\'', s),   "\"one\\\"two\" :      getQuoted (''')    -> false");             // 86
 
     n = Nibbler ("\"one\\\"two\"");
-    t.ok (n.getQuoted ('"', s, false, false), "\"one\\\"two\" :      getQuoted ('\"', false, false) -> true"); // 87
-    t.is (s, "one\\\"two", "getQuoted ('\"', false, false) -> one\\\"two");                                    // 88
+    t.ok (n.getQuoted ('"', s, false), "\"one\\\"two\" :      getQuoted ('\"', false, false) -> true"); // 87
+    t.is (s, "one\"two", "getQuoted ('\"', false) -> one\"two");                                        // 88
 
     n = Nibbler ("\"one\\\"two\"");
-    t.ok (n.getQuoted ('"', s, false, true),  "\"one\\\"two\" :      getQuoted ('\"', false, true)  -> true"); // 89
-    t.is (s, "\"one\\\"two\"", "getQuoted ('\"', false, true) -> \"one\\\"two\"");                             // 90
+    t.ok (n.getQuoted ('"', s, true),  "\"one\\\"two\" :      getQuoted ('\"', false, true)  -> true"); // 89
+    t.is (s, "\"one\"two\"", "getQuoted ('\"', true) -> \"one\"two\"");                                 // 90
 
     n = Nibbler ("\"one\\\"two\"");
-    t.ok (n.getQuoted ('"', s, true,  false), "\"one\\\"two\" :      getQuoted ('\"', true,  false) -> true"); // 91
-    t.is (s, "one\"two", "getQuoted ('\"', true, false) -> one\"two");                                         // 92
+    t.ok (n.getQuoted ('"', s, false), "\"one\\\"two\" :      getQuoted ('\"', true,  false) -> true"); // 91
+    t.is (s, "one\"two", "getQuoted ('\"', false) -> one\"two");                                        // 92
 
     n = Nibbler ("\"one\\\"two\"");
-    t.ok (n.getQuoted ('"', s, true,  true),  "\"one\\\"two\" :      getQuoted ('\"', true,  true)  -> true"); // 93
-    t.is (s, "\"one\"two\"", "getQuoted ('\"', true, true) -> \"one\"two\"");                                  // 94
+    t.ok (n.getQuoted ('"', s, true),  "\"one\\\"two\" :      getQuoted ('\"', true,  true)  -> true"); // 93
+    t.is (s, "\"one\"two\"", "getQuoted ('\"', true) -> \"one\"two\"");                                 // 94
 
 
     // bool getInt (int&);

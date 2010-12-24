@@ -258,13 +258,13 @@ int main (int argc, char** argv)
 
   n = Nibbler ("name:\"&quot;\"");
   a7.parse (n);
-  t.is (a7.composeF4 (), "name:\"&dquot;\"",
-         "Att::parse (name:\"&quot;\")");
+  t.is (a7.composeF4 (), "name:\"'\"",
+         "Att::parse (name:\"'\")");
 
   n = Nibbler ("name:\"&tab;&quot;&comma;&open;&close;&colon;\"");
   a7.parse (n);
-  t.is (a7.composeF4 (), "name:\"&tab;&dquot;,&open;&close;:\"",
-             "Att::parse (name:\"&tab;&quot;,&open;&close;:\")");
+  t.is (a7.composeF4 (), "name:\"&tab;',&open;&close;:\"",
+             "Att::parse (name:\"&tab;',&open;&close;:\")");
 
   n = Nibbler ("total gibberish");
   good = true;

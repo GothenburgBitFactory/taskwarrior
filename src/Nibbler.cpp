@@ -213,65 +213,50 @@ bool Nibbler::getUntilEOS (std::string& result)
 bool Nibbler::getQuoted (
   char c,
   std::string& result,
-  bool unescape /* = true */,
   bool quote /* = false */)
 {
-  if (mCursor < mLength)
+  bool inquote = false;
+  bool inescape = false;
+  char current = 0;
+  char previous = 0;
+  result = "";
+
+  if (mCursor >= mLength ||
+      mInput[mCursor] != c)
   {
-    if (mInput[mCursor] != c)
-      return false;
+    return false;
+  }
 
-    result = "";
-    bool inquote = false;
-    char current = 0;
-    char previous = 0;
+  for (std::string::size_type i = mCursor; i < mLength; ++i)
+  {
+    previous = current;
+    current = mInput[i];
 
-    // '"'
-    // p c
-    // - -
-    //   '
-    // ' "
-    // " '
-    for (std::string::size_type i = mCursor; i < mLength; ++i)
+    if (current == '\\' && !inescape)
     {
-      previous = current;
-      current = mInput[i];
+      inescape = true;
+      continue;
+    }
 
-      if (current == c)
+    if (current == c && !inescape)
+    {
+      if (quote)
+        result += current;
+
+      if (!inquote)
       {
-        if (previous == '\\')
-        {
-           if (!unescape)
-             result += previous;
-
-           result += current;
-        }
-        else
-        {
-          if (!inquote)
-          {
-            inquote = true;
-            if (quote)
-              result += current;
-          }
-          else
-          {
-            if (quote)
-              result += current;
-
-            mCursor = i + 1;
-            return true;
-          }
-        }
-      }
-      else if (current == '\\')
-      {
-        // NOP
+        inquote = true;
       }
       else
       {
-        result += current;
+        mCursor = i + 1;
+        return true;
       }
+    }
+    else
+    {
+      result += current;
+      inescape = false;
     }
   }
 
