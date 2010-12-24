@@ -113,6 +113,7 @@ AC_ARG_WITH([lua-lib],
 
 if test "x$with_lua" = "xyes" ; then
   AC_DEFINE([HAVE_LIBLUA], [1], [Defined if you have liblua])
+
   if test -n "$lua_inc"; then
     CFLAGS="$CFLAGS -I$lua_inc"
     CXXFLAGS="$CXXFLAGS -I$lua_inc"
@@ -122,7 +123,27 @@ if test "x$with_lua" = "xyes" ; then
     LDFLAGS="$LDFLAGS -L$lua_lib"
   fi
 
-  AC_CHECK_LIB([lua],[main])
+#  AC_CHECK_LIB([lua],[main])
+
+# The following code should replace the one line above, but is not working.
+# Anyone know why?
+
+#  # check for lua. this is separate from the above libraries because it's
+#  # liblua50 on debian and liblua everywhere else.
+#  AC_CHECK_LIB(lua, lua_open, LIB_LUA="-llua")
+#  AC_CHECK_LIB(lualib, luaopen_base, LIB_LUA_LIB=-llualib, , [$LIB_LUA -ldl -lm])
+#
+#  if test "x${LIB_LUA}" = "x"; then
+#    echo "Could not find liblua. Please install liblua 5.1+"
+#    exit 1
+#  fi
+#
+#  if test "x${LIB_LUA_LIB}" = "x"; then
+#    echo "Could not find liblualib. Please install liblualib 5.1+"
+#    exit 1
+#  fi
+#
+#  LDFLAGS="$LDFLAGS $LIB_LUA $LIB_LUA_LIB"
 fi
 
 
