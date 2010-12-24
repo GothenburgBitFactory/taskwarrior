@@ -36,6 +36,7 @@
  + Fixed bug #539, where the man page task-color(5) contained a line that
    began with a ' and was not displayed.
  + Fixed bug #540, where user names containing @s could not be parsed
+ + Fixed bug #541, which prevented sorting by 'age' column in some situations.
  + Fixed bug #542, which sorted the countdown columns incorrectly (thanks to
    Michelle Crane).
  + Fixed bug #555, which caused a segfault when logging a task with a project
