@@ -590,13 +590,6 @@ void handleMerge (std::string& outs)
     Uri uri (file, "merge");
     uri.parse();
 
-    if (sAutopush == "ask")
-    {
-      // expand uri
-      Uri push (file, "push");
-      pushfile = push.data;
-    }
-
     if (uri.data.length ())
     {
       Directory location (context.config.get ("data.location"));
@@ -627,10 +620,11 @@ void handleMerge (std::string& outs)
       if (tmpfile != "")
         remove (tmpfile.c_str ());
 
-      if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + pushfile + "\'?")) )
+      if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri.data + "\'?")) )
          || (bAutopush) )
       {
         std::string out;
+		  context.task.set ("description", uri.data);
         handlePush (out);
       }
     }
