@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (30);
+  UnitTest t (44);
 
   Uri uri1 ("asfd://user@host/folder/");
   uri1.parse ();
@@ -87,6 +87,29 @@ int main (int argc, char** argv)
   t.ok (uri6.is_local(), "Uri::is_local() : /home/user/.task/");
   uri6.parse ();
   t.is (uri6.path,     "/home/user/.task/", "Uri::expand() test");
+
+  Uri uri7 ("ftp://'user@name'@host:321/path/to/x");
+  uri7.parse ();
+  t.is (uri7.user,      "user@name", "Uri::parse() : ftp://'user@name'@host:321/path/to/x");
+  t.is (uri7.host,      "host",      "Uri::parse() : ftp://'user@name'@host:321/path/to/x");
+  t.is (uri7.port,      "321",       "Uri::parse() : ftp://'user@name'@host:321/path/to/x");
+  t.is (uri7.path,      "path/to/x", "Uri::parse() : ftp://'user@name'@host:321/path/to/x");
+  t.is (uri7.protocol,  "ftp",       "Uri::parse() : ftp://'user@name'@host:321/path/to/x");
+
+  Uri uri8 ("http://'us/er@n:ame'@host/path/to/x");
+  uri8.parse ();
+  t.is (uri8.user,      "us/er@n:ame", "Uri::parse() : http://'us/er@n:ame'@host/path/to/x");
+  t.is (uri8.host,      "host",        "Uri::parse() : http://'us/er@n:ame'@host/path/to/x");
+  t.is (uri8.port,      "",            "Uri::parse() : http://'us/er@n:ame'@host/path/to/x");
+  t.is (uri8.path,      "path/to/x",   "Uri::parse() : http://'us/er@n:ame'@host/path/to/x");
+  t.is (uri8.protocol,  "http",        "Uri::parse() : http://'us/er@n:ame'@host/path/to/x");
+
+  Uri uri9 ("'user@name'@host:path/to/x");
+  uri9.parse ();
+  t.is (uri9.user,  "user@name",   "Uri::parse() : 'user@name'@host:path/to/x");
+  t.is (uri9.host,  "host",        "Uri::parse() : 'user@name'@host:path/to/x");
+  t.is (uri9.port,  "",            "Uri::parse() : 'user@name'@host:path/to/x");
+  t.is (uri9.path,  "path/to/x",   "Uri::parse() : 'user@name'@host:path/to/x");
 
   return 0;
 }

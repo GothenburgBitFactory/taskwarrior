@@ -198,54 +198,74 @@ void Uri::parse ()
   }
 
   std::string::size_type pos;
-	std::string uripart;
-	std::string pathDelimiter = "/";
+  std::string uripart;
+  std::string pathDelimiter = "/";
 
-	user = "";
-	port = "";
+  user = "";
+  port = "";
 
 	// skip ^.*://
   if ((pos = data.find ("://")) != std::string::npos)
-	{
-		protocol = data.substr(0, pos);
-		data = data.substr (pos+3);
-		// standard syntax: protocol://[user@]host.xz[:port]/path/to/undo.data
-		pathDelimiter = "/";
-	}
-	else
-	{
-		protocol = "ssh";
-		// scp-like syntax: [user@]host.xz:path/to/undo.data
-		pathDelimiter = ":";
-	}
+  {
+    protocol = data.substr(0, pos);
+    data = data.substr (pos+3);
+    // standard syntax: protocol://[user@]host.xz[:port]/path/to/undo.data
+    pathDelimiter = "/";
+  }
+  else
+  {
+    protocol = "ssh";
+    // scp-like syntax: [user@]host.xz:path/to/undo.data
+    pathDelimiter = ":";
+  }
 
-	// get host part
-	if ((pos = data.find (pathDelimiter)) != std::string::npos)
-	{
-		host = data.substr (0, pos);
-		path = data.substr (pos+1);
-	}
-	else
-	{
+  // user delimited by single quotes?
+  if ( data[0] == '\''
+   && (pos = data.find("'", 1)) != std::string::npos )
+  {
+    if (data[pos+1] == '@')
+    {
+      // end of user name
+      user = data.substr (1, pos-1);
+      data = data.substr (pos+2);
+    }
+    else
+    {
+      throw std::string ("Could not parse uri '") + data + "', wrong usage of single quotes.";
+    }
+  }
+  else
+  {
+    // find user name
+    if ((pos = data.find ("@")) != std::string::npos)
+    {
+      user = data.substr (0, pos);
+      data = data.substr (pos+1);
+    }
+  }
+
+  // get host, port and path
+  if ((pos = data.find (pathDelimiter)) != std::string::npos)
+  {
+    host = data.substr (0, pos);
+    path = data.substr (pos+1);
+  }
+  else
+  {
     throw std::string ("The uri '") + data + "' is not in the expected format.";
-	}
+  }
 
-	// parse host
-	if ((pos = host.find ("@")) != std::string::npos)
-	{
-		user = host.substr (0, pos);
-		host = host.substr (pos+1);
-	}
-
-	// remark: this find() will never be != npos for scp-like syntax
-	// because we found pathDelimiter, which is ":", before
-	if ((pos = host.find (":")) != std::string::npos)
-	{
-		port = host.substr (pos+1);
-		host = host.substr (0,pos);
-	}
+  // port specified?
+  // remark: this find() will never be != npos for scp-like syntax
+  // because we found pathDelimiter, which is ":", before
+  if ((pos = host.find (":")) != std::string::npos)
+  {
+    port = host.substr (pos+1);
+    host = host.substr (0,pos);
+  }
 
   parsed = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// vim: et ts=2 sw=2

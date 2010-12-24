@@ -134,6 +134,21 @@ https://host[:port]/path/to/undo.data
 ftp://[user@]host[:port]/path/to/undo.data
 .RE
 
+You can use single quotes to encapsulate user names that contain delimiting 
+characters like '@', '/' or ':', e.g.:
+
+.br
+.RS
+ssh://'user@name'@host/
+.RE
+
+Remember to escape the quotes on your shell:
+
+.br
+.RS
+$ task push ftp://\'user@name\':host/
+.RE
+
 .SH CONFLICTS
 When modifications on the local and remote machine conflict, for example if
 both machines change the project name of the same task to different values,
