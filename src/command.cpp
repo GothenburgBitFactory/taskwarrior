@@ -553,6 +553,46 @@ int handleUrgency (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int handleQuery (std::string& outs)
+{
+  int rc = 0;
+
+  if (context.hooks.trigger ("pre-query-command"))
+  {
+    // Get all the tasks.
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    handleRecurrence ();
+    context.tdb.load (tasks, context.filter);
+    context.tdb.commit ();
+    context.tdb.unlock ();
+
+    // Filter sequence.
+    if (context.sequence.size ())
+      context.filter.applySequence (tasks, context.sequence);
+
+    // Note: "limit:" feature not supported.
+
+    // Compose output.
+    outs = "{";
+    std::vector <Task>::iterator t;
+    for (t = tasks.begin (); t != tasks.end (); ++t)
+    {
+      if (t != tasks.begin ())
+        outs += ",\n";
+
+      outs += t->composeJSON ();
+    }
+
+    outs += "}\n";
+
+    context.hooks.trigger ("post-query-command");
+  }
+
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int handleCompletionIDs (std::string& outs)
 {
   std::vector <Task> tasks;

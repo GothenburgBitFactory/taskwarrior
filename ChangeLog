@@ -24,6 +24,8 @@
  + Added feature #574, default due dates (thanks to Erlan Sergaziev).
  + Added feature #575, including Danish holidays (thanks to Irfan Siddiqui).
  + Eliminated dependency on ncurses.
+ + Added _query helper command for script writers, which accepts a filter like
+   any other report, but returns only full JSON.
  + Fixed bug #515, which displayed an incorrect message after duplicating a
    non-existent task (thanks to Peter De Poorter).
  + Fixed bug #529, where the 'depends' attribute was not mentioned in the
