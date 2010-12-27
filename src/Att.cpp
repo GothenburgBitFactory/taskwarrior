@@ -779,7 +779,7 @@ bool Att::match (const Att& other) const
   // word = contains as a substring, with word boundaries.
   else if (mMod == "word") // TODO i18n
   {
-    if (regex)
+    if (regex && other.mName != "tags")
     {
       std::vector <int> start;
       std::vector <int> end;
@@ -811,7 +811,7 @@ bool Att::match (const Att& other) const
   // noword = does not contain as a substring, with word boundaries.
   else if (mMod == "noword") // TODO i18n
   {
-    if (regex)
+    if (regex && other.mName != "tags")
     {
       std::vector <int> start;
       std::vector <int> end;
