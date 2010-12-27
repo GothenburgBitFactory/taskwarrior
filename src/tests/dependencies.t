@@ -121,11 +121,12 @@ qx{../task rc:dep.rc add Five};
 qx{../task rc:dep.rc add Six recurring due:tomorrow recur:daily};
 
 # [20]
+qx{../task rc:dep.rc ls}; # To force handleRecurrence call.
 $output = qx{../task rc:dep.rc 6 dep:5};
 like ($output, qr/Modified \d+ task/, 'dependencies - recurring task depending on another task');
 
 # [21]
-$output = qx{../task rc:dep.rc 5 dep:6};
+$output = qx{../task rc:dep.rc 4 dep:5};
 like ($output, qr/Modified \d+ task/, 'dependencies - task depending on recurring task');
 
 # [22] t 1 dep:2,3,4; t 1 dep:-2,-4,5; t info 1 => blocked by 3,5

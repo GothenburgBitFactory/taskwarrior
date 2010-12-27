@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
@@ -44,7 +44,6 @@ my $output = qx{../task rc:recur.rc list};
 like ($output, qr/one/, 'recur weekdays');
 
 $output = qx{../task rc:recur.rc info 1};
-like ($output, qr/Status\s+Recurring/,    'task is recurring');
 like ($output, qr/Recurrence\s+weekdays/, 'task recurs every weekday');
 
 qx{../task rc:recur.rc do 1};

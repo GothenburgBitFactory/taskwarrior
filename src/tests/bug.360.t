@@ -45,16 +45,16 @@ qx{../task rc:bug.rc ls};
 
 # Result: trying to add the project generates an error about removing
 # recurrence from a task.
-my $output = qx{../task rc:bug.rc 2 project:bar};
+my $output = qx{../task rc:bug.rc 1 project:bar};
 unlike ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'No recurrence removal error');
 
 # Now try to generate the error above via regular means - ie, is it actually
 # doing what it should?
-$output = qx{../task rc:bug.rc 2 recur:};
+$output = qx{../task rc:bug.rc 1 recur:};
 like ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'Recurrence removal error');
 
 # Prevent removal of the due date from a recurring task.
-$output = qx{../task rc:bug.rc 2 due:};
+$output = qx{../task rc:bug.rc 1 due:};
 like ($output, qr/You cannot remove the due date from a recurring task./ms, 'Cannot remove due date from a recurring task');
 
 # Allow removal of the due date from a non-recurring task.

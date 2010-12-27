@@ -81,6 +81,7 @@ bool Task::operator== (const Task& other)
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task (const std::string& input)
 {
+  id = 0;
   parse (input);
 }
 

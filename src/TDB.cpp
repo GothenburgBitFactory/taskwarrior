@@ -309,7 +309,10 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
           {
             // TODO Add hidden attribute indicating source?
             Task task (line);
-            task.id = mId++;
+
+            Task::status status = task.getStatus ();
+            if (status != Task::recurring)
+              task.id = mId++;
 
             mPending.push_back (task);
 

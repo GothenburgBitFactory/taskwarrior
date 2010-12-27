@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 12;
 
 # Create the rc file.
 if (open my $fh, '>', 'add.rc')
@@ -54,12 +54,6 @@ $output = qx{../task rc:add.rc info 1};
 like ($output, qr/ID\s+1\n/, 'add ID');
 like ($output, qr/Status\s+Pending\n/, 'add Pending');
 like ($output, qr/Description\s+This a TEST\n/, 'add ID');
-
-# Test delete.
-qx{../task rc:add.rc delete 1};
-$output = qx{../task rc:add.rc info 1};
-like ($output, qr/ID\s+1\n/, 'add ID');
-like ($output, qr/Status\s+Deleted\n/, 'add Deleted');
 
 # Cleanup.
 unlink 'pending.data';

@@ -36,14 +36,16 @@
  + Fixed bug #538, where some color legend items were not readable.
  + Fixed bug #539, where the man page task-color(5) contained a line that
    began with a ' and was not displayed.
- + Fixed bug #540, where user names containing @s could not be parsed
+ + Fixed bug #540, where user names containing @s could not be parsed.
  + Fixed bug #541, which prevented sorting by 'age' column in some situations.
  + Fixed bug #542, which sorted the countdown columns incorrectly (thanks to
    Michelle Crane).
  + Fixed bug #555, which caused a segfault when logging a task with a project
    (thanks to Itay Perl).
+ + Fixed bug #564, which allowed the deletion of parent recurring tasks (thanks
+   to Peter De Poorter).
  + Fixed bug #570, which used unsupported brace expansion with dash (default
-   /bin/sh in Ubuntu)
+   /bin/sh in Ubuntu).
  + Fixed bug #579, which displayed incorrect counts when using the 'limit:N'
    filter (thanks to Thomas Sattler).
  + Fixed bug #580, where reusing the merge uri for autopush failed when the

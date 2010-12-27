@@ -47,7 +47,7 @@ if (open my $fh, '>', 'response.txt')
   ok (-r 'response.txt', 'Created response.txt');
 }
 
-qx{../task rc:confirm.rc add foo} for 1 .. 10;
+qx{../task rc:confirm.rc add foo} for 1..10;
 
 # Test the various forms of "Yes".
 my $output = qx{echo "Yes" | ../task rc:confirm.rc del 1};

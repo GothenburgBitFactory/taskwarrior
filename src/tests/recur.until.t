@@ -43,12 +43,12 @@ qx{../task rc:recur.rc add foo due:now recur:2sec until:5sec};
 diag ("Sleeping for 6 seconds");
 sleep 6;
 my $output = qx{../task rc:recur.rc list};
+like ($output, qr/^\s+1/ms, 'Found 1');
 like ($output, qr/^\s+2/ms, 'Found 2');
 like ($output, qr/^\s+3/ms, 'Found 3');
 like ($output, qr/^\s+4/ms, 'Found 4');
-like ($output, qr/^\s+5/ms, 'Found 5');
 
-qx{../task rc:recur.rc do $_} for 2..6;
+qx{../task rc:recur.rc do $_} for 1..5;
 $output = qx{../task rc:recur.rc list};
 like ($output, qr/and has been deleted/, 'Parent task deleted');
 
