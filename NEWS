@@ -66,6 +66,7 @@ Taskwarrior has been built and tested on the following configurations:
   * Solaris 10 and 8
   * OpenBSD 4.5
   * FreeBSD
+  * NetBSD
   * Cygwin 1.7 and 1.5
   * Haiku R1/alpha1
 
