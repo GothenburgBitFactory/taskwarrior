@@ -447,13 +447,14 @@ std::string Chart::render ()
   grid.replace (LOC (graph_height / 2,     width - 10), 10, "ss Started");
   grid.replace (LOC (graph_height / 2 + 1, width - 10), 10, "pp Pending");
 
-  // Draw y-axis.
-  for (int i = 0; i < graph_height; ++i)
-     grid.replace (LOC (i + 1, max_label + 1), 1, "|");
-
   // Determine y-axis labelling.
   std::vector <int> labels;
   yLabels (labels);
+  max_label = (int) log10 ((double) labels[2]) + 1;
+
+  // Draw y-axis.
+  for (int i = 0; i < graph_height; ++i)
+     grid.replace (LOC (i + 1, max_label + 1), 1, "|");
 
   // Draw y-axis labels.
   char label [12];
