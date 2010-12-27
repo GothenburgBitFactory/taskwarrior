@@ -425,6 +425,29 @@ std::string Task::composeYAML () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string Task::composeJSON () const
+{
+  std::stringstream out;
+  out << "{";
+
+  std::map <std::string, Att>::const_iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+  {
+    if (i != this->begin ())
+      out << ",";
+
+    out << "\""
+        << i->second.name ()
+        << "\":\""
+        << i->second.value ()
+        << "\"";
+  }
+
+  out << "}";
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Task::getAnnotations (std::vector <Att>& annotations) const
 {
   annotations.clear ();

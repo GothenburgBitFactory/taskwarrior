@@ -45,6 +45,7 @@ public:
   void parse (const std::string&);
   std::string composeCSV () const;
   std::string composeYAML () const;
+  std::string composeJSON () const;
 
   // Status values.
   enum status {pending, completed, deleted, recurring, waiting};
