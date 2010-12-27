@@ -61,6 +61,11 @@ std::string::size_type find (const std::string&, const std::string&, bool sensit
 std::string::size_type find (const std::string&, const std::string&, std::string::size_type, bool sensitive = true);
 int strippedLength (const std::string&);
 std::string cutOff (const std::string&, std::string::size_type);
+std::string format (char);
+std::string format (int);
+std::string formatHex (int);
+std::string format (float, int, int);
+std::string format (double, int, int);
 
 // UTF-8 aware.
 int characters (const std::string&);

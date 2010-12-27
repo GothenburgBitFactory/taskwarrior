@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (194);
+  UnitTest t (208);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -389,8 +389,32 @@ int main (int argc, char** argv)
 
   // int characters (const std::string&);
   t.is (characters ("Çirçös"),            6, "characters (Çirçös) == 6");
-  t.is (characters ("ツネナラム"),        5, "characters (ツネナラム) == 6");
-  t.is (characters ("Zwölf Boxkämpfer"), 16, "characters (Zwölf Boxkämpfer) == 6");
+  t.is (characters ("ツネナラム"),        5, "characters (ツネナラム) == 5");
+  t.is (characters ("Zwölf Boxkämpfer"), 16, "characters (Zwölf Boxkämpfer) == 16");
+
+  // std::string format (char);
+  t.is (format ('A'), "A", "format ('A') -> A");
+
+  // std::string format (int);
+  t.is (format (0),  "0",  "format (0) -> 0");
+  t.is (format (-1), "-1", "format (-1) -> -1");
+
+  // std::string formatHex (int);
+  t.is (formatHex (0),   "0",  "formatHex (0) -> 0");
+  t.is (formatHex (10),  "a",  "formatHex (10) -> a");
+  t.is (formatHex (123), "7b", "formatHex (123) -> 7b");
+
+  // std::string format (float, int, int);
+  t.is (format (1.23456789, 8, 1), "       1",  "format (1.23456789, 8, 1) -> _______1");
+  t.is (format (1.23456789, 8, 2), "     1.2",  "format (1.23456789, 8, 2) -> _____1.2");
+  t.is (format (1.23456789, 8, 3), "    1.23",  "format (1.23456789, 8, 3) -> ____1.23");
+  t.is (format (1.23456789, 8, 4), "   1.235",  "format (1.23456789, 8, 4) -> ___1.235");
+  t.is (format (1.23456789, 8, 5), "  1.2346",  "format (1.23456789, 8, 5) -> __1.2346");
+  t.is (format (1.23456789, 8, 6), " 1.23457",  "format (1.23456789, 8, 6) ->  1.23457");
+  t.is (format (1.23456789, 8, 7), "1.234568",  "format (1.23456789, 8, 7) -> 1.234568");
+  t.is (format (1.23456789, 8, 8), "1.2345679", "format (1.23456789, 8, 8) -> 1.2345679");
+
+  // std::string format (double, int, int);
 
   return 0;
 }

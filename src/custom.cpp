@@ -140,20 +140,14 @@ int handleCustomReport (const std::string& report, std::string& outs)
         table.setColumnWidth (columnCount, Table::minimum);
         table.setColumnJustification (columnCount, Table::right);
 
-        char s[16];
         std::string value;
         int row = 0;
         foreach (task, tasks)
         {
           if (task->id != 0)
-          {
-            sprintf (s, "%d", (int) task->id);
-            value = s;
-          }
+            value = format (task->id);
           else
-          {
             value = "-";
-          }
 
           context.hooks.trigger ("format-id", "id", value);
           table.addCell (row++, columnCount, value);

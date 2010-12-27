@@ -640,17 +640,13 @@ const bool Config::getBoolean (const std::string& key)
 ////////////////////////////////////////////////////////////////////////////////
 void Config::set (const std::string& key, const int value)
 {
-  char v[24];
-  sprintf (v, "%d", value);
-  (*this)[key] = v;
+  (*this)[key] = format (value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Config::set (const std::string& key, const double value)
 {
-  char v[32];
-  sprintf (v, "%f", value);
-  (*this)[key] = v;
+  (*this)[key] = format (value, 1, 8);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -431,12 +431,9 @@ int handleInfo (std::string& outs)
       context.hooks.trigger ("pre-display", *task);
 
       // id
-      char svalue[12];
-      std::string value;
       int row = table.addRow ();
       table.addCell (row, 0, "ID");
-      sprintf (svalue, "%d", (int) task->id);
-      value = svalue;
+      std::string value = format (task->id);
       context.hooks.trigger ("format-id", "id", value);
       table.addCell (row, 1, value);
 

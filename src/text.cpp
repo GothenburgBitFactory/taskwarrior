@@ -635,6 +635,7 @@ int strippedLength (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// UTF8
 int characters (const std::string& str)
 {
   int byteLength = str.length ();
@@ -658,14 +659,59 @@ std::string cutOff (const std::string& str, std::string::size_type len)
 {
   if (str.length () > len)
   {
-    return (str.substr(0,len-2) + "..");
+    return (str.substr (0, len - 2) + "..");
   }
   else
   {
     std::string res = str;
     res.resize (len, ' ');
     return res;
-  }  
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string format (char value)
+{
+  std::stringstream s;
+  s << value;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string format (int value)
+{
+  std::stringstream s;
+  s << value;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string formatHex (int value)
+{
+  std::stringstream s;
+  s.setf (std::ios::hex, std::ios::basefield);
+  s << value;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string format (float value, int width, int precision)
+{
+  std::stringstream s;
+  s.width (width);
+  s.precision (precision);
+  s << value;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string format (double value, int width, int precision)
+{
+  std::stringstream s;
+  s.width (width);
+  s.precision (precision);
+  s << value;
+  return s.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -49,6 +49,7 @@ public:
 
   bool getQuoted (char, std::string&, bool quote = false);
   bool getInt (int&);
+  bool getHex (int&);
   bool getUnsignedInt (int&);
   bool getNumber (double&);
   bool getLiteral (const std::string&);

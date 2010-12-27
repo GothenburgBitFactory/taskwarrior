@@ -478,12 +478,10 @@ int handleReportGHistoryMonthly (std::string& outs)
         std::string bar = "";
         if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
         {
-          char number[24];
           std::string aBar = "";
           if (addedGroup[i->first])
           {
-            sprintf (number, "%d", addedGroup[i->first]);
-            aBar = number;
+            aBar = format (addedGroup[i->first]);
             while (aBar.length () < addedBar)
               aBar = " " + aBar;
           }
@@ -491,8 +489,7 @@ int handleReportGHistoryMonthly (std::string& outs)
           std::string cBar = "";
           if (completedGroup[i->first])
           {
-            sprintf (number, "%d", completedGroup[i->first]);
-            cBar = number;
+            cBar = format (completedGroup[i->first]);
             while (cBar.length () < completedBar)
               cBar = " " + cBar;
           }
@@ -500,8 +497,7 @@ int handleReportGHistoryMonthly (std::string& outs)
           std::string dBar = "";
           if (deletedGroup[i->first])
           {
-            sprintf (number, "%d", deletedGroup[i->first]);
-            dBar = number;
+            dBar = format (deletedGroup[i->first]);
             while (dBar.length () < deletedBar)
               dBar = " " + dBar;
           }
@@ -677,12 +673,10 @@ int handleReportGHistoryAnnual (std::string& outs)
         std::string bar = "";
         if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
         {
-          char number[24];
           std::string aBar = "";
           if (addedGroup[i->first])
           {
-            sprintf (number, "%d", addedGroup[i->first]);
-            aBar = number;
+            aBar = format (addedGroup[i->first]);
             while (aBar.length () < addedBar)
               aBar = " " + aBar;
           }
@@ -690,8 +684,7 @@ int handleReportGHistoryAnnual (std::string& outs)
           std::string cBar = "";
           if (completedGroup[i->first])
           {
-            sprintf (number, "%d", completedGroup[i->first]);
-            cBar = number;
+            cBar = format (completedGroup[i->first]);
             while (cBar.length () < completedBar)
               cBar = " " + cBar;
           }
@@ -699,8 +692,7 @@ int handleReportGHistoryAnnual (std::string& outs)
           std::string dBar = "";
           if (deletedGroup[i->first])
           {
-            sprintf (number, "%d", deletedGroup[i->first]);
-            dBar = number;
+            dBar = format (deletedGroup[i->first]);
             while (dBar.length () < deletedBar)
               dBar = " " + dBar;
           }

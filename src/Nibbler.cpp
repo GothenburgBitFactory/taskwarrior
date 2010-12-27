@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
+#include <inttypes.h>
 #include <string.h>
 #include <ctype.h>
 #include "Nibbler.h"
@@ -283,6 +284,33 @@ bool Nibbler::getInt (int& result)
   if (i > mCursor)
   {
     result = atoi (mInput.substr (mCursor, i - mCursor).c_str ());
+    mCursor = i;
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getHex (int& result)
+{
+  std::string::size_type i = mCursor;
+
+  if (i < mLength)
+  {
+    if (mInput[i] == '-')
+      ++i;
+    else if (mInput[i] == '+')
+      ++i;
+  }
+
+  // TODO Potential for use of find_first_not_of
+  while (i < mLength && isxdigit (mInput[i]))
+    ++i;
+
+  if (i > mCursor)
+  {
+    result = strtoimax (mInput.substr (mCursor, i - mCursor).c_str (), NULL, 16);
     mCursor = i;
     return true;
   }

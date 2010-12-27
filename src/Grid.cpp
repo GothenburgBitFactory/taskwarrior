@@ -61,6 +61,7 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <text.h>
 #include <Grid.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -364,16 +365,14 @@ Grid::Cell::operator double () const
 
 Grid::Cell::operator std::string () const
 {
-  char s[64] = {0};
-
   switch (mType)
   {
   case CELL_BOOL:   return mBool ? "true" : "false"; // TODO i18n
-  case CELL_CHAR:   sprintf (s, "%c", mChar);   return std::string (s);
-  case CELL_INT:    sprintf (s, "%d", mInt);    return std::string (s);
-  case CELL_FLOAT:  sprintf (s, "%f", mFloat);  return std::string (s);
-  case CELL_DOUBLE: sprintf (s, "%f", mDouble); return std::string (s);
-  case CELL_STRING:                             return mString;
+  case CELL_CHAR:   return format (mChar);
+  case CELL_INT:    return format (mInt);
+  case CELL_FLOAT:  return format (mFloat, 1, 6);
+  case CELL_DOUBLE: return format (mDouble, 1, 8);
+  case CELL_STRING: return mString;
   }
 
   return std::string ("");

@@ -83,9 +83,7 @@ static std::string findDate (
       if (value != "")
       {
         Date dt (value, context.config.get ("dateformat"));
-        char epoch [16];
-        sprintf (epoch, "%d", (int)dt.toEpoch ());
-        return std::string (epoch);
+        return format ((int) dt.toEpoch ());
       }
     }
   }
