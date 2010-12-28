@@ -38,10 +38,10 @@ if (open my $fh, '>', 'import.rc')
   ok (-r 'import.rc', 'Created import.rc');
 }
 
-my $output = qx{../task rc:import.rc import http://taskwarrior.org/attachments/download/216/import.txt};
+my $output = qx{../src/task rc:import.rc import http://taskwarrior.org/attachments/download/216/import.txt};
 like ($output, qr/Imported 2 tasks successfully, with 0 errors./, 'no errors');
 
-$output = qx{../task rc:import.rc list};
+$output = qx{../src/task rc:import.rc list};
 like ($output, qr/1.+A.+H.+This is a test/, 't1');
 like ($output, qr/2.+Another task/,         't2');
 

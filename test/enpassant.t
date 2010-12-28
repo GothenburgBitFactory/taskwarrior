@@ -39,15 +39,15 @@ if (open my $fh, '>', 'enp.rc')
 }
 
 # Test the en passant feature.
-qx{../task rc:enp.rc add foo};
-qx{../task rc:enp.rc add foo bar};
-qx{../task rc:enp.rc do 1,2 /foo/FOO/ pri:H +tag};
-my $output = qx{../task rc:enp.rc info 1};
+qx{../src/task rc:enp.rc add foo};
+qx{../src/task rc:enp.rc add foo bar};
+qx{../src/task rc:enp.rc do 1,2 /foo/FOO/ pri:H +tag};
+my $output = qx{../src/task rc:enp.rc info 1};
 like ($output, qr/Status\s+Completed/,    'en passant 1 status change');
 like ($output, qr/Description\s+FOO/,     'en passant 1 description change');
 like ($output, qr/Priority\s+H/,          'en passant 1 description change');
 like ($output, qr/Tags\s+tag/,            'en passant 1 description change');
-$output = qx{../task rc:enp.rc info 2};
+$output = qx{../src/task rc:enp.rc info 2};
 like ($output, qr/Status\s+Completed/,    'en passant 2 status change');
 like ($output, qr/Description\s+FOO bar/, 'en passant 2 description change');
 like ($output, qr/Priority\s+H/,          'en passant 2 description change');

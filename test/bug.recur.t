@@ -40,8 +40,8 @@ if (open my $fh, '>', 'recur.rc')
 }
 
 # Add a recurring task with no due date, look for expected error.
-qx{../task rc:recur.rc add foo recur:daily};
-my $output = qx{../task rc:recur.rc info 1};
+qx{../src/task rc:recur.rc add foo recur:daily};
+my $output = qx{../src/task rc:recur.rc info 1};
 unlike ($output, qr/Description\s+foo/, 'task not created - missing due date');
 
 # Cleanup.

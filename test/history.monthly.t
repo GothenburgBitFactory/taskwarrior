@@ -62,7 +62,7 @@ EOF
   ok (-r 'pending.data', 'Created pending.data');
 }
 
-my $output = qx{../task rc:time.rc history.monthly};
+my $output = qx{../src/task rc:time.rc history.monthly};
 like ($output, qr/7\s+1\s+0\s+6/, 'history.monthly - last month');
 like ($output, qr/2\s+3\s+3\s+-4/, 'history.monthly - this month');
 like ($output, qr/4\s+2\s+1\s+1/, 'history.monthly - average');

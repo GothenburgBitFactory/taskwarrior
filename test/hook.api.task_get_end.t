@@ -50,13 +50,13 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
   # Test the hook.
-  qx{../task rc:hook.rc add foo};
-  qx{../task rc:hook.rc do 1};
-  $output = qx{../task rc:hook.rc info 1};
+  qx{../src/task rc:hook.rc add foo};
+  qx{../src/task rc:hook.rc do 1};
+  $output = qx{../src/task rc:hook.rc info 1};
   like ($output, qr/^<<\d+>>$/ms, 'Hook called task_get_end');
 }
 else

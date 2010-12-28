@@ -42,30 +42,30 @@ if (open my $fh, '>', 'bulk.rc')
 
 # Add some tasks with project, prioriy and due date, some with only due date.
 # Bulk add a project and priority to the tasks that were without.
-qx{../task rc:bulk.rc add t1 pro:p1 pri:H due:monday};
-qx{../task rc:bulk.rc add t2 pro:p1 pri:M due:tuesday};
-qx{../task rc:bulk.rc add t3 pro:p1 pri:L due:wednesday};
-qx{../task rc:bulk.rc add t4              due:thursday};
-qx{../task rc:bulk.rc add t5              due:friday};
-qx{../task rc:bulk.rc add t6              due:saturday};
+qx{../src/task rc:bulk.rc add t1 pro:p1 pri:H due:monday};
+qx{../src/task rc:bulk.rc add t2 pro:p1 pri:M due:tuesday};
+qx{../src/task rc:bulk.rc add t3 pro:p1 pri:L due:wednesday};
+qx{../src/task rc:bulk.rc add t4              due:thursday};
+qx{../src/task rc:bulk.rc add t5              due:friday};
+qx{../src/task rc:bulk.rc add t6              due:saturday};
 
-my $output = qx{echo "quit"|../task rc:bulk.rc pro:p1 pri:M 4 5 6};
+my $output = qx{echo "quit"|../src/task rc:bulk.rc pro:p1 pri:M 4 5 6};
 like ($output, qr/Modified 0 tasks/, '"quit" prevents any further modifications');
 
-$output = qx{echo "All"|../task rc:bulk.rc pro:p1 pri:M 4 5 6};
+$output = qx{echo "All"|../src/task rc:bulk.rc pro:p1 pri:M 4 5 6};
 unlike ($output, qr/Task 4 "t4"\n  - No changes were made/, 'Task 4 modified');
 unlike ($output, qr/Task 5 "t5"\n  - No changes were made/, 'Task 5 modified');
 unlike ($output, qr/Task 6 "t6"\n  - No changes were made/, 'Task 6 modified');
 
-$output = qx{../task rc:bulk.rc info 4};
+$output = qx{../src/task rc:bulk.rc info 4};
 like ($output, qr/Project\s+p1/, 'project applied to 4');
 like ($output, qr/Priority\s+M/, 'priority applied to 4');
 
-$output = qx{../task rc:bulk.rc info 5};
+$output = qx{../src/task rc:bulk.rc info 5};
 like ($output, qr/Project\s+p1/, 'project applied to 5');
 like ($output, qr/Priority\s+M/, 'priority applied to 5');
 
-$output = qx{../task rc:bulk.rc info 6};
+$output = qx{../src/task rc:bulk.rc info 6};
 like ($output, qr/Project\s+p1/, 'project applied to 6');
 like ($output, qr/Priority\s+M/, 'priority applied to 6');
 

@@ -39,10 +39,10 @@ if (open my $fh, '>', 'extra.rc')
   ok (-r 'extra.rc', 'Created extra.rc');
 }
 
-qx{../task rc:extra.rc add foo};
-my $output = qx{../task rc:extra.rc 1 start pri:L};
+qx{../src/task rc:extra.rc add foo};
+my $output = qx{../src/task rc:extra.rc 1 start pri:L};
 like ($output, qr/The 'start' command does not allow further modification of a task\./, 'no modifications allowed for start');
-$output = qx{../task rc:extra.rc 1 stop pro:bar};
+$output = qx{../src/task rc:extra.rc 1 stop pro:bar};
 like ($output, qr/The 'stop' command does not allow further modification of a task\./, 'no modifications allowed for stop');
 
 # Cleanup.

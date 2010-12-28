@@ -69,11 +69,11 @@ EOF
   ok (-r 'import.txt', 'Created sample import data');
 }
 
-my $output = qx{../task rc:import.rc import import.txt};
+my $output = qx{../src/task rc:import.rc import import.txt};
 like ($output, qr/Imported 3 tasks successfully./, 'no errors');
 # Imported 3 tasks successfully.
 
-$output = qx{../task rc:import.rc list};
+$output = qx{../src/task rc:import.rc list};
 # ID Project Pri Due Active Age     Description
 # -- ------- --- --- ------ ------- -----------
 #  1 A                      1.5 yrs zero
@@ -85,7 +85,7 @@ like   ($output, qr/1.+A.+zero/, 't1 present');
 like   ($output, qr/2.+B.+one/,  't2 present');
 unlike ($output, qr/3.+two/,     't3 missing');
 
-$output = qx{../task rc:import.rc completed};
+$output = qx{../src/task rc:import.rc completed};
 # Complete  Project Pri Age     Description
 # --------- ------- --- ------- -----------
 # 2/13/2009             1.5 yrs two
@@ -97,7 +97,7 @@ unlike ($output, qr/2.+B.+one/,        't2 missing');
 like   ($output, qr/2\/13\/2009.+two/, 't3 present');
 
 # Make sure that a duplicate task cannot be imported.
-$output = qx{../task rc:import.rc import import.txt};
+$output = qx{../src/task rc:import.rc import import.txt};
 like ($output, qr/Cannot add task because the uuid .+ is not unique\./, 'error on duplicate uuid');
 
 # Cleanup.

@@ -43,12 +43,12 @@ if (open my $fh, '>', 'pri.rc')
 }
 
 # Generate the usage screen, and locate the custom report on it.
-qx{../task rc:pri.rc add one   pri:H};
-qx{../task rc:pri.rc add two   pri:M};
-qx{../task rc:pri.rc add three pri:L};
-qx{../task rc:pri.rc add four  pri:};
+qx{../src/task rc:pri.rc add one   pri:H};
+qx{../src/task rc:pri.rc add two   pri:M};
+qx{../src/task rc:pri.rc add three pri:L};
+qx{../src/task rc:pri.rc add four  pri:};
 
-my $output = qx{../task rc:pri.rc foo 2>&1};
+my $output = qx{../src/task rc:pri.rc foo 2>&1};
 like ($output,   qr/ID P/,       'priority_long indicator heading');
 like ($output,   qr/1\s+High/,   'priority_long High');
 like ($output,   qr/2\s+Medium/, 'priority_long Medium');

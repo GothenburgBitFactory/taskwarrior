@@ -58,14 +58,14 @@ for my $i (1 .. 1000)
   my $priority = $priorities[rand % 3];
   my $tag      =       $tags[rand % 8];
 
-  qx{../task rc:bench.rc add project:$project priority:$priority +$tag $i $description};
+  qx{../src/task rc:bench.rc add project:$project priority:$priority +$tag $i $description};
 }
 diag ("1000 tasks added in " . (time () - $cursor) . " seconds");
 $cursor = time ();
 
-qx{../task rc:bench.rc /with/WITH/}         for   1 .. 200;
-qx{../task rc:bench.rc done $_}             for 201 .. 400;
-qx{../task rc:bench.rc start $_}            for 401 .. 600;
+qx{../src/task rc:bench.rc /with/WITH/}         for   1 .. 200;
+qx{../src/task rc:bench.rc done $_}             for 201 .. 400;
+qx{../src/task rc:bench.rc start $_}            for 401 .. 600;
 diag ("600 tasks altered in " . (time () - $cursor) . " seconds");
 $cursor = time ();
 
@@ -73,15 +73,15 @@ $cursor = time ();
 
 for (1 .. 100)
 {
-  diag (grep {/^Timer /} qx{../task rc:bench.rc ls});
-  diag (grep {/^Timer /} qx{../task rc:bench.rc list});
-  diag (grep {/^Timer /} qx{../task rc:bench.rc list priority:H});
-  diag (grep {/^Timer /} qx{../task rc:bench.rc list +tag});
-  diag (grep {/^Timer /} qx{../task rc:bench.rc list project_A});
-  diag (grep {/^Timer /} qx{../task rc:bench.rc long});
-  diag (grep {/^Timer /} qx{../task rc:bench.rc completed});
-  diag (grep {/^Timer /} qx{../task rc:bench.rc history});
-  diag (grep {/^Timer /} qx{../task rc:bench.rc ghistory});
+  diag (grep {/^Timer /} qx{../src/task rc:bench.rc ls});
+  diag (grep {/^Timer /} qx{../src/task rc:bench.rc list});
+  diag (grep {/^Timer /} qx{../src/task rc:bench.rc list priority:H});
+  diag (grep {/^Timer /} qx{../src/task rc:bench.rc list +tag});
+  diag (grep {/^Timer /} qx{../src/task rc:bench.rc list project_A});
+  diag (grep {/^Timer /} qx{../src/task rc:bench.rc long});
+  diag (grep {/^Timer /} qx{../src/task rc:bench.rc completed});
+  diag (grep {/^Timer /} qx{../src/task rc:bench.rc history});
+  diag (grep {/^Timer /} qx{../src/task rc:bench.rc ghistory});
 }
 
 # Stop the clock.

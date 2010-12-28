@@ -41,23 +41,23 @@ if (open my $fh, '>', 'delete.rc')
 }
 
 # Add a task, delete it, undelete it.
-my $output = qx{../task rc:delete.rc add one; ../task rc:delete.rc info 1};
+my $output = qx{../src/task rc:delete.rc add one; ../src/task rc:delete.rc info 1};
 ok (-r 'pending.data', 'pending.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
-$output = qx{../task rc:delete.rc delete 1; ../task rc:delete.rc info 1};
+$output = qx{../src/task rc:delete.rc delete 1; ../src/task rc:delete.rc info 1};
 like ($output, qr/Status\s+Deleted\n/, 'Deleted');
 ok (-r 'completed.data', 'completed.data created');
 
-$output = qx{echo 'y' | ../task rc:delete.rc undo; ../task rc:delete.rc info 1};
+$output = qx{echo 'y' | ../src/task rc:delete.rc undo; ../src/task rc:delete.rc info 1};
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 ok (-r 'completed.data', 'completed.data created');
 
-$output = qx{../task rc:delete.rc delete 1; ../task rc:delete.rc list};
+$output = qx{../src/task rc:delete.rc delete 1; ../src/task rc:delete.rc list};
 like ($output, qr/No matches./, 'No matches');
 ok (-r 'completed.data', 'completed.data created');
 
-$output = qx{../task rc:delete.rc info 1};
+$output = qx{../src/task rc:delete.rc info 1};
 like ($output, qr/Task 1 not found/, 'No matches');
 
 # Cleanup.

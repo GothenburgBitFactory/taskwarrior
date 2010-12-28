@@ -40,82 +40,82 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug #480 - putting a '@' character in tags breaks filters.
-qx{../task rc:bug.rc add one +ordinary};
-qx{../task rc:bug.rc add two +\@strange};
+qx{../src/task rc:bug.rc add one +ordinary};
+qx{../src/task rc:bug.rc add two +\@strange};
 
-my $output = qx{../task rc:bug.rc long +ordinary};
+my $output = qx{../src/task rc:bug.rc long +ordinary};
 like ($output,   qr/one/, '+ordinary explicitly included');
 unlike ($output, qr/two/, '@strange implicitly excluded');
 
-$output = qx{../task rc:bug.rc long -ordinary};
+$output = qx{../src/task rc:bug.rc long -ordinary};
 unlike ($output, qr/one/, '-ordinary explicitly excluded');
 like ($output,   qr/two/, '@strange implicitly included');
 
-$output = qx{../task rc:bug.rc long +\@strange};
+$output = qx{../src/task rc:bug.rc long +\@strange};
 unlike ($output, qr/one/, '-ordinary implicitly excluded');
 like ($output,   qr/two/, '@strange explicitly included');
 
-$output = qx{../task rc:bug.rc long -\@strange};
+$output = qx{../src/task rc:bug.rc long -\@strange};
 like ($output,   qr/one/, '+ordinary implicitly included');
 unlike ($output, qr/two/, '@strange explicitly excluded');
 
 # Bug #XXX - '-t1 -t2' doesn't seem to work, when @ characters are involved.
 unlink 'pending.data';
-qx{../task rc:bug.rc add one   +t1};
-qx{../task rc:bug.rc add two   +t2};
-qx{../task rc:bug.rc add three +t3};
+qx{../src/task rc:bug.rc add one   +t1};
+qx{../src/task rc:bug.rc add two   +t2};
+qx{../src/task rc:bug.rc add three +t3};
 
-$output = qx{../task rc:bug.rc list -t1};
+$output = qx{../src/task rc:bug.rc list -t1};
 unlike ($output, qr/one/,   'Single: no t1');
 like   ($output, qr/two/,   'Single: yes t2');
 like   ($output, qr/three/, 'Single: yes t3');
 
-$output = qx{../task rc:bug.rc list -t1 -t2};
+$output = qx{../src/task rc:bug.rc list -t1 -t2};
 unlike ($output, qr/one/,   'Double: no t1');
 unlike ($output, qr/two/,   'Double: no t2');
 like   ($output, qr/three/, 'Double: yes t3');
 
-$output = qx{../task rc:bug.rc list -t1 -t2 -t3};
+$output = qx{../src/task rc:bug.rc list -t1 -t2 -t3};
 unlike ($output, qr/one/,   'Triple: no t1');
 unlike ($output, qr/two/,   'Triple: no t2');
 unlike ($output, qr/three/, 'Triple: no t3');
 
 # Once again, with @ characters.
-qx{../task rc:bug.rc 1 +\@1};
-qx{../task rc:bug.rc 2 +\@2};
-qx{../task rc:bug.rc 3 +\@3};
+qx{../src/task rc:bug.rc 1 +\@1};
+qx{../src/task rc:bug.rc 2 +\@2};
+qx{../src/task rc:bug.rc 3 +\@3};
 
-$output = qx{../task rc:bug.rc list -\@1};
+$output = qx{../src/task rc:bug.rc list -\@1};
 unlike ($output, qr/one/,   'Single: no @1');
 like   ($output, qr/two/,   'Single: yes @2');
 like   ($output, qr/three/, 'Single: yes @3');
 
-$output = qx{../task rc:bug.rc list -\@1 -\@2};
+$output = qx{../src/task rc:bug.rc list -\@1 -\@2};
 unlike ($output, qr/one/,   'Double: no @1');
 unlike ($output, qr/two/,   'Double: no @2');
 like   ($output, qr/three/, 'Double: yes @3');
 
-$output = qx{../task rc:bug.rc list -\@1 -\@2 -\@3};
+$output = qx{../src/task rc:bug.rc list -\@1 -\@2 -\@3};
 unlike ($output, qr/one/,   'Triple: no @1');
 unlike ($output, qr/two/,   'Triple: no @2');
 unlike ($output, qr/three/, 'Triple: no @3');
 
 # Once again, with @ characters and punctuation.
-qx{../task rc:bug.rc 1 +\@foo.1};
-qx{../task rc:bug.rc 2 +\@foo.2};
-qx{../task rc:bug.rc 3 +\@foo.3};
+qx{../src/task rc:bug.rc 1 +\@foo.1};
+qx{../src/task rc:bug.rc 2 +\@foo.2};
+qx{../src/task rc:bug.rc 3 +\@foo.3};
 
-$output = qx{../task rc:bug.rc list -\@foo.1};
+$output = qx{../src/task rc:bug.rc list -\@foo.1};
 unlike ($output, qr/one/,   'Single: no @foo.1');
 like   ($output, qr/two/,   'Single: yes @foo.2');
 like   ($output, qr/three/, 'Single: yes @foo.3');
 
-$output = qx{../task rc:bug.rc list -\@foo.1 -\@foo.2};
+$output = qx{../src/task rc:bug.rc list -\@foo.1 -\@foo.2};
 unlike ($output, qr/one/,   'Double: no @foo.1');
 unlike ($output, qr/two/,   'Double: no @foo.2');
 like   ($output, qr/three/, 'Double: yes @foo.3');
 
-$output = qx{../task rc:bug.rc list -\@foo.1 -\@foo.2 -\@foo.3};
+$output = qx{../src/task rc:bug.rc list -\@foo.1 -\@foo.2 -\@foo.3};
 unlike ($output, qr/one/,   'Triple: no @foo.1');
 unlike ($output, qr/two/,   'Triple: no @foo.2');
 unlike ($output, qr/three/, 'Triple: no @foo.3');

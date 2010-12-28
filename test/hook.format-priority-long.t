@@ -59,13 +59,13 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  qx{../task rc:hook.rc add foo pri:H};
-  qx{../task rc:hook.rc add bar pri:M};
-  qx{../task rc:hook.rc add baz pri:L};
-  $output = qx{../task rc:hook.rc ls};
+  qx{../src/task rc:hook.rc add foo pri:H};
+  qx{../src/task rc:hook.rc add bar pri:M};
+  qx{../src/task rc:hook.rc add baz pri:L};
+  $output = qx{../src/task rc:hook.rc ls};
 
   like ($output, qr/\^\^\^\^\s+foo/, 'format-priority_long hook High   -> ^^^^');
   like ($output, qr/====\s+bar/,     'format-priority_long hook Medium -> ====');

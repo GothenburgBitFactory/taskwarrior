@@ -45,23 +45,23 @@ if (open my $fh, '>', 'denotate.rc')
 }
 
 # Add four tasks, annotate one three times, one twice, one just once and one none.
-qx{../task rc:denotate.rc add one};
-qx{../task rc:denotate.rc annotate 1 Ernie};
+qx{../src/task rc:denotate.rc add one};
+qx{../src/task rc:denotate.rc annotate 1 Ernie};
 diag ("6 second delay");
 sleep 1;
-qx{../task rc:denotate.rc annotate 1 Bert};
+qx{../src/task rc:denotate.rc annotate 1 Bert};
 sleep 1;
-qx{../task rc:denotate.rc annotate 1 Bibo};
+qx{../src/task rc:denotate.rc annotate 1 Bibo};
 sleep 1;
-qx{../task rc:denotate.rc annotate 1 Kermit the frog};
+qx{../src/task rc:denotate.rc annotate 1 Kermit the frog};
 sleep 1;
-qx{../task rc:denotate.rc annotate 1 Kermit the frog};
+qx{../src/task rc:denotate.rc annotate 1 Kermit the frog};
 sleep 1;
-qx{../task rc:denotate.rc annotate 1 Kermit};
+qx{../src/task rc:denotate.rc annotate 1 Kermit};
 sleep 1;
-qx{../task rc:denotate.rc annotate 1 Kermit and Miss Piggy};
+qx{../src/task rc:denotate.rc annotate 1 Kermit and Miss Piggy};
 
-my $output = qx{../task rc:denotate.rc rrr};
+my $output = qx{../src/task rc:denotate.rc rrr};
 
 like ($output, qr/1 one/,   'task 1');
 like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Ernie/ms,                    'first   annotation');
@@ -73,36 +73,36 @@ like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit/ms,                  'six
 like ($output, qr/Kermit.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'seventh annotation');
 like ($output, qr/1 task/, 'count');
 
-qx{../task rc:denotate.rc denotate 1 Ernie};
-$output = qx{../task rc:denotate.rc rrr};
+qx{../src/task rc:denotate.rc denotate 1 Ernie};
+$output = qx{../src/task rc:denotate.rc rrr};
 unlike ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Ernie/ms, 'Delete annotation');
 like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms, 'Bert now first annotationt');
 
-qx{../task rc:denotate.rc denotate 1 Bi};
-$output = qx{../task rc:denotate.rc rrr};
+qx{../src/task rc:denotate.rc denotate 1 Bi};
+$output = qx{../src/task rc:denotate.rc rrr};
 unlike ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Bibo/ms, 'Delete partial match');
 like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms, 'Kermit the frog now second annotation');
 
-qx{../task rc:denotate.rc denotate 1 BErt};
-$output = qx{../task rc:denotate.rc rrr};
+qx{../src/task rc:denotate.rc denotate 1 BErt};
+$output = qx{../src/task rc:denotate.rc rrr};
 like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms, 'Denotate is case sensitive');
 like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms, 'Kermit the frog still second annoation');
 
-qx{../task rc:denotate.rc denotate 1 Kermit};
-$output = qx{../task rc:denotate.rc rrr};
+qx{../src/task rc:denotate.rc denotate 1 Kermit};
+$output = qx{../src/task rc:denotate.rc rrr};
 like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   'Exact match deletion - Bert');
 like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       'Exact match deletion - Kermit the frog');
 like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       'Exact match deletion - Kermit the frog');
 like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'Exact match deletion - Kermit and Miss Piggy');
 
-qx{../task rc:denotate.rc denotate 1 Kermit the};
-$output = qx{../task rc:denotate.rc rrr};
+qx{../src/task rc:denotate.rc denotate 1 Kermit the};
+$output = qx{../src/task rc:denotate.rc rrr};
 like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   'Delete just one annotation - Bert');
 like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       'Delete just one annotation - Kermit the frog');
 like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'Delete just one annotation - Kermit and Miss Piggy');
 
-qx{../task rc:denotate.rc denotate 1 Kermit a};
-$output = qx{../task rc:denotate.rc rrr};
+qx{../src/task rc:denotate.rc denotate 1 Kermit a};
+$output = qx{../src/task rc:denotate.rc rrr};
 like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   'Delete partial match - Bert');
 like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       'Delete partial match - Kermit the frog');
 unlike ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'Delete partial match - Kermit and Miss Piggy');

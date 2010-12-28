@@ -40,39 +40,39 @@ if (open my $fh, '>', 'hasnt.rc')
 }
 
 # 1
-qx{../task rc:hasnt.rc add foo};
+qx{../src/task rc:hasnt.rc add foo};
 
 # 2
-qx{../task rc:hasnt.rc add foo};
-qx{../task rc:hasnt.rc 2 annotate bar};
+qx{../src/task rc:hasnt.rc add foo};
+qx{../src/task rc:hasnt.rc 2 annotate bar};
 
 # 3
-qx{../task rc:hasnt.rc add foo};
-qx{../task rc:hasnt.rc 3 annotate bar};
+qx{../src/task rc:hasnt.rc add foo};
+qx{../src/task rc:hasnt.rc 3 annotate bar};
 diag ("3 second delay");
 sleep 1;
-qx{../task rc:hasnt.rc 3 annotate baz};
+qx{../src/task rc:hasnt.rc 3 annotate baz};
 
 # 4
-qx{../task rc:hasnt.rc add bar};
+qx{../src/task rc:hasnt.rc add bar};
 
 # 5
-qx{../task rc:hasnt.rc add bar};
-qx{../task rc:hasnt.rc 5 annotate foo};
+qx{../src/task rc:hasnt.rc add bar};
+qx{../src/task rc:hasnt.rc 5 annotate foo};
 
 # 6
-qx{../task rc:hasnt.rc add bar};
-qx{../task rc:hasnt.rc 6 annotate foo};
+qx{../src/task rc:hasnt.rc add bar};
+qx{../src/task rc:hasnt.rc 6 annotate foo};
 sleep 1;
-qx{../task rc:hasnt.rc 6 annotate baz};
+qx{../src/task rc:hasnt.rc 6 annotate baz};
 
 #7
-qx{../task rc:hasnt.rc add one};
-qx{../task rc:hasnt.rc 7 annotate two};
+qx{../src/task rc:hasnt.rc add one};
+qx{../src/task rc:hasnt.rc 7 annotate two};
 sleep 1;
-qx{../task rc:hasnt.rc 7 annotate three};
+qx{../src/task rc:hasnt.rc 7 annotate three};
 
-my $output = qx{../task rc:hasnt.rc ls description.has:foo};
+my $output = qx{../src/task rc:hasnt.rc ls description.has:foo};
 like   ($output, qr/\n 1/, '1 has foo -> yes');
 like   ($output, qr/\n 2/, '2 has foo -> yes');
 like   ($output, qr/\n 3/, '3 has foo -> yes');
@@ -81,7 +81,7 @@ like   ($output, qr/\n 5/, '5 has foo -> yes');
 like   ($output, qr/\n 6/, '6 has foo -> yes');
 unlike ($output, qr/\n 7/, '7 has foo -> no');
 
-$output = qx{../task rc:hasnt.rc ls description.hasnt:foo};
+$output = qx{../src/task rc:hasnt.rc ls description.hasnt:foo};
 unlike ($output, qr/\n 1/, '1 hasnt foo -> no');
 unlike ($output, qr/\n 2/, '2 hasnt foo -> no');
 unlike ($output, qr/\n 3/, '3 hasnt foo -> no');

@@ -40,18 +40,18 @@ if (open my $fh, '>', 'projects.rc')
 
 # Create a data set of two tasks, with unique project names, one
 # pending, one completed.
-qx{../task rc:projects.rc add project:p1 one};
-qx{../task rc:projects.rc add project:p2 two};
-qx{../task rc:projects.rc done 1};
-my $output = qx{../task rc:projects.rc ls};
+qx{../src/task rc:projects.rc add project:p1 one};
+qx{../src/task rc:projects.rc add project:p2 two};
+qx{../src/task rc:projects.rc done 1};
+my $output = qx{../src/task rc:projects.rc ls};
 unlike ($output, qr/p1/, 'p1 done');
 like ($output, qr/p2/, 'p2 pending');
 
-$output = qx{../task rc:projects.rc projects};
+$output = qx{../src/task rc:projects.rc projects};
 unlike ($output, qr/p1/, 'p1 done');
 like ($output, qr/p2/, 'p2 pending');
 
-$output = qx{../task rc:projects.rc rc.list.all.projects:yes projects};
+$output = qx{../src/task rc:projects.rc rc.list.all.projects:yes projects};
 like ($output, qr/p1/, 'p1 listed');
 like ($output, qr/p2/, 'p2 listed');
 

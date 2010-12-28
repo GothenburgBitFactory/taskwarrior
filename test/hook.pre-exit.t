@@ -48,11 +48,11 @@ if (open my $fh, '>', 'hook')
 }
 
 # Test the hook.
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
   # Test the hook.
-  $output = qx{../task rc:hook.rc _version};
+  $output = qx{../src/task rc:hook.rc _version};
   like ($output, qr/\n\d\.\d+\.\d+/ms, 'Found marker after output');
 }
 else

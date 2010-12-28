@@ -49,14 +49,14 @@ if (open my $fh, '>', 'import.txt')
   ok (-r 'import.txt', 'Created sample import data');
 }
 
-my $output = qx{../task rc:import.rc import import.txt};
+my $output = qx{../src/task rc:import.rc import import.txt};
 like ($output, qr/Imported 3 tasks successfully, with 0 errors./, 'no errors');
 
-$output = qx{../task rc:import.rc list};
+$output = qx{../src/task rc:import.rc list};
 like ($output, qr/1.+project.+This is a test/, 't1');
 like ($output, qr/2.+H.+A prioritized task/,   't2');
 
-$output = qx{../task rc:import.rc completed};
+$output = qx{../src/task rc:import.rc completed};
 like ($output, qr/3\/25\/2009.+Walk the dog/,  't3');
 
 # Cleanup.

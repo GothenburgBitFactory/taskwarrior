@@ -53,11 +53,11 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  qx{../task rc:hook.rc add foo due:eom};
-  $output = qx{../task rc:hook.rc long};
+  qx{../src/task rc:hook.rc add foo due:eom};
+  $output = qx{../src/task rc:hook.rc long};
 
   like ($output, qr/<-?\d+\D+>/, 'format-countdown_compact hook countdown_compact -> <countdown_compact>');
 }

@@ -39,15 +39,15 @@ if (open my $fh, '>', 'recur.rc')
 }
 
 # Create a few recurring tasks, and test the sort order of the recur column.
-qx{../task rc:recur.rc add due:friday recur:weekdays one};
-my $output = qx{../task rc:recur.rc list};
+qx{../src/task rc:recur.rc add due:friday recur:weekdays one};
+my $output = qx{../src/task rc:recur.rc list};
 like ($output, qr/one/, 'recur weekdays');
 
-$output = qx{../task rc:recur.rc info 1};
+$output = qx{../src/task rc:recur.rc info 1};
 like ($output, qr/Recurrence\s+weekdays/, 'task recurs every weekday');
 
-qx{../task rc:recur.rc do 1};
-$output = qx{../task rc:recur.rc list};
+qx{../src/task rc:recur.rc do 1};
+$output = qx{../src/task rc:recur.rc list};
 
 # Cleanup.
 unlink 'pending.data';

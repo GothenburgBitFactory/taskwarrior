@@ -47,17 +47,17 @@ if (open my $fh, '>', 'bug.rc')
 
 # Bug #418: due.before:eow not working
 #   - with dateformat is MD
-qx{../task rc:bug.rc add one   due:6/28/2010};
-qx{../task rc:bug.rc add two   due:6/29/2010};
-qx{../task rc:bug.rc add three due:6/30/2010};
-qx{../task rc:bug.rc add four  due:7/1/2010};
-qx{../task rc:bug.rc add five  due:7/2/2010};
-qx{../task rc:bug.rc add six   due:7/3/2010};
-qx{../task rc:bug.rc add seven due:7/4/2010};
-qx{../task rc:bug.rc add eight due:7/5/2010};
-qx{../task rc:bug.rc add nine  due:7/6/2010};
+qx{../src/task rc:bug.rc add one   due:6/28/2010};
+qx{../src/task rc:bug.rc add two   due:6/29/2010};
+qx{../src/task rc:bug.rc add three due:6/30/2010};
+qx{../src/task rc:bug.rc add four  due:7/1/2010};
+qx{../src/task rc:bug.rc add five  due:7/2/2010};
+qx{../src/task rc:bug.rc add six   due:7/3/2010};
+qx{../src/task rc:bug.rc add seven due:7/4/2010};
+qx{../src/task rc:bug.rc add eight due:7/5/2010};
+qx{../src/task rc:bug.rc add nine  due:7/6/2010};
 
-my $output = qx{../task rc:bug.rc foo};
+my $output = qx{../src/task rc:bug.rc foo};
 like ($output, qr/one/ms,     'task 1 listed');
 like ($output, qr/two/ms,     'task 2 listed');
 like ($output, qr/three/ms,   'task 3 listed');
@@ -68,7 +68,7 @@ like ($output, qr/seven/ms,   'task 7 listed');
 like ($output, qr/eight/ms,   'task 8 listed');
 like ($output, qr/nine/ms,    'task 9 listed');
 
-$output = qx{../task rc:bug.rc foo due.before:7/2/2010};
+$output = qx{../src/task rc:bug.rc foo due.before:7/2/2010};
 like ($output, qr/one/ms,     'task 1 listed');
 like ($output, qr/two/ms,     'task 2 listed');
 like ($output, qr/three/ms,   'task 3 listed');

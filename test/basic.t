@@ -43,17 +43,17 @@ if (open my $fh, '>', 'basic.rc')
 my $version = slurp ('../../configure.ac');
 
 # Test the usage command.
-my $output = qx{../task rc:basic.rc};
+my $output = qx{../src/task rc:basic.rc};
 like ($output, qr/You must specify a command, or a task ID to modify/m, 'missing command and ID');
 
 # Test the version command.
-$output = qx{../task rc:basic.rc version};
+$output = qx{../src/task rc:basic.rc version};
 like ($output, qr/task $version/, 'version - task version number');
 like ($output, qr/GNU\s+General\s+Public\s+License/, 'version - license');
 like ($output, qr/http:\/\/taskwarrior\.org/, 'version - url');
 
 # Test the _version command.
-$output = qx{../task rc:basic.rc _version};
+$output = qx{../src/task rc:basic.rc _version};
 like ($output, qr/$version/, '_version - task version number');
 
 # Cleanup.

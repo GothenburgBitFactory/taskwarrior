@@ -39,20 +39,20 @@ if (open my $fh, '>', 'nag.rc')
   ok (-r 'nag.rc', 'Created nag.rc');
 }
 
-my $setup = "../task rc:nag.rc add due:yesterday one;"
-          . "../task rc:nag.rc add due:tomorrow two;"
-          . "../task rc:nag.rc add priority:H three;"
-          . "../task rc:nag.rc add priority:M four;"
-          . "../task rc:nag.rc add priority:L five;"
-          . "../task rc:nag.rc add six;";
+my $setup = "../src/task rc:nag.rc add due:yesterday one;"
+          . "../src/task rc:nag.rc add due:tomorrow two;"
+          . "../src/task rc:nag.rc add priority:H three;"
+          . "../src/task rc:nag.rc add priority:M four;"
+          . "../src/task rc:nag.rc add priority:L five;"
+          . "../src/task rc:nag.rc add six;";
 qx{$setup};
 
-like   (qx{../task rc:nag.rc do 6}, qr/NAG/, 'do pri: -> nag');
-like   (qx{../task rc:nag.rc do 5}, qr/NAG/, 'do pri:L -> nag');
-like   (qx{../task rc:nag.rc do 4}, qr/NAG/, 'do pri:M-> nag');
-like   (qx{../task rc:nag.rc do 3}, qr/NAG/, 'do pri:H-> nag');
-like   (qx{../task rc:nag.rc do 2}, qr/NAG/, 'do due:tomorrow -> nag');
-unlike (qx{../task rc:nag.rc do 1}, qr/NAG/, 'do due:yesterday -> no nag');
+like   (qx{../src/task rc:nag.rc do 6}, qr/NAG/, 'do pri: -> nag');
+like   (qx{../src/task rc:nag.rc do 5}, qr/NAG/, 'do pri:L -> nag');
+like   (qx{../src/task rc:nag.rc do 4}, qr/NAG/, 'do pri:M-> nag');
+like   (qx{../src/task rc:nag.rc do 3}, qr/NAG/, 'do pri:H-> nag');
+like   (qx{../src/task rc:nag.rc do 2}, qr/NAG/, 'do due:tomorrow -> nag');
+unlike (qx{../src/task rc:nag.rc do 1}, qr/NAG/, 'do due:yesterday -> no nag');
 
 # Cleanup.
 unlink 'pending.data';

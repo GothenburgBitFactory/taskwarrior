@@ -1,3 +1,4 @@
+*.o
 *.log
 att.t
 autocomplete.t

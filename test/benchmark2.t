@@ -51,22 +51,22 @@ my $output;
 
 # Add 1 task.
 add (1);
-$output = qx{../task rc:bench2.rc list};
+$output = qx{../src/task rc:bench2.rc list};
 report ('run-1', $output);
 
 # Add 9 more tasks.
 add (9);
-$output = qx{../task rc:bench2.rc list};
+$output = qx{../src/task rc:bench2.rc list};
 report ('run-10', $output);
 
 # Add 90 more tasks.
 add (90);
-$output = qx{../task rc:bench2.rc list};
+$output = qx{../src/task rc:bench2.rc list};
 report ('run-100', $output);
 
 # Add 900 more tasks.
 add (900);
-$output = qx{../task rc:bench2.rc list};
+$output = qx{../src/task rc:bench2.rc list};
 report ('run-1000', $output);
 
 # Cleanup.
@@ -95,7 +95,7 @@ sub add
     my $priority = $priorities[rand % 3];
     my $tag      =       $tags[rand % 8];
 
-    qx{../task rc:bench2.rc add project:$project priority:$priority +$tag $i $description};
+    qx{../src/task rc:bench2.rc add project:$project priority:$priority +$tag $i $description};
   }
 }
 
@@ -111,7 +111,7 @@ sub report
   }
 
   # Generate output for benchmark2 chart.
-  chomp (my $version = qx{../task _version});
+  chomp (my $version = qx{../src/task _version});
   my $out = sprintf "%s %s %f,%f,%f,%f,%f,%f,%f",
                     $label,
                     $version,

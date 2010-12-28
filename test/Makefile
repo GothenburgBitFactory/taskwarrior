@@ -2,21 +2,21 @@ PROJECT = t.t tdb.t date.t duration.t t.benchmark.t text.t autocomplete.t      \
           config.t seq.t att.t stringtable.t record.t nibbler.t subst.t filt.t \
           cmd.t util.t color.t list.t path.t file.t directory.t grid.t rx.t    \
           taskmod.t sensor.t rectangle.t tree.t tree2.t lisp.t uri.t
-CFLAGS  = -I. -I.. -I../.. -Wall -pedantic -ggdb3 -fno-rtti
+CFLAGS  = -I. -I.. -I../src -Wall -pedantic -ggdb3 -fno-rtti
 LFLAGS  = -L/usr/local/lib -lpthread -llua
-OBJECTS = ../t-TDB.o ../t-Task.o ../t-text.o ../t-Date.o ../t-Table.o          \
-          ../t-Duration.o ../t-util.o ../t-Config.o ../t-Sequence.o ../t-Att.o \
-          ../t-Cmd.o ../t-Record.o ../t-StringTable.o ../t-Subst.o             \
-          ../t-Nibbler.o ../t-Location.o ../t-Filter.o ../t-Context.o          \
-          ../t-Keymap.o ../t-command.o ../t-interactive.o ../t-report.o        \
-          ../t-Grid.o ../t-Color.o ../t-rules.o ../t-recur.o ../t-custom.o     \
-          ../t-export.o ../t-import.o ../t-edit.o ../t-Timer.o                 \
-          ../t-Permission.o ../t-Path.o ../t-File.o ../t-Directory.o           \
-          ../t-Hooks.o ../t-API.o ../t-rx.o ../t-Taskmod.o ../t-dependency.o   \
-          ../t-Transport.o ../t-TransportSSH.o ../t-Sensor.o ../t-Thread.o     \
-          ../t-Lisp.o ../t-Rectangle.o ../t-Tree.o ../t-TransportRSYNC.o       \
-          ../t-TransportCurl.o ../t-Uri.o ../t-diag.o ../t-burndown.o          \
-          ../t-history.o
+OBJECTS = ../src/t-TDB.o ../src/t-Task.o ../src/t-text.o ../src/t-Date.o ../src/t-Table.o          \
+          ../src/t-Duration.o ../src/t-util.o ../src/t-Config.o ../src/t-Sequence.o ../src/t-Att.o \
+          ../src/t-Cmd.o ../src/t-Record.o ../src/t-StringTable.o ../src/t-Subst.o             \
+          ../src/t-Nibbler.o ../src/t-Location.o ../src/t-Filter.o ../src/t-Context.o          \
+          ../src/t-Keymap.o ../src/t-command.o ../src/t-interactive.o ../src/t-report.o        \
+          ../src/t-Grid.o ../src/t-Color.o ../src/t-rules.o ../src/t-recur.o ../src/t-custom.o     \
+          ../src/t-export.o ../src/t-import.o ../src/t-edit.o ../src/t-Timer.o                 \
+          ../src/t-Permission.o ../src/t-Path.o ../src/t-File.o ../src/t-Directory.o           \
+          ../src/t-Hooks.o ../src/t-API.o ../src/t-rx.o ../src/t-Taskmod.o ../src/t-dependency.o   \
+          ../src/t-Transport.o ../src/t-TransportSSH.o ../src/t-Sensor.o ../src/t-Thread.o     \
+          ../src/t-Lisp.o ../src/t-Rectangle.o ../src/t-Tree.o ../src/t-TransportRSYNC.o       \
+          ../src/t-TransportCurl.o ../src/t-Uri.o ../src/t-diag.o ../src/t-burndown.o          \
+          ../src/t-history.o
 
 all: $(PROJECT)
 

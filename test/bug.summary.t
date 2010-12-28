@@ -41,16 +41,16 @@ if (open my $fh, '>', 'summary.rc')
 
 # Add three tasks.  Do 1, delete 1, leave 1 pending.  Summary should depict a
 # 50% completion.
-qx{../task rc:summary.rc add project:A one};
-qx{../task rc:summary.rc add project:A two};
-qx{../task rc:summary.rc add project:A three};
-qx{../task rc:summary.rc do 1};
-qx{../task rc:summary.rc delete 2};
-my $output = qx{../task rc:summary.rc summary};
+qx{../src/task rc:summary.rc add project:A one};
+qx{../src/task rc:summary.rc add project:A two};
+qx{../src/task rc:summary.rc add project:A three};
+qx{../src/task rc:summary.rc do 1};
+qx{../src/task rc:summary.rc delete 2};
+my $output = qx{../src/task rc:summary.rc summary};
 like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, 'summary correctly shows 50% before report');
 
-qx{../task rc:summary.rc list};
-$output = qx{../task rc:summary.rc summary};
+qx{../src/task rc:summary.rc list};
+$output = qx{../src/task rc:summary.rc summary};
 like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, 'summary correctly shows 50% after report');
 
 # Cleanup.

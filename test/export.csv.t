@@ -39,9 +39,9 @@ if (open my $fh, '>', 'export.rc')
 }
 
 # Add two tasks, export, examine result.
-qx{../task rc:export.rc add priority:H project:A one};
-qx{../task rc:export.rc add +tag1 +tag2 two};
-qx{../task rc:export.rc export.csv > ./export.txt};
+qx{../src/task rc:export.rc add priority:H project:A one};
+qx{../src/task rc:export.rc add +tag1 +tag2 two};
+qx{../src/task rc:export.rc export.csv > ./export.txt};
 
 my @lines;
 if (open my $fh, '<', './export.txt')

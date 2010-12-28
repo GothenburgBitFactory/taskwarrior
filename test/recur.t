@@ -43,14 +43,14 @@ if (open my $fh, '>', 'recur.rc')
 }
 
 # Create a few recurring tasks, and test the sort order of the recur column.
-qx{../task rc:recur.rc add due:tomorrow recur:daily  first};
-qx{../task rc:recur.rc add due:tomorrow recur:weekly second};
-qx{../task rc:recur.rc add due:tomorrow recur:3d     third};
+qx{../src/task rc:recur.rc add due:tomorrow recur:daily  first};
+qx{../src/task rc:recur.rc add due:tomorrow recur:weekly second};
+qx{../src/task rc:recur.rc add due:tomorrow recur:3d     third};
 
-my $output = qx{../task rc:recur.rc asc};
+my $output = qx{../src/task rc:recur.rc asc};
 like ($output, qr/first .* third .* second/msx, 'daily 3d weekly');
 
-$output = qx{../task rc:recur.rc desc};
+$output = qx{../src/task rc:recur.rc desc};
 like ($output, qr/second .* third .* first/msx, 'weekly 3d daily');
 
 # Cleanup.

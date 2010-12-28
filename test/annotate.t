@@ -45,24 +45,24 @@ if (open my $fh, '>', 'annotate.rc')
 }
 
 # Add four tasks, annotate one three times, one twice, one just once and one none.
-qx{../task rc:annotate.rc add one};
-qx{../task rc:annotate.rc add two};
-qx{../task rc:annotate.rc add three};
-qx{../task rc:annotate.rc add four};
-qx{../task rc:annotate.rc annotate 1 foo1};
+qx{../src/task rc:annotate.rc add one};
+qx{../src/task rc:annotate.rc add two};
+qx{../src/task rc:annotate.rc add three};
+qx{../src/task rc:annotate.rc add four};
+qx{../src/task rc:annotate.rc annotate 1 foo1};
 diag ("5 second delay");
 sleep 1;
-qx{../task rc:annotate.rc annotate 1 foo2};
+qx{../src/task rc:annotate.rc annotate 1 foo2};
 sleep 1;
-qx{../task rc:annotate.rc annotate 1 foo3};
+qx{../src/task rc:annotate.rc annotate 1 foo3};
 sleep 1;
-qx{../task rc:annotate.rc annotate 2 bar1};
+qx{../src/task rc:annotate.rc annotate 2 bar1};
 sleep 1;
-qx{../task rc:annotate.rc annotate 2 bar2};
+qx{../src/task rc:annotate.rc annotate 2 bar2};
 sleep 1;
-qx{../task rc:annotate.rc annotate 3 baz1};
+qx{../src/task rc:annotate.rc annotate 3 baz1};
 
-my $output = qx{../task rc:annotate.rc rrr};
+my $output = qx{../src/task rc:annotate.rc rrr};
 
 # ID Description                    
 # -- -------------------------------
@@ -91,7 +91,7 @@ like ($output, qr/bar1.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms, 'full - second annotati
 like ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms,'full - first  annotation task 3');
 like ($output, qr/4 tasks/, 'count');
 
-$output = qx{../task rc:annotate.rc rc.annotations:sparse rrr};
+$output = qx{../src/task rc:annotate.rc rc.annotations:sparse rrr};
 like   ($output, qr/1 \+one/, 'task 1');
 like   ($output, qr/2 \+two/, 'task 2');
 like   ($output, qr/3 three/, 'task 3');
@@ -104,7 +104,7 @@ like   ($output, qr/two.+\d{1,2}\/\d{1,2}\/\d{4} bar2/ms,   'sparse - second ann
 like   ($output, qr/three.+\d{1,2}\/\d{1,2}\/\d{4} baz1/ms, 'sparse - third  annotation task 3');
 like   ($output, qr/4 tasks/, 'count');
 
-$output = qx{../task rc:annotate.rc rc.annotations:none rrr};
+$output = qx{../src/task rc:annotate.rc rc.annotations:none rrr};
 like   ($output, qr/1 \+one/,   'task 1');
 like   ($output, qr/2 \+two/,   'task 2');
 like   ($output, qr/3 \+three/, 'task 3');
@@ -131,7 +131,7 @@ if (open my $fh, '>', 'annotate2.rc')
   ok (-r 'annotate2.rc', 'Created annotate2.rc');
 }
 
-$output = qx{../task rc:annotate2.rc rrr};
+$output = qx{../src/task rc:annotate2.rc rrr};
 like ($output, qr/1 one/,   'task 1');
 like ($output, qr/2 two/,   'task 2');
 like ($output, qr/3 three/, 'task 3');

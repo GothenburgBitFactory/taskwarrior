@@ -60,24 +60,24 @@ if (open my $fh, '>', 'date3.rc')
   ok (-r 'date3.rc', 'Created date3.rc');
 }
 
-qx{../task rc:date1.rc add foo due:20091231};
-my $output = qx{../task rc:date1.rc info 1};
+qx{../src/task rc:date1.rc add foo due:20091231};
+my $output = qx{../src/task rc:date1.rc info 1};
 like ($output, qr/\b20091231\b/, 'date format YMD parsed');
 
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
 
-qx{../task rc:date2.rc add foo due:12/1/09};
-$output = qx{../task rc:date2.rc info 1};
+qx{../src/task rc:date2.rc add foo due:12/1/09};
+$output = qx{../src/task rc:date2.rc info 1};
 like ($output, qr/\b12\/1\/09\b/, 'date format m/d/y parsed');
 
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
 
-qx{../task rc:date3.rc add foo due:4/8/10};
-$output = qx{../task rc:date3.rc list};
+qx{../src/task rc:date3.rc add foo due:4/8/10};
+$output = qx{../src/task rc:date3.rc list};
 like ($output, qr/Thursday 08 April 2010 \(v14\)/, 'date format A D B Y (vV) parsed');
-$output = qx{../task rc:date3.rc rc.dateformat.report:"D b Y - a" list};
+$output = qx{../src/task rc:date3.rc rc.dateformat.report:"D b Y - a" list};
 like ($output, qr/08 Apr 2010 - Thu/, 'date format D b Y - a parsed');
                   
 # Cleanup.

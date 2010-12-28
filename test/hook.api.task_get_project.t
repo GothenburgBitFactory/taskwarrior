@@ -47,12 +47,12 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
   # Test the hook.
-  qx{../task rc:hook.rc add foo pro:PPP};
-  $output = qx{../task rc:hook.rc info 1};
+  qx{../src/task rc:hook.rc add foo pro:PPP};
+  $output = qx{../src/task rc:hook.rc info 1};
   like ($output, qr/^<<PPP>>$/ms, 'Hook called task_get_project');
 }
 else

@@ -39,53 +39,53 @@ if (open my $fh, '>', 'abbrev.rc')
 }
 
 # Test the priority attribute abbrevations.
-qx{../task rc:abbrev.rc add priority:H with};
-qx{../task rc:abbrev.rc add without};
+qx{../src/task rc:abbrev.rc add priority:H with};
+qx{../src/task rc:abbrev.rc add without};
 
-my $output = qx{../task rc:abbrev.rc list priority:H};
+my $output = qx{../src/task rc:abbrev.rc list priority:H};
 like   ($output, qr/\bwith\b/,    'priority:H with');
 unlike ($output, qr/\bwithout\b/, 'priority:H without');
 
-$output = qx{../task rc:abbrev.rc list priorit:H};
+$output = qx{../src/task rc:abbrev.rc list priorit:H};
 like   ($output, qr/\bwith\b/,    'priorit:H with');
 unlike ($output, qr/\bwithout\b/, 'priorit:H without');
 
-$output = qx{../task rc:abbrev.rc list priori:H};
+$output = qx{../src/task rc:abbrev.rc list priori:H};
 like   ($output, qr/\bwith\b/,    'priori:H with');
 unlike ($output, qr/\bwithout\b/, 'priori:H without');
 
-$output = qx{../task rc:abbrev.rc list prior:H};
+$output = qx{../src/task rc:abbrev.rc list prior:H};
 like   ($output, qr/\bwith\b/,    'prior:H with');
 unlike ($output, qr/\bwithout\b/, 'prior:H without');
 
-$output = qx{../task rc:abbrev.rc list prio:H};
+$output = qx{../src/task rc:abbrev.rc list prio:H};
 like   ($output, qr/\bwith\b/,    'prio:H with');
 unlike ($output, qr/\bwithout\b/, 'prio:H without');
 
-$output = qx{../task rc:abbrev.rc list pri:H};
+$output = qx{../src/task rc:abbrev.rc list pri:H};
 like   ($output, qr/\bwith\b/,    'pri:H with');
 unlike ($output, qr/\bwithout\b/, 'pri:H without');
 
 # Test the version command abbreviations.
-$output = qx{../task rc:abbrev.rc version};
+$output = qx{../src/task rc:abbrev.rc version};
 like ($output, qr/GNU\s+General\s+Public\s+License/, 'version');
 
-$output = qx{../task rc:abbrev.rc versio};
+$output = qx{../src/task rc:abbrev.rc versio};
 like ($output, qr/GNU\s+General\s+Public\s+License/, 'versio');
 
-$output = qx{../task rc:abbrev.rc versi};
+$output = qx{../src/task rc:abbrev.rc versi};
 like ($output, qr/GNU\s+General\s+Public\s+License/, 'versi');
 
-$output = qx{../task rc:abbrev.rc vers};
+$output = qx{../src/task rc:abbrev.rc vers};
 like ($output, qr/GNU\s+General\s+Public\s+License/, 'vers');
 
-$output = qx{../task rc:abbrev.rc ver};
+$output = qx{../src/task rc:abbrev.rc ver};
 like ($output, qr/GNU\s+General\s+Public\s+License/, 'ver');
 
-$output = qx{../task rc:abbrev.rc ve};
+$output = qx{../src/task rc:abbrev.rc ve};
 like ($output, qr/GNU\s+General\s+Public\s+License/, 've');
 
-$output = qx{../task rc:abbrev.rc v};
+$output = qx{../src/task rc:abbrev.rc v};
 like ($output, qr/GNU\s+General\s+Public\s+License/, 'v');
 
 # Cleanup.

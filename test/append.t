@@ -39,9 +39,9 @@ if (open my $fh, '>', 'append.rc')
 }
 
 # Add a task, then append more decsription.
-qx{../task rc:append.rc add foo};
-qx{../task rc:append.rc 1 append bar};
-my $output = qx{../task rc:append.rc info 1};
+qx{../src/task rc:append.rc add foo};
+qx{../src/task rc:append.rc 1 append bar};
+my $output = qx{../src/task rc:append.rc info 1};
 like ($output, qr/Description\s+foo\sbar\n/, 'append worked');
 
 # Cleanup.

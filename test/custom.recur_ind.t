@@ -43,14 +43,14 @@ if (open my $fh, '>', 'custom.rc')
 }
 
 # Add a recurring and non-recurring task, look for the indicator.
-qx{../task rc:custom.rc add foo due:tomorrow recur:weekly};
-qx{../task rc:custom.rc add bar};
-my $output = qx{../task rc:custom.rc foo 2>&1};
+qx{../src/task rc:custom.rc add foo due:tomorrow recur:weekly};
+qx{../src/task rc:custom.rc add bar};
+my $output = qx{../src/task rc:custom.rc foo 2>&1};
 like ($output,   qr/ID R/,   'Recurrence indicator heading');
 like ($output,   qr/2\s+R/, 'Recurrence indicator t1');
 unlike ($output, qr/1\s+R/, 'No recurrence indicator t2');
 
-$output = qx{../task rc:custom.rc foo rc.recurrence.indicator=RE 2>&1};
+$output = qx{../src/task rc:custom.rc foo rc.recurrence.indicator=RE 2>&1};
 like ($output,   qr/2\s+RE/, 'Custom recurrence indicator t1');
 unlike ($output, qr/1\s+RE/, 'No custom recurrence indicator t2');
 

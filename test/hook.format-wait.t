@@ -51,11 +51,11 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  qx{../task rc:hook.rc add foo wait:tomorrow};
-  $output = qx{../task rc:hook.rc waiting};
+  qx{../src/task rc:hook.rc add foo wait:tomorrow};
+  $output = qx{../src/task rc:hook.rc waiting};
 
   like ($output, qr/<\d+\/\d+\/\d+>/, 'format-wait hook wait -> <wait>');
 }

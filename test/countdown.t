@@ -64,29 +64,29 @@ if (open my $fh, '>', 'countdown.rc')
 
 # Create a variety of pending tasks with increasingly higher due dates
 # to ensure proper sort order.
-qx{../task rc:countdown.rc add one       due:-1.2y};
-qx{../task rc:countdown.rc add two       due:-9mo};
-qx{../task rc:countdown.rc add three     due:-2mo};
-qx{../task rc:countdown.rc add four      due:-3wk};
-qx{../task rc:countdown.rc add five      due:-7d};
-qx{../task rc:countdown.rc add six       due:-2d};
-qx{../task rc:countdown.rc add seven     due:-1d};
-qx{../task rc:countdown.rc add eight     due:-12h};
-qx{../task rc:countdown.rc add nine      due:-6h};
-qx{../task rc:countdown.rc add ten       due:-1h};
-qx{../task rc:countdown.rc add eleven    due:-30s};
-qx{../task rc:countdown.rc add twelve    due:1h};
-qx{../task rc:countdown.rc add thirteen  due:6h};
-qx{../task rc:countdown.rc add fourteen  due:12h};
-qx{../task rc:countdown.rc add fifteen   due:1d};
-qx{../task rc:countdown.rc add sixteen   due:2d};
-qx{../task rc:countdown.rc add seventeen due:7d};
-qx{../task rc:countdown.rc add eighteen  due:3wk};
-qx{../task rc:countdown.rc add nineteen  due:2mo};
-qx{../task rc:countdown.rc add twenty    due:9mo};
-qx{../task rc:countdown.rc add twentyone due:1.2y};
+qx{../src/task rc:countdown.rc add one       due:-1.2y};
+qx{../src/task rc:countdown.rc add two       due:-9mo};
+qx{../src/task rc:countdown.rc add three     due:-2mo};
+qx{../src/task rc:countdown.rc add four      due:-3wk};
+qx{../src/task rc:countdown.rc add five      due:-7d};
+qx{../src/task rc:countdown.rc add six       due:-2d};
+qx{../src/task rc:countdown.rc add seven     due:-1d};
+qx{../src/task rc:countdown.rc add eight     due:-12h};
+qx{../src/task rc:countdown.rc add nine      due:-6h};
+qx{../src/task rc:countdown.rc add ten       due:-1h};
+qx{../src/task rc:countdown.rc add eleven    due:-30s};
+qx{../src/task rc:countdown.rc add twelve    due:1h};
+qx{../src/task rc:countdown.rc add thirteen  due:6h};
+qx{../src/task rc:countdown.rc add fourteen  due:12h};
+qx{../src/task rc:countdown.rc add fifteen   due:1d};
+qx{../src/task rc:countdown.rc add sixteen   due:2d};
+qx{../src/task rc:countdown.rc add seventeen due:7d};
+qx{../src/task rc:countdown.rc add eighteen  due:3wk};
+qx{../src/task rc:countdown.rc add nineteen  due:2mo};
+qx{../src/task rc:countdown.rc add twenty    due:9mo};
+qx{../src/task rc:countdown.rc add twentyone due:1.2y};
 
-my $output = qx{../task rc:countdown.rc up};
+my $output = qx{../src/task rc:countdown.rc up};
 like ($output, qr/\bone\b.+\btwo\b/ms,          'up: one < two');
 like ($output, qr/\btwo\b.+\bthree/ms,          'up: two < three');
 like ($output, qr/\bthree\b.+\bfour/ms,         'up: three < four');
@@ -108,7 +108,7 @@ like ($output, qr/\beighteen\b.+\bnineteen/ms,  'up: eighteen < nineteen');
 like ($output, qr/\bnineteen\b.+\btwenty/ms,    'up: nineteen < twenty');
 like ($output, qr/\btwenty\b.+\btwentyone/ms,   'up: twenty < twentyone');
 
-$output = qx{../task rc:countdown.rc down};
+$output = qx{../src/task rc:countdown.rc down};
 like ($output, qr/\btwentyone\b.+\btwenty/ms,   'down: twentyone < twenty');
 like ($output, qr/\btwenty\b.+\bnineteen/ms,    'down: twenty < nineteen');
 like ($output, qr/\bnineteen\b.+\beighteen/ms,  'down: nineteen < eighteen');
@@ -130,7 +130,7 @@ like ($output, qr/\bfour\b.+\bthree/ms,         'down: four < three');
 like ($output, qr/\bthree\b.+\btwo/ms,          'down: three < two');
 like ($output, qr/\btwo\b.+\bone\b/ms,          'down: two < one');
 
-$output = qx{../task rc:countdown.rc upc};
+$output = qx{../src/task rc:countdown.rc upc};
 like ($output, qr/\bone\b.+\btwo\b/ms,          'upc: one < two');
 like ($output, qr/\btwo\b.+\bthree/ms,          'upc: two < three');
 like ($output, qr/\bthree\b.+\bfour/ms,         'upc: three < four');
@@ -152,7 +152,7 @@ like ($output, qr/\beighteen\b.+\bnineteen/ms,  'upc: eighteen < nineteen');
 like ($output, qr/\bnineteen\b.+\btwenty/ms,    'upc: nineteen < twenty');
 like ($output, qr/\btwenty\b.+\btwentyone/ms,   'upc: twenty < twentyone');
 
-$output = qx{../task rc:countdown.rc downc};
+$output = qx{../src/task rc:countdown.rc downc};
 like ($output, qr/\btwentyone\b.+\btwenty/ms,   'downc: twentyone < twenty');
 like ($output, qr/\btwenty\b.+\bnineteen/ms,    'downc: twenty < nineteen');
 like ($output, qr/\bnineteen\b.+\beighteen/ms,  'downc: nineteen < eighteen');

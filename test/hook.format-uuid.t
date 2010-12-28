@@ -51,11 +51,11 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  qx{../task rc:hook.rc add foo};
-  $output = qx{../task rc:hook.rc info 1};
+  qx{../src/task rc:hook.rc add foo};
+  $output = qx{../src/task rc:hook.rc info 1};
 
   like ($output, qr/UUID\s+<[0-9a-f-]+>/, 'format-uuid hook uuid -> <uuid>');
 }

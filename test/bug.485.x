@@ -40,13 +40,13 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug #485 - 'task list recur:month' doesn't list monthly tasks
-qx{../task rc:bug.rc add one due:tomorrow recur:monthly};
-qx{../task rc:bug.rc add two due:tomorrow recur:month};
-my $output = qx{../task rc:bug.rc list recur:monthly};
+qx{../src/task rc:bug.rc add one due:tomorrow recur:monthly};
+qx{../src/task rc:bug.rc add two due:tomorrow recur:month};
+my $output = qx{../src/task rc:bug.rc list recur:monthly};
 like ($output, qr/one/, 'monthly -> monthly');
 like ($output, qr/two/, 'month   -> monthly');
 
-$output = qx{../task rc:bug.rc list recur:month};
+$output = qx{../src/task rc:bug.rc list recur:month};
 like ($output, qr/one/, 'monthly -> month');
 like ($output, qr/two/, 'month   -> month');
 

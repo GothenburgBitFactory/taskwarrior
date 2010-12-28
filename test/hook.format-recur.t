@@ -51,11 +51,11 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  qx{../task rc:hook.rc add foo due:tomorrow recur:weekly};
-  $output = qx{../task rc:hook.rc long};
+  qx{../src/task rc:hook.rc add foo due:tomorrow recur:weekly};
+  $output = qx{../src/task rc:hook.rc long};
 
   like ($output, qr/<weekly>/, 'format-recur hook recur -> <recur>');
 }

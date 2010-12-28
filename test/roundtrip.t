@@ -40,18 +40,18 @@ if (open my $fh, '>', 'roundtrip.rc')
 }
 
 # Add two tasks.
-qx{../task rc:roundtrip.rc add priority:H project:A one};
-qx{../task rc:roundtrip.rc add +tag1 +tag2 two};
+qx{../src/task rc:roundtrip.rc add priority:H project:A one};
+qx{../src/task rc:roundtrip.rc add +tag1 +tag2 two};
 
 # trip 1.
-qx{../task rc:roundtrip.rc export.yaml > ./roundtrip.txt};
+qx{../src/task rc:roundtrip.rc export.yaml > ./roundtrip.txt};
 unlink 'pending.data', 'completed.data', 'undo.data';
-qx{../task rc:roundtrip.rc import ./roundtrip.txt};
+qx{../src/task rc:roundtrip.rc import ./roundtrip.txt};
 
 # trip 2.
-qx{../task rc:roundtrip.rc export.yaml > ./roundtrip.txt};
+qx{../src/task rc:roundtrip.rc export.yaml > ./roundtrip.txt};
 unlink 'pending.data', 'completed.data', 'undo.data';
-qx{../task rc:roundtrip.rc import ./roundtrip.txt};
+qx{../src/task rc:roundtrip.rc import ./roundtrip.txt};
 
 # Exammine.
 
@@ -59,7 +59,7 @@ qx{../task rc:roundtrip.rc import ./roundtrip.txt};
 # -- ------- --- -------- ------- --- ----- --------- --- ---- --------- ---------
 #  1 A       H   8/7/2010                               -                one
 #  2             8/7/2010                               -      tag1 tag2 two
-my $output = qx{../task rc:roundtrip.rc long};
+my $output = qx{../src/task rc:roundtrip.rc long};
 like ($output, qr/1.+A.+H.+\d+\/\d+\/\d+.+(?:-|\d+).+one/,       '2 round trips task 1 identical');
 like ($output, qr/2.+\d+\/\d+\/\d+.+(?:-|\d+).+tag1\stag2\stwo/, '2 round trips task 2 identical');
 

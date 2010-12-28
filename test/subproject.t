@@ -38,28 +38,28 @@ if (open my $fh, '>', 'sp.rc')
   ok (-r 'sp.rc', 'Created sp.rc');
 }
 
-my $setup = "../task rc:sp.rc add project:abc abc;"
-          . "../task rc:sp.rc add project:ab  ab;"
-          . "../task rc:sp.rc add project:a   a;"
-          . "../task rc:sp.rc add project:b   b;";
+my $setup = "../src/task rc:sp.rc add project:abc abc;"
+          . "../src/task rc:sp.rc add project:ab  ab;"
+          . "../src/task rc:sp.rc add project:a   a;"
+          . "../src/task rc:sp.rc add project:b   b;";
 qx{$setup};
 
-my $output = qx{../task rc:sp.rc list project:b};
+my $output = qx{../src/task rc:sp.rc list project:b};
 like ($output, qr/\bb\s*$/m, 'abc,ab,a,b | b -> b');
 
-$output = qx{../task rc:sp.rc list project:a};
+$output = qx{../src/task rc:sp.rc list project:a};
 like ($output, qr/\babc\s*$/m, 'abc,ab,a,b | a -> abc');
 like ($output, qr/\bab\s*$/m,  'abc,ab,a,b | a -> ab');
 like ($output, qr/\ba\s*$/m,   'abc,ab,a,b | a -> a');
 
-$output = qx{../task rc:sp.rc list project:ab};
+$output = qx{../src/task rc:sp.rc list project:ab};
 like ($output, qr/\babc\s*$/m, 'abc,ab,a,b | a -> abc');
 like ($output, qr/\bab\s*$/m,  'abc,ab,a,b | a -> ab');
 
-$output = qx{../task rc:sp.rc list project:abc};
+$output = qx{../src/task rc:sp.rc list project:abc};
 like ($output, qr/\babc\s*$/m, 'abc,ab,a,b | a -> abc');
 
-$output = qx{../task rc:sp.rc list project:abcd};
+$output = qx{../src/task rc:sp.rc list project:abcd};
 like ($output, qr/No matches./, 'abc,ab,a,b | abcd -> nul');
 
 # Cleanup.

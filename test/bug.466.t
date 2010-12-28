@@ -43,7 +43,7 @@ if (open my $fh, '>', '466.rc')
 }
 
 # Bug #466 - wrong error message when sort key missing +/-
-my $output = qx{../task rc:466.rc foo};
+my $output = qx{../src/task rc:466.rc foo};
 like ($output, qr/Sort column 'id' does not have a \+\/- ascending\/descending indicator\./,
       'Error on missing sort direction');
 

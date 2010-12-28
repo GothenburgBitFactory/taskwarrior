@@ -39,8 +39,8 @@ if (open my $fh, '>', 'backslash.rc')
 }
 
 # Add a description with a backslash.
-qx{../task rc:backslash.rc add foo\\\\bar};
-my $output = qx{../task rc:backslash.rc ls};
+qx{../src/task rc:backslash.rc add foo\\\\bar};
+my $output = qx{../src/task rc:backslash.rc ls};
 like ($output, qr/foo\\bar/, 'Backslash preserved, no parsing issues');
 
 # Cleanup.

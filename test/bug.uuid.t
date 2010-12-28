@@ -41,39 +41,39 @@ if (open my $fh, '>', 'uuid.rc')
 
 # Add a task, dup it, add a recurring task, list.  Then make sure they all have
 # unique UUID values.
-qx{../task rc:uuid.rc add simple};
-qx{../task rc:uuid.rc 1 duplicate};
-qx{../task rc:uuid.rc add periodic recur:daily due:yesterday};
-my $output = qx{../task rc:uuid.rc stats};
+qx{../src/task rc:uuid.rc add simple};
+qx{../src/task rc:uuid.rc 1 duplicate};
+qx{../src/task rc:uuid.rc add periodic recur:daily due:yesterday};
+my $output = qx{../src/task rc:uuid.rc stats};
 
 my @all_uuids;
 my %unique_uuids;
-$output = qx{../task rc:uuid.rc 1 info};
+$output = qx{../src/task rc:uuid.rc 1 info};
 my ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../task rc:uuid.rc 2 info};
+$output = qx{../src/task rc:uuid.rc 2 info};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../task rc:uuid.rc 3 info};
+$output = qx{../src/task rc:uuid.rc 3 info};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../task rc:uuid.rc 4 info};
+$output = qx{../src/task rc:uuid.rc 4 info};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../task rc:uuid.rc 5 info};
+$output = qx{../src/task rc:uuid.rc 5 info};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../task rc:uuid.rc 6 info};
+$output = qx{../src/task rc:uuid.rc 6 info};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;

@@ -55,8 +55,8 @@ if (open my $fh, '>', 'annual.rc')
 # 10             12/29/2008          - foo
 # 11             12/29/2009          - foo
 
-qx{../task rc:annual.rc add foo due:1/1/2000 recur:annual until:1/1/2009};
-my $output = qx{../task rc:annual.rc list};
+qx{../src/task rc:annual.rc add foo due:1/1/2000 recur:annual until:1/1/2009};
+my $output = qx{../src/task rc:annual.rc list};
 like ($output, qr/1\s+1\/1\/2000\s+(?:-|\d+\ssecs?)\s+foo/,  'synthetic 1 no creep');
 like ($output, qr/2\s+1\/1\/2001\s+(?:-|\d+\ssecs?)\s+foo/,  'synthetic 2 no creep');
 like ($output, qr/3\s+1\/1\/2002\s+(?:-|\d+\ssecs?)\s+foo/,  'synthetic 3 no creep');

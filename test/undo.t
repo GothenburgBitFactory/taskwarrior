@@ -40,19 +40,19 @@ if (open my $fh, '>', 'undo.rc')
 }
 
 # Test the add/do/undo commands.
-my $output = qx{../task rc:undo.rc add one; ../task rc:undo.rc info 1};
+my $output = qx{../src/task rc:undo.rc add one; ../src/task rc:undo.rc info 1};
 ok (-r 'pending.data', 'pending.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
-$output = qx{../task rc:undo.rc do 1; ../task rc:undo.rc info 1};
+$output = qx{../src/task rc:undo.rc do 1; ../src/task rc:undo.rc info 1};
 ok (-r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Completed\n/, 'Completed');
 
-$output = qx{echo 'y'|../task rc:undo.rc undo; ../task rc:undo.rc info 1};
+$output = qx{echo 'y'|../src/task rc:undo.rc undo; ../src/task rc:undo.rc info 1};
 ok (-r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
-$output = qx{../task rc:undo.rc do 1; ../task rc:undo.rc list};
+$output = qx{../src/task rc:undo.rc do 1; ../src/task rc:undo.rc list};
 like ($output, qr/No matches/, 'No matches');
 
 # Cleanup.

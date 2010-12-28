@@ -39,9 +39,9 @@ if (open my $fh, '>', 'prepend.rc')
 }
 
 # Add a task, then prepend more decsription.
-qx{../task rc:prepend.rc add bar};
-qx{../task rc:prepend.rc 1 prepend foo};
-my $output = qx{../task rc:prepend.rc info 1};
+qx{../src/task rc:prepend.rc add bar};
+qx{../src/task rc:prepend.rc 1 prepend foo};
+my $output = qx{../src/task rc:prepend.rc info 1};
 like ($output, qr/Description\s+foo\sbar\n/, 'prepend worked');
 
 # Cleanup.

@@ -74,65 +74,65 @@ Confirmed:
                      *y
 =cut
 
-my $output = qx{../task rc:period.rc add daily due:tomorrow recur:daily};
+my $output = qx{../src/task rc:period.rc add daily due:tomorrow recur:daily};
 unlike ($output, qr/was not recognized/, 'recur:daily');
 
-$output = qx{../task rc:period.rc add day due:tomorrow recur:day};
+$output = qx{../src/task rc:period.rc add day due:tomorrow recur:day};
 unlike ($output, qr/was not recognized/, 'recur:day');
 
-$output = qx{../task rc:period.rc add weekly due:tomorrow recur:weekly};
+$output = qx{../src/task rc:period.rc add weekly due:tomorrow recur:weekly};
 unlike ($output, qr/was not recognized/, 'recur:weekly');
 
-$output = qx{../task rc:period.rc add sennight due:tomorrow recur:sennight};
+$output = qx{../src/task rc:period.rc add sennight due:tomorrow recur:sennight};
 unlike ($output, qr/was not recognized/, 'recur:sennight');
 
-$output = qx{../task rc:period.rc add biweekly due:tomorrow recur:biweekly};
+$output = qx{../src/task rc:period.rc add biweekly due:tomorrow recur:biweekly};
 unlike ($output, qr/was not recognized/, 'recur:biweekly');
 
-$output = qx{../task rc:period.rc add fortnight due:tomorrow recur:fortnight};
+$output = qx{../src/task rc:period.rc add fortnight due:tomorrow recur:fortnight};
 unlike ($output, qr/was not recognized/, 'recur:fortnight');
 
-$output = qx{../task rc:period.rc add monthly due:tomorrow recur:monthly};
+$output = qx{../src/task rc:period.rc add monthly due:tomorrow recur:monthly};
 unlike ($output, qr/was not recognized/, 'recur:monthly');
 
-$output = qx{../task rc:period.rc add quarterly due:tomorrow recur:quarterly};
+$output = qx{../src/task rc:period.rc add quarterly due:tomorrow recur:quarterly};
 unlike ($output, qr/was not recognized/, 'recur:quarterly');
 
-$output = qx{../task rc:period.rc add semiannual due:tomorrow recur:semiannual};
+$output = qx{../src/task rc:period.rc add semiannual due:tomorrow recur:semiannual};
 unlike ($output, qr/was not recognized/, 'recur:semiannual');
 
-$output = qx{../task rc:period.rc add bimonthly due:tomorrow recur:bimonthly};
+$output = qx{../src/task rc:period.rc add bimonthly due:tomorrow recur:bimonthly};
 unlike ($output, qr/was not recognized/, 'recur:bimonthly');
 
-$output = qx{../task rc:period.rc add biannual due:tomorrow recur:biannual};
+$output = qx{../src/task rc:period.rc add biannual due:tomorrow recur:biannual};
 unlike ($output, qr/was not recognized/, 'recur:biannual');
 
-$output = qx{../task rc:period.rc add biyearly due:tomorrow recur:biyearly};
+$output = qx{../src/task rc:period.rc add biyearly due:tomorrow recur:biyearly};
 unlike ($output, qr/was not recognized/, 'recur:biyearly');
 
-$output = qx{../task rc:period.rc add annual due:tomorrow recur:annual};
+$output = qx{../src/task rc:period.rc add annual due:tomorrow recur:annual};
 unlike ($output, qr/was not recognized/, 'recur:annual');
 
-$output = qx{../task rc:period.rc add yearly due:tomorrow recur:yearly};
+$output = qx{../src/task rc:period.rc add yearly due:tomorrow recur:yearly};
 unlike ($output, qr/was not recognized/, 'recur:yearly');
 
-$output = qx{../task rc:period.rc add 2d due:tomorrow recur:2d};
+$output = qx{../src/task rc:period.rc add 2d due:tomorrow recur:2d};
 unlike ($output, qr/was not recognized/, 'recur:2d');
 
-$output = qx{../task rc:period.rc add 2w due:tomorrow recur:2w};
+$output = qx{../src/task rc:period.rc add 2w due:tomorrow recur:2w};
 unlike ($output, qr/was not recognized/, 'recur:2w');
 
-$output = qx{../task rc:period.rc add 2m due:tomorrow recur:2mo};
+$output = qx{../src/task rc:period.rc add 2m due:tomorrow recur:2mo};
 unlike ($output, qr/was not recognized/, 'recur:2m');
 
-$output = qx{../task rc:period.rc add 2q due:tomorrow recur:2q};
+$output = qx{../src/task rc:period.rc add 2q due:tomorrow recur:2q};
 unlike ($output, qr/was not recognized/, 'recur:2q');
 
-$output = qx{../task rc:period.rc add 2y due:tomorrow recur:2y};
+$output = qx{../src/task rc:period.rc add 2y due:tomorrow recur:2y};
 unlike ($output, qr/was not recognized/, 'recur:2y');
 
 # Verify that the recurring task instances get created.  One of each.
-$output = qx{../task rc:period.rc list};
+$output = qx{../src/task rc:period.rc list};
 like ($output, qr/\bdaily\b/,      'verify daily');
 like ($output, qr/\bday\b/,        'verify day');
 like ($output, qr/\bweekly\b/,     'verify weekly');

@@ -40,26 +40,26 @@ if (open my $fh, '>', 'count.rc')
 }
 
 # Test the count command.
-qx{../task rc:count.rc add one};
-qx{../task rc:count.rc log two};
-qx{../task rc:count.rc add three};
-qx{../task rc:count.rc delete 3};
-qx{../task rc:count.rc add four wait:eom};
-qx{../task rc:count.rc add five due:eom recur:monthly};
+qx{../src/task rc:count.rc add one};
+qx{../src/task rc:count.rc log two};
+qx{../src/task rc:count.rc add three};
+qx{../src/task rc:count.rc delete 3};
+qx{../src/task rc:count.rc add four wait:eom};
+qx{../src/task rc:count.rc add five due:eom recur:monthly};
 
-my $output = qx{../task rc:count.rc count};
+my $output = qx{../src/task rc:count.rc count};
 like ($output, qr/^5$/ms, 'count');
 
-$output = qx{../task rc:count.rc count status:deleted};
+$output = qx{../src/task rc:count.rc count status:deleted};
 like ($output, qr/^1$/ms, 'count status:deleted');
 
-$output = qx{../task rc:count.rc count e};
+$output = qx{../src/task rc:count.rc count e};
 like ($output, qr/^3$/ms, 'count e');
 
-$output = qx{../task rc:count.rc count description.startswith:f};
+$output = qx{../src/task rc:count.rc count description.startswith:f};
 like ($output, qr/^2$/ms, 'count description.startswith:f');
 
-$output = qx{../task rc:count.rc count due.any:};
+$output = qx{../src/task rc:count.rc count due.any:};
 like ($output, qr/^1$/ms, 'count due.any:');
 
 # Cleanup.

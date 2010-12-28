@@ -48,19 +48,19 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
   my $good = $ENV{'PWD'} . '/hook:good';
   my $bad  = $ENV{'PWD'} . '/hook:bad';
 
-  qx{echo 'y'|../task rc:hook.rc config -- hook.pre-completed "$bad"};
-  qx{../task rc:hook.rc add foo};
-  $output = qx{../task rc:hook.rc done 1};
+  qx{echo 'y'|../src/task rc:hook.rc config -- hook.pre-completed "$bad"};
+  qx{../src/task rc:hook.rc add foo};
+  $output = qx{../src/task rc:hook.rc done 1};
   like ($output, qr/disallowed/, 'pre-completed hook rejected completion');
 
-  qx{echo 'y'|../task rc:hook.rc config -- hook.pre-completed "$good"};
-  $output = qx{../task rc:hook.rc done 1};
+  qx{echo 'y'|../src/task rc:hook.rc config -- hook.pre-completed "$good"};
+  $output = qx{../src/task rc:hook.rc done 1};
   like ($output, qr/Marked 1 task as done/, 'pre-completed hook allowed completion');
 }
 else

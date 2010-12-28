@@ -44,10 +44,10 @@ if (open my $fh, '>', '425.rc')
 # Create a task and attempt to revise the description to include the word 'in'
 # (this breaks in 1.9.3 and earlier)
 
-qx{../task rc:425.rc add Foo};
-qx{../task rc:425.rc 1 Bar in Bar};
+qx{../src/task rc:425.rc add Foo};
+qx{../src/task rc:425.rc 1 Bar in Bar};
 
-my $output = qx{../task rc:425.rc 1 ls};
+my $output = qx{../src/task rc:425.rc 1 ls};
 
 like ($output, qr/1\s+Bar in Bar/m, 'parser - interpret \'in\' in description');
 

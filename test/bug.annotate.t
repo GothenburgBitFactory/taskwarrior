@@ -39,12 +39,12 @@ if (open my $fh, '>', 'bug_annotate.rc')
 }
 
 # Attempt a blank annotation.
-qx{../task rc:bug_annotate.rc add foo};
-my $output = qx{../task rc:bug_annotate.rc 1 annotate};
+qx{../src/task rc:bug_annotate.rc add foo};
+my $output = qx{../src/task rc:bug_annotate.rc 1 annotate};
 like ($output, qr/Cannot apply a blank annotation./, 'failed on blank annotation');
 
 # Attempt an annotation without ID
-$output = qx{../task rc:bug_annotate.rc annotate bar};
+$output = qx{../src/task rc:bug_annotate.rc annotate bar};
 like ($output, qr/ID needed to apply an annotation./, 'failed on annotation without ID');
 
 # Cleanup.

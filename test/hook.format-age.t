@@ -51,13 +51,13 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  qx{../task rc:hook.rc add foo};
+  qx{../src/task rc:hook.rc add foo};
   diag ("1 second delay");
   sleep 1;
-  $output = qx{../task rc:hook.rc list};
+  $output = qx{../src/task rc:hook.rc list};
 
   like ($output, qr/<\d\ssec>/, 'format-age hook age -> <age>');
 }

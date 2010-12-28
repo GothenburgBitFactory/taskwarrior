@@ -51,12 +51,12 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  qx{../task rc:hook.rc add foo};
-  qx{../task rc:hook.rc do 1};
-  $output = qx{../task rc:hook.rc completed};
+  qx{../src/task rc:hook.rc add foo};
+  qx{../src/task rc:hook.rc do 1};
+  $output = qx{../src/task rc:hook.rc completed};
 
   like ($output, qr/<\d+\/\d+\/\d+>/, 'format-end hook end -> <end>');
 }

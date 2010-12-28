@@ -40,16 +40,16 @@ if (open my $fh, '>', 'info.rc')
 }
 
 # Test the add command.
-qx{../task rc:info.rc add test one};
-qx{../task rc:info.rc add test two};
-qx{../task rc:info.rc add test three};
+qx{../src/task rc:info.rc add test one};
+qx{../src/task rc:info.rc add test two};
+qx{../src/task rc:info.rc add test three};
 
-my $output = qx{../task rc:info.rc 1};
+my $output = qx{../src/task rc:info.rc 1};
 like ($output, qr/Description\s+test one\n/, 'single auto-info one');
 unlike ($output, qr/Description\s+test two\n/, 'single auto-info !two');
 unlike ($output, qr/Description\s+test three\n/, 'single auto-info !three');
 
-$output = qx{../task rc:info.rc 1-2};
+$output = qx{../src/task rc:info.rc 1-2};
 like ($output, qr/Description\s+test one\n/, 'single auto-info one');
 like ($output, qr/Description\s+test two\n/, 'single auto-info two');
 unlike ($output, qr/Description\s+test three\n/, 'single auto-info !three');

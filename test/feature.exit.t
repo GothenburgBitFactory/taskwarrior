@@ -39,10 +39,10 @@ if (open my $fh, '>', 'exit.rc')
   ok (-r 'exit.rc', 'Created exit.rc');
 }
 
-qx{../task rc:exit.rc add foo};
-my $exit_good = system ('../task rc:exit.rc ls foo 2>&1 >>/dev/null');
+qx{../src/task rc:exit.rc add foo};
+my $exit_good = system ('../src/task rc:exit.rc ls foo 2>&1 >>/dev/null');
 is ($exit_good, 0, 'task returns 0 on success');
-my $exit_bad  = system ('../task rc:exit.rc ls bar 2>&1 >>/dev/null');
+my $exit_bad  = system ('../src/task rc:exit.rc ls bar 2>&1 >>/dev/null');
 isnt ($exit_bad, 0, 'task returns non-zero on failure');
 
 # Cleanup.

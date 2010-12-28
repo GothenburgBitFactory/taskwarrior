@@ -44,12 +44,12 @@ if (open my $fh, '>', 'custom.rc')
 }
 
 # Generate the usage screen, and locate the custom report on it.
-my $output = qx{../task rc:custom.rc usage};
+my $output = qx{../src/task rc:custom.rc usage};
 like ($output, qr/task foo \[tags\] \[attrs\] desc\.\.\.\s+DESC\n/m, 'report.foo');
 
-qx{../task rc:custom.rc add project:A one};
-qx{../task rc:custom.rc add two};
-$output = qx{../task rc:custom.rc foo};
+qx{../src/task rc:custom.rc add project:A one};
+qx{../src/task rc:custom.rc add two};
+$output = qx{../src/task rc:custom.rc foo};
 like ($output,   qr/ID/,          'custom label for id column');
 like ($output,   qr/DESCRIPTION/, 'custom label for description column');
 like ($output,   qr/one/,         'custom filter included');

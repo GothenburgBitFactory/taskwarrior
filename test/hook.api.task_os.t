@@ -47,11 +47,11 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
   # Test the hook.
-  $output = qx{../task rc:hook.rc _version};
+  $output = qx{../src/task rc:hook.rc _version};
 
   my ($os) = $output =~ /^<<(darwin|solaris|cygwin|openbsd|haiku|freebsd|linux)>>$/ms;
   diag ($os);

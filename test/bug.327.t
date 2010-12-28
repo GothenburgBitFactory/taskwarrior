@@ -40,13 +40,13 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Setup: Add a recurring task then remove the due date.
-qx{../task rc:bug.rc add foo recur:yearly due:eoy};
-qx{../task rc:bug.rc li};
-qx{../task rc:bug.rc 2 due:};
+qx{../src/task rc:bug.rc add foo recur:yearly due:eoy};
+qx{../src/task rc:bug.rc li};
+qx{../src/task rc:bug.rc 2 due:};
 
 # Result: Somehow the due date is incremented and wraps around to 12/31/1969,
 # then keeps going back to today.
-my $output = qx{../task rc:bug.rc li};
+my $output = qx{../src/task rc:bug.rc li};
 unlike ($output, qr/1969/ms, 'Should not display 12/31/1969');
 
 # Cleanup.

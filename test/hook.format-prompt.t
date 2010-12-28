@@ -53,10 +53,10 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-my $output = qx{../task rc:hook.rc version};
+my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
-  my $output = qx{echo "\\nquit\\n" | ../task rc:hook.rc shell};
+  my $output = qx{echo "\\nquit\\n" | ../src/task rc:hook.rc shell};
   like ($output, qr/<foo>/, 'format-prompt hook prompt -> <prompt>');
 }
 else

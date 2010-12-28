@@ -39,54 +39,54 @@ if (open my $fh, '>', 'pri.rc')
 }
 
 # Verify that priorities can be select with the 'over' and 'under' modifiers.
-qx{../task rc:pri.rc add H pri:H};
-qx{../task rc:pri.rc add M pri:M};
-qx{../task rc:pri.rc add L pri:L};
-qx{../task rc:pri.rc add _};
+qx{../src/task rc:pri.rc add H pri:H};
+qx{../src/task rc:pri.rc add M pri:M};
+qx{../src/task rc:pri.rc add L pri:L};
+qx{../src/task rc:pri.rc add _};
 
-my $output = qx{../task rc:pri.rc ls priority.under:H};
+my $output = qx{../src/task rc:pri.rc ls priority.under:H};
 unlike ($output, qr/H/, 'pri H !< H');
   like ($output, qr/M/, 'pri M < H');
   like ($output, qr/L/, 'pri L < H');
   like ($output, qr/_/, 'pri _ < H');
 
-$output = qx{../task rc:pri.rc ls priority.under:M};
+$output = qx{../src/task rc:pri.rc ls priority.under:M};
 unlike ($output, qr/H/, 'pri H !< M');
 unlike ($output, qr/M/, 'pri M !< M');
   like ($output, qr/L/, 'pri L < M');
   like ($output, qr/_/, 'pri _ < M');
 
-$output = qx{../task rc:pri.rc ls priority.under:L};
+$output = qx{../src/task rc:pri.rc ls priority.under:L};
 unlike ($output, qr/H/, 'pri H !< L');
 unlike ($output, qr/M/, 'pri M !< L');
 unlike ($output, qr/L/, 'pri L !< L');
   like ($output, qr/_/, 'pri _ < L');
 
-$output = qx{../task rc:pri.rc ls priority.under:};
+$output = qx{../src/task rc:pri.rc ls priority.under:};
 unlike ($output, qr/H/, 'pri H !< _');
 unlike ($output, qr/M/, 'pri M !< _');
 unlike ($output, qr/L/, 'pri L !< _');
 unlike ($output, qr/_/, 'pri _ !< _');
 
-$output = qx{../task rc:pri.rc ls priority.over:H};
+$output = qx{../src/task rc:pri.rc ls priority.over:H};
 unlike ($output, qr/H/, 'pri H !> H');
 unlike ($output, qr/M/, 'pri M !> H');
 unlike ($output, qr/L/, 'pri L !> H');
 unlike ($output, qr/_/, 'pri _ !> H');
 
-$output = qx{../task rc:pri.rc ls priority.over:M};
+$output = qx{../src/task rc:pri.rc ls priority.over:M};
   like ($output, qr/H/, 'pri H > M');
 unlike ($output, qr/M/, 'pri M !> M');
 unlike ($output, qr/L/, 'pri L !> M');
 unlike ($output, qr/_/, 'pri _ !> M');
 
-$output = qx{../task rc:pri.rc ls priority.over:L};
+$output = qx{../src/task rc:pri.rc ls priority.over:L};
   like ($output, qr/H/, 'pri H > L');
   like ($output, qr/M/, 'pri M > L');
 unlike ($output, qr/L/, 'pri L !> L');
 unlike ($output, qr/_/, 'pri _ !> L');
 
-$output = qx{../task rc:pri.rc ls priority.over:};
+$output = qx{../src/task rc:pri.rc ls priority.over:};
   like ($output, qr/H/, 'pri H > _');
   like ($output, qr/M/, 'pri M > _');
   like ($output, qr/L/, 'pri L > _');
