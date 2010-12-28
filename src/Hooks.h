@@ -30,7 +30,7 @@
 #include <vector>
 #include <string>
 #include "API.h"
-#include "auto.h"
+#include "../auto.h"
 
 // Hook class representing a single hook, which is just a three-way map.
 class Hook

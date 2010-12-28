@@ -27,7 +27,7 @@
 #ifndef INCLUDED_API
 #define INCLUDED_API
 
-#include "auto.h"
+#include "../auto.h"
 #ifdef HAVE_LIBLUA
 
 #include <vector>
