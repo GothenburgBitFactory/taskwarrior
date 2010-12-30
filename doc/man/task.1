@@ -568,6 +568,19 @@ as description:
 $ task add -- project:Home needs scheduling
 .RE
 
+In other situations, the shell sees spaces and breaks up arguments.  For
+example, this command:
+
+.RS
+$ task 123 /from this/to that/
+.RE
+
+is broken up into several arguments, which is corrected with quotes:
+
+.RS
+$ task 123 "/from this/to that/"
+.RE
+
 .SH CONFIGURATION FILE AND OVERRIDE OPTIONS
 Taskwarrior stores its configuration in a file in the user's home directory:
 ~/.taskrc . The default configuration file can be overridden with
