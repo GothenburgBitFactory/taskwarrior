@@ -335,7 +335,7 @@ int longUsage (std::string& outs)
         << "  any"                                                              << "\n"
         << "  is         (synonym equals)"                                      << "\n"
         << "  isnt       (synonym not)"                                         << "\n"
-        << "  has        (synonym contain)"                                     << "\n"
+        << "  has        (synonym contains)"                                    << "\n"
         << "  hasnt"                                                            << "\n"
         << "  startswith (synonym left)"                                        << "\n"
         << "  endswith   (synonym right)"                                       << "\n"

@@ -35,9 +35,10 @@ Adds an annotation to an existing task.
 
 .TP
 .B denotate ID description
-Deletes an annotation for the specified task. If the provided description matches an
-annotation exactly, the corresponding annotation is deleted. If the provided description
-matches annotations partly, the first partly matched annotation is deleted.
+Deletes an annotation for the specified task. If the provided description
+matches an annotation exactly, the corresponding annotation is deleted. If the
+provided description matches annotations partly, the first partly matched
+annotation is deleted.
 
 .TP
 .B info ID
@@ -136,29 +137,33 @@ Imports tasks from a variety of formats.
 
 .TP
 .B export
-Exports all tasks in the default format.  This is an alias to the command export.yaml.
-Redirect the output to a file, if you wish to save it, or pipe it to another command.
+Exports all tasks in the default format.  This is an alias to the command
+export.yaml.  Redirect the output to a file, if you wish to save it, or pipe it
+to another command.
 
 .TP
 .B export.csv
 Exports all tasks in CSV format.
-Redirect the output to a file, if you wish to save it, or pipe it to another command.
+Redirect the output to a file, if you wish to save it, or pipe it to another
+command.
 
 .TP
 .B export.ical
 Exports all tasks in iCalendar format.
-Redirect the output to a file, if you wish to save it, or pipe it to another command.
+Redirect the output to a file, if you wish to save it, or pipe it to another
+command.
 
 .TP
 .B export.yaml
 Exports all tasks in YAML 1.1 format.
-Redirect the output to a file, if you wish to save it, or pipe it to another command.
+Redirect the output to a file, if you wish to save it, or pipe it to another
+command.
 
 .TP
 .B merge URL
 Merges two task databases by comparing the modifications that are stored in the
-undo.data files. The location of the second undo.data file must be passed on as argument. URL may have the following syntaxes:
-
+undo.data files. The location of the second undo.data file must be passed on as
+argument. URL may have the following syntaxes:
 
 	ssh://[user@]host.xz[:port]/path/to/undo.data
 
@@ -231,11 +236,13 @@ Modifies the existing task with provided information.
 
 .TP
 .B ID /from/to/
-Performs one substitution on task description and annotation for fixing mistakes.
+Performs one substitution on task description and annotation for fixing
+mistakes.
 
 .TP
 .B ID /from/to/g
-Performs all substitutions on task description and annotation for fixing mistakes.
+Performs all substitutions on task description and annotation for fixing
+mistakes.
 
 .TP
 .B edit ID
@@ -258,67 +265,86 @@ these reports can be configured in the configuration file. See also the man page
 taskrc(5).
 
 .TP
-.B active [tags] [attrs] [description]
-Shows all tasks matching the specified criteria
-that are started but not completed.
+.B active [filter]
+Shows all tasks matching the filter that are started but not completed.
 
 .TP
-.B all [tags] [attrs] [description]
-Shows all tasks matching the specified criteria.
+.B all [filter]
+Shows all tasks matching the filter.
 
 .TP
-.B completed [tags] [attrs] [description]
-Shows all tasks matching the specified criteria
-that are completed.
+.B completed [filter]
+Shows all tasks matching the filter that are completed.
 
 .TP
-.B minimal [tags] [attrs] [description]
-Provides a minimal listing of tasks with specified criteria.
+.B minimal [filter]
+Provides a minimal listing of tasks matching the filter.
 
 .TP
-.B ls [tags] [attrs] [description]
-Provides a short listing of tasks with specified criteria.
+.B ls [filter]
+Provides a short listing of tasks matching the filter.
 
 .TP
-.B list [tags] [attrs] [description]
-Provides a more detailed listing of tasks with specified criteria.
+.B list [filter]
+Provides a more detailed listing of tasks matching the filter.
 
 .TP
-.B long [tags] [attrs] [description]
-Provides the most detailed listing of tasks with specified criteria.
+.B long [filter]
+Provides the most detailed listing of tasks with filter.
 
 .TP
-.B newest [tags] [attrs] [description]
-Shows the newest tasks with specified criteria.
+.B newest [filter]
+Shows the newest tasks with filter.
 
 .TP
-.B oldest [tags] [attrs] [description]
-Shows the oldest tasks with specified criteria
+.B oldest [filter]
+Shows the oldest tasks with filter
 
 .TP
-.B overdue [tags] [attrs] [description]
-Shows all incomplete tasks matching the specified criteria
+.B overdue [filter]
+Shows all incomplete tasks matching the filter
 that are beyond their due date.
 
 .TP
-.B recurring [tags] [attrs] [description]
-Shows all recurring tasks matching the specified criteria.
+.B recurring [filter]
+Shows all recurring tasks matching the filter.
 
 .TP
-.B waiting [tags] [attrs] [description]
-Shows all waiting tasks matching the specified criteria.
+.B waiting [filter]
+Shows all waiting tasks matching the filter.
 
 .TP
-.B blocked [tags] [attrs] [description]
-Shows all blocked tasks, that are dependent on other tasks.
+.B blocked [filter]
+Shows all blocked tasks, that are dependent on other tasks, matching the filter.
 
 .TP
-.B unblocked [tags] [attrs] [description]
-Shows all tasks that are not blocked by dependencies.
+.B unblocked [filter]
+Shows all tasks that are not blocked by dependencies, matching the filter.
 
 .TP
-.B next [tags] [attrs] [description]
-Shows all tasks with upcoming due dates matching the specified criteria.
+.B next [filter]
+Shows all tasks with upcoming due dates matching the filter.
+
+.SH FILTERS
+
+A filter is a set of search criteria that the report applies before displaying
+the results.  For example, to list all tasks belonging to the 'Home' project:
+
+    task list project:Home
+
+You can specify multiple filters, each of which further restrict the results:
+
+    task list project:Home +weekend garden
+
+This example applies three filters: the 'Home' project, the 'weekend' tag, and
+the description or annotations must contain the characters 'garden'.  In this
+example, 'garden' is translated internally to:
+
+    description.contains:garden
+
+as a convenient shortcut.  The 'contains' here is an attribute modifier, which
+is used to exert more control over the filter than simply absence or presence.
+See 'ATTRIBUTE MODIFIERS' for a complete list of modifiers.
 
 .SH ATTRIBUTES AND METADATA
 
@@ -425,6 +451,86 @@ For example:
 task list due.before:eom priority.not:L
 .RE
 
+The
+.I before
+modifier is used to compare values, preserving semantics, so project.before:B
+list all projects that begin with 'A'.  Priority 'L' is before 'M', and
+due:2011-01-01 is before due:2011-01-02.  The synonyms 'under' and 'below' are
+included to allow filters that read more naturally.
+
+The
+.I after
+modifier is the inverse of the
+.I before
+modifier.
+
+The
+.I none
+modifier requires that the attribute does not have a value.  For example:
+
+    task list priority:
+    task list priority.none:
+
+are equivalent, and list tasks that do not have a priority.
+
+The
+.I any
+modifier requires that the attribute has a value, but any value will suffice.
+
+The
+.I is
+modifier requires an exact match with the value.
+
+The
+.I isnt
+modifier is the inverse of the
+.I is
+modifier.
+
+The
+.I has
+modifier is used to search for a substring, such as:
+
+    task list description.has:foo
+    task list foo
+
+which are equivalent and will return any task that has 'foo' in the description
+or annotations.
+
+The
+.I hasnt
+modifier is the inverse of the
+.I has
+modifier.
+
+The
+.I startswith
+modifier matches against the left, or beginning of an attribute, such that:
+
+    task list project.startswith:H
+    task list project:H
+
+are equivalent and will match any project starting with 'H'.
+
+The
+.I endswith
+modifier matches against the right, or end of an attribute.
+
+The
+.I word
+modifier requires that the attribute contain the whole word specified, such
+that this:
+
+    task list description.word:bar
+
+will match the description 'foo bar baz' but does not match 'dog food'.
+
+The
+.I noword
+modifier is the inverse of the
+.I word
+modifier.
+
 .SH SPECIFYING DATES AND FREQUENCIES
 
 .SS DATES
@@ -529,7 +635,8 @@ Every two years.
 
 
 .SH COMMAND ABBREVIATION
-All taskwarrior commands may be abbreviated as long as a unique prefix is used. E.g.
+All taskwarrior commands may be abbreviated as long as a unique prefix is used,
+for example:
 
 .RS
 $ task li

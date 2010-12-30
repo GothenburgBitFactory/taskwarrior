@@ -57,6 +57,8 @@
  + Fixed bug #587, where the man page needed clarification on quoting some
    arguments to prevent them from being broken up by the shell (thanks to
    Steve Rader).
+ + Fixed bug #589, where the man page did not adequately describe searching
+   or usage of attribute modifiers (thanks to Steve Rader).
 
 ------ old releases ------------------------------
 
