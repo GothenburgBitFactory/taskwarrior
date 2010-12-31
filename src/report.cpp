@@ -661,6 +661,7 @@ int handleInfo (std::string& outs)
       //table.addCell (row, 0, "Urgency");
       //table.addCell (row, 1, task->urgency ());
 
+      // Create a second table, containing undo log change details.
       Table journal;
 
       // If an alternating row color is specified, notify the table.

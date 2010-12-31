@@ -550,7 +550,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
         int row = 0;
         foreach (task, tasks)
         {
-          std::string value = format (task->urgency (), 1, 3);
+          std::string value = format (task->urgency (), 4, 3);
           context.hooks.trigger ("format-urgency", "urgency", value);
           table.addCell (row++, columnCount, value);
         }
@@ -580,7 +580,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
       char direction = (*sortColumn)[sortColumn->length () - 1];
 
       // TODO This code should really be using Att::type.
-      if (column == "id")
+      if (column == "id" || column == "urgency")
         table.sortOn (columnIndex[column],
                       (direction == '+' ?
                         Table::ascendingNumeric :
