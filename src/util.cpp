@@ -557,7 +557,8 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
 std::string renderAttribute (const std::string& name, const std::string& value)
 {
   Att a;
-  if (a.type (name) == "date")
+  if (a.type (name) == "date" &&
+      value != "")
   {
     Date d ((time_t)::atoi (value.c_str ()));
     return d.toString (context.config.get ("dateformat"));

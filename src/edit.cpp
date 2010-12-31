@@ -427,12 +427,14 @@ static void parseTask (Task& task, const std::string& after)
       {
         std::cout << "Wait date modified.\n";
         task.set ("wait", value);
+        task.setStatus (Task::waiting);
       }
     }
     else
     {
       std::cout << "Wait date modified.\n";
       task.set ("wait", value);
+      task.setStatus (Task::waiting);
     }
   }
   else
@@ -441,6 +443,7 @@ static void parseTask (Task& task, const std::string& after)
     {
       std::cout << "Wait date removed.\n";
       task.remove ("wait");
+      task.setStatus (Task::pending);
     }
   }
 
