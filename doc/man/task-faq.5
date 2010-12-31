@@ -21,6 +21,14 @@ Prevent this with the following entry in your .taskrc file:
 
    _forcecolor=on
 
+There is an additional problem with using pagers such as 'less' and 'more'.
+When using less, these options will preserve the color codes:
+
+    task ... | less -FrX
+
+There have been problems reported with the Linux 'more' pager, which inserts
+newline characters.
+
 .TP
 .B Q: How do I backup my taskwarrior data files? Where are they?
 A: Taskwarrior writes all pending tasks to the file
