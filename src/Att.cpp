@@ -53,6 +53,7 @@ static const char* internalNames[] =
   "status",
   "description",
   "tags",
+  "urgency",
   // Note that annotations are not listed.
 };
 
@@ -465,7 +466,8 @@ std::string Att::type (const std::string& name) const
   else if (name == "recur")
     return "duration";
 
-  else if (name == "limit")
+  else if (name == "limit" ||
+           name == "urgency")
     return "number";
 
   else if (name == "priority")

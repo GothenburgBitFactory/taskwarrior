@@ -541,6 +541,21 @@ int handleCustomReport (const std::string& report, std::string& outs)
         }
       }
 
+      else if (*col == "urgency")
+      {
+        table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Urgency");
+        table.setColumnWidth (columnCount, Table::minimum);
+        table.setColumnJustification (columnCount, Table::right);
+
+        int row = 0;
+        foreach (task, tasks)
+        {
+          std::string value = format (task->urgency (), 1, 3);
+          context.hooks.trigger ("format-urgency", "urgency", value);
+          table.addCell (row++, columnCount, value);
+        }
+      }
+
       // Common to all columns.
       // Add underline.
       if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
@@ -712,7 +727,8 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "description_only"     &&
         *it != "description"          &&
         *it != "wait"                 &&
-        *it != "depends")
+        *it != "depends"              &&
+        *it != "urgency")
       bad.push_back (*it);
 
   if (bad.size ())
