@@ -1,6 +1,6 @@
 # bash completion support for taskwarrior
 #
-# Copyright 2009-2010 Federico Hernandez
+# Copyright 2009 - 2011 Federico Hernandez
 # All rights reserved.
 #
 # This script is part of the taskwarrior project.

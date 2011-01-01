@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -893,7 +893,7 @@ int handleVersion (std::string& outs)
 #endif
 
         << "\n"
-        << "Copyright (C) 2006 - 2010 P. Beckingham, F. Hernandez.\n"
+        << "Copyright (C) 2006 - 2011 P. Beckingham, F. Hernandez.\n"
 #ifdef HAVE_LIBLUA
         << "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio.\n"
 #endif

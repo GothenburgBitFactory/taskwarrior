@@ -12,7 +12,7 @@
 #  * Attribute names and modifiers
 #
 # License:
-#  Copyright 2009 Mick Koch <kchmck@gmail.com>
+#  Copyright 2009 - 2011 Mick Koch <kchmck@gmail.com>
 #
 #  This script is free software. It comes without any warranty, to the extent
 #  permitted by applicable law. You can redistribute it and/or modify it under

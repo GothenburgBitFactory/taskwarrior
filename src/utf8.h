@@ -75,7 +75,7 @@ int u8_printf(char *fmt, ...);
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under

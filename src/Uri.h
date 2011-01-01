@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2010, Johannes Schlatow.
+// Copyright 2010 - 2011, Johannes Schlatow.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under

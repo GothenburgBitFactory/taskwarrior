@@ -32,10 +32,10 @@ Upstream Authors:
 
 Copyright:
 
-    Copyright 2006 - 2010, Paul Beckingham
-    Copyright 2009 - 2010  Federico Hernandez
-    Copyright 2006 - 2010, Paul Beckingham, Federico Hernandez
-    Copyright 2009 - 2010  John Florian
+    Copyright 2006 - 2011, Paul Beckingham
+    Copyright 2009 - 2011  Federico Hernandez
+    Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez
+    Copyright 2009 - 2011  John Florian
     Copyright 2009 P.C. Shyamshankar
     Copyright © 1994–2008 Lua.org, PUC-Rio
 
@@ -60,6 +60,6 @@ Public License can be found in `/usr/share/common-licenses/GPL-2'.
 
 The Debian packaging is:
 
-    Copyright (C) 2009 - 2010, Federico Hernandez <ultrafredde@gmail.com>
+    Copyright (C) 2009 - 2011, Federico Hernandez <ultrafredde@gmail.com>
 
 and is licensed under the GPL, see above.
