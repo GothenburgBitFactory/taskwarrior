@@ -1,0 +1,43 @@
+/* cmake.h.in. Creates auto.h during a cmake run */
+
+/* Package information */
+#define PACKAGE "${PACKAGE}"
+#define VERSION "${VERSION}"
+#define PACKAGE_BUGREPORT "${PACKAGE_BUGREPORT}"
+#define PACKAGE_NAME      "${PACKAGE_NAME}"
+#define PACKAGE_TARNAME   "${PACKAGE_TARNAME}"
+#define PACKAGE_VERSION   "${PACKAGE_VERSION}"
+#define PACKAGE_STRING    "${PACKAGE_STRING}"
+
+/* Compiling platform */
+#cmakedefine LINUX
+#cmakedefine DARWIN
+#cmakedefine CYGWIN
+#cmakedefine FREEBSD
+#cmakedefine OPENBSD
+#cmakedefine HAIKU
+#cmakedefine SOLARIS
+#cmakedefine WIN32
+#cmakedefine UNKNOWN
+
+/* Found the lua library */
+#cmakedefine HAVE_LIBLUA
+
+/* Found the pthread library */
+#cmakedefine HAVE_LIBPTHREAD
+
+/* Found the readline library */
+#cmakedefine HAVE_READLINE
+#cmakedefine HAVE_LIBREADLINE
+
+/* Found random */
+#cmakedefine HAVE_RANDOM
+
+/* Found srandom */
+#cmakedefine HAVE_SRANDOM
+
+/* Found uuid_unparse_lower */
+#cmakedefine HAVE_UUID
+
+/* To comment out large blocks of code */
+#cmakedefine NOPE

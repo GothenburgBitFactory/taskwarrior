@@ -1,36 +1,54 @@
-cmake_minimum_required (VERSION 2.8) 
+cmake_minimum_required (VERSION 2.8)
+include (CheckFunctionExists)
+
+set (PACKAGE "${PROJECT_NAME}")
+set (VERSION "${PROJECT_VERSION}")
+set (PACKAGE_BUGREPORT "support@taskwarrior.org")
+set (PACKAGE_NAME "${PACKAGE}")
+set (PACKAGE_TARNAME "${PACKAGE}")
+set (PACKAGE_VERSION "${VERSION}")
+set (PACKAGE_STRING "${PACKAGE} ${VERSION}")
 
 include_directories (${CMAKE_SOURCE_DIR}/src) 
-find_package (Lua51)
-include (${LUA_INCLUDE_DIR})
 
-#AC_DEFINE([SOLARIS], [], [Compiling on Solaris])
-#AC_DEFINE([DARWIN], [], [Compiling on Darwin])
-#AC_DEFINE([CYGWIN], [], [Compiling on Cygwin])
-#AC_DEFINE([OPENBSD], [], [Compiling on OpenBSD])
-#AC_DEFINE([HAIKU], [], [Compiling on Haiku])
-#AC_DEFINE([FREEBSD], [], [Compiling on FreeBSD])
-#AC_DEFINE([LINUX], [], [Compiling on Linux])
-#AC_DEFINE([UNKNOWN], [], [Compiling on Unknown])
-#AC_DEFINE([HAVE_LIBLUA], [1], [Defined if you have liblua])
-#AC_CONFIG_SRCDIR([src/main.cpp])
-#AC_CONFIG_HEADER([auto.h])
-#AC_CHECK_LIB(pthread,pthread_create)
-#AC_HEADER_STDC
+find_package (Lua51)
+if (LUA51_FOUND)
+  set (HAVE_LIBLUA true)
+endif (LUA51_FOUND)
+
+find_path (PTHREAD_INCLUDE_DIR pthread.h)
+find_library (PTHREAD_LIBRARY NAMES pthread)
+if (PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
+  set (HAVE_LIBPTHREAD true)
+endif (PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
+
+#find_path (READLINE_INCLUDE_DIR readline/readline.h)
+#find_library (READLINE_LIBRARY NAMES readline)
+#if (READLINE_INCLUDE_DIR AND READLINE_LIBRARY)
+#  set (HAVE_LIBREADLINE true)
+#  set (HAVE_READLINE true)
+#endif (READLINE_INCLUDE_DIR AND READLINE_LIBRARY)
+
+check_function_exists (random  HAVE_RANDOM)
+check_function_exists (srandom HAVE_SRANDOM)
+check_function_exists (uuid_unparse_lower HAVE_UUID)
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  set (LINUX true)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  set (DARWIN true)
+else (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  set (UNKNOWN true)
+endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+configure_file (
+  ${CMAKE_SOURCE_DIR}/cmake.h.in
+  ${CMAKE_SOURCE_DIR}/auto.h)
+
+include_directories (${CMAKE_SOURCE_DIR}/src ${LUA_INCLUDE_DIR} ${PTHREAD_INCLUDE_DIR}${READLINE_INCLUDE_DIR})
+
 #AC_CHECK_HEADERS([stdlib.h sys/file.h sys/stat.h sys/time.h unistd.h])
 #AC_CHECK_HEADERS([sstream string vector map])
-#AC_HEADER_STDBOOL
-#AC_C_CONST
-#AC_TYPE_PID_T
-#AC_TYPE_SIZE_T
-#AC_HEADER_TIME
-#AC_STRUCT_TM
-#AC_FUNC_MKTIME
-#AC_FUNC_SELECT_ARGTYPES
-#AC_CHECK_FUNCS([select])
-#AC_CHECK_FUNC(uuid_unparse_lower, [AC_DEFINE([HAVE_UUID], [1], [Found uuid_unparse_lower])])
-#AC_CHECK_FUNC(random, [AC_DEFINE([HAVE_RANDOM], [1], [Found random])])
-#AC_CHECK_FUNC(srandom, [AC_DEFINE([HAVE_SRANDOM], [1], [Found srandom])])
 
 set (task_SRCS API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h
                Config.cpp Config.h Context.cpp Context.h Date.cpp Date.h
@@ -51,10 +69,10 @@ set (task_SRCS API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h
                text.cpp text.h util.cpp util.h Uri.cpp Uri.h)
 
 add_executable (task ${task_SRCS})
-target_link_libraries (task ${LUA_LIBRARIES})
+target_link_libraries (task ${LUA_LIBRARIES} ${READLINE_LIBRARY})
+
 install (TARGETS task DESTINATION bin)
 
 set (CMAKE_BUILD_TYPE debug)
 set (CMAKE_C_FLAGS_DEBUG "-ggdb3")
 set (CMAKE_C_FLAGS_RELEASE "-O3")
-
