@@ -6,6 +6,7 @@ config.status
 src/.deps
 src/Makefile
 */*task
+*/*libtask.a
 stamp-h1
 Makefile
 Makefile.in

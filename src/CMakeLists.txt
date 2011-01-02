@@ -1,54 +1,7 @@
-cmake_minimum_required (VERSION 2.8)
-include (CheckFunctionExists)
-
-set (PACKAGE "${PROJECT_NAME}")
-set (VERSION "${PROJECT_VERSION}")
-set (PACKAGE_BUGREPORT "support@taskwarrior.org")
-set (PACKAGE_NAME "${PACKAGE}")
-set (PACKAGE_TARNAME "${PACKAGE}")
-set (PACKAGE_VERSION "${VERSION}")
-set (PACKAGE_STRING "${PACKAGE} ${VERSION}")
-
-include_directories (${CMAKE_SOURCE_DIR}/src) 
-
-find_package (Lua51)
-if (LUA51_FOUND)
-  set (HAVE_LIBLUA true)
-endif (LUA51_FOUND)
-
-find_path (PTHREAD_INCLUDE_DIR pthread.h)
-find_library (PTHREAD_LIBRARY NAMES pthread)
-if (PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
-  set (HAVE_LIBPTHREAD true)
-endif (PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
-
-#find_path (READLINE_INCLUDE_DIR readline/readline.h)
-#find_library (READLINE_LIBRARY NAMES readline)
-#if (READLINE_INCLUDE_DIR AND READLINE_LIBRARY)
-#  set (HAVE_LIBREADLINE true)
-#  set (HAVE_READLINE true)
-#endif (READLINE_INCLUDE_DIR AND READLINE_LIBRARY)
-
-check_function_exists (random  HAVE_RANDOM)
-check_function_exists (srandom HAVE_SRANDOM)
-check_function_exists (uuid_unparse_lower HAVE_UUID)
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  set (LINUX true)
-elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  set (DARWIN true)
-else (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  set (UNKNOWN true)
-endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-
-configure_file (
-  ${CMAKE_SOURCE_DIR}/cmake.h.in
-  ${CMAKE_SOURCE_DIR}/auto.h)
-
-include_directories (${CMAKE_SOURCE_DIR}/src ${LUA_INCLUDE_DIR} ${PTHREAD_INCLUDE_DIR}${READLINE_INCLUDE_DIR})
-
-#AC_CHECK_HEADERS([stdlib.h sys/file.h sys/stat.h sys/time.h unistd.h])
-#AC_CHECK_HEADERS([sstream string vector map])
+include_directories (${CMAKE_SOURCE_DIR}/src
+                     ${LUA_INCLUDE_DIR}
+                     ${PTHREAD_INCLUDE_DIR}
+                     ${READLINE_INCLUDE_DIR})
 
 set (task_SRCS API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h
                Config.cpp Config.h Context.cpp Context.h Date.cpp Date.h
@@ -65,11 +18,13 @@ set (task_SRCS API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h
                TransportCurl.cpp TransportCurl.h Tree.cpp Tree.h burndown.cpp
                command.cpp custom.cpp dependency.cpp diag.cpp edit.cpp
                export.cpp history.cpp i18n.h import.cpp interactive.cpp
-               main.cpp main.h recur.cpp report.cpp rules.cpp rx.cpp rx.h
-               text.cpp text.h util.cpp util.h Uri.cpp Uri.h)
+               recur.cpp report.cpp rules.cpp rx.cpp rx.h text.cpp text.h
+               util.cpp util.h Uri.cpp Uri.h)
 
-add_executable (task ${task_SRCS})
-target_link_libraries (task ${LUA_LIBRARIES} ${READLINE_LIBRARY})
+add_library (task STATIC ${task_SRCS})
+add_executable (task_executable main.cpp)
+target_link_libraries (task_executable task ${LUA_LIBRARIES} ${PTHREAD_LIBRARY} ${READLINE_LIBRARY})
+set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 
 install (TARGETS task DESTINATION bin)
 
