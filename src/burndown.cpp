@@ -487,7 +487,7 @@ std::string Chart::render ()
       grid.replace (LOC (height - 5, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), bar.minor_label.length (), bar.minor_label);
 
       if (major_label != bar.major_label)
-        grid.replace (LOC (height - 4, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), bar.major_label.length (), bar.major_label);
+        grid.replace (LOC (height - 4, max_label + 2 + ((actual_bars - bar.offset - 1) * 3)), bar.major_label.length (), " " + bar.major_label);
 
       major_label = bar.major_label;
     }
