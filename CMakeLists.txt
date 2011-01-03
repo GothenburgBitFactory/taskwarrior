@@ -31,6 +31,14 @@ endif (PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
 #  set (HAVE_READLINE true)
 #endif (READLINE_INCLUDE_DIR AND READLINE_LIBRARY)
 
+set (TASK_INCLUDE_DIRS ${LUA_INCLUDE_DIR}
+                       ${PTHREAD_INCLUDE_DIR}
+                       ${READLINE_INCLUDE_DIR})
+
+set (TASK_LIBRARIES ${LUA_LIBRARIES}
+                    ${PTHREAD_LIBRARY}
+                    ${READLINE_LIBRARY})
+
 check_function_exists (random  HAVE_RANDOM)
 check_function_exists (srandom HAVE_SRANDOM)
 check_function_exists (uuid_unparse_lower HAVE_UUID)

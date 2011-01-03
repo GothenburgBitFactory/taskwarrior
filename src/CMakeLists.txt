@@ -1,7 +1,5 @@
 include_directories (${CMAKE_SOURCE_DIR}/src
-                     ${LUA_INCLUDE_DIR}
-                     ${PTHREAD_INCLUDE_DIR}
-                     ${READLINE_INCLUDE_DIR})
+                     ${TASK_INCLUDE_DIRS})
 
 set (task_SRCS API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h
                Config.cpp Config.h Context.cpp Context.h Date.cpp Date.h
@@ -23,7 +21,7 @@ set (task_SRCS API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h
 
 add_library (task STATIC ${task_SRCS})
 add_executable (task_executable main.cpp)
-target_link_libraries (task_executable task ${LUA_LIBRARIES} ${PTHREAD_LIBRARY} ${READLINE_LIBRARY})
+target_link_libraries (task_executable task ${TASK_LIBRARIES})
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 
 install (TARGETS task DESTINATION bin)
