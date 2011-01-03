@@ -39,5 +39,3 @@
 /* Found uuid_unparse_lower */
 #cmakedefine HAVE_UUID
 
-/* To comment out large blocks of code */
-#cmakedefine NOPE
