@@ -27,7 +27,11 @@
 #ifndef INCLUDED_THREAD
 #define INCLUDED_THREAD
 
+#include <../auto.h>
+
+#ifdef HAVE_LIBPTHREAD
 #include <pthread.h>
+#endif
 
 class Thread
 {
