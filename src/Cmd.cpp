@@ -136,6 +136,8 @@ void Cmd::load ()
     commands.push_back ("_version");
     commands.push_back ("_urgency");
     commands.push_back ("_query");
+	 commands.push_back ("_zshcommands");
+	 commands.push_back ("_zshids");
     commands.push_back ("export.csv");
     commands.push_back ("export.ical");
     commands.push_back ("export.yaml");
@@ -243,6 +245,8 @@ bool Cmd::isReadOnlyCommand ()
       command == "_version"                                                  ||
       command == "_urgency"                                                  ||
       command == "_query"                                                    ||
+      command == "_zshcommands"                                              ||
+      command == "_zshids"                                                   ||
       command == "export.csv"                                                ||
       command == "export.ical"                                               ||
       command == "export.yaml"                                               ||

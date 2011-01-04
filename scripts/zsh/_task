@@ -31,6 +31,7 @@ typeset -g _task_cmds _task_projects _task_tags _task_config _task_modifiers
 _task_projects=($(task _projects))
 _task_tags=($(task _tags))
 _task_ids=($(task _ids))
+_task_zshids=( ${(f)"$(task _zshids)"} )
 _task_config=($(task _config))
 _task_modifiers=(
 	'before' \
@@ -47,17 +48,35 @@ _task_modifiers=(
 	'noword'
 )
 _task_cmds=($(task _commands))
+_task_zshcmds=( ${(f)"$(task _zshcommands)"} )
+
+# concat zshcmds and zshids
+_task_cmds_ids=($_task_zshcmds $_task_zshids)
+
 _task_idCmds=(
-	'append' \
-	'prepend' \
-	'annotate' \
-	'denotate' \
-	'edit' \
-	'duplicate' \
-	'info' \
-	'start' \
-	'stop' \
-	'done'
+	'append:Appends more description to an existing task.' \
+	'prepend:Prepends more description to an existing task.' \
+	'annotate:Adds an annotation to an existing task.' \
+	'denotate:Deletes an annotation of an existing task.' \
+	'edit:Launches an editor to let you modify a task directly.' \
+	'duplicate:Duplicates the specified task, and allows modifications.' \
+	'info:Shows all data, metadata for specified task.' \
+	'start:Marks specified task as started.' \
+	'stop:Removes the start time from a task.' \
+	'done:Marks the specified task as completed.'
+)
+
+_task_idCmdsDesc=(
+	'append:Appends more description to an existing task.' \
+	'prepend:Prepends more description to an existing task.' \
+	'annotate:Adds an annotation to an existing task.' \
+	'denotate:Deletes an annotation of an existing task.' \
+	'edit:Launches an editor to let you modify a task directly.' \
+	'duplicate:Duplicates the specified task, and allows modifications.' \
+	'info:Shows all data, metadata for specified task.' \
+	'start:Marks specified task as started.' \
+	'stop:Removes the start time from a task.' \
+	'done:Marks the specified task as completed.'
 )
 
 _task() {
@@ -190,7 +209,7 @@ _task_default() {
 (( $+functions[_task_id] )) ||
 _task_id() {
 	if (( CURRENT < 3 )); then
-		_describe -t ids 'task IDs' _task_ids
+		_describe -t ids 'task IDs' _task_zshids
 	else
 		_task_attributes "$@"
 	fi
@@ -205,7 +224,7 @@ _task_merge() {
 # modify (task [0-9]* ...) completion
 (( $+functions[_task_modify] )) ||
 _task_modify() {
-	_describe -t commands 'task command' _task_idCmds
+	_describe -t commands 'task command' _task_idCmdsDesc
 	_task_attributes "$@"
 }
 
@@ -214,11 +233,11 @@ _task_modify() {
 _task_commands() {
     local cmd ret=1
 	if (( CURRENT == 1 )); then
-		# TODO add descriptions (assoz array)
-		_describe -t commands 'task command' _task_cmds
+		#TODO fix descriptions
+
+		_describe -t commands 'task command' _task_cmds_ids
 		# TODO match more than one ID
-		_describe -t ids 'task IDs' _task_ids
-		# TODO sorting
+		# TODO sorting (ids below commands)
 	elif [[ $words[1] =~ ^[0-9]*$ ]] then
 		 _call_function ret _task_modify
 		 return ret
