@@ -27,6 +27,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string.h>
+#include <math.h>
 #include <main.h>
 #include <util.h>
 #include <text.h>
@@ -270,7 +271,35 @@ void UnitTest::is (double actual, double expected, const std::string& name)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void UnitTest::is (char actual, char expected, const std::string& name)
+void UnitTest::is (double actual, double expected, double tolerance, const std::string& name)
+{
+  ++mCounter;
+  if (fabs (actual - expected) <= tolerance)
+  {
+    ++mPassed;
+    std::cout << "ok "
+              << mCounter
+              << " - "
+              << name
+              << "\n";
+  }
+  else
+  {
+    ++mFailed;
+    std::cout << "not ok "
+              << mCounter
+              << " - "
+              << name
+              << "\n# expected: "
+              << expected
+              << "\n#      got: "
+              << actual
+              << "\n";
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void UnitTest::is (unsigned char actual, unsigned char expected, const std::string& name)
 {
   ++mCounter;
   if (actual == expected)

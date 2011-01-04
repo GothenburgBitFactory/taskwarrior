@@ -44,7 +44,8 @@ public:
   void is (size_t, size_t, const std::string&);
   void is (int, int, const std::string&);
   void is (double, double, const std::string&);
-  void is (char, char, const std::string&);
+  void is (double, double, double, const std::string&);
+  void is (unsigned char, unsigned char, const std::string&);
   void is (const std::string&, const std::string&, const std::string&);
   void is (const char*, const char*, const std::string&);
   void diag (const std::string&);
