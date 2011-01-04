@@ -93,7 +93,7 @@ like ($output, qr/Task not deleted\./, 'confirmation - N works');
 
 # Test Yes for multiple changes
 $output = qx{echo -e "y\nY\nY\nY\nY" | ../src/task rc:confirm.rc 7-10 +bar};
-like ($output, qr/Proceed with change\? \(Yes\/no\/All\/quit\)/, 'multiple confirmations - Y works');
+like ($output, qr/Proceed with change\? \(yes\/no\/all\/quit\)/, 'multiple confirmations - Y works');
 like ($output, qr/Task 7 "foo"/,     'multiple confirmations - Y works');
 like ($output, qr/Task 8 "foo"/,     'multiple confirmations - Y works');
 like ($output, qr/Task 9 "foo"/,     'multiple confirmations - Y works');
@@ -102,7 +102,7 @@ like ($output, qr/Modified 4 tasks/, 'multiple confirmations - Y works');
 
 # Test no for multiple changes
 $output = qx{echo -e "N\nn\nn\nn\nn" | ../src/task rc:confirm.rc 7-10 -bar};
-like ($output, qr/Proceed with change\? \(Yes\/no\/All\/quit\)/, 'multiple confirmations - n works');
+like ($output, qr/Proceed with change\? \(yes\/no\/all\/quit\)/, 'multiple confirmations - n works');
 like ($output, qr/Task 7 "foo"/,     'multiple confirmations - n works');
 like ($output, qr/Task 8 "foo"/,     'multiple confirmations - n works');
 like ($output, qr/Task 9 "foo"/,     'multiple confirmations - n works');
@@ -111,14 +111,14 @@ like ($output, qr/Modified 0 tasks/, 'multiple confirmations - n works');
 
 # Test All for multiple changes
 $output = qx{echo -e "a\nA" | ../src/task rc:confirm.rc 7-10 -bar};
-like ($output, qr/Proceed with change\? \(Yes\/no\/All\/quit\)/, 'multiple confirmations - A works');
+like ($output, qr/Proceed with change\? \(yes\/no\/all\/quit\)/, 'multiple confirmations - A works');
 like ($output,   qr/Task 7 "foo"/,     'multiple confirmations - A works');
 unlike ($output, qr/Task 8 "foo"/,     'multiple confirmations - A works');
 like ($output,   qr/Modified 4 tasks/, 'multiple confirmations - A works');
 
 # Test quit for multiple changes
 $output = qx{echo "q" | ../src/task rc:confirm.rc 7-10 +bar};
-like ($output, qr/Proceed with change\? \(Yes\/no\/All\/quit\)/, 'multiple confirmations - q works');
+like ($output, qr/Proceed with change\? \(yes\/no\/all\/quit\)/, 'multiple confirmations - q works');
 like ($output,   qr/Task 7 "foo"/,     'multiple confirmations - q works');
 unlike ($output, qr/Task 8 "foo"/,     'multiple confirmations - q works');
 like ($output,   qr/Modified 0 tasks/, 'multiple confirmations - q works');

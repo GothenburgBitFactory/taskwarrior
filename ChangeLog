@@ -59,6 +59,8 @@
    Steve Rader).
  + Fixed bug #589, where the man page did not adequately describe searching
    or usage of attribute modifiers (thanks to Steve Rader).
+ + Applied patch to fix bug #590, which makes the yes/no/all/quit confirmation
+   prompts consistent (thanks to Steve Rader).
  + Fixed bug #595, where taskwarrior ignored changes to the wait date during
    the edit command, consequently not changing task status (thanks to Eric
    Fluger).

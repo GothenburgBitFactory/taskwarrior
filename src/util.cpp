@@ -83,8 +83,10 @@ int confirm3 (const std::string& question)
 {
   std::vector <std::string> options;
   options.push_back ("Yes");
+  options.push_back ("yes");
   options.push_back ("no");
   options.push_back ("All");
+  options.push_back ("all");
 
   std::string answer;
   std::vector <std::string> matches;
@@ -93,9 +95,9 @@ int confirm3 (const std::string& question)
   {
     std::cout << question
               << " ("
-              << options[0] << "/"
               << options[1] << "/"
-              << options[2]
+              << options[2] << "/"
+              << options[4]
               << ") ";
 
     std::getline (std::cin, answer);
@@ -105,7 +107,9 @@ int confirm3 (const std::string& question)
   while (matches.size () != 1);
 
        if (matches[0] == "Yes") return 1;
+  else if (matches[0] == "yes") return 1;
   else if (matches[0] == "All") return 2;
+  else if (matches[0] == "all") return 2;
   else                          return 0;
 }
 
@@ -118,8 +122,10 @@ int confirm4 (const std::string& question)
 {
   std::vector <std::string> options;
   options.push_back ("Yes");
+  options.push_back ("yes");
   options.push_back ("no");
   options.push_back ("All");
+  options.push_back ("all");
   options.push_back ("quit");
 
   std::string answer;
@@ -129,10 +135,10 @@ int confirm4 (const std::string& question)
   {
     std::cout << question
               << " ("
-              << options[0] << "/"
               << options[1] << "/"
               << options[2] << "/"
-              << options[3]
+              << options[4] << "/"
+              << options[5]
               << ") ";
 
     std::getline (std::cin, answer);
@@ -142,7 +148,9 @@ int confirm4 (const std::string& question)
   while (matches.size () != 1);
 
        if (matches[0] == "Yes")  return 1;
+  else if (matches[0] == "yes")  return 1;
   else if (matches[0] == "All")  return 2;
+  else if (matches[0] == "all")  return 2;
   else if (matches[0] == "quit") return 3;
   else                           return 0;
 }
