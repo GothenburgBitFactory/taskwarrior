@@ -56,4 +56,5 @@ configure_file (
   ${CMAKE_SOURCE_DIR}/auto.h)
 
 add_subdirectory (src)
+add_subdirectory (doc)
 add_subdirectory (test EXCLUDE_FROM_ALL)
