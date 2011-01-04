@@ -250,6 +250,7 @@ int handleProjects (std::string& outs)
     std::map <std::string, int> medium;
     std::map <std::string, int> low;
     std::map <std::string, int> none;
+    bool no_project = false;
     std::string project;
     std::string priority;
     foreach (t, tasks)
@@ -258,6 +259,8 @@ int handleProjects (std::string& outs)
       priority = t->get ("priority");
 
       unique[project] += 1;
+      if (project == "")
+        no_project = true;
 
            if (priority == "H") high[project]   += 1;
       else if (priority == "M") medium[project] += 1;
@@ -306,11 +309,15 @@ int handleProjects (std::string& outs)
         table.addCell (row, 5, high[i->first]);
       }
 
+      int number_projects = unique.size ();
+      if (no_project)
+        --number_projects;
+
       out << optionalBlankLine ()
           << table.render ()
           << optionalBlankLine ()
-          << unique.size ()
-          << (unique.size () == 1 ? " project" : " projects")
+          << number_projects
+          << (number_projects == 1 ? " project" : " projects")
           << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")\n";
     }
     else
