@@ -298,7 +298,7 @@ int handleProjects (std::string& outs)
       foreach (i, unique)
       {
         int row = table.addRow ();
-        table.addCell (row, 0, i->first);
+        table.addCell (row, 0, (i->first == "" ? "(none)" : i->first));
         table.addCell (row, 1, i->second);
         table.addCell (row, 2, none[i->first]);
         table.addCell (row, 3, low[i->first]);

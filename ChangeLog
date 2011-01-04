@@ -62,6 +62,9 @@
  + Fixed bug #595, where taskwarrior ignored changes to the wait date during
    the edit command, consequently not changing task status (thanks to Eric
    Fluger).
+ + Applied patch to fix bug #613, so that the summary report and the projects
+   command now consistently show a missing project as "(none)" (thanks to
+   Steve Rader).
 
 ------ old releases ------------------------------
 
