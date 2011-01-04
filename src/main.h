@@ -69,6 +69,8 @@ int handleCompletionConfig (std::string&);
 int handleCompletionVersion (std::string&);
 int handleUrgency (std::string&);
 int handleQuery (std::string&);
+int handleZshCompletionCommands (std::string&);
+int handleZshCompletionIDs (std::string&);
 int handleVersion (std::string&);
 int handleConfig (std::string&);
 int handleShow (std::string&);
