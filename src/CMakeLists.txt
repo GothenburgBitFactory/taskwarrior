@@ -24,7 +24,7 @@ add_executable (task_executable main.cpp)
 target_link_libraries (task_executable task ${TASK_LIBRARIES})
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 
-install (TARGETS task DESTINATION bin)
+install (TARGETS task_executable DESTINATION bin)
 
 set (CMAKE_BUILD_TYPE debug)
 set (CMAKE_C_FLAGS_DEBUG "-ggdb3")
