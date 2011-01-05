@@ -66,6 +66,7 @@ std::string Config::defaults =
   "curses=on                                      # Detects terminal width\n"
   "defaultwidth=80                                # Without detection, assumed width\n"
   "#editor=vi                                     # Preferred text editor\n"
+  "edit.verbose=yes                               # Include comments in files created during task edit\n"
   "\n"
   "# Miscellaneous\n"
   "verbose=yes                                    # Provide extra feedback\n"

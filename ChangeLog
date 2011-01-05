@@ -69,6 +69,9 @@
  + Applied patch to fix bug #613, so that the summary report and the projects
    command now consistently show a missing project as "(none)" (thanks to
    Steve Rader).
+ + Applied patch to fix bug #618, so that the configuration setting
+   'edit.verbose' can be set to 'no' and eliminate the help text when using
+   the 'task edit' command (thanks to Steve Rader).
 
 ------ old releases ------------------------------
 

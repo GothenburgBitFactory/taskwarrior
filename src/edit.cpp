@@ -110,22 +110,26 @@ static std::string formatDate (
 static std::string formatTask (Task task)
 {
   std::stringstream before;
-  before << "# The 'task edit <id>' command allows you to modify all aspects of a task\n"
-         << "# using a text editor.  What is shown below is a representation of the\n"
-         << "# task in all it's detail.  Modify what you wish, and if you save and\n"
-         << "# quit your editor, taskwarrior will read this file and try to make sense\n"
-         << "# of what changed, and apply those changes.  If you quit your editor\n"
-         << "# without saving or making any modifications, taskwarrior will do nothing.\n"
-         << "#\n"
-         << "# Lines that begin with # represent data you cannot change, like ID.\n"
-         << "# If you get too 'creative' with your editing, taskwarrior will dump you\n"
-         << "# back into the editor to try again.\n"
-         << "#\n"
-         << "# Should you find yourself in an endless Groundhog Day loop, editing and\n"
-         << "# editing the same file, just quit the editor without making any changes.\n"
-         << "# Taskwarrior will notice this and stop the editing.\n"
-         << "#\n"
-         << "# Name               Editable details\n"
+  bool verbose = context.config.getBoolean ("edit.verbose");
+
+  if (verbose)
+    before << "# The 'task edit <id>' command allows you to modify all aspects of a task\n"
+           << "# using a text editor.  What is shown below is a representation of the\n"
+           << "# task in all it's detail.  Modify what you wish, and if you save and\n"
+           << "# quit your editor, taskwarrior will read this file and try to make sense\n"
+           << "# of what changed, and apply those changes.  If you quit your editor\n"
+           << "# without saving or making any modifications, taskwarrior will do nothing.\n"
+           << "#\n"
+           << "# Lines that begin with # represent data you cannot change, like ID.\n"
+           << "# If you get too 'creative' with your editing, taskwarrior will dump you\n"
+           << "# back into the editor to try again.\n"
+           << "#\n"
+           << "# Should you find yourself in an endless Groundhog Day loop, editing and\n"
+           << "# editing the same file, just quit the editor without making any changes.\n"
+           << "# Taskwarrior will notice this and stop the editing.\n"
+           << "#\n";
+
+  before << "# Name               Editable details\n"
          << "# -----------------  ----------------------------------------------------\n"
          << "# ID:                " << task.id                                          << "\n"
          << "# UUID:              " << task.get ("uuid")                                << "\n"
@@ -139,10 +143,14 @@ static std::string formatTask (Task task)
   task.getTags (tags);
   std::string allTags;
   join (allTags, " ", tags);
-  before << "# Separate the tags with spaces, like this: tag1 tag2\n"
-         << "  Tags:              " << allTags                                          << "\n"
-         << "# The description field is allowed to wrap and use multiple lines.  Task\n"
-         << "# will combine them.\n"
+
+  if (verbose)
+    before << "# Separate the tags with spaces, like this: tag1 tag2\n"
+           << "  Tags:              " << allTags                                          << "\n"
+           << "# The description field is allowed to wrap and use multiple lines.  Task\n"
+           << "# will combine them.\n";
+
+  before << "  Tags:              " << allTags                                          << "\n"
          << "  Description:       " << task.get ("description")                         << "\n"
          << "  Created:           " << formatDate (task, "entry")                       << "\n"
          << "  Started:           " << formatDate (task, "start")                       << "\n"
@@ -153,9 +161,14 @@ static std::string formatTask (Task task)
          << "  Wait until:        " << formatDate (task, "wait")                        << "\n"
          << "  Parent:            " << task.get ("parent")                              << "\n"
          << "  Foreground color:  " << task.get ("fg")                                  << "\n"
-         << "  Background color:  " << task.get ("bg")                                  << "\n"
-         << "# Annotations look like this: <date> -- <text> and there can be any number of them\n"
-         << "# ' -- ' is the separator between the date and text field. It should not be removed\n";
+         << "  Background color:  " << task.get ("bg")                                  << "\n";
+
+  if (verbose)
+    before << "# Annotations look like this: <date> -- <text> and there can be any number of them.\n"
+           << "# The ' -- ' separator between the date and text field should not be removed.\n"
+           << "# A \"blank slot\" for adding an annotation follows for your convenience.\n";
+
+  before << "  Background color:  " << task.get ("bg")                                  << "\n";
 
   std::vector <Att> annotations;
   task.getAnnotations (annotations);
@@ -175,8 +188,11 @@ static std::string formatTask (Task task)
   task.getDependencies (dependencies);
   std::string allDeps;
   join (allDeps, ",", dependencies);
-  before << "# Dependencies should be a comma-separated list of task IDs, with no spaces.\n"
-         << "  Dependencies:      " << allDeps << "\n";
+
+  if (verbose)
+    before << "# Dependencies should be a comma-separated list of task IDs, with no spaces.\n";
+
+  before << "  Dependencies:      " << allDeps << "\n";
 
   before << "# End\n";
   return before.str ();

@@ -44,6 +44,8 @@ New configuration options in taskwarrior 1.9.4
     to change the effective first month in the calendar report.
   - default.due can be specified, and adds a default due date to all added
     and imported tasks that don't otherwise have a due date.
+  - edit.verbose can be set to 'off' to eliminated the help text when using
+    the 'task edit' command.
 
 Newly deprecated features in taskwarrior 1.9.4
 
