@@ -51,6 +51,7 @@ else (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set (UNKNOWN true)
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+message ("-- Configuring auto.h")
 configure_file (
   ${CMAKE_SOURCE_DIR}/cmake.h.in
   ${CMAKE_SOURCE_DIR}/auto.h)
