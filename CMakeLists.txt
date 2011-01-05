@@ -61,7 +61,7 @@ add_subdirectory (i18n)
 add_subdirectory (scripts)
 add_subdirectory (test EXCLUDE_FROM_ALL)
 
-set (doc_FILES NEWS ChangeLog README README.build INSTALL AUTHORS COPYING)
+set (doc_FILES NEWS ChangeLog README INSTALL AUTHORS COPYING)
 foreach (doc_FILE ${doc_FILES})
   install (FILES ${doc_FILE}  DESTINATION share/doc/task)
 endforeach (doc_FILE)
