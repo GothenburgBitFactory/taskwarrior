@@ -11,6 +11,9 @@ set (test_SRCS date.t t.t tdb.t duration.t t.benchmark.t text.t autocomplete.t s
 add_custom_target (test ./run_all DEPENDS ${test_SRCS}
                                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
 
+add_custom_target (build_tests DEPENDS ${test_SRCS}
+                               WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
+
 foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} "${src_FILE}.cpp" test.cpp)
   target_link_libraries (${src_FILE} task ${TASK_LIBRARIES})
