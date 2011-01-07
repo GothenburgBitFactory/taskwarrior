@@ -12,32 +12,34 @@ set (PACKAGE_TARNAME "${PACKAGE}")
 set (PACKAGE_VERSION "${VERSION}")
 set (PACKAGE_STRING "${PACKAGE} ${VERSION}")
 
+message ("-- Looking for Lua51")
 find_package (Lua51)
 if (LUA51_FOUND)
   set (HAVE_LIBLUA true)
+  set (TASK_INCLUDE_DIRS ${TASK_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
+  set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${LUA_LIBRARIES})
 endif (LUA51_FOUND)
 
+message ("-- Looking for pthread")
 find_path (PTHREAD_INCLUDE_DIR pthread.h)
 find_library (PTHREAD_LIBRARY NAMES pthread)
 if (PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
   message ("-- Found pthread: ${PTHREAD_LIBRARY}")
   set (HAVE_LIBPTHREAD true)
+  set (TASK_INCLUDE_DIRS ${TASK_INCLUDE_DIRS} ${PTHREAD_INCLUDE_DIR})
+  set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${PTHREAD_LIBRARIES})
 endif (PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
 
-#find_path (READLINE_INCLUDE_DIR readline/readline.h)
+#message ("-- Looking for readline")
+#find_path    (READLINE_INCLUDE_DIR   readline/readline.h)
 #find_library (READLINE_LIBRARY NAMES readline)
 #if (READLINE_INCLUDE_DIR AND READLINE_LIBRARY)
+#  message ("-- Found readline: ${READLINE_LIBRARY}")
 #  set (HAVE_LIBREADLINE true)
 #  set (HAVE_READLINE true)
+#  set (TASK_INCLUDE_DIRS ${TASK_INCLUDE_DIRS} ${READLINE_INCLUDE_DIR})
+#  set (TASK_LIBRARIES    ${TASK_LIBRARIES }   ${READLINE_LIBRARIES})
 #endif (READLINE_INCLUDE_DIR AND READLINE_LIBRARY)
-
-set (TASK_INCLUDE_DIRS ${LUA_INCLUDE_DIR}
-                       ${PTHREAD_INCLUDE_DIR}
-                       ${READLINE_INCLUDE_DIR})
-
-set (TASK_LIBRARIES ${LUA_LIBRARIES}
-                    ${PTHREAD_LIBRARY}
-                    ${READLINE_LIBRARY})
 
 check_function_exists (random  HAVE_RANDOM)
 check_function_exists (srandom HAVE_SRANDOM)
@@ -66,3 +68,14 @@ set (doc_FILES NEWS ChangeLog README INSTALL AUTHORS COPYING)
 foreach (doc_FILE ${doc_FILES})
   install (FILES ${doc_FILE}  DESTINATION share/doc/task)
 endforeach (doc_FILE)
+
+# ---
+
+set (CPACK_SOURCE_GENERATOR "TGZ")
+set (CPACK_SOURCE_PACKAGE_FILE_NAME ${PACKAGE_NAME}-${PACKAGE_VERSION})
+set (CPACK_SOURCE_IGNORE_FILES  "CMakeCache" "CMakeFiles" "CPackConfig" "CPackSourceConfig"
+                                "_CPack_Packages" "cmake_install" "install_manifest"
+                                "Makefile$" "test" "package-config" "misc/*"
+                                "src/task$" "src/libtask.a" "auto.h"
+                                "/\\.gitignore" "/\\.git/" "swp$")
+include (CPack)
