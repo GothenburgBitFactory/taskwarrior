@@ -133,6 +133,9 @@ void handleDiagnostics (std::string& outs)
   std::cout << "[1mBuild Features[0m\n"
   // Build date.
             << "     Built: " << __DATE__ << " " << __TIME__ << "\n"
+#ifdef HAVE_COMMIT
+            << "    Commit: " << COMMIT << "\n"
+#endif
             << "      Caps:"
 #ifdef HAVE_LIBPTHREAD
             << " +pthreads"

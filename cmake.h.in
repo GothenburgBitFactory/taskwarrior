@@ -9,6 +9,10 @@
 #define PACKAGE_VERSION   "${PACKAGE_VERSION}"
 #define PACKAGE_STRING    "${PACKAGE_STRING}"
 
+/* git information */
+#cmakedefine HAVE_COMMIT
+#define COMMIT "${COMMIT}"
+
 /* Compiling platform */
 #cmakedefine LINUX
 #cmakedefine DARWIN

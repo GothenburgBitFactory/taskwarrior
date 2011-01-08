@@ -4,6 +4,13 @@ include (CheckFunctionExists)
 project (task)
 set (PROJECT_VERSION "1.9.4")
 
+if (EXISTS .git/index)
+  set (HAVE_COMMIT true)
+  execute_process (COMMAND git log -1 --pretty=format:%h
+                   OUTPUT_VARIABLE COMMIT)
+endif (EXISTS .git/index)
+
+
 set (PACKAGE "${PROJECT_NAME}")
 set (VERSION "${PROJECT_VERSION}")
 set (PACKAGE_BUGREPORT "support@taskwarrior.org")
