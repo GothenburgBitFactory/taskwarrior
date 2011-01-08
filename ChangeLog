@@ -17,6 +17,8 @@
  + Added feature #158, regular expression support for filters and substitutions.
  + Added feature #247, providing infinite width reports when redirecting output
    to a file, by setting defaultwidth to 0.
+ + Added feature #309, which sets the xterm title when reports are run,
+   according to the configuration variable 'xterm.title', which defaults to off.
  + Added feature #546, which is a 'count' command that counts tasks, and is
    intended to help scripts that manipulate task output.
  + Added feature #567, which makes it possible to apply an offset to the first

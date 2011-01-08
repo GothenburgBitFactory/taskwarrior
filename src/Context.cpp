@@ -206,6 +206,17 @@ int Context::dispatch (std::string &out)
 
   hooks.trigger ("pre-dispatch");
 
+  // For read-only commands, optionally update the xterm window title.
+  // Why just the read-only commands?  Because this capability is to answer the
+  // question of 'what did I just do to generate this outout?'.
+  if (config.getBoolean ("xterm.title") &&
+      cmd.isReadOnlyCommand ())
+  {
+    std::string title;
+    join (title, " ", args);
+    std::cout << "]0;task " << title << "" << std::endl;
+  }
+
   // TODO Just look at this thing.  It cries out for a dispatch table.
        if (cmd.command == "projects")         { rc = handleProjects              (out); }
   else if (cmd.command == "tags")             { rc = handleTags                  (out); }

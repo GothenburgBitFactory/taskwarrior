@@ -46,6 +46,8 @@ New configuration options in taskwarrior 1.9.4
     and imported tasks that don't otherwise have a due date.
   - edit.verbose can be set to 'off' to eliminated the help text when using
     the 'task edit' command.
+  - xterm.title can be set to 'on' to update the xterm window title when a
+    report is run.
 
 Newly deprecated features in taskwarrior 1.9.4
 

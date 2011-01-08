@@ -84,6 +84,7 @@ std::string Config::defaults =
   "undo.style=side                                # Undo style - can be 'side', or 'diff'\n"
   "burndown.bias=0.666                            # Weighted mean bias toward recent data\n"
   "regex=no                                       # Assume all search/filter strings are regexes\n"
+  "xterm.title=no                                 # Sets xterm title for some commands\n"
   "\n"
   "# Dates\n"
   "dateformat=m/d/Y                               # Preferred input and display date format\n"
