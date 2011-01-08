@@ -282,6 +282,10 @@ The default value is off, because this advanced feature could cause confusion
 among users that are not comfortable with regular expressions.
 
 .TP
+.B xterm.title=no
+Sets the xterm window title when reports are run.  Defaults to off.
+
+.TP
 .B _forcecolor=no
 Taskwarrior shuts off color automatically when the output is not sent directly
 to a TTY.  For example, this command:

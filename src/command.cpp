@@ -1158,6 +1158,7 @@ int handleShow (std::string& outs)
       "active.indicator tag.indicator recurrence.indicator recurrence.limit "
       "list.all.projects list.all.tags undo.style verbose rule.precedence.color "
       "merge.autopush merge.default.uri pull.default.uri push.default.uri "
+      "xterm.title "
 #ifdef FEATURE_SHELL
       "shell.prompt "
 #endif
