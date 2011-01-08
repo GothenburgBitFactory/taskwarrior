@@ -73,6 +73,7 @@
  + Applied patch to fix bug #618, so that the configuration setting
    'edit.verbose' can be set to 'no' and eliminate the help text when using
    the 'task edit' command (thanks to Steve Rader).
+ + Enhanced unit tests in response to bug #624 (thanks to Steve Rader).
 
 ------ old releases ------------------------------
 
