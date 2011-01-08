@@ -520,7 +520,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
       {
         table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Deps");
         table.setColumnWidth (columnCount, Table::minimum);
-        table.setColumnJustification (columnCount, Table::left);
+        table.setColumnJustification (columnCount, Table::right);
 
         int row = 0;
         std::vector <Task> blocked;
