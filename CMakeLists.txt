@@ -4,10 +4,12 @@ include (CheckFunctionExists)
 project (task)
 set (PROJECT_VERSION "1.9.4")
 
+message ("-- Looking for SHA1 references")
 if (EXISTS .git/index)
   set (HAVE_COMMIT true)
   execute_process (COMMAND git log -1 --pretty=format:%h
                    OUTPUT_VARIABLE COMMIT)
+  message ("-- Found SHA1 reference: ${COMMIT}")
 endif (EXISTS .git/index)
 
 
