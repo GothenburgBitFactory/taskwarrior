@@ -388,7 +388,6 @@ int handleCustomReport (const std::string& report, std::string& outs)
           {
             Date dt (::atoi (created.c_str ()));
             age = Duration (now - dt).formatCompact ();
-
             context.hooks.trigger ("format-age_compact", "age_compact", age);
             table.addCell (row, columnCount, age);
           }
