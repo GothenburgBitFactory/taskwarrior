@@ -32,6 +32,8 @@
  + Added feature #575, including Danish holidays (thanks to Irfan Siddiqui).
  + Added feature #608, and now completing a task, with journal.time turned on
    will stop the task first (thanks to Andy Kriger).
+ + Added feature #629, a new holiday configuration file for New Zealand
+   (thanks to Stephen Haywood)
  + Eliminated dependency on ncurses.
  + The dependency columns are now right-justified (thanks to Eric Fluger).
  + Fixed bug that caused the 'done' command to always exit with a non-zero
