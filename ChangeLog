@@ -14,6 +14,11 @@
  + Added ability to temporarily suspend GC (rc.gc:0) for a given command, which
    helps scriptwriters implement shadow files externally (thanks to Sander
    Marechal).
+ + Added feature #30, which eliminates the dependency on ncurses (thanks to
+   Johan Friis).
+ + Added feature #157, which implements the _query command, a helper command for
+   script writers, which accepts a filter like any other report, but returns
+   only full JSON.
  + Added feature #158, regular expression support for filters and substitutions.
  + Added feature #247, providing infinite width reports when redirecting output
    to a file, by setting defaultwidth to 0.
@@ -26,8 +31,6 @@
  + Added feature #574, default due dates (thanks to Erlan Sergaziev).
  + Added feature #575, including Danish holidays (thanks to Irfan Siddiqui).
  + Eliminated dependency on ncurses.
- + Added _query helper command for script writers, which accepts a filter like
-   any other report, but returns only full JSON.
  + The dependency columns are now right-justified (thanks to Eric Fluger).
  + Fixed bug #515, which displayed an incorrect message after duplicating a
    non-existent task (thanks to Peter De Poorter).
