@@ -1864,12 +1864,14 @@ int handleDone (std::string& outs)
           nagged = nag (*task);
       }
       else
+      {
         out << "Task "
             << task->id
             << " '"
             << task->get ("description")
             << "' is neither pending nor waiting.\n";
         rc = 1;
+      }
     }
 
     if (count)

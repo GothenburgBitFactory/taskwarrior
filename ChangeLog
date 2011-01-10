@@ -29,6 +29,8 @@
  + Added _query helper command for script writers, which accepts a filter like
    any other report, but returns only full JSON.
  + The dependency columns are now right-justified (thanks to Eric Fluger).
+ + Fixed bug that caused the 'done' command to always exit with a non-zero
+   status (thanks to Steve Rader).
  + Fixed bug #515, which displayed an incorrect message after duplicating a
    non-existent task (thanks to Peter De Poorter).
  + Fixed bug #529, where the 'depends' attribute was not mentioned in the

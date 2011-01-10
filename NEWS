@@ -11,7 +11,7 @@ New Features in taskwarrior 1.9.4
   - The first month in the calendar report can now be changed with an offset
     value.
   - No more dependency on ncurses.
-  - New '_query helper command for script writers, which accepts a filter like
+  - New '_query' helper command for script writers, which accepts a filter like
     any other report, but returns unformatted JSON.
   - Assorted bug fixes.
 
