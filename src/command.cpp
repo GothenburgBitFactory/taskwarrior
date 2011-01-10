@@ -1862,6 +1862,11 @@ int handleDone (std::string& outs)
         // Change status.
         task->setStatus (Task::completed);
 
+        // Stop the task, if started.
+        if (task->has ("start") &&
+            context.config.getBoolean ("journal.time"))
+          task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
+
         // Only allow valid tasks.
         task->validate ();
 
