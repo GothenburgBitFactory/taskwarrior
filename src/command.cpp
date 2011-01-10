@@ -543,6 +543,11 @@ int handleUrgency (std::string& outs)
 
   // Filter sequence.
   context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
+  {
+    std::cout << "No tasks specified.\n";
+    return 1;
+  }
 
   // Find the task(s).
   std::stringstream out;
@@ -577,6 +582,12 @@ int handleQuery (std::string& outs)
     // Filter sequence.
     if (context.sequence.size ())
       context.filter.applySequence (tasks, context.sequence);
+
+    if (tasks.size () == 0)
+    {
+      std::cout << "No tasks specified.\n";
+      return 1;
+    }
 
     // Note: "limit:" feature not supported.
 
@@ -1545,6 +1556,11 @@ int handleDelete (std::string& outs)
     // Filter sequence.
     std::vector <Task> all = tasks;
     context.filter.applySequence (tasks, context.sequence);
+    if (tasks.size () == 0)
+    {
+      std::cout << "No tasks specified.\n";
+      return 1;
+    }
 
     // Determine the end date.
     char endTime[16];
@@ -1640,7 +1656,8 @@ int handleDelete (std::string& outs)
             context.footnote (onProjectChange (*task));
           }
         }
-        else {
+        else
+        {
           out << "Task not deleted.\n";
           rc  = 1;
         }
@@ -1677,6 +1694,11 @@ int handleStart (std::string& outs)
 
     // Filter sequence.
     context.filter.applySequence (tasks, context.sequence);
+    if (tasks.size () == 0)
+    {
+      std::cout << "No tasks specified.\n";
+      return 1;
+    }
 
     bool nagged = false;
     foreach (task, tasks)
@@ -1743,6 +1765,11 @@ int handleStop (std::string& outs)
 
     // Filter sequence.
     context.filter.applySequence (tasks, context.sequence);
+    if (tasks.size () == 0)
+    {
+      std::cout << "No tasks specified.\n";
+      return 1;
+    }
 
     foreach (task, tasks)
     {
@@ -1801,6 +1828,11 @@ int handleDone (std::string& outs)
     // Filter sequence.
     std::vector <Task> all = tasks;
     context.filter.applySequence (tasks, context.sequence);
+    if (tasks.size () == 0)
+    {
+      std::cout << "No tasks specified.\n";
+      return 1;
+    }
 
     Permission permission;
     if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
@@ -1909,6 +1941,11 @@ int handleModify (std::string& outs)
   // Filter sequence.
   std::vector <Task> all = tasks;
   context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
+  {
+    std::cout << "No tasks specified.\n";
+    return 1;
+  }
 
   Permission permission;
   if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
@@ -2067,6 +2104,11 @@ int handleAppend (std::string& outs)
     // Filter sequence.
     std::vector <Task> all = tasks;
     context.filter.applySequence (tasks, context.sequence);
+    if (tasks.size () == 0)
+    {
+      std::cout << "No tasks specified.\n";
+      return 1;
+    }
 
     Permission permission;
     if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
@@ -2149,6 +2191,11 @@ int handlePrepend (std::string& outs)
     // Filter sequence.
     std::vector <Task> all = tasks;
     context.filter.applySequence (tasks, context.sequence);
+    if (tasks.size () == 0)
+    {
+      std::cout << "No tasks specified.\n";
+      return 1;
+    }
 
     Permission permission;
     if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
@@ -2230,6 +2277,11 @@ int handleDuplicate (std::string& outs)
 
     // Filter sequence.
     context.filter.applySequence (tasks, context.sequence);
+    if (tasks.size () == 0)
+    {
+      std::cout << "No tasks specified.\n";
+      return 1;
+    }
 
     foreach (task, tasks)
     {
@@ -2655,6 +2707,11 @@ int handleAnnotate (std::string& outs)
 
     // Filter sequence.
     context.filter.applySequence (tasks, context.sequence);
+    if (tasks.size () == 0)
+    {
+      std::cout << "No tasks specified.\n";
+      return 1;
+    }
 
     Permission permission;
     if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
@@ -2717,6 +2774,11 @@ int handleDenotate (std::string& outs)
     context.tdb.loadPending (tasks, filter);
 
     context.filter.applySequence (tasks, context.sequence);
+    if (tasks.size () == 0)
+    {
+      std::cout << "No tasks specified.\n";
+      return 1;
+    }
 
     Permission permission;
     if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))

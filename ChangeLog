@@ -74,6 +74,8 @@
    Fluger).
  + Fixed bug #597, which caused a missing project to be counted as a project
    in the projects command (thanks to Steve Rader).
+ + Fixed bug #603, which caused no feedback when task IDs were not specified
+   (thanks to Steve Rader).
  + Applied patch to fix bug #613, so that the summary report and the projects
    command now consistently show a missing project as "(none)" (thanks to
    Steve Rader).
