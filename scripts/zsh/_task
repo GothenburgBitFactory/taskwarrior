@@ -87,7 +87,7 @@ word=$'[^\0]#\0'
 
 # priorities
 local -a task_priorities
-_regex_words task_prios 'task priorities' \
+_regex_words values 'task priorities' \
 	'H:High' \
 	'M:Middle' \
 	'L:Low'
@@ -97,11 +97,11 @@ task_priorities=("$reply[@]")
 local -a task_projects
 task_projects=(
 	/"$word"/
-	":task_projects:task projects:compadd -a _task_projects"
+	":values:task projects:compadd -a _task_projects"
 )
 
 local -a _task_dates
-_regex_words _task_dates 'task dates' \
+_regex_words values 'task dates' \
 	'tod*ay:Today' \
 	'yes*terday:Yesterday' \
 	'tom*orrow:Tomorrow' \
@@ -125,7 +125,7 @@ _regex_words _task_dates 'task dates' \
 _task_dates=("$reply[@]")
 
 local -a _task_reldates
-_regex_words _task_reldates 'task reldates' \
+_regex_words values 'task reldates' \
 	'hrs:n hours' \
 	'day:n days' \
 	'1st:first' \
@@ -141,7 +141,7 @@ task_dates=(
 	\)
 )
 
-_regex_words _task_freqs 'task frequencies' \
+_regex_words values 'task frequencies' \
 	'daily:Every day' \
 	'day:Every day' \
 	'weekdays:Every day skipping weekend days' \
@@ -157,7 +157,7 @@ _regex_words _task_freqs 'task frequencies' \
 _task_freqs=("$reply[@]")
 
 local -a _task_frequencies
-_regex_words _task_frequencies 'task frequencies' \
+_regex_words values 'task frequencies' \
 	'd:days' \
 	'w:weeks' \
 	'q:quarters' \
@@ -172,7 +172,7 @@ task_freqs=(
 
 # attributes
 local -a task_attributes
-_regex_words -t ':' task_attr 'task attributes' \
+_regex_words -t ':' default 'task attributes' \
 	'pro*ject:Project name:$task_projects' \
 	'du*e:Due date:$task_dates' \
 	'wa*it:Date until task becomes pending:$task_dates' \
@@ -186,9 +186,9 @@ task_attributes=("$reply[@]")
 
 args=(
 	\( "$task_attributes[@]" \|
-	\( /'(project|due|wait|recur|priority|until|fg|bg|limit).'/- \( /$'[^:]#:'/ ":task_mods:modifiers:compadd -S ':' -a _task_modifiers" \) \) \|
-	\( /'(rc).'/- \( /$'[^:]#:'/ ":task_config:config:compadd -S ':' -a _task_config" \) \) \|
-	\( /'(+|-)'/- \( /"$word"/ ":task_rtag:remove tag:compadd -a _task_tags" \) \) \|
+	\( /'(project|due|wait|recur|priority|until|fg|bg|limit).'/- \( /$'[^:]#:'/ ":default:modifiers:compadd -S ':' -a _task_modifiers" \) \) \|
+	\( /'(rc).'/- \( /$'[^:]#:'/ ":arguments:config:compadd -S ':' -a _task_config" \) \) \|
+	\( /'(+|-)'/- \( /"$word"/ ":values:remove tag:compadd -a _task_tags" \) \) \|
 	\( /"$word"/ \)
 	\) \#
 )
@@ -208,7 +208,7 @@ _task_id() {
 	if (( CURRENT < 3 )); then
 		# update IDs
 		_task_zshids=( ${(f)"$(task _zshids)"} )
-		_describe -t ids 'task IDs' _task_zshids
+		_describe -t values 'task IDs' _task_zshids
 	else
 		_task_attributes "$@"
 	fi
@@ -217,8 +217,24 @@ _task_id() {
 # merge completion
 (( $+functions[_task_merge] )) ||
 _task_merge() {
+	# TODO match URIs in .taskrc
 	_files
 }
+
+# push completion
+(( $+functions[_task_push] )) ||
+_task_push() {
+	# TODO match URIs in .taskrc
+	_files
+}
+
+# pull completion
+(( $+functions[_task_pull] )) ||
+_task_pull() {
+	# TODO match URIs in .taskrc
+	_files
+}
+
 
 # modify (task [0-9]* ...) completion
 (( $+functions[_task_modify] )) ||
@@ -236,18 +252,18 @@ _task_commands() {
 		_task_zshids=( ${(f)"$(task _zshids)"} )
 
 		_describe -t commands 'task command' _task_zshcmds
-		_describe -t ids 'task IDs' _task_zshids
+		_describe -t values 'task IDs' _task_zshids
 		# TODO match more than one ID
 	elif [[ $words[1] =~ ^[0-9]*$ ]] then
 		 _call_function ret _task_modify
 		 return ret
 	else
-        local curcontext="${curcontext}"
+#        local curcontext="${curcontext}"
 #        cmd="${_task_cmds[(r)$words[1]:*]%%:*}"
 		  cmd="${_task_cmds[(r)$words[1]]}"
 		  idCmd="${(M)_task_idCmds[@]:#$words[1]}"
         if (( $#cmd )); then
-            curcontext="${curcontext%:*:*}:task-${cmd}"
+#            curcontext="${curcontext%:*:*}:task-${cmd}"
 
 				if (( $#idCmd )); then
 					_call_function ret _task_id
