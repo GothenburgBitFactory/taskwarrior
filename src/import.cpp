@@ -1267,16 +1267,16 @@ int handleImport (std::string& outs)
 
   if (context.hooks.trigger ("pre-import-command"))
   {
-    std::stringstream out;		
-		
+    std::stringstream out;
+
 		// Use the description as a file name.
     std::string file = trim (context.task.get ("description"));
-		
-#if FEATURE_URL > 0
+
+#ifdef FEATURE_URL
     std::string tmpfile = "";
     Uri uri (file);
     uri.parse ();
-    
+
     Transport* transport;
     if ((transport = Transport::getTransport (uri)) != NULL )
     {
@@ -1288,7 +1288,7 @@ int handleImport (std::string& outs)
       file = tmpfile;
     }
 #endif
-    
+
     if (file.length () > 0)
     {
       // Load the file.
@@ -1344,11 +1344,9 @@ int handleImport (std::string& outs)
       case not_a_clue:    /* to stop the compiler from complaining. */ break;
       }
 
-#if FEATURE_URL > 0
+#ifdef FEATURE_URL
       if (tmpfile != "")
-      {
         remove (tmpfile.c_str ());
-      }
 #endif
     }
     else

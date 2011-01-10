@@ -133,7 +133,7 @@ Shows task database statistics.
 
 .TP
 .B import \fIfile
-Imports tasks from a variety of formats.
+Imports tasks in a variety of formats, from file or URL.
 
 .TP
 .B export
