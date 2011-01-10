@@ -13,6 +13,7 @@ New Features in taskwarrior 1.9.4
   - No more dependency on ncurses.
   - New '_query' helper command for script writers, which accepts a filter like
     any other report, but returns unformatted JSON.
+  - Import can now read from files and URLs.
   - Assorted bug fixes.
 
   Please refer to the ChangeLog file for full details.  There are too many to
