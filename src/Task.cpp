@@ -430,17 +430,71 @@ std::string Task::composeJSON () const
   std::stringstream out;
   out << "{";
 
+  // Used for determining type.
+  Att att;
+
+  // First the non-annotations.
+  int attributes_written = 0;
+  int annotation_count = 0;
   std::map <std::string, Att>::const_iterator i;
   for (i = this->begin (); i != this->end (); ++i)
   {
-    if (i != this->begin ())
+    if (attributes_written)
       out << ",";
 
-    out << "\""
-        << i->second.name ()
-        << "\":\""
-        << i->second.value ()
-        << "\"";
+    if (i->second.name ().substr (0, 11) == "annotation_")
+    {
+      ++annotation_count;
+    }
+    else if (att.type (i->second.name ()) == "date")
+    {
+      Date d (i->second.value ());
+      out << "\""
+          << i->second.name ()
+          << "\":\""
+          << d.toISO ()
+          << "\"";
+
+      ++attributes_written;
+    }
+    else
+    {
+      out << "\""
+          << i->second.name ()
+          << "\":\""
+          << i->second.value ()
+          << "\"";
+
+      ++attributes_written;
+    }
+  }
+
+  // Now the annotations, if any.
+  if (annotation_count)
+  {
+    out << ","
+        << "\"annotations\":[";
+
+    int annotations_written = 0;
+    for (i = this->begin (); i != this->end (); ++i)
+    {
+      if (i->second.name ().substr (0, 11) == "annotation_")
+      {
+        if (annotations_written)
+          out << ",";
+
+        Date d (i->second.name ().substr (11));
+        out << "{\"entry\":\""
+            << d.toISO ()
+            << "\",\"description\":\""
+            << i->second.value ()
+            << "\"}";
+
+        ++annotations_written;
+      }
+    }
+
+    out << "]";
   }
 
   out << "}";
