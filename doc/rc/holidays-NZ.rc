@@ -1,0 +1,116 @@
+################################################################################
+# Sample calendar for New Zealand
+#
+# Information sourced from:
+# http://www.ers.dol.govt.nz/holidays_act_2003/dates/2010_13.html
+#
+################################################################################
+#
+# taskwarrior - a command line task list manager.
+#
+# Copyright 2011, Stephen Heywood.
+# All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+################################################################################
+
+calendar.holidays=sparse
+
+# 2010
+#holiday.christmas.name=Christmas Day
+#holiday.christmas.date=20101225
+#holiday.boxingday.name=Boxing Day
+#holiday.boxingday.date=20101226
+
+# 2011
+holiday.newyear.name=New Year's Day
+holiday.newyear.date=20110101
+holiday.dayafternewyearsday.name=Day after New Years Day
+holiday.dayafternewyearsday.date=20110102
+holiday.waitangiday.name=Waitangi Day
+holiday.waitangiday.date=20110206
+
+holiday.goodfriday.name=Good Friday
+holiday.goodfriday.date=20110422
+holiday.eastermonday.name=Easter Monday
+holiday.eastermonday.date=20110425
+
+holiday.anzacday.name=ANZAC Day
+holiday.anzacday.date=20110425
+holiday.queensbirthday.name=Queen's Birthday
+holiday.queensbirthday.date=20110606
+holiday.labourday.name=Labour Day
+holiday.labourday.date=20111024
+
+holiday.christmas.name=Christmas Day
+holiday.christmas.date=20111225
+holiday.boxingday.name=Boxing Day
+holiday.boxingday.date=20111226
+
+# 2012
+#holiday.newyear.name=New Year's Day
+#holiday.newyear.date=20120101
+#holiday.dayafternewyearsday.name=Day after New Years Day
+#holiday.dayafternewyearsday.date=20120102
+#holiday.waitangiday.name=Waitangi Day
+#holiday.waitangiday.date=20120206
+
+#holiday.goodfriday.name=Good Friday
+#holiday.goodfriday.date=20120406
+#holiday.eastermonday.name=Easter Monday
+#holiday.eastermonday.date=20120409
+
+#holiday.anzacday.name=ANZAC Day
+#holiday.anzacday.date=20120425
+#holiday.queensbirthday.name=Queen's Birthday
+#holiday.queensbirthday.date=20120604
+#holiday.labourday.name=Labour Day
+#holiday.labourday.date=20121022
+
+#holiday.christmas.name=Christmas Day
+#holiday.christmas.date=20121225
+#holiday.boxingday.name=Boxing Day
+#holiday.boxingday.date=20121226
+
+# 2013
+#holiday.newyear.name=New Year's Day
+#holiday.newyear.date=20130101
+#holiday.dayafternewyearsday.name=Day after New Years Day
+#holiday.dayafternewyearsday.date=20130102
+#holiday.waitangiday.name=Waitangi Day
+#holiday.waitangiday.date=20130206
+
+#holiday.goodfriday.name=Good Friday
+#holiday.goodfriday.date=20130329
+#holiday.eastermonday.name=Easter Monday
+#holiday.eastermonday.date=20130401
+
+#holiday.anzacday.name=ANZAC Day
+#holiday.anzacday.date=20130425
+#holiday.queensbirthday.name=Queen's Birthday
+#holiday.queensbirthday.date=20130603
+#holiday.labourday.name=Labour Day
+#holiday.labourday.date=20131028
+
+#holiday.christmas.name=Christmas Day
+#holiday.christmas.date=20131225
+#holiday.boxingday.name=Boxing Day
+#holiday.boxingday.date=20131226
