@@ -1,0 +1,68 @@
+################################################################################
+# Sample calendar for the US
+#
+# taskwarrior - a command line task list manager.
+#
+# Copyright 2011, Nicola Busanello
+# All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+################################################################################
+
+calendar.holidays=sparse
+
+# 2011
+
+# fisse (legali)
+holiday.capodanno.name=Capodanno
+holiday.capodanno.date=20110101
+holiday.sanmarco.name=Festa della liberazione
+holiday.sanmarco.date=20110425
+holiday.lavoratori.name=Festa del lavoro
+holiday.lavoratori.date=20110501
+holiday.repubblica.name=Festa della repubblica
+holiday.repubblica.date=20110602
+
+# fisse (cristiane)
+holiday.epifania.name=Epifania
+holiday.epifania.date=20110106
+holiday.ferragosto.name=Assunzione (ferragosto)
+holiday.ferragosto.date=20110815
+holiday.ognissanti.name=Ognissanti
+holiday.ognissanti.date=20111101
+holiday.madonna.name=Immacolata concezione
+holiday.madonna.date=20111208
+holiday.natale.name=Natale
+holiday.natale.date=20111225
+holiday.sstefano.name=S.to Stefano
+holiday.sstefano.date=20111226
+
+# variabili (cristiane)
+holiday.carnevale.name=Carnevale
+holiday.carnevale.date=20110308
+holiday.pasqua.name=Pasqua
+holiday.pasqua.date=20110424
+# nel 2011 coincide con la festa della liberazione
+#holiday.pasqua.name=Pasquetta
+#holiday.pasqua.date=20110425
+
+# 2012
+
