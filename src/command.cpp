@@ -524,20 +524,10 @@ int handleCompletionConfig (std::string& outs)
 // script.
 int handleCompletionVersion (std::string& outs)
 {
-  outs = VERSION;
-  outs += "\n";
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// A simple SHA1 display for use during development to identify which task
-// version one is running.
-int handleSha1 (std::string& outs)
-{
 #ifdef HAVE_COMMIT
   outs = COMMIT;
 #else
-  outs = "No SHA1 available";
+  outs = VERSION;
 #endif
   outs += "\n";
   return 0;

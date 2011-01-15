@@ -134,7 +134,6 @@ void Cmd::load ()
     commands.push_back ("_ids");
     commands.push_back ("_config");
     commands.push_back ("_version");
-    commands.push_back ("_sha1");
     commands.push_back ("_urgency");
     commands.push_back ("_query");
 	 commands.push_back ("_zshcommands");
@@ -244,7 +243,6 @@ bool Cmd::isReadOnlyCommand ()
       command == "_ids"                                                      ||
       command == "_config"                                                   ||
       command == "_version"                                                  ||
-      command == "_sha1"                                                     ||
       command == "_urgency"                                                  ||
       command == "_query"                                                    ||
       command == "_zshcommands"                                              ||

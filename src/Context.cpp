@@ -269,7 +269,6 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "_ids")             { rc = handleCompletionIDs         (out); }
   else if (cmd.command == "_config")          { rc = handleCompletionConfig      (out); }
   else if (cmd.command == "_version")         { rc = handleCompletionVersion     (out); }
-  else if (cmd.command == "_sha1")            { rc = handleSha1                  (out); }
   else if (cmd.command == "_urgency")         { rc = handleUrgency               (out); }
   else if (cmd.command == "_query")           { rc = handleQuery                 (out); }
   else if (cmd.command == "_zshcommands")     { rc = handleZshCompletionCommands (out); }
