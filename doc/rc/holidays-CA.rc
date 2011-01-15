@@ -29,20 +29,6 @@
 
 calendar.holidays=sparse
 
-# 2010
-holiday.labourday.name=Labour Day
-holiday.labourday.date=20100906
-holiday.thanksgiving.name=Thanksgiving Day
-holiday.thanksgiving.date=20101011
-holiday.remembranceday.name=Remembrance Day
-holiday.remembranceday.date=20101111
-holiday.christmasday.name=Christmas Day
-holiday.christmasday.date=20101225
-holiday.boxingday.name=Boxing Day
-holiday.boxingday.date=20101226
-holiday.newyearseve.name=New Year's Eve
-holiday.newyearseve.date=20101231
-
 # 2011
 holiday.newyearsday.name=New Year's Day
 holiday.newyearsday.date=20110101
@@ -58,19 +44,16 @@ holiday.canadaday.name=Canada Day
 holiday.canadaday.date=20110701
 holiday.firstmondayofaugust.name=First Monday of August
 holiday.firstmondayofaugust.date=20110801
+holiday.labourday.name=Labour Day
+holiday.labourday.date=20110905
+holiday.thanksgiving.name=Thanksgiving Day
+holiday.thanksgiving.date=20111010
+holiday.remembranceday.name=Remembrance Day
+holiday.remembranceday.date=20111111
+holiday.christmasday.name=Christmas Day
+holiday.christmasday.date=20111225
+holiday.boxingday.name=Boxing Day
+holiday.boxingday.date=20111226
+holiday.newyearseve.name=New Year's Eve
+holiday.newyearseve.date=20111231
 
-# Commented out to prevent collision with names of 2010 holidays
-# that haven't happened yet
-
-#holiday.labourday.name=Labour Day
-#holiday.labourday.date=20110905
-#holiday.thanksgiving.name=Thanksgiving Day
-#holiday.thanksgiving.date=20111010
-#holiday.remembranceday.name=Remembrance Day
-#holiday.remembranceday.date=20111111
-#holiday.christmasday.name=Christmas Day
-#holiday.christmasday.date=20111225
-#holiday.boxingday.name=Boxing Day
-#holiday.boxingday.date=20111226
-#holiday.newyearseve.name=New Year's Eve
-#holiday.newyearseve.date=20111231

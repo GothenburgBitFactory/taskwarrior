@@ -29,22 +29,6 @@
 
 calendar.holidays=sparse
 
-# 2010
-holiday.reformationstag.name=Reformationstag (BB,MV,SN,ST,TH)
-holiday.reformationstag.date=20101031
-holiday.allerheiligen.name=Allerheiligen (BW,BY,NRW,RP,SL)
-holiday.allerheiligen.date=20101101
-holiday.bussundbettag.name=Buss und Bettag (SN)
-holiday.bussundbettag.date=20101117
-holiday.heiligabend.name=Heilig Abend
-holiday.heiligabend.date=20101224
-holiday.weihnachtstag.name=Weihnachtstag
-holiday.weihnachtstag.date=20101225
-holiday.zweiterweihnachtstag.name=Zweiter Weihnachtstag
-holiday.zweiterweihnachtstag.date=20101226
-holiday.sylvester.name=Sylvester
-holiday.sylvester.date=20101231
-
 # 2011
 holiday.neujahr.name=Neujahr
 holiday.neujahr.date=20110101
@@ -70,18 +54,17 @@ holiday.mariahimmelfahrt.name=Mariä Himmelfahrt (SL)
 holiday.mariahimmelfahrt.date=20110815
 holiday.einheit.name=Tag der Deutschen Einheit
 holiday.einheit.date=20111003
-
-#holiday.reformationstag.name=Reformationstag (BB,MV,SN,ST,TH)
-#holiday.reformationstag.date=20111031
-#holiday.allerheiligen.name=Allerheiligen (BW,BY,NRW,RP,SL)
-#holiday.allerheiligen.date=20111101
-#holiday.bussundbettag.name=Buss und Bettag (SN)
-#holiday.bussundbettag.date=20111116
-#holiday.heiligabend.name=Heilig Abend
-#holiday.heiligabend.date=20111224
-#holiday.weihnachtstag.name=Weihnachtstag
-#holiday.weihnachtstag.date=20111225
-#holiday.zweiterweihnachtstag.name=Zweiter Weihnachtstag
-#holiday.zweiterweihnachtstag.date=20111226
-#holiday.sylvester.name=Sylvester
-#holiday.sylvester.date=20111231
+holiday.reformationstag.name=Reformationstag (BB,MV,SN,ST,TH)
+holiday.reformationstag.date=20111031
+holiday.allerheiligen.name=Allerheiligen (BW,BY,NRW,RP,SL)
+holiday.allerheiligen.date=20111101
+holiday.bussundbettag.name=Buss und Bettag (SN)
+holiday.bussundbettag.date=20111116
+holiday.heiligabend.name=Heilig Abend
+holiday.heiligabend.date=20111224
+holiday.weihnachtstag.name=Weihnachtstag
+holiday.weihnachtstag.date=20111225
+holiday.zweiterweihnachtstag.name=Zweiter Weihnachtstag
+holiday.zweiterweihnachtstag.date=20111226
+holiday.sylvester.name=Sylvester
+holiday.sylvester.date=20111231

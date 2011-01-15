@@ -29,12 +29,6 @@
 
 calendar.holidays=sparse
 
-# 2010
-holiday.juledag.name=Juledag
-holiday.juledag.date=20101225
-holiday.andenjuledag.name=Anden juledag
-holiday.andenjuledag.date=20101226
-
 # 2011
 holiday.nytårsdag.name=Nytårsdag
 holiday.nytårsdag.date=20110101
@@ -56,11 +50,10 @@ holiday.pinsedag.name=Pinsedag
 holiday.pinsedag.date=20110612
 holiday.andenpinsedag.name=Anden pinsedag
 holiday.andenpinsedag.date=20110613
-
-#holiday.juledag.name=Juledag
-#holiday.juledag.date=20111225
-#holiday.andenjuledag.name=Anden juledag
-#holiday.andenjuledag.date=20111226
+holiday.juledag.name=Juledag
+holiday.juledag.date=20111225
+holiday.andenjuledag.name=Anden juledag
+holiday.andenjuledag.date=20111226
 
 # 2012
 #holiday.nytårsdag.name=Nytårsdag

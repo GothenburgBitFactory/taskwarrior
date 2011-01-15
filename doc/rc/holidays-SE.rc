@@ -29,18 +29,6 @@
 
 calendar.holidays=sparse
 
-# 2010
-holiday.allahelgonsdag.name=Alla Helgons Dag
-holiday.allahelgonsdag.date=20101106
-holiday.julafton.name=Julafton
-holiday.julafton.date=20101224
-holiday.juldagen.name=Juldagen
-holiday.juldagen.date=20101225
-holiday.annandagjul.name=Annandag jul
-holiday.annandagjul.date=20101226
-holiday.nyårsafton.name=Nyårsafton
-holiday.nyårsafton.date=20101231
-
 # 2011
 holiday.nyårsdagen.name=Nyårsdagen
 holiday.nyårsdagen.date=20110101
@@ -66,14 +54,13 @@ holiday.midsommarafton.name=Midsommarafton
 holiday.midsommarafton.date=20110624
 holiday.midsommardagen.name=Midsommardagen
 holiday.midsommardagen.date=20110625
-
-# holiday.allahelgonsdag.name=Alla Helgons Dag
-# holiday.allahelgonsdag.date=20111105
-# holiday.julafton.name=Julafton
-# holiday.julafton.date=20111224
-# holiday.juldagen.name=Juldagen
-# holiday.juldagen.date=20111225
-# holiday.annandagjul.name=Annandag jul
-# holiday.annandagjul.date=20111226
-# holiday.nyårsafton.name=Nyårsafton
-# holiday.nyårsafton.date=20111231
+holiday.allahelgonsdag.name=Alla Helgons Dag
+holiday.allahelgonsdag.date=20111105
+holiday.julafton.name=Julafton
+holiday.julafton.date=20111224
+holiday.juldagen.name=Juldagen
+holiday.juldagen.date=20111225
+holiday.annandagjul.name=Annandag jul
+holiday.annandagjul.date=20111226
+holiday.nyårsafton.name=Nyårsafton
+holiday.nyårsafton.date=20111231

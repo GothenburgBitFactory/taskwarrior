@@ -29,20 +29,6 @@
 
 calendar.holidays=sparse
 
-# 2010
-holiday.laborday.name=Labor Day
-holiday.laborday.date=20100906
-holiday.columbusday.name=Columbus Day
-holiday.columbusday.date=20101011
-holiday.veteransdays.name=Veterans Day
-holiday.veteransdays.date=20101111
-holiday.thanksgiving.name=Thanksgiving Day
-holiday.thanksgiving.date=20101125
-holiday.christmasday.name=Christmas Day
-holiday.christmasday.date=20101225
-holiday.newyearseve.name=New Year's Eve
-holiday.newyearseve.date=20101231
-
 # 2011
 holiday.newyearsday.name=New Year's Day
 holiday.newyearsday.date=20110101
@@ -56,17 +42,16 @@ holiday.memorialday.name=Memorial Day
 holiday.memorialday.date=20110530
 holiday.independenceday.name=Independence Day
 holiday.independenceday.date=20110704
-
-# holiday.laborday.name=Labor Day
-# holiday.laborday.date=20110905
-# holiday.columbusday.name=Columbus Day
-# holiday.columbusday.date=20111010
-# holiday.veteransdays.name=Veterans Day
-# holiday.veteransdays.date=20111111
-# holiday.thanksgiving.name=Thanksgiving Day
-# holiday.thanksgiving.date=20111124
-# holiday.christmasday.name=Christmas Day
-# holiday.christmasday.date=20111225
-# holiday.newyearseve.name=New Year's Eve
-# holiday.newyearseve.date=20111231
+holiday.laborday.name=Labor Day
+holiday.laborday.date=20110905
+holiday.columbusday.name=Columbus Day
+holiday.columbusday.date=20111010
+holiday.veteransdays.name=Veterans Day
+holiday.veteransdays.date=20111111
+holiday.thanksgiving.name=Thanksgiving Day
+holiday.thanksgiving.date=20111124
+holiday.christmasday.name=Christmas Day
+holiday.christmasday.date=20111225
+holiday.newyearseve.name=New Year's Eve
+holiday.newyearseve.date=20111231
 

@@ -29,14 +29,6 @@
 
 calendar.holidays=sparse
 
-# 2010
-holiday.toussaint.name=La Toussaint
-holiday.toussaint.date=20101101
-holiday.armistice.name=Jour d'armistice
-holiday.armistice.date=20101111
-holiday.noël.name=Noël
-holiday.noël.date=20101225
-
 # 2011
 holiday.jourdelan.name=Jour de l'an
 holiday.jourdelan.date=20110101
@@ -52,11 +44,10 @@ holiday.bastille.name=Fête nationale
 holiday.bastille.date=20110714
 holiday.assomption.name=Assomption
 holiday.assomption.date=20110815
-
-#holiday.toussaint.name=La Toussaint
-#holiday.toussaint.date=20111101
-#holiday.armistice.name=Jour d'armistice
-#holiday.armistice.date=20111111
-#holiday.noël.name=Noël
-#holiday.noël.date=20111225
+holiday.toussaint.name=La Toussaint
+holiday.toussaint.date=20111101
+holiday.armistice.name=Jour d'armistice
+holiday.armistice.date=20111111
+holiday.noël.name=Noël
+holiday.noël.date=20111225
 

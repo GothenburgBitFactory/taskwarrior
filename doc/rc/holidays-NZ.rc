@@ -34,12 +34,6 @@
 
 calendar.holidays=sparse
 
-# 2010
-#holiday.christmas.name=Christmas Day
-#holiday.christmas.date=20101225
-#holiday.boxingday.name=Boxing Day
-#holiday.boxingday.date=20101226
-
 # 2011
 holiday.newyear.name=New Year's Day
 holiday.newyear.date=20110101

@@ -29,16 +29,6 @@
 
 calendar.holidays=sparse
 
-# 2010
-holiday.sinterklaas.name=Sinterklaas
-holiday.sinterklaas.date=20101205
-holiday.koninkrijksdag.name=Koninkrijksdag
-holiday.koninkrijksdag.date=20101215
-holiday.kerstmis.name=Kerstmis
-holiday.kerstmis.date=20101225
-holiday.kerstmis.name=Tweede Kerstdag
-holiday.kerstmis.date=20101226
-
 # 2011
 holiday.nieuwjaar.name=Nieuwjaar
 holiday.nieuwjaar.date=20110101
@@ -60,14 +50,14 @@ holiday.pinksteren.name= Pinksteren
 holiday.pinksteren.date=20110612
 holiday.pinksteren.name=Tweede Pinksterdag
 holiday.pinksteren.date=20110613
-#holiday.sinterklaas.name=Sinterklaas
-#holiday.sinterklaas.date=20111205
-#holiday.koninkrijksdag.name=Koninkrijksdag
-#holiday.koninkrijksdag.date=20111215
-#holiday.kerstmis.name=Kerstmis
-#holiday.kerstmis.date=20111225
-#holiday.kerstmis.name=Tweede Kerstdag
-#holiday.kerstmis.date=20111226
+holiday.sinterklaas.name=Sinterklaas
+holiday.sinterklaas.date=20111205
+holiday.koninkrijksdag.name=Koninkrijksdag
+holiday.koninkrijksdag.date=20111215
+holiday.kerstmis.name=Kerstmis
+holiday.kerstmis.date=20111225
+holiday.kerstmis.name=Tweede Kerstdag
+holiday.kerstmis.date=20111226
 
 # 2012
 #holiday.nieuwjaar.name=Nieuwjaar

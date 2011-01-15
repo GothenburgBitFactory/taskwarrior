@@ -29,22 +29,6 @@
 
 calendar.holidays=sparse
 
-# 2010
-holiday.fiestanacional.name=Fiesta Nacional de España
-holiday.fiestanacional.date=20101012
-holiday.santos.name=Dia de todos los Santos
-holiday.santos.date=20101101
-holiday.constitucion.name=Dia de la Constitución
-holiday.constitucion.date=20101206
-holiday.concepcion.name=Inmaculada Concepción
-holiday.concepcion.date=20101208
-holiday.nochebuena.name=Noche Buena
-holiday.nochebuena.date=20101224
-holiday.navidad.name=Navidad
-holiday.navidad.date=20101225
-holiday.nochevieja.name=Noche Vieja
-holiday.nochevieja.date=20101231
-
 # 2011
 holiday.anonuevo.name=Año Nuevo
 holiday.anonuevo.date=20110101
@@ -56,18 +40,17 @@ holiday.trabajo.name=Fiesta del Trabajo
 holiday.trabajo.date=20110501
 holiday.virgen.name=Asunción de la Virgen
 holiday.virgen.date=20110815
-
-#holiday.fiestanacional.name=Fiesta Nacional de España
-#holiday.fiestanacional.date=20111012
-#holiday.santos.name=Dia de todos los Santos
-#holiday.santos.date=20111101
-#holiday.constitucion.name=Dia de la Constitución
-#holiday.constitucion.date=20111206
-#holiday.concepcion.name=Inmaculada Concepción
-#holiday.concepcion.date=20111208
-#holiday.nochebuena.name=Noche Buena
-#holiday.nochebuena.date=20111224
-#holiday.navidad.name=Navidad
-#holiday.navidad.date=20111225
-#holiday.nochevieja.name=Noche Vieja
-#holiday.nochevieja.date=20111231
+holiday.fiestanacional.name=Fiesta Nacional de España
+holiday.fiestanacional.date=20111012
+holiday.santos.name=Dia de todos los Santos
+holiday.santos.date=20111101
+holiday.constitucion.name=Dia de la Constitución
+holiday.constitucion.date=20111206
+holiday.concepcion.name=Inmaculada Concepción
+holiday.concepcion.date=20111208
+holiday.nochebuena.name=Noche Buena
+holiday.nochebuena.date=20111224
+holiday.navidad.name=Navidad
+holiday.navidad.date=20111225
+holiday.nochevieja.name=Noche Vieja
+holiday.nochevieja.date=20111231
