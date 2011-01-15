@@ -113,7 +113,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
       if (i >= input.length () ||
           ! isdigit (input[i]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (m).";
+        throw std::string ("\"") + input + "\" is not a valid date (m).  Expected format '" + format + "'";
       }
 
       if (i + 1 < input.length ()                    &&
@@ -134,7 +134,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
       if (i >= input.length () ||
           ! isdigit (input[i]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (d).";
+        throw std::string ("\"") + input + "\" is not a valid date (d).  Expected format '" + format + "'";
       }
 
       if (i + 1 < input.length ()                                                                    &&
@@ -157,7 +157,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           ! isdigit (input[i + 0]) ||
           ! isdigit (input[i + 1]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (y).";
+        throw std::string ("\"") + input + "\" is not a valid date (y).  Expected format '" + format + "'";
       }
 
       year = atoi (input.substr (i, 2).c_str ()) + 2000;
@@ -169,7 +169,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           ! isdigit (input[i + 0]) ||
           ! isdigit (input[i + 1]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (M).";
+        throw std::string ("\"") + input + "\" is not a valid date (M).  Expected format '" + format + "'";
       }
 
       month = atoi (input.substr (i, 2).c_str ());
@@ -181,7 +181,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           ! isdigit (input[i + 0]) ||
           ! isdigit (input[i + 1]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (D).";
+        throw std::string ("\"") + input + "\" is not a valid date (D).  Expected format '" + format + "'";
       }
 
       day = atoi (input.substr (i, 2).c_str ());
@@ -193,7 +193,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           ! isdigit (input[i + 0]) ||
           ! isdigit (input[i + 1]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (V).";
+        throw std::string ("\"") + input + "\" is not a valid date (V).  Expected format '" + format + "'";
       }
 
       i += 2;
@@ -207,7 +207,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           ! isdigit (input[i + 2]) ||
           ! isdigit (input[i + 3]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (Y).";
+        throw std::string ("\"") + input + "\" is not a valid date (Y).  Expected format '" + format + "'";
       }
 
       year = atoi (input.substr (i, 4).c_str ());
@@ -221,7 +221,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           isdigit (input[i + 1]) ||
           isdigit (input[i + 2]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (a).";
+        throw std::string ("\"") + input + "\" is not a valid date (a).  Expected format '" + format + "'";
       }
 
       i += 3;
@@ -233,7 +233,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           isdigit (input[i + 1]) ||
           isdigit (input[i + 2]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (b).";
+        throw std::string ("\"") + input + "\" is not a valid date (b).  Expected format '" + format + "'";
       }
 
       month = Date::monthOfYear (input.substr (i, 3).c_str());
@@ -247,7 +247,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           isdigit (input[i + 1]) ||
           isdigit (input[i + 2]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (A).";
+        throw std::string ("\"") + input + "\" is not a valid date (A).  Expected format '" + format + "'";
       }
 
       i += Date::dayName( Date::dayOfWeek (input.substr (i, 3).c_str()) ).size();
@@ -259,7 +259,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           isdigit (input[i + 1]) ||
           isdigit (input[i + 2]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (B).";
+        throw std::string ("\"") + input + "\" is not a valid date (B).  Expected format '" + format + "'";
       }
 
       month = Date::monthOfYear (input.substr (i, 3).c_str());
@@ -271,7 +271,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
       if (i >= input.length () ||
           ! isdigit (input[i]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (h).";
+        throw std::string ("\"") + input + "\" is not a valid date (h).  Expected format '" + format + "'";
       }
 
       if (i + 1 < input.length ()                    &&
@@ -293,7 +293,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           ! isdigit (input[i + 0]) ||
           ! isdigit (input[i + 1]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (H).";
+        throw std::string ("\"") + input + "\" is not a valid date (H).  Expected format '" + format + "'";
       }
 
       hour = atoi (input.substr (i, 2).c_str ());
@@ -305,7 +305,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           ! isdigit (input[i + 0]) ||
           ! isdigit (input[i + 1]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (N).";
+        throw std::string ("\"") + input + "\" is not a valid date (N).  Expected format '" + format + "'";
       }
 
       minute = atoi (input.substr (i, 2).c_str ());
@@ -317,7 +317,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
           ! isdigit (input[i + 0]) ||
           ! isdigit (input[i + 1]))
       {
-        throw std::string ("\"") + input + "\" is not a valid date (S).";
+        throw std::string ("\"") + input + "\" is not a valid date (S).  Expected format '" + format + "'";
       }
 
       second = atoi (input.substr (i, 2).c_str ());
@@ -328,7 +328,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
       if (i >= input.length () ||
           input[i] != format[f])
       {
-        throw std::string ("\"") + input + "\" is not a valid date (DEFAULT).";
+        throw std::string ("\"") + input + "\" is not a valid date.  Expected format '" + format + "'";
       }
       ++i;
       break;
@@ -344,10 +344,10 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
   }
 
   if (i < input.length ())
-    throw std::string ("\"") + input + "\" is not a valid date in " + format + " format.";
+    throw std::string ("\"") + input + "\" is not a valid date.  Expected format '" + format + "'";
 
   if (!valid (month, day, year))
-    throw std::string ("\"") + input + "\" is not a valid date (VALID).";
+    throw std::string ("\"") + input + "\" is not a valid date but is in a valid format.";
 
   // Convert to epoch.
   struct tm t = {0};
