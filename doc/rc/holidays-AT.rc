@@ -1,0 +1,78 @@
+################################################################################
+# Sample calendar for Austria
+#
+# taskwarrior - a command line task list manager.
+#
+# Copyright 2011, Andreas Poisel
+# All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+################################################################################
+
+calendar.holidays=sparse
+
+# 2011
+holiday.neujahr.name=Neujahr
+holiday.neujahr.date=20110101
+holiday.heiligedreikonige.name=Heilige drei KÃ¶nige
+holiday.heiligedreikonige.date=20110106
+holiday.josef.name=Josef (K, St, T, V)
+holiday.josef.date=20110319
+holiday.karfreitag.name=Karfreitag
+holiday.karfreitag.date=20110422
+holiday.ostersonntag.name=Ostersonntag
+holiday.ostersonntag.date=20110424
+holiday.ostermontag.name=Ostermontag
+holiday.ostermontag.date=20110425
+holiday.staatsfeiertag.name=Staatsfeiertag
+holiday.staatsfeiertag.date=20110501
+holiday.florian.name=Florian (OÃ)
+holiday.florian.date=20110504
+holiday.christihimmelfahrt.name=Christi Himmelfahrt
+holiday.christihimmelfahrt.date=20110602
+holiday.pfingstsonntag.name=Pfingstsonntag
+holiday.pfingstsonntag.date=20110612
+holiday.pfingstmontag.name=Pfingstmontag
+holiday.pfingstmontag.date=20110613
+holiday.fronleichnam.name=Fronleichnam
+holiday.fronleichnam.date=20110623
+holiday.mariahimmelfahrt.name=MariÃ€ Himmelfahrt
+holiday.mariahimmelfahrt.date=20110815
+holiday.rupert.name=Rupert (S)
+holiday.rupert.date=20110924
+holiday.kvolksabst.name=Tag der Volksabstimmung (K)
+holiday.kvolksabst.date=20111010
+holiday.allerheiligen.name=Allerheiligen
+holiday.allerheiligen.date=20111101
+holiday.martin.name=Martin (B)
+holiday.martin.date=20111111
+holiday.leopold.name=Leopold (W, NÃ)
+holiday.leopold.date=20111115
+holiday.mariaempfaengnis.name=MariÃ€ EmpfÃ€ngnis
+holiday.mariaempfaengnis.date=20111208
+holiday.heiligerabend.name=Heiliger Abend
+holiday.heiligerabend.date=20111224
+holiday.christtag.name=Christtag
+holiday.christtag.date=20111225
+holiday.stefanitag.name=Stefanitag
+holiday.stefanitag.date=20111226
+holiday.silvester.name=Silvester
+holiday.silvester.date=20111231
