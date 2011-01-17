@@ -708,6 +708,7 @@ int handleInfo (std::string& outs)
         std::string previous;
         std::string current;
         unsigned int i = 0;
+        long time = 0;
         while (i < undo.size ())
         {
           when = undo[i++];
@@ -730,6 +731,20 @@ int handleInfo (std::string& outs)
               Task before (previous.substr (4));
               Task after (current.substr (4));
               journal.addCell (row, 1, taskInfoDifferences (before, after));
+
+              // calculate the total active time
+              if (before.get ("start") == ""
+                && after.get ("start") != "")
+              {
+                // task started
+                time -= timestamp.toEpoch();
+              }
+              else if (before.get ("start") != ""
+                     && after.get ("start") == "")
+              {
+                // task stopped
+                time += timestamp.toEpoch();
+              }
             }
           }
         }
@@ -737,6 +752,26 @@ int handleInfo (std::string& outs)
         if (journal.rowCount () > 0)
           out << journal.render ()
               << "\n";
+
+        // add now() if task is still active
+        if (time < 0)
+          time += Date().toEpoch();
+
+        // print total active time
+        if (time >= 0)
+        {
+          int row = journal.addRow ();
+          int hours = time / 3600;
+          int minutes = (time % 3600) / 60;
+
+          out << "Total active time: "
+              << hours << "h " << minutes;
+
+          if (minutes == 0)
+            out << "0";
+
+          out << "m\n\n";
+        }
       }
     }
 
