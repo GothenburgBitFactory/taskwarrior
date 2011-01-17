@@ -139,6 +139,9 @@ void handleDiagnostics (std::string& outs)
 #ifdef HAVE_COMMIT
             << "    Commit: " << COMMIT << "\n"
 #endif
+#ifdef HAVE_CMAKE
+            << "     CMake: " << CMAKE_VERSION << "\n"
+#endif
             << "      Caps:"
 #ifdef HAVE_LIBPTHREAD
             << " +pthreads"
