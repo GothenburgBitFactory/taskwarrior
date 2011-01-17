@@ -42,8 +42,11 @@
 #include "text.h"
 #include "util.h"
 #include "main.h"
-#include "../auto.h"
 #include "Transport.h"
+#include "../auto.h"
+#ifdef HAVE_COMMIT
+#include "../commit.h"
+#endif
 
 extern Context context;
 

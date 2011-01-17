@@ -9,6 +9,8 @@ if (EXISTS .git/index)
   set (HAVE_COMMIT true)
   execute_process (COMMAND git log -1 --pretty=format:%h
                    OUTPUT_VARIABLE COMMIT)
+  configure_file ( ${CMAKE_SOURCE_DIR}/commit.h.in
+                   ${CMAKE_SOURCE_DIR}/commit.h)
   message ("-- Found SHA1 reference: ${COMMIT}")
 endif (EXISTS .git/index)
 

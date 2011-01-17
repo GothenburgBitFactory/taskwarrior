@@ -39,6 +39,9 @@
 #include <main.h>
 #include <util.h>
 #include "../auto.h"
+#ifdef HAVE_COMMIT
+#include "../commit.h"
+#endif
 
 #ifdef HAVE_LIBLUA
 extern "C"
