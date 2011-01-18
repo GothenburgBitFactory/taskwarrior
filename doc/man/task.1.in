@@ -591,6 +591,15 @@ task ... due:eom
 task ... due:eoy
 
 .TP
+At some point or later
+.br
+task ... wait:later
+.br
+task ... wait:someday
+
+This sets the wait date to 1/18/2038.
+
+.TP
 Next occurring weekday
 task ... due:fri
 .RE

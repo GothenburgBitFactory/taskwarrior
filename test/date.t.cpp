@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (162);
+  UnitTest t (165);
 
   try
   {
@@ -335,6 +335,11 @@ int main (int argc, char** argv)
 
     Date r16 ("soy");
     t.notok (r16.sameYear (now), "soy not in same year as now");
+
+    Date later ("later");
+    t.is (later.month (),   1, "later -> m = 1");
+    t.is (later.day (),    18, "later -> d = 18");
+    t.is (later.year (), 2038, "later -> y = 2038");
 
     // Date::sameHour
     Date r17 ("6/7/2010 01:00:00", "m/d/Y H:N:S");

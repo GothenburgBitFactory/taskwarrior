@@ -15,6 +15,8 @@ New Features in taskwarrior 1.9.4
     any other report, but returns unformatted JSON.
   - Import can now read from files and URLs.
   - Assorted bug fixes.
+  - new worded date "later" and "someday" to be used with the wait attribute to
+    hide a task until somepoint in time (this sets the wait date to 1/18/2038).
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.

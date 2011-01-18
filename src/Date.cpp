@@ -985,6 +985,8 @@ bool Date::isRelativeDate (const std::string& input)
   supported.push_back ("midsommar");
   supported.push_back ("midsommarafton");
   supported.push_back ("now");
+  supported.push_back ("later");
+  supported.push_back ("someday");
 
   std::vector <std::string> matches;
   if (autoComplete (in, supported, matches) == 1)
@@ -1139,6 +1141,12 @@ bool Date::isRelativeDate (const std::string& input)
     else if (found == "now")
     {
       mT = time (NULL);
+      return true;
+    }
+    else if (found == "later" || found == "someday")
+    {
+      Date then (1, 18, 2038);
+      mT = then.mT;
       return true;
     }
   }

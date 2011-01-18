@@ -33,7 +33,8 @@
  + Added feature #608, and now completing a task, with journal.time turned on
    will stop the task first (thanks to Andy Kriger).
  + Added feature #629, a new holiday configuration file for New Zealand
-   (thanks to Stephen Haywood)
+   (thanks to Stephen Haywood).
+ + Added feature #638, a wait:later possibility (thanks to Clément Bœsch).
  + Added new holiday configuration file for Italy (thanks to Nicola Busanello).
  + Added new holiday configuration file for Austria (thanks to Andreas Poisel).
  + Eliminated dependency on ncurses.
