@@ -506,7 +506,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
     {
       out << "annotation added '"
           << after.get (*name)
-          << "'";
+          << "'\n";
     }
     else
       out << *name
@@ -542,7 +542,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
       {
         out << "annotation '"
             << after.get (*name)
-            << "'";
+            << "'\n";
       }
       else
         out << *name

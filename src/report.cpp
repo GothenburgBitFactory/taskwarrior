@@ -675,10 +675,6 @@ int handleInfo (std::string& outs)
         }
       }
 
-      out << optionalBlankLine ()
-          << table.render ()
-          << "\n";
-
       journal.setTableWidth (context.getWidth ());
       journal.setDateFormat (context.config.get ("dateformat"));
 
@@ -708,7 +704,7 @@ int handleInfo (std::string& outs)
         std::string previous;
         std::string current;
         unsigned int i = 0;
-        long time = 0;
+        long total_time = 0;
         while (i < undo.size ())
         {
           when = undo[i++];
@@ -737,41 +733,41 @@ int handleInfo (std::string& outs)
                 && after.get ("start") != "")
               {
                 // task started
-                time -= timestamp.toEpoch();
+                total_time -= timestamp.toEpoch ();
               }
               else if (before.get ("start") != ""
                      && after.get ("start") == "")
               {
                 // task stopped
-                time += timestamp.toEpoch();
+                total_time += timestamp.toEpoch ();
               }
             }
           }
         }
 
+        // add now() if task is still active
+        if (total_time < 0)
+          total_time += Date ().toEpoch ();
+
+
+        // print total active time
+        if (total_time > 0)
+        {
+          row = journal.addRow ();
+          journal.addCell (row, 0, "Total active time");
+          journal.addCell (row, 1, Duration (total_time).format ());
+
+          if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+            journal.setCellColor (row, 1, Color ("bold"));
+        }
+
+        out << optionalBlankLine ()
+            << table.render ()
+            << "\n";
+
         if (journal.rowCount () > 0)
           out << journal.render ()
               << "\n";
-
-        // add now() if task is still active
-        if (time < 0)
-          time += Date().toEpoch();
-
-        // print total active time
-        if (time >= 0)
-        {
-          int row = journal.addRow ();
-          int hours = time / 3600;
-          int minutes = (time % 3600) / 60;
-
-          out << "Total active time: "
-              << hours << "h " << minutes;
-
-          if (minutes == 0)
-            out << "0";
-
-          out << "m\n\n";
-        }
       }
     }
 
