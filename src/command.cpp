@@ -599,7 +599,6 @@ int handleQuery (std::string& outs)
     // Note: "limit:" feature not supported.
 
     // Compose output.
-    outs = "[";
     std::vector <Task>::iterator t;
     for (t = tasks.begin (); t != tasks.end (); ++t)
     {
@@ -609,8 +608,7 @@ int handleQuery (std::string& outs)
       outs += t->composeJSON ();
     }
 
-    outs += "]\n";
-
+    outs += "\n";
     context.hooks.trigger ("post-query-command");
   }
 
