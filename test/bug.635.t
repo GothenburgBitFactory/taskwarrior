@@ -1,0 +1,68 @@
+#! /usr/bin/perl
+################################################################################
+## taskwarrior - a command line task list manager.
+##
+## Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez.
+## All rights reserved.
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 2 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, write to the
+##
+##     Free Software Foundation, Inc.,
+##     51 Franklin Street, Fifth Floor,
+##     Boston, MA
+##     02110-1301
+##     USA
+##
+################################################################################
+
+use strict;
+use warnings;
+use Test::More tests => 6;
+
+# Create the rc file.
+if (open my $fh, '>', 'bug.rc')
+{
+  print $fh "data.location=.\n",
+            "confirmation=no\n";
+  close $fh;
+  ok (-r 'bug.rc', 'Created bug.rc');
+}
+
+# Bug 635: /OLD/NEW/g is broken?
+
+# Setup: Add a task with two identical spelling mistakes
+qx{../src/task rc:bug.rc add Pay teh rent on teh 31st};
+
+# Process: Global replace incorrect text
+qx{../src/task rc:bug.rc 1 /teh/the/g};
+
+# Result: Verify corrected output
+my $output = qx{../src/task rc:bug.rc ls 1};
+like ($output, qr/Pay the rent on the 31st/ms, 'Global replace performed correctly.');
+
+# Cleanup.
+unlink 'pending.data';
+ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
+
+unlink 'bug.rc';
+ok (!-r 'bug.rc', 'Removed bug.rc');
+
+exit 0;
+
