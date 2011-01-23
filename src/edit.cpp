@@ -170,8 +170,6 @@ static std::string formatTask (Task task)
            << "# The ' -- ' separator between the date and text field should not be removed.\n"
            << "# A \"blank slot\" for adding an annotation follows for your convenience.\n";
 
-  before << "  Background color:  " << task.get ("bg")                                  << "\n";
-
   std::vector <Att> annotations;
   task.getAnnotations (annotations);
   std::vector <Att>::iterator anno;
