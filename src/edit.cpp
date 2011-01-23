@@ -51,7 +51,7 @@ static std::string findValue (
   std::string::size_type found = text.find (name);
   if (found != std::string::npos)
   {
-    std::string::size_type eol = text.find ("\n", found);
+    std::string::size_type eol = text.find ("\n", found + 1);
     if (eol != std::string::npos)
     {
       std::string value = text.substr (
@@ -73,7 +73,7 @@ static std::string findDate (
   std::string::size_type found = text.find (name);
   if (found != std::string::npos)
   {
-    std::string::size_type eol = text.find ("\n", found);
+    std::string::size_type eol = text.find ("\n", found + 1);
     if (eol != std::string::npos)
     {
       std::string value = trim (text.substr (
@@ -202,7 +202,7 @@ static std::string formatTask (Task task)
 static void parseTask (Task& task, const std::string& after)
 {
   // project
-  std::string value = findValue (after, "Project:");
+  std::string value = findValue (after, "\n  Project:");
   if (task.get ("project") != value)
   {
     if (value != "")
@@ -218,7 +218,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // priority
-  value = findValue (after, "Priority:");
+  value = findValue (after, "\n  Priority:");
   if (task.get ("priority") != value)
   {
     if (value != "")
@@ -237,14 +237,14 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // tags
-  value = findValue (after, "Tags:");
+  value = findValue (after, "\n  Tags:");
   std::vector <std::string> tags;
   split (tags, value, ' ');
   task.remove ("tags");
   task.addTags (tags);
 
   // description.
-  value = findValue (after, "Description: ");
+  value = findValue (after, "\n  Description:");
   if (task.get ("description") != value)
   {
     if (value != "")
@@ -257,7 +257,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // entry
-  value = findDate (after, "Created:");
+  value = findDate (after, "\n  Created:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -273,7 +273,7 @@ static void parseTask (Task& task, const std::string& after)
     throw std::string ("Cannot remove creation date.");
 
   // start
-  value = findDate (after, "Started:");
+  value = findDate (after, "\n  Started:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -303,7 +303,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // end
-  value = findDate (after, "Ended:");
+  value = findDate (after, "\n  Ended:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -331,7 +331,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // due
-  value = findDate (after, "Due:");
+  value = findDate (after, "\n  Due:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -369,7 +369,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // until
-  value = findDate (after, "Until:");
+  value = findDate (after, "\n  Until:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -399,7 +399,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // recur
-  value = findValue (after, "Recur:");
+  value = findValue (after, "\n  Recur:");
   if (value != task.get ("recur"))
   {
     if (value != "")
@@ -431,7 +431,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // wait
-  value = findDate (after, "Wait until:");
+  value = findDate (after, "\n  Wait until:");
   if (value != "")
   {
     Date edited (::atoi (value.c_str ()));
@@ -464,7 +464,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // parent
-  value = findValue (after, "Parent:");
+  value = findValue (after, "\n  Parent:");
   if (value != task.get ("parent"))
   {
     if (value != "")
@@ -480,7 +480,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // fg
-  value = findValue (after, "Foreground color:");
+  value = findValue (after, "\n  Foreground color:");
   if (value != task.get ("fg"))
   {
     if (value != "")
@@ -496,7 +496,7 @@ static void parseTask (Task& task, const std::string& after)
   }
 
   // bg
-  value = findValue (after, "Background color:");
+  value = findValue (after, "\n  Background color:");
   if (value != task.get ("bg"))
   {
     if (value != "")
@@ -514,11 +514,11 @@ static void parseTask (Task& task, const std::string& after)
   // Annotations
   std::vector <Att> annotations;
   std::string::size_type found = 0;
-  while ((found = after.find ("Annotation:", found)) != std::string::npos)
+  while ((found = after.find ("\n  Annotation:", found)) != std::string::npos)
   {
     found += 11;
 
-    std::string::size_type eol = after.find ("\n", found);
+    std::string::size_type eol = after.find ("\n", found + 1);
     if (eol != std::string::npos)
     {
       std::string value = trim (after.substr (
@@ -546,7 +546,7 @@ static void parseTask (Task& task, const std::string& after)
   task.setAnnotations (annotations);
 
   // Dependencies
-  value = findValue (after, "Dependencies:");
+  value = findValue (after, "\n  Dependencies:");
   std::vector <std::string> dependencies;
   split (dependencies, value, ",");
 
