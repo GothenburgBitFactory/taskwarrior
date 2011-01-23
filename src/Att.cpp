@@ -629,7 +629,7 @@ bool Att::match (const Att& other) const
     if (regex)
     {
       std::string pattern = "^" + mValue + "$";
-      if (!regexMatch (other.mValue, pattern, case_sensitive))
+      if (regexMatch (other.mValue, pattern, case_sensitive))
         return false;
     }
     else if (compare (mValue, other.mValue, (bool) case_sensitive))
