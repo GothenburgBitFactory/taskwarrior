@@ -244,7 +244,7 @@ int main (int argc, char** argv)
     t.diag ("Nibbler::getNumber");
     n = Nibbler ("-1.234 2.3e4");
     t.ok    (n.getNumber (d),         "'-1.234 2.3e4' : getNumber ()       -> true");
-    t.is    (d, -1.234,               "'-1.234 2.3e4' : getNumber ()       -> '-1.234'");
+    t.is    (d, -1.234, 0.000001,     "'-1.234 2.3e4' : getNumber ()       -> '-1.234'");
     t.ok    (n.skip (' '),            "      ' 2.3e4' : skip (' ')         -> true");
     t.ok    (n.getNumber (d),         "       '2.3e4' : getNumber ()       -> true");
     t.is    (d, 2.3e4,                "       '2.3e4' : getNumber ()       -> '2.3e4'");

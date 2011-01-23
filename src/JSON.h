@@ -24,15 +24,38 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_UTF8
-#define INCLUDED_UTF8
+#ifndef INCLUDED_JSON
+#define INCLUDED_JSON
 
 #include <string>
+#include <Tree.h>
+#include <Nibbler.h>
 
-unsigned int utf8_codepoint (const std::string&);
-unsigned int utf8_next_char (const std::string&, std::string::size_type&);
-std::string utf8_character (unsigned int);
-int utf8_sequence (unsigned int);
+class JSON
+{
+public:
+  JSON ();                       // Default constructor
+  JSON (const std::string&);     // Constructor
+  JSON (const JSON&);            // Copy constructor
+  JSON& operator= (const JSON&); // Assignment operator
+  ~JSON ();                      // Destructor
+
+  static std::string encode (const std::string&);
+  static std::string decode (const std::string&);
+
+  Tree* tree ();
+
+private:
+  bool parseObject (Tree*, Nibbler&);
+  bool parsePair (Tree*, Nibbler&);
+  bool parseArray (Tree*, Nibbler&);
+  bool parseValue (Tree*, Nibbler&);
+  bool parseString (Tree*, Nibbler&);
+  bool parseNumber (Tree*, Nibbler&);
+
+private:
+  Tree root;
+};
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

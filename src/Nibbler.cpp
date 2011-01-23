@@ -26,11 +26,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
-#include <inttypes.h>
 #include <string.h>
 #include <ctype.h>
-#include "Nibbler.h"
-#include "rx.h"
+#include <inttypes.h>
+#include <Nibbler.h>
+#include <rx.h>
 
 const char* c_digits = "0123456789";
 
@@ -283,7 +283,7 @@ bool Nibbler::getInt (int& result)
 
   if (i > mCursor)
   {
-    result = atoi (mInput.substr (mCursor, i - mCursor).c_str ());
+    result = strtoimax (mInput.substr (mCursor, i - mCursor).c_str (), NULL, 10);
     mCursor = i;
     return true;
   }
@@ -328,7 +328,7 @@ bool Nibbler::getUnsignedInt (int& result)
 
   if (i > mCursor)
   {
-    result = atoi (mInput.substr (mCursor, i - mCursor).c_str ());
+    result = strtoimax (mInput.substr (mCursor, i - mCursor).c_str (), NULL, 10);
     mCursor = i;
     return true;
   }
@@ -392,7 +392,7 @@ bool Nibbler::getNumber (double& result)
         while (i < mLength && isdigit (mInput[i]))
           ++i;
 
-        result = atof (mInput.substr (mCursor, i - mCursor).c_str ());
+        result = strtof (mInput.substr (mCursor, i - mCursor).c_str (), NULL);
         mCursor = i;
         return true;
       }
@@ -400,7 +400,7 @@ bool Nibbler::getNumber (double& result)
       return false;
     }
 
-    result = atof (mInput.substr (mCursor, i - mCursor).c_str ());
+    result = strtof (mInput.substr (mCursor, i - mCursor).c_str (), NULL);
     mCursor = i;
     return true;
   }

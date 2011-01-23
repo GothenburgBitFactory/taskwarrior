@@ -27,9 +27,8 @@
 
 #include <algorithm>
 #include <iostream>
-#include <sstream>
-#include "text.h"
-#include "Tree.h"
+#include <text.h>
+#include <Tree.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 //  - Tree, Branch and Node are synonymous.
@@ -119,6 +118,12 @@ int Tree::branches ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Tree::name (const std::string& name)
+{
+  _name = name;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string Tree::name () const
 {
   return _name;
@@ -135,9 +140,14 @@ void Tree::attribute (const std::string& name, const std::string& value)
 // Accessor for attributes.
 void Tree::attribute (const std::string& name, const int value)
 {
-  std::stringstream s;
-  s << value;
-  _attributes[name] = s.str ();
+  _attributes[name] = format (value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Accessor for attributes.
+void Tree::attribute (const std::string& name, const double value)
+{
+  _attributes[name] = format (value, 1, 8);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

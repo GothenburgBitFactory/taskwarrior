@@ -47,9 +47,11 @@ public:
   void replaceBranch (Tree*, Tree*);
   int branches ();
 
+  void name (const std::string&);
   std::string name () const;
   void attribute (const std::string&, const std::string&);
   void attribute (const std::string&, const int);
+  void attribute (const std::string&, const double);
   std::string attribute (const std::string&);
   void removeAttribute (const std::string&);
   int attributes () const;
