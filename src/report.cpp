@@ -749,7 +749,6 @@ int handleInfo (std::string& outs)
         if (total_time < 0)
           total_time += Date ().toEpoch ();
 
-
         // print total active time
         if (total_time > 0)
         {
@@ -760,15 +759,15 @@ int handleInfo (std::string& outs)
           if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
             journal.setCellColor (row, 1, Color ("bold"));
         }
-
-        out << optionalBlankLine ()
-            << table.render ()
-            << "\n";
-
-        if (journal.rowCount () > 0)
-          out << journal.render ()
-              << "\n";
       }
+
+      out << optionalBlankLine ()
+          << table.render ()
+          << "\n";
+
+      if (journal.rowCount () > 0)
+        out << journal.render ()
+            << "\n";
     }
 
     if (! tasks.size ())
