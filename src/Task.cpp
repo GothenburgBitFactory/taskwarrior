@@ -27,14 +27,15 @@
 
 #include <sstream>
 #include <algorithm>
-#include "Context.h"
-#include "Nibbler.h"
-#include "Date.h"
-#include "Duration.h"
-#include "Task.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
+#include <Context.h>
+#include <Nibbler.h>
+#include <Date.h>
+#include <Duration.h>
+#include <Task.h>
+#include <JSON.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
 
 extern Context context;
 
@@ -462,7 +463,7 @@ std::string Task::composeJSON () const
       out << "\""
           << i->second.name ()
           << "\":\""
-          << i->second.value ()
+          << JSON::encode (i->second.value ())
           << "\"";
 
       ++attributes_written;
@@ -487,7 +488,7 @@ std::string Task::composeJSON () const
         out << "{\"entry\":\""
             << d.toISO ()
             << "\",\"description\":\""
-            << i->second.value ()
+            << JSON::encode (i->second.value ())
             << "\"}";
 
         ++annotations_written;
