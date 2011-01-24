@@ -445,6 +445,12 @@ a D b Y (V)  would do an output as "Fri 24 Jul 2009 (30)"
 A, B D, Y    would do an output as "Friday, July 24, 2009"
 .br
 vV a Y-M-D   would do an output as "v30 Fri 2009-07-24"
+.br
+yMD.HN       would do an output as "110124.2342"
+.br
+m/d/Y H:N    would do an output as "1/24/2011 10:42"
+.br
+a D b Y H:N:S would do and output as "Mon 24 Jan 2011 11:19:42"
 .RE
 .RE
 
