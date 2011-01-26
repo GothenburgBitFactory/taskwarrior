@@ -32,6 +32,7 @@
 #include <text.h>
 #include <rx.h>
 #include <i18n.h>
+#include <main.h>
 
 extern Context context;
 
@@ -132,6 +133,7 @@ void Subst::apply (
 
   if (mFrom != "")
   {
+#ifdef FEATURE_REGEX
     if (context.config.getBoolean ("regex"))
     {
       // Insert capturing parentheses, if necessary.
@@ -185,6 +187,7 @@ void Subst::apply (
     }
     else
     {
+#endif
       if (mGlobal)
       {
         // Perform all subs on description.
@@ -241,7 +244,9 @@ void Subst::apply (
           }
         }
       }
+#ifdef FEATURE_REGEX
     }
+#endif
   }
 }
 

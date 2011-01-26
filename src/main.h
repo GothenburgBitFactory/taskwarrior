@@ -33,6 +33,8 @@
 #define FEATURE_NCURSES_COLS 1   // Shortcut that avoids WINDOW.
 #define FEATURE_URL          1   // URL support for import.
                                  // (always enabled for merge/push/pull)
+//#define FEATURE_REGEX        1   // Enables regexes for attribute modifiers,
+//                                 // subst, general search.
 
 #include <string>
 #include <vector>

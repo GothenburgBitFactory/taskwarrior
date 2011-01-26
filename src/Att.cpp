@@ -37,6 +37,7 @@
 #include <Duration.h>
 #include <Context.h>
 #include <Att.h>
+#include <main.h>
 
 extern Context context;
 
@@ -587,6 +588,7 @@ bool Att::match (const Att& other) const
     }
     else
     {
+#ifdef FEATURE_REGEX
       if (regex)
       {
         std::string pattern = "^" + mValue + "$";
@@ -595,12 +597,17 @@ bool Att::match (const Att& other) const
       }
       else if (!compare (mValue, other.mValue, (bool) case_sensitive))
         return false;
+#else
+      if (!compare (mValue, other.mValue, (bool) case_sensitive))
+        return false;
+#endif
     }
   }
 
   // has = contains as a substring.
   else if (mMod == "has" || mMod == "contains") // TODO i18n
   {
+#ifdef FEATURE_REGEX
     if (regex)
     {
       if (!regexMatch (other.mValue, mValue, case_sensitive))
@@ -608,11 +615,16 @@ bool Att::match (const Att& other) const
     }
     else if (find (other.mValue, mValue, (bool) case_sensitive) == std::string::npos)
       return false;
+#else
+    if (find (other.mValue, mValue, (bool) case_sensitive) == std::string::npos)
+      return false;
+#endif
   }
 
   // is = equal.  Nop.
   else if (mMod == "is" || mMod == "equals") // TODO i18n
   {
+#ifdef FEATURE_REGEX
     if (regex)
     {
       std::string pattern = "^" + mValue + "$";
@@ -621,11 +633,16 @@ bool Att::match (const Att& other) const
     }
     else if (!compare (mValue, other.mValue, (bool) case_sensitive))
       return false;
+#else
+    if (!compare (mValue, other.mValue, (bool) case_sensitive))
+      return false;
+#endif
   }
 
   // isnt = not equal.
   else if (mMod == "isnt" || mMod == "not") // TODO i18n
   {
+#ifdef FEATURE_REGEX
     if (regex)
     {
       std::string pattern = "^" + mValue + "$";
@@ -634,6 +651,10 @@ bool Att::match (const Att& other) const
     }
     else if (compare (mValue, other.mValue, (bool) case_sensitive))
       return false;
+#else
+    if (compare (mValue, other.mValue, (bool) case_sensitive))
+      return false;
+#endif
   }
 
   // any = any value, but not empty value.
@@ -653,6 +674,7 @@ bool Att::match (const Att& other) const
   // startswith = first characters must match.
   else if (mMod == "startswith" || mMod == "left") // TODO i18n
   {
+#ifdef FEATURE_REGEX
     if (regex)
     {
       std::string pattern = "^" + mValue;
@@ -661,17 +683,21 @@ bool Att::match (const Att& other) const
     }
     else
     {
+#endif
       if (other.mValue.length () < mValue.length ())
         return false;
 
       if (!compare (mValue, other.mValue.substr (0, mValue.length ()), (bool) case_sensitive))
         return false;
+#ifdef FEATURE_REGEX
     }
+#endif
   }
 
   // endswith = last characters must match.
   else if (mMod == "endswith" || mMod == "right") // TODO i18n
   {
+#ifdef FEATURE_REGEX
     if (regex)
     {
       std::string pattern = mValue + "$";
@@ -680,6 +706,7 @@ bool Att::match (const Att& other) const
     }
     else
     {
+#endif
       if (other.mValue.length () < mValue.length ())
         return false;
 
@@ -687,12 +714,15 @@ bool Att::match (const Att& other) const
                       other.mValue.length () - mValue.length (),
                       std::string::npos), (bool) case_sensitive))
         return false;
+#ifdef FEATURE_REGEX
     }
+#endif
   }
 
   // hasnt = does not contain as a substring.
   else if (mMod == "hasnt") // TODO i18n
   {
+#ifdef FEATURE_REGEX
     if (regex)
     {
       if (regexMatch (other.mValue, mValue, case_sensitive))
@@ -700,6 +730,10 @@ bool Att::match (const Att& other) const
     }
     else if (find (other.mValue, mValue, (bool) case_sensitive) != std::string::npos)
       return false;
+#else
+    if (find (other.mValue, mValue, (bool) case_sensitive) != std::string::npos)
+      return false;
+#endif
   }
 
   // before = under = below = <
@@ -781,6 +815,7 @@ bool Att::match (const Att& other) const
   // word = contains as a substring, with word boundaries.
   else if (mMod == "word") // TODO i18n
   {
+#ifdef FEATURE_REGEX
     if (regex && other.mName != "tags")
     {
       std::vector <int> start;
@@ -796,6 +831,7 @@ bool Att::match (const Att& other) const
     }
     else
     {
+#endif
       // Fail if the substring is not found.
       std::string::size_type sub = find (other.mValue, mValue, (bool) case_sensitive);
       if (sub == std::string::npos)
@@ -807,12 +843,15 @@ bool Att::match (const Att& other) const
 
       if (!isWordEnd (other.mValue, sub + mValue.length () - 1))
         return false;
+#ifdef FEATURE_REGEX
     }
+#endif
   }
 
   // noword = does not contain as a substring, with word boundaries.
   else if (mMod == "noword") // TODO i18n
   {
+#ifdef FEATURE_REGEX
     if (regex && other.mName != "tags")
     {
       std::vector <int> start;
@@ -824,6 +863,7 @@ bool Att::match (const Att& other) const
     }
     else
     {
+#endif
       // Fail if the substring is not found.
       std::string::size_type sub = find (other.mValue, mValue);
       if (sub != std::string::npos &&
@@ -832,7 +872,9 @@ bool Att::match (const Att& other) const
       {
         return false;
       }
+#ifdef FEATURE_REGEX
     }
+#endif
   }
 
   return true;
