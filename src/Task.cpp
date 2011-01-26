@@ -443,10 +443,13 @@ std::string Task::composeJSON () const
     if (attributes_written)
       out << ",";
 
+    // Annotations are simply counted.
     if (i->second.name ().substr (0, 11) == "annotation_")
     {
       ++annotation_count;
     }
+
+    // Date fields are written as ISO 8601.
     else if (att.type (i->second.name ()) == "date")
     {
       Date d (i->second.value ());
@@ -458,6 +461,28 @@ std::string Task::composeJSON () const
 
       ++attributes_written;
     }
+
+    // Tags are converted to an array.
+    else if (i->second.name () == "tags")
+    {
+      std::vector <std::string> tags;
+      split (tags, i->second.value (), ',');
+
+      out << "\"tags\":[";
+
+      std::vector <std::string>::iterator i;
+      for (i = tags.begin (); i != tags.end (); ++i)
+      {
+        if (i != tags.begin ())
+          out << ",";
+
+        out << "\"" << *i << "\"";
+      }
+
+      out << "]";
+    }
+
+    // Everything else is a quoted value.
     else
     {
       out << "\""
