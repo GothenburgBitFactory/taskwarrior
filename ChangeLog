@@ -16,6 +16,8 @@
    Marechal).
  + Added feature #30, which eliminates the dependency on ncurses (thanks to
    Johan Friis).
+ + Added feature #41, XML export in the form of add-on script export-xml.pl,
+   export-xml.py and export-xml.rb.
  + Added feature #157, which implements the _query command, a helper command for
    script writers, which accepts a filter like any other report, but returns
    only full JSON.
