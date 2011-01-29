@@ -401,7 +401,7 @@ std::string Config::defaults =
   "#report.waiting.annotations=full\n"
   "\n"
   "# task all\n"
-  "report.all.description=Lists all tasks matching the specified criteria\n"
+  "report.all.description=Lists all tasks matching the specified criteria, including parents of recurring tasks\n"
   "report.all.columns=id,project,priority,due,end,active,age,description\n"
   "report.all.labels=ID,Project,Pri,Due,Completed,Active,Age,Description\n"
   "report.all.sort=project+,due+,end+,priority-,active-,description+\n"

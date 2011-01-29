@@ -271,7 +271,7 @@ Shows all tasks matching the filter that are started but not completed.
 
 .TP
 .B all [filter]
-Shows all tasks matching the filter.
+Shows all tasks matching the filter, including parents of recurring tasks.
 
 .TP
 .B completed [filter]
