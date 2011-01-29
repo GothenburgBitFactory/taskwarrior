@@ -55,7 +55,9 @@ New configuration options in taskwarrior 1.9.4
 
 Newly deprecated features in taskwarrior 1.9.4
 
-  -
+  - The export commands (export, export.csv, export.yaml, export.ical and
+    export.vcalendar) are deprecated, and will be replaced in future releases
+    by add-on scripts.
 
 ---
 
