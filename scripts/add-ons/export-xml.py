@@ -36,26 +36,26 @@ command = "/usr/local/bin/task _query " + " ".join (sys.argv[1:])
 # Generate output.
 print "<tasks>"
 for task in commands.getoutput (command).split (",\n"):
-  data = json.loads (task)
-  print "  <task>"
-  for attribute in data.items ():
-    if attribute[0] == "annotations":
-      print "    <annotations>"
-      for anno in attribute[1]:
-        print "      <annotation>"
-        for item in anno.items ():
-          print "        <{0}>{1}</{0}>".format (item[0], item[1])
-        print "      </annotation>"
-      print "    </annotations>"
-    elif attribute[0] == "tags":
-      print "    <tags>"
-      for tag in attribute[1]:
-        print "      <tag>{0}</tag>".format (tag)
-      print "    </tags>"
-    else:
-      print "    <{0}>{1}</{0}>".format (attribute[0], attribute[1])
-  print "  </task>"
-print "</tasks>"
+    data = json.loads (task)
+    print ("  <task>")
+    for name,value in data.items ():
+        if name == "annotations":
+            print ("    <annotations>")
+            for anno in value:
+                print ("      <annotation>")
+                for name,value in anno.items ():
+                    print ("        <{0}>{1}</{0}>".format (name, value))
+                    print ("      </annotation>")
+                    print ("    </annotations>")
+        elif name == "tags":
+            print ("    <tags>")
+            for tag in value:
+                print ("      <tag>{0}</tag>".format (tag))
+                print ("    </tags>")
+        else:
+            print ("    <{0}>{1}</{0}>".format (name, value))
+    print ("  </task>")
+print ("</tasks>")
 sys.exit (0)
 
 ################################################################################
