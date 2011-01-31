@@ -44,7 +44,7 @@ my $output = qx{../src/task rc:bug.rc merge user.name\@taskwarrior.org:undo.data
 unlike ($output, qr/not a valid modifier/, 'scp syntax with dots');
 unlike ($output, qr/not in the expected format/, 'scp syntax with dots');
 
-$output = qx{../src/task rc:bug.rc merge ssh://user.name\@taskwarrior.org/udno.data};
+$output = qx{../src/task rc:bug.rc merge ssh://user.name\@taskwarrior.org/undo.data};
 unlike ($output, qr/not a valid modifier/, 'standard syntax with dots');
 unlike ($output, qr/not in the expected format/, 'standard syntax with dots');
 
