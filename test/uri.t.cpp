@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (44);
+  UnitTest t (54);
 
   Uri uri1 ("asfd://user@host/folder/");
   uri1.parse ();
@@ -111,7 +111,26 @@ int main (int argc, char** argv)
   t.is (uri9.port,  "",            "Uri::parse() : 'user@name'@host:path/to/x");
   t.is (uri9.path,  "path/to/x",   "Uri::parse() : 'user@name'@host:path/to/x");
 
+  // bug #668
+  Uri uri10 ("user.name@host.com:undo.data");
+  uri10.parse ();
+  t.is (uri10.user,  "user.name",  "Uri::parse() : user.name@host.com:undo.data");
+  t.is (uri10.host,  "host.com",   "Uri::parse() : user.name@host.com:undo.data");
+  t.is (uri10.port,  "",           "Uri::parse() : user.name@host.com:undo.data");
+  t.is (uri10.path,  "undo.data",  "Uri::parse() : user.name@host.com:undo.data");
+  t.is (uri10.protocol, "ssh",     "Uri::parse() : user.name@host.com:undo.data");
+
+  Uri uri11 ("ssh://user.name@host.com/undo.data");
+  uri11.parse ();
+  t.is (uri11.user,  "user.name",  "Uri::parse() : ssh://user.name@host.com/undo.data");
+  t.is (uri11.host,  "host.com",   "Uri::parse() : ssh://user.name@host.com/undo.data");
+  t.is (uri11.port,  "",           "Uri::parse() : ssh://user.name@host.com/undo.data");
+  t.is (uri11.path,  "undo.data",  "Uri::parse() : ssh://user.name@host.com/undo.data");
+  t.is (uri11.protocol, "ssh",     "Uri::parse() : ssh://user.name@host.com/undo.data");
+
+
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// vim: et ts=2 sw=2
