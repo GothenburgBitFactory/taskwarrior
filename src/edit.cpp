@@ -147,13 +147,8 @@ static std::string formatTask (Task task)
   if (verbose)
     before << "# Separate the tags with spaces, like this: tag1 tag2\n";
 
-  before   << "  Tags:              " << allTags                                        << "\n";
-
-  if (verbose)
-    before << "# The description field is allowed to wrap and use multiple lines.  Task\n"
-           << "# will combine them.\n";
-
-  before << "  Description:       " << task.get ("description")                         << "\n"
+  before << "  Tags:              " << allTags                                          << "\n"
+         << "  Description:       " << task.get ("description")                         << "\n"
          << "  Created:           " << formatDate (task, "entry")                       << "\n"
          << "  Started:           " << formatDate (task, "start")                       << "\n"
          << "  Ended:             " << formatDate (task, "end")                         << "\n"
