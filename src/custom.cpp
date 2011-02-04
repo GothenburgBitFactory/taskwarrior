@@ -118,9 +118,16 @@ int handleCustomReport (const std::string& report, std::string& outs)
     if (context.sequence.size ())
       context.filter.applySequence (tasks, context.sequence);
 
+    // Determine the output date format, which uses a hierarchy of definitions.
+    std::string dateformat = context.config.get ("report." + report + ".dateformat");
+    if (dateformat == "")
+      dateformat = context.config.get ("dateformat.report");
+    if (dateformat == "")
+      dateformat = context.config.get ("dateformat");
+
     Table table;
     table.setTableWidth (context.getWidth ());
-    table.setDateFormat (context.config.get ("dateformat"));
+    table.setDateFormat (dateformat);
     table.setReportName (report);
 
     foreach (task, tasks)
@@ -228,12 +235,6 @@ int handleCustomReport (const std::string& report, std::string& outs)
         table.setColumnWidth (columnCount, Table::minimum);
         table.setColumnJustification (columnCount, Table::right);
 
-        std::string format = context.config.get ("report." + report + ".dateformat");
-        if (format == "")
-          format = context.config.get ("dateformat.report");
-        if (format == "")
-          format = context.config.get ("dateformat");
-
         std::string entered;
         for (unsigned int row = 0; row < tasks.size(); ++row)
         {
@@ -241,7 +242,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
           if (entered.length ())
           {
             Date dt (::atoi (entered.c_str ()));
-            entered = dt.toString (format);
+            entered = dt.toString (dateformat);
             context.hooks.trigger ("format-entry", "entry", entered);
             table.addCell (row, columnCount, entered);
           }
@@ -254,12 +255,6 @@ int handleCustomReport (const std::string& report, std::string& outs)
         table.setColumnWidth (columnCount, Table::minimum);
         table.setColumnJustification (columnCount, Table::right);
 
-        std::string format = context.config.get ("report." + report + ".dateformat");
-        if (format == "")
-          format = context.config.get ("dateformat.report");
-        if (format == "")
-          format = context.config.get ("dateformat");
-
         std::string started;
         for (unsigned int row = 0; row < tasks.size(); ++row)
         {
@@ -267,7 +262,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
           if (started.length ())
           {
             Date dt (::atoi (started.c_str ()));
-            started = dt.toString (format);
+            started = dt.toString (dateformat);
             context.hooks.trigger ("format-start", "start", started);
             table.addCell (row, columnCount, started);
           }
@@ -280,12 +275,6 @@ int handleCustomReport (const std::string& report, std::string& outs)
         table.setColumnWidth (columnCount, Table::minimum);
         table.setColumnJustification (columnCount, Table::right);
 
-        std::string format = context.config.get ("report." + report + ".dateformat");
-        if (format == "")
-          format = context.config.get ("dateformat.report");
-        if (format == "")
-          format = context.config.get ("dateformat");
-
         std::string ended;
         for (unsigned int row = 0; row < tasks.size(); ++row)
         {
@@ -293,7 +282,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
           if (ended.length ())
           {
             Date dt (::atoi (ended.c_str ()));
-            ended = dt.toString (format);
+            ended = dt.toString (dateformat);
             context.hooks.trigger ("format-end", "end", ended);
             table.addCell (row, columnCount, ended);
           }
@@ -306,17 +295,11 @@ int handleCustomReport (const std::string& report, std::string& outs)
         table.setColumnWidth (columnCount, Table::minimum);
         table.setColumnJustification (columnCount, Table::left);
 
-        std::string format = context.config.get ("report." + report + ".dateformat");
-        if (format == "")
-          format = context.config.get ("dateformat.report");
-        if (format == "")
-          format = context.config.get ("dateformat");
-
         int row = 0;
         std::string due;
         foreach (task, tasks)
         {
-          std::string value = getDueDate (*task, format);
+          std::string value = getDueDate (*task, dateformat);
           context.hooks.trigger ("format-due", "due", value);
           table.addCell (row++, columnCount, value);
         }
@@ -518,12 +501,6 @@ int handleCustomReport (const std::string& report, std::string& outs)
         table.setColumnWidth (columnCount, Table::minimum);
         table.setColumnJustification (columnCount, Table::right);
 
-        std::string format = context.config.get ("report." + report + ".dateformat");
-        if (format == "")
-          format = context.config.get ("dateformat.report");
-        if (format == "")
-          format = context.config.get ("dateformat");
-
         int row = 0;
         std::string wait;
         foreach (task, tasks)
@@ -532,7 +509,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
           if (wait != "")
           {
             Date dt (::atoi (wait.c_str ()));
-            wait = dt.toString (format);
+            wait = dt.toString (dateformat);
             context.hooks.trigger ("format-wait", "wait", wait);
             table.addCell (row++, columnCount, wait);
           }
