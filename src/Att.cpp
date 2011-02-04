@@ -205,14 +205,18 @@ bool Att::valid (const std::string& input) const
       if (!n.getUntilOneOf (".:", ignored))
         return false;
 
-    if (n.skip (':') &&
-        (n.getQuoted ('"', ignored) ||
-         n.getUntil  (' ', ignored) ||
-         n.getUntilEOS (ignored)    ||
-         n.depleted ()))
-      return true;
+    if (n.skip (':'))
+    {
+      if (input.find ('@') <= n.cursor () ||
+          input.find ('/') <= n.cursor ())
+        return false;
 
-    return false;
+      if (n.getQuoted ('"', ignored) ||
+          n.getUntil  (' ', ignored) ||
+          n.getUntilEOS (ignored)    ||
+          n.depleted ())
+        return true;
+    }
   }
 
   return false;

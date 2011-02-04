@@ -69,6 +69,8 @@ public:
   char next ();
   std::string next (const int quantity);
 
+  std::string::size_type cursor ();
+
   void save ();
   void restore ();
 
