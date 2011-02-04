@@ -4,7 +4,6 @@ New Features in taskwarrior 1.9.4
   - New burndown charts.
   - New 'count' helper command.
   - Inifinite width reports, when redirecting output.
-  - Regular expression support in filters and substitutions.
   - Added highlighting for the show command that indicates which values differ
     from the defaults.
   - Added change log display to the 'info' command.
@@ -12,7 +11,8 @@ New Features in taskwarrior 1.9.4
     value.
   - No more dependency on ncurses.
   - New '_query' helper command for script writers, which accepts a filter like
-    any other report, but returns unformatted JSON.
+    any other report, but returns unformatted JSON.  The new alias 'export.json'
+    maps to the _query command.
   - Import can now read from files and URLs.
   - Assorted bug fixes.
   - New literal date "later" and "someday" to be used with the wait attribute to

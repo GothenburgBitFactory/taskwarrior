@@ -290,6 +290,7 @@ std::string Config::defaults =
   "alias.ghistory=ghistory.monthly                # Prefer monthly graphical over annual history reports\n"
   "alias.export=export.yaml                       # Prefer YAML over CSV or iCal export\n"
   "alias.export.vcalendar=export.ical             # They are the same\n"
+  "alias.export.json=_query                       # The _query command will be used for all export\n"
   "alias.burndown=burndown.weekly                 # Prefer the weekly burndown chart\n"
   "\n"
   "# Fields: id, uuid, project, priority, priority_long, entry, start, end,\n"
