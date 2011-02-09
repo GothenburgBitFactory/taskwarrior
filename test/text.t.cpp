@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (208);
+  UnitTest t (213);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -415,6 +415,13 @@ int main (int argc, char** argv)
   t.is (format (1.23456789, 8, 8), "1.2345679", "format (1.23456789, 8, 8) -> 1.2345679");
 
   // std::string format (double, int, int);
+
+  // std::string printable (const std::string&);
+  t.is (printable ("a\rb"), "a\\rb", "printable <carriage-return> -> \\r");
+  t.is (printable ("a\nb"), "a\\nb", "printable <newline> -> \\n");
+  t.is (printable ("a\fb"), "a\\fb", "printable <formfeed> -> \\f");
+  t.is (printable ("a\tb"), "a\\tb", "printable <tab> -> \\t");
+  t.is (printable ("a\vb"), "a\\vb", "printable <vertical-space> -> \\v");
 
   return 0;
 }
