@@ -239,10 +239,16 @@ Modifies the existing task with provided information.
 Performs one substitution on task description and annotation for fixing
 mistakes.
 
+If either 'from' or 'to' contain spaces, you will need to put quotes around
+the whole thing.
+
 .TP
 .B ID /from/to/g
 Performs all substitutions on task description and annotation for fixing
 mistakes.
+
+If either 'from' or 'to' contain spaces, you will need to put quotes around
+the whole thing.
 
 .TP
 .B edit ID
