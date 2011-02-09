@@ -511,7 +511,7 @@ static void parseTask (Task& task, const std::string& after)
   std::string::size_type found = 0;
   while ((found = after.find ("\n  Annotation:", found)) != std::string::npos)
   {
-    found += 11;
+    found += 14;  // Length of "\n  Annotation:".
 
     std::string::size_type eol = after.find ("\n", found + 1);
     if (eol != std::string::npos)
