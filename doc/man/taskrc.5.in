@@ -269,15 +269,6 @@ names you have used, or just the ones used in active tasks.  The default value i
 May be yes or no, and determines whether keyword lookup and substitutions on the
 description and annotations are done in a case sensitive way.  Defaults to yes.
 
-.TP
-.B regex=on
-Enables regular expression searches in filters (task list ^Fix), and
-substitutions (task <id> /^the/The/).
-
-Note that this feature works in conjunction with the
-.B search.case.sensitive
-setting.
-
 The default value is off, because this advanced feature could cause confusion
 among users that are not comfortable with regular expressions.
 
