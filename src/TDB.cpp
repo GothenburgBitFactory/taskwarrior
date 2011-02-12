@@ -999,7 +999,8 @@ void TDB::undo ()
   }
 
   // Output displayed, now confirm.
-  if (!confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
+  if (context.config.getBoolean ("confirmation") &&
+      !confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
   {
     std::cout << "No changes made.\n";
     context.hooks.trigger ("post-undo");

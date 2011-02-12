@@ -196,8 +196,9 @@ Controls some of the verbosity of taskwarrior.
 .TP
 .B confirmation=yes
 May be "yes" or "no", and determines whether taskwarrior will ask for
-confirmation before deleting a task or doing bulk changes.  The default value
-is "yes".
+confirmation before deleting a task, performing bulk changes, or the undo
+command.  The default value is "yes".  Consider leaving this setting as "no",
+for safety.
 
 .TP
 .B echo.command=yes

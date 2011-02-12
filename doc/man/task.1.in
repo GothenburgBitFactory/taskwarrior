@@ -50,7 +50,7 @@ With an ID but no specific command, taskwarrior runs the "info" command.
 
 .TP
 .B undo
-Reverts the most recent action.
+Reverts the most recent action.  Obeys the confirmation setting.
 
 .TP
 .B shell
