@@ -311,8 +311,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
             Task task (line);
 
             Task::status status = task.getStatus ();
-            if (status != Task::recurring)
-              task.id = mId++;
+            task.id = mId++;
 
             mPending.push_back (task);
 

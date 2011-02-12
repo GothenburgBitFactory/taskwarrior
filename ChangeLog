@@ -104,6 +104,8 @@
    contained certain tokens (like 'Due:').
  + Fixed bug #654, which broke the info command when a task had no journal
    entries.
+ + Fixed bug #656, which caused multiple recurring child tasks to be created
+   (thanks to Bryce Harrington).
  + Fixed bug #671, removing the claim in the 'edit' command claims that
    description text can wrap over multiple lines, because it cannot.
 
