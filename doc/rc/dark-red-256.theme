@@ -39,6 +39,10 @@ color.history.add=color0 on rgb100
 color.history.done=color0 on rgb300
 color.history.delete=color0 on rgb500
 
+color.burndown.pending=on rgb200
+color.burndown.started=on rgb411
+color.burndown.done=on gray4
+
 color.undo.before=rgb301
 color.undo.after=rgb503
 

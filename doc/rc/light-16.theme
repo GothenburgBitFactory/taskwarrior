@@ -39,6 +39,10 @@ color.history.add=black on red
 color.history.done=black on green
 color.history.delete=black on yellow
 
+color.burndown.pending=on red
+color.burndown.started=on yellow
+color.burndown.done=on green
+
 color.undo.before=red
 color.undo.after=green
 
