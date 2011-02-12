@@ -39,9 +39,6 @@ New configuration options in taskwarrior 1.9.4
     for the burndown charts, and is documented in taskrc(5).
   - defaultwidth=0 is causes word-wrapping to be turned off, and effectively
     set reports to potentially have infinite width .
-  - regex=on enables regular expression searches for filters (task list a...e
-    matches 'above') and substitutions (task <id> /a...e/over/ changes 'above'
-    to 'over').  Default is off, as this is an advanced feature.
   - journal.info controls whether a change log for each task is displayed by
     the 'info' command.
   - gc=off can be used, temporarily, to defer GC until later commands, which
