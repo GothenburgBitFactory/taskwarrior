@@ -100,6 +100,8 @@
    'edit.verbose' can be set to 'no' and eliminate the help text when using
    the 'task edit' command (thanks to Steve Rader).
  + Enhanced unit tests in response to bug #624 (thanks to Steve Rader).
+ + Fixed bug #628, where dateformats containing spaces were not properly
+   parsed (thanks to Steve Rader).
  + Fixed bug #641, where certain reports broke when 'dateformat' differed from
    'dateformat.report'.
  + Fixed bug #651, which broke the edit command when a task description

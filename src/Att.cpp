@@ -496,10 +496,12 @@ std::string Att::modType (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//
+//                                  ______________
+//                                  |            |
+//                                  |            v
 // start --> name --> . --> mod --> : --> " --> value --> " --> end
-//            |                     ^
-//            |_____________________|
+//            |                     ^              |             ^
+//            |_____________________|              |_____________|
 //
 void Att::parse (const std::string& input)
 {
@@ -537,8 +539,8 @@ void Att::parse (Nibbler& n)
     {
       // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
-      if (n.getQuoted ('"', mValue) ||
-          n.getUntil  (' ', mValue))
+      if (n.getQuoted   ('"', mValue) ||
+          n.getUntilEOS (mValue))
       {
         decode (mValue);
       }
