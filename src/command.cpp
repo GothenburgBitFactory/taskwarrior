@@ -1573,54 +1573,78 @@ int handleDelete (std::string& outs)
 
     foreach (task, tasks)
     {
-      if (context.hooks.trigger ("pre-delete", *task))
+      if (task->getStatus () == Task::pending ||
+          task->getStatus () == Task::waiting)
       {
-        std::stringstream question;
-        question << "Permanently delete task "
-                 << task->id
-                 << " '"
-                 << task->get ("description")
-                 << "'?";
-
-        if (!context.config.getBoolean ("confirmation") || confirm (question.str ()))
+        if (context.hooks.trigger ("pre-delete", *task))
         {
-          // Check for the more complex case of a recurring task.  If this is a
-          // recurring task, get confirmation to delete them all.
-          std::string parent = task->get ("parent");
-          if (parent != "")
+          std::stringstream question;
+          question << "Permanently delete task "
+                   << task->id
+                   << " '"
+                   << task->get ("description")
+                   << "'?";
+
+          if (!context.config.getBoolean ("confirmation") || confirm (question.str ()))
           {
-            if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
+            // Check for the more complex case of a recurring task.  If this is a
+            // recurring task, get confirmation to delete them all.
+            std::string parent = task->get ("parent");
+            if (parent != "")
             {
-              // Scan all pending tasks for siblings of this task, and the parent
-              // itself, and delete them.
-              foreach (sibling, all)
+              if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
               {
-                if (sibling->get ("parent") == parent ||
-                    sibling->get ("uuid")   == parent)
+                // Scan all pending tasks for siblings of this task, and the parent
+                // itself, and delete them.
+                foreach (sibling, all)
                 {
-                  sibling->setStatus (Task::deleted);
+                  if (sibling->get ("parent") == parent ||
+                      sibling->get ("uuid")   == parent)
+                  {
+                    sibling->setStatus (Task::deleted);
 
-                  // Don't want a 'delete' to clobber the end date that may have
-                  // been written by a 'done' command.
-                  if (! sibling->has ("end"))
-                    sibling->set ("end", endTime);
+                    // Don't want a 'delete' to clobber the end date that may have
+                    // been written by a 'done' command.
+                    if (! sibling->has ("end"))
+                      sibling->set ("end", endTime);
 
-                  context.tdb.update (*sibling);
+                    context.tdb.update (*sibling);
 
-                  if (context.config.getBoolean ("echo.command"))
-                    out << "Deleting recurring task "
-                        << sibling->id
-                        << " '"
-                        << sibling->get ("description")
-                        << "'.\n";
+                    if (context.config.getBoolean ("echo.command"))
+                      out << "Deleting recurring task "
+                          << sibling->id
+                          << " '"
+                          << sibling->get ("description")
+                          << "'.\n";
+                  }
                 }
+              }
+              else
+              {
+                // Update mask in parent.
+                task->setStatus (Task::deleted);
+                updateRecurrenceMask (all, *task);
+
+                // Don't want a 'delete' to clobber the end date that may have
+                // been written by a 'done' command.
+                if (! task->has ("end"))
+                  task->set ("end", endTime);
+
+                context.tdb.update (*task);
+
+                out << "Deleting recurring task "
+                    << task->id
+                    << " '"
+                    << task->get ("description")
+                    << "'.\n";
+
+                dependencyChainOnComplete (*task);
+                context.footnote (onProjectChange (*task));
               }
             }
             else
             {
-              // Update mask in parent.
               task->setStatus (Task::deleted);
-              updateRecurrenceMask (all, *task);
 
               // Don't want a 'delete' to clobber the end date that may have
               // been written by a 'done' command.
@@ -1629,11 +1653,12 @@ int handleDelete (std::string& outs)
 
               context.tdb.update (*task);
 
-              out << "Deleting recurring task "
-                  << task->id
-                  << " '"
-                  << task->get ("description")
-                  << "'.\n";
+              if (context.config.getBoolean ("echo.command"))
+                out << "Deleting task "
+                    << task->id
+                    << " '"
+                    << task->get ("description")
+                    << "'.\n";
 
               dependencyChainOnComplete (*task);
               context.footnote (onProjectChange (*task));
@@ -1641,33 +1666,21 @@ int handleDelete (std::string& outs)
           }
           else
           {
-            task->setStatus (Task::deleted);
-
-            // Don't want a 'delete' to clobber the end date that may have
-            // been written by a 'done' command.
-            if (! task->has ("end"))
-              task->set ("end", endTime);
-
-            context.tdb.update (*task);
-
-            if (context.config.getBoolean ("echo.command"))
-              out << "Deleting task "
-                  << task->id
-                  << " '"
-                  << task->get ("description")
-                  << "'.\n";
-
-            dependencyChainOnComplete (*task);
-            context.footnote (onProjectChange (*task));
+            out << "Task not deleted.\n";
+            rc  = 1;
           }
-        }
-        else
-        {
-          out << "Task not deleted.\n";
-          rc  = 1;
-        }
 
-        context.hooks.trigger ("post-delete", *task);
+          context.hooks.trigger ("post-delete", *task);
+        }
+      }
+      else
+      {
+        out << "Task "
+            << task->id
+            << " '"
+            << task->get ("description")
+            << "' is neither pending nor waiting.\n";
+        rc = 1;
       }
     }
 

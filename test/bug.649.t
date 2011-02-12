@@ -47,7 +47,7 @@ qx{../src/task rc:bug.rc add Test due:3d rec:1w};
 
 # Result: Immediately delete the created task
 my $output = qx{../src/task rc:bug.rc done 1};
-like   ($output, qr/Completed/ms, 'New recurring task can be immediately deleted.');
+unlike ($output, qr/Completed/ms, 'New recurring task cannot be immediately completed.');
 
 # Cleanup.
 unlink 'pending.data';
