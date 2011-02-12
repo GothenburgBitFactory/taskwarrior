@@ -556,7 +556,7 @@ static void parseTask (Task& task, const std::string& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void editFile (Task& task)
+bool editFile (Task& task)
 {
   // Check for file permissions.
   Directory location (context.config.get ("data.location"));
@@ -587,6 +587,8 @@ void editFile (Task& task)
   editor += "\"" + file.str () + "\"";
 
 ARE_THESE_REALLY_HARMFUL:
+  bool changes = false; // No changes made.
+
   // Launch the editor.
   std::cout << "Launching '" << editor << "' now...\n";
   if (-1 == system (editor.c_str ()))
@@ -628,12 +630,18 @@ ARE_THESE_REALLY_HARMFUL:
       if (confirm ("Taskwarrior couldn't handle your edits.  Would you like to try again?"))
         goto ARE_THESE_REALLY_HARMFUL;
     }
+    else
+      changes = true;
   }
   else
+  {
     std::cout << "No edits were detected.\n";
+    changes = false;
+  }
 
   // Cleanup.
   File::remove (file.str ());
+  return changes;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -660,35 +668,8 @@ int handleEdit (std::string& outs)
 
     std::vector <Task>::iterator task;
     for (task = tasks.begin (); task != tasks.end (); ++task)
-    {
-      editFile (*task);
-      context.tdb.update (*task);
-/*
-      TODO Figure out what this is.  I can't remember, but don't want to remove
-           it until I do.
-
-      std::vector <Task>::iterator other;
-      for (other = all.begin (); other != all.end (); ++other)
-      {
-        if (other->id != task.id) // Don't edit the same task again.
-        {
-          if (task.has ("parent") && 
-          if (other is parent of task)
-          {
-            // Transfer everything but mask, imask, uuid, parent.
-          }
-          else if (task is parent of other)
-          {
-            // Transfer everything but mask, imask, uuid, parent.
-          }
-          else if (task and other are siblings)
-          {
-            // Transfer everything but mask, imask, uuid, parent.
-          }
-        }
-      }
-*/
-    }
+      if (editFile (*task))
+        context.tdb.update (*task);
 
     context.tdb.commit ();
     context.tdb.unlock ();

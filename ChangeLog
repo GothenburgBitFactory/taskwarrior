@@ -104,6 +104,8 @@
    'dateformat.report'.
  + Fixed bug #651, which broke the edit command when a task description
    contained certain tokens (like 'Due:').
+ + Fixed bug #653, which caused undo information to be recorded when no changes
+   were made by the 'edit' command.
  + Fixed bug #654, which broke the info command when a task had no journal
    entries.
  + Fixed bug #656, which caused multiple recurring child tasks to be created
