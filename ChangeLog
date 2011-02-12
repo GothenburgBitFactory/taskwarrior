@@ -49,6 +49,8 @@
    status (thanks to Steve Rader).
  + Fixed bug that caused entry, end, start and wait dates to not use report-
    specific date format overrides (thanks to Eric Fluger).
+ + Fixed bug #485, which caused filters of 'recur' to fail for partial matches
+   (thanks to T. Charles Yun).
  + Fixed bug #515, which displayed an incorrect message after duplicating a
    non-existent task (thanks to Peter De Poorter).
  + Fixed bug #529, where the 'depends' attribute was not mentioned in the

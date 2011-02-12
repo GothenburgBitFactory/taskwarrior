@@ -853,6 +853,21 @@ void Context::autoFilter (Att& a, Filter& f)
     }
   }
 
+  // Recurrence periods are matched left-most.
+  else if (a.name () == "recur" && a.mod () == "")
+  {
+    if (a.value () != "")
+    {
+      f.push_back (Att ("recur", "startswith", a.value ()));
+      debug ("auto filter: " + a.name () + ".startswith:" + a.value ());
+    }
+    else
+    {
+      f.push_back (Att ("recur", "is", a.value ()));
+      debug ("auto filter: " + a.name () + ".is:" + a.value ());
+    }
+  }
+
   // The limit attribute does not participate in filtering, and needs to be
   // specifically handled in handleCustomReport.
   else if (a.name () == "limit")
