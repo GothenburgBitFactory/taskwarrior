@@ -47,7 +47,7 @@ qx{../src/task rc:bug.rc add wait:"Wed Jan 01 2020" A buggy task};
 
 # Result: Immediately delete the created task
 my $output = qx{../src/task rc:bug.rc waiting};
-like   ($output, qr/1\/1\/2020/ms, 'a b D Y ateformat correctly parsed.');
+like   ($output, qr/1\/1\/2020/ms, 'a b D Y dateformat correctly parsed.');
 
 # Cleanup.
 unlink 'pending.data';
