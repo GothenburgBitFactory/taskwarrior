@@ -1457,7 +1457,7 @@ void TDB::merge (const std::string& mergeFile)
           // Find the same uuid in completed data
           for (it = completed.begin (); it != completed.end (); ++it)
           {
-            if (it->find (uuid) != std::string::npos)
+            if (it->find ("uuid:\"" + uuid) != std::string::npos)
             {
               // Update the completed record.
 /*
@@ -1500,7 +1500,7 @@ void TDB::merge (const std::string& mergeFile)
           // Find the same uuid in the pending data.
           for (it = pending.begin (); it != pending.end (); ++it)
           {
-            if (it->find (uuid) != std::string::npos)
+            if (it->find ("uuid:\"" + uuid) != std::string::npos)
             {
               // Update the pending record.
               std::cout << "Found remote change to        "
@@ -1555,7 +1555,7 @@ void TDB::merge (const std::string& mergeFile)
         std::vector <std::string>::iterator pit;
         for (pit = pending.begin (); pit != pending.end (); ++pit)
         {
-          if (pit->find (uuid) != std::string::npos)
+          if (pit->find ("uuid:\"" + uuid) != std::string::npos)
           {
             found = true;
             break;
