@@ -1,40 +1,241 @@
+# This document defines the BNF grammar that will be supported in Taskwarrior
+# 2.1.
 
-# This is a full BNF grammar for the taskwarrior command line.  It is intended
-# that a future release of taskwarrior will incorporate a complete lexer/parser
-# implementing this grammar, which will allow for more sophisticated command
-# lines, for example:
-#
-#    task delete 1 2 4-7
-#    task add pri:H pro:X -- pro pri 1 ///
-#
 
-command     ::= simple_command
-              | filter_command filter?
-              | id_command
-              | "export" file
-              | <id>
-              | <id> <substitution> ;
+# Commands (alphabetically)
 
-simple_command ::= "version" | "help" | "projects" | "tags" | "next" | "stats"
-                 | "color" ;
+command_add         ::= "add" ws+ task-elements ;
 
-filter_command ::= "summary" | "history" | "calendar" | "active" | "overdue"
-                 | "oldest" | "newest" | "add" | "list" | "long" | "ls"
-                 | "completed" ;
+command_annotate    ::= "annotate" ws+ range ws+ words ;
 
-id_command ::= "delete" | "undelete" | "info" | "start" | "end" | "done"
-             | "undo" ;
+command_append      ::= "append" ws+ range ws+ words ;
 
-filter      ::= filter_part+ ;
+command_burndown    ::= "burndown.monthly" ws+ filter
+                      | "burndown.weekly"  ws+ filter
+                      | "burndown.daily"   ws+ filter
+                      | "burndown.monthly"
+                      | "burndown.weekly"
+                      | "burndown.daily"
+                      ;
 
-filter_part ::= tag_add | tag_remove | attribute | word ;
+command_calendar    ::= "calendar" ws+ "due" ws+ filter
+                      | "calendar" ws+ "due"
+                      | "calendar" ws+ "y" ws+ filter
+                      | "calendar" ws+ "y"
+                      | "calendar" ws+ year ws+ filter
+                      | "calendar" ws+ year
+                      | "calendar" ws+ year ws+ month ws+ filter
+                      | "calendar" ws+ year ws+ month
+                      | "calendar" ws+ month-name ws+ filter
+                      | "calendar" ws+ month-name
+                      | "calendar" ws+ filter
+                      | "calendar"
+                      ;
 
-tag_add     ::= "+" word ;
-tag_remove  ::= "-" word ;
-attribute   ::= word ":" word ;
-word        ::=
-file        ::=
-id          ::= digit+ ;
-digit       ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
-substitution ::= "/" word+ "/" word* "/" "g"? ;
+command_colors      ::= "colors" ws+ "legend"
+                      | "colors" ws+ "sample"
+                      | "colors"
+                      ;
+
+command_config      ::= "config" ws+ word ws+ words
+                      | "config" ws+ word
+                      ;
+
+command_count       ::= "count" ws+ filter
+                      | "count"
+                      ;
+
+# TODO en-passant
+command_delete      ::= "delete" ws+ range ;
+
+command_denotate    ::= "denotate" ws+ range ws+ pattern ;
+
+command_diagnostics ::= "diagnostics" ;
+
+# TODO en-passant
+command_done        ::= "done" ws+ range ;
+
+# TODO en-passant
+command_duplicate   ::= "duplicate" ws+ range ;
+
+command_edit        ::= "edit" ws+ range ;
+
+command_ghistory    ::= "ghistory.annual"  ws+ filter
+                      | "ghistory.monthly" ws+ filter
+                      | "ghistory.weekly"  ws+ filter
+                      | "ghistory.daily"   ws+ filter
+                      | "ghistory.annual"
+                      | "ghistory.monthly"
+                      | "ghistory.weekly"
+                      | "ghistory.daily"
+                      ;
+
+command_help        ::= "help" ;
+
+command_history     ::= "history.annual"  ws+ filter
+                      | "history.monthly" ws+ filter
+                      | "history.weekly"  ws+ filter
+                      | "history.daily"   ws+ filter
+                      | "history.annual"
+                      | "history.monthly"
+                      | "history.weekly"
+                      | "history.daily"
+                      ;
+
+command_import      ::= "import" ws+ file
+                      | "import" ws+ "-"
+                      ;
+
+command_info        ::= "info" ws+ range
+                      ;
+
+command_log         ::= "log" ws+ task-elements ;
+
+command_merge       ::= "merge" ws+ url ;
+
+command_prepend     ::= "prepend" ws+ range ws+ words ;
+
+command_projects    ::= "projects" ws+ filter
+                      | "projects"
+                      ;
+
+command_pull        ::= "pull" ws+ url ;
+
+command_push        ::= "push" ws+ url ;
+
+command_shell       ::= "shell" ;
+
+command_show        ::= "show" ws+ pattern
+                      | "show"
+                      ;
+
+command_start       ::= "start" ws+ range
+                      | "start"
+                      ;
+
+command_stats       ::= "statistics" ws+ filter
+                      | "statistics"
+                      ;
+
+command_stop        ::= "stop" ws+ range
+                      | "stop"
+                      ;
+
+command_summary     ::= "summary" ws+ filter
+                      | "summary"
+                      ;
+
+command_tags        ::= "tags" ;
+
+command_timesheet   ::= "timesheet" ws+ digit
+                      | "timesheet"
+                      ;
+
+command_undo        ::= "undo" ;
+
+command_version     ::= "version" ;
+
+# command_report      ::= report ws+ filter ;
+
+
+# Helper Commands (alphabetically)
+
+helper_query        ::= "query" ws+ filter
+                      | "query"
+                      ;
+
+
+# Primitives
+range               ::=   ;
+id-equivalent       ::= uuid | id ;
+id                  ::= digit+ ;
+uuid                ::=   ;
+attribute           ::=   ;
+modifier            ::=   ;
+
+task-elements       ::= task-element+ ;
+
+task-element        ::= attribute ws+
+                      | tag ws+
+                      | word ws+
+                      ;
+
+filter              ::= filter-elements+ ;
+
+filter-elements     ::= range
+                      | pattern
+                      | filter-attribute ;
+
+filter-attribute    ::= field modifier? ":" value? ;
+
+modifier            ::= ".above"
+                      | ".after"
+                      | ".any"
+                      | ".before"
+                      | ".below"
+                      | ".contains"
+                      | ".endswith"
+                      | ".equals"
+                      | ".has"
+                      | ".hasnt"
+                      | ".is"
+                      | ".isnt"
+                      | ".left"
+                      | ".none"
+                      | ".not"
+                      | ".noword"
+                      | ".over"
+                      | ".right"
+                      | ".startswith"
+                      | ".under"
+                      | ".word"
+                      ;
+
+value               ::=   ;
+
+year                ::= digit digit digit digit ;
+
+month               ::= "1" | "2" | "3" |  "4" |  "5" |  "6"
+                      | "7" | "8" | "9" | "10" | "11" | "12"
+                      ;
+
+# TODO Case-insensitive
+month-name          ::= "january"
+                      | "february"
+                      | "march"
+                      | "april"
+                      | "may"
+                      | "june"
+                      | "july"
+                      | "august"
+                      | "september"
+                      | "october"
+                      | "november"
+                      | "december"
+                      ;
+
+filter-attribute    ::= field "." modifier ":" value
+                      | field "." modifier ":"
+                      | field ":" value
+                      | field ":"
+                      ;
+
+tag                 ::= "+" word
+                      | "-" word ;
+
+substitution        ::= "/" pattern "/" words "/" "g"? ;
+
+pattern             ::=   ;
+url                 ::=   ;
+file                ::=   ;
+words               ::=   ;
+word                ::=   ;
+
+
+# Fundamentals
+
+digit               ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+ws                  ::= " " | "\t" ;
+
+# End
 
