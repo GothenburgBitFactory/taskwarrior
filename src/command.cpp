@@ -592,7 +592,7 @@ int handleQuery (std::string& outs)
 
     if (tasks.size () == 0)
     {
-      std::cout << "No tasks specified.\n";
+      std::cout << "No matches.\n";
       return 1;
     }
 
