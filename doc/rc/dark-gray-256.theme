@@ -1,0 +1,75 @@
+###############################################################################
+# Sample taskwarrior 1.9 (or later) dark gray 256-color theme
+#
+# taskwarrior - a command line task list manager.
+#
+# Copyright 2011, Paul Beckingham, Federico Hernandez.
+# All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+################################################################################
+
+color=on
+color.header=color8
+color.footnote=color8
+color.debug=color8
+
+color.summary.bar=black on gray12
+color.summary.background=white on gray3
+
+color.history.add=color0 on gray6
+color.history.done=color0 on gray15
+color.history.delete=color0 on gray10
+
+color.burndown.pending=on gray6
+color.burndown.started=on gray15
+color.burndown.done=on gray10
+
+color.sync.added=gray10
+color.sync.changed=gray15
+color.sync.rejected=gray6
+
+color.undo.before=gray6
+color.undo.after=gray15
+
+color.calendar.today=color8 on color15
+color.calendar.due=color7 on color8
+color.calendar.due.today=color15 on color8
+color.calendar.overdue=underline color0 on color7
+color.calendar.weekend=on color235
+color.calendar.holiday=color7 on color15
+color.calendar.weeknumber=gray4
+
+color.recurring=gray8
+color.overdue=color0 on color15
+color.due.today=underline color0 on color7
+color.due=color7
+color.active=color7 on color8
+color.pri.none=
+color.pri.H=color15
+color.pri.M=color7
+color.pri.L=color8
+color.tagged=gray12
+color.blocked=color15 on color8
+color.project.none=
+color.tag.none=
+color.alternate=on gray2
+

@@ -43,6 +43,10 @@ color.burndown.pending=on color9
 color.burndown.started=on color11
 color.burndown.done=on rgb010
 
+color.sync.added=rgb010
+color.sync.changed=color11
+color.sync.rejected=color9
+
 color.undo.before=color1
 color.undo.after=color2
 

@@ -15,6 +15,7 @@
    helps scriptwriters implement shadow files externally (thanks to Sander
    Marechal).
  + Added alias 'export.json' that maps to the new _query helper command.
+ + Added new dark-gray-256 color theme.
  + Added feature #30, which eliminates the dependency on ncurses (thanks to
    Johan Friis).
  + Added feature #41, XML export in the form of add-on script export-xml.pl,

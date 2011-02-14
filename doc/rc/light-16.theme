@@ -43,6 +43,10 @@ color.burndown.pending=on red
 color.burndown.started=on yellow
 color.burndown.done=on green
 
+color.sync.added=green
+color.sync.changed=yellow
+color.sync.rejected=red
+
 color.undo.before=red
 color.undo.after=green
 
