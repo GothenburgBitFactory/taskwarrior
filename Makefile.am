@@ -3,15 +3,19 @@ SUBDIRS = src
 dist_man_MANS = doc/man/task.1 doc/man/taskrc.5 doc/man/task-tutorial.5 doc/man/task-faq.5 doc/man/task-color.5 doc/man/task-sync.5
 
 #docdir = $(datadir)/doc/${PACKAGE}-${VERSION}
-doc_DATA = AUTHORS ChangeLog COPYING NEWS README
-
-EXTRA_DIST = INSTALL
+doc_DATA = AUTHORS ChangeLog COPYING NEWS README INSTALL
 
 bashscriptsdir = $(docdir)
 nobase_dist_bashscripts_DATA = scripts/bash/task_completion.sh
 
 zshscriptsdir = $(docdir)
 nobase_dist_zshscripts_DATA = scripts/zsh/_task
+
+addonsdir = $(docdir)
+nobase_dist_addons_DATA = scripts/add-ons/export-csv.pl scripts/add-ons/export-ical.pl scripts/add-ons/export-xml.pl scripts/add-ons/export-xml.py scripts/add-ons/export-xml.rb scripts/add-ons/export-yaml.pl
+
+fishdir = $(docdir)
+nobase_dist_fish_DATA = scripts/fish/task.fish
 
 vimscriptsdir = $(docdir)
 nobase_dist_vimscripts_DATA = scripts/vim/README scripts/vim/ftdetect/task.vim scripts/vim/syntax/taskdata.vim scripts/vim/syntax/taskedit.vim scripts/vim/syntax/taskrc.vim

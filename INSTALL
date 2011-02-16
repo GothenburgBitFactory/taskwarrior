@@ -1,12 +1,18 @@
 Installation Instructions
 -------------------------
 
-Copyright (C) 1994, 1995, 1996, 1999, 2000, 2001, 2002, 2004, 2005,
-2006 Free Software Foundation, Inc.
-
-This file is free documentation; the Free Software Foundation gives
-unlimited permission to copy, distribute and modify it.
-
+# Building task with autotools is deprecated and will be phased out disabled.
+#
+# Please follow the instructions below to build task with cmake.
+#
+# In case you still want or need to build task with autotools:
+#
+#    $ ./configure
+#    $ make
+#    $ sudo make install
+#
+# For more details on using autotools and options to ./configure please refer
+# to the autoconf manual.
 
 Pre-requisites
 --------------
@@ -17,6 +23,7 @@ from source.
 Optionally, you might want to have Lua installed, if you wish to write plugins
 and modify taskwarrior.
 
+More information on cmake can be obtained at http://cmake.org
 
 Basic Installation
 ------------------
@@ -27,7 +34,6 @@ Briefly, these shell commands will unpack, build and install taskwarrior:
   $ cd task-X.Y.Z                                 [2]
   $ cmake .                                       [3]
   $ make                                          [4]
-  $ make test                                     [5]
   $ sudo make install                             [6]
   $ cd .. ; rm -r task-X.Y.Z                      [7]
 
@@ -43,15 +49,9 @@ These commands are explained below:
 
   4. Builds taskwarrior.  This may take a minute.
 
-  5. Optional step that runs the unit tests.  This will take several minutes,
-     during which there will be minimal feedback.  Note that thousands of tests
-     are run, and some of those tests need to introduce a delay between commands
-     which explains the lengthy time.  On completion, will report the number of
-     passing and failing tests.  There should be zero failing tests.
+  5. Installs the program, documentation and other data files.
 
-  6. Installs the program, documentation and other data files.
-
-  7. Removes the temporary directory.
+  6. Removes the temporary directory.
 
 
 Uninstallation
@@ -78,13 +78,6 @@ section, which includes instructions on how to contact us for help.
 
 Operating System Notes
 ----------------------
-
-Haiku Alpha/R1
-  Taskwarrior must be built with gcc version 4.x, so make sure you run:
-
-    $ setgcc gcc4
-
-  To switch from gcc 2.95 to gcc 4.x.
 
 Cygwin
   If 'make install' fails when writing to the /usr/local/share/ directory,
