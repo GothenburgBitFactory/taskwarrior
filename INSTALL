@@ -1,7 +1,7 @@
 Installation Instructions
 -------------------------
 
-# Building task with autotools is deprecated and will be phased out disabled.
+# Building task with autotools is deprecated and will be phased out.
 #
 # Please follow the instructions below to build task with cmake.
 #
