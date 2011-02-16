@@ -16,7 +16,7 @@ task_SOURCES = API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h     \
                command.cpp custom.cpp dependency.cpp diag.cpp edit.cpp         \
                export.cpp history.cpp i18n.h import.cpp interactive.cpp        \
                main.cpp main.h recur.cpp report.cpp rules.cpp rx.cpp rx.h      \
-               text.cpp text.h util.cpp util.h Uri.cpp Uri.h
+               text.cpp text.h util.cpp util.h Uri.cpp Uri.h JSON.cpp JSON.h utf8.cpp utf8.h
 task_CPPFLAGS=$(LUA_CFLAGS)
 task_LDFLAGS=$(LUA_LFLAGS)
 
