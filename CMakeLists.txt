@@ -4,7 +4,7 @@ include (CheckFunctionExists)
 set (HAVE_CMAKE true)
 
 project (task)
-set (PROJECT_VERSION "1.9.4")
+set (PROJECT_VERSION "1.9.4.beta1")
 
 message ("-- Looking for SHA1 references")
 if (EXISTS .git/index)
