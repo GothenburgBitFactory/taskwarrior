@@ -34,8 +34,8 @@ Briefly, these shell commands will unpack, build and install taskwarrior:
   $ cd task-X.Y.Z                                 [2]
   $ cmake .                                       [3]
   $ make                                          [4]
-  $ sudo make install                             [6]
-  $ cd .. ; rm -r task-X.Y.Z                      [7]
+  $ sudo make install                             [5]
+  $ cd .. ; rm -r task-X.Y.Z                      [6]
 
 These commands are explained below:
 

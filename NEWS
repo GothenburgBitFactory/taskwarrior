@@ -31,6 +31,7 @@ New commands in taskwarrior 1.9.4
     'burndown' that is an alias to burndown.weekly.
   - 'count' accepts a filter, and simply returns a count of the tasks
     matching the filter.  Used as a helper command by scripts.
+  - '_query' helper command for all future export formats.
 
 New configuration options in taskwarrior 1.9.4
 
