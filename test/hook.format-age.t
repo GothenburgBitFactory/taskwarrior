@@ -59,7 +59,7 @@ if ($output =~ /PUC-Rio/)
   sleep 1;
   $output = qx{../src/task rc:hook.rc list};
 
-  like ($output, qr/<\d\ssec>/, 'format-age hook age -> <age>');
+  like ($output, qr/<\d\ssecs?>/, 'format-age hook age -> <age>');
 }
 else
 {
