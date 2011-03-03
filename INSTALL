@@ -54,6 +54,39 @@ These commands are explained below:
   6. Removes the temporary directory.
 
 
+Build and configurations options
+--------------------------------
+
+You can customize the configuration run with cmake variables. This will modify the
+installation process:
+
+To change the installation directory you use the following configuration variable:
+
+  $ cmake -DCMAKE_INSTALL_PREFIX=<path-to-installation-dir> .
+
+cmake configuration variables are applied with the -D option and consist of a <name>
+and a <value>:
+
+  $ cmake -D<name>=<value> .
+
+Four more variables can customize the installation process. The following table lists
+them and their defaults plus the CMAKE_INSTALL_PREFIX:
+
+  CMAKE_INSTALL_PREFIX  /usr/local
+  TASK_BINDIR           bin
+  TASK_DOCDIR           share/doc/task
+  TASK_MAN1DIR          share/man/man1
+  TASK_MAN5DIR          share/man/man5
+
+The correpsonding TASK_* variables will be combined with CMAKE_INSTALL_PREFIX to get
+absolute installation directoris:
+
+  CMAKE_INSTALL_PREFIZ/TASK_BINDIR   /usr/local/bin
+  CMAKE_INSTALL_PREFIZ/TASK_DOCDIR   /usr/local/share/doc/task
+  CMAKE_INSTALL_PREFIZ/TASK_MAN1DIR  /usr/local/share/man/man1
+  CMAKE_INSTALL_PREFIZ/TASK_MAN5DIR  /usr/local/share/man/man5
+
+
 Uninstallation
 --------------
 
