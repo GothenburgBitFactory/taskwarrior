@@ -1,4 +1,5 @@
 cmake.h
+auto.h
 commit.h
 Makefile
 */*task

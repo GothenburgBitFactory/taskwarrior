@@ -256,7 +256,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
 
   $ /usr/local/bin/task version
 
-  task 1.9.4 built for darwin
+  task 2.0.0 built for darwin
   Copyright (C) 2006 - 2011 P. Beckingham, F. Hernandez.
 
   Taskwarrior may be copied only under the terms of the GNU General Public
@@ -269,9 +269,9 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
   $ man task
   ...
   ...
-  task 1.9.4             2011-0l-10                task 1.9.4
+  task 2.0.0             2011-0l-10                task 2.0.0
 
-  The man page should list 1.9.2 as the version number, but the date will be
+  The man page should list 2.0.0 as the version number, but the date will be
   different.
 
 9. Email the package to Fredde.

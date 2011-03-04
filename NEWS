@@ -1,65 +1,22 @@
 
-New Features in taskwarrior 1.9.4
+New Features in taskwarrior 2.0.0
 
-  - New burndown charts.
-  - New 'count' helper command.
-  - Inifinite width reports, when redirecting output.
-  - Added highlighting for the show command that indicates which values differ
-    from the defaults.
-  - Added change log display to the 'info' command.
-  - The first month in the calendar report can now be changed with an offset
-    value.
-  - No more dependency on ncurses.
-  - New '_query' helper command for script writers, which accepts a filter like
-    any other report, but returns unformatted JSON.  The new alias 'export.json'
-    maps to the _query command.
-  - Import can now read from files and URLs.
-  - Assorted bug fixes.
-  - New literal date "later" and "someday" to be used with the wait attribute to
-    hide a task until somepoint in time (this sets the wait date to 1/18/2038).
-  - Total active time now shown on the info report.
-  - Add-on scripts: export-xml.pl, export-xml.py, export-xml.rb, export-ical.pl,
-    export-csv.pl and export-yaml.pl.
-  - New dark-gray-256 color theme.
+  - 
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
 
-New commands in taskwarrior 1.9.4
+New commands in taskwarrior 2.0.0
 
-  - 'burndown.daily', 'burndown.weekly', 'burndown.monthly', also with
-    'burndown' that is an alias to burndown.weekly.
-  - 'count' accepts a filter, and simply returns a count of the tasks
-    matching the filter.  Used as a helper command by scripts.
-  - '_query' helper command for all future export formats.
+  - 
 
-New configuration options in taskwarrior 1.9.4
+New configuration options in taskwarrior 2.0.0
 
-  - color.burndown.pending, color.burndown.started and color.burndown.done
-    control the color of the burndown charts.
-  - burndown.bias, which is a tweakable control for the completion estimation
-    for the burndown charts, and is documented in taskrc(5).
-  - defaultwidth=0 is causes word-wrapping to be turned off, and effectively
-    set reports to potentially have infinite width .
-  - journal.info controls whether a change log for each task is displayed by
-    the 'info' command.
-  - gc=off can be used, temporarily, to defer GC until later commands, which
-    eliminates problems with task ID numbers for script writers.
-  - calendar.offset=off and calendar.offset.value=-1 to apply an offset value
-    to change the effective first month in the calendar report.
-  - default.due can be specified, and adds a default due date to all added
-    and imported tasks that don't otherwise have a due date.
-  - edit.verbose can be set to 'off' to eliminated the help text when using
-    the 'task edit' command.
-  - xterm.title can be set to 'on' to update the xterm window title when a
-    report is run.
-  - new holidays configuration file for New Zealand, Italy, Austria.
+  - 
 
-Newly deprecated features in taskwarrior 1.9.4
+Newly deprecated features in taskwarrior 2.0.0
 
-  - The export commands (export, export.csv, export.yaml, export.ical and
-    export.vcalendar) are deprecated, and will be replaced in future releases
-    by add-on scripts.
+  - 
 
 ---
 
