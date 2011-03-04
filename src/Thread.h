@@ -27,7 +27,7 @@
 #ifndef INCLUDED_THREAD
 #define INCLUDED_THREAD
 
-#include <../auto.h>
+#include <../cmake.h>
 
 #ifdef HAVE_LIBPTHREAD
 #include <pthread.h>

@@ -33,7 +33,7 @@
 #include "text.h"
 #include "util.h"
 #include "main.h"
-#include "../auto.h"
+#include "../cmake.h"
 
 extern Context context;
 

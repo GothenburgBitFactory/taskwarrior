@@ -1,18 +1,10 @@
 Installation Instructions
 -------------------------
 
-# Building task with autotools is deprecated and will be phased out.
-#
-# Please follow the instructions below to build task with cmake.
-#
-# In case you still want or need to build task with autotools:
-#
-#    $ ./configure
-#    $ make
-#    $ sudo make install
-#
-# For more details on using autotools and options to ./configure please refer
-# to the autoconf manual.
+Building task with autotools has been phased out. As of version 1.9.4
+task uses and builds now with cmake.
+
+Please follow the instructions below to build task with cmake.
 
 Pre-requisites
 --------------

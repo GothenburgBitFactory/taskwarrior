@@ -35,7 +35,7 @@
 #endif
 
 #include "Context.h"
-#include "../auto.h"
+#include "../cmake.h"
 
 Context context;
 

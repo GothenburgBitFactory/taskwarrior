@@ -44,7 +44,7 @@
 #include "Table.h"
 #include "Date.h"
 #include "Color.h"
-#include "../auto.h"
+#include "../cmake.h"
 
 // recur.cpp
 void handleRecurrence ();

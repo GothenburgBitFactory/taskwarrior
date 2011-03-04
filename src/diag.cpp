@@ -38,7 +38,7 @@
 #include <File.h>
 #include <main.h>
 #include <util.h>
-#include "../auto.h"
+#include "../cmake.h"
 #ifdef HAVE_COMMIT
 #include "../commit.h"
 #endif

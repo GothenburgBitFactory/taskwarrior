@@ -43,7 +43,7 @@
 #include "main.h"
 #include "i18n.h"
 #include "util.h"
-#include "../auto.h"
+#include "../cmake.h"
 
 extern Context context;
 

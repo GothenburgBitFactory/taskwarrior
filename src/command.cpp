@@ -43,7 +43,7 @@
 #include "util.h"
 #include "main.h"
 #include "Transport.h"
-#include "../auto.h"
+#include "../cmake.h"
 #ifdef HAVE_COMMIT
 #include "../commit.h"
 #endif

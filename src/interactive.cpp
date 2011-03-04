@@ -37,7 +37,7 @@
 //#include "util.h"
 #include "main.h"
 #include "i18n.h"
-#include "../auto.h"
+#include "../cmake.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 int Context::interactive ()

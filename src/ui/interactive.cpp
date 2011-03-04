@@ -33,7 +33,7 @@
 #include "log.h"
 #include "Layout.h"
 #include "i18n.h"
-#include "../auto.h"
+#include "../cmake.h"
 
 #ifdef HAVE_LIBNCURSES
 #include <ncurses.h>

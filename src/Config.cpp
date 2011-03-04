@@ -39,7 +39,7 @@
 #include "Config.h"
 #include "text.h"
 #include "util.h"
-#include "../auto.h"
+#include "../cmake.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // This string is used in two ways:
