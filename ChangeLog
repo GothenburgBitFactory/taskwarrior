@@ -1,7 +1,7 @@
 
 ------ current release ---------------------------
 
-1.9.4 (03/03/2011)
+1.9.4 (03/03/2011) b9bae255f4fa03970eced3ac0876935271d1d7a1
  + Added burndown charts - 'burndown.daily', 'burndown.weekly',
    'burndown.monthly', that use 'color.burndown.pending', 'color.burndown.started'
    and 'color.burndown.done' colors.
