@@ -6,6 +6,7 @@ mkdir -p local/share/doc/task/scripts/vim/ftdetect
 mkdir -p local/share/doc/task/scripts/vim/syntax
 mkdir -p local/share/doc/task/scripts/zsh
 mkdir -p local/share/doc/task/scripts/fish
+mkdir -p local/share/doc/task/scripts/add-ons
 mkdir -p local/share/doc/task/rc
 mkdir -p local/share/man/man1
 mkdir -p local/share/man/man5
@@ -27,6 +28,7 @@ cp ../../scripts/vim/ftdetect/* local/share/doc/task/scripts/vim/ftdetect
 cp ../../scripts/vim/syntax/*   local/share/doc/task/scripts/vim/syntax
 cp ../../scripts/zsh/*          local/share/doc/task/scripts/zsh
 cp ../../scripts/fish/*         local/share/doc/task/scripts/fish
+cp ../../scripts/add-ons/*      local/share/doc/task/scripts/add-ons
 
 cp ../../doc/rc/*.theme         local/share/doc/task/rc
 cp ../../doc/rc/holidays*       local/share/doc/task/rc
