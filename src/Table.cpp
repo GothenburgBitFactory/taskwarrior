@@ -829,7 +829,7 @@ const std::string Table::render (int maxrows /* = 0 */, int maxlines /* = 0 */)
     if (mSortColumns.size ())
     {
       table = this;  // Substitute for 'this' in the static 'sort_compare'.
-      std::sort (order.begin (), order.end (), sort_compare);
+      std::stable_sort (order.begin (), order.end (), sort_compare);
     }
   }
 

@@ -3,6 +3,8 @@
 
 2.0.0 ()
  + autoconf eliminated.
+ + Corrected sorting to use std::stable_sort instead of std::sort, which is not
+   guaranteed stable (thanks to Stefan Hacker).
 
 ------ old releases ------------------------------
 
