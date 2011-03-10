@@ -198,7 +198,7 @@ void Uri::parse ()
   }
 
   std::string::size_type pos;
-  std::string uripart;
+  std::string data = this->data;
   std::string pathDelimiter = "/";
 
   user = "";
