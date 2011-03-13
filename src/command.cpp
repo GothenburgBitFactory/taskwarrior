@@ -469,7 +469,7 @@ int handleCompletionTags (std::string& outs)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Scan all the tasks for their project name, building a map using project
+  // Scan all the tasks for their tags, building a map using tag
   // names as keys.
   std::map <std::string, int> unique;
   foreach (t, tasks)
@@ -480,6 +480,14 @@ int handleCompletionTags (std::string& outs)
     foreach (tag, tags)
       unique[*tag] = 0;
   }
+
+  // add built-in tags to map
+  unique["nocolor"] = 0;
+  unique["nonag"]   = 0;
+  unique["nocal"]   = 0;
+  unique["next"]    = 0;
+  unique["stall"]   = 0;
+  unique["someday"] = 0;
 
   std::stringstream out;
   foreach (tag, unique)

@@ -5,6 +5,7 @@
  + autoconf eliminated.
  + Corrected sorting to use std::stable_sort instead of std::sort, which is not
    guaranteed stable (thanks to Stefan Hacker).
+ + Added feature #700, which adds tab-completion of built-in tags.
 
 ------ old releases ------------------------------
 
