@@ -342,7 +342,7 @@ bool taskDiff (const Task& before, const Task& after)
   std::vector <std::string> afterOnly;
   listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
 
-  if (beforeOnly.size () ||
+  if (beforeOnly.size () !=
       afterOnly.size ())
     return true;
 
