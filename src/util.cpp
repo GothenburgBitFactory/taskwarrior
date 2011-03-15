@@ -471,20 +471,20 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
         std::string from;
         join (from, ",", deps_before);
 
-        out << "dependencies '"
+        out << "Dependencies '"
             << from
-            << "' deleted\n";
+            << "' deleted.\n";
     }
     else if (name->substr (0, 11) == "annotation_")
     {
-      out << "annotation '"
+      out << "Annotation '"
           << before.get (*name)
-          << "' deleted";
+          << "' deleted.\n";
     }
     else
     {
-      out << *name
-          << " deleted\n";
+      out << ucFirst (*name)
+          << " deleted.\n";
     }
   }
 
@@ -497,22 +497,22 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
       std::string to;
       join (to, ",", deps_after);
 
-      out << *name
+      out << ucFirst(*name)
           << " set to '"
           << to
-          << "'\n";
+          << "'.\n";
     }
     else if (name->substr (0, 11) == "annotation_")
     {
-      out << "annotation added '"
+      out << "Annotation of '"
           << after.get (*name)
-          << "'\n";
+          << "' added.\n";
     }
     else
-      out << *name
+      out << ucFirst(*name)
           << " set to '"
           << renderAttribute (*name, after.get (*name))
-          << "'\n";
+          << "'.\n";
   }
 
   foreach (name, beforeAtts)
@@ -531,26 +531,26 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
         std::string to;
         join (to, ",", deps_after);
 
-        out << *name
+        out << ucFirst(*name)
             << " changed from '"
             << from
             << "' to '"
             << to
-            << "'\n";
+            << "'.\n";
       }
       else if (name->substr (0, 11) == "annotation_")
       {
-        out << "annotation '"
+        out << "Annotation changed to '"
             << after.get (*name)
-            << "'\n";
+            << "'.\n";
       }
       else
-        out << *name
+        out << ucFirst(*name)
             << " changed from '"
             << renderAttribute (*name, before.get (*name))
             << "' to '"
             << renderAttribute (*name, after.get (*name))
-            << "'\n";
+            << "'.\n";
     }
 
 

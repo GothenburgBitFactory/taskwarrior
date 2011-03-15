@@ -75,9 +75,9 @@ $output = qx{../src/task rc:seq.rc info 2};
 like ($output, qr/Start/, 'sequence start 2');
 qx{../src/task rc:seq.rc stop 1,2};
 $output = qx{../src/task rc:seq.rc info 1};
-unlike ($output, qr/Start/, 'sequence stop 1');
+like ($output, qr/Start\sdeleted/, 'sequence stop 1');
 $output = qx{../src/task rc:seq.rc info 2};
-unlike ($output, qr/Start/, 'sequence stop 2');
+like ($output, qr/Start\sdeleted/, 'sequence stop 2');
 
 # Test sequences in modify
 qx{../src/task rc:seq.rc 1,2 +tag};

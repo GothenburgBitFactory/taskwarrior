@@ -49,7 +49,7 @@ qx{../src/task rc:bug.rc done 1};
 
 # Check to ensure task was stopped
 my $output = qx{../src/task rc:bug.rc info 1};
-like   ($output, qr/end set to/ms, 'Done command also stops started task.');
+like   ($output, qr/End set to/ms, 'Done command also stops started task.');
 
 # Cleanup.
 unlink 'pending.data';
