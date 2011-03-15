@@ -517,7 +517,8 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
 
   foreach (name, beforeAtts)
     if (*name              != "uuid" &&
-        before.get (*name) != after.get (*name))
+        before.get (*name) != after.get (*name) &&
+        before.get (*name) != "" && after.get (*name) != "")
     {
       if (*name == "depends")
       {
