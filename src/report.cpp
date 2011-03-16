@@ -47,7 +47,7 @@
 #include <util.h>
 #include <main.h>
 
-static void countTasks (const std::vector <Task>&, const std::string&, const std::string&, int&, int&);
+static void countTasks (const std::vector <Task>&, const std::string&, const std::vector <Task>&, int&, int&);
 
 extern Context context;
 
@@ -2236,9 +2236,8 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
     Filter filter;
     context.tdb.load (all, filter);
 
-    countTasks (all,                           project, task.get ("uuid"), count_pending, count_done);
-    countTasks (context.tdb.getAllNew (),      project, "nope",            count_pending, count_done);
-    countTasks (context.tdb.getAllModified (), project, "nope",            count_pending, count_done);
+    countTasks (all,                           project, context.tdb.getAllModified (), count_pending, count_done);
+    countTasks (context.tdb.getAllModified (), project, (std::vector <Task>) NULL,     count_pending, count_done);
 
     int percentage = 0;
     if (count_done + count_pending > 0)
@@ -2271,29 +2270,42 @@ std::string onProjectChange (Task& task1, Task& task2)
 static void countTasks (
   const std::vector <Task>& all,
   const std::string& project,
-  const std::string& skip,
+  const std::vector <Task>& skipTasks,
   int& count_pending,
   int& count_done)
 {
   std::vector <Task>::const_iterator it;
   for (it = all.begin (); it != all.end (); ++it)
   {
-    if (it->get ("project") == project &&
-        it->get ("uuid")    != skip)
+    bool skip = 0;
+
+    if (it->get ("project") == project)
     {
-      switch (it->getStatus ())
+      std::vector <Task>::const_iterator itSkipTasks;
+      for (itSkipTasks = skipTasks.begin (); itSkipTasks != skipTasks.end (); ++itSkipTasks)
       {
-      case Task::pending:
-      case Task::waiting:
-        ++count_pending;
-        break;
+        if (it->get("uuid") == itSkipTasks->get("uuid"))
+        {
+          skip = 1;
+          break;
+        }
+      }
+      if (skip == 0)
+      {
+        switch (it->getStatus ())
+        {
+          case Task::pending:
+          case Task::waiting:
+            ++count_pending;
+            break;
 
-      case Task::completed:
-        ++count_done;
-        break;
+          case Task::completed:
+            ++count_done;
+            break;
 
-      default:
-        break;
+          default:
+            break;
+        }
       }
     }
   }
