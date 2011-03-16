@@ -577,3 +577,58 @@ std::string renderAttribute (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// The vector must be sorted first.  This is a modified version of the run-
+// length encoding algorithm.
+//
+// This function converts the vector:
+//
+//   [1, 3, 4, 6, 7, 8, 9, 11]
+//
+// to ths string:
+//
+//   1,3-4,6-9,11
+//
+std::string compressIds (const std::vector <int>& ids)
+{
+  std::stringstream result;
+
+  int range_start = 0;
+  int range_end = 0;
+
+  for (int i = 0; i < ids.size (); ++i)
+  {
+    if (i + 1 == ids.size ())
+    {
+      if (result.str ().length ())
+        result << ",";
+
+      if (range_start < range_end)
+        result << ids[range_start] << "-" << ids[range_end];
+      else
+        result << ids[range_start];
+    }
+    else
+    {
+      if (ids[range_end] + 1 == ids[i + 1])
+      {
+        ++range_end;
+      }
+      else
+      {
+        if (result.str ().length ())
+          result << ",";
+
+        if (range_start < range_end)
+          result << ids[range_start] << "-" << ids[range_end];
+        else
+          result << ids[range_start];
+
+        range_start = range_end = i + 1;
+      }
+    }
+  }
+
+  return result.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////

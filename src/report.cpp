@@ -245,6 +245,10 @@ int shortUsage (std::string& outs)
   table.addCell (row, 2, "Shows only the number of matching tasks.");
 
   row = table.addRow ();
+  table.addCell (row, 1, "task ids [filter]");
+  table.addCell (row, 2, "Shows only the IDs of matching tasks, in the form of a range.");
+
+  row = table.addRow ();
   table.addCell (row, 1, "task version");
   table.addCell (row, 2, "Shows the task version number.");
 

@@ -84,6 +84,7 @@ int handleAnnotate (std::string&);
 int handleDenotate (std::string&);
 int handleDuplicate (std::string&);
 int handleCount (std::string&);
+int handleIds (std::string&);
 void handleUndo ();
 void handleMerge (std::string&);
 void handlePush (std::string&);

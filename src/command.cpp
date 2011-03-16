@@ -2399,6 +2399,36 @@ int handleCount (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int handleIds (std::string& outs)
+{
+  int rc = 0;
+
+  if (context.hooks.trigger ("pre-ids-command"))
+  {
+    // Scan the pending tasks, applying any filter.
+    std::vector <Task> tasks;
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    handleRecurrence ();
+    context.tdb.load (tasks, context.filter);
+    context.tdb.commit ();
+    context.tdb.unlock ();
+
+    // Find number of matching tasks.
+    std::vector <int> ids;
+    foreach (task, tasks)
+      if (task->id)
+        ids.push_back (task->id);
+
+    std::sort (ids.begin (), ids.end ());
+    outs = compressIds (ids) + "\n";
+
+    context.hooks.trigger ("post-ids-command");
+  }
+
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 #ifdef FEATURE_SHELL
 void handleShell ()
 {

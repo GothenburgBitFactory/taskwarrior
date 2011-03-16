@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/select.h>
 #include "Context.h"
 #include "Directory.h"
 #include "File.h"
@@ -82,6 +83,26 @@ void Context::initialize (int argc, char** argv)
     }
     else
       args.push_back (argv[i]);
+  }
+
+  // Capture any stdin args.
+  struct timeval tv;
+  fd_set fds;
+  tv.tv_sec = 0;
+  tv.tv_usec = 0;
+  FD_ZERO (&fds);
+  FD_SET (STDIN_FILENO, &fds);
+  select (STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
+  if (FD_ISSET (0, &fds))
+  {
+    std::string arg;
+    while (std::cin >> arg)
+    {
+      if (arg == "--")
+        break;
+
+      args.push_back (arg);
+    }
   }
 
   initialize ();
@@ -263,6 +284,7 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "pull")             {      handlePull                  (out); }
   else if (cmd.command == "diagnostics")      {      handleDiagnostics           (out); }
   else if (cmd.command == "count")            { rc = handleCount                 (out); }
+  else if (cmd.command == "ids")              { rc = handleIds                   (out); }
   else if (cmd.command == "_projects")        { rc = handleCompletionProjects    (out); }
   else if (cmd.command == "_tags")            { rc = handleCompletionTags        (out); }
   else if (cmd.command == "_commands")        { rc = handleCompletionCommands    (out); }

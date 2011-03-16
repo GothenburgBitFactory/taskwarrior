@@ -175,16 +175,16 @@ qx{../src/task rc:dep.rc add Four};
 qx{../src/task rc:dep.rc 2 dep:1; ../src/task rc:dep.rc 3 dep:2; ../src/task rc:dep.rc 4 dep:3};
 
 # [30,31]
-$output = qx{echo y | ../src/task rc:dep.rc do 2};
+$output = qx{echo '-- y' | ../src/task rc:dep.rc do 2};
 like ($output, qr/fixed/, 'dependencies - user prompted to fix broken chain after completing a blocked task');
 like ($output, qr/is blocked by/, 'dependencies - user nagged for completing a blocked task');
 
 # [32]
-$output = qx{echo y | ../src/task rc:dep.rc do 1};
+$output = qx{echo '-- y' | ../src/task rc:dep.rc do 1};
 unlike ($output, qr/fixed/, 'dependencies - user not prompted to fix broken chain when the head of the chain is marked as complete');
 
 # [33]
-$output = qx{echo y | ../src/task rc:dep.rc del 4};
+$output = qx{echo '-- y' | ../src/task rc:dep.rc del 4};
 unlike ($output, qr/fixed/, 'dependencies - user not prompted to fix broken chain when the tail of the chain is deleted');
 
 # [34]
@@ -203,17 +203,17 @@ qx{../src/task rc:dep.rc 4 dep:3};
 qx{../src/task rc:dep.rc 5 dep:4};
 
 # [35]
-qx{echo y | ../src/task rc:dep.rc do 2};
+qx{echo '-- y' | ../src/task rc:dep.rc do 2};
 $output = qx{../src/task rc:dep.rc depreport};
 like ($output, qr/\s1\s+One\s*\n\s2\s+1\s+Three\s*\n\s3\s+2\s+Four\s*\n\s4\s+3\s+Five/, 'dependencies - fixed chain after completing a blocked task');
 
 # [36]
-qx{printf "Y\nY\n" | ../src/task rc:dep.rc del 2}; 
+qx{echo "-- Y\nY\n" | ../src/task rc:dep.rc del 2};
 $output = qx{../src/task rc:dep.rc depreport};
 like ($output, qr/\s1\s+One\s*\n\s2\s+1\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - fixed chain after deleting a blocked task');
 
 # [37]
-qx{../src/task rc:dep.rc 2 dep:-1}; 
+qx{../src/task rc:dep.rc 2 dep:-1};
 $output = qx{../src/task rc:dep.rc depreport};
 like ($output, qr/\s1\s+One\s*\n\s2\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - chain should not be automatically repaired after manually removing a dependency');
 
