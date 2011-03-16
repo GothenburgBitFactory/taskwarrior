@@ -41,11 +41,11 @@ if (open my $fh, '>', 'shell.rc')
 }
 
 # Test the prompt.
-my $output = qx{echo "\\nquit\\n" | ../src/task rc:shell.rc shell};
+my $output = qx{echo "-- \\nquit\\n" | ../src/task rc:shell.rc shell};
 like ($output, qr/testprompt>/, 'custom prompt is being used');
 
 # Test a simple add, then info.
-$output = qx{echo "add foo\ninfo 1\n" | ../src/task rc:shell.rc shell};
+$output = qx{echo "-- add foo\ninfo 1\n" | ../src/task rc:shell.rc shell};
 like ($output, qr/Description\s+foo/, 'add/info working');
 
 # Cleanup.

@@ -149,6 +149,7 @@ void Cmd::load ()
     commands.push_back ("burndown.weekly");
     commands.push_back ("burndown.monthly");
     commands.push_back ("count");
+    commands.push_back ("ids");
 
     // Commands whose names are localized.
     commands.push_back (context.stringtable.get (CMD_ADD,         "add"));
@@ -258,6 +259,7 @@ bool Cmd::isReadOnlyCommand ()
       command == "burndown.weekly"                                           ||
       command == "burndown.monthly"                                          ||
       command == "count"                                                     ||
+      command == "ids"                                                       ||
       command == context.stringtable.get (CMD_CALENDAR,    "calendar")       ||
       command == context.stringtable.get (CMD_COLORS,      "colors")         ||
       command == context.stringtable.get (CMD_DIAGNOSTICS, "diagnostics")    ||

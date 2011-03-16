@@ -64,7 +64,7 @@ int main (int argc, char** argv)
   {
     context.initialize (argc, argv);
 
-/* From 2.0.0
+/* From old 2.0.0
     std::string::size_type task = context.program.find ("/task");
     std::string::size_type t    = context.program.find ("/t");
     std::string::size_type cal  = context.program.find ("/cal");

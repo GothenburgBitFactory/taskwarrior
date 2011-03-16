@@ -54,12 +54,12 @@ if ($output =~ /PUC-Rio/)
   my $good = $ENV{'PWD'} . '/hook:good';
   my $bad  = $ENV{'PWD'} . '/hook:bad';
 
-  qx{echo 'y'|../src/task rc:hook.rc config -- hook.pre-completed "$bad"};
+  qx{echo '-- y'|../src/task rc:hook.rc config -- hook.pre-completed "$bad"};
   qx{../src/task rc:hook.rc add foo};
   $output = qx{../src/task rc:hook.rc done 1};
   like ($output, qr/disallowed/, 'pre-completed hook rejected completion');
 
-  qx{echo 'y'|../src/task rc:hook.rc config -- hook.pre-completed "$good"};
+  qx{echo '-- y'|../src/task rc:hook.rc config -- hook.pre-completed "$good"};
   $output = qx{../src/task rc:hook.rc done 1};
   like ($output, qr/Marked 1 task as done/, 'pre-completed hook allowed completion');
 }

@@ -49,7 +49,7 @@ $output = qx{../src/task rc:delete.rc delete 1; ../src/task rc:delete.rc info 1}
 like ($output, qr/Status\s+Deleted\n/, 'Deleted');
 ok (-r 'completed.data', 'completed.data created');
 
-$output = qx{echo 'y' | ../src/task rc:delete.rc undo; ../src/task rc:delete.rc info 1};
+$output = qx{echo '-- y' | ../src/task rc:delete.rc undo; ../src/task rc:delete.rc info 1};
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 ok (-r 'completed.data', 'completed.data created');
 

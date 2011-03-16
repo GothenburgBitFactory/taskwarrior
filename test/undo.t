@@ -34,7 +34,8 @@ use Test::More tests => 15;
 if (open my $fh, '>', 'undo.rc')
 {
   print $fh "data.location=.\n",
-            "echo.command=no\n";
+            "echo.command=no\n",
+            "confirmation=no\n";
   close $fh;
   ok (-r 'undo.rc', 'Created undo.rc');
 }
@@ -48,7 +49,7 @@ $output = qx{../src/task rc:undo.rc do 1; ../src/task rc:undo.rc info 1};
 ok (-r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Completed\n/, 'Completed');
 
-$output = qx{echo 'y'|../src/task rc:undo.rc undo; ../src/task rc:undo.rc info 1};
+$output = qx{../src/task rc:undo.rc undo; ../src/task rc:undo.rc info 1};
 ok (-r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
