@@ -7,11 +7,15 @@
    of the actual tasks.  For advanced pipeline use.
  + Now supplements the command line with data read from standard input, which
    allows commands like:  echo 'add Pay the bills' | task
- + Added feature #700, which adds tab-completion of built-in tags.
  + Corrected sorting to use std::stable_sort instead of std::sort, which is not
    guaranteed stable (thanks to Stefan Hacker).
+
+ + Added feature #700, which adds tab-completion of built-in tags.
  + Added feature #710, which adds an attribute modifier prefix to return the
    complement of a filtered set (thanks to Dan White).
+
+ + Fixed Bug #713, which fixes typos in the holidays-UK.rc file (thanks to
+   Alexei Romanoff).
 
 ------ old releases ------------------------------
 
