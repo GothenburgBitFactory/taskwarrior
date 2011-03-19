@@ -198,6 +198,17 @@ currently defined colors.
 Displays only a count of tasks matching the filter.
 
 .TP
+.B ids [filter]
+Applies the filter then extracts only the task IDs and presents them as
+a range, for example: 1-4,12.  This is useful as input to a task command,
+to achieve this:
+
+	task priority:H $(task ids project:Home)
+
+This example first gets the IDs for the project:Home filter, then sets
+the priority to H for each of those tasks.
+
+.TP
 .B version
 Shows the taskwarrior version number
 
