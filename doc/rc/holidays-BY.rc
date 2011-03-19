@@ -1,0 +1,78 @@
+################################################################################
+# Sample calendar for the US
+#
+# taskwarrior - a command line task list manager.
+#
+# Copyright 2010 - 2011, Federico Hernandez.
+# All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the
+#
+#     Free Software Foundation, Inc.,
+#     51 Franklin Street, Fifth Floor,
+#     Boston, MA
+#     02110-1301
+#     USA
+#
+################################################################################
+
+calendar.holidays=sparse
+
+# 2011
+holiday.newyearsday.name=Новы Год
+holiday.newyearsday.date=20110101
+holiday.ortodoxcristmasday.name=Раство Хрыстова(праваслаўнае)
+holiday.ortodoxcristmasday.date=20110107
+holiday.independenceday.name=Дзень незалежнаці
+holiday.independenceday.date=20110703
+holiday.womensday.name=Міжнародны жаночы дзень
+holiday.womensday.date=20110308
+holiday.eastern.name=Пасха
+holiday.eastern.date=20110424
+holiday.labourday.name=Свята працы
+holiday.labourday.date=20110501
+holiday.radunica.name=Радуніца
+holiday.radunica.date=20110503
+holiday.winday.name=Дзень Перамогі
+holiday.winday.date=20110509
+holiday.independence.name=Дзень Незалежнасці
+holiday.independence.date=20110703
+holiday.octoberrevolution.name=Дзень Кастрычніцкай рэвалюцыі
+holiday.octoberrevolution.date=20111107
+holiday.westchristmasday.name=Раство Хрыстова(у заходніх хрысціян)
+holiday.westchristmasday.date=20111225
+
+# 2012
+#holiday.newyearsday.name=Новы Год
+#holiday.newyearsday.date=20120101
+#holiday.ortodoxcristmasday.name=Раство Хрыстова(праваслаўнае)
+#holiday.ortodoxcristmasday.date=20120107
+#holiday.independenceday.name=Дзень незалежнаці
+#holiday.independenceday.date=20120703
+#holiday.womensday.name=Міжнародны жаночы дзень
+#holiday.womensday.date=20120308
+#holiday.eastern.name=Пасха
+#holiday.eastern.date=20120415
+#holiday.radunica.name=Радуніца
+#holiday.radunica.date=20120424
+#holiday.labourday.name=Свята працы
+#holiday.labourday.date=20120501
+#holiday.winday.name=Дзень Перамогі
+#holiday.winday.date=20120509
+#holiday.independence.name=Дзень Незалежнасці
+#holiday.independence.date=20120703
+#holiday.octoberrevolution.name=Дзень Кастрычніцкай рэвалюцыі
+#holiday.octoberrevolution.date=20121107
+#holiday.westchristmasday.name=Раство Хрыстова(у заходніх хрысціян)
+#holiday.westchristmasday.date=20121225

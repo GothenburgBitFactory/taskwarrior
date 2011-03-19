@@ -16,6 +16,7 @@
 
  + Fixed Bug #713, which fixes typos in the holidays-UK.rc file (thanks to
    Alexei Romanoff).
+ + Added feature #714, including Belarus holidays (thanks to Alexei Romanoff).
 
 ------ old releases ------------------------------
 
