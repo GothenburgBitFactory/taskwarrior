@@ -10,6 +10,8 @@
  + Added feature #700, which adds tab-completion of built-in tags.
  + Corrected sorting to use std::stable_sort instead of std::sort, which is not
    guaranteed stable (thanks to Stefan Hacker).
+ + Added feature #710, which adds an attribute modifier prefix to return the
+   complement of a filtered set (thanks to Dan White).
 
 ------ old releases ------------------------------
 

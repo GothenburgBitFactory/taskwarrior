@@ -5,6 +5,8 @@ New Features in taskwarrior 2.0.0
     of the actual tasks.  For advanced pipeline use.
   - Now supplements the command line with data read from standard input, which
     allows commands like:  echo 'add Pay the bills' | task
+  - Attribute modifiers may be prefixed with '~' to return the opposite of a
+    filter's results.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.

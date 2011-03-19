@@ -36,6 +36,7 @@ class Att
 public:
   Att ();
   Att (const std::string&, const std::string&, const std::string&);
+  Att (const std::string&, const std::string&, const std::string&, const std::string&);
   Att (const std::string&, const std::string&, int);
   Att (const std::string&, const std::string&);
   Att (const std::string&, int);
@@ -44,6 +45,7 @@ public:
   bool operator== (const Att&) const;
   ~Att ();
 
+  bool logicSense (bool match) const;
   bool valid (const std::string&) const;
   static bool validInternalName (const std::string&);
   static bool validModifiableName (const std::string&);
@@ -82,6 +84,7 @@ private:
   std::string mName;
   std::string mValue;
   std::string mMod;
+  std::string mSense;
 };
 
 #endif

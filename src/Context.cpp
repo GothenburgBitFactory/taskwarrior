@@ -861,12 +861,20 @@ void Context::autoFilter (Att& a, Filter& f)
   }
 
   // Projects are matched left-most.
-  else if (a.name () == "project" && a.mod () == "")
+  else if (a.name () == "project" && (a.mod () == "" || a.mod () == "not"))
   {
     if (a.value () != "")
     {
-      f.push_back (Att ("project", "startswith", a.value ()));
-      debug ("auto filter: " + a.name () + ".startswith:" + a.value ());
+      if (a.mod () == "not")
+      {
+        f.push_back (Att ("project", "startswith", a.value (), "negative"));
+        debug ("auto filter: " + a.name () + ".~startswith:" + a.value ());
+      }
+      else
+      {
+        f.push_back (Att ("project", "startswith", a.value ()));
+        debug ("auto filter: " + a.name () + ".startswith:" + a.value ());
+      }
     }
     else
     {

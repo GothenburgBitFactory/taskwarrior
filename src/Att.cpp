@@ -113,6 +113,7 @@ Att::Att ()
 : mName ("")
 , mValue ("")
 , mMod ("")
+, mSense ("positive")
 {
 }
 
@@ -122,6 +123,17 @@ Att::Att (const std::string& name, const std::string& mod, const std::string& va
   mName  = name;
   mValue = value;
   mMod   = mod;
+  mSense = "positive";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Att::Att (const std::string& name, const std::string& mod, const std::string& value,
+          const std::string& sense)
+{
+  mName  = name;
+  mValue = value;
+  mMod   = mod;
+  mSense = sense;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +146,7 @@ Att::Att (const std::string& name, const std::string& mod, int value)
   mValue = s.str ();
 
   mMod = mod;
+  mSense = "positive";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -142,6 +155,7 @@ Att::Att (const std::string& name, const std::string& value)
   mName  = name;
   mValue = value;
   mMod   = "";
+  mSense = "positive";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -154,6 +168,7 @@ Att::Att (const std::string& name, int value)
   mValue = s.str ();
 
   mMod = "";
+  mSense = "positive";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -162,6 +177,7 @@ Att::Att (const Att& other)
   mName  = other.mName;
   mValue = other.mValue;
   mMod   = other.mMod;
+  mSense = other.mSense;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +188,7 @@ Att& Att::operator= (const Att& other)
     mName  = other.mName;
     mValue = other.mValue;
     mMod   = other.mMod;
+    mSense = other.mSense;
   }
 
   return *this;
@@ -180,14 +197,29 @@ Att& Att::operator= (const Att& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Att::operator== (const Att& other) const
 {
-  return mName  == other.mName &&
-         mMod   == other.mMod  &&
-         mValue == other.mValue;
+  return mName  == other.mName  &&
+         mMod   == other.mMod   &&
+         mValue == other.mValue &&
+         mSense == other.mSense;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Att::~Att ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Att::logicSense (bool match) const
+{
+  if (mSense == "positive")
+    return match;
+  else if (mSense == "negative")
+    return ! match;
+  else
+  {
+    context.debug ("mSense: " + mSense);
+    throw ("unknown mSense " + mSense);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -515,6 +547,7 @@ void Att::parse (Nibbler& n)
   mName  = "";
   mValue = "";
   mMod   = "";
+  mSense = "positive";
 
   if (n.getUntilOneOf (".:", mName))
   {
@@ -524,6 +557,13 @@ void Att::parse (Nibbler& n)
     if (n.skip ('.'))
     {
       std::string mod;
+
+      if (n.skip ('~'))
+      {
+        context.debug ("using negative logic");
+        mSense = "negative";
+      }
+
       if (n.getUntil (":", mod))
       {
         if (validMod (mod))

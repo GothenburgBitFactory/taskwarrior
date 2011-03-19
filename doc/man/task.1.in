@@ -424,7 +424,8 @@ id1 and id2 should be completed before this task.  Consequently, this task will
 then show up on the 'blocked' report.
 
 .SH ATTRIBUTE MODIFIERS
-Attribute modifiers improve filters.  Supported modifiers are:
+Attribute modifiers improve filters.  Prefixing any modifier with '~' returns
+the complementary set of items.  Supported modifiers are:
 
 .RS
 .B before     (synonyms under, below)
@@ -517,7 +518,11 @@ modifier matches against the left, or beginning of an attribute, such that:
     task list project.startswith:H
     task list project:H
 
-are equivalent and will match any project starting with 'H'.
+are equivalent and will match any project starting with 'H'.  Matching all
+projects not starting with 'H' is done with:
+
+    task list project.~startswith:H
+    task list project.not:H
 
 The
 .I endswith

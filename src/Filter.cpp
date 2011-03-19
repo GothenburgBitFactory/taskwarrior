@@ -81,12 +81,12 @@ bool Filter::pass (const Record& record) const
       // are willing to invest a week understanding and testing it.
       if (att->modType (att->mod ()) == "positive")
       {
-        if (! (pass || annotation_pass_count))
+        if (! att->logicSense (pass || annotation_pass_count))
           return false;
       }
       else
       {
-        if (! (pass && annotation_fail_count == 0))
+        if (! att->logicSense (pass && annotation_fail_count == 0))
           return false;
       }
     }
@@ -102,7 +102,7 @@ bool Filter::pass (const Record& record) const
       // An individual attribute match failure is enough to fail the filter.
       if ((r = record.find (att->name ())) != record.end ())
       {
-        if (! att->match (r->second))
+        if (! att->logicSense (att->match (r->second)))
           return false;
       }
       else if (! att->match (Att ()))
