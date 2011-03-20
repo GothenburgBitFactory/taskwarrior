@@ -194,7 +194,18 @@ void handleDiagnostics (std::string& outs)
 
   std::cout << "     Regex: "
             << (context.config.getBoolean ("regex") ? "Enabled" : "Disabled")
-            << "\n\n";
+            << "\n";
+
+  // Determine rc.editor/$EDITOR/$VISUAL.
+  char* peditor;
+  if (context.config.get ("editor") != "")
+    std::cout << " rc.editor: " << context.config.get ("editor") << "\n";
+  else if ((peditor = getenv ("VISUAL")) != NULL)
+    std::cout << "   $VISUAL: " << peditor << "\n";
+  else if ((peditor = getenv ("EDITOR")) != NULL)
+    std::cout << "   $EDITOR: " << peditor << "\n";
+
+  std::cout << "\n";
 
   // External commands.
   std::cout << "[1mExternal Utilities[0m\n";
@@ -279,6 +290,7 @@ void handleDiagnostics (std::string& outs)
               << context.getHeight ()
               << ")\n";
   }
+
   std::cout << "\n";
 }
 

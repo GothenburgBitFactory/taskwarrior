@@ -2,6 +2,8 @@
 ------ current release ---------------------------
 
 2.0.0 ()
+
+# Untracked Features, biggest first.
  + autoconf eliminated.
  + New 'ids' command that returns a filtered set of task ID numbers, instead
    of the actual tasks.  For advanced pipeline use.
@@ -9,14 +11,19 @@
    allows commands like:  echo 'add Pay the bills' | task
  + Corrected sorting to use std::stable_sort instead of std::sort, which is not
    guaranteed stable (thanks to Stefan Hacker).
+ + Enhanced diagnostics command.
 
+# Tracked Features, sorted by ID.
  + Added feature #700, which adds tab-completion of built-in tags.
  + Added feature #710, which adds an attribute modifier prefix to return the
    complement of a filtered set (thanks to Dan White).
 
+# Tracked Bugs, sorted by ID.
  + Fixed Bug #713, which fixes typos in the holidays-UK.rc file (thanks to
    Alexei Romanoff).
  + Added feature #714, including Belarus holidays (thanks to Alexei Romanoff).
+
+# Untracked Bugs, biggest first.
 
 ------ old releases ------------------------------
 
