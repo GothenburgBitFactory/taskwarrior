@@ -375,7 +375,7 @@ std::string taskDifferences (const Task& before, const Task& after)
   std::stringstream out;
   foreach (name, beforeOnly)
     out << "  - "
-        << *name
+        << ucFirst(*name)
         << " will be deleted.\n";
 
   foreach (name, afterOnly)
@@ -385,17 +385,17 @@ std::string taskDifferences (const Task& before, const Task& after)
       std::vector <int> deps_after;
       after.getDependencies (deps_after);
       std::string to;
-      join (to, ",", deps_after);
+      join (to, ", ", deps_after);
 
       out << "  - "
-          << *name
+          << "Dependencies"
           << " will be set to '"
           << to
           << "'.\n";
     }
     else
       out << "  - "
-          << *name
+          << ucFirst(*name)
           << " will be set to '"
           << renderAttribute (*name, after.get (*name))
           << "'.\n";
@@ -410,15 +410,15 @@ std::string taskDifferences (const Task& before, const Task& after)
         std::vector <int> deps_before;
         before.getDependencies (deps_before);
         std::string from;
-        join (from, ",", deps_before);
+        join (from, ", ", deps_before);
 
         std::vector <int> deps_after;
         after.getDependencies (deps_after);
         std::string to;
-        join (to, ",", deps_after);
+        join (to, ", ", deps_after);
 
         out << "  - "
-            << *name
+            << "Dependencies"
             << " will be changed from '"
             << from
             << "' to '"
@@ -427,7 +427,7 @@ std::string taskDifferences (const Task& before, const Task& after)
       }
       else
         out << "  - "
-            << *name
+            << ucFirst(*name)
             << " will be changed from '"
             << renderAttribute (*name, before.get (*name))
             << "' to '"
@@ -469,7 +469,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
         std::vector <int> deps_before;
         before.getDependencies (deps_before);
         std::string from;
-        join (from, ",", deps_before);
+        join (from, ", ", deps_before);
 
         out << "Dependencies '"
             << from
@@ -495,9 +495,9 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
       std::vector <int> deps_after;
       after.getDependencies (deps_after);
       std::string to;
-      join (to, ",", deps_after);
+      join (to, ", ", deps_after);
 
-      out << ucFirst(*name)
+      out << "Dependencies"
           << " set to '"
           << to
           << "'.\n";
@@ -525,14 +525,14 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
         std::vector <int> deps_before;
         before.getDependencies (deps_before);
         std::string from;
-        join (from, ",", deps_before);
+        join (from, ", ", deps_before);
 
         std::vector <int> deps_after;
         after.getDependencies (deps_after);
         std::string to;
-        join (to, ",", deps_after);
+        join (to, ", ", deps_after);
 
-        out << ucFirst(*name)
+        out << "Dependencies"
             << " changed from '"
             << from
             << "' to '"
@@ -553,7 +553,6 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
             << renderAttribute (*name, after.get (*name))
             << "'.\n";
     }
-
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
