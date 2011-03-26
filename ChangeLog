@@ -17,13 +17,15 @@
  + Added feature #700, which adds tab-completion of built-in tags.
  + Added feature #710, which adds an attribute modifier prefix to return the
    complement of a filtered set (thanks to Dan White).
+ + Added feature #714, including Belarus holidays (thanks to Alexei Romanoff).
 
 # Tracked Bugs, sorted by ID.
  + Fixed bug #703, where global substitutions didn't make all expected
    annotation changes.
  + Fixed Bug #713, which fixes typos in the holidays-UK.rc file (thanks to
    Alexei Romanoff).
- + Added feature #714, including Belarus holidays (thanks to Alexei Romanoff).
+ + Fixed Bug #723, which displayed a misleading message when the output was
+   truncated to a page.
 
 # Untracked Bugs, biggest first.
 
