@@ -205,10 +205,10 @@ void Subst::apply (
 
         // Perform all subs on annotations.
         counter = 0;
-        pattern = 0;
         std::vector <Att>::iterator i;
         for (i = annotations.begin (); i != annotations.end (); ++i)
         {
+          pattern = 0;
           std::string annotation = i->value ();
           while ((pattern = find (annotation, mFrom, pattern, sensitive)) != std::string::npos)
           {

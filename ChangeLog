@@ -19,6 +19,8 @@
    complement of a filtered set (thanks to Dan White).
 
 # Tracked Bugs, sorted by ID.
+ + Fixed bug #703, where global substitutions didn't make all expected
+   annotation changes.
  + Fixed Bug #713, which fixes typos in the holidays-UK.rc file (thanks to
    Alexei Romanoff).
  + Added feature #714, including Belarus holidays (thanks to Alexei Romanoff).
