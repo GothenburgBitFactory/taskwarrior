@@ -111,16 +111,13 @@ void Subst::parse (const std::string& input)
       mGlobal = n.skip ('g');
 
     if (mFrom == "")
-      throw context.stringtable.get (SUBST_EMPTY,
-                                     "Cannot substitute an empty string.");
+      throw std::string ("Cannot substitute an empty string.");
 
     if (!n.depleted ())
-      throw context.stringtable.get (SUBST_BAD_CHARS,
-                                     "Unrecognized character(s) at end of substitution.");
+      throw std::string ("Unrecognized character(s) at end of substitution.");
   }
   else
-    throw context.stringtable.get (SUBST_MALFORMED,
-                                   "Malformed substitution.");
+    throw std::string ("Malformed substitution.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

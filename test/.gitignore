@@ -22,7 +22,6 @@ rectangle.t
 rx.t
 sensor.t
 seq.t
-stringtable.t
 subst.t
 t.benchmark.t
 t.t

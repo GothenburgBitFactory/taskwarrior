@@ -35,7 +35,6 @@
 #include "Cmd.h"
 #include "Task.h"
 #include "TDB.h"
-#include "StringTable.h"
 #include "Hooks.h"
 
 class Context
@@ -84,7 +83,6 @@ public:
   Subst                     subst;
   Task                      task;
   TDB                       tdb;
-  StringTable               stringtable;
   std::string               program;
   std::vector <std::string> args;
   std::string               file_override;

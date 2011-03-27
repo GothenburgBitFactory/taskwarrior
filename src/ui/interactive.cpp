@@ -77,9 +77,8 @@ int Context::handleInteractive ()
 
 #else
 
-  throw stringtable.get (INTERACTIVE_NO_NCURSES,
-                         "Interactive task is only available when built with ncurses "
-                         "support.");
+  throw std::string ("Interactive task is only available when built with "
+                     "ncurses support.");
 
 #endif
 

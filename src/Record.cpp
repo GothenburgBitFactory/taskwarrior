@@ -94,8 +94,7 @@ void Record::parse (const std::string& input)
       n.depleted ())
   {
     if (line.length () == 0)
-      throw context.stringtable.get (RECORD_EMPTY,
-                                     "Empty record in input.");
+      throw std::string ("Empty record in input.");
 
     Nibbler nl (line);
     Att a;
@@ -109,12 +108,10 @@ void Record::parse (const std::string& input)
     std::string remainder;
     nl.getUntilEOS (remainder);
     if (remainder.length ())
-      throw context.stringtable.get (RECORD_EXTRA,
-                                     "Unrecognized characters at end of line.");
+      throw std::string ("Unrecognized characters at end of line.");
   }
   else
-    throw context.stringtable.get (RECORD_NOT_FF4,
-                                   "Record not recognized as format 4.");
+    throw std::string ("Record not recognized as format 4.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

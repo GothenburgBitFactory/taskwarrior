@@ -59,9 +59,7 @@ bool confirm (const std::string& question)
   do
   {
     std::cout << question
-              << " "
-              << context.stringtable.get (CONFIRM_YES_NO, "(y/n)")
-              << " ";
+              << " (y/n) ";
 
     std::getline (std::cin, answer);
     answer = std::cin.eof() ? "no" : lowerCase (trim (answer));

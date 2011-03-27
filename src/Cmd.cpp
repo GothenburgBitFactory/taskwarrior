@@ -127,7 +127,6 @@ void Cmd::load ()
 {
   if (commands.size () == 0)
   {
-    // Commands whose names are not localized.
     commands.push_back ("_projects");
     commands.push_back ("_tags");
     commands.push_back ("_commands");
@@ -150,41 +149,39 @@ void Cmd::load ()
     commands.push_back ("burndown.monthly");
     commands.push_back ("count");
     commands.push_back ("ids");
-
-    // Commands whose names are localized.
-    commands.push_back (context.stringtable.get (CMD_ADD,         "add"));
-    commands.push_back (context.stringtable.get (CMD_APPEND,      "append"));
-    commands.push_back (context.stringtable.get (CMD_ANNOTATE,    "annotate"));
-    commands.push_back (context.stringtable.get (CMD_DENOTATE,    "denotate"));
-    commands.push_back (context.stringtable.get (CMD_CALENDAR,    "calendar"));
-    commands.push_back (context.stringtable.get (CMD_COLORS,      "colors"));
-    commands.push_back (context.stringtable.get (CMD_CONFIG,      "config"));
-    commands.push_back (context.stringtable.get (CMD_SHOW,        "show"));
-    commands.push_back (context.stringtable.get (CMD_DELETE,      "delete"));
-    commands.push_back (context.stringtable.get (CMD_DIAGNOSTICS, "diagnostics"));
-    commands.push_back (context.stringtable.get (CMD_DONE,        "done"));
-    commands.push_back (context.stringtable.get (CMD_DUPLICATE,   "duplicate"));
-    commands.push_back (context.stringtable.get (CMD_EDIT,        "edit"));
-    commands.push_back (context.stringtable.get (CMD_HELP,        "help"));
-    commands.push_back (context.stringtable.get (CMD_IMPORT,      "import"));
-    commands.push_back (context.stringtable.get (CMD_INFO,        "info"));
-    commands.push_back (context.stringtable.get (CMD_LOG,         "log"));
-    commands.push_back (context.stringtable.get (CMD_PREPEND,     "prepend"));
-    commands.push_back (context.stringtable.get (CMD_PROJECTS,    "projects"));
+    commands.push_back ("add");
+    commands.push_back ("append");
+    commands.push_back ("annotate");
+    commands.push_back ("denotate");
+    commands.push_back ("calendar");
+    commands.push_back ("colors");
+    commands.push_back ("config");
+    commands.push_back ("show");
+    commands.push_back ("delete");
+    commands.push_back ("diagnostics");
+    commands.push_back ("done");
+    commands.push_back ("duplicate");
+    commands.push_back ("edit");
+    commands.push_back ("help");
+    commands.push_back ("import");
+    commands.push_back ("info");
+    commands.push_back ("log");
+    commands.push_back ("prepend");
+    commands.push_back ("projects");
 #ifdef FEATURE_SHELL
-    commands.push_back (context.stringtable.get (CMD_SHELL,       "shell"));
+    commands.push_back ("shell");
 #endif
-    commands.push_back (context.stringtable.get (CMD_START,       "start"));
-    commands.push_back (context.stringtable.get (CMD_STATS,       "stats"));
-    commands.push_back (context.stringtable.get (CMD_STOP,        "stop"));
-    commands.push_back (context.stringtable.get (CMD_SUMMARY,     "summary"));
-    commands.push_back (context.stringtable.get (CMD_TAGS,        "tags"));
-    commands.push_back (context.stringtable.get (CMD_TIMESHEET,   "timesheet"));
-    commands.push_back (context.stringtable.get (CMD_UNDO,        "undo"));
-    commands.push_back (context.stringtable.get (CMD_VERSION,     "version"));
-    commands.push_back (context.stringtable.get (CMD_MERGE,       "merge"));
-    commands.push_back (context.stringtable.get (CMD_PUSH,        "push"));
-    commands.push_back (context.stringtable.get (CMD_PULL,        "pull"));
+    commands.push_back ("start");
+    commands.push_back ("stats");
+    commands.push_back ("stop");
+    commands.push_back ("summary");
+    commands.push_back ("tags");
+    commands.push_back ("timesheet");
+    commands.push_back ("undo");
+    commands.push_back ("version");
+    commands.push_back ("merge");
+    commands.push_back ("push");
+    commands.push_back ("pull");
 
     // Now load the custom reports.
     std::vector <std::string> all;
@@ -260,21 +257,21 @@ bool Cmd::isReadOnlyCommand ()
       command == "burndown.monthly"                                          ||
       command == "count"                                                     ||
       command == "ids"                                                       ||
-      command == context.stringtable.get (CMD_CALENDAR,    "calendar")       ||
-      command == context.stringtable.get (CMD_COLORS,      "colors")         ||
-      command == context.stringtable.get (CMD_DIAGNOSTICS, "diagnostics")    ||
-      command == context.stringtable.get (CMD_CONFIG,      "config")         ||
-      command == context.stringtable.get (CMD_SHOW,        "show")           ||
-      command == context.stringtable.get (CMD_HELP,        "help")           ||
-      command == context.stringtable.get (CMD_INFO,        "info")           ||
-      command == context.stringtable.get (CMD_PROJECTS,    "projects")       ||
-			command == context.stringtable.get (CMD_PUSH,        "push")           ||
-      command == context.stringtable.get (CMD_SHELL,       "shell")          ||
-      command == context.stringtable.get (CMD_STATS,       "stats")          ||
-      command == context.stringtable.get (CMD_SUMMARY,     "summary")        ||
-      command == context.stringtable.get (CMD_TAGS,        "tags")           ||
-      command == context.stringtable.get (CMD_TIMESHEET,   "timesheet")      ||
-      command == context.stringtable.get (CMD_VERSION,     "version")        ||
+      command == "calendar"                                                  ||
+      command == "colors"                                                    ||
+      command == "diagnostics"                                               ||
+      command == "config"                                                    ||
+      command == "show"                                                      ||
+      command == "help"                                                      ||
+      command == "info"                                                      ||
+      command == "projects"                                                  ||
+			command == "push"                                                      ||
+      command == "shell"                                                     ||
+      command == "stats"                                                     ||
+      command == "summary"                                                   ||
+      command == "tags"                                                      ||
+      command == "timesheet"                                                 ||
+      command == "version"                                                   ||
       validCustom (command))
     return true;
 
@@ -285,22 +282,22 @@ bool Cmd::isReadOnlyCommand ()
 // Commands that directly modify the data files.
 bool Cmd::isWriteCommand ()
 {
-  if (command == context.stringtable.get (CMD_MERGE,     "merge")     ||
-      command == context.stringtable.get (CMD_ADD,       "add")       ||
-      command == context.stringtable.get (CMD_APPEND,    "append")    ||
-      command == context.stringtable.get (CMD_ANNOTATE,  "annotate")  ||
-      command == context.stringtable.get (CMD_DENOTATE,  "denotate")  ||
-      command == context.stringtable.get (CMD_DELETE,    "delete")    ||
-      command == context.stringtable.get (CMD_DONE,      "done")      ||
-      command == context.stringtable.get (CMD_DUPLICATE, "duplicate") ||
-      command == context.stringtable.get (CMD_EDIT,      "edit")      ||
-      command == context.stringtable.get (CMD_IMPORT,    "import")    ||
-      command == context.stringtable.get (CMD_LOG,       "log")       ||
-      command == context.stringtable.get (CMD_PREPEND,   "prepend")   ||
-      command == context.stringtable.get (CMD_PULL,      "pull")      ||
-      command == context.stringtable.get (CMD_START,     "start")     ||
-      command == context.stringtable.get (CMD_STOP,      "stop")      ||
-      command == context.stringtable.get (CMD_UNDO,      "undo"))
+  if (command == "merge"     ||
+      command == "add"       ||
+      command == "append"    ||
+      command == "annotate"  ||
+      command == "denotate"  ||
+      command == "delete"    ||
+      command == "done"      ||
+      command == "duplicate" ||
+      command == "edit"      ||
+      command == "import"    ||
+      command == "log"       ||
+      command == "prepend"   ||
+      command == "pull"      ||
+      command == "start"     ||
+      command == "stop"      ||
+      command == "undo")
     return true;
 
   return false;

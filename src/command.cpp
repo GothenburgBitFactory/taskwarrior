@@ -2497,7 +2497,7 @@ void handleShell ()
 
         catch (...)
         {
-          std::cerr << context.stringtable.get (100, "Unknown error.") << "\n";
+          std::cerr << "Unknown error." << "\n";
         }
       }
     }

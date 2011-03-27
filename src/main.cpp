@@ -96,7 +96,7 @@ int main (int argc, char** argv)
 
   catch (...)
   {
-    std::cerr << context.stringtable.get (100, "Unknown error.") << "\n";
+    std::cerr << "Unknown error." << "\n";
     return -2;
   }
 

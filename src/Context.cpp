@@ -51,7 +51,6 @@ Context::Context ()
 , subst ()
 , task ()
 , tdb ()
-, stringtable ()
 , program ("")
 , file_override ("")
 , var_overrides ("")
@@ -135,8 +134,6 @@ void Context::initialize ()
   if (config.getBoolean ("color"))
     initializeColorRules ();
 
-  // Load appropriate stringtable as soon after the config file as possible, to
-  // allow all subsequent messages to be localizable.
   Directory location (config.get ("data.location"));
   std::string locale = config.get ("locale");
 
@@ -144,9 +141,6 @@ void Context::initialize ()
   std::string::size_type period = locale.find ('.');
   if (period != std::string::npos)
     locale = locale.substr (0, period);
-
-  if (locale != "")
-    stringtable.load (location.data + "/strings." + locale);
 
   // init TDB.
   tdb.clear ();
@@ -175,7 +169,7 @@ int Context::run ()
 
   catch (...)
   {
-    footnote (stringtable.get (100, "Unknown error."));
+    footnote ("Unknown error.");
     rc = 3;
   }
 
@@ -465,10 +459,7 @@ void Context::loadCorrectConfigFile ()
   // Set up default locations.
   struct passwd* pw = getpwuid (getuid ());
   if (!pw)
-    throw std::string (
-      stringtable.get (
-        SHELL_READ_PASSWD,
-        "Could not read home directory from the passwd file."));
+    throw std::string ("Could not read home directory from the passwd file.");
 
   std::string home = pw->pw_dir;
   File      rc   (home + "/.taskrc");
@@ -621,8 +612,7 @@ void Context::parse (
         foundNonSequence = true;
 
         if (arg->find (',') != std::string::npos)
-          throw stringtable.get (TAGS_NO_COMMA,
-                                 "Tags are not permitted to contain commas.");
+          throw std::string ("Tags are not permitted to contain commas.");
 
         tagAdditions.push_back (arg->substr (1));
         parseTask.addTag       (arg->substr (1));
@@ -640,8 +630,7 @@ void Context::parse (
         foundNonSequence = true;
 
         if (arg->find (',') != std::string::npos)
-          throw stringtable.get (TAGS_NO_COMMA,
-                                 "Tags are not permitted to contain commas.");
+          throw std::string ("Tags are not permitted to contain commas.");
 
         tagRemovals.push_back (arg->substr (1));
       }
@@ -801,9 +790,7 @@ void Context::parse (
         parse (args, cmd, task, sequence, subst, filter);
       }
       else
-        throw stringtable.get (
-          CMD_MISSING,
-          "You must specify a command, or a task ID to modify.");
+        throw std::string ("You must specify a command, or a task ID to modify.");
     }
 
     // If the command "task 123" is entered, but with no modifier arguments,
@@ -831,7 +818,6 @@ void Context::clear ()
 //  task.clear ();
   task = Task ();
   tdb.clear ();
-//  stringtable.clear ();
   program = "";
   args.clear ();
   file_override = "";
