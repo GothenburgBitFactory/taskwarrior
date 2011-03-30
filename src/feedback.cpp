@@ -147,7 +147,6 @@ std::string taskDifferences (const Task& before, const Task& after)
             << "'.\n";
     }
 
-
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
     out << "  - No changes will be made.\n";

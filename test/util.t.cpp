@@ -60,6 +60,7 @@ int main (int argc, char** argv)
 
   // TODO const std::string uuid ();
 
+  // TODO These are in feedback.cpp, not util.cpp.
   // std::string taskDiff (const Task&, const Task&);
   Task left;
   left.set ("zero", "0");
@@ -75,10 +76,10 @@ int main (int argc, char** argv)
 
   std::string output = taskDifferences (left, right);
   t.ok (taskDiff (left, right),                                                     "Detected changes");
-  t.ok (output.find ("zero will be changed from '0' to '00'") != std::string::npos, "Detected change zero:0 -> zero:00");
-  t.ok (output.find ("one will be deleted")                   != std::string::npos, "Detected deletion one:1 ->");
-  t.ok (output.find ("two")                                   == std::string::npos, "Detected no change two:2 -> two:2");
-  t.ok (output.find ("three will be set to '3'")              != std::string::npos, "Detected addition -> three:3");
+  t.ok (output.find ("Zero will be changed from '0' to '00'") != std::string::npos, "Detected change zero:0 -> zero:00");
+  t.ok (output.find ("One will be deleted")                   != std::string::npos, "Detected deletion one:1 ->");
+  t.ok (output.find ("Two")                                   == std::string::npos, "Detected no change two:2 -> two:2");
+  t.ok (output.find ("Three will be set to '3'")              != std::string::npos, "Detected addition -> three:3");
 
   t.notok (taskDiff (right, rightAgain),                                            "No changes detected");
   output = taskDifferences (right, rightAgain);
