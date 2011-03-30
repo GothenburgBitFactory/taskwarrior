@@ -64,4 +64,6 @@ directory.
 Accidentally changed a task? The undo command makes it a breeze to recover from
 any inadvertent change -- even a deletion!
 %
-
+Want to see a list of all changes you have made to a task?  The info report will
+display a complete change history.
+%
