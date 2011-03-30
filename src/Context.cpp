@@ -67,6 +67,20 @@ Context::~Context ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Context::initialize2 (int argc, char** argv)
+{
+  // TODO Capture the args.
+  // TODO Capture any stdin args.
+  // TODO Scan for rc:<file> overrides --> apply.
+  // TODO Combine command line into one string.
+  // TODO Load relevant rc file.
+  // TODO Instantiate built-in command objects.
+  // TODO Instantiate extension command objects.
+  // TODO Instantiate default command object.
+  // TODO Chain-of-command pattern dispatch.
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Context::initialize (int argc, char** argv)
 {
   // Capture the args.
