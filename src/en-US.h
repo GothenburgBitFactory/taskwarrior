@@ -36,32 +36,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_I18N
-#define INCLUDED_I18N
+#ifndef INCLUDED_EN_US
+#define INCLUDED_EN_US
 
-#include "../cmake.h"
+// To localize, clone and rename this file, then change all the defines below.
 
-#if PACKAGE_LANGUAGE == LANGUAGE_EN_US
-#include <en-US.h>
-#endif
-
-// Other languages here.
-
-#define CCOLOR_BOLD             500
-#define CCOLOR_UNDERLINE        501
-#define CCOLOR_ON               502
-#define CCOLOR_BRIGHT           503
-#define CCOLOR_BLACK            504
-#define CCOLOR_RED              505
-#define CCOLOR_GREEN            506
-#define CCOLOR_YELLOW           507
-#define CCOLOR_BLUE             508
-#define CCOLOR_MAGENTA          509
-#define CCOLOR_CYAN             510
-#define CCOLOR_WHITE            511
-
-#define CCOLOR_OFF              520
-#define CCOLOR_UNKNOWN          521
+#define STRING_UNKNOWN_ERROR "Unknown error."
 
 #endif
 

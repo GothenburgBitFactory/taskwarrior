@@ -34,7 +34,8 @@
 #include <sys/time.h>
 #endif
 
-#include "Context.h"
+#include <i18n.h>
+#include <Context.h>
 #include "../cmake.h"
 
 Context context;
@@ -96,7 +97,7 @@ int main (int argc, char** argv)
 
   catch (...)
   {
-    std::cerr << "Unknown error." << "\n";
+    std::cerr << STRING_UNKNOWN_ERROR << "\n";
     return -2;
   }
 

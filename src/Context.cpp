@@ -135,9 +135,9 @@ void Context::initialize ()
     initializeColorRules ();
 
   Directory location (config.get ("data.location"));
-  std::string locale = config.get ("locale");
 
   // If there is a locale variant (en-US.<variant>), then strip it.
+  std::string locale = config.get ("locale");
   std::string::size_type period = locale.find ('.');
   if (period != std::string::npos)
     locale = locale.substr (0, period);

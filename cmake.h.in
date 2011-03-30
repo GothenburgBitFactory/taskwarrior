@@ -9,6 +9,15 @@
 #define PACKAGE_VERSION   "${PACKAGE_VERSION}"
 #define PACKAGE_STRING    "${PACKAGE_STRING}"
 
+/* Localization */
+#define PACKAGE_LANGUAGE  1
+#define LANGUAGE_EN_US 1
+
+/*
+Override PACKAGE_LANGUAGE, then
+#define LANGUAGE_XX_YY 2
+*/
+
 /* git information */
 #cmakedefine HAVE_COMMIT
 
