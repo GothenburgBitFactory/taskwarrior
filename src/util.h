@@ -68,10 +68,6 @@ const std::string uuid ();
   int flock (int, int);
 #endif
 
-bool taskDiff (const Task&, const Task&);
-std::string taskDifferences (const Task&, const Task&);
-std::string taskInfoDifferences (const Task&, const Task&);
-std::string renderAttribute (const std::string&, const std::string&);
 std::string compressIds (const std::vector <int>&);
 
 #endif

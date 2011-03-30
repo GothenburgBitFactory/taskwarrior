@@ -161,6 +161,13 @@ void dependencyChainOnComplete (Task&);
 void dependencyChainOnStart (Task&);
 void dependencyChainOnModify (Task&, Task&);
 
+// feedback.cpp
+bool taskDiff (const Task&, const Task&);
+std::string taskDifferences (const Task&, const Task&);
+std::string taskInfoDifferences (const Task&, const Task&);
+std::string renderAttribute (const std::string&, const std::string&);
+std::string feedback (const Task&, const Task&);
+
 // list template
 ///////////////////////////////////////////////////////////////////////////////
 template <class T> bool listDiff (const T& left, const T& right)
