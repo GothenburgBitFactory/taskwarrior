@@ -28,6 +28,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <stdlib.h>
 #include <inttypes.h>
 #include <Att.h>
 #include <Context.h>
@@ -280,7 +281,7 @@ std::string renderAttribute (const std::string& name, const std::string& value)
   if (a.type (name) == "date" &&
       value != "")
   {
-    Date d ((time_t)::strtol (value.c_str (), NULL, 10));
+    Date d ((time_t)strtol (value.c_str (), NULL, 10));
     return d.toString (context.config.get ("dateformat"));
   }
 
