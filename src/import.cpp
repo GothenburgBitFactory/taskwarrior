@@ -1272,7 +1272,6 @@ int handleImport (std::string& outs)
 		// Use the description as a file name.
     std::string file = trim (context.task.get ("description"));
 
-#ifdef FEATURE_URL
     std::string tmpfile = "";
     Uri uri (file);
     uri.parse ();
@@ -1287,7 +1286,6 @@ int handleImport (std::string& outs)
 
       file = tmpfile;
     }
-#endif
 
     if (file.length () > 0)
     {
@@ -1344,10 +1342,8 @@ int handleImport (std::string& outs)
       case not_a_clue:    /* to stop the compiler from complaining. */ break;
       }
 
-#ifdef FEATURE_URL
       if (tmpfile != "")
         remove (tmpfile.c_str ());
-#endif
     }
     else
       throw std::string ("You must specify a file to import.");

@@ -29,8 +29,6 @@
 
 #define FEATURE_TDB_OPT      1   // TDB Optimization reduces file I/O.
 #define FEATURE_NEW_ID       1   // Echoes back new id.
-#define FEATURE_URL          1   // URL support for import.
-                                 // (always enabled for merge/push/pull)
 //#define FEATURE_REGEX        1   // Enables regexes for attribute modifiers,
 //                                 // subst, general search.
 
