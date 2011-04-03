@@ -1182,10 +1182,7 @@ int handleShow (std::string& outs)
       "active.indicator tag.indicator recurrence.indicator recurrence.limit "
       "list.all.projects list.all.tags undo.style verbose rule.precedence.color "
       "merge.autopush merge.default.uri pull.default.uri push.default.uri "
-      "xterm.title "
-#ifdef FEATURE_SHELL
-      "shell.prompt "
-#endif
+      "xterm.title shell.prompt "
       "import.synonym.status import.synonym.tags import.synonym.entry "
       "import.synonym.start import.synonym.due import.synonym.recur "
       "import.synonym.end import.synonym.project import.synonym.priority "
@@ -2429,7 +2426,6 @@ int handleIds (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#ifdef FEATURE_SHELL
 void handleShell ()
 {
   if (context.hooks.trigger ("pre-shell-command"))
@@ -2508,7 +2504,6 @@ void handleShell ()
     context.hooks.trigger ("post-shell-command");
   }
 }
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 int handleColor (std::string& outs)

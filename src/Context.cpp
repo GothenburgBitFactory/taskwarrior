@@ -282,9 +282,7 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "import")           { rc = handleImport                (out); }
   else if (cmd.command == "duplicate")        { rc = handleDuplicate             (out); }
   else if (cmd.command == "edit")             { rc = handleEdit                  (out); }
-#ifdef FEATURE_SHELL
   else if (cmd.command == "shell")            {      handleShell                 (   ); }
-#endif
   else if (cmd.command == "undo")             {      handleUndo                  (   ); }
   else if (cmd.command == "merge")            { tdb.gc ();
                                                      handleMerge                 (out); }

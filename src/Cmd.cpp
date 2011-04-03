@@ -168,9 +168,7 @@ void Cmd::load ()
     commands.push_back ("log");
     commands.push_back ("prepend");
     commands.push_back ("projects");
-#ifdef FEATURE_SHELL
     commands.push_back ("shell");
-#endif
     commands.push_back ("start");
     commands.push_back ("stats");
     commands.push_back ("stop");

@@ -121,11 +121,9 @@ int shortUsage (std::string& outs)
   table.addCell (row, 1, "task undo");
   table.addCell (row, 2, "Reverts the most recent action.");
 
-#ifdef FEATURE_SHELL
   row = table.addRow ();
   table.addCell (row, 1, "task shell");
   table.addCell (row, 2, "Launches an interactive shell.");
-#endif
 
   row = table.addRow ();
   table.addCell (row, 1, "task duplicate ID [tags] [attrs] [desc...]");
