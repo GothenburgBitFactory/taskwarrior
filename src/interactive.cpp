@@ -55,7 +55,7 @@ int Context::getWidth ()
   if (width == 0)
     return 65536;
 
-  if (config.getBoolean ("curses"))
+  if (config.getBoolean ("detection"))
   {
     if (terminal_width == 0 &&
         terminal_height == 0)
@@ -83,7 +83,7 @@ int Context::getHeight ()
 {
   int height = 24;
 
-  if (config.getBoolean ("curses"))
+  if (config.getBoolean ("detection"))
   {
     if (terminal_width == 0 &&
         terminal_height == 0)

@@ -63,7 +63,7 @@ std::string Config::defaults =
   "gc=on                                          # Garbage-collect data files - DO NOT CHANGE unless you are sure\n"
   "\n"
   "# Terminal\n"
-  "curses=on                                      # Detects terminal width\n"
+  "detection=on                                   # Detects terminal width\n"
   "defaultwidth=80                                # Without detection, assumed width\n"
   "#editor=vi                                     # Preferred text editor\n"
   "edit.verbose=yes                               # Include comments in files created during task edit\n"

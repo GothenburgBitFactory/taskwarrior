@@ -155,15 +155,16 @@ as this significantly affects performance.
 
 .SS TERMINAL
 .TP
-.B curses=on
-Determines whether to use ncurses to establish the size of the window you are
+.B detection=on
+Determines whether to use ioctl to establish the size of the window you are
 using, for text wrapping.
 
 .TP
 .B defaultwidth=80
-The width of tables used when ncurses support is not available. Defaults to 80.
-If set to 0, is interpreted as infinite width, therefore with no word-wrapping;
-useful when redirecting report output to a file for subsequent manipulation.
+The width of output used when auto-detection support is not available. Defaults
+to 80.  If set to 0, is interpreted as infinite width, therefore with no
+word-wrapping; useful when redirecting report output to a file for subsequent
+manipulation.
 
 .TP
 .B editor=vi

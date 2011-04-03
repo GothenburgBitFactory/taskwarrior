@@ -12,6 +12,8 @@
  + Corrected sorting to use std::stable_sort instead of std::sort, which is not
    guaranteed stable (thanks to Stefan Hacker).
  + Enhanced diagnostics command.
+ + The old 'curses' configuration variable is now replaced by 'detection', and
+   has the same meaning - whether or not to auto-detect terminal size.
 
 # Tracked Features, sorted by ID.
  + Added feature #700, which adds tab-completion of built-in tags.

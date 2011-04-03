@@ -136,10 +136,10 @@ void Context::initialize ()
   loadCorrectConfigFile ();
   loadAliases ();
 
-  // When redirecting output to a file, do not use color, curses.
+  // When redirecting output to a file, do not use color.
   if (!isatty (fileno (stdout)))
   {
-    config.set ("curses", "off");
+    config.set ("detection", "off");
 
     if (! config.getBoolean ("_forcecolor"))
       config.set ("color",  "off");
@@ -346,7 +346,7 @@ void Context::shadow ()
       throw std::string ("Configuration variable 'shadow.file' is set to "
                          "overwrite your undo log.  Please change it.");
 
-    std::string oldCurses = config.get ("curses");
+    std::string oldDetection = config.get ("detection");
     std::string oldColor  = config.get ("color");
 
     clear ();
@@ -360,8 +360,8 @@ void Context::shadow ()
     split (args, command, ' ');
 
     initialize ();
-    config.set ("curses", "off");
-    config.set ("color",  "off");
+    config.set ("detection", "off");
+    config.set ("color",     "off");
 
     parse ();
     std::string result;
@@ -375,8 +375,8 @@ void Context::shadow ()
     else
       throw std::string ("Could not write file '") + shadowFile.data + "'";
 
-    config.set ("curses", oldCurses);
-    config.set ("color",  oldColor);
+    config.set ("detection", oldDetection);
+    config.set ("color",     oldColor);
 
     // Optionally display a notification that the shadow file was updated.
     if (config.getBoolean ("shadow.notify"))
