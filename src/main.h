@@ -27,7 +27,6 @@
 #ifndef INCLUDED_MAIN
 #define INCLUDED_MAIN
 
-#define FEATURE_TDB_OPT      1   // TDB Optimization reduces file I/O.
 #define FEATURE_NEW_ID       1   // Echoes back new id.
 //#define FEATURE_REGEX        1   // Enables regexes for attribute modifiers,
 //                                 // subst, general search.
