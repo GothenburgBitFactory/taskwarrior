@@ -561,7 +561,6 @@ void Context::loadAliases ()
       std::string canonical = config.get (*var);
 
       aliases[alias] = canonical;
-      debug (std::string ("Alias ") + alias + " -> " + canonical);
     }
   }
 }
