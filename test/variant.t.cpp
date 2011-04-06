@@ -24,38 +24,32 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_DURATION
-#define INCLUDED_DURATION
+#include <iostream>
+#include <Context.h>
+#include <Variant.h>
+#include <test.h>
 
-#include <string>
-#include <time.h>
+Context context;
 
-class Duration
+////////////////////////////////////////////////////////////////////////////////
+int main (int argc, char** argv)
 {
-public:
-  Duration ();                           // Default constructor
-  Duration (const Duration&);            // Copy constructor
-  Duration (time_t);                     // Constructor
-  Duration (const std::string&);         // Parse
-  bool operator< (const Duration&);
-  bool operator> (const Duration&);
-  Duration& operator= (const Duration&);
-  ~Duration ();                          // Destructor
+  UnitTest t (2);
 
-  operator time_t () const;
-  operator std::string () const;
+  try
+  {
+    Variant v = Variant (1) + Variant (2);
+    t.ok (v.type () == Variant::v_integer, "1 + 2 --> integer");
+    t.ok (v.format () == "3", "1 + 2 --> 3");
+  }
 
-  std::string format () const;
-  std::string formatCompact () const;
+  catch (std::string& e)
+  {
+    t.fail ("Exception thrown.");
+    t.diag (e);
+  }
 
-  bool negative () const;
-  bool valid (const std::string&) const;
-  void parse (const std::string&);
+  return 0;
+}
 
-private:
-  time_t mSecs;
-  bool mNegative;
-};
-
-#endif
 ////////////////////////////////////////////////////////////////////////////////

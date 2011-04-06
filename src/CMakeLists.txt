@@ -16,7 +16,8 @@ set (task_SRCS API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h
                command.cpp custom.cpp dependency.cpp diag.cpp edit.cpp
                export.cpp history.cpp i18n.h import.cpp interactive.cpp
                recur.cpp report.cpp rules.cpp rx.cpp rx.h text.cpp text.h
-               utf8.cpp utf8.h util.cpp util.h Uri.cpp Uri.h)
+               utf8.cpp utf8.h util.cpp util.h Uri.cpp Uri.h Variant.cpp
+               Variant.h)
 
 add_library (task STATIC ${task_SRCS})
 add_executable (task_executable main.cpp)

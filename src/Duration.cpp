@@ -126,13 +126,13 @@ Duration::Duration (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration::operator time_t ()
+Duration::operator time_t () const
 {
   return mSecs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration::operator std::string ()
+Duration::operator std::string () const
 {
   std::stringstream s;
   s << (mNegative ? - (long) mSecs : (long) mSecs);
