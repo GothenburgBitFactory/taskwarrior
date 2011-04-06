@@ -17,7 +17,7 @@ New commands in taskwarrior 2.0.0
 
 New configuration options in taskwarrior 2.0.0
 
-  - Now includes Belarus holiday data.
+  - Now includes Belarus and Czech Republic holiday data.
   - The old 'curses' configuration variable is renamed to 'detection', but
     retains the original meaning, which is whether or not to auto-detect the
     dimensions of the terminal window.
