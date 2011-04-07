@@ -38,14 +38,8 @@ public:
   bool operator== (const Command&) const;     // TODO Is this necessary?
   ~Command ();
 
-/*
-  std::string syntax () const;
-  std::string help () const;
-  bool validate_args (Tree*);
-  std::string results ();
-  int execute (Tree*); 
-  bool needs_gc () const;
-*/
+  bool implements (const std::string&) const;
+  std::string execute (const std::string&);
 
 private:
 };
