@@ -25,6 +25,8 @@
 # Tracked Bugs, sorted by ID.
  + Fixed bug #703, where global substitutions didn't make all expected
    annotation changes.
+ + Fixed bug #707, which had inverted logic with the urgency calculation for
+   blocked tasks.
  + Fixed Bug #713, which fixes typos in the holidays-UK.rc file (thanks to
    Alexei Romanoff).
  + Fixed Bug #723, which displayed a misleading message when the output was

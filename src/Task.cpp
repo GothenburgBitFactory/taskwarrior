@@ -928,8 +928,8 @@ double Task::urgency ()
   coefficient = context.config.getReal ("urgency.blocked.coefficient");
 
   value = get ("depends");
-  if (value != "") term = 0.0;
-  else             term = 1.0;
+  if (value != "") term = 1.0;
+  else             term = 0.0;
 
   urgency += term * coefficient;
 
