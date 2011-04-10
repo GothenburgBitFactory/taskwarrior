@@ -1621,7 +1621,7 @@ used most.  You can create your own, or use one of the samples to show holidays
 on the calendar.  Try adding this line to your ~/.taskrc file:
 
 .RS
-include /usr/local/share/doc/task/rc/holidays-US.rc
+include /usr/local/share/doc/task/rc/holidays.en-US.rc
 .RE
 
 Then:
@@ -1654,7 +1654,8 @@ $ task calendar
 Legend: today, due, due-today, overdue, weekend, holiday, weeknumber.
 .RE
 
-There are holiday files for CA, DE, ES, FR, NL, SE, UK and US.
+There are holiday files for be-BY, cs-CZ, da-DK, de-AT, de-DE, en-CA, en-GB,
+en-NZ, en-US, es-ES, fr-FR, it-IT, nb-NO, nl-NL and sv-SE locales.
 
 You can see the whole year, see due tasks as well, and see the holidays:
 

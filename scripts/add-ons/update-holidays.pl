@@ -29,8 +29,21 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use JSON;
-use LWP::Simple;
+
+# Give a nice error if the (non-standard) JSON module is not installed.
+eval "use JSON";
+if ($@)
+{
+  print "Error: You need to install the JSON Perl module.\n";
+  exit 1;
+}
+
+eval "use LWP::Simple";
+if ($@)
+{
+  print "Error: You need to install the LWP::Simple Perl module.\n";
+  exit 1;
+}
 
 # Command line options, argument validation.
 my $help;
@@ -58,6 +71,33 @@ usage: update-holidays.pl [--help]
   --file         Location of the holiday file to update.
                  Note: this file *will* be overwritten.
 
+Typical usage is to simply specify a locale, like this:
+
+  ./update-holidays.pl --locale en-US --file holidays.en-US.rc
+
+This will give you all holidays for the locale.  If you want data for a locale
+that has regional data, you may want to specify regions, to make sure you get
+the data local to your region.  For example, the following command will download
+Australian holiday data that is either national, or specific to the New South
+Wales territory.
+
+  update-holidays.pl --locale en-AU \
+                     --region NSW \
+                     --file holidays.en-AU.rc
+
+Multiple regions may be specified, such as the two Swiss cantons of Zürich and
+Schwyz:
+
+  update-holidays.pl --locale de-CH \
+                     --region Zürich \
+                     --region Schwyz \
+                     --file holidays.de-CH.rc
+
+See http://holidata.net for details of supported locales and regions.
+
+It is recommended that you regularly update your holiday files.  Not only does
+this keep your holiday data current, but allows for corrected data to be used.
+
 EOF
 
   exit 1;
@@ -65,6 +105,9 @@ EOF
 
 # File name is required.
 die "You must specify a holiday file to update.\n"  if ! $file;
+
+# Convert @regions to %region_hash to simplify lookup.
+my %region_hash = map {$_ => undef} @regions;
 
 # Perhaps the locale can be found in the file name, if not already specified?
 if (!$locale &&
@@ -84,11 +127,29 @@ my $next    = $current + 1;
 my $url_current = "http://holidata.net/${locale}/${current}.json";
 my $url_next    = "http://holidata.net/${locale}/${next}.json";
 
-# Fetch the data.
+# Fetch data for the current year.
+my $data_current = get ($url_current);
+print "\n",
+      "Data for ${locale}, for ${current} could not be downloaded.  This could\n",
+      "mean that you do not have an internet connection, or that\n",
+      "Holidata.net does not support this locale and/or year.\n",
+      "\n"
+  unless defined $data_current;
+
+# Fetch data for the next year.
+my $data_next = get ($url_next);
+print "\n",
+      "Data for ${locale}, for ${next} could not be downloaded.  This could\n",
+      "mean that you do not have an internet connection, or that\n",
+      "Holidata.net does not support this locale and/or year.\n",
+      "\n"
+  unless defined $data_next;
+
+# Without data, cannot proceed.
 my $data;
-eval {$data = get ($url_current);};
-eval {$data .= get ($url_next);};
-die "Could not query data for ${locale}, for ${next}.\n" unless defined $data;
+$data .= $data_current if defined $data_current;
+$data .= $data_next    if defined $data_next;
+exit (1) if !defined $data || $data eq '';
 
 # Filter the holidays according to @regions.
 my $id = 1;
@@ -97,14 +158,20 @@ for my $holiday (split /\n/ms, $data)
 {
   my $parsed = from_json ($holiday);
 
-  $content .= "holiday.${locale}${id}.name=" . $parsed->{'description'} .  "\n" .
-              "holiday.${locale}${id}.date=" . $parsed->{'date'} .         "\n";
+  if (@regions == 0 ||
+      (@regions > 0 && ($parsed->{'region'} eq '' ||
+                        exists $region_hash{$parsed->{'region'}})))
+  {
+    $content .= "holiday.${locale}${id}.name=" . $parsed->{'description'} .  "\n" .
+                "holiday.${locale}${id}.date=" . $parsed->{'date'} .         "\n";
+  }
 
   ++$id;
 }
 
 # Overwrite the file.
-if (open my $fh, '>:encoding(UTF-8)', $file)
+if (open my $fh, '>', $file)
+#if (open my $fh, '>:encoding(UTF-8)', $file)
 {
   print $fh
         "# International Holiday Data provided by Holidata.net\n",

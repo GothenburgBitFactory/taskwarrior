@@ -15,6 +15,8 @@
  + The old 'curses' configuration variable is now replaced by 'detection', and
    has the same meaning - whether or not to auto-detect terminal size.
  + Added Czech Republic holiday files (thanks to Tomas Cech).
+ + All holiday files have been renamed to include a locale, rather than just a
+   country code.  For example: holidays.en-US.rc.
 
 # Tracked Features, sorted by ID.
  + Added feature #700, which adds tab-completion of built-in tags.

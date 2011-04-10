@@ -115,7 +115,7 @@ ones containing just the relevant configuration data like colors, etc.
 There are two excellent uses of includes in your .taskrc, shown here:
 
 .RS
-include /usr/local/share/doc/task/rc/holidays-US.rc
+include /usr/local/share/doc/task/rc/holidays.en-US.rc
 .br
 include /usr/local/share/doc/task/rc/dark-16.theme
 .RE
@@ -182,13 +182,6 @@ that you would see a smaller, more compact representation of the task, with no
 help text.
 
 .SS MISCELLANEOUS
-
-.TP
-.B locale=en-US
-The locale is a combination of ISO 639-1 language code and ISO 3166 country
-code.  If not specified, will assume en-US.  If specified, taskwarrior will
-locate the correct file of localized strings and proceed.  It is an error to
-specify a locale for which there is no strings file.
 
 .TP
 .B verbose=yes
@@ -562,7 +555,7 @@ be included like this:
 .RS
 .RS
 .br
-include /usr/local/share/doc/task/rc/holidays-US.rc
+include /usr/local/share/doc/task/rc/holidays.en-US.rc
 .RE
 .RE
 
