@@ -117,7 +117,7 @@ std::string Config::defaults =
   "# Urgency Coefficients\n"
   "urgency.next.coefficient=10.0                  # Urgency coefficients for 'next' special tag\n"
   "urgency.blocking.coefficient=9.0               # Urgency coefficients for blocking tasks\n"
-  "urgency.blocked.coefficient=8.0                # Urgency coefficients for blocked tasks\n"
+  "urgency.blocked.coefficient=-8.0               # Urgency coefficients for blocked tasks\n"
   "urgency.due.coefficient=7.0                    # Urgency coefficients for due dates\n"
   "urgency.priority.coefficient=6.0               # Urgency coefficients for priorities\n"
   "urgency.waiting.coefficient=5.0                # Urgency coefficients for waiting status\n"
