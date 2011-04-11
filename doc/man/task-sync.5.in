@@ -109,17 +109,39 @@ All the other URIs allow access to remote machines.  The first uses SSH and scp
 
 .br
 .RS
-ssh://[user@]host[:port]/path/to/undo.data
+ssh://[user@]host[:port]/path/to/.task/
 .br
-[user@]host:/path/
+[user@]host:path/to/.task/
 .RE
+
+Remember that in both cases paths are considered to be relative to the users home directory,
+i.e. they will expand to ~/path/to/.task/. You can specify absolute paths as follows:
+
+.br
+.RS
+ssh://[user@]host[:port]//absolute/path/to/.task/
+.br
+[user@]host:/absolute/path/to/.task/
+.RE
+
+Remark: Since taskwarrior simply calls the scp binary you can specify very much anything
+that scp would accept, e.g. host configurations from ~/.ssh/config or ~username
+expansion:
+
+.br
+.RS
+ssh://configured-host/~[user]/.task/
+.br
+configured-host:~[user]/.task/
+.RE
+
 
 Rsync is another supported protocol that minimizes network traffic, by a clever
 algorithm that doesn't copy files that have not changed:
 
 .br
 .RS
-rsync://[user@]host.xz[:port]/path/to/undo.data
+rsync://[user@]host.xz[:port]/path/to/.task/
 .RE
 
 Curl supports several protocols that can transfer data using HTTP, HTTPS and
@@ -127,11 +149,11 @@ FTP:
 
 .br
 .RS
-http://host[:port]/path/to/undo.data
+http://host[:port]/path/to/.task/
 .br
-https://host[:port]/path/to/undo.data
+https://host[:port]/path/to/.task/
 .br
-ftp://[user@]host[:port]/path/to/undo.data
+ftp://[user@]host[:port]/path/to/.task/
 .RE
 
 You can use single quotes to encapsulate user names that contain delimiting 

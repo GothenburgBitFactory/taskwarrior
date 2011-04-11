@@ -165,15 +165,16 @@ Merges two task databases by comparing the modifications that are stored in the
 undo.data files. The location of the second undo.data file must be passed on as
 argument. URL may have the following syntaxes:
 
-	ssh://[user@]host.xz[:port]/path/to/undo.data
+	ssh://[user@]host.xz[:port]/path/to/.task/
 
-	rsync://[user@]host.xz[:port]/path/to/undo.data
+	rsync://[user@]host.xz[:port]/path/to/.task/
 
-	[user@]host.xz:path/to/undo.data
+	[user@]host.xz:path/to/.task/
 
-	/path/to/local/undo.data
+	/path/to/local/.task/
 
-You can set aliases for frequently used URLs in the .taskrc.
+You can set aliases for frequently used URLs in the .taskrc. Further documentation
+can be found in task-sync(5) manpage.
 
 .TP
 .B push URL

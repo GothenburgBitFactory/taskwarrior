@@ -989,7 +989,7 @@ void handlePull (std::string& outs)
 			Directory location (context.config.get ("data.location"));
 
       if (! uri.append ("{pending,undo,completed}.data"))
-        throw std::string ("The uri '") + uri.path + "' is not a local directory.";
+        throw std::string ("The uri '") + uri.path + "' is not a directory. Did you forget a trailing '/'?";
 
 			Transport* transport;
 			if ((transport = Transport::getTransport (uri)) != NULL)

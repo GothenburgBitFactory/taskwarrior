@@ -33,6 +33,8 @@
    Alexei Romanoff).
  + Fixed Bug #723, which displayed a misleading message when the output was
    truncated to a page.
+ + Fixed Bug #732, which fixes misleading messages and documentation for
+   merge/push/pull URIs (thanks to Thomas Cech).
 
 # Untracked Bugs, biggest first.
 
