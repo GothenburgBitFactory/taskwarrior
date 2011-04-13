@@ -64,29 +64,7 @@ int main (int argc, char** argv)
   try
   {
     context.initialize (argc, argv);
-
-/* From old 2.0.0
-    std::string::size_type task = context.program.find ("/task");
-    std::string::size_type t    = context.program.find ("/t");
-    std::string::size_type cal  = context.program.find ("/cal");
-
-    if (context.program != "task"                                            &&
-        context.program != "t"                                               &&
-        context.program != "cal"                                             &&
-        (task == std::string::npos || context.program.length () != task + 5) &&
-        (t    == std::string::npos || context.program.length () != t    + 2) &&
-        (cal  == std::string::npos || context.program.length () != cal  + 4))
-      status = context.handleInteractive ();
-    else
-      status = context.run ();
-*/
-
-    std::string::size_type itask = context.program.find ("/itask");
-    if (context.program == "itask" ||
-        (itask != std::string::npos && context.program.length () == itask + 5))
-      status = context.interactive ();
-    else
-      status = context.run ();
+    status = context.run ();
   }
 
   catch (std::string& error)

@@ -50,7 +50,6 @@ public:
   void initialize2 (int, char**);      // all startup
   void initialize ();                  // for reinitializing
   int run ();                          // task classic
-  int interactive ();                  // task interactive (not implemented)
   int dispatch (std::string&);         // command handler dispatch
   void shadow ();                      // shadow file update
 
