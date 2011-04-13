@@ -27,6 +27,7 @@ t.benchmark.t
 t.t
 taskmod.t
 tdb.t
+tdb2.t
 text.t
 transport.t
 tree.t

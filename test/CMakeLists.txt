@@ -4,6 +4,7 @@ include_directories (${CMAKE_SOURCE_DIR}/src
                      ${TASK_INCLUDE_DIRS})
 
 set (test_SRCS date.t t.t tdb.t duration.t t.benchmark.t text.t autocomplete.t
+               tdb2.t
                seq.t record.t att.t subst.t nibbler.t filt.t cmd.t config.t
                util.t color.t list.t path.t file.t grid.t directory.t rx.t
                taskmod.t rectangle.t tree.t tree2.t uri.t json.t variant.t)

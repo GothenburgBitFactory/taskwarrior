@@ -35,7 +35,9 @@
 #include "Cmd.h"
 #include "Task.h"
 #include "TDB.h"
+#include "TDB2.h"
 #include "Hooks.h"
+#include "DOM.h"
 
 class Context
 {
@@ -83,6 +85,7 @@ public:
   Subst                     subst;
   Task                      task;
   TDB                       tdb;
+  TDB2                      tdb2;
   std::string               program;
   std::vector <std::string> args;
   std::string               file_override;
@@ -92,6 +95,7 @@ public:
   std::vector <std::string> tagAdditions;
   std::vector <std::string> tagRemovals;
   Hooks                     hooks;
+  DOM                       dom;
 
   std::vector <std::string> headers;
   std::vector <std::string> footnotes;
