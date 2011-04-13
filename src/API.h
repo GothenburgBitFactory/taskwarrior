@@ -32,13 +32,13 @@
 
 #include <vector>
 #include <string>
-#include "Task.h"
+#include <Task.h>
 
 extern "C"
 {
-  #include "lua.h"
-  #include "lualib.h"
-  #include "lauxlib.h"
+  #include <lua.h>
+  #include <lualib.h>
+  #include <lauxlib.h>
 }
 
 class API

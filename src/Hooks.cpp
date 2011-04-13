@@ -73,6 +73,22 @@ Hook& Hook::operator= (const Hook& other)
 ////////////////////////////////////////////////////////////////////////////////
 Hooks::Hooks ()
 {
+/*
+  // New 2.x hooks.
+  validTaskEvents.push_back ("on-task-add");
+  validTaskEvents.push_back ("on-task-modify");
+  validTaskEvents.push_back ("on-task-complete");
+  validTaskEvents.push_back ("on-task-delete");
+
+  validProgramEvents.push_back ("on-launch");
+  validProgramEvents.push_back ("on-exit");
+  validProgramEvents.push_back ("on-file-read");
+  validProgramEvents.push_back ("on-file-write");
+  validProgramEvents.push_back ("on-synch");
+  validProgramEvents.push_back ("on-gc");
+*/
+
+  // Obsolete 1.x hooks.
   validProgramEvents.push_back ("post-start");
   validProgramEvents.push_back ("post-commit");
   validProgramEvents.push_back ("pre-fatal-error");
