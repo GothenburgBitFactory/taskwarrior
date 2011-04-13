@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez.
+// Copyright 2011, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -24,51 +24,32 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_API
-#define INCLUDED_API
+#ifndef INCLUDED_DOM
+#define INCLUDED_DOM
 
-#include "../cmake.h"
-#ifdef HAVE_LIBLUA
-
-#include <vector>
 #include <string>
-#include <Task.h>
+#include <time.h>
 
-extern "C"
-{
-  #include <lua.h>
-  #include <lualib.h>
-  #include <lauxlib.h>
-}
-
-class API
+class DOM
 {
 public:
-  API ();
-  API (const API&);
-  API& operator= (const API&);
-  ~API ();
+  DOM ();
+  ~DOM ();
 
-  void initialize ();
-  bool callProgramHook (const std::string&, const std::string&);
-  bool callListHook    (const std::string&, const std::string&, std::vector <Task>&);
-  bool callTaskHook    (const std::string&, const std::string&, Task&);
-  bool callFieldHook   (const std::string&, const std::string&, const std::string&, std::string&);
+  const int         getInteger (const std::string&);
+  const double      getReal    (const std::string&);
+  const bool        getBoolean (const std::string&);
+  const time_t      getDate    (const std::string&);
+  const std::string get        (const std::string&);
+
+  void set (const std::string&, const bool);
+  void set (const std::string&, const int);
+  void set (const std::string&, const double);
+  void set (const std::string&, const time_t);
+  void set (const std::string&, const std::string&);
 
 private:
-  void loadFile (const std::string&);
-
-public:
-  lua_State* L;
-  std::vector <std::string> loaded;
-
-  // Context for the API.
-//  std::vector <Task> all;
-  Task current;
-//  std::string& name;
-//  std::string& value;
 };
 
-#endif
 #endif
 ////////////////////////////////////////////////////////////////////////////////
