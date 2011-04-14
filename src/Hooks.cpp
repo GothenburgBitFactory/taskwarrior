@@ -90,9 +90,21 @@ Hooks::Hooks ()
 
   // Obsolete 1.x hooks.
   validProgramEvents.push_back ("post-start");
+  validProgramEvents.push_back ("pre-exit");
+  validProgramEvents.push_back ("pre-file-read");
+  validProgramEvents.push_back ("post-file-read");
+  validProgramEvents.push_back ("pre-file-write");
+  validProgramEvents.push_back ("post-file-write");
+  validProgramEvents.push_back ("pre-gc");
+  validProgramEvents.push_back ("post-gc");
+
+
+
+
+
+
   validProgramEvents.push_back ("post-commit");
   validProgramEvents.push_back ("pre-fatal-error");
-  validProgramEvents.push_back ("pre-exit");
   validProgramEvents.push_back ("pre-command-line");
   validProgramEvents.push_back ("post-command-line");
   validProgramEvents.push_back ("pre-command-line-override");
@@ -109,10 +121,6 @@ Hooks::Hooks ()
   validProgramEvents.push_back ("post-file-lock");
   validProgramEvents.push_back ("pre-file-unlock");
   validProgramEvents.push_back ("post-file-unlock");
-  validProgramEvents.push_back ("pre-file-read");
-  validProgramEvents.push_back ("post-file-read");
-  validProgramEvents.push_back ("pre-file-write");
-  validProgramEvents.push_back ("post-file-write");
   validProgramEvents.push_back ("pre-output");
   validProgramEvents.push_back ("post-output");
   validProgramEvents.push_back ("pre-debug");
@@ -123,8 +131,6 @@ Hooks::Hooks ()
   validProgramEvents.push_back ("post-footnote");
   validProgramEvents.push_back ("pre-dispatch");
   validProgramEvents.push_back ("post-dispatch");
-  validProgramEvents.push_back ("pre-gc");
-  validProgramEvents.push_back ("post-gc");
   validProgramEvents.push_back ("pre-archive");
   validProgramEvents.push_back ("post-archive");
   validProgramEvents.push_back ("pre-purge");
@@ -211,9 +217,6 @@ Hooks::Hooks ()
   validProgramEvents.push_back ("post-usage-command");
   validProgramEvents.push_back ("pre-version-command");
   validProgramEvents.push_back ("post-version-command");
-
-  validListEvents.push_back ("pre-filter");
-  validListEvents.push_back ("post-filter");
 
   validTaskEvents.push_back ("pre-display");
   validTaskEvents.push_back ("pre-modification");
@@ -366,33 +369,6 @@ bool Hooks::trigger (const std::string& event)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// List hooks.
-bool Hooks::trigger (const std::string& event, std::vector <Task>& tasks)
-{
-#ifdef HAVE_LIBLUA
-  std::vector <Hook>::iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
-  {
-    if (it->event == event)
-    {
-      Timer timer (std::string ("Hooks::trigger ") + event);
-
-      if (validListEvent (event))
-      {
-        context.debug (std::string ("Event ") + event + " triggered");
-        if (! api.callListHook (it->file, it->function, tasks))
-          return false;
-      }
-      else
-        throw std::string ("Unrecognized hook event '") + event + "'.";
-    }
-  }
-#endif
-
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Task hooks.
 bool Hooks::trigger (const std::string& event, Task& task)
 {
@@ -453,14 +429,6 @@ bool Hooks::trigger (
 bool Hooks::validProgramEvent (const std::string& event)
 {
   if (std::find (validProgramEvents.begin (), validProgramEvents.end (), event) != validProgramEvents.end ())
-    return true;
-
-  return false;
-}
-
-bool Hooks::validListEvent (const std::string& event)
-{
-  if (std::find (validListEvents.begin (), validListEvents.end (), event) != validListEvents.end ())
     return true;
 
   return false;

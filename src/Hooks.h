@@ -59,13 +59,11 @@ public:
   void initialize ();
 
   bool trigger (const std::string&);                                   // Program
-  bool trigger (const std::string&, std::vector <Task>&);              // List
   bool trigger (const std::string&, Task&);                            // Task
   bool trigger (const std::string&, const std::string&, std::string&); // Field
 
 private:
   bool validProgramEvent (const std::string&);
-  bool validListEvent (const std::string&);
   bool validTaskEvent (const std::string&);
   bool validFieldEvent (const std::string&);
 
@@ -76,7 +74,6 @@ private:
   std::vector <Hook> all;           // All current hooks.
 
   std::vector <std::string> validProgramEvents;
-  std::vector <std::string> validListEvents;
   std::vector <std::string> validTaskEvents;
   std::vector <std::string> validFieldEvents;
 };

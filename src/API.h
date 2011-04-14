@@ -51,7 +51,6 @@ public:
 
   void initialize ();
   bool callProgramHook (const std::string&, const std::string&);
-  bool callListHook    (const std::string&, const std::string&, std::vector <Task>&);
   bool callTaskHook    (const std::string&, const std::string&, Task&);
   bool callFieldHook   (const std::string&, const std::string&, const std::string&, std::string&);
 

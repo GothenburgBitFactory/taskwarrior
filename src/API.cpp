@@ -123,15 +123,6 @@ static int api_task_feature (lua_State* L)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Returns values from .taskrc, by name.
-static int api_task_get_config (lua_State* L)
-{
-  std::string name = luaL_checkstring (L, 1);
-  lua_pushstring (L, context.config.get (name).c_str ());
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 static int api_task_header_message (lua_State* L)
 {
   std::string message = luaL_checkstring (L, 1);
@@ -167,166 +158,6 @@ static int api_task_exit (lua_State* L)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// -- 'id' is the task id passed to the hook function.  Date attributes are
-// -- returned as a numeric epoch offset.  Tags and annotations are returned
-// -- as tables.  A nil value indicates a missing value.
-static int api_task_get_uuid (lua_State* L)
-{
-  if (the_task != NULL)
-    lua_pushstring (L, the_task->get ("uuid").c_str ());
-  else
-    lua_pushnil (L);
-
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_description (lua_State* L)
-{
-  if (the_task != NULL)
-    lua_pushstring (L, the_task->get ("description").c_str ());
-  else
-    lua_pushnil (L);
-
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_project (lua_State* L)
-{
-  if (the_task != NULL)
-    lua_pushstring (L, the_task->get ("project").c_str ());
-  else
-    lua_pushnil (L);
-
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_priority (lua_State* L)
-{
-  if (the_task != NULL)
-    lua_pushstring (L, the_task->get ("priority").c_str ());
-  else
-    lua_pushnil (L);
-
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_status (lua_State* L)
-{
-  if (the_task != NULL)
-    lua_pushstring (L, Task::statusToText (the_task->getStatus ()).c_str ());
-  else
-    lua_pushnil (L);
-
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_due (lua_State* L)
-{
-  if (the_task != NULL)
-  {
-    unsigned int value = (unsigned int) the_task->get_ulong ("due");
-    if (value)
-    {
-      lua_pushinteger (L, value);
-      return 1;
-    }
-  }
-
-  lua_pushnil (L);
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_entry (lua_State* L)
-{
-  if (the_task != NULL)
-  {
-    unsigned int value = (unsigned int) the_task->get_ulong ("entry");
-    if (value)
-    {
-      lua_pushinteger (L, value);
-      return 1;
-    }
-  }
-
-  lua_pushnil (L);
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_start (lua_State* L)
-{
-  if (the_task != NULL)
-  {
-    unsigned int value = (unsigned int) the_task->get_ulong ("start");
-    if (value)
-    {
-      lua_pushinteger (L, value);
-      return 1;
-    }
-  }
-
-  lua_pushnil (L);
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_end (lua_State* L)
-{
-  if (the_task != NULL)
-  {
-    unsigned int value = (unsigned int) the_task->get_ulong ("end");
-    if (value)
-    {
-      lua_pushinteger (L, value);
-      return 1;
-    }
-  }
-
-  lua_pushnil (L);
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_until (lua_State* L)
-{
-  if (the_task != NULL)
-  {
-    unsigned int value = (unsigned int) the_task->get_ulong ("until");
-    if (value)
-    {
-      lua_pushinteger (L, value);
-      return 1;
-    }
-  }
-
-  lua_pushnil (L);
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_get_wait (lua_State* L)
-{
-  if (the_task != NULL)
-  {
-    unsigned int value = (unsigned int) the_task->get_ulong ("wait");
-    if (value)
-    {
-      lua_pushinteger (L, value);
-      return 1;
-    }
-  }
-
-  lua_pushnil (L);
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 API::API ()
 : L (NULL)
 {
@@ -354,22 +185,10 @@ void API::initialize ()
   lua_pushcfunction (L, api_task_lua_version);           lua_setglobal (L, "task_lua_version");
   lua_pushcfunction (L, api_task_os);                    lua_setglobal (L, "task_os");
   lua_pushcfunction (L, api_task_feature);               lua_setglobal (L, "task_feature");
-  lua_pushcfunction (L, api_task_get_config);            lua_setglobal (L, "task_get_config");
   lua_pushcfunction (L, api_task_header_message);        lua_setglobal (L, "task_header_message");
   lua_pushcfunction (L, api_task_footnote_message);      lua_setglobal (L, "task_footnote_message");
   lua_pushcfunction (L, api_task_debug_message);         lua_setglobal (L, "task_debug_message");
   lua_pushcfunction (L, api_task_exit);                  lua_setglobal (L, "task_exit");
-  lua_pushcfunction (L, api_task_get_uuid);              lua_setglobal (L, "task_get_uuid");
-  lua_pushcfunction (L, api_task_get_description);       lua_setglobal (L, "task_get_description");
-  lua_pushcfunction (L, api_task_get_project);           lua_setglobal (L, "task_get_project");
-  lua_pushcfunction (L, api_task_get_priority);          lua_setglobal (L, "task_get_priority");
-  lua_pushcfunction (L, api_task_get_status);            lua_setglobal (L, "task_get_status");
-  lua_pushcfunction (L, api_task_get_due);               lua_setglobal (L, "task_get_due");
-  lua_pushcfunction (L, api_task_get_entry);             lua_setglobal (L, "task_get_entry");
-  lua_pushcfunction (L, api_task_get_start);             lua_setglobal (L, "task_get_start");
-  lua_pushcfunction (L, api_task_get_end);               lua_setglobal (L, "task_get_end");
-  lua_pushcfunction (L, api_task_get_until);             lua_setglobal (L, "task_get_until");
-  lua_pushcfunction (L, api_task_get_wait);              lua_setglobal (L, "task_get_wait");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -414,24 +233,6 @@ bool API::callProgramHook (
 
   lua_pop (L, 1);
   return rc == 0 ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO No intention of implementing this before task 2.0.  Why?  Because we
-//      need to implement a Lua iterator, in C++, to iterate over a std::vector.
-bool API::callListHook (
-  const std::string& file,
-  const std::string& function,
-  std::vector <Task>& all)
-{
-  loadFile (file);
-
-  // TODO Get function.
-  // TODO Prepare args.
-  // TODO Make call.
-  // TODO Get exit status.
-
-  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
