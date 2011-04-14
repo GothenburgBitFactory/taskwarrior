@@ -28,7 +28,6 @@
 #define INCLUDED_CONTEXT
 
 #include "Filter.h"
-#include "Keymap.h"
 #include "Config.h"
 #include "Sequence.h"
 #include "Subst.h"
@@ -80,7 +79,6 @@ private:
 public:
   Config                    config;
   Filter                    filter;
-  Keymap                    keymap;
   Sequence                  sequence;
   Subst                     subst;
   Task                      task;

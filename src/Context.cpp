@@ -46,7 +46,6 @@
 Context::Context ()
 : config ()
 , filter ()
-, keymap ()
 , sequence ()
 , subst ()
 , task ()
@@ -825,7 +824,6 @@ void Context::clear ()
 {
 //  Config                    config;
   filter.clear ();
-//  Keymap                    keymap;
   sequence.clear ();
   subst.clear ();
 //  task.clear ();
