@@ -8,6 +8,7 @@ color.t
 config.t
 date.t
 directory.t
+dom.t
 duration.t
 file.t
 filt.t

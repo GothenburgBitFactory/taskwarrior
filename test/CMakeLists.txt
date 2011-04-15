@@ -3,11 +3,11 @@ include_directories (${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/test
                      ${TASK_INCLUDE_DIRS})
 
-set (test_SRCS date.t t.t tdb.t duration.t t.benchmark.t text.t autocomplete.t
-               tdb2.t
-               seq.t record.t att.t subst.t nibbler.t filt.t cmd.t config.t
-               util.t color.t list.t path.t file.t grid.t directory.t rx.t
-               taskmod.t rectangle.t tree.t tree2.t uri.t json.t variant.t)
+set (test_SRCS att.t autocomplete.t cmd.t color.t config.t date.t directory.t
+               dom.t duration.t file.t filt.t grid.t json.t list.t nibbler.t
+               path.t record.t rectangle.t rx.t seq.t subst.t t.benchmark.t t.t
+               taskmod.t tdb.t tdb2.t text.t tree.t tree2.t uri.t util.t
+               variant.t)
 
 add_custom_target (test ./run_all DEPENDS ${test_SRCS}
                                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)

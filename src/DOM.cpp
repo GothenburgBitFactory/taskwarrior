@@ -25,7 +25,18 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <Context.h>
 #include <DOM.h>
+#include "../cmake.h"
+
+#ifdef HAVE_LIBLUA
+extern "C"
+{
+  #include <lua.h>
+}
+#endif
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 DOM::DOM ()
@@ -62,8 +73,67 @@ const time_t DOM::getDate (const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO <id>.                  <-- context.tdb2
+// TODO <uuid>.                <-- context.tdb2
+// rc.<name>              <-- context.config
+// TODO report.<name>.         <-- context.reports
+// TODO stats.<name>           <-- context.stats
+//
+// system.<name>          <-- context.system
+// system.version
+// system.lua.version
+// system.os
 const std::string DOM::get (const std::string& name)
 {
+  int len = name.length ();
+
+  // rc. --> context.config
+  if (len > 3 &&
+      name.substr (0, 3) == "rc.")
+  {
+    return context.config.get (name.substr (3));
+  }
+
+  // TODO <id>.
+  // TODO <uuid>.
+  // TODO report.
+  // TODO stats.<name>
+
+  // system. --> Implement locally.
+  else if (len > 7 &&
+           name.substr (0, 7) == "system.")
+  {
+    // Taskwarrior version number.
+    if (name.substr (7) == "version")
+      return VERSION;
+
+#ifdef HAVE_LIBLUA
+    // Lua version number.
+    else if (name.substr (7) == "lua.version")
+      return LUA_RELEASE;
+#endif
+
+    // OS type.
+    else if (name.substr (7) == "os")
+#if defined (DARWIN)
+      return "Darwin";
+#elif defined (SOLARIS)
+      return "Solaris";
+#elif defined (CYGWIN)
+      return "Cygwin";
+#elif defined (OPENBSD)
+      return "OpenBSD";
+#elif defined (HAIKU)
+      return "Haiku";
+#elif defined (FREEBSD)
+      return "FreeBSD";
+#elif defined (LINUX)
+      return "Linux";
+#else
+      return "<unknown>";
+#endif
+  }
+
   return "";
 }
 
