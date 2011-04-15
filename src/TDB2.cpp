@@ -25,7 +25,154 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <text.h>
 #include <TDB2.h>
+
+
+////////////////////////////////////////////////////////////////////////////////
+TDB2::TDB2 ()
+: _location ("")
+, _loaded_pending_tasks (false)
+, _loaded_pending_lines (false)
+, _loaded_pending_contents (false)
+, _dirty_pending_tasks (false)
+, _dirty_pending_lines (false)
+, _dirty_pending_contents (false)
+, _pending_contents ("")
+
+, _completed_contents ("")
+, _backlog_contents ("")
+, _undo_contents ("")
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Deliberately no file writes on destruct.  TDB2::commit should have been
+// already called, if data is to be preserved.
+TDB2::~TDB2 ()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::set_location (const std::string& location)
+{
+  _location = location;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <Task>& TDB2::get_pending_tasks ()
+{
+  if (! _loaded_pending_tasks)
+    load_pending_tasks ();
+
+  return _pending_tasks;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string>& TDB2::get_pending_lines ()
+{
+  if (! _loaded_pending_lines)
+    load_pending_lines ();
+
+  return _pending_lines;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string& TDB2::get_pending_contents ()
+{
+  if (! _loaded_pending_contents)
+    load_pending_contents ();
+
+  return _pending_contents;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::load_pending_tasks ()
+{
+  if (! _loaded_pending_tasks)
+  {
+    if (! _loaded_pending_lines)
+      load_pending_lines ();
+
+    std::vector <std::string>::iterator i;
+    for (i = _pending_lines.begin (); i != _pending_lines.end (); ++i)
+      _pending_tasks.push_back (Task (*i));
+
+    _loaded_pending_tasks = true;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::load_pending_lines ()
+{
+  if (! _loaded_pending_lines)
+  {
+    if (! _loaded_pending_contents)
+      load_pending_contents ();
+
+    split (_pending_lines, _pending_contents, '\n');
+    _loaded_pending_lines = true;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::load_pending_contents ()
+{
+  if (! _loaded_pending_contents)
+  {
+    _pending_contents = "";
+    _dirty_pending_contents = false;
+
+    // TODO pending_file = File (_location + "/pending.data");
+    // TODO pending_file.openAndLock ();
+    // TODO pending_file.read (_pending_contents);
+
+    _loaded_pending_contents = true;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::add (const Task& task)
+{
+  // TODO Handle pending vs completed/deleted
+
+  _dirty_pending_tasks = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::modify (const Task& task)
+{
+  // TODO Handle pending vs completed/deleted
+
+  _dirty_pending_tasks = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::commit ()
+{
+  if (_dirty_pending_tasks)
+  {
+    // TODO Compose _pending_lines from _pending_tasks
+    _dirty_pending_tasks = false;
+  }
+
+  if (_dirty_pending_lines)
+  {
+   _pending_contents = "";  // TODO Verify no resize.
+    join (_pending_contents, "\n", _pending_lines);
+    _dirty_pending_lines = false;
+  }
+
+  if (_dirty_pending_contents)
+  {
+    // TODO Write _pending_contents to file.
+    // TODO _pending_file.write (_pending_contents);
+
+    _dirty_pending_contents = false;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 #if 0
 #include <iostream>

@@ -30,12 +30,48 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <stdio.h>
+#include <File.h>
+#include <Task.h>
 
 class TDB2
 {
 public:
+  TDB2 ();
+  ~TDB2 ();
+
+  void set_location (const std::string&);
+
+  std::vector <Task>& get_pending_tasks ();
+  std::vector <std::string>& get_pending_lines ();
+  std::string& get_pending_contents ();
+
+  void add (const Task&);
+  void modify (const Task&);
+  void commit ();
 
 private:
+  void load_pending_tasks ();
+  void load_pending_lines ();
+  void load_pending_contents ();
+
+private:
+  std::string _location;
+
+  bool _loaded_pending_tasks;
+  bool _loaded_pending_lines;
+  bool _loaded_pending_contents;
+  bool _dirty_pending_tasks;
+  bool _dirty_pending_lines;
+  bool _dirty_pending_contents;
+  std::vector <Task> _pending_tasks;
+  std::vector <std::string> _pending_lines;
+  std::string _pending_contents;
+  File _pending_file;
+
+  std::string _completed_contents;
+  std::string _backlog_contents;
+  std::string _undo_contents;
 };
 
 
