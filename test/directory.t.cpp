@@ -34,7 +34,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (21);
+  UnitTest t (25);
 
   // Directory (const File&);
   // Directory (const Path&);
@@ -92,6 +92,16 @@ int main (int argc, char** argv)
 
   t.ok (d5.remove (), "Directory::remove /tmp/test_directory");
   t.notok (d5.exists (), "Directory::exists /tmp/test_directory - no");
+
+  // bool remove (const std::string&);
+  Directory d7 ("/tmp/to_be_removed");
+  t.ok (d7.create (), "Directory::create /tmp/to_be_removed");
+  File::create (d7.data + "/f0");
+  Directory d8 (d7.data + "/another");
+  t.ok (d8.create (), "Directory::create /tmp/to_be_removed/another");
+  File::create (d8.data + "/f1");
+  t.ok (d7.remove (), "Directory::remove /tmp/to_be_removed");
+  t.notok (d7.exists (), "Directory /tmp/to_be_removed gone");
 
   return 0;
 }

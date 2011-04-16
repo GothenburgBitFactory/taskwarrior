@@ -24,9 +24,11 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
 #ifndef INCLUDED_FILE
 #define INCLUDED_FILE
 
+#include <stdio.h>
 #include <string>
 #include <vector>
 #include <sys/stat.h>
@@ -46,19 +48,21 @@ public:
   virtual bool create ();
   virtual bool remove ();
 
-//  bool open ();
-//  bool openAndLock ();
-//  void close ();
+  bool open ();
+  bool openAndLock ();
+  void close ();
 
-//  bool lock ();
-//  bool lockNoWait ();
-//  void unlock ();
+  bool lock ();
+  bool waitForLock ();
 
-//  void read (std::string&);
-//  void read (std::vector <std::string>&);
+  void read (std::string&);
+  void read (std::vector <std::string>&);
 
-//  void write (const std::string&);
-//  void write (const std::vector <std::string>&);
+  void write (const std::string&);
+  void write (const std::vector <std::string>&);
+
+  void append (const std::string&);
+  void append (const std::vector <std::string>&);
 
   virtual mode_t mode ();
   virtual size_t size () const;
@@ -75,7 +79,8 @@ public:
   static bool remove (const std::string&);
 
 private:
-//  int handle;
+  FILE* fh;
+  int   h;
 };
 
 #endif

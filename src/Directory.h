@@ -49,6 +49,7 @@ public:
 
 private:
   void list (const std::string&, std::vector <std::string>&, bool);
+  bool remove_directory (const std::string&);
 };
 
 #endif

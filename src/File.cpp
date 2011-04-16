@@ -27,46 +27,56 @@
 
 #include <fstream>
 #include <sys/types.h>
+#include <sys/file.h>
 #include <pwd.h>
 #include <unistd.h>
-#include "File.h"
+#include <File.h>
+#include <util.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 File::File ()
 : Path::Path ()
+, fh (NULL)
+, h (-1)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 File::File (const Path& other)
 : Path::Path (other)
+, fh (NULL)
+, h (-1)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 File::File (const File& other)
 : Path::Path (other)
+, fh (NULL)
+, h (-1)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 File::File (const std::string& in)
 : Path::Path (in)
+, fh (NULL)
+, h (-1)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 File::~File ()
 {
+  if (fh)
+    close ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 File& File::operator= (const File& other)
 {
   if (this != &other)
-  {
     Path::operator= (other);
-  }
 
   return *this;
 }
@@ -74,10 +84,9 @@ File& File::operator= (const File& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool File::create ()
 {
-  std::ofstream out (data.c_str ());
-  if (out.good ())
+  if (open ())
   {
-    out.close ();
+    close ();
     return true;
   }
 
@@ -88,6 +97,161 @@ bool File::create ()
 bool File::remove ()
 {
   return unlink (data.c_str ()) == 0 ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool File::open ()
+{
+  if (data != "" && fh == NULL)
+  {
+    bool already_exists = exists ();
+    if (already_exists)
+      if (!readable () || !writable ())
+        throw std::string ("Task does not have the correct permissions for '") +
+              data + "'.";
+
+    fh = fopen (data.c_str (), (already_exists ? "r+" : "w+"));
+    if (fh)
+    {
+      h = fileno (fh);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool File::openAndLock ()
+{
+  return open () && lock ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void File::close ()
+{
+  if (fh)
+  {
+    fclose (fh);
+    fh = NULL;
+    h = -1;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool File::lock ()
+{
+  if (fh && h != -1)
+  {
+    // Try three times before failing.
+    int retry = 0;
+    while (flock (h, LOCK_NB | LOCK_EX) && ++retry <= 3)
+      ;
+
+    if (retry <= 3)
+      return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool File::waitForLock ()
+{
+  if (fh && h != -1)
+    return flock (h, LOCK_EX) == 0 ? true : false;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Opens if necessary.
+void File::read (std::string& contents)
+{
+  contents = "";
+
+  std::ifstream in (data.c_str ());
+  if (in.good ())
+  {
+    std::string line;
+    while (getline (in, line))
+      contents += line + "\n";
+
+    in.close ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Opens if necessary.
+void File::read (std::vector <std::string>& contents)
+{
+  contents.clear ();
+
+  std::ifstream in (data.c_str ());
+  if (in.good ())
+  {
+    std::string line;
+    while (getline (in, line))
+      contents.push_back (line);
+
+    in.close ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Opens if necessary.
+void File::write (const std::string& line)
+{
+  if (!fh)
+    open ();
+
+  if (fh)
+    fputs (line.c_str (), fh);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Opens if necessary.
+void File::write (const std::vector <std::string>& lines)
+{
+  if (!fh)
+    open ();
+
+  if (fh)
+  {
+    std::vector <std::string>::const_iterator it;
+    for (it = lines.begin (); it != lines.end (); ++it)
+      fputs (it->c_str (), fh);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Opens if necessary.
+void File::append (const std::string& line)
+{
+  if (!fh)
+    open ();
+
+  if (fh)
+  {
+    fseek (fh, 0, SEEK_END);
+    fputs (line.c_str (), fh);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Opens if necessary.
+void File::append (const std::vector <std::string>& lines)
+{
+  if (!fh)
+    open ();
+
+  if (fh)
+  {
+    fseek (fh, 0, SEEK_END);
+    std::vector <std::string>::const_iterator it;
+    for (it = lines.begin (); it != lines.end (); ++it)
+      fputs (((*it) + "\n").c_str (), fh);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

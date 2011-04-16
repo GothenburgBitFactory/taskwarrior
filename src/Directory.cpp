@@ -30,7 +30,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
-#include "Directory.h"
+#include <Directory.h>
 #include "../cmake.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,41 @@ bool Directory::create ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Directory::remove ()
 {
-  return rmdir (data.c_str ()) == 0 ? true : false;
+  return remove_directory (data);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Directory::remove_directory (const std::string& dir)
+{
+  DIR* dp = opendir (dir.c_str ());
+  if (dp != NULL)
+  {
+    struct dirent* de;
+    while ((de = readdir (dp)) != NULL)
+    {
+      if (!strcmp (de->d_name, ".") ||
+          !strcmp (de->d_name, ".."))
+        continue;
+
+#if defined (SOLARIS) || defined (HAIKU)
+      struct stat s;
+      stat (de->d_name, &s);
+      if (s.st_mode & S_IFDIR)
+        remove_directory (dir + "/" + de->de_name);
+      else
+        unlink ((dir + "/" + de->d_name).c_str ());
+#else
+      if (de->d_type == DT_DIR)
+        remove_directory (dir + "/" + de->d_name);
+      else
+        unlink ((dir + "/" + de->d_name).c_str ());
+#endif
+    }
+
+    closedir (dp);
+  }
+
+  return rmdir (dir.c_str ()) ? false : true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
