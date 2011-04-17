@@ -36,16 +36,7 @@ public:
   DOM ();
   ~DOM ();
 
-  const int         getInteger (const std::string&);
-  const double      getReal    (const std::string&);
-  const bool        getBoolean (const std::string&);
-  const time_t      getDate    (const std::string&);
-  const std::string get        (const std::string&);
-
-  void set (const std::string&, const bool);
-  void set (const std::string&, const int);
-  void set (const std::string&, const double);
-  void set (const std::string&, const time_t);
+  const std::string get (const std::string&);
   void set (const std::string&, const std::string&);
 
 private:

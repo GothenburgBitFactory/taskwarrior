@@ -25,7 +25,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <sstream>
 #include <Context.h>
+#include <text.h>
 #include <DOM.h>
 #include "../cmake.h"
 
@@ -49,35 +51,12 @@ DOM::~DOM ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const int DOM::getInteger (const std::string& name)
-{
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const double DOM::getReal (const std::string& name)
-{
-  return 0.0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const bool DOM::getBoolean (const std::string& name)
-{
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const time_t DOM::getDate (const std::string& name)
-{
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // TODO <id>.                  <-- context.tdb2
 // TODO <uuid>.                <-- context.tdb2
 // rc.<name>              <-- context.config
 // TODO report.<name>.         <-- context.reports
 // TODO stats.<name>           <-- context.stats
+// TODO context.<name>    <-- args, ...
 //
 // system.<name>          <-- context.system
 // system.version
@@ -94,6 +73,35 @@ const std::string DOM::get (const std::string& name)
     return context.config.get (name.substr (3));
   }
 
+  else if (len > 8 &&
+           name.substr (0, 8) == "context.")
+  {
+    if (name == "context.program")
+      return context.program;
+
+    else if (name == "context.args")
+    {
+      std::string combined;
+      join (combined, " ", context.args);
+      return combined;
+    }
+    else if (name == "context.width")
+    {
+      std::stringstream s;
+      s << context.terminal_width;
+      return s.str ();
+    }
+    else if (name == "context.height")
+    {
+      std::stringstream s;
+      s << context.terminal_height;
+      return s.str ();
+    }
+
+    else
+      throw std::string ("DOM: Cannot get unrecognized name '") + name + "'.";
+  }
+
   // TODO <id>.
   // TODO <uuid>.
   // TODO report.
@@ -104,17 +112,17 @@ const std::string DOM::get (const std::string& name)
            name.substr (0, 7) == "system.")
   {
     // Taskwarrior version number.
-    if (name.substr (7) == "version")
+    if (name == "system.version")
       return VERSION;
 
 #ifdef HAVE_LIBLUA
     // Lua version number.
-    else if (name.substr (7) == "lua.version")
+    else if (name == "system.lua.version")
       return LUA_RELEASE;
 #endif
 
     // OS type.
-    else if (name.substr (7) == "os")
+    else if (name == "system.os")
 #if defined (DARWIN)
       return "Darwin";
 #elif defined (SOLARIS)
@@ -132,34 +140,29 @@ const std::string DOM::get (const std::string& name)
 #else
       return "<unknown>";
 #endif
+
+    else
+      throw std::string ("DOM: Cannot get unrecognized name '") + name + "'.";
   }
 
   return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void DOM::set (const std::string& name, const bool value)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void DOM::set (const std::string& name, const int value)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void DOM::set (const std::string& name, const double value)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void DOM::set (const std::string& name, const time_t value)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void DOM::set (const std::string& name, const std::string& value)
 {
+  int len = name.length ();
+
+  // rc. --> context.config
+  if (len > 3 &&
+      name.substr (0, 3) == "rc.")
+  {
+    return context.config.set (name.substr (3), value);
+  }
+
+  // Unrecognized --> error.
+  else
+    throw std::string ("DOM: Cannot set '") + name + "'.";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
