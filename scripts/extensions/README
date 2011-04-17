@@ -1,0 +1,8 @@
+There are several types of extension:
+
+- Hook-based
+- User Defined Attribute
+- Command
+- Format
+- DOM
+

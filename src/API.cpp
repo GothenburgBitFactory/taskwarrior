@@ -58,71 +58,6 @@ Task* the_task = NULL;
 #ifdef HAVE_LIBLUA
 
 ////////////////////////////////////////////////////////////////////////////////
-// Returns a string representing the taskwarrior version number, such as
-// '1.9.0'.
-static int api_task_version (lua_State* L)
-{
-  lua_pushstring (L, PACKAGE_VERSION);
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Returns a string representing the Lua version number, such as '5.1.4'.
-// Lua 5.2.0 has a 'lua_version' call, but 5.1.4 is the target.
-static int api_task_lua_version (lua_State* L)
-{
-  // Convert "Lua 5.1.4" -> "5.1.4"
-  std::string ver = LUA_RELEASE;
-  lua_pushstring (L, ver.substr (4, std::string::npos).c_str ());
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Returns the type of OS that task is running on.
-static int api_task_os (lua_State* L)
-{
-#if defined (DARWIN)
-  lua_pushstring (L, "darwin");
-#elif defined (SOLARIS)
-  lua_pushstring (L, "solaris");
-#elif defined (CYGWIN)
-  lua_pushstring (L, "cygwin");
-#elif defined (OPENBSD)
-  lua_pushstring (L, "openbsd");
-#elif defined (HAIKU)
-  lua_pushstring (L, "haiku");
-#elif defined (FREEBSD)
-  lua_pushstring (L, "freebsd");
-#elif defined (LINUX)
-  lua_pushstring (L, "linux");
-#else
-  lua_pushstring (L, "unknown");
-#endif
-
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static int api_task_feature (lua_State* L)
-{
-  std::string name = luaL_checkstring (L, 1);
-  bool value = false;
-
-  if (name == "readline")
-  {
-#ifdef HAVE_READLINE
-    value = true;
-#endif
-  }
-
-  else if (name == "lua")
-    value = true;
-
-  lua_pushboolean (L, value ? 1 : 0);
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 static int api_task_header_message (lua_State* L)
 {
   std::string message = luaL_checkstring (L, 1);
@@ -158,6 +93,39 @@ static int api_task_exit (lua_State* L)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// DOM reads.
+static int api_task_get (lua_State* L)
+{
+  std::string name = luaL_checkstring (L, 1);
+  try
+  {
+    lua_pushstring (L, context.dom.get (name).c_str ());
+  }
+  catch (...)
+  {
+    // TODO Error!
+    lua_pushstring (L, "");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// DOM writes.
+static int api_task_set (lua_State* L)
+{
+  std::string name  = luaL_checkstring (L, 1);
+  std::string value = luaL_checkstring (L, 2);
+
+  try
+  {
+    context.dom.set (name, value);
+  }
+  catch (...)
+  {
+    // TODO Error!
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 API::API ()
 : L (NULL)
 {
@@ -181,14 +149,12 @@ void API::initialize ()
   luaL_openlibs (L);  // TODO Error handling
 
   // Register all the API functions in Lua global space.
-  lua_pushcfunction (L, api_task_version);               lua_setglobal (L, "task_version");
-  lua_pushcfunction (L, api_task_lua_version);           lua_setglobal (L, "task_lua_version");
-  lua_pushcfunction (L, api_task_os);                    lua_setglobal (L, "task_os");
-  lua_pushcfunction (L, api_task_feature);               lua_setglobal (L, "task_feature");
   lua_pushcfunction (L, api_task_header_message);        lua_setglobal (L, "task_header_message");
   lua_pushcfunction (L, api_task_footnote_message);      lua_setglobal (L, "task_footnote_message");
   lua_pushcfunction (L, api_task_debug_message);         lua_setglobal (L, "task_debug_message");
   lua_pushcfunction (L, api_task_exit);                  lua_setglobal (L, "task_exit");
+  lua_pushcfunction (L, api_task_get);                   lua_setglobal (L, "task_get");
+  lua_pushcfunction (L, api_task_set);                   lua_setglobal (L, "task_set");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
