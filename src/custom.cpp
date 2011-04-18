@@ -530,6 +530,19 @@ int handleCustomReport (const std::string& report, std::string& outs)
       }
     }
 
+    else if (*col == "status")
+    {
+      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Status");
+      table.setColumnWidth (columnCount, Table::minimum);
+      table.setColumnJustification (columnCount, Table::left);
+
+      int row = 0;
+      foreach (task, tasks)
+      {
+        table.addCell (row++, columnCount, task->statusToText (task->getStatus ()));
+      }
+    }
+
     // Common to all columns.
     // Add underline.
     if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
@@ -698,7 +711,8 @@ void validReportColumns (const std::vector <std::string>& columns)
         *it != "description"          &&
         *it != "wait"                 &&
         *it != "depends"              &&
-        *it != "urgency")
+        *it != "urgency"              &&
+        *it != "status")
       bad.push_back (*it);
 
   if (bad.size ())
