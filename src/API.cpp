@@ -259,63 +259,6 @@ bool API::callTaskHook (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool API::callFieldHook (
-  const std::string& file,
-  const std::string& function,
-  const std::string& name,
-  std::string& value)
-{
-  loadFile (file);
-
-  // Get function.
-  lua_getglobal (L, function.c_str ());
-  if (!lua_isfunction (L, -1))
-  {
-    lua_pop (L, 1);
-    throw std::string ("The Lua function '") + function + "' was not found.";
-  }
-
-  // Prepare args.
-  lua_pushstring (L, name.c_str ());
-  lua_pushstring (L, value.c_str ());
-
-  // Make call.
-  if (lua_pcall (L, 2, 3, 0) != 0)
-    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1) + ".";
-
-  // Call successful - get return values.
-  if (!lua_isstring (L, -3))
-    throw std::string ("Error: '") + function + "' did not return a modified value.";
-
-  if (!lua_isnumber (L, -2))
-    throw std::string ("Error: '") + function + "' did not return a success indicator.";
-
-  if (!lua_isstring (L, -1) && !lua_isnil (L, -1))
-    throw std::string ("Error: '") + function + "' did not return a message or nil.";
-
-  const char* new_value = lua_tostring  (L, -3);
-  int rc                = lua_tointeger (L, -2);
-  const char* message   = lua_tostring  (L, -1);
-
-  if (rc == 0)
-  {
-    // Overwrite with the modified value.
-    value = new_value;
-
-    if (message)
-      context.footnote (std::string ("Warning: ") + message);
-  }
-  else
-  {
-    if (message)
-      throw std::string (message);
-  }
-
-  lua_pop (L, 1);
-  return rc == 0 ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void API::loadFile (const std::string& file)
 {
   // If the file is not loaded.

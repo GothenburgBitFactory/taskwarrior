@@ -52,7 +52,6 @@ public:
   void initialize ();
   bool callProgramHook (const std::string&, const std::string&);
   bool callTaskHook    (const std::string&, const std::string&, Task&);
-  bool callFieldHook   (const std::string&, const std::string&, const std::string&, std::string&);
 
 private:
   void loadFile (const std::string&);
