@@ -41,50 +41,40 @@ extern Context context;
 int handleExportCSV (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-export-command"))
-  {
-    std::stringstream out;
+  // Deliberately no 'id'.
+  out << "'uuid',"
+      << "'status',"
+      << "'tags',"
+      << "'entry',"
+      << "'start',"
+      << "'due',"
+      << "'recur',"
+      << "'end',"
+      << "'project',"
+      << "'priority',"
+      << "'fg',"
+      << "'bg',"
+      << "'description'"
+      << "\n";
 
-    // Deliberately no 'id'.
-    out << "'uuid',"
-        << "'status',"
-        << "'tags',"
-        << "'entry',"
-        << "'start',"
-        << "'due',"
-        << "'recur',"
-        << "'end',"
-        << "'project',"
-        << "'priority',"
-        << "'fg',"
-        << "'bg',"
-        << "'description'"
-        << "\n";
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
-    // Get all the tasks.
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    context.tdb.load (tasks, context.filter);
-    context.tdb.commit ();
-    context.tdb.unlock ();
+  foreach (task, tasks)
+    if (task->getStatus () != Task::recurring)
+      out << task->composeCSV ().c_str ();
 
-    foreach (task, tasks)
-    {
-      context.hooks.trigger ("pre-display", *task);
+  outs = out.str ();
 
-      if (task->getStatus () != Task::recurring)
-        out << task->composeCSV ().c_str ();
-    }
-
-    outs = out.str ();
-    context.hooks.trigger ("post-export-command");
-
-    // Prevent messages from cluttering the export output.
-    context.headers.clear ();
-  }
-
+  // Prevent messages from cluttering the export output.
+  context.headers.clear ();
   return rc;
 }
 
@@ -95,133 +85,125 @@ int handleExportCSV (std::string& outs)
 int handleExportiCal (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-export-command"))
+  out << "BEGIN:VCALENDAR\n"
+      << "VERSION:2.0\n"
+      << "PRODID:-//GBF//" << PACKAGE_STRING << "//EN\n";
+
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  foreach (task, tasks)
   {
-    std::stringstream out;
-
-    out << "BEGIN:VCALENDAR\n"
-        << "VERSION:2.0\n"
-        << "PRODID:-//GBF//" << PACKAGE_STRING << "//EN\n";
-
-    // Get all the tasks.
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    context.tdb.load (tasks, context.filter);
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    foreach (task, tasks)
+    if (task->getStatus () != Task::recurring)
     {
-      context.hooks.trigger ("pre-display", *task);
+      out << "BEGIN:VTODO\n";
 
-      if (task->getStatus () != Task::recurring)
+      // Required UID:20070313T123432Z-456553@example.com
+      out << "UID:" << task->get ("uuid") << "\n";
+
+      // Required DTSTAMP:20070313T123432Z
+      Date entry (atoi (task->get ("entry").c_str ()));
+      out << "DTSTAMP:" << entry.toISO () << "\n";
+
+      // Optional DTSTART:20070514T110000Z
+      if (task->has ("start"))
       {
-        out << "BEGIN:VTODO\n";
-
-        // Required UID:20070313T123432Z-456553@example.com
-        out << "UID:" << task->get ("uuid") << "\n";
-
-        // Required DTSTAMP:20070313T123432Z
-        Date entry (atoi (task->get ("entry").c_str ()));
-        out << "DTSTAMP:" << entry.toISO () << "\n";
-
-        // Optional DTSTART:20070514T110000Z
-        if (task->has ("start"))
-        {
-          Date start (atoi (task->get ("start").c_str ()));
-          out << "DTSTART:" << start.toISO () << "\n";
-        }
-
-        // Optional DUE:20070709T130000Z
-        if (task->has ("due"))
-        {
-          Date due (atoi (task->get ("due").c_str ()));
-          out << "DUE:" << due.toISO () << "\n";
-        }
-
-        // Optional COMPLETED:20070707T100000Z
-        if (task->has ("end") && task->getStatus () == Task::completed)
-        {
-          Date end (atoi (task->get ("end").c_str ()));
-          out << "COMPLETED:" << end.toISO () << "\n";
-        }
-
-        out << "SUMMARY:" << task->get ("description") << "\n";
-
-        // Optional CLASS:PUBLIC/PRIVATE/CONFIDENTIAL
-        std::string classification = context.config.get ("export.ical.class");
-        if (classification == "")
-          classification = "PRIVATE";
-        out << "CLASS:" << classification << "\n";
-
-        // Optional multiple CATEGORIES:FAMILY,FINANCE
-        if (task->getTagCount () > 0)
-        {
-          std::vector <std::string> tags;
-          task->getTags (tags);
-          std::string all;
-          join (all, ",", tags);
-          out << "CATEGORIES:" << all << "\n";
-        }
-
-        // Optional PRIORITY:
-        // 1-4  H
-        // 5    M
-        // 6-9  L
-        if (task->has ("priority"))
-        {
-          out << "PRIORITY:";
-          std::string priority = task->get ("priority");
-
-               if (priority == "H") out << "1";
-          else if (priority == "M") out << "5";
-          else                      out << "9";
-
-          out << "\n";
-        }
-
-        // Optional STATUS:NEEDS-ACTION/IN-PROCESS/COMPLETED/CANCELLED
-        out << "STATUS:";
-        Task::status stat = task->getStatus ();
-        if (stat == Task::pending || stat == Task::waiting)
-        {
-          if (task->has ("start"))
-            out << "IN-PROCESS";
-          else
-            out << "NEEDS-ACTION";
-        }
-        else if (stat == Task::completed)
-        {
-          out << "COMPLETED";
-        }
-        else if (stat == Task::deleted)
-        {
-          out << "CANCELLED";
-        }
-        out << "\n";
-
-        // Optional COMMENT:annotation1
-        // Optional COMMENT:annotation2
-        std::vector <Att> annotations;
-        task->getAnnotations (annotations);
-        foreach (anno, annotations)
-          out << "COMMENT:" << anno->value () << "\n";
-
-        out << "END:VTODO\n";
+        Date start (atoi (task->get ("start").c_str ()));
+        out << "DTSTART:" << start.toISO () << "\n";
       }
+
+      // Optional DUE:20070709T130000Z
+      if (task->has ("due"))
+      {
+        Date due (atoi (task->get ("due").c_str ()));
+        out << "DUE:" << due.toISO () << "\n";
+      }
+
+      // Optional COMPLETED:20070707T100000Z
+      if (task->has ("end") && task->getStatus () == Task::completed)
+      {
+        Date end (atoi (task->get ("end").c_str ()));
+        out << "COMPLETED:" << end.toISO () << "\n";
+      }
+
+      out << "SUMMARY:" << task->get ("description") << "\n";
+
+      // Optional CLASS:PUBLIC/PRIVATE/CONFIDENTIAL
+      std::string classification = context.config.get ("export.ical.class");
+      if (classification == "")
+        classification = "PRIVATE";
+      out << "CLASS:" << classification << "\n";
+
+      // Optional multiple CATEGORIES:FAMILY,FINANCE
+      if (task->getTagCount () > 0)
+      {
+        std::vector <std::string> tags;
+        task->getTags (tags);
+        std::string all;
+        join (all, ",", tags);
+        out << "CATEGORIES:" << all << "\n";
+      }
+
+      // Optional PRIORITY:
+      // 1-4  H
+      // 5    M
+      // 6-9  L
+      if (task->has ("priority"))
+      {
+        out << "PRIORITY:";
+        std::string priority = task->get ("priority");
+
+             if (priority == "H") out << "1";
+        else if (priority == "M") out << "5";
+        else                      out << "9";
+
+        out << "\n";
+      }
+
+      // Optional STATUS:NEEDS-ACTION/IN-PROCESS/COMPLETED/CANCELLED
+      out << "STATUS:";
+      Task::status stat = task->getStatus ();
+      if (stat == Task::pending || stat == Task::waiting)
+      {
+        if (task->has ("start"))
+          out << "IN-PROCESS";
+        else
+          out << "NEEDS-ACTION";
+      }
+      else if (stat == Task::completed)
+      {
+        out << "COMPLETED";
+      }
+      else if (stat == Task::deleted)
+      {
+        out << "CANCELLED";
+      }
+      out << "\n";
+
+      // Optional COMMENT:annotation1
+      // Optional COMMENT:annotation2
+      std::vector <Att> annotations;
+      task->getAnnotations (annotations);
+      foreach (anno, annotations)
+        out << "COMMENT:" << anno->value () << "\n";
+
+      out << "END:VTODO\n";
     }
-
-    out << "END:VCALENDAR\n";
-
-    outs = out.str ();
-    context.hooks.trigger ("post-export-command");
-
-    // Prevent messages from cluttering the export output.
-    context.headers.clear ();
   }
 
+  out << "END:VCALENDAR\n";
+
+  outs = out.str ();
+
+  // Prevent messages from cluttering the export output.
+  context.headers.clear ();
   return rc;
 }
 
@@ -230,36 +212,27 @@ int handleExportYAML (std::string& outs)
 {
   int rc = 0;
 
-  if (context.hooks.trigger ("pre-export-command"))
-  {
-    // YAML header.
-    std::stringstream out;
-    out << "%YAML 1.1\n"
-        << "---\n";
+  // YAML header.
+  std::stringstream out;
+  out << "%YAML 1.1\n"
+      << "---\n";
 
-    // Get all the tasks.
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    context.tdb.load (tasks, context.filter);
-    context.tdb.commit ();
-    context.tdb.unlock ();
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
-    foreach (task, tasks)
-    {
-      context.hooks.trigger ("pre-display", *task);
-      out << task->composeYAML ().c_str ();
-    }
+  foreach (task, tasks)
+    out << task->composeYAML ().c_str ();
 
-    out << "...\n";
+  out << "...\n";
+  outs = out.str ();
 
-    outs = out.str ();
-    context.hooks.trigger ("post-export-command");
-
-    // Prevent messages from cluttering the export output.
-    context.headers.clear ();
-  }
-
+  // Prevent messages from cluttering the export output.
+  context.headers.clear ();
   return rc;
 }
 

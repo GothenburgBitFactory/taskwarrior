@@ -2457,7 +2457,7 @@ void handleShell ()
       std::string prompt = context.config.get ("shell.prompt");
       if (context.hooks.trigger ("pre-shell-prompt"))
       {
-        context.hooks.trigger ("format-prompt", "prompt", prompt);
+        //context.hooks.trigger ("format-prompt", "prompt", prompt);
         std::cout << prompt << " ";
       }
       context.hooks.trigger ("post-shell-prompt");

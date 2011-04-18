@@ -60,12 +60,10 @@ public:
 
   bool trigger (const std::string&);                                   // Program
   bool trigger (const std::string&, Task&);                            // Task
-  bool trigger (const std::string&, const std::string&, std::string&); // Field
 
 private:
   bool validProgramEvent (const std::string&);
   bool validTaskEvent (const std::string&);
-  bool validFieldEvent (const std::string&);
 
 private:
 #ifdef HAVE_LIBLUA
@@ -75,7 +73,6 @@ private:
 
   std::vector <std::string> validProgramEvents;
   std::vector <std::string> validTaskEvents;
-  std::vector <std::string> validFieldEvents;
 };
 
 #endif

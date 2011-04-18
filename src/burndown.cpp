@@ -974,47 +974,41 @@ int handleReportBurndownDaily (std::string& outs)
 {
   int rc = 0;
 
-  if (context.hooks.trigger ("pre-burndown-command"))
+  // Scan the pending tasks, applying any filter.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Create a chart, scan the tasks, then render.
+  Chart chart ('D');
+
+  // Use any filter as a title.
+  if (context.filter.size ())
   {
-    // Scan the pending tasks, applying any filter.
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    context.tdb.load (tasks, context.filter);
-    context.tdb.commit ();
-    context.tdb.unlock ();
+    std::string combined = "(";
 
-    // Create a chart, scan the tasks, then render.
-    Chart chart ('D');
-
-    // Use any filter as a title.
-    if (context.filter.size ())
+    for (unsigned int i = 0; i < context.filter.size (); ++i)
     {
-      std::string combined = "(";
+      if (i)
+        combined += " ";
 
-      for (unsigned int i = 0; i < context.filter.size (); ++i)
-      {
-        if (i)
-          combined += " ";
+      combined += context.filter[i].name ();
 
-        combined += context.filter[i].name ();
+      if (context.filter[i].mod ().length ())
+        combined += "." + context.filter[i].mod ();
 
-        if (context.filter[i].mod ().length ())
-          combined += "." + context.filter[i].mod ();
-
-        combined += ":" + context.filter[i].value ();
-      }
-
-      combined += ")";
-      chart.description (combined);
+      combined += ":" + context.filter[i].value ();
     }
 
-    chart.scan (tasks);
-    outs = chart.render ();
-
-    context.hooks.trigger ("post-burndown-command");
+    combined += ")";
+    chart.description (combined);
   }
 
+  chart.scan (tasks);
+  outs = chart.render ();
   return rc;
 }
 
@@ -1023,47 +1017,41 @@ int handleReportBurndownWeekly (std::string& outs)
 {
   int rc = 0;
 
-  if (context.hooks.trigger ("pre-burndown-command"))
+  // Scan the pending tasks, applying any filter.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Create a chart, scan the tasks, then render.
+  Chart chart ('W');
+
+  // Use any filter as a title.
+  if (context.filter.size ())
   {
-    // Scan the pending tasks, applying any filter.
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    context.tdb.load (tasks, context.filter);
-    context.tdb.commit ();
-    context.tdb.unlock ();
+    std::string combined = "(";
 
-    // Create a chart, scan the tasks, then render.
-    Chart chart ('W');
-
-    // Use any filter as a title.
-    if (context.filter.size ())
+    for (unsigned int i = 0; i < context.filter.size (); ++i)
     {
-      std::string combined = "(";
+      if (i)
+        combined += " ";
 
-      for (unsigned int i = 0; i < context.filter.size (); ++i)
-      {
-        if (i)
-          combined += " ";
+      combined += context.filter[i].name ();
 
-        combined += context.filter[i].name ();
+      if (context.filter[i].mod ().length ())
+        combined += "." + context.filter[i].mod ();
 
-        if (context.filter[i].mod ().length ())
-          combined += "." + context.filter[i].mod ();
-
-        combined += ":" + context.filter[i].value ();
-      }
-
-      combined += ")";
-      chart.description (combined);
+      combined += ":" + context.filter[i].value ();
     }
 
-    chart.scan (tasks);
-    outs = chart.render ();
-
-    context.hooks.trigger ("post-burndown-command");
+    combined += ")";
+    chart.description (combined);
   }
 
+  chart.scan (tasks);
+  outs = chart.render ();
   return rc;
 }
 
@@ -1072,47 +1060,41 @@ int handleReportBurndownMonthly (std::string& outs)
 {
   int rc = 0;
 
-  if (context.hooks.trigger ("pre-burndown-command"))
+  // Scan the pending tasks, applying any filter.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Create a chart, scan the tasks, then render.
+  Chart chart ('M');
+
+  // Use any filter as a title.
+  if (context.filter.size ())
   {
-    // Scan the pending tasks, applying any filter.
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    context.tdb.load (tasks, context.filter);
-    context.tdb.commit ();
-    context.tdb.unlock ();
+    std::string combined = "(";
 
-    // Create a chart, scan the tasks, then render.
-    Chart chart ('M');
-
-    // Use any filter as a title.
-    if (context.filter.size ())
+    for (unsigned int i = 0; i < context.filter.size (); ++i)
     {
-      std::string combined = "(";
+      if (i)
+        combined += " ";
 
-      for (unsigned int i = 0; i < context.filter.size (); ++i)
-      {
-        if (i)
-          combined += " ";
+      combined += context.filter[i].name ();
 
-        combined += context.filter[i].name ();
+      if (context.filter[i].mod ().length ())
+        combined += "." + context.filter[i].mod ();
 
-        if (context.filter[i].mod ().length ())
-          combined += "." + context.filter[i].mod ();
-
-        combined += ":" + context.filter[i].value ();
-      }
-
-      combined += ")";
-      chart.description (combined);
+      combined += ":" + context.filter[i].value ();
     }
 
-    chart.scan (tasks);
-    outs = chart.render ();
-
-    context.hooks.trigger ("post-burndown-command");
+    combined += ")";
+    chart.description (combined);
   }
 
+  chart.scan (tasks);
+  outs = chart.render ();
   return rc;
 }
 

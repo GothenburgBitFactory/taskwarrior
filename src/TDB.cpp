@@ -191,25 +191,21 @@ void TDB::location (const std::string& path)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::lock (bool lockFile /* = true */)
 {
-  if (context.hooks.trigger ("pre-file-lock"))
+  mLock = lockFile;
+
+  mPending.clear ();
+  mNew.clear ();
+  mCompleted.clear ();
+  mModified.clear ();
+
+  foreach (location, mLocations)
   {
-    mLock = lockFile;
-
-    mPending.clear ();
-    mNew.clear ();
-    mCompleted.clear ();
-    mModified.clear ();
-
-    foreach (location, mLocations)
-    {
-      location->pending   = openAndLock (location->path + "/pending.data");
-      location->completed = openAndLock (location->path + "/completed.data");
-      location->undo      = openAndLock (location->path + "/undo.data");
-    }
-
-    mAllOpenAndLocked = true;
-    context.hooks.trigger ("post-file-lock");
+    location->pending   = openAndLock (location->path + "/pending.data");
+    location->completed = openAndLock (location->path + "/completed.data");
+    location->undo      = openAndLock (location->path + "/undo.data");
   }
+
+  mAllOpenAndLocked = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -492,7 +488,6 @@ void TDB::update (const Task& task)
 int TDB::commit ()
 {
   Timer t ("TDB::commit");
-  context.hooks.trigger ("pre-commit");
 
   int quantity = mNew.size () + mModified.size ();
 
@@ -512,7 +507,6 @@ int TDB::commit ()
       writeUndo (*task, mLocations[0].undo);
 
     mNew.clear ();
-    context.hooks.trigger ("post-commit");
     return quantity;
   }
 
@@ -579,7 +573,6 @@ int TDB::commit ()
     mNew.clear ();
   }
 
-  context.hooks.trigger ("post-commit");
   return quantity;
 }
 
@@ -713,7 +706,6 @@ int TDB::nextId ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::undo ()
 {
-  context.hooks.trigger ("pre-undo");
   Directory location (context.config.get ("data.location"));
 
   std::string undoFile      = location.data + "/undo.data";
@@ -997,7 +989,6 @@ void TDB::undo ()
       !confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
   {
     std::cout << "No changes made.\n";
-    context.hooks.trigger ("post-undo");
     return;
   }
 
@@ -1035,7 +1026,6 @@ void TDB::undo ()
       // Rewrite files.
       File::write (pendingFile, p);
       File::write (undoFile, u);
-      context.hooks.trigger ("post-undo");
       return;
     }
   }
@@ -1074,7 +1064,6 @@ void TDB::undo ()
       }
 
       std::cout << "Undo complete.\n";
-      context.hooks.trigger ("post-undo");
       return;
     }
   }

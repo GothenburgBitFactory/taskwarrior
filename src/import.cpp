@@ -1264,94 +1264,88 @@ static std::string importYAML (const std::vector <std::string>& lines)
 int handleImport (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-import-command"))
+	// Use the description as a file name.
+  std::string file = trim (context.task.get ("description"));
+
+  std::string tmpfile = "";
+  Uri uri (file);
+  uri.parse ();
+
+  Transport* transport;
+  if ((transport = Transport::getTransport (uri)) != NULL )
   {
-    std::stringstream out;
+    std::string location (context.config.get ("data.location"));
+    tmpfile = location + "/import.data";
+    transport->recv (tmpfile);
+    delete transport;
 
-		// Use the description as a file name.
-    std::string file = trim (context.task.get ("description"));
-
-    std::string tmpfile = "";
-    Uri uri (file);
-    uri.parse ();
-
-    Transport* transport;
-    if ((transport = Transport::getTransport (uri)) != NULL )
-    {
-      std::string location (context.config.get ("data.location"));
-      tmpfile = location + "/import.data";
-      transport->recv (tmpfile);
-      delete transport;
-
-      file = tmpfile;
-    }
-
-    if (file.length () > 0)
-    {
-      // Load the file.
-      std::vector <std::string> all;
-      File::read (file, all);
-
-      std::vector <std::string> lines;
-      std::vector <std::string>::iterator it;
-      for (it = all.begin (); it != all.end (); ++it)
-      {
-        std::string line = *it;
-        trim (line);
-
-        // Skip blank lines
-        if (line.length () > 0)
-          lines.push_back (line);
-      }
-
-      // Take a guess at the file type.
-      fileType type = determineFileType (lines);
-      std::string identifier;
-      switch (type)
-      {
-      case task_1_4_3:    identifier = "This looks like an older taskwarrior export file.";              break;
-      case task_1_5_0:    identifier = "This looks like a recent taskwarrior export file.";              break;
-      case task_1_6_0:    identifier = "This looks like a current taskwarrior export file.";             break;
-      case task_cmd_line: identifier = "This looks like taskwarrior command line arguments.";            break;
-      case todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                            break;
-      case csv:           identifier = "This looks like a CSV file, but not a taskwarrior export file."; break;
-      case yaml:          identifier = "This looks like a YAML file.";                                   break;
-      case text:          identifier = "This looks like a text file with one task per line.";            break;
-      case not_a_clue:
-        throw std::string ("Taskwarrior cannot determine which type of file "
-                           "this is, and cannot proceed.");
-      }
-
-      // For tty users, confirm the import, as it is destructive.
-      if (isatty (fileno (stdout)))
-        if (! confirm (identifier + "  Okay to proceed?"))
-          throw std::string ("Taskwarrior will not import any data.");
-
-      // Determine which type it might be, then attempt an import.
-      switch (type)
-      {
-      case task_1_4_3:    out << importTask_1_4_3  (lines); break;
-      case task_1_5_0:    out << importTask_1_5_0  (lines); break;
-      case task_1_6_0:    out << importTask_1_6_0  (lines); break;
-      case task_cmd_line: out << importTaskCmdLine (lines); break;
-      case todo_sh_2_0:   out << importTodoSh_2_0  (lines); break;
-      case csv:           out << importCSV         (lines); break;
-      case yaml:          out << importYAML        (lines); break;
-      case text:          out << importText        (lines); break;
-      case not_a_clue:    /* to stop the compiler from complaining. */ break;
-      }
-
-      if (tmpfile != "")
-        remove (tmpfile.c_str ());
-    }
-    else
-      throw std::string ("You must specify a file to import.");
-
-    outs = out.str ();
-    context.hooks.trigger ("post-import-command");
+    file = tmpfile;
   }
 
+  if (file.length () > 0)
+  {
+    // Load the file.
+    std::vector <std::string> all;
+    File::read (file, all);
+
+    std::vector <std::string> lines;
+    std::vector <std::string>::iterator it;
+    for (it = all.begin (); it != all.end (); ++it)
+    {
+      std::string line = *it;
+      trim (line);
+
+      // Skip blank lines
+      if (line.length () > 0)
+        lines.push_back (line);
+    }
+
+    // Take a guess at the file type.
+    fileType type = determineFileType (lines);
+    std::string identifier;
+    switch (type)
+    {
+    case task_1_4_3:    identifier = "This looks like an older taskwarrior export file.";              break;
+    case task_1_5_0:    identifier = "This looks like a recent taskwarrior export file.";              break;
+    case task_1_6_0:    identifier = "This looks like a current taskwarrior export file.";             break;
+    case task_cmd_line: identifier = "This looks like taskwarrior command line arguments.";            break;
+    case todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                            break;
+    case csv:           identifier = "This looks like a CSV file, but not a taskwarrior export file."; break;
+    case yaml:          identifier = "This looks like a YAML file.";                                   break;
+    case text:          identifier = "This looks like a text file with one task per line.";            break;
+    case not_a_clue:
+      throw std::string ("Taskwarrior cannot determine which type of file "
+                         "this is, and cannot proceed.");
+    }
+
+    // For tty users, confirm the import, as it is destructive.
+    if (isatty (fileno (stdout)))
+      if (! confirm (identifier + "  Okay to proceed?"))
+        throw std::string ("Taskwarrior will not import any data.");
+
+    // Determine which type it might be, then attempt an import.
+    switch (type)
+    {
+    case task_1_4_3:    out << importTask_1_4_3  (lines); break;
+    case task_1_5_0:    out << importTask_1_5_0  (lines); break;
+    case task_1_6_0:    out << importTask_1_6_0  (lines); break;
+    case task_cmd_line: out << importTaskCmdLine (lines); break;
+    case todo_sh_2_0:   out << importTodoSh_2_0  (lines); break;
+    case csv:           out << importCSV         (lines); break;
+    case yaml:          out << importYAML        (lines); break;
+    case text:          out << importText        (lines); break;
+    case not_a_clue:    /* to stop the compiler from complaining. */ break;
+    }
+
+    if (tmpfile != "")
+      remove (tmpfile.c_str ());
+  }
+  else
+    throw std::string ("You must specify a file to import.");
+
+  outs = out.str ();
   return rc;
 }
 

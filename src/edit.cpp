@@ -652,32 +652,27 @@ int handleEdit (std::string& outs)
 {
   int rc = 0;
 
-  if (context.hooks.trigger ("pre-edit-command"))
-  {
-    std::stringstream out;
+  std::stringstream out;
 
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    Filter filter;
-    context.tdb.loadPending (tasks, filter);
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
 
-    // Filter sequence.
-    std::vector <Task> all = tasks;
-    context.filter.applySequence (tasks, context.sequence);
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
 
-    std::vector <Task>::iterator task;
-    for (task = tasks.begin (); task != tasks.end (); ++task)
-      if (editFile (*task))
-        context.tdb.update (*task);
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (editFile (*task))
+      context.tdb.update (*task);
 
-    context.tdb.commit ();
-    context.tdb.unlock ();
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
-    outs = out.str ();
-    context.hooks.trigger ("post-edit-command");
-  }
-
+  outs = out.str ();
   return rc;
 }
 

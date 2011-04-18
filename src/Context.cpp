@@ -124,7 +124,7 @@ void Context::initialize (int argc, char** argv)
   // Hook system init, plus post-start event occurring at the first possible
   // moment after hook initialization.
   hooks.initialize ();
-  hooks.trigger ("post-start");
+  hooks.trigger ("on-launch");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -189,41 +189,33 @@ int Context::run ()
   }
 
   // Dump all debug messages.
-  hooks.trigger ("pre-debug");
   if (config.getBoolean ("debug"))
     foreach (d, debugMessages)
       if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
         std::cout << colorizeDebug (*d) << "\n";
       else
         std::cout << *d << "\n";
-  hooks.trigger ("post-debug");
 
   // Dump all headers.
-  hooks.trigger ("pre-header");
   if (config.getBoolean ("verbose"))
     foreach (h, headers)
       if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
         std::cout << colorizeHeader (*h) << "\n";
       else
         std::cout << *h << "\n";
-  hooks.trigger ("post-header");
 
   // Dump the report output.
-  hooks.trigger ("pre-output");
   std::cout << output;
-  hooks.trigger ("post-output");
 
   // Dump all footnotes.
-  hooks.trigger ("pre-footnote");
   if (config.getBoolean ("verbose"))
     foreach (f, footnotes)
       if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
         std::cout << colorizeFootnote (*f) << "\n";
       else
         std::cout << *f << "\n";
-  hooks.trigger ("post-footnote");
 
-  hooks.trigger ("pre-exit");
+  hooks.trigger ("on-exit");
   return rc;
 }
 
@@ -233,8 +225,6 @@ int Context::dispatch (std::string &out)
   int rc = 0;
 
   Timer t ("Context::dispatch");
-
-  hooks.trigger ("pre-dispatch");
 
   // For read-only commands, optionally update the xterm window title.
   // Why just the read-only commands?  Because this capability is to answer the
@@ -310,15 +300,12 @@ int Context::dispatch (std::string &out)
                                                 rc = handleCustomReport (cmd.command, out); }
 
   // If the command is not recognized, display usage.
-  else                                        { hooks.trigger ("pre-usage-command");
-                                                rc = shortUsage (out);
-                                                hooks.trigger ("post-usage-command"); }
+  else                                        { rc = shortUsage (out); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
   if (cmd.isWriteCommand () && !inShadow)
     shadow ();
 
-  hooks.trigger ("post-dispatch");
   return rc;
 }
 

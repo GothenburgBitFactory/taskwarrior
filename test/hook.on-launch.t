@@ -35,7 +35,7 @@ if (open my $fh, '>', 'hook.rc')
 {
   print $fh "data.location=.\n",
             "hooks=on\n",
-            "hook.pre-exit=" . $ENV{'PWD'} . "/hook:test\n";
+            "hook.on-launch=" . $ENV{'PWD'} . "/hook:test\n";
   close $fh;
   ok (-r 'hook.rc', 'Created hook.rc');
 }
@@ -47,17 +47,16 @@ if (open my $fh, '>', 'hook')
   ok (-r 'hook', 'Created hook');
 }
 
-# Test the hook.
 my $output = qx{../src/task rc:hook.rc version};
 if ($output =~ /PUC-Rio/)
 {
   # Test the hook.
   $output = qx{../src/task rc:hook.rc _version};
-  like ($output, qr/\n\w{7}/ms, 'Found marker after output');
+  like ($output, qr/^marker.+\n\w{7}/ms, 'Found marker before output');
 }
 else
 {
-  pass ('Found marker after output - skipping: no Lua support');
+  pass ('Found marker before output - skip: no Lua support');
 }
 
 # Cleanup.
