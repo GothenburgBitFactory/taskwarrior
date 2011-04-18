@@ -53,7 +53,6 @@
 #include <API.h>
 
 extern Context context;
-Task* the_task = NULL;
 
 #ifdef HAVE_LIBLUA
 
@@ -122,6 +121,7 @@ static int api_task_set (lua_State* L)
   catch (...)
   {
     // TODO Error!
+    lua_pushstring (L, "");
   }
 }
 
@@ -223,15 +223,9 @@ bool API::callTaskHook (
   // Prepare args.
   lua_pushnumber (L, current.id);
 
-  // Expose the task.
-  the_task = &current;
-
   // Make call.
   if (lua_pcall (L, 1, 2, 0) != 0)
     throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1) + ".";
-
-  // Hide the task.
-  the_task = NULL;
 
   // Call successful - get return values.
   if (!lua_isnumber (L, -2))

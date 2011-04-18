@@ -1,8 +1,100 @@
-There are several types of extension:
+Extensions
+----------
 
-- Hook-based
-- User Defined Attribute
-- Command
-- Format
-- DOM
+Extensions are Lua scripts that require installation and configuration, and when
+invoked have access to taskwarrior internals through a Lua API.
+
+There are several types of extension.  Each type has different requirements, and
+is called in different ways.
+
+All extensions must be installed, which means they must implement the 'install'
+function, which provides:
+
+  - Type              One of: program, task, uda, command, format, dom
+  - Name              Single word name
+  - Version           Version string
+  - Description       One to two line description
+  - Author            Author's name
+  - Contact           Author's contact
+  - License           Distribution License
+  - Copyright         Copyright notice
+
+
+Program Hooks
+-------------
+
+These are scripts that are triggered by program-level events.  The supported
+program hooks are:
+
+    on-launch         As soon as is convenient after program launch
+    on-exit           As late as possible while still providing API
+    on-file-read      Immediately before reading a data file
+    on-file-write     Immediately after writing a data file
+    on-synch          Immediately before a synch operation
+    on-merge          Immediately before a merge operation
+    on-gc             Immediately before a GC operation
+
+When a program hook script is invoked, there is no context, so no arguments are
+passed to the script.
+
+
+Task Hooks
+----------
+
+These scripts are triggered by task-specific events.  The supported task hooks
+are:
+
+    on-task-add       Immediately prior to committing an added task
+    on-task-modify    Immediately prior to committing a modified task
+    on-task-complete  Immediately prior to committing a completed task
+    on-task-delete    Immediately prior to committing a deleted task
+
+When a task hook script is invoked, the context is a specific task, and so the
+task uuid is passed as the only argument.
+
+
+User Defined Attribute
+----------------------
+
+It is possible to create a user-defined attribute with a UDA extension.  These
+extensions must provide:
+
+    - Data type (string, date, duration, integer, real, custom)
+    - Custom types must implement a compare function for sorting
+    - Default format rendering
+    - Allowed value checking
+
+
+Command
+-------
+
+It is possible to implement a command using an extension.  These extensions must
+provide:
+
+    - BNF command syntax
+    - Declaration as read-only or write command, which allows taskwarrior to
+      allow this command when the database is read-only
+    - Declaration of whether the command displays ID values, which instructs
+      taskwarrior to run a GC beforehan
+
+
+Format
+------
+
+A format extension is one that provides custom rendering for an attribute.
+These extensions must provide:
+
+    - Must implement a format function.
+
+
+DOM
+---
+
+DOM extensions provide a DOM address and can be called to respond to that name.
+These extensions must provide:
+
+    - DOM name
+    - Evaluation function
+
+---
 
