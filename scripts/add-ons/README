@@ -1,7 +1,7 @@
 External Scripts
 ----------------
 
-Add-on scripts are executed vi an alias mechanism in taskwarrior.  This has the
+Add-on scripts are executed via an alias mechanism in taskwarrior.  This has the
 effect of this command:
 
     task <script> <arguments>
