@@ -104,7 +104,7 @@ void Hooks::initialize ()
 #endif
 
   // Allow a master switch to turn the whole thing off.
-  bool big_red_switch = context.config.getBoolean ("hooks");
+  bool big_red_switch = context.config.getBoolean ("extensions");
   if (big_red_switch)
   {
     std::vector <std::string> vars;
