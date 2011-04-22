@@ -17,6 +17,9 @@
  + Added Czech Republic holiday files (thanks to Tomas Cech).
  + All holiday files have been renamed to include a locale, rather than just a
    country code.  For example: holidays.en-US.rc.
+ + Now ships with an add-on script, update-holidays.pl, which contacts
+   http://holidata.net, and brings the installed holiday files up to date.
+ + Extension system now controlled by the 'extensions' configuration variable.
 
 # Tracked Features, sorted by ID.
  + Added feature #523 & #659, adding 'status' as a reportable field (thanks to

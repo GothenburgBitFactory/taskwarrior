@@ -1178,7 +1178,7 @@ int handleShow (std::string& outs)
       "nag next journal.time journal.time.start.annotation journal.info "
       "journal.time.stop.annotation project shadow.command shadow.file "
       "shadow.notify weekstart editor edit.verbose import.synonym.id import.synonym.uuid "
-      "complete.all.projects complete.all.tags search.case.sensitive hooks "
+      "complete.all.projects complete.all.tags search.case.sensitive extensions "
       "active.indicator tag.indicator recurrence.indicator recurrence.limit "
       "list.all.projects list.all.tags undo.style verbose rule.precedence.color "
       "merge.autopush merge.default.uri pull.default.uri push.default.uri "

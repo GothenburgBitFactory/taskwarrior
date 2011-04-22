@@ -24,6 +24,7 @@ New configuration options in taskwarrior 2.0.0
   - The old 'curses' configuration variable is renamed to 'detection', but
     retains the original meaning, which is whether or not to auto-detect the
     dimensions of the terminal window.
+  - Extension system now controlled by the 'extensions' configuration variable.
 
 Newly deprecated features in taskwarrior 2.0.0
 

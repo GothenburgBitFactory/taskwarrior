@@ -349,6 +349,11 @@ Taskwarrior supports command aliases.  This alias provides an alternate name
 any of the commands.  Several commands you may use are actually aliases -
 the 'history' report, for example, or 'export'.
 
+.SS EXTENSIONS
+.TP
+.B extensions=on
+Enables the extension system.  Defaults to on.
+
 .SS DATES
 
 .TP
@@ -488,7 +493,7 @@ of the holidays is also shown.  If set to sparse only the days are color-coded
 and no details on the holidays will be displayed. The displaying of holidays is
 turned off by setting the variable to none.  The default value is "none".
 
-.SS Journal entries
+.SS JOURNAL ENTRIES
 
 .TP
 .B journal.time=no
@@ -511,7 +516,7 @@ having set journal.time.
 When enabled, this setting causes a change log of each task to be displayed by
 the 'info' command.  Default value is "on".
 
-.SS Holidays
+.SS HOLIDAYS
 Holidays are entered either directly in the .taskrc file or via an include file
 that is specified in .taskrc.  For each holiday the name and the date is
 required to be given:

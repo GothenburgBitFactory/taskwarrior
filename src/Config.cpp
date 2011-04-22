@@ -253,7 +253,7 @@ std::string Config::defaults =
   "list.all.projects=no                           # Include old project names in 'projects' command\n"
   "list.all.tags=no                               # Include old tag names in 'tags' command\n"
   "debug=no                                       # Display diagnostics\n"
-  "hooks=off                                      # Hook system master switch\n"
+  "extensions=off                                 # Extension system master switch\n"
   "fontunderline=yes                              # Uses underlines rather than -------\n"
   "shell.prompt=task>                             # Prompt used by the shell command\n"
   "\n"
