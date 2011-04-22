@@ -288,18 +288,6 @@ Color Table::getColor (const int index, const int row, const int col)
   if (index % 2)
     c = alternate;
 
-/*
-  // TODO Obsolete - this is not used.  Consider removal.
-  // Blend with a table color, if specified.
-  if ((i = mColor.find ("table")) != mColor.end ())
-    c.blend (i->second);
-
-  // Blend with a column color, if specified.
-  sprintf (id, "col:%d", col);
-  if ((i = mColor.find (id)) != mColor.end ())
-    c.blend (i->second);
-*/
-
   // Blend with a row color, if specified.
   sprintf (id, "row:%d", row);
   if ((i = mColor.find (id)) != mColor.end ())
@@ -459,7 +447,7 @@ const std::string Table::formatHeader (
 
   std::string data = mColumns[col];
   Color c = getHeaderUnderline (col);
-  int gap = width - strippedLength (data);  // TODO Does this need characters () too?
+  int gap = width - characters (data);
 
   std::string pad = std::string (padding, ' ');
 
