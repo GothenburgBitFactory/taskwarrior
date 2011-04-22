@@ -567,6 +567,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "#include /usr/local/share/doc/task/rc/dark-blue-256.theme\n"
            << "#include /usr/local/share/doc/task/rc/dark-violets-256.theme\n"
            << "#include /usr/local/share/doc/task/rc/dark-yellow-green.theme\n"
+           << "#include /usr/local/share/doc/task/rc/dark-gray-256.theme\n"
            << "\n";
 
   // Write out the new file.
