@@ -355,13 +355,6 @@ bool Att::validNameValue (
           name               +
           "\" is not an attribute you may modify directly.";
 
-  // Thirdly, make sure the value has the expected form or values.
-  if (name == "project")
-  {
-    if (!noSpaces (value))
-      throw std::string ("The '") + name + "' attribute may not contain spaces.";
-  }
-
   else if (name == "priority")
   {
     if (value != "")

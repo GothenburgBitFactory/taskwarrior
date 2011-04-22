@@ -42,6 +42,10 @@
    truncated to a page.
  + Fixed Bug #732, which fixes misleading messages and documentation for
    merge/push/pull URIs (thanks to Tomas Cech).
+ + Fixed Bug #745, which allows projects names with spaces, provided the values
+   are quoted (thanks to Duane Waddle).
+ + Applied patch for Bug #746, which added missing documentation for the 'entry'
+   report column (thanks to Duane Waddle).
 
 # Untracked Bugs, biggest first.
 

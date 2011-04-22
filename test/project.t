@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 14;
 
 # Create the rc file.
 if (open my $fh, '>', 'pro.rc')
@@ -61,6 +61,10 @@ like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 33% complete
 $output = qx{../src/task rc:pro.rc 3 pro:bar};
 like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 50% complete \(1 of 2 tasks remaining\)\./, 'change project');
 like ($output, qr/The project 'bar' has changed\.  Project 'bar' is 0% complete \(1 of 1 tasks remaining\)\./, 'change project');
+
+# Test projects with spaces in them.
+$output = qx{../src/task rc:pro.rc 3 pro:"foo bar"};
+like ($output, qr/The project 'foo bar' has changed\./, 'project with spaces');
 
 # Cleanup.
 unlink 'pending.data';
