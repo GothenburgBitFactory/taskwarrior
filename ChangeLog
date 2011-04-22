@@ -26,6 +26,8 @@
    Peter De Poorter and Bryce Harrington).
  + Added feature #657 & #658, using the 'ids' command, tasks matching a filter
    can now be modified as a group (thanks to Bryce Harrington, Eric Fluger).
+ + Added feature #679, which makes color rules match project names in a left-
+   most fashion, like filters (thanks to ch077179).
  + Added feature #700, which adds tab-completion of built-in tags.
  + Added feature #710, which adds an attribute modifier prefix to return the
    complement of a filtered set (thanks to Dan White).

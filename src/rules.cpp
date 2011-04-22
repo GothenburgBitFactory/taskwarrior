@@ -153,8 +153,13 @@ static void colorizeProject (Task& task, const std::string& rule, Color& c)
   // Observe the case sensitivity setting.
   bool sensitive = context.config.getBoolean ("search.case.sensitive");
 
-  if (compare (task.get ("project"), rule.substr (14), sensitive))
-    c.blend (gsColor[rule]);
+  std::string project = task.get ("project");
+  std::string rule_trunc = rule.substr (14);
+
+  // Match project names leftmost, just like Context::autoFilter.
+  if (rule_trunc.length () <= project.length ())
+    if (compare (rule_trunc, project.substr (0, rule_trunc.length ()), sensitive))
+      c.blend (gsColor[rule]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
