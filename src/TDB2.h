@@ -34,6 +34,46 @@
 #include <File.h>
 #include <Task.h>
 
+// TF2 Class represents a single file in the task database.
+class TF2
+{
+public:
+  TF2 ();
+  ~TF2 ();
+
+  void target (const std::string&);
+
+  std::vector <Task>& get_tasks ();
+  std::vector <std::string>& get_lines ();
+  std::string& get_contents ();
+
+  void add_task (const Task&);
+  void modify_task (const Task&);
+  void add_line (const std::string&);
+  void clear_lines ();
+  void commit ();
+
+private:
+  void load_tasks ();
+  void load_lines ();
+  void load_contents ();
+
+private:
+  bool _dirty;
+  bool _loaded_tasks;
+  bool _loaded_lines;
+  bool _loaded_contents;
+  std::vector <Task> _tasks;
+  std::vector <Task> _added_tasks;
+  std::vector <Task> _modified_tasks;
+  std::vector <std::string> _lines;
+  std::vector <std::string> _added_lines;
+  std::string _contents;
+  File _file;
+};
+
+
+// TDB2 Class represents all the files in the task database.
 class TDB2
 {
 public:
@@ -41,37 +81,19 @@ public:
   ~TDB2 ();
 
   void set_location (const std::string&);
-
-  std::vector <Task>& get_pending_tasks ();
-  std::vector <std::string>& get_pending_lines ();
-  std::string& get_pending_contents ();
-
   void add (const Task&);
   void modify (const Task&);
   void commit ();
 
-private:
-  void load_pending_tasks ();
-  void load_pending_lines ();
-  void load_pending_contents ();
+public:
+  TF2 pending;
+  TF2 completed;
+  TF2 undo;
+  TF2 backlog;
+  TF2 synch_key;
 
 private:
   std::string _location;
-
-  bool _loaded_pending_tasks;
-  bool _loaded_pending_lines;
-  bool _loaded_pending_contents;
-  bool _dirty_pending_tasks;
-  bool _dirty_pending_lines;
-  bool _dirty_pending_contents;
-  std::vector <Task> _pending_tasks;
-  std::vector <std::string> _pending_lines;
-  std::string _pending_contents;
-  File _pending_file;
-
-  std::string _completed_contents;
-  std::string _backlog_contents;
-  std::string _undo_contents;
 };
 
 

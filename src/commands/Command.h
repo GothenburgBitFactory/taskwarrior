@@ -38,6 +38,8 @@ public:
   bool operator== (const Command&) const;     // TODO Is this necessary?
   ~Command ();
 
+  static Command* factory (const std::string&);
+
   bool implements (const std::string&) const;
   std::string execute (const std::string&);
 

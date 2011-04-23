@@ -27,16 +27,17 @@
 #ifndef INCLUDED_CONTEXT
 #define INCLUDED_CONTEXT
 
-#include "Filter.h"
-#include "Config.h"
-#include "Sequence.h"
-#include "Subst.h"
-#include "Cmd.h"
-#include "Task.h"
-#include "TDB.h"
-#include "TDB2.h"
-#include "Hooks.h"
-#include "DOM.h"
+#include <Command.h>
+#include <Filter.h>
+#include <Config.h>
+#include <Sequence.h>
+#include <Subst.h>
+#include <Cmd.h>
+#include <Task.h>
+#include <TDB.h>
+#include <TDB2.h>
+#include <Hooks.h>
+#include <DOM.h>
 
 class Context
 {
@@ -82,13 +83,13 @@ public:
   Sequence                  sequence;
   Subst                     subst;
   Task                      task;
-  TDB                       tdb;
+  TDB                       tdb;                // TODO Obsolete
   TDB2                      tdb2;
   std::string               program;
   std::vector <std::string> args;
   std::string               file_override;
   std::string               var_overrides;
-  Cmd                       cmd;
+  Cmd                       cmd;                // TODO Obsolete
   std::map <std::string, std::string> aliases;
   std::vector <std::string> tagAdditions;
   std::vector <std::string> tagRemovals;
@@ -99,6 +100,8 @@ public:
   std::vector <std::string> footnotes;
   std::vector <std::string> debugMessages;
   bool                      inShadow;
+
+  std::vector <Command*>    commands;
 
   int                       terminal_width;
   int                       terminal_height;

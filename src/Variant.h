@@ -37,14 +37,14 @@ class Variant
 public:
   enum variant_type
   {
-    v_unknown,
-    v_boolean,
-    v_integer,
-    v_double,
-    v_string,
-    v_date,
-    v_duration,
-    v_other
+    v_unknown  = 1,
+    v_boolean  = 2,
+    v_integer  = 4,
+    v_double   = 8,
+    v_string   = 16,
+    v_date     = 32,
+    v_duration = 64,
+    v_other    = 128
   };
 
   Variant ();
@@ -89,6 +89,7 @@ public:
   std::string format ();
   void cast (const variant_type);
   variant_type type ();
+  void promote (Variant&, Variant&);
 
 private:
   variant_type mType;

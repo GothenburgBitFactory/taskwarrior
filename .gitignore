@@ -4,6 +4,8 @@ commit.h
 Makefile
 */*task
 */*libtask.a
+*/*/libcommands.a
+*/*/libcolumns.a
 *~
 .*.swp
 package-config/osx/binary/task

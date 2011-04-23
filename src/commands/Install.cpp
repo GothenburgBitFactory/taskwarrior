@@ -26,80 +26,66 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <Install.h>
 #include <Context.h>
-#include <Column.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-Column* Column::factory (const std::string& name)
+Install::Install ()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Install::Install (const Install& other)
 {
 /*
-  if (name == "description")  return new ColumnDescription ();
-
-  throw std::string ("Unrecognized column type '") + name + "'";
-*/
-  return NULL;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Column::Column ()
-: _name ("")
-, _minimum (0)
-, _maximum (0)
-, _wrap (false)
-, _just (left)
-, _sizing (minimal)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Column::Column (const Column& other)
-{
-  _name    = other._name;
   _minimum = other._minimum;
-  _maximum = other._maximum;
-  _wrap    = other._wrap;
-  _just    = other._just;
-  _sizing  = other._sizing;
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Column& Column::operator= (const Column& other)
+Install& Install::operator= (const Install& other)
 {
   if (this != &other)
   {
+/*
     _name    = other._name;
-    _minimum = other._minimum;
-    _maximum = other._maximum;
-    _wrap    = other._wrap;
-    _just    = other._just;
-    _sizing  = other._sizing;
+*/
   }
 
   return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Column::operator== (const Column& other) const
+bool Install::operator== (const Install& other) const
 {
+  return false;
+/*
   return _name    == other._name    &&
          _minimum == other._minimum &&
          _maximum == other._maximum &&
          _wrap    == other._wrap    &&
          _just    == other._just    &&
          _sizing  == other._sizing;
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Column::~Column ()
+Install::~Install ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Column::setName (const std::string& name)
+bool Install::implements (const std::string&) const
 {
-  _name = name;
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Install::execute (const std::string&)
+{
+  return "output";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -27,8 +27,20 @@
 
 #include <iostream>
 #include <Command.h>
+#include <Context.h>
 
 extern Context context;
+
+////////////////////////////////////////////////////////////////////////////////
+Command* Command::factory (const std::string& name)
+{
+/*
+  if (name == "install")  return new Install ();
+
+  throw std::string ("Unrecognized command '") + name + "'";
+*/
+  return NULL;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 Command::Command ()

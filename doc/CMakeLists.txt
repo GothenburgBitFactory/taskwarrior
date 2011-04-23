@@ -1,3 +1,4 @@
+cmake_minimum_required (VERSION 2.8)
 message ("-- Configuring man pages")
 set (man_FILES task-color.5 task-faq.5 task-sync.5 task-tutorial.5 task.1 taskrc.5)
 foreach (man_FILE ${man_FILES})

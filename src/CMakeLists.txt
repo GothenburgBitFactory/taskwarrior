@@ -1,4 +1,7 @@
+cmake_minimum_required (VERSION 2.8)
 include_directories (${CMAKE_SOURCE_DIR}/src
+                     ${CMAKE_SOURCE_DIR}/src/commands
+                     ${CMAKE_SOURCE_DIR}/src/columns
                      ${TASK_INCLUDE_DIRS})
 
 set (task_SRCS API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h
@@ -21,7 +24,7 @@ set (task_SRCS API.cpp API.h Att.cpp Att.h Cmd.cpp Cmd.h Color.cpp Color.h
 
 add_library (task STATIC ${task_SRCS})
 add_executable (task_executable main.cpp)
-target_link_libraries (task_executable task ${TASK_LIBRARIES})
+target_link_libraries (task_executable task commands columns ${TASK_LIBRARIES})
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 
 install (TARGETS task_executable DESTINATION ${TASK_BINDIR})

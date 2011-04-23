@@ -24,36 +24,25 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_COLUMN
-#define INCLUDED_COLUMN
+#ifndef INCLUDED_INSTALL
+#define INCLUDED_INSTALL
 
 #include <string>
+#include <Command.h>
 
-class Column
+class Install : Command
 {
 public:
-  enum just   {right = 0, left, center};
-  enum sizing {minimal = 0, fixed, proportional, maximal};
+  Install ();
+  Install (const Install&);
+  Install& operator= (const Install&);
+  bool operator== (const Install&) const;     // TODO Is this necessary?
+  ~Install ();
 
-  static Column* factory (const std::string&);
-
-  Column ();
-  Column (const Column&);
-  Column& operator= (const Column&);
-  bool operator== (const Column&) const;     // TODO Is this necessary?
-  ~Column ();
-
-  void setName (const std::string&);
-  std::string render (Task*, int, int, const std::string style = "default");
-  std::string type () const;
+  bool implements (const std::string&) const;
+  std::string execute (const std::string&);
 
 private:
-  std::string _name;
-  int         _minimum;
-  int         _maximum;
-  bool        _wrap;
-  just        _just;
-  sizing      _sizing;
 };
 
 #endif

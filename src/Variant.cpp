@@ -789,10 +789,10 @@ void Variant::cast (const variant_type type)
   else if (mType == v_string && type == v_double)
     mDouble = atol (mString.c_str ());
 
-  // From v_date
+  // TODO From v_date
 
 
-  // From v_duration
+  // TODO From v_duration
 
 
   mType = type;
@@ -802,6 +802,37 @@ void Variant::cast (const variant_type type)
 Variant::variant_type Variant::type ()
 {
   return mType;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Variant::promote (Variant& lhs, Variant& rhs)
+{
+  // Short circuit.
+  if (lhs.type () == rhs.type ())
+    return;
+
+  variant_type newType;
+  switch (lhs.type () | rhs.type ())
+  {
+  case v_boolean | v_integer:    newType = v_integer;   break;
+  case v_boolean | v_double:     newType = v_double;    break;
+  case v_boolean | v_string:     newType = v_string;    break;
+  case v_boolean | v_date:       newType = v_date;      break;
+  case v_boolean | v_duration:   newType = v_duration;  break;
+  case v_integer | v_double:     newType = v_integer;   break;
+  case v_integer | v_string:     newType = v_string;    break;
+  case v_integer | v_date:       newType = v_date;      break;
+  case v_integer | v_duration:   newType = v_duration;  break;
+  case v_double  | v_string:     newType = v_string;    break;
+  case v_double  | v_date:       newType = v_date;      break;
+  case v_double  | v_duration:   newType = v_duration;  break;
+  case v_string  | v_date:       newType = v_date;      break;
+  case v_string  | v_duration:   newType = v_duration;  break;
+  case v_date    | v_duration:   newType = v_date;      break;
+  }
+
+  lhs.cast (newType);
+  rhs.cast (newType);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

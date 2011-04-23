@@ -30,19 +30,191 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+TF2::TF2 ()
+: _dirty (false)
+, _loaded_tasks (false)
+, _loaded_lines (false)
+, _loaded_contents (false)
+, _contents ("")
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+TF2::~TF2 ()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TF2::target (const std::string& f)
+{
+  _file = File (f);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <Task>& TF2::get_tasks ()
+{
+  if (! _loaded_tasks)
+    load_tasks ();
+
+  return _tasks /*+ _added_tasks*/;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string>& TF2::get_lines ()
+{
+  if (! _loaded_lines)
+    load_lines ();
+
+  return _lines /*+ _added_lines*/;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string& TF2::get_contents ()
+{
+  if (! _loaded_contents)
+    load_contents ();
+
+  return _contents;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TF2::add_task (const Task& task)
+{
+  _added_tasks.push_back (task);
+  _dirty = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TF2::modify_task (const Task& task)
+{
+  _modified_tasks.push_back (task);
+  _dirty = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TF2::add_line (const std::string& line)
+{
+  _added_lines.push_back (line);
+  _dirty = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// This is so that synch.key can just overwrite and not grow.
+void TF2::clear_lines ()
+{
+  _lines.clear ();
+  _dirty = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Top-down recomposition.
+void TF2::commit ()
+{
+  // Load the lowest form, to allow
+  if (_dirty)
+  {
+    load_contents ();
+
+    if (_modified_tasks.size ())
+    {
+      std::map <std::string, Task> modified;
+      std::vector <Task>::iterator it;
+      for (it = _modified_tasks.begin (); it != _modified_tasks.end (); ++it)
+        modified[it->get ("uuid")] = *it;
+
+//    for (it = _
+
+     _modified_tasks.clear ();
+    }
+
+    if (_added_tasks.size ())
+    {
+      std::vector <Task>::iterator it;
+      for (it = _added_tasks.begin (); it != _added_tasks.end (); ++it)
+        _lines.push_back (it->composeF4 ());
+
+      _added_tasks.clear ();
+    }
+
+    if (_added_lines.size ())
+    {
+      //_lines += _added_lines;
+      _added_lines.clear ();
+    }
+
+// TODO This clobbers minimal case.
+
+    _contents = "";  // TODO Verify no resize.
+    join (_contents, "\n", _lines);
+    _file.write (_contents);
+
+    _dirty = false;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TF2::load_tasks ()
+{
+  if (! _loaded_tasks)
+  {
+    if (! _loaded_lines)
+      load_lines ();
+
+    std::vector <std::string>::iterator i;
+    for (i = _lines.begin (); i != _lines.end (); ++i)
+      _tasks.push_back (Task (*i));
+
+    _loaded_tasks = true;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TF2::load_lines ()
+{
+  if (! _loaded_lines)
+  {
+    if (! _loaded_contents)
+      load_contents ();
+
+    split (_lines, _contents, '\n');
+    _loaded_lines = true;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TF2::load_contents ()
+{
+  if (! _loaded_contents)
+  {
+    _contents = "";
+
+    if (_file.open ())
+    {
+      if (_file.lock ())
+      {
+        _file.read (_contents);
+        _loaded_contents = true;
+      }
+      // TODO Error handling?
+    }
+    // TODO Error handling?
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
 TDB2::TDB2 ()
 : _location ("")
-, _loaded_pending_tasks (false)
-, _loaded_pending_lines (false)
-, _loaded_pending_contents (false)
-, _dirty_pending_tasks (false)
-, _dirty_pending_lines (false)
-, _dirty_pending_contents (false)
-, _pending_contents ("")
-
-, _completed_contents ("")
-, _backlog_contents ("")
-, _undo_contents ("")
 {
 }
 
@@ -54,122 +226,44 @@ TDB2::~TDB2 ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Once a location is known, the files can be set up.  Note that they are not
+// read.
 void TDB2::set_location (const std::string& location)
 {
   _location = location;
-}
 
-////////////////////////////////////////////////////////////////////////////////
-std::vector <Task>& TDB2::get_pending_tasks ()
-{
-  if (! _loaded_pending_tasks)
-    load_pending_tasks ();
-
-  return _pending_tasks;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string>& TDB2::get_pending_lines ()
-{
-  if (! _loaded_pending_lines)
-    load_pending_lines ();
-
-  return _pending_lines;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string& TDB2::get_pending_contents ()
-{
-  if (! _loaded_pending_contents)
-    load_pending_contents ();
-
-  return _pending_contents;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::load_pending_tasks ()
-{
-  if (! _loaded_pending_tasks)
-  {
-    if (! _loaded_pending_lines)
-      load_pending_lines ();
-
-    std::vector <std::string>::iterator i;
-    for (i = _pending_lines.begin (); i != _pending_lines.end (); ++i)
-      _pending_tasks.push_back (Task (*i));
-
-    _loaded_pending_tasks = true;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::load_pending_lines ()
-{
-  if (! _loaded_pending_lines)
-  {
-    if (! _loaded_pending_contents)
-      load_pending_contents ();
-
-    split (_pending_lines, _pending_contents, '\n');
-    _loaded_pending_lines = true;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::load_pending_contents ()
-{
-  if (! _loaded_pending_contents)
-  {
-    _pending_contents = "";
-    _dirty_pending_contents = false;
-
-    // TODO pending_file = File (_location + "/pending.data");
-    // TODO pending_file.openAndLock ();
-    // TODO pending_file.read (_pending_contents);
-
-    _loaded_pending_contents = true;
-  }
+  pending.target   (location + "/pending.data");
+  completed.target (location + "/completed.data");
+  undo.target      (location + "/undo.data");
+  backlog.target   (location + "/backlog.data");
+  synch_key.target (location + "/synch.key");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::add (const Task& task)
 {
-  // TODO Handle pending vs completed/deleted
-
-  _dirty_pending_tasks = true;
+  // Use the raw string form for speed.
+  std::string status = task.get ("status");
+  if (status == "completed" || status == "deleted")
+    completed.add_task (task);
+  else
+    pending.add_task (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::modify (const Task& task)
 {
   // TODO Handle pending vs completed/deleted
-
-  _dirty_pending_tasks = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::commit ()
 {
-  if (_dirty_pending_tasks)
-  {
-    // TODO Compose _pending_lines from _pending_tasks
-    _dirty_pending_tasks = false;
-  }
-
-  if (_dirty_pending_lines)
-  {
-   _pending_contents = "";  // TODO Verify no resize.
-    join (_pending_contents, "\n", _pending_lines);
-    _dirty_pending_lines = false;
-  }
-
-  if (_dirty_pending_contents)
-  {
-    // TODO Write _pending_contents to file.
-    // TODO _pending_file.write (_pending_contents);
-
-    _dirty_pending_contents = false;
-  }
+  pending.commit ();
+  completed.commit ();
+  undo.commit ();
+  backlog.commit ();
+  synch_key.commit ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
