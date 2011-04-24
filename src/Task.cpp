@@ -426,10 +426,14 @@ std::string Task::composeYAML () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Task::composeJSON () const
+std::string Task::composeJSON (bool include_id /*= false*/) const
 {
   std::stringstream out;
   out << "{";
+
+  // ID inclusion is optional, not recommended.
+  if (include_id)
+    out << "\"id\":" << id << ",";
 
   // Used for determining type.
   Att att;

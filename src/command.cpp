@@ -613,7 +613,7 @@ int handleQuery (std::string& outs)
       if (t != tasks.begin ())
         outs += ",\n";
 
-      outs += t->composeJSON ();
+      outs += t->composeJSON (true);
     }
 
     outs += "\n";
