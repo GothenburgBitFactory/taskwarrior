@@ -34,13 +34,21 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (2);
+  UnitTest t (6);
 
   try
   {
     Variant v = Variant (1) + Variant (2);
     t.ok (v.type () == Variant::v_integer, "1 + 2 --> integer");
     t.ok (v.format () == "3", "1 + 2 --> 3");
+
+    v = Variant (1.2) + Variant (2.3);
+    t.ok (v.type () == Variant::v_double, "1.2 + 2.3 --> double");
+    t.ok (v.format () == "3.5", "1.2 + 2.3 --> 3.5");
+
+    v = Variant (1.2) + Variant (2);
+    t.ok (v.type () == Variant::v_double, "1.2 + 2 --> double");
+    t.ok (v.format () == "3.2", "1.2 + 2 --> 3.2");
   }
 
   catch (std::string& e)
