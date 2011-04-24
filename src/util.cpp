@@ -189,7 +189,8 @@ int autoComplete (
   unsigned int length = partial.length ();
   if (length)
   {
-    foreach (item, list)
+    std::vector <std::string>::const_iterator item;
+    for (item = list.begin (); item != list.end (); ++item)
     {
       // An exact match is a special case.  Assume there is only one exact match
       // and return immediately.

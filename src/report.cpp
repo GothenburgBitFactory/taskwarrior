@@ -400,7 +400,8 @@ int handleInfo (std::string& outs)
 
   // Find the task.
   std::stringstream out;
-  foreach (task, tasks)
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     Table table;
     table.setTableWidth (context.getWidth ());
@@ -776,7 +777,8 @@ int handleReportSummary (std::string& outs)
 
   // Generate unique list of project names from all pending tasks.
   std::map <std::string, bool> allProjects;
-  foreach (task, tasks)
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
     if (task->getStatus () == Task::pending)
       allProjects[task->get ("project")] = false;
 
@@ -797,7 +799,7 @@ int handleReportSummary (std::string& outs)
   }
 
   // Count the various tasks.
-  foreach (task, tasks)
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     std::string project = task->get ("project");
     ++counter[project];
@@ -984,7 +986,8 @@ int handleReportTimesheet (std::string& outs)
     completed.setColumnJustification (2, Table::right);
     completed.setColumnJustification (3, Table::left);
 
-    foreach (task, tasks)
+    std::vector <Task>::iterator task;
+    for (task = tasks.begin (); task != tasks.end (); ++task)
     {
       // If task completed within range.
       if (task->getStatus () == Task::completed)
@@ -1042,7 +1045,7 @@ int handleReportTimesheet (std::string& outs)
     started.setColumnJustification (1, Table::left);
     started.setColumnJustification (2, Table::right);
     started.setColumnJustification (3, Table::left);
-    foreach (task, tasks)
+    for (task = tasks.begin (); task != tasks.end (); ++task)
     {
       // If task started within range, but not completed withing range.
       if (task->getStatus () == Task::pending &&
@@ -1443,7 +1446,8 @@ int handleReportCalendar (std::string& outs)
   if (getpendingdate == true) {
     // Find the oldest pending due date.
     Date oldest (12,31,2037);
-    foreach (task, tasks)
+    std::vector <Task>::iterator task;
+    for (task = tasks.begin (); task != tasks.end (); ++task)
     {
       if (task->getStatus () == Task::pending)
       {
@@ -1931,7 +1935,8 @@ void gatherNextTasks (std::vector <Task>& tasks)
   int limit = context.config.getInteger ("next");
 
   // due:< 1wk, pri:*
-  foreach (task, tasks)
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     if (task->has ("due"))
     {
@@ -1950,7 +1955,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   }
 
   // blocking, not blocked
-  foreach (task, tasks)
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     if (dependencyIsBlocking (*task) &&
         ! dependencyIsBlocked (*task))
@@ -1966,7 +1971,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   }
 
   // due:*, pri:H
-  foreach (task, tasks)
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     if (task->has ("due"))
     {
@@ -1985,7 +1990,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   }
 
   // pri:H
-  foreach (task, tasks)
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     std::string priority = task->get ("priority");
     if (priority == "H")
@@ -2001,7 +2006,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   }
 
   // due:*, pri:M
-  foreach (task, tasks)
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     if (task->has ("due"))
     {
@@ -2020,7 +2025,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   }
 
   // pri:M
-  foreach (task, tasks)
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     std::string priority = task->get ("priority");
     if (priority == "M")
@@ -2036,7 +2041,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   }
 
   // due:*, pri:L
-  foreach (task, tasks)
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     if (task->has ("due"))
     {
@@ -2055,7 +2060,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   }
 
   // pri:L
-  foreach (task, tasks)
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     std::string priority = task->get ("priority");
     if (priority == "L")
@@ -2071,7 +2076,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   }
 
   // due:, pri:
-  foreach (task, tasks)
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     if (task->has ("due"))
     {
@@ -2090,7 +2095,7 @@ void gatherNextTasks (std::vector <Task>& tasks)
   }
 
   // Filler.
-  foreach (task, tasks)
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     std::string project = task->get ("project");
     if (countByProject[project] < limit && matching.find (task->id) == matching.end ())

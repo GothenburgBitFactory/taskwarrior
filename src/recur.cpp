@@ -59,7 +59,8 @@ void handleRecurrence ()
   std::vector <Task> modified;
 
   // Look at all tasks and find any recurring ones.
-  foreach (t, tasks)
+  std::vector <Task>::iterator t;
+  for (t = tasks.begin (); t != tasks.end (); ++t)
   {
     if (t->getStatus () == Task::recurring)
     {
@@ -87,7 +88,8 @@ void handleRecurrence ()
       // Iterate over the due dates, and check each against the mask.
       bool changed = false;
       unsigned int i = 0;
-      foreach (d, due)
+      std::vector <Date>::iterator d;
+      for (d = due.begin (); d != due.end (); ++d)
       {
         if (mask.length () <= i)
         {
@@ -453,7 +455,8 @@ bool nag (Task& task)
     char pri       = ' ';
 
     // Scan all pending tasks.
-    foreach (t, tasks)
+    std::vector <Task>::iterator t;
+    for (t = tasks.begin (); t != tasks.end (); ++t)
     {
       if (t->id == task.id)
       {

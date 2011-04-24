@@ -185,7 +185,8 @@ void Cmd::load ()
     std::vector <std::string> all;
     context.config.all (all);
 
-    foreach (i, all)
+    std::vector <std::string>::iterator i;
+    for (i = all.begin (); i != all.end (); ++i)
     {
       if (i->substr (0, 7) == "report.")
       {
@@ -209,8 +210,9 @@ void Cmd::load ()
     }
 
     // Now load the aliases.
-    foreach (i, context.aliases)
-      commands.push_back (i->first);
+    std::map <std::string, std::string>::iterator it;
+    for (it = context.aliases.begin (); it != context.aliases.end (); ++it)
+      commands.push_back (it->first);
   }
 }
 
@@ -224,9 +226,10 @@ void Cmd::allCustomReports (std::vector <std::string>& all) const
 void Cmd::allCommands (std::vector <std::string>& all) const
 {
   all.clear ();
-  foreach (command, commands)
-    if (command->substr (0, 1) != "_")
-      all.push_back (*command);
+  std::vector <std::string>::const_iterator c;
+  for (c = commands.begin (); c != commands.end (); ++c)
+    if (c->substr (0, 1) != "_")
+      all.push_back (*c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
