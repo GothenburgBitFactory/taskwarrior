@@ -32,15 +32,15 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/select.h>
-#include "Context.h"
-#include "Directory.h"
-#include "File.h"
-#include "Timer.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
-#include "i18n.h"
-#include "../cmake.h"
+#include <Context.h>
+#include <Directory.h>
+#include <File.h>
+#include <Timer.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
+#include <i18n.h>
+#include <../cmake.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
@@ -75,10 +75,17 @@ void Context::initialize2 (int argc, char** argv)
   // TODO Scan for rc:<file> overrides --> apply.
   // TODO Combine command line into one string.
   // TODO Load relevant rc file.
+
   // TODO Instantiate built-in command objects.
+  commands.push_back (Command::factory ("install"));
+
   // TODO Instantiate extension command objects.
   // TODO Instantiate default command object.
-  // TODO Chain-of-command pattern dispatch.
+  // TODO Instantiate column objects.
+  // TODO Instantiate UDA objects.
+  // TODO Instantiate format objects.
+  // TODO Instantiate extension format objects.
+  // TODO Hook: on-launch
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -237,7 +244,8 @@ int Context::dispatch (std::string &out)
     std::cout << "]0;task " << title << "" << std::endl;
   }
 
-  // TODO Just look at this thing.  It cries out for a dispatch table.
+  // TODO Chain-of-command pattern dispatch.
+
        if (cmd.command == "projects")         { rc = handleProjects              (out); }
   else if (cmd.command == "tags")             { rc = handleTags                  (out); }
   else if (cmd.command == "colors")           { rc = handleColor                 (out); }

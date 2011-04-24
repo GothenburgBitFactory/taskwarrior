@@ -24,27 +24,36 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_INSTALL
-#define INCLUDED_INSTALL
 
-#include <string>
-#include <Command.h>
+#include <Context.h>
+#include <ID.h>
 
-class Install : public Command
+extern Context context;
+
+////////////////////////////////////////////////////////////////////////////////
+ColumnID::ColumnID ()
 {
-public:
-  Install ();
-  Install (const Install&);
-  Install& operator= (const Install&);
-  bool operator== (const Install&) const;     // TODO Is this necessary?
-  ~Install ();
+  setName ("id");
+}
 
-  bool read_only () const;
-  bool implements (const std::string&) const;
-  std::string execute (const std::string&);
+////////////////////////////////////////////////////////////////////////////////
+ColumnID::~ColumnID ()
+{
+}
 
-private:
-};
+////////////////////////////////////////////////////////////////////////////////
+std::string ColumnID::render (
+  Task* task,
+  int width,
+  int height,
+  const std::string style)
+{
+}
 
-#endif
+////////////////////////////////////////////////////////////////////////////////
+std::string ColumnID::type () const
+{
+  return "number";
+}
+
 ////////////////////////////////////////////////////////////////////////////////

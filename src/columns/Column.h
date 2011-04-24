@@ -28,12 +28,15 @@
 #define INCLUDED_COLUMN
 
 #include <string>
+#include <Task.h>
 
 class Column
 {
 public:
+/*
   enum just   {right = 0, left, center};
   enum sizing {minimal = 0, fixed, proportional, maximal};
+*/
 
   static Column* factory (const std::string&);
 
@@ -43,17 +46,19 @@ public:
   bool operator== (const Column&) const;     // TODO Is this necessary?
   ~Column ();
 
-  void setName (const std::string&);
-  std::string render (Task*, int, int, const std::string style = "default");
-  std::string type () const;
+  virtual void setName (const std::string&);
+  virtual std::string render (Task*, int, int, const std::string style = "default") = 0;
+  virtual std::string type () const = 0;
 
-private:
+protected:
   std::string _name;
+/*
   int         _minimum;
   int         _maximum;
   bool        _wrap;
   just        _just;
   sizing      _sizing;
+*/
 };
 
 #endif

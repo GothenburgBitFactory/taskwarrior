@@ -24,24 +24,21 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_INSTALL
-#define INCLUDED_INSTALL
+#ifndef INCLUDED_ID
+#define INCLUDED_ID
 
 #include <string>
-#include <Command.h>
+#include <Column.h>
+#include <Task.h>
 
-class Install : public Command
+class ColumnID : public Column
 {
 public:
-  Install ();
-  Install (const Install&);
-  Install& operator= (const Install&);
-  bool operator== (const Install&) const;     // TODO Is this necessary?
-  ~Install ();
+  ColumnID ();
+  ~ColumnID ();
 
-  bool read_only () const;
-  bool implements (const std::string&) const;
-  std::string execute (const std::string&);
+  std::string render (Task*, int, int, const std::string style = "default");
+  std::string type () const;
 
 private:
 };

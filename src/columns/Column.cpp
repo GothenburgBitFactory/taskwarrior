@@ -45,11 +45,13 @@ Column* Column::factory (const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 Column::Column ()
 : _name ("")
+/*
 , _minimum (0)
 , _maximum (0)
 , _wrap (false)
 , _just (left)
 , _sizing (minimal)
+*/
 {
 }
 
@@ -57,11 +59,13 @@ Column::Column ()
 Column::Column (const Column& other)
 {
   _name    = other._name;
+/*
   _minimum = other._minimum;
   _maximum = other._maximum;
   _wrap    = other._wrap;
   _just    = other._just;
   _sizing  = other._sizing;
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -70,11 +74,13 @@ Column& Column::operator= (const Column& other)
   if (this != &other)
   {
     _name    = other._name;
+/*
     _minimum = other._minimum;
     _maximum = other._maximum;
     _wrap    = other._wrap;
     _just    = other._just;
     _sizing  = other._sizing;
+*/
   }
 
   return *this;
@@ -83,12 +89,12 @@ Column& Column::operator= (const Column& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Column::operator== (const Column& other) const
 {
-  return _name    == other._name    &&
+  return _name    == other._name    /*&&
          _minimum == other._minimum &&
          _maximum == other._maximum &&
          _wrap    == other._wrap    &&
          _just    == other._just    &&
-         _sizing  == other._sizing;
+         _sizing  == other._sizing*/;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -4,7 +4,8 @@ include_directories (${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/columns
                      ${TASK_INCLUDE_DIRS})
 
-set (columns_SRCS Column.cpp Column.h)
+set (columns_SRCS Column.cpp Column.h
+                  ID.cpp ID.h)
 
 add_library (columns STATIC ${columns_SRCS})
 

@@ -28,6 +28,7 @@
 #define INCLUDED_CONTEXT
 
 #include <Command.h>
+#include <Column.h>
 #include <Filter.h>
 #include <Config.h>
 #include <Sequence.h>
@@ -101,6 +102,7 @@ public:
   std::vector <std::string> debugMessages;
   bool                      inShadow;
 
+  std::vector <Column*>     columns;
   std::vector <Command*>    commands;
 
   int                       terminal_width;
