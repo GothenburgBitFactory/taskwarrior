@@ -7,7 +7,7 @@
 function install ()
   return 'program',                        -- Type
          'goodbye',                        -- Name
-         1.0,                              -- Version
+         '1.0',                            -- Version
          'Simply says goodbye',            -- Description
          'Paul Beckingham',                -- Author
          'paul@beckingham.net',            -- Contact
@@ -22,10 +22,8 @@ function hook ()
 end
 
 -- Arguments: None
--- Returns:   1, 'error' --> failure
---            0, nil     --> success
+-- Returns:   0 --> success only
 function goodbye ()
   print ('Goodbye.')
-  return 0, nil
 end
 

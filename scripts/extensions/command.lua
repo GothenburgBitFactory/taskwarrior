@@ -7,7 +7,7 @@
 function install ()
   return 'command',                        -- Type
          'random',                         -- Name
-         1.0,                              -- Version
+         '1.0',                            -- Version
          'Displays a random pending task', -- Description
          'Paul Beckingham',                -- Author
          'paul@beckingham.net',            -- Contact
@@ -26,20 +26,21 @@ end
 -- Returns:   1 --> command does not modify data
 --            0 --> command modifies data
 function read_only ()
-  return 1
+  return true
 end
 
 -- Arguments: None
 -- Returns:   1 --> command displays task ID
---            0 --> no ID dispalyed
+--            0 --> no ID displayed
 function display_id ()
-  return 1
+  return true
 end
 
 -- Arguments: None
--- Returns:   1, 'error' --> command failed
---            0, nil     --> success
-function execute ()
-  return 1, 'Not implemented'
+-- Returns:   1 --> command failed
+--            0 --> success
+function execute (command_line)
+  task_footnote_message ('Not implemented')
+  return 1
 end
 

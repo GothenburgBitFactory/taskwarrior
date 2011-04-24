@@ -7,7 +7,7 @@
 function install ()
   return 'task',                           -- Type
          'encourage',                      -- Name
-         1.0,                              -- Version
+         '1.0',                            -- Version
          'Positive feedback',              -- Description
          'Paul Beckingham',                -- Author
          'paul@beckingham.net',            -- Contact
@@ -22,15 +22,15 @@ function hook ()
 end
 
 -- Arguments: None
--- Returns:   1, 'error' --> failure
---            0, nil     --> success
+-- Returns:   1 --> failure
+--            0 --> success
 function encourage ()
   -- Only provide encouragement if the verbosity settings allow it.
   verbosity = task_get ('rc.verbose')
   if string.find (verbosity, 'encourage') ~= nil
   then
-    print ('Good work.')
+    task_footnote_message ('Good work.')
   end
-  return 0, nil
+  return 0
 end
 

@@ -7,7 +7,7 @@
 function install ()
   return 'uda',                            -- Type
          'priority',                       -- Name
-         1.0,                              -- Version
+         '1.0',                            -- Version
          'Implements priority attribute',  -- Description
          'Paul Beckingham',                -- Author
          'paul@beckingham.net',            -- Contact
@@ -15,28 +15,19 @@ function install ()
          '© 2011, Göteborg Bit Factory'    -- Copyright
 end
 
-
 -- Arguments: None
 -- Returns:   Data type
 function type ()
   return 'custom'
 end
 
--- Arguments: proposed value
--- Returns:   1 --> allowed
---            0 --> disallowed
-function allowed (value)
-  if value == 'H' ||
-     value == 'M' ||
-     value == 'L' ||
-     value == '' then
-    return 1
-  end
-
-  return 0
+-- Arguments: None
+-- Returns:   List of allowable values
+function allowed ()
+  return 'H', 'M', 'L', ''
 end
 
--- Arguments: left and right values to compare
+-- Arguments: Left and right values to compare
 -- Returns:   1 --> left < right
 --            0 --> left >= right
 function compare (left, right)
@@ -63,7 +54,7 @@ end
 -- Returns:   Urgency Term
 -- Note:      Should reference rc.urgency.<field>.coefficient
 function urgency (value)
-  coefficient = task_get ('urgency.<field>.coefficient')
+  coefficient = task_get ('urgency.priority.coefficient')
 
   -- TODO Urgency calculation here
 

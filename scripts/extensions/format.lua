@@ -7,7 +7,7 @@
 function install ()
   return 'format',                         -- Type
          'uuid.short',                     -- Name
-         1.0,                              -- Version
+         '1.0',                            -- Version
          'Provides short formatted UUIDs', -- Description
          'Paul Beckingham',                -- Author
          'paul@beckingham.net',            -- Contact

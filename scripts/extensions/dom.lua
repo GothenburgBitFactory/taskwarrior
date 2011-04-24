@@ -7,7 +7,7 @@
 function install ()
   return 'dom',                            -- Type
          'system.load.average',            -- Name
-         1.0,                              -- Version
+         '1.0',                            -- Version
          'Provides access to system load', -- Description
          'Paul Beckingham',                -- Author
          'paul@beckingham.net',            -- Contact
@@ -17,7 +17,6 @@ end
 
 -- Arguments: The DOM reference to evaluate
 -- Returns:   The value from the DOM lookup
--- Note:      'name' may include '*' wildcards
 function lookup (name)
   return 1.23 -- Fake load average
 end
