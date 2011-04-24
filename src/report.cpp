@@ -2194,8 +2194,18 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
     countTasks (all,                           project, context.tdb.getAllModified (), count_pending, count_done);
     countTasks (context.tdb.getAllModified (), project, (std::vector <Task>) NULL,     count_pending, count_done);
 
+    // count_done  count_pending  percentage
+    // ----------  -------------  ----------
+    //          0              0          0%
+    //         >0              0        100%
+    //          0             >0          0%
+    //         >0             >0  calculated
     int percentage = 0;
-    if (count_done + count_pending > 0)
+    if (count_done == 0)
+      percentage = 0;
+    else if (count_pending == 0)
+      percentage = 100;
+    else
       percentage = (count_done * 100 / (count_done + count_pending));
 
     msg << "Project '"
