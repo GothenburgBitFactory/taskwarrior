@@ -28,10 +28,23 @@
 
 use strict;
 use warnings;
-use JSON;
+
+# Give a nice error if the (non-standard) JSON module is not installed.
+eval "use JSON";
+if ($@)
+{
+  print "Error: You need to install the JSON Perl module.\n";
+  exit 1;
+}
+
 
 # Use the taskwarrior 1.9.4+ _query command to issue a query and return JSON
 my $command = '/usr/local/bin/task _query ' . join (' ', @ARGV);
+if ($command =~ /No matches/)
+{
+  print stderr $command;
+  exit 1;
+}
 
 # Generate output.
 print "<tasks>\n";

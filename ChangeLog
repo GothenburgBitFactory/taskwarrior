@@ -20,6 +20,7 @@
  + Now ships with an add-on script, update-holidays.pl, which contacts
    http://holidata.net, and brings the installed holiday files up to date.
  + Extension system now controlled by the 'extensions' configuration variable.
+ + HTML export in the form of an external scripts export-html.pl.
 
 # Tracked Features, sorted by ID.
  + Added feature #523 & #659, adding 'status' as a reportable field (thanks to

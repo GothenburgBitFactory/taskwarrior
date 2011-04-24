@@ -47,57 +47,45 @@ if ($command =~ /No matches/)
 }
 
 # Generate output.
-print "BEGIN:VCALENDAR\n",
-      "VERSION:2.0\n",
-      "PRODID:=//GBF/taskwarrior 1.9.4//EN\n";
+print "<html>\n",
+      "  <body>\n",
+      "    <table>\n",
+      "      <thead>\n",
+      "        <tr>\n",
+      "          <td>ID</td>\n",
+      "          <td>Pri</td>\n",
+      "          <td>Description</td>\n",
+      "          <td>Project</td>\n",
+      "          <td>Due</td>\n",
+      "        </tr>\n",
+      "      </thead>\n",
+      "      <tbody>\n";
 
+my $count = 0;
 for my $task (split /,$/ms, qx{$command})
 {
+  ++$count;
   my $data = from_json ($task);
 
-  print "BEGIN:VTODO\n";
-  print "UID:$data->{'uuid'}\n";
-  print "DTSTAMP:$data->{'entry'}\n";
-  print "DTSTART:$data->{'start'}\n" if exists $data->{'start'};
-  print "DUE:$data->{'due'}\n"       if exists $data->{'due'};
-  print "COMPLETED:$data->{'end'}\n" if exists $data->{'end'};
-  print "SUMMARY:$data->{'description'}\n";
-  print "CLASS:PRIVATE\n";
-  print "CATEGORIES:", join (',', @{$data->{'tags'}}), "\n" if exists $data->{'tags'};
-
-  # Priorities map to a 1-9 scale.
-  if (exists $data->{'priority'})
-  {
-    print "PRIORITY:", ($data->{'priority'} eq 'H' ? '1' :
-                        $data->{'priority'} eq 'M' ? '5' :
-                                                     '9'), "\n";
-  }
-
-  # Status maps differently.
-  my $status = $data->{'status'};
-  if ($status eq 'pending' || $status eq 'waiting')
-  {
-    print "STATUS:", (exists $data->{'start'} ? 'IN-PROCESS' : 'NEEDS-ACTION'), "\n";
-  }
-  elsif ($status eq 'completed')
-  {
-    print "STATUS:COMPLETED\n";
-  }
-  elsif ($status eq 'deleted')
-  {
-    print "STATUS:CANCELLED\n";
-  }
-
-  # Annotations become comments.
-  if (exists $data->{'annotations'})
-  {
-    print "COMMENT:$_->{'description'}\n" for @{$data->{'annotations'}};
-  }
-
-  print "END:VTODO\n";
+  print "        <tr>\n",
+        "          <td>", ($data->{'id'}          || ''), "</td>\n",
+        "          <td>", ($data->{'priority'}    || ''), "</td>\n",
+        "          <td>", ($data->{'description'} || ''), "</td>\n",
+        "          <td>", ($data->{'project'}     || ''), "</td>\n",
+        "          <td>", ($data->{'due'}         || ''), "</td>\n",
+        "        </tr>\n";
 }
 
-print "END:VCALENDAR\n";
+print "      </tbody>\n",
+      "      <tfooter>\n",
+      "        <tr>\n",
+      "          <td>", $count, " matching tasks</td>\n",
+      "        </tr>\n",
+      "      </tfooter>\n",
+      "    </table>\n",
+      "  </body>\n",
+      "</html>\n";
+
 exit 0;
 
 ################################################################################
