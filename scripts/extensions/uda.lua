@@ -59,3 +59,14 @@ function format (value)
   return value
 end
 
+-- Arguments: Value
+-- Returns:   Urgency Term
+-- Note:      Should reference rc.urgency.<field>.coefficient
+function urgency (value)
+  coefficient = task_get ('urgency.<field>.coefficient')
+
+  -- TODO Urgency calculation here
+
+  return coefficient * 1.0
+end
+

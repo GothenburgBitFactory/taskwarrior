@@ -35,6 +35,8 @@
  + Added feature #714, including Belarus holidays (thanks to Alexei Romanoff).
 
 # Tracked Bugs, sorted by ID.
+ + Fixed bug #594, which broke the 'all' report with a combination of bad regex
+   handling and a formatting bug (thanks to Steve Rader).
  + Fixed bug #605, which gave misleading project completion percentages under
    certain circumstances (thanks to Steve Rader).
  + Fixed bug #703, where global substitutions didn't make all expected

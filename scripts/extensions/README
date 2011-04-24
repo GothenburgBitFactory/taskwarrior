@@ -7,8 +7,8 @@ invoked have access to taskwarrior internals through a Lua API.
 There are several types of extension.  Each type has different requirements, and
 is called in different ways.
 
-All extensions must be installed, which means they must implement the 'install'
-function, which provides:
+All extensions must be installed using the 'install' command, which means they
+must implement the 'install' function, which returns a set of string values for:
 
   - Type              One of: program, task, uda, command, format, dom
   - Name              Single word name
@@ -18,6 +18,11 @@ function, which provides:
   - Contact           Author's contact
   - License           Distribution License
   - Copyright         Copyright notice
+
+All extensions, on installation, will be copied into ~/.task/extensions, and the
+corresponding configuration entry will be created:
+
+  extension.<uuid>=<JSON description block>
 
 
 Program Hooks
@@ -63,6 +68,7 @@ extensions must provide:
     - Custom types must implement a compare function for sorting
     - Default format rendering
     - Allowed value checking
+    - Urgency calculation term
 
 
 Command
@@ -75,7 +81,7 @@ provide:
     - Declaration as read-only or write command, which allows taskwarrior to
       allow this command when the database is read-only
     - Declaration of whether the command displays ID values, which instructs
-      taskwarrior to run a GC beforehan
+      taskwarrior to run a GC beforehand
 
 
 Format
