@@ -36,12 +36,13 @@ public:
   Command (const Command&);
   Command& operator= (const Command&);
   bool operator== (const Command&) const;     // TODO Is this necessary?
-  ~Command ();
+  virtual ~Command ();
 
   static Command* factory (const std::string&);
 
-  bool implements (const std::string&) const;
-  std::string execute (const std::string&);
+  virtual bool read_only () const;
+  virtual bool implements (const std::string&) const = 0;
+  virtual std::string execute (const std::string&) = 0;
 
 private:
 };

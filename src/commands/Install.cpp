@@ -33,6 +33,9 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Install::Install ()
+/*
+: _name ("")
+*/
 {
 }
 
@@ -77,12 +80,23 @@ Install::~Install ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Install::implements (const std::string&) const
+bool Install::read_only () const
 {
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Install::implements (const std::string& command_line) const
+{
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Algorithm:
+//   Copy file rc.data.location/extensions
+//   Generate UUID
+//   Call the "install" function once, store results in rc:
+//     extension.<uuid>=<JSON>
 std::string Install::execute (const std::string&)
 {
   return "output";

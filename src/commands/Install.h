@@ -39,6 +39,7 @@ public:
   bool operator== (const Install&) const;     // TODO Is this necessary?
   ~Install ();
 
+  bool read_only () const;
   bool implements (const std::string&) const;
   std::string execute (const std::string&);
 
