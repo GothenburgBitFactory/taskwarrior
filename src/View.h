@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// taskwarrior - a command line task list manager.
+// task - a command line task list manager.
 //
 // Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
@@ -24,27 +24,55 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_ID
-#define INCLUDED_ID
+#ifndef INCLUDED_VIEW
+#define INCLUDED_VIEW
 
-#include <vector>
 #include <string>
-#include <Column.h>
+#include <vector>
 #include <Task.h>
+#include <Color.h>
+#include <Column.h>
 
-class ColumnID : public Column
+class View
 {
 public:
-  ColumnID ();
-  ~ColumnID ();
+  View ();
+  ~View ();
 
-  void measure (Task&, int&, int&);
-  void renderHeader (std::vector <std::string>&, int);
-  void render (std::vector <std::string>&, Task*, int);
-  std::string type () const;
+  // View specifications.
+  void add (Column*);
+  void width (int);
+  void leftMargin (int);
+  void colorOdd (Color&);
+  void colorEven (Color&);
+  void intraPadding (int);
+  void extraPadding (int);
+  void intraColorOdd (Color&);
+  void intraColorEven (Color&);
+  void extraColorOdd (Color&);
+  void extraColorEven (Color&);
+  void truncate (int);
+  int lines ();
+
+  // View rendering.
+  std::string render (std::vector <Task>&, std::vector <int>&);
 
 private:
+  std::vector <Column*> _columns;
+  int _width;
+  int _left_margin;
+  Color _odd;
+  Color _even;
+  int _intra_padding;
+  Color _intra_odd;
+  Color _intra_even;
+  int _extra_padding;
+  Color _extra_odd;
+  Color _extra_even;
+  int _truncate;
+  int _lines;
 };
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////
+

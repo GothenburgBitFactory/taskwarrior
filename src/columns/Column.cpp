@@ -28,44 +28,34 @@
 #include <iostream>
 #include <Context.h>
 #include <Column.h>
+#include <ID.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Column* Column::factory (const std::string& name)
 {
-/*
-  if (name == "description")  return new ColumnDescription ();
+  if (name == "id")  return new ColumnID ();
 
   throw std::string ("Unrecognized column type '") + name + "'";
-*/
   return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Column::Column ()
-: _name ("")
-/*
+: _style ("default")
+, _label ("")
 , _minimum (0)
 , _maximum (0)
-, _wrap (false)
-, _just (left)
-, _sizing (minimal)
-*/
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Column::Column (const Column& other)
 {
-  _name    = other._name;
-/*
+  _label   = other._label;
   _minimum = other._minimum;
   _maximum = other._maximum;
-  _wrap    = other._wrap;
-  _just    = other._just;
-  _sizing  = other._sizing;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,14 +63,9 @@ Column& Column::operator= (const Column& other)
 {
   if (this != &other)
   {
-    _name    = other._name;
-/*
+    _label   = other._label;
     _minimum = other._minimum;
     _maximum = other._maximum;
-    _wrap    = other._wrap;
-    _just    = other._just;
-    _sizing  = other._sizing;
-*/
   }
 
   return *this;
@@ -89,12 +74,9 @@ Column& Column::operator= (const Column& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Column::operator== (const Column& other) const
 {
-  return _name    == other._name    /*&&
+  return _label   == other._label   &&
          _minimum == other._minimum &&
-         _maximum == other._maximum &&
-         _wrap    == other._wrap    &&
-         _just    == other._just    &&
-         _sizing  == other._sizing*/;
+         _maximum == other._maximum;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -103,9 +85,15 @@ Column::~Column ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Column::setName (const std::string& name)
+void Column::setStyle (const std::string& style)
 {
-  _name = name;
+  _style = style;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Column::setLabel (const std::string& label)
+{
+  _label = label;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

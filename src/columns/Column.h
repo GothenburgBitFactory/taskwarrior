@@ -33,11 +33,6 @@
 class Column
 {
 public:
-/*
-  enum just   {right = 0, left, center};
-  enum sizing {minimal = 0, fixed, proportional, maximal};
-*/
-
   static Column* factory (const std::string&);
 
   Column ();
@@ -46,19 +41,18 @@ public:
   bool operator== (const Column&) const;     // TODO Is this necessary?
   ~Column ();
 
-  virtual void setName (const std::string&);
-  virtual std::string render (Task*, int, int, const std::string style = "default") = 0;
+  virtual void setStyle (const std::string&);
+  virtual void setLabel (const std::string&);
+  virtual void measure (Task&, int&, int&) = 0;
+  virtual void renderHeader (std::vector <std::string>&, int) = 0;
+  virtual void render (std::vector <std::string>&, Task*, int) = 0;
   virtual std::string type () const = 0;
 
 protected:
-  std::string _name;
-/*
+  std::string _style;
+  std::string _label;
   int         _minimum;
   int         _maximum;
-  bool        _wrap;
-  just        _just;
-  sizing      _sizing;
-*/
 };
 
 #endif

@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <math.h>
 #include <Context.h>
 #include <ID.h>
 
@@ -33,7 +34,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnID::ColumnID ()
 {
-  setName ("id");
+  setLabel ("id");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,11 +43,28 @@ ColumnID::~ColumnID ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string ColumnID::render (
-  Task* task,
-  int width,
-  int height,
-  const std::string style)
+// Set the minimum and maximum widths for the value.
+void ColumnID::measure (Task& task, int& minimum, int& maximum)
+{
+  int length;
+
+       if (task.id < 10)     length = 1;                              // Fast
+  else if (task.id < 100)    length = 2;                              // Fast
+  else if (task.id < 1000)   length = 3;                              // Fast
+  else if (task.id < 10000)  length = 4;                              // Fast
+  else                       length = (int) log10 ((double) task.id); // Slow
+
+  minimum = maximum = length;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnID::renderHeader (std::vector <std::string>& lines, int width)
+{
+  lines.push_back ("ID");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnID::render (std::vector <std::string>& lines, Task* task, int width)
 {
 }
 
