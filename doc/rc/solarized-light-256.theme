@@ -1,0 +1,72 @@
+###############################################################################
+# Taskwarrior solarized-light-256 theme created by Stefan A. Keel.
+#
+# For use with taskwarrior - a command line task list manager created by 
+# Paul Beckingham, Federico Hernandez. <http://taskwarrior.org>
+# 
+# Colors used are based on the Solarized palette created by Ethan Schoonover 
+# <http://ethanschoonover.com/solarized>
+#
+# Colors 0 through 15 in this theme are based on the 16 color positions defined
+# in the Xresources file distributed with the Solarized color palette.
+#
+# This theme was designed to work with a terminal application that is using
+# a Solarized "Light" color theme, otherwise colors will look odd. 
+# Solarized includes themes for iTerm2, OSX Terminal.app, and Xresources.
+# Others are also available, i.e.:
+# Gnome Terminal <https://github.com/sigurdga/gnome-terminal-colors-solarized>
+#
+# This theme is free to use, modify, redistribute, or simply giggle at. It is 
+# distributed with absolutely no warranty of servicability or guarantee.
+#
+#################################################################################
+color=on
+
+color.active=color7 on color9
+color.alternate=on color7
+
+color.blocked=color14 on color10
+
+color.burndown.done=color0 on color4
+color.burndown.pending=color0 on color1
+color.burndown.started=color0 on color9
+
+color.calendar.due=color7 on color9
+color.calendar.due.today=color7 on color1
+color.calendar.holiday=color0 on color3
+color.calendar.overdue=color7 on color5
+color.calendar.today=color7 on color4
+color.calendar.weekend=on color7
+color.calendar.weeknumber=color4
+
+color.debug=color6
+color.due=color9
+color.due.today=color1
+color.overdue=color5
+color.footnote=color6
+color.header=color4
+
+color.history.add=color0 on color1
+color.history.delete=color0 on color3
+color.history.done=color14 on color0
+
+color.pri.H=color0
+color.pri.M=color10
+color.pri.L=color14
+color.pri.none=
+
+color.project.none=
+color.recurring=color4
+
+color.summary.background=on color7
+color.summary.bar=color0 on color6
+
+color.sync.added=color10
+color.sync.changed=color9
+color.sync.rejected=color13
+
+color.tag.none=
+color.tagged=color6
+
+color.undo.after=color2
+color.undo.before=color1
