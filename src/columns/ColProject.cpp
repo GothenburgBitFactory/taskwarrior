@@ -27,49 +27,57 @@
 
 #include <math.h>
 #include <Context.h>
-#include <ID.h>
+#include <ColProject.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnID::ColumnID ()
+ColumnProject::ColumnProject ()
 {
   setLabel ("id");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnID::~ColumnID ()
+ColumnProject::~ColumnProject ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnID::measure (Task& task, int& minimum, int& maximum)
+void ColumnProject::measure (Task& task, int& minimum, int& maximum)
 {
-  int length;
+  std::string project = task.get ("project");
+  minimum = maximum = project.length ();
 
-       if (task.id < 10)     length = 1;                              // Fast
-  else if (task.id < 100)    length = 2;                              // Fast
-  else if (task.id < 1000)   length = 3;                              // Fast
-  else if (task.id < 10000)  length = 4;                              // Fast
-  else                       length = (int) log10 ((double) task.id); // Slow
+  int longest = 0;
+  std::string::size_type last = -1;
+  std::string::size_type space = project.find (' ');
+  while (space != std::string::npos)
+  {
+    if (space - last - 1 > minimum)
+      longest = space - last - 1;
 
-  minimum = maximum = length;
+    last = space;
+    space = project.find (' ', last + 1);
+  }
+
+  if (longest)
+    minimum = longest;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnID::renderHeader (std::vector <std::string>& lines, int width)
+void ColumnProject::renderHeader (std::vector <std::string>& lines, int width)
 {
   lines.push_back ("ID");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnID::render (std::vector <std::string>& lines, Task* task, int width)
+void ColumnProject::render (std::vector <std::string>& lines, Task* task, int width)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string ColumnID::type () const
+std::string ColumnProject::type () const
 {
   return "number";
 }

@@ -25,77 +25,53 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
+#include <math.h>
 #include <Context.h>
-#include <Column.h>
 #include <ColID.h>
-#include <ColProject.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-Column* Column::factory (const std::string& name)
+ColumnID::ColumnID ()
 {
-  if (name == "id")       return new ColumnID ();
-  if (name == "project")  return new ColumnProject ();
-
-  throw std::string ("Unrecognized column type '") + name + "'";
-  return NULL;
+  setLabel ("id");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Column::Column ()
-: _style ("default")
-, _label ("")
-, _minimum (0)
-, _maximum (0)
+ColumnID::~ColumnID ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Column::Column (const Column& other)
+// Set the minimum and maximum widths for the value.
+void ColumnID::measure (Task& task, int& minimum, int& maximum)
 {
-  _label   = other._label;
-  _minimum = other._minimum;
-  _maximum = other._maximum;
+  int length;
+
+       if (task.id < 10)     length = 1;                              // Fast
+  else if (task.id < 100)    length = 2;                              // Fast
+  else if (task.id < 1000)   length = 3;                              // Fast
+  else if (task.id < 10000)  length = 4;                              // Fast
+  else                       length = (int) log10 ((double) task.id); // Slow
+
+  minimum = maximum = length;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Column& Column::operator= (const Column& other)
+void ColumnID::renderHeader (std::vector <std::string>& lines, int width)
 {
-  if (this != &other)
-  {
-    _label   = other._label;
-    _minimum = other._minimum;
-    _maximum = other._maximum;
-  }
-
-  return *this;
+  lines.push_back ("ID");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Column::operator== (const Column& other) const
-{
-  return _label   == other._label   &&
-         _minimum == other._minimum &&
-         _maximum == other._maximum;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Column::~Column ()
+void ColumnID::render (std::vector <std::string>& lines, Task* task, int width)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Column::setStyle (const std::string& style)
+std::string ColumnID::type () const
 {
-  _style = style;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Column::setLabel (const std::string& label)
-{
-  _label = label;
+  return "number";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

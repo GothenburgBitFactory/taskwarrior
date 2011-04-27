@@ -25,8 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <sstream>
 #include <View.h>
+#include <text.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 View::View ()
@@ -163,6 +165,12 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
     minimal.push_back (global_min);
     ideal.push_back (global_ideal);
   }
+
+  std::string combined;
+  join (combined, ",", minimal);
+  std::cout << "# minimal " << combined << "\n";
+  join (combined, ",", ideal);
+  std::cout << "# ideal " << combined << "\n";
 
   // TODO Calculate final column widths.
 
