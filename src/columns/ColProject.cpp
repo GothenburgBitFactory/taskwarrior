@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <math.h>
 #include <Context.h>
 #include <ColProject.h>
@@ -51,12 +52,19 @@ void ColumnProject::measure (Task& task, int& minimum, int& maximum)
   std::string project = task.get ("project");
   minimum = maximum = project.length ();
 
+  std::string::size_type space = project.find (' ');
+  if (space == std::string::npos)
+  {
+    std::cout << "# ColProject::measure project=" << project << " min=" << minimum << " max=" << maximum << "\n";
+    return;
+  }
+
+  minimum = 0;
   int longest = 0;
   std::string::size_type last = -1;
-  std::string::size_type space = project.find (' ');
   while (space != std::string::npos)
   {
-    if (space - last - 1 > minimum)
+    if (space - last - 1 > longest)
       longest = space - last - 1;
 
     last = space;
@@ -65,10 +73,12 @@ void ColumnProject::measure (Task& task, int& minimum, int& maximum)
 
   if (longest)
     minimum = longest;
+
+  std::cout << "# ColProject::measure project=" << project << " min=" << minimum << " max=" << maximum << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnProject::render (std::vector <std::string>& lines, Task* task, int width)
+void ColumnProject::render (std::vector <std::string>& lines, Task& task, int width)
 {
 }
 

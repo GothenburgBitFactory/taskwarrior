@@ -50,7 +50,7 @@ public:
 
   virtual void measure (Task&, int&, int&) = 0;
   virtual void renderHeader (std::vector <std::string>&, int);
-  virtual void render (std::vector <std::string>&, Task*, int) = 0;
+  virtual void render (std::vector <std::string>&, Task&, int) = 0;
 
 protected:
   std::string _type;

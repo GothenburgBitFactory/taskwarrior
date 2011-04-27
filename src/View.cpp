@@ -36,7 +36,7 @@ View::View ()
 , _left_margin (0)
 , _odd (0)
 , _even (0)
-, _intra_padding (0)
+, _intra_padding (1)
 , _intra_odd (0)
 , _intra_even (0)
 , _extra_padding (0)
@@ -61,6 +61,9 @@ View::~View ()
 // |ma|ex|cell   |in|cell   |in|cell   |ex|
 // +--+--+-------+--+-------+--+-------+--+
 // 
+// margin
+// extrapadding
+// intrapadding
 std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
 {
   // Determine minimal, ideal column widths.
@@ -70,8 +73,9 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
   std::vector <Column*>::iterator i;
   for (i = _columns.begin (); i != _columns.end (); ++i)
   {
+    // Headers factor in to width calculations.
     int global_min = characters ((*i)->getLabel ());
-    int global_ideal = 0;
+    int global_ideal = global_min;
 
     std::vector <Task>::iterator d;
     for (d = data.begin (); d != data.end (); ++d)
@@ -88,13 +92,65 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
     ideal.push_back (global_ideal);
   }
 
+  // TODO Remove
   std::string combined;
   join (combined, ",", minimal);
   std::cout << "# minimal " << combined << "\n";
   join (combined, ",", ideal);
   std::cout << "# ideal " << combined << "\n";
 
-  // TODO Calculate final column widths.
+  // Sum the minimal widths.
+  int sum_minimal = 0;
+  std::vector <int>::iterator c;
+  for (c = minimal.begin (); c != minimal.end (); ++c)
+    sum_minimal += *c;
+  std::cout << "# sum_minimal " << sum_minimal << "\n";
+
+  // Sum the ideal widths.
+  int sum_ideal = 0;
+  for (c = ideal.begin (); c != ideal.end (); ++c)
+    sum_ideal += *c;
+  std::cout << "# sum_ideal " << sum_ideal << "\n";
+
+  // Calculate final column widths.
+  int overage = _width
+              - _left_margin
+              - (2 * _extra_padding)
+              - ((_columns.size () - 1) * _intra_padding);
+  std::cout << "# width " << _width << "\n";
+
+  std::vector <int> widths;
+  if (sum_ideal <= overage)
+  {
+    std::cout << "# ideal case: " << sum_ideal << " <= " << overage << "\n";
+    widths = ideal;
+  }
+  else if (sum_minimal > overage)
+  {
+    throw std::string ("There is not enough horizontal width to display the results.");
+  }
+  else
+  {
+    widths = minimal;
+    overage -= sum_minimal;
+    std::cout << "# overage " << overage << "\n";
+
+    // Spread 'overage' among columns where width[i] < ideal[i]
+    while (overage)
+    {
+      for (int i = 0; i < _columns.size () && overage; ++i)
+      {
+        if (widths[i] < ideal[i])
+        {
+          ++widths[i];
+          --overage;
+        }
+      }
+    }
+
+    join (combined, ",", widths);
+    std::cout << "# final widths " << combined << "\n";
+  }
 
   // TODO Compose column headers.
 
@@ -105,6 +161,7 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
   std::vector <int>::iterator s;
   for (s = sequence.begin (); s != sequence.end (); ++s)
   {
+    // TODO render each row.
   }
 
   return output.str ();

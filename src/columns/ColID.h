@@ -39,7 +39,7 @@ public:
   ~ColumnID ();
 
   void measure (Task&, int&, int&);
-  void render (std::vector <std::string>&, Task*, int);
+  void render (std::vector <std::string>&, Task&, int);
 
 private:
 };

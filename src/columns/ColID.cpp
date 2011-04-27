@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <iomanip>
 #include <sstream>
 #include <math.h>
@@ -60,16 +61,18 @@ void ColumnID::measure (Task& task, int& minimum, int& maximum)
   else                       length = (int) log10 ((double) task.id); // Slow
 
   minimum = maximum = length;
+
+  std::cout << "# ColID::measure id=" << task.id << " min=" << minimum << " max=" << maximum << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnID::render (std::vector <std::string>& lines, Task* task, int width)
+void ColumnID::render (std::vector <std::string>& lines, Task& task, int width)
 {
   std::stringstream line;
-  line << std::setw (width) << std::setfill (' ') << task->id;
+  line << std::setw (width) << std::setfill (' ') << task.id;
 
-  if (task->id)
-    line << task->id;
+  if (task.id)
+    line << task.id;
   else
     line << '-';
 

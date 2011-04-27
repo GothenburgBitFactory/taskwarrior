@@ -41,9 +41,14 @@ int main (int argc, char** argv)
   try
   {
     // Two sample tasks.
+    Task t1 ("[project:\"Home\"]");
+    t1.id = 1;
+    Task t2 ("[project:\"Garden Care\"]");
+    t2.id = 11;
+
     std::vector <Task> data;
-    data.push_back (Task ("[description:\"Migrate import out of core\" entry:\"1303155011\" project:\"task-2.1\" status:\"pending\" uuid:\"3bb54f40-c38f-4936-aae6-f67de6227e00\"]"));
-    data.push_back (Task ("[annotation_1303444800:\"Uli Martens\" description:\"New command: task show defaults, that dumps the Config.cpp defaults string, as an example of a complete .taskrc file\" entry:\"1303472714\" project:\"task-2.0\" status:\"pending\" uuid:\"f30cb9c3-3fc0-483f-bfb2-3bf134f00694\"]"));
+    data.push_back (t1);
+    data.push_back (t2);
 
     // Sequence of tasks.
     std::vector <int> sequence;
@@ -54,7 +59,10 @@ int main (int argc, char** argv)
     View view;
     view.add (Column::factory ("id"));
     view.add (Column::factory ("project"));
-    view.width (40);
+    view.width (12);
+    view.leftMargin (0);
+    view.extraPadding (0);
+    view.intraPadding (1);
 
     // Render the view.
     std::cout << view.render (data, sequence)
