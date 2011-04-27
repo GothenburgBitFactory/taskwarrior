@@ -54,101 +54,95 @@ extern Context context;
 int handleAdd (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-add-command"))
+  context.task.set ("uuid", uuid ());
+  context.task.setEntry ();
+
+  // Recurring tasks get a special status.
+  if (context.task.has ("due") &&
+      context.task.has ("recur"))
   {
-    std::stringstream out;
-
-    context.task.set ("uuid", uuid ());
-    context.task.setEntry ();
-
-    // Recurring tasks get a special status.
-    if (context.task.has ("due") &&
-        context.task.has ("recur"))
-    {
-      context.task.setStatus (Task::recurring);
-      context.task.set ("mask", "");
-    }
-
-    // Tasks with a wait: date get a special status.
-    else if (context.task.has ("wait"))
-      context.task.setStatus (Task::waiting);
-
-    // By default, tasks are pending.
-    else
-      context.task.setStatus (Task::pending);
-
-    // Override with default.project, if not specified.
-    if (context.task.get ("project") == "")
-      context.task.set ("project", context.config.get ("default.project"));
-
-    // Override with default.priority, if not specified.
-    if (context.task.get ("priority") == "")
-    {
-      std::string defaultPriority = context.config.get ("default.priority");
-      if (Att::validNameValue ("priority", "", defaultPriority))
-        context.task.set ("priority", defaultPriority);
-    }
-
-    // Override with default.due, if not specified.
-    if (context.task.get ("due") == "")
-    {
-      std::string defaultDue = context.config.get ("default.due");
-      if (defaultDue != "" &&
-          Att::validNameValue ("due", "", defaultDue))
-        context.task.set ("due", defaultDue);
-    }
-
-    // Include tags.
-    foreach (tag, context.tagAdditions)
-      context.task.addTag (*tag);
-
-    // Must load pending to resolve dependencies, and to provide a new ID.
-    context.tdb.lock (context.config.getBoolean ("locking"));
-
-    std::vector <Task> all;
-    Filter none;
-    context.tdb.loadPending (all, none);
-
-    // Resolve dependencies.
-    if (context.task.has ("depends"))
-    {
-      // Convert ID to UUID.
-      std::vector <std::string> deps;
-      split (deps, context.task.get ("depends"), ',');
-
-      // Eliminate the ID-based set.
-      context.task.set ("depends", "");
-
-      std::vector <std::string>::iterator i;
-      for (i = deps.begin (); i != deps.end (); i++)
-      {
-        int id = atoi (i->c_str ());
-        if (id < 0)
-          context.task.removeDependency (-id);
-        else
-          context.task.addDependency (id);
-      }
-    }
-
-    // Only valid tasks can be added.
-    context.task.validate ();
-
-    context.tdb.add (context.task);
-
-#ifdef FEATURE_NEW_ID
-    out << "Created task " << context.tdb.nextId () << ".\n";
-#endif
-
-    context.footnote (onProjectChange (context.task));
-
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    outs = out.str ();
-    context.hooks.trigger ("post-add-command");
+    context.task.setStatus (Task::recurring);
+    context.task.set ("mask", "");
   }
 
+  // Tasks with a wait: date get a special status.
+  else if (context.task.has ("wait"))
+    context.task.setStatus (Task::waiting);
+
+  // By default, tasks are pending.
+  else
+    context.task.setStatus (Task::pending);
+
+  // Override with default.project, if not specified.
+  if (context.task.get ("project") == "")
+    context.task.set ("project", context.config.get ("default.project"));
+
+  // Override with default.priority, if not specified.
+  if (context.task.get ("priority") == "")
+  {
+    std::string defaultPriority = context.config.get ("default.priority");
+    if (Att::validNameValue ("priority", "", defaultPriority))
+      context.task.set ("priority", defaultPriority);
+  }
+
+  // Override with default.due, if not specified.
+  if (context.task.get ("due") == "")
+  {
+    std::string defaultDue = context.config.get ("default.due");
+    if (defaultDue != "" &&
+        Att::validNameValue ("due", "", defaultDue))
+      context.task.set ("due", defaultDue);
+  }
+
+  // Include tags.
+  foreach (tag, context.tagAdditions)
+    context.task.addTag (*tag);
+
+  // Must load pending to resolve dependencies, and to provide a new ID.
+  context.tdb.lock (context.config.getBoolean ("locking"));
+
+  std::vector <Task> all;
+  Filter none;
+  context.tdb.loadPending (all, none);
+
+  // Resolve dependencies.
+  if (context.task.has ("depends"))
+  {
+    // Convert ID to UUID.
+    std::vector <std::string> deps;
+    split (deps, context.task.get ("depends"), ',');
+
+    // Eliminate the ID-based set.
+    context.task.set ("depends", "");
+
+    std::vector <std::string>::iterator i;
+    for (i = deps.begin (); i != deps.end (); i++)
+    {
+      int id = atoi (i->c_str ());
+      if (id < 0)
+        context.task.removeDependency (-id);
+      else
+        context.task.addDependency (id);
+    }
+  }
+
+  // Only valid tasks can be added.
+  context.task.validate ();
+
+  context.tdb.add (context.task);
+
+#ifdef FEATURE_NEW_ID
+  out << "Created task " << context.tdb.nextId () << ".\n";
+#endif
+
+  context.footnote (onProjectChange (context.task));
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  outs = out.str ();
   return rc;
 }
 
@@ -156,73 +150,67 @@ int handleAdd (std::string& outs)
 int handleLog (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-log-command"))
+  context.task.setStatus (Task::completed);
+  context.task.set ("uuid", uuid ());
+  context.task.setEntry ();
+
+  // Add an end date.
+  char entryTime[16];
+  sprintf (entryTime, "%u", (unsigned int) time (NULL));
+  context.task.set ("end", entryTime);
+
+  // Recurring tasks get a special status.
+  if (context.task.has ("recur"))
+    throw std::string ("You cannot log recurring tasks.");
+
+  if (context.task.has ("wait"))
+    throw std::string ("You cannot log waiting tasks.");
+
+  // It makes no sense to add dependencies to an already-completed task.
+  if (context.task.get ("depends") != "")
+    throw std::string ("You cannot specify dependencies on a completed task.");
+
+  // Override with default.project, if not specified.
+  if (context.task.get ("project") == "")
+    context.task.set ("project", context.config.get ("default.project"));
+
+  // Override with default.priority, if not specified.
+  if (context.task.get ("priority") == "")
   {
-    std::stringstream out;
-
-    context.task.setStatus (Task::completed);
-    context.task.set ("uuid", uuid ());
-    context.task.setEntry ();
-
-    // Add an end date.
-    char entryTime[16];
-    sprintf (entryTime, "%u", (unsigned int) time (NULL));
-    context.task.set ("end", entryTime);
-
-    // Recurring tasks get a special status.
-    if (context.task.has ("recur"))
-      throw std::string ("You cannot log recurring tasks.");
-
-    if (context.task.has ("wait"))
-      throw std::string ("You cannot log waiting tasks.");
-
-    // It makes no sense to add dependencies to an already-completed task.
-    if (context.task.get ("depends") != "")
-      throw std::string ("You cannot specify dependencies on a completed task.");
-
-    // Override with default.project, if not specified.
-    if (context.task.get ("project") == "")
-      context.task.set ("project", context.config.get ("default.project"));
-
-    // Override with default.priority, if not specified.
-    if (context.task.get ("priority") == "")
-    {
-      std::string defaultPriority = context.config.get ("default.priority");
-      if (Att::validNameValue ("priority", "", defaultPriority))
-        context.task.set ("priority", defaultPriority);
-    }
-
-    // Override with default.due, if not specified.
-    if (context.task.get ("due") == "")
-    {
-      std::string defaultDue = context.config.get ("default.due");
-      if (defaultDue != "" &&
-          Att::validNameValue ("due", "", defaultDue))
-        context.task.set ("due", defaultDue);
-    }
-
-    // Include tags.
-    foreach (tag, context.tagAdditions)
-      context.task.addTag (*tag);
-
-    // Only valid tasks can be added.
-    context.task.validate ();
-
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    context.tdb.add (context.task);
-    context.tdb.commit ();
-
-    if (context.config.getBoolean ("echo.command"))
-      out << "Logged task.\n";
-
-    context.footnote (onProjectChange (context.task));
-    context.tdb.unlock ();
-
-    outs = out.str ();
-    context.hooks.trigger ("post-log-command");
+    std::string defaultPriority = context.config.get ("default.priority");
+    if (Att::validNameValue ("priority", "", defaultPriority))
+      context.task.set ("priority", defaultPriority);
   }
 
+  // Override with default.due, if not specified.
+  if (context.task.get ("due") == "")
+  {
+    std::string defaultDue = context.config.get ("default.due");
+    if (defaultDue != "" &&
+        Att::validNameValue ("due", "", defaultDue))
+      context.task.set ("due", defaultDue);
+  }
+
+  // Include tags.
+  foreach (tag, context.tagAdditions)
+    context.task.addTag (*tag);
+
+  // Only valid tasks can be added.
+  context.task.validate ();
+
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  context.tdb.add (context.task);
+  context.tdb.commit ();
+
+  if (context.config.getBoolean ("echo.command"))
+    out << "Logged task.\n";
+
+  context.footnote (onProjectChange (context.task));
+  context.tdb.unlock ();
+
+  outs = out.str ();
   return rc;
 }
 
@@ -230,109 +218,103 @@ int handleLog (std::string& outs)
 int handleProjects (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-projects-command"))
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  int quantity;
+  if (context.config.getBoolean ("list.all.projects"))
+    quantity = context.tdb.load (tasks, context.filter);
+  else
+    quantity = context.tdb.loadPending (tasks, context.filter);
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Scan all the tasks for their project name, building a map using project
+  // names as keys.
+  std::map <std::string, int> unique;
+  std::map <std::string, int> high;
+  std::map <std::string, int> medium;
+  std::map <std::string, int> low;
+  std::map <std::string, int> none;
+  bool no_project = false;
+  std::string project;
+  std::string priority;
+  foreach (t, tasks)
   {
-    std::stringstream out;
+    project = t->get ("project");
+    priority = t->get ("priority");
 
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    int quantity;
-    if (context.config.getBoolean ("list.all.projects"))
-      quantity = context.tdb.load (tasks, context.filter);
-    else
-      quantity = context.tdb.loadPending (tasks, context.filter);
+    unique[project] += 1;
+    if (project == "")
+      no_project = true;
 
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    // Scan all the tasks for their project name, building a map using project
-    // names as keys.
-    std::map <std::string, int> unique;
-    std::map <std::string, int> high;
-    std::map <std::string, int> medium;
-    std::map <std::string, int> low;
-    std::map <std::string, int> none;
-    bool no_project = false;
-    std::string project;
-    std::string priority;
-    foreach (t, tasks)
-    {
-      project = t->get ("project");
-      priority = t->get ("priority");
-
-      unique[project] += 1;
-      if (project == "")
-        no_project = true;
-
-           if (priority == "H") high[project]   += 1;
-      else if (priority == "M") medium[project] += 1;
-      else if (priority == "L") low[project]    += 1;
-      else                      none[project]   += 1;
-    }
-
-    if (unique.size ())
-    {
-      // Render a list of project names from the map.
-      Table table;
-      table.addColumn ("Project");
-      table.addColumn ("Tasks");
-      table.addColumn ("Pri:None");
-      table.addColumn ("Pri:L");
-      table.addColumn ("Pri:M");
-      table.addColumn ("Pri:H");
-
-      if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-          context.config.getBoolean ("fontunderline"))
-      {
-        table.setColumnUnderline (0);
-        table.setColumnUnderline (1);
-        table.setColumnUnderline (2);
-        table.setColumnUnderline (3);
-        table.setColumnUnderline (4);
-        table.setColumnUnderline (5);
-      }
-      else
-        table.setTableDashedUnderline ();
-
-      table.setColumnJustification (1, Table::right);
-      table.setColumnJustification (2, Table::right);
-      table.setColumnJustification (3, Table::right);
-      table.setColumnJustification (4, Table::right);
-      table.setColumnJustification (5, Table::right);
-
-      foreach (i, unique)
-      {
-        int row = table.addRow ();
-        table.addCell (row, 0, (i->first == "" ? "(none)" : i->first));
-        table.addCell (row, 1, i->second);
-        table.addCell (row, 2, none[i->first]);
-        table.addCell (row, 3, low[i->first]);
-        table.addCell (row, 4, medium[i->first]);
-        table.addCell (row, 5, high[i->first]);
-      }
-
-      int number_projects = unique.size ();
-      if (no_project)
-        --number_projects;
-
-      out << optionalBlankLine ()
-          << table.render ()
-          << optionalBlankLine ()
-          << number_projects
-          << (number_projects == 1 ? " project" : " projects")
-          << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")\n";
-    }
-    else
-    {
-      out << "No projects.\n";
-      rc = 1;
-    }
-
-    outs = out.str ();
-    context.hooks.trigger ("post-projects-command");
+         if (priority == "H") high[project]   += 1;
+    else if (priority == "M") medium[project] += 1;
+    else if (priority == "L") low[project]    += 1;
+    else                      none[project]   += 1;
   }
 
+  if (unique.size ())
+  {
+    // Render a list of project names from the map.
+    Table table;
+    table.addColumn ("Project");
+    table.addColumn ("Tasks");
+    table.addColumn ("Pri:None");
+    table.addColumn ("Pri:L");
+    table.addColumn ("Pri:M");
+    table.addColumn ("Pri:H");
+
+    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+        context.config.getBoolean ("fontunderline"))
+    {
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
+      table.setColumnUnderline (2);
+      table.setColumnUnderline (3);
+      table.setColumnUnderline (4);
+      table.setColumnUnderline (5);
+    }
+    else
+      table.setTableDashedUnderline ();
+
+    table.setColumnJustification (1, Table::right);
+    table.setColumnJustification (2, Table::right);
+    table.setColumnJustification (3, Table::right);
+    table.setColumnJustification (4, Table::right);
+    table.setColumnJustification (5, Table::right);
+
+    foreach (i, unique)
+    {
+      int row = table.addRow ();
+      table.addCell (row, 0, (i->first == "" ? "(none)" : i->first));
+      table.addCell (row, 1, i->second);
+      table.addCell (row, 2, none[i->first]);
+      table.addCell (row, 3, low[i->first]);
+      table.addCell (row, 4, medium[i->first]);
+      table.addCell (row, 5, high[i->first]);
+    }
+
+    int number_projects = unique.size ();
+    if (no_project)
+      --number_projects;
+
+    out << optionalBlankLine ()
+        << table.render ()
+        << optionalBlankLine ()
+        << number_projects
+        << (number_projects == 1 ? " project" : " projects")
+        << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")\n";
+  }
+  else
+  {
+    out << "No projects.\n";
+    rc = 1;
+  }
+
+  outs = out.str ();
   return rc;
 }
 
@@ -370,87 +352,81 @@ int handleCompletionProjects (std::string& outs)
 int handleTags (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-tags-command"))
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  int quantity = 0;
+  if (context.config.getBoolean ("list.all.tags"))
+    quantity += context.tdb.load (tasks, context.filter);
+  else
+    quantity += context.tdb.loadPending (tasks, context.filter);
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Scan all the tasks for their project name, building a map using project
+  // names as keys.
+  std::map <std::string, int> unique;
+  foreach (t, tasks)
   {
-    std::stringstream out;
+    std::vector <std::string> tags;
+    t->getTags (tags);
 
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    int quantity = 0;
-    if (context.config.getBoolean ("list.all.tags"))
-      quantity += context.tdb.load (tasks, context.filter);
-    else
-      quantity += context.tdb.loadPending (tasks, context.filter);
-
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    // Scan all the tasks for their project name, building a map using project
-    // names as keys.
-    std::map <std::string, int> unique;
-    foreach (t, tasks)
-    {
-      std::vector <std::string> tags;
-      t->getTags (tags);
-
-      foreach (tag, tags)
-        if (unique.find (*tag) != unique.end ())
-          unique[*tag]++;
-        else
-          unique[*tag] = 1;
-    }
-
-    bool use_color = context.config.getBoolean ("color") ||
-                     context.config.getBoolean ("_forcecolor");
-
-    if (unique.size ())
-    {
-      // Render a list of tags names from the map.
-      Table table;
-      table.addColumn ("Tag");
-      table.addColumn ("Count");
-
-      if (use_color)
-      {
-        table.setColumnUnderline (0);
-        table.setColumnUnderline (1);
-      }
-
-      table.setColumnJustification (1, Table::right);
-
-      Color bold ("bold");
-      foreach (i, unique)
-      {
-        int row = table.addRow ();
-        table.addCell (row, 0, i->first);
-        table.addCell (row, 1, i->second);
-
-        // Highlight the special tags.
-        if (use_color && (i->first == "nocolor" ||
-                          i->first == "nonag"))
-        {
-          table.setRowColor (row, bold);
-        }
-      }
-
-      out << optionalBlankLine ()
-          << table.render ()
-          << optionalBlankLine ()
-          << unique.size ()
-          << (unique.size () == 1 ? " tag" : " tags")
-          << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")\n";
-    }
-    else
-    {
-      out << "No tags.\n";
-      rc = 1;
-    }
-
-    outs = out.str ();
-    context.hooks.trigger ("post-tags-command");
+    foreach (tag, tags)
+      if (unique.find (*tag) != unique.end ())
+        unique[*tag]++;
+      else
+        unique[*tag] = 1;
   }
 
+  bool use_color = context.config.getBoolean ("color") ||
+                   context.config.getBoolean ("_forcecolor");
+
+  if (unique.size ())
+  {
+    // Render a list of tags names from the map.
+    Table table;
+    table.addColumn ("Tag");
+    table.addColumn ("Count");
+
+    if (use_color)
+    {
+      table.setColumnUnderline (0);
+      table.setColumnUnderline (1);
+    }
+
+    table.setColumnJustification (1, Table::right);
+
+    Color bold ("bold");
+    foreach (i, unique)
+    {
+      int row = table.addRow ();
+      table.addCell (row, 0, i->first);
+      table.addCell (row, 1, i->second);
+
+      // Highlight the special tags.
+      if (use_color && (i->first == "nocolor" ||
+                        i->first == "nonag"))
+      {
+        table.setRowColor (row, bold);
+      }
+    }
+
+    out << optionalBlankLine ()
+        << table.render ()
+        << optionalBlankLine ()
+        << unique.size ()
+        << (unique.size () == 1 ? " tag" : " tags")
+        << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")\n";
+  }
+  else
+  {
+    out << "No tags.\n";
+    rc = 1;
+  }
+
+  outs = out.str ();
   return rc;
 }
 
@@ -584,42 +560,37 @@ int handleQuery (std::string& outs)
 {
   int rc = 0;
 
-  if (context.hooks.trigger ("pre-query-command"))
+  // Get all the tasks.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Filter sequence.
+  if (context.sequence.size ())
+    context.filter.applySequence (tasks, context.sequence);
+
+  if (tasks.size () == 0)
   {
-    // Get all the tasks.
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    context.tdb.load (tasks, context.filter);
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    // Filter sequence.
-    if (context.sequence.size ())
-      context.filter.applySequence (tasks, context.sequence);
-
-    if (tasks.size () == 0)
-    {
-      std::cout << "No matches.\n";
-      return 1;
-    }
-
-    // Note: "limit:" feature not supported.
-
-    // Compose output.
-    std::vector <Task>::iterator t;
-    for (t = tasks.begin (); t != tasks.end (); ++t)
-    {
-      if (t != tasks.begin ())
-        outs += ",\n";
-
-      outs += t->composeJSON (true);
-    }
-
-    outs += "\n";
-    context.hooks.trigger ("post-query-command");
+    std::cout << "No matches.\n";
+    return 1;
   }
 
+  // Note: "limit:" feature not supported.
+
+  // Compose output.
+  std::vector <Task>::iterator t;
+  for (t = tasks.begin (); t != tasks.end (); ++t)
+  {
+    if (t != tasks.begin ())
+      outs += ",\n";
+
+    outs += t->composeJSON (true);
+  }
+
+  outs += "\n";
   return rc;
 }
 
@@ -845,76 +816,66 @@ int handleZshCompletionCommands (std::string& outs)
 ////////////////////////////////////////////////////////////////////////////////
 void handleUndo ()
 {
-  if (context.hooks.trigger ("pre-undo-command"))
-  {
-    context.disallowModification ();
+  context.disallowModification ();
 
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    context.tdb.undo ();
-    context.tdb.unlock ();
-
-    context.hooks.trigger ("post-undo-command");
-  }
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  context.tdb.undo ();
+  context.tdb.unlock ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void handleMerge (std::string& outs)
 {
-  if (context.hooks.trigger ("pre-merge-command"))
+  std::string file = trim (context.task.get ("description"));
+  std::string pushfile = "";
+  std::string tmpfile = "";
+
+  std::string sAutopush = lowerCase (context.config.get        ("merge.autopush"));
+  bool        bAutopush =            context.config.getBoolean ("merge.autopush");
+
+  Uri uri (file, "merge");
+  uri.parse();
+
+  if (uri.data.length ())
   {
-    std::string file = trim (context.task.get ("description"));
-    std::string pushfile = "";
-    std::string tmpfile = "";
+    Directory location (context.config.get ("data.location"));
 
-    std::string sAutopush = lowerCase (context.config.get        ("merge.autopush"));
-    bool        bAutopush =            context.config.getBoolean ("merge.autopush");
+    // be sure that uri points to a file
+    uri.append ("undo.data");
 
-    Uri uri (file, "merge");
-    uri.parse();
-
-    if (uri.data.length ())
+    Transport* transport;
+    if ((transport = Transport::getTransport (uri)) != NULL )
     {
-      Directory location (context.config.get ("data.location"));
+      tmpfile = location.data + "/undo_remote.data";
+      transport->recv (tmpfile);
+      delete transport;
 
-      // be sure that uri points to a file
-      uri.append ("undo.data");
-
-      Transport* transport;
-      if ((transport = Transport::getTransport (uri)) != NULL )
-      {
-        tmpfile = location.data + "/undo_remote.data";
-        transport->recv (tmpfile);
-        delete transport;
-
-        file = tmpfile;
-      }
-      else
-        file = uri.path;
-
-      context.tdb.lock (context.config.getBoolean ("locking"));
-      context.tdb.merge (file);
-      context.tdb.unlock ();
-
-      std::cout << "Merge complete.\n";
-
-      context.hooks.trigger ("post-merge-command");
-
-      if (tmpfile != "")
-        remove (tmpfile.c_str ());
-
-      if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri.data + "\'?")) )
-         || (bAutopush) )
-      {
-        std::string out;
-		  context.task.set ("description", uri.data);
-        handlePush (out);
-      }
+      file = tmpfile;
     }
     else
-      throw std::string ("No uri was specified for the merge.  Either specify "
-                         "the uri of a remote .task directory, or create a "
-                         "'merge.default.uri' entry in your .taskrc file.");
+      file = uri.path;
+
+    context.tdb.lock (context.config.getBoolean ("locking"));
+    context.tdb.merge (file);
+    context.tdb.unlock ();
+
+    std::cout << "Merge complete.\n";
+
+    if (tmpfile != "")
+      remove (tmpfile.c_str ());
+
+    if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri.data + "\'?")) )
+       || (bAutopush) )
+    {
+      std::string out;
+	  context.task.set ("description", uri.data);
+      handlePush (out);
+    }
   }
+  else
+    throw std::string ("No uri was specified for the merge.  Either specify "
+                       "the uri of a remote .task directory, or create a "
+                       "'merge.default.uri' entry in your .taskrc file.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -922,213 +883,197 @@ void handleMerge (std::string& outs)
 // this is potentially on another machine, no checking can be performed.
 void handlePush (std::string& outs)
 {
-  if (context.hooks.trigger ("pre-push-command"))
+  std::string file = trim (context.task.get ("description"));
+
+  Uri uri (file, "push");
+  uri.parse ();
+
+  if (uri.data.length ())
   {
-    std::string file = trim (context.task.get ("description"));
+		Directory location (context.config.get ("data.location"));
 
-    Uri uri (file, "push");
-    uri.parse ();
+		Transport* transport;
+		if ((transport = Transport::getTransport (uri)) != NULL )
+		{
+			transport->send (location.data + "/{pending,undo,completed}.data");
+			delete transport;
+		}
+		else
+		{
+      // Verify that files are not being copied from rc.data.location to the
+      // same place.
+      if (Directory (uri.path) == Directory (context.config.get ("data.location")))
+        throw std::string ("Cannot push files when the source and destination are the same.");
 
-    if (uri.data.length ())
-    {
-			Directory location (context.config.get ("data.location"));
+      // copy files locally
+      if (! Path (uri.data).is_directory ())
+        throw std::string ("The uri '") + uri.path + "' is not a local directory.";
 
-			Transport* transport;
-			if ((transport = Transport::getTransport (uri)) != NULL )
-			{
-				transport->send (location.data + "/{pending,undo,completed}.data");
-				delete transport;
-			}
-			else
-			{
-        // Verify that files are not being copied from rc.data.location to the
-        // same place.
-        if (Directory (uri.path) == Directory (context.config.get ("data.location")))
-          throw std::string ("Cannot push files when the source and destination are the same.");
+      std::ifstream ifile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
+      std::ofstream ofile1 ((uri.path      + "/undo.data").c_str(), std::ios_base::binary);
+      ofile1 << ifile1.rdbuf();
 
-        // copy files locally
-        if (! Path (uri.data).is_directory ())
-          throw std::string ("The uri '") + uri.path + "' is not a local directory.";
+      std::ifstream ifile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
+      std::ofstream ofile2 ((uri.path      + "/pending.data").c_str(), std::ios_base::binary);
+      ofile2 << ifile2.rdbuf();
 
-        std::ifstream ifile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
-        std::ofstream ofile1 ((uri.path      + "/undo.data").c_str(), std::ios_base::binary);
-        ofile1 << ifile1.rdbuf();
+      std::ifstream ifile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
+      std::ofstream ofile3 ((uri.path      + "/completed.data").c_str(), std::ios_base::binary);
+      ofile3 << ifile3.rdbuf();
+		}
 
-        std::ifstream ifile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
-        std::ofstream ofile2 ((uri.path      + "/pending.data").c_str(), std::ios_base::binary);
-        ofile2 << ifile2.rdbuf();
-
-        std::ifstream ifile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
-        std::ofstream ofile3 ((uri.path      + "/completed.data").c_str(), std::ios_base::binary);
-        ofile3 << ifile3.rdbuf();
-			}
-
-      std::cout << "Local tasks transferred to " << uri.data << "\n";
-
-      context.hooks.trigger ("post-push-command");
-    }
-    else
-      throw std::string ("No uri was specified for the push.  Either specify "
-                         "the uri of a remote .task directory, or create a "
-                         "'push.default.uri' entry in your .taskrc file.");
+    std::cout << "Local tasks transferred to " << uri.data << "\n";
   }
+  else
+    throw std::string ("No uri was specified for the push.  Either specify "
+                       "the uri of a remote .task directory, or create a "
+                       "'push.default.uri' entry in your .taskrc file.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void handlePull (std::string& outs)
 {
-  if (context.hooks.trigger ("pre-pull-command"))
+  std::string file = trim (context.task.get ("description"));
+
+  Uri uri (file, "pull");
+  uri.parse ();
+
+  if (uri.data.length ())
   {
-    std::string file = trim (context.task.get ("description"));
+		Directory location (context.config.get ("data.location"));
 
-    Uri uri (file, "pull");
-    uri.parse ();
+    if (! uri.append ("{pending,undo,completed}.data"))
+      throw std::string ("The uri '") + uri.path + "' is not a directory. Did you forget a trailing '/'?";
 
-    if (uri.data.length ())
-    {
-			Directory location (context.config.get ("data.location"));
+		Transport* transport;
+		if ((transport = Transport::getTransport (uri)) != NULL)
+		{
+			transport->recv (location.data + "/");
+			delete transport;
+		}
+		else
+		{
+      // Verify that files are not being copied from rc.data.location to the
+      // same place.
+      if (Directory (uri.path) == Directory (context.config.get ("data.location")))
+        throw std::string ("Cannot pull files when the source and destination are the same.");
 
-      if (! uri.append ("{pending,undo,completed}.data"))
-        throw std::string ("The uri '") + uri.path + "' is not a directory. Did you forget a trailing '/'?";
+      // copy files locally
 
-			Transport* transport;
-			if ((transport = Transport::getTransport (uri)) != NULL)
-			{
-				transport->recv (location.data + "/");
-				delete transport;
-			}
-			else
-			{
-        // Verify that files are not being copied from rc.data.location to the
-        // same place.
-        if (Directory (uri.path) == Directory (context.config.get ("data.location")))
-          throw std::string ("Cannot pull files when the source and destination are the same.");
+      // remove {pending,undo,completed}.data
+      uri.path = uri.parent();
 
-        // copy files locally
+      Path path1 (uri.path + "undo.data");
+      Path path2 (uri.path + "pending.data");
+      Path path3 (uri.path + "completed.data");
 
-        // remove {pending,undo,completed}.data
-        uri.path = uri.parent();
+      if (path1.exists() && path2.exists() && path3.exists())
+      {
+//        if (confirm ("xxxxxxxxxxxxx"))
+//        {
+          std::ofstream ofile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
+          std::ifstream ifile1 (path1.data.c_str()                    , std::ios_base::binary);
+          ofile1 << ifile1.rdbuf();
 
-        Path path1 (uri.path + "undo.data");
-        Path path2 (uri.path + "pending.data");
-        Path path3 (uri.path + "completed.data");
+          std::ofstream ofile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
+          std::ifstream ifile2 (path2.data.c_str()                    , std::ios_base::binary);
+          ofile2 << ifile2.rdbuf();
 
-        if (path1.exists() && path2.exists() && path3.exists())
-        {
-//          if (confirm ("xxxxxxxxxxxxx"))
-//          {
-            std::ofstream ofile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
-            std::ifstream ifile1 (path1.data.c_str()                    , std::ios_base::binary);
-            ofile1 << ifile1.rdbuf();
+          std::ofstream ofile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
+          std::ifstream ifile3 (path3.data.c_str()                    , std::ios_base::binary);
+          ofile3 << ifile3.rdbuf();
+//        }
+      }
+      else
+      {
+        throw std::string ("At least one of the database files in '" + uri.path + "' is not present.");
+      }
+		}
 
-            std::ofstream ofile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
-            std::ifstream ifile2 (path2.data.c_str()                    , std::ios_base::binary);
-            ofile2 << ifile2.rdbuf();
-
-            std::ofstream ofile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
-            std::ifstream ifile3 (path3.data.c_str()                    , std::ios_base::binary);
-            ofile3 << ifile3.rdbuf();
-//          }
-        }
-        else
-        {
-          throw std::string ("At least one of the database files in '" + uri.path + "' is not present.");
-        }
-			}
-
-      std::cout << "Tasks transferred from " << uri.data << "\n";
-
-      context.hooks.trigger ("post-pull-command");
-    }
-    else
-      throw std::string ("No uri was specified for the pull.  Either specify "
-                         "the uri of a remote .task directory, or create a "
-                         "'pull.default.uri' entry in your .taskrc file.");
+    std::cout << "Tasks transferred from " << uri.data << "\n";
   }
+  else
+    throw std::string ("No uri was specified for the pull.  Either specify "
+                       "the uri of a remote .task directory, or create a "
+                       "'pull.default.uri' entry in your .taskrc file.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int handleVersion (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-version-command"))
-  {
-    std::stringstream out;
+  // Create a table for the disclaimer.
+  int width = context.getWidth ();
+  Table disclaimer;
+  disclaimer.setTableWidth (width);
+  disclaimer.addColumn (" ");
+  disclaimer.setColumnWidth (0, Table::flexible);
+  disclaimer.setColumnJustification (0, Table::left);
+  disclaimer.addCell (disclaimer.addRow (), 0,
+      "Taskwarrior may be copied only under the terms of the GNU General Public "
+      "License, which may be found in the taskwarrior source kit.");
 
-    // Create a table for the disclaimer.
-    int width = context.getWidth ();
-    Table disclaimer;
-    disclaimer.setTableWidth (width);
-    disclaimer.addColumn (" ");
-    disclaimer.setColumnWidth (0, Table::flexible);
-    disclaimer.setColumnJustification (0, Table::left);
-    disclaimer.addCell (disclaimer.addRow (), 0,
-        "Taskwarrior may be copied only under the terms of the GNU General Public "
-        "License, which may be found in the taskwarrior source kit.");
+  // Create a table for the URL.
+  Table link;
+  link.setTableWidth (width);
+  link.addColumn (" ");
+  link.setColumnWidth (0, Table::flexible);
+  link.setColumnJustification (0, Table::left);
+  link.addCell (link.addRow (), 0,
+    "Documentation for taskwarrior can be found using 'man task', 'man taskrc', "
+    "'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' or at "
+    "http://taskwarrior.org");
 
-    // Create a table for the URL.
-    Table link;
-    link.setTableWidth (width);
-    link.addColumn (" ");
-    link.setColumnWidth (0, Table::flexible);
-    link.setColumnJustification (0, Table::left);
-    link.addCell (link.addRow (), 0,
-      "Documentation for taskwarrior can be found using 'man task', 'man taskrc', "
-      "'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' or at "
-      "http://taskwarrior.org");
+  Color bold ("bold");
 
-    Color bold ("bold");
-
-    out << "\n"
-        << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-             ? bold.colorize (PACKAGE)
-             : PACKAGE)
-        << " "
-        << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-             ? bold.colorize (VERSION)
-             : VERSION)
-        << " built for "
+  out << "\n"
+      << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+           ? bold.colorize (PACKAGE)
+           : PACKAGE)
+      << " "
+      << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+           ? bold.colorize (VERSION)
+           : VERSION)
+      << " built for "
 
 #if defined (DARWIN)
-        << "darwin"
+      << "darwin"
 #elif defined (SOLARIS)
-        << "solaris"
+      << "solaris"
 #elif defined (CYGWIN)
-        << "cygwin"
+      << "cygwin"
 #elif defined (OPENBSD)
-        << "openbsd"
+      << "openbsd"
 #elif defined (HAIKU)
-        << "haiku"
+      << "haiku"
 #elif defined (FREEBSD)
-        << "freebsd"
+      << "freebsd"
 #elif defined (LINUX)
-        << "linux"
+      << "linux"
 #else
-        << "unknown"
+      << "unknown"
 #endif
 
 #ifdef HAVE_LIBREADLINE
-        << "-readline"
+      << "-readline"
 #endif
 
 #ifdef HAVE_LIBLUA
-        << "-lua"
+      << "-lua"
 #endif
 
-        << "\n"
-        << "Copyright (C) 2006 - 2011 P. Beckingham, F. Hernandez.\n"
+      << "\n"
+      << "Copyright (C) 2006 - 2011 P. Beckingham, F. Hernandez.\n"
 #ifdef HAVE_LIBLUA
-        << "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio.\n"
+      << "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio.\n"
 #endif
-        << disclaimer.render ()
-        << link.render ()
-        << "\n";
+      << disclaimer.render ()
+      << link.render ()
+      << "\n";
 
-    outs = out.str ();
-    context.hooks.trigger ("post-version-command");
-  }
-
+  outs = out.str ();
   return rc;
 }
 
@@ -1136,290 +1081,285 @@ int handleVersion (std::string& outs)
 int handleShow (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-config-command"))
+  // Obtain the arguments from the description.  That way, things like '--'
+  // have already been handled.
+  std::vector <std::string> args;
+  split (args, context.task.get ("description"), ' ');
+
+  if (args.size () > 1)
+    throw std::string ("The show command takes zero or one option.");
+
+  int width = context.getWidth ();
+
+  std::vector <std::string> all;
+  context.config.all (all);
+
+  // Complain about configuration variables that are not recognized.
+  // These are the regular configuration variables.
+  // Note that there is a leading and trailing space, to make it easier to
+  // search for whole words.
+  std::string recognized =
+    " annotations blanklines bulk burndown.bias calendar.details calendar.details.report "
+    "calendar.holidays calendar.legend color calendar.offset calendar.offset.value "
+    "color.active color.due color.due.today color.blocked color.burndown.done "
+    "color.burndown.pending color.burndown.started color.overdue color.pri.H "
+    "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
+    "color.footnote color.header color.debug color.alternate color.calendar.today "
+    "color.calendar.due color.calendar.due.today color.calendar.overdue regex "
+    "color.calendar.weekend color.calendar.holiday color.calendar.weeknumber "
+    "color.summary.background color.summary.bar color.history.add "
+    "color.history.done color.history.delete color.undo.before "
+    "color.sync.added color.sync.changed color.sync.rejected color.undo.after "
+    "confirmation data.location dateformat dateformat.holiday "
+    "dateformat.report dateformat.annotation debug default.command default.due "
+    "default.priority default.project defaultwidth due "
+    "dependency.confirmation dependency.reminder detection locale displayweeknumber "
+    "export.ical.class echo.command fontunderline gc locking monthsperline "
+    "nag next journal.time journal.time.start.annotation journal.info "
+    "journal.time.stop.annotation project shadow.command shadow.file "
+    "shadow.notify weekstart editor edit.verbose import.synonym.id import.synonym.uuid "
+    "complete.all.projects complete.all.tags search.case.sensitive extensions "
+    "active.indicator tag.indicator recurrence.indicator recurrence.limit "
+    "list.all.projects list.all.tags undo.style verbose rule.precedence.color "
+    "merge.autopush merge.default.uri pull.default.uri push.default.uri "
+    "xterm.title shell.prompt "
+    "import.synonym.status import.synonym.tags import.synonym.entry "
+    "import.synonym.start import.synonym.due import.synonym.recur "
+    "import.synonym.end import.synonym.project import.synonym.priority "
+    "import.synonym.fg import.synonym.bg import.synonym.description "
+
+    "urgency.next.coefficient urgency.blocking.coefficient "
+    "urgency.blocked.coefficient urgency.due.coefficient "
+    "urgency.priority.coefficient urgency.waiting.coefficient "
+    "urgency.active.coefficient urgency.project.coefficient "
+    "urgency.tags.coefficient urgency.annotations.coefficient ";
+
+  // This configuration variable is supported, but not documented.  It exists
+  // so that unit tests can force color to be on even when the output from task
+  // is redirected to a file, or stdout is not a tty.
+  recognized += "_forcecolor ";
+
+  std::vector <std::string> unrecognized;
+  foreach (i, all)
   {
-    std::stringstream out;
-
-    // Obtain the arguments from the description.  That way, things like '--'
-    // have already been handled.
-    std::vector <std::string> args;
-    split (args, context.task.get ("description"), ' ');
-
-    if (args.size () > 1)
-      throw std::string ("The show command takes zero or one option.");
-
-    int width = context.getWidth ();
-
-    std::vector <std::string> all;
-    context.config.all (all);
-
-    // Complain about configuration variables that are not recognized.
-    // These are the regular configuration variables.
-    // Note that there is a leading and trailing space, to make it easier to
-    // search for whole words.
-    std::string recognized =
-      " annotations blanklines bulk burndown.bias calendar.details calendar.details.report "
-      "calendar.holidays calendar.legend color calendar.offset calendar.offset.value "
-      "color.active color.due color.due.today color.blocked color.burndown.done "
-      "color.burndown.pending color.burndown.started color.overdue color.pri.H "
-      "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
-      "color.footnote color.header color.debug color.alternate color.calendar.today "
-      "color.calendar.due color.calendar.due.today color.calendar.overdue regex "
-      "color.calendar.weekend color.calendar.holiday color.calendar.weeknumber "
-      "color.summary.background color.summary.bar color.history.add "
-      "color.history.done color.history.delete color.undo.before "
-      "color.sync.added color.sync.changed color.sync.rejected color.undo.after "
-      "confirmation data.location dateformat dateformat.holiday "
-      "dateformat.report dateformat.annotation debug default.command default.due "
-      "default.priority default.project defaultwidth due "
-      "dependency.confirmation dependency.reminder detection locale displayweeknumber "
-      "export.ical.class echo.command fontunderline gc locking monthsperline "
-      "nag next journal.time journal.time.start.annotation journal.info "
-      "journal.time.stop.annotation project shadow.command shadow.file "
-      "shadow.notify weekstart editor edit.verbose import.synonym.id import.synonym.uuid "
-      "complete.all.projects complete.all.tags search.case.sensitive extensions "
-      "active.indicator tag.indicator recurrence.indicator recurrence.limit "
-      "list.all.projects list.all.tags undo.style verbose rule.precedence.color "
-      "merge.autopush merge.default.uri pull.default.uri push.default.uri "
-      "xterm.title shell.prompt "
-      "import.synonym.status import.synonym.tags import.synonym.entry "
-      "import.synonym.start import.synonym.due import.synonym.recur "
-      "import.synonym.end import.synonym.project import.synonym.priority "
-      "import.synonym.fg import.synonym.bg import.synonym.description "
-
-      "urgency.next.coefficient urgency.blocking.coefficient "
-      "urgency.blocked.coefficient urgency.due.coefficient "
-      "urgency.priority.coefficient urgency.waiting.coefficient "
-      "urgency.active.coefficient urgency.project.coefficient "
-      "urgency.tags.coefficient urgency.annotations.coefficient ";
-
-    // This configuration variable is supported, but not documented.  It exists
-    // so that unit tests can force color to be on even when the output from task
-    // is redirected to a file, or stdout is not a tty.
-    recognized += "_forcecolor ";
-
-    std::vector <std::string> unrecognized;
-    foreach (i, all)
+    // Disallow partial matches by tacking a leading and trailing space on each
+    // variable name.
+    std::string pattern = " " + *i + " ";
+    if (recognized.find (pattern) == std::string::npos)
     {
-      // Disallow partial matches by tacking a leading and trailing space on each
-      // variable name.
-      std::string pattern = " " + *i + " ";
-      if (recognized.find (pattern) == std::string::npos)
+      // These are special configuration variables, because their name is
+      // dynamic.
+      if (i->substr (0, 14) != "color.keyword."        &&
+          i->substr (0, 14) != "color.project."        &&
+          i->substr (0, 10) != "color.tag."            &&
+          i->substr (0,  8) != "holiday."              &&
+          i->substr (0,  7) != "report."               &&
+          i->substr (0,  6) != "alias."                &&
+          i->substr (0,  5) != "hook."                 &&
+          i->substr (0, 21) != "urgency.user.project." &&
+          i->substr (0, 17) != "urgency.user.tag.")
       {
-        // These are special configuration variables, because their name is
-        // dynamic.
-        if (i->substr (0, 14) != "color.keyword."        &&
-            i->substr (0, 14) != "color.project."        &&
-            i->substr (0, 10) != "color.tag."            &&
-            i->substr (0,  8) != "holiday."              &&
-            i->substr (0,  7) != "report."               &&
-            i->substr (0,  6) != "alias."                &&
-            i->substr (0,  5) != "hook."                 &&
-            i->substr (0, 21) != "urgency.user.project." &&
-            i->substr (0, 17) != "urgency.user.tag.")
-        {
-          unrecognized.push_back (*i);
-        }
+        unrecognized.push_back (*i);
       }
     }
+  }
 
-    // Find all the values that match the defaults, for highlighting.
-    std::vector <std::string> default_values;
-    Config default_config;
-    default_config.setDefaults ();
+  // Find all the values that match the defaults, for highlighting.
+  std::vector <std::string> default_values;
+  Config default_config;
+  default_config.setDefaults ();
 
-    foreach (i, all)
-      if (context.config.get (*i) != default_config.get (*i))
-        default_values.push_back (*i);
+  foreach (i, all)
+    if (context.config.get (*i) != default_config.get (*i))
+      default_values.push_back (*i);
 
-    // Create a table for output.
-    Table table;
-    table.setTableWidth (width);
-    table.setDateFormat (context.config.get ("dateformat"));
-    table.addColumn ("Config variable");
-    table.addColumn ("Value");
+  // Create a table for output.
+  Table table;
+  table.setTableWidth (width);
+  table.setDateFormat (context.config.get ("dateformat"));
+  table.addColumn ("Config variable");
+  table.addColumn ("Value");
+
+  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+  {
+    table.setColumnUnderline (0);
+    table.setColumnUnderline (1);
+  }
+  else
+    table.setTableDashedUnderline ();
+
+  table.setColumnWidth (0, Table::minimum);
+  table.setColumnWidth (1, Table::flexible);
+  table.setColumnJustification (0, Table::left);
+  table.setColumnJustification (1, Table::left);
+  table.sortOn (0, Table::ascendingCharacter);
+
+  Color error ("bold white on red");
+  Color warning ("black on yellow");
+
+  std::string section;
+
+  if (args.size () == 1)
+    section = args[0];
+
+  if (section == "all")
+    section = "";
+
+  foreach (i, all)
+  {
+    std::string::size_type loc = i->find (section, 0);
+
+    if (loc != std::string::npos)
+    {
+      int row = table.addRow ();
+      table.addCell (row, 0, *i);
+      table.addCell (row, 1, context.config.get (*i));
+
+      // Look for unrecognized.
+      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+      {
+        if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
+          table.setRowColor (row, error);
+
+        else if (std::find (default_values.begin (), default_values.end (), *i) != default_values.end ())
+          table.setRowColor (row, warning);
+      }
+    }
+  }
+
+  out << "\n"
+      << table.render ()
+      << (table.rowCount () == 0 ? "No matching configuration variables.\n\n" : "\n");
+
+  // Display the unrecognized variables.
+  if (unrecognized.size ())
+  {
+    out << "Your .taskrc file contains these unrecognized variables:\n";
+
+    foreach (i, unrecognized)
+      out << "  " << *i << "\n";
 
     if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-    {
-      table.setColumnUnderline (0);
-      table.setColumnUnderline (1);
-    }
-    else
-      table.setTableDashedUnderline ();
+      out << "\n  These are highlighted in " << error.colorize ("color") << " above.";
 
-    table.setColumnWidth (0, Table::minimum);
-    table.setColumnWidth (1, Table::flexible);
-    table.setColumnJustification (0, Table::left);
-    table.setColumnJustification (1, Table::left);
-    table.sortOn (0, Table::ascendingCharacter);
+    out << "\n\n";
+  }
 
-    Color error ("bold white on red");
-    Color warning ("black on yellow");
+  if (default_values.size ())
+  {
+    out << "Some of your .taskrc variables differ from the default values.";
 
-    std::string section;
+    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+      out << "  These are highlighted in " << warning.colorize ("color") << " above.";
+  }
 
-    if (args.size () == 1)
-      section = args[0];
+  out << context.config.checkForDeprecatedColor ();
+  out << context.config.checkForDeprecatedColumns ();
+  // TODO Check for referenced but missing theme files.
+  // TODO Check for referenced but missing string files.
+  // TODO Check for referenced but missing tips files.
 
-    if (section == "all")
-      section = "";
-
-    foreach (i, all)
-    {
-      std::string::size_type loc = i->find (section, 0);
-
-      if (loc != std::string::npos)
-      {
-        int row = table.addRow ();
-        table.addCell (row, 0, *i);
-        table.addCell (row, 1, context.config.get (*i));
-
-        // Look for unrecognized.
-        if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-        {
-          if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
-            table.setRowColor (row, error);
-
-          else if (std::find (default_values.begin (), default_values.end (), *i) != default_values.end ())
-            table.setRowColor (row, warning);
-        }
-      }
-    }
-
-    out << "\n"
-        << table.render ()
-        << (table.rowCount () == 0 ? "No matching configuration variables.\n\n" : "\n");
-
-    // Display the unrecognized variables.
-    if (unrecognized.size ())
-    {
-      out << "Your .taskrc file contains these unrecognized variables:\n";
-
-      foreach (i, unrecognized)
-        out << "  " << *i << "\n";
-
-      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-        out << "\n  These are highlighted in " << error.colorize ("color") << " above.";
-
-      out << "\n\n";
-    }
-
-    if (default_values.size ())
-    {
-      out << "Some of your .taskrc variables differ from the default values.";
-
-      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-        out << "  These are highlighted in " << warning.colorize ("color") << " above.";
-    }
-
-    out << context.config.checkForDeprecatedColor ();
-    out << context.config.checkForDeprecatedColumns ();
-    // TODO Check for referenced but missing theme files.
-    // TODO Check for referenced but missing string files.
-    // TODO Check for referenced but missing tips files.
-
-    // Check for referenced but missing hook scripts.
+  // Check for referenced but missing hook scripts.
 #ifdef HAVE_LIBLUA
-    std::vector <std::string> missing_scripts;
-    foreach (i, all)
+  std::vector <std::string> missing_scripts;
+  foreach (i, all)
+  {
+    if (i->substr (0, 5) == "hook.")
     {
-      if (i->substr (0, 5) == "hook.")
+      std::string value = context.config.get (*i);
+      Nibbler n (value);
+
+      // <path>:<function> [, ...]
+      while (!n.depleted ())
       {
-        std::string value = context.config.get (*i);
-        Nibbler n (value);
-
-        // <path>:<function> [, ...]
-        while (!n.depleted ())
+        std::string file;
+        std::string function;
+        if (n.getUntil (':', file) &&
+            n.skip (':')           &&
+            n.getUntil (',', function))
         {
-          std::string file;
-          std::string function;
-          if (n.getUntil (':', file) &&
-              n.skip (':')           &&
-              n.getUntil (',', function))
-          {
-            Path script (file);
-            if (!script.exists () || !script.readable ())
-              missing_scripts.push_back (file);
+          Path script (file);
+          if (!script.exists () || !script.readable ())
+            missing_scripts.push_back (file);
 
-            (void) n.skip (',');
-          }
+          (void) n.skip (',');
         }
       }
     }
+  }
 
-    if (missing_scripts.size ())
-    {
-      out << "Your .taskrc file contains these missing or unreadable hook scripts:\n";
+  if (missing_scripts.size ())
+  {
+    out << "Your .taskrc file contains these missing or unreadable hook scripts:\n";
 
-      foreach (i, missing_scripts)
-        out << "  " << *i << "\n";
+    foreach (i, missing_scripts)
+      out << "  " << *i << "\n";
 
-      out << "\n";
-    }
+    out << "\n";
+  }
 #endif
 
-    // Check for bad values in rc.annotations.
-    std::string annotations = context.config.get ("annotations");
-    if (annotations != "full"   &&
-        annotations != "sparse" &&
-        annotations != "none")
-      out << "Configuration error: annotations contains an unrecognized value '"
-          << annotations
-          << "'.\n";
+  // Check for bad values in rc.annotations.
+  std::string annotations = context.config.get ("annotations");
+  if (annotations != "full"   &&
+      annotations != "sparse" &&
+      annotations != "none")
+    out << "Configuration error: annotations contains an unrecognized value '"
+        << annotations
+        << "'.\n";
 
-    // Check for bad values in rc.calendar.details.
-    std::string calendardetails = context.config.get ("calendar.details");
-    if (calendardetails != "full"   &&
-        calendardetails != "sparse" &&
-        calendardetails != "none")
-      out << "Configuration error: calendar.details contains an unrecognized value '"
-          << calendardetails
-          << "'.\n";
+  // Check for bad values in rc.calendar.details.
+  std::string calendardetails = context.config.get ("calendar.details");
+  if (calendardetails != "full"   &&
+      calendardetails != "sparse" &&
+      calendardetails != "none")
+    out << "Configuration error: calendar.details contains an unrecognized value '"
+        << calendardetails
+        << "'.\n";
 
-    // Check for bad values in rc.calendar.holidays.
-    std::string calendarholidays = context.config.get ("calendar.holidays");
-    if (calendarholidays != "full"   &&
-        calendarholidays != "sparse" &&
-        calendarholidays != "none")
-      out << "Configuration error: calendar.holidays contains an unrecognized value '"
-          << calendarholidays
-          << "'.\n";
+  // Check for bad values in rc.calendar.holidays.
+  std::string calendarholidays = context.config.get ("calendar.holidays");
+  if (calendarholidays != "full"   &&
+      calendarholidays != "sparse" &&
+      calendarholidays != "none")
+    out << "Configuration error: calendar.holidays contains an unrecognized value '"
+        << calendarholidays
+        << "'.\n";
 
-    // Check for bad values in rc.default.priority.
-    std::string defaultPriority = context.config.get ("default.priority");
-    if (defaultPriority != "H" &&
-        defaultPriority != "M" &&
-        defaultPriority != "L" &&
-        defaultPriority != "")
-      out << "Configuration error: default.priority contains an unrecognized value '"
-          << defaultPriority
-          << "'.\n";
+  // Check for bad values in rc.default.priority.
+  std::string defaultPriority = context.config.get ("default.priority");
+  if (defaultPriority != "H" &&
+      defaultPriority != "M" &&
+      defaultPriority != "L" &&
+      defaultPriority != "")
+    out << "Configuration error: default.priority contains an unrecognized value '"
+        << defaultPriority
+        << "'.\n";
 
-    // Verify installation.  This is mentioned in the documentation as the way
-    // to ensure everything is properly installed.
+  // Verify installation.  This is mentioned in the documentation as the way
+  // to ensure everything is properly installed.
 
-    if (all.size () == 0)
-    {
-      out << "Configuration error: .taskrc contains no entries.\n";
-      rc = 1;
-    }
-    else
-    {
-      Directory location (context.config.get ("data.location"));
-
-      if (location.data == "")
-        out << "Configuration error: data.location not specified in .taskrc "
-               "file.\n";
-
-      if (! location.exists ())
-        out << "Configuration error: data.location contains a directory name"
-               " that doesn't exist, or is unreadable.\n";
-    }
-
-    outs = out.str ();
-    context.hooks.trigger ("post-config-command");
+  if (all.size () == 0)
+  {
+    out << "Configuration error: .taskrc contains no entries.\n";
+    rc = 1;
   }
+  else
+  {
+    Directory location (context.config.get ("data.location"));
+
+    if (location.data == "")
+      out << "Configuration error: data.location not specified in .taskrc "
+             "file.\n";
+
+    if (! location.exists ())
+      out << "Configuration error: data.location contains a directory name"
+             " that doesn't exist, or is unreadable.\n";
+  }
+
+  outs = out.str ();
   return rc;
 }
 
@@ -1427,123 +1367,119 @@ int handleShow (std::string& outs)
 int handleConfig (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-config-command"))
+  // Obtain the arguments from the description.  That way, things like '--'
+  // have already been handled.
+  std::vector <std::string> args;
+  split (args, context.task.get ("description"), ' ');
+
+  // Support:
+  //   task config name value    # set name to value
+  //   task config name ""       # set name to blank
+  //   task config name          # remove name
+  if (args.size () > 0)
   {
-    std::stringstream out;
+    std::string name = args[0];
+    std::string value = "";
 
-    // Obtain the arguments from the description.  That way, things like '--'
-    // have already been handled.
-    std::vector <std::string> args;
-    split (args, context.task.get ("description"), ' ');
-
-    // Support:
-    //   task config name value    # set name to value
-    //   task config name ""       # set name to blank
-    //   task config name          # remove name
-    if (args.size () > 0)
+    if (args.size () > 1)
     {
-      std::string name = args[0];
-      std::string value = "";
-
-      if (args.size () > 1)
+      for (unsigned int i = 1; i < args.size (); ++i)
       {
-        for (unsigned int i = 1; i < args.size (); ++i)
-        {
-          if (i > 1)
-            value += " ";
+        if (i > 1)
+          value += " ";
 
-          value += args[i];
-        }
+        value += args[i];
       }
+    }
 
-      if (name != "")
+    if (name != "")
+    {
+      bool change = false;
+
+      // Read .taskrc (or equivalent)
+      std::string contents;
+      File::read (context.config.original_file, contents);
+
+      // task config name value
+      // task config name ""
+      if (args.size () > 1 ||
+          context.args[context.args.size () - 1] == "")
       {
-        bool change = false;
-
-        // Read .taskrc (or equivalent)
-        std::string contents;
-        File::read (context.config.original_file, contents);
-
-        // task config name value
-        // task config name ""
-        if (args.size () > 1 ||
-            context.args[context.args.size () - 1] == "")
+        // Find existing entry & overwrite
+        std::string::size_type pos = contents.find (name + "=");
+        if (pos != std::string::npos)
         {
-          // Find existing entry & overwrite
-          std::string::size_type pos = contents.find (name + "=");
-          if (pos != std::string::npos)
-          {
-            std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
-            if (eol == std::string::npos)
-              throw std::string ("Cannot find EOL after entry '") + name + "'.";
-
-            if (confirm (std::string ("Are you sure you want to change the value of '")
-                           + name
-                           + "' from '"
-                           + context.config.get(name)
-                           + "' to '"
-                           + value + "'?"))
-            {
-              contents = contents.substr (0, pos)
-                       + name + "=" + value
-                       + contents.substr (eol);
-              change = true;
-            }
-          }
-
-          // Not found, so append instead.
-          else
-          {
-            if (confirm (std::string ("Are you sure you want to add '") + name + "' with a value of '" + value + "'?"))
-            {
-              contents = contents
-                       + "\n"
-                       + name + "=" + value
-                       + "\n";
-              change = true;
-            }
-          }
-        }
-
-        // task config name
-        else
-        {
-          // Remove name
-          std::string::size_type pos = contents.find (name + "=");
-          if (pos == std::string::npos)
-            throw std::string ("No entry named '") + name + "' found.";
-
           std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
           if (eol == std::string::npos)
             throw std::string ("Cannot find EOL after entry '") + name + "'.";
 
-          if (confirm (std::string ("Are you sure you want to remove '") + name + "'?"))
+          if (confirm (std::string ("Are you sure you want to change the value of '")
+                         + name
+                         + "' from '"
+                         + context.config.get(name)
+                         + "' to '"
+                         + value + "'?"))
           {
-            contents = contents.substr (0, pos) + contents.substr (eol + 1);
+            contents = contents.substr (0, pos)
+                     + name + "=" + value
+                     + contents.substr (eol);
             change = true;
           }
         }
 
-        // Write .taskrc (or equivalent)
-        if (change)
-        {
-          File::write (context.config.original_file, contents);
-          out << "Config file "
-              << context.config.original_file.data
-              << " modified.\n";
-        }
+        // Not found, so append instead.
         else
-          out << "No changes made.\n";
+        {
+          if (confirm (std::string ("Are you sure you want to add '") + name + "' with a value of '" + value + "'?"))
+          {
+            contents = contents
+                     + "\n"
+                     + name + "=" + value
+                     + "\n";
+            change = true;
+          }
+        }
+      }
+
+      // task config name
+      else
+      {
+        // Remove name
+        std::string::size_type pos = contents.find (name + "=");
+        if (pos == std::string::npos)
+          throw std::string ("No entry named '") + name + "' found.";
+
+        std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
+        if (eol == std::string::npos)
+          throw std::string ("Cannot find EOL after entry '") + name + "'.";
+
+        if (confirm (std::string ("Are you sure you want to remove '") + name + "'?"))
+        {
+          contents = contents.substr (0, pos) + contents.substr (eol + 1);
+          change = true;
+        }
+      }
+
+      // Write .taskrc (or equivalent)
+      if (change)
+      {
+        File::write (context.config.original_file, contents);
+        out << "Config file "
+            << context.config.original_file.data
+            << " modified.\n";
       }
       else
-        throw std::string ("Specify the name of a config variable to modify.");
-      outs = out.str ();
-      context.hooks.trigger ("post-config-command");
+        out << "No changes made.\n";
     }
     else
       throw std::string ("Specify the name of a config variable to modify.");
+    outs = out.str ();
   }
+  else
+    throw std::string ("Specify the name of a config variable to modify.");
+
   return rc;
 }
 
@@ -1551,151 +1487,140 @@ int handleConfig (std::string& outs)
 int handleDelete (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-delete-command"))
+  context.disallowModification ();
+
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
   {
-    std::stringstream out;
+    std::cout << "No tasks specified.\n";
+    return 1;
+  }
 
-    context.disallowModification ();
+  // Determine the end date.
+  char endTime[16];
+  sprintf (endTime, "%u", (unsigned int) time (NULL));
 
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    Filter filter;
-    context.tdb.loadPending (tasks, filter);
-
-    // Filter sequence.
-    std::vector <Task> all = tasks;
-    context.filter.applySequence (tasks, context.sequence);
-    if (tasks.size () == 0)
+  foreach (task, tasks)
+  {
+    if (task->getStatus () == Task::pending ||
+        task->getStatus () == Task::waiting)
     {
-      std::cout << "No tasks specified.\n";
-      return 1;
-    }
+      std::stringstream question;
+      question << "Permanently delete task "
+               << task->id
+               << " '"
+               << task->get ("description")
+               << "'?";
 
-    // Determine the end date.
-    char endTime[16];
-    sprintf (endTime, "%u", (unsigned int) time (NULL));
-
-    foreach (task, tasks)
-    {
-      if (task->getStatus () == Task::pending ||
-          task->getStatus () == Task::waiting)
+      if (!context.config.getBoolean ("confirmation") || confirm (question.str ()))
       {
-        if (context.hooks.trigger ("pre-delete", *task))
+        // Check for the more complex case of a recurring task.  If this is a
+        // recurring task, get confirmation to delete them all.
+        std::string parent = task->get ("parent");
+        if (parent != "")
         {
-          std::stringstream question;
-          question << "Permanently delete task "
-                   << task->id
-                   << " '"
-                   << task->get ("description")
-                   << "'?";
-
-          if (!context.config.getBoolean ("confirmation") || confirm (question.str ()))
+          if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
           {
-            // Check for the more complex case of a recurring task.  If this is a
-            // recurring task, get confirmation to delete them all.
-            std::string parent = task->get ("parent");
-            if (parent != "")
+            // Scan all pending tasks for siblings of this task, and the parent
+            // itself, and delete them.
+            foreach (sibling, all)
             {
-              if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
+              if (sibling->get ("parent") == parent ||
+                  sibling->get ("uuid")   == parent)
               {
-                // Scan all pending tasks for siblings of this task, and the parent
-                // itself, and delete them.
-                foreach (sibling, all)
-                {
-                  if (sibling->get ("parent") == parent ||
-                      sibling->get ("uuid")   == parent)
-                  {
-                    sibling->setStatus (Task::deleted);
-
-                    // Don't want a 'delete' to clobber the end date that may have
-                    // been written by a 'done' command.
-                    if (! sibling->has ("end"))
-                      sibling->set ("end", endTime);
-
-                    context.tdb.update (*sibling);
-
-                    if (context.config.getBoolean ("echo.command"))
-                      out << "Deleting recurring task "
-                          << sibling->id
-                          << " '"
-                          << sibling->get ("description")
-                          << "'.\n";
-                  }
-                }
-              }
-              else
-              {
-                // Update mask in parent.
-                task->setStatus (Task::deleted);
-                updateRecurrenceMask (all, *task);
+                sibling->setStatus (Task::deleted);
 
                 // Don't want a 'delete' to clobber the end date that may have
                 // been written by a 'done' command.
-                if (! task->has ("end"))
-                  task->set ("end", endTime);
+                if (! sibling->has ("end"))
+                  sibling->set ("end", endTime);
 
-                context.tdb.update (*task);
+                context.tdb.update (*sibling);
 
-                out << "Deleting recurring task "
-                    << task->id
-                    << " '"
-                    << task->get ("description")
-                    << "'.\n";
-
-                dependencyChainOnComplete (*task);
-                context.footnote (onProjectChange (*task));
+                if (context.config.getBoolean ("echo.command"))
+                  out << "Deleting recurring task "
+                      << sibling->id
+                      << " '"
+                      << sibling->get ("description")
+                      << "'.\n";
               }
-            }
-            else
-            {
-              task->setStatus (Task::deleted);
-
-              // Don't want a 'delete' to clobber the end date that may have
-              // been written by a 'done' command.
-              if (! task->has ("end"))
-                task->set ("end", endTime);
-
-              context.tdb.update (*task);
-
-              if (context.config.getBoolean ("echo.command"))
-                out << "Deleting task "
-                    << task->id
-                    << " '"
-                    << task->get ("description")
-                    << "'.\n";
-
-              dependencyChainOnComplete (*task);
-              context.footnote (onProjectChange (*task));
             }
           }
           else
           {
-            out << "Task not deleted.\n";
-            rc  = 1;
-          }
+            // Update mask in parent.
+            task->setStatus (Task::deleted);
+            updateRecurrenceMask (all, *task);
 
-          context.hooks.trigger ("post-delete", *task);
+            // Don't want a 'delete' to clobber the end date that may have
+            // been written by a 'done' command.
+            if (! task->has ("end"))
+              task->set ("end", endTime);
+
+            context.tdb.update (*task);
+
+            out << "Deleting recurring task "
+                << task->id
+                << " '"
+                << task->get ("description")
+                << "'.\n";
+
+            dependencyChainOnComplete (*task);
+            context.footnote (onProjectChange (*task));
+          }
+        }
+        else
+        {
+          task->setStatus (Task::deleted);
+
+          // Don't want a 'delete' to clobber the end date that may have
+          // been written by a 'done' command.
+          if (! task->has ("end"))
+            task->set ("end", endTime);
+
+          context.tdb.update (*task);
+
+          if (context.config.getBoolean ("echo.command"))
+            out << "Deleting task "
+                << task->id
+                << " '"
+                << task->get ("description")
+                << "'.\n";
+
+          dependencyChainOnComplete (*task);
+          context.footnote (onProjectChange (*task));
         }
       }
       else
       {
-        out << "Task "
-            << task->id
-            << " '"
-            << task->get ("description")
-            << "' is neither pending nor waiting.\n";
-        rc = 1;
+        out << "Task not deleted.\n";
+        rc  = 1;
       }
     }
-
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    outs = out.str ();
-    context.hooks.trigger ("post-delete-command");
+    else
+    {
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' is neither pending nor waiting.\n";
+      rc = 1;
+    }
   }
 
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  outs = out.str ();
   return rc;
 }
 
@@ -1703,70 +1628,64 @@ int handleDelete (std::string& outs)
 int handleStart (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-start-command"))
+  context.disallowModification ();
+
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
   {
-    std::stringstream out;
+    std::cout << "No tasks specified.\n";
+    return 1;
+  }
 
-    context.disallowModification ();
-
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    Filter filter;
-    context.tdb.loadPending (tasks, filter);
-
-    // Filter sequence.
-    context.filter.applySequence (tasks, context.sequence);
-    if (tasks.size () == 0)
+  bool nagged = false;
+  foreach (task, tasks)
+  {
+    if (! task->has ("start"))
     {
-      std::cout << "No tasks specified.\n";
-      return 1;
-    }
+      char startTime[16];
+      sprintf (startTime, "%u", (unsigned int) time (NULL));
 
-    bool nagged = false;
-    foreach (task, tasks)
-    {
-      if (! task->has ("start"))
-      {
-        char startTime[16];
-        sprintf (startTime, "%u", (unsigned int) time (NULL));
+      task->set ("start", startTime);
 
-        task->set ("start", startTime);
+      if (context.config.getBoolean ("journal.time"))
+        task->addAnnotation (context.config.get ("journal.time.start.annotation"));
 
-        if (context.config.getBoolean ("journal.time"))
-          task->addAnnotation (context.config.get ("journal.time.start.annotation"));
+      context.tdb.update (*task);
 
-        context.tdb.update (*task);
-
-        if (context.config.getBoolean ("echo.command"))
-          out << "Started "
-              << task->id
-              << " '"
-              << task->get ("description")
-              << "'.\n";
-        if (!nagged)
-          nagged = nag (*task);
-
-        dependencyChainOnStart (*task);
-      }
-      else
-      {
-        out << "Task "
+      if (context.config.getBoolean ("echo.command"))
+        out << "Started "
             << task->id
             << " '"
             << task->get ("description")
-            << "' already started.\n";
-        rc = 1;
-      }
+            << "'.\n";
+      if (!nagged)
+        nagged = nag (*task);
+
+      dependencyChainOnStart (*task);
     }
-
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    outs = out.str ();
-    context.hooks.trigger ("post-start-command");
+    else
+    {
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' already started.\n";
+      rc = 1;
+    }
   }
 
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  outs = out.str ();
   return rc;
 }
 
@@ -1774,62 +1693,56 @@ int handleStart (std::string& outs)
 int handleStop (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-stop-command"))
+  context.disallowModification ();
+
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
   {
-    std::stringstream out;
+    std::cout << "No tasks specified.\n";
+    return 1;
+  }
 
-    context.disallowModification ();
-
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    Filter filter;
-    context.tdb.loadPending (tasks, filter);
-
-    // Filter sequence.
-    context.filter.applySequence (tasks, context.sequence);
-    if (tasks.size () == 0)
+  foreach (task, tasks)
+  {
+    if (task->has ("start"))
     {
-      std::cout << "No tasks specified.\n";
-      return 1;
-    }
+      task->remove ("start");
 
-    foreach (task, tasks)
-    {
-      if (task->has ("start"))
-      {
-        task->remove ("start");
+      if (context.config.getBoolean ("journal.time"))
+        task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
 
-        if (context.config.getBoolean ("journal.time"))
-          task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
+      context.tdb.update (*task);
 
-        context.tdb.update (*task);
-
-        if (context.config.getBoolean ("echo.command"))
-          out << "Stopped "
-              << task->id
-              << " '"
-              << task->get ("description")
-              << "'.\n";
-      }
-      else
-      {
-        out << "Task "
+      if (context.config.getBoolean ("echo.command"))
+        out << "Stopped "
             << task->id
             << " '"
             << task->get ("description")
-            << "' not started.\n";
-        rc = 1;
-      }
+            << "'.\n";
     }
-
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    outs = out.str ();
-    context.hooks.trigger ("post-stop-command");
+    else
+    {
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' not started.\n";
+      rc = 1;
+    }
   }
 
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  outs = out.str ();
   return rc;
 }
 
@@ -1837,127 +1750,113 @@ int handleStop (std::string& outs)
 int handleDone (std::string& outs)
 {
   int rc = 0;
+  int count = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-done-command"))
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
   {
-    int count = 0;
-    std::stringstream out;
-
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    Filter filter;
-    context.tdb.loadPending (tasks, filter);
-
-    // Filter sequence.
-    std::vector <Task> all = tasks;
-    context.filter.applySequence (tasks, context.sequence);
-    if (tasks.size () == 0)
-    {
-      std::cout << "No tasks specified.\n";
-      return 1;
-    }
-
-    Permission permission;
-    if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
-      permission.bigSequence ();
-
-    bool nagged = false;
-    foreach (task, tasks)
-    {
-      if (task->getStatus () == Task::pending ||
-          task->getStatus () == Task::waiting)
-      {
-        Task before (*task);
-
-        // Apply other deltas.
-        if (deltaDescription (*task))
-          permission.bigChange ();
-
-        deltaTags (*task);
-        deltaAttributes (*task);
-        deltaSubstitutions (*task);
-
-        // Add an end date.
-        char entryTime[16];
-        sprintf (entryTime, "%u", (unsigned int) time (NULL));
-        task->set ("end", entryTime);
-
-        // Change status.
-        task->setStatus (Task::completed);
-
-        // Stop the task, if started.
-        if (task->has ("start") &&
-            context.config.getBoolean ("journal.time"))
-          task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
-
-        // Only allow valid tasks.
-        task->validate ();
-
-        if (taskDiff (before, *task))
-        {
-          if (context.hooks.trigger ("pre-completed", *task))
-          {
-            if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
-            {
-              context.tdb.update (*task);
-
-              if (context.config.getBoolean ("echo.command"))
-                out << "Completed "
-                    << task->id
-                    << " '"
-                    << task->get ("description")
-                    << "'.\n";
-
-              dependencyChainOnComplete (*task);
-              context.footnote (onProjectChange (*task, false));
-
-              ++count;
-              context.hooks.trigger ("post-completed", *task);
-            }
-          }
-          else
-            continue;
-        }
-
-        updateRecurrenceMask (all, *task);
-        if (!nagged)
-          nagged = nag (*task);
-      }
-      else
-      {
-        out << "Task "
-            << task->id
-            << " '"
-            << task->get ("description")
-            << "' is neither pending nor waiting.\n";
-        rc = 1;
-      }
-    }
-
-    if (count)
-      context.tdb.commit ();
-
-    context.tdb.unlock ();
-
-    if (context.config.getBoolean ("echo.command"))
-      out << "Marked "
-          << count
-          << " task"
-          << (count == 1 ? "" : "s")
-          << " as done.\n";
-
-    outs = out.str ();
-    context.hooks.trigger ("post-done-command");
+    std::cout << "No tasks specified.\n";
+    return 1;
   }
 
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
+    permission.bigSequence ();
+
+  bool nagged = false;
+  foreach (task, tasks)
+  {
+    if (task->getStatus () == Task::pending ||
+        task->getStatus () == Task::waiting)
+    {
+      Task before (*task);
+
+      // Apply other deltas.
+      if (deltaDescription (*task))
+        permission.bigChange ();
+
+      deltaTags (*task);
+      deltaAttributes (*task);
+      deltaSubstitutions (*task);
+
+      // Add an end date.
+      char entryTime[16];
+      sprintf (entryTime, "%u", (unsigned int) time (NULL));
+      task->set ("end", entryTime);
+
+      // Change status.
+      task->setStatus (Task::completed);
+
+      // Stop the task, if started.
+      if (task->has ("start") &&
+          context.config.getBoolean ("journal.time"))
+        task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
+
+      // Only allow valid tasks.
+      task->validate ();
+
+      if (taskDiff (before, *task))
+      {
+        if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
+        {
+          context.tdb.update (*task);
+
+          if (context.config.getBoolean ("echo.command"))
+            out << "Completed "
+                << task->id
+                << " '"
+                << task->get ("description")
+                << "'.\n";
+
+          dependencyChainOnComplete (*task);
+          context.footnote (onProjectChange (*task, false));
+
+          ++count;
+        }
+      }
+
+      updateRecurrenceMask (all, *task);
+      if (!nagged)
+        nagged = nag (*task);
+    }
+    else
+    {
+      out << "Task "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "' is neither pending nor waiting.\n";
+      rc = 1;
+    }
+  }
+
+  if (count)
+    context.tdb.commit ();
+
+  context.tdb.unlock ();
+
+  if (context.config.getBoolean ("echo.command"))
+    out << "Marked "
+        << count
+        << " task"
+        << (count == 1 ? "" : "s")
+        << " as done.\n";
+
+  outs = out.str ();
   return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int handleModify (std::string& outs)
 {
-  context.hooks.trigger ("pre-modify-command");
-
   int count = 0;
   std::stringstream out;
 
@@ -2087,7 +1986,6 @@ int handleModify (std::string& outs)
     out << "Modified " << count << " task" << (count == 1 ? ".\n" : "s.\n");
 
   outs = out.str ();
-  context.hooks.trigger ("post-modify-command");
   return 0;
 }
 
@@ -2095,86 +1993,80 @@ int handleModify (std::string& outs)
 int handleAppend (std::string& outs)
 {
   int rc = 0;
+  int count = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-append-command"))
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
   {
-    int count = 0;
-    std::stringstream out;
+    std::cout << "No tasks specified.\n";
+    return 1;
+  }
 
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    Filter filter;
-    context.tdb.loadPending (tasks, filter);
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
+    permission.bigSequence ();
 
-    // Filter sequence.
-    std::vector <Task> all = tasks;
-    context.filter.applySequence (tasks, context.sequence);
-    if (tasks.size () == 0)
+  foreach (task, tasks)
+  {
+    foreach (other, all)
     {
-      std::cout << "No tasks specified.\n";
-      return 1;
-    }
-
-    Permission permission;
-    if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
-      permission.bigSequence ();
-
-    foreach (task, tasks)
-    {
-      foreach (other, all)
+      if (other->id             == task->id               || // Self
+          (task->has ("parent") &&
+           task->get ("parent") == other->get ("parent")) || // Sibling
+          other->get ("uuid")   == task->get ("parent"))     // Parent
       {
-        if (other->id             == task->id               || // Self
-            (task->has ("parent") &&
-             task->get ("parent") == other->get ("parent")) || // Sibling
-            other->get ("uuid")   == task->get ("parent"))     // Parent
+        Task before (*other);
+
+        // A non-zero value forces a file write.
+        int changes = 0;
+
+        // Apply other deltas.
+        changes += deltaAppend (*other);
+        changes += deltaTags (*other);
+        changes += deltaAttributes (*other);
+        changes += deltaSubstitutions (*other);
+
+        if (taskDiff (before, *other))
         {
-          Task before (*other);
+          // Only allow valid tasks.
+          other->validate ();
 
-          // A non-zero value forces a file write.
-          int changes = 0;
-
-          // Apply other deltas.
-          changes += deltaAppend (*other);
-          changes += deltaTags (*other);
-          changes += deltaAttributes (*other);
-          changes += deltaSubstitutions (*other);
-
-          if (taskDiff (before, *other))
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
           {
-            // Only allow valid tasks.
-            other->validate ();
+            context.tdb.update (*other);
 
-            if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
-            {
-              context.tdb.update (*other);
+            if (context.config.getBoolean ("echo.command"))
+              out << "Appended '"
+                  << context.task.get ("description")
+                  << "' to task "
+                  << other->id
+                  << ".\n";
 
-              if (context.config.getBoolean ("echo.command"))
-                out << "Appended '"
-                    << context.task.get ("description")
-                    << "' to task "
-                    << other->id
-                    << ".\n";
+            if (before.get ("project") != other->get ("project"))
+              context.footnote (onProjectChange (before, *other));
 
-              if (before.get ("project") != other->get ("project"))
-                context.footnote (onProjectChange (before, *other));
-
-              ++count;
-            }
+            ++count;
           }
         }
       }
     }
-
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    if (context.config.getBoolean ("echo.command"))
-      out << "Appended " << count << " task" << (count == 1 ? ".\n" : "s.\n");
-
-    outs = out.str ();
-    context.hooks.trigger ("post-append-command");
   }
 
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  if (context.config.getBoolean ("echo.command"))
+    out << "Appended " << count << " task" << (count == 1 ? ".\n" : "s.\n");
+
+  outs = out.str ();
   return rc;
 }
 
@@ -2182,86 +2074,80 @@ int handleAppend (std::string& outs)
 int handlePrepend (std::string& outs)
 {
   int rc = 0;
+  int count = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-prepend-command"))
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
   {
-    int count = 0;
-    std::stringstream out;
+    std::cout << "No tasks specified.\n";
+    return 1;
+  }
 
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    Filter filter;
-    context.tdb.loadPending (tasks, filter);
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
+    permission.bigSequence ();
 
-    // Filter sequence.
-    std::vector <Task> all = tasks;
-    context.filter.applySequence (tasks, context.sequence);
-    if (tasks.size () == 0)
+  foreach (task, tasks)
+  {
+    foreach (other, all)
     {
-      std::cout << "No tasks specified.\n";
-      return 1;
-    }
-
-    Permission permission;
-    if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
-      permission.bigSequence ();
-
-    foreach (task, tasks)
-    {
-      foreach (other, all)
+      if (other->id             == task->id               || // Self
+          (task->has ("parent") &&
+           task->get ("parent") == other->get ("parent")) || // Sibling
+          other->get ("uuid")   == task->get ("parent"))     // Parent
       {
-        if (other->id             == task->id               || // Self
-            (task->has ("parent") &&
-             task->get ("parent") == other->get ("parent")) || // Sibling
-            other->get ("uuid")   == task->get ("parent"))     // Parent
+        Task before (*other);
+
+        // A non-zero value forces a file write.
+        int changes = 0;
+
+        // Apply other deltas.
+        changes += deltaPrepend (*other);
+        changes += deltaTags (*other);
+        changes += deltaAttributes (*other);
+        changes += deltaSubstitutions (*other);
+
+        if (taskDiff (before, *other))
         {
-          Task before (*other);
+          // Only allow valid tasks.
+          other->validate ();
 
-          // A non-zero value forces a file write.
-          int changes = 0;
-
-          // Apply other deltas.
-          changes += deltaPrepend (*other);
-          changes += deltaTags (*other);
-          changes += deltaAttributes (*other);
-          changes += deltaSubstitutions (*other);
-
-          if (taskDiff (before, *other))
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
           {
-            // Only allow valid tasks.
-            other->validate ();
+            context.tdb.update (*other);
 
-            if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
-            {
-              context.tdb.update (*other);
+            if (context.config.getBoolean ("echo.command"))
+              out << "Prepended '"
+                  << context.task.get ("description")
+                  << "' to task "
+                  << other->id
+                  << ".\n";
 
-              if (context.config.getBoolean ("echo.command"))
-                out << "Prepended '"
-                    << context.task.get ("description")
-                    << "' to task "
-                    << other->id
-                    << ".\n";
+            if (before.get ("project") != other->get ("project"))
+              context.footnote (onProjectChange (before, *other));
 
-              if (before.get ("project") != other->get ("project"))
-                context.footnote (onProjectChange (before, *other));
-
-              ++count;
-            }
+            ++count;
           }
         }
       }
     }
-
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    if (context.config.getBoolean ("echo.command"))
-      out << "Prepended " << count << " task" << (count == 1 ? ".\n" : "s.\n");
-
-    outs = out.str ();
-    context.hooks.trigger ("post-prepend-command");
   }
 
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  if (context.config.getBoolean ("echo.command"))
+    out << "Prepended " << count << " task" << (count == 1 ? ".\n" : "s.\n");
+
+  outs = out.str ();
   return rc;
 }
 
@@ -2269,98 +2155,92 @@ int handlePrepend (std::string& outs)
 int handleDuplicate (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
+  int count = 0;
 
-  if (context.hooks.trigger ("pre-duplicate-command"))
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
   {
-    std::stringstream out;
-    int count = 0;
-
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    Filter filter;
-    context.tdb.loadPending (tasks, filter);
-
-    // Filter sequence.
-    context.filter.applySequence (tasks, context.sequence);
-    if (tasks.size () == 0)
-    {
-      std::cout << "No tasks specified.\n";
-      return 1;
-    }
-
-    foreach (task, tasks)
-    {
-      Task dup (*task);
-      dup.set ("uuid", uuid ());  // Needs a new UUID.
-      dup.setStatus (Task::pending);
-      dup.remove ("start");   // Does not inherit start date.
-      dup.remove ("end");     // Does not inherit end date.
-
-      // Recurring tasks are duplicated and downgraded to regular tasks.
-      if (task->getStatus () == Task::recurring)
-      {
-        dup.remove ("parent");
-        dup.remove ("recur");
-        dup.remove ("until");
-        dup.remove ("imak");
-        dup.remove ("imask");
-
-        out << "Note: task "
-            << task->id
-            << " was a recurring task.  The new task is not.\n";
-      }
-
-      // Apply deltas.
-      deltaDescription (dup);
-      deltaTags (dup);
-      deltaAttributes (dup);
-      deltaSubstitutions (dup);
-
-      // A New task needs a new entry time.
-      char entryTime[16];
-      sprintf (entryTime, "%u", (unsigned int) time (NULL));
-      dup.set ("entry", entryTime);
-
-      // Only allow valid tasks.
-      dup.validate ();
-
-      context.tdb.add (dup);
-
-      if (context.config.getBoolean ("echo.command"))
-        out << "Duplicated "
-            << task->id
-            << " '"
-            << task->get ("description")
-            << "'.\n";
-
-      context.footnote (onProjectChange (dup));
-
-      ++count;
-    }
-
-    if (tasks.size () == 0)
-    {
-      out << "No matches.\n";
-      rc = 1;
-    }
-    else if (context.config.getBoolean ("echo.command"))
-    {
-#ifdef FEATURE_NEW_ID
-      // All this, just for an id number.
-      std::vector <Task> all;
-      Filter none;
-      context.tdb.loadPending (all, none);
-      out << "Created task " << context.tdb.nextId () << ".\n";
-#endif
-    }
-
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    outs = out.str ();
-    context.hooks.trigger ("post-duplicate-command");
+    std::cout << "No tasks specified.\n";
+    return 1;
   }
 
+  foreach (task, tasks)
+  {
+    Task dup (*task);
+    dup.set ("uuid", uuid ());  // Needs a new UUID.
+    dup.setStatus (Task::pending);
+    dup.remove ("start");   // Does not inherit start date.
+    dup.remove ("end");     // Does not inherit end date.
+
+    // Recurring tasks are duplicated and downgraded to regular tasks.
+    if (task->getStatus () == Task::recurring)
+    {
+      dup.remove ("parent");
+      dup.remove ("recur");
+      dup.remove ("until");
+      dup.remove ("imak");
+      dup.remove ("imask");
+
+      out << "Note: task "
+          << task->id
+          << " was a recurring task.  The new task is not.\n";
+    }
+
+    // Apply deltas.
+    deltaDescription (dup);
+    deltaTags (dup);
+    deltaAttributes (dup);
+    deltaSubstitutions (dup);
+
+    // A New task needs a new entry time.
+    char entryTime[16];
+    sprintf (entryTime, "%u", (unsigned int) time (NULL));
+    dup.set ("entry", entryTime);
+
+    // Only allow valid tasks.
+    dup.validate ();
+
+    context.tdb.add (dup);
+
+    if (context.config.getBoolean ("echo.command"))
+      out << "Duplicated "
+          << task->id
+          << " '"
+          << task->get ("description")
+          << "'.\n";
+
+    context.footnote (onProjectChange (dup));
+
+    ++count;
+  }
+
+  if (tasks.size () == 0)
+  {
+    out << "No matches.\n";
+    rc = 1;
+  }
+  else if (context.config.getBoolean ("echo.command"))
+  {
+#ifdef FEATURE_NEW_ID
+    // All this, just for an id number.
+    std::vector <Task> all;
+    Filter none;
+    context.tdb.loadPending (all, none);
+    out << "Created task " << context.tdb.nextId () << ".\n";
+#endif
+  }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  outs = out.str ();
   return rc;
 }
 
@@ -2369,28 +2249,24 @@ int handleCount (std::string& outs)
 {
   int rc = 0;
 
-  if (context.hooks.trigger ("pre-count-command"))
-  {
-    // Scan the pending tasks, applying any filter.
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    context.tdb.load (tasks, context.filter);
-    context.tdb.commit ();
-    context.tdb.unlock ();
+  // Scan the pending tasks, applying any filter.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
-    // Find number of matching tasks.  Skip recurring parent tasks.
-    int count = 0;
-    std::vector <Task>::iterator it;
-    for (it = tasks.begin (); it != tasks.end (); ++it)
-      if (it->getStatus () != Task::recurring)
-        ++count;
+  // Find number of matching tasks.  Skip recurring parent tasks.
+  int count = 0;
+  std::vector <Task>::iterator it;
+  for (it = tasks.begin (); it != tasks.end (); ++it)
+    if (it->getStatus () != Task::recurring)
+      ++count;
 
-    std::stringstream out;
-    out << count << "\n";
-    outs = out.str ();
-    context.hooks.trigger ("post-count-command");
-  }
+  std::stringstream out;
+  out << count << "\n";
+  outs = out.str ();
 
   return rc;
 }
@@ -2400,321 +2276,299 @@ int handleIds (std::string& outs)
 {
   int rc = 0;
 
-  if (context.hooks.trigger ("pre-ids-command"))
-  {
-    // Scan the pending tasks, applying any filter.
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    handleRecurrence ();
-    context.tdb.load (tasks, context.filter);
-    context.tdb.commit ();
-    context.tdb.unlock ();
+  // Scan the pending tasks, applying any filter.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
 
-    // Find number of matching tasks.
-    std::vector <int> ids;
-    foreach (task, tasks)
-      if (task->id)
-        ids.push_back (task->id);
+  // Find number of matching tasks.
+  std::vector <int> ids;
+  foreach (task, tasks)
+    if (task->id)
+      ids.push_back (task->id);
 
-    std::sort (ids.begin (), ids.end ());
-    outs = compressIds (ids) + "\n";
-
-    context.hooks.trigger ("post-ids-command");
-  }
-
+  std::sort (ids.begin (), ids.end ());
+  outs = compressIds (ids) + "\n";
   return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void handleShell ()
 {
-  if (context.hooks.trigger ("pre-shell-command"))
+  // Display some kind of welcome message.
+  Color bold (Color::nocolor, Color::nocolor, false, true, false);
+  std::cout << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+                 ? bold.colorize (PACKAGE_STRING)
+                 : PACKAGE_STRING)
+            << " shell\n\n"
+            << "Enter any task command (such as 'list'), or hit 'Enter'.\n"
+            << "There is no need to include the 'task' command itself.\n"
+            << "Enter 'quit' (or 'bye', 'exit') to end the session.\n\n";
+
+  // Make a copy because context.clear will delete them.
+  std::string permanentOverrides = " " + context.file_override
+                                 + " " + context.var_overrides;
+
+  std::vector <std::string> quit_commands;
+  quit_commands.push_back ("quit");
+  quit_commands.push_back ("exit");
+  quit_commands.push_back ("bye");
+
+  std::string command;
+  bool keepGoing = true;
+
+  do
   {
-    // Display some kind of welcome message.
-    Color bold (Color::nocolor, Color::nocolor, false, true, false);
-    std::cout << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-                   ? bold.colorize (PACKAGE_STRING)
-                   : PACKAGE_STRING)
-              << " shell\n\n"
-              << "Enter any task command (such as 'list'), or hit 'Enter'.\n"
-              << "There is no need to include the 'task' command itself.\n"
-              << "Enter 'quit' (or 'bye', 'exit') to end the session.\n\n";
+    std::cout << context.config.get ("shell.prompt") << " ";
 
-    // Make a copy because context.clear will delete them.
-    std::string permanentOverrides = " " + context.file_override
-                                   + " " + context.var_overrides;
+    command = "";
+    std::getline (std::cin, command);
+    std::string decoratedCommand = trim (command + permanentOverrides);
 
-    std::vector <std::string> quit_commands;
-    quit_commands.push_back ("quit");
-    quit_commands.push_back ("exit");
-    quit_commands.push_back ("bye");
-
-    std::string command;
-    bool keepGoing = true;
-
-    do
+    // When looking for the 'quit' command, use 'command', not
+    // 'decoratedCommand'.
+    if (std::find (quit_commands.begin (), quit_commands.end (), lowerCase (command)) != quit_commands.end ())
     {
-      std::string prompt = context.config.get ("shell.prompt");
-      if (context.hooks.trigger ("pre-shell-prompt"))
+      keepGoing = false;
+    }
+    else
+    {
+      try
       {
-        //context.hooks.trigger ("format-prompt", "prompt", prompt);
-        std::cout << prompt << " ";
+        context.clear ();
+
+        std::vector <std::string> args;
+        split (args, decoratedCommand, ' ');
+        foreach (arg, args)    context.args.push_back (*arg);
+
+        context.initialize ();
+        context.run ();
       }
-      context.hooks.trigger ("post-shell-prompt");
 
-      command = "";
-      std::getline (std::cin, command);
-      std::string decoratedCommand = trim (command + permanentOverrides);
-
-      // When looking for the 'quit' command, use 'command', not
-      // 'decoratedCommand'.
-      if (std::find (quit_commands.begin (), quit_commands.end (), lowerCase (command)) != quit_commands.end ())
+      catch (std::string& error)
       {
-        keepGoing = false;
+        std::cout << error << "\n";
       }
-      else
+
+      catch (...)
       {
-        try
-        {
-          context.clear ();
-
-          std::vector <std::string> args;
-          split (args, decoratedCommand, ' ');
-          foreach (arg, args)    context.args.push_back (*arg);
-
-          context.initialize ();
-          context.run ();
-        }
-
-        catch (std::string& error)
-        {
-          std::cout << error << "\n";
-        }
-
-        catch (...)
-        {
-          std::cerr << "Unknown error." << "\n";
-        }
+        std::cerr << "Unknown error." << "\n";
       }
     }
-    while (keepGoing && !std::cin.eof ());
-
-    // No need to repeat any overrides after the shell quits.
-    context.clearMessages ();
-    context.hooks.trigger ("post-shell-command");
   }
+  while (keepGoing && !std::cin.eof ());
+
+  // No need to repeat any overrides after the shell quits.
+  context.clearMessages ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int handleColor (std::string& outs)
 {
   int rc = 0;
+  std::stringstream out;
 
-  if (context.hooks.trigger ("pre-color-command"))
+  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
   {
-    std::stringstream out;
-
-    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+    // If the description contains 'legend', show all the colors currently in
+    // use.
+    std::string description = context.task.get ("description");
+    if (description.find ("legend") != std::string::npos)
     {
-      // If the description contains 'legend', show all the colors currently in
-      // use.
-      std::string description = context.task.get ("description");
-      if (description.find ("legend") != std::string::npos)
+      out << "\nHere are the colors currently in use:\n";
+
+      std::vector <std::string> all;
+      context.config.all (all);
+
+      Table table;
+      table.addColumn ("Color");
+      table.addColumn ("Definition");
+
+      if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
+          context.config.getBoolean ("fontunderline"))
       {
-        out << "\nHere are the colors currently in use:\n";
-
-        std::vector <std::string> all;
-        context.config.all (all);
-
-        Table table;
-        table.addColumn ("Color");
-        table.addColumn ("Definition");
-
-        if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-            context.config.getBoolean ("fontunderline"))
-        {
-          table.setColumnUnderline (0);
-          table.setColumnUnderline (1);
-        }
-        else
-          table.setTableDashedUnderline ();
-
-        foreach (item, all)
-        {
-          // Skip items with 'color' in their name, that are not referring to
-          // actual colors.
-          if (*item != "_forcecolor" &&
-              *item != "color"       &&
-              item->find ("color") == 0)
-          {
-            int row = table.addRow ();
-            table.addCell (row, 0, *item);
-            table.addCell (row, 1, context.config.get (*item));
-            table.setRowColor (row, context.config.get (*item));
-          }
-        }
-
-        out << optionalBlankLine ()
-            << table.render ()
-            << optionalBlankLine ()
-            << "\n";
+        table.setColumnUnderline (0);
+        table.setColumnUnderline (1);
       }
-
-      // If there is something in the description, then assume that is a color,
-      // and display it as a sample.
-      else if (description != "")
-      {
-        Color one    ("black on bright yellow");
-        Color two    ("underline cyan on bright blue");
-        Color three  ("color214 on color202");
-        Color four   ("rgb150 on rgb020");
-        Color five   ("underline grey10 on grey3");
-        Color six    ("red on color173");
-        Color sample (description);
-
-        out << "\n"
-            << "Use this command to see how colors are displayed by your terminal.\n\n"
-            << "\n"
-            << "16-color usage (supports underline, bold text, bright background):\n"
-            << "  " << one.colorize ("task color black on bright yellow")            << "\n"
-            << "  " << two.colorize ("task color underline cyan on bright blue")     << "\n"
-            << "\n"
-            << "256-color usage (supports underline):\n"
-            << "  " << three.colorize ("task color color214 on color202")            << "\n"
-            << "  " << four.colorize ("task color rgb150 on rgb020")                 << "\n"
-            << "  " << five.colorize ("task color underline grey10 on grey3")        << "\n"
-            << "  " << six.colorize ("task color red on color173")                   << "\n"
-            << "\n"
-            << "Your sample:"                                                        << "\n"
-            << "  " << sample.colorize ("task color " + description)                 << "\n\n";
-      }
-
-      // Show all supported colors.  Possibly show some unsupported ones too.
       else
+        table.setTableDashedUnderline ();
+
+      foreach (item, all)
       {
-        out << "\n"
-            << "Basic colors"
-            << "\n"
-            << " " << Color::colorize (" black ",   "black")
-            << " " << Color::colorize (" red ",     "red")
-            << " " << Color::colorize (" blue ",    "blue")
-            << " " << Color::colorize (" green ",   "green")
-            << " " << Color::colorize (" magenta ", "magenta")
-            << " " << Color::colorize (" cyan ",    "cyan")
-            << " " << Color::colorize (" yellow ",  "yellow")
-            << " " << Color::colorize (" white ",   "white")
-            << "\n"
-            << " " << Color::colorize (" black ",   "white on black")
-            << " " << Color::colorize (" red ",     "white on red")
-            << " " << Color::colorize (" blue ",    "white on blue")
-            << " " << Color::colorize (" green ",   "black on green")
-            << " " << Color::colorize (" magenta ", "black on magenta")
-            << " " << Color::colorize (" cyan ",    "black on cyan")
-            << " " << Color::colorize (" yellow ",  "black on yellow")
-            << " " << Color::colorize (" white ",   "black on white")
-            << "\n\n";
-
-        out << "Effects"
-            << "\n"
-            << " " << Color::colorize (" red ",               "red")
-            << " " << Color::colorize (" bold red ",          "bold red")
-            << " " << Color::colorize (" underline on blue ", "underline on blue")
-            << " " << Color::colorize (" on green ",          "black on green")
-            << " " << Color::colorize (" on bright green ",   "black on bright green")
-            << "\n\n";
-
-        // 16 system colors.
-        out << "color0 - color15"
-            << "\n"
-            << "  0 1 2 . . .\n";
-        for (int r = 0; r < 2; ++r)
+        // Skip items with 'color' in their name, that are not referring to
+        // actual colors.
+        if (*item != "_forcecolor" &&
+            *item != "color"       &&
+            item->find ("color") == 0)
         {
-          out << "  ";
-          for (int c = 0; c < 8; ++c)
-          {
-            std::stringstream s;
-            s << "on color" << (r*8 + c);
-            out << Color::colorize ("  ", s.str ());
-          }
-
-          out << "\n";
+          int row = table.addRow ();
+          table.addCell (row, 0, *item);
+          table.addCell (row, 1, context.config.get (*item));
+          table.setRowColor (row, context.config.get (*item));
         }
+      }
 
-        out << "          . . . 15\n\n";
+      out << optionalBlankLine ()
+          << table.render ()
+          << optionalBlankLine ()
+          << "\n";
+    }
 
-        // Color cube.
-        out << "Color cube rgb"
-            << Color::colorize ("0", "bold red")
-            << Color::colorize ("0", "bold green")
-            << Color::colorize ("0", "bold blue")
-            << " - rgb"
-            << Color::colorize ("5", "bold red")
-            << Color::colorize ("5", "bold green")
-            << Color::colorize ("5", "bold blue")
-            << " (also color16 - color231)"
-            << "\n"
-            << "  " << Color::colorize ("0            "
-                                        "1            "
-                                        "2            "
-                                        "3            "
-                                        "4            "
-                                        "5", "bold red")
-            << "\n"
-            << "  " << Color::colorize ("0 1 2 3 4 5  "
-                                        "0 1 2 3 4 5  "
-                                        "0 1 2 3 4 5  "
-                                        "0 1 2 3 4 5  "
-                                        "0 1 2 3 4 5  "
-                                        "0 1 2 3 4 5", "bold blue")
-            << "\n";
+    // If there is something in the description, then assume that is a color,
+    // and display it as a sample.
+    else if (description != "")
+    {
+      Color one    ("black on bright yellow");
+      Color two    ("underline cyan on bright blue");
+      Color three  ("color214 on color202");
+      Color four   ("rgb150 on rgb020");
+      Color five   ("underline grey10 on grey3");
+      Color six    ("red on color173");
+      Color sample (description);
 
-        char label [12];
-        for (int g = 0; g < 6; ++g)
-        {
-          sprintf (label, " %d", g);
-          out << Color::colorize (label, "bold green");
-          for (int r = 0; r < 6; ++r)
-          {
-            for (int b = 0; b < 6; ++b)
-            {
-              std::stringstream s;
-              s << "on rgb" << r << g << b;
-              out << Color::colorize ("  ", s.str ());
-            }
+      out << "\n"
+          << "Use this command to see how colors are displayed by your terminal.\n\n"
+          << "\n"
+          << "16-color usage (supports underline, bold text, bright background):\n"
+          << "  " << one.colorize ("task color black on bright yellow")            << "\n"
+          << "  " << two.colorize ("task color underline cyan on bright blue")     << "\n"
+          << "\n"
+          << "256-color usage (supports underline):\n"
+          << "  " << three.colorize ("task color color214 on color202")            << "\n"
+          << "  " << four.colorize ("task color rgb150 on rgb020")                 << "\n"
+          << "  " << five.colorize ("task color underline grey10 on grey3")        << "\n"
+          << "  " << six.colorize ("task color red on color173")                   << "\n"
+          << "\n"
+          << "Your sample:"                                                        << "\n"
+          << "  " << sample.colorize ("task color " + description)                 << "\n\n";
+    }
 
-            out << " ";
-          }
+    // Show all supported colors.  Possibly show some unsupported ones too.
+    else
+    {
+      out << "\n"
+          << "Basic colors"
+          << "\n"
+          << " " << Color::colorize (" black ",   "black")
+          << " " << Color::colorize (" red ",     "red")
+          << " " << Color::colorize (" blue ",    "blue")
+          << " " << Color::colorize (" green ",   "green")
+          << " " << Color::colorize (" magenta ", "magenta")
+          << " " << Color::colorize (" cyan ",    "cyan")
+          << " " << Color::colorize (" yellow ",  "yellow")
+          << " " << Color::colorize (" white ",   "white")
+          << "\n"
+          << " " << Color::colorize (" black ",   "white on black")
+          << " " << Color::colorize (" red ",     "white on red")
+          << " " << Color::colorize (" blue ",    "white on blue")
+          << " " << Color::colorize (" green ",   "black on green")
+          << " " << Color::colorize (" magenta ", "black on magenta")
+          << " " << Color::colorize (" cyan ",    "black on cyan")
+          << " " << Color::colorize (" yellow ",  "black on yellow")
+          << " " << Color::colorize (" white ",   "black on white")
+          << "\n\n";
 
-          out << "\n";
-        }
+      out << "Effects"
+          << "\n"
+          << " " << Color::colorize (" red ",               "red")
+          << " " << Color::colorize (" bold red ",          "bold red")
+          << " " << Color::colorize (" underline on blue ", "underline on blue")
+          << " " << Color::colorize (" on green ",          "black on green")
+          << " " << Color::colorize (" on bright green ",   "black on bright green")
+          << "\n\n";
 
-        out << "\n";
-
-        // Grey ramp.
-        out << "Gray ramp gray0 - gray23 (also color232 - color255)\n"
-            << "  0 1 2 . . .                             . . . 23\n"
-            << "  ";
-        for (int g = 0; g < 24; ++g)
+      // 16 system colors.
+      out << "color0 - color15"
+          << "\n"
+          << "  0 1 2 . . .\n";
+      for (int r = 0; r < 2; ++r)
+      {
+        out << "  ";
+        for (int c = 0; c < 8; ++c)
         {
           std::stringstream s;
-          s << "on gray" << g;
+          s << "on color" << (r*8 + c);
           out << Color::colorize ("  ", s.str ());
         }
 
-        out << "\n\nTry running 'task color white on red'.\n\n";
+        out << "\n";
       }
-    }
-    else
-    {
-      out << "Color is currently turned off in your .taskrc file.  To enable "
-             "color, remove the line 'color=off', or change the 'off' to 'on'.\n";
-      rc = 1;
-    }
 
-    outs = out.str ();
-    context.hooks.trigger ("post-color-command");
+      out << "          . . . 15\n\n";
+
+      // Color cube.
+      out << "Color cube rgb"
+          << Color::colorize ("0", "bold red")
+          << Color::colorize ("0", "bold green")
+          << Color::colorize ("0", "bold blue")
+          << " - rgb"
+          << Color::colorize ("5", "bold red")
+          << Color::colorize ("5", "bold green")
+          << Color::colorize ("5", "bold blue")
+          << " (also color16 - color231)"
+          << "\n"
+          << "  " << Color::colorize ("0            "
+                                      "1            "
+                                      "2            "
+                                      "3            "
+                                      "4            "
+                                      "5", "bold red")
+          << "\n"
+          << "  " << Color::colorize ("0 1 2 3 4 5  "
+                                      "0 1 2 3 4 5  "
+                                      "0 1 2 3 4 5  "
+                                      "0 1 2 3 4 5  "
+                                      "0 1 2 3 4 5  "
+                                      "0 1 2 3 4 5", "bold blue")
+          << "\n";
+
+      char label [12];
+      for (int g = 0; g < 6; ++g)
+      {
+        sprintf (label, " %d", g);
+        out << Color::colorize (label, "bold green");
+        for (int r = 0; r < 6; ++r)
+        {
+          for (int b = 0; b < 6; ++b)
+          {
+            std::stringstream s;
+            s << "on rgb" << r << g << b;
+            out << Color::colorize ("  ", s.str ());
+          }
+
+          out << " ";
+        }
+
+        out << "\n";
+      }
+
+      out << "\n";
+
+      // Grey ramp.
+      out << "Gray ramp gray0 - gray23 (also color232 - color255)\n"
+          << "  0 1 2 . . .                             . . . 23\n"
+          << "  ";
+      for (int g = 0; g < 24; ++g)
+      {
+        std::stringstream s;
+        s << "on gray" << g;
+        out << Color::colorize ("  ", s.str ());
+      }
+
+      out << "\n\nTry running 'task color white on red'.\n\n";
+    }
+  }
+  else
+  {
+    out << "Color is currently turned off in your .taskrc file.  To enable "
+           "color, remove the line 'color=off', or change the 'off' to 'on'.\n";
+    rc = 1;
   }
 
+  outs = out.str ();
   return rc;
 }
 
@@ -2723,64 +2577,59 @@ int handleAnnotate (std::string& outs)
 {
   int rc = 0;
 
-  if (context.hooks.trigger ("pre-annotate-command"))
+  if (!context.task.has ("description"))
+    throw std::string ("Cannot apply a blank annotation.");
+
+  if (context.sequence.size () == 0)
+    throw std::string ("ID needed to apply an annotation.");
+
+  std::stringstream out;
+
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
   {
-    if (!context.task.has ("description"))
-      throw std::string ("Cannot apply a blank annotation.");
-
-    if (context.sequence.size () == 0)
-      throw std::string ("ID needed to apply an annotation.");
-
-    std::stringstream out;
-
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    Filter filter;
-    context.tdb.loadPending (tasks, filter);
-
-    // Filter sequence.
-    context.filter.applySequence (tasks, context.sequence);
-    if (tasks.size () == 0)
-    {
-      std::cout << "No tasks specified.\n";
-      return 1;
-    }
-
-    Permission permission;
-    if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
-      permission.bigSequence ();
-
-    foreach (task, tasks)
-    {
-      Task before (*task);
-      task->addAnnotation (context.task.get ("description"));
-
-      if (taskDiff (before, *task))
-      {
-        // Only allow valid tasks.
-        task->validate ();
-
-        if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
-        {
-          context.tdb.update (*task);
-
-          if (context.config.getBoolean ("echo.command"))
-            out << "Annotated "
-                << task->id
-                << " with '"
-                << context.task.get ("description")
-                << "'.\n";
-        }
-      }
-    }
-
-    context.tdb.commit ();
-    context.tdb.unlock ();
-
-    outs = out.str ();
-    context.hooks.trigger ("post-annotate-command");
+    std::cout << "No tasks specified.\n";
+    return 1;
   }
 
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
+    permission.bigSequence ();
+
+  foreach (task, tasks)
+  {
+    Task before (*task);
+    task->addAnnotation (context.task.get ("description"));
+
+    if (taskDiff (before, *task))
+    {
+      // Only allow valid tasks.
+      task->validate ();
+
+      if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
+      {
+        context.tdb.update (*task);
+
+        if (context.config.getBoolean ("echo.command"))
+          out << "Annotated "
+              << task->id
+              << " with '"
+              << context.task.get ("description")
+              << "'.\n";
+      }
+    }
+  }
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  outs = out.str ();
   return rc;
 }
 
@@ -2789,51 +2638,64 @@ int handleDenotate (std::string& outs)
 {
   int rc = 0;
 
-  if (context.hooks.trigger ("pre-denotate-command"))
+  if (!context.task.has ("description"))
+    throw std::string ("Description needed to delete an annotation.");
+
+  if (context.sequence.size () == 0)
+    throw std::string ("A task ID is needed to delete an annotation.");
+
+  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+
+  std::stringstream out;
+
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  context.filter.applySequence (tasks, context.sequence);
+  if (tasks.size () == 0)
   {
-    if (!context.task.has ("description"))
-      throw std::string ("Description needed to delete an annotation.");
+    std::cout << "No tasks specified.\n";
+    return 1;
+  }
 
-    if (context.sequence.size () == 0)
-      throw std::string ("A task ID is needed to delete an annotation.");
+  Permission permission;
+  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
+    permission.bigSequence ();
 
-    bool sensitive = context.config.getBoolean ("search.case.sensitive");
+  foreach (task, tasks)
+  {
+    Task before (*task);
+    std::string desc = context.task.get ("description");
+    std::vector <Att> annotations;
+    task->getAnnotations (annotations);
 
-    std::stringstream out;
+    if (annotations.size () == 0)
+      throw std::string ("The specified task has no annotations that can be deleted.");
 
-    std::vector <Task> tasks;
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    Filter filter;
-    context.tdb.loadPending (tasks, filter);
-
-    context.filter.applySequence (tasks, context.sequence);
-    if (tasks.size () == 0)
+    std::vector <Att>::iterator i;
+    std::string anno;
+    bool match = false;;
+    for (i = annotations.begin (); i != annotations.end (); ++i)
     {
-      std::cout << "No tasks specified.\n";
-      return 1;
+      anno = i->value ();
+      if (anno == desc)
+      {
+        match = true;
+        annotations.erase (i);
+        task->setAnnotations (annotations);
+        break;
+      }
     }
-
-    Permission permission;
-    if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
-      permission.bigSequence ();
-
-    foreach (task, tasks)
+    if (!match)
     {
-      Task before (*task);
-      std::string desc = context.task.get ("description");
-      std::vector <Att> annotations;
-      task->getAnnotations (annotations);
-
-      if (annotations.size () == 0)
-        throw std::string ("The specified task has no annotations that can be deleted.");
-
-      std::vector <Att>::iterator i;
-      std::string anno;
-      bool match = false;;
       for (i = annotations.begin (); i != annotations.end (); ++i)
       {
         anno = i->value ();
-        if (anno == desc)
+        std::string::size_type loc = find (anno, desc, sensitive);
+
+        if (loc != std::string::npos)
         {
           match = true;
           annotations.erase (i);
@@ -2841,50 +2703,32 @@ int handleDenotate (std::string& outs)
           break;
         }
       }
-      if (!match)
-      {
-        for (i = annotations.begin (); i != annotations.end (); ++i)
-        {
-          anno = i->value ();
-          std::string::size_type loc = find (anno, desc, sensitive);
-
-          if (loc != std::string::npos)
-          {
-            match = true;
-            annotations.erase (i);
-            task->setAnnotations (annotations);
-            break;
-          }
-        }
-      }
-
-      if (taskDiff (before, *task))
-      {
-        // Only allow valid tasks.
-        task->validate ();
-
-        if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
-        {
-          context.tdb.update (*task);
-          if (context.config.getBoolean ("echo.command"))
-            out << "Found annotation '"
-                << anno
-                << "' and deleted it.\n";
-        }
-      }
-      else
-        out << "Did not find any matching annotation to be deleted for '"
-            << desc
-            << "'.\n";
     }
 
-    context.tdb.commit ();
-    context.tdb.unlock ();
+    if (taskDiff (before, *task))
+    {
+      // Only allow valid tasks.
+      task->validate ();
 
-    outs = out.str ();
-    context.hooks.trigger ("post-denotate-command");
+      if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
+      {
+        context.tdb.update (*task);
+        if (context.config.getBoolean ("echo.command"))
+          out << "Found annotation '"
+              << anno
+              << "' and deleted it.\n";
+      }
+    }
+    else
+      out << "Did not find any matching annotation to be deleted for '"
+          << desc
+          << "'.\n";
   }
 
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  outs = out.str ();
   return rc;
 }
 
@@ -2936,22 +2780,14 @@ int deltaTags (Task& task)
   context.task.getTags (tags);
   foreach (tag, tags)
   {
-    if (context.hooks.trigger ("pre-tag", task))
-    {
-      task.addTag (*tag);
-      ++changes;
-      context.hooks.trigger ("post-tag", task);
-    }
+    task.addTag (*tag);
+    ++changes;
   }
 
   foreach (tag, context.tagRemovals)
   {
-    if (context.hooks.trigger ("pre-detag", task))
-    {
-      task.removeTag (*tag);
-      ++changes;
-      context.hooks.trigger ("post-detag", task);
-    }
+    task.removeTag (*tag);
+    ++changes;
   }
 
   return changes;
