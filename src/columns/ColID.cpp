@@ -25,16 +25,21 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iomanip>
+#include <sstream>
 #include <math.h>
 #include <Context.h>
 #include <ColID.h>
+#include <text.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnID::ColumnID ()
 {
-  setLabel ("id");
+  _type  = "number";
+  _style = "default";
+  _label = "ID";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,20 +63,17 @@ void ColumnID::measure (Task& task, int& minimum, int& maximum)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnID::renderHeader (std::vector <std::string>& lines, int width)
-{
-  lines.push_back ("ID");
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void ColumnID::render (std::vector <std::string>& lines, Task* task, int width)
 {
-}
+  std::stringstream line;
+  line << std::setw (width) << std::setfill (' ') << task->id;
 
-////////////////////////////////////////////////////////////////////////////////
-std::string ColumnID::type () const
-{
-  return "number";
+  if (task->id)
+    line << task->id;
+  else
+    line << '-';
+
+  lines.push_back (line.str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

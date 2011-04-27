@@ -30,6 +30,7 @@
 #include <Column.h>
 #include <ColID.h>
 #include <ColProject.h>
+#include <text.h>
 
 extern Context context;
 
@@ -45,19 +46,18 @@ Column* Column::factory (const std::string& name)
 
 ////////////////////////////////////////////////////////////////////////////////
 Column::Column ()
-: _style ("default")
+: _type ("string")
+, _style ("default")
 , _label ("")
-, _minimum (0)
-, _maximum (0)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Column::Column (const Column& other)
 {
-  _label   = other._label;
-  _minimum = other._minimum;
-  _maximum = other._maximum;
+  _type  = other._type;
+  _style = other._style;
+  _label = other._label;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,9 +65,9 @@ Column& Column::operator= (const Column& other)
 {
   if (this != &other)
   {
+    _type    = other._type;
+    _style   = other._style;
     _label   = other._label;
-    _minimum = other._minimum;
-    _maximum = other._maximum;
   }
 
   return *this;
@@ -76,9 +76,9 @@ Column& Column::operator= (const Column& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Column::operator== (const Column& other) const
 {
-  return _label   == other._label   &&
-         _minimum == other._minimum &&
-         _maximum == other._maximum;
+  return _type  == other._type   &&
+         _style == other._style   &&
+         _label == other._label;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,15 +87,28 @@ Column::~Column ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Column::setStyle (const std::string& style)
+void Column::renderHeader (std::vector <std::string>& lines, int width)
 {
-  _style = style;
-}
+  // Create a basic label.
+  std::string header;
+  header.reserve (width);
+  header = _label;
 
-////////////////////////////////////////////////////////////////////////////////
-void Column::setLabel (const std::string& label)
-{
-  _label = label;
+  // Right pad with spaces, if necessary.
+  int length = characters (_label);
+  if (length < width)
+    _label += std::string (' ', width - length);
+
+  // Now underline the header, or add a dashed line.
+  if (context.config.getBoolean ("fontunderline"))
+  {
+    lines.push_back (header);
+  }
+  else
+  {
+    lines.push_back (header);
+    lines.push_back (std::string ('-', width));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

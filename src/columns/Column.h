@@ -27,6 +27,7 @@
 #ifndef INCLUDED_COLUMN
 #define INCLUDED_COLUMN
 
+#include <vector>
 #include <string>
 #include <Task.h>
 
@@ -41,18 +42,20 @@ public:
   bool operator== (const Column&) const;     // TODO Is this necessary?
   ~Column ();
 
-  virtual void setStyle (const std::string&);
-  virtual void setLabel (const std::string&);
+  std::string getStyle ()                  { return _style;  }
+  std::string getLabel ()                  { return _label;  }
+  void setStyle (const std::string& value) { _style = value; }
+  void setLabel (const std::string& value) { _label = value; }
+  std::string type () const                { return _type;   }
+
   virtual void measure (Task&, int&, int&) = 0;
-  virtual void renderHeader (std::vector <std::string>&, int) = 0;
+  virtual void renderHeader (std::vector <std::string>&, int);
   virtual void render (std::vector <std::string>&, Task*, int) = 0;
-  virtual std::string type () const = 0;
 
 protected:
+  std::string _type;
   std::string _style;
   std::string _label;
-  int         _minimum;
-  int         _maximum;
 };
 
 #endif

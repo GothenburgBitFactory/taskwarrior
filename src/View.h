@@ -40,37 +40,37 @@ public:
   ~View ();
 
   // View specifications.
-  void add (Column*);
-  void width (int);
-  void leftMargin (int);
-  void colorOdd (Color&);
-  void colorEven (Color&);
-  void intraPadding (int);
-  void extraPadding (int);
-  void intraColorOdd (Color&);
-  void intraColorEven (Color&);
-  void extraColorOdd (Color&);
-  void extraColorEven (Color&);
-  void truncate (int);
-  int lines ();
+  void add (Column* column)       { _columns.push_back (column); }
+  void width (int width)          { _width = width;              }
+  void leftMargin (int margin)    { _left_margin = margin;       }
+  void colorOdd (Color& c)        { _odd = c;                    }
+  void colorEven (Color& c)       { _even = c;                   }
+  void intraPadding (int padding) { _intra_padding = padding;    }
+  void intraColorOdd (Color& c)   { _intra_odd = c;              }
+  void intraColorEven (Color& c)  { _intra_even = c;             }
+  void extraPadding (int padding) { _extra_padding = padding;    }
+  void extraColorOdd (Color& c)   { _extra_odd = c;              }
+  void extraColorEven (Color& c)  { _extra_even = c;             }
+  void truncate (int n)           { _truncate = n;               }
+  int lines ()                    { return _lines;               }
 
   // View rendering.
   std::string render (std::vector <Task>&, std::vector <int>&);
 
 private:
   std::vector <Column*> _columns;
-  int _width;
-  int _left_margin;
-  Color _odd;
-  Color _even;
-  int _intra_padding;
-  Color _intra_odd;
-  Color _intra_even;
-  int _extra_padding;
-  Color _extra_odd;
-  Color _extra_even;
-  int _truncate;
-  int _lines;
+  int                   _width;
+  int                   _left_margin;
+  Color                 _odd;
+  Color                 _even;
+  int                   _intra_padding;
+  Color                 _intra_odd;
+  Color                 _intra_even;
+  int                   _extra_padding;
+  Color                 _extra_odd;
+  Color                 _extra_even;
+  int                   _truncate;
+  int                   _lines;
 };
 
 #endif
