@@ -26,74 +26,68 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <Context.h>
-#include <Nibbler.h>
-#include <ColProject.h>
+#include <ColPriority.h>
 #include <text.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnProject::ColumnProject ()
+ColumnPriority::ColumnPriority ()
 {
   _type  = "string";
   _style = "default";
-  _label = "Project";
+  _label = "Pri";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnProject::~ColumnProject ()
+ColumnPriority::~ColumnPriority ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Overriden so that style <----> label are linked.
+// Note that you can not determine which gets called first.
+void ColumnPriority::setStyle (const std::string& value)
+{
+  _style = value;
+
+  if (_style == "long" && _label == "Pri")
+    _label = "Priority";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnProject::measure (Task& task, int& minimum, int& maximum)
+void ColumnPriority::measure (Task& task, int& minimum, int& maximum)
 {
-  std::string project = task.get ("project");
+  std::string priority = task.get ("priority");
 
-  if (_style == "parent")
+  minimum = maximum = 1;
+  if (_style == "long")
   {
-    std::string::size_type period = project.find ('.');
-    if (period != std::string::npos)
-      project = project.substr (0, period);
+         if (priority == "H") minimum = maximum = 4;
+    else if (priority == "M") minimum = maximum = 6;
+    else if (priority == "L") minimum = maximum = 3;
   }
   else if (_style != "default")
     throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
-
-  minimum = 0;
-  maximum = project.length ();
-
-  Nibbler nibbler (project);
-  std::string word;
-  while (nibbler.getUntilWS (word))
-  {
-    nibbler.skipWS ();
-    if (word.length () > minimum)
-      minimum = word.length ();
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnProject::render (
+void ColumnPriority::render (
   std::vector <std::string>& lines,
   Task& task,
   int width,
   Color& color)
 {
-  std::string project = task.get ("project");
-  if (_style == "parent")
+  std::string priority = task.get ("priority");
+  if (_style == "long")
   {
-    std::string::size_type period = project.find ('.');
-    if (period != std::string::npos)
-      project = project.substr (0, period);
+         if (priority == "H") priority = "High";
+    else if (priority == "M") priority = "Medium";
+    else if (priority == "L") priority = "Low";
   }
 
-  std::vector <std::string> raw;
-  wrapText (raw, project, width);
-
-  std::vector <std::string>::iterator i;
-  for (i = raw.begin (); i != raw.end (); ++i)
-    lines.push_back (color.colorize (leftJustify (*i, width)));
+  lines.push_back (color.colorize (leftJustify (priority, width)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

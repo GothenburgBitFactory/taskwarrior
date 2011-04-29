@@ -58,6 +58,9 @@ void ColumnID::measure (Task& task, int& minimum, int& maximum)
   else                       length = (int) log10 ((double) task.id); // Slow
 
   minimum = maximum = length;
+
+  if (_style != "default")
+    throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -24,8 +24,8 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_PROJECT
-#define INCLUDED_PROJECT
+#ifndef INCLUDED_COLPROJECT
+#define INCLUDED_COLPROJECT
 
 #include <vector>
 #include <string>

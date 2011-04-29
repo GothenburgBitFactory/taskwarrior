@@ -24,8 +24,8 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_COLID
-#define INCLUDED_COLID
+#ifndef INCLUDED_COLPRIORITY
+#define INCLUDED_COLPRIORITY
 
 #include <vector>
 #include <string>
@@ -33,12 +33,13 @@
 #include <Color.h>
 #include <Task.h>
 
-class ColumnID : public Column
+class ColumnPriority : public Column
 {
 public:
-  ColumnID ();
-  ~ColumnID ();
+  ColumnPriority ();
+  ~ColumnPriority ();
 
+  void setStyle (const std::string&);
   void measure (Task&, int&, int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
 

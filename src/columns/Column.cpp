@@ -28,19 +28,34 @@
 #include <Context.h>
 #include <Column.h>
 #include <ColID.h>
+#include <ColPriority.h>
 #include <ColProject.h>
 #include <text.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Supports the new complete column definition:
+//
+//   <type>[.<format>][.<key>[.<direction>][.<break>]]
+//
 Column* Column::factory (const std::string& name)
 {
-  if (name == "id")       return new ColumnID ();
-  if (name == "project")  return new ColumnProject ();
+  // TODO Decompose name into type, format, key, direction and break.
 
-  throw std::string ("Unrecognized column type '") + name + "'";
-  return NULL;
+  Column* column;
+       if (name == "id")       column = new ColumnID ();
+  else if (name == "priority") column = new ColumnPriority ();
+  else if (name == "project")  column = new ColumnProject ();
+  else
+    throw std::string ("Unrecognized column type '") + name + "'";
+
+  // TODO Set format.
+  // TODO Set key.
+  // TODO Set direction.
+  // TODO Set break.
+
+  return column;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

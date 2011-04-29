@@ -45,9 +45,10 @@ public:
 
   std::string getStyle ()                  { return _style;  }
   std::string getLabel ()                  { return _label;  }
-  void setStyle (const std::string& value) { _style = value; }
-  void setLabel (const std::string& value) { _label = value; }
   std::string type () const                { return _type;   }
+
+  virtual void setStyle (const std::string& value) { _style = value; }
+  virtual void setLabel (const std::string& value) { _label = value; }
 
   virtual void measure (Task&, int&, int&) = 0;
   virtual void renderHeader (std::vector <std::string>&, int, Color&);
