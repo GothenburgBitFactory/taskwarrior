@@ -99,7 +99,6 @@ unsigned int utf8_next_char (const std::string& input, std::string::size_type& i
            ((input[i++] & 0x3F) <<  6) +
             (input[i++] & 0x3F);
 
-
   // Default: pretend as though it's a single character.
   // TODO Or should this throw?
   return input[i++];

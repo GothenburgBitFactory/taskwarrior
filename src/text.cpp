@@ -51,7 +51,7 @@ void wrapText (
   std::string copy = text;
   std::string line;
 
-  while (copy.length ())
+  while (copy.length ())  // Used as Boolean, therefore UTF8 safe.
   {
     extractLine (copy, line, width);
     lines.push_back (line);
