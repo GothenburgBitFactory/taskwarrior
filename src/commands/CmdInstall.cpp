@@ -26,13 +26,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
-#include <Install.h>
+#include <CmdInstall.h>
 #include <Context.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-Install::Install ()
+CmdInstall::CmdInstall ()
 /*
 : _name ("")
 */
@@ -40,7 +40,7 @@ Install::Install ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Install::Install (const Install& other)
+CmdInstall::CmdInstall (const CmdInstall& other)
 {
 /*
   _minimum = other._minimum;
@@ -48,7 +48,7 @@ Install::Install (const Install& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Install& Install::operator= (const Install& other)
+CmdInstall& CmdInstall::operator= (const CmdInstall& other)
 {
   if (this != &other)
   {
@@ -61,7 +61,7 @@ Install& Install::operator= (const Install& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Install::operator== (const Install& other) const
+bool CmdInstall::operator== (const CmdInstall& other) const
 {
   return false;
 /*
@@ -75,18 +75,18 @@ bool Install::operator== (const Install& other) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Install::~Install ()
+CmdInstall::~CmdInstall ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Install::read_only () const
+bool CmdInstall::read_only () const
 {
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Install::implements (const std::string& command_line) const
+bool CmdInstall::implements (const std::string& command_line) const
 {
   return false;
 }
@@ -97,7 +97,7 @@ bool Install::implements (const std::string& command_line) const
 //   Generate UUID
 //   Call the "install" function once, store results in rc:
 //     extension.<uuid>=<JSON>
-std::string Install::execute (const std::string&)
+std::string CmdInstall::execute (const std::string&)
 {
   return "output";
 }

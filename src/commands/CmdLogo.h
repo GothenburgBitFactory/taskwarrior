@@ -24,20 +24,20 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_INSTALL
-#define INCLUDED_INSTALL
+#ifndef INCLUDED_CMDLOGO
+#define INCLUDED_CMDLOGO
 
 #include <string>
 #include <Command.h>
 
-class Install : public Command
+class CmdLogo : public Command
 {
 public:
-  Install ();
-  Install (const Install&);
-  Install& operator= (const Install&);
-  bool operator== (const Install&) const;     // TODO Is this necessary?
-  ~Install ();
+  CmdLogo ();
+  CmdLogo (const CmdLogo&);
+  CmdLogo& operator= (const CmdLogo&);
+  bool operator== (const CmdLogo&) const;     // TODO Is this necessary?
+  ~CmdLogo ();
 
   bool read_only () const;
   bool implements (const std::string&) const;

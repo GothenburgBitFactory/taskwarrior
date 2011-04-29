@@ -27,7 +27,8 @@
 
 #include <iostream>
 #include <Command.h>
-#include <Install.h>
+#include <CmdInstall.h>
+#include <CmdLogo.h>
 #include <Context.h>
 
 extern Context context;
@@ -35,10 +36,13 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 Command* Command::factory (const std::string& name)
 {
-  if (name == "install")  return new Install ();
+  Command* command;
+       if (name == "install") command = new CmdInstall ();
+  else if (name == "_logo")   command = new CmdLogo ();
+  else
+    throw std::string ("Unrecognized command '") + name + "'";
 
-  throw std::string ("Unrecognized command '") + name + "'";
-  return NULL;
+  return command;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
