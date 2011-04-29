@@ -728,7 +728,7 @@ std::string leftJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string leftJustify (const std::string& input, const int width)
 {
-  return input + std::string (width - input.length (), ' ');
+  return input + std::string (width - characters (input), ' ');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -742,7 +742,7 @@ std::string rightJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string rightJustify (const std::string& input, const int width)
 {
-  return std::string (width - input.length (), ' ') + input;
+  return std::string (width - characters (input), ' ') + input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
