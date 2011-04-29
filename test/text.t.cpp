@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (208);
+  UnitTest t (214);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -415,6 +415,16 @@ int main (int argc, char** argv)
   t.is (format (1.23456789, 8, 8), "1.2345679", "format (1.23456789, 8, 8) -> 1.2345679");
 
   // std::string format (double, int, int);
+
+  // std::string leftJustify (const std::string&, const int);
+  t.is (leftJustify ("foo", 3), "foo",   "leftJustify foo,3 -> 'foo'");
+  t.is (leftJustify ("foo", 4), "foo ",  "leftJustify foo,4 -> 'foo '");
+  t.is (leftJustify ("foo", 5), "foo  ", "leftJustify foo,5 -> 'foo  '");
+
+  // std::string rightJustify (const std::string&, const int);
+  t.is (rightJustify ("foo", 3), "foo",   "rightJustify foo,3 -> 'foo'");
+  t.is (rightJustify ("foo", 4), " foo",  "rightJustify foo,4 -> ' foo'");
+  t.is (rightJustify ("foo", 5), "  foo", "rightJustify foo,5 -> '  foo'");
 
   return 0;
 }

@@ -655,6 +655,7 @@ int characters (const std::string& str)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Truncates a long line, and include a two-character ellipsis.
 std::string cutOff (const std::string& str, std::string::size_type len)
 {
   if (str.length () > len)
@@ -712,6 +713,18 @@ std::string format (double value, int width, int precision)
   s.precision (precision);
   s << value;
   return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string leftJustify (const std::string& input, const int width)
+{
+  return input + std::string (width - input.length (), ' ');
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string rightJustify (const std::string& input, const int width)
+{
+  return std::string (width - input.length (), ' ') + input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
