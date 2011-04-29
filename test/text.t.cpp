@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (214);
+  UnitTest t (220);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -417,9 +417,19 @@ int main (int argc, char** argv)
   // std::string format (double, int, int);
 
   // std::string leftJustify (const std::string&, const int);
+  t.is (leftJustify (123, 3), "123",   "leftJustify 123,3 -> '123'");
+  t.is (leftJustify (123, 4), "123 ",  "leftJustify 123,4 -> '123 '");
+  t.is (leftJustify (123, 5), "123  ", "leftJustify 123,5 -> '123  '");
+
+  // std::string leftJustify (const std::string&, const int);
   t.is (leftJustify ("foo", 3), "foo",   "leftJustify foo,3 -> 'foo'");
   t.is (leftJustify ("foo", 4), "foo ",  "leftJustify foo,4 -> 'foo '");
   t.is (leftJustify ("foo", 5), "foo  ", "leftJustify foo,5 -> 'foo  '");
+
+  // std::string rightJustify (const std::string&, const int);
+  t.is (rightJustify (123, 3), "123",   "rightJustify 123,3 -> '123'");
+  t.is (rightJustify (123, 4), " 123",  "rightJustify 123,4 -> ' 123'");
+  t.is (rightJustify (123, 5), "  123", "rightJustify 123,5 -> '  123'");
 
   // std::string rightJustify (const std::string&, const int);
   t.is (rightJustify ("foo", 3), "foo",   "rightJustify foo,3 -> 'foo'");

@@ -66,7 +66,9 @@ std::string format (int);
 std::string formatHex (int);
 std::string format (float, int, int);
 std::string format (double, int, int);
+std::string leftJustify (const int, const int);
 std::string leftJustify (const std::string&, const int);
+std::string rightJustify (const int, const int);
 std::string rightJustify (const std::string&, const int);
 
 // UTF-8 aware.

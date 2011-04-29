@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include <vector>
 #include <string>
 #include <strings.h>
@@ -716,9 +717,26 @@ std::string format (double value, int width, int precision)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string leftJustify (const int input, const int width)
+{
+  std::stringstream s;
+  s << input;
+  std::string output = s.str ();
+  return output + std::string (width - output.length (), ' ');
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string leftJustify (const std::string& input, const int width)
 {
   return input + std::string (width - input.length (), ' ');
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string rightJustify (const int input, const int width)
+{
+  std::stringstream s;
+  s << std::setw (width) << std::setfill (' ') << input;
+  return s.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
