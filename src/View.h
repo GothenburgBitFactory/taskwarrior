@@ -37,7 +37,7 @@ class View
 {
 public:
   View ();
-  ~View ();
+  ~View () {}
 
   // View specifications.
   void add (Column* column)       { _columns.push_back (column); }

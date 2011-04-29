@@ -25,8 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove
-#include <sstream>
+//#include <iostream> // TODO Remove
 #include <View.h>
 #include <text.h>
 
@@ -45,11 +44,6 @@ View::View ()
 , _extra_even (0)
 , _truncate (0)
 , _lines (0)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-View::~View ()
 {
 }
 
@@ -196,6 +190,7 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
 
   // Output string.
   std::string out;
+  _lines = 0;
 
   // Render column headers.
   std::string left_margin = std::string (_left_margin, ' ');
@@ -218,6 +213,7 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
     }
 
     out += extra + "\n";
+    ++_lines;
   }
 
   // Compose, render columns, in sequence.
@@ -253,6 +249,7 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
       }
 
       out += extra + "\n";
+      ++_lines;
     }
 
     cells.clear ();

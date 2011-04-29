@@ -74,6 +74,8 @@ int main (int argc, char** argv)
     // Render the view.
     std::cout << view.render (data, sequence)
               << std::endl;
+
+    t.is (view.lines (), 4, "View::lines == 4");
   }
 
   catch (std::string& e)
