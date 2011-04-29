@@ -40,6 +40,9 @@ int main (int argc, char** argv)
 
   try
   {
+    // Set up configuration.
+    context.config.set ("fontunderline", true);
+
     // Two sample tasks.
     Task t1 ("[project:\"Home\"]");
     t1.id = 1;
@@ -55,14 +58,18 @@ int main (int argc, char** argv)
     sequence.push_back (0);
     sequence.push_back (1);
 
+    // Create colors.
+    Color header_color (Color (Color::yellow, Color::nocolor, false, false, false));
+
     // Create a view.
     View view;
     view.add (Column::factory ("id"));
     view.add (Column::factory ("project"));
-    view.width (12);
-    view.leftMargin (0);
+    view.width (16);
+    view.leftMargin (4);
     view.extraPadding (0);
     view.intraPadding (1);
+    view.colorHeader (header_color);
 
     // Render the view.
     std::cout << view.render (data, sequence)

@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <Context.h>
 #include <Column.h>
 #include <ColID.h>
@@ -87,27 +86,29 @@ Column::~Column ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Column::renderHeader (std::vector <std::string>& lines, int width)
+void Column::renderHeader (
+  std::vector <std::string>& lines,
+  int width,
+  Color& color)
 {
   // Create a basic label.
   std::string header;
   header.reserve (width);
   header = _label;
 
-  // Right pad with spaces, if necessary.
-  int length = characters (_label);
-  if (length < width)
-    _label += std::string (' ', width - length);
+  // Create a fungible copy.
+  Color c = color;
 
   // Now underline the header, or add a dashed line.
   if (context.config.getBoolean ("fontunderline"))
   {
-    lines.push_back (header);
+    c.blend (Color (Color::nocolor, Color::nocolor, true, false, false));
+    lines.push_back (c.colorize (leftJustify (header, width)));
   }
   else
   {
-    lines.push_back (header);
-    lines.push_back (std::string ('-', width));
+    lines.push_back (c.colorize (leftJustify (header, width)));
+    lines.push_back (c.colorize (std::string (width, '-')));
   }
 }
 

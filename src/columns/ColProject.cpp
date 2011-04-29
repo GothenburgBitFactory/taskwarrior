@@ -25,10 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove
-#include <math.h>
 #include <Context.h>
+#include <Nibbler.h>
 #include <ColProject.h>
+#include <text.h>
 
 extern Context context;
 
@@ -50,36 +50,34 @@ ColumnProject::~ColumnProject ()
 void ColumnProject::measure (Task& task, int& minimum, int& maximum)
 {
   std::string project = task.get ("project");
-  minimum = maximum = project.length ();
-
-  std::string::size_type space = project.find (' ');
-  if (space == std::string::npos)
-  {
-    std::cout << "# ColProject::measure project=" << project << " min=" << minimum << " max=" << maximum << "\n";
-    return;
-  }
-
   minimum = 0;
-  int longest = 0;
-  std::string::size_type last = -1;
-  while (space != std::string::npos)
+  maximum = project.length ();
+
+  Nibbler nibbler (project);
+  std::string word;
+  while (nibbler.getUntilWS (word))
   {
-    if (space - last - 1 > longest)
-      longest = space - last - 1;
-
-    last = space;
-    space = project.find (' ', last + 1);
+    nibbler.skipWS ();
+    if (word.length () > minimum)
+      minimum = word.length ();
   }
-
-  if (longest)
-    minimum = longest;
-
-  std::cout << "# ColProject::measure project=" << project << " min=" << minimum << " max=" << maximum << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnProject::render (std::vector <std::string>& lines, Task& task, int width)
+void ColumnProject::render (
+  std::vector <std::string>& lines,
+  Task& task,
+  int width,
+  Color& color)
 {
+  // TODO Can't use Nibbler here.  Need to use a UTF8-safe version of extractLines.
+  Nibbler nibbler (task.get ("project"));
+  std::string word;
+  while (nibbler.getUntilWS (word))
+  {
+    nibbler.skipWS ();
+    lines.push_back (color.colorize (leftJustify (word, width)));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

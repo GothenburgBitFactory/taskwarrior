@@ -30,6 +30,7 @@
 #include <vector>
 #include <string>
 #include <Column.h>
+#include <Color.h>
 #include <Task.h>
 
 class ColumnProject : public Column
@@ -39,7 +40,7 @@ public:
   ~ColumnProject ();
 
   void measure (Task&, int&, int&);
-  void render (std::vector <std::string>&, Task&, int);
+  void render (std::vector <std::string>&, Task&, int, Color&);
 
 private:
 };

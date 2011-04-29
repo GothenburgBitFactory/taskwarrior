@@ -43,6 +43,7 @@ public:
   void add (Column* column)       { _columns.push_back (column); }
   void width (int width)          { _width = width;              }
   void leftMargin (int margin)    { _left_margin = margin;       }
+  void colorHeader (Color& c)     { _header = c;                 }
   void colorOdd (Color& c)        { _odd = c;                    }
   void colorEven (Color& c)       { _even = c;                   }
   void intraPadding (int padding) { _intra_padding = padding;    }
@@ -61,6 +62,7 @@ private:
   std::vector <Column*> _columns;
   int                   _width;
   int                   _left_margin;
+  Color                 _header;
   Color                 _odd;
   Color                 _even;
   int                   _intra_padding;
