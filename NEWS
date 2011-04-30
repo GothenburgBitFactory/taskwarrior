@@ -28,6 +28,7 @@ New configuration options in taskwarrior 2.0.0
     dimensions of the terminal window.
   - Extension system now controlled by the 'extensions' configuration variable.
   - Two new solarized color themes.
+  - New 'dependency.indicator' for the 'depends.indicator' report field format.
 
 Newly deprecated features in taskwarrior 2.0.0
 

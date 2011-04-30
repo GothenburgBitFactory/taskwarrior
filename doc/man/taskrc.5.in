@@ -300,11 +300,15 @@ string you like.
 
 .TP
 .B active.indicator=*
-The character or string to show in the active column.  Defaults to *.
+The character or string to show in the start.active column.  Defaults to *.
 
 .TP
 .B tag.indicator=+
-The character or string to show in the tag_indicator column.  Defaults to +.
+The character or string to show in the tag.indicator column.  Defaults to +.
+
+.TP
+.B dependency.indicator=D
+The character or string to show in the depends.indicator column.  Defaults to +.
 
 .TP
 .B recurrence.indicator=R

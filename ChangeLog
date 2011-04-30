@@ -23,6 +23,8 @@
  + HTML export in the form of an external scripts export-html.pl.
  + Two additional solarized theme files, solarized-dark-256.theme and
    solarized-light-256.theme (thanks to Stefan Keel).
+ + New 'dependency.indicator' configuration variable for the depends.indicator
+   report field.
 
 # Tracked Features, sorted by ID.
  + Added feature #523 & #659, adding 'status' as a reportable field (thanks to

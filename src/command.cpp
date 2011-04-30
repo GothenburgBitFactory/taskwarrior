@@ -1114,7 +1114,7 @@ int handleShow (std::string& outs)
     "color.sync.added color.sync.changed color.sync.rejected color.undo.after "
     "confirmation data.location dateformat dateformat.holiday "
     "dateformat.report dateformat.annotation debug default.command default.due "
-    "default.priority default.project defaultwidth due "
+    "default.priority default.project defaultwidth dependency.indicator due "
     "dependency.confirmation dependency.reminder detection locale displayweeknumber "
     "export.ical.class echo.command fontunderline gc locking monthsperline "
     "nag next journal.time journal.time.start.annotation journal.info "
