@@ -49,7 +49,7 @@ public:
   Context (const Context&);
   Context& operator= (const Context&);
 
-  void initialize (int, char**);       // all startup
+  void initialize (int, char**);       // all startup  TODO Obsolete
   void initialize2 (int, char**);      // all startup
   void initialize ();                  // for reinitializing
   int run ();                          // task classic

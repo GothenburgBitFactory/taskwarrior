@@ -25,9 +25,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-//#include <iostream> // TODO Remove
 #include <View.h>
 #include <text.h>
+#include <main.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 View::View ()
@@ -83,6 +83,9 @@ View::View ()
 //     among all columns, one character at a time, while the column width is
 //     less than the maximum width, and while there is overage remaining.
 //
+// Note: a possible enhancement is to proportionally distribute the overage
+//       according to average data length.
+//
 std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
 {
   // Determine minimal, ideal column widths.
@@ -112,48 +115,32 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
     ideal.push_back (global_ideal);
   }
 
-//  // TODO Remove
-//  std::string combined;
-//  join (combined, ",", minimal);
-//  std::cout << "# minimal " << combined << "\n";
-//  join (combined, ",", ideal);
-//  std::cout << "# ideal " << combined << "\n";
-
   // Sum the minimal widths.
   int sum_minimal = 0;
   std::vector <int>::iterator c;
   for (c = minimal.begin (); c != minimal.end (); ++c)
     sum_minimal += *c;
-//  std::cout << "# sum_minimal " << sum_minimal << "\n";
 
   // Sum the ideal widths.
   int sum_ideal = 0;
   for (c = ideal.begin (); c != ideal.end (); ++c)
     sum_ideal += *c;
-//  std::cout << "# sum_ideal " << sum_ideal << "\n";
 
   // Calculate final column widths.
   int overage = _width
               - _left_margin
               - (2 * _extra_padding)
               - ((_columns.size () - 1) * _intra_padding);
-//  std::cout << "# width " << _width << "\n";
 
   std::vector <int> widths;
   if (sum_ideal <= overage)
-//  {
-//    std::cout << "# ideal case: " << sum_ideal << " <= " << overage << "\n";
     widths = ideal;
-//  }
   else if (sum_minimal > overage)
-//  {
     throw std::string ("There is not enough horizontal width to display the results.");
-//  }
   else
   {
     widths = minimal;
     overage -= sum_minimal;
-//    std::cout << "# overage " << overage << "\n";
 
     // Spread 'overage' among columns where width[i] < ideal[i]
     while (overage)
@@ -167,9 +154,6 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
         }
       }
     }
-//
-//    join (combined, ",", widths);
-//    std::cout << "# final widths " << combined << "\n";
   }
 
   // Compose column headers.
@@ -184,18 +168,19 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
       max_lines = headers[c].size ();
   }
 
-//  for (int i = 0; i < headers.size (); ++i)
-//    for (int j = 0; j < headers[i].size (); ++j)
-//      std::cout << "# headers[" << i << "][" << j << "]=<" << headers[i][j] << ">\n";
-
   // Output string.
   std::string out;
   _lines = 0;
 
   // Render column headers.
   std::string left_margin = std::string (_left_margin, ' ');
-  std::string extra = std::string (_extra_padding, ' ');
-  std::string intra = std::string (_intra_padding, ' ');
+  std::string extra       = std::string (_extra_padding, ' ');
+  std::string intra       = std::string (_intra_padding, ' ');
+
+  std::string extra_odd   = _extra_odd.colorize  (extra);
+  std::string extra_even  = _extra_even.colorize (extra);
+  std::string intra_odd   = _intra_odd.colorize  (intra);
+  std::string intra_even  = _intra_even.colorize (intra);
 
   for (int i = 0; i < max_lines; ++i)
   {
@@ -217,17 +202,25 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
   }
 
   // Compose, render columns, in sequence.
-  Color color ("cyan");
   std::vector <std::vector <std::string> > cells;
   std::vector <int>::iterator s;
-  for (s = sequence.begin (); s != sequence.end (); ++s)
+  for (int s = 0; s < sequence.size (); ++s)
   {
     max_lines = 0;
+
+    // Apply color rules to task.
+    Color rule_color;
+    autoColorize (data[s], rule_color);
+
+    // Alternate rows based on |s % 2|
+    bool odd = (s % 2) ? true : false;
+    Color row_color = odd ? _odd : _even;
+    row_color.blend (rule_color);
 
     for (int c = 0; c < _columns.size (); ++c)
     {
       cells.push_back (std::vector <std::string> ());
-      _columns[c]->render (cells[c], data[*s], widths[c], color);
+      _columns[c]->render (cells[c], data[s], widths[c], row_color);
 
       if (cells[c].size () > max_lines)
         max_lines = cells[c].size ();
@@ -235,20 +228,20 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
 
     for (int i = 0; i < max_lines; ++i)
     {
-      out += left_margin + extra;
+      out += left_margin + (odd ? extra_odd : extra_even);
 
       for (int c = 0; c < _columns.size (); ++c)
       {
         if (c)
-          out += intra;
+          out += (odd ? intra_odd : intra_even);
 
         if (i < cells[c].size ())
           out += cells[c][i];
         else
-          out += color.colorize (std::string (widths[c], ' '));
+          out += row_color.colorize (std::string (widths[c], ' '));
       }
 
-      out += extra + "\n";
+      out += (odd ? extra_odd : extra_even) + "\n";
       ++_lines;
     }
 

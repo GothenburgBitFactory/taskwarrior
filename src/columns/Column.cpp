@@ -41,19 +41,54 @@ extern Context context;
 //
 Column* Column::factory (const std::string& name)
 {
-  // TODO Decompose name into type, format, key, direction and break.
+  // Decompose name into type and style.
+  std::string::size_type dot = name.find ('.');
+  std::string column_name;
+  std::string column_style;
+  if (dot != std::string::npos)
+  {
+    column_name = name.substr (0, dot);
+    column_style = name.substr (dot + 1);
+  }
+  else
+  {
+    column_name = name;
+    column_style = "default";
+  }
 
   Column* column;
-       if (name == "id")       column = new ColumnID ();
-  else if (name == "priority") column = new ColumnPriority ();
-  else if (name == "project")  column = new ColumnProject ();
+       if (column_name == "id")       column = new ColumnID ();
+  else if (column_name == "priority") column = new ColumnPriority ();
+  else if (column_name == "project")  column = new ColumnProject ();
   else
-    throw std::string ("Unrecognized column type '") + name + "'";
+    throw std::string ("Unrecognized column type '") + column_name + "'";
 
-  // TODO Set format.
-  // TODO Set key.
-  // TODO Set direction.
-  // TODO Set break.
+  column->setStyle (column_style);
+
+/*
+  // TODO Load the report column def from config
+  // TODO Parse column defs
+  // TODO   Create column object
+  // TODO   Column: name
+  // TODO   Column: style
+  // TODO   Column: break
+
+  // TODO Color: odd
+  // TODO Color: even
+  // TODO Color: intra_odd
+  // TODO Color: intra_even
+  // TODO Color: extra_odd
+  // TODO Color: extra_even
+  // TODO Color: header
+
+  // Terminal width.
+  view.width (getWidth ());
+
+  // TODO Intra padding.
+  // TODO Extra padding.
+  // TODO Margin.
+  // TODO Truncate lines/page.
+*/
 
   return column;
 }

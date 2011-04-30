@@ -44,7 +44,7 @@ int main (int argc, char** argv)
     context.config.set ("fontunderline", true);
 
     // Two sample tasks.
-    Task t1 ("[project:\"Home\"]");
+    Task t1 ("[project:\"Home\" priority:\"H\"]");
     t1.id = 1;
     Task t2 ("[project:\"Garden Care\"]");
     t2.id = 11;
@@ -65,15 +65,15 @@ int main (int argc, char** argv)
     View view;
     view.add (Column::factory ("id"));
     view.add (Column::factory ("project"));
-    view.width (16);
+    view.add (Column::factory ("priority"));
+    view.width (20);
     view.leftMargin (4);
     view.extraPadding (0);
     view.intraPadding (1);
     view.colorHeader (header_color);
 
     // Render the view.
-    std::cout << view.render (data, sequence)
-              << std::endl;
+    std::cout << view.render (data, sequence);
 
     t.is (view.lines (), 4, "View::lines == 4");
   }

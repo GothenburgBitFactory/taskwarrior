@@ -823,12 +823,13 @@ void Context::clear ()
   subst.clear ();
 //  task.clear ();
   task = Task ();
-  tdb.clear ();
+  tdb.clear ();            // TODO Obsolete
+//  tdb2.clear ();
   program = "";
   args.clear ();
   file_override = "";
   var_overrides = "";
-  cmd.command = "";
+  cmd.command = "";        // TODO Obsolete
   tagAdditions.clear ();
   tagRemovals.clear ();
 
