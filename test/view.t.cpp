@@ -42,9 +42,10 @@ int main (int argc, char** argv)
   {
     // Set up configuration.
     context.config.set ("fontunderline", true);
+    context.config.set ("tag.indicator", "+");
 
     // Two sample tasks.
-    Task t1 ("[uuid:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\" project:\"Home\" priority:\"H\"]");
+    Task t1 ("[uuid:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\" project:\"Home\" priority:\"H\" tags:\"one,two\"]");
     t1.id = 1;
     Task t2 ("[uuid:\"f30cb9c3-3fc0-483f-bfb2-3bf134f00694\" project:\"Garden Care\"]");
     t2.id = 11;
@@ -67,6 +68,9 @@ int main (int argc, char** argv)
     view.add (Column::factory ("uuid.short"));
     view.add (Column::factory ("project"));
     view.add (Column::factory ("priority.long"));
+    view.add (Column::factory ("tags"));
+    view.add (Column::factory ("tags.indicator"));
+    view.add (Column::factory ("tags.count"));
     view.width (80);
     view.leftMargin (4);
     view.extraPadding (0);

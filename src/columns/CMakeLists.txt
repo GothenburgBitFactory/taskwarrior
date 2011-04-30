@@ -8,6 +8,7 @@ set (columns_SRCS Column.cpp Column.h
                   ColID.cpp ColID.h
                   ColPriority.cpp ColPriority.h
                   ColProject.cpp ColProject.h
+                  ColTags.cpp ColTags.h
                   ColUUID.cpp ColUUID.h)
 
 add_library (columns STATIC ${columns_SRCS})

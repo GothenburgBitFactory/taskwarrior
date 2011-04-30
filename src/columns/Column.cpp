@@ -30,6 +30,7 @@
 #include <ColID.h>
 #include <ColPriority.h>
 #include <ColProject.h>
+#include <ColTags.h>
 #include <ColUUID.h>
 #include <text.h>
 
@@ -61,6 +62,7 @@ Column* Column::factory (const std::string& name)
        if (column_name == "id")       column = new ColumnID ();
   else if (column_name == "priority") column = new ColumnPriority ();
   else if (column_name == "project")  column = new ColumnProject ();
+  else if (column_name == "tags")     column = new ColumnTags ();
   else if (column_name == "uuid")     column = new ColumnUUID ();
   else
     throw std::string ("Unrecognized column type '") + column_name + "'";
