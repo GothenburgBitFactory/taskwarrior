@@ -45,9 +45,9 @@ int main (int argc, char** argv)
     context.config.set ("tag.indicator", "+");
 
     // Two sample tasks.
-    Task t1 ("[uuid:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\" project:\"Home\" priority:\"H\" tags:\"one,two\"]");
+    Task t1 ("[uuid:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\" description:\"This is the description text\" project:\"Home\" priority:\"H\" tags:\"one,two\"]");
     t1.id = 1;
-    Task t2 ("[uuid:\"f30cb9c3-3fc0-483f-bfb2-3bf134f00694\" project:\"Garden Care\"]");
+    Task t2 ("[uuid:\"f30cb9c3-3fc0-483f-bfb2-3bf134f00694\" description:\"This is the description text\" project:\"Garden Care\"]");
     t2.id = 11;
 
     std::vector <Task> data;
@@ -61,6 +61,8 @@ int main (int argc, char** argv)
 
     // Create colors.
     Color header_color (Color (Color::yellow, Color::nocolor, false, false, false));
+    Color odd_color ("on gray1");
+    Color even_color ("on gray0");
 
     // Create a view.
     View view;
@@ -71,11 +73,23 @@ int main (int argc, char** argv)
     view.add (Column::factory ("tags"));
     view.add (Column::factory ("tags.indicator"));
     view.add (Column::factory ("tags.count"));
-    view.width (80);
+    view.add (Column::factory ("description.truncated"));
+    view.width (64);
     view.leftMargin (4);
+/*
+    view.extraPadding (1);
+*/
     view.extraPadding (0);
     view.intraPadding (1);
     view.colorHeader (header_color);
+    view.colorOdd (odd_color);
+    view.colorEven (even_color);
+    view.intraColorOdd (odd_color);
+    view.intraColorEven (even_color);
+/*
+    view.extraColorOdd (odd_color);
+    view.extraColorEven (even_color);
+*/
 
     // Render the view.
     std::cout << view.render (data, sequence);

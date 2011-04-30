@@ -117,7 +117,7 @@ void ColumnTags::render (
 
       std::vector <std::string>::iterator i;
       for (i = all.begin (); i != all.end (); ++i)
-        lines.push_back (color.colorize (rightJustify (*i, width)));
+        lines.push_back (color.colorize (leftJustify (*i, width)));
     }
   }
 }

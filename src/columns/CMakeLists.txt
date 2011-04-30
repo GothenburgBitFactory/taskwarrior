@@ -5,6 +5,7 @@ include_directories (${CMAKE_SOURCE_DIR}/src
                      ${TASK_INCLUDE_DIRS})
 
 set (columns_SRCS Column.cpp Column.h
+                  ColDescription.cpp ColDescription.h
                   ColID.cpp ColID.h
                   ColPriority.cpp ColPriority.h
                   ColProject.cpp ColProject.h

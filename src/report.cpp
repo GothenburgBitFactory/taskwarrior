@@ -229,7 +229,7 @@ int shortUsage (std::string& outs)
   table.addCell (row, 1, "task push URL");
   table.addCell (row, 2, "Pushes the local *.data files to the URL.");
 
-	row = table.addRow ();
+  row = table.addRow ();
   table.addCell (row, 1, "task pull URL");
   table.addCell (row, 2, "Overwrites the local *.data files with those found at the URL.");
 
@@ -2146,9 +2146,9 @@ std::string getFullDescription (Task& task, const std::string& report)
       foreach (anno, annotations)
       {
         Date dt (atoi (anno->name ().substr (11).c_str ()));
-	std::string format = context.config.get ("dateformat.annotation");
-	if (format == "")
-	  format = context.config.get ("dateformat");
+        std::string format = context.config.get ("dateformat.annotation");
+        if (format == "")
+          format = context.config.get ("dateformat");
         std::string when = dt.toString (format);
         desc += "\n" + when + " " + anno->value ();
       }

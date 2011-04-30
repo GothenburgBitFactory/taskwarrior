@@ -27,11 +27,20 @@
 
 #include <Context.h>
 #include <Column.h>
+//#include <ColDepends.h>
+#include <ColDescription.h>
+//#include <ColDue.h>
+//#include <ColEnd.h>
+//#include <ColEntry.h>
 #include <ColID.h>
 #include <ColPriority.h>
 #include <ColProject.h>
+//#include <ColRecur.h>
+//#include <ColStart.h>
 #include <ColTags.h>
+//#include <ColUntilDepends.h>
 #include <ColUUID.h>
+//#include <ColWait.h>
 #include <text.h>
 
 extern Context context;
@@ -59,11 +68,20 @@ Column* Column::factory (const std::string& name)
   }
 
   Column* column;
-       if (column_name == "id")       column = new ColumnID ();
-  else if (column_name == "priority") column = new ColumnPriority ();
-  else if (column_name == "project")  column = new ColumnProject ();
-  else if (column_name == "tags")     column = new ColumnTags ();
-  else if (column_name == "uuid")     column = new ColumnUUID ();
+//       if (column_name == "depends")     column = new ColumnDepends ();
+       if (column_name == "description") column = new ColumnDescription ();
+//  else if (column_name == "due")         column = new ColumnDue ();
+//  else if (column_name == "end")         column = new ColumnEnd ();
+//  else if (column_name == "entry")       column = new ColumnEntry ();
+  else if (column_name == "id")          column = new ColumnID ();
+  else if (column_name == "priority")    column = new ColumnPriority ();
+  else if (column_name == "project")     column = new ColumnProject ();
+//  else if (column_name == "recur")       column = new ColumnRecur ();
+//  else if (column_name == "start")       column = new ColumnStart ();
+  else if (column_name == "tags")        column = new ColumnTags ();
+//  else if (column_name == "until")       column = new ColumnUntil ();
+  else if (column_name == "uuid")        column = new ColumnUUID ();
+//  else if (column_name == "wait")        column = new ColumnWait ();
   else
     throw std::string ("Unrecognized column type '") + column_name + "'";
 
