@@ -27,7 +27,7 @@
 
 #include <Context.h>
 #include <Column.h>
-//#include <ColDepends.h>
+#include <ColDepends.h>
 #include <ColDescription.h>
 //#include <ColDue.h>
 //#include <ColEnd.h>
@@ -68,8 +68,8 @@ Column* Column::factory (const std::string& name)
   }
 
   Column* column;
-//       if (column_name == "depends")     column = new ColumnDepends ();
-       if (column_name == "description") column = new ColumnDescription ();
+       if (column_name == "depends")     column = new ColumnDepends ();
+  else if (column_name == "description") column = new ColumnDescription ();
 //  else if (column_name == "due")         column = new ColumnDue ();
 //  else if (column_name == "end")         column = new ColumnEnd ();
 //  else if (column_name == "entry")       column = new ColumnEntry ();

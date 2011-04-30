@@ -45,9 +45,20 @@ int main (int argc, char** argv)
     context.config.set ("tag.indicator", "+");
 
     // Two sample tasks.
-    Task t1 ("[uuid:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\" description:\"This is the description text\" project:\"Home\" priority:\"H\" tags:\"one,two\"]");
+    Task t1 ("["
+               "uuid:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\" "
+               "description:\"This is the description text\" "
+               "project:\"Home\" "
+               "priority:\"H\" "
+               "tags:\"one,two\""
+             "]");
     t1.id = 1;
-    Task t2 ("[uuid:\"f30cb9c3-3fc0-483f-bfb2-3bf134f00694\" description:\"This is the description text\" project:\"Garden Care\"]");
+    Task t2 ("["
+               "uuid:\"f30cb9c3-3fc0-483f-bfb2-3bf134f00694\" "
+               "description:\"This is the description text\" "
+               "project:\"Garden Care\" "
+               "depends:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\""
+             "]");
     t2.id = 11;
 
     std::vector <Task> data;
@@ -74,7 +85,8 @@ int main (int argc, char** argv)
     view.add (Column::factory ("tags.indicator"));
     view.add (Column::factory ("tags.count"));
     view.add (Column::factory ("description.truncated"));
-    view.width (64);
+    view.add (Column::factory ("depends"));
+    view.width (100);
     view.leftMargin (4);
 /*
     view.extraPadding (1);

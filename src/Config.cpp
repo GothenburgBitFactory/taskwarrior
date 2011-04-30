@@ -79,6 +79,7 @@ std::string Config::defaults =
   "search.case.sensitive=yes                      # Setting to no allows case insensitive searches\n"
   "active.indicator=*                             # What to show as an active task indicator\n"
   "tag.indicator=+                                # What to show as a tag indicator\n"
+  "dependency.indicator=D                         # What to show as a dependency indicator\n"
   "recurrence.indicator=R                         # What to show as a task recurrence indicator\n"
   "recurrence.limit=1                             # Number of future recurring pending tasks\n"
   "undo.style=side                                # Undo style - can be 'side', or 'diff'\n"
