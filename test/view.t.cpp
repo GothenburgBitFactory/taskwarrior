@@ -48,6 +48,7 @@ int main (int argc, char** argv)
 
     // Two sample tasks.
     Task t1 ("["
+               "status:\"pending\" "
                "uuid:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\" "
                "description:\"This is the description text\" "
                "project:\"Home\" "
@@ -56,6 +57,7 @@ int main (int argc, char** argv)
              "]");
     t1.id = 1;
     Task t2 ("["
+               "status:\"pending\" "
                "uuid:\"f30cb9c3-3fc0-483f-bfb2-3bf134f00694\" "
                "description:\"This is the description text\" "
                "project:\"Garden Care\" "
@@ -93,7 +95,9 @@ int main (int argc, char** argv)
     view.add (Column::factory ("depends.indicator"));
     view.add (Column::factory ("recur"));
     view.add (Column::factory ("recur.indicator"));
-    view.width (100);
+    view.add (Column::factory ("status"));
+    view.add (Column::factory ("status.short"));
+    view.width (120);
     view.leftMargin (4);
 /*
     view.extraPadding (1);

@@ -11,6 +11,7 @@ set (columns_SRCS Column.cpp Column.h
                   ColPriority.cpp ColPriority.h
                   ColProject.cpp ColProject.h
                   ColRecur.cpp ColRecur.h
+                  ColStatus.cpp ColStatus.h
                   ColTags.cpp ColTags.h
                   ColUUID.cpp ColUUID.h)
 

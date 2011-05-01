@@ -37,6 +37,7 @@
 #include <ColProject.h>
 #include <ColRecur.h>
 //#include <ColStart.h>
+#include <ColStatus.h>
 #include <ColTags.h>
 //#include <ColUntil.h>
 #include <ColUUID.h>
@@ -78,6 +79,7 @@ Column* Column::factory (const std::string& name)
   else if (column_name == "project")     column = new ColumnProject ();
   else if (column_name == "recur")       column = new ColumnRecur ();
 //  else if (column_name == "start")       column = new ColumnStart ();
+  else if (column_name == "status")      column = new ColumnStatus ();
   else if (column_name == "tags")        column = new ColumnTags ();
 //  else if (column_name == "until")       column = new ColumnUntil ();
   else if (column_name == "uuid")        column = new ColumnUUID ();
