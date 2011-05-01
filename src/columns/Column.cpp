@@ -35,10 +35,10 @@
 #include <ColID.h>
 #include <ColPriority.h>
 #include <ColProject.h>
-//#include <ColRecur.h>
+#include <ColRecur.h>
 //#include <ColStart.h>
 #include <ColTags.h>
-//#include <ColUntilDepends.h>
+//#include <ColUntil.h>
 #include <ColUUID.h>
 //#include <ColWait.h>
 #include <text.h>
@@ -46,9 +46,9 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Supports the new complete column definition:
+// Supports the new complete column definition:
 //
-//   <type>[.<format>][.<key>[.<direction>][.<break>]]
+//   <type>[.<format>]
 //
 Column* Column::factory (const std::string& name)
 {
@@ -76,7 +76,7 @@ Column* Column::factory (const std::string& name)
   else if (column_name == "id")          column = new ColumnID ();
   else if (column_name == "priority")    column = new ColumnPriority ();
   else if (column_name == "project")     column = new ColumnProject ();
-//  else if (column_name == "recur")       column = new ColumnRecur ();
+  else if (column_name == "recur")       column = new ColumnRecur ();
 //  else if (column_name == "start")       column = new ColumnStart ();
   else if (column_name == "tags")        column = new ColumnTags ();
 //  else if (column_name == "until")       column = new ColumnUntil ();

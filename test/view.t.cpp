@@ -43,6 +43,8 @@ int main (int argc, char** argv)
     // Set up configuration.
     context.config.set ("fontunderline", true);
     context.config.set ("tag.indicator", "+");
+    context.config.set ("dependency.indicator", "D");
+    context.config.set ("recurrence.indicator", "R");
 
     // Two sample tasks.
     Task t1 ("["
@@ -57,6 +59,7 @@ int main (int argc, char** argv)
                "uuid:\"f30cb9c3-3fc0-483f-bfb2-3bf134f00694\" "
                "description:\"This is the description text\" "
                "project:\"Garden Care\" "
+               "recur:\"monthly\" "
                "depends:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\""
              "]");
     t2.id = 11;
@@ -86,6 +89,10 @@ int main (int argc, char** argv)
     view.add (Column::factory ("tags.count"));
     view.add (Column::factory ("description.truncated"));
     view.add (Column::factory ("depends"));
+    view.add (Column::factory ("depends.count"));
+    view.add (Column::factory ("depends.indicator"));
+    view.add (Column::factory ("recur"));
+    view.add (Column::factory ("recur.indicator"));
     view.width (100);
     view.leftMargin (4);
 /*

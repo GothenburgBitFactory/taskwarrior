@@ -10,6 +10,7 @@ set (columns_SRCS Column.cpp Column.h
                   ColID.cpp ColID.h
                   ColPriority.cpp ColPriority.h
                   ColProject.cpp ColProject.h
+                  ColRecur.cpp ColRecur.h
                   ColTags.cpp ColTags.h
                   ColUUID.cpp ColUUID.h)
 
