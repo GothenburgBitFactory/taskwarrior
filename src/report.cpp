@@ -410,8 +410,7 @@ int handleInfo (std::string& outs)
     table.addColumn ("Name");
     table.addColumn ("Value");
 
-    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-        context.config.getBoolean ("fontunderline"))
+    if (context.color () && context.config.getBoolean ("fontunderline"))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
@@ -644,7 +643,7 @@ int handleInfo (std::string& outs)
     Table journal;
 
     // If an alternating row color is specified, notify the table.
-    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+    if (context.color ())
     {
       Color alternate (context.config.get ("color.alternate"));
       if (alternate.nontrivial ())
@@ -660,8 +659,7 @@ int handleInfo (std::string& outs)
     journal.addColumn ("Date");
     journal.addColumn ("Modification");
 
-    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-        context.config.getBoolean ("fontunderline"))
+    if (context.color () && context.config.getBoolean ("fontunderline"))
     {
       journal.setColumnUnderline (0);
       journal.setColumnUnderline (1);
@@ -735,7 +733,7 @@ int handleInfo (std::string& outs)
         journal.addCell (row, 0, "Total active time");
         journal.addCell (row, 1, Duration (total_time).format ());
 
-        if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+        if (context.color ())
           journal.setCellColor (row, 1, Color ("bold"));
       }
     }
@@ -833,8 +831,7 @@ int handleReportSummary (std::string& outs)
   table.addColumn ("Complete");
   table.addColumn ("0%                        100%");
 
-  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-      context.config.getBoolean ("fontunderline"))
+  if (context.color () && context.config.getBoolean ("fontunderline"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -871,7 +868,7 @@ int handleReportSummary (std::string& outs)
 
       std::string bar;
       std::string subbar;
-      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+      if (context.color ())
       {
         bar += bar_color.colorize (std::string (           completedBar, ' '));
         bar += bg_color.colorize  (std::string (barWidth - completedBar, ' '));
@@ -942,8 +939,6 @@ int handleReportTimesheet (std::string& outs)
   if (context.sequence.size () == 1)
     quantity = context.sequence[0];
 
-  bool color = context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor");
-
   std::stringstream out;
   for (int week = 0; week < quantity; ++week)
   {
@@ -956,7 +951,7 @@ int handleReportTimesheet (std::string& outs)
 
     Color bold (Color::nocolor, Color::nocolor, false, true, false);
     out << "\n"
-        << (color ? bold.colorize (title) : title)
+        << (context.color () ? bold.colorize (title) : title)
         << "\n";
 
     // Render the completed table.
@@ -967,7 +962,7 @@ int handleReportTimesheet (std::string& outs)
     completed.addColumn ("Due");
     completed.addColumn ("Description");
 
-    if (color && context.config.getBoolean ("fontunderline"))
+    if (context.color () && context.config.getBoolean ("fontunderline"))
     {
       completed.setColumnUnderline (1);
       completed.setColumnUnderline (2);
@@ -1003,7 +998,7 @@ int handleReportTimesheet (std::string& outs)
           completed.addCell (row, 2, getDueDate (*task, format));
           completed.addCell (row, 3, getFullDescription (*task, "timesheet"));
 
-          if (color)
+          if (context.color ())
           {
             Color c (task->get ("fg") + " " + task->get ("bg"));
             autoColorize (*task, c);
@@ -1027,7 +1022,7 @@ int handleReportTimesheet (std::string& outs)
     started.addColumn ("Due");
     started.addColumn ("Description");
 
-    if (color && context.config.getBoolean ("fontunderline"))
+    if (context.color () && context.config.getBoolean ("fontunderline"))
     {
       started.setColumnUnderline (1);
       started.setColumnUnderline (2);
@@ -1062,7 +1057,7 @@ int handleReportTimesheet (std::string& outs)
           started.addCell (row, 2, getDueDate (*task, format));
           started.addCell (row, 3, getFullDescription (*task, "timesheet"));
 
-          if (color)
+          if (context.color ())
           {
             Color c (task->get ("fg") + " " + task->get ("bg"));
             autoColorize (*task, c);
@@ -1130,8 +1125,7 @@ std::string renderMonths (
       table.addColumn ("Sa");
     }
 
-    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-        context.config.getBoolean ("fontunderline"))
+    if (context.color () && context.config.getBoolean ("fontunderline"))
     {
       table.setColumnUnderline (i + 1);
       table.setColumnUnderline (i + 2);
@@ -1213,7 +1207,7 @@ std::string renderMonths (
       if (context.config.getBoolean ("displayweeknumber"))
       {
         table.addCell (row, (8 * mpl), woy);
-        if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+        if (context.color ())
           table.setCellColor (row, (8 * mpl), color_weeknumber);
       }
 
@@ -1227,7 +1221,7 @@ std::string renderMonths (
 
       table.addCell (row, thisCol, d);
 
-      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+      if (context.color ())
       {
         Color cellColor;
 
@@ -1559,8 +1553,7 @@ int handleReportCalendar (std::string& outs)
   Color color_holiday    (context.config.get ("color.calendar.holiday"));
   Color color_weeknumber (context.config.get ("color.calendar.weeknumber"));
 
-  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-      context.config.getBoolean ("calendar.legend"))
+  if (context.color () && context.config.getBoolean ("calendar.legend"))
     out << "Legend: "
         << color_today.colorize ("today")
         << ", "
@@ -1635,8 +1628,7 @@ int handleReportCalendar (std::string& outs)
       holTable.addColumn ("Holiday");
       holTable.sortOn (0, Table::ascendingDueDate);
 
-      if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-          context.config.getBoolean ("fontunderline"))
+      if (context.color () && context.config.getBoolean ("fontunderline"))
       {
         holTable.setColumnUnderline (0);
         holTable.setColumnUnderline (1);
@@ -1783,8 +1775,7 @@ int handleReportStats (std::string& outs)
   table.addColumn ("Category");
   table.addColumn ("Data");
 
-  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-      context.config.getBoolean ("fontunderline"))
+  if (context.color () && context.config.getBoolean ("fontunderline"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1907,7 +1898,7 @@ int handleReportStats (std::string& outs)
   }
 
   // If an alternating row color is specified, notify the table.
-  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+  if (context.color ())
   {
     Color alternate (context.config.get ("color.alternate"));
     if (alternate.nontrivial ())

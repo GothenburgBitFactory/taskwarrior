@@ -56,6 +56,7 @@ Context::Context ()
 , var_overrides ("")
 , cmd ()
 , dom ()
+, use_color (true)
 , inShadow (false)
 , terminal_width (0)
 , terminal_height (0)
@@ -150,7 +151,7 @@ void Context::initialize ()
     config.set ("detection", "off");
 
     if (! config.getBoolean ("_forcecolor"))
-      config.set ("color",  "off");
+      config.set ("color", "off");
   }
 
   if (config.getBoolean ("color"))
@@ -198,7 +199,7 @@ int Context::run ()
   // Dump all debug messages.
   if (config.getBoolean ("debug"))
     foreach (d, debugMessages)
-      if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
+      if (color ())
         std::cout << colorizeDebug (*d) << "\n";
       else
         std::cout << *d << "\n";
@@ -206,7 +207,7 @@ int Context::run ()
   // Dump all headers.
   if (config.getBoolean ("verbose"))
     foreach (h, headers)
-      if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
+      if (color ())
         std::cout << colorizeHeader (*h) << "\n";
       else
         std::cout << *h << "\n";
@@ -217,7 +218,7 @@ int Context::run ()
   // Dump all footnotes.
   if (config.getBoolean ("verbose"))
     foreach (f, footnotes)
-      if (config.getBoolean ("color") || config.getBoolean ("_forcecolor"))
+      if (color ())
         std::cout << colorizeFootnote (*f) << "\n";
       else
         std::cout << *f << "\n";
@@ -315,6 +316,13 @@ int Context::dispatch (std::string &out)
     shadow ();
 
   return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Context::color ()
+{
+  return config.getBoolean ("color") ||
+         config.getBoolean ("_forcecolor");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

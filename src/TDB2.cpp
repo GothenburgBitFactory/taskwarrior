@@ -988,11 +988,8 @@ void TDB::undo ()
   Date lastChange (atoi (when.c_str ()));
 
   // Set the colors.
-  bool useColor = context.config.getBoolean ("color") ||
-                  context.config.getBoolean ("_forcecolor") ? true : false;
-
-  Color color_red   (useColor ? context.config.get ("color.undo.before") : "");
-  Color color_green (useColor ? context.config.get ("color.undo.after") : "");
+  Color color_red   (context.color () ? context.config.get ("color.undo.before") : "");
+  Color color_green (context.color () ? context.config.get ("color.undo.after") : "");
 
   if (context.config.get ("undo.style") == "side")
   {
@@ -1010,8 +1007,7 @@ void TDB::undo ()
     table.addColumn ("Prior Values");
     table.addColumn ("Current Values");
 
-    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-        context.config.getBoolean ("fontunderline"))
+    if (context.color () && context.config.getBoolean ("fontunderline"))
     {
       table.setColumnUnderline (1);
       table.setColumnUnderline (2);
@@ -1391,8 +1387,6 @@ void TDB::merge (const std::string& mergeFile)
   }
 
   // Add some color.
-  bool useColor = (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-                  ? true : false;
   Color colorAdded    (context.config.get ("color.sync.added"));
   Color colorChanged  (context.config.get ("color.sync.changed"));
   Color colorRejected (context.config.get ("color.sync.rejected"));
@@ -1449,7 +1443,7 @@ void TDB::merge (const std::string& mergeFile)
       {
 /*
         std::cout << "New local task                     "
-                  << (useColor ? colorAdded.colorize (lmod_it->getUuid ()) : lmod_it->getUuid ())
+                  << (context.color () ? colorAdded.colorize (lmod_it->getUuid ()) : lmod_it->getUuid ())
                   << "\n";
 */
 
@@ -1475,7 +1469,7 @@ void TDB::merge (const std::string& mergeFile)
       {
 /*
         std::cout << "Adding new remote task             "
-                  << (useColor ? colorAdded.colorize (tmod.getUuid ()) : tmod.getUuid ())
+                  << (context.color () ? colorAdded.colorize (tmod.getUuid ()) : tmod.getUuid ())
                   << "\n";
 */
 
@@ -1548,7 +1542,7 @@ void TDB::merge (const std::string& mergeFile)
               if (tmod_r > tmod_l)
               {
                 std::cout << "Found remote change to        "
-                          << (useColor ? colorChanged.colorize (uuid) : uuid)
+                          << (context.color () ? colorChanged.colorize (uuid) : uuid)
                           << "  \"" << cutOff (tmod_r.getBefore ().get ("description"), 10) << "\""
                           << "\n";
 
@@ -1564,7 +1558,7 @@ void TDB::merge (const std::string& mergeFile)
               else
               {
                 std::cout << "Retaining local changes to    "
-                          << (useColor ? colorRejected.colorize (uuid) : uuid)
+                          << (context.color () ? colorRejected.colorize (uuid) : uuid)
                           << "  \"" << cutOff (tmod_l.getBefore ().get ("description"), 10) << "\""
                           << "\n";
 
@@ -1689,7 +1683,7 @@ void TDB::merge (const std::string& mergeFile)
               // Update the completed record.
 /*
               std::cout << "Modifying                     "
-                        << (useColor ? colorChanged.colorize (uuid) : uuid)
+                        << (context.color () ? colorChanged.colorize (uuid) : uuid)
                         << "\n";
 */
 
@@ -1731,7 +1725,7 @@ void TDB::merge (const std::string& mergeFile)
             {
               // Update the pending record.
               std::cout << "Found remote change to        "
-                        << (useColor ? colorChanged.colorize (uuid) : uuid)
+                        << (context.color () ? colorChanged.colorize (uuid) : uuid)
                         << "  \"" << cutOff (tmod.getBefore ().get ("description"), 10) << "\""
                         << "\n";
 
@@ -1766,7 +1760,7 @@ void TDB::merge (const std::string& mergeFile)
         if (!found)
         {
           std::cout << "Missing                       "
-                    << (useColor ? colorRejected.colorize (uuid) : uuid)
+                    << (context.color () ? colorRejected.colorize (uuid) : uuid)
                     << "  \"" << cutOff (tmod.getBefore ().get ("description"), 10) << "\""
                     << "\n";
           mods.erase (current);
@@ -1792,7 +1786,7 @@ void TDB::merge (const std::string& mergeFile)
         if (!found)
         {
           std::cout << "Merging new remote task       "
-                    << (useColor ? colorAdded.colorize (uuid) : uuid)
+                    << (context.color () ? colorAdded.colorize (uuid) : uuid)
                     << "  \"" << cutOff (tmod.getAfter ().get ("description"), 10) << "\""
                     << "\n";
 

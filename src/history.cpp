@@ -93,8 +93,7 @@ int handleReportHistoryMonthly (std::string& outs)
   table.addColumn ("Deleted");
   table.addColumn ("Net");
 
-  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-      context.config.getBoolean ("fontunderline"))
+  if (context.color () && context.config.getBoolean ("fontunderline"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -157,7 +156,7 @@ int handleReportHistoryMonthly (std::string& outs)
     }
 
     table.addCell (row, 5, net);
-    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) && net)
+    if (context.color () && net)
       table.setCellColor (row, 5, net > 0 ? Color (Color::red) :
                                             Color (Color::green));
   }
@@ -168,7 +167,7 @@ int handleReportHistoryMonthly (std::string& outs)
     row = table.addRow ();
 
     table.addCell (row, 1, "Average");
-    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+    if (context.color ())
       table.setRowColor (row, Color (Color::nocolor, Color::nocolor, false, true, false));
     table.addCell (row, 2, totalAdded     / (table.rowCount () - 2));
     table.addCell (row, 3, totalCompleted / (table.rowCount () - 2));
@@ -248,8 +247,7 @@ int handleReportHistoryAnnual (std::string& outs)
   table.addColumn ("Deleted");
   table.addColumn ("Net");
 
-  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-      context.config.getBoolean ("fontunderline"))
+  if (context.color () && context.config.getBoolean ("fontunderline"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -310,7 +308,7 @@ int handleReportHistoryAnnual (std::string& outs)
     }
 
     table.addCell (row, 4, net);
-    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) && net)
+    if (context.color () && net)
       table.setCellColor (row, 4, net > 0 ? Color (Color::red) :
                                             Color (Color::green));
   }
@@ -321,7 +319,7 @@ int handleReportHistoryAnnual (std::string& outs)
     row = table.addRow ();
 
     table.addCell (row, 0, "Average");
-    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+    if (context.color ())
       table.setRowColor (row, Color (Color::nocolor, Color::nocolor, false, true, false));
     table.addCell (row, 1, totalAdded     / (table.rowCount () - 2));
     table.addCell (row, 2, totalCompleted / (table.rowCount () - 2));
@@ -401,8 +399,7 @@ int handleReportGHistoryMonthly (std::string& outs)
   table.addColumn ("Month");
   table.addColumn ("Number Added/Completed/Deleted");
 
-  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-      context.config.getBoolean ("fontunderline"))
+  if (context.color () && context.config.getBoolean ("fontunderline"))
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -461,7 +458,7 @@ int handleReportGHistoryMonthly (std::string& outs)
       unsigned int deletedBar   = (widthOfBar *   deletedGroup[i->first]) / maxLine;
 
       std::string bar = "";
-      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+      if (context.color ())
       {
         std::string aBar = "";
         if (addedGroup[i->first])
@@ -514,7 +511,7 @@ int handleReportGHistoryMonthly (std::string& outs)
         << table.render ()
         << "\n";
 
-    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+    if (context.color ())
       out << "Legend: "
           << color_add.colorize ("added")
           << ", "
@@ -592,8 +589,7 @@ int handleReportGHistoryAnnual (std::string& outs)
   table.addColumn ("Year");
   table.addColumn ("Number Added/Completed/Deleted");
 
-  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-      context.config.getBoolean ("fontunderline"))
+  if (context.color () && context.config.getBoolean ("fontunderline"))
   {
     table.setColumnUnderline (0);
   }
@@ -650,7 +646,7 @@ int handleReportGHistoryAnnual (std::string& outs)
       unsigned int deletedBar   = (widthOfBar *   deletedGroup[i->first]) / maxLine;
 
       std::string bar = "";
-      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+      if (context.color ())
       {
         std::string aBar = "";
         if (addedGroup[i->first])
@@ -702,7 +698,7 @@ int handleReportGHistoryAnnual (std::string& outs)
         << table.render ()
         << "\n";
 
-    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+    if (context.color ())
       out << "Legend: "
           << color_add.colorize ("added")
           << ", "

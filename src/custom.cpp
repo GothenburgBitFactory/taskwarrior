@@ -545,8 +545,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
 
     // Common to all columns.
     // Add underline.
-    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-        context.config.getBoolean ("fontunderline"))
+    if (context.color () && context.config.getBoolean ("fontunderline"))
       table.setColumnUnderline (columnCount);
     else
       table.setTableDashedUnderline ();
@@ -613,7 +612,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
   }
 
   // Now auto colorize all rows.
-  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+  if (context.color ())
   {
     for (unsigned int row = 0; row < tasks.size (); ++row)
     {
@@ -624,7 +623,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
   }
 
   // If an alternating row color is specified, notify the table.
-  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+  if (context.color ())
   {
     Color alternate (context.config.get ("color.alternate"));
     if (alternate.nontrivial ())
@@ -633,8 +632,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
 
   // How many lines taken up by table header?
   int table_header;
-  if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-      context.config.getBoolean ("fontunderline"))
+  if (context.color () && context.config.getBoolean ("fontunderline"))
     table_header = 1;  // Underlining doesn't use extra line.
   else
     table_header = 2;  // Dashes use an extra line.

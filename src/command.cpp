@@ -267,8 +267,7 @@ int handleProjects (std::string& outs)
     table.addColumn ("Pri:M");
     table.addColumn ("Pri:H");
 
-    if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-        context.config.getBoolean ("fontunderline"))
+    if (context.color () && context.config.getBoolean ("fontunderline"))
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
@@ -380,9 +379,6 @@ int handleTags (std::string& outs)
         unique[*tag] = 1;
   }
 
-  bool use_color = context.config.getBoolean ("color") ||
-                   context.config.getBoolean ("_forcecolor");
-
   if (unique.size ())
   {
     // Render a list of tags names from the map.
@@ -390,7 +386,7 @@ int handleTags (std::string& outs)
     table.addColumn ("Tag");
     table.addColumn ("Count");
 
-    if (use_color)
+    if (context.color ())
     {
       table.setColumnUnderline (0);
       table.setColumnUnderline (1);
@@ -406,8 +402,8 @@ int handleTags (std::string& outs)
       table.addCell (row, 1, i->second);
 
       // Highlight the special tags.
-      if (use_color && (i->first == "nocolor" ||
-                        i->first == "nonag"))
+      if (context.color () && (i->first == "nocolor" ||
+                               i->first == "nonag"))
       {
         table.setRowColor (row, bold);
       }
@@ -1029,13 +1025,9 @@ int handleVersion (std::string& outs)
   Color bold ("bold");
 
   out << "\n"
-      << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-           ? bold.colorize (PACKAGE)
-           : PACKAGE)
+      << (context.color () ? bold.colorize (PACKAGE) : PACKAGE)
       << " "
-      << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-           ? bold.colorize (VERSION)
-           : VERSION)
+      << (context.color () ? bold.colorize (VERSION) : VERSION)
       << " built for "
 
 #if defined (DARWIN)
@@ -1182,7 +1174,7 @@ int handleShow (std::string& outs)
   table.addColumn ("Config variable");
   table.addColumn ("Value");
 
-  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+  if (context.color ())
   {
     table.setColumnUnderline (0);
     table.setColumnUnderline (1);
@@ -1218,7 +1210,7 @@ int handleShow (std::string& outs)
       table.addCell (row, 1, context.config.get (*i));
 
       // Look for unrecognized.
-      if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+      if (context.color ())
       {
         if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
           table.setRowColor (row, error);
@@ -1241,7 +1233,7 @@ int handleShow (std::string& outs)
     foreach (i, unrecognized)
       out << "  " << *i << "\n";
 
-    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+    if (context.color ())
       out << "\n  These are highlighted in " << error.colorize ("color") << " above.";
 
     out << "\n\n";
@@ -1251,7 +1243,7 @@ int handleShow (std::string& outs)
   {
     out << "Some of your .taskrc variables differ from the default values.";
 
-    if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+    if (context.color ())
       out << "  These are highlighted in " << warning.colorize ("color") << " above.";
   }
 
@@ -2300,9 +2292,7 @@ void handleShell ()
 {
   // Display some kind of welcome message.
   Color bold (Color::nocolor, Color::nocolor, false, true, false);
-  std::cout << ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
-                 ? bold.colorize (PACKAGE_STRING)
-                 : PACKAGE_STRING)
+  std::cout << (context.color () ? bold.colorize (PACKAGE_STRING) : PACKAGE_STRING)
             << " shell\n\n"
             << "Enter any task command (such as 'list'), or hit 'Enter'.\n"
             << "There is no need to include the 'task' command itself.\n"
@@ -2371,7 +2361,7 @@ int handleColor (std::string& outs)
   int rc = 0;
   std::stringstream out;
 
-  if (context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor"))
+  if (context.color ())
   {
     // If the description contains 'legend', show all the colors currently in
     // use.
@@ -2387,8 +2377,7 @@ int handleColor (std::string& outs)
       table.addColumn ("Color");
       table.addColumn ("Definition");
 
-      if ((context.config.getBoolean ("color") || context.config.getBoolean ("_forcecolor")) &&
-          context.config.getBoolean ("fontunderline"))
+      if (context.color () && context.config.getBoolean ("fontunderline"))
       {
         table.setColumnUnderline (0);
         table.setColumnUnderline (1);

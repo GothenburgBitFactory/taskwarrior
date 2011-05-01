@@ -59,6 +59,8 @@ public:
   int getWidth ();                     // determine terminal width
   int getHeight ();                    // determine terminal height
 
+  bool color ();                       // TTY or <other>?
+
   void header (const std::string&);    // Header message sink
   void footnote (const std::string&);  // Footnote message sink
   void debug (const std::string&);     // Debug message sink
@@ -96,6 +98,7 @@ public:
   std::vector <std::string> tagRemovals;
   Hooks                     hooks;
   DOM                       dom;
+  bool                      use_color;
 
   std::vector <std::string> headers;
   std::vector <std::string> footnotes;
