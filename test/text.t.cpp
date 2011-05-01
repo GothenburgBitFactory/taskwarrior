@@ -27,6 +27,7 @@
 #include <iostream>
 #include "main.h"
 #include "text.h"
+#include "utf8.h"
 #include "test.h"
 
 Context context;
@@ -387,11 +388,6 @@ int main (int argc, char** argv)
   t.is (strippedLength (std::string ("\033[0m")),                           0, "strippedLength ^[[0m                        -> 0");
   t.is (strippedLength (std::string ("\033[1m\033[0m")),                    0, "strippedLength ^[[1m^[[0m                   -> 0");
 
-  // int characters (const std::string&);
-  t.is (characters ("Çirçös"),            6, "characters (Çirçös) == 6");
-  t.is (characters ("ツネナラム"),        5, "characters (ツネナラム) == 5");
-  t.is (characters ("Zwölf Boxkämpfer"), 16, "characters (Zwölf Boxkämpfer) == 16");
-
   // std::string format (char);
   t.is (format ('A'), "A", "format ('A') -> A");
 
@@ -437,6 +433,11 @@ int main (int argc, char** argv)
   t.is (rightJustify ("foo", 4), " foo",  "rightJustify foo,4 -> ' foo'");
   t.is (rightJustify ("foo", 5), "  foo", "rightJustify foo,5 -> '  foo'");
   t.is (rightJustify ("föo", 5), "  föo", "rightJustify föo,5 -> '  föo'");
+
+  // int utf8_length (const std::string&);
+  t.is (utf8_length ("Çirçös"),            6, "utf8_length (Çirçös) == 6");
+  t.is (utf8_length ("ツネナラム"),        5, "utf8_length (ツネナラム) == 5");
+  t.is (utf8_length ("Zwölf Boxkämpfer"), 16, "utf8_length (Zwölf Boxkämpfer) == 16");
 
   return 0;
 }

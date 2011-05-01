@@ -27,6 +27,7 @@
 
 #include <View.h>
 #include <text.h>
+#include <utf8.h>
 #include <main.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +97,7 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
   for (i = _columns.begin (); i != _columns.end (); ++i)
   {
     // Headers factor in to width calculations.
-    int global_min = characters ((*i)->getLabel ());
+    int global_min = utf8_length ((*i)->getLabel ());
     int global_ideal = global_min;
 
     std::vector <Task>::iterator d;

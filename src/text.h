@@ -71,8 +71,5 @@ std::string leftJustify (const std::string&, const int);
 std::string rightJustify (const int, const int);
 std::string rightJustify (const std::string&, const int);
 
-// UTF-8 aware.
-int characters (const std::string&);
-
 #endif
 ////////////////////////////////////////////////////////////////////////////////

@@ -36,6 +36,7 @@
 #include "Context.h"
 #include "util.h"
 #include "text.h"
+#include "utf8.h"
 
 extern Context context;
 
@@ -229,7 +230,7 @@ void extractLine (std::string& text, std::string& line, int length)
 
   // Special case: no \n, and less than length characters total.
   // special case: text.find ("\n") == std::string::npos && text.length () < length
-  if (eol == std::string::npos && characters (text) <= length)
+  if (eol == std::string::npos && utf8_length (text) <= length)
   {
     line = text;
     text = "";
@@ -636,26 +637,6 @@ int strippedLength (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// UTF8
-int characters (const std::string& str)
-{
-  int byteLength = str.length ();
-  int charLength = byteLength;
-  const char* data = str.data ();
-
-  // decrement the number of bytes for each byte that matches 0b10??????
-  // this way only the first byte of any utf8 sequence is counted
-  for (int i = 0; i < byteLength; i++)
-  {
-    // extract the two MSB and check whether they are 10
-    if ((data[i] & 0xC0) == 0x80)
-      charLength--;
-  }
-
-  return charLength;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Truncates a long line, and include a two-character ellipsis.
 std::string cutOff (const std::string& str, std::string::size_type len)
 {
@@ -728,7 +709,7 @@ std::string leftJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string leftJustify (const std::string& input, const int width)
 {
-  return input + std::string (width - characters (input), ' ');
+  return input + std::string (width - utf8_length (input), ' ');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -742,7 +723,7 @@ std::string rightJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string rightJustify (const std::string& input, const int width)
 {
-  return std::string (width - characters (input), ' ') + input;
+  return std::string (width - utf8_length (input), ' ') + input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

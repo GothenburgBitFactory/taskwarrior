@@ -52,6 +52,7 @@
 #include "Duration.h"
 #include "Timer.h"
 #include "text.h"
+#include "utf8.h"
 #include "util.h"
 #include "Context.h"
 
@@ -108,7 +109,7 @@ void Table::setTableDashedUnderline ()
 int Table::addColumn (const std::string& col)
 {
   mSpecifiedWidth.push_back (minimum);
-  mMaxDataWidth.push_back (col == "" ? 1 : characters (col));
+  mMaxDataWidth.push_back (col == "" ? 1 : utf8_length (col));
   mCalculatedWidth.push_back (0);
   mColumnPadding.push_back (0);
 
@@ -193,11 +194,11 @@ void Table::addCell (const int row, const int col, const std::string& data)
     std::vector <std::string> lines;
     split (lines, data, "\n");
     for (unsigned int i = 0; i < lines.size (); ++i)
-      if (characters (lines[i]) > length)
-        length = characters (lines[i]);
+      if (utf8_length (lines[i]) > length)
+        length = utf8_length (lines[i]);
   }
   else
-    length = characters (data);
+    length = utf8_length (data);
 
   // Automatically maintain max width.
   mMaxDataWidth[col] = max (mMaxDataWidth[col], length);
@@ -447,7 +448,7 @@ const std::string Table::formatHeader (
 
   std::string data = mColumns[col];
   Color c = getHeaderUnderline (col);
-  int gap = width - characters (data);
+  int gap = width - utf8_length (data);
 
   std::string pad = std::string (padding, ' ');
 
@@ -530,7 +531,7 @@ void Table::formatCell (
   for (size_t chunk = 0; chunk < chunks.size (); ++chunk)
   {
     // Place the data within the available space - justify.
-    int gap = width - characters (chunks[chunk]);
+    int gap = width - utf8_length (chunks[chunk]);
 
     preJust = "";
     postJust = "";
