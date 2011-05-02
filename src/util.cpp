@@ -31,6 +31,7 @@
 #include <string>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -377,6 +378,56 @@ std::string compressIds (const std::vector <int>& ids)
   }
 
   return result.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Run an external executable with execvp. This means stdio goes to 
+// the child process, so that it can receive user input (e.g. passwords).
+//
+int execute(const std::string& executable, std::vector<std::string> arguments)
+{
+  if (executable == "")
+    return -1;
+
+  pid_t child_pid = fork();
+
+  if (child_pid == 0)
+  {
+    // this is done by the child process
+    char shell[] = "bash";
+    char opt[]   = "-c";
+
+    std::string cmdline = executable;
+
+    std::vector <std::string>::iterator it;
+    for (it = arguments.begin(); it != arguments.end(); ++it)
+    {
+      cmdline += " " + (std::string)*it;
+    }
+
+    char** argv = new char*[4];
+    argv[0] = shell;                  // bash
+    argv[1] = opt;                    // -c
+    argv[2] = (char*)cmdline.c_str();	// e.g. scp undo.data user@host:.task/
+    argv[3] = NULL;                   // required by execv
+
+    int ret = execvp(shell, argv);
+    delete[] argv;
+
+    exit(ret);
+  }
+  else
+  {
+    // this is done by the parent process
+    int child_status;
+
+    pid_t pid = waitpid(child_pid, &child_status, 0);
+
+    if (pid == -1)
+      return -1;
+    else
+      return child_status;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

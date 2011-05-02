@@ -58,6 +58,7 @@ void delay (float);
 std::string formatBytes (size_t);
 int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&);
 const std::string uuid ();
+int execute (const std::string&, std::vector<std::string>);
 
 #ifdef SOLARIS
   #define LOCK_SH 1

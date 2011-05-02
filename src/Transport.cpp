@@ -27,8 +27,7 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include "util.h"
 #include "Transport.h"
 #include "TransportSSH.h"
 #include "TransportRSYNC.h"
@@ -70,49 +69,7 @@ Transport* Transport::getTransport(const Uri& uri)
 ////////////////////////////////////////////////////////////////////////////////
 int Transport::execute()
 {
-  if (executable == "")
-    return -1;
-
-  pid_t child_pid = fork();
-
-  if (child_pid == 0)
-  {
-    // this is done by the child process
-    char shell[] = "bash";
-    char opt[]   = "-c";
-
-    std::string cmdline = executable;
-
-    std::vector <std::string>::iterator it;
-    for (it = arguments.begin(); it != arguments.end(); ++it)
-    {
-      std::string tmp = *it;
-      cmdline += " " + tmp;
-    }
-
-    char** argv = new char*[4];
-    argv[0] = shell;                  // sh
-    argv[1] = opt;                    // -c
-    argv[2] = (char*)cmdline.c_str();	// e.g. scp undo.data user@host:.task/
-    argv[3] = NULL;                   // required by execv
-
-    int ret = execvp(shell, argv);
-    delete[] argv;
-
-    exit(ret);
-  }
-  else
-  {
-    // this is done by the parent process
-    int child_status;
-
-    pid_t pid = waitpid(child_pid, &child_status, 0);
-
-    if (pid == -1)
-      return -1;
-    else
-      return child_status;
-  }
+  return ::execute(executable, arguments);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
