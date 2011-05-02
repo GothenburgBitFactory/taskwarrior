@@ -5,15 +5,22 @@ include_directories (${CMAKE_SOURCE_DIR}/src
                      ${TASK_INCLUDE_DIRS})
 
 set (columns_SRCS Column.cpp Column.h
+                  ColDate.cpp ColDate.h
                   ColDepends.cpp ColDepends.h
                   ColDescription.cpp ColDescription.h
+                  ColDue.cpp ColDue.h
+                  ColEnd.cpp ColEnd.h
+                  ColEntry.cpp ColEntry.h
                   ColID.cpp ColID.h
                   ColPriority.cpp ColPriority.h
                   ColProject.cpp ColProject.h
                   ColRecur.cpp ColRecur.h
+                  ColStart.cpp ColStart.h
                   ColStatus.cpp ColStatus.h
                   ColTags.cpp ColTags.h
-                  ColUUID.cpp ColUUID.h)
+                  ColUntil.cpp ColUntil.h
+                  ColUUID.cpp ColUUID.h
+                  ColWait.cpp ColWait.h)
 
 add_library (columns STATIC ${columns_SRCS})
 

@@ -45,6 +45,7 @@ int main (int argc, char** argv)
     context.config.set ("tag.indicator", "+");
     context.config.set ("dependency.indicator", "D");
     context.config.set ("recurrence.indicator", "R");
+    context.config.set ("dateformat", "Y-M-D");
 
     // Two sample tasks.
     Task t1 ("["
@@ -53,6 +54,7 @@ int main (int argc, char** argv)
                "description:\"This is the description text\" "
                "project:\"Home\" "
                "priority:\"H\" "
+               "due:\"1234567890\" "
                "tags:\"one,two\""
              "]");
     t1.id = 1;
@@ -87,16 +89,20 @@ int main (int argc, char** argv)
     view.add (Column::factory ("project"));
     view.add (Column::factory ("priority.long"));
     view.add (Column::factory ("tags"));
-    view.add (Column::factory ("tags.indicator"));
+//    view.add (Column::factory ("tags.indicator"));
     view.add (Column::factory ("tags.count"));
     view.add (Column::factory ("description.truncated"));
-    view.add (Column::factory ("depends"));
-    view.add (Column::factory ("depends.count"));
+//    view.add (Column::factory ("depends"));
+//    view.add (Column::factory ("depends.count"));
     view.add (Column::factory ("depends.indicator"));
-    view.add (Column::factory ("recur"));
+//    view.add (Column::factory ("recur"));
     view.add (Column::factory ("recur.indicator"));
-    view.add (Column::factory ("status"));
+//    view.add (Column::factory ("status"));
     view.add (Column::factory ("status.short"));
+//    view.add (Column::factory ("due"));
+    view.add (Column::factory ("due.julian"));
+//    view.add (Column::factory ("due.epoch"));
+//    view.add (Column::factory ("due.iso"));
     view.width (120);
     view.leftMargin (4);
 /*
