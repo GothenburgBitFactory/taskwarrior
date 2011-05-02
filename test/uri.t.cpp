@@ -125,7 +125,7 @@ int main (int argc, char** argv)
   t.is (uri11.user,  "user.name",  "Uri::parse() : ssh://user.name@host.com/undo.data");
   t.is (uri11.host,  "host.com",   "Uri::parse() : ssh://user.name@host.com/undo.data");
   t.is (uri11.port,  "",           "Uri::parse() : ssh://user.name@host.com/undo.data");
-  t.is (uri11.path,  "undo.data",  "Uri::parse() : ssh://user.name@host.com/undo.data");
+  t.is (uri11.path,  "/undo.data", "Uri::parse() : ssh://user.name@host.com/undo.data");
   t.is (uri11.protocol, "ssh",     "Uri::parse() : ssh://user.name@host.com/undo.data");
 
 

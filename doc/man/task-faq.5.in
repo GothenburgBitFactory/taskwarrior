@@ -155,8 +155,8 @@ a second database.
 
 Here is a basic example of the procedure:
 
-    $ task merge ssh://user@myremotehost/.task/
-    $ task push ssh://user@myremotehost/.task/
+    $ task merge ssh://user@myremotehost/~/.task/
+    $ task push ssh://user@myremotehost/~/.task/
 
 The first command fetches the undo.data file from the remote system, reads the
 changes made and updates the local database. When this merge command completes,

@@ -109,19 +109,26 @@ All the other URIs allow access to remote machines.  The first uses SSH and scp
 
 .br
 .RS
-ssh://[user@]host[:port]/path/to/.task/
+ssh://[user@]host[:port]/absolute/path/to/.task/
 .br
-[user@]host:path/to/.task/
+[user@]host:/absolute/path/to/.task/
 .RE
 
-Remember that in both cases paths are considered to be relative to the users home directory,
-i.e. they will expand to ~/path/to/.task/. You can specify absolute paths as follows:
+In both cases paths are considered to be absolute. You can specify paths relative to the
+users home directory as follows:
 
 .br
 .RS
-ssh://[user@]host[:port]//absolute/path/to/.task/
+ssh://[user@]host[:port]/~/.task/
 .br
-[user@]host:/absolute/path/to/.task/
+[user@]host:~/.task/
+.RE
+
+or even shorter
+
+.br
+.RS
+[user@]host:.task/
 .RE
 
 Remark: Since taskwarrior simply calls the scp binary you can specify very much anything
@@ -130,9 +137,9 @@ expansion:
 
 .br
 .RS
-ssh://configured-host/~[user]/.task/
+ssh://configured-host/~[username]/.task/
 .br
-configured-host:~[user]/.task/
+configured-host:~[username]/.task/
 .RE
 
 

@@ -255,6 +255,12 @@ void Uri::parse ()
     throw std::string ("The uri '") + data + "' is not in the expected format.";
   }
 
+  // path is absolute for ssh:// syntax
+  if ( (protocol == "ssh") && (pathDelimiter == "/") )
+  {
+    path = "/" + path;
+  }
+
   // port specified?
   // remark: this find() will never be != npos for scp-like syntax
   // because we found pathDelimiter, which is ":", before
