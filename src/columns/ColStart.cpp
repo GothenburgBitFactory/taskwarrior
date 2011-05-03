@@ -25,7 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <Context.h>
 #include <ColStart.h>
+#include <text.h>
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStart::ColumnStart ()
@@ -37,6 +41,54 @@ ColumnStart::ColumnStart ()
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStart::~ColumnStart ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Overriden so that style <----> label are linked.
+// Note that you can not determine which gets called first.
+void ColumnStart::setStyle (const std::string& value)
+{
+  _style = value;
+
+  if (_style == "active" && _label == "Started")
+    _label = "A";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Set the minimum and maximum widths for the value.
+void ColumnStart::measure (Task& task, int& minimum, int& maximum)
+{
+  minimum = maximum = 0;
+
+  if (task.has (_attribute))
+  {
+    if (_style == "active")
+    {
+    }
+    else
+      ColumnDate::measure (task, minimum, maximum);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnStart::render (
+  std::vector <std::string>& lines,
+  Task& task,
+  int width,
+  Color& color)
+{
+  if (task.has (_attribute))
+  {
+    if (_style == "active")
+    {
+      lines.push_back (
+        color.colorize (
+          rightJustify (
+            context.config.get ("active.indicator"), width)));
+    }
+    else
+      ColumnDate::render (lines, task, width, color);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

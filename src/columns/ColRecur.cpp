@@ -91,23 +91,6 @@ void ColumnRecur::render (
         color.colorize (
           rightJustify (context.config.get ("recurrence.indicator").length (), width)));
   }
-
-/*
-  std::string project = task.get ("project");
-  if (_style == "parent")
-  {
-    std::string::size_type period = project.find ('.');
-    if (period != std::string::npos)
-      project = project.substr (0, period);
-  }
-
-  std::vector <std::string> raw;
-  wrapText (raw, project, width);
-
-  std::vector <std::string>::iterator i;
-  for (i = raw.begin (); i != raw.end (); ++i)
-    lines.push_back (color.colorize (leftJustify (*i, width)));
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

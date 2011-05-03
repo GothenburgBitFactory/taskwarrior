@@ -102,9 +102,6 @@ void ColumnDate::measure (Task& task, int& minimum, int& maximum)
     else if (_style == "short")
     {
     }
-    else if (_style == "active")
-    {
-    }
     else if (_style == "countdown")
     {
     }

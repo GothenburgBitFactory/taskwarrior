@@ -55,6 +55,7 @@ int main (int argc, char** argv)
                "description:\"This is the description text\" "
                "project:\"Home\" "
                "priority:\"H\" "
+               "start:\"1234567890\" "
                "due:\"1234567890\" "
                "tags:\"one,two\""
              "]");
@@ -92,6 +93,8 @@ int main (int argc, char** argv)
     view.add (Column::factory ("tags"));
 //    view.add (Column::factory ("tags.indicator"));
     view.add (Column::factory ("tags.count"));
+//    view.add (Column::factory ("description"));
+//    view.add (Column::factory ("description.desc"));
     view.add (Column::factory ("description.truncated"));
 //    view.add (Column::factory ("depends"));
 //    view.add (Column::factory ("depends.count"));
@@ -104,8 +107,9 @@ int main (int argc, char** argv)
     view.add (Column::factory ("due.julian"));
 //    view.add (Column::factory ("due.epoch"));
 //    view.add (Column::factory ("due.iso"));
+    view.add (Column::factory ("start.active"));
     view.add (Column::factory ("urgency"));
-    view.width (120);
+    view.width (100);
     view.leftMargin (4);
 /*
     view.extraPadding (1);
