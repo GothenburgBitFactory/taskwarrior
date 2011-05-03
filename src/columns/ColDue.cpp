@@ -25,7 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <stdlib.h>
+#include <Context.h>
 #include <ColDue.h>
+#include <Date.h>
+#include <Duration.h>
+#include <text.h>
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDue::ColumnDue ()
@@ -37,6 +44,60 @@ ColumnDue::ColumnDue ()
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDue::~ColumnDue ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Overriden so that style <----> label are linked.
+// Note that you can not determine which gets called first.
+void ColumnDue::setStyle (const std::string& value)
+{
+  _style = value;
+
+  if (_style == "countdown" && _label == "Due")
+    _label = "Countdown";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Set the minimum and maximum widths for the value.
+void ColumnDue::measure (Task& task, int& minimum, int& maximum)
+{
+  minimum = maximum = 0;
+
+  if (task.has (_attribute))
+  {
+    if (_style == "countdown")
+    {
+      Date date ((time_t) strtol (task.get (_attribute).c_str (), NULL, 10));
+      Date now;
+      minimum = maximum = Duration (now - date).format ().length ();
+    }
+    else
+      ColumnDate::measure (task, minimum, maximum);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnDue::render (
+  std::vector <std::string>& lines,
+  Task& task,
+  int width,
+  Color& color)
+{
+  if (task.has (_attribute))
+  {
+    if (_style == "countdown")
+    {
+      Date date ((time_t) strtol (task.get (_attribute).c_str (), NULL, 10));
+      Date now;
+
+      lines.push_back (
+        color.colorize (
+          rightJustify (
+            Duration (now - date).format (), width)));
+    }
+    else
+      ColumnDate::render (lines, task, width, color);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

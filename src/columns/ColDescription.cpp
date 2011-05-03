@@ -153,7 +153,7 @@ void ColumnDescription::render (
   {
     int len = description.length ();
     if (len > width)
-      lines.push_back (color.colorize (description.substr (0, len - 3) + "..."));
+      lines.push_back (color.colorize (description.substr (0, width - 3) + "..."));
     else
       lines.push_back (color.colorize (leftJustify (description, width)));
   }

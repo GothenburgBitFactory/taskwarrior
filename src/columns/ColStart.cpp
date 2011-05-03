@@ -63,8 +63,7 @@ void ColumnStart::measure (Task& task, int& minimum, int& maximum)
   if (task.has (_attribute))
   {
     if (_style == "active")
-    {
-    }
+      minimum = maximum = context.config.get ("active.indicator").length ();
     else
       ColumnDate::measure (task, minimum, maximum);
   }

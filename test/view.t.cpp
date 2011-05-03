@@ -104,7 +104,8 @@ int main (int argc, char** argv)
 //    view.add (Column::factory ("status"));
     view.add (Column::factory ("status.short"));
 //    view.add (Column::factory ("due"));
-    view.add (Column::factory ("due.julian"));
+//    view.add (Column::factory ("due.julian"));
+    view.add (Column::factory ("due.countdown"));
 //    view.add (Column::factory ("due.epoch"));
 //    view.add (Column::factory ("due.iso"));
     view.add (Column::factory ("start.active"));

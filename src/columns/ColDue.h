@@ -34,6 +34,10 @@ class ColumnDue : public ColumnDate
 public:
   ColumnDue ();
   ~ColumnDue ();
+
+  void setStyle (const std::string&);
+  void measure (Task&, int&, int&);
+  void render (std::vector <std::string>&, Task&, int, Color&);
 };
 
 #endif

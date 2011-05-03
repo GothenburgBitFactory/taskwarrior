@@ -99,15 +99,6 @@ void ColumnDate::measure (Task& task, int& minimum, int& maximum)
       Date now;
       minimum = maximum = Duration (now - date).format ().length ();
     }
-    else if (_style == "short")
-    {
-    }
-    else if (_style == "countdown")
-    {
-    }
-    else if (_style == "remaining")
-    {
-    }
     else
       throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
   }
