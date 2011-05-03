@@ -40,6 +40,7 @@
 #include <ColStatus.h>
 #include <ColTags.h>
 #include <ColUntil.h>
+#include <ColUrgency.h>
 #include <ColUUID.h>
 #include <ColWait.h>
 #include <text.h>
@@ -82,6 +83,7 @@ Column* Column::factory (const std::string& name)
   else if (column_name == "status")      column = new ColumnStatus ();
   else if (column_name == "tags")        column = new ColumnTags ();
   else if (column_name == "until")       column = new ColumnUntil ();
+  else if (column_name == "urgency")     column = new ColumnUrgency ();
   else if (column_name == "uuid")        column = new ColumnUUID ();
   else if (column_name == "wait")        column = new ColumnWait ();
   else

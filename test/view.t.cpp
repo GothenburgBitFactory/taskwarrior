@@ -41,6 +41,7 @@ int main (int argc, char** argv)
   try
   {
     // Set up configuration.
+    context.config.setDefaults ();
     context.config.set ("fontunderline", true);
     context.config.set ("tag.indicator", "+");
     context.config.set ("dependency.indicator", "D");
@@ -103,6 +104,7 @@ int main (int argc, char** argv)
     view.add (Column::factory ("due.julian"));
 //    view.add (Column::factory ("due.epoch"));
 //    view.add (Column::factory ("due.iso"));
+    view.add (Column::factory ("urgency"));
     view.width (120);
     view.leftMargin (4);
 /*
