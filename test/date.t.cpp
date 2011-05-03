@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (165);
+  UnitTest t (168);
 
   try
   {
@@ -241,6 +241,11 @@ int main (int argc, char** argv)
     t.is (fromString13.hour (),     12, "ctor (std::string) -> h");
     t.is (fromString13.minute (),   34, "ctor (std::string) -> N");
     t.is (fromString13.second (),   56, "ctor (std::string) -> S");
+
+    // Day of year
+    t.is (Date ("1/1/2011",   "m/d/Y").dayOfYear (),   1, "dayOfYear (1/1/2011)   ->   1");
+    t.is (Date ("5/1/2011",   "m/d/Y").dayOfYear (), 121, "dayOfYear (5/1/2011)   -> 121");
+    t.is (Date ("12/31/2011", "m/d/Y").dayOfYear (), 365, "dayOfYear (12/31/2011) -> 365");
 
     // Easter
     Date e1 (Date::easter(1980));

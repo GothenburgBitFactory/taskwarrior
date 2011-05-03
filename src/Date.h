@@ -75,6 +75,7 @@ public:
   int year () const;
   int weekOfYear (int) const;
   int dayOfWeek () const;
+  int dayOfYear () const;
   int hour () const;
   int minute () const;
   int second () const;
