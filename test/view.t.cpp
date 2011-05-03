@@ -94,8 +94,8 @@ int main (int argc, char** argv)
 //    view.add (Column::factory ("tags.indicator"));
     view.add (Column::factory ("tags.count"));
 //    view.add (Column::factory ("description"));
-//    view.add (Column::factory ("description.desc"));
-    view.add (Column::factory ("description.truncated"));
+    view.add (Column::factory ("description.desc"));
+//    view.add (Column::factory ("description.truncated"));
 //    view.add (Column::factory ("depends"));
 //    view.add (Column::factory ("depends.count"));
     view.add (Column::factory ("depends.indicator"));
@@ -110,7 +110,7 @@ int main (int argc, char** argv)
 //    view.add (Column::factory ("due.iso"));
     view.add (Column::factory ("start.active"));
     view.add (Column::factory ("urgency"));
-    view.width (100);
+    view.width (context.getWidth ());
     view.leftMargin (4);
 /*
     view.extraPadding (1);

@@ -65,9 +65,20 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   {
   }
 
-  // The text
+  // Just the text
   else if (_style == "desc")
   {
+    maximum = description.length ();
+    minimum = 0;
+
+    Nibbler nibbler (description);
+    std::string word;
+    while (nibbler.getUntilWS (word))
+    {
+      nibbler.skipWS ();
+      if (word.length () > minimum)
+        minimum = word.length ();
+    }
   }
 
   // The text <date> <anno> ...
