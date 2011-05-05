@@ -60,17 +60,8 @@ void ColumnProject::measure (Task& task, int& minimum, int& maximum)
   else if (_style != "default")
     throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
 
-  minimum = 0;
+  minimum = longestWord (project);
   maximum = project.length ();
-
-  Nibbler nibbler (project);
-  std::string word;
-  while (nibbler.getUntilWS (word))
-  {
-    nibbler.skipWS ();
-    if (word.length () > minimum)
-      minimum = word.length ();
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

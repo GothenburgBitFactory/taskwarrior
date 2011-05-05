@@ -30,6 +30,7 @@
 #include <Date.h>
 #include <ColDescription.h>
 #include <text.h>
+#include <util.h>
 
 extern Context context;
 
@@ -63,6 +64,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
       format = context.config.get ("dateformat");
 
     minimum = Date::length (format);
+    minimum = longestWord (description);
     maximum = description.length ();
 
     std::vector <Att> annos;
@@ -77,16 +79,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   else if (_style == "desc")
   {
     maximum = description.length ();
-    minimum = 0;
-
-    Nibbler nibbler (description);
-    std::string word;
-    while (nibbler.getUntilWS (word))
-    {
-      nibbler.skipWS ();
-      if (word.length () > minimum)
-        minimum = word.length ();
-    }
+    minimum = longestWord (description);
   }
 
   // The text <date> <anno> ...
@@ -96,7 +89,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
     if (format == "")
       format = context.config.get ("dateformat");
 
-    minimum = Date::length (format);
+    minimum = max (Date::length (format), longestWord (description));
     maximum = description.length ();
 
     std::vector <Att> annos;
@@ -121,16 +114,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
 
     // <description> + ' ' + '[' + <count> + ']'
     maximum = description.length () + 3 + format ((int)annos.size ()).length ();
-    minimum = 0;
-
-    Nibbler nibbler (description);
-    std::string word;
-    while (nibbler.getUntilWS (word))
-    {
-      nibbler.skipWS ();
-      if (word.length () > minimum)
-        minimum = word.length ();
-    }
+    minimum = longestWord (description);
   }
 
   else
