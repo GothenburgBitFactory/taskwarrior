@@ -212,6 +212,11 @@ and a "+" sign will be added if there are any annotations present.  The default
 value is "full".
 
 .TP
+.B indent.annotation=1
+Controls the number of spaces to indent annotations when shown beneath the
+description field.  The default value is "1".
+
+.TP
 .B next=2
 Is a number, defaulting to 2, which is the number of tasks for each project that
 are shown in the

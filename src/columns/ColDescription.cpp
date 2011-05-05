@@ -27,6 +27,7 @@
 
 #include <Context.h>
 #include <Nibbler.h>
+#include <Date.h>
 #include <ColDescription.h>
 #include <text.h>
 
@@ -51,18 +52,25 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
 {
   std::string description = task.get ("description");
 
-/*
-  std::vector <Att> annos;
-  task.getAnnotations (annos);
-*/
-
-  // TODO Render Date () in appropriate format, to calculate length.
-
   // The text
   // <date> <anno>
   // ...
   if (_style == "default")
   {
+    int indent = context.config.getInteger ("indent.annotation");
+    std::string format = context.config.get ("dateformat.annotation");
+    if (format == "")
+      format = context.config.get ("dateformat");
+
+    minimum = Date::length (format);
+    maximum = description.length ();
+
+    std::vector <Att> annos;
+    task.getAnnotations (annos);
+    std::vector <Att>::iterator i;
+    for (i = annos.begin (); i != annos.end (); i++)
+      if (indent + i->value ().length () + minimum + 1 > maximum)
+        maximum = indent + i->value ().length () + minimum + 1;
   }
 
   // Just the text
@@ -84,6 +92,18 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   // The text <date> <anno> ...
   else if (_style == "oneline")
   {
+    std::string format = context.config.get ("dateformat.annotation");
+    if (format == "")
+      format = context.config.get ("dateformat");
+
+    minimum = Date::length (format);
+    maximum = description.length ();
+
+    std::vector <Att> annos;
+    task.getAnnotations (annos);
+    std::vector <Att>::iterator i;
+    for (i = annos.begin (); i != annos.end (); i++)
+      maximum += i->value ().length () + minimum + 1;
   }
 
   // The te...
@@ -96,35 +116,25 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   // The text [2]
   else if (_style == "count")
   {
+    std::vector <Att> annos;
+    task.getAnnotations (annos);
+
+    // <description> + ' ' + '[' + <count> + ']'
+    maximum = description.length () + 3 + format ((int)annos.size ()).length ();
+    minimum = 0;
+
+    Nibbler nibbler (description);
+    std::string word;
+    while (nibbler.getUntilWS (word))
+    {
+      nibbler.skipWS ();
+      if (word.length () > minimum)
+        minimum = word.length ();
+    }
   }
 
   else
     throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
-
-/*
-  std::string project = task.get ("project");
-
-  if (_style == "parent")
-  {
-    std::string::size_type period = project.find ('.');
-    if (period != std::string::npos)
-      project = project.substr (0, period);
-  }
-  else if (_style != "default")
-    throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
-
-  minimum = 0;
-  maximum = project.length ();
-
-  Nibbler nibbler (project);
-  std::string word;
-  while (nibbler.getUntilWS (word))
-  {
-    nibbler.skipWS ();
-    if (word.length () > minimum)
-      minimum = word.length ();
-  }
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -141,6 +151,29 @@ void ColumnDescription::render (
   // ...
   if (_style == "default")
   {
+    std::vector <Att> annos;
+    task.getAnnotations (annos);
+    if (annos.size ())
+    {
+      int indent = context.config.getInteger ("indent.annotation");
+      std::string format = context.config.get ("dateformat.annotation");
+      if (format == "")
+        format = context.config.get ("dateformat");
+
+      std::vector <Att>::iterator i;
+      for (i = annos.begin (); i != annos.end (); i++)
+      {
+        Date dt (atoi (i->name ().substr (11).c_str ()));
+        description += "\n" + std::string (indent, ' ') + dt.toString (format) + " " + i->value ();
+      }
+    }
+
+    std::vector <std::string> raw;
+    wrapText (raw, description, width);
+
+    std::vector <std::string>::iterator i;
+    for (i = raw.begin (); i != raw.end (); ++i)
+      lines.push_back (color.colorize (leftJustify (*i, width)));
   }
 
   // This is a description
@@ -157,6 +190,28 @@ void ColumnDescription::render (
   // This is a description <date> <anno> ...
   else if (_style == "oneline")
   {
+    std::vector <Att> annos;
+    task.getAnnotations (annos);
+    if (annos.size ())
+    {
+      std::string format = context.config.get ("dateformat.annotation");
+      if (format == "")
+        format = context.config.get ("dateformat");
+
+      std::vector <Att>::iterator i;
+      for (i = annos.begin (); i != annos.end (); i++)
+      {
+        Date dt (atoi (i->name ().substr (11).c_str ()));
+        description += " " + dt.toString (format) + " " + i->value ();
+      }
+    }
+
+    std::vector <std::string> raw;
+    wrapText (raw, description, width);
+
+    std::vector <std::string>::iterator i;
+    for (i = raw.begin (); i != raw.end (); ++i)
+      lines.push_back (color.colorize (leftJustify (*i, width)));
   }
 
   // This is a des...
@@ -172,6 +227,18 @@ void ColumnDescription::render (
   // This is a description [2]
   else if (_style == "count")
   {
+    std::vector <Att> annos;
+    task.getAnnotations (annos);
+
+    if (annos.size ())
+      description += " [" + format ((int) annos.size ()) + "]";
+
+    std::vector <std::string> raw;
+    wrapText (raw, description, width);
+
+    std::vector <std::string>::iterator i;
+    for (i = raw.begin (); i != raw.end (); ++i)
+      lines.push_back (color.colorize (leftJustify (*i, width)));
   }
 }
 

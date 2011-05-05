@@ -47,6 +47,7 @@ int main (int argc, char** argv)
     context.config.set ("dependency.indicator", "D");
     context.config.set ("recurrence.indicator", "R");
     context.config.set ("dateformat", "Y-M-D");
+    context.config.set ("indent.annotation", "2");
 
     // Two sample tasks.
     Task t1 ("["
@@ -55,6 +56,7 @@ int main (int argc, char** argv)
                "description:\"This is the description text\" "
                "project:\"Home\" "
                "priority:\"H\" "
+               "annotation_1234567890:\"This is an annotation\" "
                "start:\"1234567890\" "
                "due:\"1234567890\" "
                "tags:\"one,two\""
@@ -94,8 +96,10 @@ int main (int argc, char** argv)
 //    view.add (Column::factory ("tags.indicator"));
     view.add (Column::factory ("tags.count"));
 //    view.add (Column::factory ("description"));
-    view.add (Column::factory ("description.desc"));
+//    view.add (Column::factory ("description.desc"));
 //    view.add (Column::factory ("description.truncated"));
+    view.add (Column::factory ("description.oneline"));
+//    view.add (Column::factory ("description.count"));
 //    view.add (Column::factory ("depends"));
 //    view.add (Column::factory ("depends.count"));
     view.add (Column::factory ("depends.indicator"));

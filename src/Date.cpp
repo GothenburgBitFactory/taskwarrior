@@ -695,6 +695,38 @@ int Date::monthOfYear (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int Date::length (const std::string& format)
+{
+  int total = 0;
+
+  std::string::const_iterator i;
+  for (i = format.begin (); i != format.end (); ++i)
+  {
+    switch (*i)
+    {
+    case 'm':
+    case 'M':
+    case 'd':
+    case 'D':
+    case 'y':
+    case 'A':
+    case 'b':
+    case 'B':
+    case 'V':
+    case 'h':
+    case 'H':
+    case 'N':
+    case 'S': total += 2; break;
+    case 'a': total += 3; break;
+    case 'Y': total += 4; break;
+    default:  total += 1; break;
+    }
+  }
+
+  return total;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 time_t Date::easter (int year)
 {
   int Y = year;

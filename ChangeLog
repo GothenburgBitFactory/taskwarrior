@@ -25,6 +25,7 @@
    solarized-light-256.theme (thanks to Stefan Keel).
  + New 'dependency.indicator' configuration variable for the depends.indicator
    report field.
+ + New 'indent.annotation' for the 'description.default' field format.
 
 # Tracked Features, sorted by ID.
  + Added feature #523 & #659, adding 'status' as a reportable field (thanks to
