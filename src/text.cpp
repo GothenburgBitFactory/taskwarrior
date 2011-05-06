@@ -220,7 +220,7 @@ int longestWord (const std::string& input)
 {
   int longest = 0;
   int length = 0;
-  std::string::size_type i;
+  std::string::size_type i = 0;
   int character;
 
   while (character = utf8_next_char (input, i))

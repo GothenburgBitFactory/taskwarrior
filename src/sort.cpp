@@ -25,211 +25,172 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <vector>
 #include <string>
+#include <Context.h>
+#include <Duration.h>
 #include <Task.h>
+#include <text.h>
 
-static std::vector <Task>* data = NULL;
+extern Context context;
+
+static std::vector <Task>* global_data = NULL;
+static std::vector <std::string> global_keys;
+static bool sort_compare (int, int);
 
 ////////////////////////////////////////////////////////////////////////////////
-void view_sort (
-  std::vector <Task>& data)
+void sort_tasks (
+  std::vector <Task>& data,
+  std::vector <int>& order,
+  const std::string& keys)
 {
+  global_data = &data;
+
+  // Split the key defs.
+  global_keys.clear ();
+  split (global_keys, keys, ',');
+
+  // Only sort if necessary.
+  if (order.size ())
+    std::stable_sort (order.begin (), order.end (), sort_compare);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Re-implementation, using direct Task access instead of data copies that
 // require re-parsing.
-bool sort_compare (int left, int right)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
+//
 // Essentially a static implementation of a dynamic operator<.
-bool sort_compare (int left, int right)
+static bool sort_compare (int left, int right)
 {
-  for (size_t c = 0; c < table->mSortColumns.size (); ++c)
+  int result;
+  std::string field;
+  bool ascending;
+
+  int left_number;
+  int right_number;
+  std::string left_string;
+  std::string right_string;
+  time_t left_date;
+  time_t right_date;
+  float left_real;
+  float right_real;
+
+  std::vector <std::string>::iterator k;
+  for (k = global_keys.begin (); k != global_keys.end (); ++k)
   {
-    int column = table->mSortColumns[c];
-    Table::order sort_type = table->mSortOrder[column];
+    context.decomposeSortField (*k, field, ascending);
 
-    Grid::Cell* cell_left  = table->mData.byRow (left,  column);
-    Grid::Cell* cell_right = table->mData.byRow (right, column);
-
-    // Equally NULL - next column.
-    if (cell_left == NULL && cell_right == NULL)
-      continue;
-
-    // Equal - next column
-    if (cell_left && cell_right && *cell_left == *cell_right)
-      continue;
-
-    // Note: Table::ascendingDueDate is not represented here because it is not
-    //       possible to have a NULL due date, only a blank "".
-
-    // nothing < something.
-    if (cell_left == NULL && cell_right != NULL)
-      return (sort_type == Table::ascendingNumeric   ||
-              sort_type == Table::ascendingCharacter ||
-              sort_type == Table::ascendingPriority  ||
-              sort_type == Table::ascendingDate      ||
-              sort_type == Table::ascendingPeriod) ? true : false;
-
-    // something > nothing.
-    if (cell_left != NULL && cell_right == NULL)
-      return (sort_type == Table::ascendingNumeric   ||
-              sort_type == Table::ascendingCharacter ||
-              sort_type == Table::ascendingPriority  ||
-              sort_type == Table::ascendingDate      ||
-              sort_type == Table::ascendingPeriod) ? false : true;
-
-    // Differing data - do a proper comparison.
-    if (cell_left && cell_right)
+    // Number.
+    if (field == "id")
     {
-      switch (sort_type)
-      {
-      case Table::ascendingNumeric:
-        return (float)*cell_left < (float)*cell_right ? true : false;
-        break;
+      left_number  = (*global_data)[left].id;
+      right_number = (*global_data)[right].id;
 
-      case Table::descendingNumeric:
-        return (float)*cell_left < (float)*cell_right ? false : true;
-        break;
+      if (left_number == right_number)
+        continue;
 
-      case Table::ascendingCharacter:
-        return (std::string)*cell_left < (std::string)*cell_right ? true : false;
-        break;
+      if (ascending)
+        return left_number < right_number;
 
-      case Table::descendingCharacter:
-        return (std::string)*cell_left < (std::string)*cell_right ? false : true;
-        break;
+      return left_number > right_number;
+    }
 
-      case Table::ascendingDate:
-        {
-          // something > nothing.
-          if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
-            return false;
+    // String.
+    else if (field == "description" ||
+             field == "depends"     ||
+             field == "project"     ||
+             field == "status"      ||
+             field == "tags"        ||
+             field == "uuid")
+    {
+      left_string  = (*global_data)[left].get  (field);
+      right_string = (*global_data)[right].get (field);
 
-          // nothing < something.
-          else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
-            return true;
+      if (left_string == right_string)
+        continue;
 
-          else
-          {
-            Date dl ((std::string)*cell_left, table->mDateFormat);
-            Date dr ((std::string)*cell_right, table->mDateFormat);
-            return dl < dr ? true : false;
-          }
-        }
-        break;
+      if (ascending)
+        return left_string < right_string;
 
-      case Table::descendingDate:
-        {
-          // something > nothing.
-          if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
-            return true;
+      return left_string > right_string;
+    }
 
-          // nothing < something.
-          else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
-            return false;
+    // Priority.
+    else if (field == "priority")
+    {
+      left_string  = (*global_data)[left].get  (field);
+      right_string = (*global_data)[right].get (field);
+      if (left_string == right_string)
+        continue;
 
-          else
-          {
-            Date dl ((std::string)*cell_left, table->mDateFormat);
-            Date dr ((std::string)*cell_right, table->mDateFormat);
-            return dl < dr ? false : true;
-          }
-        }
-        break;
+      if (ascending)
+        return (left_string == ""  && right_string != "")                           ||
+               (left_string == "L" && (right_string == "M" || right_string == "H")) ||
+               (left_string == "M" && right_string == "H");
 
-      case Table::ascendingDueDate:
-        {
-          // something > nothing.
-          if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
-            return true;
+      return (left_string != ""  && right_string == "")                           ||
+             (left_string == "M" && right_string == "L")                          ||
+             (left_string == "H" && (right_string == "M" || right_string == "L"));
+    }
 
-          // nothing < something.
-          else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
-            return false;
+    // Date.
+    else if (field == "due"   ||
+             field == "end"   ||
+             field == "entry" ||
+             field == "start" ||
+             field == "until" ||
+             field == "wait")
+    {
+      left_string  = (*global_data)[left].get  (field);
+      right_string = (*global_data)[right].get (field);
 
-          else
-          {
-            std::string format = context.config.get ("report." + table->mReportName + ".dateformat");
-            if (format == "")
-              format = context.config.get ("dateformat.report");
-            if (format == "")
-              format = context.config.get ("dateformat");
+      if (left_string == right_string)
+        continue;
 
-            Date dl ((std::string)*cell_left,  format);
-            Date dr ((std::string)*cell_right, format);
-            return dl < dr ? true : false;
-          }
-        }
-        break;
+      left_date  = atoi (left_string.c_str ());
+      right_date = atoi (right_string.c_str ());
 
-      case Table::descendingDueDate:
-        {
-          // something > nothing.
-          if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
-            return true;
+      if (ascending)
+        return left_date < right_date;
 
-          // nothing < something.
-          else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
-            return false;
+      return left_date > right_date;
+    }
 
-          else
-          {
-            std::string format = context.config.get ("report." + table->mReportName + ".dateformat");
-            if (format == "")
-              format = context.config.get ("dateformat.report");
-            if (format == "")
-              format = context.config.get ("dateformat");
+    // Duration.
+    else if (field == "recur")
+    {
+      left_string  = (*global_data)[left].get  (field);
+      right_string = (*global_data)[right].get (field);
 
-            Date dl ((std::string)*cell_left,  format);
-            Date dr ((std::string)*cell_right, format);
-            return dl < dr ? false : true;
-          }
-        }
-        break;
+      if (left_string == right_string)
+        continue;
 
-      case Table::ascendingPriority:
-         if (((std::string)*cell_left == ""  && (std::string)*cell_right  != "")                                      ||
-            ((std::string)*cell_left  == "L" && ((std::string)*cell_right == "M" || (std::string)*cell_right == "H")) ||
-            ((std::string)*cell_left  == "M" && (std::string)*cell_right  == "H"))
-          return true;
-        else
-          return false;
-        break;
+      Duration left_duration (left_string);
+      Duration right_duration (right_string);
+      if (ascending)
+        return left_duration < right_duration;
 
-      case Table::descendingPriority:
-        if (((std::string)*cell_left != ""  && (std::string)*cell_right  == "")  ||
-            ((std::string)*cell_left == "M" && (std::string)*cell_right  == "L") ||
-            ((std::string)*cell_left == "H" && ((std::string)*cell_right == "L"  || (std::string)*cell_right == "M")))
-         return true;
-        else
-          return false;
-        break;
+      return left_duration > right_duration;
+    }
 
-      case Table::ascendingPeriod:
-        if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
-          return true;
-        else if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
-          return false;
-        else
-          return Duration ((std::string)*cell_left) < Duration ((std::string)*cell_right) ? true : false;
-        break;
+    // Urgency.
+    else if (field == "urgency")
+    {
+      left_real  = (*global_data)[left].urgency ();
+      right_real = (*global_data)[right].urgency ();
 
-      case Table::descendingPeriod:
-        if ((std::string)*cell_left != "" && (std::string)*cell_right == "")
-          return false;
-        else if ((std::string)*cell_left == "" && (std::string)*cell_right != "")
-          return true;
-        else
-          return Duration ((std::string)*cell_left) < Duration ((std::string)*cell_right) ? false : true;
-        break;
-      }
+      if (left_real == right_real)
+        continue;
+
+      if (ascending)
+        return left_real < right_real;
+
+      return left_real > right_real;
     }
   }
 
   return false;
 }
+
+////////////////////////////////////////////////////////////////////////////////

@@ -161,6 +161,9 @@ std::string taskInfoDifferences (const Task&, const Task&);
 std::string renderAttribute (const std::string&, const std::string&);
 std::string feedback (const Task&, const Task&);
 
+// sort.cpp
+void sort_tasks (std::vector <Task>&, std::vector <int>&, const std::string&);
+
 // list template
 ///////////////////////////////////////////////////////////////////////////////
 template <class T> bool listDiff (const T& left, const T& right)

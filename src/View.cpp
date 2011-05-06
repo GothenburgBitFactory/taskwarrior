@@ -211,7 +211,7 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
 
     // Apply color rules to task.
     Color rule_color;
-    autoColorize (data[s], rule_color);
+    autoColorize (data[sequence[s]], rule_color);
 
     // Alternate rows based on |s % 2|
     bool odd = (s % 2) ? true : false;
@@ -221,7 +221,7 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
     for (int c = 0; c < _columns.size (); ++c)
     {
       cells.push_back (std::vector <std::string> ());
-      _columns[c]->render (cells[c], data[s], widths[c], row_color);
+      _columns[c]->render (cells[c], data[sequence[s]], widths[c], row_color);
 
       if (cells[c].size () > max_lines)
         max_lines = cells[c].size ();

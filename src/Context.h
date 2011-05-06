@@ -73,6 +73,7 @@ public:
   std::string canonicalize (const std::string&) const;
   void disallowModification () const;
   void applyOverrides (const std::vector <std::string>&, std::vector <std::string>&);
+  void decomposeSortField (const std::string&, std::string&, bool&);
 
 private:
   void loadCorrectConfigFile ();

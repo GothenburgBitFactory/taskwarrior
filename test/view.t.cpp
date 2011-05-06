@@ -30,6 +30,7 @@
 #include <Task.h>
 #include <View.h>
 #include <test.h>
+#include <main.h>
 
 Context context;
 
@@ -71,15 +72,26 @@ int main (int argc, char** argv)
                "depends:\"2a64f6e0-bf8e-430d-bf71-9ec3f0d9b661\""
              "]");
     t2.id = 11;
+    Task t3 ("["
+               "status:\"pending\" "
+               "uuid:\"c44cb9c3-3fc0-483f-bfb2-3bf134f05554\" "
+               "description:\"Another description\" "
+               "project:\"Garden\" "
+             "]");
+    t3.id = 8;
 
     std::vector <Task> data;
     data.push_back (t1);
     data.push_back (t2);
+    data.push_back (t3);
 
     // Sequence of tasks.
     std::vector <int> sequence;
     sequence.push_back (0);
     sequence.push_back (1);
+    sequence.push_back (2);
+
+    sort_tasks (data, sequence, "description+,id-");
 
     // Create colors.
     Color header_color (Color (Color::yellow, Color::nocolor, false, false, false));
@@ -95,10 +107,10 @@ int main (int argc, char** argv)
     view.add (Column::factory ("tags"));
 //    view.add (Column::factory ("tags.indicator"));
     view.add (Column::factory ("tags.count"));
-//    view.add (Column::factory ("description"));
+    view.add (Column::factory ("description"));
 //    view.add (Column::factory ("description.desc"));
 //    view.add (Column::factory ("description.truncated"));
-    view.add (Column::factory ("description.oneline"));
+//    view.add (Column::factory ("description.oneline"));
 //    view.add (Column::factory ("description.count"));
 //    view.add (Column::factory ("depends"));
 //    view.add (Column::factory ("depends.count"));
@@ -134,7 +146,7 @@ int main (int argc, char** argv)
     // Render the view.
     std::cout << view.render (data, sequence);
 
-    t.is (view.lines (), 3, "View::lines == 3");
+    t.is (view.lines (), 5, "View::lines == 5");
   }
 
   catch (std::string& e)

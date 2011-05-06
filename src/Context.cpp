@@ -820,6 +820,31 @@ void Context::parse (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Context::decomposeSortField (
+  const std::string& field,
+  std::string& key,
+  bool& ascending)
+{
+  int length = field.length ();
+
+  if (field[length - 1] == '+')
+  {
+    ascending = true;
+    key = field.substr (0, length - 1);
+  }
+  else if (field[length - 1] == '-')
+  {
+    ascending = false;
+    key = field.substr (0, length - 1);
+  }
+  else
+  {
+    ascending = true;
+    key = field;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Note: The reason some of these are commented out is because the ::clear
 // method is not really "clear" but "clear_some".  Some members do not need to
 // be initialized.  That makes this method something of a misnomer.  So be it.
