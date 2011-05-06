@@ -38,25 +38,34 @@
  + Added feature #710, which adds an attribute modifier prefix to return the
    complement of a filtered set (thanks to Dan White).
  + Added feature #714, including Belarus holidays (thanks to Alexei Romanoff).
+ + Added feature #733, including Czech holidays (thanks to Tomas Cech).
+ + Added feature #740, that allows for indented annotations, controlled by the
+   'indent.annotation' configuration variable (thanks to Steve Rader, Tomas
+   Cech).
 
 # Tracked Bugs, sorted by ID.
  + Fixed bug #594, which broke the 'all' report with a combination of bad regex
    handling and a formatting bug (thanks to Steve Rader).
  + Fixed bug #605, which gave misleading project completion percentages under
    certain circumstances (thanks to Steve Rader).
+ + Fixed bug #699, truncated ssh://... during autopush after merge.
  + Fixed bug #703, where global substitutions didn't make all expected
    annotation changes.
+ + Fixed bug #704, which improved wording of journal messages.
+ + Fixed bug #706, where deletions were recorded in the journal twice.
  + Fixed bug #707, which had inverted logic with the urgency calculation for
    blocked tasks.
- + Fixed Bug #713, which fixes typos in the holidays-UK.rc file (thanks to
+ + Fixed bug #708, which corrected bad math in project % complete calculations
+   (thanks to Michelle Crane).
+ + Fixed bug #713, which fixes typos in the holidays-UK.rc file (thanks to
    Alexei Romanoff).
- + Fixed Bug #723, which displayed a misleading message when the output was
+ + Fixed bug #723, which displayed a misleading message when the output was
    truncated to a page.
- + Fixed Bug #732, which fixes misleading messages and documentation for
+ + Fixed bug #732, which fixes misleading messages and documentation for
    merge/push/pull URIs (thanks to Tomas Cech).
- + Fixed Bug #741, which miscounted columns widths when a table header used
+ + Fixed bug #741, which miscounted columns widths when a table header used
    unicode characters (thanks to Tomas Cech).
- + Fixed Bug #745, which allows projects names with spaces, provided the values
+ + Fixed bug #745, which allows projects names with spaces, provided the values
    are quoted (thanks to Duane Waddle).
  + Applied patch for Bug #746, which added missing documentation for the 'entry'
    report column (thanks to Duane Waddle).
