@@ -312,7 +312,9 @@ int Context::dispatch (std::string &out)
   else                                        { rc = shortUsage (out); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
-  if (cmd.isWriteCommand () && !inShadow)
+  if ((cmd.isWriteCommand () ||
+       (cmd.command == "" && sequence.size ())) &&
+      !inShadow)
     shadow ();
 
   return rc;

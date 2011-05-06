@@ -67,7 +67,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
   split (labels, reportLabels, ',');
 
   if (columns.size () != labels.size () && labels.size () != 0)
-    throw std::string ("There are a different number of columns than labels ") +
+    throw std::string ("There are a different number of columns and labels ") +
           "for report '" + report + "'.";
 
   std::map <std::string, std::string> columnLabels;
