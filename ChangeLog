@@ -60,8 +60,8 @@
    are quoted (thanks to Duane Waddle).
  + Applied patch for Bug #746, which added missing documentation for the 'entry'
    report column (thanks to Duane Waddle).
- + Fixed bug #762, so that modifications to task are considered 'write' commands,
-   and there update shadow files (thanks to Aikido Guy).
+ + Fixed bug #762, #763, so that modifications to tasks are considered 'write'
+   commands, and therefore update shadow files (thanks to Aikido Guy).
 
 # Untracked Bugs, biggest first.
 
