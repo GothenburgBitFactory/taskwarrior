@@ -2467,6 +2467,7 @@ int handleColor (std::string& outs)
           << " " << Color::colorize (" underline on blue ", "underline on blue")
           << " " << Color::colorize (" on green ",          "black on green")
           << " " << Color::colorize (" on bright green ",   "black on bright green")
+          << " " << Color::colorize (" inverse ",           "inverse")
           << "\n\n";
 
       // 16 system colors.
