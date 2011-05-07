@@ -77,7 +77,8 @@ Color::Color (unsigned int c)
   if (!(c & _COLOR_HASBG)) value &= ~_COLOR_BG;
 
   value = c & (_COLOR_256 | _COLOR_HASBG | _COLOR_HASFG |_COLOR_UNDERLINE |
-               _COLOR_BOLD | _COLOR_BRIGHT | _COLOR_BG | _COLOR_FG);
+               _COLOR_INVERSE | _COLOR_BOLD | _COLOR_BRIGHT | _COLOR_BG |
+               _COLOR_FG);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +123,7 @@ Color::Color (const std::string& spec)
          if (word == "bold")      fg_value |= _COLOR_BOLD;
     else if (word == "bright")    bg_value |= _COLOR_BRIGHT;
     else if (word == "underline") fg_value |= _COLOR_UNDERLINE;
+    else if (word == "inverse")   fg_value |= _COLOR_INVERSE;
     else if (word == "on")        bg = true;
 
     // X where X is one of black, red, blue ...
@@ -299,6 +301,9 @@ Color::operator std::string () const
   if (value & _COLOR_UNDERLINE)
     description += std::string (description.length () ? " " : "") + "underline";
 
+  if (value & _COLOR_INVERSE)
+    description += std::string (description.length () ? " " : "") + "inverse";
+
   if (value & _COLOR_HASFG)
     description += std::string (description.length () ? " " : "") + fg ();
 
@@ -328,6 +333,7 @@ void Color::blend (const Color& other)
 {
   Color c (other);
   value |= (c.value & _COLOR_UNDERLINE);    // Always inherit underline.
+  value |= (c.value & _COLOR_INVERSE);      // Always inherit inverse.
 
   // 16 <-- 16.
   if (!(value   & _COLOR_256) &&
@@ -433,6 +439,12 @@ std::string Color::colorize (const std::string& input)
       needTerminator = true;
     }
 
+    if (value & _COLOR_INVERSE)
+    {
+      result << "\033[7m";
+      needTerminator = true;
+    }
+
     if (value & _COLOR_HASFG)
     {
       result << "\033[38;5;" << (value & _COLOR_FG) << "m";
@@ -467,6 +479,12 @@ std::string Color::colorize (const std::string& input)
     {
       if (count++) result << ";";
       result << "4";
+    }
+
+    if (value & _COLOR_INVERSE)
+    {
+      if (count++) result << ";";
+      result << "7";
     }
 
     if (value & _COLOR_HASFG)

@@ -87,11 +87,17 @@ View::View ()
 // Note: a possible enhancement is to proportionally distribute the overage
 //       according to average data length.
 //
+// Note: an enhancement to the 'no solution' problem is to simply force-break
+//       the larger fields.  If the widest field is W0, and the second widest
+//       field is W1, then a solution may be achievable by reducing W0 --> W1.
+//
 std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
 {
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
   std::vector <int> ideal;
+//  std::vector <int> avg_ideal;
+//  int cumulative_ideal = 0;
 
   std::vector <Column*>::iterator i;
   for (i = _columns.begin (); i != _columns.end (); ++i)
@@ -108,12 +114,19 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
       int ideal;
       (*i)->measure (*d, min, ideal);
 
-      if (min > global_min)     global_min = min;
+      if (min   > global_min)   global_min = min;
       if (ideal > global_ideal) global_ideal = ideal;
+
+//      cumulative_ideal += ideal;
     }
 
     minimal.push_back (global_min);
     ideal.push_back (global_ideal);
+
+//    if (data.size ())
+//      avg_ideal.push_back ((int) (cumulative_ideal / data.size ()));
+//    else
+//      avg_ideal.push_back (0);
   }
 
   // Sum the minimal widths.
