@@ -71,6 +71,8 @@
    report column (thanks to Duane Waddle).
  + Fixed bug #762, #763, so that modifications to tasks are considered 'write'
    commands, and therefore update shadow files (thanks to Aikido Guy).
+ + Applied patch for Bug #770, which fixed a broken build (thanks to Christopher
+   J. Pilkington).
 
 # Untracked Bugs, biggest first.
 
