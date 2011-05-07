@@ -28,6 +28,7 @@
  + New 'indent.annotation' for the 'description.default' field format.
 
 # Tracked Features, sorted by ID.
+ + Added feature #330, which supports the 'inverse' color attribute.
  + Added feature #523 & #659, adding 'status' as a reportable field (thanks to
    Peter De Poorter and Bryce Harrington).
  + Added feature #657 & #658, using the 'ids' command, tasks matching a filter

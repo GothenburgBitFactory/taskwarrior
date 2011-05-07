@@ -106,6 +106,10 @@ There is an additional 'underline' attribute that may be used:
 
     underline bright red on black
 
+And an 'inverse' attribute:
+
+    inverse red
+
 Taskwarrior has a command that helps you visualize these color combinations.
 Try this:
 
