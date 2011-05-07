@@ -73,6 +73,8 @@
    commands, and therefore update shadow files (thanks to Aikido Guy).
  + Applied patch for Bug #770, which fixed a broken build (thanks to Christopher
    J. Pilkington).
+ + Applied patch for Bug #771, which looks for libuuid if uuid_unparse_lower is
+   not located (thanks to Christopher J. Pilkington).
 
 # Untracked Bugs, biggest first.
 
