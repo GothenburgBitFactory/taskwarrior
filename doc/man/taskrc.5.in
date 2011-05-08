@@ -212,9 +212,21 @@ and a "+" sign will be added if there are any annotations present.  The default
 value is "full".
 
 .TP
-.B indent.annotation=1
+.B indent.annotation=2
 Controls the number of spaces to indent annotations when shown beneath the
-description field.  The default value is "1".
+description field.  The default value is "2".
+
+.TP
+.B indent.report=0
+Controls the indentation of the entire report output.  Default is "0".
+
+.TP
+.B row.padding=0
+Controls left and right padding around each row of the report output.  Default is "0".
+
+.TP
+.B column.padding=0
+Controls padding between columns of the report output.  Default is "1".
 
 .TP
 .B next=2
@@ -742,6 +754,11 @@ Color of holidays in calendar.
 .TP
 .B color.calendar.weeknumber=black on white
 Color of weeknumbers in calendar.
+.RE
+
+.TP
+.B color.label=
+Colors the report labels.  Defaults to not use color.
 .RE
 
 .TP

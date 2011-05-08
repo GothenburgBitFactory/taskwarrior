@@ -12,6 +12,7 @@
  + Corrected sorting to use std::stable_sort instead of std::sort, which is not
    guaranteed stable (thanks to Stefan Hacker).
  + Enhanced diagnostics command.
+ + Performance enhancements.
  + The old 'curses' configuration variable is now replaced by 'detection', and
    has the same meaning - whether or not to auto-detect terminal size.
  + Added Czech Republic holiday files (thanks to Tomas Cech).
@@ -26,6 +27,7 @@
  + New 'dependency.indicator' configuration variable for the depends.indicator
    report field.
  + New 'indent.annotation' for the 'description.default' field format.
+ + New 'color.label' for colorizing the report column labels.
 
 # Tracked Features, sorted by ID.
  + Added feature #330, which supports the 'inverse' color attribute.

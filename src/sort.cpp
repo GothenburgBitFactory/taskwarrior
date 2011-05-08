@@ -31,6 +31,7 @@
 #include <Context.h>
 #include <Duration.h>
 #include <Task.h>
+#include <Timer.h>
 #include <text.h>
 
 extern Context context;
@@ -45,6 +46,8 @@ void sort_tasks (
   std::vector <int>& order,
   const std::string& keys)
 {
+  Timer t ("Sort");
+
   global_data = &data;
 
   // Split the key defs.

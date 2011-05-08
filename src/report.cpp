@@ -634,10 +634,9 @@ int handleInfo (std::string& outs)
     }
 
     // Task::urgency
-    // TODO Enable this later.  This was for testing.
-    //row = table.addRow ();
-    //table.addCell (row, 0, "Urgency");
-    //table.addCell (row, 1, task->urgency ());
+    row = table.addRow ();
+    table.addCell (row, 0, "Urgency");
+    table.addCell (row, 1, task->urgency ());
 
     // Create a second table, containing undo log change details.
     Table journal;

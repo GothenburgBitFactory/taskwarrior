@@ -35,7 +35,7 @@
 class Column
 {
 public:
-  static Column* factory (const std::string&);
+  static Column* factory (const std::string&, const std::string&);
 
   Column ();
   Column (const Column&);
@@ -47,8 +47,9 @@ public:
   std::string getLabel ()                  { return _label;  }
   std::string type () const                { return _type;   }
 
-  virtual void setStyle (const std::string& value) { _style = value; }
-  virtual void setLabel (const std::string& value) { _label = value; }
+  virtual void setStyle  (const std::string& value) { _style = value;  }
+  virtual void setLabel  (const std::string& value) { _label = value;  }
+  virtual void setReport (const std::string& value) { _report = value; }
 
   virtual void measure (Task&, int&, int&) = 0;
   virtual void renderHeader (std::vector <std::string>&, int, Color&);
@@ -58,6 +59,7 @@ protected:
   std::string _type;
   std::string _style;
   std::string _label;
+  std::string _report;
 };
 
 #endif

@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <View.h>
+#include <Timer.h>
 #include <text.h>
 #include <utf8.h>
 #include <main.h>
@@ -43,8 +44,10 @@ View::View ()
 , _extra_padding (0)
 , _extra_odd (0)
 , _extra_even (0)
-, _truncate (0)
+, _truncate_lines (0)
+, _truncate_rows (0)
 , _lines (0)
+, _rows (0)
 {
 }
 
@@ -93,6 +96,8 @@ View::View ()
 //
 std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
 {
+  Timer timer ("View::render");
+
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
   std::vector <int> ideal;
@@ -212,10 +217,14 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
     }
 
     out += extra + "\n";
-    ++_lines;
+
+    // Stop if the line limit is exceeded.
+    if (++_lines >= _truncate_lines && _truncate_lines != 0)
+      return out;
   }
 
   // Compose, render columns, in sequence.
+  _rows = 0;
   std::vector <std::vector <std::string> > cells;
   std::vector <int>::iterator s;
   for (int s = 0; s < sequence.size (); ++s)
@@ -247,7 +256,12 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
       for (int c = 0; c < _columns.size (); ++c)
       {
         if (c)
-          out += (odd ? intra_odd : intra_even);
+        {
+          if (row_color.nontrivial ())
+            out += row_color.colorize (intra);
+          else
+            out += (odd ? intra_odd : intra_even);
+        }
 
         if (i < cells[c].size ())
           out += cells[c][i];
@@ -256,10 +270,17 @@ std::string View::render (std::vector <Task>& data, std::vector <int>& sequence)
       }
 
       out += (odd ? extra_odd : extra_even) + "\n";
-      ++_lines;
+
+      // Stop if the line limit is exceeded.
+      if (++_lines >= _truncate_lines && _truncate_lines != 0)
+        return out;
     }
 
     cells.clear ();
+
+    // Stop if the row limit is exceeded.
+    if (++_rows >= _truncate_rows && _truncate_rows != 0)
+      return out;
   }
 
   return out;

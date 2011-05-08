@@ -42,18 +42,11 @@ ColumnDate::ColumnDate ()
   _style     = "default";
   _label     = "";
   _attribute = "";
-  _report    = "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDate::~ColumnDate ()
 {
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ColumnDate::setReport (const std::string& report)
-{
-  _report = report;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +90,7 @@ void ColumnDate::measure (Task& task, int& minimum, int& maximum)
     else if (_style == "age")
     {
       Date now;
-      minimum = maximum = Duration (now - date).format ().length ();
+      minimum = maximum = Duration (now - date).formatCompact ().length ();
     }
     else
       throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
@@ -165,7 +158,7 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           rightJustify (
-            Duration (now - date).format (), width)));
+            Duration (now - date).formatCompact (), width)));
     }
     else if (_style == "short")
     {

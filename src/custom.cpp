@@ -35,20 +35,135 @@
 #include <pwd.h>
 #include <time.h>
 
-#include "Context.h"
-#include "Date.h"
-#include "Duration.h"
-#include "Table.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
+#include <Context.h>
+#include <Date.h>
+#include <Duration.h>
+#include <Table.h>
+#include <View.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
 
 extern Context context;
-static std::vector <std::string> customReports;
 
 ////////////////////////////////////////////////////////////////////////////////
-// This report will eventually become the one report that many others morph into
-// via the .taskrc file.
+void validateReportColumns (std::vector <std::string>& columns)
+{
+  // One-time initialization, on demand.
+  static std::map <std::string, std::string> legacyMap;
+  if (! legacyMap.size ())
+  {
+    legacyMap["priority_long"]        = "priority.long";
+    legacyMap["entry_time"]           = "entry";
+    legacyMap["start_time"]           = "start";
+    legacyMap["end_time"]             = "end";
+    legacyMap["countdown"]            = "due.countdown";
+    legacyMap["countdown_compact"]    = "due.countdown";
+    legacyMap["age"]                  = "entry.age";
+    legacyMap["age_compact"]          = "entry.age";
+    legacyMap["active"]               = "start.active";
+    legacyMap["recurrence_indicator"] = "recur.indicator";
+    legacyMap["tag_indicator"]        = "tags.indicator";
+    legacyMap["description_only"]     = "description.desc";
+  }
+
+  std::vector <std::string>::iterator i;
+  for (i = columns.begin (); i != columns.end (); ++i)
+  {
+    // If a legacy column was used, complain about it, but modify it anyway.
+    std::map <std::string, std::string>::iterator found = legacyMap.find (*i);
+    if (found != legacyMap.end ())
+    {
+      context.footnote (std::string ("Deprecated report field '")
+                                   + *i
+                                   + "' used.  Please modify this to '"
+                                   + found->second
+                                   + "'.");
+      *i = found->second;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void validateSortColumns (std::vector <std::string>& columns)
+{
+  // One-time initialization, on demand.
+  static std::map <std::string, std::string> legacyMap;
+  if (! legacyMap.size ())
+  {
+    legacyMap["priority_long"]        = "priority";
+    legacyMap["entry_time"]           = "entry";
+    legacyMap["start_time"]           = "start";
+    legacyMap["end_time"]             = "end";
+    legacyMap["countdown"]            = "due";
+    legacyMap["countdown_compact"]    = "due";
+    legacyMap["age"]                  = "entry";
+    legacyMap["age_compact"]          = "entry";
+    legacyMap["active"]               = "start";
+    legacyMap["recurrence_indicator"] = "recur";
+    legacyMap["tag_indicator"]        = "tags";
+    legacyMap["description_only"]     = "description";
+  }
+
+  std::vector <std::string>::iterator i;
+  for (i = columns.begin (); i != columns.end (); ++i)
+  {
+    // If a legacy column was used, complain about it, but modify it anyway.
+    std::map <std::string, std::string>::iterator found = legacyMap.find (*i);
+    if (found != legacyMap.end ())
+    {
+      context.footnote (std::string ("Deprecated sort field '")
+                                   + *i
+                                   + "' used.  Please modify this to '"
+                                   + found->second
+                                   + "'.");
+      *i = found->second;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// A value of zero mean unlimited.
+// A value of 'page' means however many screen lines there are.
+// A value of a positive integer is a row/task limit.
+void getLimits (const std::string& report, int& rows, int& lines)
+{
+  rows = 0;
+  lines = 0;
+
+  int screenheight = 0;
+
+  // If a report has a stated limit, use it.
+  if (report != "")
+  {
+    std::string name = "report." + report + ".limit";
+    if (context.config.get (name) == "page")
+      lines = screenheight = context.getHeight ();
+    else
+      rows = context.config.getInteger (name);
+  }
+
+  // If the custom report has a defined limit, then allow a numeric override.
+  // This is an integer specified as a filter (limit:10).
+  if (context.task.has ("limit"))
+  {
+    if (context.task.get ("limit") == "page")
+    {
+      if (screenheight == 0)
+        screenheight = context.getHeight ();
+
+      rows = 0;
+      lines = screenheight;
+    }
+    else
+    {
+      rows = atoi (context.task.get ("limit").c_str ());
+      lines = 0;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int handleCustomReport (const std::string& report, std::string& outs)
 {
   int rc = 0;
@@ -61,7 +176,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
 
   std::vector <std::string> columns;
   split (columns, reportColumns, ',');
-  validReportColumns (columns);
+  validateReportColumns (columns);
 
   std::vector <std::string> labels;
   split (labels, reportLabels, ',');
@@ -77,7 +192,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
 
   std::vector <std::string> sortOrder;
   split (sortOrder, reportSort, ',');
-  validSortColumns (columns, sortOrder);
+  validateSortColumns (sortOrder);
 
   // Apply rc overrides.
   std::vector <std::string> filterArgs;
@@ -115,520 +230,31 @@ int handleCustomReport (const std::string& report, std::string& outs)
   if (context.sequence.size ())
     context.filter.applySequence (tasks, context.sequence);
 
-  // Determine the output date format, which uses a hierarchy of definitions.
-  std::string dateformat = context.config.get ("report." + report + ".dateformat");
-  if (dateformat == "")
-    dateformat = context.config.get ("dateformat.report");
-  if (dateformat == "")
-    dateformat = context.config.get ("dateformat");
-
-  Table table;
-  table.setTableWidth (context.getWidth ());
-  table.setDateFormat (dateformat);
-  table.setReportName (report);
-
-  foreach (task, tasks)
-    table.addRow ();
-
-  int columnCount = 0;
-  int dueColumn = -1;
-  foreach (col, columns)
-  {
-    // Add each column individually.
-    if (*col == "id")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "ID");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string value;
-      int row = 0;
-      foreach (task, tasks)
-      {
-        if (task->id != 0)
-          value = format (task->id);
-        else
-          value = "-";
-
-        table.addCell (row++, columnCount, value);
-      }
-    }
-
-    else if (*col == "uuid")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "UUID");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      std::string value;
-      int row = 0;
-      foreach (task, tasks)
-      {
-        value = task->get ("uuid");
-        table.addCell (row++, columnCount, value);
-      }
-    }
-
-    else if (*col == "project")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Project");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      std::string value;
-      int row = 0;
-      foreach (task, tasks)
-      {
-        value = task->get ("project");
-        table.addCell (row++, columnCount, value);
-      }
-    }
-
-    else if (*col == "priority")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Pri");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      int row = 0;
-      foreach (task, tasks)
-      {
-        std::string value = task->get ("priority");
-        table.addCell (row++, columnCount, value);
-      }
-    }
-
-    else if (*col == "priority_long")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Pri");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      int row = 0;
-      std::string pri;
-      foreach (task, tasks)
-      {
-        pri = task->get ("priority");
-
-             if (pri == "H") pri = "High";   // TODO i18n
-        else if (pri == "M") pri = "Medium"; // TODO i18n
-        else if (pri == "L") pri = "Low";    // TODO i18n
-
-        table.addCell (row++, columnCount, pri);
-      }
-    }
-
-    else if (*col == "entry" || *col == "entry_time")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Added");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string entered;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        entered = tasks[row].get ("entry");
-        if (entered.length ())
-        {
-          Date dt (::atoi (entered.c_str ()));
-          entered = dt.toString (dateformat);
-          table.addCell (row, columnCount, entered);
-        }
-      }
-    }
-
-    else if (*col == "start" || *col == "start_time")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Started");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string started;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        started = tasks[row].get ("start");
-        if (started.length ())
-        {
-          Date dt (::atoi (started.c_str ()));
-          started = dt.toString (dateformat);
-          table.addCell (row, columnCount, started);
-        }
-      }
-    }
-
-    else if (*col == "end" || *col == "end_time")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Completed");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string ended;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        ended = tasks[row].get ("end");
-        if (ended.length ())
-        {
-          Date dt (::atoi (ended.c_str ()));
-          ended = dt.toString (dateformat);
-          table.addCell (row, columnCount, ended);
-        }
-      }
-    }
-
-    else if (*col == "due")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Due");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      int row = 0;
-      std::string due;
-      foreach (task, tasks)
-      {
-        std::string value = getDueDate (*task, dateformat);
-        table.addCell (row++, columnCount, value);
-      }
-
-      dueColumn = columnCount;
-    }
-
-    else if (*col == "countdown")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Countdown");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string due;
-      std::string countdown;
-      Date now;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        due = tasks[row].get ("due");
-        if (due.length ())
-        {
-          Date dt (::atoi (due.c_str ()));
-          countdown = Duration (now - dt).format ();
-          table.addCell (row, columnCount, countdown);
-        }
-      }
-    }
-
-    else if (*col == "countdown_compact")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Countdown");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string due;
-      std::string countdown;
-      Date now;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        due = tasks[row].get ("due");
-        if (due.length ())
-        {
-          Date dt (::atoi (due.c_str ()));
-          countdown = Duration (now - dt).formatCompact ();
-          table.addCell (row, columnCount, countdown);
-        }
-      }
-    }
-
-    else if (*col == "age")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Age");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string created;
-      std::string age;
-      Date now;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        created = tasks[row].get ("entry");
-        if (created.length ())
-        {
-          Date dt (::atoi (created.c_str ()));
-          age = Duration (now - dt).format ();
-          table.addCell (row, columnCount, age);
-        }
-      }
-    }
-
-    else if (*col == "age_compact")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Age");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      std::string created;
-      std::string age;
-      Date now;
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        created = tasks[row].get ("entry");
-        if (created.length ())
-        {
-          Date dt (::atoi (created.c_str ()));
-          age = Duration (now - dt).formatCompact ();
-          table.addCell (row, columnCount, age);
-        }
-      }
-    }
-
-    else if (*col == "active")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Active");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-        if (tasks[row].has ("start"))
-          table.addCell (row, columnCount, context.config.get ("active.indicator"));
-    }
-
-    else if (*col == "tags")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Tags");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      int row = 0;
-      std::vector <std::string> all;
-      std::string tags;
-      foreach (task, tasks)
-      {
-        task->getTags (all);
-        join (tags, " ", all);
-        table.addCell (row++, columnCount, tags);
-      }
-    }
-
-    else if (*col == "description_only")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Description");
-      table.setColumnWidth (columnCount, Table::flexible);
-      table.setColumnJustification (columnCount, Table::left);
-
-      std::string desc;
-      int row = 0;
-      foreach (task, tasks)
-      {
-        desc = task->get ("description");
-        table.addCell (row++, columnCount, desc);
-      }
-    }
-
-    else if (*col == "description")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Description");
-      table.setColumnWidth (columnCount, Table::flexible);
-      table.setColumnJustification (columnCount, Table::left);
-
-      std::string desc;
-      int row = 0;
-      foreach (task, tasks)
-      {
-        desc = getFullDescription (*task, report);
-        table.addCell (row++, columnCount, desc);
-      }
-    }
-
-    else if (*col == "recur")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Recur");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-      {
-        std::string recur = tasks[row].get ("recur");
-        if (recur != "")
-        {
-          table.addCell (row, columnCount, recur);
-        }
-      }
-    }
-
-    else if (*col == "recurrence_indicator")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "R");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-        if (tasks[row].has ("recur"))
-          table.addCell (row, columnCount, context.config.get ("recurrence.indicator"));
-    }
-
-    else if (*col == "tag_indicator")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "T");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      for (unsigned int row = 0; row < tasks.size(); ++row)
-        if (tasks[row].getTagCount ())
-          table.addCell (row, columnCount, context.config.get ("tag.indicator"));
-    }
-
-    else if (*col == "wait")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Wait");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      int row = 0;
-      std::string wait;
-      foreach (task, tasks)
-      {
-        wait = task->get ("wait");
-        if (wait != "")
-        {
-          Date dt (::atoi (wait.c_str ()));
-          wait = dt.toString (dateformat);
-          table.addCell (row++, columnCount, wait);
-        }
-      }
-    }
-
-    else if (*col == "depends")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Deps");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      int row = 0;
-      std::vector <Task> blocked;
-      std::vector <int> blocked_ids;
-      std::string deps;
-      foreach (task, tasks)
-      {
-        dependencyGetBlocking (*task, blocked);
-        foreach (b, blocked)
-          blocked_ids.push_back (b->id);
-
-        join (deps, ",", blocked_ids);
-        blocked_ids.clear ();
-        blocked.clear ();
-
-        table.addCell (row++, columnCount, deps);
-      }
-    }
-
-    else if (*col == "urgency")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Urgency");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::right);
-
-      int row = 0;
-      foreach (task, tasks)
-      {
-        std::string value = format (task->urgency (), 4, 3);
-        table.addCell (row++, columnCount, value);
-      }
-    }
-
-    else if (*col == "status")
-    {
-      table.addColumn (columnLabels[*col] != "" ? columnLabels[*col] : "Status");
-      table.setColumnWidth (columnCount, Table::minimum);
-      table.setColumnJustification (columnCount, Table::left);
-
-      int row = 0;
-      foreach (task, tasks)
-      {
-        table.addCell (row++, columnCount, task->statusToText (task->getStatus ()));
-      }
-    }
-
-    // Common to all columns.
-    // Add underline.
-    if (context.color () && context.config.getBoolean ("fontunderline"))
-      table.setColumnUnderline (columnCount);
-    else
-      table.setTableDashedUnderline ();
-
-    ++columnCount;
-  }
-
-  // Dynamically add sort criteria.
-  // Build a map of column names -> index.
-  std::map <std::string, unsigned int> columnIndex;
-  for (unsigned int c = 0; c < columns.size (); ++c)
-    columnIndex[columns[c]] = c;
-
-  foreach (sortColumn, sortOrder)
-  {
-    // Separate column and direction.
-    std::string column = sortColumn->substr (0, sortColumn->length () - 1);
-    char direction = (*sortColumn)[sortColumn->length () - 1];
-
-    // TODO This code should really be using Att::type.
-    if (column == "id" || column == "urgency")
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingNumeric :
-                      Table::descendingNumeric));
-
-    else if (column == "priority")
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingPriority :
-                      Table::descendingPriority));
-
-    else if (column == "entry"      || column == "start"    || column == "wait"       ||
-             column == "until"      || column == "end"      || column == "entry_time" ||
-             column == "start_time" || column == "end_time")
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingDate :
-                      Table::descendingDate));
-
-    else if (column == "due")
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingDueDate :
-                      Table::descendingDueDate));
-
-    else if (column == "recur" || column == "age" || column == "age_compact")
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingPeriod :
-                      Table::descendingPeriod));
-
-    else if (column == "countdown" || column == "countdown_compact")
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::descendingPeriod :   // Yes, these are flipped.
-                      Table::ascendingPeriod));   // Yes, these are flipped.
-
-    else
-      table.sortOn (columnIndex[column],
-                    (direction == '+' ?
-                      Table::ascendingCharacter :
-                      Table::descendingCharacter));
-  }
-
-  // Now auto colorize all rows.
-  if (context.color ())
-  {
-    for (unsigned int row = 0; row < tasks.size (); ++row)
-    {
-      Color c (tasks[row].get ("fg") + " " + tasks[row].get ("bg"));
-      autoColorize (tasks[row], c);
-      table.setRowColor (row, c);
-    }
-  }
-
-  // If an alternating row color is specified, notify the table.
-  if (context.color ())
-  {
-    Color alternate (context.config.get ("color.alternate"));
-    if (alternate.nontrivial ())
-      table.setTableAlternateColor (alternate);
-  }
+  // Sort the tasks.
+  std::vector <int> sequence;
+  for (int i = 0; i < tasks.size (); ++i)
+    sequence.push_back (i);
+
+  sort_tasks (tasks, sequence, reportSort);
+
+  // Configure the view.
+  View view;
+  view.width (context.getWidth ());
+  view.leftMargin (context.config.getInteger ("indent.report"));
+  view.extraPadding (context.config.getInteger ("row.padding"));
+  view.intraPadding (context.config.getInteger ("column.padding"));
+
+  Color label (context.config.get ("color.label"));
+  view.colorHeader (label);
+
+  Color alternate (context.config.get ("color.alternate"));
+  view.colorOdd (alternate);
+  view.intraColorOdd (alternate);
+
+  // Add the columns.
+  std::vector <std::string>::iterator it;
+  for (it = columns.begin (); it != columns.end (); ++it)
+    view.add (Column::factory (*it, report));
 
   // How many lines taken up by table header?
   int table_header;
@@ -650,21 +276,24 @@ int handleCustomReport (const std::string& report, std::string& outs)
               + context.footnotes.size ();
 
   std::stringstream out;
-  if (table.rowCount ())
+  if (tasks.size ())
   {
-    out << optionalBlankLine ()
-        << table.render (maxrows, maxlines)
-        << optionalBlankLine ()
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " task" : " tasks");
+    view.truncateRows (maxrows);
+    view.truncateLines (maxlines);
 
-    if (maxrows && maxrows < table.rowCount ())
+    out << optionalBlankLine ()
+        << view.render (tasks, sequence)
+        << optionalBlankLine ()
+        << tasks.size ()
+        << (tasks.size () == 1 ? " task" : " tasks");
+
+    if (maxrows && maxrows < view.rows ())
       out << ", " << maxrows << " shown";
 
-    if (maxlines && maxlines < table.rowCount ())
+    if (maxlines && maxlines < view.rows ())
       out << ", truncated to " << maxlines - table_header << " lines";
 
-    out << std::endl;
+    out << "\n";
   }
   else
   {
@@ -675,123 +304,6 @@ int handleCustomReport (const std::string& report, std::string& outs)
 
   outs = out.str ();
   return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void validReportColumns (const std::vector <std::string>& columns)
-{
-  std::vector <std::string> bad;
-
-  std::vector <std::string>::const_iterator it;
-  for (it = columns.begin (); it != columns.end (); ++it)
-    if (*it != "id"                   &&
-        *it != "uuid"                 &&
-        *it != "project"              &&
-        *it != "priority"             &&
-        *it != "priority_long"        &&
-        *it != "entry"                &&
-        *it != "entry_time"           &&  // TODO Deprecated
-        *it != "start"                &&
-        *it != "start_time"           &&  // TODO Deprecated
-        *it != "end"                  &&
-        *it != "end_time"             &&  // TODO Deprecated
-        *it != "due"                  &&
-        *it != "countdown"            &&
-        *it != "countdown_compact"    &&
-        *it != "age"                  &&
-        *it != "age_compact"          &&
-        *it != "active"               &&
-        *it != "tags"                 &&
-        *it != "recur"                &&
-        *it != "recurrence_indicator" &&
-        *it != "tag_indicator"        &&
-        *it != "description_only"     &&
-        *it != "description"          &&
-        *it != "wait"                 &&
-        *it != "depends"              &&
-        *it != "urgency"              &&
-        *it != "status")
-      bad.push_back (*it);
-
-  if (bad.size ())
-  {
-    std::string error;
-    join (error, ", ", bad);
-    throw std::string ("Unrecognized column name: ") + error + ".";
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void validSortColumns (
-  const std::vector <std::string>& columns,
-  const std::vector <std::string>& sortColumns)
-{
-  std::vector <std::string> bad;
-  std::vector <std::string>::const_iterator sc;
-  for (sc = sortColumns.begin (); sc != sortColumns.end (); ++sc)
-  {
-    char direction = (*sc)[sc->length () - 1];
-    if (direction != '-' && direction != '+')
-      throw std::string ("Sort column '") +
-            *sc +
-            "' does not have a +/- ascending/descending indicator.";
-
-    std::vector <std::string>::const_iterator co;
-    for (co = columns.begin (); co != columns.end (); ++co)
-      if (sc->substr (0, sc->length () - 1) == *co)
-        break;
-
-    if (co == columns.end ())
-      bad.push_back (*sc);
-  }
-
-  if (bad.size ())
-  {
-    std::string error;
-    join (error, ", ", bad);
-    throw std::string ("Sort column is not part of the report: ") + error + ".";
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// A value of zero mean unlimited.
-// A value of 'page' means however many screen lines there are.
-// A value of a positive integer is a row limit.
-void getLimits (const std::string& report, int& rows, int& lines)
-{
-  rows = 0;
-  lines = 0;
-
-  int screenheight = 0;
-
-  // If a report has a stated limit, use it.
-  if (report != "")
-  {
-    std::string name = "report." + report + ".limit";
-    if (context.config.get (name) == "page")
-      lines = screenheight = context.getHeight ();
-    else
-      rows = context.config.getInteger (name);
-  }
-
-  // If the custom report has a defined limit, then allow a numeric override.
-  // This is an integer specified as a filter (limit:10).
-  if (context.task.has ("limit"))
-  {
-    if (context.task.get ("limit") == "page")
-    {
-      if (screenheight == 0)
-        screenheight = context.getHeight ();
-
-      rows = 0;
-      lines = screenheight;
-    }
-    else
-    {
-      rows = atoi (context.task.get ("limit").c_str ());
-      lines = 0;
-    }
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

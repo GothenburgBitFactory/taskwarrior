@@ -42,6 +42,8 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task ()
 : id (0)
+, urgency_value (0.0)
+, recalc_urgency (true)
 {
 }
 
@@ -121,6 +123,8 @@ void Task::setEntry ()
   char entryTime[16];
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
   set ("entry", entryTime); // No i18n
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +137,8 @@ Task::status Task::getStatus () const
 void Task::setStatus (Task::status status)
 {
   set ("status", statusToText (status)); // No i18n
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -551,6 +557,8 @@ void Task::setAnnotations (const std::vector <Att>& annotations)
   std::vector <Att>::const_iterator ci;
   for (ci = annotations.begin (); ci != annotations.end (); ++ci)
     (*this)[ci->name ()] = *ci;
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -885,13 +893,14 @@ int Task::determineVersion (const std::string& line)
 //
 // See rfc31-urgency.txt for full details.
 //
-double Task::urgency ()
+float Task::urgency ()
 {
-  double urgency = 0.0;
+  if (! recalc_urgency)
+    return urgency_value;
 
   // urgency.priority.coefficient
-  double coefficient = context.config.getReal ("urgency.priority.coefficient");
-  double term;
+  float coefficient = context.config.getReal ("urgency.priority.coefficient");
+  float term;
 
   std::string value = get ("priority");
        if (value == "H") term = 1.0;
@@ -899,7 +908,7 @@ double Task::urgency ()
   else if (value == "L") term = 0.3;
   else                   term = 0.0;
 
-  urgency += term * coefficient;
+  urgency_value += term * coefficient;
 
   // urgency.project.coefficient
   coefficient = context.config.getReal ("urgency.project.coefficient");
@@ -908,7 +917,7 @@ double Task::urgency ()
   if (value != "") term = 1.0;
   else             term = 0.0;
 
-  urgency += term * coefficient;
+  urgency_value += term * coefficient;
 
   // urgency.active.coefficient
   coefficient = context.config.getReal ("urgency.active.coefficient");
@@ -917,7 +926,7 @@ double Task::urgency ()
   if (value != "") term = 1.0;
   else             term = 0.0;
 
-  urgency += term * coefficient;
+  urgency_value += term * coefficient;
 
   // urgency.waiting.coefficient
   coefficient = context.config.getReal ("urgency.waiting.coefficient");
@@ -926,7 +935,7 @@ double Task::urgency ()
        if (value == "pending") term = 1.0;
   else if (value == "waiting") term = 0.0;
 
-  urgency += term * coefficient;
+  urgency_value += term * coefficient;
 
   // urgency.blocked.coefficient
   coefficient = context.config.getReal ("urgency.blocked.coefficient");
@@ -935,7 +944,7 @@ double Task::urgency ()
   if (value != "") term = 1.0;
   else             term = 0.0;
 
-  urgency += term * coefficient;
+  urgency_value += term * coefficient;
 
   // urgency.annotations.coefficient
   coefficient = context.config.getReal ("urgency.annotations.coefficient");
@@ -947,7 +956,7 @@ double Task::urgency ()
   else if (annos.size () == 1) term = 0.8;
   else                         term = 0.0;
 
-  urgency += term * coefficient;
+  urgency_value += term * coefficient;
 
   // urgency.tags.coefficient
   coefficient = context.config.getReal ("urgency.tags.coefficient");
@@ -958,7 +967,7 @@ double Task::urgency ()
   else if (count == 1) term = 0.8;
   else                 term = 0.0;
 
-  urgency += term * coefficient;
+  urgency_value += term * coefficient;
 
   // urgency.next.coefficient
   coefficient = context.config.getReal ("urgency.next.coefficient");
@@ -966,7 +975,7 @@ double Task::urgency ()
   if (hasTag ("next")) term = 1.0;
   else                 term = 0.0;
 
-  urgency += term * coefficient;
+  urgency_value += term * coefficient;
 
   // urgency.due.coefficient
   // overdue days 7 -> 1.0
@@ -1025,7 +1034,7 @@ double Task::urgency ()
   else
     term = 0.0;
 
-  urgency += term * coefficient;
+  urgency_value += term * coefficient;
 
   // Tag- and project-specific coefficients.
   std::vector <std::string> all;
@@ -1044,7 +1053,7 @@ double Task::urgency ()
         coefficient = context.config.getReal (*var);
 
         if (get ("project").find (project) == 0)
-          urgency += coefficient;
+          urgency_value += coefficient;
       }
 
     // urgency.user.tag.<tag>.coefficient
@@ -1055,7 +1064,7 @@ double Task::urgency ()
         coefficient = context.config.getReal (*var);
 
         if (hasTag (tag))
-          urgency += coefficient;
+          urgency_value += coefficient;
       }
     }
   }
@@ -1066,10 +1075,11 @@ double Task::urgency ()
   if (dependencyIsBlocking (*this)) term = 1.0;
   else                              term = 0.0;
 
-  urgency += term * coefficient;
+  urgency_value += term * coefficient;
 
   // Return the sum of all terms.
-  return urgency;
+  recalc_urgency = false;
+  return urgency_value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

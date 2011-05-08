@@ -52,8 +52,10 @@ public:
   void extraPadding (int padding) { _extra_padding = padding;    }
   void extraColorOdd (Color& c)   { _extra_odd = c;              }
   void extraColorEven (Color& c)  { _extra_even = c;             }
-  void truncate (int n)           { _truncate = n;               }
+  void truncateLines (int n)      { _truncate_lines = n;         }
+  void truncateRows (int n)       { _truncate_rows = n;          }
   int lines ()                    { return _lines;               }
+  int rows ()                     { return _rows;                }
 
   // View rendering.
   std::string render (std::vector <Task>&, std::vector <int>&);
@@ -71,8 +73,10 @@ private:
   int                   _extra_padding;
   Color                 _extra_odd;
   Color                 _extra_even;
-  int                   _truncate;
+  int                   _truncate_lines;
+  int                   _truncate_rows;
   int                   _lines;
+  int                   _rows;
 };
 
 #endif

@@ -52,6 +52,8 @@ public:
 
   // Public data.
   int id;
+  float urgency_value;
+  bool recalc_urgency;
 
   // Series of helper functions.
   static status textToStatus (const std::string&);
@@ -82,7 +84,7 @@ public:
 
   void validate () const;
 
-  double urgency ();
+  float urgency ();
 
 private:
   int determineVersion (const std::string&);

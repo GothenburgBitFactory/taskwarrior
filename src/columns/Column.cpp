@@ -52,7 +52,7 @@ extern Context context;
 //
 //   <type>[.<format>]
 //
-Column* Column::factory (const std::string& name)
+Column* Column::factory (const std::string& name, const std::string& report)
 {
   // Decompose name into type and style.
   std::string::size_type dot = name.find ('.');
@@ -89,33 +89,8 @@ Column* Column::factory (const std::string& name)
   else
     throw std::string ("Unrecognized column type '") + column_name + "'";
 
+  column->setReport (report);
   column->setStyle (column_style);
-
-/*
-  // TODO Load the report column def from config
-  // TODO Parse column defs
-  // TODO   Create column object
-  // TODO   Column: name
-  // TODO   Column: style
-  // TODO   Column: break
-
-  // TODO Color: odd
-  // TODO Color: even
-  // TODO Color: intra_odd
-  // TODO Color: intra_even
-  // TODO Color: extra_odd
-  // TODO Color: extra_even
-  // TODO Color: header
-
-  // Terminal width.
-  view.width (getWidth ());
-
-  // TODO Intra padding.
-  // TODO Extra padding.
-  // TODO Margin.
-  // TODO Truncate lines/page.
-*/
-
   return column;
 }
 
@@ -124,6 +99,7 @@ Column::Column ()
 : _type ("string")
 , _style ("default")
 , _label ("")
+, _report ("")
 {
 }
 

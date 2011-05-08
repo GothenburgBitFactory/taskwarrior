@@ -125,8 +125,8 @@ int handleReportGHistoryAnnual (std::string&);
 
 // custom.cpp
 int handleCustomReport (const std::string&, std::string&);
-void validReportColumns (const std::vector <std::string>&);
-void validSortColumns (const std::vector <std::string>&, const std::vector <std::string>&);
+void validateReportColumns (const std::vector <std::string>&);
+void validateSortColumns (const std::vector <std::string>&);
 void getLimits (const std::string&, int&, int&);
 
 // rules.cpp
