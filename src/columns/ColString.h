@@ -24,44 +24,26 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_COLUMN
-#define INCLUDED_COLUMN
+#ifndef INCLUDED_COLSTRING
+#define INCLUDED_COLSTRING
 
 #include <vector>
 #include <string>
+#include <Column.h>
 #include <Color.h>
 #include <Task.h>
 
-class Column
+class ColumnString : public Column
 {
 public:
-  static Column* factory (const std::string&, const std::string&);
+  ColumnString ();
+  ~ColumnString ();
 
-  Column ();
-  Column (const Column&);
-  Column& operator= (const Column&);
-  bool operator== (const Column&) const;     // TODO Is this necessary?
-  ~Column ();
+  void setReport (const std::string&);
+  void measure (const std::string&, int&, int&);
+  void render (std::vector <std::string>&, const std::string&, int, Color&);
 
-  std::string getStyle ()                  { return _style;  }
-  std::string getLabel ()                  { return _label;  }
-  std::string type () const                { return _type;   }
-
-  virtual void setStyle  (const std::string& value) { _style = value;  }
-  virtual void setLabel  (const std::string& value) { _label = value;  }
-  virtual void setReport (const std::string& value) { _report = value; }
-
-  virtual void measure (const std::string&, int&, int&);
-  virtual void measure (Task&, int&, int&);
-  virtual void renderHeader (std::vector <std::string>&, int, Color&);
-  virtual void render (std::vector <std::string>&, const std::string&, int, Color&);
-  virtual void render (std::vector <std::string>&, Task&, int, Color&);
-
-protected:
-  std::string _type;
-  std::string _style;
-  std::string _label;
-  std::string _report;
+private:
 };
 
 #endif

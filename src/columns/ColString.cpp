@@ -26,70 +26,70 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <Context.h>
-#include <Nibbler.h>
-#include <ColRecur.h>
+#include <ColString.h>
 #include <text.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnRecur::ColumnRecur ()
+ColumnString::ColumnString ()
 {
   _type  = "string";
   _style = "default";
-  _label = "Recur";
+  _label = "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnRecur::~ColumnRecur ()
+ColumnString::~ColumnString ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Overriden so that style <----> label are linked.
-// Note that you can not determine which gets called first.
-void ColumnRecur::setStyle (const std::string& value)
+// ColumnString is unique - it copies the report name into the label.  This is
+// a kludgy reuse of an otherwise unused member.
+void ColumnString::setReport (const std::string& value)
 {
-  _style = value;
-
-  if (_style == "indicator" && _label == "Recur")
-    _label = _label.substr (0, context.config.get ("recurrence.indicator").length ());
+  _report = _label = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnRecur::measure (Task& task, int& minimum, int& maximum)
+void ColumnString::measure (const std::string& value, int& minimum, int& maximum)
 {
-  if (_style == "default")
+  maximum = value.length ();
+
+  if (_style == "fixed")
   {
-    minimum = maximum = task.get ("recur").length ();
+    minimum = maximum;
   }
-  else if (_style == "indicator")
+  else if (_style == "default")
   {
-    if (task.has ("recur"))
-      minimum = maximum = context.config.get ("recurrence.indicator").length ();
+    minimum = longestWord (value);
   }
   else
     throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnRecur::render (
+void ColumnString::render (
   std::vector <std::string>& lines,
-  Task& task,
+  const std::string& value,
   int width,
   Color& color)
 {
-  if (_style == "default")
+  if (_style == "fixed")
   {
-    lines.push_back (color.colorize (rightJustify (task.get ("recur"), width)));
+    lines.push_back (value);
   }
-  else if (_style == "indicator")
+  else if (_style == "default")
   {
-    if (task.has ("recur"))
-      lines.push_back (
-        color.colorize (
-          rightJustify (context.config.get ("recurrence.indicator"), width)));
+    std::vector <std::string> raw;
+    wrapText (raw, value, width);
+
+    std::vector <std::string>::iterator i;
+    for (i = raw.begin (); i != raw.end (); ++i)
+      lines.push_back (color.colorize (leftJustify (*i, width)));
   }
 }
 

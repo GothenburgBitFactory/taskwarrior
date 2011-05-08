@@ -38,6 +38,7 @@
 #include <ColRecur.h>
 #include <ColStart.h>
 #include <ColStatus.h>
+#include <ColString.h>
 #include <ColTags.h>
 #include <ColUntil.h>
 #include <ColUrgency.h>
@@ -86,8 +87,11 @@ Column* Column::factory (const std::string& name, const std::string& report)
   else if (column_name == "urgency")     column = new ColumnUrgency ();
   else if (column_name == "uuid")        column = new ColumnUUID ();
   else if (column_name == "wait")        column = new ColumnWait ();
+
+  // Special non-task column
+  else if (column_name == "string")      column = new ColumnString ();
   else
-    throw std::string ("Unrecognized column name '") + column_name + "'";
+    throw std::string ("Unrecognized column name '") + column_name + "'.";
 
   column->setReport (report);
   column->setStyle (column_style);
@@ -162,6 +166,30 @@ void Column::renderHeader (
     lines.push_back (c.colorize (leftJustify (header, width)));
     lines.push_back (c.colorize (std::string (width, '-')));
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Column::measure (const std::string& value, int& minimum, int& maximum)
+{
+  throw std::string ("Virtual method Column::measure not overriden.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Column::measure (Task& task, int& minimum, int& maximum)
+{
+  throw std::string ("Virtual method Column::measure not overriden.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Column::render (std::vector <std::string>& lines, const std::string& value, int width, Color& color)
+{
+  throw std::string ("Virtual method Column::render not overriden.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Column::render (std::vector <std::string>& lines, Task& task, int width, Color& color)
+{
+  throw std::string ("Virtual method Column::render not overriden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
