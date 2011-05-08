@@ -14,6 +14,7 @@ New Features in taskwarrior 2.0.0
   - Reports may now be sorted by columns that are not displayed (example: ID,
     project, due date and description sorted by urgency).
   - Performance enhancements.
+  - New 'next' report, that gauges urgency and reports the most urgent tasks.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -38,7 +39,7 @@ New configuration options in taskwarrior 2.0.0
 
 Newly deprecated features in taskwarrior 2.0.0
 
-  - 
+  - The 'next' configuration variable has been removed.
 
 ---
 

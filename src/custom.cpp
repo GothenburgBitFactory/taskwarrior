@@ -287,10 +287,10 @@ int handleCustomReport (const std::string& report, std::string& outs)
         << tasks.size ()
         << (tasks.size () == 1 ? " task" : " tasks");
 
-    if (maxrows && maxrows < view.rows ())
+    if (maxrows && maxrows < tasks.size ())
       out << ", " << maxrows << " shown";
 
-    if (maxlines && maxlines < view.rows ())
+    if (maxlines && maxlines < tasks.size ())
       out << ", truncated to " << maxlines - table_header << " lines";
 
     out << "\n";

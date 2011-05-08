@@ -229,13 +229,6 @@ Controls left and right padding around each row of the report output.  Default i
 Controls padding between columns of the report output.  Default is "1".
 
 .TP
-.B next=2
-Is a number, defaulting to 2, which is the number of tasks for each project that
-are shown in the
-.B task next
-command.
-
-.TP
 .B bulk=2
 Is a number, defaulting to 2.  When more than this number of tasks are modified
 in a single command, confirmation will be required, unless the
@@ -247,10 +240,9 @@ This is useful for preventing large-scale unintended changes.
 .TP
 .B nag=You have higher priority tasks.
 This may be a string of text, or blank. It is used as a prompt when a task is
-started or completed that is not considered high priority. The "task next"
-command lists important tasks, and completing one of those does not generate
-this nagging. Default value is: You have higher priority tasks.  It is a gentle
-reminder that you are contradicting your own priority settings.
+started or completed that is not considered high priority.  Default value is:
+You have higher priority tasks.  It is a gentle reminder that you are
+contradicting your own priority settings.
 
 .TP
 .B complete.all.projects=yes
@@ -1023,7 +1015,7 @@ Lists all tasks matching the specified criteria.
 
 .TP
 .B next
-Lists all tasks with upcoming due dates matching the specified criteria.
+Lists the most important tasks.
 
 .SH "CREDITS & COPYRIGHTS"
 Taskwarrior was written by P. Beckingham <paul@beckingham.net>.

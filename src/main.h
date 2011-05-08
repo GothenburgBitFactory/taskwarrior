@@ -106,7 +106,6 @@ int handleReportSummary (std::string&);
 int handleReportCalendar (std::string&);
 int handleReportStats (std::string&);
 int handleReportTimesheet (std::string&);
-void gatherNextTasks (std::vector <Task>&);
 std::string getFullDescription (Task&, const std::string&);
 std::string getDueDate (Task&, const std::string&);
 std::string onProjectChange (Task&, bool scope = true);
