@@ -21,6 +21,8 @@ fi
 
 for i in *.t
 do
+  echo '#' $i >>all.log
+
   if [ $BAR == 1 ]; then
     $VRAMSTEG --label 'All tests' --min 0 --max $TOTAL --current $COUNT --percentage --start $START --estimate
     COUNT=$[COUNT + 1]

@@ -35,28 +35,28 @@ if (open my $fh, '>', 'countdown.rc')
 {
   print $fh "data.location=.\n";
   print $fh "report.up.description=countdown+ report\n";
-  print $fh "report.up.columns=id,countdown,description\n";
+  print $fh "report.up.columns=id,due.countdown,description\n";
   print $fh "report.up.labels=ID,Countdown,Description\n";
   print $fh "report.up.filter=status:pending\n";
-  print $fh "report.up.sort=countdown+\n";
+  print $fh "report.up.sort=due+\n";
 
   print $fh "report.down.description=countdown- report\n";
-  print $fh "report.down.columns=id,countdown,description\n";
+  print $fh "report.down.columns=id,due.countdown,description\n";
   print $fh "report.down.labels=ID,Countdown,Description\n";
   print $fh "report.down.filter=status:pending\n";
-  print $fh "report.down.sort=countdown-\n";
+  print $fh "report.down.sort=due-\n";
 
   print $fh "report.upc.description=countdown_compact+ report\n";
   print $fh "report.upc.columns=id,countdown_compact,description\n";
   print $fh "report.upc.labels=ID,Countdown,Description\n";
   print $fh "report.upc.filter=status:pending\n";
-  print $fh "report.upc.sort=countdown_compact+\n";
+  print $fh "report.upc.sort=due+\n";
 
   print $fh "report.downc.description=countdown_compact- report\n";
   print $fh "report.downc.columns=id,countdown_compact,description\n";
   print $fh "report.downc.labels=ID,Countdown,Description\n";
   print $fh "report.downc.filter=status:pending\n";
-  print $fh "report.downc.sort=countdown_compact-\n";
+  print $fh "report.downc.sort=due-\n";
 
   close $fh;
   ok (-r 'countdown.rc', 'Created countdown.rc');

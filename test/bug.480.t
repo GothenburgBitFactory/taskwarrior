@@ -33,7 +33,8 @@ use Test::More tests => 40;
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "defaultwidth=0\n";
 
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
@@ -44,19 +45,20 @@ qx{../src/task rc:bug.rc add one +ordinary};
 qx{../src/task rc:bug.rc add two +\@strange};
 
 my $output = qx{../src/task rc:bug.rc long +ordinary};
-like ($output,   qr/one/, '+ordinary explicitly included');
+diag ($output);
+like ($output,   qr/one/, '+ordinary explicitly included'); # 2
 unlike ($output, qr/two/, '@strange implicitly excluded');
 
 $output = qx{../src/task rc:bug.rc long -ordinary};
 unlike ($output, qr/one/, '-ordinary explicitly excluded');
-like ($output,   qr/two/, '@strange implicitly included');
+like ($output,   qr/two/, '@strange implicitly included'); # 5
 
 $output = qx{../src/task rc:bug.rc long +\@strange};
 unlike ($output, qr/one/, '-ordinary implicitly excluded');
-like ($output,   qr/two/, '@strange explicitly included');
+like ($output,   qr/two/, '@strange explicitly included'); # 7
 
 $output = qx{../src/task rc:bug.rc long -\@strange};
-like ($output,   qr/one/, '+ordinary implicitly included');
+like ($output,   qr/one/, '+ordinary implicitly included'); # 8
 unlike ($output, qr/two/, '@strange explicitly excluded');
 
 # Bug #XXX - '-t1 -t2' doesn't seem to work, when @ characters are involved.

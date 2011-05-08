@@ -34,7 +34,8 @@ use Test::More tests => 8;
 if (open my $fh, '>', 'color.rc')
 {
   print $fh "data.location=.\n",
-            "color.pri.H=red\n";
+            "color.pri.H=red\n",
+            "fontunderline=no\n";
   close $fh;
   ok (-r 'color.rc', 'Created color.rc');
 }

@@ -35,7 +35,7 @@ if (open my $fh, '>', 'pri.rc')
 {
   print $fh "data.location=.\n",
             "report.foo.description=DESC\n",
-            "report.foo.columns=id,priority_long\n",
+            "report.foo.columns=id,priority.long\n",
             "report.foo.labels=ID,P\n",
             "report.foo.sort=id+\n";
   close $fh;
@@ -49,11 +49,11 @@ qx{../src/task rc:pri.rc add three pri:L};
 qx{../src/task rc:pri.rc add four  pri:};
 
 my $output = qx{../src/task rc:pri.rc foo 2>&1};
-like ($output,   qr/ID P/,       'priority_long indicator heading');
-like ($output,   qr/1\s+High/,   'priority_long High');
-like ($output,   qr/2\s+Medium/, 'priority_long Medium');
-like ($output,   qr/3\s+Low/,    'priority_long Low');
-like ($output,   qr/4\s*\n/,      'priority_long None');
+like ($output,   qr/ID.+Pri/,    'priority.long indicator heading');
+like ($output,   qr/1\s+High/,   'priority.long High');
+like ($output,   qr/2\s+Medium/, 'priority.long Medium');
+like ($output,   qr/3\s+Low/,    'priority.long Low');
+like ($output,   qr/4\s*\n/,     'priority.long None');
 
 # Cleanup.
 unlink 'pending.data';

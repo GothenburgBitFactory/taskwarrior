@@ -35,7 +35,7 @@ if (open my $fh, '>', 'custom.rc')
 {
   print $fh "data.location=.\n",
             "report.foo.description=DESC\n",
-            "report.foo.columns=id,recurrence_indicator\n",
+            "report.foo.columns=id,recur.indicator\n",
             "report.foo.labels=ID,R\n",
             "report.foo.sort=id+\n";
   close $fh;
@@ -46,7 +46,7 @@ if (open my $fh, '>', 'custom.rc')
 qx{../src/task rc:custom.rc add foo due:tomorrow recur:weekly};
 qx{../src/task rc:custom.rc add bar};
 my $output = qx{../src/task rc:custom.rc foo 2>&1};
-like ($output,   qr/ID R/,   'Recurrence indicator heading');
+like ($output,   qr/ID.+R/, 'Recurrence indicator heading');
 like ($output,   qr/3\s+R/, 'Recurrence indicator t1');
 unlike ($output, qr/2\s+R/, 'No recurrence indicator t2');
 

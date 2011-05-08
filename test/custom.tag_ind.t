@@ -35,7 +35,7 @@ if (open my $fh, '>', 'custom.rc')
 {
   print $fh "data.location=.\n",
             "report.foo.description=DESC\n",
-            "report.foo.columns=id,tag_indicator\n",
+            "report.foo.columns=id,tags.indicator\n",
             "report.foo.labels=ID,T\n",
             "report.foo.sort=id+\n";
   close $fh;
@@ -46,7 +46,7 @@ if (open my $fh, '>', 'custom.rc')
 qx{../src/task rc:custom.rc add foo +tag};
 qx{../src/task rc:custom.rc add bar};
 my $output = qx{../src/task rc:custom.rc foo 2>&1};
-like ($output,   qr/ID T/,   'Tag indicator heading');
+like ($output,   qr/ID.+T/,  'Tag indicator heading');
 like ($output,   qr/1\s+\+/, 'Tag indicator t1');
 unlike ($output, qr/2\s+\+/, 'No tag indicator t2');
 

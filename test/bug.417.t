@@ -44,11 +44,11 @@ qx{../src/task rc:bug.rc add due:yesterday before};
 qx{../src/task rc:bug.rc add due:today     now};
 qx{../src/task rc:bug.rc add due:tomorrow  after};
 
-my $output = qx{../src/task rc:bug.rc rc.report.long.sort:countdown+ long};
-like ($output, qr/before.+now.+after/ms, 'rc.report.long.sort:countdown+ works');
+my $output = qx{../src/task rc:bug.rc rc.report.long.sort:due+ long};
+like ($output, qr/before.+now.+after/ms, 'rc.report.long.sort:due+ works');
 
-$output = qx{../src/task rc:bug.rc rc.report.long.sort:countdown- long};
-like ($output, qr/after.+now.+before/ms, 'rc.report.long.sort:countdown- works');
+$output = qx{../src/task rc:bug.rc rc.report.long.sort:due- long};
+like ($output, qr/after.+now.+before/ms, 'rc.report.long.sort:due- works');
 
 # Cleanup.
 unlink 'pending.data';
