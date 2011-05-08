@@ -87,7 +87,7 @@ Column* Column::factory (const std::string& name, const std::string& report)
   else if (column_name == "uuid")        column = new ColumnUUID ();
   else if (column_name == "wait")        column = new ColumnWait ();
   else
-    throw std::string ("Unrecognized column type '") + column_name + "'";
+    throw std::string ("Unrecognized column name '") + column_name + "'";
 
   column->setReport (report);
   column->setStyle (column_style);
