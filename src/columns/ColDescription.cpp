@@ -55,7 +55,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   std::string description = task.get ("description");
 
   // The text
-  // <date> <anno>
+  // <indent> <date> <anno>
   // ...
   if (_style == "default")
   {
@@ -64,16 +64,20 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
     if (format == "")
       format = context.config.get ("dateformat");
 
-    minimum = Date::length (format);
-    minimum = longestWord (description);
+    int min_desc = longestWord (description);
+    int min_anno = indent + Date::length (format);
+    minimum = max (min_desc, min_anno);
     maximum = description.length ();
 
     std::vector <Att> annos;
     task.getAnnotations (annos);
     std::vector <Att>::iterator i;
     for (i = annos.begin (); i != annos.end (); i++)
-      if (indent + i->value ().length () + minimum + 1 > maximum)
-        maximum = indent + i->value ().length () + minimum + 1;
+    {
+      int len = min_anno + 1 + i->value ().length ();
+      if (len > maximum)
+        maximum = len;
+    }
   }
 
   // Just the text
@@ -90,7 +94,9 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
     if (format == "")
       format = context.config.get ("dateformat");
 
-    minimum = max (Date::length (format), longestWord (description));
+    int min_desc = longestWord (description);
+    int min_anno = Date::length (format);
+    minimum = max (min_desc, min_anno);
     maximum = description.length ();
 
     std::vector <Att> annos;
