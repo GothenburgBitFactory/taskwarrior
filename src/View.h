@@ -59,6 +59,7 @@ public:
 
   // View rendering.
   std::string render (std::vector <Task>&, std::vector <int>&);
+  std::string render (std::vector <std::vector <std::string> >&);
 
 private:
   std::vector <Column*> _columns;
