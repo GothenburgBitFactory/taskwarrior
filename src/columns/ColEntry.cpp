@@ -40,3 +40,13 @@ ColumnEntry::~ColumnEntry ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Overriden so that style <----> label are linked.
+// Note that you can not determine which gets called first.
+void ColumnEntry::setStyle (const std::string& value)
+{
+  _style = value;
+
+  if (_style == "age" && _label == "Added") _label = "Age";
+}
+
+////////////////////////////////////////////////////////////////////////////////
