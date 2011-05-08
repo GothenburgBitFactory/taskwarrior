@@ -33,7 +33,8 @@ use Test::More tests => 7;
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "defaultwidth=100\n";
   close $fh;
   ok (-r 'recur.rc', 'Created recur.rc');
 }

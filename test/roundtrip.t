@@ -34,7 +34,8 @@ use Test::More tests => 8;
 if (open my $fh, '>', 'roundtrip.rc')
 {
   print $fh "data.location=.\n",
-            "confirmation=no\n";
+            "confirmation=no\n",
+            "defaultwidth=100\n";
   close $fh;
   ok (-r 'roundtrip.rc', 'Created roundtrip.rc');
 }
