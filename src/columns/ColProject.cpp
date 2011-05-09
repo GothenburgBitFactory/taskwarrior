@@ -58,7 +58,7 @@ void ColumnProject::measure (Task& task, int& minimum, int& maximum)
       project = project.substr (0, period);
   }
   else if (_style != "default")
-    throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
+    throw std::string ("Unrecognized column format 'project.") + _style + "'";
 
   minimum = longestWord (project);
   maximum = project.length ();

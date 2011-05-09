@@ -60,7 +60,7 @@ void ColumnID::measure (Task& task, int& minimum, int& maximum)
   minimum = maximum = length;
 
   if (_style != "default")
-    throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
+    throw std::string ("Unrecognized column format 'id.") + _style + "'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

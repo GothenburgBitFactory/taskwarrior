@@ -52,7 +52,7 @@ void ColumnUUID::measure (Task& task, int& minimum, int& maximum)
        if (_style == "default") minimum = maximum = 36;
   else if (_style == "short")   minimum = maximum = 8;
   else
-    throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
+    throw std::string ("Unrecognized column format 'uuid.") + _style + "'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

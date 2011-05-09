@@ -81,7 +81,7 @@ void ColumnTags::measure (Task& task, int& minimum, int& maximum)
     }
   }
   else
-    throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
+    throw std::string ("Unrecognized column format 'tags.") + _style + "'";
 
 }
 

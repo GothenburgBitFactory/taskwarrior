@@ -93,7 +93,7 @@ void ColumnDate::measure (Task& task, int& minimum, int& maximum)
       minimum = maximum = Duration (now - date).formatCompact ().length ();
     }
     else
-      throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
+      throw std::string ("Unrecognized column format '") + _attribute + "." + _style + "'";
   }
 }
 

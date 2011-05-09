@@ -51,7 +51,7 @@ void ColumnUrgency::measure (Task& task, int& minimum, int& maximum)
   minimum = maximum = format (task.urgency (), 4, 3).length ();
 
   if (_style != "default")
-    throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
+    throw std::string ("Unrecognized column format 'urgency.") + _style + "'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

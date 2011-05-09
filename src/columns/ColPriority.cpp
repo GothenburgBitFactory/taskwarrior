@@ -69,7 +69,7 @@ void ColumnPriority::measure (Task& task, int& minimum, int& maximum)
     else if (priority == "L") minimum = maximum = 3;
   }
   else if (_style != "default")
-    throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
+    throw std::string ("Unrecognized column format 'priority.") + _style + "'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

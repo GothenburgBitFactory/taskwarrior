@@ -78,7 +78,7 @@ void ColumnStatus::measure (Task& task, int& minimum, int& maximum)
   else if (_style == "short")
     minimum = maximum = 1;
   else
-    throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
+    throw std::string ("Unrecognized column format 'status.") + _style + "'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

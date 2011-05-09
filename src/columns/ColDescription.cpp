@@ -125,7 +125,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   }
 
   else
-    throw std::string ("Unrecognized column format '") + _type + "." + _style + "'";
+    throw std::string ("Unrecognized column format 'description.") + _style + "'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
