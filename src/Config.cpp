@@ -335,7 +335,7 @@ std::string Config::defaults =
   "\n"
   "# task minimal\n"
   "report.minimal.description=A really minimal listing\n"
-  "report.minimal.columns=id,project,description\n"
+  "report.minimal.columns=id,project,description.truncated\n"
   "report.minimal.labels=ID,Project,Description\n"
   "report.minimal.sort=project+,description+\n"
   "report.minimal.filter=status:pending\n"
