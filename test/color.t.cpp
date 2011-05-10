@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1033);
+  UnitTest t (1036);
 
   // Names matched to values.
   t.is ((int) Color (""),        (int) Color (Color::nocolor), "''        == Color::nocolor");
@@ -181,6 +181,11 @@ int main (int argc, char** argv)
 
     t.is (Color::colorize ("foo", color), std::string (codes), description);
   }
+
+  // std::string Color::strip (const std::string&);
+  t.is (Color::strip (""),                  "",    "Color::strip '' -> ''");
+  t.is (Color::strip ("foo"),               "foo", "Color::strip 'foo' -> 'foo'");
+  t.is (Color::strip ("f\033[1mo\033[0mo"), "foo", "Color::strip 'f<b>o</b>o' -> 'foo'");
 
   return 0;
 }

@@ -507,6 +507,32 @@ std::string Color::colorize (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Remove color codes from a string.
+std::string Color::strip (const std::string& input)
+{
+  int length = input.length ();
+  bool inside = false;
+  std::string output;
+  for (int i = 0; i < length; ++i)
+  {
+    if (inside)
+    {
+      if (input[i] == 'm')
+        inside = false;
+    }
+    else
+    {
+      if (input[i] == 033)
+        inside = true;
+      else
+        output += input[i];
+    }
+  }
+
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string Color::colorize (const std::string& input, const std::string& spec)
 {
   Color c (spec);
