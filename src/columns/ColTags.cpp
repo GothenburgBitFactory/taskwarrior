@@ -27,7 +27,6 @@
 
 #include <algorithm>
 #include <Context.h>
-#include <Nibbler.h>
 #include <ColTags.h>
 #include <text.h>
 

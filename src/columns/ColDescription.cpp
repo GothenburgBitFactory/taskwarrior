@@ -27,7 +27,6 @@
 
 #include <stdlib.h>
 #include <Context.h>
-#include <Nibbler.h>
 #include <Date.h>
 #include <ColDescription.h>
 #include <text.h>
