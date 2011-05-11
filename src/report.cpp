@@ -43,6 +43,7 @@
 #include <Date.h>
 #include <Duration.h>
 #include <Table.h>
+#include <ViewText.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -54,6 +55,14 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int shortUsage (std::string& outs)
 {
+  ViewText view;
+  view.width (context.getWidth ());
+  view.add ("");
+  view.add ("");
+  view.add ("");
+
+
+
   Table table;
 
   table.addColumn (" ");
@@ -284,6 +293,9 @@ int shortUsage (std::string& outs)
   std::stringstream out;
   out << table.render ()
       << "\n"
+      << "-------------\n"
+      << view.render ()
+      << "-------------\n"
       << "Documentation for taskwarrior can be found using 'man task', "
       << "'man taskrc', 'man task-tutorial', 'man task-color', 'man task-faq' "
       << "or at http://taskwarrior.org"

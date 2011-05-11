@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <Context.h>
 #include <ColString.h>
 #include <text.h>
@@ -54,21 +55,18 @@ void ColumnString::setReport (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
+//
 void ColumnString::measure (const std::string& value, int& minimum, int& maximum)
 {
-  maximum = value.length ();
+  std::string stripped = Color::strip (value);
+  maximum = stripped.length ();
 
-  if (_style == "fixed")
-  {
-    minimum = maximum;
-  }
-  else if (_style == "default")
-  {
-    minimum = longestWord (value);
-  }
+  if (_style == "left"  ||
+      _style == "right" ||
+      _style == "default")
+    minimum = longestWord (stripped);
   else
     throw std::string ("Unrecognized column format 'string.") + _style + "'";
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,11 +76,7 @@ void ColumnString::render (
   int width,
   Color& color)
 {
-  if (_style == "fixed")
-  {
-    lines.push_back (value);
-  }
-  else if (_style == "default")
+  if (_style == "default" || _style == "left")
   {
     std::vector <std::string> raw;
     wrapText (raw, value, width);
@@ -90,6 +84,15 @@ void ColumnString::render (
     std::vector <std::string>::iterator i;
     for (i = raw.begin (); i != raw.end (); ++i)
       lines.push_back (color.colorize (leftJustify (*i, width)));
+  }
+  else if (_style == "right")
+  {
+    std::vector <std::string> raw;
+    wrapText (raw, value, width);
+
+    std::vector <std::string>::iterator i;
+    for (i = raw.begin (); i != raw.end (); ++i)
+      lines.push_back (color.colorize (rightJustify (*i, width)));
   }
 }
 

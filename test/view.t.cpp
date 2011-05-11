@@ -28,7 +28,8 @@
 #include <Context.h>
 #include <Column.h>
 #include <Task.h>
-#include <View.h>
+#include <ViewTask.h>
+#include <ViewText.h>
 #include <test.h>
 #include <main.h>
 
@@ -37,7 +38,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1);
+  UnitTest t (2);
 
   try
   {
@@ -100,7 +101,7 @@ int main (int argc, char** argv)
 
     // Create a view.
     std::string report = "view.t";
-    View view;
+    ViewTask view;
     view.add (Column::factory ("id", report));
     view.add (Column::factory ("uuid.short", report));
     view.add (Column::factory ("project", report));
@@ -146,8 +147,41 @@ int main (int argc, char** argv)
 
     // Render the view.
     std::cout << view.render (data, sequence);
-
     t.is (view.lines (), 5, "View::lines == 5");
+
+    // Now render a string-only grid.
+    context.config.set ("fontunderline", false);
+    Color single_cell ("bold white on red");
+
+    ViewText string_view;
+    string_view.width (context.getWidth ());
+    string_view.leftMargin (4);
+    string_view.extraPadding (0);
+    string_view.intraPadding (1);
+    string_view.colorHeader (header_color);
+    string_view.colorOdd (odd_color);
+    string_view.colorEven (even_color);
+    string_view.intraColorOdd (odd_color);
+    string_view.intraColorEven (even_color);
+
+    string_view.add ("One");
+    string_view.add ("Two");
+    string_view.add ("Three");
+
+    int row = string_view.addRow ();
+    string_view.set (row, 0, "top left");
+    string_view.set (row, 1, "top center");
+    string_view.set (row, 2, "top right");
+
+    row = string_view.addRow ();
+    string_view.set (row, 0, "bottom left", single_cell);
+    string_view.set (row, 1, "bottom center, containing sufficient text that "
+                             "wrapping will occur because it exceeds all "
+                             "reasonable values for default width.");
+    string_view.set (row, 2, "bottom right");
+
+    std::cout << string_view.render ();
+    t.ok (string_view.lines () > 4, "View::lines > 4");
   }
 
   catch (std::string& e)

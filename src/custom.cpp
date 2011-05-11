@@ -38,7 +38,7 @@
 #include <Context.h>
 #include <Date.h>
 #include <Duration.h>
-#include <View.h>
+#include <ViewTask.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -237,7 +237,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
   sort_tasks (tasks, sequence, reportSort);
 
   // Configure the view.
-  View view;
+  ViewTask view;
   view.width (context.getWidth ());
   view.leftMargin (context.config.getInteger ("indent.report"));
   view.extraPadding (context.config.getInteger ("row.padding"));

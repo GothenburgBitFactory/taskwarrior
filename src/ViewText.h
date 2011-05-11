@@ -24,8 +24,8 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_VIEW
-#define INCLUDED_VIEW
+#ifndef INCLUDED_VIEWTEXT
+#define INCLUDED_VIEWTEXT
 
 #include <string>
 #include <vector>
@@ -33,14 +33,14 @@
 #include <Color.h>
 #include <Column.h>
 
-class View
+class ViewText
 {
 public:
-  View ();
-  ~View () {}
+  ViewText ();
+  ~ViewText () {}
 
   // View specifications.
-  void add (Column* column)       { _columns.push_back (column); }
+  void add (const std::string&);
   void width (int width)          { _width = width;              }
   void leftMargin (int margin)    { _left_margin = margin;       }
   void colorHeader (Color& c)     { _header = c;                 }
@@ -57,27 +57,34 @@ public:
   int lines ()                    { return _lines;               }
   int rows ()                     { return _rows;                }
 
+  // Data provision.
+  int addRow ();
+  void set (int, int, const std::string&, Color color = Color::nocolor);
+  void set (int, int, int, Color color = Color::nocolor);
+  void set (int, int, float, int, int, Color color = Color::nocolor);
+
   // View rendering.
-  std::string render (std::vector <Task>&, std::vector <int>&);
-  std::string render (std::vector <std::vector <std::string> >&);
+  std::string render ();
 
 private:
-  std::vector <Column*> _columns;
-  int                   _width;
-  int                   _left_margin;
-  Color                 _header;
-  Color                 _odd;
-  Color                 _even;
-  int                   _intra_padding;
-  Color                 _intra_odd;
-  Color                 _intra_even;
-  int                   _extra_padding;
-  Color                 _extra_odd;
-  Color                 _extra_even;
-  int                   _truncate_lines;
-  int                   _truncate_rows;
-  int                   _lines;
-  int                   _rows;
+  std::vector <std::vector <std::string> > _data;
+  std::vector <std::vector <Color> >       _color;
+  std::vector <Column*>                    _columns;
+  int                                      _width;
+  int                                      _left_margin;
+  Color                                    _header;
+  Color                                    _odd;
+  Color                                    _even;
+  int                                      _intra_padding;
+  Color                                    _intra_odd;
+  Color                                    _intra_even;
+  int                                      _extra_padding;
+  Color                                    _extra_odd;
+  Color                                    _extra_even;
+  int                                      _truncate_lines;
+  int                                      _truncate_rows;
+  int                                      _lines;
+  int                                      _rows;
 };
 
 #endif

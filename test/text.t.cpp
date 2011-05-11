@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (227);
+  UnitTest t (236);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -48,13 +48,12 @@ int main (int argc, char** argv)
   t.is (lines[3], "wrapping",      "wrapText line 3 -> 'wrapping'");
   t.is (lines[4], "code.",         "wrapText line 4 -> 'code.'");
 
-#ifdef NOPE
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   text = "This ☺ is a test of utf8 line extraction.";
   lines.clear ();
   wrapText (lines, text, 7);
   t.is (lines.size (), (size_t) 7, "wrapText 'This ☺ is a test of utf8 line extraction.' -> total 7 lines");
-  t.is (lines[0], "This ☺",     "wrapText line 0 -> 'This ☺'");
+  t.is (lines[0], "This ☺",        "wrapText line 0 -> 'This ☺'");
   t.is (lines[1], "is a",          "wrapText line 1 -> 'is a'");
   t.is (lines[2], "test of",       "wrapText line 2 -> 'test of'");
   t.is (lines[3], "utf8",          "wrapText line 3 -> 'utf8'");
@@ -64,12 +63,9 @@ int main (int argc, char** argv)
 
   // void extractLine (std::string& text, std::string& line, int length)
   text = "This ☺ is a test of utf8 line extraction.";
-#endif
   std::string line;
-#ifdef NOPE
   extractLine (text, line, 7);
   t.is (line, "line 1", "extractLine 7 'This ☺ is a test of utf8 line extraction.' -> 'This ☺'");
-#endif
 
   // void extractLine (std::string& text, std::string& line, int length)
   text = "line 1\nlengthy second line that exceeds width";
