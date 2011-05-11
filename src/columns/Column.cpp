@@ -147,24 +147,27 @@ void Column::renderHeader (
   int width,
   Color& color)
 {
-  // Create a basic label.
-  std::string header;
-  header.reserve (width);
-  header = _label;
-
-  // Create a fungible copy.
-  Color c = color;
-
-  // Now underline the header, or add a dashed line.
-  if (context.config.getBoolean ("fontunderline"))
+  if (_label != "")
   {
-    c.blend (Color (Color::nocolor, Color::nocolor, true, false, false));
-    lines.push_back (c.colorize (leftJustify (header, width)));
-  }
-  else
-  {
-    lines.push_back (c.colorize (leftJustify (header, width)));
-    lines.push_back (c.colorize (std::string (width, '-')));
+    // Create a basic label.
+    std::string header;
+    header.reserve (width);
+    header = _label;
+
+    // Create a fungible copy.
+    Color c = color;
+
+    // Now underline the header, or add a dashed line.
+    if (context.config.getBoolean ("fontunderline"))
+    {
+      c.blend (Color (Color::nocolor, Color::nocolor, true, false, false));
+      lines.push_back (c.colorize (leftJustify (header, width)));
+    }
+    else
+    {
+      lines.push_back (c.colorize (leftJustify (header, width)));
+      lines.push_back (c.colorize (std::string (width, '-')));
+    }
   }
 }
 

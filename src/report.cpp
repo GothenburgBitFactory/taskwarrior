@@ -61,219 +61,201 @@ int shortUsage (std::string& outs)
   view.add ("");
   view.add ("");
 
+  int row = view.addRow ();
+  view.set (row, 0, "Usage:");
+  view.set (row, 1, "task");
 
+  row = view.addRow ();
+  view.set (row, 1, "task add [tags] [attrs] desc...");
+  view.set (row, 2, "Adds a new task.");
 
-  Table table;
+  row = view.addRow ();
+  view.set (row, 1, "task log [tags] [attrs] desc...");
+  view.set (row, 2, "Adds a new task that is already completed.");
 
-  table.addColumn (" ");
-  table.addColumn (" ");
-  table.addColumn (" ");
+  row = view.addRow ();
+  view.set (row, 1, "task append ID [tags] [attrs] desc...");
+  view.set (row, 2, "Appends more description to an existing task.");
 
-  table.setColumnJustification (0, Table::left);
-  table.setColumnJustification (1, Table::left);
-  table.setColumnJustification (2, Table::left);
+  row = view.addRow ();
+  view.set (row, 1, "task prepend ID [tags] [attrs] desc...");
+  view.set (row, 2, "Prepends more description to an existing task.");
 
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::minimum);
-  table.setColumnWidth (2, Table::flexible);
-  table.setTableWidth (context.getWidth ());
-  table.setDateFormat (context.config.get ("dateformat"));
+  row = view.addRow ();
+  view.set (row, 1, "task annotate ID desc...");
+  view.set (row, 2, "Adds an annotation to an existing task.");
 
-  int row = table.addRow ();
-  table.addCell (row, 0, "Usage:");
-  table.addCell (row, 1, "task");
+  row = view.addRow ();
+  view.set (row, 1, "task denotate ID desc...");
+  view.set (row, 2, "Deletes an annotation of an existing task.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task add [tags] [attrs] desc...");
-  table.addCell (row, 2, "Adds a new task.");
+  row = view.addRow ();
+  view.set (row, 1, "task ID [tags] [attrs] [desc...]");
+  view.set (row, 2, "Modifies the existing task with provided arguments.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task log [tags] [attrs] desc...");
-  table.addCell (row, 2, "Adds a new task that is already completed.");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task append ID [tags] [attrs] desc...");
-  table.addCell (row, 2, "Appends more description to an existing task.");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task prepend ID [tags] [attrs] desc...");
-  table.addCell (row, 2, "Prepends more description to an existing task.");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task annotate ID desc...");
-  table.addCell (row, 2, "Adds an annotation to an existing task.");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task denotate ID desc...");
-  table.addCell (row, 2, "Deletes an annotation of an existing task.");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task ID [tags] [attrs] [desc...]");
-  table.addCell (row, 2, "Modifies the existing task with provided arguments.");
-
-  row = table.addRow ();
-  table.addCell (row, 1, "task ID /from/to/g");
-  table.addCell (row, 2, "Performs substitution on the task description and "
+  row = view.addRow ();
+  view.set (row, 1, "task ID /from/to/g");
+  view.set (row, 2, "Performs substitution on the task description and "
                          "annotations.  The 'g' is optional, and causes "
                          "substitutions for all matching text, not just the "
                          "first occurrence.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task ID");
-  table.addCell (row, 2, "Specifying an ID without a command invokes the 'info' command.");
+  row = view.addRow ();
+  view.set (row, 1, "task ID");
+  view.set (row, 2, "Specifying an ID without a command invokes the 'info' command.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task edit ID");
-  table.addCell (row, 2, "Launches an editor to let you modify all aspects of a task directly, therefore it is to be used carefully.");
+  row = view.addRow ();
+  view.set (row, 1, "task edit ID");
+  view.set (row, 2, "Launches an editor to let you modify all aspects of a task directly, therefore it is to be used carefully.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task undo");
-  table.addCell (row, 2, "Reverts the most recent action.");
+  row = view.addRow ();
+  view.set (row, 1, "task undo");
+  view.set (row, 2, "Reverts the most recent action.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task shell");
-  table.addCell (row, 2, "Launches an interactive shell.");
+  row = view.addRow ();
+  view.set (row, 1, "task shell");
+  view.set (row, 2, "Launches an interactive shell.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task duplicate ID [tags] [attrs] [desc...]");
-  table.addCell (row, 2, "Duplicates the specified task, and allows modifications.");
+  row = view.addRow ();
+  view.set (row, 1, "task duplicate ID [tags] [attrs] [desc...]");
+  view.set (row, 2, "Duplicates the specified task, and allows modifications.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task delete ID");
-  table.addCell (row, 2, "Deletes the specified task.");
+  row = view.addRow ();
+  view.set (row, 1, "task delete ID");
+  view.set (row, 2, "Deletes the specified task.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task info ID");
-  table.addCell (row, 2, "Shows all data, metadata for specified task.");
+  row = view.addRow ();
+  view.set (row, 1, "task info ID");
+  view.set (row, 2, "Shows all data, metadata for specified task.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task start ID");
-  table.addCell (row, 2, "Marks specified task as started.");
+  row = view.addRow ();
+  view.set (row, 1, "task start ID");
+  view.set (row, 2, "Marks specified task as started.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task stop ID");
-  table.addCell (row, 2, "Removes the 'start' time from a task.");
+  row = view.addRow ();
+  view.set (row, 1, "task stop ID");
+  view.set (row, 2, "Removes the 'start' time from a task.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task done ID [tags] [attrs] [desc...]");
-  table.addCell (row, 2, "Marks the specified task as completed.");
+  row = view.addRow ();
+  view.set (row, 1, "task done ID [tags] [attrs] [desc...]");
+  view.set (row, 2, "Marks the specified task as completed.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task projects");
-  table.addCell (row, 2, "Shows a list of all project names used, and how many tasks are in each.");
+  row = view.addRow ();
+  view.set (row, 1, "task projects");
+  view.set (row, 2, "Shows a list of all project names used, and how many tasks are in each.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task tags");
-  table.addCell (row, 2, "Shows a list of all tags used.");
+  row = view.addRow ();
+  view.set (row, 1, "task tags");
+  view.set (row, 2, "Shows a list of all tags used.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task summary");
-  table.addCell (row, 2, "Shows a report of task status by project.");
+  row = view.addRow ();
+  view.set (row, 1, "task summary");
+  view.set (row, 2, "Shows a report of task status by project.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task timesheet [weeks]");
-  table.addCell (row, 2, "Shows a weekly report of tasks completed and started.");
+  row = view.addRow ();
+  view.set (row, 1, "task timesheet [weeks]");
+  view.set (row, 2, "Shows a weekly report of tasks completed and started.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task history");
-  table.addCell (row, 2, "Shows a report of task history, by month.  Alias to history.monthly.");
+  row = view.addRow ();
+  view.set (row, 1, "task history");
+  view.set (row, 2, "Shows a report of task history, by month.  Alias to history.monthly.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task history.annual");
-  table.addCell (row, 2, "Shows a report of task history, by year.");
+  row = view.addRow ();
+  view.set (row, 1, "task history.annual");
+  view.set (row, 2, "Shows a report of task history, by year.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task ghistory");
-  table.addCell (row, 2, "Shows a graphical report of task history, by month.  Alias to ghistory.monthly.");
+  row = view.addRow ();
+  view.set (row, 1, "task ghistory");
+  view.set (row, 2, "Shows a graphical report of task history, by month.  Alias to ghistory.monthly.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task ghistory.annual");
-  table.addCell (row, 2, "Shows a graphical report of task history, by year.");
+  row = view.addRow ();
+  view.set (row, 1, "task ghistory.annual");
+  view.set (row, 2, "Shows a graphical report of task history, by year.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task burndown.daily");
-  table.addCell (row, 2, "Shows a graphical burndown chart, by day.");
+  row = view.addRow ();
+  view.set (row, 1, "task burndown.daily");
+  view.set (row, 2, "Shows a graphical burndown chart, by day.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task burndown.weekly");
-  table.addCell (row, 2, "Shows a graphical burndown chart, by week.");
+  row = view.addRow ();
+  view.set (row, 1, "task burndown.weekly");
+  view.set (row, 2, "Shows a graphical burndown chart, by week.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task burndown.monthly");
-  table.addCell (row, 2, "Shows a graphical burndown chart, by month.");
+  row = view.addRow ();
+  view.set (row, 1, "task burndown.monthly");
+  view.set (row, 2, "Shows a graphical burndown chart, by month.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task calendar [due|month year|year]");
-  table.addCell (row, 2, "Shows a calendar, with due tasks marked.");
+  row = view.addRow ();
+  view.set (row, 1, "task calendar [due|month year|year]");
+  view.set (row, 2, "Shows a calendar, with due tasks marked.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task stats");
-  table.addCell (row, 2, "Shows task database statistics.");
+  row = view.addRow ();
+  view.set (row, 1, "task stats");
+  view.set (row, 2, "Shows task database statistics.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task import");
-  table.addCell (row, 2, "Imports tasks from a variety of formats.");
+  row = view.addRow ();
+  view.set (row, 1, "task import");
+  view.set (row, 2, "Imports tasks from a variety of formats.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task export");
-  table.addCell (row, 2, "Lists all tasks in CSV format.  Alias to export.csv");
+  row = view.addRow ();
+  view.set (row, 1, "task export");
+  view.set (row, 2, "Lists all tasks in CSV format.  Alias to export.csv");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task export.csv");
-  table.addCell (row, 2, "Lists all tasks in CSV format.");
+  row = view.addRow ();
+  view.set (row, 1, "task export.csv");
+  view.set (row, 2, "Lists all tasks in CSV format.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task export.ical");
-  table.addCell (row, 2, "Lists all tasks in iCalendar format.");
+  row = view.addRow ();
+  view.set (row, 1, "task export.ical");
+  view.set (row, 2, "Lists all tasks in iCalendar format.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task export.yaml");
-  table.addCell (row, 2, "Lists all tasks in YAML format.");
+  row = view.addRow ();
+  view.set (row, 1, "task export.yaml");
+  view.set (row, 2, "Lists all tasks in YAML format.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task merge URL");
-  table.addCell (row, 2, "Merges the specified undo.data file with the local data files.");
+  row = view.addRow ();
+  view.set (row, 1, "task merge URL");
+  view.set (row, 2, "Merges the specified undo.data file with the local data files.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task push URL");
-  table.addCell (row, 2, "Pushes the local *.data files to the URL.");
+  row = view.addRow ();
+  view.set (row, 1, "task push URL");
+  view.set (row, 2, "Pushes the local *.data files to the URL.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task pull URL");
-  table.addCell (row, 2, "Overwrites the local *.data files with those found at the URL.");
+  row = view.addRow ();
+  view.set (row, 1, "task pull URL");
+  view.set (row, 2, "Overwrites the local *.data files with those found at the URL.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task color [sample | legend]");
-  table.addCell (row, 2, "Displays all possible colors, a named sample, or a "
+  row = view.addRow ();
+  view.set (row, 1, "task color [sample | legend]");
+  view.set (row, 2, "Displays all possible colors, a named sample, or a "
                          "legend containing all currently defined colors.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task count [filter]");
-  table.addCell (row, 2, "Shows only the number of matching tasks.");
+  row = view.addRow ();
+  view.set (row, 1, "task count [filter]");
+  view.set (row, 2, "Shows only the number of matching tasks.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task ids [filter]");
-  table.addCell (row, 2, "Shows only the IDs of matching tasks, in the form of a range.");
+  row = view.addRow ();
+  view.set (row, 1, "task ids [filter]");
+  view.set (row, 2, "Shows only the IDs of matching tasks, in the form of a range.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task version");
-  table.addCell (row, 2, "Shows the task version number.");
+  row = view.addRow ();
+  view.set (row, 1, "task version");
+  view.set (row, 2, "Shows the task version number.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task show [all | substring]");
-  table.addCell (row, 2, "Shows the entire task configuration variables or the ones containing substring.");
+  row = view.addRow ();
+  view.set (row, 1, "task show [all | substring]");
+  view.set (row, 2, "Shows the entire task configuration variables or the ones containing substring.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task config [name [value | '']]");
-  table.addCell (row, 2, "Add, modify and remove settings in the task configuration.");
+  row = view.addRow ();
+  view.set (row, 1, "task config [name [value | '']]");
+  view.set (row, 2, "Add, modify and remove settings in the task configuration.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task diagnostics");
-  table.addCell (row, 2, "Information needed when reporting a problem.");
+  row = view.addRow ();
+  view.set (row, 1, "task diagnostics");
+  view.set (row, 2, "Information needed when reporting a problem.");
 
-  row = table.addRow ();
-  table.addCell (row, 1, "task help");
-  table.addCell (row, 2, "Shows the long usage text.");
+  row = view.addRow ();
+  view.set (row, 1, "task help");
+  view.set (row, 2, "Shows the long usage text.");
 
   // Add custom reports here...
   std::vector <std::string> all;
@@ -285,17 +267,15 @@ int shortUsage (std::string& outs)
     if (description == "")
       description = "(missing description)";
 
-    row = table.addRow ();
-    table.addCell (row, 1, command);
-    table.addCell (row, 2, description);
+    row = view.addRow ();
+    view.set (row, 1, command);
+    view.set (row, 2, description);
   }
 
   std::stringstream out;
-  out << table.render ()
-      << "\n"
-      << "-------------\n"
+  out << "\n"
       << view.render ()
-      << "-------------\n"
+      << "\n"
       << "Documentation for taskwarrior can be found using 'man task', "
       << "'man taskrc', 'man task-tutorial', 'man task-color', 'man task-faq' "
       << "or at http://taskwarrior.org"
@@ -1779,133 +1759,118 @@ int handleReportStats (std::string& outs)
   }
 
   // Create a table for output.
-  Table table;
-  table.setTableWidth (context.getWidth ());
-  table.setTableIntraPadding (2);
-  table.setDateFormat (context.config.get ("dateformat"));
-  table.addColumn ("Category");
-  table.addColumn ("Data");
+  ViewText view;
+  view.width (context.getWidth ());
+  view.intraPadding (2);
+  view.add ("Category");
+  view.add ("Data");
 
-  if (context.color () && context.config.getBoolean ("fontunderline"))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-  }
-  else
-    table.setTableDashedUnderline ();
+  int row = view.addRow ();
+  view.set (row, 0, "Pending");
+  view.set (row, 1, pendingT);
 
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::flexible);
+  row = view.addRow ();
+  view.set (row, 0, "Waiting");
+  view.set (row, 1, waitingT);
 
-  table.setColumnJustification (0, Table::left);
-  table.setColumnJustification (1, Table::left);
+  row = view.addRow ();
+  view.set (row, 0, "Recurring");
+  view.set (row, 1, recurringT);
 
-  int row = table.addRow ();
-  table.addCell (row, 0, "Pending");
-  table.addCell (row, 1, pendingT);
+  row = view.addRow ();
+  view.set (row, 0, "Completed");
+  view.set (row, 1, completedT);
 
-  row = table.addRow ();
-  table.addCell (row, 0, "Waiting");
-  table.addCell (row, 1, waitingT);
+  row = view.addRow ();
+  view.set (row, 0, "Deleted");
+  view.set (row, 1, deletedT);
 
-  row = table.addRow ();
-  table.addCell (row, 0, "Recurring");
-  table.addCell (row, 1, recurringT);
+  row = view.addRow ();
+  view.set (row, 0, "Total");
+  view.set (row, 1, totalT);
 
-  row = table.addRow ();
-  table.addCell (row, 0, "Completed");
-  table.addCell (row, 1, completedT);
+  row = view.addRow ();
+  view.set (row, 0, "Annotations");
+  view.set (row, 1, annotationsT);
 
-  row = table.addRow ();
-  table.addCell (row, 0, "Deleted");
-  table.addCell (row, 1, deletedT);
+  row = view.addRow ();
+  view.set (row, 0, "Unique tags");
+  view.set (row, 1, (int)allTags.size ());
 
-  row = table.addRow ();
-  table.addCell (row, 0, "Total");
-  table.addCell (row, 1, totalT);
+  row = view.addRow ();
+  view.set (row, 0, "Projects");
+  view.set (row, 1, (int)allProjects.size ());
 
-  row = table.addRow ();
-  table.addCell (row, 0, "Annotations");
-  table.addCell (row, 1, annotationsT);
+  row = view.addRow ();
+  view.set (row, 0, "Data size");
+  view.set (row, 1, formatBytes (dataSize));
 
-  row = table.addRow ();
-  table.addCell (row, 0, "Unique tags");
-  table.addCell (row, 1, (int)allTags.size ());
-
-  row = table.addRow ();
-  table.addCell (row, 0, "Projects");
-  table.addCell (row, 1, (int)allProjects.size ());
-
-  row = table.addRow ();
-  table.addCell (row, 0, "Data size");
-  table.addCell (row, 1, formatBytes (dataSize));
-
-  row = table.addRow ();
-  table.addCell (row, 0, "Undo transactions");
-  table.addCell (row, 1, undoCount);
+  row = view.addRow ();
+  view.set (row, 0, "Undo transactions");
+  view.set (row, 1, undoCount);
 
   if (totalT)
   {
-    row = table.addRow ();
-    table.addCell (row, 0, "Tasks tagged");
+    row = view.addRow ();
+    view.set (row, 0, "Tasks tagged");
 
     std::stringstream value;
     value << std::setprecision (3) << (100.0 * taggedT / totalT) << "%";
-    table.addCell (row, 1, value.str ());
+    view.set (row, 1, value.str ());
   }
 
   if (tasks.size ())
   {
     Date e (earliest);
-    row = table.addRow ();
-    table.addCell (row, 0, "Oldest task");
-    table.addCell (row, 1, e.toString (context.config.get ("dateformat")));
+    row = view.addRow ();
+    view.set (row, 0, "Oldest task");
+    view.set (row, 1, e.toString (context.config.get ("dateformat")));
 
     Date l (latest);
-    row = table.addRow ();
-    table.addCell (row, 0, "Newest task");
-    table.addCell (row, 1, l.toString (context.config.get ("dateformat")));
+    row = view.addRow ();
+    view.set (row, 0, "Newest task");
+    view.set (row, 1, l.toString (context.config.get ("dateformat")));
 
-    row = table.addRow ();
-    table.addCell (row, 0, "Task used for");
-    table.addCell (row, 1, Duration (latest - earliest).format ());
+    row = view.addRow ();
+    view.set (row, 0, "Task used for");
+    view.set (row, 1, Duration (latest - earliest).format ());
   }
 
   if (totalT)
   {
-    row = table.addRow ();
-    table.addCell (row, 0, "Task added every");
-    table.addCell (row, 1, Duration (((latest - earliest) / totalT)).format ());
+    row = view.addRow ();
+    view.set (row, 0, "Task added every");
+    view.set (row, 1, Duration (((latest - earliest) / totalT)).format ());
   }
 
   if (completedT)
   {
-    row = table.addRow ();
-    table.addCell (row, 0, "Task completed every");
-    table.addCell (row, 1, Duration ((latest - earliest) / completedT).format ());
+    row = view.addRow ();
+    view.set (row, 0, "Task completed every");
+    view.set (row, 1, Duration ((latest - earliest) / completedT).format ());
   }
 
   if (deletedT)
   {
-    row = table.addRow ();
-    table.addCell (row, 0, "Task deleted every");
-    table.addCell (row, 1, Duration ((latest - earliest) / deletedT).format ());
+    row = view.addRow ();
+    view.set (row, 0, "Task deleted every");
+    view.set (row, 1, Duration ((latest - earliest) / deletedT).format ());
   }
 
   if (pendingT || completedT)
   {
-    row = table.addRow ();
-    table.addCell (row, 0, "Average time pending");
-    table.addCell (row, 1, Duration ((int) ((daysPending / (pendingT + completedT)) * 86400)).format ());
+    row = view.addRow ();
+    view.set (row, 0, "Average time pending");
+    view.set (row, 1, Duration ((int) ((daysPending / (pendingT + completedT)) * 86400)).format ());
   }
 
   if (totalT)
   {
-    row = table.addRow ();
-    table.addCell (row, 0, "Average desc length");
+    row = view.addRow ();
+    view.set (row, 0, "Average desc length");
     std::stringstream value;
     value << (int) (descLength / totalT) << " characters";
-    table.addCell (row, 1, value.str ());
+    view.set (row, 1, value.str ());
   }
 
   // If an alternating row color is specified, notify the table.
@@ -1913,11 +1878,15 @@ int handleReportStats (std::string& outs)
   {
     Color alternate (context.config.get ("color.alternate"));
     if (alternate.nontrivial ())
-      table.setTableAlternateColor (alternate);
+    {
+      view.colorOdd (alternate);
+      view.intraColorOdd (alternate);
+      view.extraColorOdd (alternate);
+    }
   }
 
   out << optionalBlankLine ()
-      << table.render ()
+      << view.render ()
       << optionalBlankLine ();
 
   outs = out.str ();

@@ -68,7 +68,7 @@ int ViewText::addRow ()
 ////////////////////////////////////////////////////////////////////////////////
 void ViewText::set (int row, int col, const std::string& value, Color color)
 {
-  _data[row][col]  = value;
+  _data[row][col] = value;
 
   if (color.nontrivial ())
     _color[row][col] = color;
@@ -78,7 +78,7 @@ void ViewText::set (int row, int col, const std::string& value, Color color)
 void ViewText::set (int row, int col, int value, Color color)
 {
   std::string string_value = format (value);
-  _data[row][col]  = value;
+  _data[row][col] = string_value;
 
   if (color.nontrivial ())
     _color[row][col] = color;
@@ -88,7 +88,7 @@ void ViewText::set (int row, int col, int value, Color color)
 void ViewText::set (int row, int col, float value, int width, int precision, Color color)
 {
   std::string string_value = format ((float)value, width, precision);
-  _data[row][col]  = value;
+  _data[row][col] = string_value;
 
   if (color.nontrivial ())
     _color[row][col] = color;
