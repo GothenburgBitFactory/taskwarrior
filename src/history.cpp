@@ -28,7 +28,7 @@
 #include <sstream>
 
 #include <Context.h>
-#include <Table.h>
+#include <ViewText.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -83,32 +83,15 @@ int handleReportHistoryMonthly (std::string& outs)
     }
   }
 
-  // Now build the table.
-  Table table;
-  table.setDateFormat (context.config.get ("dateformat"));
-  table.addColumn ("Year");
-  table.addColumn ("Month");
-  table.addColumn ("Added");
-  table.addColumn ("Completed");
-  table.addColumn ("Deleted");
-  table.addColumn ("Net");
-
-  if (context.color () && context.config.getBoolean ("fontunderline"))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-    table.setColumnUnderline (4);
-    table.setColumnUnderline (5);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnJustification (2, Table::right);
-  table.setColumnJustification (3, Table::right);
-  table.setColumnJustification (4, Table::right);
-  table.setColumnJustification (5, Table::right);
+  // Now build the view.
+  ViewText view;
+  view.width (context.getWidth ());
+  view.add (Column::factory ("string",       "Year"));
+  view.add (Column::factory ("string",       "Month"));
+  view.add (Column::factory ("string.right", "Added"));
+  view.add (Column::factory ("string.right", "Completed"));
+  view.add (Column::factory ("string.right", "Deleted"));
+  view.add (Column::factory ("string.right", "Net"));
 
   int totalAdded     = 0;
   int totalCompleted = 0;
@@ -118,7 +101,7 @@ int handleReportHistoryMonthly (std::string& outs)
   int row = 0;
   foreach (i, groups)
   {
-    row = table.addRow ();
+    row = view.addRow ();
 
     totalAdded     += addedGroup     [i->first];
     totalCompleted += completedGroup [i->first];
@@ -130,55 +113,60 @@ int handleReportHistoryMonthly (std::string& outs)
 
     if (y != priorYear)
     {
-      table.addCell (row, 0, y);
+      view.set (row, 0, y);
       priorYear = y;
     }
-    table.addCell (row, 1, Date::monthName(m));
+    view.set (row, 1, Date::monthName(m));
 
     int net = 0;
 
     if (addedGroup.find (i->first) != addedGroup.end ())
     {
-      table.addCell (row, 2, addedGroup[i->first]);
+      view.set (row, 2, addedGroup[i->first]);
       net +=addedGroup[i->first];
     }
 
     if (completedGroup.find (i->first) != completedGroup.end ())
     {
-      table.addCell (row, 3, completedGroup[i->first]);
+      view.set (row, 3, completedGroup[i->first]);
       net -= completedGroup[i->first];
     }
 
     if (deletedGroup.find (i->first) != deletedGroup.end ())
     {
-      table.addCell (row, 4, deletedGroup[i->first]);
+      view.set (row, 4, deletedGroup[i->first]);
       net -= deletedGroup[i->first];
     }
 
-    table.addCell (row, 5, net);
+    Color net_color;
     if (context.color () && net)
-      table.setCellColor (row, 5, net > 0 ? Color (Color::red) :
-                                            Color (Color::green));
+      net_color = net > 0
+                    ? Color (Color::red)
+                    : Color (Color::green);
+
+    view.set (row, 5, net, net_color);
   }
 
-  if (table.rowCount ())
+  if (view.rows ())
   {
-    table.addRow ();
-    row = table.addRow ();
+    view.addRow ();
+    row = view.addRow ();
 
-    table.addCell (row, 1, "Average");
+    Color row_color;
     if (context.color ())
-      table.setRowColor (row, Color (Color::nocolor, Color::nocolor, false, true, false));
-    table.addCell (row, 2, totalAdded     / (table.rowCount () - 2));
-    table.addCell (row, 3, totalCompleted / (table.rowCount () - 2));
-    table.addCell (row, 4, totalDeleted   / (table.rowCount () - 2));
-    table.addCell (row, 5, (totalAdded - totalCompleted - totalDeleted) / (table.rowCount () - 2));
+      row_color = Color (Color::nocolor, Color::nocolor, false, true, false);
+
+    view.set (row, 1, "Average", row_color);
+    view.set (row, 2, totalAdded     / (view.rows () - 2), row_color);
+    view.set (row, 3, totalCompleted / (view.rows () - 2), row_color);
+    view.set (row, 4, totalDeleted   / (view.rows () - 2), row_color);
+    view.set (row, 5, (totalAdded - totalCompleted - totalDeleted) / (view.rows () - 2), row_color);
   }
 
   std::stringstream out;
-  if (table.rowCount ())
+  if (view.rows ())
     out << optionalBlankLine ()
-        << table.render ()
+        << view.render ()
         << "\n";
   else
   {
@@ -238,30 +226,14 @@ int handleReportHistoryAnnual (std::string& outs)
     }
   }
 
-  // Now build the table.
-  Table table;
-  table.setDateFormat (context.config.get ("dateformat"));
-  table.addColumn ("Year");
-  table.addColumn ("Added");
-  table.addColumn ("Completed");
-  table.addColumn ("Deleted");
-  table.addColumn ("Net");
-
-  if (context.color () && context.config.getBoolean ("fontunderline"))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-    table.setColumnUnderline (4);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnJustification (1, Table::right);
-  table.setColumnJustification (2, Table::right);
-  table.setColumnJustification (3, Table::right);
-  table.setColumnJustification (4, Table::right);
+  // Now build the view.
+  ViewText view;
+  view.width (context.getWidth ());
+  view.add (Column::factory ("string",       "Year"));
+  view.add (Column::factory ("string.right", "Added"));
+  view.add (Column::factory ("string.right", "Completed"));
+  view.add (Column::factory ("string.right", "Deleted"));
+  view.add (Column::factory ("string.right", "Net"));
 
   int totalAdded     = 0;
   int totalCompleted = 0;
@@ -271,7 +243,7 @@ int handleReportHistoryAnnual (std::string& outs)
   int row = 0;
   foreach (i, groups)
   {
-    row = table.addRow ();
+    row = view.addRow ();
 
     totalAdded     += addedGroup     [i->first];
     totalCompleted += completedGroup [i->first];
@@ -283,7 +255,7 @@ int handleReportHistoryAnnual (std::string& outs)
 
     if (y != priorYear)
     {
-      table.addCell (row, 0, y);
+      view.set (row, 0, y);
       priorYear = y;
     }
 
@@ -291,46 +263,51 @@ int handleReportHistoryAnnual (std::string& outs)
 
     if (addedGroup.find (i->first) != addedGroup.end ())
     {
-      table.addCell (row, 1, addedGroup[i->first]);
+      view.set (row, 1, addedGroup[i->first]);
       net +=addedGroup[i->first];
     }
 
     if (completedGroup.find (i->first) != completedGroup.end ())
     {
-      table.addCell (row, 2, completedGroup[i->first]);
+      view.set (row, 2, completedGroup[i->first]);
       net -= completedGroup[i->first];
     }
 
     if (deletedGroup.find (i->first) != deletedGroup.end ())
     {
-      table.addCell (row, 3, deletedGroup[i->first]);
+      view.set (row, 3, deletedGroup[i->first]);
       net -= deletedGroup[i->first];
     }
 
-    table.addCell (row, 4, net);
+    Color net_color;
     if (context.color () && net)
-      table.setCellColor (row, 4, net > 0 ? Color (Color::red) :
-                                            Color (Color::green));
+      net_color = net > 0
+                    ? Color (Color::red)
+                    : Color (Color::green);
+
+    view.set (row, 4, net, net_color);
   }
 
-  if (table.rowCount ())
+  if (view.rows ())
   {
-    table.addRow ();
-    row = table.addRow ();
+    view.addRow ();
+    row = view.addRow ();
 
-    table.addCell (row, 0, "Average");
+    Color row_color;
     if (context.color ())
-      table.setRowColor (row, Color (Color::nocolor, Color::nocolor, false, true, false));
-    table.addCell (row, 1, totalAdded     / (table.rowCount () - 2));
-    table.addCell (row, 2, totalCompleted / (table.rowCount () - 2));
-    table.addCell (row, 3, totalDeleted   / (table.rowCount () - 2));
-    table.addCell (row, 4, (totalAdded - totalCompleted - totalDeleted) / (table.rowCount () - 2));
+      row_color = Color (Color::nocolor, Color::nocolor, false, true, false);
+
+    view.set (row, 0, "Average", row_color);
+    view.set (row, 1, totalAdded     / (view.rows () - 2), row_color);
+    view.set (row, 2, totalCompleted / (view.rows () - 2), row_color);
+    view.set (row, 3, totalDeleted   / (view.rows () - 2), row_color);
+    view.set (row, 4, (totalAdded - totalCompleted - totalDeleted) / (view.rows () - 2), row_color);
   }
 
   std::stringstream out;
-  if (table.rowCount ())
+  if (view.rows ())
     out << optionalBlankLine ()
-        << table.render ()
+        << view.render ()
         << "\n";
   else
   {
@@ -392,20 +369,12 @@ int handleReportGHistoryMonthly (std::string& outs)
 
   int widthOfBar = context.getWidth () - 15;   // 15 == strlen ("2008 September ")
 
-  // Now build the table.
-  Table table;
-  table.setDateFormat (context.config.get ("dateformat"));
-  table.addColumn ("Year");
-  table.addColumn ("Month");
-  table.addColumn ("Number Added/Completed/Deleted");
-
-  if (context.color () && context.config.getBoolean ("fontunderline"))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-  }
-  else
-    table.setTableDashedUnderline ();
+  // Now build the view.
+  ViewText view;
+  view.width (context.getWidth ());
+  view.add (Column::factory ("string", "Year"));
+  view.add (Column::factory ("string", "Month"));
+  view.add (Column::factory ("string", "Number Added/Completed/Deleted"));
 
   Color color_add    (context.config.get ("color.history.add"));
   Color color_done   (context.config.get ("color.history.done"));
@@ -436,7 +405,7 @@ int handleReportGHistoryMonthly (std::string& outs)
     int row = 0;
     foreach (i, groups)
     {
-      row = table.addRow ();
+      row = view.addRow ();
 
       totalAdded     += addedGroup[i->first];
       totalCompleted += completedGroup[i->first];
@@ -448,10 +417,10 @@ int handleReportGHistoryMonthly (std::string& outs)
 
       if (y != priorYear)
       {
-        table.addCell (row, 0, y);
+        view.set (row, 0, y);
         priorYear = y;
       }
-      table.addCell (row, 1, Date::monthName(m));
+      view.set (row, 1, Date::monthName(m));
 
       unsigned int addedBar     = (widthOfBar *     addedGroup[i->first]) / maxLine;
       unsigned int completedBar = (widthOfBar * completedGroup[i->first]) / maxLine;
@@ -500,15 +469,15 @@ int handleReportGHistoryMonthly (std::string& outs)
         bar += aBar + cBar + dBar;
       }
 
-      table.addCell (row, 2, bar);
+      view.set (row, 2, bar);
     }
   }
 
   std::stringstream out;
-  if (table.rowCount ())
+  if (view.rows ())
   {
     out << optionalBlankLine ()
-        << table.render ()
+        << view.render ()
         << "\n";
 
     if (context.color ())
@@ -583,18 +552,11 @@ int handleReportGHistoryAnnual (std::string& outs)
 
   int widthOfBar = context.getWidth () - 5;   // 5 == strlen ("2008 ")
 
-  // Now build the table.
-  Table table;
-  table.setDateFormat (context.config.get ("dateformat"));
-  table.addColumn ("Year");
-  table.addColumn ("Number Added/Completed/Deleted");
-
-  if (context.color () && context.config.getBoolean ("fontunderline"))
-  {
-    table.setColumnUnderline (0);
-  }
-  else
-    table.setTableDashedUnderline ();
+  // Now build the view.
+  ViewText view;
+  view.width (context.getWidth ());
+  view.add (Column::factory ("string", "Year"));
+  view.add (Column::factory ("string", "Number Added/Completed/Deleted"));
 
   Color color_add    (context.config.get ("color.history.add"));
   Color color_done   (context.config.get ("color.history.done"));
@@ -625,7 +587,7 @@ int handleReportGHistoryAnnual (std::string& outs)
     int row = 0;
     foreach (i, groups)
     {
-      row = table.addRow ();
+      row = view.addRow ();
 
       totalAdded     += addedGroup[i->first];
       totalCompleted += completedGroup[i->first];
@@ -637,7 +599,7 @@ int handleReportGHistoryAnnual (std::string& outs)
 
       if (y != priorYear)
       {
-        table.addCell (row, 0, y);
+        view.set (row, 0, y);
         priorYear = y;
       }
 
@@ -687,15 +649,15 @@ int handleReportGHistoryAnnual (std::string& outs)
         bar += aBar + cBar + dBar;
       }
 
-      table.addCell (row, 1, bar);
+      view.set (row, 1, bar);
     }
   }
 
   std::stringstream out;
-  if (table.rowCount ())
+  if (view.rows ())
   {
     out << optionalBlankLine ()
-        << table.render ()
+        << view.render ()
         << "\n";
 
     if (context.color ())

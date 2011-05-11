@@ -52,12 +52,6 @@ ViewText::ViewText ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ViewText::add (const std::string& label)
-{
-  _columns.push_back (Column::factory ("string", label));
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int ViewText::addRow ()
 {
   _data.push_back (std::vector <std::string> (_columns.size (), ""));

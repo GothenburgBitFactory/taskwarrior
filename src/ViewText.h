@@ -40,7 +40,7 @@ public:
   ~ViewText () {}
 
   // View specifications.
-  void add (const std::string&);
+  void add (Column* col)          { _columns.push_back (col);    }
   void width (int width)          { _width = width;              }
   void leftMargin (int margin)    { _left_margin = margin;       }
   void colorHeader (Color& c)     { _header = c;                 }
@@ -55,7 +55,7 @@ public:
   void truncateLines (int n)      { _truncate_lines = n;         }
   void truncateRows (int n)       { _truncate_rows = n;          }
   int lines ()                    { return _lines;               }
-  int rows ()                     { return _rows;                }
+  int rows ()                     { return (int) _data.size ();  }
 
   // Data provision.
   int addRow ();

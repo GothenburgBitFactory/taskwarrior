@@ -57,9 +57,9 @@ int shortUsage (std::string& outs)
 {
   ViewText view;
   view.width (context.getWidth ());
-  view.add ("");
-  view.add ("");
-  view.add ("");
+  view.add (Column::factory ("string", ""));
+  view.add (Column::factory ("string", ""));
+  view.add (Column::factory ("string", ""));
 
   int row = view.addRow ();
   view.set (row, 0, "Usage:");
@@ -1762,8 +1762,8 @@ int handleReportStats (std::string& outs)
   ViewText view;
   view.width (context.getWidth ());
   view.intraPadding (2);
-  view.add ("Category");
-  view.add ("Data");
+  view.add (Column::factory ("string", "Category"));
+  view.add (Column::factory ("string", "Data"));
 
   int row = view.addRow ();
   view.set (row, 0, "Pending");
