@@ -786,29 +786,12 @@ int handleReportSummary (std::string& outs)
   }
 
   // Create a table for output.
-  Table table;
-  table.addColumn ("Project");
-  table.addColumn ("Remaining");
-  table.addColumn ("Avg age");
-  table.addColumn ("Complete");
-  table.addColumn ("0%                        100%");
-
-  if (context.color () && context.config.getBoolean ("fontunderline"))
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-    table.setColumnUnderline (2);
-    table.setColumnUnderline (3);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnJustification (1, Table::right);
-  table.setColumnJustification (2, Table::right);
-  table.setColumnJustification (3, Table::right);
-
-  table.sortOn (0, Table::ascendingCharacter);
-  table.setDateFormat (context.config.get ("dateformat"));
+  ViewText view;
+  view.add (Column::factory ("string", "Project"));
+  view.add (Column::factory ("string", "Remaining"));
+  view.add (Column::factory ("string", "Avg age"));
+  view.add (Column::factory ("string", "Complete"));
+  view.add (Column::factory ("string", "0%                        100%"));
 
   Color bar_color (context.config.get ("color.summary.bar"));
   Color bg_color  (context.config.get ("color.summary.background"));
@@ -818,11 +801,11 @@ int handleReportSummary (std::string& outs)
   {
     if (countPending[i->first] > 0)
     {
-      int row = table.addRow ();
-      table.addCell (row, 0, (i->first == "" ? "(none)" : i->first));
-      table.addCell (row, 1, countPending[i->first]);
+      int row = view.addRow ();
+      view.set (row, 0, (i->first == "" ? "(none)" : i->first));
+      view.set (row, 1, countPending[i->first]);
       if (counter[i->first])
-        table.addCell (row, 2, Duration ((int) (sumEntry[i->first] / (double)counter[i->first])).format ());
+        view.set (row, 2, Duration ((int) (sumEntry[i->first] / (double)counter[i->first])).format ());
 
       int c = countCompleted[i->first];
       int p = countPending[i->first];
@@ -840,21 +823,21 @@ int handleReportSummary (std::string& outs)
         bar += std::string (           completedBar, '=')
             +  std::string (barWidth - completedBar, ' ');
       }
-      table.addCell (row, 4, bar);
+      view.set (row, 4, bar);
 
       char percent[12];
       sprintf (percent, "%d%%", 100 * c / (c + p));
-      table.addCell (row, 3, percent);
+      view.set (row, 3, percent);
     }
   }
 
   std::stringstream out;
-  if (table.rowCount ())
+  if (view.rows ())
     out << optionalBlankLine ()
-        << table.render ()
+        << view.render ()
         << optionalBlankLine ()
-        << table.rowCount ()
-        << (table.rowCount () == 1 ? " project" : " projects")
+        << view.rows ()
+        << (view.rows () == 1 ? " project" : " projects")
         << "\n";
   else {
     out << "No projects.\n";
