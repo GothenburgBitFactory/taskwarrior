@@ -200,7 +200,11 @@ std::string ViewText::render ()
         out += headers[c][i];
     }
 
-    out += extra + "\n";
+    out += extra;
+
+    // Trim right.
+    out.erase (out.find_last_not_of (" ") + 1);
+    out += "\n";
 
     // Stop if the line limit is exceeded.
     if (++_lines >= _truncate_lines && _truncate_lines != 0)
@@ -256,7 +260,11 @@ std::string ViewText::render ()
         }
       }
 
-      out += (odd ? extra_odd : extra_even) + "\n";
+      out += (odd ? extra_odd : extra_even);
+
+      // Trim right.
+      out.erase (out.find_last_not_of (" ") + 1);
+      out += "\n";
 
       // Stop if the line limit is exceeded.
       if (++_lines >= _truncate_lines && _truncate_lines != 0)

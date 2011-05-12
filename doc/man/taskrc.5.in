@@ -184,8 +184,18 @@ help text.
 .SS MISCELLANEOUS
 
 .TP
-.B verbose=yes
-Controls some of the verbosity of taskwarrior.
+.B edit.verbose=on|off|list...
+When set to on (the default), helpful explanatory comments are added to the
+edited file when using the "task edit ..." command.  Setting this to off means
+that you would see minimal output, with no help text.
+
+Alternatively, you can specify a comma-separated list of verbosity tokens that
+control specific occasions when output is generated.  This list may contain:
+
+    blanklines        Inserts extra blank lines in output, for clarity
+
+Note that the "on" setting is equivalent to all the tokens being specified,
+and the "off" setting is equivalent to none of the tokens being specified.
 
 .TP
 .B confirmation=yes

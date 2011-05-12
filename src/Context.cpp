@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,6 +58,7 @@ Context::Context ()
 , cmd ()
 , dom ()
 , use_color (true)
+, verbosity_legacy (false)
 , inShadow (false)
 , terminal_width (0)
 , terminal_height (0)
@@ -325,6 +327,24 @@ bool Context::color ()
 {
   return config.getBoolean ("color") ||
          config.getBoolean ("_forcecolor");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Context::verbose (const std::string& token)
+{
+  if (! verbosity.size ())
+  {
+    verbosity_legacy = config.getBoolean ("verbose");
+    split (verbosity, config.get ("verbose"), ',');
+  }
+
+  if (verbosity_legacy)
+    return true;
+
+  if (std::find (verbosity.begin (), verbosity.end (), token) != verbosity.end ())
+    return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

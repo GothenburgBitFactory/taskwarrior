@@ -28,6 +28,8 @@
    report field.
  + New 'indent.annotation' for the 'description.default' field format.
  + New 'color.label' for colorizing the report column labels.
+ + The 'blanklines' configuration variable now replaced by the 'verbose' token
+   'blanklines'.
 
 # Tracked Features, sorted by ID.
  + Added feature #330, which supports the 'inverse' color attribute.

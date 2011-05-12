@@ -70,6 +70,8 @@ std::string Config::defaults =
   "\n"
   "# Miscellaneous\n"
   "verbose=yes                                    # Provide extra feedback\n"
+  "#verbose=no                                    # Provide minimal feedback\n"
+  "#verbose=blanklines                            # Provide controlled feedback\n"
   "confirmation=yes                               # Confirmation on delete, big changes\n"
   "echo.command=yes                               # Details on command just run\n"
   "annotations=full                               # Level of verbosity for annotations: full, sparse or none\n"

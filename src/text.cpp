@@ -402,10 +402,7 @@ std::string ucFirst (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 const char* optionalBlankLine ()
 {
-  if (context.config.getBoolean ("blanklines") == true) // no i18n
-    return newline;
-
-  return noline;
+  return context.verbose ("blanklines") ? newline : noline;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

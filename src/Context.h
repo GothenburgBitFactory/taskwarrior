@@ -60,6 +60,7 @@ public:
   int getHeight ();                    // determine terminal height
 
   bool color ();                       // TTY or <other>?
+  bool verbose (const std::string&);   // Verbosity control
 
   void header (const std::string&);    // Header message sink
   void footnote (const std::string&);  // Footnote message sink
@@ -101,6 +102,8 @@ public:
   DOM                       dom;
   bool                      use_color;
 
+  bool                      verbosity_legacy;
+  std::vector <std::string> verbosity;
   std::vector <std::string> headers;
   std::vector <std::string> footnotes;
   std::vector <std::string> debugMessages;

@@ -21,7 +21,7 @@ syn match taskrcVal	".\{-}$" 		contains=taskrcComment
 syn match taskrcEqual	"="
 syn match taskrcKey	"^\s*.\{-}="he=e-1	contains=taskrcEqual
 
-syn keyword taskrcGoodKey	locking detection confirmation next bulk nag weekstart displayweeknumber defaultwidth editor monthsperline annotations _forcecolor blanklines debug hooks fontunderline 
+syn keyword taskrcGoodKey	locking detection confirmation next bulk nag weekstart displayweeknumber defaultwidth editor monthsperline annotations _forcecolor debug hooks fontunderline 
 
 syn match taskrcGoodKey	"\(active\|tag\|recurrence\)\.indicator"
 syn match taskrcGoodKey	"alias\.\S\{-}="he=e-1

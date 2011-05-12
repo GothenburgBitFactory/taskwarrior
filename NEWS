@@ -15,6 +15,7 @@ New Features in taskwarrior 2.0.0
     project, due date and description sorted by urgency).
   - Performance enhancements.
   - New 'next' report, that gauges urgency and reports the most urgent tasks.
+  - The 'blanklines' configuration variable replaced by 'verbose=...' tokens.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -36,6 +37,7 @@ New configuration options in taskwarrior 2.0.0
   - New 'dependency.indicator' for the 'depends.indicator' report field format.
   - New 'indent.annotation' for the description.default field format.
   - New 'color.label' for report column labels.
+  - New 'verbose=...' support for individual verbosity settings.
 
 Newly deprecated features in taskwarrior 2.0.0
 

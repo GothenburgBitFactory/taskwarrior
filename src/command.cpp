@@ -1093,7 +1093,7 @@ int handleShow (std::string& outs)
   // Note that there is a leading and trailing space, to make it easier to
   // search for whole words.
   std::string recognized =
-    " annotations blanklines bulk burndown.bias calendar.details calendar.details.report "
+    " annotations bulk burndown.bias calendar.details calendar.details.report "
     "calendar.holidays calendar.legend color calendar.offset calendar.offset.value "
     "color.active color.due color.due.today color.blocked color.burndown.done "
     "color.burndown.pending color.burndown.started color.overdue color.pri.H "
