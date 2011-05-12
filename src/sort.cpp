@@ -137,9 +137,32 @@ static bool sort_compare (int left, int right)
              (left_string == "H" && (right_string == "M" || right_string == "L"));
     }
 
+    // Due Date.
+    else if (field == "due")
+    {
+      left_string  = (*global_data)[left].get  (field);
+      right_string = (*global_data)[right].get (field);
+
+      if (left_string != "" && right_string == "")
+        return true;
+
+      if (left_string == "" && right_string != "")
+        return false;
+
+      if (left_string == right_string)
+        continue;
+
+      left_date  = atoi (left_string.c_str ());
+      right_date = atoi (right_string.c_str ());
+
+      if (ascending)
+        return left_date < right_date;
+
+      return left_date > right_date;
+    }
+
     // Date.
-    else if (field == "due"   ||
-             field == "end"   ||
+    else if (field == "end"   ||
              field == "entry" ||
              field == "start" ||
              field == "until" ||
