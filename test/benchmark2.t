@@ -121,7 +121,7 @@ sub report
                     $data{'TDB::loadCompleted'} || 0,
                     $data{'TDB::gc'},
                     $data{'TDB::commit'},
-                    $data{'Table::render'};
+                    $data{'View::render'};
 
   diag ($out);
 }
