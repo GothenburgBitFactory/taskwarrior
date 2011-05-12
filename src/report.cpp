@@ -395,63 +395,55 @@ int handleInfo (std::string& outs)
   std::vector <Task>::iterator task;
   for (task = tasks.begin (); task != tasks.end (); ++task)
   {
-    Table table;
-    table.setTableWidth (context.getWidth ());
-    table.setDateFormat (context.config.get ("dateformat"));
+    ViewText view;
+    view.width (context.getWidth ());
+    view.add (Column::factory ("string", "Name"));
+    view.add (Column::factory ("string", "Value"));
 
-    table.addColumn ("Name");
-    table.addColumn ("Value");
-
-    if (context.color () && context.config.getBoolean ("fontunderline"))
+    // If an alternating row color is specified, notify the table.
+    if (context.color ())
     {
-      table.setColumnUnderline (0);
-      table.setColumnUnderline (1);
+      Color alternate (context.config.get ("color.alternate"));
+      view.colorOdd (alternate);
+      view.intraColorOdd (alternate);
     }
-    else
-      table.setTableDashedUnderline ();
 
-    table.setColumnWidth (0, Table::minimum);
-    table.setColumnWidth (1, Table::flexible);
-
-    table.setColumnJustification (0, Table::left);
-    table.setColumnJustification (1, Table::left);
     Date now;
 
     // id
-    int row = table.addRow ();
-    table.addCell (row, 0, "ID");
-    table.addCell (row, 1, format (task->id));
+    int row = view.addRow ();
+    view.set (row, 0, "ID");
+    view.set (row, 1, format (task->id));
 
     std::string status = ucFirst (Task::statusToText (task->getStatus ()));
 
     // description
-    row = table.addRow ();
-    table.addCell (row, 0, "Description");
-    table.addCell (row, 1, getFullDescription (*task, "info"));
-
     Color c;
     autoColorize (*task, c);
-    table.setCellColor (row, 1, c);
+
+    row = view.addRow ();
+    view.set (row, 0, "Description");
+    view.set (row, 1, getFullDescription (*task, "info"), c);
 
     // status
-    row = table.addRow ();
-    table.addCell (row, 0, "Status");
-    table.addCell (row, 1, status);
+    row = view.addRow ();
+    view.set (row, 0, "Status");
+    view.set (row, 1, status);
 
     // project
     if (task->has ("project"))
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "Project");
-      table.addCell (row, 1, task->get ("project"));
+      row = view.addRow ();
+      view.set (row, 0, "Project");
+      view.set (row, 1, task->get ("project"));
     }
 
     // priority
     if (task->has ("priority"))
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "Priority");
-      table.addCell (row, 1, task->get ("priority"));
+      row = view.addRow ();
+      view.set (row, 0, "Priority");
+      view.set (row, 1, task->get ("priority"));
     }
 
     // dependencies: blocked
@@ -465,9 +457,9 @@ int handleInfo (std::string& outs)
         for (it = blocked.begin (); it != blocked.end (); ++it)
           message << it->id << " " << it->get ("description") << "\n";
 
-        row = table.addRow ();
-        table.addCell (row, 0, "This task blocked by");
-        table.addCell (row, 1, message.str ());
+        row = view.addRow ();
+        view.set (row, 0, "This task blocked by");
+        view.set (row, 1, message.str ());
       }
     }
 
@@ -482,25 +474,25 @@ int handleInfo (std::string& outs)
         for (it = blocking.begin (); it != blocking.end (); ++it)
           message << it->id << " " << it->get ("description") << "\n";
 
-        row = table.addRow ();
-        table.addCell (row, 0, "This task is blocking");
-        table.addCell (row, 1, message.str ());
+        row = view.addRow ();
+        view.set (row, 0, "This task is blocking");
+        view.set (row, 1, message.str ());
       }
     }
 
     // recur
     if (task->has ("recur"))
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "Recurrence");
-      table.addCell (row, 1, task->get ("recur"));
+      row = view.addRow ();
+      view.set (row, 0, "Recurrence");
+      view.set (row, 1, task->get ("recur"));
     }
 
     // until
     if (task->has ("until"))
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "Recur until");
+      row = view.addRow ();
+      view.set (row, 0, "Recur until");
 
       Date dt (atoi (task->get ("until").c_str ()));
       std::string format = context.config.get ("reportdateformat");
@@ -508,68 +500,68 @@ int handleInfo (std::string& outs)
         format = context.config.get ("dateformat");
 
       std::string until = getDueDate (*task, format);
-      table.addCell (row, 1, until);
+      view.set (row, 1, until);
     }
 
     // mask
     if (task->getStatus () == Task::recurring)
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "Mask");
-      table.addCell (row, 1, task->get ("mask"));
+      row = view.addRow ();
+      view.set (row, 0, "Mask");
+      view.set (row, 1, task->get ("mask"));
     }
 
     if (task->has ("parent"))
     {
       // parent
-      row = table.addRow ();
-      table.addCell (row, 0, "Parent task");
-      table.addCell (row, 1, task->get ("parent"));
+      row = view.addRow ();
+      view.set (row, 0, "Parent task");
+      view.set (row, 1, task->get ("parent"));
 
       // imask
-      row = table.addRow ();
-      table.addCell (row, 0, "Mask Index");
-      table.addCell (row, 1, task->get ("imask"));
+      row = view.addRow ();
+      view.set (row, 0, "Mask Index");
+      view.set (row, 1, task->get ("imask"));
     }
 
     // due (colored)
     if (task->has ("due"))
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "Due");
+      row = view.addRow ();
+      view.set (row, 0, "Due");
 
       std::string format = context.config.get ("reportdateformat");
       if (format == "")
         format = context.config.get ("dateformat");
 
-      table.addCell (row, 1, getDueDate (*task, format));
+      view.set (row, 1, getDueDate (*task, format));
     }
 
     // wait
     if (task->has ("wait"))
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "Waiting until");
+      row = view.addRow ();
+      view.set (row, 0, "Waiting until");
       Date dt (atoi (task->get ("wait").c_str ()));
-      table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+      view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
     // start
     if (task->has ("start"))
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "Start");
+      row = view.addRow ();
+      view.set (row, 0, "Start");
       Date dt (atoi (task->get ("start").c_str ()));
-      table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+      view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
     // end
     if (task->has ("end"))
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "End");
+      row = view.addRow ();
+      view.set (row, 0, "End");
       Date dt (atoi (task->get ("end").c_str ()));
-      table.addCell (row, 1, dt.toString (context.config.get ("dateformat")));
+      view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
     // tags ...
@@ -580,20 +572,20 @@ int handleInfo (std::string& outs)
       std::string allTags;
       join (allTags, " ", tags);
 
-      row = table.addRow ();
-      table.addCell (row, 0, "Tags");
-      table.addCell (row, 1, allTags);
+      row = view.addRow ();
+      view.set (row, 0, "Tags");
+      view.set (row, 1, allTags);
     }
 
     // uuid
-    row = table.addRow ();
-    table.addCell (row, 0, "UUID");
+    row = view.addRow ();
+    view.set (row, 0, "UUID");
     std::string uuid = task->get ("uuid");
-    table.addCell (row, 1, uuid);
+    view.set (row, 1, uuid);
 
     // entry
-    row = table.addRow ();
-    table.addCell (row, 0, "Entered");
+    row = view.addRow ();
+    view.set (row, 0, "Entered");
     Date dt (atoi (task->get ("entry").c_str ()));
     std::string entry = dt.toString (context.config.get ("dateformat"));
 
@@ -605,64 +597,45 @@ int handleInfo (std::string& outs)
       age = Duration (now - dt).format ();
     }
 
-    table.addCell (row, 1, entry + " (" + age + ")");
+    view.set (row, 1, entry + " (" + age + ")");
 
     // fg
     std::string color = task->get ("fg");
     if (color != "")
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "Foreground color");
-      table.addCell (row, 1, color);
+      row = view.addRow ();
+      view.set (row, 0, "Foreground color");
+      view.set (row, 1, color);
     }
 
     // bg
     color = task->get ("bg");
     if (color != "")
     {
-      row = table.addRow ();
-      table.addCell (row, 0, "Background color");
-      table.addCell (row, 1, color);
+      row = view.addRow ();
+      view.set (row, 0, "Background color");
+      view.set (row, 1, color);
     }
 
     // Task::urgency
-    row = table.addRow ();
-    table.addCell (row, 0, "Urgency");
-    table.addCell (row, 1, task->urgency ());
+    row = view.addRow ();
+    view.set (row, 0, "Urgency");
+    view.set (row, 1, task->urgency ());
 
     // Create a second table, containing undo log change details.
-    Table journal;
+    ViewText journal;
 
     // If an alternating row color is specified, notify the table.
     if (context.color ())
     {
       Color alternate (context.config.get ("color.alternate"));
-      if (alternate.nontrivial ())
-      {
-        table.setTableAlternateColor (alternate);
-        journal.setTableAlternateColor (alternate);
-      }
+      journal.colorOdd (alternate);
+      journal.intraColorOdd (alternate);
     }
 
-    journal.setTableWidth (context.getWidth ());
-    journal.setDateFormat (context.config.get ("dateformat"));
-
-    journal.addColumn ("Date");
-    journal.addColumn ("Modification");
-
-    if (context.color () && context.config.getBoolean ("fontunderline"))
-    {
-      journal.setColumnUnderline (0);
-      journal.setColumnUnderline (1);
-    }
-    else
-      journal.setTableDashedUnderline ();
-
-    journal.setColumnWidth (0, Table::minimum);
-    journal.setColumnWidth (1, Table::flexible);
-
-    journal.setColumnJustification (0, Table::left);
-    journal.setColumnJustification (1, Table::left);
+    journal.width (context.getWidth ());
+    journal.add (Column::factory ("string", "Date"));
+    journal.add (Column::factory ("string", "Modification"));
 
     if (context.config.getBoolean ("journal.info") &&
         undo.size () > 3)
@@ -690,11 +663,11 @@ int handleInfo (std::string& outs)
             int row = journal.addRow ();
 
             Date timestamp (atoi (when.substr (5).c_str ()));
-            journal.addCell (row, 0, timestamp.toString (context.config.get ("dateformat")));
+            journal.set (row, 0, timestamp.toString (context.config.get ("dateformat")));
 
             Task before (previous.substr (4));
             Task after (current.substr (4));
-            journal.addCell (row, 1, taskInfoDifferences (before, after));
+            journal.set (row, 1, taskInfoDifferences (before, after));
 
             // calculate the total active time
             if (before.get ("start") == ""
@@ -721,19 +694,17 @@ int handleInfo (std::string& outs)
       if (total_time > 0)
       {
         row = journal.addRow ();
-        journal.addCell (row, 0, "Total active time");
-        journal.addCell (row, 1, Duration (total_time).format ());
-
-        if (context.color ())
-          journal.setCellColor (row, 1, Color ("bold"));
+        journal.set (row, 0, "Total active time");
+        journal.set (row, 1, Duration (total_time).format (),
+                     (context.color () ? Color ("bold") : Color ()));
       }
     }
 
     out << optionalBlankLine ()
-        << table.render ()
+        << view.render ()
         << "\n";
 
-    if (journal.rowCount () > 0)
+    if (journal.rows () > 0)
       out << journal.render ()
           << "\n";
   }

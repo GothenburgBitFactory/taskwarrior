@@ -149,7 +149,8 @@ int handleReportHistoryMonthly (std::string& outs)
 
   if (view.rows ())
   {
-    view.addRow ();
+    row = view.addRow ();
+    view.set (row, 0, " ");
     row = view.addRow ();
 
     Color row_color;
