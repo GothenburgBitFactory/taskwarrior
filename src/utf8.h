@@ -34,6 +34,7 @@ unsigned int utf8_next_char (const std::string&, std::string::size_type&);
 std::string utf8_character (unsigned int);
 int utf8_sequence (unsigned int);
 int utf8_length (const std::string&);
+int utf8_text_length (const std::string&);
 
 
 #endif

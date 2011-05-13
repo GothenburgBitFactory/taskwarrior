@@ -254,7 +254,7 @@ void extractLine (std::string& text, std::string& line, int length)
 
   // Special case: no \n, and less than length characters total.
   // special case: text.find ("\n") == std::string::npos && text.length () < length
-  if (eol == std::string::npos && utf8_length (text) <= length)
+  if (eol == std::string::npos && utf8_text_length (text) <= length)
   {
     line = text;
     text = "";
@@ -730,7 +730,7 @@ std::string leftJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string leftJustify (const std::string& input, const int width)
 {
-  return input + std::string (width - utf8_length (input), ' ');
+  return input + std::string (width - utf8_text_length (input), ' ');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -744,7 +744,7 @@ std::string rightJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string rightJustify (const std::string& input, const int width)
 {
-  return std::string (width - utf8_length (input), ' ') + input;
+  return std::string (width - utf8_text_length (input), ' ') + input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

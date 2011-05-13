@@ -185,3 +185,41 @@ int utf8_length (const std::string& str)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int utf8_text_length (const std::string& str)
+{
+  int byteLength = str.length ();
+  int charLength = byteLength;
+  const char* data = str.data ();
+  bool in_color = false;
+
+  // Decrement the number of bytes for each byte that matches 0b10??????
+  // this way only the first byte of any utf8 sequence is counted.
+  for (int i = 0; i < byteLength; i++)
+  {
+    if (in_color)
+    {
+      if (data[i] == 'm')
+        in_color = false;
+
+      --charLength;
+    }
+    else
+    {
+      if (data[i] == 033)
+      {
+        in_color = true;
+        --charLength;
+      }
+      else
+      {
+        // Extract the first two bits and check whether they are 10
+        if ((data[i] & 0xC0) == 0x80)
+          --charLength;
+      }
+    }
+  }
+
+  return charLength;
+}
+
+////////////////////////////////////////////////////////////////////////////////
