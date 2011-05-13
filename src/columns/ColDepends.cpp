@@ -61,27 +61,27 @@ void ColumnDepends::setStyle (const std::string& value)
 // Set the minimum and maximum widths for the value.
 void ColumnDepends::measure (Task& task, int& minimum, int& maximum)
 {
-  std::vector <Task> blocked;
-  dependencyGetBlocking (task, blocked);
+  std::vector <Task> blocking;
+  dependencyGetBlocking (task, blocking);
 
        if (_style == "indicator") minimum = maximum = context.config.get ("dependency.indicator").length ();
-  else if (_style == "count")     minimum = maximum = 2 + format ((int) blocked.size ()).length ();
+  else if (_style == "count")     minimum = maximum = 2 + format ((int) blocking.size ()).length ();
   else if (_style == "default")
   {
     minimum = maximum = 0;
     if (task.has ("depends"))
     {
-      std::vector <int> blocked_ids;
+      std::vector <int> blocking_ids;
       std::vector <Task>::iterator i;
-      for (i = blocked.begin (); i != blocked.end (); ++i)
-        blocked_ids.push_back (i->id);
+      for (i = blocking.begin (); i != blocking.end (); ++i)
+        blocking_ids.push_back (i->id);
 
       std::string all;
-      join (all, " ", blocked_ids);
+      join (all, " ", blocking_ids);
       maximum = all.length ();
 
       int length;
-      for (i = blocked.begin (); i != blocked.end (); ++i)
+      for (i = blocking.begin (); i != blocking.end (); ++i)
       {
         length = format (i->id).length ();
         if (length > minimum)
@@ -110,23 +110,24 @@ void ColumnDepends::render (
       return;
     }
 
-    std::vector <Task> blocked;
-    dependencyGetBlocking (task, blocked);
+    std::vector <Task> blocking;
+    dependencyGetBlocking (task, blocking);
 
     if (_style == "count")
     {
       lines.push_back (
         color.colorize (
-          rightJustify ("[" + format ((int)blocked.size ()) + "]", width)));
+          rightJustify ("[" + format ((int)blocking.size ()) + "]", width)));
     }
     else if (_style == "default")
     {
-      std::vector <Task> blocked;
-      dependencyGetBlocking (task, blocked);
+      std::vector <int> blocking_ids;
+      std::vector <Task>::iterator t;
+      for (t = blocking.begin (); t != blocking.end (); ++t)
+        blocking_ids.push_back (t->id);
 
       std::string combined;
-      std::vector <int> blocked_ids;
-      join (combined, " ", blocked_ids);
+      join (combined, " ", blocking_ids);
 
       std::vector <std::string> all;
       wrapText (all, combined, width);
