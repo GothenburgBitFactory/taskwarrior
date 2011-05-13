@@ -42,7 +42,6 @@
 #include <File.h>
 #include <Date.h>
 #include <Duration.h>
-#include <Table.h>
 #include <ViewText.h>
 #include <text.h>
 #include <util.h>
@@ -787,6 +786,7 @@ int handleReportSummary (std::string& outs)
 
   // Create a table for output.
   ViewText view;
+  view.width (context.getWidth ());
   view.add (Column::factory ("string", "Project"));
   view.add (Column::factory ("string", "Remaining"));
   view.add (Column::factory ("string", "Avg age"));
@@ -900,31 +900,12 @@ int handleReportTimesheet (std::string& outs)
         << "\n";
 
     // Render the completed table.
-    Table completed;
-    completed.setTableWidth (width);
-    completed.addColumn ("   ");
-    completed.addColumn ("Project");
-    completed.addColumn ("Due");
-    completed.addColumn ("Description");
-
-    if (context.color () && context.config.getBoolean ("fontunderline"))
-    {
-      completed.setColumnUnderline (1);
-      completed.setColumnUnderline (2);
-      completed.setColumnUnderline (3);
-    }
-    else
-      completed.setTableDashedUnderline ();
-
-    completed.setColumnWidth (0, Table::minimum);
-    completed.setColumnWidth (1, Table::minimum);
-    completed.setColumnWidth (2, Table::minimum);
-    completed.setColumnWidth (3, Table::flexible);
-
-    completed.setColumnJustification (0, Table::left);
-    completed.setColumnJustification (1, Table::left);
-    completed.setColumnJustification (2, Table::right);
-    completed.setColumnJustification (3, Table::left);
+    ViewText completed;
+    completed.width (width);
+    completed.add (Column::factory ("string", "   "));
+    completed.add (Column::factory ("string", "Project"));
+    completed.add (Column::factory ("string.right", "Due"));
+    completed.add (Column::factory ("string", "Description"));
 
     std::vector <Task>::iterator task;
     for (task = tasks.begin (); task != tasks.end (); ++task)
@@ -935,56 +916,35 @@ int handleReportTimesheet (std::string& outs)
         Date compDate (atoi (task->get ("end").c_str ()));
         if (compDate >= start && compDate < end)
         {
+          Color c (task->get ("fg") + " " + task->get ("bg"));
+          if (context.color ())
+            autoColorize (*task, c);
+
           int row = completed.addRow ();
           std::string format = context.config.get ("dateformat.report");
           if (format == "")
             format = context.config.get ("dateformat");
-          completed.addCell (row, 1, task->get ("project"));
-          completed.addCell (row, 2, getDueDate (*task, format));
-          completed.addCell (row, 3, getFullDescription (*task, "timesheet"));
-
-          if (context.color ())
-          {
-            Color c (task->get ("fg") + " " + task->get ("bg"));
-            autoColorize (*task, c);
-            completed.setRowColor (row, c);
-          }
+          completed.set (row, 1, task->get ("project"), c);
+          completed.set (row, 2, getDueDate (*task, format), c);
+          completed.set (row, 3, getFullDescription (*task, "timesheet"), c);
         }
       }
     }
 
-    out << "  Completed (" << completed.rowCount () << " tasks)\n";
+    out << "  Completed (" << completed.rows () << " tasks)\n";
 
-    if (completed.rowCount ())
+    if (completed.rows ())
       out << completed.render ()
           << "\n";
 
     // Now render the started table.
-    Table started;
-    started.setTableWidth (width);
-    started.addColumn ("   ");
-    started.addColumn ("Project");
-    started.addColumn ("Due");
-    started.addColumn ("Description");
+    ViewText started;
+    started.width (width);
+    started.add (Column::factory ("string", "   "));
+    started.add (Column::factory ("string", "Project"));
+    started.add (Column::factory ("string.right", "Due"));
+    started.add (Column::factory ("string", "Description"));
 
-    if (context.color () && context.config.getBoolean ("fontunderline"))
-    {
-      started.setColumnUnderline (1);
-      started.setColumnUnderline (2);
-      started.setColumnUnderline (3);
-    }
-    else
-      started.setTableDashedUnderline ();
-
-    started.setColumnWidth (0, Table::minimum);
-    started.setColumnWidth (1, Table::minimum);
-    started.setColumnWidth (2, Table::minimum);
-    started.setColumnWidth (3, Table::flexible);
-
-    started.setColumnJustification (0, Table::left);
-    started.setColumnJustification (1, Table::left);
-    started.setColumnJustification (2, Table::right);
-    started.setColumnJustification (3, Table::left);
     for (task = tasks.begin (); task != tasks.end (); ++task)
     {
       // If task started within range, but not completed withing range.
@@ -994,27 +954,25 @@ int handleReportTimesheet (std::string& outs)
         Date startDate (atoi (task->get ("start").c_str ()));
         if (startDate >= start && startDate < end)
         {
+          Color c (task->get ("fg") + " " + task->get ("bg"));
+          if (context.color ())
+            autoColorize (*task, c);
+
           int row = started.addRow ();
           std::string format = context.config.get ("dateformat.report");
           if (format == "")
             format = context.config.get ("dateformat");
-          started.addCell (row, 1, task->get ("project"));
-          started.addCell (row, 2, getDueDate (*task, format));
-          started.addCell (row, 3, getFullDescription (*task, "timesheet"));
+          started.set (row, 1, task->get ("project"), c);
+          started.set (row, 2, getDueDate (*task, format), c);
+          started.set (row, 3, getFullDescription (*task, "timesheet"), c);
 
-          if (context.color ())
-          {
-            Color c (task->get ("fg") + " " + task->get ("bg"));
-            autoColorize (*task, c);
-            started.setRowColor (row, c);
-          }
         }
       }
     }
 
-    out << "  Started (" << started.rowCount () << " tasks)\n";
+    out << "  Started (" << started.rows () << " tasks)\n";
 
-    if (started.rowCount ())
+    if (started.rows ())
       out << started.render ()
           << "\n\n";
 
@@ -1035,9 +993,6 @@ std::string renderMonths (
   std::vector <Task>& all,
   int monthsPerLine)
 {
-  Table table;
-  table.setDateFormat (context.config.get ("dateformat"));
-
   // What day of the week does the user consider the first?
   int weekStart = Date::dayOfWeek (context.config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
@@ -1045,64 +1000,41 @@ std::string renderMonths (
                        "only contain 'Sunday' or 'Monday'.");
 
   // Build table for the number of months to be displayed.
+  ViewText view;
+  view.width (context.getWidth ());
   for (int i = 0 ; i < (monthsPerLine * 8); i += 8)
   {
     if (weekStart == 1)
     {
-      table.addColumn (" ");
-      table.addColumn ("Mo");
-      table.addColumn ("Tu");
-      table.addColumn ("We");
-      table.addColumn ("Th");
-      table.addColumn ("Fr");
-      table.addColumn ("Sa");
-      table.addColumn ("Su");
+      view.add (Column::factory ("string", "    "));
+      view.add (Column::factory ("string", "Mo"));
+      view.add (Column::factory ("string", "Tu"));
+      view.add (Column::factory ("string", "We"));
+      view.add (Column::factory ("string", "Th"));
+      view.add (Column::factory ("string", "Fr"));
+      view.add (Column::factory ("string", "Sa"));
+      view.add (Column::factory ("string", "Su"));
     }
     else
     {
-      table.addColumn (" ");
-      table.addColumn ("Su");
-      table.addColumn ("Mo");
-      table.addColumn ("Tu");
-      table.addColumn ("We");
-      table.addColumn ("Th");
-      table.addColumn ("Fr");
-      table.addColumn ("Sa");
+      view.add (Column::factory ("string", "    "));
+      view.add (Column::factory ("string", "Su"));
+      view.add (Column::factory ("string", "Mo"));
+      view.add (Column::factory ("string", "Tu"));
+      view.add (Column::factory ("string", "We"));
+      view.add (Column::factory ("string", "Th"));
+      view.add (Column::factory ("string", "Fr"));
+      view.add (Column::factory ("string", "Sa"));
     }
-
-    if (context.color () && context.config.getBoolean ("fontunderline"))
-    {
-      table.setColumnUnderline (i + 1);
-      table.setColumnUnderline (i + 2);
-      table.setColumnUnderline (i + 3);
-      table.setColumnUnderline (i + 4);
-      table.setColumnUnderline (i + 5);
-      table.setColumnUnderline (i + 6);
-      table.setColumnUnderline (i + 7);
-    }
-    else
-      table.setTableDashedUnderline ();
-
-    table.setColumnJustification (i + 0, Table::right);
-    table.setColumnJustification (i + 1, Table::right);
-    table.setColumnJustification (i + 2, Table::right);
-    table.setColumnJustification (i + 3, Table::right);
-    table.setColumnJustification (i + 4, Table::right);
-    table.setColumnJustification (i + 5, Table::right);
-    table.setColumnJustification (i + 6, Table::right);
-    table.setColumnJustification (i + 7, Table::right);
-
-    // This creates a nice gap between the months.
-    table.setColumnWidth (i + 0, 4);
   }
 
   // At most, we need 6 rows.
-  table.addRow ();
-  table.addRow ();
-  table.addRow ();
-  table.addRow ();
-  table.addRow ();
-  table.addRow ();
+  view.addRow ();
+  view.addRow ();
+  view.addRow ();
+  view.addRow ();
+  view.addRow ();
+  view.addRow ();
 
   // Set number of days per month, months to render, and years to render.
   std::vector<int> years;
@@ -1150,11 +1082,7 @@ std::string renderMonths (
       int woy = temp.weekOfYear (weekStart);
 
       if (context.config.getBoolean ("displayweeknumber"))
-      {
-        table.addCell (row, (8 * mpl), woy);
-        if (context.color ())
-          table.setCellColor (row, (8 * mpl), color_weeknumber);
-      }
+        view.set (row, (8 * mpl), woy, color_weeknumber);
 
       // Calculate column id.
       int thisCol = dow +                       // 0 = Sunday
@@ -1164,7 +1092,7 @@ std::string renderMonths (
       if (thisCol == (8 * mpl))
         thisCol += 7;
 
-      table.addCell (row, thisCol, d);
+      view.set (row, thisCol, d);
 
       if (context.color ())
       {
@@ -1237,7 +1165,8 @@ std::string renderMonths (
             }
           }
         }
-        table.setCellColor (row, thisCol, cellColor);
+// TODO Solve this.
+//        table.setCellColor (row, thisCol, cellColor);
       }
 
       // Check for end of week, and...
@@ -1249,7 +1178,7 @@ std::string renderMonths (
     }
   }
 
-  return table.render ();
+  return view.render ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1567,32 +1496,18 @@ int handleReportCalendar (std::string& outs)
       std::vector <std::string> holidays;
       context.config.all (holidays);
 
-      Table holTable;
-      holTable.setTableWidth (context.getWidth ());
-      holTable.addColumn ("Date");
-      holTable.addColumn ("Holiday");
-      holTable.sortOn (0, Table::ascendingDueDate);
+      ViewText holTable;
+      holTable.width (context.getWidth ());
+      holTable.add (Column::factory ("string", "Date"));
+      holTable.add (Column::factory ("string", "Holiday"));
 
-      if (context.color () && context.config.getBoolean ("fontunderline"))
-      {
-        holTable.setColumnUnderline (0);
-        holTable.setColumnUnderline (1);
-      }
-      else
-        holTable.setTableDashedUnderline ();
-
-      holTable.setColumnWidth (0, Table::minimum);
-      holTable.setColumnWidth (1, Table::flexible);
-
-      holTable.setColumnJustification (0, Table::left);
-      holTable.setColumnJustification (1, Table::left);
-
-      foreach (hol, holidays)
-        if (hol->substr (0, 8) == "holiday.")
-          if (hol->substr (hol->size () - 4) == "name")
+      std::vector <std::string>::iterator it;
+      for (it = holidays.begin (); it != holidays.end (); ++it)
+        if (it->substr (0, 8) == "holiday.")
+          if (it->substr (it->size () - 4) == "name")
           {
-            std::string holName = context.config.get ("holiday." + hol->substr (8, hol->size () - 13) + ".name");
-            std::string holDate = context.config.get ("holiday." + hol->substr (8, hol->size () - 13) + ".date");
+            std::string holName = context.config.get ("holiday." + it->substr (8, it->size () - 13) + ".name");
+            std::string holDate = context.config.get ("holiday." + it->substr (8, it->size () - 13) + ".date");
             Date hDate (holDate.c_str (), context.config.get ("dateformat.holiday"));
 
             if (date_after < hDate && hDate < date_before)
@@ -1606,8 +1521,8 @@ int handleReportCalendar (std::string& outs)
                 format = context.config.get ("dateformat");
 
               int row = holTable.addRow ();
-              holTable.addCell (row, 0, hDate.toString (format));
-              holTable.addCell (row, 1, holName);
+              holTable.set (row, 0, hDate.toString (format));
+              holTable.set (row, 1, holName);
             }
           }
 

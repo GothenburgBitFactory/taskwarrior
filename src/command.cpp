@@ -43,6 +43,7 @@
 #include "util.h"
 #include "main.h"
 #include "Transport.h"
+#include "ViewText.h"
 #include "../cmake.h"
 #ifdef HAVE_COMMIT
 #include "../commit.h"
@@ -259,41 +260,24 @@ int handleProjects (std::string& outs)
   if (unique.size ())
   {
     // Render a list of project names from the map.
-    Table table;
-    table.addColumn ("Project");
-    table.addColumn ("Tasks");
-    table.addColumn ("Pri:None");
-    table.addColumn ("Pri:L");
-    table.addColumn ("Pri:M");
-    table.addColumn ("Pri:H");
-
-    if (context.color () && context.config.getBoolean ("fontunderline"))
-    {
-      table.setColumnUnderline (0);
-      table.setColumnUnderline (1);
-      table.setColumnUnderline (2);
-      table.setColumnUnderline (3);
-      table.setColumnUnderline (4);
-      table.setColumnUnderline (5);
-    }
-    else
-      table.setTableDashedUnderline ();
-
-    table.setColumnJustification (1, Table::right);
-    table.setColumnJustification (2, Table::right);
-    table.setColumnJustification (3, Table::right);
-    table.setColumnJustification (4, Table::right);
-    table.setColumnJustification (5, Table::right);
+    ViewText view;
+    view.width (context.getWidth ());
+    view.add (Column::factory ("string",       "Project"));
+    view.add (Column::factory ("string.right", "Tasks"));
+    view.add (Column::factory ("string.right", "Pri:None"));
+    view.add (Column::factory ("string.right", "Pri:L"));
+    view.add (Column::factory ("string.right", "Pri:M"));
+    view.add (Column::factory ("string.right", "Pri:H"));
 
     foreach (i, unique)
     {
-      int row = table.addRow ();
-      table.addCell (row, 0, (i->first == "" ? "(none)" : i->first));
-      table.addCell (row, 1, i->second);
-      table.addCell (row, 2, none[i->first]);
-      table.addCell (row, 3, low[i->first]);
-      table.addCell (row, 4, medium[i->first]);
-      table.addCell (row, 5, high[i->first]);
+      int row = view.addRow ();
+      view.set (row, 0, (i->first == "" ? "(none)" : i->first));
+      view.set (row, 1, i->second);
+      view.set (row, 2, none[i->first]);
+      view.set (row, 3, low[i->first]);
+      view.set (row, 4, medium[i->first]);
+      view.set (row, 5, high[i->first]);
     }
 
     int number_projects = unique.size ();
@@ -301,7 +285,7 @@ int handleProjects (std::string& outs)
       --number_projects;
 
     out << optionalBlankLine ()
-        << table.render ()
+        << view.render ()
         << optionalBlankLine ()
         << number_projects
         << (number_projects == 1 ? " project" : " projects")
@@ -382,35 +366,28 @@ int handleTags (std::string& outs)
   if (unique.size ())
   {
     // Render a list of tags names from the map.
-    Table table;
-    table.addColumn ("Tag");
-    table.addColumn ("Count");
-
-    if (context.color ())
-    {
-      table.setColumnUnderline (0);
-      table.setColumnUnderline (1);
-    }
-
-    table.setColumnJustification (1, Table::right);
+    ViewText view;
+    view.width (context.getWidth ());
+    view.add (Column::factory ("string", "Tag"));
+    view.add (Column::factory ("string.right", "Count"));
 
     Color bold ("bold");
+    bool special = false;
     foreach (i, unique)
     {
-      int row = table.addRow ();
-      table.addCell (row, 0, i->first);
-      table.addCell (row, 1, i->second);
-
       // Highlight the special tags.
-      if (context.color () && (i->first == "nocolor" ||
-                               i->first == "nonag"))
-      {
-        table.setRowColor (row, bold);
-      }
+      special = (context.color () &&
+                 (i->first == "nocolor" ||
+                  i->first == "nonag"   ||
+                  i->first == "next")) ? true : false;
+
+      int row = view.addRow ();
+      view.set (row, 0, i->first,  special ? bold : Color ());
+      view.set (row, 1, i->second, special ? bold : Color ());
     }
 
     out << optionalBlankLine ()
-        << table.render ()
+        << view.render ()
         << optionalBlankLine ()
         << unique.size ()
         << (unique.size () == 1 ? " tag" : " tags")
@@ -1002,22 +979,18 @@ int handleVersion (std::string& outs)
 
   // Create a table for the disclaimer.
   int width = context.getWidth ();
-  Table disclaimer;
-  disclaimer.setTableWidth (width);
-  disclaimer.addColumn (" ");
-  disclaimer.setColumnWidth (0, Table::flexible);
-  disclaimer.setColumnJustification (0, Table::left);
-  disclaimer.addCell (disclaimer.addRow (), 0,
+  ViewText disclaimer;
+  disclaimer.width (width);
+  disclaimer.add (Column::factory ("string", ""));
+  disclaimer.set (disclaimer.addRow (), 0,
       "Taskwarrior may be copied only under the terms of the GNU General Public "
       "License, which may be found in the taskwarrior source kit.");
 
   // Create a table for the URL.
-  Table link;
-  link.setTableWidth (width);
-  link.addColumn (" ");
-  link.setColumnWidth (0, Table::flexible);
-  link.setColumnJustification (0, Table::left);
-  link.addCell (link.addRow (), 0,
+  ViewText link;
+  link.width (width);
+  link.add (Column::factory ("string", ""));
+  link.set (link.addRow (), 0,
     "Documentation for taskwarrior can be found using 'man task', 'man taskrc', "
     "'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' or at "
     "http://taskwarrior.org");
@@ -1061,7 +1034,9 @@ int handleVersion (std::string& outs)
 #ifdef HAVE_LIBLUA
       << "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio.\n"
 #endif
+      << "\n"
       << disclaimer.render ()
+      << "\n"
       << link.render ()
       << "\n";
 
@@ -1168,26 +1143,11 @@ int handleShow (std::string& outs)
     if (context.config.get (*i) != default_config.get (*i))
       default_values.push_back (*i);
 
-  // Create a table for output.
-  Table table;
-  table.setTableWidth (width);
-  table.setDateFormat (context.config.get ("dateformat"));
-  table.addColumn ("Config variable");
-  table.addColumn ("Value");
-
-  if (context.color ())
-  {
-    table.setColumnUnderline (0);
-    table.setColumnUnderline (1);
-  }
-  else
-    table.setTableDashedUnderline ();
-
-  table.setColumnWidth (0, Table::minimum);
-  table.setColumnWidth (1, Table::flexible);
-  table.setColumnJustification (0, Table::left);
-  table.setColumnJustification (1, Table::left);
-  table.sortOn (0, Table::ascendingCharacter);
+  // Create output view.
+  ViewText view;
+  view.width (width);
+  view.add (Column::factory ("string", "Config variable"));
+  view.add (Column::factory ("string", "Value"));
 
   Color error ("bold white on red");
   Color warning ("black on yellow");
@@ -1206,25 +1166,22 @@ int handleShow (std::string& outs)
 
     if (loc != std::string::npos)
     {
-      int row = table.addRow ();
-      table.addCell (row, 0, *i);
-      table.addCell (row, 1, context.config.get (*i));
-
       // Look for unrecognized.
-      if (context.color ())
-      {
-        if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
-          table.setRowColor (row, error);
+      Color color;
+      if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
+        color = error;
+      else if (std::find (default_values.begin (), default_values.end (), *i) != default_values.end ())
+        color = warning;
 
-        else if (std::find (default_values.begin (), default_values.end (), *i) != default_values.end ())
-          table.setRowColor (row, warning);
-      }
+      int row = view.addRow ();
+      view.set (row, 0, *i, color);
+      view.set (row, 1, context.config.get (*i), color);
     }
   }
 
   out << "\n"
-      << table.render ()
-      << (table.rowCount () == 0 ? "No matching configuration variables.\n\n" : "\n");
+      << view.render ()
+      << (view.rows () == 0 ? "No matching configuration variables.\n\n" : "\n");
 
   // Display the unrecognized variables.
   if (unrecognized.size ())
@@ -2374,17 +2331,10 @@ int handleColor (std::string& outs)
       std::vector <std::string> all;
       context.config.all (all);
 
-      Table table;
-      table.addColumn ("Color");
-      table.addColumn ("Definition");
-
-      if (context.color () && context.config.getBoolean ("fontunderline"))
-      {
-        table.setColumnUnderline (0);
-        table.setColumnUnderline (1);
-      }
-      else
-        table.setTableDashedUnderline ();
+      ViewText view;
+      view.width (context.getWidth ());
+      view.add (Column::factory ("string", "Color"));
+      view.add (Column::factory ("string", "Definition"));
 
       foreach (item, all)
       {
@@ -2394,16 +2344,14 @@ int handleColor (std::string& outs)
             *item != "color"       &&
             item->find ("color") == 0)
         {
-          int row = table.addRow ();
-          table.addCell (row, 0, *item);
-          table.addCell (row, 1, context.config.get (*item));
-          table.setRowColor (row, context.config.get (*item));
+          Color color (context.config.get (*item));
+          int row = view.addRow ();
+          view.set (row, 0, *item, color);
+          view.set (row, 1, context.config.get (*item), color);
         }
       }
 
-      out << optionalBlankLine ()
-          << table.render ()
-          << optionalBlankLine ()
+      out << view.render ()
           << "\n";
     }
 

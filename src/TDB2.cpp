@@ -284,7 +284,7 @@ void TDB2::commit ()
 #include "TDB.h"
 #include "Directory.h"
 #include "File.h"
-#include "Table.h"
+#include "ViewText.h"
 #include "Timer.h"
 #include "Color.h"
 #include "main.h"
@@ -1000,24 +1000,12 @@ void TDB::undo ()
 
     // Attributes are all there is, so figure the different attribute names
     // between before and after.
-    Table table;
-    table.setTableWidth (context.getWidth ());
-    table.setTableIntraPadding (2);
-    table.addColumn (" ");
-    table.addColumn ("Prior Values");
-    table.addColumn ("Current Values");
-
-    if (context.color () && context.config.getBoolean ("fontunderline"))
-    {
-      table.setColumnUnderline (1);
-      table.setColumnUnderline (2);
-    }
-    else
-      table.setTableDashedUnderline ();
-
-    table.setColumnWidth (0, Table::minimum);
-    table.setColumnWidth (1, Table::flexible);
-    table.setColumnWidth (2, Table::flexible);
+    ViewText view;
+    view.width (context.getWidth ());
+    view.intraPadding (2);
+    view.add (Column::factory ("string", ""));
+    view.add (Column::factory ("string", "Prior Values"));
+    view.add (Column::factory ("string", "Current Values"));
 
     Task after (current);
 
@@ -1040,10 +1028,9 @@ void TDB::undo ()
       int row;
       foreach (name, beforeOnly)
       {
-        row = table.addRow ();
-        table.addCell (row, 0, *name);
-        table.addCell (row, 1, renderAttribute (*name, before.get (*name)));
-        table.setCellColor (row, 1, color_red);
+        row = view.addRow ();
+        view.set (row, 0, *name, red);
+        view.set (row, 1, renderAttribute (*name, before.get (*name)), red);
       }
 
       foreach (name, before)
@@ -1053,25 +1040,18 @@ void TDB::undo ()
 
         if (currentValue != "")
         {
-          row = table.addRow ();
-          table.addCell (row, 0, name->first);
-          table.addCell (row, 1, renderAttribute (name->first, priorValue));
-          table.addCell (row, 2, renderAttribute (name->first, currentValue));
-
-          if (priorValue != currentValue)
-          {
-            table.setCellColor (row, 1, color_red);
-            table.setCellColor (row, 2, color_green);
-          }
+          row = view.addRow ();
+          view.set (row, 0, name->first);
+          view.set (row, 1, renderAttribute (name->first, priorValue), priorValue != currentValue ? color_red : color_green);
+          view.set (row, 2, renderAttribute (name->first, currentValue), priorValue != currentValue ? color_red : color_green);
         }
       }
 
       foreach (name, afterOnly)
       {
-        row = table.addRow ();
-        table.addCell (row, 0, *name);
-        table.addCell (row, 2, renderAttribute (*name, after.get (*name)));
-        table.setCellColor (row, 2, color_green);
+        row = view.addRow ();
+        view.set (row, 0, *name);
+        view.set (row, 2, renderAttribute (*name, after.get (*name)), color_green);
       }
     }
     else
@@ -1079,15 +1059,14 @@ void TDB::undo ()
       int row;
       foreach (name, after)
       {
-        row = table.addRow ();
-        table.addCell (row, 0, name->first);
-        table.addCell (row, 2, renderAttribute (name->first, after.get (name->first)));
-        table.setCellColor (row, 2, color_green);
+        row = view.addRow ();
+        view.set (row, 0, name->first);
+        view.set (row, 2, renderAttribute (name->first, after.get (name->first)), color_green);
       }
     }
 
     std::cout << "\n"
-              << table.render ()
+              << view.render ()
               << "\n";
   }
 
@@ -1114,27 +1093,21 @@ void TDB::undo ()
     Task after (current);
 
     // Generate table header.
-    Table table;
-    table.setTableWidth (context.getWidth ());
-    table.setTableIntraPadding (2);
-    table.addColumn (" ");
-    table.addColumn (" ");
-    table.setColumnWidth (0, Table::minimum);
-    table.setColumnWidth (1, Table::flexible);
-    table.setColumnJustification (0, Table::right);
-    table.setColumnJustification (1, Table::left);
+    ViewText view
+    view.width (context.getWidth ());
+    view.intraPadding (2);
+    view.addColumn (Column::factory ("string.right", ""));
+    view.addColumn (Column::factory ("string", ""));
 
-    int row = table.addRow ();
-    table.addCell (row, 0, "--- previous state");
-    table.addCell (row, 1, "Undo will restore this state");
-    table.setRowColor (row, color_red);
+    int row = view.addRow ();
+    view.set (row, 0, "--- previous state", color_red);
+    view.set (row, 1, "Undo will restore this state", color_red);
 
-    row = table.addRow ();
-    table.addCell (row, 0, "+++ current state ");  // Note trailing space.
-    table.addCell (row, 1, "Change made " + lastChange.toString (context.config.get ("dateformat")));
-    table.setRowColor (row, color_green);
+    row = view.addRow ();
+    view.set (row, 0, "+++ current state ", color_green);  // Note trailing space.
+    view.set (row, 1, "Change made " + lastChange.toString (context.config.get ("dateformat")), color_green);
 
-    table.addRow ();
+    view.addRow ();
 
     // Add rows to table showing diffs.
     std::vector <std::string> all;
@@ -1172,55 +1145,49 @@ void TDB::undo ()
         {
           // Show nothing - no point displaying that which did not change.
 
-          // row = table.addRow ();
-          // table.addCell (row, 0, *a + ":");
-          // table.addCell (row, 1, before_att);
+          // row = view.addRow ();
+          // view.set (row, 0, *a + ":");
+          // view.set (row, 1, before_att);
         }
 
         // Attribute deleted.
         else if (before_att != "" && after_att == "")
         {
-          row = table.addRow ();
-          table.addCell (row, 0, "-" + *a + ":");
-          table.addCell (row, 1, before_att);
-          table.setRowColor (row, color_red);
+          row = view.addRow ();
+          view.set (row, 0, "-" + *a + ":", color_red);
+          view.set (row, 1, before_att, color_red);
 
-          row = table.addRow ();
-          table.addCell (row, 0, "+" + *a + ":");
-          table.setRowColor (row, color_green);
+          row = view.addRow ();
+          view.set (row, 0, "+" + *a + ":", color_green);
         }
 
         // Attribute added.
         else if (before_att == "" && after_att != "")
         {
-          row = table.addRow ();
-          table.addCell (row, 0, "-" + *a + ":");
-          table.setRowColor (row, color_red);
+          row = view.addRow ();
+          view.set (row, 0, "-" + *a + ":", color_red);
 
-          row = table.addRow ();
-          table.addCell (row, 0, "+" + *a + ":");
-          table.addCell (row, 1, after_att);
-          table.setRowColor (row, color_green);
+          row = view.addRow ();
+          view.set (row, 0, "+" + *a + ":", color_green);
+          view.set (row, 1, after_att, color_green);
         }
 
         // Attribute changed.
         else
         {
-          row = table.addRow ();
-          table.addCell (row, 0, "-" + *a + ":");
-          table.addCell (row, 1, before_att);
-          table.setRowColor (row, color_red);
+          row = view.addRow ();
+          view.set (row, 0, "-" + *a + ":", color_red);
+          view.set (row, 1, before_att, color_red);
 
-          row = table.addRow ();
-          table.addCell (row, 0, "+" + *a + ":");
-          table.addCell (row, 1, after_att);
-          table.setRowColor (row, color_green);
+          row = view.addRow ();
+          view.set (row, 0, "+" + *a + ":", color_green);
+          view.set (row, 1, after_att, color_green);
         }
       }
     }
 
     std::cout << "\n"
-              << table.render ()
+              << view.render ()
               << "\n";
   }
 

@@ -222,6 +222,10 @@ std::string ViewText::render ()
     bool odd = (row % 2) ? true : false;
     Color row_color = odd ? _odd : _even;
 
+    // TODO row_color.blend (provided color);
+    // TODO Problem: colors for columns are specified, not rows,
+    //      therefore there are only cell colors, not intra colors.
+
     Color cell_color;
     for (int col = 0; col < _columns.size (); ++col)
     {

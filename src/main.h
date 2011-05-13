@@ -36,7 +36,6 @@
 #include <map>
 #include <sys/types.h>
 #include "Context.h"
-#include "Table.h"
 #include "Date.h"
 #include "Color.h"
 #include "../cmake.h"

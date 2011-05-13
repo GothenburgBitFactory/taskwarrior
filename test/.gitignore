@@ -12,7 +12,6 @@ dom.t
 duration.t
 file.t
 filt.t
-grid.t
 json.t
 lisp.t
 list.t

@@ -111,13 +111,18 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     int global_min = utf8_length ((*i)->getLabel ());
     int global_ideal = global_min;
 
-    std::vector <Task>::iterator d;
-    for (d = data.begin (); d != data.end (); ++d)
+    for (int s = 0; s < sequence.size (); ++s)
     {
+      if (s >= _truncate_lines && _truncate_lines != 0)
+        break;
+
+      if (s >= _truncate_rows && _truncate_rows != 0)
+        break;
+
       // Determine minimum and ideal width for this column.
       int min;
       int ideal;
-      (*i)->measure (*d, min, ideal);
+      (*i)->measure (data[sequence[s]], min, ideal);
 
       if (min   > global_min)   global_min = min;
       if (ideal > global_ideal) global_ideal = ideal;
@@ -162,14 +167,17 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     overage -= sum_minimal;
 
     // Spread 'overage' among columns where width[i] < ideal[i]
-    while (overage)
+    bool needed = true;
+    while (overage && needed)
     {
+      needed = false;
       for (int i = 0; i < _columns.size () && overage; ++i)
       {
         if (widths[i] < ideal[i])
         {
           ++widths[i];
           --overage;
+          needed = true;
         }
       }
     }

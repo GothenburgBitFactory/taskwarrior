@@ -16,7 +16,6 @@ set (task_SRCS API.cpp API.h
                Duration.cpp Duration.h
                File.cpp File.h
                Filter.cpp Filter.h
-               Grid.cpp Grid.h
                Hooks.cpp Hooks.h
                JSON.cpp JSON.h
                Location.cpp Location.h
@@ -29,7 +28,6 @@ set (task_SRCS API.cpp API.h
                Subst.cpp Subst.h
                TDB.cpp TDB.h
                TDB2.cpp TDB2.h
-               Table.cpp Table.h
                Task.cpp Task.h
                Taskmod.cpp Taskmod.h
                Timer.cpp Timer.h
