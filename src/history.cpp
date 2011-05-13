@@ -26,7 +26,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
-
 #include <Context.h>
 #include <ViewText.h>
 #include <text.h>
@@ -551,13 +550,13 @@ int handleReportGHistoryAnnual (std::string& outs)
     }
   }
 
-  int widthOfBar = context.getWidth () - 5;   // 5 == strlen ("2008 ")
+  int widthOfBar = context.getWidth () - 5;   // 5 == strlen ("YYYY ")
 
   // Now build the view.
   ViewText view;
   view.width (context.getWidth ());
   view.add (Column::factory ("string", "Year"));
-  view.add (Column::factory ("string", "Number Added/Completed/Deleted"));
+  view.add (Column::factory ("string.left_fixed", "Number Added/Completed/Deleted"));
 
   Color color_add    (context.config.get ("color.history.add"));
   Color color_done   (context.config.get ("color.history.done"));

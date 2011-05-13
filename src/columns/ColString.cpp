@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove
 #include <Context.h>
 #include <ColString.h>
 #include <text.h>
@@ -58,13 +57,17 @@ void ColumnString::setReport (const std::string& value)
 //
 void ColumnString::measure (const std::string& value, int& minimum, int& maximum)
 {
-  std::string stripped = Color::strip (value);
-  maximum = stripped.length ();
-
   if (_style == "left"  ||
       _style == "right" ||
       _style == "default")
+  {
+    std::string stripped = Color::strip (value);
+    maximum = stripped.length ();
     minimum = longestWord (stripped);
+  }
+  else if (_style == "left_fixed" ||
+           _style == "right_fixed")
+    minimum = maximum = strippedLength (value);
   else
     throw std::string ("Unrecognized column format 'string.") + _style + "'";
 }
@@ -93,6 +96,14 @@ void ColumnString::render (
     std::vector <std::string>::iterator i;
     for (i = raw.begin (); i != raw.end (); ++i)
       lines.push_back (color.colorize (rightJustify (*i, width)));
+  }
+  else if (_style == "left_fixed")
+  {
+    lines.push_back (leftJustify (value, width));
+  }
+  else if (_style == "right_fixed")
+  {
+    lines.push_back (rightJustify (value, width));
   }
 }
 
