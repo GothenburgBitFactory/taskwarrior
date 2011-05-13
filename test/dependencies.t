@@ -156,7 +156,7 @@ qx{../src/task rc:dep.rc do 2};
 
 # [27]
 $output = qx{../src/task rc:dep.rc depreport};
-like ($output, qr/\s1\s+2,3\s+One\s+/, 'dependencies - depends report column reflects changed IDs');
+like ($output, qr/\s1\s+2 3\s+One\s+/, 'dependencies - depends report column reflects changed IDs');
 
 # [28]
 qx{../src/task rc:dep.rc do 3};

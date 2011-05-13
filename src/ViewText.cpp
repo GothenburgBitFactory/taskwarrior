@@ -96,7 +96,6 @@ std::string ViewText::render ()
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
   std::vector <int> ideal;
-
   for (int col = 0; col < _columns.size (); ++col)
   {
     // Headers factor in to width calculations.
