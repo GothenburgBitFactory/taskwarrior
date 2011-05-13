@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
@@ -51,6 +52,8 @@ Task::Task ()
 Task::Task (const Task& other)
 : Record (other)
 , id (other.id)
+, urgency_value (other.urgency_value)
+, recalc_urgency (other.recalc_urgency)
 {
 }
 
@@ -60,7 +63,9 @@ Task& Task::operator= (const Task& other)
   if (this != &other)
   {
     Record::operator= (other);
-    id = other.id;
+    id             = other.id;
+    urgency_value  = other.urgency_value;
+    recalc_urgency = other.recalc_urgency;
   }
 
   return *this;
@@ -85,6 +90,8 @@ bool Task::operator== (const Task& other)
 Task::Task (const std::string& input)
 {
   id = 0;
+  urgency_value = 0.0;
+  recalc_urgency = true;
   parse (input);
 }
 
@@ -914,18 +921,16 @@ float Task::urgency ()
     // urgency.project.coefficient
     coefficient = context.config.getReal ("urgency.project.coefficient");
 
-    value = get ("project");
-    if (value != "") term = 1.0;
-    else             term = 0.0;
+    if (has ("project")) term = 1.0;
+    else                 term = 0.0;
 
     urgency_value += term * coefficient;
 
     // urgency.active.coefficient
     coefficient = context.config.getReal ("urgency.active.coefficient");
 
-    value = get ("start");
-    if (value != "") term = 1.0;
-    else             term = 0.0;
+    if (has ("start")) term = 1.0;
+    else               term = 0.0;
 
     urgency_value += term * coefficient;
 
@@ -941,9 +946,8 @@ float Task::urgency ()
     // urgency.blocked.coefficient
     coefficient = context.config.getReal ("urgency.blocked.coefficient");
 
-    value = get ("depends");
-    if (value != "") term = 1.0;
-    else             term = 0.0;
+    if (has ("depends")) term = 1.0;
+    else                 term = 0.0;
 
     urgency_value += term * coefficient;
 

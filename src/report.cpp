@@ -619,7 +619,7 @@ int handleInfo (std::string& outs)
     // Task::urgency
     row = view.addRow ();
     view.set (row, 0, "Urgency");
-    view.set (row, 1, task->urgency ());
+    view.set (row, 1, trimLeft (format (task->urgency (), 4, 4)));
 
     // Create a second table, containing undo log change details.
     ViewText journal;
