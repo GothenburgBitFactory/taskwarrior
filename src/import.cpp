@@ -80,9 +80,15 @@ static fileType determineFileType (const std::vector <std::string>& lines)
       return task_1_4_3;
   }
 
-  if (lines.size () > 2 &&
-      lines[0] == "%YAML 1.1" &&
-      lines[1] == "---")
+  if ((lines.size () > 2 &&
+       lines[0] == "%YAML 1.1" &&
+       lines[1] == "---")
+      ||
+      (lines.size () > 3 &&
+       (lines[0].find ("task:") != std::string::npos ||
+        lines[1].find ("task:") != std::string::npos ||
+        lines[2].find ("task:") != std::string::npos ||
+        lines[3].find ("task:") != std::string::npos)))
   {
     return yaml;
   }
@@ -1247,6 +1253,23 @@ static std::string importYAML (const std::vector <std::string>& lines)
 
     else if (name != "" && value != "")
       t.set (name, value);
+  }
+
+  if (t.size ())
+  {
+    // Generate a UUID if not present.
+    if (t.get ("uuid") == "")
+      t.set ("uuid", uuid ());
+
+    // Add defaults.
+    decorateTask (t);
+    t.setStatus (status);
+
+    // TODO Fail on UUID collision.
+
+    context.tdb.add (t);
+    t.clear ();
+    ++count;
   }
 
   context.tdb.commit ();

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 18;
 
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
@@ -100,9 +100,31 @@ like   ($output, qr/2\/13\/2009.+two/, 't3 present');
 $output = qx{../src/task rc:import.rc import import.txt};
 like ($output, qr/Cannot add task because the uuid .+ is not unique\./, 'error on duplicate uuid');
 
+# Create import file.
+if (open my $fh, '>', 'import2.txt')
+{
+  print $fh <<EOF;
+task:
+  uuid: 44444444-4444-4444-4444-444444444444
+  description: three
+  status: pending
+  entry: 1234567889
+EOF
+
+  close $fh;
+  ok (-r 'import2.txt', 'Created second sample import data');
+}
+
+$output = qx{../src/task rc:import.rc import import2.txt};
+like ($output, qr/Imported 1 tasks successfully./, 'no errors');
+# Imported 1 tasks successfully.
+
 # Cleanup.
 unlink 'import.txt';
 ok (!-r 'import.txt', 'Removed import.txt');
+
+unlink 'import2.txt';
+ok (!-r 'import2.txt', 'Removed import2.txt');
 
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');

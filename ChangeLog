@@ -82,6 +82,7 @@
    not located (thanks to Christopher J. Pilkington).
 
 # Untracked Bugs, biggest first.
+ + Fixed bug that required the '%YAML' prologue in a YAML import.
 
 ------ old releases ------------------------------
 
