@@ -24,23 +24,35 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_CMDINSTALL
-#define INCLUDED_CMDINSTALL
 
-#include <string>
-#include <Command.h>
+#include <iostream>
+#include <CmdExec.h>
+#include <Context.h>
 
-class CmdInstall : public Command
+extern Context context;
+
+////////////////////////////////////////////////////////////////////////////////
+CmdExec::CmdExec ()
 {
-public:
-  CmdInstall ();
-  ~CmdInstall ();
+}
 
-  bool implements (const std::string&) const;
-  int execute (const std::string&, std::string&);
+////////////////////////////////////////////////////////////////////////////////
+CmdExec::~CmdExec ()
+{
+}
 
-private:
-};
+////////////////////////////////////////////////////////////////////////////////
+bool CmdExec::implements (const std::string& command_line) const
+{
+  std::cout << "# CmdExec::implements\n";
+  return false;
+}
 
-#endif
+////////////////////////////////////////////////////////////////////////////////
+int CmdExec::execute (const std::string& commandLine, std::string& output)
+{
+  std::cout << "# CmdExec::execute\n";
+  return 1;
+}
+
 ////////////////////////////////////////////////////////////////////////////////

@@ -24,17 +24,17 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_CMDINSTALL
-#define INCLUDED_CMDINSTALL
+#ifndef INCLUDED_CMDEXEC
+#define INCLUDED_CMDEXEC
 
 #include <string>
 #include <Command.h>
 
-class CmdInstall : public Command
+class CmdExec : public Command
 {
 public:
-  CmdInstall ();
-  ~CmdInstall ();
+  CmdExec ();
+  ~CmdExec ();
 
   bool implements (const std::string&) const;
   int execute (const std::string&, std::string&);

@@ -33,45 +33,7 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdInstall::CmdInstall ()
-/*
-: _name ("")
-*/
 {
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CmdInstall::CmdInstall (const CmdInstall& other)
-{
-/*
-  _minimum = other._minimum;
-*/
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CmdInstall& CmdInstall::operator= (const CmdInstall& other)
-{
-  if (this != &other)
-  {
-/*
-    _name    = other._name;
-*/
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CmdInstall::operator== (const CmdInstall& other) const
-{
-  return false;
-/*
-  return _name    == other._name    &&
-         _minimum == other._minimum &&
-         _maximum == other._maximum &&
-         _wrap    == other._wrap    &&
-         _just    == other._just    &&
-         _sizing  == other._sizing;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,14 +42,9 @@ CmdInstall::~CmdInstall ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CmdInstall::read_only () const
-{
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CmdInstall::implements (const std::string& command_line) const
 {
+  std::cout << "# CmdInstall::implements\n";
   return false;
 }
 
@@ -97,9 +54,10 @@ bool CmdInstall::implements (const std::string& command_line) const
 //   Generate UUID
 //   Call the "install" function once, store results in rc:
 //     extension.<uuid>=<JSON>
-std::string CmdInstall::execute (const std::string&)
+int CmdInstall::execute (const std::string& commandLine, std::string& output)
 {
-  return "output";
+  std::cout << "# CmdInstall::execute\n";
+  return 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

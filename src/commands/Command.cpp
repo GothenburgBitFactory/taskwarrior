@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <Command.h>
+#include <CmdExec.h>
 #include <CmdInstall.h>
 #include <CmdLogo.h>
 #include <Context.h>
@@ -37,10 +38,13 @@ extern Context context;
 Command* Command::factory (const std::string& name)
 {
   Command* command;
-       if (name == "install") command = new CmdInstall ();
+       if (name == "exec")    command = new CmdExec ();
+  else if (name == "install") command = new CmdInstall ();
   else if (name == "_logo")   command = new CmdLogo ();
   else
-    throw std::string ("Unrecognized command '") + name + "'";
+    throw std::string ("Unrecognized command object '") + name + "'";
+
+  // TODO Initialize command object.
 
   return command;
 }
@@ -72,12 +76,6 @@ Command& Command::operator= (const Command& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Command::read_only () const
-{
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Command::operator== (const Command& other) const
 {
   return false;
@@ -94,6 +92,13 @@ bool Command::operator== (const Command& other) const
 ////////////////////////////////////////////////////////////////////////////////
 Command::~Command ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Command::read_only () const
+{
+  std::cout << "# Command::read_only\n";
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -53,6 +53,7 @@ Context::Context ()
 , tdb ()
 , tdb2 ()
 , program ("")
+, commandLine ("")
 , file_override ("")
 , var_overrides ("")
 , cmd ()
@@ -73,27 +74,8 @@ Context::~Context ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::initialize2 (int argc, char** argv)
 {
-  // TODO Capture the args.
-  // TODO Capture any stdin args.
-  // TODO Scan for rc:<file> overrides --> apply.
-  // TODO Combine command line into one string.
-  // TODO Load relevant rc file.
+  Timer t ("Context::initialize2");
 
-  // TODO Instantiate built-in command objects.
-  commands.push_back (Command::factory ("install"));
-
-  // TODO Instantiate extension command objects.
-  // TODO Instantiate default command object.
-  // TODO Instantiate column objects.
-  // TODO Instantiate UDA objects.
-  // TODO Instantiate format objects.
-  // TODO Instantiate extension format objects.
-  // TODO Hook: on-launch
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Context::initialize (int argc, char** argv)
-{
   // Capture the args.
   for (int i = 0; i < argc; ++i)
   {
@@ -128,6 +110,34 @@ void Context::initialize (int argc, char** argv)
       args.push_back (arg);
     }
   }
+
+  // TODO Scan for rc:<file> overrides --> apply.
+
+  // Combine command line into one string.
+  join (commandLine, " ", args);
+
+  // TODO Load relevant rc file.
+
+  // Instantiate built-in command objects.
+  commands.push_back (Command::factory ("exec"));
+  commands.push_back (Command::factory ("install"));
+  commands.push_back (Command::factory ("_logo"));
+
+  // TODO Instantiate extension command objects.
+  // TODO Instantiate default command object.
+  // TODO Instantiate extension UDA objects.
+  // TODO Instantiate extension format objects.
+  // TODO Hook: on-launch
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::initialize (int argc, char** argv)
+{
+  // Capture the args.
+  // ...
+
+  // Capture any stdin args.
+  // ...
 
   initialize ();
 
@@ -182,8 +192,10 @@ int Context::run ()
   std::string output;
   try
   {
-    parse ();               // Parse command line.
-    rc = dispatch (output); // Dispatch to command handlers.
+    parse ();                 // Parse command line.
+    rc = dispatch2 (output);  // Dispatch to new command handlers.
+    if (rc)
+      rc = dispatch (output); // Dispatch to old command handlers.
   }
 
   catch (const std::string& error)
@@ -230,22 +242,35 @@ int Context::run ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int Context::dispatch2 (std::string &out)
+{
+  Timer t ("Context::dispatch2");
+
+  updateXtermTitle ();
+
+  std::vector <Command*>::iterator c;
+  for (c = commands.begin (); c != commands.end (); ++c)
+  {
+    if ((*c)->implements (commandLine))
+    {
+      if (! (*c)->read_only ())
+        tdb.gc ();
+
+      return (*c)->execute (commandLine, out);
+    }
+  }
+
+  return 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Context::dispatch (std::string &out)
 {
   int rc = 0;
 
   Timer t ("Context::dispatch");
 
-  // For read-only commands, optionally update the xterm window title.
-  // Why just the read-only commands?  Because this capability is to answer the
-  // question of 'what did I just do to generate this outout?'.
-  if (config.getBoolean ("xterm.title") &&
-      cmd.isReadOnlyCommand ())
-  {
-    std::string title;
-    join (title, " ", args);
-    std::cout << "]0;task " << title << "" << std::endl;
-  }
+  updateXtermTitle ();
 
   // TODO Chain-of-command pattern dispatch.
 
@@ -881,6 +906,7 @@ void Context::clear ()
   tdb.clear ();            // TODO Obsolete
 //  tdb2.clear ();
   program = "";
+  commandLine = "";
   args.clear ();
   file_override = "";
   var_overrides = "";
@@ -995,6 +1021,19 @@ void Context::autoFilter (Filter& f)
   {
     f.push_back (Att ("tags", "noword", *tag));
     debug ("auto filter: -" + *tag);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// This capability is to answer the question of 'what did I just do to generate
+// this output?'.
+void Context::updateXtermTitle ()
+{
+  if (config.getBoolean ("xterm.title"))
+  {
+    std::string title;
+    join (title, " ", args);
+    std::cout << "]0;task " << title << "" << std::endl;
   }
 }
 

@@ -55,7 +55,7 @@ int Context::getWidth ()
         terminal_width = buff[1];
 
         std::stringstream out;
-        out << "Context::getWidth: determined width of " << width << " characters";
+        out << "Context::getWidth: determined width of " << terminal_width << " characters";
         debug (out.str ());
       }
     }

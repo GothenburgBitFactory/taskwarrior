@@ -28,50 +28,13 @@
 #include <iostream>
 #include <CmdLogo.h>
 #include <Context.h>
+#include <text.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdLogo::CmdLogo ()
-/*
-: _name ("")
-*/
 {
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CmdLogo::CmdLogo (const CmdLogo& other)
-{
-/*
-  _minimum = other._minimum;
-*/
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CmdLogo& CmdLogo::operator= (const CmdLogo& other)
-{
-  if (this != &other)
-  {
-/*
-    _name    = other._name;
-*/
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CmdLogo::operator== (const CmdLogo& other) const
-{
-  return false;
-/*
-  return _name    == other._name    &&
-         _minimum == other._minimum &&
-         _maximum == other._maximum &&
-         _wrap    == other._wrap    &&
-         _just    == other._just    &&
-         _sizing  == other._sizing;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -82,12 +45,16 @@ CmdLogo::~CmdLogo ()
 ////////////////////////////////////////////////////////////////////////////////
 bool CmdLogo::read_only () const
 {
-  return false;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CmdLogo::implements (const std::string& command_line) const
 {
+  // TODO Upgrade to a parsed value.
+  if (command_line.find ("_logo") != std::string::npos)
+    return true;
+
   return false;
 }
 
@@ -97,7 +64,7 @@ bool CmdLogo::implements (const std::string& command_line) const
 //   Generate UUID
 //   Call the "install" function once, store results in rc:
 //     extension.<uuid>=<JSON>
-std::string CmdLogo::execute (const std::string&)
+int CmdLogo::execute (const std::string& commandLine, std::string& output)
 {
   static const char* data[] =
   {
@@ -132,10 +99,10 @@ std::string CmdLogo::execute (const std::string&)
     ""
   };
 
-  std::string output;
+  output += optionalBlankLine ();
+
   for (int line = 0; data[line][0]; ++line)
   {
-
     for (int c = 0; c < 14; ++c)
     {
       int value = (int) data[line][c];
@@ -163,9 +130,13 @@ std::string CmdLogo::execute (const std::string&)
         output += block;
       }
     }
+
+    output += "\n";
   }
 
-  return output;
+  output += optionalBlankLine ();
+
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -53,6 +53,7 @@ public:
   void initialize2 (int, char**);      // all startup
   void initialize ();                  // for reinitializing
   int run ();                          // task classic
+  int dispatch2 (std::string&);        // command handler dispatch
   int dispatch (std::string&);         // command handler dispatch
   void shadow ();                      // shadow file update
 
@@ -81,6 +82,7 @@ private:
   void loadAliases ();
   void autoFilter (Att&, Filter&);
   void autoFilter (Filter&);
+  void updateXtermTitle ();
 
 public:
   Config                    config;
@@ -92,6 +94,7 @@ public:
   TDB2                      tdb2;
   std::string               program;
   std::vector <std::string> args;
+  std::string               commandLine;
   std::string               file_override;
   std::string               var_overrides;
   Cmd                       cmd;                // TODO Obsolete
@@ -109,7 +112,6 @@ public:
   std::vector <std::string> debugMessages;
   bool                      inShadow;
 
-  std::vector <Column*>     columns;
   std::vector <Command*>    commands;
 
   int                       terminal_width;

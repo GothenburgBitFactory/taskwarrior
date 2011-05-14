@@ -34,14 +34,11 @@ class CmdLogo : public Command
 {
 public:
   CmdLogo ();
-  CmdLogo (const CmdLogo&);
-  CmdLogo& operator= (const CmdLogo&);
-  bool operator== (const CmdLogo&) const;     // TODO Is this necessary?
   ~CmdLogo ();
 
   bool read_only () const;
   bool implements (const std::string&) const;
-  std::string execute (const std::string&);
+  int execute (const std::string&, std::string&);
 
 private:
 };
