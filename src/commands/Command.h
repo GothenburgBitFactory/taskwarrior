@@ -43,8 +43,6 @@ public:
   virtual bool read_only () const;
   virtual bool implements (const std::string&) const = 0;
   virtual int execute (const std::string&, std::string&) = 0;
-
-private:
 };
 
 #endif

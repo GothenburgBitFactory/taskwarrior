@@ -99,10 +99,16 @@ int CmdLogo::execute (const std::string& commandLine, std::string& output)
     ""
   };
 
+  if (!context.color ())
+    throw std::string ("The _logo command requires that color support is enabled.");
+
+  std::string indent (context.config.getInteger ("indent.report"), ' ');
   output += optionalBlankLine ();
 
   for (int line = 0; data[line][0]; ++line)
   {
+    output += indent;
+
     for (int c = 0; c < 14; ++c)
     {
       int value = (int) data[line][c];

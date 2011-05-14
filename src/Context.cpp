@@ -119,9 +119,9 @@ void Context::initialize2 (int argc, char** argv)
   // TODO Load relevant rc file.
 
   // Instantiate built-in command objects.
-  commands.push_back (Command::factory ("exec"));
-  commands.push_back (Command::factory ("install"));
-  commands.push_back (Command::factory ("_logo"));
+  commands["exec"]    = Command::factory ("exec");
+  commands["install"] = Command::factory ("install");
+  commands["logo"]    = Command::factory ("_logo");
 
   // TODO Instantiate extension command objects.
   // TODO Instantiate default command object.
@@ -248,15 +248,15 @@ int Context::dispatch2 (std::string &out)
 
   updateXtermTitle ();
 
-  std::vector <Command*>::iterator c;
+  std::map <std::string, Command*>::iterator c;
   for (c = commands.begin (); c != commands.end (); ++c)
   {
-    if ((*c)->implements (commandLine))
+    if (c->second->implements (commandLine))
     {
-      if (! (*c)->read_only ())
+      if (! c->second->read_only ())
         tdb.gc ();
 
-      return (*c)->execute (commandLine, out);
+      return c->second->execute (commandLine, out);
     }
   }
 

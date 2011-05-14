@@ -85,37 +85,37 @@ private:
   void updateXtermTitle ();
 
 public:
-  Config                    config;
-  Filter                    filter;
-  Sequence                  sequence;
-  Subst                     subst;
-  Task                      task;
-  TDB                       tdb;                // TODO Obsolete
-  TDB2                      tdb2;
-  std::string               program;
-  std::vector <std::string> args;
-  std::string               commandLine;
-  std::string               file_override;
-  std::string               var_overrides;
-  Cmd                       cmd;                // TODO Obsolete
+  Config                              config;
+  Filter                              filter;
+  Sequence                            sequence;
+  Subst                               subst;
+  Task                                task;
+  TDB                                 tdb;                // TODO Obsolete
+  TDB2                                tdb2;
+  std::string                         program;
+  std::vector <std::string>           args;
+  std::string                         commandLine;
+  std::string                         file_override;
+  std::string                         var_overrides;
+  Cmd                                 cmd;                // TODO Obsolete
   std::map <std::string, std::string> aliases;
-  std::vector <std::string> tagAdditions;
-  std::vector <std::string> tagRemovals;
-  Hooks                     hooks;
-  DOM                       dom;
-  bool                      use_color;
+  std::vector <std::string>           tagAdditions;
+  std::vector <std::string>           tagRemovals;
+  Hooks                               hooks;
+  DOM                                 dom;
+  bool                                use_color;
 
-  bool                      verbosity_legacy;
-  std::vector <std::string> verbosity;
-  std::vector <std::string> headers;
-  std::vector <std::string> footnotes;
-  std::vector <std::string> debugMessages;
-  bool                      inShadow;
+  bool                                verbosity_legacy;
+  std::vector <std::string>           verbosity;
+  std::vector <std::string>           headers;
+  std::vector <std::string>           footnotes;
+  std::vector <std::string>           debugMessages;
+  bool                                inShadow;
 
-  std::vector <Command*>    commands;
+  std::map <std::string, Command*>    commands;
 
-  int                       terminal_width;
-  int                       terminal_height;
+  int                                 terminal_width;
+  int                                 terminal_height;
 };
 
 #endif

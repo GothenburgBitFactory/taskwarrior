@@ -269,7 +269,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
 
   // Adjust for fluff in the output.
   if (maxlines)
-    maxlines -= (context.verbose ("blanklines") ? 1 : 0)
+    maxlines -= (context.verbose ("blank") ? 1 : 0)
               + table_header
               + context.headers.size ()
               + context.footnotes.size ();

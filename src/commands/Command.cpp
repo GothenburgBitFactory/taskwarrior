@@ -57,9 +57,7 @@ Command::Command ()
 ////////////////////////////////////////////////////////////////////////////////
 Command::Command (const Command& other)
 {
-/*
-  _minimum = other._minimum;
-*/
+//  _all = other._all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,9 +65,7 @@ Command& Command::operator= (const Command& other)
 {
   if (this != &other)
   {
-/*
-    _name    = other._name;
-*/
+//    _all = other._all;
   }
 
   return *this;
@@ -78,15 +74,8 @@ Command& Command::operator= (const Command& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Command::operator== (const Command& other) const
 {
+//  return _all == other._all;
   return false;
-/*
-  return _name    == other._name    &&
-         _minimum == other._minimum &&
-         _maximum == other._maximum &&
-         _wrap    == other._wrap    &&
-         _just    == other._just    &&
-         _sizing  == other._sizing;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

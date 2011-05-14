@@ -453,6 +453,10 @@ int handleCompletionCommands (std::string& outs)
   std::vector <std::string> commands;
   context.cmd.allCommands (commands);
 
+  std::map <std::string, Command*>::iterator i;
+  for (i = context.commands.begin (); i != context.commands.end (); ++i)
+    commands.push_back (i->first);
+
   // Sort alphabetically.
   std::sort (commands.begin (), commands.end ());
 
