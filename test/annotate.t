@@ -39,7 +39,8 @@ if (open my $fh, '>', 'annotate.rc')
             "confirmation=off\n",
             "report.rrr.description=rrr\n",
             "report.rrr.columns=id,description\n",
-            "report.rrr.sort=id+\n";
+            "report.rrr.sort=id+\n",
+            "color=off\n";
   close $fh;
   ok (-r 'annotate.rc', 'Created annotate.rc');
 }
