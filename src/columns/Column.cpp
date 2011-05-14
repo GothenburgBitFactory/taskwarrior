@@ -158,7 +158,8 @@ void Column::renderHeader (
     Color c = color;
 
     // Now underline the header, or add a dashed line.
-    if (context.config.getBoolean ("fontunderline"))
+    if (context.color () &&
+        context.config.getBoolean ("fontunderline"))
     {
       c.blend (Color (Color::nocolor, Color::nocolor, true, false, false));
       lines.push_back (c.colorize (leftJustify (header, width)));

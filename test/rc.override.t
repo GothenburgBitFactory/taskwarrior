@@ -40,10 +40,10 @@ if (open my $fh, '>', 'rc.rc')
 }
 
 my $output = qx{../src/task rc:rc.rc show};
-like ($output, qr/\sfoo\s+bar/, 'unmodified');
+like ($output, qr/^.*foo.+bar.*$/m, 'unmodified');
 
 $output = qx{../src/task rc:rc.rc rc.foo:baz show};
-like ($output, qr/\sfoo\s+baz/, 'overridden');
+like ($output, qr/^.*foo.*baz.*$/m, 'overridden');
 
 unlink 'rc.rc';
 ok (!-r 'rc.rc', 'Removed rc.rc');

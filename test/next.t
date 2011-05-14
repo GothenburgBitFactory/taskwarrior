@@ -47,8 +47,8 @@ qx{../src/task rc:next.rc add project:B priority:H BH};
 qx{../src/task rc:next.rc add project:B Bnone};
 
 my $output = qx{../src/task rc:next.rc next};
-like ($output, qr/\s1\sA\s+H\s+(?:-|\d secs?)\sAH\n/, 'AH shown');
-like ($output, qr/\s3\sB\s+H\s+(?:-|\d secs?)\sBH\n/, 'BH shown');
+like ($output, qr/AH/, 'AH shown');
+like ($output, qr/BH/, 'BH shown');
 
 # Cleanup.
 unlink 'pending.data';

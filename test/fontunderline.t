@@ -39,7 +39,7 @@ if (open my $fh, '>', 'font.rc')
 }
 
 # Test the fontunderline config variable.  The following truth table defines
-# the different results which are to be tested.
+# the different results which are to be confirmed.
 #
 #   color  _forcecolor  fontunderline  result
 #   -----  -----------  -------------  ---------
