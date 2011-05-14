@@ -30,6 +30,8 @@
  + New 'color.label' for colorizing the report column labels.
  + The 'blanklines' configuration variable now replaced by the 'verbose' token
    'blanklines'.
+ + The 'verbose' configuration variable now accepts a specific list of items to
+   be verbose about.  See taskrc(5).
 
 # Tracked Features, sorted by ID.
  + Added feature #330, which supports the 'inverse' color attribute.

@@ -192,7 +192,10 @@ that you would see minimal output, with no help text.
 Alternatively, you can specify a comma-separated list of verbosity tokens that
 control specific occasions when output is generated.  This list may contain:
 
-    blanklines        Inserts extra blank lines in output, for clarity
+    blank      Inserts extra blank lines in output, for clarity
+    header     Messages that appear before report output
+    footnote   Messages that appear after report output
+    label      Column labels on tabular reports
 
 Note that the "on" setting is equivalent to all the tokens being specified,
 and the "off" setting is equivalent to none of the tokens being specified.

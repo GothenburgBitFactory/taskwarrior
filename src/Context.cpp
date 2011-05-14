@@ -210,7 +210,7 @@ int Context::run ()
     rc = 3;
   }
 
-  // Dump all debug messages.
+  // Dump all debug messages, controlled by rc.debug.
   if (config.getBoolean ("debug"))
     foreach (d, debugMessages)
       if (color ())
@@ -218,8 +218,8 @@ int Context::run ()
       else
         std::cout << *d << "\n";
 
-  // Dump all headers.
-  if (config.getBoolean ("verbose"))
+  // Dump all headers, controlled by 'header' verbosity token.
+  if (verbose ("header"))
     foreach (h, headers)
       if (color ())
         std::cout << colorizeHeader (*h) << "\n";
@@ -229,8 +229,8 @@ int Context::run ()
   // Dump the report output.
   std::cout << output;
 
-  // Dump all footnotes.
-  if (config.getBoolean ("verbose"))
+  // Dump all footnotes, controlled by 'footnote' verbosity token.
+  if (verbose ("footnote"))
     foreach (f, footnotes)
       if (color ())
         std::cout << colorizeFootnote (*f) << "\n";
@@ -355,6 +355,7 @@ bool Context::color ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Support verbosity levels.
 bool Context::verbose (const std::string& token)
 {
   if (! verbosity.size ())
