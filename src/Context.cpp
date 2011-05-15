@@ -119,7 +119,8 @@ void Context::initialize2 (int argc, char** argv)
   // TODO Load relevant rc file.
 
   // Instantiate built-in command objects.
-  commands["exec"]    = Command::factory ("exec");
+  commands["execute"] = Command::factory ("execute");
+  commands["help"]    = Command::factory ("help");
   commands["install"] = Command::factory ("install");
   commands["logo"]    = Command::factory ("_logo");
 
@@ -280,7 +281,6 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "version")          { rc = handleVersion               (out); }
   else if (cmd.command == "config")           { rc = handleConfig                (out); }
   else if (cmd.command == "show")             { rc = handleShow                  (out); }
-  else if (cmd.command == "help")             { rc = longUsage                   (out); }
   else if (cmd.command == "stats")            { rc = handleReportStats           (out); }
   else if (cmd.command == "info")             { rc = handleInfo                  (out); }
   else if (cmd.command == "history.monthly")  { rc = handleReportHistoryMonthly  (out); }

@@ -35,6 +35,8 @@ extern Context context;
 CmdExec::CmdExec ()
 : _external_command ("")
 {
+  _usage       = "task execute <external command>";
+  _description = "Executes external commands and scripts";
   _read_only   = false;
   _displays_id = true;
 }
@@ -42,8 +44,12 @@ CmdExec::CmdExec ()
 ////////////////////////////////////////////////////////////////////////////////
 bool CmdExec::implements (const std::string& command_line)
 {
+  _external_command = "";
   if (context.args.size () > 1 &&
-      (context.args[0] == "exec" ||
+      (context.args[0] == "execute"  ||
+       context.args[0] == "execut"  ||
+       context.args[0] == "execu"  ||
+       context.args[0] == "exec"  ||
        context.args[0] == "exe"  ||
        context.args[0] == "ex"))
   {

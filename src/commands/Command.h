@@ -40,14 +40,18 @@ public:
 
   static Command* factory (const std::string&);
 
+  std::string usage () const;
+  std::string description () const;
   bool read_only () const;
   bool displays_id () const;
   virtual bool implements (const std::string&) = 0;
   virtual int execute (const std::string&, std::string&) = 0;
 
 protected:
-  bool _read_only;
-  bool _displays_id;
+  std::string _usage;
+  std::string _description;
+  bool        _read_only;
+  bool        _displays_id;
 };
 
 #endif

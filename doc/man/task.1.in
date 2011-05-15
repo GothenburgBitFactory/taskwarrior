@@ -210,6 +210,12 @@ This example first gets the IDs for the project:Home filter, then sets
 the priority to H for each of those tasks.
 
 .TP
+.B execute <external command>
+Executes the specified command.  Not useful by itself, but when used in
+conjunction with aliases and extensions can provide seamless extension
+integration.
+
+.TP
 .B version
 Shows the taskwarrior version number
 
@@ -217,7 +223,7 @@ Shows the taskwarrior version number
 .B help
 Shows the long usage text.
 
-.TP 
+.TP
 .B show [all | substring]"
 Shows all the current settings in the taskwarrior configuration file. If a
 substring is specified just the settings containing that substring will be

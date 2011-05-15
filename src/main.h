@@ -99,7 +99,6 @@ int handleEdit (std::string&);
 
 // report.cpp
 int shortUsage (std::string&);
-int longUsage (std::string&);
 int handleInfo (std::string&);
 int handleReportSummary (std::string&);
 int handleReportCalendar (std::string&);

@@ -24,39 +24,20 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+#ifndef INCLUDED_CMDHELP
+#define INCLUDED_CMDHELP
 
-#include <iostream> // TODO Remove.
-#include <CmdInstall.h>
-#include <Context.h>
+#include <string>
+#include <Command.h>
 
-extern Context context;
-
-////////////////////////////////////////////////////////////////////////////////
-CmdInstall::CmdInstall ()
+class CmdHelp : public Command
 {
-  _usage       = "task install <extension> [<extension> ...]";
-  _description = "Installs extensions and external scripts";
-  _read_only   = true;
-  _displays_id = false;
-}
+public:
+  CmdHelp ();
 
-////////////////////////////////////////////////////////////////////////////////
-bool CmdInstall::implements (const std::string& command_line)
-{
-  std::cout << "# CmdInstall::implements '" << command_line << "'\n";
-  return false;
-}
+  bool implements (const std::string&);
+  int execute (const std::string&, std::string&);
+};
 
-////////////////////////////////////////////////////////////////////////////////
-// Algorithm:
-//   Copy file rc.data.location/extensions
-//   Generate UUID
-//   Call the "install" function once, store results in rc:
-//     extension.<uuid>=<JSON>
-int CmdInstall::execute (const std::string& commandLine, std::string& output)
-{
-  std::cout << "# CmdInstall::execute\n";
-  return 1;
-}
-
+#endif
 ////////////////////////////////////////////////////////////////////////////////

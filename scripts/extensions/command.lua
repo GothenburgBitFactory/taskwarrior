@@ -16,6 +16,12 @@ function install ()
 end
 
 -- Arguments: None
+-- Returns:   Usage syntax, such as "task random"
+function usage ()
+  return 'task random'
+end
+
+-- Arguments: None
 -- Returns:   Valid Taskwarrior BNF, minimally defining a production rule that
 --            has the same name as the command itself
 function syntax ()

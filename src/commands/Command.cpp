@@ -28,6 +28,7 @@
 #include <iostream>
 #include <Command.h>
 #include <CmdExec.h>
+#include <CmdHelp.h>
 #include <CmdInstall.h>
 #include <CmdLogo.h>
 #include <Context.h>
@@ -38,7 +39,8 @@ extern Context context;
 Command* Command::factory (const std::string& name)
 {
   Command* command;
-       if (name == "exec")    command = new CmdExec ();
+       if (name == "execute") command = new CmdExec ();
+  else if (name == "help")    command = new CmdHelp ();
   else if (name == "install") command = new CmdInstall ();
   else if (name == "_logo")   command = new CmdLogo ();
   else
@@ -51,7 +53,9 @@ Command* Command::factory (const std::string& name)
 
 ////////////////////////////////////////////////////////////////////////////////
 Command::Command ()
-: _read_only (true)
+: _usage ("")
+, _description ("")
+, _read_only (true)
 , _displays_id (true)
 {
 }
@@ -59,6 +63,8 @@ Command::Command ()
 ////////////////////////////////////////////////////////////////////////////////
 Command::Command (const Command& other)
 {
+  _usage       = other._usage;
+  _description = other._description;
   _read_only   = other._read_only;
   _displays_id = other._displays_id;
 }
@@ -68,6 +74,8 @@ Command& Command::operator= (const Command& other)
 {
   if (this != &other)
   {
+    _usage       = other._usage;
+    _description = other._description;
     _read_only   = other._read_only;
     _displays_id = other._displays_id;
   }
@@ -78,13 +86,27 @@ Command& Command::operator= (const Command& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Command::operator== (const Command& other) const
 {
-  return _read_only   == other._read_only &&
+  return _usage       == other._usage       &&
+         _description == other._description &&
+         _read_only   == other._read_only   &&
          _displays_id == other._displays_id;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Command::~Command ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Command::usage () const
+{
+  return _usage;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Command::description () const
+{
+  return _description;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

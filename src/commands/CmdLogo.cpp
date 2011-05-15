@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove.
 #include <CmdLogo.h>
 #include <Context.h>
 #include <text.h>
@@ -35,6 +34,8 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdLogo::CmdLogo ()
 {
+  _usage       = "task logo";
+  _description = "Displays the Taskwarrior logo";
   _read_only   = true;
   _displays_id = false;
 }
