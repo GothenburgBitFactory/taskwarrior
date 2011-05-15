@@ -51,13 +51,16 @@ Command* Command::factory (const std::string& name)
 
 ////////////////////////////////////////////////////////////////////////////////
 Command::Command ()
+: _read_only (true)
+, _displays_id (true)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Command::Command (const Command& other)
 {
-//  _all = other._all;
+  _read_only   = other._read_only;
+  _displays_id = other._displays_id;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +68,8 @@ Command& Command::operator= (const Command& other)
 {
   if (this != &other)
   {
-//    _all = other._all;
+    _read_only   = other._read_only;
+    _displays_id = other._displays_id;
   }
 
   return *this;
@@ -74,8 +78,8 @@ Command& Command::operator= (const Command& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Command::operator== (const Command& other) const
 {
-//  return _all == other._all;
-  return false;
+  return _read_only   == other._read_only &&
+         _displays_id == other._displays_id;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,8 +90,13 @@ Command::~Command ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Command::read_only () const
 {
-  std::cout << "# Command::read_only\n";
-  return false;
+  return _read_only;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Command::displays_id () const
+{
+  return _displays_id;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

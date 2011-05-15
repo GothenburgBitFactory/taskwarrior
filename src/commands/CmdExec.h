@@ -34,12 +34,12 @@ class CmdExec : public Command
 {
 public:
   CmdExec ();
-  ~CmdExec ();
 
-  bool implements (const std::string&) const;
+  bool implements (const std::string&);
   int execute (const std::string&, std::string&);
 
 private:
+  std::string _external_command;
 };
 
 #endif

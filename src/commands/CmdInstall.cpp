@@ -25,7 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
+#include <iostream> // TODO Remove.
 #include <CmdInstall.h>
 #include <Context.h>
 
@@ -34,17 +34,14 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdInstall::CmdInstall ()
 {
+  _read_only   = true;
+  _displays_id = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdInstall::~CmdInstall ()
+bool CmdInstall::implements (const std::string& command_line)
 {
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CmdInstall::implements (const std::string& command_line) const
-{
-  std::cout << "# CmdInstall::implements\n";
+  std::cout << "# CmdInstall::implements '" << command_line << "'\n";
   return false;
 }
 

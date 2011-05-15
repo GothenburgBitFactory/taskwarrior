@@ -25,7 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
+#include <stdlib.h>
 #include <CmdExec.h>
 #include <Context.h>
 
@@ -33,26 +33,39 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdExec::CmdExec ()
+: _external_command ("")
 {
+  _read_only   = false;
+  _displays_id = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdExec::~CmdExec ()
+bool CmdExec::implements (const std::string& command_line)
 {
-}
+  if (context.args.size () > 1 &&
+      (context.args[0] == "exec" ||
+       context.args[0] == "exe"  ||
+       context.args[0] == "ex"))
+  {
+    for (int i = 1; i < context.args.size (); ++i)
+    {
+      if (i > 1)
+        _external_command += " ";
 
-////////////////////////////////////////////////////////////////////////////////
-bool CmdExec::implements (const std::string& command_line) const
-{
-  std::cout << "# CmdExec::implements\n";
+      _external_command += context.args[i];
+    }
+
+    return true;
+  }
+
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdExec::execute (const std::string& commandLine, std::string& output)
+int CmdExec::execute (const std::string&, std::string&)
 {
-  std::cout << "# CmdExec::execute\n";
-  return 1;
+  system (_external_command.c_str ());
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

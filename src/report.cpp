@@ -788,9 +788,9 @@ int handleReportSummary (std::string& outs)
   ViewText view;
   view.width (context.getWidth ());
   view.add (Column::factory ("string", "Project"));
-  view.add (Column::factory ("string", "Remaining"));
-  view.add (Column::factory ("string", "Avg age"));
-  view.add (Column::factory ("string", "Complete"));
+  view.add (Column::factory ("string.right", "Remaining"));
+  view.add (Column::factory ("string.right", "Avg age"));
+  view.add (Column::factory ("string.right", "Complete"));
   view.add (Column::factory ("string", "0%                        100%"));
 
   Color bar_color (context.config.get ("color.summary.bar"));

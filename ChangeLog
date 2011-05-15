@@ -32,6 +32,7 @@
    'blanklines'.
  + The 'verbose' configuration variable now accepts a specific list of items to
    be verbose about.  See taskrc(5).
+ + New 'exec' command that runs external programs.
 
 # Tracked Features, sorted by ID.
  + Added feature #330, which supports the 'inverse' color attribute.
