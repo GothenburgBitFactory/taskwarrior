@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2010 - 2011, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -24,38 +24,102 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
 #ifndef INCLUDED_JSON
 #define INCLUDED_JSON
 
+#include <map>
+#include <vector>
 #include <string>
-#include <Tree.h>
 #include <Nibbler.h>
 
-class JSON
+namespace json
 {
-public:
-  JSON ();                       // Default constructor
-  JSON (const std::string&);     // Constructor
-  JSON (const JSON&);            // Copy constructor
-  JSON& operator= (const JSON&); // Assignment operator
-  ~JSON ();                      // Destructor
+  enum jtype
+  {
+    j_value,
+    j_object,
+    j_array,
+    j_string,
+    j_number,
+    j_literal
+  };
 
-  static std::string encode (const std::string&);
-  static std::string decode (const std::string&);
+  class value
+  {
+  public:
+    value () {}
+    virtual ~value () {}
+    static value* parse (Nibbler&);
+    virtual jtype type ();
+    virtual std::string dump ();
+  };
 
-  Tree* tree ();
+  class string : public value, public std::string
+  {
+  public:
+    string () {}
+    string (const std::string&);
+    ~string () {}
+    static string* parse (Nibbler&);
+    jtype type ();
+    std::string dump ();
+  };
 
-private:
-  bool parseObject (Tree*, Nibbler&);
-  bool parsePair (Tree*, Nibbler&);
-  bool parseArray (Tree*, Nibbler&);
-  bool parseValue (Tree*, Nibbler&);
-  bool parseString (Tree*, Nibbler&);
-  bool parseNumber (Tree*, Nibbler&);
+  class number : public value, public std::string
+  {
+  public:
+    number () : _dvalue (0.0) {}
+    ~number () {}
+    static number* parse (Nibbler&);
+    jtype type ();
+    std::string dump ();
+    operator double () const;
 
-private:
-  Tree root;
-};
+    double _dvalue;
+  };
+
+  class literal : public value
+  {
+  public:
+    literal () : _lvalue (none) {}
+    ~literal () {}
+    static literal* parse (Nibbler&);
+    jtype type ();
+    std::string dump ();
+
+    enum literal_value {none, nullvalue, falsevalue, truevalue};
+    literal_value _lvalue;
+  };
+
+  class array : public value, public std::vector <value*>
+  {
+  public:
+    array () {}
+    ~array ();
+    static array* parse (Nibbler&);
+    jtype type ();
+    std::string dump ();
+  };
+
+  class object : public value, public std::map <std::string, value*>
+  {
+  public:
+    object () {}
+    ~object ();
+    static object* parse (Nibbler&);
+    static bool parse_pair (Nibbler&, std::string&, value*&);
+    jtype type ();
+    std::string dump ();
+  };
+
+  // Parser entry point.
+  value* parse (const std::string&);
+
+  // Encode/decode for JSON entities.
+  std::string encode (const std::string&);
+  std::string decode (const std::string&);
+}
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

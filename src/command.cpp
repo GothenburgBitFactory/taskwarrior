@@ -2250,6 +2250,7 @@ int handleIds (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete.
 void handleShell ()
 {
   // Display some kind of welcome message.
@@ -2291,11 +2292,11 @@ void handleShell ()
       try
       {
         context.clear ();
-
         std::vector <std::string> args;
         split (args, decoratedCommand, ' ');
         foreach (arg, args)    context.args.push_back (*arg);
 
+        context.initialize2 (0, NULL);
         context.initialize ();
         context.run ();
       }

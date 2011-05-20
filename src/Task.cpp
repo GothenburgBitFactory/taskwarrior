@@ -505,7 +505,7 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
       out << "\""
           << i->second.name ()
           << "\":\""
-          << JSON::encode (i->second.value ())
+          << json::encode (i->second.value ())
           << "\"";
 
       ++attributes_written;
@@ -530,7 +530,7 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
         out << "{\"entry\":\""
             << d.toISO ()
             << "\",\"description\":\""
-            << JSON::encode (i->second.value ())
+            << json::encode (i->second.value ())
             << "\"}";
 
         ++annotations_written;

@@ -43,7 +43,6 @@ CmdInstall::CmdInstall ()
 ////////////////////////////////////////////////////////////////////////////////
 bool CmdInstall::implements (const std::string& command_line)
 {
-  std::cout << "# CmdInstall::implements '" << command_line << "'\n";
   return false;
 }
 
@@ -55,7 +54,6 @@ bool CmdInstall::implements (const std::string& command_line)
 //     extension.<uuid>=<JSON>
 int CmdInstall::execute (const std::string& commandLine, std::string& output)
 {
-  std::cout << "# CmdInstall::execute\n";
   return 1;
 }
 

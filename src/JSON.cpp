@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2010 - 2011, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -25,35 +25,361 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <sstream>
+#include <iostream> // TODO Remove.
+#include <text.h>
 #include <utf8.h>
 #include <JSON.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-JSON::JSON ()
-: root ("root")
+json::value* json::value::parse (Nibbler& nibbler)
 {
+  json::value* v;
+  if ((v = json::object::parse        (nibbler)) ||
+      (v = json::array::parse         (nibbler)) ||
+      (v = json::string::parse        (nibbler)) ||
+      (v = json::number::parse        (nibbler)) ||
+      (v = json::literal::parse       (nibbler)))
+    return v;
+
+  return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-JSON::JSON (const std::string& input)
-: root ("root")
+json::jtype json::value::type ()
 {
+  return json::j_value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string json::value::dump ()
+{
+  return "<value>";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::string::string (const std::string& other)
+{
+  *this = other;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::string* json::string::parse (Nibbler& nibbler)
+{
+  std::string value;
+  if (nibbler.getQuoted ('"', value, false))
+  {
+    json::string* s = new json::string ();
+    *(std::string*)s = value;
+    return s;
+  }
+
+  return NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::jtype json::string::type ()
+{
+  return json::j_string;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string json::string::dump ()
+{
+  return std::string ("\"") + (std::string) *this + "\"";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::number* json::number::parse (Nibbler& nibbler)
+{
+  int i;
+  double d;
+  if (nibbler.getNumber (d))
+  {
+    json::number* s = new json::number ();
+    s->_dvalue = d;
+    return s;
+  }
+
+  return NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::jtype json::number::type ()
+{
+  return json::j_number;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string json::number::dump ()
+{
+  return format (_dvalue);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::number::operator double () const
+{
+  return _dvalue;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::literal* json::literal::parse (Nibbler& nibbler)
+{
+  if (nibbler.getLiteral ("null"))
+  {
+    json::literal* s = new json::literal ();
+    s->_lvalue = nullvalue;
+    return s;
+  }
+  else if (nibbler.getLiteral ("false"))
+  {
+    json::literal* s = new json::literal ();
+    s->_lvalue = falsevalue;
+    return s;
+  }
+  else if (nibbler.getLiteral ("true"))
+  {
+    json::literal* s = new json::literal ();
+    s->_lvalue = truevalue;
+    return s;
+  }
+
+  return NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::jtype json::literal::type ()
+{
+  return json::j_literal;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string json::literal::dump ()
+{
+       if (_lvalue == nullvalue)  return "null";
+  else if (_lvalue == falsevalue) return "false";
+  else                            return "true";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::array::~array ()
+{
+  std::vector <json::value*>::iterator i;
+  for (i  = ((std::vector <json::value*>*)this)->begin ();
+       i != ((std::vector <json::value*>*)this)->end ();
+       ++i)
+    delete *i;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::array* json::array::parse (Nibbler& nibbler)
+{
+  Nibbler n (nibbler);
+  n.skipWS ();
+  if (n.skip ('['))
+  {
+    n.skipWS ();
+
+    json::array* arr = new json::array ();
+
+    json::value* value;
+    if (value = json::value::parse (n))
+    {
+      arr->push_back (value);
+      value = NULL; // Not a leak.  Looks like a leak.
+      n.skipWS ();
+      while (n.skip (','))
+      {
+        n.skipWS ();
+
+        if (value = json::value::parse (n))
+        {
+          arr->push_back (value);
+          n.skipWS ();
+        }
+        else
+        {
+          delete arr;
+          return NULL;
+        }
+      }
+    }
+    if (n.skip (']'))
+    {
+      nibbler = n;
+      return arr;
+    }
+
+    delete arr;
+  }
+
+  return NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::jtype json::array::type ()
+{
+  return json::j_array;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string json::array::dump ()
+{
+  std::string output;
+  output += "[";
+
+  std::vector <json::value*>::iterator i;
+  for (i  = ((std::vector <json::value*>*)this)->begin ();
+       i != ((std::vector <json::value*>*)this)->end ();
+       ++i)
+  {
+    if (i != ((std::vector <json::value*>*)this)->begin ())
+      output += ",";
+
+    output += (*i)->dump ();
+  }
+
+  output += "]";
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::object::~object ()
+{
+  std::map <std::string, json::value*>::iterator i;
+  for (i  = ((std::map <std::string, json::value*>*)this)->begin ();
+       i != ((std::map <std::string, json::value*>*)this)->end ();
+       ++i)
+    delete i->second;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::object* json::object::parse (Nibbler& nibbler)
+{
+  Nibbler n (nibbler);
+  n.skipWS ();
+  if (n.skip ('{'))
+  {
+    n.skipWS ();
+
+    json::object* obj = new json::object ();
+
+    std::string name;
+    json::value* value;
+    if (json::object::parse_pair (n, name, value))
+    {
+      obj->insert (std::pair <std::string, json::value*> (name, value));
+      value = NULL; // Not a leak.  Looks like a leak.
+
+      n.skipWS ();
+      while (n.skip (','))
+      {
+        n.skipWS ();
+
+        if (json::object::parse_pair (n, name, value))
+        {
+          obj->insert (std::pair <std::string, json::value*> (name, value));
+          n.skipWS ();
+        }
+        else
+        {
+          delete obj;
+          return NULL;
+        }
+      }
+    }
+
+    if (n.skip ('}'))
+    {
+      nibbler = n;
+      return obj;
+    }
+
+    delete obj;
+  }
+
+  return NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool json::object::parse_pair (
+  Nibbler& nibbler,
+  std::string& name,
+  json::value*& val)
+{
+  Nibbler n (nibbler);
+
+  if (n.getQuoted ('"', name, false))
+  {
+    n.skipWS ();
+    if (n.skip (':'))
+    {
+      n.skipWS ();
+      if (val = json::value::parse (n))
+      {
+        nibbler = n;
+        return true;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::jtype json::object::type ()
+{
+  return json::j_object;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string json::object::dump ()
+{
+  std::string output;
+  output += "{";
+
+  std::map <std::string, json::value*>::iterator i;
+  for (i  = ((std::map <std::string, json::value*>*)this)->begin ();
+       i != ((std::map <std::string, json::value*>*)this)->end ();
+       ++i)
+  {
+    if (i != ((std::map <std::string, json::value*>*)this)->begin ())
+      output += ",";
+
+    output += "\"" + i->first + "\":";
+    output += i->second->dump ();
+  }
+
+  output += "}";
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+json::value* json::parse (const std::string& input)
+{
+  json::value* root = NULL;
+
   Nibbler n (input);
-  if (!parseObject (&root, n))
-    throw std::string ("Syntax error in request.");
+  n.skipWS ();
+
+       if (n.next () == '{') root = json::object::parse (n);
+  else if (n.next () == '[') root = json::array::parse (n);
+  else
+    throw std::string ("Error: expected '{' or '[' at position ") +
+          format ((int)n.cursor ());
+
+  // Check for end condition.
+  n.skipWS ();
+  if (!n.depleted ())
+  {
+    delete root;
+    throw std::string ("Error: extra characters found: ") + n.dump ();
+  }
+
+  return root;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-JSON::~JSON ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// \n   -> "\\n"
-// \t   -> "\\t"
-std::string JSON::encode (const std::string& input)
+std::string json::encode (const std::string& input)
 {
   std::string output;
 
@@ -80,7 +406,7 @@ std::string JSON::encode (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string JSON::decode (const std::string& input)
+std::string json::decode (const std::string& input)
 {
   std::string output;
 
@@ -119,220 +445,6 @@ std::string JSON::decode (const std::string& input)
   }
 
   return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Tree* JSON::tree ()
-{
-  return &root;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// object
-//   {}
-//   { pair , ... }
-bool JSON::parseObject (Tree* t, Nibbler& nibbler)
-{
-  Nibbler n (nibbler);
-  n.skipWS ();
-
-  if (n.skip ('{'))
-  {
-    n.skipWS ();
-
-    Tree* node = new Tree ("node");
-    if (parsePair (node, n))
-    {
-      t->addBranch (node);
-
-      n.skipWS ();
-      while (n.skip (','))
-      {
-        n.skipWS ();
-
-        node = new Tree ("node");
-        if (!parsePair (node, n))
-        {
-          delete node;
-          return false;
-        }
-
-        t->addBranch (node);
-        n.skipWS ();
-      }
-    }
-    else
-      delete node;
-
-    if (n.skip ('}'))
-    {
-      n.skipWS ();
-      nibbler = n;
-      t->attribute ("type", "collection");
-      return true;
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// pair
-//   string : value
-bool JSON::parsePair (Tree* t, Nibbler& nibbler)
-{
-  Nibbler n (nibbler);
-
-  std::string value;
-  if (n.getQuoted ('"', value))
-  {
-    n.skipWS ();
-    if (n.skip (':'))
-    {
-      n.skipWS ();
-      if (parseValue (t, n))
-      {
-        nibbler = n;
-        t->name (value);
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// array
-//   []
-//   [ value , ... ]
-bool JSON::parseArray (Tree* t, Nibbler& nibbler)
-{
-  Nibbler n (nibbler);
-  n.skipWS ();
-
-  if (n.skip ('['))
-  {
-    n.skipWS ();
-
-    Tree* node = new Tree ("node");
-    if (parseValue (node, n))
-    {
-      t->addBranch (node);
-
-      n.skipWS ();
-      while (n.skip (','))
-      {
-        n.skipWS ();
-
-        node = new Tree ("node");
-        if (!parseValue (node, n))
-        {
-          delete node;
-          return false;
-        }
-
-        t->addBranch (node);
-        n.skipWS ();
-      }
-    }
-    else
-      delete node;
-
-    if (n.skip (']'))
-    {
-      n.skipWS ();
-      nibbler = n;
-      t->attribute ("type", "list");
-      return true;
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// value
-//   string
-//   number
-//   object
-//   array
-//   true
-//   false
-//   null
-bool JSON::parseValue (Tree* t, Nibbler& nibbler)
-{
-  if (parseString (t, nibbler)     ||
-      parseNumber (t, nibbler)     ||
-      parseObject (t, nibbler)     ||
-      parseArray  (t, nibbler)     ||
-      nibbler.getLiteral ("true")  ||
-      nibbler.getLiteral ("false") ||
-      nibbler.getLiteral ("null"))
-  {
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// string
-//   ""
-//   " chars "
-//
-// chars
-//   char
-//   char chars
-//
-// char
-//   any-Unicode-character-except-"-or-\-or-control-character
-//   \"
-//   \\     [extra text to de-confuse gcc]
-//   \/
-//   \b
-//   \f
-//   \n
-//   \r
-//   \t
-//   \u four-hex-digits
-bool JSON::parseString (Tree* t, Nibbler& nibbler)
-{
-  std::string value;
-  if (nibbler.getQuoted ('"', value, false))
-  {
-    t->attribute ("type", "string");
-    t->attribute ("value", value);
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// number
-//   int frac exp
-//   int frac
-//   int exp
-//   int
-bool JSON::parseNumber (Tree* t, Nibbler& nibbler)
-{
-  int i;
-  double d;
-  if (nibbler.getNumber (d))
-  {
-    t->attribute ("type", "number");
-    t->attribute ("value", d);
-    return true;
-  }
-  else if (nibbler.getInt (i))
-  {
-    t->attribute ("type", "number");
-    t->attribute ("value", i);
-    return true;
-  }
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

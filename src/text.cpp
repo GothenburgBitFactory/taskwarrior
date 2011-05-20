@@ -761,6 +761,14 @@ std::string format (double value, int width, int precision)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string format (double value)
+{
+  std::stringstream s;
+  s << value;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string leftJustify (const int input, const int width)
 {
   std::stringstream s;
