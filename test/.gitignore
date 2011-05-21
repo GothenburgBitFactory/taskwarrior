@@ -36,3 +36,6 @@ uri.t
 util.t
 variant.t
 view.t
+
+json_test
+

@@ -199,15 +199,20 @@ json::array* json::array::parse (Nibbler& nibbler)
         else
         {
           delete arr;
-          return NULL;
+          throw std::string ("Error: missing value after ',' at position ") +
+                format ((int) n.cursor ());
         }
       }
     }
+
     if (n.skip (']'))
     {
       nibbler = n;
       return arr;
     }
+    else
+      throw std::string ("Error: missing ']' at position ") +
+            format ((int) n.cursor ());
 
     delete arr;
   }
@@ -283,7 +288,8 @@ json::object* json::object::parse (Nibbler& nibbler)
         else
         {
           delete obj;
-          return NULL;
+          throw std::string ("Error: missing value after ',' at position ") +
+                format ((int) n.cursor ());
         }
       }
     }
@@ -293,6 +299,9 @@ json::object* json::object::parse (Nibbler& nibbler)
       nibbler = n;
       return obj;
     }
+    else
+      throw std::string ("Error: missing '}' at position ") +
+            format ((int) n.cursor ());
 
     delete obj;
   }
@@ -319,7 +328,13 @@ bool json::object::parse_pair (
         nibbler = n;
         return true;
       }
+      else
+        throw std::string ("Error: missing value at position ") +
+              format ((int) n.cursor ());
     }
+    else
+      throw std::string ("Error: missing ':' at position ") +
+            format ((int) n.cursor ());
   }
 
   return NULL;
@@ -372,7 +387,8 @@ json::value* json::parse (const std::string& input)
   if (!n.depleted ())
   {
     delete root;
-    throw std::string ("Error: extra characters found: ") + n.dump ();
+    throw std::string ("Error: extra characters found at position ") +
+          format ((int) n.cursor ());
   }
 
   return root;
