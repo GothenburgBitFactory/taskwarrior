@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'append.rc')
@@ -38,11 +38,15 @@ if (open my $fh, '>', 'append.rc')
   ok (-r 'append.rc', 'Created append.rc');
 }
 
-# Add a task, then append more decsription.
+# Add a task, then append more description.
 qx{../src/task rc:append.rc add foo};
 qx{../src/task rc:append.rc 1 append bar};
 my $output = qx{../src/task rc:append.rc info 1};
 like ($output, qr/Description\s+foo\sbar\n/, 'append worked');
+
+# Should cause an error when nothing is appended.
+$output = qx{../src/task rc:append.rc append 1};
+unlike ($output, qr/Appended 0 tasks/, 'blank append failed');
 
 # Cleanup.
 unlink 'pending.data';

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'prepend.rc')
@@ -43,6 +43,10 @@ qx{../src/task rc:prepend.rc add bar};
 qx{../src/task rc:prepend.rc 1 prepend foo};
 my $output = qx{../src/task rc:prepend.rc info 1};
 like ($output, qr/Description\s+foo\sbar\n/, 'prepend worked');
+
+# Should cause an error when nothing is appended.
+$output = qx{../src/task rc:prepend.rc prepend 1};
+unlike ($output, qr/Prepended 0 tasks/, 'blank prepend failed');
 
 # Cleanup.
 unlink 'pending.data';
