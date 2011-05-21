@@ -26,10 +26,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <ViewTask.h>
+#include <Context.h>
 #include <Timer.h>
 #include <text.h>
 #include <utf8.h>
 #include <main.h>
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ViewTask::ViewTask ()
@@ -204,10 +207,10 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   std::string extra       = std::string (_extra_padding, ' ');
   std::string intra       = std::string (_intra_padding, ' ');
 
-  std::string extra_odd   = _extra_odd.colorize  (extra);
-  std::string extra_even  = _extra_even.colorize (extra);
-  std::string intra_odd   = _intra_odd.colorize  (intra);
-  std::string intra_even  = _intra_even.colorize (intra);
+  std::string extra_odd   = context.color () ? _extra_odd.colorize  (extra) : extra;
+  std::string extra_even  = context.color () ? _extra_even.colorize (extra) : extra;
+  std::string intra_odd   = context.color () ? _intra_odd.colorize  (intra) : intra;
+  std::string intra_even  = context.color () ? _intra_even.colorize (intra) : intra;
 
   for (int i = 0; i < max_lines; ++i)
   {
@@ -249,8 +252,12 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
     // Alternate rows based on |s % 2|
     bool odd = (s % 2) ? true : false;
-    Color row_color = odd ? _odd : _even;
-    row_color.blend (rule_color);
+    Color row_color;
+    if (context.color ())
+    {
+      row_color = odd ? _odd : _even;
+      row_color.blend (rule_color);
+    }
 
     for (int c = 0; c < _columns.size (); ++c)
     {

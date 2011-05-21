@@ -26,10 +26,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <ViewText.h>
+#include <Context.h>
 #include <Timer.h>
 #include <text.h>
 #include <utf8.h>
 #include <main.h>
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ViewText::ViewText ()
@@ -64,7 +67,8 @@ void ViewText::set (int row, int col, const std::string& value, Color color)
 {
   _data[row][col] = value;
 
-  if (color.nontrivial ())
+  if (color.nontrivial () &&
+      ! context.color ())
     _color[row][col] = color;
 }
 
@@ -74,7 +78,8 @@ void ViewText::set (int row, int col, int value, Color color)
   std::string string_value = format (value);
   _data[row][col] = string_value;
 
-  if (color.nontrivial ())
+  if (color.nontrivial () &&
+      ! context.color ())
     _color[row][col] = color;
 }
 
@@ -84,7 +89,8 @@ void ViewText::set (int row, int col, float value, int width, int precision, Col
   std::string string_value = format ((float)value, width, precision);
   _data[row][col] = string_value;
 
-  if (color.nontrivial ())
+  if (color.nontrivial () &&
+      ! context.color ())
     _color[row][col] = color;
 }
 
@@ -179,10 +185,10 @@ std::string ViewText::render ()
   std::string extra       = std::string (_extra_padding, ' ');
   std::string intra       = std::string (_intra_padding, ' ');
 
-  std::string extra_odd   = _extra_odd.colorize  (extra);
-  std::string extra_even  = _extra_even.colorize (extra);
-  std::string intra_odd   = _intra_odd.colorize  (intra);
-  std::string intra_even  = _intra_even.colorize (intra);
+  std::string extra_odd   = context.color () ? _extra_odd.colorize  (extra) : extra;
+  std::string extra_even  = context.color () ? _extra_even.colorize (extra) : extra;
+  std::string intra_odd   = context.color () ? _intra_odd.colorize  (intra) : intra;
+  std::string intra_even  = context.color () ? _intra_even.colorize (intra) : intra;
 
   for (int i = 0; i < max_lines; ++i)
   {
@@ -228,8 +234,11 @@ std::string ViewText::render ()
     Color cell_color;
     for (int col = 0; col < _columns.size (); ++col)
     {
-      cell_color = row_color;
-      cell_color.blend (_color[row][col]);
+      if (context.color ())
+      {
+        cell_color = row_color;
+        cell_color.blend (_color[row][col]);
+      }
 
       cells.push_back (std::vector <std::string> ());
       _columns[col]->render (cells[col], _data[row][col], widths[col], cell_color);
@@ -256,10 +265,15 @@ std::string ViewText::render ()
           out += cells[col][i];
         else
         {
-          cell_color = row_color;
-          cell_color.blend (_color[row][col]);
+          if (context.color ())
+          {
+            cell_color = row_color;
+            cell_color.blend (_color[row][col]);
 
-          out += cell_color.colorize (std::string (widths[col], ' '));
+            out += cell_color.colorize (std::string (widths[col], ' '));
+          }
+          else
+            out += std::string (widths[col], ' ');
         }
       }
 

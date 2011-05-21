@@ -257,7 +257,8 @@ static void colorizeRecurring (Task& task, const std::string& rule, Color& c)
 void autoColorize (Task& task, Color& c)
 {
   // The special tag 'nocolor' overrides all auto and specific colorization.
-  if (task.hasTag ("nocolor"))
+  if (!context.color () ||
+      task.hasTag ("nocolor"))
   {
     c = Color ();
     return;
