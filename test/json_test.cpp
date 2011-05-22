@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <File.h>
 #include <JSON.h>
 #include <Context.h>
 
@@ -36,24 +37,46 @@ int main (int argc, char** argv)
 {
   if (argc == 1)
   {
-    std::cout << "\nUsage: json_test '{...}' ...\n\n";
+    std::cout << "\nUsage: json_test [-q] <file | JSON> ...\n"
+              << "\n"
+              << "      -q        quiet, no JSON dump\n"
+              << "      <file>    file containing JSON\n"
+              << "      <JSON>    JSON string, may need to be quoted\n"
+              << "\n";
     return 0;
   }
 
+  bool quiet = false;
+  for (int i = 1; i < argc; ++i)
+    if (!strcmp (argv[i], "-q"))
+      quiet = true;
+
   for (int i = 1; i < argc; ++i)
   {
-    try
+    if (strcmp (argv[i], "-q"))
     {
-      json::value* root = json::parse (argv[i]);
-      if (root)
+      try
       {
-        std::cout << root->dump () << "\n";
+        json::value* root;
+        File file (argv[i]);
+        if (file.exists ())
+        {
+          std::string contents;
+          file.read (contents);
+          root = json::parse (contents);
+        }
+        else
+          root = json::parse (argv[i]);
+
+        if (root && !quiet)
+          std::cout << root->dump () << "\n";
+
         delete root;
       }
-    }
 
-    catch (const std::string& e) { std::cout << e << "\n";         }
-    catch (...)                  { std::cout << "Unknown error\n"; }
+      catch (const std::string& e) { std::cout << e << "\n";         }
+      catch (...)                  { std::cout << "Unknown error\n"; }
+    }
   }
 
   return 0;

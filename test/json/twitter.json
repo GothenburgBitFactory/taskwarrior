@@ -1,0 +1,50 @@
+{"results":[
+ 
+     {"text":"@twitterapi  http:\/\/tinyurl.com\/ctrefg",
+ 
+     "to_user_id":396524,
+ 
+     "to_user":"TwitterAPI",
+ 
+     "from_user":"jkoum",
+ 
+     "metadata":
+ 
+     {
+ 
+      "result_type":"popular",
+ 
+      "recent_retweets": 109
+ 
+     },
+ 
+     "id":1478555574,   
+ 
+     "from_user_id":1833773,
+ 
+     "iso_language_code":"nl",
+ 
+     "source":"<a href=\"http:\/\/twitter.com\/\">twitter<\/a>",
+ 
+     "profile_image_url":"http:\/\/s3.amazonaws.com\/twitter_production\/profile_images\/118412707\/2522215727_a5f07da155_b_normal.jpg",
+ 
+     "created_at":"Wed, 08 Apr 2009 19:22:10 +0000"}
+ 
+     ],
+ 
+     "since_id":0,
+ 
+     "max_id":1480307926,
+ 
+     "refresh_url":"?since_id=1480307926&q=%40twitterapi",
+ 
+     "results_per_page":15,
+ 
+     "next_page":"?page=2&max_id=1480307926&q=%40twitterapi",
+ 
+     "completed_in":0.031704,
+ 
+     "page":1,
+ 
+     "query":"%40twitterapi"
+}
