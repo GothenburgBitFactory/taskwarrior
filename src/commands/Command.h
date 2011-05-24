@@ -40,6 +40,7 @@ public:
 
   static Command* factory (const std::string&);
 
+  std::string keyword () const;
   std::string usage () const;
   std::string description () const;
   bool read_only () const;
@@ -48,6 +49,7 @@ public:
   virtual int execute (const std::string&, std::string&) = 0;
 
 protected:
+  std::string _keyword;
   std::string _usage;
   std::string _description;
   bool        _read_only;

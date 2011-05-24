@@ -8,7 +8,8 @@ set (commands_SRCS Command.cpp Command.h
                    CmdExec.cpp CmdExec.h
                    CmdHelp.cpp CmdHelp.h
                    CmdInstall.cpp CmdInstall.h
-                   CmdLogo.cpp CmdLogo.h)
+                   CmdLogo.cpp CmdLogo.h
+                   CmdTip.cpp CmdTip.h)
 
 add_library (commands STATIC ${commands_SRCS})
 

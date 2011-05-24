@@ -26,42 +26,30 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
-#include <CmdExec.h>
+#include <CmdTip.h>
 #include <Context.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdExec::CmdExec ()
+CmdTip::CmdTip ()
 : _external_command ("")
 {
-  _keyword     = "execute";
-  _usage       = "task execute <external command>";
-  _description = "Executes external commands and scripts";
-  _read_only   = false;
-  _displays_id = true;
+  _keyword     = "tip";
+  _usage       = "task tip";
+  _description = "Displays helpful usage tips";
+  _read_only   = true;
+  _displays_id = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CmdExec::implements (const std::string& command_line)
+bool CmdTip::implements (const std::string& command_line)
 {
   _external_command = "";
   if (context.args.size () > 1 &&
-      (context.args[0] == "execute"  ||
-       context.args[0] == "execut"  ||
-       context.args[0] == "execu"  ||
-       context.args[0] == "exec"  ||
-       context.args[0] == "exe"  ||
-       context.args[0] == "ex"))
+      (context.args[0] == "tip"  ||
+       context.args[0] == "ti"))
   {
-    for (int i = 1; i < context.args.size (); ++i)
-    {
-      if (i > 1)
-        _external_command += " ";
-
-      _external_command += context.args[i];
-    }
-
     return true;
   }
 
@@ -69,9 +57,9 @@ bool CmdExec::implements (const std::string& command_line)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdExec::execute (const std::string&, std::string&)
+int CmdTip::execute (const std::string&, std::string&)
 {
-  system (_external_command.c_str ());
+  // TODO Read tips file, pick one, display it.
   return 0;
 }
 

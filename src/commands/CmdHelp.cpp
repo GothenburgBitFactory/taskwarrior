@@ -36,6 +36,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdHelp::CmdHelp ()
 {
+  _keyword     = "help";
   _usage       = "task help";
   _description = "Displays this usage help text";
   _read_only   = true;

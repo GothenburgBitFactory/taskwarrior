@@ -34,6 +34,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdLogo::CmdLogo ()
 {
+  _keyword     = "logo";
   _usage       = "task logo";
   _description = "Displays the Taskwarrior logo";
   _read_only   = true;

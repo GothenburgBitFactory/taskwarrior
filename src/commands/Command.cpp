@@ -31,6 +31,7 @@
 #include <CmdHelp.h>
 #include <CmdInstall.h>
 #include <CmdLogo.h>
+#include <CmdTip.h>
 #include <Context.h>
 
 extern Context context;
@@ -42,6 +43,7 @@ Command* Command::factory (const std::string& name)
        if (name == "execute") command = new CmdExec ();
   else if (name == "help")    command = new CmdHelp ();
   else if (name == "install") command = new CmdInstall ();
+  else if (name == "tip")     command = new CmdTip ();
   else if (name == "_logo")   command = new CmdLogo ();
   else
     throw std::string ("Unrecognized command object '") + name + "'";
@@ -95,6 +97,12 @@ bool Command::operator== (const Command& other) const
 ////////////////////////////////////////////////////////////////////////////////
 Command::~Command ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Command::keyword () const
+{
+  return _keyword;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
