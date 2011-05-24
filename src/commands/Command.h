@@ -27,6 +27,7 @@
 #ifndef INCLUDED_COMMAND
 #define INCLUDED_COMMAND
 
+#include <map>
 #include <string>
 
 class Command
@@ -38,7 +39,7 @@ public:
   bool operator== (const Command&) const;     // TODO Is this necessary?
   virtual ~Command ();
 
-  static Command* factory (const std::string&);
+  static void factory (std::map <std::string, Command*>&);
 
   std::string keyword () const;
   std::string usage () const;

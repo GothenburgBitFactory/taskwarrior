@@ -250,10 +250,13 @@ int handleCustomReport (const std::string& report, std::string& outs)
   view.colorOdd (alternate);
   view.intraColorOdd (alternate);
 
-  // Add the columns.
-  std::vector <std::string>::iterator it;
-  for (it = columns.begin (); it != columns.end (); ++it)
-    view.add (Column::factory (*it, report));
+  // Add the columns and labels.
+  for (int i = 0; i < columns.size (); ++i)
+  {
+    Column* c = Column::factory (columns[i], report);
+    c->setLabel (labels[i]);
+    view.add (c);
+  }
 
   // How many lines taken up by table header?
   int table_header;

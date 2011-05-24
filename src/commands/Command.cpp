@@ -37,20 +37,15 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-Command* Command::factory (const std::string& name)
+void Command::factory (std::map <std::string, Command*>& all)
 {
-  Command* command;
-       if (name == "execute") command = new CmdExec ();
-  else if (name == "help")    command = new CmdHelp ();
-  else if (name == "install") command = new CmdInstall ();
-  else if (name == "tip")     command = new CmdTip ();
-  else if (name == "_logo")   command = new CmdLogo ();
-  else
-    throw std::string ("Unrecognized command object '") + name + "'";
+  Command* c;
 
-  // TODO Initialize command object.
-
-  return command;
+  c = new CmdExec ();    all[c->keyword ()] = c;
+  c = new CmdHelp ();    all[c->keyword ()] = c;
+  c = new CmdInstall (); all[c->keyword ()] = c;
+  c = new CmdLogo ();    all[c->keyword ()] = c;
+  c = new CmdTip ();     all[c->keyword ()] = c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
