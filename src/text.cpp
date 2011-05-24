@@ -482,6 +482,16 @@ void guess (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool nontrivial (const std::string& input)
+{
+  for (size_t i = 0; i < input.length (); ++i)
+    if (!isspace (input[i]))
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool digitsOnly (const std::string& input)
 {
   for (size_t i = 0; i < input.length (); ++i)

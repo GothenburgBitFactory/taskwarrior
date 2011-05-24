@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (243);
+  UnitTest t (255);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -206,6 +206,7 @@ int main (int argc, char** argv)
 
   // std::string trimLeft (const std::string& in, const std::string& t /*= " "*/)
   t.is (trimLeft (""),                     "",            "trimLeft '' -> ''");
+  t.is (trimLeft ("   "),                  "",            "trimLeft '   ' -> ''");
   t.is (trimLeft ("",              " \t"), "",            "trimLeft '' -> ''");
   t.is (trimLeft ("xxx"),                  "xxx",         "trimLeft 'xxx' -> 'xxx'");
   t.is (trimLeft ("xxx",           " \t"), "xxx",         "trimLeft 'xxx' -> 'xxx'");
@@ -214,6 +215,7 @@ int main (int argc, char** argv)
 
   // std::string trimRight (const std::string& in, const std::string& t /*= " "*/)
   t.is (trimRight (""),                     "",            "trimRight '' -> ''");
+  t.is (trimRight ("   "),                  "",            "trimRight '   ' -> ''");
   t.is (trimRight ("",              " \t"), "",            "trimRight '' -> ''");
   t.is (trimRight ("xxx"),                  "xxx",         "trimRight 'xxx' -> 'xxx'");
   t.is (trimRight ("xxx",           " \t"), "xxx",         "trimRight 'xxx' -> 'xxx'");
@@ -222,6 +224,7 @@ int main (int argc, char** argv)
 
   // std::string trim (const std::string& in, const std::string& t /*= " "*/)
   t.is (trim (""),                     "",          "trim '' -> ''");
+  t.is (trim ("   "),                  "",          "trim '   ' -> ''");
   t.is (trim ("",              " \t"), "",          "trim '' -> ''");
   t.is (trim ("xxx"),                  "xxx",       "trim 'xxx' -> 'xxx'");
   t.is (trim ("xxx",           " \t"), "xxx",       "trim 'xxx' -> 'xxx'");
@@ -277,6 +280,17 @@ int main (int argc, char** argv)
   // std::string upperCase (const std::string& input)
   t.is (upperCase (""),            "",            "upperCase '' -> ''");
   t.is (upperCase ("pre01_:POST"), "PRE01_:POST", "upperCase 'pre01_:POST' -> 'PRE01_:POST'");
+
+  // bool nontrivial (const std::string&);
+  t.notok (nontrivial (""),                       "nontrivial '' -> false");
+  t.notok (nontrivial ("   "),                    "nontrivial '   ' -> false");
+  t.notok (nontrivial ("\t\t"),                   "nontrivial '\\t\\t' -> false");
+  t.notok (nontrivial (" \t \t"),                 "nontrivial ' \\t \\t' -> false");
+  t.ok    (nontrivial ("a"),                      "nontrivial 'a' -> true");
+  t.ok    (nontrivial ("   a"),                   "nontrivial '   a' -> true");
+  t.ok    (nontrivial ("a   "),                   "nontrivial 'a   ' -> true");
+  t.ok    (nontrivial ("  \t\ta"),                "nontrivial '  \\t\\ta' -> true");
+  t.ok    (nontrivial ("a\t\t  "),                "nontrivial 'a\\t\\t  ' -> true");
 
   // bool digitsOnly (const std::string&);
   t.ok    (digitsOnly (""),                       "digitsOnly '' -> true");
