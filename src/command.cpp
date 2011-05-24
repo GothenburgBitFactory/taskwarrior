@@ -1946,6 +1946,9 @@ int handleModify (std::string& outs)
 ////////////////////////////////////////////////////////////////////////////////
 int handleAppend (std::string& outs)
 {
+  if (!context.task.has ("description"))
+    throw std::string ("Additional text must be provided.");
+
   int rc = 0;
   int count = 0;
   std::stringstream out;
@@ -2027,6 +2030,9 @@ int handleAppend (std::string& outs)
 ////////////////////////////////////////////////////////////////////////////////
 int handlePrepend (std::string& outs)
 {
+  if (!context.task.has ("description"))
+    throw std::string ("Additional text must be provided.");
+
   int rc = 0;
   int count = 0;
   std::stringstream out;
