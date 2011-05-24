@@ -57,7 +57,6 @@ int handleDone (std::string&);
 int handleModify (std::string&);
 int handleProjects (std::string&);
 int handleCompletionProjects (std::string&);
-int handleTags (std::string&);
 int handleCompletionTags (std::string&);
 int handleCompletionCommands (std::string&);
 int handleCompletionIDs (std::string&);
@@ -98,7 +97,6 @@ void handleDiagnostics (std::string&);
 int handleEdit (std::string&);
 
 // report.cpp
-int shortUsage (std::string&);
 int handleInfo (std::string&);
 int handleReportSummary (std::string&);
 int handleReportCalendar (std::string&);
@@ -119,12 +117,6 @@ int handleReportHistoryMonthly (std::string&);
 int handleReportHistoryAnnual (std::string&);
 int handleReportGHistoryMonthly (std::string&);
 int handleReportGHistoryAnnual (std::string&);
-
-// custom.cpp
-int handleCustomReport (const std::string&, std::string&);
-void validateReportColumns (const std::vector <std::string>&);
-void validateSortColumns (const std::vector <std::string>&);
-void getLimits (const std::string&, int&, int&);
 
 // rules.cpp
 void initializeColorRules ();

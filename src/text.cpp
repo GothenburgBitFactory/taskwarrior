@@ -265,7 +265,7 @@ int longestWord (const std::string& input)
   std::string::size_type i = 0;
   int character;
 
-  while (character = utf8_next_char (input, i))
+  while ((character = utf8_next_char (input, i)))
   {
     if (character == ' ')
     {

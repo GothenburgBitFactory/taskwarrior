@@ -49,10 +49,8 @@ public:
   Context (const Context&);
   Context& operator= (const Context&);
 
-  void initialize (int, char**);       // all startup  TODO Obsolete
-  void initialize2 (int, char**);      // all startup
-  void initialize ();                  // for reinitializing
-  int run ();                          // task classic
+  void initialize (int, char**);       // all startup
+  int run ();
   int dispatch2 (std::string&);        // command handler dispatch
   int dispatch (std::string&);         // command handler dispatch
   void shadow ();                      // shadow file update
@@ -72,13 +70,17 @@ public:
   void parse (std::vector <std::string>&, Cmd&, Task&, Sequence&, Subst&, Filter&);
   void clear ();
 
-  std::string canonicalize (const std::string&) const;
   void disallowModification () const;
-  void applyOverrides (const std::vector <std::string>&, std::vector <std::string>&);
+  void applyOverrides ();
   void decomposeSortField (const std::string&, std::string&, bool&);
 
 private:
-  void loadCorrectConfigFile ();
+  void captureCommandLineArgs (int, char**);
+  void appendPipedArgs ();
+  void assumeLocations ();
+  void overrideRCFile ();
+  void determineDataLocation ();
+  void createDefaultConfig ();
   void loadAliases ();
   void resolveAliases ();
   void autoFilter (Att&, Filter&);
@@ -86,15 +88,19 @@ private:
   void updateXtermTitle ();
 
 public:
+  std::string                         program;
+  std::vector <std::string>           args;
+  std::string                         home_dir;
+  File                                rc_file;
+  Path                                data_dir;
   Config                              config;
+
   Filter                              filter;
   Sequence                            sequence;
   Subst                               subst;
   Task                                task;
   TDB                                 tdb;                // TODO Obsolete
   TDB2                                tdb2;
-  std::string                         program;
-  std::vector <std::string>           args;
   std::string                         commandLine;
   std::string                         file_override;
   std::string                         var_overrides;
@@ -104,6 +110,9 @@ public:
   std::vector <std::string>           tagRemovals;
   Hooks                               hooks;
   DOM                                 dom;
+
+  // Color
+  bool                                determine_color_use;
   bool                                use_color;
 
   bool                                verbosity_legacy;

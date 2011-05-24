@@ -45,19 +45,22 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
-: config ()
+: program ("")
+, rc_file ()
+, data_dir ()
+, config ()
 , filter ()
 , sequence ()
 , subst ()
 , task ()
 , tdb ()
 , tdb2 ()
-, program ("")
 , commandLine ("")
 , file_override ("")
 , var_overrides ("")
 , cmd ()
 , dom ()
+, determine_color_use (true)
 , use_color (true)
 , verbosity_legacy (false)
 , inShadow (false)
@@ -72,68 +75,49 @@ Context::~Context ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Context::initialize2 (int argc, char** argv)
+void Context::initialize (int argc, char** argv)
 {
-  Timer t ("Context::initialize2");
+  Timer t ("Context::initialize");
 
-  // Capture the args.
-  for (int i = 0; i < argc; ++i)
-  {
-    if (i == 0)
-    {
-      program = argv[i];
-      std::string::size_type cal = program.find ("/cal");
-      if (program == "cal" ||
-          (cal != std::string::npos && program.length () == cal + 4))
-        args.push_back ("calendar");
-    }
-    else
-      args.push_back (argv[i]);
-  }
+  // char** argv --> std::vector <std::string> Context::args.
+  captureCommandLineArgs (argc, argv);
 
-  // Capture any stdin args.
-  struct timeval tv;
-  fd_set fds;
-  tv.tv_sec = 0;
-  tv.tv_usec = 0;
-  FD_ZERO (&fds);
-  FD_SET (STDIN_FILENO, &fds);
-  select (STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
-  if (FD_ISSET (0, &fds))
-  {
-    std::string arg;
-    while (std::cin >> arg)
-    {
-      if (arg == "--")
-        break;
+  // echo one two -- three | task zero --> task zero one two
+  // 'three' is left in the input buffer.
+  appendPipedArgs ();
 
-      args.push_back (arg);
-    }
-  }
+  // Assume default .taskrc and .task locations.
+  assumeLocations ();
 
-  // TODO Scan for rc:<file> overrides --> apply.
+  // Process 'rc:<file>' command line override, and remove the argument from the
+  // Context::args.
+  overrideRCFile ();
 
-  // Load the configuration file from the home directory.  If the file cannot
-  // be found, offer to create a sample one.
-  loadCorrectConfigFile ();
+  // Dump any existing values and load rc file.
+  config.clear ();
+  config.load  (rc_file);
+
+  // The data location, Context::data_dir, is determined from the assumed
+  // location (~/.task), or set by data.location in the config file, or
+  // overridden by rc.data.location on the command line.
+  determineDataLocation ();
+
+  // Create missing config file and data directory, if necessary.
+  createDefaultConfig ();
+
+  // Apply rc overrides to Context::config.
+  applyOverrides ();
+
+  // Handle Aliases.
   loadAliases ();
   resolveAliases ();
 
   // Combine command line into one string.
   join (commandLine, " ", args);
 
-  // When redirecting output to a file, do not use color.
-  if (!isatty (fileno (stdout)))
-  {
-    config.set ("detection", "off");
-
-    if (! config.getBoolean ("_forcecolor"))
-      config.set ("color", "off");
-  }
-
-  if (config.getBoolean ("color"))
+  // Initialize the color rules, if necessary.
+  if (color ())
     initializeColorRules ();
-
 
   // Instantiate built-in command objects.
   Command::factory (commands);
@@ -142,42 +126,6 @@ void Context::initialize2 (int argc, char** argv)
   // TODO Instantiate default command object.
   // TODO Instantiate extension UDA objects.
   // TODO Instantiate extension format objects.
-  // TODO Hook: on-launch
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Context::initialize (int argc, char** argv)
-{
-  // Capture the args.
-  // ...
-
-  // Capture any stdin args.
-  // ...
-
-  initialize ();
-
-  // Hook system init, plus post-start event occurring at the first possible
-  // moment after hook initialization.
-  hooks.initialize ();
-  hooks.trigger ("on-launch");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Context::initialize ()
-{
-  Timer t ("Context::initialize");
-
-  // Load the configuration file from the home directory.  If the file cannot
-  // be found, offer to create a sample one.
-  // ...
-
-  // Resolve aliases.
-  // ...
-
-  // When redirecting output to a file, do not use color.
-  // ...
-
-  Directory location (config.get ("data.location"));
 
   // If there is a locale variant (en-US.<variant>), then strip it.
   std::string locale = config.get ("locale");
@@ -185,12 +133,14 @@ void Context::initialize ()
   if (period != std::string::npos)
     locale = locale.substr (0, period);
 
-  // init TDB.
+  // Initialize the database.
   tdb.clear ();
-  std::vector <std::string> all;
-  split (all, location, ',');
-  foreach (path, all)
-    tdb.location (*path);
+  tdb.location (data_dir);
+
+  // Hook system init, plus post-start event occurring at the first possible
+  // moment after hook initialization.
+  hooks.initialize ();
+  hooks.trigger ("on-launch");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -271,13 +221,21 @@ int Context::dispatch2 (std::string &out)
     std::vector <std::string> matches;
     if (autoComplete (*arg, keywords, matches) == 1)
     {
-       Command* c = commands[matches[0]];
-       if (! c->read_only ())
-         tdb.gc ();
+      if (*arg != matches[0])
+        debug ("Context::dispatch2 parse keyword '" + *arg + "' --> '" + matches[0] + "'");
+      else
+        debug ("Context::dispatch2 parse keyword '" + *arg + "'");
 
-       return c->execute (commandLine, out);
+      Command* c = commands[matches[0]];
+      if (c->displays_id ())
+        tdb.gc ();
+
+      return c->execute (commandLine, out);
     }
   }
+
+  // TODO When ::dispatch is eliminated, show usage on unrecognized command.
+//  commands["help"]->execute (commandLine, out);
 
   return 1;
 }
@@ -291,7 +249,6 @@ int Context::dispatch (std::string &out)
 
   // TODO Chain-of-command pattern dispatch.
        if (cmd.command == "projects")         { rc = handleProjects              (out); }
-  else if (cmd.command == "tags")             { rc = handleTags                  (out); }
   else if (cmd.command == "colors")           { rc = handleColor                 (out); }
   else if (cmd.command == "version")          { rc = handleVersion               (out); }
   else if (cmd.command == "config")           { rc = handleConfig                (out); }
@@ -347,11 +304,10 @@ int Context::dispatch (std::string &out)
            sequence.size ())                  { rc = handleModify                (out); }
 
   // Commands that display IDs and therefore need TDB::gc first.
-  else if (cmd.validCustom (cmd.command))     { if (!inShadow) tdb.gc ();
-                                                rc = handleCustomReport (cmd.command, out); }// ...
+  // ...
 
   // If the command is not recognized, display usage.
-  else                                        { rc = shortUsage (out); }
+  else                                        { rc = commands["help"]->execute (commandLine, out); }
 
   // Only update the shadow file if such an update was not suppressed (shadow),
   if ((cmd.isWriteCommand () ||
@@ -365,8 +321,35 @@ int Context::dispatch (std::string &out)
 ////////////////////////////////////////////////////////////////////////////////
 bool Context::color ()
 {
-  return config.getBoolean ("color") ||
-         config.getBoolean ("_forcecolor");
+  if (determine_color_use)
+  {
+    // What the config says.
+    use_color = config.getBoolean ("color");
+
+    // Only tty's support color.
+    if (! isatty (fileno (stdout)))
+    {
+      // No ioctl.
+      config.set ("detection", "off");
+      config.set ("color",     "off");
+
+      // Files don't get color.
+      use_color = false;
+    }
+
+    // Override.
+    if (config.getBoolean ("_forcecolor"))
+    {
+      config.set ("color", "on");
+      use_color = true;
+    }
+
+    // No need to go through this again.
+    determine_color_use = false;
+  }
+
+  // Cached result.
+  return use_color;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -424,7 +407,7 @@ void Context::shadow ()
 
     split (args, command, ' ');
 
-    initialize ();
+    //initialize ();
     config.set ("detection", "off");
     config.set ("color",     "off");
 
@@ -452,36 +435,6 @@ void Context::shadow ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Only allows aliases 10 deep.
-std::string Context::canonicalize (const std::string& input) const
-{
-  std::string canonical = input;
-
-  // First try to autocomplete the alias.
-  std::vector <std::string> options;
-  std::vector <std::string> matches;
-  foreach (name, aliases)
-    options.push_back (name->first);
-
-  autoComplete (input, options, matches);
-  if (matches.size () == 1)
-  {
-    canonical = matches[0];
-
-    // Follow the chain.
-    int i = 10;  // Safety valve.
-    std::map <std::string, std::string>::const_iterator found;
-    while ((found = aliases.find (canonical)) != aliases.end () && i-- > 0)
-      canonical = found->second;
-
-    if (i < 1)
-      return input;
-  }
-
-  return canonical;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void Context::disallowModification () const
 {
   if (task.size ()         ||
@@ -497,23 +450,24 @@ void Context::disallowModification () const
 // Takes a vector of args (foo, rc.name:value, bar), extracts any rc.name:value
 // args and sets the name/value in context.config, returning only the plain args
 // (foo, bar) as output.
-void Context::applyOverrides (
-  const std::vector <std::string>& input,
-  std::vector <std::string>& output)
+void Context::applyOverrides ()
 {
+  std::vector <std::string> filtered;
   bool foundTerminator = false;
-  foreach (in, input)
+
+  std::vector <std::string>::iterator arg;
+  for (arg = args.begin (); arg != args.end (); ++arg)
   {
-    if (*in == "--")
+    if (*arg == "--")
     {
       foundTerminator = true;
-      output.push_back (*in);
+      filtered.push_back (*arg);
     }
-    else if (!foundTerminator && in->substr (0, 3) == "rc.")
+    else if (!foundTerminator && arg->substr (0, 3) == "rc.")
     {
       std::string name;
       std::string value;
-      Nibbler n (*in);
+      Nibbler n (*arg);
       if (n.getLiteral ("rc.")         &&  // rc.
           n.getUntilOneOf (":=", name) &&  //    xxx
           n.skipN (1))                     //       :
@@ -521,60 +475,114 @@ void Context::applyOverrides (
         n.getUntilEOS (value);  // Don't care if it's blank.
 
         config.set (name, value);
-        var_overrides += " " + *in;
-        footnote ("Configuration override " + in->substr (3));
+        footnote ("Configuration override " + arg->substr (3));
+
+        // Overrides are retained for potential use by the default command.
+        var_overrides += " " + *arg;
       }
       else
-        footnote ("Problem with override: " + *in);
+        footnote ("Problem with override: " + *arg);
     }
     else
-      output.push_back (*in);
+      filtered.push_back (*arg);
+  }
+
+  // Overwrite args with the filtered subset.
+  args = filtered;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::captureCommandLineArgs (int argc, char** argv)
+{
+  for (int i = 0; i < argc; ++i)
+  {
+    if (i == 0)
+    {
+      program = argv[i];
+      std::string::size_type cal = program.find ("/cal");
+      if (program == "cal" ||
+          (cal != std::string::npos && program.length () == cal + 4))
+        args.push_back ("calendar");
+    }
+    else
+      args.push_back (argv[i]);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Context::loadCorrectConfigFile ()
+void Context::appendPipedArgs ()
+{
+  // Capture any stdin args.
+  struct timeval tv;
+  fd_set fds;
+  tv.tv_sec = 0;
+  tv.tv_usec = 0;
+  FD_ZERO (&fds);
+  FD_SET (STDIN_FILENO, &fds);
+  select (STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
+  if (FD_ISSET (0, &fds))
+  {
+    std::string arg;
+    while (std::cin >> arg)
+    {
+      if (arg == "--")
+        break;
+
+      args.push_back (arg);
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::assumeLocations ()
 {
   // Set up default locations.
   struct passwd* pw = getpwuid (getuid ());
   if (!pw)
     throw std::string ("Could not read home directory from the passwd file.");
 
-  std::string home = pw->pw_dir;
-  File      rc   (home + "/.taskrc");
-  Directory data (home + "./task");
+  home_dir = pw->pw_dir;
+  rc_file  = File      (home_dir + "/.taskrc");
+  data_dir = Directory (home_dir + "./task");
+}
 
-  // Is there an file_override for rc:?
-  foreach (arg, args)
+////////////////////////////////////////////////////////////////////////////////
+void Context::overrideRCFile ()
+{
+  // Is there an override for rc:<file>?
+  std::vector <std::string>::iterator arg;
+  for (arg = args.begin (); arg != args.end (); ++arg)
   {
+    // Nothing after -- is to be interpreted in any way.
     if (*arg == "--")
       break;
+
     else if (arg->substr (0, 3) == "rc:")
     {
       file_override = *arg;
-      rc = File (arg->substr (3));
+      rc_file = File (arg->substr (3));
 
-      home = rc;
-      std::string::size_type last_slash = rc.data.rfind ("/");
+      home_dir = rc_file;
+      std::string::size_type last_slash = rc_file.data.rfind ("/");
       if (last_slash != std::string::npos)
-        home = rc.data.substr (0, last_slash);
+        home_dir = rc_file.data.substr (0, last_slash);
       else
-        home = ".";
+        home_dir = ".";
 
       args.erase (arg);
-      header ("Using alternate .taskrc file " + rc.data); // TODO i18n
-      break;
+      header ("Using alternate .taskrc file " + rc_file.data); // TODO i18n
+      break; // Must break - iterator is dead.
     }
   }
+}
 
-  // Load rc file.
-  config.clear ();       // Dump current values.
-  config.load  (rc);     // Load new file.
-
+////////////////////////////////////////////////////////////////////////////////
+void Context::determineDataLocation ()
+{
   if (config.get ("data.location") != "")
-    data = Directory (config.get ("data.location"));
+    data_dir = Directory (config.get ("data.location"));
 
-  // Are there any var_overrides for data.location?
+  // Are there any overrides for data.location?
   foreach (arg, args)
   {
     if (*arg == "--")
@@ -582,33 +590,32 @@ void Context::loadCorrectConfigFile ()
     else if (arg->substr (0, 16) == "rc.data.location" &&
              ((*arg)[16] == ':' || (*arg)[16] == '='))
     {
-      data = Directory (arg->substr (17));
-      header ("Using alternate data.location " + data.data); // TODO i18n
+      data_dir = Directory (arg->substr (17));
+      header ("Using alternate data.location " + data_dir.data); // TODO i18n
       break;
     }
   }
+}
 
+////////////////////////////////////////////////////////////////////////////////
+void Context::createDefaultConfig ()
+{
   // Do we need to create a default rc?
-  if (! rc.exists ())
+  if (! rc_file.exists ())
   {
     if (!confirm ("A configuration file could not be found in " // TODO i18n
-                + home
+                + home_dir
                 + "\n\n"
                 + "Would you like a sample "
-                + rc.data
+                + rc_file.data
                 + " created, so taskwarrior can proceed?"))
       throw std::string ("Cannot proceed without rc file.");
 
-    config.createDefaultRC (rc, data);
+    config.createDefaultRC (rc_file, data_dir);
   }
 
   // Create data location, if necessary.
-  config.createDefaultData (data);
-
-  // Apply rc overrides.
-  std::vector <std::string> filtered;
-  applyOverrides (args, filtered);
-  args = filtered;
+  config.createDefaultData (data_dir);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -892,7 +899,7 @@ void Context::parse (
         file_override = "";
         var_overrides = "";
         footnotes.clear ();
-        initialize ();
+        //initialize ();
         parse (args, cmd, task, sequence, subst, filter);
       }
       else

@@ -182,7 +182,7 @@ json::array* json::array::parse (Nibbler& nibbler)
     json::array* arr = new json::array ();
 
     json::value* value;
-    if (value = json::value::parse (n))
+    if ((value = json::value::parse (n)))
     {
       arr->push_back (value);
       value = NULL; // Not a leak.  Looks like a leak.
@@ -191,7 +191,7 @@ json::array* json::array::parse (Nibbler& nibbler)
       {
         n.skipWS ();
 
-        if (value = json::value::parse (n))
+        if ((value = json::value::parse (n)))
         {
           arr->push_back (value);
           n.skipWS ();
@@ -323,7 +323,7 @@ bool json::object::parse_pair (
     if (n.skip (':'))
     {
       n.skipWS ();
-      if (val = json::value::parse (n))
+      if ((val = json::value::parse (n)))
       {
         nibbler = n;
         return true;

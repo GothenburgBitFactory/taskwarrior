@@ -63,7 +63,6 @@ int main (int argc, char** argv)
 
   try
   {
-    context.initialize2 (argc, argv);
     context.initialize (argc, argv);
     status = context.run ();
   }

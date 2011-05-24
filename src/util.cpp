@@ -345,7 +345,7 @@ std::string compressIds (const std::vector <int>& ids)
   int range_start = 0;
   int range_end = 0;
 
-  for (int i = 0; i < ids.size (); ++i)
+  for (unsigned int i = 0; i < ids.size (); ++i)
   {
     if (i + 1 == ids.size ())
     {

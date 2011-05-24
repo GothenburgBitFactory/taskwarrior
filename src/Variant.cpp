@@ -45,29 +45,12 @@ Variant::Variant (const Variant& other)
   // Explicitly copy only the relevant type.  This saves memory.
   switch (mType)
   {
-  case v_boolean:
-    mBool = other.mBool;
-    break;
-
-  case v_integer:
-    mInteger = other.mInteger;
-    break;
-
-  case v_double:
-    mDouble = other.mDouble;
-    break;
-
-  case v_string:
-    mString = other.mString;
-    break;
-
-  case v_date:
-    mDate = other.mDate;
-    break;
-
-  case v_duration:
-    mDuration = other.mDuration;
-    break;
+  case v_boolean:  mBool     = other.mBool;     break;
+  case v_integer:  mInteger  = other.mInteger;  break;
+  case v_double:   mDouble   = other.mDouble;   break;
+  case v_string:   mString   = other.mString;   break;
+  case v_date:     mDate     = other.mDate;     break;
+  case v_duration: mDuration = other.mDuration; break;
   }
 }
 
@@ -464,7 +447,7 @@ Variant& Variant::operator< (const Variant& other)
   switch (mType)
   {
   case v_boolean:
-    throw std::string ("Cannot perform relationally compare Boolean types");
+    throw std::string ("Cannot perform relational compare Boolean types");
     break;
 
   case v_integer:
@@ -501,7 +484,7 @@ Variant& Variant::operator> (const Variant& other)
   switch (mType)
   {
   case v_boolean:
-    throw std::string ("Cannot perform relationally compare Boolean types");
+    throw std::string ("Cannot perform relational compare Boolean types");
     break;
 
   case v_integer:

@@ -332,78 +332,6 @@ int handleCompletionProjects (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleTags (std::string& outs)
-{
-  int rc = 0;
-  std::stringstream out;
-
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  int quantity = 0;
-  if (context.config.getBoolean ("list.all.tags"))
-    quantity += context.tdb.load (tasks, context.filter);
-  else
-    quantity += context.tdb.loadPending (tasks, context.filter);
-
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Scan all the tasks for their project name, building a map using project
-  // names as keys.
-  std::map <std::string, int> unique;
-  foreach (t, tasks)
-  {
-    std::vector <std::string> tags;
-    t->getTags (tags);
-
-    foreach (tag, tags)
-      if (unique.find (*tag) != unique.end ())
-        unique[*tag]++;
-      else
-        unique[*tag] = 1;
-  }
-
-  if (unique.size ())
-  {
-    // Render a list of tags names from the map.
-    ViewText view;
-    view.width (context.getWidth ());
-    view.add (Column::factory ("string", "Tag"));
-    view.add (Column::factory ("string.right", "Count"));
-
-    Color bold ("bold");
-    bool special = false;
-    foreach (i, unique)
-    {
-      // Highlight the special tags.
-      special = (context.color () &&
-                 (i->first == "nocolor" ||
-                  i->first == "nonag"   ||
-                  i->first == "next")) ? true : false;
-
-      int row = view.addRow ();
-      view.set (row, 0, i->first,  special ? bold : Color ());
-      view.set (row, 1, i->second, special ? bold : Color ());
-    }
-
-    out << optionalBlankLine ()
-        << view.render ()
-        << optionalBlankLine ()
-        << unique.size ()
-        << (unique.size () == 1 ? " tag" : " tags")
-        << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")\n";
-  }
-  else
-  {
-    out << "No tags.\n";
-    rc = 1;
-  }
-
-  outs = out.str ();
-  return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int handleCompletionTags (std::string& outs)
 {
   std::vector <Task> tasks;
@@ -2302,8 +2230,7 @@ void handleShell ()
         split (args, decoratedCommand, ' ');
         foreach (arg, args)    context.args.push_back (*arg);
 
-        context.initialize2 (0, NULL);
-        context.initialize ();
+        context.initialize (0, NULL);
         context.run ();
       }
 
