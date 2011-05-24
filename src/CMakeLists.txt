@@ -35,7 +35,6 @@ set (task_SRCS API.cpp API.h
                TransportCurl.cpp TransportCurl.h
                TransportRSYNC.cpp TransportRSYNC.h
                TransportSSH.cpp TransportSSH.h
-               Tree.cpp Tree.h
                Uri.cpp Uri.h
                Variant.cpp Variant.h
                ViewTask.cpp ViewTask.h

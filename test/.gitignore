@@ -30,8 +30,6 @@ tdb.t
 tdb2.t
 text.t
 transport.t
-tree.t
-tree2.t
 uri.t
 util.t
 variant.t
