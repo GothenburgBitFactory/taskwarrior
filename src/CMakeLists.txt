@@ -23,7 +23,6 @@ set (task_SRCS API.cpp API.h
                Path.cpp Path.h
                Permission.cpp Permission.h
                Record.cpp Record.h
-               Rectangle.cpp Rectangle.h
                Sequence.cpp Sequence.h
                Subst.cpp Subst.h
                TDB.cpp TDB.h
