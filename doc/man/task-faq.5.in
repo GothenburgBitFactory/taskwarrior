@@ -257,7 +257,7 @@ efficiency.
 
 .TP
 .B Q: How do I list tasks that are either priority 'H' or 'M', but not 'L'?
-Taskwarriors filters are all combined with and implicit logical AND operator, so
+Taskwarrior's filters are all combined with and implicit logical AND operator, so
 if you were to try this:
 
     $ task list priority:H priority:M
