@@ -24,17 +24,22 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_CMDEXEC
-#define INCLUDED_CMDEXEC
+#ifndef INCLUDED_CMDCUSTOM
+#define INCLUDED_CMDCUSTOM
 
 #include <string>
 #include <Command.h>
 
-class CmdExec : public Command
+class CmdCustom : public Command
 {
 public:
-  CmdExec ();
+  CmdCustom (const std::string&, const std::string&, const std::string&);
   int execute (const std::string&, std::string&);
+
+private:
+  void validateReportColumns (std::vector <std::string>&);
+  void validateSortColumns (std::vector <std::string>&);
+  void getLimits (const std::string&, int&, int&);
 };
 
 #endif

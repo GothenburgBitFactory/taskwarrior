@@ -34,12 +34,7 @@ class CmdTip : public Command
 {
 public:
   CmdTip ();
-
-  bool implements (const std::string&);
   int execute (const std::string&, std::string&);
-
-private:
-  std::string _external_command;
 };
 
 #endif

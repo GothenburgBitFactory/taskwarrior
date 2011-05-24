@@ -34,11 +34,7 @@ class CmdLogo : public Command
 {
 public:
   CmdLogo ();
-
-  bool implements (const std::string&);
   int execute (const std::string&, std::string&);
-
-private:
 };
 
 #endif

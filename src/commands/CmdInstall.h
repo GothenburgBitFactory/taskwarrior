@@ -34,11 +34,7 @@ class CmdInstall : public Command
 {
 public:
   CmdInstall ();
-
-  bool implements (const std::string&);
   int execute (const std::string&, std::string&);
-
-private:
 };
 
 #endif

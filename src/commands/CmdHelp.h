@@ -34,8 +34,6 @@ class CmdHelp : public Command
 {
 public:
   CmdHelp ();
-
-  bool implements (const std::string&);
   int execute (const std::string&, std::string&);
 };
 

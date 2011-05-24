@@ -5,10 +5,12 @@ include_directories (${CMAKE_SOURCE_DIR}/src
                      ${TASK_INCLUDE_DIRS})
 
 set (commands_SRCS Command.cpp Command.h
+                   CmdCustom.cpp CmdCustom.h
                    CmdExec.cpp CmdExec.h
                    CmdHelp.cpp CmdHelp.h
                    CmdInstall.cpp CmdInstall.h
                    CmdLogo.cpp CmdLogo.h
+                   CmdTags.cpp CmdTags.h
                    CmdTip.cpp CmdTip.h)
 
 add_library (commands STATIC ${commands_SRCS})

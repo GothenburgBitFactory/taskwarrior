@@ -24,16 +24,16 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_CMDEXEC
-#define INCLUDED_CMDEXEC
+#ifndef INCLUDED_CMDTAGS
+#define INCLUDED_CMDTAGS
 
 #include <string>
 #include <Command.h>
 
-class CmdExec : public Command
+class CmdTags : public Command
 {
 public:
-  CmdExec ();
+  CmdTags ();
   int execute (const std::string&, std::string&);
 };
 

@@ -26,11 +26,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <vector>
 #include <Command.h>
+#include <CmdCustom.h>
 #include <CmdExec.h>
 #include <CmdHelp.h>
 #include <CmdInstall.h>
 #include <CmdLogo.h>
+#include <CmdTags.h>
 #include <CmdTip.h>
 #include <Context.h>
 
@@ -45,7 +48,42 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdHelp ();    all[c->keyword ()] = c;
   c = new CmdInstall (); all[c->keyword ()] = c;
   c = new CmdLogo ();    all[c->keyword ()] = c;
+  c = new CmdTags ();    all[c->keyword ()] = c;
   c = new CmdTip ();     all[c->keyword ()] = c;
+
+  // Instantiate a command object for each custom report.
+  std::vector <std::string> variables;
+  context.config.all (variables);
+
+  std::vector <std::string> reports;
+  std::vector <std::string>::iterator i;
+  for (i = variables.begin (); i != variables.end (); ++i)
+  {
+    if (i->substr (0, 7) == "report.")
+    {
+      std::string report = i->substr (7);
+      std::string::size_type columns = report.find (".columns");
+      if (columns != std::string::npos)
+        reports.push_back (report.substr (0, columns));
+    }
+  }
+
+  std::vector <std::string>::iterator report;
+  for (report = reports.begin (); report != reports.end (); ++report)
+  {
+    // Make sure a custom report does not clash with a built-in command.
+    if (all.find (*report) != all.end ())
+      throw std::string ("Custom report '")
+            + *report
+            + "' conflicts with built-in task command.";
+
+    c = new CmdCustom (
+              *report,
+              "task " + *report + " [tags] [attrs] desc...",
+              context.config.get ("report." + *report + ".description"));
+
+    all[c->keyword ()] = c;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

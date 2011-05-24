@@ -33,27 +33,12 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdTip::CmdTip ()
-: _external_command ("")
 {
   _keyword     = "tip";
   _usage       = "task tip";
   _description = "Displays helpful usage tips";
   _read_only   = true;
   _displays_id = false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CmdTip::implements (const std::string& command_line)
-{
-  _external_command = "";
-  if (context.args.size () > 1 &&
-      (context.args[0] == "tip"  ||
-       context.args[0] == "ti"))
-  {
-    return true;
-  }
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

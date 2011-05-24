@@ -85,10 +85,12 @@ bool Cmd::validCustom (const std::string& input)
   autoComplete (lowerCase (input), commands, matches);
   if (matches.size () == 1)
   {
+/*
     std::string canonical = context.canonicalize (matches[0]);
     matches.clear ();
     autoComplete (canonical, customReports, matches);
     if (matches.size () == 1)
+*/
       return true;
   }
 
@@ -106,7 +108,7 @@ void Cmd::parse (const std::string& input)
   std::vector <std::string> matches;
   autoComplete (input, commands, matches);
   if (1 == matches.size ())
-    command = context.canonicalize (matches[0]);
+    /*command = context.canonicalize (matches[0])*/;
 
   else if (0 == matches.size ())
     command = "";
@@ -173,7 +175,6 @@ void Cmd::load ()
     commands.push_back ("stats");
     commands.push_back ("stop");
     commands.push_back ("summary");
-    commands.push_back ("tags");
     commands.push_back ("timesheet");
     commands.push_back ("undo");
     commands.push_back ("version");
@@ -270,7 +271,6 @@ bool Cmd::isReadOnlyCommand ()
       command == "shell"                                                     ||
       command == "stats"                                                     ||
       command == "summary"                                                   ||
-      command == "tags"                                                      ||
       command == "timesheet"                                                 ||
       command == "version"                                                   ||
       validCustom (command))

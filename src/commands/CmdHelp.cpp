@@ -44,20 +44,6 @@ CmdHelp::CmdHelp ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CmdHelp::implements (const std::string& command_line)
-{
-  if (context.args.size () &&
-      (context.args[0] == "help" ||
-       context.args[0] == "hel"  ||
-       context.args[0] == "he"))
-  {
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int CmdHelp::execute (const std::string& command_line, std::string& output)
 {
   ViewText view;
@@ -77,7 +63,7 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   for (i = context.commands.begin (); i != context.commands.end (); ++i)
     all.push_back (i->first);
 
-  // Sort alphabetically.
+  // Sort alphabetically by usage.
   std::sort (all.begin (), all.end ());
 
   foreach (name, all)
@@ -166,10 +152,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   row = view.addRow ();
   view.set (row, 1, "task projects");
   view.set (row, 2, "Shows a list of all project names used, and how many tasks are in each.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task tags");
-  view.set (row, 2, "Shows a list of all tags used.");
 
   row = view.addRow ();
   view.set (row, 1, "task summary");
@@ -275,27 +257,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   row = view.addRow ();
   view.set (row, 1, "task diagnostics");
   view.set (row, 2, "Information needed when reporting a problem.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task help");
-  view.set (row, 2, "Shows the long usage text.");
-*/
-
-/*
-  // TODO Add custom reports here...
-  std::vector <std::string> all;
-  context.cmd.allCustomReports (all);
-  foreach (report, all)
-  {
-    std::string command = std::string ("task ") + *report + std::string (" [tags] [attrs] desc...");
-    std::string description = context.config.get (std::string ("report.") + *report + ".description");
-    if (description == "")
-      description = "(missing description)";
-
-    row = view.addRow ();
-    view.set (row, 1, command);
-    view.set (row, 2, description);
-  }
 */
 
   output = "\n"

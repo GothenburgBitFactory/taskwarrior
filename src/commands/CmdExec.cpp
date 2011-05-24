@@ -27,13 +27,9 @@
 
 #include <stdlib.h>
 #include <CmdExec.h>
-#include <Context.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdExec::CmdExec ()
-: _external_command ("")
 {
   _keyword     = "execute";
   _usage       = "task execute <external command>";
@@ -43,36 +39,9 @@ CmdExec::CmdExec ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CmdExec::implements (const std::string& command_line)
+int CmdExec::execute (const std::string& command_line, std::string& output)
 {
-  _external_command = "";
-  if (context.args.size () > 1 &&
-      (context.args[0] == "execute"  ||
-       context.args[0] == "execut"  ||
-       context.args[0] == "execu"  ||
-       context.args[0] == "exec"  ||
-       context.args[0] == "exe"  ||
-       context.args[0] == "ex"))
-  {
-    for (int i = 1; i < context.args.size (); ++i)
-    {
-      if (i > 1)
-        _external_command += " ";
-
-      _external_command += context.args[i];
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int CmdExec::execute (const std::string&, std::string&)
-{
-  system (_external_command.c_str ());
-  return 0;
+  return system (command_line.c_str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

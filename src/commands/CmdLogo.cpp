@@ -42,16 +42,6 @@ CmdLogo::CmdLogo ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CmdLogo::implements (const std::string& command_line)
-{
-  // TODO Upgrade to a parsed value.
-  if (command_line.find ("_logo") != std::string::npos)
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Algorithm:
 //   Copy file rc.data.location/extensions
 //   Generate UUID
@@ -93,7 +83,7 @@ int CmdLogo::execute (const std::string& commandLine, std::string& output)
   };
 
   if (!context.color ())
-    throw std::string ("The _logo command requires that color support is enabled.");
+    throw std::string ("The logo command requires that color support is enabled.");
 
   std::string indent (context.config.getInteger ("indent.report"), ' ');
   output += optionalBlankLine ();
