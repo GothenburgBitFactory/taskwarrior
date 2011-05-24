@@ -163,7 +163,8 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   if (_width == 0 || sum_ideal <= overage)
     widths = ideal;
   else if (sum_minimal > overage)
-    throw std::string ("There is not enough horizontal width to display the results.");
+//    throw std::string ("There is not enough horizontal width to display the results.");
+    widths = minimal;
   else
   {
     widths = minimal;
@@ -221,7 +222,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       if (c)
         out += intra;
 
-      if (headers[i].size () < max_lines - i)
+      if (headers[c].size () < max_lines - i)
         out += _header.colorize (std::string (widths[c], ' '));
       else
         out += headers[c][i];

@@ -148,7 +148,7 @@ void Column::renderHeader (
   Color& color)
 {
   if (context.verbose ("label") &&
-     _label != "")
+     nontrivial (_label))
   {
     // Create a basic label.
     std::string header;

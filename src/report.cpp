@@ -928,25 +928,25 @@ std::string renderMonths (
   {
     if (weekStart == 1)
     {
-      view.add (Column::factory ("string", "    "));
-      view.add (Column::factory ("string", "Mo"));
-      view.add (Column::factory ("string", "Tu"));
-      view.add (Column::factory ("string", "We"));
-      view.add (Column::factory ("string", "Th"));
-      view.add (Column::factory ("string", "Fr"));
-      view.add (Column::factory ("string", "Sa"));
-      view.add (Column::factory ("string", "Su"));
+      view.add (Column::factory ("string.right", "    "));
+      view.add (Column::factory ("string.right", "Mo"));
+      view.add (Column::factory ("string.right", "Tu"));
+      view.add (Column::factory ("string.right", "We"));
+      view.add (Column::factory ("string.right", "Th"));
+      view.add (Column::factory ("string.right", "Fr"));
+      view.add (Column::factory ("string.right", "Sa"));
+      view.add (Column::factory ("string.right", "Su"));
     }
     else
     {
-      view.add (Column::factory ("string", "    "));
-      view.add (Column::factory ("string", "Su"));
-      view.add (Column::factory ("string", "Mo"));
-      view.add (Column::factory ("string", "Tu"));
-      view.add (Column::factory ("string", "We"));
-      view.add (Column::factory ("string", "Th"));
-      view.add (Column::factory ("string", "Fr"));
-      view.add (Column::factory ("string", "Sa"));
+      view.add (Column::factory ("string.right", "    "));
+      view.add (Column::factory ("string.right", "Su"));
+      view.add (Column::factory ("string.right", "Mo"));
+      view.add (Column::factory ("string.right", "Tu"));
+      view.add (Column::factory ("string.right", "We"));
+      view.add (Column::factory ("string.right", "Th"));
+      view.add (Column::factory ("string.right", "Fr"));
+      view.add (Column::factory ("string.right", "Sa"));
     }
   }
 
@@ -1087,8 +1087,8 @@ std::string renderMonths (
             }
           }
         }
-// TODO Solve this.
-//        table.setCellColor (row, thisCol, cellColor);
+
+        view.set (row, thisCol, cellColor);
       }
 
       // Check for end of week, and...

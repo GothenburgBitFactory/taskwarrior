@@ -68,7 +68,7 @@ void ViewText::set (int row, int col, const std::string& value, Color color)
   _data[row][col] = value;
 
   if (color.nontrivial () &&
-      ! context.color ())
+      context.color ())
     _color[row][col] = color;
 }
 
@@ -79,7 +79,7 @@ void ViewText::set (int row, int col, int value, Color color)
   _data[row][col] = string_value;
 
   if (color.nontrivial () &&
-      ! context.color ())
+      context.color ())
     _color[row][col] = color;
 }
 
@@ -90,7 +90,15 @@ void ViewText::set (int row, int col, float value, int width, int precision, Col
   _data[row][col] = string_value;
 
   if (color.nontrivial () &&
-      ! context.color ())
+      context.color ())
+    _color[row][col] = color;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ViewText::set (int row, int col, Color color)
+{
+  if (color.nontrivial () &&
+      context.color ())
     _color[row][col] = color;
 }
 
@@ -144,7 +152,8 @@ std::string ViewText::render ()
   if (sum_ideal <= overage)
     widths = ideal;
   else if (sum_minimal > overage)
-    throw std::string ("There is not enough horizontal width to display the results.");
+//    throw std::string ("There is not enough horizontal width to display the results.");
+    widths = minimal;
   else
   {
     widths = minimal;
@@ -199,7 +208,7 @@ std::string ViewText::render ()
       if (c)
         out += intra;
 
-      if (headers[i].size () < max_lines - i)
+      if (headers[c].size () < max_lines - i)
         out += _header.colorize (std::string (widths[c], ' '));
       else
         out += headers[c][i];
