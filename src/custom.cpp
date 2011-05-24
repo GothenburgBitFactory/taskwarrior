@@ -181,7 +181,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
   split (labels, reportLabels, ',');
 
   if (columns.size () != labels.size () && labels.size () != 0)
-    throw std::string ("There are a different number of columns and labels ") +
+    throw std::string ("There are different numbers of columns and labels ") +
           "for report '" + report + "'.";
 
   std::map <std::string, std::string> columnLabels;
@@ -277,6 +277,7 @@ int handleCustomReport (const std::string& report, std::string& outs)
               + context.headers.size ()
               + context.footnotes.size ();
 
+  // Render.
   std::stringstream out;
   if (tasks.size ())
   {

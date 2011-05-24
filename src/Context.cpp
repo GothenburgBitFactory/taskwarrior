@@ -113,16 +113,30 @@ void Context::initialize2 (int argc, char** argv)
 
   // TODO Scan for rc:<file> overrides --> apply.
 
+  // Load the configuration file from the home directory.  If the file cannot
+  // be found, offer to create a sample one.
+  loadCorrectConfigFile ();
+  loadAliases ();
+  resolveAliases ();
+
   // Combine command line into one string.
   join (commandLine, " ", args);
 
-  // TODO Load relevant rc file.
+  // When redirecting output to a file, do not use color.
+  if (!isatty (fileno (stdout)))
+  {
+    config.set ("detection", "off");
+
+    if (! config.getBoolean ("_forcecolor"))
+      config.set ("color", "off");
+  }
+
+  if (config.getBoolean ("color"))
+    initializeColorRules ();
+
 
   // Instantiate built-in command objects.
-  commands["execute"] = Command::factory ("execute");
-  commands["help"]    = Command::factory ("help");
-  commands["install"] = Command::factory ("install");
-  commands["logo"]    = Command::factory ("_logo");
+  Command::factory (commands);
 
   // TODO Instantiate extension command objects.
   // TODO Instantiate default command object.
@@ -155,20 +169,13 @@ void Context::initialize ()
 
   // Load the configuration file from the home directory.  If the file cannot
   // be found, offer to create a sample one.
-  loadCorrectConfigFile ();
-  loadAliases ();
+  // ...
+
+  // Resolve aliases.
+  // ...
 
   // When redirecting output to a file, do not use color.
-  if (!isatty (fileno (stdout)))
-  {
-    config.set ("detection", "off");
-
-    if (! config.getBoolean ("_forcecolor"))
-      config.set ("color", "off");
-  }
-
-  if (config.getBoolean ("color"))
-    initializeColorRules ();
+  // ...
 
   Directory location (config.get ("data.location"));
 
@@ -243,21 +250,32 @@ int Context::run ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Locate and dispatch to the command whose keyword matches via autoComplete
+// with the earliest argument.
 int Context::dispatch2 (std::string &out)
 {
   Timer t ("Context::dispatch2");
 
   updateXtermTitle ();
 
-  std::map <std::string, Command*>::iterator c;
-  for (c = commands.begin (); c != commands.end (); ++c)
-  {
-    if (c->second->implements (commandLine))
-    {
-      if (! c->second->read_only ())
-        tdb.gc ();
+  // Create list of all command keywords.
+  std::vector <std::string> keywords;
+  std::map <std::string, Command*>::iterator i;
+  for (i = commands.begin (); i != commands.end (); ++i)
+    keywords.push_back (i->first);
 
-      return c->second->execute (commandLine, out);
+  // Autocomplete args against keywords.
+  std::vector <std::string>::iterator arg;
+  for (arg = args.begin (); arg != args.end (); ++arg)
+  {
+    std::vector <std::string> matches;
+    if (autoComplete (*arg, keywords, matches) == 1)
+    {
+       Command* c = commands[matches[0]];
+       if (! c->read_only ())
+         tdb.gc ();
+
+       return c->execute (commandLine, out);
     }
   }
 
@@ -271,10 +289,7 @@ int Context::dispatch (std::string &out)
 
   Timer t ("Context::dispatch");
 
-  updateXtermTitle ();
-
   // TODO Chain-of-command pattern dispatch.
-
        if (cmd.command == "projects")         { rc = handleProjects              (out); }
   else if (cmd.command == "tags")             { rc = handleTags                  (out); }
   else if (cmd.command == "colors")           { rc = handleColor                 (out); }
@@ -333,7 +348,7 @@ int Context::dispatch (std::string &out)
 
   // Commands that display IDs and therefore need TDB::gc first.
   else if (cmd.validCustom (cmd.command))     { if (!inShadow) tdb.gc ();
-                                                rc = handleCustomReport (cmd.command, out); }
+                                                rc = handleCustomReport (cmd.command, out); }// ...
 
   // If the command is not recognized, display usage.
   else                                        { rc = shortUsage (out); }
@@ -603,16 +618,44 @@ void Context::loadAliases ()
 
   std::vector <std::string> vars;
   config.all (vars);
-  foreach (var, vars)
-  {
-    if (var->substr (0, 6) == "alias.")
-    {
-      std::string alias = var->substr (6);
-      std::string canonical = config.get (*var);
 
-      aliases[alias] = canonical;
+  std::vector <std::string>::iterator var;
+  for (var = vars.begin (); var != vars.end (); ++var)
+    if (var->substr (0, 6) == "alias.")
+      aliases[var->substr (6)] = config.get (*var);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// An alias must be a distinct word on the command line.
+// Aliases may not recurse.
+void Context::resolveAliases ()
+{
+  std::vector <std::string> expanded;
+  bool something = false;
+
+  std::vector <std::string>::iterator arg;
+  for (arg = args.begin (); arg != args.end (); ++arg)
+  {
+    std::map <std::string, std::string>::iterator match = aliases.find (*arg);
+    if (match != aliases.end ())
+    {
+      debug (std::string ("Context::resolveAliases '") + *arg + "' --> '" + aliases[*arg] + "'");
+
+      std::vector <std::string> words;
+      splitq (words, aliases[*arg], ' ');
+
+      std::vector <std::string>::iterator word;
+      for (word = words.begin (); word != words.end (); ++word)
+        expanded.push_back (*word);
+
+      something = true;
     }
+    else
+      expanded.push_back (*arg);
   }
+
+  if (something)
+    args = expanded;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

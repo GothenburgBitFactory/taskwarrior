@@ -80,6 +80,7 @@ public:
 private:
   void loadCorrectConfigFile ();
   void loadAliases ();
+  void resolveAliases ();
   void autoFilter (Att&, Filter&);
   void autoFilter (Filter&);
   void updateXtermTitle ();
