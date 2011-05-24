@@ -40,7 +40,6 @@ set (task_SRCS API.cpp API.h
                ViewText.cpp ViewText.h
                burndown.cpp
                command.cpp
-               custom.cpp
                dependency.cpp
                diag.cpp
                edit.cpp
