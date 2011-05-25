@@ -250,7 +250,6 @@ int Context::dispatch (std::string &out)
   // TODO Chain-of-command pattern dispatch.
        if (cmd.command == "projects")         { rc = handleProjects              (out); }
   else if (cmd.command == "colors")           { rc = handleColor                 (out); }
-  else if (cmd.command == "version")          { rc = handleVersion               (out); }
   else if (cmd.command == "config")           { rc = handleConfig                (out); }
   else if (cmd.command == "show")             { rc = handleShow                  (out); }
   else if (cmd.command == "stats")            { rc = handleReportStats           (out); }

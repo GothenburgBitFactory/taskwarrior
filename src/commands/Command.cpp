@@ -35,6 +35,7 @@
 #include <CmdLogo.h>
 #include <CmdTags.h>
 #include <CmdTip.h>
+#include <CmdVersion.h>
 #include <Context.h>
 
 extern Context context;
@@ -50,6 +51,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdLogo ();    all[c->keyword ()] = c;
   c = new CmdTags ();    all[c->keyword ()] = c;
   c = new CmdTip ();     all[c->keyword ()] = c;
+  c = new CmdVersion (); all[c->keyword ()] = c;
 
   // Instantiate a command object for each custom report.
   std::vector <std::string> variables;
