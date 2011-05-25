@@ -251,7 +251,6 @@ int Context::dispatch (std::string &out)
        if (cmd.command == "projects")         { rc = handleProjects              (out); }
   else if (cmd.command == "colors")           { rc = handleColor                 (out); }
   else if (cmd.command == "config")           { rc = handleConfig                (out); }
-  else if (cmd.command == "show")             { rc = handleShow                  (out); }
   else if (cmd.command == "stats")            { rc = handleReportStats           (out); }
   else if (cmd.command == "info")             { rc = handleInfo                  (out); }
   else if (cmd.command == "history.monthly")  { rc = handleReportHistoryMonthly  (out); }

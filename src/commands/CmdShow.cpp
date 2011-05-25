@@ -1,0 +1,318 @@
+////////////////////////////////////////////////////////////////////////////////
+// taskwarrior - a command line task list manager.
+//
+// Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez.
+// All rights reserved.
+//
+// This program is free software; you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software
+// Foundation; either version 2 of the License, or (at your option) any later
+// version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+// details.
+//
+// You should have received a copy of the GNU General Public License along with
+// this program; if not, write to the
+//
+//     Free Software Foundation, Inc.,
+//     51 Franklin Street, Fifth Floor,
+//     Boston, MA
+//     02110-1301
+//     USA
+//
+////////////////////////////////////////////////////////////////////////////////
+
+#include <vector>
+#include <sstream>
+#include <text.h>
+#include <Context.h>
+#include <Directory.h>
+#include <ViewText.h>
+#include <CmdShow.h>
+
+extern Context context;
+
+////////////////////////////////////////////////////////////////////////////////
+CmdShow::CmdShow ()
+{
+  _keyword     = "show";
+  _usage       = "task show [all | substring]";
+  _description = "Shows the entire task configuration variables or the ones "
+                 "containing substring.";
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdShow::execute (const std::string& command_line, std::string& output)
+{
+  int rc = 0;
+  std::stringstream out;
+
+  // Obtain the arguments from the description.  That way, things like '--'
+  // have already been handled.
+  std::vector <std::string> args;
+  split (args, context.task.get ("description"), ' ');
+
+  if (args.size () > 1)
+    throw std::string ("You can only specify 'all' or a search string.");
+
+  int width = context.getWidth ();
+
+  // Complain about configuration variables that are not recognized.
+  // These are the regular configuration variables.
+  // Note that there is a leading and trailing space, to make it easier to
+  // search for whole words.
+  std::string recognized =
+    " annotations bulk burndown.bias calendar.details calendar.details.report "
+    "calendar.holidays calendar.legend color calendar.offset calendar.offset.value "
+    "color.active color.due color.due.today color.blocked color.burndown.done "
+    "color.burndown.pending color.burndown.started color.overdue color.pri.H "
+    "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
+    "color.footnote color.header color.debug color.alternate color.calendar.today "
+    "color.calendar.due color.calendar.due.today color.calendar.overdue regex "
+    "color.calendar.weekend color.calendar.holiday color.calendar.weeknumber "
+    "color.summary.background color.summary.bar color.history.add "
+    "color.history.done color.history.delete color.undo.before color.label "
+    "color.sync.added color.sync.changed color.sync.rejected color.undo.after "
+    "confirmation data.location dateformat dateformat.holiday "
+    "dateformat.report dateformat.annotation debug default.command default.due "
+    "default.priority default.project defaultwidth dependency.indicator due "
+    "dependency.confirmation dependency.reminder detection locale displayweeknumber "
+    "export.ical.class echo.command fontunderline gc locking monthsperline "
+    "nag journal.time journal.time.start.annotation journal.info "
+    "journal.time.stop.annotation project shadow.command shadow.file "
+    "shadow.notify weekstart editor edit.verbose import.synonym.id import.synonym.uuid "
+    "complete.all.projects complete.all.tags search.case.sensitive extensions "
+    "active.indicator tag.indicator recurrence.indicator recurrence.limit "
+    "list.all.projects list.all.tags undo.style verbose rule.precedence.color "
+    "merge.autopush merge.default.uri pull.default.uri push.default.uri "
+    "xterm.title shell.prompt indent.annotation indent.report column.spacing "
+    "row.padding column.padding "
+    "import.synonym.status import.synonym.tags import.synonym.entry "
+    "import.synonym.start import.synonym.due import.synonym.recur "
+    "import.synonym.end import.synonym.project import.synonym.priority "
+    "import.synonym.fg import.synonym.bg import.synonym.description "
+
+    "urgency.next.coefficient urgency.blocking.coefficient "
+    "urgency.blocked.coefficient urgency.due.coefficient "
+    "urgency.priority.coefficient urgency.waiting.coefficient "
+    "urgency.active.coefficient urgency.project.coefficient "
+    "urgency.tags.coefficient urgency.annotations.coefficient ";
+
+  // This configuration variable is supported, but not documented.  It exists
+  // so that unit tests can force color to be on even when the output from task
+  // is redirected to a file, or stdout is not a tty.
+  recognized += "_forcecolor ";
+
+  std::vector <std::string> all;
+  context.config.all (all);
+
+  std::vector <std::string> unrecognized;
+  std::vector <std::string>::iterator i;
+  for (i = all.begin (); i != all.end (); ++i)
+  {
+    // Disallow partial matches by tacking a leading and trailing space on each
+    // variable name.
+    std::string pattern = " " + *i + " ";
+    if (recognized.find (pattern) == std::string::npos)
+    {
+      // These are special configuration variables, because their name is
+      // dynamic.
+      if (i->substr (0, 14) != "color.keyword."        &&
+          i->substr (0, 14) != "color.project."        &&
+          i->substr (0, 10) != "color.tag."            &&
+          i->substr (0,  8) != "holiday."              &&
+          i->substr (0,  7) != "report."               &&
+          i->substr (0,  6) != "alias."                &&
+          i->substr (0,  5) != "hook."                 &&
+          i->substr (0, 21) != "urgency.user.project." &&
+          i->substr (0, 17) != "urgency.user.tag.")
+      {
+        unrecognized.push_back (*i);
+      }
+    }
+  }
+
+  // Find all the values that match the defaults, for highlighting.
+  std::vector <std::string> default_values;
+  Config default_config;
+  default_config.setDefaults ();
+
+  for (i = all.begin (); i != all.end (); ++i)
+    if (context.config.get (*i) != default_config.get (*i))
+      default_values.push_back (*i);
+
+  // Create output view.
+  ViewText view;
+  view.width (width);
+  view.add (Column::factory ("string", "Config variable"));
+  view.add (Column::factory ("string", "Value"));
+
+  Color error ("bold white on red");
+  Color warning ("black on yellow");
+
+  std::string section;
+
+  if (args.size () == 2)
+    section = args[1];
+
+  if (section == "all")
+    section = "";
+
+  for (i = all.begin (); i != all.end (); ++i)
+  {
+    std::string::size_type loc = i->find (section, 0);
+    if (loc != std::string::npos)
+    {
+      // Look for unrecognized.
+      Color color;
+      if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
+        color = error;
+      else if (std::find (default_values.begin (), default_values.end (), *i) != default_values.end ())
+        color = warning;
+
+      int row = view.addRow ();
+      view.set (row, 0, *i, color);
+      view.set (row, 1, context.config.get (*i), color);
+    }
+  }
+
+  out << "\n"
+      << view.render ()
+      << (view.rows () == 0 ? "No matching configuration variables.\n\n" : "\n");
+
+  // Display the unrecognized variables.
+  if (unrecognized.size ())
+  {
+    out << "Your .taskrc file contains these unrecognized variables:\n";
+
+    for (i = unrecognized.begin (); i != unrecognized.end (); ++i)
+      out << "  " << *i << "\n";
+
+    if (context.color ())
+      out << "\n  These are highlighted in " << error.colorize ("color") << " above.";
+
+    out << "\n\n";
+  }
+
+  if (default_values.size ())
+  {
+    out << "Some of your .taskrc variables differ from the default values.";
+
+    if (context.color ())
+      out << "  These are highlighted in " << warning.colorize ("color") << " above.";
+  }
+
+  out << context.config.checkForDeprecatedColor ();
+  out << context.config.checkForDeprecatedColumns ();
+  // TODO Check for referenced but missing theme files.
+  // TODO Check for referenced but missing string files.
+  // TODO Check for referenced but missing tips files.
+
+  // Check for referenced but missing hook scripts.
+#ifdef HAVE_LIBLUA
+  std::vector <std::string> missing_scripts;
+  for (i = all.begin (); i != all.end (); ++i)
+  {
+    if (i->substr (0, 5) == "hook.")
+    {
+      std::string value = context.config.get (*i);
+      Nibbler n (value);
+
+      // <path>:<function> [, ...]
+      while (!n.depleted ())
+      {
+        std::string file;
+        std::string function;
+        if (n.getUntil (':', file) &&
+            n.skip (':')           &&
+            n.getUntil (',', function))
+        {
+          Path script (file);
+          if (!script.exists () || !script.readable ())
+            missing_scripts.push_back (file);
+
+          (void) n.skip (',');
+        }
+      }
+    }
+  }
+
+  if (missing_scripts.size ())
+  {
+    out << "Your .taskrc file contains these missing or unreadable hook scripts:\n";
+
+    for (i = missing_scripts.begin (); i != missing_scripts.end (); ++i)
+      out << "  " << *i << "\n";
+
+    out << "\n";
+  }
+#endif
+
+  // Check for bad values in rc.annotations.
+  std::string annotations = context.config.get ("annotations");
+  if (annotations != "full"   &&
+      annotations != "sparse" &&
+      annotations != "none")
+    out << "Configuration error: annotations contains an unrecognized value '"
+        << annotations
+        << "'.\n";
+
+  // Check for bad values in rc.calendar.details.
+  std::string calendardetails = context.config.get ("calendar.details");
+  if (calendardetails != "full"   &&
+      calendardetails != "sparse" &&
+      calendardetails != "none")
+    out << "Configuration error: calendar.details contains an unrecognized value '"
+        << calendardetails
+        << "'.\n";
+
+  // Check for bad values in rc.calendar.holidays.
+  std::string calendarholidays = context.config.get ("calendar.holidays");
+  if (calendarholidays != "full"   &&
+      calendarholidays != "sparse" &&
+      calendarholidays != "none")
+    out << "Configuration error: calendar.holidays contains an unrecognized value '"
+        << calendarholidays
+        << "'.\n";
+
+  // Check for bad values in rc.default.priority.
+  std::string defaultPriority = context.config.get ("default.priority");
+  if (defaultPriority != "H" &&
+      defaultPriority != "M" &&
+      defaultPriority != "L" &&
+      defaultPriority != "")
+    out << "Configuration error: default.priority contains an unrecognized value '"
+        << defaultPriority
+        << "'.\n";
+
+  // Verify installation.  This is mentioned in the documentation as the way
+  // to ensure everything is properly installed.
+
+  if (all.size () == 0)
+  {
+    out << "Configuration error: .taskrc contains no entries.\n";
+    rc = 1;
+  }
+  else
+  {
+    Directory location (context.config.get ("data.location"));
+
+    if (location.data == "")
+      out << "Configuration error: data.location not specified in .taskrc "
+             "file.\n";
+
+    if (! location.exists ())
+      out << "Configuration error: data.location contains a directory name"
+             " that doesn't exist, or is unreadable.\n";
+  }
+
+  output = out.str ();
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////

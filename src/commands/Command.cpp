@@ -33,6 +33,7 @@
 #include <CmdHelp.h>
 #include <CmdInstall.h>
 #include <CmdLogo.h>
+#include <CmdShow.h>
 #include <CmdTags.h>
 #include <CmdTip.h>
 #include <CmdVersion.h>
@@ -49,6 +50,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdHelp ();              all[c->keyword ()] = c;
   c = new CmdInstall ();           all[c->keyword ()] = c;
   c = new CmdLogo ();              all[c->keyword ()] = c;
+  c = new CmdShow ();              all[c->keyword ()] = c;
   c = new CmdTags ();              all[c->keyword ()] = c;
   c = new CmdTip ();               all[c->keyword ()] = c;
   c = new CmdVersion ();           all[c->keyword ()] = c;

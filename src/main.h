@@ -66,7 +66,6 @@ int handleQuery (std::string&);
 int handleZshCompletionCommands (std::string&);
 int handleZshCompletionIDs (std::string&);
 int handleConfig (std::string&);
-int handleShow (std::string&);
 int handleDelete (std::string&);
 int handleStart (std::string&);
 int handleStop (std::string&);
