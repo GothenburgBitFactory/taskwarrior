@@ -37,5 +37,12 @@ public:
   int execute (const std::string&, std::string&);
 };
 
+class CmdCompletionVersion : public Command
+{
+public:
+  CmdCompletionVersion ();
+  int execute (const std::string&, std::string&);
+};
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////

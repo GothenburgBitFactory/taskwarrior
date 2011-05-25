@@ -412,20 +412,6 @@ int handleCompletionConfig (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// A simple version display for use by completion scripts and the task-update
-// script.
-int handleCompletionVersion (std::string& outs)
-{
-#ifdef HAVE_COMMIT
-  outs = COMMIT;
-#else
-  outs = VERSION;
-#endif
-  outs += "\n";
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Temporary command to display urgency for a task.
 int handleUrgency (std::string& outs)
 {

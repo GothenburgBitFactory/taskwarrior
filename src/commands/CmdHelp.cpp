@@ -243,10 +243,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   view.set (row, 2, "Shows only the IDs of matching tasks, in the form of a range.");
 
   row = view.addRow ();
-  view.set (row, 1, "task version");
-  view.set (row, 2, "Shows the task version number.");
-
-  row = view.addRow ();
   view.set (row, 1, "task show [all | substring]");
   view.set (row, 2, "Shows the entire task configuration variables or the ones containing substring.");
 

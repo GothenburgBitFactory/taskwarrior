@@ -30,6 +30,7 @@
 #include <Context.h>
 #include <ViewText.h>
 #include <cmake.h>
+#include <commit.h>
 #include <CmdVersion.h>
 
 extern Context context;
@@ -113,6 +114,30 @@ int CmdVersion::execute (const std::string& command_line, std::string& output)
       << "\n";
 
   output = out.str ();
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CmdCompletionVersion::CmdCompletionVersion ()
+{
+  _keyword     = "_version";
+  _usage       = "task _version";
+  _description = "Shows only the taskwarrior version number.";
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdCompletionVersion::execute (
+  const std::string& command_line,
+  std::string& output)
+{
+#ifdef HAVE_COMMIT
+  output = COMMIT;
+#else
+  output = VERSION;
+#endif
+  output += "\n";
   return 0;
 }
 
