@@ -28,6 +28,7 @@
 #include <sstream>
 #include <Context.h>
 #include <text.h>
+#include <i18n.h>
 #include <DOM.h>
 #include "../cmake.h"
 
@@ -138,7 +139,7 @@ const std::string DOM::get (const std::string& name)
 #elif defined (LINUX)
       return "Linux";
 #else
-      return "<unknown>";
+      return STRING_DOM_UNKNOWN
 #endif
 
     else

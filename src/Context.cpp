@@ -164,7 +164,7 @@ int Context::run ()
 
   catch (...)
   {
-    footnote ("Unknown error.");
+    footnote (STRING_UNKNOWN_ERROR);
     rc = 3;
   }
 
@@ -369,6 +369,7 @@ bool Context::verbose (const std::string& token)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO OBSOLETE
 void Context::shadow ()
 {
   // Determine if shadow file is enabled.
@@ -536,7 +537,7 @@ void Context::assumeLocations ()
   // Set up default locations.
   struct passwd* pw = getpwuid (getuid ());
   if (!pw)
-    throw std::string ("Could not read home directory from the passwd file.");
+    throw std::string (STRING_NO_HOME);
 
   home_dir = pw->pw_dir;
   rc_file  = File      (home_dir + "/.taskrc");
@@ -722,7 +723,7 @@ void Context::parse (
         foundNonSequence = true;
 
         if (arg->find (',') != std::string::npos)
-          throw std::string ("Tags are not permitted to contain commas.");
+          throw std::string (STRING_TAGS_NO_COMMAS);
 
         tagAdditions.push_back (arg->substr (1));
         parseTask.addTag       (arg->substr (1));
@@ -740,7 +741,7 @@ void Context::parse (
         foundNonSequence = true;
 
         if (arg->find (',') != std::string::npos)
-          throw std::string ("Tags are not permitted to contain commas.");
+          throw std::string (STRING_TAGS_NO_COMMAS);
 
         tagRemovals.push_back (arg->substr (1));
       }
@@ -900,7 +901,7 @@ void Context::parse (
         parse (args, cmd, task, sequence, subst, filter);
       }
       else
-        throw std::string ("You must specify a command, or a task ID to modify.");
+        throw std::string (STRING_TRIVIAL_INPUT);
     }
 
     // If the command "task 123" is entered, but with no modifier arguments,
@@ -908,7 +909,7 @@ void Context::parse (
     else if (!foundNonSequence &&
              (parseTask.id != 0 || parseSequence.size () != 0))
     {
-      std::cout << "No command - assuming 'info'.\n";
+      std::cout << STRING_ASSUME_INFO << "\n";
       parseCmd.command = "info";
     }
   }

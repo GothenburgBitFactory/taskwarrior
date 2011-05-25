@@ -28,6 +28,7 @@
 #include <vector>
 #include <sstream>
 #include <text.h>
+#include <i18n.h>
 #include <Context.h>
 #include <Directory.h>
 #include <ViewText.h>
@@ -40,8 +41,7 @@ CmdShow::CmdShow ()
 {
   _keyword     = "show";
   _usage       = "task show [all | substring]";
-  _description = "Shows the entire task configuration variables or the ones "
-                 "containing substring.";
+  _description = STRING_CMD_SHOW;
   _read_only   = true;
   _displays_id = false;
 }
@@ -58,7 +58,7 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
   split (args, context.task.get ("description"), ' ');
 
   if (args.size () > 1)
-    throw std::string ("You can only specify 'all' or a search string.");
+    throw std::string (STRING_CMD_SHOW_ARGS);
 
   int width = context.getWidth ();
 
@@ -183,12 +183,13 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
 
   out << "\n"
       << view.render ()
-      << (view.rows () == 0 ? "No matching configuration variables.\n\n" : "\n");
+      << (view.rows () == 0 ? STRING_CMD_SHOW_NONE : "")
+      << (view.rows () == 0 ? "\n\n" : "\n");
 
   // Display the unrecognized variables.
   if (unrecognized.size ())
   {
-    out << "Your .taskrc file contains these unrecognized variables:\n";
+    out << STRING_CMD_SHOW_UNREC << "\n";
 
     for (i = unrecognized.begin (); i != unrecognized.end (); ++i)
       out << "  " << *i << "\n";
@@ -201,7 +202,7 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
 
   if (default_values.size ())
   {
-    out << "Some of your .taskrc variables differ from the default values.";
+    out << STRING_CMD_SHOW_DIFFER;
 
     if (context.color ())
       out << "  These are highlighted in " << warning.colorize ("color") << " above.";
@@ -244,7 +245,7 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
 
   if (missing_scripts.size ())
   {
-    out << "Your .taskrc file contains these missing or unreadable hook scripts:\n";
+    out << STRING_CMD_SHOW_HOOKS << "\n";
 
     for (i = missing_scripts.begin (); i != missing_scripts.end (); ++i)
       out << "  " << *i << "\n";
@@ -295,7 +296,7 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
 
   if (all.size () == 0)
   {
-    out << "Configuration error: .taskrc contains no entries.\n";
+    out << STRING_CMD_SHOW_EMPTY << "\n";
     rc = 1;
   }
   else

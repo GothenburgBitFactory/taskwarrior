@@ -66,7 +66,8 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   // Sort alphabetically by usage.
   std::sort (all.begin (), all.end ());
 
-  foreach (name, all)
+  std::vector <std::string>::iterator name;
+  for (name = all.begin (); name != all.end (); ++name)
   {
     row = view.addRow ();
     view.set (row, 1, context.commands[*name]->usage ());
