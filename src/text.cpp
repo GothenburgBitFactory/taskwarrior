@@ -43,6 +43,8 @@ extern Context context;
 static const char* newline = "\n";
 static const char* noline  = "";
 
+static void replace_positional (std::string&, const std::string&, const std::string&);
+
 ///////////////////////////////////////////////////////////////////////////////
 void wrapText (
   std::vector <std::string>& lines,
@@ -726,7 +728,7 @@ std::string cutOff (const std::string& str, std::string::size_type len)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string format (char value)
+const std::string format (char value)
 {
   std::stringstream s;
   s << value;
@@ -734,7 +736,7 @@ std::string format (char value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string format (int value)
+const std::string format (int value)
 {
   std::stringstream s;
   s << value;
@@ -742,7 +744,7 @@ std::string format (int value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string formatHex (int value)
+const std::string formatHex (int value)
 {
   std::stringstream s;
   s.setf (std::ios::hex, std::ios::basefield);
@@ -751,7 +753,7 @@ std::string formatHex (int value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string format (float value, int width, int precision)
+const std::string format (float value, int width, int precision)
 {
   std::stringstream s;
   s.width (width);
@@ -761,7 +763,7 @@ std::string format (float value, int width, int precision)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string format (double value, int width, int precision)
+const std::string format (double value, int width, int precision)
 {
   std::stringstream s;
   s.width (width);
@@ -771,11 +773,107 @@ std::string format (double value, int width, int precision)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string format (double value)
+const std::string format (double value)
 {
   std::stringstream s;
   s << value;
   return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void replace_positional (
+  std::string& fmt,
+  const std::string& from,
+  const std::string& to)
+{
+  std::string::size_type pos = 0;
+  while ((pos = fmt.find (from, pos)) != std::string::npos)
+  {
+    fmt.replace (pos, from.length (), to);
+    pos += to.length ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  const std::string& arg1)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", arg1);
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  int arg1)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", format (arg1));
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  const std::string& arg1,
+  const std::string& arg2)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", arg1);
+  replace_positional (output, "{2}", arg2);
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  const std::string& arg1,
+  int arg2)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", arg1);
+  replace_positional (output, "{2}", format (arg2));
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  int arg1,
+  const std::string& arg2)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", format (arg1));
+  replace_positional (output, "{2}", arg2);
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  int arg1,
+  int arg2)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", format (arg1));
+  replace_positional (output, "{2}", format (arg2));
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  const std::string& arg1,
+  const std::string& arg2,
+  const std::string& arg3)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", arg1);
+  replace_positional (output, "{2}", arg2);
+  replace_positional (output, "{3}", arg3);
+  return output;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -64,12 +64,20 @@ std::string::size_type find (const std::string&, const std::string&, bool sensit
 std::string::size_type find (const std::string&, const std::string&, std::string::size_type, bool sensitive = true);
 int strippedLength (const std::string&);
 std::string cutOff (const std::string&, std::string::size_type);
-std::string format (char);
-std::string format (int);
-std::string formatHex (int);
-std::string format (float, int, int);
-std::string format (double, int, int);
-std::string format (double);
+const std::string format (char);
+const std::string format (int);
+const std::string formatHex (int);
+const std::string format (float, int, int);
+const std::string format (double, int, int);
+const std::string format (double);
+const std::string format (const std::string&, const std::string&);
+const std::string format (const std::string&, int);
+const std::string format (const std::string&, const std::string&, const std::string&);
+const std::string format (const std::string&, const std::string&, int);
+const std::string format (const std::string&, int, const std::string& arg2);
+const std::string format (const std::string&, int, int);
+const std::string format (const std::string&, const std::string&, const std::string&, const std::string&);
+
 std::string leftJustify (const int, const int);
 std::string leftJustify (const std::string&, const int);
 std::string rightJustify (const int, const int);

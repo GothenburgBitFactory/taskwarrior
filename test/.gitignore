@@ -12,6 +12,7 @@ dom.t
 duration.t
 file.t
 filt.t
+i18n.t
 json.t
 lisp.t
 list.t
