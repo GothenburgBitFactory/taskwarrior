@@ -39,6 +39,9 @@
 #include <TDB2.h>
 #include <Hooks.h>
 #include <DOM.h>
+#include <Path.h>
+#include <File.h>
+#include <Directory.h>
 
 class Context
 {
@@ -93,6 +96,7 @@ public:
   std::string                         home_dir;
   File                                rc_file;
   Path                                data_dir;
+  Directory                           extension_dir;
   Config                              config;
 
   Filter                              filter;

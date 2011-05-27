@@ -48,6 +48,7 @@ Context::Context ()
 : program ("")
 , rc_file ()
 , data_dir ()
+, extension_dir ()
 , config ()
 , filter ()
 , sequence ()
@@ -589,6 +590,7 @@ void Context::determineDataLocation ()
              ((*arg)[16] == ':' || (*arg)[16] == '='))
     {
       data_dir = Directory (arg->substr (17));
+      extension_dir = data_dir.data + "/extensions";
       header ("Using alternate data.location " + data_dir.data); // TODO i18n
       break;
     }
@@ -614,6 +616,9 @@ void Context::createDefaultConfig ()
 
   // Create data location, if necessary.
   config.createDefaultData (data_dir);
+
+  // Create extension directory, if necessary.
+  extension_dir.create ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
