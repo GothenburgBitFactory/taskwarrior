@@ -39,6 +39,11 @@
 //   - attribute names
 //   - modifier names
 //
+// Rules:
+//   - Localized strings should contain leading or trailing white space,
+//     including \n
+//   - 
+//
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef INCLUDED_EN_US
@@ -47,25 +52,29 @@
 // To localize, clone and rename this file, then change all the defines below.
 
 // Errors
-#define STRING_UNKNOWN_ERROR   "Unknown error."
-#define STRING_NO_HOME         "Could not read home directory from the passwd file."
-#define STRING_TAGS_NO_COMMAS  "Tags are not permitted to contain commas."
-#define STRING_TRIVIAL_INPUT   "You must specify a command, or a task ID to modify."
-#define STRING_ASSUME_INFO     "No command - assuming 'info'"
+#define STRING_UNKNOWN_ERROR         "Unknown error."
+#define STRING_NO_HOME               "Could not read home directory from the passwd file."
+#define STRING_TAGS_NO_COMMAS        "Tags are not permitted to contain commas."
+#define STRING_TRIVIAL_INPUT         "You must specify a command, or a task ID to modify."
+#define STRING_ASSUME_INFO           "No command - assuming 'info'"
 
 // 'show' command
-#define STRING_CMD_SHOW        "Shows the entire task configuration variables or the ones containing substring."
-#define STRING_CMD_SHOW_ARGS   "You can only specify 'all' or a search string."
-#define STRING_CMD_SHOW_NONE   "No matching configuration variables."
-#define STRING_CMD_SHOW_UNREC  "Your .taskrc file contains these unrecognized variables:"
-#define STRING_CMD_SHOW_DIFFER "Some of your .taskrc variables differ from the default values."
-#define STRING_CMD_SHOW_HOOKS  "Your .taskrc file contains these missing or unreadable hook scripts:"
-#define STRING_CMD_SHOW_EMPTY  "Configuration error: .taskrc contains no entries."
+#define STRING_CMD_SHOW              "Shows the entire task configuration variables or the ones containing substring."
+#define STRING_CMD_SHOW_ARGS         "You can only specify 'all' or a search string."
+#define STRING_CMD_SHOW_NONE         "No matching configuration variables."
+#define STRING_CMD_SHOW_UNREC        "Your .taskrc file contains these unrecognized variables:"
+#define STRING_CMD_SHOW_DIFFER       "Some of your .taskrc variables differ from the default values."
+#define STRING_CMD_SHOW_HOOKS        "Your .taskrc file contains these missing or unreadable hook scripts:"
+#define STRING_CMD_SHOW_EMPTY        "Configuration error: .taskrc contains no entries."
+#define STRING_CMD_SHOW_DIFFER_COLOR "These are highlighted in {1} above."
+#define STRING_CMD_SHOW_CONFIG_ERROR "Configuration error: {1} contains an unrecognized value '{2}'."
+#define STRING_CMD_SHOW_NO_LOCATION  "Configuration error: data.location not specified in .taskrc file."
+#define STRING_CMD_SHOW_LOC_EXIST    "Configuration error: data.location contains a directory name that doesn't exist, or is unreadable."
 
 // DOM
-#define STRING_DOM_UNKNOWN     "<unknown>"
-#define STRING_DOM_UNREC       "DOM: Cannot get unrecognized name '{1}'."
-#define STRING_DOM_CANNOT_SET  "DOM: Cannot set '{1}'."
+#define STRING_DOM_UNKNOWN           "<unknown>"
+#define STRING_DOM_UNREC             "DOM: Cannot get unrecognized name '{1}'."
+#define STRING_DOM_CANNOT_SET        "DOM: Cannot set '{1}'."
 
 #endif
 

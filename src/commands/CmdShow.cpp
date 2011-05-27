@@ -54,10 +54,7 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
 
   // Obtain the arguments from the description.  That way, things like '--'
   // have already been handled.
-  std::vector <std::string> args;
-  split (args, context.task.get ("description"), ' ');
-
-  if (args.size () > 1)
+  if (context.args.size () > 2)
     throw std::string (STRING_CMD_SHOW_ARGS);
 
   int width = context.getWidth ();
@@ -68,12 +65,13 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
   // search for whole words.
   std::string recognized =
     " annotations bulk burndown.bias calendar.details calendar.details.report "
-    "calendar.holidays calendar.legend color calendar.offset calendar.offset.value "
-    "color.active color.due color.due.today color.blocked color.burndown.done "
-    "color.burndown.pending color.burndown.started color.overdue color.pri.H "
-    "color.pri.L color.pri.M color.pri.none color.recurring color.tagged "
-    "color.footnote color.header color.debug color.alternate color.calendar.today "
-    "color.calendar.due color.calendar.due.today color.calendar.overdue regex "
+    "calendar.holidays calendar.legend color calendar.offset "
+    "calendar.offset.value color.active color.due color.due.today "
+    "color.blocked color.burndown.done color.burndown.pending "
+    "color.burndown.started color.overdue color.pri.H color.pri.L color.pri.M "
+    "color.pri.none color.recurring color.tagged color.footnote color.header "
+    "color.debug color.alternate color.calendar.today color.calendar.due "
+    "color.calendar.due.today color.calendar.overdue regex "
     "color.calendar.weekend color.calendar.holiday color.calendar.weeknumber "
     "color.summary.background color.summary.bar color.history.add "
     "color.history.done color.history.delete color.undo.before color.label "
@@ -81,17 +79,17 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
     "confirmation data.location dateformat dateformat.holiday "
     "dateformat.report dateformat.annotation debug default.command default.due "
     "default.priority default.project defaultwidth dependency.indicator due "
-    "dependency.confirmation dependency.reminder detection locale displayweeknumber "
-    "export.ical.class echo.command fontunderline gc locking monthsperline "
-    "nag journal.time journal.time.start.annotation journal.info "
+    "dependency.confirmation dependency.reminder detection locale "
+    "displayweeknumber export.ical.class echo.command fontunderline gc locking "
+    "monthsperline nag journal.time journal.time.start.annotation journal.info "
     "journal.time.stop.annotation project shadow.command shadow.file "
-    "shadow.notify weekstart editor edit.verbose import.synonym.id import.synonym.uuid "
-    "complete.all.projects complete.all.tags search.case.sensitive extensions "
-    "active.indicator tag.indicator recurrence.indicator recurrence.limit "
-    "list.all.projects list.all.tags undo.style verbose rule.precedence.color "
-    "merge.autopush merge.default.uri pull.default.uri push.default.uri "
-    "xterm.title shell.prompt indent.annotation indent.report column.spacing "
-    "row.padding column.padding "
+    "shadow.notify weekstart editor edit.verbose import.synonym.id "
+    "import.synonym.uuid complete.all.projects complete.all.tags "
+    "search.case.sensitive extensions active.indicator tag.indicator "
+    "recurrence.indicator recurrence.limit list.all.projects list.all.tags "
+    "undo.style verbose rule.precedence.color merge.autopush merge.default.uri "
+    "pull.default.uri push.default.uri xterm.title shell.prompt "
+    "indent.annotation indent.report column.spacing row.padding column.padding "
     "import.synonym.status import.synonym.tags import.synonym.entry "
     "import.synonym.start import.synonym.due import.synonym.recur "
     "import.synonym.end import.synonym.project import.synonym.priority "
@@ -157,8 +155,8 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
 
   std::string section;
 
-  if (args.size () == 2)
-    section = args[1];
+  if (context.args.size () == 2)
+    section = context.args[1];
 
   if (section == "all")
     section = "";
@@ -195,7 +193,7 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
       out << "  " << *i << "\n";
 
     if (context.color ())
-      out << "\n  These are highlighted in " << error.colorize ("color") << " above.";
+      out << "\n  " << format (STRING_CMD_SHOW_DIFFER_COLOR, error.colorize ("color"));
 
     out << "\n\n";
   }
@@ -205,7 +203,7 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
     out << STRING_CMD_SHOW_DIFFER;
 
     if (context.color ())
-      out << "  These are highlighted in " << warning.colorize ("color") << " above.";
+      out << "  " << format (STRING_CMD_SHOW_DIFFER_COLOR, warning.colorize ("color"));
   }
 
   out << context.config.checkForDeprecatedColor ();
@@ -259,27 +257,24 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
   if (annotations != "full"   &&
       annotations != "sparse" &&
       annotations != "none")
-    out << "Configuration error: annotations contains an unrecognized value '"
-        << annotations
-        << "'.\n";
+    out << format (STRING_CMD_SHOW_CONFIG_ERROR, "annotations", annotations)
+        << "\n";
 
   // Check for bad values in rc.calendar.details.
   std::string calendardetails = context.config.get ("calendar.details");
   if (calendardetails != "full"   &&
       calendardetails != "sparse" &&
       calendardetails != "none")
-    out << "Configuration error: calendar.details contains an unrecognized value '"
-        << calendardetails
-        << "'.\n";
+    out << format (STRING_CMD_SHOW_CONFIG_ERROR, "calendar.details", calendardetails)
+        << "\n";
 
   // Check for bad values in rc.calendar.holidays.
   std::string calendarholidays = context.config.get ("calendar.holidays");
   if (calendarholidays != "full"   &&
       calendarholidays != "sparse" &&
       calendarholidays != "none")
-    out << "Configuration error: calendar.holidays contains an unrecognized value '"
-        << calendarholidays
-        << "'.\n";
+    out << format (STRING_CMD_SHOW_CONFIG_ERROR, "calendar.holidays", calendarholidays)
+        << "\n";
 
   // Check for bad values in rc.default.priority.
   std::string defaultPriority = context.config.get ("default.priority");
@@ -287,9 +282,8 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
       defaultPriority != "M" &&
       defaultPriority != "L" &&
       defaultPriority != "")
-    out << "Configuration error: default.priority contains an unrecognized value '"
-        << defaultPriority
-        << "'.\n";
+    out << format (STRING_CMD_SHOW_CONFIG_ERROR, "default.priority", defaultPriority)
+        << "\n";
 
   // Verify installation.  This is mentioned in the documentation as the way
   // to ensure everything is properly installed.
@@ -304,12 +298,10 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
     Directory location (context.config.get ("data.location"));
 
     if (location.data == "")
-      out << "Configuration error: data.location not specified in .taskrc "
-             "file.\n";
+      out << STRING_CMD_SHOW_NO_LOCATION << "\n";
 
     if (! location.exists ())
-      out << "Configuration error: data.location contains a directory name"
-             " that doesn't exist, or is unreadable.\n";
+      out << STRING_CMD_SHOW_LOC_EXIST << "\n";
   }
 
   output = out.str ();
