@@ -28,6 +28,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <stdlib.h>
 #include <text.h>
 #include <Context.h>
 #include <Sequence.h>
@@ -95,7 +96,7 @@ void Sequence::parse (const std::string& input)
         if (! validId (range[0]))
           throw std::string ("Invalid ID in sequence.");
 
-        int id = atoi (range[0].c_str ());
+        int id = strtol (range[0].c_str (), NULL, 10);
         this->push_back (id);
       }
       break;
@@ -106,8 +107,8 @@ void Sequence::parse (const std::string& input)
             ! validId (range[1]))
           throw std::string ("Invalid ID in range.");
 
-        int low  = atoi (range[0].c_str ());
-        int high = atoi (range[1].c_str ());
+        int low  = strtol (range[0].c_str (), NULL, 10);
+        int high = strtol (range[1].c_str (), NULL, 10);
         if (low > high)
           throw std::string ("Inverted sequence range high-low.");
 

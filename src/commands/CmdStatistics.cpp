@@ -27,6 +27,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <stdlib.h>
 #include <ViewText.h>
 #include <Duration.h>
 #include <Context.h>
@@ -108,13 +109,13 @@ int CmdStatistics::execute (const std::string& command_line, std::string& output
     if (it->getStatus () == Task::recurring) ++recurringT;
     if (it->getStatus () == Task::waiting)   ++waitingT;
 
-    time_t entry = atoi (it->get ("entry").c_str ());
+    time_t entry = strtol (it->get ("entry").c_str (), NULL, 10);
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
     if (it->getStatus () == Task::completed)
     {
-      time_t end = atoi (it->get ("end").c_str ());
+      time_t end = strtol (it->get ("end").c_str (), NULL, 10);
       daysPending += (end - entry) / 86400.0;
     }
 

@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Date.h>
 #include <Duration.h>
@@ -174,7 +175,7 @@ int CmdInfo::execute (const std::string& command_line, std::string& output)
       row = view.addRow ();
       view.set (row, 0, "Recur until");
 
-      Date dt (stdtol (task->get ("until").c_str (), NULL, 10));
+      Date dt (strtol (task->get ("until").c_str (), NULL, 10));
       std::string format = context.config.get ("reportdateformat");
       if (format == "")
         format = context.config.get ("dateformat");

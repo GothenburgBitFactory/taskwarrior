@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
+#include <algorithm>
 #include <stdlib.h>
 #include <Context.h>
 #include <Command.h>

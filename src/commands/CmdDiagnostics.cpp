@@ -27,6 +27,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include <stdlib.h>
 #include <rx.h>
 #include <Context.h>
 #include <util.h>

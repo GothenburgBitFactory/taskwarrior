@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <stdlib.h>
 #include <Duration.h>
 #include <Context.h>
 #include <text.h>
@@ -135,7 +136,7 @@ std::string CmdEdit::formatDate (
   std::string value = task.get (attribute);
   if (value.length ())
   {
-    Date dt (::atoi (value.c_str ()));
+    Date dt (strtol (value.c_str (), NULL, 10));
     value = dt.toString (context.config.get ("dateformat"));
   }
 
@@ -206,7 +207,7 @@ std::string CmdEdit::formatTask (Task task)
   std::vector <Att>::iterator anno;
   for (anno = annotations.begin (); anno != annotations.end (); ++anno)
   {
-    Date dt (::atoi (anno->name ().substr (11).c_str ()));
+    Date dt (strtol (anno->name ().substr (11).c_str (), NULL, 10));
     before << "  Annotation:        " << dt.toString (context.config.get ("dateformat.annotation"))
            << " -- "                  << anno->value ()                                 << "\n";
   }
@@ -291,9 +292,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   value = findDate (after, "\n  Created:");
   if (value != "")
   {
-    Date edited (::atoi (value.c_str ()));
+    Date edited (strtol (value.c_str (), NULL, 10));
 
-    Date original (::atoi (task.get ("entry").c_str ()));
+    Date original (strtol (task.get ("entry").c_str (), NULL, 10));
     if (!original.sameDay (edited))
     {
       context.footnote ("Creation date modified.");
@@ -307,11 +308,11 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   value = findDate (after, "\n  Started:");
   if (value != "")
   {
-    Date edited (::atoi (value.c_str ()));
+    Date edited (strtol (value.c_str (), NULL, 10));
 
     if (task.get ("start") != "")
     {
-      Date original (::atoi (task.get ("start").c_str ()));
+      Date original (strtol (task.get ("start").c_str (), NULL, 10));
       if (!original.sameDay (edited))
       {
         context.footnote ("Start date modified.");
@@ -337,11 +338,11 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   value = findDate (after, "\n  Ended:");
   if (value != "")
   {
-    Date edited (::atoi (value.c_str ()));
+    Date edited (strtol (value.c_str (), NULL, 10));
 
     if (task.get ("end") != "")
     {
-      Date original (::atoi (task.get ("end").c_str ()));
+      Date original (strtol (task.get ("end").c_str (), NULL, 10));
       if (!original.sameDay (edited))
       {
         context.footnote ("Done date modified.");
@@ -365,11 +366,11 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   value = findDate (after, "\n  Due:");
   if (value != "")
   {
-    Date edited (::atoi (value.c_str ()));
+    Date edited (strtol (value.c_str (), NULL, 10));
 
     if (task.get ("due") != "")
     {
-      Date original (::atoi (task.get ("due").c_str ()));
+      Date original (strtol (task.get ("due").c_str (), NULL, 10));
       if (!original.sameDay (edited))
       {
         context.footnote ("Due date modified.");
@@ -403,11 +404,11 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   value = findDate (after, "\n  Until:");
   if (value != "")
   {
-    Date edited (::atoi (value.c_str ()));
+    Date edited (strtol (value.c_str (), NULL, 10));
 
     if (task.get ("until") != "")
     {
-      Date original (::atoi (task.get ("until").c_str ()));
+      Date original (strtol (task.get ("until").c_str (), NULL, 10));
       if (!original.sameDay (edited))
       {
         context.footnote ("Until date modified.");
@@ -465,11 +466,11 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   value = findDate (after, "\n  Wait until:");
   if (value != "")
   {
-    Date edited (::atoi (value.c_str ()));
+    Date edited (strtol (value.c_str (), NULL, 10));
 
     if (task.get ("wait") != "")
     {
-      Date original (::atoi (task.get ("wait").c_str ()));
+      Date original (strtol (task.get ("wait").c_str (), NULL, 10));
       if (!original.sameDay (edited))
       {
         context.footnote ("Wait date modified.");

@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <algorithm>
 #include <Color.h>
 #include <Context.h>
 #include <text.h>
