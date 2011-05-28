@@ -88,9 +88,6 @@ int deltaTags (Task&);
 int deltaAttributes (Task&);
 int deltaSubstitutions (Task&);
 
-// edit.cpp
-int handleEdit (std::string&);
-
 // report.cpp
 int handleReportSummary (std::string&);
 int handleReportCalendar (std::string&);

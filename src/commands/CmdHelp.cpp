@@ -115,10 +115,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   view.set (row, 2, "Specifying an ID without a command invokes the 'info' command.");
 
   row = view.addRow ();
-  view.set (row, 1, "task edit ID");
-  view.set (row, 2, "Launches an editor to let you modify all aspects of a task directly, therefore it is to be used carefully.");
-
-  row = view.addRow ();
   view.set (row, 1, "task undo");
   view.set (row, 2, "Reverts the most recent action.");
 

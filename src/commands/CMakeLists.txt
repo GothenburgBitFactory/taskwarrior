@@ -8,6 +8,7 @@ include_directories (${CMAKE_SOURCE_DIR}
 set (commands_SRCS Command.cpp        Command.h
                    CmdCustom.cpp      CmdCustom.h
                    CmdDiagnostics.cpp CmdDiagnostics.h
+                   CmdEdit.cpp        CmdEdit.h
                    CmdExec.cpp        CmdExec.h
                    CmdHelp.cpp        CmdHelp.h
                    CmdInfo.cpp        CmdInfo.h

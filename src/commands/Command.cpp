@@ -30,6 +30,7 @@
 #include <Command.h>
 #include <CmdCustom.h>
 #include <CmdDiagnostics.h>
+#include <CmdEdit.h>
 #include <CmdExec.h>
 #include <CmdHelp.h>
 #include <CmdInfo.h>
@@ -50,6 +51,7 @@ void Command::factory (std::map <std::string, Command*>& all)
 
   c = new CmdCompletionVersion (); all[c->keyword ()] = c;
   c = new CmdDiagnostics ();       all[c->keyword ()] = c;
+  c = new CmdEdit ();              all[c->keyword ()] = c;
   c = new CmdExec ();              all[c->keyword ()] = c;
   c = new CmdHelp ();              all[c->keyword ()] = c;
   c = new CmdInfo ();              all[c->keyword ()] = c;

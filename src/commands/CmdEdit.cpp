@@ -24,27 +24,63 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
 #include <sstream>
-#include <stdio.h>
-#include <time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <string.h>
-#include <Directory.h>
-#include <File.h>
-#include <Date.h>
 #include <Duration.h>
+#include <Context.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
+#include <CmdEdit.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string findValue (
+CmdEdit::CmdEdit ()
+{
+  _keyword     = "edit";
+  _usage       = "task edit <ID>";
+  _description = "Launches an editor to let you modify all aspects of a task "
+                 "directly, therefore it is to be used carefully.";
+  _read_only   = false;
+  _displays_id = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Introducing the Silver Bullet.  This feature is the catch-all fixative for
+// various other ills.  This is like opening up the hood and going in with a
+// wrench.  To be used sparingly.
+int CmdEdit::execute (const std::string& command_line, std::string& output)
+{
+  int rc = 0;
+
+  std::stringstream out;
+
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
+
+  // Filter sequence.
+  std::vector <Task> all = tasks;
+  context.filter.applySequence (tasks, context.sequence);
+
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (editFile (*task))
+      context.tdb.update (*task);
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  output = out.str ();
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string CmdEdit::findValue (
   const std::string& text,
   const std::string& name)
 {
@@ -66,7 +102,7 @@ static std::string findValue (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string findDate (
+std::string CmdEdit::findDate (
   const std::string& text,
   const std::string& name)
 {
@@ -92,7 +128,7 @@ static std::string findDate (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string formatDate (
+std::string CmdEdit::formatDate (
   Task& task,
   const std::string& attribute)
 {
@@ -107,7 +143,7 @@ static std::string formatDate (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string formatTask (Task task)
+std::string CmdEdit::formatTask (Task task)
 {
   std::stringstream before;
   bool verbose = context.config.getBoolean ("edit.verbose");
@@ -194,7 +230,7 @@ static std::string formatTask (Task task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void parseTask (Task& task, const std::string& after)
+void CmdEdit::parseTask (Task& task, const std::string& after)
 {
   // project
   std::string value = findValue (after, "\n  Project:");
@@ -202,12 +238,12 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      std::cout << "Project modified.\n";
+      context.footnote ("Project modified.");
       task.set ("project", value);
     }
     else
     {
-      std::cout << "Project deleted.\n";
+      context.footnote ("Project deleted.");
       task.remove ("project");
     }
   }
@@ -220,13 +256,13 @@ static void parseTask (Task& task, const std::string& after)
     {
       if (Att::validNameValue ("priority", "", value))
       {
-        std::cout << "Priority modified.\n";
+        context.footnote ("Priority modified.");
         task.set ("priority", value);
       }
     }
     else
     {
-      std::cout << "Priority deleted.\n";
+      context.footnote ("Priority deleted.");
       task.remove ("priority");
     }
   }
@@ -244,7 +280,7 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      std::cout << "Description modified.\n";
+      context.footnote ("Description modified.");
       task.set ("description", value);
     }
     else
@@ -260,7 +296,7 @@ static void parseTask (Task& task, const std::string& after)
     Date original (::atoi (task.get ("entry").c_str ()));
     if (!original.sameDay (edited))
     {
-      std::cout << "Creation date modified.\n";
+      context.footnote ("Creation date modified.");
       task.set ("entry", value);
     }
   }
@@ -278,13 +314,13 @@ static void parseTask (Task& task, const std::string& after)
       Date original (::atoi (task.get ("start").c_str ()));
       if (!original.sameDay (edited))
       {
-        std::cout << "Start date modified.\n";
+        context.footnote ("Start date modified.");
         task.set ("start", value);
       }
     }
     else
     {
-      std::cout << "Start date modified.\n";
+      context.footnote ("Start date modified.");
       task.set ("start", value);
     }
   }
@@ -292,7 +328,7 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (task.get ("start") != "")
     {
-      std::cout << "Start date removed.\n";
+      context.footnote ("Start date removed.");
       task.remove ("start");
     }
   }
@@ -308,7 +344,7 @@ static void parseTask (Task& task, const std::string& after)
       Date original (::atoi (task.get ("end").c_str ()));
       if (!original.sameDay (edited))
       {
-        std::cout << "Done date modified.\n";
+        context.footnote ("Done date modified.");
         task.set ("end", value);
       }
     }
@@ -319,7 +355,7 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (task.get ("end") != "")
     {
-      std::cout << "Done date removed.\n";
+      context.footnote ("Done date removed.");
       task.setStatus (Task::pending);
       task.remove ("end");
     }
@@ -336,13 +372,13 @@ static void parseTask (Task& task, const std::string& after)
       Date original (::atoi (task.get ("due").c_str ()));
       if (!original.sameDay (edited))
       {
-        std::cout << "Due date modified.\n";
+        context.footnote ("Due date modified.");
         task.set ("due", value);
       }
     }
     else
     {
-      std::cout << "Due date modified.\n";
+      context.footnote ("Due date modified.");
       task.set ("due", value);
     }
   }
@@ -353,11 +389,11 @@ static void parseTask (Task& task, const std::string& after)
       if (task.getStatus () == Task::recurring ||
           task.get ("parent") != "")
       {
-        std::cout << "Cannot remove a due date from a recurring task.\n";
+        context.footnote ("Cannot remove a due date from a recurring task.");
       }
       else
       {
-        std::cout << "Due date removed.\n";
+        context.footnote ("Due date removed.");
         task.remove ("due");
       }
     }
@@ -374,13 +410,13 @@ static void parseTask (Task& task, const std::string& after)
       Date original (::atoi (task.get ("until").c_str ()));
       if (!original.sameDay (edited))
       {
-        std::cout << "Until date modified.\n";
+        context.footnote ("Until date modified.");
         task.set ("until", value);
       }
     }
     else
     {
-      std::cout << "Until date modified.\n";
+      context.footnote ("Until date modified.");
       task.set ("until", value);
     }
   }
@@ -388,7 +424,7 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (task.get ("until") != "")
     {
-      std::cout << "Until date removed.\n";
+      context.footnote ("Until date removed.");
       task.remove ("until");
     }
   }
@@ -402,7 +438,7 @@ static void parseTask (Task& task, const std::string& after)
       Duration d;
       if (d.valid (value))
       {
-        std::cout << "Recurrence modified.\n";
+        context.footnote ("Recurrence modified.");
         if (task.get ("due") != "")
         {
           task.set ("recur", value);
@@ -416,7 +452,7 @@ static void parseTask (Task& task, const std::string& after)
     }
     else
     {
-      std::cout << "Recurrence removed.\n";
+      context.footnote ("Recurrence removed.");
       task.setStatus (Task::pending);
       task.remove ("recur");
       task.remove ("until");
@@ -436,14 +472,14 @@ static void parseTask (Task& task, const std::string& after)
       Date original (::atoi (task.get ("wait").c_str ()));
       if (!original.sameDay (edited))
       {
-        std::cout << "Wait date modified.\n";
+        context.footnote ("Wait date modified.");
         task.set ("wait", value);
         task.setStatus (Task::waiting);
       }
     }
     else
     {
-      std::cout << "Wait date modified.\n";
+      context.footnote ("Wait date modified.");
       task.set ("wait", value);
       task.setStatus (Task::waiting);
     }
@@ -452,7 +488,7 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (task.get ("wait") != "")
     {
-      std::cout << "Wait date removed.\n";
+      context.footnote ("Wait date removed.");
       task.remove ("wait");
       task.setStatus (Task::pending);
     }
@@ -464,12 +500,12 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      std::cout << "Parent UUID modified.\n";
+      context.footnote ("Parent UUID modified.");
       task.set ("parent", value);
     }
     else
     {
-      std::cout << "Parent UUID removed.\n";
+      context.footnote ("Parent UUID removed.");
       task.remove ("parent");
     }
   }
@@ -480,12 +516,12 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      std::cout << "Foreground color modified.\n";
+      context.footnote ("Foreground color modified.");
       task.set ("fg", value);
     }
     else
     {
-      std::cout << "Foreground color removed.\n";
+      context.footnote ("Foreground color removed.");
       task.remove ("fg");
     }
   }
@@ -496,12 +532,12 @@ static void parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      std::cout << "Background color modified.\n";
+      context.footnote ("Background color modified.");
       task.set ("bg", value);
     }
     else
     {
-      std::cout << "Background color removed.\n";
+      context.footnote ("Background color removed.");
       task.remove ("bg");
     }
   }
@@ -556,7 +592,7 @@ static void parseTask (Task& task, const std::string& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool editFile (Task& task)
+bool CmdEdit::editFile (Task& task)
 {
   // Check for file permissions.
   Directory location (context.config.get ("data.location"));
@@ -642,38 +678,6 @@ ARE_THESE_REALLY_HARMFUL:
   // Cleanup.
   File::remove (file.str ());
   return changes;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Introducing the Silver Bullet.  This feature is the catch-all fixative for
-// various other ills.  This is like opening up the hood and going in with a
-// wrench.  To be used sparingly.
-int handleEdit (std::string& outs)
-{
-  int rc = 0;
-
-  std::stringstream out;
-
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
-
-  // Filter sequence.
-  std::vector <Task> all = tasks;
-  context.filter.applySequence (tasks, context.sequence);
-
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (editFile (*task))
-      context.tdb.update (*task);
-
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  outs = out.str ();
-  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

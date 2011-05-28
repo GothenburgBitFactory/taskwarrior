@@ -160,7 +160,6 @@ void Cmd::load ()
     commands.push_back ("delete");
     commands.push_back ("done");
     commands.push_back ("duplicate");
-    commands.push_back ("edit");
     commands.push_back ("help");
     commands.push_back ("import");
     commands.push_back ("log");
@@ -281,7 +280,6 @@ bool Cmd::isWriteCommand ()
       command == "delete"    ||
       command == "done"      ||
       command == "duplicate" ||
-      command == "edit"      ||
       command == "import"    ||
       command == "log"       ||
       command == "prepend"   ||
