@@ -152,10 +152,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   view.set (row, 2, "Marks the specified task as completed.");
 
   row = view.addRow ();
-  view.set (row, 1, "task projects");
-  view.set (row, 2, "Shows a list of all project names used, and how many tasks are in each.");
-
-  row = view.addRow ();
   view.set (row, 1, "task summary");
   view.set (row, 2, "Shows a report of task status by project.");
 

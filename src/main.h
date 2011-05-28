@@ -56,8 +56,6 @@ int handleAppend (std::string&);
 int handlePrepend (std::string&);
 int handleDone (std::string&);
 int handleModify (std::string&);
-int handleProjects (std::string&);
-int handleCompletionProjects (std::string&);
 int handleCompletionConfig (std::string&);
 int handleQuery (std::string&);
 int handleConfig (std::string&);

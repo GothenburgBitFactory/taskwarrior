@@ -39,6 +39,7 @@
 #include <CmdInfo.h>
 #include <CmdInstall.h>
 #include <CmdLogo.h>
+#include <CmdProjects.h>
 #include <CmdShell.h>
 #include <CmdShow.h>
 #include <CmdStatistics.h>
@@ -57,6 +58,7 @@ void Command::factory (std::map <std::string, Command*>& all)
 
   c = new CmdCompletionCommands (); all[c->keyword ()] = c;
   c = new CmdCompletionIds ();      all[c->keyword ()] = c;
+  c = new CmdCompletionProjects (); all[c->keyword ()] = c;
   c = new CmdCompletionTags ();     all[c->keyword ()] = c;
   c = new CmdCompletionVersion ();  all[c->keyword ()] = c;
   c = new CmdCount ();              all[c->keyword ()] = c;
@@ -68,6 +70,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdInfo ();               all[c->keyword ()] = c;
   c = new CmdInstall ();            all[c->keyword ()] = c;
   c = new CmdLogo ();               all[c->keyword ()] = c;
+  c = new CmdProjects ();           all[c->keyword ()] = c;
   c = new CmdShell ();              all[c->keyword ()] = c;
   c = new CmdShow ();               all[c->keyword ()] = c;
   c = new CmdStatistics ();         all[c->keyword ()] = c;

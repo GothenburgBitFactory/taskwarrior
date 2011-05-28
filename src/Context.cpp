@@ -247,8 +247,7 @@ int Context::dispatch (std::string &out)
   Timer t ("Context::dispatch");
 
   // TODO Chain-of-command pattern dispatch.
-       if (cmd.command == "projects")         { rc = handleProjects              (out); }
-  else if (cmd.command == "colors")           { rc = handleColor                 (out); }
+       if (cmd.command == "colors")           { rc = handleColor                 (out); }
   else if (cmd.command == "config")           { rc = handleConfig                (out); }
   else if (cmd.command == "history.monthly")  { rc = handleReportHistoryMonthly  (out); }
   else if (cmd.command == "history.annual")   { rc = handleReportHistoryAnnual   (out); }
@@ -280,7 +279,6 @@ int Context::dispatch (std::string &out)
                                                      handleMerge                 (out); }
   else if (cmd.command == "push")             {      handlePush                  (out); }
   else if (cmd.command == "pull")             {      handlePull                  (out); }
-  else if (cmd.command == "_projects")        { rc = handleCompletionProjects    (out); }
   else if (cmd.command == "_config")          { rc = handleCompletionConfig      (out); }
   else if (cmd.command == "_query")           { rc = handleQuery                 (out); }
   else if (cmd.command == "" &&
