@@ -142,7 +142,6 @@ void Cmd::load ()
     commands.push_back ("burndown.weekly");
     commands.push_back ("burndown.monthly");
     commands.push_back ("add");
-    commands.push_back ("append");
     commands.push_back ("annotate");
     commands.push_back ("denotate");
     commands.push_back ("calendar");
@@ -247,7 +246,6 @@ bool Cmd::isWriteCommand ()
 {
   if (command == "merge"     ||
       command == "add"       ||
-      command == "append"    ||
       command == "annotate"  ||
       command == "denotate"  ||
       command == "delete"    ||

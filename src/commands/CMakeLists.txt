@@ -6,6 +6,7 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${TASK_INCLUDE_DIRS})
 
 set (commands_SRCS Command.cpp        Command.h
+                   CmdAppend.cpp      CmdAppend.h
                    CmdCommands.cpp    CmdCommands.h
                    CmdCount.cpp       CmdCount.h
                    CmdCustom.cpp      CmdCustom.h

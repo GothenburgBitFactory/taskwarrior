@@ -28,6 +28,7 @@
 #include <iostream>
 #include <vector>
 #include <Command.h>
+#include <CmdAppend.h>
 #include <CmdCommands.h>
 #include <CmdCount.h>
 #include <CmdCustom.h>
@@ -57,6 +58,7 @@ void Command::factory (std::map <std::string, Command*>& all)
 {
   Command* c;
 
+  c = new CmdAppend ();             all[c->keyword ()] = c;
   c = new CmdCompletionCommands (); all[c->keyword ()] = c;
   c = new CmdCompletionIds ();      all[c->keyword ()] = c;
   c = new CmdCompletionProjects (); all[c->keyword ()] = c;
