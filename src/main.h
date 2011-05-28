@@ -86,7 +86,6 @@ int deltaSubstitutions (Task&);
 // report.cpp
 int handleReportSummary (std::string&);
 int handleReportCalendar (std::string&);
-int handleReportStats (std::string&);
 int handleReportTimesheet (std::string&);
 std::string getFullDescription (Task&, const std::string&);
 std::string getDueDate (Task&, const std::string&);

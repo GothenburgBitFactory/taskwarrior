@@ -156,13 +156,11 @@ void Cmd::load ()
     commands.push_back ("delete");
     commands.push_back ("done");
     commands.push_back ("duplicate");
-    commands.push_back ("help");
     commands.push_back ("import");
     commands.push_back ("log");
     commands.push_back ("prepend");
     commands.push_back ("projects");
     commands.push_back ("start");
-    commands.push_back ("stats");
     commands.push_back ("stop");
     commands.push_back ("summary");
     commands.push_back ("timesheet");
@@ -246,10 +244,8 @@ bool Cmd::isReadOnlyCommand ()
       command == "calendar"                                                  ||
       command == "colors"                                                    ||
       command == "config"                                                    ||
-      command == "help"                                                      ||
       command == "projects"                                                  ||
 			command == "push"                                                      ||
-      command == "stats"                                                     ||
       command == "summary"                                                   ||
       command == "timesheet"                                                 ||
       validCustom (command))

@@ -196,10 +196,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   view.set (row, 2, "Shows a calendar, with due tasks marked.");
 
   row = view.addRow ();
-  view.set (row, 1, "task stats");
-  view.set (row, 2, "Shows task database statistics.");
-
-  row = view.addRow ();
   view.set (row, 1, "task import");
   view.set (row, 2, "Imports tasks from a variety of formats.");
 
