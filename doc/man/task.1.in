@@ -41,12 +41,12 @@ provided description matches annotations partly, the first partly matched
 annotation is deleted.
 
 .TP
-.B info ID
+.B information ID
 Shows all data and metadata for the specified task.
 
 .TP
 .B ID
-With an ID but no specific command, taskwarrior runs the "info" command.
+With an ID but no specific command, taskwarrior runs the "information" command.
 
 .TP
 .B undo

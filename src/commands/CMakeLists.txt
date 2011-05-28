@@ -15,7 +15,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdExec.cpp        CmdExec.h
                    CmdHelp.cpp        CmdHelp.h
                    CmdHistory.cpp     CmdHistory.h
-                   CmdIds.cpp         CmdIds.h
+                   CmdIDs.cpp         CmdIDs.h
                    CmdInfo.cpp        CmdInfo.h
                    CmdInstall.cpp     CmdInstall.h
                    CmdLogo.cpp        CmdLogo.h
