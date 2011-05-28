@@ -174,7 +174,7 @@ int CmdInfo::execute (const std::string& command_line, std::string& output)
       row = view.addRow ();
       view.set (row, 0, "Recur until");
 
-      Date dt (atoi (task->get ("until").c_str ()));
+      Date dt (stdtol (task->get ("until").c_str (), NULL, 10));
       std::string format = context.config.get ("reportdateformat");
       if (format == "")
         format = context.config.get ("dateformat");
@@ -222,7 +222,7 @@ int CmdInfo::execute (const std::string& command_line, std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, "Waiting until");
-      Date dt (atoi (task->get ("wait").c_str ()));
+      Date dt (strtol (task->get ("wait").c_str (), NULL, 10));
       view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
@@ -231,7 +231,7 @@ int CmdInfo::execute (const std::string& command_line, std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, "Start");
-      Date dt (atoi (task->get ("start").c_str ()));
+      Date dt (strtol (task->get ("start").c_str (), NULL, 10));
       view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
@@ -240,7 +240,7 @@ int CmdInfo::execute (const std::string& command_line, std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, "End");
-      Date dt (atoi (task->get ("end").c_str ()));
+      Date dt (strtol (task->get ("end").c_str (), NULL, 10));
       view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
@@ -266,14 +266,14 @@ int CmdInfo::execute (const std::string& command_line, std::string& output)
     // entry
     row = view.addRow ();
     view.set (row, 0, "Entered");
-    Date dt (atoi (task->get ("entry").c_str ()));
+    Date dt (strtol (task->get ("entry").c_str (), NULL, 10));
     std::string entry = dt.toString (context.config.get ("dateformat"));
 
     std::string age;
     std::string created = task->get ("entry");
     if (created.length ())
     {
-      Date dt (atoi (created.c_str ()));
+      Date dt (strtol (created.c_str (), NULL, 10));
       age = Duration (now - dt).format ();
     }
 
@@ -342,7 +342,7 @@ int CmdInfo::execute (const std::string& command_line, std::string& output)
           {
             int row = journal.addRow ();
 
-            Date timestamp (atoi (when.substr (5).c_str ()));
+            Date timestamp (strtol (when.substr (5).c_str (), NULL, 10));
             journal.set (row, 0, timestamp.toString (context.config.get ("dateformat")));
 
             Task before (previous.substr (4));

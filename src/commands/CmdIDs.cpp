@@ -29,12 +29,12 @@
 #include <Context.h>
 #include <main.h>
 #include <util.h>
-#include <CmdIds.h>
+#include <CmdIDs.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdIds::CmdIds ()
+CmdIDs::CmdIDs ()
 {
   _keyword     = "ids";
   _usage       = "task ids [<filter>]";
@@ -44,7 +44,7 @@ CmdIds::CmdIds ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdIds::execute (const std::string& command_line, std::string& output)
+int CmdIDs::execute (const std::string& command_line, std::string& output)
 {
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;

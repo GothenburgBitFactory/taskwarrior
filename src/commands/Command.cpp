@@ -37,7 +37,7 @@
 #include <CmdExec.h>
 #include <CmdHelp.h>
 #include <CmdHistory.h>
-#include <CmdIds.h>
+#include <CmdIDs.h>
 #include <CmdInfo.h>
 #include <CmdInstall.h>
 #include <CmdLogo.h>
@@ -74,7 +74,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdHelp ();               all[c->keyword ()] = c;
   c = new CmdHistoryMonthly ();     all[c->keyword ()] = c;
   c = new CmdHistoryAnnual ();      all[c->keyword ()] = c;
-  c = new CmdIds ();                all[c->keyword ()] = c;
+  c = new CmdIDs ();                all[c->keyword ()] = c;
   c = new CmdInfo ();               all[c->keyword ()] = c;
   c = new CmdInstall ();            all[c->keyword ()] = c;
   c = new CmdLogo ();               all[c->keyword ()] = c;

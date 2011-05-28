@@ -31,10 +31,10 @@
 #include <string>
 #include <Command.h>
 
-class CmdIds : public Command
+class CmdIDs : public Command
 {
 public:
-  CmdIds ();
+  CmdIDs ();
   int execute (const std::string&, std::string&);
 };
 

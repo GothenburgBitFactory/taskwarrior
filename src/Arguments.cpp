@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <stdlib.h>
 #include <sys/select.h>
 #include <Context.h>
 #include <Nibbler.h>
