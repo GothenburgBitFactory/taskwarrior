@@ -262,7 +262,6 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "add")              { rc = handleAdd                   (out); }
   else if (cmd.command == "log")              { rc = handleLog                   (out); }
   else if (cmd.command == "append")           { rc = handleAppend                (out); }
-  else if (cmd.command == "prepend")          { rc = handlePrepend               (out); }
   else if (cmd.command == "annotate")         { rc = handleAnnotate              (out); }
   else if (cmd.command == "denotate")         { rc = handleDenotate              (out); }
   else if (cmd.command == "done")             { rc = handleDone                  (out); }

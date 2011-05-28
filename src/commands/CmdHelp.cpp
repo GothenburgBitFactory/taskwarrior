@@ -101,10 +101,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   view.set (row, 2, "Appends more description to an existing task.");
 
   row = view.addRow ();
-  view.set (row, 1, "task prepend ID [tags] [attrs] desc...");
-  view.set (row, 2, "Prepends more description to an existing task.");
-
-  row = view.addRow ();
   view.set (row, 1, "task annotate ID desc...");
   view.set (row, 2, "Adds an annotation to an existing task.");
 

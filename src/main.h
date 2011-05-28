@@ -53,7 +53,6 @@ bool nag (Task&);
 int handleAdd (std::string&);
 int handleLog (std::string&);
 int handleAppend (std::string&);
-int handlePrepend (std::string&);
 int handleDone (std::string&);
 int handleModify (std::string&);
 int handleCompletionConfig (std::string&);
