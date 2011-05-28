@@ -32,7 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/select.h>
 #include <Context.h>
 #include <Directory.h>
 #include <File.h>
@@ -81,18 +80,19 @@ void Context::initialize (int argc, char** argv)
   Timer t ("Context::initialize");
 
   // char** argv --> std::vector <std::string> Context::args.
-  captureCommandLineArgs (argc, argv);
+  program = argv[0];
+  args.capture (argc, argv);
 
   // echo one two -- three | task zero --> task zero one two
   // 'three' is left in the input buffer.
-  appendPipedArgs ();
+  args.append_stdin ();
 
   // Assume default .taskrc and .task locations.
   assumeLocations ();
 
   // Process 'rc:<file>' command line override, and remove the argument from the
   // Context::args.
-  overrideRCFile ();
+  args.rc_override (home_dir, rc_file, file_override);
 
   // Dump any existing values and load rc file.
   config.clear ();
@@ -101,20 +101,23 @@ void Context::initialize (int argc, char** argv)
   // The data location, Context::data_dir, is determined from the assumed
   // location (~/.task), or set by data.location in the config file, or
   // overridden by rc.data.location on the command line.
-  determineDataLocation ();
+  std::string location;
+  args.get_data_location (location);
+  data_dir = Directory (location);
+  extension_dir = data_dir.data + "/extensions";
 
   // Create missing config file and data directory, if necessary.
   createDefaultConfig ();
 
-  // Apply rc overrides to Context::config.
-  applyOverrides ();
+  // Apply rc overrides to Context::config, capturing raw args for later use.
+  args.apply_overrides (var_overrides);
 
   // Handle Aliases.
   loadAliases ();
-  resolveAliases ();
+  args.resolve_aliases ();
 
   // Combine command line into one string.
-  join (commandLine, " ", args);
+  commandLine = args.combine ();
 
   // Initialize the color rules, if necessary.
   if (color ())
@@ -446,93 +449,6 @@ void Context::disallowModification () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Takes a vector of args (foo, rc.name:value, bar), extracts any rc.name:value
-// args and sets the name/value in context.config, returning only the plain args
-// (foo, bar) as output.
-void Context::applyOverrides ()
-{
-  std::vector <std::string> filtered;
-  bool foundTerminator = false;
-
-  std::vector <std::string>::iterator arg;
-  for (arg = args.begin (); arg != args.end (); ++arg)
-  {
-    if (*arg == "--")
-    {
-      foundTerminator = true;
-      filtered.push_back (*arg);
-    }
-    else if (!foundTerminator && arg->substr (0, 3) == "rc.")
-    {
-      std::string name;
-      std::string value;
-      Nibbler n (*arg);
-      if (n.getLiteral ("rc.")         &&  // rc.
-          n.getUntilOneOf (":=", name) &&  //    xxx
-          n.skipN (1))                     //       :
-      {
-        n.getUntilEOS (value);  // Don't care if it's blank.
-
-        config.set (name, value);
-        footnote ("Configuration override " + arg->substr (3));
-
-        // Overrides are retained for potential use by the default command.
-        var_overrides += " " + *arg;
-      }
-      else
-        footnote ("Problem with override: " + *arg);
-    }
-    else
-      filtered.push_back (*arg);
-  }
-
-  // Overwrite args with the filtered subset.
-  args = filtered;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Context::captureCommandLineArgs (int argc, char** argv)
-{
-  for (int i = 0; i < argc; ++i)
-  {
-    if (i == 0)
-    {
-      program = argv[i];
-      std::string::size_type cal = program.find ("/cal");
-      if (program == "cal" ||
-          (cal != std::string::npos && program.length () == cal + 4))
-        args.push_back ("calendar");
-    }
-    else
-      args.push_back (argv[i]);
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Context::appendPipedArgs ()
-{
-  // Capture any stdin args.
-  struct timeval tv;
-  fd_set fds;
-  tv.tv_sec = 0;
-  tv.tv_usec = 0;
-  FD_ZERO (&fds);
-  FD_SET (STDIN_FILENO, &fds);
-  select (STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
-  if (FD_ISSET (0, &fds))
-  {
-    std::string arg;
-    while (std::cin >> arg)
-    {
-      if (arg == "--")
-        break;
-
-      args.push_back (arg);
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void Context::assumeLocations ()
 {
   // Set up default locations.
@@ -543,58 +459,6 @@ void Context::assumeLocations ()
   home_dir = pw->pw_dir;
   rc_file  = File      (home_dir + "/.taskrc");
   data_dir = Directory (home_dir + "./task");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Context::overrideRCFile ()
-{
-  // Is there an override for rc:<file>?
-  std::vector <std::string>::iterator arg;
-  for (arg = args.begin (); arg != args.end (); ++arg)
-  {
-    // Nothing after -- is to be interpreted in any way.
-    if (*arg == "--")
-      break;
-
-    else if (arg->substr (0, 3) == "rc:")
-    {
-      file_override = *arg;
-      rc_file = File (arg->substr (3));
-
-      home_dir = rc_file;
-      std::string::size_type last_slash = rc_file.data.rfind ("/");
-      if (last_slash != std::string::npos)
-        home_dir = rc_file.data.substr (0, last_slash);
-      else
-        home_dir = ".";
-
-      args.erase (arg);
-      header ("Using alternate .taskrc file " + rc_file.data); // TODO i18n
-      break; // Must break - iterator is dead.
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Context::determineDataLocation ()
-{
-  if (config.get ("data.location") != "")
-    data_dir = Directory (config.get ("data.location"));
-
-  // Are there any overrides for data.location?
-  foreach (arg, args)
-  {
-    if (*arg == "--")
-      break;
-    else if (arg->substr (0, 16) == "rc.data.location" &&
-             ((*arg)[16] == ':' || (*arg)[16] == '='))
-    {
-      data_dir = Directory (arg->substr (17));
-      extension_dir = data_dir.data + "/extensions";
-      header ("Using alternate data.location " + data_dir.data); // TODO i18n
-      break;
-    }
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -618,7 +482,8 @@ void Context::createDefaultConfig ()
   config.createDefaultData (data_dir);
 
   // Create extension directory, if necessary.
-  extension_dir.create ();
+  if (! extension_dir.exists ())
+    extension_dir.create ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -633,39 +498,6 @@ void Context::loadAliases ()
   for (var = vars.begin (); var != vars.end (); ++var)
     if (var->substr (0, 6) == "alias.")
       aliases[var->substr (6)] = config.get (*var);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// An alias must be a distinct word on the command line.
-// Aliases may not recurse.
-void Context::resolveAliases ()
-{
-  std::vector <std::string> expanded;
-  bool something = false;
-
-  std::vector <std::string>::iterator arg;
-  for (arg = args.begin (); arg != args.end (); ++arg)
-  {
-    std::map <std::string, std::string>::iterator match = aliases.find (*arg);
-    if (match != aliases.end ())
-    {
-      debug (std::string ("Context::resolveAliases '") + *arg + "' --> '" + aliases[*arg] + "'");
-
-      std::vector <std::string> words;
-      splitq (words, aliases[*arg], ' ');
-
-      std::vector <std::string>::iterator word;
-      for (word = words.begin (); word != words.end (); ++word)
-        expanded.push_back (*word);
-
-      something = true;
-    }
-    else
-      expanded.push_back (*arg);
-  }
-
-  if (something)
-    args = expanded;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

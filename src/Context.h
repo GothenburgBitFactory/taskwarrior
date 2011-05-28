@@ -42,6 +42,7 @@
 #include <Path.h>
 #include <File.h>
 #include <Directory.h>
+#include <Arguments.h>
 
 class Context
 {
@@ -74,25 +75,20 @@ public:
   void clear ();
 
   void disallowModification () const;
-  void applyOverrides ();
   void decomposeSortField (const std::string&, std::string&, bool&);
 
 private:
-  void captureCommandLineArgs (int, char**);
-  void appendPipedArgs ();
   void assumeLocations ();
-  void overrideRCFile ();
   void determineDataLocation ();
   void createDefaultConfig ();
   void loadAliases ();
-  void resolveAliases ();
   void autoFilter (Att&, Filter&);
   void autoFilter (Filter&);
   void updateXtermTitle ();
 
 public:
   std::string                         program;
-  std::vector <std::string>           args;
+  Arguments                           args;
   std::string                         home_dir;
   File                                rc_file;
   Path                                data_dir;
