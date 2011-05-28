@@ -43,7 +43,6 @@ set (task_SRCS API.cpp API.h
                burndown.cpp
                command.cpp
                dependency.cpp
-               diag.cpp
                edit.cpp
                export.cpp
                feedback.cpp

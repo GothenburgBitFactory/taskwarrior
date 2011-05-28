@@ -88,9 +88,6 @@ int deltaTags (Task&);
 int deltaAttributes (Task&);
 int deltaSubstitutions (Task&);
 
-// diag.cpp
-void handleDiagnostics (std::string&);
-
 // edit.cpp
 int handleEdit (std::string&);
 

@@ -25,18 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <algorithm>
-#include <string>
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-
 #include <rx.h>
-#include <File.h>
-#include <main.h>
+#include <Context.h>
 #include <util.h>
 #include <cmake.h>
 #ifdef HAVE_COMMIT
@@ -50,165 +42,188 @@ extern "C"
 }
 #endif
 
+#include <CmdDiagnostics.h>
+
 extern Context context;
+
+////////////////////////////////////////////////////////////////////////////////
+CmdDiagnostics::CmdDiagnostics ()
+{
+  _keyword     = "diagnostics";
+  _usage       = "task diagnostics";
+  _description = "Shows information needed when reporting a problem.";
+  _read_only   = true;
+  _displays_id = false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // This command will generate output that is intended to help diagnose problems.
 //
 // Although this will change over time, initially this command will answer the
 // kind of questions we always have to ask whenever something is wrong.
-void handleDiagnostics (std::string& outs)
+int CmdDiagnostics::execute (const std::string& command_line, std::string& output)
 {
-  std::cout << "\n[1m" << PACKAGE_STRING << "[0m\n";
+  Color bold ("bold");
 
-  std::cout << "  Platform: "
-            <<
+  std::stringstream out;
+  out << "\n"
+      << bold.colorize (PACKAGE_STRING)
+      << "\n";
+
+  out << "  Platform: "
+      <<
 #if defined (DARWIN)
-               "Darwin"
+         "Darwin"
 #elif defined (SOLARIS)
-               "Solaris"
+         "Solaris"
 #elif defined (CYGWIN)
-               "Cygwin"
+         "Cygwin"
 #elif defined (OPENBSD)
-               "OpenBSD"
+         "OpenBSD"
 #elif defined (HAIKU)
-               "Haiku"
+         "Haiku"
 #elif defined (FREEBSD)
-               "FreeBSD"
+         "FreeBSD"
 #elif defined (LINUX)
-               "Linux"
+         "Linux"
 #else
-               "<unknown>"
+         "<unknown>"
 #endif
-            << "\n\n";
+      << "\n\n";
 
   // Compiler.
-  std::cout << "[1mCompiler[0m\n"
+  out << bold.colorize ("Compiler")
+      << "\n"
 #ifdef __VERSION__
-            << "   Version: " << __VERSION__ << "\n"
+      << "   Version: " << __VERSION__ << "\n"
 #endif
-            << "      Caps:"
+      << "      Caps:"
 #ifdef __STDC__
-            << " +stdc"
+      << " +stdc"
 #endif
 #ifdef __STDC_HOSTED__
-            << " +stdc_hosted"
+      << " +stdc_hosted"
 #endif
 #ifdef __STDC_VERSION__
-            << " +" << __STDC_VERSION__
+      << " +" << __STDC_VERSION__
 #endif
 #ifdef _POSIX_VERSION
-            << " +" << _POSIX_VERSION
+      << " +" << _POSIX_VERSION
 #endif
 #ifdef _POSIX2_C_VERSION
-            << " +" << _POSIX2_C_VERSION
+      << " +" << _POSIX2_C_VERSION
 #endif
 #ifdef _ILP32
-            << " +ILP32"
+      << " +ILP32"
 #endif
 #ifdef _LP64
-            << " +LP64"
+      << " +LP64"
 #endif
-            << " +c" << sizeof (char)
-            << " +i" << sizeof (int)
-            << " +l" << sizeof (long)
-            << " +vp" << sizeof (void*)
-            << "\n\n";
+      << " +c" << sizeof (char)
+      << " +i" << sizeof (int)
+      << " +l" << sizeof (long)
+      << " +vp" << sizeof (void*)
+      << "\n\n";
 
-  std::cout << "[1mLibraries[0m\n";
+  out << bold.colorize ("Libraries")
+      << "\n";
 
-  std::cout << "  Readline: "
+  out << "  Readline: "
 #ifdef HAVE_LIBREADLINE
-            << std::setbase (16) << RL_READLINE_VERSION
+      << std::setbase (16) << RL_READLINE_VERSION
 #else
-            << "n/a"
+      << "n/a"
 #endif
-            << "\n";
+      << "\n";
 
-  std::cout << "       Lua: "
+  out << "       Lua: "
 #ifdef HAVE_LIBLUA
-            << LUA_RELEASE
+      << LUA_RELEASE
 #else
-            << "n/a"
+      << "n/a"
 #endif
-            << "\n\n";
+      << "\n\n";
 
-  std::cout << "[1mBuild Features[0m\n"
+  out << bold.colorize ("Build Features")
+      << "\n"
+
   // Build date.
-            << "     Built: " << __DATE__ << " " << __TIME__ << "\n"
+      << "     Built: " << __DATE__ << " " << __TIME__ << "\n"
 #ifdef HAVE_COMMIT
-            << "    Commit: " << COMMIT << "\n"
+      << "    Commit: " << COMMIT << "\n"
 #endif
 #ifdef HAVE_CMAKE
-            << "     CMake: " << CMAKE_VERSION << "\n"
+      << "     CMake: " << CMAKE_VERSION << "\n"
 #endif
-            << "      Caps:"
+      << "      Caps:"
 #ifdef HAVE_LIBPTHREAD
-            << " +pthreads"
+      << " +pthreads"
 #else
-            << " -pthreads"
+      << " -pthreads"
 #endif
 
 #ifdef HAVE_SRANDOM
-            << " +srandom"
+      << " +srandom"
 #else
-            << " -srandom"
+      << " -srandom"
 #endif
 
 #ifdef HAVE_RANDOM
-            << " +random"
+      << " +random"
 #else
-            << " -random"
+      << " -random"
 #endif
 
 #ifdef HAVE_UUID
-            << " +uuid"
+      << " +uuid"
 #else
-            << " -uuid"
+      << " -uuid"
 #endif
-            << "\n\n";
+      << "\n\n";
 
   // Config: .taskrc found, readable, writable
-  std::cout << "[1mConfiguration[0m\n"
-            << "      File: " << context.config.original_file.data
-            << (context.config.original_file.exists () ? " (found)" : " (missing)")
-            << ", " << context.config.original_file.size () << " bytes"
-            << ", mode "
-            << std::setbase (8)
-            << context.config.original_file.mode ()
-            << "\n";
+  out << bold.colorize ("Configuration")
+      << "\n"
+      << "      File: " << context.config.original_file.data
+      << (context.config.original_file.exists () ? " (found)" : " (missing)")
+      << ", " << context.config.original_file.size () << " bytes"
+      << ", mode "
+      << std::setbase (8)
+      << context.config.original_file.mode ()
+      << "\n";
 
   // Config: data.location found, readable, writable
   File location (context.config.get ("data.location"));
-  std::cout << "      Data: " << location.data
-            << (location.exists () ? " (found)" : " (missing)")
-            << ", " << (location.is_directory () ? "dir" : "?")
-            << ", mode "
-            << std::setbase (8)
-            << location.mode ()
-            << "\n";
+  out << "      Data: " << location.data
+      << (location.exists () ? " (found)" : " (missing)")
+      << ", " << (location.is_directory () ? "dir" : "?")
+      << ", mode "
+      << std::setbase (8)
+      << location.mode ()
+      << "\n";
 
-  std::cout << "   Locking: "
-            << (context.config.getBoolean ("locking") ? "Enabled" : "Disabled")
-            << "\n";
+  out << "   Locking: "
+      << (context.config.getBoolean ("locking") ? "Enabled" : "Disabled")
+      << "\n";
 
-  std::cout << "     Regex: "
-            << (context.config.getBoolean ("regex") ? "Enabled" : "Disabled")
-            << "\n";
+  out << "     Regex: "
+      << (context.config.getBoolean ("regex") ? "Enabled" : "Disabled")
+      << "\n";
 
   // Determine rc.editor/$EDITOR/$VISUAL.
   char* peditor;
   if (context.config.get ("editor") != "")
-    std::cout << " rc.editor: " << context.config.get ("editor") << "\n";
+    out << " rc.editor: " << context.config.get ("editor") << "\n";
   else if ((peditor = getenv ("VISUAL")) != NULL)
-    std::cout << "   $VISUAL: " << peditor << "\n";
+    out << "   $VISUAL: " << peditor << "\n";
   else if ((peditor = getenv ("EDITOR")) != NULL)
-    std::cout << "   $EDITOR: " << peditor << "\n";
+    out << "   $EDITOR: " << peditor << "\n";
 
-  std::cout << "\n";
+  out << "\n";
 
   // External commands.
-  std::cout << "[1mExternal Utilities[0m\n";
+  out << bold.colorize ("External Utilities")
+      << "\n";
   {
     std::vector <std::string> matches;
     char buffer [1024] = {0};
@@ -219,9 +234,9 @@ void handleDiagnostics (std::string& outs)
       pclose (fp);
 
       if (p)
-        std::cout << "       scp: "
-                  << (regexMatch (buffer, "usage") ? "found" : "n/a")
-                  << "\n";
+        out << "       scp: "
+            << (regexMatch (buffer, "usage") ? "found" : "n/a")
+            << "\n";
     }
 
     if ((fp = popen ("rsync --version 2>&1", "r")))
@@ -234,9 +249,9 @@ void handleDiagnostics (std::string& outs)
       {
         matches.clear ();
         regexMatch (matches, buffer, "version ([0-9]+\\.[0-9]+\\.[0-9]+)");
-        std::cout << "     rsync: "
-                  << (matches.size () ? matches[0] : "n/a")
-                  << "\n";
+        out << "     rsync: "
+            << (matches.size () ? matches[0] : "n/a")
+            << "\n";
       }
     }
 
@@ -250,19 +265,20 @@ void handleDiagnostics (std::string& outs)
       {
         matches.clear ();
         regexMatch (matches, buffer, "curl ([0-9]+\\.[0-9]+\\.[0-9]+)");
-        std::cout << "      curl: "
-                  << (matches.size () ? matches[0] : "n/a")
-                  << "\n";
+        out << "      curl: "
+            << (matches.size () ? matches[0] : "n/a")
+            << "\n";
       }
     }
 
-    std::cout << "\n";
+    out << "\n";
   }
 
   // Generate 1000 UUIDs and verify they are all unique.
-  std::cout << "[1mTests[0m\n";
+  out << bold.colorize ("Tests")
+      << "\n";
   {
-    std::cout << "  UUID gen: ";
+    out << "  UUID gen: ";
     std::vector <std::string> uuids;
     std::string id;
     for (int i = 0; i < 1000; i++)
@@ -270,7 +286,7 @@ void handleDiagnostics (std::string& outs)
       id = uuid ();
       if (std::find (uuids.begin (), uuids.end (), id) != uuids.end ())
       {
-        std::cout << "Failed - duplicate UUID at iteration " << i << "\n";
+        out << "Failed - duplicate UUID at iteration " << i << "\n";
         break;
       }
       else
@@ -278,21 +294,22 @@ void handleDiagnostics (std::string& outs)
     }
 
     if (uuids.size () >= 1000)
-      std::cout << "1000 unique UUIDs generated.\n";
+      out << "1000 unique UUIDs generated.\n";
 
     // Determine terminal details.
     const char* term = getenv ("TERM");
-    std::cout << "     $TERM: "
-              << (term ? term : "-none=")
-              << " ("
-              << context.getWidth ()
-              << "x"
-              << context.getHeight ()
-              << ")\n";
+    out << "     $TERM: "
+        << (term ? term : "-none=")
+        << " ("
+        << context.getWidth ()
+        << "x"
+        << context.getHeight ()
+        << ")\n";
   }
 
-  std::cout << "\n";
+  out << "\n";
+  output = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-

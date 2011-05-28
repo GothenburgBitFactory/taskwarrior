@@ -242,10 +242,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   row = view.addRow ();
   view.set (row, 1, "task config [name [value | '']]");
   view.set (row, 2, "Add, modify and remove settings in the task configuration.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task diagnostics");
-  view.set (row, 2, "Information needed when reporting a problem.");
 */
 
   output = "\n"

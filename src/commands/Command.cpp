@@ -29,6 +29,7 @@
 #include <vector>
 #include <Command.h>
 #include <CmdCustom.h>
+#include <CmdDiagnostics.h>
 #include <CmdExec.h>
 #include <CmdHelp.h>
 #include <CmdInfo.h>
@@ -47,16 +48,17 @@ void Command::factory (std::map <std::string, Command*>& all)
 {
   Command* c;
 
+  c = new CmdCompletionVersion (); all[c->keyword ()] = c;
+  c = new CmdDiagnostics ();       all[c->keyword ()] = c;
   c = new CmdExec ();              all[c->keyword ()] = c;
   c = new CmdHelp ();              all[c->keyword ()] = c;
-  c = new CmdInstall ();           all[c->keyword ()] = c;
   c = new CmdInfo ();              all[c->keyword ()] = c;
+  c = new CmdInstall ();           all[c->keyword ()] = c;
   c = new CmdLogo ();              all[c->keyword ()] = c;
   c = new CmdShow ();              all[c->keyword ()] = c;
   c = new CmdTags ();              all[c->keyword ()] = c;
   c = new CmdTip ();               all[c->keyword ()] = c;
   c = new CmdVersion ();           all[c->keyword ()] = c;
-  c = new CmdCompletionVersion (); all[c->keyword ()] = c;
 
   // Instantiate a command object for each custom report.
   std::vector <std::string> variables;

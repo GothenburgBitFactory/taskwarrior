@@ -158,7 +158,6 @@ void Cmd::load ()
     commands.push_back ("colors");
     commands.push_back ("config");
     commands.push_back ("delete");
-    commands.push_back ("diagnostics");
     commands.push_back ("done");
     commands.push_back ("duplicate");
     commands.push_back ("edit");
@@ -256,7 +255,6 @@ bool Cmd::isReadOnlyCommand ()
       command == "ids"                                                       ||
       command == "calendar"                                                  ||
       command == "colors"                                                    ||
-      command == "diagnostics"                                               ||
       command == "config"                                                    ||
       command == "help"                                                      ||
       command == "projects"                                                  ||
