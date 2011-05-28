@@ -152,22 +152,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   view.set (row, 2, "Shows a weekly report of tasks completed and started.");
 
   row = view.addRow ();
-  view.set (row, 1, "task history");
-  view.set (row, 2, "Shows a report of task history, by month.  Alias to history.monthly.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task history.annual");
-  view.set (row, 2, "Shows a report of task history, by year.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task ghistory");
-  view.set (row, 2, "Shows a graphical report of task history, by month.  Alias to ghistory.monthly.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task ghistory.annual");
-  view.set (row, 2, "Shows a graphical report of task history, by year.");
-
-  row = view.addRow ();
   view.set (row, 1, "task burndown.daily");
   view.set (row, 2, "Shows a graphical burndown chart, by day.");
 

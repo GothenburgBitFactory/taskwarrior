@@ -28,14 +28,25 @@
 #include <sstream>
 #include <Context.h>
 #include <ViewText.h>
-#include <text.h>
-#include <util.h>
 #include <main.h>
+#include <text.h>
+#include <CmdHistory.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportHistoryMonthly (std::string& outs)
+CmdHistoryMonthly::CmdHistoryMonthly ()
+{
+  _keyword     = "history.monthly";
+  _usage       = "task execute <external command>";
+  _usage       = "task history.monthly [<filter>]";
+  _description = "Shows a report of task history, by month.";
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdHistoryMonthly::execute (const std::string& command_line, std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
@@ -51,7 +62,8 @@ int handleReportHistoryMonthly (std::string& outs)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  foreach (task, tasks)
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     Date entry (task->get ("entry"));
 
@@ -98,7 +110,8 @@ int handleReportHistoryMonthly (std::string& outs)
 
   int priorYear = 0;
   int row = 0;
-  foreach (i, groups)
+  std::map <time_t, int>::iterator i;
+  for (i = groups.begin (); i != groups.end (); ++i)
   {
     row = view.addRow ();
 
@@ -174,12 +187,22 @@ int handleReportHistoryMonthly (std::string& outs)
     rc = 1;
   }
 
-  outs = out.str ();
+  output = out.str ();
   return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportHistoryAnnual (std::string& outs)
+CmdHistoryAnnual::CmdHistoryAnnual ()
+{
+  _keyword     = "history.annual";
+  _usage       = "task history.annual [<filter>]";
+  _description = "Shows a report of task history, by year.";
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdHistoryAnnual::execute (const std::string& command_line, std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
@@ -195,7 +218,8 @@ int handleReportHistoryAnnual (std::string& outs)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  foreach (task, tasks)
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     Date entry (task->get ("entry"));
 
@@ -241,7 +265,8 @@ int handleReportHistoryAnnual (std::string& outs)
 
   int priorYear = 0;
   int row = 0;
-  foreach (i, groups)
+  std::map <time_t, int>::iterator i;
+  for (i = groups.begin (); i != groups.end (); ++i)
   {
     row = view.addRow ();
 
@@ -315,12 +340,22 @@ int handleReportHistoryAnnual (std::string& outs)
     rc = 1;
   }
 
-  outs = out.str ();
+  output = out.str ();
   return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportGHistoryMonthly (std::string& outs)
+CmdGHistoryMonthly::CmdGHistoryMonthly ()
+{
+  _keyword     = "ghistory.monthly";
+  _usage       = "task ghistory.monthly [<filter>]";
+  _description = "Shows a graphical report of task history, by month.";
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdGHistoryMonthly::execute (const std::string& command_line, std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
@@ -336,7 +371,8 @@ int handleReportGHistoryMonthly (std::string& outs)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  foreach (task, tasks)
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     Date entry (task->get ("entry"));
 
@@ -383,7 +419,8 @@ int handleReportGHistoryMonthly (std::string& outs)
   // Determine the longest line, and the longest "added" line.
   int maxAddedLine = 0;
   int maxRemovedLine = 0;
-  foreach (i, groups)
+  std::map <time_t, int>::iterator i;
+  for (i = groups.begin (); i != groups.end (); ++i)
   {
     if (completedGroup[i->first] + deletedGroup[i->first] > maxRemovedLine)
       maxRemovedLine = completedGroup[i->first] + deletedGroup[i->first];
@@ -403,7 +440,8 @@ int handleReportGHistoryMonthly (std::string& outs)
 
     int priorYear = 0;
     int row = 0;
-    foreach (i, groups)
+    std::map <time_t, int>::iterator i;
+    for (i = groups.begin (); i != groups.end (); ++i)
     {
       row = view.addRow ();
 
@@ -498,12 +536,22 @@ int handleReportGHistoryMonthly (std::string& outs)
     rc = 1;
   }
 
-  outs = out.str ();
+  output = out.str ();
   return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportGHistoryAnnual (std::string& outs)
+CmdGHistoryAnnual::CmdGHistoryAnnual ()
+{
+  _keyword     = "ghistory.annual";
+  _usage       = "task ghistory.annual [<filter>]";
+  _description = "Shows a graphical report of task history, by year.";
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdGHistoryAnnual::execute (const std::string& command_line, std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
@@ -519,7 +567,8 @@ int handleReportGHistoryAnnual (std::string& outs)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  foreach (task, tasks)
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     Date entry (task->get ("entry"));
 
@@ -565,7 +614,8 @@ int handleReportGHistoryAnnual (std::string& outs)
   // Determine the longest line, and the longest "added" line.
   int maxAddedLine = 0;
   int maxRemovedLine = 0;
-  foreach (i, groups)
+  std::map <time_t, int>::iterator i;
+  for (i = groups.begin (); i != groups.end (); ++i)
   {
     if (completedGroup[i->first] + deletedGroup[i->first] > maxRemovedLine)
       maxRemovedLine = completedGroup[i->first] + deletedGroup[i->first];
@@ -585,7 +635,8 @@ int handleReportGHistoryAnnual (std::string& outs)
 
     int priorYear = 0;
     int row = 0;
-    foreach (i, groups)
+    std::map <time_t, int>::iterator i;
+    for (i = groups.begin (); i != groups.end (); ++i)
     {
       row = view.addRow ();
 
@@ -678,7 +729,7 @@ int handleReportGHistoryAnnual (std::string& outs)
     rc = 1;
   }
 
-  outs = out.str ();
+  output = out.str ();
   return rc;
 }
 

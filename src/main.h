@@ -89,12 +89,6 @@ int handleReportBurndownDaily (std::string&);
 int handleReportBurndownWeekly (std::string&);
 int handleReportBurndownMonthly (std::string&);
 
-// history.cpp
-int handleReportHistoryMonthly (std::string&);
-int handleReportHistoryAnnual (std::string&);
-int handleReportGHistoryMonthly (std::string&);
-int handleReportGHistoryAnnual (std::string&);
-
 // rules.cpp
 void initializeColorRules ();
 void autoColorize (Task&, Color&);

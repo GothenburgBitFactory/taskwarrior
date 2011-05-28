@@ -249,10 +249,6 @@ int Context::dispatch (std::string &out)
   // TODO Chain-of-command pattern dispatch.
        if (cmd.command == "colors")           { rc = handleColor                 (out); }
   else if (cmd.command == "config")           { rc = handleConfig                (out); }
-  else if (cmd.command == "history.monthly")  { rc = handleReportHistoryMonthly  (out); }
-  else if (cmd.command == "history.annual")   { rc = handleReportHistoryAnnual   (out); }
-  else if (cmd.command == "ghistory.monthly") { rc = handleReportGHistoryMonthly (out); }
-  else if (cmd.command == "ghistory.annual")  { rc = handleReportGHistoryAnnual  (out); }
   else if (cmd.command == "burndown.daily")   { rc = handleReportBurndownDaily   (out); }
   else if (cmd.command == "burndown.weekly")  { rc = handleReportBurndownWeekly  (out); }
   else if (cmd.command == "burndown.monthly") { rc = handleReportBurndownMonthly (out); }

@@ -134,10 +134,6 @@ void Cmd::load ()
     commands.push_back ("export.csv");
     commands.push_back ("export.ical");
     commands.push_back ("export.yaml");
-    commands.push_back ("history.monthly");
-    commands.push_back ("history.annual");
-    commands.push_back ("ghistory.monthly");
-    commands.push_back ("ghistory.annual");
     commands.push_back ("burndown.daily");
     commands.push_back ("burndown.weekly");
     commands.push_back ("burndown.monthly");
@@ -221,10 +217,6 @@ bool Cmd::isReadOnlyCommand ()
       command == "export.csv"                                                ||
       command == "export.ical"                                               ||
       command == "export.yaml"                                               ||
-      command == "history.monthly"                                           ||
-      command == "history.annual"                                            ||
-      command == "ghistory.monthly"                                          ||
-      command == "ghistory.annual"                                           ||
       command == "burndown.daily"                                            ||
       command == "burndown.weekly"                                           ||
       command == "burndown.monthly"                                          ||
