@@ -142,7 +142,6 @@ void Cmd::load ()
     commands.push_back ("burndown.daily");
     commands.push_back ("burndown.weekly");
     commands.push_back ("burndown.monthly");
-    commands.push_back ("count");
     commands.push_back ("add");
     commands.push_back ("append");
     commands.push_back ("annotate");
@@ -234,7 +233,6 @@ bool Cmd::isReadOnlyCommand ()
       command == "burndown.daily"                                            ||
       command == "burndown.weekly"                                           ||
       command == "burndown.monthly"                                          ||
-      command == "count"                                                     ||
       command == "calendar"                                                  ||
       command == "colors"                                                    ||
       command == "config"                                                    ||

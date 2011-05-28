@@ -29,6 +29,7 @@
 #include <vector>
 #include <Command.h>
 #include <CmdCommands.h>
+#include <CmdCount.h>
 #include <CmdCustom.h>
 #include <CmdDiagnostics.h>
 #include <CmdEdit.h>
@@ -58,6 +59,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdCompletionIds ();      all[c->keyword ()] = c;
   c = new CmdCompletionTags ();     all[c->keyword ()] = c;
   c = new CmdCompletionVersion ();  all[c->keyword ()] = c;
+  c = new CmdCount ();              all[c->keyword ()] = c;
   c = new CmdDiagnostics ();        all[c->keyword ()] = c;
   c = new CmdEdit ();               all[c->keyword ()] = c;
   c = new CmdExec ();               all[c->keyword ()] = c;

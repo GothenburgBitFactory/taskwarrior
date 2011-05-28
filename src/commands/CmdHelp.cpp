@@ -233,10 +233,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
                          "legend containing all currently defined colors.");
 
   row = view.addRow ();
-  view.set (row, 1, "task count [filter]");
-  view.set (row, 2, "Shows only the number of matching tasks.");
-
-  row = view.addRow ();
   view.set (row, 1, "task config [name [value | '']]");
   view.set (row, 2, "Add, modify and remove settings in the task configuration.");
 */

@@ -1458,33 +1458,6 @@ int handleDuplicate (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleCount (std::string& outs)
-{
-  int rc = 0;
-
-  // Scan the pending tasks, applying any filter.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Find number of matching tasks.  Skip recurring parent tasks.
-  int count = 0;
-  std::vector <Task>::iterator it;
-  for (it = tasks.begin (); it != tasks.end (); ++it)
-    if (it->getStatus () != Task::recurring)
-      ++count;
-
-  std::stringstream out;
-  out << count << "\n";
-  outs = out.str ();
-
-  return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int handleColor (std::string& outs)
 {
   int rc = 0;
