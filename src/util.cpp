@@ -28,6 +28,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 #include <string>
 #include <sys/types.h>
 #include <sys/time.h>

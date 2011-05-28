@@ -28,6 +28,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <stdlib.h>
 #include <text.h>
 #include <Context.h>
