@@ -130,11 +130,9 @@ void Cmd::load ()
   if (commands.size () == 0)
   {
     commands.push_back ("_projects");
-    commands.push_back ("_commands");
     commands.push_back ("_ids");
     commands.push_back ("_config");
     commands.push_back ("_query");
-    commands.push_back ("_zshcommands");
     commands.push_back ("_zshids");
     commands.push_back ("export.csv");
     commands.push_back ("export.ical");
@@ -229,11 +227,9 @@ void Cmd::allCommands (std::vector <std::string>& all) const
 bool Cmd::isReadOnlyCommand ()
 {
   if (command == "_projects"                                                 ||
-      command == "_commands"                                                 ||
       command == "_ids"                                                      ||
       command == "_config"                                                   ||
       command == "_query"                                                    ||
-      command == "_zshcommands"                                              ||
       command == "_zshids"                                                   ||
       command == "export.csv"                                                ||
       command == "export.ical"                                               ||

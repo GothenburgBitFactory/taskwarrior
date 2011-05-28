@@ -125,7 +125,7 @@ CmdCompletionTags::CmdCompletionTags ()
 {
   _keyword     = "_tags";
   _usage       = "task _tags";
-  _description = "Shows only a list of all tags used.";
+  _description = "Shows only a list of all tags used, for autocompletion purposes.";
   _read_only   = true;
   _displays_id = false;
 }
