@@ -281,12 +281,9 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "push")             {      handlePush                  (out); }
   else if (cmd.command == "pull")             {      handlePull                  (out); }
   else if (cmd.command == "count")            { rc = handleCount                 (out); }
-  else if (cmd.command == "ids")              { rc = handleIds                   (out); }
   else if (cmd.command == "_projects")        { rc = handleCompletionProjects    (out); }
-  else if (cmd.command == "_ids")             { rc = handleCompletionIDs         (out); }
   else if (cmd.command == "_config")          { rc = handleCompletionConfig      (out); }
   else if (cmd.command == "_query")           { rc = handleQuery                 (out); }
-  else if (cmd.command == "_zshids")          { rc = handleZshCompletionIDs      (out); }
   else if (cmd.command == "" &&
            sequence.size ())                  { rc = handleModify                (out); }
 

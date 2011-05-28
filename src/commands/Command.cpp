@@ -34,6 +34,7 @@
 #include <CmdEdit.h>
 #include <CmdExec.h>
 #include <CmdHelp.h>
+#include <CmdIds.h>
 #include <CmdInfo.h>
 #include <CmdInstall.h>
 #include <CmdLogo.h>
@@ -54,12 +55,14 @@ void Command::factory (std::map <std::string, Command*>& all)
   Command* c;
 
   c = new CmdCompletionCommands (); all[c->keyword ()] = c;
+  c = new CmdCompletionIds ();      all[c->keyword ()] = c;
   c = new CmdCompletionTags ();     all[c->keyword ()] = c;
   c = new CmdCompletionVersion ();  all[c->keyword ()] = c;
   c = new CmdDiagnostics ();        all[c->keyword ()] = c;
   c = new CmdEdit ();               all[c->keyword ()] = c;
   c = new CmdExec ();               all[c->keyword ()] = c;
   c = new CmdHelp ();               all[c->keyword ()] = c;
+  c = new CmdIds ();                all[c->keyword ()] = c;
   c = new CmdInfo ();               all[c->keyword ()] = c;
   c = new CmdInstall ();            all[c->keyword ()] = c;
   c = new CmdLogo ();               all[c->keyword ()] = c;
@@ -71,6 +74,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdUrgency ();            all[c->keyword ()] = c;
   c = new CmdVersion ();            all[c->keyword ()] = c;
   c = new CmdZshCommands ();        all[c->keyword ()] = c;
+  c = new CmdZshCompletionIds ();   all[c->keyword ()] = c;
 
   // Instantiate a command object for each custom report.
   std::vector <std::string> variables;

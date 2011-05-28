@@ -130,10 +130,8 @@ void Cmd::load ()
   if (commands.size () == 0)
   {
     commands.push_back ("_projects");
-    commands.push_back ("_ids");
     commands.push_back ("_config");
     commands.push_back ("_query");
-    commands.push_back ("_zshids");
     commands.push_back ("export.csv");
     commands.push_back ("export.ical");
     commands.push_back ("export.yaml");
@@ -145,7 +143,6 @@ void Cmd::load ()
     commands.push_back ("burndown.weekly");
     commands.push_back ("burndown.monthly");
     commands.push_back ("count");
-    commands.push_back ("ids");
     commands.push_back ("add");
     commands.push_back ("append");
     commands.push_back ("annotate");
@@ -225,10 +222,8 @@ void Cmd::allCommands (std::vector <std::string>& all) const
 bool Cmd::isReadOnlyCommand ()
 {
   if (command == "_projects"                                                 ||
-      command == "_ids"                                                      ||
       command == "_config"                                                   ||
       command == "_query"                                                    ||
-      command == "_zshids"                                                   ||
       command == "export.csv"                                                ||
       command == "export.ical"                                               ||
       command == "export.yaml"                                               ||
@@ -240,7 +235,6 @@ bool Cmd::isReadOnlyCommand ()
       command == "burndown.weekly"                                           ||
       command == "burndown.monthly"                                          ||
       command == "count"                                                     ||
-      command == "ids"                                                       ||
       command == "calendar"                                                  ||
       command == "colors"                                                    ||
       command == "config"                                                    ||

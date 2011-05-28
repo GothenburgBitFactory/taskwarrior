@@ -386,54 +386,6 @@ int handleQuery (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleCompletionIDs (std::string& outs)
-{
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  std::vector <int> ids;
-  foreach (task, tasks)
-    if (task->getStatus () != Task::deleted &&
-        task->getStatus () != Task::completed)
-      ids.push_back (task->id);
-
-  std::sort (ids.begin (), ids.end ());
-
-  std::stringstream out;
-  foreach (id, ids)
-    out << *id << "\n";
-
-  outs = out.str ();
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int handleZshCompletionIDs (std::string& outs)
-{
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  std::stringstream out;
-  foreach (task, tasks) {
-    if (task->getStatus () != Task::deleted &&
-        task->getStatus () != Task::completed) {
-      out << task->id << ":" << task->get("description") << "\n";
-    }
-  }
-
-  outs = out.str ();
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void handleUndo ()
 {
   context.disallowModification ();
@@ -1529,30 +1481,6 @@ int handleCount (std::string& outs)
   out << count << "\n";
   outs = out.str ();
 
-  return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int handleIds (std::string& outs)
-{
-  int rc = 0;
-
-  // Scan the pending tasks, applying any filter.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Find number of matching tasks.
-  std::vector <int> ids;
-  foreach (task, tasks)
-    if (task->id)
-      ids.push_back (task->id);
-
-  std::sort (ids.begin (), ids.end ());
-  outs = compressIds (ids) + "\n";
   return rc;
 }
 

@@ -237,10 +237,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   view.set (row, 2, "Shows only the number of matching tasks.");
 
   row = view.addRow ();
-  view.set (row, 1, "task ids [filter]");
-  view.set (row, 2, "Shows only the IDs of matching tasks, in the form of a range.");
-
-  row = view.addRow ();
   view.set (row, 1, "task config [name [value | '']]");
   view.set (row, 2, "Add, modify and remove settings in the task configuration.");
 */
