@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_RECORD
 #define INCLUDED_RECORD
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <map>

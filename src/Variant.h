@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_VARIANT
 #define INCLUDED_VARIANT
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <time.h>

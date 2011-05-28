@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLENTRY
 #define INCLUDED_COLENTRY
+#define L10N                                           // Localization complete.
 
 #include <ColDate.h>
 

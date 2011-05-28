@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_PERMISSION
 #define INCLUDED_PERMISSION
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include "Task.h"

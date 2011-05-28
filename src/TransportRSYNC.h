@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_TRANSPORTRSYNC
 #define INCLUDED_TRANSPORTRSYNC
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Transport.h>

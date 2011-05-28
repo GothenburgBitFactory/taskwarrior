@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_DATE
 #define INCLUDED_DATE
+#define L10N                                           // Localization complete.
 
 #include <stdio.h>
 #include <string>

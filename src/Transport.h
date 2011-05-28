@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_TRANSPORT
 #define INCLUDED_TRANSPORT
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>

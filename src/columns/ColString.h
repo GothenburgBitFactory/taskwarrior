@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLSTRING
 #define INCLUDED_COLSTRING
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

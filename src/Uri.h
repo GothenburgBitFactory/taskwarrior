@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_URI
 #define INCLUDED_URI
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

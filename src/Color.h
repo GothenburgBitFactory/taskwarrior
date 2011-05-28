@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLOR
 #define INCLUDED_COLOR
+#define L10N                                           // Localization complete.
 
 #include <string>
 

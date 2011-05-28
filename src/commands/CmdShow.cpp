@@ -34,6 +34,8 @@
 #include <ViewText.h>
 #include <CmdShow.h>
 
+#define L10N                                           // Localization complete.
+
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -147,8 +149,8 @@ int CmdShow::execute (const std::string& command_line, std::string& output)
   // Create output view.
   ViewText view;
   view.width (width);
-  view.add (Column::factory ("string", "Config variable"));
-  view.add (Column::factory ("string", "Value"));
+  view.add (Column::factory ("string", STRING_CMD_SHOW_CONF_VAR));
+  view.add (Column::factory ("string", STRING_CMD_SHOW_CONF_VALUE));
 
   Color error ("bold white on red");
   Color warning ("black on yellow");

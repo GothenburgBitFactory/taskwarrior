@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_LOCATION
 #define INCLUDED_LOCATION
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <stdio.h>

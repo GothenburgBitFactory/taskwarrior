@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_ARGUMENTS
 #define INCLUDED_ARGUMENTS
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

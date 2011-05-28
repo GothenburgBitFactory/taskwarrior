@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLDESCRIPTION
 #define INCLUDED_COLDESCRIPTION
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

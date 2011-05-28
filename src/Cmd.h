@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_CMD
 #define INCLUDED_CMD
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

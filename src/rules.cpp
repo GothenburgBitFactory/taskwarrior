@@ -32,6 +32,8 @@
 #include "util.h"
 #include "main.h"
 
+#define L10N                                           // Localization complete.
+
 extern Context context;
 
 static std::map <std::string, Color> gsColor;

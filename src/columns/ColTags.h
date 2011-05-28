@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLTAGS
 #define INCLUDED_COLTAGS
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

@@ -27,6 +27,7 @@
 
 #ifndef INCLUDED_RX
 #define INCLuDED_RX
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>

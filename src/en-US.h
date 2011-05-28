@@ -41,15 +41,50 @@
 //
 // Rules:
 //   - Localized strings should contain leading or trailing white space,
-//     including \n
-//   - 
+//     including \n, thus allowing the code to compose strings.
+//   - Retain the tense of the original string.
+//   - Retain the same verbosiy of the original string.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_EN_US
-#define INCLUDED_EN_US
+////////////////////////////////////////////////////////////////////////////////
+//
+// Translators:
+//   1. Copy this file (en-US.h) to a new file with the target locale as the
+//      file name.  Using German as an example, do this:
+//
+//        cp en-US.h de-DE.h
+//
+//   2. Modify all the strings below.
+//        i.e. change "Unknown error." to "Unbekannter Fehler.".
+//
+//   3. Add your new translation to the task.git/src/i18n.h file by changing:
+//
+//        #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
+//        #include <en-US.h>
+//        #endif
+//
+//      to:
+//
+//        #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
+//        #include <en-US.h>
+//        #elif PACKAGE_LANGUAGE == LANGUAGE_DE_DE
+//        #include <de-DE.h>
+//        #endif
+//
+//   4. Build your localized Taskwarrior with these commands:
+//
+//      cd task.git
+//      cmake -D PACKAGE_LANGUAGE=LANGUAGE_DE_DE .
+//      make
+//
+//   5. Submit your translation to support@taskwarrior.org, for inclusion in
+//      next release.
+//
+////////////////////////////////////////////////////////////////////////////////
 
-// To localize, clone and rename this file, then change all the defines below.
+#ifndef INCLUDED_STRINGS
+#define INCLUDED_STRINGS
 
 // Errors
 #define STRING_UNKNOWN_ERROR         "Unknown error."
@@ -70,6 +105,8 @@
 #define STRING_CMD_SHOW_CONFIG_ERROR "Configuration error: {1} contains an unrecognized value '{2}'."
 #define STRING_CMD_SHOW_NO_LOCATION  "Configuration error: data.location not specified in .taskrc file."
 #define STRING_CMD_SHOW_LOC_EXIST    "Configuration error: data.location contains a directory name that doesn't exist, or is unreadable."
+#define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
+#define STRING_CMD_SHOW_CONF_VALUE   "Value"
 
 // DOM
 #define STRING_DOM_UNKNOWN           "<unknown>"

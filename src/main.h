@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_MAIN
 #define INCLUDED_MAIN
+#define L10N                                           // Localization complete.
 
 #define FEATURE_NEW_ID       1   // Echoes back new id.
 //#define FEATURE_REGEX        1   // Enables regexes for attribute modifiers,

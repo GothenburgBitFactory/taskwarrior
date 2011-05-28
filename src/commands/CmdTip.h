@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_CMDTIP
 #define INCLUDED_CMDTIP
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_VIEWTASK
 #define INCLUDED_VIEWTASK
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>

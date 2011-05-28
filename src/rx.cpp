@@ -29,6 +29,8 @@
 #include <regex.h>
 #include "rx.h"
 
+#define L10N                                           // Localization complete.
+
 //#define _POSIX_C_SOURCE 1
 #define MAX_MATCHES 8
 

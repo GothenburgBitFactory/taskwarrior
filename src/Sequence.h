@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_SEQUENCE
 #define INCLUDED_SEQUENCE
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

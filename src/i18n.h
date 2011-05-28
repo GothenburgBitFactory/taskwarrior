@@ -38,6 +38,7 @@
 
 #ifndef INCLUDED_I18N
 #define INCLUDED_I18N
+#define L10N                                           // Localization complete.
 
 #include "../cmake.h"
 

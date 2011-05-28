@@ -27,6 +27,7 @@
 
 #ifndef INCLUDED_FILE
 #define INCLUDED_FILE
+#define L10N                                           // Localization complete.
 
 #include <stdio.h>
 #include <string>

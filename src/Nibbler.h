@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_NIBBLER
 #define INCLUDED_NIBBLER
+#define L10N                                           // Localization complete.
 
 #include <string>
 

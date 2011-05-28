@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_CMDLOGO
 #define INCLUDED_CMDLOGO
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

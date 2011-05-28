@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLDEPENDS
 #define INCLUDED_COLDEPENDS
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

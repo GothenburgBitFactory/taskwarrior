@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLUNTIL
 #define INCLUDED_COLUNTIL
+#define L10N                                           // Localization complete.
 
 #include <ColDate.h>
 

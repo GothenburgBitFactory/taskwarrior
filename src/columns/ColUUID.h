@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLUUID
 #define INCLUDED_COLUUID
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

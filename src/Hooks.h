@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_HOOKS
 #define INCLUDED_HOOKS
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

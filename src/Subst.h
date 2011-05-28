@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_SUBST
 #define INCLUDED_SUBST
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include "Att.h"

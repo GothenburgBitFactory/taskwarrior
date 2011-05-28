@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLRECUR
 #define INCLUDED_COLRECUR
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

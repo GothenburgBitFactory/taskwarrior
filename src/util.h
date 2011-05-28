@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_UTIL
 #define INCLUDED_UTIL
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>
@@ -42,6 +43,7 @@
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
+// TODO Obsolete.
 #define foreach(i, c)                                              \
 for (typeof (c) *foreach_p = & (c);                                \
      foreach_p;                                                    \

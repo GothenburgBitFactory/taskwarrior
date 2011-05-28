@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_FILTER
 #define INCLUDED_FILTER
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include "Att.h"

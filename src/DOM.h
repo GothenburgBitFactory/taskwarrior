@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_DOM
 #define INCLUDED_DOM
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <time.h>

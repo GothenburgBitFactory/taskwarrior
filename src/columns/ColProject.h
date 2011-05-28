@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLPROJECT
 #define INCLUDED_COLPROJECT
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

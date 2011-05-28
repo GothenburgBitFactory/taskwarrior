@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_ATT
 #define INCLUDED_ATT
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>

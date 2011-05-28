@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_CMDHELP
 #define INCLUDED_CMDHELP
+#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

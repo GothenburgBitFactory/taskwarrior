@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef INCLUDED_COLPRIORITY
 #define INCLUDED_COLPRIORITY
+#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>
