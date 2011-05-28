@@ -412,41 +412,6 @@ int handleCompletionConfig (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Temporary command to display urgency for a task.
-int handleUrgency (std::string& outs)
-{
-  // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Filter sequence.
-  context.filter.applySequence (tasks, context.sequence);
-  if (tasks.size () == 0)
-  {
-    std::cout << "No tasks specified.\n";
-    return 1;
-  }
-
-  // Find the task(s).
-  std::stringstream out;
-  foreach (task, tasks)
-  {
-    out << "task "
-        << task->id
-        << " urgency "
-        << task->urgency ()
-        << "\n";
-  }
-
-  outs = out.str ();
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int handleQuery (std::string& outs)
 {
   int rc = 0;

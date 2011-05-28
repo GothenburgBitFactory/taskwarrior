@@ -17,6 +17,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdShow.cpp        CmdShow.h
                    CmdTags.cpp        CmdTags.h
                    CmdTip.cpp         CmdTip.h
+                   CmdUrgency.cpp     CmdUrgency.h
                    CmdVersion.cpp     CmdVersion.h)
 
 add_library (commands STATIC ${commands_SRCS})

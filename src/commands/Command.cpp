@@ -39,6 +39,7 @@
 #include <CmdShow.h>
 #include <CmdTags.h>
 #include <CmdTip.h>
+#include <CmdUrgency.h>
 #include <CmdVersion.h>
 #include <Context.h>
 
@@ -60,6 +61,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdShow ();              all[c->keyword ()] = c;
   c = new CmdTags ();              all[c->keyword ()] = c;
   c = new CmdTip ();               all[c->keyword ()] = c;
+  c = new CmdUrgency ();           all[c->keyword ()] = c;
   c = new CmdVersion ();           all[c->keyword ()] = c;
 
   // Instantiate a command object for each custom report.
