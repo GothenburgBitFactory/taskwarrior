@@ -69,9 +69,22 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   std::vector <std::string>::iterator name;
   for (name = all.begin (); name != all.end (); ++name)
   {
-    row = view.addRow ();
-    view.set (row, 1, context.commands[*name]->usage ());
-    view.set (row, 2, context.commands[*name]->description ());
+    if ((*name)[0] != '_')
+    {
+      row = view.addRow ();
+      view.set (row, 1, context.commands[*name]->usage ());
+      view.set (row, 2, context.commands[*name]->description ());
+    }
+  }
+
+  for (name = all.begin (); name != all.end (); ++name)
+  {
+    if ((*name)[0] == '_')
+    {
+      row = view.addRow ();
+      view.set (row, 1, context.commands[*name]->usage ());
+      view.set (row, 2, context.commands[*name]->description ());
+    }
   }
 
 /*
