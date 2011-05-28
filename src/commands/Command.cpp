@@ -51,6 +51,7 @@ void Command::factory (std::map <std::string, Command*>& all)
 {
   Command* c;
 
+  c = new CmdCompletionTags ();    all[c->keyword ()] = c;
   c = new CmdCompletionVersion (); all[c->keyword ()] = c;
   c = new CmdDiagnostics ();       all[c->keyword ()] = c;
   c = new CmdEdit ();              all[c->keyword ()] = c;

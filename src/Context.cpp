@@ -284,7 +284,6 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "count")            { rc = handleCount                 (out); }
   else if (cmd.command == "ids")              { rc = handleIds                   (out); }
   else if (cmd.command == "_projects")        { rc = handleCompletionProjects    (out); }
-  else if (cmd.command == "_tags")            { rc = handleCompletionTags        (out); }
   else if (cmd.command == "_commands")        { rc = handleCompletionCommands    (out); }
   else if (cmd.command == "_ids")             { rc = handleCompletionIDs         (out); }
   else if (cmd.command == "_config")          { rc = handleCompletionConfig      (out); }

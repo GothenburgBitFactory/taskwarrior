@@ -332,49 +332,6 @@ int handleCompletionProjects (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleCompletionTags (std::string& outs)
-{
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-
-  Filter filter;
-  if (context.config.getBoolean ("complete.all.tags"))
-    context.tdb.load (tasks, filter);
-  else
-    context.tdb.loadPending (tasks, filter);
-
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Scan all the tasks for their tags, building a map using tag
-  // names as keys.
-  std::map <std::string, int> unique;
-  foreach (t, tasks)
-  {
-    std::vector <std::string> tags;
-    t->getTags (tags);
-
-    foreach (tag, tags)
-      unique[*tag] = 0;
-  }
-
-  // add built-in tags to map
-  unique["nocolor"] = 0;
-  unique["nonag"]   = 0;
-  unique["nocal"]   = 0;
-  unique["next"]    = 0;
-  unique["stall"]   = 0;
-  unique["someday"] = 0;
-
-  std::stringstream out;
-  foreach (tag, unique)
-    out << tag->first << "\n";
-
-  outs = out.str ();
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int handleCompletionCommands (std::string& outs)
 {
   // Get a list of all commands.

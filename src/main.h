@@ -58,7 +58,6 @@ int handleDone (std::string&);
 int handleModify (std::string&);
 int handleProjects (std::string&);
 int handleCompletionProjects (std::string&);
-int handleCompletionTags (std::string&);
 int handleCompletionCommands (std::string&);
 int handleCompletionIDs (std::string&);
 int handleCompletionConfig (std::string&);

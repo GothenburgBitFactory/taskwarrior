@@ -130,7 +130,6 @@ void Cmd::load ()
   if (commands.size () == 0)
   {
     commands.push_back ("_projects");
-    commands.push_back ("_tags");
     commands.push_back ("_commands");
     commands.push_back ("_ids");
     commands.push_back ("_config");
@@ -230,7 +229,6 @@ void Cmd::allCommands (std::vector <std::string>& all) const
 bool Cmd::isReadOnlyCommand ()
 {
   if (command == "_projects"                                                 ||
-      command == "_tags"                                                     ||
       command == "_commands"                                                 ||
       command == "_ids"                                                      ||
       command == "_config"                                                   ||

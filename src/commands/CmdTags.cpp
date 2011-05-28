@@ -121,3 +121,59 @@ int CmdTags::execute (const std::string& command_line, std::string& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+CmdCompletionTags::CmdCompletionTags ()
+{
+  _keyword     = "_tags";
+  _usage       = "task _tags";
+  _description = "Shows only a list of all tags used.";
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdCompletionTags::execute (const std::string& command_line, std::string& output)
+{
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+
+  Filter filter;
+  if (context.config.getBoolean ("complete.all.tags"))
+    context.tdb.load (tasks, filter);
+  else
+    context.tdb.loadPending (tasks, filter);
+
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Scan all the tasks for their tags, building a map using tag
+  // names as keys.
+  std::map <std::string, int> unique;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+  {
+    std::vector <std::string> tags;
+    task->getTags (tags);
+
+    std::vector <std::string>::iterator tag;
+    for (tag = tags.begin (); tag != tags.end (); ++tag)
+      unique[*tag] = 0;
+  }
+
+  // add built-in tags to map
+  unique["nocolor"] = 0;
+  unique["nonag"]   = 0;
+  unique["nocal"]   = 0;
+  unique["next"]    = 0;
+  unique["stall"]   = 0;
+  unique["someday"] = 0;
+
+  std::stringstream out;
+  std::map <std::string, int>::iterator it;
+  for (it = unique.begin (); it != unique.end (); ++it)
+    out << it->first << "\n";
+
+  output = out.str ();
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////

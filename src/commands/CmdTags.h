@@ -38,5 +38,12 @@ public:
   int execute (const std::string&, std::string&);
 };
 
+class CmdCompletionTags : public Command
+{
+public:
+  CmdCompletionTags ();
+  int execute (const std::string&, std::string&);
+};
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////
