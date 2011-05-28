@@ -276,7 +276,6 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "export.yaml")      { rc = handleExportYAML            (out); }
   else if (cmd.command == "import")           { rc = handleImport                (out); }
   else if (cmd.command == "duplicate")        { rc = handleDuplicate             (out); }
-  else if (cmd.command == "shell")            {      handleShell                 (   ); }
   else if (cmd.command == "undo")             {      handleUndo                  (   ); }
   else if (cmd.command == "merge")            { tdb.gc ();
                                                      handleMerge                 (out); }

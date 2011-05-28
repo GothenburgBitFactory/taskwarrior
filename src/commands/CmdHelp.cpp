@@ -132,10 +132,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   view.set (row, 2, "Reverts the most recent action.");
 
   row = view.addRow ();
-  view.set (row, 1, "task shell");
-  view.set (row, 2, "Launches an interactive shell.");
-
-  row = view.addRow ();
   view.set (row, 1, "task duplicate ID [tags] [attrs] [desc...]");
   view.set (row, 2, "Duplicates the specified task, and allows modifications.");
 

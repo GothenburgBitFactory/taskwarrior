@@ -79,7 +79,6 @@ void handleUndo ();
 void handleMerge (std::string&);
 void handlePush (std::string&);
 void handlePull (std::string&);
-void handleShell ();
 int deltaAppend (Task&);
 int deltaPrepend (Task&);
 int deltaDescription (Task&);

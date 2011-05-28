@@ -14,6 +14,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdInfo.cpp        CmdInfo.h
                    CmdInstall.cpp     CmdInstall.h
                    CmdLogo.cpp        CmdLogo.h
+                   CmdShell.cpp       CmdShell.h
                    CmdShow.cpp        CmdShow.h
                    CmdTags.cpp        CmdTags.h
                    CmdTip.cpp         CmdTip.h
