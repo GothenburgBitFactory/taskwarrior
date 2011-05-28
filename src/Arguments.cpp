@@ -329,6 +329,7 @@ void Arguments::extract_sequence (std::vector <int>& sequence)
               if (low > high)
                 throw std::string ("Inverted sequence range high-low.");
 
+              // TODO Is this meaningful?
               if (high - low >= ARGUMENTS_SEQUENCE_MAX_RANGE)
                 throw std::string ("ID Range too large.");
 

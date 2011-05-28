@@ -95,7 +95,6 @@ void handleDiagnostics (std::string&);
 int handleEdit (std::string&);
 
 // report.cpp
-int handleInfo (std::string&);
 int handleReportSummary (std::string&);
 int handleReportCalendar (std::string&);
 int handleReportStats (std::string&);

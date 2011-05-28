@@ -230,6 +230,9 @@ int Context::dispatch2 (std::string &out)
     return c->execute (commandLine, out);
   }
 
+  // TODO Need to invoke 'information' when a sequence/filter is present, but
+  //      no command is specified.
+
   // TODO When ::dispatch is eliminated, show usage on unrecognized command.
 //  commands["help"]->execute (commandLine, out);
 
@@ -248,7 +251,6 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "colors")           { rc = handleColor                 (out); }
   else if (cmd.command == "config")           { rc = handleConfig                (out); }
   else if (cmd.command == "stats")            { rc = handleReportStats           (out); }
-  else if (cmd.command == "info")             { rc = handleInfo                  (out); }
   else if (cmd.command == "history.monthly")  { rc = handleReportHistoryMonthly  (out); }
   else if (cmd.command == "history.annual")   { rc = handleReportHistoryAnnual   (out); }
   else if (cmd.command == "ghistory.monthly") { rc = handleReportGHistoryMonthly (out); }

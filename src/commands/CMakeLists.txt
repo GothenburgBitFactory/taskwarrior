@@ -9,6 +9,7 @@ set (commands_SRCS Command.cpp    Command.h
                    CmdCustom.cpp  CmdCustom.h
                    CmdExec.cpp    CmdExec.h
                    CmdHelp.cpp    CmdHelp.h
+                   CmdInfo.cpp    CmdInfo.h
                    CmdInstall.cpp CmdInstall.h
                    CmdLogo.cpp    CmdLogo.h
                    CmdShow.cpp    CmdShow.h

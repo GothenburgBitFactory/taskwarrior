@@ -164,7 +164,6 @@ void Cmd::load ()
     commands.push_back ("edit");
     commands.push_back ("help");
     commands.push_back ("import");
-    commands.push_back ("info");
     commands.push_back ("log");
     commands.push_back ("prepend");
     commands.push_back ("projects");
@@ -260,7 +259,6 @@ bool Cmd::isReadOnlyCommand ()
       command == "diagnostics"                                               ||
       command == "config"                                                    ||
       command == "help"                                                      ||
-      command == "info"                                                      ||
       command == "projects"                                                  ||
 			command == "push"                                                      ||
       command == "shell"                                                     ||

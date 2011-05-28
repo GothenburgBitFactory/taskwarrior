@@ -135,10 +135,6 @@ int CmdHelp::execute (const std::string& command_line, std::string& output)
   view.set (row, 2, "Deletes the specified task.");
 
   row = view.addRow ();
-  view.set (row, 1, "task info ID");
-  view.set (row, 2, "Shows all data, metadata for specified task.");
-
-  row = view.addRow ();
   view.set (row, 1, "task start ID");
   view.set (row, 2, "Marks specified task as started.");
 
