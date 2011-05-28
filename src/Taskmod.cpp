@@ -28,7 +28,7 @@
 #include <sstream>
 #include <iostream>
 #include <assert.h>
-#include "Taskmod.h"
+#include <Taskmod.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 Taskmod::Taskmod ()

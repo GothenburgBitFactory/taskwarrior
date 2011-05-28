@@ -30,7 +30,7 @@
 
 #include <string>
 #include <vector>
-#include "../cmake.h"
+#include <cmake.h>
 
 // text.cpp, Non-UTF-8 aware.
 void wrapText (std::vector <std::string>&, const std::string&, const int);

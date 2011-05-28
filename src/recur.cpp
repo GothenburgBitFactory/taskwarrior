@@ -37,12 +37,12 @@
 #include <pwd.h>
 #include <time.h>
 
-#include "Context.h"
-#include "Date.h"
-#include "Duration.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
+#include <Context.h>
+#include <Date.h>
+#include <Duration.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
 
 // Global context for use by all.
 extern Context context;

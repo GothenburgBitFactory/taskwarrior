@@ -27,8 +27,8 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "main.h"
-#include "test.h"
+#include <main.h>
+#include <test.h>
 
 Context context;
 

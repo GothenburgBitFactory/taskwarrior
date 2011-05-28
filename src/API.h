@@ -28,7 +28,7 @@
 #define INCLUDED_API
 #define L10N                                           // Localization complete.
 
-#include "../cmake.h"
+#include <../cmake.h>
 #ifdef HAVE_LIBLUA
 
 #include <vector>

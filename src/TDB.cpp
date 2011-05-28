@@ -35,19 +35,19 @@
 #include <stdio.h>
 #include <sys/file.h>
 #include <stdlib.h>
-#include "text.h"
-#include "util.h"
-#include "TDB.h"
-#include "Directory.h"
-#include "File.h"
-#include "ViewText.h"
-#include "Timer.h"
-#include "Color.h"
-#include "main.h"
+#include <text.h>
+#include <util.h>
+#include <TDB.h>
+#include <Directory.h>
+#include <File.h>
+#include <ViewText.h>
+#include <Timer.h>
+#include <Color.h>
+#include <main.h>
 
 #define NDEBUG
-#include "assert.h"
-#include "Taskmod.h"
+#include <assert.h>
+#include <Taskmod.h>
 
 #define DEBUG_OUTPUT 0
 

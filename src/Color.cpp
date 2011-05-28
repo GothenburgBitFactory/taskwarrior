@@ -29,9 +29,9 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
-#include "Color.h"
-#include "text.h"
-#include "i18n.h"
+#include <Color.h>
+#include <text.h>
+#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 static struct

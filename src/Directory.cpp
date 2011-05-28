@@ -31,7 +31,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <Directory.h>
-#include "../cmake.h"
+#include <cmake.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 Directory::Directory ()

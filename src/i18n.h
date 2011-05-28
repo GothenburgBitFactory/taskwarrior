@@ -40,7 +40,7 @@
 #define INCLUDED_I18N
 #define L10N                                           // Localization complete.
 
-#include "../cmake.h"
+#include <cmake.h>
 
 #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
 #include <en-US.h>

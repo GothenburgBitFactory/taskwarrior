@@ -29,9 +29,9 @@
 #define L10N                                           // Localization complete.
 
 #include <string>
-#include "Record.h"
-#include "Subst.h"
-#include "Sequence.h"
+#include <Record.h>
+#include <Subst.h>
+#include <Sequence.h>
 
 class Task : public Record
 {

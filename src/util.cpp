@@ -40,12 +40,12 @@
 #include <pwd.h>
 #include <errno.h>
 
-#include "Date.h"
-#include "text.h"
-#include "main.h"
-#include "i18n.h"
-#include "util.h"
-#include "../cmake.h"
+#include <Date.h>
+#include <text.h>
+#include <main.h>
+#include <i18n.h>
+#include <util.h>
+#include <cmake.h>
 
 extern Context context;
 

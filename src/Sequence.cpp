@@ -29,11 +29,11 @@
 #include <string>
 #include <algorithm>
 #include <ctype.h>
-#include "util.h"
-#include "text.h"
-#include "i18n.h"
-#include "Context.h"
-#include "Sequence.h"
+#include <util.h>
+#include <text.h>
+#include <i18n.h>
+#include <Context.h>
+#include <Sequence.h>
 
 extern Context context;
 

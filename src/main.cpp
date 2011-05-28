@@ -36,7 +36,7 @@
 
 #include <i18n.h>
 #include <Context.h>
-#include "../cmake.h"
+#include <cmake.h>
 
 Context context;
 

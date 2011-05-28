@@ -38,9 +38,9 @@
 #include <File.h>
 #include <main.h>
 #include <util.h>
-#include "../cmake.h"
+#include <cmake.h>
 #ifdef HAVE_COMMIT
-#include "../commit.h"
+#include <commit.h>
 #endif
 
 #ifdef HAVE_LIBLUA

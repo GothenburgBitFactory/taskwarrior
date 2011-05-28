@@ -35,7 +35,7 @@
 #include <main.h>
 #include <text.h>
 #include <util.h>
-#include "../cmake.h"
+#include <cmake.h>
 
 extern Context context;
 

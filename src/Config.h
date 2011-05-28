@@ -31,7 +31,7 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "File.h"
+#include <File.h>
 
 class Config : public std::map <std::string, std::string>
 {

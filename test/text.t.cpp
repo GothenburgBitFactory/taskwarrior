@@ -25,10 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
-#include "main.h"
-#include "text.h"
-#include "utf8.h"
-#include "test.h"
+#include <main.h>
+#include <text.h>
+#include <utf8.h>
+#include <test.h>
 
 Context context;
 

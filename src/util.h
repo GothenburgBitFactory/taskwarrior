@@ -32,8 +32,8 @@
 #include <vector>
 #include <map>
 #include <sys/types.h>
-#include "Task.h"
-#include "../cmake.h"
+#include <Task.h>
+#include <cmake.h>
 
 #ifndef min
 #define min(a,b) ((a) < (b) ? (a) : (b))

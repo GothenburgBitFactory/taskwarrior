@@ -30,7 +30,7 @@
 #include <text.h>
 #include <i18n.h>
 #include <DOM.h>
-#include "../cmake.h"
+#include <cmake.h>
 
 #ifdef HAVE_LIBLUA
 extern "C"

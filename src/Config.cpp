@@ -33,13 +33,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
-#include "Directory.h"
-#include "Date.h"
-#include "File.h"
-#include "Config.h"
-#include "text.h"
-#include "util.h"
-#include "../cmake.h"
+#include <Directory.h>
+#include <Date.h>
+#include <File.h>
+#include <Config.h>
+#include <text.h>
+#include <util.h>
+#include <cmake.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // This string is used in two ways:

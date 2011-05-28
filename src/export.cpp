@@ -29,11 +29,11 @@
 #include <sstream>
 #include <stdlib.h>
 
-#include "Att.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
-#include "../cmake.h"
+#include <Att.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
+#include <cmake.h>
 
 extern Context context;
 

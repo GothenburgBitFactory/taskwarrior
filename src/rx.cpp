@@ -27,7 +27,7 @@
 
 #include <stdlib.h>
 #include <regex.h>
-#include "rx.h"
+#include <rx.h>
 
 #define L10N                                           // Localization complete.
 

@@ -26,11 +26,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <stdlib.h>
-#include "Context.h"
-#include "Date.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
+#include <Context.h>
+#include <Date.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
 
 #define L10N                                           // Localization complete.
 

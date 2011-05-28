@@ -30,7 +30,7 @@
 
 #include <string>
 #include <vector>
-#include "Nibbler.h"
+#include <Nibbler.h>
 
 class Att
 {

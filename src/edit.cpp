@@ -33,13 +33,13 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
-#include "Directory.h"
-#include "File.h"
-#include "Date.h"
-#include "Duration.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
+#include <Directory.h>
+#include <File.h>
+#include <Date.h>
+#include <Duration.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
 
 extern Context context;
 

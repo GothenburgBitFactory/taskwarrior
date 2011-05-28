@@ -36,17 +36,17 @@
 #include <pwd.h>
 #include <time.h>
 
-#include "Permission.h"
-#include "Directory.h"
-#include "Nibbler.h"
-#include "text.h"
-#include "util.h"
-#include "main.h"
-#include "Transport.h"
-#include "ViewText.h"
-#include "../cmake.h"
+#include <Permission.h>
+#include <Directory.h>
+#include <Nibbler.h>
+#include <text.h>
+#include <util.h>
+#include <main.h>
+#include <Transport.h>
+#include <ViewText.h>
+#include <cmake.h>
 #ifdef HAVE_COMMIT
-#include "../commit.h"
+#include <commit.h>
 #endif
 
 extern Context context;

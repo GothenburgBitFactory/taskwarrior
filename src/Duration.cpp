@@ -31,9 +31,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "text.h"
-#include "util.h"
-#include "Duration.h"
+#include <text.h>
+#include <util.h>
+#include <Duration.h>
 
 static const char* durations[] =
 {

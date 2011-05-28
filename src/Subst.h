@@ -29,7 +29,7 @@
 #define L10N                                           // Localization complete.
 
 #include <string>
-#include "Att.h"
+#include <Att.h>
 
 class Subst
 {

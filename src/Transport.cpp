@@ -27,11 +27,11 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include "util.h"
-#include "Transport.h"
-#include "TransportSSH.h"
-#include "TransportRSYNC.h"
-#include "TransportCurl.h"
+#include <util.h>
+#include <Transport.h>
+#include <TransportSSH.h>
+#include <TransportRSYNC.h>
+#include <TransportCurl.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 Transport::Transport (const Uri& uri)

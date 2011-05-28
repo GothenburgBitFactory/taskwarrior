@@ -31,8 +31,8 @@
 #include <sys/stat.h>
 #include <pwd.h>
 #include <unistd.h>
-#include "Path.h"
-#include "../cmake.h"
+#include <Path.h>
+#include <cmake.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 Path::Path ()

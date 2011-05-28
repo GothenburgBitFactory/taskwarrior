@@ -31,7 +31,7 @@
 #include <main.h>
 #include <util.h>
 #include <text.h>
-#include "test.h"
+#include <test.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 UnitTest::UnitTest ()

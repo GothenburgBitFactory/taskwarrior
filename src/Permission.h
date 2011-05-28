@@ -29,7 +29,7 @@
 #define L10N                                           // Localization complete.
 
 #include <string>
-#include "Task.h"
+#include <Task.h>
 
 class Permission
 {

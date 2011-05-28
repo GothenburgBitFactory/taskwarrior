@@ -25,9 +25,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
-#include "main.h"
-#include "util.h"
-#include "test.h"
+#include <main.h>
+#include <util.h>
+#include <test.h>
 
 Context context;
 

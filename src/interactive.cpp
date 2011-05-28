@@ -28,10 +28,10 @@
 #include <sstream>
 #include <stdio.h>
 #include <sys/ioctl.h>
-#include "Context.h"
-#include "main.h"
-#include "i18n.h"
-#include "../cmake.h"
+#include <Context.h>
+#include <main.h>
+#include <i18n.h>
+#include <cmake.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 int Context::getWidth ()

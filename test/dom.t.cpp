@@ -26,7 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <unistd.h>
-#include "../cmake.h"
+#include <cmake.h>
 #include <main.h>
 #include <test.h>
 

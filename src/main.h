@@ -36,10 +36,10 @@
 #include <vector>
 #include <map>
 #include <sys/types.h>
-#include "Context.h"
-#include "Date.h"
-#include "Color.h"
-#include "../cmake.h"
+#include <Context.h>
+#include <Date.h>
+#include <Color.h>
+#include <cmake.h>
 
 // recur.cpp
 void handleRecurrence ();
