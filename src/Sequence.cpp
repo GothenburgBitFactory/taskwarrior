@@ -26,12 +26,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <map>
+#include <vector>
 #include <string>
-#include <algorithm>
-#include <ctype.h>
-#include <util.h>
 #include <text.h>
-#include <i18n.h>
 #include <Context.h>
 #include <Sequence.h>
 
@@ -156,11 +153,7 @@ bool Sequence::validId (const std::string& input) const
   if (input.length () == 0)
     return false;
 
-  for (size_t i = 0; i < input.length (); ++i)
-    if (!isdigit (input[i]))
-      return false;
-
-  return true;
+  return digitsOnly (input);
 }
 
 //////////////////////////////////////////////////////////////////////////////// 

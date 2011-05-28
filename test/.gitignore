@@ -1,6 +1,7 @@
 *.o
 *.data
 *.log
+arguments.t
 att.t
 autocomplete.t
 cmd.t

@@ -32,19 +32,28 @@
 #include <string>
 #include <File.h>
 
+#define ARGUMENTS_SEQUENCE_MAX_RANGE 1000
+
 class Arguments : public std::vector <std::string>
 {
 public:
   Arguments ();
   ~Arguments ();
 
-  void capture (int, char**);
+  void capture (int, const char**);
   void append_stdin ();
   void rc_override (std::string&, File&, std::string&);
   void get_data_location (std::string&);
   void apply_overrides (std::string&);
   void resolve_aliases ();
   std::string combine ();
+
+  bool extract_command (const std::vector <std::string>&, std::string&);
+  void extract_sequence (std::vector <int>&);
+  void extract_uuids (std::vector <std::string>&);
+  void extract_filter ();
+  void extract_modifications ();
+  void extract_text ();
 };
 
 #endif

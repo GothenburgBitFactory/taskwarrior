@@ -54,7 +54,7 @@ public:
   Context (const Context&);
   Context& operator= (const Context&);
 
-  void initialize (int, char**);       // all startup
+  void initialize (int, const char**); // all startup
   int run ();
   int dispatch2 (std::string&);        // command handler dispatch
   int dispatch (std::string&);         // command handler dispatch

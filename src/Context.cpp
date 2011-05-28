@@ -75,11 +75,12 @@ Context::~Context ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Context::initialize (int argc, char** argv)
+void Context::initialize (int argc, const char** argv)
 {
   Timer t ("Context::initialize");
 
   // char** argv --> std::vector <std::string> Context::args.
+  // TODO Handle "cal" case here.
   program = argv[0];
   args.capture (argc, argv);
 
@@ -154,7 +155,7 @@ int Context::run ()
   std::string output;
   try
   {
-    parse ();                 // Parse command line.
+    parse ();                 // Parse command line. TODO Obsolete
     rc = dispatch2 (output);  // Dispatch to new command handlers.
     if (rc)
       rc = dispatch (output); // Dispatch to old command handlers.
@@ -219,23 +220,14 @@ int Context::dispatch2 (std::string &out)
     keywords.push_back (i->first);
 
   // Autocomplete args against keywords.
-  std::vector <std::string>::iterator arg;
-  for (arg = args.begin (); arg != args.end (); ++arg)
+  std::string command;
+  if (args.extract_command (keywords, command))
   {
-    std::vector <std::string> matches;
-    if (autoComplete (*arg, keywords, matches) == 1)
-    {
-      if (*arg != matches[0])
-        debug ("Context::dispatch2 parse keyword '" + *arg + "' --> '" + matches[0] + "'");
-      else
-        debug ("Context::dispatch2 parse keyword '" + *arg + "'");
+    Command* c = commands[command];
+    if (c->displays_id ())
+      tdb.gc ();
 
-      Command* c = commands[matches[0]];
-      if (c->displays_id ())
-        tdb.gc ();
-
-      return c->execute (commandLine, out);
-    }
+    return c->execute (commandLine, out);
   }
 
   // TODO When ::dispatch is eliminated, show usage on unrecognized command.
