@@ -50,6 +50,7 @@ endif (LUA51_FOUND)
 
 check_function_exists (random  HAVE_RANDOM)
 check_function_exists (srandom HAVE_SRANDOM)
+
 # Some systems include uuid automatically (OS X), others need the includes/library
 check_function_exists (uuid_unparse_lower HAVE_UUID)
 if (NOT HAVE_UUID)

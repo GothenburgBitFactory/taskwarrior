@@ -174,25 +174,25 @@ void Column::renderHeader (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Column::measure (const std::string& value, int& minimum, int& maximum)
+void Column::measure (const std::string&, int&, int&)
 {
   throw std::string ("Virtual method Column::measure not overriden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Column::measure (Task& task, int& minimum, int& maximum)
+void Column::measure (Task&, int&, int&)
 {
   throw std::string ("Virtual method Column::measure not overriden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Column::render (std::vector <std::string>& lines, const std::string& value, int width, Color& color)
+void Column::render (std::vector <std::string>&, const std::string&, int, Color&)
 {
   throw std::string ("Virtual method Column::render not overriden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Column::render (std::vector <std::string>& lines, Task& task, int width, Color& color)
+void Column::render (std::vector <std::string>&, Task&, int, Color&)
 {
   throw std::string ("Virtual method Column::render not overriden.");
 }

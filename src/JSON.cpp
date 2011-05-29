@@ -91,7 +91,6 @@ std::string json::string::dump ()
 ////////////////////////////////////////////////////////////////////////////////
 json::number* json::number::parse (Nibbler& nibbler)
 {
-  int i;
   double d;
   if (nibbler.getNumber (d))
   {

@@ -291,8 +291,10 @@ std::string renderAttribute (const std::string& name, const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 // TODO Implement all the post-command feedback here.  This includes project
 //      completion percentages, "3 tasks modified", all warnings, and so on.
-std::string feedback (const Task& before, const Task& after)
+std::string feedback (const Task&, const Task&)
 {
+
+  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

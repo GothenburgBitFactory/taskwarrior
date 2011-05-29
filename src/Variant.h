@@ -44,8 +44,7 @@ public:
     v_double   = 8,
     v_string   = 16,
     v_date     = 32,
-    v_duration = 64,
-    v_other    = 128
+    v_duration = 64
   };
 
   Variant ();

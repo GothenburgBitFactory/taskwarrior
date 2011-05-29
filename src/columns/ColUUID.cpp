@@ -47,7 +47,7 @@ ColumnUUID::~ColumnUUID ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnUUID::measure (Task& task, int& minimum, int& maximum)
+void ColumnUUID::measure (Task&, int& minimum, int& maximum)
 {
        if (_style == "default") minimum = maximum = 36;
   else if (_style == "short")   minimum = maximum = 8;

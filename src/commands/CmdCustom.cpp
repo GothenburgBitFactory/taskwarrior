@@ -51,7 +51,7 @@ CmdCustom::CmdCustom (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCustom::execute (const std::string& command_line, std::string& output)
+int CmdCustom::execute (const std::string&, std::string& output)
 {
   int rc = 0;
 
@@ -120,7 +120,7 @@ int CmdCustom::execute (const std::string& command_line, std::string& output)
 
   // Sort the tasks.
   std::vector <int> sequence;
-  for (int i = 0; i < tasks.size (); ++i)
+  for (unsigned int i = 0; i < tasks.size (); ++i)
     sequence.push_back (i);
 
   sort_tasks (tasks, sequence, reportSort);
@@ -140,7 +140,7 @@ int CmdCustom::execute (const std::string& command_line, std::string& output)
   view.intraColorOdd (alternate);
 
   // Add the columns and labels.
-  for (int i = 0; i < columns.size (); ++i)
+  for (unsigned int i = 0; i < columns.size (); ++i)
   {
     Column* c = Column::factory (columns[i], _keyword);
     c->setLabel (labels[i]);
@@ -179,10 +179,10 @@ int CmdCustom::execute (const std::string& command_line, std::string& output)
         << tasks.size ()
         << (tasks.size () == 1 ? " task" : " tasks");
 
-    if (maxrows && maxrows < tasks.size ())
+    if (maxrows && maxrows < (int)tasks.size ())
       out << ", " << maxrows << " shown";
 
-    if (maxlines && maxlines < tasks.size ())
+    if (maxlines && maxlines < (int)tasks.size ())
       out << ", truncated to " << maxlines - table_header << " lines";
 
     out << "\n";

@@ -63,7 +63,7 @@ CmdDiagnostics::CmdDiagnostics ()
 //
 // Although this will change over time, initially this command will answer the
 // kind of questions we always have to ask whenever something is wrong.
-int CmdDiagnostics::execute (const std::string& command_line, std::string& output)
+int CmdDiagnostics::execute (const std::string&, std::string& output)
 {
   Color bold ("bold");
 

@@ -75,7 +75,7 @@ void ColumnTags::measure (Task& task, int& minimum, int& maximum)
       split (all, tags, ',');
       std::vector <std::string>::iterator i;
       for (i = all.begin (); i != all.end (); ++i)
-        if (i->length () > minimum)
+        if ((int)i->length () > minimum)
           minimum = i->length () + 1;
     }
   }

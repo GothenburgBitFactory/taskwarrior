@@ -67,7 +67,6 @@ void sort_tasks (
 // Essentially a static implementation of a dynamic operator<.
 static bool sort_compare (int left, int right)
 {
-  int result;
   std::string field;
   bool ascending;
 

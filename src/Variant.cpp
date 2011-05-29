@@ -51,6 +51,7 @@ Variant::Variant (const Variant& other)
   case v_string:   mString   = other.mString;   break;
   case v_date:     mDate     = other.mDate;     break;
   case v_duration: mDuration = other.mDuration; break;
+  case v_unknown:                               break;
   }
 }
 
@@ -147,6 +148,9 @@ Variant& Variant::operator<= (const Variant& other)
   case v_duration:
     mBool = (time_t)mDuration <= (time_t)other.mDuration ? true : false;
     break;
+
+  case v_unknown:
+    break;
   }
 
   mType = v_boolean;
@@ -183,6 +187,9 @@ Variant& Variant::operator>= (const Variant& other)
 
   case v_duration:
     mBool = (time_t)mDuration >= (time_t)other.mDuration ? true : false;
+    break;
+
+  case v_unknown:
     break;
   }
 
@@ -221,6 +228,9 @@ Variant& Variant::operator== (const Variant& other)
   case v_duration:
     mBool = mDuration == other.mDuration ? true : false;
     break;
+
+  case v_unknown:
+    break;
   }
 
   mType = v_boolean;
@@ -258,6 +268,9 @@ Variant& Variant::operator!= (const Variant& other)
   case v_duration:
     mBool = mDuration != other.mDuration ? true : false;
     break;
+
+  case v_unknown:
+    break;
   }
 
   mType = v_boolean;
@@ -291,6 +304,9 @@ Variant& Variant::operator^ (const Variant& other)
 
   case v_duration:
     throw std::string ("Cannot perform exponentiation on duration types");
+    break;
+
+  case v_unknown:
     break;
   }
 
@@ -335,6 +351,9 @@ Variant& Variant::operator- (const Variant& other)
     // TODO Missing operator -=
     //mDuration -= other.mDuration;
     break;
+
+  case v_unknown:
+    break;
   }
 
   return *this;
@@ -370,6 +389,9 @@ Variant& Variant::operator+ (const Variant& other)
     // TODO operator+ missing
     //mDuration += other.mDuration;
     break;
+
+  case v_unknown:
+    break;
   }
 
   return *this;
@@ -403,6 +425,9 @@ Variant& Variant::operator* (const Variant& other)
   case v_duration:
     throw std::string ("Cannot perform multiplication on duration types");
     break;
+
+  case v_unknown:
+    break;
   }
 
   return *this;
@@ -435,6 +460,9 @@ Variant& Variant::operator/ (const Variant& other)
 
   case v_duration:
     throw std::string ("Cannot perform division on duration types");
+    break;
+
+  case v_unknown:
     break;
   }
 
@@ -472,6 +500,9 @@ Variant& Variant::operator< (const Variant& other)
   case v_duration:
     mBool = mDuration < other.mDuration ? true : false;
     break;
+
+  case v_unknown:
+    break;
   }
 
   mType = v_boolean;
@@ -508,6 +539,9 @@ Variant& Variant::operator> (const Variant& other)
 
   case v_duration:
     mBool = mDuration > other.mDuration ? true : false;
+    break;
+
+  case v_unknown:
     break;
   }
 

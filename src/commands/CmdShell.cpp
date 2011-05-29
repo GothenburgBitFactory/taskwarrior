@@ -45,7 +45,7 @@ CmdShell::CmdShell ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdShell::execute (const std::string& command_line, std::string& output)
+int CmdShell::execute (const std::string&, std::string&)
 {
   // Display some kind of welcome message.
   Color bold (Color::nocolor, Color::nocolor, false, true, false);

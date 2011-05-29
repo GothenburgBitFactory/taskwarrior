@@ -39,7 +39,7 @@ CmdExec::CmdExec ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdExec::execute (const std::string& command_line, std::string& output)
+int CmdExec::execute (const std::string& command_line, std::string&)
 {
   return system (command_line.c_str ());
 }

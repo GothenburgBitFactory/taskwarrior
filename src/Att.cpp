@@ -606,7 +606,9 @@ bool Att::match (const Att& other) const
   bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
 
   // Are regular expressions being used in place of string comparison?
+#ifdef FEATURE_REGEX
   bool regex = context.config.getBoolean ("regex");
+#endif
 
   // If there are no mods, just perform a straight compare on value.
   if (mMod == "")

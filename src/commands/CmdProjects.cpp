@@ -44,7 +44,7 @@ CmdProjects::CmdProjects ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdProjects::execute (const std::string& command_line, std::string& output)
+int CmdProjects::execute (const std::string&, std::string& output)
 {
   int rc = 0;
   std::stringstream out;
@@ -142,7 +142,7 @@ CmdCompletionProjects::CmdCompletionProjects ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCompletionProjects::execute (const std::string& command_line, std::string& output)
+int CmdCompletionProjects::execute (const std::string&, std::string& output)
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));

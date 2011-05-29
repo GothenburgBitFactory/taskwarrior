@@ -46,7 +46,7 @@ CmdHistoryMonthly::CmdHistoryMonthly ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdHistoryMonthly::execute (const std::string& command_line, std::string& output)
+int CmdHistoryMonthly::execute (const std::string&, std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
@@ -202,7 +202,7 @@ CmdHistoryAnnual::CmdHistoryAnnual ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdHistoryAnnual::execute (const std::string& command_line, std::string& output)
+int CmdHistoryAnnual::execute (const std::string&, std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
@@ -355,7 +355,7 @@ CmdGHistoryMonthly::CmdGHistoryMonthly ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdGHistoryMonthly::execute (const std::string& command_line, std::string& output)
+int CmdGHistoryMonthly::execute (const std::string&, std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
@@ -551,7 +551,7 @@ CmdGHistoryAnnual::CmdGHistoryAnnual ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdGHistoryAnnual::execute (const std::string& command_line, std::string& output)
+int CmdGHistoryAnnual::execute (const std::string&, std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data

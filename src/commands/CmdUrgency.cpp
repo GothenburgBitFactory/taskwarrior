@@ -44,7 +44,7 @@ CmdUrgency::CmdUrgency ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdUrgency::execute (const std::string& command_line, std::string& output)
+int CmdUrgency::execute (const std::string&, std::string& output)
 {
   // Get all the tasks.
   std::vector <Task> tasks;

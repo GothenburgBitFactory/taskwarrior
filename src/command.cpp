@@ -280,7 +280,7 @@ void handleUndo ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleMerge (std::string& outs)
+void handleMerge (std::string&)
 {
   std::string file = trim (context.task.get ("description"));
   std::string pushfile = "";
@@ -337,7 +337,7 @@ void handleMerge (std::string& outs)
 ////////////////////////////////////////////////////////////////////////////////
 // Transfers the local data (from rc.location.data) to the remote path.  Because
 // this is potentially on another machine, no checking can be performed.
-void handlePush (std::string& outs)
+void handlePush (std::string&)
 {
   std::string file = trim (context.task.get ("description"));
 
@@ -387,7 +387,7 @@ void handlePush (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void handlePull (std::string& outs)
+void handlePull (std::string&)
 {
   std::string file = trim (context.task.get ("description"));
 

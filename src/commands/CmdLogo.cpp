@@ -47,7 +47,7 @@ CmdLogo::CmdLogo ()
 //   Generate UUID
 //   Call the "install" function once, store results in rc:
 //     extension.<uuid>=<JSON>
-int CmdLogo::execute (const std::string& commandLine, std::string& output)
+int CmdLogo::execute (const std::string&, std::string& output)
 {
   static const char* data[] =
   {

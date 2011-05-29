@@ -44,7 +44,7 @@ CmdHelp::CmdHelp ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdHelp::execute (const std::string& command_line, std::string& output)
+int CmdHelp::execute (const std::string&, std::string& output)
 {
   ViewText view;
   view.width (context.getWidth ());

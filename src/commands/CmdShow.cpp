@@ -50,7 +50,7 @@ CmdShow::CmdShow ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdShow::execute (const std::string& command_line, std::string& output)
+int CmdShow::execute (const std::string&, std::string& output)
 {
   int rc = 0;
   std::stringstream out;

@@ -110,13 +110,13 @@ std::string ViewText::render ()
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
   std::vector <int> ideal;
-  for (int col = 0; col < _columns.size (); ++col)
+  for (unsigned int col = 0; col < _columns.size (); ++col)
   {
     // Headers factor in to width calculations.
     int global_min = utf8_length (_columns[col]->getLabel ());
     int global_ideal = global_min;
 
-    for (int row = 0; row < _data.size (); ++row)
+    for (unsigned int row = 0; row < _data.size (); ++row)
     {
       // Determine minimum and ideal width for this column.
       int min;
@@ -162,7 +162,7 @@ std::string ViewText::render ()
     // Spread 'overage' among columns where width[i] < ideal[i]
     while (overage)
     {
-      for (int i = 0; i < _columns.size () && overage; ++i)
+      for (unsigned int i = 0; i < _columns.size () && overage; ++i)
       {
         if (widths[i] < ideal[i])
         {
@@ -174,9 +174,9 @@ std::string ViewText::render ()
   }
 
   // Compose column headers.
-  int max_lines = 0;
+  unsigned int max_lines = 0;
   std::vector <std::vector <std::string> > headers;
-  for (int c = 0; c < _columns.size (); ++c)
+  for (unsigned int c = 0; c < _columns.size (); ++c)
   {
     headers.push_back (std::vector <std::string> ());
     _columns[c]->renderHeader (headers[c], widths[c], _header);
@@ -199,11 +199,11 @@ std::string ViewText::render ()
   std::string intra_odd   = context.color () ? _intra_odd.colorize  (intra) : intra;
   std::string intra_even  = context.color () ? _intra_even.colorize (intra) : intra;
 
-  for (int i = 0; i < max_lines; ++i)
+  for (unsigned int i = 0; i < max_lines; ++i)
   {
     out += left_margin + extra;
 
-    for (int c = 0; c < _columns.size (); ++c)
+    for (unsigned int c = 0; c < _columns.size (); ++c)
     {
       if (c)
         out += intra;
@@ -228,7 +228,7 @@ std::string ViewText::render ()
   // Compose, render columns, in sequence.
   _rows = 0;
   std::vector <std::vector <std::string> > cells;
-  for (int row = 0; row < _data.size (); ++row)
+  for (unsigned int row = 0; row < _data.size (); ++row)
   {
     max_lines = 0;
 
@@ -241,7 +241,7 @@ std::string ViewText::render ()
     //      therefore there are only cell colors, not intra colors.
 
     Color cell_color;
-    for (int col = 0; col < _columns.size (); ++col)
+    for (unsigned int col = 0; col < _columns.size (); ++col)
     {
       if (context.color ())
       {
@@ -256,11 +256,11 @@ std::string ViewText::render ()
         max_lines = cells[col].size ();
     }
 
-    for (int i = 0; i < max_lines; ++i)
+    for (unsigned int i = 0; i < max_lines; ++i)
     {
       out += left_margin + (odd ? extra_odd : extra_even);
 
-      for (int col = 0; col < _columns.size (); ++col)
+      for (unsigned int col = 0; col < _columns.size (); ++col)
       {
         if (col)
         {

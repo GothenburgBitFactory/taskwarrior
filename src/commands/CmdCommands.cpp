@@ -45,7 +45,7 @@ CmdCompletionCommands::CmdCompletionCommands ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCompletionCommands::execute (const std::string& command_line, std::string& output)
+int CmdCompletionCommands::execute (const std::string&, std::string& output)
 {
   // Get a list of all commands.
   std::vector <std::string> commands;
@@ -81,7 +81,7 @@ CmdZshCommands::CmdZshCommands ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdZshCommands::execute (const std::string& command_line, std::string& output)
+int CmdZshCommands::execute (const std::string&, std::string& output)
 {
   // Get a list of all commands.
   std::vector <std::string> commands;

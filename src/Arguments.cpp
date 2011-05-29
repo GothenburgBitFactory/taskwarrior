@@ -286,7 +286,7 @@ void Arguments::extract_sequence (std::vector <int>& sequence)
   std::vector <int> kill;
 
   bool terminated = false;
-  for (int i = 0; i < this->size (); ++i)
+  for (unsigned int i = 0; i < this->size (); ++i)
   {
     if (!terminated)
     {
@@ -358,7 +358,7 @@ void Arguments::extract_sequence (std::vector <int>& sequence)
   }
 
   // Now remove args in the kill list.
-  for (int k = 0; k < kill.size (); ++k)
+  for (unsigned int k = 0; k < kill.size (); ++k)
     this->erase (this->begin () + kill[k]);
 }
 

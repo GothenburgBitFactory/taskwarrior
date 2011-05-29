@@ -44,7 +44,7 @@ CmdAppend::CmdAppend ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdAppend::execute (const std::string& command_line, std::string& output)
+int CmdAppend::execute (const std::string&, std::string& output)
 {
   if (!context.task.has ("description"))
     throw std::string ("Additional text must be provided.");
