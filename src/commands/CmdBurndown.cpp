@@ -26,16 +26,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
-#include <algorithm>
 #include <math.h>
-#include <string.h>
-
 #include <Context.h>
 #include <Date.h>
 #include <Duration.h>
-#include <text.h>
-#include <util.h>
 #include <main.h>
+#include <CmdBurndown.h>
 
 extern Context context;
 
@@ -970,93 +966,17 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportBurndownDaily (std::string& outs)
+CmdBurndownMonthly::CmdBurndownMonthly ()
 {
-  int rc = 0;
-
-  // Scan the pending tasks, applying any filter.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Create a chart, scan the tasks, then render.
-  Chart chart ('D');
-
-  // Use any filter as a title.
-  if (context.filter.size ())
-  {
-    std::string combined = "(";
-
-    for (unsigned int i = 0; i < context.filter.size (); ++i)
-    {
-      if (i)
-        combined += " ";
-
-      combined += context.filter[i].name ();
-
-      if (context.filter[i].mod ().length ())
-        combined += "." + context.filter[i].mod ();
-
-      combined += ":" + context.filter[i].value ();
-    }
-
-    combined += ")";
-    chart.description (combined);
-  }
-
-  chart.scan (tasks);
-  outs = chart.render ();
-  return rc;
+  _keyword     = "burndown.monthly";
+  _usage       = "task burndown.monthly [<filter>]";
+  _description = "Shows a graphical burndown chart, by month.";
+  _read_only   = true;
+  _displays_id = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleReportBurndownWeekly (std::string& outs)
-{
-  int rc = 0;
-
-  // Scan the pending tasks, applying any filter.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Create a chart, scan the tasks, then render.
-  Chart chart ('W');
-
-  // Use any filter as a title.
-  if (context.filter.size ())
-  {
-    std::string combined = "(";
-
-    for (unsigned int i = 0; i < context.filter.size (); ++i)
-    {
-      if (i)
-        combined += " ";
-
-      combined += context.filter[i].name ();
-
-      if (context.filter[i].mod ().length ())
-        combined += "." + context.filter[i].mod ();
-
-      combined += ":" + context.filter[i].value ();
-    }
-
-    combined += ")";
-    chart.description (combined);
-  }
-
-  chart.scan (tasks);
-  outs = chart.render ();
-  return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int handleReportBurndownMonthly (std::string& outs)
+int CmdBurndownMonthly::execute (const std::string&, std::string& output)
 {
   int rc = 0;
 
@@ -1094,7 +1014,113 @@ int handleReportBurndownMonthly (std::string& outs)
   }
 
   chart.scan (tasks);
-  outs = chart.render ();
+  output = chart.render ();
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CmdBurndownWeekly::CmdBurndownWeekly ()
+{
+  _keyword     = "burndown.weekly";
+  _usage       = "task burndown.weekly [<filter>]";
+  _description = "Shows a graphical burndown chart, by week.";
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdBurndownWeekly::execute (const std::string&, std::string& output)
+{
+  int rc = 0;
+
+  // Scan the pending tasks, applying any filter.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Create a chart, scan the tasks, then render.
+  Chart chart ('W');
+
+  // Use any filter as a title.
+  if (context.filter.size ())
+  {
+    std::string combined = "(";
+
+    for (unsigned int i = 0; i < context.filter.size (); ++i)
+    {
+      if (i)
+        combined += " ";
+
+      combined += context.filter[i].name ();
+
+      if (context.filter[i].mod ().length ())
+        combined += "." + context.filter[i].mod ();
+
+      combined += ":" + context.filter[i].value ();
+    }
+
+    combined += ")";
+    chart.description (combined);
+  }
+
+  chart.scan (tasks);
+  output = chart.render ();
+  return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CmdBurndownDaily::CmdBurndownDaily ()
+{
+  _keyword     = "burndown.daily";
+  _usage       = "task burndown.daily [<filter>]";
+  _description = "Shows a graphical burndown chart, by day.";
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdBurndownDaily::execute (const std::string&, std::string& output)
+{
+  int rc = 0;
+
+  // Scan the pending tasks, applying any filter.
+  std::vector <Task> tasks;
+  context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+  context.tdb.load (tasks, context.filter);
+  context.tdb.commit ();
+  context.tdb.unlock ();
+
+  // Create a chart, scan the tasks, then render.
+  Chart chart ('D');
+
+  // Use any filter as a title.
+  if (context.filter.size ())
+  {
+    std::string combined = "(";
+
+    for (unsigned int i = 0; i < context.filter.size (); ++i)
+    {
+      if (i)
+        combined += " ";
+
+      combined += context.filter[i].name ();
+
+      if (context.filter[i].mod ().length ())
+        combined += "." + context.filter[i].mod ();
+
+      combined += ":" + context.filter[i].value ();
+    }
+
+    combined += ")";
+    chart.description (combined);
+  }
+
+  chart.scan (tasks);
+  output = chart.render ();
   return rc;
 }
 

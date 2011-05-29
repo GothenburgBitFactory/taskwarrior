@@ -152,18 +152,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
   view.set (row, 2, "Shows a weekly report of tasks completed and started.");
 
   row = view.addRow ();
-  view.set (row, 1, "task burndown.daily");
-  view.set (row, 2, "Shows a graphical burndown chart, by day.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task burndown.weekly");
-  view.set (row, 2, "Shows a graphical burndown chart, by week.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task burndown.monthly");
-  view.set (row, 2, "Shows a graphical burndown chart, by month.");
-
-  row = view.addRow ();
   view.set (row, 1, "task calendar [due|month year|year]");
   view.set (row, 2, "Shows a calendar, with due tasks marked.");
 

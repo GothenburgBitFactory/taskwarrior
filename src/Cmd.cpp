@@ -134,9 +134,6 @@ void Cmd::load ()
     commands.push_back ("export.csv");
     commands.push_back ("export.ical");
     commands.push_back ("export.yaml");
-    commands.push_back ("burndown.daily");
-    commands.push_back ("burndown.weekly");
-    commands.push_back ("burndown.monthly");
     commands.push_back ("add");
     commands.push_back ("annotate");
     commands.push_back ("denotate");
@@ -217,9 +214,6 @@ bool Cmd::isReadOnlyCommand ()
       command == "export.csv"                                                ||
       command == "export.ical"                                               ||
       command == "export.yaml"                                               ||
-      command == "burndown.daily"                                            ||
-      command == "burndown.weekly"                                           ||
-      command == "burndown.monthly"                                          ||
       command == "calendar"                                                  ||
       command == "colors"                                                    ||
       command == "config"                                                    ||
