@@ -59,7 +59,10 @@ set (task_SRCS API.cpp API.h
 
 add_library (task STATIC ${task_SRCS})
 add_executable (task_executable main.cpp)
-target_link_libraries (task_executable task commands columns ${TASK_LIBRARIES})
+
+# Yes, 'task' is included twice, other linking fails on CentOS.
+target_link_libraries (task_executable task commands columns task ${TASK_LIBRARIES})
+
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 
 install (TARGETS task_executable DESTINATION ${TASK_BINDIR})
