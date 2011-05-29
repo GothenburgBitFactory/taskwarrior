@@ -705,7 +705,8 @@ static std::string importTaskCmdLine (const std::vector <std::string>& lines)
       context.task.clear ();
       context.cmd.command = "";
       context.parse ();
-      (void)handleAdd (unused);
+//      (void)handleAdd (unused);
+      context.commands["add"]->execute (unused, unused);
       context.clearMessages ();
     }
 

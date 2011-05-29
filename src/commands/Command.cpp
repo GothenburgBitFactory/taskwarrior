@@ -28,6 +28,7 @@
 #include <iostream>
 #include <vector>
 #include <Command.h>
+#include <CmdAdd.h>
 #include <CmdAppend.h>
 #include <CmdBurndown.h>
 #include <CmdCommands.h>
@@ -60,6 +61,7 @@ void Command::factory (std::map <std::string, Command*>& all)
 {
   Command* c;
 
+  c = new CmdAdd ();                all[c->keyword ()] = c;
   c = new CmdAppend ();             all[c->keyword ()] = c;
   c = new CmdBurndownDaily ();      all[c->keyword ()] = c;
   c = new CmdBurndownMonthly ();    all[c->keyword ()] = c;

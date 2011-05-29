@@ -134,7 +134,6 @@ void Cmd::load ()
     commands.push_back ("export.csv");
     commands.push_back ("export.ical");
     commands.push_back ("export.yaml");
-    commands.push_back ("add");
     commands.push_back ("annotate");
     commands.push_back ("denotate");
     commands.push_back ("calendar");
@@ -231,7 +230,6 @@ bool Cmd::isReadOnlyCommand ()
 bool Cmd::isWriteCommand ()
 {
   if (command == "merge"     ||
-      command == "add"       ||
       command == "annotate"  ||
       command == "denotate"  ||
       command == "delete"    ||

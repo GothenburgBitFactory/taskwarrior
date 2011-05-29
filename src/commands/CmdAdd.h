@@ -24,37 +24,18 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_ARGUMENTS
-#define INCLUDED_ARGUMENTS
+#ifndef INCLUDED_CMDADD
+#define INCLUDED_CMDADD
 #define L10N                                           // Localization complete.
 
-#include <vector>
 #include <string>
-#include <File.h>
+#include <Command.h>
 
-#define ARGUMENTS_SEQUENCE_MAX_RANGE 1000
-
-class Arguments : public std::vector <std::string>
+class CmdAdd : public Command
 {
 public:
-  Arguments ();
-  ~Arguments ();
-
-  void capture (int, const char**);
-  void append_stdin ();
-  void rc_override (std::string&, File&, std::string&);
-  void get_data_location (std::string&);
-  void apply_overrides (std::string&);
-  void resolve_aliases ();
-  std::string combine ();
-
-  bool extract_command (const std::vector <std::string>&, std::string&);
-  void extract_sequence (std::vector <int>&);
-  void extract_nv ();
-  void extract_uuids (std::vector <std::string>&);
-  void extract_filter ();
-  void extract_modifications ();
-  void extract_text ();
+  CmdAdd ();
+  int execute (const std::string&, std::string&);
 };
 
 #endif

@@ -50,7 +50,6 @@ int getDueState (const std::string&);
 bool nag (Task&);
 
 // command.cpp
-int handleAdd (std::string&);
 int handleLog (std::string&);
 int handleDone (std::string&);
 int handleModify (std::string&);
