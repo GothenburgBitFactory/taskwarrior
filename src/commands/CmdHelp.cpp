@@ -89,10 +89,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
 
 /*
   row = view.addRow ();
-  view.set (row, 1, "task ID [tags] [attrs] [desc...]");
-  view.set (row, 2, "Modifies the existing task with provided arguments.");
-
-  row = view.addRow ();
   view.set (row, 1, "task ID /from/to/g");
   view.set (row, 2, "Performs substitution on the task description and "
                          "annotations.  The 'g' is optional, and causes "

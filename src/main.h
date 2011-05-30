@@ -50,7 +50,6 @@ int getDueState (const std::string&);
 bool nag (Task&);
 
 // command.cpp
-int handleModify (std::string&);
 int deltaAppend (Task&);
 int deltaPrepend (Task&);
 int deltaDescription (Task&);

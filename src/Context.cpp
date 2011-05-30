@@ -249,13 +249,12 @@ int Context::dispatch (std::string &out)
   Timer t ("Context::dispatch");
 
   // TODO Chain-of-command pattern dispatch.
-  if (cmd.command == "" && sequence.size ()) { rc = handleModify (out); }
+  // ...
 
   // Commands that display IDs and therefore need TDB::gc first.
   // ...
 
-  // If the command is not recognized, display usage.
-  else                                        { rc = commands["help"]->execute (commandLine, out); }
+  rc = commands["help"]->execute (commandLine, out);
 
   // Only update the shadow file if such an update was not suppressed (shadow),
   if ((cmd.isWriteCommand () ||
