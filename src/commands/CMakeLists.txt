@@ -34,6 +34,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdPrepend.cpp     CmdPrepend.h
                    CmdProjects.cpp    CmdProjects.h
                    CmdPull.cpp        CmdPull.h
+                   CmdPush.cpp        CmdPush.h
                    CmdQuery.cpp       CmdQuery.h
                    CmdReports.cpp     CmdReports.h
                    CmdShell.cpp       CmdShell.h

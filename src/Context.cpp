@@ -251,7 +251,6 @@ int Context::dispatch (std::string &out)
   // TODO Chain-of-command pattern dispatch.
        if (cmd.command == "merge")            { tdb.gc ();
                                                      handleMerge                 (out); }
-  else if (cmd.command == "push")             {      handlePush                  (out); }
   else if (cmd.command == "" &&
            sequence.size ())                  { rc = handleModify                (out); }
 

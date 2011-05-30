@@ -95,67 +95,16 @@ void handleMerge (std::string&)
     if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri.data + "\'?")) )
        || (bAutopush) )
     {
+      context.task.set ("description", uri.data);
+
       std::string out;
-	  context.task.set ("description", uri.data);
-      handlePush (out);
+      context.commands["push"]->execute ("", out);
     }
   }
   else
     throw std::string ("No uri was specified for the merge.  Either specify "
                        "the uri of a remote .task directory, or create a "
                        "'merge.default.uri' entry in your .taskrc file.");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Transfers the local data (from rc.location.data) to the remote path.  Because
-// this is potentially on another machine, no checking can be performed.
-void handlePush (std::string&)
-{
-  std::string file = trim (context.task.get ("description"));
-
-  Uri uri (file, "push");
-  uri.parse ();
-
-  if (uri.data.length ())
-  {
-		Directory location (context.config.get ("data.location"));
-
-		Transport* transport;
-		if ((transport = Transport::getTransport (uri)) != NULL )
-		{
-			transport->send (location.data + "/{pending,undo,completed}.data");
-			delete transport;
-		}
-		else
-		{
-      // Verify that files are not being copied from rc.data.location to the
-      // same place.
-      if (Directory (uri.path) == Directory (context.config.get ("data.location")))
-        throw std::string ("Cannot push files when the source and destination are the same.");
-
-      // copy files locally
-      if (! Path (uri.data).is_directory ())
-        throw std::string ("The uri '") + uri.path + "' is not a local directory.";
-
-      std::ifstream ifile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
-      std::ofstream ofile1 ((uri.path      + "/undo.data").c_str(), std::ios_base::binary);
-      ofile1 << ifile1.rdbuf();
-
-      std::ifstream ifile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
-      std::ofstream ofile2 ((uri.path      + "/pending.data").c_str(), std::ios_base::binary);
-      ofile2 << ifile2.rdbuf();
-
-      std::ifstream ifile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
-      std::ofstream ofile3 ((uri.path      + "/completed.data").c_str(), std::ios_base::binary);
-      ofile3 << ifile3.rdbuf();
-		}
-
-    std::cout << "Local tasks transferred to " << uri.data << "\n";
-  }
-  else
-    throw std::string ("No uri was specified for the push.  Either specify "
-                       "the uri of a remote .task directory, or create a "
-                       "'push.default.uri' entry in your .taskrc file.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

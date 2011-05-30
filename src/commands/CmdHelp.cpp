@@ -106,10 +106,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
   row = view.addRow ();
   view.set (row, 1, "task merge URL");
   view.set (row, 2, "Merges the specified undo.data file with the local data files.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task push URL");
-  view.set (row, 2, "Pushes the local *.data files to the URL.");
 */
 
   output = "\n"

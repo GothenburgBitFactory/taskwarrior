@@ -56,6 +56,7 @@
 #include <CmdPrepend.h>
 #include <CmdProjects.h>
 #include <CmdPull.h>
+#include <CmdPush.h>
 #include <CmdQuery.h>
 #include <CmdReports.h>
 #include <CmdShell.h>
@@ -116,6 +117,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdPrepend ();            all[c->keyword ()] = c;
   c = new CmdProjects ();           all[c->keyword ()] = c;
   c = new CmdPull ();               all[c->keyword ()] = c;
+  c = new CmdPush ();               all[c->keyword ()] = c;
   c = new CmdQuery ();              all[c->keyword ()] = c;
   c = new CmdReports ();            all[c->keyword ()] = c;
   c = new CmdShell ();              all[c->keyword ()] = c;

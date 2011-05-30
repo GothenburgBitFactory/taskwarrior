@@ -130,7 +130,6 @@ void Cmd::load ()
   if (commands.size () == 0)
   {
     commands.push_back ("merge");
-    commands.push_back ("push");
 
     // Now load the custom reports.
     std::vector <std::string> all;
@@ -187,10 +186,6 @@ void Cmd::allCommands (std::vector <std::string>& all) const
 // Commands that do not directly modify the data files.
 bool Cmd::isReadOnlyCommand ()
 {
-  if (command == "push"                                                      ||
-      validCustom (command))
-    return true;
-
   return false;
 }
 
