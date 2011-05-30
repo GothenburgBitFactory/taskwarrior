@@ -53,7 +53,6 @@ bool nag (Task&);
 int handleDone (std::string&);
 int handleModify (std::string&);
 int handleDelete (std::string&);
-void handleUndo ();
 void handleMerge (std::string&);
 void handlePush (std::string&);
 void handlePull (std::string&);

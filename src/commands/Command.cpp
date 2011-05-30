@@ -63,6 +63,7 @@
 #include <CmdSummary.h>
 #include <CmdTags.h>
 #include <CmdTip.h>
+#include <CmdUndo.h>
 #include <CmdUrgency.h>
 #include <CmdVersion.h>
 #include <Context.h>
@@ -118,6 +119,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdSummary ();            all[c->keyword ()] = c;
   c = new CmdTags ();               all[c->keyword ()] = c;
   c = new CmdTip ();                all[c->keyword ()] = c;
+  c = new CmdUndo ();               all[c->keyword ()] = c;
   c = new CmdUrgency ();            all[c->keyword ()] = c;
   c = new CmdVersion ();            all[c->keyword ()] = c;
   c = new CmdZshCommands ();        all[c->keyword ()] = c;

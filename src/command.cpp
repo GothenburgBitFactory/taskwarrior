@@ -52,16 +52,6 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleUndo ()
-{
-  context.disallowModification ();
-
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.undo ();
-  context.tdb.unlock ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void handleMerge (std::string&)
 {
   std::string file = trim (context.task.get ("description"));
