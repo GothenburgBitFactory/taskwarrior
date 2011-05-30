@@ -129,13 +129,11 @@ void Cmd::load ()
 {
   if (commands.size () == 0)
   {
-    commands.push_back ("_config");
     commands.push_back ("_query");
     commands.push_back ("export.csv");
     commands.push_back ("export.ical");
     commands.push_back ("export.yaml");
     commands.push_back ("calendar");
-    commands.push_back ("config");
     commands.push_back ("delete");
     commands.push_back ("done");
     commands.push_back ("duplicate");
@@ -202,13 +200,11 @@ void Cmd::allCommands (std::vector <std::string>& all) const
 // Commands that do not directly modify the data files.
 bool Cmd::isReadOnlyCommand ()
 {
-  if (command == "_config"                                                   ||
-      command == "_query"                                                    ||
+  if (command == "_query"                                                    ||
       command == "export.csv"                                                ||
       command == "export.ical"                                               ||
       command == "export.yaml"                                               ||
       command == "calendar"                                                  ||
-      command == "config"                                                    ||
 			command == "push"                                                      ||
       command == "summary"                                                   ||
       command == "timesheet"                                                 ||

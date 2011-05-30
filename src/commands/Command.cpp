@@ -34,6 +34,7 @@
 #include <CmdBurndown.h>
 #include <CmdColor.h>
 #include <CmdCommands.h>
+#include <CmdConfig.h>
 #include <CmdCount.h>
 #include <CmdCustom.h>
 #include <CmdDenotate.h>
@@ -75,10 +76,12 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdBurndownWeekly ();     all[c->keyword ()] = c;
   c = new CmdColor ();              all[c->keyword ()] = c;
   c = new CmdCompletionCommands (); all[c->keyword ()] = c;
+  c = new CmdCompletionConfig ();   all[c->keyword ()] = c;
   c = new CmdCompletionIds ();      all[c->keyword ()] = c;
   c = new CmdCompletionProjects (); all[c->keyword ()] = c;
   c = new CmdCompletionTags ();     all[c->keyword ()] = c;
   c = new CmdCompletionVersion ();  all[c->keyword ()] = c;
+  c = new CmdConfig ();             all[c->keyword ()] = c;
   c = new CmdCount ();              all[c->keyword ()] = c;
   c = new CmdDenotate ();           all[c->keyword ()] = c;
   c = new CmdDiagnostics ();        all[c->keyword ()] = c;

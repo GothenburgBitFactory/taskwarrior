@@ -247,8 +247,7 @@ int Context::dispatch (std::string &out)
   Timer t ("Context::dispatch");
 
   // TODO Chain-of-command pattern dispatch.
-       if (cmd.command == "config")           { rc = handleConfig                (out); }
-  else if (cmd.command == "summary")          { rc = handleReportSummary         (out); }
+       if (cmd.command == "summary")          { rc = handleReportSummary         (out); }
   else if (cmd.command == "calendar")         { rc = handleReportCalendar        (out); }
   else if (cmd.command == "timesheet")        { rc = handleReportTimesheet       (out); }
   else if (cmd.command == "done")             { rc = handleDone                  (out); }
@@ -263,7 +262,6 @@ int Context::dispatch (std::string &out)
                                                      handleMerge                 (out); }
   else if (cmd.command == "push")             {      handlePush                  (out); }
   else if (cmd.command == "pull")             {      handlePull                  (out); }
-  else if (cmd.command == "_config")          { rc = handleCompletionConfig      (out); }
   else if (cmd.command == "_query")           { rc = handleQuery                 (out); }
   else if (cmd.command == "" &&
            sequence.size ())                  { rc = handleModify                (out); }
