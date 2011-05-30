@@ -51,7 +51,6 @@ bool nag (Task&);
 
 // command.cpp
 int handleModify (std::string&);
-void handleMerge (std::string&);
 int deltaAppend (Task&);
 int deltaPrepend (Task&);
 int deltaDescription (Task&);

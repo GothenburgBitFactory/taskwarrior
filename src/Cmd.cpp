@@ -129,8 +129,6 @@ void Cmd::load ()
 {
   if (commands.size () == 0)
   {
-    commands.push_back ("merge");
-
     // Now load the custom reports.
     std::vector <std::string> all;
     context.config.all (all);
@@ -193,9 +191,6 @@ bool Cmd::isReadOnlyCommand ()
 // Commands that directly modify the data files.
 bool Cmd::isWriteCommand ()
 {
-  if (command == "merge")
-    return true;
-
   return false;
 }
 

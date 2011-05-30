@@ -52,62 +52,6 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-void handleMerge (std::string&)
-{
-  std::string file = trim (context.task.get ("description"));
-  std::string pushfile = "";
-  std::string tmpfile = "";
-
-  std::string sAutopush = lowerCase (context.config.get        ("merge.autopush"));
-  bool        bAutopush =            context.config.getBoolean ("merge.autopush");
-
-  Uri uri (file, "merge");
-  uri.parse();
-
-  if (uri.data.length ())
-  {
-    Directory location (context.config.get ("data.location"));
-
-    // be sure that uri points to a file
-    uri.append ("undo.data");
-
-    Transport* transport;
-    if ((transport = Transport::getTransport (uri)) != NULL )
-    {
-      tmpfile = location.data + "/undo_remote.data";
-      transport->recv (tmpfile);
-      delete transport;
-
-      file = tmpfile;
-    }
-    else
-      file = uri.path;
-
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    context.tdb.merge (file);
-    context.tdb.unlock ();
-
-    std::cout << "Merge complete.\n";
-
-    if (tmpfile != "")
-      remove (tmpfile.c_str ());
-
-    if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri.data + "\'?")) )
-       || (bAutopush) )
-    {
-      context.task.set ("description", uri.data);
-
-      std::string out;
-      context.commands["push"]->execute ("", out);
-    }
-  }
-  else
-    throw std::string ("No uri was specified for the merge.  Either specify "
-                       "the uri of a remote .task directory, or create a "
-                       "'merge.default.uri' entry in your .taskrc file.");
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int handleModify (std::string& outs)
 {
   int count = 0;

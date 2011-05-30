@@ -31,6 +31,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdInstall.cpp     CmdInstall.h
                    CmdLog.cpp         CmdLog.h
                    CmdLogo.cpp        CmdLogo.h
+                   CmdMerge.cpp       CmdMerge.h
                    CmdPrepend.cpp     CmdPrepend.h
                    CmdProjects.cpp    CmdProjects.h
                    CmdPull.cpp        CmdPull.h

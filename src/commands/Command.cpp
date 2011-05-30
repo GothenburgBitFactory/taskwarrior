@@ -53,6 +53,7 @@
 #include <CmdInstall.h>
 #include <CmdLog.h>
 #include <CmdLogo.h>
+#include <CmdMerge.h>
 #include <CmdPrepend.h>
 #include <CmdProjects.h>
 #include <CmdPull.h>
@@ -114,6 +115,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdInstall ();            all[c->keyword ()] = c;
   c = new CmdLog ();                all[c->keyword ()] = c;
   c = new CmdLogo ();               all[c->keyword ()] = c;
+  c = new CmdMerge ();              all[c->keyword ()] = c;
   c = new CmdPrepend ();            all[c->keyword ()] = c;
   c = new CmdProjects ();           all[c->keyword ()] = c;
   c = new CmdPull ();               all[c->keyword ()] = c;

@@ -249,10 +249,7 @@ int Context::dispatch (std::string &out)
   Timer t ("Context::dispatch");
 
   // TODO Chain-of-command pattern dispatch.
-       if (cmd.command == "merge")            { tdb.gc ();
-                                                     handleMerge                 (out); }
-  else if (cmd.command == "" &&
-           sequence.size ())                  { rc = handleModify                (out); }
+  if (cmd.command == "" && sequence.size ()) { rc = handleModify (out); }
 
   // Commands that display IDs and therefore need TDB::gc first.
   // ...
