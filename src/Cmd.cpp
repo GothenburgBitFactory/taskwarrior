@@ -135,7 +135,6 @@ void Cmd::load ()
     commands.push_back ("export.ical");
     commands.push_back ("export.yaml");
     commands.push_back ("calendar");
-    commands.push_back ("colors");
     commands.push_back ("config");
     commands.push_back ("delete");
     commands.push_back ("done");
@@ -211,7 +210,6 @@ bool Cmd::isReadOnlyCommand ()
       command == "export.ical"                                               ||
       command == "export.yaml"                                               ||
       command == "calendar"                                                  ||
-      command == "colors"                                                    ||
       command == "config"                                                    ||
 			command == "push"                                                      ||
       command == "summary"                                                   ||

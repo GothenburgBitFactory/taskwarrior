@@ -58,7 +58,6 @@ int handleConfig (std::string&);
 int handleDelete (std::string&);
 int handleStart (std::string&);
 int handleStop (std::string&);
-int handleColor (std::string&);
 int handleDuplicate (std::string&);
 void handleUndo ();
 void handleMerge (std::string&);

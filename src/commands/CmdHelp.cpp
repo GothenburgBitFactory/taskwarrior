@@ -172,11 +172,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
   view.set (row, 2, "Overwrites the local *.data files with those found at the URL.");
 
   row = view.addRow ();
-  view.set (row, 1, "task color [sample | legend]");
-  view.set (row, 2, "Displays all possible colors, a named sample, or a "
-                         "legend containing all currently defined colors.");
-
-  row = view.addRow ();
   view.set (row, 1, "task config [name [value | '']]");
   view.set (row, 2, "Add, modify and remove settings in the task configuration.");
 */

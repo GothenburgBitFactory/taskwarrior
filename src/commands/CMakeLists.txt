@@ -11,6 +11,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdAppend.cpp      CmdAppend.h
                    CmdBurndown.cpp    CmdBurndown.h
                    CmdCommands.cpp    CmdCommands.h
+                   CmdColor.cpp       CmdColor.h
                    CmdCount.cpp       CmdCount.h
                    CmdCustom.cpp      CmdCustom.h
                    CmdDenotate.cpp    CmdDenotate.h
