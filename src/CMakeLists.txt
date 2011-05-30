@@ -44,7 +44,6 @@ set (task_SRCS API.cpp API.h
                dependency.cpp
                feedback.cpp
                i18n.h
-               import.cpp
                interactive.cpp
                recur.cpp
                report.cpp

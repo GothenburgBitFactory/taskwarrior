@@ -24,35 +24,29 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
+
 #include <sstream>
-#include <stdio.h>
-#include <unistd.h>
-#include <Nibbler.h>
-#include <File.h>
-#include <Date.h>
+#include <Context.h>
+#include <Transport.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
-#include <Transport.h>
+#include <CmdImport.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-enum fileType
+CmdImport::CmdImport ()
 {
-  not_a_clue,
-  task_1_4_3,
-  task_1_5_0,
-  task_1_6_0,
-  task_cmd_line,
-  todo_sh_2_0,
-  csv,
-  yaml,
-  text
-};
+  _keyword     = "import";
+  _usage       = "task import <file>";
+  _description = "Imports tasks from a variety of formats.";
+  _read_only   = false;
+  _displays_id = false;
+}
 
-static fileType determineFileType (const std::vector <std::string>& lines)
+////////////////////////////////////////////////////////////////////////////////
+CmdImport::fileType CmdImport::determineFileType (const std::vector <std::string>& lines)
 {
   // '7f7a4191-c2f2-487f-8855-7a1eb378c267',' ...
   // ....:....|....:....|....:....|....:....|
@@ -69,15 +63,15 @@ static fileType determineFileType (const std::vector <std::string>& lines)
   {
     if (lines[0] == "'uuid','status','tags','entry','start','due','recur',"
                     "'end','project','priority','fg','bg','description'")
-      return task_1_6_0;
+      return type_task_1_6_0;
 
     if (lines[0] == "'id','uuid','status','tags','entry','start','due','recur',"
                     "'end','project','priority','fg','bg','description'")
-      return task_1_5_0;
+      return type_task_1_5_0;
 
     if (lines[0] == "'id','status','tags','entry','start','due','end','project',"
                     "'priority','fg','bg','description'")
-      return task_1_4_3;
+      return type_task_1_4_3;
   }
 
   if ((lines.size () > 2 &&
@@ -90,7 +84,7 @@ static fileType determineFileType (const std::vector <std::string>& lines)
         lines[2].find ("task:") != std::string::npos ||
         lines[3].find ("task:") != std::string::npos)))
   {
-    return yaml;
+    return type_yaml;
   }
 
   // A task command line might include a priority or project.
@@ -111,7 +105,7 @@ static fileType determineFileType (const std::vector <std::string>& lines)
           words[w].substr (0, 6) == "proje:"    ||
           words[w].substr (0, 5) == "proj:"     ||
           words[w].substr (0, 4) == "pro:")
-        return task_cmd_line;
+        return type_task_cmd_line;
   }
 
   // x 2009-03-25 Walk the dog +project @context
@@ -133,7 +127,7 @@ static fileType determineFileType (const std::vector <std::string>& lines)
           lines[i][9] == '-' &&
           isdigit (lines[i][10]) &&
           isdigit (lines[i][11]))
-        return todo_sh_2_0;
+        return type_todo_sh_2_0;
     }
 
     std::vector <std::string> words;
@@ -144,13 +138,13 @@ static fileType determineFileType (const std::vector <std::string>& lines)
       if (words[w].length () > 1 &&
           words[w][0] == '+'     &&
           !isspace (words[w][1]))
-        return todo_sh_2_0;
+        return type_todo_sh_2_0;
 
       // @context
       if (words[w].length () > 1 &&
           words[w][0] == '@'     &&
           !isspace (words[w][1]))
-        return todo_sh_2_0;
+        return type_todo_sh_2_0;
     }
   }
 
@@ -166,17 +160,17 @@ static fileType determineFileType (const std::vector <std::string>& lines)
     }
   }
   if (commas_on_every_line)
-    return csv;
+    return type_csv;
 
   // Looks like 'text' is the default case, if there is any data at all.
   if (lines.size () >= 1)
-    return text;
+    return type_text;
 
-  return not_a_clue;
+  return type_not_a_clue;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void decorateTask (Task& task)
+void CmdImport::decorateTask (Task& task)
 {
   if (!task.has ("entry"))
   {
@@ -208,7 +202,7 @@ static void decorateTask (Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
+std::string CmdImport::task_1_4_3 (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
 
@@ -364,7 +358,7 @@ static std::string importTask_1_4_3 (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
+std::string CmdImport::task_1_5_0 (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
 
@@ -525,7 +519,7 @@ static std::string importTask_1_5_0 (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
+std::string CmdImport::task_1_6_0 (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
 
@@ -687,7 +681,7 @@ static std::string importTask_1_6_0 (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importTaskCmdLine (const std::vector <std::string>& lines)
+std::string CmdImport::taskCmdLine (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
   std::string unused;
@@ -735,7 +729,7 @@ static std::string importTaskCmdLine (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
+std::string CmdImport::todoSh_2_0 (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
 
@@ -862,7 +856,7 @@ static std::string importTodoSh_2_0 (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importText (const std::vector <std::string>& lines)
+std::string CmdImport::text (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
   int count = 0;
@@ -926,7 +920,7 @@ static std::string importText (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importCSV (const std::vector <std::string>& lines)
+std::string CmdImport::CSV (const std::vector <std::string>& lines)
 {
   std::vector <std::string> failed;
 
@@ -1171,7 +1165,7 @@ static std::string importCSV (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static std::string importYAML (const std::vector <std::string>& lines)
+std::string CmdImport::YAML (const std::vector <std::string>& lines)
 {
   int count = 0;
 
@@ -1285,7 +1279,7 @@ static std::string importYAML (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleImport (std::string& outs)
+int CmdImport::execute (const std::string&, std::string& output)
 {
   int rc = 0;
   std::stringstream out;
@@ -1331,15 +1325,15 @@ int handleImport (std::string& outs)
     std::string identifier;
     switch (type)
     {
-    case task_1_4_3:    identifier = "This looks like an older taskwarrior export file.";              break;
-    case task_1_5_0:    identifier = "This looks like a recent taskwarrior export file.";              break;
-    case task_1_6_0:    identifier = "This looks like a current taskwarrior export file.";             break;
-    case task_cmd_line: identifier = "This looks like taskwarrior command line arguments.";            break;
-    case todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                            break;
-    case csv:           identifier = "This looks like a CSV file, but not a taskwarrior export file."; break;
-    case yaml:          identifier = "This looks like a YAML file.";                                   break;
-    case text:          identifier = "This looks like a text file with one task per line.";            break;
-    case not_a_clue:
+    case type_task_1_4_3:    identifier = "This looks like an older taskwarrior export file.";              break;
+    case type_task_1_5_0:    identifier = "This looks like a recent taskwarrior export file.";              break;
+    case type_task_1_6_0:    identifier = "This looks like a current taskwarrior export file.";             break;
+    case type_task_cmd_line: identifier = "This looks like taskwarrior command line arguments.";            break;
+    case type_todo_sh_2_0:   identifier = "This looks like a todo.sh 2.x file.";                            break;
+    case type_csv:           identifier = "This looks like a CSV file, but not a taskwarrior export file."; break;
+    case type_yaml:          identifier = "This looks like a YAML file.";                                   break;
+    case type_text:          identifier = "This looks like a text file with one task per line.";            break;
+    case type_not_a_clue:
       throw std::string ("Taskwarrior cannot determine which type of file "
                          "this is, and cannot proceed.");
     }
@@ -1352,15 +1346,15 @@ int handleImport (std::string& outs)
     // Determine which type it might be, then attempt an import.
     switch (type)
     {
-    case task_1_4_3:    out << importTask_1_4_3  (lines); break;
-    case task_1_5_0:    out << importTask_1_5_0  (lines); break;
-    case task_1_6_0:    out << importTask_1_6_0  (lines); break;
-    case task_cmd_line: out << importTaskCmdLine (lines); break;
-    case todo_sh_2_0:   out << importTodoSh_2_0  (lines); break;
-    case csv:           out << importCSV         (lines); break;
-    case yaml:          out << importYAML        (lines); break;
-    case text:          out << importText        (lines); break;
-    case not_a_clue:    /* to stop the compiler from complaining. */ break;
+    case type_task_1_4_3:    out << task_1_4_3  (lines); break;
+    case type_task_1_5_0:    out << task_1_5_0  (lines); break;
+    case type_task_1_6_0:    out << task_1_6_0  (lines); break;
+    case type_task_cmd_line: out << taskCmdLine (lines); break;
+    case type_todo_sh_2_0:   out << todoSh_2_0  (lines); break;
+    case type_csv:           out << CSV         (lines); break;
+    case type_yaml:          out << YAML        (lines); break;
+    case type_text:          out << text        (lines); break;
+    case type_not_a_clue:    /* to stop the compiler from complaining. */ break;
     }
 
     if (tmpfile != "")
@@ -1369,7 +1363,7 @@ int handleImport (std::string& outs)
   else
     throw std::string ("You must specify a file to import.");
 
-  outs = out.str ();
+  output = out.str ();
   return rc;
 }
 

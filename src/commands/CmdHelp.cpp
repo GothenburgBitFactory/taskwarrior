@@ -124,26 +124,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
   view.set (row, 2, "Shows a calendar, with due tasks marked.");
 
   row = view.addRow ();
-  view.set (row, 1, "task import");
-  view.set (row, 2, "Imports tasks from a variety of formats.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task export");
-  view.set (row, 2, "Lists all tasks in CSV format.  Alias to export.csv");
-
-  row = view.addRow ();
-  view.set (row, 1, "task export.csv");
-  view.set (row, 2, "Lists all tasks in CSV format.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task export.ical");
-  view.set (row, 2, "Lists all tasks in iCalendar format.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task export.yaml");
-  view.set (row, 2, "Lists all tasks in YAML format.");
-
-  row = view.addRow ();
   view.set (row, 1, "task merge URL");
   view.set (row, 2, "Merges the specified undo.data file with the local data files.");
 

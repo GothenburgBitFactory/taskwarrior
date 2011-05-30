@@ -45,6 +45,7 @@
 #include <CmdHelp.h>
 #include <CmdHistory.h>
 #include <CmdIDs.h>
+#include <CmdImport.h>
 #include <CmdInfo.h>
 #include <CmdInstall.h>
 #include <CmdLog.h>
@@ -98,6 +99,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdHistoryMonthly ();     all[c->keyword ()] = c;
   c = new CmdHistoryAnnual ();      all[c->keyword ()] = c;
   c = new CmdIDs ();                all[c->keyword ()] = c;
+  c = new CmdImport ();             all[c->keyword ()] = c;
   c = new CmdInfo ();               all[c->keyword ()] = c;
   c = new CmdInstall ();            all[c->keyword ()] = c;
   c = new CmdLog ();                all[c->keyword ()] = c;

@@ -84,9 +84,6 @@ std::string colorizeHeader (const std::string&);
 std::string colorizeFootnote (const std::string&);
 std::string colorizeDebug (const std::string&);
 
-// import.cpp
-int handleImport (std::string&);
-
 // dependency.cpp
 bool dependencyIsBlocked (const Task&);
 void dependencyGetBlocked (const Task&, std::vector <Task>&);

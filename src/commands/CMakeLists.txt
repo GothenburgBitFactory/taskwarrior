@@ -23,6 +23,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdHelp.cpp        CmdHelp.h
                    CmdHistory.cpp     CmdHistory.h
                    CmdIDs.cpp         CmdIDs.h
+                   CmdImport.cpp      CmdImport.h
                    CmdInfo.cpp        CmdInfo.h
                    CmdInstall.cpp     CmdInstall.h
                    CmdLog.cpp         CmdLog.h
