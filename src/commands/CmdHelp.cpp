@@ -110,10 +110,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
   row = view.addRow ();
   view.set (row, 1, "task push URL");
   view.set (row, 2, "Pushes the local *.data files to the URL.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task pull URL");
-  view.set (row, 2, "Overwrites the local *.data files with those found at the URL.");
 */
 
   output = "\n"

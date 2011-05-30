@@ -252,7 +252,6 @@ int Context::dispatch (std::string &out)
        if (cmd.command == "merge")            { tdb.gc ();
                                                      handleMerge                 (out); }
   else if (cmd.command == "push")             {      handlePush                  (out); }
-  else if (cmd.command == "pull")             {      handlePull                  (out); }
   else if (cmd.command == "" &&
            sequence.size ())                  { rc = handleModify                (out); }
 

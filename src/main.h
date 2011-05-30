@@ -53,7 +53,6 @@ bool nag (Task&);
 int handleModify (std::string&);
 void handleMerge (std::string&);
 void handlePush (std::string&);
-void handlePull (std::string&);
 int deltaAppend (Task&);
 int deltaPrepend (Task&);
 int deltaDescription (Task&);
