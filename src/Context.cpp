@@ -259,7 +259,6 @@ int Context::dispatch (std::string &out)
                                                      handleMerge                 (out); }
   else if (cmd.command == "push")             {      handlePush                  (out); }
   else if (cmd.command == "pull")             {      handlePull                  (out); }
-  else if (cmd.command == "_query")           { rc = handleQuery                 (out); }
   else if (cmd.command == "" &&
            sequence.size ())                  { rc = handleModify                (out); }
 

@@ -129,7 +129,6 @@ void Cmd::load ()
 {
   if (commands.size () == 0)
   {
-    commands.push_back ("_query");
     commands.push_back ("calendar");
     commands.push_back ("delete");
     commands.push_back ("done");
@@ -195,8 +194,7 @@ void Cmd::allCommands (std::vector <std::string>& all) const
 // Commands that do not directly modify the data files.
 bool Cmd::isReadOnlyCommand ()
 {
-  if (command == "_query"                                                    ||
-      command == "calendar"                                                  ||
+  if (command == "calendar"                                                  ||
 			command == "push"                                                      ||
       command == "timesheet"                                                 ||
       validCustom (command))

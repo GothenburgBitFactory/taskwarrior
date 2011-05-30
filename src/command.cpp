@@ -52,45 +52,6 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleQuery (std::string& outs)
-{
-  int rc = 0;
-
-  // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Filter sequence.
-  if (context.sequence.size ())
-    context.filter.applySequence (tasks, context.sequence);
-
-  if (tasks.size () == 0)
-  {
-    std::cout << "No matches.\n";
-    return 1;
-  }
-
-  // Note: "limit:" feature not supported.
-
-  // Compose output.
-  std::vector <Task>::iterator t;
-  for (t = tasks.begin (); t != tasks.end (); ++t)
-  {
-    if (t != tasks.begin ())
-      outs += ",\n";
-
-    outs += t->composeJSON (true);
-  }
-
-  outs += "\n";
-  return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void handleUndo ()
 {
   context.disallowModification ();

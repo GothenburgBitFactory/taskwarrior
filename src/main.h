@@ -52,7 +52,6 @@ bool nag (Task&);
 // command.cpp
 int handleDone (std::string&);
 int handleModify (std::string&);
-int handleQuery (std::string&);
 int handleDelete (std::string&);
 void handleUndo ();
 void handleMerge (std::string&);
