@@ -252,7 +252,6 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "summary")          { rc = handleReportSummary         (out); }
   else if (cmd.command == "calendar")         { rc = handleReportCalendar        (out); }
   else if (cmd.command == "timesheet")        { rc = handleReportTimesheet       (out); }
-  else if (cmd.command == "denotate")         { rc = handleDenotate              (out); }
   else if (cmd.command == "done")             { rc = handleDone                  (out); }
   else if (cmd.command == "delete")           { rc = handleDelete                (out); }
   else if (cmd.command == "start")            { rc = handleStart                 (out); }
