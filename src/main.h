@@ -64,7 +64,6 @@ int deltaAttributes (Task&);
 int deltaSubstitutions (Task&);
 
 // report.cpp
-int handleReportTimesheet (std::string&);
 std::string getFullDescription (Task&, const std::string&);
 std::string getDueDate (Task&, const std::string&);
 std::string onProjectChange (Task&, bool scope = true);

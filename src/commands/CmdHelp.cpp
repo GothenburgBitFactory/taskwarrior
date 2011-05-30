@@ -112,10 +112,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
   view.set (row, 2, "Marks the specified task as completed.");
 
   row = view.addRow ();
-  view.set (row, 1, "task timesheet [weeks]");
-  view.set (row, 2, "Shows a weekly report of tasks completed and started.");
-
-  row = view.addRow ();
   view.set (row, 1, "task merge URL");
   view.set (row, 2, "Merges the specified undo.data file with the local data files.");
 

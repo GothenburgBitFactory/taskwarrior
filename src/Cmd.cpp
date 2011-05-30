@@ -131,7 +131,6 @@ void Cmd::load ()
   {
     commands.push_back ("delete");
     commands.push_back ("done");
-    commands.push_back ("timesheet");
     commands.push_back ("merge");
     commands.push_back ("push");
     commands.push_back ("pull");
@@ -192,7 +191,6 @@ void Cmd::allCommands (std::vector <std::string>& all) const
 bool Cmd::isReadOnlyCommand ()
 {
   if (command == "push"                                                      ||
-      command == "timesheet"                                                 ||
       validCustom (command))
     return true;
 
