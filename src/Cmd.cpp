@@ -134,7 +134,6 @@ void Cmd::load ()
     commands.push_back ("delete");
     commands.push_back ("done");
     commands.push_back ("import");
-    commands.push_back ("summary");
     commands.push_back ("timesheet");
     commands.push_back ("undo");
     commands.push_back ("merge");
@@ -199,7 +198,6 @@ bool Cmd::isReadOnlyCommand ()
   if (command == "_query"                                                    ||
       command == "calendar"                                                  ||
 			command == "push"                                                      ||
-      command == "summary"                                                   ||
       command == "timesheet"                                                 ||
       validCustom (command))
     return true;

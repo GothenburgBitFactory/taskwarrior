@@ -57,6 +57,7 @@
 #include <CmdStart.h>
 #include <CmdStatistics.h>
 #include <CmdStop.h>
+#include <CmdSummary.h>
 #include <CmdTags.h>
 #include <CmdTip.h>
 #include <CmdUrgency.h>
@@ -108,6 +109,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdStart ();              all[c->keyword ()] = c;
   c = new CmdStatistics ();         all[c->keyword ()] = c;
   c = new CmdStop ();               all[c->keyword ()] = c;
+  c = new CmdSummary ();            all[c->keyword ()] = c;
   c = new CmdTags ();               all[c->keyword ()] = c;
   c = new CmdTip ();                all[c->keyword ()] = c;
   c = new CmdUrgency ();            all[c->keyword ()] = c;

@@ -116,10 +116,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
   view.set (row, 2, "Marks the specified task as completed.");
 
   row = view.addRow ();
-  view.set (row, 1, "task summary");
-  view.set (row, 2, "Shows a report of task status by project.");
-
-  row = view.addRow ();
   view.set (row, 1, "task timesheet [weeks]");
   view.set (row, 2, "Shows a weekly report of tasks completed and started.");
 

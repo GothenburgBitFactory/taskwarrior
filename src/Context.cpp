@@ -249,8 +249,7 @@ int Context::dispatch (std::string &out)
   Timer t ("Context::dispatch");
 
   // TODO Chain-of-command pattern dispatch.
-       if (cmd.command == "summary")          { rc = handleReportSummary         (out); }
-  else if (cmd.command == "calendar")         { rc = handleReportCalendar        (out); }
+       if (cmd.command == "calendar")         { rc = handleReportCalendar        (out); }
   else if (cmd.command == "timesheet")        { rc = handleReportTimesheet       (out); }
   else if (cmd.command == "done")             { rc = handleDone                  (out); }
   else if (cmd.command == "delete")           { rc = handleDelete                (out); }
