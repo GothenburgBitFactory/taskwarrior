@@ -65,6 +65,7 @@ std::string Config::defaults =
   "# Terminal\n"
   "detection=on                                   # Detects terminal width\n"
   "defaultwidth=80                                # Without detection, assumed width\n"
+  "avoidlastcolumn=no                             # Fixes Cygwin width problem\n"
   "#editor=vi                                     # Preferred text editor\n"
   "edit.verbose=yes                               # Include comments in files created during task edit\n"
   "\n"

@@ -52,6 +52,9 @@
    Cech).
 
 # Tracked Bugs, sorted by ID.
+ + Fixed bug #511, which caused display problem on Cygwin when colored output
+   used the full width of the terminal.  The 'avoidlastcolumn' configuration
+   variable forces taskwarrior to never use the last column.
  + Fixed bug #594, which broke the 'all' report with a combination of bad regex
    handling and a formatting bug (thanks to Steve Rader).
  + Fixed bug #605, which gave misleading project completion percentages under

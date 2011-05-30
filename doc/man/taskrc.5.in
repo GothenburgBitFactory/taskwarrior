@@ -167,6 +167,12 @@ word-wrapping; useful when redirecting report output to a file for subsequent
 manipulation.
 
 .TP
+.B avoidlastcolumn=no
+Causes the width of the terminal minus one to be used as the full width.  This
+avoids placing color codes in the last column which can cause problems for
+Cygwin users.  Default value is 'no'.
+
+.TP
 .B editor=vi
 Specifies which text editor you wish to use for when the
 .B task edit <ID>

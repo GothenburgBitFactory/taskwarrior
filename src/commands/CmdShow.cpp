@@ -67,10 +67,10 @@ int CmdShow::execute (const std::string&, std::string& output)
   // Note that there is a leading and trailing space, to make it easier to
   // search for whole words.
   std::string recognized =
-    " annotations bulk burndown.bias calendar.details calendar.details.report "
-    "calendar.holidays calendar.legend color calendar.offset "
-    "calendar.offset.value color.active color.due color.due.today "
-    "color.blocked color.burndown.done color.burndown.pending "
+    " annotations avoidlastcolumn bulk burndown.bias calendar.details "
+    "calendar.details.report calendar.holidays calendar.legend color "
+    "calendar.offset calendar.offset.value color.active color.due "
+    "color.due.today color.blocked color.burndown.done color.burndown.pending "
     "color.burndown.started color.overdue color.pri.H color.pri.L color.pri.M "
     "color.pri.none color.recurring color.tagged color.footnote color.header "
     "color.debug color.alternate color.calendar.today color.calendar.due "

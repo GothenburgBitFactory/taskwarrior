@@ -61,6 +61,12 @@ int Context::getWidth ()
     }
 
     width = terminal_width;
+
+    // Ncurses does this, and perhaps we need to as well, to avoid a problem on
+    // Cygwin where the display goes right up to the terminal width, and causes
+    // and odd color wrapping problem.
+    if (config.getBoolean ("avoidlastcolumn"))
+      --width;
   }
 
   return width;
