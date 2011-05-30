@@ -40,6 +40,7 @@
 #include <CmdCustom.h>
 #include <CmdDenotate.h>
 #include <CmdDiagnostics.h>
+#include <CmdDone.h>
 #include <CmdDuplicate.h>
 #include <CmdEdit.h>
 #include <CmdExec.h>
@@ -94,6 +95,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdCount ();              all[c->keyword ()] = c;
   c = new CmdDenotate ();           all[c->keyword ()] = c;
   c = new CmdDiagnostics ();        all[c->keyword ()] = c;
+  c = new CmdDone ();               all[c->keyword ()] = c;
   c = new CmdDuplicate ();          all[c->keyword ()] = c;
   c = new CmdEdit ();               all[c->keyword ()] = c;
   c = new CmdExec ();               all[c->keyword ()] = c;
