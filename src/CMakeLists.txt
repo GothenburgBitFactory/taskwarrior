@@ -40,13 +40,12 @@ set (task_SRCS API.cpp API.h
                Variant.cpp Variant.h
                ViewTask.cpp ViewTask.h
                ViewText.cpp ViewText.h
-               command.cpp
+               helpers.cpp
                dependency.cpp
                feedback.cpp
                i18n.h
                interactive.cpp
                recur.cpp
-               report.cpp
                rules.cpp
                rx.cpp rx.h
                sort.cpp
