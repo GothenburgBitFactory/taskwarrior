@@ -253,7 +253,6 @@ int Context::dispatch (std::string &out)
   else if (cmd.command == "timesheet")        { rc = handleReportTimesheet       (out); }
   else if (cmd.command == "done")             { rc = handleDone                  (out); }
   else if (cmd.command == "delete")           { rc = handleDelete                (out); }
-  else if (cmd.command == "start")            { rc = handleStart                 (out); }
   else if (cmd.command == "stop")             { rc = handleStop                  (out); }
   else if (cmd.command == "export.csv")       { rc = handleExportCSV             (out); }
   else if (cmd.command == "export.ical")      { rc = handleExportiCal            (out); }

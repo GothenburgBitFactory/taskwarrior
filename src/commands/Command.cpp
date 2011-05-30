@@ -51,6 +51,7 @@
 #include <CmdProjects.h>
 #include <CmdShell.h>
 #include <CmdShow.h>
+#include <CmdStart.h>
 #include <CmdStatistics.h>
 #include <CmdTags.h>
 #include <CmdTip.h>
@@ -96,6 +97,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdProjects ();           all[c->keyword ()] = c;
   c = new CmdShell ();              all[c->keyword ()] = c;
   c = new CmdShow ();               all[c->keyword ()] = c;
+  c = new CmdStart ();              all[c->keyword ()] = c;
   c = new CmdStatistics ();         all[c->keyword ()] = c;
   c = new CmdTags ();               all[c->keyword ()] = c;
   c = new CmdTip ();                all[c->keyword ()] = c;

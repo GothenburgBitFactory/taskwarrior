@@ -116,10 +116,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
   view.set (row, 2, "Deletes the specified task.");
 
   row = view.addRow ();
-  view.set (row, 1, "task start ID");
-  view.set (row, 2, "Marks specified task as started.");
-
-  row = view.addRow ();
   view.set (row, 1, "task stop ID");
   view.set (row, 2, "Removes the 'start' time from a task.");
 
