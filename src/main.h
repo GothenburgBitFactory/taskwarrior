@@ -54,7 +54,6 @@ int handleDone (std::string&);
 int handleModify (std::string&);
 int handleQuery (std::string&);
 int handleDelete (std::string&);
-int handleDuplicate (std::string&);
 void handleUndo ();
 void handleMerge (std::string&);
 void handlePush (std::string&);

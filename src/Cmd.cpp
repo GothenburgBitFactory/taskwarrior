@@ -133,7 +133,6 @@ void Cmd::load ()
     commands.push_back ("calendar");
     commands.push_back ("delete");
     commands.push_back ("done");
-    commands.push_back ("duplicate");
     commands.push_back ("import");
     commands.push_back ("summary");
     commands.push_back ("timesheet");
@@ -215,7 +214,6 @@ bool Cmd::isWriteCommand ()
   if (command == "merge"     ||
       command == "delete"    ||
       command == "done"      ||
-      command == "duplicate" ||
       command == "import"    ||
       command == "pull"      ||
       command == "undo")

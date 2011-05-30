@@ -108,10 +108,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
   view.set (row, 2, "Reverts the most recent action.");
 
   row = view.addRow ();
-  view.set (row, 1, "task duplicate ID [tags] [attrs] [desc...]");
-  view.set (row, 2, "Duplicates the specified task, and allows modifications.");
-
-  row = view.addRow ();
   view.set (row, 1, "task delete ID");
   view.set (row, 2, "Deletes the specified task.");
 
