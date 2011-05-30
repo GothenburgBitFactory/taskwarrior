@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
+#include <stdlib.h>
 #include <Context.h>
 #include <text.h>
 #include <util.h>
@@ -117,7 +118,7 @@ int CmdAdd::execute (const std::string&, std::string& output)
     std::vector <std::string>::iterator i;
     for (i = deps.begin (); i != deps.end (); i++)
     {
-      int id = atoi (i->c_str ());
+      int id = strtol (i->c_str (), NULL, 10);
       if (id < 0)
         context.task.removeDependency (-id);
       else

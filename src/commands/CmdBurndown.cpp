@@ -26,6 +26,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
+#include <algorithm>
+#include <string.h>
 #include <math.h>
 #include <Context.h>
 #include <Date.h>
