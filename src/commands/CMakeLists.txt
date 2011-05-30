@@ -20,6 +20,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdIDs.cpp         CmdIDs.h
                    CmdInfo.cpp        CmdInfo.h
                    CmdInstall.cpp     CmdInstall.h
+                   CmdLog.cpp         CmdLog.h
                    CmdLogo.cpp        CmdLogo.h
                    CmdPrepend.cpp     CmdPrepend.h
                    CmdProjects.cpp    CmdProjects.h
