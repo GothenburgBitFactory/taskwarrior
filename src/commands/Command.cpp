@@ -32,6 +32,7 @@
 #include <CmdAnnotate.h>
 #include <CmdAppend.h>
 #include <CmdBurndown.h>
+#include <CmdCalendar.h>
 #include <CmdColor.h>
 #include <CmdCommands.h>
 #include <CmdConfig.h>
@@ -79,6 +80,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdBurndownDaily ();      all[c->keyword ()] = c;
   c = new CmdBurndownMonthly ();    all[c->keyword ()] = c;
   c = new CmdBurndownWeekly ();     all[c->keyword ()] = c;
+  c = new CmdCalendar ();           all[c->keyword ()] = c;
   c = new CmdColor ();              all[c->keyword ()] = c;
   c = new CmdCompletionCommands (); all[c->keyword ()] = c;
   c = new CmdCompletionConfig ();   all[c->keyword ()] = c;
