@@ -130,9 +130,6 @@ void Cmd::load ()
   if (commands.size () == 0)
   {
     commands.push_back ("_query");
-    commands.push_back ("export.csv");
-    commands.push_back ("export.ical");
-    commands.push_back ("export.yaml");
     commands.push_back ("calendar");
     commands.push_back ("delete");
     commands.push_back ("done");
@@ -201,9 +198,6 @@ void Cmd::allCommands (std::vector <std::string>& all) const
 bool Cmd::isReadOnlyCommand ()
 {
   if (command == "_query"                                                    ||
-      command == "export.csv"                                                ||
-      command == "export.ical"                                               ||
-      command == "export.yaml"                                               ||
       command == "calendar"                                                  ||
 			command == "push"                                                      ||
       command == "summary"                                                   ||

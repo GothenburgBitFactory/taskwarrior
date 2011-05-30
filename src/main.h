@@ -90,11 +90,6 @@ std::string colorizeDebug (const std::string&);
 // import.cpp
 int handleImport (std::string&);
 
-// export.cpp
-int handleExportCSV (std::string&);
-int handleExportiCal (std::string&);
-int handleExportYAML (std::string&);
-
 // dependency.cpp
 bool dependencyIsBlocked (const Task&);
 void dependencyGetBlocked (const Task&, std::vector <Task>&);

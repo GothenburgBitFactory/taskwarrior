@@ -33,6 +33,7 @@
  + The 'verbose' configuration variable now accepts a specific list of items to
    be verbose about.  See taskrc(5).
  + New 'execute' command that runs external programs.
+ + The default export format is now JSON.
 
 # Tracked Features, sorted by ID.
  + Added feature #330, which supports the 'inverse' color attribute.

@@ -17,6 +17,7 @@ New Features in taskwarrior 2.0.0
   - New 'next' report, that gauges urgency and reports the most urgent tasks.
   - Fine control of verbosity through the 'verbose=' configuration variable.
   - New 'execute' command that runs external scripts/programs.
+  - JSON is the new default export format.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -39,6 +40,7 @@ New configuration options in taskwarrior 2.0.0
   - New 'indent.annotation' for the description.default field format.
   - New 'color.label' for report column labels.
   - New 'verbose=...' support for individual verbosity settings.
+  - New 'avoidlastcolumn' support for Cygwin users.
 
 Newly deprecated features in taskwarrior 2.0.0
 

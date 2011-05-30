@@ -42,7 +42,6 @@ set (task_SRCS API.cpp API.h
                ViewText.cpp ViewText.h
                command.cpp
                dependency.cpp
-               export.cpp
                feedback.cpp
                i18n.h
                import.cpp
