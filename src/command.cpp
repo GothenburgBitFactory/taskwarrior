@@ -552,63 +552,6 @@ int handleDelete (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleStop (std::string& outs)
-{
-  int rc = 0;
-  std::stringstream out;
-
-  context.disallowModification ();
-
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
-
-  // Filter sequence.
-  context.filter.applySequence (tasks, context.sequence);
-  if (tasks.size () == 0)
-  {
-    std::cout << "No tasks specified.\n";
-    return 1;
-  }
-
-  foreach (task, tasks)
-  {
-    if (task->has ("start"))
-    {
-      task->remove ("start");
-
-      if (context.config.getBoolean ("journal.time"))
-        task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
-
-      context.tdb.update (*task);
-
-      if (context.config.getBoolean ("echo.command"))
-        out << "Stopped "
-            << task->id
-            << " '"
-            << task->get ("description")
-            << "'.\n";
-    }
-    else
-    {
-      out << "Task "
-          << task->id
-          << " '"
-          << task->get ("description")
-          << "' not started.\n";
-      rc = 1;
-    }
-  }
-
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  outs = out.str ();
-  return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int handleDone (std::string& outs)
 {
   int rc = 0;

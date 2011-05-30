@@ -140,7 +140,6 @@ void Cmd::load ()
     commands.push_back ("done");
     commands.push_back ("duplicate");
     commands.push_back ("import");
-    commands.push_back ("stop");
     commands.push_back ("summary");
     commands.push_back ("timesheet");
     commands.push_back ("undo");
@@ -229,7 +228,6 @@ bool Cmd::isWriteCommand ()
       command == "duplicate" ||
       command == "import"    ||
       command == "pull"      ||
-      command == "stop"      ||
       command == "undo")
     return true;
 

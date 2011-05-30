@@ -31,6 +31,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdShow.cpp        CmdShow.h
                    CmdStart.cpp       CmdStart.h
                    CmdStatistics.cpp  CmdStatistics.h
+                   CmdStop.cpp        CmdStop.h
                    CmdTags.cpp        CmdTags.h
                    CmdTip.cpp         CmdTip.h
                    CmdUrgency.cpp     CmdUrgency.h
