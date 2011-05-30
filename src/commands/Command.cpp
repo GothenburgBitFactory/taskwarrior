@@ -38,6 +38,7 @@
 #include <CmdConfig.h>
 #include <CmdCount.h>
 #include <CmdCustom.h>
+#include <CmdDelete.h>
 #include <CmdDenotate.h>
 #include <CmdDiagnostics.h>
 #include <CmdDone.h>
@@ -93,6 +94,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdCompletionVersion ();  all[c->keyword ()] = c;
   c = new CmdConfig ();             all[c->keyword ()] = c;
   c = new CmdCount ();              all[c->keyword ()] = c;
+  c = new CmdDelete ();             all[c->keyword ()] = c;
   c = new CmdDenotate ();           all[c->keyword ()] = c;
   c = new CmdDiagnostics ();        all[c->keyword ()] = c;
   c = new CmdDone ();               all[c->keyword ()] = c;

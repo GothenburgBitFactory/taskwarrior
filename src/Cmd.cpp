@@ -129,7 +129,6 @@ void Cmd::load ()
 {
   if (commands.size () == 0)
   {
-    commands.push_back ("delete");
     commands.push_back ("merge");
     commands.push_back ("push");
     commands.push_back ("pull");
@@ -201,7 +200,6 @@ bool Cmd::isReadOnlyCommand ()
 bool Cmd::isWriteCommand ()
 {
   if (command == "merge"     ||
-      command == "delete"    ||
       command == "pull")
     return true;
 

@@ -249,8 +249,7 @@ int Context::dispatch (std::string &out)
   Timer t ("Context::dispatch");
 
   // TODO Chain-of-command pattern dispatch.
-       if (cmd.command == "delete")           { rc = handleDelete                (out); }
-  else if (cmd.command == "merge")            { tdb.gc ();
+       if (cmd.command == "merge")            { tdb.gc ();
                                                      handleMerge                 (out); }
   else if (cmd.command == "push")             {      handlePush                  (out); }
   else if (cmd.command == "pull")             {      handlePull                  (out); }

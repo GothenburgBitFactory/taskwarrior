@@ -104,10 +104,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
   view.set (row, 2, "Specifying an ID without a command invokes the 'info' command.");
 
   row = view.addRow ();
-  view.set (row, 1, "task delete ID");
-  view.set (row, 2, "Deletes the specified task.");
-
-  row = view.addRow ();
   view.set (row, 1, "task merge URL");
   view.set (row, 2, "Merges the specified undo.data file with the local data files.");
 

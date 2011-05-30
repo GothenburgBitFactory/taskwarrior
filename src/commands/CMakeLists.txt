@@ -16,6 +16,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdConfig.cpp      CmdConfig.h
                    CmdCount.cpp       CmdCount.h
                    CmdCustom.cpp      CmdCustom.h
+                   CmdDelete.cpp      CmdDelete.h
                    CmdDenotate.cpp    CmdDenotate.h
                    CmdDiagnostics.cpp CmdDiagnostics.h
                    CmdDone.cpp        CmdDone.h
