@@ -1208,67 +1208,6 @@ int handleColor (std::string& outs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int handleAnnotate (std::string& outs)
-{
-  int rc = 0;
-
-  if (!context.task.has ("description"))
-    throw std::string ("Cannot apply a blank annotation.");
-
-  if (context.sequence.size () == 0)
-    throw std::string ("ID needed to apply an annotation.");
-
-  std::stringstream out;
-
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
-
-  // Filter sequence.
-  context.filter.applySequence (tasks, context.sequence);
-  if (tasks.size () == 0)
-  {
-    std::cout << "No tasks specified.\n";
-    return 1;
-  }
-
-  Permission permission;
-  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
-    permission.bigSequence ();
-
-  foreach (task, tasks)
-  {
-    Task before (*task);
-    task->addAnnotation (context.task.get ("description"));
-
-    if (taskDiff (before, *task))
-    {
-      // Only allow valid tasks.
-      task->validate ();
-
-      if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
-      {
-        context.tdb.update (*task);
-
-        if (context.config.getBoolean ("echo.command"))
-          out << "Annotated "
-              << task->id
-              << " with '"
-              << context.task.get ("description")
-              << "'.\n";
-      }
-    }
-  }
-
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  outs = out.str ();
-  return rc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int handleDenotate (std::string& outs)
 {
   int rc = 0;

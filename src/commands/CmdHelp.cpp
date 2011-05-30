@@ -89,10 +89,6 @@ int CmdHelp::execute (const std::string&, std::string& output)
 
 /*
   row = view.addRow ();
-  view.set (row, 1, "task annotate ID desc...");
-  view.set (row, 2, "Adds an annotation to an existing task.");
-
-  row = view.addRow ();
   view.set (row, 1, "task denotate ID desc...");
   view.set (row, 2, "Deletes an annotation of an existing task.");
 

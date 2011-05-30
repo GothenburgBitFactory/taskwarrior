@@ -59,7 +59,6 @@ int handleDelete (std::string&);
 int handleStart (std::string&);
 int handleStop (std::string&);
 int handleColor (std::string&);
-int handleAnnotate (std::string&);
 int handleDenotate (std::string&);
 int handleDuplicate (std::string&);
 void handleUndo ();
