@@ -51,6 +51,8 @@
  + Added feature #740, that allows for indented annotations, controlled by the
    'indent.annotation' configuration variable (thanks to Steve Rader, Tomas
    Cech).
+ + Added feature #755, adding a new command 'reports' that lists reports and
+   their descriptions.
 
 # Tracked Bugs, sorted by ID.
  + Fixed bug #511, which caused display problem on Cygwin when colored output

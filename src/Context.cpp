@@ -224,6 +224,8 @@ int Context::dispatch2 (std::string &out)
   if (args.extract_command (keywords, command))
   {
     Command* c = commands[command];
+
+    // GC is invoked prior to running any command that displays task IDs.
     if (c->displays_id ())
       tdb.gc ();
 
