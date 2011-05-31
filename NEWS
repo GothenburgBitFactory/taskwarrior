@@ -19,6 +19,7 @@ New Features in taskwarrior 2.0.0
   - New 'execute' command that runs external scripts/programs.
   - JSON is the new default export format.
   - New 'reports' command that lists reports and their descriptions.
+  - New complex aliases.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
