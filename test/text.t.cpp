@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (255);
+  UnitTest t (258);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -250,10 +250,15 @@ int main (int argc, char** argv)
   t.is (unquoteText ("\"x\""),    "x",    "unquoteText '\"x\"' -> 'x'");
 
   // int longestWord (const std::string&)
-  t.is (longestWord ("    "),                  0, "longestWord (    ) --> 0");
-  t.is (longestWord ("this is a test"),        4, "longestWord (this is a test) --> 4");
-  t.is (longestWord ("this is a better test"), 6, "longestWord (this is a better test) --> 6");
-  t.is (longestWord ("house Çirçös clown"),    6, "longestWord (Çirçös) --> 6");
+  t.is (longestWord ("    "),                   0, "longestWord (    ) --> 0");
+  t.is (longestWord ("this is a test"),         4, "longestWord (this is a test) --> 4");
+  t.is (longestWord ("this is a better test"),  6, "longestWord (this is a better test) --> 6");
+  t.is (longestWord ("house Çirçös clown"),     6, "longestWord (Çirçös) --> 6");
+
+  // int longestLine (const std::string&)
+  t.is (longestLine ("one two three four"),    18, "longestLine (one two three four) --> 18");
+  t.is (longestLine ("one\ntwo three four"),   14, "longestLine (one\\ntwo three four) --> 14");
+  t.is (longestLine ("one\ntwo\nthree\nfour"),  5, "longestLine (one\\ntwo\\nthree\\nfour) --> 5");
 
   // std::string commify (const std::string& data)
   t.is (commify (""),           "",              "commify '' -> ''");

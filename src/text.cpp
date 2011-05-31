@@ -284,6 +284,33 @@ int longestWord (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int longestLine (const std::string& input)
+{
+  int longest = 0;
+  int length = 0;
+  std::string::size_type i = 0;
+  int character;
+
+  while ((character = utf8_next_char (input, i)))
+  {
+    if (character == '\n')
+    {
+      if (length > longest)
+        longest = length;
+
+      length = 0;
+    }
+    else
+      ++length;
+  }
+
+  if (length > longest)
+    longest = length;
+
+  return longest;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void extractLine (std::string& text, std::string& line, int length)
 {
   size_t eol = text.find ("\n");
