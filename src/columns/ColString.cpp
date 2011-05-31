@@ -62,7 +62,7 @@ void ColumnString::measure (const std::string& value, int& minimum, int& maximum
       _style == "default")
   {
     std::string stripped = Color::strip (value);
-    maximum = stripped.length ();
+    maximum = longestLine (stripped);
     minimum = longestWord (stripped);
   }
   else if (_style == "left_fixed" ||
