@@ -56,6 +56,7 @@ int CmdHelp::execute (const std::string&, std::string& output)
   int row = view.addRow ();
   view.set (row, 0, "Usage:");
   view.set (row, 1, "task");
+  view.set (row, 2, "Runs rc.default.command, if specified.");
 
   // Obsolete method of getting a list of all commands.
   std::vector <std::string> all;
@@ -66,6 +67,7 @@ int CmdHelp::execute (const std::string&, std::string& output)
   // Sort alphabetically by usage.
   std::sort (all.begin (), all.end ());
 
+  // Add the regular commands.
   std::vector <std::string>::iterator name;
   for (name = all.begin (); name != all.end (); ++name)
   {
@@ -77,6 +79,7 @@ int CmdHelp::execute (const std::string&, std::string& output)
     }
   }
 
+  // Add the helper commands.
   for (name = all.begin (); name != all.end (); ++name)
   {
     if ((*name)[0] == '_')

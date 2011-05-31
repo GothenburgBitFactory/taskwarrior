@@ -35,7 +35,7 @@ extern Context context;
 CmdQuery::CmdQuery ()
 {
   _keyword     = "_query";
-  _usage       = "task _query <external command>";
+  _usage       = "task _query [<filter>]";
   _description = "Executes external commands and scripts";
   _read_only   = true;
   _displays_id = true;
