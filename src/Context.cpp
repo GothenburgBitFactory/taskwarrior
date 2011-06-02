@@ -63,6 +63,7 @@ Context::Context ()
 , use_color (true)
 , verbosity_legacy (false)
 , inShadow (false)
+, command ("")
 , terminal_width (0)
 , terminal_height (0)
 {
@@ -128,6 +129,15 @@ void Context::initialize (int argc, const char** argv)
 
   // TODO Instantiate extension command objects.
   // TODO Instantiate default command object.
+
+  // Create list of all command keywords.
+  std::vector <std::string> keywords;
+  std::map <std::string, Command*>::iterator i;
+  for (i = commands.begin (); i != commands.end (); ++i)
+    keywords.push_back (i->first);
+
+  args.extract_command (keywords, command);
+
   // TODO Instantiate extension UDA objects.
   // TODO Instantiate extension format objects.
 
@@ -207,18 +217,11 @@ int Context::dispatch (std::string &out)
 {
   Timer t ("Context::dispatch");
 
-  updateXtermTitle ();
-
-  // Create list of all command keywords.
-  std::vector <std::string> keywords;
-  std::map <std::string, Command*>::iterator i;
-  for (i = commands.begin (); i != commands.end (); ++i)
-    keywords.push_back (i->first);
-
   // Autocomplete args against keywords.
-  std::string command;
-  if (args.extract_command (keywords, command))
+  if (command != "")
   {
+    updateXtermTitle ();
+
     Command* c = commands[command];
 
     // GC is invoked prior to running any command that displays task IDs.
@@ -838,7 +841,7 @@ void Context::updateXtermTitle ()
   {
     std::string title;
     join (title, " ", args);
-    std::cout << "]0;task " << title << "" << std::endl;
+    std::cout << "]0;task " << command << " " << title << "" << std::endl;
   }
 }
 

@@ -49,6 +49,13 @@ public:
   std::string combine ();
 
   bool extract_command (const std::vector <std::string>&, std::string&);
+  void remove_command (const std::string&);
+
+/*
+  void extract_read_only (command, filter);
+  void extract_write_commands (filter, command, mods);
+*/
+
   void extract_filter ();
   void extract_modifications ();
 

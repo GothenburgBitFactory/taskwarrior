@@ -81,11 +81,13 @@ int CmdCustom::execute (const std::string&, std::string& output)
   split (sortOrder, reportSort, ',');
   validateSortColumns (sortOrder);
 
+/*
   // Apply rc overrides.
   std::vector <std::string> filterArgs;
   std::vector <std::string> filteredArgs;
   split (filterArgs, reportFilter, ' ');
 //  context.applyOverrides (filterArgs, filteredArgs);
+*/
 
 /*
   {
@@ -108,17 +110,35 @@ int CmdCustom::execute (const std::string&, std::string& output)
   }
 */
 
-  // Get all the tasks.
+  // Load the data.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+//  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);  // TODO No filter.
   context.tdb.commit ();
   context.tdb.unlock ();
 
+/*
   // Filter sequence.
   if (context.sequence.size ())
     context.filter.applySequence (tasks, context.sequence);
+*/
+
+////////////////////////////////////
+  // TODO Create the filter
+  context.args.remove_command (_keyword);
+
+  //std::vector <std::string> filter_args;
+  //context.args.extract_filter (filter_args);
+
+  // TODO Apply the filter
+  // Filter filter (context.args);
+
+  // std::vector <Task> filtered;
+  // thing.eval (filtered, context.args, tasks);
+////////////////////////////////////
 
   // Sort the tasks.
   std::vector <int> sequence;
@@ -150,6 +170,7 @@ int CmdCustom::execute (const std::string&, std::string& output)
   }
 
   // How many lines taken up by table header?
+  // TODO Consider rc.verbose
   int table_header;
   if (context.color () && context.config.getBoolean ("fontunderline"))
     table_header = 1;  // Underlining doesn't use extra line.
@@ -162,6 +183,7 @@ int CmdCustom::execute (const std::string&, std::string& output)
   getLimits (_keyword, maxrows, maxlines);
 
   // Adjust for fluff in the output.
+  // TODO Consider rc.verbose
   if (maxlines)
     maxlines -= (context.verbose ("blank") ? 1 : 0)
               + table_header
@@ -169,6 +191,7 @@ int CmdCustom::execute (const std::string&, std::string& output)
               + context.footnotes.size ();
 
   // Render.
+  // TODO Consider rc.verbose
   std::stringstream out;
   if (tasks.size ())
   {
