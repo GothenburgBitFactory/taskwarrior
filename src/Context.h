@@ -34,7 +34,6 @@
 #include <Config.h>
 #include <Sequence.h>
 #include <Subst.h>
-#include <Cmd.h>
 #include <Task.h>
 #include <TDB.h>
 #include <TDB2.h>
@@ -56,7 +55,6 @@ public:
 
   void initialize (int, const char**); // all startup
   int run ();
-  int dispatch2 (std::string&);        // command handler dispatch
   int dispatch (std::string&);         // command handler dispatch
   void shadow ();                      // shadow file update
 
@@ -71,8 +69,10 @@ public:
   void debug (const std::string&);     // Debug message sink
   void clearMessages ();
 
+/*
   void parse ();
   void parse (std::vector <std::string>&, Cmd&, Task&, Sequence&, Subst&, Filter&);
+*/
   void clear ();
 
   void disallowModification () const;
@@ -105,7 +105,6 @@ public:
   std::string                         commandLine;
   std::string                         file_override;
   std::string                         var_overrides;
-  Cmd                                 cmd;                // TODO Obsolete
   std::map <std::string, std::string> aliases;
   std::vector <std::string>           tagAdditions;
   std::vector <std::string>           tagRemovals;

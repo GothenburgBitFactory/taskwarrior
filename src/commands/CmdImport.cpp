@@ -693,15 +693,16 @@ std::string CmdImport::taskCmdLine (const std::vector <std::string>& lines)
 
     try
     {
+/*
       context.args.clear ();
       split (context.args, std::string ("add ") + line, ' ');
 
       context.task.clear ();
       context.cmd.command = "";
       context.parse ();
-//      (void)handleAdd (unused);
       context.commands["add"]->execute (unused, unused);
       context.clearMessages ();
+*/
     }
 
     catch (...)
@@ -801,10 +802,12 @@ std::string CmdImport::todoSh_2_0 (const std::vector <std::string>& lines)
         }
       }
 
+/*
       context.task.clear ();
       context.cmd.command = "";
       context.parse ();
       decorateTask (context.task);
+*/
 
       // Override the Task::pending that decorateTask applies.
       if (!isPending)
@@ -882,10 +885,12 @@ std::string CmdImport::text (const std::vector <std::string>& lines)
         context.args.clear ();
         split (context.args, std::string ("add ") + line, ' ');
 
+/*
         context.task.clear ();
         context.cmd.command = "";
         context.parse ();
         decorateTask (context.task);
+*/
 
         context.tdb.add (context.task);
         context.clearMessages ();

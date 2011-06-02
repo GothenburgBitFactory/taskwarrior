@@ -349,12 +349,13 @@ bool Att::validNameValue (
 
   // Some attributes are intended to be private, unless the command is read-
   // only, in which cased these are perfectly valid elements of a filter.
+/*
   if (context.cmd.isWriteCommand () &&
       !validModifiableName (name))
     throw std::string ("\"") +
           name               +
           "\" is not an attribute you may modify directly.";
-
+*/
   else if (name == "priority")
   {
     if (value != "")
@@ -371,7 +372,7 @@ bool Att::validNameValue (
 
   else if (name == "description")
   {
-    if (context.cmd.isWriteCommand ())
+//    if (context.cmd.isWriteCommand ())
     {
       if (value == "")
         throw std::string ("The '") + name + "' attribute must not be blank.";

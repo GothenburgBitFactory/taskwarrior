@@ -87,6 +87,7 @@ int CmdCustom::execute (const std::string&, std::string& output)
   split (filterArgs, reportFilter, ' ');
 //  context.applyOverrides (filterArgs, filteredArgs);
 
+/*
   {
     Cmd cmd (_keyword);
     Task task;
@@ -105,6 +106,7 @@ int CmdCustom::execute (const std::string&, std::string& output)
     for (att = filter.begin (); att != filter.end (); ++att)
       context.filter.push_back (*att);
   }
+*/
 
   // Get all the tasks.
   std::vector <Task> tasks;

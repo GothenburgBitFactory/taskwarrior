@@ -58,7 +58,6 @@ Context::Context ()
 , commandLine ("")
 , file_override ("")
 , var_overrides ("")
-, cmd ()
 , dom ()
 , determine_color_use (true)
 , use_color (true)
@@ -110,12 +109,12 @@ void Context::initialize (int argc, const char** argv)
   // Create missing config file and data directory, if necessary.
   createDefaultConfig ();
 
-  // Apply rc overrides to Context::config, capturing raw args for later use.
-  args.apply_overrides (var_overrides);
-
   // Handle Aliases.
   loadAliases ();
   args.resolve_aliases ();
+
+  // Apply rc overrides to Context::config, capturing raw args for later use.
+  args.apply_overrides (var_overrides);
 
   // Combine command line into one string.
   commandLine = args.combine ();
@@ -155,10 +154,7 @@ int Context::run ()
   std::string output;
   try
   {
-    parse ();                 // Parse command line. TODO Obsolete
-    rc = dispatch2 (output);  // Dispatch to new command handlers.
-    if (rc)
-      rc = dispatch (output); // Dispatch to old command handlers.
+    rc = dispatch (output);
   }
 
   catch (const std::string& error)
@@ -207,9 +203,9 @@ int Context::run ()
 ////////////////////////////////////////////////////////////////////////////////
 // Locate and dispatch to the command whose keyword matches via autoComplete
 // with the earliest argument.
-int Context::dispatch2 (std::string &out)
+int Context::dispatch (std::string &out)
 {
-  Timer t ("Context::dispatch2");
+  Timer t ("Context::dispatch");
 
   updateXtermTitle ();
 
@@ -235,34 +231,7 @@ int Context::dispatch2 (std::string &out)
   // TODO Need to invoke 'information' when a sequence/filter is present, but
   //      no command is specified.
 
-  // TODO When ::dispatch is eliminated, show usage on unrecognized command.
-//  commands["help"]->execute (commandLine, out);
-
-  return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int Context::dispatch (std::string &out)
-{
-  int rc = 0;
-
-  Timer t ("Context::dispatch");
-
-  // TODO Chain-of-command pattern dispatch.
-  // ...
-
-  // Commands that display IDs and therefore need TDB::gc first.
-  // ...
-
-  rc = commands["help"]->execute (commandLine, out);
-
-  // Only update the shadow file if such an update was not suppressed (shadow),
-  if ((cmd.isWriteCommand () ||
-       (cmd.command == "" && sequence.size ())) &&
-      !inShadow)
-    shadow ();
-
-  return rc;
+  return commands["help"]->execute (commandLine, out);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -359,7 +328,7 @@ void Context::shadow ()
     config.set ("detection", "off");
     config.set ("color",     "off");
 
-    parse ();
+//    parse ();
     std::string result;
     (void)dispatch (result);
     std::ofstream out (shadowFile.data.c_str ());
@@ -390,7 +359,7 @@ void Context::disallowModification () const
       tagAdditions.size () ||
       tagRemovals.size ())
     throw std::string ("The '")
-        + cmd.command
+//        + cmd.command
         + "' command does not allow further modification of a task.";
 }
 
@@ -447,12 +416,15 @@ void Context::loadAliases ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+/*
 void Context::parse ()
 {
   parse (args, cmd, task, sequence, subst, filter);
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
+/*
 void Context::parse (
   std::vector <std::string>& parseArgs,
   Cmd& parseCmd,
@@ -697,6 +669,7 @@ void Context::parse (
     }
   }
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void Context::decomposeSortField (
@@ -742,7 +715,7 @@ void Context::clear ()
   args.clear ();
   file_override = "";
   var_overrides = "";
-  cmd.command = "";        // TODO Obsolete
+//  cmd.command = "";        // TODO Obsolete
   tagAdditions.clear ();
   tagRemovals.clear ();
 

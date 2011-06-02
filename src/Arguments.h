@@ -49,12 +49,16 @@ public:
   std::string combine ();
 
   bool extract_command (const std::vector <std::string>&, std::string&);
-  void extract_sequence (std::vector <int>&);
-  void extract_nv ();
-  void extract_uuids (std::vector <std::string>&);
   void extract_filter ();
   void extract_modifications ();
-  void extract_text ();
+
+  void extract_sequence (std::vector <int>&);
+  void extract_uuids (std::vector <std::string>&);
+  void extract_attrs ();
+  void extract_words ();
+  void extract_tags ();
+  void extract_pattern ();
+  void extract_subst ();
 };
 
 #endif
