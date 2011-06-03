@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
+#include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
 #include <Duration.h>
@@ -96,7 +97,7 @@ int CmdSummary::execute (const std::string&, std::string& output)
     {
       ++countPending[project];
 
-      time_t entry = atoi (task->get ("entry").c_str ());
+      time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
       if (entry)
         sumEntry[project] = sumEntry[project] + (double) (now - entry);
     }
@@ -105,8 +106,8 @@ int CmdSummary::execute (const std::string&, std::string& output)
     {
       ++countCompleted[project];
 
-      time_t entry = atoi (task->get ("entry").c_str ());
-      time_t end   = atoi (task->get ("end").c_str ());
+      time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
+      time_t end   = strtol (task->get ("end").c_str (), NULL, 10);
       if (entry && end)
         sumEntry[project] = sumEntry[project] + (double) (end - entry);
     }

@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
+#include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
 #include <Date.h>
@@ -109,7 +110,7 @@ int CmdTimesheet::execute (const std::string&, std::string& output)
       // If task completed within range.
       if (task->getStatus () == Task::completed)
       {
-        Date compDate (atoi (task->get ("end").c_str ()));
+        Date compDate (strtol (task->get ("end").c_str (), NULL, 10));
         if (compDate >= start && compDate < end)
         {
           Color c (task->get ("fg") + " " + task->get ("bg"));
@@ -147,7 +148,7 @@ int CmdTimesheet::execute (const std::string&, std::string& output)
       if (task->getStatus () == Task::pending &&
           task->has ("start"))
       {
-        Date startDate (atoi (task->get ("start").c_str ()));
+        Date startDate (strtol (task->get ("start").c_str (), NULL, 10));
         if (startDate >= start && startDate < end)
         {
           Color c (task->get ("fg") + " " + task->get ("bg"));

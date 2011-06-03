@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
+#include <algorithm>
 #include <Context.h>
 #include <ViewText.h>
 #include <text.h>
