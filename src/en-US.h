@@ -108,10 +108,18 @@
 #define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
 #define STRING_CMD_SHOW_CONF_VALUE   "Value"
 
+// Context
+#define STRING_CONTEXT_CREATE_RC     "A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so taskwarrior can proceed?"
+#define STRING_CONTEXT_NEED_RC       "Cannot proceed without rc file."
+
 // DOM
 #define STRING_DOM_UNKNOWN           "<unknown>"
 #define STRING_DOM_UNREC             "DOM: Cannot get unrecognized name '{1}'."
 #define STRING_DOM_CANNOT_SET        "DOM: Cannot set '{1}'."
+
+// Lua
+#define STRING_LUA_BAD_HOOK_DEF      "Malformed hook definition '{1}'."
+#define STRING_LUA_BAD_EVENT         "Unrecognized hook event '{1}'."
 
 #endif
 

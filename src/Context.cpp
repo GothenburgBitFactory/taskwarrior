@@ -385,13 +385,8 @@ void Context::createDefaultConfig ()
   // Do we need to create a default rc?
   if (! rc_file.exists ())
   {
-    if (!confirm ("A configuration file could not be found in " // TODO i18n
-                + home_dir
-                + "\n\n"
-                + "Would you like a sample "
-                + rc_file.data
-                + " created, so taskwarrior can proceed?"))
-      throw std::string ("Cannot proceed without rc file.");
+    if (!confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file.data)))
+      throw std::string (STRING_CONTEXT_NEED_RC);
 
     config.createDefaultRC (rc_file, data_dir);
   }

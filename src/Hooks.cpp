@@ -30,6 +30,9 @@
 #include <Context.h>
 #include <Hooks.h>
 #include <Timer.h>
+#include <i18n.h>
+
+#define L10N                                           // Localization complete.
 
 extern Context context;
 
@@ -143,7 +146,7 @@ void Hooks::initialize ()
             (void) n.skip (',');
           }
           else
-            throw std::string ("Malformed hook definition '") + *it + "'.";
+            throw std::string (format (STRING_LUA_BAD_HOOK_DEF, *it));
         }
       }
     }
@@ -171,7 +174,7 @@ bool Hooks::trigger (const std::string& event)
           return false;
       }
       else
-        throw std::string ("Unrecognized hook event '") + event + "'.";
+        throw std::string (format (STRING_LUA_BAD_EVENT, event));
     }
   }
 #endif
@@ -198,7 +201,7 @@ bool Hooks::trigger (const std::string& event, Task& task)
           return false;
       }
       else
-        throw std::string ("Unrecognized hook event '") + event + "'.";
+        throw std::string (format (STRING_LUA_BAD_EVENT, event));
     }
   }
 #endif
@@ -215,6 +218,7 @@ bool Hooks::validProgramEvent (const std::string& event)
   return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 bool Hooks::validTaskEvent (const std::string& event)
 {
   if (std::find (validTaskEvents.begin (), validTaskEvents.end (), event) != validTaskEvents.end ())
