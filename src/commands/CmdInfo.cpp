@@ -180,7 +180,7 @@ int CmdInfo::execute (const std::string&, std::string& output)
       if (format == "")
         format = context.config.get ("dateformat");
 
-      std::string until = getDueDate (*task, format);
+      std::string until = dt.toString (context.config.get ("dateformat"));
       view.set (row, 1, until);
     }
 

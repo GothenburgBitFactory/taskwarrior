@@ -97,6 +97,8 @@
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
+ + Fixed bug that showed the 'due' date, under the heading 'until' date, in the
+   info report (thanks to Michael McCann).
 
 ------ old releases ------------------------------
 
