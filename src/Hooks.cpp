@@ -30,6 +30,7 @@
 #include <Context.h>
 #include <Hooks.h>
 #include <Timer.h>
+#include <text.h>
 #include <i18n.h>
 
 #define L10N                                           // Localization complete.
