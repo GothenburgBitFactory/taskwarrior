@@ -28,7 +28,7 @@
 #include <fstream>
 #include <sstream>
 #include <Context.h>
-#include <URI.h>
+#include <Uri.h>
 #include <Transport.h>
 #include <text.h>
 #include <util.h>
