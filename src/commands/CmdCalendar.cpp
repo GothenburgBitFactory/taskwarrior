@@ -27,6 +27,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
 #include <text.h>
@@ -130,12 +131,12 @@ int CmdCalendar::execute (const std::string&, std::string& output)
 
     // YYYY.
     else if (digitsOnly (*arg) && arg->length () == 4)
-      argYear = atoi (arg->c_str ());
+      argYear = strtol (arg->c_str (), NULL, 10);
 
     // MM.
     else if (digitsOnly (*arg) && arg->length () <= 2)
     {
-      argMonth = atoi (arg->c_str ());
+      argMonth = strtol (arg->c_str (), NULL, 10);
       if (argMonth < 1 || argMonth > 12)
         throw std::string ("Argument '") + *arg + "' is not a valid month.";
     }
@@ -189,7 +190,7 @@ int CmdCalendar::execute (const std::string&, std::string& output)
             !task->hasTag ("nocal"))
         {
           ++countDueDates;
-          Date d (atoi (task->get ("due").c_str ()));
+          Date d (strtol (task->get ("due").c_str (), NULL, 10));
           if (d < oldest) oldest = d;
         }
       }
@@ -556,7 +557,7 @@ std::string CmdCalendar::renderMonths (
                 task->has ("due"))
             {
               std::string due = task->get ("due");
-              Date duedmy (atoi(due.c_str()));
+              Date duedmy (strtol (due.c_str(), NULL, 10));
 
               if (duedmy.day   () == d           &&
                   duedmy.month () == months[mpl] &&
