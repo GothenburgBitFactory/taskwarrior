@@ -108,7 +108,7 @@ void Subst::parse (const std::string& input)
       n.getUntil ('/', mTo)   &&
       n.skip     ('/'))
   {
-      mGlobal = n.skip ('g');
+    mGlobal = n.skip ('g');
 
     if (mFrom == "")
       throw std::string ("Cannot substitute an empty string.");

@@ -58,8 +58,21 @@ public:
   void extract_filter ();
   void extract_modifications ();
 */
-  void extract_sequence (std::vector <int>&);
+
+  bool is_attr (const std::string&);
+  bool is_attmod (const std::string&);
+  bool is_subst (const std::string&);
+  bool is_pattern (const std::string&);
+
+  bool extract_attr (const std::string&, std::string&, std::string&);
+  bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
+  bool extract_subst (const std::string&, std::string&, std::string&, bool&);
+  bool extract_pattern (const std::string&, std::string&);
+
+  bool valid_modifier (const std::string&);
+
 /*
+  void extract_sequence (std::vector <int>&);
   void extract_uuids (std::vector <std::string>&);
   void extract_attrs ();
   void extract_words ();

@@ -32,12 +32,32 @@
 #include <sys/select.h>
 #include <Context.h>
 #include <Nibbler.h>
+#include <Directory.h>
 #include <ViewText.h>
 #include <text.h>
 #include <util.h>
 #include <Arguments.h>
 
 extern Context context;
+
+// Synonyms on the same line.
+static const char* modifierNames[] =
+{
+  "before",     "under",    "below",
+  "after",      "over",     "above",
+  "none",
+  "any",
+  "is",         "equals",
+  "isnt",       "not",
+  "has",        "contains",
+  "hasnt",
+  "startswith", "left",
+  "endswith",   "right",
+  "word",
+  "noword"
+};
+
+#define NUM_MODIFIER_NAMES   (sizeof (modifierNames)   / sizeof (modifierNames[0]))
 
 ////////////////////////////////////////////////////////////////////////////////
 Arguments::Arguments ()
@@ -54,7 +74,7 @@ Arguments::~Arguments ()
 void Arguments::capture (int argc, const char** argv)
 {
   for (int i = 0; i < argc; ++i)
-    this->push_back (std::make_pair (argv[i], (i == 0 ? "program" : "")));
+    this->push_back (std::make_pair (argv[i], ""));
 
   categorize ();
 }
@@ -71,6 +91,8 @@ void Arguments::capture (const std::string& arg)
 // Add a pair for every word from std::cin, with a category of "".
 void Arguments::append_stdin ()
 {
+  bool something_happened = false;
+
   // Use 'select' to determine whether there is any std::cin content buffered
   // before trying to read it, to prevent blocking.
   struct timeval tv;
@@ -90,10 +112,12 @@ void Arguments::append_stdin ()
         break;
 
       this->push_back (std::make_pair (arg, ""));
+      something_happened = true;
     }
   }
 
-  categorize ();
+  if (something_happened)
+    categorize ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +148,7 @@ void Arguments::categorize ()
         context.debug ("Arguments::categorize keyword '" + arg->first + "'");
 
       // Not only categorize the command, but overwrite the original command
-      // the fule name.
+      // with the full command name.
       arg->first  = matches[0];
       arg->second = "command";
 
@@ -134,6 +158,7 @@ void Arguments::categorize ()
   }
 
   // Now categorize every uncategorized argument.
+  std::string ignored;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
     if (!terminated)
@@ -145,24 +170,45 @@ void Arguments::categorize ()
         arg->second = "terminator";
       }
 
-//      // Only categorize uncategorized args.
-//      else if (arg->second == "")
-      else
+      else if (arg->second != "command")
       {
+        // program
+        if (arg == this->begin ())
+          arg->second = "program";
+
         // rc:<file>
-        if (arg->first.substr (0, 3) == "rc:")
+        else if (arg->first.substr (0, 3) == "rc:")
           arg->second = "rc";
 
         // rc.<name>[:=]<value>
         else if (arg->first.substr (0, 3) == "rc.")
           arg->second = "override";
 
+        // +tag
+        // -tag
+        else if (arg->first[0] == '+' ||
+                 arg->first[0] == '-')
+          arg->second = "tag";
+
+        // /pattern/
+        else if (is_pattern (arg->first))
+          arg->second = "pattern";
+
+        // 
+        // <name>.<modifier>[:=]<value>
+        else if (is_attmod (arg->first))
+          arg->second = "attmod";
+
+        // <name>[:=]<value>
+        else if (is_attr (arg->first))
+          arg->second = "attribute";
+
         // TODO Sequence
         // TODO UUID
-        // TODO +tag
-        // TODO -tag
-        // TODO subst
-        // TODO attr
+
+        // /<from>/<to>/[g]
+        else if (is_subst (arg->first))
+          arg->second = "substitution";
 
         else if (arg->second == "")
           arg->second = "word";
@@ -305,7 +351,6 @@ void Arguments::resolve_aliases ()
     for (e = expanded.begin (); e != expanded.end (); ++e)
       this->push_back (std::make_pair (*e, ""));
 
-    // Must now re-categorize everything.
     categorize ();
   }
 }
@@ -355,6 +400,281 @@ bool Arguments::find_command (std::string& command)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//                    ______________
+//                    |            |
+//                    |            v
+// start --> name --> : --> " --> value --> " --> end
+//                                   |             ^
+//                                   |_____________|
+//
+bool Arguments::is_attr (const std::string& input)
+{
+  Nibbler n (input);
+
+  // Ensure a clean parse.
+  std::string name;
+  std::string value;
+
+  if (n.getUntilOneOf ("=:", name))
+  {
+    if (n.skip (':') ||
+        n.skip ('='))
+    {
+      // Both quoted and unquoted Att's are accepted.
+      // Consider removing this for a stricter parse.
+      if (n.getQuoted   ('"', value) ||
+          n.getUntilEOS (value))
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                  ______________
+//                                  |            |
+//                                  |            v
+// start --> name --> . --> mod --> : --> " --> value --> " --> end
+//            |                     ^              |             ^
+//            |_____________________|              |_____________|
+//
+bool Arguments::is_attmod (const std::string& input)
+{
+  Nibbler n (input);
+
+  // Ensure a clean parse.
+  std::string ignored;
+
+  if (n.getUntil (".", ignored))
+  {
+    if (n.skip ('.'))
+    {
+      n.skip ('~');
+      n.getUntilOneOf (":=", ignored);
+    }
+
+    if (n.skip (':') ||
+        n.skip ('='))
+    {
+      // Both quoted and unquoted Att's are accepted.
+      // Consider removing this for a stricter parse.
+      if (n.getQuoted   ('"', ignored) ||
+          n.getUntilEOS (ignored))
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// /<from>/<to>/[g]
+bool Arguments::is_subst (const std::string& input)
+{
+  std::string ignored;
+  Nibbler n (input);
+  if (n.skip     ('/')            &&
+      n.getUntil ('/', ignored)   &&
+      n.skip     ('/')            &&
+      n.getUntil ('/', ignored)   &&
+      n.skip     ('/'))
+  {
+    n.skip ('g');
+    if (n.depleted ())
+      return ! Directory (input).exists ();   // Ouch - expensive call.
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// /<pattern>/
+bool Arguments::is_pattern (const std::string& input)
+{
+  if (input[0] == '/'     &&
+      input.length () > 2 &&
+      input[input.length () - 1] == '/')
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                    ______________
+//                    |            |
+//                    |            v
+// start --> name --> : --> " --> value --> " --> end
+//                                   |             ^
+//                                   |_____________|
+//
+bool Arguments::extract_attr (
+  const std::string& input,
+  std::string& name,
+  std::string& value)
+{
+  Nibbler n (input);
+
+  // Ensure a clean parse.
+  name  = "";
+  value = "";
+
+  if (n.getUntilOneOf ("=:", name))
+  {
+    if (name.length () == 0)
+      throw std::string ("Missing attribute name"); // TODO i18n
+
+    if (n.skip (':') ||
+        n.skip ('='))
+    {
+      // Both quoted and unquoted Att's are accepted.
+      // Consider removing this for a stricter parse.
+      if (n.getQuoted   ('"', value) ||
+          n.getUntilEOS (value))
+      {
+        return true;
+      }
+    }
+    else
+      throw std::string ("Missing : after attribute name."); // TODO i18n
+  }
+  else
+    throw std::string ("Missing : after attribute name."); // TODO i18n
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                  ______________
+//                                  |            |
+//                                  |            v
+// start --> name --> . --> mod --> : --> " --> value --> " --> end
+//                                                 |             ^
+//                                                 |_____________|
+//
+bool Arguments::extract_attmod (
+  const std::string& input,
+  std::string& name,
+  std::string& modifier,
+  std::string& value,
+  std::string& sense)
+{
+  Nibbler n (input);
+
+  // Ensure a clean parse.
+  name     = "";
+  value    = "";
+  modifier = "";
+  sense    = "positive";
+
+  if (n.getUntil (".", name))
+  {
+    if (name.length () == 0)
+      throw std::string ("Missing attribute name"); // TODO i18n
+
+    if (n.skip ('.'))
+    {
+      if (n.skip ('~'))
+        sense = "negative";
+
+      if (n.getUntilOneOf (":=", modifier))
+      {
+        if (!valid_modifier (modifier))
+          throw std::string ("The name '") + modifier + "' is not a valid modifier."; // TODO i18n
+      }
+      else
+        throw std::string ("Missing . or : after modifier."); // TODO i18n
+    }
+    else
+      throw std::string ("Missing modifier."); // TODO i18n
+
+    if (n.skip (':') ||
+        n.skip ('='))
+    {
+      // Both quoted and unquoted Att's are accepted.
+      // Consider removing this for a stricter parse.
+      if (n.getQuoted   ('"', value) ||
+          n.getUntilEOS (value))
+      {
+        return true;
+      }
+    }
+    else
+      throw std::string ("Missing : after attribute name."); // TODO i18n
+  }
+  else
+    throw std::string ("Missing : after attribute name."); // TODO i18n
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Arguments::extract_subst (
+  const std::string& input,
+  std::string& from,
+  std::string& to,
+  bool& global)
+{
+  Nibbler n (input);
+  if (n.skip     ('/')       &&
+      n.getUntil ('/', from) &&
+      n.skip     ('/')       &&
+      n.getUntil ('/', to)   &&
+      n.skip     ('/'))
+  {
+    global = n.skip ('g');
+
+    if (from == "")
+      throw std::string ("Cannot substitute an empty string.");
+
+    if (!n.depleted ())
+      throw std::string ("Unrecognized character(s) at end of substitution.");
+
+    return true;
+  }
+  else
+    throw std::string ("Malformed substitution.");
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Arguments::extract_pattern (const std::string& input, std::string& pattern)
+{
+  Nibbler n (input);
+  if (n.skip     ('/')          &&
+      n.getUntil ('/', pattern) &&
+      n.skip     ('/'))
+  {
+    if (pattern == "")
+      throw std::string ("Cannot search for an empty pattern.");
+
+    if (!n.depleted ())
+      throw std::string ("Unrecognized character(s) at end of pattern.");
+
+    return true;
+  }
+  else
+    throw std::string ("Malformed pattern.");
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Arguments::valid_modifier (const std::string& modifier)
+{
+  for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
+    if (modifierNames[i] == modifier)
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // A sequence can be:
 //
 //   a single ID:          1
@@ -377,9 +697,9 @@ bool Arguments::find_command (std::string& command)
 //
 // The sequence is "1,2".
 //
+/*
 void Arguments::extract_sequence (std::vector <int>& sequence)
 {
-/*
   sequence.clear ();
   std::vector <int> kill;
 
@@ -458,19 +778,26 @@ void Arguments::extract_sequence (std::vector <int>& sequence)
   // Now remove args in the kill list.
   for (unsigned int k = 0; k < kill.size (); ++k)
     this->erase (this->begin () + kill[k]);
-*/
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void Arguments::dump (const std::string& label)
 {
-  // Set up a map of categories to colors.
+  // Set up a color mapping.
   std::map <std::string, Color> color_map;
-  color_map["program"]  = Color ("white on blue");
-  color_map["command"]  = Color ("black on cyan");
-  color_map["rc"]       = Color ("bold white on red");
-  color_map["override"] = Color ("white on red");
-  color_map["none"]     = Color ("white on gray3");
+  color_map["program"]      = Color ("white on blue");
+  color_map["command"]      = Color ("black on cyan");
+  color_map["rc"]           = Color ("bold white on red");
+  color_map["override"]     = Color ("white on red");
+  color_map["tag"]          = Color ("green on gray3");
+  color_map["pattern"]      = Color ("cyan on gray3");
+  color_map["attribute"]    = Color ("bold red on gray3");
+  color_map["attmod"]       = Color ("bold red on gray3");
+  color_map["sequence"]     = Color ("yellow on gray3");
+  color_map["uuid"]         = Color ("yellow on gray3");
+  color_map["substitution"] = Color ("bold cyan on gray3");
+  color_map["none"]         = Color ("white on gray3");
 
   Color color_debug (context.config.get ("color.debug"));
   std::stringstream out;

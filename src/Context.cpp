@@ -120,6 +120,9 @@ void Context::initialize (int argc, const char** argv)
   // Instantiate built-in command objects.
   Command::factory (commands);
 
+  // Finally categorize all arguments.
+  args.categorize ();
+
   // TODO Instantiate extension command objects.
   // TODO Instantiate default command object.
 
@@ -145,7 +148,7 @@ void Context::initialize (int argc, const char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 int Context::run ()
 {
-  Timer timer ("Context::run");
+  Timer t ("Context::run");
 
   int rc;
   std::string output;
