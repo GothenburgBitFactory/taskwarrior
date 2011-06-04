@@ -52,6 +52,7 @@ int CmdCalendar::execute (std::string& output)
 {
   int rc = 0;
 
+/*
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
   int width = context.getWidth ();
@@ -401,6 +402,7 @@ int CmdCalendar::execute (std::string& output)
   }
 
   output = out.str ();
+*/
   return rc;
 }
 

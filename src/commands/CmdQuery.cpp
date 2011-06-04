@@ -46,6 +46,7 @@ int CmdQuery::execute (std::string& output)
 {
   int rc = 0;
 
+/*
   // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -77,6 +78,7 @@ int CmdQuery::execute (std::string& output)
   }
 
   output += "\n";
+*/
   return rc;
 }
 

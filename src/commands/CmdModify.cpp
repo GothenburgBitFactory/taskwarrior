@@ -51,6 +51,7 @@ CmdModify::CmdModify ()
 int CmdModify::execute (std::string& output)
 {
   int count = 0;
+/*
   std::stringstream out;
 
   std::vector <Task> tasks;
@@ -181,6 +182,7 @@ int CmdModify::execute (std::string& output)
     out << "Modified " << count << " task" << (count == 1 ? ".\n" : "s.\n");
 
   output = out.str ();
+*/
   return 0;
 }
 

@@ -48,6 +48,7 @@ int CmdAnnotate::execute (std::string& output)
 {
   int rc = 0;
 
+/*
   if (!context.task.has ("description"))
     throw std::string ("Cannot apply a blank annotation.");
 
@@ -102,6 +103,7 @@ int CmdAnnotate::execute (std::string& output)
   context.tdb.unlock ();
 
   output = out.str ();
+*/
   return rc;
 }
 

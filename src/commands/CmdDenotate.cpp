@@ -49,6 +49,7 @@ int CmdDenotate::execute (std::string& output)
 {
   int rc = 0;
 
+/*
   if (!context.task.has ("description"))
     throw std::string ("Description needed to delete an annotation.");
 
@@ -141,6 +142,7 @@ int CmdDenotate::execute (std::string& output)
   context.tdb.unlock ();
 
   output = out.str ();
+*/
   return rc;
 }
 

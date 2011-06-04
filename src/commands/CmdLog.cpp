@@ -48,6 +48,7 @@ CmdLog::CmdLog ()
 int CmdLog::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::stringstream out;
 
   context.task.setStatus (Task::completed);
@@ -109,6 +110,7 @@ int CmdLog::execute (std::string& output)
   context.tdb.unlock ();
 
   output = out.str ();
+*/
   return rc;
 }
 

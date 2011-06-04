@@ -224,8 +224,7 @@ void Arguments::categorize ()
 ////////////////////////////////////////////////////////////////////////////////
 void Arguments::rc_override (
   std::string& home,
-  File& rc,
-  std::string& override)
+  File& rc)
 {
   // Is there an override for rc:<file>?
   std::vector <std::pair <std::string, std::string> >::iterator arg;
@@ -233,7 +232,6 @@ void Arguments::rc_override (
   {
     if (arg->second == "rc")
     {
-      override = arg->first;
       rc = File (arg->first.substr (3));
       home = rc;
 
@@ -280,7 +278,7 @@ void Arguments::get_data_location (std::string& data)
 ////////////////////////////////////////////////////////////////////////////////
 // Extracts any rc.name:value args and sets the name/value in context.config,
 // leaving only the plain args.
-void Arguments::apply_overrides (std::string& var_overrides)
+void Arguments::apply_overrides ()
 {
   std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
@@ -294,13 +292,10 @@ void Arguments::apply_overrides (std::string& var_overrides)
           n.getUntilOneOf (":=", name) &&  //    xxx
           n.skipN (1))                     //       :
       {
-        n.getUntilEOS (value);  // Don't care if it's blank.
+        n.getUntilEOS (value);  // May be blank.
 
         context.config.set (name, value);
         context.footnote ("Configuration override rc." + name + "=" + value);
-
-        // Overrides are retained for potential use by the default command.
-        var_overrides += " " + arg->first;
       }
       else
         context.footnote ("Problem with override: " + arg->first);

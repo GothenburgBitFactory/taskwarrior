@@ -47,6 +47,7 @@ CmdColor::CmdColor ()
 int CmdColor::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::stringstream out;
 
   if (context.color ())
@@ -239,6 +240,7 @@ int CmdColor::execute (std::string& output)
   }
 
   output = out.str ();
+*/
   return rc;
 }
 

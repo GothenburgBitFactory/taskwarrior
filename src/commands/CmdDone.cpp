@@ -47,6 +47,7 @@ CmdDone::CmdDone ()
 int CmdDone::execute (std::string& output)
 {
   int rc = 0;
+/*
   int count = 0;
   std::stringstream out;
 
@@ -149,6 +150,7 @@ int CmdDone::execute (std::string& output)
         << " as done.\n";
 
   output = out.str ();
+*/
   return rc;
 }
 

@@ -33,7 +33,6 @@
 #include <Filter.h>
 #include <Config.h>
 #include <Sequence.h>
-#include <Subst.h>
 #include <Task.h>
 #include <TDB.h>
 #include <TDB2.h>
@@ -68,11 +67,6 @@ public:
   void footnote (const std::string&);  // Footnote message sink
   void debug (const std::string&);     // Debug message sink
   void clearMessages ();
-
-/*
-  void parse ();
-  void parse (std::vector <std::string>&, Cmd&, Task&, Sequence&, Subst&, Filter&);
-*/
   void clear ();
 
   void disallowModification () const;
@@ -96,17 +90,23 @@ public:
   Directory                           extension_dir;
   Config                              config;
 
+/*
   Filter                              filter;             // TODO Obsolete
   Sequence                            sequence;           // TODO Obsolete
   Subst                               subst;              // TODO Obsolete
   Task                                task;               // TODO Obsolete
+*/
   TDB                                 tdb;                // TODO Obsolete
   TDB2                                tdb2;
+/*
   std::string                         file_override;
   std::string                         var_overrides;
+*/
   std::map <std::string, std::string> aliases;
+/*
   std::vector <std::string>           tagAdditions;       // TODO Obsolete
   std::vector <std::string>           tagRemovals;        // TODO Obsolete
+*/
   Hooks                               hooks;
   DOM                                 dom;
 
@@ -119,7 +119,9 @@ public:
   std::vector <std::string>           headers;
   std::vector <std::string>           footnotes;
   std::vector <std::string>           debugMessages;
+/*
   bool                                inShadow;
+*/
 
   std::map <std::string, Command*>    commands;
 

@@ -48,19 +48,12 @@ Context::Context ()
 , data_dir ()
 , extension_dir ()
 , config ()
-, filter ()
-, sequence ()
-, subst ()
-, task ()
 , tdb ()
 , tdb2 ()
-, file_override ("")
-, var_overrides ("")
 , dom ()
 , determine_color_use (true)
 , use_color (true)
 , verbosity_legacy (false)
-, inShadow (false)
 , terminal_width (0)
 , terminal_height (0)
 {
@@ -89,7 +82,7 @@ void Context::initialize (int argc, const char** argv)
 
   // Process 'rc:<file>' command line override, and remove the argument from the
   // Context::args.
-  args.rc_override (home_dir, rc_file, file_override);
+  args.rc_override (home_dir, rc_file);
 
   // Dump any existing values and load rc file.
   config.clear ();
@@ -111,7 +104,7 @@ void Context::initialize (int argc, const char** argv)
   args.resolve_aliases ();
 
   // Apply rc overrides to Context::config, capturing raw args for later use.
-  args.apply_overrides (var_overrides);
+  args.apply_overrides ();
 
   // Initialize the color rules, if necessary.
   if (color ())
@@ -356,6 +349,7 @@ void Context::shadow ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::disallowModification () const
 {
+/*
   if (task.size ()         ||
       subst.mFrom != ""    ||
       tagAdditions.size () ||
@@ -363,6 +357,7 @@ void Context::disallowModification () const
     throw std::string ("The '")
 //        + cmd.command
         + "' command does not allow further modification of a task.";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -411,14 +406,6 @@ void Context::loadAliases ()
     if (var->substr (0, 6) == "alias.")
       aliases[var->substr (6)] = config.get (*var);
 }
-
-////////////////////////////////////////////////////////////////////////////////
-/*
-void Context::parse ()
-{
-  parse (args, cmd, task, sequence, subst, filter);
-}
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 /*
@@ -699,23 +686,11 @@ void Context::decomposeSortField (
 // be initialized.  That makes this method something of a misnomer.  So be it.
 void Context::clear ()
 {
-//  Config                    config;
-  filter.clear ();
-  sequence.clear ();
-  subst.clear ();
-//  task.clear ();
-  task = Task ();
   tdb.clear ();            // TODO Obsolete
 //  tdb2.clear ();
   args.clear ();
-  file_override = "";
-  var_overrides = "";
-//  cmd.command = "";        // TODO Obsolete
-  tagAdditions.clear ();
-  tagRemovals.clear ();
 
   clearMessages ();
-  inShadow = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -804,6 +779,7 @@ void Context::autoFilter (Att& a, Filter& f)
 // Add all the tags in the task to the filter.
 void Context::autoFilter (Filter& f)
 {
+/*
   // This is now a correct implementation of a filter on the presence or absence
   // of a tag.  The prior code provided the illusion of leftmost partial tag
   // matches, but was really using the 'contains' and 'nocontains' attribute
@@ -822,6 +798,7 @@ void Context::autoFilter (Filter& f)
     f.push_back (Att ("tags", "noword", *tag));
     debug ("auto filter: -" + *tag);
   }
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

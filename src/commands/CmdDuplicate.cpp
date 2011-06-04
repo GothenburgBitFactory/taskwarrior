@@ -48,6 +48,7 @@ CmdDuplicate::CmdDuplicate ()
 int CmdDuplicate::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::stringstream out;
   int count = 0;
 
@@ -135,6 +136,7 @@ int CmdDuplicate::execute (std::string& output)
   context.tdb.unlock ();
 
   output = out.str ();
+*/
   return rc;
 }
 

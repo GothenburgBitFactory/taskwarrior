@@ -50,6 +50,7 @@ int CmdTimesheet::execute (std::string& output)
 {
   int rc = 0;
 
+/*
   // Scan the pending tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -179,6 +180,7 @@ int CmdTimesheet::execute (std::string& output)
   }
 
   output = out.str ();
+*/
   return rc;
 }
 

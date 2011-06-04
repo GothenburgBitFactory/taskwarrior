@@ -49,6 +49,7 @@ CmdMerge::CmdMerge ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdMerge::execute (std::string& output)
 {
+/*
   std::string file = trim (context.task.get ("description"));
   std::string pushfile = "";
   std::string tmpfile = "";
@@ -100,6 +101,7 @@ int CmdMerge::execute (std::string& output)
     throw std::string ("No uri was specified for the merge.  Either specify "
                        "the uri of a remote .task directory, or create a "
                        "'merge.default.uri' entry in your .taskrc file.");
+*/
 
   return 0;
 }

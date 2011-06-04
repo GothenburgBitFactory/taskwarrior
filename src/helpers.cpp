@@ -197,21 +197,22 @@ static void countTasks (
           break;
         }
       }
+
       if (skip == 0)
       {
         switch (it->getStatus ())
         {
-          case Task::pending:
-          case Task::waiting:
-            ++count_pending;
-            break;
+        case Task::pending:
+        case Task::waiting:
+          ++count_pending;
+          break;
 
-          case Task::completed:
-            ++count_done;
-            break;
+        case Task::completed:
+          ++count_done;
+          break;
 
-          default:
-            break;
+        default:
+          break;
         }
       }
     }
@@ -221,25 +222,28 @@ static void countTasks (
 ////////////////////////////////////////////////////////////////////////////////
 int deltaAppend (Task& task)
 {
+/*
   if (context.task.has ("description"))
   {
     task.set ("description",
               task.get ("description") + " " + context.task.get ("description"));
     return 1;
   }
-
+*/
   return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int deltaPrepend (Task& task)
 {
+/*
   if (context.task.has ("description"))
   {
     task.set ("description",
               context.task.get ("description") + " " + task.get ("description"));
     return 1;
   }
+*/
 
   return 0;
 }
@@ -247,11 +251,13 @@ int deltaPrepend (Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 int deltaDescription (Task& task)
 {
+/*
   if (context.task.has ("description"))
   {
     task.set ("description", context.task.get ("description"));
     return 1;
   }
+*/
 
   return 0;
 }
@@ -261,6 +267,7 @@ int deltaTags (Task& task)
 {
   int changes = 0;
 
+/*
   // Apply or remove tags, if any.
   std::vector <std::string> tags;
   context.task.getTags (tags);
@@ -276,6 +283,7 @@ int deltaTags (Task& task)
     task.removeTag (*tag);
     ++changes;
   }
+*/
 
   return changes;
 }
@@ -285,6 +293,7 @@ int deltaAttributes (Task& task)
 {
   int changes = 0;
 
+/*
   std::map <std::string, Att>::iterator att;
   for (att = context.task.begin (); att != context.task.end (); ++att)
   {
@@ -341,6 +350,7 @@ int deltaAttributes (Task& task)
       ++changes;
     }
   }
+*/
 
   return changes;
 }
@@ -348,16 +358,147 @@ int deltaAttributes (Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 int deltaSubstitutions (Task& task)
 {
+/*
   std::string description = task.get ("description");
   std::vector <Att> annotations;
   task.getAnnotations (annotations);
 
-  context.subst.apply (description, annotations);
+  apply_subst (description, annotations);
 
   task.set ("description", description);
   task.setAnnotations (annotations);
+*/
 
   return 1;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+/*
+void apply_subst (
+  std::string& description,
+  std::vector <Att>& annotations) const
+{
+  std::string::size_type pattern;
+  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+
+  if (mFrom != "")
+  {
+#ifdef FEATURE_REGEX
+    if (context.config.getBoolean ("regex"))
+    {
+      // Insert capturing parentheses, if necessary.
+      std::string pattern;
+      if (mFrom.find ('(') != std::string::npos)
+        pattern = mFrom;
+      else
+        pattern = "(" + mFrom + ")";
+
+      std::vector <int> start;
+      std::vector <int> end;
+
+      // Perform all subs on description.
+      int counter = 0;
+      if (regexMatch (start, end, description, pattern, sensitive))
+      {
+        for (unsigned int i = 0; i < start.size (); ++i)
+        {
+          description.replace (start[i], end[i] - start[i], mTo);
+          if (!mGlobal)
+            break;
+
+          if (++counter > 1000)
+            throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
+        }
+      }
+
+      // Perform all subs on annotations.
+      counter = 0;
+      std::vector <Att>::iterator i;
+      for (i = annotations.begin (); i != annotations.end (); ++i)
+      {
+        std::string annotation = i->value ();
+        start.clear ();
+        end.clear ();
+
+        if (regexMatch (start, end, annotation, pattern, sensitive))
+        {
+          for (unsigned int match = 0; match < start.size (); ++match)
+          {
+            annotation.replace (start[match], end[match] - start[match], mTo);
+            i->value (annotation);
+            if (!mGlobal)
+              break;
+
+            if (++counter > 1000)
+              throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
+          }
+        }
+      }
+    }
+    else
+    {
+#endif
+      if (mGlobal)
+      {
+        // Perform all subs on description.
+        int counter = 0;
+        pattern = 0;
+
+        while ((pattern = find (description, mFrom, pattern, sensitive)) != std::string::npos)
+        {
+          description.replace (pattern, mFrom.length (), mTo);
+          pattern += mTo.length ();
+
+          if (++counter > 1000)
+            throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
+        }
+
+        // Perform all subs on annotations.
+        counter = 0;
+        std::vector <Att>::iterator i;
+        for (i = annotations.begin (); i != annotations.end (); ++i)
+        {
+          pattern = 0;
+          std::string annotation = i->value ();
+          while ((pattern = find (annotation, mFrom, pattern, sensitive)) != std::string::npos)
+          {
+            annotation.replace (pattern, mFrom.length (), mTo);
+            pattern += mTo.length ();
+
+            i->value (annotation);
+
+            if (++counter > 1000)
+              throw ("Terminated substitution because more than a thousand changes were made - infinite loop protection.");
+          }
+        }
+      }
+      else
+      {
+        // Perform first description substitution.
+        if ((pattern = find (description, mFrom, sensitive)) != std::string::npos)
+          description.replace (pattern, mFrom.length (), mTo);
+
+        // Failing that, perform the first annotation substitution.
+        else
+        {
+          std::vector <Att>::iterator i;
+          for (i = annotations.begin (); i != annotations.end (); ++i)
+          {
+            std::string annotation = i->value ();
+            if ((pattern = find (annotation, mFrom, sensitive)) != std::string::npos)
+            {
+              annotation.replace (pattern, mFrom.length (), mTo);
+              i->value (annotation);
+              break;
+            }
+          }
+        }
+      }
+#ifdef FEATURE_REGEX
+    }
+#endif
+  }
+}
+*/
 
 ////////////////////////////////////////////////////////////////////////////////

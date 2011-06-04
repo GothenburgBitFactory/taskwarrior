@@ -49,6 +49,7 @@ CmdTags::CmdTags ()
 int CmdTags::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::stringstream out;
 
   std::vector <Task> tasks;
@@ -117,6 +118,7 @@ int CmdTags::execute (std::string& output)
   }
 
   output = out.str ();
+*/
   return rc;
 }
 
@@ -133,6 +135,7 @@ CmdCompletionTags::CmdCompletionTags ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionTags::execute (std::string& output)
 {
+/*
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
 
@@ -173,6 +176,7 @@ int CmdCompletionTags::execute (std::string& output)
     out << it->first << "\n";
 
   output = out.str ();
+*/
   return 0;
 }
 

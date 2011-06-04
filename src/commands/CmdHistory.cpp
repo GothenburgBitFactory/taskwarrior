@@ -48,6 +48,7 @@ CmdHistoryMonthly::CmdHistoryMonthly ()
 int CmdHistoryMonthly::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::map <time_t, int> groups;          // Represents any month with data
   std::map <time_t, int> addedGroup;      // Additions by month
   std::map <time_t, int> completedGroup;  // Completions by month
@@ -187,6 +188,7 @@ int CmdHistoryMonthly::execute (std::string& output)
   }
 
   output = out.str ();
+*/
   return rc;
 }
 
@@ -204,6 +206,7 @@ CmdHistoryAnnual::CmdHistoryAnnual ()
 int CmdHistoryAnnual::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::map <time_t, int> groups;          // Represents any month with data
   std::map <time_t, int> addedGroup;      // Additions by month
   std::map <time_t, int> completedGroup;  // Completions by month
@@ -340,6 +343,7 @@ int CmdHistoryAnnual::execute (std::string& output)
   }
 
   output = out.str ();
+*/
   return rc;
 }
 
@@ -357,6 +361,7 @@ CmdGHistoryMonthly::CmdGHistoryMonthly ()
 int CmdGHistoryMonthly::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::map <time_t, int> groups;          // Represents any month with data
   std::map <time_t, int> addedGroup;      // Additions by month
   std::map <time_t, int> completedGroup;  // Completions by month
@@ -536,6 +541,7 @@ int CmdGHistoryMonthly::execute (std::string& output)
   }
 
   output = out.str ();
+*/
   return rc;
 }
 
@@ -553,6 +559,7 @@ CmdGHistoryAnnual::CmdGHistoryAnnual ()
 int CmdGHistoryAnnual::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::map <time_t, int> groups;          // Represents any month with data
   std::map <time_t, int> addedGroup;      // Additions by month
   std::map <time_t, int> completedGroup;  // Completions by month
@@ -729,6 +736,7 @@ int CmdGHistoryAnnual::execute (std::string& output)
   }
 
   output = out.str ();
+*/
   return rc;
 }
 

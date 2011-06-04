@@ -47,6 +47,7 @@ CmdIDs::CmdIDs ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdIDs::execute (std::string& output)
 {
+/*
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -64,6 +65,7 @@ int CmdIDs::execute (std::string& output)
 
   std::sort (ids.begin (), ids.end ());
   output = compressIds (ids) + "\n";
+*/
   return 0;
 }
 

@@ -50,6 +50,7 @@ CmdPush::CmdPush ()
 // this is potentially on another machine, no checking can be performed.
 int CmdPush::execute (std::string& output)
 {
+/*
   std::string file = trim (context.task.get ("description"));
 
   Uri uri (file, "push");
@@ -95,6 +96,7 @@ int CmdPush::execute (std::string& output)
     throw std::string ("No uri was specified for the push.  Either specify "
                        "the uri of a remote .task directory, or create a "
                        "'push.default.uri' entry in your .taskrc file.");
+*/
 
   return 0;
 }

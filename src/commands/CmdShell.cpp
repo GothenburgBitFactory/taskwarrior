@@ -47,6 +47,7 @@ CmdShell::CmdShell ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdShell::execute (std::string&)
 {
+/*
   // Display some kind of welcome message.
   Color bold (Color::nocolor, Color::nocolor, false, true, false);
   std::cout << (context.color () ? bold.colorize (PACKAGE_STRING) : PACKAGE_STRING)
@@ -85,17 +86,15 @@ int CmdShell::execute (std::string&)
     {
       try
       {
-/*
-        context.clear ();
-        std::vector <std::string> args;
-        split (args, decoratedCommand, ' ');
-        std::vector <std::string>::iterator arg;
-        for (arg = args.begin (); arg != args.end (); ++arg)
-          context.args.push_back (*arg);
-
-        context.initialize (0, NULL);
-        context.run ();
-*/
+//        context.clear ();
+//        std::vector <std::string> args;
+//        split (args, decoratedCommand, ' ');
+//        std::vector <std::string>::iterator arg;
+//        for (arg = args.begin (); arg != args.end (); ++arg)
+//          context.args.push_back (*arg);
+//
+//        context.initialize (0, NULL);
+//        context.run ();
       }
 
       catch (std::string& error)
@@ -113,6 +112,7 @@ int CmdShell::execute (std::string&)
 
   // No need to repeat any overrides after the shell quits.
   context.clearMessages ();
+*/
   return 0;
 }
 

@@ -45,6 +45,7 @@ CmdCount::CmdCount ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCount::execute (std::string& output)
 {
+/*
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -63,6 +64,7 @@ int CmdCount::execute (std::string& output)
   std::stringstream out;
   out << count << "\n";
   output = out.str ();
+*/
   return 0;
 }
 

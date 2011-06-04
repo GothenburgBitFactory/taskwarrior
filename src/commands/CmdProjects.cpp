@@ -47,6 +47,7 @@ CmdProjects::CmdProjects ()
 int CmdProjects::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::stringstream out;
 
   std::vector <Task> tasks;
@@ -128,6 +129,7 @@ int CmdProjects::execute (std::string& output)
   }
 
   output = out.str ();
+*/
   return rc;
 }
 
@@ -144,6 +146,7 @@ CmdCompletionProjects::CmdCompletionProjects ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionProjects::execute (std::string& output)
 {
+/*
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
 
@@ -167,6 +170,7 @@ int CmdCompletionProjects::execute (std::string& output)
   for (project = unique.begin (); project != unique.end (); ++project)
     if (project->first.length ())
       output += project->first + "\n";
+*/
 
   return 0;
 }

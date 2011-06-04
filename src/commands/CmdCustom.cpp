@@ -321,6 +321,7 @@ void CmdCustom::getLimits (const std::string& report, int& rows, int& lines)
 
   // If the custom report has a defined limit, then allow a numeric override.
   // This is an integer specified as a filter (limit:10).
+/*
   if (context.task.has ("limit"))
   {
     if (context.task.get ("limit") == "page")
@@ -337,6 +338,7 @@ void CmdCustom::getLimits (const std::string& report, int& rows, int& lines)
       lines = 0;
     }
   }
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -1287,6 +1287,7 @@ std::string CmdImport::YAML (const std::vector <std::string>& lines)
 int CmdImport::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::stringstream out;
 
 	// Use the description as a file name.
@@ -1359,7 +1360,7 @@ int CmdImport::execute (std::string& output)
     case type_csv:           out << CSV         (lines); break;
     case type_yaml:          out << YAML        (lines); break;
     case type_text:          out << text        (lines); break;
-    case type_not_a_clue:    /* to stop the compiler from complaining. */ break;
+    case type_not_a_clue:                                break;  // To stifle gcc.
     }
 
     if (tmpfile != "")
@@ -1369,6 +1370,7 @@ int CmdImport::execute (std::string& output)
     throw std::string ("You must specify a file to import.");
 
   output = out.str ();
+*/
   return rc;
 }
 

@@ -45,9 +45,9 @@ public:
   void categorize ();
 
   void append_stdin ();
-  void rc_override (std::string&, File&, std::string&);
+  void rc_override (std::string&, File&);
   void get_data_location (std::string&);
-  void apply_overrides (std::string&);
+  void apply_overrides ();
   void resolve_aliases ();
 
   std::vector <std::string> list ();

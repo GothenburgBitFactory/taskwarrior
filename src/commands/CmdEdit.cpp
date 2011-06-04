@@ -56,6 +56,7 @@ int CmdEdit::execute (std::string& output)
 {
   int rc = 0;
 
+/*
   std::stringstream out;
 
   std::vector <Task> tasks;
@@ -77,6 +78,7 @@ int CmdEdit::execute (std::string& output)
   context.tdb.unlock ();
 
   output = out.str ();
+*/
   return rc;
 }
 

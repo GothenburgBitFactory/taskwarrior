@@ -982,6 +982,7 @@ int CmdBurndownMonthly::execute (std::string& output)
 {
   int rc = 0;
 
+/*
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -1017,6 +1018,7 @@ int CmdBurndownMonthly::execute (std::string& output)
 
   chart.scan (tasks);
   output = chart.render ();
+*/
   return rc;
 }
 
@@ -1035,6 +1037,7 @@ int CmdBurndownWeekly::execute (std::string& output)
 {
   int rc = 0;
 
+/*
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -1070,6 +1073,7 @@ int CmdBurndownWeekly::execute (std::string& output)
 
   chart.scan (tasks);
   output = chart.render ();
+*/
   return rc;
 }
 
@@ -1088,6 +1092,7 @@ int CmdBurndownDaily::execute (std::string& output)
 {
   int rc = 0;
 
+/*
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -1123,6 +1128,7 @@ int CmdBurndownDaily::execute (std::string& output)
 
   chart.scan (tasks);
   output = chart.render ();
+*/
   return rc;
 }
 

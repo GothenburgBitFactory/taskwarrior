@@ -46,6 +46,7 @@ CmdUrgency::CmdUrgency ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdUrgency::execute (std::string& output)
 {
+/*
   // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -73,6 +74,7 @@ int CmdUrgency::execute (std::string& output)
         << "\n";
 
   output = out.str ();
+*/
   return 0;
 }
 

@@ -46,6 +46,7 @@ CmdStop::CmdStop ()
 int CmdStop::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::stringstream out;
 
   context.disallowModification ();
@@ -97,6 +98,7 @@ int CmdStop::execute (std::string& output)
   context.tdb.unlock ();
 
   output = out.str ();
+*/
   return rc;
 }
 

@@ -25,7 +25,6 @@ set (task_SRCS API.cpp API.h
                Permission.cpp Permission.h
                Record.cpp Record.h
                Sequence.cpp Sequence.h
-               Subst.cpp Subst.h
                TDB.cpp TDB.h
                TDB2.cpp TDB2.h
                Task.cpp Task.h

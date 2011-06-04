@@ -52,6 +52,7 @@ CmdStatistics::CmdStatistics ()
 int CmdStatistics::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::stringstream out;
 
   // Go get the file sizes.
@@ -273,6 +274,7 @@ int CmdStatistics::execute (std::string& output)
       << optionalBlankLine ();
 
   output = out.str ();
+*/
   return rc;
 }
 

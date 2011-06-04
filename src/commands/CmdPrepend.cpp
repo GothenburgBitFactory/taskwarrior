@@ -46,10 +46,13 @@ CmdPrepend::CmdPrepend ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdPrepend::execute (std::string& output)
 {
+/*
   if (!context.task.has ("description"))
     throw std::string ("Additional text must be provided.");
+*/
 
   int rc = 0;
+/*
   int count = 0;
   std::stringstream out;
 
@@ -126,6 +129,7 @@ int CmdPrepend::execute (std::string& output)
     out << "Prepended " << count << " task" << (count == 1 ? ".\n" : "s.\n");
 
   output = out.str ();
+*/
   return rc;
 }
 
