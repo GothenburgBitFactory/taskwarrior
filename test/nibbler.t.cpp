@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (162);
+  UnitTest t (168);
 
   try
   {
@@ -209,7 +209,6 @@ int main (int argc, char** argv)
     t.ok (n.getQuoted ('"', s, true),  "\"one\\\"two\" :      getQuoted ('\"', true,  true)  -> true"); // 93
     t.is (s, "\"one\"two\"", "getQuoted ('\"', true) -> \"one\"two\"");                                 // 94
 
-
     // bool getInt (int&);
     t.diag ("Nibbler::getInt");
     n = Nibbler ("123 -4");
@@ -271,6 +270,16 @@ int main (int argc, char** argv)
     t.ok    (n.getRx ("th...", s),    "        'three' :   getRx ('th...')   -> true");
     t.is    (s, "three",              "        'three' :   getRx ('th...')   -> 'three'");
     t.ok    (n.depleted (),           "             '' :       depleted ()   -> true");
+
+    // bool getUUID (std::string&);
+    t.diag ("Nibbler::getUUID");
+    n = Nibbler ("00000000-0000-0000-0000-000000-000000,a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2-b3c4d5");
+    t.ok (n.getUUID (s),                              "uuid 1 found");
+    t.is (s, "00000000-0000-0000-0000-000000-000000", "uuid 1 -> correct");
+    t.ok (n.skip (','),                               "comma -> skipped");
+    t.ok (n.getUUID (s),                              "uuid 2 -> found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2-b3c4d5", "uuid 2 -> correct");
+    t.ok (n.depleted (),                              "depleted");
 
     // bool getUntilEOL (std::string&);
     t.diag ("Nibbler::getUntilEOL");

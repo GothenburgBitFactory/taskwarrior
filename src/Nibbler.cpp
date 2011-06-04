@@ -447,6 +447,62 @@ bool Nibbler::getRx (const std::string& regex, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getUUID (std::string& result)
+{
+  std::string::size_type i = mCursor;
+
+  if (i < mLength &&
+      mLength - i >= 37)
+  {
+    // 8-4-4-4-6-6
+    if (isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        mInput[i++] == '-'     &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        mInput[i++] == '-'     &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        mInput[i++] == '-'     &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        mInput[i++] == '-'     &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        mInput[i++] == '-'     &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]) &&
+        isxdigit (mInput[i++]))
+    {
+      result = mInput.substr (mCursor, 37);
+      mCursor = i;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipN (const int quantity /* = 1 */)
 {
   if (mCursor < mLength &&
