@@ -452,49 +452,48 @@ bool Nibbler::getUUID (std::string& result)
   std::string::size_type i = mCursor;
 
   if (i < mLength &&
-      mLength - i >= 37)
+      mLength - i >= 36)
   {
-    // 8-4-4-4-6-6
-    if (isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        mInput[i++] == '-'     &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        mInput[i++] == '-'     &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        mInput[i++] == '-'     &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        mInput[i++] == '-'     &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        mInput[i++] == '-'     &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]) &&
-        isxdigit (mInput[i++]))
+    // 88888888-4444-4444-4444-cccccccccccc
+    if (isxdigit (mInput[i + 0]) &&
+        isxdigit (mInput[i + 1]) &&
+        isxdigit (mInput[i + 2]) &&
+        isxdigit (mInput[i + 3]) &&
+        isxdigit (mInput[i + 4]) &&
+        isxdigit (mInput[i + 5]) &&
+        isxdigit (mInput[i + 6]) &&
+        isxdigit (mInput[i + 7]) &&
+        mInput[i + 8] == '-'     &&
+        isxdigit (mInput[i + 9]) &&
+        isxdigit (mInput[i + 10]) &&
+        isxdigit (mInput[i + 11]) &&
+        isxdigit (mInput[i + 12]) &&
+        mInput[i + 13] == '-'     &&
+        isxdigit (mInput[i + 14]) &&
+        isxdigit (mInput[i + 15]) &&
+        isxdigit (mInput[i + 16]) &&
+        isxdigit (mInput[i + 17]) &&
+        mInput[i + 18] == '-'     &&
+        isxdigit (mInput[i + 19]) &&
+        isxdigit (mInput[i + 20]) &&
+        isxdigit (mInput[i + 21]) &&
+        isxdigit (mInput[i + 22]) &&
+        mInput[i + 23] == '-'     &&
+        isxdigit (mInput[i + 24]) &&
+        isxdigit (mInput[i + 25]) &&
+        isxdigit (mInput[i + 26]) &&
+        isxdigit (mInput[i + 27]) &&
+        isxdigit (mInput[i + 28]) &&
+        isxdigit (mInput[i + 29]) &&
+        isxdigit (mInput[i + 30]) &&
+        isxdigit (mInput[i + 31]) &&
+        isxdigit (mInput[i + 32]) &&
+        isxdigit (mInput[i + 33]) &&
+        isxdigit (mInput[i + 34]) &&
+        isxdigit (mInput[i + 35]))
     {
-      result = mInput.substr (mCursor, 37);
-      mCursor = i;
+      result = mInput.substr (mCursor, 36);
+      mCursor = i + 36;
       return true;
     }
   }

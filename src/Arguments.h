@@ -63,23 +63,24 @@ public:
   bool is_attmod (const std::string&);
   bool is_subst (const std::string&);
   bool is_pattern (const std::string&);
+  bool is_id (const std::string&);
+  bool is_uuid (const std::string&);
+  bool is_tag (const std::string&);
 
   bool extract_attr (const std::string&, std::string&, std::string&);
   bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
   bool extract_subst (const std::string&, std::string&, std::string&, bool&);
   bool extract_pattern (const std::string&, std::string&);
+  bool extract_id (const std::string&, std::vector <int>&);
+  bool extract_uuid (const std::string&, std::vector <std::string>&);
+  bool extract_tag (const std::string&, char&, std::string&);
+
+/*
+  void extract_words ();
+*/
 
   bool valid_modifier (const std::string&);
 
-/*
-  void extract_sequence (std::vector <int>&);
-  void extract_uuids (std::vector <std::string>&);
-  void extract_attrs ();
-  void extract_words ();
-  void extract_tags ();
-  void extract_pattern ();
-  void extract_subst ();
-*/
   void dump (const std::string&);
 };
 

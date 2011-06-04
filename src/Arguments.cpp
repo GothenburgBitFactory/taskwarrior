@@ -57,7 +57,7 @@ static const char* modifierNames[] =
   "noword"
 };
 
-#define NUM_MODIFIER_NAMES   (sizeof (modifierNames)   / sizeof (modifierNames[0]))
+#define NUM_MODIFIER_NAMES (sizeof (modifierNames) / sizeof (modifierNames[0]))
 
 ////////////////////////////////////////////////////////////////////////////////
 Arguments::Arguments ()
@@ -121,7 +121,7 @@ void Arguments::append_stdin ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Scan all the arguments, and assign a category.
+// Scan all the arguments, and assign a category for each one.
 void Arguments::categorize ()
 {
   bool terminated = false;
@@ -184,10 +184,8 @@ void Arguments::categorize ()
         else if (arg->first.substr (0, 3) == "rc.")
           arg->second = "override";
 
-        // +tag
-        // -tag
-        else if (arg->first[0] == '+' ||
-                 arg->first[0] == '-')
+        // [+-]tag
+        else if (is_tag (arg->first))
           arg->second = "tag";
 
         // /pattern/
@@ -203,13 +201,19 @@ void Arguments::categorize ()
         else if (is_attr (arg->first))
           arg->second = "attribute";
 
-        // TODO Sequence
-        // TODO UUID
+        // <id>[-<id>][,...]
+        else if (is_id (arg->first))
+          arg->second = "id";
 
         // /<from>/<to>/[g]
         else if (is_subst (arg->first))
           arg->second = "substitution";
 
+        // <uuid>[,...]
+        else if (is_uuid (arg->first))
+          arg->second = "uuid";
+
+        // If the type is not known, it is treated as a generic word.
         else if (arg->second == "")
           arg->second = "word";
       }
@@ -500,6 +504,74 @@ bool Arguments::is_pattern (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// <id>[-<id>][,<id>[-<id>]]
+bool Arguments::is_id (const std::string& input)
+{
+  Nibbler n (input);
+  int id;
+
+  if (n.getUnsignedInt (id))
+  {
+    if (n.skip ('-'))
+    {
+      if (!n.getUnsignedInt (id))
+        return false;
+    }
+
+    while (n.skip (','))
+    {
+      if (n.getUnsignedInt (id))
+      {
+        if (n.skip ('-'))
+        {
+          if (!n.getUnsignedInt (id))
+            return false;
+        }
+      }
+      else
+        return false;
+    }
+  }
+  else
+    return false;
+
+  return n.depleted ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// <uuid>[,...]
+bool Arguments::is_uuid (const std::string& input)
+{
+  Nibbler n (input);
+  std::string uuid;
+
+  if (n.getUUID (uuid))
+  {
+    while (n.skip (','))
+    {
+      if (!n.getUUID (uuid))
+        return false;
+    }
+  }
+  else
+    return false;
+
+  return n.depleted ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// [+-]<tag>
+bool Arguments::is_tag (const std::string& input)
+{
+  if (input.length () > 1 &&
+      (input[0] == '+' ||
+       input[0] == '-'))
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //                    ______________
 //                    |            |
 //                    |            v
@@ -660,16 +732,6 @@ bool Arguments::extract_pattern (const std::string& input, std::string& pattern)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Arguments::valid_modifier (const std::string& modifier)
-{
-  for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
-    if (modifierNames[i] == modifier)
-      return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // A sequence can be:
 //
 //   a single ID:          1
@@ -692,89 +754,103 @@ bool Arguments::valid_modifier (const std::string& modifier)
 //
 // The sequence is "1,2".
 //
-/*
-void Arguments::extract_sequence (std::vector <int>& sequence)
+bool Arguments::extract_id (const std::string& input, std::vector <int>& sequence)
 {
+  Nibbler n (input);
   sequence.clear ();
-  std::vector <int> kill;
 
-  bool terminated = false;
-  for (unsigned int i = 0; i < this->size (); ++i)
+  int id;
+  if (n.getUnsignedInt (id))
   {
-    if (!terminated)
-    {
-      bool something = false;
+    sequence.push_back (id);
 
-      // The '--' argument shuts off all parsing - everything is an argument.
-      if ((*this)[i] == "--")
+    if (n.skip ('-'))
+    {
+      if (!n.getUnsignedInt (id))
+        throw std::string ("Unrecognized ID after hyphen.");
+
+      sequence.push_back (id);
+    }
+
+    while (n.skip (','))
+    {
+      if (n.getUnsignedInt (id))
       {
-        terminated = true;
+        sequence.push_back (id);
+
+        if (n.skip ('-'))
+        {
+          if (!n.getUnsignedInt (id))
+            throw std::string ("Unrecognized ID after hyphen.");
+
+          sequence.push_back (id);
+        }
       }
       else
-      {
-        if (isdigit ((*this)[i][0]))
-        {
-          std::vector <std::string> ranges;
-          split (ranges, (*this)[i], ',');
-
-          std::vector <std::string>::iterator it;
-          for (it = ranges.begin (); it != ranges.end (); ++it)
-          {
-            std::vector <std::string> range;
-            split (range, *it, '-');
-
-            if (range.size () == 1)
-            {
-              if (! digitsOnly (range[0]))
-                throw std::string ("Invalid ID in sequence.");
-
-              int id = (int)strtol (range[0].c_str (), NULL, 10);
-              sequence.push_back (id);
-              something = true;
-            }
-            else if (range.size () == 2)
-            {
-              if (! digitsOnly (range[0]) ||
-                  ! digitsOnly (range[1]))
-                throw std::string ("Invalid ID in range.");
-
-              int low  = (int)strtol (range[0].c_str (), NULL, 10);
-              int high = (int)strtol (range[1].c_str (), NULL, 10);
-              if (low > high)
-                throw std::string ("Inverted sequence range high-low.");
-
-              // TODO Is this meaningful?
-              if (high - low >= ARGUMENTS_SEQUENCE_MAX_RANGE)
-                throw std::string ("ID Range too large.");
-
-              for (int r = low; r <= high; ++r)
-                sequence.push_back (r);
-
-              something = true;
-            }
-
-            // Not a properly formed sequence, therefore probably text.
-            else
-              break;
-          }
-        }
-
-        // Once a sequence has been found, any non-numeric arguments effectively
-        // terminate sequence processing.
-        else if (sequence.size ())
-          terminated = true;
-      }
-
-      if (something)
-        kill.push_back (i);
+        throw std::string ("Malformed ID");
     }
   }
+  else
+    throw std::string ("Malformed ID");
 
-  // Now remove args in the kill list.
-  for (unsigned int k = 0; k < kill.size (); ++k)
-    this->erase (this->begin () + kill[k]);
+  return n.depleted ();
 }
-*/
+
+////////////////////////////////////////////////////////////////////////////////
+bool Arguments::extract_uuid (
+  const std::string& input,
+  std::vector <std::string>& sequence)
+{
+  Nibbler n (input);
+  sequence.clear ();
+
+  std::string uuid;
+  if (n.getUUID (uuid))
+  {
+    sequence.push_back (uuid);
+
+    while (n.skip (','))
+    {
+      if (!n.getUUID (uuid))
+        throw std::string ("Unrecognized UUID after comma.");
+
+      sequence.push_back (uuid);
+    }
+  }
+  else
+    throw std::string ("Malformed UUID");
+
+  if (!n.depleted ())
+    throw std::string ("Unrecognized character(s) at end of pattern.");
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Arguments::extract_tag (
+  const std::string& input,
+  char& type,
+  std::string& tag)
+{
+  if (input.length () > 1)
+  {
+    type = input[0];
+    tag  = input.substr (1);
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Arguments::valid_modifier (const std::string& modifier)
+{
+  for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
+    if (modifierNames[i] == modifier)
+      return true;
+
+  return false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 void Arguments::dump (const std::string& label)
@@ -789,7 +865,7 @@ void Arguments::dump (const std::string& label)
   color_map["pattern"]      = Color ("cyan on gray3");
   color_map["attribute"]    = Color ("bold red on gray3");
   color_map["attmod"]       = Color ("bold red on gray3");
-  color_map["sequence"]     = Color ("yellow on gray3");
+  color_map["id"]           = Color ("yellow on gray3");
   color_map["uuid"]         = Color ("yellow on gray3");
   color_map["substitution"] = Color ("bold cyan on gray3");
   color_map["none"]         = Color ("white on gray3");
@@ -801,7 +877,7 @@ void Arguments::dump (const std::string& label)
 
   ViewText view;
   view.width (context.getWidth ());
-  view.leftMargin (4);
+  view.leftMargin (2);
   for (unsigned int i = 0; i < this->size (); ++i)
     view.add (Column::factory ("string", ""));
 

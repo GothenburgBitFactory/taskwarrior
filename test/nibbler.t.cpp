@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (168);
+  UnitTest t (171);
 
   try
   {
@@ -273,13 +273,18 @@ int main (int argc, char** argv)
 
     // bool getUUID (std::string&);
     t.diag ("Nibbler::getUUID");
-    n = Nibbler ("00000000-0000-0000-0000-000000-000000,a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2-b3c4d5");
-    t.ok (n.getUUID (s),                              "uuid 1 found");
-    t.is (s, "00000000-0000-0000-0000-000000-000000", "uuid 1 -> correct");
-    t.ok (n.skip (','),                               "comma -> skipped");
-    t.ok (n.getUUID (s),                              "uuid 2 -> found");
-    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2-b3c4d5", "uuid 2 -> correct");
-    t.ok (n.depleted (),                              "depleted");
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5");
+    t.ok (n.getUUID (s),                             "uuid 1 found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5", "uuid 1 -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("00000000-0000-0000-0000-000000000000,a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5");
+    t.ok (n.getUUID (s),                             "uuid 1 found");
+    t.is (s, "00000000-0000-0000-0000-000000000000", "uuid 1 -> correct");
+    t.ok (n.skip (','),                              "comma -> skipped");
+    t.ok (n.getUUID (s),                             "uuid 2 -> found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5", "uuid 2 -> correct");
+    t.ok (n.depleted (),                             "depleted");
 
     // bool getUntilEOL (std::string&);
     t.diag ("Nibbler::getUntilEOL");
