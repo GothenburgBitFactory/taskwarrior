@@ -70,13 +70,13 @@ int main (int argc, const char** argv)
   catch (std::string& error)
   {
     std::cout << error << "\n";
-    return -1;
+    status = -1;
   }
 
   catch (...)
   {
     std::cerr << STRING_UNKNOWN_ERROR << "\n";
-    return -2;
+    status = -2;
   }
 
   return status;

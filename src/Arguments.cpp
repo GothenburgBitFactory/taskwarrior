@@ -124,7 +124,11 @@ void Arguments::append_stdin ()
 // Scan all the arguments, and assign a category for each one.
 void Arguments::categorize ()
 {
-  bool terminated = false;
+  bool terminated                     = false;
+  bool found_command                  = false;
+  bool found_sequence                 = false;
+  bool found_something_after_sequence = false;
+  bool found_non_sequence             = false;
 
   // Generate a vector of command keywords against which autoComplete can run.
   std::vector <std::string> keywords;
@@ -132,96 +136,201 @@ void Arguments::categorize ()
   for (k = context.commands.begin (); k != context.commands.end (); ++k)
     keywords.push_back (k->first);
 
-  // First scan for a command.
+  // Now categorize every argument.
+  std::string ignored;
   std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->first == "--")
-      break;
+/*
+    std::cout << "# " << leftJustify (arg->first, 36)
+              << " found_command=" << (found_command ? "true " : "false")
+              << " found_sequence=" << (found_sequence ? "true " : "false")
+              << " found_something_after_sequence=" << (found_something_after_sequence ? "true " : "false")
+              << " found_non_sequence=" << (found_non_sequence ? "true " : "false")
+              << "\n";
+*/
 
-    std::vector <std::string> matches;
-    if (autoComplete (arg->first, keywords, matches) == 1)
-    {
-      if (arg->first != matches[0])
-        context.debug ("Arguments::categorize keyword '" + arg->first + "' --> '" + matches[0] + "'");
-      else
-        context.debug ("Arguments::categorize keyword '" + arg->first + "'");
-
-      // Not only categorize the command, but overwrite the original command
-      // with the full command name.
-      arg->first  = matches[0];
-      arg->second = "command";
-
-      // Only the first match is a command.
-      break;
-    }
-  }
-
-  // Now categorize every uncategorized argument.
-  std::string ignored;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
     if (!terminated)
     {
       // Nothing after -- is to be interpreted in any way.
       if (arg->first == "--")
       {
         terminated = true;
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
+
         arg->second = "terminator";
       }
 
-      else if (arg->second != "command")
+      // program
+      else if (arg == this->begin ())
       {
-        // program
-        if (arg == this->begin ())
-          arg->second = "program";
+        arg->second = "program";
+      }
 
-        // rc:<file>
-        else if (arg->first.substr (0, 3) == "rc:")
-          arg->second = "rc";
+      // command
+      else if (!found_command &&
+               is_command (keywords, arg->first))
+      {
+        found_command = true;
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
 
-        // rc.<name>[:=]<value>
-        else if (arg->first.substr (0, 3) == "rc.")
-          arg->second = "override";
+        arg->second = "command";
+      }
 
-        // [+-]tag
-        else if (is_tag (arg->first))
-          arg->second = "tag";
+      // rc:<file>
+      else if (arg->first.substr (0, 3) == "rc:")
+      {
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
 
-        // /pattern/
-        else if (is_pattern (arg->first))
-          arg->second = "pattern";
+        arg->second = "rc";
+      }
 
-        // 
-        // <name>.<modifier>[:=]<value>
-        else if (is_attmod (arg->first))
-          arg->second = "attmod";
+      // rc.<name>[:=]<value>
+      else if (arg->first.substr (0, 3) == "rc.")
+      {
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
 
-        // <name>[:=]<value>
-        else if (is_attr (arg->first))
-          arg->second = "attribute";
+        arg->second = "override";
+      }
 
-        // <id>[-<id>][,...]
-        else if (is_id (arg->first))
-          arg->second = "id";
+      // <id>[-<id>][,...]
+      else if (!found_something_after_sequence &&
+               is_id (arg->first))
+      {
+        found_sequence = true;
+        arg->second = "id";
+      }
 
-        // /<from>/<to>/[g]
-        else if (is_subst (arg->first))
-          arg->second = "substitution";
+      // <uuid>[,...]
+      else if (!found_something_after_sequence &&
+               is_uuid (arg->first))
+      {
+        found_sequence = true;
+        arg->second = "uuid";
+      }
 
-        // <uuid>[,...]
-        else if (is_uuid (arg->first))
-          arg->second = "uuid";
+      // [+-]tag
+      else if (is_tag (arg->first))
+      {
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
 
-        // If the type is not known, it is treated as a generic word.
-        else if (arg->second == "")
-          arg->second = "word";
+        arg->second = "tag";
+      }
+
+      // 
+      // <name>.<modifier>[:=]<value>
+      else if (is_attmod (arg->first))
+      {
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
+
+        arg->second = "attmod";
+      }
+
+      // <name>[:=]<value>
+      else if (is_attr (arg->first))
+      {
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
+
+        arg->second = "attribute";
+      }
+
+      // /<from>/<to>/[g]
+      else if (is_subst (arg->first))
+      {
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
+
+        arg->second = "substitution";
+      }
+
+      // /pattern/
+      else if (is_pattern (arg->first))
+      {
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
+
+        arg->second = "pattern";
+      }
+
+      // If the type is not known, it is treated as a generic word.
+      else
+      {
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
+
+        arg->second = "word";
       }
     }
 
     // All post-termination arguments are simply words.
     else
+    {
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
+
       arg->second = "word";
+    }
+  }
+
+  // If no command was specified, and there were no command line arguments
+  // then invoke the default command.
+  if (!found_command)
+  {
+    if (found_non_sequence)
+    {
+      // TODO Invoke the default command.
+/*
+      // Apply overrides, if any.
+      std::string defaultCommand = config.get ("default.command");
+      if (defaultCommand != "")
+      {
+        // Add on the overrides.
+        defaultCommand += " " + file_override + " " + var_overrides;
+
+        // Stuff the command line.
+        args.clear ();
+        split (args, defaultCommand, ' ');
+        header ("[task " + trim (defaultCommand) + "]");
+
+        // Reinitialize the context and recurse.
+        file_override = "";
+        var_overrides = "";
+        footnotes.clear ();
+        //initialize ();
+        parse (args, cmd, task, sequence, subst, filter);
+      }
+      else
+        throw std::string (STRING_TRIVIAL_INPUT);
+*/
+    }
+
+    // If the command "task 123" is entered, but with no modifier arguments,
+    // then the actual command is assumed to be "info".
+    else if (!found_non_sequence &&
+             found_sequence)
+    {
+      // TODO Invoke the info command.
+//      std::cout << STRING_ASSUME_INFO << "\n";
+//      parseCmd.command = "info";
+    }
   }
 }
 
@@ -399,6 +508,21 @@ bool Arguments::find_command (std::string& command)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Arguments::is_command (
+  const std::vector <std::string>& keywords,
+  std::string& command)
+{
+  std::vector <std::string> matches;
+  if (autoComplete (command, keywords, matches) == 1)
+  {
+    command = matches[0];
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //                    ______________
 //                    |            |
 //                    |            v
@@ -495,9 +619,12 @@ bool Arguments::is_subst (const std::string& input)
 // /<pattern>/
 bool Arguments::is_pattern (const std::string& input)
 {
-  if (input[0] == '/'     &&
-      input.length () > 2 &&
-      input[input.length () - 1] == '/')
+  unsigned int length = input.length ();
+
+  if (input[0] == '/'          &&
+      length  > 2              &&
+      input[length - 1] == '/' &&
+      input.find ('/', 1) == length - 1)
     return true;
 
   return false;

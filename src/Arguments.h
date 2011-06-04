@@ -54,11 +54,8 @@ public:
   std::string combine ();
 
   bool find_command (std::string&);
-/*
-  void extract_filter ();
-  void extract_modifications ();
-*/
 
+  bool is_command (const std::vector <std::string>&, std::string&);
   bool is_attr (const std::string&);
   bool is_attmod (const std::string&);
   bool is_subst (const std::string&);
@@ -76,6 +73,8 @@ public:
   bool extract_tag (const std::string&, char&, std::string&);
 
 /*
+  void extract_filter ();
+  void extract_modifications ();
   void extract_words ();
 */
 

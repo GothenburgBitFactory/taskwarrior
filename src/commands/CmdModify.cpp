@@ -50,8 +50,8 @@ CmdModify::CmdModify ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdModify::execute (std::string& output)
 {
-  int count = 0;
 /*
+  int count = 0;
   std::stringstream out;
 
   std::vector <Task> tasks;
