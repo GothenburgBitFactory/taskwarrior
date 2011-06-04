@@ -35,7 +35,7 @@ class CmdMerge : public Command
 {
 public:
   CmdMerge ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

@@ -35,21 +35,21 @@ class CmdIDs : public Command
 {
 public:
   CmdIDs ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 class CmdCompletionIds : public Command
 {
 public:
   CmdCompletionIds ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 class CmdZshCompletionIds : public Command
 {
 public:
   CmdZshCompletionIds ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

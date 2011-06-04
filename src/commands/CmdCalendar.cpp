@@ -48,7 +48,7 @@ CmdCalendar::CmdCalendar ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCalendar::execute (const std::string&, std::string& output)
+int CmdCalendar::execute (std::string& output)
 {
   int rc = 0;
 
@@ -114,8 +114,9 @@ int CmdCalendar::execute (const std::string&, std::string& output)
   int argMonth = 0;
   int argYear = 0;
   bool argWholeYear = false;
+  std::vector <std::string> args = context.args.list ();
   std::vector <std::string>::iterator arg;
-  for (arg = context.args.begin (); arg != context.args.end (); ++arg)
+  for (arg = args.begin (); arg != args.end (); ++arg)
   {
     // Some version of "calendar".
     if (autoComplete (lowerCase (*arg), commandNames, matches) == 1)
@@ -353,7 +354,7 @@ int CmdCalendar::execute (const std::string&, std::string& output)
       context.sequence.clear ();
 
       std::string output;
-      context.commands[report]->execute (context.commandLine, output);
+      context.commands[report]->execute (output);
       out << output;
     }
 

@@ -46,7 +46,7 @@ CmdAdd::CmdAdd ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdAdd::execute (const std::string&, std::string& output)
+int CmdAdd::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;

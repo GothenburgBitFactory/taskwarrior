@@ -45,7 +45,7 @@ CmdIDs::CmdIDs ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdIDs::execute (const std::string&, std::string& output)
+int CmdIDs::execute (std::string& output)
 {
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;
@@ -78,7 +78,7 @@ CmdCompletionIds::CmdCompletionIds ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCompletionIds::execute (const std::string&, std::string& output)
+int CmdCompletionIds::execute (std::string& output)
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
@@ -116,7 +116,7 @@ CmdZshCompletionIds::CmdZshCompletionIds ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdZshCompletionIds::execute (const std::string&, std::string& output)
+int CmdZshCompletionIds::execute (std::string& output)
 {
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));

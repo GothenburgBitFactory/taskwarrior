@@ -35,14 +35,14 @@ class CmdConfig : public Command
 {
 public:
   CmdConfig ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 class CmdCompletionConfig : public Command
 {
 public:
   CmdCompletionConfig ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

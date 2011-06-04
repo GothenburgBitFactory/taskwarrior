@@ -44,7 +44,7 @@ CmdAnnotate::CmdAnnotate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdAnnotate::execute (const std::string&, std::string& output)
+int CmdAnnotate::execute (std::string& output)
 {
   int rc = 0;
 

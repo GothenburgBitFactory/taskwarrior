@@ -36,10 +36,12 @@
 #include <Directory.h>
 #include <Date.h>
 #include <File.h>
+#include <Timer.h>
 #include <Config.h>
 #include <text.h>
 #include <util.h>
 #include <cmake.h>
+#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // This string is used in two ways:
@@ -473,9 +475,10 @@ Config::Config (const std::string& file)
 //
 void Config::load (const std::string& file, int nest /* = 1 */)
 {
+  Timer timer ("Config::load (" + file + ")");
+
   if (nest > 10)
-    throw std::string ("Configuration file nested to more than 10 levels deep"
-                       " - this has to be a mistake.");
+    throw std::string (STRING_CONFIG_OVERNEST);
 
   // First time in, load the default values.
   if (nest == 1)

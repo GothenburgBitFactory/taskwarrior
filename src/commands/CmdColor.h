@@ -35,7 +35,7 @@ class CmdColor : public Command
 {
 public:
   CmdColor ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

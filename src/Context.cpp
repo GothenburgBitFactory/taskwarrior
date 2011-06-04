@@ -44,8 +44,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
-: program ("")
-, rc_file ()
+: rc_file ()
 , data_dir ()
 , extension_dir ()
 , config ()
@@ -55,7 +54,6 @@ Context::Context ()
 , task ()
 , tdb ()
 , tdb2 ()
-, commandLine ("")
 , file_override ("")
 , var_overrides ("")
 , dom ()
@@ -63,7 +61,6 @@ Context::Context ()
 , use_color (true)
 , verbosity_legacy (false)
 , inShadow (false)
-, command ("")
 , terminal_width (0)
 , terminal_height (0)
 {
@@ -81,7 +78,6 @@ void Context::initialize (int argc, const char** argv)
 
   // char** argv --> std::vector <std::string> Context::args.
   // TODO Handle "cal" case here.
-  program = argv[0];
   args.capture (argc, argv);
 
   // echo one two -- three | task zero --> task zero one two
@@ -117,9 +113,6 @@ void Context::initialize (int argc, const char** argv)
   // Apply rc overrides to Context::config, capturing raw args for later use.
   args.apply_overrides (var_overrides);
 
-  // Combine command line into one string.
-  commandLine = args.combine ();
-
   // Initialize the color rules, if necessary.
   if (color ())
     initializeColorRules ();
@@ -129,14 +122,6 @@ void Context::initialize (int argc, const char** argv)
 
   // TODO Instantiate extension command objects.
   // TODO Instantiate default command object.
-
-  // Create list of all command keywords.
-  std::vector <std::string> keywords;
-  std::map <std::string, Command*>::iterator i;
-  for (i = commands.begin (); i != commands.end (); ++i)
-    keywords.push_back (i->first);
-
-  args.extract_command (keywords, command);
 
   // TODO Instantiate extension UDA objects.
   // TODO Instantiate extension format objects.
@@ -160,6 +145,8 @@ void Context::initialize (int argc, const char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 int Context::run ()
 {
+  Timer timer ("Context::run");
+
   int rc;
   std::string output;
   try
@@ -181,11 +168,15 @@ int Context::run ()
 
   // Dump all debug messages, controlled by rc.debug.
   if (config.getBoolean ("debug"))
+  {
     foreach (d, debugMessages)
       if (color ())
         std::cout << colorizeDebug (*d) << "\n";
       else
         std::cout << *d << "\n";
+
+    args.dump ("Argument categorization");
+  }
 
   // Dump all headers, controlled by 'header' verbosity token.
   if (verbose ("header"))
@@ -218,7 +209,8 @@ int Context::dispatch (std::string &out)
   Timer t ("Context::dispatch");
 
   // Autocomplete args against keywords.
-  if (command != "")
+  std::string command;
+  if (args.find_command (command))
   {
     updateXtermTitle ();
 
@@ -228,13 +220,13 @@ int Context::dispatch (std::string &out)
     if (c->displays_id ())
       tdb.gc ();
 
-    return c->execute (commandLine, out);
+    return c->execute (out);
   }
 
   // TODO Need to invoke 'information' when a sequence/filter is present, but
   //      no command is specified.
 
-  return commands["help"]->execute (commandLine, out);
+  return commands["help"]->execute (out);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -265,6 +257,8 @@ bool Context::color ()
 
     // No need to go through this again.
     determine_color_use = false;
+
+    debug ("Context::color --> " + std::string (use_color ? "on" : "off"));
   }
 
   // Cached result.
@@ -294,6 +288,7 @@ bool Context::verbose (const std::string& token)
 // TODO OBSOLETE
 void Context::shadow ()
 {
+/*
   // Determine if shadow file is enabled.
   File shadowFile (config.get ("shadow.file"));
   if (shadowFile.data != "")
@@ -352,6 +347,7 @@ void Context::shadow ()
 
     inShadow = false;
   }
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -708,8 +704,6 @@ void Context::clear ()
   task = Task ();
   tdb.clear ();            // TODO Obsolete
 //  tdb2.clear ();
-  program = "";
-  commandLine = "";
   args.clear ();
   file_override = "";
   var_overrides = "";
@@ -834,8 +828,11 @@ void Context::updateXtermTitle ()
 {
   if (config.getBoolean ("xterm.title"))
   {
+    std::string command;
+    args.find_command (command);
+
     std::string title;
-    join (title, " ", args);
+    join (title, " ", args.list ());
     std::cout << "]0;task " << command << " " << title << "" << std::endl;
   }
 }

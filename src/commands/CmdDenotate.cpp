@@ -45,7 +45,7 @@ CmdDenotate::CmdDenotate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdDenotate::execute (const std::string&, std::string& output)
+int CmdDenotate::execute (std::string& output)
 {
   int rc = 0;
 

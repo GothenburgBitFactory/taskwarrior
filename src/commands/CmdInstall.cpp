@@ -47,7 +47,7 @@ CmdInstall::CmdInstall ()
 //   Generate UUID
 //   Call the "install" function once, store results in rc:
 //     extension.<uuid>=<JSON>
-int CmdInstall::execute (const std::string&, std::string&)
+int CmdInstall::execute (std::string&)
 {
   return 1;
 }

@@ -35,7 +35,7 @@ class CmdInstall : public Command
 {
 public:
   CmdInstall ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

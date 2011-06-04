@@ -26,10 +26,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <sstream>
+#include <algorithm>
 #include <stdlib.h>
 #include <sys/select.h>
 #include <Context.h>
 #include <Nibbler.h>
+#include <ViewText.h>
 #include <text.h>
 #include <util.h>
 #include <Arguments.h>
@@ -47,17 +50,29 @@ Arguments::~Arguments ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Add a pair for every argument, with a category of "".
 void Arguments::capture (int argc, const char** argv)
 {
   for (int i = 0; i < argc; ++i)
-    if (i > 0)
-      this->push_back (argv[i]);
+    this->push_back (std::make_pair (argv[i], (i == 0 ? "program" : "")));
+
+  categorize ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Add a pair with a category of "".
+void Arguments::capture (const std::string& arg)
+{
+  this->push_back (std::make_pair (arg, ""));
+  categorize ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Add a pair for every word from std::cin, with a category of "".
 void Arguments::append_stdin ()
 {
-  // Capture any stdin args.
+  // Use 'select' to determine whether there is any std::cin content buffered
+  // before trying to read it, to prevent blocking.
   struct timeval tv;
   fd_set fds;
   tv.tv_sec = 0;
@@ -70,11 +85,93 @@ void Arguments::append_stdin ()
     std::string arg;
     while (std::cin >> arg)
     {
+      // It the terminator token is found, stop reading.
       if (arg == "--")
         break;
 
-      this->push_back (arg);
+      this->push_back (std::make_pair (arg, ""));
     }
+  }
+
+  categorize ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Scan all the arguments, and assign a category.
+void Arguments::categorize ()
+{
+  bool terminated = false;
+
+  // Generate a vector of command keywords against which autoComplete can run.
+  std::vector <std::string> keywords;
+  std::map <std::string, Command*>::iterator k;
+  for (k = context.commands.begin (); k != context.commands.end (); ++k)
+    keywords.push_back (k->first);
+
+  // First scan for a command.
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    if (arg->first == "--")
+      break;
+
+    std::vector <std::string> matches;
+    if (autoComplete (arg->first, keywords, matches) == 1)
+    {
+      if (arg->first != matches[0])
+        context.debug ("Arguments::categorize keyword '" + arg->first + "' --> '" + matches[0] + "'");
+      else
+        context.debug ("Arguments::categorize keyword '" + arg->first + "'");
+
+      // Not only categorize the command, but overwrite the original command
+      // the fule name.
+      arg->first  = matches[0];
+      arg->second = "command";
+
+      // Only the first match is a command.
+      break;
+    }
+  }
+
+  // Now categorize every uncategorized argument.
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    if (!terminated)
+    {
+      // Nothing after -- is to be interpreted in any way.
+      if (arg->first == "--")
+      {
+        terminated = true;
+        arg->second = "terminator";
+      }
+
+//      // Only categorize uncategorized args.
+//      else if (arg->second == "")
+      else
+      {
+        // rc:<file>
+        if (arg->first.substr (0, 3) == "rc:")
+          arg->second = "rc";
+
+        // rc.<name>[:=]<value>
+        else if (arg->first.substr (0, 3) == "rc.")
+          arg->second = "override";
+
+        // TODO Sequence
+        // TODO UUID
+        // TODO +tag
+        // TODO -tag
+        // TODO subst
+        // TODO attr
+
+        else if (arg->second == "")
+          arg->second = "word";
+      }
+    }
+
+    // All post-termination arguments are simply words.
+    else
+      arg->second = "word";
   }
 }
 
@@ -85,17 +182,13 @@ void Arguments::rc_override (
   std::string& override)
 {
   // Is there an override for rc:<file>?
-  std::vector <std::string>::iterator arg;
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    // Nothing after -- is to be interpreted in any way.
-    if (*arg == "--")
-      break;
-
-    else if (arg->substr (0, 3) == "rc:")
+    if (arg->second == "rc")
     {
-      override = *arg;
-      rc = File (arg->substr (3));
+      override = arg->first;
+      rc = File (arg->first.substr (3));
       home = rc;
 
       std::string::size_type last_slash = rc.data.rfind ("/");
@@ -104,9 +197,10 @@ void Arguments::rc_override (
       else
         home = ".";
 
-      this->erase (arg);
       context.header ("Using alternate .taskrc file " + rc.data); // TODO i18n
-      break; // Must break - iterator is dead.
+
+      // Keep scanning, because if there are multiple rc:file arguments, we
+      // want the last one to dominate.
     }
   }
 }
@@ -119,17 +213,21 @@ void Arguments::get_data_location (std::string& data)
     data = location;
 
   // Are there any overrides for data.location?
-  std::vector <std::string>::iterator arg;
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (*arg == "--")
-      break;
-    else if (arg->substr (0, 16) == "rc.data.location" &&
-             ((*arg)[16] == ':' || (*arg)[16] == '='))
+    if (arg->second == "override")
     {
-      data = arg->substr (17);
-      context.header ("Using alternate data.location " + data); // TODO i18n
+      if (arg->first.substr (0, 16) == "rc.data.location" &&
+               (arg->first[16] == ':' || arg->first[16] == '='))
+      {
+        data = arg->first.substr (17);
+        context.header ("Using alternate data.location " + data); // TODO i18n
+      }
     }
+
+    // Keep scanning, because if there are multiple rc:file arguments, we
+    // want the last one to dominate.
   }
 }
 
@@ -138,22 +236,14 @@ void Arguments::get_data_location (std::string& data)
 // leaving only the plain args.
 void Arguments::apply_overrides (std::string& var_overrides)
 {
-  std::vector <std::string> filtered;
-  bool foundTerminator = false;
-
-  std::vector <std::string>::iterator arg;
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (*arg == "--")
-    {
-      foundTerminator = true;
-      filtered.push_back (*arg);
-    }
-    else if (!foundTerminator && arg->substr (0, 3) == "rc.")
+    if (arg->second == "override")
     {
       std::string name;
       std::string value;
-      Nibbler n (*arg);
+      Nibbler n (arg->first);
       if (n.getLiteral ("rc.")         &&  // rc.
           n.getUntilOneOf (":=", name) &&  //    xxx
           n.skipN (1))                     //       :
@@ -161,22 +251,15 @@ void Arguments::apply_overrides (std::string& var_overrides)
         n.getUntilEOS (value);  // Don't care if it's blank.
 
         context.config.set (name, value);
-        context.footnote ("Configuration override " + arg->substr (3));
+        context.footnote ("Configuration override rc." + name + "=" + value);
 
         // Overrides are retained for potential use by the default command.
-        var_overrides += " " + *arg;
+        var_overrides += " " + arg->first;
       }
       else
-        context.footnote ("Problem with override: " + *arg);
+        context.footnote ("Problem with override: " + arg->first);
     }
-    else
-      filtered.push_back (*arg);
   }
-
-  // Overwrite args with the filtered subset.
-  this->clear ();
-  for (arg = filtered.begin (); arg != filtered.end (); ++arg)
-    this->push_back (*arg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -187,22 +270,22 @@ void Arguments::resolve_aliases ()
   std::vector <std::string> expanded;
   bool something = false;
 
-  std::vector <std::string>::iterator arg;
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
     std::map <std::string, std::string>::iterator match =
-      context.aliases.find (*arg);
+      context.aliases.find (arg->first);
 
     if (match != context.aliases.end ())
     {
       context.debug (std::string ("Arguments::resolve_aliases '")
-                     + *arg
+                     + arg->first
                      + "' --> '"
-                     + context.aliases[*arg]
+                     + context.aliases[arg->first]
                      + "'");
 
       std::vector <std::string> words;
-      splitq (words, context.aliases[*arg], ' ');
+      splitq (words, context.aliases[arg->first], ' ');
 
       std::vector <std::string>::iterator word;
       for (word = words.begin (); word != words.end (); ++word)
@@ -211,68 +294,64 @@ void Arguments::resolve_aliases ()
       something = true;
     }
     else
-      expanded.push_back (*arg);
+      expanded.push_back (arg->first);
   }
 
   // Only overwrite if something happened.
   if (something)
   {
     this->clear ();
-    for (arg = expanded.begin (); arg != expanded.end (); ++arg)
-      this->push_back (*arg);
+    std::vector <std::string>::iterator e;
+    for (e = expanded.begin (); e != expanded.end (); ++e)
+      this->push_back (std::make_pair (*e, ""));
+
+    // Must now re-categorize everything.
+    categorize ();
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string> Arguments::list ()
+{
+  std::vector <std::string> all;
+  std::vector <std::pair <std::string, std::string> >::iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+    all.push_back (i->first);
+
+  return all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Arguments::combine ()
 {
   std::string combined;
-  join (combined, " ", *(std::vector <std::string>*)this);
+
+  std::vector <std::pair <std::string, std::string> >::iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+  {
+    if (i != this->begin ())
+      combined += " ";
+
+    combined += i->first;
+  }
+
   return combined;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Given a vector of command keywords, scan all arguments and locate the first
-// argument that matches a keyword.
-bool Arguments::extract_command (
-  const std::vector <std::string>& keywords,
-  std::string& command)
+bool Arguments::find_command (std::string& command)
 {
-  std::vector <std::string>::iterator arg;
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    std::vector <std::string> matches;
-    if (autoComplete (*arg, keywords, matches) == 1)
+    if (arg->second == "command")
     {
-      if (*arg != matches[0])
-        context.debug ("Arguments::extract_command keyword '" + *arg + "' --> '" + matches[0] + "'");
-      else
-        context.debug ("Arguments::extract_command keyword '" + *arg + "'");
-
-      command = matches[0];
+      command = arg->first;
       return true;
     }
   }
 
   return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO
-void Arguments::remove_command (const std::string& command)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO
-void Arguments::extract_filter ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO
-void Arguments::extract_modifications ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -300,6 +379,7 @@ void Arguments::extract_modifications ()
 //
 void Arguments::extract_sequence (std::vector <int>& sequence)
 {
+/*
   sequence.clear ();
   std::vector <int> kill;
 
@@ -378,44 +458,52 @@ void Arguments::extract_sequence (std::vector <int>& sequence)
   // Now remove args in the kill list.
   for (unsigned int k = 0; k < kill.size (); ++k)
     this->erase (this->begin () + kill[k]);
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO
-void Arguments::extract_uuids (std::vector <std::string>& uuids)
+void Arguments::dump (const std::string& label)
 {
-  uuids.clear ();
+  // Set up a map of categories to colors.
+  std::map <std::string, Color> color_map;
+  color_map["program"]  = Color ("white on blue");
+  color_map["command"]  = Color ("black on cyan");
+  color_map["rc"]       = Color ("bold white on red");
+  color_map["override"] = Color ("white on red");
+  color_map["none"]     = Color ("white on gray3");
 
-}
+  Color color_debug (context.config.get ("color.debug"));
+  std::stringstream out;
+  out << color_debug.colorize (label)
+      << "\n";
 
-////////////////////////////////////////////////////////////////////////////////
-// TODO
-void Arguments::extract_attrs ()
-{
-}
+  ViewText view;
+  view.width (context.getWidth ());
+  view.leftMargin (4);
+  for (unsigned int i = 0; i < this->size (); ++i)
+    view.add (Column::factory ("string", ""));
 
-////////////////////////////////////////////////////////////////////////////////
-// TODO
-void Arguments::extract_words ()
-{
-}
+  view.addRow ();
+  view.addRow ();
 
-////////////////////////////////////////////////////////////////////////////////
-// TODO
-void Arguments::extract_tags ()
-{
-}
+  for (unsigned int i = 0; i < this->size (); ++i)
+  {
+    std::string arg      = (*this)[i].first;
+    std::string category = (*this)[i].second;
 
-////////////////////////////////////////////////////////////////////////////////
-// TODO
-void Arguments::extract_pattern ()
-{
-}
+    Color c;
+    if (color_map[category].nontrivial ())
+      c = color_map[category];
+    else
+      c = color_map["none"];
 
-////////////////////////////////////////////////////////////////////////////////
-// TODO
-void Arguments::extract_subst ()
-{
+    view.set (0, i, arg,      c);
+    view.set (1, i, category, c);
+  }
+
+  out << view.render ();
+  context.debug (out.str ());
+  std::cout << out.str (); // TODO Remove
 }
 
 ////////////////////////////////////////////////////////////////////////////////

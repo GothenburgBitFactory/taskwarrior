@@ -45,7 +45,7 @@ CmdReports::CmdReports ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdReports::execute (const std::string&, std::string& output)
+int CmdReports::execute (std::string& output)
 {
   std::vector <std::string> reports;
 

@@ -48,7 +48,7 @@ CmdPush::CmdPush ()
 ////////////////////////////////////////////////////////////////////////////////
 // Transfers the local data (from rc.location.data) to the remote path.  Because
 // this is potentially on another machine, no checking can be performed.
-int CmdPush::execute (const std::string&, std::string& output)
+int CmdPush::execute (std::string& output)
 {
   std::string file = trim (context.task.get ("description"));
 

@@ -35,7 +35,7 @@ class CmdPull : public Command
 {
 public:
   CmdPull ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

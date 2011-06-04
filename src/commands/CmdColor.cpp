@@ -44,7 +44,7 @@ CmdColor::CmdColor ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdColor::execute (const std::string&, std::string& output)
+int CmdColor::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;

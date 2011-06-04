@@ -35,28 +35,28 @@ class CmdHistoryMonthly : public Command
 {
 public:
   CmdHistoryMonthly ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 class CmdHistoryAnnual : public Command
 {
 public:
   CmdHistoryAnnual ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 class CmdGHistoryMonthly : public Command
 {
 public:
   CmdGHistoryMonthly ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 class CmdGHistoryAnnual : public Command
 {
 public:
   CmdGHistoryAnnual ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

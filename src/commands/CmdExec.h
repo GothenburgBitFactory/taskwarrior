@@ -35,7 +35,7 @@ class CmdExec : public Command
 {
 public:
   CmdExec ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

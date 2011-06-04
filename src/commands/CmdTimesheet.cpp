@@ -46,7 +46,7 @@ CmdTimesheet::CmdTimesheet ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdTimesheet::execute (const std::string&, std::string& output)
+int CmdTimesheet::execute (std::string& output)
 {
   int rc = 0;
 

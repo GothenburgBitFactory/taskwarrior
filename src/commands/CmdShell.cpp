@@ -45,7 +45,7 @@ CmdShell::CmdShell ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdShell::execute (const std::string&, std::string&)
+int CmdShell::execute (std::string&)
 {
   // Display some kind of welcome message.
   Color bold (Color::nocolor, Color::nocolor, false, true, false);
@@ -85,6 +85,7 @@ int CmdShell::execute (const std::string&, std::string&)
     {
       try
       {
+/*
         context.clear ();
         std::vector <std::string> args;
         split (args, decoratedCommand, ' ');
@@ -94,6 +95,7 @@ int CmdShell::execute (const std::string&, std::string&)
 
         context.initialize (0, NULL);
         context.run ();
+*/
       }
 
       catch (std::string& error)

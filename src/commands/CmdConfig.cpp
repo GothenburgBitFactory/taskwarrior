@@ -45,9 +45,12 @@ CmdConfig::CmdConfig ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdConfig::execute (const std::string&, std::string& output)
+int CmdConfig::execute (std::string& output)
 {
   int rc = 0;
+/*
+  TODO Revise argument handling
+
   std::stringstream out;
 
   // Obtain the arguments from the description.  That way, things like '--'
@@ -160,6 +163,7 @@ int CmdConfig::execute (const std::string&, std::string& output)
   }
   else
     throw std::string ("Specify the name of a config variable to modify.");
+*/
 
   return rc;
 }
@@ -176,7 +180,7 @@ CmdCompletionConfig::CmdCompletionConfig ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCompletionConfig::execute (const std::string&, std::string& output)
+int CmdCompletionConfig::execute (std::string& output)
 {
   std::vector <std::string> configs;
   context.config.all (configs);

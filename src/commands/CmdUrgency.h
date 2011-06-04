@@ -35,7 +35,7 @@ class CmdUrgency : public Command
 {
 public:
   CmdUrgency ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

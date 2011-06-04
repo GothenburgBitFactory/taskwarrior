@@ -44,7 +44,7 @@ CmdDone::CmdDone ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdDone::execute (const std::string&, std::string& output)
+int CmdDone::execute (std::string& output)
 {
   int rc = 0;
   int count = 0;

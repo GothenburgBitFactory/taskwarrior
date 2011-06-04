@@ -47,7 +47,7 @@ CmdInfo::CmdInfo ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdInfo::execute (const std::string&, std::string& output)
+int CmdInfo::execute (std::string& output)
 {
   int rc = 0;
 

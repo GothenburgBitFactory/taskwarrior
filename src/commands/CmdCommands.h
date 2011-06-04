@@ -35,14 +35,14 @@ class CmdCompletionCommands : public Command
 {
 public:
   CmdCompletionCommands ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 class CmdZshCommands : public Command
 {
 public:
   CmdZshCommands ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

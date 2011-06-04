@@ -42,7 +42,7 @@ CmdTip::CmdTip ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdTip::execute (const std::string&, std::string&)
+int CmdTip::execute (std::string&)
 {
   // TODO Read tips file, pick one, display it.
   return 0;

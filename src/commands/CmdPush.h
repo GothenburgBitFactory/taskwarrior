@@ -35,7 +35,7 @@ class CmdPush : public Command
 {
 public:
   CmdPush ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

@@ -739,6 +739,7 @@ std::string CmdImport::todoSh_2_0 (const std::vector <std::string>& lines)
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
   {
+/*
     try
     {
       context.args.clear ();
@@ -802,12 +803,10 @@ std::string CmdImport::todoSh_2_0 (const std::vector <std::string>& lines)
         }
       }
 
-/*
-      context.task.clear ();
-      context.cmd.command = "";
-      context.parse ();
-      decorateTask (context.task);
-*/
+//      context.task.clear ();
+//      context.cmd.command = "";
+//      context.parse ();
+//      decorateTask (context.task);
 
       // Override the Task::pending that decorateTask applies.
       if (!isPending)
@@ -837,6 +836,7 @@ std::string CmdImport::todoSh_2_0 (const std::vector <std::string>& lines)
       context.clearMessages ();
       failed.push_back (*it);
     }
+*/
   }
 
   context.tdb.commit ();
@@ -869,6 +869,7 @@ std::string CmdImport::text (const std::vector <std::string>& lines)
   std::vector <std::string>::const_iterator it;
   for (it = lines.begin (); it != lines.end (); ++it)
   {
+/*
     std::string line = *it;
 
     // Strip comments
@@ -885,12 +886,10 @@ std::string CmdImport::text (const std::vector <std::string>& lines)
         context.args.clear ();
         split (context.args, std::string ("add ") + line, ' ');
 
-/*
-        context.task.clear ();
-        context.cmd.command = "";
-        context.parse ();
-        decorateTask (context.task);
-*/
+//        context.task.clear ();
+//        context.cmd.command = "";
+//        context.parse ();
+//        decorateTask (context.task);
 
         context.tdb.add (context.task);
         context.clearMessages ();
@@ -902,6 +901,7 @@ std::string CmdImport::text (const std::vector <std::string>& lines)
         failed.push_back (line);
       }
     }
+*/
   }
 
   context.tdb.commit ();
@@ -1284,7 +1284,7 @@ std::string CmdImport::YAML (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdImport::execute (const std::string&, std::string& output)
+int CmdImport::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;

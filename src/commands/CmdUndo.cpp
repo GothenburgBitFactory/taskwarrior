@@ -41,7 +41,7 @@ CmdUndo::CmdUndo ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdUndo::execute (const std::string&, std::string& output)
+int CmdUndo::execute (std::string& output)
 {
   context.disallowModification ();
 

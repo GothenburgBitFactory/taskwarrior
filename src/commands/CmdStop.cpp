@@ -43,7 +43,7 @@ CmdStop::CmdStop ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdStop::execute (const std::string&, std::string& output)
+int CmdStop::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;

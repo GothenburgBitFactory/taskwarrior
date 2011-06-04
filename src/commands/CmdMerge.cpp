@@ -47,7 +47,7 @@ CmdMerge::CmdMerge ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdMerge::execute (const std::string&, std::string& output)
+int CmdMerge::execute (std::string& output)
 {
   std::string file = trim (context.task.get ("description"));
   std::string pushfile = "";
@@ -93,7 +93,7 @@ int CmdMerge::execute (const std::string&, std::string& output)
       context.task.set ("description", uri.data);
 
       std::string out;
-      context.commands["push"]->execute ("", out);
+      context.commands["push"]->execute (out);
     }
   }
   else

@@ -38,7 +38,7 @@ class CmdCalendar : public Command
 {
 public:
   CmdCalendar ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 
 private:
   std::string renderMonths (int, int, const Date&, std::vector <Task>&, int);

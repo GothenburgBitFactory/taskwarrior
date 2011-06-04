@@ -46,7 +46,7 @@ CmdPull::CmdPull ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdPull::execute (const std::string&, std::string& output)
+int CmdPull::execute (std::string& output)
 {
   std::string file = trim (context.task.get ("description"));
 

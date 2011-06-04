@@ -35,7 +35,7 @@ class CmdModify : public Command
 {
 public:
   CmdModify ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

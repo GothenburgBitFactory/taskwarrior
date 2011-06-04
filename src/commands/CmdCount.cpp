@@ -43,7 +43,7 @@ CmdCount::CmdCount ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCount::execute (const std::string&, std::string& output)
+int CmdCount::execute (std::string& output)
 {
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;

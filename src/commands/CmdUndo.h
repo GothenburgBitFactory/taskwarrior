@@ -35,7 +35,7 @@ class CmdUndo : public Command
 {
 public:
   CmdUndo ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

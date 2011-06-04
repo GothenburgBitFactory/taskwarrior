@@ -51,7 +51,7 @@ CmdCustom::CmdCustom (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCustom::execute (const std::string&, std::string& output)
+int CmdCustom::execute (std::string& output)
 {
   int rc = 0;
 
@@ -128,7 +128,6 @@ int CmdCustom::execute (const std::string&, std::string& output)
 
 ////////////////////////////////////
   // TODO Create the filter
-  context.args.remove_command (_keyword);
 
   //std::vector <std::string> filter_args;
   //context.args.extract_filter (filter_args);

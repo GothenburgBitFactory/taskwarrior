@@ -35,7 +35,7 @@ class CmdSummary : public Command
 {
 public:
   CmdSummary ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

@@ -35,7 +35,7 @@ class CmdDelete : public Command
 {
 public:
   CmdDelete ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

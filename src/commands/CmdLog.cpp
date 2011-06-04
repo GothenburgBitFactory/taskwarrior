@@ -45,7 +45,7 @@ CmdLog::CmdLog ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdLog::execute (const std::string&, std::string& output)
+int CmdLog::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;

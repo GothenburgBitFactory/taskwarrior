@@ -50,9 +50,10 @@ CmdShow::CmdShow ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdShow::execute (const std::string&, std::string& output)
+int CmdShow::execute (std::string& output)
 {
   int rc = 0;
+/*
   std::stringstream out;
 
   // Obtain the arguments from the description.  That way, things like '--'
@@ -308,6 +309,7 @@ int CmdShow::execute (const std::string&, std::string& output)
   }
 
   output = out.str ();
+*/
   return rc;
 }
 

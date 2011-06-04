@@ -47,7 +47,7 @@ public:
   std::string description () const;
   bool read_only () const;
   bool displays_id () const;
-  virtual int execute (const std::string&, std::string&) = 0;
+  virtual int execute (std::string&) = 0;
 
 protected:
   std::string _keyword;

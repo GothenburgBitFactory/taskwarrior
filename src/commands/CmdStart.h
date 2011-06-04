@@ -35,7 +35,7 @@ class CmdStart : public Command
 {
 public:
   CmdStart ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

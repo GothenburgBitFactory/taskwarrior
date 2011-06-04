@@ -978,7 +978,7 @@ CmdBurndownMonthly::CmdBurndownMonthly ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdBurndownMonthly::execute (const std::string&, std::string& output)
+int CmdBurndownMonthly::execute (std::string& output)
 {
   int rc = 0;
 
@@ -1031,7 +1031,7 @@ CmdBurndownWeekly::CmdBurndownWeekly ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdBurndownWeekly::execute (const std::string&, std::string& output)
+int CmdBurndownWeekly::execute (std::string& output)
 {
   int rc = 0;
 
@@ -1084,7 +1084,7 @@ CmdBurndownDaily::CmdBurndownDaily ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdBurndownDaily::execute (const std::string&, std::string& output)
+int CmdBurndownDaily::execute (std::string& output)
 {
   int rc = 0;
 

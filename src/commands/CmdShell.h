@@ -35,7 +35,7 @@ class CmdShell : public Command
 {
 public:
   CmdShell ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

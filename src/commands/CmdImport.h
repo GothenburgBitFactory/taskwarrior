@@ -35,7 +35,7 @@ class CmdImport : public Command
 {
 public:
   CmdImport ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 
 private:
   enum fileType

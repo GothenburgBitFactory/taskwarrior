@@ -35,7 +35,7 @@ class CmdDenotate : public Command
 {
 public:
   CmdDenotate ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

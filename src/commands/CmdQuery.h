@@ -35,7 +35,7 @@ class CmdQuery : public Command
 {
 public:
   CmdQuery ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

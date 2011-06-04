@@ -35,7 +35,7 @@ class CmdShow : public Command
 {
 public:
   CmdShow ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

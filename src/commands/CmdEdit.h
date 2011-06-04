@@ -36,7 +36,7 @@ class CmdEdit : public Command
 {
 public:
   CmdEdit ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 
 private:
   std::string findValue (const std::string&, const std::string&);

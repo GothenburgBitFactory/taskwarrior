@@ -42,7 +42,7 @@ CmdQuery::CmdQuery ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdQuery::execute (const std::string&, std::string& output)
+int CmdQuery::execute (std::string& output)
 {
   int rc = 0;
 

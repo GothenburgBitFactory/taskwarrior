@@ -45,7 +45,7 @@ CmdDuplicate::CmdDuplicate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdDuplicate::execute (const std::string&, std::string& output)
+int CmdDuplicate::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;

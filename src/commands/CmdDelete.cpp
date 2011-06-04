@@ -45,7 +45,7 @@ CmdDelete::CmdDelete ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdDelete::execute (const std::string&, std::string& output)
+int CmdDelete::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;

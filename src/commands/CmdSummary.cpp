@@ -50,7 +50,7 @@ CmdSummary::CmdSummary ()
 // Project  Remaining  Avg Age  Complete  0%                  100%
 // A               12      13d       55%  XXXXXXXXXXXXX-----------
 // B              109   3d 12h       10%  XXX---------------------
-int CmdSummary::execute (const std::string&, std::string& output)
+int CmdSummary::execute (std::string& output)
 {
   int rc = 0;
 

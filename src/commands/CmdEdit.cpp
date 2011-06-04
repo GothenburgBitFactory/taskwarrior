@@ -52,7 +52,7 @@ CmdEdit::CmdEdit ()
 // Introducing the Silver Bullet.  This feature is the catch-all fixative for
 // various other ills.  This is like opening up the hood and going in with a
 // wrench.  To be used sparingly.
-int CmdEdit::execute (const std::string&, std::string& output)
+int CmdEdit::execute (std::string& output)
 {
   int rc = 0;
 

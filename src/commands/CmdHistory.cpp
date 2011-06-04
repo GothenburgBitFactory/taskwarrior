@@ -38,7 +38,6 @@ extern Context context;
 CmdHistoryMonthly::CmdHistoryMonthly ()
 {
   _keyword     = "history.monthly";
-  _usage       = "task execute <external command>";
   _usage       = "task history.monthly [<filter>]";
   _description = "Shows a report of task history, by month.";
   _read_only   = true;
@@ -46,7 +45,7 @@ CmdHistoryMonthly::CmdHistoryMonthly ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdHistoryMonthly::execute (const std::string&, std::string& output)
+int CmdHistoryMonthly::execute (std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
@@ -202,7 +201,7 @@ CmdHistoryAnnual::CmdHistoryAnnual ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdHistoryAnnual::execute (const std::string&, std::string& output)
+int CmdHistoryAnnual::execute (std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
@@ -355,7 +354,7 @@ CmdGHistoryMonthly::CmdGHistoryMonthly ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdGHistoryMonthly::execute (const std::string&, std::string& output)
+int CmdGHistoryMonthly::execute (std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data
@@ -551,7 +550,7 @@ CmdGHistoryAnnual::CmdGHistoryAnnual ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdGHistoryAnnual::execute (const std::string&, std::string& output)
+int CmdGHistoryAnnual::execute (std::string& output)
 {
   int rc = 0;
   std::map <time_t, int> groups;          // Represents any month with data

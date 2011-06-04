@@ -43,7 +43,7 @@ CmdStart::CmdStart ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdStart::execute (const std::string&, std::string& output)
+int CmdStart::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;

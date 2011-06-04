@@ -34,38 +34,40 @@
 
 #define ARGUMENTS_SEQUENCE_MAX_RANGE 1000
 
-class Arguments : public std::vector <std::string>
+class Arguments : public std::vector <std::pair <std::string, std::string> >
 {
 public:
   Arguments ();
   ~Arguments ();
 
   void capture (int, const char**);
+  void capture (const std::string&);
+  void categorize ();
+
   void append_stdin ();
   void rc_override (std::string&, File&, std::string&);
   void get_data_location (std::string&);
   void apply_overrides (std::string&);
   void resolve_aliases ();
+
+  std::vector <std::string> list ();
   std::string combine ();
 
-  bool extract_command (const std::vector <std::string>&, std::string&);
-  void remove_command (const std::string&);
-
+  bool find_command (std::string&);
 /*
-  void extract_read_only (command, filter);
-  void extract_write_commands (filter, command, mods);
-*/
-
   void extract_filter ();
   void extract_modifications ();
-
+*/
   void extract_sequence (std::vector <int>&);
+/*
   void extract_uuids (std::vector <std::string>&);
   void extract_attrs ();
   void extract_words ();
   void extract_tags ();
   void extract_pattern ();
   void extract_subst ();
+*/
+  void dump (const std::string&);
 };
 
 #endif

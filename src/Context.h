@@ -102,7 +102,6 @@ public:
   Task                                task;               // TODO Obsolete
   TDB                                 tdb;                // TODO Obsolete
   TDB2                                tdb2;
-  std::string                         commandLine;        // TODO Obsolete
   std::string                         file_override;
   std::string                         var_overrides;
   std::map <std::string, std::string> aliases;
@@ -123,7 +122,6 @@ public:
   bool                                inShadow;
 
   std::map <std::string, Command*>    commands;
-  std::string                         command;
 
   int                                 terminal_width;
   int                                 terminal_height;

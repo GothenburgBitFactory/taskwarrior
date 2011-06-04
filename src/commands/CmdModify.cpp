@@ -48,7 +48,7 @@ CmdModify::CmdModify ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdModify::execute (const std::string&, std::string& output)
+int CmdModify::execute (std::string& output)
 {
   int count = 0;
   std::stringstream out;

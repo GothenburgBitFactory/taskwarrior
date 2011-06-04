@@ -40,7 +40,7 @@
 
 Context context;
 
-int main (int argc, char** argv)
+int main (int argc, const char** argv)
 {
   // Set up randomness.
 #ifdef CYGWIN
@@ -63,7 +63,7 @@ int main (int argc, char** argv)
 
   try
   {
-    context.initialize (argc, (const char**)argv);
+    context.initialize (argc, argv);
     status = context.run ();
   }
 

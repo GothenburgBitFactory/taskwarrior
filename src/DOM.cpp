@@ -78,12 +78,12 @@ const std::string DOM::get (const std::string& name)
            name.substr (0, 8) == "context.")
   {
     if (name == "context.program")
-      return context.program;
+      return context.args[0].first;
 
     else if (name == "context.args")
     {
       std::string combined;
-      join (combined, " ", context.args);
+      join (combined, " ", context.args.list ());
       return combined;
     }
     else if (name == "context.width")

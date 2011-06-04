@@ -35,7 +35,7 @@ class CmdTimesheet : public Command
 {
 public:
   CmdTimesheet ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

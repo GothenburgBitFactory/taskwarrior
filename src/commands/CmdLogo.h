@@ -35,7 +35,7 @@ class CmdLogo : public Command
 {
 public:
   CmdLogo ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

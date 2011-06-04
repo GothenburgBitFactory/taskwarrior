@@ -35,7 +35,7 @@ class CmdPrepend : public Command
 {
 public:
   CmdPrepend ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

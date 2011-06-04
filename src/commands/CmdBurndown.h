@@ -35,21 +35,21 @@ class CmdBurndownMonthly : public Command
 {
 public:
   CmdBurndownMonthly ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 class CmdBurndownWeekly : public Command
 {
 public:
   CmdBurndownWeekly ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 class CmdBurndownDaily : public Command
 {
 public:
   CmdBurndownDaily ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif

@@ -26,7 +26,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
+#include <Context.h>
 #include <CmdExec.h>
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdExec::CmdExec ()
@@ -39,8 +42,17 @@ CmdExec::CmdExec ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdExec::execute (const std::string& command_line, std::string&)
+int CmdExec::execute (std::string& output)
 {
+  std::string command_line;
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = context.args.begin (); arg != context.args.end (); ++arg)
+  {
+    if (arg != context.args.begin () &&
+        arg->first != "execute")
+      command_line += arg->first;
+  }
+
   return system (command_line.c_str ());
 }
 

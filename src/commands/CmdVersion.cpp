@@ -46,7 +46,7 @@ CmdVersion::CmdVersion ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdVersion::execute (const std::string&, std::string& output)
+int CmdVersion::execute (std::string& output)
 {
   std::stringstream out;
 
@@ -128,9 +128,7 @@ CmdCompletionVersion::CmdCompletionVersion ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdCompletionVersion::execute (
-  const std::string&,
-  std::string& output)
+int CmdCompletionVersion::execute (std::string& output)
 {
 #ifdef HAVE_COMMIT
   output = COMMIT;

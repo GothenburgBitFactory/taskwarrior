@@ -35,7 +35,7 @@ class CmdCustom : public Command
 {
 public:
   CmdCustom (const std::string&, const std::string&, const std::string&);
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 
 private:
   void validateReportColumns (std::vector <std::string>&);

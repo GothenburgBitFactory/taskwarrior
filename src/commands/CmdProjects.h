@@ -35,14 +35,14 @@ class CmdProjects : public Command
 {
 public:
   CmdProjects ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 class CmdCompletionProjects : public Command
 {
 public:
   CmdCompletionProjects ();
-  int execute (const std::string&, std::string&);
+  int execute (std::string&);
 };
 
 #endif
