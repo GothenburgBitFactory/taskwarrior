@@ -970,6 +970,150 @@ bool Arguments::extract_tag (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Arguments Arguments::extract_read_only_filter ()
+{
+  Arguments filter;
+
+  std::vector <std::pair <std::string, std::string> >::iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+  {
+    // Excluded.
+    if (i->second == "program"  ||
+        i->second == "command"  ||
+        i->second == "rc"       ||
+        i->second == "override")
+    {
+      ;
+    }
+
+    // Included.
+    else if (i->second == "tag"       ||
+             i->second == "pattern"   ||
+             i->second == "attribute" ||
+             i->second == "attmod"    ||
+             i->second == "id"        ||
+             i->second == "uuid"      ||
+             i->second == "word")
+    {
+      filter.push_back (*i);
+    }
+
+    // Error.
+    else
+    {
+      // substitution
+      throw std::string ("A substitutions '") + i->first + "' is not allowed "
+            "in a read-only command filter.";
+    }
+  }
+
+  return filter;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Arguments Arguments::extract_write_filter ()
+{
+  Arguments filter;
+
+  std::vector <std::pair <std::string, std::string> >::iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+  {
+    // Only use args prior to command.
+    if (i->second == "command")
+      break;
+
+    // Excluded.
+    else if (i->second == "program"  ||
+             i->second == "rc"       ||
+             i->second == "override")
+    {
+      ;
+    }
+
+    // Included.
+    else if (i->second == "tag"       ||
+             i->second == "pattern"   ||
+             i->second == "attribute" ||
+             i->second == "attmod"    ||
+             i->second == "id"        ||
+             i->second == "uuid"      ||
+             i->second == "word")
+    {
+      filter.push_back (*i);
+    }
+
+    // Error.
+    else
+    {
+      // substitution
+      throw std::string ("A substitutions '")
+            + i->first
+            + "' is not allowed in a read-only command filter.";
+    }
+  }
+
+  return filter;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Arguments Arguments::extract_modifications ()
+{
+  Arguments modifications;
+
+  bool seen_command = false;
+  std::vector <std::pair <std::string, std::string> >::iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+  {
+    // Only use args after command.
+    if (i->second == "command")
+    {
+      seen_command = true;
+    }
+
+    else if (seen_command)
+    {
+      // Excluded.
+      if (i->second == "program"  ||
+          i->second == "rc"       ||
+          i->second == "override")
+      {
+      }
+
+      // Included.
+      else if (i->second == "tag"          ||
+               i->second == "attribute"    ||
+               i->second == "substitution" ||
+               i->second == "word")
+      {
+        modifications.push_back (*i);
+      }
+
+      // Error.
+      else
+      {
+        if (i->second == "pattern")
+          throw std::string ("A pattern '")
+                + i->first
+                + "' is not allowed when modifiying a task.";
+
+        else if (i->second == "attmod")
+          throw std::string ("Attribute modifiers '")
+                + i->first
+                + "' are not allowed when modifiying a task.";
+
+        else if (i->second == "id")
+          throw std::string ("A task id cannot be modified.");
+
+        else if (i->second == "uuid")
+          throw std::string ("A task uuid cannot be modified.");
+      }
+    }
+  }
+
+  return modifications;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Arguments::valid_modifier (const std::string& modifier)
 {
   for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)

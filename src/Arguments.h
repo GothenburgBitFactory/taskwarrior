@@ -64,6 +64,7 @@ public:
   bool is_uuid (const std::string&);
   bool is_tag (const std::string&);
 
+  // TODO Decide if these are really useful.
   bool extract_attr (const std::string&, std::string&, std::string&);
   bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
   bool extract_subst (const std::string&, std::string&, std::string&, bool&);
@@ -72,11 +73,9 @@ public:
   bool extract_uuid (const std::string&, std::vector <std::string>&);
   bool extract_tag (const std::string&, char&, std::string&);
 
-/*
-  void extract_filter ();
-  void extract_modifications ();
-  void extract_words ();
-*/
+  Arguments extract_read_only_filter ();
+  Arguments extract_write_filter ();
+  Arguments extract_modifications ();
 
   bool valid_modifier (const std::string&);
 

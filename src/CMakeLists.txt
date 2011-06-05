@@ -15,6 +15,7 @@ set (task_SRCS API.cpp API.h
                Date.cpp Date.h
                Directory.cpp Directory.h
                Duration.cpp Duration.h
+               Expression.cpp Expression.h
                File.cpp File.h
                Filter.cpp Filter.h
                Hooks.cpp Hooks.h

@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewTask.h>
+#include <Expression.h>
 #include <text.h>
 #include <main.h>
 #include <CmdCustom.h>
@@ -81,62 +82,20 @@ int CmdCustom::execute (std::string& output)
   split (sortOrder, reportSort, ',');
   validateSortColumns (sortOrder);
 
-/*
-  // Apply rc overrides.
-  std::vector <std::string> filterArgs;
-  std::vector <std::string> filteredArgs;
-  split (filterArgs, reportFilter, ' ');
-//  context.applyOverrides (filterArgs, filteredArgs);
-*/
-
-/*
-  {
-    Cmd cmd (_keyword);
-    Task task;
-    Sequence sequence;
-    Subst subst;
-    Filter filter;
-    context.parse (filteredArgs, cmd, task, sequence, subst, filter);
-
-    context.sequence.combine (sequence);
-
-    // Special case: Allow limit to be overridden by the command line.
-    if (!context.task.has ("limit") && task.has ("limit"))
-      context.task.set ("limit", task.get ("limit"));
-
-    Filter::iterator att;
-    for (att = filter.begin (); att != filter.end (); ++att)
-      context.filter.push_back (*att);
-  }
-*/
-
   // Load the data.
+  // TODO Replace with TDB2.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-//  context.tdb.load (tasks, context.filter);
-  Filter filter;
-  context.tdb.load (tasks, filter);  // TODO No filter.
+  Filter filter;                     // Blank
+  context.tdb.load (tasks, filter);  // No filter.
   context.tdb.commit ();
   context.tdb.unlock ();
 
-/*
-  // Filter sequence.
-  if (context.sequence.size ())
-    context.filter.applySequence (tasks, context.sequence);
-*/
-
 ////////////////////////////////////
-  // TODO Create the filter
-
-  //std::vector <std::string> filter_args;
-  //context.args.extract_filter (filter_args);
-
-  // TODO Apply the filter
-  // Filter filter (context.args);
-
-  // std::vector <Task> filtered;
-  // thing.eval (filtered, context.args, tasks);
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+  // TODO e.apply (tasks);
 ////////////////////////////////////
 
   // Sort the tasks.
