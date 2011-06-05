@@ -95,6 +95,10 @@ int CmdCustom::execute (std::string& output)
 ////////////////////////////////////
   Arguments f = context.args.extract_read_only_filter ();
   Expression e (f);
+  e.toInfix ();
+  e.toPostfix ();
+
+return 0;
   // TODO e.apply (tasks);
 ////////////////////////////////////
 

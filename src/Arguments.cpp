@@ -40,7 +40,7 @@
 
 extern Context context;
 
-// Synonyms on the same line.
+// Supported modifiers, synonyms on the same line.
 static const char* modifierNames[] =
 {
   "before",     "under",    "below",
@@ -57,7 +57,31 @@ static const char* modifierNames[] =
   "noword"
 };
 
+// Supported operators, synonyms on same line.
+static const char* operators[] =
+{
+  "+",             // Addition, unary plus
+  "-",             // Subtraction, unary minus
+  "*",             // Multiplication
+  "/",             // Division
+  "%",             // Modulus
+  "~",             // Substring/regex match
+  "!~",            // Substring/regex no-match
+  "<",   "lt",     // Less than
+  "<=",  "le",     // Less than or equal
+  "=",   "eq",     // Equal
+  "!=",  "ne",     // Not equal
+  ">=",  "ge",     // Greater than or equal
+  ">",   "gt",     // Greater than
+  "!",   "not",    // Not
+  "and",           // Conjunction
+  "or",            // Disjunction
+  "(",             // Precedence start
+  ")"              // Precedence end
+};
+
 #define NUM_MODIFIER_NAMES (sizeof (modifierNames) / sizeof (modifierNames[0]))
+#define NUM_OPERATORS      (sizeof (operators) / sizeof (operators[0]))
 
 ////////////////////////////////////////////////////////////////////////////////
 Arguments::Arguments ()
@@ -266,6 +290,16 @@ void Arguments::categorize ()
           found_something_after_sequence = true;
 
         arg->second = "pattern";
+      }
+
+      // <operator>
+      else if (is_operator (arg->first))
+      {
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
+
+        arg->second = "op";
       }
 
       // If the type is not known, it is treated as a generic word.
@@ -699,6 +733,16 @@ bool Arguments::is_tag (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Arguments::is_operator (const std::string& input)
+{
+  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
+    if (operators[i] == input)
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //                    ______________
 //                    |            |
 //                    |            v
@@ -970,6 +1014,15 @@ bool Arguments::extract_tag (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Arguments::extract_operator (
+  const std::string& input,
+  std::string& op)
+{
+  op = input;
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Arguments Arguments::extract_read_only_filter ()
 {
   Arguments filter;
@@ -993,6 +1046,7 @@ Arguments Arguments::extract_read_only_filter ()
              i->second == "attmod"    ||
              i->second == "id"        ||
              i->second == "uuid"      ||
+             i->second == "op"        ||
              i->second == "word")
     {
       filter.push_back (*i);
@@ -1037,6 +1091,7 @@ Arguments Arguments::extract_write_filter ()
              i->second == "attmod"    ||
              i->second == "id"        ||
              i->second == "uuid"      ||
+             i->second == "op"        ||
              i->second == "word")
     {
       filter.push_back (*i);
@@ -1083,6 +1138,7 @@ Arguments Arguments::extract_modifications ()
       else if (i->second == "tag"          ||
                i->second == "attribute"    ||
                i->second == "substitution" ||
+               i->second == "op"           ||
                i->second == "word")
       {
         modifications.push_back (*i);
@@ -1139,6 +1195,7 @@ void Arguments::dump (const std::string& label)
   color_map["id"]           = Color ("yellow on gray3");
   color_map["uuid"]         = Color ("yellow on gray3");
   color_map["substitution"] = Color ("bold cyan on gray3");
+  color_map["op"]           = Color ("bold blue on gray3");
   color_map["none"]         = Color ("white on gray3");
 
   Color color_debug (context.config.get ("color.debug"));
@@ -1172,7 +1229,6 @@ void Arguments::dump (const std::string& label)
 
   out << view.render ();
   context.debug (out.str ());
-  std::cout << out.str (); // TODO Remove
 }
 
 ////////////////////////////////////////////////////////////////////////////////

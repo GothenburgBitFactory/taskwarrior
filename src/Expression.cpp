@@ -25,15 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <Context.h>
 #include <Expression.h>
 
-////////////////////////////////////////////////////////////////////////////////
-Expression::Expression ()
-{
-}
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Expression::Expression (Arguments& arguments)
+: _original (arguments)
 {
 }
 
@@ -49,13 +48,38 @@ bool Expression::eval (Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Inserts the 'and' operator by default between terms that are not separated by
+// at least one operator.
+//
+// Converts:  <term1>     <term2> <op> <term3>
+// to:        <term1> and <term2> <op> <term3>
+//
 void Expression::toInfix ()
 {
+  _infix.clear ();
+
+  std::string previous = "op";
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _original.begin (); arg != _original.end (); ++arg)
+  {
+    if (previous    != "op" &&
+        arg->second != "op")
+      _infix.push_back (std::make_pair ("and", "op"));
+
+    _infix.push_back (*arg);
+    previous = arg->second;
+  }
+
+  _infix.dump ("Expression::toInfix");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Dijkstra Shunting Algorithm.
 void Expression::toPostfix ()
 {
+  _postfix.clear ();
+
+  _postfix.dump ("Expression::toPostfix");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

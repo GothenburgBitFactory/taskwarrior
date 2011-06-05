@@ -35,16 +35,18 @@
 class Expression
 {
 public:
-  Expression ();
   Expression (Arguments&);
   ~Expression ();
   bool eval (Task&);
+  void toInfix ();
+  void toPostfix ();
 
   void dump (const std::string&);
 
 private:
-  void toInfix ();
-  void toPostfix ();
+  Arguments _original;
+  Arguments _infix;
+  Arguments _postfix;
 };
 
 #endif

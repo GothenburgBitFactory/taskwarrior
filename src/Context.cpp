@@ -170,8 +170,6 @@ int Context::run ()
         std::cout << colorizeDebug (*d) << "\n";
       else
         std::cout << *d << "\n";
-
-    args.dump ("Argument categorization");
   }
 
   // Dump all headers, controlled by 'header' verbosity token.
@@ -222,6 +220,7 @@ int Context::dispatch (std::string &out)
     if (c->displays_id ())
       tdb.gc ();
 
+    args.dump ("Argument Categorization");
     return c->execute (out);
   }
 

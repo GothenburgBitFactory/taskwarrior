@@ -63,6 +63,7 @@ public:
   bool is_id (const std::string&);
   bool is_uuid (const std::string&);
   bool is_tag (const std::string&);
+  bool is_operator (const std::string&);
 
   // TODO Decide if these are really useful.
   bool extract_attr (const std::string&, std::string&, std::string&);
@@ -72,6 +73,7 @@ public:
   bool extract_id (const std::string&, std::vector <int>&);
   bool extract_uuid (const std::string&, std::vector <std::string>&);
   bool extract_tag (const std::string&, char&, std::string&);
+  bool extract_operator (const std::string&, std::string&);
 
   Arguments extract_read_only_filter ();
   Arguments extract_write_filter ();
