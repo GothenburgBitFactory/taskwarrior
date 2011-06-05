@@ -93,7 +93,8 @@ int CmdLog::execute (std::string& output)
   }
 
   // Include tags.
-  foreach (tag, context.tagAdditions)
+  std::vector <std::string>::iterator tag;
+  for (tag = tagAdditions.begin 90; tag != tagAdditions.end (); ++tag)
     context.task.addTag (*tag);
 
   // Only valid tasks can be added.

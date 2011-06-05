@@ -121,10 +121,10 @@ void TransportCurl::recv(std::string target)
     split (splitted, toSplit.substr(0, pos), ',');
 
     target = "";
-    foreach (file, splitted)
-    {
+
+    std::vector <std::string>::iterator file;
+    for (file = splitted.begin (); file != splitted.end (); ++file)
       target += " -o " + prefix + *file + suffix;
-    }
   }
   else
   {

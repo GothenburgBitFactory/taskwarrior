@@ -164,7 +164,8 @@ int Context::run ()
   // Dump all debug messages, controlled by rc.debug.
   if (config.getBoolean ("debug"))
   {
-    foreach (d, debugMessages)
+    std::vector <std::string>::iterator d;
+    for (d = debugMessages.begin (); d != debugMessages.end (); ++d)
       if (color ())
         std::cout << colorizeDebug (*d) << "\n";
       else
@@ -175,22 +176,28 @@ int Context::run ()
 
   // Dump all headers, controlled by 'header' verbosity token.
   if (verbose ("header"))
-    foreach (h, headers)
+  {
+    std::vector <std::string>::iterator h;
+    for (h = headers.begin (); h != headers.end (); ++h)
       if (color ())
         std::cout << colorizeHeader (*h) << "\n";
       else
         std::cout << *h << "\n";
+  }
 
   // Dump the report output.
   std::cout << output;
 
   // Dump all footnotes, controlled by 'footnote' verbosity token.
   if (verbose ("footnote"))
-    foreach (f, footnotes)
+  {
+    std::vector <std::string>::iterator f;
+    for (f = footnotes.begin (); f != footnotes.end (); ++f)
       if (color ())
         std::cout << colorizeFootnote (*f) << "\n";
       else
         std::cout << *f << "\n";
+  }
 
   hooks.trigger ("on-exit");
   return rc;
@@ -453,7 +460,8 @@ void Context::autoFilter (Att& a, Filter& f)
   {
     std::vector <std::string> words;
     split (words, a.value (), ' ');
-    foreach (word, words)
+    std::vector <std::string>::iterator word;
+    for (word = words.begin (); word != words.end (); ++word)
     {
       f.push_back (Att ("description", "has", *word));
       debug ("auto filter: " + a.name () + ".has:" + *word);
@@ -537,14 +545,15 @@ void Context::autoFilter (Filter& f)
   // modifiers.  See bug #293.
 
   // Include tagAdditions.
-  foreach (tag, tagAdditions)
+  std::vector <std::string>::iterator tag;
+  for (tag = tagAdditions.begin (); tag != tagAdditions.end (); ++tag)
   {
     f.push_back (Att ("tags", "word", *tag));
     debug ("auto filter: +" + *tag);
   }
 
   // Include tagRemovals.
-  foreach (tag, tagRemovals)
+  for (tag = tagRemovals.begin (); tag != tagRemovals.end (); ++tag)
   {
     f.push_back (Att ("tags", "noword", *tag));
     debug ("auto filter: -" + *tag);

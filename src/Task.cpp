@@ -78,7 +78,8 @@ bool Task::operator== (const Task& other)
   if (size () != other.size ())
     return false;
 
-  foreach (att, *this)
+  std::map <std::string, Att>::iterator att;
+  for (att = this->begin (); att != this->end (); ++att)
     if (att->second.name () != "uuid")
       if (att->second.value () != other.get (att->second.name ()))
         return false;
@@ -423,14 +424,16 @@ std::string Task::composeYAML () const
 
   // Only include non-trivial attributes.
   std::string value;
-  foreach (name, names)
+  std::vector <std::string>::iterator name;
+  for (name = names.begin (); name != names.end (); ++name)
     if ((value = get (*name)) != "")
       out << "    " << *name << ": " << value << "\n";
 
   // Now the annotations, which are not listed by the Att::allNames call.
   std::vector <Att> annotations;
   getAnnotations (annotations);
-  foreach (a, annotations)
+  std::vector <Att>::iterator a;
+  for (a = annotations.begin (); a != annotations.end (); ++a)
     out << "    annotation:\n"
         << "      entry: "       << a->name().substr (11) << "\n"
         << "      description: " << a->value ()           << "\n";
@@ -1045,7 +1048,8 @@ float Task::urgency ()
     std::vector <std::string> all;
     context.config.all (all);
 
-    foreach (var, all)
+    std::vector <std::string>::iterator var;
+    for (var = all.begin (); var != all.end (); ++var)
     {
       if (var->substr (0, 13) == "urgency.user.")
       {

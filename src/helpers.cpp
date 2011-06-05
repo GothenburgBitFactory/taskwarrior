@@ -85,7 +85,9 @@ std::string getFullDescription (Task& task, const std::string& report)
       desc += "\n" + when + " " + anno.value ();
     }
     else
-      foreach (anno, annotations)
+    {
+      std::vector <Att>::iterator anno;
+      for (anno = annotations.begin (); anno != annotations.end (); ++anno)
       {
         Date dt (atoi (anno->name ().substr (11).c_str ()));
         std::string format = context.config.get ("dateformat.annotation");
@@ -94,6 +96,7 @@ std::string getFullDescription (Task& task, const std::string& report)
         std::string when = dt.toString (format);
         desc += "\n" + when + " " + anno->value ();
       }
+    }
   }
 
   return desc;
