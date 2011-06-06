@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez.
+// Copyright 2011, Paul Beckingham, Federico Hernandez.
 // All rights reserved.
 //
 // This program is free software; you can redistribute it and/or modify it under
@@ -24,41 +24,61 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_EXPRESSION
-#define INCLUDED_EXPRESSION
-#define L10N                                           // Localization complete.
 
+#ifndef INCLUDED_LEXER
+#define INCLUDED_LEXER
+
+#include <vector>
 #include <string>
-#include <Arguments.h>
-#include <Task.h>
 
-class Expression
+class Lexer
 {
 public:
-  Expression (Arguments&);
-  ~Expression ();
-  bool eval (Task&);
+  Lexer (const std::string&);
+  void tokenize (std::vector <std::string>&);
+
+  void categorizeAsAlpha (char);
+  void ignoreAsAlpha (char);
+  void setAlpha (const std::string&);
+
+  void categorizeAsDigit (char);
+  void ignoreAsDigit (char);
+  void setDigit (const std::string&);
+
+  void categorizeAsQuote (char);
+  void ignoreAsQuote (char);
+  void setQuote (const std::string&);
+
+  void categorizeAsWhite (char);
+  void ignoreAsWhite (char);
+  void setWhite (const std::string&);
+
+  void coalesceAlpha (bool);
+  void coalesceDigits (bool);
+  void coalesceQuoted (bool);
+  void coalesceWhite (bool);
+  void skipWhitespace (bool);
+  void specialToken (const std::string&);
 
 private:
-  void expand_sequence ();
-  void expand_expression ();
-  void expand_tag (const std::string&);
-  void expand_attr (const std::string&);
-  void expand_attmod (const std::string&);
-  void expand_word (const std::string&);
-  void expand_pattern (const std::string&);
+  int classify (char);
 
-  void to_infix ();
-  void to_postfix ();
-  bool is_new_style ();
-  void dump (const std::string&);
+  std::string mInput;
 
-private:
-  Arguments _original;
-  Arguments _sequenced;
-  Arguments _infix;
-  Arguments _postfix;
+  std::string mAlpha;
+  std::string mDigit;
+  std::string mQuote;
+  std::string mWhite;
+
+  bool mAlphaCoalesce;
+  bool mDigitCoalesce;
+  bool mQuotedCoalesce;
+  bool mWhiteCoalesce;
+  bool mSkipWhitespace;
+
+  std::vector <std::string> mSpecialTokens;
 };
 
 #endif
+
 ////////////////////////////////////////////////////////////////////////////////

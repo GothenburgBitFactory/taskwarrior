@@ -20,6 +20,7 @@ set (task_SRCS API.cpp API.h
                Filter.cpp Filter.h
                Hooks.cpp Hooks.h
                JSON.cpp JSON.h
+               Lexer.cpp Lexer.h
                Location.cpp Location.h
                Nibbler.cpp Nibbler.h
                Path.cpp Path.h

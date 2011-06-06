@@ -251,7 +251,6 @@ void Arguments::categorize ()
         arg->second = "tag";
       }
 
-      // 
       // <name>.<modifier>[:=]<value>
       else if (is_attmod (arg->first))
       {
@@ -300,6 +299,16 @@ void Arguments::categorize ()
           found_something_after_sequence = true;
 
         arg->second = "op";
+      }
+
+      // <expression>
+      else if (is_expression (arg->first))
+      {
+        found_non_sequence = true;
+        if (found_sequence)
+          found_something_after_sequence = true;
+
+        arg->second = "exp";
       }
 
       // If the type is not known, it is treated as a generic word.
@@ -557,13 +566,7 @@ bool Arguments::is_command (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                    ______________
-//                    |            |
-//                    |            v
-// start --> name --> : --> " --> value --> " --> end
-//                                   |             ^
-//                                   |_____________|
-//
+// <name>[:=]['"][<value>]['"]
 bool Arguments::is_attr (const std::string& input)
 {
   Nibbler n (input);
@@ -591,13 +594,7 @@ bool Arguments::is_attr (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                                  ______________
-//                                  |            |
-//                                  |            v
-// start --> name --> . --> mod --> : --> " --> value --> " --> end
-//            |                     ^              |             ^
-//            |_____________________|              |_____________|
-//
+// <name>.<mod>[:=]['"]<value>['"]
 bool Arguments::is_attmod (const std::string& input)
 {
   Nibbler n (input);
@@ -733,6 +730,7 @@ bool Arguments::is_tag (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// "+", "-", "*", "/", "%", "~", "!~", "<" ...
 bool Arguments::is_operator (const std::string& input)
 {
   for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
@@ -743,13 +741,21 @@ bool Arguments::is_operator (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                    ______________
-//                    |            |
-//                    |            v
-// start --> name --> : --> " --> value --> " --> end
-//                                   |             ^
-//                                   |_____________|
-//
+bool Arguments::is_expression (const std::string& input)
+{
+  std::vector <std::string> tokens;
+  splitq (tokens, input, ' ');
+
+  std::vector <std::string>::iterator token;
+  for (token = tokens.begin (); token != tokens.end (); ++token)
+    if (is_operator (*token))
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// <name>[:=]['"]<value>['"]
 bool Arguments::extract_attr (
   const std::string& input,
   std::string& name,
@@ -787,13 +793,7 @@ bool Arguments::extract_attr (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                                  ______________
-//                                  |            |
-//                                  |            v
-// start --> name --> . --> mod --> : --> " --> value --> " --> end
-//                                                 |             ^
-//                                                 |_____________|
-//
+// <name>.<mod>[:=]['"]<value>['"]
 bool Arguments::extract_attmod (
   const std::string& input,
   std::string& name,
@@ -821,7 +821,7 @@ bool Arguments::extract_attmod (
 
       if (n.getUntilOneOf (":=", modifier))
       {
-        if (!valid_modifier (modifier))
+        if (!Arguments::valid_modifier (modifier))
           throw std::string ("The name '") + modifier + "' is not a valid modifier."; // TODO i18n
       }
       else
@@ -928,19 +928,24 @@ bool Arguments::extract_pattern (const std::string& input, std::string& pattern)
 bool Arguments::extract_id (const std::string& input, std::vector <int>& sequence)
 {
   Nibbler n (input);
-  sequence.clear ();
 
   int id;
+
   if (n.getUnsignedInt (id))
   {
     sequence.push_back (id);
 
     if (n.skip ('-'))
     {
-      if (!n.getUnsignedInt (id))
+      int end;
+      if (!n.getUnsignedInt (end))
         throw std::string ("Unrecognized ID after hyphen.");
 
-      sequence.push_back (id);
+      if (id > end)
+        throw std::string ("Inverted range 'high-low' instead of 'low-high'");
+
+      for (int n = id + 1; n <= end; ++n)
+        sequence.push_back (n);
     }
 
     while (n.skip (','))
@@ -951,10 +956,15 @@ bool Arguments::extract_id (const std::string& input, std::vector <int>& sequenc
 
         if (n.skip ('-'))
         {
-          if (!n.getUnsignedInt (id))
+          int end;
+          if (!n.getUnsignedInt (end))
             throw std::string ("Unrecognized ID after hyphen.");
 
-          sequence.push_back (id);
+          if (id > end)
+            throw std::string ("Inverted range 'high-low' instead of 'low-high'");
+
+          for (int n = id + 1; n <= end; ++n)
+            sequence.push_back (n);
         }
       }
       else
@@ -973,7 +983,6 @@ bool Arguments::extract_uuid (
   std::vector <std::string>& sequence)
 {
   Nibbler n (input);
-  sequence.clear ();
 
   std::string uuid;
   if (n.getUUID (uuid))
@@ -1047,6 +1056,7 @@ Arguments Arguments::extract_read_only_filter ()
              i->second == "id"        ||
              i->second == "uuid"      ||
              i->second == "op"        ||
+             i->second == "exp"       ||
              i->second == "word")
     {
       filter.push_back (*i);
@@ -1092,6 +1102,7 @@ Arguments Arguments::extract_write_filter ()
              i->second == "id"        ||
              i->second == "uuid"      ||
              i->second == "op"        ||
+             i->second == "exp"       ||
              i->second == "word")
     {
       filter.push_back (*i);
@@ -1153,9 +1164,14 @@ Arguments Arguments::extract_modifications ()
                 + "' is not allowed when modifiying a task.";
 
         else if (i->second == "attmod")
-          throw std::string ("Attribute modifiers '")
+          throw std::string ("An attribute modifier '")
                 + i->first
-                + "' are not allowed when modifiying a task.";
+                + "' is not allowed when modifiying a task.";
+
+        else if (i->second == "exp")
+          throw std::string ("An expression '")
+                + i->first
+                + "' is not allowed when modifiying a task.";
 
         else if (i->second == "id")
           throw std::string ("A task id cannot be modified.");
@@ -1196,6 +1212,7 @@ void Arguments::dump (const std::string& label)
   color_map["uuid"]         = Color ("yellow on gray3");
   color_map["substitution"] = Color ("bold cyan on gray3");
   color_map["op"]           = Color ("bold blue on gray3");
+  color_map["exp"]          = Color ("bold green on gray5");
   color_map["none"]         = Color ("white on gray3");
 
   Color color_debug (context.config.get ("color.debug"));

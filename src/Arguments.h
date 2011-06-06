@@ -55,31 +55,32 @@ public:
 
   bool find_command (std::string&);
 
-  bool is_command (const std::vector <std::string>&, std::string&);
-  bool is_attr (const std::string&);
-  bool is_attmod (const std::string&);
-  bool is_subst (const std::string&);
-  bool is_pattern (const std::string&);
-  bool is_id (const std::string&);
-  bool is_uuid (const std::string&);
-  bool is_tag (const std::string&);
-  bool is_operator (const std::string&);
+  static bool is_command (const std::vector <std::string>&, std::string&);
+  static bool is_attr (const std::string&);
+  static bool is_attmod (const std::string&);
+  static bool is_subst (const std::string&);
+  static bool is_pattern (const std::string&);
+  static bool is_id (const std::string&);
+  static bool is_uuid (const std::string&);
+  static bool is_tag (const std::string&);
+  static bool is_operator (const std::string&);
+  static bool is_expression (const std::string&);
 
   // TODO Decide if these are really useful.
-  bool extract_attr (const std::string&, std::string&, std::string&);
-  bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
-  bool extract_subst (const std::string&, std::string&, std::string&, bool&);
-  bool extract_pattern (const std::string&, std::string&);
-  bool extract_id (const std::string&, std::vector <int>&);
-  bool extract_uuid (const std::string&, std::vector <std::string>&);
-  bool extract_tag (const std::string&, char&, std::string&);
-  bool extract_operator (const std::string&, std::string&);
+  static bool extract_attr (const std::string&, std::string&, std::string&);
+  static bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
+  static bool extract_subst (const std::string&, std::string&, std::string&, bool&);
+  static bool extract_pattern (const std::string&, std::string&);
+  static bool extract_id (const std::string&, std::vector <int>&);
+  static bool extract_uuid (const std::string&, std::vector <std::string>&);
+  static bool extract_tag (const std::string&, char&, std::string&);
+  static bool extract_operator (const std::string&, std::string&);
 
   Arguments extract_read_only_filter ();
   Arguments extract_write_filter ();
   Arguments extract_modifications ();
 
-  bool valid_modifier (const std::string&);
+  static bool valid_modifier (const std::string&);
 
   void dump (const std::string&);
 };
