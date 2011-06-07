@@ -77,8 +77,8 @@ private:
   void determineDataLocation ();
   void createDefaultConfig ();
   void loadAliases ();
-  void autoFilter (Att&, Filter&);
-  void autoFilter (Filter&);
+//  void autoFilter (Att&, Filter&);
+//  void autoFilter (Filter&);
   void updateXtermTitle ();
 
 public:
@@ -90,23 +90,9 @@ public:
   Directory                           extension_dir;
   Config                              config;
 
-/*
-  Filter                              filter;             // TODO Obsolete
-  Sequence                            sequence;           // TODO Obsolete
-  Subst                               subst;              // TODO Obsolete
-  Task                                task;               // TODO Obsolete
-*/
   TDB                                 tdb;                // TODO Obsolete
   TDB2                                tdb2;
-/*
-  std::string                         file_override;
-  std::string                         var_overrides;
-*/
   std::map <std::string, std::string> aliases;
-/*
-  std::vector <std::string>           tagAdditions;       // TODO Obsolete
-  std::vector <std::string>           tagRemovals;        // TODO Obsolete
-*/
   Hooks                               hooks;
   DOM                                 dom;
 

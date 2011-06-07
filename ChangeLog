@@ -94,6 +94,8 @@
    J. Pilkington).
  + Applied patch for Bug #771, which looks for libuuid if uuid_unparse_lower is
    not located (thanks to Christopher J. Pilkington).
+ + Fixed bug #783, which fixes completed and deleted tasks still showing as
+   active (thanks to Adam Wolk).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.

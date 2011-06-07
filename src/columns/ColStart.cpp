@@ -63,7 +63,10 @@ void ColumnStart::measure (Task& task, int& minimum, int& maximum)
   if (task.has (_attribute))
   {
     if (_style == "active")
-      minimum = maximum = context.config.get ("active.indicator").length ();
+    {
+      if (! task.has ("end"))
+        minimum = maximum = context.config.get ("active.indicator").length ();
+    }
     else
       ColumnDate::measure (task, minimum, maximum);
   }
@@ -80,10 +83,11 @@ void ColumnStart::render (
   {
     if (_style == "active")
     {
-      lines.push_back (
-        color.colorize (
-          rightJustify (
-            context.config.get ("active.indicator"), width)));
+      if (! task.has ("end"))
+        lines.push_back (
+          color.colorize (
+            rightJustify (
+              context.config.get ("active.indicator"), width)));
     }
     else
       ColumnDate::render (lines, task, width, color);

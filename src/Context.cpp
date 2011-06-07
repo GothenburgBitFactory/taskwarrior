@@ -452,6 +452,7 @@ void Context::clear ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add all the attributes in the task to the filter.  All except uuid.
+/*
 void Context::autoFilter (Att& a, Filter& f)
 {
   // Words are found in the description using the .has modifier.
@@ -532,12 +533,13 @@ void Context::autoFilter (Att& a, Filter& f)
            a.value ());
   }
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add all the tags in the task to the filter.
+/*
 void Context::autoFilter (Filter& f)
 {
-/*
   // This is now a correct implementation of a filter on the presence or absence
   // of a tag.  The prior code provided the illusion of leftmost partial tag
   // matches, but was really using the 'contains' and 'nocontains' attribute
@@ -557,8 +559,8 @@ void Context::autoFilter (Filter& f)
     f.push_back (Att ("tags", "noword", *tag));
     debug ("auto filter: -" + *tag);
   }
-*/
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // This capability is to answer the question of 'what did I just do to generate

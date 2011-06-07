@@ -132,12 +132,9 @@ static void colorizePriorityNone (Task& task, const std::string& rule, Color& c)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeActive (Task& task, const std::string& rule, Color& c)
 {
-  Task::status status = task.getStatus ();
-
   if (gsColor[rule].nontrivial () &&
-      status != Task::completed   &&
-      status != Task::deleted     &&
-      task.has ("start"))
+      task.has ("start")          &&
+      !task.has ("end"))
     c.blend (gsColor[rule]);
 }
 
@@ -157,7 +154,7 @@ static void colorizeProject (Task& task, const std::string& rule, Color& c)
   std::string project = task.get ("project");
   std::string rule_trunc = rule.substr (14);
 
-  // Match project names leftmost, just like Context::autoFilter.
+  // Match project names leftmost.
   if (rule_trunc.length () <= project.length ())
     if (compare (rule_trunc, project.substr (0, rule_trunc.length ()), sensitive))
       c.blend (gsColor[rule]);
