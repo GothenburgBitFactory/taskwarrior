@@ -29,6 +29,7 @@
 #define L10N                                           // Localization complete.
 
 #include <string>
+#include <stack>
 #include <Arguments.h>
 #include <Task.h>
 

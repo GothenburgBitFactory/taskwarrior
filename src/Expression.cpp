@@ -109,7 +109,6 @@ void Expression::expand_sequence ()
   }
 
   sequence << ")";
-  std::cout << "# sequence '" << sequence.str () << "'\n";
 
   // Copy everything up to the first id/uuid.
   for (arg = _original.begin (); arg != _original.end (); ++arg)
@@ -385,13 +384,6 @@ void Expression::to_infix ()
 //
 //   While there are tokens to be read:
 //     Read a token.
-//     If the token is a number, then add it to the output queue.
-//     If the token is a function token, then push it onto the stack.
-//     If the token is a function argument separator (e.g., a comma):
-//       Until the token at the top of the stack is a left parenthesis, pop
-//       operators off the stack onto the output queue. If no left parentheses
-//       are encountered, either the separator was misplaced or parentheses were
-//       mismatched.
 //     If the token is an operator, o1, then:
 //       while there is an operator token, o2, at the top of the stack, and
 //             either o1 is left-associative and its precedence is less than or
@@ -409,6 +401,8 @@ void Expression::to_infix ()
 //       the output queue.
 //       If the stack runs out without finding a left parenthesis, then there
 //       are mismatched parentheses.
+//     If the token is a number, then add it to the output queue.
+//
 //   When there are no more tokens to read:
 //     While there are still operator tokens in the stack:
 //       If the operator token on the top of the stack is a parenthesis, then
@@ -419,6 +413,69 @@ void Expression::to_infix ()
 void Expression::to_postfix ()
 {
   _postfix.clear ();
+
+  std::pair <std::string, std::string> item;
+  Arguments op_stack;
+  char type;
+  int precedence;
+  char associativity;
+
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _infix.begin (); arg != _infix.end (); ++arg)
+  {
+    if (arg->first == "(")
+    {
+      op_stack.push_back (*arg);
+    }
+    else if (arg->first == ")")
+    {
+      while (op_stack.size () > 0 &&
+             op_stack[op_stack.size () - 1].first != "(")
+      {
+        _postfix.push_back (op_stack[op_stack.size () - 1]);
+        op_stack.pop_back ();
+      }
+
+      if (op_stack.size ())
+      {
+        op_stack.pop_back ();
+      }
+      else
+      {
+        throw std::string ("Mismatched parentheses in expression");
+      }
+    }
+    else if (Arguments::is_operator (arg->first, type, precedence, associativity))
+    {
+      char type2;
+      int precedence2;
+      char associativity2;
+      while (op_stack.size () > 0 &&
+             Arguments::is_operator (op_stack[op_stack.size () - 1].first, type2, precedence2, associativity2) &&
+             ((associativity == 'l' && precedence <= precedence2) ||
+              (associativity == 'r' && precedence <  precedence2)))
+      {
+        _postfix.push_back (op_stack[op_stack.size () - 1]);
+        op_stack.pop_back ();
+      }
+
+      op_stack.push_back (*arg);
+    }
+    else
+    {
+      _postfix.push_back (*arg);
+    }
+  }
+
+  while (op_stack.size () != 0)
+  {
+    if (op_stack[op_stack.size () - 1].first == "(" ||
+        op_stack[op_stack.size () - 1].first == ")")
+      throw std::string ("Mismatched parentheses in expression");
+
+    _postfix.push_back (op_stack[op_stack.size () - 1]);
+    op_stack.pop_back ();
+  }
 
   _postfix.dump ("Expression::toPostfix");
 }

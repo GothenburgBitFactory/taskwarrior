@@ -15,6 +15,7 @@ file.t
 filt.t
 i18n.t
 json.t
+lexer.t
 lisp.t
 list.t
 nibbler.t

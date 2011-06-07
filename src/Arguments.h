@@ -64,6 +64,7 @@ public:
   static bool is_uuid (const std::string&);
   static bool is_tag (const std::string&);
   static bool is_operator (const std::string&);
+  static bool is_operator (const std::string&, char&, int&, char&);
   static bool is_expression (const std::string&);
 
   // TODO Decide if these are really useful.

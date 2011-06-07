@@ -57,27 +57,51 @@ static const char* modifierNames[] =
   "noword"
 };
 
-// Supported operators, synonyms on same line.
-static const char* operators[] =
+// Supported operators, borrowed from C++, particularly the precedence.
+static struct
 {
-  "+",             // Addition, unary plus
-  "-",             // Subtraction, unary minus
-  "*",             // Multiplication
-  "/",             // Division
-  "%",             // Modulus
-  "~",             // Substring/regex match
-  "!~",            // Substring/regex no-match
-  "<",   "lt",     // Less than
-  "<=",  "le",     // Less than or equal
-  "=",   "eq",     // Equal
-  "!=",  "ne",     // Not equal
-  ">=",  "ge",     // Greater than or equal
-  ">",   "gt",     // Greater than
-  "!",   "not",    // Not
-  "and",           // Conjunction
-  "or",            // Disjunction
-  "(",             // Precedence start
-  ")"              // Precedence end
+  std::string op;
+  int         precedence;
+  char        type;
+  char        associativity;
+} operators[] =
+{
+  // Operator  Precedence  Type  Associativity
+  {  "^",      16,         'b',  'r' },    // Exponent
+
+  {  "!",      15,         'u',  'r' },    // Not
+  {  "not",    15,         'u',  'r' },    // Not
+  {  "-",      15,         'u',  'r' },    // Unary minus
+
+  {  "*",      13,         'b',  'l' },    // Multiplication
+  {  "/",      13,         'b',  'l' },    // Division
+  {  "%",      13,         'b',  'l' },    // Modulus
+
+  {  "+",      12,         'b',  'l' },    // Addition
+  {  "-",      12,         'b',  'l' },    // Subtraction
+
+  {  "<",      10,         'b',  'l' },    // Less than
+  {  "lt",     10,         'b',  'l' },    // Less than
+  {  "<=",     10,         'b',  'l' },    // Less than or equal
+  {  "le",     10,         'b',  'l' },    // Less than or equal
+  {  ">=",     10,         'b',  'l' },    // Greater than or equal
+  {  "ge",     10,         'b',  'l' },    // Greater than or equal
+  {  ">",      10,         'b',  'l' },    // Greater than
+  {  "gt",     10,         'b',  'l' },    // Greater than
+
+  {  "~",       9,         'b',  'l' },    // Regex match
+  {  "!~",      9,         'b',  'l' },    // Regex non-match
+  {  "=",       9,         'b',  'l' },    // Equal
+  {  "eq",      9,         'b',  'l' },    // Equal
+  {  "!=",      9,         'b',  'l' },    // Inequal
+  {  "ne",      9,         'b',  'l' },    // Inequal
+
+  {  "and",     5,         'b',  'l' },    // Conjunction
+
+  {  "or",      4,         'b',  'l' },    // Disjunction
+
+  {  "(",       0,         'b',  'l' },    // Precedence start
+  {  ")",       0,         'b',  'l' },    // Precedence end
 };
 
 #define NUM_MODIFIER_NAMES (sizeof (modifierNames) / sizeof (modifierNames[0]))
@@ -730,12 +754,30 @@ bool Arguments::is_tag (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// "+", "-", "*", "/", "%", "~", "!~", "<" ...
 bool Arguments::is_operator (const std::string& input)
 {
   for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
-    if (operators[i] == input)
+    if (operators[i].op == input)
       return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Arguments::is_operator (
+  const std::string& input,
+  char& type,
+  int& precedence,
+  char& associativity)
+{
+  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
+    if (operators[i].op == input)
+    {
+      type          = operators[i].type;
+      precedence    = operators[i].precedence;
+      associativity = operators[i].associativity;
+      return true;
+    }
 
   return false;
 }
