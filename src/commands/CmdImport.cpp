@@ -235,7 +235,7 @@ std::string CmdImport::task_1_4_3 (const std::vector <std::string>& lines)
             if (fields[f][0]                       != '\'' &&
                 fields[f][fields[f].length () - 1] == '\'')
             {
-              modified[modified.size () - 1] += "," + fields[f];
+              modified.back () += "," + fields[f];
             }
 
             else
@@ -391,7 +391,7 @@ std::string CmdImport::task_1_5_0 (const std::vector <std::string>& lines)
             if (fields[f][0]                       != '\'' &&
                 fields[f][fields[f].length () - 1] == '\'')
             {
-              modified[modified.size () - 1] += "," + fields[f];
+              modified.back () += "," + fields[f];
             }
 
             else
@@ -552,7 +552,7 @@ std::string CmdImport::task_1_6_0 (const std::vector <std::string>& lines)
             if (fields[f][0]                       != '\'' &&
                 fields[f][fields[f].length () - 1] == '\'')
             {
-              modified[modified.size () - 1] += "," + fields[f];
+              modified.back () += "," + fields[f];
             }
 
             else

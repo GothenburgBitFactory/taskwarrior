@@ -52,8 +52,10 @@ Expression::~Expression ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Expression::eval (Task& task)
 {
-  // TODO Duplicate the _postfix vector as the operating stack.
-  // TODO ...
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _postfix.begin (); arg != _postfix.end (); ++arg)
+  {
+  }
 
   return true;
 }
@@ -430,9 +432,9 @@ void Expression::to_postfix ()
     else if (arg->first == ")")
     {
       while (op_stack.size () > 0 &&
-             op_stack[op_stack.size () - 1].first != "(")
+             op_stack.back ().first != "(")
       {
-        _postfix.push_back (op_stack[op_stack.size () - 1]);
+        _postfix.push_back (op_stack.back ());
         op_stack.pop_back ();
       }
 
@@ -451,11 +453,11 @@ void Expression::to_postfix ()
       int precedence2;
       char associativity2;
       while (op_stack.size () > 0 &&
-             Arguments::is_operator (op_stack[op_stack.size () - 1].first, type2, precedence2, associativity2) &&
+             Arguments::is_operator (op_stack.back ().first, type2, precedence2, associativity2) &&
              ((associativity == 'l' && precedence <= precedence2) ||
               (associativity == 'r' && precedence <  precedence2)))
       {
-        _postfix.push_back (op_stack[op_stack.size () - 1]);
+        _postfix.push_back (op_stack.back ());
         op_stack.pop_back ();
       }
 
@@ -469,11 +471,11 @@ void Expression::to_postfix ()
 
   while (op_stack.size () != 0)
   {
-    if (op_stack[op_stack.size () - 1].first == "(" ||
-        op_stack[op_stack.size () - 1].first == ")")
+    if (op_stack.back ().first == "(" ||
+        op_stack.back ().first == ")")
       throw std::string ("Mismatched parentheses in expression");
 
-    _postfix.push_back (op_stack[op_stack.size () - 1]);
+    _postfix.push_back (op_stack.back ());
     op_stack.pop_back ();
   }
 

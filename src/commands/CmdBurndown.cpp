@@ -832,7 +832,7 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
 {
   // If there are no current pending tasks, then it is meaningless to find
   // rates or estimated completion date.
-  if (bars[sequence[sequence.size () - 1]].pending == 0)
+  if (bars[sequence.back ()].pending == 0)
     return;
 
   // Calculate how many items we have.
@@ -936,7 +936,7 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
   // Estimate completion
   if (fix_rate > find_rate)
   {
-    int current_pending = bars[sequence[sequence.size () - 1]].pending;
+    int current_pending = bars[sequence.back ()].pending;
     int remaining_days = (int) (current_pending / (fix_rate - find_rate));
 
     Date now;
