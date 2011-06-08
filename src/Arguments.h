@@ -51,6 +51,7 @@ public:
   void resolve_aliases ();
 
   std::vector <std::string> list ();
+  static std::vector <std::string> operator_list ();
   std::string combine ();
 
   bool find_command (std::string&);

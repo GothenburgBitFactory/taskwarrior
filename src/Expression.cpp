@@ -29,6 +29,7 @@
 #include <sstream>
 #include <Context.h>
 #include <Lexer.h>
+#include <text.h>
 #include <Expression.h>
 
 extern Context context;
@@ -55,6 +56,22 @@ bool Expression::eval (Task& task)
   std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = _postfix.begin (); arg != _postfix.end (); ++arg)
   {
+    // if (arg->second != "op")
+    //   eval_stack.push_back (*arg);
+
+    // else
+    // {
+    //   if (arg->first == "+")
+    //   {
+    //     pop
+    //     pop
+    //     add the two operands
+    //     push result
+    //   }
+    //   else if ()
+    //   {
+    //   }
+    // }
   }
 
   return true;
@@ -85,7 +102,10 @@ void Expression::expand_sequence ()
 
   // If there is no sequence, we're done.
   if (ids.size () == 0 && uuids.size () == 0)
+  {
+    _sequenced = _original;
     return;
+  }
 
   // Construct the algebraic form.
   std::stringstream sequence;
@@ -166,6 +186,10 @@ void Expression::expand_attr (const std::string& input)
   std::string value;
   Arguments::extract_attr (input, name, value);
 
+  // Always quote the value, so that empty values, or values containing spaces
+  // are preserved.
+  value = "\"" + value + "\"";
+
   _infix.push_back (std::make_pair (name, "dom"));
   _infix.push_back (std::make_pair ("=", "op"));
   _infix.push_back (std::make_pair (value, "exp"));
@@ -184,6 +208,10 @@ void Expression::expand_attmod (const std::string& input)
   std::string value;
   std::string sense;
   Arguments::extract_attmod (input, name, mod, value, sense);
+
+  // Always quote the value, so that empty values, or values containing spaces
+  // are preserved.
+  value = "\"" + value + "\"";
 
   if (mod == "before" || mod == "under" || mod == "below")
   {
@@ -284,12 +312,17 @@ void Expression::expand_expression ()
 {
   Arguments temp;
 
+  // Get a list of all operators.
+  std::vector <std::string> operators = Arguments::operator_list ();
+
+  // Look for all 'exp' args.
   std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = _infix.begin (); arg != _infix.end (); ++arg)
   {
     if (arg->second == "exp")
     {
-      Lexer lexer (arg->first);
+/* obsolete */
+      Lexer lexer (unquoteText (arg->first));
       lexer.skipWhitespace (true);
       lexer.coalesceAlpha (true);
       lexer.coalesceDigits (true);
@@ -306,6 +339,12 @@ void Expression::expand_expression ()
         else
           temp.push_back (std::make_pair (*token, "dom"));
       }
+/* obsolete */
+/* proposed */
+/*
+      Nibbler n (arg->first);
+*/
+/* proposed */
     }
     else
       temp.push_back (*arg);
@@ -321,8 +360,6 @@ void Expression::expand_expression ()
 //
 // Converts:  <term1>     <term2> <op> <exp>
 // to:        <term1> and <term2> <op> <token> <token> <token>
-//
-//
 //
 // Rules:
 //   1. Two adjacent non-operator arguments have an 'and' inserted between them.
@@ -368,7 +405,10 @@ void Expression::to_infix ()
     else if (arg->second == "word")
       expand_word (arg->first);
 
-    // Expressions will be converted later.
+    else if (arg->second == "op")
+      _infix.push_back (*arg);
+
+    // Skip expressions, convert later.
     else if (arg->second == "exp")
       _infix.push_back (*arg);
 
@@ -383,6 +423,7 @@ void Expression::to_infix ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Dijkstra Shunting Algorithm.
+// http://en.wikipedia.org/wiki/Shunting-yard_algorithm
 //
 //   While there are tokens to be read:
 //     Read a token.
@@ -501,9 +542,12 @@ bool Expression::is_new_style ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Remove?
-void Expression::dump (const std::string& label)
+void Expression::dump ()
 {
+  _original.dump  ("Original Arguments");
+  _sequenced.dump ("Sequence Expanded");
+  _infix.dump     ("Converted to Infix");
+  _postfix.dump   ("Converted to Postfix");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

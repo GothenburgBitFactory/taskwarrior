@@ -43,6 +43,7 @@ public:
 private:
   void expand_sequence ();
   void expand_expression ();
+
   void expand_tag (const std::string&);
   void expand_attr (const std::string&);
   void expand_attmod (const std::string&);
@@ -52,7 +53,7 @@ private:
   void to_infix ();
   void to_postfix ();
   bool is_new_style ();
-  void dump (const std::string&);
+  void dump ();
 
 private:
   Arguments _original;

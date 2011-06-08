@@ -97,15 +97,21 @@ int CmdCustom::execute (std::string& output)
   Expression e (f);
 
 return 0;
-  // TODO e.apply (tasks);
+
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
 ////////////////////////////////////
 
   // Sort the tasks.
   std::vector <int> sequence;
-  for (unsigned int i = 0; i < tasks.size (); ++i)
+  for (unsigned int i = 0; i < filtered.size (); ++i)
     sequence.push_back (i);
 
-  sort_tasks (tasks, sequence, reportSort);
+  sort_tasks (filtered, sequence, reportSort);
 
   // Configure the view.
   ViewTask view;
@@ -153,21 +159,21 @@ return 0;
   // Render.
   // TODO Consider rc.verbose
   std::stringstream out;
-  if (tasks.size ())
+  if (filtered.size ())
   {
     view.truncateRows (maxrows);
     view.truncateLines (maxlines);
 
     out << optionalBlankLine ()
-        << view.render (tasks, sequence)
+        << view.render (filtered, sequence)
         << optionalBlankLine ()
-        << tasks.size ()
-        << (tasks.size () == 1 ? " task" : " tasks");
+        << filtered.size ()
+        << (filtered.size () == 1 ? " task" : " tasks");
 
-    if (maxrows && maxrows < (int)tasks.size ())
+    if (maxrows && maxrows < (int)filtered.size ())
       out << ", " << maxrows << " shown";
 
-    if (maxlines && maxlines < (int)tasks.size ())
+    if (maxlines && maxlines < (int)filtered.size ())
       out << ", truncated to " << maxlines - table_header << " lines";
 
     out << "\n";

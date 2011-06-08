@@ -542,6 +542,16 @@ std::vector <std::string> Arguments::list ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string> Arguments::operator_list ()
+{
+  std::vector <std::string> all;
+  for (int i = 0; i < NUM_OPERATORS; ++i)
+    all.push_back (operators[i].op);
+
+  return all;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string Arguments::combine ()
 {
   std::string combined;
@@ -594,20 +604,29 @@ bool Arguments::is_command (
 bool Arguments::is_attr (const std::string& input)
 {
   Nibbler n (input);
-
-  // Ensure a clean parse.
   std::string name;
   std::string value;
 
   if (n.getUntilOneOf ("=:", name))
   {
+    if (name.length () == 0)
+      return false;
+
     if (n.skip (':') ||
         n.skip ('='))
     {
+      // Exclude certain URLs, that look like attrs.
+      if (input.find ('@') <= n.cursor () ||
+          input.find ('/') <= n.cursor ())
+        return false;
+
       // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
-      if (n.getQuoted   ('"', value) ||
-          n.getUntilEOS (value))
+      if (n.getQuoted   ('"', value)  ||
+          n.getQuoted   ('\'', value) ||
+          n.getUntil    (' ', value)  ||
+          n.getUntilEOS (value)       ||
+          n.depleted ())
       {
         return true;
       }
@@ -622,25 +641,39 @@ bool Arguments::is_attr (const std::string& input)
 bool Arguments::is_attmod (const std::string& input)
 {
   Nibbler n (input);
+  std::string name;
+  std::string modifier;
+  std::string value;
 
-  // Ensure a clean parse.
-  std::string ignored;
-
-  if (n.getUntil (".", ignored))
+  if (n.getUntilOneOf (".", name))
   {
+    if (name.length () == 0)
+      return false;
+
     if (n.skip ('.'))
     {
       n.skip ('~');
-      n.getUntilOneOf (":=", ignored);
+      n.getUntilOneOf (":=", modifier);
+
+      if (modifier.length () == 0)
+        return false;
     }
 
     if (n.skip (':') ||
         n.skip ('='))
     {
+      // Exclude certain URLs, that look like attrs.
+      if (input.find ('@') <= n.cursor () ||
+          input.find ('/') <= n.cursor ())
+        return false;
+
       // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
-      if (n.getQuoted   ('"', ignored) ||
-          n.getUntilEOS (ignored))
+      if (n.getQuoted   ('"', value)  ||
+          n.getQuoted   ('\'', value) ||
+          n.getUntil    (' ', value)  ||
+          n.getUntilEOS (value)       ||
+          n.depleted ())
       {
         return true;
       }
@@ -654,17 +687,20 @@ bool Arguments::is_attmod (const std::string& input)
 // /<from>/<to>/[g]
 bool Arguments::is_subst (const std::string& input)
 {
-  std::string ignored;
+  std::string from;
+  std::string to;
   Nibbler n (input);
   if (n.skip     ('/')            &&
-      n.getUntil ('/', ignored)   &&
+      n.getUntil ('/', from)   &&
       n.skip     ('/')            &&
-      n.getUntil ('/', ignored)   &&
+      n.getUntil ('/', to)   &&
       n.skip     ('/'))
   {
     n.skip ('g');
-    if (n.depleted ())
-      return ! Directory (input).exists ();   // Ouch - expensive call.
+    if (n.depleted ()                 &&
+        ! Directory (input).exists () &&   // Ouch - expensive call.
+        from.length ())
+      return true;
   }
 
   return false;
@@ -747,8 +783,13 @@ bool Arguments::is_tag (const std::string& input)
 {
   if (input.length () > 1 &&
       (input[0] == '+' ||
-       input[0] == '-'))
+       input[0] == '-') &&
+       noSpaces (input) &&
+       input.find ('+', 1) == std::string::npos &&
+       input.find ('-', 1) == std::string::npos)
+  {
     return true;
+  }
 
   return false;
 }
