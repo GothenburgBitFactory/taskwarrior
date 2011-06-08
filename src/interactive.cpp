@@ -33,6 +33,10 @@
 #include <i18n.h>
 #include <cmake.h>
 
+#ifdef SOLARIS
+#include <sys/termios.h>
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 int Context::getWidth ()
 {

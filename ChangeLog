@@ -96,6 +96,8 @@
    not located (thanks to Christopher J. Pilkington).
  + Fixed bug #783, which fixes completed and deleted tasks still showing as
    active (thanks to Adam Wolk).
+ + Fixed bug #785, which fixes a broken build on Solaris (thanks to Owen
+   Clarke).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
