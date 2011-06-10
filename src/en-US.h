@@ -108,6 +108,15 @@
 #define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
 #define STRING_CMD_SHOW_CONF_VALUE   "Value"
 
+// API
+#define STRING_API_EXITING           "Exiting."
+#define STRING_API_NOFUNC            "The Lua function '{1}' was not found."
+#define STRING_API_ERROR_CALLING     "Error calling '{1}' - {2}."
+#define STRING_API_ERROR_FAIL        "Error: '{1}' did not return a success indicator."
+#define STRING_API_ERROR_NORET       "Error: '{1}' did not return a message or nil."
+#define STRING_API_WARNING           "Warning: {1}"
+#define STRING_API_ERROR             "Error: {1}"
+
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
 

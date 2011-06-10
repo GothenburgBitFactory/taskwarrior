@@ -47,10 +47,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <algorithm>
 #include <iostream>
 #include <Context.h>
 #include <API.h>
+#include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -86,7 +90,7 @@ static int api_task_debug_message (lua_State* L)
 static int api_task_exit (lua_State*)
 {
   // TODO Is this the correct exception?  How does the shell handle this?
-  std::cout << "Exiting." << std::endl;
+  std::cout << STRING_API_EXITING << std::endl;
   exit (0); 
   return 0;
 }
@@ -173,19 +177,19 @@ bool API::callProgramHook (
   if (!lua_isfunction (L, -1))
   {
     lua_pop (L, 1);
-    throw std::string ("The Lua function '") + function + "' was not found.";
+    throw format (STRING_API_NOFUNC, function);
   }
 
   // Make call.
   if (lua_pcall (L, 0, 2, 0) != 0)
-    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1) + ".";
+    throw format (STRING_API_ERROR_CALLING, function, lua_tostring (L, -1));
 
   // Call successful - get return values.
   if (!lua_isnumber (L, -2))
-    throw std::string ("Error: '") + function + "' did not return a success indicator.";
+    throw format (STRING_API_ERROR_FAIL, function);
 
   if (!lua_isstring (L, -1) && !lua_isnil (L, -1))
-    throw std::string ("Error: '") + function + "' did not return a message or nil.";
+    throw format (STRING_API_ERROR_NORET, function);
 
   int rc              = lua_tointeger (L, -2);
   const char* message = lua_tostring  (L, -1);
@@ -193,7 +197,7 @@ bool API::callProgramHook (
   if (rc == 0)
   {
     if (message)
-      context.footnote (std::string ("Warning: ") + message);
+      context.footnote (format (STRING_API_WARNING, message));
   }
   else
   {
@@ -221,7 +225,7 @@ bool API::callTaskHook (
   if (!lua_isfunction (L, -1))
   {
     lua_pop (L, 1);
-    throw std::string ("The Lua function '") + function + "' was not found.";
+    throw format (STRING_API_NOFUNC, function);
   }
 
   // Prepare args.
@@ -229,14 +233,14 @@ bool API::callTaskHook (
 
   // Make call.
   if (lua_pcall (L, 1, 2, 0) != 0)
-    throw std::string ("Error calling '") + function + "' - " + lua_tostring (L, -1) + ".";
+    throw format (STRING_API_ERROR_CALLING, function, lua_tostring (L, -1));
 
   // Call successful - get return values.
   if (!lua_isnumber (L, -2))
-    throw std::string ("Error: '") + function + "' did not return a success indicator.";
+    throw format (STRING_API_ERROR_FAIL, function);
 
   if (!lua_isstring (L, -1) && !lua_isnil (L, -1))
-    throw std::string ("Error: '") + function + "' did not return a message or nil.";
+    throw format (STRING_API_ERROR_NORET, function);
 
   int rc              = lua_tointeger (L, -2);
   const char* message = lua_tostring  (L, -1);
@@ -244,7 +248,7 @@ bool API::callTaskHook (
   if (rc == 0)
   {
     if (message)
-      context.footnote (std::string ("Warning: ") + message);
+      context.footnote (format (STRING_API_WARNING, message));
   }
   else
   {
@@ -264,7 +268,7 @@ void API::loadFile (const std::string& file)
   {
     // Load the file, if possible.
     if (luaL_loadfile (L, file.c_str ()) || lua_pcall (L, 0, 0, 0))
-      throw std::string ("Error: ") + std::string (lua_tostring (L, -1));
+      throw format (STRING_API_ERROR, lua_tostring (L, -1));
 
     // Mark this as loaded, so as to not bother again.
     loaded.push_back (file);
