@@ -50,7 +50,7 @@ public:
   std::string formatCompact () const;
 
   bool negative () const;
-  bool valid (const std::string&) const;
+  static bool valid (const std::string&);
   void parse (const std::string&);
 
 private:

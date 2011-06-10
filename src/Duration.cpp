@@ -237,7 +237,7 @@ bool Duration::negative () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Duration::valid (const std::string& input) const
+bool Duration::valid (const std::string& input)
 {
   std::string lower_input = lowerCase (input);
 
