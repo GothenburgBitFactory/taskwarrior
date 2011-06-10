@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include <sstream>
 #include <map>
 #include <vector>
@@ -96,13 +97,15 @@ int CmdCustom::execute (std::string& output)
   Arguments f = context.args.extract_read_only_filter ();
   Expression e (f);
 
-return 0;
-
   std::vector <Task> filtered;
   std::vector <Task>::iterator task;
   for (task = tasks.begin (); task != tasks.end (); ++task)
     if (e.eval (*task))
       filtered.push_back (*task);
+
+  std::cout << "# tasks=" << tasks.size () << "\n"
+            << "# filtered=" << filtered.size () << "\n";
+return 0;
 
 ////////////////////////////////////
 

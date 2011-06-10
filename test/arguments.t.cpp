@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (109);
+  UnitTest t (113);
 
   const char* fake[] =
   {
@@ -66,58 +66,64 @@ int main (int argc, char** argv)
         "combine good");
 
   // bool is_attr (const std::string&);
-  t.ok (Arguments::is_attr ("name:"),                       "name:              -> attr");
-  t.ok (Arguments::is_attr ("name:\"\""),                   "name:\"\"            -> attr");
-  t.ok (Arguments::is_attr ("name:one"),                    "name:one           -> attr");
-  t.ok (Arguments::is_attr ("name:\"one\""),                "name:\"one\"         -> attr");
-  t.ok (Arguments::is_attr ("name:\"one two\""),            "name:\"one two\"     -> attr");
+  t.ok (Arguments::is_attr ("name:"),                       "name:               -> attr");
+  t.ok (Arguments::is_attr ("name:\"\""),                   "name:\"\"             -> attr");
+  t.ok (Arguments::is_attr ("name:one"),                    "name:one            -> attr");
+  t.ok (Arguments::is_attr ("name:\"one\""),                "name:\"one\"          -> attr");
+  t.ok (Arguments::is_attr ("name:\"one two\""),            "name:\"one two\"      -> attr");
 
-  t.ok (Arguments::is_attr ("name="),                       "name=              -> attr");
-  t.ok (Arguments::is_attr ("name=\"\""),                   "name=\"\"            -> attr");
-  t.ok (Arguments::is_attr ("name=one"),                    "name=one           -> attr");
-  t.ok (Arguments::is_attr ("name=\"one\""),                "name=\"one\"         -> attr");
-  t.ok (Arguments::is_attr ("name=\"one two\""),            "name=\"one two\"     -> attr");
+  t.ok (Arguments::is_attr ("name="),                       "name=               -> attr");
+  t.ok (Arguments::is_attr ("name=\"\""),                   "name=\"\"             -> attr");
+  t.ok (Arguments::is_attr ("name=one"),                    "name=one            -> attr");
+  t.ok (Arguments::is_attr ("name=\"one\""),                "name=\"one\"          -> attr");
+  t.ok (Arguments::is_attr ("name=\"one two\""),            "name=\"one two\"      -> attr");
+
+  t.notok (Arguments::is_attr ("name"),                     "name                -> not attr");
+  t.notok (Arguments::is_attr ("(name=val and 1<2)"),      "(name=val and 1<2)   -> not attr");
 
   // bool is_attmod (const std::string&);
-  t.ok (Arguments::is_attmod ("name.is:"),                  "name.is:           -> attr");
-  t.ok (Arguments::is_attmod ("name.is:\"\""),              "name.is:\"\"         -> attr");
-  t.ok (Arguments::is_attmod ("name.is:one"),               "name.is:one        -> attr");
-  t.ok (Arguments::is_attmod ("name.is:\"one\""),           "name.is:\"one\"      -> attr");
-  t.ok (Arguments::is_attmod ("name.is:\"one two\""),       "name.is:\"one two\"  -> attr");
+  t.ok (Arguments::is_attmod ("name.is:"),                  "name.is:            -> attmod");
+  t.ok (Arguments::is_attmod ("name.is:\"\""),              "name.is:\"\"          -> attmod");
+  t.ok (Arguments::is_attmod ("name.is:one"),               "name.is:one         -> attmod");
+  t.ok (Arguments::is_attmod ("name.is:\"one\""),           "name.is:\"one\"       -> attmod");
+  t.ok (Arguments::is_attmod ("name.is:\"one two\""),       "name.is:\"one two\"   -> attmod");
 
-  t.ok (Arguments::is_attmod ("name.is="),                  "name.is=           -> attr");
-  t.ok (Arguments::is_attmod ("name.is=\"\""),              "name.is=\"\"         -> attr");
-  t.ok (Arguments::is_attmod ("name.is=one"),               "name.is=one        -> attr");
-  t.ok (Arguments::is_attmod ("name.is=\"one\""),           "name.is=\"one\"      -> attr");
-  t.ok (Arguments::is_attmod ("name.is=\"one two\""),       "name.is=\"one two\"  -> attr");
+  t.ok (Arguments::is_attmod ("name.is="),                  "name.is=            -> attmod");
+  t.ok (Arguments::is_attmod ("name.is=\"\""),              "name.is=\"\"          -> attmod");
+  t.ok (Arguments::is_attmod ("name.is=one"),               "name.is=one         -> attmod");
+  t.ok (Arguments::is_attmod ("name.is=\"one\""),           "name.is=\"one\"       -> attmod");
+  t.ok (Arguments::is_attmod ("name.is=\"one two\""),       "name.is=\"one two\"   -> attmod");
+
+  t.notok (Arguments::is_attmod ("name"),                   "name                -> not attmod");
+  t.notok (Arguments::is_attmod ("(name=value and 1<2"),    "(name=value and 1<2 -> not attmod");
 
   // bool is_subst (const std::string&);
-  t.notok (Arguments::is_subst ("///"),                     "///                -> not subst");
-  t.notok (Arguments::is_subst ("//to/"),                   "//to/              -> not subst");
-  t.ok    (Arguments::is_subst ("/from//"),                 "/from//            -> subst");
-  t.ok    (Arguments::is_subst ("/from/to/"),               "/from/to/          -> subst");
-  t.ok    (Arguments::is_subst ("/from from/to to/"),       "/from from/to to/  -> subst");
+  t.notok (Arguments::is_subst ("///"),                     "///                 -> not subst");
+  t.notok (Arguments::is_subst ("//to/"),                   "//to/               -> not subst");
+  t.ok    (Arguments::is_subst ("/from//"),                 "/from//             -> subst");
+  t.ok    (Arguments::is_subst ("/from/to/"),               "/from/to/           -> subst");
+  t.ok    (Arguments::is_subst ("/from from/to to/"),       "/from from/to to/   -> subst");
 
-  t.notok (Arguments::is_subst ("///g"),                    "///g               -> not subst");
-  t.notok (Arguments::is_subst ("//to/g"),                  "//to/g             -> not subst");
-  t.ok    (Arguments::is_subst ("/from//g"),                "/from//g           -> subst");
-  t.ok    (Arguments::is_subst ("/from/to/g"),              "/from/to/g         -> subst");
-  t.ok    (Arguments::is_subst ("/from from/to to/g"),      "/from from/to to/g -> subst");
+  t.notok (Arguments::is_subst ("///g"),                    "///g                -> not subst");
+  t.notok (Arguments::is_subst ("//to/g"),                  "//to/g              -> not subst");
+  t.ok    (Arguments::is_subst ("/from//g"),                "/from//g            -> subst");
+  t.ok    (Arguments::is_subst ("/from/to/g"),              "/from/to/g          -> subst");
+  t.ok    (Arguments::is_subst ("/from from/to to/g"),      "/from from/to to/g  -> subst");
 
   // bool is_pattern (const std::string&);
-  t.notok (Arguments::is_pattern ("//"),                    "//                 -> not pattern");
-  t.notok (Arguments::is_pattern ("///"),                   "///                -> not pattern");
-  t.ok    (Arguments::is_pattern ("/one/"),                 "/one/              -> pattern");
-  t.ok    (Arguments::is_pattern ("/one two/"),             "/one two/          -> pattern");
-  t.ok    (Arguments::is_pattern ("/  /"),                  "/  /               -> pattern");
+  t.notok (Arguments::is_pattern ("//"),                    "//                  -> not pattern");
+  t.notok (Arguments::is_pattern ("///"),                   "///                 -> not pattern");
+  t.ok    (Arguments::is_pattern ("/one/"),                 "/one/               -> pattern");
+  t.ok    (Arguments::is_pattern ("/one two/"),             "/one two/           -> pattern");
+  t.ok    (Arguments::is_pattern ("/  /"),                  "/  /                -> pattern");
 
   // bool is_id (const std::string&);
-  t.ok    (Arguments::is_id ("1"),                          "1                  -> id");
-  t.ok    (Arguments::is_id ("1,2"),                        "1,2                -> id");
-  t.ok    (Arguments::is_id ("1-2"),                        "1-2                -> id");
-  t.ok    (Arguments::is_id ("1,2,3"),                      "1,2,3              -> id");
-  t.ok    (Arguments::is_id ("1-2,3,4-5"),                  "1-2,3,4-5          -> id");
-  t.notok (Arguments::is_id ("1-2-3"),                      "1-2-3              -> no id");
+  t.ok    (Arguments::is_id ("1"),                          "1                   -> id");
+  t.ok    (Arguments::is_id ("1,2"),                        "1,2                 -> id");
+  t.ok    (Arguments::is_id ("1-2"),                        "1-2                 -> id");
+  t.ok    (Arguments::is_id ("1,2,3"),                      "1,2,3               -> id");
+  t.ok    (Arguments::is_id ("1-2,3,4-5"),                  "1-2,3,4-5           -> id");
+  t.notok (Arguments::is_id ("1-2-3"),                      "1-2-3               -> no id");
 
   // bool is_uuid (const std::string&);
   t.ok    (Arguments::is_uuid ("00000000-0000-0000-0000-000000000000"),
@@ -126,15 +132,15 @@ int main (int argc, char** argv)
                                "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee,ffffffff-ffff-ffff-ffff-ffffffffffff -> uuid");
 
   // bool is_tag (const std::string&);
-  t.ok    (Arguments::is_tag ("+one"),                      "+one               -> tag");
-  t.ok    (Arguments::is_tag ("-one"),                      "-one               -> tag");
-  t.notok (Arguments::is_tag ("+one "),                     "+one               -> not tag");
-  t.notok (Arguments::is_tag ("-one "),                     "-one               -> not tag");
-  t.notok (Arguments::is_tag ("+"),                         "+                  -> not tag");
-  t.notok (Arguments::is_tag ("-"),                         "-                  -> not tag");
-  t.notok (Arguments::is_tag ("++"),                        "++                 -> not tag");
-  t.notok (Arguments::is_tag ("--"),                        "--                 -> not tag");
-  t.notok (Arguments::is_tag ("+one two"),                  "+one two           -> not tag");
+  t.ok    (Arguments::is_tag ("+one"),                      "+one                -> tag");
+  t.ok    (Arguments::is_tag ("-one"),                      "-one                -> tag");
+  t.notok (Arguments::is_tag ("+one "),                     "+one                -> not tag");
+  t.notok (Arguments::is_tag ("-one "),                     "-one                -> not tag");
+  t.notok (Arguments::is_tag ("+"),                         "+                   -> not tag");
+  t.notok (Arguments::is_tag ("-"),                         "-                   -> not tag");
+  t.notok (Arguments::is_tag ("++"),                        "++                  -> not tag");
+  t.notok (Arguments::is_tag ("--"),                        "--                  -> not tag");
+  t.notok (Arguments::is_tag ("+one two"),                  "+one two            -> not tag");
 
   // bool is_operator (const std::string&);
   t.ok    (Arguments::is_operator ("^"),   "^   -> operator");

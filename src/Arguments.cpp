@@ -32,6 +32,7 @@
 #include <sys/select.h>
 #include <Context.h>
 #include <Nibbler.h>
+#include <Lexer.h>
 #include <Directory.h>
 #include <ViewText.h>
 #include <text.h>
@@ -106,6 +107,8 @@ static struct
 
 #define NUM_MODIFIER_NAMES (sizeof (modifierNames) / sizeof (modifierNames[0]))
 #define NUM_OPERATORS      (sizeof (operators) / sizeof (operators[0]))
+
+static const char* non_word_chars = " +-*/%()=<>!~";
 
 ////////////////////////////////////////////////////////////////////////////////
 Arguments::Arguments ()
@@ -603,6 +606,9 @@ bool Arguments::is_attr (const std::string& input)
     if (name.length () == 0)
       return false;
 
+    if (name.find_first_of (non_word_chars) != std::string::npos)
+      return false;
+
     if (n.skip (':') ||
         n.skip ('='))
     {
@@ -640,6 +646,9 @@ bool Arguments::is_attmod (const std::string& input)
   if (n.getUntilOneOf (".", name))
   {
     if (name.length () == 0)
+      return false;
+
+    if (name.find_first_of (non_word_chars) != std::string::npos)
       return false;
 
     if (n.skip ('.'))
@@ -820,8 +829,14 @@ bool Arguments::is_operator (
 ////////////////////////////////////////////////////////////////////////////////
 bool Arguments::is_expression (const std::string& input)
 {
+  Lexer lexer (unquoteText (input));
+  lexer.skipWhitespace (true);
+  lexer.coalesceAlpha (true);
+  lexer.coalesceDigits (true);
+  lexer.coalesceQuoted (true);
+
   std::vector <std::string> tokens;
-  splitq (tokens, input, ' ');
+  lexer.tokenize (tokens);
 
   std::vector <std::string>::iterator token;
   for (token = tokens.begin (); token != tokens.end (); ++token)
