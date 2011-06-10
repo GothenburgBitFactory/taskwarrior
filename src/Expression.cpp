@@ -39,10 +39,10 @@ extern Context context;
 Expression::Expression (Arguments& arguments)
 : _original (arguments)
 {
-  expand_sequence ();
-  to_infix ();
-  expand_expression ();
-  to_postfix ();
+  expand_sequence ();     // Convert sequence to expression.
+  to_infix ();            // Old-style to infix.
+  expand_expression ();   // Lex expressions to dom, op tokens.
+  to_postfix ();          // Infix --> Postfix
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -211,6 +211,7 @@ void Expression::expand_attmod (const std::string& input)
 
   // Always quote the value, so that empty values, or values containing spaces
   // are preserved.
+  std::string raw_value = value;
   value = "\"" + value + "\"";
 
   if (mod == "before" || mod == "under" || mod == "below")
@@ -263,19 +264,27 @@ void Expression::expand_attmod (const std::string& input)
   }
   else if (mod == "startswith" || mod == "left")
   {
-    // TODO ?
+    _infix.push_back (std::make_pair (name, "dom"));
+    _infix.push_back (std::make_pair ("~", "op"));
+    _infix.push_back (std::make_pair ("^" + raw_value, "rx"));
   }
   else if (mod == "endswith" || mod == "right")
   {
-    // TODO ?
+    _infix.push_back (std::make_pair (name, "dom"));
+    _infix.push_back (std::make_pair ("~", "op"));
+    _infix.push_back (std::make_pair (raw_value + "$", "rx"));
   }
   else if (mod == "word")
   {
-    // TODO ?
+    _infix.push_back (std::make_pair (name, "dom"));
+    _infix.push_back (std::make_pair ("~", "op"));
+    _infix.push_back (std::make_pair ("\\b" + raw_value + "\\b", "rx"));
   }
   else if (mod == "noword")
   {
-    // TODO ?
+    _infix.push_back (std::make_pair (name, "dom"));
+    _infix.push_back (std::make_pair ("!~", "op"));
+    _infix.push_back (std::make_pair ("\\b" + raw_value + "\\b", "rx"));
   }
 }
 
@@ -363,7 +372,6 @@ void Expression::expand_expression ()
 //
 // Rules:
 //   1. Two adjacent non-operator arguments have an 'and' inserted between them.
-//   2. Any argument of type "exp" is lexed and replaced by tokens.
 //
 void Expression::to_infix ()
 {

@@ -27,6 +27,7 @@
 
 #include <sstream>
 #include <Context.h>
+#include <Nibbler.h>
 #include <text.h>
 #include <i18n.h>
 #include <DOM.h>
@@ -52,28 +53,59 @@ DOM::~DOM ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO <id>.                  <-- context.tdb2
-// TODO <uuid>.                <-- context.tdb2
-// rc.<name>              <-- context.config
-// TODO report.<name>.         <-- context.reports
-// TODO stats.<name>           <-- context.stats
-// TODO context.<name>    <-- args, ...
+// DOM Supported References:
+//   rc.<name>
 //
-// system.<name>          <-- context.system
-// system.version
-// system.lua.version
-// system.os
+//   context.program
+//   context.args
+//   context.width
+//   context.height
+//
+//   <id>.<?>
+//   <id>.{entry,start,end,due,until,wait}
+//   <id>.{entry,start,end,due,until,wait}.year
+//   <id>.{entry,start,end,due,until,wait}.month
+//   <id>.{entry,start,end,due,until,wait}.day
+//   <id>.{entry,start,end,due,until,wait}.hour
+//   <id>.{entry,start,end,due,until,wait}.minute
+//   <id>.{entry,start,end,due,until,wait}.second
+//   <id>.description
+//   <id>.project
+//   <id>.priority
+//   <id>.parent
+//   <id>.status
+//   <id>.tags
+//   <id>.urgency
+//   <id>.recur
+//   <id>.depends
+//
+//   <uuid>.<?>
+//
+//   TODO report.<name>.         <-- context.reports
+//   TODO stats.<name>           <-- context.stats
+//
+//   system.version
+//   system.lua.version
+//   system.os
 const std::string DOM::get (const std::string& name)
 {
   int len = name.length ();
+  Nibbler n (name);
+  int id;
+  std::string uuid;
+
+  // Primitives
+  if (is_primitive (name))
+    return name;
 
   // rc. --> context.config
-  if (len > 3 &&
+  else if (len > 3 &&
       name.substr (0, 3) == "rc.")
   {
     return context.config.get (name.substr (3));
   }
 
+  // context.*
   else if (len > 8 &&
            name.substr (0, 8) == "context.")
   {
@@ -103,8 +135,25 @@ const std::string DOM::get (const std::string& name)
       throw std::string ("DOM: Cannot get unrecognized name '") + name + "'.";
   }
 
-  // TODO <id>.
-  // TODO <uuid>.
+  // <id>.<name>
+  else if (n.getInt (id))
+  {
+    if (n.skip ('.'))
+    {
+      std::string ref;
+      n.getUntilEOS (ref);
+
+      if (ref == "description")
+        ;
+        // TODO return task.get ("description");
+    }
+  }
+
+  // TODO <uuid>.<name>
+  else if (n.getUUID (uuid))
+  {
+  }
+
   // TODO report.
   // TODO stats.<name>
 
@@ -167,4 +216,29 @@ void DOM::set (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO This should return a Variant.
+bool DOM::is_primitive (const std::string& input)
+{
+  std::string s;
+  double d;
+  int i;
 
+  // String?
+  Nibbler n (input);
+  if (n.getQuoted ('"', s) && n.depleted ())
+    return true;
+
+  // Number?
+  n = Nibbler (input);
+  if (n.getNumber (d) && n.depleted ())
+    return true;
+
+  // Integer?
+  n = Nibbler (input);
+  if (n.getInt (i) && n.depleted ())
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////

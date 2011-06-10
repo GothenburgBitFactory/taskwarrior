@@ -189,15 +189,6 @@ void Arguments::categorize ()
   std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-/*
-    std::cout << "# " << leftJustify (arg->first, 36)
-              << " found_command=" << (found_command ? "true " : "false")
-              << " found_sequence=" << (found_sequence ? "true " : "false")
-              << " found_something_after_sequence=" << (found_something_after_sequence ? "true " : "false")
-              << " found_non_sequence=" << (found_non_sequence ? "true " : "false")
-              << "\n";
-*/
-
     if (!terminated)
     {
       // Nothing after -- is to be interpreted in any way.
@@ -545,7 +536,7 @@ std::vector <std::string> Arguments::list ()
 std::vector <std::string> Arguments::operator_list ()
 {
   std::vector <std::string> all;
-  for (int i = 0; i < NUM_OPERATORS; ++i)
+  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
     all.push_back (operators[i].op);
 
   return all;
@@ -628,6 +619,7 @@ bool Arguments::is_attr (const std::string& input)
           n.getUntilEOS (value)       ||
           n.depleted ())
       {
+        // TODO Validate and expand attribute name
         return true;
       }
     }
@@ -675,6 +667,8 @@ bool Arguments::is_attmod (const std::string& input)
           n.getUntilEOS (value)       ||
           n.depleted ())
       {
+        // TODO Validate and expand attribute name
+        // TODO Validate and expand modifier name
         return true;
       }
     }

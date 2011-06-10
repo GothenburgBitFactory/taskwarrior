@@ -41,6 +41,7 @@ public:
   void set (const std::string&, const std::string&);
 
 private:
+  bool is_primitive (const std::string&);
 };
 
 #endif

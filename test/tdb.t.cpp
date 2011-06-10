@@ -38,8 +38,9 @@ void get (std::vector <Task>& pending, std::vector <Task>& completed)
   TDB tdb;
   tdb.location (".");
   tdb.lock ();
-  tdb.loadPending   (pending,   context.filter);
-  tdb.loadCompleted (completed, context.filter);
+  Filter filter;
+  tdb.loadPending   (pending,   filter);
+  tdb.loadCompleted (completed, filter);
   tdb.unlock ();
 }
 
@@ -99,7 +100,7 @@ int main (int argc, char** argv)
     completed.clear ();
 
     tdb.lock ();
-    tdb.load (all, context.filter);
+    tdb.load (all, filter);
     all[0].set ("name", "value2");
     tdb.update (all[0]);                                             // P1 C0 N0 M1
     tdb.commit ();                                                   // P1 C0 N0 M0
@@ -117,7 +118,7 @@ int main (int argc, char** argv)
     all.clear ();
 
     tdb.lock ();
-    tdb.loadPending (all, context.filter);
+    tdb.loadPending (all, filter);
     all[0].setStatus (Task::completed);
     tdb.update (all[0]);                                             // P1 C0 N0 M1
     Task t2 ("[foo:\"bar\" status:\"pending\"]");

@@ -38,8 +38,9 @@ void get (std::vector <Task>& pending, std::vector <Task>& completed)
   TDB tdb;
   tdb.location (".");
   tdb.lock ();
-  tdb.loadPending   (pending,   context.filter);
-  tdb.loadCompleted (completed, context.filter);
+  Filter filter;
+  tdb.loadPending   (pending,   filter);
+  tdb.loadCompleted (completed, filter);
   tdb.unlock ();
 }
 
