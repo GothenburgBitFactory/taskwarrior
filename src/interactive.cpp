@@ -25,11 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <Context.h>
 #include <main.h>
+#include <text.h>
 #include <i18n.h>
 #include <cmake.h>
 
@@ -58,9 +61,7 @@ int Context::getWidth ()
         terminal_height = buff[0];
         terminal_width = buff[1];
 
-        std::stringstream out;
-        out << "Context::getWidth: determined width of " << terminal_width << " characters";
-        debug (out.str ());
+        debug (format ("Context::getWidth: determined width of {1} characters", terminal_width));
       }
     }
 
@@ -92,9 +93,7 @@ int Context::getHeight ()
         terminal_height = buff[0];
         terminal_width = buff[1];
 
-        std::stringstream out;
-        out << "Context::getWidth: determined height of " << terminal_height << " characters";
-        debug (out.str ());
+        debug (format ("Context::getHeight: determined height of {1} characters", terminal_height));
       }
     }
 

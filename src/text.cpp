@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <algorithm>
 #include <iostream>
 #include <sstream>
@@ -37,6 +39,7 @@
 #include <util.h>
 #include <text.h>
 #include <utf8.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -494,11 +497,7 @@ void guess (
   {
     std::sort (matches.begin (), matches.end ());
 
-    std::string error = "Ambiguous "; // TODO i18n
-    error += type;
-    error += " '";
-    error += candidate;
-    error += "' - could be either of "; // TODO i18n
+    std::string error = format (STRING_TEXT_AMBIGUOUS, type, candidate);
     for (size_t i = 0; i < matches.size (); ++i)
     {
       if (i)

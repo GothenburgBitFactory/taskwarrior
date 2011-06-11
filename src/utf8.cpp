@@ -25,8 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <string>
 #include <utf8.h>
+#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Converts '0'     -> 0
@@ -65,7 +68,7 @@ unsigned int utf8_codepoint (const std::string& input)
                 XDIGIT (input[3]);
   }
   else
-    throw std::string ("Invalid codepoint representation.");
+    throw std::string (STRING_UTF8_INVALID_CP_REP);
 
   return codepoint;
 }
@@ -144,7 +147,7 @@ std::string utf8_character (unsigned int codepoint)
     sequence[4] = 0;
   }
   else
-    throw std::string ("Invalid Unicode codepoint.");
+    throw std::string (STRING_UTF8_INVALID_CP);
 
   sequence[4] = '\0';
   return std::string (sequence);

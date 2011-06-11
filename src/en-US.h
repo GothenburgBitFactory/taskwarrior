@@ -86,28 +86,6 @@
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
 
-// Errors
-#define STRING_UNKNOWN_ERROR         "Unknown error."
-#define STRING_NO_HOME               "Could not read home directory from the passwd file."
-#define STRING_TAGS_NO_COMMAS        "Tags are not permitted to contain commas."
-#define STRING_TRIVIAL_INPUT         "You must specify a command, or a task ID to modify."
-#define STRING_ASSUME_INFO           "No command - assuming 'info'"
-
-// 'show' command
-#define STRING_CMD_SHOW              "Shows the entire task configuration variables or the ones containing substring."
-#define STRING_CMD_SHOW_ARGS         "You can only specify 'all' or a search string."
-#define STRING_CMD_SHOW_NONE         "No matching configuration variables."
-#define STRING_CMD_SHOW_UNREC        "Your .taskrc file contains these unrecognized variables:"
-#define STRING_CMD_SHOW_DIFFER       "Some of your .taskrc variables differ from the default values."
-#define STRING_CMD_SHOW_HOOKS        "Your .taskrc file contains these missing or unreadable hook scripts:"
-#define STRING_CMD_SHOW_EMPTY        "Configuration error: .taskrc contains no entries."
-#define STRING_CMD_SHOW_DIFFER_COLOR "These are highlighted in {1} above."
-#define STRING_CMD_SHOW_CONFIG_ERROR "Configuration error: {1} contains an unrecognized value '{2}'."
-#define STRING_CMD_SHOW_NO_LOCATION  "Configuration error: data.location not specified in .taskrc file."
-#define STRING_CMD_SHOW_LOC_EXIST    "Configuration error: data.location contains a directory name that doesn't exist, or is unreadable."
-#define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
-#define STRING_CMD_SHOW_CONF_VALUE   "Value"
-
 // API
 #define STRING_API_EXITING           "Exiting."
 #define STRING_API_NOFUNC            "The Lua function '{1}' was not found."
@@ -129,9 +107,44 @@
 #define STRING_DOM_UNREC             "DOM: Cannot get unrecognized name '{1}'."
 #define STRING_DOM_CANNOT_SET        "DOM: Cannot set '{1}'."
 
+// Errors
+// TODO Move each of these to appropriate section.
+#define STRING_UNKNOWN_ERROR         "Unknown error."
+#define STRING_NO_HOME               "Could not read home directory from the passwd file."
+#define STRING_TAGS_NO_COMMAS        "Tags are not permitted to contain commas."
+#define STRING_TRIVIAL_INPUT         "You must specify a command, or a task ID to modify."
+#define STRING_ASSUME_INFO           "No command - assuming 'info'"
+
+// File
+#define STRING_FILE_PERMS            "Task does not have the correct permissions for '{1}'."
+
 // Lua
 #define STRING_LUA_BAD_HOOK_DEF      "Malformed hook definition '{1}'."
 #define STRING_LUA_BAD_EVENT         "Unrecognized hook event '{1}'."
+
+// 'show' command
+#define STRING_CMD_SHOW              "Shows the entire task configuration variables or the ones containing substring."
+#define STRING_CMD_SHOW_ARGS         "You can only specify 'all' or a search string."
+#define STRING_CMD_SHOW_NONE         "No matching configuration variables."
+#define STRING_CMD_SHOW_UNREC        "Your .taskrc file contains these unrecognized variables:"
+#define STRING_CMD_SHOW_DIFFER       "Some of your .taskrc variables differ from the default values."
+#define STRING_CMD_SHOW_HOOKS        "Your .taskrc file contains these missing or unreadable hook scripts:"
+#define STRING_CMD_SHOW_EMPTY        "Configuration error: .taskrc contains no entries."
+#define STRING_CMD_SHOW_DIFFER_COLOR "These are highlighted in {1} above."
+#define STRING_CMD_SHOW_CONFIG_ERROR "Configuration error: {1} contains an unrecognized value '{2}'."
+#define STRING_CMD_SHOW_NO_LOCATION  "Configuration error: data.location not specified in .taskrc file."
+#define STRING_CMD_SHOW_LOC_EXIST    "Configuration error: data.location contains a directory name that doesn't exist, or is unreadable."
+#define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
+#define STRING_CMD_SHOW_CONF_VALUE   "Value"
+
+// text
+                                     // A comma-separated list of commands is appended.
+#define STRING_TEXT_AMBIGUOUS        "Ambiguous {1} '{2}' - could be either of "
+
+// utf8
+#define STRING_UTF8_INVALID_CP_REP   "Invalid codepoint representation."
+#define STRING_UTF8_INVALID_CP       "Invalid Unicode codepoint."
+
 
 #endif
 

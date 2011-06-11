@@ -76,7 +76,7 @@ const std::string format (const std::string&, const std::string&);
 const std::string format (const std::string&, int);
 const std::string format (const std::string&, const std::string&, const std::string&);
 const std::string format (const std::string&, const std::string&, int);
-const std::string format (const std::string&, int, const std::string& arg2);
+const std::string format (const std::string&, int, const std::string&);
 const std::string format (const std::string&, int, int);
 const std::string format (const std::string&, const std::string&, const std::string&, const std::string&);
 

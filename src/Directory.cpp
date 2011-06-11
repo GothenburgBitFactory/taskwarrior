@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>

@@ -25,13 +25,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <fstream>
 #include <sys/types.h>
 #include <sys/file.h>
 #include <pwd.h>
 #include <unistd.h>
 #include <File.h>
+#include <text.h>
 #include <util.h>
+#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 File::File ()
@@ -107,8 +111,7 @@ bool File::open ()
     bool already_exists = exists ();
     if (already_exists)
       if (!readable () || !writable ())
-        throw std::string ("Task does not have the correct permissions for '") +
-              data + "'.";
+        throw std::string (format (STRING_FILE_PERMS, data));
 
     fh = fopen (data.c_str (), (already_exists ? "r+" : "w+"));
     if (fh)
