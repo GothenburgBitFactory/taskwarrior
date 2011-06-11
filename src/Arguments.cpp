@@ -233,7 +233,7 @@ void Arguments::categorize ()
         arg->second = "rc";
       }
 
-      // rc.<name>[:=]<value>
+      // rc.<name>:<value>
       else if (arg->first.substr (0, 3) == "rc.")
       {
         found_non_sequence = true;
@@ -281,7 +281,7 @@ void Arguments::categorize ()
         arg->second = "tag";
       }
 
-      // <name>.<modifier>[:=]<value>
+      // <name>.<modifier>:<value>
       else if (is_attmod (arg->first))
       {
         found_non_sequence = true;
@@ -291,7 +291,7 @@ void Arguments::categorize ()
         arg->second = "attmod";
       }
 
-      // <name>[:=]<value>
+      // <name>:<value>
       else if (is_attr (arg->first))
       {
         found_non_sequence = true;
@@ -427,7 +427,7 @@ void Arguments::rc_override (
       else
         home = ".";
 
-      context.header ("Using alternate .taskrc file " + rc.data); // TODO i18n
+      context.header ("Using alternate .taskrc file " + rc.data);
 
       // Keep scanning, because if there are multiple rc:file arguments, we
       // want the last one to dominate.
@@ -449,10 +449,10 @@ void Arguments::get_data_location (std::string& data)
     if (arg->second == "override")
     {
       if (arg->first.substr (0, 16) == "rc.data.location" &&
-               (arg->first[16] == ':' || arg->first[16] == '='))
+          arg->first[16] == ':')
       {
         data = arg->first.substr (17);
-        context.header ("Using alternate data.location " + data); // TODO i18n
+        context.header ("Using alternate data.location " + data);
       }
     }
 
@@ -474,14 +474,14 @@ void Arguments::apply_overrides ()
       std::string name;
       std::string value;
       Nibbler n (arg->first);
-      if (n.getLiteral ("rc.")         &&  // rc.
-          n.getUntilOneOf (":=", name) &&  //    xxx
-          n.skipN (1))                     //       :
-      {
+      if (n.getLiteral ("rc.")   &&  // rc.
+          n.getUntil (':', name) &&  //    xxx
+          n.skip (':'))              //       :
+       {
         n.getUntilEOS (value);  // May be blank.
 
         context.config.set (name, value);
-        context.footnote ("Configuration override rc." + name + "=" + value);
+        context.footnote ("Configuration override rc." + name + ":" + value);
       }
       else
         context.footnote ("Problem with override: " + arg->first);
@@ -606,7 +606,7 @@ bool Arguments::is_command (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <name>[:=]['"][<value>]['"]
+// <name>:['"][<value>]['"]
 bool Arguments::is_attr (const std::string& input)
 {
   Nibbler n (input);
@@ -621,8 +621,7 @@ bool Arguments::is_attr (const std::string& input)
     if (name.find_first_of (non_word_chars) != std::string::npos)
       return false;
 
-    if (n.skip (':') ||
-        n.skip ('='))
+    if (n.skip (':'))
     {
       // Exclude certain URLs, that look like attrs.
       if (input.find ('@') <= n.cursor () ||
@@ -647,7 +646,7 @@ bool Arguments::is_attr (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <name>.<mod>[:=]['"]<value>['"]
+// <name>.<mod>:['"]<value>['"]
 bool Arguments::is_attmod (const std::string& input)
 {
   Nibbler n (input);
@@ -666,14 +665,13 @@ bool Arguments::is_attmod (const std::string& input)
     if (n.skip ('.'))
     {
       n.skip ('~');
-      n.getUntilOneOf (":=", modifier);
+      n.getUntil (':', modifier);
 
       if (modifier.length () == 0)
         return false;
     }
 
-    if (n.skip (':') ||
-        n.skip ('='))
+    if (n.skip (':'))
     {
       // Exclude certain URLs, that look like attrs.
       if (input.find ('@') <= n.cursor () ||
@@ -688,6 +686,8 @@ bool Arguments::is_attmod (const std::string& input)
           n.getUntilEOS (value)       ||
           n.depleted ())
       {
+        return ! is_expression (value);
+
         // TODO Validate and expand attribute name
         // TODO Validate and expand modifier name
         return true;
@@ -700,6 +700,12 @@ bool Arguments::is_attmod (const std::string& input)
 
 ////////////////////////////////////////////////////////////////////////////////
 // /<from>/<to>/[g]
+//
+// Note: one problem with this is that substitutions start with a /, and so any
+//       two-directory absolute path, (or three-level, if the third directory is
+//       named 'g') can be misinterpreted.  To help (but not solve) this, if a
+//       substition exists on the local disk, it is not considered a subst.
+//       This needs to be changed to a better solution.
 bool Arguments::is_subst (const std::string& input)
 {
   std::string from;
@@ -841,16 +847,26 @@ bool Arguments::is_operator (
 ////////////////////////////////////////////////////////////////////////////////
 bool Arguments::is_expression (const std::string& input)
 {
-  Lexer lexer (unquoteText (input));
+  std::string unquoted = unquoteText (input);
+
+  // Look for space-separated operators.
+  std::vector <std::string> tokens;
+  split (tokens, unquoted, ' ');
+  std::vector <std::string>::iterator token;
+  for (token = tokens.begin (); token != tokens.end (); ++token)
+    if (is_operator (*token))
+      return true;
+
+  // Look for cuddled operators.
+  Lexer lexer (unquoted);
   lexer.skipWhitespace (true);
   lexer.coalesceAlpha (true);
   lexer.coalesceDigits (true);
   lexer.coalesceQuoted (true);
 
-  std::vector <std::string> tokens;
+  tokens.clear ();
   lexer.tokenize (tokens);
 
-  std::vector <std::string>::iterator token;
   for (token = tokens.begin (); token != tokens.end (); ++token)
     if (is_operator (*token))
       return true;
@@ -859,7 +875,7 @@ bool Arguments::is_expression (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <name>[:=]['"]<value>['"]
+// <name>:['"]<value>['"]
 bool Arguments::extract_attr (
   const std::string& input,
   std::string& name,
@@ -871,13 +887,12 @@ bool Arguments::extract_attr (
   name  = "";
   value = "";
 
-  if (n.getUntilOneOf ("=:", name))
+  if (n.getUntil (':', name))
   {
     if (name.length () == 0)
-      throw std::string ("Missing attribute name"); // TODO i18n
+      throw std::string ("Missing attribute name");
 
-    if (n.skip (':') ||
-        n.skip ('='))
+    if (n.skip (':'))
     {
       // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
@@ -888,16 +903,16 @@ bool Arguments::extract_attr (
       }
     }
     else
-      throw std::string ("Missing : after attribute name."); // TODO i18n
+      throw std::string ("Missing : after attribute name.");
   }
   else
-    throw std::string ("Missing : after attribute name."); // TODO i18n
+    throw std::string ("Missing : after attribute name.");
 
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <name>.<mod>[:=]['"]<value>['"]
+// <name>.<mod>:['"]<value>['"]
 bool Arguments::extract_attmod (
   const std::string& input,
   std::string& name,
@@ -916,26 +931,25 @@ bool Arguments::extract_attmod (
   if (n.getUntil (".", name))
   {
     if (name.length () == 0)
-      throw std::string ("Missing attribute name"); // TODO i18n
+      throw std::string ("Missing attribute name");
 
     if (n.skip ('.'))
     {
       if (n.skip ('~'))
         sense = "negative";
 
-      if (n.getUntilOneOf (":=", modifier))
+      if (n.getUntil (':', modifier))
       {
         if (!Arguments::valid_modifier (modifier))
-          throw std::string ("The name '") + modifier + "' is not a valid modifier."; // TODO i18n
+          throw std::string ("The name '") + modifier + "' is not a valid modifier.";
       }
       else
-        throw std::string ("Missing . or : after modifier."); // TODO i18n
+        throw std::string ("Missing . or : after modifier.");
     }
     else
-      throw std::string ("Missing modifier."); // TODO i18n
+      throw std::string ("Missing modifier.");
 
-    if (n.skip (':') ||
-        n.skip ('='))
+    if (n.skip (':'))
     {
       // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
@@ -946,10 +960,10 @@ bool Arguments::extract_attmod (
       }
     }
     else
-      throw std::string ("Missing : after attribute name."); // TODO i18n
+      throw std::string ("Missing : after attribute name.");
   }
   else
-    throw std::string ("Missing : after attribute name."); // TODO i18n
+    throw std::string ("Missing : after attribute name.");
 
   return false;
 }
