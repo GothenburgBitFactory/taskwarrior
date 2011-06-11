@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 #include <inttypes.h>
 #include <Nibbler.h>
 #include <rx.h>
@@ -259,6 +260,19 @@ bool Nibbler::getQuoted (
       result += current;
       inescape = false;
     }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getDigit (int& result)
+{
+  if (mCursor < mLength &&
+      isdigit (mInput[mCursor]))
+  {
+    result = mInput[mCursor++] - '0';
+    return true;
   }
 
   return false;
@@ -498,6 +512,78 @@ bool Nibbler::getUUID (std::string& result)
     }
   }
 
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// 19980119T070000Z =  YYYYMMDDThhmmssZ
+bool Nibbler::getDateISO (time_t& t)
+{
+  std::string::size_type i = mCursor;
+
+  if (i < mLength &&
+      mLength - i >= 16)
+  {
+    if (isdigit (mInput[i + 0]) &&
+        isdigit (mInput[i + 1]) &&
+        isdigit (mInput[i + 2]) &&
+        isdigit (mInput[i + 3]) &&
+        isdigit (mInput[i + 4]) &&
+        isdigit (mInput[i + 5]) &&
+        isdigit (mInput[i + 6]) &&
+        isdigit (mInput[i + 7]) &&
+        mInput[i + 8] == 'T' &&
+        isdigit (mInput[i + 9]) &&
+        isdigit (mInput[i + 10]) &&
+        isdigit (mInput[i + 11]) &&
+        isdigit (mInput[i + 12]) &&
+        isdigit (mInput[i + 13]) &&
+        isdigit (mInput[i + 14]) &&
+        mInput[i + 15] == 'Z')
+    {
+      mCursor += 16;
+
+      int year   = (mInput[i + 0] - '0') * 1000
+                 + (mInput[i + 1] - '0') *  100
+                 + (mInput[i + 2] - '0') *   10
+                 + (mInput[i + 3] - '0');
+
+      int month  = (mInput[i + 4] - '0') * 10
+                 + (mInput[i + 5] - '0');
+
+      int day    = (mInput[i + 6] - '0') * 10
+                 + (mInput[i + 7] - '0');
+
+      int hour   = (mInput[i + 9] - '0') * 10
+                 + (mInput[i + 10] - '0');
+
+      int minute = (mInput[i + 11] - '0') * 10
+                 + (mInput[i + 12] - '0');
+
+      int second = (mInput[i + 13] - '0') * 10
+                 + (mInput[i + 14] - '0');
+
+      // Convert to epoch.
+      struct tm tms = {0};
+      tms.tm_isdst = -1;   // Requests that mktime determine summer time effect.
+      tms.tm_mday  = day;
+      tms.tm_mon   = month - 1;
+      tms.tm_year  = year - 1900;
+      tms.tm_hour  = hour;
+      tms.tm_min   = minute;
+      tms.tm_sec   = second;
+
+      t = timegm (&tms);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getDate (const std::string& format, time_t& t)
+{
   return false;
 }
 

@@ -53,6 +53,7 @@ public:
 */
 
   bool getQuoted (char, std::string&, bool quote = false);
+  bool getDigit (int&);
   bool getInt (int&);
   bool getHex (int&);
   bool getUnsignedInt (int&);
@@ -60,6 +61,8 @@ public:
   bool getLiteral (const std::string&);
   bool getRx (const std::string&, std::string&);
   bool getUUID (std::string&);
+  bool getDateISO (time_t&);
+  bool getDate (const std::string&, time_t&);
 
   bool skipN (const int quantity = 1);
   bool skip (char);

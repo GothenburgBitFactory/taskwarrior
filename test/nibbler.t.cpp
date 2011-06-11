@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (171);
+  UnitTest t (185);
 
   try
   {
@@ -41,6 +41,7 @@ int main (int argc, char** argv)
     std::string s;
     int i;
     double d;
+    time_t ti;
 
     // Make sure the nibbler behaves itself with trivial input.
     t.diag ("Test all nibbler calls given empty input");
@@ -53,11 +54,14 @@ int main (int argc, char** argv)
     t.notok (n.skipAll ('x'),            "trivial: skipAll");
     t.notok (n.skipAllOneOf ("abc"),     "trivial: skipAllOneOf");
     t.notok (n.getQuoted ('"', s),       "trivial: getQuoted");
+    t.notok (n.getDigit (i),             "trivial: getDigit");
     t.notok (n.getInt (i),               "trivial: getInt");
     t.notok (n.getHex (i),               "trivial: getHex");
     t.notok (n.getUnsignedInt (i),       "trivial: getUnsignedInt");
     t.notok (n.getUntilEOL (s),          "trivial: getUntilEOL");
     t.notok (n.getUntilEOS (s),          "trivial: getUntilEOS");
+    t.notok (n.getDateISO (ti),          "trivial: getDateISO");
+    t.notok (n.getDate ("YYYYMMDD", ti), "trivial: getDate");
     t.ok    (n.depleted (),              "trivial: depleted");
 
     // bool getUntil (char, std::string&);
@@ -209,6 +213,15 @@ int main (int argc, char** argv)
     t.ok (n.getQuoted ('"', s, true),  "\"one\\\"two\" :      getQuoted ('\"', true,  true)  -> true"); // 93
     t.is (s, "\"one\"two\"", "getQuoted ('\"', true) -> \"one\"two\"");                                 // 94
 
+    // bool getDigit (int&);
+    t.diag ("Nibbler::getDigit");
+    n = Nibbler ("12x");
+    t.ok    (n.getDigit (i),          "     '12x' :         getdigit ()     -> true");
+    t.is    (i, 1,                    "     '12x' :         getdigit ()     -> 1");
+    t.ok    (n.getDigit (i),          "      '2x' :         getdigit ()     -> true");
+    t.is    (i, 2,                    "      '2x' :         getdigit ()     -> 2");
+    t.notok (n.getDigit (i),          "       'x' :         getdigit ()     -> false");
+
     // bool getInt (int&);
     t.diag ("Nibbler::getInt");
     n = Nibbler ("123 -4");
@@ -285,6 +298,18 @@ int main (int argc, char** argv)
     t.ok (n.getUUID (s),                             "uuid 2 -> found");
     t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5", "uuid 2 -> correct");
     t.ok (n.depleted (),                             "depleted");
+
+    // bool getDateISO (time_t&);
+    t.diag ("Nibbler::getDateISO");
+    n = Nibbler ("19980119T070000Z");
+    t.ok    (n.getDateISO (ti),       "'19980119T070000Z': getDateISO ()  -> true");
+    t.is    (ti, 885193200,           "'19980119T070000Z': getDateISO ()  -> 885193200");
+    t.ok    (n.depleted (),           "depleted");
+
+    n = Nibbler ("20090213T233130Z");
+    t.ok    (n.getDateISO (ti),       "'20090213T233130Z': getDateISO ()  -> true");
+    t.is    (ti, 1234567890,          "'20090213T233130Z': getDateISO ()  -> 1234567890");
+    t.ok    (n.depleted (),           "depleted");
 
     // bool getUntilEOL (std::string&);
     t.diag ("Nibbler::getUntilEOL");
