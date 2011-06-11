@@ -442,6 +442,7 @@ void TDB::lock (bool lockFile /* = true */)
   mCompleted.clear ();
   mModified.clear ();
 
+  
   foreach (location, mLocations)
   {
     location->pending   = openAndLock (location->path + "/pending.data");

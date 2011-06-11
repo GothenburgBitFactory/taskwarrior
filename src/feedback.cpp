@@ -45,11 +45,12 @@ bool taskDiff (const Task& before, const Task& after)
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
   std::vector <std::string> beforeAtts;
-  foreach (att, before)
+  std::map <std::string, Att>::const_iterator att;
+  for (att = before.begin (); att != before.end (); ++att)
     beforeAtts.push_back (att->first);
 
   std::vector <std::string> afterAtts;
-  foreach (att, after)
+  for (att = after.begin (); att != after.end (); ++att)
     afterAtts.push_back (att->first);
 
   std::vector <std::string> beforeOnly;
@@ -60,7 +61,8 @@ bool taskDiff (const Task& before, const Task& after)
       afterOnly.size ())
     return true;
 
-  foreach (name, beforeAtts)
+  std::vector <std::string>::iterator name;
+  for (name = beforeAtts.begin (); name != beforeAtts.end (); ++name)
     if (*name              != "uuid" &&
         before.get (*name) != after.get (*name))
       return true;
@@ -74,11 +76,12 @@ std::string taskDifferences (const Task& before, const Task& after)
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
   std::vector <std::string> beforeAtts;
-  foreach (att, before)
+  std::map <std::string, Att>::const_iterator att;
+  for (att = before.begin (); att != before.end (); ++att)
     beforeAtts.push_back (att->first);
 
   std::vector <std::string> afterAtts;
-  foreach (att, after)
+  for (att = after.begin (); att != after.end (); ++att)
     afterAtts.push_back (att->first);
 
   std::vector <std::string> beforeOnly;
@@ -87,12 +90,13 @@ std::string taskDifferences (const Task& before, const Task& after)
 
   // Now start generating a description of the differences.
   std::stringstream out;
-  foreach (name, beforeOnly)
+  std::vector <std::string>::iterator name;
+  for (name = beforeOnly.begin (); name != beforeOnly.end (); ++name)
     out << "  - "
         << ucFirst(*name)
         << " will be deleted.\n";
 
-  foreach (name, afterOnly)
+  for (name = afterOnly.begin (); name != afterOnly.end (); ++name)
   {
     if (*name == "depends")
     {
@@ -115,7 +119,7 @@ std::string taskDifferences (const Task& before, const Task& after)
           << "'.\n";
   }
 
-  foreach (name, beforeAtts)
+  for (name = beforeAtts.begin (); name != beforeAtts.end (); ++name)
     if (*name              != "uuid" &&
         before.get (*name) != after.get (*name))
     {
@@ -162,11 +166,12 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
   std::vector <std::string> beforeAtts;
-  foreach (att, before)
+  std::map <std::string, Att>::const_iterator att;
+  for (att = before.begin (); att != before.end (); ++att)
     beforeAtts.push_back (att->first);
 
   std::vector <std::string> afterAtts;
-  foreach (att, after)
+  for (att = after.begin (); att != after.end (); ++att)
     afterAtts.push_back (att->first);
 
   std::vector <std::string> beforeOnly;
@@ -175,7 +180,8 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
 
   // Now start generating a description of the differences.
   std::stringstream out;
-  foreach (name, beforeOnly)
+  std::vector <std::string>::iterator name;
+  for (name = beforeOnly.begin (); name != beforeOnly.end (); ++name)
   {
     if (*name == "depends")
     {
@@ -201,7 +207,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
     }
   }
 
-  foreach (name, afterOnly)
+  for (name = afterOnly.begin (); name != afterOnly.end (); ++name)
   {
     if (*name == "depends")
     {
@@ -228,7 +234,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
           << "'.\n";
   }
 
-  foreach (name, beforeAtts)
+  for (name = beforeAtts.begin (); name != beforeAtts.end (); ++name)
     if (*name              != "uuid" &&
         before.get (*name) != after.get (*name) &&
         before.get (*name) != "" && after.get (*name) != "")

@@ -134,7 +134,8 @@ static bool followUpstream (
 {
   std::vector <Task> blocking;
   dependencyGetBlocking (task, blocking);
-  foreach (b, blocking)
+  std::vector <Task>::iterator b;
+  for (b = blocking.begin (); b != blocking.end (); ++b)
   {
     std::string link = task.get ("uuid") + " -> " + b->get ("uuid");
 
@@ -200,7 +201,8 @@ void dependencyChainOnComplete (Task& task)
     if (context.config.getBoolean ("dependency.reminder"))
     {
       std::cout << "Task " << task.id << " is blocked by:\n";
-      foreach (b, blocking)
+      std::vector <Task>::iterator b;
+      for (b = blocking.begin (); b != blocking.end (); ++b)
         std::cout << "  " << b->id << " " << b->get ("description") << "\n";
     }
 
@@ -210,7 +212,8 @@ void dependencyChainOnComplete (Task& task)
       if (context.config.getBoolean ("dependency.reminder"))
       {
         std::cout << "and is blocking:\n";
-        foreach (b, blocked)
+        std::vector <Task>::iterator b;
+        for (b = blocked.begin (); b != blocked.end (); ++b)
           std::cout << "  " << b->id << " " << b->get ("description") << "\n";
       }
 
@@ -219,19 +222,21 @@ void dependencyChainOnComplete (Task& task)
       {
         // Repair the chain - everything in blocked should now depend on
         // everything in blocking, instead of task.id.
-        foreach (left, blocked)
+        std::vector <Task>::iterator left;
+        std::vector <Task>::iterator right;
+        for (left = blocked.begin (); left != blocked.end (); ++left)
         {
           left->removeDependency (task.id);
 
-          foreach (right, blocking)
+          for (right = blocking.begin (); right != blocking.end (); ++right)
             left->addDependency (right->id);
         }
 
         // Now update TDB, now that the updates have all occurred.
-        foreach (left, blocked)
+        for (left = blocked.begin (); left != blocked.end (); ++left)
           context.tdb.update (*left);
 
-        foreach (right, blocking)
+        for (right = blocking.begin (); right != blocking.end (); ++right)
           context.tdb.update (*right);
       }
     }
@@ -251,7 +256,8 @@ void dependencyChainOnStart (Task& task)
     if (blocking.size ())
     {
       std::cout << "Task " << task.id << " is blocked by:\n";
-      foreach (b, blocking)
+      std::vector <Task>::iterator b;
+      for (b = blocking.begin (); b != blocking.end (); ++b)
         std::cout << "  " << b->id << " " << b->get ("description") << "\n";
     }
   }
@@ -293,7 +299,8 @@ void dependencyChainOnModify (Task& before, Task& after)
     std::vector <Task> blocked;
     dependencyGetBlocked (after, blocked);
 
-    foreach (b, blocked)
+    std::vector <Task>::iterator b;
+    for (b = blocked.begin (); b != blocked.end (); ++b)
     {
       std::cout << "# dependencyChainOnModify\n";
     }
