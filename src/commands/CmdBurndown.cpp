@@ -32,6 +32,7 @@
 #include <Context.h>
 #include <Date.h>
 #include <Duration.h>
+#include <Expression.h>
 #include <main.h>
 #include <CmdBurndown.h>
 
@@ -392,8 +393,8 @@ void Chart::scan (std::vector <Task>& tasks)
 //   |      21 22 23 24 25 26 27 28 29 30 31 01 02 03 04 05 06             |
 //   |      July                             August                        |
 //   |                                                                     |
-//   |      Find rate 1.7/d      Estimated completion 8/12/2010            |
-//   |      Fix rate  1.3/d                                                |
+//   |      Add rate 1.7/d           Estimated completion 8/12/2010        |
+//   |      Don/Delete rate  1.3/d                                         |
 //   +---------------------------------------------------------------------+
 std::string Chart::render ()
 {
@@ -522,14 +523,14 @@ std::string Chart::render ()
   else
     strcpy (rate, "-");
 
-  grid.replace (LOC (height - 2, max_label + 3), 11 + strlen (rate), std::string ("Find rate: ") + rate);
+  grid.replace (LOC (height - 2, max_label + 3), 11 + strlen (rate), std::string ("Add rate: ") + rate);
 
   if (fix_rate != 0.0)
     sprintf (rate, "%.1f/d", fix_rate);
   else
     strcpy (rate, "-");
 
-  grid.replace (LOC (height - 1, max_label + 3), 11 + strlen (rate), std::string ("Fix rate:  ") + rate);
+  grid.replace (LOC (height - 1, max_label + 3), 11 + strlen (rate), std::string ("Done/Delete rate:  ") + rate);
 
   // Draw completion date.
   if (completion.length ())
@@ -982,43 +983,39 @@ int CmdBurndownMonthly::execute (std::string& output)
 {
   int rc = 0;
 
-/*
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
+
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('M');
 
   // Use any filter as a title.
-  if (context.filter.size ())
+  if (context.args.size () > 2)
   {
-    std::string combined = "(";
-
-    for (unsigned int i = 0; i < context.filter.size (); ++i)
-    {
-      if (i)
-        combined += " ";
-
-      combined += context.filter[i].name ();
-
-      if (context.filter[i].mod ().length ())
-        combined += "." + context.filter[i].mod ();
-
-      combined += ":" + context.filter[i].value ();
-    }
-
-    combined += ")";
+    std::string combined = "("
+                         + context.args.extract_read_only_filter ().combine ()
+                         + ")";
     chart.description (combined);
   }
 
-  chart.scan (tasks);
+  chart.scan (filtered);
   output = chart.render ();
-*/
   return rc;
 }
 
@@ -1037,43 +1034,39 @@ int CmdBurndownWeekly::execute (std::string& output)
 {
   int rc = 0;
 
-/*
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
+
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('W');
 
   // Use any filter as a title.
-  if (context.filter.size ())
+  if (context.args.size () > 2)
   {
-    std::string combined = "(";
-
-    for (unsigned int i = 0; i < context.filter.size (); ++i)
-    {
-      if (i)
-        combined += " ";
-
-      combined += context.filter[i].name ();
-
-      if (context.filter[i].mod ().length ())
-        combined += "." + context.filter[i].mod ();
-
-      combined += ":" + context.filter[i].value ();
-    }
-
-    combined += ")";
+    std::string combined = "("
+                         + context.args.extract_read_only_filter ().combine ()
+                         + ")";
     chart.description (combined);
   }
 
-  chart.scan (tasks);
+  chart.scan (filtered);
   output = chart.render ();
-*/
   return rc;
 }
 
@@ -1092,43 +1085,39 @@ int CmdBurndownDaily::execute (std::string& output)
 {
   int rc = 0;
 
-/*
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
+
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('D');
 
   // Use any filter as a title.
-  if (context.filter.size ())
+  if (context.args.size () > 2)
   {
-    std::string combined = "(";
-
-    for (unsigned int i = 0; i < context.filter.size (); ++i)
-    {
-      if (i)
-        combined += " ";
-
-      combined += context.filter[i].name ();
-
-      if (context.filter[i].mod ().length ())
-        combined += "." + context.filter[i].mod ();
-
-      combined += ":" + context.filter[i].value ();
-    }
-
-    combined += ")";
+    std::string combined = "("
+                         + context.args.extract_read_only_filter ().combine ()
+                         + ")";
     chart.description (combined);
   }
 
-  chart.scan (tasks);
+  chart.scan (filtered);
   output = chart.render ();
-*/
   return rc;
 }
 

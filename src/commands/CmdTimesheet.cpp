@@ -28,6 +28,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
+#include <Expression.h>
 #include <ViewText.h>
 #include <Date.h>
 #include <main.h>
@@ -50,14 +51,24 @@ int CmdTimesheet::execute (std::string& output)
 {
   int rc = 0;
 
-/*
   // Scan the pending tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
+
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
 
   // Just do this once.
   int width = context.getWidth ();
@@ -79,8 +90,11 @@ int CmdTimesheet::execute (std::string& output)
 
   // Determine how many reports to run.
   int quantity = 1;
+/*
+  TODO Need some command line parsing.
   if (context.sequence.size () == 1)
     quantity = context.sequence[0];
+*/
 
   std::stringstream out;
   for (int week = 0; week < quantity; ++week)
@@ -105,8 +119,7 @@ int CmdTimesheet::execute (std::string& output)
     completed.add (Column::factory ("string.right", "Due"));
     completed.add (Column::factory ("string", "Description"));
 
-    std::vector <Task>::iterator task;
-    for (task = tasks.begin (); task != tasks.end (); ++task)
+    for (task = filtered.begin (); task != filtered.end (); ++task)
     {
       // If task completed within range.
       if (task->getStatus () == Task::completed)
@@ -143,7 +156,7 @@ int CmdTimesheet::execute (std::string& output)
     started.add (Column::factory ("string.right", "Due"));
     started.add (Column::factory ("string", "Description"));
 
-    for (task = tasks.begin (); task != tasks.end (); ++task)
+    for (task = filtered.begin (); task != filtered.end (); ++task)
     {
       // If task started within range, but not completed withing range.
       if (task->getStatus () == Task::pending &&
@@ -180,7 +193,6 @@ int CmdTimesheet::execute (std::string& output)
   }
 
   output = out.str ();
-*/
   return rc;
 }
 

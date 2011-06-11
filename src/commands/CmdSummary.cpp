@@ -30,6 +30,7 @@
 #include <Context.h>
 #include <ViewText.h>
 #include <Duration.h>
+#include <Expression.h>
 #include <text.h>
 #include <main.h>
 #include <CmdSummary.h>
@@ -54,19 +55,28 @@ int CmdSummary::execute (std::string& output)
 {
   int rc = 0;
 
-/*
   // Scan the pending tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Generate unique list of project names from all pending tasks.
-  std::map <std::string, bool> allProjects;
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
   std::vector <Task>::iterator task;
   for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
+  // Generate unique list of project names from all pending tasks.
+  std::map <std::string, bool> allProjects;
+  for (task = filtered.begin (); task != filtered.end (); ++task)
     if (task->getStatus () == Task::pending)
       allProjects[task->get ("project")] = false;
 
@@ -88,7 +98,7 @@ int CmdSummary::execute (std::string& output)
   }
 
   // Count the various tasks.
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     std::string project = task->get ("project");
     ++counter[project];
@@ -176,7 +186,6 @@ int CmdSummary::execute (std::string& output)
   }
 
   output = out.str ();
-*/
   return rc;
 }
 

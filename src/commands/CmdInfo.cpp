@@ -28,6 +28,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
+#include <Expression.h>
 #include <Date.h>
 #include <Duration.h>
 #include <ViewText.h>
@@ -51,17 +52,24 @@ int CmdInfo::execute (std::string& output)
 {
   int rc = 0;
 
-/*
   // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, context.filter);
+  Filter filter;
+  context.tdb.loadPending (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter sequence.
-  context.filter.applySequence (tasks, context.sequence);
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
 
   // Read the undo file.
   std::vector <std::string> undo;
@@ -74,8 +82,7 @@ int CmdInfo::execute (std::string& output)
 
   // Find the task.
   std::stringstream out;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     ViewText view;
     view.width (context.getWidth ());
@@ -391,14 +398,13 @@ int CmdInfo::execute (std::string& output)
           << "\n";
   }
 
-  if (! tasks.size ())
+  if (! filtered.size ())
   {
     out << "No matches.\n";
     rc = 1;
   }
 
   output = out.str ();
-*/
   return rc;
 }
 

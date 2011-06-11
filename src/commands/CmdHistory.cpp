@@ -27,6 +27,7 @@
 
 #include <sstream>
 #include <Context.h>
+#include <Expression.h>
 #include <ViewText.h>
 #include <main.h>
 #include <text.h>
@@ -48,7 +49,7 @@ CmdHistoryMonthly::CmdHistoryMonthly ()
 int CmdHistoryMonthly::execute (std::string& output)
 {
   int rc = 0;
-/*
+
   std::map <time_t, int> groups;          // Represents any month with data
   std::map <time_t, int> addedGroup;      // Additions by month
   std::map <time_t, int> completedGroup;  // Completions by month
@@ -58,12 +59,22 @@ int CmdHistoryMonthly::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
   std::vector <Task>::iterator task;
   for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Date entry (task->get ("entry"));
 
@@ -188,7 +199,6 @@ int CmdHistoryMonthly::execute (std::string& output)
   }
 
   output = out.str ();
-*/
   return rc;
 }
 
@@ -206,7 +216,6 @@ CmdHistoryAnnual::CmdHistoryAnnual ()
 int CmdHistoryAnnual::execute (std::string& output)
 {
   int rc = 0;
-/*
   std::map <time_t, int> groups;          // Represents any month with data
   std::map <time_t, int> addedGroup;      // Additions by month
   std::map <time_t, int> completedGroup;  // Completions by month
@@ -216,12 +225,22 @@ int CmdHistoryAnnual::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
   std::vector <Task>::iterator task;
   for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Date entry (task->get ("entry"));
 
@@ -343,7 +362,6 @@ int CmdHistoryAnnual::execute (std::string& output)
   }
 
   output = out.str ();
-*/
   return rc;
 }
 
@@ -361,7 +379,6 @@ CmdGHistoryMonthly::CmdGHistoryMonthly ()
 int CmdGHistoryMonthly::execute (std::string& output)
 {
   int rc = 0;
-/*
   std::map <time_t, int> groups;          // Represents any month with data
   std::map <time_t, int> addedGroup;      // Additions by month
   std::map <time_t, int> completedGroup;  // Completions by month
@@ -371,12 +388,22 @@ int CmdGHistoryMonthly::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
   std::vector <Task>::iterator task;
   for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Date entry (task->get ("entry"));
 
@@ -541,7 +568,6 @@ int CmdGHistoryMonthly::execute (std::string& output)
   }
 
   output = out.str ();
-*/
   return rc;
 }
 
@@ -559,7 +585,6 @@ CmdGHistoryAnnual::CmdGHistoryAnnual ()
 int CmdGHistoryAnnual::execute (std::string& output)
 {
   int rc = 0;
-/*
   std::map <time_t, int> groups;          // Represents any month with data
   std::map <time_t, int> addedGroup;      // Additions by month
   std::map <time_t, int> completedGroup;  // Completions by month
@@ -569,12 +594,22 @@ int CmdGHistoryAnnual::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
   std::vector <Task>::iterator task;
   for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Date entry (task->get ("entry"));
 
@@ -736,7 +771,6 @@ int CmdGHistoryAnnual::execute (std::string& output)
   }
 
   output = out.str ();
-*/
   return rc;
 }
 

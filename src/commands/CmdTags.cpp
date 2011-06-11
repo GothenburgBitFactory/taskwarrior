@@ -29,6 +29,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <Context.h>
+#include <Expression.h>
 #include <ViewText.h>
 #include <CmdTags.h>
 #include <text.h>
@@ -49,28 +50,37 @@ CmdTags::CmdTags ()
 int CmdTags::execute (std::string& output)
 {
   int rc = 0;
-/*
   std::stringstream out;
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   int quantity = 0;
+  Filter filter;
   if (context.config.getBoolean ("list.all.tags"))
-    quantity += context.tdb.load (tasks, context.filter);
+    quantity += context.tdb.load (tasks, filter);
   else
-    quantity += context.tdb.loadPending (tasks, context.filter);
+    quantity += context.tdb.loadPending (tasks, filter);
 
   context.tdb.commit ();
   context.tdb.unlock ();
 
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
   std::map <std::string, int> unique;
-  std::vector <Task>::iterator t;
-  for (t = tasks.begin (); t != tasks.end (); ++t)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     std::vector <std::string> tags;
-    t->getTags (tags);
+    task->getTags (tags);
 
     std::vector <std::string>::iterator tag;
     for (tag = tags.begin (); tag != tags.end (); ++tag)
@@ -118,7 +128,6 @@ int CmdTags::execute (std::string& output)
   }
 
   output = out.str ();
-*/
   return rc;
 }
 
@@ -135,7 +144,6 @@ CmdCompletionTags::CmdCompletionTags ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionTags::execute (std::string& output)
 {
-/*
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
 
@@ -148,11 +156,20 @@ int CmdCompletionTags::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
   // Scan all the tasks for their tags, building a map using tag
   // names as keys.
   std::map <std::string, int> unique;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     std::vector <std::string> tags;
     task->getTags (tags);
@@ -176,7 +193,6 @@ int CmdCompletionTags::execute (std::string& output)
     out << it->first << "\n";
 
   output = out.str ();
-*/
   return 0;
 }
 

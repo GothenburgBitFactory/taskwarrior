@@ -28,6 +28,7 @@
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
+#include <Expression.h>
 #include <main.h>
 #include <util.h>
 #include <CmdIDs.h>
@@ -47,25 +48,33 @@ CmdIDs::CmdIDs ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdIDs::execute (std::string& output)
 {
-/*
   // Scan the pending tasks, applying any filter.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Find number of matching tasks.
-  std::vector <int> ids;
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
   std::vector <Task>::iterator task;
   for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
+  // Find number of matching tasks.
+  std::vector <int> ids;
+  for (task = filtered.begin (); task != filtered.end (); ++task)
     if (task->id)
       ids.push_back (task->id);
 
   std::sort (ids.begin (), ids.end ());
   output = compressIds (ids) + "\n";
-*/
   return 0;
 }
 
@@ -89,9 +98,18 @@ int CmdCompletionIds::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  std::vector <int> ids;
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
   std::vector <Task>::iterator task;
   for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
+  std::vector <int> ids;
+  for (task = filtered.begin (); task != filtered.end (); ++task)
     if (task->getStatus () != Task::deleted &&
         task->getStatus () != Task::completed)
       ids.push_back (task->id);
@@ -127,9 +145,18 @@ int CmdZshCompletionIds::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  std::stringstream out;
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
   std::vector <Task>::iterator task;
   for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
+  std::stringstream out;
+  for (task = filtered.begin (); task != filtered.end (); ++task)
     if (task->getStatus () != Task::deleted &&
         task->getStatus () != Task::completed)
       out << task->id

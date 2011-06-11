@@ -31,6 +31,7 @@
 #include <ViewText.h>
 #include <Duration.h>
 #include <Context.h>
+#include <Expression.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>
@@ -42,7 +43,7 @@ extern Context context;
 CmdStatistics::CmdStatistics ()
 {
   _keyword     = "stats";
-  _usage       = "task stats";
+  _usage       = "task stats [<filter>]";
   _description = "Shows task database statistics.";
   _read_only   = true;
   _displays_id = false;
@@ -52,7 +53,6 @@ CmdStatistics::CmdStatistics ()
 int CmdStatistics::execute (std::string& output)
 {
   int rc = 0;
-/*
   std::stringstream out;
 
   // Go get the file sizes.
@@ -80,9 +80,20 @@ int CmdStatistics::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
+
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
 
   Date now;
   time_t earliest   = time (NULL);
@@ -100,44 +111,43 @@ int CmdStatistics::execute (std::string& output)
   std::map <std::string, int> allTags;
   std::map <std::string, int> allProjects;
 
-  std::vector <Task>::iterator it;
-  for (it = tasks.begin (); it != tasks.end (); ++it)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     ++totalT;
-    if (it->getStatus () == Task::deleted)   ++deletedT;
-    if (it->getStatus () == Task::pending)   ++pendingT;
-    if (it->getStatus () == Task::completed) ++completedT;
-    if (it->getStatus () == Task::recurring) ++recurringT;
-    if (it->getStatus () == Task::waiting)   ++waitingT;
+    if (task->getStatus () == Task::deleted)   ++deletedT;
+    if (task->getStatus () == Task::pending)   ++pendingT;
+    if (task->getStatus () == Task::completed) ++completedT;
+    if (task->getStatus () == Task::recurring) ++recurringT;
+    if (task->getStatus () == Task::waiting)   ++waitingT;
 
-    time_t entry = strtol (it->get ("entry").c_str (), NULL, 10);
+    time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
-    if (it->getStatus () == Task::completed)
+    if (task->getStatus () == Task::completed)
     {
-      time_t end = strtol (it->get ("end").c_str (), NULL, 10);
+      time_t end = strtol (task->get ("end").c_str (), NULL, 10);
       daysPending += (end - entry) / 86400.0;
     }
 
-    if (it->getStatus () == Task::pending)
+    if (task->getStatus () == Task::pending)
       daysPending += (now.toEpoch () - entry) / 86400.0;
 
-    descLength += it->get ("description").length ();
+    descLength += task->get ("description").length ();
 
     std::vector <Att> annotations;
-    it->getAnnotations (annotations);
+    task->getAnnotations (annotations);
     annotationsT += annotations.size ();
 
     std::vector <std::string> tags;
-    it->getTags (tags);
+    task->getTags (tags);
     if (tags.size ()) ++taggedT;
 
     std::vector <std::string>::iterator t;
     for (t = tags.begin (); t != tags.end (); ++t)
       allTags[*t] = 0;
 
-    std::string project = it->get ("project");
+    std::string project = task->get ("project");
     if (project != "")
       allProjects[project] = 0;
   }
@@ -203,7 +213,7 @@ int CmdStatistics::execute (std::string& output)
     view.set (row, 1, value.str ());
   }
 
-  if (tasks.size ())
+  if (filtered.size ())
   {
     Date e (earliest);
     row = view.addRow ();
@@ -274,7 +284,6 @@ int CmdStatistics::execute (std::string& output)
       << optionalBlankLine ();
 
   output = out.str ();
-*/
   return rc;
 }
 

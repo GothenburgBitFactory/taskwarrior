@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <Context.h>
+#include <Expression.h>
 #include <main.h>
 #include <CmdQuery.h>
 
@@ -46,39 +47,44 @@ int CmdQuery::execute (std::string& output)
 {
   int rc = 0;
 
-/*
   // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  Filter filter;
+  context.tdb.load (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter sequence.
-  if (context.sequence.size ())
-    context.filter.applySequence (tasks, context.sequence);
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
 
-  if (tasks.size () == 0)
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
+
+  if (filtered.size () == 0)
   {
     context.footnote ("No matches.");
     return 1;
   }
 
   // Note: "limit:" feature not supported.
+  // TODO Why not?
 
   // Compose output.
-  std::vector <Task>::iterator t;
-  for (t = tasks.begin (); t != tasks.end (); ++t)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
-    if (t != tasks.begin ())
+    if (task != filtered.begin ())
       output += ",\n";
 
-    output += t->composeJSON (true);
+    output += task->composeJSON (true);
   }
 
   output += "\n";
-*/
   return rc;
 }
 
