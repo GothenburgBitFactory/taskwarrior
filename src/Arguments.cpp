@@ -244,19 +244,31 @@ void Arguments::categorize ()
       }
 
       // <id>[-<id>][,...]
-      else if (!found_something_after_sequence &&
-               is_id (arg->first))
+      else if (is_id (arg->first))
       {
-        found_sequence = true;
-        arg->second = "id";
+        if (!found_something_after_sequence)
+        {
+          found_sequence = true;
+          arg->second = "id";
+        }
+        else
+        {
+          arg->second = "word";
+        }
       }
 
       // <uuid>[,...]
-      else if (!found_something_after_sequence &&
-               is_uuid (arg->first))
+      else if (is_uuid (arg->first))
       {
-        found_sequence = true;
-        arg->second = "uuid";
+        if (!found_something_after_sequence)
+        {
+          found_sequence = true;
+          arg->second = "uuid";
+        }
+        else
+        {
+          arg->second = "word";
+        }
       }
 
       // [+-]tag
