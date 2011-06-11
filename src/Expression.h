@@ -42,24 +42,17 @@ public:
 
 private:
   void expand_sequence ();
+  void implicit_and ();
+  void expand_tag ();
+  void expand_pattern ();
+  void expand_attr ();
+  void expand_attmod ();
+  void expand_word ();
   void expand_expression ();
-
-  void expand_tag (const std::string&);
-  void expand_attr (const std::string&);
-  void expand_attmod (const std::string&);
-  void expand_word (const std::string&);
-  void expand_pattern (const std::string&);
-
-  void to_infix ();
-  void to_postfix ();
-  bool is_new_style ();
-  void dump ();
+  void postfix ();
 
 private:
-  Arguments _original;
-  Arguments _sequenced;
-  Arguments _infix;
-  Arguments _postfix;
+  Arguments _args;
 };
 
 #endif

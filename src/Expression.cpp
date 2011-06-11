@@ -29,6 +29,9 @@
 #include <sstream>
 #include <Context.h>
 #include <Lexer.h>
+#include <Date.h>
+#include <Duration.h>
+#include <Variant.h>
 #include <text.h>
 #include <Expression.h>
 
@@ -37,12 +40,19 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 // Perform all the necessary steps prior to an eval call.
 Expression::Expression (Arguments& arguments)
-: _original (arguments)
+: _args (arguments)
 {
-  expand_sequence ();     // Convert sequence to expression.
-  to_infix ();            // Old-style to infix.
-  expand_expression ();   // Lex expressions to dom, op tokens.
-  to_postfix ();          // Infix --> Postfix
+  _args.dump ("Expression::Expression");
+
+  expand_sequence ();
+  implicit_and ();
+  expand_tag ();
+  expand_pattern ();      // Configurable
+  expand_attr ();
+  expand_attmod ();
+  expand_word ();
+  expand_expression ();   // Configurable
+  postfix ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,11 +63,13 @@ Expression::~Expression ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Expression::eval (Task& task)
 {
+  std::vector <Variant> value_stack;
+
   std::vector <std::pair <std::string, std::string> >::iterator arg;
-  for (arg = _postfix.begin (); arg != _postfix.end (); ++arg)
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
     // if (arg->second != "op")
-    //   eval_stack.push_back (*arg);
+    //   value_stack.push_back (Variant (*arg));
 
     // else
     // {
@@ -68,9 +80,14 @@ bool Expression::eval (Task& task)
     //     add the two operands
     //     push result
     //   }
-    //   else if ()
+    //   else if (arg->first == "?")
     //   {
     //   }
+    //   else if (arg->first == "?")
+    //   {
+    //   }
+    //   else
+    //    throw std::string ("Unsupported operator '") + arg->first + "'.";
     // }
   }
 
@@ -85,13 +102,12 @@ bool Expression::eval (Task& task)
 void Expression::expand_sequence ()
 {
   Arguments temp;
-  _sequenced.clear ();
 
   // Extract all the components of a sequence.
   std::vector <int> ids;
   std::vector <std::string> uuids;
   std::vector <std::pair <std::string, std::string> >::iterator arg;
-  for (arg = _original.begin (); arg != _original.end (); ++arg)
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
     if (arg->second == "id")
       Arguments::extract_id (arg->first, ids);
@@ -102,10 +118,7 @@ void Expression::expand_sequence ()
 
   // If there is no sequence, we're done.
   if (ids.size () == 0 && uuids.size () == 0)
-  {
-    _sequenced = _original;
     return;
-  }
 
   // Construct the algebraic form.
   std::stringstream sequence;
@@ -120,7 +133,9 @@ void Expression::expand_sequence ()
 
   if (uuids.size ())
   {
-    sequence << " or ";
+    if (sequence.str ().length () > 1)
+      sequence << " or ";
+
     for (unsigned int i = 0; i < uuids.size (); ++i)
     {
       if (i)
@@ -133,7 +148,7 @@ void Expression::expand_sequence ()
   sequence << ")";
 
   // Copy everything up to the first id/uuid.
-  for (arg = _original.begin (); arg != _original.end (); ++arg)
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
     if (arg->second == "id" || arg->second == "uuid")
       break;
@@ -146,7 +161,7 @@ void Expression::expand_sequence ()
 
   // Now copy everything after the last id/uuid.
   bool found_id = false;
-  for (arg = _original.begin (); arg != _original.end (); ++arg)
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
     if (arg->second == "id" || arg->second == "uuid")
       found_id = true;
@@ -155,278 +170,354 @@ void Expression::expand_sequence ()
       temp.push_back (*arg);
   }
 
-  _sequenced.swap (temp);
-  _sequenced.dump ("Expression::expand_sequence");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Convert:  +with -without
-//
-// To:       tags ~ with
-//           tags !~ without
-void Expression::expand_tag (const std::string& input)
-{
-   char type;
-   std::string value;
-   Arguments::extract_tag (input, type, value);
-
-   _infix.push_back (std::make_pair ("tags", "dom"));
-   _infix.push_back (std::make_pair (type == '+' ? "~" : "!~", "op"));
-   _infix.push_back (std::make_pair (value, "exp"));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Convert:  <name>[:=]<value>
-//
-// To:       <name> = lex<value>
-void Expression::expand_attr (const std::string& input)
-{
-  // TODO Should canonicalize 'name'.
-  std::string name;
-  std::string value;
-  Arguments::extract_attr (input, name, value);
-
-  // Always quote the value, so that empty values, or values containing spaces
-  // are preserved.
-  value = "\"" + value + "\"";
-
-  _infix.push_back (std::make_pair (name, "dom"));
-  _infix.push_back (std::make_pair ("=", "op"));
-  _infix.push_back (std::make_pair (value, "exp"));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Convert:  <name>.<mod>[:=]<value>
-//
-// To:       <name> <op> lex<value>
-void Expression::expand_attmod (const std::string& input)
-{
-  // TODO Should canonicalize 'name'.
-  std::string name;
-  // TODO Should canonicalize 'mod'.
-  std::string mod;
-  std::string value;
-  std::string sense;
-  Arguments::extract_attmod (input, name, mod, value, sense);
-
-  // Always quote the value, so that empty values, or values containing spaces
-  // are preserved.
-  std::string raw_value = value;
-  value = "\"" + value + "\"";
-
-  if (mod == "before" || mod == "under" || mod == "below")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("<", "op"));
-    _infix.push_back (std::make_pair (value, "exp"));
-  }
-  else if (mod == "after" || mod == "over" || mod == "above")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair (">", "op"));
-    _infix.push_back (std::make_pair (value, "exp"));
-  }
-  else if (mod == "none")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("==", "op"));
-    _infix.push_back (std::make_pair ("\"\"", "exp"));
-  }
-  else if (mod == "any")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("!=", "op"));
-    _infix.push_back (std::make_pair ("\"\"", "exp"));
-  }
-  else if (mod == "is" || mod == "equals")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("=", "op"));
-    _infix.push_back (std::make_pair (value, "exp"));
-  }
-  else if (mod == "isnt" || mod == "not")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("!=", "op"));
-    _infix.push_back (std::make_pair (value, "exp"));
-  }
-  else if (mod == "has" || mod == "contains")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("~", "op"));
-    _infix.push_back (std::make_pair (value, "exp"));
-  }
-  else if (mod == "hasnt")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("!~", "op"));
-    _infix.push_back (std::make_pair (value, "exp"));
-  }
-  else if (mod == "startswith" || mod == "left")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("~", "op"));
-    _infix.push_back (std::make_pair ("^" + raw_value, "rx"));
-  }
-  else if (mod == "endswith" || mod == "right")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("~", "op"));
-    _infix.push_back (std::make_pair (raw_value + "$", "rx"));
-  }
-  else if (mod == "word")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("~", "op"));
-    _infix.push_back (std::make_pair ("\\b" + raw_value + "\\b", "rx"));
-  }
-  else if (mod == "noword")
-  {
-    _infix.push_back (std::make_pair (name, "dom"));
-    _infix.push_back (std::make_pair ("!~", "op"));
-    _infix.push_back (std::make_pair ("\\b" + raw_value + "\\b", "rx"));
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Convert:  <word>
-//
-// To:       description ~ <word>
-void Expression::expand_word (const std::string& input)
-{
-  _infix.push_back (std::make_pair ("description", "dom"));
-  _infix.push_back (std::make_pair ("~", "op"));
-  _infix.push_back (std::make_pair (input, "exp"));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Convert:  /<pattern>/
-//
-// To:       description ~ <pattern>
-void Expression::expand_pattern (const std::string& input)
-{
-  std::string value;
-  Arguments::extract_pattern (input, value);
-
-  _infix.push_back (std::make_pair ("description", "dom"));
-  _infix.push_back (std::make_pair ("~", "op"));
-  _infix.push_back (std::make_pair (value, "exp"));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Convert:  <exp>
-//
-// To:       lex<exp>
-void Expression::expand_expression ()
-{
-  Arguments temp;
-
-  // Get a list of all operators.
-  std::vector <std::string> operators = Arguments::operator_list ();
-
-  // Look for all 'exp' args.
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
-  for (arg = _infix.begin (); arg != _infix.end (); ++arg)
-  {
-    if (arg->second == "exp")
-    {
-/* obsolete */
-      Lexer lexer (unquoteText (arg->first));
-      lexer.skipWhitespace (true);
-      lexer.coalesceAlpha (true);
-      lexer.coalesceDigits (true);
-      lexer.coalesceQuoted (true);
-
-      std::vector <std::string> tokens;
-      lexer.tokenize (tokens);
-
-      std::vector <std::string>::iterator token;
-      for (token = tokens.begin (); token != tokens.end (); ++token)
-      {
-        if (_infix.is_operator (*token))
-          temp.push_back (std::make_pair (*token, "op"));
-        else
-          temp.push_back (std::make_pair (*token, "dom"));
-      }
-/* obsolete */
-/* proposed */
-/*
-      Nibbler n (arg->first);
-*/
-/* proposed */
-    }
-    else
-      temp.push_back (*arg);
-  }
-
-  _infix.swap (temp);
-  _infix.dump ("Expression::expand_expression");
+  _args.swap (temp);
+  _args.dump ("Expression::expand_sequence");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Inserts the 'and' operator by default between terms that are not separated by
 // at least one operator.
 //
-// Converts:  <term1>     <term2> <op> <exp>
-// to:        <term1> and <term2> <op> <token> <token> <token>
+// Converts:  <term1>     <term2> <op> <term>
+// to:        <term1> and <term2> <op> <term>
 //
-// Rules:
-//   1. Two adjacent non-operator arguments have an 'and' inserted between them.
-//
-void Expression::to_infix ()
+void Expression::implicit_and ()
 {
-  _infix.clear ();
+  Arguments temp;
+  bool delta = false;
 
-  bool new_style = is_new_style ();
-
-  std::string value;
   std::string previous = "op";
   std::vector <std::pair <std::string, std::string> >::iterator arg;
-  for (arg = _sequenced.begin (); arg != _sequenced.end (); ++arg)
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
     // Old-style filters need 'and' conjunctions.
-    if (!new_style          &&
-        previous    != "op" &&
+    if (previous    != "op" &&
         arg->second != "op")
     {
-      _infix.push_back (std::make_pair ("and", "op"));
+      temp.push_back (std::make_pair ("and", "op"));
+      delta = true;
     }
 
-    // Upgrade all arguments to new-style.
-    // ID & UUID sequence has already been converted.
-    if (arg->second == "id" ||
-        arg->second == "uuid")
-      ; // NOP.
-
-    else if (arg->second == "tag")
-      expand_tag (arg->first);
-
-    else if (arg->second == "pattern")
-      expand_pattern (arg->first);
-
-    else if (arg->second == "attribute")
-      expand_attr (arg->first);
-
-    else if (arg->second == "attmod")
-      expand_attmod (arg->first);
-
-    else if (arg->second == "word")
-      expand_word (arg->first);
-
-    else if (arg->second == "op")
-      _infix.push_back (*arg);
-
-    // Skip expressions, convert later.
-    else if (arg->second == "exp")
-      _infix.push_back (*arg);
-
-    else
-      throw std::string ("Error: unrecognized argument category '") + arg->second + "'";
-
+    // Now insert the adjacent non-operator.
+    temp.push_back (*arg);
     previous = arg->second;
   }
 
-  _infix.dump ("Expression::toInfix");
+  if (delta)
+  {
+    _args.swap (temp);
+    _args.dump ("Expression::implicit_and");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Convert:  +with -without
+// To:       tags ~ with
+//           tags !~ without
+void Expression::expand_tag ()
+{
+  Arguments temp;
+  bool delta = false;
+
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
+  {
+    if (arg->second == "tag")
+    {
+      char type;
+      std::string value;
+      Arguments::extract_tag (arg->first, type, value);
+
+      temp.push_back (std::make_pair ("tags", "lvalue"));
+      temp.push_back (std::make_pair (type == '+' ? "~" : "!~", "op"));
+      temp.push_back (std::make_pair (value, "rvalue"));
+      delta = true;
+    }
+    else
+      temp.push_back (*arg);
+  }
+
+  if (delta)
+  {
+    _args.swap (temp);
+    _args.dump ("Expression::expand_tag");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Convert:  /foo/
+// To:       description ~ foo
+void Expression::expand_pattern ()
+{
+  Arguments temp;
+  bool delta = false;
+
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
+  {
+    if (arg->second == "pattern")
+    {
+      std::string value;
+      Arguments::extract_pattern (arg->first, value);
+
+      temp.push_back (std::make_pair ("description", "lvalue"));
+      temp.push_back (std::make_pair ("~", "op"));
+      temp.push_back (std::make_pair (value, "rvalue"));
+      delta = true;
+    }
+    else
+      temp.push_back (*arg);
+  }
+
+  if (delta)
+  {
+    _args.swap (temp);
+    _args.dump ("Expression::expand_pattern");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Convert:  <name>[:=]<value>
+// To:       <name> = lex<value>
+void Expression::expand_attr ()
+{
+  Arguments temp;
+  bool delta = false;
+
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
+  {
+    if (arg->second == "attr")
+    {
+      // TODO Canonicalize 'name'.
+      std::string name;
+      std::string value;
+      Arguments::extract_attr (arg->first, name, value);
+
+      // Always quote the value, so that empty values, or values containing spaces
+      // are preserved.
+      value = "\"" + value + "\"";
+
+      temp.push_back (std::make_pair (name, "lvalue"));
+      temp.push_back (std::make_pair ("=", "op"));
+      temp.push_back (std::make_pair (value, "rvalue"));
+      delta = true;
+    }
+    else
+      temp.push_back (*arg);
+  }
+
+  if (delta)
+  {
+    _args.swap (temp);
+    _args.dump ("Expression::expand_attr");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Convert:  <name>.<mod>[:=]<value>
+// To:       <name> <op> lex<value>
+void Expression::expand_attmod ()
+{
+  Arguments temp;
+  bool delta = false;
+
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
+  {
+    if (arg->second == "attmod")
+    {
+      // TODO Should canonicalize 'name'.
+      std::string name;
+      // TODO Should canonicalize 'mod'.
+      std::string mod;
+      std::string value;
+      std::string sense;
+      Arguments::extract_attmod (arg->first, name, mod, value, sense);
+
+      // Always quote the value, so that empty values, or values containing spaces
+      // are preserved.
+      std::string raw_value = value;
+      value = "\"" + value + "\"";
+
+      if (mod == "before" || mod == "under" || mod == "below")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("<", "op"));
+        temp.push_back (std::make_pair (value, "rvalue"));
+      }
+      else if (mod == "after" || mod == "over" || mod == "above")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair (">", "op"));
+        temp.push_back (std::make_pair (value, "rvalue"));
+      }
+      else if (mod == "none")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("==", "op"));
+        temp.push_back (std::make_pair ("\"\"", "rvalue"));
+      }
+      else if (mod == "any")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("!=", "op"));
+        temp.push_back (std::make_pair ("\"\"", "rvalue"));
+      }
+      else if (mod == "is" || mod == "equals")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("=", "op"));
+        temp.push_back (std::make_pair (value, "rvalue"));
+      }
+      else if (mod == "isnt" || mod == "not")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("!=", "op"));
+        temp.push_back (std::make_pair (value, "rvalue"));
+      }
+      else if (mod == "has" || mod == "contains")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("~", "op"));
+        temp.push_back (std::make_pair (value, "rvalue"));
+      }
+      else if (mod == "hasnt")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("!~", "op"));
+        temp.push_back (std::make_pair (value, "rvalue"));
+      }
+      else if (mod == "startswith" || mod == "left")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("~", "op"));
+        temp.push_back (std::make_pair ("^" + raw_value, "rx"));
+      }
+      else if (mod == "endswith" || mod == "right")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("~", "op"));
+        temp.push_back (std::make_pair (raw_value + "$", "rx"));
+      }
+      else if (mod == "word")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("~", "op"));
+        temp.push_back (std::make_pair ("\\b" + raw_value + "\\b", "rx"));
+      }
+      else if (mod == "noword")
+      {
+        temp.push_back (std::make_pair (name, "lvalue"));
+        temp.push_back (std::make_pair ("!~", "op"));
+        temp.push_back (std::make_pair ("\\b" + raw_value + "\\b", "rx"));
+      }
+      else
+        throw std::string ("Error: unrecognized attribute modifier '") + mod + "'.";
+
+      delta = true;
+    }
+    else
+      temp.push_back (*arg);
+  }
+
+  if (delta)
+  {
+    _args.swap (temp);
+    _args.dump ("Expression::expand_attmod");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Convert:  <word>
+// To:       description ~ <word>
+void Expression::expand_word ()
+{
+  Arguments temp;
+  bool delta = false;
+
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
+  {
+    if (arg->second == "word")
+    {
+      temp.push_back (std::make_pair ("description", "lvalue"));
+      temp.push_back (std::make_pair ("~", "op"));
+      temp.push_back (std::make_pair (arg->first, "rvalue"));
+
+      delta = true;
+    }
+    else
+      temp.push_back (*arg);
+  }
+
+  if (delta)
+  {
+    _args.swap (temp);
+    _args.dump ("Expression::expand_word");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Look for "exp" arguments, and convert them to one of:
+//   "date"
+//   "duration"
+//   Lexer::tokenize
+void Expression::expand_expression ()
+{
+  Arguments temp;
+  bool delta = false;
+
+  // Get a list of all operators.
+  std::vector <std::string> operators = Arguments::operator_list ();
+
+  // Look for all 'exp' args.
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
+  {
+    if (arg->second == "exp")
+    {
+      // Remove quotes.
+      arg->first = unquoteText (arg->first);
+
+      if (Date::valid (arg->first, context.config.get ("dateformat")))
+        temp.push_back (std::make_pair (arg->first, "date"));
+
+      else if (Duration::valid (arg->first))
+        temp.push_back (std::make_pair (arg->first, "duration"));
+
+      // The expression does not appear to be syntactic sugar, so it should be
+      // lexed.
+      else
+      {
+        Lexer lexer (arg->first);
+        lexer.skipWhitespace (true);
+        lexer.coalesceAlpha (true);
+        lexer.coalesceDigits (true);
+        lexer.coalesceQuoted (true);
+
+        std::vector <std::string> tokens;
+        lexer.tokenize (tokens);
+
+        std::vector <std::string>::iterator token;
+        for (token = tokens.begin (); token != tokens.end (); ++token)
+          temp.push_back (
+            std::make_pair (
+              *token,
+              (_args.is_operator (*token) ? "op" : "dom")));
+      }
+
+      delta = true;
+    }
+    else
+      temp.push_back (*arg);
+  }
+
+  if (delta)
+  {
+    _args.swap (temp);
+    _args.dump ("Expression::expand_expression");
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -461,9 +552,9 @@ void Expression::to_infix ()
 //       Pop the operator onto the output queue.
 //   Exit.
 //
-void Expression::to_postfix ()
+void Expression::postfix ()
 {
-  _postfix.clear ();
+  Arguments temp;
 
   std::pair <std::string, std::string> item;
   Arguments op_stack;
@@ -472,7 +563,7 @@ void Expression::to_postfix ()
   char associativity;
 
   std::vector <std::pair <std::string, std::string> >::iterator arg;
-  for (arg = _infix.begin (); arg != _infix.end (); ++arg)
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
     if (arg->first == "(")
     {
@@ -483,7 +574,7 @@ void Expression::to_postfix ()
       while (op_stack.size () > 0 &&
              op_stack.back ().first != "(")
       {
-        _postfix.push_back (op_stack.back ());
+        temp.push_back (op_stack.back ());
         op_stack.pop_back ();
       }
 
@@ -506,7 +597,7 @@ void Expression::to_postfix ()
              ((associativity == 'l' && precedence <= precedence2) ||
               (associativity == 'r' && precedence <  precedence2)))
       {
-        _postfix.push_back (op_stack.back ());
+        temp.push_back (op_stack.back ());
         op_stack.pop_back ();
       }
 
@@ -514,7 +605,7 @@ void Expression::to_postfix ()
     }
     else
     {
-      _postfix.push_back (*arg);
+      temp.push_back (*arg);
     }
   }
 
@@ -524,38 +615,12 @@ void Expression::to_postfix ()
         op_stack.back ().first == ")")
       throw std::string ("Mismatched parentheses in expression");
 
-    _postfix.push_back (op_stack.back ());
+    temp.push_back (op_stack.back ());
     op_stack.pop_back ();
   }
 
-  _postfix.dump ("Expression::toPostfix");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Test whether the _original arguments are old style or new style.
-//
-// Old style:  no single argument corresponds to an operator, ie no 'and', 'or',
-//             etc.
-//
-// New style:  at least one argument that is an operator.
-//
-bool Expression::is_new_style ()
-{
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
-  for (arg = _original.begin (); arg != _original.end (); ++arg)
-    if (Arguments::is_operator (arg->first))
-      return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Expression::dump ()
-{
-  _original.dump  ("Original Arguments");
-  _sequenced.dump ("Sequence Expanded");
-  _infix.dump     ("Converted to Infix");
-  _postfix.dump   ("Converted to Postfix");
+  _args.swap (temp);
+  _args.dump ("Expression::toPostfix");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -223,6 +223,11 @@ bool DOM::is_primitive (const std::string& input)
   double d;
   int i;
 
+  // TODO Date?
+  // TODO Quoted Date?
+  // TODO Duration?
+  // TODO Quoted Duration?
+
   // String?
   Nibbler n (input);
   if (n.getQuoted ('"', s) && n.depleted ())

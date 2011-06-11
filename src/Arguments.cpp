@@ -286,7 +286,7 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "attribute";
+        arg->second = "attr";
       }
 
       // /<from>/<to>/[g]
@@ -296,7 +296,7 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "substitution";
+        arg->second = "subst";
       }
 
       // /pattern/
@@ -1143,7 +1143,7 @@ Arguments Arguments::extract_read_only_filter ()
     // Included.
     else if (i->second == "tag"       ||
              i->second == "pattern"   ||
-             i->second == "attribute" ||
+             i->second == "attr"      ||
              i->second == "attmod"    ||
              i->second == "id"        ||
              i->second == "uuid"      ||
@@ -1158,7 +1158,7 @@ Arguments Arguments::extract_read_only_filter ()
     else
     {
       // substitution
-      throw std::string ("A substitutions '") + i->first + "' is not allowed "
+      throw std::string ("A substitution '") + i->first + "' is not allowed "
             "in a read-only command filter.";
     }
   }
@@ -1189,7 +1189,7 @@ Arguments Arguments::extract_write_filter ()
     // Included.
     else if (i->second == "tag"       ||
              i->second == "pattern"   ||
-             i->second == "attribute" ||
+             i->second == "attr"      ||
              i->second == "attmod"    ||
              i->second == "id"        ||
              i->second == "uuid"      ||
@@ -1238,10 +1238,10 @@ Arguments Arguments::extract_modifications ()
       }
 
       // Included.
-      else if (i->second == "tag"          ||
-               i->second == "attribute"    ||
-               i->second == "substitution" ||
-               i->second == "op"           ||
+      else if (i->second == "tag"   ||
+               i->second == "attr"  ||
+               i->second == "subst" ||
+               i->second == "op"    ||
                i->second == "word")
       {
         modifications.push_back (*i);
@@ -1292,20 +1292,20 @@ void Arguments::dump (const std::string& label)
 {
   // Set up a color mapping.
   std::map <std::string, Color> color_map;
-  color_map["program"]      = Color ("white on blue");
-  color_map["command"]      = Color ("black on cyan");
-  color_map["rc"]           = Color ("bold white on red");
-  color_map["override"]     = Color ("white on red");
-  color_map["tag"]          = Color ("green on gray3");
-  color_map["pattern"]      = Color ("cyan on gray3");
-  color_map["attribute"]    = Color ("bold red on gray3");
-  color_map["attmod"]       = Color ("bold red on gray3");
-  color_map["id"]           = Color ("yellow on gray3");
-  color_map["uuid"]         = Color ("yellow on gray3");
-  color_map["substitution"] = Color ("bold cyan on gray3");
-  color_map["op"]           = Color ("bold blue on gray3");
-  color_map["exp"]          = Color ("bold green on gray5");
-  color_map["none"]         = Color ("white on gray3");
+  color_map["program"]  = Color ("white on blue");
+  color_map["command"]  = Color ("black on cyan");
+  color_map["rc"]       = Color ("bold white on red");
+  color_map["override"] = Color ("white on red");
+  color_map["tag"]      = Color ("green on gray3");
+  color_map["pattern"]  = Color ("cyan on gray3");
+  color_map["attr"]     = Color ("bold red on gray3");
+  color_map["attmod"]   = Color ("bold red on gray3");
+  color_map["id"]       = Color ("yellow on gray3");
+  color_map["uuid"]     = Color ("yellow on gray3");
+  color_map["subst"]    = Color ("bold cyan on gray3");
+  color_map["op"]       = Color ("bold blue on gray3");
+  color_map["exp"]      = Color ("bold green on gray5");
+  color_map["none"]     = Color ("white on gray3");
 
   Color color_debug (context.config.get ("color.debug"));
   std::stringstream out;
