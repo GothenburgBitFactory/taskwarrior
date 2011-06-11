@@ -29,6 +29,7 @@
 #define L10N                                           // Localization complete.
 
 #include <string>
+#include <vector>
 
 class Nibbler
 {
@@ -63,6 +64,7 @@ public:
   bool getUUID (std::string&);
   bool getDateISO (time_t&);
   bool getDate (const std::string&, time_t&);
+  bool getOneOf (const std::vector <std::string>&, std::string&);
 
   bool skipN (const int quantity = 1);
   bool skip (char);

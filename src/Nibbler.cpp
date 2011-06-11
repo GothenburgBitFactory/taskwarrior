@@ -588,6 +588,24 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getOneOf (
+  const std::vector <std::string>& options,
+  std::string& found)
+{
+  std::vector <std::string>::const_iterator option;
+  for (option = options.begin (); option != options.end (); ++option)
+  {
+    if (getLiteral (*option))
+    {
+      found = *option;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipN (const int quantity /* = 1 */)
 {
   if (mCursor < mLength &&

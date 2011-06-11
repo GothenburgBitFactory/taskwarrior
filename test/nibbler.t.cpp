@@ -33,7 +33,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (185);
+  UnitTest t (193);
 
   try
   {
@@ -42,6 +42,7 @@ int main (int argc, char** argv)
     int i;
     double d;
     time_t ti;
+    std::vector <std::string> options;
 
     // Make sure the nibbler behaves itself with trivial input.
     t.diag ("Test all nibbler calls given empty input");
@@ -62,6 +63,7 @@ int main (int argc, char** argv)
     t.notok (n.getUntilEOS (s),          "trivial: getUntilEOS");
     t.notok (n.getDateISO (ti),          "trivial: getDateISO");
     t.notok (n.getDate ("YYYYMMDD", ti), "trivial: getDate");
+    t.notok (n.getOneOf (options, s),    "trivial: getOneOf");
     t.ok    (n.depleted (),              "trivial: depleted");
 
     // bool getUntil (char, std::string&);
@@ -310,6 +312,20 @@ int main (int argc, char** argv)
     t.ok    (n.getDateISO (ti),       "'20090213T233130Z': getDateISO ()  -> true");
     t.is    (ti, 1234567890,          "'20090213T233130Z': getDateISO ()  -> 1234567890");
     t.ok    (n.depleted (),           "depleted");
+
+    // bool getOneOf (const std::vector <std::string>&, std::string&);
+    t.diag ("Nibbler::getOneOf");
+    options.push_back ("one");
+    options.push_back ("two");
+    options.push_back ("three");
+    n = Nibbler ("onetwothreefour");
+    t.ok    (n.getOneOf (options, s),         "'onetwothreefour':   getOneOf () -> true");
+    t.is    (s, "one",                        "'onetwothreefour':   getOneOf () -> one");
+    t.ok    (n.getOneOf (options, s),         "   'twothreefour':   getOneOf () -> true");
+    t.is    (s, "two",                        "   'twothreefour':   getOneOf () -> two");
+    t.ok    (n.getOneOf (options, s),         "      'threefour':   getOneOf () -> true");
+    t.is    (s, "three",                      "      'threefour':   getOneOf () -> three");
+    t.notok (n.getOneOf (options, s),         "           'four':   getOneOf () -> fasle");
 
     // bool getUntilEOL (std::string&);
     t.diag ("Nibbler::getUntilEOL");
