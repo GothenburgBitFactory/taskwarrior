@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <string.h>
 #include <File.h>
 #include <JSON.h>
 #include <Context.h>

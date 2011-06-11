@@ -20,5 +20,5 @@ add_custom_target (build_tests DEPENDS ${test_SRCS}
 
 foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} "${src_FILE}.cpp" test.cpp)
-  target_link_libraries (${src_FILE} task commands columns ${TASK_LIBRARIES})
+  target_link_libraries (${src_FILE} task commands task columns ${TASK_LIBRARIES})
 endforeach (src_FILE)

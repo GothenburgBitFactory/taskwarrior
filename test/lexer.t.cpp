@@ -27,7 +27,7 @@
 
 #include <Lexer.h>
 #include <Context.h>
-#include <Test.h>
+#include <test.h>
 
 Context context;
 
