@@ -25,12 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
 #include <inttypes.h>
 #include <Nibbler.h>
+#include <Date.h>
 #include <rx.h>
 
 const char* c_digits = "0123456789";
@@ -584,7 +586,308 @@ bool Nibbler::getDateISO (time_t& t)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getDate (const std::string& format, time_t& t)
 {
-  return false;
+  std::string::size_type i = mCursor;
+
+  int month  = 0;
+  int day    = 0;
+  int year   = -1;   // So we can check later.
+  int hour   = 0;
+  int minute = 0;
+  int second = 0;
+
+  for (unsigned int f = 0; f < format.length (); ++f)
+  {
+    switch (format[f])
+    {
+    case 'm':
+      if (i + 2 <= mLength &&
+          (mInput[i + 0] == '0' || mInput[i + 0] == '1') &&
+          isdigit (mInput[i + 1]))
+      {
+        month = atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else if (i + 1 <= mLength &&
+               isdigit (mInput[i + 0]))
+      {
+        month = mInput[i] - '0';
+        i += 1;
+      }
+      else
+        return false;
+      break;
+
+    case 'd':
+      if (i + 2 <= mLength        &&
+          isdigit (mInput[i + 1]) &&
+          isdigit (mInput[i + 1]))
+      {
+        day = atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else if (i + 1 <= mLength &&
+               isdigit (mInput[i + 0]))
+      {
+        day = mInput[i] - '0';
+        i += 1;
+      }
+      else
+        return false;
+      break;
+
+    case 'y':
+      if (i + 2 <= mLength &&
+          isdigit (mInput[i + 0]) &&
+          isdigit (mInput[i + 1]))
+      {
+        year = 2000 + atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else
+        return false;
+      break;
+
+    case 'M':
+      if (i + 2 <= mLength &&
+          isdigit (mInput[i + 0]) &&
+          isdigit (mInput[i + 1]))
+      {
+        month = atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else
+        return false;
+      break;
+
+    case 'D':
+      if (i + 2 <= mLength &&
+          isdigit (mInput[i + 0]) &&
+          isdigit (mInput[i + 1]))
+      {
+        day = atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else
+        return false;
+      break;
+
+    // Merely parse, not extract.
+    case 'V':
+      if (i + 2 <= mLength &&
+          isdigit (mInput[i + 0]) &&
+          isdigit (mInput[i + 1]))
+      {
+        day = atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else
+        return false;
+      break;
+
+    case 'Y':
+      if (i + 4 <= mLength &&
+          isdigit (mInput[i + 0]) &&
+          isdigit (mInput[i + 1]) &&
+          isdigit (mInput[i + 2]) &&
+          isdigit (mInput[i + 3]))
+      {
+        year = atoi (mInput.substr (i, 4).c_str ());
+        i += 4;
+      }
+      else
+        return false;
+      break;
+
+    // Merely parse, not extract.
+    case 'a':
+      if (i + 3 <= mLength          &&
+          ! isdigit (mInput[i + 0]) &&
+          ! isdigit (mInput[i + 1]) &&
+          ! isdigit (mInput[i + 2]))
+        i += 3;
+      else
+        return false;
+      break;
+
+    // Merely parse, not extract.
+    case 'b':
+      if (i + 3 <= mLength          &&
+          ! isdigit (mInput[i + 0]) &&
+          ! isdigit (mInput[i + 1]) &&
+          ! isdigit (mInput[i + 2]))
+      {
+        month = Date::monthOfYear (mInput.substr (i, 3).c_str());
+        i += 3;
+      }
+      else
+        return false;
+      break;
+
+    // Merely parse, not extract.
+    case 'A':
+      if (i + 3 <= mLength          &&
+          ! isdigit (mInput[i + 0]) &&
+          ! isdigit (mInput[i + 1]) &&
+          ! isdigit (mInput[i + 2]))
+        i += Date::dayName (Date::dayOfWeek (mInput.substr (i, 3).c_str ())).size ();
+      else
+        return false;
+      break;
+
+    case 'B':
+      if (i + 3 <= mLength          &&
+          ! isdigit (mInput[i + 0]) &&
+          ! isdigit (mInput[i + 1]) &&
+          ! isdigit (mInput[i + 2]))
+      {
+        month = Date::monthOfYear (mInput.substr (i, 3).c_str ());
+        i += Date::monthName (month).size ();
+      }
+      else
+        return false;
+      break;
+
+    case 'h':
+      if (i + 2 <= mLength &&
+          (mInput[i + 0] == '0' || mInput[i + 0] == '1') &&
+          isdigit (mInput[i + 1]))
+      {
+        hour = atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else if (i + 1 <= mLength &&
+               isdigit (mInput[i + 0]))
+      {
+        hour = atoi (mInput.substr (i, 1).c_str ());
+        i += 1;
+      }
+      else
+        return false;
+      break;
+
+    case 'H':
+      if (i + 2 <= mLength &&
+          isdigit (mInput[i + 0]) &&
+          isdigit (mInput[i + 1]))
+      {
+        hour = atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else
+        return false;
+      break;
+
+    case 'N':
+      if (i + 2 <= mLength &&
+          isdigit (mInput[i + 0]) &&
+          isdigit (mInput[i + 1]))
+      {
+        minute = atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else
+        return false;
+      break;
+
+    case 'S':
+      if (i + 2 <= mLength &&
+          isdigit (mInput[i + 0]) &&
+          isdigit (mInput[i + 1]))
+      {
+        second = atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else
+        return false;
+      break;
+
+    case 'j':
+      if (i + 3 <= mLength        &&
+          isdigit (mInput[i + 0]) &&
+          isdigit (mInput[i + 1]) &&
+          isdigit (mInput[i + 2]))
+      {
+        day = atoi (mInput.substr (i, 3).c_str ());
+        i += 3;
+      }
+      else if (i + 2 <= mLength        &&
+               isdigit (mInput[i + 0]) &&
+               isdigit (mInput[i + 1]))
+      {
+        day = atoi (mInput.substr (i, 2).c_str ());
+        i += 2;
+      }
+      else if (i + 1 <= mLength &&
+               isdigit (mInput[i + 0]))
+      {
+        day = atoi (mInput.substr (i, 1).c_str ());
+        i += 1;
+      }
+      else
+        return false;
+      break;
+
+    case 'J':
+      if (i + 3 <= mLength        &&
+          isdigit (mInput[i + 0]) &&
+          isdigit (mInput[i + 1]) &&
+          isdigit (mInput[i + 2]))
+      {
+        day = atoi (mInput.substr (i, 3).c_str ());
+        i += 3;
+      }
+      else
+        return false;
+      break;
+
+    default:
+      if (i + 1 <= mLength &&
+          mInput[i] == format[f])
+        ++i;
+      else
+        return false;
+      break;
+    }
+  }
+
+  // Default the year to the current year, for formats that lack Y/y.
+  if (year == -1)
+  {
+    time_t now = time (NULL);
+    struct tm* default_year = localtime (&now);
+    year = default_year->tm_year + 1900;
+  }
+
+  // Convert to epoch.
+  struct tm tms = {0};
+  tms.tm_isdst = -1;   // Requests that mktime determine summer time effect.
+
+  if (month == 0 && day >= 0 && day <= 365)
+  {
+    tms.tm_yday  = day;
+    tms.tm_mon   = 0;
+
+    if (! Date::valid (day, year))
+      return false;
+  }
+  else
+  {
+    tms.tm_mday  = day;
+    tms.tm_mon   = month > 0 ? month - 1 : 0;
+
+    if (! Date::valid (month, day, year))
+      return false;
+  }
+
+  tms.tm_year  = year - 1900;
+  tms.tm_hour  = hour;
+  tms.tm_min   = minute;
+  tms.tm_sec   = second;
+
+  t = mktime (&tms);
+  std::cout << "# " << year << " " << month << " " << day << " " << hour << " " << minute << " " << second << "\n";
+  mCursor = i;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

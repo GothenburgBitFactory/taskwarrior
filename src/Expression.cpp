@@ -186,7 +186,8 @@ void Expression::expand_sequence ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Nibble the whole thing.
+// Nibble the whole bloody thing.  Nuke it from orbit - it's the only way to be
+// sure.
 void Expression::expand_tokens ()
 {
   Arguments temp;
@@ -194,10 +195,16 @@ void Expression::expand_tokens ()
   // Get a list of all operators.
   std::vector <std::string> operators = Arguments::operator_list ();
 
-  // Look at all args.
+  // Date format, for both parsing and rendering.
+  std::string date_format = context.config.get ("dateformat");
+
+  // Fake polymorphism.
   std::string s;
   int i;
   double d;
+  time_t t;
+
+  // Look at all args.
   std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
@@ -212,6 +219,12 @@ void Expression::expand_tokens ()
 
     else if (n.getInt (i))
       temp.push_back (std::make_pair (format (i), "int"));
+
+    else if (n.getDateISO (t))
+      temp.push_back (std::make_pair (Date (t).toISO (), "date"));
+
+    else if (n.getDate (date_format, t))
+      temp.push_back (std::make_pair (Date (t).toString (date_format), "date"));
 
     else
       temp.push_back (*arg);

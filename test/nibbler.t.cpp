@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <Context.h>
+#include <Date.h>
 #include <Nibbler.h>
 #include <test.h>
 
@@ -33,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (193);
+  UnitTest t (242);
 
   try
   {
@@ -42,6 +43,7 @@ int main (int argc, char** argv)
     int i;
     double d;
     time_t ti;
+    Date dt;
     std::vector <std::string> options;
 
     // Make sure the nibbler behaves itself with trivial input.
@@ -312,6 +314,87 @@ int main (int argc, char** argv)
     t.ok    (n.getDateISO (ti),       "'20090213T233130Z': getDateISO ()  -> true");
     t.is    (ti, 1234567890,          "'20090213T233130Z': getDateISO ()  -> 1234567890");
     t.ok    (n.depleted (),           "depleted");
+
+    // bool getDate (time_t&, const std::string&);
+    t.diag ("Nibbler::getDate");
+    n = Nibbler ("1/1/2008");
+    t.ok (n.getDate ("m/d/Y", ti), "m/d/Y ok");
+    dt = Date (ti);
+    t.is (dt.month (),   1, "ctor (std::string) -> m");
+    t.is (dt.day (),     1, "ctor (std::string) -> d");
+    t.is (dt.year (), 2008, "ctor (std::string) -> y");
+
+    n = Nibbler ("20080101");
+    t.ok (n.getDate ("YMD", ti), "YMD ok");
+    dt = Date (ti);
+    t.is (dt.month (),   1, "ctor (std::string) -> m");
+    t.is (dt.day (),     1, "ctor (std::string) -> d");
+    t.is (dt.year (), 2008, "ctor (std::string) -> y");
+
+    n = Nibbler ("12/31/2007");
+    t.ok (n.getDate ("m/d/Y", ti), "m/d/Y ok");
+    dt = Date (ti);
+    t.is (dt.month (),  12, "ctor (std::string) -> m");
+    t.is (dt.day (),    31, "ctor (std::string) -> d");
+    t.is (dt.year (), 2007, "ctor (std::string) -> y");
+
+    n = Nibbler ("20071231");
+    t.ok (n.getDate ("YMD", ti), "YMD ok");
+    dt = Date (ti);
+    t.is (dt.month (),  12, "ctor (std::string) -> m");
+    t.is (dt.day (),    31, "ctor (std::string) -> d");
+    t.is (dt.year (), 2007, "ctor (std::string) -> y");
+
+    n = Nibbler ("Tue 01 Jan 2008 (01)");
+    t.ok (n.getDate ("a D b Y (V)", ti), "a D b Y (V)");
+    dt = Date (ti);
+    t.is (dt.month (),   1, "ctor (std::string) -> m");
+    t.is (dt.day (),     1, "ctor (std::string) -> d");
+    t.is (dt.year (), 2008, "ctor (std::string) -> y");
+
+    n = Nibbler ("Tuesday, January 1, 2008");
+    t.ok (n.getDate ("A, B d, Y", ti), "A, B d, Y ok");
+    dt = Date (ti);
+    t.is (dt.month (),   1, "ctor (std::string) -> m");
+    t.is (dt.day (),     1, "ctor (std::string) -> d");
+    t.is (dt.year (), 2008, "ctor (std::string) -> y");
+
+    n = Nibbler ("v01 Tue 2008-01-01");
+    t.ok (n.getDate ("vV a Y-M-D", ti), "vV a Y-M-D ok");
+    dt = Date (ti);
+    t.is (dt.month (),   1, "ctor (std::string) -> m");
+    t.is (dt.day (),     1, "ctor (std::string) -> d");
+    t.is (dt.year (), 2008, "ctor (std::string) -> y");
+
+    n = Nibbler ("6/7/2010 1:23:45");
+    t.ok (n.getDate ("m/d/Y h:N:S", ti), "m/d/Y h:N:S ok");
+    dt = Date (ti);
+    t.is (dt.month (),     6, "ctor (std::string) -> m");
+    t.is (dt.day (),       7, "ctor (std::string) -> d");
+    t.is (dt.year (),   2010, "ctor (std::string) -> Y");
+    t.is (dt.hour (),      1, "ctor (std::string) -> h");
+    t.is (dt.minute (),   23, "ctor (std::string) -> N");
+    t.is (dt.second (),   45, "ctor (std::string) -> S");
+
+    n = Nibbler ("6/7/2010 01:23:45");
+    t.ok (n.getDate ("m/d/Y H:N:S", ti), "m/d/Y H:N:S ok");
+    dt = Date (ti);
+    t.is (dt.month (),     6, "ctor (std::string) -> m");
+    t.is (dt.day (),       7, "ctor (std::string) -> d");
+    t.is (dt.year (),   2010, "ctor (std::string) -> Y");
+    t.is (dt.hour (),      1, "ctor (std::string) -> h");
+    t.is (dt.minute (),   23, "ctor (std::string) -> N");
+    t.is (dt.second (),   45, "ctor (std::string) -> S");
+
+    n = Nibbler ("6/7/2010 12:34:56");
+    t.ok (n.getDate ("m/d/Y H:N:S", ti), "m/d/Y H:N:S ok");
+    dt = Date (ti);
+    t.is (dt.month (),     6, "ctor (std::string) -> m");
+    t.is (dt.day (),       7, "ctor (std::string) -> d");
+    t.is (dt.year (),   2010, "ctor (std::string) -> Y");
+    t.is (dt.hour (),     12, "ctor (std::string) -> h");
+    t.is (dt.minute (),   34, "ctor (std::string) -> N");
+    t.is (dt.second (),   56, "ctor (std::string) -> S");
 
     // bool getOneOf (const std::vector <std::string>&, std::string&);
     t.diag ("Nibbler::getOneOf");
