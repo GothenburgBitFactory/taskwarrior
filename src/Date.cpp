@@ -538,6 +538,20 @@ bool Date::valid (const int m, const int d, const int y)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Julian
+bool Date::valid (const int d, const int y)
+{
+  // Check that the year is valid.
+  if (y < 0)
+    return false;
+
+  if (d < 0 || d > 365)
+    return false;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Date::leapYear (int year)
 {
   bool ly = false;

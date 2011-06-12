@@ -60,6 +60,7 @@ public:
   static bool valid (const std::string&, const std::string& format = "m/d/Y");
   static bool valid (const int, const int, const int, const int, const int, const int);
   static bool valid (const int, const int, const int);
+  static bool valid (const int, const int);
 
   static time_t easter (int year);
   static bool leapYear (int);
