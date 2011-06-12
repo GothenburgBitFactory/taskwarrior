@@ -53,7 +53,6 @@ CmdShow::CmdShow ()
 int CmdShow::execute (std::string& output)
 {
   int rc = 0;
-/*
   std::stringstream out;
 
   // Obtain the arguments from the description.  That way, things like '--'
@@ -68,42 +67,141 @@ int CmdShow::execute (std::string& output)
   // Note that there is a leading and trailing space, to make it easier to
   // search for whole words.
   std::string recognized =
-    " annotations avoidlastcolumn bulk burndown.bias calendar.details "
-    "calendar.details.report calendar.holidays calendar.legend color "
-    "calendar.offset calendar.offset.value color.active color.due "
-    "color.due.today color.blocked color.burndown.done color.burndown.pending "
-    "color.burndown.started color.overdue color.pri.H color.pri.L color.pri.M "
-    "color.pri.none color.recurring color.tagged color.footnote color.header "
-    "color.debug color.alternate color.calendar.today color.calendar.due "
-    "color.calendar.due.today color.calendar.overdue regex "
-    "color.calendar.weekend color.calendar.holiday color.calendar.weeknumber "
-    "color.summary.background color.summary.bar color.history.add "
-    "color.history.done color.history.delete color.undo.before color.label "
-    "color.sync.added color.sync.changed color.sync.rejected color.undo.after "
-    "confirmation data.location dateformat dateformat.holiday "
-    "dateformat.report dateformat.annotation debug default.command default.due "
-    "default.priority default.project defaultwidth dependency.indicator due "
-    "dependency.confirmation dependency.reminder detection locale "
-    "displayweeknumber export.ical.class echo.command fontunderline gc locking "
-    "monthsperline nag journal.time journal.time.start.annotation journal.info "
-    "journal.time.stop.annotation project shadow.command shadow.file "
-    "shadow.notify weekstart editor edit.verbose import.synonym.id "
-    "import.synonym.uuid complete.all.projects complete.all.tags "
-    "search.case.sensitive extensions active.indicator tag.indicator "
-    "recurrence.indicator recurrence.limit list.all.projects list.all.tags "
-    "undo.style verbose rule.precedence.color merge.autopush merge.default.uri "
-    "pull.default.uri push.default.uri xterm.title shell.prompt "
-    "indent.annotation indent.report column.spacing row.padding column.padding "
-    "import.synonym.status import.synonym.tags import.synonym.entry "
-    "import.synonym.start import.synonym.due import.synonym.recur "
-    "import.synonym.end import.synonym.project import.synonym.priority "
-    "import.synonym.fg import.synonym.bg import.synonym.description "
-
-    "urgency.next.coefficient urgency.blocking.coefficient "
-    "urgency.blocked.coefficient urgency.due.coefficient "
-    "urgency.priority.coefficient urgency.waiting.coefficient "
-    "urgency.active.coefficient urgency.project.coefficient "
-    "urgency.tags.coefficient urgency.annotations.coefficient ";
+    " active.indicator"
+    " annotations"
+    " avoidlastcolumn"
+    " bulk"
+    " burndown.bias"
+    " calendar.details"
+    " calendar.details.report"
+    " calendar.holidays"
+    " calendar.legend"
+    " calendar.offset"
+    " calendar.offset.value"
+    " color"
+    " color.active"
+    " color.alternate"
+    " color.blocked"
+    " color.burndown.done"
+    " color.burndown.pending"
+    " color.burndown.started"
+    " color.calendar.due"
+    " color.calendar.due.today"
+    " color.calendar.holiday"
+    " color.calendar.overdue"
+    " color.calendar.today"
+    " color.calendar.weekend"
+    " color.calendar.weeknumber"
+    " color.debug"
+    " color.due"
+    " color.due.today"
+    " color.footnote"
+    " color.header"
+    " color.history.add"
+    " color.history.delete"
+    " color.history.done"
+    " color.label"
+    " color.overdue"
+    " color.pri.H"
+    " color.pri.L"
+    " color.pri.M"
+    " color.pri.none"
+    " color.recurring"
+    " color.summary.background"
+    " color.summary.bar"
+    " color.sync.added"
+    " color.sync.changed"
+    " color.sync.rejected"
+    " color.tagged"
+    " color.undo.after"
+    " color.undo.before"
+    " column.padding"
+    " column.spacing"
+    " complete.all.projects"
+    " complete.all.tags"
+    " confirmation"
+    " data.location"
+    " dateformat"
+    " dateformat.annotation"
+    " dateformat.holiday"
+    " dateformat.report"
+    " debug"
+    " default.command"
+    " default.due"
+    " default.priority"
+    " default.project"
+    " defaultwidth"
+    " dependency.confirmation"
+    " dependency.indicator"
+    " dependency.reminder"
+    " detection"
+    " displayweeknumber"
+    " due"
+    " echo.command"
+    " edit.verbose"
+    " editor"
+    " export.ical.class"
+    " expressions"
+    " extensions"
+    " fontunderline"
+    " gc"
+    " import.synonym.bg"
+    " import.synonym.description"
+    " import.synonym.due"
+    " import.synonym.end"
+    " import.synonym.entry"
+    " import.synonym.fg"
+    " import.synonym.id"
+    " import.synonym.priority"
+    " import.synonym.project"
+    " import.synonym.recur"
+    " import.synonym.start"
+    " import.synonym.status"
+    " import.synonym.tags"
+    " import.synonym.uuid"
+    " indent.annotation"
+    " indent.report"
+    " journal.info"
+    " journal.time"
+    " journal.time.start.annotation"
+    " journal.time.stop.annotation"
+    " list.all.projects"
+    " list.all.tags"
+    " locale"
+    " locking"
+    " merge.autopush"
+    " merge.default.uri"
+    " monthsperline"
+    " nag"
+    " patterns"
+    " project"
+    " pull.default.uri"
+    " push.default.uri"
+    " recurrence.indicator"
+    " recurrence.limit"
+    " regex"
+    " row.padding"
+    " rule.precedence.color"
+    " search.case.sensitive"
+    " shadow.command"
+    " shadow.file"
+    " shadow.notify"
+    " shell.prompt"
+    " tag.indicator"
+    " undo.style"
+    " urgency.active.coefficient"
+    " urgency.annotations.coefficient"
+    " urgency.blocked.coefficient"
+    " urgency.blocking.coefficient"
+    " urgency.due.coefficient"
+    " urgency.next.coefficient"
+    " urgency.priority.coefficient"
+    " urgency.project.coefficient"
+    " urgency.tags.coefficient"
+    " urgency.waiting.coefficient"
+    " verbose"
+    " weekstart"
+    " xterm.title";
 
   // This configuration variable is supported, but not documented.  It exists
   // so that unit tests can force color to be on even when the output from task
@@ -159,8 +257,24 @@ int CmdShow::execute (std::string& output)
 
   std::string section;
 
+  // Look for the first plausible argument which could be a pattern 
+  // TODO Replace this 'section' assessment with something that scans the
+  //      arguments and pulls out either <word> or <pattern> strings to use as
+  //      search items.
+/*
   if (context.args.size () == 2)
     section = context.args[1];
+*/
+/*
+  Arguments args = context.args.extract_read_only_filter ();
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = args.begin (); arg != args.end (); ++arg)
+  {
+    if (arg->second == "string")
+    {
+    }
+  }
+*/
 
   if (section == "all")
     section = "";
@@ -309,7 +423,6 @@ int CmdShow::execute (std::string& output)
   }
 
   output = out.str ();
-*/
   return rc;
 }
 

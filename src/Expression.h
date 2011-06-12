@@ -49,7 +49,10 @@ private:
   void expand_attmod ();
   void expand_word ();
   void expand_expression ();
+  void expand_tokens ();
   void postfix ();
+
+  bool is_new_style ();
 
 private:
   Arguments _args;

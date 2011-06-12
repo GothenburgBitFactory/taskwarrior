@@ -25,12 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove.
 #include <sstream>
 #include <Context.h>
 #include <Lexer.h>
 #include <Date.h>
 #include <Duration.h>
+#include <Nibbler.h>
 #include <Variant.h>
 #include <text.h>
 #include <Expression.h>
@@ -44,15 +44,26 @@ Expression::Expression (Arguments& arguments)
 {
   _args.dump ("Expression::Expression");
 
-  expand_sequence ();
-  implicit_and ();
-  expand_tag ();
-  expand_pattern ();      // Configurable
-  expand_attr ();
-  expand_attmod ();
-  expand_word ();
-  expand_expression ();   // Configurable
-  postfix ();
+  if (is_new_style () && context.config.getBoolean ("expressions"))
+  {
+    context.debug ("Filter --> new");
+    expand_sequence ();
+    expand_tokens ();
+    postfix ();
+  }
+  else
+  {
+    context.debug ("Filter --> old");
+    expand_sequence ();
+    implicit_and ();
+    expand_tag ();
+    expand_pattern ();
+    expand_attr ();
+    expand_attmod ();
+    expand_word ();
+    expand_expression ();
+    postfix ();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -175,6 +186,42 @@ void Expression::expand_sequence ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Nibble the whole thing.
+void Expression::expand_tokens ()
+{
+  Arguments temp;
+
+  // Get a list of all operators.
+  std::vector <std::string> operators = Arguments::operator_list ();
+
+  // Look at all args.
+  std::string s;
+  int i;
+  double d;
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
+  {
+    Nibbler n (arg->first);
+
+    if (n.getQuoted ('"', s, true) ||
+        n.getQuoted ('\'', s, true))
+      temp.push_back (std::make_pair (s, "string"));
+
+    else if (n.getNumber (d))
+      temp.push_back (std::make_pair (format (d), "number"));
+
+    else if (n.getInt (i))
+      temp.push_back (std::make_pair (format (i), "int"));
+
+    else
+      temp.push_back (*arg);
+  }
+
+  _args.swap (temp);
+  _args.dump ("Expression::expand_tokens");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Inserts the 'and' operator by default between terms that are not separated by
 // at least one operator.
 //
@@ -230,7 +277,7 @@ void Expression::expand_tag ()
 
       temp.push_back (std::make_pair ("tags", "lvalue"));
       temp.push_back (std::make_pair (type == '+' ? "~" : "!~", "op"));
-      temp.push_back (std::make_pair (value, "rvalue"));
+      temp.push_back (std::make_pair (value, "string"));
       delta = true;
     }
     else
@@ -262,7 +309,7 @@ void Expression::expand_pattern ()
 
       temp.push_back (std::make_pair ("description", "lvalue"));
       temp.push_back (std::make_pair ("~", "op"));
-      temp.push_back (std::make_pair (value, "rvalue"));
+      temp.push_back (std::make_pair (value, "rx"));
       delta = true;
     }
     else
@@ -293,6 +340,7 @@ void Expression::expand_attr ()
       std::string name;
       std::string value;
       Arguments::extract_attr (arg->first, name, value);
+      Arguments::is_attribute (name, name);
 
       // Always quote the value, so that empty values, or values containing spaces
       // are preserved.
@@ -327,13 +375,13 @@ void Expression::expand_attmod ()
   {
     if (arg->second == "attmod")
     {
-      // TODO Should canonicalize 'name'.
       std::string name;
-      // TODO Should canonicalize 'mod'.
       std::string mod;
       std::string value;
       std::string sense;
       Arguments::extract_attmod (arg->first, name, mod, value, sense);
+      Arguments::is_attribute (name, name);
+      Arguments::is_modifier (mod);
 
       // Always quote the value, so that empty values, or values containing spaces
       // are preserved.
@@ -356,13 +404,13 @@ void Expression::expand_attmod ()
       {
         temp.push_back (std::make_pair (name, "lvalue"));
         temp.push_back (std::make_pair ("==", "op"));
-        temp.push_back (std::make_pair ("\"\"", "rvalue"));
+        temp.push_back (std::make_pair ("\"\"", "string"));
       }
       else if (mod == "any")
       {
         temp.push_back (std::make_pair (name, "lvalue"));
         temp.push_back (std::make_pair ("!=", "op"));
-        temp.push_back (std::make_pair ("\"\"", "rvalue"));
+        temp.push_back (std::make_pair ("\"\"", "string"));
       }
       else if (mod == "is" || mod == "equals")
       {
@@ -443,7 +491,7 @@ void Expression::expand_word ()
     {
       temp.push_back (std::make_pair ("description", "lvalue"));
       temp.push_back (std::make_pair ("~", "op"));
-      temp.push_back (std::make_pair (arg->first, "rvalue"));
+      temp.push_back (std::make_pair ("\"" + arg->first + "\"", "rvalue"));
 
       delta = true;
     }
@@ -477,34 +525,75 @@ void Expression::expand_expression ()
   {
     if (arg->second == "exp")
     {
-      // Remove quotes.
-      arg->first = unquoteText (arg->first);
+      // Split expression into space-separated tokens.
+      std::vector <std::string> tokens;
+      split (tokens, unquoteText (arg->first), ' ');
 
-      if (Date::valid (arg->first, context.config.get ("dateformat")))
-        temp.push_back (std::make_pair (arg->first, "date"));
-
-      else if (Duration::valid (arg->first))
-        temp.push_back (std::make_pair (arg->first, "duration"));
-
-      // The expression does not appear to be syntactic sugar, so it should be
-      // lexed.
-      else
+      std::vector <std::string>::iterator token;
+      for (token = tokens.begin (); token != tokens.end (); ++token)
       {
-        Lexer lexer (arg->first);
-        lexer.skipWhitespace (true);
-        lexer.coalesceAlpha (true);
-        lexer.coalesceDigits (true);
-        lexer.coalesceQuoted (true);
+        if (Date::valid (*token, context.config.get ("dateformat")))
+          temp.push_back (std::make_pair (*token, "date"));
 
-        std::vector <std::string> tokens;
-        lexer.tokenize (tokens);
+        else if (Duration::valid (*token))
+          temp.push_back (std::make_pair (*token, "duration"));
 
-        std::vector <std::string>::iterator token;
-        for (token = tokens.begin (); token != tokens.end (); ++token)
-          temp.push_back (
-            std::make_pair (
-              *token,
-              (_args.is_operator (*token) ? "op" : "dom")));
+        else if (Arguments::is_id (*token))
+          temp.push_back (std::make_pair (*token, "int"));
+
+        else if (Arguments::is_uuid (*token))
+          temp.push_back (std::make_pair (*token, "string"));
+
+        else if (Arguments::is_operator (*token))
+          temp.push_back (std::make_pair (*token, "op"));
+
+        // The expression does not appear to be syntactic sugar, so it should be
+        // lexed.
+        else
+        {
+          Lexer lexer (*token);
+          lexer.skipWhitespace (true);
+          lexer.coalesceAlpha (true);
+          lexer.coalesceDigits (true);
+          lexer.coalesceQuoted (true);
+
+          // Each operator of length > 1 is a special token.
+          std::vector <std::string>::iterator op;
+          for (op = operators.begin (); op != operators.end (); ++op)
+            if (op->length () > 1)
+              lexer.specialToken (*op);
+
+          std::vector <std::string> ltokens;
+          lexer.tokenize (ltokens);
+
+          std::vector <std::string>::iterator ltoken;
+          for (ltoken = ltokens.begin (); ltoken != ltokens.end (); ++ltoken)
+          {
+            if (Date::valid (*ltoken, context.config.get ("dateformat")))
+              temp.push_back (std::make_pair (*ltoken, "date"));
+
+            else if (Duration::valid (*ltoken))
+              temp.push_back (std::make_pair (*ltoken, "duration"));
+
+            else if (Arguments::is_id (*ltoken))
+              temp.push_back (std::make_pair (*ltoken, "int"));
+
+            else if (Arguments::is_uuid (*ltoken))
+              temp.push_back (std::make_pair (*ltoken, "string"));
+
+            else if (Arguments::is_operator (*ltoken))
+              temp.push_back (std::make_pair (*ltoken, "op"));
+
+            else if (Arguments::is_id (*ltoken))
+              temp.push_back (std::make_pair (*ltoken, "int"));
+
+            else if (Arguments::is_uuid (*ltoken))
+              temp.push_back (std::make_pair (*ltoken, "string"));
+
+            else
+              temp.push_back (std::make_pair (*ltoken, "lvalue"));
+          }
+        }
       }
 
       delta = true;
@@ -621,6 +710,24 @@ void Expression::postfix ()
 
   _args.swap (temp);
   _args.dump ("Expression::toPostfix");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Test whether the _original arguments are old style or new style.
+//
+// Old style:  no single argument corresponds to an operator, ie no 'and', 'or',
+//             etc.
+//
+// New style:  at least one argument that is an operator.
+//
+bool Expression::is_new_style ()
+{
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
+    if (Arguments::is_symbol_operator (arg->first))
+      return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

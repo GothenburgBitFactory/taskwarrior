@@ -95,6 +95,8 @@ std::string Config::defaults =
   "burndown.bias=0.666                            # Weighted mean bias toward recent data\n"
   "regex=no                                       # Assume all search/filter strings are regexes\n"
   "xterm.title=no                                 # Sets xterm title for some commands\n"
+  "expressions=on                                 # Support for algebraic expressions\n"
+  "patterns=on                                    # Support for regex patterns\n"
   "\n"
   "# Dates\n"
   "dateformat=m/d/Y                               # Preferred input and display date format\n"

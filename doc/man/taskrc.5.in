@@ -300,6 +300,16 @@ among users that are not comfortable with regular expressions.
 Sets the xterm window title when reports are run.  Defaults to off.
 
 .TP
+.B patterns=on
+Enables or disables pattern support on the command line, such as /foo/.
+Defaults to on.
+
+.TP
+.B expressions=on
+Enables or disables algebraic expression support on the command line, such as
+"due<eom and (pri=H or pri=M)".  Defaults to on.
+
+.TP
 .B _forcecolor=no
 Taskwarrior shuts off color automatically when the output is not sent directly
 to a TTY.  For example, this command:

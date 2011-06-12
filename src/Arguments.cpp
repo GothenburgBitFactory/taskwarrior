@@ -41,6 +41,36 @@
 
 extern Context context;
 
+static const char* attributeNames[] =
+{
+  "entry",
+  "start",
+  "end",
+  "parent",
+  "uuid",
+  "mask",
+  "imask",
+  "limit",
+  "status",
+  "description",
+  "tags",
+  "urgency",
+  // Note that annotations are not listed.
+};
+
+static const char* modifiableAttributeNames[] =
+{
+  "project",
+  "priority",
+  "fg",
+  "bg",
+  "due",
+  "recur",
+  "until",
+  "wait",
+  "depends",
+};
+
 // Supported modifiers, synonyms on the same line.
 static const char* modifierNames[] =
 {
@@ -64,49 +94,52 @@ static struct
   std::string op;
   int         precedence;
   char        type;
+  int         symbol;
   char        associativity;
 } operators[] =
 {
-  // Operator  Precedence  Type  Associativity
-  {  "^",      16,         'b',  'r' },    // Exponent
+  // Operator  Precedence  Type  Symbol  Associativity
+  {  "^",      16,         'b',  1,      'r' },    // Exponent
 
-  {  "!",      15,         'u',  'r' },    // Not
-  {  "not",    15,         'u',  'r' },    // Not
-  {  "-",      15,         'u',  'r' },    // Unary minus
+  {  "!",      15,         'u',  1,      'r' },    // Not
+  {  "not",    15,         'u',  0,      'r' },    // Not
+  {  "-",      15,         'u',  1,      'r' },    // Unary minus
 
-  {  "*",      13,         'b',  'l' },    // Multiplication
-  {  "/",      13,         'b',  'l' },    // Division
-  {  "%",      13,         'b',  'l' },    // Modulus
+  {  "*",      13,         'b',  1,      'l' },    // Multiplication
+  {  "/",      13,         'b',  1,      'l' },    // Division
+  {  "%",      13,         'b',  1,      'l' },    // Modulus
 
-  {  "+",      12,         'b',  'l' },    // Addition
-  {  "-",      12,         'b',  'l' },    // Subtraction
+  {  "+",      12,         'b',  1,      'l' },    // Addition
+  {  "-",      12,         'b',  1,      'l' },    // Subtraction
 
-  {  "<",      10,         'b',  'l' },    // Less than
-  {  "lt",     10,         'b',  'l' },    // Less than
-  {  "<=",     10,         'b',  'l' },    // Less than or equal
-  {  "le",     10,         'b',  'l' },    // Less than or equal
-  {  ">=",     10,         'b',  'l' },    // Greater than or equal
-  {  "ge",     10,         'b',  'l' },    // Greater than or equal
-  {  ">",      10,         'b',  'l' },    // Greater than
-  {  "gt",     10,         'b',  'l' },    // Greater than
+  {  "<",      10,         'b',  1,      'l' },    // Less than
+  {  "lt",     10,         'b',  0,      'l' },    // Less than
+  {  "<=",     10,         'b',  1,      'l' },    // Less than or equal
+  {  "le",     10,         'b',  0,      'l' },    // Less than or equal
+  {  ">=",     10,         'b',  1,      'l' },    // Greater than or equal
+  {  "ge",     10,         'b',  0,      'l' },    // Greater than or equal
+  {  ">",      10,         'b',  1,      'l' },    // Greater than
+  {  "gt",     10,         'b',  0,      'l' },    // Greater than
 
-  {  "~",       9,         'b',  'l' },    // Regex match
-  {  "!~",      9,         'b',  'l' },    // Regex non-match
-  {  "=",       9,         'b',  'l' },    // Equal
-  {  "eq",      9,         'b',  'l' },    // Equal
-  {  "!=",      9,         'b',  'l' },    // Inequal
-  {  "ne",      9,         'b',  'l' },    // Inequal
+  {  "~",       9,         'b',  1,      'l' },    // Regex match
+  {  "!~",      9,         'b',  1,      'l' },    // Regex non-match
+  {  "=",       9,         'b',  1,      'l' },    // Equal
+  {  "eq",      9,         'b',  0,      'l' },    // Equal
+  {  "!=",      9,         'b',  1,      'l' },    // Inequal
+  {  "ne",      9,         'b',  0,      'l' },    // Inequal
 
-  {  "and",     5,         'b',  'l' },    // Conjunction
+  {  "and",     5,         'b',  0,      'l' },    // Conjunction
 
-  {  "or",      4,         'b',  'l' },    // Disjunction
+  {  "or",      4,         'b',  0,      'l' },    // Disjunction
 
-  {  "(",       0,         'b',  'l' },    // Precedence start
-  {  ")",       0,         'b',  'l' },    // Precedence end
+  {  "(",       0,         'b',  1,      'l' },    // Precedence start
+  {  ")",       0,         'b',  1,      'l' },    // Precedence end
 };
 
-#define NUM_MODIFIER_NAMES (sizeof (modifierNames) / sizeof (modifierNames[0]))
-#define NUM_OPERATORS      (sizeof (operators) / sizeof (operators[0]))
+#define NUM_ATT_NAMES            (sizeof (attributeNames) / sizeof (attributeNames[0]))
+#define NUM_MODIFIABLE_ATT_NAMES (sizeof (modifiableAttributeNames) / sizeof (modifiableAttributeNames[0]))
+#define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
+#define NUM_OPERATORS            (sizeof (operators) / sizeof (operators[0]))
 
 static const char* non_word_chars = " +-*/%()=<>!~";
 
@@ -180,6 +213,10 @@ void Arguments::categorize ()
   bool found_sequence                 = false;
   bool found_something_after_sequence = false;
   bool found_non_sequence             = false;
+
+  // Configurable support.
+  bool enable_expressions = context.config.getBoolean ("expressions");
+  bool enable_patterns    = context.config.getBoolean ("patterns");
 
   // Generate a vector of command keywords against which autoComplete can run.
   std::vector <std::string> keywords;
@@ -312,7 +349,7 @@ void Arguments::categorize ()
       }
 
       // /pattern/
-      else if (is_pattern (arg->first))
+      else if (enable_patterns && is_pattern (arg->first))
       {
         found_non_sequence = true;
         if (found_sequence)
@@ -332,7 +369,7 @@ void Arguments::categorize ()
       }
 
       // <expression>
-      else if (is_expression (arg->first))
+      else if (enable_expressions && is_expression (arg->first))
       {
         found_non_sequence = true;
         if (found_sequence)
@@ -636,8 +673,9 @@ bool Arguments::is_attr (const std::string& input)
           n.getUntilEOS (value)       ||
           n.depleted ())
       {
-        // TODO Validate and expand attribute name
-        return true;
+        // Validate and canonicalize attribute name.
+        if (is_attribute (name, name))
+          return true;
       }
     }
   }
@@ -688,9 +726,10 @@ bool Arguments::is_attmod (const std::string& input)
       {
         return ! is_expression (value);
 
-        // TODO Validate and expand attribute name
-        // TODO Validate and expand modifier name
-        return true;
+        // Validate and canonicalize attribute and modifier names.
+        if (is_attribute (name, name) &&
+            is_modifier (modifier))
+          return true;
       }
     }
   }
@@ -840,6 +879,57 @@ bool Arguments::is_operator (
       associativity = operators[i].associativity;
       return true;
     }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Arguments::is_symbol_operator (const std::string& input)
+{
+  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
+    if (operators[i].symbol &&
+        operators[i].op == input)
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Arguments::is_attribute (const std::string& input, std::string& canonical)
+{
+  // Guess at the full attribute name.
+  std::vector <std::string> candidates;
+  for (unsigned i = 0; i < NUM_ATT_NAMES; ++i)
+    candidates.push_back (attributeNames[i]);
+
+  for (unsigned i = 0; i < NUM_MODIFIABLE_ATT_NAMES; ++i)
+    candidates.push_back (modifiableAttributeNames[i]);
+
+  std::vector <std::string> matches;
+  autoComplete (input, candidates, matches);
+
+  if (matches.size () == 1)
+  {
+    canonical = matches[0];
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Arguments::is_modifier (const std::string& input)
+{
+  // Guess at the full attribute name.
+  std::vector <std::string> candidates;
+  for (unsigned i = 0; i < NUM_MODIFIER_NAMES; ++i)
+    candidates.push_back (modifierNames[i]);
+
+  std::vector <std::string> matches;
+  autoComplete (input, candidates, matches);
+
+  if (matches.size () == 1)
+    return true;
 
   return false;
 }
@@ -1322,16 +1412,23 @@ void Arguments::dump (const std::string& label)
   color_map["command"]  = Color ("black on cyan");
   color_map["rc"]       = Color ("bold white on red");
   color_map["override"] = Color ("white on red");
-  color_map["tag"]      = Color ("green on gray3");
-  color_map["pattern"]  = Color ("cyan on gray3");
-  color_map["attr"]     = Color ("bold red on gray3");
-  color_map["attmod"]   = Color ("bold red on gray3");
-  color_map["id"]       = Color ("yellow on gray3");
-  color_map["uuid"]     = Color ("yellow on gray3");
-  color_map["subst"]    = Color ("bold cyan on gray3");
-  color_map["op"]       = Color ("bold blue on gray3");
-  color_map["exp"]      = Color ("bold green on gray5");
-  color_map["none"]     = Color ("white on gray3");
+  color_map["tag"]      = Color ("green on gray2");
+  color_map["pattern"]  = Color ("cyan on gray2");
+  color_map["attr"]     = Color ("bold red on gray2");
+  color_map["attmod"]   = Color ("bold red on gray2");
+  color_map["id"]       = Color ("yellow on gray2");
+  color_map["uuid"]     = Color ("yellow on gray2");
+  color_map["subst"]    = Color ("bold cyan on gray2");
+  color_map["exp"]      = Color ("bold green on gray2");
+  color_map["none"]     = Color ("white on gray2");
+
+  // Fundamentals.
+  color_map["lvalue"]   = Color ("bold green on rgb010");
+  color_map["op"]       = Color ("white on rgb010");
+  color_map["int"]      = Color ("bold yellow on rgb010");
+  color_map["number"]   = Color ("bold yellow on rgb010");
+  color_map["string"]   = Color ("bold yellow on rgb010");
+  color_map["rx"]       = Color ("bold red on rgb010");
 
   Color color_debug (context.config.get ("color.debug"));
   std::stringstream out;

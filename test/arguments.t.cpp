@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (113);
+  UnitTest t (103);
 
   const char* fake[] =
   {
@@ -72,12 +72,6 @@ int main (int argc, char** argv)
   t.ok (Arguments::is_attr ("name:\"one\""),                "name:\"one\"          -> attr");
   t.ok (Arguments::is_attr ("name:\"one two\""),            "name:\"one two\"      -> attr");
 
-  t.ok (Arguments::is_attr ("name="),                       "name=               -> attr");
-  t.ok (Arguments::is_attr ("name=\"\""),                   "name=\"\"             -> attr");
-  t.ok (Arguments::is_attr ("name=one"),                    "name=one            -> attr");
-  t.ok (Arguments::is_attr ("name=\"one\""),                "name=\"one\"          -> attr");
-  t.ok (Arguments::is_attr ("name=\"one two\""),            "name=\"one two\"      -> attr");
-
   t.notok (Arguments::is_attr ("name"),                     "name                -> not attr");
   t.notok (Arguments::is_attr ("(name=val and 1<2)"),      "(name=val and 1<2)   -> not attr");
 
@@ -87,12 +81,6 @@ int main (int argc, char** argv)
   t.ok (Arguments::is_attmod ("name.is:one"),               "name.is:one         -> attmod");
   t.ok (Arguments::is_attmod ("name.is:\"one\""),           "name.is:\"one\"       -> attmod");
   t.ok (Arguments::is_attmod ("name.is:\"one two\""),       "name.is:\"one two\"   -> attmod");
-
-  t.ok (Arguments::is_attmod ("name.is="),                  "name.is=            -> attmod");
-  t.ok (Arguments::is_attmod ("name.is=\"\""),              "name.is=\"\"          -> attmod");
-  t.ok (Arguments::is_attmod ("name.is=one"),               "name.is=one         -> attmod");
-  t.ok (Arguments::is_attmod ("name.is=\"one\""),           "name.is=\"one\"       -> attmod");
-  t.ok (Arguments::is_attmod ("name.is=\"one two\""),       "name.is=\"one two\"   -> attmod");
 
   t.notok (Arguments::is_attmod ("name"),                   "name                -> not attmod");
   t.notok (Arguments::is_attmod ("(name=value and 1<2"),    "(name=value and 1<2 -> not attmod");
@@ -202,24 +190,6 @@ int main (int argc, char** argv)
   t.ok    (Arguments::valid_modifier ("word"),          "word        -> modifier");
   t.ok    (Arguments::valid_modifier ("noword"),        "noword      -> modifier");
   t.notok (Arguments::valid_modifier ("duck"),          "duck        -> not modified");
-
-  // TODO void extract_uuids (std::vector <std::string>&);
-  // TODO void extract_filter ();
-  // TODO void extract_modifications ();
-  // TODO void extract_text ();
-
-  // TODO bool extract_attr (const std::string&, std::string&, std::string&);
-  // TODO bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
-  // TODO bool extract_subst (const std::string&, std::string&, std::string&, bool&);
-  // TODO bool extract_pattern (const std::string&, std::string&);
-  // TODO bool extract_id (const std::string&, std::vector <int>&);
-  // TODO bool extract_uuid (const std::string&, std::vector <std::string>&);
-  // TODO bool extract_tag (const std::string&, char&, std::string&);
-  // TODO bool extract_operator (const std::string&, std::string&);
-
-  // TODO Arguments extract_read_only_filter ();
-  // TODO Arguments extract_write_filter ();
-  // TODO Arguments extract_modifications ();
 
   return 0;
 }
