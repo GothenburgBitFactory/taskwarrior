@@ -34,6 +34,8 @@
    be verbose about.  See taskrc(5).
  + New 'execute' command that runs external programs.
  + The default export format is now JSON.
+ + The configuration variable 'json.array' determines whether 'query' command
+   output is enclosed by '[...]'.
 
 # Tracked Features, sorted by ID.
  + Added feature #330, which supports the 'inverse' color attribute.

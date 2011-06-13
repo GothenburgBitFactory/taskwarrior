@@ -75,7 +75,13 @@ int CmdQuery::execute (std::string& output)
   // Note: "limit:" feature not supported.
   // TODO Why not?
 
+  // Is output contained within a JSON array?
+  bool json_array = context.config.getBoolean ("json.array");
+
   // Compose output.
+  if (json_array)
+    output += "[\n";
+
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     if (task != filtered.begin ())
@@ -83,6 +89,9 @@ int CmdQuery::execute (std::string& output)
 
     output += task->composeJSON (true);
   }
+
+  if (json_array)
+    output += "\n]";
 
   output += "\n";
   return rc;

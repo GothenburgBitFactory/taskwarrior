@@ -43,6 +43,10 @@ New configuration options in taskwarrior 2.0.0
   - New 'color.label' for report column labels.
   - New 'verbose=...' support for individual verbosity settings.
   - New 'avoidlastcolumn' support for Cygwin users.
+  - New 'patterns' enables/disables command line pattern support.
+  - New 'expressions' enables/disables command line expression support.
+  - New 'json.array' determines whether 'query' command output is enclosed by
+    '[...]'.
 
 Newly deprecated features in taskwarrior 2.0.0
 

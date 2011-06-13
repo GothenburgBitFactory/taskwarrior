@@ -310,6 +310,11 @@ Enables or disables algebraic expression support on the command line, such as
 "due<eom and (pri=H or pri=M)".  Defaults to on.
 
 .TP
+.B json.array=off
+Determines whether the query command encloses the JSON output in '[...]' to
+create a properly-formed JSON array.  Defaults to off.
+
+.TP
 .B _forcecolor=no
 Taskwarrior shuts off color automatically when the output is not sent directly
 to a TTY.  For example, this command:
