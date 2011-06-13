@@ -162,10 +162,10 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   std::vector <int> widths;
   if (_width == 0 || sum_ideal <= overage)
     widths = ideal;
-  else if (sum_minimal > overage)
+  else if (sum_minimal > overage || overage < 0)
 //    throw std::string ("There is not enough horizontal width to display the results.");
     widths = minimal;
-  else
+  else if (overage > 0)
   {
     widths = minimal;
     overage -= sum_minimal;

@@ -57,9 +57,11 @@ void wrapText (
   std::string copy = text;
   std::string line;
 
+  int modified_width = width > 0 ? width : 1;
+
   while (copy.length ())  // Used as Boolean, therefore UTF8 safe.
   {
-    extractLine (copy, line, width);
+    extractLine (copy, line, modified_width);
     lines.push_back (line);
   }
 }

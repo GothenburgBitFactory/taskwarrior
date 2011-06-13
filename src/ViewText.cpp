@@ -151,10 +151,10 @@ std::string ViewText::render ()
   std::vector <int> widths;
   if (sum_ideal <= overage)
     widths = ideal;
-  else if (sum_minimal > overage)
+  else if (sum_minimal > overage || overage < 0)
 //    throw std::string ("There is not enough horizontal width to display the results.");
     widths = minimal;
-  else
+  else if (overage > 0)
   {
     widths = minimal;
     overage -= sum_minimal;
