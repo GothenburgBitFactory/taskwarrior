@@ -89,6 +89,8 @@ static const char* modifierNames[] =
 };
 
 // Supported operators, borrowed from C++, particularly the precedence.
+// Note: table is sorted by length of operator string, so searches match
+//       longest first.
 static struct
 {
   std::string op;
@@ -99,39 +101,27 @@ static struct
 } operators[] =
 {
   // Operator  Precedence  Type  Symbol  Associativity
+  {  "and",     5,         'b',  0,      'l' },    // Conjunction
+  {  "xor",     4,         'b',  0,      'l' },    // Disjunction
+
+  {  "or",      3,         'b',  0,      'l' },    // Disjunction
+  {  "<=",     10,         'b',  1,      'l' },    // Less than or equal
+  {  ">=",     10,         'b',  1,      'l' },    // Greater than or equal
+  {  "!~",      9,         'b',  1,      'l' },    // Regex non-match
+  {  "!=",      9,         'b',  1,      'l' },    // Inequal
+
+  {  "=",       9,         'b',  1,      'l' },    // Equal
   {  "^",      16,         'b',  1,      'r' },    // Exponent
-
+  {  ">",      10,         'b',  1,      'l' },    // Greater than
+  {  "~",       9,         'b',  1,      'l' },    // Regex match
   {  "!",      15,         'u',  1,      'r' },    // Not
-  {  "not",    15,         'u',  0,      'r' },    // Not
   {  "-",      15,         'u',  1,      'r' },    // Unary minus
-
   {  "*",      13,         'b',  1,      'l' },    // Multiplication
   {  "/",      13,         'b',  1,      'l' },    // Division
   {  "%",      13,         'b',  1,      'l' },    // Modulus
-
   {  "+",      12,         'b',  1,      'l' },    // Addition
   {  "-",      12,         'b',  1,      'l' },    // Subtraction
-
   {  "<",      10,         'b',  1,      'l' },    // Less than
-  {  "lt",     10,         'b',  0,      'l' },    // Less than
-  {  "<=",     10,         'b',  1,      'l' },    // Less than or equal
-  {  "le",     10,         'b',  0,      'l' },    // Less than or equal
-  {  ">=",     10,         'b',  1,      'l' },    // Greater than or equal
-  {  "ge",     10,         'b',  0,      'l' },    // Greater than or equal
-  {  ">",      10,         'b',  1,      'l' },    // Greater than
-  {  "gt",     10,         'b',  0,      'l' },    // Greater than
-
-  {  "~",       9,         'b',  1,      'l' },    // Regex match
-  {  "!~",      9,         'b',  1,      'l' },    // Regex non-match
-  {  "=",       9,         'b',  1,      'l' },    // Equal
-  {  "eq",      9,         'b',  0,      'l' },    // Equal
-  {  "!=",      9,         'b',  1,      'l' },    // Inequal
-  {  "ne",      9,         'b',  0,      'l' },    // Inequal
-
-  {  "and",     5,         'b',  0,      'l' },    // Conjunction
-
-  {  "or",      4,         'b',  0,      'l' },    // Disjunction
-
   {  "(",       0,         'b',  1,      'l' },    // Precedence start
   {  ")",       0,         'b',  1,      'l' },    // Precedence end
 };
@@ -724,8 +714,6 @@ bool Arguments::is_attmod (const std::string& input)
           n.getUntilEOS (value)       ||
           n.depleted ())
       {
-        return ! is_expression (value);
-
         // Validate and canonicalize attribute and modifier names.
         if (is_attribute (name, name) &&
             is_modifier (modifier))

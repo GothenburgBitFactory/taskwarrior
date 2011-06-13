@@ -48,7 +48,6 @@ private:
   void expand_attr ();
   void expand_attmod ();
   void expand_word ();
-  void expand_expression ();
   void expand_tokens ();
   void postfix ();
 

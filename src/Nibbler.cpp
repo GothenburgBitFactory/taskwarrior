@@ -909,6 +909,32 @@ bool Nibbler::getOneOf (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getDOM (std::string& found)
+{
+  std::string::size_type i     = mCursor;
+  std::string::size_type start = mCursor;
+
+  while (   isdigit (mInput[i]) ||
+            mInput[i] == '.'    ||
+            mInput[i] == '-'    ||
+            mInput[i] == '_'    ||
+         (! ispunct (mInput[i]) &&
+          ! isspace (mInput[i])))
+  {
+    ++i;
+  }
+
+  if (i > mCursor)
+  {
+    found = mInput.substr (start, i - start);
+    mCursor = i;
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipN (const int quantity /* = 1 */)
 {
   if (mCursor < mLength &&

@@ -65,6 +65,7 @@ public:
   bool getDateISO (time_t&);
   bool getDate (const std::string&, time_t&);
   bool getOneOf (const std::vector <std::string>&, std::string&);
+  bool getDOM (std::string&);
 
   bool skipN (const int quantity = 1);
   bool skip (char);

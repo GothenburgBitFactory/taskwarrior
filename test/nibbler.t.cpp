@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (242);
+  UnitTest t (257);
 
   try
   {
@@ -408,7 +408,26 @@ int main (int argc, char** argv)
     t.is    (s, "two",                        "   'twothreefour':   getOneOf () -> two");
     t.ok    (n.getOneOf (options, s),         "      'threefour':   getOneOf () -> true");
     t.is    (s, "three",                      "      'threefour':   getOneOf () -> three");
-    t.notok (n.getOneOf (options, s),         "           'four':   getOneOf () -> fasle");
+    t.notok (n.getOneOf (options, s),         "           'four':   getOneOf () -> false");
+
+    // bool getDOM (std::string&);
+    t.diag ("Nibbler::getDOM");
+    n = Nibbler ("one one.two one.two.three 1.project a0-a0-a0.due");
+    t.ok (n.getDOM (s),        "'one'              getDOM -> ok");
+    t.is (s, "one",            "'one'              getDOM -> 'one'");
+    t.ok (n.skipWS (),         "skipWS");
+    t.ok (n.getDOM (s),        "'one.two'          getDOM -> ok");
+    t.is (s, "one.two",        "'one.two'          getDOM -> ok");
+    t.ok (n.skipWS (),         "skipWS");
+    t.ok (n.getDOM (s),        "'one.two.three'    getDOM -> ok");
+    t.is (s, "one.two.three",  "'one.two.three'    getDOM -> ok");
+    t.ok (n.skipWS (),         "skipWS");
+    t.ok (n.getDOM (s),        "'1.project'        getDOM -> ok");
+    t.is (s, "1.project",      "'1.project'        getDOM -> ok");
+    t.ok (n.skipWS (),         "skipWS");
+    t.ok (n.getDOM (s),        "'a0-a0-a0.due'     getDOM -> ok");
+    t.is (s, "a0-a0-a0.due",   "'a0-a0-a0.due'     getDOM -> ok");
+    t.ok (n.depleted (),       "depleted");
 
     // bool getUntilEOL (std::string&);
     t.diag ("Nibbler::getUntilEOL");

@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove.
 #include <sstream>
 #include <Context.h>
 #include <Lexer.h>
@@ -61,7 +62,7 @@ Expression::Expression (Arguments& arguments)
     expand_attr ();
     expand_attmod ();
     expand_word ();
-    expand_expression ();
+    expand_tokens ();
     postfix ();
   }
 }
@@ -79,30 +80,35 @@ bool Expression::eval (Task& task)
   std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    // if (arg->second != "op")
-    //   value_stack.push_back (Variant (*arg));
+    if (arg->second == "op")
+    {
+      char type;
+      int precedence;
+      char associativity;
+      Arguments::is_operator (arg->first, type, precedence, associativity);
 
-    // else
-    // {
-    //   if (arg->first == "+")
-    //   {
-    //     pop
-    //     pop
-    //     add the two operands
-    //     push result
-    //   }
-    //   else if (arg->first == "?")
-    //   {
-    //   }
-    //   else if (arg->first == "?")
-    //   {
-    //   }
-    //   else
-    //    throw std::string ("Unsupported operator '") + arg->first + "'.";
-    // }
+      if (arg->first == "+")
+      {
+        // TODO pop
+        // TODO pop
+        // TODO add the operators
+        // TODO push the result
+      }
+
+
+/*
+      else
+        throw std::string ("Unsupported operator '") + arg->first + "'.";
+*/
+    }
+/*
+    else
+      value_stack.push_back (Variant (*arg));
+*/
   }
 
-  return true;
+  // TODO Return the value that is on the stack.
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -191,6 +197,7 @@ void Expression::expand_sequence ()
 void Expression::expand_tokens ()
 {
   Arguments temp;
+  bool delta = false;
 
   // Get a list of all operators.
   std::vector <std::string> operators = Arguments::operator_list ();
@@ -208,24 +215,48 @@ void Expression::expand_tokens ()
   std::vector <std::pair <std::string, std::string> >::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    Nibbler n (arg->first);
+    if (arg->second == "exp")
+    {
+      // Nibble each arg token by token.
+      Nibbler n (arg->first);
 
-    if (n.getQuoted ('"', s, true) ||
-        n.getQuoted ('\'', s, true))
-      temp.push_back (std::make_pair (s, "string"));
+      while (! n.depleted ())
+      {
+        if (n.getQuoted ('"', s, true) ||
+            n.getQuoted ('\'', s, true))
+          temp.push_back (std::make_pair (s, "string"));
 
-    else if (n.getNumber (d))
-      temp.push_back (std::make_pair (format (d), "number"));
+        else if (n.getOneOf (operators, s))
+          temp.push_back (std::make_pair (s, "op"));
 
-    else if (n.getInt (i))
-      temp.push_back (std::make_pair (format (i), "int"));
+        else if (n.getDOM (s))
+          temp.push_back (std::make_pair (s, "dom"));
 
-    else if (n.getDateISO (t))
-      temp.push_back (std::make_pair (Date (t).toISO (), "date"));
+        else if (n.getNumber (d))
+          temp.push_back (std::make_pair (format (d), "number"));
 
-    else if (n.getDate (date_format, t))
-      temp.push_back (std::make_pair (Date (t).toString (date_format), "date"));
+        else if (n.getInt (i))
+          temp.push_back (std::make_pair (format (i), "int"));
 
+        else if (n.getDateISO (t))
+          temp.push_back (std::make_pair (Date (t).toISO (), "date"));
+
+        else if (n.getDate (date_format, t))
+          temp.push_back (std::make_pair (Date (t).toString (date_format), "date"));
+
+        else
+        {
+          if (! n.getUntilWS (s))
+            n.getUntilEOS (s);
+
+          temp.push_back (std::make_pair (s, "?"));
+        }
+
+        n.skipWS ();
+      }
+
+      delta = true;
+    }
     else
       temp.push_back (*arg);
   }
@@ -516,109 +547,6 @@ void Expression::expand_word ()
   {
     _args.swap (temp);
     _args.dump ("Expression::expand_word");
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Look for "exp" arguments, and convert them to one of:
-//   "date"
-//   "duration"
-//   Lexer::tokenize
-void Expression::expand_expression ()
-{
-  Arguments temp;
-  bool delta = false;
-
-  // Get a list of all operators.
-  std::vector <std::string> operators = Arguments::operator_list ();
-
-  // Look for all 'exp' args.
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
-  for (arg = _args.begin (); arg != _args.end (); ++arg)
-  {
-    if (arg->second == "exp")
-    {
-      // Split expression into space-separated tokens.
-      std::vector <std::string> tokens;
-      split (tokens, unquoteText (arg->first), ' ');
-
-      std::vector <std::string>::iterator token;
-      for (token = tokens.begin (); token != tokens.end (); ++token)
-      {
-        if (Date::valid (*token, context.config.get ("dateformat")))
-          temp.push_back (std::make_pair (*token, "date"));
-
-        else if (Duration::valid (*token))
-          temp.push_back (std::make_pair (*token, "duration"));
-
-        else if (Arguments::is_id (*token))
-          temp.push_back (std::make_pair (*token, "int"));
-
-        else if (Arguments::is_uuid (*token))
-          temp.push_back (std::make_pair (*token, "string"));
-
-        else if (Arguments::is_operator (*token))
-          temp.push_back (std::make_pair (*token, "op"));
-
-        // The expression does not appear to be syntactic sugar, so it should be
-        // lexed.
-        else
-        {
-          Lexer lexer (*token);
-          lexer.skipWhitespace (true);
-          lexer.coalesceAlpha (true);
-          lexer.coalesceDigits (true);
-          lexer.coalesceQuoted (true);
-
-          // Each operator of length > 1 is a special token.
-          std::vector <std::string>::iterator op;
-          for (op = operators.begin (); op != operators.end (); ++op)
-            if (op->length () > 1)
-              lexer.specialToken (*op);
-
-          std::vector <std::string> ltokens;
-          lexer.tokenize (ltokens);
-
-          std::vector <std::string>::iterator ltoken;
-          for (ltoken = ltokens.begin (); ltoken != ltokens.end (); ++ltoken)
-          {
-            if (Date::valid (*ltoken, context.config.get ("dateformat")))
-              temp.push_back (std::make_pair (*ltoken, "date"));
-
-            else if (Duration::valid (*ltoken))
-              temp.push_back (std::make_pair (*ltoken, "duration"));
-
-            else if (Arguments::is_id (*ltoken))
-              temp.push_back (std::make_pair (*ltoken, "int"));
-
-            else if (Arguments::is_uuid (*ltoken))
-              temp.push_back (std::make_pair (*ltoken, "string"));
-
-            else if (Arguments::is_operator (*ltoken))
-              temp.push_back (std::make_pair (*ltoken, "op"));
-
-            else if (Arguments::is_id (*ltoken))
-              temp.push_back (std::make_pair (*ltoken, "int"));
-
-            else if (Arguments::is_uuid (*ltoken))
-              temp.push_back (std::make_pair (*ltoken, "string"));
-
-            else
-              temp.push_back (std::make_pair (*ltoken, "lvalue"));
-          }
-        }
-      }
-
-      delta = true;
-    }
-    else
-      temp.push_back (*arg);
-  }
-
-  if (delta)
-  {
-    _args.swap (temp);
-    _args.dump ("Expression::expand_expression");
   }
 }
 

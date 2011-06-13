@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (103);
+  UnitTest t (97);
 
   const char* fake[] =
   {
@@ -66,21 +66,21 @@ int main (int argc, char** argv)
         "combine good");
 
   // bool is_attr (const std::string&);
-  t.ok (Arguments::is_attr ("name:"),                       "name:               -> attr");
-  t.ok (Arguments::is_attr ("name:\"\""),                   "name:\"\"             -> attr");
-  t.ok (Arguments::is_attr ("name:one"),                    "name:one            -> attr");
-  t.ok (Arguments::is_attr ("name:\"one\""),                "name:\"one\"          -> attr");
-  t.ok (Arguments::is_attr ("name:\"one two\""),            "name:\"one two\"      -> attr");
+  t.ok (Arguments::is_attr ("project:"),                       "name:               -> attr");
+  t.ok (Arguments::is_attr ("project:\"\""),                   "name:\"\"             -> attr");
+  t.ok (Arguments::is_attr ("project:one"),                    "name:one            -> attr");
+  t.ok (Arguments::is_attr ("project:\"one\""),                "name:\"one\"          -> attr");
+  t.ok (Arguments::is_attr ("project:\"one two\""),            "name:\"one two\"      -> attr");
 
   t.notok (Arguments::is_attr ("name"),                     "name                -> not attr");
   t.notok (Arguments::is_attr ("(name=val and 1<2)"),      "(name=val and 1<2)   -> not attr");
 
   // bool is_attmod (const std::string&);
-  t.ok (Arguments::is_attmod ("name.is:"),                  "name.is:            -> attmod");
-  t.ok (Arguments::is_attmod ("name.is:\"\""),              "name.is:\"\"          -> attmod");
-  t.ok (Arguments::is_attmod ("name.is:one"),               "name.is:one         -> attmod");
-  t.ok (Arguments::is_attmod ("name.is:\"one\""),           "name.is:\"one\"       -> attmod");
-  t.ok (Arguments::is_attmod ("name.is:\"one two\""),       "name.is:\"one two\"   -> attmod");
+  t.ok (Arguments::is_attmod ("project.is:"),                  "name.is:            -> attmod");
+  t.ok (Arguments::is_attmod ("project.is:\"\""),              "name.is:\"\"          -> attmod");
+  t.ok (Arguments::is_attmod ("project.is:one"),               "name.is:one         -> attmod");
+  t.ok (Arguments::is_attmod ("project.is:\"one\""),           "name.is:\"one\"       -> attmod");
+  t.ok (Arguments::is_attmod ("project.is:\"one two\""),       "name.is:\"one two\"   -> attmod");
 
   t.notok (Arguments::is_attmod ("name"),                   "name                -> not attmod");
   t.notok (Arguments::is_attmod ("(name=value and 1<2"),    "(name=value and 1<2 -> not attmod");
@@ -133,7 +133,6 @@ int main (int argc, char** argv)
   // bool is_operator (const std::string&);
   t.ok    (Arguments::is_operator ("^"),   "^   -> operator");
   t.ok    (Arguments::is_operator ("!"),   "!   -> operator");
-  t.ok    (Arguments::is_operator ("not"), "not -> operator");
   t.ok    (Arguments::is_operator ("-"),   "-   -> operator");
   t.ok    (Arguments::is_operator ("*"),   "*   -> operator");
   t.ok    (Arguments::is_operator ("/"),   "/   -> operator");
@@ -141,20 +140,15 @@ int main (int argc, char** argv)
   t.ok    (Arguments::is_operator ("+"),   "+   -> operator");
   t.ok    (Arguments::is_operator ("-"),   "-   -> operator");
   t.ok    (Arguments::is_operator ("<"),   "<   -> operator");
-  t.ok    (Arguments::is_operator ("lt"),  "lt  -> operator");
   t.ok    (Arguments::is_operator ("<="),  "<=  -> operator");
-  t.ok    (Arguments::is_operator ("le"),  "le  -> operator");
   t.ok    (Arguments::is_operator (">="),  ">=  -> operator");
-  t.ok    (Arguments::is_operator ("ge"),  "ge  -> operator");
   t.ok    (Arguments::is_operator (">"),   ">   -> operator");
-  t.ok    (Arguments::is_operator ("gt"),  "gt  -> operator");
   t.ok    (Arguments::is_operator ("~"),   "~   -> operator");
   t.ok    (Arguments::is_operator ("!~"),  "!~  -> operator");
   t.ok    (Arguments::is_operator ("="),   "=   -> operator");
-  t.ok    (Arguments::is_operator ("eq"),  "eq  -> operator");
   t.ok    (Arguments::is_operator ("!="),  "!=  -> operator");
-  t.ok    (Arguments::is_operator ("ne"),  "ne  -> operator");
   t.ok    (Arguments::is_operator ("and"), "and -> operator");
+  t.ok    (Arguments::is_operator ("xor"), "xor -> operator");
   t.ok    (Arguments::is_operator ("or"),  "or  -> operator");
   t.ok    (Arguments::is_operator ("("),   "(   -> operator");
   t.ok    (Arguments::is_operator (")"),   ")   -> operator");
@@ -165,7 +159,7 @@ int main (int argc, char** argv)
   t.ok    (Arguments::is_expression ("1+1"),   "1+1      -> expression");
   t.ok    (Arguments::is_expression ("a~b"),   "a~b      -> expression");
   t.ok    (Arguments::is_expression ("(1)"),   "(1)      -> expression");
-  t.ok    (Arguments::is_expression ("not a"), "not a    -> expression");
+  t.ok    (Arguments::is_expression ("!a"),    "!a       -> expression");
 
   // static bool valid_modifier (const std::string&);
   t.ok    (Arguments::valid_modifier ("before"),        "before      -> modifier");
