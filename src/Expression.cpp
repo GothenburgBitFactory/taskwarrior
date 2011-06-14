@@ -45,26 +45,26 @@ Expression::Expression (Arguments& arguments)
 {
   _args.dump ("Expression::Expression");
 
-  if (is_new_style () && context.config.getBoolean ("expressions"))
-  {
+  bool new_style = is_new_style () && context.config.getBoolean ("expressions");
+  if (new_style)
     context.debug ("Filter --> new");
-    expand_sequence ();
-    expand_tokens ();
-    postfix ();
-  }
   else
-  {
     context.debug ("Filter --> old");
-    expand_sequence ();
+
+  expand_sequence ();
+
+  if (new_style)
+  {
     implicit_and ();
     expand_tag ();
     expand_pattern ();
     expand_attr ();
     expand_attmod ();
     expand_word ();
-    expand_tokens ();
-    postfix ();
   }
+
+  expand_tokens ();
+  postfix ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +225,9 @@ void Expression::expand_tokens ()
         if (n.getQuoted ('"', s, true) ||
             n.getQuoted ('\'', s, true))
           temp.push_back (std::make_pair (s, "string"));
+
+        else if (n.getQuoted ('/', s, true))
+          temp.push_back (std::make_pair (s, "pattern"));
 
         else if (n.getOneOf (operators, s))
           temp.push_back (std::make_pair (s, "op"));

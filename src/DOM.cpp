@@ -230,7 +230,9 @@ bool DOM::is_primitive (const std::string& input)
 
   // String?
   Nibbler n (input);
-  if (n.getQuoted ('"', s) && n.depleted ())
+  if ((n.getQuoted ('"', s) ||
+       n.getQuoted ('\'', s)) &&
+      n.depleted ())
     return true;
 
   // Number?

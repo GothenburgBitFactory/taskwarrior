@@ -148,7 +148,17 @@ Arguments::~Arguments ()
 void Arguments::capture (int argc, const char** argv)
 {
   for (int i = 0; i < argc; ++i)
-    this->push_back (std::make_pair (argv[i], ""));
+  {
+    std::vector <std::string> parts;
+    if (is_multipart (argv[i], parts))
+    {
+      std::vector <std::string>::iterator part;
+      for (part = parts.begin (); part != parts.end (); ++part)
+        this->push_back (std::make_pair (*part, ""));
+    }
+    else
+      this->push_back (std::make_pair (argv[i], ""));
+  }
 
   categorize ();
 }
@@ -157,7 +167,16 @@ void Arguments::capture (int argc, const char** argv)
 // Add a pair with a category of "".
 void Arguments::capture (const std::string& arg)
 {
-  this->push_back (std::make_pair (arg, ""));
+  std::vector <std::string> parts;
+  if (is_multipart (arg, parts))
+  {
+    std::vector <std::string>::iterator part;
+    for (part = parts.begin (); part != parts.end (); ++part)
+      this->push_back (std::make_pair (*part, ""));
+  }
+  else
+    this->push_back (std::make_pair (arg, ""));
+
   categorize ();
 }
 
@@ -618,6 +637,26 @@ bool Arguments::find_command (std::string& command)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Arguments::is_multipart (
+  const std::string& input,
+  std::vector <std::string>& parts)
+{
+  parts.clear ();
+  Nibbler n (input);
+  std::string part;
+  while (n.getQuoted ('"', part)  ||
+         n.getQuoted ('\'', part) ||
+         n.getQuoted ('/', part) ||
+         n.getUntilWS (part))
+  {
+    n.skipWS ();
+    parts.push_back (part);
+  }
+
+  return parts.size () > 1 ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Arguments::is_command (
   const std::vector <std::string>& keywords,
   std::string& command)
@@ -758,12 +797,10 @@ bool Arguments::is_subst (const std::string& input)
 // /<pattern>/
 bool Arguments::is_pattern (const std::string& input)
 {
-  unsigned int length = input.length ();
-
-  if (input[0] == '/'          &&
-      length  > 2              &&
-      input[length - 1] == '/' &&
-      input.find ('/', 1) == length - 1)
+  Nibbler n (input);
+  std::string pattern;
+  if (input.length () > 2 &&
+      n.getQuoted ('/', pattern, true))
     return true;
 
   return false;
@@ -974,7 +1011,8 @@ bool Arguments::extract_attr (
     {
       // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
-      if (n.getQuoted   ('"', value) ||
+      if (n.getQuoted   ('"', value)  ||
+          n.getQuoted   ('\'', value) ||
           n.getUntilEOS (value))
       {
         return true;
@@ -1031,7 +1069,8 @@ bool Arguments::extract_attmod (
     {
       // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
-      if (n.getQuoted   ('"', value) ||
+      if (n.getQuoted   ('"', value)  ||
+          n.getQuoted   ('\'', value) ||
           n.getUntilEOS (value))
       {
         return true;
