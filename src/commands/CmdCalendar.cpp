@@ -29,6 +29,7 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <Context.h>
+#include <Expression.h>
 #include <ViewText.h>
 #include <text.h>
 #include <util.h>
@@ -52,7 +53,6 @@ int CmdCalendar::execute (std::string& output)
 {
   int rc = 0;
 
-/*
   // Each month requires 28 text columns width.  See how many will actually
   // fit.  But if a preference is specified, and it fits, use it.
   int width = context.getWidth ();
@@ -71,6 +71,16 @@ int CmdCalendar::execute (std::string& output)
   context.tdb.loadPending (tasks, filter);
   context.tdb.commit ();
   context.tdb.unlock ();
+
+  // Filter.
+  Arguments f = context.args.extract_read_only_filter ();
+  Expression e (f);
+
+  std::vector <Task> filtered;
+  std::vector <Task>::iterator task;
+  for (task = tasks.begin (); task != tasks.end (); ++task)
+    if (e.eval (*task))
+      filtered.push_back (*task);
 
   Date today;
   bool getpendingdate = false;
@@ -115,6 +125,7 @@ int CmdCalendar::execute (std::string& output)
   int argMonth = 0;
   int argYear = 0;
   bool argWholeYear = false;
+/*
   std::vector <std::string> args = context.args.list ();
   std::vector <std::string>::iterator arg;
   for (arg = args.begin (); arg != args.end (); ++arg)
@@ -154,6 +165,7 @@ int CmdCalendar::execute (std::string& output)
     else
       throw std::string ("Could not recognize argument '") + *arg + "'.";
   }
+*/
 
   // Supported combinations:
   //
@@ -180,11 +192,11 @@ int CmdCalendar::execute (std::string& output)
 
   // Now begin the data subset and rendering.
   int countDueDates = 0;
-  if (getpendingdate == true) {
+  if (getpendingdate == true)
+  {
     // Find the oldest pending due date.
     Date oldest (12,31,2037);
-    std::vector <Task>::iterator task;
-    for (task = tasks.begin (); task != tasks.end (); ++task)
+    for (task = filtered.begin (); task != filtered.end (); ++task)
     {
       if (task->getStatus () == Task::pending)
       {
@@ -277,7 +289,7 @@ int CmdCalendar::execute (std::string& output)
 
     out << "\n"
         << optionalBlankLine ()
-        << renderMonths (mFrom, yFrom, today, tasks, monthsPerLine)
+        << renderMonths (mFrom, yFrom, today, filtered, monthsPerLine)
         << "\n";
 
     mFrom += monthsPerLine;
@@ -350,10 +362,6 @@ int CmdCalendar::execute (std::string& output)
       // Display all due task in the report colorized not only the imminet ones
       context.config.set ("due", 0);
 
-      context.args.clear ();
-      context.filter.clear ();
-      context.sequence.clear ();
-
       std::string output;
       context.commands[report]->execute (output);
       out << output;
@@ -402,7 +410,6 @@ int CmdCalendar::execute (std::string& output)
   }
 
   output = out.str ();
-*/
   return rc;
 }
 

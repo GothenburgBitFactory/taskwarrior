@@ -39,6 +39,7 @@
 
 # Tracked Features, sorted by ID.
  + Added feature #330, which supports the 'inverse' color attribute.
+ + Added feature #479, which enables filtering for the 'calendar' command.
  + Added feature #523 & #659, adding 'status' as a reportable field (thanks to
    Peter De Poorter and Bryce Harrington).
  + Added feature #545, #610, #611, #646, which support complex aliases.
