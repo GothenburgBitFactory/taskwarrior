@@ -93,7 +93,7 @@ void ColumnDepends::measure (Task& task, int& minimum, int& maximum)
     }
   }
   else
-    throw format (STRING_BAD_COLUMN_FORMAT, 'depends', _style);
+    throw format (STRING_COLUMN_BAD_FORMAT, "depends", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
