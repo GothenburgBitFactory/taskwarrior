@@ -25,10 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <algorithm>
 #include <Context.h>
 #include <ColDepends.h>
 #include <text.h>
+#include <i18n.h>
 #include <main.h>
 
 extern Context context;
@@ -38,7 +41,7 @@ ColumnDepends::ColumnDepends ()
 {
   _type  = "string";
   _style = "default";
-  _label = "Depends";
+  _label = STRING_COLUMN_LABEL_DEP;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,8 +56,8 @@ void ColumnDepends::setStyle (const std::string& value)
 {
   _style = value;
 
-       if (_style == "indicator" && _label == "Depends") _label = _label.substr (0, context.config.get ("dependency.indicator").length ());
-  else if (_style == "count"     && _label == "Depends") _label = "Dep";
+       if (_style == "indicator" && _label == STRING_COLUMN_LABEL_DEP) _label = _label.substr (0, context.config.get ("dependency.indicator").length ());
+  else if (_style == "count"     && _label == STRING_COLUMN_LABEL_DEP) _label = STRING_COLUMN_LABEL_DEP_S;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +93,7 @@ void ColumnDepends::measure (Task& task, int& minimum, int& maximum)
     }
   }
   else
-    throw std::string ("Unrecognized column format 'depends.") + _style + "'";
+    throw format (STRING_BAD_COLUMN_FORMAT, 'depends', _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -95,6 +95,12 @@
 #define STRING_API_WARNING           "Warning: {1}"
 #define STRING_API_ERROR             "Error: {1}"
 
+// Columns
+#define STRING_COLUMN_BAD_FORMAT     "Unrecognized column format '{1}.{2}'"
+#define STRING_COLUMN_LABEL_DEP      "Depends"
+#define STRING_COLUMN_LABEL_DEP_S    "Dep"
+#define STRING_COLUMN_LABEL_DESC     "Description"
+
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
 

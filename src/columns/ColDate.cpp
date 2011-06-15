@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <stdlib.h>
 #include <math.h>
 #include <Context.h>
@@ -32,6 +34,7 @@
 #include <Date.h>
 #include <Duration.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -93,7 +96,7 @@ void ColumnDate::measure (Task& task, int& minimum, int& maximum)
       minimum = maximum = Duration (now - date).formatCompact ().length ();
     }
     else
-      throw std::string ("Unrecognized column format '") + _attribute + "." + _style + "'";
+      throw format (STRING_COLUMN_BAD_FORMAT, _attribute, _style);
   }
 }
 

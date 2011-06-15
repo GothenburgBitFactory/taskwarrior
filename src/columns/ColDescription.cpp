@@ -25,12 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <stdlib.h>
 #include <Context.h>
 #include <Date.h>
 #include <ColDescription.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -39,7 +42,7 @@ ColumnDescription::ColumnDescription ()
 {
   _type  = "string";
   _style = "default";
-  _label = "Description";
+  _label = STRING_COLUMN_LABEL_DESC;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +127,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   }
 
   else
-    throw std::string ("Unrecognized column format 'description.") + _style + "'";
+    throw format (STRING_COLUMN_BAD_FORMAT, "description.", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -141,11 +144,12 @@ void ColumnDescription::render (
   // ...
   if (_style == "default")
   {
+    int indent = context.config.getInteger ("indent.annotation");
+
     std::vector <Att> annos;
     task.getAnnotations (annos);
     if (annos.size ())
     {
-      int indent = context.config.getInteger ("indent.annotation");
       std::string format = context.config.get ("dateformat.annotation");
       if (format == "")
         format = context.config.get ("dateformat");
@@ -163,7 +167,10 @@ void ColumnDescription::render (
 
     std::vector <std::string>::iterator i;
     for (i = raw.begin (); i != raw.end (); ++i)
-      lines.push_back (color.colorize (leftJustify (*i, width)));
+      if (i == raw.begin ())
+        lines.push_back (color.colorize (leftJustify (*i, width)));
+      else
+        lines.push_back (color.colorize (leftJustify (std::string (indent, ' ') + *i, width)));
   }
 
   // This is a description
