@@ -130,14 +130,6 @@ int CmdDiagnostics::execute (std::string& output)
   out << bold.colorize ("Libraries")
       << "\n";
 
-  out << "  Readline: "
-#ifdef HAVE_LIBREADLINE
-      << std::setbase (16) << RL_READLINE_VERSION
-#else
-      << "n/a"
-#endif
-      << "\n";
-
   out << "       Lua: "
 #ifdef HAVE_LIBLUA
       << LUA_RELEASE
@@ -206,10 +198,6 @@ int CmdDiagnostics::execute (std::string& output)
 
   out << "   Locking: "
       << (context.config.getBoolean ("locking") ? "Enabled" : "Disabled")
-      << "\n";
-
-  out << "     Regex: "
-      << (context.config.getBoolean ("regex") ? "Enabled" : "Disabled")
       << "\n";
 
   // Determine rc.editor/$EDITOR/$VISUAL.

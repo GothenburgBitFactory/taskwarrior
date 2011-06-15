@@ -101,6 +101,8 @@
    active (thanks to Adam Wolk).
  + Fixed bug #785, which fixes a broken build on Solaris (thanks to Owen
    Clarke).
+ + Fixed bug #788, which reported regex and readline versions, even though they
+   are not used.
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
