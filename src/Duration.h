@@ -41,6 +41,7 @@ public:
   bool operator< (const Duration&);
   bool operator> (const Duration&);
   Duration& operator= (const Duration&);
+  Duration& operator- (const Duration&);
   ~Duration ();                          // Destructor
 
   operator time_t () const;

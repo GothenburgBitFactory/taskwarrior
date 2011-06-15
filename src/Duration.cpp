@@ -152,6 +152,13 @@ Duration& Duration::operator= (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Duration& Duration::operator- (const Duration& other)
+{
+  throw std::string ("Error: Duration::operator- unimplemented");
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string Duration::format () const
 {
   char formatted[24];
