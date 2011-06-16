@@ -25,12 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
 #include <util.h>
 #include <Nibbler.h>
 #include <Context.h>
+#include <text.h>
 #include <i18n.h>
 #include <Record.h>
 
@@ -94,7 +97,7 @@ void Record::parse (const std::string& input)
       n.depleted ())
   {
     if (line.length () == 0)
-      throw std::string ("Empty record in input.");
+      throw std::string (STRING_RECORD_EMPTY);
 
     Nibbler nl (line);
     Att a;
@@ -108,10 +111,10 @@ void Record::parse (const std::string& input)
     std::string remainder;
     nl.getUntilEOS (remainder);
     if (remainder.length ())
-      throw std::string ("Unrecognized characters at end of line.");
+      throw std::string (STRING_RECORD_JUNK_AT_EOL);
   }
   else
-    throw std::string ("Record not recognized as format 4.");
+    throw std::string (STRING_RECORD_NOT_FF4);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

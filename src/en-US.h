@@ -124,9 +124,18 @@
 // File
 #define STRING_FILE_PERMS            "Task does not have the correct permissions for '{1}'."
 
+// interactive
+#define STRING_INTERACTIVE_WIDTH     "Context::getWidth: determined width of {1} characters"
+#define STRING_INTERACTIVE_HEIGHT    "Context::getHeight: determined height of {1} characters"
+
 // Lua
 #define STRING_LUA_BAD_HOOK_DEF      "Malformed hook definition '{1}'."
 #define STRING_LUA_BAD_EVENT         "Unrecognized hook event '{1}'."
+
+// Record
+#define STRING_RECORD_EMPTY          "Empty record in input."
+#define STRING_RECORD_JUNK_AT_EOL    "Unrecognized characters at end of line."
+#define STRING_RECORD_NOT_FF4        "Record not recognized as format 4."
 
 // 'show' command
 #define STRING_CMD_SHOW              "Shows the entire task configuration variables or the ones containing substring."
