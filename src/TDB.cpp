@@ -124,9 +124,8 @@ void readTaskmods (std::vector <std::string> &input,
 //  |  |    open
 //  |  |    [lock]
 //  |  |
-//  |  |  +- TDB::load (Filter)
+//  |  |  +- TDB::load
 //  |  |  |    read all
-//  |  |  |    apply filter
 //  |  |  |    return subset
 //  |  |  |
 //  |  |  +- TDB::add (T)
@@ -238,12 +237,13 @@ void TDB::unlock ()
 // Returns number of filtered tasks.
 // Note: tasks.clear () is deliberately not called, to allow the combination of
 //       multiple files.
-int TDB::load (std::vector <Task>& tasks, Filter& filter)
+int TDB::load (std::vector <Task>& tasks)
 {
   // Special optimization: if the filter contains Att ('status', '', 'pending'),
   // and no other 'status' filters, then loadCompleted can be skipped.
   int numberStatusClauses = 0;
   int numberSimpleStatusClauses = 0;
+/*
   foreach (att, filter)
   {
     if (att->name () == "status")
@@ -256,12 +256,13 @@ int TDB::load (std::vector <Task>& tasks, Filter& filter)
         ++numberSimpleStatusClauses;
     }
   }
+*/
 
-  loadPending (tasks, filter);
+  loadPending (tasks);
 
   if (numberStatusClauses == 0 ||
       numberStatusClauses != numberSimpleStatusClauses)
-    loadCompleted (tasks, filter);
+    loadCompleted (tasks);
   else
     context.debug ("load optimization short circuit");
 
@@ -272,7 +273,7 @@ int TDB::load (std::vector <Task>& tasks, Filter& filter)
 // Returns number of filtered tasks.
 // Note: tasks.clear () is deliberately not called, to allow the combination of
 //       multiple files.
-int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
+int TDB::loadPending (std::vector <Task>& tasks)
 {
   Timer t ("TDB::loadPending");
 
@@ -316,6 +317,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
     }
 
     // Now filter and return.
+/*
     if (filter.size ())
     {
       foreach (task, mPending)
@@ -323,6 +325,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
           tasks.push_back (*task);
     }
     else
+*/
     {
       foreach (task, mPending)
         tasks.push_back (*task);
@@ -331,6 +334,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
     // Hand back any accumulated additions, if TDB::loadPending is being called
     // repeatedly.
     int fakeId = mId;
+/*
     if (filter.size ())
     {
       foreach (task, mNew)
@@ -341,6 +345,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
       }
     }
     else
+*/
     {
       foreach (task, mNew)
       {
@@ -364,7 +369,7 @@ int TDB::loadPending (std::vector <Task>& tasks, Filter& filter)
 // Returns number of filtered tasks.
 // Note: tasks.clear () is deliberately not called, to allow the combination of
 //       multiple files.
-int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
+int TDB::loadCompleted (std::vector <Task>& tasks)
 {
   Timer t ("TDB::loadCompleted");
 
@@ -401,6 +406,7 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
     }
 
     // Now filter and return.
+/*
     if (filter.size ())
     {
       foreach (task, mCompleted)
@@ -408,6 +414,7 @@ int TDB::loadCompleted (std::vector <Task>& tasks, Filter& filter)
           tasks.push_back (*task);
     }
     else
+*/
     {
       foreach (task, mCompleted)
         tasks.push_back (*task);
@@ -599,9 +606,8 @@ int TDB::gc ()
 
   lock ();
 
-  Filter filter;
   std::vector <Task> ignore;
-  loadPending (ignore, filter);
+  loadPending (ignore);
 
   // Search for dangling dependencies.  These are dependencies whose uuid cannot
   // be converted to an id by TDB.

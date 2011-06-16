@@ -51,8 +51,7 @@ int CmdUrgency::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  context.tdb.loadPending (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
 

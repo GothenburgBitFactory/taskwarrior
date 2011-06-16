@@ -32,7 +32,6 @@
 #include <vector>
 #include <string>
 #include <Location.h>
-#include <Filter.h>
 #include <Task.h>
 
 // Length of longest line.
@@ -53,9 +52,9 @@ public:
   void  lock (bool lockFile = true);
   void  unlock ();
 
-  int   load (std::vector <Task>&, Filter&);
-  int   loadPending (std::vector <Task>&, Filter&);
-  int   loadCompleted (std::vector <Task>&, Filter&);
+  int   load (std::vector <Task>&);
+  int   loadPending (std::vector <Task>&);
+  int   loadCompleted (std::vector <Task>&);
 
   const std::vector <Task>& getAllPending ();
   const std::vector <Task>& getAllNew ();

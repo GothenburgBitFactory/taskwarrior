@@ -17,7 +17,6 @@ set (task_SRCS API.cpp API.h
                Duration.cpp Duration.h
                Expression.cpp Expression.h
                File.cpp File.h
-               Filter.cpp Filter.h
                Hooks.cpp Hooks.h
                JSON.cpp JSON.h
                Lexer.cpp Lexer.h
@@ -26,7 +25,6 @@ set (task_SRCS API.cpp API.h
                Path.cpp Path.h
                Permission.cpp Permission.h
                Record.cpp Record.h
-               Sequence.cpp Sequence.h
                TDB.cpp TDB.h
                TDB2.cpp TDB2.h
                Task.cpp Task.h

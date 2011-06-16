@@ -368,7 +368,7 @@ void readTaskmods (std::vector <std::string> &input,
 //  |  |    open
 //  |  |    [lock]
 //  |  |
-//  |  |  +- TDB::load (Filter)
+//  |  |  +- TDB::load
 //  |  |  |    read all
 //  |  |  |    apply filter
 //  |  |  |    return subset

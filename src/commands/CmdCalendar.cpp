@@ -65,10 +65,9 @@ int CmdCalendar::execute (std::string& output)
 
   // Get all the tasks.
   std::vector <Task> tasks;
-  Filter filter;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.loadPending (tasks, filter);
+  context.tdb.loadPending (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
 

@@ -30,9 +30,7 @@
 
 #include <Command.h>
 #include <Column.h>
-#include <Filter.h>
 #include <Config.h>
-#include <Sequence.h>
 #include <Task.h>
 #include <TDB.h>
 #include <TDB2.h>
@@ -77,8 +75,6 @@ private:
   void determineDataLocation ();
   void createDefaultConfig ();
   void loadAliases ();
-//  void autoFilter (Att&, Filter&);
-//  void autoFilter (Filter&);
   void updateXtermTitle ();
 
 public:

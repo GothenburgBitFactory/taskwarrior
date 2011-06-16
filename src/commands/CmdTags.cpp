@@ -55,11 +55,10 @@ int CmdTags::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   int quantity = 0;
-  Filter filter;
   if (context.config.getBoolean ("list.all.tags"))
-    quantity += context.tdb.load (tasks, filter);
+    quantity += context.tdb.load (tasks);
   else
-    quantity += context.tdb.loadPending (tasks, filter);
+    quantity += context.tdb.loadPending (tasks);
 
   context.tdb.commit ();
   context.tdb.unlock ();
@@ -147,11 +146,10 @@ int CmdCompletionTags::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
 
-  Filter filter;
   if (context.config.getBoolean ("complete.all.tags"))
-    context.tdb.load (tasks, filter);
+    context.tdb.load (tasks);
   else
-    context.tdb.loadPending (tasks, filter);
+    context.tdb.loadPending (tasks);
 
   context.tdb.commit ();
   context.tdb.unlock ();

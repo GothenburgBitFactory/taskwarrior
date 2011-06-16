@@ -343,13 +343,12 @@ Variant& Variant::operator- (const Variant& other)
     break;
 
   case v_date:
-    // TODO operator-= only takes integers.
-    //mDate -= other.mDate;
+    mDuration = Duration (mDate - other.mDate);
+    mType = v_duration;
     break;
 
   case v_duration:
-    // TODO Missing operator -=
-    //mDuration -= other.mDuration;
+    mDuration = mDuration - other.mDuration;
     break;
 
   case v_unknown:

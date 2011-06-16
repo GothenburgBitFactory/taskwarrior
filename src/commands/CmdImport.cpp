@@ -1178,8 +1178,7 @@ std::string CmdImport::YAML (const std::vector <std::string>& lines)
 
   // Load all the tasks so that the uuid uniqueness can be checked.
   std::vector <Task> tasks;
-  Filter filter;
-  context.tdb.load (tasks, filter);
+  context.tdb.load (tasks);
 
   Task t;
 

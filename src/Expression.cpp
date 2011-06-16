@@ -52,17 +52,12 @@ Expression::Expression (Arguments& arguments)
     context.debug ("Filter --> old");
 
   expand_sequence ();
-
-  if (new_style)
-  {
-    implicit_and ();
-    expand_tag ();
-    expand_pattern ();
-    expand_attr ();
-    expand_attmod ();
-    expand_word ();
-  }
-
+  implicit_and ();
+  expand_tag ();
+  expand_pattern ();
+  expand_attr ();
+  expand_attmod ();
+  expand_word ();
   expand_tokens ();
   postfix ();
 }
@@ -82,24 +77,111 @@ bool Expression::eval (Task& task)
   {
     if (arg->second == "op")
     {
+      // We already know it's an operator, but we need to know more.  Or do we?
+/*
       char type;
       int precedence;
       char associativity;
       Arguments::is_operator (arg->first, type, precedence, associativity);
+*/
 
+      // TODO Need helpers that pop, and error out if necessary.
       if (arg->first == "+")
       {
-        // TODO pop
-        // TODO pop
-        // TODO add the operators
-        // TODO push the result
+        // TODO This needs to be type-aware.
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left + right;
+
+        value_stack.push_back (left);
       }
 
 
-/*
+      else if (arg->first == "and")
+      {
+      }
+
+      else if (arg->first == "xor")
+      {
+      }
+
+      else if (arg->first == "or")
+      {
+      }
+
+      else if (arg->first == "<=")
+      {
+      }
+
+      else if (arg->first == ">=")
+      {
+      }
+
+      else if (arg->first == "!~")
+      {
+      }
+
+      else if (arg->first == "!=")
+      {
+      }
+
+      else if (arg->first == "=")
+      {
+      }
+
+      else if (arg->first == "^")
+      {
+      }
+
+      else if (arg->first == ">")
+      {
+      }
+
+      else if (arg->first == "~")
+      {
+      }
+
+      else if (arg->first == "!")
+      {
+      }
+
+      else if (arg->first == "*")
+      {
+      }
+
+      else if (arg->first == "/")
+      {
+      }
+
+      else if (arg->first == "%")
+      {
+      }
+
+      else if (arg->first == "+")
+      {
+      }
+
+      else if (arg->first == "-")
+      {
+      }
+
+      else if (arg->first == "<")
+      {
+      }
+
+      else if (arg->first == "(")
+      {
+      }
+
+      else if (arg->first == ")")
+      {
+      }
+
       else
         throw std::string ("Unsupported operator '") + arg->first + "'.";
-*/
     }
 /*
     else
@@ -107,6 +189,7 @@ bool Expression::eval (Task& task)
 */
   }
 
+  // TODO Any more values on stack?  Error.
   // TODO Return the value that is on the stack.
   return false;
 }

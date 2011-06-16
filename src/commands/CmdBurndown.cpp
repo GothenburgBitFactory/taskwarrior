@@ -987,8 +987,7 @@ int CmdBurndownMonthly::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  Filter filter;
-  context.tdb.load (tasks, filter);
+  context.tdb.load (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
 
@@ -1038,8 +1037,7 @@ int CmdBurndownWeekly::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  Filter filter;
-  context.tdb.load (tasks, filter);
+  context.tdb.load (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
 
@@ -1089,8 +1087,7 @@ int CmdBurndownDaily::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  Filter filter;
-  context.tdb.load (tasks, filter);
+  context.tdb.load (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
 

@@ -53,8 +53,7 @@ extern Context context;
 void handleRecurrence ()
 {
   std::vector <Task> tasks;
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  context.tdb.loadPending (tasks);
 
   std::vector <Task> modified;
 
@@ -441,10 +440,9 @@ bool nag (Task& task)
   {
     // Load all pending tasks.
     std::vector <Task> tasks;
-    Filter filter;
 
     // Piggy-back on existing locked TDB.
-    context.tdb.loadPending (tasks, filter);
+    context.tdb.loadPending (tasks);
 
     // Counters.
     int overdue    = 0;

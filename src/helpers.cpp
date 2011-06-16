@@ -133,8 +133,7 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
     int count_done = 0;
 
     std::vector <Task> all;
-    Filter filter;
-    context.tdb.load (all, filter);
+    context.tdb.load (all);
 
     countTasks (all,                           project, context.tdb.getAllModified (), count_pending, count_done);
     countTasks (context.tdb.getAllModified (), project, (std::vector <Task>) NULL,     count_pending, count_done);

@@ -30,7 +30,6 @@
 
 #include <string>
 #include <Record.h>
-#include <Sequence.h>
 
 class Task : public Record
 {
