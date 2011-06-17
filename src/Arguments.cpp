@@ -37,6 +37,7 @@
 #include <ViewText.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <Arguments.h>
 
 extern Context context;
@@ -111,11 +112,11 @@ static struct
   {  "!=",      9,         'b',  1,      'l' },    // Inequal
 
   {  "=",       9,         'b',  1,      'l' },    // Equal
-  {  "^",      16,         'b',  1,      'r' },    // Exponent
+//  {  "^",      16,         'b',  1,      'r' },    // Exponent
   {  ">",      10,         'b',  1,      'l' },    // Greater than
   {  "~",       9,         'b',  1,      'l' },    // Regex match
   {  "!",      15,         'u',  1,      'r' },    // Not
-  {  "-",      15,         'u',  1,      'r' },    // Unary minus
+//  {  "-",      15,         'u',  1,      'r' },    // Unary minus
   {  "*",      13,         'b',  1,      'l' },    // Multiplication
   {  "/",      13,         'b',  1,      'l' },    // Division
   {  "%",      13,         'b',  1,      'l' },    // Modulus
@@ -149,8 +150,11 @@ void Arguments::capture (int argc, const char** argv)
 {
   for (int i = 0; i < argc; ++i)
   {
+    // The "i != 0" guarantees that argv[0] does not get split, because it may
+    // be an absolute path, and Expression::expand_tokens would make a dog's
+    // dinner out of it.
     std::vector <std::string> parts;
-    if (is_multipart (argv[i], parts))
+    if (is_multipart (argv[i], parts) && i != 0)
     {
       std::vector <std::string>::iterator part;
       for (part = parts.begin (); part != parts.end (); ++part)
@@ -270,22 +274,16 @@ void Arguments::categorize ()
       }
 
       // rc:<file>
+      // Note: This doesn't break a sequence chain.
       else if (arg->first.substr (0, 3) == "rc:")
       {
-        found_non_sequence = true;
-        if (found_sequence)
-          found_something_after_sequence = true;
-
         arg->second = "rc";
       }
 
       // rc.<name>:<value>
+      // Note: This doesn't break a sequence chain.
       else if (arg->first.substr (0, 3) == "rc.")
       {
-        found_non_sequence = true;
-        if (found_sequence)
-          found_something_after_sequence = true;
-
         arg->second = "override";
       }
 
@@ -447,7 +445,7 @@ void Arguments::categorize ()
              found_sequence)
     {
       // TODO Invoke the info command.
-//      std::cout << STRING_ASSUME_INFO << "\n";
+      std::cout << STRING_ASSUME_INFO << "\n";
 //      parseCmd.command = "info";
     }
   }
@@ -925,10 +923,28 @@ bool Arguments::is_attribute (const std::string& input, std::string& canonical)
   // Guess at the full attribute name.
   std::vector <std::string> candidates;
   for (unsigned i = 0; i < NUM_ATT_NAMES; ++i)
+  {
+    // Short-circuit: exact matches cause immediate return.
+    if (attributeNames[i] == input)
+    {
+      canonical = input;
+      return true;
+    }
+
     candidates.push_back (attributeNames[i]);
+  }
 
   for (unsigned i = 0; i < NUM_MODIFIABLE_ATT_NAMES; ++i)
+  {
+    // Short-circuit: exact matches cause immediate return.
+    if (modifiableAttributeNames[i] == input)
+    {
+      canonical = input;
+      return true;
+    }
+
     candidates.push_back (modifiableAttributeNames[i]);
+  }
 
   std::vector <std::string> matches;
   autoComplete (input, candidates, matches);
@@ -948,7 +964,13 @@ bool Arguments::is_modifier (const std::string& input)
   // Guess at the full attribute name.
   std::vector <std::string> candidates;
   for (unsigned i = 0; i < NUM_MODIFIER_NAMES; ++i)
+  {
+    // Short-circuit: exact matches cause immediate return.
+    if (modifierNames[i] == input)
+      return true;
+
     candidates.push_back (modifierNames[i]);
+  }
 
   std::vector <std::string> matches;
   autoComplete (input, candidates, matches);

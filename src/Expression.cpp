@@ -46,12 +46,6 @@ Expression::Expression (Arguments& arguments)
 {
   _args.dump ("Expression::Expression");
 
-  bool new_style = is_new_style () && context.config.getBoolean ("expressions");
-  if (new_style)
-    context.debug ("Filter --> new");
-  else
-    context.debug ("Filter --> old");
-
   expand_sequence ();
   implicit_and ();
   expand_tag ();
@@ -84,108 +78,231 @@ bool Expression::eval (Task& task)
   {
     if (arg->second == "op")
     {
-      // We already know it's an operator, but we need to know more.  Or do we?
-/*
-      char type;
-      int precedence;
-      char associativity;
-      Arguments::is_operator (arg->first, type, precedence, associativity);
-*/
-
       // TODO Need helpers that pop, and error out if necessary.
-      if (arg->first == "+")
+      if (arg->first == "and")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
         Variant right (value_stack.back ());
         value_stack.pop_back ();
         Variant left (value_stack.back ());
         value_stack.pop_back ();
 
-        context.debug ("eval left=" + left.format ());
-        context.debug ("eval right=" + right.format ());
-        left = left + right;
-        context.debug ("eval + --> " + left.format ());
-
+        left = left && right;
         value_stack.push_back (left);
-      }
-
-      else if (arg->first == "and")
-      {
       }
 
       else if (arg->first == "xor")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = (left && !right) || (!left && right);
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "or")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left || right;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "<=")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left <= right;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == ">=")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left >= right;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "!~")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        // TODO
+/*
+  if left == "description" then it really means description or annotations or project.
+  if left == "tags" then it just means tags.
+*/
       }
 
       else if (arg->first == "!=")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left != right;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "=")
       {
-      }
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
 
-      else if (arg->first == "^")
-      {
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left == right;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == ">")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left > right;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "~")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        // TODO
+/*
+  if left == "description" then it really means description or annotations or project.
+  if left == "tags" then it just means tags.
+*/
       }
 
       else if (arg->first == "!")
       {
+        if (value_stack.size () < 1)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = ! left;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "*")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left * right;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "/")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left / right;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "%")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        // TODO Implement modulus.
       }
 
       else if (arg->first == "+")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left + right;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "-")
       {
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
+
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
+
+        left = left - right;
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "<")
       {
-      }
+        if (value_stack.size () < 2)
+          throw std::string ("Error: Insufficient operands.");
 
-      else if (arg->first == "(")
-      {
-      }
+        Variant right (value_stack.back ());
+        value_stack.pop_back ();
+        Variant left (value_stack.back ());
+        value_stack.pop_back ();
 
-      else if (arg->first == ")")
-      {
+        left = left < right;
+        value_stack.push_back (left);
       }
 
       else
@@ -196,7 +313,7 @@ bool Expression::eval (Task& task)
     else
     {
       if (arg->second == "lvalue")
-        value_stack.push_back (Variant (context.dom.get (arg->first)));
+        value_stack.push_back (Variant (context.dom.get (arg->first, task)));
 
       else if (arg->second == "int")
         value_stack.push_back (Variant ((int) strtol (arg->first.c_str (), NULL, 10)));
@@ -212,12 +329,11 @@ bool Expression::eval (Task& task)
       else
         throw std::string ("Error: Expression::eval unrecognized operand '") +   + "'.";
     }
-
   }
 
   // Coerce stack element to boolean.
   Variant result (value_stack.back ());
-  context.debug ("eval result=" + result.format ());
+  //context.debug ("eval result=" + result.format ());
   value_stack.pop_back ();
   bool pass_fail = result.boolean ();
 

@@ -63,26 +63,6 @@ DOM::~DOM ()
 //   context.width
 //   context.height
 //
-//   <id>.<?>
-//   <id>.{entry,start,end,due,until,wait}
-//   <id>.{entry,start,end,due,until,wait}.year
-//   <id>.{entry,start,end,due,until,wait}.month
-//   <id>.{entry,start,end,due,until,wait}.day
-//   <id>.{entry,start,end,due,until,wait}.hour
-//   <id>.{entry,start,end,due,until,wait}.minute
-//   <id>.{entry,start,end,due,until,wait}.second
-//   <id>.description
-//   <id>.project
-//   <id>.priority
-//   <id>.parent
-//   <id>.status
-//   <id>.tags
-//   <id>.urgency
-//   <id>.recur
-//   <id>.depends
-//
-//   <uuid>.<?>
-//
 //   TODO report.<name>.         <-- context.reports
 //   TODO stats.<name>           <-- context.stats
 //
@@ -93,8 +73,6 @@ const std::string DOM::get (const std::string& name)
 {
   int len = name.length ();
   Nibbler n (name);
-  int id;
-  std::string uuid;
 
   // Primitives
   if (is_primitive (name))
@@ -135,30 +113,6 @@ const std::string DOM::get (const std::string& name)
 
     else
       throw format (STRING_DOM_UNREC, name);
-  }
-
-  // <id>.<name>
-  else if (n.getInt (id))
-  {
-    if (n.skip ('.'))
-    {
-      std::string ref;
-      n.getUntilEOS (ref);
-
-      if (ref == "description")
-        ;
-        // TODO return task.get ("description");
-    }
-  }
-
-  // TODO <uuid>.<name>
-  else if (n.getUUID (uuid))
-  {
-    std::string attr;
-    if (n.skip ('.') &&
-        n.getUntilEOS (attr))
-    {
-    }
   }
 
   // TODO report.
@@ -203,6 +157,129 @@ const std::string DOM::get (const std::string& name)
   }
 
   return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// DOM Supported References:
+//
+//   TODO <id>.{entry,start,end,due,until,wait}
+//   TODO <id>.description
+//   TODO <id>.project
+//   TODO <id>.priority
+//   TODO <id>.parent
+//   TODO <id>.status
+//   TODO <id>.tags
+//   TODO <id>.urgency
+//   TODO <id>.recur
+//   TODO <id>.depends
+//
+//   TODO <uuid>.{entry,start,end,due,until,wait}
+//   TODO <uuid>.description
+//   TODO <uuid>.project
+//   TODO <uuid>.priority
+//   TODO <uuid>.parent
+//   TODO <uuid>.status
+//   TODO <uuid>.tags
+//   TODO <uuid>.urgency
+//   TODO <uuid>.recur
+//   TODO <uuid>.depends
+//
+//   {entry,start,end,due,until,wait}
+//   description
+//   project
+//   priority
+//   parent
+//   status
+//   tags
+//   urgency
+//   recur
+//   depends
+//
+const std::string DOM::get (const std::string& name, Task& task)
+{
+  Nibbler n (name);
+  int id;
+  std::string uuid;
+
+  // Primitives
+  if (is_primitive (name))
+    return name;
+
+  // <id>.<name>
+  else if (n.getInt (id))
+  {
+    if (n.skip ('.'))
+    {
+      // TODO Obtain task 'id' from TDB2.
+
+      std::string attr;
+      n.getUntilEOS (attr);
+
+           if (attr == "description")  return task.get ("description");
+      else if (attr == "status")       return task.get ("status");
+      else if (attr == "project")      return task.get ("project");
+      else if (attr == "priority")     return task.get ("priority");
+      else if (attr == "parent")       return task.get ("parent");
+      else if (attr == "tags")         return task.get ("tags");
+      else if (attr == "urgency")      return format (task.urgency (), 4, 3);
+      else if (attr == "recur")        return task.get ("recur");
+      else if (attr == "depends")      return task.get ("depends");
+      else if (attr == "entry")        return task.get ("entry");
+      else if (attr == "start")        return task.get ("start");
+      else if (attr == "end")          return task.get ("end");
+      else if (attr == "due")          return task.get ("due");
+      else if (attr == "until")        return task.get ("until");
+      else if (attr == "wait")         return task.get ("wait");
+    }
+  }
+
+  // <uuid>.<name>
+  else if (n.getUUID (uuid))
+  {
+    if (n.skip ('.'))
+    {
+      // TODO Obtain task 'uuid' from TDB2.
+
+      std::string attr;
+      n.getUntilEOS (attr);
+
+           if (attr == "description")  return task.get ("description");
+      else if (attr == "status")       return task.get ("status");
+      else if (attr == "project")      return task.get ("project");
+      else if (attr == "priority")     return task.get ("priority");
+      else if (attr == "parent")       return task.get ("parent");
+      else if (attr == "tags")         return task.get ("tags");
+      else if (attr == "urgency")      return format (task.urgency (), 4, 3);
+      else if (attr == "recur")        return task.get ("recur");
+      else if (attr == "depends")      return task.get ("depends");
+      else if (attr == "entry")        return task.get ("entry");
+      else if (attr == "start")        return task.get ("start");
+      else if (attr == "end")          return task.get ("end");
+      else if (attr == "due")          return task.get ("due");
+      else if (attr == "until")        return task.get ("until");
+      else if (attr == "wait")         return task.get ("wait");
+    }
+  }
+
+  // [<task>.] <name>
+       if (name == "description")  return task.get ("description");
+  else if (name == "status")       return task.get ("status");
+  else if (name == "project")      return task.get ("project");
+  else if (name == "priority")     return task.get ("priority");
+  else if (name == "parent")       return task.get ("parent");
+  else if (name == "tags")         return task.get ("tags");
+  else if (name == "urgency")      return format (task.urgency (), 4, 3);
+  else if (name == "recur")        return task.get ("recur");
+  else if (name == "depends")      return task.get ("depends");
+  else if (name == "entry")        return task.get ("entry");
+  else if (name == "start")        return task.get ("start");
+  else if (name == "end")          return task.get ("end");
+  else if (name == "due")          return task.get ("due");
+  else if (name == "until")        return task.get ("until");
+  else if (name == "wait")         return task.get ("wait");
+
+  // Delegate to the context-free version of DOM::get.
+  return this->get (name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -29,6 +29,7 @@
 #define L10N                                           // Localization complete.
 
 #include <string>
+#include <Task.h>
 #include <time.h>
 
 class DOM
@@ -38,6 +39,7 @@ public:
   ~DOM ();
 
   const std::string get (const std::string&);
+  const std::string get (const std::string&, Task&);
   void set (const std::string&, const std::string&);
 
 private:

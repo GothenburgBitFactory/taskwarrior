@@ -92,7 +92,7 @@ int CmdCustom::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-////////////////////////////////////
+  // Filter.
   Arguments f = context.args.extract_read_only_filter ();
   Expression e (f);
 
@@ -101,12 +101,6 @@ int CmdCustom::execute (std::string& output)
   for (task = tasks.begin (); task != tasks.end (); ++task)
     if (e.eval (*task))
       filtered.push_back (*task);
-
-  std::cout << "# tasks=" << tasks.size () << "\n"
-            << "# filtered=" << filtered.size () << "\n";
-//return 0;
-
-////////////////////////////////////
 
   // Sort the tasks.
   std::vector <int> sequence;

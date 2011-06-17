@@ -54,6 +54,9 @@ private:
   bool is_new_style ();
 
 private:
+
+
+private:
   Arguments _args;
 };
 
