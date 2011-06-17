@@ -927,6 +927,17 @@ bool Nibbler::getDOM (std::string& found)
   if (i > mCursor)
   {
     found = mInput.substr (start, i - start);
+
+    // If found is simple a number, then it is not a DOM reference.
+    double d;
+    Nibbler exclusion (found);
+    if (exclusion.getNumber (d) && exclusion.depleted ())
+      return false;
+
+    int in;
+    if (exclusion.getInt (in) && exclusion.depleted ())
+      return false;
+
     mCursor = i;
     return true;
   }

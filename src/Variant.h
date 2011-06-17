@@ -90,6 +90,7 @@ public:
   void cast (const variant_type);
   variant_type type ();
   void promote (Variant&, Variant&);
+  bool boolean ();
 
 private:
   variant_type mType;

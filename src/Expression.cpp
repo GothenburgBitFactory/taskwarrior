@@ -27,6 +27,7 @@
 
 #include <iostream> // TODO Remove.
 #include <sstream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Lexer.h>
 #include <Date.h>
@@ -70,6 +71,12 @@ Expression::~Expression ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Expression::eval (Task& task)
 {
+  // If there are no elements in the filter, then all tasks pass.
+  if (_args.size () == 0)
+    return true;
+
+  // There are elements in the filter, so the expression must be evaluated
+  // against each task.
   std::vector <Variant> value_stack;
 
   std::vector <std::pair <std::string, std::string> >::iterator arg;
@@ -88,17 +95,18 @@ bool Expression::eval (Task& task)
       // TODO Need helpers that pop, and error out if necessary.
       if (arg->first == "+")
       {
-        // TODO This needs to be type-aware.
         Variant right (value_stack.back ());
         value_stack.pop_back ();
         Variant left (value_stack.back ());
         value_stack.pop_back ();
 
+        context.debug ("eval left=" + left.format ());
+        context.debug ("eval right=" + right.format ());
         left = left + right;
+        context.debug ("eval + --> " + left.format ());
 
         value_stack.push_back (left);
       }
-
 
       else if (arg->first == "and")
       {
@@ -183,15 +191,41 @@ bool Expression::eval (Task& task)
       else
         throw std::string ("Unsupported operator '") + arg->first + "'.";
     }
-/*
+
+    // It's not an operator, it's either and lvalue or some form of rvalue.
     else
-      value_stack.push_back (Variant (*arg));
-*/
+    {
+      if (arg->second == "lvalue")
+        value_stack.push_back (Variant (context.dom.get (arg->first)));
+
+      else if (arg->second == "int")
+        value_stack.push_back (Variant ((int) strtol (arg->first.c_str (), NULL, 10)));
+
+      else if (arg->second == "number")
+        value_stack.push_back (Variant (strtod (arg->first.c_str (), NULL)));
+
+      else if (arg->second == "rvalue" ||
+               arg->second == "string" ||
+               arg->second == "rx")
+        value_stack.push_back (Variant (arg->first));
+
+      else
+        throw std::string ("Error: Expression::eval unrecognized operand '") +   + "'.";
+    }
+
   }
 
-  // TODO Any more values on stack?  Error.
-  // TODO Return the value that is on the stack.
-  return false;
+  // Coerce stack element to boolean.
+  Variant result (value_stack.back ());
+  context.debug ("eval result=" + result.format ());
+  value_stack.pop_back ();
+  bool pass_fail = result.boolean ();
+
+  // Check for stack remnants.
+  if (value_stack.size ())
+    throw std::string ("Error: Expression::eval found extra items on the stack.");
+
+  return pass_fail;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -316,7 +350,7 @@ void Expression::expand_tokens ()
           temp.push_back (std::make_pair (s, "op"));
 
         else if (n.getDOM (s))
-          temp.push_back (std::make_pair (s, "dom"));
+          temp.push_back (std::make_pair (s, "lvalue"));
 
         else if (n.getNumber (d))
           temp.push_back (std::make_pair (format (d), "number"));
