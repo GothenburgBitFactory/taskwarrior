@@ -104,7 +104,7 @@ int CmdCustom::execute (std::string& output)
 
   std::cout << "# tasks=" << tasks.size () << "\n"
             << "# filtered=" << filtered.size () << "\n";
-return 0;
+//return 0;
 
 ////////////////////////////////////
 

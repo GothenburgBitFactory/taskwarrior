@@ -25,9 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
 #include <ColPriority.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -36,7 +39,7 @@ ColumnPriority::ColumnPriority ()
 {
   _type  = "string";
   _style = "default";
-  _label = "Pri";
+  _label = STRING_COLUMN_LABEL_PRI;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,8 +54,8 @@ void ColumnPriority::setStyle (const std::string& value)
 {
   _style = value;
 
-  if (_style == "long" && _label == "Pri")
-    _label = "Priority";
+  if (_style == "long" && _label == STRING_COLUMN_LABEL_PRI)
+    _label = STRING_COLUMN_LABEL_PRIORITY;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +72,7 @@ void ColumnPriority::measure (Task& task, int& minimum, int& maximum)
     else if (priority == "L") minimum = maximum = 3;
   }
   else if (_style != "default")
-    throw std::string ("Unrecognized column format 'priority.") + _style + "'";
+    throw format (STRING_COLUMN_BAD_FORMAT, "priority", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

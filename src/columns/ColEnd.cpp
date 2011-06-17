@@ -25,12 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <ColEnd.h>
+#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnEnd::ColumnEnd ()
 {
-  _label     = "Completed";
+  _label     = STRING_COLUMN_LABEL_COMPLETE;
   _attribute = "end";
 }
 

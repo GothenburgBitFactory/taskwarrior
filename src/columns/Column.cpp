@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
 #include <Column.h>
 #include <ColDepends.h>
@@ -45,6 +47,7 @@
 #include <ColUUID.h>
 #include <ColWait.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -91,7 +94,7 @@ Column* Column::factory (const std::string& name, const std::string& report)
   // Special non-task column
   else if (column_name == "string")      column = new ColumnString ();
   else
-    throw std::string ("Unrecognized column name '") + column_name + "'.";
+    throw format (STRING_COLUMN_BAD_NAME, column_name);
 
   column->setReport (report);
   column->setStyle (column_style);
@@ -174,24 +177,28 @@ void Column::renderHeader (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// No L10N.
 void Column::measure (const std::string&, int&, int&)
 {
   throw std::string ("Virtual method Column::measure not overriden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// No L10N.
 void Column::measure (Task&, int&, int&)
 {
   throw std::string ("Virtual method Column::measure not overriden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// No L10N.
 void Column::render (std::vector <std::string>&, const std::string&, int, Color&)
 {
   throw std::string ("Virtual method Column::render not overriden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// No L10N.
 void Column::render (std::vector <std::string>&, Task&, int, Color&)
 {
   throw std::string ("Virtual method Column::render not overriden.");

@@ -25,19 +25,22 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <stdlib.h>
 #include <Context.h>
 #include <ColDue.h>
 #include <Date.h>
 #include <Duration.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDue::ColumnDue ()
 {
-  _label     = "Due";
+  _label     = STRING_COLUMN_LABEL_DUE;
   _attribute = "due";
 }
 
@@ -53,8 +56,8 @@ void ColumnDue::setStyle (const std::string& value)
 {
   _style = value;
 
-  if (_style == "countdown" && _label == "Due")
-    _label = "Countdown";
+  if (_style == "countdown" && _label == STRING_COLUMN_LABEL_DUE)
+    _label = STRING_COLUMN_LABEL_COUNT;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

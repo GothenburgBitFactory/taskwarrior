@@ -27,8 +27,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 //
+// This file contains all the strings that should be localized.  If a string is
+// *not* in this file, then either:
+//   (a) it should not be localized, or
+//   (b) you have found a bug - please report it
+//
 // Strings that should be localized:
-//   - text output that the user sees or types
+//   - text output that the user sees
 //
 // Strings that should NOT be localized:
 //   - ./taskrc configuration variable names
@@ -38,12 +43,13 @@
 //   - debug strings
 //   - attribute names
 //   - modifier names
+//   - logical operators (and, or, xor)
 //
 // Rules:
 //   - Localized strings should contain leading or trailing white space,
 //     including \n, thus allowing the code to compose strings.
 //   - Retain the tense of the original string.
-//   - Retain the same verbosiy of the original string.
+//   - Retain the same degree of verbosity of the original string.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -78,13 +84,14 @@
 //      cmake -D PACKAGE_LANGUAGE=LANGUAGE_DE_DE .
 //      make
 //
-//   5. Submit your translation to support@taskwarrior.org, for inclusion in
-//      next release.
+//   5. Submit your translation to support@taskwarrior.org, where it will be
+//      shared with others.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
+#define L10N                                           // Localization complete.
 
 // API
 #define STRING_API_EXITING           "Exiting."
@@ -95,11 +102,54 @@
 #define STRING_API_WARNING           "Warning: {1}"
 #define STRING_API_ERROR             "Error: {1}"
 
-// Columns
+// columns/Col*
+#define STRING_COLUMN_BAD_NAME       "Unrecognized column name '{1}'"
 #define STRING_COLUMN_BAD_FORMAT     "Unrecognized column format '{1}.{2}'"
 #define STRING_COLUMN_LABEL_DEP      "Depends"
 #define STRING_COLUMN_LABEL_DEP_S    "Dep"
 #define STRING_COLUMN_LABEL_DESC     "Description"
+#define STRING_COLUMN_LABEL_DUE      "Due"
+#define STRING_COLUMN_LABEL_COUNT    "Count"
+#define STRING_COLUMN_LABEL_COMPLETE "Completed"
+#define STRING_COLUMN_LABEL_ADDED    "Added"
+#define STRING_COLUMN_LABEL_AGE      "Age"
+#define STRING_COLUMN_LABEL_ID       "ID"
+#define STRING_COLUMN_LABEL_PRI      "Pri"
+#define STRING_COLUMN_LABEL_PRIORITY "Priority"
+#define STRING_COLUMN_LABEL_PROJECT  "Project"
+#define STRING_COLUMN_LABEL_UNTIL    "Until"
+#define STRING_COLUMN_LABEL_WAIT     "Wait"
+#define STRING_COLUMN_LABEL_RECUR    "Recur"
+#define STRING_COLUMN_LABEL_STARTED  "Started"
+#define STRING_COLUMN_LABEL_ACTIVE   "A"
+#define STRING_COLUMN_LABEL_STATUS   "Status"
+#define STRING_COLUMN_LABEL_STAT     "St"
+#define STRING_COLUMN_LABEL_STAT_PE  "Pending"
+#define STRING_COLUMN_LABEL_STAT_CO  "Completed"
+#define STRING_COLUMN_LABEL_STAT_DE  "Deleted"
+#define STRING_COLUMN_LABEL_STAT_WA  "Waiting"
+#define STRING_COLUMN_LABEL_STAT_RE  "Recurring"
+#define STRING_COLUMN_LABEL_STAT_P   "P"
+#define STRING_COLUMN_LABEL_STAT_C   "C"
+#define STRING_COLUMN_LABEL_STAT_D   "D"
+#define STRING_COLUMN_LABEL_STAT_W   "W"
+#define STRING_COLUMN_LABEL_STAT_R   "R"
+#define STRING_COLUMN_LABEL_TAGS     "Tags"
+#define STRING_COLUMN_LABEL_TAG      "Tag"
+#define STRING_COLUMN_LABEL_UUID     "UUID"
+#define STRING_COLUMN_LABEL_URGENCY  "Urgency"
+
+// commands/Cmd*
+#define STRING_CMD_VERSION_USAGE     "Shows the taskwarrior version number."
+#define STRING_CMD_VERSION_USAGE2    "Shows only the taskwarrior version number."
+#define STRING_CMD_VERSION_GPL       "Taskwarrior may be copied only under the terms of the GNU General Public License, which may be found in the taskwarrior source kit."
+#define STRING_CMD_VERSION_DOCS      "Documentation for taskwarrior can be found using 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' or at http://taskwarrior.org"
+#define STRING_CMD_VERSION_BUILT     "{1} {2} built for "
+#define STRING_CMD_VERSION_UNKNOWN   "unknown"
+#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2011 P. Beckingham, F. Hernandez."
+#define STRING_CMD_VERSION_COPY2     "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio."
+#define STRING_CMD_LOGO_USAGE        "Displays the Taskwarrior logo"
+#define STRING_CMD_LOGO_COLOR_REQ    "The logo command requires that color support is enabled."
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
@@ -160,6 +210,18 @@
 #define STRING_UTF8_INVALID_CP_REP   "Invalid codepoint representation."
 #define STRING_UTF8_INVALID_CP       "Invalid Unicode codepoint."
 
+// util
+#define STRING_UTIL_CONFIRM_YN       " (y/n) "
+#define STRING_UTIL_CONFIRM_YES      "yes"
+#define STRING_UTIL_CONFIRM_YES_U    "Yes"
+#define STRING_UTIL_CONFIRM_NO       "no"
+#define STRING_UTIL_CONFIRM_ALL      "all"
+#define STRING_UTIL_CONFIRM_ALL_U    "All"
+#define STRING_UTIL_CONFIRM_QUIT     "quit"
+#define STRING_UTIL_GIBIBYTES        "GiB"
+#define STRING_UTIL_MEBIBYTES        "MiB"
+#define STRING_UTIL_KIBIBYTES        "KiB"
+#define STRING_UTIL_BYTES            "B"
 
 #endif
 

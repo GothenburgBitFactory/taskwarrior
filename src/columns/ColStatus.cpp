@@ -25,9 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
 #include <ColStatus.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -36,7 +39,7 @@ ColumnStatus::ColumnStatus ()
 {
   _type  = "string";
   _style = "default";
-  _label = "Status";
+  _label = STRING_COLUMN_LABEL_STATUS;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,8 +54,8 @@ void ColumnStatus::setStyle (const std::string& value)
 {
   _style = value;
 
-  if (_style == "short" && _label == "Status")
-    _label = "St";
+  if (_style == "short" && _label == STRING_COLUMN_LABEL_STATUS)
+    _label = STRING_COLUMN_LABEL_STAT;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +81,7 @@ void ColumnStatus::measure (Task& task, int& minimum, int& maximum)
   else if (_style == "short")
     minimum = maximum = 1;
   else
-    throw std::string ("Unrecognized column format 'status.") + _style + "'";
+    throw format (STRING_COLUMN_BAD_FORMAT, "status.", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -93,20 +96,20 @@ void ColumnStatus::render (
 
   if (_style == "default")
   {
-         if (status == Task::pending)   value = "Pending";
-    else if (status == Task::completed) value = "Completed";
-    else if (status == Task::deleted)   value = "Deleted";
-    else if (status == Task::waiting)   value = "Waiting";
-    else if (status == Task::recurring) value = "Recurring";
+         if (status == Task::pending)   value = STRING_COLUMN_LABEL_STAT_PE;
+    else if (status == Task::completed) value = STRING_COLUMN_LABEL_STAT_CO;
+    else if (status == Task::deleted)   value = STRING_COLUMN_LABEL_STAT_DE;
+    else if (status == Task::waiting)   value = STRING_COLUMN_LABEL_STAT_WA;
+    else if (status == Task::recurring) value = STRING_COLUMN_LABEL_STAT_RE;
   }
 
   else if (_style == "short")
   {
-         if (status == Task::pending)   value = "P";
-    else if (status == Task::completed) value = "C";
-    else if (status == Task::deleted)   value = "D";
-    else if (status == Task::waiting)   value = "W";
-    else if (status == Task::recurring) value = "R";
+         if (status == Task::pending)   value = STRING_COLUMN_LABEL_STAT_P;
+    else if (status == Task::completed) value = STRING_COLUMN_LABEL_STAT_C;
+    else if (status == Task::deleted)   value = STRING_COLUMN_LABEL_STAT_D;
+    else if (status == Task::waiting)   value = STRING_COLUMN_LABEL_STAT_W;
+    else if (status == Task::recurring) value = STRING_COLUMN_LABEL_STAT_R;
   }
 
   lines.push_back (color.colorize (leftJustify (value, width)));

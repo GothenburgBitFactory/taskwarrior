@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
@@ -32,6 +34,8 @@
 #include <cmake.h>
 #include <commit.h>
 #include <CmdVersion.h>
+#include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -40,7 +44,7 @@ CmdVersion::CmdVersion ()
 {
   _keyword     = "version";
   _usage       = "task version";
-  _description = "Shows the taskwarrior version number.";
+  _description = STRING_CMD_VERSION_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -55,26 +59,20 @@ int CmdVersion::execute (std::string& output)
   ViewText disclaimer;
   disclaimer.width (width);
   disclaimer.add (Column::factory ("string", ""));
-  disclaimer.set (disclaimer.addRow (), 0,
-      "Taskwarrior may be copied only under the terms of the GNU General Public "
-      "License, which may be found in the taskwarrior source kit.");
+  disclaimer.set (disclaimer.addRow (), 0, STRING_CMD_VERSION_GPL);
 
   // Create a table for the URL.
   ViewText link;
   link.width (width);
   link.add (Column::factory ("string", ""));
-  link.set (link.addRow (), 0,
-    "Documentation for taskwarrior can be found using 'man task', 'man taskrc', "
-    "'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' or at "
-    "http://taskwarrior.org");
+  link.set (link.addRow (), 0, STRING_CMD_VERSION_DOCS);
 
   Color bold ("bold");
 
   out << "\n"
-      << (context.color () ? bold.colorize (PACKAGE) : PACKAGE)
-      << " "
-      << (context.color () ? bold.colorize (VERSION) : VERSION)
-      << " built for "
+      << format (STRING_CMD_VERSION_BUILT,
+                 (context.color () ? bold.colorize (PACKAGE) : PACKAGE),
+                 (context.color () ? bold.colorize (VERSION) : VERSION))
 
 #if defined (DARWIN)
       << "darwin"
@@ -91,11 +89,7 @@ int CmdVersion::execute (std::string& output)
 #elif defined (LINUX)
       << "linux"
 #else
-      << "unknown"
-#endif
-
-#ifdef HAVE_LIBREADLINE
-      << "-readline"
+      << STRING_CMD_VERSION_UNKNOWN
 #endif
 
 #ifdef HAVE_LIBLUA
@@ -103,9 +97,11 @@ int CmdVersion::execute (std::string& output)
 #endif
 
       << "\n"
-      << "Copyright (C) 2006 - 2011 P. Beckingham, F. Hernandez.\n"
+      << STRING_CMD_VERSION_COPY
+      << "\n"
 #ifdef HAVE_LIBLUA
-      << "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio.\n"
+      << STRING_CMD_VERSION_COPY2
+      << "\n"
 #endif
       << "\n"
       << disclaimer.render ()
@@ -122,7 +118,7 @@ CmdCompletionVersion::CmdCompletionVersion ()
 {
   _keyword     = "_version";
   _usage       = "task _version";
-  _description = "Shows only the taskwarrior version number.";
+  _description = STRING_CMD_VERSION_USAGE2;
   _read_only   = true;
   _displays_id = false;
 }

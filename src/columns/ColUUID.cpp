@@ -25,10 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <math.h>
 #include <Context.h>
 #include <ColUUID.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -37,7 +40,7 @@ ColumnUUID::ColumnUUID ()
 {
   _type  = "string";
   _style = "default";
-  _label = "UUID";
+  _label = STRING_COLUMN_LABEL_UUID;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +55,7 @@ void ColumnUUID::measure (Task&, int& minimum, int& maximum)
        if (_style == "default") minimum = maximum = 36;
   else if (_style == "short")   minimum = maximum = 8;
   else
-    throw std::string ("Unrecognized column format 'uuid.") + _style + "'";
+    throw format (STRING_COLUMN_BAD_FORMAT, "uuid.", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

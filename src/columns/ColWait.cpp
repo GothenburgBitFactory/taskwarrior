@@ -25,12 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <ColWait.h>
+#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnWait::ColumnWait ()
 {
-  _label     = "Wait";
+  _label     = STRING_COLUMN_LABEL_WAIT;
   _attribute = "wait";
 }
 

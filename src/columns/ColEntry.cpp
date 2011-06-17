@@ -25,12 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <ColEntry.h>
+#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnEntry::ColumnEntry ()
 {
-  _label     = "Added";
+  _label     = STRING_COLUMN_LABEL_ADDED;
   _attribute = "entry";
 }
 
@@ -46,7 +49,9 @@ void ColumnEntry::setStyle (const std::string& value)
 {
   _style = value;
 
-  if (_style == "age" && _label == "Added") _label = "Age";
+  if (_style == "age" &&
+      _label == STRING_COLUMN_LABEL_ADDED)
+    _label = STRING_COLUMN_LABEL_AGE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

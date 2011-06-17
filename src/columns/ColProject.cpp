@@ -25,9 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
 #include <ColProject.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -36,7 +39,7 @@ ColumnProject::ColumnProject ()
 {
   _type  = "string";
   _style = "default";
-  _label = "Project";
+  _label = STRING_COLUMN_LABEL_PROJECT;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +60,7 @@ void ColumnProject::measure (Task& task, int& minimum, int& maximum)
       project = project.substr (0, period);
   }
   else if (_style != "default")
-    throw std::string ("Unrecognized column format 'project.") + _style + "'";
+    throw format (STRING_COLUMN_BAD_FORMAT, "project.", _style);
 
   minimum = longestWord (project);
   maximum = project.length ();

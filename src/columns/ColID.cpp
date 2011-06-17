@@ -25,10 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <math.h>
 #include <Context.h>
 #include <ColID.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -37,7 +40,7 @@ ColumnID::ColumnID ()
 {
   _type  = "number";
   _style = "default";
-  _label = "ID";
+  _label = STRING_COLUMN_LABEL_ID;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +63,7 @@ void ColumnID::measure (Task& task, int& minimum, int& maximum)
   minimum = maximum = length;
 
   if (_style != "default")
-    throw std::string ("Unrecognized column format 'id.") + _style + "'";
+    throw format (STRING_COLUMN_BAD_FORMAT, "id", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

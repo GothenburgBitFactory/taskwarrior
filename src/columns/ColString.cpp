@@ -25,9 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
 #include <ColString.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -69,7 +72,7 @@ void ColumnString::measure (const std::string& value, int& minimum, int& maximum
            _style == "right_fixed")
     minimum = maximum = strippedLength (value);
   else
-    throw std::string ("Unrecognized column format 'string.") + _style + "'";
+    throw format (STRING_COLUMN_BAD_FORMAT, "string.", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

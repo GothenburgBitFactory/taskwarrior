@@ -25,16 +25,19 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
 #include <ColStart.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStart::ColumnStart ()
 {
-  _label     = "Started";
+  _label     = STRING_COLUMN_LABEL_STARTED;
   _attribute = "start";
 }
 
@@ -50,8 +53,8 @@ void ColumnStart::setStyle (const std::string& value)
 {
   _style = value;
 
-  if (_style == "active" && _label == "Started")
-    _label = "A";
+  if (_style == "active" && _label == STRING_COLUMN_LABEL_STARTED)
+    _label = STRING_COLUMN_LABEL_ACTIVE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

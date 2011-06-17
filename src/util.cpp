@@ -24,6 +24,9 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -57,23 +60,26 @@ extern Context context;
 // std::getline, the newline can be detected, and the prompt re-written.
 bool confirm (const std::string& question)
 {
+  std::vector <std::string> options;
+  options.push_back ("yes");
+  options.push_back ("no");
+
   std::string answer;
+  std::vector <std::string> matches;
 
   do
   {
     std::cout << question
-              << " (y/n) ";
+              << STRING_UTIL_CONFIRM_YN;
 
     std::getline (std::cin, answer);
-    answer = std::cin.eof() ? "no" : lowerCase (trim (answer));
-  }
-  while (answer != "y"   && // TODO i18n
-         answer != "ye"  && // TODO i18n
-         answer != "yes" && // TODO i18n
-         answer != "n"   && // TODO i18n
-         answer != "no");   // TODO i18n
+    answer = std::cin.eof() ? STRING_UTIL_CONFIRM_NO : lowerCase (trim (answer));
 
-  return (answer == "y" || answer == "ye" || answer == "yes") ? true : false;   // TODO i18n
+    autoComplete (answer, options, matches);
+  }
+  while (matches.size () != 1);
+
+  return matches[0] == STRING_UTIL_CONFIRM_YES ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -83,11 +89,11 @@ bool confirm (const std::string& question)
 int confirm3 (const std::string& question)
 {
   std::vector <std::string> options;
-  options.push_back ("Yes");
-  options.push_back ("yes");
-  options.push_back ("no");
-  options.push_back ("All");
-  options.push_back ("all");
+  options.push_back (STRING_UTIL_CONFIRM_YES_U);
+  options.push_back (STRING_UTIL_CONFIRM_YES);
+  options.push_back (STRING_UTIL_CONFIRM_NO);
+  options.push_back (STRING_UTIL_CONFIRM_ALL_U);
+  options.push_back (STRING_UTIL_CONFIRM_ALL);
 
   std::string answer;
   std::vector <std::string> matches;
@@ -107,11 +113,11 @@ int confirm3 (const std::string& question)
   }
   while (matches.size () != 1);
 
-       if (matches[0] == "Yes") return 1;
-  else if (matches[0] == "yes") return 1;
-  else if (matches[0] == "All") return 2;
-  else if (matches[0] == "all") return 2;
-  else                          return 0;
+       if (matches[0] == STRING_UTIL_CONFIRM_YES_U) return 1;
+  else if (matches[0] == STRING_UTIL_CONFIRM_YES)   return 1;
+  else if (matches[0] == STRING_UTIL_CONFIRM_ALL_U) return 2;
+  else if (matches[0] == STRING_UTIL_CONFIRM_ALL)   return 2;
+  else                                              return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,12 +128,12 @@ int confirm3 (const std::string& question)
 int confirm4 (const std::string& question)
 {
   std::vector <std::string> options;
-  options.push_back ("Yes");
-  options.push_back ("yes");
-  options.push_back ("no");
-  options.push_back ("All");
-  options.push_back ("all");
-  options.push_back ("quit");
+  options.push_back (STRING_UTIL_CONFIRM_YES_U);
+  options.push_back (STRING_UTIL_CONFIRM_YES);
+  options.push_back (STRING_UTIL_CONFIRM_NO);
+  options.push_back (STRING_UTIL_CONFIRM_ALL_U);
+  options.push_back (STRING_UTIL_CONFIRM_ALL);
+  options.push_back (STRING_UTIL_CONFIRM_QUIT);
 
   std::string answer;
   std::vector <std::string> matches;
@@ -148,11 +154,11 @@ int confirm4 (const std::string& question)
   }
   while (matches.size () != 1);
 
-       if (matches[0] == "Yes")  return 1;
-  else if (matches[0] == "yes")  return 1;
-  else if (matches[0] == "All")  return 2;
-  else if (matches[0] == "all")  return 2;
-  else if (matches[0] == "quit") return 3;
+       if (matches[0] == STRING_UTIL_CONFIRM_YES_U) return 1;
+  else if (matches[0] == STRING_UTIL_CONFIRM_YES)   return 1;
+  else if (matches[0] == STRING_UTIL_CONFIRM_ALL_U) return 2;
+  else if (matches[0] == STRING_UTIL_CONFIRM_ALL)   return 2;
+  else if (matches[0] == STRING_UTIL_CONFIRM_QUIT)  return 3;
   else                           return 0;
 }
 
@@ -172,10 +178,10 @@ std::string formatBytes (size_t bytes)
 {
   char formatted[24];
 
-       if (bytes >=  995000000) sprintf (formatted, "%.1f GiB", (bytes / 1000000000.0));
-  else if (bytes >=     995000) sprintf (formatted, "%.1f MiB", (bytes /    1000000.0));
-  else if (bytes >=        995) sprintf (formatted, "%.1f KiB", (bytes /       1000.0));
-  else                          sprintf (formatted, "%d B",     (int)bytes            );
+       if (bytes >=  995000000) sprintf (formatted, "%.1f %s", (bytes / 1000000000.0), STRING_UTIL_GIBIBYTES);
+  else if (bytes >=     995000) sprintf (formatted, "%.1f %s", (bytes /    1000000.0), STRING_UTIL_MEBIBYTES);
+  else if (bytes >=        995) sprintf (formatted, "%.1f %s", (bytes /       1000.0), STRING_UTIL_KIBIBYTES);
+  else                          sprintf (formatted, "%d %s",   (int)bytes,             STRING_UTIL_BYTES);
 
   return commify (formatted);
 }
@@ -237,7 +243,7 @@ const std::string uuid ()
 #include <stdlib.h>
 static char randomHexDigit ()
 {
-  static char digits[] = "0123456789abcdef"; // no i18n
+  static char digits[] = "0123456789abcdef"; // no l10n
 #ifdef HAVE_RANDOM
   // random is better than rand.
   return digits[random () % 16];

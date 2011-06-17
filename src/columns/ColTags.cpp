@@ -25,10 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <algorithm>
 #include <Context.h>
 #include <ColTags.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -37,7 +40,7 @@ ColumnTags::ColumnTags ()
 {
   _type  = "string";
   _style = "default";
-  _label = "Tags";
+  _label = STRING_COLUMN_LABEL_TAGS;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,8 +55,13 @@ void ColumnTags::setStyle (const std::string& value)
 {
   _style = value;
 
-       if (_style == "indicator" && _label == "Tags") _label = _label.substr (0, context.config.get ("tag.indicator").length ());
-  else if (_style == "count"     && _label == "Tags") _label = "Tag";
+  if (_style == "indicator" &&
+      _label == STRING_COLUMN_LABEL_TAGS)
+    _label = _label.substr (0, context.config.get ("tag.indicator").length ());
+
+  else if (_style == "count" &&
+            _label == STRING_COLUMN_LABEL_TAGS)
+    _label = STRING_COLUMN_LABEL_TAG;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,8 +88,7 @@ void ColumnTags::measure (Task& task, int& minimum, int& maximum)
     }
   }
   else
-    throw std::string ("Unrecognized column format 'tags.") + _style + "'";
-
+    throw format (STRING_COLUMN_BAD_FORMAT, "tags.", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

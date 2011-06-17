@@ -25,12 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <ColUntil.h>
+#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnUntil::ColumnUntil ()
 {
-  _label     = "Until";
+  _label     = STRING_COLUMN_LABEL_UNTIL;
   _attribute = "until";
 }
 

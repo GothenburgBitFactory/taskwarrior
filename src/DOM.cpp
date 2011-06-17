@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <Context.h>
 #include <Nibbler.h>
@@ -132,7 +134,7 @@ const std::string DOM::get (const std::string& name)
     }
 
     else
-      throw std::string ("DOM: Cannot get unrecognized name '") + name + "'.";
+      throw format (STRING_DOM_UNREC, name);
   }
 
   // <id>.<name>
@@ -152,6 +154,11 @@ const std::string DOM::get (const std::string& name)
   // TODO <uuid>.<name>
   else if (n.getUUID (uuid))
   {
+    std::string attr;
+    if (n.skip ('.') &&
+        n.getUntilEOS (attr))
+    {
+    }
   }
 
   // TODO report.
@@ -192,7 +199,7 @@ const std::string DOM::get (const std::string& name)
 #endif
 
     else
-      throw std::string ("DOM: Cannot get unrecognized name '") + name + "'.";
+      throw format (STRING_DOM_UNREC, name);
   }
 
   return "";
@@ -212,7 +219,7 @@ void DOM::set (const std::string& name, const std::string& value)
 
   // Unrecognized --> error.
   else
-    throw std::string ("DOM: Cannot set '") + name + "'.";
+    throw format (STRING_DOM_CANNOT_SET, name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

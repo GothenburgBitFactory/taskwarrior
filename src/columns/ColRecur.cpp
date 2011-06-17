@@ -25,9 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
 #include <ColRecur.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -36,7 +39,7 @@ ColumnRecur::ColumnRecur ()
 {
   _type  = "string";
   _style = "default";
-  _label = "Recur";
+  _label = STRING_COLUMN_LABEL_RECUR;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +54,7 @@ void ColumnRecur::setStyle (const std::string& value)
 {
   _style = value;
 
-  if (_style == "indicator" && _label == "Recur")
+  if (_style == "indicator" && _label == STRING_COLUMN_LABEL_RECUR)
     _label = _label.substr (0, context.config.get ("recurrence.indicator").length ());
 }
 
@@ -69,7 +72,7 @@ void ColumnRecur::measure (Task& task, int& minimum, int& maximum)
       minimum = maximum = context.config.get ("recurrence.indicator").length ();
   }
   else
-    throw std::string ("Unrecognized column format 'recur.") + _style + "'";
+    throw format (STRING_COLUMN_BAD_FORMAT, "recur.", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -25,9 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
 #include <ColUrgency.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -36,7 +39,7 @@ ColumnUrgency::ColumnUrgency ()
 {
   _type  = "number";
   _style = "default";
-  _label = "Urgency";
+  _label = STRING_COLUMN_LABEL_URGENCY;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +54,7 @@ void ColumnUrgency::measure (Task& task, int& minimum, int& maximum)
   minimum = maximum = format (task.urgency (), 4, 3).length ();
 
   if (_style != "default")
-    throw std::string ("Unrecognized column format 'urgency.") + _style + "'";
+    throw format (STRING_COLUMN_BAD_FORMAT, "urgency.", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
