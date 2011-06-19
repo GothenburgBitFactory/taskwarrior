@@ -26,7 +26,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <Context.h>
-#include <Expression.h>
 #include <main.h>
 #include <CmdQuery.h>
 
@@ -55,15 +54,9 @@ int CmdQuery::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   if (filtered.size () == 0)
   {
@@ -81,6 +74,7 @@ int CmdQuery::execute (std::string& output)
   if (json_array)
     output += "[\n";
 
+  std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     if (task != filtered.begin ())

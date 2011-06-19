@@ -32,7 +32,6 @@
 #include <Context.h>
 #include <Date.h>
 #include <Duration.h>
-#include <Expression.h>
 #include <main.h>
 #include <CmdBurndown.h>
 
@@ -991,15 +990,9 @@ int CmdBurndownMonthly::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('M');
@@ -1041,15 +1034,9 @@ int CmdBurndownWeekly::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('W');
@@ -1091,15 +1078,9 @@ int CmdBurndownDaily::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('D');

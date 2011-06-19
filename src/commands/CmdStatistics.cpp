@@ -31,7 +31,6 @@
 #include <ViewText.h>
 #include <Duration.h>
 #include <Context.h>
-#include <Expression.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>
@@ -84,15 +83,9 @@ int CmdStatistics::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   Date now;
   time_t earliest   = time (NULL);
@@ -110,6 +103,7 @@ int CmdStatistics::execute (std::string& output)
   std::map <std::string, int> allTags;
   std::map <std::string, int> allProjects;
 
+  std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     ++totalT;

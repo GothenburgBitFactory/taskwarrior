@@ -32,7 +32,6 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewTask.h>
-#include <Expression.h>
 #include <text.h>
 #include <main.h>
 #include <CmdCustom.h>
@@ -92,15 +91,9 @@ int CmdCustom::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   // Sort the tasks.
   std::vector <int> sequence;

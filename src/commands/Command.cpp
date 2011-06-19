@@ -27,7 +27,9 @@
 
 #include <iostream>
 #include <vector>
+#include <Expression.h>
 #include <Command.h>
+
 #include <CmdAdd.h>
 #include <CmdAnnotate.h>
 #include <CmdAppend.h>
@@ -246,6 +248,23 @@ bool Command::read_only () const
 bool Command::displays_id () const
 {
   return _displays_id;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
+{
+  Arguments f = context.args.extract_read_only_filter ();
+  if (f.size ())
+  {
+    Expression e (f);
+
+    std::vector <Task>::iterator task;
+    for (task = input.begin (); task != input.end (); ++task)
+      if (e.eval (*task))
+        output.push_back (*task);
+  }
+  else
+    output = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

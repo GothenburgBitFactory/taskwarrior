@@ -29,7 +29,6 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <Context.h>
-#include <Expression.h>
 #include <ViewText.h>
 #include <text.h>
 #include <util.h>
@@ -71,15 +70,9 @@ int CmdCalendar::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   Date today;
   bool getpendingdate = false;
@@ -195,6 +188,7 @@ int CmdCalendar::execute (std::string& output)
   {
     // Find the oldest pending due date.
     Date oldest (12,31,2037);
+    std::vector <Task>::iterator task;
     for (task = filtered.begin (); task != filtered.end (); ++task)
     {
       if (task->getStatus () == Task::pending)

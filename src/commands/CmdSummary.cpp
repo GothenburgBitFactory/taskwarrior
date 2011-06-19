@@ -30,7 +30,6 @@
 #include <Context.h>
 #include <ViewText.h>
 #include <Duration.h>
-#include <Expression.h>
 #include <text.h>
 #include <main.h>
 #include <CmdSummary.h>
@@ -63,18 +62,13 @@ int CmdSummary::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   // Generate unique list of project names from all pending tasks.
   std::map <std::string, bool> allProjects;
+  std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
     if (task->getStatus () == Task::pending)
       allProjects[task->get ("project")] = false;

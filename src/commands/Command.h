@@ -29,7 +29,9 @@
 #define L10N                                           // Localization complete.
 
 #include <map>
+#include <vector>
 #include <string>
+#include <Task.h>
 
 class Command
 {
@@ -48,6 +50,8 @@ public:
   bool read_only () const;
   bool displays_id () const;
   virtual int execute (std::string&) = 0;
+
+  void filter (std::vector <Task>&, std::vector <Task>&);
 
 protected:
   std::string _keyword;

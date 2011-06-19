@@ -28,7 +28,6 @@
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
-#include <Expression.h>
 #include <main.h>
 #include <util.h>
 #include <CmdIDs.h>
@@ -56,18 +55,13 @@ int CmdIDs::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   // Find number of matching tasks.
   std::vector <int> ids;
+  std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
     if (task->id)
       ids.push_back (task->id);
@@ -96,17 +90,12 @@ int CmdCompletionIds::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   std::vector <int> ids;
+  std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
     if (task->getStatus () != Task::deleted &&
         task->getStatus () != Task::completed)
@@ -142,17 +131,12 @@ int CmdZshCompletionIds::execute (std::string& output)
   context.tdb.commit ();
   context.tdb.unlock ();
 
-  // Filter.
-  Arguments f = context.args.extract_read_only_filter ();
-  Expression e (f);
-
+  // Apply filter.
   std::vector <Task> filtered;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
-    if (e.eval (*task))
-      filtered.push_back (*task);
+  filter (tasks, filtered);
 
   std::stringstream out;
+  std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
     if (task->getStatus () != Task::deleted &&
         task->getStatus () != Task::completed)
