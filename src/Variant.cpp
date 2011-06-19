@@ -33,28 +33,28 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant ()
-: mType (v_unknown)
-, mRaw ("")
-, mRawType ("")
+: _type (v_unknown)
+, _raw ("")
+, _raw_type ("")
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const Variant& other)
 {
-  mType    = other.mType;
-  mRaw     = other.mRaw;
-  mRawType = other.mRawType;
+  _type    = other._type;
+  _raw     = other._raw;
+  _raw_type = other._raw_type;
 
   // Explicitly copy only the relevant type.  This saves memory.
-  switch (mType)
+  switch (_type)
   {
-  case v_boolean:  mBool     = other.mBool;     break;
-  case v_integer:  mInteger  = other.mInteger;  break;
-  case v_double:   mDouble   = other.mDouble;   break;
-  case v_string:   mString   = other.mString;   break;
-  case v_date:     mDate     = other.mDate;     break;
-  case v_duration: mDuration = other.mDuration; break;
+  case v_boolean:  _bool     = other._bool;     break;
+  case v_integer:  _integer  = other._integer;  break;
+  case v_double:   _double   = other._double;   break;
+  case v_string:   _string   = other._string;   break;
+  case v_date:     _date     = other._date;     break;
+  case v_duration: _duration = other._duration; break;
   case v_unknown:                               break;
   }
 }
@@ -62,43 +62,43 @@ Variant::Variant (const Variant& other)
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const bool input)
 {
-  mType = v_boolean;
-  mBool = input;
+  _type = v_boolean;
+  _bool = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const int input)
 {
-  mType = v_integer;
-  mInteger = input;
+  _type = v_integer;
+  _integer = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const double& input)
 {
-  mType = v_double;
-  mDouble = input;
+  _type = v_double;
+  _double = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const std::string& input)
 {
-  mType = v_string;
-  mString = input;
+  _type = v_string;
+  _string = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const Date& input)
 {
-  mType = v_date;
-  mDate = input;
+  _type = v_date;
+  _date = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const Duration& input)
 {
-  mType = v_duration;
-  mDuration = input;
+  _type = v_duration;
+  _duration = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,15 +107,15 @@ Variant& Variant::operator= (const Variant& other)
 {
   if (this != &other)
   {
-    mType     = other.mType;
-    mBool     = other.mBool;
-    mInteger  = other.mInteger;
-    mDouble   = other.mDouble;
-    mString   = other.mString;
-    mDate     = other.mDate;
-    mDuration = other.mDuration;
-    mRaw      = other.mRaw;
-    mRawType  = other.mRawType;
+    _type     = other._type;
+    _bool     = other._bool;
+    _integer  = other._integer;
+    _double   = other._double;
+    _string   = other._string;
+    _date     = other._date;
+    _duration = other._duration;
+    _raw      = other._raw;
+    _raw_type = other._raw_type;
   }
 
   return *this;
@@ -126,7 +126,7 @@ bool Variant::operator&& (Variant& other)
 {
   cast (v_boolean);
   other.cast (v_boolean);
-  return mBool && other.mBool;
+  return _bool && other._bool;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,7 +134,7 @@ bool Variant::operator|| (Variant& other)
 {
   cast (v_boolean);
   other.cast (v_boolean);
-  return mBool || other.mBool;
+  return _bool || other._bool;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -143,33 +143,33 @@ bool Variant::operator<= (Variant& other)
   promote (*this, other);
   bool result;
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
     throw std::string ("Cannot perform relative comparison on bool types");
     break;
 
   case v_integer:
-    result = mInteger <= other.mInteger ? true : false;
+    result = _integer <= other._integer ? true : false;
     break;
 
   case v_double:
-    result = mDouble <= other.mDouble ? true : false;
+    result = _double <= other._double ? true : false;
     break;
 
   case v_string:
     {
-      int collating = strcmp (mString.c_str (), other.mString.c_str ());
+      int collating = strcmp (_string.c_str (), other._string.c_str ());
       result = collating <= 0 ? true : false;
     }
     break;
 
   case v_date:
-    result = mDate <= other.mDate ? true : false;
+    result = _date <= other._date ? true : false;
     break;
 
   case v_duration:
-    result = (time_t)mDuration <= (time_t)other.mDuration ? true : false;
+    result = (time_t)_duration <= (time_t)other._duration ? true : false;
     break;
 
   case v_unknown:
@@ -186,33 +186,33 @@ bool Variant::operator>= (Variant& other)
   promote (*this, other);
   bool result;
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
     throw std::string ("Cannot perform relative comparison on bool types");
     break;
 
   case v_integer:
-    result = mInteger >= other.mInteger ? true : false;
+    result = _integer >= other._integer ? true : false;
     break;
 
   case v_double:
-    result = mDouble >= other.mDouble ? true : false;
+    result = _double >= other._double ? true : false;
     break;
 
   case v_string:
     {
-      int collating = strcmp (mString.c_str (), other.mString.c_str ());
+      int collating = strcmp (_string.c_str (), other._string.c_str ());
       result = collating >= 0 ? true : false;
     }
     break;
 
   case v_date:
-    result = mDate >= other.mDate ? true : false;
+    result = _date >= other._date ? true : false;
     break;
 
   case v_duration:
-    result = (time_t)mDuration >= (time_t)other.mDuration ? true : false;
+    result = (time_t)_duration >= (time_t)other._duration ? true : false;
     break;
 
   case v_unknown:
@@ -229,33 +229,33 @@ bool Variant::operator== (Variant& other)
   promote (*this, other);
   bool result;
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
-    result = mBool == other.mBool ? true : false;
+    result = _bool == other._bool ? true : false;
     break;
 
   case v_integer:
-    result = mInteger == other.mInteger ? true : false;
+    result = _integer == other._integer ? true : false;
     break;
 
   case v_double:
-    result = mDouble == other.mDouble ? true : false;
+    result = _double == other._double ? true : false;
     break;
 
   case v_string:
     {
-      int collating = strcmp (mString.c_str (), other.mString.c_str ());
+      int collating = strcmp (_string.c_str (), other._string.c_str ());
       result = collating == 0 ? true : false;
     }
     break;
 
   case v_date:
-    result = mDate == other.mDate ? true : false;
+    result = _date == other._date ? true : false;
     break;
 
   case v_duration:
-    result = mDuration == other.mDuration ? true : false;
+    result = _duration == other._duration ? true : false;
     break;
 
   case v_unknown:
@@ -272,33 +272,33 @@ bool Variant::operator!= (Variant& other)
   promote (*this, other);
   bool result;
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
-    result = mBool != other.mBool ? true : false;
+    result = _bool != other._bool ? true : false;
     break;
 
   case v_integer:
-    result = mInteger != other.mInteger ? true : false;
+    result = _integer != other._integer ? true : false;
     break;
 
   case v_double:
-    result = mDouble != other.mDouble ? true : false;
+    result = _double != other._double ? true : false;
     break;
 
   case v_string:
     {
-      int collating = strcmp (mString.c_str (), other.mString.c_str ());
+      int collating = strcmp (_string.c_str (), other._string.c_str ());
       result = collating != 0 ? true : false;
     }
     break;
 
   case v_date:
-    result = mDate != other.mDate ? true : false;
+    result = _date != other._date ? true : false;
     break;
 
   case v_duration:
-    result = mDuration != other.mDuration ? true : false;
+    result = _duration != other._duration ? true : false;
     break;
 
   case v_unknown:
@@ -310,49 +310,11 @@ bool Variant::operator!= (Variant& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Variant& Variant::operator^ (Variant& other)
-{
-  // TODO This is all wrong!
-  switch (mType)
-  {
-  case v_boolean:
-    throw std::string ("Cannot perform exponentiation on Boolean types");
-    break;
-
-  case v_integer:
-    mInteger = (int) pow ((double) mInteger, (double) other.mInteger);
-    break;
-
-  case v_double:
-    mDouble = pow (mDouble, other.mDouble);
-    break;
-
-  case v_string:
-    throw std::string ("Cannot perform exponentiation on string types");
-    break;
-
-  case v_date:
-    throw std::string ("Cannot perform exponentiation on date types");
-    break;
-
-  case v_duration:
-    throw std::string ("Cannot perform exponentiation on duration types");
-    break;
-
-  case v_unknown:
-    throw std::string ("Cannot perform exponentiation on unknown types");
-    break;
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Variant::operator! ()
 {
   cast (v_boolean);
-  mBool = ! mBool;
-  return mBool;
+  _bool = ! _bool;
+  return _bool;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -360,18 +322,18 @@ Variant& Variant::operator- (Variant& other)
 {
   promote (*this, other);
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
     throw std::string ("Cannot perform subtraction on Boolean types");
     break;
 
   case v_integer:
-    mInteger -= other.mInteger;
+    _integer -= other._integer;
     break;
 
   case v_double:
-    mDouble -= other.mDouble;
+    _double -= other._double;
     break;
 
   case v_string:
@@ -379,12 +341,12 @@ Variant& Variant::operator- (Variant& other)
     break;
 
   case v_date:
-    mDuration = Duration (mDate - other.mDate);
-    mType = v_duration;
+    _duration = Duration (_date - other._date);
+    _type = v_duration;
     break;
 
   case v_duration:
-    mDuration = mDuration - other.mDuration;
+    _duration = _duration - other._duration;
     break;
 
   case v_unknown:
@@ -400,32 +362,32 @@ Variant& Variant::operator+ (Variant& other)
 {
   promote (*this, other);
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
     throw std::string ("Cannot perform addition on Boolean types");
     break;
 
   case v_integer:
-    mInteger += other.mInteger;
+    _integer += other._integer;
     break;
 
   case v_double:
-    mDouble += other.mDouble;
+    _double += other._double;
     break;
 
   case v_string:
-    mString += other.mString;
+    _string += other._string;
     break;
 
   case v_date:
     // TODO operator+ only works for int
-    //mDate += other.mDate;
+    //_date += other._date;
     break;
 
   case v_duration:
     // TODO operator+ missing
-    //mDuration += other.mDuration;
+    //_duration += other._duration;
     break;
 
   case v_unknown:
@@ -441,18 +403,18 @@ Variant& Variant::operator* (Variant& other)
 {
   promote (*this, other);
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
     throw std::string ("Cannot perform multiplication on Boolean types");
     break;
 
   case v_integer:
-    mInteger *= other.mInteger;
+    _integer *= other._integer;
     break;
 
   case v_double:
-    mDouble *= other.mDouble;
+    _double *= other._double;
     break;
 
   case v_string:
@@ -480,18 +442,18 @@ Variant& Variant::operator/ (Variant& other)
 {
   promote (*this, other);
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
     throw std::string ("Cannot perform division on Boolean types");
     break;
 
   case v_integer:
-    mInteger /= other.mInteger;
+    _integer /= other._integer;
     break;
 
   case v_double:
-    mDouble /= other.mDouble;
+    _double /= other._double;
     break;
 
   case v_string:
@@ -520,33 +482,33 @@ bool Variant::operator< (Variant& other)
   promote (*this, other);
   bool result;
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
     throw std::string ("Cannot perform relational compare Boolean types");
     break;
 
   case v_integer:
-    result = mInteger < other.mInteger ? true : false;
+    result = _integer < other._integer ? true : false;
     break;
 
   case v_double:
-    result = mDouble < other.mDouble ? true : false;
+    result = _double < other._double ? true : false;
     break;
 
   case v_string:
     {
-      int collating = strcmp (mString.c_str (), other.mString.c_str ());
+      int collating = strcmp (_string.c_str (), other._string.c_str ());
       result = collating < 0 ? true : false;
     }
     break;
 
   case v_date:
-    result = mDate < other.mDate ? true : false;
+    result = _date < other._date ? true : false;
     break;
 
   case v_duration:
-    result = mDuration < other.mDuration ? true : false;
+    result = _duration < other._duration ? true : false;
     break;
 
   case v_unknown:
@@ -563,33 +525,33 @@ bool Variant::operator> (Variant& other)
   promote (*this, other);
   bool result;
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
     throw std::string ("Cannot perform relational compare Boolean types");
     break;
 
   case v_integer:
-    result = mInteger > other.mInteger ? true : false;
+    result = _integer > other._integer ? true : false;
     break;
 
   case v_double:
-    result = mDouble > other.mDouble ? true : false;
+    result = _double > other._double ? true : false;
     break;
 
   case v_string:
     {
-      int collating = strcmp (mString.c_str (), other.mString.c_str ());
+      int collating = strcmp (_string.c_str (), other._string.c_str ());
       result = collating > 0 ? true : false;
     }
     break;
 
   case v_date:
-    result = mDate > other.mDate ? true : false;
+    result = _date > other._date ? true : false;
     break;
 
   case v_duration:
-    result = mDuration > other.mDuration ? true : false;
+    result = _duration > other._duration ? true : false;
     break;
 
   case v_unknown:
@@ -608,8 +570,8 @@ void Variant::input (const std::string& input)
       ! compare (input, "yes",  false) ||
       ! compare (input, "on",   false))
   {
-    mType = v_boolean;
-    mBool = true;
+    _type = v_boolean;
+    _bool = true;
     return;
   }
 
@@ -618,8 +580,8 @@ void Variant::input (const std::string& input)
       ! compare (input, "no",    false) ||
       ! compare (input, "off",   false))
   {
-    mType = v_boolean;
-    mBool = false;
+    _type = v_boolean;
+    _bool = false;
     return;
   }
 
@@ -638,20 +600,20 @@ void Variant::input (const std::string& input)
   {
     if (period)
     {
-      mType = v_double;
-      mDouble = atof (input.c_str ());
+      _type = v_double;
+      _double = atof (input.c_str ());
     }
     else
     {
-      mType = v_integer;
-      mInteger = atoi (input.c_str ());
+      _type = v_integer;
+      _integer = atoi (input.c_str ());
     }
 
     return;
   }
 
-  mType = v_string;
-  mString = input;
+  _type = v_string;
+  _string = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -659,16 +621,16 @@ std::string Variant::format ()
 {
   std::string output;
 
-  switch (mType)
+  switch (_type)
   {
   case v_boolean:
-    output = mBool ? "true" : "false";
+    output = _bool ? "true" : "false";
     break;
 
   case v_integer:
     {
       char temp [24];
-      sprintf (temp, "%d", mInteger);
+      sprintf (temp, "%d", _integer);
       output = temp;
     }
     break;
@@ -676,21 +638,21 @@ std::string Variant::format ()
   case v_double:
     {
       char temp [24];
-      sprintf (temp, "%g", mDouble);
+      sprintf (temp, "%g", _double);
       output = temp;
     }
     break;
 
   case v_string:
-    output = mString;
+    output = _string;
     break;
 
   case v_date:
-    // TODO Format mDate.
+    // TODO Format _date.
     break;
 
   case v_duration:
-    // TODO Format mDuration.
+    // TODO Format _duration.
     break;
 
   case v_unknown:
@@ -705,62 +667,62 @@ std::string Variant::format ()
 ////////////////////////////////////////////////////////////////////////////////
 void Variant::cast (const variant_type type)
 {
-  if (mType == v_unknown || type == v_unknown)
+  if (_type == v_unknown || type == v_unknown)
     throw std::string ("Cannot coerce data either to or from an unknown type");
 
   // Short circuit.
-  if (mType == type)
+  if (_type == type)
     return;
 
   // From v_boolean
-  if (mType == v_boolean && type == v_integer)
-    mInteger = mBool ? 1 : 0;
+  if (_type == v_boolean && type == v_integer)
+    _integer = _bool ? 1 : 0;
 
-  else if (mType == v_boolean && type == v_double)
-    mDouble = mBool ? 1.0 : 0.0;
+  else if (_type == v_boolean && type == v_double)
+    _double = _bool ? 1.0 : 0.0;
 
-  else if (mType == v_boolean && type == v_string)
-    mString = mBool ? "true" : "false";
+  else if (_type == v_boolean && type == v_string)
+    _string = _bool ? "true" : "false";
 
   // From v_integer
-  else if (mType == v_integer && type == v_boolean)
-    mBool = mInteger == 0 ? false : true;
+  else if (_type == v_integer && type == v_boolean)
+    _bool = _integer == 0 ? false : true;
 
-  else if (mType == v_integer && type == v_double)
-    mDouble = (double)mInteger;
+  else if (_type == v_integer && type == v_double)
+    _double = (double)_integer;
 
-  else if (mType == v_integer && type == v_string)
+  else if (_type == v_integer && type == v_string)
   {
     char temp [24];
-    sprintf (temp, "%d", mInteger);
-    mString = temp;
+    sprintf (temp, "%d", _integer);
+    _string = temp;
   }
 
   // From v_double
-  else if (mType == v_double && type == v_boolean)
-    mBool = mDouble == 0.0 ? false : true;
+  else if (_type == v_double && type == v_boolean)
+    _bool = _double == 0.0 ? false : true;
 
-  else if (mType == v_double && type == v_integer)
-    mInteger = (int)mDouble;
+  else if (_type == v_double && type == v_integer)
+    _integer = (int)_double;
 
-  else if (mType == v_double && type == v_string)
+  else if (_type == v_double && type == v_string)
   {
     char temp [24];
-    sprintf (temp, "%g", mDouble);
-    mString = temp;
+    sprintf (temp, "%g", _double);
+    _string = temp;
   }
 
   // From v_string
-  else if (mType == v_string && type == v_boolean)
-    mBool = (mString.length () == 0 ||
-             mString == "0"         ||
-             mString == "0.0") ? false : true;
+  else if (_type == v_string && type == v_boolean)
+    _bool = (_string.length () == 0 ||
+             _string == "0"         ||
+             _string == "0.0") ? false : true;
 
-  else if (mType == v_string && type == v_integer)
-    mInteger = atol (mString.c_str ());
+  else if (_type == v_string && type == v_integer)
+    _integer = atol (_string.c_str ());
 
-  else if (mType == v_string && type == v_double)
-    mDouble = atol (mString.c_str ());
+  else if (_type == v_string && type == v_double)
+    _double = atol (_string.c_str ());
 
   // TODO From v_date
 
@@ -768,48 +730,18 @@ void Variant::cast (const variant_type type)
   // TODO From v_duration
 
 
-  mType = type;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Variant::variant_type Variant::type ()
-{
-  return mType;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Variant::raw (const std::string& input)
-{
-  mRaw = input;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string Variant::raw ()
-{
-  return mRaw;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Variant::raw_type (const std::string& input)
-{
-  mRawType = input;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string Variant::raw_type ()
-{
-  return mRawType;
+  _type = type;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Variant::promote (Variant& lhs, Variant& rhs)
 {
   // Short circuit.
-  if (lhs.type () == rhs.type ())
+  if (lhs._type == rhs._type)
     return;
 
   variant_type newType;
-  switch (lhs.type () | rhs.type ())
+  switch (lhs._type | rhs._type)
   {
   case v_boolean | v_integer:    newType = v_integer;   break;
   case v_boolean | v_double:     newType = v_double;    break;
@@ -838,13 +770,13 @@ void Variant::promote (Variant& lhs, Variant& rhs)
 bool Variant::boolean ()
 {
   cast (v_boolean);
-  return mBool;
+  return _bool;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Variant::dump ()
 {
-  return format () + "/" + raw () + "/" + raw_type ();
+  return format () + "/" + _raw + "/" + _raw_type;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

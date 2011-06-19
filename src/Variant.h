@@ -68,7 +68,6 @@ public:
   bool operator!= (Variant& other);
   bool operator! ();
 
-  Variant& operator^ (Variant& other);
   Variant& operator- (Variant& other);
   Variant& operator+ (Variant& other);
   Variant& operator* (Variant& other);
@@ -77,27 +76,21 @@ public:
   void input (const std::string&);
   std::string format ();
   void cast (const variant_type);
-  variant_type type ();
-  void raw (const std::string&);
-  std::string raw ();
-  void raw_type (const std::string&);
-  std::string raw_type ();
   void promote (Variant&, Variant&);
   bool boolean ();
   std::string dump ();
 
-private:
-  variant_type mType;
+public:
+  variant_type _type;
+  std::string _raw;
+  std::string _raw_type;
 
-  bool mBool;
-  int mInteger;
-  double mDouble;
-  std::string mString;
-  Date mDate;
-  Duration mDuration;
-
-  std::string mRaw;
-  std::string mRawType;
+  bool _bool;
+  int _integer;
+  double _double;
+  std::string _string;
+  Date _date;
+  Duration _duration;
 };
 
 #endif

@@ -93,18 +93,18 @@ bool Expression::eval (Task& task)
           throw std::string ("Error: Insufficient operands for '!' operator.");
 
         Variant right (value_stack.back ());
-        if (right.raw_type () == "lvalue")
+        if (right._raw_type == "lvalue")
         {
-          right = Variant (context.dom.get (right.raw (), task));
-          right.raw (value_stack.back ().raw ());
-          right.raw_type (value_stack.back ().raw_type ());
+          right = Variant (context.dom.get (right._raw, task));
+          right._raw = value_stack.back ()._raw;
+          right._raw_type = value_stack.back ()._raw_type;
         }
         value_stack.pop_back ();
 
         std::cout << "#   " << " ! " << right.dump () << "\n";
         bool result = !right;
         right = Variant (result);
-        right.raw_type ("bool");
+        right._raw_type = "bool";
 
         std::cout << "#     --> " << right.dump () << "\n";
         value_stack.push_back (right);
@@ -120,21 +120,21 @@ bool Expression::eval (Task& task)
 
       // rvalue (string, rx, int, number, dom ...).
       Variant right (value_stack.back ());
-      if (right.raw_type () == "lvalue")
+      if (right._raw_type == "lvalue")
       {
-        right = Variant (context.dom.get (right.raw (), task));
-        right.raw (value_stack.back ().raw ());
-        right.raw_type (value_stack.back ().raw_type ());
+        right = Variant (context.dom.get (right._raw, task));
+        right._raw = value_stack.back ()._raw;
+        right._raw_type = value_stack.back ()._raw_type;
       }
       value_stack.pop_back ();
 
       // lvalue (dom).
       Variant left (value_stack.back ());
-      if (left.raw_type () == "lvalue")
+      if (left._raw_type == "lvalue")
       {
-        left = Variant (context.dom.get (left.raw (), task));
-        left.raw (value_stack.back ().raw ());
-        left.raw_type (value_stack.back ().raw_type ());
+        left = Variant (context.dom.get (left._raw, task));
+        left._raw = value_stack.back ()._raw;
+        left._raw_type = value_stack.back ()._raw_type;
       }
       value_stack.pop_back ();
 
@@ -144,7 +144,7 @@ bool Expression::eval (Task& task)
         std::cout << "#   " << left.dump () << " and " << right.dump () << "\n";
         bool result = (left && right);
         left = Variant (result);
-        left.raw_type ("bool");
+        left._raw_type = "bool";
 
         std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
@@ -157,7 +157,7 @@ bool Expression::eval (Task& task)
         bool right_bool = right.boolean ();
         bool result = (left_bool && !right_bool) || (!left_bool && right_bool);
         left = Variant (result);
-        left.raw_type ("bool");
+        left._raw_type = "bool";
 
         std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
@@ -168,7 +168,7 @@ bool Expression::eval (Task& task)
         std::cout << "#   " << left.dump () << " or " << right.dump () << "\n";
         bool result = (left || right);
         left = Variant (result);
-        left.raw_type ("bool");
+        left._raw_type = "bool";
 
         std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
@@ -179,7 +179,7 @@ bool Expression::eval (Task& task)
         std::cout << "#   " << left.dump () << " <= " << right.dump () << "\n";
         bool result = (left <= right);
         left = Variant (result);
-        left.raw_type ("bool");
+        left._raw_type = "bool";
 
         std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
@@ -190,7 +190,7 @@ bool Expression::eval (Task& task)
         std::cout << "#   " << left.dump () << " >= " << right.dump () << "\n";
         bool result = (left >= right);
         left = Variant (result);
-        left.raw_type ("bool");
+        left._raw_type = "bool";
 
         std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
@@ -206,7 +206,7 @@ bool Expression::eval (Task& task)
         std::cout << "#   " << left.dump () << " != " << right.dump () << "\n";
         bool result = (left != right);
         left = Variant (result);
-        left.raw_type ("bool");
+        left._raw_type = "bool";
 
         std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
@@ -217,7 +217,7 @@ bool Expression::eval (Task& task)
         std::cout << "#   " << left.dump () << " = " << right.dump () << "\n";
         bool result = (left == right);
         left = Variant (result);
-        left.raw_type ("bool");
+        left._raw_type = "bool";
 
         std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
@@ -228,7 +228,7 @@ bool Expression::eval (Task& task)
         std::cout << "#   " << left.dump () << " > " << right.dump () << "\n";
         bool result = (left > right);
         left = Variant (result);
-        left.raw_type ("bool");
+        left._raw_type = "bool";
 
         std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
@@ -236,30 +236,47 @@ bool Expression::eval (Task& task)
 
       else if (arg->first == "~")
       {
+        std::cout << "#   " << left.dump () << " ~ " << right.dump () << "\n";
+        bool result = false;
+
         // Matches against description are really against either description,
         // annotations or project.
-        if (left.raw () == "description")
+        if (left._raw == "description")
         {
-          if (right.raw_type () == "rx")
+          if (right._raw_type == "rx")
           {
             throw std::string ("rx not supported");
           }
           else
           {
+            left.cast (Variant::v_string);
+            right.cast (Variant::v_string);
+            if (left._string.find (right._string) != std::string::npos)
+              result = true;
           }
         }
 
         // Matches against non-description fields are treated as-is.
         else
         {
-          if (right.raw_type () == "rx")
+          if (right._raw_type == "rx")
           {
             throw std::string ("rx not supported");
           }
           else
           {
+            left.cast (Variant::v_string);
+            right.cast (Variant::v_string);
+            if (left._string.find (right._string) != std::string::npos)
+              result = true;
           }
         }
+
+        left = Variant (result);
+        left._raw_type = "bool";
+
+        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "*")
@@ -296,7 +313,7 @@ bool Expression::eval (Task& task)
         std::cout << "#   " << left.dump () << " < " << right.dump () << "\n";
         bool result = (left < right);
         left = Variant (result);
-        left.raw_type ("bool");
+        left._raw_type = "bool";
 
         std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
@@ -355,8 +372,8 @@ void Expression::create_variant (
   else
     throw std::string ("Unrecognized operand '") +   + "'.";
 
-  variant.raw (value);
-  variant.raw_type (type);
+  variant._raw      = value;
+  variant._raw_type = type;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

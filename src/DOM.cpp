@@ -156,7 +156,7 @@ const std::string DOM::get (const std::string& name)
       throw format (STRING_DOM_UNREC, name);
   }
 
-  return "";
+  return name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -300,7 +300,6 @@ void DOM::set (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO This should return a Variant.
 bool DOM::is_primitive (const std::string& input)
 {
   std::string s;
