@@ -55,42 +55,36 @@ public:
   Variant (const std::string&);
   Variant (const Date&);
   Variant (const Duration&);
+  Variant& operator= (const Variant&);
 
-  Variant& operator&& (const Variant& other);
-  Variant& operator|| (const Variant& other);
-  Variant& operator<= (const Variant& other);
-  Variant& operator>= (const Variant& other);
-  Variant& operator== (const Variant& other);
-  Variant& operator!= (const Variant& other);
-  Variant& operator^ (const Variant& other);
-  Variant& operator! ();
-  Variant& operator- (const Variant& other);
-  Variant& operator+ (const Variant& other);
-  Variant& operator* (const Variant& other);
-  Variant& operator/ (const Variant& other);
-  Variant& operator< (const Variant& other);
-  Variant& operator> (const Variant& other);
+  bool operator&& (Variant& other);
+  bool operator|| (Variant& other);
 
-  void sqrt  ();
-  void sin   ();
-  void cos   ();
-  void tan   ();
-  void asin  ();
-  void acos  ();
-  void atan  ();
-  void log   ();
-  void exp   ();
-  void exp10 ();
-  void ln    ();
-  void sign  ();
-  void abs   ();
+  bool operator<= (Variant& other);
+  bool operator>= (Variant& other);
+  bool operator== (Variant& other);
+  bool operator< (Variant& other);
+  bool operator> (Variant& other);
+  bool operator!= (Variant& other);
+  bool operator! ();
+
+  Variant& operator^ (Variant& other);
+  Variant& operator- (Variant& other);
+  Variant& operator+ (Variant& other);
+  Variant& operator* (Variant& other);
+  Variant& operator/ (Variant& other);
 
   void input (const std::string&);
   std::string format ();
   void cast (const variant_type);
   variant_type type ();
+  void raw (const std::string&);
+  std::string raw ();
+  void raw_type (const std::string&);
+  std::string raw_type ();
   void promote (Variant&, Variant&);
   bool boolean ();
+  std::string dump ();
 
 private:
   variant_type mType;
@@ -101,6 +95,9 @@ private:
   std::string mString;
   Date mDate;
   Duration mDuration;
+
+  std::string mRaw;
+  std::string mRawType;
 };
 
 #endif

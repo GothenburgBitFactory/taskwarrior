@@ -44,17 +44,20 @@ extern Context context;
 Expression::Expression (Arguments& arguments)
 : _args (arguments)
 {
-  _args.dump ("Expression::Expression");
+  if (_args.size ())
+  {
+    _args.dump ("Expression::Expression");
 
-  expand_sequence ();
-  implicit_and ();
-  expand_tag ();
-  expand_pattern ();
-  expand_attr ();
-  expand_attmod ();
-  expand_word ();
-  expand_tokens ();
-  postfix ();
+    expand_sequence ();
+    implicit_and ();
+    expand_tag ();
+    expand_pattern ();
+    expand_attr ();
+    expand_attmod ();
+    expand_word ();
+    expand_tokens ();
+    postfix ();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,123 +74,204 @@ bool Expression::eval (Task& task)
 
   // There are elements in the filter, so the expression must be evaluated
   // against each task.
-  std::vector <std::pair <Variant, std::string> > value_stack;
+  std::vector <Variant> value_stack;
 
   // TODO Build an on-demand regex cache.
 
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <std::pair <std::string, std::string> >::const_iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
     if (arg->second == "op")
     {
+      std::cout << "# operator " << arg->first << "\n";
+
       // Handle the unary operator first.
       if (arg->first == "!")
       {
+        // Are there sufficient arguments?
         if (value_stack.size () < 1)
           throw std::string ("Error: Insufficient operands for '!' operator.");
 
-        std::string right_type = value_stack.back ().second;
-        Variant right (value_stack.back ().first);
+        Variant right (value_stack.back ());
+        if (right.raw_type () == "lvalue")
+        {
+          right = Variant (context.dom.get (right.raw (), task));
+          right.raw (value_stack.back ().raw ());
+          right.raw_type (value_stack.back ().raw_type ());
+        }
         value_stack.pop_back ();
 
-        right = ! right;
-        value_stack.push_back (std::make_pair (right, ""));
-        continue;  // This only occurs here.
+        std::cout << "#   " << " ! " << right.dump () << "\n";
+        bool result = !right;
+        right = Variant (result);
+        right.raw_type ("bool");
+
+        std::cout << "#     --> " << right.dump () << "\n";
+        value_stack.push_back (right);
+
+        // This only occurs here, because the unary operators are handled, and
+        // now the binary operators will be processed.
+        continue;
       }
 
+      // Are there sufficient arguments?
       if (value_stack.size () < 2)
         throw std::string ("Error: Insufficient operands for '") + arg->first + "' operator.";
 
-      // Pop the binary operands first.
-      std::string right_type = value_stack.back ().second;
-      Variant right (value_stack.back ().first);
+      // rvalue (string, rx, int, number, dom ...).
+      Variant right (value_stack.back ());
+      if (right.raw_type () == "lvalue")
+      {
+        right = Variant (context.dom.get (right.raw (), task));
+        right.raw (value_stack.back ().raw ());
+        right.raw_type (value_stack.back ().raw_type ());
+      }
       value_stack.pop_back ();
 
-      std::string left_type = value_stack.back ().second;
-      Variant left (value_stack.back ().first);
+      // lvalue (dom).
+      Variant left (value_stack.back ());
+      if (left.raw_type () == "lvalue")
+      {
+        left = Variant (context.dom.get (left.raw (), task));
+        left.raw (value_stack.back ().raw ());
+        left.raw_type (value_stack.back ().raw_type ());
+      }
       value_stack.pop_back ();
 
-      // Now hte binary operators.
+      // Now the binary operators.
       if (arg->first == "and")
       {
-        left = left && right;
-        value_stack.push_back (std::make_pair (left, ""));
+        std::cout << "#   " << left.dump () << " and " << right.dump () << "\n";
+        bool result = (left && right);
+        left = Variant (result);
+        left.raw_type ("bool");
+
+        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "xor")
       {
-        left = (left && !right) || (!left && right);
-        value_stack.push_back (std::make_pair (left, ""));
+        std::cout << "#   " << left.dump () << " xor " << right.dump () << "\n";
+        bool left_bool  = left.boolean ();
+        bool right_bool = right.boolean ();
+        bool result = (left_bool && !right_bool) || (!left_bool && right_bool);
+        left = Variant (result);
+        left.raw_type ("bool");
+
+        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "or")
       {
-        left = left || right;
-        value_stack.push_back (std::make_pair (left, ""));
+        std::cout << "#   " << left.dump () << " or " << right.dump () << "\n";
+        bool result = (left || right);
+        left = Variant (result);
+        left.raw_type ("bool");
+
+        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "<=")
       {
-        left = left <= right;
-        value_stack.push_back (std::make_pair (left, ""));
+        std::cout << "#   " << left.dump () << " <= " << right.dump () << "\n";
+        bool result = (left <= right);
+        left = Variant (result);
+        left.raw_type ("bool");
+
+        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else if (arg->first == ">=")
       {
-        left = left >= right;
-        value_stack.push_back (std::make_pair (left, ""));
+        std::cout << "#   " << left.dump () << " >= " << right.dump () << "\n";
+        bool result = (left >= right);
+        left = Variant (result);
+        left.raw_type ("bool");
+
+        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "!~")
       {
-        // TODO
-/*
-  if left == "description" then it really means description or annotations or project.
-  if left == "tags" then it just means tags.
-*/
+        // TODO Copy "~".
       }
 
       else if (arg->first == "!=")
       {
-        left = left != right;
-        value_stack.push_back (std::make_pair (left, ""));
+        std::cout << "#   " << left.dump () << " != " << right.dump () << "\n";
+        bool result = (left != right);
+        left = Variant (result);
+        left.raw_type ("bool");
+
+        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "=")
       {
-context.debug ("eval left=" + left.format ());
-context.debug ("eval right=" + right.format ());
+        std::cout << "#   " << left.dump () << " = " << right.dump () << "\n";
+        bool result = (left == right);
+        left = Variant (result);
+        left.raw_type ("bool");
 
-        left = left == right;
-        value_stack.push_back (std::make_pair (left, ""));
+        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else if (arg->first == ">")
       {
-        left = left > right;
-        value_stack.push_back (std::make_pair (left, ""));
+        std::cout << "#   " << left.dump () << " > " << right.dump () << "\n";
+        bool result = (left > right);
+        left = Variant (result);
+        left.raw_type ("bool");
+
+        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "~")
       {
-        // TODO We need to compare right against description, all annotations and project.
-        // TODO Does that mean we need the original lvalue intact, and not a DOM subst?
-/*
-  if left == "description" then it really means description or annotations or project.
-  if left == "tags" then it just means tags.
-*/
+        // Matches against description are really against either description,
+        // annotations or project.
+        if (left.raw () == "description")
+        {
+          if (right.raw_type () == "rx")
+          {
+            throw std::string ("rx not supported");
+          }
+          else
+          {
+          }
+        }
+
+        // Matches against non-description fields are treated as-is.
+        else
+        {
+          if (right.raw_type () == "rx")
+          {
+            throw std::string ("rx not supported");
+          }
+          else
+          {
+          }
+        }
       }
 
       else if (arg->first == "*")
       {
         left = left * right;
-        value_stack.push_back (std::make_pair (left, ""));
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "/")
       {
         left = left / right;
-        value_stack.push_back (std::make_pair (left, ""));
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "%")
@@ -198,19 +282,24 @@ context.debug ("eval right=" + right.format ());
       else if (arg->first == "+")
       {
         left = left + right;
-        value_stack.push_back (std::make_pair (left, ""));
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "-")
       {
         left = left - right;
-        value_stack.push_back (std::make_pair (left, ""));
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "<")
       {
-        left = left < right;
-        value_stack.push_back (std::make_pair (left, ""));
+        std::cout << "#   " << left.dump () << " < " << right.dump () << "\n";
+        bool result = (left < right);
+        left = Variant (result);
+        left.raw_type ("bool");
+
+        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else
@@ -220,28 +309,14 @@ context.debug ("eval right=" + right.format ());
     // It's not an operator, it's either and lvalue or some form of rvalue.
     else
     {
-      if (arg->second == "lvalue")
-        value_stack.push_back (std::make_pair (Variant (context.dom.get (arg->first, task)), ""));
-
-      else if (arg->second == "int")
-        value_stack.push_back (std::make_pair (Variant ((int) strtol (arg->first.c_str (), NULL, 10)), ""));
-
-      else if (arg->second == "number")
-        value_stack.push_back (std::make_pair (Variant (strtod (arg->first.c_str (), NULL)), ""));
-
-      else if (arg->second == "rvalue" ||
-               arg->second == "string" ||
-               arg->second == "rx")
-        value_stack.push_back (std::make_pair (Variant (unquoteText (arg->first)), ""));
-
-      else
-        throw std::string ("Error: Expression::eval unrecognized operand '") +   + "'.";
+      Variant operand;
+      create_variant (operand, arg->first, arg->second);
+      value_stack.push_back (operand);
     }
   }
 
   // Coerce stack element to boolean.
-  Variant result (value_stack.back ().first);
-  //context.debug ("eval result=" + result.format ());
+  Variant result (value_stack.back ());
   value_stack.pop_back ();
   bool pass_fail = result.boolean ();
 
@@ -250,6 +325,38 @@ context.debug ("eval right=" + right.format ());
     throw std::string ("Error: Expression::eval found extra items on the stack.");
 
   return pass_fail;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Expression::create_variant (
+  Variant& variant,
+  const std::string& value,
+  const std::string& type)
+{
+  std::cout << "# operand '" << value << "' as " << type << "\n";
+
+  // DOM references are not resolved until the operator is processed.  This
+  // preserves the original name, which helps determine how to apply the
+  // operator.
+  if (type == "lvalue")
+    variant = Variant (value);
+
+  else if (type == "int")
+    variant = Variant ((int) strtol (value.c_str (), NULL, 10));
+
+  else if (type == "number")
+    variant = Variant (strtod (value.c_str (), NULL));
+
+  else if (type == "rvalue" ||
+           type == "string" ||
+           type == "rx")
+    variant = Variant (unquoteText (value));
+
+  else
+    throw std::string ("Unrecognized operand '") +   + "'.";
+
+  variant.raw (value);
+  variant.raw_type (type);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

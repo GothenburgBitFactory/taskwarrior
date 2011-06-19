@@ -32,6 +32,7 @@
 #include <stack>
 #include <Arguments.h>
 #include <Task.h>
+#include <Variant.h>
 
 class Expression
 {
@@ -51,6 +52,7 @@ private:
   void expand_tokens ();
   void postfix ();
 
+  void create_variant (Variant&, const std::string&, const std::string&);
   bool is_new_style ();
 
 private:
