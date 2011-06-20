@@ -28,6 +28,7 @@
 #include <iostream>
 #include <vector>
 #include <Expression.h>
+#include <Timer.h>
 #include <Command.h>
 
 #include <CmdAdd.h>
@@ -253,6 +254,8 @@ bool Command::displays_id () const
 ////////////////////////////////////////////////////////////////////////////////
 void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 {
+  Timer timer ("Command::filter");
+
   Arguments f = context.args.extract_read_only_filter ();
   if (f.size ())
   {

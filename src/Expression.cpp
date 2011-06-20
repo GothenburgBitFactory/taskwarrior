@@ -83,7 +83,7 @@ bool Expression::eval (Task& task)
   {
     if (arg->second == "op")
     {
-      std::cout << "# operator " << arg->first << "\n";
+//      std::cout << "# operator " << arg->first << "\n";
 
       // Handle the unary operator first.
       if (arg->first == "!")
@@ -101,12 +101,12 @@ bool Expression::eval (Task& task)
         }
         value_stack.pop_back ();
 
-        std::cout << "#   " << " ! " << right.dump () << "\n";
+//        std::cout << "#   " << " ! " << right.dump () << "\n";
         bool result = !right;
         right = Variant (result);
         right._raw_type = "bool";
 
-        std::cout << "#     --> " << right.dump () << "\n";
+//        std::cout << "#     --> " << right.dump () << "\n";
         value_stack.push_back (right);
 
         // This only occurs here, because the unary operators are handled, and
@@ -141,102 +141,142 @@ bool Expression::eval (Task& task)
       // Now the binary operators.
       if (arg->first == "and")
       {
-        std::cout << "#   " << left.dump () << " and " << right.dump () << "\n";
+//        std::cout << "#   " << left.dump () << " and " << right.dump () << "\n";
         bool result = (left && right);
         left = Variant (result);
         left._raw_type = "bool";
 
-        std::cout << "#     --> " << left.dump () << "\n";
+//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
       else if (arg->first == "xor")
       {
-        std::cout << "#   " << left.dump () << " xor " << right.dump () << "\n";
+//        std::cout << "#   " << left.dump () << " xor " << right.dump () << "\n";
         bool left_bool  = left.boolean ();
         bool right_bool = right.boolean ();
         bool result = (left_bool && !right_bool) || (!left_bool && right_bool);
         left = Variant (result);
         left._raw_type = "bool";
 
-        std::cout << "#     --> " << left.dump () << "\n";
+//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
       else if (arg->first == "or")
       {
-        std::cout << "#   " << left.dump () << " or " << right.dump () << "\n";
+//        std::cout << "#   " << left.dump () << " or " << right.dump () << "\n";
         bool result = (left || right);
         left = Variant (result);
         left._raw_type = "bool";
 
-        std::cout << "#     --> " << left.dump () << "\n";
+//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
       else if (arg->first == "<=")
       {
-        std::cout << "#   " << left.dump () << " <= " << right.dump () << "\n";
+//        std::cout << "#   " << left.dump () << " <= " << right.dump () << "\n";
         bool result = (left <= right);
         left = Variant (result);
         left._raw_type = "bool";
 
-        std::cout << "#     --> " << left.dump () << "\n";
+//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
       else if (arg->first == ">=")
       {
-        std::cout << "#   " << left.dump () << " >= " << right.dump () << "\n";
+//        std::cout << "#   " << left.dump () << " >= " << right.dump () << "\n";
         bool result = (left >= right);
         left = Variant (result);
         left._raw_type = "bool";
 
-        std::cout << "#     --> " << left.dump () << "\n";
+//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
       else if (arg->first == "!~")
       {
-        // TODO Copy "~".
+//        std::cout << "#   " << left.dump () << " !~ " << right.dump () << "\n";
+        bool result = false;
+
+        // Matches against description are really against either description,
+        // annotations or project.
+        if (left._raw == "description")
+        {
+          if (right._raw_type == "rx")
+          {
+            throw std::string ("rx not supported");
+          }
+          else
+          {
+            left.cast (Variant::v_string);
+            right.cast (Variant::v_string);
+            if (left._string.find (right._string) == std::string::npos)
+              result = true;
+          }
+        }
+
+        // Matches against non-description fields are treated as-is.
+        else
+        {
+          if (right._raw_type == "rx")
+          {
+            throw std::string ("rx not supported");
+          }
+          else
+          {
+            left.cast (Variant::v_string);
+            right.cast (Variant::v_string);
+            if (left._string.find (right._string) == std::string::npos)
+              result = true;
+          }
+        }
+
+        left = Variant (result);
+        left._raw_type = "bool";
+
+//        std::cout << "#     --> " << left.dump () << "\n";
+        value_stack.push_back (left);
       }
 
       else if (arg->first == "!=")
       {
-        std::cout << "#   " << left.dump () << " != " << right.dump () << "\n";
+//        std::cout << "#   " << left.dump () << " != " << right.dump () << "\n";
         bool result = (left != right);
         left = Variant (result);
         left._raw_type = "bool";
 
-        std::cout << "#     --> " << left.dump () << "\n";
+//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
       else if (arg->first == "=")
       {
-        std::cout << "#   " << left.dump () << " = " << right.dump () << "\n";
+//        std::cout << "#   " << left.dump () << " = " << right.dump () << "\n";
         bool result = (left == right);
         left = Variant (result);
         left._raw_type = "bool";
 
-        std::cout << "#     --> " << left.dump () << "\n";
+//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
       else if (arg->first == ">")
       {
-        std::cout << "#   " << left.dump () << " > " << right.dump () << "\n";
+//        std::cout << "#   " << left.dump () << " > " << right.dump () << "\n";
         bool result = (left > right);
         left = Variant (result);
         left._raw_type = "bool";
 
-        std::cout << "#     --> " << left.dump () << "\n";
+//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
       else if (arg->first == "~")
       {
-        std::cout << "#   " << left.dump () << " ~ " << right.dump () << "\n";
+//        std::cout << "#   " << left.dump () << " ~ " << right.dump () << "\n";
         bool result = false;
 
         // Matches against description are really against either description,
@@ -275,7 +315,7 @@ bool Expression::eval (Task& task)
         left = Variant (result);
         left._raw_type = "bool";
 
-        std::cout << "#     --> " << left.dump () << "\n";
+//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
@@ -310,12 +350,12 @@ bool Expression::eval (Task& task)
 
       else if (arg->first == "<")
       {
-        std::cout << "#   " << left.dump () << " < " << right.dump () << "\n";
+//        std::cout << "#   " << left.dump () << " < " << right.dump () << "\n";
         bool result = (left < right);
         left = Variant (result);
         left._raw_type = "bool";
 
-        std::cout << "#     --> " << left.dump () << "\n";
+//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
@@ -350,7 +390,7 @@ void Expression::create_variant (
   const std::string& value,
   const std::string& type)
 {
-  std::cout << "# operand '" << value << "' as " << type << "\n";
+//  std::cout << "# operand '" << value << "' as " << type << "\n";
 
   // DOM references are not resolved until the operator is processed.  This
   // preserves the original name, which helps determine how to apply the
