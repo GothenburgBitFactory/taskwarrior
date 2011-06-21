@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <text.h>
-#include <rx.h>
+#include <RegX.h>
 #include <Color.h>
 #include <util.h>
 #include <Date.h>
@@ -634,7 +634,8 @@ bool Att::match (const Att& other) const
       if (regex)
       {
         std::string pattern = "^" + mValue + "$";
-        if (!regexMatch (other.mValue, pattern, case_sensitive))
+        RegX r (pattern, case_sensitive);
+        if (!r.match (other.mValue))
           return false;
       }
       else if (!compare (mValue, other.mValue, (bool) case_sensitive))
@@ -652,7 +653,8 @@ bool Att::match (const Att& other) const
 #ifdef FEATURE_REGEX
     if (regex)
     {
-      if (!regexMatch (other.mValue, mValue, case_sensitive))
+      RegX r (mValue, case_sensitive);
+      if (!r.match (other.mValue))
         return false;
     }
     else if (find (other.mValue, mValue, (bool) case_sensitive) == std::string::npos)
@@ -670,7 +672,8 @@ bool Att::match (const Att& other) const
     if (regex)
     {
       std::string pattern = "^" + mValue + "$";
-      if (!regexMatch (other.mValue, pattern, case_sensitive))
+      RegX r (pattern, case_sensitive);
+      if (!r.match (other.mValue))
         return false;
     }
     else if (!compare (mValue, other.mValue, (bool) case_sensitive))
@@ -688,7 +691,8 @@ bool Att::match (const Att& other) const
     if (regex)
     {
       std::string pattern = "^" + mValue + "$";
-      if (regexMatch (other.mValue, pattern, case_sensitive))
+      RegX r (pattern, case_sensitive);
+      if (r.match (other.mValue))
         return false;
     }
     else if (compare (mValue, other.mValue, (bool) case_sensitive))
@@ -720,7 +724,8 @@ bool Att::match (const Att& other) const
     if (regex)
     {
       std::string pattern = "^" + mValue;
-      if (!regexMatch (other.mValue, pattern, case_sensitive))
+      RegX r (pattern, case_sensitive);
+      if (!r.match (other.mValue))
         return false;
     }
     else
@@ -743,7 +748,8 @@ bool Att::match (const Att& other) const
     if (regex)
     {
       std::string pattern = mValue + "$";
-      if (!regexMatch (other.mValue, pattern, case_sensitive))
+      RegX r (pattern, case_sensitive);
+      if (!r.match (other.mValue))
         return false;
     }
     else
@@ -767,7 +773,8 @@ bool Att::match (const Att& other) const
 #ifdef FEATURE_REGEX
     if (regex)
     {
-      if (regexMatch (other.mValue, mValue, case_sensitive))
+      RegX r (mValue, case_sensitive);
+      if (r.match (other.mValue))
         return false;
     }
     else if (find (other.mValue, mValue, (bool) case_sensitive) != std::string::npos)
@@ -862,7 +869,8 @@ bool Att::match (const Att& other) const
     {
       std::vector <int> start;
       std::vector <int> end;
-      if (!regexMatch (start, end, other.mValue, mValue, case_sensitive))
+      RegX r (mValue, case_sensitive);
+      if (!r.match (start, end, other.mValue))
         return false;
 
       if (!isWordStart (other.mValue, start[0]))
@@ -898,8 +906,9 @@ bool Att::match (const Att& other) const
     {
       std::vector <int> start;
       std::vector <int> end;
-      if (regexMatch (start, end, other.mValue, mValue, case_sensitive) &&
-          isWordStart (other.mValue, start[0])                     &&
+      RegX r (mValue, case_sensitive);
+      if (r.match (start, end, other.mValue)   &&
+          isWordStart (other.mValue, start[0]) &&
           isWordEnd (other.mValue, end[0]))
         return false;
     }

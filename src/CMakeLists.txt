@@ -25,6 +25,7 @@ set (task_SRCS API.cpp API.h
                Path.cpp Path.h
                Permission.cpp Permission.h
                Record.cpp Record.h
+               RegX.cpp RegX.h
                TDB.cpp TDB.h
                TDB2.cpp TDB2.h
                Task.cpp Task.h
@@ -45,7 +46,6 @@ set (task_SRCS API.cpp API.h
                interactive.cpp
                recur.cpp
                rules.cpp
-               rx.cpp rx.h
                sort.cpp
                text.cpp text.h
                utf8.cpp utf8.h

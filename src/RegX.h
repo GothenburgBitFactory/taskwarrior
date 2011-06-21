@@ -25,16 +25,36 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_RX
-#define INCLuDED_RX
+#ifndef INCLUDED_REGX
+#define INCLUDED_REGX
 #define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>
+#include <regex.h>
 
-bool regexMatch (const std::string&, const std::string&, bool caseSensitive = true);
-bool regexMatch (std::vector<std::string>&, const std::string&, const std::string&, bool caseSensitive = true);
-bool regexMatch (std::vector<int>&, std::vector<int>&, const std::string&, const std::string&, bool caseSensitive = true);
+class RegX
+{
+public:
+  RegX (const std::string&, bool caseSensitive = true);
+  RegX (const RegX&);
+  RegX& operator= (const RegX&);
+  bool operator== (const RegX&) const;
+  ~RegX ();
+
+  bool match (const std::string&);
+  bool match (std::vector<std::string>&, const std::string&);
+  bool match (std::vector <int>&, std::vector <int>&, const std::string&);
+
+private:
+  void compile ();
+
+private:
+  bool _compiled;
+  std::string _pattern;
+  bool _case_sensitive;
+  regex_t _regex;
+};
 
 #endif
 

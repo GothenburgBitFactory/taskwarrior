@@ -25,7 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <Context.h>
-#include <rx.h>
+#include <RegX.h>
 #include <test.h>
 
 Context context;
@@ -36,30 +36,41 @@ int main (int argc, char** argv)
 
   std::string text = "This is a test.";
 
-  ut.ok (regexMatch (text, "i. ", true), text + " =~ /i. /");
+  RegX r1 ("i. ", true);
+  ut.ok (r1.match (text), text + " =~ /i. /");
 
   std::vector <std::string> matches;
-  ut.ok (regexMatch (matches, text, "(i.) ", false), text + " =~ /(i.) /");
+  RegX r2 ("(i.) ", false);
+  ut.ok (r2.match (matches, text), text + " =~ /(i.) /");
   ut.ok (matches.size () == 1, "1 match");
   ut.is (matches[0], "is", "$1 == is");
 
   text = "abcdefghijklmnopqrstuvwxyz";
 
-  ut.ok (regexMatch (text, "t..", true), "t..");
-  ut.ok (regexMatch (text, "T..", false), "T..");
-  ut.ok (!regexMatch (text, "T..", true), "! T..");
+  RegX r3 ("t..", true);
+  ut.ok (r3.match (text), "t..");
+
+  RegX r4 ("T..", false);
+  ut.ok (r4.match (text), "T..");
+
+  RegX r5 ("T..", true);
+  ut.ok (!r5.match (text), "! T..");
 
   text = "this is a test of the regex engine.";
   //      |...:....|....:....|....:....|....:
 
-  ut.ok (regexMatch (text, "^this"),      "^this matches");
-  ut.ok (regexMatch (text, "engine\\.$"), "engine\\.$ matches");
+  RegX r6 ("^this");
+  ut.ok (r6.match (text),      "^this matches");
+
+  RegX r7 ("engine\\.$");
+  ut.ok (r7.match (text), "engine\\.$ matches");
 
   std::vector <std::string> results;
   std::vector <int> start;
   std::vector <int> end;
-  ut.ok (regexMatch (results, text,    "(e..)", true), "(e..) there are matches");
-  ut.ok (regexMatch (start, end, text, "(e..)", true), "(e..) there are matches");
+  RegX r8 ("(e..)", true);
+  ut.ok (r8.match (results, text), "(e..) there are matches");
+  ut.ok (r8.match (start, end, text), "(e..) there are matches");
   ut.is (results.size (), (size_t) 1, "(e..) == 1 match");
   ut.is (results[0], "est", "(e..)[0] == 'est'");
   ut.is (start[0],      11, "(e..)[0] == 11->");

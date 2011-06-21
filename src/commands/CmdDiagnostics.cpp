@@ -29,7 +29,7 @@
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
-#include <rx.h>
+#include <RegX.h>
 #include <Context.h>
 #include <util.h>
 #include <cmake.h>
@@ -223,9 +223,10 @@ int CmdDiagnostics::execute (std::string& output)
       char* p = fgets (buffer, 1023, fp);
       pclose (fp);
 
+      RegX r ("usage", false);
       if (p)
         out << "       scp: "
-            << (regexMatch (buffer, "usage") ? "found" : "n/a")
+            << (r.match (buffer) ? "found" : "n/a")
             << "\n";
     }
 
@@ -237,8 +238,9 @@ int CmdDiagnostics::execute (std::string& output)
       // rsync  version 2.6.9  protocol version 29
       if (p)
       {
+        RegX r ("version ([0-9]+\\.[0-9]+\\.[0-9]+)", false);
         matches.clear ();
-        regexMatch (matches, buffer, "version ([0-9]+\\.[0-9]+\\.[0-9]+)");
+        r.match (matches, buffer);
         out << "     rsync: "
             << (matches.size () ? matches[0] : "n/a")
             << "\n";
@@ -253,8 +255,9 @@ int CmdDiagnostics::execute (std::string& output)
       // curl 7.19.7 (universal-apple-darwin10.0) libcurl/7.19.7 OpenSSL/0.9.8l zlib/1.2.3
       if (p)
       {
+        RegX r ("curl ([0-9]+\\.[0-9]+\\.[0-9]+)", false);
         matches.clear ();
-        regexMatch (matches, buffer, "curl ([0-9]+\\.[0-9]+\\.[0-9]+)");
+        r.match (matches, buffer);
         out << "      curl: "
             << (matches.size () ? matches[0] : "n/a")
             << "\n";

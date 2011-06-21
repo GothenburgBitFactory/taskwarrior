@@ -38,9 +38,8 @@ void get (std::vector <Task>& pending, std::vector <Task>& completed)
   TDB tdb;
   tdb.location (".");
   tdb.lock ();
-  Filter filter;
-  tdb.loadPending   (pending,   filter);
-  tdb.loadCompleted (completed, filter);
+  tdb.loadPending   (pending);
+  tdb.loadCompleted (completed);
   tdb.unlock ();
 }
 
@@ -60,7 +59,6 @@ int main (int argc, char** argv)
     context.config.set ("gc", "on");
 
     // Try reading an empty database.
-    Filter filter;
     std::vector <Task> all;
     std::vector <Task> pending;
     std::vector <Task> completed;
@@ -100,7 +98,7 @@ int main (int argc, char** argv)
     completed.clear ();
 
     tdb.lock ();
-    tdb.load (all, filter);
+    tdb.load (all);
     all[0].set ("name", "value2");
     tdb.update (all[0]);                                             // P1 C0 N0 M1
     tdb.commit ();                                                   // P1 C0 N0 M0
@@ -118,7 +116,7 @@ int main (int argc, char** argv)
     all.clear ();
 
     tdb.lock ();
-    tdb.loadPending (all, filter);
+    tdb.loadPending (all);
     all[0].setStatus (Task::completed);
     tdb.update (all[0]);                                             // P1 C0 N0 M1
     Task t2 ("[foo:\"bar\" status:\"pending\"]");

@@ -33,7 +33,7 @@
 #include <inttypes.h>
 #include <Nibbler.h>
 #include <Date.h>
-#include <rx.h>
+#include <RegX.h>
 
 const char* c_digits = "0123456789";
 
@@ -146,9 +146,10 @@ bool Nibbler::getUntilRx (const std::string& regex, std::string& result)
     else
       modified_regex = regex;
 
+    RegX r (modified_regex, true);
     std::vector <int> start;
     std::vector <int> end;
-    if (regexMatch (start, end, mInput.substr (mCursor), modified_regex, true))
+    if (r.match (start, end, mInput.substr (mCursor)))
     {
       result = mInput.substr (mCursor, start[0]);
       mCursor += start[0];
@@ -450,8 +451,9 @@ bool Nibbler::getRx (const std::string& regex, std::string& result)
     else
       modified_regex = regex;
 
+    RegX r (modified_regex, true);
     std::vector <std::string> results;
-    if (regexMatch (results, mInput.substr (mCursor), modified_regex, true))
+    if (r.match (results, mInput.substr (mCursor)))
     {
       result = results[0];
       mCursor += result.length ();
@@ -1010,8 +1012,9 @@ bool Nibbler::skipRx (const std::string& regex)
     else
       modified_regex = regex;
 
+    RegX r (modified_regex, true);
     std::vector <std::string> results;
-    if (regexMatch (results, mInput.substr (mCursor), modified_regex, true))
+    if (r.match (results, mInput.substr (mCursor)))
     {
       mCursor += results[0].length ();
       return true;
