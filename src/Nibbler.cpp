@@ -25,7 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
+#define L10N                                           // Localization complete.
+
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -887,7 +888,6 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
   tms.tm_sec   = second;
 
   t = mktime (&tms);
-  std::cout << "# " << year << " " << month << " " << day << " " << hour << " " << minute << " " << second << "\n";
   mCursor = i;
   return true;
 }
