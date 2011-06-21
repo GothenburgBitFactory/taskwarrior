@@ -34,6 +34,7 @@
 #include <Duration.h>
 #include <Nibbler.h>
 #include <Variant.h>
+#include <RegX.h>
 #include <text.h>
 #include <Expression.h>
 
@@ -199,39 +200,15 @@ bool Expression::eval (Task& task)
       else if (arg->first == "!~")
       {
 //        std::cout << "#   " << left.dump () << " !~ " << right.dump () << "\n";
-        bool result = false;
+        bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
+        bool result = !eval_match (left, right, case_sensitive);
 
         // Matches against description are really against either description,
         // annotations or project.
-        if (left._raw == "description")
+        // Short-circuit if match already failed.
+        if (result && left._raw == "description")
         {
-          if (right._raw_type == "rx")
-          {
-            throw std::string ("rx not supported");
-          }
-          else
-          {
-            left.cast (Variant::v_string);
-            right.cast (Variant::v_string);
-            if (left._string.find (right._string) == std::string::npos)
-              result = true;
-          }
-        }
-
-        // Matches against non-description fields are treated as-is.
-        else
-        {
-          if (right._raw_type == "rx")
-          {
-            throw std::string ("rx not supported");
-          }
-          else
-          {
-            left.cast (Variant::v_string);
-            right.cast (Variant::v_string);
-            if (left._string.find (right._string) == std::string::npos)
-              result = true;
-          }
+          // TODO check further.
         }
 
         left = Variant (result);
@@ -277,39 +254,15 @@ bool Expression::eval (Task& task)
       else if (arg->first == "~")
       {
 //        std::cout << "#   " << left.dump () << " ~ " << right.dump () << "\n";
-        bool result = false;
+        bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
+        bool result = eval_match (left, right, case_sensitive);
 
         // Matches against description are really against either description,
         // annotations or project.
-        if (left._raw == "description")
+        // Short-circuit if match is already found.
+        if (!result && left._raw == "description")
         {
-          if (right._raw_type == "rx")
-          {
-            throw std::string ("rx not supported");
-          }
-          else
-          {
-            left.cast (Variant::v_string);
-            right.cast (Variant::v_string);
-            if (left._string.find (right._string) != std::string::npos)
-              result = true;
-          }
-        }
-
-        // Matches against non-description fields are treated as-is.
-        else
-        {
-          if (right._raw_type == "rx")
-          {
-            throw std::string ("rx not supported");
-          }
-          else
-          {
-            left.cast (Variant::v_string);
-            right.cast (Variant::v_string);
-            if (left._string.find (right._string) != std::string::npos)
-              result = true;
-          }
+          // TODO check further.
         }
 
         left = Variant (result);
@@ -382,6 +335,32 @@ bool Expression::eval (Task& task)
     throw std::string ("Error: Expression::eval found extra items on the stack.");
 
   return pass_fail;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Expression::eval_match (Variant& left, Variant& right, bool case_sensitive)
+{
+  if (right._raw_type == "rx")
+  {
+    left.cast (Variant::v_string);
+    right.cast (Variant::v_string);
+
+    // Create a cached entry, if it does not already exist.
+    if (_regexes.find (right._string) == _regexes.end ())
+      _regexes[right._string] = RegX (right._string, case_sensitive);
+
+    if (_regexes[right._string].match (left._string))
+      return true;
+  }
+  else
+  {
+    left.cast (Variant::v_string);
+    right.cast (Variant::v_string);
+    if (find (left._string, right._string, (bool) case_sensitive) != std::string::npos)
+      return true;
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

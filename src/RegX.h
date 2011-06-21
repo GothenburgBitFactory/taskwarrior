@@ -36,6 +36,7 @@
 class RegX
 {
 public:
+  RegX ();
   RegX (const std::string&, bool caseSensitive = true);
   RegX (const RegX&);
   RegX& operator= (const RegX&);

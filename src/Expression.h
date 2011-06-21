@@ -32,6 +32,7 @@
 #include <stack>
 #include <Arguments.h>
 #include <Task.h>
+#include <RegX.h>
 #include <Variant.h>
 
 class Expression
@@ -56,10 +57,11 @@ private:
   bool is_new_style ();
 
 private:
-
+  bool eval_match (Variant&, Variant&, bool);
 
 private:
   Arguments _args;
+  std::map <std::string, RegX> _regexes;
 };
 
 #endif
