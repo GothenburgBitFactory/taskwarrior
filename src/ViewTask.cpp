@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <ViewTask.h>
 #include <Context.h>
 #include <Timer.h>
@@ -104,8 +106,6 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
   std::vector <int> ideal;
-//  std::vector <int> avg_ideal;
-//  int cumulative_ideal = 0;
 
   std::vector <Column*>::iterator i;
   for (i = _columns.begin (); i != _columns.end (); ++i)
@@ -129,17 +129,10 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
       if (min   > global_min)   global_min = min;
       if (ideal > global_ideal) global_ideal = ideal;
-
-//      cumulative_ideal += ideal;
     }
 
     minimal.push_back (global_min);
     ideal.push_back (global_ideal);
-
-//    if (data.size ())
-//      avg_ideal.push_back ((int) (cumulative_ideal / data.size ()));
-//    else
-//      avg_ideal.push_back (0);
   }
 
   // Sum the minimal widths.
@@ -163,7 +156,6 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   if (_width == 0 || sum_ideal <= overage)
     widths = ideal;
   else if (sum_minimal > overage || overage < 0)
-//    throw std::string ("There is not enough horizontal width to display the results.");
     widths = minimal;
   else if (overage > 0)
   {

@@ -25,10 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
 #include <main.h>
+#include <text.h>
+#include <i18n.h>
 #include <CmdUrgency.h>
 
 extern Context context;
@@ -38,7 +42,7 @@ CmdUrgency::CmdUrgency ()
 {
   _keyword     = "_urgency";
   _usage       = "task _urgency <IDs>";
-  _description = "Displays the urgency measure of a task.";
+  _description = STRING_CMD_URGENCY_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -60,7 +64,7 @@ int CmdUrgency::execute (std::string& output)
 
   if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    context.footnote (STRING_CMD_URGENCY_NO_TASKS);
     return 1;
   }
 
@@ -68,10 +72,7 @@ int CmdUrgency::execute (std::string& output)
   std::stringstream out;
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
-    out << "task "
-        << task->id
-        << " urgency "
-        << task->urgency ()
+    out << format (STRING_CMD_URGENCY_RESULT, task->id, task->urgency ())
         << "\n";
 
   output = out.str ();

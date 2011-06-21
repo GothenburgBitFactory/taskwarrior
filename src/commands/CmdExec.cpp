@@ -25,8 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <stdlib.h>
 #include <Context.h>
+#include <i18n.h>
 #include <CmdExec.h>
 
 extern Context context;
@@ -36,7 +39,7 @@ CmdExec::CmdExec ()
 {
   _keyword     = "execute";
   _usage       = "task execute <external command>";
-  _description = "Executes external commands and scripts";
+  _description = STRING_CMD_EXEC_USAGE;
   _read_only   = false;
   _displays_id = true;
 }

@@ -25,8 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <iostream>
+#include <i18n.h>
 #include <assert.h>
 #include <Taskmod.h>
 
@@ -130,9 +133,7 @@ bool Taskmod::isValid ()
 std::string Taskmod::getUuid ()
 {
   if (!bAfterSet)
-  {
-    throw std::string ("Taskmod::getUuid(): Task object not initialized.");
-  }
+    throw std::string (STRING_TASKMOD_BAD_INIT);
 
   return after.get ("uuid");
 }
@@ -143,14 +144,14 @@ std::string Taskmod::toString ()
   assert (bAfterSet);
 
   std::stringstream stream;
-  stream << "time " << timestamp << "\n";
+  stream << STRING_TASKMOD_TIME << timestamp << "\n";
 
   if (bBeforeSet)
   {
-    stream << "old " << before.composeF4();
+    stream << STRING_TASKMOD_OLD << before.composeF4();
   }
 
-  stream << "new " << after.composeF4();
+  stream << STRING_TASKMOD_NEW << after.composeF4();
   stream << "---\n";
 
   return stream.str ();
@@ -202,3 +203,5 @@ std::string Taskmod::getTimeStr () const
 
   return sstream.str ();
 }
+
+////////////////////////////////////////////////////////////////////////////////

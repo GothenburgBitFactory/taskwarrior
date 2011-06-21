@@ -25,7 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
+#include <text.h>
+#include <i18n.h>
 #include <Uri.h>
 
 extern Context context;
@@ -231,7 +235,7 @@ void Uri::parse ()
     }
     else
     {
-      throw std::string ("Could not parse uri '") + data + "', wrong usage of single quotes.";
+      throw std::string (format (STRING_URI_QUOTES, data));
     }
   }
   else
@@ -252,7 +256,7 @@ void Uri::parse ()
   }
   else
   {
-    throw std::string ("The uri '") + data + "' is not in the expected format.";
+    throw std::string (format (STRING_URI_BAD_FORMAT, data));
   }
 
   // path is absolute for ssh:// syntax

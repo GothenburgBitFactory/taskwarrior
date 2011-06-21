@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <ViewText.h>
 #include <Context.h>
 #include <Timer.h>
@@ -152,7 +154,6 @@ std::string ViewText::render ()
   if (sum_ideal <= overage)
     widths = ideal;
   else if (sum_minimal > overage || overage < 0)
-//    throw std::string ("There is not enough horizontal width to display the results.");
     widths = minimal;
   else if (overage > 0)
   {

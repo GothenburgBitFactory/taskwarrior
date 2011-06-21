@@ -102,6 +102,9 @@
 #define STRING_API_WARNING           "Warning: {1}"
 #define STRING_API_ERROR             "Error: {1}"
 
+// Color
+#define STRING_COLOR_UNRECOGNIZED    "The color '{1}' is not recognized."
+
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Unrecognized column name '{1}'"
 #define STRING_COLUMN_BAD_FORMAT     "Unrecognized column format '{1}.{2}'"
@@ -150,6 +153,10 @@
 #define STRING_CMD_VERSION_COPY2     "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio."
 #define STRING_CMD_LOGO_USAGE        "Displays the Taskwarrior logo"
 #define STRING_CMD_LOGO_COLOR_REQ    "The logo command requires that color support is enabled."
+#define STRING_CMD_EXEC_USAGE        "Executes external commands and scripts"
+#define STRING_CMD_URGENCY_USAGE     "Displays the urgency measure of a task."
+#define STRING_CMD_URGENCY_NO_TASKS  "No tasks specified."
+#define STRING_CMD_URGENCY_RESULT    "task {1} urgency {2}"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
@@ -182,6 +189,10 @@
 #define STRING_LUA_BAD_HOOK_DEF      "Malformed hook definition '{1}'."
 #define STRING_LUA_BAD_EVENT         "Unrecognized hook event '{1}'."
 
+// Permission
+#define STRING_PERM_TASK_LINE        "task {1} \"{2}\""
+#define STRING_PERM_RECURRING        "(Recurring)"
+
 // Record
 #define STRING_RECORD_EMPTY          "Empty record in input."
 #define STRING_RECORD_JUNK_AT_EOL    "Unrecognized characters at end of line."
@@ -202,9 +213,19 @@
 #define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
 #define STRING_CMD_SHOW_CONF_VALUE   "Value"
 
+// Taskmod
+#define STRING_TASKMOD_BAD_INIT      "Taskmod::getUuid(): Task object not initialized."
+#define STRING_TASKMOD_TIME          "time "
+#define STRING_TASKMOD_OLD           "old "
+#define STRING_TASKMOD_NEW           "new "
+
 // text
                                      // A comma-separated list of commands is appended.
 #define STRING_TEXT_AMBIGUOUS        "Ambiguous {1} '{2}' - could be either of "
+
+// Uri
+#define STRING_URI_QUOTES            "Could not parse uri '{1}', wrong usage of single quotes."
+#define STRING_URI_BAD_FORMAT        "The uri '{1}' is not in the expected format."
 
 // utf8
 #define STRING_UTF8_INVALID_CP_REP   "Invalid codepoint representation."

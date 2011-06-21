@@ -24,6 +24,9 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -150,7 +153,7 @@ Color::Color (const std::string& spec)
     {
       index = atoi (word.substr (4).c_str ());
       if (index < 0 || index > 23)
-        throw std::string ("The color '") + *it + "' is not recognized.";
+        throw format (STRING_COLOR_UNRECOGNIZED, *it);
 
       if (bg)
       {
@@ -172,7 +175,7 @@ Color::Color (const std::string& spec)
       index = atoi (word.substr (3).c_str ());
       if (word.length () != 6 ||
           index < 0 || index > 555)
-        throw std::string ("The color '") + *it + "' is not recognized.";
+        throw format (STRING_COLOR_UNRECOGNIZED, *it);
 
       int r = atoi (word.substr (3, 1).c_str ());
       int g = atoi (word.substr (4, 1).c_str ());
@@ -180,7 +183,7 @@ Color::Color (const std::string& spec)
       if (r < 0 || r > 5 ||
           g < 0 || g > 5 ||
           b < 0 || b > 5)
-        throw std::string ("The color '") + *it + "' is not recognized.";
+        throw format (STRING_COLOR_UNRECOGNIZED, *it);
 
       index = 16 + r*36 + g*6 + b;
 
@@ -203,7 +206,7 @@ Color::Color (const std::string& spec)
     {
       index = atoi (word.substr (5).c_str ());
       if (index < 0 || index > 255)
-        throw std::string ("The color '") + *it + "' is not recognized.";
+        throw format (STRING_COLOR_UNRECOGNIZED, *it);
 
       upgrade ();
 
@@ -221,7 +224,7 @@ Color::Color (const std::string& spec)
       }
     }
     else if (word != "")
-      throw std::string ("The color '") + *it + "' is not recognized.";
+      throw format (STRING_COLOR_UNRECOGNIZED, *it);
   }
 
   // Now combine the fg and bg into a single color.

@@ -29,7 +29,10 @@
 #include <Permission.h>
 #include <Context.h>
 #include <util.h>
+#include <text.h>
 #include <i18n.h>
+
+#define L10N                                           // Localization complete.
 
 extern Context context;
 
@@ -56,16 +59,14 @@ bool Permission::confirmed (const Task& task, const std::string& question)
   if (allConfirmed)
     return true;
 
-  std::cout << "\nTask "
-            << task.id
-            << " \""
-            << task.get ("description")
-            << "\"";
+  std::cout << "\n"
+            << format (STRING_PERM_TASK_LINE, task.id, task.get ("description"));
 
   if (task.getStatus () == Task::recurring ||
       task.has ("parent"))
   {
-    std::cout << " (Recurring)";
+    std::cout << " "
+              << STRING_PERM_RECURRING;
   }
 
   std::cout << std::endl;  // Flush.
