@@ -44,6 +44,9 @@ public:
 
 private:
   bool is_primitive (const std::string&);
+
+private:
+  std::map <std::string, std::string> _cache;
 };
 
 #endif
