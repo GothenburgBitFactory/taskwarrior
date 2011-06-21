@@ -34,7 +34,7 @@
 #include <Duration.h>
 #include <Nibbler.h>
 #include <Variant.h>
-#include <RegX.h>
+#include <RX.h>
 #include <text.h>
 #include <Expression.h>
 
@@ -347,7 +347,7 @@ bool Expression::eval_match (Variant& left, Variant& right, bool case_sensitive)
 
     // Create a cached entry, if it does not already exist.
     if (_regexes.find (right._string) == _regexes.end ())
-      _regexes[right._string] = RegX (right._string, case_sensitive);
+      _regexes[right._string] = RX (right._string, case_sensitive);
 
     if (_regexes[right._string].match (left._string))
       return true;

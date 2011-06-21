@@ -34,7 +34,7 @@
 #include <inttypes.h>
 #include <Nibbler.h>
 #include <Date.h>
-#include <RegX.h>
+#include <RX.h>
 
 const char* c_digits = "0123456789";
 
@@ -147,7 +147,7 @@ bool Nibbler::getUntilRx (const std::string& regex, std::string& result)
     else
       modified_regex = regex;
 
-    RegX r (modified_regex, true);
+    RX r (modified_regex, true);
     std::vector <int> start;
     std::vector <int> end;
     if (r.match (start, end, mInput.substr (mCursor)))
@@ -452,7 +452,7 @@ bool Nibbler::getRx (const std::string& regex, std::string& result)
     else
       modified_regex = regex;
 
-    RegX r (modified_regex, true);
+    RX r (modified_regex, true);
     std::vector <std::string> results;
     if (r.match (results, mInput.substr (mCursor)))
     {
@@ -1012,7 +1012,7 @@ bool Nibbler::skipRx (const std::string& regex)
     else
       modified_regex = regex;
 
-    RegX r (modified_regex, true);
+    RX r (modified_regex, true);
     std::vector <std::string> results;
     if (r.match (results, mInput.substr (mCursor)))
     {

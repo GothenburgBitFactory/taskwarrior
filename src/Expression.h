@@ -32,7 +32,7 @@
 #include <stack>
 #include <Arguments.h>
 #include <Task.h>
-#include <RegX.h>
+#include <RX.h>
 #include <Variant.h>
 
 class Expression
@@ -61,7 +61,7 @@ private:
 
 private:
   Arguments _args;
-  std::map <std::string, RegX> _regexes;
+  std::map <std::string, RX> _regexes;
 };
 
 #endif

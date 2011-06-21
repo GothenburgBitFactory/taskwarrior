@@ -25,7 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 #include <Context.h>
-#include <RegX.h>
+#include <RX.h>
 #include <test.h>
 
 Context context;
@@ -36,39 +36,39 @@ int main (int argc, char** argv)
 
   std::string text = "This is a test.";
 
-  RegX r1 ("i. ", true);
+  RX r1 ("i. ", true);
   ut.ok (r1.match (text), text + " =~ /i. /");
 
   std::vector <std::string> matches;
-  RegX r2 ("(i.) ", false);
+  RX r2 ("(i.) ", false);
   ut.ok (r2.match (matches, text), text + " =~ /(i.) /");
   ut.ok (matches.size () == 1, "1 match");
   ut.is (matches[0], "is", "$1 == is");
 
   text = "abcdefghijklmnopqrstuvwxyz";
 
-  RegX r3 ("t..", true);
+  RX r3 ("t..", true);
   ut.ok (r3.match (text), "t..");
 
-  RegX r4 ("T..", false);
+  RX r4 ("T..", false);
   ut.ok (r4.match (text), "T..");
 
-  RegX r5 ("T..", true);
+  RX r5 ("T..", true);
   ut.ok (!r5.match (text), "! T..");
 
   text = "this is a test of the regex engine.";
   //      |...:....|....:....|....:....|....:
 
-  RegX r6 ("^this");
+  RX r6 ("^this");
   ut.ok (r6.match (text),      "^this matches");
 
-  RegX r7 ("engine\\.$");
+  RX r7 ("engine\\.$");
   ut.ok (r7.match (text), "engine\\.$ matches");
 
   std::vector <std::string> results;
   std::vector <int> start;
   std::vector <int> end;
-  RegX r8 ("(e..)", true);
+  RX r8 ("(e..)", true);
   ut.ok (r8.match (results, text), "(e..) there are matches");
   ut.ok (r8.match (start, end, text), "(e..) there are matches");
   ut.is (results.size (), (size_t) 1, "(e..) == 1 match");

@@ -25,23 +25,23 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REGX
-#define INCLUDED_REGX
+#ifndef INCLUDED_RX
+#define INCLUDED_RX
 #define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>
 #include <regex.h>
 
-class RegX
+class RX
 {
 public:
-  RegX ();
-  RegX (const std::string&, bool caseSensitive = true);
-  RegX (const RegX&);
-  RegX& operator= (const RegX&);
-  bool operator== (const RegX&) const;
-  ~RegX ();
+  RX ();
+  RX (const std::string&, bool caseSensitive = true);
+  RX (const RX&);
+  RX& operator= (const RX&);
+  bool operator== (const RX&) const;
+  ~RX ();
 
   bool match (const std::string&);
   bool match (std::vector<std::string>&, const std::string&);

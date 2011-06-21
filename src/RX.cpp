@@ -27,7 +27,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <RegX.h>
+#include <RX.h>
 
 #define L10N                                           // Localization complete.
 
@@ -35,7 +35,7 @@
 #define MAX_MATCHES 64
 
 ////////////////////////////////////////////////////////////////////////////////
-RegX::RegX ()
+RX::RX ()
 : _compiled (false)
 , _pattern ("")
 , _case_sensitive (true)
@@ -43,7 +43,7 @@ RegX::RegX ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-RegX::RegX (
+RX::RX (
   const std::string& pattern,
   bool case_sensitive /* = true */)
 : _compiled (false)
@@ -54,7 +54,7 @@ RegX::RegX (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-RegX::RegX (const RegX& other)
+RX::RX (const RX& other)
 : _compiled (false)
 , _pattern (other._pattern)
 , _case_sensitive (other._case_sensitive)
@@ -62,7 +62,7 @@ RegX::RegX (const RegX& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-RegX& RegX::operator= (const RegX& other)
+RX& RX::operator= (const RX& other)
 {
   if (this != &other)
   {
@@ -75,21 +75,21 @@ RegX& RegX::operator= (const RegX& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool RegX::operator== (const RegX& other) const
+bool RX::operator== (const RX& other) const
 {
   return _pattern        == other._pattern &&
          _case_sensitive == other._case_sensitive;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-RegX::~RegX ()
+RX::~RX ()
 {
   if (_compiled)
     regfree (&_regex);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RegX::compile ()
+void RX::compile ()
 {
   if (!_compiled)
   {
@@ -110,7 +110,7 @@ void RegX::compile ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool RegX::match (const std::string& in)
+bool RX::match (const std::string& in)
 {
   if (!_compiled)
     compile ();
@@ -119,7 +119,7 @@ bool RegX::match (const std::string& in)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool RegX::match (
+bool RX::match (
   std::vector<std::string>& matches,
   const std::string& in)
 {
@@ -139,7 +139,7 @@ bool RegX::match (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool RegX::match (
+bool RX::match (
   std::vector <int>& start,
   std::vector <int>& end,
   const std::string& in)

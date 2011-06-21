@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <text.h>
-#include <RegX.h>
+#include <RX.h>
 #include <Color.h>
 #include <util.h>
 #include <Date.h>
@@ -634,7 +634,7 @@ bool Att::match (const Att& other) const
       if (regex)
       {
         std::string pattern = "^" + mValue + "$";
-        RegX r (pattern, case_sensitive);
+        RX r (pattern, case_sensitive);
         if (!r.match (other.mValue))
           return false;
       }
@@ -653,7 +653,7 @@ bool Att::match (const Att& other) const
 #ifdef FEATURE_REGEX
     if (regex)
     {
-      RegX r (mValue, case_sensitive);
+      RX r (mValue, case_sensitive);
       if (!r.match (other.mValue))
         return false;
     }
@@ -672,7 +672,7 @@ bool Att::match (const Att& other) const
     if (regex)
     {
       std::string pattern = "^" + mValue + "$";
-      RegX r (pattern, case_sensitive);
+      RX r (pattern, case_sensitive);
       if (!r.match (other.mValue))
         return false;
     }
@@ -691,7 +691,7 @@ bool Att::match (const Att& other) const
     if (regex)
     {
       std::string pattern = "^" + mValue + "$";
-      RegX r (pattern, case_sensitive);
+      RX r (pattern, case_sensitive);
       if (r.match (other.mValue))
         return false;
     }
@@ -724,7 +724,7 @@ bool Att::match (const Att& other) const
     if (regex)
     {
       std::string pattern = "^" + mValue;
-      RegX r (pattern, case_sensitive);
+      RX r (pattern, case_sensitive);
       if (!r.match (other.mValue))
         return false;
     }
@@ -748,7 +748,7 @@ bool Att::match (const Att& other) const
     if (regex)
     {
       std::string pattern = mValue + "$";
-      RegX r (pattern, case_sensitive);
+      RX r (pattern, case_sensitive);
       if (!r.match (other.mValue))
         return false;
     }
@@ -773,7 +773,7 @@ bool Att::match (const Att& other) const
 #ifdef FEATURE_REGEX
     if (regex)
     {
-      RegX r (mValue, case_sensitive);
+      RX r (mValue, case_sensitive);
       if (r.match (other.mValue))
         return false;
     }
@@ -869,7 +869,7 @@ bool Att::match (const Att& other) const
     {
       std::vector <int> start;
       std::vector <int> end;
-      RegX r (mValue, case_sensitive);
+      RX r (mValue, case_sensitive);
       if (!r.match (start, end, other.mValue))
         return false;
 
@@ -906,7 +906,7 @@ bool Att::match (const Att& other) const
     {
       std::vector <int> start;
       std::vector <int> end;
-      RegX r (mValue, case_sensitive);
+      RX r (mValue, case_sensitive);
       if (r.match (start, end, other.mValue)   &&
           isWordStart (other.mValue, start[0]) &&
           isWordEnd (other.mValue, end[0]))
