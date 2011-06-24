@@ -37,6 +37,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnRecur::ColumnRecur ()
 {
+  _name  = "recur";
   _type  = "string";
   _style = "default";
   _label = STRING_COLUMN_LABEL_RECUR;
@@ -45,6 +46,12 @@ ColumnRecur::ColumnRecur ()
 ////////////////////////////////////////////////////////////////////////////////
 ColumnRecur::~ColumnRecur ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnRecur::validate (std::string& value)
+{
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,11 +75,11 @@ void ColumnRecur::measure (Task& task, int& minimum, int& maximum)
   }
   else if (_style == "indicator")
   {
-    if (task.has ("recur"))
+    if (task.has (_name))
       minimum = maximum = context.config.get ("recurrence.indicator").length ();
   }
   else
-    throw format (STRING_COLUMN_BAD_FORMAT, "recur.", _style);
+    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +95,7 @@ void ColumnRecur::render (
   }
   else if (_style == "indicator")
   {
-    if (task.has ("recur"))
+    if (task.has (_name))
       lines.push_back (
         color.colorize (
           rightJustify (context.config.get ("recurrence.indicator"), width)));

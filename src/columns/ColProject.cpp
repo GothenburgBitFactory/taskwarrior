@@ -37,6 +37,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnProject::ColumnProject ()
 {
+  _name  = "project";
   _type  = "string";
   _style = "default";
   _label = STRING_COLUMN_LABEL_PROJECT;
@@ -48,10 +49,16 @@ ColumnProject::~ColumnProject ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ColumnProject::validate (std::string& value)
+{
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnProject::measure (Task& task, int& minimum, int& maximum)
 {
-  std::string project = task.get ("project");
+  std::string project = task.get (_name);
 
   if (_style == "parent")
   {
@@ -60,7 +67,7 @@ void ColumnProject::measure (Task& task, int& minimum, int& maximum)
       project = project.substr (0, period);
   }
   else if (_style != "default")
-    throw format (STRING_COLUMN_BAD_FORMAT, "project.", _style);
+    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 
   minimum = longestWord (project);
   maximum = project.length ();
@@ -73,7 +80,7 @@ void ColumnProject::render (
   int width,
   Color& color)
 {
-  std::string project = task.get ("project");
+  std::string project = task.get (_name);
   if (_style == "parent")
   {
     std::string::size_type period = project.find ('.');

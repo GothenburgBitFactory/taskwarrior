@@ -52,7 +52,7 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-// Supports the new complete column definition:
+// Supports the complete column definition:
 //
 //   <type>[.<format>]
 //
@@ -73,37 +73,62 @@ Column* Column::factory (const std::string& name, const std::string& report)
     column_style = "default";
   }
 
-  Column* column;
-       if (column_name == "depends")     column = new ColumnDepends ();
-  else if (column_name == "description") column = new ColumnDescription ();
-  else if (column_name == "due")         column = new ColumnDue ();
-  else if (column_name == "end")         column = new ColumnEnd ();
-  else if (column_name == "entry")       column = new ColumnEntry ();
-  else if (column_name == "id")          column = new ColumnID ();
-  else if (column_name == "priority")    column = new ColumnPriority ();
-  else if (column_name == "project")     column = new ColumnProject ();
-  else if (column_name == "recur")       column = new ColumnRecur ();
-  else if (column_name == "start")       column = new ColumnStart ();
-  else if (column_name == "status")      column = new ColumnStatus ();
-  else if (column_name == "tags")        column = new ColumnTags ();
-  else if (column_name == "until")       column = new ColumnUntil ();
-  else if (column_name == "urgency")     column = new ColumnUrgency ();
-  else if (column_name == "uuid")        column = new ColumnUUID ();
-  else if (column_name == "wait")        column = new ColumnWait ();
+  Column* c;
+       if (column_name == "depends")     c = new ColumnDepends ();
+  else if (column_name == "description") c = new ColumnDescription ();
+  else if (column_name == "due")         c = new ColumnDue ();
+  else if (column_name == "end")         c = new ColumnEnd ();
+  else if (column_name == "entry")       c = new ColumnEntry ();
+  else if (column_name == "id")          c = new ColumnID ();
+  else if (column_name == "priority")    c = new ColumnPriority ();
+  else if (column_name == "project")     c = new ColumnProject ();
+  else if (column_name == "recur")       c = new ColumnRecur ();
+  else if (column_name == "start")       c = new ColumnStart ();
+  else if (column_name == "status")      c = new ColumnStatus ();
+  else if (column_name == "tags")        c = new ColumnTags ();
+  else if (column_name == "until")       c = new ColumnUntil ();
+  else if (column_name == "urgency")     c = new ColumnUrgency ();
+  else if (column_name == "uuid")        c = new ColumnUUID ();
+  else if (column_name == "wait")        c = new ColumnWait ();
 
-  // Special non-task column
-  else if (column_name == "string")      column = new ColumnString ();
+  // Special non-task column.
+  else if (column_name == "string")      c = new ColumnString ();
   else
     throw format (STRING_COLUMN_BAD_NAME, column_name);
 
-  column->setReport (report);
-  column->setStyle (column_style);
-  return column;
+  c->setReport (report);
+  c->setStyle (column_style);
+  return c;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Bulk column instantiation.
+void Column::factory (std::map <std::string, Column*>& all)
+{
+  Column* c;
+
+  c = new ColumnDepends ();        all[c->_name] = c;
+  c = new ColumnDescription ();    all[c->_name] = c;
+  c = new ColumnDue ();            all[c->_name] = c;
+  c = new ColumnEnd ();            all[c->_name] = c;
+  c = new ColumnEntry ();          all[c->_name] = c;
+  c = new ColumnID ();             all[c->_name] = c;
+  c = new ColumnPriority ();       all[c->_name] = c;
+  c = new ColumnProject ();        all[c->_name] = c;
+  c = new ColumnRecur ();          all[c->_name] = c;
+  c = new ColumnStart ();          all[c->_name] = c;
+  c = new ColumnStatus ();         all[c->_name] = c;
+  c = new ColumnTags ();           all[c->_name] = c;
+  c = new ColumnUntil ();          all[c->_name] = c;
+  c = new ColumnUrgency ();        all[c->_name] = c;
+  c = new ColumnUUID ();           all[c->_name] = c;
+  c = new ColumnWait ();           all[c->_name] = c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Column::Column ()
-: _type ("string")
+: _name ("")
+, _type ("string")
 , _style ("default")
 , _label ("")
 , _report ("")
@@ -113,9 +138,11 @@ Column::Column ()
 ////////////////////////////////////////////////////////////////////////////////
 Column::Column (const Column& other)
 {
+  _name  = other._name;
   _type  = other._type;
   _style = other._style;
   _label = other._label;
+  _label = other._report;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -123,9 +150,11 @@ Column& Column::operator= (const Column& other)
 {
   if (this != &other)
   {
+    _name    = other._name;
     _type    = other._type;
     _style   = other._style;
     _label   = other._label;
+    _report  = other._report;
   }
 
   return *this;
@@ -134,8 +163,9 @@ Column& Column::operator= (const Column& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Column::operator== (const Column& other) const
 {
-  return _type  == other._type   &&
-         _style == other._style   &&
+  return _name  == other._name  &&
+         _type  == other._type  &&
+         _style == other._style &&
          _label == other._label;
 }
 
@@ -174,6 +204,12 @@ void Column::renderHeader (
       lines.push_back (c.colorize (std::string (width, '-')));
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Column::validate (std::string& input)
+{
+  return input.length () ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

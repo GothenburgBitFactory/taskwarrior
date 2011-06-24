@@ -37,6 +37,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStatus::ColumnStatus ()
 {
+  _name  = "status";
   _type  = "string";
   _style = "default";
   _label = STRING_COLUMN_LABEL_STATUS;
@@ -45,6 +46,12 @@ ColumnStatus::ColumnStatus ()
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStatus::~ColumnStatus ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnStatus::validate (std::string& value)
+{
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +88,7 @@ void ColumnStatus::measure (Task& task, int& minimum, int& maximum)
   else if (_style == "short")
     minimum = maximum = 1;
   else
-    throw format (STRING_COLUMN_BAD_FORMAT, "status.", _style);
+    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

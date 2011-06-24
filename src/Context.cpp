@@ -113,11 +113,16 @@ void Context::initialize (int argc, const char** argv)
   // Instantiate built-in command objects.
   Command::factory (commands);
 
+  // Instantiate built-in column objects.
+  Column::factory (columns);
+
   // Finally categorize all arguments.
   args.categorize ();
 
   // TODO Instantiate extension command objects.
   // TODO Instantiate default command object.
+
+  // TODO Instantiate extension column objects.
 
   // TODO Instantiate extension UDA objects.
   // TODO Instantiate extension format objects.

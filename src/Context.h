@@ -106,6 +106,7 @@ public:
 */
 
   std::map <std::string, Command*>    commands;
+  std::map <std::string, Column*>     columns;
 
   int                                 terminal_width;
   int                                 terminal_height;

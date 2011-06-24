@@ -41,10 +41,10 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDate::ColumnDate ()
 {
+  _name      = "";
   _type      = "date";
   _style     = "default";
   _label     = "";
-  _attribute = "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,14 +53,20 @@ ColumnDate::~ColumnDate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ColumnDate::validate (std::string& value)
+{
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnDate::measure (Task& task, int& minimum, int& maximum)
 {
   minimum = maximum = 0;
 
-  if (task.has (_attribute))
+  if (task.has (_name))
   {
-    Date date ((time_t) strtol (task.get (_attribute).c_str (), NULL, 10));
+    Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
 
     if (_style == "default")
     {
@@ -96,7 +102,7 @@ void ColumnDate::measure (Task& task, int& minimum, int& maximum)
       minimum = maximum = Duration (now - date).formatCompact ().length ();
     }
     else
-      throw format (STRING_COLUMN_BAD_FORMAT, _attribute, _style);
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
 }
 
@@ -107,7 +113,7 @@ void ColumnDate::render (
   int width,
   Color& color)
 {
-  if (task.has (_attribute))
+  if (task.has (_name))
   {
     if (_style == "default")
     {
@@ -124,12 +130,12 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           leftJustify (
-            Date ((time_t) strtol (task.get (_attribute).c_str (), NULL, 10))
+            Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
               .toString (format), width)));
     }
     else if (_style == "julian")
     {
-      double julian = (Date ((time_t) strtol (task.get (_attribute).c_str (), NULL, 10))
+      double julian = (Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
         .toEpoch () / 86400.0) + 2440587.5;
 
       lines.push_back (
@@ -142,7 +148,7 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           rightJustify (
-            Date ((time_t) strtol (task.get (_attribute).c_str (), NULL, 10))
+            Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
               .toEpochString (), width)));
     }
     else if (_style == "iso")
@@ -150,12 +156,12 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           leftJustify (
-            Date ((time_t) strtol (task.get (_attribute).c_str (), NULL, 10))
+            Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
               .toISO (), width)));
     }
     else if (_style == "age")
     {
-      Date date ((time_t) strtol (task.get (_attribute).c_str (), NULL, 10));
+      Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
       Date now;
 
       lines.push_back (

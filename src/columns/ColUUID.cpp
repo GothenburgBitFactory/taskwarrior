@@ -38,6 +38,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnUUID::ColumnUUID ()
 {
+  _name  = "uuid";
   _type  = "string";
   _style = "default";
   _label = STRING_COLUMN_LABEL_UUID;
@@ -49,13 +50,19 @@ ColumnUUID::~ColumnUUID ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ColumnUUID::validate (std::string& value)
+{
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnUUID::measure (Task&, int& minimum, int& maximum)
 {
        if (_style == "default") minimum = maximum = 36;
   else if (_style == "short")   minimum = maximum = 8;
   else
-    throw format (STRING_COLUMN_BAD_FORMAT, "uuid.", _style);
+    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,10 +75,10 @@ void ColumnUUID::render (
   // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
   //                             34f00694  short
   if (_style == "default")
-    lines.push_back (color.colorize (leftJustify (task.get ("uuid"), width)));
+    lines.push_back (color.colorize (leftJustify (task.get (_name), width)));
 
   else if (_style == "short")
-    lines.push_back (color.colorize (leftJustify (task.get ("uuid").substr (28), width)));
+    lines.push_back (color.colorize (leftJustify (task.get (_name).substr (28), width)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

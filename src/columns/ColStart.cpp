@@ -37,13 +37,19 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStart::ColumnStart ()
 {
-  _label     = STRING_COLUMN_LABEL_STARTED;
-  _attribute = "start";
+  _name  = "start";
+  _label = STRING_COLUMN_LABEL_STARTED;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStart::~ColumnStart ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnStart::validate (std::string& value)
+{
+  return ColumnDate::validate (value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +69,7 @@ void ColumnStart::measure (Task& task, int& minimum, int& maximum)
 {
   minimum = maximum = 0;
 
-  if (task.has (_attribute))
+  if (task.has (_name))
   {
     if (_style == "active")
     {
@@ -82,7 +88,7 @@ void ColumnStart::render (
   int width,
   Color& color)
 {
-  if (task.has (_attribute))
+  if (task.has (_name))
   {
     if (_style == "active")
     {

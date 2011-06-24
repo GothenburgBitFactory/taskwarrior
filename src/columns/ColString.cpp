@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2011, Paul Beckingham, Federico Hernandez.
@@ -37,6 +37,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnString::ColumnString ()
 {
+  _name  = "string";
   _type  = "string";
   _style = "default";
   _label = "";
@@ -72,7 +73,7 @@ void ColumnString::measure (const std::string& value, int& minimum, int& maximum
            _style == "right_fixed")
     minimum = maximum = strippedLength (value);
   else
-    throw format (STRING_COLUMN_BAD_FORMAT, "string.", _style);
+    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -37,6 +37,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnPriority::ColumnPriority ()
 {
+  _name  = "priority";
   _type  = "string";
   _style = "default";
   _label = STRING_COLUMN_LABEL_PRI;
@@ -45,6 +46,20 @@ ColumnPriority::ColumnPriority ()
 ////////////////////////////////////////////////////////////////////////////////
 ColumnPriority::~ColumnPriority ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnPriority::validate (std::string& value)
+{
+  value = upperCase (value);
+
+  if (value == "H" ||
+      value == "M" ||
+      value == "L" ||
+      value == "")
+    return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +77,7 @@ void ColumnPriority::setStyle (const std::string& value)
 // Set the minimum and maximum widths for the value.
 void ColumnPriority::measure (Task& task, int& minimum, int& maximum)
 {
-  std::string priority = task.get ("priority");
+  std::string priority = task.get (_name);
 
   minimum = maximum = 1;
   if (_style == "long")
@@ -82,7 +97,7 @@ void ColumnPriority::render (
   int width,
   Color& color)
 {
-  std::string priority = task.get ("priority");
+  std::string priority = task.get (_name);
   if (_style == "long")
   {
          if (priority == "H") priority = "High";

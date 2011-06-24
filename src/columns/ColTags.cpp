@@ -38,6 +38,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTags::ColumnTags ()
 {
+  _name  = "tags";
   _type  = "string";
   _style = "default";
   _label = STRING_COLUMN_LABEL_TAGS;
@@ -46,6 +47,12 @@ ColumnTags::ColumnTags ()
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTags::~ColumnTags ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnTags::validate (std::string& value)
+{
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +80,7 @@ void ColumnTags::measure (Task& task, int& minimum, int& maximum)
   else if (_style == "count")     minimum = maximum = 3;
   else if (_style == "default")
   {
-    std::string tags = task.get ("tags");
+    std::string tags = task.get (_name);
     minimum = 0;
     maximum = tags.length ();
 
@@ -88,7 +95,7 @@ void ColumnTags::measure (Task& task, int& minimum, int& maximum)
     }
   }
   else
-    throw format (STRING_COLUMN_BAD_FORMAT, "tags.", _style);
+    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +105,7 @@ void ColumnTags::render (
   int width,
   Color& color)
 {
-  std::string tags = task.get ("tags");
+  std::string tags = task.get (_name);
   if (tags != "")
   {
     if (_style == "indicator")

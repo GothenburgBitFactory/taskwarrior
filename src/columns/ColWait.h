@@ -35,6 +35,8 @@ class ColumnWait : public ColumnDate
 public:
   ColumnWait ();
   ~ColumnWait ();
+
+  bool validate (std::string&);
 };
 
 #endif

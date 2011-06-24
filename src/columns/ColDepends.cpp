@@ -39,6 +39,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDepends::ColumnDepends ()
 {
+  _name  = "depends";
   _type  = "string";
   _style = "default";
   _label = STRING_COLUMN_LABEL_DEP;
@@ -47,6 +48,12 @@ ColumnDepends::ColumnDepends ()
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDepends::~ColumnDepends ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnDepends::validate (std::string& value)
+{
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +100,7 @@ void ColumnDepends::measure (Task& task, int& minimum, int& maximum)
     }
   }
   else
-    throw format (STRING_COLUMN_BAD_FORMAT, "depends", _style);
+    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +110,7 @@ void ColumnDepends::render (
   int width,
   Color& color)
 {
-  if (task.has ("depends"))
+  if (task.has (_name))
   {
     if (_style == "indicator")
     {

@@ -37,6 +37,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnUrgency::ColumnUrgency ()
 {
+  _name  = "urgency";
   _type  = "number";
   _style = "default";
   _label = STRING_COLUMN_LABEL_URGENCY;
@@ -54,7 +55,7 @@ void ColumnUrgency::measure (Task& task, int& minimum, int& maximum)
   minimum = maximum = format (task.urgency (), 4, 3).length ();
 
   if (_style != "default")
-    throw format (STRING_COLUMN_BAD_FORMAT, "urgency.", _style);
+    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -40,6 +40,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDescription::ColumnDescription ()
 {
+  _name  = "description";
   _type  = "string";
   _style = "default";
   _label = STRING_COLUMN_LABEL_DESC;
@@ -51,10 +52,16 @@ ColumnDescription::~ColumnDescription ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ColumnDescription::validate (std::string& value)
+{
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
 {
-  std::string description = task.get ("description");
+  std::string description = task.get (_name);
 
   // The text
   // <indent> <date> <anno>
@@ -127,7 +134,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   }
 
   else
-    throw format (STRING_COLUMN_BAD_FORMAT, "description.", _style);
+    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +144,7 @@ void ColumnDescription::render (
   int width,
   Color& color)
 {
-  std::string description = task.get ("description");
+  std::string description = task.get (_name);
 
   // This is a description
   // <date> <anno>

@@ -35,6 +35,8 @@ class ColumnEnd : public ColumnDate
 public:
   ColumnEnd ();
   ~ColumnEnd ();
+
+  bool validate (std::string&);
 };
 
 #endif

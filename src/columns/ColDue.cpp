@@ -40,13 +40,19 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDue::ColumnDue ()
 {
+  _name      = "due";
   _label     = STRING_COLUMN_LABEL_DUE;
-  _attribute = "due";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDue::~ColumnDue ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnDue::validate (std::string& value)
+{
+  return ColumnDate::validate (value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,11 +72,11 @@ void ColumnDue::measure (Task& task, int& minimum, int& maximum)
 {
   minimum = maximum = 0;
 
-  if (task.has (_attribute))
+  if (task.has (_name))
   {
     if (_style == "countdown")
     {
-      Date date ((time_t) strtol (task.get (_attribute).c_str (), NULL, 10));
+      Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
       Date now;
       minimum = maximum = Duration (now - date).format ().length ();
     }
@@ -86,11 +92,11 @@ void ColumnDue::render (
   int width,
   Color& color)
 {
-  if (task.has (_attribute))
+  if (task.has (_name))
   {
     if (_style == "countdown")
     {
-      Date date ((time_t) strtol (task.get (_attribute).c_str (), NULL, 10));
+      Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
       Date now;
 
       lines.push_back (

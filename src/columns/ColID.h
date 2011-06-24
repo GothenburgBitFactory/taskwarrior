@@ -40,6 +40,7 @@ public:
   ColumnID ();
   ~ColumnID ();
 
+  bool validate (std::string&);
   void measure (Task&, int&, int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
 
