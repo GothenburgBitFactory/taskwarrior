@@ -72,7 +72,6 @@ public:
   static bool is_modifier (const std::string&);
   static bool is_expression (const std::string&);
 
-  // TODO Decide if these are really useful.
   static bool extract_attr (const std::string&, std::string&, std::string&);
   static bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
   static bool extract_subst (const std::string&, std::string&, std::string&, bool&);

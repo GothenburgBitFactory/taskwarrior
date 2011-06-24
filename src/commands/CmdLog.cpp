@@ -25,9 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <Context.h>
 #include <text.h>
+#include <i18n.h>
 #include <util.h>
 #include <main.h>
 #include <CmdLog.h>
@@ -39,7 +42,7 @@ CmdLog::CmdLog ()
 {
   _keyword     = "log";
   _usage       = "task log [tags] [attrs] desc...";
-  _description = "Adds a new task that is already completed.";
+  _description = STRING_CMD_LOG_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -48,70 +51,49 @@ CmdLog::CmdLog ()
 int CmdLog::execute (std::string& output)
 {
   int rc = 0;
-/*
-  std::stringstream out;
 
-  context.task.setStatus (Task::completed);
-  context.task.set ("uuid", uuid ());
-  context.task.setEntry ();
+  // Must load pending to resolve dependencies, and to provide a new ID.
+  context.tdb.lock (context.config.getBoolean ("locking"));
 
-  // Add an end date.
-  char entryTime[16];
-  sprintf (entryTime, "%u", (unsigned int) time (NULL));
-  context.task.set ("end", entryTime);
+  std::vector <Task> all;
+  context.tdb.loadPending (all);
+
+  // Every task needs a UUID.
+  Task task;
+  task.set ("uuid", uuid ());
+
+  // Apply the command line modifications to the new task.
+  Arguments modifications = context.args.extract_modifications ();
+  modify_task (task, modifications);
+  apply_defaults (task);
 
   // Recurring tasks get a special status.
-  if (context.task.has ("recur"))
+  if (task.has ("recur"))
     throw std::string ("You cannot log recurring tasks.");
 
-  if (context.task.has ("wait"))
+  if (task.has ("wait"))
     throw std::string ("You cannot log waiting tasks.");
 
-  // It makes no sense to add dependencies to an already-completed task.
-  if (context.task.get ("depends") != "")
-    throw std::string ("You cannot specify dependencies on a completed task.");
+  // Override with log-specific changes.
+  task.setStatus (Task::completed);
 
-  // Override with default.project, if not specified.
-  if (context.task.get ("project") == "")
-    context.task.set ("project", context.config.get ("default.project"));
-
-  // Override with default.priority, if not specified.
-  if (context.task.get ("priority") == "")
-  {
-    std::string defaultPriority = context.config.get ("default.priority");
-    if (Att::validNameValue ("priority", "", defaultPriority))
-      context.task.set ("priority", defaultPriority);
-  }
-
-  // Override with default.due, if not specified.
-  if (context.task.get ("due") == "")
-  {
-    std::string defaultDue = context.config.get ("default.due");
-    if (defaultDue != "" &&
-        Att::validNameValue ("due", "", defaultDue))
-      context.task.set ("due", defaultDue);
-  }
-
-  // Include tags.
-  std::vector <std::string>::iterator tag;
-  for (tag = tagAdditions.begin 90; tag != tagAdditions.end (); ++tag)
-    context.task.addTag (*tag);
+  // Provide an end date unless user already specified one.
+  if (task.get ("end") == "")
+    task.set ("end", task.get ("entry"));
 
   // Only valid tasks can be added.
-  context.task.validate ();
+  task.validate ();
 
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.add (context.task);
+  context.tdb.add (task);
+
+  context.footnote (onProjectChange (task));
+
   context.tdb.commit ();
-
-  if (context.config.getBoolean ("echo.command"))
-    out << "Logged task.\n";
-
-  context.footnote (onProjectChange (context.task));
   context.tdb.unlock ();
 
-  output = out.str ();
-*/
+  if (context.config.getBoolean ("echo.command"))
+    output = "Logged task.\n";
+
   return rc;
 }
 

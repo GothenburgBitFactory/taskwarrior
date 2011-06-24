@@ -25,10 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
 #include <text.h>
+#include <i18n.h>
 #include <util.h>
 #include <main.h>
 #include <CmdAdd.h>
@@ -40,7 +43,7 @@ CmdAdd::CmdAdd ()
 {
   _keyword     = "add";
   _usage       = "task add [tags] [attrs] desc...";
-  _description = "Adds a new task.";
+  _description = STRING_CMD_ADD_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -49,100 +52,39 @@ CmdAdd::CmdAdd ()
 int CmdAdd::execute (std::string& output)
 {
   int rc = 0;
-/*
-  std::stringstream out;
-
-  context.task.set ("uuid", uuid ());
-  context.task.setEntry ();
-
-  // Recurring tasks get a special status.
-  if (context.task.has ("due") &&
-      context.task.has ("recur"))
-  {
-    context.task.setStatus (Task::recurring);
-    context.task.set ("mask", "");
-  }
-
-  // Tasks with a wait: date get a special status.
-  else if (context.task.has ("wait"))
-    context.task.setStatus (Task::waiting);
-
-  // By default, tasks are pending.
-  else
-    context.task.setStatus (Task::pending);
-
-  // Override with default.project, if not specified.
-  if (context.task.get ("project") == "")
-    context.task.set ("project", context.config.get ("default.project"));
-
-  // Override with default.priority, if not specified.
-  if (context.task.get ("priority") == "")
-  {
-    std::string defaultPriority = context.config.get ("default.priority");
-    if (Att::validNameValue ("priority", "", defaultPriority))
-      context.task.set ("priority", defaultPriority);
-  }
-
-  // Override with default.due, if not specified.
-  if (context.task.get ("due") == "")
-  {
-    std::string defaultDue = context.config.get ("default.due");
-    if (defaultDue != "" &&
-        Att::validNameValue ("due", "", defaultDue))
-      context.task.set ("due", defaultDue);
-  }
-
-  // Include tags.
-  std::vector <std::string>::iterator tag;
-  for (tag = context.tagAdditions.begin ();
-       tag != context.tagAdditions.end ();
-       ++tag)
-    context.task.addTag (*tag);
 
   // Must load pending to resolve dependencies, and to provide a new ID.
   context.tdb.lock (context.config.getBoolean ("locking"));
 
   std::vector <Task> all;
-  Filter none;
-  context.tdb.loadPending (all, none);
+  context.tdb.loadPending (all);
 
-  // Resolve dependencies.
-  if (context.task.has ("depends"))
-  {
-    // Convert ID to UUID.
-    std::vector <std::string> deps;
-    split (deps, context.task.get ("depends"), ',');
+  // Every task needs a UUID.
+  Task task;
+  task.set ("uuid", uuid ());
 
-    // Eliminate the ID-based set.
-    context.task.set ("depends", "");
-
-    std::vector <std::string>::iterator i;
-    for (i = deps.begin (); i != deps.end (); i++)
-    {
-      int id = strtol (i->c_str (), NULL, 10);
-      if (id < 0)
-        context.task.removeDependency (-id);
-      else
-        context.task.addDependency (id);
-    }
-  }
+  // Apply the command line modifications to the new task.
+  Arguments modifications = context.args.extract_modifications ();
+  modify_task (task, modifications);
+  apply_defaults (task);
 
   // Only valid tasks can be added.
-  context.task.validate ();
+  task.validate ();
 
-  context.tdb.add (context.task);
+  context.tdb.add (task);
 
+  std::stringstream out;
+  // TODO This should be a call in to feedback.cpp.
 #ifdef FEATURE_NEW_ID
   out << "Created task " << context.tdb.nextId () << ".\n";
 #endif
 
-  context.footnote (onProjectChange (context.task));
+  context.footnote (onProjectChange (task));
 
   context.tdb.commit ();
   context.tdb.unlock ();
 
   output = out.str ();
-*/
   return rc;
 }
 

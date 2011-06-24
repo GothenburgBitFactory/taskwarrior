@@ -32,6 +32,7 @@
 #include <vector>
 #include <string>
 #include <Task.h>
+#include <Arguments.h>
 
 class Command
 {
@@ -51,7 +52,10 @@ public:
   bool displays_id () const;
   virtual int execute (std::string&) = 0;
 
+protected:
   void filter (std::vector <Task>&, std::vector <Task>&);
+  void modify_task (Task&, Arguments&);
+  void apply_defaults (Task&);
 
 protected:
   std::string _keyword;

@@ -25,10 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <vector>
 #include <Expression.h>
+#include <Att.h>
 #include <Timer.h>
+#include <text.h>
+#include <i18n.h>
 #include <Command.h>
 
 #include <CmdAdd.h>
@@ -76,6 +81,10 @@
 #include <CmdUrgency.h>
 #include <CmdVersion.h>
 #include <Context.h>
+
+#include <ColProject.h>
+#include <ColPriority.h>
+#include <ColDue.h>
 
 extern Context context;
 
@@ -162,9 +171,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   {
     // Make sure a custom report does not clash with a built-in command.
     if (all.find (*report) != all.end ())
-      throw std::string ("Custom report '")
-            + *report
-            + "' conflicts with built-in task command.";
+      throw format (STRING_CMD_CONFLICT, *report);
 
     c = new CmdCustom (
               *report,
@@ -268,6 +275,132 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
   }
   else
     output = input;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Apply the modifications in arguments to the task.
+void Command::modify_task (Task& task, Arguments& arguments)
+{
+  std::string description;
+
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = arguments.begin (); arg != arguments.end (); ++arg)
+  {
+    // Attributes are essentially name:value pairs, and correspond directly
+    // to stored attributes.
+    if (arg->second == "attr")
+    {
+      std::string name;
+      std::string value;
+      Arguments::extract_attr (arg->first, name, value);
+
+      // Dependencies must be resolved to UUIDs.
+      if (name == "depends")
+      {
+        // Convert ID to UUID.
+        std::vector <std::string> deps;
+        split (deps, value, ',');
+
+        // Apply or remove dendencies in turn.
+        std::vector <std::string>::iterator i;
+        for (i = deps.begin (); i != deps.end (); i++)
+        {
+          int id = strtol (i->c_str (), NULL, 10);
+          if (id < 0)
+            task.removeDependency (-id);
+          else
+            task.addDependency (id);
+        }
+      }
+
+      // By default, just add it.
+      else
+        task.set (name, value);
+    }
+
+    // Tags need special handling because they are essentially a vector stored
+    // in a single string, therefore Task::{add,remove}Tag must be called as
+    // appropriate.
+    else if (arg->second == "tag")
+    {
+      char type;
+      std::string value;
+      Arguments::extract_tag (arg->first, type, value);
+
+      if (type == '+')
+        task.addTag (value);
+      else
+        task.removeTag (value);
+    }
+
+    // Words and operators are aggregated into a description.
+    else if (arg->second == "word" ||
+             arg->second == "op")
+    {
+      if (description.length ())
+        description += " ";
+
+      description += arg->first;
+    }
+
+    // Any additional argument types are indicative of a failure in
+    // Arguments::extract_modifications.
+    else
+      throw format (STRING_CMD_MOD_UNEXPECTED, arg->first);
+  }
+
+  task.set ("description", description);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Command::apply_defaults (Task& task)
+{
+  // Provide an entry date unless user already specified one.
+  if (task.get ("entry") == "")
+    task.setEntry ();
+
+  // Recurring tasks get a special status.
+  if (task.has ("due") &&
+      task.has ("recur"))
+  {
+    task.setStatus (Task::recurring);
+    task.set ("mask", "");
+  }
+
+  // Tasks with a wait: date get a special status.
+  else if (task.has ("wait"))
+    task.setStatus (Task::waiting);
+
+  // By default, tasks are pending.
+  else
+    task.setStatus (Task::pending);
+
+  // Override with default.project, if not specified.
+  if (task.get ("project") == "")
+  {
+    std::string defaultProject = context.config.get ("default.project");
+    if (defaultProject != "" &&
+        context.columns["project"]->validate (defaultProject))
+      task.set ("project", defaultProject);
+  }
+
+  // Override with default.priority, if not specified.
+  if (task.get ("priority") == "")
+  {
+    std::string defaultPriority = context.config.get ("default.priority");
+    if (defaultPriority != "" &&
+        context.columns["priority"]->validate (defaultPriority))
+      task.set ("priority", defaultPriority);
+  }
+
+  // Override with default.due, if not specified.
+  if (task.get ("due") == "")
+  {
+    std::string defaultDue = context.config.get ("default.due");
+    if (defaultDue != "" &&
+        context.columns["due"]->validate (defaultDue))
+      task.set ("due", defaultDue);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

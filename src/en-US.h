@@ -143,6 +143,7 @@
 #define STRING_COLUMN_LABEL_URGENCY  "Urgency"
 
 // commands/Cmd*
+#define STRING_CMD_CONFLICT          "Custom report '{1}' conflicts with built-in task command."
 #define STRING_CMD_VERSION_USAGE     "Shows the taskwarrior version number."
 #define STRING_CMD_VERSION_USAGE2    "Shows only the taskwarrior version number."
 #define STRING_CMD_VERSION_GPL       "Taskwarrior may be copied only under the terms of the GNU General Public License, which may be found in the taskwarrior source kit."
@@ -157,6 +158,9 @@
 #define STRING_CMD_URGENCY_USAGE     "Displays the urgency measure of a task."
 #define STRING_CMD_URGENCY_NO_TASKS  "No tasks specified."
 #define STRING_CMD_URGENCY_RESULT    "task {1} urgency {2}"
+#define STRING_CMD_ADD_USAGE         "Adds a new task."
+#define STRING_CMD_MOD_UNEXPECTED    "Unexpected argument '{1}' found while modifying a task."
+#define STRING_CMD_LOG_USAGE         "Adds a new task that is already completed."
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
