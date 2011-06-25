@@ -25,11 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
 #include <main.h>
 #include <util.h>
+#include <i18n.h>
 #include <CmdIDs.h>
 
 extern Context context;
@@ -39,7 +42,7 @@ CmdIDs::CmdIDs ()
 {
   _keyword     = "ids";
   _usage       = "task ids [<filter>]";
-  _description = "Shows only the IDs of matching tasks, in the form of a range.";
+  _description = STRING_CMD_IDS_USAGE_RANGE;
   _read_only   = true;
   _displays_id = true;
 }
@@ -76,7 +79,7 @@ CmdCompletionIds::CmdCompletionIds ()
 {
   _keyword     = "_ids";
   _usage       = "task _ids [<filter>]";
-  _description = "Shows only the IDs of matching tasks, in the form of a list.";
+  _description = STRING_CMD_IDS_USAGE_LIST;
   _read_only   = true;
   _displays_id = true;
 }
@@ -117,7 +120,7 @@ CmdZshCompletionIds::CmdZshCompletionIds ()
 {
   _keyword     = "_zshids";
   _usage       = "task _zshids [<filter>]";
-  _description = "Shows the IDs and descriptions of matching tasks.";
+  _description = STRING_CMD_IDS_USAGE_ZSH;
   _read_only   = true;
   _displays_id = true;
 }
