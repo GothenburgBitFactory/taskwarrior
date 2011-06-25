@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
@@ -33,6 +35,7 @@
 #include <ViewText.h>
 #include <main.h>
 #include <text.h>
+#include <i18n.h>
 #include <CmdInfo.h>
 
 extern Context context;
@@ -41,7 +44,7 @@ CmdInfo::CmdInfo ()
 {
   _keyword     = "information";
   _usage       = "task information <filter>";
-  _description = "Shows all data and metadata for specified tasks.";
+  _description = STRING_CMD_INFO_USAGE;
   _read_only   = true;
   _displays_id = true;
 }
@@ -79,8 +82,8 @@ int CmdInfo::execute (std::string& output)
   {
     ViewText view;
     view.width (context.getWidth ());
-    view.add (Column::factory ("string", "Name"));
-    view.add (Column::factory ("string", "Value"));
+    view.add (Column::factory ("string", STRING_COLUMN_LABEL_NAME));
+    view.add (Column::factory ("string", STRING_COLUMN_LABEL_VALUE));
 
     // If an alternating row color is specified, notify the table.
     if (context.color ())
@@ -94,7 +97,7 @@ int CmdInfo::execute (std::string& output)
 
     // id
     int row = view.addRow ();
-    view.set (row, 0, "ID");
+    view.set (row, 0, STRING_COLUMN_LABEL_ID);
     view.set (row, 1, format (task->id));
 
     std::string status = ucFirst (Task::statusToText (task->getStatus ()));
@@ -104,19 +107,19 @@ int CmdInfo::execute (std::string& output)
     autoColorize (*task, c);
 
     row = view.addRow ();
-    view.set (row, 0, "Description");
+    view.set (row, 0, STRING_COLUMN_LABEL_DESC);
     view.set (row, 1, getFullDescription (*task, "info"), c);
 
     // status
     row = view.addRow ();
-    view.set (row, 0, "Status");
+    view.set (row, 0, STRING_COLUMN_LABEL_STATUS);
     view.set (row, 1, status);
 
     // project
     if (task->has ("project"))
     {
       row = view.addRow ();
-      view.set (row, 0, "Project");
+      view.set (row, 0, STRING_COLUMN_LABEL_PROJECT);
       view.set (row, 1, task->get ("project"));
     }
 
@@ -124,7 +127,7 @@ int CmdInfo::execute (std::string& output)
     if (task->has ("priority"))
     {
       row = view.addRow ();
-      view.set (row, 0, "Priority");
+      view.set (row, 0, STRING_COLUMN_LABEL_PRIORITY);
       view.set (row, 1, task->get ("priority"));
     }
 
@@ -140,7 +143,7 @@ int CmdInfo::execute (std::string& output)
           message << it->id << " " << it->get ("description") << "\n";
 
         row = view.addRow ();
-        view.set (row, 0, "This task blocked by");
+        view.set (row, 0, STRING_CMD_INFO_BLOCKED);
         view.set (row, 1, message.str ());
       }
     }
@@ -157,7 +160,7 @@ int CmdInfo::execute (std::string& output)
           message << it->id << " " << it->get ("description") << "\n";
 
         row = view.addRow ();
-        view.set (row, 0, "This task is blocking");
+        view.set (row, 0, STRING_CMD_INFO_BLOCKING);
         view.set (row, 1, message.str ());
       }
     }
@@ -166,7 +169,7 @@ int CmdInfo::execute (std::string& output)
     if (task->has ("recur"))
     {
       row = view.addRow ();
-      view.set (row, 0, "Recurrence");
+      view.set (row, 0, STRING_COLUMN_LABEL_RECUR_L);
       view.set (row, 1, task->get ("recur"));
     }
 
@@ -174,7 +177,7 @@ int CmdInfo::execute (std::string& output)
     if (task->has ("until"))
     {
       row = view.addRow ();
-      view.set (row, 0, "Recur until");
+      view.set (row, 0, STRING_CMD_INFO_RECUR_UNTIL);
 
       Date dt (strtol (task->get ("until").c_str (), NULL, 10));
       std::string format = context.config.get ("reportdateformat");
@@ -189,7 +192,7 @@ int CmdInfo::execute (std::string& output)
     if (task->getStatus () == Task::recurring)
     {
       row = view.addRow ();
-      view.set (row, 0, "Mask");
+      view.set (row, 0, STRING_COLUMN_LABEL_MASK);
       view.set (row, 1, task->get ("mask"));
     }
 
@@ -197,12 +200,12 @@ int CmdInfo::execute (std::string& output)
     {
       // parent
       row = view.addRow ();
-      view.set (row, 0, "Parent task");
+      view.set (row, 0, STRING_COLUMN_LABEL_PARENT);
       view.set (row, 1, task->get ("parent"));
 
       // imask
       row = view.addRow ();
-      view.set (row, 0, "Mask Index");
+      view.set (row, 0, STRING_COLUMN_LABEL_MASK_IDX);
       view.set (row, 1, task->get ("imask"));
     }
 
@@ -210,7 +213,7 @@ int CmdInfo::execute (std::string& output)
     if (task->has ("due"))
     {
       row = view.addRow ();
-      view.set (row, 0, "Due");
+      view.set (row, 0, STRING_COLUMN_LABEL_DUE);
 
       std::string format = context.config.get ("reportdateformat");
       if (format == "")
@@ -223,7 +226,7 @@ int CmdInfo::execute (std::string& output)
     if (task->has ("wait"))
     {
       row = view.addRow ();
-      view.set (row, 0, "Waiting until");
+      view.set (row, 0, STRING_COLUMN_LABEL_WAITING);
       Date dt (strtol (task->get ("wait").c_str (), NULL, 10));
       view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
@@ -232,7 +235,7 @@ int CmdInfo::execute (std::string& output)
     if (task->has ("start"))
     {
       row = view.addRow ();
-      view.set (row, 0, "Start");
+      view.set (row, 0, STRING_COLUMN_LABEL_START);
       Date dt (strtol (task->get ("start").c_str (), NULL, 10));
       view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
@@ -241,7 +244,7 @@ int CmdInfo::execute (std::string& output)
     if (task->has ("end"))
     {
       row = view.addRow ();
-      view.set (row, 0, "End");
+      view.set (row, 0, STRING_COLUMN_LABEL_END);
       Date dt (strtol (task->get ("end").c_str (), NULL, 10));
       view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
@@ -255,19 +258,19 @@ int CmdInfo::execute (std::string& output)
       join (allTags, " ", tags);
 
       row = view.addRow ();
-      view.set (row, 0, "Tags");
+      view.set (row, 0, STRING_COLUMN_LABEL_TAGS);
       view.set (row, 1, allTags);
     }
 
     // uuid
     row = view.addRow ();
-    view.set (row, 0, "UUID");
+    view.set (row, 0, STRING_COLUMN_LABEL_UUID);
     std::string uuid = task->get ("uuid");
     view.set (row, 1, uuid);
 
     // entry
     row = view.addRow ();
-    view.set (row, 0, "Entered");
+    view.set (row, 0, STRING_COLUMN_LABEL_ENTERED);
     Date dt (strtol (task->get ("entry").c_str (), NULL, 10));
     std::string entry = dt.toString (context.config.get ("dateformat"));
 
@@ -281,27 +284,27 @@ int CmdInfo::execute (std::string& output)
 
     view.set (row, 1, entry + " (" + age + ")");
 
-    // fg
+    // fg TODO deprecated
     std::string color = task->get ("fg");
     if (color != "")
     {
       row = view.addRow ();
-      view.set (row, 0, "Foreground color");
+      view.set (row, 0, STRING_COLUMN_LABEL_FG);
       view.set (row, 1, color);
     }
 
-    // bg
+    // bg TODO deprecated
     color = task->get ("bg");
     if (color != "")
     {
       row = view.addRow ();
-      view.set (row, 0, "Background color");
+      view.set (row, 0, STRING_COLUMN_LABEL_BG);
       view.set (row, 1, color);
     }
 
     // Task::urgency
     row = view.addRow ();
-    view.set (row, 0, "Urgency");
+    view.set (row, 0, STRING_COLUMN_LABEL_URGENCY);
     view.set (row, 1, trimLeft (format (task->urgency (), 4, 4)));
 
     // Create a second table, containing undo log change details.
@@ -316,8 +319,8 @@ int CmdInfo::execute (std::string& output)
     }
 
     journal.width (context.getWidth ());
-    journal.add (Column::factory ("string", "Date"));
-    journal.add (Column::factory ("string", "Modification"));
+    journal.add (Column::factory ("string", STRING_COLUMN_LABEL_DATE));
+    journal.add (Column::factory ("string", STRING_CMD_INFO_MODIFICATION));
 
     if (context.config.getBoolean ("journal.info") &&
         undo.size () > 3)
@@ -376,7 +379,7 @@ int CmdInfo::execute (std::string& output)
       if (total_time > 0)
       {
         row = journal.addRow ();
-        journal.set (row, 0, "Total active time");
+        journal.set (row, 0, STRING_CMD_INFO_TOTAL_ACTIVE);
         journal.set (row, 1, Duration (total_time).format (),
                      (context.color () ? Color ("bold") : Color ()));
       }
@@ -393,7 +396,7 @@ int CmdInfo::execute (std::string& output)
 
   if (! filtered.size ())
   {
-    out << "No matches.\n";
+    out << STRING_FEEDBACK_NO_MATCH << "\n";
     rc = 1;
   }
 

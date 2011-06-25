@@ -25,7 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
+#include <i18n.h>
 #include <CmdUndo.h>
 
 extern Context context;
@@ -35,7 +38,7 @@ CmdUndo::CmdUndo ()
 {
   _keyword     = "undo";
   _usage       = "task undo";
-  _description = "Reverts the most recent change to a task.";
+  _description = STRING_CMD_UNDO_USAGE;
   _read_only   = false;
   _displays_id = false;
 }

@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <vector>
 #include <stdlib.h>
@@ -32,6 +34,7 @@
 #include <ViewText.h>
 #include <CmdTags.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -40,7 +43,7 @@ CmdTags::CmdTags ()
 {
   _keyword     = "tags";
   _usage       = "task tags";
-  _description = "Shows a list of all tags used.";
+  _description = STRING_CMD_TAGS_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -88,8 +91,8 @@ int CmdTags::execute (std::string& output)
     // Render a list of tags names from the map.
     ViewText view;
     view.width (context.getWidth ());
-    view.add (Column::factory ("string", "Tag"));
-    view.add (Column::factory ("string.right", "Count"));
+    view.add (Column::factory ("string", STRING_COLUMN_LABEL_TAG));
+    view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_COUNT));
 
     Color bold ("bold");
     bool special = false;
@@ -109,14 +112,23 @@ int CmdTags::execute (std::string& output)
 
     out << optionalBlankLine ()
         << view.render ()
-        << optionalBlankLine ()
-        << unique.size ()
-        << (unique.size () == 1 ? " tag" : " tags")
-        << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")\n";
+        << optionalBlankLine ();
+
+    if (unique.size () == 1)
+      out << STRING_CMD_TAGS_SINGLE;
+    else
+      out << format (STRING_CMD_TAGS_PLURAL, unique.size ());
+
+    if (quantity == 1)
+      out << " " << STRING_FEEDBACK_TASKS_SINGLE;
+    else
+      out << " " << format (STRING_FEEDBACK_TASKS_PLURAL, quantity);
+
+    out << "\n";
   }
   else
   {
-    out << "No tags.\n";
+    out << STRING_CMD_TAGS_NO_TAGS << "\n";
     rc = 1;
   }
 
@@ -129,7 +141,7 @@ CmdCompletionTags::CmdCompletionTags ()
 {
   _keyword     = "_tags";
   _usage       = "task _tags";
-  _description = "Shows only a list of all tags used, for autocompletion purposes.";
+  _description = STRING_CMD_COMTAGS_USAGE;
   _read_only   = true;
   _displays_id = false;
 }

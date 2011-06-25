@@ -25,11 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
 #include <ViewText.h>
 #include <text.h>
+#include <i18n.h>
 #include <CmdReports.h>
 
 extern Context context;
@@ -39,7 +42,7 @@ CmdReports::CmdReports ()
 {
   _keyword     = "reports";
   _usage       = "task reports";
-  _description = "Lists all supported reports.";
+  _description = STRING_CMD_REPORTS_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -84,8 +87,8 @@ int CmdReports::execute (std::string& output)
   std::stringstream out;
   ViewText view;
   view.width (context.getWidth ());
-  view.add (Column::factory ("string", "Report"));
-  view.add (Column::factory ("string", "Description"));
+  view.add (Column::factory ("string", STRING_CMD_REPORTS_REPORT));
+  view.add (Column::factory ("string", STRING_CMD_REPORTS_DESC));
 
   // If an alternating row color is specified, notify the table.
   if (context.color ())
@@ -106,8 +109,7 @@ int CmdReports::execute (std::string& output)
   out << optionalBlankLine ()
       << view.render ()
       << optionalBlankLine ()
-      << reports.size ()
-      << " reports"
+      << format (STRING_CMD_REPORTS_SUMMARY, reports.size ())
       << "\n";
 
   output = out.str ();

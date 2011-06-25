@@ -25,8 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
 #include <main.h>
+#include <i18n.h>
 #include <CmdQuery.h>
 
 extern Context context;
@@ -36,7 +39,7 @@ CmdQuery::CmdQuery ()
 {
   _keyword     = "_query";
   _usage       = "task _query [<filter>]";
-  _description = "Executes external commands and scripts";
+  _description = STRING_CMD_QUERY_USAGE;
   _read_only   = true;
   _displays_id = true;
 }
@@ -60,7 +63,7 @@ int CmdQuery::execute (std::string& output)
 
   if (filtered.size () == 0)
   {
-    context.footnote ("No matches.");
+    context.footnote (STRING_FEEDBACK_NO_MATCH);
     return 1;
   }
 

@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <iomanip>
 #include <stdlib.h>
@@ -34,6 +36,7 @@
 #include <main.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <CmdStatistics.h>
 
 extern Context context;
@@ -43,7 +46,7 @@ CmdStatistics::CmdStatistics ()
 {
   _keyword     = "stats";
   _usage       = "task stats [<filter>]";
-  _description = "Shows task database statistics.";
+  _description = STRING_CMD_STATS_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -53,6 +56,8 @@ int CmdStatistics::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;
+
+  std::string dateformat = context.config.get ("dateformat");
 
   // Go get the file sizes.
   size_t dataSize = 0;
@@ -149,57 +154,57 @@ int CmdStatistics::execute (std::string& output)
   ViewText view;
   view.width (context.getWidth ());
   view.intraPadding (2);
-  view.add (Column::factory ("string", "Category"));
-  view.add (Column::factory ("string", "Data"));
+  view.add (Column::factory ("string", STRING_CMD_STATS_CATEGORY));
+  view.add (Column::factory ("string", STRING_CMD_STATS_DATA));
 
   int row = view.addRow ();
-  view.set (row, 0, "Pending");
+  view.set (row, 0, STRING_COLUMN_LABEL_STAT_PE);
   view.set (row, 1, pendingT);
 
   row = view.addRow ();
-  view.set (row, 0, "Waiting");
+  view.set (row, 0, STRING_COLUMN_LABEL_STAT_WA);
   view.set (row, 1, waitingT);
 
   row = view.addRow ();
-  view.set (row, 0, "Recurring");
+  view.set (row, 0, STRING_COLUMN_LABEL_STAT_RE);
   view.set (row, 1, recurringT);
 
   row = view.addRow ();
-  view.set (row, 0, "Completed");
+  view.set (row, 0, STRING_COLUMN_LABEL_STAT_CO);
   view.set (row, 1, completedT);
 
   row = view.addRow ();
-  view.set (row, 0, "Deleted");
+  view.set (row, 0, STRING_COLUMN_LABEL_STAT_DE);
   view.set (row, 1, deletedT);
 
   row = view.addRow ();
-  view.set (row, 0, "Total");
+  view.set (row, 0, STRING_CMD_STATS_TOTAL);
   view.set (row, 1, totalT);
 
   row = view.addRow ();
-  view.set (row, 0, "Annotations");
+  view.set (row, 0, STRING_CMD_STATS_ANNOTATIONS);
   view.set (row, 1, annotationsT);
 
   row = view.addRow ();
-  view.set (row, 0, "Unique tags");
+  view.set (row, 0, STRING_CMD_STATS_UNIQUE_TAGS);
   view.set (row, 1, (int)allTags.size ());
 
   row = view.addRow ();
-  view.set (row, 0, "Projects");
+  view.set (row, 0, STRING_CMD_STATS_PROJECTS);
   view.set (row, 1, (int)allProjects.size ());
 
   row = view.addRow ();
-  view.set (row, 0, "Data size");
+  view.set (row, 0, STRING_CMD_STATS_DATA_SIZE);
   view.set (row, 1, formatBytes (dataSize));
 
   row = view.addRow ();
-  view.set (row, 0, "Undo transactions");
+  view.set (row, 0, STRING_CMD_STATS_UNDO_TXNS);
   view.set (row, 1, undoCount);
 
   if (totalT)
   {
     row = view.addRow ();
-    view.set (row, 0, "Tasks tagged");
+    view.set (row, 0, STRING_CMD_STATS_TAGGED);
 
     std::stringstream value;
     value << std::setprecision (3) << (100.0 * taggedT / totalT) << "%";
@@ -210,54 +215,52 @@ int CmdStatistics::execute (std::string& output)
   {
     Date e (earliest);
     row = view.addRow ();
-    view.set (row, 0, "Oldest task");
-    view.set (row, 1, e.toString (context.config.get ("dateformat")));
+    view.set (row, 0, STRING_CMD_STATS_OLDEST);
+    view.set (row, 1, e.toString (dateformat));
 
     Date l (latest);
     row = view.addRow ();
-    view.set (row, 0, "Newest task");
-    view.set (row, 1, l.toString (context.config.get ("dateformat")));
+    view.set (row, 0, STRING_CMD_STATS_NEWEST);
+    view.set (row, 1, l.toString (dateformat));
 
     row = view.addRow ();
-    view.set (row, 0, "Task used for");
+    view.set (row, 0, STRING_CMD_STATS_USED_FOR);
     view.set (row, 1, Duration (latest - earliest).format ());
   }
 
   if (totalT)
   {
     row = view.addRow ();
-    view.set (row, 0, "Task added every");
+    view.set (row, 0, STRING_CMD_STATS_ADD_EVERY);
     view.set (row, 1, Duration (((latest - earliest) / totalT)).format ());
   }
 
   if (completedT)
   {
     row = view.addRow ();
-    view.set (row, 0, "Task completed every");
+    view.set (row, 0, STRING_CMD_STATS_COMP_EVERY);
     view.set (row, 1, Duration ((latest - earliest) / completedT).format ());
   }
 
   if (deletedT)
   {
     row = view.addRow ();
-    view.set (row, 0, "Task deleted every");
+    view.set (row, 0, STRING_CMD_STATS_DEL_EVERY);
     view.set (row, 1, Duration ((latest - earliest) / deletedT).format ());
   }
 
   if (pendingT || completedT)
   {
     row = view.addRow ();
-    view.set (row, 0, "Average time pending");
+    view.set (row, 0, STRING_CMD_STATS_AVG_PEND);
     view.set (row, 1, Duration ((int) ((daysPending / (pendingT + completedT)) * 86400)).format ());
   }
 
   if (totalT)
   {
     row = view.addRow ();
-    view.set (row, 0, "Average desc length");
-    std::stringstream value;
-    value << (int) (descLength / totalT) << " characters";
-    view.set (row, 1, value.str ());
+    view.set (row, 0, STRING_CMD_STATS_DESC_LEN);
+    view.set (row, 1, format (STRING_CMD_STATS_CHARS, (int) (descLength / totalT)));
   }
 
   // If an alternating row color is specified, notify the table.
