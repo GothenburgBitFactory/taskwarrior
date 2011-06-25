@@ -119,16 +119,16 @@ Bar::~Bar ()
 //   4                   e----------------->
 //   5                               e----->
 //   --  ------------------------------------
-//   pp         1  2  3  3  2  2  2  3  3  3
-//   ss               2  1  1  1  1  1  1  1
-//   dd                  1  1  1  1  1  1  1
+//   PP         1  2  3  3  2  2  2  3  3  3
+//   SS               2  1  1  1  1  1  1  1
+//   DD                  1  1  1  1  1  1  1
 //   --  ------------------------------------
 //
-//   5 |             ss dd          dd dd dd 
-//   4 |             ss ss dd dd dd ss ss ss 
-//   3 |             pp pp ss ss ss pp pp pp 
-//   2 |          pp pp pp pp pp pp pp pp pp 
-//   1 |       pp pp pp pp pp pp pp pp pp pp 
+//   5 |             SS DD          DD DD DD 
+//   4 |             SS SS DD DD DD SS SS SS 
+//   3 |             PP PP SS SS SS PP PP PP 
+//   2 |          PP PP PP PP PP PP PP PP PP 
+//   1 |       PP PP PP PP PP PP PP PP PP PP 
 //   0 +-------------------------------------
 //       30 31 01 02 03 04 05 06 07 08 09 10
 //       Oct   Nov
@@ -381,18 +381,18 @@ void Chart::scan (std::vector <Task>& tasks)
 //   +---------------------------------------------------------------------+
 //   |                                                                     |
 //   | 20 |                                                                |
-//   |    |                            dd dd dd dd dd dd dd dd             |
-//   |    |          dd dd dd dd dd dd dd dd dd dd dd dd dd dd             |
-//   |    | pp pp ss ss ss ss ss ss ss ss ss dd dd dd dd dd dd   dd Done   |
-//   | 10 | pp pp pp pp pp pp ss ss ss ss ss ss dd dd dd dd dd   ss Started|
-//   |    | pp pp pp pp pp pp pp pp pp pp pp ss ss ss ss dd dd   pp Pending|
-//   |    | pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp ss dd             |
-//   |    | pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp             |
+//   |    |                            DD DD DD DD DD DD DD DD             |
+//   |    |          DD DD DD DD DD DD DD DD DD DD DD DD DD DD             |
+//   |    | PP PP SS SS SS SS SS SS SS SS SS DD DD DD DD DD DD   DD Done   |
+//   | 10 | PP PP PP PP PP PP SS SS SS SS SS SS DD DD DD DD DD   SS Started|
+//   |    | PP PP PP PP PP PP PP PP PP PP PP SS SS SS SS DD DD   PP Pending|
+//   |    | PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP SS DD             |
+//   |    | PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP             |
 //   |  0 +----------------------------------------------------            |
 //   |      21 22 23 24 25 26 27 28 29 30 31 01 02 03 04 05 06             |
 //   |      July                             August                        |
 //   |                                                                     |
-//   |      Add rate 1.7/d           Estimated completion 8/12/2010        |
+//   |      ADD rate 1.7/d           Estimated completion 8/12/2010        |
 //   |      Don/Delete rate  1.3/d                                         |
 //   +---------------------------------------------------------------------+
 std::string Chart::render ()
@@ -441,9 +441,9 @@ std::string Chart::render ()
   }
 
   // Legend.
-  grid.replace (LOC (graph_height / 2 - 1, width - 10), 10, "dd Done   ");
-  grid.replace (LOC (graph_height / 2,     width - 10), 10, "ss Started");
-  grid.replace (LOC (graph_height / 2 + 1, width - 10), 10, "pp Pending");
+  grid.replace (LOC (graph_height / 2 - 1, width - 10), 10, "DD Done   ");
+  grid.replace (LOC (graph_height / 2,     width - 10), 10, "SS Started");
+  grid.replace (LOC (graph_height / 2 + 1, width - 10), 10, "PP Pending");
 
   // Determine y-axis labelling.
   std::vector <int> labels;
@@ -504,13 +504,13 @@ std::string Chart::render ()
       int done    = ((bar.done + carryover_done) * graph_height) / labels[2];
 
       for (int b = 0; b < pending; ++b)
-        grid.replace (LOC (graph_height - b, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "pp");
+        grid.replace (LOC (graph_height - b, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "PP");
 
       for (int b = 0; b < started; ++b)
-        grid.replace (LOC (graph_height - b - pending, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "ss");
+        grid.replace (LOC (graph_height - b - pending, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "SS");
 
       for (int b = 0; b < done; ++b)
-        grid.replace (LOC (graph_height - b - pending - started, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "dd");
+        grid.replace (LOC (graph_height - b - pending - started, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "DD");
     }
   }
 
@@ -522,18 +522,18 @@ std::string Chart::render ()
   else
     strcpy (rate, "-");
 
-  grid.replace (LOC (height - 2, max_label + 3), 11 + strlen (rate), std::string ("Add rate: ") + rate);
+  grid.replace (LOC (height - 2, max_label + 3), 18 + strlen (rate), std::string ("Add rate:         ") + rate);
 
   if (fix_rate != 0.0)
     sprintf (rate, "%.1f/d", fix_rate);
   else
     strcpy (rate, "-");
 
-  grid.replace (LOC (height - 1, max_label + 3), 11 + strlen (rate), std::string ("Done/Delete rate:  ") + rate);
+  grid.replace (LOC (height - 1, max_label + 3), 18 + strlen (rate), std::string ("Done/Delete rate: ") + rate);
 
   // Draw completion date.
   if (completion.length ())
-    grid.replace (LOC (height - 2, max_label + 27), 22 + completion.length (), "Estimated completion: " + completion);
+    grid.replace (LOC (height - 2, max_label + 32), 22 + completion.length (), "Estimated completion: " + completion);
 
   optimizeGrid ();
 
@@ -542,15 +542,15 @@ std::string Chart::render ()
   Color color_done    (context.config.get ("color.burndown.done"));
   Color color_started (context.config.get ("color.burndown.started"));
 
-  // Replace dd, ss, pp with colored strings.
+  // Replace DD, SS, PP with colored strings.
   std::string::size_type i;
-  while ((i = grid.find ("pp")) != std::string::npos)
+  while ((i = grid.find ("PP")) != std::string::npos)
     grid.replace (i, 2, color_pending.colorize ("  "));
 
-  while ((i = grid.find ("ss")) != std::string::npos)
+  while ((i = grid.find ("SS")) != std::string::npos)
     grid.replace (i, 2, color_started.colorize ("  "));
 
-  while ((i = grid.find ("dd")) != std::string::npos)
+  while ((i = grid.find ("DD")) != std::string::npos)
     grid.replace (i, 2, color_done.colorize ("  "));
 
   return grid;
