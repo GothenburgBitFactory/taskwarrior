@@ -635,6 +635,17 @@ bool Arguments::find_command (std::string& command)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string Arguments::find_limit ()
+{
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+    if (arg->first.find ("limit:") != std::string::npos)
+      return arg->first.substr (6);
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Arguments::is_multipart (
   const std::string& input,
   std::vector <std::string>& parts)
@@ -1316,7 +1327,9 @@ Arguments Arguments::extract_read_only_filter ()
              i->second == "exp"       ||
              i->second == "word")
     {
-      filter.push_back (*i);
+      // "limit" is special - it is recognized but not included in filters.
+      if (i->first.find ("limit:") == std::string::npos)
+        filter.push_back (*i);
     }
 
     // Error.
@@ -1362,7 +1375,9 @@ Arguments Arguments::extract_write_filter ()
              i->second == "exp"       ||
              i->second == "word")
     {
-      filter.push_back (*i);
+      // "limit" is special - it is recognized but not included in filters.
+      if (i->first.find ("limit:") == std::string::npos)
+        filter.push_back (*i);
     }
 
     // Error.
@@ -1409,7 +1424,9 @@ Arguments Arguments::extract_modifications ()
                i->second == "op"    ||
                i->second == "word")
       {
-        modifications.push_back (*i);
+        // "limit" is special - it is recognized but not included in filters.
+        if (i->first.find ("limit:") == std::string::npos)
+          modifications.push_back (*i);
       }
 
       // Error.

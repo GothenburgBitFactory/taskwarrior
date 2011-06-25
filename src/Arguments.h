@@ -55,6 +55,7 @@ public:
   std::string combine ();
 
   bool find_command (std::string&);
+  std::string find_limit ();
 
   static bool is_multipart (const std::string&, std::vector <std::string>&);
   static bool is_command (const std::vector <std::string>&, std::string&);
