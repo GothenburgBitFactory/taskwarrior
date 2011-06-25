@@ -159,6 +159,7 @@
 #define STRING_CMD_URGENCY_NO_TASKS  "No tasks specified."
 #define STRING_CMD_URGENCY_RESULT    "task {1} urgency {2}"
 #define STRING_CMD_ADD_USAGE         "Adds a new task."
+#define STRING_CMD_ADD_FEEDBACK      "Created task {1}."
 #define STRING_CMD_MOD_UNEXPECTED    "Unexpected argument '{1}' found while modifying a task."
 #define STRING_CMD_LOG_USAGE         "Adds a new task that is already completed."
 

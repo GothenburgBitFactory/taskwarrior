@@ -76,7 +76,8 @@ int CmdAdd::execute (std::string& output)
   std::stringstream out;
   // TODO This should be a call in to feedback.cpp.
 #ifdef FEATURE_NEW_ID
-  out << "Created task " << context.tdb.nextId () << ".\n";
+  out << format (STRING_CMD_ADD_FEEDBACK, context.tdb.nextId ())
+      << "\n";
 #endif
 
   context.footnote (onProjectChange (task));
