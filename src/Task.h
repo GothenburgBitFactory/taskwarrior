@@ -81,6 +81,8 @@ public:
   void getDependencies (std::vector <int>&) const;
   void getDependencies (std::vector <std::string>&) const;
 
+  void substitute (const std::string&, const std::string&, bool);
+
   void validate () const;
 
   float urgency ();

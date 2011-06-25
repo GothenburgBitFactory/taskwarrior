@@ -786,9 +786,9 @@ bool Arguments::is_subst (const std::string& input)
   std::string from;
   std::string to;
   Nibbler n (input);
-  if (n.skip     ('/')            &&
-      n.getUntil ('/', from)   &&
-      n.skip     ('/')            &&
+  if (n.skip     ('/')       &&
+      n.getUntil ('/', from) &&
+      n.skip     ('/')       &&
       n.getUntil ('/', to)   &&
       n.skip     ('/'))
   {

@@ -33,6 +33,8 @@
 #include <vector>
 #include <regex.h>
 
+#define RX_MAX_MATCHES 64
+
 class RX
 {
 public:

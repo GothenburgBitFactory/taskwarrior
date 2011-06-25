@@ -343,6 +343,16 @@ void Command::modify_task (Task& task, Arguments& arguments)
       description += arg->first;
     }
 
+    // Substitutions.
+    else if (arg->second == "subst")
+    {
+      std::string from;
+      std::string to;
+      bool global;
+      Arguments::extract_subst (arg->first, from, to, global);
+      task.substitute (from, to, global);
+    }
+
     // Any additional argument types are indicative of a failure in
     // Arguments::extract_modifications.
     else

@@ -34,9 +34,13 @@
 #include <Duration.h>
 #include <Task.h>
 #include <JSON.h>
+#include <RX.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <main.h>
+
+#define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
 extern Context context;
 
@@ -751,6 +755,126 @@ void Task::removeTag (const std::string& tag)
     join (combined, ",", tags); // No i18n
     set ("tags", combined); // No i18n
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::substitute (
+  const std::string& from,
+  const std::string& to,
+  bool global)
+{
+  // Get the data to modify.
+  std::string description = get ("description");
+  std::vector <Att> annotations;
+  getAnnotations (annotations);
+
+  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+
+  // Count the changes, so we know whether to proceed to annotations, after
+  // modifying description.
+  int changes = 0;
+
+  // Regex support is optional.
+  if (context.config.getBoolean ("regex"))
+  {
+    // Insert capturing parentheses, if necessary.
+    std::string pattern;
+    if (from.find ('(') != std::string::npos)
+      pattern = from;
+    else
+      pattern = "(" + from + ")";
+
+    // Create the regex.
+    RX rx (pattern, sensitive);
+    std::vector <int> start;
+    std::vector <int> end;
+
+    // Perform all subs on description.
+    if (rx.match (start, end, description))
+    {
+      int skew = 0;
+      int limit = global ? (int) start.size () : 1;
+      for (int i = 0; i < limit && i < RX_MAX_MATCHES; ++i)
+      {
+        description.replace (start[i + skew], end[i] - start[i], to);
+        skew += to.length () - (end[i] - start[i]);
+        ++changes;
+      }
+    }
+
+    if (changes == 0 || global)
+    {
+      // Perform all subs on annotations.
+      std::vector <Att>::iterator it;
+      for (it = annotations.begin (); it != annotations.end (); ++it)
+      {
+        std::string annotation = it->value ();
+
+        start.clear ();
+        end.clear ();
+        if (rx.match (start, end, annotation))
+        {
+          int skew = 0;
+          int limit = global ? (int) start.size () : 1;
+          for (int i = 0; i < limit && i < RX_MAX_MATCHES; ++i)
+          {
+            annotation.replace (start[i + skew], end[i] - start[i], to);
+            skew += to.length () - (end[i] - start[i]);
+            it->value (annotation);
+            ++changes;
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    // Perform all subs on description.
+    int counter = 0;
+    std::string::size_type pos = 0;
+
+    while ((pos = ::find (description, from, pos, sensitive)) != std::string::npos)
+    {
+      description.replace (pos, from.length (), to);
+      pos += to.length ();
+      ++changes;
+
+      if (! global)
+        break;
+
+      if (++counter > APPROACHING_INFINITY)
+        throw format (STRING_INFINITE_LOOP, APPROACHING_INFINITY);
+    }
+
+    if (changes == 0 || global)
+    {
+      // Perform all subs on annotations.
+      counter = 0;
+      std::vector <Att>::iterator i;
+      for (i = annotations.begin (); i != annotations.end (); ++i)
+      {
+        pos = 0;
+        std::string annotation = i->value ();
+        while ((pos = ::find (annotation, from, pos, sensitive)) != std::string::npos)
+        {
+          annotation.replace (pos, from.length (), to);
+          pos += to.length ();
+          ++changes;
+
+          i->value (annotation);
+
+          if (! global)
+            break;
+
+          if (++counter > APPROACHING_INFINITY)
+            throw format (STRING_INFINITE_LOOP, APPROACHING_INFINITY);
+        }
+      }
+    }
+  }
+
+  set ("description", description);
+  setAnnotations (annotations);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -48,10 +48,13 @@ New configuration options in taskwarrior 2.0.0
   - New 'expressions' enables/disables command line expression support.
   - New 'json.array' determines whether 'query' command output is enclosed by
     '[...]'.
+  - New 'regex' control determines whether substitutions use Regular Expressions
+    or simple text patterns.
 
 Newly deprecated features in taskwarrior 2.0.0
 
   - The 'next' configuration variable has been removed.
+  - Use of 'fg:' and 'bg:' attributes are deprecated.
 
 ---
 

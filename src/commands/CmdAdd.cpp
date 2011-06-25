@@ -27,8 +27,6 @@
 
 #define L10N                                           // Localization complete.
 
-#include <sstream>
-#include <stdlib.h>
 #include <Context.h>
 #include <text.h>
 #include <i18n.h>
@@ -59,7 +57,7 @@ int CmdAdd::execute (std::string& output)
   std::vector <Task> all;
   context.tdb.loadPending (all);
 
-  // Every task needs a UUID.
+  // Every new task needs a UUID.
   Task task;
   task.set ("uuid", uuid ());
 
@@ -73,19 +71,15 @@ int CmdAdd::execute (std::string& output)
 
   context.tdb.add (task);
 
-  std::stringstream out;
   // TODO This should be a call in to feedback.cpp.
 #ifdef FEATURE_NEW_ID
-  out << format (STRING_CMD_ADD_FEEDBACK, context.tdb.nextId ())
-      << "\n";
+  output = format (STRING_CMD_ADD_FEEDBACK, context.tdb.nextId ()) + "\n";
 #endif
 
   context.footnote (onProjectChange (task));
 
   context.tdb.commit ();
   context.tdb.unlock ();
-
-  output = out.str ();
   return rc;
 }
 

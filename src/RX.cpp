@@ -31,8 +31,7 @@
 
 #define L10N                                           // Localization complete.
 
-//#define _POSIX_C_SOURCE 1
-#define MAX_MATCHES 64
+//#define _POSIX_C_SOURCE 1      // Forgot why this is here.  Moving on...
 
 ////////////////////////////////////////////////////////////////////////////////
 RX::RX ()
@@ -126,8 +125,8 @@ bool RX::match (
   if (!_compiled)
     compile ();
 
-  regmatch_t rm[MAX_MATCHES];
-  if (regexec (&_regex, in.c_str (), MAX_MATCHES, rm, 0) == 0)
+  regmatch_t rm[RX_MAX_MATCHES];
+  if (regexec (&_regex, in.c_str (), RX_MAX_MATCHES, rm, 0) == 0)
   {
     for (unsigned int i = 1; i < 1 + _regex.re_nsub; ++i)
       matches.push_back (in.substr (rm[i].rm_so, rm[i].rm_eo - rm[i].rm_so));
@@ -147,8 +146,8 @@ bool RX::match (
   if (!_compiled)
     compile ();
 
-  regmatch_t rm[MAX_MATCHES];
-  if (regexec (&_regex, in.c_str (), MAX_MATCHES, rm, 0) == 0)
+  regmatch_t rm[RX_MAX_MATCHES];
+  if (regexec (&_regex, in.c_str (), RX_MAX_MATCHES, rm, 0) == 0)
   {
     for (unsigned int i = 1; i < 1 + _regex.re_nsub; ++i)
     {
