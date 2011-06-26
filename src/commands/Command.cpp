@@ -29,6 +29,7 @@
 
 #include <iostream>
 #include <vector>
+#include <stdlib.h>
 #include <Expression.h>
 #include <Att.h>
 #include <Timer.h>
