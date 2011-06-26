@@ -127,7 +127,8 @@ int CmdCustom::execute (std::string& output)
   for (unsigned int i = 0; i < columns.size (); ++i)
   {
     Column* c = Column::factory (columns[i], _keyword);
-    c->setLabel (labels[i]);
+    if (i < labels.size ())
+      c->setLabel (labels[i]);
     view.add (c);
   }
 
