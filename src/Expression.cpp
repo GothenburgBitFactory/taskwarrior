@@ -128,6 +128,7 @@ bool Expression::eval (Task& task)
         right._raw_type = value_stack.back ()._raw_type;
       }
       value_stack.pop_back ();
+//      std::cout << "# right raw=" << right._raw << " type=" << right._type << " value=" << right._string << "\n";
 
       // lvalue (dom).
       Variant left (value_stack.back ());
@@ -138,6 +139,7 @@ bool Expression::eval (Task& task)
         left._raw_type = value_stack.back ()._raw_type;
       }
       value_stack.pop_back ();
+//      std::cout << "# left raw=" << left._raw << " type=" << left._type << " value=" << left._string << "\n";
 
       // Now the binary operators.
       if (arg->first == "and")

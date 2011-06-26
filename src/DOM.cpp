@@ -27,6 +27,7 @@
 
 #define L10N                                           // Localization complete.
 
+//#include <iostream> // TODO Remove
 #include <sstream>
 #include <Context.h>
 #include <Nibbler.h>
@@ -72,25 +73,24 @@ DOM::~DOM ()
 const std::string DOM::get (const std::string& name)
 {
   // Cache test.
+/*
   std::map <std::string, std::string>::iterator hit = _cache.find (name);
   if (hit != _cache.end ())
     return hit->second;
+*/
 
   int len = name.length ();
   Nibbler n (name);
 
   // Primitives
   if (is_primitive (name))
-  {
-    _cache[name] = name;
-    return name;
-  }
+    return /*_cache[name] =*/ name;
 
   // rc. --> context.config
   else if (len > 3 &&
       name.substr (0, 3) == "rc.")
   {
-    return _cache[name] = context.config.get (name.substr (3));
+    return /*_cache[name] =*/ context.config.get (name.substr (3));
   }
 
   // context.*
@@ -98,25 +98,25 @@ const std::string DOM::get (const std::string& name)
            name.substr (0, 8) == "context.")
   {
     if (name == "context.program")
-      return _cache[name] = context.args[0].first;
+      return /*_cache[name] =*/ context.args[0].first;
 
     else if (name == "context.args")
     {
       std::string combined;
       join (combined, " ", context.args.list ());
-      return _cache[name] = combined;
+      return /*_cache[name] =*/ combined;
     }
     else if (name == "context.width")
     {
       std::stringstream s;
       s << context.terminal_width;
-      return _cache[name] = s.str ();
+      return /*_cache[name] =*/ s.str ();
     }
     else if (name == "context.height")
     {
       std::stringstream s;
       s << context.terminal_height;
-      return _cache[name] = s.str ();
+      return /*_cache[name] =*/ s.str ();
     }
 
     else
@@ -132,39 +132,39 @@ const std::string DOM::get (const std::string& name)
   {
     // Taskwarrior version number.
     if (name == "system.version")
-      return _cache[name] = VERSION;
+      return /*_cache[name] =*/ VERSION;
 
 #ifdef HAVE_LIBLUA
     // Lua version number.
     else if (name == "system.lua.version")
-      return _cache[name] = LUA_RELEASE;
+      return /*_cache[name] =*/ LUA_RELEASE;
 #endif
 
     // OS type.
     else if (name == "system.os")
 #if defined (DARWIN)
-      return _cache[name] = "Darwin";
+      return /*_cache[name] =*/ "Darwin";
 #elif defined (SOLARIS)
-      return _cache[name] = "Solaris";
+      return /*_cache[name] =*/ "Solaris";
 #elif defined (CYGWIN)
-      return _cache[name] = "Cygwin";
+      return /*_cache[name] =*/ "Cygwin";
 #elif defined (OPENBSD)
-      return _cache[name] = "OpenBSD";
+      return /*_cache[name] =*/ "OpenBSD";
 #elif defined (HAIKU)
-      return _cache[name] = "Haiku";
+      return /*_cache[name] =*/ "Haiku";
 #elif defined (FREEBSD)
-      return _cache[name] = "FreeBSD";
+      return /*_cache[name] =*/ "FreeBSD";
 #elif defined (LINUX)
-      return _cache[name] = "Linux";
+      return /*_cache[name] =*/ "Linux";
 #else
-      return _cache[name] = STRING_DOM_UNKNOWN
+      return /*_cache[name] =*/ STRING_DOM_UNKNOWN
 #endif
 
     else
       throw format (STRING_DOM_UNREC, name);
   }
 
-  return _cache[name] = name;
+  return /*_cache[name] =*/ name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -206,9 +206,11 @@ const std::string DOM::get (const std::string& name)
 const std::string DOM::get (const std::string& name, Task& task)
 {
   // Cache test.
+/*
   std::map <std::string, std::string>::iterator hit = _cache.find (name);
   if (hit != _cache.end ())
     return hit->second;
+*/
 
   Nibbler n (name);
   int id;
@@ -216,7 +218,7 @@ const std::string DOM::get (const std::string& name, Task& task)
 
   // Primitives
   if (is_primitive (name))
-    return _cache[name] = name;
+    return /*_cache[name] =*/ name;
 
   // <id>.<name>
   else if (n.getInt (id))
@@ -224,25 +226,14 @@ const std::string DOM::get (const std::string& name, Task& task)
     if (n.skip ('.'))
     {
       // TODO Obtain task 'id' from TDB2.
+//      std::cout << "# DOM::get " << name << "\n";
 
       std::string attr;
       n.getUntilEOS (attr);
 
-           if (attr == "description")  return task.get ("description");
-      else if (attr == "status")       return task.get ("status");
-      else if (attr == "project")      return task.get ("project");
-      else if (attr == "priority")     return task.get ("priority");
-      else if (attr == "parent")       return task.get ("parent");
-      else if (attr == "tags")         return task.get ("tags");
-      else if (attr == "urgency")      return format (task.urgency (), 4, 3);
-      else if (attr == "recur")        return task.get ("recur");
-      else if (attr == "depends")      return task.get ("depends");
-      else if (attr == "entry")        return task.get ("entry");
-      else if (attr == "start")        return task.get ("start");
-      else if (attr == "end")          return task.get ("end");
-      else if (attr == "due")          return task.get ("due");
-      else if (attr == "until")        return task.get ("until");
-      else if (attr == "wait")         return task.get ("wait");
+           if (attr == "id")      return format (task.id);
+      else if (attr == "urgency") return format (task.urgency (), 4, 3);
+      else                        return task.get (attr);
     }
   }
 
@@ -252,46 +243,26 @@ const std::string DOM::get (const std::string& name, Task& task)
     if (n.skip ('.'))
     {
       // TODO Obtain task 'uuid' from TDB2.
+//      std::cout << "# DOM::get name\n";
 
       std::string attr;
       n.getUntilEOS (attr);
 
-           if (attr == "description")  return task.get ("description");
-      else if (attr == "status")       return task.get ("status");
-      else if (attr == "project")      return task.get ("project");
-      else if (attr == "priority")     return task.get ("priority");
-      else if (attr == "parent")       return task.get ("parent");
-      else if (attr == "tags")         return task.get ("tags");
-      else if (attr == "urgency")      return format (task.urgency (), 4, 3);
-      else if (attr == "recur")        return task.get ("recur");
-      else if (attr == "depends")      return task.get ("depends");
-      else if (attr == "entry")        return task.get ("entry");
-      else if (attr == "start")        return task.get ("start");
-      else if (attr == "end")          return task.get ("end");
-      else if (attr == "due")          return task.get ("due");
-      else if (attr == "until")        return task.get ("until");
-      else if (attr == "wait")         return task.get ("wait");
+           if (attr == "id")      return format (task.id);
+      else if (attr == "urgency") return format (task.urgency (), 4, 3);
+      else                        return task.get (attr);
     }
   }
 
   // [<task>.] <name>
-       if (name == "description")  return task.get ("description");
-  else if (name == "status")       return task.get ("status");
-  else if (name == "project")      return task.get ("project");
-  else if (name == "priority")     return task.get ("priority");
-  else if (name == "parent")       return task.get ("parent");
-  else if (name == "tags")         return task.get ("tags");
-  else if (name == "urgency")      return format (task.urgency (), 4, 3);
-  else if (name == "recur")        return task.get ("recur");
-  else if (name == "depends")      return task.get ("depends");
-  else if (name == "entry")        return task.get ("entry");
-  else if (name == "start")        return task.get ("start");
-  else if (name == "end")          return task.get ("end");
-  else if (name == "due")          return task.get ("due");
-  else if (name == "until")        return task.get ("until");
-  else if (name == "wait")         return task.get ("wait");
+//  std::cout << "# DOM::get " << name << "\n";
+
+       if (name == "id")      return format (task.id);
+  else if (name == "urgency") return format (task.urgency (), 4, 3);
+  else                        return task.get (name);
 
   // Delegate to the context-free version of DOM::get.
+//  std::cout << "# DOM::get delegate...\n";
   return this->get (name);
 }
 
@@ -304,8 +275,7 @@ void DOM::set (const std::string& name, const std::string& value)
   if (len > 3 &&
       name.substr (0, 3) == "rc.")
   {
-    _cache[name] = value;
-    context.config.set (name.substr (3), value);
+    context.config.set (name.substr (3), /*_cache[name] =*/ value);
   }
 
   // Unrecognized --> error.

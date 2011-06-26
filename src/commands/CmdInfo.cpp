@@ -58,7 +58,7 @@ int CmdInfo::execute (std::string& output)
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.loadPending (tasks);
+  context.tdb.load (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
 
