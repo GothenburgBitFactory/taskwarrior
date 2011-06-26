@@ -38,8 +38,15 @@
    output is enclosed by '[...]'.
 
 # Tracked Features, sorted by ID.
+ + Added feature #278, which provides a more consistent command line grammar.
  + Added feature #330, which supports the 'inverse' color attribute.
  + Added feature #479, which enables filtering for the 'calendar' command.
+ + Added feature #496, which allows rc.default.command to be supplemented with
+   a filter, so that 'task project:Home' applies the project filter to the
+   default command.
+ + Added feature #507, which provides an alternative mechanism for inverting
+   attribute modifiers, in the form of new algebraic filters (thanks to Michelle
+   Crane).
  + Added feature #523 & #659, adding 'status' as a reportable field (thanks to
    Peter De Poorter and Bryce Harrington).
  + Added feature #545, #610, #611, #646, which support complex aliases.
@@ -57,6 +64,8 @@
    Cech).
  + Added feature #755, adding a new command 'reports' that lists reports and
    their descriptions.
+ + Added feature #779, which uses more relevant and consistent terms on the
+   'burndown' charts.
 
 # Tracked Bugs, sorted by ID.
  + Fixed bug #475, which allowed a blank annotation command to be entered
@@ -68,6 +77,10 @@
    handling and a formatting bug (thanks to Steve Rader).
  + Fixed bug #605, which gave misleading project completion percentages under
    certain circumstances (thanks to Steve Rader).
+ + Fixed bug #645 & #660, which prevented logically combining report filters
+   (thanks to Bryce Harrington).
+ + Fixed bug #696, where the command line parser was confused by a single '-'
+   or '+' character.
  + Fixed bug #699, truncated ssh://... during autopush after merge.
  + Fixed bug #703, where global substitutions didn't make all expected
    annotation changes.
@@ -97,6 +110,10 @@
    J. Pilkington).
  + Applied patch for Bug #771, which looks for libuuid if uuid_unparse_lower is
    not located (thanks to Christopher J. Pilkington).
+ + Fixed bug #777, which prevented _query command output from passing JSON
+   validation due to missing [] around the task list.
+ + Fixed bug #781, which prevented tasks with dependencies from showing on the
+   'next' report (thanks to Wim Schuermann).
  + Fixed bug #783, which fixes completed and deleted tasks still showing as
    active (thanks to Adam Wolk).
  + Fixed bug #785, which fixes a broken build on Solaris (thanks to Owen
