@@ -441,9 +441,10 @@ void Arguments::categorize ()
   // then invoke the default command.
   if (!found_command)
   {
-    if (found_non_sequence)
+    if (!found_sequence)
     {
       // TODO Invoke the default command.
+      std::cout << "DEFAULT COMMAND\n";
 /*
       // Apply overrides, if any.
       std::string defaultCommand = config.get ("default.command");
@@ -471,12 +472,10 @@ void Arguments::categorize ()
 
     // If the command "task 123" is entered, but with no modifier arguments,
     // then the actual command is assumed to be "info".
-    else if (!found_non_sequence &&
-             found_sequence)
+    else if (!found_non_sequence)
     {
-      // TODO Invoke the info command.
-      std::cout << STRING_ASSUME_INFO << "\n";
-//      parseCmd.command = "info";
+      context.header (STRING_ASSUME_INFO);
+      push_back (std::make_pair ("information", "command"));
     }
   }
 }

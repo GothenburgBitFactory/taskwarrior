@@ -150,7 +150,8 @@ int CmdCustom::execute (std::string& output)
     maxlines -= (context.verbose ("blank") ? 1 : 0)
               + table_header
               + context.headers.size ()
-              + context.footnotes.size ();
+              + context.footnotes.size ()
+              + 1;  // "X tasks shown ..."
 
   // Render.
   // TODO Consider rc.verbose
