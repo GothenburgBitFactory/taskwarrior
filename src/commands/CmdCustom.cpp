@@ -82,6 +82,13 @@ int CmdCustom::execute (std::string& output)
   split (sortOrder, reportSort, ',');
   validateSortColumns (sortOrder);
 
+  // Prepend the argument list with those from the report filter.
+  std::vector <std::string> filterArgs;
+  split (filterArgs, reportFilter, ' ');
+  std::vector <std::string>::iterator arg;
+  for (arg = filterArgs.begin (); arg != filterArgs.end (); ++ arg)
+    context.args.capture_first (*arg);
+
   // Load the data.
   // TODO Replace with TDB2.
   std::vector <Task> tasks;

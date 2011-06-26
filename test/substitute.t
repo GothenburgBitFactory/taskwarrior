@@ -28,12 +28,13 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 # Create the rc file.
 if (open my $fh, '>', 'subst.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "regex=off\n";
   close $fh;
   ok (-r 'subst.rc', 'Created subst.rc');
 }
@@ -67,6 +68,11 @@ like ($output, qr/aaa bbb ccc/, 'individual successive substitution in descripti
 qx{../src/task rc:subst.rc 1 /bbb//};
 $output = qx{../src/task rc:subst.rc info 1};
 like ($output, qr/aaa  ccc/, 'word deletion in description');
+
+# Regexes
+qx{../src/task rc:subst.rc rc.regex:on 1 "/c(c)./C/"};
+$output = qx{../src/task rc:subst.rc info 1};
+like ($output, qr/aaa  cCc/, 'regex');
 
 # Cleanup.
 unlink 'pending.data';

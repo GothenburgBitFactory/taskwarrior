@@ -168,7 +168,7 @@ void Arguments::capture (int argc, const char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Add a pair with a category of "".
+// Append a pair with a category of "".
 void Arguments::capture (const std::string& arg)
 {
   std::vector <std::string> parts;
@@ -180,6 +180,36 @@ void Arguments::capture (const std::string& arg)
   }
   else
     this->push_back (std::make_pair (arg, ""));
+
+  categorize ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Prepend a pair with a category of "".
+void Arguments::capture_first (const std::string& arg)
+{
+  // Break the new argument into parts that comprise a series.
+  std::vector <std::pair <std::string, std::string> > series;
+
+  std::vector <std::string> parts;
+  if (is_multipart (arg, parts))
+  {
+    std::vector <std::string>::iterator part;
+    for (part = parts.begin (); part != parts.end (); ++part)
+      series.push_back (std::make_pair (*part, ""));
+  }
+  else
+    series.push_back (std::make_pair (arg, ""));
+
+  // Locate an appropriate place to insert the series.  This would be
+  // immediately after the program and command arguments.
+  std::vector <std::pair <std::string, std::string> >::iterator position;
+  for (position = this->begin (); position != this->end (); ++position)
+    if (position->second != "program" &&
+        position->second != "command")
+      break;
+
+  this->insert (position, series.begin (), series.end ());
 
   categorize ();
 }

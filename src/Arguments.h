@@ -42,6 +42,7 @@ public:
 
   void capture (int, const char**);
   void capture (const std::string&);
+  void capture_first (const std::string&);
   void categorize ();
 
   void append_stdin ();
