@@ -673,8 +673,8 @@ bool Arguments::find_command (std::string& command)
 ////////////////////////////////////////////////////////////////////////////////
 std::string Arguments::find_limit ()
 {
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
+  std::vector <std::pair <std::string, std::string> >::reverse_iterator arg;
+  for (arg = this->rbegin (); arg != this->rend (); ++arg)
     if (arg->first.find ("limit:") != std::string::npos)
       return arg->first.substr (6);
 
