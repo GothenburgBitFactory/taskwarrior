@@ -149,7 +149,6 @@ int CmdCustom::execute (std::string& output)
   if (maxlines)
     maxlines -= (context.verbose ("blank") ? 1 : 0)
               + table_header
-              + context.headers.size ()
               + context.footnotes.size ()
               + 1;  // "X tasks shown ..."
 

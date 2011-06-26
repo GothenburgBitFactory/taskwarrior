@@ -50,6 +50,7 @@ public:
   void get_data_location (std::string&);
   void apply_overrides ();
   void resolve_aliases ();
+  void inject_defaults ();
 
   std::vector <std::string> list ();
   static std::vector <std::string> operator_list ();

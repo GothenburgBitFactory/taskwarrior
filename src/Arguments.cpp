@@ -436,48 +436,6 @@ void Arguments::categorize ()
       arg->second = "word";
     }
   }
-
-  // If no command was specified, and there were no command line arguments
-  // then invoke the default command.
-  if (!found_command)
-  {
-    if (!found_sequence)
-    {
-      // TODO Invoke the default command.
-      std::cout << "DEFAULT COMMAND\n";
-/*
-      // Apply overrides, if any.
-      std::string defaultCommand = config.get ("default.command");
-      if (defaultCommand != "")
-      {
-        // Add on the overrides.
-        defaultCommand += " " + file_override + " " + var_overrides;
-
-        // Stuff the command line.
-        args.clear ();
-        split (args, defaultCommand, ' ');
-        header ("[task " + trim (defaultCommand) + "]");
-
-        // Reinitialize the context and recurse.
-        file_override = "";
-        var_overrides = "";
-        footnotes.clear ();
-        //initialize ();
-        parse (args, cmd, task, sequence, subst, filter);
-      }
-      else
-        throw std::string (STRING_TRIVIAL_INPUT);
-*/
-    }
-
-    // If the command "task 123" is entered, but with no modifier arguments,
-    // then the actual command is assumed to be "info".
-    else if (!found_non_sequence)
-    {
-      context.header (STRING_ASSUME_INFO);
-      push_back (std::make_pair ("information", "command"));
-    }
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -606,6 +564,55 @@ void Arguments::resolve_aliases ()
       this->push_back (std::make_pair (*e, ""));
 
     categorize ();
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Arguments::inject_defaults ()
+{
+  bool found_command  = false;
+  bool found_sequence = false;
+  bool found_other    = false;
+
+  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    if (arg->second == "command")
+      found_command = true;
+
+    else if (arg->second == "id")
+      found_sequence = true;
+
+    else if (arg->second != "program"  &&
+             arg->second != "override" &&
+             arg->second != "rc")
+      found_other = true;
+  }
+
+  // If no command was specified, and there were no command line arguments
+  // then invoke the default command.
+  if (!found_command)
+  {
+    if (found_other || !found_sequence)
+    {
+      // Apply overrides, if any.
+      std::string defaultCommand = context.config.get ("default.command");
+      if (defaultCommand != "")
+      {
+        capture_first (defaultCommand);
+        context.header ("[task " + trim (defaultCommand) + "]");
+      }
+      else
+        throw std::string (STRING_TRIVIAL_INPUT);
+    }
+
+    // If the command "task 123" is entered, but with no modifier arguments,
+    // then the actual command is assumed to be "info".
+    else if (found_sequence)
+    {
+      context.header (STRING_ASSUME_INFO);
+      push_back (std::make_pair ("information", "command"));
+    }
   }
 }
 

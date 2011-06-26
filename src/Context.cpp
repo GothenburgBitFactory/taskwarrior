@@ -116,8 +116,11 @@ void Context::initialize (int argc, const char** argv)
   // Instantiate built-in column objects.
   Column::factory (columns);
 
-  // Finally categorize all arguments.
+  // Categorize all arguments one more time.
   args.categorize ();
+
+  // Handle default command and assumed 'info' command.
+  args.inject_defaults ();
 
   // TODO Instantiate extension command objects.
   // TODO Instantiate default command object.
