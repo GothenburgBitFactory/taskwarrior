@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <algorithm>
 #include <Context.h>
@@ -32,8 +34,6 @@
 #include <Timer.h>
 #include <text.h>
 #include <i18n.h>
-
-#define L10N                                           // Localization complete.
 
 extern Context context;
 

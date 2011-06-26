@@ -25,12 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <Context.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <main.h>
 
 extern Context context;
@@ -200,7 +203,9 @@ void dependencyChainOnComplete (Task& task)
     // Nag about broken chain.
     if (context.config.getBoolean ("dependency.reminder"))
     {
-      std::cout << "Task " << task.id << " is blocked by:\n";
+      std::cout << format (STRING_DEPEND_BLOCKED, task.id)
+                << "\n";
+
       std::vector <Task>::iterator b;
       for (b = blocking.begin (); b != blocking.end (); ++b)
         std::cout << "  " << b->id << " " << b->get ("description") << "\n";
@@ -211,14 +216,16 @@ void dependencyChainOnComplete (Task& task)
     {
       if (context.config.getBoolean ("dependency.reminder"))
       {
-        std::cout << "and is blocking:\n";
+        std::cout << STRING_DEPEND_BLOCKING
+                  << "\n";
+
         std::vector <Task>::iterator b;
         for (b = blocked.begin (); b != blocked.end (); ++b)
           std::cout << "  " << b->id << " " << b->get ("description") << "\n";
       }
 
       if (!context.config.getBoolean ("dependency.confirmation") ||
-          confirm ("Would you like the dependency chain fixed?"))
+          confirm (STRING_DEPEND_FIX_CHAIN))
       {
         // Repair the chain - everything in blocked should now depend on
         // everything in blocking, instead of task.id.
@@ -255,7 +262,9 @@ void dependencyChainOnStart (Task& task)
     // broken chain.
     if (blocking.size ())
     {
-      std::cout << "Task " << task.id << " is blocked by:\n";
+      std::cout << format (STRING_DEPEND_BLOCKED, task.id)
+                << "\n";
+
       std::vector <Task>::iterator b;
       for (b = blocking.begin (); b != blocking.end (); ++b)
         std::cout << "  " << b->id << " " << b->get ("description") << "\n";

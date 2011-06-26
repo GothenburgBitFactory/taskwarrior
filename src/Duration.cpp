@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <string>
 #include <vector>
@@ -33,6 +35,7 @@
 #include <string.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <Duration.h>
 
 static const char* durations[] =
@@ -369,7 +372,7 @@ void Duration::parse (const std::string& input)
   }
 
   if (mSecs == 0)
-    throw std::string ("The duration '") + input + "' was not recognized.";
+    throw ::format (STRING_DURATION_UNRECOGNIZED, input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

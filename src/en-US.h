@@ -217,15 +217,29 @@
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
+#define STRING_CONFIG_READ_INCLUDE   "Could not read include file '{1}'."
+#define STRING_CONFIG_INCLUDE_PATH   "Can only include files with absolute paths, not '{1}'"
+#define STRING_CONFIG_BAD_ENTRY      "Malformed entry '{1}'."
+#define STRING_CONFIG_BAD_WRITE      "Could not write to '{1}'."
+#define STRING_CONFIG_DEPRECATED_US  "Your .taskrc file contains color settings that use deprecated underscores.  Please check:"
+#define STRING_CONFIG_DEPRECATED_COL "Your .taskrc file contains reports with deprecated columns.  Please check for entry_time, start_time or end_time in:"
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so taskwarrior can proceed?"
 #define STRING_CONTEXT_NEED_RC       "Cannot proceed without rc file."
 
+// dependency
+#define STRING_DEPEND_BLOCKED        "Task {1} is blocked by:"
+#define STRING_DEPEND_BLOCKING       "and is blocking:"
+#define STRING_DEPEND_FIX_CHAIN      "Would you like the dependency chain fixed?"
+
 // DOM
 #define STRING_DOM_UNKNOWN           "<unknown>"
 #define STRING_DOM_UNREC             "DOM: Cannot get unrecognized name '{1}'."
 #define STRING_DOM_CANNOT_SET        "DOM: Cannot set '{1}'."
+
+// Duration
+#define STRING_DURATION_UNRECOGNIZED "The duration '{1}' was not recognized."
 
 // Errors
 // TODO Move each of these to appropriate section.
@@ -247,6 +261,15 @@
 // interactive
 #define STRING_INTERACTIVE_WIDTH     "Context::getWidth: determined width of {1} characters"
 #define STRING_INTERACTIVE_HEIGHT    "Context::getHeight: determined height of {1} characters"
+
+// JSON
+#define STRING_JSON_MISSING_VALUE    "Error: missing value after ',' at position {1}"
+#define STRING_JSON_MISSING_VALUE2   "Error: missing value at position {1}"
+#define STRING_JSON_MISSING_BRACKET  "Error: missing ']' at position {1}"
+#define STRING_JSON_MISSING_BRACE    "Error: missing '}' at position {1}"
+#define STRING_JSON_MISSING_COLON    "Error: missing ':' at position {1}"
+#define STRING_JSON_MISSING_OPEN     "Error: expected '{' or '[' at position {1}"
+#define STRING_JSON_EXTRA_CHARACTERS "Error: extra characters found at position {1}"
 
 // Lua
 #define STRING_LUA_BAD_HOOK_DEF      "Malformed hook definition '{1}'."

@@ -24,6 +24,9 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <stdlib.h>
 #include <Context.h>
@@ -31,8 +34,6 @@
 #include <text.h>
 #include <util.h>
 #include <main.h>
-
-#define L10N                                           // Localization complete.
 
 extern Context context;
 
@@ -318,4 +319,3 @@ std::string colorizeDebug (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-

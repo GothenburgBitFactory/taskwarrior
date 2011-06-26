@@ -25,11 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <stdlib.h>
 #include <string.h>
 #include <RX.h>
-
-#define L10N                                           // Localization complete.
 
 //#define _POSIX_C_SOURCE 1      // Forgot why this is here.  Moving on...
 

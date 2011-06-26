@@ -24,6 +24,9 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -542,13 +545,13 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
             if (included.readable ())
               this->load (included, nest + 1);
             else
-              throw std::string ("Could not read include file '") + included.data + "'.";
+              throw format (STRING_CONFIG_READ_INCLUDE, included.data);
           }
           else
-            throw std::string ("Can only include files with absolute paths, not '") + included.data + "'";
+            throw format (STRING_CONFIG_INCLUDE_PATH, included.data);
         }
         else
-          throw std::string ("Malformed entry '") + line + "'.";
+          throw format (STRING_CONFIG_BAD_ENTRY, line);
       }
     }
   }
@@ -585,7 +588,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
 
   // Write out the new file.
   if (! File::write (rc, contents.str ()))
-    throw std::string ("Could not write to '") + rc + "'.";
+    throw format (STRING_CONFIG_BAD_WRITE, rc);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -699,8 +702,8 @@ std::string Config::checkForDeprecatedColor ()
   std::stringstream out;
   if (deprecated.size ())
   {
-    out << "Your .taskrc file contains color settings that use deprecated "
-        << "underscores.  Please check:\n";
+    out << STRING_CONFIG_DEPRECATED_US
+        << "\n";
 
     std::vector <std::string>::iterator it2;
     for (it2 = deprecated.begin (); it2 != deprecated.end (); ++it2)
@@ -734,8 +737,8 @@ std::string Config::checkForDeprecatedColumns ()
 
   if (deprecated.size ())
   {
-    out << "Your .taskrc file contains reports with deprecated columns.  "
-        << "Please check for entry_time, start_time or end_time in:\n";
+    out << STRING_CONFIG_DEPRECATED_COL
+        << "\n";
 
     std::vector <std::string>::iterator it2;
     for (it2 = deprecated.begin (); it2 != deprecated.end (); ++it2)

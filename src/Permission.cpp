@@ -25,14 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <Permission.h>
 #include <Context.h>
 #include <util.h>
 #include <text.h>
 #include <i18n.h>
-
-#define L10N                                           // Localization complete.
 
 extern Context context;
 
