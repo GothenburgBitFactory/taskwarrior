@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -42,6 +44,7 @@
 #include <Duration.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <main.h>
 
 // Global context for use by all.
@@ -68,9 +71,8 @@ void handleRecurrence ()
       std::vector <Date> due;
       if (!generateDueDates (*t, due))
       {
-        std::cout << "Task ("
-                  << trim (t->get ("description"))
-                  << ") has past its 'until' date, and has been deleted.\n";
+        std::cout << format (STRING_RECUR_PAST_UNTIL, trim (t->get ("description")))
+                  << "\n";
 
         // Determine the end date.
         char endTime[16];

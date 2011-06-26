@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iomanip>
 #include <sstream>
 #include <time.h>
@@ -35,6 +37,7 @@
 #include <Date.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <Context.h>
 
 extern Context context;
@@ -102,7 +105,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
   if (n.getDate (format, mT) && n.depleted ())
     return;
 
-  throw std::string ("'") + input + "' is not a valid date in the '" + format + "' format.";
+  throw ::format (STRING_DATE_INVALID_FORMAT, input, format);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -391,8 +394,7 @@ int Date::weekOfYear (int weekStart) const
   else if (weekStart == 1)
     strftime(weekStr, sizeof(weekStr), "%V", t);
   else
-    throw std::string ("The 'weekstart' configuration variable may "
-                       "only contain 'Sunday' or 'Monday'.");
+    throw std::string (STRING_DATE_BAD_WEEKSTART);
 
   int weekNumber = atoi (weekStr);
 

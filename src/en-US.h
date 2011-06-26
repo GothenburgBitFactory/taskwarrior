@@ -214,6 +214,23 @@
 #define STRING_CMD_TAGS_SINGLE       "1 tag"
 #define STRING_CMD_TAGS_PLURAL       "{1} tags"
 #define STRING_CMD_TAGS_NO_TAGS      "No tags."
+#define STRING_CMD_HISTORY_USAGE_M   "Shows a report of task history, by month."
+#define STRING_CMD_HISTORY_YEAR      "Year"
+#define STRING_CMD_HISTORY_MONTH     "Month"
+#define STRING_CMD_HISTORY_ADDED     "Added"
+#define STRING_CMD_HISTORY_COMP      "Completed"
+#define STRING_CMD_HISTORY_DEL       "Deleted"
+#define STRING_CMD_HISTORY_NET       "Net"
+#define STRING_CMD_HISTORY_USAGE_A   "Shows a report of task history, by year."
+#define STRING_CMD_HISTORY_NO_TASKS  "No tasks."
+#define STRING_CMD_HISTORY_AVERAGE   "Average"
+#define STRING_CMD_HISTORY_LEGEND    "Legend: {1}, {2}, {3}"
+#define STRING_CMD_HISTORY_LEGEND_A  "Legend: + added, X completed, - deleted"
+#define STRING_CMD_GHISTORY_USAGE_M  "Shows a graphical report of task history, by month."
+#define STRING_CMD_GHISTORY_USAGE_A  "Shows a graphical report of task history, by year."
+#define STRING_CMD_GHISTORY_YEAR     "Year"
+#define STRING_CMD_GHISTORY_MONTH    "Month"
+#define STRING_CMD_GHISTORY_NUMBER   "Number Added/Completed/Deleted"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
@@ -227,6 +244,10 @@
 // Context
 #define STRING_CONTEXT_CREATE_RC     "A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so taskwarrior can proceed?"
 #define STRING_CONTEXT_NEED_RC       "Cannot proceed without rc file."
+
+// Date
+#define STRING_DATE_INVALID_FORMAT   "'{1}' is not a valid date in the '{2}' format."
+#define STRING_DATE_BAD_WEEKSTART    "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'."
 
 // dependency
 #define STRING_DEPEND_BLOCKED        "Task {1} is blocked by:"
@@ -283,6 +304,9 @@
 #define STRING_RECORD_EMPTY          "Empty record in input."
 #define STRING_RECORD_JUNK_AT_EOL    "Unrecognized characters at end of line."
 #define STRING_RECORD_NOT_FF4        "Record not recognized as format 4."
+
+// recur
+#define STRING_RECUR_PAST_UNTIL      "Task ({1}) has past its 'until' date, and has been deleted."
 
 // 'show' command
 #define STRING_CMD_SHOW              "Shows the entire task configuration variables or the ones containing substring."
