@@ -137,12 +137,11 @@ int CmdDone::execute (std::string& output)
   context.tdb.unlock ();
 
   if (context.config.getBoolean ("echo.command"))
-    if (count == 1)
-      out << format (STRING_CMD_DONE_MARKED, count)
-          << "\n";
-    else
-      out << format (STRING_CMD_DONE_MARKED_N, count)
-          << "\n";
+    out << format ((count == 1
+                      ? STRING_CMD_DONE_MARKED
+                      : STRING_CMD_DONE_MARKED_N),
+                   count)
+        << "\n";
 
   output = out.str ();
   return rc;
