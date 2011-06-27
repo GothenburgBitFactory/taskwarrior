@@ -29,6 +29,8 @@
 #include <Context.h>
 #include <Permission.h>
 #include <util.h>
+#include <text.h>
+#include <i18n.h>
 #include <main.h>
 #include <CmdDelete.h>
 
@@ -48,22 +50,22 @@ CmdDelete::CmdDelete ()
 int CmdDelete::execute (std::string& output)
 {
   int rc = 0;
-/*
   std::stringstream out;
 
   context.disallowModification ();
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
-
-  // Filter sequence.
+  context.tdb.loadPending (tasks);
   std::vector <Task> all = tasks;
-  context.filter.applySequence (tasks, context.sequence);
-  if (tasks.size () == 0)
+
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
+
+  if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
     return 1;
   }
 
@@ -72,7 +74,7 @@ int CmdDelete::execute (std::string& output)
   sprintf (endTime, "%u", (unsigned int) time (NULL));
 
   std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     if (task->getStatus () == Task::pending ||
         task->getStatus () == Task::waiting)
@@ -185,7 +187,6 @@ int CmdDelete::execute (std::string& output)
   context.tdb.unlock ();
 
   output = out.str ();
-*/
   return rc;
 }
 
