@@ -295,6 +295,8 @@ void Command::modify_task (Task& task, Arguments& arguments)
       std::string value;
       Arguments::extract_attr (arg->first, name, value);
 
+      // TODO All 'value's must be eval'd first.
+
       // Dependencies must be resolved to UUIDs.
       if (name == "depends")
       {
@@ -412,7 +414,8 @@ void Command::apply_defaults (Task& task)
     std::string defaultDue = context.config.get ("default.due");
     if (defaultDue != "" &&
         context.columns["due"]->validate (defaultDue))
-      task.set ("due", defaultDue);
+      // TODO Determine whether this could/should be eval'd first.
+      task.set ("due", Date (defaultDue).toEpoch ());
   }
 }
 
