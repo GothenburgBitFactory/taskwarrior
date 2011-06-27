@@ -57,7 +57,7 @@ int CmdAdd::execute (std::string& output)
   std::vector <Task> all;
   context.tdb.loadPending (all);
 
-  // Every new task needs a UUID.
+  // Every task needs a UUID.
   Task task;
   task.set ("uuid", uuid ());
 

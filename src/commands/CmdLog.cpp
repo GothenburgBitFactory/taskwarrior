@@ -27,7 +27,6 @@
 
 #define L10N                                           // Localization complete.
 
-#include <sstream>
 #include <Context.h>
 #include <text.h>
 #include <i18n.h>
