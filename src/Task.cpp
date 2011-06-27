@@ -881,10 +881,14 @@ void Task::substitute (
 void Task::validate () const
 {
   // Every task needs an ID, entry and description attribute.
-  if (!has ("uuid")  ||
-      !has ("entry") ||
-      !has ("description"))
-    throw std::string ("A task must have a description in order to be valid.");
+  if (!has ("uuid"))
+    throw std::string ("A task must have a UUID.");
+
+  if (!has ("entry"))
+    throw std::string ("A task must have an entry timestamp.");
+
+  if (!has ("description"))
+    throw std::string ("A task must have a description.");
 
   if (get ("description") == "") // No i18n
     throw std::string ("Cannot add a task that is blank, or contains <CR> or <LF> characters.");

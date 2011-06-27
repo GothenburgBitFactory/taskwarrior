@@ -190,7 +190,7 @@ int CmdHistoryMonthly::execute (std::string& output)
         << "\n";
   else
   {
-    out << STRING_CMD_HISTORY_NO_TASKS << "\n";
+    out << STRING_FEEDBACK_NO_TASKS << "\n";
     rc = 1;
   }
 
@@ -347,7 +347,7 @@ int CmdHistoryAnnual::execute (std::string& output)
         << "\n";
   else
   {
-    out << STRING_CMD_HISTORY_NO_TASKS << "\n";
+    out << STRING_FEEDBACK_NO_TASKS << "\n";
     rc = 1;
   }
 
@@ -546,7 +546,7 @@ int CmdGHistoryMonthly::execute (std::string& output)
   }
   else
   {
-    out << STRING_CMD_HISTORY_NO_TASKS << "\n";
+    out << STRING_FEEDBACK_NO_TASKS << "\n";
     rc = 1;
   }
 
@@ -742,7 +742,7 @@ int CmdGHistoryAnnual::execute (std::string& output)
   }
   else
   {
-    out << STRING_CMD_HISTORY_NO_TASKS << "\n";
+    out << STRING_FEEDBACK_NO_TASKS << "\n";
     rc = 1;
   }
 

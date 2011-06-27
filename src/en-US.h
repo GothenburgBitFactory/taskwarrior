@@ -169,7 +169,6 @@
 #define STRING_CMD_LOGO_COLOR_REQ    "The logo command requires that color support is enabled."
 #define STRING_CMD_EXEC_USAGE        "Executes external commands and scripts"
 #define STRING_CMD_URGENCY_USAGE     "Displays the urgency measure of a task."
-#define STRING_CMD_URGENCY_NO_TASKS  "No tasks specified."
 #define STRING_CMD_URGENCY_RESULT    "task {1} urgency {2}"
 #define STRING_CMD_ADD_USAGE         "Adds a new task."
 #define STRING_CMD_ADD_FEEDBACK      "Created task {1}."
@@ -222,7 +221,6 @@
 #define STRING_CMD_HISTORY_DEL       "Deleted"
 #define STRING_CMD_HISTORY_NET       "Net"
 #define STRING_CMD_HISTORY_USAGE_A   "Shows a report of task history, by year."
-#define STRING_CMD_HISTORY_NO_TASKS  "No tasks."
 #define STRING_CMD_HISTORY_AVERAGE   "Average"
 #define STRING_CMD_HISTORY_LEGEND    "Legend: {1}, {2}, {3}"
 #define STRING_CMD_HISTORY_LEGEND_A  "Legend: + added, X completed, - deleted"
@@ -231,6 +229,12 @@
 #define STRING_CMD_GHISTORY_YEAR     "Year"
 #define STRING_CMD_GHISTORY_MONTH    "Month"
 #define STRING_CMD_GHISTORY_NUMBER   "Number Added/Completed/Deleted"
+#define STRING_CMD_DONE_USAGE        "Marks the specified task as completed."
+#define STRING_CMD_DONE_PROCEED      "Proceed with change?"
+#define STRING_CMD_DONE_COMPLETED    "Completed {1} '{2}'."
+#define STRING_CMD_DONE_NOT_PENDING  "Task {1} '{2}' is neither pending nor waiting."
+#define STRING_CMD_DONE_MARKED       "Marked {1} task as done"
+#define STRING_CMD_DONE_MARKED_N     "Marked {1} tasks as done"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
@@ -272,6 +276,8 @@
 #define STRING_INFINITE_LOOP         "Terminated substitution because more than {1} changes were made - infinite loop protection."
 
 // Feedback
+#define STRING_FEEDBACK_NO_TASKS     "No tasks."
+#define STRING_FEEDBACK_NO_TASKS_SP  "No tasks specified."
 #define STRING_FEEDBACK_NO_MATCH     "No matches."
 #define STRING_FEEDBACK_TASKS_SINGLE "(1 task)"
 #define STRING_FEEDBACK_TASKS_PLURAL "({1} tasks)"

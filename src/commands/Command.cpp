@@ -360,7 +360,9 @@ void Command::modify_task (Task& task, Arguments& arguments)
       throw format (STRING_CMD_MOD_UNEXPECTED, arg->first);
   }
 
-  task.set ("description", description);
+  // Only update description if one was specified.
+  if (description.length ())
+    task.set ("description", description);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
