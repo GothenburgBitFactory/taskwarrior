@@ -77,6 +77,9 @@ bool Expression::eval (Task& task)
   // against each task.
   std::vector <Variant> value_stack;
 
+  // Case sensitivity is configurable.
+  bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
+
   // TODO Build an on-demand regex cache.
 
   std::vector <std::pair <std::string, std::string> >::const_iterator arg;
@@ -234,7 +237,19 @@ bool Expression::eval (Task& task)
       else if (arg->first == "=")
       {
 //        std::cout << "#   " << left.dump () << " = " << right.dump () << "\n";
-        bool result = (left == right);
+        bool result = false;
+        if (left._raw == "project" || left._raw == "recur")
+        {
+          left.cast (Variant::v_string);
+          right.cast (Variant::v_string);
+          if (right._string.length () <= left._string.length ())
+            result = compare (right._string,
+                              left._string.substr (0, right._string.length ()),
+                              (bool) case_sensitive);
+        }
+        else
+          result = (left == right);
+
         left = Variant (result);
         left._raw_type = "bool";
 
