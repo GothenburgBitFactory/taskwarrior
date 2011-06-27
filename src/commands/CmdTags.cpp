@@ -115,20 +115,20 @@ int CmdTags::execute (std::string& output)
         << optionalBlankLine ();
 
     if (unique.size () == 1)
-      out << STRING_CMD_TAGS_SINGLE;
+      context.footnote (STRING_CMD_TAGS_SINGLE);
     else
-      out << format (STRING_CMD_TAGS_PLURAL, unique.size ());
+      context.footnote (format (STRING_CMD_TAGS_PLURAL, unique.size ()));
 
     if (quantity == 1)
-      out << " " << STRING_FEEDBACK_TASKS_SINGLE;
+      context.footnote (STRING_FEEDBACK_TASKS_SINGLE);
     else
-      out << " " << format (STRING_FEEDBACK_TASKS_PLURAL, quantity);
+      context.footnote (format (STRING_FEEDBACK_TASKS_PLURAL, quantity));
 
     out << "\n";
   }
   else
   {
-    out << STRING_CMD_TAGS_NO_TAGS << "\n";
+    context.footnote (STRING_CMD_TAGS_NO_TAGS);
     rc = 1;
   }
 

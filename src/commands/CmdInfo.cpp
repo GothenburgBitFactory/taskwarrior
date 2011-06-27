@@ -396,7 +396,7 @@ int CmdInfo::execute (std::string& output)
 
   if (! filtered.size ())
   {
-    out << STRING_FEEDBACK_NO_MATCH << "\n";
+    context.footnote (STRING_FEEDBACK_NO_MATCH);
     rc = 1;
   }
 
