@@ -230,12 +230,22 @@ const std::string uuid ()
   uuid_t id;
   uuid_generate (id);
   char buffer[100] = {0};
+#ifdef SOLARIS
+  uuid_unparse (id, buffer);
+#else
   uuid_unparse_lower (id, buffer);
+#endif
 
   // Bug found by Steven de Brouwer.
   buffer[36] = '\0';
 
+#ifdef SOLARIS
+  std::string data = std::string (buffer);
+  std::transform (data.begin(), data.end(), data.begin(), ::tolower);
+  return data;
+#else
   return std::string (buffer);
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
