@@ -29,7 +29,6 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
-#include <Lexer.h>
 #include <Date.h>
 #include <Duration.h>
 #include <Nibbler.h>
@@ -334,11 +333,6 @@ bool Expression::eval (Task& task)
       {
         left = left / right;
         value_stack.push_back (left);
-      }
-
-      else if (arg->first == "%")
-      {
-        // TODO Implement modulus.
       }
 
       else if (arg->first == "+")

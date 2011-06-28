@@ -119,7 +119,7 @@ static struct
 //  {  "-",      15,         'u',  1,      'r' },    // Unary minus
   {  "*",      13,         'b',  1,      'l' },    // Multiplication
   {  "/",      13,         'b',  1,      'l' },    // Division
-  {  "%",      13,         'b',  1,      'l' },    // Modulus
+//  {  "%",      13,         'b',  1,      'l' },    // Modulus
   {  "+",      12,         'b',  1,      'l' },    // Addition
   {  "-",      12,         'b',  1,      'l' },    // Subtraction
   {  "<",      10,         'b',  1,      'l' },    // Less than
@@ -288,7 +288,7 @@ void Arguments::categorize ()
       // program
       else if (arg == this->begin ())
       {
-        arg->second = "program";
+        arg->second = "program";  // TODO Is this a problem for expressions that do not contain a program name?
       }
 
       // command
