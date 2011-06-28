@@ -109,7 +109,7 @@ bool Directory::remove_directory (const std::string& dir)
       struct stat s;
       stat (de->d_name, &s);
       if (s.st_mode & S_IFDIR)
-        remove_directory (dir + "/" + de->de_name);
+        remove_directory (dir + "/" + de->d_name);
       else
         unlink ((dir + "/" + de->d_name).c_str ());
 #else

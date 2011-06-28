@@ -120,7 +120,8 @@
    Clarke).
  + Fixed bug #788, which reported regex and readline versions, even though they
    are not used.
- + Fixed bug #792, so that cmake now recognizes Solaris (thanks to Owen Clarke).
+ + Fixed bug #792 & #794, so that cmake now recognizes Solaris (thanks to Owen
+   Clarke).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.

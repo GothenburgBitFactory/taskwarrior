@@ -157,7 +157,7 @@ const std::string DOM::get (const std::string& name)
 #elif defined (LINUX)
       return /*_cache[name] =*/ "Linux";
 #else
-      return /*_cache[name] =*/ STRING_DOM_UNKNOWN
+      return /*_cache[name] =*/ STRING_DOM_UNKNOWN;
 #endif
 
     else
