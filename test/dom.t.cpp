@@ -46,14 +46,16 @@ int main (int argc, char** argv)
 
   try
   {
-    DOM dom;
+    // Prime the pump.
+    context.args.capture ("task");
 
     // TODO dom.get rc.name
+    DOM dom;
     t.is (dom.get ("system.version"),     VERSION,     "DOM system.version -> VERSION");
     t.is (dom.get ("system.lua.version"), LUA_RELEASE, "DOM system.lua.version -> LUA_RELEASE");
     t.ok (dom.get ("system.os") != "<unknown>",        "DOM system.os -> != Unknown");
-    t.is (dom.get ("context.program"),    "",          "DOM context.program -> ''");
-    t.is (dom.get ("context.args"),       "",          "DOM context.args -> ''");
+    t.is (dom.get ("context.program"),    "task",      "DOM context.program -> 'task'");
+    t.is (dom.get ("context.args"),       "task",      "DOM context.args -> 'task'");
     t.is (dom.get ("context.width"),      "0",         "DOM context.width -> '0'");
     t.is (dom.get ("context.height"),     "0",         "DOM context.height -> '0'");
 
