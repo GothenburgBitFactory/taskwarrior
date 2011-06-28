@@ -183,22 +183,46 @@ bool Expression::eval (Task& task)
       else if (arg->first == "<=")
       {
 //        std::cout << "#   " << left.dump () << " <= " << right.dump () << "\n";
-        bool result = (left <= right);
+        bool result = false;
+        if (left._raw == "priority")
+        {
+          left.cast (Variant::v_string);
+          right.cast (Variant::v_string);
+
+               if (left._string        == right._string       ) result = true;
+          else if (                       right._string == "H") result = true;
+          else if (left._string == "L" && right._string == "M") result = true;
+          else if (left._string == ""                         ) result = true;
+        }
+        else
+          result = (left <= right);
+
         left = Variant (result);
         left._raw_type = "bool";
 
-//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
       else if (arg->first == ">=")
       {
 //        std::cout << "#   " << left.dump () << " >= " << right.dump () << "\n";
-        bool result = (left >= right);
+        bool result = false;
+        if (left._raw == "priority")
+        {
+          left.cast (Variant::v_string);
+          right.cast (Variant::v_string);
+
+               if (left._string        == right._string       ) result = true;
+          else if (left._string == "H"                        ) result = true;
+          else if (left._string == "M" && right._string == "L") result = true;
+          else if (                       right._string == "" ) result = true;
+        }
+        else
+          result = (left >= right);
+
         left = Variant (result);
         left._raw_type = "bool";
 
-//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
@@ -260,11 +284,22 @@ bool Expression::eval (Task& task)
       else if (arg->first == ">")
       {
 //        std::cout << "#   " << left.dump () << " > " << right.dump () << "\n";
-        bool result = (left > right);
+        bool result = false;
+        if (left._raw == "priority")
+        {
+          left.cast (Variant::v_string);
+          right.cast (Variant::v_string);
+
+               if (left._string == "H" && right._string != "H") result = true;
+          else if (left._string == "M" && right._string == "L") result = true;
+          else if (left._string != ""  && right._string == "")  result = true;
+        }
+        else
+          result = (left > right);
+
         left = Variant (result);
         left._raw_type = "bool";
 
-//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
@@ -321,11 +356,22 @@ bool Expression::eval (Task& task)
       else if (arg->first == "<")
       {
 //        std::cout << "#   " << left.dump () << " < " << right.dump () << "\n";
-        bool result = (left < right);
+        bool result = false;
+        if (left._raw == "priority")
+        {
+          left.cast (Variant::v_string);
+          right.cast (Variant::v_string);
+
+               if (left._string != "H" && right._string == "H") result = true;
+          else if (left._string == "L" && right._string == "M") result = true;
+          else if (left._string == ""  && right._string != "")  result = true;
+        }
+        else
+          result = (left < right);
+
         left = Variant (result);
         left._raw_type = "bool";
 
-//        std::cout << "#     --> " << left.dump () << "\n";
         value_stack.push_back (left);
       }
 
