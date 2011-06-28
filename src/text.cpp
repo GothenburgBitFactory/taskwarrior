@@ -446,10 +446,7 @@ std::string commify (const std::string& data)
 std::string lowerCase (const std::string& input)
 {
   std::string output = input;
-  for (int i = 0; i < (int) input.length (); ++i)
-    if (isupper (input[i]))
-      output[i] = tolower (input[i]);
-
+  std::transform (output.begin (), output.end (), output.begin (), tolower);
   return output;
 }
 
@@ -457,10 +454,7 @@ std::string lowerCase (const std::string& input)
 std::string upperCase (const std::string& input)
 {
   std::string output = input;
-  for (int i = 0; i < (int) input.length (); ++i)
-    if (islower (input[i]))
-      output[i] = toupper (input[i]);
-
+  std::transform (output.begin (), output.end (), output.begin (), toupper);
   return output;
 }
 

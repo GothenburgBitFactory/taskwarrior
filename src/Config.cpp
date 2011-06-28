@@ -66,6 +66,7 @@ std::string Config::defaults =
   "data.location=~/.task\n"
   "locking=on                                     # Use file-level locking\n"
   "gc=on                                          # Garbage-collect data files - DO NOT CHANGE unless you are sure\n"
+  "exit.on.missing.db=no                          # Whether to exit if ~/.task is not found\n"
   "\n"
   "# Terminal\n"
   "detection=on                                   # Detects terminal width\n"
@@ -596,7 +597,12 @@ void Config::createDefaultData (const std::string& data)
 {
   Directory d (data);
   if (! d.exists ())
+  {
+    if (getBoolean ("exit.on.missing.db"))
+      throw std::string ("Error: rc.data.location does not exist - exiting according to rc.exit.on.missing.db setting.");
+
     d.create ();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

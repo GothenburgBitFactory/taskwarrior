@@ -57,7 +57,6 @@ void handleRecurrence ()
 {
   std::vector <Task> tasks;
   context.tdb.loadPending (tasks);
-
   std::vector <Task> modified;
 
   // Look at all tasks and find any recurring ones.
@@ -66,6 +65,7 @@ void handleRecurrence ()
   {
     if (t->getStatus () == Task::recurring)
     {
+/*
       // Generate a list of due dates for this recurring task, regardless of
       // the mask.
       std::vector <Date> due;
@@ -143,6 +143,7 @@ void handleRecurrence ()
         t->set ("mask", mask);
         context.tdb.update (*t);
       }
+*/
     }
     else
       modified.push_back (*t);

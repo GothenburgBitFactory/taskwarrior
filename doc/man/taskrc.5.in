@@ -153,6 +153,11 @@ don't change.  Note that this should be used in the form of a command line
 override (task rc.gc=off ...), and not permanently used in the .taskrc file,
 as this significantly affects performance.
 
+.TP
+.B exit.on.missing.db=no
+When set to 'yes' causes the program to exit if the database (~/.task or
+rc.data.location override) is missing.  Default value is 'no'.
+
 .SS TERMINAL
 .TP
 .B detection=on

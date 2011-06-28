@@ -50,6 +50,8 @@ New configuration options in taskwarrior 2.0.0
     '[...]'.
   - New 'regex' control determines whether substitutions use Regular Expressions
     or simple text patterns.
+  - New 'exit.on.missing.db' control causes an exit if the ~/.task directory
+    (or override) is missing.
 
 Newly deprecated features in taskwarrior 2.0.0
 

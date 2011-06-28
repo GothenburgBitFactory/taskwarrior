@@ -140,6 +140,7 @@ int CmdShow::execute (std::string& output)
     " echo.command"
     " edit.verbose"
     " editor"
+    " exit.on.missing.db"
     " export.ical.class"
     " expressions"
     " extensions"
