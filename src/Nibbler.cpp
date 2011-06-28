@@ -578,7 +578,16 @@ bool Nibbler::getDateISO (time_t& t)
       tms.tm_min   = minute;
       tms.tm_sec   = second;
 
-      t = timegm (&tms);
+      char *tz = getenv ("TZ");
+      setenv ("TZ", "", 1);
+      tzset ();
+      t = mktime (&tms);
+      if (tz)
+        setenv ("TZ", tz, 1);
+      else
+        unsetenv ("TZ");
+      tzset();
+
       return true;
     }
   }
