@@ -560,6 +560,10 @@ int main (int argc, char** argv)
   t.ok (d.valid ("-1 mths"),    "valid duration -1 mths");
   t.ok (d.valid ("-1 mth"),     "valid duration -1 mth");
   t.ok (d.valid ("-1mo"),       "valid duration -1mo");
+  t.ok (d.valid ("0m"),         "valid duration 0m");
+  t.ok (d.valid ("1m"),         "valid duration 1m");
+  t.ok (d.valid ("10m"),        "valid duration 10m");
+  t.ok (d.valid ("-1m"),        "valid duration -1m");
 
   t.ok (d.valid ("0 wks"),      "valid duration 0 wks");
   t.ok (d.valid ("0 wk"),       "valid duration 0 wk");
@@ -603,16 +607,12 @@ int main (int argc, char** argv)
 
   t.ok (d.valid ("0 mins"),     "valid duration 0 mins");
   t.ok (d.valid ("0 min"),      "valid duration 0 min");
-  t.ok (d.valid ("0m"),         "valid duration 0m");
   t.ok (d.valid ("1 mins"),     "valid duration 1 mins");
   t.ok (d.valid ("1 min"),      "valid duration 1 min");
-  t.ok (d.valid ("1m"),         "valid duration 1m");
   t.ok (d.valid ("10 mins"),    "valid duration 10 mins");
   t.ok (d.valid ("10 min"),     "valid duration 10 min");
-  t.ok (d.valid ("10m"),        "valid duration 10m");
   t.ok (d.valid ("-1 mins"),    "valid duration -1 mins");
   t.ok (d.valid ("-1 min"),     "valid duration -1 min");
-  t.ok (d.valid ("-1m"),        "valid duration -1m");
 
   t.ok (d.valid ("0 secs"),     "valid duration 0 secs");
   t.ok (d.valid ("0 sec"),      "valid duration 0 sec");
@@ -676,6 +676,10 @@ int main (int argc, char** argv)
   t.is (convertDuration ("10 mths"),     300, "valid duration 10 mths");
   t.is (convertDuration ("10 mth"),      300, "valid duration 10 mth");
   t.is (convertDuration ("10mo"),        300, "valid duration 10mo");
+  t.is (convertDuration ("0m"),               "valid duration 0m");
+  t.is (convertDuration ("1m"),               "valid duration 1m");
+  t.is (convertDuration ("10m"),              "valid duration 10m");
+  t.is (convertDuration ("-1m"),              "valid duration -1m");
 
   t.is (convertDuration ("0 wks"),         0, "valid duration 0 wks");
   t.is (convertDuration ("0 wk"),          0, "valid duration 0 wk");

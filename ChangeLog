@@ -36,6 +36,7 @@
  + The default export format is now JSON.
  + The configuration variable 'json.array' determines whether 'query' command
    output is enclosed by '[...]'.
+ + The duration 'm' is now interpreted as 'months', not 'minutes'.
 
 # Tracked Features, sorted by ID.
  + Added feature #278, which provides a more consistent command line grammar.

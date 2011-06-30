@@ -56,7 +56,6 @@ static const char* durations[] =
   "minutes",
   "mins",
   "min",
-  "m",
 
   "mnths",
   "monthly",
@@ -65,6 +64,7 @@ static const char* durations[] =
   "mos",
   "mo",
   "mths",
+  "m",
 
   "quarterly",
   "quarters",
@@ -338,6 +338,7 @@ void Duration::parse (const std::string& input)
     else if (match == "mos")                              mSecs = (int) (value * 86400 * 30);
     else if (match == "mo")                               mSecs = (int) (value * 86400 * 30);
     else if (match == "mths")                             mSecs = (int) (value * 86400 * 30);
+    else if (match == "m")                                mSecs = (int) (value * 86400 * 30);
 
     else if (match == "biweekly")                         mSecs = (int) (value * 86400 * 14);
     else if (match == "fortnight")                        mSecs = (int) (value * 86400 * 14);
@@ -361,7 +362,6 @@ void Duration::parse (const std::string& input)
     else if (match == "minutes")                          mSecs = (int) (value * 60);
     else if (match == "mins")                             mSecs = (int) (value * 60);
     else if (match == "min")                              mSecs = (int) (value * 60);
-    else if (match == "m")                                mSecs = (int) (value * 60);
 
     else if (match == "seconds")                          mSecs = (int) value;
     else if (match == "secs")                             mSecs = (int) value;
