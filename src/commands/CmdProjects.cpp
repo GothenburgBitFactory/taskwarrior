@@ -25,10 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <Context.h>
 #include <ViewText.h>
 #include <text.h>
+#include <i18n.h>
+#include <main.h>
 #include <CmdProjects.h>
 
 extern Context context;
@@ -38,7 +42,7 @@ CmdProjects::CmdProjects ()
 {
   _keyword     = "projects";
   _usage       = "task projects [<filter>]";
-  _description = "Shows a list of all project names used, and how many tasks are in each";
+  _description = STRING_CMD_PROJECTS_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -47,19 +51,26 @@ CmdProjects::CmdProjects ()
 int CmdProjects::execute (std::string& output)
 {
   int rc = 0;
-/*
-  std::stringstream out;
 
+  // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
+
   int quantity;
   if (context.config.getBoolean ("list.all.projects"))
-    quantity = context.tdb.load (tasks, context.filter);
+    quantity = context.tdb.load (tasks);
   else
-    quantity = context.tdb.loadPending (tasks, context.filter);
+    quantity = context.tdb.loadPending (tasks);
 
   context.tdb.commit ();
   context.tdb.unlock ();
+
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
+
+  std::stringstream out;
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
@@ -72,7 +83,7 @@ int CmdProjects::execute (std::string& output)
   std::string project;
   std::string priority;
   std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     project = task->get ("project");
     priority = task->get ("priority");
@@ -92,18 +103,18 @@ int CmdProjects::execute (std::string& output)
     // Render a list of project names from the map.
     ViewText view;
     view.width (context.getWidth ());
-    view.add (Column::factory ("string",       "Project"));
-    view.add (Column::factory ("string.right", "Tasks"));
-    view.add (Column::factory ("string.right", "Pri:None"));
-    view.add (Column::factory ("string.right", "Pri:L"));
-    view.add (Column::factory ("string.right", "Pri:M"));
-    view.add (Column::factory ("string.right", "Pri:H"));
+    view.add (Column::factory ("string",       STRING_COLUMN_LABEL_PROJECT));
+    view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_TASKS));
+    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_N));
+    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_H));
+    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_M));
+    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_L));
 
     std::map <std::string, int>::iterator project;
     for (project = unique.begin (); project != unique.end (); ++project)
     {
       int row = view.addRow ();
-      view.set (row, 0, (project->first == "" ? "(none)" : project->first));
+      view.set (row, 0, (project->first == "" ? STRING_CMD_PROJECTS_NONE : project->first));
       view.set (row, 1, project->second);
       view.set (row, 2, none[project->first]);
       view.set (row, 3, low[project->first]);
@@ -118,18 +129,22 @@ int CmdProjects::execute (std::string& output)
     out << optionalBlankLine ()
         << view.render ()
         << optionalBlankLine ()
-        << number_projects
-        << (number_projects == 1 ? " project" : " projects")
-        << " (" << quantity << (quantity == 1 ? " task" : " tasks") << ")\n";
+        << (number_projects == 1
+              ? format (STRING_CMD_PROJECTS_SUMMARY,  number_projects)
+              : format (STRING_CMD_PROJECTS_SUMMARY2, number_projects))
+        << " "
+        << (quantity == 1
+              ? format (STRING_CMD_PROJECTS_TASK,  quantity)
+              : format (STRING_CMD_PROJECTS_TASKS, quantity))
+        << "\n";
   }
   else
   {
-    out << "No projects.\n";
+    out << STRING_CMD_PROJECTS_NO << "\n";
     rc = 1;
   }
 
   output = out.str ();
-*/
   return rc;
 }
 
@@ -138,7 +153,7 @@ CmdCompletionProjects::CmdCompletionProjects ()
 {
   _keyword     = "_projects";
   _usage       = "task _projects [<filter>]";
-  _description = "Shows only a list of all project names used";
+  _description = STRING_CMD_PROJECTS_USAGE_2;
   _read_only   = true;
   _displays_id = false;
 }
@@ -146,31 +161,34 @@ CmdCompletionProjects::CmdCompletionProjects ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionProjects::execute (std::string& output)
 {
-/*
+  // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
+  handleRecurrence ();
 
-  Filter filter;
   if (context.config.getBoolean ("complete.all.projects"))
-    context.tdb.load (tasks, filter);
+    context.tdb.load (tasks);
   else
-    context.tdb.loadPending (tasks, filter);
+    context.tdb.loadPending (tasks);
 
   context.tdb.commit ();
   context.tdb.unlock ();
+
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
   std::map <std::string, int> unique;
   std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
     unique[task->get ("project")] = 0;
 
   std::map <std::string, int>::iterator project;
   for (project = unique.begin (); project != unique.end (); ++project)
     if (project->first.length ())
       output += project->first + "\n";
-*/
 
   return 0;
 }

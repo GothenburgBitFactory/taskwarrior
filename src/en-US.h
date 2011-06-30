@@ -108,6 +108,7 @@
 // columns/Col*
 #define STRING_COLUMN_BAD_NAME       "Unrecognized column name '{1}'"
 #define STRING_COLUMN_BAD_FORMAT     "Unrecognized column format '{1}.{2}'"
+#define STRING_COLUMN_LABEL_TASKS    "Tasks"
 #define STRING_COLUMN_LABEL_DEP      "Depends"
 #define STRING_COLUMN_LABEL_DEP_S    "Dep"
 #define STRING_COLUMN_LABEL_DESC     "Description"
@@ -235,6 +236,18 @@
 #define STRING_CMD_DONE_NOT_PENDING  "Task {1} '{2}' is neither pending nor waiting."
 #define STRING_CMD_DONE_MARKED       "Marked {1} task as done"
 #define STRING_CMD_DONE_MARKED_N     "Marked {1} tasks as done"
+#define STRING_CMD_PROJECTS_USAGE    "Shows a list of all project names used, and how many tasks are in each"
+#define STRING_CMD_PROJECTS_USAGE_2  "Shows only a list of all project names used"
+#define STRING_CMD_PROJECTS_NO       "No projects."
+#define STRING_CMD_PROJECTS_PRI_N    "Pri:None"
+#define STRING_CMD_PROJECTS_PRI_H    "Pri:H"
+#define STRING_CMD_PROJECTS_PRI_M    "Pri:M"
+#define STRING_CMD_PROJECTS_PRI_L    "Pri:L"
+#define STRING_CMD_PROJECTS_NONE     "(none)"
+#define STRING_CMD_PROJECTS_SUMMARY  "{1} project"
+#define STRING_CMD_PROJECTS_SUMMARY2 "{1} projects"
+#define STRING_CMD_PROJECTS_TASK     "({1} task)"
+#define STRING_CMD_PROJECTS_TASKS    "({1} tasks)"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
