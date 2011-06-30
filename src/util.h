@@ -35,6 +35,10 @@
 #include <Task.h>
 #include <cmake.h>
 
+#ifdef HAVE_UUID
+#include <uuid/uuid.h>
+#endif
+
 #ifndef min
 #define min(a,b) ((a) < (b) ? (a) : (b))
 #endif
@@ -59,7 +63,12 @@ int confirm4 (const std::string&);
 void delay (float);
 std::string formatBytes (size_t);
 int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&);
+
+#if defined(HAVE_UUID) && !defined(HAVE_UUID_UNPARSE_LOWER)
+void uuid_unparse_lower (uuid_t uu, char *out);
+#endif
 const std::string uuid ();
+
 int execute (const std::string&, std::vector<std::string>);
 
 #ifdef SOLARIS

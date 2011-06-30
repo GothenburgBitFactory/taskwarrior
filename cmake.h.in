@@ -53,6 +53,7 @@ Override PACKAGE_LANGUAGE, then
 /* Found srandom */
 #cmakedefine HAVE_SRANDOM
 
-/* Found uuid_unparse_lower */
+/* Found the uuid library */
 #cmakedefine HAVE_UUID
+#cmakedefine HAVE_UUID_UNPARSE_LOWER
 
