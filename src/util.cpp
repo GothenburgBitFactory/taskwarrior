@@ -249,62 +249,28 @@ const std::string uuid ()
 
 ////////////////////////////////////////////////////////////////////////////////
 #else
-#include <stdlib.h>
-static char randomHexDigit ()
-{
-  static char digits[] = "0123456789abcdef"; // no l10n
+
 #ifdef HAVE_RANDOM
-  // random is better than rand.
-  return digits[random () % 16];
-#else
-  return digits[rand () % 16];
+#define rand() random()
 #endif
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::string uuid ()
 {
-  // xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-  char id [48] = {0};
-  id[0]  = randomHexDigit ();
-  id[1]  = randomHexDigit ();
-  id[2]  = randomHexDigit ();
-  id[3]  = randomHexDigit ();
-  id[4]  = randomHexDigit ();
-  id[5]  = randomHexDigit ();
-  id[6]  = randomHexDigit ();
-  id[7]  = randomHexDigit ();
-  id[8]  = '-';
-  id[9]  = randomHexDigit ();
-  id[10] = randomHexDigit ();
-  id[11] = randomHexDigit ();
-  id[12] = randomHexDigit ();
-  id[13] = '-';
-  id[14] = randomHexDigit ();
-  id[15] = randomHexDigit ();
-  id[16] = randomHexDigit ();
-  id[17] = randomHexDigit ();
-  id[18] = '-';
-  id[19] = randomHexDigit ();
-  id[20] = randomHexDigit ();
-  id[21] = randomHexDigit ();
-  id[22] = randomHexDigit ();
-  id[23] = '-';
-  id[24] = randomHexDigit ();
-  id[25] = randomHexDigit ();
-  id[26] = randomHexDigit ();
-  id[27] = randomHexDigit ();
-  id[28] = randomHexDigit ();
-  id[29] = randomHexDigit ();
-  id[30] = randomHexDigit ();
-  id[31] = randomHexDigit ();
-  id[32] = randomHexDigit ();
-  id[33] = randomHexDigit ();
-  id[34] = randomHexDigit ();
-  id[35] = randomHexDigit ();
-  id[36] = '\0';
+  uint32_t time_low = ((rand () << 16) & 0xffff0000) | (rand () & 0xffff);
+  uint16_t time_mid = rand () & 0xffff;
+  uint16_t time_high_and_version = (rand () & 0x0fff) | 0x4000;
+  uint16_t clock_seq = (rand () & 0x3fff) | 0x8000;
+  uint8_t node [6];
+  for (size_t i = 0; i < 6; i++)
+    node[i] = rand() & 0xff;
 
-  return id;
+  char buffer[37];
+  sprintf(buffer, "%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+    time_low, time_mid, time_high_and_version, clock_seq >> 8, clock_seq & 0xff,
+    node[0], node[1], node[2], node[3], node[4], node[5]);
+
+  return std::string (buffer);
 }
 #endif
 

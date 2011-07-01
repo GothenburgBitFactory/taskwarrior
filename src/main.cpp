@@ -42,23 +42,19 @@
 
 Context context;
 
+#ifdef HAVE_SRANDOM
+#define srand(x) srandom(x)
+#endif
+
 int main (int argc, const char** argv)
 {
   // Set up randomness.
 #ifdef CYGWIN
-  #ifdef HAVE_SRANDOM
-  srandom (time (NULL));
-  #else
   srand (time (NULL));
-  #endif
 #else
   struct timeval tv;
   gettimeofday (&tv, NULL);
-  #ifdef HAVE_SRANDOM
-  srandom (tv.tv_usec);
-  #else
   srand (tv.tv_usec);
-  #endif
 #endif
 
   int status = 0;
