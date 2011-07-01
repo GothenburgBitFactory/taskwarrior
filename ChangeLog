@@ -126,6 +126,8 @@
    are not used.
  + Fixed bug #792, #793, #794 and #795, so that cmake now recognizes and builds
    on Solaris (thanks to Owen Clarke).
+ + Fixed bug #797 which corrects a build problem with 'srandom' (thanks to Owen
+   Clarke).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.

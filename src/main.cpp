@@ -52,9 +52,9 @@ int main (int argc, const char** argv)
   srand (time (NULL));
   #endif
 #else
-  #ifdef HAVE_SRANDOM
   struct timeval tv;
   gettimeofday (&tv, NULL);
+  #ifdef HAVE_SRANDOM
   srandom (tv.tv_usec);
   #else
   srand (tv.tv_usec);
