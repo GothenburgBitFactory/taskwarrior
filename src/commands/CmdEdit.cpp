@@ -56,29 +56,24 @@ int CmdEdit::execute (std::string& output)
 {
   int rc = 0;
 
-/*
-  std::stringstream out;
-
+  // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  context.tdb.load (tasks);
 
-  // Filter sequence.
-  std::vector <Task> all = tasks;
-  context.filter.applySequence (tasks, context.sequence);
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
 
+  // Find number of matching tasks.  Skip recurring parent tasks.
   std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
     if (editFile (*task))
       context.tdb.update (*task);
 
   context.tdb.commit ();
   context.tdb.unlock ();
-
-  output = out.str ();
-*/
   return rc;
 }
 
