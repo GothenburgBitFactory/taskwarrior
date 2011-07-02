@@ -197,7 +197,7 @@ int CmdCalendar::execute (std::string& output)
             !task->hasTag ("nocal"))
         {
           ++countDueDates;
-          Date d (strtol (task->get ("due").c_str (), NULL, 10));
+          Date d (task->get ("due"));
           if (d < oldest) oldest = d;
         }
       }

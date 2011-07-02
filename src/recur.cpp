@@ -107,8 +107,8 @@ void handleRecurrence ()
 
           if (t->has ("wait"))
           {
-            Date old_wait (atoi (t->get ("wait").c_str ()));
-            Date old_due (atoi (t->get ("due").c_str ()));
+            Date old_wait (t->get_date ("wait"));
+            Date old_due (t->get_date ("due"));
             Date due (*d);
             sprintf (dueDate, "%u", (unsigned int) (due + (old_wait - old_due)).toEpoch ());
             rec.set ("wait", dueDate);
@@ -160,14 +160,14 @@ void handleRecurrence ()
 bool generateDueDates (Task& parent, std::vector <Date>& allDue)
 {
   // Determine due date, recur period and until date.
-  Date due (atoi (parent.get ("due").c_str ()));
+  Date due (parent.get_date ("due"));
   std::string recur = parent.get ("recur");
 
   bool specificEnd = false;
   Date until;
   if (parent.get ("until") != "")
   {
-    until = Date (atoi (parent.get ("until").c_str ()));
+    until = Date (parent.get ("until"));
     specificEnd = true;
   }
 

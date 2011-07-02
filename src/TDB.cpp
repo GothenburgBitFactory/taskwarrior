@@ -650,7 +650,7 @@ int TDB::gc ()
     else if (s == Task::waiting)
     {
       // Wake up tasks that need to be woken.
-      Date wait_date (atoi (task->get ("wait").c_str ()));
+      Date wait_date (task->get_date ("wait"));
       if (now > wait_date)
       {
         task->setStatus (Task::pending);

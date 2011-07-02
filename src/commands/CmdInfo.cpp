@@ -179,7 +179,7 @@ int CmdInfo::execute (std::string& output)
       row = view.addRow ();
       view.set (row, 0, STRING_CMD_INFO_RECUR_UNTIL);
 
-      Date dt (strtol (task->get ("until").c_str (), NULL, 10));
+      Date dt (task->get ("until"));
       std::string format = context.config.get ("reportdateformat");
       if (format == "")
         format = context.config.get ("dateformat");
@@ -227,7 +227,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_WAITING);
-      Date dt (strtol (task->get ("wait").c_str (), NULL, 10));
+      Date dt (task->get_date ("wait"));
       view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
@@ -236,7 +236,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_START);
-      Date dt (strtol (task->get ("start").c_str (), NULL, 10));
+      Date dt (task->get_date ("start"));
       view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
@@ -245,7 +245,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_END);
-      Date dt (strtol (task->get ("end").c_str (), NULL, 10));
+      Date dt (task->get_date ("end"));
       view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
@@ -271,7 +271,7 @@ int CmdInfo::execute (std::string& output)
     // entry
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_ENTERED);
-    Date dt (strtol (task->get ("entry").c_str (), NULL, 10));
+    Date dt (task->get_date ("entry"));
     std::string entry = dt.toString (context.config.get ("dateformat"));
 
     std::string age;

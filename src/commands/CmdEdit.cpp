@@ -296,7 +296,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     Date edited (strtol (value.c_str (), NULL, 10));
 
-    Date original (strtol (task.get ("entry").c_str (), NULL, 10));
+    Date original (task.get_date ("entry"));
     if (!original.sameDay (edited))
     {
       context.footnote ("Creation date modified.");
@@ -314,7 +314,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
 
     if (task.get ("start") != "")
     {
-      Date original (strtol (task.get ("start").c_str (), NULL, 10));
+      Date original (task.get_date ("start"));
       if (!original.sameDay (edited))
       {
         context.footnote ("Start date modified.");
@@ -344,7 +344,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
 
     if (task.get ("end") != "")
     {
-      Date original (strtol (task.get ("end").c_str (), NULL, 10));
+      Date original (task.get_date ("end"));
       if (!original.sameDay (edited))
       {
         context.footnote ("Done date modified.");
@@ -372,7 +372,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
 
     if (task.get ("due") != "")
     {
-      Date original (strtol (task.get ("due").c_str (), NULL, 10));
+      Date original (task.get_date ("due"));
       if (!original.sameDay (edited))
       {
         context.footnote ("Due date modified.");
@@ -410,7 +410,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
 
     if (task.get ("until") != "")
     {
-      Date original (strtol (task.get ("until").c_str (), NULL, 10));
+      Date original (task.get_date ("until"));
       if (!original.sameDay (edited))
       {
         context.footnote ("Until date modified.");
@@ -472,7 +472,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
 
     if (task.get ("wait") != "")
     {
-      Date original (strtol (task.get ("wait").c_str (), NULL, 10));
+      Date original (task.get_date ("wait"));
       if (!original.sameDay (edited))
       {
         context.footnote ("Wait date modified.");

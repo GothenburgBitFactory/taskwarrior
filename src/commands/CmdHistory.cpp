@@ -72,11 +72,11 @@ int CmdHistoryMonthly::execute (std::string& output)
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
-    Date entry (task->get ("entry"));
+    Date entry (task->get_date ("entry"));
 
     Date end;
     if (task->has ("end"))
-      end = Date (task->get ("end"));
+      end = Date (task->get_date ("end"));
 
     time_t epoch = entry.startOfMonth ().toEpoch ();
     groups[epoch] = 0;
@@ -232,11 +232,11 @@ int CmdHistoryAnnual::execute (std::string& output)
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
-    Date entry (task->get ("entry"));
+    Date entry (task->get_date ("entry"));
 
     Date end;
     if (task->has ("end"))
-      end = Date (task->get ("end"));
+      end = Date (task->get_date ("end"));
 
     time_t epoch = entry.startOfYear ().toEpoch ();
     groups[epoch] = 0;
@@ -389,11 +389,11 @@ int CmdGHistoryMonthly::execute (std::string& output)
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
-    Date entry (task->get ("entry"));
+    Date entry (task->get_date ("entry"));
 
     Date end;
     if (task->has ("end"))
-      end = Date (task->get ("end"));
+      end = Date (task->get_date ("end"));
 
     time_t epoch = entry.startOfMonth ().toEpoch ();
     groups[epoch] = 0;
@@ -588,11 +588,11 @@ int CmdGHistoryAnnual::execute (std::string& output)
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
-    Date entry (task->get ("entry"));
+    Date entry (task->get_date ("entry"));
 
     Date end;
     if (task->has ("end"))
-      end = Date (task->get ("end"));
+      end = Date (task->get_date ("end"));
 
     time_t epoch = entry.startOfYear ().toEpoch ();
     groups[epoch] = 0;

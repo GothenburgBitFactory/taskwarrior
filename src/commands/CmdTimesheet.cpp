@@ -117,7 +117,7 @@ int CmdTimesheet::execute (std::string& output)
       // If task completed within range.
       if (task->getStatus () == Task::completed)
       {
-        Date compDate (strtol (task->get ("end").c_str (), NULL, 10));
+        Date compDate (task->get_date ("end"));
         if (compDate >= start && compDate < end)
         {
           Color c (task->get ("fg") + " " + task->get ("bg"));
@@ -155,7 +155,7 @@ int CmdTimesheet::execute (std::string& output)
       if (task->getStatus () == Task::pending &&
           task->has ("start"))
       {
-        Date startDate (strtol (task->get ("start").c_str (), NULL, 10));
+        Date startDate (task->get_date ("start"));
         if (startDate >= start && startDate < end)
         {
           Color c (task->get ("fg") + " " + task->get ("bg"));

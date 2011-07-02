@@ -883,28 +883,28 @@ void Task::validate () const
 
   if (has ("due"))
   {
-    Date due (::atoi (get ("due").c_str ()));
+    Date due (get_date ("due"));
 
     // Verify wait < due
     if (has ("wait"))
     {
-      Date wait (::atoi (get ("wait").c_str ()));
+      Date wait (get_date ("wait"));
       if (wait > due)
         throw std::string (STRING_TASK_VALID_WAIT);
     }
 
-    Date entry (::atoi (get ("entry").c_str ()));
+    Date entry (get_date ("entry"));
 
     if (has ("start"))
     {
-      Date start (::atoi (get ("start").c_str ()));
+      Date start (get_date ("start"));
       if (entry > start)
         throw std::string (STRING_TASK_VALID_START);
     }
 
     if (has ("end"))
     {
-      Date end (::atoi (get ("end").c_str ()));
+      Date end (get_date ("end"));
       if (entry > end)
         throw std::string (STRING_TASK_VALID_END);
     }
@@ -1129,7 +1129,7 @@ float Task::urgency ()
     if (has ("due"))
     {
       Date now;
-      Date due (get ("due"));
+      Date due (get_date ("due"));
       int days_overdue = (now - due) / 86400;
 
            if (days_overdue >=  7)  term = 1.0;

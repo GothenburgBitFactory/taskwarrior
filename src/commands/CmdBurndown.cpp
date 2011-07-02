@@ -227,7 +227,7 @@ void Chart::scan (std::vector <Task>& tasks)
   for (task = tasks.begin (); task != tasks.end (); ++task)
   {
     // The entry date is when the counting starts.
-    Date from = quantize (Date (task->get ("entry")));
+    Date from = quantize (Date (task->get_date ("entry")));
     epoch = from.toEpoch ();
 
     if (bars.find (epoch) != bars.end ())
@@ -241,7 +241,7 @@ void Chart::scan (std::vector <Task>& tasks)
     {
       if (task->has ("start"))
       {
-        Date start = quantize (Date (task->get ("start")));
+        Date start = quantize (Date (task->get_date ("start")));
         while (from < start)
         {
           epoch = from.toEpoch ();
@@ -272,7 +272,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::completed)
     {
       // Truncate history so it starts at 'earliest' for completed tasks.
-      Date end = quantize (Date (task->get ("end")));
+      Date end = quantize (Date (task->get_date ("end")));
       epoch = end.toEpoch ();
 
       if (bars.find (epoch) != bars.end ())
@@ -288,7 +288,7 @@ void Chart::scan (std::vector <Task>& tasks)
 
       if (task->has ("start"))
       {
-        Date start = quantize (Date (task->get ("start")));
+        Date start = quantize (Date (task->get_date ("start")));
         while (from < start)
         {
           epoch = from.toEpoch ();
@@ -312,7 +312,7 @@ void Chart::scan (std::vector <Task>& tasks)
       }
       else
       {
-        Date end = quantize (Date (task->get ("end")));
+        Date end = quantize (Date (task->get_date ("end")));
         while (from < end)
         {
           epoch = from.toEpoch ();
@@ -334,7 +334,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::deleted)
     {
       // Skip old deleted tasks.
-      Date end = quantize (Date (task->get ("end")));
+      Date end = quantize (Date (task->get_date ("end")));
       epoch = end.toEpoch ();
       if (bars.find (epoch) != bars.end ())
         ++bars[epoch].removed;
@@ -344,7 +344,7 @@ void Chart::scan (std::vector <Task>& tasks)
 
       if (task->has ("start"))
       {
-        Date start = quantize (Date (task->get ("start")));
+        Date start = quantize (Date (task->get_date ("start")));
         while (from < start)
         {
           epoch = from.toEpoch ();
@@ -361,7 +361,7 @@ void Chart::scan (std::vector <Task>& tasks)
       }
       else
       {
-        Date end = quantize (Date (task->get ("end")));
+        Date end = quantize (Date (task->get_date ("end")));
         while (from < end)
         {
           epoch = from.toEpoch ();
