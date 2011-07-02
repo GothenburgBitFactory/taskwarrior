@@ -352,6 +352,18 @@
                                      // A comma-separated list of commands is appended.
 #define STRING_TEXT_AMBIGUOUS        "Ambiguous {1} '{2}' - could be either of "
 
+// Transport
+#define STRING_TRANSPORT_URI_NODIR   "The uri '{1}' does not appear to be a directory."
+#define STRING_TRANSPORT_CURL_URI    "When using the 'curl' protocol, the uri must contain a hostname."
+#define STRING_TRANSPORT_CURL_WILDCD "When using the 'curl' protocol, wildcards are not supported."
+#define STRING_TRANSPORT_CURL_NORUN  "Could not run curl.  Is it installed, and available in $PATH?"
+#define STRING_TRANSPORT_CURL_FAIL   "Curl failed, see output above."
+#define STRING_TRANSPORT_RSYNC_URI   "When using the 'rsync' protocol, the uri must contain a hostname."
+#define STRING_TRANSPORT_RSYNC_NORUN "Could not run rsync.  Is it installed, and available in $PATH?"
+#define STRING_TRANSPORT_SSH_URI     "When using the 'ssh' protocol, the uri must contain a hostname."
+#define STRING_TRANSPORT_SSH_NORUN   "Could not run ssh.  Is it installed, and available in $PATH?"
+
+
 // Uri
 #define STRING_URI_QUOTES            "Could not parse uri '{1}', wrong usage of single quotes."
 #define STRING_URI_BAD_FORMAT        "The uri '{1}' is not in the expected format."

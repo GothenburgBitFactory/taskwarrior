@@ -25,6 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
+#include <text.h>
+#include <i18n.h>
 #include <TransportSSH.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,12 +41,12 @@ TransportSSH::TransportSSH(const Uri& uri) : Transport(uri)
 void TransportSSH::send(const std::string& source)
 {
 	if (uri.host == "")
-		throw std::string ("when using the 'ssh' protocol, the uri must contain a hostname.");
+		throw std::string (STRING_TRANSPORT_SSH_URI);
 
 	// Is there more than one file to transfer?
 	// Then path has to end with a '/'
 	if (is_filelist(source) && !uri.is_directory())
-    throw std::string ("The uri '") + uri.path + "' does not appear to be a directory.";
+    throw format (STRING_TRANSPORT_URI_NODIR, uri.path);
 
 	// cmd line is: scp [-p port] [user@]host:path
 	if (uri.port != "")
@@ -63,19 +67,19 @@ void TransportSSH::send(const std::string& source)
 	}
 
 	if (execute())
-    throw std::string ("Could not run scp.  Is it installed, and available in $PATH?");
+    throw std::string (STRING_TRANSPORT_SSH_NORUN);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::recv(std::string target)
 {
 	if (uri.host == "")
-		throw std::string ("when using the 'ssh' protocol, the uri must contain a hostname.");
+		throw std::string (STRING_TRANSPORT_SSH_URI);
 
 	// Is there more than one file to transfer?
 	// Then target has to end with a '/'
 	if (is_filelist(uri.path) && !is_directory(target))
-    throw std::string ("The uri '") + target + "' does not appear to be a directory.";
+    throw format (STRING_TRANSPORT_URI_NODIR, target);
 
 	// cmd line is: scp [-p port] [user@]host:path
 	if (uri.port != "")
@@ -96,7 +100,7 @@ void TransportSSH::recv(std::string target)
 	arguments.push_back (target);
 
 	if (execute())
-    throw std::string ("Could not run scp.  Is it installed, and available in $PATH?");
+    throw std::string (STRING_TRANSPORT_SSH_NORUN);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

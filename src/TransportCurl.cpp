@@ -25,8 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <TransportCurl.h>
 #include <text.h>
+#include <i18n.h>
 #include <util.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +42,7 @@ TransportCurl::TransportCurl(const Uri& uri) : Transport(uri)
 void TransportCurl::send(const std::string& source)
 {
   if (uri.host == "")
-    throw std::string ("when using the 'curl' protocol, the uri must contain a hostname.");
+    throw std::string (STRING_TRANSPORT_CURL_URI);
 
   if (uri.user != "")
   {
@@ -53,10 +56,10 @@ void TransportCurl::send(const std::string& source)
     pos = source.find("{");
 
     if (pos == std::string::npos)
-      throw std::string ("When using the 'curl' protocol, wildcards are not supported.");
+      throw std::string (STRING_TRANSPORT_CURL_WILDCD);
 
     if (!uri.is_directory())
-      throw std::string ("The uri '") + uri.path + "' does not appear to be a directory.";
+      throw format (STRING_TRANSPORT_URI_NODIR, uri.path);
 
     arguments.push_back ("-T");
     arguments.push_back ("\"" + source + "\"");
@@ -81,9 +84,9 @@ void TransportCurl::send(const std::string& source)
   if (result)
   {
     if (result == 127) // command not found
-      throw std::string ("Could not run curl.  Is it installed, and available in $PATH?");
+      throw std::string (STRING_TRANSPORT_CURL_NORUN);
     else
-      throw std::string ("Curl failed, see output above.");
+      throw std::string (STRING_TRANSPORT_CURL_FAIL);
   }
 }
 
@@ -91,7 +94,7 @@ void TransportCurl::send(const std::string& source)
 void TransportCurl::recv(std::string target)
 {
   if (uri.host == "")
-    throw std::string ("when using the 'curl' protocol, the uri must contain a hostname.");
+    throw std::string (STRING_TRANSPORT_CURL_URI);
 
   if (uri.user != "")
   {
@@ -106,10 +109,10 @@ void TransportCurl::recv(std::string target)
     pos = uri.path.find("{");
 
     if (pos == std::string::npos)
-      throw std::string ("When using the 'curl' protocol, wildcards are not supported.");
+      throw std::string (STRING_TRANSPORT_CURL_WILDCD);
 
     if (!is_directory(target))
-      throw std::string ("The uri '") + target + "' does not appear to be a directory.";
+      throw format (STRING_TRANSPORT_URI_NODIR, target);
 
     std::string toSplit;
     std::string suffix;
@@ -147,9 +150,9 @@ void TransportCurl::recv(std::string target)
   if (result)
   {
     if (result == 127) // command not found
-      throw std::string ("Could not run curl.  Is it installed, and available in $PATH?");
+      throw std::string (STRING_TRANSPORT_CURL_NORUN);
     else
-      throw std::string ("Curl failed, see output above.");
+      throw std::string (STRING_TRANSPORT_CURL_FAIL);
   }
 }
 
