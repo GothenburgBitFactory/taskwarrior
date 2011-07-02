@@ -158,10 +158,10 @@ void Arguments::capture (int argc, const char** argv)
     {
       std::vector <std::string>::iterator part;
       for (part = parts.begin (); part != parts.end (); ++part)
-        this->push_back (std::make_pair (*part, ""));
+        this->push_back (Triple (*part, "?", ""));
     }
     else
-      this->push_back (std::make_pair (argv[i], ""));
+      this->push_back (Triple (argv[i], "?", ""));
   }
 
   categorize ();
@@ -176,10 +176,10 @@ void Arguments::capture (const std::string& arg)
   {
     std::vector <std::string>::iterator part;
     for (part = parts.begin (); part != parts.end (); ++part)
-      this->push_back (std::make_pair (*part, ""));
+      this->push_back (Triple (*part, "?", ""));
   }
   else
-    this->push_back (std::make_pair (arg, ""));
+    this->push_back (Triple (arg, "?", ""));
 
   categorize ();
 }
@@ -189,24 +189,24 @@ void Arguments::capture (const std::string& arg)
 void Arguments::capture_first (const std::string& arg)
 {
   // Break the new argument into parts that comprise a series.
-  std::vector <std::pair <std::string, std::string> > series;
+  std::vector <Triple> series;
 
   std::vector <std::string> parts;
   if (is_multipart (arg, parts))
   {
     std::vector <std::string>::iterator part;
     for (part = parts.begin (); part != parts.end (); ++part)
-      series.push_back (std::make_pair (*part, ""));
+      series.push_back (Triple (*part, "?", ""));
   }
   else
-    series.push_back (std::make_pair (arg, ""));
+    series.push_back (Triple (arg, "?", ""));
 
   // Locate an appropriate place to insert the series.  This would be
   // immediately after the program and command arguments.
-  std::vector <std::pair <std::string, std::string> >::iterator position;
+  std::vector <Triple>::iterator position;
   for (position = this->begin (); position != this->end (); ++position)
-    if (position->second != "program" &&
-        position->second != "command")
+    if (position->_third != "program" &&
+        position->_third != "command")
       break;
 
   this->insert (position, series.begin (), series.end ());
@@ -238,7 +238,7 @@ void Arguments::append_stdin ()
       if (arg == "--")
         break;
 
-      this->push_back (std::make_pair (arg, ""));
+      this->push_back (Triple (arg, "?", ""));
       something_happened = true;
     }
   }
@@ -269,150 +269,150 @@ void Arguments::categorize ()
 
   // Now categorize every argument.
   std::string ignored;
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
     if (!terminated)
     {
       // Nothing after -- is to be interpreted in any way.
-      if (arg->first == "--")
+      if (arg->_first == "--")
       {
         terminated = true;
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "terminator";
+        arg->_third = "terminator";
       }
 
       // program
       else if (arg == this->begin ())
       {
-        arg->second = "program";  // TODO Is this a problem for expressions that do not contain a program name?
+        arg->_third = "program";  // TODO Is this a problem for expressions that do not contain a program name?
       }
 
       // command
       else if (!found_command &&
-               is_command (keywords, arg->first))
+               is_command (keywords, arg->_first))
       {
         found_command = true;
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "command";
+        arg->_third = "command";
       }
 
       // rc:<file>
       // Note: This doesn't break a sequence chain.
-      else if (arg->first.substr (0, 3) == "rc:")
+      else if (arg->_first.substr (0, 3) == "rc:")
       {
-        arg->second = "rc";
+        arg->_third = "rc";
       }
 
       // rc.<name>:<value>
       // Note: This doesn't break a sequence chain.
-      else if (arg->first.substr (0, 3) == "rc.")
+      else if (arg->_first.substr (0, 3) == "rc.")
       {
-        arg->second = "override";
+        arg->_third = "override";
       }
 
       // <id>[-<id>][,...]
-      else if (is_id (arg->first))
+      else if (is_id (arg->_first))
       {
         if (!found_something_after_sequence)
         {
           found_sequence = true;
-          arg->second = "id";
+          arg->_third = "id";
         }
         else
         {
-          arg->second = "word";
+          arg->_third = "word";
         }
       }
 
       // <uuid>[,...]
-      else if (is_uuid (arg->first))
+      else if (is_uuid (arg->_first))
       {
         if (!found_something_after_sequence)
         {
           found_sequence = true;
-          arg->second = "uuid";
+          arg->_third = "uuid";
         }
         else
         {
-          arg->second = "word";
+          arg->_third = "word";
         }
       }
 
       // [+-]tag
-      else if (is_tag (arg->first))
+      else if (is_tag (arg->_first))
       {
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "tag";
+        arg->_third = "tag";
       }
 
       // <name>.<modifier>:<value>
-      else if (is_attmod (arg->first))
+      else if (is_attmod (arg->_first))
       {
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "attmod";
+        arg->_third = "attmod";
       }
 
       // <name>:<value>
-      else if (is_attr (arg->first))
+      else if (is_attr (arg->_first))
       {
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "attr";
+        arg->_third = "attr";
       }
 
       // /<from>/<to>/[g]
-      else if (is_subst (arg->first))
+      else if (is_subst (arg->_first))
       {
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "subst";
+        arg->_third = "subst";
       }
 
       // /pattern/
-      else if (enable_patterns && is_pattern (arg->first))
+      else if (enable_patterns && is_pattern (arg->_first))
       {
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "pattern";
+        arg->_third = "pattern";
       }
 
       // <operator>
-      else if (is_operator (arg->first))
+      else if (is_operator (arg->_first))
       {
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "op";
+        arg->_third = "op";
       }
 
       // <expression>
-      else if (enable_expressions && is_expression (arg->first))
+      else if (enable_expressions && is_expression (arg->_first))
       {
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "exp";
+        arg->_third = "exp";
       }
 
       // If the type is not known, it is treated as a generic word.
@@ -422,7 +422,7 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        arg->second = "word";
+        arg->_third = "word";
       }
     }
 
@@ -433,7 +433,7 @@ void Arguments::categorize ()
       if (found_sequence)
         found_something_after_sequence = true;
 
-      arg->second = "word";
+      arg->_third = "word";
     }
   }
 }
@@ -444,12 +444,12 @@ void Arguments::rc_override (
   File& rc)
 {
   // Is there an override for rc:<file>?
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->second == "rc")
+    if (arg->_third == "rc")
     {
-      rc = File (arg->first.substr (3));
+      rc = File (arg->_first.substr (3));
       home = rc;
 
       std::string::size_type last_slash = rc.data.rfind ("/");
@@ -474,15 +474,15 @@ void Arguments::get_data_location (std::string& data)
     data = location;
 
   // Are there any overrides for data.location?
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->second == "override")
+    if (arg->_third == "override")
     {
-      if (arg->first.substr (0, 16) == "rc.data.location" &&
-          arg->first[16] == ':')
+      if (arg->_first.substr (0, 16) == "rc.data.location" &&
+          arg->_first[16] == ':')
       {
-        data = arg->first.substr (17);
+        data = arg->_first.substr (17);
         context.header ("Using alternate data.location " + data);
       }
     }
@@ -497,14 +497,14 @@ void Arguments::get_data_location (std::string& data)
 // leaving only the plain args.
 void Arguments::apply_overrides ()
 {
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->second == "override")
+    if (arg->_third == "override")
     {
       std::string name;
       std::string value;
-      Nibbler n (arg->first);
+      Nibbler n (arg->_first);
       if (n.getLiteral ("rc.")   &&  // rc.
           n.getUntil (':', name) &&  //    xxx
           n.skip (':'))              //       :
@@ -515,7 +515,7 @@ void Arguments::apply_overrides ()
         context.footnote ("Configuration override rc." + name + ":" + value);
       }
       else
-        context.footnote ("Problem with override: " + arg->first);
+        context.footnote ("Problem with override: " + arg->_first);
     }
   }
 }
@@ -528,22 +528,22 @@ void Arguments::resolve_aliases ()
   std::vector <std::string> expanded;
   bool something = false;
 
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
     std::map <std::string, std::string>::iterator match =
-      context.aliases.find (arg->first);
+      context.aliases.find (arg->_first);
 
     if (match != context.aliases.end ())
     {
       context.debug (std::string ("Arguments::resolve_aliases '")
-                     + arg->first
+                     + arg->_first
                      + "' --> '"
-                     + context.aliases[arg->first]
+                     + context.aliases[arg->_first]
                      + "'");
 
       std::vector <std::string> words;
-      splitq (words, context.aliases[arg->first], ' ');
+      splitq (words, context.aliases[arg->_first], ' ');
 
       std::vector <std::string>::iterator word;
       for (word = words.begin (); word != words.end (); ++word)
@@ -552,7 +552,7 @@ void Arguments::resolve_aliases ()
       something = true;
     }
     else
-      expanded.push_back (arg->first);
+      expanded.push_back (arg->_first);
   }
 
   // Only overwrite if something happened.
@@ -561,7 +561,7 @@ void Arguments::resolve_aliases ()
     this->clear ();
     std::vector <std::string>::iterator e;
     for (e = expanded.begin (); e != expanded.end (); ++e)
-      this->push_back (std::make_pair (*e, ""));
+      this->push_back (Triple (*e, "?", ""));
 
     categorize ();
   }
@@ -574,18 +574,18 @@ void Arguments::inject_defaults ()
   bool found_sequence = false;
   bool found_other    = false;
 
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->second == "command")
+    if (arg->_third == "command")
       found_command = true;
 
-    else if (arg->second == "id")
+    else if (arg->_third == "id")
       found_sequence = true;
 
-    else if (arg->second != "program"  &&
-             arg->second != "override" &&
-             arg->second != "rc")
+    else if (arg->_third != "program"  &&
+             arg->_third != "override" &&
+             arg->_third != "rc")
       found_other = true;
   }
 
@@ -611,7 +611,7 @@ void Arguments::inject_defaults ()
     else if (found_sequence)
     {
       context.header (STRING_ASSUME_INFO);
-      push_back (std::make_pair ("information", "command"));
+      push_back (Triple ("information", "?", "command"));
     }
   }
 }
@@ -620,9 +620,9 @@ void Arguments::inject_defaults ()
 std::vector <std::string> Arguments::list ()
 {
   std::vector <std::string> all;
-  std::vector <std::pair <std::string, std::string> >::iterator i;
-  for (i = this->begin (); i != this->end (); ++i)
-    all.push_back (i->first);
+  std::vector <Triple>::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+    all.push_back (arg->_first);
 
   return all;
 }
@@ -642,13 +642,13 @@ std::string Arguments::combine ()
 {
   std::string combined;
 
-  std::vector <std::pair <std::string, std::string> >::iterator i;
-  for (i = this->begin (); i != this->end (); ++i)
+  std::vector <Triple>::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (i != this->begin ())
+    if (arg != this->begin ())
       combined += " ";
 
-    combined += i->first;
+    combined += arg->_first;
   }
 
   return combined;
@@ -657,12 +657,12 @@ std::string Arguments::combine ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Arguments::find_command (std::string& command)
 {
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->second == "command")
+    if (arg->_third == "command")
     {
-      command = arg->first;
+      command = arg->_first;
       return true;
     }
   }
@@ -673,10 +673,10 @@ bool Arguments::find_command (std::string& command)
 ////////////////////////////////////////////////////////////////////////////////
 std::string Arguments::find_limit ()
 {
-  std::vector <std::pair <std::string, std::string> >::reverse_iterator arg;
+  std::vector <Triple>::reverse_iterator arg;
   for (arg = this->rbegin (); arg != this->rend (); ++arg)
-    if (arg->first.find ("limit:") != std::string::npos)
-      return arg->first.substr (6);
+    if (arg->_first.find ("limit:") != std::string::npos)
+      return arg->_first.substr (6);
 
   return "";
 }
@@ -1222,8 +1222,8 @@ bool Arguments::extract_pattern (const std::string& input, std::string& pattern)
 //
 // The sequence is "1 2".
 //
-// The first number found in the command line is assumed to be a sequence.  If
-// there are two sequences, only the first is recognized, for example:
+// The _first number found in the command line is assumed to be a sequence.  If
+// there are two sequences, only the _first is recognized, for example:
 //
 //    1,2 three 4,5
 //
@@ -1340,39 +1340,39 @@ Arguments Arguments::extract_read_only_filter ()
 {
   Arguments filter;
 
-  std::vector <std::pair <std::string, std::string> >::iterator i;
-  for (i = this->begin (); i != this->end (); ++i)
+  std::vector <Triple>::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
   {
     // Excluded.
-    if (i->second == "program"  ||
-        i->second == "command"  ||
-        i->second == "rc"       ||
-        i->second == "override")
+    if (arg->_third == "program"  ||
+        arg->_third == "command"  ||
+        arg->_third == "rc"       ||
+        arg->_third == "override")
     {
       ;
     }
 
     // Included.
-    else if (i->second == "tag"       ||
-             i->second == "pattern"   ||
-             i->second == "attr"      ||
-             i->second == "attmod"    ||
-             i->second == "id"        ||
-             i->second == "uuid"      ||
-             i->second == "op"        ||
-             i->second == "exp"       ||
-             i->second == "word")
+    else if (arg->_third == "tag"       ||
+             arg->_third == "pattern"   ||
+             arg->_third == "attr"      ||
+             arg->_third == "attmod"    ||
+             arg->_third == "id"        ||
+             arg->_third == "uuid"      ||
+             arg->_third == "op"        ||
+             arg->_third == "exp"       ||
+             arg->_third == "word")
     {
       // "limit" is special - it is recognized but not included in filters.
-      if (i->first.find ("limit:") == std::string::npos)
-        filter.push_back (*i);
+      if (arg->_first.find ("limit:") == std::string::npos)
+        filter.push_back (*arg);
     }
 
     // Error.
     else
     {
       // substitution
-      throw std::string ("A substitution '") + i->first + "' is not allowed "
+      throw std::string ("A substitution '") + arg->_first + "' is not allowed "
             "in a read-only command filter.";
     }
   }
@@ -1385,35 +1385,35 @@ Arguments Arguments::extract_write_filter ()
 {
   Arguments filter;
 
-  std::vector <std::pair <std::string, std::string> >::iterator i;
-  for (i = this->begin (); i != this->end (); ++i)
+  std::vector <Triple>::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
   {
     // Only use args prior to command.
-    if (i->second == "command")
+    if (arg->_third == "command")
       break;
 
     // Excluded.
-    else if (i->second == "program"  ||
-             i->second == "rc"       ||
-             i->second == "override")
+    else if (arg->_third == "program"  ||
+             arg->_third == "rc"       ||
+             arg->_third == "override")
     {
       ;
     }
 
     // Included.
-    else if (i->second == "tag"       ||
-             i->second == "pattern"   ||
-             i->second == "attr"      ||
-             i->second == "attmod"    ||
-             i->second == "id"        ||
-             i->second == "uuid"      ||
-             i->second == "op"        ||
-             i->second == "exp"       ||
-             i->second == "word")
+    else if (arg->_third == "tag"       ||
+             arg->_third == "pattern"   ||
+             arg->_third == "attr"      ||
+             arg->_third == "attmod"    ||
+             arg->_third == "id"        ||
+             arg->_third == "uuid"      ||
+             arg->_third == "op"        ||
+             arg->_third == "exp"       ||
+             arg->_third == "word")
     {
       // "limit" is special - it is recognized but not included in filters.
-      if (i->first.find ("limit:") == std::string::npos)
-        filter.push_back (*i);
+      if (arg->_first.find ("limit:") == std::string::npos)
+        filter.push_back (*arg);
     }
 
     // Error.
@@ -1421,7 +1421,7 @@ Arguments Arguments::extract_write_filter ()
     {
       // substitution
       throw std::string ("A substitutions '")
-            + i->first
+            + arg->_first
             + "' is not allowed in a read-only command filter.";
     }
   }
@@ -1435,11 +1435,11 @@ Arguments Arguments::extract_modifications ()
   Arguments modifications;
 
   bool seen_command = false;
-  std::vector <std::pair <std::string, std::string> >::iterator i;
-  for (i = this->begin (); i != this->end (); ++i)
+  std::vector <Triple>::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
   {
     // Only use args after command.
-    if (i->second == "command")
+    if (arg->_third == "command")
     {
       seen_command = true;
     }
@@ -1447,46 +1447,46 @@ Arguments Arguments::extract_modifications ()
     else if (seen_command)
     {
       // Excluded.
-      if (i->second == "program"  ||
-          i->second == "rc"       ||
-          i->second == "override")
+      if (arg->_third == "program"  ||
+          arg->_third == "rc"       ||
+          arg->_third == "override")
       {
       }
 
       // Included.
-      else if (i->second == "tag"   ||
-               i->second == "attr"  ||
-               i->second == "subst" ||
-               i->second == "op"    ||
-               i->second == "word")
+      else if (arg->_third == "tag"   ||
+               arg->_third == "attr"  ||
+               arg->_third == "subst" ||
+               arg->_third == "op"    ||
+               arg->_third == "word")
       {
         // "limit" is special - it is recognized but not included in filters.
-        if (i->first.find ("limit:") == std::string::npos)
-          modifications.push_back (*i);
+        if (arg->_first.find ("limit:") == std::string::npos)
+          modifications.push_back (*arg);
       }
 
       // Error.
       else
       {
-        if (i->second == "pattern")
+        if (arg->_third == "pattern")
           throw std::string ("A pattern '")
-                + i->first
+                + arg->_first
                 + "' is not allowed when modifiying a task.";
 
-        else if (i->second == "attmod")
+        else if (arg->_third == "attmod")
           throw std::string ("An attribute modifier '")
-                + i->first
+                + arg->_first
                 + "' is not allowed when modifiying a task.";
 
-        else if (i->second == "exp")
+        else if (arg->_third == "exp")
           throw std::string ("An expression '")
-                + i->first
+                + arg->_first
                 + "' is not allowed when modifiying a task.";
 
-        else if (i->second == "id")
+        else if (arg->_third == "id")
           throw std::string ("A task id cannot be modified.");
 
-        else if (i->second == "uuid")
+        else if (arg->_third == "uuid")
           throw std::string ("A task uuid cannot be modified.");
       }
     }
@@ -1545,11 +1545,13 @@ void Arguments::dump (const std::string& label)
 
   view.addRow ();
   view.addRow ();
+  view.addRow ();
 
   for (unsigned int i = 0; i < this->size (); ++i)
   {
-    std::string arg      = (*this)[i].first;
-    std::string category = (*this)[i].second;
+    std::string arg      = (*this)[i]._first;
+    std::string expanded = (*this)[i]._second;
+    std::string category = (*this)[i]._third;
 
     Color c;
     if (color_map[category].nontrivial ())
@@ -1558,7 +1560,8 @@ void Arguments::dump (const std::string& label)
       c = color_map["none"];
 
     view.set (0, i, arg,      c);
-    view.set (1, i, category, c);
+    view.set (1, i, expanded, c);
+    view.set (2, i, category, c);
   }
 
   out << view.render ();

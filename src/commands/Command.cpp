@@ -284,16 +284,16 @@ void Command::modify_task (Task& task, Arguments& arguments)
 {
   std::string description;
 
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = arguments.begin (); arg != arguments.end (); ++arg)
   {
     // Attributes are essentially name:value pairs, and correspond directly
     // to stored attributes.
-    if (arg->second == "attr")
+    if (arg->_third == "attr")
     {
       std::string name;
       std::string value;
-      Arguments::extract_attr (arg->first, name, value);
+      Arguments::extract_attr (arg->_first, name, value);
 
       // TODO All 'value's must be eval'd first.
 
@@ -324,11 +324,11 @@ void Command::modify_task (Task& task, Arguments& arguments)
     // Tags need special handling because they are essentially a vector stored
     // in a single string, therefore Task::{add,remove}Tag must be called as
     // appropriate.
-    else if (arg->second == "tag")
+    else if (arg->_third == "tag")
     {
       char type;
       std::string value;
-      Arguments::extract_tag (arg->first, type, value);
+      Arguments::extract_tag (arg->_first, type, value);
 
       if (type == '+')
         task.addTag (value);
@@ -337,29 +337,29 @@ void Command::modify_task (Task& task, Arguments& arguments)
     }
 
     // Words and operators are aggregated into a description.
-    else if (arg->second == "word" ||
-             arg->second == "op")
+    else if (arg->_third == "word" ||
+             arg->_third == "op")
     {
       if (description.length ())
         description += " ";
 
-      description += arg->first;
+      description += arg->_first;
     }
 
     // Substitutions.
-    else if (arg->second == "subst")
+    else if (arg->_third == "subst")
     {
       std::string from;
       std::string to;
       bool global;
-      Arguments::extract_subst (arg->first, from, to, global);
+      Arguments::extract_subst (arg->_first, from, to, global);
       task.substitute (from, to, global);
     }
 
     // Any additional argument types are indicative of a failure in
     // Arguments::extract_modifications.
     else
-      throw format (STRING_CMD_MOD_UNEXPECTED, arg->first);
+      throw format (STRING_CMD_MOD_UNEXPECTED, arg->_first);
   }
 
   // Only update description if one was specified.

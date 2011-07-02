@@ -98,7 +98,7 @@ const std::string DOM::get (const std::string& name)
            name.substr (0, 8) == "context.")
   {
     if (name == "context.program")
-      return /*_cache[name] =*/ context.args[0].first;
+      return /*_cache[name] =*/ context.args[0]._first;
 
     else if (name == "context.args")
     {

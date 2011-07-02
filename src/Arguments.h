@@ -34,7 +34,53 @@
 
 #define ARGUMENTS_SEQUENCE_MAX_RANGE 1000
 
-class Arguments : public std::vector <std::pair <std::string, std::string> >
+class Triple
+{
+public:
+  Triple (
+    const std::string& one,
+    const std::string& two,
+    const std::string& three)
+  : _first (one)
+  , _second (two)
+  , _third (three)
+  {
+  }
+
+  Triple (const Triple& other)
+  {
+    _first  = other._first;
+    _second = other._second;
+    _third  = other._third;
+  }
+
+  Triple& operator= (const Triple& other)
+  {
+    if (this != &other)
+    {
+      _first  = other._first;
+      _second = other._second;
+      _third  = other._third;
+    }
+
+    return *this;
+  }
+
+  bool operator== (const Triple& other) const
+  {
+    return _first  == other._first  &&
+           _second == other._second &&
+           _third  == other._third;
+  }
+
+public:
+  std::string _first;
+  std::string _second;
+  std::string _third;
+};
+
+//class Arguments : public std::vector <std::pair <std::string, std::string> >
+class Arguments : public std::vector <Triple>
 {
 public:
   Arguments ();

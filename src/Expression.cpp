@@ -81,15 +81,15 @@ bool Expression::eval (Task& task)
 
   // TODO Build an on-demand regex cache.
 
-  std::vector <std::pair <std::string, std::string> >::const_iterator arg;
+  std::vector <Triple>::const_iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->second == "op")
+    if (arg->_third == "op")
     {
-//      std::cout << "# operator " << arg->first << "\n";
+//      std::cout << "# operator " << arg->_first << "\n";
 
       // Handle the unary operator first.
-      if (arg->first == "!")
+      if (arg->_first == "!")
       {
         // Are there sufficient arguments?
         if (value_stack.size () < 1)
@@ -119,7 +119,7 @@ bool Expression::eval (Task& task)
 
       // Are there sufficient arguments?
       if (value_stack.size () < 2)
-        throw std::string ("Error: Insufficient operands for '") + arg->first + "' operator.";
+        throw std::string ("Error: Insufficient operands for '") + arg->_first + "' operator.";
 
       // rvalue (string, rx, int, number, dom ...).
       Variant right (value_stack.back ());
@@ -144,7 +144,7 @@ bool Expression::eval (Task& task)
 //      std::cout << "# left raw=" << left._raw << " type=" << left._type << " value=" << left._string << "\n";
 
       // Now the binary operators.
-      if (arg->first == "and")
+      if (arg->_first == "and")
       {
 //        std::cout << "#   " << left.dump () << " and " << right.dump () << "\n";
         bool result = (left && right);
@@ -155,7 +155,7 @@ bool Expression::eval (Task& task)
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "xor")
+      else if (arg->_first == "xor")
       {
 //        std::cout << "#   " << left.dump () << " xor " << right.dump () << "\n";
         bool left_bool  = left.boolean ();
@@ -168,7 +168,7 @@ bool Expression::eval (Task& task)
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "or")
+      else if (arg->_first == "or")
       {
 //        std::cout << "#   " << left.dump () << " or " << right.dump () << "\n";
         bool result = (left || right);
@@ -179,7 +179,7 @@ bool Expression::eval (Task& task)
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "<=")
+      else if (arg->_first == "<=")
       {
 //        std::cout << "#   " << left.dump () << " <= " << right.dump () << "\n";
         bool result = false;
@@ -202,7 +202,7 @@ bool Expression::eval (Task& task)
         value_stack.push_back (left);
       }
 
-      else if (arg->first == ">=")
+      else if (arg->_first == ">=")
       {
 //        std::cout << "#   " << left.dump () << " >= " << right.dump () << "\n";
         bool result = false;
@@ -225,7 +225,7 @@ bool Expression::eval (Task& task)
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "!~")
+      else if (arg->_first == "!~")
       {
 //        std::cout << "#   " << left.dump () << " !~ " << right.dump () << "\n";
         bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
@@ -246,7 +246,7 @@ bool Expression::eval (Task& task)
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "!=")
+      else if (arg->_first == "!=")
       {
 //        std::cout << "#   " << left.dump () << " != " << right.dump () << "\n";
         bool result = (left != right);
@@ -257,7 +257,7 @@ bool Expression::eval (Task& task)
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "=")
+      else if (arg->_first == "=")
       {
 //        std::cout << "#   " << left.dump () << " = " << right.dump () << "\n";
         bool result = false;
@@ -280,7 +280,7 @@ bool Expression::eval (Task& task)
         value_stack.push_back (left);
       }
 
-      else if (arg->first == ">")
+      else if (arg->_first == ">")
       {
 //        std::cout << "#   " << left.dump () << " > " << right.dump () << "\n";
         bool result = false;
@@ -302,7 +302,7 @@ bool Expression::eval (Task& task)
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "~")
+      else if (arg->_first == "~")
       {
 //        std::cout << "#   " << left.dump () << " ~ " << right.dump () << "\n";
         bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
@@ -323,31 +323,31 @@ bool Expression::eval (Task& task)
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "*")
+      else if (arg->_first == "*")
       {
         left = left * right;
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "/")
+      else if (arg->_first == "/")
       {
         left = left / right;
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "+")
+      else if (arg->_first == "+")
       {
         left = left + right;
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "-")
+      else if (arg->_first == "-")
       {
         left = left - right;
         value_stack.push_back (left);
       }
 
-      else if (arg->first == "<")
+      else if (arg->_first == "<")
       {
 //        std::cout << "#   " << left.dump () << " < " << right.dump () << "\n";
         bool result = false;
@@ -370,14 +370,14 @@ bool Expression::eval (Task& task)
       }
 
       else
-        throw std::string ("Unsupported operator '") + arg->first + "'.";
+        throw std::string ("Unsupported operator '") + arg->_first + "'.";
     }
 
     // It's not an operator, it's either and lvalue or some form of rvalue.
     else
     {
       Variant operand;
-      create_variant (operand, arg->first, arg->second);
+      create_variant (operand, arg->_first, arg->_third);
       value_stack.push_back (operand);
     }
   }
@@ -464,14 +464,14 @@ void Expression::expand_sequence ()
   // Extract all the components of a sequence.
   std::vector <int> ids;
   std::vector <std::string> uuids;
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->second == "id")
-      Arguments::extract_id (arg->first, ids);
+    if (arg->_third == "id")
+      Arguments::extract_id (arg->_first, ids);
 
-    else if (arg->second == "uuid")
-      Arguments::extract_uuid (arg->first, uuids);
+    else if (arg->_third == "uuid")
+      Arguments::extract_uuid (arg->_first, uuids);
   }
 
   // If there is no sequence, we're done.
@@ -508,20 +508,20 @@ void Expression::expand_sequence ()
   // Copy everything up to the first id/uuid.
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->second == "id" || arg->second == "uuid")
+    if (arg->_third == "id" || arg->_third == "uuid")
       break;
 
     temp.push_back (*arg);
   }
 
   // Now insert the new sequence expression.
-  temp.push_back (std::make_pair (sequence.str (), "exp"));
+  temp.push_back (Triple (sequence.str (), "?", "exp"));
 
   // Now copy everything after the last id/uuid.
   bool found_id = false;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->second == "id" || arg->second == "uuid")
+    if (arg->_third == "id" || arg->_third == "uuid")
       found_id = true;
 
     else if (found_id)
@@ -553,47 +553,47 @@ void Expression::expand_tokens ()
   time_t t;
 
   // Look at all args.
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->second == "exp")
+    if (arg->_third == "exp")
     {
       // Nibble each arg token by token.
-      Nibbler n (arg->first);
+      Nibbler n (arg->_first);
 
       while (! n.depleted ())
       {
         if (n.getQuoted ('"', s, true) ||
             n.getQuoted ('\'', s, true))
-          temp.push_back (std::make_pair (s, "string"));
+          temp.push_back (Triple (s, "?", "string"));
 
         else if (n.getQuoted ('/', s, true))
-          temp.push_back (std::make_pair (s, "pattern"));
+          temp.push_back (Triple (s, "?", "pattern"));
 
         else if (n.getOneOf (operators, s))
-          temp.push_back (std::make_pair (s, "op"));
+          temp.push_back (Triple (s, "?", "op"));
 
         else if (n.getDOM (s))
-          temp.push_back (std::make_pair (s, "lvalue"));
+          temp.push_back (Triple (s, "?", "lvalue"));
 
         else if (n.getNumber (d))
-          temp.push_back (std::make_pair (format (d), "number"));
+          temp.push_back (Triple (format (d), "?", "number"));
 
         else if (n.getInt (i))
-          temp.push_back (std::make_pair (format (i), "int"));
+          temp.push_back (Triple (format (i), "?", "int"));
 
         else if (n.getDateISO (t))
-          temp.push_back (std::make_pair (Date (t).toISO (), "date"));
+          temp.push_back (Triple (Date (t).toISO (), "?", "date"));
 
         else if (n.getDate (date_format, t))
-          temp.push_back (std::make_pair (Date (t).toString (date_format), "date"));
+          temp.push_back (Triple (Date (t).toString (date_format), "?", "date"));
 
         else
         {
           if (! n.getUntilWS (s))
             n.getUntilEOS (s);
 
-          temp.push_back (std::make_pair (s, "?"));
+          temp.push_back (Triple (s, "?", "?"));
         }
 
         n.skipWS ();
@@ -622,20 +622,20 @@ void Expression::implicit_and ()
   bool delta = false;
 
   std::string previous = "op";
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
     // Old-style filters need 'and' conjunctions.
     if (previous    != "op" &&
-        arg->second != "op")
+        arg->_third != "op")
     {
-      temp.push_back (std::make_pair ("and", "op"));
+      temp.push_back (Triple ("and", "?", "op"));
       delta = true;
     }
 
     // Now insert the adjacent non-operator.
     temp.push_back (*arg);
-    previous = arg->second;
+    previous = arg->_third;
   }
 
   if (delta)
@@ -654,18 +654,18 @@ void Expression::expand_tag ()
   Arguments temp;
   bool delta = false;
 
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->second == "tag")
+    if (arg->_third == "tag")
     {
       char type;
       std::string value;
-      Arguments::extract_tag (arg->first, type, value);
+      Arguments::extract_tag (arg->_first, type, value);
 
-      temp.push_back (std::make_pair ("tags", "lvalue"));
-      temp.push_back (std::make_pair (type == '+' ? "~" : "!~", "op"));
-      temp.push_back (std::make_pair (value, "string"));
+      temp.push_back (Triple ("tags", "?", "lvalue"));
+      temp.push_back (Triple (type == '+' ? "~" : "!~", "?", "op"));
+      temp.push_back (Triple (value, "?", "string"));
       delta = true;
     }
     else
@@ -687,17 +687,17 @@ void Expression::expand_pattern ()
   Arguments temp;
   bool delta = false;
 
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->second == "pattern")
+    if (arg->_third == "pattern")
     {
       std::string value;
-      Arguments::extract_pattern (arg->first, value);
+      Arguments::extract_pattern (arg->_first, value);
 
-      temp.push_back (std::make_pair ("description", "lvalue"));
-      temp.push_back (std::make_pair ("~", "op"));
-      temp.push_back (std::make_pair (value, "rx"));
+      temp.push_back (Triple ("description", "?", "lvalue"));
+      temp.push_back (Triple ("~", "?", "op"));
+      temp.push_back (Triple (value, "?", "rx"));
       delta = true;
     }
     else
@@ -719,24 +719,24 @@ void Expression::expand_attr ()
   Arguments temp;
   bool delta = false;
 
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->second == "attr")
+    if (arg->_third == "attr")
     {
       // TODO Canonicalize 'name'.
       std::string name;
       std::string value;
-      Arguments::extract_attr (arg->first, name, value);
+      Arguments::extract_attr (arg->_first, name, value);
       Arguments::is_attribute (name, name);
 
       // Always quote the value, so that empty values, or values containing spaces
       // are preserved.
       value = "\"" + value + "\"";
 
-      temp.push_back (std::make_pair (name, "lvalue"));
-      temp.push_back (std::make_pair ("=", "op"));
-      temp.push_back (std::make_pair (value, "rvalue"));
+      temp.push_back (Triple (name, "?", "lvalue"));
+      temp.push_back (Triple ("=", "?", "op"));
+      temp.push_back (Triple (value, "?", "rvalue"));
       delta = true;
     }
     else
@@ -758,16 +758,16 @@ void Expression::expand_attmod ()
   Arguments temp;
   bool delta = false;
 
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->second == "attmod")
+    if (arg->_third == "attmod")
     {
       std::string name;
       std::string mod;
       std::string value;
       std::string sense;
-      Arguments::extract_attmod (arg->first, name, mod, value, sense);
+      Arguments::extract_attmod (arg->_first, name, mod, value, sense);
       Arguments::is_attribute (name, name);
       Arguments::is_modifier (mod);
 
@@ -778,75 +778,75 @@ void Expression::expand_attmod ()
 
       if (mod == "before" || mod == "under" || mod == "below")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("<", "op"));
-        temp.push_back (std::make_pair (value, "rvalue"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("<", "?", "op"));
+        temp.push_back (Triple (value, "?", "rvalue"));
       }
       else if (mod == "after" || mod == "over" || mod == "above")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair (">", "op"));
-        temp.push_back (std::make_pair (value, "rvalue"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple (">", "?", "op"));
+        temp.push_back (Triple (value, "?", "rvalue"));
       }
       else if (mod == "none")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("==", "op"));
-        temp.push_back (std::make_pair ("\"\"", "string"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("==", "?", "op"));
+        temp.push_back (Triple ("\"\"", "?", "string"));
       }
       else if (mod == "any")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("!=", "op"));
-        temp.push_back (std::make_pair ("\"\"", "string"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("!=", "?", "op"));
+        temp.push_back (Triple ("\"\"", "?", "string"));
       }
       else if (mod == "is" || mod == "equals")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("=", "op"));
-        temp.push_back (std::make_pair (value, "rvalue"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("=", "?", "op"));
+        temp.push_back (Triple (value, "?", "rvalue"));
       }
       else if (mod == "isnt" || mod == "not")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("!=", "op"));
-        temp.push_back (std::make_pair (value, "rvalue"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("!=", "?", "op"));
+        temp.push_back (Triple (value, "?", "rvalue"));
       }
       else if (mod == "has" || mod == "contains")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("~", "op"));
-        temp.push_back (std::make_pair (value, "rvalue"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("~", "?", "op"));
+        temp.push_back (Triple (value, "?", "rvalue"));
       }
       else if (mod == "hasnt")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("!~", "op"));
-        temp.push_back (std::make_pair (value, "rvalue"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("!~", "?", "op"));
+        temp.push_back (Triple (value, "?", "rvalue"));
       }
       else if (mod == "startswith" || mod == "left")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("~", "op"));
-        temp.push_back (std::make_pair ("^" + raw_value, "rx"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("~", "?", "op"));
+        temp.push_back (Triple ("^" + raw_value, "?", "rx"));
       }
       else if (mod == "endswith" || mod == "right")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("~", "op"));
-        temp.push_back (std::make_pair (raw_value + "$", "rx"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("~", "?", "op"));
+        temp.push_back (Triple (raw_value + "$", "?", "rx"));
       }
       else if (mod == "word")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("~", "op"));
-        temp.push_back (std::make_pair ("\\b" + raw_value + "\\b", "rx"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("~", "?", "op"));
+        temp.push_back (Triple ("\\b" + raw_value + "\\b", "?", "rx"));
       }
       else if (mod == "noword")
       {
-        temp.push_back (std::make_pair (name, "lvalue"));
-        temp.push_back (std::make_pair ("!~", "op"));
-        temp.push_back (std::make_pair ("\\b" + raw_value + "\\b", "rx"));
+        temp.push_back (Triple (name, "?", "lvalue"));
+        temp.push_back (Triple ("!~", "?", "op"));
+        temp.push_back (Triple ("\\b" + raw_value + "\\b", "?", "rx"));
       }
       else
         throw std::string ("Error: unrecognized attribute modifier '") + mod + "'.";
@@ -872,14 +872,14 @@ void Expression::expand_word ()
   Arguments temp;
   bool delta = false;
 
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->second == "word")
+    if (arg->_third == "word")
     {
-      temp.push_back (std::make_pair ("description", "lvalue"));
-      temp.push_back (std::make_pair ("~", "op"));
-      temp.push_back (std::make_pair ("\"" + arg->first + "\"", "rvalue"));
+      temp.push_back (Triple ("description", "?", "lvalue"));
+      temp.push_back (Triple ("~", "?", "op"));
+      temp.push_back (Triple ("\"" + arg->_first + "\"", "?", "rvalue"));
 
       delta = true;
     }
@@ -936,17 +936,17 @@ void Expression::postfix ()
   int precedence;
   char associativity;
 
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->first == "(")
+    if (arg->_first == "(")
     {
       op_stack.push_back (*arg);
     }
-    else if (arg->first == ")")
+    else if (arg->_first == ")")
     {
       while (op_stack.size () > 0 &&
-             op_stack.back ().first != "(")
+             op_stack.back ()._first != "(")
       {
         temp.push_back (op_stack.back ());
         op_stack.pop_back ();
@@ -961,13 +961,13 @@ void Expression::postfix ()
         throw std::string ("Mismatched parentheses in expression");
       }
     }
-    else if (Arguments::is_operator (arg->first, type, precedence, associativity))
+    else if (Arguments::is_operator (arg->_first, type, precedence, associativity))
     {
       char type2;
       int precedence2;
       char associativity2;
       while (op_stack.size () > 0 &&
-             Arguments::is_operator (op_stack.back ().first, type2, precedence2, associativity2) &&
+             Arguments::is_operator (op_stack.back ()._first, type2, precedence2, associativity2) &&
              ((associativity == 'l' && precedence <= precedence2) ||
               (associativity == 'r' && precedence <  precedence2)))
       {
@@ -985,8 +985,8 @@ void Expression::postfix ()
 
   while (op_stack.size () != 0)
   {
-    if (op_stack.back ().first == "(" ||
-        op_stack.back ().first == ")")
+    if (op_stack.back ()._first == "(" ||
+        op_stack.back ()._first == ")")
       throw std::string ("Mismatched parentheses in expression");
 
     temp.push_back (op_stack.back ());
@@ -1007,9 +1007,9 @@ void Expression::postfix ()
 //
 bool Expression::is_new_style ()
 {
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
+  std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
-    if (Arguments::is_symbol_operator (arg->first))
+    if (Arguments::is_symbol_operator (arg->_first))
       return true;
 
   return false;
