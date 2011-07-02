@@ -174,10 +174,7 @@ void ColumnDescription::render (
 
     std::vector <std::string>::iterator i;
     for (i = raw.begin (); i != raw.end (); ++i)
-      if (i == raw.begin ())
-        lines.push_back (color.colorize (leftJustify (*i, width)));
-      else
-        lines.push_back (color.colorize (leftJustify (std::string (indent, ' ') + *i, width)));
+      lines.push_back (color.colorize (leftJustify (*i, width)));
   }
 
   // This is a description
