@@ -25,9 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <sstream>
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
 #include <main.h>
+#include <text.h>
+#include <i18n.h>
 #include <CmdCount.h>
 
 extern Context context;
@@ -37,7 +40,7 @@ CmdCount::CmdCount ()
 {
   _keyword     = "count";
   _usage       = "task count [<filter>]";
-  _description = "Shows only the number of matching tasks.";
+  _description = STRING_CMD_COUNT_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -45,26 +48,26 @@ CmdCount::CmdCount ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCount::execute (std::string& output)
 {
-/*
-  // Scan the pending tasks, applying any filter.
+  // Get all the tasks.
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks, context.filter);
+  context.tdb.load (tasks);
   context.tdb.commit ();
   context.tdb.unlock ();
+
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
 
   // Find number of matching tasks.  Skip recurring parent tasks.
   int count = 0;
   std::vector <Task>::iterator it;
-  for (it = tasks.begin (); it != tasks.end (); ++it)
+  for (it = filtered.begin (); it != filtered.end (); ++it)
     if (it->getStatus () != Task::recurring)
       ++count;
 
-  std::stringstream out;
-  out << count << "\n";
-  output = out.str ();
-*/
+  output = format (count) + "\n";
   return 0;
 }
 

@@ -253,6 +253,7 @@
 #define STRING_CMD_SUMMARY_REMAINING "Remaining"
 #define STRING_CMD_SUMMARY_AVG_AGE   "Avg age"
 #define STRING_CMD_SUMMARY_COMPLETE  "Complete"
+#define STRING_CMD_COUNT_USAGE       "Shows only the number of matching tasks."
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
