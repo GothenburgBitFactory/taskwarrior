@@ -43,9 +43,9 @@ if (open my $fh, '>', 'custom.rc')
   ok (-r 'custom.rc', 'Created custom.rc');
 }
 
-# Generate the usage screen, and locate the custom report on it.
-my $output = qx{../src/task rc:custom.rc usage};
-like ($output, qr/task foo \[tags\] \[attrs\] desc\.\.\.\s+DESC\n/m, 'report.foo');
+# Generate the help screen, and locate the custom report on it.
+my $output = qx{../src/task rc:custom.rc help};
+like ($output, qr/task foo \[<filter>\]\s+DESC\n/m, 'report.foo');
 
 qx{../src/task rc:custom.rc add project:A one};
 qx{../src/task rc:custom.rc add two};

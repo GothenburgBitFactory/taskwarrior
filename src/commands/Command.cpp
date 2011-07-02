@@ -176,7 +176,7 @@ void Command::factory (std::map <std::string, Command*>& all)
 
     c = new CmdCustom (
               *report,
-              "task " + *report + " [tags] [attrs] desc...",
+              "task " + *report + " [<filter>]",
               context.config.get ("report." + *report + ".description"));
 
     all[c->keyword ()] = c;

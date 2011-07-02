@@ -676,10 +676,10 @@ int main (int argc, char** argv)
   t.is (convertDuration ("10 mths"),     300, "valid duration 10 mths");
   t.is (convertDuration ("10 mth"),      300, "valid duration 10 mth");
   t.is (convertDuration ("10mo"),        300, "valid duration 10mo");
-  t.is (convertDuration ("0m"),               "valid duration 0m");
-  t.is (convertDuration ("1m"),               "valid duration 1m");
-  t.is (convertDuration ("10m"),              "valid duration 10m");
-  t.is (convertDuration ("-1m"),              "valid duration -1m");
+  t.is (convertDuration ("0m"),            0, "valid duration 0m");
+  t.is (convertDuration ("1m"),           30, "valid duration 1m");
+  t.is (convertDuration ("10m"),         300, "valid duration 10m");
+  t.is (convertDuration ("-1m"),          30, "valid duration -1m");
 
   t.is (convertDuration ("0 wks"),         0, "valid duration 0 wks");
   t.is (convertDuration ("0 wk"),          0, "valid duration 0 wk");
