@@ -25,12 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
 #include <Duration.h>
 #include <text.h>
+#include <i18n.h>
 #include <main.h>
 #include <CmdSummary.h>
 
@@ -41,7 +44,7 @@ CmdSummary::CmdSummary ()
 {
   _keyword     = "summary";
   _usage       = "task summary";
-  _description = "Shows a report of task status by project.";
+  _description = STRING_CMD_SUMMARY_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -120,10 +123,10 @@ int CmdSummary::execute (std::string& output)
   // Create a table for output.
   ViewText view;
   view.width (context.getWidth ());
-  view.add (Column::factory ("string", "Project"));
-  view.add (Column::factory ("string.right", "Remaining"));
-  view.add (Column::factory ("string.right", "Avg age"));
-  view.add (Column::factory ("string.right", "Complete"));
+  view.add (Column::factory ("string", STRING_CMD_SUMMARY_PROJECT));
+  view.add (Column::factory ("string.right", STRING_CMD_SUMMARY_REMAINING));
+  view.add (Column::factory ("string.right", STRING_CMD_SUMMARY_AVG_AGE));
+  view.add (Column::factory ("string.right", STRING_CMD_SUMMARY_COMPLETE));
   view.add (Column::factory ("string", "0%                        100%"));
 
   Color bar_color (context.config.get ("color.summary.bar"));
@@ -167,14 +170,20 @@ int CmdSummary::execute (std::string& output)
 
   std::stringstream out;
   if (view.rows ())
+  {
     out << optionalBlankLine ()
         << view.render ()
-        << optionalBlankLine ()
-        << view.rows ()
-        << (view.rows () == 1 ? " project" : " projects")
-        << "\n";
+        << optionalBlankLine ();
+
+    if (view.rows ())
+      out << format (STRING_CMD_PROJECTS_SUMMARY2, view.rows ());
+    else
+      out << STRING_CMD_PROJECTS_SUMMARY;
+
+    out << "\n";
+  }
   else {
-    out << "No projects.\n";
+    out << STRING_CMD_PROJECTS_NO << "\n";
     rc = 1;
   }
 
