@@ -25,7 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
@@ -184,8 +185,7 @@ void Task::legacyParse (const std::string& line)
   {
   // File format version 1, from 2006.11.27 - 2007.12.31
   case 1:
-    throw std::string ("Taskwarrior no longer supports file format 1, originally used "
-                       "between 27 November 2006 and 31 December 2007.");  // TODO i18n
+    throw std::string (STRING_TASK_NO_FF1);
     break;
 
   // File format version 2, from 2008.1.1 - 2009.3.23
@@ -233,13 +233,13 @@ void Task::legacyParse (const std::string& line)
             set ("description", line.substr (closeAttrBracket + 2)); // No i18n
           }
           else
-            throw std::string ("Missing attribute brackets"); // TODO i18n
+            throw std::string (STRING_TASK_PARSE_ATT_BRACK);
         }
         else
-          throw std::string ("Missing tag brackets"); // TODO i18n
+          throw std::string (STRING_TASK_PARSE_TAG_BRACK);
       }
       else
-        throw std::string ("Line too short"); // TODO i18n
+        throw std::string (STRING_TASK_PARSE_TOO_SHORT);
 
       removeAnnotations ();
     }
@@ -334,21 +334,21 @@ void Task::legacyParse (const std::string& line)
               set ("description", line.substr (closeAnnoBracket + 2)); // No i18n
             }
             else
-              throw std::string ("Missing annotation brackets."); // TODO i18n
+              throw std::string (STRING_TASK_PARSE_ANNO_BRACK);
           }
           else
-            throw std::string ("Missing attribute brackets."); // TODO i18n
+            throw std::string (STRING_TASK_PARSE_ATT_BRACK);
         }
         else
-          throw std::string ("Missing tag brackets."); // TODO i18n
+          throw std::string (STRING_TASK_PARSE_TAG_BRACK);
       }
       else
-        throw std::string ("Line too short."); // TODO i18n
+        throw std::string (STRING_TASK_PARSE_TOO_SHORT);
     }
     break;
 
   default:
-    throw std::string ("Unrecognized taskwarrior file format."); // TODO i18n
+    throw std::string (STRING_TASK_PARSE_UNREC_FF);
     break;
   }
 }
@@ -605,16 +605,12 @@ void Task::removeAnnotations ()
 void Task::addDependency (int id)
 {
   if (id == this->id)
-    throw std::string ("A task cannot be dependent on itself.");
+    throw std::string (STRING_TASK_DEPEND_ITSELF);
 
   // Check for extant dependency.
   std::string uuid = context.tdb.uuid (id);
   if (uuid == "")
-  {
-    std::stringstream s;
-    s << "Could not create a dependency on task " << id << " - not found.";
-    throw s.str ();
-  }
+    throw format (STRING_TASK_DEPEND_MISSING, id);
 
   // Store the dependency.
   std::string depends = get ("depends");
@@ -623,18 +619,14 @@ void Task::addDependency (int id)
     if (depends.find (uuid) == std::string::npos)
       set ("depends", depends + "," + uuid);
     else
-    {
-      std::stringstream out;
-      out << "Task " << this->id << " already depends on task " << id << ".";
-      throw out.str ();
-    }
+      throw std::string (STRING_TASK_DEPEND_DUP, this->id, id);
   }
   else
     set ("depends", uuid);
 
   // Prevent circular dependencies.
   if (dependencyIsCircular (*this))
-    throw std::string ("Circular dependency detected and disallowed.");
+    throw std::string (STRING_TASK_DEPEND_CIRCULAR);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -661,11 +653,7 @@ void Task::removeDependency (int id)
   if (uuid != "")
     removeDependency (uuid);
   else
-  {
-    std::stringstream s;
-    s << "Could not find a UUID for id " << id << ".";
-    throw s.str ();
-  }
+    throw std::string (STRING_TASK_DEPEND_NO_UUID);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -882,16 +870,16 @@ void Task::validate () const
 {
   // Every task needs an ID, entry and description attribute.
   if (!has ("uuid"))
-    throw std::string ("A task must have a UUID.");
+    throw std::string (STRING_TASK_VALID_UUID);
 
   if (!has ("entry"))
-    throw std::string ("A task must have an entry timestamp.");
+    throw std::string (STRING_TASK_VALID_ENTRY);
 
   if (!has ("description"))
-    throw std::string ("A task must have a description.");
+    throw std::string (STRING_TASK_VALID_DESC);
 
-  if (get ("description") == "") // No i18n
-    throw std::string ("Cannot add a task that is blank, or contains <CR> or <LF> characters.");
+  if (get ("description") == "")
+    throw std::string (STRING_TASK_VALID_BLANK);
 
   if (has ("due"))
   {
@@ -902,7 +890,7 @@ void Task::validate () const
     {
       Date wait (::atoi (get ("wait").c_str ()));
       if (wait > due)
-        throw std::string ("A 'wait' date must be before a 'due' date.");
+        throw std::string (STRING_TASK_VALID_WAIT);
     }
 
     Date entry (::atoi (get ("entry").c_str ()));
@@ -911,36 +899,36 @@ void Task::validate () const
     {
       Date start (::atoi (get ("start").c_str ()));
       if (entry > start)
-        throw std::string ("A 'start' date must be after an 'entry' date.");
+        throw std::string (STRING_TASK_VALID_START);
     }
 
     if (has ("end"))
     {
       Date end (::atoi (get ("end").c_str ()));
       if (entry > end)
-        throw std::string ("An 'end' date must be after an 'entry' date.");
+        throw std::string (STRING_TASK_VALID_END);
     }
   }
   else
   {
     if (has ("recur"))
-      throw std::string ("You cannot specify a recurring task without a due date.");
+      throw std::string (STRING_TASK_VALID_REC_DUE);
   }
 
   if (has ("until") && !has ("recur"))
-    throw std::string ("You cannot specify an until date for a non-recurring task.");
+    throw std::string (STRING_TASK_VALID_UNTIL);
 
   // Recur durations must be valid.
   if (has ("recur"))
   {
     Duration d;
     if (! d.valid (get ("recur")))
-      throw std::string ("A recurrence value must be valid.");
+      throw std::string (STRING_TASK_VALID_RECUR);
   }
 
   if (has ("wait") &&
       getStatus () == Task::recurring)
-    throw std::string ("You cannot create a task that is both waiting and recurring.");
+    throw std::string (STRING_TASK_VALID_WAIT_RECUR);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

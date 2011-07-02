@@ -342,6 +342,31 @@
 #define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
 #define STRING_CMD_SHOW_CONF_VALUE   "Value"
 
+// Task
+#define STRING_TASK_NO_FF1           "Taskwarrior no longer supports file format 1, originally used between 27 November 2006 and 31 December 2007."
+#define STRING_TASK_PARSE_ANNO_BRACK "Missing annotation brackets."
+#define STRING_TASK_PARSE_ATT_BRACK  "Missing attribute brackets."
+#define STRING_TASK_PARSE_TAG_BRACK  "Missing tag brackets."
+#define STRING_TASK_PARSE_TOO_SHORT  "Line too short."
+#define STRING_TASK_PARSE_UNREC_FF   "Unrecognized taskwarrior file format."
+#define STRING_TASK_DEPEND_ITSELF    "A task cannot be dependent on itself."
+#define STRING_TASK_DEPEND_MISSING   "Could not create a dependency on task {1} - not found."
+#define STRING_TASK_DEPEND_DUP       "Task {1} already depends on task {2}."
+#define STRING_TASK_DEPEND_CIRCULAR  "Circular dependency detected and disallowed."
+#define STRING_TASK_DEPEND_NO_UUID   "Could not find a UUID for id {1}."
+#define STRING_TASK_VALID_UUID       "A task must have a UUID."
+#define STRING_TASK_VALID_ENTRY      "A task must have an entry timestamp."
+#define STRING_TASK_VALID_DESC       "A task must have a description."
+#define STRING_TASK_VALID_BLANK      "Cannot add a task that is blank."
+#define STRING_TASK_VALID_WAIT       "A 'wait' date must be before a 'due' date."
+#define STRING_TASK_VALID_START      "A 'start' date must be after an 'entry' date."
+#define STRING_TASK_VALID_END        "An 'end' date must be after an 'entry' date."
+#define STRING_TASK_VALID_REC_DUE    "You cannot specify a recurring task without a due date."
+#define STRING_TASK_VALID_UNTIL      "You cannot specify an until date for a non-recurring task."
+#define STRING_TASK_VALID_RECUR      "A recurrence value must be valid."
+#define STRING_TASK_VALID_WAIT_RECUR "You cannot create a task that is both waiting and recurring."
+
+
 // Taskmod
 #define STRING_TASKMOD_BAD_INIT      "Taskmod::getUuid(): Task object not initialized."
 #define STRING_TASKMOD_TIME          "time "
@@ -362,7 +387,6 @@
 #define STRING_TRANSPORT_RSYNC_NORUN "Could not run rsync.  Is it installed, and available in $PATH?"
 #define STRING_TRANSPORT_SSH_URI     "When using the 'ssh' protocol, the uri must contain a hostname."
 #define STRING_TRANSPORT_SSH_NORUN   "Could not run ssh.  Is it installed, and available in $PATH?"
-
 
 // Uri
 #define STRING_URI_QUOTES            "Could not parse uri '{1}', wrong usage of single quotes."
