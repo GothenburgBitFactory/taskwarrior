@@ -90,6 +90,17 @@ public:
 private:
   int determineVersion (const std::string&);
   void legacyParse (const std::string&);
+
+  inline float urgency_priority ();
+  inline float urgency_project ();
+  inline float urgency_active ();
+  inline float urgency_waiting ();
+  inline float urgency_blocked ();
+  inline float urgency_annotations ();
+  inline float urgency_tags ();
+  inline float urgency_next ();
+  inline float urgency_due ();
+  inline float urgency_blocking ();
 };
 
 #endif

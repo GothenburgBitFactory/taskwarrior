@@ -1024,141 +1024,16 @@ float Task::urgency ()
   if (recalc_urgency)
   {
     urgency_value = 0.0;
-
-    // urgency.priority.coefficient
-    float coefficient = context.config.getReal ("urgency.priority.coefficient");
-    float term;
-
-    std::string value = get ("priority");
-         if (value == "H") term = 1.0;
-    else if (value == "M") term = 0.65;
-    else if (value == "L") term = 0.3;
-    else                   term = 0.0;
-
-    urgency_value += term * coefficient;
-
-    // urgency.project.coefficient
-    coefficient = context.config.getReal ("urgency.project.coefficient");
-
-    if (has ("project")) term = 1.0;
-    else                 term = 0.0;
-
-    urgency_value += term * coefficient;
-
-    // urgency.active.coefficient
-    coefficient = context.config.getReal ("urgency.active.coefficient");
-
-    if (has ("start")) term = 1.0;
-    else               term = 0.0;
-
-    urgency_value += term * coefficient;
-
-    // urgency.waiting.coefficient
-    coefficient = context.config.getReal ("urgency.waiting.coefficient");
-
-    value = get ("status");
-         if (value == "pending") term = 1.0;
-    else if (value == "waiting") term = 0.0;
-
-    urgency_value += term * coefficient;
-
-    // urgency.blocked.coefficient
-    coefficient = context.config.getReal ("urgency.blocked.coefficient");
-
-    if (has ("depends")) term = 1.0;
-    else                 term = 0.0;
-
-    urgency_value += term * coefficient;
-
-    // urgency.annotations.coefficient
-    coefficient = context.config.getReal ("urgency.annotations.coefficient");
-
-    std::vector <Att> annos;
-    getAnnotations (annos);
-         if (annos.size () >= 3) term = 1.0;
-    else if (annos.size () == 2) term = 0.9;
-    else if (annos.size () == 1) term = 0.8;
-    else                         term = 0.0;
-
-    urgency_value += term * coefficient;
-
-    // urgency.tags.coefficient
-    coefficient = context.config.getReal ("urgency.tags.coefficient");
-
-    int count = getTagCount ();
-       if (count >= 3) term = 1.0;
-    else if (count == 2) term = 0.9;
-    else if (count == 1) term = 0.8;
-    else                 term = 0.0;
-
-    urgency_value += term * coefficient;
-
-    // urgency.next.coefficient
-    coefficient = context.config.getReal ("urgency.next.coefficient");
-
-    if (hasTag ("next")) term = 1.0;
-    else                 term = 0.0;
-
-    urgency_value += term * coefficient;
-
-    // urgency.due.coefficient
-    // overdue days 7 -> 1.0
-    //              6 -> 0.96
-    //              5 -> 0.92
-    //              5 -> 0.88
-    //              5 -> 0.84
-    //              5 -> 0.80
-    //              5 -> 0.76
-    //              0 -> 0.72
-    //             -1 -> 0.68
-    //             -2 -> 0.64
-    //             -3 -> 0.60
-    //             -4 -> 0.56
-    //             -5 -> 0.52
-    //             -6 -> 0.48
-    //             -7 -> 0.44
-    //             -8 -> 0.40
-    //             -9 -> 0.36
-    //            -10 -> 0.32
-    //            -11 -> 0.28
-    //            -12 -> 0.24
-    //            -13 -> 0.20
-    //            -14 -> 0.16
-    //    no due date -> 0.0
-    coefficient = context.config.getReal ("urgency.due.coefficient");
-    if (has ("due"))
-    {
-      Date now;
-      Date due (get_date ("due"));
-      int days_overdue = (now - due) / 86400;
-
-           if (days_overdue >=  7)  term = 1.0;
-      else if (days_overdue >=  6)  term = 0.96;
-      else if (days_overdue >=  5)  term = 0.92;
-      else if (days_overdue >=  4)  term = 0.88;
-      else if (days_overdue >=  3)  term = 0.84;
-      else if (days_overdue >=  2)  term = 0.80;
-      else if (days_overdue >=  1)  term = 0.76;
-      else if (days_overdue >=  0)  term = 0.72;
-      else if (days_overdue >= -1)  term = 0.68;
-      else if (days_overdue >= -2)  term = 0.64;
-      else if (days_overdue >= -3)  term = 0.60;
-      else if (days_overdue >= -4)  term = 0.56;
-      else if (days_overdue >= -5)  term = 0.52;
-      else if (days_overdue >= -6)  term = 0.48;
-      else if (days_overdue >= -7)  term = 0.44;
-      else if (days_overdue >= -8)  term = 0.40;
-      else if (days_overdue >= -9)  term = 0.36;
-      else if (days_overdue >= -10) term = 0.32;
-      else if (days_overdue >= -11) term = 0.28;
-      else if (days_overdue >= -12) term = 0.24;
-      else if (days_overdue >= -13) term = 0.20;
-      else                          term = 0.16;
-    }
-    else
-      term = 0.0;
-
-    urgency_value += term * coefficient;
+    urgency_value += urgency_priority ()    * context.config.getReal ("urgency.priority.coefficient");
+    urgency_value += urgency_project ()     * context.config.getReal ("urgency.project.coefficient");
+    urgency_value += urgency_active ()      * context.config.getReal ("urgency.active.coefficient");
+    urgency_value += urgency_waiting ()     * context.config.getReal ("urgency.waiting.coefficient");
+    urgency_value += urgency_blocked ()     * context.config.getReal ("urgency.blocked.coefficient");
+    urgency_value += urgency_annotations () * context.config.getReal ("urgency.annotations.coefficient");
+    urgency_value += urgency_tags ()        * context.config.getReal ("urgency.tags.coefficient");
+    urgency_value += urgency_next ()        * context.config.getReal ("urgency.next.coefficient");
+    urgency_value += urgency_due ()         * context.config.getReal ("urgency.due.coefficient");
+    urgency_value += urgency_blocking ()    * context.config.getReal ("urgency.blocking.coefficient");
 
     // Tag- and project-specific coefficients.
     std::vector <std::string> all;
@@ -1175,10 +1050,9 @@ float Task::urgency ()
             (end = var->find (".coefficient")) != std::string::npos)
         {
           std::string project = var->substr (21, end - 21);
-          coefficient = context.config.getReal (*var);
 
           if (get ("project").find (project) == 0)
-            urgency_value += coefficient;
+            urgency_value += context.config.getReal (*var);
         }
 
         // urgency.user.tag.<tag>.coefficient
@@ -1186,27 +1060,145 @@ float Task::urgency ()
             (end = var->find (".coefficient")) != std::string::npos)
         {
           std::string tag = var->substr (17, end - 17);
-          coefficient = context.config.getReal (*var);
 
           if (hasTag (tag))
-            urgency_value += coefficient;
+            urgency_value += context.config.getReal (*var);
         }
       }
     }
-
-    // urgency.blocking.coefficient
-    coefficient = context.config.getReal ("urgency.blocking.coefficient");
-
-    if (dependencyIsBlocking (*this)) term = 1.0;
-    else                              term = 0.0;
-
-    urgency_value += term * coefficient;
 
     // Return the sum of all terms.
     recalc_urgency = false;
   }
 
   return urgency_value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_priority ()
+{
+  std::string value = get ("priority");
+
+       if (value == "H") return 1.0;
+  else if (value == "M") return 0.65;
+  else if (value == "L") return 0.3;
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_project ()
+{
+  if (has ("project"))
+    return 1.0;
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_active ()
+{
+  if (has ("start"))
+    return 1.0;
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_waiting ()
+{
+  if (get ("status") == "pending")
+    return 1.0;
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_blocked ()
+{
+  if (has ("depends"))
+    return 1.0;
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_annotations ()
+{
+  std::vector <Att> annos;
+  getAnnotations (annos);
+
+       if (annos.size () >= 3) return 1.0;
+  else if (annos.size () == 2) return 0.9;
+  else if (annos.size () == 1) return 0.8;
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_tags ()
+{
+  switch (getTagCount ())
+  {
+  case 0:  return 0.0;
+  case 1:  return 0.8;
+  case 2:  return 0.9;
+  default: return 1.0;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_next ()
+{
+  if (hasTag ("next"))
+    return 1.0;
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_due ()
+{
+  if (has ("due"))
+  {
+    Date now;
+    Date due (get_date ("due"));
+    int days_overdue = (now - due) / 86400;
+
+         if (days_overdue >=  7)  return 1.0;
+    else if (days_overdue >=  6)  return 0.96;
+    else if (days_overdue >=  5)  return 0.92;
+    else if (days_overdue >=  4)  return 0.88;
+    else if (days_overdue >=  3)  return 0.84;
+    else if (days_overdue >=  2)  return 0.80;
+    else if (days_overdue >=  1)  return 0.76;
+    else if (days_overdue >=  0)  return 0.72;
+    else if (days_overdue >= -1)  return 0.68;
+    else if (days_overdue >= -2)  return 0.64;
+    else if (days_overdue >= -3)  return 0.60;
+    else if (days_overdue >= -4)  return 0.56;
+    else if (days_overdue >= -5)  return 0.52;
+    else if (days_overdue >= -6)  return 0.48;
+    else if (days_overdue >= -7)  return 0.44;
+    else if (days_overdue >= -8)  return 0.40;
+    else if (days_overdue >= -9)  return 0.36;
+    else if (days_overdue >= -10) return 0.32;
+    else if (days_overdue >= -11) return 0.28;
+    else if (days_overdue >= -12) return 0.24;
+    else if (days_overdue >= -13) return 0.20;
+    else                          return 0.16;
+  }
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_blocking ()
+{
+  if (dependencyIsBlocking (*this))
+    return 1.0;
+
+  return 0.0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
