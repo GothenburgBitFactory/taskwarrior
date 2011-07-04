@@ -43,7 +43,10 @@ public:
   bool operator> (const Duration&);
   bool operator>= (const Duration&);
   Duration& operator= (const Duration&);
-  Duration& operator- (const Duration&);
+  Duration operator- (const Duration&);
+  Duration operator+ (const Duration&);
+  Duration& operator-= (const Duration&);
+  Duration& operator+= (const Duration&);
   ~Duration ();                          // Destructor
 
   operator time_t () const;
@@ -56,7 +59,7 @@ public:
   static bool valid (const std::string&);
   void parse (const std::string&);
 
-private:
+protected:
   time_t mSecs;
   bool mNegative;
 };

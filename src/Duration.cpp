@@ -155,9 +155,60 @@ Duration& Duration::operator= (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration& Duration::operator- (const Duration& other)
+Duration Duration::operator- (const Duration& other)
 {
-  throw std::string ("Error: Duration::operator- unimplemented");
+  int left  =       mSecs * (      mNegative ? -1 : 1);
+  int right = other.mSecs * (other.mNegative ? -1 : 1);
+
+  left -= right;
+
+  Duration result;
+  result.mSecs = abs (left);
+  result.mNegative = left < 0;
+
+  return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Duration Duration::operator+ (const Duration& other)
+{
+  int left  =       mSecs * (      mNegative ? -1 : 1);
+  int right = other.mSecs * (other.mNegative ? -1 : 1);
+
+  left += right;
+
+  Duration result;
+  result.mSecs = abs (left);
+  result.mNegative = left < 0;
+
+  return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Duration& Duration::operator-= (const Duration& other)
+{
+  int left  =       mSecs * (      mNegative ? -1 : 1);
+  int right = other.mSecs * (other.mNegative ? -1 : 1);
+
+  left -= right;
+
+  mSecs = abs (left);
+  mNegative = left < 0;
+
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Duration& Duration::operator+= (const Duration& other)
+{
+  int left  =       mSecs * (      mNegative ? -1 : 1);
+  int right = other.mSecs * (other.mNegative ? -1 : 1);
+
+  left += right;
+
+  mSecs = abs (left);
+  mNegative = left < 0;
+
   return *this;
 }
 

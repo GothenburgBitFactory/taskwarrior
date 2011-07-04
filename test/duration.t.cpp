@@ -48,7 +48,7 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (618);
+  UnitTest t (628);
 
   Duration d;
 
@@ -741,6 +741,36 @@ int main (int argc, char** argv)
     left = Duration ("1sec");   right = Duration ("2secs");  t.notok (left >= right, "duration NOT 1sec >= 2secs");
     left = Duration ("2secs");  right = Duration ("2secs");  t.ok (left >= right, "duration 1sec >= 2secs");
     left = Duration ("2secs");  right = Duration ("1secs");  t.ok (left >= right, "duration 1sec >= 2secs");
+
+    // operator+
+    left  = Duration (1);
+    right = Duration (2);
+    Duration result = left + right;
+    t.is ((int)(time_t)left,   1, "1 + 2 = 3, 1 is still 1");
+    t.is ((int)(time_t)right,  2, "1 + 2 = 3, 2 is still 2");
+    t.is ((int)(time_t)result, 3, "1 + 2 = 3");
+
+    // operator+=
+    left  = Duration (1);
+    right = Duration (2);
+    left += right;
+    t.is ((int)(time_t)left,   3, "1 += 2, 1 is now 3");
+    t.is ((int)(time_t)right,  2, "1 += 2, 2 is still 2");
+
+    // operator-
+    left  = Duration (3);
+    right = Duration (2);
+    result = left - right;
+    t.is ((int)(time_t)left,   3, "3 - 2 = 1, 3 is still 3");
+    t.is ((int)(time_t)right,  2, "3 - 2 = 1, 2 is still 2");
+    t.is ((int)(time_t)result, 1, "3 - 2 = 1");
+
+    // operator-=
+    left  = Duration (3);
+    right = Duration (2);
+    left -= right;
+    t.is ((int)(time_t)left,   1, "3 -= 2, 3 is now 1");
+    t.is ((int)(time_t)right,  2, "3 -= 2, 2 is still 2");
   }
 
   catch (const std::string& e) { t.diag (e); }
