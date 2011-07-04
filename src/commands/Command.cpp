@@ -264,7 +264,12 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 {
   Timer timer ("Command::filter");
 
-  Arguments f = context.args.extract_read_only_filter ();
+  Arguments f;
+  if (read_only ())
+    f = context.args.extract_read_only_filter ();
+  else
+    f = context.args.extract_write_filter ();
+
   if (f.size ())
   {
     Expression e (f);

@@ -74,12 +74,11 @@ public:
   }
 
 public:
-  std::string _first;
-  std::string _second;
-  std::string _third;
+  std::string _first;      // Represents token to be evaluated
+  std::string _second;     // Represents progressive token type
+  std::string _third;      // Represent original category
 };
 
-//class Arguments : public std::vector <std::pair <std::string, std::string> >
 class Arguments : public std::vector <Triple>
 {
 public:

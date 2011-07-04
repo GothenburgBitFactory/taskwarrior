@@ -158,10 +158,10 @@ void Arguments::capture (int argc, const char** argv)
     {
       std::vector <std::string>::iterator part;
       for (part = parts.begin (); part != parts.end (); ++part)
-        this->push_back (Triple (*part, "?", ""));
+        this->push_back (Triple (*part, "", ""));
     }
     else
-      this->push_back (Triple (argv[i], "?", ""));
+      this->push_back (Triple (argv[i], "", ""));
   }
 
   categorize ();
@@ -176,10 +176,10 @@ void Arguments::capture (const std::string& arg)
   {
     std::vector <std::string>::iterator part;
     for (part = parts.begin (); part != parts.end (); ++part)
-      this->push_back (Triple (*part, "?", ""));
+      this->push_back (Triple (*part, "", ""));
   }
   else
-    this->push_back (Triple (arg, "?", ""));
+    this->push_back (Triple (arg, "", ""));
 
   categorize ();
 }
@@ -196,10 +196,10 @@ void Arguments::capture_first (const std::string& arg)
   {
     std::vector <std::string>::iterator part;
     for (part = parts.begin (); part != parts.end (); ++part)
-      series.push_back (Triple (*part, "?", ""));
+      series.push_back (Triple (*part, "", ""));
   }
   else
-    series.push_back (Triple (arg, "?", ""));
+    series.push_back (Triple (arg, "", ""));
 
   // Locate an appropriate place to insert the series.  This would be
   // immediately after the program and command arguments.
@@ -238,7 +238,7 @@ void Arguments::append_stdin ()
       if (arg == "--")
         break;
 
-      this->push_back (Triple (arg, "?", ""));
+      this->push_back (Triple (arg, "", ""));
       something_happened = true;
     }
   }
@@ -561,7 +561,7 @@ void Arguments::resolve_aliases ()
     this->clear ();
     std::vector <std::string>::iterator e;
     for (e = expanded.begin (); e != expanded.end (); ++e)
-      this->push_back (Triple (*e, "?", ""));
+      this->push_back (Triple (*e, "", ""));
 
     categorize ();
   }
@@ -611,7 +611,7 @@ void Arguments::inject_defaults ()
     else if (found_sequence)
     {
       context.header (STRING_ASSUME_INFO);
-      push_back (Triple ("information", "?", "command"));
+      push_back (Triple ("information", "", "command"));
     }
   }
 }
@@ -1357,8 +1357,7 @@ Arguments Arguments::extract_read_only_filter ()
              arg->_third == "pattern"   ||
              arg->_third == "attr"      ||
              arg->_third == "attmod"    ||
-             arg->_third == "id"        ||
-             arg->_third == "uuid"      ||
+             arg->_third == "seq"       ||
              arg->_third == "op"        ||
              arg->_third == "exp"       ||
              arg->_third == "word")
@@ -1384,13 +1383,14 @@ Arguments Arguments::extract_read_only_filter ()
 Arguments Arguments::extract_write_filter ()
 {
   Arguments filter;
+  bool before_command = true;
 
   std::vector <Triple>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
     // Only use args prior to command.
     if (arg->_third == "command")
-      break;
+      before_command = false;
 
     // Excluded.
     else if (arg->_third == "program"  ||
@@ -1400,27 +1400,34 @@ Arguments Arguments::extract_write_filter ()
       ;
     }
 
-    // Included.
+    // Included regardless of position.
+    else if (arg->_third == "seq")
+    {
+      filter.push_back (*arg);
+    }
+
+    // Included if prior to command.
     else if (arg->_third == "tag"       ||
              arg->_third == "pattern"   ||
              arg->_third == "attr"      ||
              arg->_third == "attmod"    ||
-             arg->_third == "id"        ||
-             arg->_third == "uuid"      ||
              arg->_third == "op"        ||
              arg->_third == "exp"       ||
              arg->_third == "word")
     {
-      // "limit" is special - it is recognized but not included in filters.
-      if (arg->_first.find ("limit:") == std::string::npos)
-        filter.push_back (*arg);
+      if (before_command)
+      {
+        // "limit" is special - it is recognized but not included in filters.
+        if (arg->_first.find ("limit:") == std::string::npos)
+          filter.push_back (*arg);
+      }
     }
 
     // Error.
     else
     {
       // substitution
-      throw std::string ("A substitutions '")
+      throw std::string ("A substitution '")
             + arg->_first
             + "' is not allowed in a read-only command filter.";
     }
@@ -1554,7 +1561,9 @@ void Arguments::dump (const std::string& label)
     std::string category = (*this)[i]._third;
 
     Color c;
-    if (color_map[category].nontrivial ())
+    if (color_map[expanded].nontrivial ())
+      c = color_map[expanded];
+    else if (color_map[category].nontrivial ())
       c = color_map[category];
     else
       c = color_map["none"];

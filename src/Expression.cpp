@@ -84,7 +84,7 @@ bool Expression::eval (Task& task)
   std::vector <Triple>::const_iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->_third == "op")
+    if (arg->_second == "op")
     {
 //      std::cout << "# operator " << arg->_first << "\n";
 
@@ -377,7 +377,7 @@ bool Expression::eval (Task& task)
     else
     {
       Variant operand;
-      create_variant (operand, arg->_first, arg->_third);
+      create_variant (operand, arg->_first, arg->_second);
       value_stack.push_back (operand);
     }
   }
@@ -515,7 +515,7 @@ void Expression::expand_sequence ()
   }
 
   // Now insert the new sequence expression.
-  temp.push_back (Triple (sequence.str (), "?", "exp"));
+  temp.push_back (Triple (sequence.str (), "exp", "seq"));
 
   // Now copy everything after the last id/uuid.
   bool found_id = false;
@@ -556,7 +556,7 @@ void Expression::expand_tokens ()
   std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->_third == "exp")
+    if (arg->_second == "exp")
     {
       // Nibble each arg token by token.
       Nibbler n (arg->_first);
@@ -565,35 +565,35 @@ void Expression::expand_tokens ()
       {
         if (n.getQuoted ('"', s, true) ||
             n.getQuoted ('\'', s, true))
-          temp.push_back (Triple (s, "?", "string"));
+          temp.push_back (Triple (s, "string", arg->_third));
 
         else if (n.getQuoted ('/', s, true))
-          temp.push_back (Triple (s, "?", "pattern"));
+          temp.push_back (Triple (s, "pattern", arg->_third));
 
         else if (n.getOneOf (operators, s))
-          temp.push_back (Triple (s, "?", "op"));
+          temp.push_back (Triple (s, "op", arg->_third));
 
         else if (n.getDOM (s))
-          temp.push_back (Triple (s, "?", "lvalue"));
+          temp.push_back (Triple (s, "lvalue", arg->_third));
 
         else if (n.getNumber (d))
-          temp.push_back (Triple (format (d), "?", "number"));
+          temp.push_back (Triple (format (d), "number", arg->_third));
 
         else if (n.getInt (i))
-          temp.push_back (Triple (format (i), "?", "int"));
+          temp.push_back (Triple (format (i), "int", arg->_third));
 
         else if (n.getDateISO (t))
-          temp.push_back (Triple (Date (t).toISO (), "?", "date"));
+          temp.push_back (Triple (Date (t).toISO (), "date", arg->_third));
 
         else if (n.getDate (date_format, t))
-          temp.push_back (Triple (Date (t).toString (date_format), "?", "date"));
+          temp.push_back (Triple (Date (t).toString (date_format), "date", arg->_third));
 
         else
         {
           if (! n.getUntilWS (s))
             n.getUntilEOS (s);
 
-          temp.push_back (Triple (s, "?", "?"));
+          temp.push_back (Triple (s, "?", arg->_third));
         }
 
         n.skipWS ();
@@ -629,7 +629,7 @@ void Expression::implicit_and ()
     if (previous    != "op" &&
         arg->_third != "op")
     {
-      temp.push_back (Triple ("and", "?", "op"));
+      temp.push_back (Triple ("and", "op", "-"));
       delta = true;
     }
 
@@ -663,9 +663,9 @@ void Expression::expand_tag ()
       std::string value;
       Arguments::extract_tag (arg->_first, type, value);
 
-      temp.push_back (Triple ("tags", "?", "lvalue"));
-      temp.push_back (Triple (type == '+' ? "~" : "!~", "?", "op"));
-      temp.push_back (Triple (value, "?", "string"));
+      temp.push_back (Triple ("tags",                   "lvalue", arg->_third));
+      temp.push_back (Triple (type == '+' ? "~" : "!~", "op",     arg->_third));
+      temp.push_back (Triple (value,                    "string", arg->_third));
       delta = true;
     }
     else
@@ -695,9 +695,9 @@ void Expression::expand_pattern ()
       std::string value;
       Arguments::extract_pattern (arg->_first, value);
 
-      temp.push_back (Triple ("description", "?", "lvalue"));
-      temp.push_back (Triple ("~", "?", "op"));
-      temp.push_back (Triple (value, "?", "rx"));
+      temp.push_back (Triple ("description", "lvalue", arg->_third));
+      temp.push_back (Triple ("~",           "op",     arg->_third));
+      temp.push_back (Triple (value,         "rx",     arg->_third));
       delta = true;
     }
     else
@@ -734,9 +734,9 @@ void Expression::expand_attr ()
       // are preserved.
       value = "\"" + value + "\"";
 
-      temp.push_back (Triple (name, "?", "lvalue"));
-      temp.push_back (Triple ("=", "?", "op"));
-      temp.push_back (Triple (value, "?", "rvalue"));
+      temp.push_back (Triple (name,  "lvalue", arg->_third));
+      temp.push_back (Triple ("=",   "op",     arg->_third));
+      temp.push_back (Triple (value, "rvalue", arg->_third));
       delta = true;
     }
     else
@@ -778,75 +778,75 @@ void Expression::expand_attmod ()
 
       if (mod == "before" || mod == "under" || mod == "below")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("<", "?", "op"));
-        temp.push_back (Triple (value, "?", "rvalue"));
+        temp.push_back (Triple (name,  "lvalue", arg->_third));
+        temp.push_back (Triple ("<",   "op",     arg->_third));
+        temp.push_back (Triple (value, "rvalue", arg->_third));
       }
       else if (mod == "after" || mod == "over" || mod == "above")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple (">", "?", "op"));
-        temp.push_back (Triple (value, "?", "rvalue"));
+        temp.push_back (Triple (name,  "lvalue", arg->_third));
+        temp.push_back (Triple (">",   "op",     arg->_third));
+        temp.push_back (Triple (value, "rvalue", arg->_third));
       }
       else if (mod == "none")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("==", "?", "op"));
-        temp.push_back (Triple ("\"\"", "?", "string"));
+        temp.push_back (Triple (name,   "lvalue", arg->_third));
+        temp.push_back (Triple ("==",   "op",     arg->_third));
+        temp.push_back (Triple ("\"\"", "string", arg->_third));
       }
       else if (mod == "any")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("!=", "?", "op"));
-        temp.push_back (Triple ("\"\"", "?", "string"));
+        temp.push_back (Triple (name,   "lvalue", arg->_third));
+        temp.push_back (Triple ("!=",   "op",     arg->_third));
+        temp.push_back (Triple ("\"\"", "string", arg->_third));
       }
       else if (mod == "is" || mod == "equals")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("=", "?", "op"));
-        temp.push_back (Triple (value, "?", "rvalue"));
+        temp.push_back (Triple (name,  "lvalue", arg->_third));
+        temp.push_back (Triple ("=",   "op",     arg->_third));
+        temp.push_back (Triple (value, "rvalue", arg->_third));
       }
       else if (mod == "isnt" || mod == "not")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("!=", "?", "op"));
-        temp.push_back (Triple (value, "?", "rvalue"));
+        temp.push_back (Triple (name,  "lvalue", arg->_third));
+        temp.push_back (Triple ("!=",  "op",     arg->_third));
+        temp.push_back (Triple (value, "rvalue", arg->_third));
       }
       else if (mod == "has" || mod == "contains")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("~", "?", "op"));
-        temp.push_back (Triple (value, "?", "rvalue"));
+        temp.push_back (Triple (name,  "lvalue", arg->_third));
+        temp.push_back (Triple ("~",   "op",     arg->_third));
+        temp.push_back (Triple (value, "rvalue", arg->_third));
       }
       else if (mod == "hasnt")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("!~", "?", "op"));
-        temp.push_back (Triple (value, "?", "rvalue"));
+        temp.push_back (Triple (name,  "lvalue", arg->_third));
+        temp.push_back (Triple ("!~",  "op",     arg->_third));
+        temp.push_back (Triple (value, "rvalue", arg->_third));
       }
       else if (mod == "startswith" || mod == "left")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("~", "?", "op"));
-        temp.push_back (Triple ("^" + raw_value, "?", "rx"));
+        temp.push_back (Triple (name,            "lvalue", arg->_third));
+        temp.push_back (Triple ("~",             "op",     arg->_third));
+        temp.push_back (Triple ("^" + raw_value, "rx",     arg->_third));
       }
       else if (mod == "endswith" || mod == "right")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("~", "?", "op"));
-        temp.push_back (Triple (raw_value + "$", "?", "rx"));
+        temp.push_back (Triple (name,            "lvalue", arg->_third));
+        temp.push_back (Triple ("~",             "op",     arg->_third));
+        temp.push_back (Triple (raw_value + "$", "rx",     arg->_third));
       }
       else if (mod == "word")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("~", "?", "op"));
-        temp.push_back (Triple ("\\b" + raw_value + "\\b", "?", "rx"));
+        temp.push_back (Triple (name,                      "lvalue", arg->_third));
+        temp.push_back (Triple ("~",                       "op",     arg->_third));
+        temp.push_back (Triple ("\\b" + raw_value + "\\b", "rx",     arg->_third));
       }
       else if (mod == "noword")
       {
-        temp.push_back (Triple (name, "?", "lvalue"));
-        temp.push_back (Triple ("!~", "?", "op"));
-        temp.push_back (Triple ("\\b" + raw_value + "\\b", "?", "rx"));
+        temp.push_back (Triple (name,                      "lvalue", arg->_third));
+        temp.push_back (Triple ("!~",                      "op",     arg->_third));
+        temp.push_back (Triple ("\\b" + raw_value + "\\b", "rx",     arg->_third));
       }
       else
         throw std::string ("Error: unrecognized attribute modifier '") + mod + "'.";
@@ -877,9 +877,9 @@ void Expression::expand_word ()
   {
     if (arg->_third == "word")
     {
-      temp.push_back (Triple ("description", "?", "lvalue"));
-      temp.push_back (Triple ("~", "?", "op"));
-      temp.push_back (Triple ("\"" + arg->_first + "\"", "?", "rvalue"));
+      temp.push_back (Triple ("description",             "lvalue", arg->_third));
+      temp.push_back (Triple ("~",                       "op",     arg->_third));
+      temp.push_back (Triple ("\"" + arg->_first + "\"", "rvalue", arg->_third));
 
       delta = true;
     }

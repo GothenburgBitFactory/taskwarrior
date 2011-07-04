@@ -153,7 +153,7 @@ void Hooks::initialize ()
     }
   }
   else
-    context.debug ("Hooks::initialize - hook system off");
+    context.debug ("Hooks::initialize --> off");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
