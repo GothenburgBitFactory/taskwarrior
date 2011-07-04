@@ -48,7 +48,7 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (608);
+  UnitTest t (618);
 
   Duration d;
 
@@ -731,6 +731,16 @@ int main (int argc, char** argv)
     left = Duration ("1y");     right = Duration ("1q");     t.ok (left > right, "1y > 1q");
 
     left = Duration ("-3s");    right = Duration ("-6s");    t.ok (left > right, "duration -3s > -6s");
+
+    // operator<=
+    left = Duration ("1sec");   right = Duration ("2secs");  t.ok (left <= right, "duration 1sec <= 2secs");
+    left = Duration ("2secs");  right = Duration ("2secs");  t.ok (left <= right, "duration 1sec <= 2secs");
+    left = Duration ("2secs");  right = Duration ("1secs");  t.notok (left <= right, "duration NOT 1sec <= 2secs");
+
+    // operator>=
+    left = Duration ("1sec");   right = Duration ("2secs");  t.notok (left >= right, "duration NOT 1sec >= 2secs");
+    left = Duration ("2secs");  right = Duration ("2secs");  t.ok (left >= right, "duration 1sec >= 2secs");
+    left = Duration ("2secs");  right = Duration ("1secs");  t.ok (left >= right, "duration 1sec >= 2secs");
   }
 
   catch (const std::string& e) { t.diag (e); }

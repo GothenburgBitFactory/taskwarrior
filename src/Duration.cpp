@@ -227,12 +227,30 @@ bool Duration::operator< (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Duration::operator<= (const Duration& other)
+{
+  long left  = (long) (      mNegative ?       -mSecs :       mSecs);
+  long right = (long) (other.mNegative ? -other.mSecs : other.mSecs);
+
+  return left <= right;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator> (const Duration& other)
 {
   long left  = (long) (      mNegative ?       -mSecs :       mSecs);
   long right = (long) (other.mNegative ? -other.mSecs : other.mSecs);
 
   return left > right;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Duration::operator>= (const Duration& other)
+{
+  long left  = (long) (      mNegative ?       -mSecs :       mSecs);
+  long right = (long) (other.mNegative ? -other.mSecs : other.mSecs);
+
+  return left >= right;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

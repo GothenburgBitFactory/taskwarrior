@@ -39,7 +39,9 @@ public:
   Duration (time_t);                     // Constructor
   Duration (const std::string&);         // Parse
   bool operator< (const Duration&);
+  bool operator<= (const Duration&);
   bool operator> (const Duration&);
+  bool operator>= (const Duration&);
   Duration& operator= (const Duration&);
   Duration& operator- (const Duration&);
   ~Duration ();                          // Destructor
