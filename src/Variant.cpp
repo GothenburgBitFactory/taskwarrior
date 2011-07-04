@@ -24,12 +24,17 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <text.h>
+#include <i18n.h>
+#include <Context.h>
 #include <Variant.h>
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant ()
@@ -146,34 +151,34 @@ bool Variant::operator<= (Variant& other)
   switch (_type)
   {
   case v_boolean:
-    throw std::string ("Cannot perform relative comparison on bool types");
+    throw std::string (STRING_VARIANT_REL_BOOL);
     break;
 
   case v_integer:
-    result = _integer <= other._integer ? true : false;
+    result = _integer <= other._integer;
     break;
 
   case v_double:
-    result = _double <= other._double ? true : false;
+    result = _double <= other._double;
     break;
 
   case v_string:
     {
       int collating = strcmp (_string.c_str (), other._string.c_str ());
-      result = collating <= 0 ? true : false;
+      result = collating <= 0;
     }
     break;
 
   case v_date:
-    result = _date <= other._date ? true : false;
+    result = _date <= other._date;
     break;
 
   case v_duration:
-    result = (time_t)_duration <= (time_t)other._duration ? true : false;
+    result = _duration <= other._duration;
     break;
 
   case v_unknown:
-    throw std::string ("Cannot perform relative comparison on unknown types");
+    throw std::string (STRING_VARIANT_REL_UNKNOWN);
     break;
   }
 
@@ -189,34 +194,34 @@ bool Variant::operator>= (Variant& other)
   switch (_type)
   {
   case v_boolean:
-    throw std::string ("Cannot perform relative comparison on bool types");
+    throw std::string (STRING_VARIANT_REL_BOOL);
     break;
 
   case v_integer:
-    result = _integer >= other._integer ? true : false;
+    result = _integer >= other._integer;
     break;
 
   case v_double:
-    result = _double >= other._double ? true : false;
+    result = _double >= other._double;
     break;
 
   case v_string:
     {
       int collating = strcmp (_string.c_str (), other._string.c_str ());
-      result = collating >= 0 ? true : false;
+      result = collating >= 0;
     }
     break;
 
   case v_date:
-    result = _date >= other._date ? true : false;
+    result = _date >= other._date;
     break;
 
   case v_duration:
-    result = (time_t)_duration >= (time_t)other._duration ? true : false;
+    result = _duration >= other._duration;
     break;
 
   case v_unknown:
-    throw std::string ("Cannot perform relative comparison on unknown types");
+    throw std::string (STRING_VARIANT_REL_UNKNOWN);
     break;
   }
 
@@ -232,34 +237,34 @@ bool Variant::operator== (Variant& other)
   switch (_type)
   {
   case v_boolean:
-    result = _bool == other._bool ? true : false;
+    result = _bool == other._bool;
     break;
 
   case v_integer:
-    result = _integer == other._integer ? true : false;
+    result = _integer == other._integer;
     break;
 
   case v_double:
-    result = _double == other._double ? true : false;
+    result = _double == other._double;
     break;
 
   case v_string:
     {
       int collating = strcmp (_string.c_str (), other._string.c_str ());
-      result = collating == 0 ? true : false;
+      result = collating == 0;
     }
     break;
 
   case v_date:
-    result = _date == other._date ? true : false;
+    result = _date == other._date;
     break;
 
   case v_duration:
-    result = _duration == other._duration ? true : false;
+    result = _duration == other._duration;
     break;
 
   case v_unknown:
-    throw std::string ("Cannot perform relative comparison on unknown types");
+    throw std::string (STRING_VARIANT_REL_UNKNOWN);
     break;
   }
 
@@ -275,34 +280,34 @@ bool Variant::operator!= (Variant& other)
   switch (_type)
   {
   case v_boolean:
-    result = _bool != other._bool ? true : false;
+    result = _bool != other._bool;
     break;
 
   case v_integer:
-    result = _integer != other._integer ? true : false;
+    result = _integer != other._integer;
     break;
 
   case v_double:
-    result = _double != other._double ? true : false;
+    result = _double != other._double;
     break;
 
   case v_string:
     {
       int collating = strcmp (_string.c_str (), other._string.c_str ());
-      result = collating != 0 ? true : false;
+      result = collating != 0;
     }
     break;
 
   case v_date:
-    result = _date != other._date ? true : false;
+    result = _date != other._date;
     break;
 
   case v_duration:
-    result = _duration != other._duration ? true : false;
+    result = _duration != other._duration;
     break;
 
   case v_unknown:
-    throw std::string ("Cannot perform relative comparison on unknown types");
+    throw std::string (STRING_VARIANT_REL_UNKNOWN);
     break;
   }
 
@@ -485,34 +490,34 @@ bool Variant::operator< (Variant& other)
   switch (_type)
   {
   case v_boolean:
-    throw std::string ("Cannot perform relational compare Boolean types");
+    throw std::string (STRING_VARIANT_REL_BOOL);
     break;
 
   case v_integer:
-    result = _integer < other._integer ? true : false;
+    result = _integer < other._integer;
     break;
 
   case v_double:
-    result = _double < other._double ? true : false;
+    result = _double < other._double;
     break;
 
   case v_string:
     {
       int collating = strcmp (_string.c_str (), other._string.c_str ());
-      result = collating < 0 ? true : false;
+      result = collating < 0;
     }
     break;
 
   case v_date:
-    result = _date < other._date ? true : false;
+    result = _date < other._date;
     break;
 
   case v_duration:
-    result = _duration < other._duration ? true : false;
+    result = _duration < other._duration;
     break;
 
   case v_unknown:
-    throw std::string ("Cannot perform relative comparisons on unknown types");
+    throw std::string (STRING_VARIANT_REL_UNKNOWN);
     break;
   }
 
@@ -528,34 +533,34 @@ bool Variant::operator> (Variant& other)
   switch (_type)
   {
   case v_boolean:
-    throw std::string ("Cannot perform relational compare Boolean types");
+    throw std::string (STRING_VARIANT_REL_BOOL);
     break;
 
   case v_integer:
-    result = _integer > other._integer ? true : false;
+    result = _integer > other._integer;
     break;
 
   case v_double:
-    result = _double > other._double ? true : false;
+    result = _double > other._double;
     break;
 
   case v_string:
     {
       int collating = strcmp (_string.c_str (), other._string.c_str ());
-      result = collating > 0 ? true : false;
+      result = collating > 0;
     }
     break;
 
   case v_date:
-    result = _date > other._date ? true : false;
+    result = _date > other._date;
     break;
 
   case v_duration:
-    result = _duration > other._duration ? true : false;
+    result = _duration > other._duration;
     break;
 
   case v_unknown:
-    throw std::string ("Cannot perform relative comparisons on unknown types");
+    throw std::string (STRING_VARIANT_REL_UNKNOWN);
     break;
   }
 
@@ -648,11 +653,11 @@ std::string Variant::format ()
     break;
 
   case v_date:
-    // TODO Format _date.
+    output = _date.toString (context.config.get ("dateformat"));
     break;
 
   case v_duration:
-    // TODO Format _duration.
+    output = _duration.formatCompact ();
     break;
 
   case v_unknown:
