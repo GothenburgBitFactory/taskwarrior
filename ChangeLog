@@ -130,6 +130,8 @@
    (thanks to Owen Clarke).
  + Applied patches for bug #798 which allows out-of-source builds (thanks to
    Ben Boeckel).
+ + Applied documentation patch for #799, fixing a broken link in the man page
+   (thanks to Bryce Harrington).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
