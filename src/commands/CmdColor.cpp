@@ -28,6 +28,9 @@
 #include <sstream>
 #include <ViewText.h>
 #include <Context.h>
+#include <Color.h>
+#include <text.h>
+#include <i18n.h>
 #include <CmdColor.h>
 
 extern Context context;
@@ -47,15 +50,21 @@ CmdColor::CmdColor ()
 int CmdColor::execute (std::string& output)
 {
   int rc = 0;
-/*
-  std::stringstream out;
 
+  // Get the non-attribute, non-fancy command line arguments.
+  bool legend = false;
+  Arguments words = context.args.extract_simple_words ();
+  std::vector <Triple>::iterator word;
+  for (word = words.begin (); word != words.end (); ++word)
+    if (closeEnough ("legend", word->_first))
+      legend = true;
+
+  std::stringstream out;
   if (context.color ())
   {
     // If the description contains 'legend', show all the colors currently in
     // use.
-    std::string description = context.task.get ("description");
-    if (description.find ("legend") != std::string::npos)
+    if (legend)
     {
       out << "\nHere are the colors currently in use:\n";
 
@@ -89,7 +98,7 @@ int CmdColor::execute (std::string& output)
 
     // If there is something in the description, then assume that is a color,
     // and display it as a sample.
-    else if (description != "")
+    else if (words.size ())
     {
       Color one    ("black on bright yellow");
       Color two    ("underline cyan on bright blue");
@@ -97,7 +106,17 @@ int CmdColor::execute (std::string& output)
       Color four   ("rgb150 on rgb020");
       Color five   ("underline grey10 on grey3");
       Color six    ("red on color173");
-      Color sample (description);
+
+      std::string swatch;
+      for (word = words.begin (); word != words.end (); ++word)
+      {
+        if (word != words.begin ())
+          swatch += " ";
+
+        swatch += word->_first;
+      }
+
+      Color sample (swatch);
 
       out << "\n"
           << "Use this command to see how colors are displayed by your terminal.\n\n"
@@ -113,7 +132,7 @@ int CmdColor::execute (std::string& output)
           << "  " << six.colorize ("task color red on color173")                   << "\n"
           << "\n"
           << "Your sample:"                                                        << "\n"
-          << "  " << sample.colorize ("task color " + description)                 << "\n\n";
+          << "  " << sample.colorize ("task color " + swatch)                      << "\n\n";
     }
 
     // Show all supported colors.  Possibly show some unsupported ones too.
@@ -240,7 +259,6 @@ int CmdColor::execute (std::string& output)
   }
 
   output = out.str ();
-*/
   return rc;
 }
 
