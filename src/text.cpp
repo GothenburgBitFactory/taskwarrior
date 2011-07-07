@@ -618,6 +618,18 @@ bool compare (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool closeEnough (const std::string& reference, const std::string& attempt)
+{
+  if (compare (reference, attempt, false))
+    return true;
+
+  if (attempt.length () < reference.length ())
+    return compare (reference.substr (0, attempt.length ()), attempt, false);
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string::size_type find (
   const std::string& text,
   const std::string& pattern,
