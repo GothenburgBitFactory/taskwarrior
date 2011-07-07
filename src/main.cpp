@@ -61,8 +61,9 @@ int main (int argc, const char** argv)
 
   try
   {
-    context.initialize (argc, argv);
-    status = context.run ();
+    status = context.initialize (argc, argv);
+    if (status == 0)
+      status = context.run ();
   }
 
   catch (std::string& error)

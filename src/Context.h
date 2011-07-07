@@ -50,7 +50,7 @@ public:
   Context (const Context&);
   Context& operator= (const Context&);
 
-  void initialize (int, const char**); // all startup
+  int initialize (int, const char**);  // all startup
   int run ();
   int dispatch (std::string&);         // command handler dispatch
   void shadow ();                      // shadow file update

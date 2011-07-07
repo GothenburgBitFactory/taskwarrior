@@ -65,85 +65,114 @@ Context::~Context ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Context::initialize (int argc, const char** argv)
+int Context::initialize (int argc, const char** argv)
 {
   Timer t ("Context::initialize");
+  int rc = 0;
 
-  // char** argv --> std::vector <std::string> Context::args.
-  // TODO Handle "cal" case here.
-  args.capture (argc, argv);
+  try
+  {
+    // char** argv --> std::vector <std::string> Context::args.
+    // TODO Handle "cal" case here.
+    args.capture (argc, argv);
 
-  // echo one two -- three | task zero --> task zero one two
-  // 'three' is left in the input buffer.
-  args.append_stdin ();
+    // echo one two -- three | task zero --> task zero one two
+    // 'three' is left in the input buffer.
+    args.append_stdin ();
 
-  // Assume default .taskrc and .task locations.
-  assumeLocations ();
+    // Assume default .taskrc and .task locations.
+    assumeLocations ();
 
-  // Process 'rc:<file>' command line override, and remove the argument from the
-  // Context::args.
-  args.rc_override (home_dir, rc_file);
+    // Process 'rc:<file>' command line override, and remove the argument from the
+    // Context::args.
+    args.rc_override (home_dir, rc_file);
 
-  // Dump any existing values and load rc file.
-  config.clear ();
-  config.load  (rc_file);
+    // Dump any existing values and load rc file.
+    config.clear ();
+    config.load  (rc_file);
 
-  // The data location, Context::data_dir, is determined from the assumed
-  // location (~/.task), or set by data.location in the config file, or
-  // overridden by rc.data.location on the command line.
-  std::string location;
-  args.get_data_location (location);
-  data_dir = Directory (location);
-  extension_dir = data_dir.data + "/extensions";
+    // The data location, Context::data_dir, is determined from the assumed
+    // location (~/.task), or set by data.location in the config file, or
+    // overridden by rc.data.location on the command line.
+    std::string location;
+    args.get_data_location (location);
+    data_dir = Directory (location);
+    extension_dir = data_dir.data + "/extensions";
 
-  // Create missing config file and data directory, if necessary.
-  createDefaultConfig ();
+    // Create missing config file and data directory, if necessary.
+    createDefaultConfig ();
 
-  // Handle Aliases.
-  loadAliases ();
-  args.resolve_aliases ();
+    // Handle Aliases.
+    loadAliases ();
+    args.resolve_aliases ();
 
-  // Apply rc overrides to Context::config, capturing raw args for later use.
-  args.apply_overrides ();
+    // Apply rc overrides to Context::config, capturing raw args for later use.
+    args.apply_overrides ();
 
-  // Initialize the color rules, if necessary.
-  if (color ())
-    initializeColorRules ();
+    // Initialize the color rules, if necessary.
+    if (color ())
+      initializeColorRules ();
 
-  // Instantiate built-in command objects.
-  Command::factory (commands);
+    // Instantiate built-in command objects.
+    Command::factory (commands);
 
-  // Instantiate built-in column objects.
-  Column::factory (columns);
+    // Instantiate built-in column objects.
+    Column::factory (columns);
 
-  // Categorize all arguments one more time.
-  args.categorize ();
+    // Categorize all arguments one more time.
+    args.categorize ();
 
-  // Handle default command and assumed 'info' command.
-  args.inject_defaults ();
+    // Handle default command and assumed 'info' command.
+    args.inject_defaults ();
 
-  // TODO Instantiate extension command objects.
-  // TODO Instantiate default command object.
+    // TODO Instantiate extension command objects.
+    // TODO Instantiate default command object.
 
-  // TODO Instantiate extension column objects.
+    // TODO Instantiate extension column objects.
 
-  // TODO Instantiate extension UDA objects.
-  // TODO Instantiate extension format objects.
+    // TODO Instantiate extension UDA objects.
+    // TODO Instantiate extension format objects.
 
-  // If there is a locale variant (en-US.<variant>), then strip it.
-  std::string locale = config.get ("locale");
-  std::string::size_type period = locale.find ('.');
-  if (period != std::string::npos)
-    locale = locale.substr (0, period);
+    // If there is a locale variant (en-US.<variant>), then strip it.
+    std::string locale = config.get ("locale");
+    std::string::size_type period = locale.find ('.');
+    if (period != std::string::npos)
+      locale = locale.substr (0, period);
 
-  // Initialize the database.
-  tdb.clear ();
-  tdb.location (data_dir);
+    // Initialize the database.
+    tdb.clear ();
+    tdb.location (data_dir);
 
-  // Hook system init, plus post-start event occurring at the first possible
-  // moment after hook initialization.
-  hooks.initialize ();
-  hooks.trigger ("on-launch");
+    // Hook system init, plus post-start event occurring at the first possible
+    // moment after hook initialization.
+    hooks.initialize ();
+    hooks.trigger ("on-launch");
+  }
+
+  catch (const std::string& error)
+  {
+    footnote (error);
+    rc = 2;
+  }
+
+  catch (...)
+  {
+    footnote (STRING_UNKNOWN_ERROR);
+    rc = 3;
+  }
+
+  // Dump all debug messages, controlled by rc.debug.
+  if (rc && config.getBoolean ("debug"))
+  {
+    std::vector <std::string>::iterator d;
+    for (d = debugMessages.begin (); d != debugMessages.end (); ++d)
+      if (color ())
+        std::cout << colorizeDebug (*d) << "\n";
+      else
+        std::cout << *d << "\n";
+  }
+
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
