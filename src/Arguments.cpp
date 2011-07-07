@@ -1503,6 +1503,62 @@ Arguments Arguments::extract_modifications ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Arguments Arguments::extract_simple_words ()
+{
+  Arguments filter;
+
+  std::vector <Triple>::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    // Excluded.
+    if (arg->_third == "program"  ||
+        arg->_third == "command"  ||
+        arg->_third == "rc"       ||
+        arg->_third == "override" ||
+        arg->_third == "attr"     ||
+        arg->_third == "attmod")
+    {
+      ;
+    }
+
+    // Included.
+    else if (arg->_third == "tag"       ||
+             arg->_third == "pattern"   ||
+             arg->_third == "seq"       ||
+             arg->_third == "op"        ||
+             arg->_third == "exp"       ||
+             arg->_third == "word")
+    {
+      // "limit" is special - it is recognized but not included in filters.
+      if (arg->_first.find ("limit:") == std::string::npos)
+        filter.push_back (*arg);
+    }
+
+    // Error.
+    else
+    {
+      if (arg->_third == "tag")
+        throw std::string ("A tag '") + arg->_first + "' is not allowed "
+          "with this command.";
+
+      else if (arg->_third == "pattern")
+        throw std::string ("A pattern '") + arg->_first + "' is not allowed "
+          "with this command.";
+
+      else if (arg->_third == "substitution")
+        throw std::string ("A substitution '") + arg->_first + "' is not allowed "
+          "with this command.";
+
+      else
+        throw std::string ("Argument '") + arg->_first + "' is not allowed "
+          "with this command.";
+    }
+  }
+
+  return filter;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Arguments::valid_modifier (const std::string& modifier)
 {
   for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)

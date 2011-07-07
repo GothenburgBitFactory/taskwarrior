@@ -132,6 +132,7 @@ public:
   Arguments extract_read_only_filter ();
   Arguments extract_write_filter ();
   Arguments extract_modifications ();
+  Arguments extract_simple_words ();
 
   static bool valid_modifier (const std::string&);
 
