@@ -48,33 +48,28 @@ CmdConfig::CmdConfig ()
 int CmdConfig::execute (std::string& output)
 {
   int rc = 0;
-/*
-  TODO Revise argument handling
-
   std::stringstream out;
 
-  // Obtain the arguments from the description.  That way, things like '--'
-  // have already been handled.
-  std::vector <std::string> args;
-  split (args, context.task.get ("description"), ' ');
+  // Get the non-attribute, non-fancy command line arguments.
+  Arguments words = context.args.extract_simple_words ();
 
   // Support:
   //   task config name value    # set name to value
   //   task config name ""       # set name to blank
   //   task config name          # remove name
-  if (args.size () > 0)
+  if (words.size ())
   {
-    std::string name = args[0];
+    std::string name = words[0]._first;
     std::string value = "";
 
-    if (args.size () > 1)
+    if (words.size () > 1)
     {
-      for (unsigned int i = 1; i < args.size (); ++i)
+      for (unsigned int i = 1; i < words.size (); ++i)
       {
         if (i > 1)
           value += " ";
 
-        value += args[i];
+        value += words[i]._first;
       }
     }
 
@@ -88,8 +83,8 @@ int CmdConfig::execute (std::string& output)
 
       // task config name value
       // task config name ""
-      if (args.size () > 1 ||
-          context.args[context.args.size () - 1] == "")
+      if (words.size () ||
+          words.back ()._first == "")
       {
         // Find existing entry & overwrite
         std::string::size_type pos = contents.find (name + "=");
@@ -163,7 +158,6 @@ int CmdConfig::execute (std::string& output)
   }
   else
     throw std::string ("Specify the name of a config variable to modify.");
-*/
 
   return rc;
 }
