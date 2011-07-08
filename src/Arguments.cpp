@@ -168,7 +168,7 @@ void Arguments::capture (int argc, const char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Append a pair with a category of "".
+// Append a Triple with a blank category.
 void Arguments::capture (const std::string& arg)
 {
   std::vector <std::string> parts;
@@ -185,7 +185,7 @@ void Arguments::capture (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Prepend a pair with a category of "".
+// Prepend a Triple with a blank category.
 void Arguments::capture_first (const std::string& arg)
 {
   // Break the new argument into parts that comprise a series.
@@ -289,6 +289,17 @@ void Arguments::categorize ()
       else if (arg == this->begin ())
       {
         arg->_third = "program";  // TODO Is this a problem for expressions that do not contain a program name?
+
+        if (arg->_first == "cal"                                        ||
+            arg->_first == "calendar"                                   ||
+            arg->_first.find ("/calendar") == arg->_first.length () - 9 ||
+            arg->_first.find ("/cal")      == arg->_first.length () - 4)
+        {
+          arg->_first = "calendar";
+          arg->_third = "command";
+          found_command = true;
+          found_non_sequence = true;
+        }
       }
 
       // command

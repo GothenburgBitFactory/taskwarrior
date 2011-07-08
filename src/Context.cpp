@@ -120,6 +120,7 @@ int Context::initialize (int argc, const char** argv)
     Column::factory (columns);
 
     // Categorize all arguments one more time.
+    // TODO This may not be necessary.
     args.categorize ();
 
     // Handle default command and assumed 'info' command.
