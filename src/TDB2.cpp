@@ -442,7 +442,6 @@ void TDB::lock (bool lockFile /* = true */)
   mCompleted.clear ();
   mModified.clear ();
 
-  
   foreach (location, mLocations)
   {
     location->pending   = openAndLock (location->path + "/pending.data");
@@ -1836,8 +1835,9 @@ FILE* TDB::openAndLock (const std::string& file)
     throw std::string ("Could not open '") + file + "'.";
 
   // Lock if desired.  Try three times before failing.
-  int retry = 0;
   if (mLock)
+  {
+    int retry = 0;
     while (flock (fileno (in), LOCK_NB | LOCK_EX) && ++retry <= 3)
     {
       std::cout << "Waiting for file lock...\n";
@@ -1845,8 +1845,9 @@ FILE* TDB::openAndLock (const std::string& file)
         delay (0.2);
     }
 
-  if (retry > 3)
-    throw std::string ("Could not lock '") + file + "'.";
+    if (retry > 3)
+      throw std::string ("Could not lock '") + file + "'.";
+  }
 
   return in;
 }
