@@ -248,7 +248,36 @@ void Arguments::append_stdin ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Scan all the arguments, and assign a category for each one.
+// Scan all the arguments, and assign a category for each one.  The categories
+// are used to identify arguments types, and when extracting filters and
+// modifications.
+//
+// Categories and filters:
+//
+//               ro    wr    mods  words
+// terminator     -     -     -     -
+// program        -     -     -     -
+// command        -     -     -     -
+// rc             -     -     -     -
+// override       -     -     -     -
+// id             Y     Y     Err   Y
+// uuid           Y     Y     Err   Y
+// word           Y     <     >     Y
+// tag            Y     <     >     Y
+// attmod         Y     <     Err   -
+// attr           Y     <     >     -
+// substitution   Err   Err   >     Y
+// pattern        Y     <     Err   Y
+// op             Y     <     >     Y
+// exp            Y     <     Err   Y
+// 
+// Legend:
+//   Y    Included
+//   -    Excluded
+//   <    Included if before <command>
+//   >    Included if after <command>
+//   Err  Error if present
+
 void Arguments::categorize ()
 {
   bool terminated                     = false;
