@@ -1368,7 +1368,8 @@ Arguments Arguments::extract_read_only_filter ()
              arg->_third == "pattern"   ||
              arg->_third == "attr"      ||
              arg->_third == "attmod"    ||
-             arg->_third == "seq"       ||
+             arg->_third == "id"        ||
+             arg->_third == "uuid"      ||
              arg->_third == "op"        ||
              arg->_third == "exp"       ||
              arg->_third == "word")
@@ -1382,8 +1383,11 @@ Arguments Arguments::extract_read_only_filter ()
     else
     {
       // substitution
-      throw std::string ("A substitution '") + arg->_first + "' is not allowed "
-            "in a read-only command filter.";
+      throw std::string ("A ")
+            + arg->_third
+            + " '"
+            + arg->_first
+            + "' is not allowed in a read-only filter.";
     }
   }
 
@@ -1412,7 +1416,8 @@ Arguments Arguments::extract_write_filter ()
     }
 
     // Included regardless of position.
-    else if (arg->_third == "seq")
+    else if (arg->_third == "id"   ||
+             arg->_third == "uuid")
     {
       filter.push_back (*arg);
     }
@@ -1462,6 +1467,12 @@ Arguments Arguments::extract_modifications ()
       seen_command = true;
     }
 
+    // Sequence excluded regardless of location.
+    else if (arg->_third == "id"   ||
+             arg->_third == "uuid")
+    {
+    }
+
     else if (seen_command)
     {
       // Excluded.
@@ -1496,6 +1507,7 @@ Arguments Arguments::extract_modifications ()
                 + arg->_first
                 + "' is not allowed when modifiying a task.";
 
+        // TODO Really?
         else if (arg->_third == "exp")
           throw std::string ("An expression '")
                 + arg->_first
@@ -1533,11 +1545,13 @@ Arguments Arguments::extract_simple_words ()
     }
 
     // Included.
-    else if (arg->_third == "tag"       ||
-             arg->_third == "pattern"   ||
-             arg->_third == "seq"       ||
-             arg->_third == "op"        ||
-             arg->_third == "exp"       ||
+    else if (arg->_third == "tag"          ||
+             arg->_third == "pattern"      ||
+             arg->_third == "substitution" ||
+             arg->_third == "id"           ||
+             arg->_third == "uuid"         ||
+             arg->_third == "op"           ||
+             arg->_third == "exp"          ||
              arg->_third == "word")
     {
       // "limit" is special - it is recognized but not included in filters.
@@ -1547,23 +1561,8 @@ Arguments Arguments::extract_simple_words ()
 
     // Error.
     else
-    {
-      if (arg->_third == "tag")
-        throw std::string ("A tag '") + arg->_first + "' is not allowed "
-          "with this command.";
-
-      else if (arg->_third == "pattern")
-        throw std::string ("A pattern '") + arg->_first + "' is not allowed "
-          "with this command.";
-
-      else if (arg->_third == "substitution")
-        throw std::string ("A substitution '") + arg->_first + "' is not allowed "
-          "with this command.";
-
-      else
-        throw std::string ("Argument '") + arg->_first + "' is not allowed "
-          "with this command.";
-    }
+      throw std::string ("Argument '") + arg->_first + "' is not allowed "
+        "with this command.";
   }
 
   return filter;
