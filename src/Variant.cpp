@@ -590,8 +590,21 @@ void Variant::input (const std::string& input)
     return;
   }
 
-  // TODO Attempt Date (input) parse.
-  // TODO Attempt Duration (input) parse.
+  // Attempt Date (input) parse.
+  if (Date::valid (input, context.config.get ("dateformat")))
+  {
+    _type = v_date;
+    _date = Date (input);
+    return;
+  }
+
+  // Attempt Duration (input) parse.
+  if (Duration::valid (input))
+  {
+    _type = v_duration;
+    _duration = Duration (input);
+    return;
+  }
 
   bool numeric = true;
   bool period = false;
