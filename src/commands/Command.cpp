@@ -299,31 +299,35 @@ void Command::modify_task (Task& task, Arguments& arguments)
       std::string name;
       std::string value;
       Arguments::extract_attr (arg->_first, name, value);
-
-      // TODO All 'value's must be eval'd first.
-
-      // Dependencies must be resolved to UUIDs.
-      if (name == "depends")
+      if (Arguments::is_attribute (name, name))
       {
-        // Convert ID to UUID.
-        std::vector <std::string> deps;
-        split (deps, value, ',');
+        // TODO All 'value's must be eval'd first.
 
-        // Apply or remove dendencies in turn.
-        std::vector <std::string>::iterator i;
-        for (i = deps.begin (); i != deps.end (); i++)
+        // Dependencies must be resolved to UUIDs.
+        if (name == "depends")
         {
-          int id = strtol (i->c_str (), NULL, 10);
-          if (id < 0)
-            task.removeDependency (-id);
-          else
-            task.addDependency (id);
-        }
-      }
+          // Convert ID to UUID.
+          std::vector <std::string> deps;
+          split (deps, value, ',');
 
-      // By default, just add it.
+          // Apply or remove dendencies in turn.
+          std::vector <std::string>::iterator i;
+          for (i = deps.begin (); i != deps.end (); i++)
+          {
+            int id = strtol (i->c_str (), NULL, 10);
+            if (id < 0)
+              task.removeDependency (-id);
+            else
+              task.addDependency (id);
+          }
+        }
+
+        // By default, just add it.
+        else
+          task.set (name, value);
+      }
       else
-        task.set (name, value);
+        throw format (STRING_CMD_ADD_BAD_ATTRIBUTE, name);
     }
 
     // Tags need special handling because they are essentially a vector stored

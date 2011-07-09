@@ -173,6 +173,7 @@
 #define STRING_CMD_URGENCY_RESULT    "task {1} urgency {2}"
 #define STRING_CMD_ADD_USAGE         "Adds a new task."
 #define STRING_CMD_ADD_FEEDBACK      "Created task {1}."
+#define STRING_CMD_ADD_BAD_ATTRIBUTE "Unrecognized attribute '{1}'."
 #define STRING_CMD_MOD_UNEXPECTED    "Unexpected argument '{1}' found while modifying a task."
 #define STRING_CMD_LOG_USAGE         "Adds a new task that is already completed."
 #define STRING_CMD_IDS_USAGE_RANGE   "Shows only the IDs of matching tasks, in the form of a range."
