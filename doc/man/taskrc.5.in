@@ -699,6 +699,12 @@ Task has priority L.
 .br
 .B color.pri.none
 Task has no priority.
+.br
+.B color.completed
+Task is completed.
+.br
+.B color.deleted
+Task is deleted.
 .RE
 .RE
 
@@ -850,7 +856,7 @@ Colors the output of the merge command.
 .RE
 
 .TP
-.B rule.precedence.color=due.today,active,blocked,overdue,due,keyword,project,tag,recurring,pri,tagged
+.B rule.precedence.color=due.today,active,blocked,overdue,due,keyword,project,tag,recurring,pri,tagged,completed,deleted
 .RS
 This setting specifies the precedence of the color rules, from highest to
 lowest.  Note that the prefix 'color.' is omitted (for brevity), and that any

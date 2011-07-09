@@ -254,6 +254,20 @@ static void colorizeRecurring (Task& task, const std::string& rule, Color& c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+static void colorizeCompleted (Task& task, const std::string& rule, Color& c)
+{
+  if (task.getStatus () == Task::completed)
+    c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void colorizeDeleted (Task& task, const std::string& rule, Color& c)
+{
+  if (task.getStatus () == Task::completed)
+    c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void autoColorize (Task& task, Color& c)
 {
   // The special tag 'nocolor' overrides all auto and specific colorization.
@@ -283,6 +297,8 @@ void autoColorize (Task& task, Color& c)
     else if (*r == "color.due.today")              colorizeDueToday     (task, *r, c);
     else if (*r == "color.overdue")                colorizeOverdue      (task, *r, c);
     else if (*r == "color.recurring")              colorizeRecurring    (task, *r, c);
+    else if (*r == "color.completed")              colorizeCompleted    (task, *r, c);
+    else if (*r == "color.deleted")                colorizeDeleted      (task, *r, c);
 
     // Wildcards
     else if (r->substr (0,  9) == "color.tag")     colorizeTag          (task, *r, c);

@@ -41,6 +41,8 @@
 # Tracked Features, sorted by ID.
  + Added feature #278, which provides a more consistent command line grammar.
  + Added feature #330, which supports the 'inverse' color attribute.
+ + Added feature #340, which implements new color rules 'color.completed' and
+   'color.deleted'.
  + Added feature #479, which enables filtering for the 'calendar' command.
  + Added feature #496, which allows rc.default.command to be supplemented with
    a filter, so that 'task project:Home' applies the project filter to the
