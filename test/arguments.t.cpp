@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (97);
+  UnitTest t (95);
 
   const char* fake[] =
   {
@@ -131,12 +131,10 @@ int main (int argc, char** argv)
   t.notok (Arguments::is_tag ("+one two"),                  "+one two            -> not tag");
 
   // bool is_operator (const std::string&);
-  t.ok    (Arguments::is_operator ("^"),   "^   -> operator");
   t.ok    (Arguments::is_operator ("!"),   "!   -> operator");
   t.ok    (Arguments::is_operator ("-"),   "-   -> operator");
   t.ok    (Arguments::is_operator ("*"),   "*   -> operator");
   t.ok    (Arguments::is_operator ("/"),   "/   -> operator");
-  t.ok    (Arguments::is_operator ("%"),   "%   -> operator");
   t.ok    (Arguments::is_operator ("+"),   "+   -> operator");
   t.ok    (Arguments::is_operator ("-"),   "-   -> operator");
   t.ok    (Arguments::is_operator ("<"),   "<   -> operator");
