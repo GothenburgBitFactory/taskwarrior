@@ -68,10 +68,10 @@ int CmdLog::execute (std::string& output)
 
   // Recurring tasks get a special status.
   if (task.has ("recur"))
-    throw std::string ("You cannot log recurring tasks.");
+    throw std::string (STRING_CMD_LOG_NO_RECUR);
 
   if (task.has ("wait"))
-    throw std::string ("You cannot log waiting tasks.");
+    throw std::string (STRING_CMD_LOG_NO_WAITING);
 
   // Override with log-specific changes.
   task.setStatus (Task::completed);
@@ -91,7 +91,7 @@ int CmdLog::execute (std::string& output)
   context.tdb.unlock ();
 
   if (context.config.getBoolean ("echo.command"))
-    output = "Logged task.\n";
+    output = std::string (STRING_CMD_LOG_LOGGED) + "\n";
 
   return rc;
 }
