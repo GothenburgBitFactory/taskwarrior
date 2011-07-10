@@ -566,45 +566,52 @@ void Arguments::apply_overrides ()
 void Arguments::resolve_aliases ()
 {
   std::vector <std::string> expanded;
-  bool something = false;
+  bool something;
+  int safety_valve = 10;
 
-  std::vector <Triple>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
+  do
   {
-    std::map <std::string, std::string>::iterator match =
-      context.aliases.find (arg->_first);
-
-    if (match != context.aliases.end ())
+    something = false;
+    std::vector <Triple>::iterator arg;
+    for (arg = this->begin (); arg != this->end (); ++arg)
     {
-      context.debug (std::string ("Arguments::resolve_aliases '")
-                     + arg->_first
-                     + "' --> '"
-                     + context.aliases[arg->_first]
-                     + "'");
+      std::map <std::string, std::string>::iterator match =
+        context.aliases.find (arg->_first);
 
-      std::vector <std::string> words;
-      splitq (words, context.aliases[arg->_first], ' ');
+      if (match != context.aliases.end ())
+      {
+        context.debug (std::string ("Arguments::resolve_aliases '")
+                       + arg->_first
+                       + "' --> '"
+                       + context.aliases[arg->_first]
+                       + "'");
 
-      std::vector <std::string>::iterator word;
-      for (word = words.begin (); word != words.end (); ++word)
-        expanded.push_back (*word);
+        std::vector <std::string> words;
+        splitq (words, context.aliases[arg->_first], ' ');
 
-      something = true;
+        std::vector <std::string>::iterator word;
+        for (word = words.begin (); word != words.end (); ++word)
+          expanded.push_back (*word);
+
+        something = true;
+      }
+      else
+        expanded.push_back (arg->_first);
     }
-    else
-      expanded.push_back (arg->_first);
-  }
 
-  // Only overwrite if something happened.
-  if (something)
-  {
-    this->clear ();
-    std::vector <std::string>::iterator e;
-    for (e = expanded.begin (); e != expanded.end (); ++e)
-      this->push_back (Triple (*e, "", ""));
+    // Only overwrite if something happened.
+    if (something)
+    {
+      this->clear ();
+      std::vector <std::string>::iterator e;
+      for (e = expanded.begin (); e != expanded.end (); ++e)
+        this->push_back (Triple (*e, "", ""));
 
-    categorize ();
+      expanded.clear ();
+      categorize ();
+    }
   }
+  while (something && --safety_valve > 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
