@@ -274,6 +274,15 @@
 #define STRING_CMD_STOP_USAGE        "Removes the 'start' time from a task."
 #define STRING_CMD_STOP_NOT          "Task {1} '{2}' not started."
 #define STRING_CMD_STOP_DONE         "Stopped {1} '{2}'."
+#define STRING_CMD_APPEND_USAGE      "Appends text to an existing task description."
+#define STRING_CMD_APPEND_DONE       "Appended to task {1}."
+#define STRING_CMD_APPEND_SUMMARY    "Appended {1} task."
+#define STRING_CMD_APPEND_SUMMARY_N  "Appended {1} tasks."
+#define STRING_CMD_PREPEND_USAGE     "Prepends text to an existing task description."
+#define STRING_CMD_PREPEND_DONE      "Prepended to task {1}."
+#define STRING_CMD_PREPEND_SUMMARY   "Prepended {1} task."
+#define STRING_CMD_PREPEND_SUMMARY_N "Prepended {1} tasks."
+#define STRING_CMD_XPEND_NEED_TEXT   "Additional text must be provided."
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."

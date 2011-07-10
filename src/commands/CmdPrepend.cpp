@@ -25,10 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <Context.h>
 #include <Permission.h>
 #include <main.h>
+#include <text.h>
+#include <i18n.h>
 #include <CmdPrepend.h>
 
 extern Context context;
@@ -37,8 +41,8 @@ extern Context context;
 CmdPrepend::CmdPrepend ()
 {
   _keyword     = "prepend";
-  _usage       = "task prepend <IDs> [tags] [attrs] desc...";
-  _description = "Prepends more description to an existing task.";
+  _usage       = "task <filter> prepend <modifications>";
+  _description = STRING_CMD_PREPEND_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -46,39 +50,41 @@ CmdPrepend::CmdPrepend ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdPrepend::execute (std::string& output)
 {
-/*
-  if (!context.task.has ("description"))
-    throw std::string ("Additional text must be provided.");
-*/
-
   int rc = 0;
-/*
   int count = 0;
   std::stringstream out;
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  context.tdb.loadPending (tasks);
 
-  // Filter sequence.
-  std::vector <Task> all = tasks;
-  context.filter.applySequence (tasks, context.sequence);
-  if (tasks.size () == 0)
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
+
+  if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
     return 1;
   }
 
+  // Apply the command line modifications to the started task.
+  Arguments modifications = context.args.extract_modifications ();
+  if (!modifications.size ())
+    throw std::string (STRING_CMD_XPEND_NEED_TEXT);
+
   Permission permission;
-  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
+  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
   std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
+    modify_task_description_prepend (*task, modifications);
+    apply_defaults (*task);
+
     std::vector <Task>::iterator other;
-    for (other = all.begin (); other != all.end (); ++other)
+    for (other = tasks.begin (); other != tasks.end (); ++other)
     {
       if (other->id             == task->id               || // Self
           (task->has ("parent") &&
@@ -91,26 +97,22 @@ int CmdPrepend::execute (std::string& output)
         int changes = 0;
 
         // Apply other deltas.
-        changes += deltaPrepend (*other);
-        changes += deltaTags (*other);
-        changes += deltaAttributes (*other);
-        changes += deltaSubstitutions (*other);
+        modify_task_description_prepend (*other, modifications);
+        apply_defaults (*other);
+        ++changes;
 
         if (taskDiff (before, *other))
         {
           // Only allow valid tasks.
           other->validate ();
 
-          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Are you sure?"))
+          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
           {
             context.tdb.update (*other);
 
             if (context.config.getBoolean ("echo.command"))
-              out << "Prepended '"
-                  << context.task.get ("description")
-                  << "' to task "
-                  << other->id
-                  << ".\n";
+              out << format (STRING_CMD_PREPEND_DONE, other->id)
+                  << "\n";
 
             if (before.get ("project") != other->get ("project"))
               context.footnote (onProjectChange (before, *other));
@@ -126,10 +128,13 @@ int CmdPrepend::execute (std::string& output)
   context.tdb.unlock ();
 
   if (context.config.getBoolean ("echo.command"))
-    out << "Prepended " << count << " task" << (count == 1 ? ".\n" : "s.\n");
+    out << format ((count == 1
+                      ? STRING_CMD_PREPEND_SUMMARY
+                      : STRING_CMD_PREPEND_SUMMARY_N),
+                   count)
+        << "\n";
 
   output = out.str ();
-*/
   return rc;
 }
 

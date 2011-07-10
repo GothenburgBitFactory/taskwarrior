@@ -72,10 +72,6 @@ int CmdDelete::execute (std::string& output)
   // Apply the command line modifications to the new task.
   Arguments modifications = context.args.extract_modifications ();
 
-  // Determine the end date.
-  char endTime[16];
-  sprintf (endTime, "%u", (unsigned int) time (NULL));
-
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
