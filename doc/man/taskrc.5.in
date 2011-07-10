@@ -195,10 +195,10 @@ help text.
 .SS MISCELLANEOUS
 
 .TP
-.B edit.verbose=on|off|list...
-When set to on (the default), helpful explanatory comments are added to the
-edited file when using the "task edit ..." command.  Setting this to off means
-that you would see minimal output, with no help text.
+.B verbose=on|off|list...
+When set to on (the default), helpful explanatory comments are added to all
+output from Taskwarrior.  Setting this to off means that you would see minimal
+output.
 
 Alternatively, you can specify a comma-separated list of verbosity tokens that
 control specific occasions when output is generated.  This list may contain:
@@ -207,6 +207,7 @@ control specific occasions when output is generated.  This list may contain:
     header     Messages that appear before report output
     footnote   Messages that appear after report output
     label      Column labels on tabular reports
+    new-id     Provides feedback of any new task IDs
 
 Note that the "on" setting is equivalent to all the tokens being specified,
 and the "off" setting is equivalent to none of the tokens being specified.

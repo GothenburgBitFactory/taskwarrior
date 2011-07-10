@@ -110,7 +110,8 @@ int CmdDuplicate::execute (std::string& output)
           << "'.\n";
 
     // TODO This should be a call in to feedback.cpp.
-    out << format (STRING_CMD_ADD_FEEDBACK, context.tdb.nextId ()) + "\n";
+    if (context.verbose ("new-id"))
+      out << format (STRING_CMD_ADD_FEEDBACK, context.tdb.nextId ()) + "\n";
 
     context.footnote (onProjectChange (dup));
   }

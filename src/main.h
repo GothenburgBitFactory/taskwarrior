@@ -28,8 +28,6 @@
 #define INCLUDED_MAIN
 #define L10N                                           // Localization complete.
 
-#define FEATURE_NEW_ID       1   // Echoes back new id.
-
 #include <string>
 #include <vector>
 #include <map>
