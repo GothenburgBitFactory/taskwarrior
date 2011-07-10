@@ -119,8 +119,7 @@ int Context::initialize (int argc, const char** argv)
     // Instantiate built-in column objects.
     Column::factory (columns);
 
-    // Categorize all arguments one more time.
-    // TODO This may not be necessary.
+    // Categorize all arguments one more time.  THIS IS NECESSARY.
     args.categorize ();
 
     // Handle default command and assumed 'info' command.

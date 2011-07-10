@@ -861,8 +861,11 @@ void Task::substitute (
     }
   }
 
-  set ("description", description);
-  setAnnotations (annotations);
+  if (changes)
+  {
+    set ("description", description);
+    setAnnotations (annotations);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

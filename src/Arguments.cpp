@@ -154,7 +154,7 @@ void Arguments::capture (int argc, const char** argv)
     // be an absolute path, and Expression::expand_tokens would make a dog's
     // dinner out of it.
     std::vector <std::string> parts;
-    if (is_multipart (argv[i], parts) && i != 0)
+    if (i && is_multipart (argv[i], parts))
     {
       std::vector <std::string>::iterator part;
       for (part = parts.begin (); part != parts.end (); ++part)
@@ -731,7 +731,7 @@ bool Arguments::is_multipart (
   std::string part;
   while (n.getQuoted ('"', part)  ||
          n.getQuoted ('\'', part) ||
-         n.getQuoted ('/', part) ||
+//         n.getQuoted ('/', part)  ||   <--- this line breaks subst.
          n.getUntilWS (part))
   {
     n.skipWS ();
@@ -864,14 +864,14 @@ bool Arguments::is_subst (const std::string& input)
   Nibbler n (input);
   if (n.skip     ('/')       &&
       n.getUntil ('/', from) &&
+      from.length ()         &&
       n.skip     ('/')       &&
       n.getUntil ('/', to)   &&
       n.skip     ('/'))
   {
     n.skip ('g');
-    if (n.depleted ()                 &&
-        ! Directory (input).exists () &&   // Ouch - expensive call.
-        from.length ())
+    if (n.depleted () &&
+        ! Directory (input).exists ())    // Ouch - expensive call.
       return true;
   }
 
@@ -1376,6 +1376,14 @@ bool Arguments::extract_operator (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Almost all arguments are filters, except:
+//   subst
+//   program
+//   command
+//   rc
+//   override
+//
+// Special case: attr "limit" is ignored.
 Arguments Arguments::extract_read_only_filter ()
 {
   Arguments filter;
@@ -1389,7 +1397,6 @@ Arguments Arguments::extract_read_only_filter ()
         arg->_third == "rc"       ||
         arg->_third == "override")
     {
-      ;
     }
 
     // Included.
@@ -1424,6 +1431,10 @@ Arguments Arguments::extract_read_only_filter ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// A write filter includes id/uuid anywhere on the command line, but any other
+// filter elements must occur before the command.
+//
+// Special case: attr "limit" is ignored.
 Arguments Arguments::extract_write_filter ()
 {
   Arguments filter;
@@ -1441,7 +1452,6 @@ Arguments Arguments::extract_write_filter ()
              arg->_third == "rc"       ||
              arg->_third == "override")
     {
-      ;
     }
 
     // Included regardless of position.
@@ -1471,10 +1481,13 @@ Arguments Arguments::extract_write_filter ()
     // Error.
     else
     {
-      // substitution
-      throw std::string ("A substitution '")
-            + arg->_first
-            + "' is not allowed in a read-only command filter.";
+      if (before_command)
+      {
+        // substitution
+        throw std::string ("A substitution '")
+              + arg->_first
+              + "' is not allowed in a write command filter.";
+      }
     }
   }
 
@@ -1574,13 +1587,13 @@ Arguments Arguments::extract_simple_words ()
     }
 
     // Included.
-    else if (arg->_third == "tag"          ||
-             arg->_third == "pattern"      ||
-             arg->_third == "substitution" ||
-             arg->_third == "id"           ||
-             arg->_third == "uuid"         ||
-             arg->_third == "op"           ||
-             arg->_third == "exp"          ||
+    else if (arg->_third == "tag"     ||
+             arg->_third == "pattern" ||
+             arg->_third == "subst"   ||
+             arg->_third == "id"      ||
+             arg->_third == "uuid"    ||
+             arg->_third == "op"      ||
+             arg->_third == "exp"     ||
              arg->_third == "word")
     {
       // "limit" is special - it is recognized but not included in filters.
