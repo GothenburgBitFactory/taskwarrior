@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <Context.h>
 #include <Permission.h>
@@ -40,8 +42,8 @@ extern Context context;
 CmdDelete::CmdDelete ()
 {
   _keyword     = "delete";
-  _usage       = "task delete ID";
-  _description = "Deletes the specified task.";
+  _usage       = "task <filter> delete [<modifications>]";
+  _description = STRING_CMD_DELETE_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -83,21 +85,18 @@ int CmdDelete::execute (std::string& output)
       modify_task_annotate (*task, modifications);
       apply_defaults (*task);
 
-      std::stringstream question;
-      question << "Permanently delete task "
-               << task->id
-               << " '"
-               << task->get ("description")
-               << "'?";
+      std::string question = format (STRING_CMD_DELETE_QUESTION,
+                                     task->id,
+                                     task->get ("description"));
 
-      if (!context.config.getBoolean ("confirmation") || confirm (question.str ()))
+      if (!context.config.getBoolean ("confirmation") || confirm (question))
       {
         // Check for the more complex case of a recurring task.  If this is a
         // recurring task, get confirmation to delete them all.
         std::string parent = task->get ("parent");
         if (parent != "")
         {
-          if (confirm ("This is a recurring task.  Do you want to delete all pending recurrences of this same task?"))
+          if (confirm (STRING_CMD_DELETE_CONF_RECUR))
           {
             // Scan all pending tasks for siblings of this task, and the parent
             // itself, and delete them.
@@ -112,7 +111,7 @@ int CmdDelete::execute (std::string& output)
                 // Don't want a 'delete' to clobber the end date that may have
                 // been written by a 'done' command.
                 if (! sibling->has ("end"))
-                  sibling->set ("end", endTime);
+                  sibling->setEnd ();
 
                 // Apply the command line modifications to the sibling.
                 modify_task_annotate (*sibling, modifications);
@@ -122,12 +121,12 @@ int CmdDelete::execute (std::string& output)
                 context.tdb.update (*sibling);
                 ++count;
 
+                // TODO Feedback.
                 if (context.config.getBoolean ("echo.command"))
-                  out << "Deleting recurring task "
-                      << sibling->id
-                      << " '"
-                      << sibling->get ("description")
-                      << "'.\n";
+                  out << format (STRING_CMD_DELETE_RECURRING,
+                                 sibling->id,
+                                 sibling->get ("description"))
+                      << "\n";
               }
             }
           }
@@ -140,17 +139,16 @@ int CmdDelete::execute (std::string& output)
             // Don't want a 'delete' to clobber the end date that may have
             // been written by a 'done' command.
             if (! task->has ("end"))
-              task->set ("end", endTime);
+              task->setEnd ();
 
             task->validate ();
             context.tdb.update (*task);
             ++count;
 
-            out << "Deleting recurring task "
-                << task->id
-                << " '"
-                << task->get ("description")
-                << "'.\n";
+            out << format (STRING_CMD_DELETE_RECURRING,
+                           task->id,
+                           task->get ("description"))
+                << "\n";
 
             dependencyChainOnComplete (*task);
             context.footnote (onProjectChange (*task));
@@ -163,18 +161,17 @@ int CmdDelete::execute (std::string& output)
           // Don't want a 'delete' to clobber the end date that may have
           // been written by a 'done' command.
           if (! task->has ("end"))
-            task->set ("end", endTime);
+            task->setEnd ();
 
           task->validate ();
           context.tdb.update (*task);
           ++count;
 
           if (context.config.getBoolean ("echo.command"))
-            out << "Deleting task "
-                << task->id
-                << " '"
-                << task->get ("description")
-                << "'.\n";
+            out << format (STRING_CMD_DELETE_DELETING,
+                           task->id,
+                           task->get ("description"))
+                << "\n";
 
           dependencyChainOnComplete (*task);
           context.footnote (onProjectChange (*task));
@@ -182,17 +179,16 @@ int CmdDelete::execute (std::string& output)
       }
       else
       {
-        out << "Task not deleted.\n";
+        out << STRING_CMD_DELETE_NOT << "\n";
         rc  = 1;
       }
     }
     else
     {
-      out << "Task "
-          << task->id
-          << " '"
-          << task->get ("description")
-          << "' is neither pending nor waiting.\n";
+      out << format (STRING_CMD_DELETE_NOTPEND,
+                     task->id,
+                     task->get ("description"))
+          << "\n";
       rc = 1;
     }
   }

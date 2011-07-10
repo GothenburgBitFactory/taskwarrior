@@ -41,7 +41,7 @@ extern Context context;
 CmdDone::CmdDone ()
 {
   _keyword     = "done";
-  _usage       = "task done ID [tags] [attrs] [desc...]";
+  _usage       = "task <filter> done [<modifications>]";
   _description = STRING_CMD_DONE_USAGE;
   _read_only   = false;
   _displays_id = false;
@@ -87,12 +87,7 @@ int CmdDone::execute (std::string& output)
       modify_task_annotate (*task, modifications);
       apply_defaults (*task);
 
-      // Add an end date.
-      char entryTime[16];
-      sprintf (entryTime, "%u", (unsigned int) time (NULL));
-      task->set ("end", entryTime);
-
-      // Change status.
+      task->setEnd ();
       task->setStatus (Task::completed);
 
       // Stop the task, if started.

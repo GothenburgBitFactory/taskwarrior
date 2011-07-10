@@ -25,10 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <Context.h>
 #include <Permission.h>
 #include <main.h>
+#include <text.h>
 #include <i18n.h>
 #include <CmdStop.h>
 
@@ -38,8 +41,8 @@ extern Context context;
 CmdStop::CmdStop ()
 {
   _keyword     = "stop";
-  _usage       = "task stop ID";
-  _description = "Removes the 'start' time from a task.";
+  _usage       = "task <filter> stop [<modifications>]";
+  _description = STRING_CMD_STOP_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -99,21 +102,19 @@ int CmdStop::execute (std::string& output)
           ++count;
 
           if (context.config.getBoolean ("echo.command"))
-            out << "Stopped "
-                << task->id
-                << " '"
-                << task->get ("description")
-                << "'.\n";
+            out << format (STRING_CMD_STOP_DONE,
+                           task->id,
+                           task->get ("description"))
+                << "\n";
         }
       }
     }
     else
     {
-      out << "Task "
-          << task->id
-          << " '"
-          << task->get ("description")
-          << "' not started.\n";
+      out << format (STRING_CMD_STOP_NOT,
+                     task->id,
+                     task->get ("description"))
+          << "\n";
       rc = 1;
     }
   }

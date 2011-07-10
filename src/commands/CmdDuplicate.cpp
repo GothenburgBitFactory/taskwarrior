@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <Context.h>
 #include <text.h>
@@ -40,7 +42,7 @@ CmdDuplicate::CmdDuplicate ()
 {
   _keyword     = "duplicate";
   _usage       = "task <filter> duplicate [<modifications>]";
-  _description = "Duplicates the specified tasks, and allows modifications.";
+  _description = STRING_CMD_DUPLICATE_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -88,9 +90,8 @@ int CmdDuplicate::execute (std::string& output)
       dup.remove ("imak");
       dup.remove ("imask");
 
-      out << "Note: task "
-          << task->id
-          << " was a recurring task.  The duplicate task is not.\n";
+      out << format (STRING_CMD_DUPLICATE_NON_REC, task->id)
+          << "\n";
     }
 
     modify_task_annotate (dup, modifications);
@@ -103,11 +104,10 @@ int CmdDuplicate::execute (std::string& output)
     ++count;
 
     if (context.config.getBoolean ("echo.command"))
-      out << "Duplicated "
-          << task->id
-          << " '"
-          << task->get ("description")
-          << "'.\n";
+      out << format (STRING_CMD_DUPLICATE_DONE,
+                     task->id,
+                     task->get ("description"))
+          << "\n";
 
     // TODO This should be a call in to feedback.cpp.
     if (context.verbose ("new-id"))

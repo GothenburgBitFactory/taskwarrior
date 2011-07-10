@@ -173,11 +173,7 @@ CmdImport::fileType CmdImport::determineFileType (const std::vector <std::string
 void CmdImport::decorateTask (Task& task)
 {
   if (!task.has ("entry"))
-  {
-    char entryTime[16];
-    sprintf (entryTime, "%u", (unsigned int) time (NULL));
-    task.set ("entry", entryTime);
-  }
+    task.setEntry ();
 
   task.setStatus (Task::pending);
 

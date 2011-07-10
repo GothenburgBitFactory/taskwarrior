@@ -25,10 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <Context.h>
 #include <Permission.h>
 #include <main.h>
+#include <text.h>
 #include <i18n.h>
 #include <CmdStart.h>
 
@@ -38,8 +41,8 @@ extern Context context;
 CmdStart::CmdStart ()
 {
   _keyword     = "start";
-  _usage       = "task start ID";
-  _description = "Marks specified task as started.";
+  _usage       = "task <filter> start [<modifications>]";
+  _description = STRING_CMD_START_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -102,11 +105,10 @@ int CmdStart::execute (std::string& output)
           ++count;
 
           if (context.config.getBoolean ("echo.command"))
-            out << "Started "
-                << task->id
-                << " '"
-                << task->get ("description")
-                << "'.\n";
+            out << format (STRING_CMD_START_DONE,
+                           task->id,
+                           task->get ("description"))
+                << "\n";
 
           dependencyChainOnStart (*task);
         }
@@ -117,11 +119,10 @@ int CmdStart::execute (std::string& output)
     }
     else
     {
-      out << "Task "
-          << task->id
-          << " '"
-          << task->get ("description")
-          << "' already started.\n";
+      out << format (STRING_CMD_START_ALREADY,
+                     task->id,
+                     task->get ("description"))
+          << "\n";
       rc = 1;
     }
   }
