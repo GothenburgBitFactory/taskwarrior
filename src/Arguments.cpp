@@ -889,10 +889,14 @@ bool Arguments::is_subst (const std::string& input)
 // /<pattern>/
 bool Arguments::is_pattern (const std::string& input)
 {
-  Nibbler n (input);
-  std::string pattern;
-  if (input.length () > 2 &&
-      n.getQuoted ('/', pattern, true))
+  std::string::size_type first  = input.find ('/', 0);
+  std::string::size_type second = input.find ('/', first + 1);
+  std::string::size_type third  = input.find ('/', second + 1);
+
+  if (first  == 0                   &&
+      second == input.length () - 1 &&
+      third  == std::string::npos   &&
+      second > 1)
     return true;
 
   return false;
