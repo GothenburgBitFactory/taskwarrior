@@ -103,6 +103,7 @@ int CmdDone::execute (std::string& output)
         if (permission.confirmed (before, taskDifferences (before, *task) + STRING_CMD_DONE_PROCEED))
         {
           context.tdb.update (*task);
+          ++count;
 
           if (context.config.getBoolean ("echo.command"))
             out << format (STRING_CMD_DONE_COMPLETED, task->id, task->get ("description"))
@@ -111,7 +112,6 @@ int CmdDone::execute (std::string& output)
           dependencyChainOnComplete (*task);
           context.footnote (onProjectChange (*task, false));
 
-          ++count;
         }
       }
 

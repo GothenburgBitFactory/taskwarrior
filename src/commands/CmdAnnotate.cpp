@@ -25,10 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <Context.h>
 #include <Permission.h>
 #include <main.h>
+#include <text.h>
+#include <i18n.h>
 #include <CmdAnnotate.h>
 
 extern Context context;
@@ -38,7 +42,7 @@ CmdAnnotate::CmdAnnotate ()
 {
   _keyword     = "annotate";
   _usage       = "task annotate ID desc...";
-  _description = "Adds an annotation to an existing task.";
+  _description = STRING_CMD_ANNO_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -47,63 +51,73 @@ CmdAnnotate::CmdAnnotate ()
 int CmdAnnotate::execute (std::string& output)
 {
   int rc = 0;
-
-/*
-  if (!context.task.has ("description"))
-    throw std::string ("Cannot apply a blank annotation.");
-
-  if (context.sequence.size () == 0)
-    throw std::string ("ID needed to apply an annotation.");
-
+  int count = 0;
   std::stringstream out;
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  context.tdb.loadPending (tasks);
 
-  // Filter sequence.
-  context.filter.applySequence (tasks, context.sequence);
-  if (tasks.size () == 0)
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
+
+  if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
     return 1;
   }
 
+  // Apply the command line modifications to the completed task.
+  Arguments modifications = context.args.extract_modifications ();
+  if (!modifications.size ())
+    throw std::string (STRING_CMD_XPEND_NEED_TEXT);
+
   Permission permission;
-  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
+  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
   std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Task before (*task);
-    task->addAnnotation (context.task.get ("description"));
+    modify_task_annotate (*task, modifications);
+    apply_defaults (*task);
+
+    // Only allow valid tasks.
+    task->validate ();
 
     if (taskDiff (before, *task))
     {
-      // Only allow valid tasks.
-      task->validate ();
-
-      if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
+      if (permission.confirmed (before,
+                                taskDifferences (before, *task)
+                                + STRING_CMD_DONE_PROCEED))
       {
         context.tdb.update (*task);
+        ++count;
 
         if (context.config.getBoolean ("echo.command"))
-          out << "Annotated "
-              << task->id
-              << " with '"
-              << context.task.get ("description")
-              << "'.\n";
+          out << format (STRING_CMD_ANNO_DONE,
+                         task->id,
+                         task->get ("description"))
+              << "\n";
       }
     }
   }
 
-  context.tdb.commit ();
+  if (count)
+    context.tdb.commit ();
+
   context.tdb.unlock ();
 
+  if (context.config.getBoolean ("echo.command"))
+    out << format ((count == 1
+                      ? STRING_CMD_ANNO_SUMMARY
+                      : STRING_CMD_ANNO_SUMMARY_N),
+                   count)
+        << "\n";
+
   output = out.str ();
-*/
   return rc;
 }
 

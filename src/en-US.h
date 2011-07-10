@@ -283,6 +283,10 @@
 #define STRING_CMD_PREPEND_SUMMARY   "Prepended {1} task."
 #define STRING_CMD_PREPEND_SUMMARY_N "Prepended {1} tasks."
 #define STRING_CMD_XPEND_NEED_TEXT   "Additional text must be provided."
+#define STRING_CMD_ANNO_USAGE        "Adds an annotation to an existing task."
+#define STRING_CMD_ANNO_DONE         "Annotated {1} '{2}'"
+#define STRING_CMD_ANNO_SUMMARY      "Prepended {1} task."
+#define STRING_CMD_ANNO_SUMMARY_N    "Prepended {1} tasks."
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
