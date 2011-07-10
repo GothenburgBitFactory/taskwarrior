@@ -67,7 +67,6 @@ public:
   void clearMessages ();
   void clear ();
 
-  void disallowModification () const;
   void decomposeSortField (const std::string&, std::string&, bool&);
 
 private:

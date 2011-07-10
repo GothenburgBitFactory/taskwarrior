@@ -394,20 +394,6 @@ void Context::shadow ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Context::disallowModification () const
-{
-/*
-  if (task.size ()         ||
-      subst.mFrom != ""    ||
-      tagAdditions.size () ||
-      tagRemovals.size ())
-    throw std::string ("The '")
-//        + cmd.command
-        + "' command does not allow further modification of a task.";
-*/
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void Context::assumeLocations ()
 {
   // Set up default locations.
