@@ -49,8 +49,11 @@ CmdMerge::CmdMerge ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdMerge::execute (std::string& output)
 {
-/*
-  std::string file = trim (context.task.get ("description"));
+  Arguments words = context.args.extract_simple_words ();
+  std::string file;
+  if (words.size ())
+    file = words[0]._first;
+
   std::string pushfile = "";
   std::string tmpfile = "";
 
@@ -91,7 +94,7 @@ int CmdMerge::execute (std::string& output)
     if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri.data + "\'?")) )
        || (bAutopush) )
     {
-      context.task.set ("description", uri.data);
+//      context.task.set ("description", uri.data);
 
       std::string out;
       context.commands["push"]->execute (out);
@@ -101,7 +104,6 @@ int CmdMerge::execute (std::string& output)
     throw std::string ("No uri was specified for the merge.  Either specify "
                        "the uri of a remote .task directory, or create a "
                        "'merge.default.uri' entry in your .taskrc file.");
-*/
 
   return 0;
 }

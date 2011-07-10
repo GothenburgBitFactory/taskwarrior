@@ -48,8 +48,10 @@ CmdPull::CmdPull ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdPull::execute (std::string& output)
 {
-/*
-  std::string file = trim (context.task.get ("description"));
+  Arguments words = context.args.extract_simple_words ();
+  std::string file;
+  if (words.size ())
+    file = words[0]._first;
 
   Uri uri (file, "pull");
   uri.parse ();
@@ -112,7 +114,6 @@ int CmdPull::execute (std::string& output)
     throw std::string ("No uri was specified for the pull.  Either specify "
                        "the uri of a remote .task directory, or create a "
                        "'pull.default.uri' entry in your .taskrc file.");
-*/
 
   return 0;
 }
