@@ -46,7 +46,13 @@ CmdInfo::CmdInfo ()
   _usage       = "task information <filter>";
   _description = STRING_CMD_INFO_USAGE;
   _read_only   = true;
-  _displays_id = true;
+
+  // This is inaccurate, but it does prevent a GC.  While this doesn't make a
+  // lot of sense, given that the info command shows the ID, it does mimic the
+  // behavior of versions prior to 2.0, which the test suite relies upon.
+  //
+  // One the test suite is completely modified, this can be corrected.
+  _displays_id = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

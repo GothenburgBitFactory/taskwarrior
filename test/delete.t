@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 17;
+use Test::More tests => 20;
 
 # Create the rc file.
 if (open my $fh, '>', 'delete.rc')
@@ -58,7 +58,17 @@ like ($output, qr/No matches./, 'No matches');
 ok (-r 'completed.data', 'completed.data created');
 
 $output = qx{../src/task rc:delete.rc info 1};
-like ($output, qr/Task 1 not found/, 'No matches');
+like ($output, qr/No matches\./, 'No matches');
+
+# Add a task, delete it, and modify on the fly.
+qx{../src/task rc:delete.rc add one two};
+$output = qx{../src/task rc:delete.rc list};
+like ($output, qr/one two/, 'Second task added');
+
+qx{../src/task rc:delete.rc 1 delete foo pri:H};
+$output = qx{../src/task rc:delete.rc 1 info};
+like ($output, qr/foo/, 'Deletion annotation successful');
+like ($output, qr/H/,   'Deletion modification successful');
 
 # Cleanup.
 ok (-r 'pending.data', 'Need to remove pending.data');
