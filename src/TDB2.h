@@ -85,6 +85,7 @@ public:
   void add (const Task&);
   void modify (const Task&);
   void commit ();
+  int gc ();
 
 public:
   TF2 pending;

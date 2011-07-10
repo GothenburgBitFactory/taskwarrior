@@ -141,8 +141,9 @@ int Context::initialize (int argc, const char** argv)
       locale = locale.substr (0, period);
 
     // Initialize the database.
-    tdb.clear ();
-    tdb.location (data_dir);
+    tdb.clear ();                   // TODO Obsolete
+    tdb.location (data_dir);        // TODO Obsolete
+    tdb2.set_location (data_dir);
 
     // Hook system init, plus post-start event occurring at the first possible
     // moment after hook initialization.
@@ -256,7 +257,10 @@ int Context::dispatch (std::string &out)
 
     // GC is invoked prior to running any command that displays task IDs.
     if (c->displays_id ())
+    {
       tdb.gc ();
+      tdb2.gc ();
+    }
 
     args.dump ("Argument Categorization");
     return c->execute (out);
