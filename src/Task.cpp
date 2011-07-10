@@ -151,6 +151,16 @@ void Task::setEnd ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Task::setStart ()
+{
+  char startTime[16];
+  sprintf (startTime, "%u", (unsigned int) time (NULL));
+  set ("start", startTime);
+
+  recalc_urgency = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Task::status Task::getStatus () const
 {
   return textToStatus (get ("status"));

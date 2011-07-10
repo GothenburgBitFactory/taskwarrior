@@ -60,6 +60,7 @@ public:
 
   void setEntry ();
   void setEnd ();
+  void setStart ();
 
   status getStatus () const;
   void setStatus (status);

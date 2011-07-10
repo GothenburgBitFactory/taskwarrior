@@ -46,6 +46,12 @@ qx{../src/task rc:args.rc add three};
 qx{../src/task rc:args.rc add four};
 qx{../src/task rc:args.rc add five};
 
+qx{../src/task rc:args.rc 1 start};
+qx{../src/task rc:args.rc 2 start};
+qx{../src/task rc:args.rc 3 start};
+qx{../src/task rc:args.rc 4 start};
+qx{../src/task rc:args.rc 5 start};
+
 qx{../src/task rc:args.rc 1 stop oneanno};
 my $output = qx{../src/task rc:args.rc 1 info};
 like ($output, qr/oneanno/, 'stop enpassant anno');

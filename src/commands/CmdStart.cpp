@@ -87,9 +87,7 @@ int CmdStart::execute (std::string& output)
       apply_defaults (*task);
 
       // Add a start time.
-      char startTime[16];
-      sprintf (startTime, "%u", (unsigned int) time (NULL));
-      task->set ("start", startTime);
+      task->setStart ();
 
       if (context.config.getBoolean ("journal.time"))
         task->addAnnotation (context.config.get ("journal.time.start.annotation"));
