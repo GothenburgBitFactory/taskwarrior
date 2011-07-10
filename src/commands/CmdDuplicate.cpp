@@ -29,6 +29,7 @@
 #include <Context.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <main.h>
 #include <CmdDuplicate.h>
 
@@ -37,9 +38,9 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdDuplicate::CmdDuplicate ()
 {
-  _keyword     = "dulicate";
-  _usage       = "task duplicate ID [tags] [attrs] [desc...]";
-  _description = "Duplicates the specified task, and allows modifications.";
+  _keyword     = "duplicate";
+  _usage       = "task <filter> duplicate [<modifications>]";
+  _description = "Duplicates the specified tasks, and allows modifications.";
   _read_only   = false;
   _displays_id = false;
 }
@@ -48,31 +49,35 @@ CmdDuplicate::CmdDuplicate ()
 int CmdDuplicate::execute (std::string& output)
 {
   int rc = 0;
-/*
-  std::stringstream out;
   int count = 0;
+  std::stringstream out;
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  context.tdb.loadPending (tasks);
 
-  // Filter sequence.
-  context.filter.applySequence (tasks, context.sequence);
-  if (tasks.size () == 0)
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
+
+  if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
     return 1;
   }
 
+  // Apply the command line modifications to the completed task.
+  Arguments modifications = context.args.extract_modifications ();
+
   std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Task dup (*task);
-    dup.set ("uuid", uuid ());  // Needs a new UUID.
-    dup.setStatus (Task::pending);
-    dup.remove ("start");   // Does not inherit start date.
-    dup.remove ("end");     // Does not inherit end date.
+    dup.set ("uuid", uuid ());     // Needs a new UUID.
+    dup.setStatus (Task::pending); // Does not inherit status.
+    dup.remove ("start");          // Does not inherit start date.
+    dup.remove ("end");            // Does not inherit end date.
+    dup.remove ("entry");          // Does not inherit entry date.
 
     // Recurring tasks are duplicated and downgraded to regular tasks.
     if (task->getStatus () == Task::recurring)
@@ -85,24 +90,17 @@ int CmdDuplicate::execute (std::string& output)
 
       out << "Note: task "
           << task->id
-          << " was a recurring task.  The new task is not.\n";
+          << " was a recurring task.  The duplicate task is not.\n";
     }
 
-    // Apply deltas.
-    deltaDescription (dup);
-    deltaTags (dup);
-    deltaAttributes (dup);
-    deltaSubstitutions (dup);
-
-    // A New task needs a new entry time.
-    char entryTime[16];
-    sprintf (entryTime, "%u", (unsigned int) time (NULL));
-    dup.set ("entry", entryTime);
+    modify_task_annotate (dup, modifications);
+    apply_defaults (dup);
 
     // Only allow valid tasks.
     dup.validate ();
 
     context.tdb.add (dup);
+    ++count;
 
     if (context.config.getBoolean ("echo.command"))
       out << "Duplicated "
@@ -111,32 +109,20 @@ int CmdDuplicate::execute (std::string& output)
           << task->get ("description")
           << "'.\n";
 
+    // TODO This should be a call in to feedback.cpp.
+    out << format (STRING_CMD_ADD_FEEDBACK, context.tdb.nextId ()) + "\n";
+
     context.footnote (onProjectChange (dup));
-
-    ++count;
   }
 
-  if (tasks.size () == 0)
-  {
-    out << "No matches.\n";
-    rc = 1;
-  }
-  else if (context.config.getBoolean ("echo.command"))
-  {
-#ifdef FEATURE_NEW_ID
-    // All this, just for an id number.
-    std::vector <Task> all;
-    Filter none;
-    context.tdb.loadPending (all, none);
-    out << "Created task " << context.tdb.nextId () << ".\n";
-#endif
-  }
+  if (count)
+    context.tdb.commit ();
 
-  context.tdb.commit ();
   context.tdb.unlock ();
 
+  // TODO Add count summary, like the 'done' command.
+
   output = out.str ();
-*/
   return rc;
 }
 

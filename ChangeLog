@@ -43,6 +43,8 @@
  + Added feature #330, which supports the 'inverse' color attribute.
  + Added feature #340, which implements new color rules 'color.completed' and
    'color.deleted'.
+ + Added feature #422, which allows task modifications during 'done', 'delete',
+   'start' and 'stop' commands.
  + Added feature #479, which enables filtering for the 'calendar' command.
  + Added feature #496, which allows rc.default.command to be supplemented with
    a filter, so that 'task project:Home' applies the project filter to the
@@ -50,6 +52,8 @@
  + Added feature #507, which provides an alternative mechanism for inverting
    attribute modifiers, in the form of new algebraic filters (thanks to Michelle
    Crane).
+ + Added feature #514, which allows duplication of tasks based on a generalized
+   filter, rather than just IDs (thanks to Peter De Poorter).
  + Added feature #523 & #659, adding 'status' as a reportable field (thanks to
    Peter De Poorter and Bryce Harrington).
  + Added feature #545, #610, #611, #646, which support complex aliases.

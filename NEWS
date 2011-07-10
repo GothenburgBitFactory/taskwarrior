@@ -21,6 +21,8 @@ New Features in taskwarrior 2.0.0
   - New 'reports' command that lists reports and their descriptions.
   - New complex aliases.
   - Filtering now available on most read-only commands.
+  - The done, delete, start and stop commands now allow modification to the
+    task and annotations.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
