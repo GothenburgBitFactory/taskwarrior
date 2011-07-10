@@ -63,7 +63,7 @@ int CmdLog::execute (std::string& output)
 
   // Apply the command line modifications to the new task.
   Arguments modifications = context.args.extract_modifications ();
-  modify_task (task, modifications);
+  modify_task_description_replace (task, modifications);
   apply_defaults (task);
 
   // Recurring tasks get a special status.

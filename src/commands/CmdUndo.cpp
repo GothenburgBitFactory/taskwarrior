@@ -46,7 +46,7 @@ CmdUndo::CmdUndo ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdUndo::execute (std::string& output)
 {
-  context.disallowModification ();
+  // TODO Detect attemps to modify the task.
 
   context.tdb.lock (context.config.getBoolean ("locking"));
   context.tdb.undo ();

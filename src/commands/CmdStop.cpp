@@ -27,7 +27,9 @@
 
 #include <sstream>
 #include <Context.h>
+#include <Permission.h>
 #include <main.h>
+#include <i18n.h>
 #include <CmdStop.h>
 
 extern Context context;
@@ -46,42 +48,64 @@ CmdStop::CmdStop ()
 int CmdStop::execute (std::string& output)
 {
   int rc = 0;
-/*
+  int count = 0;
   std::stringstream out;
-
-  context.disallowModification ();
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  context.tdb.loadPending (tasks);
 
-  // Filter sequence.
-  context.filter.applySequence (tasks, context.sequence);
-  if (tasks.size () == 0)
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
+
+  if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
     return 1;
   }
 
+  // Apply the command line modifications to the stopped task.
+  Arguments modifications = context.args.extract_modifications ();
+
+  Permission permission;
+  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
+    permission.bigSequence ();
+
   std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     if (task->has ("start"))
     {
+      Task before (*task);
+
+      modify_task_annotate (*task, modifications);
+      apply_defaults (*task);
+
+      // Remove the start time.
       task->remove ("start");
 
       if (context.config.getBoolean ("journal.time"))
         task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
 
-      context.tdb.update (*task);
+      // Only allow valid tasks.
+      task->validate ();
 
-      if (context.config.getBoolean ("echo.command"))
-        out << "Stopped "
-            << task->id
-            << " '"
-            << task->get ("description")
-            << "'.\n";
+      if (taskDiff (before, *task))
+      {
+        if (permission.confirmed (before, taskDifferences (before, *task) + STRING_CMD_DONE_PROCEED))
+        {
+          context.tdb.update (*task);
+          ++count;
+
+          if (context.config.getBoolean ("echo.command"))
+            out << "Stopped "
+                << task->id
+                << " '"
+                << task->get ("description")
+                << "'.\n";
+        }
+      }
     }
     else
     {
@@ -94,11 +118,12 @@ int CmdStop::execute (std::string& output)
     }
   }
 
-  context.tdb.commit ();
+  if (count)
+    context.tdb.commit ();
+
   context.tdb.unlock ();
 
   output = out.str ();
-*/
   return rc;
 }
 

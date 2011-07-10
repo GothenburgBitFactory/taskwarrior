@@ -285,10 +285,52 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Apply the modifications in arguments to the task.
-void Command::modify_task (Task& task, Arguments& arguments)
+void Command::modify_task_description_replace (Task& task, Arguments& arguments)
 {
   std::string description;
+  modify_task (task, arguments, description);
 
+  if (description.length ())
+   task.set ("description", description);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Command::modify_task_description_prepend (Task& task, Arguments& arguments)
+{
+  std::string description;
+  modify_task (task, arguments, description);
+
+  if (description.length ())
+    task.set ("description", description + " " + task.get ("description"));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Command::modify_task_description_append (Task& task, Arguments& arguments)
+{
+  std::string description;
+  modify_task (task, arguments, description);
+
+  if (description.length ())
+    task.set ("description", task.get ("description") + " " + description);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Command::modify_task_annotate (Task& task, Arguments& arguments)
+{
+  std::string description;
+  modify_task (task, arguments, description);
+
+  if (description.length ())
+    task.addAnnotation (description);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Worker function that does all the updates, but never overwrites description.
+void Command::modify_task (
+  Task& task,
+  Arguments& arguments,
+  std::string& description)
+{
   std::vector <Triple>::iterator arg;
   for (arg = arguments.begin (); arg != arguments.end (); ++arg)
   {
@@ -370,10 +412,6 @@ void Command::modify_task (Task& task, Arguments& arguments)
     else
       throw format (STRING_CMD_MOD_UNEXPECTED, arg->_first);
   }
-
-  // Only update description if one was specified.
-  if (description.length ())
-    task.set ("description", description);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

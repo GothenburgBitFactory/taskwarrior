@@ -68,6 +68,9 @@ int CmdDone::execute (std::string& output)
     return 1;
   }
 
+  // Apply the command line modifications to the completed task.
+  Arguments modifications = context.args.extract_modifications ();
+
   Permission permission;
   if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
@@ -81,9 +84,7 @@ int CmdDone::execute (std::string& output)
     {
       Task before (*task);
 
-      // Apply the command line modifications to the new task.
-      Arguments modifications = context.args.extract_modifications ();
-      modify_task (*task, modifications);
+      modify_task_annotate (*task, modifications);
       apply_defaults (*task);
 
       // Add an end date.
