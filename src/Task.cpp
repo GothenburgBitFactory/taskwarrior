@@ -135,7 +135,17 @@ void Task::setEntry ()
 {
   char entryTime[16];
   sprintf (entryTime, "%u", (unsigned int) time (NULL));
-  set ("entry", entryTime); // No i18n
+  set ("entry", entryTime);
+
+  recalc_urgency = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::setEnd ()
+{
+  char endTime[16];
+  sprintf (endTime, "%u", (unsigned int) time (NULL));
+  set ("end", endTime);
 
   recalc_urgency = true;
 }
@@ -143,13 +153,13 @@ void Task::setEntry ()
 ////////////////////////////////////////////////////////////////////////////////
 Task::status Task::getStatus () const
 {
-  return textToStatus (get ("status")); // No i18n
+  return textToStatus (get ("status"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setStatus (Task::status status)
 {
-  set ("status", statusToText (status)); // No i18n
+  set ("status", statusToText (status));
 
   recalc_urgency = true;
 }
@@ -200,7 +210,7 @@ void Task::legacyParse (const std::string& line)
                             : line[37] == 'r' ? recurring
                             :                   pending;
 
-        set ("status", statusToText (status)); // No i18n
+        set ("status", statusToText (status));
 
         size_t openTagBracket  = line.find ("[");
         size_t closeTagBracket = line.find ("]", openTagBracket);
@@ -230,7 +240,7 @@ void Task::legacyParse (const std::string& line)
                 set (pair[0], pair[1]);
             }
 
-            set ("description", line.substr (closeAttrBracket + 2)); // No i18n
+            set ("description", line.substr (closeAttrBracket + 2));
           }
           else
             throw std::string (STRING_TASK_PARSE_ATT_BRACK);
@@ -257,7 +267,7 @@ void Task::legacyParse (const std::string& line)
                             : line[37] == 'r' ? recurring
                             :                   pending;
 
-        set ("status", statusToText (status)); // No i18n
+        set ("status", statusToText (status));
 
         size_t openTagBracket  = line.find ("[");
         size_t closeTagBracket = line.find ("]", openTagBracket);
@@ -327,11 +337,11 @@ void Task::legacyParse (const std::string& line)
                 {
                   std::string name = pair.substr (0, colon);
                   std::string value = pair.substr (colon + 2, pair.length () - colon - 3);
-                  set ("annotation_" + name, value); // No i18n
+                  set ("annotation_" + name, value);
                 }
               }
 
-              set ("description", line.substr (closeAnnoBracket + 2)); // No i18n
+              set ("description", line.substr (closeAnnoBracket + 2));
             }
             else
               throw std::string (STRING_TASK_PARSE_ANNO_BRACK);
@@ -359,55 +369,55 @@ std::string Task::composeCSV () const
   std::stringstream out;
 
   // Deliberately no 'id'.
-  out << "'" << get ("uuid")     << "',"; // No i18n
-  out << "'" << get ("status")   << "',"; // No i18n
+  out << "'" << get ("uuid")   << "',";
+  out << "'" << get ("status") << "',";
 
   // Tags
   std::vector <std::string> tags;
   getTags (tags);
   std::string allTags;
-  join (allTags, " ", tags);              // No i18n
-  out << "'" << allTags          << "',"; // No i18n
+  join (allTags, " ", tags);
+  out << "'" << allTags          << "',";
 
-  out <<        get ("entry")    <<  ","; // No i18n
-  out <<        get ("start")    <<  ","; // No i18n
+  out <<        get ("entry")    <<  ",";
+  out <<        get ("start")    <<  ",";
 
   if (has ("due"))
-    out <<      get ("due")      <<  ","; // No i18n
+    out <<      get ("due")      <<  ",";
   else
-    out << ","; // No i18n
+    out << ",";
 
   if (has ("recur"))
-    out <<      get ("recur")    <<  ","; // No i18n
+    out <<      get ("recur")    <<  ",";
   else
-    out << ","; // No i18n
+    out << ",";
 
-  out <<        get ("end")      <<  ","; // No i18n
+  out <<        get ("end")      <<  ",";
 
   if (has ("project"))
-    out << "'" << get ("project")  << "',"; // No i18n
+    out << "'" << get ("project")  << "',";
   else
-    out << ","; // No i18n
+    out << ",";
 
   if (has ("priority"))
-    out << "'" << get ("priority") << "',"; // No i18n
+    out << "'" << get ("priority") << "',";
   else
-    out << ","; // No i18n
+    out << ",";
 
   if (has ("fg"))
-    out << "'" << get ("fg")     << "',"; // No i18n
+    out << "'" << get ("fg")     << "',";
   else
-    out << ","; // No i18n
+    out << ",";
 
   if (has ("bg"))
-    out << "'" << get ("bg")     << "',"; // No i18n
+    out << "'" << get ("bg")     << "',";
   else
-    out << ","; // No i18n
+    out << ",";
 
   // Convert single quotes to double quotes, because single quotes are used to
   // delimit the values that need it.
-  std::string clean = get ("description"); // No i18n
-  std::replace (clean.begin (), clean.end (), '\'', '"'); // No i18n
+  std::string clean = get ("description");
+  std::replace (clean.begin (), clean.end (), '\'', '"');
   out << "'" << clean            << "'\n";
 
   return out.str ();
@@ -558,7 +568,7 @@ void Task::getAnnotations (std::vector <Att>& annotations) const
 
   Record::const_iterator ci;
   for (ci = this->begin (); ci != this->end (); ++ci)
-    if (ci->first.substr (0, 11) == "annotation_")  // No i18n
+    if (ci->first.substr (0, 11) == "annotation_")
       annotations.push_back (ci->second);
 }
 
@@ -582,7 +592,7 @@ void Task::setAnnotations (const std::vector <Att>& annotations)
 void Task::addAnnotation (const std::string& description)
 {
   std::stringstream s;
-  s << "annotation_" << time (NULL); // No i18n
+  s << "annotation_" << time (NULL);
 
   (*this)[s.str ()] = Att (s.str (), description);
 }
@@ -594,7 +604,7 @@ void Task::removeAnnotations ()
   Record::iterator i = this->begin ();
   while (i != this->end ())
   {
-    if (i->first.substr (0, 11) == "annotation_") // No i18n
+    if (i->first.substr (0, 11) == "annotation_")
       this->erase (i++);
     else
       i++;
@@ -680,7 +690,7 @@ void Task::getDependencies (std::vector <std::string>& all) const
 int Task::getTagCount ()
 {
   std::vector <std::string> tags;
-  split (tags, get ("tags"), ','); // No i18n
+  split (tags, get ("tags"), ',');
 
   return (int) tags.size ();
 }
@@ -689,7 +699,7 @@ int Task::getTagCount ()
 bool Task::hasTag (const std::string& tag)
 {
   std::vector <std::string> tags;
-  split (tags, get ("tags"), ','); // No i18n
+  split (tags, get ("tags"), ',');
 
   if (std::find (tags.begin (), tags.end (), tag) != tags.end ())
     return true;
@@ -701,21 +711,21 @@ bool Task::hasTag (const std::string& tag)
 void Task::addTag (const std::string& tag)
 {
   std::vector <std::string> tags;
-  split (tags, get ("tags"), ','); // No i18n
+  split (tags, get ("tags"), ',');
 
   if (std::find (tags.begin (), tags.end (), tag) == tags.end ())
   {
     tags.push_back (tag);
     std::string combined;
-    join (combined, ",", tags); // No i18n
-    set ("tags", combined); // No i18n
+    join (combined, ",", tags);
+    set ("tags", combined);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::addTags (const std::vector <std::string>& tags)
 {
-  remove ("tags"); // No i18n
+  remove ("tags");
 
   std::vector <std::string>::const_iterator it;
   for (it = tags.begin (); it != tags.end (); ++it)
@@ -725,14 +735,14 @@ void Task::addTags (const std::vector <std::string>& tags)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::getTags (std::vector<std::string>& tags) const
 {
-  split (tags, get ("tags"), ','); // No i18n
+  split (tags, get ("tags"), ',');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::removeTag (const std::string& tag)
 {
   std::vector <std::string> tags;
-  split (tags, get ("tags"), ','); // No i18n
+  split (tags, get ("tags"), ',');
 
   std::vector <std::string>::iterator i;
   i = std::find (tags.begin (), tags.end (), tag);
@@ -740,8 +750,8 @@ void Task::removeTag (const std::string& tag)
   {
     tags.erase (i);
     std::string combined;
-    join (combined, ",", tags); // No i18n
-    set ("tags", combined); // No i18n
+    join (combined, ",", tags);
+    set ("tags", combined);
   }
 }
 
@@ -959,9 +969,9 @@ int Task::determineVersion (const std::string& line)
     //   uuid status [tags] [attributes] [annotations] description\n
     //
     // Scan for the number of [] pairs.
-    std::string::size_type tagAtts  = line.find ("] [", 0); // No i18n
-    std::string::size_type attsAnno = line.find ("] [", tagAtts + 1); // No i18n
-    std::string::size_type annoDesc = line.find ("] ",  attsAnno + 1); // No i18n
+    std::string::size_type tagAtts  = line.find ("] [", 0);
+    std::string::size_type attsAnno = line.find ("] [", tagAtts + 1);
+    std::string::size_type annoDesc = line.find ("] ",  attsAnno + 1);
     if (tagAtts  != std::string::npos &&
         attsAnno != std::string::npos &&
         annoDesc != std::string::npos)
@@ -977,7 +987,7 @@ int Task::determineVersion (const std::string& line)
   // Scan for [, ] and :".
   else if (line[0] == '[' &&
            line[line.length () - 1] == ']' &&
-           line.find ("uuid:\"") != std::string::npos) // No i18n
+           line.find ("uuid:\"") != std::string::npos)
     return 4;
 
   // Version 1 looks like:
@@ -987,9 +997,9 @@ int Task::determineVersion (const std::string& line)
   //
   // Scan for the first character being either the bracket or X.
   else if (line.find ("X [") == 0 ||
-           line.find ("uuid") == std::string::npos || // No i18n
+           line.find ("uuid") == std::string::npos ||
            (line[0] == '[' &&
-            line.substr (line.length () - 1, 1) != "]")) // No i18n
+            line.substr (line.length () - 1, 1) != "]"))
     return 1;
 
   // Version 5?

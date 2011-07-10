@@ -59,6 +59,7 @@ public:
   static std::string statusToText (status);
 
   void setEntry ();
+  void setEnd ();
 
   status getStatus () const;
   void setStatus (status);

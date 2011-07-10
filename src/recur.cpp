@@ -75,9 +75,7 @@ void handleRecurrence ()
                   << "\n";
 
         // Determine the end date.
-        char endTime[16];
-        sprintf (endTime, "%u", (unsigned int) time (NULL));
-        t->set ("end", endTime);
+        t->setEnd ();
         t->setStatus (Task::deleted);
         context.tdb.update (*t);
         continue;
