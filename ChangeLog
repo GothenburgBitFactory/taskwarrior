@@ -61,6 +61,8 @@
  + Added feature #559, that causes Taskwarrior to exit if the ~/.task (or
    rc.data.location override) does not exist, controlled by the
    rc.exit.on.missing.db configuration variable (thanks to Sander Marechal).
+ + Added feature #607, which allows modification of a task during annotation
+   (thanks to Peter De Poorter).
  + Added feature #612, so that the 'info' command displays the sum of all
    active (start/stop) times for a task, if the 'journal.info' configuration
    variable is set (thanks to Andy Kriger).
