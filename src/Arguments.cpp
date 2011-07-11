@@ -1583,6 +1583,7 @@ Arguments Arguments::extract_modifications ()
                arg->_third == "attr"  ||
                arg->_third == "subst" ||
                arg->_third == "op"    ||
+               arg->_third == "exp"   ||
                arg->_third == "word")
       {
         // "limit" is special - it is recognized but not included in filters.
@@ -1600,12 +1601,6 @@ Arguments Arguments::extract_modifications ()
 
         else if (arg->_third == "attmod")
           throw std::string ("An attribute modifier '")
-                + arg->_first
-                + "' is not allowed when modifiying a task.";
-
-        // TODO Really?
-        else if (arg->_third == "exp")
-          throw std::string ("An expression '")
                 + arg->_first
                 + "' is not allowed when modifiying a task.";
 

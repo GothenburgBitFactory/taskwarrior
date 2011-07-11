@@ -82,6 +82,7 @@
    'burndown' charts.
 
 # Tracked Bugs, sorted by ID.
+ + Fixed bug #403, which disambiguates certain commands involving numbers.
  + Fixed bug #475, which allowed a blank annotation command to be entered
    (thanks to Andreas Kalex).
  + Fixed bug #511, which caused display problem on Cygwin when colored output
