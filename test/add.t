@@ -53,7 +53,7 @@ qx{../src/task rc:add.rc 1 "/is //"};
 $output = qx{../src/task rc:add.rc info 1};
 like ($output, qr/ID\s+1\n/, 'add ID');
 like ($output, qr/Status\s+Pending\n/, 'add Pending');
-like ($output, qr/Description\s+This a TEST\n/, 'add ID');
+like ($output, qr/Description\s+This is a TEST\n/, 'add Description');
 
 # Cleanup.
 unlink 'pending.data';
