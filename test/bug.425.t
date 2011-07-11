@@ -48,7 +48,6 @@ qx{../src/task rc:425.rc add Foo};
 qx{../src/task rc:425.rc 1 Bar in Bar};
 
 my $output = qx{../src/task rc:425.rc 1 ls};
-
 like ($output, qr/1\s+Bar in Bar/m, 'parser - interpret \'in\' in description');
 
 # Cleanup.
