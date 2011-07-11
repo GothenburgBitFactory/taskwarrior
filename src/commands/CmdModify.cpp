@@ -30,6 +30,8 @@
 #include <Context.h>
 #include <Permission.h>
 #include <main.h>
+#include <text.h>
+#include <i18n.h>
 #include <CmdModify.h>
 
 extern Context context;
@@ -37,10 +39,9 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdModify::CmdModify ()
 {
-  // TODO Mention substitutions.
   _keyword     = "modify";
-  _usage       = "task modify ID [tags] [attrs] [desc...]\n"
-                 "task        ID [tags] [attrs] [desc...]";
+  _usage       = "task <filter>   modify <modifications>\n"
+                 "task <sequence>        <modifications>";
   _description = "Modifies the existing task with provided arguments.\n"
                  "The 'modify' keyword is optional.";
   _read_only   = false;
@@ -50,89 +51,91 @@ CmdModify::CmdModify ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdModify::execute (std::string& output)
 {
-/*
   int count = 0;
   std::stringstream out;
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  context.tdb.loadPending (tasks);
 
-  // Filter sequence.
-  std::vector <Task> all = tasks;
-  context.filter.applySequence (tasks, context.sequence);
-  if (tasks.size () == 0)
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
+
+  if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
     return 1;
   }
 
+  // Apply the command line modifications to the new task.
+  Arguments modifications = context.args.extract_modifications ();
+
   Permission permission;
-  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
+  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
   std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
+    Task before (*task);
+    modify_task_annotate (*task, modifications);
+    apply_defaults (*task);
+
     // Perform some logical consistency checks.
-    if (context.task.has ("recur") &&
-        !context.task.has ("due")  &&
-        !task->has ("due"))
+    if (task->has ("recur") &&
+        !task->has ("due")  &&
+        !before.has ("due"))
       throw std::string ("You cannot specify a recurring task without a due date.");
 
-    if (context.task.has ("until")  &&
-        !context.task.has ("recur") &&
-        !task->has ("recur"))
+    if (task->has ("until")  &&
+        !task->has ("recur") &&
+        !before.has ("recur"))
       throw std::string ("You cannot specify an until date for a non-recurring task.");
 
-    if (task->has ("recur")     &&
-        task->has ("due")        &&
-        context.task.has ("due") &&
-        context.task.get ("due") == "")
+    if (before.has ("recur")     &&
+        before.has ("due")        &&
+        task->has ("due") &&
+        task->get ("due") == "")
       throw std::string ("You cannot remove the due date from a recurring task.");
 
-    if (task->has ("recur")        &&
-        context.task.has ("recur") &&
-        context.task.get ("recur") == "")
+    if (before.has ("recur")        &&
+        task->has ("recur") &&
+        task->get ("recur") == "")
       throw std::string ("You cannot remove the recurrence from a recurring task.");
 
     // Make all changes.
     bool warned = false;
     std::vector <Task>::iterator other;
-    for (other = all.begin (); other != all.end (); ++other)
+    for (other = tasks.begin (); other != tasks.end (); ++other)
     {
       // Skip wait: modification to a parent task, and other child tasks.  Too
       // difficult to achieve properly without losing 'waiting' as a status.
       // Soon...
-      if (other->id             == task->id               || // Self
-          (! context.task.has ("wait") &&                    // skip waits
-           task->has ("parent") &&                           // is recurring
-           task->get ("parent") == other->get ("parent")) || // Sibling
-          other->get ("uuid")   == task->get ("parent"))     // Parent
+      if (other->id              == task->id               || // Self
+          (! task->has ("wait")  &&                           // skip waits
+           before.has ("parent") &&                           // is recurring
+           before.get ("parent") == other->get ("parent")) || // Sibling
+          other->get ("uuid")    == before.get ("parent"))    // Parent
       {
-        if (task->has ("parent") && !warned)
+        if (before.has ("parent") && !warned)
         {
           warned = true;
           std::cout << "Task "
-                    << task->id
+                    << before.id
                     << " is a recurring task, and all other instances of this"
                     << " task will be modified.\n";
         }
 
-        Task before (*other);
-
-        // A non-zero value forces a file write.
-        int changes = 0;
+        Task alternate (*other);
 
         // If a task is being made recurring, there are other cascading
         // changes.
-        if (!task->has ("recur") &&
-            context.task.has ("recur"))
+        if (!before.has ("recur") &&
+            task->has ("recur"))
         {
           other->setStatus (Task::recurring);
           other->set ("mask", "");
-          ++changes;
 
           std::cout << "Task "
                     << other->id
@@ -140,49 +143,43 @@ int CmdModify::execute (std::string& output)
         }
 
         // Apply other deltas.
-        if (deltaDescription (*other))
-        {
-          permission.bigChange ();
-          ++changes;
-        }
+        modify_task_description_replace (*other, modifications);
+        apply_defaults (*other);
 
-        changes += deltaTags (*other);
-        changes += deltaAttributes (*other);
-        changes += deltaSubstitutions (*other);
-
-        if (taskDiff (before, *other))
+        if (taskDiff (alternate, *other))
         {
           // Only allow valid tasks.
           other->validate ();
 
-          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
+          if (permission.confirmed (alternate, taskDifferences (alternate, *other) + "Proceed with change?"))
           {
             // TODO Are dependencies being explicitly removed?
             //      Either we scan context.task for negative IDs "depends:-n"
             //      or we ask deltaAttributes (above) to record dependency
             //      removal.
-            dependencyChainOnModify (before, *other);
+            dependencyChainOnModify (alternate, *other);
 
             context.tdb.update (*other);
-
-            if (before.get ("project") != other->get ("project"))
-              context.footnote (onProjectChange (before, *other));
-
             ++count;
+
+            if (alternate.get ("project") != other->get ("project"))
+              context.footnote (onProjectChange (alternate, *other));
+
           }
         }
       }
     }
   }
 
-  context.tdb.commit ();
+  if (count)
+    context.tdb.commit ();
+
   context.tdb.unlock ();
 
   if (context.config.getBoolean ("echo.command"))
     out << "Modified " << count << " task" << (count == 1 ? ".\n" : "s.\n");
 
   output = out.str ();
-*/
   return 0;
 }
 

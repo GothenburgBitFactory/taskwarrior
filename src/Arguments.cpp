@@ -617,6 +617,7 @@ void Arguments::resolve_aliases ()
 ////////////////////////////////////////////////////////////////////////////////
 void Arguments::inject_defaults ()
 {
+  // Scan the arguments and detect what is present.
   bool found_command  = false;
   bool found_sequence = false;
   bool found_other    = false;
@@ -627,7 +628,8 @@ void Arguments::inject_defaults ()
     if (arg->_third == "command")
       found_command = true;
 
-    else if (arg->_third == "id")
+    else if (arg->_third == "id" ||
+             arg->_third == "uuid")
       found_sequence = true;
 
     else if (arg->_third != "program"  &&
@@ -636,11 +638,11 @@ void Arguments::inject_defaults ()
       found_other = true;
   }
 
-  // If no command was specified, and there were no command line arguments
-  // then invoke the default command.
+  // If no command was specified, then a command will be inserted.
   if (!found_command)
   {
-    if (found_other || !found_sequence)
+    // Default command.
+    if (!found_sequence)
     {
       // Apply overrides, if any.
       std::string defaultCommand = context.config.get ("default.command");
@@ -653,12 +655,17 @@ void Arguments::inject_defaults ()
         throw std::string (STRING_TRIVIAL_INPUT);
     }
 
-    // If the command "task 123" is entered, but with no modifier arguments,
-    // then the actual command is assumed to be "info".
-    else if (found_sequence)
+    // Modify command.
+    if (found_other)
+    {
+      capture_first ("modify");
+    }
+
+    // Information command.
+    else
     {
       context.header (STRING_ASSUME_INFO);
-      push_back (Triple ("information", "", "command"));
+      capture_first ("information");
     }
   }
 }
