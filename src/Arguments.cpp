@@ -286,6 +286,10 @@ void Arguments::categorize ()
   bool found_something_after_sequence = false;
   bool found_non_sequence             = false;
 
+  // Track where the command is, if possible.
+  int command_pos           = -1;
+  int distance_from_command = 0;
+
   // Configurable support.
   bool enable_expressions = context.config.getBoolean ("expressions");
   bool enable_patterns    = context.config.getBoolean ("patterns");
@@ -297,9 +301,10 @@ void Arguments::categorize ()
     keywords.push_back (k->first);
 
   // Now categorize every argument.
+  int counter = 0;
   std::string ignored;
   std::vector <Triple>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
+  for (arg = this->begin (); arg != this->end (); ++arg, ++counter)
   {
     if (!terminated)
     {
@@ -340,6 +345,8 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
+        command_pos = counter;
+
         arg->_third = "command";
       }
 
@@ -360,28 +367,30 @@ void Arguments::categorize ()
       // <id>[-<id>][,...]
       else if (is_id (arg->_first))
       {
-        if (!found_something_after_sequence)
+        if (found_something_after_sequence ||
+            (command_pos != -1 && distance_from_command > 0))
         {
-          found_sequence = true;
-          arg->_third = "id";
+          arg->_third = "word";
         }
         else
         {
-          arg->_third = "word";
+          found_sequence = true;
+          arg->_third = "id";
         }
       }
 
       // <uuid>[,...]
       else if (is_uuid (arg->_first))
       {
-        if (!found_something_after_sequence)
+        if (found_something_after_sequence ||
+            (command_pos != -1 && distance_from_command > 0))
         {
-          found_sequence = true;
-          arg->_third = "uuid";
+          arg->_third = "word";
         }
         else
         {
-          arg->_third = "word";
+          found_sequence = true;
+          arg->_third = "uuid";
         }
       }
 
@@ -391,6 +400,9 @@ void Arguments::categorize ()
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
+
+        if (command_pos != -1)
+          ++distance_from_command;
 
         arg->_third = "tag";
       }
@@ -402,6 +414,9 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
+        if (command_pos != -1)
+          ++distance_from_command;
+
         arg->_third = "attmod";
       }
 
@@ -411,6 +426,9 @@ void Arguments::categorize ()
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
+
+        if (command_pos != -1)
+          ++distance_from_command;
 
         arg->_third = "attr";
       }
@@ -422,6 +440,9 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
+        if (command_pos != -1)
+          ++distance_from_command;
+
         arg->_third = "subst";
       }
 
@@ -431,6 +452,9 @@ void Arguments::categorize ()
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
+
+        if (command_pos != -1)
+          ++distance_from_command;
 
         arg->_third = "pattern";
       }
@@ -442,6 +466,9 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
+        if (command_pos != -1)
+          ++distance_from_command;
+
         arg->_third = "op";
       }
 
@@ -452,6 +479,9 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
+        if (command_pos != -1)
+          ++distance_from_command;
+
         arg->_third = "exp";
       }
 
@@ -461,6 +491,9 @@ void Arguments::categorize ()
         found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
+
+        if (command_pos != -1)
+          ++distance_from_command;
 
         arg->_third = "word";
       }
@@ -615,6 +648,7 @@ void Arguments::resolve_aliases ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// These are some delicate heuristics here.  Tread lightly.
 void Arguments::inject_defaults ()
 {
   // Scan the arguments and detect what is present.
@@ -654,18 +688,20 @@ void Arguments::inject_defaults ()
       else
         throw std::string (STRING_TRIVIAL_INPUT);
     }
-
-    // Modify command.
-    if (found_other)
-    {
-      capture_first ("modify");
-    }
-
-    // Information command.
     else
     {
-      context.header (STRING_ASSUME_INFO);
-      capture_first ("information");
+      // Modify command.
+      if (found_other)
+      {
+        capture_first ("modify");
+      }
+
+      // Information command.
+      else
+      {
+        context.header (STRING_ASSUME_INFO);
+        capture_first ("information");
+      }
     }
   }
 }
