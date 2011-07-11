@@ -94,6 +94,8 @@
    certain circumstances (thanks to Steve Rader).
  + Fixed bug #645 & #660, which prevented logically combining report filters
    (thanks to Bryce Harrington).
+ + Fixed bug #683, in which the 'config' command sometimes edited comments
+   instead of the proper line in .taskrc (thanks to Erlan Sergaziev).
  + Fixed bug #691, which was a mis-reporting of file lock state even when file
    locking was turned off (thanks to Tom Duffy).
  + Fixed bug #696, where the command line parser was confused by a single '-'

@@ -78,67 +78,80 @@ int CmdConfig::execute (std::string& output)
       bool change = false;
 
       // Read .taskrc (or equivalent)
-      std::string contents;
+      std::vector <std::string> contents;
       File::read (context.config.original_file, contents);
 
       // task config name value
       // task config name ""
-      if (words.size () ||
-          words.back ()._first == "")
+      if (words.size () > 1)
       {
-        // Find existing entry & overwrite
-        std::string::size_type pos = contents.find (name + "=");
-        if (pos != std::string::npos)
+        bool found = false;
+        std::vector <std::string>::iterator line;
+        for (line = contents.begin (); line != contents.end (); ++line)
         {
-          std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
-          if (eol == std::string::npos)
-            throw std::string ("Cannot find EOL after entry '") + name + "'.";
+          // If there is a comment on the line, it must follow the pattern.
+          std::string::size_type comment = line->find ("#");
+          std::string::size_type pos     = line->find (name + "=");
 
-          if (confirm (std::string ("Are you sure you want to change the value of '")
-                         + name
-                         + "' from '"
-                         + context.config.get(name)
-                         + "' to '"
-                         + value + "'?"))
+          if (pos != std::string::npos &&
+              (comment == std::string::npos ||
+               comment > pos))
           {
-            contents = contents.substr (0, pos)
-                     + name + "=" + value
-                     + contents.substr (eol);
-            change = true;
+            found = true;
+            if (confirm (std::string ("Are you sure you want to change the value of '")
+                           + name
+                           + "' from '"
+                           + context.config.get(name)
+                           + "' to '"
+                           + value + "'?"))
+            {
+              if (comment != std::string::npos)
+                *line = name + "=" + value + " " + line->substr (comment);
+              else
+                *line = name + "=" + value;
+
+              change = true;
+            }
           }
         }
 
         // Not found, so append instead.
-        else
+        if (!found &&
+            confirm (std::string ("Are you sure you want to add '") + name + "' with a value of '" + value + "'?"))
         {
-          if (confirm (std::string ("Are you sure you want to add '") + name + "' with a value of '" + value + "'?"))
-          {
-            contents = contents
-                     + "\n"
-                     + name + "=" + value
-                     + "\n";
-            change = true;
-          }
+          contents.push_back (name + "=" + value);
+          change = true;
         }
       }
 
       // task config name
       else
       {
-        // Remove name
-        std::string::size_type pos = contents.find (name + "=");
-        if (pos == std::string::npos)
-          throw std::string ("No entry named '") + name + "' found.";
-
-        std::string::size_type eol = contents.find_first_of ("\r\f\n", pos);
-        if (eol == std::string::npos)
-          throw std::string ("Cannot find EOL after entry '") + name + "'.";
-
-        if (confirm (std::string ("Are you sure you want to remove '") + name + "'?"))
+        bool found = false;
+        std::vector <std::string>::iterator line;
+        for (line = contents.begin (); line != contents.end (); ++line)
         {
-          contents = contents.substr (0, pos) + contents.substr (eol + 1);
-          change = true;
+          // If there is a comment on the line, it must follow the pattern.
+          std::string::size_type comment = line->find ("#");
+          std::string::size_type pos     = line->find (name + "=");
+
+          if (pos != std::string::npos &&
+              (comment == std::string::npos ||
+               comment > pos))
+          {
+            found = true;
+
+            // Remove name
+            if (confirm (std::string ("Are you sure you want to remove '") + name + "'?"))
+            {
+              *line = "";
+              change = true;
+            }
+          }
         }
+
+        if (!found)
+          throw std::string ("No entry named '") + name + "' found.";
       }
 
       // Write .taskrc (or equivalent)
@@ -154,6 +167,7 @@ int CmdConfig::execute (std::string& output)
     }
     else
       throw std::string ("Specify the name of a config variable to modify.");
+
     output = out.str ();
   }
   else
