@@ -117,6 +117,8 @@
    merge/push/pull URIs (thanks to Tomas Cech).
  + Fixed bug #741, which miscounted columns widths when a table header used
    unicode characters (thanks to Tomas Cech).
+ + Fixed bug #744, which omitted new ID feedback for all but the first
+   duplicated task (thanks to Uli Martens).
  + Fixed bug #745, which allows projects names with spaces, provided the values
    are quoted (thanks to Duane Waddle).
  + Applied patch for Bug #746, which added missing documentation for the 'entry'
