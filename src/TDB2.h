@@ -32,6 +32,7 @@
 #include <vector>
 #include <string>
 #include <stdio.h>
+#include <ViewText.h>
 #include <File.h>
 #include <Task.h>
 
@@ -44,9 +45,9 @@ public:
 
   void target (const std::string&);
 
-  std::vector <Task>& get_tasks ();
-  std::vector <std::string>& get_lines ();
-  std::string& get_contents ();
+  const std::vector <Task>& get_tasks ();
+  const std::vector <std::string>& get_lines ();
+  const std::string& get_contents ();
 
   void add_task (const Task&);
   void modify_task (const Task&);
@@ -54,25 +55,26 @@ public:
   void clear_lines ();
   void commit ();
 
-private:
+public:
   void load_tasks ();
   void load_lines ();
   void load_contents ();
 
-private:
+public:
+  bool _read_only;
   bool _dirty;
   bool _loaded_tasks;
   bool _loaded_lines;
   bool _loaded_contents;
   std::vector <Task> _tasks;
   std::vector <Task> _added_tasks;
+  std::vector <Task> _removed_tasks;
   std::vector <Task> _modified_tasks;
   std::vector <std::string> _lines;
   std::vector <std::string> _added_lines;
   std::string _contents;
   File _file;
 };
-
 
 // TDB2 Class represents all the files in the task database.
 class TDB2
@@ -86,6 +88,9 @@ public:
   void modify (const Task&);
   void commit ();
   int gc ();
+
+  void dump ();
+  void dump_file (ViewText&, const std::string&, TF2&);
 
 public:
   TF2 pending;

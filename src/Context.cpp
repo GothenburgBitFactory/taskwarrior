@@ -143,6 +143,7 @@ int Context::initialize (int argc, const char** argv)
     tdb.clear ();                   // TODO Obsolete
     tdb.location (data_dir);        // TODO Obsolete
     tdb2.set_location (data_dir);
+    tdb2.dump ();
 
     // Hook system init, plus post-start event occurring at the first possible
     // moment after hook initialization.

@@ -25,13 +25,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <Context.h>
 #include <text.h>
 #include <TDB2.h>
 
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 TF2::TF2 ()
-: _dirty (false)
+: _read_only (false)
+, _dirty (false)
 , _loaded_tasks (false)
 , _loaded_lines (false)
 , _loaded_contents (false)
@@ -48,10 +51,11 @@ TF2::~TF2 ()
 void TF2::target (const std::string& f)
 {
   _file = File (f);
+  _read_only = ! _file.writable ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <Task>& TF2::get_tasks ()
+const std::vector <Task>& TF2::get_tasks ()
 {
   if (! _loaded_tasks)
     load_tasks ();
@@ -60,7 +64,7 @@ std::vector <Task>& TF2::get_tasks ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string>& TF2::get_lines ()
+const std::vector <std::string>& TF2::get_lines ()
 {
   if (! _loaded_lines)
     load_lines ();
@@ -69,7 +73,7 @@ std::vector <std::string>& TF2::get_lines ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string& TF2::get_contents ()
+const std::string& TF2::get_contents ()
 {
   if (! _loaded_contents)
     load_contents ();
@@ -155,54 +159,44 @@ void TF2::commit ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_tasks ()
 {
-  if (! _loaded_tasks)
-  {
-    if (! _loaded_lines)
-      load_lines ();
+  if (! _loaded_lines)
+    load_lines ();
 
-    std::vector <std::string>::iterator i;
-    for (i = _lines.begin (); i != _lines.end (); ++i)
-      _tasks.push_back (Task (*i));
+  std::vector <std::string>::iterator i;
+  for (i = _lines.begin (); i != _lines.end (); ++i)
+    _tasks.push_back (Task (*i));
 
-    _loaded_tasks = true;
-  }
+  _loaded_tasks = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_lines ()
 {
-  if (! _loaded_lines)
-  {
-    if (! _loaded_contents)
-      load_contents ();
+  if (! _loaded_contents)
+    load_contents ();
 
-    split (_lines, _contents, '\n');
-    _loaded_lines = true;
-  }
+  split (_lines, _contents, '\n');
+  _loaded_lines = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_contents ()
 {
-  if (! _loaded_contents)
-  {
-    _contents = "";
+  _contents = "";
 
-    if (_file.open ())
+  if (_file.open ())
+  {
+    if (_file.lock ())
     {
-      if (_file.lock ())
-      {
-        _file.read (_contents);
-        _loaded_contents = true;
-      }
-      // TODO Error handling?
+      _file.read (_contents);
+      _loaded_contents = true;
     }
     // TODO Error handling?
   }
+  // TODO Error handling?
 }
 
-
-
+////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -269,8 +263,77 @@ void TDB2::commit ()
 ////////////////////////////////////////////////////////////////////////////////
 int TDB2::gc ()
 {
+/*
+  pending.load_tasks
+  completed.load_tasks
 
+  for each pending
+    if status == completed || status == deleted
+      pending.remove
+      completed.add
+    if status == waiting && wait < now
+      status = pending
+      wait.clear
+
+  for each completed
+    if status == pending || status == waiting
+      completed.remove
+      pending.add
+*/
   return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//  File           RW State Tasks + - ~ lines + - Bytes
+//  -------------- -- ----- ----- - - - ----- - - -----
+//  pending.data   rw clean   123t  +2t  -1t ~1t
+//  completed.data rw clean   123t  +2t      ~1t
+//  undo.data      rw clean   123t  +2t      ~1t
+//  backlog.data   rw clean   123t  +2t      ~1t
+//  synch-key.data rw clean                        123b
+//
+void TDB2::dump ()
+{
+  if (context.config.getBoolean ("debug"))
+  {
+    ViewText view;
+    view.width (context.getWidth ());
+    view.add (Column::factory ("string",       "File"));
+    view.add (Column::factory ("string.right", "RW"));
+    view.add (Column::factory ("string.right", "State"));
+    view.add (Column::factory ("string.right", "Tasks"));
+    view.add (Column::factory ("string.right", "+"));
+    view.add (Column::factory ("string.right", "-"));
+    view.add (Column::factory ("string.right", "~"));
+    view.add (Column::factory ("string.right", "Lines"));
+    view.add (Column::factory ("string.right", "+"));
+    view.add (Column::factory ("string.right", "Bytes"));
+
+    dump_file (view, "pending.data", pending);
+    dump_file (view, "completed.data", completed);
+    dump_file (view, "undo.data", undo);
+    dump_file (view, "backlog.data", backlog);
+    dump_file (view, "synch_key.data", synch_key);
+    context.debug (view.render ());
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::dump_file (ViewText& view, const std::string& label, TF2& tf)
+{
+  int row = view.addRow ();
+  view.set (row, 0, label);
+  view.set (row, 1, std::string (tf._file.readable () ? "r" : "-") +
+                    std::string (tf._file.writable () ? "w" : "-"));
+  view.set (row, 2, tf._dirty ? "dirty" : "clean");
+  view.set (row, 3, tf._loaded_tasks ? (format ((int)tf._tasks.size ())) : "-");
+  view.set (row, 4, (int)tf._added_tasks.size ());
+  view.set (row, 5, (int)tf._removed_tasks.size ());
+  view.set (row, 6, (int)tf._modified_tasks.size ());
+  view.set (row, 7, tf._loaded_lines ? (format ((int)tf._lines.size ())) : "-");
+  view.set (row, 8, (int)tf._added_lines.size ());
+  view.set (row, 9, tf._loaded_contents ? (format ((int)tf._contents.size ())) : "-");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
