@@ -23,6 +23,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdDuplicate.cpp   CmdDuplicate.h
                    CmdEdit.cpp        CmdEdit.h
                    CmdExec.cpp        CmdExec.h
+                   CmdExport.cpp      CmdExport.h
                    CmdHelp.cpp        CmdHelp.h
                    CmdHistory.cpp     CmdHistory.h
                    CmdIDs.cpp         CmdIDs.h
@@ -37,7 +38,6 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdProjects.cpp    CmdProjects.h
                    CmdPull.cpp        CmdPull.h
                    CmdPush.cpp        CmdPush.h
-                   CmdQuery.cpp       CmdQuery.h
                    CmdReports.cpp     CmdReports.h
                    CmdShell.cpp       CmdShell.h
                    CmdShow.cpp        CmdShow.h

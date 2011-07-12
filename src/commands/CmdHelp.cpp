@@ -90,6 +90,20 @@ int CmdHelp::execute (std::string& output)
     }
   }
 
+  // Add the aliases commands.
+  row = view.addRow ();
+  view.set (row, 1, " ");
+
+  std::map <std::string, std::string>::iterator alias;
+  for (alias =  context.aliases.begin ();
+       alias != context.aliases.end ();
+       ++alias)
+  {
+    row = view.addRow ();
+    view.set (row, 1, alias->first);
+    view.set (row, 2, "Aliased to '" + alias->second + "'");
+  }
+
 /*
   row = view.addRow ();
   view.set (row, 1, "task ID /from/to/g");

@@ -40,8 +40,8 @@ extern Context context;
 CmdModify::CmdModify ()
 {
   _keyword     = "modify";
-  _usage       = "task <filter>   modify <modifications>\n"
-                 "task <sequence>        <modifications>";
+  _usage       = "task <filter> modify <modifications>\n"
+                 "task <sequence> <modifications>";
   _description = "Modifies the existing task with provided arguments.\n"
                  "The 'modify' keyword is optional.";
   _read_only   = false;

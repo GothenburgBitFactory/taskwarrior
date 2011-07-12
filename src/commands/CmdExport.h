@@ -24,17 +24,17 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_CMDQUERY
-#define INCLUDED_CMDQUERY
+#ifndef INCLUDED_CMDEXPORT
+#define INCLUDED_CMDEXPORT
 #define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>
 
-class CmdQuery : public Command
+class CmdExport : public Command
 {
 public:
-  CmdQuery ();
+  CmdExport ();
   int execute (std::string&);
 };
 

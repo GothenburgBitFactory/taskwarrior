@@ -30,22 +30,22 @@
 #include <Context.h>
 #include <main.h>
 #include <i18n.h>
-#include <CmdQuery.h>
+#include <CmdExport.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdQuery::CmdQuery ()
+CmdExport::CmdExport ()
 {
-  _keyword     = "_query";
-  _usage       = "task _query [<filter>]";
-  _description = STRING_CMD_QUERY_USAGE;
+  _keyword     = "export";
+  _usage       = "task export [<filter>]";
+  _description = STRING_CMD_EXPORT_USAGE;
   _read_only   = true;
   _displays_id = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdQuery::execute (std::string& output)
+int CmdExport::execute (std::string& output)
 {
   int rc = 0;
 
