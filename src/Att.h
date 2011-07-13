@@ -54,10 +54,8 @@ public:
   static bool validNameValue (std::string&, std::string&, std::string&);
   static bool validMod (const std::string&);
   std::string type (const std::string&) const;
-  std::string modType (const std::string&) const;
   void parse (const std::string&);
   void parse (Nibbler&);
-  bool match (const Att&) const;
 
   std::string composeF4 () const;
 
@@ -69,9 +67,6 @@ public:
 
   std::string value () const;
   void value (const std::string&);
-
-  int value_int () const;
-  void value_int (int);
 
   static void allNames (std::vector <std::string>&);
 
