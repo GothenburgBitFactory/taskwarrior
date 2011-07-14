@@ -125,6 +125,15 @@ int CmdHelp::execute (std::string& output)
            "or at http://taskwarrior.org"
          + "\n"
          + "\n"
+
+         + "<filter>\n"
+           "  Used to restrict the visible data.\n"
+           "\n"
+
+         + "<modfications>\n"
+           "  Changes to apply to the filtered data.\n"
+           "\n"
+
          + "ID is the numeric identifier displayed by the 'task list' command. "
            "You can specify multiple IDs for task commands, and multiple tasks "
            "will be affected.  To specify multiple IDs make sure you use one "

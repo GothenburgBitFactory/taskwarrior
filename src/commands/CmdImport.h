@@ -36,6 +36,14 @@ class CmdImport : public Command
 public:
   CmdImport ();
   int execute (std::string&);
+};
+
+/*
+class CmdImport : public Command
+{
+public:
+  CmdImport ();
+  int execute (std::string&);
 
 private:
   enum fileType
@@ -62,6 +70,7 @@ private:
   std::string CSV (const std::vector <std::string>&);
   std::string YAML (const std::vector <std::string>&);
 };
+*/
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////

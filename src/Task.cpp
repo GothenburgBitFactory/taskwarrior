@@ -697,7 +697,7 @@ void Task::getDependencies (std::vector <std::string>& all) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Task::getTagCount ()
+int Task::getTagCount () const
 {
   std::vector <std::string> tags;
   split (tags, get ("tags"), ',');
@@ -706,7 +706,7 @@ int Task::getTagCount ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Task::hasTag (const std::string& tag)
+bool Task::hasTag (const std::string& tag) const
 {
   std::vector <std::string> tags;
   split (tags, get ("tags"), ',');
@@ -1042,53 +1042,61 @@ int Task::determineVersion (const std::string& line)
 //
 // See rfc31-urgency.txt for full details.
 //
+float Task::urgency_c () const
+{
+  float value = 0.0;
+  value += urgency_priority ()    * context.config.getReal ("urgency.priority.coefficient");
+  value += urgency_project ()     * context.config.getReal ("urgency.project.coefficient");
+  value += urgency_active ()      * context.config.getReal ("urgency.active.coefficient");
+  value += urgency_waiting ()     * context.config.getReal ("urgency.waiting.coefficient");
+  value += urgency_blocked ()     * context.config.getReal ("urgency.blocked.coefficient");
+  value += urgency_annotations () * context.config.getReal ("urgency.annotations.coefficient");
+  value += urgency_tags ()        * context.config.getReal ("urgency.tags.coefficient");
+  value += urgency_next ()        * context.config.getReal ("urgency.next.coefficient");
+  value += urgency_due ()         * context.config.getReal ("urgency.due.coefficient");
+  value += urgency_blocking ()    * context.config.getReal ("urgency.blocking.coefficient");
+
+  // Tag- and project-specific coefficients.
+  std::vector <std::string> all;
+  context.config.all (all);
+
+  std::vector <std::string>::iterator var;
+  for (var = all.begin (); var != all.end (); ++var)
+  {
+    if (var->substr (0, 13) == "urgency.user.")
+    {
+      // urgency.user.project.<project>.coefficient
+      std::string::size_type end = std::string::npos;
+      if (var->substr (13, 8) == "project." &&
+          (end = var->find (".coefficient")) != std::string::npos)
+      {
+        std::string project = var->substr (21, end - 21);
+
+        if (get ("project").find (project) == 0)
+          value += context.config.getReal (*var);
+      }
+
+      // urgency.user.tag.<tag>.coefficient
+      if (var->substr (13, 4) == "tag." &&
+          (end = var->find (".coefficient")) != std::string::npos)
+      {
+        std::string tag = var->substr (17, end - 17);
+
+        if (hasTag (tag))
+          value += context.config.getReal (*var);
+      }
+    }
+  }
+
+  return value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 float Task::urgency ()
 {
   if (recalc_urgency)
   {
-    urgency_value = 0.0;
-    urgency_value += urgency_priority ()    * context.config.getReal ("urgency.priority.coefficient");
-    urgency_value += urgency_project ()     * context.config.getReal ("urgency.project.coefficient");
-    urgency_value += urgency_active ()      * context.config.getReal ("urgency.active.coefficient");
-    urgency_value += urgency_waiting ()     * context.config.getReal ("urgency.waiting.coefficient");
-    urgency_value += urgency_blocked ()     * context.config.getReal ("urgency.blocked.coefficient");
-    urgency_value += urgency_annotations () * context.config.getReal ("urgency.annotations.coefficient");
-    urgency_value += urgency_tags ()        * context.config.getReal ("urgency.tags.coefficient");
-    urgency_value += urgency_next ()        * context.config.getReal ("urgency.next.coefficient");
-    urgency_value += urgency_due ()         * context.config.getReal ("urgency.due.coefficient");
-    urgency_value += urgency_blocking ()    * context.config.getReal ("urgency.blocking.coefficient");
-
-    // Tag- and project-specific coefficients.
-    std::vector <std::string> all;
-    context.config.all (all);
-
-    std::vector <std::string>::iterator var;
-    for (var = all.begin (); var != all.end (); ++var)
-    {
-      if (var->substr (0, 13) == "urgency.user.")
-      {
-        // urgency.user.project.<project>.coefficient
-        std::string::size_type end = std::string::npos;
-        if (var->substr (13, 8) == "project." &&
-            (end = var->find (".coefficient")) != std::string::npos)
-        {
-          std::string project = var->substr (21, end - 21);
-
-          if (get ("project").find (project) == 0)
-            urgency_value += context.config.getReal (*var);
-        }
-
-        // urgency.user.tag.<tag>.coefficient
-        if (var->substr (13, 4) == "tag." &&
-            (end = var->find (".coefficient")) != std::string::npos)
-        {
-          std::string tag = var->substr (17, end - 17);
-
-          if (hasTag (tag))
-            urgency_value += context.config.getReal (*var);
-        }
-      }
-    }
+    urgency_value = urgency_c ();
 
     // Return the sum of all terms.
     recalc_urgency = false;
@@ -1098,7 +1106,7 @@ float Task::urgency ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_priority ()
+float Task::urgency_priority () const
 {
   std::string value = get ("priority");
 
@@ -1110,7 +1118,7 @@ float Task::urgency_priority ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_project ()
+float Task::urgency_project () const
 {
   if (has ("project"))
     return 1.0;
@@ -1119,7 +1127,7 @@ float Task::urgency_project ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_active ()
+float Task::urgency_active () const
 {
   if (has ("start"))
     return 1.0;
@@ -1128,7 +1136,7 @@ float Task::urgency_active ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_waiting ()
+float Task::urgency_waiting () const
 {
   if (get ("status") == "pending")
     return 1.0;
@@ -1137,7 +1145,7 @@ float Task::urgency_waiting ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_blocked ()
+float Task::urgency_blocked () const
 {
   if (has ("depends"))
     return 1.0;
@@ -1146,7 +1154,7 @@ float Task::urgency_blocked ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_annotations ()
+float Task::urgency_annotations () const
 {
   std::vector <Att> annos;
   getAnnotations (annos);
@@ -1159,7 +1167,7 @@ float Task::urgency_annotations ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_tags ()
+float Task::urgency_tags () const
 {
   switch (getTagCount ())
   {
@@ -1171,7 +1179,7 @@ float Task::urgency_tags ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_next ()
+float Task::urgency_next () const
 {
   if (hasTag ("next"))
     return 1.0;
@@ -1180,7 +1188,7 @@ float Task::urgency_next ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_due ()
+float Task::urgency_due () const
 {
   if (has ("due"))
   {
@@ -1216,7 +1224,7 @@ float Task::urgency_due ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_blocking ()
+float Task::urgency_blocking () const
 {
   if (dependencyIsBlocking (*this))
     return 1.0;

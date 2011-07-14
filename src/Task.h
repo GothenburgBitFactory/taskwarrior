@@ -65,8 +65,8 @@ public:
   status getStatus () const;
   void setStatus (status);
 
-  int getTagCount ();
-  bool hasTag (const std::string&);
+  int getTagCount () const;
+  bool hasTag (const std::string&) const;
   void addTag (const std::string&);
   void addTags (const std::vector <std::string>&);
   void getTags (std::vector<std::string>&) const;
@@ -87,22 +87,23 @@ public:
 
   void validate () const;
 
+  float urgency_c () const;
   float urgency ();
 
 private:
   int determineVersion (const std::string&);
   void legacyParse (const std::string&);
 
-  inline float urgency_priority ();
-  inline float urgency_project ();
-  inline float urgency_active ();
-  inline float urgency_waiting ();
-  inline float urgency_blocked ();
-  inline float urgency_annotations ();
-  inline float urgency_tags ();
-  inline float urgency_next ();
-  inline float urgency_due ();
-  inline float urgency_blocking ();
+  inline float urgency_priority () const;
+  inline float urgency_project () const;
+  inline float urgency_active () const;
+  inline float urgency_waiting () const;
+  inline float urgency_blocked () const;
+  inline float urgency_annotations () const;
+  inline float urgency_tags () const;
+  inline float urgency_next () const;
+  inline float urgency_due () const;
+  inline float urgency_blocking () const;
 };
 
 #endif

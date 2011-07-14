@@ -39,7 +39,7 @@ public:
   ~DOM ();
 
   const std::string get (const std::string&);
-  const std::string get (const std::string&, Task&);
+  const std::string get (const std::string&, const Task&);
   void set (const std::string&, const std::string&);
 
 private:

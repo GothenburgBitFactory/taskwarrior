@@ -203,7 +203,7 @@ const std::string DOM::get (const std::string& name)
 //   recur
 //   depends
 //
-const std::string DOM::get (const std::string& name, Task& task)
+const std::string DOM::get (const std::string& name, const Task& task)
 {
   // Cache test.
 /*
@@ -232,7 +232,7 @@ const std::string DOM::get (const std::string& name, Task& task)
       n.getUntilEOS (attr);
 
            if (attr == "id")      return format (task.id);
-      else if (attr == "urgency") return format (task.urgency (), 4, 3);
+      else if (attr == "urgency") return format (task.urgency_c (), 4, 3);
       else                        return task.get (attr);
     }
   }
@@ -249,7 +249,7 @@ const std::string DOM::get (const std::string& name, Task& task)
       n.getUntilEOS (attr);
 
            if (attr == "id")      return format (task.id);
-      else if (attr == "urgency") return format (task.urgency (), 4, 3);
+      else if (attr == "urgency") return format (task.urgency_c (), 4, 3);
       else                        return task.get (attr);
     }
   }
@@ -258,7 +258,7 @@ const std::string DOM::get (const std::string& name, Task& task)
 //  std::cout << "# DOM::get " << name << "\n";
 
        if (name == "id")      return format (task.id);
-  else if (name == "urgency") return format (task.urgency (), 4, 3);
+  else if (name == "urgency") return format (task.urgency_c (), 4, 3);
   else                        return task.get (name);
 
   // Delegate to the context-free version of DOM::get.

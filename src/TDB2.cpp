@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove.
 #include <Context.h>
 #include <text.h>
 #include <TDB2.h>
@@ -52,29 +53,37 @@ void TF2::target (const std::string& f)
 {
   _file = File (f);
   _read_only = ! _file.writable ();
+
+  std::cout << "# TF2::target " << f << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task>& TF2::get_tasks ()
 {
+  std::cout << "# TF2::get_tasks\n";
+
   if (! _loaded_tasks)
     load_tasks ();
 
-  return _tasks /*+ _added_tasks*/;
+  return _tasks;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <std::string>& TF2::get_lines ()
 {
+  std::cout << "# TF2::get_lines\n";
+
   if (! _loaded_lines)
     load_lines ();
 
-  return _lines /*+ _added_lines*/;
+  return _lines;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::string& TF2::get_contents ()
 {
+  std::cout << "# TF2::get_contents\n";
+
   if (! _loaded_contents)
     load_contents ();
 
@@ -84,13 +93,29 @@ const std::string& TF2::get_contents ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::add_task (const Task& task)
 {
-  _added_tasks.push_back (task);
+  std::cout << "# TF2::add_task\n";
+
+  _tasks.push_back (task);           // For subsequent queries
+  _added_tasks.push_back (task);     // For commit/synch
   _dirty = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::modify_task (const Task& task)
 {
+  std::cout << "# TF2::modify_task\n";
+
+  // Modify in-place.
+  std::vector <Task>::iterator i;
+  for (i = _tasks.begin (); i != _tasks.end (); ++i)
+  {
+    if (i->get ("uuid") == task.get ("uuid"))
+    {
+      *i = task;
+      break;
+    }
+  }
+
   _modified_tasks.push_back (task);
   _dirty = true;
 }
@@ -98,6 +123,8 @@ void TF2::modify_task (const Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::add_line (const std::string& line)
 {
+  std::cout << "# TF2::add_line\n";
+
   _added_lines.push_back (line);
   _dirty = true;
 }
@@ -106,6 +133,7 @@ void TF2::add_line (const std::string& line)
 // This is so that synch.key can just overwrite and not grow.
 void TF2::clear_lines ()
 {
+  std::cout << "# TF2::clear_lines\n";
   _lines.clear ();
   _dirty = true;
 }
@@ -114,6 +142,57 @@ void TF2::clear_lines ()
 // Top-down recomposition.
 void TF2::commit ()
 {
+  std::cout << "# TF2::commit " << _file.data << "\n";
+
+  // The _dirty flag indicates that the file needs to be written.
+  if (_dirty)
+  {
+    // Special case: added but no modified means just append to the file.
+    if (!_modified_tasks.size () &&
+        (_added_tasks.size () || _added_lines.size ()))
+    {
+      if (_file.open ())
+      {
+        if (context.config.getBoolean ("locking"))
+          _file.lock ();
+
+        // Write out all the added tasks.
+        std::vector <Task>::iterator task;
+        for (task = _added_tasks.begin ();
+             task != _added_tasks.end ();
+             ++task)
+        {
+          _file.append (task->composeF4 ());
+        }
+
+        _added_tasks.clear ();
+
+        // Write out all the added lines.
+        std::vector <std::string>::iterator line;
+        for (line = _added_lines.begin ();
+             line != _added_lines.end ();
+             ++line)
+        {
+          _file.append (*line);
+        }
+
+        _added_lines.clear ();
+        _file.close ();
+      }
+    }
+    else
+    {
+      // TODO _file.truncate ();
+      // TODO only write out _tasks, because any deltas have already been applied.
+      // TODO append _added_lines.
+    }
+
+    _dirty = false;
+  }
+
+
+  // --------------------------- old implementation -------------------------
+/*
   // Load the lowest form, to allow
   if (_dirty)
   {
@@ -154,24 +233,49 @@ void TF2::commit ()
 
     _dirty = false;
   }
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_tasks ()
 {
+  std::cout << "# TF2::load_tasks\n";
+
   if (! _loaded_lines)
     load_lines ();
 
-  std::vector <std::string>::iterator i;
-  for (i = _lines.begin (); i != _lines.end (); ++i)
-    _tasks.push_back (Task (*i));
+  int line_number = 0;
+  try
+  {
+    std::vector <std::string>::iterator i;
+    for (i = _lines.begin (); i != _lines.end (); ++i)
+    {
+      ++line_number;
+      Task task (*i);
+// TODO Find a way to number pending tasks, but not others.
+//      task.id = _id++;
+      _tasks.push_back (task);
+    }
 
-  _loaded_tasks = true;
+    _loaded_tasks = true;
+  }
+
+  catch (std::string& e)
+  {
+/*
+    std::stringstream s;
+    s << " in " << _file.data << " at line " << line_number;
+    throw e + s.str ();
+*/
+    throw e + format (" in {1} at line {2}", _file.data, line_number);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_lines ()
 {
+  std::cout << "# TF2::load_lines\n";
+
   if (! _loaded_contents)
     load_contents ();
 
@@ -182,16 +286,17 @@ void TF2::load_lines ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_contents ()
 {
+  std::cout << "# TF2::load_contents\n";
+
   _contents = "";
 
   if (_file.open ())
   {
-    if (_file.lock ())
-    {
-      _file.read (_contents);
-      _loaded_contents = true;
-    }
-    // TODO Error handling?
+    if (context.config.getBoolean ("locking"))
+      _file.lock ();
+
+    _file.read (_contents);
+    _loaded_contents = true;
   }
   // TODO Error handling?
 }
@@ -209,7 +314,9 @@ void TF2::load_contents ()
 ////////////////////////////////////////////////////////////////////////////////
 TDB2::TDB2 ()
 : _location ("")
+, _id (1)
 {
+  std::cout << "# TDB2::TDB2\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -217,6 +324,7 @@ TDB2::TDB2 ()
 // already called, if data is to be preserved.
 TDB2::~TDB2 ()
 {
+  std::cout << "# TDB2::~TDB2\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -224,6 +332,7 @@ TDB2::~TDB2 ()
 // read.
 void TDB2::set_location (const std::string& location)
 {
+  std::cout << "# TDB2::set_location " << location << "\n";
   _location = location;
 
   pending.target   (location + "/pending.data");
@@ -234,35 +343,53 @@ void TDB2::set_location (const std::string& location)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Add the new task to the appropriate file.
 void TDB2::add (const Task& task)
 {
-  // Use the raw string form for speed.
+  std::cout << "# TDB2::add\n";
+
   std::string status = task.get ("status");
-  if (status == "completed" || status == "deleted")
+  if (status == "completed" ||
+      status == "deleted")
     completed.add_task (task);
   else
     pending.add_task (task);
+
+  backlog.add_task (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::modify (const Task& task)
 {
-  // TODO Handle pending vs completed/deleted
+  std::cout << "# TDB2::modify\n";
+
+  std::string status = task.get ("status");
+  if (status == "completed" ||
+      status == "deleted")
+    completed.modify_task (task);
+  else
+    pending.modify_task (task);
+
+  backlog.modify_task (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::commit ()
 {
+  dump ();
+  std::cout << "# TDB2::commit\n";
   pending.commit ();
   completed.commit ();
   undo.commit ();
   backlog.commit ();
   synch_key.commit ();
+  dump ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int TDB2::gc ()
 {
+  std::cout << "# TDB2::gc\n";
 /*
   pending.load_tasks
   completed.load_tasks
@@ -281,6 +408,12 @@ int TDB2::gc ()
       pending.add
 */
   return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int TDB2::next_id ()
+{
+  return _id++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -304,7 +437,6 @@ void TDB2::dump ()
     view.add (Column::factory ("string.right", "State"));
     view.add (Column::factory ("string.right", "Tasks"));
     view.add (Column::factory ("string.right", "+"));
-    view.add (Column::factory ("string.right", "-"));
     view.add (Column::factory ("string.right", "~"));
     view.add (Column::factory ("string.right", "Lines"));
     view.add (Column::factory ("string.right", "+"));
@@ -329,11 +461,10 @@ void TDB2::dump_file (ViewText& view, const std::string& label, TF2& tf)
   view.set (row, 2, tf._dirty ? "dirty" : "clean");
   view.set (row, 3, tf._loaded_tasks ? (format ((int)tf._tasks.size ())) : "-");
   view.set (row, 4, (int)tf._added_tasks.size ());
-  view.set (row, 5, (int)tf._removed_tasks.size ());
-  view.set (row, 6, (int)tf._modified_tasks.size ());
-  view.set (row, 7, tf._loaded_lines ? (format ((int)tf._lines.size ())) : "-");
-  view.set (row, 8, (int)tf._added_lines.size ());
-  view.set (row, 9, tf._loaded_contents ? (format ((int)tf._contents.size ())) : "-");
+  view.set (row, 5, (int)tf._modified_tasks.size ());
+  view.set (row, 6, tf._loaded_lines ? (format ((int)tf._lines.size ())) : "-");
+  view.set (row, 7, (int)tf._added_lines.size ());
+  view.set (row, 8, tf._loaded_contents ? (format ((int)tf._contents.size ())) : "-");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

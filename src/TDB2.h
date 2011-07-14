@@ -45,9 +45,9 @@ public:
 
   void target (const std::string&);
 
-  const std::vector <Task>& get_tasks ();
+  const std::vector <Task>&        get_tasks ();
   const std::vector <std::string>& get_lines ();
-  const std::string& get_contents ();
+  const std::string&               get_contents ();
 
   void add_task (const Task&);
   void modify_task (const Task&);
@@ -55,7 +55,6 @@ public:
   void clear_lines ();
   void commit ();
 
-public:
   void load_tasks ();
   void load_lines ();
   void load_contents ();
@@ -68,7 +67,6 @@ public:
   bool _loaded_contents;
   std::vector <Task> _tasks;
   std::vector <Task> _added_tasks;
-  std::vector <Task> _removed_tasks;
   std::vector <Task> _modified_tasks;
   std::vector <std::string> _lines;
   std::vector <std::string> _added_lines;
@@ -87,7 +85,8 @@ public:
   void add (const Task&);
   void modify (const Task&);
   void commit ();
-  int gc ();
+  int  gc ();
+  int  next_id ();
 
   void dump ();
   void dump_file (ViewText&, const std::string&, TF2&);
@@ -101,6 +100,7 @@ public:
 
 private:
   std::string _location;
+  int _id;
 };
 
 

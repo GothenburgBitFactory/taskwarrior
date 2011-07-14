@@ -317,41 +317,16 @@ int TDB::loadPending (std::vector <Task>& tasks)
     }
 
     // Now filter and return.
-/*
-    if (filter.size ())
-    {
-      foreach (task, mPending)
-        if (filter.pass (*task))
-          tasks.push_back (*task);
-    }
-    else
-*/
-    {
-      foreach (task, mPending)
-        tasks.push_back (*task);
-    }
+    foreach (task, mPending)
+      tasks.push_back (*task);
 
     // Hand back any accumulated additions, if TDB::loadPending is being called
     // repeatedly.
     int fakeId = mId;
-/*
-    if (filter.size ())
+    foreach (task, mNew)
     {
-      foreach (task, mNew)
-      {
-        task->id = fakeId++;
-        if (filter.pass (*task))
-          tasks.push_back (*task);
-      }
-    }
-    else
-*/
-    {
-      foreach (task, mNew)
-      {
-        task->id = fakeId++;
-        tasks.push_back (*task);
-      }
+      task->id = fakeId++;
+      tasks.push_back (*task);
     }
   }
 
@@ -406,19 +381,8 @@ int TDB::loadCompleted (std::vector <Task>& tasks)
     }
 
     // Now filter and return.
-/*
-    if (filter.size ())
-    {
-      foreach (task, mCompleted)
-        if (filter.pass (*task))
-          tasks.push_back (*task);
-    }
-    else
-*/
-    {
-      foreach (task, mCompleted)
-        tasks.push_back (*task);
-    }
+    foreach (task, mCompleted)
+      tasks.push_back (*task);
   }
 
   catch (std::string& e)

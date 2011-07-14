@@ -84,11 +84,7 @@ int main (int argc, char** argv)
   a5.value ("\t\",[]:");
   t.is (a5.composeF4 (), "name:\"&tab;&dquot;,&open;&close;:\"", "Att::composeF4 fully encoded \\t\",[]:");
 
-  Att a6 ("name", 6);
-  t.is (a6.value_int (), 6, "Att::value_int get");
-  a6.value_int (7);
-  t.is (a6.value_int (), 7, "Att::value_int set/get");
-  t.is (a6.value (), "7", "Att::value 7");
+  Att a6 ("name", 7);
 
   // Att::mod - straight comparisons.
   bool good = true;

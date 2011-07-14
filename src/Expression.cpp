@@ -66,7 +66,7 @@ Expression::~Expression ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Expression::eval (Task& task)
+bool Expression::eval (const Task& task)
 {
   // If there are no elements in the filter, then all tasks pass.
   if (_args.size () == 0)

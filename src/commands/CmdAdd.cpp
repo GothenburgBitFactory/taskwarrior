@@ -51,12 +51,6 @@ int CmdAdd::execute (std::string& output)
 {
   int rc = 0;
 
-  // Must load pending to resolve dependencies, and to provide a new ID.
-  context.tdb.lock (context.config.getBoolean ("locking"));
-
-  std::vector <Task> all;
-  context.tdb.loadPending (all);
-
   // Every task needs a UUID.
   Task task;
   task.set ("uuid", uuid ());
@@ -68,17 +62,16 @@ int CmdAdd::execute (std::string& output)
 
   // Only valid tasks can be added.
   task.validate ();
-
-  context.tdb.add (task);
+  context.tdb2.add (task);
 
   // TODO This should be a call in to feedback.cpp.
+/*
   if (context.verbose ("new-id"))
     output = format (STRING_CMD_ADD_FEEDBACK, context.tdb.nextId ()) + "\n";
+*/
 
   context.footnote (onProjectChange (task));
-
-  context.tdb.commit ();
-  context.tdb.unlock ();
+  context.tdb2.commit ();
   return rc;
 }
 

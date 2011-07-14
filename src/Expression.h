@@ -40,7 +40,7 @@ class Expression
 public:
   Expression (Arguments&);
   ~Expression ();
-  bool eval (Task&);
+  bool eval (const Task&);
 
 private:
   void expand_sequence ();

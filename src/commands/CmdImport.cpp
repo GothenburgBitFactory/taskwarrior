@@ -25,9 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include <sstream>
 #include <Context.h>
 #include <Transport.h>
+#include <JSON.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -35,6 +37,85 @@
 
 extern Context context;
 
+////////////////////////////////////////////////////////////////////////////////
+CmdImport::CmdImport ()
+{
+  _keyword     = "import";
+  _usage       = "task import <file> [<file> ...]";
+  _description = "Imports JSON files.";
+  _read_only   = false;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdImport::execute (std::string& output)
+{
+  int rc = 0;
+
+	// Use the description as a file name.
+  Arguments words = context.args.extract_simple_words ();
+  if (! words.size ())
+    throw std::string ("You must specify a file to import.");
+
+  std::vector <Triple>::iterator word;
+  for (word = words.begin (); word != words.end (); ++word)
+  {
+    std::string file = word->_first;
+    std::cout << "Importing '" << file << "'\n";
+
+    std::string tmpfile = "";
+    Uri uri (file);
+    uri.parse ();
+
+    Transport* transport;
+    if ((transport = Transport::getTransport (uri)) != NULL)
+    {
+      std::string location (context.config.get ("data.location"));
+      tmpfile = location + "/import.data";
+      transport->recv (tmpfile);
+      delete transport;
+
+      file = tmpfile;
+    }
+
+    // Load the file.
+    std::vector <std::string> lines;
+    File::read (file, lines);
+
+    std::vector <std::string>::iterator line;
+    for (line = lines.begin (); line != lines.end (); ++line)
+    {
+      std::string object = trimLeft (
+                             trimRight (
+                               trimRight (
+                                 trim (*line), ","),
+                               "]"),
+                             "[");
+
+      // Parse the whole thing.
+      json::value* root = json::parse (object);
+      std::cout << root->dump ()
+                << "\n";
+
+/*
+      // For each object element...
+      std::map <std::string, json::value*>::iterator i;
+      for (i  = ((std::map <std::string, json::value*>*)root)->begin ();
+           i != ((std::map <std::string, json::value*>*)root)->end ();
+           ++i)
+      {
+        Task task;
+
+        // TODO Navigate each object.
+      }
+*/
+    }
+  }
+
+  return rc;
+}
+
+#ifdef OLD_STYLE
 ////////////////////////////////////////////////////////////////////////////////
 CmdImport::CmdImport ()
 {
@@ -1368,5 +1449,5 @@ int CmdImport::execute (std::string& output)
 */
   return rc;
 }
-
+#endif
 ////////////////////////////////////////////////////////////////////////////////

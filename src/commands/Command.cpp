@@ -284,6 +284,48 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Command::filter (std::vector <Task>& output)
+{
+  Timer timer ("Command::filter");
+
+  Arguments f;
+  if (read_only ())
+    f = context.args.extract_read_only_filter ();
+  else
+    f = context.args.extract_write_filter ();
+
+  if (f.size ())
+  {
+    const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
+    const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
+
+    Expression e (f);
+
+    output.clear ();
+    std::vector <Task>::const_iterator task;
+    for (task = pending.begin (); task != pending.end (); ++task)
+      if (e.eval (*task))
+        output.push_back (*task);
+
+    for (task = completed.begin (); task != completed.end (); ++task)
+      if (e.eval (*task))
+        output.push_back (*task);
+  }
+  else
+  {
+    const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
+    const std::vector <Task>& completed = context.tdb2.completed.get_tasks ();
+
+    std::vector <Task>::const_iterator task;
+    for (task = pending.begin (); task != pending.end (); ++task)
+      output.push_back (*task);
+
+    for (task = completed.begin (); task != completed.end (); ++task)
+      output.push_back (*task);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Apply the modifications in arguments to the task.
 void Command::modify_task_description_replace (Task& task, Arguments& arguments)
 {
