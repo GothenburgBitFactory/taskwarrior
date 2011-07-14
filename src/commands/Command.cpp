@@ -60,7 +60,7 @@
 #include <CmdIDs.h>
 #include <CmdImport.h>
 #include <CmdInfo.h>
-#include <CmdInstall.h>
+//#include <CmdInstall.h>
 #include <CmdLog.h>
 #include <CmdLogo.h>
 #include <CmdMerge.h>
@@ -126,7 +126,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdIDs ();                all[c->keyword ()] = c;
   c = new CmdImport ();             all[c->keyword ()] = c;
   c = new CmdInfo ();               all[c->keyword ()] = c;
-  c = new CmdInstall ();            all[c->keyword ()] = c;
+//  c = new CmdInstall ();            all[c->keyword ()] = c;
   c = new CmdLog ();                all[c->keyword ()] = c;
   c = new CmdLogo ();               all[c->keyword ()] = c;
   c = new CmdMerge ();              all[c->keyword ()] = c;

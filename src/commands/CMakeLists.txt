@@ -29,7 +29,6 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdIDs.cpp         CmdIDs.h
                    CmdImport.cpp      CmdImport.h
                    CmdInfo.cpp        CmdInfo.h
-                   CmdInstall.cpp     CmdInstall.h
                    CmdLog.cpp         CmdLog.h
                    CmdLogo.cpp        CmdLogo.h
                    CmdMerge.cpp       CmdMerge.h
