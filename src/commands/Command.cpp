@@ -297,7 +297,6 @@ void Command::filter (std::vector <Task>& output)
   if (f.size ())
   {
     const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
-    const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
 
     Expression e (f);
 
@@ -307,9 +306,15 @@ void Command::filter (std::vector <Task>& output)
       if (e.eval (*task))
         output.push_back (*task);
 
-    for (task = completed.begin (); task != completed.end (); ++task)
-      if (e.eval (*task))
-        output.push_back (*task);
+    if (! filter_shortcut (f))
+    {
+      const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
+      for (task = completed.begin (); task != completed.end (); ++task)
+        if (e.eval (*task))
+          output.push_back (*task);
+    }
+    else
+      context.debug ("Command::filter skipping completed.data");
   }
   else
   {
@@ -323,6 +328,31 @@ void Command::filter (std::vector <Task>& output)
     for (task = completed.begin (); task != completed.end (); ++task)
       output.push_back (*task);
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// If the filter contains the restriction "status:pending", as the first filter
+// term, then completed.data does not need to be loaded.
+bool Command::filter_shortcut (const Arguments& filter)
+{
+/**/
+  if (filter.size () >= 3)
+  {
+    std::cout << "# filter[0] " << filter[0]._first << "\n"
+              << "# filter[1] " << filter[1]._first << "\n"
+              << "# filter[2] " << filter[2]._first << "\n";
+  }
+/**/
+
+  // Postfix: <status> <"pending"> <=>
+  //                 0           1   2
+  if (filter.size ()                    >= 3                 &&
+      filter[0]._first                  == "status"          &&
+      filter[1]._first.find ("pending") != std::string::npos &&
+      filter[2]._first                  == "=")
+    return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

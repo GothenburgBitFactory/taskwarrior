@@ -55,6 +55,7 @@ public:
 protected:
   void filter (std::vector <Task>&, std::vector <Task>&);
   void filter (std::vector <Task>&);
+  bool filter_shortcut (const Arguments&);
 
   void modify_task_description_replace (Task&, Arguments&);
   void modify_task_description_prepend (Task&, Arguments&);

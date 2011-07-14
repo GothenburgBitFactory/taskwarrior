@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (121);
+  UnitTest t (118);
 
   Att a;
   t.notok (a.valid ("name"),              "Att::valid name           -> fail");

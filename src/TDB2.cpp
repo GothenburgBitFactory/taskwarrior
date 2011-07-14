@@ -316,7 +316,6 @@ TDB2::TDB2 ()
 : _location ("")
 , _id (1)
 {
-  std::cout << "# TDB2::TDB2\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -324,7 +323,6 @@ TDB2::TDB2 ()
 // already called, if data is to be preserved.
 TDB2::~TDB2 ()
 {
-  std::cout << "# TDB2::~TDB2\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -387,6 +385,10 @@ void TDB2::commit ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Scans the pending tasks for any that are completed or deleted, and if so,
+// moves them to the completed.data file.  Returns a count of tasks moved.
+// Now reverts expired waiting tasks to pending.
+// Now cleans up dangling dependencies.
 int TDB2::gc ()
 {
   std::cout << "# TDB2::gc\n";
@@ -407,6 +409,10 @@ int TDB2::gc ()
       completed.remove
       pending.add
 */
+
+  // TODO Remove dangling dependencies
+  // TODO Wake up expired waiting tasks
+
   return 0;
 }
 

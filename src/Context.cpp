@@ -266,9 +266,6 @@ int Context::dispatch (std::string &out)
     return c->execute (out);
   }
 
-  // TODO Need to invoke 'information' when a sequence/filter is present, but
-  //      no command is specified.
-
   return commands["help"]->execute (out);
 }
 
