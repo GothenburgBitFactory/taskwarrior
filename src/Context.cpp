@@ -174,6 +174,27 @@ int Context::initialize (int argc, const char** argv)
         std::cout << *d << "\n";
   }
 
+  // Dump all headers, controlled by 'header' verbosity token.
+  if (rc && verbose ("header"))
+  {
+    std::vector <std::string>::iterator h;
+    for (h = headers.begin (); h != headers.end (); ++h)
+      if (color ())
+        std::cout << colorizeHeader (*h) << "\n";
+      else
+        std::cout << *h << "\n";
+  }
+
+  // Dump all footnotes, controlled by 'footnote' verbosity token.
+  if (rc && verbose ("footnote"))
+  {
+    std::vector <std::string>::iterator f;
+    for (f = footnotes.begin (); f != footnotes.end (); ++f)
+      if (color ())
+        std::cout << colorizeFootnote (*f) << "\n";
+      else
+        std::cout << *f << "\n";
+  }
   return rc;
 }
 

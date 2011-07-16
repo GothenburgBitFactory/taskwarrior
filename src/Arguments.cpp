@@ -683,7 +683,7 @@ void Arguments::inject_defaults ()
       if (defaultCommand != "")
       {
         capture_first (defaultCommand);
-        context.header ("[task " + trim (defaultCommand) + "]");
+        context.header ("[" + combine () + "]");
       }
       else
         throw std::string (STRING_TRIVIAL_INPUT);

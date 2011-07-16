@@ -339,8 +339,8 @@
 #define STRING_UNKNOWN_ERROR         "Unknown error."
 #define STRING_NO_HOME               "Could not read home directory from the passwd file."
 #define STRING_TAGS_NO_COMMAS        "Tags are not permitted to contain commas."
-#define STRING_TRIVIAL_INPUT         "You must specify a command, or a task ID to modify."
-#define STRING_ASSUME_INFO           "No command specified - assuming 'information'"
+#define STRING_TRIVIAL_INPUT         "You must specify a command or a task to modify."
+#define STRING_ASSUME_INFO           "No command specified - assuming 'information'."
 #define STRING_INFINITE_LOOP         "Terminated substitution because more than {1} changes were made - infinite loop protection."
 
 // Feedback

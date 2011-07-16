@@ -44,7 +44,7 @@ my $version = slurp ('../../configure.ac');
 
 # Test the usage command.
 my $output = qx{../src/task rc:basic.rc};
-like ($output, qr/You must specify a command, or a task ID to modify/m, 'missing command and ID');
+like ($output, qr/You must specify a command or a task to modify./m, 'missing command and ID');
 
 # Test the version command.
 $output = qx{../src/task rc:basic.rc version};

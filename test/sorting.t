@@ -39,7 +39,6 @@ if (open my $fh, '>', 'sorting.rc')
 }
 
 # Test assorted sort orders.
-
 qx{../src/task rc:sorting.rc add                                    zero};
 qx{../src/task rc:sorting.rc add priority:H project:A due:yesterday one};
 qx{../src/task rc:sorting.rc add priority:M project:B due:today     two};
@@ -48,12 +47,6 @@ qx{../src/task rc:sorting.rc add priority:H project:C due:today     four};
 
 qx{../src/task rc:sorting.rc start 2};
 qx{../src/task rc:sorting.rc start 4};
-
-# pri:H pro:C   due:today     four
-# pri:H pro:A * due:yesterday one
-# pri:M pro:B   due:today     two
-# pri:L pro:C * due:tomorrow  three
-#                             zero
 
 my %tests =
 (

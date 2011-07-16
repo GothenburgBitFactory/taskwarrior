@@ -955,7 +955,7 @@ void Task::validate () const
 
   if (has ("priority"))
   {
-    std::string priority - get ("priority");
+    std::string priority = get ("priority");
     if (priority != "H" &&
         priority != "M" &&
         priority != "L")
