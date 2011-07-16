@@ -59,7 +59,7 @@ int CmdColumns::execute (std::string& output)
 
   std::sort (names.begin (), names.end ());
 
-  // Render a list of project names from the map.
+  // Render a list of column names, formats and examples.
   ViewText formats;
   formats.width (context.getWidth ());
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_COLUMN));
@@ -90,6 +90,35 @@ int CmdColumns::execute (std::string& output)
          + "\n"
          + STRING_CMD_COLUMNS_NOTE
          + "\n";
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CmdCompletionColumns::CmdCompletionColumns ()
+{
+  _keyword     = "_columns";
+  _usage       = "task _columns";
+  _description = STRING_CMD_COLUMNS_USAGE2;
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdCompletionColumns::execute (std::string& output)
+{
+  // Include all columns.
+  std::vector <std::string> names;
+  std::map <std::string, Column*>::const_iterator col;
+  for (col = context.columns.begin (); col != context.columns.end (); ++col)
+    names.push_back (col->first);
+
+  std::sort (names.begin (), names.end ());
+
+  // Render only the column names.
+  std::vector <std::string>::iterator name;
+  for (name = names.begin (); name != names.end (); ++name)
+    output += *name + "\n";
 
   return 0;
 }

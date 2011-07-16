@@ -38,5 +38,12 @@ public:
   int execute (std::string&);
 };
 
+class CmdCompletionColumns : public Command
+{
+public:
+  CmdCompletionColumns ();
+  int execute (std::string&);
+};
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////
