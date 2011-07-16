@@ -13,6 +13,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdCalendar.cpp    CmdCalendar.h
                    CmdCommands.cpp    CmdCommands.h
                    CmdColor.cpp       CmdColor.h
+                   CmdColumns.cpp     CmdColumns.h
                    CmdConfig.cpp      CmdConfig.h
                    CmdCount.cpp       CmdCount.h
                    CmdCustom.cpp      CmdCustom.h

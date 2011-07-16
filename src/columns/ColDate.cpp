@@ -43,8 +43,22 @@ ColumnDate::ColumnDate ()
 {
   _name      = "";
   _type      = "date";
-  _style     = "default";
+  _style     = "formatted";
   _label     = "";
+
+  _styles.push_back ("formatted");
+  _styles.push_back ("julian");
+  _styles.push_back ("epoch");
+  _styles.push_back ("iso");
+  _styles.push_back ("age");
+
+  Date now;
+  now -= 125; // So that "age" is non-zero.
+  _examples.push_back (now.toString (context.config.get ("dateformat")));
+  _examples.push_back (format (now.toJulian (), 13, 12));
+  _examples.push_back (now.toEpochString ());
+  _examples.push_back (now.toISO ());
+  _examples.push_back (Duration (Date () - now).formatCompact ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +82,8 @@ void ColumnDate::measure (Task& task, int& minimum, int& maximum)
   {
     Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
 
-    if (_style == "default")
+    if (_style == "default" ||
+        _style == "formatted")
     {
       // Determine the output date format, which uses a hierarchy of definitions.
       //   rc.report.<report>.dateformat
@@ -84,9 +99,7 @@ void ColumnDate::measure (Task& task, int& minimum, int& maximum)
     }
     else if (_style == "julian")
     {
-      // (JD − 2440587.5) × 86400 
-      double julian = (date.toEpoch () / 86400.0) + 2440587.5;
-      minimum = maximum = format (julian, 13, 12).length ();
+      minimum = maximum = format (date.toJulian (), 13, 12).length ();
     }
     else if (_style == "epoch")
     {
@@ -115,7 +128,8 @@ void ColumnDate::render (
 {
   if (task.has (_name))
   {
-    if (_style == "default")
+    if (_style == "default" ||
+        _style == "formatted")
     {
       // Determine the output date format, which uses a hierarchy of definitions.
       //   rc.report.<report>.dateformat
@@ -135,13 +149,11 @@ void ColumnDate::render (
     }
     else if (_style == "julian")
     {
-      double julian = (Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
-        .toEpoch () / 86400.0) + 2440587.5;
-
       lines.push_back (
         color.colorize (
           rightJustify (
-            format (julian, 13, 12), width)));
+            format (Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
+              .toJulian (), 13, 12), width)));
     }
     else if (_style == "epoch")
     {
@@ -168,18 +180,6 @@ void ColumnDate::render (
         color.colorize (
           rightJustify (
             Duration (now - date).formatCompact (), width)));
-    }
-    else if (_style == "short")
-    {
-    }
-    else if (_style == "active")
-    {
-    }
-    else if (_style == "countdown")
-    {
-    }
-    else if (_style == "remaining")
-    {
     }
   }
 }

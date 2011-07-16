@@ -111,7 +111,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   for (i = _columns.begin (); i != _columns.end (); ++i)
   {
     // Headers factor in to width calculations.
-    int global_min = utf8_length ((*i)->getLabel ());
+    int global_min = utf8_length ((*i)->label ());
     int global_ideal = global_min;
 
     for (unsigned int s = 0; s < sequence.size (); ++s)

@@ -41,8 +41,16 @@ ColumnDepends::ColumnDepends ()
 {
   _name  = "depends";
   _type  = "string";
-  _style = "default";
+  _style = "list";
   _label = STRING_COLUMN_LABEL_DEP;
+
+  _styles.push_back ("list");
+  _styles.push_back ("count");
+  _styles.push_back ("indicator");
+
+  _examples.push_back ("1 2 10");
+  _examples.push_back ("[3]");
+  _examples.push_back (context.config.get ("dependency.indicator"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +84,8 @@ void ColumnDepends::measure (Task& task, int& minimum, int& maximum)
 
        if (_style == "indicator") minimum = maximum = context.config.get ("dependency.indicator").length ();
   else if (_style == "count")     minimum = maximum = 2 + format ((int) blocking.size ()).length ();
-  else if (_style == "default")
+  else if (_style == "default" ||
+           _style == "list")
   {
     minimum = maximum = 0;
     if (task.has ("depends"))
@@ -129,7 +138,8 @@ void ColumnDepends::render (
         color.colorize (
           rightJustify ("[" + format ((int)blocking.size ()) + "]", width)));
     }
-    else if (_style == "default")
+    else if (_style == "default" ||
+             _style == "list")
     {
       std::vector <int> blocking_ids;
       std::vector <Task>::iterator t;

@@ -40,8 +40,16 @@ ColumnTags::ColumnTags ()
 {
   _name  = "tags";
   _type  = "string";
-  _style = "default";
+  _style = "list";
   _label = STRING_COLUMN_LABEL_TAGS;
+
+  _styles.push_back ("list");
+  _styles.push_back ("indicator");
+  _styles.push_back ("count");
+
+  _examples.push_back (STRING_COLUMN_EXAMPLES_TAGS);
+  _examples.push_back (context.config.get ("tag.indicator"));
+  _examples.push_back ("[2]");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +86,8 @@ void ColumnTags::measure (Task& task, int& minimum, int& maximum)
 
        if (_style == "indicator") minimum = maximum = context.config.get ("tag.indicator").length ();
   else if (_style == "count")     minimum = maximum = 3;
-  else if (_style == "default")
+  else if (_style == "default" ||
+           _style == "list")
   {
     std::string tags = task.get (_name);
     minimum = 0;
@@ -122,7 +131,8 @@ void ColumnTags::render (
         color.colorize (
           rightJustify ("[" + format ((int)all.size ()) + "]", width)));
     }
-    else if (_style == "default")
+    else if (_style == "default" ||
+             _style == "list")
     {
       std::replace (tags.begin (), tags.end (), ',', ' ');
       std::vector <std::string> all;

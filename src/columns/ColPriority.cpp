@@ -39,8 +39,14 @@ ColumnPriority::ColumnPriority ()
 {
   _name  = "priority";
   _type  = "string";
-  _style = "default";
+  _style = "short";
   _label = STRING_COLUMN_LABEL_PRI;
+
+  _styles.push_back ("short");
+  _styles.push_back ("long");
+
+  _examples.push_back ("H");
+  _examples.push_back ("High");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +92,8 @@ void ColumnPriority::measure (Task& task, int& minimum, int& maximum)
     else if (priority == "M") minimum = maximum = 6;
     else if (priority == "L") minimum = maximum = 3;
   }
-  else if (_style != "default")
+  else if (_style != "default" &&
+           _style != "short")
     throw format (STRING_COLUMN_BAD_FORMAT, "priority", _style);
 }
 

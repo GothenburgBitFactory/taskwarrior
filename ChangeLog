@@ -82,6 +82,9 @@
    their descriptions.
  + Added feature #779, which uses more relevant and consistent terms on the
    'burndown' charts.
+ + Added feature #800, adding a new command 'columns' that lists all the columns
+   available for custom reports, and includes their formatting options (thanks
+   to T. Charles Yun).
 
 # Tracked Bugs, sorted by ID.
  + Fixed bug #403, which disambiguates certain commands involving numbers.

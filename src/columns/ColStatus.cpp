@@ -39,8 +39,14 @@ ColumnStatus::ColumnStatus ()
 {
   _name  = "status";
   _type  = "string";
-  _style = "default";
+  _style = "long";
   _label = STRING_COLUMN_LABEL_STATUS;
+
+  _styles.push_back ("long");
+  _styles.push_back ("short");
+
+  _examples.push_back (STRING_COLUMN_LABEL_STAT_PE);
+  _examples.push_back (STRING_COLUMN_LABEL_STAT_P);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +77,8 @@ void ColumnStatus::measure (Task& task, int& minimum, int& maximum)
 {
   Task::status status = task.getStatus ();
 
-  if (_style == "default")
+  if (_style == "default" ||
+      _style == "long")
   {
     if (status == Task::pending ||
         status == Task::deleted ||
@@ -101,7 +108,8 @@ void ColumnStatus::render (
   Task::status status = task.getStatus ();
   std::string value;
 
-  if (_style == "default")
+  if (_style == "default" ||
+      _style == "long")
   {
          if (status == Task::pending)   value = STRING_COLUMN_LABEL_STAT_PE;
     else if (status == Task::completed) value = STRING_COLUMN_LABEL_STAT_CO;

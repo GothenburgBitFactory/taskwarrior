@@ -39,8 +39,14 @@ ColumnRecur::ColumnRecur ()
 {
   _name  = "recur";
   _type  = "string";
-  _style = "default";
+  _style = "duration";
   _label = STRING_COLUMN_LABEL_RECUR;
+
+  _styles.push_back ("duration");
+  _styles.push_back ("indicator");
+
+  _examples.push_back ("weekly");
+  _examples.push_back (context.config.get ("recurrence.indicator"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +75,8 @@ void ColumnRecur::setStyle (const std::string& value)
 // Set the minimum and maximum widths for the value.
 void ColumnRecur::measure (Task& task, int& minimum, int& maximum)
 {
-  if (_style == "default")
+  if (_style == "default" ||
+      _style == "duration")
   {
     minimum = maximum = task.get ("recur").length ();
   }
@@ -89,7 +96,8 @@ void ColumnRecur::render (
   int width,
   Color& color)
 {
-  if (_style == "default")
+  if (_style == "default" ||
+      _style == "duration")
   {
     lines.push_back (color.colorize (rightJustify (task.get ("recur"), width)));
   }

@@ -45,9 +45,11 @@ public:
   bool operator== (const Column&) const;     // TODO Is this necessary?
   ~Column ();
 
-  std::string getStyle ()                  { return _style;  }
-  std::string getLabel ()                  { return _label;  }
-  std::string type () const                { return _type;   }
+  std::string style () const                  { return _style;  }
+  std::string label () const                  { return _label;  }
+  std::string type () const                   { return _type;   }
+  std::vector <std::string> styles () const   { return _styles; }
+  std::vector <std::string> examples () const { return _examples; }
 
   virtual void setStyle  (const std::string& value) { _style = value;  }
   virtual void setLabel  (const std::string& value) { _label = value;  }
@@ -66,6 +68,8 @@ protected:
   std::string _style;
   std::string _label;
   std::string _report;
+  std::vector <std::string> _styles;
+  std::vector <std::string> _examples;
 };
 
 #endif

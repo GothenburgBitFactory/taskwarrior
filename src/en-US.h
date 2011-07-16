@@ -155,6 +155,19 @@
 #define STRING_COLUMN_LABEL_FG       "Foreground color"
 #define STRING_COLUMN_LABEL_BG       "Background color"
 #define STRING_COLUMN_LABEL_DATE     "Date"
+#define STRING_COLUMN_LABEL_COLUMN   "Columns"
+#define STRING_COLUMN_LABEL_STYLES   "Supported Formats"
+#define STRING_COLUMN_LABEL_EXAMPLES "Example"
+
+// Column Examples
+#define STRING_COLUMN_EXAMPLES_TAGS  "home @chore"
+#define STRING_COLUMN_EXAMPLES_PROJ  "home.garden"
+#define STRING_COLUMN_EXAMPLES_PAR   "home"
+#define STRING_COLUMN_EXAMPLES_DESC  "Move your clothes down on to the lower peg"
+#define STRING_COLUMN_EXAMPLES_ANNO1 "Immediately before your lunch"
+#define STRING_COLUMN_EXAMPLES_ANNO2 "If you are playing in the match this afternoon"
+#define STRING_COLUMN_EXAMPLES_ANNO3 "Before you write your letter home"
+#define STRING_COLUMN_EXAMPLES_ANNO4 "If you're not getting your hair cut"
 
 // commands/Cmd*
 #define STRING_CMD_CONFLICT          "Custom report '{1}' conflicts with built-in task command."
@@ -287,6 +300,8 @@
 #define STRING_CMD_ANNO_DONE         "Annotated {1} '{2}'"
 #define STRING_CMD_ANNO_SUMMARY      "Annotated {1} task."
 #define STRING_CMD_ANNO_SUMMARY_N    "Annotated {1} tasks."
+#define STRING_CMD_COLUMNS_USAGE     "Displays supported columns and styles."
+#define STRING_CMD_COLUMNS_NOTE      "* Means default format, and therefore optionsl.  For example, 'due' and 'due.formatted' are equivalent."
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."

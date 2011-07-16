@@ -42,8 +42,35 @@ ColumnDescription::ColumnDescription ()
 {
   _name  = "description";
   _type  = "string";
-  _style = "default";
+  _style = "combined";
   _label = STRING_COLUMN_LABEL_DESC;
+
+  _styles.push_back ("combined");
+  _styles.push_back ("desc");
+  _styles.push_back ("oneline");
+  _styles.push_back ("truncated");
+  _styles.push_back ("count");
+
+  std::string t  = Date ().toString (context.config.get ("dateformat"));
+  std::string d  = STRING_COLUMN_EXAMPLES_DESC;
+  std::string a1 = STRING_COLUMN_EXAMPLES_ANNO1;
+  std::string a2 = STRING_COLUMN_EXAMPLES_ANNO2;
+  std::string a3 = STRING_COLUMN_EXAMPLES_ANNO3;
+  std::string a4 = STRING_COLUMN_EXAMPLES_ANNO4;
+
+  _examples.push_back (d
+                       + "\n  " + t + " " + a1
+                       + "\n  " + t + " " + a2
+                       + "\n  " + t + " " + a3
+                       + "\n  " + t + " " + a4);
+  _examples.push_back (d);
+  _examples.push_back (d
+                       + " " + t + " " + a1
+                       + " " + t + " " + a2
+                       + " " + t + " " + a3
+                       + " " + t + " " + a4);
+  _examples.push_back (d.substr (0, 20) + "...");
+  _examples.push_back (d + " [4]");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +93,8 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   // The text
   // <indent> <date> <anno>
   // ...
-  if (_style == "default")
+  if (_style == "default" ||
+      _style == "combined")
   {
     int indent = context.config.getInteger ("indent.annotation");
     std::string format = context.config.get ("dateformat.annotation");
@@ -149,7 +177,8 @@ void ColumnDescription::render (
   // This is a description
   // <date> <anno>
   // ...
-  if (_style == "default")
+  if (_style == "default" ||
+      _style == "combined")
   {
     int indent = context.config.getInteger ("indent.annotation");
 

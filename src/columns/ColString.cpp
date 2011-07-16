@@ -39,8 +39,18 @@ ColumnString::ColumnString ()
 {
   _name  = "string";
   _type  = "string";
-  _style = "default";
+  _style = "left";
   _label = "";
+
+  _styles.push_back ("left");
+  _styles.push_back ("right");
+  _styles.push_back ("left_fixed");
+  _styles.push_back ("right_fixed");
+
+  _styles.push_back ("Hello (wrapped)           ");
+  _styles.push_back ("           Hello (wrapped)");
+  _styles.push_back ("Hello (no-wrap)           ");
+  _styles.push_back ("           Hello (no-wrap)");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

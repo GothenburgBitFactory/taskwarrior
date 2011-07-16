@@ -115,7 +115,7 @@ std::string ViewText::render ()
   for (unsigned int col = 0; col < _columns.size (); ++col)
   {
     // Headers factor in to width calculations.
-    int global_min = utf8_length (_columns[col]->getLabel ());
+    int global_min = utf8_length (_columns[col]->label ());
     int global_ideal = global_min;
 
     for (unsigned int row = 0; row < _data.size (); ++row)

@@ -40,8 +40,12 @@ ColumnID::ColumnID ()
 {
   _name  = "id";
   _type  = "number";
-  _style = "default";
+  _style = "number";
   _label = STRING_COLUMN_LABEL_ID;
+
+  _styles.push_back ("number");
+
+  _examples.push_back ("123");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +73,8 @@ void ColumnID::measure (Task& task, int& minimum, int& maximum)
 
   minimum = maximum = length;
 
-  if (_style != "default")
+  if (_style != "default" &&
+      _style != "number")
     throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 

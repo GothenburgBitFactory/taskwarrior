@@ -49,6 +49,7 @@ public:
   time_t toEpoch ();
   std::string toEpochString ();
   std::string toISO ();
+  double toJulian ();
   void toMDY (int&, int&, int&);
   const std::string toString (const std::string& format = "m/d/Y") const;
 

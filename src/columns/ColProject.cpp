@@ -39,8 +39,14 @@ ColumnProject::ColumnProject ()
 {
   _name  = "project";
   _type  = "string";
-  _style = "default";
+  _style = "full";
   _label = STRING_COLUMN_LABEL_PROJECT;
+
+  _styles.push_back ("full");
+  _styles.push_back ("parent");
+
+  _examples.push_back (STRING_COLUMN_EXAMPLES_PROJ);
+  _examples.push_back (STRING_COLUMN_EXAMPLES_PAR);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +72,8 @@ void ColumnProject::measure (Task& task, int& minimum, int& maximum)
     if (period != std::string::npos)
       project = project.substr (0, period);
   }
-  else if (_style != "default")
+  else if (_style != "default" &&
+           _style != "full")
     throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 
   minimum = longestWord (project);

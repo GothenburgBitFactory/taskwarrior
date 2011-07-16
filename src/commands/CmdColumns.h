@@ -24,40 +24,19 @@
 //     USA
 //
 ////////////////////////////////////////////////////////////////////////////////
-
+#ifndef INCLUDED_CMDCOLUMNS
+#define INCLUDED_CMDCOLUMNS
 #define L10N                                           // Localization complete.
 
-#include <ColEntry.h>
-#include <i18n.h>
+#include <string>
+#include <Command.h>
 
-////////////////////////////////////////////////////////////////////////////////
-ColumnEntry::ColumnEntry ()
+class CmdColumns : public Command
 {
-  _name  = "entry";
-  _label = STRING_COLUMN_LABEL_ADDED;
-}
+public:
+  CmdColumns ();
+  int execute (std::string&);
+};
 
-////////////////////////////////////////////////////////////////////////////////
-ColumnEntry::~ColumnEntry ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool ColumnEntry::validate (std::string& value)
-{
-  return ColumnDate::validate (value);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Overriden so that style <----> label are linked.
-// Note that you can not determine which gets called first.
-void ColumnEntry::setStyle (const std::string& value)
-{
-  _style = value;
-
-  if (_style == "age" &&
-      _label == STRING_COLUMN_LABEL_ADDED)
-    _label = STRING_COLUMN_LABEL_AGE;
-}
-
+#endif
 ////////////////////////////////////////////////////////////////////////////////
