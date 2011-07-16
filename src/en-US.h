@@ -301,7 +301,7 @@
 #define STRING_CMD_ANNO_SUMMARY      "Annotated {1} task."
 #define STRING_CMD_ANNO_SUMMARY_N    "Annotated {1} tasks."
 #define STRING_CMD_COLUMNS_USAGE     "Displays supported columns and styles."
-#define STRING_CMD_COLUMNS_NOTE      "* Means default format, and therefore optionsl.  For example, 'due' and 'due.formatted' are equivalent."
+#define STRING_CMD_COLUMNS_NOTE      "* Means default format, and therefore optional.  For example, 'due' and 'due.formatted' are equivalent."
 #define STRING_CMD_COLUMNS_USAGE2    "Displays only a list of supported columns."
 
 // Config
