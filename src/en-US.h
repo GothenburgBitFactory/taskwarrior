@@ -420,6 +420,7 @@
 #define STRING_TASK_VALID_UNTIL      "You cannot specify an until date for a non-recurring task."
 #define STRING_TASK_VALID_RECUR      "A recurrence value must be valid."
 #define STRING_TASK_VALID_WAIT_RECUR "You cannot create a task that is both waiting and recurring."
+#define STRING_TASK_VALID_PRIORITY   "Priority values may be 'H', 'M' or 'L', not '{1}'."
 
 
 // Taskmod

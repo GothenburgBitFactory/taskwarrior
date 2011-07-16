@@ -952,6 +952,15 @@ void Task::validate () const
   if (has ("wait") &&
       getStatus () == Task::recurring)
     throw std::string (STRING_TASK_VALID_WAIT_RECUR);
+
+  if (has ("priority"))
+  {
+    std::string priority - get ("priority");
+    if (priority != "H" &&
+        priority != "M" &&
+        priority != "L")
+      throw format (STRING_TASK_VALID_PRIORITY, priority);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
