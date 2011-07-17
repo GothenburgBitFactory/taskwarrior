@@ -27,10 +27,12 @@
 
 #define L10N                                           // Localization complete.
 
-//#include <iostream> // TODO Remove
+#include <iostream> // TODO Remove
 #include <sstream>
 #include <Context.h>
 #include <Nibbler.h>
+#include <Date.h>
+#include <Duration.h>
 #include <text.h>
 #include <i18n.h>
 #include <DOM.h>
@@ -64,7 +66,6 @@ DOM::~DOM ()
 //   context.width
 //   context.height
 //
-//   TODO report.<name>.         <-- context.reports
 //   TODO stats.<name>           <-- context.stats
 //
 //   system.version
@@ -102,9 +103,7 @@ const std::string DOM::get (const std::string& name)
 
     else if (name == "context.args")
     {
-      std::string combined;
-      join (combined, " ", context.args.list ());
-      return /*_cache[name] =*/ combined;
+      return /*_cache[name] =*/ context.args.combine ();
     }
     else if (name == "context.width")
     {
@@ -123,7 +122,6 @@ const std::string DOM::get (const std::string& name)
       throw format (STRING_DOM_UNREC, name);
   }
 
-  // TODO report.
   // TODO stats.<name>
 
   // system. --> Implement locally.
@@ -226,8 +224,6 @@ const std::string DOM::get (const std::string& name, const Task& task)
     if (n.skip ('.'))
     {
       // TODO Obtain task 'id' from TDB2.
-//      std::cout << "# DOM::get " << name << "\n";
-
       std::string attr;
       n.getUntilEOS (attr);
 
@@ -243,8 +239,6 @@ const std::string DOM::get (const std::string& name, const Task& task)
     if (n.skip ('.'))
     {
       // TODO Obtain task 'uuid' from TDB2.
-//      std::cout << "# DOM::get name\n";
-
       std::string attr;
       n.getUntilEOS (attr);
 
@@ -255,14 +249,11 @@ const std::string DOM::get (const std::string& name, const Task& task)
   }
 
   // [<task>.] <name>
-//  std::cout << "# DOM::get " << name << "\n";
-
        if (name == "id")      return format (task.id);
   else if (name == "urgency") return format (task.urgency_c (), 4, 3);
   else                        return task.get (name);
 
   // Delegate to the context-free version of DOM::get.
-//  std::cout << "# DOM::get delegate...\n";
   return this->get (name);
 }
 
@@ -290,9 +281,15 @@ bool DOM::is_primitive (const std::string& input)
   double d;
   int i;
 
-  // TODO Date?
+  // Date?
+  if (Date::valid (input, context.config.get ("dateformat")))
+    return true;
+
+  // Duration?
+  if (Duration::valid (input))
+    return true;
+
   // TODO Quoted Date?
-  // TODO Duration?
   // TODO Quoted Duration?
 
   // String?
@@ -312,6 +309,7 @@ bool DOM::is_primitive (const std::string& input)
   if (n.getInt (i) && n.depleted ())
     return true;
 
+  std::cout << "# DOM::is_primitive '" << input << "' --> unknown\n";
   return false;
 }
 

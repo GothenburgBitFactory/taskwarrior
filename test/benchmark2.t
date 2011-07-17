@@ -112,16 +112,15 @@ sub report
 
   # Generate output for benchmark2 chart.
   chomp (my $version = qx{../src/task _version});
-  my $out = sprintf "%s %s %f,%f,%f,%f,%f,%f,%f",
+  my $out = sprintf "%s %s %f,%f,%f,%f,%f,%f",
                     $label,
                     $version,
                     $data{'Context::initialize'},
-                    $data{'Context::parse'},
-                    $data{'TDB::loadPending'},
-                    $data{'TDB::loadCompleted'} || 0,
-                    $data{'TDB::gc'},
-                    $data{'TDB::commit'},
-                    $data{'View::render'};
+                    $data{'TDB2::loadPending'},
+                    $data{'TDB2::loadCompleted'} || 0,
+                    $data{'TDB2::gc'},
+                    $data{'TDB2::commit'},
+                    $data{'ViewTask::render'};
 
   diag ($out);
 }

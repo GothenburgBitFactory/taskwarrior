@@ -1059,6 +1059,7 @@ bool Arguments::is_symbol_operator (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Canonicalize attribute names.
 bool Arguments::is_attribute (const std::string& input, std::string& canonical)
 {
   // Guess at the full attribute name.

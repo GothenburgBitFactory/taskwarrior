@@ -446,7 +446,7 @@ void Expression::create_variant (
     variant = Variant (unquoteText (value));
 
   else
-    throw std::string ("Unrecognized operand '") +   + "'.";
+    throw std::string ("Unrecognized operand '") + type + "'.";
 
   variant._raw      = value;
   variant._raw_type = type;
