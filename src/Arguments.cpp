@@ -1595,21 +1595,17 @@ Arguments Arguments::extract_modifications ()
       // Error.
       else
       {
-        if (arg->_third == "pattern")
-          throw std::string ("A pattern '")
-                + arg->_first
-                + "' is not allowed when modifiying a task.";
-
-        else if (arg->_third == "attmod")
-          throw std::string ("An attribute modifier '")
-                + arg->_first
-                + "' is not allowed when modifiying a task.";
-
-        else if (arg->_third == "id")
-          throw std::string ("A task id cannot be modified.");
-
-        else if (arg->_third == "uuid")
-          throw std::string ("A task uuid cannot be modified.");
+        // Instead of errors, simply downgrade these to 'word'.
+        if (arg->_third == "pattern" ||
+            arg->_third == "attmod"  ||
+            arg->_third == "id"      ||
+            arg->_third == "uuid")
+        {
+          arg->_third = "word";
+          modifications.push_back (*arg);
+        }
+        else
+          throw std::string ("Error: unrecognized argument in modifications.");
       }
     }
   }
