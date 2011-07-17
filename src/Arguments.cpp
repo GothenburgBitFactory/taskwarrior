@@ -482,7 +482,8 @@ void Arguments::categorize ()
         if (command_pos != -1)
           ++distance_from_command;
 
-        arg->_third = "exp";
+        arg->_second = "exp";
+        arg->_third  = "exp";
       }
 
       // If the type is not known, it is treated as a generic word.
