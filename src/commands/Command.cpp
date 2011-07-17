@@ -279,7 +279,7 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 
     std::vector <Task>::iterator task;
     for (task = input.begin (); task != input.end (); ++task)
-      if (e.eval (*task))
+      if (e.evalFilter (*task))
         output.push_back (*task);
   }
   else
@@ -306,14 +306,14 @@ void Command::filter (std::vector <Task>& output)
     output.clear ();
     std::vector <Task>::const_iterator task;
     for (task = pending.begin (); task != pending.end (); ++task)
-      if (e.eval (*task))
+      if (e.evalFilter (*task))
         output.push_back (*task);
 
     if (! filter_shortcut (f))
     {
       const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
       for (task = completed.begin (); task != completed.end (); ++task)
-        if (e.eval (*task))
+        if (e.evalFilter (*task))
           output.push_back (*task);
     }
     else

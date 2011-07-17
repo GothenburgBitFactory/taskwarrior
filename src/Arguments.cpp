@@ -1136,7 +1136,7 @@ bool Arguments::is_expression (const std::string& input)
     if (is_operator (*token))
       return true;
 
-  // Look for cuddled operators.
+  // Look for bare or cuddled operators.
   Lexer lexer (unquoted);
   lexer.skipWhitespace (true);
   lexer.coalesceAlpha (true);

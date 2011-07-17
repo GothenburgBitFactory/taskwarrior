@@ -41,6 +41,9 @@ public:
   Expression (Arguments&);
   ~Expression ();
   bool eval (const Task&);
+  bool evalFilter (const Task&);
+  std::string evalExpression (const Task&);
+  void eval (const Task&, std::vector <Variant>&);
 
 private:
   void expand_sequence ();
@@ -53,6 +56,7 @@ private:
   void expand_tokens ();
   void postfix ();
 
+  void tokenize (const std::string&, const std::string&, std::vector <std::string>&, Arguments&);
   void create_variant (Variant&, const std::string&, const std::string&);
   bool is_new_style ();
 
@@ -62,6 +66,7 @@ private:
 private:
   Arguments _args;
   std::map <std::string, RX> _regexes;
+  bool _prepared;
 };
 
 #endif

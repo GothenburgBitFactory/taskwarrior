@@ -43,21 +43,8 @@ extern Context context;
 // Perform all the necessary steps prior to an eval call.
 Expression::Expression (Arguments& arguments)
 : _args (arguments)
+, _prepared (false)
 {
-  if (_args.size ())
-  {
-    _args.dump ("Expression::Expression");
-
-    expand_sequence ();
-    implicit_and ();
-    expand_tag ();
-    expand_pattern ();
-    expand_attr ();
-    expand_attmod ();
-    expand_word ();
-    expand_tokens ();
-    postfix ();
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,20 +53,83 @@ Expression::~Expression ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Expression::eval (const Task& task)
+bool Expression::evalFilter (const Task& task)
 {
-  // If there are no elements in the filter, then all tasks pass.
   if (_args.size () == 0)
     return true;
 
-  // There are elements in the filter, so the expression must be evaluated
-  // against each task.
-  std::vector <Variant> value_stack;
+  if (!_prepared)
+  {
+    if (_args.size ())
+    {
+      _args.dump ("Expression::evalFilter");
 
+      expand_sequence ();
+      implicit_and ();
+      expand_tag ();
+      expand_pattern ();
+      expand_attr ();
+      expand_attmod ();
+      expand_word ();
+      expand_tokens ();
+      postfix ();
+    }
+
+    _prepared = true;
+  }
+
+  // Evaluate the expression.
+  std::vector <Variant> value_stack;
+  eval (task, value_stack);
+
+  // Coerce stack element to boolean.
+  Variant result (value_stack.back ());
+  value_stack.pop_back ();
+  return result.boolean ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Expression::evalExpression (const Task& task)
+{
+  if (_args.size () == 0)
+    return "";
+
+  if (!_prepared)
+  {
+    if (_args.size ())
+    {
+      _args.dump ("Expression::evalFilter");
+
+      expand_sequence ();
+      implicit_and ();
+      expand_tag ();
+      expand_pattern ();
+      expand_attr ();
+      expand_attmod ();
+      expand_word ();
+      expand_tokens ();
+      postfix ();
+    }
+
+    _prepared = true;
+  }
+
+  // Evaluate the expression.
+  std::vector <Variant> value_stack;
+  eval (task, value_stack);
+
+  // Coerce stack element to boolean.
+  Variant result (value_stack.back ());
+  value_stack.pop_back ();
+  result.cast (Variant::v_string);
+  return result._string;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Expression::eval (const Task& task, std::vector <Variant>& value_stack)
+{
   // Case sensitivity is configurable.
   bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
-
-  // TODO Build an on-demand regex cache.
 
   std::vector <Triple>::const_iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
@@ -382,16 +432,9 @@ bool Expression::eval (const Task& task)
     }
   }
 
-  // Coerce stack element to boolean.
-  Variant result (value_stack.back ());
-  value_stack.pop_back ();
-  bool pass_fail = result.boolean ();
-
   // Check for stack remnants.
-  if (value_stack.size ())
+  if (value_stack.size () != 1)
     throw std::string ("Error: Expression::eval found extra items on the stack.");
-
-  return pass_fail;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -515,7 +558,7 @@ void Expression::expand_sequence ()
   }
 
   // Now insert the new sequence expression.
-  temp.push_back (Triple (sequence.str (), "exp", "seq"));
+  temp.push_back (Triple (sequence.str (), "", "seq"));
 
   // Now copy everything after the last id/uuid.
   bool found_id = false;
@@ -533,8 +576,6 @@ void Expression::expand_sequence ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Nibble the whole bloody thing.  Nuke it from orbit - it's the only way to be
-// sure.
 void Expression::expand_tokens ()
 {
   Arguments temp;
@@ -543,8 +584,41 @@ void Expression::expand_tokens ()
   // Get a list of all operators.
   std::vector <std::string> operators = Arguments::operator_list ();
 
+  // Look at all args.
+  std::vector <Triple>::iterator arg;
+  for (arg = _args.begin (); arg != _args.end (); ++arg)
+  {
+    if (arg->_third  == "seq" ||
+        arg->_third  == "exp")
+    {
+      tokenize (arg->_first, arg->_third, operators, temp);
+      delta = true;
+    }
+    else
+      temp.push_back (*arg);
+  }
+
+  if (delta)
+  {
+    _args.swap (temp);
+    _args.dump ("Expression::expand_tokens");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Nibble the whole bloody thing.  Nuke it from orbit - it's the only way to be
+// sure.
+void Expression::tokenize (
+  const std::string& input,
+  const std::string& category,
+  std::vector <std::string>& operators,
+  Arguments& tokens)
+{
   // Date format, for both parsing and rendering.
   std::string date_format = context.config.get ("dateformat");
+
+  // Nibble each arg token by token.
+  Nibbler n (input);
 
   // Fake polymorphism.
   std::string s;
@@ -552,61 +626,43 @@ void Expression::expand_tokens ()
   double d;
   time_t t;
 
-  // Look at all args.
-  std::vector <Triple>::iterator arg;
-  for (arg = _args.begin (); arg != _args.end (); ++arg)
+  while (! n.depleted ())
   {
-    if (arg->_second == "exp")
-    {
-      // Nibble each arg token by token.
-      Nibbler n (arg->_first);
+    if (n.getQuoted ('"', s, true) ||
+        n.getQuoted ('\'', s, true))
+      tokens.push_back (Triple (s, "string", category));
 
-      while (! n.depleted ())
-      {
-        if (n.getQuoted ('"', s, true) ||
-            n.getQuoted ('\'', s, true))
-          temp.push_back (Triple (s, "string", arg->_third));
+    else if (n.getQuoted ('/', s, true))
+      tokens.push_back (Triple (s, "pattern", category));
 
-        else if (n.getQuoted ('/', s, true))
-          temp.push_back (Triple (s, "pattern", arg->_third));
+    else if (n.getOneOf (operators, s))
+      tokens.push_back (Triple (s, "op", category));
 
-        else if (n.getOneOf (operators, s))
-          temp.push_back (Triple (s, "op", arg->_third));
+    else if (n.getDOM (s))
+      tokens.push_back (Triple (s, "lvalue", category));
 
-        else if (n.getDOM (s))
-          temp.push_back (Triple (s, "lvalue", arg->_third));
+    else if (n.getNumber (d))
+      tokens.push_back (Triple (format (d), "number", category));
 
-        else if (n.getNumber (d))
-          temp.push_back (Triple (format (d), "number", arg->_third));
+    else if (n.getInt (i))
+      tokens.push_back (Triple (format (i), "int", category));
 
-        else if (n.getInt (i))
-          temp.push_back (Triple (format (i), "int", arg->_third));
+    else if (n.getDateISO (t))
+      tokens.push_back (Triple (Date (t).toISO (), "date", category));
 
-        else if (n.getDateISO (t))
-          temp.push_back (Triple (Date (t).toISO (), "date", arg->_third));
+    else if (n.getDate (date_format, t))
+      tokens.push_back (Triple (Date (t).toString (date_format), "date", category));
 
-        else if (n.getDate (date_format, t))
-          temp.push_back (Triple (Date (t).toString (date_format), "date", arg->_third));
-
-        else
-        {
-          if (! n.getUntilWS (s))
-            n.getUntilEOS (s);
-
-          temp.push_back (Triple (s, "?", arg->_third));
-        }
-
-        n.skipWS ();
-      }
-
-      delta = true;
-    }
     else
-      temp.push_back (*arg);
-  }
+    {
+      if (! n.getUntilWS (s))
+        n.getUntilEOS (s);
 
-  _args.swap (temp);
-  _args.dump ("Expression::expand_tokens");
+      tokens.push_back (Triple (s, "?", category));
+    }
+
+    n.skipWS ();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -724,10 +780,11 @@ void Expression::expand_attr ()
   {
     if (arg->_third == "attr")
     {
-      // TODO Canonicalize 'name'.
       std::string name;
       std::string value;
       Arguments::extract_attr (arg->_first, name, value);
+
+      // Canonicalize 'name'.
       Arguments::is_attribute (name, name);
 
       // Always quote the value, so that empty values, or values containing spaces
@@ -816,13 +873,13 @@ void Expression::expand_attmod ()
       {
         temp.push_back (Triple (name,  "lvalue", arg->_third));
         temp.push_back (Triple ("~",   "op",     arg->_third));
-        temp.push_back (Triple (value, "rvalue", arg->_third));
+        temp.push_back (Triple (value, "rx",     arg->_third));
       }
       else if (mod == "hasnt")
       {
         temp.push_back (Triple (name,  "lvalue", arg->_third));
         temp.push_back (Triple ("!~",  "op",     arg->_third));
-        temp.push_back (Triple (value, "rvalue", arg->_third));
+        temp.push_back (Triple (value, "rx",     arg->_third));
       }
       else if (mod == "startswith" || mod == "left")
       {
@@ -879,7 +936,7 @@ void Expression::expand_word ()
     {
       temp.push_back (Triple ("description",             "lvalue", arg->_third));
       temp.push_back (Triple ("~",                       "op",     arg->_third));
-      temp.push_back (Triple ("\"" + arg->_first + "\"", "rvalue", arg->_third));
+      temp.push_back (Triple ("\"" + arg->_first + "\"", "string", arg->_third));
 
       delta = true;
     }

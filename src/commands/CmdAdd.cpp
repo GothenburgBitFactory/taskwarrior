@@ -69,8 +69,9 @@ int CmdAdd::execute (std::string& output)
   if (context.verbose ("new-id"))
     output = format (STRING_CMD_ADD_FEEDBACK, context.tdb.nextId ()) + "\n";
 */
-
+/*
   context.footnote (onProjectChange (task));
+*/
   context.tdb2.commit ();
   return rc;
 }
