@@ -417,16 +417,21 @@ void Command::modify_task (
       std::string name;
       std::string value;
       Arguments::extract_attr (arg->_first, name, value);
-      if (Arguments::is_attribute (name, name))
+      if (Arguments::is_attribute (name, name))  // Canonicalize
       {
-        // TODO All 'value's must be eval'd first.
+        // All values must be eval'd first.
+        Arguments fragment;
+        fragment.push_back (Triple (value, "exp", "attr"));
+        Expression e (fragment);
+        std::string result = e.evalExpression (task);
+        context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
 
         // Dependencies must be resolved to UUIDs.
         if (name == "depends")
         {
           // Convert ID to UUID.
           std::vector <std::string> deps;
-          split (deps, value, ',');
+          split (deps, result, ',');
 
           // Apply or remove dendencies in turn.
           std::vector <std::string>::iterator i;
@@ -442,7 +447,7 @@ void Command::modify_task (
 
         // By default, just add it.
         else
-          task.set (name, value);
+          task.set (name, result);
       }
       else
         throw format (STRING_CMD_ADD_BAD_ATTRIBUTE, name);

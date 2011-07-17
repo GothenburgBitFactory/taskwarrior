@@ -95,13 +95,13 @@ std::string Expression::evalExpression (const Task& task)
   {
     _args.dump ("Expression::evalExpression");
 
-    expand_sequence ();
-    implicit_and ();
-    expand_tag ();
-    expand_pattern ();
-    expand_attr ();
-    expand_attmod ();
-    expand_word ();
+//    expand_sequence ();
+//    implicit_and ();
+//    expand_tag ();
+//    expand_pattern ();
+//    expand_attr ();
+//    expand_attmod ();
+//    expand_word ();
     expand_tokens ();
     postfix ();
 
@@ -786,10 +786,11 @@ void Expression::expand_attr ()
       // Canonicalize 'name'.
       Arguments::is_attribute (name, name);
 
+/*
       // Always quote the value, so that empty values, or values containing spaces
       // are preserved.
       value = "\"" + value + "\"";
-
+*/
       temp.push_back (Triple (name,  "lvalue", arg->_third));
       temp.push_back (Triple ("=",   "op",     arg->_third));
       temp.push_back (Triple (value, "exp",    arg->_third));
@@ -833,10 +834,12 @@ void Expression::expand_attmod ()
       Arguments::is_attribute (name, name);
       Arguments::is_modifier (mod);
 
+/*
       // Always quote the value, so that empty values, or values containing spaces
       // are preserved.
       std::string raw_value = value;
       value = "\"" + value + "\"";
+*/
 
       if (mod == "before" || mod == "under" || mod == "below")
       {
@@ -888,27 +891,31 @@ void Expression::expand_attmod ()
       }
       else if (mod == "startswith" || mod == "left")
       {
-        temp.push_back (Triple (name,            "lvalue", arg->_third));
-        temp.push_back (Triple ("~",             "op",     arg->_third));
-        temp.push_back (Triple ("^" + raw_value, "rx",     arg->_third));
+        temp.push_back (Triple (name,        "lvalue", arg->_third));
+        temp.push_back (Triple ("~",         "op",     arg->_third));
+//        temp.push_back (Triple ("^" + raw_value, "rx",     arg->_third));
+        temp.push_back (Triple ("^" + value, "rx",     arg->_third));
       }
       else if (mod == "endswith" || mod == "right")
       {
-        temp.push_back (Triple (name,            "lvalue", arg->_third));
-        temp.push_back (Triple ("~",             "op",     arg->_third));
-        temp.push_back (Triple (raw_value + "$", "rx",     arg->_third));
+        temp.push_back (Triple (name,        "lvalue", arg->_third));
+        temp.push_back (Triple ("~",         "op",     arg->_third));
+//        temp.push_back (Triple (raw_value + "$", "rx",     arg->_third));
+        temp.push_back (Triple (value + "$", "rx",     arg->_third));
       }
       else if (mod == "word")
       {
-        temp.push_back (Triple (name,                      "lvalue", arg->_third));
-        temp.push_back (Triple ("~",                       "op",     arg->_third));
-        temp.push_back (Triple ("\\b" + raw_value + "\\b", "rx",     arg->_third));
+        temp.push_back (Triple (name,                  "lvalue", arg->_third));
+        temp.push_back (Triple ("~",                   "op",     arg->_third));
+//        temp.push_back (Triple ("\\b" + raw_value + "\\b", "rx",     arg->_third));
+        temp.push_back (Triple ("\\b" + value + "\\b", "rx",     arg->_third));
       }
       else if (mod == "noword")
       {
-        temp.push_back (Triple (name,                      "lvalue", arg->_third));
-        temp.push_back (Triple ("!~",                      "op",     arg->_third));
-        temp.push_back (Triple ("\\b" + raw_value + "\\b", "rx",     arg->_third));
+        temp.push_back (Triple (name,                  "lvalue", arg->_third));
+        temp.push_back (Triple ("!~",                  "op",     arg->_third));
+//        temp.push_back (Triple ("\\b" + raw_value + "\\b", "rx",     arg->_third));
+        temp.push_back (Triple ("\\b" + value + "\\b", "rx",     arg->_third));
       }
       else
         throw std::string ("Error: unrecognized attribute modifier '") + mod + "'.";
