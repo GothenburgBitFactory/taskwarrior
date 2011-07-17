@@ -263,6 +263,7 @@ bool Command::displays_id () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Filter a specific list of tasks.
 void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 {
   Timer timer ("Command::filter");
@@ -287,6 +288,7 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Filter all tasks.
 void Command::filter (std::vector <Task>& output)
 {
   Timer timer ("Command::filter");
@@ -300,7 +302,6 @@ void Command::filter (std::vector <Task>& output)
   if (f.size ())
   {
     const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
-
     Expression e (f);
 
     output.clear ();

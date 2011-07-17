@@ -60,20 +60,17 @@ bool Expression::evalFilter (const Task& task)
 
   if (!_prepared)
   {
-    if (_args.size ())
-    {
-      _args.dump ("Expression::evalFilter");
+    _args.dump ("Expression::evalFilter");
 
-      expand_sequence ();
-      implicit_and ();
-      expand_tag ();
-      expand_pattern ();
-      expand_attr ();
-      expand_attmod ();
-      expand_word ();
-      expand_tokens ();
-      postfix ();
-    }
+    expand_sequence ();
+    implicit_and ();
+    expand_tag ();
+    expand_pattern ();
+    expand_attr ();
+    expand_attmod ();
+    expand_word ();
+    expand_tokens ();
+    postfix ();
 
     _prepared = true;
   }
@@ -96,20 +93,17 @@ std::string Expression::evalExpression (const Task& task)
 
   if (!_prepared)
   {
-    if (_args.size ())
-    {
-      _args.dump ("Expression::evalFilter");
+    _args.dump ("Expression::evalExpression");
 
-      expand_sequence ();
-      implicit_and ();
-      expand_tag ();
-      expand_pattern ();
-      expand_attr ();
-      expand_attmod ();
-      expand_word ();
-      expand_tokens ();
-      postfix ();
-    }
+    expand_sequence ();
+    implicit_and ();
+    expand_tag ();
+    expand_pattern ();
+    expand_attr ();
+    expand_attmod ();
+    expand_word ();
+    expand_tokens ();
+    postfix ();
 
     _prepared = true;
   }
@@ -558,7 +552,7 @@ void Expression::expand_sequence ()
   }
 
   // Now insert the new sequence expression.
-  temp.push_back (Triple (sequence.str (), "", "seq"));
+  temp.push_back (Triple (sequence.str (), "exp", "seq"));
 
   // Now copy everything after the last id/uuid.
   bool found_id = false;
@@ -588,8 +582,7 @@ void Expression::expand_tokens ()
   std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
   {
-    if (arg->_third  == "seq" ||
-        arg->_third  == "exp")
+    if (arg->_second == "exp")
     {
       tokenize (arg->_first, arg->_third, operators, temp);
       delta = true;

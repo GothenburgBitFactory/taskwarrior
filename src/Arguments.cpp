@@ -288,7 +288,7 @@ void Arguments::categorize ()
 
   // Track where the command is, if possible.
   int command_pos           = -1;
-  int distance_from_command = 0;
+//  int distance_from_command = 0;
 
   // Configurable support.
   bool enable_expressions = context.config.getBoolean ("expressions");
@@ -367,8 +367,8 @@ void Arguments::categorize ()
       // <id>[-<id>][,...]
       else if (is_id (arg->_first))
       {
-        if (found_something_after_sequence ||
-            (command_pos != -1 && distance_from_command > 0))
+        if (found_something_after_sequence/* ||
+            (command_pos != -1 && distance_from_command > 0)*/)
         {
           arg->_third = "word";
         }
@@ -382,8 +382,8 @@ void Arguments::categorize ()
       // <uuid>[,...]
       else if (is_uuid (arg->_first))
       {
-        if (found_something_after_sequence ||
-            (command_pos != -1 && distance_from_command > 0))
+        if (found_something_after_sequence/* ||
+            (command_pos != -1 && distance_from_command > 0)*/)
         {
           arg->_third = "word";
         }
@@ -401,8 +401,8 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        if (command_pos != -1)
-          ++distance_from_command;
+//        if (command_pos != -1)
+//          ++distance_from_command;
 
         arg->_third = "tag";
       }
@@ -414,8 +414,8 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        if (command_pos != -1)
-          ++distance_from_command;
+//        if (command_pos != -1)
+//          ++distance_from_command;
 
         arg->_third = "attmod";
       }
@@ -427,8 +427,8 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        if (command_pos != -1)
-          ++distance_from_command;
+//        if (command_pos != -1)
+//          ++distance_from_command;
 
         arg->_third = "attr";
       }
@@ -440,8 +440,8 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        if (command_pos != -1)
-          ++distance_from_command;
+//        if (command_pos != -1)
+//          ++distance_from_command;
 
         arg->_third = "subst";
       }
@@ -453,8 +453,8 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        if (command_pos != -1)
-          ++distance_from_command;
+//        if (command_pos != -1)
+//          ++distance_from_command;
 
         arg->_third = "pattern";
       }
@@ -466,8 +466,8 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        if (command_pos != -1)
-          ++distance_from_command;
+//        if (command_pos != -1)
+//          ++distance_from_command;
 
         arg->_third = "op";
       }
@@ -479,8 +479,8 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        if (command_pos != -1)
-          ++distance_from_command;
+//        if (command_pos != -1)
+//          ++distance_from_command;
 
         arg->_second = "exp";
         arg->_third  = "exp";
@@ -493,8 +493,8 @@ void Arguments::categorize ()
         if (found_sequence)
           found_something_after_sequence = true;
 
-        if (command_pos != -1)
-          ++distance_from_command;
+//        if (command_pos != -1)
+//          ++distance_from_command;
 
         arg->_third = "word";
       }

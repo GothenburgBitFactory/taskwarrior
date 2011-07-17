@@ -309,7 +309,7 @@ bool DOM::is_primitive (const std::string& input)
   if (n.getInt (i) && n.depleted ())
     return true;
 
-  std::cout << "# DOM::is_primitive '" << input << "' --> unknown\n";
+//  std::cout << "# DOM::is_primitive '" << input << "' --> unknown\n";
   return false;
 }
 
