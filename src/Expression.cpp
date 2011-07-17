@@ -761,8 +761,14 @@ void Expression::expand_pattern ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Convert:  <name>[:=]<value>
-// To:       <name> = lex<value>
+// +----------------+       +----------+  +------+  +---------+
+// | <name>:<value> |       | <name>   |  | =    |  | <value> |
+// +----------------+       +----------+  +------+  +---------+
+// |                |  -->  | <lvalue> |  | op   |  | exp     |
+// +----------------+       +----------+  +------+  +---------+
+// | attr           |       | attr     |  | attr |  | attr    |
+// +----------------+       +----------+  +------+  +---------+
+//
 void Expression::expand_attr ()
 {
   Arguments temp;
@@ -786,7 +792,7 @@ void Expression::expand_attr ()
 
       temp.push_back (Triple (name,  "lvalue", arg->_third));
       temp.push_back (Triple ("=",   "op",     arg->_third));
-      temp.push_back (Triple (value, "rvalue", arg->_third));
+      temp.push_back (Triple (value, "exp",    arg->_third));
       delta = true;
     }
     else
@@ -801,8 +807,14 @@ void Expression::expand_attr ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Convert:  <name>.<mod>[:=]<value>
-// To:       <name> <op> lex<value>
+// +----------------------+       +----------+  +-------+  +---------------+
+// | <name>.<mod>:<value> |       | <name>   |  | <mod> |  | <value>       |
+// +----------------------+       +----------+  +-------+  +---------------+
+// |                      |  -->  | <lvalue> |  | op    |  | exp/string/rx |
+// +----------------------+       +----------+  +-------+  +---------------+
+// | attr                 |       | attr     |  | attr  |  | attr          |
+// +----------------------+       +----------+  +-------+  +---------------+
+//
 void Expression::expand_attmod ()
 {
   Arguments temp;
@@ -830,13 +842,13 @@ void Expression::expand_attmod ()
       {
         temp.push_back (Triple (name,  "lvalue", arg->_third));
         temp.push_back (Triple ("<",   "op",     arg->_third));
-        temp.push_back (Triple (value, "rvalue", arg->_third));
+        temp.push_back (Triple (value, "exp",    arg->_third));
       }
       else if (mod == "after" || mod == "over" || mod == "above")
       {
         temp.push_back (Triple (name,  "lvalue", arg->_third));
         temp.push_back (Triple (">",   "op",     arg->_third));
-        temp.push_back (Triple (value, "rvalue", arg->_third));
+        temp.push_back (Triple (value, "exp",    arg->_third));
       }
       else if (mod == "none")
       {
@@ -854,13 +866,13 @@ void Expression::expand_attmod ()
       {
         temp.push_back (Triple (name,  "lvalue", arg->_third));
         temp.push_back (Triple ("=",   "op",     arg->_third));
-        temp.push_back (Triple (value, "rvalue", arg->_third));
+        temp.push_back (Triple (value, "exp",    arg->_third));
       }
       else if (mod == "isnt" || mod == "not")
       {
         temp.push_back (Triple (name,  "lvalue", arg->_third));
         temp.push_back (Triple ("!=",  "op",     arg->_third));
-        temp.push_back (Triple (value, "rvalue", arg->_third));
+        temp.push_back (Triple (value, "exp",    arg->_third));
       }
       else if (mod == "has" || mod == "contains")
       {
