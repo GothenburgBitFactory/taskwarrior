@@ -859,15 +859,15 @@ void Expression::expand_attmod ()
       }
       else if (mod == "none")
       {
-        temp.push_back (Triple (name,   "lvalue", arg->_third));
-        temp.push_back (Triple ("==",   "op",     arg->_third));
-        temp.push_back (Triple ("\"\"", "string", arg->_third));
+        temp.push_back (Triple (name, "lvalue", arg->_third));
+        temp.push_back (Triple ("==", "op",     arg->_third));
+        temp.push_back (Triple ("",   "string", arg->_third));
       }
       else if (mod == "any")
       {
-        temp.push_back (Triple (name,   "lvalue", arg->_third));
-        temp.push_back (Triple ("!=",   "op",     arg->_third));
-        temp.push_back (Triple ("\"\"", "string", arg->_third));
+        temp.push_back (Triple (name, "lvalue", arg->_third));
+        temp.push_back (Triple ("!=", "op",     arg->_third));
+        temp.push_back (Triple ("",   "string", arg->_third));
       }
       else if (mod == "is" || mod == "equals")
       {
