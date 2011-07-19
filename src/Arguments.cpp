@@ -150,7 +150,7 @@ void Arguments::capture (int argc, const char** argv)
 {
   for (int i = 0; i < argc; ++i)
   {
-    // The "i != 0" guarantees that argv[0] does not get split, because it may
+    // The "i &&" guarantees that argv[0] does not get split, because it may
     // be an absolute path, and Expression::expand_tokens would make a dog's
     // dinner out of it.
     std::vector <std::string> parts;

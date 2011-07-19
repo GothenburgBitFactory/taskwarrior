@@ -647,6 +647,9 @@ void Expression::tokenize (
     else if (n.getDate (date_format, t))
       tokens.push_back (Triple (Date (t).toString (date_format), "date", category));
 
+    else if (n.getWord (s))
+      tokens.push_back (Triple (s, "rvalue", category));
+
     else
     {
       if (! n.getUntilWS (s))
