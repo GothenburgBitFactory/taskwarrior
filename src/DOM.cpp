@@ -82,10 +82,11 @@ const std::string DOM::get (const std::string& name)
 
   int len = name.length ();
   Nibbler n (name);
+  std::string copy_name (name);
 
   // Primitives
-  if (is_primitive (name))
-    return /*_cache[name] =*/ name;
+  if (is_literal (copy_name))
+    return /*_cache[name] =*/ copy_name;
 
   // rc. --> context.config
   else if (len > 3 &&
@@ -162,6 +163,7 @@ const std::string DOM::get (const std::string& name)
       throw format (STRING_DOM_UNREC, name);
   }
 
+  // Pass-through.
   return /*_cache[name] =*/ name;
 }
 
@@ -190,16 +192,16 @@ const std::string DOM::get (const std::string& name)
 //   TODO <uuid>.recur
 //   TODO <uuid>.depends
 //
-//   {entry,start,end,due,until,wait}
-//   description
-//   project
-//   priority
-//   parent
-//   status
-//   tags
-//   urgency
-//   recur
-//   depends
+//   {.entry,.start,.end,.due,.until,.wait}
+//   .description
+//   .project
+//   .priority
+//   .parent
+//   .status
+//   .tags
+//   .urgency
+//   .recur
+//   .depends
 //
 const std::string DOM::get (const std::string& name, const Task& task)
 {
@@ -215,8 +217,13 @@ const std::string DOM::get (const std::string& name, const Task& task)
   std::string uuid;
 
   // Primitives
-  if (is_primitive (name))
-    return /*_cache[name] =*/ name;
+  std::string copy_name (name);
+  if (is_literal (copy_name))
+    return /*_cache[name] =*/ copy_name;
+
+  // <attr>
+  else if (task.has (name))
+    return task.get (name);
 
   // <id>.<name>
   else if (n.getInt (id))
@@ -248,14 +255,16 @@ const std::string DOM::get (const std::string& name, const Task& task)
     }
   }
 
-  // [<task>.] <name>
-       if (name == "id")      return format (task.id);
-  else if (name == "urgency") return format (task.urgency_c (), 4, 3);
-  else                        return task.get (name);
+  // [<task>] .<name>
+       if (name == ".id")              return format (task.id);
+  else if (name == ".urgency")         return format (task.urgency_c (), 4, 3);
+  else if (task.has (name.substr (1))) return task.get (name.substr (1));
 
   // Delegate to the context-free version of DOM::get.
   return this->get (name);
 }
+
+// TODO Need a context-specific DOM::set.
 
 ////////////////////////////////////////////////////////////////////////////////
 void DOM::set (const std::string& name, const std::string& value)
@@ -275,7 +284,7 @@ void DOM::set (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool DOM::is_primitive (const std::string& input)
+bool DOM::is_literal (std::string& input)
 {
   std::string s;
   double d;
@@ -283,7 +292,11 @@ bool DOM::is_primitive (const std::string& input)
 
   // Date?
   if (Date::valid (input, context.config.get ("dateformat")))
+  {
+    input = Date (input).toEpochString ();
+    std::cout << "# DOM::is_literal '" << input << "' --> date\n";
     return true;
+  }
 
   // Duration?
   if (Duration::valid (input))
@@ -309,7 +322,7 @@ bool DOM::is_primitive (const std::string& input)
   if (n.getInt (i) && n.depleted ())
     return true;
 
-//  std::cout << "# DOM::is_primitive '" << input << "' --> unknown\n";
+//  std::cout << "# DOM::is_literal '" << input << "' --> unknown\n";
   return false;
 }
 

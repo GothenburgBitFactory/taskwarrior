@@ -43,7 +43,7 @@ public:
   void set (const std::string&, const std::string&);
 
 private:
-  bool is_primitive (const std::string&);
+  bool is_literal (std::string&);
 
 private:
   std::map <std::string, std::string> _cache;

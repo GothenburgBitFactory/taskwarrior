@@ -112,11 +112,11 @@ std::string Expression::evalExpression (const Task& task)
   std::vector <Variant> value_stack;
   eval (task, value_stack);
 
-  // Coerce stack element to boolean.
+  // Coerce stack element to string.
   Variant result (value_stack.back ());
   value_stack.pop_back ();
   result.cast (Variant::v_string);
-  return result._string;
+  return context.dom.get (result._string, task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -417,7 +417,7 @@ void Expression::eval (const Task& task, std::vector <Variant>& value_stack)
         throw std::string ("Unsupported operator '") + arg->_first + "'.";
     }
 
-    // It's not an operator, it's either and lvalue or some form of rvalue.
+    // It's not an operator, it's an lvalue or some form of rvalue.
     else
     {
       Variant operand;
@@ -480,6 +480,7 @@ void Expression::create_variant (
   else if (type == "rvalue" ||
            type == "string" ||
            type == "rx")
+    // TODO Is unquoteText necessary?
     variant = Variant (unquoteText (value));
 
   else
@@ -651,7 +652,7 @@ void Expression::tokenize (
       if (! n.getUntilWS (s))
         n.getUntilEOS (s);
 
-      tokens.push_back (Triple (s, "?", category));
+      tokens.push_back (Triple (s, "string", category));
     }
 
     n.skipWS ();
@@ -1022,13 +1023,9 @@ void Expression::postfix ()
       }
 
       if (op_stack.size ())
-      {
         op_stack.pop_back ();
-      }
       else
-      {
         throw std::string ("Mismatched parentheses in expression");
-      }
     }
     else if (Arguments::is_operator (arg->_first, type, precedence, associativity))
     {

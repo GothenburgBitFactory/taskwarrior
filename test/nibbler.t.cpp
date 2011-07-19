@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (257);
+  UnitTest t (277);
 
   try
   {
@@ -412,29 +412,74 @@ int main (int argc, char** argv)
 
     // bool getDOM (std::string&);
     t.diag ("Nibbler::getDOM");
-    n = Nibbler ("one one.two one.two.three 1.project a0-a0-a0.due");
-    t.ok (n.getDOM (s),        "'one'              getDOM -> ok");
-    t.is (s, "one",            "'one'              getDOM -> 'one'");
+
+    // positive.
+    n = Nibbler (".due  ");
+    t.ok (n.getDOM (s),        "'.due'             getDOM -> ok");
+    t.is (s, ".due",           "'.due'             getDOM -> '.due'");
+
+    n = Nibbler ("123.due  ");
+    t.ok (n.getDOM (s),        "'123.due'          getDOM -> ok");
+    t.is (s, "123.due",        "'123.due'          getDOM -> '123.due'");
+
+    n = Nibbler ("ebeeab00-ccf8-464b-8b58-f7f2d606edfb.due  ");
+    t.ok (n.getDOM (s),        "'ebeeab00-ccf8-464b-8b58-f7f2d606edfb.due'  getDOM -> ok");
+    t.is (s, "ebeeab00-ccf8-464b-8b58-f7f2d606edfb.due",
+                               "'ebeeab00-ccf8-464b-8b58-f7f2d606edfb.due'  getDOM -> 'ebeeab00-ccf8-464b-8b58-f7f2d606edfb.due");
+
+    n = Nibbler ("rc.one.two.three.four.five.six.seven  ");
+    t.ok (n.getDOM (s),        "'rc.one.two.three.four.five.six.seven'      getDOM -> 'rc.one.two.three.four.five.six.seven'");
+    t.is (s, "rc.one.two.three.four.five.six.seven",
+                               "'rc.one.two.three.four.five.six.seven'      getDOM -> 'rc.one.two.three.four.five.six.seven'");
+
+    // negative.
+    n = Nibbler ("1+2  ");
+    t.notok (n.getDOM (s),     "'1+2'              getDOM -> notok");
+
+    n = Nibbler ("..foo  ");
+    t.notok (n.getDOM (s),     "'..foo'            getDOM -> notok");
+
+    // bool getWord (std::string&);
+    t.diag ("Nibbler::getWord");
+    n = Nibbler ("one two th3ee");
+    t.ok (n.getWord (s),       "'one'              getWord -> ok");
+    t.is (s, "one",            "'one'              getWord -> 'one'");
     t.ok (n.skipWS (),         "skipWS");
-    t.ok (n.getDOM (s),        "'one.two'          getDOM -> ok");
-    t.is (s, "one.two",        "'one.two'          getDOM -> ok");
+    t.ok (n.getWord (s),       "'two'              getWord -> ok");
+    t.is (s, "two",            "'two'              getWord -> 'two'");
     t.ok (n.skipWS (),         "skipWS");
-    t.ok (n.getDOM (s),        "'one.two.three'    getDOM -> ok");
-    t.is (s, "one.two.three",  "'one.two.three'    getDOM -> ok");
-    t.ok (n.skipWS (),         "skipWS");
-    t.ok (n.getDOM (s),        "'1.project'        getDOM -> ok");
-    t.is (s, "1.project",      "'1.project'        getDOM -> ok");
-    t.ok (n.skipWS (),         "skipWS");
-    t.ok (n.getDOM (s),        "'a0-a0-a0.due'     getDOM -> ok");
-    t.is (s, "a0-a0-a0.due",   "'a0-a0-a0.due'     getDOM -> ok");
+    t.ok (n.getWord (s),       "'th'               getWord -> ok");
+    t.is (s, "th",             "'th'               getWord -> 'th'");
+    t.ok (n.skip ('3'),        "skip(3)");
+    t.ok (n.getWord (s),       "'ee'               getWord -> ok");
+    t.is (s, "ee",             "'ee'               getWord -> 'ee'");
     t.ok (n.depleted (),       "depleted");
+
+    t.diag ("Nibbler::getWord");
+    n = Nibbler ("one TWO,three,f ");
+    t.ok (n.getWord (s),              "'one TWO,three,f '   getWord  -> ok");
+    t.is (s, "one",                   "   ' TWO,three,f '   getWord  -> one");
+    t.ok (n.skipWS (),                "    'TWO,three,f '   skipWS   -> ok");
+
+    t.ok (n.getWord (s),              "    'TWO,three,f '   getWord  -> ok");
+    t.is (s, "TWO",                   "       ',three,f '   getWord  -> TWO");
+    t.ok (n.skip (','),               "        'three,f '   skip ,   -> ok");
+
+    t.ok (n.getWord (s),              "        'three,f '   getWord  -> ok");
+    t.is (s, "three",                 "             ',f '   getWord  -> three");
+    t.ok (n.skip (','),               "              'f '   skip ,   -> ok");
+
+    t.ok (n.getWord (s),              "              'f '   getWord  -> ok");
+    t.is (s, "f",                     "               ' '   getWord  -> f");
+    t.ok (n.skipWS (),                "                ''   skip ,   -> ok");
+    t.ok (n.depleted (),              "                ''   depleted -> true");
 
     // bool getUntilEOL (std::string&);
     t.diag ("Nibbler::getUntilEOL");
     n = Nibbler ("one\ntwo");
-    t.ok    (n.getUntilEOL (s),       "'one\\ntwo' :    getUntilEOL ()       -> true");
-    t.is    (s, "one",                "'one\\ntwo' :    getUntilEOL ()       -> 'one'");
-    t.ok    (n.skip ('\n'),           "   '\\ntwo' :           skip ('\\n')   -> true");
+    t.ok    (n.getUntilEOL (s),       "'one\\ntwo' :   getUntilEOL ()       -> true");
+    t.is    (s, "one",                "'one\\ntwo' :   getUntilEOL ()       -> 'one'");
+    t.ok    (n.skip ('\n'),           "   '\\ntwo' :          skip ('\\n')   -> true");
     t.ok    (n.getUntilEOL (s),       "     'two' :    getUntilEOL ()       -> true");
     t.is    (s, "two",                "     'two' :    getUntilEOL ()       -> 'two'");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");

@@ -34,6 +34,7 @@
 #include <inttypes.h>
 #include <Nibbler.h>
 #include <Date.h>
+#include <text.h>
 #include <RX.h>
 
 const char* c_digits = "0123456789";
@@ -920,37 +921,93 @@ bool Nibbler::getOneOf (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getDOM (std::string& found)
+// [<number>|<uuid>|<word>|].<word>[.<word> ...]
+bool Nibbler::getDOM (std::string& result)
 {
-  std::string::size_type i     = mCursor;
-  std::string::size_type start = mCursor;
-
-  while (   isdigit (mInput[i]) ||
-            mInput[i] == '.'    ||
-            mInput[i] == '-'    ||
-            mInput[i] == '_'    ||
-         (! ispunct (mInput[i]) &&
-          ! isspace (mInput[i])))
+  std::string::size_type i = mCursor;
+  if (i < mLength)
   {
-    ++i;
+    save ();
+
+    std::string left;
+    std::string right;
+    int number;
+
+    if (skip ('.') &&
+        getWord (right))
+    {
+      while (skip ('.') &&
+             getWord (right))
+        ;
+
+      result = mInput.substr (i, mCursor - i);
+      return true;
+    }
+
+    restore ();
+    if (getWord (left) &&
+        skip ('.')     &&
+        getWord (right))
+    {
+      while (skip ('.') &&
+             getWord (right))
+        ;
+
+      result = mInput.substr (i, mCursor - i);
+      return true;
+    }
+
+    restore ();
+    if (getInt (number) &&
+        skip ('.')      &&
+        getWord (right))
+    {
+      while (skip ('.') &&
+             getWord (right))
+        ;
+
+      result = mInput.substr (i, mCursor - i);
+      return true;
+    }
+
+    restore ();
+    if (getUUID (left) &&
+        skip ('.')     &&
+        getWord (right))
+    {
+      while (skip ('.') &&
+             getWord (right))
+        ;
+
+      result = mInput.substr (i, mCursor - i);
+      return true;
+    }
   }
 
-  if (i > mCursor)
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// A word is a contiguous string of non-space, non-digit, non-punct characters.
+bool Nibbler::getWord (std::string& result)
+{
+  std::string::size_type i = mCursor;
+
+  if (i < mLength)
   {
-    found = mInput.substr (start, i - start);
+    while (!isdigit (mInput[i]) &&
+           !ispunct (mInput[i]) &&
+           !isspace (mInput[i]))
+    {
+      ++i;
+    }
 
-    // If found is simple a number, then it is not a DOM reference.
-    double d;
-    Nibbler exclusion (found);
-    if (exclusion.getNumber (d) && exclusion.depleted ())
-      return false;
-
-    int in;
-    if (exclusion.getInt (in) && exclusion.depleted ())
-      return false;
-
-    mCursor = i;
-    return true;
+    if (i > mCursor)
+    {
+      result = mInput.substr (mCursor, i - mCursor);
+      mCursor = i;
+      return true;
+    }
   }
 
   return false;
