@@ -933,18 +933,6 @@ bool Nibbler::getDOM (std::string& result)
     std::string right;
     int number;
 
-    if (skip ('.') &&
-        getWord (right))
-    {
-      while (skip ('.') &&
-             getWord (right))
-        ;
-
-      result = mInput.substr (i, mCursor - i);
-      return true;
-    }
-
-    restore ();
     if (getWord (left) &&
         skip ('.')     &&
         getWord (right))
@@ -982,6 +970,18 @@ bool Nibbler::getDOM (std::string& result)
       result = mInput.substr (i, mCursor - i);
       return true;
     }
+
+    restore ();
+    if (getWord (right))
+    {
+      while (skip ('.') &&
+             getWord (right))
+        ;
+
+      result = mInput.substr (i, mCursor - i);
+      return true;
+    }
+
   }
 
   return false;

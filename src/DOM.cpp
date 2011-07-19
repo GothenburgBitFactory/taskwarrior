@@ -255,9 +255,9 @@ const std::string DOM::get (const std::string& name, const Task& task)
     }
   }
 
-  // [<task>] .<name>
-       if (name == ".id")              return format (task.id);
-  else if (name == ".urgency")         return format (task.urgency_c (), 4, 3);
+  // [<task>.]<name>
+       if (name == "id")               return format (task.id);
+  else if (name == "urgency")          return format (task.urgency_c (), 4, 3);
   else if (task.has (name.substr (1))) return task.get (name.substr (1));
 
   // Delegate to the context-free version of DOM::get.

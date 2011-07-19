@@ -1551,7 +1551,7 @@ Arguments Arguments::extract_write_filter ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Arguments Arguments::extract_modifications ()
+Arguments Arguments::extract_modifications (bool include_seq/* = false*/)
 {
   Arguments modifications;
 
@@ -1566,9 +1566,11 @@ Arguments Arguments::extract_modifications ()
     }
 
     // Sequence excluded regardless of location.
-    else if (arg->_third == "id"   ||
+    else if (arg->_third == "id" ||
              arg->_third == "uuid")
     {
+      if (include_seq)
+        modifications.push_back (Triple (arg->_first, arg->_second, "word"));
     }
 
     else if (seen_command)

@@ -414,9 +414,9 @@ int main (int argc, char** argv)
     t.diag ("Nibbler::getDOM");
 
     // positive.
-    n = Nibbler (".due  ");
-    t.ok (n.getDOM (s),        "'.due'             getDOM -> ok");
-    t.is (s, ".due",           "'.due'             getDOM -> '.due'");
+    n = Nibbler ("due  ");
+    t.ok (n.getDOM (s),        "'due'              getDOM -> ok");
+    t.is (s, "due",            "'due'              getDOM -> 'due'");
 
     n = Nibbler ("123.due  ");
     t.ok (n.getDOM (s),        "'123.due'          getDOM -> ok");
