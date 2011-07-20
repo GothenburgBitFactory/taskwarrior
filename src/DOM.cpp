@@ -215,6 +215,7 @@ const std::string DOM::get (const std::string& name, const Task& task)
   Nibbler n (name);
   int id;
   std::string uuid;
+  std::string canonical;
 
   // Primitives
   std::string copy_name (name);
@@ -222,8 +223,8 @@ const std::string DOM::get (const std::string& name, const Task& task)
     return /*_cache[name] =*/ copy_name;
 
   // <attr>
-  else if (task.has (name))
-    return task.get (name);
+  else if (Arguments::is_attribute (name, canonical))
+    return task.get (canonical);
 
   // <id>.<name>
   else if (n.getInt (id))
