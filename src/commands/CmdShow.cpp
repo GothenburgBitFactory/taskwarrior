@@ -67,6 +67,7 @@ int CmdShow::execute (std::string& output)
   // Note that there is a leading and trailing space, to make it easier to
   // search for whole words.
   std::string recognized =
+    " abbreviation.minimum"
     " active.indicator"
     " annotations"
     " avoidlastcolumn"

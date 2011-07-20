@@ -102,6 +102,7 @@ std::string Config::defaults =
   "expressions=on                                 # Support for algebraic expressions\n"
   "patterns=on                                    # Support for regex patterns\n"
   "json.array=off                                 # Enclose JSON output in [ ]\n"
+  "abbreviation.minimum=2                         # Shortest allowed abbreviation\n"
   "\n"
   "# Dates\n"
   "dateformat=m/d/Y                               # Preferred input and display date format\n"

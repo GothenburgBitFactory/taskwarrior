@@ -482,7 +482,8 @@ void guess (
   std::string& candidate)
 {
   std::vector <std::string> matches;
-  autoComplete (candidate, options, matches);
+  autoComplete (candidate, options, matches,
+                context.config.getInteger ("abbreviation.minimum"));
   if (1 == matches.size ())
     candidate = matches[0];
 

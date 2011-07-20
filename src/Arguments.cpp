@@ -798,7 +798,10 @@ bool Arguments::is_command (
   std::string& command)
 {
   std::vector <std::string> matches;
-  if (autoComplete (command, keywords, matches) == 1)
+  if (autoComplete (command,
+                    keywords,
+                    matches,
+                    context.config.getInteger ("abbreviation.minimum")) == 1)
   {
     command = matches[0];
     return true;
@@ -1090,7 +1093,10 @@ bool Arguments::is_attribute (const std::string& input, std::string& canonical)
   }
 
   std::vector <std::string> matches;
-  autoComplete (input, candidates, matches);
+  autoComplete (input,
+                candidates,
+                matches,
+                context.config.getInteger ("abbreviation.minimum"));
 
   if (matches.size () == 1)
   {
@@ -1116,7 +1122,10 @@ bool Arguments::is_modifier (const std::string& input)
   }
 
   std::vector <std::string> matches;
-  autoComplete (input, candidates, matches);
+  autoComplete (input,
+                candidates,
+                matches,
+                context.config.getInteger ("abbreviation.minimum"));
 
   if (matches.size () == 1)
     return true;

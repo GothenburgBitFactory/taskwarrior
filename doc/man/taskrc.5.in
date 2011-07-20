@@ -388,6 +388,11 @@ of the longer-term rate.  The calculation is as follows:
     rate = (long-term-rate * (1 - bias)) + (short-term-rate * bias)
 
 .TP
+.B abbreviation.minimum=2
+Minimum length of any abbreviated command/value.  This means that "ve", "ver",
+"vers", "versi", "versio" will all equate to "version", but "v" will not.
+Default is 2.
+.TP
 .B debug=off
 Taskwarrior has a debug mode that causes diagnostic output to be displayed.
 Typically this is not something anyone would want, but when reporting a bug,

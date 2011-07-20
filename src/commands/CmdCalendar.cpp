@@ -123,11 +123,11 @@ int CmdCalendar::execute (std::string& output)
   for (arg = args.begin (); arg != args.end (); ++arg)
   {
     // Some version of "calendar".
-    if (autoComplete (lowerCase (*arg), commandNames, matches) == 1)
+    if (autoComplete (lowerCase (*arg), commandNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
       continue;
 
     // "due".
-    else if (autoComplete (lowerCase (*arg), keywordNames, matches) == 1)
+    else if (autoComplete (lowerCase (*arg), keywordNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
       getpendingdate = true;
 
     // "y".
@@ -147,7 +147,7 @@ int CmdCalendar::execute (std::string& output)
     }
 
     // "January" etc.
-    else if (autoComplete (lowerCase (*arg), monthNames, matches) == 1)
+    else if (autoComplete (lowerCase (*arg), monthNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
     {
       argMonth = Date::monthOfYear (matches[0]);
       if (argMonth == -1)

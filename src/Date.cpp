@@ -27,6 +27,7 @@
 
 #define L10N                                           // Localization complete.
 
+#include <iostream> // TODO Remove.
 #include <iomanip>
 #include <sstream>
 #include <time.h>
@@ -175,17 +176,18 @@ void Date::toMDY (int& m, int& d, int& y)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string Date::toString (const std::string& format /*= "m/d/Y" */) const
+const std::string Date::toString (
+  const std::string& format /*= "m/d/Y" */) const
 {
-  // Making this local copy seems to fix a bug.  Remove the local copy and you'll
-  // see segmentation faults and all kinds of gibberish.
+  // Making this local copy seems to fix a bug.  Remove the local copy and
+  // you'll see segmentation faults and all kinds of gibberish.
   std::string localFormat = format;
 
   char buffer[12];
   std::string formatted;
   for (unsigned int i = 0; i < localFormat.length (); ++i)
   {
-    char c = localFormat[i];
+    int c = localFormat[i];
     switch (c)
     {
     case 'm': sprintf (buffer, "%d",   this->month ());                        break;
@@ -794,8 +796,9 @@ bool Date::isRelativeDate (const std::string& input)
   supported.push_back ("later");
   supported.push_back ("someday");
 
+  // Hard-coded 3, despite rc.abbreviation.minimum.
   std::vector <std::string> matches;
-  if (autoComplete (in, supported, matches) == 1)
+  if (autoComplete (in, supported, matches, 3) == 1)
   {
     std::string found = matches[0];
 

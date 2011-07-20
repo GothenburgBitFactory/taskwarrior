@@ -74,7 +74,7 @@ void initializeColorRules ()
   {
     // Add the leading "color." string.
     std::string rule = "color." + *p;
-    autoComplete (rule, rules, results);
+    autoComplete (rule, rules, results, 3); // Hard-coded 3.
 
     std::vector <std::string>::iterator r;
     for (r = results.begin (); r != results.end (); ++r)

@@ -27,7 +27,6 @@
 
 #define L10N                                           // Localization complete.
 
-#include <iostream> // TODO Remove
 #include <sstream>
 #include <Context.h>
 #include <Nibbler.h>
@@ -192,16 +191,16 @@ const std::string DOM::get (const std::string& name)
 //   TODO <uuid>.recur
 //   TODO <uuid>.depends
 //
-//   {.entry,.start,.end,.due,.until,.wait}
-//   .description
-//   .project
-//   .priority
-//   .parent
-//   .status
-//   .tags
-//   .urgency
-//   .recur
-//   .depends
+//   {entry,start,end,due,until,wait}
+//   description
+//   project
+//   priority
+//   parent
+//   status
+//   tags
+//   urgency
+//   recur
+//   depends
 //
 const std::string DOM::get (const std::string& name, const Task& task)
 {
@@ -295,7 +294,6 @@ bool DOM::is_literal (std::string& input)
   if (Date::valid (input, context.config.get ("dateformat")))
   {
     input = Date (input).toEpochString ();
-    std::cout << "# DOM::is_literal '" << input << "' --> date\n";
     return true;
   }
 
@@ -323,7 +321,6 @@ bool DOM::is_literal (std::string& input)
   if (n.getInt (i) && n.depleted ())
     return true;
 
-//  std::cout << "# DOM::is_literal '" << input << "' --> unknown\n";
   return false;
 }
 

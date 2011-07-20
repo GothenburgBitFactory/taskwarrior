@@ -75,7 +75,7 @@ bool confirm (const std::string& question)
     std::getline (std::cin, answer);
     answer = std::cin.eof() ? STRING_UTIL_CONFIRM_NO : lowerCase (trim (answer));
 
-    autoComplete (answer, options, matches);
+    autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }
   while (matches.size () != 1);
 
@@ -109,7 +109,7 @@ int confirm3 (const std::string& question)
 
     std::getline (std::cin, answer);
     answer = trim (answer);
-    autoComplete (answer, options, matches);
+    autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }
   while (matches.size () != 1);
 
@@ -150,7 +150,7 @@ int confirm4 (const std::string& question)
 
     std::getline (std::cin, answer);
     answer = trim (answer);
-    autoComplete (answer, options, matches);
+    autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }
   while (matches.size () != 1);
 
@@ -190,7 +190,8 @@ std::string formatBytes (size_t bytes)
 int autoComplete (
   const std::string& partial,
   const std::vector<std::string>& list,
-  std::vector<std::string>& matches)
+  std::vector<std::string>& matches,
+  int minimum/* = 2*/)
 {
   matches.clear ();
 
@@ -211,7 +212,8 @@ int autoComplete (
       }
 
       // Maintain a list of partial matches.
-      else if (length <= item->length () &&
+      else if (length >= (unsigned) minimum &&
+               length <= item->length ()    &&
                partial == item->substr (0, length))
         matches.push_back (*item);
     }

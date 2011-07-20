@@ -56,6 +56,8 @@ New configuration options in taskwarrior 2.0.0
   - New 'exit.on.missing.db' control causes an exit if the ~/.task directory
     (or override) is missing.
   - New 'color.completed' and 'color.deleted' color rules.
+  - New 'abbreviation.minimum' setting controls how short an abbreviated
+    command or value may be.
 
 Newly deprecated features in taskwarrior 2.0.0
 

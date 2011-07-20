@@ -174,7 +174,7 @@ void Expression::eval (const Task& task, std::vector <Variant>& value_stack)
         right._raw_type = value_stack.back ()._raw_type;
       }
       value_stack.pop_back ();
-//      std::cout << "# right raw=" << right._raw << " type=" << right._type << " value=" << right._string << "\n";
+//      std::cout << "# right variant " << right.dump () << "\n";
 
       // lvalue (dom).
       Variant left (value_stack.back ());
@@ -185,7 +185,7 @@ void Expression::eval (const Task& task, std::vector <Variant>& value_stack)
         left._raw_type = value_stack.back ()._raw_type;
       }
       value_stack.pop_back ();
-//      std::cout << "# left raw=" << left._raw << " type=" << left._type << " value=" << left._string << "\n";
+//      std::cout << "# left variant " << left.dump () << "\n";
 
       // Now the binary operators.
       if (arg->_first == "and")
@@ -463,7 +463,7 @@ void Expression::create_variant (
   const std::string& value,
   const std::string& type)
 {
-//  std::cout << "# operand '" << value << "' as " << type << "\n";
+//  std::cout << "# create_variant " << value << "/" << type << "\n";
 
   // DOM references are not resolved until the operator is processed.  This
   // preserves the original name, which helps determine how to apply the

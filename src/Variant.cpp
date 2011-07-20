@@ -41,6 +41,12 @@ Variant::Variant ()
 : _type (v_unknown)
 , _raw ("")
 , _raw_type ("")
+, _bool (false)
+, _integer (0)
+, _double (0.0)
+, _string ("")
+, _date (0)
+, _duration (0)
 {
 }
 
@@ -66,44 +72,86 @@ Variant::Variant (const Variant& other)
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const bool input)
+: _type (v_boolean)
+, _raw ("")
+, _raw_type ("")
+, _bool (input)
+, _integer (0)
+, _double (0.0)
+, _string ("")
+, _date (0)
+, _duration (0)
 {
-  _type = v_boolean;
-  _bool = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const int input)
+: _type (v_integer)
+, _raw ("")
+, _raw_type ("")
+, _bool (false)
+, _integer (input)
+, _double (0.0)
+, _string ("")
+, _date (0)
+, _duration (0)
 {
-  _type = v_integer;
-  _integer = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const double& input)
+: _type (v_double)
+, _raw ("")
+, _raw_type ("")
+, _bool (false)
+, _integer (0)
+, _double (input)
+, _string ("")
+, _date (0)
+, _duration (0)
 {
-  _type = v_double;
-  _double = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const std::string& input)
+: _type (v_string)
+, _raw ("")
+, _raw_type ("")
+, _bool (false)
+, _integer (0)
+, _double (0.0)
+, _string (input)
+, _date (0)
+, _duration (0)
 {
-  _type = v_string;
-  _string = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const Date& input)
+: _type (v_date)
+, _raw ("")
+, _raw_type ("")
+, _bool (false)
+, _integer (0)
+, _double (0.0)
+, _string ("")
+, _date (input)
+, _duration (0)
 {
-  _type = v_date;
-  _date = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const Duration& input)
+: _type (v_duration)
+, _raw ("")
+, _raw_type ("")
+, _bool (false)
+, _integer (0)
+, _double (0.0)
+, _string ("")
+, _date (0)
+, _duration (input)
 {
-  _type = v_duration;
-  _duration = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

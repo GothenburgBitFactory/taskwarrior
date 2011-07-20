@@ -301,7 +301,10 @@ bool Att::validNameValue (
     candidates.push_back (modifiableNames[i]);
 
   std::vector <std::string> matches;
-  autoComplete (name, candidates, matches);
+  autoComplete (name,
+                candidates,
+                matches,
+                context.config.getInteger ("abbreviation.minimum"));
 
   if (matches.size () == 0)
     return false;
@@ -327,7 +330,10 @@ bool Att::validNameValue (
       candidates.push_back (modifierNames[i]);
 
     matches.clear ();
-    autoComplete (mod, candidates, matches);
+    autoComplete (mod,
+                  candidates,
+                  matches,
+                  context.config.getInteger ("abbreviation.minimum"));
 
     if (matches.size () == 0)
       throw std::string ("Unrecognized modifier '") + mod + "'.";
@@ -454,7 +460,10 @@ bool Att::validNameValue (
     candidates.push_back ("deleted");
     candidates.push_back ("recurring");
     candidates.push_back ("waiting");
-    autoComplete (value, candidates, matches);
+    autoComplete (value,
+                  candidates,
+                  matches,
+                  context.config.getInteger ("abbreviation.minimum"));
 
     if (matches.size () == 1)
       value = matches[0];

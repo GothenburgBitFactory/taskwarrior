@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <Context.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -90,6 +91,8 @@ static const char* durations[] =
 };
 
 #define NUM_DURATIONS   (sizeof (durations)   / sizeof (durations[0]))
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration ()
@@ -339,7 +342,10 @@ bool Duration::valid (const std::string& input)
     supported.push_back (durations[i]);
 
   std::vector <std::string> matches;
-  if (autoComplete (units, supported, matches) == 1)
+  if (autoComplete (units,
+                    supported,
+                    matches,
+                    context.config.getInteger ("abbreviation.minimum")) == 1)
     return true;
 
   return false;
@@ -376,7 +382,10 @@ void Duration::parse (const std::string& input)
 
   mSecs = 0;
   std::vector <std::string> matches;
-  if (autoComplete (units, supported, matches) == 1)
+  if (autoComplete (units,
+                    supported,
+                    matches,
+                    context.config.getInteger ("abbreviation.minimum")) == 1)
   {
     std::string match = matches[0];
 
