@@ -324,10 +324,11 @@ void Arguments::categorize ()
       {
         arg->_third = "program";  // TODO Is this a problem for expressions that do not contain a program name?
 
-        if (arg->_first == "cal"                                        ||
-            arg->_first == "calendar"                                   ||
-            arg->_first.find ("/calendar") == arg->_first.length () - 9 ||
-            arg->_first.find ("/cal")      == arg->_first.length () - 4)
+
+        if ((arg->_first.length () >= 3 &&
+             arg->_first.substr (arg->_first.length () - 3) == "cal") ||
+            (arg->_first.length () >= 8 &&
+             arg->_first.substr (arg->_first.length () - 8) == "calendar"))
         {
           arg->_first = "calendar";
           arg->_third = "command";
