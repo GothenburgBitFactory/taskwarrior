@@ -40,6 +40,7 @@
 #include <File.h>
 #include <Directory.h>
 #include <Arguments.h>
+#include <A3.h>
 
 class Context
 {
@@ -59,6 +60,7 @@ public:
   int getHeight ();                    // determine terminal height
 
   const std::vector <std::string> getColumns () const;
+  const std::vector <std::string> getCommands () const;
 
   bool color ();                       // TTY or <other>?
   bool verbose (const std::string&);   // Verbosity control
@@ -81,6 +83,7 @@ private:
 public:
   std::string                         program;
   Arguments                           args;
+  A3                                  a3;
   std::string                         home_dir;
   File                                rc_file;
   Path                                data_dir;

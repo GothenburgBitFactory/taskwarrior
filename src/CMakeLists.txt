@@ -5,7 +5,8 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src/columns
                      ${TASK_INCLUDE_DIRS})
 
-set (task_SRCS API.cpp API.h
+set (task_SRCS A3.cpp A3.h
+               API.cpp API.h
                Arguments.cpp Arguments.h
                Att.cpp Att.h
                Color.cpp Color.h
@@ -15,6 +16,7 @@ set (task_SRCS API.cpp API.h
                Date.cpp Date.h
                Directory.cpp Directory.h
                Duration.cpp Duration.h
+               E9.cpp E9.h
                Expression.cpp Expression.h
                File.cpp File.h
                Hooks.cpp Hooks.h

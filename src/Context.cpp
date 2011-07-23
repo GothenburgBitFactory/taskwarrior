@@ -73,8 +73,8 @@ int Context::initialize (int argc, const char** argv)
   try
   {
     // char** argv --> std::vector <std::string> Context::args.
-    // TODO Handle "cal" case here.
     args.capture (argc, argv);
+    a3.capture (argc, argv);
 
     // echo one two -- three | task zero --> task zero one two
     // 'three' is left in the input buffer.
@@ -121,6 +121,9 @@ int Context::initialize (int argc, const char** argv)
 
     // Categorize all arguments one more time.  THIS IS NECESSARY.
     args.categorize ();
+
+    a3.categorize ();
+    a3.dump ("Initial");  // TODO Remove.
 
     // Handle default command and assumed 'info' command.
     args.inject_defaults ();
@@ -283,7 +286,7 @@ int Context::dispatch (std::string &out)
       tdb2.gc ();
     }
 
-    args.dump ("Argument Categorization");
+//    args.dump ("Argument Categorization");
     return c->execute (out);
   }
 
@@ -417,6 +420,17 @@ const std::vector <std::string> Context::getColumns () const
   std::vector <std::string> output;
   std::map <std::string, Column*>::const_iterator i;
   for (i = columns.begin (); i != columns.end (); ++i)
+    output.push_back (i->first);
+
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> Context::getCommands () const
+{
+  std::vector <std::string> output;
+  std::map <std::string, Command*>::const_iterator i;
+  for (i = commands.begin (); i != commands.end (); ++i)
     output.push_back (i->first);
 
   return output;

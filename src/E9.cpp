@@ -35,32 +35,32 @@
 #include <Variant.h>
 #include <RX.h>
 #include <text.h>
-#include <Expression.h>
+#include <E9.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Perform all the necessary steps prior to an eval call.
-Expression::Expression (Arguments& arguments)
+E9::E9 (Arguments& arguments)
 : _args (arguments)
 , _prepared (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Expression::~Expression ()
+E9::~E9 ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Expression::evalFilter (const Task& task)
+bool E9::evalFilter (const Task& task)
 {
   if (_args.size () == 0)
     return true;
 
   if (!_prepared)
   {
-//    _args.dump ("Expression::evalFilter");
+    _args.dump ("E9::evalFilter");
 
     expand_sequence ();
     implicit_and ();
@@ -86,14 +86,14 @@ bool Expression::evalFilter (const Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Expression::evalExpression (const Task& task)
+std::string E9::evalE9 (const Task& task)
 {
   if (_args.size () == 0)
     return "";
 
   if (!_prepared)
   {
-//    _args.dump ("Expression::evalExpression");
+    _args.dump ("E9::evalE9");
 
 //    expand_sequence ();
 //    implicit_and ();
@@ -120,7 +120,7 @@ std::string Expression::evalExpression (const Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Expression::eval (const Task& task, std::vector <Variant>& value_stack)
+void E9::eval (const Task& task, std::vector <Variant>& value_stack)
 {
   // Case sensitivity is configurable.
   bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
@@ -428,11 +428,11 @@ void Expression::eval (const Task& task, std::vector <Variant>& value_stack)
 
   // Check for stack remnants.
   if (value_stack.size () != 1)
-    throw std::string ("Error: Expression::eval found extra items on the stack.");
+    throw std::string ("Error: E9::eval found extra items on the stack.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Expression::eval_match (Variant& left, Variant& right, bool case_sensitive)
+bool E9::eval_match (Variant& left, Variant& right, bool case_sensitive)
 {
   if (right._raw_type == "rx")
   {
@@ -458,7 +458,7 @@ bool Expression::eval_match (Variant& left, Variant& right, bool case_sensitive)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Expression::create_variant (
+void E9::create_variant (
   Variant& variant,
   const std::string& value,
   const std::string& type)
@@ -495,7 +495,7 @@ void Expression::create_variant (
 //
 // To:       (id=1 or (id>=3 and id<=5) or
 //            uuid="00000000-0000-0000-0000-000000000000")
-void Expression::expand_sequence ()
+void E9::expand_sequence ()
 {
   Arguments temp;
 
@@ -567,11 +567,11 @@ void Expression::expand_sequence ()
   }
 
   _args.swap (temp);
-//  _args.dump ("Expression::expand_sequence");
+  _args.dump ("E9::expand_sequence");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Expression::expand_tokens ()
+void E9::expand_tokens ()
 {
   Arguments temp;
   bool delta = false;
@@ -595,14 +595,14 @@ void Expression::expand_tokens ()
   if (delta)
   {
     _args.swap (temp);
-//    _args.dump ("Expression::expand_tokens");
+    _args.dump ("E9::expand_tokens");
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Nibble the whole bloody thing.  Nuke it from orbit - it's the only way to be
 // sure.
-void Expression::tokenize (
+void E9::tokenize (
   const std::string& input,
   const std::string& category,
   std::vector <std::string>& operators,
@@ -669,7 +669,7 @@ void Expression::tokenize (
 // Converts:  <term1>     <term2> <op> <term>
 // to:        <term1> and <term2> <op> <term>
 //
-void Expression::implicit_and ()
+void E9::implicit_and ()
 {
   Arguments temp;
   bool delta = false;
@@ -694,7 +694,7 @@ void Expression::implicit_and ()
   if (delta)
   {
     _args.swap (temp);
-//    _args.dump ("Expression::implicit_and");
+    _args.dump ("E9::implicit_and");
   }
 }
 
@@ -702,7 +702,7 @@ void Expression::implicit_and ()
 // Convert:  +with -without
 // To:       tags ~ with
 //           tags !~ without
-void Expression::expand_tag ()
+void E9::expand_tag ()
 {
   Arguments temp;
   bool delta = false;
@@ -728,14 +728,14 @@ void Expression::expand_tag ()
   if (delta)
   {
     _args.swap (temp);
-//    _args.dump ("Expression::expand_tag");
+    _args.dump ("E9::expand_tag");
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Convert:  /foo/
 // To:       description ~ foo
-void Expression::expand_pattern ()
+void E9::expand_pattern ()
 {
   Arguments temp;
   bool delta = false;
@@ -760,7 +760,7 @@ void Expression::expand_pattern ()
   if (delta)
   {
     _args.swap (temp);
-//    _args.dump ("Expression::expand_pattern");
+    _args.dump ("E9::expand_pattern");
   }
 }
 
@@ -773,7 +773,7 @@ void Expression::expand_pattern ()
 // | attr           |       | attr     |  | attr |  | attr    |
 // +----------------+       +----------+  +------+  +---------+
 //
-void Expression::expand_attr ()
+void E9::expand_attr ()
 {
   Arguments temp;
   bool delta = false;
@@ -807,7 +807,7 @@ void Expression::expand_attr ()
   if (delta)
   {
     _args.swap (temp);
-//    _args.dump ("Expression::expand_attr");
+    _args.dump ("E9::expand_attr");
   }
 }
 
@@ -820,7 +820,7 @@ void Expression::expand_attr ()
 // | attr                 |       | attr     |  | attr  |  | attr          |
 // +----------------------+       +----------+  +-------+  +---------------+
 //
-void Expression::expand_attmod ()
+void E9::expand_attmod ()
 {
   Arguments temp;
   bool delta = false;
@@ -933,14 +933,14 @@ void Expression::expand_attmod ()
   if (delta)
   {
     _args.swap (temp);
-//    _args.dump ("Expression::expand_attmod");
+    _args.dump ("E9::expand_attmod");
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Convert:  <word>
 // To:       description ~ <word>
-void Expression::expand_word ()
+void E9::expand_word ()
 {
   Arguments temp;
   bool delta = false;
@@ -963,7 +963,7 @@ void Expression::expand_word ()
   if (delta)
   {
     _args.swap (temp);
-//    _args.dump ("Expression::expand_word");
+    _args.dump ("E9::expand_word");
   }
 }
 
@@ -999,7 +999,7 @@ void Expression::expand_word ()
 //       Pop the operator onto the output queue.
 //   Exit.
 //
-void Expression::postfix ()
+void E9::postfix ()
 {
   Arguments temp;
 
@@ -1063,7 +1063,7 @@ void Expression::postfix ()
   }
 
   _args.swap (temp);
-//  _args.dump ("Expression::toPostfix");
+  _args.dump ("E9::toPostfix");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1074,7 +1074,7 @@ void Expression::postfix ()
 //
 // New style:  at least one argument that is an operator.
 //
-bool Expression::is_new_style ()
+bool E9::is_new_style ()
 {
   std::vector <Triple>::iterator arg;
   for (arg = _args.begin (); arg != _args.end (); ++arg)
