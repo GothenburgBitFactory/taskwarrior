@@ -79,6 +79,7 @@ int Context::initialize (int argc, const char** argv)
     // echo one two -- three | task zero --> task zero one two
     // 'three' is left in the input buffer.
     args.append_stdin ();
+    a3.append_stdin ();
 
     // Assume default .taskrc and .task locations.
     assumeLocations ();
@@ -86,6 +87,8 @@ int Context::initialize (int argc, const char** argv)
     // Process 'rc:<file>' command line override, and remove the argument from the
     // Context::args.
     args.rc_override (home_dir, rc_file);
+    a3.categorize ();
+    a3.rc_override (home_dir, rc_file);
 
     // Dump any existing values and load rc file.
     config.clear ();
@@ -95,7 +98,8 @@ int Context::initialize (int argc, const char** argv)
     // location (~/.task), or set by data.location in the config file, or
     // overridden by rc.data.location on the command line.
     std::string location;
-    args.get_data_location (location);
+//    args.get_data_location (location);
+    a3.get_data_location (location);
     data_dir = Directory (location);
     extension_dir = data_dir.data + "/extensions";
 
@@ -105,9 +109,11 @@ int Context::initialize (int argc, const char** argv)
     // Handle Aliases.
     loadAliases ();
     args.resolve_aliases ();
+    a3.resolve_aliases ();
 
     // Apply rc overrides to Context::config, capturing raw args for later use.
-    args.apply_overrides ();
+//    args.apply_overrides ();
+    a3.apply_overrides ();
 
     // Initialize the color rules, if necessary.
     if (color ())
@@ -121,12 +127,12 @@ int Context::initialize (int argc, const char** argv)
 
     // Categorize all arguments one more time.  THIS IS NECESSARY.
     args.categorize ();
-
     a3.categorize ();
-    a3.dump ("Initial");  // TODO Remove.
 
     // Handle default command and assumed 'info' command.
     args.inject_defaults ();
+    a3.inject_defaults ();
+    a3.dump ("Context::initialize");  // TODO Remove.
 
     // TODO Instantiate extension command objects.
     // TODO Instantiate default command object.
@@ -532,7 +538,7 @@ void Context::updateXtermTitle ()
     args.find_command (command);
 
     std::string title;
-    join (title, " ", args.list ());
+    join (title, " ", a3.list ());
     std::cout << "]0;task " << command << " " << title << "" << std::endl;
   }
 }

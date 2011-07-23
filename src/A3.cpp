@@ -241,20 +241,10 @@ bool A3::is_command (
   return false;
 }
 
-
-
-
-
-
-
-
-#ifdef NOPE
 ////////////////////////////////////////////////////////////////////////////////
 // Add a pair for every word from std::cin, with a category of "".
 void A3::append_stdin ()
 {
-  bool something_happened = false;
-
   // Use 'select' to determine whether there is any std::cin content buffered
   // before trying to read it, to prevent blocking.
   struct timeval tv;
@@ -273,13 +263,9 @@ void A3::append_stdin ()
       if (arg == "--")
         break;
 
-      this->push_back (Arg (arg, "", ""));
-      something_happened = true;
+      this->push_back (Arg (arg, ""));
     }
   }
-
-  if (something_happened)
-    categorize ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -291,9 +277,9 @@ void A3::rc_override (
   std::vector <Arg>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_third == "rc")
+    if (arg->_category == "rc")
     {
-      rc = File (arg->_first.substr (3));
+      rc = File (arg->_raw.substr (3));
       home = rc;
 
       std::string::size_type last_slash = rc.data.rfind ("/");
@@ -304,7 +290,7 @@ void A3::rc_override (
 
       context.header ("Using alternate .taskrc file " + rc.data);
 
-      // Keep scanning, because if there are multiple rc:file arguments, we
+      // Keep looping, because if there are multiple rc:file arguments, we
       // want the last one to dominate.
     }
   }
@@ -321,46 +307,18 @@ void A3::get_data_location (std::string& data)
   std::vector <Arg>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_third == "override")
+    if (arg->_category == "override")
     {
-      if (arg->_first.substr (0, 16) == "rc.data.location" &&
-          arg->_first[16] == ':')
+      if (arg->_raw.substr (0, 16) == "rc.data.location" &&
+          (arg->_raw[16] == ':' || arg->_raw[16] == '='))
       {
-        data = arg->_first.substr (17);
+        data = arg->_raw.substr (17);
         context.header ("Using alternate data.location " + data);
       }
     }
 
-    // Keep scanning, because if there are multiple rc:file arguments, we
-    // want the last one to dominate.
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Extracts any rc.name:value args and sets the name/value in context.config,
-// leaving only the plain args.
-void A3::apply_overrides ()
-{
-  std::vector <Arg>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    if (arg->_third == "override")
-    {
-      std::string name;
-      std::string value;
-      Nibbler n (arg->_first);
-      if (n.getLiteral ("rc.")   &&  // rc.
-          n.getUntil (':', name) &&  //    xxx
-          n.skip (':'))              //       :
-       {
-        n.getUntilEOS (value);  // May be blank.
-
-        context.config.set (name, value);
-        context.footnote ("Configuration override rc." + name + ":" + value);
-      }
-      else
-        context.footnote ("Problem with override: " + arg->_first);
-    }
+    // Keep scanning, because if there are multiple overrides, we want the last
+    // one to dominate.
   }
 }
 
@@ -380,18 +338,18 @@ void A3::resolve_aliases ()
     for (arg = this->begin (); arg != this->end (); ++arg)
     {
       std::map <std::string, std::string>::iterator match =
-        context.aliases.find (arg->_first);
+        context.aliases.find (arg->_raw);
 
       if (match != context.aliases.end ())
       {
         context.debug (std::string ("A3::resolve_aliases '")
-                       + arg->_first
+                       + arg->_raw
                        + "' --> '"
-                       + context.aliases[arg->_first]
+                       + context.aliases[arg->_raw]
                        + "'");
 
         std::vector <std::string> words;
-        splitq (words, context.aliases[arg->_first], ' ');
+        splitq (words, context.aliases[arg->_raw], ' ');
 
         std::vector <std::string>::iterator word;
         for (word = words.begin (); word != words.end (); ++word)
@@ -400,7 +358,7 @@ void A3::resolve_aliases ()
         something = true;
       }
       else
-        expanded.push_back (arg->_first);
+        expanded.push_back (arg->_raw);
     }
 
     // Only overwrite if something happened.
@@ -409,13 +367,43 @@ void A3::resolve_aliases ()
       this->clear ();
       std::vector <std::string>::iterator e;
       for (e = expanded.begin (); e != expanded.end (); ++e)
-        this->push_back (Arg (*e, "", ""));
+        this->push_back (Arg (*e, ""));
 
       expanded.clear ();
-      categorize ();
     }
   }
   while (something && --safety_valve > 0);
+
+  if (safety_valve <= 0)
+    context.debug ("Nested alias limit of 10 reached.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Extracts any rc.name:value args and sets the name/value in context.config,
+// leaving only the plain args.
+void A3::apply_overrides ()
+{
+  std::vector <Arg>::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    if (arg->_category == "override")
+    {
+      std::string name;
+      std::string value;
+      Nibbler n (arg->_raw);
+      if (n.getLiteral ("rc.")         &&  // rc.
+          n.getUntilOneOf (":=", name) &&  //    xxx
+          (n.skip (':') || n.skip ('=')))  //       [:=]
+       {
+        n.getUntilEOS (value);  // May be blank.
+
+        context.config.set (name, value);
+        context.footnote ("Configuration override rc." + name + ":" + value);
+      }
+      else
+        context.footnote ("Problem with override: " + arg->_raw);
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -430,16 +418,18 @@ void A3::inject_defaults ()
   std::vector <Arg>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_third == "command")
+    if (arg->_category == "command")
       found_command = true;
 
-    else if (arg->_third == "id" ||
-             arg->_third == "uuid")
+/* TODO no "id" or "uuid" categories exist at this time.  Hmm.
+    else if (arg->_category == "id" ||
+             arg->_category == "uuid")
       found_sequence = true;
+*/
 
-    else if (arg->_third != "program"  &&
-             arg->_third != "override" &&
-             arg->_third != "rc")
+    else if (arg->_category != "program"  &&
+             arg->_category != "override" &&
+             arg->_category != "rc")
       found_other = true;
   }
 
@@ -478,16 +468,47 @@ void A3::inject_defaults ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string> A3::list ()
+const std::string A3::combine () const
+{
+  std::string combined;
+
+  std::vector <Arg>::const_iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    if (arg != this->begin ())
+      combined += " ";
+
+    combined += arg->_raw;
+  }
+
+  return combined;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> A3::list () const
 {
   std::vector <std::string> all;
-  std::vector <Arg>::iterator arg;
+  std::vector <Arg>::const_iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
-    all.push_back (arg->_first);
+    all.push_back (arg->_raw);
 
   return all;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ifdef NOPE
 ////////////////////////////////////////////////////////////////////////////////
 std::vector <std::string> A3::operator_list ()
 {
@@ -496,23 +517,6 @@ std::vector <std::string> A3::operator_list ()
     all.push_back (operators[i].op);
 
   return all;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string A3::combine ()
-{
-  std::string combined;
-
-  std::vector <Arg>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    if (arg != this->begin ())
-      combined += " ";
-
-    combined += arg->_first;
-  }
-
-  return combined;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

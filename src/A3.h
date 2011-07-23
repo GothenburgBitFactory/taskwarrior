@@ -84,20 +84,20 @@ public:
   void capture_first (const std::string&);
 
   void categorize ();
-
   static bool is_command (const std::vector <std::string>&, std::string&);
 
-/*
   void append_stdin ();
   void rc_override (std::string&, File&);
   void get_data_location (std::string&);
-  void apply_overrides ();
   void resolve_aliases ();
+  void apply_overrides ();
   void inject_defaults ();
 
-  std::vector <std::string> list ();
+  const std::string combine () const;
+  const std::vector <std::string> list () const;
+
+/*
   static std::vector <std::string> operator_list ();
-  std::string combine ();
 
   bool find_command (std::string&);
   std::string find_limit ();
