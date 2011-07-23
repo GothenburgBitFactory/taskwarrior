@@ -86,7 +86,10 @@ int CmdCustom::execute (std::string& output)
   split (filterArgs, reportFilter, ' ');
   std::vector <std::string>::iterator arg;
   for (arg = filterArgs.begin (); arg != filterArgs.end (); ++ arg)
+  {
     context.args.capture_first (*arg);
+    context.a3.capture_first (*arg);
+  }
 
   // Load the data.
   // TODO Replace with TDB2.

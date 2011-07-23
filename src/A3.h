@@ -95,12 +95,12 @@ public:
 
   const std::string combine () const;
   const std::vector <std::string> list () const;
+  bool find_command (std::string&) const;
+  const std::string find_limit () const;
 
 /*
   static std::vector <std::string> operator_list ();
 
-  bool find_command (std::string&);
-  std::string find_limit ();
 
   static bool is_multipart (const std::string&, std::vector <std::string>&);
   static bool is_attr (const std::string&);

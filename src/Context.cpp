@@ -98,7 +98,6 @@ int Context::initialize (int argc, const char** argv)
     // location (~/.task), or set by data.location in the config file, or
     // overridden by rc.data.location on the command line.
     std::string location;
-//    args.get_data_location (location);
     a3.get_data_location (location);
     data_dir = Directory (location);
     extension_dir = data_dir.data + "/extensions";
@@ -112,7 +111,6 @@ int Context::initialize (int argc, const char** argv)
     a3.resolve_aliases ();
 
     // Apply rc overrides to Context::config, capturing raw args for later use.
-//    args.apply_overrides ();
     a3.apply_overrides ();
 
     // Initialize the color rules, if necessary.
@@ -279,7 +277,7 @@ int Context::dispatch (std::string &out)
 
   // Autocomplete args against keywords.
   std::string command;
-  if (args.find_command (command))
+  if (a3.find_command (command))
   {
     updateXtermTitle ();
 
@@ -292,7 +290,13 @@ int Context::dispatch (std::string &out)
       tdb2.gc ();
     }
 
-//    args.dump ("Argument Categorization");
+    // Only read-only commands can be run when TDB2 is read-only.
+    // TODO Implement TDB2::read_only
+/*
+    if (tdb2.read_only () && !c->read_only ())
+      throw std::string ("");
+*/
+
     return c->execute (out);
   }
 

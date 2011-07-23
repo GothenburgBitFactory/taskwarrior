@@ -495,6 +495,34 @@ const std::vector <std::string> A3::list () const
   return all;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+bool A3::find_command (std::string& command) const
+{
+  std::vector <Arg>::const_iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    if (arg->_category == "command")
+    {
+      command = arg->_raw;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string A3::find_limit () const
+{
+  std::vector <Arg>::const_reverse_iterator arg;
+  for (arg = this->rbegin (); arg != this->rend (); ++arg)
+    if (arg->_raw.find ("limit:") != std::string::npos)
+      return arg->_raw.substr (6);
+
+  return "";
+}
+
+
 
 
 
@@ -517,22 +545,6 @@ std::vector <std::string> A3::operator_list ()
     all.push_back (operators[i].op);
 
   return all;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool A3::find_command (std::string& command)
-{
-  std::vector <Arg>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    if (arg->_third == "command")
-    {
-      command = arg->_first;
-      return true;
-    }
-  }
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
