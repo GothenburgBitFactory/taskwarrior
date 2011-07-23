@@ -132,17 +132,19 @@ Column::Column ()
 , _style ("default")
 , _label ("")
 , _report ("")
+, _modifiable (true)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Column::Column (const Column& other)
 {
-  _name  = other._name;
-  _type  = other._type;
-  _style = other._style;
-  _label = other._label;
-  _label = other._report;
+  _name       = other._name;
+  _type       = other._type;
+  _style      = other._style;
+  _label      = other._label;
+  _label      = other._report;
+  _modifiable = other._modifiable;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -150,11 +152,12 @@ Column& Column::operator= (const Column& other)
 {
   if (this != &other)
   {
-    _name    = other._name;
-    _type    = other._type;
-    _style   = other._style;
-    _label   = other._label;
-    _report  = other._report;
+    _name        = other._name;
+    _type        = other._type;
+    _style       = other._style;
+    _label       = other._label;
+    _report      = other._report;
+    _modifiable  = other._modifiable;
   }
 
   return *this;
@@ -163,10 +166,12 @@ Column& Column::operator= (const Column& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Column::operator== (const Column& other) const
 {
-  return _name  == other._name  &&
-         _type  == other._type  &&
-         _style == other._style &&
-         _label == other._label;
+  return _name       == other._name   &&
+         _type       == other._type   &&
+         _style      == other._style  &&
+         _label      == other._label  &&
+         _report     == other._report &&
+         _modifiable == other._modifiable;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

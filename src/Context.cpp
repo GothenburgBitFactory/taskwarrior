@@ -412,6 +412,17 @@ void Context::shadow ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> Context::getColumns () const
+{
+  std::vector <std::string> output;
+  std::map <std::string, Column*>::const_iterator i;
+  for (i = columns.begin (); i != columns.end (); ++i)
+    output.push_back (i->first);
+
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Context::assumeLocations ()
 {
   // Set up default locations.

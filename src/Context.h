@@ -58,6 +58,8 @@ public:
   int getWidth ();                     // determine terminal width
   int getHeight ();                    // determine terminal height
 
+  const std::vector <std::string> getColumns () const;
+
   bool color ();                       // TTY or <other>?
   bool verbose (const std::string&);   // Verbosity control
 

@@ -38,10 +38,11 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnUUID::ColumnUUID ()
 {
-  _name  = "uuid";
-  _type  = "string";
-  _style = "long";
-  _label = STRING_COLUMN_LABEL_UUID;
+  _name       = "uuid";
+  _type       = "string";
+  _style      = "long";
+  _label      = STRING_COLUMN_LABEL_UUID;
+  _modifiable = false;
 
   _styles.push_back ("long");
   _styles.push_back ("short");
