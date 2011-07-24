@@ -48,10 +48,10 @@ CmdPull::CmdPull ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdPull::execute (std::string& output)
 {
-  Arguments words = context.args.extract_simple_words ();
+  std::vector <std::string> words = context.a3.extract_words ();
   std::string file;
   if (words.size ())
-    file = words[0]._first;
+    file = words[0];
 
   Uri uri (file, "pull");
   uri.parse ();
