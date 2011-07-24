@@ -304,9 +304,6 @@ void Command::filter (std::vector <Task>& output)
 
   A3 mods = context.a3.extract_modifications ();
   mods.dump ("extract_modifications");
-
-  A3 words = context.a3.extract_words ();
-  words.dump ("extract_words");
 /**/
 
   Arguments f;

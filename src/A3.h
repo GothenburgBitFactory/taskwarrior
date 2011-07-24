@@ -101,7 +101,7 @@ public:
 
   const A3 extract_filter () const;
   const A3 extract_modifications () const;
-  const A3 extract_words () const;
+  const std::vector <std::string> extract_words () const;
 
   const A3 tokenize (const A3&) const;
 

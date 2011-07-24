@@ -574,13 +574,13 @@ const A3 A3::extract_modifications () const
       mods.push_back (*arg);
   }
 
-  return mods;
+  return tokenize (mods);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const A3 A3::extract_words () const
+const std::vector <std::string> A3::extract_words () const
 {
-  A3 words;
+  std::vector <std::string> words;
   std::vector <Arg>::const_iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
@@ -592,7 +592,7 @@ const A3 A3::extract_words () const
       ;
 
     else
-      words.push_back (*arg);
+      words.push_back (arg->_raw);
   }
 
   return words;
