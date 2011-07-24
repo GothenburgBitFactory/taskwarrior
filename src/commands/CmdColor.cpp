@@ -53,10 +53,10 @@ int CmdColor::execute (std::string& output)
 
   // Get the non-attribute, non-fancy command line arguments.
   bool legend = false;
-  Arguments words = context.args.extract_simple_words ();
-  std::vector <Triple>::iterator word;
+  std::vector <std::string> words = context.a3.extract_words ();
+  std::vector <std::string>::iterator word;
   for (word = words.begin (); word != words.end (); ++word)
-    if (closeEnough ("legend", word->_first))
+    if (closeEnough ("legend", *word))
       legend = true;
 
   std::stringstream out;
@@ -113,7 +113,7 @@ int CmdColor::execute (std::string& output)
         if (word != words.begin ())
           swatch += " ";
 
-        swatch += word->_first;
+        swatch += *word;
       }
 
       Color sample (swatch);
