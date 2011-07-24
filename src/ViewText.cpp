@@ -29,7 +29,6 @@
 
 #include <ViewText.h>
 #include <Context.h>
-#include <Timer.h>
 #include <text.h>
 #include <utf8.h>
 #include <main.h>
@@ -107,8 +106,6 @@ void ViewText::set (int row, int col, Color color)
 ////////////////////////////////////////////////////////////////////////////////
 std::string ViewText::render ()
 {
-  Timer timer ("ViewText::render");
-
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
   std::vector <int> ideal;
