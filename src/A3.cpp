@@ -42,7 +42,6 @@
 extern Context context;
 
 // Supported modifiers, synonyms on the same line.
-/*
 static const char* modifierNames[] =
 {
   "before",     "under",    "below",
@@ -58,7 +57,7 @@ static const char* modifierNames[] =
   "word",
   "noword"
 };
-*/
+
 // Supported operators, borrowed from C++, particularly the precedence.
 // Note: table is sorted by length of operator string, so searches match
 //       longest first.
@@ -97,7 +96,7 @@ static struct
   {  ")",       0,         'b',  1,      'l' },    // Precedence end
 };
 
-//#define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
+#define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
 #define NUM_OPERATORS            (sizeof (operators) / sizeof (operators[0]))
 
 //static const char* non_word_chars = " +-*/%()=<>!~";
@@ -611,7 +610,6 @@ const A3 A3::tokenize (const A3& input) const
 
    combined += arg->_raw;
   }
-  std::cout << "# A3::tokenize combined '" << combined << "'\n";
 
   // List of operators for recognition.
   std::vector <std::string> operators = A3::operator_list ();
@@ -625,55 +623,92 @@ const A3 A3::tokenize (const A3& input) const
   n.skipWS ();
 
   std::string s;
-//  int i;
-//  double d;
+  int i;
+  double d;
   time_t t;
+  std::cout << "# " << n.dump () << "\n";
   while (! n.depleted ())
   {
     if (n.getQuoted ('"', s, true) ||
         n.getQuoted ('\'', s, true))
-      output.push_back (Arg (s, "literal string"));
+    {
+      std::cout << "# string '" << s << "'\n";
+      output.push_back (Arg (s, "string"));
+    }
 
     else if (n.getQuoted ('/', s, true))
+    {
+      std::cout << "# pattern '" << s << "'\n";
       output.push_back (Arg (s, "pattern"));
+    }
 
     else if (n.getOneOf (operators, s))
+    {
+      std::cout << "# operator '" << s << "'\n";
       output.push_back (Arg (s, "op"));
+    }
 
     else if (is_attr (n, s))
+    {
+      std::cout << "# attr '" << s << "'\n";
       output.push_back (Arg (s, "attr"));
+    }
 
-/*
+    else if (is_attmod (n, s))
+    {
+      std::cout << "# attmod '" << s << "'\n";
+      output.push_back (Arg (s, "attmod"));
+    }
+
     else if (n.getDOM (s))
+    {
+      std::cout << "# dom '" << s << "'\n";
       output.push_back (Arg (s, "dom"));
-
-    else if (n.getNumber (d))
-      output.push_back (Arg (format (d), "literal number"));
+    }
 
     else if (n.getDateISO (t))
-      output.push_back (Arg (Date (t).toISO (), "literal date"));
-*/
+    {
+      std::cout << "# date '" << t << "'\n";
+      output.push_back (Arg (Date (t).toISO (), "date"));
+    }
 
     else if (n.getDate (date_format, t))
-      output.push_back (Arg (Date (t).toString (date_format), "literal date"));
+    {
+      std::cout << "# date '" << t << "'\n";
+      output.push_back (Arg (Date (t).toString (date_format), "date"));
+    }
 
-/*
+    else if (n.getNumber (d))
+    {
+      std::cout << "# num '" << d << "'\n";
+      output.push_back (Arg (format (d), "num"));
+    }
+
     else if (n.getInt (i))
-      output.push_back (Arg (format (i), "literal int"));
+    {
+      std::cout << "# int '" << i << "'\n";
+      output.push_back (Arg (format (i), "int"));
+    }
 
-    else if (n.getWord (s))
+    else if (n.getName (s) ||
+             n.getWord (s))       // After DOM
+    {
+      std::cout << "# word '" << s << "'\n";
       output.push_back (Arg (s, "word"));
-*/
+    }
 
     else
     {
       if (! n.getUntilWS (s))
         n.getUntilEOS (s);
 
+      std::cout << "# word '" << s << "'\n";
       output.push_back (Arg (s, "word"));
     }
 
+    std::cout << "# " << n.dump () << "\n";
     n.skipWS ();
+    std::cout << "# " << n.dump () << "\n";
   }
 
   return output;
@@ -697,7 +732,7 @@ bool A3::is_attr (Nibbler& n, std::string& result)
         // Consider removing this for a stricter parse.
         if (n.getQuoted   ('"', value)  ||
             n.getQuoted   ('\'', value) ||
-            n.getUntil    (' ', value)  ||
+            n.getName     (value)       ||
             n.getUntilEOS (value)       ||
             n.depleted ())
         {
@@ -725,6 +760,60 @@ bool A3::is_attr (Nibbler& n, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// <name>.<mod>:['"]<value>['"]
+bool A3::is_attmod (Nibbler& n, std::string& result)
+{
+  n.save ();
+  std::string name;
+  std::string modifier;
+  std::string value;
+
+  if (n.getName (name) &&
+      name.length ())
+  {
+    if (n.skip ('.'))
+    {
+      // Skip the negation character.
+      n.skip ('~');
+
+      if (n.getName (modifier) &&
+          modifier.length ())
+      {
+        if (n.skip (':'))
+        {
+          // Both quoted and unquoted Att's are accepted.
+          // Consider removing this for a stricter parse.
+          if (n.getQuoted   ('"', value)  ||
+              n.getQuoted   ('\'', value) ||
+              n.getName     (value)       ||
+              n.getUntilEOS (value)       ||
+              n.depleted ())
+          {
+/*
+     TODO Eliminate anything that looks like a URL.
+            // Exclude certain URLs, that look like attrs.
+            if (value.find ('@') <= n.cursor () ||
+                value.find ('/') <= n.cursor ())
+              return false;
+*/
+
+            // Validate and canonicalize attribute name.
+            if (is_attribute (name, name) &&
+                is_modifier (modifier, modifier))
+            {
+              result = name + '.' + modifier + ':' + value;
+              return true;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Canonicalize attribute names.
 bool A3::is_attribute (const std::string& input, std::string& canonical)
 {
@@ -743,6 +832,31 @@ bool A3::is_attribute (const std::string& input, std::string& canonical)
 
   return false;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Canonicalize modifier names.
+bool A3::is_modifier (const std::string& input, std::string& canonical)
+{
+  std::vector <std::string> candidates;
+  for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
+    candidates.push_back (modifierNames[i]);
+
+  std::vector <std::string> matches;
+  autoComplete (input,
+                candidates,
+                matches,
+                context.config.getInteger ("abbreviation.minimum"));
+
+  if (matches.size () == 1)
+  {
+    canonical = matches[0];
+    return true;
+  }
+
+  return false;
+}
+
+
 
 
 
@@ -778,58 +892,6 @@ bool A3::is_multipart (
   }
 
   return parts.size () > 1 ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// <name>.<mod>:['"]<value>['"]
-bool A3::is_attmod (const std::string& input)
-{
-  Nibbler n (input);
-  std::string name;
-  std::string modifier;
-  std::string value;
-
-  if (n.getUntilOneOf (".", name))
-  {
-    if (name.length () == 0)
-      return false;
-
-    if (name.find_first_of (non_word_chars) != std::string::npos)
-      return false;
-
-    if (n.skip ('.'))
-    {
-      n.skip ('~');
-      n.getUntil (':', modifier);
-
-      if (modifier.length () == 0)
-        return false;
-    }
-
-    if (n.skip (':'))
-    {
-      // Exclude certain URLs, that look like attrs.
-      if (input.find ('@') <= n.cursor () ||
-          input.find ('/') <= n.cursor ())
-        return false;
-
-      // Both quoted and unquoted Att's are accepted.
-      // Consider removing this for a stricter parse.
-      if (n.getQuoted   ('"', value)  ||
-          n.getQuoted   ('\'', value) ||
-          n.getUntil    (' ', value)  ||
-          n.getUntilEOS (value)       ||
-          n.depleted ())
-      {
-        // Validate and canonicalize attribute and modifier names.
-        if (is_attribute (name, name) &&
-            is_modifier (modifier))
-          return true;
-      }
-    }
-  }
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1582,11 +1644,13 @@ void A3::dump (const std::string& label)
 
   // Filter colors.
   color_map["attr"]     = Color ("bold red on gray4");
+  color_map["attmod"]   = Color ("bold red on gray4");
   color_map["pattern"]  = Color ("cyan on gray4");
-  color_map["op"]       = Color ("white on rgb010");
+  color_map["op"]       = Color ("green on gray4");
+  color_map["string"]   = Color ("bold yellow on gray4");
+  color_map["date"]     = Color ("bold yellow on gray4");
 /*
   color_map["tag"]      = Color ("green on gray2");
-  color_map["attmod"]   = Color ("bold red on gray2");
   color_map["id"]       = Color ("yellow on gray2");
   color_map["uuid"]     = Color ("yellow on gray2");
   color_map["subst"]    = Color ("bold cyan on gray2");
@@ -1598,7 +1662,6 @@ void A3::dump (const std::string& label)
   color_map["lvalue"]   = Color ("bold green on rgb010");
   color_map["int"]      = Color ("bold yellow on rgb010");
   color_map["number"]   = Color ("bold yellow on rgb010");
-  color_map["string"]   = Color ("bold yellow on rgb010");
   color_map["rx"]       = Color ("bold red on rgb010");
 */
 

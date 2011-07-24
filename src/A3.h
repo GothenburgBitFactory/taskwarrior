@@ -106,13 +106,14 @@ public:
   const A3 tokenize (const A3&) const;
 
   static bool is_attr (Nibbler&, std::string&);
+  static bool is_attmod (Nibbler&, std::string&);
   static bool is_attribute (const std::string&, std::string&);
+  static bool is_modifier (const std::string&, std::string&);
 
 /*
 
 
   static bool is_multipart (const std::string&, std::vector <std::string>&);
-  static bool is_attmod (const std::string&);
   static bool is_subst (const std::string&);
   static bool is_pattern (const std::string&);
   static bool is_id (const std::string&);
