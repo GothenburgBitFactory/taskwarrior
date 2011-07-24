@@ -903,6 +903,9 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Assumes that the options are sorted by decreasing length, so that if the
+// options contain 'fourteen' and 'four', the stream is first matched against
+// the longer entry.
 bool Nibbler::getOneOf (
   const std::vector <std::string>& options,
   std::string& found)
@@ -922,6 +925,8 @@ bool Nibbler::getOneOf (
 
 ////////////////////////////////////////////////////////////////////////////////
 // [<number>|<uuid>|<word>|].<word>[.<word> ...]
+//
+// TODO Obsolete
 bool Nibbler::getDOM (std::string& result)
 {
   std::string::size_type i = mCursor;
@@ -933,9 +938,10 @@ bool Nibbler::getDOM (std::string& result)
     std::string right;
     int number;
 
-    if (getWord (left) &&
+    // <name>.<name>[.<name> ...]
+    if (getName (left) &&
         skip ('.')     &&
-        getWord (right))
+        getName (right))
     {
       while (skip ('.') &&
              getWord (right))
@@ -946,9 +952,11 @@ bool Nibbler::getDOM (std::string& result)
     }
 
     restore ();
+
+    // <id>.<name>[.<name> ...]
     if (getInt (number) &&
         skip ('.')      &&
-        getWord (right))
+        getName (right))
     {
       while (skip ('.') &&
              getWord (right))
@@ -959,9 +967,11 @@ bool Nibbler::getDOM (std::string& result)
     }
 
     restore ();
+
+    // <uuid>.<name>[.<name> ...]
     if (getUUID (left) &&
         skip ('.')     &&
-        getWord (right))
+        getName (right))
     {
       while (skip ('.') &&
              getWord (right))
@@ -972,7 +982,9 @@ bool Nibbler::getDOM (std::string& result)
     }
 
     restore ();
-    if (getWord (right))
+
+    // <name>[.<name> ...]
+    if (getName (right))
     {
       while (skip ('.') &&
              getWord (right))
@@ -982,6 +994,7 @@ bool Nibbler::getDOM (std::string& result)
       return true;
     }
 
+    restore ();
   }
 
   return false;
