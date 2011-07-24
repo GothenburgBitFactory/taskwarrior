@@ -31,8 +31,6 @@
 #include <stdlib.h>
 #include <sys/select.h>
 #include <Context.h>
-//#include <Nibbler.h>
-//#include <Lexer.h>
 #include <Directory.h>
 #include <ViewText.h>
 #include <text.h>
@@ -105,6 +103,7 @@ static struct
 
 ////////////////////////////////////////////////////////////////////////////////
 A3::A3 ()
+: _read_only_command (true)
 {
 }
 
@@ -200,6 +199,7 @@ void A3::categorize ()
       {
         found_command = true;
         arg->_category = "command";
+        _read_only_command = context.commands[arg->_raw]->read_only ();
       }
 
       // rc:<file>
@@ -522,6 +522,71 @@ const std::string A3::find_limit () const
   return "";
 }
 
+////////////////////////////////////////////////////////////////////////////////
+const A3 A3::extract_filter () const
+{
+  A3 filter;
+  bool before_command = true;
+  std::vector <Arg>::const_iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    if (arg->_category == "command")
+      before_command = false;
+
+    if (arg->_category == "program"  ||
+        arg->_category == "rc"       ||
+        arg->_category == "override" ||
+        arg->_category == "command"  ||
+        arg->_category == "terminator")
+      ;
+
+    else if (before_command || _read_only_command)
+      filter.push_back (*arg);
+  }
+
+  return filter;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const A3 A3::extract_modifications () const
+{
+  A3 mods;
+  bool before_command = true;
+  std::vector <Arg>::const_iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    if (arg->_category == "command")
+      before_command = false;
+
+    else if (! before_command)
+      mods.push_back (*arg);
+  }
+
+  return mods;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const A3 A3::extract_words () const
+{
+  A3 words;
+  std::vector <Arg>::const_iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    if (arg->_category == "program"  ||
+        arg->_category == "rc"       ||
+        arg->_category == "override" ||
+        arg->_category == "command"  ||
+        arg->_category == "terminator")
+      ;
+
+    else
+      words.push_back (*arg);
+  }
+
+  return words;
+}
+
+
 
 
 
@@ -545,17 +610,6 @@ std::vector <std::string> A3::operator_list ()
     all.push_back (operators[i].op);
 
   return all;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string A3::find_limit ()
-{
-  std::vector <Arg>::reverse_iterator arg;
-  for (arg = this->rbegin (); arg != this->rend (); ++arg)
-    if (arg->_first.find ("limit:") != std::string::npos)
-      return arg->_first.substr (6);
-
-  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1461,7 +1515,7 @@ void A3::dump (const std::string& label)
   color_map["rc"]         = Color ("bold red on red");
   color_map["override"]   = Color ("bold red on red");
   color_map["terminator"] = Color ("bold yellow on yellow");
-  color_map["word"]       = Color ("black on white");
+  color_map["word"]       = Color ("white on gray4");
   color_map["none"]       = Color ("black on white");
 
 /*

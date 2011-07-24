@@ -98,6 +98,10 @@ public:
   bool find_command (std::string&) const;
   const std::string find_limit () const;
 
+  const A3 extract_filter () const;
+  const A3 extract_modifications () const;
+  const A3 extract_words () const;
+
 /*
   static std::vector <std::string> operator_list ();
 
@@ -134,6 +138,9 @@ public:
   static bool valid_modifier (const std::string&);
 */
   void dump (const std::string&);
+
+private:
+  bool _read_only_command;
 };
 
 #endif

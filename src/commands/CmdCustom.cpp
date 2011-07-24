@@ -91,6 +91,9 @@ int CmdCustom::execute (std::string& output)
     context.a3.capture_first (*arg);
   }
 
+  context.a3.categorize ();
+  context.a3.dump ("CmdCustom::execute");
+
   // Load the data.
   // TODO Replace with TDB2.
   std::vector <Task> tasks;
