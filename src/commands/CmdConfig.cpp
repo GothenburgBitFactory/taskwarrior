@@ -51,7 +51,7 @@ int CmdConfig::execute (std::string& output)
   std::stringstream out;
 
   // Get the non-attribute, non-fancy command line arguments.
-  Arguments words = context.args.extract_simple_words ();
+  std::vector <std::string> words = context.a3.extract_words ();
 
   // Support:
   //   task config name value    # set name to value
@@ -59,7 +59,7 @@ int CmdConfig::execute (std::string& output)
   //   task config name          # remove name
   if (words.size ())
   {
-    std::string name = words[0]._first;
+    std::string name = words[0];
     std::string value = "";
 
     if (words.size () > 1)
@@ -69,7 +69,7 @@ int CmdConfig::execute (std::string& output)
         if (i > 1)
           value += " ";
 
-        value += words[i]._first;
+        value += words[i];
       }
     }
 
