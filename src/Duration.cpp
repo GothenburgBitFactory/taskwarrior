@@ -397,8 +397,6 @@ void Duration::parse (const std::string& input)
     else if (match == "years")                            mSecs = (int) (value * 86400 * 365);
     else if (match == "yrs")                              mSecs = (int) (value * 86400 * 365);
     else if (match == "y")                                mSecs = (int) (value * 86400 * 365);
-    else if (match == "yearly")                           mSecs = (int) (value * 86400 * 365);
-    else if (match == "annual")                           mSecs = (int) (value * 86400 * 365);
 
     else if (match == "semiannual")                       mSecs = (int) (value * 86400 * 183);
 
