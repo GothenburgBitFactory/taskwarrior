@@ -691,6 +691,18 @@ const A3 A3::tokenize (const A3& input) const
       output.push_back (Arg (s, "duration"));
     }
 
+    else if (is_id (n, s))
+    {
+      std::cout << "# id '" << s << "'\n";
+      output.push_back (Arg (s, "id"));
+    }
+
+    else if (is_uuid (n, s))
+    {
+      std::cout << "# uuid '" << s << "'\n";
+      output.push_back (Arg (s, "uuid"));
+    }
+
     else if (n.getNumber (d))
     {
       std::cout << "# num '" << d << "'\n";
@@ -1021,6 +1033,76 @@ bool A3::is_subst (Nibbler& n, std::string& result)
   return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// <uuid>[,...]
+bool A3::is_uuid (Nibbler& n, std::string& result)
+{
+  n.save ();
+  result = "";
+  std::string uuid;
+  if (n.getUUID (uuid))
+  {
+    result += uuid;
+    while (n.skip (',') &&
+           n.getUUID (uuid))
+    {
+      result += ',' + uuid;
+    }
+
+    return true;
+  }
+
+  n.restore ();
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// <id>[-<id>][,<id>[-<id>]]
+bool A3::is_id (Nibbler& n, std::string& result)
+{
+  n.save ();
+  std::string::size_type start = n.cursor ();
+  int id;
+
+  if (n.getUnsignedInt (id))
+  {
+    if (n.skip ('-') &&
+        !n.getUnsignedInt (id))
+    {
+      n.restore ();
+      return false;
+    }
+
+    while (n.skip (','))
+    {
+      if (n.getUnsignedInt (id))
+      {
+        if (n.skip ('-'))
+        {
+          if (!n.getUnsignedInt (id))
+          {
+            n.restore ();
+            return false;
+          }
+        }
+      }
+      else
+      {
+        n.restore ();
+        return false;
+      }
+    }
+
+    std::string::size_type end = n.cursor ();
+    n.restore ();
+    if (n.getN (end - start, result))
+      return true;
+  }
+
+  n.restore ();
+  return false;
+}
+
 
 
 
@@ -1036,62 +1118,6 @@ bool A3::is_subst (Nibbler& n, std::string& result)
 
 #ifdef NOPE
 ////////////////////////////////////////////////////////////////////////////////
-// <id>[-<id>][,<id>[-<id>]]
-bool A3::is_id (const std::string& input)
-{
-  Nibbler n (input);
-  int id;
-
-  if (n.getUnsignedInt (id))
-  {
-    if (n.skip ('-'))
-    {
-      if (!n.getUnsignedInt (id))
-        return false;
-    }
-
-    while (n.skip (','))
-    {
-      if (n.getUnsignedInt (id))
-      {
-        if (n.skip ('-'))
-        {
-          if (!n.getUnsignedInt (id))
-            return false;
-        }
-      }
-      else
-        return false;
-    }
-  }
-  else
-    return false;
-
-  return n.depleted ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// <uuid>[,...]
-bool A3::is_uuid (const std::string& input)
-{
-  Nibbler n (input);
-  std::string uuid;
-
-  if (n.getUUID (uuid))
-  {
-    while (n.skip (','))
-    {
-      if (!n.getUUID (uuid))
-        return false;
-    }
-  }
-  else
-    return false;
-
-  return n.depleted ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // [+-]<tag>
 bool A3::is_tag (const std::string& input)
 {
@@ -1104,16 +1130,6 @@ bool A3::is_tag (const std::string& input)
   {
     return true;
   }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool A3::is_operator (const std::string& input)
-{
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
-    if (operators[i].op == input)
-      return true;
 
   return false;
 }
@@ -1143,62 +1159,6 @@ bool A3::is_symbol_operator (const std::string& input)
   for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
     if (operators[i].symbol &&
         operators[i].op == input)
-      return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool A3::is_modifier (const std::string& input)
-{
-  // Guess at the full attribute name.
-  std::vector <std::string> candidates;
-  for (unsigned i = 0; i < NUM_MODIFIER_NAMES; ++i)
-  {
-    // Short-circuit: exact matches cause immediate return.
-    if (modifierNames[i] == input)
-      return true;
-
-    candidates.push_back (modifierNames[i]);
-  }
-
-  std::vector <std::string> matches;
-  autoComplete (input,
-                candidates,
-                matches,
-                context.config.getInteger ("abbreviation.minimum"));
-
-  if (matches.size () == 1)
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool A3::is_expression (const std::string& input)
-{
-  std::string unquoted = unquoteText (input);
-
-  // Look for space-separated operators.
-  std::vector <std::string> tokens;
-  split (tokens, unquoted, ' ');
-  std::vector <std::string>::iterator token;
-  for (token = tokens.begin (); token != tokens.end (); ++token)
-    if (is_operator (*token))
-      return true;
-
-  // Look for bare or cuddled operators.
-  Lexer lexer (unquoted);
-  lexer.skipWhitespace (true);
-  lexer.coalesceAlpha (true);
-  lexer.coalesceDigits (true);
-  lexer.coalesceQuoted (true);
-
-  tokens.clear ();
-  lexer.tokenize (tokens);
-
-  for (token = tokens.begin (); token != tokens.end (); ++token)
-    if (is_operator (*token))
       return true;
 
   return false;

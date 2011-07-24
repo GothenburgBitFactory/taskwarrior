@@ -113,16 +113,13 @@ public:
   static bool is_duration (Nibbler&, std::string&);
   static bool is_pattern (Nibbler&, std::string&);
   static bool is_subst (Nibbler&, std::string&);
+  static bool is_id (Nibbler&, std::string&);
+  static bool is_uuid (Nibbler&, std::string&);
 
 /*
-  static bool is_id (const std::string&);
-  static bool is_uuid (const std::string&);
   static bool is_tag (const std::string&);
-  static bool is_operator (const std::string&);
   static bool is_operator (const std::string&, char&, int&, char&);
   static bool is_symbol_operator (const std::string&);
-  static bool is_modifier (const std::string&);
-  static bool is_expression (const std::string&);
 
   static bool extract_attr (const std::string&, std::string&, std::string&);
   static bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
