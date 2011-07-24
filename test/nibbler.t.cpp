@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (277);
+  UnitTest t (292);
 
   try
   {
@@ -438,6 +438,29 @@ int main (int argc, char** argv)
 
     n = Nibbler ("..foo  ");
     t.notok (n.getDOM (s),     "'..foo'            getDOM -> notok");
+
+    // bool getName (std::string&);
+    t.diag ("Nibbler::getName");
+    n = Nibbler ("a1 one one.two 9");
+    t.ok    (n.getName (s),       "'a1 one one.two 9' getName -> ok");
+    t.is    (s, "a1",             "  ' one one.two 9' getName -> 'a1'");
+    t.ok    (n.skipWS (),         "   'one one.two 9' skipWS  -> ok");
+
+    t.ok    (n.getName (s),       "   'one one.two 9' getName -> ok");
+    t.is    (s, "one",            "      ' one.two 9' getName -> 'one'");
+    t.ok    (n.skipWS (),         "       'one.two 9' skipWS  -> ok");
+
+    t.ok    (n.getName (s),       "       'one.two 9' getName -> ok");
+    t.is    (s, "one",            "          '.two 9' getName -> 'one'");
+    t.ok    (n.skip ('.'),        "           'two 9' skip .  -> ok");
+
+    t.ok    (n.getName (s),       "           'two 9' getName -> ok");
+    t.is    (s, "two",            "              ' 9' getName -> 'two'");
+    t.ok    (n.skipWS (),         "               '9' skipWS  -> ok");
+
+    t.notok (n.getName (s),       "               '9' getName -> not ok");
+    t.ok    (n.skip ('9'),        "                '' skip 9  -> ok");
+    t.ok    (n.depleted (),       "depleted");
 
     // bool getWord (std::string&);
     t.diag ("Nibbler::getWord");

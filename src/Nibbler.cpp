@@ -988,6 +988,36 @@ bool Nibbler::getDOM (std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// A name is a string of alpha-numeric characters.
+bool Nibbler::getName (std::string& result)
+{
+  std::string::size_type i = mCursor;
+
+  if (i < mLength)
+  {
+    if (isalpha (mInput[i]))
+    {
+      ++i;
+      while (i < mLength &&
+             (isalpha (mInput[i]) ||
+              isdigit (mInput[i])))
+      {
+        ++i;
+      }
+    }
+
+    if (i > mCursor)
+    {
+      result = mInput.substr (mCursor, i - mCursor);
+      mCursor = i;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // A word is a contiguous string of non-space, non-digit, non-punct characters.
 bool Nibbler::getWord (std::string& result)
 {
