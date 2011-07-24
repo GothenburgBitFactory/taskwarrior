@@ -53,14 +53,14 @@ int CmdImport::execute (std::string& output)
   int rc = 0;
 
 	// Use the description as a file name.
-  Arguments words = context.args.extract_simple_words ();
+  std::vector <std::string> words = context.a3.extract_words ();
   if (! words.size ())
     throw std::string ("You must specify a file to import.");
 
-  std::vector <Triple>::iterator word;
+  std::vector <std::string>::iterator word;
   for (word = words.begin (); word != words.end (); ++word)
   {
-    std::string file = word->_first;
+    std::string file = *word;
     std::cout << "Importing '" << file << "'\n";
 
     std::string tmpfile = "";
