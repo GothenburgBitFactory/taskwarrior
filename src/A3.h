@@ -112,9 +112,9 @@ public:
   static bool is_dom (Nibbler&, std::string&);
   static bool is_duration (Nibbler&, std::string&);
   static bool is_pattern (Nibbler&, std::string&);
+  static bool is_subst (Nibbler&, std::string&);
 
 /*
-  static bool is_subst (const std::string&);
   static bool is_id (const std::string&);
   static bool is_uuid (const std::string&);
   static bool is_tag (const std::string&);

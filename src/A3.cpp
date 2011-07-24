@@ -637,6 +637,12 @@ const A3 A3::tokenize (const A3& input) const
       output.push_back (Arg (s, "string"));
     }
 
+    else if (is_subst (n, s))
+    {
+      std::cout << "# subst '" << s << "'\n";
+      output.push_back (Arg (s, "subst"));
+    }
+
     else if (is_pattern (n, s))
     {
       std::cout << "# pattern '" << s << "'\n";
@@ -965,6 +971,7 @@ bool A3::is_duration (Nibbler& n, std::string& result)
 // /<pattern>/
 bool A3::is_pattern (Nibbler& n, std::string& result)
 {
+  n.save ();
   std::string pattern;
   if (n.getQuoted ('/', pattern) &&
       pattern.length () > 0)
@@ -973,6 +980,44 @@ bool A3::is_pattern (Nibbler& n, std::string& result)
     return true;
   }
 
+  n.restore ();
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// /<from>/<to>/[g]
+//
+// Note: one problem with this is that substitutions start with a /, and so any
+//       two-directory absolute path, (or three-level, if the third directory is
+//       named 'g') can be misinterpreted.  To help (but not solve) this, if a
+//       substition exists on the local disk, it is not considered a subst.
+//       This needs to be changed to a better solution.
+bool A3::is_subst (Nibbler& n, std::string& result)
+{
+  n.save ();
+
+  std::string from;
+  std::string to;
+  bool global = false;
+  if (n.skip     ('/')       &&
+      n.getUntil ('/', from) &&
+      from.length ()         &&
+      n.skip     ('/')       &&
+      n.getUntil ('/', to)   &&
+      n.skip     ('/'))
+  {
+    if (n.skip ('g'))
+      global = true;
+
+    result = '/' + from + '/' + to + '/';
+    if (global)
+      result += 'g';
+
+    if (! Directory (result).exists ())    // Ouch - expensive call.
+      return true;
+  }
+
+  n.restore ();
   return false;
 }
 
@@ -990,35 +1035,6 @@ bool A3::is_pattern (Nibbler& n, std::string& result)
 
 
 #ifdef NOPE
-////////////////////////////////////////////////////////////////////////////////
-// /<from>/<to>/[g]
-//
-// Note: one problem with this is that substitutions start with a /, and so any
-//       two-directory absolute path, (or three-level, if the third directory is
-//       named 'g') can be misinterpreted.  To help (but not solve) this, if a
-//       substition exists on the local disk, it is not considered a subst.
-//       This needs to be changed to a better solution.
-bool A3::is_subst (const std::string& input)
-{
-  std::string from;
-  std::string to;
-  Nibbler n (input);
-  if (n.skip     ('/')       &&
-      n.getUntil ('/', from) &&
-      from.length ()         &&
-      n.skip     ('/')       &&
-      n.getUntil ('/', to)   &&
-      n.skip     ('/'))
-  {
-    n.skip ('g');
-    if (n.depleted () &&
-        ! Directory (input).exists ())    // Ouch - expensive call.
-      return true;
-  }
-
-  return false;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // <id>[-<id>][,<id>[-<id>]]
 bool A3::is_id (const std::string& input)
