@@ -28,6 +28,7 @@
 #define INCLUDED_DURATION
 #define L10N                                           // Localization complete.
 
+#include <vector>
 #include <string>
 #include <time.h>
 
@@ -58,6 +59,8 @@ public:
   bool negative () const;
   static bool valid (const std::string&);
   void parse (const std::string&);
+
+  static const std::vector <std::string> get_units ();
 
 protected:
   time_t mSecs;

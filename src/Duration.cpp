@@ -452,3 +452,14 @@ void Duration::parse (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> Duration::get_units ()
+{
+  std::vector <std::string> units;
+  for (unsigned int i = 0; i < NUM_DURATIONS; ++i)
+    if (strcmp (durations[i], "-"))
+      units.push_back (durations[i]);
+
+  return units;
+}
+
+////////////////////////////////////////////////////////////////////////////////
