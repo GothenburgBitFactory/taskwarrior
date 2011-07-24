@@ -33,6 +33,7 @@
 #include <Context.h>
 #include <Directory.h>
 #include <Date.h>
+#include <Duration.h>
 #include <ViewText.h>
 #include <text.h>
 #include <util.h>
@@ -636,7 +637,7 @@ const A3 A3::tokenize (const A3& input) const
       output.push_back (Arg (s, "string"));
     }
 
-    else if (n.getQuoted ('/', s, true))
+    else if (is_pattern (n, s))
     {
       std::cout << "# pattern '" << s << "'\n";
       output.push_back (Arg (s, "pattern"));
@@ -660,7 +661,7 @@ const A3 A3::tokenize (const A3& input) const
       output.push_back (Arg (s, "attmod"));
     }
 
-    else if (n.getDOM (s))
+    else if (is_dom (n, s))
     {
       std::cout << "# dom '" << s << "'\n";
       output.push_back (Arg (s, "dom"));
@@ -676,6 +677,12 @@ const A3 A3::tokenize (const A3& input) const
     {
       std::cout << "# date '" << t << "'\n";
       output.push_back (Arg (Date (t).toString (date_format), "date"));
+    }
+
+    else if (is_duration (n, s))
+    {
+      std::cout << "# duration '" << s << "'\n";
+      output.push_back (Arg (s, "duration"));
     }
 
     else if (n.getNumber (d))
@@ -722,35 +729,31 @@ bool A3::is_attr (Nibbler& n, std::string& result)
   std::string name;
   std::string value;
 
-  if (n.getName (name))
+  // If there is a valid attribute name.
+  if (n.getName (name) &&
+      name.length ()   &&
+      is_attribute (name, name))
   {
-    if (name.length ())
+    if (n.skip (':'))
     {
-      if (n.skip (':'))
+      // Both quoted and unquoted Att's are accepted.
+      // Consider removing this for a stricter parse.
+      if (n.getQuoted   ('"', value)  ||
+          n.getQuoted   ('\'', value) ||
+          n.getName     (value)       ||
+          n.getUntilEOS (value)       ||
+          n.depleted ())
       {
-        // Both quoted and unquoted Att's are accepted.
-        // Consider removing this for a stricter parse.
-        if (n.getQuoted   ('"', value)  ||
-            n.getQuoted   ('\'', value) ||
-            n.getName     (value)       ||
-            n.getUntilEOS (value)       ||
-            n.depleted ())
-        {
 /*
-   TODO Eliminate anything that looks like a URL.
-          // Exclude certain URLs, that look like attrs.
-          if (value.find ('@') <= n.cursor () ||
-              value.find ('/') <= n.cursor ())
-            return false;
+        // TODO Reject anything that looks like a URL.
+        // Exclude certain URLs, that look like attrs.
+        if (value.find ('@') <= n.cursor () ||
+            value.find ('/') <= n.cursor ())
+          return false;
 */
 
-          // Validate and canonicalize attribute name.
-          if (is_attribute (name, name))
-          {
-            result = name + ':' + value;
-            return true;
-          }
-        }
+        result = name + ':' + value;
+        return true;
       }
     }
   }
@@ -768,16 +771,20 @@ bool A3::is_attmod (Nibbler& n, std::string& result)
   std::string modifier;
   std::string value;
 
+  // If there is a valid attribute name.
   if (n.getName (name) &&
-      name.length ())
+      name.length ()   &&
+      is_attribute (name, name))
   {
     if (n.skip ('.'))
     {
       // Skip the negation character.
       n.skip ('~');
 
+      // If there is a valid modifier name.
       if (n.getName (modifier) &&
-          modifier.length ())
+          modifier.length ()   &&
+          is_modifier (modifier, modifier))
       {
         if (n.skip (':'))
         {
@@ -797,19 +804,15 @@ bool A3::is_attmod (Nibbler& n, std::string& result)
               return false;
 */
 
-            // Validate and canonicalize attribute name.
-            if (is_attribute (name, name) &&
-                is_modifier (modifier, modifier))
-            {
-              result = name + '.' + modifier + ':' + value;
-              return true;
-            }
+            result = name + '.' + modifier + ':' + value;
+            return true;
           }
         }
       }
     }
   }
 
+  n.restore ();
   return false;
 }
 
@@ -856,9 +859,122 @@ bool A3::is_modifier (const std::string& input, std::string& canonical)
   return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// DOM references are one of the following:
+//
+// 1. Fixed string
+//    DOM::get_references
+// 2. Attribute
+//    <attr>
+// 3. Task-specific attribute
+//    <id>.<attr>
+//    <uuid>.<attr>
+// 4. Configuration value
+//    rc.<name>
+//
+bool A3::is_dom (Nibbler& n, std::string& result)
+{
+  n.save ();
+  std::string name;
+  int id;
+  std::string uuid;
 
+  // Fixed string reference.
+  std::vector <std::string> refs = context.dom.get_references ();
+  if (n.getOneOf (refs, result))
+    return true;
 
+  // Configuration.
+  if (n.getLiteral ("rc."))
+  {
+    result = "rc.";
+    while (n.getWord (name))
+    {
+      result += name;
 
+      if (n.skip ('.'))
+        result += '.';
+    }
+
+    return true;
+  }
+
+  n.restore ();
+
+  // <id>.<attr>
+  if (n.getInt (id)    &&
+      n.skip ('.')     &&
+      n.getName (name) &&
+      name.length ()   &&
+      is_attribute (name, name))
+  {
+    result = format (id) + '.' + name;
+    return true;
+  }
+
+  n.restore ();
+
+  // <uuid>.<attr>
+  if (n.getUUID (uuid) &&
+      n.skip ('.')     &&
+      n.getName (name) &&
+      name.length ()   &&
+      is_attribute (name, name))
+  {
+    result = uuid + '.' + name;
+    return true;
+  }
+
+  n.restore ();
+
+  // Attribute.
+  if (n.getName (name) &&
+      name.length ()   &&
+      is_attribute (name, name))
+  {
+    result = name;
+    return true;
+  }
+
+  n.restore ();
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool A3::is_duration (Nibbler& n, std::string& result)
+{
+  n.save ();
+
+  int quantity;
+  std::string unit;
+
+  std::vector <std::string> units = Duration::get_units ();
+
+  if (n.getInt (quantity) &&
+      n.getOneOf (units, unit))
+  {
+    result = format (quantity) + unit;
+    return true;
+  }
+
+  n.restore ();
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// /<pattern>/
+bool A3::is_pattern (Nibbler& n, std::string& result)
+{
+  std::string pattern;
+  if (n.getQuoted ('/', pattern) &&
+      pattern.length () > 0)
+  {
+    result = '/' + pattern + '/';
+    return true;
+  }
+
+  return false;
+}
 
 
 
@@ -874,26 +990,6 @@ bool A3::is_modifier (const std::string& input, std::string& canonical)
 
 
 #ifdef NOPE
-////////////////////////////////////////////////////////////////////////////////
-bool A3::is_multipart (
-  const std::string& input,
-  std::vector <std::string>& parts)
-{
-  parts.clear ();
-  Nibbler n (input);
-  std::string part;
-  while (n.getQuoted ('"', part)  ||
-         n.getQuoted ('\'', part) ||
-//         n.getQuoted ('/', part)  ||   <--- this line breaks subst.
-         n.getUntilWS (part))
-  {
-    n.skipWS ();
-    parts.push_back (part);
-  }
-
-  return parts.size () > 1 ? true : false;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // /<from>/<to>/[g]
 //
@@ -919,23 +1015,6 @@ bool A3::is_subst (const std::string& input)
         ! Directory (input).exists ())    // Ouch - expensive call.
       return true;
   }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// /<pattern>/
-bool A3::is_pattern (const std::string& input)
-{
-  std::string::size_type first  = input.find ('/', 0);
-  std::string::size_type second = input.find ('/', first + 1);
-  std::string::size_type third  = input.find ('/', second + 1);
-
-  if (first  == 0                   &&
-      second == input.length () - 1 &&
-      third  == std::string::npos   &&
-      second > 1)
-    return true;
 
   return false;
 }
@@ -1629,6 +1708,10 @@ bool A3::valid_modifier (const std::string& modifier)
 
 
 
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 void A3::dump (const std::string& label)
 {
@@ -1640,7 +1723,6 @@ void A3::dump (const std::string& label)
   color_map["override"]   = Color ("bold red on red");
   color_map["terminator"] = Color ("bold yellow on yellow");
   color_map["word"]       = Color ("white on gray4");
-  color_map["none"]       = Color ("black on white");
 
   // Filter colors.
   color_map["attr"]     = Color ("bold red on gray4");
@@ -1649,21 +1731,11 @@ void A3::dump (const std::string& label)
   color_map["op"]       = Color ("green on gray4");
   color_map["string"]   = Color ("bold yellow on gray4");
   color_map["date"]     = Color ("bold yellow on gray4");
-/*
-  color_map["tag"]      = Color ("green on gray2");
-  color_map["id"]       = Color ("yellow on gray2");
-  color_map["uuid"]     = Color ("yellow on gray2");
-  color_map["subst"]    = Color ("bold cyan on gray2");
-  color_map["exp"]      = Color ("bold green on gray2");
-*/
-//  color_map["none"]     = Color ("white on gray2");
-  // Fundamentals.
-/*
-  color_map["lvalue"]   = Color ("bold green on rgb010");
-  color_map["int"]      = Color ("bold yellow on rgb010");
-  color_map["number"]   = Color ("bold yellow on rgb010");
-  color_map["rx"]       = Color ("bold red on rgb010");
-*/
+  color_map["dom"]      = Color ("bold white on gray4");
+  color_map["duration"] = Color ("magenta on gray4");
+
+  // Default.
+  color_map["none"]       = Color ("black on white");
 
   Color color_debug (context.config.get ("color.debug"));
   std::stringstream out;

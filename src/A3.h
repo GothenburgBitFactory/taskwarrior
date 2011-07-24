@@ -109,13 +109,12 @@ public:
   static bool is_attmod (Nibbler&, std::string&);
   static bool is_attribute (const std::string&, std::string&);
   static bool is_modifier (const std::string&, std::string&);
+  static bool is_dom (Nibbler&, std::string&);
+  static bool is_duration (Nibbler&, std::string&);
+  static bool is_pattern (Nibbler&, std::string&);
 
 /*
-
-
-  static bool is_multipart (const std::string&, std::vector <std::string>&);
   static bool is_subst (const std::string&);
-  static bool is_pattern (const std::string&);
   static bool is_id (const std::string&);
   static bool is_uuid (const std::string&);
   static bool is_tag (const std::string&);
