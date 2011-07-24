@@ -38,6 +38,7 @@ public:
   DOM ();
   ~DOM ();
 
+  const std::vector <std::string> get_references () const;
   const std::string get (const std::string&);
   const std::string get (const std::string&, const Task&);
   void set (const std::string&, const std::string&);

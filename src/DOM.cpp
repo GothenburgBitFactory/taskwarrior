@@ -57,6 +57,22 @@ DOM::~DOM ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> DOM::get_references () const
+{
+  std::vector <std::string> refs;
+
+  refs.push_back ("context.program");
+  refs.push_back ("context.args");
+  refs.push_back ("context.width");
+  refs.push_back ("context.height");
+  refs.push_back ("system.version");
+  refs.push_back ("system.lua.version");
+  refs.push_back ("system.os");
+
+  return refs;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // DOM Supported References:
 //   rc.<name>
 //
