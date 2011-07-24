@@ -115,9 +115,9 @@ public:
   static bool is_subst (Nibbler&, std::string&);
   static bool is_id (Nibbler&, std::string&);
   static bool is_uuid (Nibbler&, std::string&);
+  static bool is_tag (Nibbler&, std::string&);
 
 /*
-  static bool is_tag (const std::string&);
   static bool is_operator (const std::string&, char&, int&, char&);
   static bool is_symbol_operator (const std::string&);
 
@@ -129,13 +129,6 @@ public:
   static bool extract_uuid (const std::string&, std::vector <std::string>&);
   static bool extract_tag (const std::string&, char&, std::string&);
   static bool extract_operator (const std::string&, std::string&);
-
-  A3 extract_read_only_filter ();
-  A3 extract_write_filter ();
-  A3 extract_modifications (bool include_seq = false);
-  A3 extract_simple_words ();
-
-  static bool valid_modifier (const std::string&);
 */
   void dump (const std::string&);
 

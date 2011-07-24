@@ -627,98 +627,104 @@ const A3 A3::tokenize (const A3& input) const
   int i;
   double d;
   time_t t;
-  std::cout << "# " << n.dump () << "\n";
+//  std::cout << "# " << n.dump () << "\n";
   while (! n.depleted ())
   {
     if (n.getQuoted ('"', s, true) ||
         n.getQuoted ('\'', s, true))
     {
-      std::cout << "# string '" << s << "'\n";
+//      std::cout << "# string '" << s << "'\n";
       output.push_back (Arg (s, "string"));
     }
 
     else if (is_subst (n, s))
     {
-      std::cout << "# subst '" << s << "'\n";
+//      std::cout << "# subst '" << s << "'\n";
       output.push_back (Arg (s, "subst"));
     }
 
     else if (is_pattern (n, s))
     {
-      std::cout << "# pattern '" << s << "'\n";
+//      std::cout << "# pattern '" << s << "'\n";
       output.push_back (Arg (s, "pattern"));
+    }
+
+    else if (is_tag (n, s))
+    {
+//      std::cout << "# tag '" << s << "'\n";
+      output.push_back (Arg (s, "tag"));
     }
 
     else if (n.getOneOf (operators, s))
     {
-      std::cout << "# operator '" << s << "'\n";
+//      std::cout << "# operator '" << s << "'\n";
       output.push_back (Arg (s, "op"));
     }
 
     else if (is_attr (n, s))
     {
-      std::cout << "# attr '" << s << "'\n";
+//      std::cout << "# attr '" << s << "'\n";
       output.push_back (Arg (s, "attr"));
     }
 
     else if (is_attmod (n, s))
     {
-      std::cout << "# attmod '" << s << "'\n";
+//      std::cout << "# attmod '" << s << "'\n";
       output.push_back (Arg (s, "attmod"));
     }
 
     else if (is_dom (n, s))
     {
-      std::cout << "# dom '" << s << "'\n";
+//      std::cout << "# dom '" << s << "'\n";
       output.push_back (Arg (s, "dom"));
     }
 
     else if (n.getDateISO (t))
     {
-      std::cout << "# date '" << t << "'\n";
+//      std::cout << "# date '" << t << "'\n";
       output.push_back (Arg (Date (t).toISO (), "date"));
     }
 
     else if (n.getDate (date_format, t))
     {
-      std::cout << "# date '" << t << "'\n";
+//      std::cout << "# date '" << t << "'\n";
       output.push_back (Arg (Date (t).toString (date_format), "date"));
     }
 
     else if (is_duration (n, s))
     {
-      std::cout << "# duration '" << s << "'\n";
+//      std::cout << "# duration '" << s << "'\n";
       output.push_back (Arg (s, "duration"));
     }
 
     else if (is_id (n, s))
     {
-      std::cout << "# id '" << s << "'\n";
+//      std::cout << "# id '" << s << "'\n";
       output.push_back (Arg (s, "id"));
     }
 
     else if (is_uuid (n, s))
     {
-      std::cout << "# uuid '" << s << "'\n";
+//      std::cout << "# uuid '" << s << "'\n";
       output.push_back (Arg (s, "uuid"));
     }
 
     else if (n.getNumber (d))
     {
-      std::cout << "# num '" << d << "'\n";
+//      std::cout << "# num '" << d << "'\n";
       output.push_back (Arg (format (d), "num"));
     }
 
     else if (n.getInt (i))
     {
-      std::cout << "# int '" << i << "'\n";
+//      std::cout << "# int '" << i << "'\n";
       output.push_back (Arg (format (i), "int"));
     }
 
     else if (n.getName (s) ||
              n.getWord (s))       // After DOM
     {
-      std::cout << "# word '" << s << "'\n";
+//      std::cout << "# word '" << s << "'\n";
       output.push_back (Arg (s, "word"));
     }
 
@@ -727,13 +733,13 @@ const A3 A3::tokenize (const A3& input) const
       if (! n.getUntilWS (s))
         n.getUntilEOS (s);
 
-      std::cout << "# word '" << s << "'\n";
+//      std::cout << "# word '" << s << "'\n";
       output.push_back (Arg (s, "word"));
     }
 
-    std::cout << "# " << n.dump () << "\n";
+//    std::cout << "# " << n.dump () << "\n";
     n.skipWS ();
-    std::cout << "# " << n.dump () << "\n";
+//    std::cout << "# " << n.dump () << "\n";
   }
 
   return output;
@@ -1034,29 +1040,6 @@ bool A3::is_subst (Nibbler& n, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <uuid>[,...]
-bool A3::is_uuid (Nibbler& n, std::string& result)
-{
-  n.save ();
-  result = "";
-  std::string uuid;
-  if (n.getUUID (uuid))
-  {
-    result += uuid;
-    while (n.skip (',') &&
-           n.getUUID (uuid))
-    {
-      result += ',' + uuid;
-    }
-
-    return true;
-  }
-
-  n.restore ();
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // <id>[-<id>][,<id>[-<id>]]
 bool A3::is_id (Nibbler& n, std::string& result)
 {
@@ -1103,6 +1086,50 @@ bool A3::is_id (Nibbler& n, std::string& result)
   return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// <uuid>[,...]
+bool A3::is_uuid (Nibbler& n, std::string& result)
+{
+  n.save ();
+  result = "";
+  std::string uuid;
+  if (n.getUUID (uuid))
+  {
+    result += uuid;
+    while (n.skip (',') &&
+           n.getUUID (uuid))
+    {
+      result += ',' + uuid;
+    }
+
+    return true;
+  }
+
+  n.restore ();
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// [+-]<tag>
+bool A3::is_tag (Nibbler& n, std::string& result)
+{
+  n.save ();
+
+  std::string indicator;
+  std::string name;
+  if (n.getN (1, indicator)                  &&
+      (indicator == "+" || indicator == "-") &&
+      n.getName (name)                       &&
+      name.length ())
+  {
+    result = indicator + name;
+    return true;
+  }
+
+  n.restore ();
+  return false;
+}
+
 
 
 
@@ -1117,23 +1144,6 @@ bool A3::is_id (Nibbler& n, std::string& result)
 
 
 #ifdef NOPE
-////////////////////////////////////////////////////////////////////////////////
-// [+-]<tag>
-bool A3::is_tag (const std::string& input)
-{
-  if (input.length () > 1 &&
-      (input[0] == '+' ||
-       input[0] == '-') &&
-       noSpaces (input) &&
-       input.find ('+', 1) == std::string::npos &&
-       input.find ('-', 1) == std::string::npos)
-  {
-    return true;
-  }
-
-  return false;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 bool A3::is_operator (
   const std::string& input,
@@ -1441,243 +1451,6 @@ bool A3::extract_operator (
   return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Almost all arguments are filters, except:
-//   subst
-//   program
-//   command
-//   rc
-//   override
-//
-// Special case: attr "limit" is ignored.
-A3 A3::extract_read_only_filter ()
-{
-  A3 filter;
-
-  std::vector <Arg>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    // Excluded.
-    if (arg->_third == "program"  ||
-        arg->_third == "command"  ||
-        arg->_third == "rc"       ||
-        arg->_third == "override")
-    {
-    }
-
-    // Included.
-    else if (arg->_third == "tag"       ||
-             arg->_third == "pattern"   ||
-             arg->_third == "attr"      ||
-             arg->_third == "attmod"    ||
-             arg->_third == "id"        ||
-             arg->_third == "uuid"      ||
-             arg->_third == "op"        ||
-             arg->_third == "exp"       ||
-             arg->_third == "word")
-    {
-      // "limit" is special - it is recognized but not included in filters.
-      if (arg->_first.find ("limit:") == std::string::npos)
-        filter.push_back (*arg);
-    }
-
-    // Error.
-    else
-    {
-      // substitution
-      throw std::string ("A ")
-            + arg->_third
-            + " '"
-            + arg->_first
-            + "' is not allowed in a read-only filter.";
-    }
-  }
-
-  return filter;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// A write filter includes id/uuid anywhere on the command line, but any other
-// filter elements must occur before the command.
-//
-// Special case: attr "limit" is ignored.
-A3 A3::extract_write_filter ()
-{
-  A3 filter;
-  bool before_command = true;
-
-  std::vector <Arg>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    // Only use args prior to command.
-    if (arg->_third == "command")
-      before_command = false;
-
-    // Excluded.
-    else if (arg->_third == "program"  ||
-             arg->_third == "rc"       ||
-             arg->_third == "override")
-    {
-    }
-
-    // Included regardless of position.
-    else if (arg->_third == "id"   ||
-             arg->_third == "uuid")
-    {
-      filter.push_back (*arg);
-    }
-
-    // Included if prior to command.
-    else if (arg->_third == "tag"       ||
-             arg->_third == "pattern"   ||
-             arg->_third == "attr"      ||
-             arg->_third == "attmod"    ||
-             arg->_third == "op"        ||
-             arg->_third == "exp"       ||
-             arg->_third == "word")
-    {
-      if (before_command)
-      {
-        // "limit" is special - it is recognized but not included in filters.
-        if (arg->_first.find ("limit:") == std::string::npos)
-          filter.push_back (*arg);
-      }
-    }
-
-    // Error.
-    else
-    {
-      if (before_command)
-      {
-        // substitution
-        throw std::string ("A substitution '")
-              + arg->_first
-              + "' is not allowed in a write command filter.";
-      }
-    }
-  }
-
-  return filter;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-A3 A3::extract_modifications (bool include_seq/* = false*/)
-{
-  A3 modifications;
-
-  bool seen_command = false;
-  std::vector <Arg>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    // Only use args after command.
-    if (arg->_third == "command")
-    {
-      seen_command = true;
-    }
-
-    // Sequence excluded regardless of location.
-    else if (arg->_third == "id" ||
-             arg->_third == "uuid")
-    {
-      if (include_seq)
-        modifications.push_back (Arg (arg->_first, arg->_second, "word"));
-    }
-
-    else if (seen_command)
-    {
-      // Excluded.
-      if (arg->_third == "program"  ||
-          arg->_third == "rc"       ||
-          arg->_third == "override")
-      {
-      }
-
-      // Included.
-      else if (arg->_third == "tag"   ||
-               arg->_third == "attr"  ||
-               arg->_third == "subst" ||
-               arg->_third == "op"    ||
-               arg->_third == "exp"   ||
-               arg->_third == "word")
-      {
-        // "limit" is special - it is recognized but not included in filters.
-        if (arg->_first.find ("limit:") == std::string::npos)
-          modifications.push_back (*arg);
-      }
-
-      // Error.
-      else
-      {
-        // Instead of errors, simply downgrade these to 'word'.
-        if (arg->_third == "pattern" ||
-            arg->_third == "attmod"  ||
-            arg->_third == "id"      ||
-            arg->_third == "uuid")
-        {
-          arg->_third = "word";
-          modifications.push_back (*arg);
-        }
-        else
-          throw std::string ("Error: unrecognized argument in modifications.");
-      }
-    }
-  }
-
-  return modifications;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-A3 A3::extract_simple_words ()
-{
-  A3 filter;
-
-  std::vector <Arg>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    // Excluded.
-    if (arg->_third == "program"  ||
-        arg->_third == "command"  ||
-        arg->_third == "rc"       ||
-        arg->_third == "override" ||
-        arg->_third == "attr"     ||
-        arg->_third == "attmod")
-    {
-      ;
-    }
-
-    // Included.
-    else if (arg->_third == "tag"     ||
-             arg->_third == "pattern" ||
-             arg->_third == "subst"   ||
-             arg->_third == "id"      ||
-             arg->_third == "uuid"    ||
-             arg->_third == "op"      ||
-             arg->_third == "exp"     ||
-             arg->_third == "word")
-    {
-      // "limit" is special - it is recognized but not included in filters.
-      if (arg->_first.find ("limit:") == std::string::npos)
-        filter.push_back (*arg);
-    }
-
-    // Error.
-    else
-      throw std::string ("Argument '") + arg->_first + "' is not allowed "
-        "with this command.";
-  }
-
-  return filter;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool A3::valid_modifier (const std::string& modifier)
-{
-  for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
-    if (modifierNames[i] == modifier)
-      return true;
-
-  return false;
-}
 #endif // NOPE
 
 
@@ -1709,6 +1482,8 @@ void A3::dump (const std::string& label)
   color_map["date"]     = Color ("bold yellow on gray4");
   color_map["dom"]      = Color ("bold white on gray4");
   color_map["duration"] = Color ("magenta on gray4");
+  color_map["id"]       = Color ("white on gray4");
+  color_map["uuid"]     = Color ("white on gray4");
 
   // Default.
   color_map["none"]       = Color ("black on white");
