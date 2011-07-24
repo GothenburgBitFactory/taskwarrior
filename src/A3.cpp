@@ -32,6 +32,7 @@
 #include <sys/select.h>
 #include <Context.h>
 #include <Directory.h>
+#include <Date.h>
 #include <ViewText.h>
 #include <text.h>
 #include <util.h>
@@ -523,6 +524,16 @@ const std::string A3::find_limit () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> A3::operator_list ()
+{
+  std::vector <std::string> all;
+  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
+    all.push_back (operators[i].op);
+
+  return all;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const A3 A3::extract_filter () const
 {
   A3 filter;
@@ -544,6 +555,7 @@ const A3 A3::extract_filter () const
       filter.push_back (*arg);
   }
 
+  filter = tokenize (filter);
   return filter;
 }
 
@@ -586,6 +598,152 @@ const A3 A3::extract_words () const
   return words;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+const A3 A3::tokenize (const A3& input) const
+{
+  // Join all the arguments together.
+  std::string combined;
+  std::vector <Arg>::const_iterator arg;
+  for (arg = input.begin (); arg != input.end (); ++arg)
+  {
+    if (arg != input.begin ())
+      combined += " ";
+
+   combined += arg->_raw;
+  }
+  std::cout << "# A3::tokenize combined '" << combined << "'\n";
+
+  // List of operators for recognition.
+  std::vector <std::string> operators = A3::operator_list ();
+
+  // Date format, for both parsing and rendering.
+  std::string date_format = context.config.get ("dateformat");
+
+  // Nibble them apart.
+  A3 output;
+  Nibbler n (combined);
+  n.skipWS ();
+
+  std::string s;
+//  int i;
+//  double d;
+  time_t t;
+  while (! n.depleted ())
+  {
+    if (n.getQuoted ('"', s, true) ||
+        n.getQuoted ('\'', s, true))
+      output.push_back (Arg (s, "literal string"));
+
+    else if (n.getQuoted ('/', s, true))
+      output.push_back (Arg (s, "pattern"));
+
+    else if (n.getOneOf (operators, s))
+      output.push_back (Arg (s, "op"));
+
+    else if (is_attr (n, s))
+      output.push_back (Arg (s, "attr"));
+
+/*
+    else if (n.getDOM (s))
+      output.push_back (Arg (s, "dom"));
+
+    else if (n.getNumber (d))
+      output.push_back (Arg (format (d), "literal number"));
+
+    else if (n.getDateISO (t))
+      output.push_back (Arg (Date (t).toISO (), "literal date"));
+*/
+
+    else if (n.getDate (date_format, t))
+      output.push_back (Arg (Date (t).toString (date_format), "literal date"));
+
+/*
+    else if (n.getInt (i))
+      output.push_back (Arg (format (i), "literal int"));
+
+    else if (n.getWord (s))
+      output.push_back (Arg (s, "word"));
+*/
+
+    else
+    {
+      if (! n.getUntilWS (s))
+        n.getUntilEOS (s);
+
+      output.push_back (Arg (s, "word"));
+    }
+
+    n.skipWS ();
+  }
+
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// <name>:['"][<value>]['"]
+bool A3::is_attr (Nibbler& n, std::string& result)
+{
+  n.save ();
+  std::string name;
+  std::string value;
+
+  if (n.getName (name))
+  {
+    if (name.length ())
+    {
+      if (n.skip (':'))
+      {
+        // Both quoted and unquoted Att's are accepted.
+        // Consider removing this for a stricter parse.
+        if (n.getQuoted   ('"', value)  ||
+            n.getQuoted   ('\'', value) ||
+            n.getUntil    (' ', value)  ||
+            n.getUntilEOS (value)       ||
+            n.depleted ())
+        {
+/*
+   TODO Eliminate anything that looks like a URL.
+          // Exclude certain URLs, that look like attrs.
+          if (value.find ('@') <= n.cursor () ||
+              value.find ('/') <= n.cursor ())
+            return false;
+*/
+
+          // Validate and canonicalize attribute name.
+          if (is_attribute (name, name))
+          {
+            result = name + ':' + value;
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  n.restore ();
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Canonicalize attribute names.
+bool A3::is_attribute (const std::string& input, std::string& canonical)
+{
+  std::vector <std::string> columns = context.getColumns ();
+  std::vector <std::string> matches;
+  autoComplete (input,
+                columns,
+                matches,
+                context.config.getInteger ("abbreviation.minimum"));
+
+  if (matches.size () == 1)
+  {
+    canonical = matches[0];
+    return true;
+  }
+
+  return false;
+}
+
 
 
 
@@ -602,16 +760,6 @@ const A3 A3::extract_words () const
 
 
 #ifdef NOPE
-////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string> A3::operator_list ()
-{
-  std::vector <std::string> all;
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
-    all.push_back (operators[i].op);
-
-  return all;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 bool A3::is_multipart (
   const std::string& input,
@@ -630,47 +778,6 @@ bool A3::is_multipart (
   }
 
   return parts.size () > 1 ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// <name>:['"][<value>]['"]
-bool A3::is_attr (const std::string& input)
-{
-  Nibbler n (input);
-  std::string name;
-  std::string value;
-
-  if (n.getUntilOneOf ("=:", name))
-  {
-    if (name.length () == 0)
-      return false;
-
-    if (name.find_first_of (non_word_chars) != std::string::npos)
-      return false;
-
-    if (n.skip (':'))
-    {
-      // Exclude certain URLs, that look like attrs.
-      if (input.find ('@') <= n.cursor () ||
-          input.find ('/') <= n.cursor ())
-        return false;
-
-      // Both quoted and unquoted Att's are accepted.
-      // Consider removing this for a stricter parse.
-      if (n.getQuoted   ('"', value)  ||
-          n.getQuoted   ('\'', value) ||
-          n.getUntil    (' ', value)  ||
-          n.getUntilEOS (value)       ||
-          n.depleted ())
-      {
-        // Validate and canonicalize attribute name.
-        if (is_attribute (name, name))
-          return true;
-      }
-    }
-  }
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -880,51 +987,6 @@ bool A3::is_symbol_operator (const std::string& input)
     if (operators[i].symbol &&
         operators[i].op == input)
       return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Canonicalize attribute names.
-bool A3::is_attribute (const std::string& input, std::string& canonical)
-{
-  // Guess at the full attribute name.
-  std::vector <std::string> candidates;
-  for (unsigned i = 0; i < NUM_ATT_NAMES; ++i)
-  {
-    // Short-circuit: exact matches cause immediate return.
-    if (attributeNames[i] == input)
-    {
-      canonical = input;
-      return true;
-    }
-
-    candidates.push_back (attributeNames[i]);
-  }
-
-  for (unsigned i = 0; i < NUM_MODIFIABLE_ATT_NAMES; ++i)
-  {
-    // Short-circuit: exact matches cause immediate return.
-    if (modifiableAttributeNames[i] == input)
-    {
-      canonical = input;
-      return true;
-    }
-
-    candidates.push_back (modifiableAttributeNames[i]);
-  }
-
-  std::vector <std::string> matches;
-  autoComplete (input,
-                candidates,
-                matches,
-                context.config.getInteger ("abbreviation.minimum"));
-
-  if (matches.size () == 1)
-  {
-    canonical = matches[0];
-    return true;
-  }
 
   return false;
 }
@@ -1518,10 +1580,12 @@ void A3::dump (const std::string& label)
   color_map["word"]       = Color ("white on gray4");
   color_map["none"]       = Color ("black on white");
 
+  // Filter colors.
+  color_map["attr"]     = Color ("bold red on gray4");
+  color_map["pattern"]  = Color ("cyan on gray4");
+  color_map["op"]       = Color ("white on rgb010");
 /*
   color_map["tag"]      = Color ("green on gray2");
-  color_map["pattern"]  = Color ("cyan on gray2");
-  color_map["attr"]     = Color ("bold red on gray2");
   color_map["attmod"]   = Color ("bold red on gray2");
   color_map["id"]       = Color ("yellow on gray2");
   color_map["uuid"]     = Color ("yellow on gray2");
@@ -1532,7 +1596,6 @@ void A3::dump (const std::string& label)
   // Fundamentals.
 /*
   color_map["lvalue"]   = Color ("bold green on rgb010");
-  color_map["op"]       = Color ("white on rgb010");
   color_map["int"]      = Color ("bold yellow on rgb010");
   color_map["number"]   = Color ("bold yellow on rgb010");
   color_map["string"]   = Color ("bold yellow on rgb010");

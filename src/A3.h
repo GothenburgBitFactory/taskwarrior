@@ -85,6 +85,7 @@ public:
 
   void categorize ();
   static bool is_command (const std::vector <std::string>&, std::string&);
+  static const std::vector <std::string> operator_list ();
 
   void append_stdin ();
   void rc_override (std::string&, File&);
@@ -102,12 +103,15 @@ public:
   const A3 extract_modifications () const;
   const A3 extract_words () const;
 
+  const A3 tokenize (const A3&) const;
+
+  static bool is_attr (Nibbler&, std::string&);
+  static bool is_attribute (const std::string&, std::string&);
+
 /*
-  static std::vector <std::string> operator_list ();
 
 
   static bool is_multipart (const std::string&, std::vector <std::string>&);
-  static bool is_attr (const std::string&);
   static bool is_attmod (const std::string&);
   static bool is_subst (const std::string&);
   static bool is_pattern (const std::string&);
@@ -117,7 +121,6 @@ public:
   static bool is_operator (const std::string&);
   static bool is_operator (const std::string&, char&, int&, char&);
   static bool is_symbol_operator (const std::string&);
-  static bool is_attribute (const std::string&, std::string&);
   static bool is_modifier (const std::string&);
   static bool is_expression (const std::string&);
 
