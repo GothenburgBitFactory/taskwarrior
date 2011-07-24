@@ -217,6 +217,19 @@ bool Nibbler::getUntilEOS (std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getN (const int quantity, std::string& result)
+{
+  if (mCursor + quantity < mLength)
+  {
+    result = mInput.substr (mCursor, quantity);
+    mCursor += quantity;
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getQuoted (
   char c,
   std::string& result,

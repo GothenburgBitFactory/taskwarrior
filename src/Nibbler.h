@@ -53,6 +53,7 @@ public:
   bool getAllOneOf (const std::string&, std::string&);
 */
 
+  bool getN (const int, std::string&);
   bool getQuoted (char, std::string&, bool quote = false);
   bool getDigit (int&);
   bool getInt (int&);
