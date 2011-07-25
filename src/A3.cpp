@@ -555,7 +555,7 @@ const A3 A3::extract_filter () const
       filter.push_back (*arg);
   }
 
-  return expand (infix (tokenize (filter)));
+  return infix (sequence (expand (tokenize (filter))));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -622,109 +622,160 @@ const A3 A3::tokenize (const A3& input) const
   Nibbler n (combined);
   n.skipWS ();
 
+  // For identifying sequence versus non-sequence.
+  bool found_sequence                 = false;
+  bool found_something_after_sequence = false;
+  bool found_non_sequence             = false;
+
   std::string s;
   int i;
   double d;
   time_t t;
-//  std::cout << "# " << n.dump () << "\n";
   while (! n.depleted ())
   {
     if (n.getQuoted ('"', s, true) ||
         n.getQuoted ('\'', s, true))
     {
-//      std::cout << "# string '" << s << "'\n";
       output.push_back (Arg (s, "string"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (is_subst (n, s))
     {
-//      std::cout << "# subst '" << s << "'\n";
       output.push_back (Arg (s, "subst"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (is_pattern (n, s))
     {
-//      std::cout << "# pattern '" << s << "'\n";
       output.push_back (Arg (s, "pattern"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (is_tag (n, s))
     {
-//      std::cout << "# tag '" << s << "'\n";
       output.push_back (Arg (s, "tag"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (n.getOneOf (operators, s))
     {
-//      std::cout << "# operator '" << s << "'\n";
       output.push_back (Arg (s, "op"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (is_attr (n, s))
     {
-//      std::cout << "# attr '" << s << "'\n";
       output.push_back (Arg (s, "attr"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (is_attmod (n, s))
     {
-//      std::cout << "# attmod '" << s << "'\n";
       output.push_back (Arg (s, "attmod"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (is_dom (n, s))
     {
-//      std::cout << "# dom '" << s << "'\n";
       output.push_back (Arg (s, "dom"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (n.getDateISO (t))
     {
-//      std::cout << "# date '" << t << "'\n";
       output.push_back (Arg (Date (t).toISO (), "date"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (n.getDate (date_format, t))
     {
-//      std::cout << "# date '" << t << "'\n";
       output.push_back (Arg (Date (t).toString (date_format), "date"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (is_duration (n, s))
     {
-//      std::cout << "# duration '" << s << "'\n";
       output.push_back (Arg (s, "duration"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (is_id (n, s))
     {
-//      std::cout << "# id '" << s << "'\n";
-      output.push_back (Arg (s, "id"));
+      if (found_something_after_sequence)
+      {
+        output.push_back (Arg (s, "num"));
+      }
+      else
+      {
+        output.push_back (Arg (s, "id"));
+        found_sequence = true;
+      }
     }
 
     else if (is_uuid (n, s))
     {
-//      std::cout << "# uuid '" << s << "'\n";
-      output.push_back (Arg (s, "uuid"));
+      if (found_something_after_sequence)
+      {
+        output.push_back (Arg (s, "num"));
+      }
+      else
+      {
+        output.push_back (Arg (s, "uuid"));
+        found_sequence = true;
+      }
     }
 
+    // TODO This may be redundant.
     else if (n.getNumber (d))
     {
-//      std::cout << "# num '" << d << "'\n";
       output.push_back (Arg (format (d), "num"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (n.getInt (i))
     {
-//      std::cout << "# int '" << i << "'\n";
       output.push_back (Arg (format (i), "int"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else if (n.getName (s) ||
-             n.getWord (s))       // After DOM
+             n.getWord (s))
     {
-//      std::cout << "# word '" << s << "'\n";
-      output.push_back (Arg (s, "word"));
+      if (Date::valid (s))
+        output.push_back (Arg (s, "date"));
+      else
+        output.push_back (Arg (s, "word"));
+
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
     else
@@ -732,13 +783,13 @@ const A3 A3::tokenize (const A3& input) const
       if (! n.getUntilWS (s))
         n.getUntilEOS (s);
 
-//      std::cout << "# word '" << s << "'\n";
       output.push_back (Arg (s, "word"));
+      found_non_sequence = true;
+      if (found_sequence)
+        found_something_after_sequence = true;
     }
 
-//    std::cout << "# " << n.dump () << "\n";
     n.skipWS ();
-//    std::cout << "# " << n.dump () << "\n";
   }
 
   return output;
@@ -932,11 +983,85 @@ const A3 A3::expand (const A3& input) const
       expanded.push_back (Arg ("~",           "op"));
       expanded.push_back (Arg (value,         "rx"));
     }
+
+    // Default  -->  preserve
     else
       expanded.push_back (*arg);
   }
 
   return expanded;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Convert:     1-3,5 7
+// To:          (id=1 or id=2 or id=3 or id=5 or id=7)
+const A3 A3::sequence (const A3& input) const
+{
+  A3 sequenced;
+
+  // Extract all the components of a sequence.
+  std::vector <int> ids;
+  std::vector <std::string> uuids;
+  std::vector <Arg>::const_iterator arg;
+  for (arg = input.begin (); arg != input.end (); ++arg)
+  {
+    if (arg->_category == "id")
+      A3::extract_id (arg->_raw, ids);
+
+    else if (arg->_category == "uuid")
+      A3::extract_uuid (arg->_raw, uuids);
+  }
+
+  // If there is no sequence, we're done.
+  if (ids.size () == 0 && uuids.size () == 0)
+    return input;
+
+  // Copy everything up to the first id/uuid.
+  for (arg = input.begin (); arg != input.end (); ++arg)
+  {
+    if (arg->_category == "id" || arg->_category == "uuid")
+      break;
+
+    sequenced.push_back (*arg);
+  }
+
+  // Insert the algebraic form.
+  sequenced.push_back (Arg ("(", "op"));
+
+  for (unsigned int i = 0; i < ids.size (); ++i)
+  {
+    if (i)
+      sequenced.push_back (Arg ("or", "op"));
+
+    sequenced.push_back (Arg ("id",           "dom"));
+    sequenced.push_back (Arg ("=",            "op"));
+    sequenced.push_back (Arg (format(ids[i]), "num"));
+  }
+
+  for (unsigned int i = 0; i < uuids.size (); ++i)
+  {
+    if (ids.size ())
+      sequenced.push_back (Arg ("or", "op"));
+
+    sequenced.push_back (Arg ("uuid",   "dom"));
+    sequenced.push_back (Arg ("=",      "op"));
+    sequenced.push_back (Arg (uuids[i], "num"));
+  }
+
+  sequenced.push_back (Arg (")", "op"));
+
+  // Now copy everything after the last id/uuid.
+  bool found_id = false;
+  for (arg = input.begin (); arg != input.end (); ++arg)
+  {
+    if (arg->_category == "id" || arg->_category == "uuid")
+      found_id = true;
+
+    else if (found_id)
+      sequenced.push_back (*arg);
+  }
+
+  return sequenced;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1454,51 +1579,6 @@ bool A3::extract_subst (
   return false;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#ifdef NOPE
-////////////////////////////////////////////////////////////////////////////////
-bool A3::is_operator (
-  const std::string& input,
-  char& type,
-  int& precedence,
-  char& associativity)
-{
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
-    if (operators[i].op == input)
-    {
-      type          = operators[i].type;
-      precedence    = operators[i].precedence;
-      associativity = operators[i].associativity;
-      return true;
-    }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool A3::is_symbol_operator (const std::string& input)
-{
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
-    if (operators[i].symbol &&
-        operators[i].op == input)
-      return true;
-
-  return false;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // A sequence can be:
 //
@@ -1603,15 +1683,26 @@ bool A3::extract_uuid (
   return false;
 }
 
-#endif // NOPE
+////////////////////////////////////////////////////////////////////////////////
+bool A3::is_operator (
+  const std::string& input,
+  char& type,
+  int& precedence,
+  char& associativity)
+{
+  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
+  {
+    if (operators[i].op == input)
+    {
+      type          = operators[i].type;
+      precedence    = operators[i].precedence;
+      associativity = operators[i].associativity;
+      return true;
+    }
+  }
 
-
-
-
-
-
-
-
+  return false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 void A3::dump (const std::string& label)

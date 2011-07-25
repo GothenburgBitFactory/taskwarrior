@@ -106,6 +106,7 @@ public:
   const A3 tokenize (const A3&) const;
   const A3 infix (const A3&) const;
   const A3 expand (const A3&) const;
+  const A3 sequence (const A3&) const;
 
   static bool is_attr (Nibbler&, std::string&);
   static bool is_attmod (Nibbler&, std::string&);
@@ -124,14 +125,11 @@ public:
   static bool extract_attr (const std::string&, std::string&, std::string&);
   static bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
   static bool extract_subst (const std::string&, std::string&, std::string&, bool&);
-
-/*
-  static bool is_operator (const std::string&, char&, int&, char&);
-  static bool is_symbol_operator (const std::string&);
-
   static bool extract_id (const std::string&, std::vector <int>&);
   static bool extract_uuid (const std::string&, std::vector <std::string>&);
-*/
+
+  static bool is_operator (const std::string&, char&, int&, char&);
+
   void dump (const std::string&);
 
 private:
