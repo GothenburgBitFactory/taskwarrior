@@ -154,6 +154,8 @@
    Ben Boeckel).
  + Applied documentation patch for #799, fixing a broken link in the man page
    (thanks to Bryce Harrington).
+ + Applied patch for #803, allowing rc.confirmation to bypass confirmation of
+   the deletion of a recurring task (thanks to Matt Kraai).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.

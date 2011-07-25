@@ -92,7 +92,8 @@ int CmdDelete::execute (std::string& output)
         std::string parent = task->get ("parent");
         if (parent != "")
         {
-          if (confirm (STRING_CMD_DELETE_CONF_RECUR))
+          if (context.config.getBoolean ("confirmation") &&
+              confirm (STRING_CMD_DELETE_CONF_RECUR))
           {
             // Scan all pending tasks for siblings of this task, and the parent
             // itself, and delete them.
