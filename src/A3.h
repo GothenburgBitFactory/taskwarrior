@@ -120,17 +120,17 @@ public:
   static bool is_tag (Nibbler&, std::string&);
 
   static bool extract_pattern (const std::string&, std::string&);
+  static bool extract_tag (const std::string&, char&, std::string&);
+  static bool extract_attr (const std::string&, std::string&, std::string&);
+  static bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
+  static bool extract_subst (const std::string&, std::string&, std::string&, bool&);
+
 /*
   static bool is_operator (const std::string&, char&, int&, char&);
   static bool is_symbol_operator (const std::string&);
 
-  static bool extract_attr (const std::string&, std::string&, std::string&);
-  static bool extract_attmod (const std::string&, std::string&, std::string&, std::string&, std::string&);
-  static bool extract_subst (const std::string&, std::string&, std::string&, bool&);
   static bool extract_id (const std::string&, std::vector <int>&);
   static bool extract_uuid (const std::string&, std::vector <std::string>&);
-  static bool extract_tag (const std::string&, char&, std::string&);
-  static bool extract_operator (const std::string&, std::string&);
 */
   void dump (const std::string&);
 

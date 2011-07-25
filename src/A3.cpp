@@ -782,22 +782,148 @@ const A3 A3::expand (const A3& input) const
   std::vector <Arg>::const_iterator arg;
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
-/*
+    // name:value  -->  name = value
     if (arg->_category == "attr")
     {
+      std::string name;
+      std::string value;
+      A3::extract_attr (arg->_raw, name, value);
+
+      expanded.push_back (Arg (name,  "dom"));
+      expanded.push_back (Arg ("=",   "op"));
+      expanded.push_back (Arg (value, "word"));
     }
+
+    // name.mod:value  -->  name <op sub mod> value
     else if (arg->_category == "attmod")
     {
+      std::string name;
+      std::string mod;
+      std::string value;
+      std::string sense;
+      Arguments::extract_attmod (arg->_raw, name, mod, value, sense);
+
+      // name.before:value  -->  name < value
+      if (mod == "before" || mod == "under" || mod == "below")
+      {
+        expanded.push_back (Arg (name,  "dom"));
+        expanded.push_back (Arg ("<",   "op"));
+        expanded.push_back (Arg (value, "word"));
+      }
+
+      // name.after:value  -->  name > value
+      else if (mod == "after" || mod == "over" || mod == "above")
+      {
+        expanded.push_back (Arg (name,  "dom"));
+        expanded.push_back (Arg (">",   "op"));
+        expanded.push_back (Arg (value, "word"));
+      }
+
+      // name.none:  -->  name == ""
+      else if (mod == "none")
+      {
+        expanded.push_back (Arg (name, "dom"));
+        expanded.push_back (Arg ("==", "op"));
+        expanded.push_back (Arg ("",   "string"));
+      }
+
+      // name.any:  -->  name != ""
+      else if (mod == "any")
+      {
+        expanded.push_back (Arg (name, "dom"));
+        expanded.push_back (Arg ("!=", "op"));
+        expanded.push_back (Arg ("",   "string"));
+      }
+
+      // name.is:value  -->  name = value
+      else if (mod == "is" || mod == "equals")
+      {
+        expanded.push_back (Arg (name,  "dom"));
+        expanded.push_back (Arg ("=",   "op"));
+        expanded.push_back (Arg (value, "word"));
+      }
+
+      // name.isnt:value  -->  name != value
+      else if (mod == "isnt" || mod == "not")
+      {
+        expanded.push_back (Arg (name,  "dom"));
+        expanded.push_back (Arg ("!=",  "op"));
+        expanded.push_back (Arg (value, "word"));
+      }
+
+      // name.has:value  -->  name ~ value
+      else if (mod == "has" || mod == "contains")
+      {
+        expanded.push_back (Arg (name,  "dom"));
+        expanded.push_back (Arg ("~",   "op"));
+        expanded.push_back (Arg (value, "rx"));
+      }
+
+      // name.hasnt:value  -->  name !~ value
+      else if (mod == "hasnt")
+      {
+        expanded.push_back (Arg (name,  "dom"));
+        expanded.push_back (Arg ("!~",  "op"));
+        expanded.push_back (Arg (value, "rx"));
+      }
+
+      // name.startswith:value  -->  name ~ ^value
+      else if (mod == "startswith" || mod == "left")
+      {
+        expanded.push_back (Arg (name,        "dom"));
+        expanded.push_back (Arg ("~",         "op"));
+        expanded.push_back (Arg ("^" + value, "rx"));
+      }
+
+      // name.endswith:value  -->  name ~ value$
+      else if (mod == "endswith" || mod == "right")
+      {
+        expanded.push_back (Arg (name,        "dom"));
+        expanded.push_back (Arg ("~",         "op"));
+        expanded.push_back (Arg (value + "$", "rx"));
+      }
+
+      // name.word:value  -->  name ~ \bvalue\b
+      else if (mod == "word")
+      {
+        expanded.push_back (Arg (name,                  "dom"));
+        expanded.push_back (Arg ("~",                   "op"));
+        expanded.push_back (Arg ("\\b" + value + "\\b", "rx"));
+      }
+
+      // name.noword:value  -->  name !~ \bvalue\n
+      else if (mod == "noword")
+      {
+        expanded.push_back (Arg (name,                  "dom"));
+        expanded.push_back (Arg ("!~",                  "op"));
+        expanded.push_back (Arg ("\\b" + value + "\\b", "rx"));
+      }
+      else
+        throw std::string ("Error: unrecognized attribute modifier '") + mod + "'.";
     }
+
+    // [+-]value  -->  tags ~/!~ value
     else if (arg->_category == "tag")
     {
+      char type;
+      std::string value;
+      A3::extract_tag (arg->_raw, type, value);
+
+      expanded.push_back (Arg ("tags",                   "dom"));
+      expanded.push_back (Arg (type == '+' ? "~" : "!~", "op"));
+      expanded.push_back (Arg (value,                    "string"));
     }
+
+    // word  -->  description ~ word
     else if (arg->_category == "word")
     {
+      expanded.push_back (Arg ("description", "dom"));
+      expanded.push_back (Arg ("~",           "op"));
+      expanded.push_back (Arg (arg->_raw,     "string"));
     }
-    else
-*/
-    if (arg->_category == "pattern")
+
+    // /pattern/  -->  description ~ pattern
+    else if (arg->_category == "pattern")
     {
       std::string value;
       A3::extract_pattern (arg->_raw, value);
@@ -1217,6 +1343,118 @@ bool A3::extract_pattern (const std::string& input, std::string& pattern)
   return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+bool A3::extract_tag (
+  const std::string& input,
+  char& type,
+  std::string& tag)
+{
+  if (input.length () > 1)
+  {
+    type = input[0];
+    tag  = input.substr (1);
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// <name>:['"]<value>['"]
+bool A3::extract_attr (
+  const std::string& input,
+  std::string& name,
+  std::string& value)
+{
+  Nibbler n (input);
+
+  // Ensure a clean parse.
+  name  = "";
+  value = "";
+
+  if (n.getUntil (':', name))
+  {
+    if (n.skip (':'))
+    {
+      // Both quoted and unquoted Att's are accepted.
+      // Consider removing this for a stricter parse.
+      if (n.getQuoted   ('"', value)  ||
+          n.getQuoted   ('\'', value) ||
+          n.getUntilEOS (value))
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// <name>.<mod>:['"]<value>['"]
+bool A3::extract_attmod (
+  const std::string& input,
+  std::string& name,
+  std::string& modifier,
+  std::string& value,
+  std::string& sense)
+{
+  Nibbler n (input);
+
+  // Ensure a clean parse.
+  name     = "";
+  value    = "";
+  modifier = "";
+  sense    = "positive";
+
+  if (n.getUntil (".", name))
+  {
+    if (n.skip ('.'))
+    {
+      if (n.skip ('~'))
+        sense = "negative";
+
+      n.getUntil (':', modifier);
+    }
+
+    if (n.skip (':'))
+    {
+      // Both quoted and unquoted Att's are accepted.
+      // Consider removing this for a stricter parse.
+      if (n.getQuoted   ('"', value)  ||
+          n.getQuoted   ('\'', value) ||
+          n.getUntilEOS (value))
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool A3::extract_subst (
+  const std::string& input,
+  std::string& from,
+  std::string& to,
+  bool& global)
+{
+  Nibbler n (input);
+  if (n.skip     ('/')       &&
+      n.getUntil ('/', from) &&
+      n.skip     ('/')       &&
+      n.getUntil ('/', to)   &&
+      n.skip     ('/'))
+  {
+    global = n.skip ('g');
+    return true;
+  }
+
+  return false;
+}
+
+
 
 
 
@@ -1257,132 +1495,6 @@ bool A3::is_symbol_operator (const std::string& input)
     if (operators[i].symbol &&
         operators[i].op == input)
       return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// <name>:['"]<value>['"]
-bool A3::extract_attr (
-  const std::string& input,
-  std::string& name,
-  std::string& value)
-{
-  Nibbler n (input);
-
-  // Ensure a clean parse.
-  name  = "";
-  value = "";
-
-  if (n.getUntil (':', name))
-  {
-    if (name.length () == 0)
-      throw std::string ("Missing attribute name");
-
-    if (n.skip (':'))
-    {
-      // Both quoted and unquoted Att's are accepted.
-      // Consider removing this for a stricter parse.
-      if (n.getQuoted   ('"', value)  ||
-          n.getQuoted   ('\'', value) ||
-          n.getUntilEOS (value))
-      {
-        return true;
-      }
-    }
-    else
-      throw std::string ("Missing : after attribute name.");
-  }
-  else
-    throw std::string ("Missing : after attribute name.");
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// <name>.<mod>:['"]<value>['"]
-bool A3::extract_attmod (
-  const std::string& input,
-  std::string& name,
-  std::string& modifier,
-  std::string& value,
-  std::string& sense)
-{
-  Nibbler n (input);
-
-  // Ensure a clean parse.
-  name     = "";
-  value    = "";
-  modifier = "";
-  sense    = "positive";
-
-  if (n.getUntil (".", name))
-  {
-    if (name.length () == 0)
-      throw std::string ("Missing attribute name");
-
-    if (n.skip ('.'))
-    {
-      if (n.skip ('~'))
-        sense = "negative";
-
-      if (n.getUntil (':', modifier))
-      {
-        if (!A3::valid_modifier (modifier))
-          throw std::string ("The name '") + modifier + "' is not a valid modifier.";
-      }
-      else
-        throw std::string ("Missing . or : after modifier.");
-    }
-    else
-      throw std::string ("Missing modifier.");
-
-    if (n.skip (':'))
-    {
-      // Both quoted and unquoted Att's are accepted.
-      // Consider removing this for a stricter parse.
-      if (n.getQuoted   ('"', value)  ||
-          n.getQuoted   ('\'', value) ||
-          n.getUntilEOS (value))
-      {
-        return true;
-      }
-    }
-    else
-      throw std::string ("Missing : after attribute name.");
-  }
-  else
-    throw std::string ("Missing : after attribute name.");
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool A3::extract_subst (
-  const std::string& input,
-  std::string& from,
-  std::string& to,
-  bool& global)
-{
-  Nibbler n (input);
-  if (n.skip     ('/')       &&
-      n.getUntil ('/', from) &&
-      n.skip     ('/')       &&
-      n.getUntil ('/', to)   &&
-      n.skip     ('/'))
-  {
-    global = n.skip ('g');
-
-    if (from == "")
-      throw std::string ("Cannot substitute an empty string.");
-
-    if (!n.depleted ())
-      throw std::string ("Unrecognized character(s) at end of substitution.");
-
-    return true;
-  }
-  else
-    throw std::string ("Malformed substitution.");
 
   return false;
 }
@@ -1491,31 +1603,6 @@ bool A3::extract_uuid (
   return false;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-bool A3::extract_tag (
-  const std::string& input,
-  char& type,
-  std::string& tag)
-{
-  if (input.length () > 1)
-  {
-    type = input[0];
-    tag  = input.substr (1);
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool A3::extract_operator (
-  const std::string& input,
-  std::string& op)
-{
-  op = input;
-  return true;
-}
-
 #endif // NOPE
 
 
@@ -1542,8 +1629,10 @@ void A3::dump (const std::string& label)
   color_map["attr"]     = Color ("bold red on gray4");
   color_map["attmod"]   = Color ("bold red on gray4");
   color_map["pattern"]  = Color ("cyan on gray4");
+  color_map["subst"]    = Color ("bold cyan on gray4");
   color_map["op"]       = Color ("green on gray4");
   color_map["string"]   = Color ("bold yellow on gray4");
+  color_map["rx"]       = Color ("bold yellow on gray4");
   color_map["date"]     = Color ("bold yellow on gray4");
   color_map["dom"]      = Color ("bold white on gray4");
   color_map["duration"] = Color ("magenta on gray4");
