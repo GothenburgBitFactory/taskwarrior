@@ -33,6 +33,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <stdint.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/wait.h>
