@@ -555,7 +555,7 @@ const A3 A3::extract_filter () const
       filter.push_back (*arg);
   }
 
-  return infix (sequence (expand (tokenize (filter))));
+  return postfix (infix (sequence (expand (tokenize (filter)))));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1062,6 +1062,102 @@ const A3 A3::sequence (const A3& input) const
   }
 
   return sequenced;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Dijkstra Shunting Algorithm.
+// http://en.wikipedia.org/wiki/Shunting-yard_algorithm
+//
+//   While there are tokens to be read:
+//     Read a token.
+//     If the token is an operator, o1, then:
+//       while there is an operator token, o2, at the top of the stack, and
+//             either o1 is left-associative and its precedence is less than or
+//             equal to that of o2,
+//             or o1 is right-associative and its precedence is less than that
+//             of o2,
+//         pop o2 off the stack, onto the output queue;
+//       push o1 onto the stack.
+//     If the token is a left parenthesis, then push it onto the stack.
+//     If the token is a right parenthesis:
+//       Until the token at the top of the stack is a left parenthesis, pop
+//       operators off the stack onto the output queue.
+//       Pop the left parenthesis from the stack, but not onto the output queue.
+//       If the token at the top of the stack is a function token, pop it onto
+//       the output queue.
+//       If the stack runs out without finding a left parenthesis, then there
+//       are mismatched parentheses.
+//     If the token is a number, then add it to the output queue.
+//
+//   When there are no more tokens to read:
+//     While there are still operator tokens in the stack:
+//       If the operator token on the top of the stack is a parenthesis, then
+//       there are mismatched parentheses.
+//       Pop the operator onto the output queue.
+//   Exit.
+//
+const A3 A3::postfix (const A3& input) const
+{
+  A3 converted;
+  A3 op_stack;
+  char type;
+  int precedence;
+  char associativity;
+
+  std::vector <Arg>::const_iterator arg;
+  for (arg = input.begin (); arg != input.end (); ++arg)
+  {
+    if (arg->_raw == "(")
+    {
+      op_stack.push_back (*arg);
+    }
+    else if (arg->_raw == ")")
+    {
+      while (op_stack.size () > 0 &&
+             op_stack.back ()._raw != "(")
+      {
+        converted.push_back (op_stack.back ());
+        op_stack.pop_back ();
+      }
+
+      if (op_stack.size ())
+        op_stack.pop_back ();
+      else
+        throw std::string ("Mismatched parentheses in expression");
+    }
+    else if (A3::is_operator (arg->_raw, type, precedence, associativity))
+    {
+      char type2;
+      int precedence2;
+      char associativity2;
+      while (op_stack.size () > 0 &&
+             A3::is_operator (op_stack.back ()._raw, type2, precedence2, associativity2) &&
+             ((associativity == 'l' && precedence <= precedence2) ||
+              (associativity == 'r' && precedence <  precedence2)))
+      {
+        converted.push_back (op_stack.back ());
+        op_stack.pop_back ();
+      }
+
+      op_stack.push_back (*arg);
+    }
+    else
+    {
+      converted.push_back (*arg);
+    }
+  }
+
+  while (op_stack.size () != 0)
+  {
+    if (op_stack.back ()._raw == "(" ||
+        op_stack.back ()._raw == ")")
+      throw std::string ("Mismatched parentheses in expression");
+
+    converted.push_back (op_stack.back ());
+    op_stack.pop_back ();
+  }
+
+  return converted;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

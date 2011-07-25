@@ -107,6 +107,7 @@ public:
   const A3 infix (const A3&) const;
   const A3 expand (const A3&) const;
   const A3 sequence (const A3&) const;
+  const A3 postfix (const A3&) const;
 
   static bool is_attr (Nibbler&, std::string&);
   static bool is_attmod (Nibbler&, std::string&);
