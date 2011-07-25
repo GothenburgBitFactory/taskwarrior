@@ -32,6 +32,7 @@
 #include <sstream>
 #include <time.h>
 #include <assert.h>
+#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <Nibbler.h>
@@ -40,6 +41,42 @@
 #include <util.h>
 #include <i18n.h>
 #include <Context.h>
+
+static const char* relatives[] =
+{
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+  "today",
+  "tomorrow",
+  "yesterday",
+  "eow",
+  "eoww",
+  "eocw",
+  "eom",
+  "eoy",
+  "sow",
+  "soww",
+  "socw",
+  "som",
+  "soy",
+  "goodfriday",
+  "easter",
+  "eastermonday",
+  "ascension",
+  "pentecost",
+  "midsommar",
+  "midsommarafton",
+  "now",
+  "later",
+  "someday",
+};
+
+#define NUM_RELATIVES   (sizeof (relatives)   / sizeof (relatives[0]))
 
 extern Context context;
 
@@ -765,36 +802,8 @@ bool Date::isRelativeDate (const std::string& input)
   Date today;
 
   std::vector <std::string> supported;
-  supported.push_back ("monday");
-  supported.push_back ("tuesday");
-  supported.push_back ("wednesday");
-  supported.push_back ("thursday");
-  supported.push_back ("friday");
-  supported.push_back ("saturday");
-  supported.push_back ("sunday");
-  supported.push_back ("today");
-  supported.push_back ("tomorrow");
-  supported.push_back ("yesterday");
-  supported.push_back ("eow");
-  supported.push_back ("eoww");
-  supported.push_back ("eocw");
-  supported.push_back ("eom");
-  supported.push_back ("eoy");
-  supported.push_back ("sow");
-  supported.push_back ("soww");
-  supported.push_back ("socw");
-  supported.push_back ("som");
-  supported.push_back ("soy");
-  supported.push_back ("goodfriday");
-  supported.push_back ("easter");
-  supported.push_back ("eastermonday");
-  supported.push_back ("ascension");
-  supported.push_back ("pentecost");
-  supported.push_back ("midsommar");
-  supported.push_back ("midsommarafton");
-  supported.push_back ("now");
-  supported.push_back ("later");
-  supported.push_back ("someday");
+  for (unsigned int i = 0; i < NUM_RELATIVES; ++i)
+    supported.push_back (relatives[i]);
 
   // Hard-coded 3, despite rc.abbreviation.minimum.
   std::vector <std::string> matches;
@@ -1019,6 +1028,17 @@ bool Date::isRelativeDate (const std::string& input)
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> Date::get_relatives ()
+{
+  std::vector <std::string> all;
+  for (unsigned int i = 0; i < NUM_RELATIVES; ++i)
+    if (strcmp (relatives[i], "-"))
+      all.push_back (relatives[i]);
+
+  return all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

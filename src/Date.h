@@ -107,6 +107,8 @@ public:
   void operator++ ();    // Prefix
   void operator++ (int); // Postfix
 
+  static const std::vector <std::string> get_relatives ();
+
 private:
   bool isEpoch (const std::string&);
   bool isRelativeDate (const std::string&);
