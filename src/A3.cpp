@@ -555,8 +555,7 @@ const A3 A3::extract_filter () const
       filter.push_back (*arg);
   }
 
-  filter = tokenize (filter);
-  return filter;
+  return expand (infix (tokenize (filter)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -743,6 +742,75 @@ const A3 A3::tokenize (const A3& input) const
   }
 
   return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Insert 'and' operators between adjacent non-operators.
+//
+//   ) <non-op>         -->  ) and <non-op>
+//   <non-op> (         -->  <non-op> <and> (
+//   ) (                -->  ) and (
+//   <non-op> <non-op>  -->  <non-op> and <non-op>
+//
+const A3 A3::infix (const A3& input) const
+{
+  Arg previous ("?", "op");
+
+  A3 modified;
+  std::vector <Arg>::const_iterator arg;
+  for (arg = input.begin (); arg != input.end (); ++arg)
+  {
+    // Old-style filters need 'and' conjunctions.
+    if ((previous._category != "op" || previous._raw == ")") &&
+        (arg->_category     != "op" || arg->_raw     == "("))
+    {
+      modified.push_back (Arg ("and", "op"));
+    }
+
+    // Now insert the adjacent non-operator.
+    modified.push_back (*arg);
+    previous = *arg;
+  }
+
+  return modified;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const A3 A3::expand (const A3& input) const
+{
+  A3 expanded;
+  std::vector <Arg>::const_iterator arg;
+  for (arg = input.begin (); arg != input.end (); ++arg)
+  {
+/*
+    if (arg->_category == "attr")
+    {
+    }
+    else if (arg->_category == "attmod")
+    {
+    }
+    else if (arg->_category == "tag")
+    {
+    }
+    else if (arg->_category == "word")
+    {
+    }
+    else
+*/
+    if (arg->_category == "pattern")
+    {
+      std::string value;
+      A3::extract_pattern (arg->_raw, value);
+
+      expanded.push_back (Arg ("description", "dom"));
+      expanded.push_back (Arg ("~",           "op"));
+      expanded.push_back (Arg (value,         "rx"));
+    }
+    else
+      expanded.push_back (*arg);
+  }
+
+  return expanded;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1130,6 +1198,25 @@ bool A3::is_tag (Nibbler& n, std::string& result)
   return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+bool A3::extract_pattern (const std::string& input, std::string& pattern)
+{
+  Nibbler n (input);
+  if (n.skip     ('/')          &&
+      n.getUntil ('/', pattern) &&
+      n.skip     ('/'))
+  {
+    if (!n.depleted ())
+      throw std::string ("Unrecognized character(s) at end of pattern.");
+
+    return true;
+  }
+  else
+    throw std::string ("Malformed pattern.");
+
+  return false;
+}
+
 
 
 
@@ -1296,28 +1383,6 @@ bool A3::extract_subst (
   }
   else
     throw std::string ("Malformed substitution.");
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool A3::extract_pattern (const std::string& input, std::string& pattern)
-{
-  Nibbler n (input);
-  if (n.skip     ('/')          &&
-      n.getUntil ('/', pattern) &&
-      n.skip     ('/'))
-  {
-    if (pattern == "")
-      throw std::string ("Cannot search for an empty pattern.");
-
-    if (!n.depleted ())
-      throw std::string ("Unrecognized character(s) at end of pattern.");
-
-    return true;
-  }
-  else
-    throw std::string ("Malformed pattern.");
 
   return false;
 }
