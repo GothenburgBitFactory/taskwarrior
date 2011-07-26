@@ -269,16 +269,6 @@ int CmdShow::execute (std::string& output)
   if (context.args.size () == 2)
     section = context.args[1];
 */
-/*
-  Arguments args = context.args.extract_read_only_filter ();
-  std::vector <std::pair <std::string, std::string> >::iterator arg;
-  for (arg = args.begin (); arg != args.end (); ++arg)
-  {
-    if (arg->second == "string")
-    {
-    }
-  }
-*/
 
   if (section == "all")
     section = "";

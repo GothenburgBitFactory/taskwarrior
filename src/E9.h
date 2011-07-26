@@ -43,6 +43,29 @@ public:
   std::string evalExpression (const Task&);
 
 private:
+  void eval (const Task&, std::vector <Arg>&);
+
+  // Unary.
+  void operator_not (Arg&, Arg&);
+
+  // Binary.
+  void operator_and      (Arg&, Arg&, Arg&);
+  void operator_or       (Arg&, Arg&, Arg&);
+  void operator_xor      (Arg&, Arg&, Arg&);
+  void operator_lt       (Arg&, Arg&, Arg&);
+  void operator_lte      (Arg&, Arg&, Arg&);
+  void operator_gte      (Arg&, Arg&, Arg&);
+  void operator_gt       (Arg&, Arg&, Arg&);
+  void operator_inequal  (Arg&, Arg&, Arg&);
+  void operator_equal    (Arg&, Arg&, Arg&);
+  void operator_match    (Arg&, Arg&, Arg&);
+  void operator_nomatch  (Arg&, Arg&, Arg&);
+  void operator_multiply (Arg&, Arg&, Arg&);
+  void operator_divide   (Arg&, Arg&, Arg&);
+  void operator_add      (Arg&, Arg&, Arg&);
+  void operator_subtract (Arg&, Arg&, Arg&);
+
+private:
   A3 _args;
   std::map <std::string, RX> _regexes;
 };

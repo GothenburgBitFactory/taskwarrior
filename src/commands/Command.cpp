@@ -31,6 +31,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <Expression.h>
+#include <E9.h>
 #include <Att.h>
 #include <Timer.h>
 #include <text.h>
@@ -82,8 +83,8 @@
 #include <CmdUndo.h>
 #include <CmdUrgency.h>
 #include <CmdVersion.h>
-#include <Context.h>
 
+#include <Context.h>
 #include <ColProject.h>
 #include <ColPriority.h>
 #include <ColDue.h>
@@ -268,10 +269,8 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 {
   Timer timer ("Command::filter");
 
-/**/
   A3 filt = context.a3.extract_filter ();
   filt.dump ("extract_filter");
-/**/
 
   Arguments f;
   if (read_only ())
@@ -282,6 +281,7 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
   if (f.size ())
   {
     Expression e (f);
+    E9 expr (filt);
 
     std::vector <Task>::iterator task;
     for (task = input.begin (); task != input.end (); ++task)
@@ -298,13 +298,8 @@ void Command::filter (std::vector <Task>& output)
 {
   Timer timer ("Command::filter");
 
-/**/
   A3 filt = context.a3.extract_filter ();
   filt.dump ("extract_filter");
-
-  A3 mods = context.a3.extract_modifications ();
-  mods.dump ("extract_modifications");
-/**/
 
   Arguments f;
   if (read_only ())
@@ -316,6 +311,7 @@ void Command::filter (std::vector <Task>& output)
   {
     const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
     Expression e (f);
+    E9 expr (filt);
 
     output.clear ();
     std::vector <Task>::const_iterator task;

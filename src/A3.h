@@ -37,6 +37,12 @@
 class Arg
 {
 public:
+  Arg ()
+  : _raw ("")
+  , _category ("")
+  {
+  }
+
   Arg (
     const std::string& raw,
     const std::string& category)
