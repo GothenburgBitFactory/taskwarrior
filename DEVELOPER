@@ -1,0 +1,98 @@
+This file is intended to convey the current efforts, priorities and needs of the
+codebase.  It is for developers looking for a way to start contributing.
+
+
+Deprecated Code
+  This is code that is going to be phased out "soon", and therefore is not
+  worth fixing or documenting.
+
+  - Arguments.{h,cpp}
+  - Expression.{h,cpp}
+  - Variant.{h,cpp}
+  - Location.{h,cpp}
+  - TDB.{h,cpp}
+  - Att.{h,cpp}
+  - Lexer.{h,cpp}
+
+New Code Needs
+  This is code that needs to be written, usually down at the C++ function level.
+
+  - text.cpp extractLines needs to be rewritten in a UTF8-aware and color-code
+    sensitive manner.
+  - Need a function to accept a list of projects, and return an indented list
+    that reflects the hierarchy.  This will likely go into the new 'projects'
+    command.
+  - Take all the Config::checkXXX methods and create a new legacy.cpp file
+    that handles dealing with all legacy checks.  To be called from
+    src/commands/CmdShow.cpp.
+  - Need export_sql.yy script.  Any language.
+  - Need export_viz.yy script.  Any language.
+  - Need new export_xxx.yy scripts - the more the better.  Any language.
+  - Need new algorithm for determining the Y-axis for burndown charts.  The
+    Y-axis shows three numbers - 0, N/2 and N.  Choosing N appropriately is
+    not easy, and is currently done poorly.  For example the value N=200 is an
+    ideal choice if there are 194 tasks because it is a nice round number, and
+    is not too far above 194.  This should be a util.cpp function, that takes
+    an integer, and returns the integer, N.  N should be even.
+  - The JSON.{h,cpp} code is fast and efficient, but has a non-linear
+    performance curve, implying a slowdown due to fragmentation.  Fix it.
+    Test rig and sample data available on request.
+  - Devise a complete rule set for Task::validate.  What should it warn about?
+
+Documentation Needed
+  Various forms of documentation that are needed, or are in need of review or
+  update.
+
+  - Wiki/How-To: Date Handling
+  - Wiki/How-To: Urgency Customization
+  - Wiki/How-To: Custom Reports, including performance considerations
+  - Wiki/How-To: Aliases, particularly new enhanced aliases
+  - Wiki: Export formats
+
+Unit Tests Needed
+  There are always more unit tests needed.
+
+  - The basic.t unit tests are a misnomer, and should be either removed or
+    renamed.  We have long talked of 'basic functionality' that includes add,
+    delete, done, and list commands.  We need unit tests that prove that basic
+    functionality is working, and it should be called basic.t.
+  - None of the current unit tests remove the new backlog.data file, and they
+    all should.
+  - None of the current unit tests remove the 'extensions' directory, and they
+    all should.
+  - Need tests of command line expressions.
+  - Test propagation of modifications to recurring tasks.
+  - Test regex support.
+
+Work in Progress
+  Things that are currently in flux, which is another way of saying leave it
+  alone while it is being worked on.
+
+  - The A3.{h,cpp} and E9.{h,cpp} (Args and Expression) objects are being
+    completd and tested.
+  - L10N (Localization) is in progress.  This means moving all user-presented
+    strings into en-US.h, which is included by i18n.h.  Language selection will
+    be a cmake-controlled #define.  This is about 85% complete.  This makes
+    translation possible, but there is no active project to make this happen.
+    It is expected that translation files will trickle in, and create a
+    maintenance burden.  We don't know how we're going to deal with this yet.
+
+Current Codebase Condition
+
+  'master' branch:
+    - 1.9.4 release, current, locked.
+
+  '2.0.0' branch:
+    - Unit tests passing >85%.
+    - Basic commands working (add, list, done), otherwise generally broken.
+    - Expressions E9.{h,cpp} not working.
+    - DOM access DOM.{h,cpp} not working well.
+    - Aiming for an early August beta1.
+    - Aiming for a late August beta2.
+    - Aiming for a release in 2011, probably September, but when it is ready.
+
+---
+
+2011-07-25
+  Created file.
+
