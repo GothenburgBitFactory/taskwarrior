@@ -625,7 +625,6 @@ const A3 A3::tokenize (const A3& input) const
   // For identifying sequence versus non-sequence.
   bool found_sequence                 = false;
   bool found_something_after_sequence = false;
-  bool found_non_sequence             = false;
 
   std::string s;
   int i;
@@ -637,7 +636,6 @@ const A3 A3::tokenize (const A3& input) const
         n.getQuoted ('\'', s, true))
     {
       output.push_back (Arg (s, "string"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -645,7 +643,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (is_subst (n, s))
     {
       output.push_back (Arg (s, "subst"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -653,7 +650,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (is_pattern (n, s))
     {
       output.push_back (Arg (s, "pattern"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -661,7 +657,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (is_tag (n, s))
     {
       output.push_back (Arg (s, "tag"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -669,7 +664,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (n.getOneOf (operators, s))
     {
       output.push_back (Arg (s, "op"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -677,7 +671,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (is_attr (n, s))
     {
       output.push_back (Arg (s, "attr"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -685,7 +678,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (is_attmod (n, s))
     {
       output.push_back (Arg (s, "attmod"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -693,7 +685,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (is_dom (n, s))
     {
       output.push_back (Arg (s, "dom"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -701,7 +692,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (n.getDateISO (t))
     {
       output.push_back (Arg (Date (t).toISO (), "date"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -709,7 +699,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (n.getDate (date_format, t))
     {
       output.push_back (Arg (Date (t).toString (date_format), "date"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -717,7 +706,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (is_duration (n, s))
     {
       output.push_back (Arg (s, "duration"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -752,7 +740,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (n.getNumber (d))
     {
       output.push_back (Arg (format (d), "num"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -760,7 +747,6 @@ const A3 A3::tokenize (const A3& input) const
     else if (n.getInt (i))
     {
       output.push_back (Arg (format (i), "int"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -773,7 +759,6 @@ const A3 A3::tokenize (const A3& input) const
       else
         output.push_back (Arg (s, "word"));
 
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }
@@ -784,7 +769,6 @@ const A3 A3::tokenize (const A3& input) const
         n.getUntilEOS (s);
 
       output.push_back (Arg (s, "word"));
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
     }

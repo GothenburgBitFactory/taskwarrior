@@ -238,7 +238,6 @@ bool Nibbler::getQuoted (
   bool inquote = false;
   bool inescape = false;
   char current = 0;
-  char previous = 0;
   result = "";
 
   if (mCursor >= mLength ||
@@ -249,7 +248,6 @@ bool Nibbler::getQuoted (
 
   for (std::string::size_type i = mCursor; i < mLength; ++i)
   {
-    previous = current;
     current = mInput[i];
 
     if (current == '\\' && !inescape)

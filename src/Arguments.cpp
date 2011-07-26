@@ -284,10 +284,9 @@ void Arguments::categorize ()
   bool found_command                  = false;
   bool found_sequence                 = false;
   bool found_something_after_sequence = false;
-  bool found_non_sequence             = false;
 
   // Track where the command is, if possible.
-  int command_pos           = -1;
+//  int command_pos           = -1;
 //  int distance_from_command = 0;
 
   // Configurable support.
@@ -312,7 +311,6 @@ void Arguments::categorize ()
       if (arg->_first == "--")
       {
         terminated = true;
-        found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
@@ -333,7 +331,6 @@ void Arguments::categorize ()
           arg->_first = "calendar";
           arg->_third = "command";
           found_command = true;
-          found_non_sequence = true;
         }
       }
 
@@ -342,11 +339,10 @@ void Arguments::categorize ()
                is_command (keywords, arg->_first))
       {
         found_command = true;
-        found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
-        command_pos = counter;
+//        command_pos = counter;
 
         arg->_third = "command";
       }
@@ -398,7 +394,6 @@ void Arguments::categorize ()
       // [+-]tag
       else if (is_tag (arg->_first))
       {
-        found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
@@ -411,7 +406,6 @@ void Arguments::categorize ()
       // <name>.<modifier>:<value>
       else if (is_attmod (arg->_first))
       {
-        found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
@@ -424,7 +418,6 @@ void Arguments::categorize ()
       // <name>:<value>
       else if (is_attr (arg->_first))
       {
-        found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
@@ -437,7 +430,6 @@ void Arguments::categorize ()
       // /<from>/<to>/[g]
       else if (is_subst (arg->_first))
       {
-        found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
@@ -450,7 +442,6 @@ void Arguments::categorize ()
       // /pattern/
       else if (enable_patterns && is_pattern (arg->_first))
       {
-        found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
@@ -463,7 +454,6 @@ void Arguments::categorize ()
       // <operator>
       else if (is_operator (arg->_first))
       {
-        found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
@@ -476,7 +466,6 @@ void Arguments::categorize ()
       // <expression>
       else if (enable_expressions && is_expression (arg->_first))
       {
-        found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
@@ -490,7 +479,6 @@ void Arguments::categorize ()
       // If the type is not known, it is treated as a generic word.
       else
       {
-        found_non_sequence = true;
         if (found_sequence)
           found_something_after_sequence = true;
 
@@ -504,7 +492,6 @@ void Arguments::categorize ()
     // All post-termination arguments are simply words.
     else
     {
-      found_non_sequence = true;
       if (found_sequence)
         found_something_after_sequence = true;
 

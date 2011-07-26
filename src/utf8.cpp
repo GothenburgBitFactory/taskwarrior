@@ -80,31 +80,33 @@ unsigned int utf8_next_char (const std::string& input, std::string::size_type& i
   // How many bytes in the sequence?
   int length = utf8_sequence (input[i]);
 
+  i += length;
+
   // 0xxxxxxx -> 0xxxxxxx
   if (length == 1)
-    return input[i++];
+    return input[i - 1];
 
   // 110yyyyy 10xxxxxx -> 00000yyy yyxxxxxx
   if (length == 2)
-    return ((input[i++] & 0x1F) << 6) +
-            (input[i++] & 0x3F);
+    return ((input[i - 2] & 0x1F) << 6) +
+            (input[i - 1] & 0x3F);
 
   // 1110zzzz 10yyyyyy 10xxxxxx -> zzzzyyyy yyxxxxxx
   if (length == 3)
-    return ((input[i++] & 0xF)  << 12) +
-           ((input[i++] & 0x3F) <<  6) +
-            (input[i++] & 0x3F);
+    return ((input[i - 3] & 0xF)  << 12) +
+           ((input[i - 2] & 0x3F) <<  6) +
+            (input[i - 1] & 0x3F);
 
   // 11110www 10zzzzzz 10yyyyyy 10xxxxxx -> 000wwwzz zzzzyyyy yyxxxxxx
   if (length == 4)
-    return ((input[i++] & 0x7)  << 18) +
-           ((input[i++] & 0x3F) << 12) +
-           ((input[i++] & 0x3F) <<  6) +
-            (input[i++] & 0x3F);
+    return ((input[i - 4] & 0x7)  << 18) +
+           ((input[i - 3] & 0x3F) << 12) +
+           ((input[i - 2] & 0x3F) <<  6) +
+            (input[i - 1] & 0x3F);
 
   // Default: pretend as though it's a single character.
   // TODO Or should this throw?
-  return input[i++];
+  return input[i - 1];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
