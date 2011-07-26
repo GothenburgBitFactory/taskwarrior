@@ -47,7 +47,7 @@ int main (int argc, char** argv)
   try
   {
     // Prime the pump.
-    context.args.capture ("task");
+    context.a3.capture ("task");
 
     // TODO dom.get rc.name
     DOM dom;

@@ -6,13 +6,10 @@ Deprecated Code
   This is code that is going to be phased out "soon", and therefore is not
   worth fixing or documenting.
 
-  - Arguments.{h,cpp}
-  - Expression.{h,cpp}
   - Variant.{h,cpp}
   - Location.{h,cpp}
   - TDB.{h,cpp}
   - Att.{h,cpp}
-  - Lexer.{h,cpp}
 
 New Code Needs
   This is code that needs to be written, usually down at the C++ function level.
