@@ -50,11 +50,6 @@ std::string getFullDescription (Task&, const std::string&);
 std::string getDueDate (Task&, const std::string&);
 std::string onProjectChange (Task&, bool scope = true);
 std::string onProjectChange (Task&, Task&);
-int deltaAppend (Task&);
-int deltaPrepend (Task&);
-int deltaDescription (Task&);
-int deltaTags (Task&);
-int deltaAttributes (Task&);
 
 // rules.cpp
 void initializeColorRules ();
