@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (292);
+  UnitTest t (282);
 
   try
   {
@@ -409,35 +409,6 @@ int main (int argc, char** argv)
     t.ok    (n.getOneOf (options, s),         "      'threefour':   getOneOf () -> true");
     t.is    (s, "three",                      "      'threefour':   getOneOf () -> three");
     t.notok (n.getOneOf (options, s),         "           'four':   getOneOf () -> false");
-
-    // bool getDOM (std::string&);
-    t.diag ("Nibbler::getDOM");
-
-    // positive.
-    n = Nibbler ("due  ");
-    t.ok (n.getDOM (s),        "'due'              getDOM -> ok");
-    t.is (s, "due",            "'due'              getDOM -> 'due'");
-
-    n = Nibbler ("123.due  ");
-    t.ok (n.getDOM (s),        "'123.due'          getDOM -> ok");
-    t.is (s, "123.due",        "'123.due'          getDOM -> '123.due'");
-
-    n = Nibbler ("ebeeab00-ccf8-464b-8b58-f7f2d606edfb.due  ");
-    t.ok (n.getDOM (s),        "'ebeeab00-ccf8-464b-8b58-f7f2d606edfb.due'  getDOM -> ok");
-    t.is (s, "ebeeab00-ccf8-464b-8b58-f7f2d606edfb.due",
-                               "'ebeeab00-ccf8-464b-8b58-f7f2d606edfb.due'  getDOM -> 'ebeeab00-ccf8-464b-8b58-f7f2d606edfb.due");
-
-    n = Nibbler ("rc.one.two.three.four.five.six.seven  ");
-    t.ok (n.getDOM (s),        "'rc.one.two.three.four.five.six.seven'      getDOM -> 'rc.one.two.three.four.five.six.seven'");
-    t.is (s, "rc.one.two.three.four.five.six.seven",
-                               "'rc.one.two.three.four.five.six.seven'      getDOM -> 'rc.one.two.three.four.five.six.seven'");
-
-    // negative.
-    n = Nibbler ("1+2  ");
-    t.notok (n.getDOM (s),     "'1+2'              getDOM -> notok");
-
-    n = Nibbler ("..foo  ");
-    t.notok (n.getDOM (s),     "'..foo'            getDOM -> notok");
 
     // bool getName (std::string&);
     t.diag ("Nibbler::getName");
