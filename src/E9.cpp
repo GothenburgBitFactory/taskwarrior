@@ -85,6 +85,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
       // Unary operators.
       if (arg->_raw == "!")
       {
+        // TODO Are there sufficient arguments?
         Arg right = value_stack.back ();
         value_stack.pop_back ();
         operator_not (result, right);
@@ -93,6 +94,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
       // Binary operators.
       else
       {
+        // TODO Are there sufficient arguments?
         Arg right = value_stack.back ();
         value_stack.pop_back ();
         Arg left = value_stack.back ();
@@ -180,6 +182,10 @@ void E9::operator_xor (Arg& result, Arg& left, Arg& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Special handling for priority.
+//               if (left._string != "H" && right._string == "H") result = true;
+//          else if (left._string == "L" && right._string == "M") result = true;
+//          else if (left._string == ""  && right._string != "")  result = true;
 void E9::operator_lt (Arg& result, Arg& left, Arg& right)
 {
 
@@ -192,6 +198,11 @@ void E9::operator_lt (Arg& result, Arg& left, Arg& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Special handling for priority.
+//               if (left._string        == right._string       ) result = true;
+//          else if (                       right._string == "H") result = true;
+//          else if (left._string == "L" && right._string == "M") result = true;
+//          else if (left._string == ""                         ) result = true;
 void E9::operator_lte (Arg& result, Arg& left, Arg& right)
 {
 
@@ -204,6 +215,11 @@ void E9::operator_lte (Arg& result, Arg& left, Arg& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Special handling for priority.
+//               if (left._string        == right._string       ) result = true;
+//          else if (left._string == "H"                        ) result = true;
+//          else if (left._string == "M" && right._string == "L") result = true;
+//          else if (                       right._string == "" ) result = true;
 void E9::operator_gte (Arg& result, Arg& left, Arg& right)
 {
 
@@ -216,6 +232,10 @@ void E9::operator_gte (Arg& result, Arg& left, Arg& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Special handling for priority.
+//               if (left._string == "H" && right._string != "H") result = true;
+//          else if (left._string == "M" && right._string == "L") result = true;
+//          else if (left._string != ""  && right._string == "")  result = true;
 void E9::operator_gt (Arg& result, Arg& left, Arg& right)
 {
 
@@ -240,6 +260,18 @@ void E9::operator_inequal (Arg& result, Arg& left, Arg& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//        bool result = false;
+//        if (left._raw == "project" || left._raw == "recur")
+//        {
+//          left.cast (Variant::v_string);
+//          right.cast (Variant::v_string);
+//          if (right._string.length () <= left._string.length ())
+//            result = compare (right._string,
+//                              left._string.substr (0, right._string.length ()),
+//                              (bool) case_sensitive);
+//        }
+//        else
+//          result = (left == right);
 void E9::operator_equal (Arg& result, Arg& left, Arg& right)
 {
 
@@ -264,6 +296,16 @@ void E9::operator_match (Arg& result, Arg& left, Arg& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//        bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
+//        bool result = !eval_match (left, right, case_sensitive);
+//
+//        // Matches against description are really against either description,
+//        // annotations or project.
+//        // Short-circuit if match already failed.
+//        if (result && left._raw == "description")
+//        {
+//          // TODO check further.
+//        }
 void E9::operator_nomatch (Arg& result, Arg& left, Arg& right)
 {
 
@@ -323,4 +365,31 @@ void E9::operator_subtract (Arg& result, Arg& left, Arg& right)
             << "\n";
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/*
+bool Expression::eval_match (Variant& left, Variant& right, bool case_sensitive)
+{
+  if (right._raw_type == "rx")
+  {
+    left.cast (Variant::v_string);
+    right.cast (Variant::v_string);
+
+    // Create a cached entry, if it does not already exist.
+    if (_regexes.find (right._string) == _regexes.end ())
+      _regexes[right._string] = RX (right._string, case_sensitive);
+
+    if (_regexes[right._string].match (left._string))
+      return true;
+  }
+  else
+  {
+    left.cast (Variant::v_string);
+    right.cast (Variant::v_string);
+    if (find (left._string, right._string, (bool) case_sensitive) != std::string::npos)
+      return true;
+  }
+
+  return false;
+}
+*/
 ////////////////////////////////////////////////////////////////////////////////

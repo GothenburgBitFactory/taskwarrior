@@ -30,7 +30,6 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
-#include <Expression.h>
 #include <E9.h>
 #include <Att.h>
 #include <Timer.h>
@@ -280,8 +279,7 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 
   if (f.size ())
   {
-    Expression e (f);
-    E9 expr (filt);
+    E9 e (filt);
 
     std::vector <Task>::iterator task;
     for (task = input.begin (); task != input.end (); ++task)
@@ -310,8 +308,7 @@ void Command::filter (std::vector <Task>& output)
   if (f.size ())
   {
     const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
-    Expression e (f);
-    E9 expr (filt);
+    E9 e (filt);
 
     output.clear ();
     std::vector <Task>::const_iterator task;
@@ -429,9 +426,9 @@ void Command::modify_task (
       if (Arguments::is_attribute (name, name))  // Canonicalize
       {
         // All values must be eval'd first.
-        Arguments fragment;
-        fragment.push_back (Triple (value, "exp", "attr"));
-        Expression e (fragment);
+        A3 fragment;
+        fragment.push_back (Arg (value, "attr"));
+        E9 e (fragment);
         std::string result = e.evalExpression (task);
         context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
 

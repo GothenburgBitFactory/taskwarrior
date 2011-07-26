@@ -30,6 +30,7 @@
 
 #include <vector>
 #include <string>
+#include <Nibbler.h>
 #include <File.h>
 
 #define ARGUMENTS_SEQUENCE_MAX_RANGE 1000

@@ -17,7 +17,6 @@ set (task_SRCS A3.cpp A3.h
                Directory.cpp Directory.h
                Duration.cpp Duration.h
                E9.cpp E9.h
-               Expression.cpp Expression.h
                File.cpp File.h
                Hooks.cpp Hooks.h
                JSON.cpp JSON.h
