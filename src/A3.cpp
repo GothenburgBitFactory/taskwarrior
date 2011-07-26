@@ -836,7 +836,7 @@ const A3 A3::expand (const A3& input) const
       std::string mod;
       std::string value;
       std::string sense;
-      Arguments::extract_attmod (arg->_raw, name, mod, value, sense);
+      extract_attmod (arg->_raw, name, mod, value, sense);
 
       // name.before:value  -->  name < value
       if (mod == "before" || mod == "under" || mod == "below")
@@ -942,7 +942,7 @@ const A3 A3::expand (const A3& input) const
     {
       char type;
       std::string value;
-      A3::extract_tag (arg->_raw, type, value);
+      extract_tag (arg->_raw, type, value);
 
       expanded.push_back (Arg ("tags",                   "dom"));
       expanded.push_back (Arg (type == '+' ? "~" : "!~", "op"));
@@ -961,7 +961,7 @@ const A3 A3::expand (const A3& input) const
     else if (arg->_category == "pattern")
     {
       std::string value;
-      A3::extract_pattern (arg->_raw, value);
+      extract_pattern (arg->_raw, value);
 
       expanded.push_back (Arg ("description", "dom"));
       expanded.push_back (Arg ("~",           "op"));
@@ -990,10 +990,10 @@ const A3 A3::sequence (const A3& input) const
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
     if (arg->_category == "id")
-      A3::extract_id (arg->_raw, ids);
+      extract_id (arg->_raw, ids);
 
     else if (arg->_category == "uuid")
-      A3::extract_uuid (arg->_raw, uuids);
+      extract_uuid (arg->_raw, uuids);
   }
 
   // If there is no sequence, we're done.
@@ -1109,13 +1109,13 @@ const A3 A3::postfix (const A3& input) const
       else
         throw std::string ("Mismatched parentheses in expression");
     }
-    else if (A3::is_operator (arg->_raw, type, precedence, associativity))
+    else if (is_operator (arg->_raw, type, precedence, associativity))
     {
       char type2;
       int precedence2;
       char associativity2;
       while (op_stack.size () > 0 &&
-             A3::is_operator (op_stack.back ()._raw, type2, precedence2, associativity2) &&
+             is_operator (op_stack.back ()._raw, type2, precedence2, associativity2) &&
              ((associativity == 'l' && precedence <= precedence2) ||
               (associativity == 'r' && precedence <  precedence2)))
       {

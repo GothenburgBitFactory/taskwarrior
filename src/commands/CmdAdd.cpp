@@ -56,8 +56,7 @@ int CmdAdd::execute (std::string& output)
   task.set ("uuid", uuid ());
 
   // Apply the command line modifications to the new task.
-  Arguments modifications = context.args.extract_modifications (true);
-  modify_task_description_replace (task, modifications);
+  modify_task_description_replace (task, context.a3.extract_modifications ());
   apply_defaults (task);
 
   // Only valid tasks can be added.

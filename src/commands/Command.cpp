@@ -271,13 +271,7 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
   A3 filt = context.a3.extract_filter ();
   filt.dump ("extract_filter");
 
-  Arguments f;
-  if (read_only ())
-    f = context.args.extract_read_only_filter ();
-  else
-    f = context.args.extract_write_filter ();
-
-  if (f.size ())
+  if (filt.size ())
   {
     E9 e (filt);
 
@@ -299,13 +293,7 @@ void Command::filter (std::vector <Task>& output)
   A3 filt = context.a3.extract_filter ();
   filt.dump ("extract_filter");
 
-  Arguments f;
-  if (read_only ())
-    f = context.args.extract_read_only_filter ();
-  else
-    f = context.args.extract_write_filter ();
-
-  if (f.size ())
+  if (filt.size ())
   {
     const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
     E9 e (filt);
@@ -316,7 +304,7 @@ void Command::filter (std::vector <Task>& output)
       if (e.evalFilter (*task))
         output.push_back (*task);
 
-    if (! filter_shortcut (f))
+    if (! filter_shortcut (filt))
     {
       const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
       for (task = completed.begin (); task != completed.end (); ++task)
@@ -343,23 +331,23 @@ void Command::filter (std::vector <Task>& output)
 ////////////////////////////////////////////////////////////////////////////////
 // If the filter contains the restriction "status:pending", as the first filter
 // term, then completed.data does not need to be loaded.
-bool Command::filter_shortcut (const Arguments& filter)
+bool Command::filter_shortcut (const A3& filter)
 {
 /**/
   if (filter.size () >= 3)
   {
-    std::cout << "# filter[0] " << filter[0]._first << "\n"
-              << "# filter[1] " << filter[1]._first << "\n"
-              << "# filter[2] " << filter[2]._first << "\n";
+    std::cout << "# filter[0] " << filter[0]._raw << "\n"
+              << "# filter[1] " << filter[1]._raw << "\n"
+              << "# filter[2] " << filter[2]._raw << "\n";
   }
 /**/
 
   // Postfix: <status> <"pending"> <=>
   //                 0           1   2
-  if (filter.size ()                    >= 3                 &&
-      filter[0]._first                  == "status"          &&
-      filter[1]._first.find ("pending") != std::string::npos &&
-      filter[2]._first                  == "=")
+  if (filter.size ()                  >= 3                 &&
+      filter[0]._raw                  == "status"          &&
+      filter[1]._raw.find ("pending") != std::string::npos &&
+      filter[2]._raw                  == "=")
     return true;
 
   return false;
@@ -367,7 +355,7 @@ bool Command::filter_shortcut (const Arguments& filter)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Apply the modifications in arguments to the task.
-void Command::modify_task_description_replace (Task& task, Arguments& arguments)
+void Command::modify_task_description_replace (Task& task, const A3& arguments)
 {
   std::string description;
   modify_task (task, arguments, description);
@@ -377,7 +365,7 @@ void Command::modify_task_description_replace (Task& task, Arguments& arguments)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Command::modify_task_description_prepend (Task& task, Arguments& arguments)
+void Command::modify_task_description_prepend (Task& task, const A3& arguments)
 {
   std::string description;
   modify_task (task, arguments, description);
@@ -387,7 +375,7 @@ void Command::modify_task_description_prepend (Task& task, Arguments& arguments)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Command::modify_task_description_append (Task& task, Arguments& arguments)
+void Command::modify_task_description_append (Task& task, const A3& arguments)
 {
   std::string description;
   modify_task (task, arguments, description);
@@ -397,7 +385,7 @@ void Command::modify_task_description_append (Task& task, Arguments& arguments)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Command::modify_task_annotate (Task& task, Arguments& arguments)
+void Command::modify_task_annotate (Task& task, const A3& arguments)
 {
   std::string description;
   modify_task (task, arguments, description);
@@ -410,20 +398,20 @@ void Command::modify_task_annotate (Task& task, Arguments& arguments)
 // Worker function that does all the updates, but never overwrites description.
 void Command::modify_task (
   Task& task,
-  Arguments& arguments,
+  const A3& arguments,
   std::string& description)
 {
-  std::vector <Triple>::iterator arg;
+  std::vector <Arg>::const_iterator arg;
   for (arg = arguments.begin (); arg != arguments.end (); ++arg)
   {
     // Attributes are essentially name:value pairs, and correspond directly
     // to stored attributes.
-    if (arg->_third == "attr")
+    if (arg->_category == "attr")
     {
       std::string name;
       std::string value;
-      Arguments::extract_attr (arg->_first, name, value);
-      if (Arguments::is_attribute (name, name))  // Canonicalize
+      A3::extract_attr (arg->_raw, name, value);
+      if (A3::is_attribute (name, name))  // Canonicalize
       {
         // All values must be eval'd first.
         A3 fragment;
@@ -462,11 +450,11 @@ void Command::modify_task (
     // Tags need special handling because they are essentially a vector stored
     // in a single string, therefore Task::{add,remove}Tag must be called as
     // appropriate.
-    else if (arg->_third == "tag")
+    else if (arg->_category == "tag")
     {
       char type;
       std::string value;
-      Arguments::extract_tag (arg->_first, type, value);
+      A3::extract_tag (arg->_raw, type, value);
 
       if (type == '+')
         task.addTag (value);
@@ -475,29 +463,29 @@ void Command::modify_task (
     }
 
     // Words and operators are aggregated into a description.
-    else if (arg->_third == "word" ||
-             arg->_third == "op")
+    else if (arg->_category == "word" ||
+             arg->_category == "op")
     {
       if (description.length ())
         description += " ";
 
-      description += arg->_first;
+      description += arg->_raw;
     }
 
     // Substitutions.
-    else if (arg->_third == "subst")
+    else if (arg->_category == "subst")
     {
       std::string from;
       std::string to;
       bool global;
-      Arguments::extract_subst (arg->_first, from, to, global);
+      A3::extract_subst (arg->_raw, from, to, global);
       task.substitute (from, to, global);
     }
 
     // Any additional argument types are indicative of a failure in
-    // Arguments::extract_modifications.
+    // A3::extract_modifications.
     else
-      throw format (STRING_CMD_MOD_UNEXPECTED, arg->_first);
+      throw format (STRING_CMD_MOD_UNEXPECTED, arg->_raw);
   }
 }
 

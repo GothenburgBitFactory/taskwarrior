@@ -72,21 +72,18 @@ int Context::initialize (int argc, const char** argv)
 
   try
   {
-    // char** argv --> std::vector <std::string> Context::args.
-    args.capture (argc, argv);
+    // char** argv --> std::vector <std::string> Context::a3.
     a3.capture (argc, argv);
 
     // echo one two -- three | task zero --> task zero one two
     // 'three' is left in the input buffer.
-    args.append_stdin ();
     a3.append_stdin ();
 
     // Assume default .taskrc and .task locations.
     assumeLocations ();
 
     // Process 'rc:<file>' command line override, and remove the argument from the
-    // Context::args.
-    args.rc_override (home_dir, rc_file);
+    // Context::a3.
     a3.categorize ();
     a3.rc_override (home_dir, rc_file);
 
@@ -107,7 +104,6 @@ int Context::initialize (int argc, const char** argv)
 
     // Handle Aliases.
     loadAliases ();
-    args.resolve_aliases ();
     a3.resolve_aliases ();
 
     // Apply rc overrides to Context::config, capturing raw args for later use.
@@ -124,11 +120,9 @@ int Context::initialize (int argc, const char** argv)
     Column::factory (columns);
 
     // Categorize all arguments one more time.  THIS IS NECESSARY.
-    args.categorize ();
     a3.categorize ();
 
     // Handle default command and assumed 'info' command.
-    args.inject_defaults ();
     a3.inject_defaults ();
     a3.dump ("Context::initialize");  // TODO Remove.
 
@@ -526,7 +520,7 @@ void Context::clear ()
 {
   tdb.clear ();            // TODO Obsolete
 //  tdb2.clear ();
-  args.clear ();
+  a3.clear ();
 
   clearMessages ();
 }
@@ -539,7 +533,7 @@ void Context::updateXtermTitle ()
   if (config.getBoolean ("xterm.title"))
   {
     std::string command;
-    args.find_command (command);
+    a3.find_command (command);
 
     std::string title;
     join (title, " ", a3.list ());

@@ -32,7 +32,7 @@
 #include <vector>
 #include <string>
 #include <Task.h>
-#include <Arguments.h>
+#include <A3.h>
 
 class Command
 {
@@ -55,13 +55,13 @@ public:
 protected:
   void filter (std::vector <Task>&, std::vector <Task>&);
   void filter (std::vector <Task>&);
-  bool filter_shortcut (const Arguments&);
+  bool filter_shortcut (const A3&);
 
-  void modify_task_description_replace (Task&, Arguments&);
-  void modify_task_description_prepend (Task&, Arguments&);
-  void modify_task_description_append (Task&, Arguments&);
-  void modify_task_annotate (Task&, Arguments&);
-  void modify_task (Task&, Arguments&, std::string&);
+  void modify_task_description_replace (Task&, const A3&);
+  void modify_task_description_prepend (Task&, const A3&);
+  void modify_task_description_append (Task&, const A3&);
+  void modify_task_annotate (Task&, const A3&);
+  void modify_task (Task&, const A3&, std::string&);
   void apply_defaults (Task&);
 
 protected:

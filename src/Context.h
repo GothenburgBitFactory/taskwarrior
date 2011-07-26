@@ -39,7 +39,6 @@
 #include <Path.h>
 #include <File.h>
 #include <Directory.h>
-#include <Arguments.h>
 #include <A3.h>
 
 class Context
@@ -82,7 +81,6 @@ private:
 
 public:
   std::string                         program;
-  Arguments                           args;
   A3                                  a3;
   std::string                         home_dir;
   File                                rc_file;

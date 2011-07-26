@@ -69,7 +69,7 @@ int CmdPrepend::execute (std::string& output)
   }
 
   // Apply the command line modifications to the started task.
-  Arguments modifications = context.args.extract_modifications ();
+  A3 modifications = context.a3.extract_modifications ();
   if (!modifications.size ())
     throw std::string (STRING_CMD_XPEND_NEED_TEXT);
 

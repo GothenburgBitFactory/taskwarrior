@@ -70,7 +70,7 @@ int CmdDelete::execute (std::string& output)
   }
 
   // Apply the command line modifications to the new task.
-  Arguments modifications = context.args.extract_modifications ();
+  A3 modifications = context.a3.extract_modifications ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)

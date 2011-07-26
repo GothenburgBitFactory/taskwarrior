@@ -998,10 +998,10 @@ int CmdBurndownMonthly::execute (std::string& output)
   Chart chart ('M');
 
   // Use any filter as a title.
-  if (context.args.size () > 2)
+  if (context.a3.size () > 2)
   {
     std::string combined = "("
-                         + context.args.extract_read_only_filter ().combine ()
+                         + context.a3.extract_filter ().combine ()
                          + ")";
     chart.description (combined);
   }
@@ -1042,10 +1042,10 @@ int CmdBurndownWeekly::execute (std::string& output)
   Chart chart ('W');
 
   // Use any filter as a title.
-  if (context.args.size () > 2)
+  if (context.a3.size () > 2)
   {
     std::string combined = "("
-                         + context.args.extract_read_only_filter ().combine ()
+                         + context.a3.extract_filter ().combine ()
                          + ")";
     chart.description (combined);
   }
@@ -1086,10 +1086,10 @@ int CmdBurndownDaily::execute (std::string& output)
   Chart chart ('D');
 
   // Use any filter as a title.
-  if (context.args.size () > 2)
+  if (context.a3.size () > 2)
   {
     std::string combined = "("
-                         + context.args.extract_read_only_filter ().combine ()
+                         + context.a3.extract_filter ().combine ()
                          + ")";
     chart.description (combined);
   }

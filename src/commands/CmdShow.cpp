@@ -57,7 +57,7 @@ int CmdShow::execute (std::string& output)
 
   // Obtain the arguments from the description.  That way, things like '--'
   // have already been handled.
-  if (context.args.size () > 2)
+  if (context.a3.size () > 2)
     throw std::string (STRING_CMD_SHOW_ARGS);
 
   int width = context.getWidth ();

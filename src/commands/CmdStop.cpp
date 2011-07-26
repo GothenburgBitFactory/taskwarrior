@@ -69,7 +69,7 @@ int CmdStop::execute (std::string& output)
   }
 
   // Apply the command line modifications to the stopped task.
-  Arguments modifications = context.args.extract_modifications ();
+  A3 modifications = context.a3.extract_modifications ();
 
   Permission permission;
   if (filtered.size () > (size_t) context.config.getInteger ("bulk"))

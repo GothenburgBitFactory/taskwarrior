@@ -56,7 +56,7 @@ int CmdLog::execute (std::string& output)
   task.set ("uuid", uuid ());
 
   // Apply the command line modifications to the new task.
-  Arguments modifications = context.args.extract_modifications ();
+  A3 modifications = context.a3.extract_modifications ();
   modify_task_description_replace (task, modifications);
   apply_defaults (task);
 

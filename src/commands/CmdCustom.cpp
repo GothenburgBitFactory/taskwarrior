@@ -86,10 +86,7 @@ int CmdCustom::execute (std::string& output)
   split (filterArgs, reportFilter, ' ');
   std::vector <std::string>::iterator arg;
   for (arg = filterArgs.begin (); arg != filterArgs.end (); ++ arg)
-  {
-    context.args.capture_first (*arg);
     context.a3.capture_first (*arg);
-  }
 
   context.a3.categorize ();
   context.a3.dump ("CmdCustom::execute");
@@ -290,7 +287,7 @@ void CmdCustom::getLimits (const std::string& report, int& rows, int& lines)
 
   // If the custom report has a defined limit, then allow a numeric override.
   // This is an integer specified as a filter (limit:10).
-  std::string limit = context.args.find_limit ();
+  std::string limit = context.a3.find_limit ();
   if (limit != "")
   {
     if (limit == "page")

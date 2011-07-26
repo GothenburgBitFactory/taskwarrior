@@ -48,12 +48,12 @@ CmdExec::CmdExec ()
 int CmdExec::execute (std::string& output)
 {
   std::string command_line;
-  std::vector <Triple>::iterator arg;
-  for (arg = context.args.begin (); arg != context.args.end (); ++arg)
+  std::vector <Arg>::iterator arg;
+  for (arg = context.a3.begin (); arg != context.a3.end (); ++arg)
   {
-    if (arg != context.args.begin () &&
-        arg->_first != "execute")
-      command_line += arg->_first;
+    if (arg != context.a3.begin () &&
+        arg->_raw != "execute")
+      command_line += arg->_raw;
   }
 
   return system (command_line.c_str ());

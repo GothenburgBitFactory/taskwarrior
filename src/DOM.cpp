@@ -115,11 +115,11 @@ const std::string DOM::get (const std::string& name)
            name.substr (0, 8) == "context.")
   {
     if (name == "context.program")
-      return /*_cache[name] =*/ context.args[0]._first;
+      return /*_cache[name] =*/ context.a3[0]._raw;
 
     else if (name == "context.args")
     {
-      return /*_cache[name] =*/ context.args.combine ();
+      return /*_cache[name] =*/ context.a3.combine ();
     }
     else if (name == "context.width")
     {
@@ -238,7 +238,7 @@ const std::string DOM::get (const std::string& name, const Task& task)
     return /*_cache[name] =*/ copy_name;
 
   // <attr>
-  else if (Arguments::is_attribute (name, canonical))
+  else if (A3::is_attribute (name, canonical))
     return task.get (canonical);
 
   // <id>.<name>
