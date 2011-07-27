@@ -35,7 +35,7 @@
 class Transport {
 public:
   Transport (const Uri&);
-  ~Transport ();
+  virtual ~Transport ();
 
   static Transport* getTransport(const Uri&);
 

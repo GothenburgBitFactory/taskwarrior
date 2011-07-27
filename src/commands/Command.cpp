@@ -333,15 +333,6 @@ void Command::filter (std::vector <Task>& output)
 // term, then completed.data does not need to be loaded.
 bool Command::filter_shortcut (const A3& filter)
 {
-/**/
-  if (filter.size () >= 3)
-  {
-    std::cout << "# filter[0] " << filter[0]._raw << "\n"
-              << "# filter[1] " << filter[1]._raw << "\n"
-              << "# filter[2] " << filter[2]._raw << "\n";
-  }
-/**/
-
   // Postfix: <status> <"pending"> <=>
   //                 0           1   2
   if (filter.size ()                  >= 3                 &&

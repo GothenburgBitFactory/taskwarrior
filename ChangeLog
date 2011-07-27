@@ -158,6 +158,8 @@
    the deletion of a recurring task (thanks to Matt Kraai).
  + Fixed bug #807, which caused a lack of Lua to prevent tests from building
    (thanks to Owen Clarke).
+ + Fixed bug #808, which generated compiler warnings on Solarix (thanks to
+   Owen Clarke).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.

@@ -43,7 +43,7 @@ public:
   Column (const Column&);
   Column& operator= (const Column&);
   bool operator== (const Column&) const;     // TODO Is this necessary?
-  ~Column ();
+  virtual ~Column ();
 
   std::string style () const                  { return _style;      }
   std::string label () const                  { return _label;      }
