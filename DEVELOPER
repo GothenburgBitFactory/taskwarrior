@@ -46,6 +46,15 @@ Documentation Needed
   - Wiki/How-To: Aliases, particularly new enhanced aliases
   - Wiki: Export formats
 
+Holiday Data Needed
+  We are moving the holiday data to http://holidata.net, and providing a
+  script that can automatically update taskwarrior holiday files from the
+  web.  This allows us to provide corrections and additional data without
+  the need for a corresponding taskwarrior release.
+
+  If you can provide regional holiday data, we would be very grateful, and
+  ideally it could go up on holidata.net for everyone to share.
+
 Unit Tests Needed
   There are always more unit tests needed.
 
@@ -90,6 +99,6 @@ Current Codebase Condition
 
 ---
 
-2011-07-25
-  Created file.
+2011-07-27 Updated with holiday data info.
+2011-07-25 Created file.
 
