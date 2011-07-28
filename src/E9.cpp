@@ -27,6 +27,7 @@
 
 #include <iostream> // TODO Remove.
 #include <Context.h>
+#include <text.h>
 #include <A3.h>
 #include <E9.h>
 
@@ -34,9 +35,11 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Perform all the necessary steps prior to an eval call.
-E9::E9 (A3& args)
-: _args (args)
+E9::E9 (const A3& args)
 {
+  std::vector <Arg>::const_iterator arg;
+  for (arg = args.begin (); arg != args.end (); ++arg)
+    _terms.push_back (Term (*arg));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,58 +50,84 @@ E9::~E9 ()
 ////////////////////////////////////////////////////////////////////////////////
 bool E9::evalFilter (const Task& task)
 {
-  if (_args.size () == 0)
+  if (_terms.size () == 0)
     return true;
 
-  std::vector <Arg> value_stack;
+  std::vector <Term> value_stack;
   eval (task, value_stack);
 
-  // TODO Coerce result to Boolean.
-  return true;
+  // Coerce result to Boolean.
+  Term result = value_stack.back ();
+  value_stack.pop_back ();
+  return get_bool (coerce (result, "bool"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string E9::evalExpression (const Task& task)
 {
-  if (_args.size () == 0)
+  if (_terms.size () == 0)
     return "";
 
-  std::vector <Arg> value_stack;
+  std::vector <Term> value_stack;
   eval (task, value_stack);
 
-  return value_stack.back ()._raw;
+  return value_stack.back ()._value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::eval (const Task& task, std::vector <Arg>& value_stack)
+void E9::eval (const Task& task, std::vector <Term>& value_stack)
 {
   // Case sensitivity is configurable.
   bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
 
-  std::vector <Arg>::iterator arg;
-  for (arg = _args.begin (); arg != _args.end (); ++arg)
+  std::vector <Term>::iterator arg;
+  for (arg = _terms.begin (); arg != _terms.end (); ++arg)
   {
     if (arg->_category == "op")
     {
-      Arg result;
+      Term result;
 
       // Unary operators.
       if (arg->_raw == "!")
       {
-        // TODO Are there sufficient arguments?
-        Arg right = value_stack.back ();
+        if (value_stack.size () < 1)
+          throw std::string ("There are no operands for the 'not' operator.");
+
+        Term right = value_stack.back ();
         value_stack.pop_back ();
+
+        if (right._category == "dom")
+        {
+          right._value = context.dom.get (right._raw, task);
+          right._category = "string";
+        }
+
         operator_not (result, right);
       }
 
       // Binary operators.
       else
       {
-        // TODO Are there sufficient arguments?
-        Arg right = value_stack.back ();
+        if (value_stack.size () < 2)
+          throw std::string ("There are not enough operands for the '") + arg->_raw + "' operator.";
+
+        Term right = value_stack.back ();
         value_stack.pop_back ();
-        Arg left = value_stack.back ();
+
+        if (right._category == "dom")
+        {
+          right._value = context.dom.get (right._raw, task);
+          right._category = "string";
+        }
+
+        Term left = value_stack.back ();
         value_stack.pop_back ();
+
+        if (left._category == "dom")
+        {
+          left._value = context.dom.get (left._raw, task);
+          left._category = "string";
+        }
 
              if (arg->_raw == "and") operator_and      (result, left, right);
         else if (arg->_raw == "or")  operator_or       (result, left, right);
@@ -136,48 +165,74 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_not (Arg& result, Arg& left)
+bool E9::eval_match (Term& left, Term& right, bool case_sensitive)
 {
+  if (right._category == "rx")
+  {
+    coerce (left, "string");
+    coerce (right, "string");
 
-  std::cout << "# not " << left._raw << "/" << left._category
+    // Create a cached entry, if it does not already exist.
+    if (_regexes.find (right._value) == _regexes.end ())
+      _regexes[right._value] = RX (right._value, case_sensitive);
+
+    if (_regexes[right._value].match (left._value))
+      return true;
+  }
+  else
+  {
+    coerce (left, "string");
+    coerce (right, "string");
+    if (find (left._value, right._value, (bool) case_sensitive) != std::string::npos)
+      return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void E9::operator_not (Term& result, Term& right)
+{
+  result = Term (right._raw, coerce (right, "bool")._value, "bool");
+  std::cout << "# not " << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_and (Arg& result, Arg& left, Arg& right)
+void E9::operator_and (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " and "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_or (Arg& result, Arg& left, Arg& right)
+void E9::operator_or (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " or "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_xor (Arg& result, Arg& left, Arg& right)
+void E9::operator_xor (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " xor "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
@@ -186,14 +241,14 @@ void E9::operator_xor (Arg& result, Arg& left, Arg& right)
 //               if (left._string != "H" && right._string == "H") result = true;
 //          else if (left._string == "L" && right._string == "M") result = true;
 //          else if (left._string == ""  && right._string != "")  result = true;
-void E9::operator_lt (Arg& result, Arg& left, Arg& right)
+void E9::operator_lt (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " < "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
@@ -203,14 +258,14 @@ void E9::operator_lt (Arg& result, Arg& left, Arg& right)
 //          else if (                       right._string == "H") result = true;
 //          else if (left._string == "L" && right._string == "M") result = true;
 //          else if (left._string == ""                         ) result = true;
-void E9::operator_lte (Arg& result, Arg& left, Arg& right)
+void E9::operator_lte (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " <= "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
@@ -220,14 +275,14 @@ void E9::operator_lte (Arg& result, Arg& left, Arg& right)
 //          else if (left._string == "H"                        ) result = true;
 //          else if (left._string == "M" && right._string == "L") result = true;
 //          else if (                       right._string == "" ) result = true;
-void E9::operator_gte (Arg& result, Arg& left, Arg& right)
+void E9::operator_gte (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " >= "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
@@ -236,26 +291,26 @@ void E9::operator_gte (Arg& result, Arg& left, Arg& right)
 //               if (left._string == "H" && right._string != "H") result = true;
 //          else if (left._string == "M" && right._string == "L") result = true;
 //          else if (left._string != ""  && right._string == "")  result = true;
-void E9::operator_gt (Arg& result, Arg& left, Arg& right)
+void E9::operator_gt (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " > "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_inequal (Arg& result, Arg& left, Arg& right)
+void E9::operator_inequal (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " != "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
@@ -272,26 +327,31 @@ void E9::operator_inequal (Arg& result, Arg& left, Arg& right)
 //        }
 //        else
 //          result = (left == right);
-void E9::operator_equal (Arg& result, Arg& left, Arg& right)
+void E9::operator_equal (Term& result, Term& left, Term& right)
 {
+  if (left._value == right._value)
+  {
+    result._raw = result._value = "true";
+    result._category = "bool";
+  }
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " = "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_match (Arg& result, Arg& left, Arg& right)
+void E9::operator_match (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " ~ "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
@@ -306,90 +366,103 @@ void E9::operator_match (Arg& result, Arg& left, Arg& right)
 //        {
 //          // TODO check further.
 //        }
-void E9::operator_nomatch (Arg& result, Arg& left, Arg& right)
+void E9::operator_nomatch (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " !~ "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_multiply (Arg& result, Arg& left, Arg& right)
+void E9::operator_multiply (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " * "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_divide (Arg& result, Arg& left, Arg& right)
+void E9::operator_divide (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " / "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_add (Arg& result, Arg& left, Arg& right)
+void E9::operator_add (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " + "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_subtract (Arg& result, Arg& left, Arg& right)
+void E9::operator_subtract (Term& result, Term& left, Term& right)
 {
 
-  std::cout << "# " << left._raw << "/" << left._category
+  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " - "
-            << right._raw << "/" << right._category
+            << right._raw << "/" << right._value << "/" << right._category
             << " --> "
-            << result._raw << "/" << result._category
+            << result._raw << "/" << result._value << "/" << result._category
             << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
-bool Expression::eval_match (Variant& left, Variant& right, bool case_sensitive)
+const Term E9::coerce (const Term& input, const std::string& type)
 {
-  if (right._raw_type == "rx")
-  {
-    left.cast (Variant::v_string);
-    right.cast (Variant::v_string);
+  Term result;
 
-    // Create a cached entry, if it does not already exist.
-    if (_regexes.find (right._string) == _regexes.end ())
-      _regexes[right._string] = RX (right._string, case_sensitive);
-
-    if (_regexes[right._string].match (left._string))
-      return true;
-  }
-  else
+  if (type == "bool")
   {
-    left.cast (Variant::v_string);
-    right.cast (Variant::v_string);
-    if (find (left._string, right._string, (bool) case_sensitive) != std::string::npos)
-      return true;
+    result._category = "bool";
+    result._value = get_bool (input) ? "true" : "false";
   }
+
+  if (type == "string")
+  {
+    result._category = "string";
+  }
+
+  // TODO Date
+  // TODO Duration
+
+  return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool E9::get_bool (const Term& input)
+{
+  std::string value = lowerCase (input._raw);
+  if (value == "true"   ||
+      value == "t"      ||
+      value == "1"      ||
+      value == "+"      ||
+      value == "y"      ||
+      value == "yes"    ||
+      value == "on"     ||
+      value == "enable" ||
+      value == "enabled")
+    return true;
 
   return false;
 }
-*/
+
 ////////////////////////////////////////////////////////////////////////////////

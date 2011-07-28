@@ -33,40 +33,103 @@
 #include <Task.h>
 #include <RX.h>
 
+class Term
+{
+public:
+  Term ()
+  : _raw ("")
+  , _value ("")
+  , _category ("")
+  {
+  }
+
+  Term (const Arg& arg)
+  : _raw (arg._raw)
+  , _value (arg._raw)
+  , _category (arg._category)
+  {
+  }
+
+  Term (
+    const std::string& raw,
+    const std::string& value,
+    const std::string& category)
+  : _raw (raw)
+  , _value (value)
+  , _category (category)
+  {
+  }
+
+  Term (const Term& other)
+  {
+    _raw      = other._raw;
+    _value    = other._value;
+    _category = other._category;
+  }
+
+  Term& operator= (const Term& other)
+  {
+    if (this != &other)
+    {
+      _raw      = other._raw;
+      _value    = other._value;
+      _category = other._category;
+    }
+
+    return *this;
+  }
+
+  bool operator== (const Term& other) const
+  {
+    return _raw      == other._raw   &&
+           _value    == other._value &&
+           _category == other._category;
+  }
+
+public:
+  std::string _raw;      // Raw input token, never modified
+  std::string _value;    // Evaluated raw token, sometimes identical
+  std::string _category; // Categorized argument
+};
+
 class E9
 {
 public:
-  E9 (A3&);
+  E9 (const A3&);
   ~E9 ();
 
   bool evalFilter (const Task&);
   std::string evalExpression (const Task&);
 
 private:
-  void eval (const Task&, std::vector <Arg>&);
+  void eval (const Task&, std::vector <Term>&);
+  bool eval_match (Term&, Term&, bool);
 
   // Unary.
-  void operator_not (Arg&, Arg&);
+  void operator_not (Term&, Term&);
 
   // Binary.
-  void operator_and      (Arg&, Arg&, Arg&);
-  void operator_or       (Arg&, Arg&, Arg&);
-  void operator_xor      (Arg&, Arg&, Arg&);
-  void operator_lt       (Arg&, Arg&, Arg&);
-  void operator_lte      (Arg&, Arg&, Arg&);
-  void operator_gte      (Arg&, Arg&, Arg&);
-  void operator_gt       (Arg&, Arg&, Arg&);
-  void operator_inequal  (Arg&, Arg&, Arg&);
-  void operator_equal    (Arg&, Arg&, Arg&);
-  void operator_match    (Arg&, Arg&, Arg&);
-  void operator_nomatch  (Arg&, Arg&, Arg&);
-  void operator_multiply (Arg&, Arg&, Arg&);
-  void operator_divide   (Arg&, Arg&, Arg&);
-  void operator_add      (Arg&, Arg&, Arg&);
-  void operator_subtract (Arg&, Arg&, Arg&);
+  void operator_and      (Term&, Term&, Term&);
+  void operator_or       (Term&, Term&, Term&);
+  void operator_xor      (Term&, Term&, Term&);
+  void operator_lt       (Term&, Term&, Term&);
+  void operator_lte      (Term&, Term&, Term&);
+  void operator_gte      (Term&, Term&, Term&);
+  void operator_gt       (Term&, Term&, Term&);
+  void operator_inequal  (Term&, Term&, Term&);
+  void operator_equal    (Term&, Term&, Term&);
+  void operator_match    (Term&, Term&, Term&);
+  void operator_nomatch  (Term&, Term&, Term&);
+  void operator_multiply (Term&, Term&, Term&);
+  void operator_divide   (Term&, Term&, Term&);
+  void operator_add      (Term&, Term&, Term&);
+  void operator_subtract (Term&, Term&, Term&);
+
+  const Term coerce (const Term&, const std::string&);
+  bool get_bool (const Term&);
 
 private:
-  A3 _args;
+  std::vector <Term> _terms;
   std::map <std::string, RX> _regexes;
 };
 

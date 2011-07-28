@@ -653,15 +653,15 @@ const bool Config::getBoolean (const std::string& key)
   if ((*this).find (key) != (*this).end ())
   {
     std::string value = lowerCase ((*this)[key]);
-    if (value == "t"      ||  // TODO i18n
-        value == "true"   ||  // TODO i18n
-        value == "1"      ||  // no i18n
-        value == "+"      ||  // no i18n
-        value == "y"      ||  // TODO i18n
-        value == "yes"    ||  // TODO i18n
-        value == "on"     ||  // TODO i18n
-        value == "enable" ||  // TODO i18n
-        value == "enabled")   // TODO i18n
+    if (value == "t"      ||
+        value == "true"   ||
+        value == "1"      ||
+        value == "+"      ||
+        value == "y"      ||
+        value == "yes"    ||
+        value == "on"     ||
+        value == "enable" ||
+        value == "enabled")
       return true;
   }
 
