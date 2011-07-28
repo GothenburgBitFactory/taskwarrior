@@ -85,6 +85,10 @@
  + Added feature #800, adding a new command 'columns' that lists all the columns
    available for custom reports, and includes their formatting options (thanks
    to T. Charles Yun).
+ + Added feature #811, which makes the 'execute' command optional, and
+   controlled by '#define HAVE_EXECUTE 1' in cmake.h.  This allows a build
+   that does not have the potential security hole, in the event that taskwarrior
+   is run at elevated privilege, or run in the context of a web server.
 
 # Tracked Bugs, sorted by ID.
  + Fixed bug #403, which disambiguates certain commands involving numbers.

@@ -36,6 +36,7 @@
 #include <text.h>
 #include <i18n.h>
 #include <Command.h>
+#include <cmake.h>
 
 #include <CmdAdd.h>
 #include <CmdAnnotate.h>
@@ -54,7 +55,9 @@
 #include <CmdDone.h>
 #include <CmdDuplicate.h>
 #include <CmdEdit.h>
+#ifdef HAVE_EXECUTE
 #include <CmdExec.h>
+#endif
 #include <CmdExport.h>
 #include <CmdHelp.h>
 #include <CmdHistory.h>
@@ -119,7 +122,9 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdDone ();               all[c->keyword ()] = c;
   c = new CmdDuplicate ();          all[c->keyword ()] = c;
   c = new CmdEdit ();               all[c->keyword ()] = c;
+#ifdef HAVE_EXECUTE
   c = new CmdExec ();               all[c->keyword ()] = c;
+#endif
   c = new CmdExport ();             all[c->keyword ()] = c;
   c = new CmdGHistoryMonthly ();    all[c->keyword ()] = c;
   c = new CmdGHistoryAnnual ();     all[c->keyword ()] = c;
