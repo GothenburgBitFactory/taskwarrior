@@ -116,10 +116,10 @@ private:
   void operator_lte      (Term&, Term&, Term&);
   void operator_gte      (Term&, Term&, Term&);
   void operator_gt       (Term&, Term&, Term&);
-  void operator_inequal  (Term&, Term&, Term&);
-  void operator_equal    (Term&, Term&, Term&);
-  void operator_match    (Term&, Term&, Term&);
-  void operator_nomatch  (Term&, Term&, Term&);
+  void operator_inequal  (Term&, Term&, Term&, bool);
+  void operator_equal    (Term&, Term&, Term&, bool);
+  void operator_match    (Term&, Term&, Term&, bool);
+  void operator_nomatch  (Term&, Term&, Term&, bool);
   void operator_multiply (Term&, Term&, Term&);
   void operator_divide   (Term&, Term&, Term&);
   void operator_add      (Term&, Term&, Term&);

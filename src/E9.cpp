@@ -136,10 +136,10 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
         else if (arg->_raw == "<=")  operator_lte      (result, left, right);
         else if (arg->_raw == ">=")  operator_gte      (result, left, right);
         else if (arg->_raw == ">")   operator_gt       (result, left, right);
-        else if (arg->_raw == "!=")  operator_inequal  (result, left, right);
-        else if (arg->_raw == "=")   operator_equal    (result, left, right);
-        else if (arg->_raw == "~")   operator_match    (result, left, right);
-        else if (arg->_raw == "!~")  operator_nomatch  (result, left, right);
+        else if (arg->_raw == "!=")  operator_inequal  (result, left, right, case_sensitive);
+        else if (arg->_raw == "=")   operator_equal    (result, left, right, case_sensitive);
+        else if (arg->_raw == "~")   operator_match    (result, left, right, case_sensitive);
+        else if (arg->_raw == "!~")  operator_nomatch  (result, left, right, case_sensitive);
         else if (arg->_raw == "*")   operator_multiply (result, left, right);
         else if (arg->_raw == "/")   operator_divide   (result, left, right);
         else if (arg->_raw == "+")   operator_add      (result, left, right);
@@ -169,8 +169,8 @@ bool E9::eval_match (Term& left, Term& right, bool case_sensitive)
 {
   if (right._category == "rx")
   {
-    coerce (left, "string");
-    coerce (right, "string");
+    left  = coerce (left,  "string");
+    right = coerce (right, "string");
 
     // Create a cached entry, if it does not already exist.
     if (_regexes.find (right._value) == _regexes.end ())
@@ -181,8 +181,8 @@ bool E9::eval_match (Term& left, Term& right, bool case_sensitive)
   }
   else
   {
-    coerce (left, "string");
-    coerce (right, "string");
+    left  = coerce (left,  "string");
+    right = coerce (right, "string");
     if (find (left._value, right._value, (bool) case_sensitive) != std::string::npos)
       return true;
   }
@@ -193,7 +193,9 @@ bool E9::eval_match (Term& left, Term& right, bool case_sensitive)
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_not (Term& result, Term& right)
 {
+  // TODO This is not right.
   result = Term (right._raw, coerce (right, "bool")._value, "bool");
+
   std::cout << "# not " << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
@@ -203,6 +205,16 @@ void E9::operator_not (Term& result, Term& right)
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_and (Term& result, Term& left, Term& right)
 {
+  // Assume failure.
+  result._raw = result._value = "false";
+  result._category = "bool";
+
+  if (coerce (left,  "bool")._value == "true" &&
+      coerce (right, "bool")._value == "true" )
+  {
+    result._raw = result._value = "true";
+    result._category = "bool";
+  }
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " and "
@@ -215,6 +227,16 @@ void E9::operator_and (Term& result, Term& left, Term& right)
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_or (Term& result, Term& left, Term& right)
 {
+  // Assume failure.
+  result._raw = result._value = "false";
+  result._category = "bool";
+
+  if (coerce (left,  "bool")._value == "true" || 
+      coerce (right, "bool")._value == "true" )
+  {
+    result._raw = result._value = "true";
+    result._category = "bool";
+  }
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " or "
@@ -227,6 +249,19 @@ void E9::operator_or (Term& result, Term& left, Term& right)
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_xor (Term& result, Term& left, Term& right)
 {
+  // Assume failure.
+  result._raw = result._value = "false";
+  result._category = "bool";
+
+  bool bool_left  = coerce (left,  "bool")._value == "true";
+  bool bool_right = coerce (right, "bool")._value == "true";
+
+  if ((bool_left && !bool_right) ||
+      (!bool_left && bool_right))
+  {
+    result._raw = result._value = "true";
+    result._category = "bool";
+  }
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " xor "
@@ -303,7 +338,11 @@ void E9::operator_gt (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_inequal (Term& result, Term& left, Term& right)
+void E9::operator_inequal (
+  Term& result,
+  Term& left,
+  Term& right,
+  bool case_sensitive)
 {
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
@@ -315,11 +354,6 @@ void E9::operator_inequal (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//        bool result = false;
-//        if (left._raw == "project" || left._raw == "recur")
-//        {
-//          left.cast (Variant::v_string);
-//          right.cast (Variant::v_string);
 //          if (right._string.length () <= left._string.length ())
 //            result = compare (right._string,
 //                              left._string.substr (0, right._string.length ()),
@@ -327,12 +361,40 @@ void E9::operator_inequal (Term& result, Term& left, Term& right)
 //        }
 //        else
 //          result = (left == right);
-void E9::operator_equal (Term& result, Term& left, Term& right)
+void E9::operator_equal (
+  Term& result,
+  Term& left,
+  Term& right,
+  bool case_sensitive)
 {
-  if (left._value == right._value)
+  // Assume failure.
+  result._raw = result._value = "false";
+  result._category = "bool";
+
+  // 'project' and 'recur' attributes are matched leftmost.
+  if (left._raw == "project" || left._raw == "recur")
   {
-    result._raw = result._value = "true";
-    result._category = "bool";
+    coerce (left, "string");
+    coerce (right, "string");
+
+    if (right._value.length () <= left._value.length () &&
+        compare (right._value,
+                 left._value.substr (0, right._value.length ()),
+                 (bool) case_sensitive))
+    {
+      result._raw = result._value = "true";
+      result._category = "bool";
+    }
+  }
+
+  // Regular equality matching.
+  else
+  {
+    if (left._value == right._value)
+    {
+      result._raw = result._value = "true";
+      result._category = "bool";
+    }
   }
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
@@ -344,8 +406,18 @@ void E9::operator_equal (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_match (Term& result, Term& left, Term& right)
+void E9::operator_match (
+  Term& result,
+  Term& left,
+  Term& right,
+  bool case_sensitive)
 {
+  result._category = "bool";
+
+  if (eval_match (left, right, case_sensitive))
+    result._raw = result._value = "true";
+  else
+    result._raw = result._value = "false";
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " ~ "
@@ -366,8 +438,18 @@ void E9::operator_match (Term& result, Term& left, Term& right)
 //        {
 //          // TODO check further.
 //        }
-void E9::operator_nomatch (Term& result, Term& left, Term& right)
+void E9::operator_nomatch (
+  Term& result,
+  Term& left,
+  Term& right,
+  bool case_sensitive)
 {
+  result._category = "bool";
+
+  if (!eval_match (left, right, case_sensitive))
+    result._raw = result._value = "true";
+  else
+    result._raw = result._value = "false";
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " !~ "
@@ -438,6 +520,9 @@ const Term E9::coerce (const Term& input, const std::string& type)
 
   if (type == "string")
   {
+    // TODO Convert date?
+    result._raw      = input._raw;
+    result._value    = input._value;
     result._category = "string";
   }
 
@@ -450,7 +535,7 @@ const Term E9::coerce (const Term& input, const std::string& type)
 ////////////////////////////////////////////////////////////////////////////////
 bool E9::get_bool (const Term& input)
 {
-  std::string value = lowerCase (input._raw);
+  std::string value = lowerCase (input._value);
   if (value == "true"   ||
       value == "t"      ||
       value == "1"      ||
