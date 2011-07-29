@@ -216,12 +216,14 @@ void E9::operator_and (Term& result, Term& left, Term& right)
     result._category = "bool";
   }
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " and "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -238,12 +240,14 @@ void E9::operator_or (Term& result, Term& left, Term& right)
     result._category = "bool";
   }
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " or "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -263,12 +267,14 @@ void E9::operator_xor (Term& result, Term& left, Term& right)
     result._category = "bool";
   }
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " xor "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -344,13 +350,20 @@ void E9::operator_inequal (
   Term& right,
   bool case_sensitive)
 {
+  operator_equal (result, left, right, case_sensitive);
+  if (result._raw == "false")
+    result._raw = result._value = "true";
+  else
+    result._raw = result._value = "false";
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " != "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -397,12 +410,14 @@ void E9::operator_equal (
     }
   }
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " = "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -419,12 +434,14 @@ void E9::operator_match (
   else
     result._raw = result._value = "false";
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " ~ "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -451,12 +468,14 @@ void E9::operator_nomatch (
   else
     result._raw = result._value = "false";
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " !~ "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

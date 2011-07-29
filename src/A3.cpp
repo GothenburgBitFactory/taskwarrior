@@ -815,6 +815,7 @@ const A3 A3::expand (const A3& input) const
 {
   A3 expanded;
   std::vector <Arg>::const_iterator arg;
+  std::vector <Arg>::const_iterator previous = input.begin ();
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
     // name:value  -->  name = value
@@ -950,7 +951,9 @@ const A3 A3::expand (const A3& input) const
     }
 
     // word  -->  description ~ word
-    else if (arg->_category == "word")
+    // Note: use of previous prevents desc~foo --> desc~desc~foo
+    else if (arg->_category == "word" &&
+             previous->_category != "op")
     {
       expanded.push_back (Arg ("description", "dom"));
       expanded.push_back (Arg ("~",           "op"));
@@ -971,6 +974,8 @@ const A3 A3::expand (const A3& input) const
     // Default  -->  preserve
     else
       expanded.push_back (*arg);
+
+    previous = arg;
   }
 
   return expanded;
