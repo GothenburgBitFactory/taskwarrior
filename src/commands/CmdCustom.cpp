@@ -195,18 +195,18 @@ void CmdCustom::validateReportColumns (std::vector <std::string>& columns)
   static std::map <std::string, std::string> legacyMap;
   if (! legacyMap.size ())
   {
-    legacyMap["priority_long"]        = "priority.long";
-    legacyMap["entry_time"]           = "entry";
-    legacyMap["start_time"]           = "start";
-    legacyMap["end_time"]             = "end";
-    legacyMap["countdown"]            = "due.countdown";
-    legacyMap["countdown_compact"]    = "due.countdown";
-    legacyMap["age"]                  = "entry.age";
-    legacyMap["age_compact"]          = "entry.age";
-    legacyMap["active"]               = "start.active";
-    legacyMap["recurrence_indicator"] = "recur.indicator";
-    legacyMap["tag_indicator"]        = "tags.indicator";
-    legacyMap["description_only"]     = "description.desc";
+    legacyMap["priority_long"]        = "priority.long";        // Deprecated.
+    legacyMap["entry_time"]           = "entry";                // Deprecated.
+    legacyMap["start_time"]           = "start";                // Deprecated.
+    legacyMap["end_time"]             = "end";                  // Deprecated.
+    legacyMap["countdown"]            = "due.countdown";        // Deprecated.
+    legacyMap["countdown_compact"]    = "due.countdown";        // Deprecated.
+    legacyMap["age"]                  = "entry.age";            // Deprecated.
+    legacyMap["age_compact"]          = "entry.age";            // Deprecated.
+    legacyMap["active"]               = "start.active";         // Deprecated.
+    legacyMap["recurrence_indicator"] = "recur.indicator";      // Deprecated.
+    legacyMap["tag_indicator"]        = "tags.indicator";       // Deprecated.
+    legacyMap["description_only"]     = "description.desc";     // Deprecated.
   }
 
   std::vector <std::string>::iterator i;
@@ -233,18 +233,18 @@ void CmdCustom::validateSortColumns (std::vector <std::string>& columns)
   static std::map <std::string, std::string> legacyMap;
   if (! legacyMap.size ())
   {
-    legacyMap["priority_long"]        = "priority";
-    legacyMap["entry_time"]           = "entry";
-    legacyMap["start_time"]           = "start";
-    legacyMap["end_time"]             = "end";
-    legacyMap["countdown"]            = "due";
-    legacyMap["countdown_compact"]    = "due";
-    legacyMap["age"]                  = "entry";
-    legacyMap["age_compact"]          = "entry";
-    legacyMap["active"]               = "start";
-    legacyMap["recurrence_indicator"] = "recur";
-    legacyMap["tag_indicator"]        = "tags";
-    legacyMap["description_only"]     = "description";
+    legacyMap["priority_long"]        = "priority";             // Deprecated
+    legacyMap["entry_time"]           = "entry";                // Deprecated
+    legacyMap["start_time"]           = "start";                // Deprecated
+    legacyMap["end_time"]             = "end";                  // Deprecated
+    legacyMap["countdown"]            = "due";                  // Deprecated
+    legacyMap["countdown_compact"]    = "due";                  // Deprecated
+    legacyMap["age"]                  = "entry";                // Deprecated
+    legacyMap["age_compact"]          = "entry";                // Deprecated
+    legacyMap["active"]               = "start";                // Deprecated
+    legacyMap["recurrence_indicator"] = "recur";                // Deprecated
+    legacyMap["tag_indicator"]        = "tags";                 // Deprecated
+    legacyMap["description_only"]     = "description";          // Deprecated
   }
 
   std::vector <std::string>::iterator i;
