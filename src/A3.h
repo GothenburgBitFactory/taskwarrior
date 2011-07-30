@@ -84,7 +84,10 @@ class A3 : public std::vector <Arg>
 {
 public:
   A3 ();
+  A3 (const A3&);
+  A3& operator= (const A3&);
   ~A3 ();
+
 
   void capture (int, const char**);
   void capture (const std::string&);
@@ -142,6 +145,7 @@ public:
 
 private:
   bool _read_only_command;
+  std::string _limit;
 };
 
 #endif

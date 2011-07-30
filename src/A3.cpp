@@ -105,7 +105,26 @@ static struct
 ////////////////////////////////////////////////////////////////////////////////
 A3::A3 ()
 : _read_only_command (true)
+, _limit ("")
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+A3::A3 (const A3& other)
+{
+  std::vector <Arg>::operator= (other);
+  _read_only_command = other._read_only_command;
+  _limit             = other._limit;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+A3& A3::operator= (const A3& other)
+{
+  std::vector <Arg>::operator= (other);
+  _read_only_command = other._read_only_command;
+  _limit             = other._limit;
+
+  return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -515,12 +534,7 @@ bool A3::find_command (std::string& command) const
 ////////////////////////////////////////////////////////////////////////////////
 const std::string A3::find_limit () const
 {
-  std::vector <Arg>::const_reverse_iterator arg;
-  for (arg = this->rbegin (); arg != this->rend (); ++arg)
-    if (arg->_raw.find ("limit:") != std::string::npos)
-      return arg->_raw.substr (6);
-
-  return "";
+  return _limit;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -555,13 +569,17 @@ const A3 A3::extract_filter () const
       filter.push_back (*arg);
   }
 
-  return postfix (infix (sequence (expand (tokenize (filter)))));
+  filter = postfix (infix (sequence (expand (tokenize (filter)))));
+  context.a3._limit = filter._limit;
+  return filter;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const A3 A3::extract_modifications () const
 {
   A3 mods;
+  mods._limit = _limit;
+
   bool before_command = true;
   std::vector <Arg>::const_iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
@@ -573,7 +591,9 @@ const A3 A3::extract_modifications () const
       mods.push_back (*arg);
   }
 
-  return tokenize (mods);
+  mods = tokenize (mods);
+  context.a3._limit = mods._limit;
+  return mods;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -670,9 +690,18 @@ const A3 A3::tokenize (const A3& input) const
 
     else if (is_attr (n, s))
     {
-      output.push_back (Arg (s, "attr"));
-      if (found_sequence)
-        found_something_after_sequence = true;
+      // The "limit:xxx" attribute is not stored, but the value is retained.
+      if (s.length () > 6 &&
+          s.substr (0, 6) == "limit:")
+      {
+        output._limit = s.substr (6);
+      }
+      else
+      {
+        output.push_back (Arg (s, "attr"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
     }
 
     else if (is_attmod (n, s))
@@ -792,6 +821,8 @@ const A3 A3::infix (const A3& input) const
   Arg previous ("?", "op");
 
   A3 modified;
+  modified._limit = input._limit;
+
   std::vector <Arg>::const_iterator arg;
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
@@ -814,6 +845,8 @@ const A3 A3::infix (const A3& input) const
 const A3 A3::expand (const A3& input) const
 {
   A3 expanded;
+  expanded._limit = input._limit;
+
   std::vector <Arg>::const_iterator arg;
   std::vector <Arg>::const_iterator previous = input.begin ();
   for (arg = input.begin (); arg != input.end (); ++arg)
@@ -987,6 +1020,7 @@ const A3 A3::expand (const A3& input) const
 const A3 A3::sequence (const A3& input) const
 {
   A3 sequenced;
+  sequenced._limit = input._limit;
 
   // Extract all the components of a sequence.
   std::vector <int> ids;
@@ -1088,6 +1122,8 @@ const A3 A3::sequence (const A3& input) const
 const A3 A3::postfix (const A3& input) const
 {
   A3 converted;
+  converted._limit = input._limit;
+
   A3 op_stack;
   char type;
   int precedence;
@@ -1249,6 +1285,8 @@ bool A3::is_attmod (Nibbler& n, std::string& result)
 bool A3::is_attribute (const std::string& input, std::string& canonical)
 {
   std::vector <std::string> columns = context.getColumns ();
+  columns.push_back ("limit"); // Special case.
+
   std::vector <std::string> matches;
   autoComplete (input,
                 columns,
