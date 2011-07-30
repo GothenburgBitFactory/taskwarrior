@@ -148,6 +148,7 @@ _regex_words values 'task frequencies' \
 	'weekly:Every week' \
 	'biweekly:Every two weeks' \
 	'fortnight:Every two weeks' \
++ 'monthly:Every month' \
 	'quarterly:Every three months' \
 	'semiannual:Every six months' \
 	'annual:Every year' \

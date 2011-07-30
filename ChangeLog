@@ -171,6 +171,8 @@
  + Fixed bug that showed the 'due' date, under the heading 'until' date, in the
    info report (thanks to Michael McCann).
  + Fixed burndown chart y-axis height calculation (thanks to Ben Boeckel).
+ + Fixed missing recurrence values in zsh completion script (thanks to Ben
+   Boeckel).
 
 ------ old releases ------------------------------
 
