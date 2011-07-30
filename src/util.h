@@ -83,5 +83,7 @@ int execute (const std::string&, std::vector<std::string>);
 std::string compressIds (const std::vector <int>&);
 void combine (std::vector <int>&, const std::vector <int>&);
 
+unsigned burndown_size (unsigned ntasks);
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////
