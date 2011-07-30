@@ -450,7 +450,7 @@ void Context::assumeLocations ()
 
   home_dir = pw->pw_dir;
   rc_file  = File      (home_dir + "/.taskrc");
-  data_dir = Directory (home_dir + "./task");
+  data_dir = Directory (home_dir + "/.task");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
