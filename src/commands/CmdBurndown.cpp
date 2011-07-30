@@ -33,6 +33,7 @@
 #include <Date.h>
 #include <Duration.h>
 #include <main.h>
+#include <util.h>
 #include <CmdBurndown.h>
 
 extern Context context;
@@ -778,48 +779,8 @@ void Chart::maxima ()
 // (max_value), populate a vector of labels for the y axis.
 void Chart::yLabels (std::vector <int>& labels)
 {
-/*
-  double logarithm = log10 ((double) value);
-
-  int exponent = (int) logarithm;
-  logarithm -= exponent;
-
-  int divisions = 10;
-  double localMaximum = pow (10.0, exponent + 1);
-  bool repeat = true;
-
-  do
-  {
-    repeat = false;
-    double scale = pow (10.0, exponent);
-
-    while (value < localMaximum - scale)
-    {
-      localMaximum -= scale;
-      --divisions;
-    }
-
-    if (divisions < 3 && exponent > 1)
-    {
-      divisions *= 10;
-      --exponent;
-      repeat = true;
-    }
-  }
-  while (repeat);
-
-  int division_size = localMaximum / divisions;
-  for (int i = 0; i <= divisions; ++i)
-    labels.push_back (i * division_size);
-*/
-
-  // For now, simply select 0, n/2 and n, where n is value rounded up to the
-  // nearest 10.  This is a poor solution.
-  int high = max_value;
-  int mod = high % 10;
-  if (mod)
-    high += 10 - mod;
-
+  // Calculate may Y using a nice algorithm that rounds the data.
+  int high = burndown_size (max_value);
   int half = high / 2;
 
   labels.push_back (0);
