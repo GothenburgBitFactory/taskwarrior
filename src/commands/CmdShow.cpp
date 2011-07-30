@@ -205,7 +205,8 @@ int CmdShow::execute (std::string& output)
     " urgency.waiting.coefficient"
     " verbose"
     " weekstart"
-    " xterm.title";
+    " xterm.title"
+    " ";
 
   // This configuration variable is supported, but not documented.  It exists
   // so that unit tests can force color to be on even when the output from task
