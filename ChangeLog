@@ -16,6 +16,7 @@
  + The old 'curses' configuration variable is now replaced by 'detection', and
    has the same meaning - whether or not to auto-detect terminal size.
  + Added Czech Republic holiday files (thanks to Tomas Cech).
+ + Added Japanese holiday files (thanks to Takanobu Watanabe).
  + All holiday files have been renamed to include a locale, rather than just a
    country code.  For example: holidays.en-US.rc.
  + Now ships with an add-on script, update-holidays.pl, which contacts
