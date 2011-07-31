@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (282);
+  UnitTest t (289);
 
   try
   {
@@ -467,6 +467,17 @@ int main (int argc, char** argv)
     t.is (s, "f",                     "               ' '   getWord  -> f");
     t.ok (n.skipWS (),                "                ''   skip ,   -> ok");
     t.ok (n.depleted (),              "                ''   depleted -> true");
+
+    // bool getN (int, std::string&);
+    t.diag ("Nibbler::getN");
+    n = Nibbler ("111223");
+    t.ok (n.getN (3, s),              "  '111223' : getN (3)         -> true");
+    t.is (s, "111",                   "  '111223' : getN (3)         -> '111'");
+    t.ok (n.getN (2, s),              "     '223' : getN (2)         -> true");
+    t.is (s, "22",                    "     '223' : getN (2)         -> '22'");
+    t.ok (n.getN (1, s),              "       '3' : getN (1)         -> true");
+    t.is (s, "3",                     "       '3' : getN (1)         -> '1'");
+    t.ok    (n.depleted (),           "        '' : depleted ()      -> true");
 
     // bool getUntilEOL (std::string&);
     t.diag ("Nibbler::getUntilEOL");
