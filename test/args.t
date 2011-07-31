@@ -44,21 +44,21 @@ qx{../src/task rc:args.rc add project:p pri:H +tag foo};
 my $output = qx{../src/task rc:args.rc info 1};
 like ($output, qr/Description\s+foo\n/ms, 'task add project:p pri:H +tag foo');
 
-qx{../src/task rc:args.rc 1 project:p pri:H +tag -- foo};
+qx{../src/task rc:args.rc 1 modify project:p pri:H +tag -- foo};
 $output = qx{../src/task rc:args.rc info 1};
-like ($output, qr/Description\s+foo\n/ms, 'task 1 project:p pri:H +tag -- foo');
+like ($output, qr/Description\s+foo\n/ms, 'task 1 modify project:p pri:H +tag -- foo');
 
-qx{../src/task rc:args.rc 1 project:p pri:H -- +tag foo};
+qx{../src/task rc:args.rc 1 modify project:p pri:H -- +tag foo};
 $output = qx{../src/task rc:args.rc info 1};
-like ($output, qr/Description\s+\+tag\sfoo\n/ms, 'task 1 project:p pri:H -- +tag foo');
+like ($output, qr/Description\s+\+tag\sfoo\n/ms, 'task 1 modify project:p pri:H -- +tag foo');
 
-qx{../src/task rc:args.rc 1 project:p -- pri:H +tag foo};
+qx{../src/task rc:args.rc 1 modify project:p -- pri:H +tag foo};
 $output = qx{../src/task rc:args.rc info 1};
-like ($output, qr/Description\s+pri:H\s\+tag\sfoo\n/ms, 'task 1 project:p -- pri:H +tag foo');
+like ($output, qr/Description\s+pri:H\s\+tag\sfoo\n/ms, 'task 1 modify project:p -- pri:H +tag foo');
 
-qx{../src/task rc:args.rc 1 -- project:p pri:H +tag foo};
+qx{../src/task rc:args.rc 1 modify -- project:p pri:H +tag foo};
 $output = qx{../src/task rc:args.rc info 1};
-like ($output, qr/Description\s+project:p\spri:H\s\+tag\sfoo\n/ms, 'task 1 -- project:p pri:H +tag foo');
+like ($output, qr/Description\s+project:p\spri:H\s\+tag\sfoo\n/ms, 'task 1 modify -- project:p pri:H +tag foo');
 
 # Cleanup.
 unlink 'pending.data';

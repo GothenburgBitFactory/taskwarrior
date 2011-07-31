@@ -652,6 +652,7 @@ const A3 A3::tokenize (const A3& input) const
   n.skipWS ();
 
   // For identifying sequence versus non-sequence.
+  bool terminated                     = false;
   bool found_sequence                 = false;
   bool found_something_after_sequence = false;
 
@@ -661,154 +662,169 @@ const A3 A3::tokenize (const A3& input) const
   time_t t;
   while (! n.depleted ())
   {
-    if (n.getQuoted ('"', s, true) ||
-        n.getQuoted ('\'', s, true))
+    if (!terminated)
     {
-      output.push_back (Arg (s, "string"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
+      if (n.getLiteral ("--"))
+        terminated = true;
 
-    else if (is_subst (n, s))
-    {
-      output.push_back (Arg (s, "subst"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (is_pattern (n, s))
-    {
-      output.push_back (Arg (s, "pattern"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (is_tag (n, s))
-    {
-      output.push_back (Arg (s, "tag"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (n.getOneOf (operators, s))
-    {
-      output.push_back (Arg (s, "op"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (is_attr (n, s))
-    {
-      // The "limit:xxx" attribute is not stored, but the value is retained.
-      if (s.length () > 6 &&
-          s.substr (0, 6) == "limit:")
+      else if (n.getQuoted ('"', s, true) ||
+          n.getQuoted ('\'', s, true))
       {
-        output._limit = s.substr (6);
+        output.push_back (Arg (s, "string"));
+        if (found_sequence)
+          found_something_after_sequence = true;
       }
+
+      else if (is_subst (n, s))
+      {
+        output.push_back (Arg (s, "subst"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (is_pattern (n, s))
+      {
+        output.push_back (Arg (s, "pattern"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (is_tag (n, s))
+      {
+        output.push_back (Arg (s, "tag"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (n.getOneOf (operators, s))
+      {
+        output.push_back (Arg (s, "op"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (is_attr (n, s))
+      {
+        // The "limit:xxx" attribute is not stored, but the value is retained.
+        if (s.length () > 6 &&
+            s.substr (0, 6) == "limit:")
+        {
+          output._limit = s.substr (6);
+        }
+        else
+        {
+          output.push_back (Arg (s, "attr"));
+          if (found_sequence)
+            found_something_after_sequence = true;
+        }
+      }
+
+      else if (is_attmod (n, s))
+      {
+        output.push_back (Arg (s, "attmod"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (is_dom (n, s))
+      {
+        output.push_back (Arg (s, "dom"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (n.getDateISO (t))
+      {
+        output.push_back (Arg (Date (t).toISO (), "date"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (n.getDate (date_format, t))
+      {
+        output.push_back (Arg (Date (t).toString (date_format), "date"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (is_duration (n, s))
+      {
+        output.push_back (Arg (s, "duration"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (is_id (n, s))
+      {
+        if (found_something_after_sequence)
+        {
+          output.push_back (Arg (s, "num"));
+        }
+        else
+        {
+          output.push_back (Arg (s, "id"));
+          found_sequence = true;
+        }
+      }
+
+      else if (is_uuid (n, s))
+      {
+        if (found_something_after_sequence)
+        {
+          output.push_back (Arg (s, "num"));
+        }
+        else
+        {
+          output.push_back (Arg (s, "uuid"));
+          found_sequence = true;
+        }
+      }
+
+      // TODO This may be redundant.
+      else if (n.getNumber (d))
+      {
+        output.push_back (Arg (format (d), "num"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (n.getInt (i))
+      {
+        output.push_back (Arg (format (i), "int"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (n.getName (s) ||
+               n.getWord (s))
+      {
+        if (Date::valid (s))
+          output.push_back (Arg (s, "date"));
+        else
+          output.push_back (Arg (s, "word"));
+
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
       else
       {
-        output.push_back (Arg (s, "attr"));
+        if (! n.getUntilWS (s))
+          n.getUntilEOS (s);
+
+        output.push_back (Arg (s, "word"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
     }
-
-    else if (is_attmod (n, s))
-    {
-      output.push_back (Arg (s, "attmod"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (is_dom (n, s))
-    {
-      output.push_back (Arg (s, "dom"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (n.getDateISO (t))
-    {
-      output.push_back (Arg (Date (t).toISO (), "date"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (n.getDate (date_format, t))
-    {
-      output.push_back (Arg (Date (t).toString (date_format), "date"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (is_duration (n, s))
-    {
-      output.push_back (Arg (s, "duration"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (is_id (n, s))
-    {
-      if (found_something_after_sequence)
-      {
-        output.push_back (Arg (s, "num"));
-      }
-      else
-      {
-        output.push_back (Arg (s, "id"));
-        found_sequence = true;
-      }
-    }
-
-    else if (is_uuid (n, s))
-    {
-      if (found_something_after_sequence)
-      {
-        output.push_back (Arg (s, "num"));
-      }
-      else
-      {
-        output.push_back (Arg (s, "uuid"));
-        found_sequence = true;
-      }
-    }
-
-    // TODO This may be redundant.
-    else if (n.getNumber (d))
-    {
-      output.push_back (Arg (format (d), "num"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (n.getInt (i))
-    {
-      output.push_back (Arg (format (i), "int"));
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
-    else if (n.getName (s) ||
-             n.getWord (s))
-    {
-      if (Date::valid (s))
-        output.push_back (Arg (s, "date"));
-      else
-        output.push_back (Arg (s, "word"));
-
-      if (found_sequence)
-        found_something_after_sequence = true;
-    }
-
     else
     {
-      if (! n.getUntilWS (s))
-        n.getUntilEOS (s);
-
-      output.push_back (Arg (s, "word"));
-      if (found_sequence)
-        found_something_after_sequence = true;
+      if (n.getUntilEOS (s))
+      {
+        output.push_back (Arg (s, "word"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
     }
 
     n.skipWS ();
