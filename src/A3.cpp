@@ -145,7 +145,7 @@ void A3::capture (int argc, const char** argv)
 void A3::capture (const std::string& arg)
 {
   std::vector <std::string> parts;
-    this->push_back (Arg (arg, ""));
+  this->push_back (Arg (arg, ""));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1214,6 +1214,7 @@ bool A3::is_attr (Nibbler& n, std::string& result)
       if (n.getQuoted   ('"', value)  ||
           n.getQuoted   ('\'', value) ||
           n.getName     (value)       ||
+          n.getUntilWS  (value)       ||
           n.getUntilEOS (value)       ||
           n.depleted ())
       {
