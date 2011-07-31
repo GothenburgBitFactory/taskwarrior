@@ -463,6 +463,7 @@ void A3::inject_defaults ()
       std::string defaultCommand = context.config.get ("default.command");
       if (defaultCommand != "")
       {
+        context.debug ("No command or sequence found - assuming default.command.");
         capture_first (defaultCommand);
         context.header ("[" + combine () + "]");
       }
@@ -474,12 +475,14 @@ void A3::inject_defaults ()
       // Modify command.
       if (found_other)
       {
+        context.debug ("Sequence and filter, but no command found - assuming 'modify' command.");
         capture_first ("modify");
       }
 
       // Information command.
       else
       {
+        context.debug ("Sequence but no command found - assuming 'information' command.");
         context.header (STRING_ASSUME_INFO);
         capture_first ("information");
       }

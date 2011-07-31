@@ -119,11 +119,17 @@ int Context::initialize (int argc, const char** argv)
     // Instantiate built-in column objects.
     Column::factory (columns);
 
-    // Categorize all arguments one more time.  THIS IS NECESSARY.
+    // Categorize all arguments one more time.  THIS IS NECESSARY - it helps the
+    // following inject_defaults method determine whether there needs to be a
+    // default command assumed.
     a3.categorize ();
 
     // Handle default command and assumed 'info' command.
     a3.inject_defaults ();
+
+    // The re-categorization allows all injected arguments to be properly given
+    // a category.
+    a3.categorize ();
     a3.dump ("Context::initialize");  // TODO Remove.
 
     // TODO Instantiate extension command objects.
