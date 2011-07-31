@@ -97,14 +97,9 @@ const std::string DOM::get (const std::string& name)
 
   int len = name.length ();
   Nibbler n (name);
-  std::string copy_name (name);
-
-  // Primitives
-  if (is_literal (copy_name))
-    return /*_cache[name] =*/ copy_name;
 
   // rc. --> context.config
-  else if (len > 3 &&
+  if (len > 3 &&
       name.substr (0, 3) == "rc.")
   {
     return /*_cache[name] =*/ context.config.get (name.substr (3));
@@ -232,14 +227,10 @@ const std::string DOM::get (const std::string& name, const Task& task)
   std::string uuid;
   std::string canonical;
 
-  // Primitives
-  std::string copy_name (name);
-  if (is_literal (copy_name))
-    return /*_cache[name] =*/ copy_name;
-
   // <attr>
-  else if (A3::is_attribute (name, canonical))
-    return task.get (canonical);
+       if (name == "id")                       return format (task.id);
+  else if (name == "urgency")                  return format (task.urgency_c (), 4, 3);
+  else if (A3::is_attribute (name, canonical)) return task.get (canonical);
 
   // <id>.<name>
   else if (n.getInt (id))
@@ -250,9 +241,9 @@ const std::string DOM::get (const std::string& name, const Task& task)
       std::string attr;
       n.getUntilEOS (attr);
 
-           if (attr == "id")      return format (task.id);
-      else if (attr == "urgency") return format (task.urgency_c (), 4, 3);
-      else                        return task.get (attr);
+           if (attr == "id")                       return format (task.id);
+      else if (attr == "urgency")                  return format (task.urgency_c (), 4, 3);
+      else if (A3::is_attribute (name, canonical)) return task.get (canonical);
     }
   }
 
@@ -265,22 +256,17 @@ const std::string DOM::get (const std::string& name, const Task& task)
       std::string attr;
       n.getUntilEOS (attr);
 
-           if (attr == "id")      return format (task.id);
-      else if (attr == "urgency") return format (task.urgency_c (), 4, 3);
-      else                        return task.get (attr);
+           if (name == "id")                       return format (task.id);
+      else if (name == "urgency")                  return format (task.urgency_c (), 4, 3);
+      else if (A3::is_attribute (name, canonical)) return task.get (canonical);
     }
   }
-
-  // [<task>.]<name>
-       if (name == "id")               return format (task.id);
-  else if (name == "urgency")          return format (task.urgency_c (), 4, 3);
-  else if (task.has (name.substr (1))) return task.get (name.substr (1));
 
   // Delegate to the context-free version of DOM::get.
   return this->get (name);
 }
 
-// TODO Need a context-specific DOM::set.
+// TODO Need a context-specific DOM::set.  For Lua.
 
 ////////////////////////////////////////////////////////////////////////////////
 void DOM::set (const std::string& name, const std::string& value)
@@ -297,47 +283,6 @@ void DOM::set (const std::string& name, const std::string& value)
   // Unrecognized --> error.
   else
     throw format (STRING_DOM_CANNOT_SET, name);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool DOM::is_literal (std::string& input)
-{
-  std::string s;
-  double d;
-  int i;
-
-  // Date?
-  if (Date::valid (input, context.config.get ("dateformat")))
-  {
-    input = Date (input).toEpochString ();
-    return true;
-  }
-
-  // Duration?
-  if (Duration::valid (input))
-    return true;
-
-  // TODO Quoted Date?
-  // TODO Quoted Duration?
-
-  // String?
-  Nibbler n (input);
-  if ((n.getQuoted ('"', s) ||
-       n.getQuoted ('\'', s)) &&
-      n.depleted ())
-    return true;
-
-  // Number?
-  n = Nibbler (input);
-  if (n.getNumber (d) && n.depleted ())
-    return true;
-
-  // Integer?
-  n = Nibbler (input);
-  if (n.getInt (i) && n.depleted ())
-    return true;
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

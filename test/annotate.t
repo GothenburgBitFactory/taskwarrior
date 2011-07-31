@@ -64,7 +64,6 @@ sleep 1;
 qx{../src/task rc:annotate.rc 3 annotate baz1};
 
 my $output = qx{../src/task rc:annotate.rc rrr};
-diag ($output);
 
 # ID Description                    
 # -- -------------------------------
