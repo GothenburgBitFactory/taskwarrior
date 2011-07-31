@@ -588,7 +588,13 @@ const A3 A3::extract_modifications () const
       before_command = false;
 
     else if (! before_command)
-      mods.push_back (*arg);
+    {
+      if (arg->_category == "rc" ||
+          arg->_category == "override")
+        ;
+      else
+        mods.push_back (*arg);
+    }
   }
 
   mods = tokenize (mods);
