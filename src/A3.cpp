@@ -1457,7 +1457,7 @@ bool A3::is_pattern (Nibbler& n, std::string& result)
 //       two-directory absolute path, (or three-level, if the third directory is
 //       named 'g') can be misinterpreted.  To help (but not solve) this, if a
 //       substition exists on the local disk, it is not considered a subst.
-//       This needs to be changed to a better solution.
+//       This needs to be changed to a better solution.  When I think of one.
 bool A3::is_subst (Nibbler& n, std::string& result)
 {
   n.save ();
