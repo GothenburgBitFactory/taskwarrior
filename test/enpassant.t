@@ -41,7 +41,7 @@ if (open my $fh, '>', 'enp.rc')
 # Test the en passant feature.
 qx{../src/task rc:enp.rc add foo};
 qx{../src/task rc:enp.rc add foo bar};
-qx{../src/task rc:enp.rc do 1,2 /foo/FOO/ pri:H +tag};
+qx{../src/task rc:enp.rc 1,2 do /foo/FOO/ pri:H +tag};
 my $output = qx{../src/task rc:enp.rc info 1};
 like ($output, qr/Status\s+Completed/,    'en passant 1 status change');
 like ($output, qr/Description\s+FOO/,     'en passant 1 description change');

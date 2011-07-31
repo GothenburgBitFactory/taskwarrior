@@ -57,10 +57,10 @@ $output = qx{../src/task rc:bug.rc rc.report.foo.sort:entry- foo};
 like ($output, qr/newer.+older/ms, 'sort:entry- -> newer older');
 
 # Ensure the two tasks have a 1 second delta in start.
-qx{../src/task rc:bug.rc start 1};
+qx{../src/task rc:bug.rc 1 start};
 diag ("1 second delay");
 sleep 1;
-qx{../src/task rc:bug.rc start 2};
+qx{../src/task rc:bug.rc 2 start};
 
 $output = qx{../src/task rc:bug.rc rc.report.foo.sort:start+ foo};
 like ($output, qr/older.+newer/ms, 'sort:start+ -> older newer');
@@ -69,10 +69,10 @@ $output = qx{../src/task rc:bug.rc rc.report.foo.sort:start- foo};
 like ($output, qr/newer.+older/ms, 'sort:start- -> newer older');
 
 # Ensure the two tasks have a 1 second delta in end.
-qx{../src/task rc:bug.rc done 1};
+qx{../src/task rc:bug.rc 1 done};
 diag ("1 second delay");
 sleep 1;
-qx{../src/task rc:bug.rc done 2};
+qx{../src/task rc:bug.rc 2 done};
 
 $output = qx{../src/task rc:bug.rc rc.report.foo.sort:end+ foo};
 like ($output, qr/older.+newer/ms, 'sort:end+ -> older newer');

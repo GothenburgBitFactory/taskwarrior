@@ -42,7 +42,7 @@ if (open my $fh, '>', 'bug.rc')
 
 # Add a task that is waiting
 qx{../src/task rc:bug.rc add One wait:tomorrow};
-my $output = qx{../src/task rc:bug.rc do 1};
+my $output = qx{../src/task rc:bug.rc 1 done};
 like ($output, qr/Marked 1 task as done\./, 'Waiting task marked completed');
 
 # Cleanup.

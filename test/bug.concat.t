@@ -41,7 +41,7 @@ if (open my $fh, '>', 'bug_concat.rc')
 
 # When a task is modified like this:
 #
-#   % task 1 This is a new description
+#   % task 1 modify This is a new description
 #
 # The arguments are concatenated thus:
 #
@@ -51,7 +51,7 @@ qx{../src/task rc:bug_concat.rc add This is the original text};
 my $output = qx{../src/task rc:bug_concat.rc info 1};
 like ($output, qr/Description\s+This is the original text\n/, 'original correct');
 
-qx{../src/task rc:bug_concat.rc 1 This is the modified text};
+qx{../src/task rc:bug_concat.rc 1 modify This is the modified text};
 $output = qx{../src/task rc:bug_concat.rc info 1};
 like ($output, qr/Description\s+This is the modified text\n/, 'modified correct');
 

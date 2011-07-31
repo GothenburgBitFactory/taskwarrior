@@ -107,7 +107,7 @@ like   ($output, qr/30;42m23/,      'Task 2 is color-coded due');
 like   ($output, qr/April 2020/,    'April 2020 is displayed');
 unlike ($output, qr/May 2020/,      'May 2020 is not displayed');
 qx{../src/task rc:cal.rc ls};
-qx{../src/task rc:cal.rc del 1-3};
+qx{../src/task rc:cal.rc 1-3 del};
 qx{../src/task rc:cal.rc add due:20080408 three};
 $output = qx{../src/task rc:cal.rc rc._forcecolor:on cal due};
 like   ($output, qr/April 2008/,     'April 2008 is displayed');

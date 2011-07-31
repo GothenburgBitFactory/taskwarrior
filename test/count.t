@@ -43,7 +43,7 @@ if (open my $fh, '>', 'count.rc')
 qx{../src/task rc:count.rc add one};
 qx{../src/task rc:count.rc log two};
 qx{../src/task rc:count.rc add three};
-qx{../src/task rc:count.rc delete 3};
+qx{../src/task rc:count.rc 3 delete};
 qx{../src/task rc:count.rc add four wait:eom};
 qx{../src/task rc:count.rc add five due:eom recur:monthly};
 

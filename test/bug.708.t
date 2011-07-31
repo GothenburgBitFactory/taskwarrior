@@ -55,16 +55,16 @@ qx{../src/task rc:bug.rc add Nine pro:p1};
 qx{../src/task rc:bug.rc add Ten pro:p1};
 
 # Complete three tasks and ensure pending and done counts are updated correctly.
-my $output = qx{../src/task rc:bug.rc do 1-3};
+my $output = qx{../src/task rc:bug.rc 1-3 do};
 like   ($output, qr/Project 'p1' is 30% complete \(7 of 10 tasks remaining\)\./ms, 'Project counts correct for a multiple done');
 
 # Change three projects and ensure pending and done counts are updated correctly.
-$output = qx{../src/task rc:bug.rc 4-6 pro:p2};
+$output = qx{../src/task rc:bug.rc 4-6 modify pro:p2};
 like   ($output, qr/Project 'p1' is 42% complete \(4 of 7 tasks remaining\)\./ms, 'Project counts correct for a multiple project reassignment part a');
 like   ($output, qr/Project 'p2' is 0% complete \(3 of 3 tasks remaining\)\./ms, 'Project counts correct for a multiple project reassignment part b');
 
 # Delete three tasks and ensure pending and done counts are updated correctly.
-$output = qx{../src/task rc:bug.rc del 7-9};
+$output = qx{../src/task rc:bug.rc 7-9 del};
 like   ($output, qr/Project 'p1' is 75% complete \(1 of 4 tasks remaining\)\./ms, 'Project counts correct for a multiple delete');
 
 # Cleanup.

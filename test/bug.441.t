@@ -42,7 +42,7 @@ if (open my $fh, '>', '441.rc')
 
 # Bug #441: A colon messes up text replacement with ///
 qx{../src/task rc:441.rc add one two three};
-qx{../src/task rc:441.rc 1 /two/two:/};
+qx{../src/task rc:441.rc 1 modify /two/two:/};
 my $output = qx{../src/task rc:441.rc ls};
 like ($output, qr/one two: three/ms, 'Substitution with colon worked');
 

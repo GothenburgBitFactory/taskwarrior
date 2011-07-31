@@ -43,7 +43,7 @@ if (open my $fh, '>', 'tags.rc')
 # pending, one completed.
 qx{../src/task rc:tags.rc add +t1 one};
 qx{../src/task rc:tags.rc add +t2 two};
-qx{../src/task rc:tags.rc done 1};
+qx{../src/task rc:tags.rc 1 done};
 my $output = qx{../src/task rc:tags.rc long};
 unlike ($output, qr/t1/, 't1 done');
 like ($output, qr/t2/, 't2 pending');

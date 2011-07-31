@@ -55,7 +55,7 @@ $output = qx{../src/task rc:wait.rc ls};
 like ($output, qr/nowait/ms, 'non-waiting task still visible');
 like ($output, qr/yeswait/ms, 'waiting task now visible');
 
-qx{../src/task rc:wait.rc 1 wait:2s};
+qx{../src/task rc:wait.rc 1 modify wait:2s};
 $output = qx{../src/task rc:wait.rc ls};
 like ($output, qr/nowait/ms, 'non-waiting task visible');
 unlike ($output, qr/yeswait/ms, 'waiting task invisible');

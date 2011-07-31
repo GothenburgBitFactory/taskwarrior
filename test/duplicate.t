@@ -40,14 +40,14 @@ if (open my $fh, '>', 'dup.rc')
 
 # Test the duplicate command.
 qx{../src/task rc:dup.rc add foo};
-qx{../src/task rc:dup.rc duplicate 1};
+qx{../src/task rc:dup.rc 1 duplicate};
 my $output = qx{../src/task rc:dup.rc info 2};
 like ($output, qr/ID\s+2/,            'duplicate new id');
 like ($output, qr/Status\s+Pending/,  'duplicate same status');
 like ($output, qr/Description\s+foo/, 'duplicate same description');
 
 # Test the en passant modification while duplicating.
-qx{../src/task rc:dup.rc duplicate 1 priority:H /foo/FOO/ +tag};
+qx{../src/task rc:dup.rc 1 duplicate priority:H /foo/FOO/ +tag};
 $output = qx{../src/task rc:dup.rc info 3};
 like ($output, qr/ID\s+3/,            'duplicate new id');
 like ($output, qr/Status\s+Pending/,  'duplicate same status');
@@ -56,7 +56,7 @@ like ($output, qr/Priority\s+H/,      'duplicate added priority');
 like ($output, qr/Tags\s+tag/,        'duplicate added tag');
 
 # Test the output of the duplicate command - returning id of duplicated task
-$output = qx{../src/task rc:dup.rc duplicate 1};
+$output = qx{../src/task rc:dup.rc 1 duplicate};
 like ($output, qr/Duplicated\s+1\s+'foo'/, 'duplicate output task id and description');
 like ($output, qr/Created\s+task\s+4/,     'duplicate output of new task id');
 

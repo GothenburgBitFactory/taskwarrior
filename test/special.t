@@ -53,7 +53,7 @@ like ($output, qr/\033\[31mshould be red\s+\033\[0m/, 'red in second task');
 
 # Prove that +nonag suppresses nagging when a low priority task is completed
 # ahead of a high priority one.
-$output = qx{../src/task rc:special.rc done 2};
+$output = qx{../src/task rc:special.rc 2 done};
 unlike ($output, qr/NAG/, '+nonag suppressed nagging for task 2');
 
 # Cleanup.

@@ -45,8 +45,8 @@ qx{../src/task rc:sorting.rc add priority:M project:B due:today     two};
 qx{../src/task rc:sorting.rc add priority:L project:C due:tomorrow  three};
 qx{../src/task rc:sorting.rc add priority:H project:C due:today     four};
 
-qx{../src/task rc:sorting.rc start 2};
-qx{../src/task rc:sorting.rc start 4};
+qx{../src/task rc:sorting.rc 2 start};
+qx{../src/task rc:sorting.rc 2 start};
 
 my %tests =
 (

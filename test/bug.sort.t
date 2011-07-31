@@ -46,7 +46,7 @@ qx{$setup};
 my $output = qx{../src/task rc:bug_sort.rc list};
 like ($output, qr/three.*(?:one.*two|two.*one)/msi, 'list did not hang');
 
-qx{../src/task rc:bug_sort.rc 1 priority:H};
+qx{../src/task rc:bug_sort.rc 1 modify priority:H};
 $output = qx{../src/task rc:bug_sort.rc list};
 like ($output, qr/three.*one.*two/msi, 'list did not hang after pri:H on 1');
 

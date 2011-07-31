@@ -46,10 +46,10 @@ qx{../src/task rc:bug.rc add Two};
 qx{../src/task rc:bug.rc add Three};
 
 # Complete task 1 and then attempt to complete task 2
-qx{../src/task rc:bug.rc do 1};
+qx{../src/task rc:bug.rc 1 done};
 
 # Result: Immediately delete the created task
-my $output = qx{../src/task rc:bug.rc do 2};   
+my $output = qx{../src/task rc:bug.rc 2 done};
 like   ($output, qr/Two/ms, 'IDs correctly remain unchanged after done');
 
 # Cleanup.

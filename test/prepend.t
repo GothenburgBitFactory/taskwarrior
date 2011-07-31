@@ -45,7 +45,7 @@ my $output = qx{../src/task rc:prepend.rc info 1};
 like ($output, qr/Description\s+foo\sbar\n/, 'prepend worked');
 
 # Should cause an error when nothing is appended.
-$output = qx{../src/task rc:prepend.rc prepend 1};
+$output = qx{../src/task rc:prepend.rc 1 prepend};
 unlike ($output, qr/Prepended 0 tasks/, 'blank prepend failed');
 
 # Cleanup.

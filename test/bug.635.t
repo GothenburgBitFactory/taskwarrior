@@ -45,7 +45,7 @@ if (open my $fh, '>', 'bug.rc')
 qx{../src/task rc:bug.rc add Pay teh rent on teh 31st};
 
 # Process: Global replace incorrect text
-qx{../src/task rc:bug.rc 1 /teh/the/g};
+qx{../src/task rc:bug.rc 1 modify /teh/the/g};
 
 # Result: Verify corrected output
 my $output = qx{../src/task rc:bug.rc ls 1};

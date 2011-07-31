@@ -45,23 +45,23 @@ my $output = qx{../src/task rc:start.rc active};
 unlike ($output, qr/one/, 'one not active');
 unlike ($output, qr/two/, 'two not active');
 
-qx{../src/task rc:start.rc start 1};
-qx{../src/task rc:start.rc start 2};
+qx{../src/task rc:start.rc 1 start};
+qx{../src/task rc:start.rc 2 start};
 $output = qx{../src/task rc:start.rc active};
 like ($output, qr/one/, 'one active');
 like ($output, qr/two/, 'two active');
 
-qx{../src/task rc:start.rc stop 1};
+qx{../src/task rc:start.rc 1 stop};
 $output = qx{../src/task rc:start.rc active};
 unlike ($output, qr/one/, 'one not active');
 like   ($output, qr/two/, 'two active');
 
-qx{../src/task rc:start.rc stop 2};
+qx{../src/task rc:start.rc 2 stop};
 $output = qx{../src/task rc:start.rc active};
 unlike ($output, qr/one/, 'one not active');
 unlike ($output, qr/two/, 'two not active');
 
-qx{../src/task rc:start.rc done 2};
+qx{../src/task rc:start.rc 2 done};
 $output = qx{../src/task rc:start.rc list};
 unlike ($output, qr/two/, 'two deleted');
 
@@ -74,11 +74,11 @@ if (open my $fh, '>', 'start2.rc')
   ok (-r 'start2.rc', 'Created start2.rc');
 }
 
-qx{../src/task rc:start2.rc start 1};
+qx{../src/task rc:start2.rc 1 start};
 $output = qx{../src/task rc:start2.rc list};
 like ($output, qr/Started task/, 'one start and annotated');
 
-qx{../src/task rc:start2.rc stop 1};
+qx{../src/task rc:start2.rc 1 stop};
 $output = qx{../src/task rc:start2.rc list};
 like ($output, qr/Stopped task/, 'one stopped and annotated');
 
@@ -93,11 +93,11 @@ if (open my $fh, '>', 'start3.rc')
   ok (-r 'start3.rc', 'Created start3.rc');
 }
 
-qx{../src/task rc:start3.rc start 1};
+qx{../src/task rc:start3.rc 1 start};
 $output = qx{../src/task rc:start3.rc list};
 like ($output, qr/Nu.+kör.+vi/ms, 'one start and annotated with custom description');
 
-qx{../src/task rc:start3.rc stop 1};
+qx{../src/task rc:start3.rc 1 stop};
 $output = qx{../src/task rc:start3.rc list};
 like ($output, qr/Nu.+stannar.+vi/ms, 'one stopped and annotated with custom description');
 

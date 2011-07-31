@@ -95,45 +95,45 @@ copy("local/completed.data", "remote/completed.data") or fail("copy local/undo.d
 # make local modifications
 qx{../src/task rc:local.rc add left_added}; #left_added
 sleep(1);
-qx{../src/task rc:local.rc 1 prio:H};       #left_modified
+qx{../src/task rc:local.rc 1 modify prio:H};       #left_modified
 sleep(1);
-qx{../src/task rc:local.rc 3 +stay};        #left_newer
+qx{../src/task rc:local.rc 3 modify +stay};        #left_newer
 sleep(1);
-qx{../src/task rc:local.rc 4 project:test}; #right_newer
+qx{../src/task rc:local.rc 4 modify project:test}; #right_newer
 sleep(1);
-qx{../src/task rc:local.rc 6 +delete};      #right_deleted
+qx{../src/task rc:local.rc 6 modify +delete};      #right_deleted
 sleep(1);
 
 # make remote modifications
 qx{../src/task rc:remote.rc add right_added};    #right_added
 sleep(1);
-qx{../src/task rc:remote.rc 2 prio:L};           #right_modified
+qx{../src/task rc:remote.rc 2 modify prio:L};           #right_modified
 sleep(1);
-qx{../src/task rc:remote.rc 2 wait:tomorrow};    #right_modified
+qx{../src/task rc:remote.rc 2 modify wait:tomorrow};    #right_modified
 sleep(1);
-qx{../src/task rc:remote.rc 4 proj:realProject}; #right_newer
+qx{../src/task rc:remote.rc 4 modify proj:realProject}; #right_newer
 sleep(1);
-qx{../src/task rc:remote.rc 5 project:deletion}; #left_deleted
+qx{../src/task rc:remote.rc 5 modify project:deletion}; #left_deleted
 sleep(1);
-qx{../src/task rc:remote.rc done 8};             #right_completed
+qx{../src/task rc:remote.rc 8 done};             #right_completed
 sleep(1);
-qx{../src/task rc:remote.rc del 6};              #right_deleted
+qx{../src/task rc:remote.rc 6 del};              #right_deleted
 sleep(1);
-qx{../src/task rc:remote.rc done 3};             #left_newer
+qx{../src/task rc:remote.rc 3 done};             #left_newer
 sleep(1);
 
 # make new local modifications
-qx{../src/task rc:local.rc start 3};         #left_newer
+qx{../src/task rc:local.rc 3 start};         #left_newer
 sleep(1);
-qx{../src/task rc:local.rc 4 +car};          #right_newer
+qx{../src/task rc:local.rc 4 modify +car};   #right_newer
 sleep(1);
-qx{../src/task rc:local.rc done 7};          #left_completed
+qx{../src/task rc:local.rc 7 done};          #left_completed
 sleep(1);
-qx{../src/task rc:local.rc del 5};           #left_deleted
+qx{../src/task rc:local.rc 5 del};           #left_deleted
 sleep(1);
 
 # make new remote modifications
-qx{../src/task rc:remote.rc 4 +gym};         # right_newer
+qx{../src/task rc:remote.rc 4 modify +gym};         # right_newer
 
 # merge remote into local
 copy("local/undo.data", "local/undo.save") or fail("copy local/undo.data to local/undo.save");

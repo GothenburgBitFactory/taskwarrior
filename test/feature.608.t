@@ -42,10 +42,10 @@ if (open my $fh, '>', 'bug.rc')
 # Feature 608: Done should stop a task
 
 # Setup: Add and start a task
-qx{../src/task rc:bug.rc add Test due:3d; ../src/task rc:bug.rc start 1};
+qx{../src/task rc:bug.rc add Test due:3d; ../src/task rc:bug.rc 1 start};
 
 # Mark the task as completed 
-qx{../src/task rc:bug.rc done 1};
+qx{../src/task rc:bug.rc 1 done};
 
 # Check to ensure task was stopped
 my $output = qx{../src/task rc:bug.rc info 1};

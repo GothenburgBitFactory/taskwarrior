@@ -42,7 +42,7 @@ if (open my $fh, '>', 'projects.rc')
 # pending, one completed.
 qx{../src/task rc:projects.rc add project:p1 one};
 qx{../src/task rc:projects.rc add project:p2 two};
-qx{../src/task rc:projects.rc done 1};
+qx{../src/task rc:projects.rc 1 done};
 my $output = qx{../src/task rc:projects.rc ls};
 unlike ($output, qr/p1/, 'p1 done');
 like ($output, qr/p2/, 'p2 pending');

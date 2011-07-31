@@ -48,7 +48,7 @@ like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file upd
 $output = qx{../src/task rc:shadow.rc list};
 unlike ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file not updated on list');
 
-$output = qx{../src/task rc:shadow.rc delete 1};
+$output = qx{../src/task rc:shadow.rc 1 delete};
 like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file updated on delete');
 
 $output = qx{../src/task rc:shadow.rc list};

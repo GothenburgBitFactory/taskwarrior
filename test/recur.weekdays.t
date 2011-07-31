@@ -46,7 +46,7 @@ like ($output, qr/one/, 'recur weekdays');
 $output = qx{../src/task rc:recur.rc info 1};
 like ($output, qr/Recurrence\s+weekdays/, 'task recurs every weekday');
 
-qx{../src/task rc:recur.rc do 1};
+qx{../src/task rc:recur.rc 1 do};
 $output = qx{../src/task rc:recur.rc list};
 
 # Cleanup.

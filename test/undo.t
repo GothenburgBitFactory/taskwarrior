@@ -45,7 +45,7 @@ my $output = qx{../src/task rc:undo.rc add one; ../src/task rc:undo.rc info 1};
 ok (-r 'pending.data', 'pending.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
-$output = qx{../src/task rc:undo.rc do 1; ../src/task rc:undo.rc info 1};
+$output = qx{../src/task rc:undo.rc 1 do; ../src/task rc:undo.rc info 1};
 ok (-r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Completed\n/, 'Completed');
 
@@ -53,7 +53,7 @@ $output = qx{../src/task rc:undo.rc undo; ../src/task rc:undo.rc info 1};
 ok (-r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
-$output = qx{../src/task rc:undo.rc do 1; ../src/task rc:undo.rc list};
+$output = qx{../src/task rc:undo.rc 1 do; ../src/task rc:undo.rc list};
 like ($output, qr/No matches/, 'No matches');
 
 # Cleanup.

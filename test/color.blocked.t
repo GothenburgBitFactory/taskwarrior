@@ -44,7 +44,7 @@ if (open my $fh, '>', 'color.rc')
 # Test the add command.
 qx{../src/task rc:color.rc add red};
 qx{../src/task rc:color.rc add nothing};
-qx{../src/task rc:color.rc 1 depends:2};
+qx{../src/task rc:color.rc 1 modify depends:2};
 my $output = qx{../src/task rc:color.rc list};
 
 like ($output, qr/ (?!<\033\[\d\dm) .* nothing .* (?!>\033\[0m) /x, 'none');

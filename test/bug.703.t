@@ -56,7 +56,7 @@ like ($output, qr/Annotation one/,   'original annotation one');
 like ($output, qr/Annotation two/,   'original annotation two');
 like ($output, qr/Annotation three/, 'original annotation three');
 
-qx{../src/task rc:bug.rc 1 /i/I/g};
+qx{../src/task rc:bug.rc 1 modify /i/I/g};
 $output = qx{../src/task rc:bug.rc list};
 like ($output, qr/ThIs Is a test/,   'new description');
 like ($output, qr/AnnotatIon one/,   'new annotation one');

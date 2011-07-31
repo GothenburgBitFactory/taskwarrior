@@ -44,8 +44,8 @@ if (open my $fh, '>', 'summary.rc')
 qx{../src/task rc:summary.rc add project:A one};
 qx{../src/task rc:summary.rc add project:A two};
 qx{../src/task rc:summary.rc add project:A three};
-qx{../src/task rc:summary.rc do 1};
-qx{../src/task rc:summary.rc delete 2};
+qx{../src/task rc:summary.rc 1 do};
+qx{../src/task rc:summary.rc 2 delete};
 my $output = qx{../src/task rc:summary.rc summary};
 like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, 'summary correctly shows 50% before report');
 

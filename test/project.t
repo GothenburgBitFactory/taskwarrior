@@ -58,12 +58,12 @@ like ($output, qr/Project 'foo' is 25% complete \(3 of 4 tasks remaining\)\./, '
 $output = qx{../src/task rc:pro.rc 2 delete};
 like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 33% complete \(2 of 3 tasks remaining\)\./, 'delete two');
 
-$output = qx{../src/task rc:pro.rc 3 pro:bar};
+$output = qx{../src/task rc:pro.rc 3 modify pro:bar};
 like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 50% complete \(1 of 2 tasks remaining\)\./, 'change project');
 like ($output, qr/The project 'bar' has changed\.  Project 'bar' is 0% complete \(1 of 1 tasks remaining\)\./, 'change project');
 
 # Test projects with spaces in them.
-$output = qx{../src/task rc:pro.rc 3 pro:"foo bar"};
+$output = qx{../src/task rc:pro.rc 3 modify pro:"foo bar"};
 like ($output, qr/The project 'foo bar' has changed\./, 'project with spaces');
 
 # Cleanup.

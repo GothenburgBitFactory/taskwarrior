@@ -41,36 +41,36 @@ if (open my $fh, '>', 'subst.rc')
 
 # Test the substitution command.
 qx{../src/task rc:subst.rc add foo foo foo};
-qx{../src/task rc:subst.rc 1 /foo/FOO/};
+qx{../src/task rc:subst.rc 1 modify /foo/FOO/};
 my $output = qx{../src/task rc:subst.rc info 1};
 like ($output, qr/FOO foo foo/, 'substitution in description');
 
-qx{../src/task rc:subst.rc 1 /foo/FOO/g};
+qx{../src/task rc:subst.rc 1 modify /foo/FOO/g};
 $output = qx{../src/task rc:subst.rc info 1};
 like ($output, qr/FOO FOO FOO/, 'global substitution in description');
 
 # Test the substitution command on annotations.
-qx{../src/task rc:subst.rc annotate 1 bar bar bar};
-qx{../src/task rc:subst.rc 1 /bar/BAR/};
+qx{../src/task rc:subst.rc 1 annotate bar bar bar};
+qx{../src/task rc:subst.rc 1 modify /bar/BAR/};
 $output = qx{../src/task rc:subst.rc info 1};
 like ($output, qr/BAR bar bar/, 'substitution in annotation');
 
-qx{../src/task rc:subst.rc 1 /bar/BAR/g};
+qx{../src/task rc:subst.rc 1 modify /bar/BAR/g};
 $output = qx{../src/task rc:subst.rc info 1};
 like ($output, qr/BAR BAR BAR/, 'global substitution in annotation');
 
-qx{../src/task rc:subst.rc 1 /FOO/aaa/};
-qx{../src/task rc:subst.rc 1 /FOO/bbb/};
-qx{../src/task rc:subst.rc 1 /FOO/ccc/};
+qx{../src/task rc:subst.rc 1 modify /FOO/aaa/};
+qx{../src/task rc:subst.rc 1 modify /FOO/bbb/};
+qx{../src/task rc:subst.rc 1 modify /FOO/ccc/};
 $output = qx{../src/task rc:subst.rc info 1};
 like ($output, qr/aaa bbb ccc/, 'individual successive substitution in description');
 
-qx{../src/task rc:subst.rc 1 /bbb//};
+qx{../src/task rc:subst.rc 1 modify /bbb//};
 $output = qx{../src/task rc:subst.rc info 1};
 like ($output, qr/aaa  ccc/, 'word deletion in description');
 
 # Regexes
-qx{../src/task rc:subst.rc rc.regex:on 1 "/c(c)./C/"};
+qx{../src/task rc:subst.rc rc.regex:on 1 modify "/c(c)./C/"};
 $output = qx{../src/task rc:subst.rc info 1};
 like ($output, qr/aaa  cCc/, 'regex');
 

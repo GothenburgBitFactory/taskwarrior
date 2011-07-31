@@ -63,9 +63,9 @@ for my $i (1 .. 1000)
 diag ("1000 tasks added in " . (time () - $cursor) . " seconds");
 $cursor = time ();
 
-qx{../src/task rc:bench.rc /with/WITH/}         for   1 .. 200;
-qx{../src/task rc:bench.rc done $_}             for 201 .. 400;
-qx{../src/task rc:bench.rc start $_}            for 401 .. 600;
+qx{../src/task rc:bench.rc modify /with/WITH/}  for   1 .. 200;
+qx{../src/task rc:bench.rc $_ done}             for 201 .. 400;
+qx{../src/task rc:bench.rc $_ start}            for 401 .. 600;
 diag ("600 tasks altered in " . (time () - $cursor) . " seconds");
 $cursor = time ();
 
