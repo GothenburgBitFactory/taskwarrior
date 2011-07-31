@@ -46,20 +46,20 @@ if (open my $fh, '>', 'denotate.rc')
 
 # Add four tasks, annotate one three times, one twice, one just once and one none.
 qx{../src/task rc:denotate.rc add one};
-qx{../src/task rc:denotate.rc annotate 1 Ernie};
+qx{../src/task rc:denotate.rc 1 annotate Ernie};
 diag ("6 second delay");
 sleep 1;
-qx{../src/task rc:denotate.rc annotate 1 Bert};
+qx{../src/task rc:denotate.rc 1 annotate Bert};
 sleep 1;
-qx{../src/task rc:denotate.rc annotate 1 Bibo};
+qx{../src/task rc:denotate.rc 1 annotate Bibo};
 sleep 1;
-qx{../src/task rc:denotate.rc annotate 1 Kermit the frog};
+qx{../src/task rc:denotate.rc 1 annotate Kermit the frog};
 sleep 1;
-qx{../src/task rc:denotate.rc annotate 1 Kermit the frog};
+qx{../src/task rc:denotate.rc 1 annotate Kermit the frog};
 sleep 1;
-qx{../src/task rc:denotate.rc annotate 1 Kermit};
+qx{../src/task rc:denotate.rc 1 annotate Kermit};
 sleep 1;
-qx{../src/task rc:denotate.rc annotate 1 Kermit and Miss Piggy};
+qx{../src/task rc:denotate.rc 1 annotate Kermit and Miss Piggy};
 
 my $output = qx{../src/task rc:denotate.rc rrr};
 

@@ -111,11 +111,11 @@ $output = qx{../src/task rc:seq.rc info 4};
 like ($output, qr/Priority\s+H/, 'sequence duplicate 2');
 
 # Test sequences in annotate
-qx{../src/task rc:seq.rc annotate 1,2 note};
+qx{../src/task rc:seq.rc 1,2 annotate note};
 $output = qx{../src/task rc:seq.rc info 1};
-like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence annotate 1');
+like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence 1 annotate');
 $output = qx{../src/task rc:seq.rc info 2};
-like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence annotate 2');
+like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence 2 annotate');
 
 # Cleanup.
 unlink 'pending.data';

@@ -50,20 +50,21 @@ qx{../src/task rc:annotate.rc add one};
 qx{../src/task rc:annotate.rc add two};
 qx{../src/task rc:annotate.rc add three};
 qx{../src/task rc:annotate.rc add four};
-qx{../src/task rc:annotate.rc annotate 1 foo1};
+qx{../src/task rc:annotate.rc 1 annotate foo1};
 diag ("5 second delay");
 sleep 1;
-qx{../src/task rc:annotate.rc annotate 1 foo2};
+qx{../src/task rc:annotate.rc 1 annotate foo2};
 sleep 1;
-qx{../src/task rc:annotate.rc annotate 1 foo3};
+qx{../src/task rc:annotate.rc 1 annotate foo3};
 sleep 1;
-qx{../src/task rc:annotate.rc annotate 2 bar1};
+qx{../src/task rc:annotate.rc 2 annotate bar1};
 sleep 1;
-qx{../src/task rc:annotate.rc annotate 2 bar2};
+qx{../src/task rc:annotate.rc 2 annotate bar2};
 sleep 1;
-qx{../src/task rc:annotate.rc annotate 3 baz1};
+qx{../src/task rc:annotate.rc 3 annotate baz1};
 
 my $output = qx{../src/task rc:annotate.rc rrr};
+diag ($output);
 
 # ID Description                    
 # -- -------------------------------

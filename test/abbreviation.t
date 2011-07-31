@@ -33,7 +33,8 @@ use Test::More tests => 24;
 # Create the rc file.
 if (open my $fh, '>', 'abbrev.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "abbreviation.minimum=1\n";
   close $fh;
   ok (-r 'abbrev.rc', 'Created abbrev.rc');
 }
