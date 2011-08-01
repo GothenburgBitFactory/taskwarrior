@@ -57,7 +57,8 @@ int CmdShow::execute (std::string& output)
 
   // Obtain the arguments from the description.  That way, things like '--'
   // have already been handled.
-  if (context.a3.size () > 2)
+  std::vector <std::string> words = context.a3.extract_words ();
+  if (words.size () > 2)
     throw std::string (STRING_CMD_SHOW_ARGS);
 
   int width = context.getWidth ();
@@ -264,13 +265,8 @@ int CmdShow::execute (std::string& output)
   std::string section;
 
   // Look for the first plausible argument which could be a pattern 
-  // TODO Replace this 'section' assessment with something that scans the
-  //      arguments and pulls out either <word> or <pattern> strings to use as
-  //      search items.
-/*
-  if (context.args.size () == 2)
-    section = context.args[1];
-*/
+  if (words.size ())
+    section = words[0];
 
   if (section == "all")
     section = "";

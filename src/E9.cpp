@@ -297,12 +297,14 @@ void E9::operator_lt (Term& result, Term& left, Term& right)
 
   result._category = "bool";
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " < "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -326,12 +328,14 @@ void E9::operator_lte (Term& result, Term& left, Term& right)
 
   result._category = "bool";
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " <= "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -355,12 +359,14 @@ void E9::operator_gte (Term& result, Term& left, Term& right)
 
   result._category = "bool";
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " >= "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -383,12 +389,14 @@ void E9::operator_gt (Term& result, Term& left, Term& right)
 
   result._category = "bool";
 
+/*
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " > "
             << right._raw << "/" << right._value << "/" << right._category
             << " --> "
             << result._raw << "/" << result._value << "/" << result._category
             << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
