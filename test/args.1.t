@@ -52,7 +52,7 @@ $output = qx{../src/task rc:args.rc 1 done};
 like ($output, qr/^Completed 1 /ms, 'COMMAND after ID');
 
 $output = qx{../src/task rc:args.rc done 2};
-like ($output, qr/^Completed 2 /ms, 'ID after COMMAND');
+unlike ($output, qr/^Completed 2 /ms, 'ID after COMMAND');
 
 # Cleanup.
 unlink 'pending.data';

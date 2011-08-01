@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'backslash.rc')
@@ -39,11 +39,20 @@ if (open my $fh, '>', 'backslash.rc')
 }
 
 # Add a description with a backslash.
-qx{../src/task rc:backslash.rc add foo\\\\bar};
+qx{../src/task rc:backslash.rc add \\\\};
 my $output = qx{../src/task rc:backslash.rc ls};
-like ($output, qr/foo\\bar/, 'Backslash preserved, no parsing issues');
+like ($output, qr/\\/, 'Backslash preserved, no parsing issues');
 
 # Cleanup.
+unlink 'pending.data';
+ok (!-r 'pending.data', 'Removed pending.data');
+
+unlink 'completed.data';
+ok (!-r 'completed.data', 'Removed completed.data');
+
+unlink 'undo.data';
+ok (!-r 'undo.data', 'Removed undo.data');
+
 unlink 'backslash.rc';
 ok (!-r 'backslash.rc', 'Removed backslash.rc');
 
