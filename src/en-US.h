@@ -465,9 +465,5 @@
 #define STRING_UTIL_KIBIBYTES        "KiB"
 #define STRING_UTIL_BYTES            "B"
 
-// Variant
-#define STRING_VARIANT_REL_BOOL      "Cannot perform relational comparison on Boolean types."
-#define STRING_VARIANT_REL_UNKNOWN   "Cannot perform relational comparison on unknown types."
-
 #endif
 

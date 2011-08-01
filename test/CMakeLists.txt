@@ -9,7 +9,7 @@ include_directories (${CMAKE_SOURCE_DIR}
 set (test_SRCS att.t autocomplete.t color.t config.t date.t directory.t dom.t
                duration.t file.t i18n.t json.t list.t nibbler.t path.t record.t
                rx.t t.benchmark.t t.t taskmod.t tdb.t tdb2.t text.t uri.t util.t
-               variant.t view.t json_test)
+               view.t json_test)
 
 add_custom_target (test ./run_all DEPENDS ${test_SRCS}
                                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
