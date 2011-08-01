@@ -98,7 +98,11 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
 
         if (right._category == "dom")
         {
-          right._value = context.dom.get (right._raw, task);
+          if (context.config.getBoolean ("dom"))
+            right._value = context.dom.get (right._raw, task);
+          else
+            right._value = right._raw;
+
           right._category = "string";
         }
 
@@ -116,7 +120,11 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
 
         if (right._category == "dom")
         {
-          right._value = context.dom.get (right._raw, task);
+          if (context.config.getBoolean ("dom"))
+            right._value = context.dom.get (right._raw, task);
+          else
+            right._value = right._raw;
+
           right._category = "string";
         }
 
@@ -125,7 +133,11 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
 
         if (left._category == "dom")
         {
-          left._value = context.dom.get (left._raw, task);
+          if (context.config.getBoolean ("dom"))
+            left._value = context.dom.get (left._raw, task);
+          else
+            left._value = left._raw;
+
           left._category = "string";
         }
 

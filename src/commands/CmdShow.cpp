@@ -140,6 +140,7 @@ int CmdShow::execute (std::string& output)
     " dependency.reminder"
     " detection"
     " displayweeknumber"
+    " dom"
     " due"
     " echo.command"
     " edit.verbose"

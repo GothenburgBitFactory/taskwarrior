@@ -316,6 +316,11 @@ Enables or disables algebraic expression support on the command line, such as
 "due<eom and (pri=H or pri=M)".  Defaults to on.
 
 .TP
+.B dom=on
+Enables or disables access to taskwarrior internals and task metadata on the
+command line.  Defaults to on.
+
+.TP
 .B json.array=off
 Determines whether the query command encloses the JSON output in '[...]' to
 create a properly-formed JSON array.  Defaults to off.

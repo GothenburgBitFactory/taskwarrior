@@ -101,6 +101,7 @@ std::string Config::defaults =
   "xterm.title=no                                 # Sets xterm title for some commands\n"
   "expressions=on                                 # Support for algebraic expressions\n"
   "patterns=on                                    # Support for regex patterns\n"
+  "dom=on                                         # Support DOM access\n"
   "json.array=off                                 # Enclose JSON output in [ ]\n"
   "abbreviation.minimum=2                         # Shortest allowed abbreviation\n"
   "\n"

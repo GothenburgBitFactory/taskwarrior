@@ -49,6 +49,7 @@ New configuration options in taskwarrior 2.0.0
   - New 'avoidlastcolumn' support for Cygwin users.
   - New 'patterns' enables/disables command line pattern support.
   - New 'expressions' enables/disables command line expression support.
+  - New 'dom' enables/disables DOM support for the command line.
   - New 'json.array' determines whether 'query' command output is enclosed by
     '[...]'.
   - New 'regex' control determines whether substitutions use Regular Expressions
