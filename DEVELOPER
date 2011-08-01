@@ -6,7 +6,6 @@ Deprecated Code
   This is code that is going to be phased out soon, and therefore is not worth
   fixing or documenting.  Don't waste your time.
 
-  - Variant.{h,cpp}
   - Location.{h,cpp}
   - TDB.{h,cpp}
   - Att.{h,cpp}
@@ -86,8 +85,7 @@ Work in Progress
   Things that are currently in flux, which is another way of saying leave it
   alone while it is being worked on.
 
-  - The A3.{h,cpp} and E9.{h,cpp} (Args and Expression) objects are being
-    completd and tested.
+  - The E9.{h,cpp} (Expression) object is being completed and tested.
   - L10N (Localization) is in progress.  This means moving all user-presented
     strings into en-US.h, which is included by i18n.h.  Language selection will
     be a cmake-controlled #define.  This is 86% complete.  This makes
@@ -102,9 +100,9 @@ Current Codebase Condition
     - 1.9.4 release, current, locked.
 
   '2.0.0' branch:
-    - Unit tests passing >85%.
+    - Unit tests passing ~90%.
     - Basic commands working (add, list, done), otherwise generally broken.
-    - Expressions E9.{h,cpp} not working.
+    - Expressions E9.{h,cpp} not working well.
     - DOM access DOM.{h,cpp} not working well.
     - Aiming for an early August beta1.
     - Aiming for a late August beta2.
@@ -112,6 +110,7 @@ Current Codebase Condition
 
 ---
 
+2011-08-01 Removed code already obsoleted or completed.
 2011-07-29 Added more needed code descriptions.
 2011-07-27 Updated with holiday data info.
 2011-07-25 Created file.
