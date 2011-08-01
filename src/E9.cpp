@@ -278,12 +278,24 @@ void E9::operator_xor (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Special handling for priority.
-//               if (left._string != "H" && right._string == "H") result = true;
-//          else if (left._string == "L" && right._string == "M") result = true;
-//          else if (left._string == ""  && right._string != "")  result = true;
 void E9::operator_lt (Term& result, Term& left, Term& right)
 {
+  if (left._raw == "priority")
+  {
+         if (left._value != "H" && right._value == "H") result._raw = result._value = "true";
+    else if (left._value == "L" && right._value == "M") result._raw = result._value = "true";
+    else if (left._value == ""  && right._value != "")  result._raw = result._value = "true";
+    else                                                result._raw = result._value = "false";
+  }
+  else
+  {
+    if (left._value < right._value)
+      result._raw = result._value = "true";
+    else
+      result._raw = result._value = "false";
+  }
+
+  result._category = "bool";
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " < "
@@ -294,13 +306,25 @@ void E9::operator_lt (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Special handling for priority.
-//               if (left._string        == right._string       ) result = true;
-//          else if (                       right._string == "H") result = true;
-//          else if (left._string == "L" && right._string == "M") result = true;
-//          else if (left._string == ""                         ) result = true;
 void E9::operator_lte (Term& result, Term& left, Term& right)
 {
+  if (left._raw == "priority")
+  {
+         if (left._value        == right._value       ) result._raw = result._value = "true";
+    else if (                      right._value == "H") result._raw = result._value = "true";
+    else if (left._value == "L" && right._value == "M") result._raw = result._value = "true";
+    else if (left._value == ""                        ) result._raw = result._value = "true";
+    else                                                result._raw = result._value = "false";
+  }
+  else
+  {
+    if (left._value <= right._value)
+      result._raw = result._value = "true";
+    else
+      result._raw = result._value = "false";
+  }
+
+  result._category = "bool";
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " <= "
@@ -311,13 +335,25 @@ void E9::operator_lte (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Special handling for priority.
-//               if (left._string        == right._string       ) result = true;
-//          else if (left._string == "H"                        ) result = true;
-//          else if (left._string == "M" && right._string == "L") result = true;
-//          else if (                       right._string == "" ) result = true;
 void E9::operator_gte (Term& result, Term& left, Term& right)
 {
+  if (left._raw == "priority")
+  {
+         if (left._value        == right._value       ) result._raw = result._value = "true";
+    else if (left._value == "H"                       ) result._raw = result._value = "true";
+    else if (left._value == "M" && right._value == "L") result._raw = result._value = "true";
+    else if (                      right._value == "" ) result._raw = result._value = "true";
+    else                                                result._raw = result._value = "false";
+  }
+  else
+  {
+    if (left._value >= right._value)
+      result._raw = result._value = "true";
+    else
+      result._raw = result._value = "false";
+  }
+
+  result._category = "bool";
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " >= "
@@ -328,12 +364,24 @@ void E9::operator_gte (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Special handling for priority.
-//               if (left._string == "H" && right._string != "H") result = true;
-//          else if (left._string == "M" && right._string == "L") result = true;
-//          else if (left._string != ""  && right._string == "")  result = true;
 void E9::operator_gt (Term& result, Term& left, Term& right)
 {
+  if (left._raw == "priority")
+  {
+         if (left._value == "H" && right._value != "H") result._raw = result._value = "true";
+    else if (left._value == "M" && right._value == "L") result._raw = result._value = "true";
+    else if (left._value != ""  && right._value == "")  result._raw = result._value = "true";
+    else                                                result._raw = result._value = "false";
+  }
+  else
+  {
+    if (left._value > right._value)
+      result._raw = result._value = "true";
+    else
+      result._raw = result._value = "false";
+  }
+
+  result._category = "bool";
 
   std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
             << " > "
