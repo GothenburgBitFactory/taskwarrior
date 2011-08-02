@@ -41,7 +41,7 @@ extern Context context;
 CmdAnnotate::CmdAnnotate ()
 {
   _keyword     = "annotate";
-  _usage       = "task annotate ID desc...";
+  _usage       = "task <filter> annotate <modifications>";
   _description = STRING_CMD_ANNO_USAGE;
   _read_only   = false;
   _displays_id = false;

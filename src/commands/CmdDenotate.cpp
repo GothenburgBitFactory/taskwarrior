@@ -25,10 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <Context.h>
 #include <Permission.h>
 #include <text.h>
+#include <i18n.h>
 #include <main.h>
 #include <CmdDenotate.h>
 
@@ -38,8 +41,8 @@ extern Context context;
 CmdDenotate::CmdDenotate ()
 {
   _keyword     = "denotate";
-  _usage       = "task denotate ID desc...";
-  _description = "Deletes an annotation from an existing task.";
+  _usage       = "task <filter> denotate <pattern>";
+  _description = STRING_CMD_DENO_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -48,52 +51,54 @@ CmdDenotate::CmdDenotate ()
 int CmdDenotate::execute (std::string& output)
 {
   int rc = 0;
-
-/*
-  if (!context.task.has ("description"))
-    throw std::string ("Description needed to delete an annotation.");
-
-  if (context.sequence.size () == 0)
-    throw std::string ("A task ID is needed to delete an annotation.");
-
-  bool sensitive = context.config.getBoolean ("search.case.sensitive");
-
+  int count = 0;
   std::stringstream out;
 
   std::vector <Task> tasks;
   context.tdb.lock (context.config.getBoolean ("locking"));
-  Filter filter;
-  context.tdb.loadPending (tasks, filter);
+  context.tdb.loadPending (tasks);
 
-  context.filter.applySequence (tasks, context.sequence);
-  if (tasks.size () == 0)
+  // Apply filter.
+  std::vector <Task> filtered;
+  filter (tasks, filtered);
+
+  if (filtered.size () == 0)
   {
-    context.footnote ("No tasks specified.");
+    context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
     return 1;
   }
 
+  bool sensitive = context.config.getBoolean ("search.case.sensitive");
+
+  // Apply the command line modifications to the completed task.
+  A3 words = context.a3.extract_modifications ();
+  if (!words.size ())
+    throw std::string (STRING_CMD_DENO_WORDS);
+
+  std::string pattern = words.combine ();
+
   Permission permission;
-  if (context.sequence.size () > (size_t) context.config.getInteger ("bulk"))
+  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
   std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Task before (*task);
-    std::string desc = context.task.get ("description");
+
     std::vector <Att> annotations;
     task->getAnnotations (annotations);
 
     if (annotations.size () == 0)
-      throw std::string ("The specified task has no annotations that can be deleted.");
+      throw std::string (STRING_CMD_DENO_NONE);
 
     std::vector <Att>::iterator i;
     std::string anno;
-    bool match = false;;
+    bool match = false;
     for (i = annotations.begin (); i != annotations.end (); ++i)
     {
       anno = i->value ();
-      if (anno == desc)
+      if (anno == pattern)
       {
         match = true;
         annotations.erase (i);
@@ -106,11 +111,10 @@ int CmdDenotate::execute (std::string& output)
       for (i = annotations.begin (); i != annotations.end (); ++i)
       {
         anno = i->value ();
-        std::string::size_type loc = find (anno, desc, sensitive);
+        std::string::size_type loc = find (anno, pattern, sensitive);
 
         if (loc != std::string::npos)
         {
-          match = true;
           annotations.erase (i);
           task->setAnnotations (annotations);
           break;
@@ -123,26 +127,27 @@ int CmdDenotate::execute (std::string& output)
       // Only allow valid tasks.
       task->validate ();
 
-      if (permission.confirmed (before, taskDifferences (before, *task) + "Proceed with change?"))
+      if (permission.confirmed (before,
+                                taskDifferences (before, *task) + STRING_CMD_DONE_PROCEED))
       {
+        ++count;
         context.tdb.update (*task);
         if (context.config.getBoolean ("echo.command"))
-          out << "Found annotation '"
-              << anno
-              << "' and deleted it.\n";
+          out << format (STRING_CMD_DENO_FOUND, anno)
+              << "\n";
       }
     }
     else
-      out << "Did not find any matching annotation to be deleted for '"
-          << desc
-          << "'.\n";
+      out << format (STRING_CMD_DENO_NOMATCH, pattern)
+          << "\n";
   }
 
-  context.tdb.commit ();
+  if (count)
+    context.tdb.commit ();
+
   context.tdb.unlock ();
 
   output = out.str ();
-*/
   return rc;
 }
 

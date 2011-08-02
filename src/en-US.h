@@ -303,6 +303,11 @@
 #define STRING_CMD_COLUMNS_USAGE     "Displays supported columns and styles."
 #define STRING_CMD_COLUMNS_NOTE      "* Means default format, and therefore optional.  For example, 'due' and 'due.formatted' are equivalent."
 #define STRING_CMD_COLUMNS_USAGE2    "Displays only a list of supported columns."
+#define STRING_CMD_DENO_USAGE        "Deletes an annotation."
+#define STRING_CMD_DENO_WORDS        "An annotation pattern must be provided."
+#define STRING_CMD_DENO_NONE         "The specified task has no annotations that can be deleted."
+#define STRING_CMD_DENO_FOUND        "Found annotation '{1}' and deleted it."
+#define STRING_CMD_DENO_NOMATCH      "Did not find any matching annotation to be deleted for '{1}'."
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
