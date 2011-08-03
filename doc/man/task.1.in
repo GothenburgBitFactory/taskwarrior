@@ -600,7 +600,7 @@ task ... due:1day
 task ... due:9hrs
 
 .TP
-Start of (work) week (Monday), calendar week (Sunday or Monday), month and year
+Start of (work) week (Monday), calendar week (Sunday or Monday), month, quarter and year
 .br
 task ... due:sow
 .br
@@ -610,10 +610,12 @@ task ... due:socw
 .br
 task ... due:som
 .br
+task ... due:soq
+.br
 task ... due:soy
 
 .TP
-End of (work) week (Friday), calendar week (Saturday or Sunday), month and year
+End of (work) week (Friday), calendar week (Saturday or Sunday), month, quarter and year
 .br
 task ... due:eow
 .br
@@ -622,6 +624,8 @@ task ... due:eoww
 task ... due:eocw
 .br
 task ... due:eom
+.br
+task ... due:eoq
 .br
 task ... due:eoy
 
