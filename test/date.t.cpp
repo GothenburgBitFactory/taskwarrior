@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (168);
+  UnitTest t (174);
 
   try
   {
@@ -345,6 +345,16 @@ int main (int argc, char** argv)
     t.is (later.month (),   1, "later -> m = 1");
     t.is (later.day (),    18, "later -> d = 18");
     t.is (later.year (), 2038, "later -> y = 2038");
+
+    // Quarters
+    Date soq ("soq");
+    Date eoq ("eoq");
+    t.is (soq.day (),  1,      "soq is the first day of a month");
+    t.is (eoq.day () / 10,  3, "eoq is the 30th or 31th of a month");
+    t.is (soq.month () % 3, 1, "soq month is 1, 4, 7 or 10");
+    t.is (eoq.month () % 3, 0, "eoq month is 3, 6, 9 or 12");
+    t.ok (soq.sameYear (now),  "soq is in same year as now");
+    t.ok (eoq.sameYear (now),  "eoq is in same year as now");
 
     // Date::sameHour
     Date r17 ("6/7/2010 01:00:00", "m/d/Y H:N:S");

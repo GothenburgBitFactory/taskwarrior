@@ -58,11 +58,13 @@ static const char* relatives[] =
   "eoww",
   "eocw",
   "eom",
+  "eoq",
   "eoy",
   "sow",
   "soww",
   "socw",
   "som",
+  "soq",
   "soy",
   "goodfriday",
   "easter",
@@ -877,6 +879,25 @@ bool Date::isRelativeDate (const std::string& input)
       mT = then.mT;
       return true;
     }
+    else if (found == "eoq")
+    {
+      int m = today.month ();
+      int y = today.year ();
+      int q;
+      if (m <= 3)
+        q = 3;
+      else if (m >= 4 && m <= 6)
+        q = 6;
+      else if (m >= 7 && m <= 9)
+        q = 9;
+      else
+        q = 12;
+      Date then (q,
+                 Date::daysInMonth (q, y),
+                 y);
+      mT = then.mT;
+      return true;
+    }
     else if (found == "eoy")
     {
       Date then (12, 31, today.year ());
@@ -893,6 +914,25 @@ bool Date::isRelativeDate (const std::string& input)
         y++;
       }
       Date then (m, 1, y);
+      mT = then.mT;
+      return true;
+    }
+    else if (found == "soq")
+    {
+      int m = today.month ();
+      int y = today.year ();
+      int q;
+      if (m <= 3)
+        q = 1;
+      else if (m >= 4 && m <= 6)
+        q = 4;
+      else if (m >= 7 && m <= 9)
+        q = 7;
+      else
+        q = 10;
+      Date then (q,
+                 1,
+                 y);
       mT = then.mT;
       return true;
     }
