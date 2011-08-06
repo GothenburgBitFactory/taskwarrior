@@ -97,18 +97,30 @@ int CmdImport::execute (std::string& output)
       std::cout << root->dump ()
                 << "\n";
 
-/*
       // For each object element...
+      json_object_iter i;
+      for (i  = ((json_object*)root)->begin ();
+           i != ((json_object*)root)->end ();
+           ++i)
+      {
+        std::cout << "!!!\n";
+      }
+
+/*
       std::map <std::string, json::value*>::iterator i;
       for (i  = ((std::map <std::string, json::value*>*)root)->begin ();
            i != ((std::map <std::string, json::value*>*)root)->end ();
            ++i)
       {
         Task task;
+        std::cout << "!!!\n";
 
         // TODO Navigate each object.
       }
 */
+
+      delete root;
+      root = NULL;
     }
   }
 
