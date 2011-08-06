@@ -82,11 +82,9 @@ int CmdTimesheet::execute (std::string& output)
 
   // Determine how many reports to run.
   int quantity = 1;
-/*
-  TODO Need some command line parsing.
-  if (context.sequence.size () == 1)
-    quantity = context.sequence[0];
-*/
+  A3 modifications = context.a3.extract_modifications ();
+  if (modifications.size () == 1)
+    quantity = strtol (modifications[0]._raw.c_str (), NULL, 10);;
 
   std::stringstream out;
   for (int week = 0; week < quantity; ++week)
