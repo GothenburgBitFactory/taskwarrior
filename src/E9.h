@@ -39,6 +39,7 @@ public:
   Term ()
   : _raw ("")
   , _value ("")
+  , _type ("")
   , _category ("")
   {
   }
@@ -46,6 +47,7 @@ public:
   Term (const Arg& arg)
   : _raw (arg._raw)
   , _value (arg._raw)
+  , _type ("string")
   , _category (arg._category)
   {
   }
@@ -53,9 +55,11 @@ public:
   Term (
     const std::string& raw,
     const std::string& value,
+    const std::string& type,
     const std::string& category)
   : _raw (raw)
   , _value (value)
+  , _type (type)
   , _category (category)
   {
   }
@@ -64,6 +68,7 @@ public:
   {
     _raw      = other._raw;
     _value    = other._value;
+    _type     = other._type;
     _category = other._category;
   }
 
@@ -73,6 +78,7 @@ public:
     {
       _raw      = other._raw;
       _value    = other._value;
+      _type     = other._type;
       _category = other._category;
     }
 
@@ -83,12 +89,14 @@ public:
   {
     return _raw      == other._raw   &&
            _value    == other._value &&
+           _type     == other._type  &&
            _category == other._category;
   }
 
 public:
   std::string _raw;      // Raw input token, never modified
   std::string _value;    // Evaluated raw token, sometimes identical
+  std::string _type;     // Inferred type
   std::string _category; // Categorized argument
 };
 

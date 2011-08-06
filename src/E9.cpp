@@ -27,11 +27,23 @@
 
 #include <iostream> // TODO Remove.
 #include <Context.h>
+#include <Date.h>
+#include <Duration.h>
 #include <text.h>
 #include <A3.h>
 #include <E9.h>
 
 extern Context context;
+
+std::ostream& operator<< (std::ostream& out, const Term& term)
+{
+  out << term._raw   << "/"
+      << term._value << "/"
+      << term._type  << "/"
+      << term._category;
+
+  return out;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Perform all the necessary steps prior to an eval call.
@@ -79,6 +91,7 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
 {
   // Case sensitivity is configurable.
   bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
+  std::string dateformat = context.config.get ("dateformat");
 
   std::vector <Term>::iterator arg;
   for (arg = _terms.begin (); arg != _terms.end (); ++arg)
@@ -167,6 +180,15 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
     // Operand.
     else
     {
+      // Expand the value if possible.
+      if (arg->_category == "dom")
+        arg->_value = context.dom.get (arg->_raw, task);
+      else if (arg->_category == "date")
+        arg->_value = Date (arg->_raw, dateformat).toEpochString ();
+      else if (arg->_category == "duration")
+        arg->_value = (std::string)Duration (arg->_raw);
+
+      //std::cout << "# E9::eval operand " << *arg << "\n";
       value_stack.push_back (*arg);
     }
   }
@@ -206,12 +228,9 @@ bool E9::eval_match (Term& left, Term& right, bool case_sensitive)
 void E9::operator_not (Term& result, Term& right)
 {
   // TODO This is not right.
-  result = Term (right._raw, coerce (right, "bool")._value, "bool");
+  result = Term (right._raw, coerce (right, "bool")._value, "bool", right._category);
 
-  std::cout << "# not " << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
+//  std::cout << "# not " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -228,14 +247,7 @@ void E9::operator_and (Term& result, Term& left, Term& right)
     result._category = "bool";
   }
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " and "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " and " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -252,14 +264,7 @@ void E9::operator_or (Term& result, Term& left, Term& right)
     result._category = "bool";
   }
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " or "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " or " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -279,14 +284,7 @@ void E9::operator_xor (Term& result, Term& left, Term& right)
     result._category = "bool";
   }
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " xor "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " xor " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -309,14 +307,7 @@ void E9::operator_lt (Term& result, Term& left, Term& right)
 
   result._category = "bool";
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " < "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " < " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -340,14 +331,7 @@ void E9::operator_lte (Term& result, Term& left, Term& right)
 
   result._category = "bool";
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " <= "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " <= " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -371,14 +355,7 @@ void E9::operator_gte (Term& result, Term& left, Term& right)
 
   result._category = "bool";
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " >= "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " >= " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -401,14 +378,7 @@ void E9::operator_gt (Term& result, Term& left, Term& right)
 
   result._category = "bool";
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " > "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " > " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -424,14 +394,7 @@ void E9::operator_inequal (
   else
     result._raw = result._value = "false";
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " != "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " != " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -478,14 +441,7 @@ void E9::operator_equal (
     }
   }
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " = "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " = " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -502,14 +458,7 @@ void E9::operator_match (
   else
     result._raw = result._value = "false";
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " ~ "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " ~ " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -536,62 +485,31 @@ void E9::operator_nomatch (
   else
     result._raw = result._value = "false";
 
-/*
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " !~ "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
-*/
+//  std::cout << "# " << left << " !~ " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_multiply (Term& result, Term& left, Term& right)
 {
-
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " * "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
+  std::cout << "# " << left << " * " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_divide (Term& result, Term& left, Term& right)
 {
-
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " / "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
+  std::cout << "# " << left << " / " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_add (Term& result, Term& left, Term& right)
 {
-
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " + "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
+  std::cout << "# " << left << " + " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_subtract (Term& result, Term& left, Term& right)
 {
-
-  std::cout << "# " << left._raw << "/" << left._value << "/" << left._category
-            << " - "
-            << right._raw << "/" << right._value << "/" << right._category
-            << " --> "
-            << result._raw << "/" << result._value << "/" << result._category
-            << "\n";
+  std::cout << "# " << left << " - " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

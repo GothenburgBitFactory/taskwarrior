@@ -830,6 +830,7 @@ const A3 A3::tokenize (const A3& input) const
     n.skipWS ();
   }
 
+  output.dump ("A3::tokenize");
   return output;
 }
 
@@ -863,6 +864,7 @@ const A3 A3::infix (const A3& input) const
     previous = *arg;
   }
 
+  modified.dump ("A3::infix");
   return modified;
 }
 
@@ -1036,6 +1038,7 @@ const A3 A3::expand (const A3& input) const
     previous = arg;
   }
 
+  expanded.dump ("A3::expand");
   return expanded;
 }
 
@@ -1109,6 +1112,7 @@ const A3 A3::sequence (const A3& input) const
       sequenced.push_back (*arg);
   }
 
+  sequenced.dump ("A3::sequence");
   return sequenced;
 }
 
@@ -1207,6 +1211,7 @@ const A3 A3::postfix (const A3& input) const
     op_stack.pop_back ();
   }
 
+  converted.dump ("A3::postfix");
   return converted;
 }
 

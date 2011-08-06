@@ -30,8 +30,6 @@
 #include <sstream>
 #include <Context.h>
 #include <Nibbler.h>
-#include <Date.h>
-#include <Duration.h>
 #include <text.h>
 #include <i18n.h>
 #include <DOM.h>

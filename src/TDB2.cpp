@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove.
 #include <Context.h>
 #include <text.h>
 #include <TDB2.h>
@@ -281,6 +280,11 @@ void TF2::load_lines ()
 
   split (_lines, _contents, '\n');
   _loaded_lines = true;
+
+/*
+  if (_lines.back () == "")
+    _lines.pop_back ();
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

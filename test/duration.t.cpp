@@ -48,7 +48,7 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (628);
+  UnitTest t (629);
 
   Duration d;
 
@@ -570,6 +570,7 @@ int main (int argc, char** argv)
   t.ok (d.valid ("0w"),         "valid duration 0w");
   t.ok (d.valid ("1 wks"),      "valid duration 1 wks");
   t.ok (d.valid ("1 wk"),       "valid duration 1 wk");
+  t.ok (d.valid ("1wk"),        "valid duration 1wk");
   t.ok (d.valid ("1w"),         "valid duration 1w");
   t.ok (d.valid ("10 wks"),     "valid duration 10 wks");
   t.ok (d.valid ("10 wk"),      "valid duration 10 wk");

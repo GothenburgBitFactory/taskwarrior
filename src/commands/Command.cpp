@@ -409,12 +409,18 @@ void Command::modify_task (
       A3::extract_attr (arg->_raw, name, value);
       if (A3::is_attribute (name, name))  // Canonicalize
       {
+        std::cout << "# Command::modify_task name='" << name << "' value='" << value << "'\n";
+
         // All values must be eval'd first.
         A3 fragment;
-        fragment.push_back (Arg (value, "attr"));
+        fragment.capture (value);
+        fragment = fragment.tokenize (fragment);
         E9 e (fragment);
         std::string result = e.evalExpression (task);
         context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
+
+fragment.dump ("pre modify_task attr");
+std::cout << "# modify_task result='" << result << "'\n";
 
         // Dependencies must be resolved to UUIDs.
         if (name == "depends")

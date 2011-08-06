@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (258);
+  UnitTest t (262);
 
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   std::string text = "This is a test of the line wrapping code.";
@@ -154,6 +154,13 @@ int main (int argc, char** argv)
   t.is (items[1], "a",             "split '-a-bc-def' '--' -> [1] 'a'");
   t.is (items[2], "bc",            "split '-a-bc-def' '--' -> [2] 'bc'");
   t.is (items[3], "def",           "split '-a-bc-def' '--' -> [3] 'def'");
+
+  unsplit = "one\ntwo\nthree";
+  split (items, unsplit, "\n");
+  t.is (items.size (), (size_t) 3, "split 'one\\ntwo\\nthree' -> 'one', 'two', 'three'");
+  t.is (items[0], "one",           "split 'one\\ntwo\\nthree' -> [0] 'one'");
+  t.is (items[1], "two",           "split 'one\\ntwo\\nthree' -> [1] 'two'");
+  t.is (items[2], "three",         "split 'one\\ntwo\\nthree' -> [2] 'three'");
 
   // void splitq (std::vector<std::string>&, const std::string&, const char);
   unsplit = "one 'two' '' 'three four' \"five six seven\" eight'nine ten'";

@@ -57,7 +57,6 @@ static const char* durations[] =
   "minutes",
   "mins",
   "min",
-
   "mnths",
   "monthly",
   "months",
@@ -66,7 +65,6 @@ static const char* durations[] =
   "mo",
   "mths",
   "m",
-
   "quarterly",
   "quarters",
   "qrtrs",
