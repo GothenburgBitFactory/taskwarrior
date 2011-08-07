@@ -161,6 +161,100 @@ void Task::setStart ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Task::has (const std::string& name) const
+{
+  Task::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <Att> Task::all ()
+{
+  std::vector <Att> all;
+  std::map <std::string, Att>::iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+    all.push_back (i->second);
+
+  return all;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string Task::get (const std::string& name) const
+{
+  Task::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return i->second.value ();
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Task::get_int (const std::string& name) const
+{
+  Task::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return atoi (i->second.value ().c_str ());
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+unsigned long Task::get_ulong (const std::string& name) const
+{
+  Task::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return strtoul (i->second.value ().c_str (), NULL, 10);
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+time_t Task::get_date (const std::string& name) const
+{
+  Task::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return (time_t) strtoul (i->second.value ().c_str (), NULL, 10);
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+time_t Task::get_duration (const std::string& name) const
+{
+  Task::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return (time_t) strtoul (i->second.value ().c_str (), NULL, 10);
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::set (const std::string& name, const std::string& value)
+{
+  (*this)[name] = Att (name, value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::set (const std::string& name, int value)
+{
+  std::stringstream svalue;
+  svalue << value;
+
+  (*this)[name] = Att (name, svalue.str ());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::remove (const std::string& name)
+{
+  Task::iterator it;
+  if ((it = this->find (name)) != this->end ())
+    this->erase (it);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Task::status Task::getStatus () const
 {
   return textToStatus (get ("status"));
