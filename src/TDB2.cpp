@@ -1504,6 +1504,9 @@ void TDB::merge (const std::string& mergeFile)
   // list of modifications that we want to add to the local database
   std::list<Taskmod> mods;
 
+  // list of modifications that we want to add to the local history
+  std::list<Taskmod> mods_history;
+
   // list of modifications on the local database
   // has to be merged with mods to create the new undo.data
   std::list<Taskmod> lmods;
@@ -1710,6 +1713,9 @@ void TDB::merge (const std::string& mergeFile)
             {
               DEBUG_STR ("    cleaning up right side");
 
+              // add tmod_r to local history
+              mods_history.push_front (tmod_r);
+
               std::list<Taskmod>::iterator tmp_it = rmod_rit.base ();
               rmods.erase (--tmp_it);
               rmod_rit--;
@@ -1742,19 +1748,40 @@ void TDB::merge (const std::string& mergeFile)
 
                 // inserting right mod into history of local database
                 // so that it can be restored later
+                // AND more important: create a history that looks the same 
+      	        // as if we switched the roles 'remote' and 'local'
+					
+                // thus we have to find the oldest change on the local branch that is not on remote branch
+                std::list<Taskmod>::iterator lmod_it;
+                std::list<Taskmod>::iterator last = lmod_it;
+                for (lmod_it = lmods.begin (); lmod_it != lmods.end (); ++lmod_it) {
+                  if ((*lmod_it).getUuid () == uuid) {
+                    last = lmod_it;
+                  }
+                }
 
-                // TODO feature: make rejected changes on the remote branch restorable
-//                Taskmod reverse_tmod;
-//
-//                tmod_r.setBefore(lmod_rit->getAfter());
-//                tmod_r.setTimestamp(lmod_rit->getTimestamp()+1);
-//
-//                reverse_tmod.setAfter(tmod_r.getBefore());
-//                reverse_tmod.setBefore(tmod_r.getAfter());
-//                reverse_tmod.setTimestamp(tmod_r.getTimestamp());
-//
-//                mods.push_back(tmod_r);
-//                mods.push_back(reverse_tmod);
+                if (tmod_l > tmod_r) { // local change is newer
+                  last->setBefore(tmod_r.getAfter ());
+
+                  // add tmod_r to local history
+                  lmods.push_back(tmod_r);
+                }
+                else { // both mods have equal timestamps
+                  // in this case the local branch wins as above, but the remote change with the
+                  // same timestamp will be discarded
+
+                  // find next (i.e. older) mod of this uuid on remote side
+                  std::list<Taskmod>::reverse_iterator rmod_rit2;
+                  for (rmod_rit2 = rmod_rit, ++rmod_rit2; rmod_rit2 != rmods.rend (); ++rmod_rit2) {
+                    Taskmod tmp_mod = *rmod_rit2;
+                    if (tmp_mod.getUuid () == uuid) {
+                      last->setBefore (tmp_mod.getAfter ());
+                      break;
+                    }
+                  }
+                }
+
+                // TODO feature: restore command? We would have to add a marker to the undo.file.
 
                 // delete tmod from right side
                 std::list<Taskmod>::iterator tmp_it = rmod_rit.base ();
@@ -1784,6 +1811,7 @@ void TDB::merge (const std::string& mergeFile)
 
     DEBUG_STR ("sorting taskmod list");
     mods.sort ();
+    mods_history.sort ();
   }
   else if (rit == r.end ())
   {
@@ -1987,13 +2015,18 @@ void TDB::merge (const std::string& mergeFile)
     // write completed file
     if (! File::write (completedFile, completed))
       throw std::string ("Could not write '") + completedFile + "'.";
+  }
 
+  if (!mods.empty() || !lmods.empty() || !mods_history.empty()) {
     // at this point undo contains the lines up to the branch-off point
     // now we merge mods (new modifications from mergefile)
     // with lmods (part of old undo.data)
+    lmods.sort();
     mods.merge (lmods);
+    mods.merge (mods_history);
 
     // generate undo.data format
+    std::list<Taskmod>::iterator it;
     for (it = mods.begin (); it != mods.end (); it++)
       undo.push_back(it->toString ());
 
@@ -2005,6 +2038,7 @@ void TDB::merge (const std::string& mergeFile)
   // delete objects
   lmods.clear ();
   mods.clear ();
+  mods_history.clear ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
