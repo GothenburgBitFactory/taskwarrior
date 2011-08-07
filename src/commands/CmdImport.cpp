@@ -32,6 +32,7 @@
 #include <JSON.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <main.h>
 #include <CmdImport.h>
 
@@ -42,7 +43,7 @@ CmdImport::CmdImport ()
 {
   _keyword     = "import";
   _usage       = "task import <file> [<file> ...]";
-  _description = "Imports JSON files.";
+  _description = STRING_CMD_IMPORT_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -94,36 +95,100 @@ int CmdImport::execute (std::string& output)
 
       // Parse the whole thing.
       json::value* root = json::parse (object);
-      std::cout << root->dump ()
-                << "\n";
-
-      // For each object element...
-      json_object_iter i;
-      for (i  = ((json_object*)root)->begin ();
-           i != ((json_object*)root)->end ();
-           ++i)
+      if (root->type () == json::j_object)
       {
-        std::cout << "!!!\n";
-      }
-
-/*
-      std::map <std::string, json::value*>::iterator i;
-      for (i  = ((std::map <std::string, json::value*>*)root)->begin ();
-           i != ((std::map <std::string, json::value*>*)root)->end ();
-           ++i)
-      {
+        json::object* root_obj = (json::object*)root;
         Task task;
-        std::cout << "!!!\n";
+        task.set ("uuid", uuid ());
 
-        // TODO Navigate each object.
+        // For each object element...
+        json_object_iter i;
+        for (i  = root_obj->_data.begin ();
+             i != root_obj->_data.end ();
+             ++i)
+        {
+          // If the attribute is a recognized column.
+          Column* col = context.columns[i->first];
+          if (col)
+          {
+            // Any specified id is ignored.
+            if (i->first == "id")
+              ;
+
+            // Dates are converted from ISO to epoch.
+            else if (col->type () == "date")
+            {
+              Date d (unquoteText (i->second->dump ()));
+              task.set (i->first, d.toEpochString ());
+            }
+
+            // Other types are simply added.
+            else
+              task.set (i->first, unquoteText (i->second->dump ()));
+          }
+
+          // Several attributes do not have columns.
+          //   mask
+          //   imask
+          //   parent
+          else
+          {
+            // Annotations are an array of JSON objects with 'entry' and
+            // 'description' values and must be converted.
+            if (i->first == "annotations")
+            {
+              std::vector <Att> annos;
+
+              json::array* atts = (json::array*)i->second;
+              json_array_iter annotations;
+              for (annotations  = atts->_data.begin ();
+                   annotations != atts->_data.end ();
+                   ++annotations)
+              {
+                json::object* annotation = (json::object*)*annotations;
+                json::string* when = (json::string*)annotation->_data["entry"];
+                json::string* what = (json::string*)annotation->_data["description"];
+
+                std::string name = "annotation_" + Date (when->_data).toEpochString ();
+
+                annos.push_back (Att (name, what->_data));
+              }
+
+              task.setAnnotations (annos);
+            }
+
+            // These must be imported, but are not represented by Column
+            // objects.
+            else if (i->first == "mask"  ||
+                     i->first == "imask" ||
+                     i->first == "parent")
+            {
+              task.set (i->first, unquoteText (i->second->dump ()));
+            }
+            else
+              throw std::string ("Unrecognized attribute '") + i->first + "'";
+          }
+        }
+
+        task.validate ();
+
+        // TODO Verify uuid is unique, to prevent double-import.
+
+        std::cout << "  "
+                  << task.get ("uuid")
+                  << " "
+                  << task.get ("description")
+                  << "\n";
+        context.tdb2.add (task);
       }
-*/
+      else
+        throw std::string ("Not a JSON object: ") + *line;
 
       delete root;
-      root = NULL;
     }
   }
 
+  context.tdb2.commit ();
   return rc;
 }
 

@@ -308,6 +308,7 @@
 #define STRING_CMD_DENO_NONE         "The specified task has no annotations that can be deleted."
 #define STRING_CMD_DENO_FOUND        "Found annotation '{1}' and deleted it."
 #define STRING_CMD_DENO_NOMATCH      "Did not find any matching annotation to be deleted for '{1}'."
+#define STRING_CMD_IMPORT_USAGE      "Imports JSON files."
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."

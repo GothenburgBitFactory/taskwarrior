@@ -38,12 +38,12 @@ namespace json
 {
   enum jtype
   {
-    j_value,
-    j_object,
-    j_array,
-    j_string,
-    j_number,
-    j_literal
+    j_value,    // 0
+    j_object,   // 1
+    j_array,    // 2
+    j_string,   // 3
+    j_number,   // 4
+    j_literal   // 5
   };
 
   class value
@@ -56,7 +56,7 @@ namespace json
     virtual std::string dump ();
   };
 
-  class string : public value, public std::string
+  class string : public value
   {
   public:
     string () {}
@@ -65,9 +65,12 @@ namespace json
     static string* parse (Nibbler&);
     jtype type ();
     std::string dump ();
+
+  public:
+    std::string _data;
   };
 
-  class number : public value, public std::string
+  class number : public value
   {
   public:
     number () : _dvalue (0.0) {}
@@ -77,6 +80,7 @@ namespace json
     std::string dump ();
     operator double () const;
 
+  public:
     double _dvalue;
   };
 
@@ -89,11 +93,12 @@ namespace json
     jtype type ();
     std::string dump ();
 
+  public:
     enum literal_value {none, nullvalue, falsevalue, truevalue};
     literal_value _lvalue;
   };
 
-  class array : public value, public std::vector <value*>
+  class array : public value
   {
   public:
     array () {}
@@ -101,9 +106,12 @@ namespace json
     static array* parse (Nibbler&);
     jtype type ();
     std::string dump ();
+
+  public:
+    std::vector <value*> _data;
   };
 
-  class object : public value, public std::map <std::string, value*>
+  class object : public value
   {
   public:
     object () {}
@@ -112,6 +120,9 @@ namespace json
     static bool parse_pair (Nibbler&, std::string&, value*&);
     jtype type ();
     std::string dump ();
+
+  public:
+    std::map <std::string, value*> _data;
   };
 
   // Parser entry point.
@@ -121,9 +132,6 @@ namespace json
   std::string encode (const std::string&);
   std::string decode (const std::string&);
 }
-
-typedef std::vector<json::value*>                      json_array;
-typedef std::map<std::string, json::value*>            json_object;
 
 typedef std::vector <json::value*>::iterator           json_array_iter;
 typedef std::map <std::string, json::value*>::iterator json_object_iter;

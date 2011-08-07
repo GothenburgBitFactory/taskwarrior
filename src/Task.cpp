@@ -121,11 +121,11 @@ Task::status Task::textToStatus (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 std::string Task::statusToText (Task::status s)
 {
-       if (s == Task::pending)   return "pending";        // TODO i18n
-  else if (s == Task::completed) return "completed";      // TODO i18n
-  else if (s == Task::deleted)   return "deleted";        // TODO i18n
-  else if (s == Task::recurring) return "recurring";      // TODO i18n
-  else if (s == Task::waiting)   return "waiting";        // TODO i18n
+       if (s == Task::pending)   return "pending";
+  else if (s == Task::completed) return "completed";
+  else if (s == Task::deleted)   return "deleted";
+  else if (s == Task::recurring) return "recurring";
+  else if (s == Task::waiting)   return "waiting";
 
   return "pending";
 }

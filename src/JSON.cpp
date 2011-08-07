@@ -36,11 +36,11 @@
 json::value* json::value::parse (Nibbler& nibbler)
 {
   json::value* v;
-  if ((v = json::object::parse        (nibbler)) ||
-      (v = json::array::parse         (nibbler)) ||
-      (v = json::string::parse        (nibbler)) ||
-      (v = json::number::parse        (nibbler)) ||
-      (v = json::literal::parse       (nibbler)))
+  if ((v = json::object::parse  (nibbler)) ||
+      (v = json::array::parse   (nibbler)) ||
+      (v = json::string::parse  (nibbler)) ||
+      (v = json::number::parse  (nibbler)) ||
+      (v = json::literal::parse (nibbler)))
     return v;
 
   return NULL;
@@ -61,7 +61,7 @@ std::string json::value::dump ()
 ////////////////////////////////////////////////////////////////////////////////
 json::string::string (const std::string& other)
 {
-  *this = other;
+  _data = other;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ json::string* json::string::parse (Nibbler& nibbler)
   if (nibbler.getQuoted ('"', value, false))
   {
     json::string* s = new json::string ();
-    *(std::string*)s = value;
+    s->_data = value;
     return s;
   }
 
@@ -87,7 +87,7 @@ json::jtype json::string::type ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string json::string::dump ()
 {
-  return std::string ("\"") + (std::string) *this + "\"";
+  return std::string ("\"") + _data + "\"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,9 +165,7 @@ std::string json::literal::dump ()
 json::array::~array ()
 {
   std::vector <json::value*>::iterator i;
-  for (i  = ((std::vector <json::value*>*)this)->begin ();
-       i != ((std::vector <json::value*>*)this)->end ();
-       ++i)
+  for (i = _data.begin (); i != _data.end (); ++i)
     delete *i;
 }
 
@@ -185,7 +183,7 @@ json::array* json::array::parse (Nibbler& nibbler)
     json::value* value;
     if ((value = json::value::parse (n)))
     {
-      arr->push_back (value);
+      arr->_data.push_back (value);
       value = NULL; // Not a leak.  Looks like a leak.
       n.skipWS ();
       while (n.skip (','))
@@ -194,7 +192,7 @@ json::array* json::array::parse (Nibbler& nibbler)
 
         if ((value = json::value::parse (n)))
         {
-          arr->push_back (value);
+          arr->_data.push_back (value);
           n.skipWS ();
         }
         else
@@ -232,11 +230,11 @@ std::string json::array::dump ()
   output += "[";
 
   std::vector <json::value*>::iterator i;
-  for (i  = ((std::vector <json::value*>*)this)->begin ();
-       i != ((std::vector <json::value*>*)this)->end ();
+  for (i  = _data.begin ();
+       i != _data.end ();
        ++i)
   {
-    if (i != ((std::vector <json::value*>*)this)->begin ())
+    if (i != _data.begin ())
       output += ",";
 
     output += (*i)->dump ();
@@ -250,9 +248,7 @@ std::string json::array::dump ()
 json::object::~object ()
 {
   std::map <std::string, json::value*>::iterator i;
-  for (i  = ((std::map <std::string, json::value*>*)this)->begin ();
-       i != ((std::map <std::string, json::value*>*)this)->end ();
-       ++i)
+  for (i = _data.begin (); i != _data.end (); ++i)
     delete i->second;
 }
 
@@ -271,7 +267,7 @@ json::object* json::object::parse (Nibbler& nibbler)
     json::value* value;
     if (json::object::parse_pair (n, name, value))
     {
-      obj->insert (std::pair <std::string, json::value*> (name, value));
+      obj->_data.insert (std::pair <std::string, json::value*> (name, value));
       value = NULL; // Not a leak.  Looks like a leak.
 
       n.skipWS ();
@@ -281,7 +277,7 @@ json::object* json::object::parse (Nibbler& nibbler)
 
         if (json::object::parse_pair (n, name, value))
         {
-          obj->insert (std::pair <std::string, json::value*> (name, value));
+          obj->_data.insert (std::pair <std::string, json::value*> (name, value));
           n.skipWS ();
         }
         else
@@ -348,11 +344,9 @@ std::string json::object::dump ()
   output += "{";
 
   std::map <std::string, json::value*>::iterator i;
-  for (i  = ((std::map <std::string, json::value*>*)this)->begin ();
-       i != ((std::map <std::string, json::value*>*)this)->end ();
-       ++i)
+  for (i = _data.begin (); i != _data.end (); ++i)
   {
-    if (i != ((std::map <std::string, json::value*>*)this)->begin ())
+    if (i != _data.begin ())
       output += ",";
 
     output += "\"" + i->first + "\":";
