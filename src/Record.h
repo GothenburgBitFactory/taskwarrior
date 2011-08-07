@@ -36,10 +36,6 @@
 
 class Record : public std::map <std::string, Att>
 {
-public:
-  Record ();                         // Default constructor
-  Record (const std::string&);       // Copy constructor
-  virtual ~Record ();                // Destructor
 };
 
 #endif

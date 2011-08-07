@@ -28,6 +28,7 @@
 #define L10N                                           // Localization complete.
 
 #include <sstream>
+#include <stdlib.h>
 #include <algorithm>
 #include <Context.h>
 #include <Nibbler.h>
@@ -55,11 +56,8 @@ Task::Task ()
 
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task (const Task& other)
-: Record (other)
-, id (other.id)
-, urgency_value (other.urgency_value)
-, recalc_urgency (other.recalc_urgency)
 {
+  *this = other;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +65,8 @@ Task& Task::operator= (const Task& other)
 {
   if (this != &other)
   {
-    Record::operator= (other);
+    std::map <std::string, Att>::operator= (other);
+
     id             = other.id;
     urgency_value  = other.urgency_value;
     recalc_urgency = other.recalc_urgency;
@@ -83,7 +82,7 @@ bool Task::operator== (const Task& other)
   if (size () != other.size ())
     return false;
 
-  std::map <std::string, Att>::iterator att;
+  Task::iterator att;
   for (att = this->begin (); att != this->end (); ++att)
     if (att->second.name () != "uuid")
       if (att->second.value () != other.get (att->second.name ()))
@@ -174,7 +173,7 @@ bool Task::has (const std::string& name) const
 std::vector <Att> Task::all ()
 {
   std::vector <Att> all;
-  std::map <std::string, Att>::iterator i;
+  Task::iterator i;
   for (i = this->begin (); i != this->end (); ++i)
     all.push_back (i->second);
 
@@ -269,7 +268,7 @@ void Task::setStatus (Task::status status)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Attempt an FF4 parse first, using Record::parse, and in the event of an error
+// Attempt an FF4 parse first, using Task::parse, and in the event of an error
 // try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
 //
 // start --> [ --> Att --> ] --> end
@@ -286,7 +285,6 @@ void Task::parse (const std::string& input)
 
   try
   {
-//    Record::parse (copy);
     clear ();
 
     Nibbler n (copy);
@@ -510,7 +508,7 @@ std::string Task::composeF4 () const
   std::string ff4 = "[";
 
   bool first = true;
-  std::map <std::string, Att>::const_iterator it;
+  Task::const_iterator it;
   for (it = this->begin (); it != this->end (); ++it)
   {
     if (it->second.value () != "")
@@ -632,7 +630,7 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
   // First the non-annotations.
   int attributes_written = 0;
   int annotation_count = 0;
-  std::map <std::string, Att>::const_iterator i;
+  Task::const_iterator i;
   for (i = this->begin (); i != this->end (); ++i)
   {
     if (attributes_written)
@@ -727,7 +725,7 @@ void Task::getAnnotations (std::vector <Att>& annotations) const
 {
   annotations.clear ();
 
-  Record::const_iterator ci;
+  Task::const_iterator ci;
   for (ci = this->begin (); ci != this->end (); ++ci)
     if (ci->first.substr (0, 11) == "annotation_")
       annotations.push_back (ci->second);
@@ -762,7 +760,7 @@ void Task::addAnnotation (const std::string& description)
 void Task::removeAnnotations ()
 {
   // Erase old annotations.
-  Record::iterator i = this->begin ();
+  Task::iterator i = this->begin ();
   while (i != this->end ())
   {
     if (i->first.substr (0, 11) == "annotation_")

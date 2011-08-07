@@ -28,10 +28,13 @@
 #define INCLUDED_TASK
 #define L10N                                           // Localization complete.
 
+#include <vector>
+#include <map>
 #include <string>
-#include <Record.h>
+#include <stdio.h>
+#include <Att.h>
 
-class Task : public Record
+class Task : public std::map <std::string, Att>
 {
 public:
   Task ();                       // Default constructor
