@@ -40,9 +40,6 @@ public:
   Record ();                         // Default constructor
   Record (const std::string&);       // Copy constructor
   virtual ~Record ();                // Destructor
-
-  void parse (const std::string&);
-
 };
 
 #endif

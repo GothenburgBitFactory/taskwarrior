@@ -47,7 +47,6 @@ Record::Record ()
 ////////////////////////////////////////////////////////////////////////////////
 Record::Record (const std::string& input)
 {
-  parse (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,42 +54,3 @@ Record::~Record ()
 {
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//
-// start --> [ --> Att --> ] --> end
-//              ^       |
-//              +-------+
-//
-void Record::parse (const std::string& input)
-{
-  clear ();
-
-  Nibbler n (input);
-  std::string line;
-  if (n.skip     ('[')       &&
-      n.getUntil (']', line) &&
-      n.skip     (']')       &&
-      n.depleted ())
-  {
-    if (line.length () == 0)
-      throw std::string (STRING_RECORD_EMPTY);
-
-    Nibbler nl (line);
-    Att a;
-    while (!nl.depleted ())
-    {
-      a.parse (nl);
-      (*this)[a.name ()] = a;
-      nl.skip (' ');
-    }
-
-    std::string remainder;
-    nl.getUntilEOS (remainder);
-    if (remainder.length ())
-      throw std::string (STRING_RECORD_JUNK_AT_EOL);
-  }
-  else
-    throw std::string (STRING_RECORD_NOT_FF4);
-}
-
-////////////////////////////////////////////////////////////////////////////////

@@ -271,17 +271,50 @@ void Task::setStatus (Task::status status)
 ////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Record::parse, and in the event of an error
 // try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
-void Task::parse (const std::string& line)
+//
+// start --> [ --> Att --> ] --> end
+//              ^       |
+//              +-------+
+//
+void Task::parse (const std::string& input)
 {
   std::string copy;
-  if (line[line.length () - 1] == '\n')
-    copy = line.substr (0, line.length () - 1);
+  if (input[input.length () - 1] == '\n')
+    copy = input.substr (0, input.length () - 1);
   else
-    copy = line;
+    copy = input;
 
   try
   {
-    Record::parse (copy);
+//    Record::parse (copy);
+    clear ();
+
+    Nibbler n (copy);
+    std::string line;
+    if (n.skip     ('[')       &&
+        n.getUntil (']', line) &&
+        n.skip     (']')       &&
+        n.depleted ())
+    {
+      if (line.length () == 0)
+        throw std::string (STRING_RECORD_EMPTY);
+
+      Nibbler nl (line);
+      Att a;
+      while (!nl.depleted ())
+      {
+        a.parse (nl);
+        (*this)[a.name ()] = a;
+        nl.skip (' ');
+      }
+
+      std::string remainder;
+      nl.getUntilEOS (remainder);
+      if (remainder.length ())
+        throw std::string (STRING_RECORD_JUNK_AT_EOL);
+    }
+    else
+      throw std::string (STRING_RECORD_NOT_FF4);
   }
 
   catch (std::string& e)
