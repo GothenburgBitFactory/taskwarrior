@@ -27,7 +27,7 @@
 #include <iostream>
 #include <Context.h>
 #include <Att.h>
-#include <Record.h>
+#include <Task.h>
 #include <test.h>
 
 Context context;
@@ -39,75 +39,75 @@ int main (int argc, char** argv)
 
   // (blank)
   bool good = true;
-  Record record;
+  Task task;
 
-  try {record = Record ("");}
+  try {task = Task ("");}
   catch (std::string& e){t.diag (e); good = false;}
-  t.notok (good, "Record::Record ('')");
+  t.notok (good, "Task::Task ('')");
 
   // []
   good = true;
-  try {record = Record ("[]");}
+  try {task = Task ("[]");}
   catch (std::string& e){t.diag (e); good = false;}
-  t.notok (good, "Record::Record ('[]')");
+  t.notok (good, "Task::Task ('[]')");
 
   // [name:value]
   good = true;
-  try {record = Record ("[name:value]");}
+  try {task = Task ("[name:value]");}
   catch (std::string& e){t.diag (e); good = false;}
-  t.ok (good, "Record::Record ('[name:value]')");
-  t.is (record.get ("name"), "value", "name=value");
+  t.ok (good, "Task::Task ('[name:value]')");
+  t.is (task.get ("name"), "value", "name=value");
 
   // [name:"value"]
   good = true;
-  try {record = Record ("[name:\"value\"]");}
+  try {task = Task ("[name:\"value\"]");}
   catch (std::string& e){t.diag (e); good = false;}
-  t.ok (good, "Record::Record ('[name:\"value\"]')");
-  t.is (record.get ("name"), "value", "name=value");
+  t.ok (good, "Task::Task ('[name:\"value\"]')");
+  t.is (task.get ("name"), "value", "name=value");
 
   // [name:"one two"]
   good = true;
-  try {record = Record ("[name:\"one two\"]");}
+  try {task = Task ("[name:\"one two\"]");}
   catch (std::string& e){t.diag (e); good = false;}
-  t.ok (good, "Record::Record ('[name:\"one two\"]')");
-  t.is (record.get ("name"), "one two", "name=one two");
+  t.ok (good, "Task::Task ('[name:\"one two\"]')");
+  t.is (task.get ("name"), "one two", "name=one two");
 
   // [one:two three:four]
   good = true;
-  try {record = Record ("[one:\"two\" three:\"four\"]");}
+  try {task = Task ("[one:\"two\" three:\"four\"]");}
   catch (std::string& e){t.diag (e); good = false;}
-  t.ok (good, "Record::Record ('[one:\"two\" three:\"four\"]')");
-  t.is (record.get ("one"), "two", "one=two");
-  t.is (record.get ("three"), "four", "three=four");
+  t.ok (good, "Task::Task ('[one:\"two\" three:\"four\"]')");
+  t.is (task.get ("one"), "two", "one=two");
+  t.is (task.get ("three"), "four", "three=four");
 
-  // Record::set
-  record.clear ();
-  record.set ("name", "value");
-  t.is (record.composeF4 (), "[name:\"value\"]\n", "Record::set");
+  // Task::set
+  task.clear ();
+  task.set ("name", "value");
+  t.is (task.composeF4 (), "[name:\"value\"]\n", "Task::set");
 
-  // Record::has
-  t.ok    (record.has ("name"), "Record::has");
-  t.notok (record.has ("woof"), "Record::has not");
+  // Task::has
+  t.ok    (task.has ("name"), "Task::has");
+  t.notok (task.has ("woof"), "Task::has not");
 
-  // Record::get_int
-  record.set ("one", 1);
-  t.is (record.composeF4 (), "[name:\"value\" one:\"1\"]\n", "Record::set");
-  t.is (record.get_int ("one"), 1, "Record::get_int");
+  // Task::get_int
+  task.set ("one", 1);
+  t.is (task.composeF4 (), "[name:\"value\" one:\"1\"]\n", "Task::set");
+  t.is (task.get_int ("one"), 1, "Task::get_int");
 
-  // Record::get_ulong
-  record.set ("two", "4294967295");
-  t.is (record.composeF4 (), "[name:\"value\" one:\"1\" two:\"4294967295\"]\n", "Record::set");
-  t.is ((size_t)record.get_ulong ("two"), (size_t)4294967295, "Record::get_ulong");
+  // Task::get_ulong
+  task.set ("two", "4294967295");
+  t.is (task.composeF4 (), "[name:\"value\" one:\"1\" two:\"4294967295\"]\n", "Task::set");
+  t.is ((size_t)task.get_ulong ("two"), (size_t)4294967295, "Task::get_ulong");
 
-  // Record::remove
-  record.remove ("one");
-  record.remove ("two");
-  t.is (record.composeF4 (), "[name:\"value\"]\n", "Record::remove");
+  // Task::remove
+  task.remove ("one");
+  task.remove ("two");
+  t.is (task.composeF4 (), "[name:\"value\"]\n", "Task::remove");
 
-  // Record::all
-  std::vector <Att> all = record.all ();
-  t.is (all.size (), (size_t)1, "Record::all size");
-  t.is (all[0].name (), "name", "Record::all[0].name ()");
+  // Task::all
+  std::vector <Att> all = task.all ();
+  t.is (all.size (), (size_t)1, "Task::all size");
+  t.is (all[0].name (), "name", "Task::all[0].name ()");
 
   return 0;
 }

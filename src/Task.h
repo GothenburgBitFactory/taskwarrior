@@ -42,6 +42,7 @@ public:
   ~Task ();                      // Destructor
 
   void parse (const std::string&);
+  std::string composeF4 () const;
   std::string composeCSV () const;
   std::string composeYAML () const;
   std::string composeJSON (bool include_id = false) const;

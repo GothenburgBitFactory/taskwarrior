@@ -56,30 +56,6 @@ Record::~Record ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// The format is:
-//
-//   [ Att::composeF4 ... ] \n
-//
-std::string Record::composeF4 () const
-{
-  std::string ff4 = "[";
-
-  bool first = true;
-  std::map <std::string, Att>::const_iterator it;
-  for (it = this->begin (); it != this->end (); ++it)
-  {
-    if (it->second.value () != "")
-    {
-      ff4 += (first ? "" : " ") + it->second.composeF4 ();
-      first = false;
-    }
-  }
-
-  ff4 += "]\n";
-  return ff4;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 //
 // start --> [ --> Att --> ] --> end
 //              ^       |
