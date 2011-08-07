@@ -23,7 +23,6 @@ set (task_SRCS A3.cpp A3.h
                Nibbler.cpp Nibbler.h
                Path.cpp Path.h
                Permission.cpp Permission.h
-               Record.cpp Record.h
                RX.cpp RX.h
                TDB.cpp TDB.h
                TDB2.cpp TDB2.h
