@@ -157,14 +157,6 @@ int CmdImport::execute (std::string& output)
               task.setAnnotations (annos);
             }
 
-            // These must be imported, but are not represented by Column
-            // objects.
-            else if (i->first == "mask"  ||
-                     i->first == "imask" ||
-                     i->first == "parent")
-            {
-              task.set (i->first, unquoteText (i->second->dump ()));
-            }
             else
               throw std::string ("Unrecognized attribute '") + i->first + "'";
           }

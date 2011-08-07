@@ -13,6 +13,9 @@ set (columns_SRCS Column.cpp Column.h
                   ColEnd.cpp ColEnd.h
                   ColEntry.cpp ColEntry.h
                   ColID.cpp ColID.h
+                  ColIMask.cpp ColIMask.h
+                  ColMask.cpp ColMask.h
+                  ColParent.cpp ColParent.h
                   ColPriority.cpp ColPriority.h
                   ColProject.cpp ColProject.h
                   ColRecur.cpp ColRecur.h
