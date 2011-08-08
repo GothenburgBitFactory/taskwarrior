@@ -86,19 +86,18 @@ int CmdDenotate::execute (std::string& output)
   {
     Task before (*task);
 
-    std::vector <Att> annotations;
+    std::map <std::string, std::string> annotations;
     task->getAnnotations (annotations);
 
     if (annotations.size () == 0)
       throw std::string (STRING_CMD_DENO_NONE);
 
-    std::vector <Att>::iterator i;
+    std::map <std::string, std::string>::iterator i;
     std::string anno;
     bool match = false;
     for (i = annotations.begin (); i != annotations.end (); ++i)
     {
-      anno = i->value ();
-      if (anno == pattern)
+      if (i->second == pattern)
       {
         match = true;
         annotations.erase (i);
@@ -110,9 +109,7 @@ int CmdDenotate::execute (std::string& output)
     {
       for (i = annotations.begin (); i != annotations.end (); ++i)
       {
-        anno = i->value ();
-        std::string::size_type loc = find (anno, pattern, sensitive);
-
+        std::string::size_type loc = find (i->second, pattern, sensitive);
         if (loc != std::string::npos)
         {
           annotations.erase (i);

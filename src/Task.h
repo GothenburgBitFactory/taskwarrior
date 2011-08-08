@@ -32,9 +32,8 @@
 #include <map>
 #include <string>
 #include <stdio.h>
-#include <Att.h>
 
-class Task : public std::map <std::string, Att>
+class Task : public std::map <std::string, std::string>
 {
 public:
   Task ();                       // Default constructor
@@ -67,7 +66,7 @@ public:
   void setStart ();
 
   bool has (const std::string&) const;
-  std::vector <Att> all ();
+  std::vector <std::string> all ();
   const std::string get (const std::string&) const;
   int get_int (const std::string&) const;
   unsigned long get_ulong (const std::string&) const;
@@ -87,8 +86,8 @@ public:
   void getTags (std::vector<std::string>&) const;
   void removeTag (const std::string&);
 
-  void getAnnotations (std::vector <Att>&) const;
-  void setAnnotations (const std::vector <Att>&);
+  void getAnnotations (std::map <std::string, std::string>&) const;
+  void setAnnotations (const std::map <std::string, std::string>&);
   void addAnnotation (const std::string&);
   void removeAnnotations ();
 

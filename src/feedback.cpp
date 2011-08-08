@@ -30,7 +30,6 @@
 #include <vector>
 #include <stdlib.h>
 #include <inttypes.h>
-#include <Att.h>
 #include <Context.h>
 #include <main.h>
 #include <text.h>
@@ -45,7 +44,7 @@ bool taskDiff (const Task& before, const Task& after)
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
   std::vector <std::string> beforeAtts;
-  std::map <std::string, Att>::const_iterator att;
+  Task::const_iterator att;
   for (att = before.begin (); att != before.end (); ++att)
     beforeAtts.push_back (att->first);
 
@@ -76,7 +75,7 @@ std::string taskDifferences (const Task& before, const Task& after)
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
   std::vector <std::string> beforeAtts;
-  std::map <std::string, Att>::const_iterator att;
+  Task::const_iterator att;
   for (att = before.begin (); att != before.end (); ++att)
     beforeAtts.push_back (att->first);
 
@@ -166,7 +165,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
   std::vector <std::string> beforeAtts;
-  std::map <std::string, Att>::const_iterator att;
+  Task::const_iterator att;
   for (att = before.begin (); att != before.end (); ++att)
     beforeAtts.push_back (att->first);
 
@@ -283,8 +282,9 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
 ////////////////////////////////////////////////////////////////////////////////
 std::string renderAttribute (const std::string& name, const std::string& value)
 {
-  Att a;
-  if (a.type (name) == "date" &&
+  Column* col = context.columns[name];
+  if (col                    &&
+      col->type () == "date" &&
       value != "")
   {
     Date d ((time_t)strtol (value.c_str (), NULL, 10));

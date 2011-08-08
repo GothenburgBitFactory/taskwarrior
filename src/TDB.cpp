@@ -836,8 +836,7 @@ void TDB::undo ()
     view.addRow ();
 
     // Add rows to table showing diffs.
-    std::vector <std::string> all;
-    Att::allNames (all);
+    std::vector <std::string> all = context.getColumns ();
 
     // Now factor in the annotation attributes.
     Task::iterator it;

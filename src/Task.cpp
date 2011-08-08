@@ -65,7 +65,7 @@ Task& Task::operator= (const Task& other)
 {
   if (this != &other)
   {
-    std::map <std::string, Att>::operator= (other);
+    std::map <std::string, std::string>::operator= (other);
 
     id             = other.id;
     urgency_value  = other.urgency_value;
@@ -76,17 +76,17 @@ Task& Task::operator= (const Task& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// The uuid and id attributes must be exempt for comparison.
+// The uuid and id attributes must be exempt from comparison.
 bool Task::operator== (const Task& other)
 {
   if (size () != other.size ())
     return false;
 
-  Task::iterator att;
-  for (att = this->begin (); att != this->end (); ++att)
-    if (att->second.name () != "uuid")
-      if (att->second.value () != other.get (att->second.name ()))
-        return false;
+  Task::iterator i;
+  for (i = this->begin (); i != this->end (); ++i)
+    if (i->first != "uuid" &&
+        i->second != other.get (i->first))
+      return false;
 
   return true;
 }
@@ -170,12 +170,12 @@ bool Task::has (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <Att> Task::all ()
+std::vector <std::string> Task::all ()
 {
-  std::vector <Att> all;
+  std::vector <std::string> all;
   Task::iterator i;
   for (i = this->begin (); i != this->end (); ++i)
-    all.push_back (i->second);
+    all.push_back (i->first);
 
   return all;
 }
@@ -185,7 +185,7 @@ const std::string Task::get (const std::string& name) const
 {
   Task::const_iterator i = this->find (name);
   if (i != this->end ())
-    return i->second.value ();
+    return i->second;
 
   return "";
 }
@@ -195,7 +195,7 @@ int Task::get_int (const std::string& name) const
 {
   Task::const_iterator i = this->find (name);
   if (i != this->end ())
-    return atoi (i->second.value ().c_str ());
+    return strtol (i->second.c_str (), NULL, 10);
 
   return 0;
 }
@@ -205,7 +205,7 @@ unsigned long Task::get_ulong (const std::string& name) const
 {
   Task::const_iterator i = this->find (name);
   if (i != this->end ())
-    return strtoul (i->second.value ().c_str (), NULL, 10);
+    return strtoul (i->second.c_str (), NULL, 10);
 
   return 0;
 }
@@ -215,7 +215,7 @@ time_t Task::get_date (const std::string& name) const
 {
   Task::const_iterator i = this->find (name);
   if (i != this->end ())
-    return (time_t) strtoul (i->second.value ().c_str (), NULL, 10);
+    return (time_t) strtoul (i->second.c_str (), NULL, 10);
 
   return 0;
 }
@@ -225,7 +225,7 @@ time_t Task::get_duration (const std::string& name) const
 {
   Task::const_iterator i = this->find (name);
   if (i != this->end ())
-    return (time_t) strtoul (i->second.value ().c_str (), NULL, 10);
+    return (time_t) strtoul (i->second.c_str (), NULL, 10);
 
   return 0;
 }
@@ -233,16 +233,13 @@ time_t Task::get_duration (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 void Task::set (const std::string& name, const std::string& value)
 {
-  (*this)[name] = Att (name, value);
+  (*this)[name] = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::set (const std::string& name, int value)
 {
-  std::stringstream svalue;
-  svalue << value;
-
-  (*this)[name] = Att (name, svalue.str ());
+  (*this)[name] = format (value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -298,11 +295,17 @@ void Task::parse (const std::string& input)
         throw std::string (STRING_RECORD_EMPTY);
 
       Nibbler nl (line);
-      Att a;
+      std::string name;
+      std::string value;
       while (!nl.depleted ())
       {
-        a.parse (nl);
-        (*this)[a.name ()] = a;
+        if (nl.getUntil (':', name) &&
+            nl.skip (':')           &&
+            nl.getQuoted ('"', value))
+        {
+          (*this)[name] = json::decode (value);
+        }
+
         nl.skip (' ');
       }
 
@@ -501,7 +504,7 @@ void Task::legacyParse (const std::string& line)
 ////////////////////////////////////////////////////////////////////////////////
 // The format is:
 //
-//   [ Att::composeF4 ... ] \n
+//   [ <name>:<value> ... ] \n
 //
 std::string Task::composeF4 () const
 {
@@ -511,9 +514,11 @@ std::string Task::composeF4 () const
   Task::const_iterator it;
   for (it = this->begin (); it != this->end (); ++it)
   {
-    if (it->second.value () != "")
+    if (it->second != "")
     {
-      ff4 += (first ? "" : " ") + it->second.composeF4 ();
+      ff4 += (first ? "" : " ")
+           + it->first
+           + ":\"" + json::encode (it->second) + "\"";
       first = false;
     }
   }
@@ -591,8 +596,7 @@ std::string Task::composeYAML () const
   out << "  task:\n";
 
   // Get all the supported attribute names.
-  std::vector <std::string> names;
-  Att::allNames (names);
+  std::vector <std::string> names = context.getColumns ();
   std::sort (names.begin (), names.end ());
 
   // Only include non-trivial attributes.
@@ -602,14 +606,14 @@ std::string Task::composeYAML () const
     if ((value = get (*name)) != "")
       out << "    " << *name << ": " << value << "\n";
 
-  // Now the annotations, which are not listed by the Att::allNames call.
-  std::vector <Att> annotations;
+  // Now the annotations, which are not listed in names.
+  std::map <std::string, std::string> annotations;
   getAnnotations (annotations);
-  std::vector <Att>::iterator a;
+  std::map <std::string, std::string>::iterator a;
   for (a = annotations.begin (); a != annotations.end (); ++a)
     out << "    annotation:\n"
-        << "      entry: "       << a->name().substr (11) << "\n"
-        << "      description: " << a->value ()           << "\n";
+        << "      entry: "       << a->first.substr (11) << "\n"
+        << "      description: " << a->second            << "\n";
 
   return out.str ();
 }
@@ -624,9 +628,6 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
   if (include_id)
     out << "\"id\":" << id << ",";
 
-  // Used for determining type.
-  Att att;
-
   // First the non-annotations.
   int attributes_written = 0;
   int annotation_count = 0;
@@ -636,18 +637,21 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
     if (attributes_written)
       out << ",";
 
+    Column* column = context.columns[i->first];
+
     // Annotations are simply counted.
-    if (i->second.name ().substr (0, 11) == "annotation_")
+    if (i->first.substr (0, 11) == "annotation_")
     {
       ++annotation_count;
     }
 
     // Date fields are written as ISO 8601.
-    else if (att.type (i->second.name ()) == "date")
+    else if (column &&
+             column->type () == "date")
     {
-      Date d (i->second.value ());
+      Date d (i->second);
       out << "\""
-          << i->second.name ()
+          << i->second
           << "\":\""
           << d.toISO ()
           << "\"";
@@ -656,10 +660,10 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
     }
 
     // Tags are converted to an array.
-    else if (i->second.name () == "tags")
+    else if (i->first == "tags")
     {
       std::vector <std::string> tags;
-      split (tags, i->second.value (), ',');
+      split (tags, i->second, ',');
 
       out << "\"tags\":[";
 
@@ -679,9 +683,9 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
     else
     {
       out << "\""
-          << i->second.name ()
+          << i->first
           << "\":\""
-          << json::encode (i->second.value ())
+          << json::encode (i->second)
           << "\"";
 
       ++attributes_written;
@@ -697,16 +701,16 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
     int annotations_written = 0;
     for (i = this->begin (); i != this->end (); ++i)
     {
-      if (i->second.name ().substr (0, 11) == "annotation_")
+      if (i->first.substr (0, 11) == "annotation_")
       {
         if (annotations_written)
           out << ",";
 
-        Date d (i->second.name ().substr (11));
+        Date d (i->first.substr (11));
         out << "{\"entry\":\""
             << d.toISO ()
             << "\",\"description\":\""
-            << json::encode (i->second.value ())
+            << json::encode (i->second)
             << "\"}";
 
         ++annotations_written;
@@ -721,25 +725,25 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::getAnnotations (std::vector <Att>& annotations) const
+void Task::getAnnotations (std::map <std::string, std::string>& annotations) const
 {
   annotations.clear ();
 
   Task::const_iterator ci;
   for (ci = this->begin (); ci != this->end (); ++ci)
     if (ci->first.substr (0, 11) == "annotation_")
-      annotations.push_back (ci->second);
+      annotations.insert (*ci);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::setAnnotations (const std::vector <Att>& annotations)
+void Task::setAnnotations (const std::map <std::string, std::string>& annotations)
 {
   // Erase old annotations.
   removeAnnotations ();
 
-  std::vector <Att>::const_iterator ci;
+  std::map <std::string, std::string>::const_iterator ci;
   for (ci = annotations.begin (); ci != annotations.end (); ++ci)
-    (*this)[ci->name ()] = *ci;
+    this->insert (*ci);
 
   recalc_urgency = true;
 }
@@ -753,7 +757,7 @@ void Task::addAnnotation (const std::string& description)
   std::stringstream s;
   s << "annotation_" << time (NULL);
 
-  (*this)[s.str ()] = Att (s.str (), description);
+  (*this)[s.str ()] = description;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -922,7 +926,7 @@ void Task::substitute (
 {
   // Get the data to modify.
   std::string description = get ("description");
-  std::vector <Att> annotations;
+  std::map <std::string, std::string> annotations;
   getAnnotations (annotations);
 
   bool sensitive = context.config.getBoolean ("search.case.sensitive");
@@ -962,22 +966,19 @@ void Task::substitute (
     if (changes == 0 || global)
     {
       // Perform all subs on annotations.
-      std::vector <Att>::iterator it;
+      std::map <std::string, std::string>::iterator it;
       for (it = annotations.begin (); it != annotations.end (); ++it)
       {
-        std::string annotation = it->value ();
-
         start.clear ();
         end.clear ();
-        if (rx.match (start, end, annotation))
+        if (rx.match (start, end, it->second))
         {
           int skew = 0;
           int limit = global ? (int) start.size () : 1;
           for (int i = 0; i < limit && i < RX_MAX_MATCHES; ++i)
           {
-            annotation.replace (start[i + skew], end[i] - start[i], to);
+            it->second.replace (start[i + skew], end[i] - start[i], to);
             skew += to.length () - (end[i] - start[i]);
-            it->value (annotation);
             ++changes;
           }
         }
@@ -1007,18 +1008,15 @@ void Task::substitute (
     {
       // Perform all subs on annotations.
       counter = 0;
-      std::vector <Att>::iterator i;
+      std::map <std::string, std::string>::iterator i;
       for (i = annotations.begin (); i != annotations.end (); ++i)
       {
         pos = 0;
-        std::string annotation = i->value ();
-        while ((pos = ::find (annotation, from, pos, sensitive)) != std::string::npos)
+        while ((pos = ::find (i->first, from, pos, sensitive)) != std::string::npos)
         {
-          annotation.replace (pos, from.length (), to);
+          i->second.replace (pos, from.length (), to);
           pos += to.length ();
           ++changes;
-
-          i->value (annotation);
 
           if (! global)
             break;
@@ -1314,7 +1312,7 @@ float Task::urgency_blocked () const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_annotations () const
 {
-  std::vector <Att> annos;
+  std::map <std::string, std::string> annos;
   getAnnotations (annos);
 
        if (annos.size () >= 3) return 1.0;

@@ -133,7 +133,7 @@ int CmdStatistics::execute (std::string& output)
 
     descLength += task->get ("description").length ();
 
-    std::vector <Att> annotations;
+    std::map <std::string, std::string> annotations;
     task->getAnnotations (annotations);
     annotationsT += annotations.size ();
 

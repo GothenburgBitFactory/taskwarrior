@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (21);
+  UnitTest t (20);
 
   // (blank)
   bool good = true;
@@ -105,9 +105,7 @@ int main (int argc, char** argv)
   t.is (task.composeF4 (), "[name:\"value\"]\n", "Task::remove");
 
   // Task::all
-  std::vector <Att> all = task.all ();
-  t.is (all.size (), (size_t)1, "Task::all size");
-  t.is (all[0].name (), "name", "Task::all[0].name ()");
+  t.is (task.size (), (size_t)1, "Task::all size");
 
   return 0;
 }

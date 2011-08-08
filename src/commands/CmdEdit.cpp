@@ -199,14 +199,14 @@ std::string CmdEdit::formatTask (Task task)
            << "# The ' -- ' separator between the date and text field should not be removed.\n"
            << "# A \"blank slot\" for adding an annotation follows for your convenience.\n";
 
-  std::vector <Att> annotations;
+  std::map <std::string, std::string> annotations;
   task.getAnnotations (annotations);
-  std::vector <Att>::iterator anno;
+  std::map <std::string, std::string>::iterator anno;
   for (anno = annotations.begin (); anno != annotations.end (); ++anno)
   {
-    Date dt (strtol (anno->name ().substr (11).c_str (), NULL, 10));
+    Date dt (strtol (anno->first.substr (11).c_str (), NULL, 10));
     before << "  Annotation:        " << dt.toString (context.config.get ("dateformat.annotation"))
-           << " -- "                  << anno->value ()                                 << "\n";
+           << " -- "                  << anno->second << "\n";
   }
 
   Date now;
@@ -252,7 +252,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (value != "")
     {
-      if (Att::validNameValue ("priority", "", value))
+      if (context.columns["priority"]->validate (value))
       {
         context.footnote ("Priority modified.");
         task.set ("priority", value);
@@ -541,7 +541,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   }
 
   // Annotations
-  std::vector <Att> annotations;
+  std::map <std::string, std::string> annotations;
   std::string::size_type found = 0;
   while ((found = after.find ("\n  Annotation:", found)) != std::string::npos)
   {
@@ -567,7 +567,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
         std::stringstream name;
         name << "annotation_" << when.toEpoch ();
         std::string text = trim (value.substr (gap + 4), "\t ");
-        annotations.push_back (Att (name.str (), text));
+        annotations.insert (std::make_pair (name.str (), text));
       }
     }
   }

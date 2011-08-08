@@ -137,7 +137,7 @@ int CmdImport::execute (std::string& output)
             // 'description' values and must be converted.
             if (i->first == "annotations")
             {
-              std::vector <Att> annos;
+              std::map <std::string, std::string> annos;
 
               json::array* atts = (json::array*)i->second;
               json_array_iter annotations;
@@ -151,7 +151,7 @@ int CmdImport::execute (std::string& output)
 
                 std::string name = "annotation_" + Date (when->_data).toEpochString ();
 
-                annos.push_back (Att (name, what->_data));
+                annos.insert (std::make_pair (name, what->_data));
               }
 
               task.setAnnotations (annos);
@@ -336,14 +336,14 @@ void CmdImport::decorateTask (Task& task)
   std::string defaultPriority = context.config.get ("default.priority");
   if (!task.has ("priority") &&
       defaultPriority != "" &&
-      Att::validNameValue ("priority", "", defaultPriority))
+      context.columns["priority"]->validate (defaultPriority))
     task.set ("priority", defaultPriority);
 
   // Override with default.due, if not specified.
   std::string defaultDue = context.config.get ("default.due");
   if (!task.has ("due") &&
       defaultDue != "" &&
-      Att::validNameValue ("due", "", defaultDue))
+      context.columns["due"]->validate (defaultDue))
     task.set ("due", defaultDue);
 }
 

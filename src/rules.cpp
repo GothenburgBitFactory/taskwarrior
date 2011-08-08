@@ -194,7 +194,7 @@ static void colorizeKeyword (Task& task, const std::string& rule, Color& c)
     for (it = task.begin (); it != task.end (); ++it)
     {
       if (it->first.substr (0, 11) == "annotation_" &&
-          find (it->second.value (), rule.substr (14), sensitive) != std::string::npos)
+          find (it->second, rule.substr (14), sensitive) != std::string::npos)
       {
         c.blend (gsColor[rule]);
         return;

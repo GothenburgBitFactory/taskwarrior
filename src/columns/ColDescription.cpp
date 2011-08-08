@@ -106,12 +106,12 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
     minimum = max (min_desc, min_anno);
     maximum = description.length ();
 
-    std::vector <Att> annos;
+    std::map <std::string, std::string> annos;
     task.getAnnotations (annos);
-    std::vector <Att>::iterator i;
+    std::map <std::string, std::string>::iterator i;
     for (i = annos.begin (); i != annos.end (); i++)
     {
-      int len = min_anno + 1 + i->value ().length ();
+      int len = min_anno + 1 + i->second.length ();
       if (len > maximum)
         maximum = len;
     }
@@ -136,11 +136,11 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
     minimum = max (min_desc, min_anno);
     maximum = description.length ();
 
-    std::vector <Att> annos;
+    std::map <std::string, std::string> annos;
     task.getAnnotations (annos);
-    std::vector <Att>::iterator i;
+    std::map <std::string, std::string>::iterator i;
     for (i = annos.begin (); i != annos.end (); i++)
-      maximum += i->value ().length () + minimum + 1;
+      maximum += i->second.length () + minimum + 1;
   }
 
   // The te...
@@ -153,7 +153,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   // The text [2]
   else if (_style == "count")
   {
-    std::vector <Att> annos;
+    std::map <std::string, std::string> annos;
     task.getAnnotations (annos);
 
     // <description> + ' ' + '[' + <count> + ']'
@@ -182,7 +182,7 @@ void ColumnDescription::render (
   {
     int indent = context.config.getInteger ("indent.annotation");
 
-    std::vector <Att> annos;
+    std::map <std::string, std::string> annos;
     task.getAnnotations (annos);
     if (annos.size ())
     {
@@ -190,11 +190,11 @@ void ColumnDescription::render (
       if (format == "")
         format = context.config.get ("dateformat");
 
-      std::vector <Att>::iterator i;
+      std::map <std::string, std::string>::iterator i;
       for (i = annos.begin (); i != annos.end (); i++)
       {
-        Date dt (atoi (i->name ().substr (11).c_str ()));
-        description += "\n" + std::string (indent, ' ') + dt.toString (format) + " " + i->value ();
+        Date dt (strtol (i->first.substr (11).c_str (), NULL, 10));
+        description += "\n" + std::string (indent, ' ') + dt.toString (format) + " " + i->second;
       }
     }
 
@@ -220,7 +220,7 @@ void ColumnDescription::render (
   // This is a description <date> <anno> ...
   else if (_style == "oneline")
   {
-    std::vector <Att> annos;
+    std::map <std::string, std::string> annos;
     task.getAnnotations (annos);
     if (annos.size ())
     {
@@ -228,11 +228,11 @@ void ColumnDescription::render (
       if (format == "")
         format = context.config.get ("dateformat");
 
-      std::vector <Att>::iterator i;
+      std::map <std::string, std::string>::iterator i;
       for (i = annos.begin (); i != annos.end (); i++)
       {
-        Date dt (atoi (i->name ().substr (11).c_str ()));
-        description += " " + dt.toString (format) + " " + i->value ();
+        Date dt (atoi (i->first.substr (11).c_str ()));
+        description += " " + dt.toString (format) + " " + i->second;
       }
     }
 
@@ -257,7 +257,7 @@ void ColumnDescription::render (
   // This is a description [2]
   else if (_style == "count")
   {
-    std::vector <Att> annos;
+    std::map <std::string, std::string> annos;
     task.getAnnotations (annos);
 
     if (annos.size ())

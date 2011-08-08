@@ -57,7 +57,7 @@ std::string getFullDescription (Task& task, const std::string& report)
   std::string desc = task.get ("description");
   std::string annotationDetails;
 
-  std::vector <Att> annotations;
+  std::map <std::string, std::string> annotations;
   task.getAnnotations (annotations);
 
   if (annotations.size () != 0)
@@ -76,25 +76,27 @@ std::string getFullDescription (Task& task, const std::string& report)
     {
       if (annotations.size () > 1)
         desc = "+" + desc;
-      Att anno (annotations.back());
-      Date dt (atoi (anno.name ().substr (11).c_str ()));
+
+      std::map <std::string, std::string>::iterator i = annotations.begin ();
+
+      Date dt (strtol (i->first.substr (11).c_str (), NULL, 10));
       std::string format = context.config.get ("dateformat.annotation");
       if (format == "")
         format = context.config.get ("dateformat");
       std::string when = dt.toString (format);
-      desc += "\n" + when + " " + anno.value ();
+      desc += "\n" + when + " " + i->second;
     }
     else
     {
-      std::vector <Att>::iterator anno;
+      std::map <std::string, std::string>::iterator anno;
       for (anno = annotations.begin (); anno != annotations.end (); ++anno)
       {
-        Date dt (atoi (anno->name ().substr (11).c_str ()));
+        Date dt (strtol (anno->first.substr (11).c_str (), NULL, 10));
         std::string format = context.config.get ("dateformat.annotation");
         if (format == "")
           format = context.config.get ("dateformat");
         std::string when = dt.toString (format);
-        desc += "\n" + when + " " + anno->value ();
+        desc += "\n" + when + " " + anno->second;
       }
     }
   }

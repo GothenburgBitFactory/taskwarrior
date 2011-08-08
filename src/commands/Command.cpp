@@ -31,7 +31,6 @@
 #include <vector>
 #include <stdlib.h>
 #include <E9.h>
-#include <Att.h>
 #include <Timer.h>
 #include <text.h>
 #include <i18n.h>
