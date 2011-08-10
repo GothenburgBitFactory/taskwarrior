@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (289);
+  UnitTest t (292);
 
   try
   {
@@ -264,6 +264,11 @@ int main (int argc, char** argv)
     t.ok    (n.skip (' '),            "      ' 2.3e4' : skip (' ')         -> true");
     t.ok    (n.getNumber (d),         "       '2.3e4' : getNumber ()       -> true");
     t.is    (d, 2.3e4,                "       '2.3e4' : getNumber ()       -> '2.3e4'");
+    t.ok    (n.depleted (),           "            '' : depleted ()        -> true");
+
+    n = Nibbler ("2.0");
+    t.ok    (n.getNumber (d),         "'2.0' : getNumber ()                -> true");
+    t.is    (d, 2.0, 0.000001,        "'2.0' : getNumber ()                -> '2.0'");
     t.ok    (n.depleted (),           "            '' : depleted ()        -> true");
 
     // bool getLiteral (const std::string&);
