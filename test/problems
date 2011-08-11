@@ -1,0 +1,24 @@
+#! /usr/bin/perl
+
+use strict;
+use warnings;
+
+if (open my $fh, '<', 'all.log')
+{
+  my $test_file;
+  my %errors;
+
+  while (my $line = <$fh>)
+  {
+    $test_file = $1       if $line =~ /^# (\S+\.t)$/;
+    $errors{$test_file}++ if $line =~ /^not /;
+  }
+
+  close $fh;
+
+  printf "%-24s %4d\n", $_, $errors{$_}
+    for sort {$errors{$b} <=> $errors{$a}} keys %errors;
+}
+
+exit 0;
+
