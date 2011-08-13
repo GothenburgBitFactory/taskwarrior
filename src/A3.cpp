@@ -592,9 +592,28 @@ const A3 A3::extract_modifications () const
 
     else if (! before_command)
     {
+      // "rc" and "override" categories are not included.
       if (arg->_category == "rc" ||
           arg->_category == "override")
+      {
         ;
+      }
+
+      // Any arguments identified as "id" or "uuid" are downgraded to "word".
+      // This is because any true "id" or "uuid" values have already been
+      // removed in the filter.  What remains are numeric arguments in command
+      // lines that do not otherwise include an id, such as:
+      //
+      //     task add Read the article on page 2
+      else if (arg->_category == "id" ||
+               arg->_category == "uuid")
+      {
+        Arg downgrade (*arg);
+        downgrade._category = "word";
+        mods.push_back (downgrade);
+      }
+
+      // Everything else is included.
       else
         mods.push_back (*arg);
     }
@@ -780,14 +799,14 @@ const A3 A3::tokenize (const A3& input) const
         }
       }
 
-      else if (n.getNumber (d))
+      else if (is_number (n, d))
       {
         output.push_back (Arg (format (d), "num"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
 
-      else if (n.getInt (i))
+      else if (is_integer (n, i))
       {
         output.push_back (Arg (format (i), "int"));
         if (found_sequence)
@@ -1548,10 +1567,17 @@ bool A3::is_id (Nibbler& n, std::string& result)
       }
     }
 
-    std::string::size_type end = n.cursor ();
-    n.restore ();
-    if (n.getN (end - start, result))
-      return true;
+    char next = n.next ();
+    if (next == '\0' ||
+        next == ')'  ||
+        next == ' '  ||
+        next == '-')
+    {
+      std::string::size_type end = n.cursor ();
+      n.restore ();
+      if (n.getN (end - start, result))
+        return true;
+    }
   }
 
   n.restore ();
@@ -1599,6 +1625,54 @@ bool A3::is_tag (Nibbler& n, std::string& result)
   }
 
   n.restore ();
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// <number> followed by either: '\0', ')' ',' or '-'.
+//
+// This prevents the interpretation of '3M' as a number.
+bool A3::is_number (Nibbler& n, double& d)
+{
+  n.save ();
+  if (n.getNumber (d))
+  {
+    char next = n.next ();
+    if (next == '\0' ||
+        next == ')'  ||
+        next == ' '  ||
+        next == '-')
+    {
+      return true;
+    }
+
+    n.restore ();
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// <integer> followed by either: '\0', ')' ',' or '-'.
+//
+// This prevents the interpretation of '3M' as a number.
+bool A3::is_integer (Nibbler& n, int& i)
+{
+  n.save ();
+  if (n.getInt (i))
+  {
+    char next = n.next ();
+    if (next == '\0' ||
+        next == ')'  ||
+        next == ' '  ||
+        next == '-')
+    {
+      return true;
+    }
+
+    n.restore ();
+  }
+
   return false;
 }
 

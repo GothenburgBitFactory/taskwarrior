@@ -130,6 +130,8 @@ public:
   static bool is_id (Nibbler&, std::string&);
   static bool is_uuid (Nibbler&, std::string&);
   static bool is_tag (Nibbler&, std::string&);
+  static bool is_number (Nibbler&, double&);
+  static bool is_integer (Nibbler&, int&);
 
   static bool extract_pattern (const std::string&, std::string&);
   static bool extract_tag (const std::string&, char&, std::string&);
