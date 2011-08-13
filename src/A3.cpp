@@ -605,7 +605,7 @@ const A3 A3::extract_modifications () const
       // lines that do not otherwise include an id, such as:
       //
       //     task add Read the article on page 2
-      else if (arg->_category == "id" ||
+      else if (arg->_category == "id"   ||
                arg->_category == "uuid")
       {
         Arg downgrade (*arg);

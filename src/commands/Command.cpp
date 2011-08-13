@@ -418,8 +418,8 @@ void Command::modify_task (
         std::string result = e.evalExpression (task);
         context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
 
-fragment.dump ("pre modify_task attr");
-std::cout << "# modify_task result='" << result << "'\n";
+//fragment.dump ("pre modify_task attr");
+//std::cout << "# modify_task result='" << result << "'\n";
 
         // Dependencies must be resolved to UUIDs.
         if (name == "depends")
@@ -463,6 +463,7 @@ std::cout << "# modify_task result='" << result << "'\n";
         task.removeTag (value);
     }
 
+/*
     // Words and operators are aggregated into a description.
     else if (arg->_category == "word" ||
              arg->_category == "op")
@@ -472,6 +473,7 @@ std::cout << "# modify_task result='" << result << "'\n";
 
       description += arg->_raw;
     }
+*/
 
     // Substitutions.
     else if (arg->_category == "subst")
@@ -483,10 +485,22 @@ std::cout << "# modify_task result='" << result << "'\n";
       task.substitute (from, to, global);
     }
 
+/*
     // Any additional argument types are indicative of a failure in
     // A3::extract_modifications.
     else
       throw format (STRING_CMD_MOD_UNEXPECTED, arg->_raw);
+*/
+
+    // Anything else is essentially downgraded to 'word' and considered part of
+    // the description.
+    else
+    {
+      if (description.length ())
+        description += " ";
+
+      description += arg->_raw;
+    }
   }
 }
 
