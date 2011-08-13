@@ -488,25 +488,25 @@ void E9::operator_nomatch (
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_multiply (Term& result, Term& left, Term& right)
 {
-  std::cout << "# " << left << " * " << right << " --> " << result << "\n";
+//  std::cout << "# " << left << " * " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_divide (Term& result, Term& left, Term& right)
 {
-  std::cout << "# " << left << " / " << right << " --> " << result << "\n";
+//  std::cout << "# " << left << " / " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_add (Term& result, Term& left, Term& right)
 {
-  std::cout << "# " << left << " + " << right << " --> " << result << "\n";
+//  std::cout << "# " << left << " + " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_subtract (Term& result, Term& left, Term& right)
 {
-  std::cout << "# " << left << " - " << right << " --> " << result << "\n";
+//  std::cout << "# " << left << " - " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
