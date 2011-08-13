@@ -59,6 +59,9 @@ public:
   void load_lines ();
   void load_contents ();
 
+  std::string uuid (int);
+  int id (const std::string&);
+
 public:
   bool _read_only;
   bool _dirty;
@@ -72,6 +75,10 @@ public:
   std::vector <std::string> _added_lines;
   std::string _contents;
   File _file;
+
+private:
+  std::map <int, std::string> _I2U; // ID -> UUID map
+  std::map <std::string, int> _U2I; // UUID -> ID map
 };
 
 // TDB2 Class represents all the files in the task database.

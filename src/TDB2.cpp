@@ -254,6 +254,15 @@ void TF2::load_tasks ()
 // TODO Find a way to number pending tasks, but not others.
 //      task.id = _id++;
       _tasks.push_back (task);
+
+      // Maintain mapping for ease of link/dependency resolution.
+      // Note that this mapping is not restricted by the filter, and is
+      // therefore a complete set.
+      if (task.id)
+      {
+        _I2U[task.id] = task.get ("uuid");
+        _U2I[task.get ("uuid")] = task.id;
+      }
     }
 
     _loaded_tasks = true;
@@ -303,6 +312,32 @@ void TF2::load_contents ()
     _loaded_contents = true;
   }
   // TODO Error handling?
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string TF2::uuid (int id)
+{
+  if (! _loaded_tasks)
+    load_tasks ();
+
+  std::map <int, std::string>::const_iterator i;
+  if ((i = _I2U.find (id)) != _I2U.end ())
+    return i->second;
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int TF2::id (const std::string& uuid)
+{
+  if (! _loaded_tasks)
+    load_tasks ();
+
+  std::map <std::string, int>::const_iterator i;
+  if ((i = _U2I.find (uuid)) != _U2I.end ())
+    return i->second;
+
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -794,7 +794,7 @@ void Task::addDependency (int id)
     throw std::string (STRING_TASK_DEPEND_ITSELF);
 
   // Check for extant dependency.
-  std::string uuid = context.tdb.uuid (id);
+  std::string uuid = context.tdb2.pending.uuid (id);
   if (uuid == "")
     throw format (STRING_TASK_DEPEND_MISSING, id);
 
@@ -839,7 +839,7 @@ void Task::removeDependency (const std::string& uuid)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::removeDependency (int id)
 {
-  std::string uuid = context.tdb.uuid (id);
+  std::string uuid = context.tdb2.pending.uuid (id);
   if (uuid != "")
     removeDependency (uuid);
   else
@@ -858,7 +858,7 @@ void Task::getDependencies (std::vector <int>& all) const
 
   std::vector <std::string>::iterator i;
   for (i = deps.begin (); i != deps.end (); ++i)
-    all.push_back (context.tdb.id (*i));
+    all.push_back (context.tdb2.pending.id (*i));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
