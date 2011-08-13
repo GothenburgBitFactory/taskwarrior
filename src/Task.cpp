@@ -108,11 +108,11 @@ Task::~Task ()
 ////////////////////////////////////////////////////////////////////////////////
 Task::status Task::textToStatus (const std::string& input)
 {
-       if (input == "pending")   return Task::pending;    // TODO i18n
-  else if (input == "completed") return Task::completed;  // TODO i18n
-  else if (input == "deleted")   return Task::deleted;    // TODO i18n
-  else if (input == "recurring") return Task::recurring;  // TODO i18n
-  else if (input == "waiting")   return Task::waiting;    // TODO i18n
+       if (input == "pending")   return Task::pending;
+  else if (input == "completed") return Task::completed;
+  else if (input == "deleted")   return Task::deleted;
+  else if (input == "recurring") return Task::recurring;
+  else if (input == "waiting")   return Task::waiting;
 
   return Task::pending;
 }
@@ -234,12 +234,16 @@ time_t Task::get_duration (const std::string& name) const
 void Task::set (const std::string& name, const std::string& value)
 {
   (*this)[name] = value;
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::set (const std::string& name, int value)
 {
   (*this)[name] = format (value);
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,6 +252,8 @@ void Task::remove (const std::string& name)
   Task::iterator it;
   if ((it = this->find (name)) != this->end ())
     this->erase (it);
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -322,6 +328,8 @@ void Task::parse (const std::string& input)
   {
     legacyParse (copy);
   }
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -499,6 +507,8 @@ void Task::legacyParse (const std::string& line)
     throw std::string (STRING_TASK_PARSE_UNREC_FF);
     break;
   }
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -758,6 +768,7 @@ void Task::addAnnotation (const std::string& description)
   s << "annotation_" << time (NULL);
 
   (*this)[s.str ()] = description;
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -772,6 +783,8 @@ void Task::removeAnnotations ()
     else
       i++;
   }
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -800,6 +813,8 @@ void Task::addDependency (int id)
   // Prevent circular dependencies.
   if (dependencyIsCircular (*this))
     throw std::string (STRING_TASK_DEPEND_CIRCULAR);
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -817,6 +832,8 @@ void Task::removeDependency (const std::string& uuid)
     join (combined, ",", deps);
     set ("depends", combined);
   }
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -827,6 +844,8 @@ void Task::removeDependency (int id)
     removeDependency (uuid);
   else
     throw std::string (STRING_TASK_DEPEND_NO_UUID);
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -882,6 +901,8 @@ void Task::addTag (const std::string& tag)
     std::string combined;
     join (combined, ",", tags);
     set ("tags", combined);
+
+    recalc_urgency = true;
   }
 }
 
@@ -893,6 +914,8 @@ void Task::addTags (const std::vector <std::string>& tags)
   std::vector <std::string>::const_iterator it;
   for (it = tags.begin (); it != tags.end (); ++it)
     addTag (*it);
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -916,6 +939,8 @@ void Task::removeTag (const std::string& tag)
     join (combined, ",", tags);
     set ("tags", combined);
   }
+
+  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1032,6 +1057,7 @@ void Task::substitute (
   {
     set ("description", description);
     setAnnotations (annotations);
+    recalc_urgency = true;
   }
 }
 

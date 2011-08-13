@@ -905,7 +905,7 @@ const std::string format (
 {
   std::string output = fmt;
   replace_positional (output, "{1}", format (arg1));
-  replace_positional (output, "{2}", format (arg2, 6, 3));
+  replace_positional (output, "{2}", trim (format (arg2, 6, 3)));
   return output;
 }
 

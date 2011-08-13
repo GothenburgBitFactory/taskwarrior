@@ -780,7 +780,6 @@ const A3 A3::tokenize (const A3& input) const
         }
       }
 
-      // TODO This may be redundant.
       else if (n.getNumber (d))
       {
         output.push_back (Arg (format (d), "num"));

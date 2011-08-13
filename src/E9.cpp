@@ -299,10 +299,9 @@ void E9::operator_lt (Term& result, Term& left, Term& right)
   }
   else
   {
-    if (left._value < right._value)
-      result._raw = result._value = "true";
-    else
-      result._raw = result._value = "false";
+    result._raw = result._value = (left._value < right._value)
+                                ? "true"
+                                : "fasle";
   }
 
   result._category = "bool";
@@ -323,10 +322,9 @@ void E9::operator_lte (Term& result, Term& left, Term& right)
   }
   else
   {
-    if (left._value <= right._value)
-      result._raw = result._value = "true";
-    else
-      result._raw = result._value = "false";
+    result._raw = result._value = (left._value <= right._value)
+                                ? "true"
+                                : "fasle";
   }
 
   result._category = "bool";
@@ -347,10 +345,9 @@ void E9::operator_gte (Term& result, Term& left, Term& right)
   }
   else
   {
-    if (left._value >= right._value)
-      result._raw = result._value = "true";
-    else
-      result._raw = result._value = "false";
+    result._raw = result._value = (left._value >= right._value)
+                                ? "true"
+                                : "fasle";
   }
 
   result._category = "bool";
@@ -370,10 +367,9 @@ void E9::operator_gt (Term& result, Term& left, Term& right)
   }
   else
   {
-    if (left._value > right._value)
-      result._raw = result._value = "true";
-    else
-      result._raw = result._value = "false";
+    result._raw = result._value = (left._value > right._value)
+                                ? "true"
+                                : "fasle";
   }
 
   result._category = "bool";
@@ -389,10 +385,9 @@ void E9::operator_inequal (
   bool case_sensitive)
 {
   operator_equal (result, left, right, case_sensitive);
-  if (result._raw == "false")
-    result._raw = result._value = "true";
-  else
-    result._raw = result._value = "false";
+  result._raw = result._value = result._raw == "false"
+                              ? "true"
+                              : "false";
 
 //  std::cout << "# " << left << " != " << right << " --> " << result << "\n";
 }
@@ -434,6 +429,10 @@ void E9::operator_equal (
   // Regular equality matching.
   else
   {
+    result._raw = result._value = left._value == right._value
+                                ? "true"
+                                : "false";
+
     if (left._value == right._value)
     {
       result._raw = result._value = "true";
@@ -453,10 +452,9 @@ void E9::operator_match (
 {
   result._category = "bool";
 
-  if (eval_match (left, right, case_sensitive))
-    result._raw = result._value = "true";
-  else
-    result._raw = result._value = "false";
+  result._raw = result._value = eval_match (left, right, case_sensitive)
+                              ? "true"
+                              : "false";
 
 //  std::cout << "# " << left << " ~ " << right << " --> " << result << "\n";
 }
@@ -480,10 +478,9 @@ void E9::operator_nomatch (
 {
   result._category = "bool";
 
-  if (!eval_match (left, right, case_sensitive))
-    result._raw = result._value = "true";
-  else
-    result._raw = result._value = "false";
+  result._raw = result._value = eval_match (left, right, case_sensitive)
+                              ? "false"
+                              : "true";
 
 //  std::cout << "# " << left << " !~ " << right << " --> " << result << "\n";
 }
