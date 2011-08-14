@@ -43,7 +43,7 @@ if (open my $fh, '>', 'bug.rc')
 qx{../src/task rc:bug.rc add foo};
 qx{../src/task rc:bug.rc 1 annotate "This -- is -- a -- test"};
 my $output = qx{../src/task rc:bug.rc list};
-like ($output, qr/This -- is -- a -- test/, 'Double hyphens preserved.');
+like ($output, qr/This is -- a -- test/, 'Double hyphens preserved, except the first ones.');
 
 # Cleanup.
 unlink 'pending.data';
