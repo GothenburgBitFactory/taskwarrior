@@ -1280,7 +1280,7 @@ bool A3::is_attr (Nibbler& n, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <name>.<mod>:['"]<value>['"]
+// <name>.<mod>[:=]['"]<value>['"]
 bool A3::is_attmod (Nibbler& n, std::string& result)
 {
   n.save ();
@@ -1304,7 +1304,8 @@ bool A3::is_attmod (Nibbler& n, std::string& result)
           modifier.length ()   &&
           is_modifier (modifier, modifier))
       {
-        if (n.skip (':'))
+        if (n.skip (':') ||
+            n.skip ('='))
         {
           // Both quoted and unquoted Att's are accepted.
           // Consider removing this for a stricter parse.
@@ -1761,7 +1762,7 @@ bool A3::extract_attr (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <name>.<mod>:['"]<value>['"]
+// <name>.<mod>[:=]['"]<value>['"]
 bool A3::extract_attmod (
   const std::string& input,
   std::string& name,
@@ -1787,7 +1788,8 @@ bool A3::extract_attmod (
       n.getUntil (':', modifier);
     }
 
-    if (n.skip (':'))
+    if (n.skip (':') ||
+        n.skip ('='))
     {
       // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
