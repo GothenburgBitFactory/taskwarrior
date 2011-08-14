@@ -42,12 +42,9 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 703: /from/t/g fails to make all changes to annotations
 
 # Setup: Add a few tasks
-diag ("2 second delay");
 qx{../src/task rc:bug.rc add This is a test};
 qx{../src/task rc:bug.rc 1 annotate Annotation one};
-sleep 1;
 qx{../src/task rc:bug.rc 1 annotate Annotation two};
-sleep 1;
 qx{../src/task rc:bug.rc 1 annotate Annotation three};
 
 my $output = qx{../src/task rc:bug.rc list};

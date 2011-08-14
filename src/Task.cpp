@@ -762,12 +762,21 @@ void Task::setAnnotations (const std::map <std::string, std::string>& annotation
 // The timestamp is part of the name:
 //    annotation_1234567890:"..."
 //
+// Note that the time is incremented (one second) in order to find a unique
+// timestamp.
 void Task::addAnnotation (const std::string& description)
 {
-  std::stringstream s;
-  s << "annotation_" << time (NULL);
+  time_t now = time (NULL);
+  std::string key;
 
-  (*this)[s.str ()] = description;
+  do
+  {
+    key = "annotation_" + format ((int) now);
+    ++now;
+  }
+  while (has (key));
+
+  (*this)[key] = description;
   recalc_urgency = true;
 }
 

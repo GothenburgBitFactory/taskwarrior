@@ -51,16 +51,10 @@ qx{../src/task rc:annotate.rc add two};
 qx{../src/task rc:annotate.rc add three};
 qx{../src/task rc:annotate.rc add four};
 qx{../src/task rc:annotate.rc 1 annotate foo1};
-diag ("5 second delay");
-sleep 1;
 qx{../src/task rc:annotate.rc 1 annotate foo2};
-sleep 1;
 qx{../src/task rc:annotate.rc 1 annotate foo3};
-sleep 1;
 qx{../src/task rc:annotate.rc 2 annotate bar1};
-sleep 1;
 qx{../src/task rc:annotate.rc 2 annotate bar2};
-sleep 1;
 qx{../src/task rc:annotate.rc 3 annotate baz1};
 
 my $output = qx{../src/task rc:annotate.rc rrr};

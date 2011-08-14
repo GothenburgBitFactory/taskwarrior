@@ -120,22 +120,15 @@ qx{../src/task rc:urgency.rc add 6a};                        # task 12
 qx{../src/task rc:urgency.rc 12 annotate A};
 qx{../src/task rc:urgency.rc add 6b};                        # task 13
 qx{../src/task rc:urgency.rc 13 annotate A};
-diag ("6 second delay");
-sleep 1;
 qx{../src/task rc:urgency.rc 13 annotate B};
 qx{../src/task rc:urgency.rc add 6c};                        # task 14
 qx{../src/task rc:urgency.rc 14 annotate A};
-sleep 1;
 qx{../src/task rc:urgency.rc 14 annotate B};
-sleep 1;
 qx{../src/task rc:urgency.rc 14 annotate C};
 qx{../src/task rc:urgency.rc add 6d};                        # task 15
 qx{../src/task rc:urgency.rc 15 annotate A};
-sleep 1;
 qx{../src/task rc:urgency.rc 15 annotate B};
-sleep 1;
 qx{../src/task rc:urgency.rc 15 annotate C};
-sleep 1;
 qx{../src/task rc:urgency.rc 15 annotate D};
 
 # annotations: 8 (1 annotation) + 10 (pending)

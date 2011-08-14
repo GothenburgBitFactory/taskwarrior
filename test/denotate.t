@@ -47,18 +47,11 @@ if (open my $fh, '>', 'denotate.rc')
 # Add four tasks, annotate one three times, one twice, one just once and one none.
 qx{../src/task rc:denotate.rc add one};
 qx{../src/task rc:denotate.rc 1 annotate Ernie};
-diag ("6 second delay");
-sleep 1;
 qx{../src/task rc:denotate.rc 1 annotate Bert};
-sleep 1;
 qx{../src/task rc:denotate.rc 1 annotate Bibo};
-sleep 1;
 qx{../src/task rc:denotate.rc 1 annotate Kermit the frog};
-sleep 1;
 qx{../src/task rc:denotate.rc 1 annotate Kermit the frog};
-sleep 1;
 qx{../src/task rc:denotate.rc 1 annotate Kermit};
-sleep 1;
 qx{../src/task rc:denotate.rc 1 annotate Kermit and Miss Piggy};
 
 my $output = qx{../src/task rc:denotate.rc rrr};

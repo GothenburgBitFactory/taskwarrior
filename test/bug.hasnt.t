@@ -49,8 +49,6 @@ qx{../src/task rc:hasnt.rc 2 annotate bar};
 # 3
 qx{../src/task rc:hasnt.rc add foo};
 qx{../src/task rc:hasnt.rc 3 annotate bar};
-diag ("3 second delay");
-sleep 1;
 qx{../src/task rc:hasnt.rc 3 annotate baz};
 
 # 4
@@ -63,13 +61,11 @@ qx{../src/task rc:hasnt.rc 5 annotate foo};
 # 6
 qx{../src/task rc:hasnt.rc add bar};
 qx{../src/task rc:hasnt.rc 6 annotate foo};
-sleep 1;
 qx{../src/task rc:hasnt.rc 6 annotate baz};
 
 #7
 qx{../src/task rc:hasnt.rc add one};
 qx{../src/task rc:hasnt.rc 7 annotate two};
-sleep 1;
 qx{../src/task rc:hasnt.rc 7 annotate three};
 
 my $output = qx{../src/task rc:hasnt.rc ls description.has:foo};
