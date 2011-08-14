@@ -92,17 +92,10 @@ int CmdCustom::execute (std::string& output)
   context.a3.dump ("CmdCustom::execute");
 
   // Load the data.
-  // TODO Replace with TDB2.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Apply filter.
+  context.tdb2.commit ();
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
 
   // Sort the tasks.
   std::vector <int> sequence;

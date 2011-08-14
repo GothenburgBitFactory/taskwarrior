@@ -60,7 +60,7 @@ void TF2::target (const std::string& f)
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task>& TF2::get_tasks ()
 {
-//  std::cout << "# TF2::get_tasks\n";
+//  std::cout << "# TF2::get_tasks " << _file.data << "\n";
 
   if (! _loaded_tasks)
     load_tasks ();
@@ -71,7 +71,7 @@ const std::vector <Task>& TF2::get_tasks ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <std::string>& TF2::get_lines ()
 {
-//  std::cout << "# TF2::get_lines\n";
+//  std::cout << "# TF2::get_lines " << _file.data << "\n";
 
   if (! _loaded_lines)
     load_lines ();
@@ -82,7 +82,7 @@ const std::vector <std::string>& TF2::get_lines ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::string& TF2::get_contents ()
 {
-//  std::cout << "# TF2::get_contents\n";
+//  std::cout << "# TF2::get_contents " << _file.data << "\n";
 
   if (! _loaded_contents)
     load_contents ();
@@ -93,7 +93,7 @@ const std::string& TF2::get_contents ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::add_task (const Task& task)
 {
-//  std::cout << "# TF2::add_task\n";
+//  std::cout << "# TF2::add_task " << _file.data << "\n";
 
   _tasks.push_back (task);           // For subsequent queries
   _added_tasks.push_back (task);     // For commit/synch
@@ -103,7 +103,7 @@ void TF2::add_task (const Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::modify_task (const Task& task)
 {
-//  std::cout << "# TF2::modify_task\n";
+//  std::cout << "# TF2::modify_task " << _file.data << "\n";
 
   // Modify in-place.
   std::vector <Task>::iterator i;
@@ -123,7 +123,7 @@ void TF2::modify_task (const Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::add_line (const std::string& line)
 {
-//  std::cout << "# TF2::add_line\n";
+//  std::cout << "# TF2::add_line " << _file.data << "\n";
 
   _added_lines.push_back (line);
   _dirty = true;
@@ -133,7 +133,7 @@ void TF2::add_line (const std::string& line)
 // This is so that synch.key can just overwrite and not grow.
 void TF2::clear_lines ()
 {
-//  std::cout << "# TF2::clear_lines\n";
+//  std::cout << "# TF2::clear_lines " << _file.data << "\n";
   _lines.clear ();
   _dirty = true;
 }
@@ -239,7 +239,7 @@ void TF2::commit ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_tasks ()
 {
-//  std::cout << "# TF2::load_tasks\n";
+//  std::cout << "# TF2::load_tasks " << _file.data << "\n";
 
   if (! _loaded_lines)
     load_lines ();
@@ -283,7 +283,7 @@ void TF2::load_tasks ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_lines ()
 {
-//  std::cout << "# TF2::load_lines\n";
+//  std::cout << "# TF2::load_lines " << _file.data << "\n";
 
   if (! _loaded_contents)
     load_contents ();
@@ -295,7 +295,7 @@ void TF2::load_lines ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_contents ()
 {
-//  std::cout << "# TF2::load_contents\n";
+//  std::cout << "# TF2::load_contents " << _file.data << "\n";
 
   _contents = "";
 
