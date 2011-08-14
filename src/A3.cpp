@@ -937,7 +937,7 @@ const A3 A3::expand (const A3& input) const
       else if (mod == "none")
       {
         expanded.push_back (Arg (name, "dom"));
-        expanded.push_back (Arg ("==", "op"));
+        expanded.push_back (Arg ("=",  "op"));
         expanded.push_back (Arg ("",   "string"));
       }
 

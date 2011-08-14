@@ -43,7 +43,7 @@ if (open my $fh, '>', 'bug.rc')
 qx{../src/task rc:bug.rc add with +tag};
 qx{../src/task rc:bug.rc add without};
 my $output = qx{../src/task rc:bug.rc list tags.none:};
-unlike ($output, qr/with /,    'tags.none: skips tagged');
+unlike ($output, qr/with /,   'tags.none: skips tagged');
 like   ($output, qr/without/, 'tags.none: finds tagless');
 
 # Cleanup.
