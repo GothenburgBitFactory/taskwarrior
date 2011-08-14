@@ -55,8 +55,7 @@ extern Context context;
 // child tasks need to be generated to fill gaps.
 void handleRecurrence ()
 {
-  std::vector <Task> tasks;
-  context.tdb.loadPending (tasks);
+  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
   std::vector <Task> modified;
 
   // Look at all tasks and find any recurring ones.
@@ -368,7 +367,7 @@ void updateRecurrenceMask (
                       :                                          '?';
 
           it->set ("mask", mask);
-          context.tdb.update (*it);
+          context.tdb2.modify (*it);
         }
         else
         {
@@ -438,10 +437,7 @@ bool nag (Task& task)
   if (nagMessage != "")
   {
     // Load all pending tasks.
-    std::vector <Task> tasks;
-
-    // Piggy-back on existing locked TDB.
-    context.tdb.loadPending (tasks);
+    std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
 
     // Counters.
     int overdue    = 0;

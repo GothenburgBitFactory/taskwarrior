@@ -62,17 +62,10 @@ int CmdCalendar::execute (std::string& output)
   if (preferredMonthsPerLine != 0 && preferredMonthsPerLine < monthsThatFit)
     monthsPerLine = preferredMonthsPerLine;
 
-  // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
+  // Load the pending tasks.
   handleRecurrence ();
-  context.tdb.loadPending (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Apply filter.
-  std::vector <Task> filtered;
-  filter (tasks, filtered);
+  context.tdb2.commit ();
+  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
 
   Date today;
   bool getpendingdate = false;
@@ -117,10 +110,11 @@ int CmdCalendar::execute (std::string& output)
   int argMonth = 0;
   int argYear = 0;
   bool argWholeYear = false;
-/*
-  std::vector <std::string> args = context.args.list ();
+
+  std::vector <std::string> words = context.a3.extract_words ();
+
   std::vector <std::string>::iterator arg;
-  for (arg = args.begin (); arg != args.end (); ++arg)
+  for (arg = words.begin (); arg != words.end (); ++arg)
   {
     // Some version of "calendar".
     if (autoComplete (lowerCase (*arg), commandNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
@@ -157,7 +151,6 @@ int CmdCalendar::execute (std::string& output)
     else
       throw std::string ("Could not recognize argument '") + *arg + "'.";
   }
-*/
 
   // Supported combinations:
   //
@@ -189,7 +182,7 @@ int CmdCalendar::execute (std::string& output)
     // Find the oldest pending due date.
     Date oldest (12,31,2037);
     std::vector <Task>::iterator task;
-    for (task = filtered.begin (); task != filtered.end (); ++task)
+    for (task = tasks.begin (); task != tasks.end (); ++task)
     {
       if (task->getStatus () == Task::pending)
       {
@@ -282,7 +275,7 @@ int CmdCalendar::execute (std::string& output)
 
     out << "\n"
         << optionalBlankLine ()
-        << renderMonths (mFrom, yFrom, today, filtered, monthsPerLine)
+        << renderMonths (mFrom, yFrom, today, tasks, monthsPerLine)
         << "\n";
 
     mFrom += monthsPerLine;
