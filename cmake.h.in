@@ -57,5 +57,6 @@ Override PACKAGE_LANGUAGE, then
 #cmakedefine HAVE_UUID
 #cmakedefine HAVE_UUID_UNPARSE_LOWER
 
+/* Undefine this to eliminate the execute command */
 #define HAVE_EXECUTE 1
 

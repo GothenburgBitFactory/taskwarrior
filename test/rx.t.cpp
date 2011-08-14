@@ -32,7 +32,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest ut (15);
+  UnitTest ut (16);
 
   std::string text = "This is a test.";
 
@@ -75,6 +75,10 @@ int main (int argc, char** argv)
   ut.is (results[0], "est", "(e..)[0] == 'est'");
   ut.is (start[0],      11, "(e..)[0] == 11->");
   ut.is (end[0],        14, "(e..)[0] == ->14");
+
+  RX r9 ("\\bthe\\b");
+  text = "this is the end.";
+  ut.ok (r9.match (text), text + " =~ /\\bthe\\b/");
 
   return 0;
 }
