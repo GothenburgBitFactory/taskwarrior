@@ -106,7 +106,7 @@
 #define STRING_COLOR_UNRECOGNIZED    "The color '{1}' is not recognized."
 
 // columns/Col*
-#define STRING_COLUMN_BAD_NAME       "Unrecognized column name '{1}'"
+#define STRING_COLUMN_BAD_NAME       "Unrecognized column name '{1}'."
 #define STRING_COLUMN_BAD_FORMAT     "Unrecognized column format '{1}.{2}'"
 #define STRING_COLUMN_LABEL_TASKS    "Tasks"
 #define STRING_COLUMN_LABEL_DEP      "Depends"
