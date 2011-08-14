@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (20);
+  UnitTest t (18);
 
   // (blank)
   bool good = true;
@@ -50,13 +50,6 @@ int main (int argc, char** argv)
   try {task = Task ("[]");}
   catch (std::string& e){t.diag (e); good = false;}
   t.notok (good, "Task::Task ('[]')");
-
-  // [name:value]
-  good = true;
-  try {task = Task ("[name:value]");}
-  catch (std::string& e){t.diag (e); good = false;}
-  t.ok (good, "Task::Task ('[name:value]')");
-  t.is (task.get ("name"), "value", "name=value");
 
   // [name:"value"]
   good = true;
