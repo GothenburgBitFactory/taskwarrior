@@ -160,9 +160,12 @@ int main (int argc, char** argv)
     return -2;
   }
 
+  rmdir ("./extensions");
   unlink ("./pending.data");
   unlink ("./completed.data");
   unlink ("./undo.data");
+  unlink ("./backlog.data");
+  unlink ("./synch.key");
 
   return 0;
 }

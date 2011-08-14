@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 23;
+use Test::More tests => 25;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -46,7 +46,7 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug #418: due.before:eow not working
-#   - with dateformat is MD
+#   - with dateformat 'MD'
 qx{../src/task rc:bug.rc add one   due:6/28/2010};
 qx{../src/task rc:bug.rc add two   due:6/29/2010};
 qx{../src/task rc:bug.rc add three due:6/30/2010};
@@ -88,6 +88,12 @@ ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');
+
+unlink 'backlog.data';
+ok (!-r 'backlog.data', 'Removed backlog.data');
+
+unlink 'synch.key';
+ok (!-r 'synch.key', 'Removed synch.key');
 
 unlink 'bug.rc';
 ok (!-r 'bug.rc', 'Removed bug.rc');

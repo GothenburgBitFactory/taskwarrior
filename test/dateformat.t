@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 17;
 
 # Create the rc file.
 if (open my $fh, '>', 'date1.rc')
@@ -79,7 +79,7 @@ $output = qx{../src/task rc:date3.rc list};
 like ($output, qr/Thursday 08 April 2010 \(v14\)/, 'date format A D B Y (vV) parsed');
 $output = qx{../src/task rc:date3.rc rc.dateformat.report:"D b Y - a" list};
 like ($output, qr/08 Apr 2010 - Thu/, 'date format D b Y - a parsed');
-                  
+
 # Cleanup.
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
@@ -89,6 +89,12 @@ ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');
+
+unlink 'backlog.data';
+ok (!-r 'backlog.data', 'Removed backlog.data');
+
+unlink 'synch.key';
+ok (!-r 'synch.key', 'Removed synch.key');
 
 unlink 'date1.rc';
 ok (!-r 'date1.rc', 'Removed date1.rc');

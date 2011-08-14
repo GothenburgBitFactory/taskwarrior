@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 103;
+use Test::More tests => 105;
 
 # Create the rc file.
 if (open my $fh, '>', 'sorting.rc')
@@ -187,6 +187,12 @@ ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');
+
+unlink 'backlog.data';
+ok (!-r 'backlog.data', 'Removed backlog.data');
+
+unlink 'synch.key';
+ok (!-r 'synch.key', 'Removed synch.key');
 
 unlink 'sorting.rc';
 ok (!-r 'sorting.rc', 'Removed sorting.rc');

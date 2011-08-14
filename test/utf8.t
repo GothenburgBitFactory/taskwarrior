@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'utf8.rc')
@@ -78,6 +78,12 @@ ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');
+
+unlink 'backlog.data';
+ok (!-r 'backlog.data', 'Removed backlog.data');
+
+unlink 'synch.key';
+ok (!-r 'synch.key', 'Removed synch.key');
 
 unlink 'utf8.rc';
 ok (!-r 'utf8.rc', 'Removed utf8.rc');

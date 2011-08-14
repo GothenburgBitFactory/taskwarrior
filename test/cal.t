@@ -30,7 +30,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 87;
+use Test::More tests => 89;
 
 # Create the rc file.
 if (open my $fh, '>', 'cal.rc')
@@ -266,6 +266,12 @@ ok (!-r 'completed.data', 'Removed completed.data');
 
 unlink 'undo.data';
 ok (!-r 'undo.data', 'Removed undo.data');
+
+unlink 'backlog.data';
+ok (!-r 'backlog.data', 'Removed backlog.data');
+
+unlink 'synch.key';
+ok (!-r 'synch.key', 'Removed synch.key');
 
 unlink 'details.rc';
 ok (!-r 'details.rc', 'Removed details.rc');

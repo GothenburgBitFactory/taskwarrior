@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 20;
 use File::Copy;
 
 use constant false => 0;
@@ -85,6 +85,12 @@ ok (!-r 'local/undo.data', 'Removed local/undo.data');
 unlink 'local/undo.save';
 ok (!-r 'local/undo.save', 'Removed local/undo.save');
 
+unlink 'local/backlog.data';
+ok (!-r 'local/backlog.data', 'Removed local/backlog.data');
+
+unlink 'local/synch.key';
+ok (!-r 'local/synch.key', 'Removed local/synch.key');
+
 unlink 'local.rc';
 ok (!-r 'local.rc', 'Removed local.rc');
 
@@ -96,6 +102,12 @@ ok (!-r 'remote/completed.data', 'Removed remote/completed.data');
 
 unlink 'remote/undo.data';
 ok (!-r 'remote/undo.data', 'Removed remote/undo.data');
+
+unlink 'remote/backlog.data';
+ok (!-r 'remote/backlog.data', 'Removed remote/backlog.data');
+
+unlink 'remote/synch.key';
+ok (!-r 'remote/synch.key', 'Removed remote/synch.key');
 
 unlink 'remote.rc';
 ok (!-r 'remote.rc', 'Removed remote.rc');

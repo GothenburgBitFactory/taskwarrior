@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 50;
+use Test::More tests => 51;
 
 # Create the rc file.
 if (open my $fh, '>', 'urgency.rc')
@@ -312,6 +312,9 @@ ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'backlog.data';
 ok (!-r 'backlog.data', 'Removed backlog.data');
+
+unlink 'synch.key';
+ok (!-r 'synch.key', 'Removed synch.key');
 
 unlink 'urgency.rc';
 ok (!-r 'urgency.rc', 'Removed urgency.rc');

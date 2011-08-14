@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'shell.rc')
@@ -60,6 +60,12 @@ ok (!-r 'undo.data', 'Removed undo.data');
 
 unlink 'response.txt';
 ok (!-r 'response.txt', 'Removed response.txt');
+
+unlink 'backlog.data';
+ok (!-r 'backlog.data', 'Removed backlog.data');
+
+unlink 'synch.key';
+ok (!-r 'synch.key', 'Removed synch.key');
 
 unlink 'shell.rc';
 ok (!-r 'shell.rc', 'Removed shell.rc');

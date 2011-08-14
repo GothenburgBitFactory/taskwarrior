@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 45;
+use Test::More tests => 53;
 use File::Copy;
 
 use constant false => 0;
@@ -181,6 +181,10 @@ unlink 'data1/completed.data';
 ok (!-r 'data1/completed.data', 'Removed data1/completed.data');
 unlink 'data1/undo.data';
 ok (!-r 'data1/undo.data', 'Removed data1/undo.data');
+unlink 'data1/backlog.data';
+ok (!-r 'data1/backlog.data', 'Removed data1/backlog.data');
+unlink 'data1/synch.key';
+ok (!-r 'data1/synch.key', 'Removed data1/synch.key');
 
 unlink 'data2/pending.data';
 ok (!-r 'data2/pending.data', 'Removed data2/pending.data');
@@ -188,6 +192,10 @@ unlink 'data2/completed.data';
 ok (!-r 'data2/completed.data', 'Removed data2/completed.data');
 unlink 'data2/undo.data';
 ok (!-r 'data2/undo.data', 'Removed data2/undo.data');
+unlink 'data2/backlog.data';
+ok (!-r 'data2/backlog.data', 'Removed data2/backlog.data');
+unlink 'data2/synch.key';
+ok (!-r 'data2/synch.key', 'Removed data2/synch.key');
 
 unlink 'data3/pending.data';
 ok (!-r 'data3/pending.data', 'Removed data3/pending.data');
@@ -195,6 +203,10 @@ unlink 'data3/completed.data';
 ok (!-r 'data3/completed.data', 'Removed data3/completed.data');
 unlink 'data3/undo.data';
 ok (!-r 'data3/undo.data', 'Removed data3/undo.data');
+unlink 'data3/backlog.data';
+ok (!-r 'data3/backlog.data', 'Removed data3/backlog.data');
+unlink 'data3/synch.key';
+ok (!-r 'data3/synch.key', 'Removed data3/synch.key');
 
 unlink 'backup/pending.data';
 ok (!-r 'backup/pending.data', 'Removed backup/pending.data');
@@ -202,6 +214,10 @@ unlink 'backup/completed.data';
 ok (!-r 'backup/completed.data', 'Removed backup/completed.data');
 unlink 'backup/undo.data';
 ok (!-r 'backup/undo.data', 'Removed backup/undo.data');
+unlink 'backup/backlog.data';
+ok (!-r 'backup/backlog.data', 'Removed backup/backlog.data');
+unlink 'backup/synch.key';
+ok (!-r 'backup/synch.key', 'Removed backup/synch.key');
 
 unlink '1.rc';
 ok (!-r '1.rc', 'Removed 1.rc');
