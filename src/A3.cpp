@@ -1456,6 +1456,9 @@ bool A3::is_dom (Nibbler& n, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// A duration may only be followed by '\0', ')' or ' '.
+//
+// This prevents the interpretation of '31st' as a duration ('31s').
 bool A3::is_duration (Nibbler& n, std::string& result)
 {
   n.save ();
@@ -1468,8 +1471,14 @@ bool A3::is_duration (Nibbler& n, std::string& result)
   if (n.getInt (quantity) &&
       n.getOneOf (units, unit))
   {
-    result = format (quantity) + unit;
-    return true;
+    char next = n.next ();
+    if (next == '\0' ||
+        next == ')'  ||
+        next == ' ')
+    {
+      result = format (quantity) + unit;
+      return true;
+    }
   }
 
   n.restore ();
