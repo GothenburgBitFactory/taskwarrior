@@ -82,6 +82,7 @@ public:
 private:
   FILE* fh;
   int   h;
+  bool  locked;
 };
 
 #endif

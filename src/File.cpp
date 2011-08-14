@@ -42,6 +42,7 @@ File::File ()
 : Path::Path ()
 , fh (NULL)
 , h (-1)
+, locked (false)
 {
 }
 
@@ -50,6 +51,7 @@ File::File (const Path& other)
 : Path::Path (other)
 , fh (NULL)
 , h (-1)
+, locked (false)
 {
 }
 
@@ -58,6 +60,7 @@ File::File (const File& other)
 : Path::Path (other)
 , fh (NULL)
 , h (-1)
+, locked (false)
 {
 }
 
@@ -66,6 +69,7 @@ File::File (const std::string& in)
 : Path::Path (in)
 , fh (NULL)
 , h (-1)
+, locked (false)
 {
 }
 
@@ -82,6 +86,7 @@ File& File::operator= (const File& other)
   if (this != &other)
     Path::operator= (other);
 
+  locked = false;
   return *this;
 }
 
@@ -117,6 +122,7 @@ bool File::open ()
     if (fh)
     {
       h = fileno (fh);
+      locked = false;
       return true;
     }
   }
@@ -138,6 +144,7 @@ void File::close ()
     fclose (fh);
     fh = NULL;
     h = -1;
+    locked = false;
   }
 }
 
@@ -152,17 +159,28 @@ bool File::lock ()
       ;
 
     if (retry <= 3)
+    {
+      locked = true;
       return true;
+    }
   }
 
+  locked = false;
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool File::waitForLock ()
 {
+  if (locked)
+    return true;
+
   if (fh && h != -1)
-    return flock (h, LOCK_EX) == 0 ? true : false;
+    if (flock (h, LOCK_EX) == 0)
+    {
+      locked = true;
+      return true;
+    }
 
   return false;
 }
