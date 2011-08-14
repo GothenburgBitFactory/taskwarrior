@@ -463,18 +463,6 @@ void Command::modify_task (
         task.removeTag (value);
     }
 
-/*
-    // Words and operators are aggregated into a description.
-    else if (arg->_category == "word" ||
-             arg->_category == "op")
-    {
-      if (description.length ())
-        description += " ";
-
-      description += arg->_raw;
-    }
-*/
-
     // Substitutions.
     else if (arg->_category == "subst")
     {
@@ -484,13 +472,6 @@ void Command::modify_task (
       A3::extract_subst (arg->_raw, from, to, global);
       task.substitute (from, to, global);
     }
-
-/*
-    // Any additional argument types are indicative of a failure in
-    // A3::extract_modifications.
-    else
-      throw format (STRING_CMD_MOD_UNEXPECTED, arg->_raw);
-*/
 
     // Anything else is essentially downgraded to 'word' and considered part of
     // the description.

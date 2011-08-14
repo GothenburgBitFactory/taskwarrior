@@ -715,6 +715,8 @@ const A3 A3::tokenize (const A3& input) const
           found_something_after_sequence = true;
       }
 
+      // Must be higher than number.
+      // Must be higher than operator.
       else if (n.getDate (date_format, t))
       {
         output.push_back (Arg (Date (t).toString (date_format), "date"));
@@ -722,6 +724,8 @@ const A3 A3::tokenize (const A3& input) const
           found_something_after_sequence = true;
       }
 
+      // Must be higher than number.
+      // Must be higher than operator.
       else if (is_duration (n, s))
       {
         output.push_back (Arg (s, "duration"));

@@ -301,7 +301,7 @@ void E9::operator_lt (Term& result, Term& left, Term& right)
   {
     result._raw = result._value = (left._value < right._value)
                                 ? "true"
-                                : "fasle";
+                                : "false";
   }
 
   result._category = "bool";
@@ -324,7 +324,7 @@ void E9::operator_lte (Term& result, Term& left, Term& right)
   {
     result._raw = result._value = (left._value <= right._value)
                                 ? "true"
-                                : "fasle";
+                                : "false";
   }
 
   result._category = "bool";
@@ -347,7 +347,7 @@ void E9::operator_gte (Term& result, Term& left, Term& right)
   {
     result._raw = result._value = (left._value >= right._value)
                                 ? "true"
-                                : "fasle";
+                                : "false";
   }
 
   result._category = "bool";
@@ -369,7 +369,7 @@ void E9::operator_gt (Term& result, Term& left, Term& right)
   {
     result._raw = result._value = (left._value > right._value)
                                 ? "true"
-                                : "fasle";
+                                : "false";
   }
 
   result._category = "bool";
