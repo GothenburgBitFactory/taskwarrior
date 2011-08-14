@@ -267,7 +267,7 @@ std::string Config::defaults =
   "#default.project=foo                           # Default project for 'add' command\n"
   "#default.priority=M                            # Default priority for 'add' command\n"
   "#default.due=eom                               # Default due date for 'add' command\n"
-  "default.command=list                           # When no arguments are specified\n"
+  "default.command=next                           # When no arguments are specified\n"
   "\n"
   "_forcecolor=no                                 # Forces color to be on, even for non TTY output\n"
   "complete.all.projects=no                       # Include old project names in '_projects' command\n"

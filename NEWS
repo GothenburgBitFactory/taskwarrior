@@ -15,6 +15,7 @@ New Features in taskwarrior 2.0.0
     project, due date and description sorted by urgency).
   - Performance enhancements.
   - New 'next' report, that gauges urgency and reports the most urgent tasks.
+  - The 'next' report is now the default command.
   - Fine control of verbosity through the 'verbose=' configuration variable.
   - New 'execute' command that runs external scripts/programs.
   - JSON is the new default export format.
