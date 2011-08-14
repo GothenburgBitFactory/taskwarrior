@@ -715,6 +715,20 @@ const A3 A3::tokenize (const A3& input) const
           found_something_after_sequence = true;
       }
 
+      else if (n.getDate (date_format, t))
+      {
+        output.push_back (Arg (Date (t).toString (date_format), "date"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (is_duration (n, s))
+      {
+        output.push_back (Arg (s, "duration"));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
       else if (n.getOneOf (operators, s))
       {
         output.push_back (Arg (s, "op"));
@@ -755,20 +769,6 @@ const A3 A3::tokenize (const A3& input) const
       else if (n.getDateISO (t))
       {
         output.push_back (Arg (Date (t).toISO (), "date"));
-        if (found_sequence)
-          found_something_after_sequence = true;
-      }
-
-      else if (n.getDate (date_format, t))
-      {
-        output.push_back (Arg (Date (t).toString (date_format), "date"));
-        if (found_sequence)
-          found_something_after_sequence = true;
-      }
-
-      else if (is_duration (n, s))
-      {
-        output.push_back (Arg (s, "duration"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
