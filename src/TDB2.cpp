@@ -244,6 +244,7 @@ void TF2::load_tasks ()
   if (! _loaded_lines)
     load_lines ();
 
+  int id = 1;
   int line_number = 0;
   try
   {
@@ -252,8 +253,13 @@ void TF2::load_tasks ()
     {
       ++line_number;
       Task task (*i);
-// TODO Find a way to number pending tasks, but not others.
-//      task.id = _id++;
+
+      // Only set an ID for live tasks.
+      Task::status status = task.getStatus ();
+      if (status != Task::deleted &&
+          status != Task::completed)
+        task.id = id++;
+
       _tasks.push_back (task);
 
       // Maintain mapping for ease of link/dependency resolution.
@@ -271,11 +277,6 @@ void TF2::load_tasks ()
 
   catch (std::string& e)
   {
-/*
-    std::stringstream s;
-    s << " in " << _file.data << " at line " << line_number;
-    throw e + s.str ();
-*/
     throw e + format (" in {1} at line {2}", _file.data, line_number);
   }
 }
@@ -452,8 +453,13 @@ int TDB2::gc ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Next ID is that of the last pending task plus one.
 int TDB2::next_id ()
 {
+  if (! pending._loaded_tasks)
+  pending.load_tasks ();
+
+  _id = pending._tasks.back ().id + 1;
   return _id++;
 }
 
