@@ -26,6 +26,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <unistd.h>
+#include <stdio.h>
 #include <Context.h>
 #include <Column.h>
 #include <Task.h>
@@ -108,32 +110,16 @@ int main (int argc, char** argv)
     view.add (Column::factory ("project", report));
     view.add (Column::factory ("priority.long", report));
     view.add (Column::factory ("tags", report));
-//    view.add (Column::factory ("tags.indicator", report));
     view.add (Column::factory ("tags.count", report));
     view.add (Column::factory ("description", report));
-//    view.add (Column::factory ("description.desc", report));
-//    view.add (Column::factory ("description.truncated", report));
-//    view.add (Column::factory ("description.oneline", report));
-//    view.add (Column::factory ("description.count", report));
-//    view.add (Column::factory ("depends", report));
-//    view.add (Column::factory ("depends.count", report));
     view.add (Column::factory ("depends.indicator", report));
-//    view.add (Column::factory ("recur", report));
     view.add (Column::factory ("recur.indicator", report));
-//    view.add (Column::factory ("status", report));
     view.add (Column::factory ("status.short", report));
-//    view.add (Column::factory ("due", report));
-//    view.add (Column::factory ("due.julian", report));
     view.add (Column::factory ("due.countdown", report));
-//    view.add (Column::factory ("due.epoch", report));
-//    view.add (Column::factory ("due.iso", report));
     view.add (Column::factory ("start.active", report));
     view.add (Column::factory ("urgency", report));
     view.width (context.getWidth ());
     view.leftMargin (4);
-/*
-    view.extraPadding (1);
-*/
     view.extraPadding (0);
     view.intraPadding (1);
     view.colorHeader (header_color);
@@ -141,14 +127,14 @@ int main (int argc, char** argv)
     view.colorEven (even_color);
     view.intraColorOdd (odd_color);
     view.intraColorEven (even_color);
-/*
-    view.extraColorOdd (odd_color);
-    view.extraColorEven (even_color);
-*/
 
     // Render the view.
     std::cout << view.render (data, sequence);
-    t.is (view.lines (), 5, "View::lines == 5");
+    int expected_lines = 5;
+    if (!isatty (fileno (stdout)))
+      expected_lines = 6;
+
+    t.is (view.lines (), expected_lines, "View::lines == 5");
 
     // Now render a string-only grid.
     context.config.set ("fontunderline", false);
