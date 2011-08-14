@@ -139,6 +139,7 @@ private:
 private:
   std::vector <Term> _terms;
   std::map <std::string, RX> _regexes;
+  std::string _dateformat;
 };
 
 #endif

@@ -52,6 +52,8 @@ E9::E9 (const A3& args)
   std::vector <Arg>::const_iterator arg;
   for (arg = args.begin (); arg != args.end (); ++arg)
     _terms.push_back (Term (*arg));
+
+  _dateformat = context.config.get ("dateformat");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +93,6 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
 {
   // Case sensitivity is configurable.
   bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
-  std::string dateformat = context.config.get ("dateformat");
 
   std::vector <Term>::iterator arg;
   for (arg = _terms.begin (); arg != _terms.end (); ++arg)
@@ -184,7 +185,7 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
       if (arg->_category == "dom")
         arg->_value = context.dom.get (arg->_raw, task);
       else if (arg->_category == "date")
-        arg->_value = Date (arg->_raw, dateformat).toEpochString ();
+        arg->_value = Date (arg->_raw, _dateformat).toEpochString ();
       else if (arg->_category == "duration")
         arg->_value = (std::string)Duration (arg->_raw);
 
@@ -297,6 +298,25 @@ void E9::operator_lt (Term& result, Term& left, Term& right)
     else if (left._value == ""  && right._value != "")  result._raw = result._value = "true";
     else                                                result._raw = result._value = "false";
   }
+  else if (left._category  == "date" ||
+           right._category == "date")
+  {
+    Date left_date;
+    if (digitsOnly (left._value))
+      left_date = Date (left._value);
+    else
+      left_date = Date (left._value, _dateformat);
+
+    Date right_date;
+    if (digitsOnly (right._value))
+      right_date = Date (right._value);
+    else
+      right_date = Date (right._value, _dateformat);
+
+    result._raw = result._value = (left_date < right_date)
+                                ? "true"
+                                : "false";
+  }
   else
   {
     result._raw = result._value = (left._value < right._value)
@@ -319,6 +339,25 @@ void E9::operator_lte (Term& result, Term& left, Term& right)
     else if (left._value == "L" && right._value == "M") result._raw = result._value = "true";
     else if (left._value == ""                        ) result._raw = result._value = "true";
     else                                                result._raw = result._value = "false";
+  }
+  else if (left._category  == "date" ||
+           right._category == "date")
+  {
+    Date left_date;
+    if (digitsOnly (left._value))
+      left_date = Date (left._value);
+    else
+      left_date = Date (left._value, _dateformat);
+
+    Date right_date;
+    if (digitsOnly (right._value))
+      right_date = Date (right._value);
+    else
+      right_date = Date (right._value, _dateformat);
+
+    result._raw = result._value = (left_date <= right_date)
+                                ? "true"
+                                : "false";
   }
   else
   {
@@ -343,6 +382,25 @@ void E9::operator_gte (Term& result, Term& left, Term& right)
     else if (                      right._value == "" ) result._raw = result._value = "true";
     else                                                result._raw = result._value = "false";
   }
+  else if (left._category  == "date" ||
+           right._category == "date")
+  {
+    Date left_date;
+    if (digitsOnly (left._value))
+      left_date = Date (left._value);
+    else
+      left_date = Date (left._value, _dateformat);
+
+    Date right_date;
+    if (digitsOnly (right._value))
+      right_date = Date (right._value);
+    else
+      right_date = Date (right._value, _dateformat);
+
+    result._raw = result._value = (left_date >= right_date)
+                                ? "true"
+                                : "false";
+  }
   else
   {
     result._raw = result._value = (left._value >= right._value)
@@ -364,6 +422,25 @@ void E9::operator_gt (Term& result, Term& left, Term& right)
     else if (left._value == "M" && right._value == "L") result._raw = result._value = "true";
     else if (left._value != ""  && right._value == "")  result._raw = result._value = "true";
     else                                                result._raw = result._value = "false";
+  }
+  else if (left._category  == "date" ||
+           right._category == "date")
+  {
+    Date left_date;
+    if (digitsOnly (left._value))
+      left_date = Date (left._value);
+    else
+      left_date = Date (left._value, _dateformat);
+
+    Date right_date;
+    if (digitsOnly (right._value))
+      right_date = Date (right._value);
+    else
+      right_date = Date (right._value, _dateformat);
+
+    result._raw = result._value = (left_date > right_date)
+                                ? "true"
+                                : "false";
   }
   else
   {
@@ -426,6 +503,26 @@ void E9::operator_equal (
     }
   }
 
+  // Dates.
+  else if (left._category  == "date" ||
+           right._category == "date")
+  {
+    Date left_date;
+    if (digitsOnly (left._value))
+      left_date = Date (left._value);
+    else
+      left_date = Date (left._value, _dateformat);
+
+    Date right_date;
+    if (digitsOnly (right._value))
+      right_date = Date (right._value);
+    else
+      right_date = Date (right._value, _dateformat);
+
+    result._raw = result._value = (left_date == right_date)
+                                ? "true"
+                                : "false";
+  }
   // Regular equality matching.
   else
   {
