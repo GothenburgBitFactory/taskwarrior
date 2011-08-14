@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 85;
+use Test::More tests => 61;
 
 # Create the rc file.
 if (open my $fh, '>', 'filter.rc')
@@ -88,16 +88,6 @@ like   ($output, qr/six/,   'd6');
 unlike ($output, qr/seven/, 'd7');
 unlike ($output, qr/eight/, 'd8');
 
-$output = qx{../src/task rc:filter.rc list project.~startswith:bar};
-like   ($output, qr/one/,   'e1');
-like   ($output, qr/two/,   'e2');
-like   ($output, qr/three/, 'e3');
-unlike ($output, qr/four/,  'e4');
-unlike ($output, qr/five/,  'e5');
-unlike ($output, qr/six/,   'e6');
-like   ($output, qr/seven/, 'e7');
-like   ($output, qr/eight/, 'e8');
-
 $output = qx{../src/task rc:filter.rc list project:ba};
 unlike ($output, qr/one/,   'f1');
 unlike ($output, qr/two/,   'f2');
@@ -118,16 +108,6 @@ unlike ($output, qr/six/,   'g6');
 unlike ($output, qr/seven/, 'g7');
 unlike ($output, qr/eight/, 'g8');
 
-$output = qx{../src/task rc:filter.rc list project.~startswith:ba};
-like   ($output, qr/one/,   'h1');
-like   ($output, qr/two/,   'h2');
-like   ($output, qr/three/, 'h3');
-unlike ($output, qr/four/,  'h4');
-unlike ($output, qr/five/,  'h5');
-unlike ($output, qr/six/,   'h6');
-unlike ($output, qr/seven/, 'h7');
-unlike ($output, qr/eight/, 'h8');
-
 $output = qx{../src/task rc:filter.rc list description.has:foo};
 like   ($output, qr/one/,   'i1');
 unlike ($output, qr/two/,   'i2');
@@ -137,17 +117,6 @@ unlike ($output, qr/five/,  'i5');
 like   ($output, qr/six/,   'i6');
 like   ($output, qr/seven/, 'i7');
 like   ($output, qr/eight/, 'i8');
-
-$output = qx{../src/task rc:filter.rc list description.~has:foo};
-unlike ($output, qr/one/,   'j1');
-like   ($output, qr/two/,   'j2');
-like   ($output, qr/three/, 'j3');
-like   ($output, qr/four/,  'j4');
-like   ($output, qr/five/,  'j5');
-unlike ($output, qr/six/,   'j6');
-unlike ($output, qr/seven/, 'j7');
-unlike ($output, qr/eight/, 'j8');
-
 
 # Cleanup.
 unlink 'pending.data';
