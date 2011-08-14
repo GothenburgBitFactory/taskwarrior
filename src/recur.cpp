@@ -65,7 +65,6 @@ void handleRecurrence ()
   {
     if (t->getStatus () == Task::recurring)
     {
-/*
       // Generate a list of due dates for this recurring task, regardless of
       // the mask.
       std::vector <Date> due;
@@ -77,7 +76,7 @@ void handleRecurrence ()
         // Determine the end date.
         t->setEnd ();
         t->setStatus (Task::deleted);
-        context.tdb.update (*t);
+        context.tdb2.modify (*t);
         continue;
       }
 
@@ -129,7 +128,7 @@ void handleRecurrence ()
           modified.push_back (rec);
 
           // Add the new task to the DB.
-          context.tdb.add (rec);
+          context.tdb2.add (rec);
         }
 
         ++i;
@@ -139,9 +138,8 @@ void handleRecurrence ()
       if (changed)
       {
         t->set ("mask", mask);
-        context.tdb.update (*t);
+        context.tdb2.modify (*t);
       }
-*/
     }
     else
       modified.push_back (*t);
