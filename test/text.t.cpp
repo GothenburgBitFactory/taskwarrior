@@ -112,7 +112,7 @@ int main (int argc, char** argv)
   t.is (items[1], "",              "split '-' '-' -> [1] ''");
 
   split_minimal (items, unsplit, '-');
-  t.is (items.size (), (size_t) 1, "split '-' '-' -> '-'");
+  t.is (items.size (), (size_t) 0, "split '-' '-' ->");
 
   unsplit = "-a-bc-def";
   split (items, unsplit, '-');

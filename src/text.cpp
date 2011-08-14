@@ -143,7 +143,7 @@ void split_minimal (
     start = i + 1;
   }
 
-  if (input.length ())
+  if (start < input.length ())
     results.push_back (input.substr (start));
 }
 
