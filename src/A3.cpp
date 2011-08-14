@@ -1283,6 +1283,7 @@ bool A3::is_attmod (Nibbler& n, std::string& result)
   std::string name;
   std::string modifier;
   std::string value;
+//  time_t date;
 
   // If there is a valid attribute name.
   if (n.getName (name) &&
@@ -1305,8 +1306,12 @@ bool A3::is_attmod (Nibbler& n, std::string& result)
           // Consider removing this for a stricter parse.
           if (n.getQuoted   ('"', value)  ||
               n.getQuoted   ('\'', value) ||
+// TODO Need more things recognized before it falls through to getUntilEOS.
+//              n.getDate     (context.config.get ("dateformat"), date)  ||
+//              need Duration too.
               n.getName     (value)       ||
-              n.getUntilEOS (value)       ||
+              n.getUntilWS  (value)       ||
+              n.getUntilEOS (value)       ||  // Redundant?
               n.depleted ())
           {
 /*
