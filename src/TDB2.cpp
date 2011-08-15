@@ -27,6 +27,7 @@
 
 //#include <iostream> // TODO Remove.
 #include <Context.h>
+#include <Timer.h>
 #include <text.h>
 #include <TDB2.h>
 
@@ -61,6 +62,7 @@ void TF2::target (const std::string& f)
 const std::vector <Task>& TF2::get_tasks ()
 {
 //  std::cout << "# TF2::get_tasks " << _file.data << "\n";
+  Timer timer ("TF2::get_tasks " + _file.data);
 
   if (! _loaded_tasks)
     load_tasks ();
@@ -411,7 +413,7 @@ void TDB2::modify (const Task& task)
 void TDB2::commit ()
 {
   dump ();
-//  std::cout << "# TDB2::commit\n";
+  Timer timer ("TDB2::commit");
   pending.commit ();
   completed.commit ();
   undo.commit ();
@@ -427,7 +429,7 @@ void TDB2::commit ()
 // Now cleans up dangling dependencies.
 int TDB2::gc ()
 {
-//  std::cout << "# TDB2::gc\n";
+  Timer timer ("TDB2::gc");
 /*
   pending.load_tasks
   completed.load_tasks
