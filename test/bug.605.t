@@ -44,7 +44,7 @@ if (open my $fh, '>', 'bug.rc')
 qx{../src/task rc:bug.rc add One project:p1};
 
 # Delete the task and note the completion status of the project
-my $output = qx{echo '-- y' | ../src/task rc:bug.rc del 1};
+my $output = qx{echo '-- y' | ../src/task rc:bug.rc 1 del};
 like   ($output, qr/is 100\% complete/ms, 'Empty project correctly reported as being 100% completed.');
 
 # Cleanup.
