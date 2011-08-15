@@ -292,8 +292,6 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 // Filter all tasks.
 void Command::filter (std::vector <Task>& output)
 {
-  Timer timer ("Command::filter");
-
   A3 filt = context.a3.extract_filter ();
   filt.dump ("extract_filter");
 
@@ -304,6 +302,8 @@ void Command::filter (std::vector <Task>& output)
 
     output.clear ();
     std::vector <Task>::const_iterator task;
+
+    Timer timer ("Command::filter");
     for (task = pending.begin (); task != pending.end (); ++task)
       if (e.evalFilter (*task))
         output.push_back (*task);
@@ -311,6 +311,7 @@ void Command::filter (std::vector <Task>& output)
     if (! filter_shortcut (filt))
     {
       const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
+      Timer timer ("Command::filter");
       for (task = completed.begin (); task != completed.end (); ++task)
         if (e.evalFilter (*task))
           output.push_back (*task);
@@ -320,7 +321,7 @@ void Command::filter (std::vector <Task>& output)
   }
   else
   {
-    const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
+    const std::vector <Task>& pending   = context.tdb2.pending.get_tasks ();
     const std::vector <Task>& completed = context.tdb2.completed.get_tasks ();
 
     std::vector <Task>::const_iterator task;
@@ -417,9 +418,6 @@ void Command::modify_task (
         E9 e (fragment);
         std::string result = e.evalExpression (task);
         context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
-
-//fragment.dump ("pre modify_task attr");
-//std::cout << "# modify_task result='" << result << "'\n";
 
         // Dependencies must be resolved to UUIDs.
         if (name == "depends")

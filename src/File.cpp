@@ -111,20 +111,25 @@ bool File::remove ()
 ////////////////////////////////////////////////////////////////////////////////
 bool File::open ()
 {
-  if (data != "" && fh == NULL)
+  if (data != "")
   {
-    bool already_exists = exists ();
-    if (already_exists)
-      if (!readable () || !writable ())
-        throw std::string (format (STRING_FILE_PERMS, data));
-
-    fh = fopen (data.c_str (), (already_exists ? "r+" : "w+"));
-    if (fh)
+    if (! fh)
     {
-      h = fileno (fh);
-      locked = false;
-      return true;
+      bool already_exists = exists ();
+      if (already_exists)
+        if (!readable () || !writable ())
+          throw std::string (format (STRING_FILE_PERMS, data));
+
+      fh = fopen (data.c_str (), (already_exists ? "r+" : "w+"));
+      if (fh)
+      {
+        h = fileno (fh);
+        locked = false;
+        return true;
+      }
     }
+    else
+      return true;
   }
 
   return false;
