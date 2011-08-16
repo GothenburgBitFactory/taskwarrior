@@ -37,35 +37,71 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Timer starts when the object is constructed.
-Timer::Timer (const std::string& description)
-: mDescription (description)
+Timer::Timer ()
+: _description ("-")
+, _running (false)
+, _total (0)
 {
-  gettimeofday (&mStart, NULL);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Timer starts when the object is constructed with a description.
+Timer::Timer (const std::string& description)
+: _description (description)
+, _running (false)
+, _total (0)
+{
+  start ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Timer stops when the object is destructed.
 Timer::~Timer ()
 {
-  struct timeval end;
-  gettimeofday (&end, NULL);
+  stop ();
 
   std::stringstream s;
   s << "Timer " // No i18n
-    << mDescription
+    << _description
     << " "
     << std::setprecision (6)
-
 #ifndef HAIKU
     // Haiku fails on this - don't know why.
     << std::fixed
 #endif
-
-    << ((end.tv_sec - mStart.tv_sec) + ((end.tv_usec - mStart.tv_usec )
-       / 1000000.0))
+    << _total / 1000000.0
     << " sec";
 
   context.debug (s.str ());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Timer::start ()
+{
+  if (!_running)
+  {
+    gettimeofday (&_start, NULL);
+    _running = true;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Timer::stop ()
+{
+  if (_running)
+  {
+    struct timeval end;
+    gettimeofday (&end, NULL);
+    _running = false;
+    _total += (end.tv_sec - _start.tv_sec) * 1000000.0
+            + (end.tv_usec - _start.tv_usec);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+unsigned long Timer::total () const
+{
+  return _total;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

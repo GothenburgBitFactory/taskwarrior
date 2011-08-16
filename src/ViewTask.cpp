@@ -101,7 +101,7 @@ ViewTask::ViewTask ()
 //
 std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& sequence)
 {
-  Timer timer ("ViewTask::render");
+  context.timer_render.start ();
 
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
@@ -228,7 +228,10 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
     // Stop if the line limit is exceeded.
     if (++_lines >= _truncate_lines && _truncate_lines != 0)
+    {
+      context.timer_render.stop ();
       return out;
+    }
   }
 
   // Compose, render columns, in sequence.
@@ -289,16 +292,23 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
       // Stop if the line limit is exceeded.
       if (++_lines >= _truncate_lines && _truncate_lines != 0)
+      {
+        context.timer_render.stop ();
         return out;
+      }
     }
 
     cells.clear ();
 
     // Stop if the row limit is exceeded.
     if (++_rows >= _truncate_rows && _truncate_rows != 0)
+    {
+      context.timer_render.stop ();
       return out;
+    }
   }
 
+  context.timer_render.stop ();
   return out;
 }
 

@@ -31,7 +31,6 @@
 #include <vector>
 #include <stdlib.h>
 #include <E9.h>
-#include <Timer.h>
 #include <text.h>
 #include <i18n.h>
 #include <Command.h>
@@ -270,7 +269,7 @@ bool Command::displays_id () const
 // Filter a specific list of tasks.
 void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
 {
-  Timer timer ("Command::filter");
+  context.timer_filter.start ();
 
   A3 filt = context.a3.extract_filter ();
   filt.dump ("extract_filter");
@@ -286,32 +285,38 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
   }
   else
     output = input;
+
+  context.timer_filter.stop ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Filter all tasks.
 void Command::filter (std::vector <Task>& output)
 {
+  context.timer_filter.start ();
   A3 filt = context.a3.extract_filter ();
   filt.dump ("extract_filter");
 
   if (filt.size ())
   {
+    context.timer_filter.stop ();
     const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
+    context.timer_filter.start ();
     E9 e (filt);
 
     output.clear ();
     std::vector <Task>::const_iterator task;
 
-    Timer timer ("Command::filter");
     for (task = pending.begin (); task != pending.end (); ++task)
       if (e.evalFilter (*task))
         output.push_back (*task);
 
     if (! filter_shortcut (filt))
     {
+      context.timer_filter.stop ();
       const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
-      Timer timer ("Command::filter");
+      context.timer_filter.start ();
+
       for (task = completed.begin (); task != completed.end (); ++task)
         if (e.evalFilter (*task))
           output.push_back (*task);
@@ -321,8 +326,10 @@ void Command::filter (std::vector <Task>& output)
   }
   else
   {
+    context.timer_filter.stop ();
     const std::vector <Task>& pending   = context.tdb2.pending.get_tasks ();
     const std::vector <Task>& completed = context.tdb2.completed.get_tasks ();
+    context.timer_filter.start ();
 
     std::vector <Task>::const_iterator task;
     for (task = pending.begin (); task != pending.end (); ++task)
@@ -331,6 +338,8 @@ void Command::filter (std::vector <Task>& output)
     for (task = completed.begin (); task != completed.end (); ++task)
       output.push_back (*task);
   }
+
+  context.timer_filter.stop ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

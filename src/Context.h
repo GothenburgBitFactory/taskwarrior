@@ -40,6 +40,7 @@
 #include <File.h>
 #include <Directory.h>
 #include <A3.h>
+#include <Timer.h>
 
 class Context
 {
@@ -112,6 +113,15 @@ public:
 
   int                                 terminal_width;
   int                                 terminal_height;
+
+  Timer                               timer_init;
+  Timer                               timer_load;
+  Timer                               timer_synch;
+  Timer                               timer_gc;
+  Timer                               timer_filter;
+  Timer                               timer_commit;
+  Timer                               timer_sort;
+  Timer                               timer_render;
 };
 
 #endif

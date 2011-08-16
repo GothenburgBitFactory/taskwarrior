@@ -33,7 +33,6 @@
 #include <Context.h>
 #include <Duration.h>
 #include <Task.h>
-#include <Timer.h>
 #include <text.h>
 
 extern Context context;
@@ -48,7 +47,7 @@ void sort_tasks (
   std::vector <int>& order,
   const std::string& keys)
 {
-  Timer t ("Sort");
+  context.timer_sort.start ();
 
   global_data = &data;
 
@@ -59,6 +58,8 @@ void sort_tasks (
   // Only sort if necessary.
   if (order.size ())
     std::stable_sort (order.begin (), order.end (), sort_compare);
+
+  context.timer_sort.stop ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

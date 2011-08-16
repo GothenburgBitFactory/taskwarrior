@@ -27,7 +27,6 @@
 
 //#include <iostream> // TODO Remove.
 #include <Context.h>
-#include <Timer.h>
 #include <text.h>
 #include <TDB2.h>
 
@@ -62,7 +61,6 @@ void TF2::target (const std::string& f)
 const std::vector <Task>& TF2::get_tasks ()
 {
 //  std::cout << "# TF2::get_tasks " << _file.data << "\n";
-  Timer timer ("TF2::get_tasks " + _file.data);
 
   if (! _loaded_tasks)
     load_tasks ();
@@ -242,6 +240,7 @@ void TF2::commit ()
 void TF2::load_tasks ()
 {
 //  std::cout << "# TF2::load_tasks " << _file.data << "\n";
+  context.timer_load.start ();
 
   if (! _loaded_lines)
     load_lines ();
@@ -281,6 +280,8 @@ void TF2::load_tasks ()
   {
     throw e + format (" in {1} at line {2}", _file.data, line_number);
   }
+
+  context.timer_load.stop ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -413,13 +414,26 @@ void TDB2::modify (const Task& task)
 void TDB2::commit ()
 {
   dump ();
-  Timer timer ("TDB2::commit");
+
+  context.timer_gc.start ();
+
   pending.commit ();
   completed.commit ();
   undo.commit ();
   backlog.commit ();
   synch_key.commit ();
+
+  context.timer_gc.stop ();
+
   dump ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::synch ()
+{
+  context.timer_synch.start ();
+
+  context.timer_synch.stop ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -429,28 +443,34 @@ void TDB2::commit ()
 // Now cleans up dangling dependencies.
 int TDB2::gc ()
 {
-  Timer timer ("TDB2::gc");
+  context.timer_gc.start ();
+
+  // Allowed as a temporary override.
+  if (context.config.getBoolean ("gc"))
+  {
 /*
-  pending.load_tasks
-  completed.load_tasks
+    pending.load_tasks
+    completed.load_tasks
 
-  for each pending
-    if status == completed || status == deleted
-      pending.remove
-      completed.add
-    if status == waiting && wait < now
-      status = pending
-      wait.clear
+    for each pending
+      if status == completed || status == deleted
+        pending.remove
+        completed.add
+      if status == waiting && wait < now
+        status = pending
+        wait.clear
 
-  for each completed
-    if status == pending || status == waiting
-      completed.remove
-      pending.add
+    for each completed
+      if status == pending || status == waiting
+        completed.remove
+        pending.add
 */
 
-  // TODO Remove dangling dependencies
-  // TODO Wake up expired waiting tasks
+    // TODO Remove dangling dependencies
+    // TODO Wake up expired waiting tasks
+  }
 
+  context.timer_gc.stop ();
   return 0;
 }
 

@@ -34,14 +34,21 @@
 class Timer
 {
 public:
+  Timer ();
   Timer (const std::string&);
   ~Timer ();
   Timer (const Timer&);
   Timer& operator= (const Timer&);
 
+  void start ();
+  void stop ();
+  unsigned long total () const;
+
 private:
-  std::string mDescription;
-  struct timeval mStart;
+  std::string    _description;
+  bool           _running;
+  struct timeval _start;
+  unsigned long  _total;
 };
 
 #endif

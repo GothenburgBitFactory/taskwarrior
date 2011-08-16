@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <algorithm>
 #include <pwd.h>
 #include <stdlib.h>
@@ -35,12 +36,14 @@
 #include <Context.h>
 #include <Directory.h>
 #include <File.h>
-#include <Timer.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
 #include <i18n.h>
-#include <../cmake.h>
+#include <cmake.h>
+#ifdef HAVE_COMMIT
+#include <commit.h>
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
@@ -67,7 +70,7 @@ Context::~Context ()
 ////////////////////////////////////////////////////////////////////////////////
 int Context::initialize (int argc, const char** argv)
 {
-  Timer t ("Context::initialize");
+  timer_init.start ();
   int rc = 0;
 
   try
@@ -202,6 +205,8 @@ int Context::initialize (int argc, const char** argv)
       else
         std::cout << *f << "\n";
   }
+
+  timer_init.stop ();
   return rc;
 }
 
@@ -214,6 +219,37 @@ int Context::run ()
   try
   {
     rc = dispatch (output);
+
+    std::stringstream s;
+    s << "Perf "
+      << PACKAGE_STRING
+      << " "
+#ifdef HAVE_COMMIT
+      << COMMIT
+#else
+      << "-"
+#endif
+      << " "
+      << Date ().toISO ()
+
+      << " init:"   << timer_init.total ()
+      << " load:"   << timer_load.total ()
+      << " synch:"  << timer_synch.total ()
+      << " gc:"     << timer_gc.total ()
+      << " filter:" << timer_filter.total ()
+      << " commit:" << timer_commit.total ()
+      << " sort:"   << timer_sort.total ()
+      << " render:" << timer_render.total ()
+      << " total:"  << (timer_init.total ()   +
+                        timer_load.total ()   +
+                        timer_synch.total ()  +
+                        timer_gc.total ()     +
+                        timer_filter.total () +
+                        timer_commit.total () +
+                        timer_sort.total ()   +
+                        timer_render.total ())
+      << "\n";
+    debug (s.str ());
   }
 
   catch (const std::string& error)
@@ -273,8 +309,6 @@ int Context::run ()
 // with the earliest argument.
 int Context::dispatch (std::string &out)
 {
-  Timer t ("Context::dispatch");
-
   // Autocomplete args against keywords.
   std::string command;
   if (a3.find_command (command))

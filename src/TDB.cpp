@@ -41,7 +41,6 @@
 #include <Directory.h>
 #include <File.h>
 #include <ViewText.h>
-#include <Timer.h>
 #include <Color.h>
 #include <main.h>
 
@@ -275,8 +274,6 @@ int TDB::load (std::vector <Task>& tasks)
 //       multiple files.
 int TDB::loadPending (std::vector <Task>& tasks)
 {
-  Timer t ("TDB::loadPending");
-
   std::string file;
   int line_number = 1;
 
@@ -346,8 +343,6 @@ int TDB::loadPending (std::vector <Task>& tasks)
 //       multiple files.
 int TDB::loadCompleted (std::vector <Task>& tasks)
 {
-  Timer t ("TDB::loadCompleted");
-
   std::string file;
   int line_number = 1;
 
@@ -456,7 +451,7 @@ void TDB::update (const Task& task)
 // only modified by TDB::gc.
 int TDB::commit ()
 {
-  Timer t ("TDB::commit");
+  context.timer_gc.start ();
 
   int quantity = mNew.size () + mModified.size ();
 
@@ -542,6 +537,7 @@ int TDB::commit ()
     mNew.clear ();
   }
 
+  context.timer_gc.stop ();
   return quantity;
 }
 
@@ -552,11 +548,14 @@ int TDB::commit ()
 // Now cleans up dangling dependencies.
 int TDB::gc ()
 {
-  Timer t ("TDB::gc");
+  context.timer_gc.start ();
 
   // Allowed as a temporary override.
   if (!context.config.getBoolean ("gc"))
+  {
+    context.timer_gc.stop ();
     return 0;
+  }
 
   int count_pending_changes = 0;
   int count_completed_changes = 0;
@@ -662,6 +661,8 @@ int TDB::gc ()
   std::stringstream s;
   s << "gc " << (count_pending_changes + count_completed_changes) << " tasks";
   context.debug (s.str ());
+
+  context.timer_gc.stop ();
   return count_pending_changes + count_completed_changes;
 }
 
