@@ -420,6 +420,9 @@ void Command::modify_task (
       {
         std::cout << "# Command::modify_task name='" << name << "' value='" << value << "'\n";
 
+        // Get the column info.
+        Column* column = context.columns[name];
+
         // All values must be eval'd first.
         A3 fragment;
         fragment.capture (value);
@@ -445,6 +448,22 @@ void Command::modify_task (
             else
               task.addDependency (id);
           }
+        }
+
+        // Dates are special, maybe.
+        else if (column->type () == "date")
+        {
+          // If the date value is less than 5 years, it is a duration, not a
+          // date, therefore add 'now'.
+          long l = strtol (result.c_str (), NULL, 10);
+          if (labs (l) < 5 * 365 * 86400)
+          {
+            Date now;
+            now += l;
+            task.set (name, now.toEpochString ());
+          }
+          else
+            task.set (name, result);
         }
 
         // By default, just add it.
