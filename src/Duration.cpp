@@ -52,23 +52,27 @@ static const char* durations[] =
   "d",
   "fortnight",
   "hours",
+  "hour",
   "hrs",
+  "hr",
   "h",
   "minutes",
   "mins",
   "min",
-  "mnths",
   "monthly",
   "months",
   "month",
+  "mnths",
+  "mths",
+  "mth",
   "mos",
   "mo",
-  "mths",
   "m",
   "quarterly",
   "quarters",
   "qrtrs",
   "qtrs",
+  "qtr",
   "q",
   "seconds",
   "secs",
@@ -79,11 +83,15 @@ static const char* durations[] =
   "weekdays",
   "weekly",
   "weeks",
+  "week",
   "wks",
+  "wk",
   "w",
   "yearly",
   "years",
+  "year",
   "yrs",
+  "yr",
   "y",
   "-",
 };
@@ -393,7 +401,9 @@ void Duration::parse (const std::string& input)
     else if (match == "yearly")                           mSecs = (int) (value * 86400 * 365);
     else if (match == "annual")                           mSecs = (int) (value * 86400 * 365);
     else if (match == "years")                            mSecs = (int) (value * 86400 * 365);
+    else if (match == "year")                             mSecs = (int) (value * 86400 * 365);
     else if (match == "yrs")                              mSecs = (int) (value * 86400 * 365);
+    else if (match == "yr")                               mSecs = (int) (value * 86400 * 365);
     else if (match == "y")                                mSecs = (int) (value * 86400 * 365);
 
     else if (match == "semiannual")                       mSecs = (int) (value * 86400 * 183);
@@ -403,6 +413,7 @@ void Duration::parse (const std::string& input)
     else if (match == "quarters")                         mSecs = (int) (value * 86400 * 91);
     else if (match == "qrtrs")                            mSecs = (int) (value * 86400 * 91);
     else if (match == "qtrs")                             mSecs = (int) (value * 86400 * 91);
+    else if (match == "qtr")                              mSecs = (int) (value * 86400 * 91);
     else if (match == "q")                                mSecs = (int) (value * 86400 * 91);
 
     else if (match == "monthly")                          mSecs = (int) (value * 86400 * 30);
@@ -412,6 +423,7 @@ void Duration::parse (const std::string& input)
     else if (match == "mos")                              mSecs = (int) (value * 86400 * 30);
     else if (match == "mo")                               mSecs = (int) (value * 86400 * 30);
     else if (match == "mths")                             mSecs = (int) (value * 86400 * 30);
+    else if (match == "mth")                              mSecs = (int) (value * 86400 * 30);
     else if (match == "m")                                mSecs = (int) (value * 86400 * 30);
 
     else if (match == "biweekly")                         mSecs = (int) (value * 86400 * 14);
@@ -420,7 +432,9 @@ void Duration::parse (const std::string& input)
     else if (match == "weekly")                           mSecs = (int) (value * 86400 * 7);
     else if (match == "sennight")                         mSecs = (int) (value * 86400 * 7);
     else if (match == "weeks")                            mSecs = (int) (value * 86400 * 7);
+    else if (match == "week")                             mSecs = (int) (value * 86400 * 7);
     else if (match == "wks")                              mSecs = (int) (value * 86400 * 7);
+    else if (match == "wk")                               mSecs = (int) (value * 86400 * 7);
     else if (match == "w")                                mSecs = (int) (value * 86400 * 7);
 
     else if (match == "daily")                            mSecs = (int) (value * 86400 * 1);
@@ -430,7 +444,9 @@ void Duration::parse (const std::string& input)
     else if (match == "d")                                mSecs = (int) (value * 86400 * 1);
 
     else if (match == "hours")                            mSecs = (int) (value * 3600);
+    else if (match == "hour")                             mSecs = (int) (value * 3600);
     else if (match == "hrs")                              mSecs = (int) (value * 3600);
+    else if (match == "hr")                               mSecs = (int) (value * 3600);
     else if (match == "h")                                mSecs = (int) (value * 3600);
 
     else if (match == "minutes")                          mSecs = (int) (value * 60);

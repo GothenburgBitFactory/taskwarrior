@@ -1471,14 +1471,15 @@ bool A3::is_dom (Nibbler& n, std::string& result)
 // This prevents the interpretation of '31st' as a duration ('31s').
 bool A3::is_duration (Nibbler& n, std::string& result)
 {
-  n.save ();
+  std::string::size_type start = n.save ();
 
-  int quantity;
+  int i;
+  double d;
   std::string unit;
-
   std::vector <std::string> units = Duration::get_units ();
 
-  if (n.getInt (quantity) &&
+  if ((n.getInt (i) ||
+       n.getNumber (d)) &&
       n.getOneOf (units, unit))
   {
     char next = n.next ();
@@ -1486,7 +1487,7 @@ bool A3::is_duration (Nibbler& n, std::string& result)
         next == ')'  ||
         next == ' ')
     {
-      result = format (quantity) + unit;
+      result = n.str ().substr (start, n.cursor () - start);
       return true;
     }
   }

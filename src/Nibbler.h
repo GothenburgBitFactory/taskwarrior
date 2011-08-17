@@ -80,9 +80,9 @@ public:
   std::string next (const int quantity);
 
   std::string::size_type cursor ();
-
-  void save ();
-  void restore ();
+  std::string::size_type save ();
+  std::string::size_type restore ();
+  const std::string& str () const;
 
   bool depleted ();
 

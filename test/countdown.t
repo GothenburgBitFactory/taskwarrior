@@ -47,13 +47,13 @@ if (open my $fh, '>', 'countdown.rc')
   print $fh "report.down.sort=due-\n";
 
   print $fh "report.upc.description=countdown_compact+ report\n";
-  print $fh "report.upc.columns=id,countdown_compact,description\n";
+  print $fh "report.upc.columns=id,due.countdown,description\n";
   print $fh "report.upc.labels=ID,Countdown,Description\n";
   print $fh "report.upc.filter=status:pending\n";
   print $fh "report.upc.sort=due+\n";
 
   print $fh "report.downc.description=countdown_compact- report\n";
-  print $fh "report.downc.columns=id,countdown_compact,description\n";
+  print $fh "report.downc.columns=id,due.countdown,description\n";
   print $fh "report.downc.labels=ID,Countdown,Description\n";
   print $fh "report.downc.filter=status:pending\n";
   print $fh "report.downc.sort=due-\n";
