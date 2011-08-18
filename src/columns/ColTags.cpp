@@ -50,6 +50,8 @@ ColumnTags::ColumnTags ()
   _examples.push_back (STRING_COLUMN_EXAMPLES_TAGS);
   _examples.push_back (context.config.get ("tag.indicator"));
   _examples.push_back ("[2]");
+
+  _hyphenate = context.config.getBoolean ("hyphenate");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +138,7 @@ void ColumnTags::render (
     {
       std::replace (tags.begin (), tags.end (), ',', ' ');
       std::vector <std::string> all;
-      wrapText (all, tags, width);
+      wrapText (all, tags, width, _hyphenate);
 
       std::vector <std::string>::iterator i;
       for (i = all.begin (); i != all.end (); ++i)

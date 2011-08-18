@@ -61,6 +61,8 @@ New configuration options in taskwarrior 2.0.0
   - New 'color.completed' and 'color.deleted' color rules.
   - New 'abbreviation.minimum' setting controls how short an abbreviated
     command or value may be.
+  - New 'hyphenate' setting controls whether long lines are hyphenated when
+    broken during text-wrapping.
 
 Newly deprecated features in taskwarrior 2.0.0
 

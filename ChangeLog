@@ -162,6 +162,9 @@
    (thanks to Bryce Harrington).
  + Applied patch for #803, allowing rc.confirmation to bypass confirmation of
    the deletion of a recurring task (thanks to Matt Kraai).
+ + Addressed bug #804 by allowing rc.hyphenate to control whether hyphens are
+   inserted when long lines are broken.  This may help prevent xterm from
+   mis-parsing URLs in task annotations, when wrapped (thanks to Yann Davin).
  + Fixed bug #807, which caused a lack of Lua to prevent tests from building
    (thanks to Owen Clarke).
  + Fixed bug #808, which generated compiler warnings on Solarix (thanks to

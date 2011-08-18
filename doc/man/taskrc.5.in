@@ -178,6 +178,10 @@ avoids placing color codes in the last column which can cause problems for
 Cygwin users.  Default value is 'no'.
 
 .TP
+.B hyphenate=on
+Hyphenates lines when wrapping breaks occur mid-word.  Default value is 'on'.
+
+.TP
 .B editor=vi
 Specifies which text editor you wish to use for when the
 .B task edit <ID>

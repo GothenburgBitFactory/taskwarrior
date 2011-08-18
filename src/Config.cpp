@@ -72,6 +72,7 @@ std::string Config::defaults =
   "detection=on                                   # Detects terminal width\n"
   "defaultwidth=80                                # Without detection, assumed width\n"
   "avoidlastcolumn=no                             # Fixes Cygwin width problem\n"
+  "hyphenate=on                                   # Hyphenates lines wrapped on non-word-breaks\n"
   "#editor=vi                                     # Preferred text editor\n"
   "edit.verbose=yes                               # Include comments in files created during task edit\n"
   "\n"

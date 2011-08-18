@@ -37,10 +37,10 @@ int main (int argc, char** argv)
 {
   UnitTest t (262);
 
-  // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
+  // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width, bool hyphenate)
   std::string text = "This is a test of the line wrapping code.";
   std::vector <std::string> lines;
-  wrapText (lines, text, 10);
+  wrapText (lines, text, 10, true);
   t.is (lines.size (), (size_t) 5, "wrapText 'This is a test of the line wrapping code.' -> total 5 lines");
   t.is (lines[0], "This is a",     "wrapText line 0 -> 'This is a'");
   t.is (lines[1], "test of",       "wrapText line 1 -> 'test of'");
@@ -51,7 +51,7 @@ int main (int argc, char** argv)
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   text = "This ☺ is a test of utf8 line extraction.";
   lines.clear ();
-  wrapText (lines, text, 7);
+  wrapText (lines, text, 7, true);
   t.is (lines.size (), (size_t) 7, "wrapText 'This ☺ is a test of utf8 line extraction.' -> total 7 lines");
   t.is (lines[0], "This ☺",        "wrapText line 0 -> 'This ☺'");
   t.is (lines[1], "is a",          "wrapText line 1 -> 'is a'");
@@ -61,33 +61,33 @@ int main (int argc, char** argv)
   t.is (lines[5], "extrac-",       "wrapText line 5 -> 'extrac-'");
   t.is (lines[6], "tion.",         "wrapText line 6 -> 'tion.'");
 
-  // void extractLine (std::string& text, std::string& line, int length)
+  // void extractLine (std::string& text, std::string& line, int length, bool hyphenate)
   text = "This ☺ is a test of utf8 line extraction.";
   std::string line;
-  extractLine (text, line, 7);
+  extractLine (text, line, 7, true);
   t.is (line, "line 1", "extractLine 7 'This ☺ is a test of utf8 line extraction.' -> 'This ☺'");
 
   // void extractLine (std::string& text, std::string& line, int length)
   text = "line 1\nlengthy second line that exceeds width";
-  extractLine (text, line, 10);
+  extractLine (text, line, 10, true);
   t.is (line, "line 1", "extractLine 10 'line 1\\nlengthy second line that exceeds width' -> 'line 1'");
 
-  extractLine (text, line, 10);
+  extractLine (text, line, 10, true);
   t.is (line, "lengthy", "extractLine 10 'lengthy second line that exceeds width' -> 'lengthy'");
 
-  extractLine (text, line, 10);
+  extractLine (text, line, 10, true);
   t.is (line, "second", "extractLine 10 'second line that exceeds width' -> 'second'");
 
-  extractLine (text, line, 10);
+  extractLine (text, line, 10, true);
   t.is (line, "line that", "extractLine 10 'line that exceeds width' -> 'line that'");
 
-  extractLine (text, line, 10);
+  extractLine (text, line, 10, true);
   t.is (line, "exceeds", "extractLine 10 'exceeds width' -> 'exceeds'");
 
-  extractLine (text, line, 10);
+  extractLine (text, line, 10, true);
   t.is (line, "width", "extractLine 10 'width' -> 'width'");
 
-  extractLine (text, line, 10);
+  extractLine (text, line, 10, true);
   t.is (line, "", "extractLine 10 '' -> ''");
 
   // void split (std::vector<std::string>& results, const std::string& input, const char delimiter)

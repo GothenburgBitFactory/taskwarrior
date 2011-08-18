@@ -52,7 +52,8 @@ static void replace_positional (std::string&, const std::string&, const std::str
 void wrapText (
   std::vector <std::string>& lines,
   const std::string& text,
-  const int width)
+  const int width,
+  bool hyphenate)
 {
   std::string copy = text;
   std::string line;
@@ -61,7 +62,7 @@ void wrapText (
 
   while (copy.length ())  // Used as Boolean, therefore UTF8 safe.
   {
-    extractLine (copy, line, modified_width);
+    extractLine (copy, line, modified_width, hyphenate);
     lines.push_back (line);
   }
 }
@@ -316,7 +317,11 @@ int longestLine (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void extractLine (std::string& text, std::string& line, int length)
+void extractLine (
+  std::string& text,
+  std::string& line,
+  int length,
+  bool hyphenate)
 {
   size_t eol = text.find ("\n");
 
@@ -356,8 +361,16 @@ void extractLine (std::string& text, std::string& line, int length)
   {
     if (length > 1)
     {
-      line = text.substr (0, length - 1) + "-";
-      text = text.substr (length - 1);
+      if (hyphenate)
+      {
+        line = text.substr (0, length - 1) + "-";
+        text = text.substr (length - 1);
+      }
+      else
+      {
+        line = text.substr (0, length);
+        text = text.substr (length);
+      }
     }
     else
     {

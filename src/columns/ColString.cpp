@@ -51,6 +51,8 @@ ColumnString::ColumnString ()
   _styles.push_back ("           Hello (wrapped)");
   _styles.push_back ("Hello (no-wrap)           ");
   _styles.push_back ("           Hello (no-wrap)");
+
+  _hyphenate = context.config.getBoolean ("hyphenate");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +98,7 @@ void ColumnString::render (
   if (_style == "default" || _style == "left")
   {
     std::vector <std::string> raw;
-    wrapText (raw, value, width);
+    wrapText (raw, value, width, _hyphenate);
 
     std::vector <std::string>::iterator i;
     for (i = raw.begin (); i != raw.end (); ++i)
@@ -105,7 +107,7 @@ void ColumnString::render (
   else if (_style == "right")
   {
     std::vector <std::string> raw;
-    wrapText (raw, value, width);
+    wrapText (raw, value, width, _hyphenate);
 
     std::vector <std::string>::iterator i;
     for (i = raw.begin (); i != raw.end (); ++i)

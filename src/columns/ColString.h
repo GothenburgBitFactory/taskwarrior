@@ -45,6 +45,7 @@ public:
   void render (std::vector <std::string>&, const std::string&, int, Color&);
 
 private:
+  bool _hyphenate;
 };
 
 #endif

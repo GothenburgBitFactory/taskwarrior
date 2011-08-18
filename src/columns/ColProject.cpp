@@ -47,6 +47,8 @@ ColumnProject::ColumnProject ()
 
   _examples.push_back (STRING_COLUMN_EXAMPLES_PROJ);
   _examples.push_back (STRING_COLUMN_EXAMPLES_PAR);
+
+  _hyphenate = context.config.getBoolean ("hyphenate");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +98,7 @@ void ColumnProject::render (
   }
 
   std::vector <std::string> raw;
-  wrapText (raw, project, width);
+  wrapText (raw, project, width, _hyphenate);
 
   std::vector <std::string>::iterator i;
   for (i = raw.begin (); i != raw.end (); ++i)

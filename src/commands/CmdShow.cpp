@@ -151,6 +151,7 @@ int CmdShow::execute (std::string& output)
     " extensions"
     " fontunderline"
     " gc"
+    " hyphenate"
     " import.synonym.bg"
     " import.synonym.description"
     " import.synonym.due"

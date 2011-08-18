@@ -51,6 +51,8 @@ ColumnDepends::ColumnDepends ()
   _examples.push_back ("1 2 10");
   _examples.push_back ("[3]");
   _examples.push_back (context.config.get ("dependency.indicator"));
+
+  _hyphenate = context.config.getBoolean ("hyphenate");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -150,7 +152,7 @@ void ColumnDepends::render (
       join (combined, " ", blocking_ids);
 
       std::vector <std::string> all;
-      wrapText (all, combined, width);
+      wrapText (all, combined, width, _hyphenate);
 
       std::vector <std::string>::iterator i;
       for (i = all.begin (); i != all.end (); ++i)

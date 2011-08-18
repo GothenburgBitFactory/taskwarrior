@@ -71,6 +71,8 @@ ColumnDescription::ColumnDescription ()
                        + " " + t + " " + a4);
   _examples.push_back (d.substr (0, 20) + "...");
   _examples.push_back (d + " [4]");
+
+  _hyphenate = context.config.getBoolean ("hyphenate");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +201,7 @@ void ColumnDescription::render (
     }
 
     std::vector <std::string> raw;
-    wrapText (raw, description, width);
+    wrapText (raw, description, width, _hyphenate);
 
     std::vector <std::string>::iterator i;
     for (i = raw.begin (); i != raw.end (); ++i)
@@ -210,7 +212,7 @@ void ColumnDescription::render (
   else if (_style == "desc")
   {
     std::vector <std::string> raw;
-    wrapText (raw, description, width);
+    wrapText (raw, description, width, _hyphenate);
 
     std::vector <std::string>::iterator i;
     for (i = raw.begin (); i != raw.end (); ++i)
@@ -237,7 +239,7 @@ void ColumnDescription::render (
     }
 
     std::vector <std::string> raw;
-    wrapText (raw, description, width);
+    wrapText (raw, description, width, _hyphenate);
 
     std::vector <std::string>::iterator i;
     for (i = raw.begin (); i != raw.end (); ++i)
@@ -264,7 +266,7 @@ void ColumnDescription::render (
       description += " [" + format ((int) annos.size ()) + "]";
 
     std::vector <std::string> raw;
-    wrapText (raw, description, width);
+    wrapText (raw, description, width, _hyphenate);
 
     std::vector <std::string>::iterator i;
     for (i = raw.begin (); i != raw.end (); ++i)

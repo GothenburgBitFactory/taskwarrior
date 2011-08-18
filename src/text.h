@@ -33,14 +33,14 @@
 #include <cmake.h>
 
 // text.cpp, Non-UTF-8 aware.
-void wrapText (std::vector <std::string>&, const std::string&, const int);
+void wrapText (std::vector <std::string>&, const std::string&, const int, bool);
 std::string trimLeft (const std::string& in, const std::string& t = " ");
 std::string trimRight (const std::string& in, const std::string& t = " ");
 std::string trim (const std::string& in, const std::string& t = " ");
 std::string unquoteText (const std::string&);
 int longestWord (const std::string&);
 int longestLine (const std::string&);
-void extractLine (std::string&, std::string&, int);
+void extractLine (std::string&, std::string&, int, bool);
 void splitq (std::vector<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const std::string&);
