@@ -70,6 +70,17 @@ of taskwarrior, there is the file format to consider. This is yet another good
 reason to back up your task data files!
 
 .TP
+.B Q: How do I build a Darwin 32bit version of task
+A: The taskwarrior packages will not work on a 32-bit OSX installation on Core
+Duo hardware.  You will need to build Taskwarrior from source, and use this
+configure command:
+
+      ./configure "CFLAGS=-m32" "CXXFLAGS=-m32" "LDFLAGS=-m32"
+
+See:  http://taskwarrior.org/issues/817
+      http://stackoverflow.com/questions/3261909/build-32bit-on-64-bit-linux-using-a-configure-script
+
+.TP
 .B Q: How do I build taskwarrior under Cygwin?
 A: Take a look at the README.build file, where the latest information on build
 issues is kept.  Taskwarrior is built the same way everywhere. But under Cygwin,
