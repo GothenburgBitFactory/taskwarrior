@@ -117,6 +117,16 @@ Darwin
   installed. If you're using fink, this will require the lua51-dev package in
   addition to lua51.
 
+Darwin, 32bit
+  The taskwarrior packages will not work on a 32-bit OSX installation on Core
+  Duo hardware.  You will need to build Taskwarrior from source, and use this
+  configure command:
+
+    ./configure "CFLAGS=-m32" "CXXFLAGS=-m32" "LDFLAGS=-m32"
+
+ See:  http://taskwarrior.org/issues/817
+       http://stackoverflow.com/questions/3261909/build-32bit-on-64-bit-linux-using-a-configure-script
+
 
 Troubleshooting
 ---------------
