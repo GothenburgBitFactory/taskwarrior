@@ -30,55 +30,11 @@
 
 #include <vector>
 #include <string>
+#include <Arg.h>
 #include <Nibbler.h>
 #include <File.h>
 
 #define ARGUMENTS_SEQUENCE_MAX_RANGE 1000
-
-class Arg
-{
-public:
-  Arg ()
-  : _raw ("")
-  , _category ("")
-  {
-  }
-
-  Arg (
-    const std::string& raw,
-    const std::string& category)
-  : _raw (raw)
-  , _category (category)
-  {
-  }
-
-  Arg (const Arg& other)
-  {
-    _raw      = other._raw;
-    _category = other._category;
-  }
-
-  Arg& operator= (const Arg& other)
-  {
-    if (this != &other)
-    {
-      _raw      = other._raw;
-      _category = other._category;
-    }
-
-    return *this;
-  }
-
-  bool operator== (const Arg& other) const
-  {
-    return _raw      == other._raw  &&
-           _category == other._category;
-  }
-
-public:
-  std::string _raw;      // Raw input token, never modified
-  std::string _category; // Categorized argument
-};
 
 class A3 : public std::vector <Arg>
 {

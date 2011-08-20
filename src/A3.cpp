@@ -137,7 +137,7 @@ A3::~A3 ()
 void A3::capture (int argc, const char** argv)
 {
   for (int i = 0; i < argc; ++i)
-    this->push_back (Arg (argv[i], ""));
+    this->push_back (Arg (argv[i]));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ void A3::capture (int argc, const char** argv)
 void A3::capture (const std::string& arg)
 {
   std::vector <std::string> parts;
-  this->push_back (Arg (arg, ""));
+  this->push_back (Arg (arg));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +154,7 @@ void A3::capture_first (const std::string& arg)
 {
   // Break the new argument into parts that comprise a series.
   std::vector <Arg> series;
-  series.push_back (Arg (arg, ""));
+  series.push_back (Arg (arg));
 
   // Locate an appropriate place to insert the series.  This would be
   // immediately after the program and command arguments.
@@ -283,7 +283,7 @@ void A3::append_stdin ()
       if (arg == "--")
         break;
 
-      this->push_back (Arg (arg, ""));
+      this->push_back (Arg (arg));
     }
   }
 }
@@ -387,7 +387,7 @@ void A3::resolve_aliases ()
       this->clear ();
       std::vector <std::string>::iterator e;
       for (e = expanded.begin (); e != expanded.end (); ++e)
-        this->push_back (Arg (*e, ""));
+        this->push_back (Arg (*e));
 
       expanded.clear ();
     }
@@ -1466,7 +1466,7 @@ bool A3::is_dom (Nibbler& n, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// A duration may only be followed by '\0', ')' or ' '.
+// A duration may only be followed by \0, ), +, -, *, / or ' '.
 //
 // This prevents the interpretation of '31st' as a duration ('31s').
 bool A3::is_duration (Nibbler& n, std::string& result)
@@ -1485,6 +1485,10 @@ bool A3::is_duration (Nibbler& n, std::string& result)
     char next = n.next ();
     if (next == '\0' ||
         next == ')'  ||
+        next == '+'  ||
+        next == '-'  ||
+        next == '*'  ||
+        next == '/'  ||
         next == ' ')
     {
       result = n.str ().substr (start, n.cursor () - start);
@@ -1649,7 +1653,7 @@ bool A3::is_tag (Nibbler& n, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <number> followed by either: '\0', ')' ',' or '-'.
+// <number> followed by either: \0, ), +, -, *, /, ' '.
 //
 // This prevents the interpretation of '3M' as a number.
 bool A3::is_number (Nibbler& n, double& d)
@@ -1660,8 +1664,11 @@ bool A3::is_number (Nibbler& n, double& d)
     char next = n.next ();
     if (next == '\0' ||
         next == ')'  ||
-        next == ' '  ||
-        next == '-')
+        next == '+'  ||
+        next == '-'  ||
+        next == '*'  ||
+        next == '/'  ||
+        next == ' ')
     {
       return true;
     }
@@ -1673,7 +1680,7 @@ bool A3::is_number (Nibbler& n, double& d)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <integer> followed by either: '\0', ')' ',' or '-'.
+// <number> followed by either: \0, ), +, -, *, /, ' '.
 //
 // This prevents the interpretation of '3M' as a number.
 bool A3::is_integer (Nibbler& n, int& i)
@@ -1684,8 +1691,11 @@ bool A3::is_integer (Nibbler& n, int& i)
     char next = n.next ();
     if (next == '\0' ||
         next == ')'  ||
-        next == ' '  ||
-        next == '-')
+        next == '+'  ||
+        next == '-'  ||
+        next == '*'  ||
+        next == '/'  ||
+        next == ' ')
     {
       return true;
     }
@@ -1999,6 +2009,7 @@ void A3::dump (const std::string& label)
   for (unsigned int i = 0; i < this->size (); ++i)
   {
     std::string raw      = (*this)[i]._raw;
+    std::string type     = (*this)[i]._type;
     std::string category = (*this)[i]._category;
 
     Color c;
@@ -2008,6 +2019,7 @@ void A3::dump (const std::string& label)
       c = color_map["none"];
 
     view.set (0, i, raw,      c);
+    view.set (1, i, type,     c);
     view.set (2, i, category, c);
   }
 

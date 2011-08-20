@@ -301,17 +301,8 @@ void E9::operator_lt (Term& result, Term& left, Term& right)
   else if (left._category  == "date" ||
            right._category == "date")
   {
-    Date left_date;
-    if (digitsOnly (left._value))
-      left_date = Date (left._value);
-    else
-      left_date = Date (left._value, _dateformat);
-
-    Date right_date;
-    if (digitsOnly (right._value))
-      right_date = Date (right._value);
-    else
-      right_date = Date (right._value, _dateformat);
+    Date left_date  (left._value,  _dateformat);
+    Date right_date (right._value, _dateformat);
 
     result._raw = result._value = (left_date < right_date)
                                 ? "true"
@@ -343,17 +334,8 @@ void E9::operator_lte (Term& result, Term& left, Term& right)
   else if (left._category  == "date" ||
            right._category == "date")
   {
-    Date left_date;
-    if (digitsOnly (left._value))
-      left_date = Date (left._value);
-    else
-      left_date = Date (left._value, _dateformat);
-
-    Date right_date;
-    if (digitsOnly (right._value))
-      right_date = Date (right._value);
-    else
-      right_date = Date (right._value, _dateformat);
+    Date left_date  (left._value,  _dateformat);
+    Date right_date (right._value, _dateformat);
 
     result._raw = result._value = (left_date <= right_date)
                                 ? "true"
@@ -385,17 +367,8 @@ void E9::operator_gte (Term& result, Term& left, Term& right)
   else if (left._category  == "date" ||
            right._category == "date")
   {
-    Date left_date;
-    if (digitsOnly (left._value))
-      left_date = Date (left._value);
-    else
-      left_date = Date (left._value, _dateformat);
-
-    Date right_date;
-    if (digitsOnly (right._value))
-      right_date = Date (right._value);
-    else
-      right_date = Date (right._value, _dateformat);
+    Date left_date  (left._value,  _dateformat);
+    Date right_date (right._value, _dateformat);
 
     result._raw = result._value = (left_date >= right_date)
                                 ? "true"
@@ -426,17 +399,8 @@ void E9::operator_gt (Term& result, Term& left, Term& right)
   else if (left._category  == "date" ||
            right._category == "date")
   {
-    Date left_date;
-    if (digitsOnly (left._value))
-      left_date = Date (left._value);
-    else
-      left_date = Date (left._value, _dateformat);
-
-    Date right_date;
-    if (digitsOnly (right._value))
-      right_date = Date (right._value);
-    else
-      right_date = Date (right._value, _dateformat);
+    Date left_date  (left._value,  _dateformat);
+    Date right_date (right._value, _dateformat);
 
     result._raw = result._value = (left_date > right_date)
                                 ? "true"
@@ -507,17 +471,8 @@ void E9::operator_equal (
   else if (left._category  == "date" ||
            right._category == "date")
   {
-    Date left_date;
-    if (digitsOnly (left._value))
-      left_date = Date (left._value);
-    else
-      left_date = Date (left._value, _dateformat);
-
-    Date right_date;
-    if (digitsOnly (right._value))
-      right_date = Date (right._value);
-    else
-      right_date = Date (right._value, _dateformat);
+    Date left_date  (left._value,  _dateformat);
+    Date right_date (right._value, _dateformat);
 
     result._raw = result._value = (left_date == right_date)
                                 ? "true"
