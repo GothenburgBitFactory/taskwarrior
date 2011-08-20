@@ -32,7 +32,8 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Arg::Arg ()
-: _raw ("")
+: _value ("")
+, _raw ("")
 , _type ("")
 , _category ("")
 {
@@ -40,7 +41,8 @@ Arg::Arg ()
 
 ////////////////////////////////////////////////////////////////////////////////
 Arg::Arg (const std::string& raw)
-: _raw (raw)
+: _value ("")
+, _raw (raw)
 , _type ("")
 , _category ("")
 {
@@ -50,7 +52,8 @@ Arg::Arg (const std::string& raw)
 Arg::Arg (
   const std::string& raw,
   const std::string& category)
-: _raw (raw)
+: _value ("")
+, _raw (raw)
 , _type ("")
 , _category (category)
 {
@@ -61,7 +64,8 @@ Arg::Arg (
   const std::string& raw,
   const std::string& type,
   const std::string& category)
-: _raw (raw)
+: _value ("")
+, _raw (raw)
 , _type (type)
 , _category (category)
 {
@@ -70,6 +74,7 @@ Arg::Arg (
 ////////////////////////////////////////////////////////////////////////////////
 Arg::Arg (const Arg& other)
 {
+  _value    = other._value;
   _raw      = other._raw;
   _type     = other._type;
   _category = other._category;
@@ -80,6 +85,7 @@ Arg& Arg::operator= (const Arg& other)
 {
   if (this != &other)
   {
+    _value    = other._value;
     _raw      = other._raw;
     _type     = other._type;
     _category = other._category;
@@ -91,7 +97,8 @@ Arg& Arg::operator= (const Arg& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Arg::operator== (const Arg& other) const
 {
-  return _raw      == other._raw      &&
+  return _value    == other._value    &&
+         _raw      == other._raw      &&
          _type     == other._type     &&
          _category == other._category;
 }

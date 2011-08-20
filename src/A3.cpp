@@ -1107,9 +1107,9 @@ const A3 A3::sequence (const A3& input) const
     if (i)
       sequenced.push_back (Arg ("or", "op"));
 
-    sequenced.push_back (Arg ("id",           "string", "dom"));
+    sequenced.push_back (Arg ("id",           "number", "dom"));
     sequenced.push_back (Arg ("=",                      "op"));
-    sequenced.push_back (Arg (format(ids[i]), "num"));
+    sequenced.push_back (Arg (format(ids[i]), "number", "literal"));
   }
 
   for (unsigned int i = 0; i < uuids.size (); ++i)
@@ -1119,7 +1119,7 @@ const A3 A3::sequence (const A3& input) const
 
     sequenced.push_back (Arg ("uuid",   "string", "dom"));
     sequenced.push_back (Arg ("=",                "op"));
-    sequenced.push_back (Arg (uuids[i], "num"));
+    sequenced.push_back (Arg (uuids[i], "string", "literal"));
   }
 
   sequenced.push_back (Arg (")", "op"));
@@ -2029,9 +2029,11 @@ void A3::dump (const std::string& label)
   view.addRow ();
   view.addRow ();
   view.addRow ();
+  view.addRow ();
 
   for (unsigned int i = 0; i < this->size (); ++i)
   {
+    std::string value    = (*this)[i]._value;
     std::string raw      = (*this)[i]._raw;
     std::string type     = (*this)[i]._type;
     std::string category = (*this)[i]._category;
@@ -2042,9 +2044,10 @@ void A3::dump (const std::string& label)
     else
       c = color_map["none"];
 
-    view.set (0, i, raw,      c);
-    view.set (1, i, type,     c);
-    view.set (2, i, category, c);
+    view.set (0, i, value,    c);
+    view.set (1, i, raw,      c);
+    view.set (2, i, type,     c);
+    view.set (3, i, category, c);
   }
 
   out << view.render ();

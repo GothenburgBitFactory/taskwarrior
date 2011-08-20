@@ -44,6 +44,7 @@ public:
   bool operator== (const Arg&) const;
 
 public:
+  std::string _value;    // Interpreted value
   std::string _raw;      // Raw input token, never modified
   std::string _type;     // Data type
   std::string _category; // Categorized argument
