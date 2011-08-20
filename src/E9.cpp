@@ -25,21 +25,19 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove.
+#include <iostream>
 #include <Context.h>
 #include <Date.h>
 #include <Duration.h>
 #include <text.h>
-#include <A3.h>
 #include <E9.h>
 
 extern Context context;
 
-std::ostream& operator<< (std::ostream& out, const Term& term)
+std::ostream& operator<< (std::ostream& out, const Arg& term)
 {
-  out << term._raw   << "/"
-      << term._value << "/"
-      << term._type  << "/"
+  out << term._raw   << "|"
+      << term._type  << "|"
       << term._category;
 
   return out;
@@ -51,7 +49,7 @@ E9::E9 (const A3& args)
 {
   std::vector <Arg>::const_iterator arg;
   for (arg = args.begin (); arg != args.end (); ++arg)
-    _terms.push_back (Term (*arg));
+    _terms.push_back (Arg (*arg));
 
   _dateformat = context.config.get ("dateformat");
 }
@@ -67,11 +65,11 @@ bool E9::evalFilter (const Task& task)
   if (_terms.size () == 0)
     return true;
 
-  std::vector <Term> value_stack;
+  std::vector <Arg> value_stack;
   eval (task, value_stack);
 
   // Coerce result to Boolean.
-  Term result = value_stack.back ();
+  Arg result = value_stack.back ();
   value_stack.pop_back ();
   return get_bool (coerce (result, "bool"));
 }
@@ -82,24 +80,24 @@ std::string E9::evalExpression (const Task& task)
   if (_terms.size () == 0)
     return "";
 
-  std::vector <Term> value_stack;
+  std::vector <Arg> value_stack;
   eval (task, value_stack);
 
-  return value_stack.back ()._value;
+  return value_stack.back ()._raw;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::eval (const Task& task, std::vector <Term>& value_stack)
+void E9::eval (const Task& task, std::vector <Arg>& value_stack)
 {
   // Case sensitivity is configurable.
   bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
 
-  std::vector <Term>::iterator arg;
+  std::vector <Arg>::iterator arg;
   for (arg = _terms.begin (); arg != _terms.end (); ++arg)
   {
     if (arg->_category == "op")
     {
-      Term result;
+      Arg result;
 
       // Unary operators.
       if (arg->_raw == "!")
@@ -107,15 +105,13 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
         if (value_stack.size () < 1)
           throw std::string ("There are no operands for the 'not' operator.");
 
-        Term right = value_stack.back ();
+        Arg right = value_stack.back ();
         value_stack.pop_back ();
 
         if (right._category == "dom")
         {
           if (context.config.getBoolean ("dom"))
-            right._value = context.dom.get (right._raw, task);
-          else
-            right._value = right._raw;
+            right._raw = context.dom.get (right._raw, task);
 
           right._category = "string";
         }
@@ -129,28 +125,24 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
         if (value_stack.size () < 2)
           throw std::string ("There are not enough operands for the '") + arg->_raw + "' operator.";
 
-        Term right = value_stack.back ();
+        Arg right = value_stack.back ();
         value_stack.pop_back ();
 
         if (right._category == "dom")
         {
           if (context.config.getBoolean ("dom"))
-            right._value = context.dom.get (right._raw, task);
-          else
-            right._value = right._raw;
+            right._raw = context.dom.get (right._raw, task);
 
           right._category = "string";
         }
 
-        Term left = value_stack.back ();
+        Arg left = value_stack.back ();
         value_stack.pop_back ();
 
         if (left._category == "dom")
         {
           if (context.config.getBoolean ("dom"))
-            left._value = context.dom.get (left._raw, task);
-          else
-            left._value = left._raw;
+            left._raw = context.dom.get (left._raw, task);
 
           left._category = "string";
         }
@@ -183,11 +175,11 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
     {
       // Expand the value if possible.
       if (arg->_category == "dom")
-        arg->_value = context.dom.get (arg->_raw, task);
+        arg->_raw = context.dom.get (arg->_raw, task);
       else if (arg->_category == "date")
-        arg->_value = Date (arg->_raw, _dateformat).toEpochString ();
+        arg->_raw = Date (arg->_raw, _dateformat).toEpochString ();
       else if (arg->_category == "duration")
-        arg->_value = (std::string)Duration (arg->_raw);
+        arg->_raw = (std::string)Duration (arg->_raw);
 
       //std::cout << "# E9::eval operand " << *arg << "\n";
       value_stack.push_back (*arg);
@@ -200,7 +192,7 @@ void E9::eval (const Task& task, std::vector <Term>& value_stack)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool E9::eval_match (Term& left, Term& right, bool case_sensitive)
+bool E9::eval_match (Arg& left, Arg& right, bool case_sensitive)
 {
   if (right._category == "rx")
   {
@@ -208,17 +200,17 @@ bool E9::eval_match (Term& left, Term& right, bool case_sensitive)
     right = coerce (right, "string");
 
     // Create a cached entry, if it does not already exist.
-    if (_regexes.find (right._value) == _regexes.end ())
-      _regexes[right._value] = RX (right._value, case_sensitive);
+    if (_regexes.find (right._raw) == _regexes.end ())
+      _regexes[right._raw] = RX (right._raw, case_sensitive);
 
-    if (_regexes[right._value].match (left._value))
+    if (_regexes[right._raw].match (left._raw))
       return true;
   }
   else
   {
     left  = coerce (left,  "string");
     right = coerce (right, "string");
-    if (find (left._value, right._value, (bool) case_sensitive) != std::string::npos)
+    if (find (left._raw, right._raw, (bool) case_sensitive) != std::string::npos)
       return true;
   }
 
@@ -226,25 +218,25 @@ bool E9::eval_match (Term& left, Term& right, bool case_sensitive)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_not (Term& result, Term& right)
+void E9::operator_not (Arg& result, Arg& right)
 {
   // TODO This is not right.
-  result = Term (right._raw, coerce (right, "bool")._value, "bool", right._category);
+  result = Arg (right._raw, "bool", right._category);
 
 //  std::cout << "# not " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_and (Term& result, Term& left, Term& right)
+void E9::operator_and (Arg& result, Arg& left, Arg& right)
 {
   // Assume failure.
-  result._raw = result._value = "false";
+  result._raw = "false";
   result._category = "bool";
 
-  if (coerce (left,  "bool")._value == "true" &&
-      coerce (right, "bool")._value == "true" )
+  if (coerce (left,  "bool")._raw == "true" &&
+      coerce (right, "bool")._raw == "true" )
   {
-    result._raw = result._value = "true";
+    result._raw = "true";
     result._category = "bool";
   }
 
@@ -252,16 +244,16 @@ void E9::operator_and (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_or (Term& result, Term& left, Term& right)
+void E9::operator_or (Arg& result, Arg& left, Arg& right)
 {
   // Assume failure.
-  result._raw = result._value = "false";
+  result._raw = "false";
   result._category = "bool";
 
-  if (coerce (left,  "bool")._value == "true" || 
-      coerce (right, "bool")._value == "true" )
+  if (coerce (left,  "bool")._raw == "true" || 
+      coerce (right, "bool")._raw == "true" )
   {
-    result._raw = result._value = "true";
+    result._raw = "true";
     result._category = "bool";
   }
 
@@ -269,19 +261,19 @@ void E9::operator_or (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_xor (Term& result, Term& left, Term& right)
+void E9::operator_xor (Arg& result, Arg& left, Arg& right)
 {
   // Assume failure.
-  result._raw = result._value = "false";
+  result._raw = "false";
   result._category = "bool";
 
-  bool bool_left  = coerce (left,  "bool")._value == "true";
-  bool bool_right = coerce (right, "bool")._value == "true";
+  bool bool_left  = coerce (left,  "bool")._raw == "true";
+  bool bool_right = coerce (right, "bool")._raw == "true";
 
   if ((bool_left && !bool_right) ||
       (!bool_left && bool_right))
   {
-    result._raw = result._value = "true";
+    result._raw = "true";
     result._category = "bool";
   }
 
@@ -289,30 +281,30 @@ void E9::operator_xor (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_lt (Term& result, Term& left, Term& right)
+void E9::operator_lt (Arg& result, Arg& left, Arg& right)
 {
   if (left._raw == "priority")
   {
-         if (left._value != "H" && right._value == "H") result._raw = result._value = "true";
-    else if (left._value == "L" && right._value == "M") result._raw = result._value = "true";
-    else if (left._value == ""  && right._value != "")  result._raw = result._value = "true";
-    else                                                result._raw = result._value = "false";
+         if (left._raw != "H" && right._raw == "H") result._raw = "true";
+    else if (left._raw == "L" && right._raw == "M") result._raw = "true";
+    else if (left._raw == ""  && right._raw != "")  result._raw = "true";
+    else                                            result._raw = "false";
   }
   else if (left._category  == "date" ||
            right._category == "date")
   {
-    Date left_date  (left._value,  _dateformat);
-    Date right_date (right._value, _dateformat);
+    Date left_date  (left._raw,  _dateformat);
+    Date right_date (right._raw, _dateformat);
 
-    result._raw = result._value = (left_date < right_date)
-                                ? "true"
-                                : "false";
+    result._raw = result._raw = (left_date < right_date)
+                              ? "true"
+                              : "false";
   }
   else
   {
-    result._raw = result._value = (left._value < right._value)
-                                ? "true"
-                                : "false";
+    result._raw = result._raw = (left._raw < right._raw)
+                              ? "true"
+                              : "false";
   }
 
   result._category = "bool";
@@ -321,31 +313,31 @@ void E9::operator_lt (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_lte (Term& result, Term& left, Term& right)
+void E9::operator_lte (Arg& result, Arg& left, Arg& right)
 {
   if (left._raw == "priority")
   {
-         if (left._value        == right._value       ) result._raw = result._value = "true";
-    else if (                      right._value == "H") result._raw = result._value = "true";
-    else if (left._value == "L" && right._value == "M") result._raw = result._value = "true";
-    else if (left._value == ""                        ) result._raw = result._value = "true";
-    else                                                result._raw = result._value = "false";
+         if (left._raw        == right._raw       ) result._raw = "true";
+    else if (                    right._raw == "H") result._raw = "true";
+    else if (left._raw == "L" && right._raw == "M") result._raw = "true";
+    else if (left._raw == ""                      ) result._raw = "true";
+    else                                            result._raw = "false";
   }
   else if (left._category  == "date" ||
            right._category == "date")
   {
-    Date left_date  (left._value,  _dateformat);
-    Date right_date (right._value, _dateformat);
+    Date left_date  (left._raw,  _dateformat);
+    Date right_date (right._raw, _dateformat);
 
-    result._raw = result._value = (left_date <= right_date)
-                                ? "true"
-                                : "false";
+    result._raw = result._raw = (left_date <= right_date)
+                              ? "true"
+                              : "false";
   }
   else
   {
-    result._raw = result._value = (left._value <= right._value)
-                                ? "true"
-                                : "false";
+    result._raw = result._raw = (left._raw <= right._raw)
+                              ? "true"
+                              : "false";
   }
 
   result._category = "bool";
@@ -354,31 +346,31 @@ void E9::operator_lte (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_gte (Term& result, Term& left, Term& right)
+void E9::operator_gte (Arg& result, Arg& left, Arg& right)
 {
   if (left._raw == "priority")
   {
-         if (left._value        == right._value       ) result._raw = result._value = "true";
-    else if (left._value == "H"                       ) result._raw = result._value = "true";
-    else if (left._value == "M" && right._value == "L") result._raw = result._value = "true";
-    else if (                      right._value == "" ) result._raw = result._value = "true";
-    else                                                result._raw = result._value = "false";
+         if (left._raw        == right._raw       ) result._raw = "true";
+    else if (left._raw == "H"                     ) result._raw = "true";
+    else if (left._raw == "M" && right._raw == "L") result._raw = "true";
+    else if (                    right._raw == "" ) result._raw = "true";
+    else                                            result._raw = "false";
   }
   else if (left._category  == "date" ||
            right._category == "date")
   {
-    Date left_date  (left._value,  _dateformat);
-    Date right_date (right._value, _dateformat);
+    Date left_date  (left._raw,  _dateformat);
+    Date right_date (right._raw, _dateformat);
 
-    result._raw = result._value = (left_date >= right_date)
-                                ? "true"
-                                : "false";
+    result._raw = result._raw = (left_date >= right_date)
+                              ? "true"
+                              : "false";
   }
   else
   {
-    result._raw = result._value = (left._value >= right._value)
-                                ? "true"
-                                : "false";
+    result._raw = result._raw = (left._raw >= right._raw)
+                              ? "true"
+                              : "false";
   }
 
   result._category = "bool";
@@ -387,30 +379,30 @@ void E9::operator_gte (Term& result, Term& left, Term& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_gt (Term& result, Term& left, Term& right)
+void E9::operator_gt (Arg& result, Arg& left, Arg& right)
 {
   if (left._raw == "priority")
   {
-         if (left._value == "H" && right._value != "H") result._raw = result._value = "true";
-    else if (left._value == "M" && right._value == "L") result._raw = result._value = "true";
-    else if (left._value != ""  && right._value == "")  result._raw = result._value = "true";
-    else                                                result._raw = result._value = "false";
+         if (left._raw == "H" && right._raw != "H") result._raw = "true";
+    else if (left._raw == "M" && right._raw == "L") result._raw = "true";
+    else if (left._raw != ""  && right._raw == "")  result._raw = "true";
+    else                                            result._raw = "false";
   }
   else if (left._category  == "date" ||
            right._category == "date")
   {
-    Date left_date  (left._value,  _dateformat);
-    Date right_date (right._value, _dateformat);
+    Date left_date  (left._raw,  _dateformat);
+    Date right_date (right._raw, _dateformat);
 
-    result._raw = result._value = (left_date > right_date)
-                                ? "true"
-                                : "false";
+    result._raw = result._raw = (left_date > right_date)
+                              ? "true"
+                              : "false";
   }
   else
   {
-    result._raw = result._value = (left._value > right._value)
-                                ? "true"
-                                : "false";
+    result._raw = result._raw = (left._raw > right._raw)
+                              ? "true"
+                              : "false";
   }
 
   result._category = "bool";
@@ -420,15 +412,15 @@ void E9::operator_gt (Term& result, Term& left, Term& right)
 
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_inequal (
-  Term& result,
-  Term& left,
-  Term& right,
+  Arg& result,
+  Arg& left,
+  Arg& right,
   bool case_sensitive)
 {
   operator_equal (result, left, right, case_sensitive);
-  result._raw = result._value = result._raw == "false"
-                              ? "true"
-                              : "false";
+  result._raw = result._raw == "false"
+                            ? "true"
+                            : "false";
 
 //  std::cout << "# " << left << " != " << right << " --> " << result << "\n";
 }
@@ -442,13 +434,13 @@ void E9::operator_inequal (
 //        else
 //          result = (left == right);
 void E9::operator_equal (
-  Term& result,
-  Term& left,
-  Term& right,
+  Arg& result,
+  Arg& left,
+  Arg& right,
   bool case_sensitive)
 {
   // Assume failure.
-  result._raw = result._value = "false";
+  result._raw = "false";
   result._category = "bool";
 
   // 'project' and 'recur' attributes are matched leftmost.
@@ -457,12 +449,12 @@ void E9::operator_equal (
     coerce (left, "string");
     coerce (right, "string");
 
-    if (right._value.length () <= left._value.length () &&
-        compare (right._value,
-                 left._value.substr (0, right._value.length ()),
+    if (right._raw.length () <= left._raw.length () &&
+        compare (right._raw,
+                 left._raw.substr (0, right._raw.length ()),
                  (bool) case_sensitive))
     {
-      result._raw = result._value = "true";
+      result._raw = "true";
       result._category = "bool";
     }
   }
@@ -471,23 +463,23 @@ void E9::operator_equal (
   else if (left._category  == "date" ||
            right._category == "date")
   {
-    Date left_date  (left._value,  _dateformat);
-    Date right_date (right._value, _dateformat);
+    Date left_date  (left._raw,  _dateformat);
+    Date right_date (right._raw, _dateformat);
 
-    result._raw = result._value = (left_date == right_date)
-                                ? "true"
-                                : "false";
+    result._raw = (left_date == right_date)
+                ? "true"
+                : "false";
   }
   // Regular equality matching.
   else
   {
-    result._raw = result._value = left._value == right._value
-                                ? "true"
-                                : "false";
+    result._raw = left._raw == right._raw
+                ? "true"
+                : "false";
 
-    if (left._value == right._value)
+    if (left._raw == right._raw)
     {
-      result._raw = result._value = "true";
+      result._raw = "true";
       result._category = "bool";
     }
   }
@@ -497,16 +489,16 @@ void E9::operator_equal (
 
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_match (
-  Term& result,
-  Term& left,
-  Term& right,
+  Arg& result,
+  Arg& left,
+  Arg& right,
   bool case_sensitive)
 {
   result._category = "bool";
 
-  result._raw = result._value = eval_match (left, right, case_sensitive)
-                              ? "true"
-                              : "false";
+  result._raw = eval_match (left, right, case_sensitive)
+              ? "true"
+              : "false";
 
 //  std::cout << "# " << left << " ~ " << right << " --> " << result << "\n";
 }
@@ -523,60 +515,59 @@ void E9::operator_match (
 //          // TODO check further.
 //        }
 void E9::operator_nomatch (
-  Term& result,
-  Term& left,
-  Term& right,
+  Arg& result,
+  Arg& left,
+  Arg& right,
   bool case_sensitive)
 {
   result._category = "bool";
 
-  result._raw = result._value = eval_match (left, right, case_sensitive)
-                              ? "false"
-                              : "true";
+  result._raw = eval_match (left, right, case_sensitive)
+              ? "false"
+              : "true";
 
 //  std::cout << "# " << left << " !~ " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_multiply (Term& result, Term& left, Term& right)
+void E9::operator_multiply (Arg& result, Arg& left, Arg& right)
 {
 //  std::cout << "# " << left << " * " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_divide (Term& result, Term& left, Term& right)
+void E9::operator_divide (Arg& result, Arg& left, Arg& right)
 {
 //  std::cout << "# " << left << " / " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_add (Term& result, Term& left, Term& right)
+void E9::operator_add (Arg& result, Arg& left, Arg& right)
 {
 //  std::cout << "# " << left << " + " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void E9::operator_subtract (Term& result, Term& left, Term& right)
+void E9::operator_subtract (Arg& result, Arg& left, Arg& right)
 {
 //  std::cout << "# " << left << " - " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const Term E9::coerce (const Term& input, const std::string& type)
+const Arg E9::coerce (const Arg& input, const std::string& type)
 {
-  Term result;
+  Arg result;
 
   if (type == "bool")
   {
     result._category = "bool";
-    result._value = get_bool (input) ? "true" : "false";
+    result._raw = get_bool (input) ? "true" : "false";
   }
 
   if (type == "string")
   {
     // TODO Convert date?
     result._raw      = input._raw;
-    result._value    = input._value;
     result._category = "string";
   }
 
@@ -587,9 +578,9 @@ const Term E9::coerce (const Term& input, const std::string& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool E9::get_bool (const Term& input)
+bool E9::get_bool (const Arg& input)
 {
-  std::string value = lowerCase (input._value);
+  std::string value = lowerCase (input._raw);
   if (value == "true"   ||
       value == "t"      ||
       value == "1"      ||

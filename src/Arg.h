@@ -43,7 +43,6 @@ public:
   Arg& operator= (const Arg&);
   bool operator== (const Arg&) const;
 
-  
 public:
   std::string _raw;      // Raw input token, never modified
   std::string _type;     // Data type

@@ -45,7 +45,6 @@ qx{../src/task rc:bug.rc add one +ordinary};
 qx{../src/task rc:bug.rc add two +\@strange};
 
 my $output = qx{../src/task rc:bug.rc long +ordinary};
-diag ($output);
 like ($output,   qr/one/, '+ordinary explicitly included'); # 2
 unlike ($output, qr/two/, '@strange implicitly excluded');
 
