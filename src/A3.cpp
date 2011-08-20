@@ -233,13 +233,11 @@ void A3::categorize ()
         arg->_category = "override";
 
       // If the type is not known, it is treated as a generic word.
-      else
-        arg->_category = "word";
     }
 
     // All post-termination arguments are simply words.
     else
-      arg->_category = "word";
+      arg->_category = "literal";
   }
 }
 
@@ -262,7 +260,7 @@ bool A3::is_command (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Add a pair for every word from std::cin, with a category of "".
+// Add an Arg for every word from std::cin.
 void A3::append_stdin ()
 {
   // Use 'select' to determine whether there is any std::cin content buffered
@@ -609,7 +607,8 @@ const A3 A3::extract_modifications () const
                arg->_category == "uuid")
       {
         Arg downgrade (*arg);
-        downgrade._category = "word";
+        downgrade._type     = "string";
+        downgrade._category = "literal";
         mods.push_back (downgrade);
       }
 
@@ -683,13 +682,15 @@ const A3 A3::tokenize (const A3& input) const
   {
     if (!terminated)
     {
+      Arg new_arg;
+
       if (n.getLiteral ("--"))
         terminated = true;
 
       else if (n.getQuoted ('"', s, true) ||
           n.getQuoted ('\'', s, true))
       {
-        output.push_back (Arg (s, "string"));
+        output.push_back (Arg (s, "string", "literal"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -703,14 +704,14 @@ const A3 A3::tokenize (const A3& input) const
 
       else if (is_pattern (n, s))
       {
-        output.push_back (Arg (s, "pattern"));
+        output.push_back (Arg (s, "", "pattern"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
 
       else if (is_tag (n, s))
       {
-        output.push_back (Arg (s, "tag"));
+        output.push_back (Arg (s, "", "tag"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -719,7 +720,7 @@ const A3 A3::tokenize (const A3& input) const
       // Must be higher than operator.
       else if (n.getDate (date_format, t))
       {
-        output.push_back (Arg (Date (t).toString (date_format), "date"));
+        output.push_back (Arg (Date (t).toString (date_format), "date", "literal"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -728,7 +729,7 @@ const A3 A3::tokenize (const A3& input) const
       // Must be higher than operator.
       else if (is_duration (n, s))
       {
-        output.push_back (Arg (s, "duration"));
+        output.push_back (Arg (s, "duration", "literal"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -740,39 +741,39 @@ const A3 A3::tokenize (const A3& input) const
           found_something_after_sequence = true;
       }
 
-      else if (is_attr (n, s))
+      else if (is_attr (n, new_arg))
       {
         // The "limit:xxx" attribute is not stored, but the value is retained.
-        if (s.length () > 6 &&
-            s.substr (0, 6) == "limit:")
+        if (new_arg._raw.length () > 6 &&
+            new_arg._raw.substr (0, 6) == "limit:")
         {
-          output._limit = s.substr (6);
+          output._limit = new_arg._raw.substr (6);
         }
         else
         {
-          output.push_back (Arg (s, "attr"));
+          output.push_back (new_arg);
           if (found_sequence)
             found_something_after_sequence = true;
         }
       }
 
-      else if (is_attmod (n, s))
+      else if (is_attmod (n, new_arg))
       {
-        output.push_back (Arg (s, "attmod"));
+        output.push_back (new_arg);
         if (found_sequence)
           found_something_after_sequence = true;
       }
 
-      else if (is_dom (n, s))
+      else if (is_dom (n, new_arg))
       {
-        output.push_back (Arg (s, "dom"));
+        output.push_back (new_arg);
         if (found_sequence)
           found_something_after_sequence = true;
       }
 
       else if (n.getDateISO (t))
       {
-        output.push_back (Arg (Date (t).toISO (), "date"));
+        output.push_back (Arg (Date (t).toISO (), "date", "literal"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -781,11 +782,11 @@ const A3 A3::tokenize (const A3& input) const
       {
         if (found_something_after_sequence)
         {
-          output.push_back (Arg (s, "num"));
+          output.push_back (Arg (s, "number", "literal"));
         }
         else
         {
-          output.push_back (Arg (s, "id"));
+          output.push_back (Arg (s, "number", "id"));
           found_sequence = true;
         }
       }
@@ -794,25 +795,25 @@ const A3 A3::tokenize (const A3& input) const
       {
         if (found_something_after_sequence)
         {
-          output.push_back (Arg (s, "num"));
+          output.push_back (Arg (s, "string", "literal"));
         }
         else
         {
-          output.push_back (Arg (s, "uuid"));
+          output.push_back (Arg (s, "string", "uuid"));
           found_sequence = true;
         }
       }
 
       else if (is_number (n, d))
       {
-        output.push_back (Arg (format (d), "num"));
+        output.push_back (Arg (format (d), "number", "literal"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
 
       else if (is_integer (n, i))
       {
-        output.push_back (Arg (format (i), "int"));
+        output.push_back (Arg (format (i), "number", "literal"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -821,9 +822,9 @@ const A3 A3::tokenize (const A3& input) const
                n.getWord (s))
       {
         if (Date::valid (s))
-          output.push_back (Arg (s, "date"));
+          output.push_back (Arg (s, "date", "literal"));
         else
-          output.push_back (Arg (s, "word"));
+          output.push_back (Arg (s, "string", "literal"));
 
         if (found_sequence)
           found_something_after_sequence = true;
@@ -834,7 +835,7 @@ const A3 A3::tokenize (const A3& input) const
         if (! n.getUntilWS (s))
           n.getUntilEOS (s);
 
-        output.push_back (Arg (s, "word"));
+        output.push_back (Arg (s, "string", "literal"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -843,7 +844,7 @@ const A3 A3::tokenize (const A3& input) const
     {
       if (n.getUntilEOS (s))
       {
-        output.push_back (Arg (s, "word"));
+        output.push_back (Arg (s, "string", "literal"));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -907,9 +908,9 @@ const A3 A3::expand (const A3& input) const
       std::string value;
       A3::extract_attr (arg->_raw, name, value);
 
-      expanded.push_back (Arg (name,  "dom"));
-      expanded.push_back (Arg ("=",   "op"));
-      expanded.push_back (Arg (value, "word"));
+      expanded.push_back (Arg (name,  "string", "dom"));
+      expanded.push_back (Arg ("=",             "op"));
+      expanded.push_back (Arg (value, "string", "literal"));
     }
 
     // name.mod:value  -->  name <op sub mod> value
@@ -924,97 +925,97 @@ const A3 A3::expand (const A3& input) const
       // name.before:value  -->  name < value
       if (mod == "before" || mod == "under" || mod == "below")
       {
-        expanded.push_back (Arg (name,  "dom"));
-        expanded.push_back (Arg ("<",   "op"));
-        expanded.push_back (Arg (value, "word"));
+        expanded.push_back (Arg (name,  "string", "dom"));
+        expanded.push_back (Arg ("<",             "op"));
+        expanded.push_back (Arg (value, "string", "literal"));
       }
 
       // name.after:value  -->  name > value
       else if (mod == "after" || mod == "over" || mod == "above")
       {
-        expanded.push_back (Arg (name,  "dom"));
-        expanded.push_back (Arg (">",   "op"));
-        expanded.push_back (Arg (value, "word"));
+        expanded.push_back (Arg (name,  "string", "dom"));
+        expanded.push_back (Arg (">",             "op"));
+        expanded.push_back (Arg (value, "string", "literal"));
       }
 
       // name.none:  -->  name == ""
       else if (mod == "none")
       {
-        expanded.push_back (Arg (name, "dom"));
-        expanded.push_back (Arg ("=",  "op"));
-        expanded.push_back (Arg ("",   "string"));
+        expanded.push_back (Arg (name, "string", "dom"));
+        expanded.push_back (Arg ("=",            "op"));
+        expanded.push_back (Arg ("",   "string", ""));
       }
 
       // name.any:  -->  name != ""
       else if (mod == "any")
       {
-        expanded.push_back (Arg (name, "dom"));
-        expanded.push_back (Arg ("!=", "op"));
-        expanded.push_back (Arg ("",   "string"));
+        expanded.push_back (Arg (name, "string", "dom"));
+        expanded.push_back (Arg ("!=",           "op"));
+        expanded.push_back (Arg ("",   "string", ""));
       }
 
       // name.is:value  -->  name = value
       else if (mod == "is" || mod == "equals")
       {
-        expanded.push_back (Arg (name,  "dom"));
-        expanded.push_back (Arg ("=",   "op"));
-        expanded.push_back (Arg (value, "word"));
+        expanded.push_back (Arg (name,  "string", "dom"));
+        expanded.push_back (Arg ("=",             "op"));
+        expanded.push_back (Arg (value, "string", ""));
       }
 
       // name.isnt:value  -->  name != value
       else if (mod == "isnt" || mod == "not")
       {
-        expanded.push_back (Arg (name,  "dom"));
-        expanded.push_back (Arg ("!=",  "op"));
-        expanded.push_back (Arg (value, "word"));
+        expanded.push_back (Arg (name,  "string", "dom"));
+        expanded.push_back (Arg ("!=",            "op"));
+        expanded.push_back (Arg (value, "string", ""));
       }
 
       // name.has:value  -->  name ~ value
       else if (mod == "has" || mod == "contains")
       {
-        expanded.push_back (Arg (name,  "dom"));
-        expanded.push_back (Arg ("~",   "op"));
-        expanded.push_back (Arg (value, "rx"));
+        expanded.push_back (Arg (name,  "string", "dom"));
+        expanded.push_back (Arg ("~",             "op"));
+        expanded.push_back (Arg (value, "string", "rx"));
       }
 
       // name.hasnt:value  -->  name !~ value
       else if (mod == "hasnt")
       {
-        expanded.push_back (Arg (name,  "dom"));
-        expanded.push_back (Arg ("!~",  "op"));
-        expanded.push_back (Arg (value, "rx"));
+        expanded.push_back (Arg (name,  "string", "dom"));
+        expanded.push_back (Arg ("!~",            "op"));
+        expanded.push_back (Arg (value, "string", "rx"));
       }
 
       // name.startswith:value  -->  name ~ ^value
       else if (mod == "startswith" || mod == "left")
       {
-        expanded.push_back (Arg (name,        "dom"));
-        expanded.push_back (Arg ("~",         "op"));
-        expanded.push_back (Arg ("^" + value, "rx"));
+        expanded.push_back (Arg (name,        "string", "dom"));
+        expanded.push_back (Arg ("~",                   "op"));
+        expanded.push_back (Arg ("^" + value, "string", "rx"));
       }
 
       // name.endswith:value  -->  name ~ value$
       else if (mod == "endswith" || mod == "right")
       {
-        expanded.push_back (Arg (name,        "dom"));
-        expanded.push_back (Arg ("~",         "op"));
-        expanded.push_back (Arg (value + "$", "rx"));
+        expanded.push_back (Arg (name,        "string", "dom"));
+        expanded.push_back (Arg ("~",                   "op"));
+        expanded.push_back (Arg (value + "$", "string", "rx"));
       }
 
       // name.word:value  -->  name ~ \bvalue\b
       else if (mod == "word")
       {
-        expanded.push_back (Arg (name,                  "dom"));
-        expanded.push_back (Arg ("~",                   "op"));
-        expanded.push_back (Arg ("\\b" + value + "\\b", "rx"));
+        expanded.push_back (Arg (name,                  "string", "dom"));
+        expanded.push_back (Arg ("~",                             "op"));
+        expanded.push_back (Arg ("\\b" + value + "\\b", "string", "rx"));
       }
 
       // name.noword:value  -->  name !~ \bvalue\n
       else if (mod == "noword")
       {
-        expanded.push_back (Arg (name,                  "dom"));
-        expanded.push_back (Arg ("!~",                  "op"));
-        expanded.push_back (Arg ("\\b" + value + "\\b", "rx"));
+        expanded.push_back (Arg (name,                  "string", "dom"));
+        expanded.push_back (Arg ("!~",                            "op"));
+        expanded.push_back (Arg ("\\b" + value + "\\b", "string", "rx"));
       }
       else
         throw std::string ("Error: unrecognized attribute modifier '") + mod + "'.";
@@ -1027,19 +1028,19 @@ const A3 A3::expand (const A3& input) const
       std::string value;
       extract_tag (arg->_raw, type, value);
 
-      expanded.push_back (Arg ("tags",                   "dom"));
-      expanded.push_back (Arg (type == '+' ? "~" : "!~", "op"));
-      expanded.push_back (Arg (value,                    "string"));
+      expanded.push_back (Arg ("tags",                   "string", "dom"));
+      expanded.push_back (Arg (type == '+' ? "~" : "!~",           "op"));
+      expanded.push_back (Arg (value,                    "string", "literal"));
     }
 
     // word  -->  description ~ word
     // Note: use of previous prevents desc~foo --> desc~desc~foo
-    else if (arg->_category == "word" &&
+    else if (arg->_category == "literal" &&
              previous->_category != "op")
     {
-      expanded.push_back (Arg ("description", "dom"));
-      expanded.push_back (Arg ("~",           "op"));
-      expanded.push_back (Arg (arg->_raw,     "string"));
+      expanded.push_back (Arg ("description", "string", "dom"));
+      expanded.push_back (Arg ("~",                     "op"));
+      expanded.push_back (Arg (arg->_raw,     "string", "literal"));
     }
 
     // /pattern/  -->  description ~ pattern
@@ -1048,9 +1049,9 @@ const A3 A3::expand (const A3& input) const
       std::string value;
       extract_pattern (arg->_raw, value);
 
-      expanded.push_back (Arg ("description", "dom"));
-      expanded.push_back (Arg ("~",           "op"));
-      expanded.push_back (Arg (value,         "rx"));
+      expanded.push_back (Arg ("description", "string", "dom"));
+      expanded.push_back (Arg ("~",                     "op"));
+      expanded.push_back (Arg (value,         "string", "rx"));
     }
 
     // Default  -->  preserve
@@ -1106,8 +1107,8 @@ const A3 A3::sequence (const A3& input) const
     if (i)
       sequenced.push_back (Arg ("or", "op"));
 
-    sequenced.push_back (Arg ("id",           "dom"));
-    sequenced.push_back (Arg ("=",            "op"));
+    sequenced.push_back (Arg ("id",           "string", "dom"));
+    sequenced.push_back (Arg ("=",                      "op"));
     sequenced.push_back (Arg (format(ids[i]), "num"));
   }
 
@@ -1116,8 +1117,8 @@ const A3 A3::sequence (const A3& input) const
     if (ids.size ())
       sequenced.push_back (Arg ("or", "op"));
 
-    sequenced.push_back (Arg ("uuid",   "dom"));
-    sequenced.push_back (Arg ("=",      "op"));
+    sequenced.push_back (Arg ("uuid",   "string", "dom"));
+    sequenced.push_back (Arg ("=",                "op"));
     sequenced.push_back (Arg (uuids[i], "num"));
   }
 
@@ -1239,7 +1240,7 @@ const A3 A3::postfix (const A3& input) const
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>:['"][<value>]['"]
-bool A3::is_attr (Nibbler& n, std::string& result)
+bool A3::is_attr (Nibbler& n, Arg& arg)
 {
   n.save ();
   std::string name;
@@ -1269,7 +1270,18 @@ bool A3::is_attr (Nibbler& n, std::string& result)
           return false;
 */
 
-        result = name + ':' + value;
+        arg._raw      = name + ':' + value;
+        arg._category = "attr";
+
+        // Most attributes are standard, some are pseudo-attributes, such as
+        // 'limit:page', which is not represented by a column object, and
+        // therefore not stored.
+        Column* col = context.columns[name];
+        if (col)
+          arg._type = col->type ();
+        else
+          arg._type = "pseudo";
+
         return true;
       }
     }
@@ -1281,7 +1293,7 @@ bool A3::is_attr (Nibbler& n, std::string& result)
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>.<mod>[:=]['"]<value>['"]
-bool A3::is_attmod (Nibbler& n, std::string& result)
+bool A3::is_attmod (Nibbler& n, Arg& arg)
 {
   n.save ();
   std::string name;
@@ -1327,7 +1339,9 @@ bool A3::is_attmod (Nibbler& n, std::string& result)
               return false;
 */
 
-            result = name + '.' + modifier + ':' + value;
+            arg._raw      = name + '.' + modifier + ':' + value;
+            arg._type     = context.columns[name]->type ();
+            arg._category = "attmod";
             return true;
           }
         }
@@ -1397,7 +1411,7 @@ bool A3::is_modifier (const std::string& input, std::string& canonical)
 // 4. Configuration value
 //    rc.<name>
 //
-bool A3::is_dom (Nibbler& n, std::string& result)
+bool A3::is_dom (Nibbler& n, Arg& arg)
 {
   n.save ();
   std::string name;
@@ -1406,6 +1420,7 @@ bool A3::is_dom (Nibbler& n, std::string& result)
 
   // Fixed string reference.
   std::vector <std::string> refs = context.dom.get_references ();
+  std::string result;
   if (n.getOneOf (refs, result))
     return true;
 
@@ -1421,6 +1436,8 @@ bool A3::is_dom (Nibbler& n, std::string& result)
         result += '.';
     }
 
+    arg._raw      = result;
+    arg._category = "dom";
     return true;
   }
 
@@ -1434,6 +1451,9 @@ bool A3::is_dom (Nibbler& n, std::string& result)
       is_attribute (name, name))
   {
     result = format (id) + '.' + name;
+    arg._raw      = result;
+    arg._type     = context.columns[name]->type ();
+    arg._category = "dom";
     return true;
   }
 
@@ -1446,7 +1466,9 @@ bool A3::is_dom (Nibbler& n, std::string& result)
       name.length ()   &&
       is_attribute (name, name))
   {
-    result = uuid + '.' + name;
+    arg._raw      = uuid + '.' + name;
+    arg._type     = context.columns[name]->type ();
+    arg._category = "dom";
     return true;
   }
 
@@ -1457,7 +1479,9 @@ bool A3::is_dom (Nibbler& n, std::string& result)
       name.length ()   &&
       is_attribute (name, name))
   {
-    result = name;
+    arg._raw      = name;
+    arg._type     = context.columns[name]->type ();
+    arg._category = "dom";
     return true;
   }
 
@@ -1972,7 +1996,7 @@ void A3::dump (const std::string& label)
   color_map["rc"]         = Color ("bold red on red");
   color_map["override"]   = Color ("bold red on red");
   color_map["terminator"] = Color ("bold yellow on yellow");
-  color_map["word"]       = Color ("white on gray4");
+  color_map["literal"]       = Color ("white on gray4");
 
   // Filter colors.
   color_map["attr"]     = Color ("bold red on gray4");

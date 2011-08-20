@@ -75,11 +75,11 @@ public:
   const A3 sequence (const A3&) const;
   const A3 postfix (const A3&) const;
 
-  static bool is_attr (Nibbler&, std::string&);
-  static bool is_attmod (Nibbler&, std::string&);
+  static bool is_attr (Nibbler&, Arg&);
+  static bool is_attmod (Nibbler&, Arg&);
   static bool is_attribute (const std::string&, std::string&);
   static bool is_modifier (const std::string&, std::string&);
-  static bool is_dom (Nibbler&, std::string&);
+  static bool is_dom (Nibbler&, Arg&);
   static bool is_duration (Nibbler&, std::string&);
   static bool is_pattern (Nibbler&, std::string&);
   static bool is_subst (Nibbler&, std::string&);
