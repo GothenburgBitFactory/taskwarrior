@@ -31,8 +31,12 @@ New Code Needs
   - Take all the Config::checkXXX methods and create a new legacy.cpp file
     that handles dealing with all legacy checks.  To be called from
     src/commands/CmdShow.cpp.
-  - Need export_sql.yy script.  Any language.
-  - Need export_viz.yy script.  Any language.
+  - Need export_sql.yy script.  Any language.  This would have value as an
+    example, or template script serving as a starting-point for anyone who
+    needed this format.
+  - Need export_viz.yy script.  Any language.  This would have value as an
+    example, or template script serving as a starting-point for anyone who
+    needed this format.
   - Need new export_xxx.yy scripts - the more the better.  Any language.
   - The JSON.{h,cpp} code is fast and efficient up to a point, but has a non-
     linear performance curve, implying a slowdown due to fragmentation.  Fix it.
@@ -45,6 +49,7 @@ New Code Needs
       <red>one two three four</red>
     This is only possible if there is nothing between </red> and <red> and the
     colors match.
+  - Make sure the update-holidays.pl script is doing the right thing.
 
 Documentation Needed
   Various forms of documentation that are needed, or are in need of review or
@@ -100,16 +105,17 @@ Current Codebase Condition
     - 1.9.4 release, current, locked.
 
   '2.0.0' branch:
-    - Unit tests passing ~90%.
-    - Basic commands working (add, list, done), otherwise generally broken.
-    - Expressions E9.{h,cpp} not working well.
+    - Unit tests passing ~94%.
+    - Basic commands working (add, list, done).
+    - Expressions E9.{h,cpp} working.
     - DOM access DOM.{h,cpp} not working well.
-    - Aiming for an early August beta1.
-    - Aiming for a late August beta2.
-    - Aiming for a release in 2011, probably September, but when it is ready.
+    - Aiming for an August beta1.
+    - Aiming for an early September beta2.
+    - Aiming for a release in 2011, probably October, but when it is ready.
 
 ---
 
+2011-08-21 Small changes, new work listed.
 2011-08-01 Removed code already obsoleted or completed.
 2011-07-29 Added more needed code descriptions.
 2011-07-27 Updated with holiday data info.
