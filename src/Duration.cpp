@@ -134,7 +134,13 @@ Duration::Duration (const std::string& input)
 : mSecs (0)
 , mNegative (false)
 {
-  parse (input);
+  if (digitsOnly (input))
+  {
+    mSecs = (time_t) strtol (input.c_str (), NULL, 10);
+    mNegative = false;
+  }
+  else
+    parse (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -341,6 +347,12 @@ bool Duration::valid (const std::string& input)
 
   std::string units;
   n.getUntilEOS (units);
+
+  // Non-trivial value with no units means the duration is specified in
+  // seconds, and therefore a time_t.  Consider it valid.
+  if (value != 0.0 &&
+      units == "")
+    return true;
 
   // Auto complete against all supported durations.
   std::vector <std::string> supported;

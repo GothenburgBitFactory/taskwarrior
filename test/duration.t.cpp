@@ -48,7 +48,7 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (629);
+  UnitTest t (631);
 
   Duration d;
 
@@ -506,6 +506,8 @@ int main (int argc, char** argv)
   d = Duration (364*86400), t.is (d.formatCompact (), "11mo", "364*86400 -> 11mo");
   d = Duration (365*86400), t.is (d.formatCompact (), "1.0y", "365*86400 -> 1.0y");
 
+  d = Duration ("86400"),   t.is (d.formatCompact (), "1d",   "string '86400' -> 1d");
+
 	t.ok (d.valid ("daily"),      "valid duration daily");
   t.ok (d.valid ("day"),        "valid duration day");
   t.ok (d.valid ("weekly"),     "valid duration weekly");
@@ -629,6 +631,8 @@ int main (int argc, char** argv)
   t.ok (d.valid ("-1s"),        "valid duration -1s");
 
   t.ok (d.valid ("-"),          "valid duration -");
+
+  t.ok (d.valid ("86400"),      "valid duration '86400'");
 
   t.notok (d.valid ("woof"),    "valid duration woof = fail");
 
