@@ -901,6 +901,9 @@ const A3 A3::expand (const A3& input) const
   std::vector <Arg>::const_iterator previous = input.begin ();
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
+    // When expanded, the value retains the original type.
+    Arg::type implied = arg->_type;
+
     // name:value  -->  name = value
     if (arg->_category == Arg::cat_attr)
     {
@@ -910,7 +913,7 @@ const A3 A3::expand (const A3& input) const
 
       expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
       expanded.push_back (Arg ("=",                     Arg::cat_op));
-      expanded.push_back (Arg (value, Arg::type_string, Arg::cat_literal));
+      expanded.push_back (Arg (value, implied,          Arg::cat_literal));
     }
 
     // name.mod:value  -->  name <op sub mod> value
@@ -927,7 +930,7 @@ const A3 A3::expand (const A3& input) const
       {
         expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
         expanded.push_back (Arg ("<",                     Arg::cat_op));
-        expanded.push_back (Arg (value, Arg::type_string, Arg::cat_literal));
+        expanded.push_back (Arg (value, implied,          Arg::cat_literal));
       }
 
       // name.after:value  -->  name > value
@@ -935,7 +938,7 @@ const A3 A3::expand (const A3& input) const
       {
         expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
         expanded.push_back (Arg (">",                     Arg::cat_op));
-        expanded.push_back (Arg (value, Arg::type_string, Arg::cat_literal));
+        expanded.push_back (Arg (value, implied,          Arg::cat_literal));
       }
 
       // name.none:  -->  name == ""
@@ -943,7 +946,7 @@ const A3 A3::expand (const A3& input) const
       {
         expanded.push_back (Arg (name, Arg::type_string, Arg::cat_dom));
         expanded.push_back (Arg ("=",                    Arg::cat_op));
-        expanded.push_back (Arg ("",   Arg::type_string, Arg::cat_none));
+        expanded.push_back (Arg ("",   implied,          Arg::cat_none));
       }
 
       // name.any:  -->  name != ""
@@ -951,7 +954,7 @@ const A3 A3::expand (const A3& input) const
       {
         expanded.push_back (Arg (name, Arg::type_string, Arg::cat_dom));
         expanded.push_back (Arg ("!=",                   Arg::cat_op));
-        expanded.push_back (Arg ("",   Arg::type_string, Arg::cat_none));
+        expanded.push_back (Arg ("",   implied,          Arg::cat_none));
       }
 
       // name.is:value  -->  name = value
@@ -959,7 +962,7 @@ const A3 A3::expand (const A3& input) const
       {
         expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
         expanded.push_back (Arg ("=",                     Arg::cat_op));
-        expanded.push_back (Arg (value, Arg::type_string, Arg::cat_none));
+        expanded.push_back (Arg (value, implied,          Arg::cat_none));
       }
 
       // name.isnt:value  -->  name != value
@@ -967,7 +970,7 @@ const A3 A3::expand (const A3& input) const
       {
         expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
         expanded.push_back (Arg ("!=",                    Arg::cat_op));
-        expanded.push_back (Arg (value, Arg::type_string, Arg::cat_none));
+        expanded.push_back (Arg (value, implied,          Arg::cat_none));
       }
 
       // name.has:value  -->  name ~ value

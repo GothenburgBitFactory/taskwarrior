@@ -121,7 +121,7 @@ const std::string Arg::type_name (Arg::type t)
 {
   switch (t)
   {
-  case Arg::type_none:     return "none";
+  case Arg::type_none:     return "";
   case Arg::type_pseudo:   return "pseudo";
   case Arg::type_bool:     return "bool";
   case Arg::type_string:   return "string";
@@ -130,7 +130,7 @@ const std::string Arg::type_name (Arg::type t)
   case Arg::type_number:   return "number";
   }
 
-  return "none";
+  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -161,7 +161,7 @@ const std::string Arg::category_name (Arg::category c)
 {
   switch (c)
   {
-  case Arg::cat_none:       return "none";
+  case Arg::cat_none:       return "";
   case Arg::cat_terminator: return "terminator";
   case Arg::cat_program:    return "program";
   case Arg::cat_command:    return "command";
@@ -180,7 +180,7 @@ const std::string Arg::category_name (Arg::category c)
   case Arg::cat_literal:    return "literal";
   }
 
-  return "none";
+  return "";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
