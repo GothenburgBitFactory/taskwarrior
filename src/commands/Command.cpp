@@ -411,7 +411,7 @@ void Command::modify_task (
   {
     // Attributes are essentially name:value pairs, and correspond directly
     // to stored attributes.
-    if (arg->_category == "attr")
+    if (arg->_category == Arg::cat_attr)
     {
       std::string name;
       std::string value;
@@ -477,7 +477,7 @@ void Command::modify_task (
     // Tags need special handling because they are essentially a vector stored
     // in a single string, therefore Task::{add,remove}Tag must be called as
     // appropriate.
-    else if (arg->_category == "tag")
+    else if (arg->_category == Arg::cat_tag)
     {
       char type;
       std::string value;
@@ -490,7 +490,7 @@ void Command::modify_task (
     }
 
     // Substitutions.
-    else if (arg->_category == "subst")
+    else if (arg->_category == Arg::cat_subst)
     {
       std::string from;
       std::string to;

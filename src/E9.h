@@ -66,7 +66,7 @@ private:
   void operator_add      (Arg&, Arg&, Arg&);
   void operator_subtract (Arg&, Arg&, Arg&);
 
-  const Arg coerce (const Arg&, const std::string&);
+  const Arg coerce (const Arg&, const Arg::type);
   bool get_bool (const Arg&);
 
 private:

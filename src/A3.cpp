@@ -160,8 +160,8 @@ void A3::capture_first (const std::string& arg)
   // immediately after the program and command arguments.
   std::vector <Arg>::iterator position;
   for (position = this->begin (); position != this->end (); ++position)
-    if (position->_category != "program" &&
-        position->_category != "command")
+    if (position->_category != Arg::cat_program &&
+        position->_category != Arg::cat_command)
       break;
 
   this->insert (position, series.begin (), series.end ());
@@ -194,13 +194,13 @@ void A3::categorize ()
       if (arg->_raw == "--")
       {
         terminated = true;
-        arg->_category = "terminator";
+        arg->_category = Arg::cat_terminator;
       }
 
       // program
       else if (arg == this->begin ())
       {
-        arg->_category = "program";
+        arg->_category = Arg::cat_program;
 
         if ((arg->_raw.length () >= 3 &&
              arg->_raw.substr (arg->_raw.length () - 3) == "cal") ||
@@ -208,7 +208,7 @@ void A3::categorize ()
              arg->_raw.substr (arg->_raw.length () - 8) == "calendar"))
         {
           arg->_raw = "calendar";
-          arg->_category = "command";
+          arg->_category = Arg::cat_command;
           found_command = true;
         }
       }
@@ -218,26 +218,26 @@ void A3::categorize ()
                is_command (keywords, arg->_raw))
       {
         found_command = true;
-        arg->_category = "command";
+        arg->_category = Arg::cat_command;
         _read_only_command = context.commands[arg->_raw]->read_only ();
       }
 
       // rc:<file>
       // Note: This doesn't break a sequence chain.
       else if (arg->_raw.substr (0, 3) == "rc:")
-        arg->_category = "rc";
+        arg->_category = Arg::cat_rc;
 
       // rc.<name>:<value>
       // Note: This doesn't break a sequence chain.
       else if (arg->_raw.substr (0, 3) == "rc.")
-        arg->_category = "override";
+        arg->_category = Arg::cat_override;
 
       // If the type is not known, it is treated as a generic word.
     }
 
     // All post-termination arguments are simply words.
     else
-      arg->_category = "literal";
+      arg->_category = Arg::cat_literal;
   }
 }
 
@@ -295,7 +295,7 @@ void A3::rc_override (
   std::vector <Arg>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_category == "rc")
+    if (arg->_category == Arg::cat_rc)
     {
       rc = File (arg->_raw.substr (3));
       home = rc;
@@ -325,7 +325,7 @@ void A3::get_data_location (std::string& data)
   std::vector <Arg>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_category == "override")
+    if (arg->_category == Arg::cat_override)
     {
       if (arg->_raw.substr (0, 16) == "rc.data.location" &&
           (arg->_raw[16] == ':' || arg->_raw[16] == '='))
@@ -404,7 +404,7 @@ void A3::apply_overrides ()
   std::vector <Arg>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_category == "override")
+    if (arg->_category == Arg::cat_override)
     {
       std::string name;
       std::string value;
@@ -436,18 +436,18 @@ void A3::inject_defaults ()
   std::vector <Arg>::iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_category == "command")
+    if (arg->_category == Arg::cat_command)
       found_command = true;
 
 /* TODO no "id" or "uuid" categories exist at this time.  Hmm.
-    else if (arg->_category == "id" ||
-             arg->_category == "uuid")
+    else if (arg->_category == Arg::cat_id ||
+             arg->_category == Arg::cat_uuid)
       found_sequence = true;
 */
 
-    else if (arg->_category != "program"  &&
-             arg->_category != "override" &&
-             arg->_category != "rc")
+    else if (arg->_category != Arg::cat_program  &&
+             arg->_category != Arg::cat_override &&
+             arg->_category != Arg::cat_rc)
       found_other = true;
   }
 
@@ -522,7 +522,7 @@ bool A3::find_command (std::string& command) const
   std::vector <Arg>::const_iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_category == "command")
+    if (arg->_category == Arg::cat_command)
     {
       command = arg->_raw;
       return true;
@@ -556,14 +556,14 @@ const A3 A3::extract_filter () const
   std::vector <Arg>::const_iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_category == "command")
+    if (arg->_category == Arg::cat_command)
       before_command = false;
 
-    if (arg->_category == "program"  ||
-        arg->_category == "rc"       ||
-        arg->_category == "override" ||
-        arg->_category == "command"  ||
-        arg->_category == "terminator")
+    if (arg->_category == Arg::cat_program  ||
+        arg->_category == Arg::cat_rc       ||
+        arg->_category == Arg::cat_override ||
+        arg->_category == Arg::cat_command  ||
+        arg->_category == Arg::cat_terminator)
       ;
 
     else if (before_command || _read_only_command)
@@ -585,14 +585,14 @@ const A3 A3::extract_modifications () const
   std::vector <Arg>::const_iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_category == "command")
+    if (arg->_category == Arg::cat_command)
       before_command = false;
 
     else if (! before_command)
     {
-      // "rc" and "override" categories are not included.
-      if (arg->_category == "rc" ||
-          arg->_category == "override")
+      // rc and override categories are not included.
+      if (arg->_category == Arg::cat_rc ||
+          arg->_category == Arg::cat_override)
       {
         ;
       }
@@ -603,12 +603,12 @@ const A3 A3::extract_modifications () const
       // lines that do not otherwise include an id, such as:
       //
       //     task add Read the article on page 2
-      else if (arg->_category == "id"   ||
-               arg->_category == "uuid")
+      else if (arg->_category == Arg::cat_id   ||
+               arg->_category == Arg::cat_uuid)
       {
         Arg downgrade (*arg);
-        downgrade._type     = "string";
-        downgrade._category = "literal";
+        downgrade._type     = Arg::type_string;
+        downgrade._category = Arg::cat_literal;
         mods.push_back (downgrade);
       }
 
@@ -630,11 +630,11 @@ const std::vector <std::string> A3::extract_words () const
   std::vector <Arg>::const_iterator arg;
   for (arg = this->begin (); arg != this->end (); ++arg)
   {
-    if (arg->_category == "program"  ||
-        arg->_category == "rc"       ||
-        arg->_category == "override" ||
-        arg->_category == "command"  ||
-        arg->_category == "terminator")
+    if (arg->_category == Arg::cat_program  ||
+        arg->_category == Arg::cat_rc       ||
+        arg->_category == Arg::cat_override ||
+        arg->_category == Arg::cat_command  ||
+        arg->_category == Arg::cat_terminator)
       ;
 
     else
@@ -690,28 +690,28 @@ const A3 A3::tokenize (const A3& input) const
       else if (n.getQuoted ('"', s, true) ||
           n.getQuoted ('\'', s, true))
       {
-        output.push_back (Arg (s, "string", "literal"));
+        output.push_back (Arg (s, Arg::type_string, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
       }
 
       else if (is_subst (n, s))
       {
-        output.push_back (Arg (s, "subst"));
+        output.push_back (Arg (s, Arg::cat_subst));
         if (found_sequence)
           found_something_after_sequence = true;
       }
 
       else if (is_pattern (n, s))
       {
-        output.push_back (Arg (s, "", "pattern"));
+        output.push_back (Arg (s, Arg::cat_pattern));
         if (found_sequence)
           found_something_after_sequence = true;
       }
 
       else if (is_tag (n, s))
       {
-        output.push_back (Arg (s, "", "tag"));
+        output.push_back (Arg (s, Arg::cat_tag));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -720,7 +720,7 @@ const A3 A3::tokenize (const A3& input) const
       // Must be higher than operator.
       else if (n.getDate (date_format, t))
       {
-        output.push_back (Arg (Date (t).toString (date_format), "date", "literal"));
+        output.push_back (Arg (Date (t).toString (date_format), Arg::type_date, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -729,14 +729,14 @@ const A3 A3::tokenize (const A3& input) const
       // Must be higher than operator.
       else if (is_duration (n, s))
       {
-        output.push_back (Arg (s, "duration", "literal"));
+        output.push_back (Arg (s, Arg::type_duration, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
       }
 
       else if (n.getOneOf (operators, s))
       {
-        output.push_back (Arg (s, "op"));
+        output.push_back (Arg (s, Arg::cat_op));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -773,7 +773,7 @@ const A3 A3::tokenize (const A3& input) const
 
       else if (n.getDateISO (t))
       {
-        output.push_back (Arg (Date (t).toISO (), "date", "literal"));
+        output.push_back (Arg (Date (t).toISO (), Arg::type_date, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -782,11 +782,11 @@ const A3 A3::tokenize (const A3& input) const
       {
         if (found_something_after_sequence)
         {
-          output.push_back (Arg (s, "number", "literal"));
+          output.push_back (Arg (s, Arg::type_number, Arg::cat_literal));
         }
         else
         {
-          output.push_back (Arg (s, "number", "id"));
+          output.push_back (Arg (s, Arg::type_number, Arg::cat_id));
           found_sequence = true;
         }
       }
@@ -795,25 +795,25 @@ const A3 A3::tokenize (const A3& input) const
       {
         if (found_something_after_sequence)
         {
-          output.push_back (Arg (s, "string", "literal"));
+          output.push_back (Arg (s, Arg::type_string, Arg::cat_literal));
         }
         else
         {
-          output.push_back (Arg (s, "string", "uuid"));
+          output.push_back (Arg (s, Arg::type_string, Arg::cat_uuid));
           found_sequence = true;
         }
       }
 
       else if (is_number (n, d))
       {
-        output.push_back (Arg (format (d), "number", "literal"));
+        output.push_back (Arg (format (d), Arg::type_number, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
       }
 
       else if (is_integer (n, i))
       {
-        output.push_back (Arg (format (i), "number", "literal"));
+        output.push_back (Arg (format (i), Arg::type_number, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -822,9 +822,9 @@ const A3 A3::tokenize (const A3& input) const
                n.getWord (s))
       {
         if (Date::valid (s))
-          output.push_back (Arg (s, "date", "literal"));
+          output.push_back (Arg (s, Arg::type_date, Arg::cat_literal));
         else
-          output.push_back (Arg (s, "string", "literal"));
+          output.push_back (Arg (s, Arg::type_string, Arg::cat_literal));
 
         if (found_sequence)
           found_something_after_sequence = true;
@@ -835,7 +835,7 @@ const A3 A3::tokenize (const A3& input) const
         if (! n.getUntilWS (s))
           n.getUntilEOS (s);
 
-        output.push_back (Arg (s, "string", "literal"));
+        output.push_back (Arg (s, Arg::type_string, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -844,7 +844,7 @@ const A3 A3::tokenize (const A3& input) const
     {
       if (n.getUntilEOS (s))
       {
-        output.push_back (Arg (s, "string", "literal"));
+        output.push_back (Arg (s, Arg::type_string, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -867,7 +867,7 @@ const A3 A3::tokenize (const A3& input) const
 //
 const A3 A3::infix (const A3& input) const
 {
-  Arg previous ("?", "op");
+  Arg previous ("?", Arg::cat_op);
 
   A3 modified;
   modified._limit = input._limit;
@@ -876,10 +876,10 @@ const A3 A3::infix (const A3& input) const
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
     // Old-style filters need 'and' conjunctions.
-    if ((previous._category != "op" || previous._raw == ")") &&
-        (arg->_category     != "op" || arg->_raw     == "("))
+    if ((previous._category != Arg::cat_op || previous._raw == ")") &&
+        (arg->_category     != Arg::cat_op || arg->_raw     == "("))
     {
-      modified.push_back (Arg ("and", "op"));
+      modified.push_back (Arg ("and", Arg::cat_op));
     }
 
     // Now insert the adjacent non-operator.
@@ -902,19 +902,19 @@ const A3 A3::expand (const A3& input) const
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
     // name:value  -->  name = value
-    if (arg->_category == "attr")
+    if (arg->_category == Arg::cat_attr)
     {
       std::string name;
       std::string value;
       A3::extract_attr (arg->_raw, name, value);
 
-      expanded.push_back (Arg (name,  "string", "dom"));
-      expanded.push_back (Arg ("=",             "op"));
-      expanded.push_back (Arg (value, "string", "literal"));
+      expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+      expanded.push_back (Arg ("=",                     Arg::cat_op));
+      expanded.push_back (Arg (value, Arg::type_string, Arg::cat_literal));
     }
 
     // name.mod:value  -->  name <op sub mod> value
-    else if (arg->_category == "attmod")
+    else if (arg->_category == Arg::cat_attmod)
     {
       std::string name;
       std::string mod;
@@ -925,133 +925,133 @@ const A3 A3::expand (const A3& input) const
       // name.before:value  -->  name < value
       if (mod == "before" || mod == "under" || mod == "below")
       {
-        expanded.push_back (Arg (name,  "string", "dom"));
-        expanded.push_back (Arg ("<",             "op"));
-        expanded.push_back (Arg (value, "string", "literal"));
+        expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("<",                     Arg::cat_op));
+        expanded.push_back (Arg (value, Arg::type_string, Arg::cat_literal));
       }
 
       // name.after:value  -->  name > value
       else if (mod == "after" || mod == "over" || mod == "above")
       {
-        expanded.push_back (Arg (name,  "string", "dom"));
-        expanded.push_back (Arg (">",             "op"));
-        expanded.push_back (Arg (value, "string", "literal"));
+        expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg (">",                     Arg::cat_op));
+        expanded.push_back (Arg (value, Arg::type_string, Arg::cat_literal));
       }
 
       // name.none:  -->  name == ""
       else if (mod == "none")
       {
-        expanded.push_back (Arg (name, "string", "dom"));
-        expanded.push_back (Arg ("=",            "op"));
-        expanded.push_back (Arg ("",   "string", ""));
+        expanded.push_back (Arg (name, Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("=",                    Arg::cat_op));
+        expanded.push_back (Arg ("",   Arg::type_string, Arg::cat_none));
       }
 
       // name.any:  -->  name != ""
       else if (mod == "any")
       {
-        expanded.push_back (Arg (name, "string", "dom"));
-        expanded.push_back (Arg ("!=",           "op"));
-        expanded.push_back (Arg ("",   "string", ""));
+        expanded.push_back (Arg (name, Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("!=",                   Arg::cat_op));
+        expanded.push_back (Arg ("",   Arg::type_string, Arg::cat_none));
       }
 
       // name.is:value  -->  name = value
       else if (mod == "is" || mod == "equals")
       {
-        expanded.push_back (Arg (name,  "string", "dom"));
-        expanded.push_back (Arg ("=",             "op"));
-        expanded.push_back (Arg (value, "string", ""));
+        expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("=",                     Arg::cat_op));
+        expanded.push_back (Arg (value, Arg::type_string, Arg::cat_none));
       }
 
       // name.isnt:value  -->  name != value
       else if (mod == "isnt" || mod == "not")
       {
-        expanded.push_back (Arg (name,  "string", "dom"));
-        expanded.push_back (Arg ("!=",            "op"));
-        expanded.push_back (Arg (value, "string", ""));
+        expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("!=",                    Arg::cat_op));
+        expanded.push_back (Arg (value, Arg::type_string, Arg::cat_none));
       }
 
       // name.has:value  -->  name ~ value
       else if (mod == "has" || mod == "contains")
       {
-        expanded.push_back (Arg (name,  "string", "dom"));
-        expanded.push_back (Arg ("~",             "op"));
-        expanded.push_back (Arg (value, "string", "rx"));
+        expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("~",                     Arg::cat_op));
+        expanded.push_back (Arg (value, Arg::type_string, Arg::cat_rx));
       }
 
       // name.hasnt:value  -->  name !~ value
       else if (mod == "hasnt")
       {
-        expanded.push_back (Arg (name,  "string", "dom"));
-        expanded.push_back (Arg ("!~",            "op"));
-        expanded.push_back (Arg (value, "string", "rx"));
+        expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("!~",                    Arg::cat_op));
+        expanded.push_back (Arg (value, Arg::type_string, Arg::cat_rx));
       }
 
       // name.startswith:value  -->  name ~ ^value
       else if (mod == "startswith" || mod == "left")
       {
-        expanded.push_back (Arg (name,        "string", "dom"));
-        expanded.push_back (Arg ("~",                   "op"));
-        expanded.push_back (Arg ("^" + value, "string", "rx"));
+        expanded.push_back (Arg (name,        Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("~",                           Arg::cat_op));
+        expanded.push_back (Arg ("^" + value, Arg::type_string, Arg::cat_rx));
       }
 
       // name.endswith:value  -->  name ~ value$
       else if (mod == "endswith" || mod == "right")
       {
-        expanded.push_back (Arg (name,        "string", "dom"));
-        expanded.push_back (Arg ("~",                   "op"));
-        expanded.push_back (Arg (value + "$", "string", "rx"));
+        expanded.push_back (Arg (name,        Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("~",                           Arg::cat_op));
+        expanded.push_back (Arg (value + "$", Arg::type_string, Arg::cat_rx));
       }
 
       // name.word:value  -->  name ~ \bvalue\b
       else if (mod == "word")
       {
-        expanded.push_back (Arg (name,                  "string", "dom"));
-        expanded.push_back (Arg ("~",                             "op"));
-        expanded.push_back (Arg ("\\b" + value + "\\b", "string", "rx"));
+        expanded.push_back (Arg (name,                  Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("~",                                     Arg::cat_op));
+        expanded.push_back (Arg ("\\b" + value + "\\b", Arg::type_string, Arg::cat_rx));
       }
 
       // name.noword:value  -->  name !~ \bvalue\n
       else if (mod == "noword")
       {
-        expanded.push_back (Arg (name,                  "string", "dom"));
-        expanded.push_back (Arg ("!~",                            "op"));
-        expanded.push_back (Arg ("\\b" + value + "\\b", "string", "rx"));
+        expanded.push_back (Arg (name,                  Arg::type_string, Arg::cat_dom));
+        expanded.push_back (Arg ("!~",                                    Arg::cat_op));
+        expanded.push_back (Arg ("\\b" + value + "\\b", Arg::type_string, Arg::cat_rx));
       }
       else
         throw std::string ("Error: unrecognized attribute modifier '") + mod + "'.";
     }
 
     // [+-]value  -->  tags ~/!~ value
-    else if (arg->_category == "tag")
+    else if (arg->_category == Arg::cat_tag)
     {
       char type;
       std::string value;
       extract_tag (arg->_raw, type, value);
 
-      expanded.push_back (Arg ("tags",                   "string", "dom"));
-      expanded.push_back (Arg (type == '+' ? "~" : "!~",           "op"));
-      expanded.push_back (Arg (value,                    "string", "literal"));
+      expanded.push_back (Arg ("tags",                   Arg::type_string, Arg::cat_dom));
+      expanded.push_back (Arg (type == '+' ? "~" : "!~",                   Arg::cat_op));
+      expanded.push_back (Arg (value,                    Arg::type_string, Arg::cat_literal));
     }
 
     // word  -->  description ~ word
     // Note: use of previous prevents desc~foo --> desc~desc~foo
-    else if (arg->_category == "literal" &&
-             previous->_category != "op")
+    else if (arg->_category == Arg::cat_literal &&
+             previous->_category != Arg::cat_op)
     {
-      expanded.push_back (Arg ("description", "string", "dom"));
-      expanded.push_back (Arg ("~",                     "op"));
-      expanded.push_back (Arg (arg->_raw,     "string", "literal"));
+      expanded.push_back (Arg ("description", Arg::type_string, Arg::cat_dom));
+      expanded.push_back (Arg ("~",                             Arg::cat_op));
+      expanded.push_back (Arg (arg->_raw,     Arg::type_string, Arg::cat_literal));
     }
 
     // /pattern/  -->  description ~ pattern
-    else if (arg->_category == "pattern")
+    else if (arg->_category == Arg::cat_pattern)
     {
       std::string value;
       extract_pattern (arg->_raw, value);
 
-      expanded.push_back (Arg ("description", "string", "dom"));
-      expanded.push_back (Arg ("~",                     "op"));
-      expanded.push_back (Arg (value,         "string", "rx"));
+      expanded.push_back (Arg ("description", Arg::type_string, Arg::cat_dom));
+      expanded.push_back (Arg ("~",                             Arg::cat_op));
+      expanded.push_back (Arg (value,         Arg::type_string, Arg::cat_rx));
     }
 
     // Default  -->  preserve
@@ -1079,10 +1079,10 @@ const A3 A3::sequence (const A3& input) const
   std::vector <Arg>::const_iterator arg;
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
-    if (arg->_category == "id")
+    if (arg->_category == Arg::cat_id)
       extract_id (arg->_raw, ids);
 
-    else if (arg->_category == "uuid")
+    else if (arg->_category == Arg::cat_uuid)
       extract_uuid (arg->_raw, uuids);
   }
 
@@ -1093,42 +1093,42 @@ const A3 A3::sequence (const A3& input) const
   // Copy everything up to the first id/uuid.
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
-    if (arg->_category == "id" || arg->_category == "uuid")
+    if (arg->_category == Arg::cat_id || arg->_category == Arg::cat_uuid)
       break;
 
     sequenced.push_back (*arg);
   }
 
   // Insert the algebraic form.
-  sequenced.push_back (Arg ("(", "op"));
+  sequenced.push_back (Arg ("(", Arg::cat_op));
 
   for (unsigned int i = 0; i < ids.size (); ++i)
   {
     if (i)
-      sequenced.push_back (Arg ("or", "op"));
+      sequenced.push_back (Arg ("or", Arg::cat_op));
 
-    sequenced.push_back (Arg ("id",           "number", "dom"));
-    sequenced.push_back (Arg ("=",                      "op"));
-    sequenced.push_back (Arg (format(ids[i]), "number", "literal"));
+    sequenced.push_back (Arg ("id",           Arg::type_number, Arg::cat_dom));
+    sequenced.push_back (Arg ("=",                              Arg::cat_op));
+    sequenced.push_back (Arg (format(ids[i]), Arg::type_number, Arg::cat_literal));
   }
 
   for (unsigned int i = 0; i < uuids.size (); ++i)
   {
     if (ids.size ())
-      sequenced.push_back (Arg ("or", "op"));
+      sequenced.push_back (Arg ("or", Arg::cat_op));
 
-    sequenced.push_back (Arg ("uuid",   "string", "dom"));
-    sequenced.push_back (Arg ("=",                "op"));
-    sequenced.push_back (Arg (uuids[i], "string", "literal"));
+    sequenced.push_back (Arg ("uuid",        Arg::type_string, Arg::cat_dom));
+    sequenced.push_back (Arg ("=",                             Arg::cat_op));
+    sequenced.push_back (Arg (uuids[i],      Arg::type_string, Arg::cat_literal));
   }
 
-  sequenced.push_back (Arg (")", "op"));
+  sequenced.push_back (Arg (")", Arg::cat_op));
 
   // Now copy everything after the last id/uuid.
   bool found_id = false;
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
-    if (arg->_category == "id" || arg->_category == "uuid")
+    if (arg->_category == Arg::cat_id || arg->_category == Arg::cat_uuid)
       found_id = true;
 
     else if (found_id)
@@ -1271,16 +1271,16 @@ bool A3::is_attr (Nibbler& n, Arg& arg)
 */
 
         arg._raw      = name + ':' + value;
-        arg._category = "attr";
+        arg._category = Arg::cat_attr;
 
         // Most attributes are standard, some are pseudo-attributes, such as
         // 'limit:page', which is not represented by a column object, and
         // therefore not stored.
         Column* col = context.columns[name];
         if (col)
-          arg._type = col->type ();
+          arg._type = Arg::type_id (col->type ());
         else
-          arg._type = "pseudo";
+          arg._type = Arg::type_pseudo;
 
         return true;
       }
@@ -1340,8 +1340,8 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
 */
 
             arg._raw      = name + '.' + modifier + ':' + value;
-            arg._type     = context.columns[name]->type ();
-            arg._category = "attmod";
+            arg._type     = Arg::type_id (context.columns[name]->type ());
+            arg._category = Arg::cat_attmod;
             return true;
           }
         }
@@ -1437,7 +1437,7 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
     }
 
     arg._raw      = result;
-    arg._category = "dom";
+    arg._category = Arg::cat_dom;
     return true;
   }
 
@@ -1452,8 +1452,8 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
   {
     result = format (id) + '.' + name;
     arg._raw      = result;
-    arg._type     = context.columns[name]->type ();
-    arg._category = "dom";
+    arg._type     = Arg::type_id (context.columns[name]->type ());
+    arg._category = Arg::cat_dom;
     return true;
   }
 
@@ -1467,8 +1467,8 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
       is_attribute (name, name))
   {
     arg._raw      = uuid + '.' + name;
-    arg._type     = context.columns[name]->type ();
-    arg._category = "dom";
+    arg._type     = Arg::type_id (context.columns[name]->type ());
+    arg._category = Arg::cat_dom;
     return true;
   }
 
@@ -1480,8 +1480,8 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
       is_attribute (name, name))
   {
     arg._raw      = name;
-    arg._type     = context.columns[name]->type ();
-    arg._category = "dom";
+    arg._type     = Arg::type_id (context.columns[name]->type ());
+    arg._category = Arg::cat_dom;
     return true;
   }
 
@@ -1990,30 +1990,30 @@ bool A3::is_operator (
 void A3::dump (const std::string& label)
 {
   // Set up a color mapping.
-  std::map <std::string, Color> color_map;
-  color_map["program"]    = Color ("bold blue on blue");
-  color_map["command"]    = Color ("bold cyan on cyan");
-  color_map["rc"]         = Color ("bold red on red");
-  color_map["override"]   = Color ("bold red on red");
-  color_map["terminator"] = Color ("bold yellow on yellow");
-  color_map["literal"]       = Color ("white on gray4");
+  std::map <int, Color> color_map;
+  color_map[Arg::cat_program]    = Color ("bold blue on blue");
+  color_map[Arg::cat_command]    = Color ("bold cyan on cyan");
+  color_map[Arg::cat_rc]         = Color ("bold red on red");
+  color_map[Arg::cat_override]   = Color ("bold red on red");
+  color_map[Arg::cat_terminator] = Color ("bold yellow on yellow");
+  color_map[Arg::cat_literal]    = Color ("white on gray4");
 
   // Filter colors.
-  color_map["attr"]     = Color ("bold red on gray4");
-  color_map["attmod"]   = Color ("bold red on gray4");
-  color_map["pattern"]  = Color ("cyan on gray4");
-  color_map["subst"]    = Color ("bold cyan on gray4");
-  color_map["op"]       = Color ("green on gray4");
-  color_map["string"]   = Color ("bold yellow on gray4");
-  color_map["rx"]       = Color ("bold yellow on gray4");
-  color_map["date"]     = Color ("bold yellow on gray4");
-  color_map["dom"]      = Color ("bold white on gray4");
-  color_map["duration"] = Color ("magenta on gray4");
-  color_map["id"]       = Color ("white on gray4");
-  color_map["uuid"]     = Color ("white on gray4");
+  color_map[Arg::cat_attr]       = Color ("bold red on gray4");
+  color_map[Arg::cat_attmod]     = Color ("bold red on gray4");
+  color_map[Arg::cat_pattern]    = Color ("cyan on gray4");
+  color_map[Arg::cat_subst]      = Color ("bold cyan on gray4");
+  color_map[Arg::cat_op]         = Color ("green on gray4");
+  color_map[Arg::type_string]    = Color ("bold yellow on gray4");
+  color_map[Arg::cat_rx]         = Color ("bold yellow on gray4");
+  color_map[Arg::type_date]      = Color ("bold yellow on gray4");
+  color_map[Arg::cat_dom]        = Color ("bold white on gray4");
+  color_map[Arg::type_duration]  = Color ("magenta on gray4");
+  color_map[Arg::cat_id]         = Color ("white on gray4");
+  color_map[Arg::cat_uuid]       = Color ("white on gray4");
 
   // Default.
-  color_map["none"]       = Color ("black on white");
+  color_map[Arg::cat_none]       = Color ("black on white");
 
   Color color_debug (context.config.get ("color.debug"));
   std::stringstream out;
@@ -2033,21 +2033,21 @@ void A3::dump (const std::string& label)
 
   for (unsigned int i = 0; i < this->size (); ++i)
   {
-    std::string value    = (*this)[i]._value;
-    std::string raw      = (*this)[i]._raw;
-    std::string type     = (*this)[i]._type;
-    std::string category = (*this)[i]._category;
+    std::string value      = (*this)[i]._value;
+    std::string raw        = (*this)[i]._raw;
+    Arg::type type         = (*this)[i]._type;
+    Arg::category category = (*this)[i]._category;
 
     Color c;
     if (color_map[category].nontrivial ())
       c = color_map[category];
     else
-      c = color_map["none"];
+      c = color_map[Arg::cat_none];
 
-    view.set (0, i, value,    c);
-    view.set (1, i, raw,      c);
-    view.set (2, i, type,     c);
-    view.set (3, i, category, c);
+    view.set (0, i, value,                         c);
+    view.set (1, i, raw,                           c);
+    view.set (2, i, Arg::type_name (type),         c);
+    view.set (3, i, Arg::category_name (category), c);
   }
 
   out << view.render ();

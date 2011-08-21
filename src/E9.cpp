@@ -36,10 +36,10 @@ extern Context context;
 
 std::ostream& operator<< (std::ostream& out, const Arg& term)
 {
-  out << term._value << "|"
-      << term._raw   << "|"
-      << term._type  << "|"
-      << term._category;
+  out << term._value                        << "|"
+      << term._raw                          << "|"
+      << Arg::type_name (term._type)        << "|"
+      << Arg::category_name (term._category);
 
   return out;
 }
@@ -70,7 +70,7 @@ bool E9::evalFilter (const Task& task)
   // Coerce result to Boolean.
   Arg result = value_stack.back ();
   value_stack.pop_back ();
-  return get_bool (coerce (result, "bool"));
+  return get_bool (coerce (result, Arg::type_bool));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +94,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
   std::vector <Arg>::const_iterator arg;
   for (arg = _terms.begin (); arg != _terms.end (); ++arg)
   {
-    if (arg->_category == "op")
+    if (arg->_category == Arg::cat_op)
     {
       Arg result;
 
@@ -156,22 +156,22 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
       Arg operand (*arg);
 
       // Expand the value if possible.
-      if (operand._category == "dom" && _dom)
+      if (operand._category == Arg::cat_dom && _dom)
       {
         operand._value    = context.dom.get (operand._raw, task);
-        operand._category = "literal";
+        operand._category = Arg::cat_literal;
       }
-      else if (operand._type     == "date" &&
-               operand._category == "literal")
+      else if (operand._type     == Arg::type_date &&
+               operand._category == Arg::cat_literal)
       {
         operand._value    = Date (operand._raw, _dateformat).toEpochString ();
-        operand._category = "literal";
+        operand._category = Arg::cat_literal;
       }
-      else if (operand._type     == "duration" &&
-               operand._category == "literal")
+      else if (operand._type     == Arg::type_duration &&
+               operand._category == Arg::cat_literal)
       {
         operand._value    = (std::string)Duration (operand._raw);
-        operand._category = "literal";
+        operand._category = Arg::cat_literal;
       }
       else
         operand._value = operand._raw;
@@ -189,10 +189,10 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
 ////////////////////////////////////////////////////////////////////////////////
 bool E9::eval_match (Arg& left, Arg& right, bool case_sensitive)
 {
-  if (right._category == "rx")
+  if (right._category == Arg::cat_rx)
   {
-    left  = coerce (left,  "string");
-    right = coerce (right, "string");
+    left  = coerce (left,  Arg::type_string);
+    right = coerce (right, Arg::type_string);
 
     // Create a cached entry, if it does not already exist.
     if (_regexes.find (right._value) == _regexes.end ())
@@ -203,8 +203,8 @@ bool E9::eval_match (Arg& left, Arg& right, bool case_sensitive)
   }
   else
   {
-    left  = coerce (left,  "string");
-    right = coerce (right, "string");
+    left  = coerce (left,  Arg::type_string);
+    right = coerce (right, Arg::type_string);
     if (find (left._value, right._value, (bool) case_sensitive) != std::string::npos)
       return true;
   }
@@ -216,7 +216,7 @@ bool E9::eval_match (Arg& left, Arg& right, bool case_sensitive)
 void E9::operator_not (Arg& result, Arg& right)
 {
   // TODO This is not right.
-  result = Arg (right._value, "bool", right._category);
+  result = Arg (right._value, Arg::type_bool, right._category);
 
 //  std::cout << "# <operator_not> " << right << " --> " << result << "\n";
 }
@@ -226,13 +226,12 @@ void E9::operator_and (Arg& result, Arg& left, Arg& right)
 {
   // Assume failure.
   result._value = "false";
-  result._category = "bool";
+  result._type = Arg::type_bool;
 
-  if (coerce (left,  "bool")._value == "true" &&
-      coerce (right, "bool")._value == "true" )
+  if (coerce (left,  Arg::type_bool)._value == "true" &&
+      coerce (right, Arg::type_bool)._value == "true" )
   {
     result._value = "true";
-    result._category = "bool";
   }
 
 //  std::cout << "# " << left << " <operator_and> " << right << " --> " << result << "\n";
@@ -243,13 +242,12 @@ void E9::operator_or (Arg& result, Arg& left, Arg& right)
 {
   // Assume failure.
   result._value = "false";
-  result._category = "bool";
+  result._type = Arg::type_bool;
 
-  if (coerce (left,  "bool")._value == "true" ||
-      coerce (right, "bool")._value == "true" )
+  if (coerce (left,  Arg::type_bool)._value == "true" ||
+      coerce (right, Arg::type_bool)._value == "true" )
   {
     result._value = "true";
-    result._category = "bool";
   }
 
 //  std::cout << "# " << left << " <operator_or> " << right << " --> " << result << "\n";
@@ -260,16 +258,15 @@ void E9::operator_xor (Arg& result, Arg& left, Arg& right)
 {
   // Assume failure.
   result._value = "false";
-  result._category = "bool";
+  result._type = Arg::type_bool;
 
-  bool bool_left  = coerce (left,  "bool")._value == "true";
-  bool bool_right = coerce (right, "bool")._value == "true";
+  bool bool_left  = coerce (left,  Arg::type_bool)._value == "true";
+  bool bool_right = coerce (right, Arg::type_bool)._value == "true";
 
   if ((bool_left && !bool_right) ||
       (!bool_left && bool_right))
   {
     result._value = "true";
-    result._category = "bool";
   }
 
 //  std::cout << "# " << left << " <operator_xor> " << right << " --> " << result << "\n";
@@ -285,8 +282,8 @@ void E9::operator_lt (Arg& result, Arg& left, Arg& right)
     else if (left._value == ""  && right._value != "")  result._value = "true";
     else                                                result._value = "false";
   }
-  else if (left._category  == "date" ||
-           right._category == "date")
+  else if (left._type  == Arg::type_date ||
+           right._type == Arg::type_date)
   {
     Date left_date  (left._value,  _dateformat);
     Date right_date (right._value, _dateformat);
@@ -302,7 +299,7 @@ void E9::operator_lt (Arg& result, Arg& left, Arg& right)
                   : "false";
   }
 
-  result._category = "bool";
+  result._type = Arg::type_bool;
 
 //  std::cout << "# " << left << " <operator_lt> " << right << " --> " << result << "\n";
 }
@@ -318,8 +315,8 @@ void E9::operator_lte (Arg& result, Arg& left, Arg& right)
     else if (left._value == ""                        ) result._value = "true";
     else                                                result._value = "false";
   }
-  else if (left._category  == "date" ||
-           right._category == "date")
+  else if (left._type  == Arg::type_date ||
+           right._type == Arg::type_date)
   {
     Date left_date  (left._value,  _dateformat);
     Date right_date (right._value, _dateformat);
@@ -335,7 +332,7 @@ void E9::operator_lte (Arg& result, Arg& left, Arg& right)
                   : "false";
   }
 
-  result._category = "bool";
+  result._type = Arg::type_bool;
 
 //  std::cout << "# " << left << " <operator_lte> " << right << " --> " << result << "\n";
 }
@@ -351,8 +348,8 @@ void E9::operator_gte (Arg& result, Arg& left, Arg& right)
     else if (                      right._value == "" ) result._value = "true";
     else                                                result._value = "false";
   }
-  else if (left._category  == "date" ||
-           right._category == "date")
+  else if (left._type  == Arg::type_date ||
+           right._type == Arg::type_date)
   {
     Date left_date  (left._value,  _dateformat);
     Date right_date (right._value, _dateformat);
@@ -368,7 +365,7 @@ void E9::operator_gte (Arg& result, Arg& left, Arg& right)
                   : "false";
   }
 
-  result._category = "bool";
+  result._type = Arg::type_bool;
 
 //  std::cout << "# " << left << " <operator_gte> " << right << " --> " << result << "\n";
 }
@@ -383,8 +380,8 @@ void E9::operator_gt (Arg& result, Arg& left, Arg& right)
     else if (left._value != ""  && right._value == "")  result._value = "true";
     else                                                result._value = "false";
   }
-  else if (left._category  == "date" ||
-           right._category == "date")
+  else if (left._type  == Arg::type_date ||
+           right._type == Arg::type_date)
   {
     Date left_date  (left._value,  _dateformat);
     Date right_date (right._value, _dateformat);
@@ -400,7 +397,7 @@ void E9::operator_gt (Arg& result, Arg& left, Arg& right)
                   : "false";
   }
 
-  result._category = "bool";
+  result._type = Arg::type_bool;
 
 //  std::cout << "# " << left << " <operator_gt> " << right << " --> " << result << "\n";
 }
@@ -429,14 +426,14 @@ void E9::operator_equal (
 {
   // Assume failure.
   result._value = "false";
-  result._category = "bool";
+  result._type = Arg::type_bool;
 
   // 'project' and 'recur' attributes are matched leftmost.
   if (left._raw == "project" || left._raw == "recur")
   {
 //    std::cout << "# project/recur matching\n";
-    coerce (left, "string");
-    coerce (right, "string");
+    coerce (left, Arg::type_string);
+    coerce (right, Arg::type_string);
 
     if (right._value.length () <= left._value.length () &&
         compare (right._value,
@@ -444,13 +441,12 @@ void E9::operator_equal (
                  case_sensitive))
     {
       result._raw = "true";
-      result._category = "bool";
     }
   }
 
   // Dates.
-  else if (left._category  == "date" ||
-           right._category == "date")
+  else if (left._type  == Arg::type_date ||
+           right._type == Arg::type_date)
   {
 //    std::cout << "# date matching\n";
     Date left_date  (left._value,  _dateformat);
@@ -472,7 +468,7 @@ void E9::operator_equal (
     if (left._value == right._value)
     {
       result._value = "true";
-      result._category = "bool";
+      result._type = Arg::type_bool;
     }
   }
 
@@ -486,7 +482,7 @@ void E9::operator_match (
   Arg& right,
   bool case_sensitive)
 {
-  result._category = "bool";
+  result._type = Arg::type_bool;
   result._value = eval_match (left, right, case_sensitive)
                 ? "true"
                 : "false";
@@ -511,7 +507,7 @@ void E9::operator_nomatch (
   Arg& right,
   bool case_sensitive)
 {
-  result._category = "bool";
+  result._type = Arg::type_bool;
   result._value = eval_match (left, right, case_sensitive)
                 ? "false"
                 : "true";
@@ -544,21 +540,21 @@ void E9::operator_subtract (Arg& result, Arg& left, Arg& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const Arg E9::coerce (const Arg& input, const std::string& type)
+const Arg E9::coerce (const Arg& input, const Arg::type type)
 {
   Arg result;
 
-  if (type == "bool")
+  if (type == Arg::type_bool)
   {
-    result._category = "bool";
+    result._type = Arg::type_bool;
     result._value = get_bool (input) ? "true" : "false";
   }
 
-  if (type == "string")
+  if (type == Arg::type_string)
   {
     // TODO Convert date?
-    result._value    = input._value;
-    result._category = "string";
+    result._value = input._value;
+    result._type  = Arg::type_string;
   }
 
   // TODO Date
