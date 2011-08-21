@@ -290,12 +290,18 @@ void E9::operator_lt (Arg& result, Arg& left, Arg& right)
   else if (left._type  == Arg::type_date ||
            right._type == Arg::type_date)
   {
-    Date left_date  (left._value,  _dateformat);
-    Date right_date (right._value, _dateformat);
+    if (left._value == "" ||
+        right._value == "")
+      result._value = "false";
+    else
+    {
+      Date left_date  (left._value,  _dateformat);
+      Date right_date (right._value, _dateformat);
 
-    result._value = (left_date < right_date)
-                  ? "true"
-                  : "false";
+      result._value = (left_date < right_date)
+                    ? "true"
+                    : "false";
+    }
   }
   else
   {
@@ -323,12 +329,18 @@ void E9::operator_lte (Arg& result, Arg& left, Arg& right)
   else if (left._type  == Arg::type_date ||
            right._type == Arg::type_date)
   {
-    Date left_date  (left._value,  _dateformat);
-    Date right_date (right._value, _dateformat);
+    if (left._value == "" ||
+        right._value == "")
+      result._value = "false";
+    else
+    {
+      Date left_date  (left._value,  _dateformat);
+      Date right_date (right._value, _dateformat);
 
-    result._value = (left_date <= right_date)
-                  ? "true"
-                  : "false";
+      result._value = (left_date <= right_date)
+                    ? "true"
+                    : "false";
+    }
   }
   else
   {
@@ -356,12 +368,18 @@ void E9::operator_gte (Arg& result, Arg& left, Arg& right)
   else if (left._type  == Arg::type_date ||
            right._type == Arg::type_date)
   {
-    Date left_date  (left._value,  _dateformat);
-    Date right_date (right._value, _dateformat);
+    if (left._value == "" ||
+        right._value == "")
+      result._value = "false";
+    else
+    {
+      Date left_date  (left._value,  _dateformat);
+      Date right_date (right._value, _dateformat);
 
-    result._value = (left_date >= right_date)
-                  ? "true"
-                  : "false";
+      result._value = (left_date >= right_date)
+                    ? "true"
+                    : "false";
+    }
   }
   else
   {
@@ -388,12 +406,18 @@ void E9::operator_gt (Arg& result, Arg& left, Arg& right)
   else if (left._type  == Arg::type_date ||
            right._type == Arg::type_date)
   {
-    Date left_date  (left._value,  _dateformat);
-    Date right_date (right._value, _dateformat);
+    if (left._value == "" ||
+        right._value == "")
+      result._value = "false";
+    else
+    {
+      Date left_date  (left._value,  _dateformat);
+      Date right_date (right._value, _dateformat);
 
-    result._value = result._value = (left_date > right_date)
-                                  ? "true"
-                                  : "false";
+      result._value = result._value = (left_date > right_date)
+                                    ? "true"
+                                    : "false";
+    }
   }
   else
   {
