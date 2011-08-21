@@ -457,25 +457,24 @@ void E9::operator_equal (
   result._value = "false";
   result._type = Arg::type_bool;
 
-  // 'project' and 'recur' attributes are matched leftmost.
-  if (left._raw == "project" || left._raw == "recur")
+  // 'project' is matched leftmost.
+  if (left._raw == "project")
   {
-    coerce (left, Arg::type_string);
-    coerce (right, Arg::type_string);
-
-    if (right._value.length () <= left._value.length () &&
-        compare (right._value,
-                 left._value.substr (0, right._value.length ()),
+    int right_len = right._value.length ();
+    if (compare (right._value,
+                 (right_len < left._value.length ()
+                   ? left._value.substr (0, right_len)
+                   : left._value),
                  case_sensitive))
     {
-      result._raw = "true";
+      result._value = "true";
     }
   }
 
   // Dates.  Note that missing data causes processing to transfer to the generic
   // string comparison below.
   else if ((left._type  == Arg::type_date ||
-           right._type == Arg::type_date) &&
+            right._type == Arg::type_date) &&
            left._value != "" &&
            right._value != "")
   {
@@ -493,12 +492,6 @@ void E9::operator_equal (
     result._value = compare (left._value, right._value, case_sensitive)
                 ? "true"
                 : "false";
-
-    if (left._value == right._value)
-    {
-      result._value = "true";
-      result._type = Arg::type_bool;
-    }
   }
 
 //  std::cout << "# " << left << " <operator_equal> " << right << " --> " << result << "\n";

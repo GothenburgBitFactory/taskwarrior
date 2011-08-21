@@ -47,28 +47,28 @@ qx{../src/task rc:op.rc add four                      };
 
 # Test the 'or' operator.
 my $output = qx{../src/task rc:op.rc ls project:A or priority:H};
-like   ($output, qr/one/,   'ls project:A priority:H --> one');
-like   ($output, qr/two/,   'ls project:A priority:H --> two');
-like   ($output, qr/three/, 'ls project:A priority:H --> three');
-unlike ($output, qr/four/,  'ls project:A priority:H --> !four');
+like   ($output, qr/one/,   'ls project:A or priority:H --> one');
+like   ($output, qr/two/,   'ls project:A or priority:H --> two');
+like   ($output, qr/three/, 'ls project:A or priority:H --> three');
+unlike ($output, qr/four/,  'ls project:A or priority:H --> !four');
 
 $output = qx{../src/task rc:op.rc ls project:A or priority=H};
-like   ($output, qr/one/,   'ls project:A priority=H --> one');
-like   ($output, qr/two/,   'ls project:A priority=H --> two');
-like   ($output, qr/three/, 'ls project:A priority=H --> three');
-unlike ($output, qr/four/,  'ls project:A priority=H --> !four');
+like   ($output, qr/one/,   'ls project:A or priority=H --> one');
+like   ($output, qr/two/,   'ls project:A or priority=H --> two');
+like   ($output, qr/three/, 'ls project:A or priority=H --> three');
+unlike ($output, qr/four/,  'ls project:A or priority=H --> !four');
 
 $output = qx{../src/task rc:op.rc ls project=A or priority:H};
-like   ($output, qr/one/,   'ls project=A priority:H --> one');
-like   ($output, qr/two/,   'ls project=A priority:H --> two');
-like   ($output, qr/three/, 'ls project=A priority:H --> three');
-unlike ($output, qr/four/,  'ls project=A priority:H --> !four');
+like   ($output, qr/one/,   'ls project=A or priority:H --> one');
+like   ($output, qr/two/,   'ls project=A or priority:H --> two');
+like   ($output, qr/three/, 'ls project=A or priority:H --> three');
+unlike ($output, qr/four/,  'ls project=A or priority:H --> !four');
 
 $output = qx{../src/task rc:op.rc ls project=A or priority=H};
-like   ($output, qr/one/,   'ls project=A priority=H --> one');
-like   ($output, qr/two/,   'ls project=A priority=H --> two');
-like   ($output, qr/three/, 'ls project=A priority=H --> three');
-unlike ($output, qr/four/,  'ls project=A priority=H --> !four');
+like   ($output, qr/one/,   'ls project=A or priority=H --> one');
+like   ($output, qr/two/,   'ls project=A or priority=H --> two');
+like   ($output, qr/three/, 'ls project=A or priority=H --> three');
+unlike ($output, qr/four/,  'ls project=A or priority=H --> !four');
 
 # Cleanup.
 unlink 'pending.data';

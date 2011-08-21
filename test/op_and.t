@@ -76,7 +76,7 @@ unlike ($output, qr/two/,   'ls project:A priority:H --> !two');
 unlike ($output, qr/three/, 'ls project:A priority:H --> !three');
 unlike ($output, qr/four/,  'ls project:A priority:H --> !four');
 
-$output = qx{../src/task rc:op.rc ls project=A and priotity!=H};
+$output = qx{../src/task rc:op.rc ls project=A and priority!=H};
 unlike ($output, qr/one/,   'ls project:A priority:H --> !one');
 like   ($output, qr/two/,   'ls project:A priority:H --> two');
 unlike ($output, qr/three/, 'ls project:A priority:H --> !three');
