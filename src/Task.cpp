@@ -1091,6 +1091,7 @@ void Task::validate () const
     Date due (get_date ("due"));
 
     // Verify wait < due
+    // TODO Downgrade to warning.
     if (has ("wait"))
     {
       Date wait (get_date ("wait"));
@@ -1100,6 +1101,7 @@ void Task::validate () const
 
     Date entry (get_date ("entry"));
 
+    // TODO Downgrade to warning.
     if (has ("start"))
     {
       Date start (get_date ("start"));
@@ -1107,6 +1109,7 @@ void Task::validate () const
         throw std::string (STRING_TASK_VALID_START);
     }
 
+    // TODO Downgrade to warning.
     if (has ("end"))
     {
       Date end (get_date ("end"));
@@ -1128,9 +1131,10 @@ void Task::validate () const
   {
     Duration d;
     if (! d.valid (get ("recur")))
-      throw std::string (STRING_TASK_VALID_RECUR);
+      throw std::string (format (STRING_TASK_VALID_RECUR, get ("recur")));
   }
 
+  // TODO Remove this restriction.
   if (has ("wait") &&
       getStatus () == Task::recurring)
     throw std::string (STRING_TASK_VALID_WAIT_RECUR);
