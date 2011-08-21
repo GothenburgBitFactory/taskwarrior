@@ -28,6 +28,7 @@
 #define L10N                                           // Localization complete.
 
 #include <Context.h>
+#include <Duration.h>
 #include <ColRecur.h>
 #include <text.h>
 #include <i18n.h>
@@ -78,7 +79,7 @@ void ColumnRecur::measure (Task& task, int& minimum, int& maximum)
   if (_style == "default" ||
       _style == "duration")
   {
-    minimum = maximum = task.get ("recur").length ();
+    minimum = maximum = Duration (task.get ("recur")).formatCompact ().length ();
   }
   else if (_style == "indicator")
   {
@@ -99,7 +100,11 @@ void ColumnRecur::render (
   if (_style == "default" ||
       _style == "duration")
   {
-    lines.push_back (color.colorize (rightJustify (task.get ("recur"), width)));
+    lines.push_back (
+      color.colorize (
+        rightJustify (
+          Duration (task.get ("recur")).formatCompact (),
+          width)));
   }
   else if (_style == "indicator")
   {
