@@ -110,6 +110,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
         operator_not (result, right);
       }
 /*
+      // TODO Unary -.
       else if (arg->raw == "-")
       {
       }
@@ -153,9 +154,9 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
     // Operand.
     else
     {
+      // Derive _value from _raw, and push on the stack.
       Arg operand (*arg);
 
-      // Expand the value if possible.
       if (operand._category == Arg::cat_dom && _dom)
       {
         operand._value    = context.dom.get (operand._raw, task);
@@ -445,8 +446,10 @@ void E9::operator_equal (
   }
 
   // Dates.
-  else if (left._type  == Arg::type_date ||
-           right._type == Arg::type_date)
+  else if ((left._type  == Arg::type_date ||
+           right._type == Arg::type_date) &&
+           left._value != "" &&
+           right._value != "")
   {
 //    std::cout << "# date matching\n";
     Date left_date  (left._value,  _dateformat);
