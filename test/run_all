@@ -2,14 +2,6 @@
 
 date > all.log
 
-MODE=quick
-if [ "x$1" == 'xslow' ]; then
-  echo 'Including benchmarks'
-  MODE=slow
-else
-  echo 'Skipping benchmarks'
-fi
-
 VRAMSTEG=/usr/local/bin/vramsteg
 BAR=0
 if [ -x $VRAMSTEG ]; then
@@ -28,9 +20,7 @@ do
     COUNT=$[COUNT + 1]
   fi
 
-  if [[ $MODE == 'slow' || $i != 'benchmark.t' ]]; then
-    ./$i >> all.log 2>&1
-  fi
+  ./$i >> all.log 2>&1
 done
 
 if [ $BAR == 1 ]; then

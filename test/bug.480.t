@@ -82,9 +82,9 @@ unlike ($output, qr/two/,   'Triple: no t2');
 unlike ($output, qr/three/, 'Triple: no t3');
 
 # Once again, with @ characters.
-#qx{../src/task rc:bug.rc 1 modify +\@1};
-#qx{../src/task rc:bug.rc 2 modify +\@2};
-#qx{../src/task rc:bug.rc 3 modify +\@3};
+qx{../src/task rc:bug.rc 1 modify +\@1};
+qx{../src/task rc:bug.rc 2 modify +\@2};
+qx{../src/task rc:bug.rc 3 modify +\@3};
 
 $output = qx{../src/task rc:bug.rc list -\@1};
 unlike ($output, qr/one/,   'Single: no @1');
@@ -102,9 +102,9 @@ unlike ($output, qr/two/,   'Triple: no @2');
 unlike ($output, qr/three/, 'Triple: no @3');
 
 # Once again, with @ characters and punctuation.
-#qx{../src/task rc:bug.rc 1 modify +\@foo.1};
-#qx{../src/task rc:bug.rc 2 modify +\@foo.2};
-#qx{../src/task rc:bug.rc 3 modify +\@foo.3};
+qx{../src/task rc:bug.rc 1 modify +\@foo.1};
+qx{../src/task rc:bug.rc 2 modify +\@foo.2};
+qx{../src/task rc:bug.rc 3 modify +\@foo.3};
 
 $output = qx{../src/task rc:bug.rc list -\@foo.1};
 unlike ($output, qr/one/,   'Single: no @foo.1');
