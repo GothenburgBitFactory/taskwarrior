@@ -232,7 +232,6 @@ void E9::operator_not (Arg& result, Arg& right)
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_and (Arg& result, Arg& left, Arg& right)
 {
-  // Assume failure.
   result._value = "false";
   result._type = Arg::type_bool;
 
@@ -248,7 +247,6 @@ void E9::operator_and (Arg& result, Arg& left, Arg& right)
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_or (Arg& result, Arg& left, Arg& right)
 {
-  // Assume failure.
   result._value = "false";
   result._type = Arg::type_bool;
 
@@ -264,7 +262,6 @@ void E9::operator_or (Arg& result, Arg& left, Arg& right)
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_xor (Arg& result, Arg& left, Arg& right)
 {
-  // Assume failure.
   result._value = "false";
   result._type = Arg::type_bool;
 

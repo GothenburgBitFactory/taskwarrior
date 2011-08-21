@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 23;
+use Test::More tests => 27;
 
 # Create the rc file.
 if (open my $fh, '>', 'op.rc')
@@ -52,23 +52,29 @@ like   ($output, qr/two/,   'ls due.after:today --> two');
 unlike ($output, qr/three/, 'ls due.after:today --> !three');
 unlike ($output, qr/four/,  'ls due.after:today --> !four');
 
-my $output = qx{../src/task rc:op.rc ls 'due > today'};
+$output = qx{../src/task rc:op.rc ls 'due > today'};
 unlike ($output, qr/one/,   'ls due > today --> !one');
 like   ($output, qr/two/,   'ls due > today --> two');
 unlike ($output, qr/three/, 'ls due > today --> !three');
 unlike ($output, qr/four/,  'ls due > today --> !four');
 
-my $output = qx{../src/task rc:op.rc ls priority.above:L};
+$output = qx{../src/task rc:op.rc ls priority.above:L};
 like   ($output, qr/one/,   'ls priority.above:L --> one');
 like   ($output, qr/two/,   'ls priority.above:L --> two');
 unlike ($output, qr/three/, 'ls priority.above:L --> !three');
 unlike ($output, qr/four/,  'ls priority.above:L --> !four');
 
-my $output = qx{../src/task rc:op.rc ls 'priority > L'};
+$output = qx{../src/task rc:op.rc ls 'priority > L'};
 like   ($output, qr/one/,   'ls priority > L --> one');
 like   ($output, qr/two/,   'ls priority > L --> two');
 unlike ($output, qr/three/, 'ls priority > L --> !three');
 unlike ($output, qr/four/,  'ls priority > L --> !four');
+
+$output = qx{../src/task rc:op.rc ls 'description > t'};
+unlike ($output, qr/one/,   'ls description > t --> !one');
+like   ($output, qr/two/,   'ls description > t --> two');
+like   ($output, qr/three/, 'ls description > t --> three');
+unlike ($output, qr/four/,  'ls description > t --> !four');
 
 # Cleanup.
 unlink 'pending.data';
