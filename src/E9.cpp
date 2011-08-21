@@ -204,6 +204,8 @@ bool E9::eval_match (Arg& left, Arg& right, bool case_sensitive)
   }
   else
   {
+    // TODO Is there a danger of a raw date '1234567890' matching '234'?
+
     left  = coerce (left,  Arg::type_string);
     right = coerce (right, Arg::type_string);
     if (find (left._value, right._value, (bool) case_sensitive) != std::string::npos)
@@ -216,8 +218,13 @@ bool E9::eval_match (Arg& left, Arg& right, bool case_sensitive)
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_not (Arg& result, Arg& right)
 {
-  // TODO This is not right.
-  result = Arg (right._value, Arg::type_bool, right._category);
+  result = right;
+  coerce (result, Arg::type_bool);
+
+  if (result._value == "true")
+    result._value = "false";
+  else
+    result._value = "true";
 
 //  std::cout << "# <operator_not> " << right << " --> " << result << "\n";
 }
@@ -432,7 +439,6 @@ void E9::operator_equal (
   // 'project' and 'recur' attributes are matched leftmost.
   if (left._raw == "project" || left._raw == "recur")
   {
-//    std::cout << "# project/recur matching\n";
     coerce (left, Arg::type_string);
     coerce (right, Arg::type_string);
 
@@ -445,13 +451,13 @@ void E9::operator_equal (
     }
   }
 
-  // Dates.
+  // Dates.  Note that missing data causes processing to transfer to the generic
+  // string comparison below.
   else if ((left._type  == Arg::type_date ||
            right._type == Arg::type_date) &&
            left._value != "" &&
            right._value != "")
   {
-//    std::cout << "# date matching\n";
     Date left_date  (left._value,  _dateformat);
     Date right_date (right._value, _dateformat);
 
@@ -463,7 +469,6 @@ void E9::operator_equal (
   // Regular equality matching.
   else
   {
-//    std::cout << "# generic matching\n";
     result._value = compare (left._value, right._value, case_sensitive)
                 ? "true"
                 : "false";
