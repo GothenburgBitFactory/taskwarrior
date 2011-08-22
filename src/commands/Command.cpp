@@ -418,7 +418,7 @@ void Command::modify_task (
       A3::extract_attr (arg->_raw, name, value);
       if (A3::is_attribute (name, name))  // Canonicalize
       {
-        std::cout << "# Command::modify_task name='" << name << "' value='" << value << "'\n";
+//        std::cout << "# Command::modify_task name='" << name << "' value='" << value << "'\n";
 
         // Get the column info.
         Column* column = context.columns[name];

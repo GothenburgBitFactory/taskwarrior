@@ -718,6 +718,7 @@ const A3 A3::tokenize (const A3& input) const
 
       // Must be higher than number.
       // Must be higher than operator.
+      // Note that Nibbler::getDate does not read durations.
       else if (n.getDate (date_format, t))
       {
         output.push_back (Arg (Date (t).toString (date_format), Arg::type_date, Arg::cat_literal));
@@ -1500,13 +1501,11 @@ bool A3::is_duration (Nibbler& n, std::string& result)
 {
   std::string::size_type start = n.save ();
 
-  int i;
   double d;
   std::string unit;
   std::vector <std::string> units = Duration::get_units ();
 
-  if ((n.getInt (i) ||
-       n.getNumber (d)) &&
+  if (n.getNumber (d) &&
       n.getOneOf (units, unit))
   {
     char next = n.next ();
