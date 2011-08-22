@@ -460,7 +460,7 @@ void E9::operator_equal (
   // 'project' is matched leftmost.
   if (left._raw == "project")
   {
-    int right_len = right._value.length ();
+    unsigned int right_len = right._value.length ();
     if (compare (right._value,
                  (right_len < left._value.length ()
                    ? left._value.substr (0, right_len)
