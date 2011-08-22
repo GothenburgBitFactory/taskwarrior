@@ -99,6 +99,9 @@ public:
   void dump ();
   void dump_file (ViewText&, const std::string&, TF2&);
 
+private:
+  bool verifyUniqueUUID (const std::string&);
+
 public:
   TF2 pending;
   TF2 completed;

@@ -385,6 +385,11 @@ void TDB2::add (const Task& task)
 {
 //  std::cout << "# TDB2::add\n";
 
+  // If the tasks are loaded, then verify that this uuid is not already in
+  // the file.
+  if (!verifyUniqueUUID (task.get ("uuid")))
+    throw format ("Cannot add task because the uuid '{1}' is not unique.", task.get ("uuid"));
+
   std::string status = task.get ("status");
   if (status == "completed" ||
       status == "deleted")
@@ -483,6 +488,16 @@ int TDB2::next_id ()
 
   _id = pending._tasks.back ().id + 1;
   return _id++;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool TDB2::verifyUniqueUUID (const std::string& uuid)
+{
+  if (pending.id (uuid) != 0 ||
+      completed.id (uuid) != 0)
+    return false;
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
