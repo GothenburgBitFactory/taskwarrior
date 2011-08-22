@@ -338,9 +338,7 @@ bool Duration::valid (const std::string& input)
   // Assume the ordinal is 1, but look for an integer, just in case.
   double value = 1;
   Nibbler n (lower_input);
-  n.skipAll (' ');
   n.getNumber (value);
-  n.skipAll (' ');
 
   if (value < 0.0)
     value = -value;
@@ -377,10 +375,7 @@ void Duration::parse (const std::string& input)
   // Assume the ordinal is 1, but look for an integer, just in case.
   double value = 1;
   Nibbler n (lower_input);
-  n.skipAll (' ');
   n.getNumber (value);
-
-  n.skipAll (' ');
 
   if (value < 0.0)
   {
