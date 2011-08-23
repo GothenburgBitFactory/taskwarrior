@@ -267,7 +267,7 @@ bool Command::displays_id () const
 
 ////////////////////////////////////////////////////////////////////////////////
 // Filter a specific list of tasks.
-void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
+void Command::filter (const std::vector <Task>& input, std::vector <Task>& output)
 {
   context.timer_filter.start ();
 
@@ -278,7 +278,7 @@ void Command::filter (std::vector <Task>& input, std::vector <Task>& output)
   {
     E9 e (filt);
 
-    std::vector <Task>::iterator task;
+    std::vector <Task>::const_iterator task;
     for (task = input.begin (); task != input.end (); ++task)
       if (e.evalFilter (*task))
         output.push_back (*task);

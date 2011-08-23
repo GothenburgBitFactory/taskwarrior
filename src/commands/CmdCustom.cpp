@@ -93,7 +93,6 @@ int CmdCustom::execute (std::string& output)
 
   // Load the data.
   handleRecurrence ();
-  context.tdb2.commit ();
   std::vector <Task> filtered;
   filter (filtered);
 
@@ -176,6 +175,8 @@ int CmdCustom::execute (std::string& output)
         << std::endl;
     rc = 1;
   }
+
+  context.tdb2.commit ();
 
   output = out.str ();
   return rc;

@@ -53,7 +53,7 @@ public:
   virtual int execute (std::string&) = 0;
 
 protected:
-  void filter (std::vector <Task>&, std::vector <Task>&);
+  void filter (const std::vector <Task>&, std::vector <Task>&);
   void filter (std::vector <Task>&);
   bool filter_shortcut (const A3&);
 

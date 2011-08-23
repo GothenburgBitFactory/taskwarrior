@@ -25,7 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-//#include <iostream> // TODO Remove.
+#include <iostream> // TODO Remove.
 #include <Context.h>
 #include <Color.h>
 #include <text.h>
@@ -98,6 +98,13 @@ void TF2::add_task (const Task& task)
 
   _tasks.push_back (task);           // For subsequent queries
   _added_tasks.push_back (task);     // For commit/synch
+
+/*
+  int id = next_id ();
+  _I2U[id] = task.get ("uuid");
+  _U2I[task.get ("uuid")] = id;
+*/
+
   _dirty = true;
 }
 
@@ -234,6 +241,25 @@ void TF2::commit ()
 
     _dirty = false;
   }
+*/
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TF2::commitUndo ()
+{
+/*
+  for each _added_task
+    fprintf (file,
+             "time %u\nnew %s---\n",
+             (unsigned int) time (NULL),
+             after.composeF4 ().c_str ());
+
+  for each _modified_task
+    fprintf (file,
+             "time %u\nold %snew %s---\n",
+             (unsigned int) time (NULL),
+             before.composeF4 ().c_str (),
+             after.composeF4 ().c_str ());
 */
 }
 
@@ -451,6 +477,7 @@ void TDB2::add (const Task& task)
   else
     pending.add_task (task);
 
+  undo.add_task (task);
   backlog.add_task (task);
 }
 
@@ -477,7 +504,7 @@ void TDB2::commit ()
 
   pending.commit ();
   completed.commit ();
-  undo.commit ();
+  undo.commitUndo ();
   backlog.commit ();
   synch_key.commit ();
 
@@ -535,7 +562,7 @@ int TDB2::gc ()
 int TDB2::next_id ()
 {
   if (! pending._loaded_tasks)
-  pending.load_tasks ();
+    pending.load_tasks ();
 
   _id = pending._tasks.back ().id + 1;
   return _id++;
@@ -544,7 +571,7 @@ int TDB2::next_id ()
 ////////////////////////////////////////////////////////////////////////////////
 bool TDB2::verifyUniqueUUID (const std::string& uuid)
 {
-  if (pending.id (uuid) != 0 ||
+  if (pending.id (uuid)   != 0 ||
       completed.id (uuid) != 0)
     return false;
 

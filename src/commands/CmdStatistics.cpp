@@ -81,16 +81,9 @@ int CmdStatistics::execute (std::string& output)
       ++undoCount;
 
   // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (context.tdb2.pending.get_tasks (), filtered);
+  filter (context.tdb2.completed.get_tasks (), filtered);
 
   Date now;
   time_t earliest   = time (NULL);

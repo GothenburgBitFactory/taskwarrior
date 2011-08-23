@@ -50,17 +50,11 @@ CmdIDs::CmdIDs ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdIDs::execute (std::string& output)
 {
-  // Scan the pending tasks, applying any filter.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
   // Apply filter.
+  handleRecurrence ();
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
+  context.tdb.commit ();
 
   // Find number of matching tasks.
   std::vector <int> ids;
@@ -87,15 +81,11 @@ CmdCompletionIds::CmdCompletionIds ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionIds::execute (std::string& output)
 {
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.loadPending (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
   // Apply filter.
+  handleRecurrence ();
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
+  context.tdb.commit ();
 
   std::vector <int> ids;
   std::vector <Task>::iterator task;
@@ -128,15 +118,11 @@ CmdZshCompletionIds::CmdZshCompletionIds ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdZshCompletionIds::execute (std::string& output)
 {
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.loadPending (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
   // Apply filter.
+  handleRecurrence ();
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
+  context.tdb.commit ();
 
   std::stringstream out;
   std::vector <Task>::iterator task;

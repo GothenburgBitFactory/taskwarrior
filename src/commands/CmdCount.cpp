@@ -48,17 +48,9 @@ CmdCount::CmdCount ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCount::execute (std::string& output)
 {
-  // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
 
   // Find number of matching tasks.  Skip recurring parent tasks.
   int count = 0;
