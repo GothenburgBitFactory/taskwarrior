@@ -62,6 +62,8 @@ public:
   std::string uuid (int);
   int id (const std::string&);
 
+  const std::string dump ();
+
 public:
   bool _read_only;
   bool _dirty;
@@ -97,7 +99,6 @@ public:
   int  next_id ();
 
   void dump ();
-  void dump_file (ViewText&, const std::string&, TF2&);
 
 private:
   bool verifyUniqueUUID (const std::string&);

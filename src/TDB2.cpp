@@ -27,6 +27,7 @@
 
 //#include <iostream> // TODO Remove.
 #include <Context.h>
+#include <Color.h>
 #include <text.h>
 #include <TDB2.h>
 
@@ -341,6 +342,59 @@ int TF2::id (const std::string& uuid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// <label> <rw><dirty> <tasks> <lines> <contents>
+//
+// label:    <label %+14s>
+// rw:       <rw>
+// dirty:    <!|->
+// tasks:    T<tasks %04d>+<added %03d>~<changed %03d>
+// lines:    L<lines %04d>+<added %03d>
+// contents: C<bytes %06d>
+const std::string TF2::dump ()
+{
+  Color red    ("rgb500 on rgb100");
+  Color yellow ("rgb550 on rgb220");
+  Color green  ("rgb050 on rgb010");
+
+  // File label.
+  std::string label;
+  std::string::size_type slash = _file.data.rfind ('/');
+  if (slash != std::string::npos)
+    label = rightJustify (_file.data.substr (slash + 1), 14);
+
+  // File mode.
+  std::string mode = std::string (_file.readable () ? "r" : "-") +
+                     std::string (_file.writable () ? "w" : "-");
+       if (mode == "r-") mode = red.colorize (mode);
+  else if (mode == "rw") mode = green.colorize (mode);
+  else                   mode = yellow.colorize (mode);
+
+  // Hygiene.
+  std::string hygiene = _dirty ? red.colorize ("O") : green.colorize ("-");
+
+  std::string tasks          = green.colorize  (rightJustifyZero ((int) _tasks.size (),          4));
+  std::string tasks_added    = red.colorize    (rightJustifyZero ((int) _added_tasks.size (),    3));
+  std::string tasks_modified = yellow.colorize (rightJustifyZero ((int) _modified_tasks.size (), 3));
+  std::string lines          = green.colorize  (rightJustifyZero ((int) _lines.size (),          4));
+  std::string lines_added    = red.colorize    (rightJustifyZero ((int) _added_lines.size (),    3));
+  std::string contents       = green.colorize  (rightJustifyZero ((int) _contents.size (),       6));
+
+  char buffer[256];  // Composed string is actually 246 bytes.  Yikes.
+  snprintf (buffer, 256, "%14s %s %s T%s+%s~%s L%s+%s C%s",
+            label.c_str (),
+            mode.c_str (),
+            hygiene.c_str (),
+            tasks.c_str (),
+            tasks_added.c_str (),
+            tasks_modified.c_str (),
+            lines.c_str (),
+            lines_added.c_str (),
+            contents.c_str ());
+
+  return std::string (buffer);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -419,7 +473,6 @@ void TDB2::modify (const Task& task)
 void TDB2::commit ()
 {
   dump ();
-
   context.timer_gc.start ();
 
   pending.commit ();
@@ -429,8 +482,6 @@ void TDB2::commit ()
   synch_key.commit ();
 
   context.timer_gc.stop ();
-
-  dump ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -501,54 +552,17 @@ bool TDB2::verifyUniqueUUID (const std::string& uuid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//
-//  File           RW State Tasks + - ~ lines + - Bytes
-//  -------------- -- ----- ----- - - - ----- - - -----
-//  pending.data   rw clean   123t  +2t  -1t ~1t
-//  completed.data rw clean   123t  +2t      ~1t
-//  undo.data      rw clean   123t  +2t      ~1t
-//  backlog.data   rw clean   123t  +2t      ~1t
-//  synch-key.data rw clean                        123b
-//
 void TDB2::dump ()
 {
   if (context.config.getBoolean ("debug"))
   {
-    ViewText view;
-    view.width (context.getWidth ());
-    view.add (Column::factory ("string",       "File"));
-    view.add (Column::factory ("string.right", "RW"));
-    view.add (Column::factory ("string.right", "State"));
-    view.add (Column::factory ("string.right", "Tasks"));
-    view.add (Column::factory ("string.right", "+"));
-    view.add (Column::factory ("string.right", "~"));
-    view.add (Column::factory ("string.right", "Lines"));
-    view.add (Column::factory ("string.right", "+"));
-    view.add (Column::factory ("string.right", "Bytes"));
-
-    dump_file (view, "pending.data", pending);
-    dump_file (view, "completed.data", completed);
-    dump_file (view, "undo.data", undo);
-    dump_file (view, "backlog.data", backlog);
-    dump_file (view, "synch_key.data", synch_key);
-    context.debug (view.render ());
+    context.debug (pending.dump ());
+    context.debug (completed.dump ());
+    context.debug (undo.dump ());
+    context.debug (backlog.dump ());
+    context.debug (synch_key.dump ());
+    context.debug ("");
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::dump_file (ViewText& view, const std::string& label, TF2& tf)
-{
-  int row = view.addRow ();
-  view.set (row, 0, label);
-  view.set (row, 1, std::string (tf._file.readable () ? "r" : "-") +
-                    std::string (tf._file.writable () ? "w" : "-"));
-  view.set (row, 2, tf._dirty ? "dirty" : "clean");
-  view.set (row, 3, tf._loaded_tasks ? (format ((int)tf._tasks.size ())) : "-");
-  view.set (row, 4, (int)tf._added_tasks.size ());
-  view.set (row, 5, (int)tf._modified_tasks.size ());
-  view.set (row, 6, tf._loaded_lines ? (format ((int)tf._lines.size ())) : "-");
-  view.set (row, 7, (int)tf._added_lines.size ());
-  view.set (row, 8, tf._loaded_contents ? (format ((int)tf._contents.size ())) : "-");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
