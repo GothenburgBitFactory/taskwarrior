@@ -1991,69 +1991,72 @@ bool A3::is_operator (
 ////////////////////////////////////////////////////////////////////////////////
 void A3::dump (const std::string& label)
 {
-  // Set up a color mapping.
-  std::map <int, Color> color_map;
-  color_map[Arg::cat_program]    = Color ("bold blue on blue");
-  color_map[Arg::cat_command]    = Color ("bold cyan on cyan");
-  color_map[Arg::cat_rc]         = Color ("bold red on red");
-  color_map[Arg::cat_override]   = Color ("bold red on red");
-  color_map[Arg::cat_terminator] = Color ("bold yellow on yellow");
-  color_map[Arg::cat_literal]    = Color ("white on gray4");
-
-  // Filter colors.
-  color_map[Arg::cat_attr]       = Color ("bold red on gray4");
-  color_map[Arg::cat_attmod]     = Color ("bold red on gray4");
-  color_map[Arg::cat_pattern]    = Color ("cyan on gray4");
-  color_map[Arg::cat_subst]      = Color ("bold cyan on gray4");
-  color_map[Arg::cat_op]         = Color ("green on gray4");
-  color_map[Arg::type_string]    = Color ("bold yellow on gray4");
-  color_map[Arg::cat_rx]         = Color ("bold yellow on gray4");
-  color_map[Arg::type_date]      = Color ("bold yellow on gray4");
-  color_map[Arg::cat_dom]        = Color ("bold white on gray4");
-  color_map[Arg::type_duration]  = Color ("magenta on gray4");
-  color_map[Arg::cat_id]         = Color ("white on gray4");
-  color_map[Arg::cat_uuid]       = Color ("white on gray4");
-
-  // Default.
-  color_map[Arg::cat_none]       = Color ("black on white");
-
-  Color color_debug (context.config.get ("color.debug"));
-  std::stringstream out;
-  out << color_debug.colorize (label)
-      << "\n";
-
-  ViewText view;
-  view.width (context.getWidth ());
-  view.leftMargin (2);
-  for (unsigned int i = 0; i < this->size (); ++i)
-    view.add (Column::factory ("string", ""));
-
-  view.addRow ();
-  view.addRow ();
-  view.addRow ();
-  view.addRow ();
-
-  for (unsigned int i = 0; i < this->size (); ++i)
+  if (context.config.getBoolean ("debug"))
   {
-    std::string value      = (*this)[i]._value;
-    std::string raw        = (*this)[i]._raw;
-    Arg::type type         = (*this)[i]._type;
-    Arg::category category = (*this)[i]._category;
+    // Set up a color mapping.
+    std::map <int, Color> color_map;
+    color_map[Arg::cat_program]    = Color ("bold blue on blue");
+    color_map[Arg::cat_command]    = Color ("bold cyan on cyan");
+    color_map[Arg::cat_rc]         = Color ("bold red on red");
+    color_map[Arg::cat_override]   = Color ("bold red on red");
+    color_map[Arg::cat_terminator] = Color ("bold yellow on yellow");
+    color_map[Arg::cat_literal]    = Color ("white on gray4");
 
-    Color c;
-    if (color_map[category].nontrivial ())
-      c = color_map[category];
-    else
-      c = color_map[Arg::cat_none];
+    // Filter colors.
+    color_map[Arg::cat_attr]       = Color ("bold red on gray4");
+    color_map[Arg::cat_attmod]     = Color ("bold red on gray4");
+    color_map[Arg::cat_pattern]    = Color ("cyan on gray4");
+    color_map[Arg::cat_subst]      = Color ("bold cyan on gray4");
+    color_map[Arg::cat_op]         = Color ("green on gray4");
+    color_map[Arg::type_string]    = Color ("bold yellow on gray4");
+    color_map[Arg::cat_rx]         = Color ("bold yellow on gray4");
+    color_map[Arg::type_date]      = Color ("bold yellow on gray4");
+    color_map[Arg::cat_dom]        = Color ("bold white on gray4");
+    color_map[Arg::type_duration]  = Color ("magenta on gray4");
+    color_map[Arg::cat_id]         = Color ("white on gray4");
+    color_map[Arg::cat_uuid]       = Color ("white on gray4");
 
-    view.set (0, i, value,                         c);
-    view.set (1, i, raw,                           c);
-    view.set (2, i, Arg::type_name (type),         c);
-    view.set (3, i, Arg::category_name (category), c);
+    // Default.
+    color_map[Arg::cat_none]       = Color ("black on white");
+
+    Color color_debug (context.config.get ("color.debug"));
+    std::stringstream out;
+    out << color_debug.colorize (label)
+        << "\n";
+
+    ViewText view;
+    view.width (context.getWidth ());
+    view.leftMargin (2);
+    for (unsigned int i = 0; i < this->size (); ++i)
+      view.add (Column::factory ("string", ""));
+
+    view.addRow ();
+    view.addRow ();
+    view.addRow ();
+    view.addRow ();
+
+    for (unsigned int i = 0; i < this->size (); ++i)
+    {
+      std::string value      = (*this)[i]._value;
+      std::string raw        = (*this)[i]._raw;
+      Arg::type type         = (*this)[i]._type;
+      Arg::category category = (*this)[i]._category;
+
+      Color c;
+      if (color_map[category].nontrivial ())
+        c = color_map[category];
+      else
+        c = color_map[Arg::cat_none];
+
+      view.set (0, i, value,                         c);
+      view.set (1, i, raw,                           c);
+      view.set (2, i, Arg::type_name (type),         c);
+      view.set (3, i, Arg::category_name (category), c);
+    }
+
+    out << view.render ();
+    context.debug (out.str ());
   }
-
-  out << view.render ();
-  context.debug (out.str ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
