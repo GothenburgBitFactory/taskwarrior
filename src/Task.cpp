@@ -1091,30 +1091,27 @@ void Task::validate () const
     Date due (get_date ("due"));
 
     // Verify wait < due
-    // TODO Downgrade to warning.
     if (has ("wait"))
     {
       Date wait (get_date ("wait"));
       if (wait > due)
-        throw std::string (STRING_TASK_VALID_WAIT);
+        context.footnote (STRING_TASK_VALID_WAIT);
     }
 
     Date entry (get_date ("entry"));
 
-    // TODO Downgrade to warning.
     if (has ("start"))
     {
       Date start (get_date ("start"));
       if (entry > start)
-        throw std::string (STRING_TASK_VALID_START);
+        context.footnote (STRING_TASK_VALID_START);
     }
 
-    // TODO Downgrade to warning.
     if (has ("end"))
     {
       Date end (get_date ("end"));
       if (entry > end)
-        throw std::string (STRING_TASK_VALID_END);
+        context.footnote (STRING_TASK_VALID_END);
     }
   }
   else

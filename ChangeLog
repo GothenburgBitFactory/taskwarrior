@@ -126,6 +126,8 @@
    truncated to a page.
  + Fixed bug #732, which fixes misleading messages and documentation for
    merge/push/pull URIs (thanks to Tomas Cech).
+ + Fixed bug #737, which allows wait dates after due dates, but provides a
+   warning (thanks to Arkady Grudzinsky).
  + Fixed bug #741, which miscounted columns widths when a table header used
    unicode characters (thanks to Tomas Cech).
  + Fixed bug #744, which omitted new ID feedback for all but the first
