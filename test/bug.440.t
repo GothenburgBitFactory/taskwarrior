@@ -46,7 +46,7 @@ if (open my $fh, '>', '440.rc')
 qx{../src/task rc:440.rc add Foo};
 qx{../src/task rc:440.rc add Foo};
 
-qx{../src/task rc:440.rc 1 /Foo/Bar/ append Appendtext};
+qx{../src/task rc:440.rc 1 append /Foo/Bar/ Appendtext};
 qx{../src/task rc:440.rc 2 append Appendtext /Foo/Bar/};
 
 my $output1 = qx{../src/task rc:440.rc 1 ls};

@@ -49,7 +49,7 @@ if (open my $fh, '>', 'bug_concat.rc')
 
 qx{../src/task rc:bug_concat.rc add This is the original text};
 my $output = qx{../src/task rc:bug_concat.rc info 1};
-like ($output, qr/Description\s+This is the original text\n/, 'original correct');
+like ($output, qr/Description\s+This is the original text/, 'original correct');
 
 qx{../src/task rc:bug_concat.rc 1 modify This is the modified text};
 $output = qx{../src/task rc:bug_concat.rc info 1};
