@@ -87,6 +87,8 @@
  + Added feature #800, adding a new command 'columns' that lists all the columns
    available for custom reports, and includes their formatting options (thanks
    to T. Charles Yun).
+ + Added feature #806, which provides the ability to compare dates using the
+   relational operator '>=' (thanks to Miguel de Val Borro).
  + Added feature #811, which makes the 'execute' command optional, and
    controlled by '#define HAVE_EXECUTE 1' in cmake.h.  This allows a build
    that does not have the potential security hole, in the event that taskwarrior
