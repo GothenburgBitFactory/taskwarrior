@@ -48,7 +48,7 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (651);
+  UnitTest t (643);
 
   Duration d;
 
@@ -584,10 +584,6 @@ int main (int argc, char** argv)
   t.ok (d.valid ("-1mths"),     "valid duration -1mths");
   t.ok (d.valid ("-1mth"),      "valid duration -1mth");
   t.ok (d.valid ("-1mo"),       "valid duration -1mo");
-  t.ok (d.valid ("0m"),         "valid duration 0m");
-  t.ok (d.valid ("1m"),         "valid duration 1m");
-  t.ok (d.valid ("10m"),        "valid duration 10m");
-  t.ok (d.valid ("-1m"),        "valid duration -1m");
 
   t.ok (d.valid ("0wks"),       "valid duration 0wks");
   t.ok (d.valid ("0wk"),        "valid duration 0wk");
@@ -703,10 +699,6 @@ int main (int argc, char** argv)
   t.is (convertDuration ("10mths"),      300, "valid duration 10mths");
   t.is (convertDuration ("10mth"),       300, "valid duration 10mth");
   t.is (convertDuration ("10mo"),        300, "valid duration 10mo");
-  t.is (convertDuration ("0m"),            0, "valid duration 0m");
-  t.is (convertDuration ("1m"),           30, "valid duration 1m");
-  t.is (convertDuration ("10m"),         300, "valid duration 10m");
-  t.is (convertDuration ("-1m"),          30, "valid duration -1m");
 
   t.is (convertDuration ("0wks"),          0, "valid duration 0wks");
   t.is (convertDuration ("0wk"),           0, "valid duration 0wk");
