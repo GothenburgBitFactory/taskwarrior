@@ -109,6 +109,8 @@
    instead of the proper line in .taskrc (thanks to Erlan Sergaziev).
  + Fixed bug #691, which was a mis-reporting of file lock state even when file
    locking was turned off (thanks to Tom Duffy).
+ + Fixed bug #694, which allows attributes to be modified while annotating a
+   task (thanks to Aikido Guy).
  + Fixed bug #696, where the command line parser was confused by a single '-'
    or '+' character.
  + Fixed bug #699, truncated ssh://... during autopush after merge.
