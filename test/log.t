@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'log.rc')
@@ -41,11 +41,8 @@ if (open my $fh, '>', 'log.rc')
 
 # Test the log command.
 qx{../src/task rc:log.rc log This is a test};
-my $output = qx{../src/task rc:log.rc info 1};
-like ($output, qr/ID\s+1\n/, 'log ID');
-like ($output, qr/Description\s+This is a test\n/, 'log ID');
-like ($output, qr/Status\s+Completed\n/, 'log Completed');
-like ($output, qr/UUID\s+[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\n/, 'log UUID');
+my $output = qx{../src/task rc:log.rc completed};
+like ($output, qr/This is a test/, 'log description');
 
 # Cleanup.
 unlink 'pending.data';

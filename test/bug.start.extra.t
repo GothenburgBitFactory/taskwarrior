@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 11;
 
 # Create the rc file.
 if (open my $fh, '>', 'extra.rc')
@@ -40,10 +40,13 @@ if (open my $fh, '>', 'extra.rc')
 }
 
 qx{../src/task rc:extra.rc add foo};
-my $output = qx{../src/task rc:extra.rc 1 start pri:L};
-like ($output, qr/The 'start' command does not allow further modification of a task\./, 'no modifications allowed for start');
-$output = qx{../src/task rc:extra.rc 1 stop pro:bar};
-like ($output, qr/The 'stop' command does not allow further modification of a task\./, 'no modifications allowed for stop');
+qx{../src/task rc:extra.rc 1 start pri:L};
+qx{../src/task rc:extra.rc 1 stop pro:bar};
+my $output = qx{../src/task rc:extra.rc list};
+like ($output, qr/foo/,    'Task shown');
+like ($output, qr/1 task/, 'Correct count');
+like ($output, qr/L/,      'Correct priority');
+like ($output, qr/bar/,    'Correct annotation');
 
 # Cleanup.
 unlink 'pending.data';
