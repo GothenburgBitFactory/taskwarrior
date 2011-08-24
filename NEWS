@@ -63,6 +63,8 @@ New configuration options in taskwarrior 2.0.0
     command or value may be.
   - New 'hyphenate' setting controls whether long lines are hyphenated when
     broken during text-wrapping.
+  - New 'defaultheight' setting overrides the assumed 24 lines when 'detection'
+    is disabled.  This setting only affects charts.
 
 Newly deprecated features in taskwarrior 2.0.0
 

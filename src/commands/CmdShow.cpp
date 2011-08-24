@@ -134,6 +134,7 @@ int CmdShow::execute (std::string& output)
     " default.due"
     " default.priority"
     " default.project"
+    " defaultheight"
     " defaultwidth"
     " dependency.confirmation"
     " dependency.indicator"

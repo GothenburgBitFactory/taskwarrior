@@ -80,7 +80,12 @@ int Context::getWidth ()
 ////////////////////////////////////////////////////////////////////////////////
 int Context::getHeight ()
 {
-  int height = 24;
+  // Determine window size.
+  int height = config.getInteger ("defaultheight");
+
+  // A zero height value means 'infinity', which is approximated here by 2^16.
+  if (height == 0)
+    return 65536;
 
   if (config.getBoolean ("detection"))
   {
