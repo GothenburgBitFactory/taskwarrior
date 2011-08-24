@@ -284,6 +284,22 @@ std::string Duration::formatCompact () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string Duration::formatPrecise () const
+{
+  char formatted[24];
+
+  int days    = mSecs / 86400;
+  int hours   = (mSecs % 86400) / 3600;
+  int minutes = (mSecs % 3600) / 60;
+  int seconds = mSecs % 60;
+
+  if (days > 0) sprintf (formatted, "%s%dd %d:%02d:%02d", (mNegative ? "-" : ""), days, hours, minutes, seconds);
+  else          sprintf (formatted, "%s%d:%02d:%02d", (mNegative ? "-" : ""), hours, minutes, seconds);
+
+  return std::string (formatted);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator< (const Duration& other)
 {
   long left  = (long) (      mNegative ?       -mSecs :       mSecs);

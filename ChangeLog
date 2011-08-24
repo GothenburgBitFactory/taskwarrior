@@ -122,6 +122,8 @@
    (thanks to Michelle Crane).
  + Fixed bug #713, which fixes typos in the holidays-UK.rc file (thanks to
    Alexei Romanoff).
+ + Fixed bug #720, so that when the 'info' report renders total active time,
+   it uses a lossless format (thanks to Bernhard B).
  + Fixed bug #723, which displayed a misleading message when the output was
    truncated to a page.
  + Fixed bug #732, which fixes misleading messages and documentation for

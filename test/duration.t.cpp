@@ -48,7 +48,7 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (631);
+  UnitTest t (651);
 
   Duration d;
 
@@ -101,6 +101,28 @@ int main (int argc, char** argv)
   d = Duration (365 * 86400 - 1), t.is (d.formatCompact (), "11mo", "365 days - 1 sec -> 11mo");
   d = Duration (365 * 86400),     t.is (d.formatCompact (), "1.0y", "365 days -> 1.0y");
   d = Duration (365 * 86400 + 1), t.is (d.formatCompact (), "1.0y", "365 days + 1 sec -> 1.0y");
+
+  // std::string formatPrecise ();
+  d = Duration (0),               t.is (d.formatPrecise (), "0:00:00",       "0 -> 0:00:00");
+  d = Duration (1),               t.is (d.formatPrecise (), "0:00:01",       "1 -> 0:00:01");
+  d = Duration (2),               t.is (d.formatPrecise (), "0:00:02",       "2 -> 0:00:02");
+  d = Duration (59),              t.is (d.formatPrecise (), "0:00:59",       "59 -> 0:00:59");
+  d = Duration (60),              t.is (d.formatPrecise (), "0:01:00",       "60 -> 0:01;00");
+  d = Duration (119),             t.is (d.formatPrecise (), "0:01:59",       "119 -> 0:01:59");
+  d = Duration (120),             t.is (d.formatPrecise (), "0:02:00",       "120 -> 0:02:00");
+  d = Duration (121),             t.is (d.formatPrecise (), "0:02:01",       "121 -> 0:02:01");
+  d = Duration (3599),            t.is (d.formatPrecise (), "0:59:59",       "3599 -> 0:59:59");
+  d = Duration (3600),            t.is (d.formatPrecise (), "1:00:00",       "3600 -> 1:00:00");
+  d = Duration (3601),            t.is (d.formatPrecise (), "1:00:01",       "3601 -> 1:00:01");
+  d = Duration (86399),           t.is (d.formatPrecise (), "23:59:59",      "86399 -> 23:59:59");
+  d = Duration (86400),           t.is (d.formatPrecise (), "1d 0:00:00",    "86400 -> 1d 0:00:00");
+  d = Duration (86401),           t.is (d.formatPrecise (), "1d 0:00:01",    "86401 -> 1d 0:00:01");
+  d = Duration (14 * 86400 - 1),  t.is (d.formatPrecise (), "13d 23:59:59",  "(14 * 86400) - 1 sec -> 13d 23:59:59");
+  d = Duration (14 * 86400),      t.is (d.formatPrecise (), "14d 0:00:00",   "(14 * 86400) -> 14d 0:00:00");
+  d = Duration (14 * 86400 + 1),  t.is (d.formatPrecise (), "14d 0:00:01",   "(14 * 86400) + 1 -> 14d 0:00:01");
+  d = Duration (365 * 86400 - 1), t.is (d.formatPrecise (), "364d 23:59:59", "365 days - 1 sec -> 364d 23:59:59");
+  d = Duration (365 * 86400),     t.is (d.formatPrecise (), "365d 0:00:00",  "365 days -> 365d 0:00:00");
+  d = Duration (365 * 86400 + 1), t.is (d.formatPrecise (), "365d 0:00:01",  "365 days + 1 sec -> 365d 0:00:01");
 
   // Iterate for a whole year.  Why?  Just to see where the boundaries are,
   // so that changes can be made with some reference point.
