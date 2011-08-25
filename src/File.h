@@ -65,6 +65,8 @@ public:
   void append (const std::string&);
   void append (const std::vector <std::string>&);
 
+  void truncate ();
+
   virtual mode_t mode ();
   virtual size_t size () const;
   virtual time_t mtime () const;

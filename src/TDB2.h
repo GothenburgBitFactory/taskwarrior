@@ -54,7 +54,6 @@ public:
   void add_line (const std::string&);
   void clear_lines ();
   void commit ();
-  void commitUndo ();
 
   void load_tasks ();
   void load_lines ();

@@ -28,6 +28,7 @@
 #include <iostream> // TODO Remove.
 #include <Context.h>
 #include <Color.h>
+#include <Date.h>
 #include <text.h>
 #include <TDB2.h>
 
@@ -186,81 +187,41 @@ void TF2::commit ()
 
         _added_lines.clear ();
         _file.close ();
+        _dirty = false;
       }
     }
     else
     {
-      // TODO _file.truncate ();
-      // TODO only write out _tasks, because any deltas have already been applied.
-      // TODO append _added_lines.
+      if (_file.open ())
+      {
+        // Truncate the file and rewrite.
+        _file.truncate ();
+
+        // only write out _tasks, because any deltas have already been applied.
+        std::vector <Task>::iterator task;
+        for (task = _tasks.begin ();
+             task != _tasks.end ();
+             ++task)
+        {
+          _file.append (task->composeF4 ());
+        }
+
+        // Write out all the added lines.
+        std::vector <std::string>::iterator line;
+        for (line = _added_lines.begin ();
+             line != _added_lines.end ();
+             ++line)
+        {
+          _file.append (*line);
+        }
+
+        _added_lines.clear ();
+        _file.close ();
+        _dirty = false;
+      }
     }
 
-    _dirty = false;
   }
-
-
-  // --------------------------- old implementation -------------------------
-/*
-  // Load the lowest form, to allow
-  if (_dirty)
-  {
-    load_contents ();
-
-    if (_modified_tasks.size ())
-    {
-      std::map <std::string, Task> modified;
-      std::vector <Task>::iterator it;
-      for (it = _modified_tasks.begin (); it != _modified_tasks.end (); ++it)
-        modified[it->get ("uuid")] = *it;
-
-//    for (it = _
-
-     _modified_tasks.clear ();
-    }
-
-    if (_added_tasks.size ())
-    {
-      std::vector <Task>::iterator it;
-      for (it = _added_tasks.begin (); it != _added_tasks.end (); ++it)
-        _lines.push_back (it->composeF4 ());
-
-      _added_tasks.clear ();
-    }
-
-    if (_added_lines.size ())
-    {
-      //_lines += _added_lines;
-      _added_lines.clear ();
-    }
-
-// TODO This clobbers minimal case.
-
-    _contents = "";  // TODO Verify no resize.
-    join (_contents, "\n", _lines);
-    _file.write (_contents);
-
-    _dirty = false;
-  }
-*/
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TF2::commitUndo ()
-{
-/*
-  for each _added_task
-    fprintf (file,
-             "time %u\nnew %s---\n",
-             (unsigned int) time (NULL),
-             after.composeF4 ().c_str ());
-
-  for each _modified_task
-    fprintf (file,
-             "time %u\nold %snew %s---\n",
-             (unsigned int) time (NULL),
-             before.composeF4 ().c_str (),
-             after.composeF4 ().c_str ());
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -470,6 +431,7 @@ void TDB2::add (const Task& task)
   if (!verifyUniqueUUID (task.get ("uuid")))
     throw format ("Cannot add task because the uuid '{1}' is not unique.", task.get ("uuid"));
 
+  // Add new task to either pending or completed.
   std::string status = task.get ("status");
   if (status == "completed" ||
       status == "deleted")
@@ -477,7 +439,15 @@ void TDB2::add (const Task& task)
   else
     pending.add_task (task);
 
-  undo.add_task (task);
+  // Add undo data lines:
+  //   time <time>
+  //   new <task>
+  //   ---
+  undo.add_line ("time " + Date ().toEpochString () + "\n");
+  undo.add_line ("new " + task.composeF4 ());
+  undo.add_line ("---\n");
+
+  // Add task to backlog.
   backlog.add_task (task);
 }
 
@@ -486,6 +456,8 @@ void TDB2::modify (const Task& task)
 {
 //  std::cout << "# TDB2::modify\n";
 
+  // Update task in either completed or deleted.
+  // TODO Find task, overwrite it.
   std::string status = task.get ("status");
   if (status == "completed" ||
       status == "deleted")
@@ -493,6 +465,19 @@ void TDB2::modify (const Task& task)
   else
     pending.modify_task (task);
 
+  // TODO Add undo data lines:
+  // time <time>
+  // old <task>
+  // new <task>
+  // ---
+/*
+  undo.add_line ("time " + format (time (NULL)) + "\n");
+  undo.add_line ("old " + original.composeF4 ());
+  undo.add_line ("new " + task.composeF4 ());
+  undo.add_line ("---\n");
+*/
+
+  // Add modified task to backlog.
   backlog.modify_task (task);
 }
 
@@ -504,7 +489,7 @@ void TDB2::commit ()
 
   pending.commit ();
   completed.commit ();
-  undo.commitUndo ();
+  undo.commit ();
   backlog.commit ();
   synch_key.commit ();
 
@@ -515,6 +500,8 @@ void TDB2::commit ()
 void TDB2::synch ()
 {
   context.timer_synch.start ();
+
+  // TODO Need stub here.
 
   context.timer_synch.stop ();
 }

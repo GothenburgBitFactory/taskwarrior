@@ -281,6 +281,16 @@ void File::append (const std::vector <std::string>& lines)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void File::truncate ()
+{
+  if (!fh)
+    open ();
+
+  if (fh)
+    ftruncate (h, 0);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //  S_IFMT          0170000  type of file
 //         S_IFIFO  0010000  named pipe (fifo)
 //         S_IFCHR  0020000  character special
