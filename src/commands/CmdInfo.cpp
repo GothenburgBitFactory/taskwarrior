@@ -51,7 +51,7 @@ CmdInfo::CmdInfo ()
   // lot of sense, given that the info command shows the ID, it does mimic the
   // behavior of versions prior to 2.0, which the test suite relies upon.
   //
-  // One the test suite is completely modified, this can be corrected.
+  // Once the test suite is completely modified, this can be corrected.
   _displays_id = false;
 }
 
@@ -100,11 +100,12 @@ int CmdInfo::execute (std::string& output)
     }
 
     Date now;
+    int row;
 
     // id
-    int row = view.addRow ();
+    row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_ID);
-    view.set (row, 1, format (task->id));
+    view.set (row, 1, (task->id ? format (task->id) : "-"));
 
     std::string status = ucFirst (Task::statusToText (task->getStatus ()));
 
