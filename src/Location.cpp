@@ -29,26 +29,26 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 Location::Location ()
-: path ("")
-, pending (NULL)
-, completed (NULL)
-, undo (NULL)
+: _path ("")
+, _pending (NULL)
+, _completed (NULL)
+, _undo (NULL)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Location::Location (const std::string& p)
-: path (p)
+: _path (p)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Location::Location (const Location& other)
 {
-  path      = other.path;
-  pending   = other.pending;
-  completed = other.completed;
-  undo      = other.undo;
+  _path      = other._path;
+  _pending   = other._pending;
+  _completed = other._completed;
+  _undo      = other._undo;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,10 +56,10 @@ Location& Location::operator= (const Location& other)
 {
   if (this != &other)
   {
-    path      = other.path;
-    pending   = other.pending;
-    completed = other.completed;
-    undo      = other.undo;
+    _path      = other._path;
+    _pending   = other._pending;
+    _completed = other._completed;
+    _undo      = other._undo;
   }
 
   return *this;

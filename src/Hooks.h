@@ -43,9 +43,9 @@ public:
   Hook& operator= (const Hook&);
 
 public:
-  std::string event;
-  std::string file;
-  std::string function;
+  std::string _event;
+  std::string _file;
+  std::string _function;
 };
 
 // Hooks class for managing the loading and calling of hook functions.
@@ -68,12 +68,12 @@ private:
 
 private:
 #ifdef HAVE_LIBLUA
-  API api;
+  API _api;
 #endif
-  std::vector <Hook> all;           // All current hooks.
+  std::vector <Hook> _all;           // All current hooks.
 
-  std::vector <std::string> validProgramEvents;
-  std::vector <std::string> validTaskEvents;
+  std::vector <std::string> _validProgramEvents;
+  std::vector <std::string> _validTaskEvents;
 };
 
 #endif

@@ -77,7 +77,7 @@ int CmdInfo::execute (std::string& output)
   if (context.config.getBoolean ("journal.info"))
   {
     Directory location (context.config.get ("data.location"));
-    std::string undoFile = location.data + "/undo.data";
+    std::string undoFile = location._data + "/undo.data";
     File::read (undoFile, undo);
   }
 

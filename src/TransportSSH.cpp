@@ -34,36 +34,36 @@
 ////////////////////////////////////////////////////////////////////////////////
 TransportSSH::TransportSSH(const Uri& uri) : Transport(uri)
 {
-	executable = "scp";
+	_executable = "scp";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::send(const std::string& source)
 {
-	if (uri.host == "")
+	if (_uri._host == "")
 		throw std::string (STRING_TRANSPORT_SSH_URI);
 
 	// Is there more than one file to transfer?
 	// Then path has to end with a '/'
-	if (is_filelist(source) && !uri.is_directory())
-    throw format (STRING_TRANSPORT_URI_NODIR, uri.path);
+	if (is_filelist(source) && !_uri.is_directory())
+    throw format (STRING_TRANSPORT_URI_NODIR, _uri._path);
 
 	// cmd line is: scp [-p port] [user@]host:path
-	if (uri.port != "")
+	if (_uri._port != "")
 	{
-		arguments.push_back ("-P");
-		arguments.push_back (uri.port);
+		_arguments.push_back ("-P");
+		_arguments.push_back (_uri._port);
 	}
 
-	arguments.push_back (source);
+	_arguments.push_back (source);
 
-	if (uri.user != "")
+	if (_uri._user != "")
 	{
-		arguments.push_back (uri.user + "@" + uri.host + ":" + uri.path);
+		_arguments.push_back (_uri._user + "@" + _uri._host + ":" + _uri._path);
 	}
 	else
 	{
-		arguments.push_back (uri.host + ":" + uri.path);
+		_arguments.push_back (_uri._host + ":" + _uri._path);
 	}
 
 	if (execute())
@@ -73,31 +73,31 @@ void TransportSSH::send(const std::string& source)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::recv(std::string target)
 {
-	if (uri.host == "")
+	if (_uri._host == "")
 		throw std::string (STRING_TRANSPORT_SSH_URI);
 
 	// Is there more than one file to transfer?
 	// Then target has to end with a '/'
-	if (is_filelist(uri.path) && !is_directory(target))
+	if (is_filelist(_uri._path) && !is_directory(target))
     throw format (STRING_TRANSPORT_URI_NODIR, target);
 
 	// cmd line is: scp [-p port] [user@]host:path
-	if (uri.port != "")
+	if (_uri._port != "")
 	{
-		arguments.push_back ("-P");
-		arguments.push_back (uri.port);
+		_arguments.push_back ("-P");
+		_arguments.push_back (_uri._port);
 	}
 
-	if (uri.user != "")
+	if (_uri._user != "")
 	{
-		arguments.push_back (uri.user + "@" + uri.host + ":" + uri.path);
+		_arguments.push_back (_uri._user + "@" + _uri._host + ":" + _uri._path);
 	}
 	else
 	{
-		arguments.push_back (uri.host + ":" + uri.path);
+		_arguments.push_back (_uri._host + ":" + _uri._path);
 	}
 
-	arguments.push_back (target);
+	_arguments.push_back (target);
 
 	if (execute())
     throw std::string (STRING_TRANSPORT_SSH_NORUN);

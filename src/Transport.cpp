@@ -38,8 +38,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 Transport::Transport (const Uri& uri)
 {
-  executable = "";
-  this->uri = uri;
+  _executable = "";
+  this->_uri = uri;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,17 +50,17 @@ Transport::~Transport ()
 ////////////////////////////////////////////////////////////////////////////////
 Transport* Transport::getTransport(const Uri& uri)
 {
-  if (uri.protocol == "ssh")
+  if (uri._protocol == "ssh")
   {
     return new TransportSSH(uri);
   }
-  else if (uri.protocol == "rsync")
+  else if (uri._protocol == "rsync")
   {
     return new TransportRSYNC(uri);
   }
-  else if ( (uri.protocol == "http")
-         || (uri.protocol == "https")
-         || (uri.protocol == "ftp") )
+  else if ( (uri._protocol == "http")
+         || (uri._protocol == "https")
+         || (uri._protocol == "ftp") )
   {
     return new TransportCurl(uri);
   }
@@ -71,7 +71,7 @@ Transport* Transport::getTransport(const Uri& uri)
 ////////////////////////////////////////////////////////////////////////////////
 int Transport::execute()
 {
-  return ::execute(executable, arguments);
+  return ::execute(_executable, _arguments);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -82,9 +82,9 @@ public:
   static bool remove (const std::string&);
 
 private:
-  FILE* fh;
-  int   h;
-  bool  locked;
+  FILE* _fh;
+  int   _h;
+  bool  _locked;
 };
 
 #endif

@@ -114,7 +114,7 @@ private:
   bool isRelativeDate (const std::string&);
 
 protected:
-  time_t mT;
+  time_t _t;
 };
 
 #endif

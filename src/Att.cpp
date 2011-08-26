@@ -110,74 +110,74 @@ static inline std::string& str_replace (
 
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att ()
-: mName ("")
-, mValue ("")
-, mMod ("")
-, mSense ("positive")
+: _name ("")
+, _value ("")
+, _mod ("")
+, _sense ("positive")
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const std::string& name, const std::string& mod, const std::string& value)
 {
-  mName  = name;
-  mValue = value;
-  mMod   = mod;
-  mSense = "positive";
+  _name  = name;
+  _value = value;
+  _mod   = mod;
+  _sense = "positive";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const std::string& name, const std::string& mod, const std::string& value,
           const std::string& sense)
 {
-  mName  = name;
-  mValue = value;
-  mMod   = mod;
-  mSense = sense;
+  _name  = name;
+  _value = value;
+  _mod   = mod;
+  _sense = sense;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const std::string& name, const std::string& mod, int value)
 {
-  mName = name;
+  _name = name;
 
   std::stringstream s;
   s << value;
-  mValue = s.str ();
+  _value = s.str ();
 
-  mMod = mod;
-  mSense = "positive";
+  _mod = mod;
+  _sense = "positive";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const std::string& name, const std::string& value)
 {
-  mName  = name;
-  mValue = value;
-  mMod   = "";
-  mSense = "positive";
+  _name  = name;
+  _value = value;
+  _mod   = "";
+  _sense = "positive";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const std::string& name, int value)
 {
-  mName = name;
+  _name = name;
 
   std::stringstream s;
   s << value;
-  mValue = s.str ();
+  _value = s.str ();
 
-  mMod = "";
-  mSense = "positive";
+  _mod = "";
+  _sense = "positive";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Att::Att (const Att& other)
 {
-  mName  = other.mName;
-  mValue = other.mValue;
-  mMod   = other.mMod;
-  mSense = other.mSense;
+  _name  = other._name;
+  _value = other._value;
+  _mod   = other._mod;
+  _sense = other._sense;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -185,10 +185,10 @@ Att& Att::operator= (const Att& other)
 {
   if (this != &other)
   {
-    mName  = other.mName;
-    mValue = other.mValue;
-    mMod   = other.mMod;
-    mSense = other.mSense;
+    _name  = other._name;
+    _value = other._value;
+    _mod   = other._mod;
+    _sense = other._sense;
   }
 
   return *this;
@@ -197,10 +197,10 @@ Att& Att::operator= (const Att& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Att::operator== (const Att& other) const
 {
-  return mName  == other.mName  &&
-         mMod   == other.mMod   &&
-         mValue == other.mValue &&
-         mSense == other.mSense;
+  return _name  == other._name  &&
+         _mod   == other._mod   &&
+         _value == other._value &&
+         _sense == other._sense;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -211,14 +211,14 @@ Att::~Att ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Att::logicSense (bool match) const
 {
-  if (mSense == "positive")
+  if (_sense == "positive")
     return match;
-  else if (mSense == "negative")
+  else if (_sense == "negative")
     return ! match;
   else
   {
-    context.debug ("mSense: " + mSense);
-    throw ("unknown mSense " + mSense);
+    context.debug ("_sense: " + _sense);
+    throw ("unknown _sense " + _sense);
   }
 }
 
@@ -534,14 +534,14 @@ void Att::parse (const std::string& input)
 void Att::parse (Nibbler& n)
 {
   // Ensure a clean object first.
-  mName  = "";
-  mValue = "";
-  mMod   = "";
-  mSense = "positive";
+  _name  = "";
+  _value = "";
+  _mod   = "";
+  _sense = "positive";
 
-  if (n.getUntilOneOf (".:", mName))
+  if (n.getUntilOneOf (".:", _name))
   {
-    if (mName.length () == 0)
+    if (_name.length () == 0)
       throw std::string ("Missing attribute name"); // TODO i18n
 
     if (n.skip ('.'))
@@ -551,13 +551,13 @@ void Att::parse (Nibbler& n)
       if (n.skip ('~'))
       {
         context.debug ("using negative logic");
-        mSense = "negative";
+        _sense = "negative";
       }
 
       if (n.getUntil (":", mod))
       {
         if (validMod (mod))
-          mMod = mod;
+          _mod = mod;
         else
           throw std::string ("The name '") + mod + "' is not a valid modifier."; // TODO i18n
       }
@@ -569,10 +569,10 @@ void Att::parse (Nibbler& n)
     {
       // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
-      if (n.getQuoted   ('"', mValue) ||
-          n.getUntilEOS (mValue))
+      if (n.getQuoted   ('"', _value) ||
+          n.getUntilEOS (_value))
       {
-        decode (mValue);
+        decode (_value);
       }
     }
     else
@@ -582,7 +582,7 @@ void Att::parse (Nibbler& n)
     throw std::string ("Missing : after attribute name."); // TODO i18n
 
 /* TODO This might be too slow to include.  Test this assumption.
-  validNameValue (mName, mMod, mValue);
+  validNameValue (_name, _mod, _value);
 */
 }
 
@@ -592,13 +592,13 @@ std::string Att::composeF4 () const
 {
   std::string output = "";
 
-  if (mName != "" && mValue != "")
+  if (_name != "" && _value != "")
   {
-    std::string value = mValue;
+    std::string value = _value;
     encode (value);
     enquote (value);
 
-    output += mName + ":" + value;
+    output += _name + ":" + value;
   }
 
   return output;
@@ -610,37 +610,37 @@ void Att::mod (const std::string& input)
   if (input != "" && !validMod (input))
     throw std::string ("The name '") + input + "' is not a valid modifier."; // TODO i18n
 
-  mMod = input;
+  _mod = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Att::mod () const
 {
-  return mMod;
+  return _mod;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Att::name () const
 {
-  return mName;
+  return _name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Att::name (const std::string& name)
 {
-  mName = name;
+  _name = name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Att::value () const
 {
-  return mValue;
+  return _value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Att::value (const std::string& value)
 {
-  mValue = value;
+  _value = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

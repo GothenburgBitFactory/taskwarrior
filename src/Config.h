@@ -64,10 +64,10 @@ public:
   std::string checkForDeprecatedColumns ();
 
 public:
-  File original_file;
+  File _original_file;
 
 private:
-  static std::string defaults;
+  static std::string _defaults;
 };
 
 #endif

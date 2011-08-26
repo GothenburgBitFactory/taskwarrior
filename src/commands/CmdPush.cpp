@@ -46,7 +46,7 @@ CmdPush::CmdPush ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Transfers the local data (from rc.location.data) to the remote path.  Because
+// Transfers the local data (from rc.location._data) to the remote path.  Because
 // this is potentially on another machine, no checking can be performed.
 int CmdPush::execute (std::string& output)
 {
@@ -58,41 +58,41 @@ int CmdPush::execute (std::string& output)
   Uri uri (file, "push");
   uri.parse ();
 
-  if (uri.data.length ())
+  if (uri._data.length ())
   {
 		Directory location (context.config.get ("data.location"));
 
 		Transport* transport;
 		if ((transport = Transport::getTransport (uri)) != NULL )
 		{
-			transport->send (location.data + "/{pending,undo,completed}.data");
+			transport->send (location._data + "/{pending,undo,completed}.data");
 			delete transport;
 		}
 		else
 		{
       // Verify that files are not being copied from rc.data.location to the
       // same place.
-      if (Directory (uri.path) == Directory (context.config.get ("data.location")))
+      if (Directory (uri._path) == Directory (context.config.get ("data.location")))
         throw std::string ("Cannot push files when the source and destination are the same.");
 
       // copy files locally
-      if (! Path (uri.data).is_directory ())
-        throw std::string ("The uri '") + uri.path + "' is not a local directory.";
+      if (! Path (uri._data).is_directory ())
+        throw std::string ("The uri '") + uri._path + "' is not a local directory.";
 
-      std::ifstream ifile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
-      std::ofstream ofile1 ((uri.path      + "/undo.data").c_str(), std::ios_base::binary);
+      std::ifstream ifile1 ((location._data + "/undo.data").c_str(), std::ios_base::binary);
+      std::ofstream ofile1 ((uri._path       + "/undo.data").c_str(), std::ios_base::binary);
       ofile1 << ifile1.rdbuf();
 
-      std::ifstream ifile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
-      std::ofstream ofile2 ((uri.path      + "/pending.data").c_str(), std::ios_base::binary);
+      std::ifstream ifile2 ((location._data + "/pending.data").c_str(), std::ios_base::binary);
+      std::ofstream ofile2 ((uri._path       + "/pending.data").c_str(), std::ios_base::binary);
       ofile2 << ifile2.rdbuf();
 
-      std::ifstream ifile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
-      std::ofstream ofile3 ((uri.path      + "/completed.data").c_str(), std::ios_base::binary);
+      std::ifstream ifile3 ((location._data + "/completed.data").c_str(), std::ios_base::binary);
+      std::ofstream ofile3 ((uri._path       + "/completed.data").c_str(), std::ios_base::binary);
       ofile3 << ifile3.rdbuf();
 		}
 
-    output += "Local tasks transferred to " + uri.data + "\n";
+    output += "Local tasks transferred to " + uri._data + "\n";
   }
   else
     throw std::string ("No uri was specified for the push.  Either specify "

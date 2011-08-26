@@ -24,7 +24,6 @@ rx.t
 sensor.t
 seq.t
 subst.t
-t.benchmark.t
 t.t
 t2.t
 taskmod.t

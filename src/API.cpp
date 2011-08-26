@@ -135,17 +135,17 @@ static int api_task_set (lua_State* L)
 
 ////////////////////////////////////////////////////////////////////////////////
 API::API ()
-: L (NULL)
+: _L (NULL)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 API::~API ()
 {
-  if (L)
+  if (_L)
   {
-    lua_close (L);
-    L = NULL;
+    lua_close (_L);
+    _L = NULL;
   }
 }
 
@@ -153,16 +153,16 @@ API::~API ()
 void API::initialize ()
 {
   // Initialize Lua.
-  L = lua_open ();
-  luaL_openlibs (L);  // TODO Error handling
+  _L = lua_open ();
+  luaL_openlibs (_L);  // TODO Error handling
 
   // Register all the API functions in Lua global space.
-  lua_pushcfunction (L, api_task_header_message);        lua_setglobal (L, "task_header_message");
-  lua_pushcfunction (L, api_task_footnote_message);      lua_setglobal (L, "task_footnote_message");
-  lua_pushcfunction (L, api_task_debug_message);         lua_setglobal (L, "task_debug_message");
-  lua_pushcfunction (L, api_task_exit);                  lua_setglobal (L, "task_exit");
-  lua_pushcfunction (L, api_task_get);                   lua_setglobal (L, "task_get");
-  lua_pushcfunction (L, api_task_set);                   lua_setglobal (L, "task_set");
+  lua_pushcfunction (_L, api_task_header_message);   lua_setglobal (_L, "task_header_message");
+  lua_pushcfunction (_L, api_task_footnote_message); lua_setglobal (_L, "task_footnote_message");
+  lua_pushcfunction (_L, api_task_debug_message);    lua_setglobal (_L, "task_debug_message");
+  lua_pushcfunction (_L, api_task_exit);             lua_setglobal (_L, "task_exit");
+  lua_pushcfunction (_L, api_task_get);              lua_setglobal (_L, "task_get");
+  lua_pushcfunction (_L, api_task_set);              lua_setglobal (_L, "task_set");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -173,26 +173,26 @@ bool API::callProgramHook (
   loadFile (file);
 
   // Get function.
-  lua_getglobal (L, function.c_str ());
-  if (!lua_isfunction (L, -1))
+  lua_getglobal (_L, function.c_str ());
+  if (!lua_isfunction (_L, -1))
   {
-    lua_pop (L, 1);
+    lua_pop (_L, 1);
     throw format (STRING_API_NOFUNC, function);
   }
 
   // Make call.
-  if (lua_pcall (L, 0, 2, 0) != 0)
-    throw format (STRING_API_ERROR_CALLING, function, lua_tostring (L, -1));
+  if (lua_pcall (_L, 0, 2, 0) != 0)
+    throw format (STRING_API_ERROR_CALLING, function, lua_tostring (_L, -1));
 
   // Call successful - get return values.
-  if (!lua_isnumber (L, -2))
+  if (!lua_isnumber (_L, -2))
     throw format (STRING_API_ERROR_FAIL, function);
 
-  if (!lua_isstring (L, -1) && !lua_isnil (L, -1))
+  if (!lua_isstring (_L, -1) && !lua_isnil (_L, -1))
     throw format (STRING_API_ERROR_NORET, function);
 
-  int rc              = lua_tointeger (L, -2);
-  const char* message = lua_tostring  (L, -1);
+  int rc              = lua_tointeger (_L, -2);
+  const char* message = lua_tostring  (_L, -1);
 
   if (rc == 0)
   {
@@ -205,7 +205,7 @@ bool API::callProgramHook (
       throw std::string (message);
   }
 
-  lua_pop (L, 1);
+  lua_pop (_L, 1);
   return rc == 0 ? true : false;
 }
 
@@ -218,32 +218,32 @@ bool API::callTaskHook (
   loadFile (file);
 
   // Save the task for reference via the API.
-  current = task;
+  _current = task;
 
   // Get function.
-  lua_getglobal (L, function.c_str ());
-  if (!lua_isfunction (L, -1))
+  lua_getglobal (_L, function.c_str ());
+  if (!lua_isfunction (_L, -1))
   {
-    lua_pop (L, 1);
+    lua_pop (_L, 1);
     throw format (STRING_API_NOFUNC, function);
   }
 
   // Prepare args.
-  lua_pushnumber (L, current.id);
+  lua_pushnumber (_L, _current.id);
 
   // Make call.
-  if (lua_pcall (L, 1, 2, 0) != 0)
-    throw format (STRING_API_ERROR_CALLING, function, lua_tostring (L, -1));
+  if (lua_pcall (_L, 1, 2, 0) != 0)
+    throw format (STRING_API_ERROR_CALLING, function, lua_tostring (_L, -1));
 
   // Call successful - get return values.
-  if (!lua_isnumber (L, -2))
+  if (!lua_isnumber (_L, -2))
     throw format (STRING_API_ERROR_FAIL, function);
 
-  if (!lua_isstring (L, -1) && !lua_isnil (L, -1))
+  if (!lua_isstring (_L, -1) && !lua_isnil (_L, -1))
     throw format (STRING_API_ERROR_NORET, function);
 
-  int rc              = lua_tointeger (L, -2);
-  const char* message = lua_tostring  (L, -1);
+  int rc              = lua_tointeger (_L, -2);
+  const char* message = lua_tostring  (_L, -1);
 
   if (rc == 0)
   {
@@ -256,7 +256,7 @@ bool API::callTaskHook (
       throw std::string (message);
   }
 
-  lua_pop (L, 1);
+  lua_pop (_L, 1);
   return rc == 0 ? true : false;
 }
 
@@ -264,14 +264,14 @@ bool API::callTaskHook (
 void API::loadFile (const std::string& file)
 {
   // If the file is not loaded.
-  if (std::find (loaded.begin (), loaded.end (), file) == loaded.end ())
+  if (std::find (_loaded.begin (), _loaded.end (), file) == _loaded.end ())
   {
     // Load the file, if possible.
-    if (luaL_loadfile (L, file.c_str ()) || lua_pcall (L, 0, 0, 0))
-      throw format (STRING_API_ERROR, lua_tostring (L, -1));
+    if (luaL_loadfile (_L, file.c_str ()) || lua_pcall (_L, 0, 0, 0))
+      throw format (STRING_API_ERROR, lua_tostring (_L, -1));
 
-    // Mark this as loaded, so as to not bother again.
-    loaded.push_back (file);
+    // Mark this as _loaded, so as to not bother again.
+    _loaded.push_back (file);
   }
 }
 

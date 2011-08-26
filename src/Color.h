@@ -73,7 +73,7 @@ private:
   std::string bg () const;
 
 private:
-  unsigned int value;
+  unsigned int _value;
 };
 
 #endif

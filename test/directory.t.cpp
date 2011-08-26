@@ -41,20 +41,20 @@ int main (int argc, char** argv)
   Directory d0 (Path ("/tmp"));
   Directory d1 (File ("/tmp"));
   Directory d2 (File (Path ("/tmp")));
-  t.is (d0.data, d1.data, "Directory(std::string) == Directory (File&)");
-  t.is (d0.data, d2.data, "Directory(std::string) == Directory (File (Path &))");
-  t.is (d1.data, d2.data, "Directory(File&)) == Directory (File (Path &))");
+  t.is (d0._data, d1._data, "Directory(std::string) == Directory (File&)");
+  t.is (d0._data, d2._data, "Directory(std::string) == Directory (File (Path &))");
+  t.is (d1._data, d2._data, "Directory(File&)) == Directory (File (Path &))");
 
   // Directory (const Directory&);
   Directory d3 (d2);
-  t.is (d3.data, "/tmp", "Directory (Directory&)");
+  t.is (d3._data, "/tmp", "Directory (Directory&)");
 
   // Directory (const std::string&);
   Directory d4 ("/tmp/test_directory");
 
   // Directory& operator= (const Directory&);
   Directory d5 = d4;
-  t.is (d5.data, "/tmp/test_directory", "Directory::operator=");
+  t.is (d5._data, "/tmp/test_directory", "Directory::operator=");
 
   // operator (std::string) const;
   t.is ((std::string) d3, "/tmp", "Directory::operator (std::string) const");
@@ -63,11 +63,11 @@ int main (int argc, char** argv)
   t.ok (d5.create (), "Directory::create /tmp/test_directory");
   t.ok (d5.exists (), "Directory::exists /tmp/test_directory");
 
-  Directory d6 (d5.data + "/dir");
+  Directory d6 (d5._data + "/dir");
   t.ok (d6.create (), "Directory::create /tmp/test_directory/dir");
 
-  File::create (d5.data + "/f0");
-  File::create (d6.data + "/f1");
+  File::create (d5._data + "/f0");
+  File::create (d6._data + "/f1");
 
   // std::vector <std::string> list ();
   std::vector <std::string> files = d5.list ();
@@ -84,8 +84,8 @@ int main (int argc, char** argv)
   t.is (files[1], "/tmp/test_directory/f0", "file is /tmp/test_directory/f0");
 
   // virtual bool remove ();
-  t.ok (File::remove (d5.data + "/f0"), "File::remove /tmp/test_directory/f0");
-  t.ok (File::remove (d6.data + "/f1"), "File::remove /tmp/test_directory/dir/f1");
+  t.ok (File::remove (d5._data + "/f0"), "File::remove /tmp/test_directory/f0");
+  t.ok (File::remove (d6._data + "/f1"), "File::remove /tmp/test_directory/dir/f1");
 
   t.ok (d6.remove (), "Directory::remove /tmp/test_directory/dir");
   t.notok (d6.exists (), "Directory::exists /tmp/test_directory/dir - no");
@@ -96,10 +96,10 @@ int main (int argc, char** argv)
   // bool remove (const std::string&);
   Directory d7 ("/tmp/to_be_removed");
   t.ok (d7.create (), "Directory::create /tmp/to_be_removed");
-  File::create (d7.data + "/f0");
-  Directory d8 (d7.data + "/another");
+  File::create (d7._data + "/f0");
+  Directory d8 (d7._data + "/another");
   t.ok (d8.create (), "Directory::create /tmp/to_be_removed/another");
-  File::create (d8.data + "/f1");
+  File::create (d8._data + "/f1");
   t.ok (d7.remove (), "Directory::remove /tmp/to_be_removed");
   t.notok (d7.exists (), "Directory /tmp/to_be_removed gone");
 

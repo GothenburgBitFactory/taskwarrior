@@ -410,7 +410,7 @@ int CmdShow::execute (std::string& output)
   {
     Directory location (context.config.get ("data.location"));
 
-    if (location.data == "")
+    if (location._data == "")
       out << STRING_CMD_SHOW_NO_LOCATION << "\n";
 
     if (! location.exists ())

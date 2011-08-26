@@ -50,7 +50,7 @@
 // This string is used in two ways:
 // 1) It is used to create a new .taskrc file, by copying it directly to disk.
 // 2) It is parsed and used as default values for all Config.get calls.
-std::string Config::defaults =
+std::string Config::_defaults =
   "# Taskwarrior program configuration file.\n"
   "# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-faq',\n"
   "# 'man task-tutorial', 'man task-color', 'man task-sync' or 'man taskrc'\n"
@@ -469,7 +469,7 @@ std::string Config::defaults =
 //
 // In all real use cases, Config::load is called.
 Config::Config ()
-: original_file ()
+: _original_file ()
 {
 }
 
@@ -499,7 +499,7 @@ void Config::load (const std::string& file, int nest /* = 1 */)
   if (nest == 1)
   {
     setDefaults ();
-    original_file = File (file);
+    _original_file = File (file);
   }
 
   // Read the file, then parse the contents.
@@ -554,10 +554,10 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
             if (included.readable ())
               this->load (included, nest + 1);
             else
-              throw format (STRING_CONFIG_READ_INCLUDE, included.data);
+              throw format (STRING_CONFIG_READ_INCLUDE, included._data);
           }
           else
-            throw format (STRING_CONFIG_INCLUDE_PATH, included.data);
+            throw format (STRING_CONFIG_INCLUDE_PATH, included._data);
         }
         else
           throw format (STRING_CONFIG_BAD_ENTRY, line);
@@ -570,7 +570,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
 void Config::createDefaultRC (const std::string& rc, const std::string& data)
 {
   // Override data.location in the defaults.
-  std::string::size_type loc = defaults.find ("data.location=~/.task");
+  std::string::size_type loc = _defaults.find ("data.location=~/.task");
   //                                      loc+0^          +14^   +21^
 
   Date now;
@@ -580,7 +580,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << " "
            << now.toString ("m/d/Y H:N:S")
            << "]\n"
-           << defaults.substr (0, loc + 14)
+           << _defaults.substr (0, loc + 14)
            << data
            << "\n\n# Color theme (uncomment one to use)\n"
            << "#include /usr/local/share/doc/task/rc/light-16.theme\n"
@@ -616,7 +616,7 @@ void Config::createDefaultData (const std::string& data)
 ////////////////////////////////////////////////////////////////////////////////
 void Config::setDefaults ()
 {
-  parse (defaults);
+  parse (_defaults);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

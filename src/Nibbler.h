@@ -89,10 +89,10 @@ public:
   std::string dump ();
 
 private:
-  std::string mInput;
-  std::string::size_type mLength;
-  std::string::size_type mCursor;
-  std::string::size_type mSaved;
+  std::string _input;
+  std::string::size_type _length;
+  std::string::size_type _cursor;
+  std::string::size_type _saved;
 };
 
 #endif

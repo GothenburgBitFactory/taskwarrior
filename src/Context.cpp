@@ -100,7 +100,7 @@ int Context::initialize (int argc, const char** argv)
     std::string location;
     a3.get_data_location (location);
     data_dir = Directory (location);
-    extension_dir = data_dir.data + "/extensions";
+    extension_dir = data_dir._data + "/extensions";
 
     // Create missing config file and data directory, if necessary.
     createDefaultConfig ();
@@ -398,7 +398,7 @@ void Context::shadow ()
 /*
   // Determine if shadow file is enabled.
   File shadowFile (config.get ("shadow.file"));
-  if (shadowFile.data != "")
+  if (shadowFile._data != "")
   {
     inShadow = true;  // Prevents recursion in case shadow command writes.
 
@@ -436,21 +436,21 @@ void Context::shadow ()
 //    parse ();
     std::string result;
     (void)dispatch (result);
-    std::ofstream out (shadowFile.data.c_str ());
+    std::ofstream out (shadowFile._data.c_str ());
     if (out.good ())
     {
       out << result;
       out.close ();
     }
     else
-      throw std::string ("Could not write file '") + shadowFile.data + "'";
+      throw std::string ("Could not write file '") + shadowFile._data + "'";
 
     config.set ("detection", oldDetection);
     config.set ("color",     oldColor);
 
     // Optionally display a notification that the shadow file was updated.
     if (config.getBoolean ("shadow.notify"))
-      footnote (std::string ("[Shadow file '") + shadowFile.data + "' updated.]");
+      footnote (std::string ("[Shadow file '") + shadowFile._data + "' updated.]");
 
     inShadow = false;
   }
@@ -498,7 +498,7 @@ void Context::createDefaultConfig ()
   // Do we need to create a default rc?
   if (! rc_file.exists ())
   {
-    if (!confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file.data)))
+    if (!confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
       throw std::string (STRING_CONTEXT_NEED_RC);
 
     config.createDefaultRC (rc_file, data_dir);

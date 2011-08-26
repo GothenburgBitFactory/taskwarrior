@@ -83,13 +83,13 @@ Directory& Directory::operator= (const Directory& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Directory::create ()
 {
-  return mkdir (data.c_str (), 0755) == 0 ? true : false;
+  return mkdir (_data.c_str (), 0755) == 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Directory::remove ()
 {
-  return remove_directory (data);
+  return remove_directory (_data);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -130,7 +130,7 @@ bool Directory::remove_directory (const std::string& dir)
 std::vector <std::string> Directory::list ()
 {
   std::vector <std::string> files;
-  list (data, files, false);
+  list (_data, files, false);
   return files;
 }
 
@@ -138,7 +138,7 @@ std::vector <std::string> Directory::list ()
 std::vector <std::string> Directory::listRecursive ()
 {
   std::vector <std::string> files;
-  list (data, files, true);
+  list (_data, files, true);
   return files;
 }
 

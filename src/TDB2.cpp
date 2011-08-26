@@ -62,7 +62,7 @@ void TF2::target (const std::string& f)
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task>& TF2::get_tasks ()
 {
-//  std::cout << "# TF2::get_tasks " << _file.data << "\n";
+//  std::cout << "# TF2::get_tasks " << _file._data << "\n";
 
   if (! _loaded_tasks)
     load_tasks ();
@@ -73,7 +73,7 @@ const std::vector <Task>& TF2::get_tasks ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <std::string>& TF2::get_lines ()
 {
-//  std::cout << "# TF2::get_lines " << _file.data << "\n";
+//  std::cout << "# TF2::get_lines " << _file._data << "\n";
 
   if (! _loaded_lines)
     load_lines ();
@@ -84,7 +84,7 @@ const std::vector <std::string>& TF2::get_lines ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::string& TF2::get_contents ()
 {
-//  std::cout << "# TF2::get_contents " << _file.data << "\n";
+//  std::cout << "# TF2::get_contents " << _file._data << "\n";
 
   if (! _loaded_contents)
     load_contents ();
@@ -95,7 +95,7 @@ const std::string& TF2::get_contents ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::add_task (const Task& task)
 {
-//  std::cout << "# TF2::add_task " << _file.data << "\n";
+//  std::cout << "# TF2::add_task " << _file._data << "\n";
 
   _tasks.push_back (task);           // For subsequent queries
   _added_tasks.push_back (task);     // For commit/synch
@@ -112,7 +112,7 @@ void TF2::add_task (const Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::modify_task (const Task& task)
 {
-//  std::cout << "# TF2::modify_task " << _file.data << "\n";
+//  std::cout << "# TF2::modify_task " << _file._data << "\n";
 
   // Modify in-place.
   std::vector <Task>::iterator i;
@@ -132,7 +132,7 @@ void TF2::modify_task (const Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::add_line (const std::string& line)
 {
-//  std::cout << "# TF2::add_line " << _file.data << "\n";
+//  std::cout << "# TF2::add_line " << _file._data << "\n";
 
   _added_lines.push_back (line);
   _dirty = true;
@@ -142,7 +142,7 @@ void TF2::add_line (const std::string& line)
 // This is so that synch.key can just overwrite and not grow.
 void TF2::clear_lines ()
 {
-//  std::cout << "# TF2::clear_lines " << _file.data << "\n";
+//  std::cout << "# TF2::clear_lines " << _file._data << "\n";
   _lines.clear ();
   _dirty = true;
 }
@@ -151,7 +151,7 @@ void TF2::clear_lines ()
 // Top-down recomposition.
 void TF2::commit ()
 {
-//  std::cout << "# TF2::commit " << _file.data << "\n";
+//  std::cout << "# TF2::commit " << _file._data << "\n";
 
   // The _dirty flag indicates that the file needs to be written.
   if (_dirty)
@@ -227,7 +227,7 @@ void TF2::commit ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_tasks ()
 {
-//  std::cout << "# TF2::load_tasks " << _file.data << "\n";
+//  std::cout << "# TF2::load_tasks " << _file._data << "\n";
   context.timer_load.start ();
 
   if (! _loaded_lines)
@@ -266,7 +266,7 @@ void TF2::load_tasks ()
 
   catch (std::string& e)
   {
-    throw e + format (" in {1} at line {2}", _file.data, line_number);
+    throw e + format (" in {1} at line {2}", _file._data, line_number);
   }
 
   context.timer_load.stop ();
@@ -275,7 +275,7 @@ void TF2::load_tasks ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_lines ()
 {
-//  std::cout << "# TF2::load_lines " << _file.data << "\n";
+//  std::cout << "# TF2::load_lines " << _file._data << "\n";
 
   if (! _loaded_contents)
     load_contents ();
@@ -287,7 +287,7 @@ void TF2::load_lines ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_contents ()
 {
-//  std::cout << "# TF2::load_contents " << _file.data << "\n";
+//  std::cout << "# TF2::load_contents " << _file._data << "\n";
 
   _contents = "";
 
@@ -345,9 +345,9 @@ const std::string TF2::dump ()
 
   // File label.
   std::string label;
-  std::string::size_type slash = _file.data.rfind ('/');
+  std::string::size_type slash = _file._data.rfind ('/');
   if (slash != std::string::npos)
-    label = rightJustify (_file.data.substr (slash + 1), 14);
+    label = rightJustify (_file._data.substr (slash + 1), 14);
 
   // File mode.
   std::string mode = std::string (_file.readable () ? "r" : "-") +

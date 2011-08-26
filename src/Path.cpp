@@ -45,13 +45,13 @@ Path::Path ()
 Path::Path (const Path& other)
 {
   if (this != &other)
-    data = other.data;
+    _data = other._data;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Path::Path (const std::string& in)
 {
-  data = expand (in);
+  _data = expand (in);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ Path::~Path ()
 Path& Path::operator= (const Path& other)
 {
   if (this != &other)
-    this->data = other.data;
+    this->_data = other._data;
 
   return *this;
 }
@@ -71,36 +71,36 @@ Path& Path::operator= (const Path& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::operator== (const Path& other)
 {
-  return data == other.data;
+  return _data == other._data;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Path::operator std::string () const
 {
-  return data;
+  return _data;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Path::name () const
 {
-  if (data.length ())
+  if (_data.length ())
   {
-    std::string::size_type slash = data.rfind ('/');
+    std::string::size_type slash = _data.rfind ('/');
     if (slash != std::string::npos)
-      return data.substr (slash + 1, std::string::npos);
+      return _data.substr (slash + 1, std::string::npos);
   }
 
- return data;
+ return _data;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Path::parent () const
 {
-  if (data.length ())
+  if (_data.length ())
   {
-    std::string::size_type slash = data.rfind ('/');
+    std::string::size_type slash = _data.rfind ('/');
     if (slash != std::string::npos)
-      return data.substr (0, slash);
+      return _data.substr (0, slash);
   }
 
   return "";
@@ -109,11 +109,11 @@ std::string Path::parent () const
 ////////////////////////////////////////////////////////////////////////////////
 std::string Path::extension () const
 {
-  if (data.length ())
+  if (_data.length ())
   {
-    std::string::size_type dot = data.rfind ('.');
+    std::string::size_type dot = _data.rfind ('.');
     if (dot != std::string::npos)
-      return data.substr (dot + 1, std::string::npos);
+      return _data.substr (dot + 1, std::string::npos);
   }
 
   return "";
@@ -122,14 +122,14 @@ std::string Path::extension () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::exists () const
 {
-  return access (data.c_str (), F_OK) ? false : true;
+  return access (_data.c_str (), F_OK) ? false : true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::is_directory () const
 {
   struct stat s = {0};
-  if (! stat (data.c_str (), &s) &&
+  if (! stat (_data.c_str (), &s) &&
       s.st_mode & S_IFDIR)
     return true;
 
@@ -139,7 +139,7 @@ bool Path::is_directory () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::is_absolute () const
 {
-  if (data.length () && data.substr (0, 1) == "/")
+  if (_data.length () && _data.substr (0, 1) == "/")
     return true;
 
   return false;
@@ -148,19 +148,19 @@ bool Path::is_absolute () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::readable () const
 {
-  return access (data.c_str (), R_OK) ? false : true;
+  return access (_data.c_str (), R_OK) ? false : true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::writable () const
 {
-  return access (data.c_str (), W_OK) ? false : true;
+  return access (_data.c_str (), W_OK) ? false : true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::executable () const
 {
-  return access (data.c_str (), X_OK) ? false : true;
+  return access (_data.c_str (), X_OK) ? false : true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

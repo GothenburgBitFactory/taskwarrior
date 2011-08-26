@@ -64,8 +64,8 @@ public:
   static const std::vector <std::string> get_units ();
 
 protected:
-  time_t mSecs;
-  bool mNegative;
+  time_t _secs;
+  bool _negative;
 };
 
 #endif

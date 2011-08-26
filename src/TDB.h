@@ -80,18 +80,18 @@ private:
   bool uuidAlreadyUsed (const std::string&, const std::vector <Task>&);
 
 private:
-  std::vector <Location> mLocations;
-  bool mLock;
-  bool mAllOpenAndLocked;
-  int mId;
+  std::vector <Location> _locations;
+  bool _lock;
+  bool _all_opened_and_locked;
+  int _id;
 
-  std::vector <Task> mPending;   // Contents of pending.data
-  std::vector <Task> mCompleted; // Contents of pending.data
-  std::vector <Task> mNew;       // Uncommitted new tasks
-  std::vector <Task> mModified;  // Uncommitted modified tasks
+  std::vector <Task> _pending;   // Contents of pending.data
+  std::vector <Task> _completed; // Contents of pending.data
+  std::vector <Task> _new;       // Uncommitted new tasks
+  std::vector <Task> _modified;  // Uncommitted modified tasks
 
-  std::map <int, std::string> mI2U; // ID -> UUID map
-  std::map <std::string, int> mU2I; // UUID -> ID map
+  std::map <int, std::string> _I2U; // ID -> UUID map
+  std::map <std::string, int> _U2I; // UUID -> ID map
 };
 
 #endif

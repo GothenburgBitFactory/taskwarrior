@@ -46,10 +46,10 @@ public:
   static bool is_filelist(const std::string&);
 
 protected:
-  std::string executable;
-  std::vector<std::string> arguments;
+  std::string _executable;
+  std::vector<std::string> _arguments;
 
-  Uri uri;
+  Uri _uri;
 
   int execute();
 };

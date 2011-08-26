@@ -144,34 +144,34 @@ void readTaskmods (std::vector <std::string> &input,
 //       [TDB::unlock]
 //
 TDB::TDB ()
-: mLock (true)
-, mAllOpenAndLocked (false)
-, mId (1)
+: _lock (true)
+, _all_opened_and_locked (false)
+, _id (1)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 TDB::~TDB ()
 {
-  if (mAllOpenAndLocked)
+  if (_all_opened_and_locked)
     unlock ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::clear ()
 {
-  mLocations.clear ();
-  mLock = true;
+  _locations.clear ();
+  _lock = true;
 
-  if (mAllOpenAndLocked)
+  if (_all_opened_and_locked)
     unlock ();
 
-  mAllOpenAndLocked = false;
-  mId = 1;
-  mPending.clear ();
-  mNew.clear ();
-  mCompleted.clear ();
-  mModified.clear ();
+  _all_opened_and_locked = false;
+  _id = 1;
+  _pending.clear ();
+  _new.clear ();
+  _completed.clear ();
+  _modified.clear ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -183,53 +183,53 @@ void TDB::location (const std::string& path)
           path +
           "' does not exist, or is not readable and writable.";
 
-  mLocations.push_back (Location (d));
+  _locations.push_back (Location (d));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::lock (bool lockFile /* = true */)
 {
-  mLock = lockFile;
+  _lock = lockFile;
 
-  mPending.clear ();
-  mNew.clear ();
-  mCompleted.clear ();
-  mModified.clear ();
+  _pending.clear ();
+  _new.clear ();
+  _completed.clear ();
+  _modified.clear ();
 
-  foreach (location, mLocations)
+  foreach (location, _locations)
   {
-    location->pending   = openAndLock (location->path + "/pending.data");
-    location->completed = openAndLock (location->path + "/completed.data");
-    location->undo      = openAndLock (location->path + "/undo.data");
+    location->_pending   = openAndLock (location->_path + "/pending.data");
+    location->_completed = openAndLock (location->_path + "/completed.data");
+    location->_undo      = openAndLock (location->_path + "/undo.data");
   }
 
-  mAllOpenAndLocked = true;
+  _all_opened_and_locked = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::unlock ()
 {
   // Do not clear out these items, as they may be used in a read-only fashion.
-  // mPending.clear ();
-  // mNew.clear ();
-  // mModified.clear ();
+  // _pending.clear ();
+  // _new.clear ();
+  // _modified.clear ();
 
-  foreach (location, mLocations)
+  foreach (location, _locations)
   {
-    fflush (location->pending);
-    fclose (location->pending);
-    location->pending = NULL;
+    fflush (location->_pending);
+    fclose (location->_pending);
+    location->_pending = NULL;
 
-    fflush (location->completed);
-    fclose (location->completed);
-    location->completed = NULL;
+    fflush (location->_completed);
+    fclose (location->_completed);
+    location->_completed = NULL;
 
-    fflush (location->undo);
-    fclose (location->undo);
-    location->completed = NULL;
+    fflush (location->_undo);
+    fclose (location->_undo);
+    location->_completed = NULL;
   }
 
-  mAllOpenAndLocked = false;
+  _all_opened_and_locked = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -280,32 +280,32 @@ int TDB::loadPending (std::vector <Task>& tasks)
   try
   {
     // Only load if not already loaded.
-    if (mPending.size () == 0)
+    if (_pending.size () == 0)
     {
-      mId = 1;
+      _id = 1;
       char line[T_LINE_MAX];
-      foreach (location, mLocations)
+      foreach (location, _locations)
       {
         line_number = 1;
-        file = location->path + "/pending.data";
+        file = location->_path + "/pending.data";
 
-        fseek (location->pending, 0, SEEK_SET);
-        while (fgets (line, T_LINE_MAX, location->pending))
+        fseek (location->_pending, 0, SEEK_SET);
+        while (fgets (line, T_LINE_MAX, location->_pending))
         {
           int length = strlen (line);
           if (length > 3) // []\n
           {
             // TODO Add hidden attribute indicating source?
             Task task (line);
-            task.id = mId++;
+            task.id = _id++;
 
-            mPending.push_back (task);
+            _pending.push_back (task);
 
             // Maintain mapping for ease of link/dependency resolution.
             // Note that this mapping is not restricted by the filter, and is
             // therefore a complete set.
-            mI2U[task.id] = task.get ("uuid");
-            mU2I[task.get ("uuid")] = task.id;
+            _I2U[task.id] = task.get ("uuid");
+            _U2I[task.get ("uuid")] = task.id;
           }
 
           ++line_number;
@@ -314,13 +314,13 @@ int TDB::loadPending (std::vector <Task>& tasks)
     }
 
     // Now filter and return.
-    foreach (task, mPending)
+    foreach (task, _pending)
       tasks.push_back (*task);
 
     // Hand back any accumulated additions, if TDB::loadPending is being called
     // repeatedly.
-    int fakeId = mId;
-    foreach (task, mNew)
+    int fakeId = _id;
+    foreach (task, _new)
     {
       task->id = fakeId++;
       tasks.push_back (*task);
@@ -348,16 +348,16 @@ int TDB::loadCompleted (std::vector <Task>& tasks)
 
   try
   {
-    if (mCompleted.size () == 0)
+    if (_completed.size () == 0)
     {
       char line[T_LINE_MAX];
-      foreach (location, mLocations)
+      foreach (location, _locations)
       {
         line_number = 1;
-        file = location->path + "/completed.data";
+        file = location->_path + "/completed.data";
 
-        fseek (location->completed, 0, SEEK_SET);
-        while (fgets (line, T_LINE_MAX, location->completed))
+        fseek (location->_completed, 0, SEEK_SET);
+        while (fgets (line, T_LINE_MAX, location->_completed))
         {
           int length = strlen (line);
           if (length > 3) // []\n
@@ -367,7 +367,7 @@ int TDB::loadCompleted (std::vector <Task>& tasks)
             Task task (line);
             task.id = 0;  // Need a value, just not a valid value.
 
-            mCompleted.push_back (task);
+            _completed.push_back (task);
           }
 
           ++line_number;
@@ -376,7 +376,7 @@ int TDB::loadCompleted (std::vector <Task>& tasks)
     }
 
     // Now filter and return.
-    foreach (task, mCompleted)
+    foreach (task, _completed)
       tasks.push_back (*task);
   }
 
@@ -393,29 +393,29 @@ int TDB::loadCompleted (std::vector <Task>& tasks)
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task>& TDB::getAllPending ()
 {
-  return mPending;
+  return _pending;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task>& TDB::getAllNew ()
 {
-  return mNew;
+  return _new;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task>& TDB::getAllCompleted ()
 {
-  return mCompleted;
+  return _completed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task>& TDB::getAllModified ()
 {
-  return mModified;
+  return _modified;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Note: mLocations[0] is where all tasks are written.
+// Note: _locations[0] is where all tasks are written.
 void TDB::add (const Task& task)
 {
   std::string unique;
@@ -429,21 +429,21 @@ void TDB::add (const Task& task)
 
   // If the tasks are loaded, then verify that this uuid is not already in
   // the file.
-  if (uuidAlreadyUsed (unique, mNew)      ||
-      uuidAlreadyUsed (unique, mModified) ||
-      uuidAlreadyUsed (unique, mPending)  ||
-      uuidAlreadyUsed (unique, mCompleted))
+  if (uuidAlreadyUsed (unique, _new)      ||
+      uuidAlreadyUsed (unique, _modified) ||
+      uuidAlreadyUsed (unique, _pending)  ||
+      uuidAlreadyUsed (unique, _completed))
     throw std::string ("Cannot add task because the uuid '") + unique + "' is not unique.";
 
-  mNew.push_back (t);
-  mI2U[task.id] = unique;
-  mU2I[task.get ("uuid")] = t.id;
+  _new.push_back (t);
+  _I2U[task.id] = unique;
+  _U2I[task.get ("uuid")] = t.id;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB::update (const Task& task)
 {
-  mModified.push_back (task);
+  _modified.push_back (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -453,35 +453,35 @@ int TDB::commit ()
 {
   context.timer_gc.start ();
 
-  int quantity = mNew.size () + mModified.size ();
+  int quantity = _new.size () + _modified.size ();
 
   // This is an optimization.  If there are only new tasks, and none were
   // modified, simply seek to the end of pending and write.
-  if (mNew.size () && ! mModified.size ())
+  if (_new.size () && ! _modified.size ())
   {
-    fseek (mLocations[0].pending, 0, SEEK_END);
-    foreach (task, mNew)
+    fseek (_locations[0]._pending, 0, SEEK_END);
+    foreach (task, _new)
     {
-      mPending.push_back (*task);
-      fputs (task->composeF4 ().c_str (), mLocations[0].pending);
+      _pending.push_back (*task);
+      fputs (task->composeF4 ().c_str (), _locations[0]._pending);
     }
 
-    fseek (mLocations[0].undo, 0, SEEK_END);
-    foreach (task, mNew)
-      writeUndo (*task, mLocations[0].undo);
+    fseek (_locations[0]._undo, 0, SEEK_END);
+    foreach (task, _new)
+      writeUndo (*task, _locations[0]._undo);
 
-    mNew.clear ();
+    _new.clear ();
     return quantity;
   }
 
   // The alternative is to potentially rewrite both files.
-  else if (mNew.size () || mModified.size ())
+  else if (_new.size () || _modified.size ())
   {
-    // allPending is a copy of mPending, with all modifications included, and
+    // allPending is a copy of _pending, with all modifications included, and
     // new tasks appended.
     std::vector <Task> allPending;
-    allPending = mPending;
-    foreach (mtask, mModified)
+    allPending = _pending;
+    foreach (mtask, _modified)
     {
       foreach (task, allPending)
       {
@@ -496,29 +496,29 @@ int TDB::commit ()
       ;
     }
 
-    foreach (task, mNew)
+    foreach (task, _new)
       allPending.push_back (*task);
 
     // Write out all pending.
-    if (fseek (mLocations[0].pending, 0, SEEK_SET) == 0)
+    if (fseek (_locations[0]._pending, 0, SEEK_SET) == 0)
     {
-      if (ftruncate (fileno (mLocations[0].pending), 0))
+      if (ftruncate (fileno (_locations[0]._pending), 0))
         throw std::string ("Failed to truncate pending.data file ");
 
       foreach (task, allPending)
-        fputs (task->composeF4 ().c_str (), mLocations[0].pending);
+        fputs (task->composeF4 ().c_str (), _locations[0]._pending);
     }
 
     // Update the undo log.
-    if (fseek (mLocations[0].undo, 0, SEEK_END) == 0)
+    if (fseek (_locations[0]._undo, 0, SEEK_END) == 0)
     {
-      foreach (mtask, mModified)
+      foreach (mtask, _modified)
       {
-        foreach (task, mPending)
+        foreach (task, _pending)
         {
           if (task->id == mtask->id)
           {
-            writeUndo (*task, *mtask, mLocations[0].undo);
+            writeUndo (*task, *mtask, _locations[0]._undo);
             goto next_mod2;
           }
         }
@@ -527,14 +527,14 @@ int TDB::commit ()
         ;
       }
 
-      foreach (task, mNew)
-        writeUndo (*task, mLocations[0].undo);
+      foreach (task, _new)
+        writeUndo (*task, _locations[0]._undo);
     }
 
-    mPending = allPending;
+    _pending = allPending;
 
-    mModified.clear ();
-    mNew.clear ();
+    _modified.clear ();
+    _new.clear ();
   }
 
   context.timer_gc.stop ();
@@ -561,10 +561,10 @@ int TDB::gc ()
   int count_completed_changes = 0;
   Date now;
 
-  if (mNew.size ())
+  if (_new.size ())
     throw std::string ("Unexpected new tasks found during gc.");
 
-  if (mModified.size ())
+  if (_modified.size ())
     throw std::string ("Unexpected modified tasks found during gc.");
 
   lock ();
@@ -575,7 +575,7 @@ int TDB::gc ()
   // Search for dangling dependencies.  These are dependencies whose uuid cannot
   // be converted to an id by TDB.
   std::vector <std::string> deps;
-  foreach (task, mPending)
+  foreach (task, _pending)
   {
     if (task->has ("depends"))
     {
@@ -600,7 +600,7 @@ int TDB::gc ()
   // completed list.  Isn't garbage collection easy?
   std::vector <Task> still_pending;
   std::vector <Task> newly_completed;
-  foreach (task, mPending)
+  foreach (task, _pending)
   {
     Task::status s = task->getStatus ();
     if (s == Task::completed ||
@@ -633,16 +633,16 @@ int TDB::gc ()
   // No commit - all updates performed manually.
   if (count_pending_changes > 0)
   {
-    if (fseek (mLocations[0].pending, 0, SEEK_SET) == 0)
+    if (fseek (_locations[0]._pending, 0, SEEK_SET) == 0)
     {
-      if (ftruncate (fileno (mLocations[0].pending), 0))
+      if (ftruncate (fileno (_locations[0]._pending), 0))
         throw std::string ("Failed to truncate pending.data file ");
 
       foreach (task, still_pending)
-        fputs (task->composeF4 ().c_str (), mLocations[0].pending);
+        fputs (task->composeF4 ().c_str (), _locations[0]._pending);
 
       // Update cached copy.
-      mPending = still_pending;
+      _pending = still_pending;
     }
   }
 
@@ -650,9 +650,9 @@ int TDB::gc ()
   // whole list.
   if (count_completed_changes > 0)
   {
-    fseek (mLocations[0].completed, 0, SEEK_END);
+    fseek (_locations[0]._completed, 0, SEEK_END);
     foreach (task, newly_completed)
-      fputs (task->composeF4 ().c_str (), mLocations[0].completed);
+      fputs (task->composeF4 ().c_str (), _locations[0]._completed);
   }
 
   // Close files.
@@ -669,7 +669,7 @@ int TDB::gc ()
 ////////////////////////////////////////////////////////////////////////////////
 int TDB::nextId ()
 {
-  return mId++;
+  return _id++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -677,9 +677,9 @@ void TDB::undo ()
 {
   Directory location (context.config.get ("data.location"));
 
-  std::string undoFile      = location.data + "/undo.data";
-  std::string pendingFile   = location.data + "/pending.data";
-  std::string completedFile = location.data + "/completed.data";
+  std::string undoFile      = location._data + "/undo.data";
+  std::string pendingFile   = location._data + "/pending.data";
+  std::string completedFile = location._data + "/completed.data";
 
   // load undo.data
   std::vector <std::string> u;
@@ -1043,7 +1043,7 @@ void TDB::merge (const std::string& mergeFile)
 
   // load undo file (left/local branch)
   Directory location (context.config.get ("data.location"));
-  std::string undoFile = location.data + "/undo.data";
+  std::string undoFile = location._data + "/undo.data";
 
   std::vector <std::string> l;
   if (! File::read (undoFile, l))
@@ -1364,10 +1364,10 @@ void TDB::merge (const std::string& mergeFile)
 
   if (!mods.empty ())
   {
-    std::string pendingFile   = location.data + "/pending.data";
+    std::string pendingFile   = location._data + "/pending.data";
     std::vector <std::string> pending;
 
-    std::string completedFile = location.data + "/completed.data";
+    std::string completedFile = location._data + "/completed.data";
     std::vector <std::string> completed;
 
     if (! File::read (pendingFile, pending))
@@ -1560,7 +1560,7 @@ void TDB::merge (const std::string& mergeFile)
 std::string TDB::uuid (int id) const
 {
   std::map <int, std::string>::const_iterator i;
-  if ((i = mI2U.find (id)) != mI2U.end ())
+  if ((i = _I2U.find (id)) != _I2U.end ())
     return i->second;
 
   return "";
@@ -1570,7 +1570,7 @@ std::string TDB::uuid (int id) const
 int TDB::id (const std::string& uuid) const
 {
   std::map <std::string, int>::const_iterator i;
-  if ((i = mU2I.find (uuid)) != mU2I.end ())
+  if ((i = _U2I.find (uuid)) != _U2I.end ())
     return i->second;
 
   return 0;
@@ -1595,7 +1595,7 @@ FILE* TDB::openAndLock (const std::string& file)
     throw std::string ("Could not open '") + file + "'.";
 
   // Lock if desired.  Try three times before failing.
-  if (mLock)
+  if (_lock)
   {
     int retry = 0;
     while (flock (fileno (in), LOCK_NB | LOCK_EX) && ++retry <= 3)

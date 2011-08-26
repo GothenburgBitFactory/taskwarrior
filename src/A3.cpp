@@ -300,13 +300,13 @@ void A3::rc_override (
       rc = File (arg->_raw.substr (3));
       home = rc;
 
-      std::string::size_type last_slash = rc.data.rfind ("/");
+      std::string::size_type last_slash = rc._data.rfind ("/");
       if (last_slash != std::string::npos)
-        home = rc.data.substr (0, last_slash);
+        home = rc._data.substr (0, last_slash);
       else
         home = ".";
 
-      context.header ("Using alternate .taskrc file " + rc.data);
+      context.header ("Using alternate .taskrc file " + rc._data);
 
       // Keep looping, because if there are multiple rc:file arguments, we
       // want the last one to dominate.

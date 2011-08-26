@@ -66,11 +66,11 @@ public:
   std::string getTimeStr () const;
 
 protected:
-  Task after;
-  Task before;
-  long timestamp;
-  bool bAfterSet;
-  bool bBeforeSet;
+  Task _after;
+  Task _before;
+  long _timestamp;
+  bool _bAfterSet;
+  bool _bBeforeSet;
 };
 
 #endif

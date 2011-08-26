@@ -37,22 +37,22 @@ int main (int argc, char** argv)
 
   // Path ();
   Path p0;
-  t.ok (p0.data == "", "Path::Path");
+  t.ok (p0._data == "", "Path::Path");
 
   // Path (const Path&);
   Path p1 = Path ("foo");
-  t.ok (p1.data == "foo", "Path::operator=");
+  t.ok (p1._data == "foo", "Path::operator=");
 
   // Path (const std::string&);
   Path p2 ("~");
-  t.ok (p2.data != "~", "~ expanded to " + p2.data);
+  t.ok (p2._data != "~", "~ expanded to " + p2._data);
 
   Path p3 ("/tmp");
-  t.ok (p3.data == "/tmp", "/tmp -> /tmp");
+  t.ok (p3._data == "/tmp", "/tmp -> /tmp");
 
   // Path& operator= (const Path&);
   Path p3_copy (p3);
-  t.is (p3.data, p3_copy.data, "Path::Path (Path&)");
+  t.is (p3._data, p3_copy._data, "Path::Path (Path&)");
 
   // operator (std::string) const;
   t.is ((std::string) p3, "/tmp", "Path::operator (std::string) const");

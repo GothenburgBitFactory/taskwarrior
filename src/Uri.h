@@ -57,13 +57,13 @@ public:
   void parse ();
 
 public:
-  std::string data;
-  std::string path;
-  std::string host;
-  std::string port;
-  std::string user;
-  std::string protocol;
-  bool parsed;
+  std::string _data;
+  std::string _path;
+  std::string _host;
+  std::string _port;
+  std::string _user;
+  std::string _protocol;
+  bool _parsed;
 };
 
 #endif

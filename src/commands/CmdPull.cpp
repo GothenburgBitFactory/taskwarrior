@@ -56,59 +56,59 @@ int CmdPull::execute (std::string& output)
   Uri uri (file, "pull");
   uri.parse ();
 
-  if (uri.data.length ())
+  if (uri._data.length ())
   {
 		Directory location (context.config.get ("data.location"));
 
     if (! uri.append ("{pending,undo,completed}.data"))
-      throw std::string ("The uri '") + uri.path + "' is not a directory. Did you forget a trailing '/'?";
+      throw std::string ("The uri '") + uri._path + "' is not a directory. Did you forget a trailing '/'?";
 
 		Transport* transport;
 		if ((transport = Transport::getTransport (uri)) != NULL)
 		{
-			transport->recv (location.data + "/");
+			transport->recv (location._data + "/");
 			delete transport;
 		}
 		else
 		{
       // Verify that files are not being copied from rc.data.location to the
       // same place.
-      if (Directory (uri.path) == Directory (context.config.get ("data.location")))
+      if (Directory (uri._path) == Directory (context.config.get ("data.location")))
         throw std::string ("Cannot pull files when the source and destination are the same.");
 
       // copy files locally
 
       // remove {pending,undo,completed}.data
-      uri.path = uri.parent();
+      uri._path = uri.parent();
 
-      Path path1 (uri.path + "undo.data");
-      Path path2 (uri.path + "pending.data");
-      Path path3 (uri.path + "completed.data");
+      Path path1 (uri._path + "undo.data");
+      Path path2 (uri._path + "pending.data");
+      Path path3 (uri._path + "completed.data");
 
       if (path1.exists() && path2.exists() && path3.exists())
       {
 //        if (confirm ("xxxxxxxxxxxxx"))
 //        {
-          std::ofstream ofile1 ((location.data + "/undo.data").c_str(), std::ios_base::binary);
-          std::ifstream ifile1 (path1.data.c_str()                    , std::ios_base::binary);
+          std::ofstream ofile1 ((location._data + "/undo.data").c_str(), std::ios_base::binary);
+          std::ifstream ifile1 (path1._data.c_str()                    , std::ios_base::binary);
           ofile1 << ifile1.rdbuf();
 
-          std::ofstream ofile2 ((location.data + "/pending.data").c_str(), std::ios_base::binary);
-          std::ifstream ifile2 (path2.data.c_str()                    , std::ios_base::binary);
+          std::ofstream ofile2 ((location._data + "/pending.data").c_str(), std::ios_base::binary);
+          std::ifstream ifile2 (path2._data.c_str()                    , std::ios_base::binary);
           ofile2 << ifile2.rdbuf();
 
-          std::ofstream ofile3 ((location.data + "/completed.data").c_str(), std::ios_base::binary);
-          std::ifstream ifile3 (path3.data.c_str()                    , std::ios_base::binary);
+          std::ofstream ofile3 ((location._data + "/completed.data").c_str(), std::ios_base::binary);
+          std::ifstream ifile3 (path3._data.c_str()                    , std::ios_base::binary);
           ofile3 << ifile3.rdbuf();
 //        }
       }
       else
       {
-        throw std::string ("At least one of the database files in '" + uri.path + "' is not present.");
+        throw std::string ("At least one of the database files in '" + uri._path + "' is not present.");
       }
 		}
 
-    output += "Tasks transferred from " + uri.data + "\n";
+    output += "Tasks transferred from " + uri._data + "\n";
   }
   else
     throw std::string ("No uri was specified for the pull.  Either specify "

@@ -101,16 +101,16 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration ()
-: mSecs (0)
-, mNegative (false)
+: _secs (0)
+, _negative (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration (const Duration& other)
 {
-  mSecs     = other.mSecs;
-  mNegative = other.mNegative;
+  _secs     = other._secs;
+  _negative = other._negative;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -118,25 +118,25 @@ Duration::Duration (time_t input)
 {
   if (input < 0)
   {
-    mSecs = -input;
-    mNegative = true;
+    _secs = -input;
+    _negative = true;
   }
   else
   {
-    mSecs = input;
-    mNegative = false;
+    _secs = input;
+    _negative = false;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration::Duration (const std::string& input)
-: mSecs (0)
-, mNegative (false)
+: _secs (0)
+, _negative (false)
 {
   if (digitsOnly (input))
   {
-    mSecs = (time_t) strtol (input.c_str (), NULL, 10);
-    mNegative = false;
+    _secs = (time_t) strtol (input.c_str (), NULL, 10);
+    _negative = false;
   }
   else
     parse (input);
@@ -145,14 +145,14 @@ Duration::Duration (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 Duration::operator time_t () const
 {
-  return mSecs;
+  return _secs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Duration::operator std::string () const
 {
   std::stringstream s;
-  s << (mNegative ? - (long) mSecs : (long) mSecs);
+  s << (_negative ? - (long) _secs : (long) _secs);
   return s.str ();
 }
 
@@ -161,8 +161,8 @@ Duration& Duration::operator= (const Duration& other)
 {
   if (this != &other)
   {
-    mSecs     = other.mSecs;
-    mNegative = other.mNegative;
+    _secs     = other._secs;
+    _negative = other._negative;
   }
 
   return *this;
@@ -171,14 +171,14 @@ Duration& Duration::operator= (const Duration& other)
 ////////////////////////////////////////////////////////////////////////////////
 Duration Duration::operator- (const Duration& other)
 {
-  int left  =       mSecs * (      mNegative ? -1 : 1);
-  int right = other.mSecs * (other.mNegative ? -1 : 1);
+  int left  =       _secs * (      _negative ? -1 : 1);
+  int right = other._secs * (other._negative ? -1 : 1);
 
   left -= right;
 
   Duration result;
-  result.mSecs = abs (left);
-  result.mNegative = left < 0;
+  result._secs = abs (left);
+  result._negative = left < 0;
 
   return result;
 }
@@ -186,14 +186,14 @@ Duration Duration::operator- (const Duration& other)
 ////////////////////////////////////////////////////////////////////////////////
 Duration Duration::operator+ (const Duration& other)
 {
-  int left  =       mSecs * (      mNegative ? -1 : 1);
-  int right = other.mSecs * (other.mNegative ? -1 : 1);
+  int left  =       _secs * (      _negative ? -1 : 1);
+  int right = other._secs * (other._negative ? -1 : 1);
 
   left += right;
 
   Duration result;
-  result.mSecs = abs (left);
-  result.mNegative = left < 0;
+  result._secs = abs (left);
+  result._negative = left < 0;
 
   return result;
 }
@@ -201,13 +201,13 @@ Duration Duration::operator+ (const Duration& other)
 ////////////////////////////////////////////////////////////////////////////////
 Duration& Duration::operator-= (const Duration& other)
 {
-  int left  =       mSecs * (      mNegative ? -1 : 1);
-  int right = other.mSecs * (other.mNegative ? -1 : 1);
+  int left  =       _secs * (      _negative ? -1 : 1);
+  int right = other._secs * (other._negative ? -1 : 1);
 
   left -= right;
 
-  mSecs = abs (left);
-  mNegative = left < 0;
+  _secs = abs (left);
+  _negative = left < 0;
 
   return *this;
 }
@@ -215,13 +215,13 @@ Duration& Duration::operator-= (const Duration& other)
 ////////////////////////////////////////////////////////////////////////////////
 Duration& Duration::operator+= (const Duration& other)
 {
-  int left  =       mSecs * (      mNegative ? -1 : 1);
-  int right = other.mSecs * (other.mNegative ? -1 : 1);
+  int left  =       _secs * (      _negative ? -1 : 1);
+  int right = other._secs * (other._negative ? -1 : 1);
 
   left += right;
 
-  mSecs = abs (left);
-  mNegative = left < 0;
+  _secs = abs (left);
+  _negative = left < 0;
 
   return *this;
 }
@@ -230,34 +230,34 @@ Duration& Duration::operator+= (const Duration& other)
 std::string Duration::format () const
 {
   char formatted[24];
-  float days = (float) mSecs / 86400.0;
+  float days = (float) _secs / 86400.0;
 
-  if (mSecs >= 86400 * 365)
-    sprintf (formatted, "%s%.1f yrs", (mNegative ? "-" : ""), (days / 365));
-  else if (mSecs > 86400 * 84)
+  if (_secs >= 86400 * 365)
+    sprintf (formatted, "%s%.1f yrs", (_negative ? "-" : ""), (days / 365));
+  else if (_secs > 86400 * 84)
     sprintf (formatted, "%s%1d mth%s",
-                        (mNegative ? "-" : ""),  (int) (float) (days / 30.6),
+                        (_negative ? "-" : ""),  (int) (float) (days / 30.6),
                         ((int) (float) (days / 30.6) == 1 ? "" : "s"));
-  else if (mSecs > 86400 * 13)
+  else if (_secs > 86400 * 13)
     sprintf (formatted, "%s%d wk%s",
-                        (mNegative ? "-" : ""),  (int) (float) (days / 7.0),
+                        (_negative ? "-" : ""),  (int) (float) (days / 7.0),
                         ((int) (float) (days / 7.0) == 1 ? "" : "s"));
-  else if (mSecs >= 86400)
+  else if (_secs >= 86400)
     sprintf (formatted, "%s%d day%s",
-                        (mNegative ? "-" : ""),  (int) days,
+                        (_negative ? "-" : ""),  (int) days,
                         ((int) days == 1 ? "" : "s"));
-  else if (mSecs >= 3600)
+  else if (_secs >= 3600)
     sprintf (formatted, "%s%d hr%s",
-                        (mNegative ? "-" : ""),  (int) (float) (mSecs / 3600),
-                        ((int) (float) (mSecs / 3600) == 1 ? "" : "s"));
-  else if (mSecs >= 60)
+                        (_negative ? "-" : ""),  (int) (float) (_secs / 3600),
+                        ((int) (float) (_secs / 3600) == 1 ? "" : "s"));
+  else if (_secs >= 60)
     sprintf (formatted, "%s%d min%s",
-                        (mNegative ? "-" : ""),  (int) (float) (mSecs / 60),
-                        ((int) (float) (mSecs / 60) == 1 ? "" : "s"));
-  else if (mSecs >= 1)
+                        (_negative ? "-" : ""),  (int) (float) (_secs / 60),
+                        ((int) (float) (_secs / 60) == 1 ? "" : "s"));
+  else if (_secs >= 1)
     sprintf (formatted, "%s%d sec%s",
-                        (mNegative ? "-" : ""),  (int) mSecs,
-                        ((int) mSecs == 1 ? "" : "s"));
+                        (_negative ? "-" : ""),  (int) _secs,
+                        ((int) _secs == 1 ? "" : "s"));
   else
     strcpy (formatted, "-"); // no i18n
 
@@ -268,15 +268,15 @@ std::string Duration::format () const
 std::string Duration::formatCompact () const
 {
   char formatted[24];
-  float days = (float) mSecs / 86400.0;
+  float days = (float) _secs / 86400.0;
 
-       if (mSecs >= 86400 * 365) sprintf (formatted, "%s%.1fy", (mNegative ? "-" : ""), (days / 365));
-  else if (mSecs >= 86400 * 84)  sprintf (formatted, "%s%1dmo", (mNegative ? "-" : ""), (int) (float) (days / 30.6));
-  else if (mSecs >= 86400 * 13)  sprintf (formatted, "%s%dwk",  (mNegative ? "-" : ""), (int) (float) (days / 7.0));
-  else if (mSecs >= 86400)       sprintf (formatted, "%s%dd",   (mNegative ? "-" : ""), (int) days);
-  else if (mSecs >= 3600)        sprintf (formatted, "%s%dh",   (mNegative ? "-" : ""), (int) (float) (mSecs / 3600));
-  else if (mSecs >= 60)          sprintf (formatted, "%s%dm",   (mNegative ? "-" : ""), (int) (float) (mSecs / 60));
-  else if (mSecs >= 1)           sprintf (formatted, "%s%ds",   (mNegative ? "-" : ""), (int) mSecs);
+       if (_secs >= 86400 * 365) sprintf (formatted, "%s%.1fy", (_negative ? "-" : ""), (days / 365));
+  else if (_secs >= 86400 * 84)  sprintf (formatted, "%s%1dmo", (_negative ? "-" : ""), (int) (float) (days / 30.6));
+  else if (_secs >= 86400 * 13)  sprintf (formatted, "%s%dwk",  (_negative ? "-" : ""), (int) (float) (days / 7.0));
+  else if (_secs >= 86400)       sprintf (formatted, "%s%dd",   (_negative ? "-" : ""), (int) days);
+  else if (_secs >= 3600)        sprintf (formatted, "%s%dh",   (_negative ? "-" : ""), (int) (float) (_secs / 3600));
+  else if (_secs >= 60)          sprintf (formatted, "%s%dm",   (_negative ? "-" : ""), (int) (float) (_secs / 60));
+  else if (_secs >= 1)           sprintf (formatted, "%s%ds",   (_negative ? "-" : ""), (int) _secs);
   else                           strcpy (formatted, "-");
 
   return std::string (formatted);
@@ -287,13 +287,13 @@ std::string Duration::formatPrecise () const
 {
   char formatted[24];
 
-  int days    = mSecs / 86400;
-  int hours   = (mSecs % 86400) / 3600;
-  int minutes = (mSecs % 3600) / 60;
-  int seconds = mSecs % 60;
+  int days    = _secs / 86400;
+  int hours   = (_secs % 86400) / 3600;
+  int minutes = (_secs % 3600) / 60;
+  int seconds = _secs % 60;
 
-  if (days > 0) sprintf (formatted, "%s%dd %d:%02d:%02d", (mNegative ? "-" : ""), days, hours, minutes, seconds);
-  else          sprintf (formatted, "%s%d:%02d:%02d", (mNegative ? "-" : ""), hours, minutes, seconds);
+  if (days > 0) sprintf (formatted, "%s%dd %d:%02d:%02d", (_negative ? "-" : ""), days, hours, minutes, seconds);
+  else          sprintf (formatted, "%s%d:%02d:%02d", (_negative ? "-" : ""), hours, minutes, seconds);
 
   return std::string (formatted);
 }
@@ -301,8 +301,8 @@ std::string Duration::formatPrecise () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator< (const Duration& other)
 {
-  long left  = (long) (      mNegative ?       -mSecs :       mSecs);
-  long right = (long) (other.mNegative ? -other.mSecs : other.mSecs);
+  long left  = (long) (      _negative ?       -_secs :       _secs);
+  long right = (long) (other._negative ? -other._secs : other._secs);
 
   return left < right;
 }
@@ -310,8 +310,8 @@ bool Duration::operator< (const Duration& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator<= (const Duration& other)
 {
-  long left  = (long) (      mNegative ?       -mSecs :       mSecs);
-  long right = (long) (other.mNegative ? -other.mSecs : other.mSecs);
+  long left  = (long) (      _negative ?       -_secs :       _secs);
+  long right = (long) (other._negative ? -other._secs : other._secs);
 
   return left <= right;
 }
@@ -319,8 +319,8 @@ bool Duration::operator<= (const Duration& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator> (const Duration& other)
 {
-  long left  = (long) (      mNegative ?       -mSecs :       mSecs);
-  long right = (long) (other.mNegative ? -other.mSecs : other.mSecs);
+  long left  = (long) (      _negative ?       -_secs :       _secs);
+  long right = (long) (other._negative ? -other._secs : other._secs);
 
   return left > right;
 }
@@ -328,8 +328,8 @@ bool Duration::operator> (const Duration& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator>= (const Duration& other)
 {
-  long left  = (long) (      mNegative ?       -mSecs :       mSecs);
-  long right = (long) (other.mNegative ? -other.mSecs : other.mSecs);
+  long left  = (long) (      _negative ?       -_secs :       _secs);
+  long right = (long) (other._negative ? -other._secs : other._secs);
 
   return left >= right;
 }
@@ -342,7 +342,7 @@ Duration::~Duration ()
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::negative () const
 {
-  return mNegative;
+  return _negative;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -394,11 +394,11 @@ void Duration::parse (const std::string& input)
 
   if (value < 0.0)
   {
-    mNegative = true;
+    _negative = true;
     value = -value;
   }
   else
-    mNegative = false;
+    _negative = false;
 
   std::string units;
   n.getUntilEOS (units);
@@ -408,7 +408,7 @@ void Duration::parse (const std::string& input)
   for (unsigned int i = 0; i < NUM_DURATIONS; ++i)
     supported.push_back (durations[i]);
 
-  mSecs = 0;
+  _secs = 0;
   std::vector <std::string> matches;
   if (autoComplete (units,
                     supported,
@@ -417,73 +417,73 @@ void Duration::parse (const std::string& input)
   {
     std::string match = matches[0];
 
-         if (match == "biannual")                         mSecs = (int) (value * 86400 * 730);
-    else if (match == "biyearly")                         mSecs = (int) (value * 86400 * 730);
+         if (match == "biannual")                         _secs = (int) (value * 86400 * 730);
+    else if (match == "biyearly")                         _secs = (int) (value * 86400 * 730);
 
-    else if (match == "yearly")                           mSecs = (int) (value * 86400 * 365);
-    else if (match == "annual")                           mSecs = (int) (value * 86400 * 365);
-    else if (match == "years")                            mSecs = (int) (value * 86400 * 365);
-    else if (match == "year")                             mSecs = (int) (value * 86400 * 365);
-    else if (match == "yrs")                              mSecs = (int) (value * 86400 * 365);
-    else if (match == "yr")                               mSecs = (int) (value * 86400 * 365);
-    else if (match == "y")                                mSecs = (int) (value * 86400 * 365);
+    else if (match == "yearly")                           _secs = (int) (value * 86400 * 365);
+    else if (match == "annual")                           _secs = (int) (value * 86400 * 365);
+    else if (match == "years")                            _secs = (int) (value * 86400 * 365);
+    else if (match == "year")                             _secs = (int) (value * 86400 * 365);
+    else if (match == "yrs")                              _secs = (int) (value * 86400 * 365);
+    else if (match == "yr")                               _secs = (int) (value * 86400 * 365);
+    else if (match == "y")                                _secs = (int) (value * 86400 * 365);
 
-    else if (match == "semiannual")                       mSecs = (int) (value * 86400 * 183);
+    else if (match == "semiannual")                       _secs = (int) (value * 86400 * 183);
 
-    else if (match == "bimonthly")                        mSecs = (int) (value * 86400 * 61);
-    else if (match == "quarterly")                        mSecs = (int) (value * 86400 * 91);
-    else if (match == "quarters")                         mSecs = (int) (value * 86400 * 91);
-    else if (match == "qrtrs")                            mSecs = (int) (value * 86400 * 91);
-    else if (match == "qtrs")                             mSecs = (int) (value * 86400 * 91);
-    else if (match == "qtr")                              mSecs = (int) (value * 86400 * 91);
-    else if (match == "q")                                mSecs = (int) (value * 86400 * 91);
+    else if (match == "bimonthly")                        _secs = (int) (value * 86400 * 61);
+    else if (match == "quarterly")                        _secs = (int) (value * 86400 * 91);
+    else if (match == "quarters")                         _secs = (int) (value * 86400 * 91);
+    else if (match == "qrtrs")                            _secs = (int) (value * 86400 * 91);
+    else if (match == "qtrs")                             _secs = (int) (value * 86400 * 91);
+    else if (match == "qtr")                              _secs = (int) (value * 86400 * 91);
+    else if (match == "q")                                _secs = (int) (value * 86400 * 91);
 
-    else if (match == "monthly")                          mSecs = (int) (value * 86400 * 30);
-    else if (match == "month")                            mSecs = (int) (value * 86400 * 30);
-    else if (match == "months")                           mSecs = (int) (value * 86400 * 30);
-    else if (match == "mnths")                            mSecs = (int) (value * 86400 * 30);
-    else if (match == "mos")                              mSecs = (int) (value * 86400 * 30);
-    else if (match == "mo")                               mSecs = (int) (value * 86400 * 30);
-    else if (match == "mths")                             mSecs = (int) (value * 86400 * 30);
-    else if (match == "mth")                              mSecs = (int) (value * 86400 * 30);
-    else if (match == "m")                                mSecs = (int) (value * 86400 * 30);
+    else if (match == "monthly")                          _secs = (int) (value * 86400 * 30);
+    else if (match == "month")                            _secs = (int) (value * 86400 * 30);
+    else if (match == "months")                           _secs = (int) (value * 86400 * 30);
+    else if (match == "mnths")                            _secs = (int) (value * 86400 * 30);
+    else if (match == "mos")                              _secs = (int) (value * 86400 * 30);
+    else if (match == "mo")                               _secs = (int) (value * 86400 * 30);
+    else if (match == "mths")                             _secs = (int) (value * 86400 * 30);
+    else if (match == "mth")                              _secs = (int) (value * 86400 * 30);
+    else if (match == "m")                                _secs = (int) (value * 86400 * 30);
 
-    else if (match == "biweekly")                         mSecs = (int) (value * 86400 * 14);
-    else if (match == "fortnight")                        mSecs = (int) (value * 86400 * 14);
+    else if (match == "biweekly")                         _secs = (int) (value * 86400 * 14);
+    else if (match == "fortnight")                        _secs = (int) (value * 86400 * 14);
 
-    else if (match == "weekly")                           mSecs = (int) (value * 86400 * 7);
-    else if (match == "sennight")                         mSecs = (int) (value * 86400 * 7);
-    else if (match == "weeks")                            mSecs = (int) (value * 86400 * 7);
-    else if (match == "week")                             mSecs = (int) (value * 86400 * 7);
-    else if (match == "wks")                              mSecs = (int) (value * 86400 * 7);
-    else if (match == "wk")                               mSecs = (int) (value * 86400 * 7);
-    else if (match == "w")                                mSecs = (int) (value * 86400 * 7);
+    else if (match == "weekly")                           _secs = (int) (value * 86400 * 7);
+    else if (match == "sennight")                         _secs = (int) (value * 86400 * 7);
+    else if (match == "weeks")                            _secs = (int) (value * 86400 * 7);
+    else if (match == "week")                             _secs = (int) (value * 86400 * 7);
+    else if (match == "wks")                              _secs = (int) (value * 86400 * 7);
+    else if (match == "wk")                               _secs = (int) (value * 86400 * 7);
+    else if (match == "w")                                _secs = (int) (value * 86400 * 7);
 
-    else if (match == "daily")                            mSecs = (int) (value * 86400 * 1);
-    else if (match == "day")                              mSecs = (int) (value * 86400 * 1);
-    else if (match == "weekdays")                         mSecs = (int) (value * 86400 * 1);
-    else if (match == "days")                             mSecs = (int) (value * 86400 * 1);
-    else if (match == "d")                                mSecs = (int) (value * 86400 * 1);
+    else if (match == "daily")                            _secs = (int) (value * 86400 * 1);
+    else if (match == "day")                              _secs = (int) (value * 86400 * 1);
+    else if (match == "weekdays")                         _secs = (int) (value * 86400 * 1);
+    else if (match == "days")                             _secs = (int) (value * 86400 * 1);
+    else if (match == "d")                                _secs = (int) (value * 86400 * 1);
 
-    else if (match == "hours")                            mSecs = (int) (value * 3600);
-    else if (match == "hour")                             mSecs = (int) (value * 3600);
-    else if (match == "hrs")                              mSecs = (int) (value * 3600);
-    else if (match == "hr")                               mSecs = (int) (value * 3600);
-    else if (match == "h")                                mSecs = (int) (value * 3600);
+    else if (match == "hours")                            _secs = (int) (value * 3600);
+    else if (match == "hour")                             _secs = (int) (value * 3600);
+    else if (match == "hrs")                              _secs = (int) (value * 3600);
+    else if (match == "hr")                               _secs = (int) (value * 3600);
+    else if (match == "h")                                _secs = (int) (value * 3600);
 
-    else if (match == "minutes")                          mSecs = (int) (value * 60);
-    else if (match == "mins")                             mSecs = (int) (value * 60);
-    else if (match == "min")                              mSecs = (int) (value * 60);
+    else if (match == "minutes")                          _secs = (int) (value * 60);
+    else if (match == "mins")                             _secs = (int) (value * 60);
+    else if (match == "min")                              _secs = (int) (value * 60);
 
-    else if (match == "seconds")                          mSecs = (int) value;
-    else if (match == "secs")                             mSecs = (int) value;
-    else if (match == "sec")                              mSecs = (int) value;
-    else if (match == "s")                                mSecs = (int) value;
+    else if (match == "seconds")                          _secs = (int) value;
+    else if (match == "secs")                             _secs = (int) value;
+    else if (match == "sec")                              _secs = (int) value;
+    else if (match == "s")                                _secs = (int) value;
 
-    else if (match == "-")                                mSecs = 0;
+    else if (match == "-")                                _secs = 0;
   }
 
-  if (mSecs == 0)
+  if (_secs == 0)
     throw ::format (STRING_DURATION_UNRECOGNIZED, input);
 }
 

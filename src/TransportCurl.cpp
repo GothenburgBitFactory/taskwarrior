@@ -35,19 +35,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 TransportCurl::TransportCurl(const Uri& uri) : Transport(uri)
 {
-	executable = "curl";
+	_executable = "curl";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportCurl::send(const std::string& source)
 {
-  if (uri.host == "")
+  if (_uri._host == "")
     throw std::string (STRING_TRANSPORT_CURL_URI);
 
-  if (uri.user != "")
+  if (_uri._user != "")
   {
-    arguments.push_back("--user");
-    arguments.push_back(uri.user);
+    _arguments.push_back("--user");
+    _arguments.push_back(_uri._user);
   }
 
   if (is_filelist(source))
@@ -58,26 +58,26 @@ void TransportCurl::send(const std::string& source)
     if (pos == std::string::npos)
       throw std::string (STRING_TRANSPORT_CURL_WILDCD);
 
-    if (!uri.is_directory())
-      throw format (STRING_TRANSPORT_URI_NODIR, uri.path);
+    if (!_uri.is_directory())
+      throw format (STRING_TRANSPORT_URI_NODIR, _uri._path);
 
-    arguments.push_back ("-T");
-    arguments.push_back ("\"" + source + "\"");
+    _arguments.push_back ("-T");
+    _arguments.push_back ("\"" + source + "\"");
   }
   else
   {
-    arguments.push_back ("-T");
-    arguments.push_back (source);
+    _arguments.push_back ("-T");
+    _arguments.push_back (source);
   }
 
   // cmd line is: curl -T source protocol://host:port/path
-  if (uri.port != "")
+  if (_uri._port != "")
   {
-    arguments.push_back (uri.protocol + "://" + uri.host + ":" + uri.port + "/" + uri.path);
+    _arguments.push_back (_uri._protocol + "://" + _uri._host + ":" + _uri._port + "/" + _uri._path);
   }
   else
   {
-    arguments.push_back (uri.protocol + "://" + uri.host + "/" + uri.path);
+    _arguments.push_back (_uri._protocol + "://" + _uri._host + "/" + _uri._path);
   }
 
   int result = execute();
@@ -93,20 +93,20 @@ void TransportCurl::send(const std::string& source)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportCurl::recv(std::string target)
 {
-  if (uri.host == "")
+  if (_uri._host == "")
     throw std::string (STRING_TRANSPORT_CURL_URI);
 
-  if (uri.user != "")
+  if (_uri._user != "")
   {
-    arguments.push_back("--user");
-    arguments.push_back(uri.user);
+    _arguments.push_back("--user");
+    _arguments.push_back(_uri._user);
   }
 
 
-  if (is_filelist(uri.path))
+  if (is_filelist(_uri._path))
   {
     std::string::size_type pos;
-    pos = uri.path.find("{");
+    pos = _uri._path.find("{");
 
     if (pos == std::string::npos)
       throw std::string (STRING_TRANSPORT_CURL_WILDCD);
@@ -118,7 +118,7 @@ void TransportCurl::recv(std::string target)
     std::string suffix;
     std::string prefix = target;
     std::vector<std::string> splitted;
-    toSplit = uri.path.substr (pos+1);
+    toSplit = _uri._path.substr (pos+1);
     pos = toSplit.find ("}");
     suffix = toSplit.substr (pos+1);
     split (splitted, toSplit.substr(0, pos), ',');
@@ -135,16 +135,16 @@ void TransportCurl::recv(std::string target)
   }
 
   // cmd line is: curl protocol://host:port/path/to/source/file -o path/to/target/file
-  if (uri.port != "")
+  if (_uri._port != "")
   {
-    arguments.push_back (uri.protocol + "://" + uri.host + ":" + uri.port + "/" + uri.path);
+    _arguments.push_back (_uri._protocol + "://" + _uri._host + ":" + _uri._port + "/" + _uri._path);
   }
   else
   {
-    arguments.push_back (uri.protocol + "://" + uri.host + "/" + uri.path);
+    _arguments.push_back (_uri._protocol + "://" + _uri._host + "/" + _uri._path);
   }
 
-  arguments.push_back (target);
+  _arguments.push_back (target);
 
   int result = execute();
   if (result)

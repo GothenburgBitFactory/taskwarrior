@@ -79,7 +79,7 @@ int CmdConfig::execute (std::string& output)
 
       // Read .taskrc (or equivalent)
       std::vector <std::string> contents;
-      File::read (context.config.original_file, contents);
+      File::read (context.config._original_file, contents);
 
       // task config name value
       // task config name ""
@@ -157,9 +157,9 @@ int CmdConfig::execute (std::string& output)
       // Write .taskrc (or equivalent)
       if (change)
       {
-        File::write (context.config.original_file, contents);
+        File::write (context.config._original_file, contents);
         out << "Config file "
-            << context.config.original_file.data
+            << context.config._original_file._data
             << " modified.\n";
       }
       else

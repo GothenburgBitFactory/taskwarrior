@@ -58,12 +58,12 @@ private:
   void loadFile (const std::string&);
 
 public:
-  lua_State* L;
-  std::vector <std::string> loaded;
+  lua_State* _L;
+  std::vector <std::string> _loaded;
 
   // Context for the API.
 //  std::vector <Task> all;
-  Task current;
+  Task _current;
 //  std::string& name;
 //  std::string& value;
 };

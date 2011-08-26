@@ -38,25 +38,25 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Permission::Permission ()
-: needConfirmation (false)
-, allConfirmed (false)
-, quit (false)
+: _need_confirmation (false)
+, _all_confirmed (false)
+, _quit (false)
 {
   // Turning confirmations off is the same as entering "all".
   if (context.config.getBoolean ("confirmation") == false)
-    allConfirmed = true;
+    _all_confirmed = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Permission::confirmed (const Task& task, const std::string& question)
 {
-  if (quit)
+  if (_quit)
     return false;
 
-  if (!needConfirmation)
+  if (!_need_confirmation)
     return true;
 
-  if (allConfirmed)
+  if (_all_confirmed)
     return true;
 
   std::cout << "\n"
@@ -75,13 +75,13 @@ bool Permission::confirmed (const Task& task, const std::string& question)
   std::cout << "\n";       // #499
 
   if (answer == 2)
-    allConfirmed = true;
+    _all_confirmed = true;
 
   if (answer == 1 || answer == 2)
     return true;
 
   if (answer == 3)
-    quit = true;
+    _quit = true;
 
   return false;
 }

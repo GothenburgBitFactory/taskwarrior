@@ -63,13 +63,13 @@ int CmdStatistics::execute (std::string& output)
   size_t dataSize = 0;
 
   Directory location (context.config.get ("data.location"));
-  File pending (location.data + "/pending.data");
+  File pending (location._data + "/pending.data");
   dataSize += pending.size ();
 
-  File completed (location.data + "/completed.data");
+  File completed (location._data + "/completed.data");
   dataSize += completed.size ();
 
-  File undo (location.data + "/undo.data");
+  File undo (location._data + "/undo.data");
   dataSize += undo.size ();
 
   std::vector <std::string> undoTxns;

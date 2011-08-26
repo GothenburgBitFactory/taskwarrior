@@ -38,14 +38,14 @@ public:
   Permission (const Permission&);
   Permission& operator= (const Permission&);
 
-  void bigChange ()   { needConfirmation = true; }
-  void bigSequence () { needConfirmation = true; }
+  void bigChange ()   { _need_confirmation = true; }
+  void bigSequence () { _need_confirmation = true; }
   bool confirmed (const Task&, const std::string&);
 
 private:
-  bool needConfirmation;
-  bool allConfirmed;
-  bool quit;
+  bool _need_confirmation;
+  bool _all_confirmed;
+  bool _quit;
 };
 
 #endif

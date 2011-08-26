@@ -58,7 +58,7 @@ public:
   static std::vector<std::string> glob (const std::string&);
 
 public:
-  std::string data;
+  std::string _data;
 };
 
 #endif

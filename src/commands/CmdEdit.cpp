@@ -600,11 +600,11 @@ bool CmdEdit::editFile (Task& task)
   // Create a temp file name in data.location.
   std::stringstream file;
   file << "task." << getpid () << "." << task.id << ".task";
-  std::string path = location.data + "/" + file.str ();
+  std::string path = location._data + "/" + file.str ();
 
   // Format the contents, T -> text, write to a file.
   std::string before = formatTask (task);
-  int ignored = chdir (location.data.c_str ());
+  int ignored = chdir (location._data.c_str ());
   ++ignored; // Keep compiler quiet.
   File::write (file.str (), before);
 

@@ -178,17 +178,17 @@ int CmdDiagnostics::execute (std::string& output)
   // Config: .taskrc found, readable, writable
   out << bold.colorize ("Configuration")
       << "\n"
-      << "      File: " << context.config.original_file.data
-      << (context.config.original_file.exists () ? " (found)" : " (missing)")
-      << ", " << context.config.original_file.size () << " bytes"
+      << "      File: " << context.config._original_file._data
+      << (context.config._original_file.exists () ? " (found)" : " (missing)")
+      << ", " << context.config._original_file.size () << " bytes"
       << ", mode "
       << std::setbase (8)
-      << context.config.original_file.mode ()
+      << context.config._original_file.mode ()
       << "\n";
 
   // Config: data.location found, readable, writable
   File location (context.config.get ("data.location"));
-  out << "      Data: " << location.data
+  out << "      Data: " << location._data
       << (location.exists () ? " (found)" : " (missing)")
       << ", " << (location.is_directory () ? "dir" : "?")
       << ", mode "

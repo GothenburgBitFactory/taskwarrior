@@ -40,43 +40,43 @@
 ////////////////////////////////////////////////////////////////////////////////
 File::File ()
 : Path::Path ()
-, fh (NULL)
-, h (-1)
-, locked (false)
+, _fh (NULL)
+, _h (-1)
+, _locked (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 File::File (const Path& other)
 : Path::Path (other)
-, fh (NULL)
-, h (-1)
-, locked (false)
+, _fh (NULL)
+, _h (-1)
+, _locked (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 File::File (const File& other)
 : Path::Path (other)
-, fh (NULL)
-, h (-1)
-, locked (false)
+, _fh (NULL)
+, _h (-1)
+, _locked (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 File::File (const std::string& in)
 : Path::Path (in)
-, fh (NULL)
-, h (-1)
-, locked (false)
+, _fh (NULL)
+, _h (-1)
+, _locked (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 File::~File ()
 {
-  if (fh)
+  if (_fh)
     close ();
 }
 
@@ -86,7 +86,7 @@ File& File::operator= (const File& other)
   if (this != &other)
     Path::operator= (other);
 
-  locked = false;
+  _locked = false;
   return *this;
 }
 
@@ -105,26 +105,26 @@ bool File::create ()
 ////////////////////////////////////////////////////////////////////////////////
 bool File::remove ()
 {
-  return unlink (data.c_str ()) == 0 ? true : false;
+  return unlink (_data.c_str ()) == 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool File::open ()
 {
-  if (data != "")
+  if (_data != "")
   {
-    if (! fh)
+    if (! _fh)
     {
       bool already_exists = exists ();
       if (already_exists)
         if (!readable () || !writable ())
-          throw std::string (format (STRING_FILE_PERMS, data));
+          throw std::string (format (STRING_FILE_PERMS, _data));
 
-      fh = fopen (data.c_str (), (already_exists ? "r+" : "w+"));
-      if (fh)
+      _fh = fopen (_data.c_str (), (already_exists ? "r+" : "w+"));
+      if (_fh)
       {
-        h = fileno (fh);
-        locked = false;
+        _h = fileno (_fh);
+        _locked = false;
         return true;
       }
     }
@@ -144,46 +144,46 @@ bool File::openAndLock ()
 ////////////////////////////////////////////////////////////////////////////////
 void File::close ()
 {
-  if (fh)
+  if (_fh)
   {
-    fclose (fh);
-    fh = NULL;
-    h = -1;
-    locked = false;
+    fclose (_fh);
+    _fh = NULL;
+    _h = -1;
+    _locked = false;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool File::lock ()
 {
-  if (fh && h != -1)
+  if (_fh && _h != -1)
   {
     // Try three times before failing.
     int retry = 0;
-    while (flock (h, LOCK_NB | LOCK_EX) && ++retry <= 3)
+    while (flock (_h, LOCK_NB | LOCK_EX) && ++retry <= 3)
       ;
 
     if (retry <= 3)
     {
-      locked = true;
+      _locked = true;
       return true;
     }
   }
 
-  locked = false;
+  _locked = false;
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool File::waitForLock ()
 {
-  if (locked)
+  if (_locked)
     return true;
 
-  if (fh && h != -1)
-    if (flock (h, LOCK_EX) == 0)
+  if (_fh && _h != -1)
+    if (flock (_h, LOCK_EX) == 0)
     {
-      locked = true;
+      _locked = true;
       return true;
     }
 
@@ -196,7 +196,7 @@ void File::read (std::string& contents)
 {
   contents = "";
 
-  std::ifstream in (data.c_str ());
+  std::ifstream in (_data.c_str ());
   if (in.good ())
   {
     std::string line;
@@ -213,7 +213,7 @@ void File::read (std::vector <std::string>& contents)
 {
   contents.clear ();
 
-  std::ifstream in (data.c_str ());
+  std::ifstream in (_data.c_str ());
   if (in.good ())
   {
     std::string line;
@@ -228,25 +228,25 @@ void File::read (std::vector <std::string>& contents)
 // Opens if necessary.
 void File::write (const std::string& line)
 {
-  if (!fh)
+  if (!_fh)
     open ();
 
-  if (fh)
-    fputs (line.c_str (), fh);
+  if (_fh)
+    fputs (line.c_str (), _fh);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Opens if necessary.
 void File::write (const std::vector <std::string>& lines)
 {
-  if (!fh)
+  if (!_fh)
     open ();
 
-  if (fh)
+  if (_fh)
   {
     std::vector <std::string>::const_iterator it;
     for (it = lines.begin (); it != lines.end (); ++it)
-      fputs (it->c_str (), fh);
+      fputs (it->c_str (), _fh);
   }
 }
 
@@ -254,13 +254,13 @@ void File::write (const std::vector <std::string>& lines)
 // Opens if necessary.
 void File::append (const std::string& line)
 {
-  if (!fh)
+  if (!_fh)
     open ();
 
-  if (fh)
+  if (_fh)
   {
-    fseek (fh, 0, SEEK_END);
-    fputs (line.c_str (), fh);
+    fseek (_fh, 0, SEEK_END);
+    fputs (line.c_str (), _fh);
   }
 }
 
@@ -268,26 +268,26 @@ void File::append (const std::string& line)
 // Opens if necessary.
 void File::append (const std::vector <std::string>& lines)
 {
-  if (!fh)
+  if (!_fh)
     open ();
 
-  if (fh)
+  if (_fh)
   {
-    fseek (fh, 0, SEEK_END);
+    fseek (_fh, 0, SEEK_END);
     std::vector <std::string>::const_iterator it;
     for (it = lines.begin (); it != lines.end (); ++it)
-      fputs (((*it) + "\n").c_str (), fh);
+      fputs (((*it) + "\n").c_str (), _fh);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void File::truncate ()
 {
-  if (!fh)
+  if (!_fh)
     open ();
 
-  if (fh)
-    ftruncate (h, 0);
+  if (_fh)
+    ftruncate (_h, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -309,7 +309,7 @@ void File::truncate ()
 mode_t File::mode ()
 {
   struct stat s;
-  if (!stat (data.c_str (), &s))
+  if (!stat (_data.c_str (), &s))
     return s.st_mode;
 
   return 0;
@@ -319,7 +319,7 @@ mode_t File::mode ()
 size_t File::size () const
 {
   struct stat s;
-  if (!stat (data.c_str (), &s))
+  if (!stat (_data.c_str (), &s))
     return s.st_size;
 
   return 0;
@@ -329,7 +329,7 @@ size_t File::size () const
 time_t File::mtime () const
 {
   struct stat s;
-  if (!stat (data.c_str (), &s))
+  if (!stat (_data.c_str (), &s))
     return s.st_mtime;
 
   return 0;

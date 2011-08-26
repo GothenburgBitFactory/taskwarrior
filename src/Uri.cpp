@@ -37,7 +37,7 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 Uri::Uri ()
 {
-  parsed = false;
+  _parsed = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,21 +45,21 @@ Uri::Uri (const Uri& other)
 {
   if (this != &other)
   {
-    data = other.data;
-    host = other.host;
-    path = other.path;
-    user = other.user;
-    port = other.port;
-    protocol = other.protocol;
-    parsed = other.parsed;
+    _data = other._data;
+    _host = other._host;
+    _path = other._path;
+    _user = other._user;
+    _port = other._port;
+    _protocol = other._protocol;
+    _parsed = other._parsed;
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Uri::Uri (const std::string& in, const std::string& configPrefix)
 {
-  data = in;
-  parsed = false;
+  _data = in;
+  _parsed = false;
   if (configPrefix != "")
     expand(configPrefix);
 }
@@ -74,13 +74,13 @@ Uri& Uri::operator= (const Uri& other)
 {
   if (this != &other)
   {
-    this->data = other.data;
-    this->host = other.host;
-    this->path = other.path;
-    this->user = other.user;
-    this->port = other.port;
-    this->protocol = other.protocol;
-	 this->parsed = other.parsed;
+    this->_data = other._data;
+    this->_host = other._host;
+    this->_path = other._path;
+    this->_user = other._user;
+    this->_port = other._port;
+    this->_protocol = other._protocol;
+    this->_parsed = other._parsed;
   }
 
   return *this;
@@ -89,30 +89,30 @@ Uri& Uri::operator= (const Uri& other)
 ////////////////////////////////////////////////////////////////////////////////
 Uri::operator std::string () const
 {
-  return data;
+  return _data;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Uri::name () const
 {
-  if (path.length ())
+  if (_path.length ())
   {
-    std::string::size_type slash = path.rfind ('/');
+    std::string::size_type slash = _path.rfind ('/');
     if (slash != std::string::npos)
-      return path.substr (slash + 1, std::string::npos);
+      return _path.substr (slash + 1, std::string::npos);
   }
 
- return path;
+ return _path;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Uri::parent () const
 {
-  if (path.length ())
+  if (_path.length ())
   {
-    std::string::size_type slash = path.rfind ('/');
+    std::string::size_type slash = _path.rfind ('/');
     if (slash != std::string::npos)
-      return path.substr (0, slash+1);
+      return _path.substr (0, slash+1);
   }
 
   return "";
@@ -121,11 +121,11 @@ std::string Uri::parent () const
 ////////////////////////////////////////////////////////////////////////////////
 std::string Uri::extension () const
 {
-  if (path.length ())
+  if (_path.length ())
   {
-    std::string::size_type dot = path.rfind ('.');
+    std::string::size_type dot = _path.rfind ('.');
     if (dot != std::string::npos)
-      return path.substr (dot + 1, std::string::npos);
+      return _path.substr (dot + 1, std::string::npos);
   }
 
   return "";
@@ -135,21 +135,21 @@ std::string Uri::extension () const
 bool Uri::is_directory () const
 {
   if (is_local ()) {
-    return Path (this->data).is_directory ();
+    return Path (this->_data).is_directory ();
   } else
-    return (path == ".")
-        || (path == "")
-        || (path[path.length()-1] == '/');
+    return (_path == ".")
+        || (_path == "")
+        || (_path[_path.length()-1] == '/');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Uri::is_local () const
 {
-  if (parsed)
-    return (protocol == "");
+  if (_parsed)
+    return (_protocol == "");
   else
-    return ( (data.find("://") == std::string::npos)
-          && (data.find(":")   == std::string::npos) );
+    return ( (_data.find("://") == std::string::npos)
+          && (_data.find(":")   == std::string::npos) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ bool Uri::append (const std::string& path)
 {
   if (is_directory ())
   {
-    this->path += path;
+    this->_path += path;
     return true;
   }
   else
@@ -168,10 +168,10 @@ bool Uri::append (const std::string& path)
 bool Uri::expand (const std::string& configPrefix )
 {
   std::string tmp;
-  if (data.length ())
+  if (_data.length ())
   {
     // try to replace argument with uri from config
-    tmp = context.config.get (configPrefix + "." + data + ".uri");
+    tmp = context.config.get (configPrefix + "." + _data + ".uri");
   }
   else
   {
@@ -181,7 +181,7 @@ bool Uri::expand (const std::string& configPrefix )
 
   if (tmp != "")
   {
-    data = tmp;
+    _data = tmp;
     return true;
   }
 
@@ -191,90 +191,90 @@ bool Uri::expand (const std::string& configPrefix )
 ////////////////////////////////////////////////////////////////////////////////
 void Uri::parse ()
 {
-  if (parsed)
+  if (_parsed)
     return;
 
   if (is_local ())
   {
-    path = data;
-    parsed = true;
+    _path = _data;
+    _parsed = true;
     return;
   }
 
   std::string::size_type pos;
-  std::string data = this->data;
+  std::string _data = this->_data;
   std::string pathDelimiter = "/";
 
-  user = "";
-  port = "";
+  _user = "";
+  _port = "";
 
 	// skip ^.*://
-  if ((pos = data.find ("://")) != std::string::npos)
+  if ((pos = _data.find ("://")) != std::string::npos)
   {
-    protocol = data.substr(0, pos);
-    data = data.substr (pos+3);
+    _protocol = _data.substr(0, pos);
+    _data = _data.substr (pos+3);
     // standard syntax: protocol://[user@]host.xz[:port]/path/to/undo.data
     pathDelimiter = "/";
   }
   else
   {
-    protocol = "ssh";
+    _protocol = "ssh";
     // scp-like syntax: [user@]host.xz:path/to/undo.data
     pathDelimiter = ":";
   }
 
   // user delimited by single quotes?
-  if ( data[0] == '\''
-   && (pos = data.find("'", 1)) != std::string::npos )
+  if ( _data[0] == '\''
+   && (pos = _data.find("'", 1)) != std::string::npos )
   {
-    if (data[pos+1] == '@')
+    if (_data[pos+1] == '@')
     {
       // end of user name
-      user = data.substr (1, pos-1);
-      data = data.substr (pos+2);
+      _user = _data.substr (1, pos-1);
+      _data = _data.substr (pos+2);
     }
     else
     {
-      throw std::string (format (STRING_URI_QUOTES, data));
+      throw std::string (format (STRING_URI_QUOTES, _data));
     }
   }
   else
   {
     // find user name
-    if ((pos = data.find ("@")) != std::string::npos)
+    if ((pos = _data.find ("@")) != std::string::npos)
     {
-      user = data.substr (0, pos);
-      data = data.substr (pos+1);
+      _user = _data.substr (0, pos);
+      _data = _data.substr (pos+1);
     }
   }
 
   // get host, port and path
-  if ((pos = data.find (pathDelimiter)) != std::string::npos)
+  if ((pos = _data.find (pathDelimiter)) != std::string::npos)
   {
-    host = data.substr (0, pos);
-    path = data.substr (pos+1);
+    _host = _data.substr (0, pos);
+    _path = _data.substr (pos+1);
   }
   else
   {
-    throw std::string (format (STRING_URI_BAD_FORMAT, data));
+    throw std::string (format (STRING_URI_BAD_FORMAT, _data));
   }
 
   // path is absolute for ssh:// syntax
-  if ( (protocol == "ssh") && (pathDelimiter == "/") )
+  if ( (_protocol == "ssh") && (pathDelimiter == "/") )
   {
-    path = "/" + path;
+    _path = "/" + _path;
   }
 
   // port specified?
   // remark: this find() will never be != npos for scp-like syntax
   // because we found pathDelimiter, which is ":", before
-  if ((pos = host.find (":")) != std::string::npos)
+  if ((pos = _host.find (":")) != std::string::npos)
   {
-    port = host.substr (pos+1);
-    host = host.substr (0,pos);
+    _port = _host.substr (pos+1);
+    _host = _host.substr (0,pos);
   }
 
-  parsed = true;
+  _parsed = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

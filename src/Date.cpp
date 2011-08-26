@@ -86,13 +86,13 @@ extern Context context;
 // Defaults to "now".
 Date::Date ()
 {
-  mT = time (NULL);
+  _t = time (NULL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date::Date (const time_t t)
 {
-  mT = t;
+  _t = t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -105,7 +105,7 @@ Date::Date (const int m, const int d, const int y)
   t.tm_mon   = m - 1;
   t.tm_year  = y - 1900;
 
-  mT = mktime (&t);
+  _t = mktime (&t);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +122,7 @@ Date::Date (const int m,  const int d,  const int y,
   t.tm_min   = mi;
   t.tm_sec   = se;
 
-  mT = mktime (&t);
+  _t = mktime (&t);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -138,11 +138,11 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
 
   // Parse an ISO date.
   Nibbler n (input);
-  if (n.getDateISO (mT) && n.depleted ())
+  if (n.getDateISO (_t) && n.depleted ())
     return;
 
   // Parse a formatted date.
-  if (n.getDate (format, mT) && n.depleted ())
+  if (n.getDate (format, _t) && n.depleted ())
     return;
 
   throw ::format (STRING_DATE_INVALID_FORMAT, input, format);
@@ -151,7 +151,7 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
 ////////////////////////////////////////////////////////////////////////////////
 Date::Date (const Date& rhs)
 {
-  mT = rhs.mT;
+  _t = rhs._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -162,14 +162,14 @@ Date::~Date ()
 ////////////////////////////////////////////////////////////////////////////////
 time_t Date::toEpoch ()
 {
-  return mT;
+  return _t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Date::toEpochString ()
 {
   std::stringstream epoch;
-  epoch << mT;
+  epoch << _t;
   return epoch.str ();
 }
 
@@ -177,7 +177,7 @@ std::string Date::toEpochString ()
 // 19980119T070000Z =  YYYYMMDDThhmmssZ
 std::string Date::toISO ()
 {
-  struct tm* t = gmtime (&mT);
+  struct tm* t = gmtime (&_t);
 
   std::stringstream iso;
   iso << std::setw (4) << std::setfill ('0') << t->tm_year + 1900
@@ -195,19 +195,19 @@ std::string Date::toISO ()
 ////////////////////////////////////////////////////////////////////////////////
 double Date::toJulian ()
 {
-  return (mT / 86400.0) + 2440587.5;
+  return (_t / 86400.0) + 2440587.5;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Date::toEpoch (time_t& epoch)
 {
-  epoch = mT;
+  epoch = _t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Date::toMDY (int& m, int& d, int& y)
 {
-  struct tm* t = localtime (&mT);
+  struct tm* t = localtime (&_t);
 
   m = t->tm_mon + 1;
   d = t->tm_mday;
@@ -264,7 +264,7 @@ Date Date::startOfDay () const
 ////////////////////////////////////////////////////////////////////////////////
 Date Date::startOfWeek () const
 {
-  Date sow (mT);
+  Date sow (_t);
   sow -= (dayOfWeek () * 86400);
   return Date (sow.month (), sow.day (), sow.year (), 0, 0, 0);
 }
@@ -433,7 +433,7 @@ std::string Date::dayName (int dow)
 ////////////////////////////////////////////////////////////////////////////////
 int Date::weekOfYear (int weekStart) const
 {
-  struct tm* t = localtime (&mT);
+  struct tm* t = localtime (&_t);
   char   weekStr[3];
 
   if (weekStart == 0)
@@ -454,7 +454,7 @@ int Date::weekOfYear (int weekStart) const
 ////////////////////////////////////////////////////////////////////////////////
 int Date::dayOfWeek () const
 {
-  struct tm* t = localtime (&mT);
+  struct tm* t = localtime (&_t);
   return t->tm_wday;
 }
 
@@ -477,7 +477,7 @@ int Date::dayOfWeek (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 int Date::dayOfYear () const
 {
-  struct tm* t = localtime (&mT);
+  struct tm* t = localtime (&_t);
   return t->tm_yday + 1;
 }
 
@@ -563,79 +563,79 @@ time_t Date::easter (int year)
 ////////////////////////////////////////////////////////////////////////////////
 int Date::month () const
 {
-  struct tm* t = localtime (&mT);
+  struct tm* t = localtime (&_t);
   return t->tm_mon + 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Date::day () const
 {
-  struct tm* t = localtime (&mT);
+  struct tm* t = localtime (&_t);
   return t->tm_mday;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Date::year () const
 {
-  struct tm* t = localtime (&mT);
+  struct tm* t = localtime (&_t);
   return t->tm_year + 1900;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Date::hour () const
 {
-  struct tm* t = localtime (&mT);
+  struct tm* t = localtime (&_t);
   return t->tm_hour;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Date::minute () const
 {
-  struct tm* t = localtime (&mT);
+  struct tm* t = localtime (&_t);
   return t->tm_min;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Date::second () const
 {
-  struct tm* t = localtime (&mT);
+  struct tm* t = localtime (&_t);
   return t->tm_sec;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Date::operator== (const Date& rhs)
 {
-  return rhs.mT == mT;
+  return rhs._t == _t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Date::operator!= (const Date& rhs)
 {
-  return rhs.mT != mT;
+  return rhs._t != _t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Date::operator<  (const Date& rhs)
 {
-  return mT < rhs.mT;
+  return _t < rhs._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Date::operator>  (const Date& rhs)
 {
-  return mT > rhs.mT;
+  return _t > rhs._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Date::operator<= (const Date& rhs)
 {
-  return mT <= rhs.mT;
+  return _t <= rhs._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Date::operator>= (const Date& rhs)
 {
-  return mT >= rhs.mT;
+  return _t >= rhs._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -683,33 +683,33 @@ bool Date::sameYear (const Date& rhs)
 ////////////////////////////////////////////////////////////////////////////////
 Date Date::operator- (const int delta)
 {
-  return Date (mT - delta);
+  return Date (_t - delta);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date Date::operator+ (const int delta)
 {
-  return Date (mT + delta);
+  return Date (_t + delta);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date& Date::operator+= (const int delta)
 {
-  mT += (time_t) delta;
+  _t += (time_t) delta;
   return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date& Date::operator-= (const int delta)
 {
-  mT -= (time_t) delta;
+  _t -= (time_t) delta;
   return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 time_t Date::operator- (const Date& rhs)
 {
-  return mT - rhs.mT;
+  return _t - rhs._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -723,7 +723,7 @@ void Date::operator-- ()
                     hour (),
                     minute (),
                     second ());
-  mT = yesterday.mT;
+  _t = yesterday._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -737,7 +737,7 @@ void Date::operator-- (int)
                     hour (),
                     minute (),
                     second ());
-  mT = yesterday.mT;
+  _t = yesterday._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -751,7 +751,7 @@ void Date::operator++ ()
                    hour (),
                    minute (),
                    second ());
-  mT = tomorrow.mT;
+  _t = tomorrow._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -765,7 +765,7 @@ void Date::operator++ (int)
                    hour (),
                    minute (),
                    second ());
-  mT = tomorrow.mT;
+  _t = tomorrow._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -775,7 +775,7 @@ bool Date::isEpoch (const std::string& input)
       input.length () >   8 &&
       input.length () <= 10 )
   {
-    mT = (time_t) atoi (input.c_str ());
+    _t = (time_t) atoi (input.c_str ());
     return true;
   }
 
@@ -783,7 +783,7 @@ bool Date::isEpoch (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// If the input string looks like a relative date, determine that date, set mT
+// If the input string looks like a relative date, determine that date, set _t
 // and return true.
 //
 // What is a relative date?  All of the following should be recognizable, and
@@ -844,7 +844,7 @@ bool Date::isRelativeDate (const std::string& input)
       today.toMDY (m, d, y);
       Date then (m, d, y);
 
-      mT = then.mT;
+      _t = then._t;
       return true;
     }
     else if (found == "today")
@@ -852,7 +852,7 @@ bool Date::isRelativeDate (const std::string& input)
       Date then (today.month (),
                  today.day (),
                  today.year ());
-      mT = then.mT;
+      _t = then._t;
       return true;
     }
     else if (found == "tomorrow")
@@ -860,7 +860,7 @@ bool Date::isRelativeDate (const std::string& input)
       Date then (today.month (),
                  today.day (),
                  today.year ());
-      mT = then.mT + 86400;
+      _t = then._t + 86400;
       return true;
     }
     else if (found == "yesterday")
@@ -868,7 +868,7 @@ bool Date::isRelativeDate (const std::string& input)
       Date then (today.month (),
                  today.day (),
                  today.year ());
-      mT = then.mT - 86400;
+      _t = then._t - 86400;
       return true;
     }
     else if (found == "eom")
@@ -876,7 +876,7 @@ bool Date::isRelativeDate (const std::string& input)
       Date then (today.month (),
                  daysInMonth (today.month (), today.year ()),
                  today.year ());
-      mT = then.mT;
+      _t = then._t;
       return true;
     }
     else if (found == "eoq")
@@ -895,13 +895,13 @@ bool Date::isRelativeDate (const std::string& input)
       Date then (q,
                  Date::daysInMonth (q, y),
                  y);
-      mT = then.mT;
+      _t = then._t;
       return true;
     }
     else if (found == "eoy")
     {
       Date then (12, 31, today.year ());
-      mT = then.mT;
+      _t = then._t;
       return true;
     }
     else if (found == "som")
@@ -914,7 +914,7 @@ bool Date::isRelativeDate (const std::string& input)
         y++;
       }
       Date then (m, 1, y);
-      mT = then.mT;
+      _t = then._t;
       return true;
     }
     else if (found == "soq")
@@ -933,43 +933,43 @@ bool Date::isRelativeDate (const std::string& input)
       Date then (q,
                  1,
                  y);
-      mT = then.mT;
+      _t = then._t;
       return true;
     }
     else if (found == "soy")
     {
       Date then (1, 1, today.year () + 1);
-      mT = then.mT;
+      _t = then._t;
       return true;
     }
     else if (found == "goodfriday")
     {
       Date then (Date::easter(today.year()));
-      mT = then.mT - 86400*2;
+      _t = then._t - 86400*2;
       return true;
     }
     else if (found == "easter")
     {
       Date then (Date::easter(today.year()));
-      mT = then.mT;
+      _t = then._t;
       return true;
     }
     else if (found == "eastermonday")
     {
       Date then (Date::easter(today.year()));
-      mT = then.mT + 86400;
+      _t = then._t + 86400;
       return true;
     }
     else if (found == "ascension")
     {
       Date then (Date::easter(today.year()));
-      mT = then.mT + 86400*39;
+      _t = then._t + 86400*39;
       return true;
     }
     else if (found == "pentecost")
     {
       Date then (Date::easter(today.year()));
-      mT = then.mT + 86400*49;
+      _t = then._t + 86400*49;
       return true;
     }
     else if (found == "midsommar")
@@ -979,7 +979,7 @@ bool Date::isRelativeDate (const std::string& input)
         Date then (6, midsommar, today.year ());
         if (6 == then.dayOfWeek ())
         {
-          mT = then.mT;
+          _t = then._t;
           return true;
         }
       }
@@ -991,20 +991,20 @@ bool Date::isRelativeDate (const std::string& input)
         Date then (6, midsommar, today.year ());
         if (5 == then.dayOfWeek ())
         {
-          mT = then.mT;
+          _t = then._t;
           return true;
         }
       }
     }
     else if (found == "now")
     {
-      mT = time (NULL);
+      _t = time (NULL);
       return true;
     }
     else if (found == "later" || found == "someday")
     {
       Date then (1, 18, 2038);
-      mT = then.mT;
+      _t = then._t;
       return true;
     }
   }
@@ -1044,7 +1044,7 @@ bool Date::isRelativeDate (const std::string& input)
             number <= Date::daysInMonth (m, y))
         {
           Date then (m, number, y);
-          mT = then.mT;
+          _t = then._t;
           return true;
         }
 
@@ -1061,7 +1061,7 @@ bool Date::isRelativeDate (const std::string& input)
         while (number > Date::daysInMonth (m, y));
 
         Date then (m, number, y);
-        mT = then.mT;
+        _t = then._t;
         return true;
       }
     }

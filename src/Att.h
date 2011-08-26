@@ -77,10 +77,10 @@ private:
   void decode (std::string&) const;
 
 private:
-  std::string mName;
-  std::string mValue;
-  std::string mMod;
-  std::string mSense;
+  std::string _name;
+  std::string _value;
+  std::string _mod;
+  std::string _sense;
 };
 
 #endif

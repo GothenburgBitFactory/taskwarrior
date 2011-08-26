@@ -63,7 +63,7 @@ int CmdMerge::execute (std::string& output)
   Uri uri (file, "merge");
   uri.parse();
 
-  if (uri.data.length ())
+  if (uri._data.length ())
   {
     Directory location (context.config.get ("data.location"));
 
@@ -73,14 +73,14 @@ int CmdMerge::execute (std::string& output)
     Transport* transport;
     if ((transport = Transport::getTransport (uri)) != NULL )
     {
-      tmpfile = location.data + "/undo_remote.data";
+      tmpfile = location._data + "/undo_remote.data";
       transport->recv (tmpfile);
       delete transport;
 
       file = tmpfile;
     }
     else
-      file = uri.path;
+      file = uri._path;
 
     context.tdb.lock (context.config.getBoolean ("locking"));
     context.tdb.merge (file);
@@ -91,10 +91,10 @@ int CmdMerge::execute (std::string& output)
     if (tmpfile != "")
       remove (tmpfile.c_str ());
 
-    if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri.data + "\'?")) )
+    if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri._data + "\'?")) )
        || (bAutopush) )
     {
-//      context.task.set ("description", uri.data);
+//      context.task.set ("description", uri._data);
 
       std::string out;
       context.commands["push"]->execute (out);
