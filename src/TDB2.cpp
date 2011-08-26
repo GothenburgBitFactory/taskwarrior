@@ -556,6 +556,78 @@ int TDB2::next_id ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Locate task by ID.
+bool TDB2::get (int id, Task& task)
+{
+  // First load and scan pending.
+  if (! pending._loaded_tasks)
+    pending.load_tasks ();
+
+  std::vector <Task>::iterator i;
+  for (i = pending._tasks.begin (); i != pending._tasks.end (); ++i)
+  {
+    if (i->id == id)
+    {
+      task = *i;
+      return true;
+    }
+  }
+
+  // Next load and scan completed.
+  // Note that this is harmless, because it is only performed if the above
+  // load and search fails.
+  if (! completed._loaded_tasks)
+    completed.load_tasks ();
+
+  for (i = completed._tasks.begin (); i != completed._tasks.end (); ++i)
+  {
+    if (i->id == id)
+    {
+      task = *i;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Locate task by UUID.
+bool TDB2::get (const std::string& uuid, Task& task)
+{
+  // First load and scan pending.
+  if (! pending._loaded_tasks)
+    pending.load_tasks ();
+
+  std::vector <Task>::iterator i;
+  for (i = pending._tasks.begin (); i != pending._tasks.end (); ++i)
+  {
+    if (i->get ("uuid") == uuid)
+    {
+      task = *i;
+      return true;
+    }
+  }
+
+  // Next load and scan completed.
+  // Note that this is harmless, because it is only performed if the above
+  // load and search fails.
+  if (! completed._loaded_tasks)
+    completed.load_tasks ();
+
+  for (i = completed._tasks.begin (); i != completed._tasks.end (); ++i)
+  {
+    if (i->get ("uuid") == uuid)
+    {
+      task = *i;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool TDB2::verifyUniqueUUID (const std::string& uuid)
 {
   if (pending.id (uuid)   != 0 ||

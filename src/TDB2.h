@@ -59,6 +59,7 @@ public:
   void load_lines ();
   void load_contents ();
 
+  // ID <--> UUID mapping.
   std::string uuid (int);
   int id (const std::string&);
 
@@ -97,6 +98,10 @@ public:
   void synch ();
   int  gc ();
   int  next_id ();
+
+  // Generalized task accessors.
+  bool get (int, Task&);
+  bool get (const std::string&, Task&);
 
   void dump ();
 
