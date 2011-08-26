@@ -235,13 +235,18 @@ const std::string DOM::get (const std::string& name, const Task& task)
   {
     if (n.skip ('.'))
     {
-      // TODO Obtain task 'id' from TDB2.
+      Task ref;
+      if (id == task.id)
+        ref = task;
+      else
+        context.tdb2.get (id, ref);
+
       std::string attr;
       n.getUntilEOS (attr);
 
-           if (attr == "id")                       return format (task.id);
-      else if (attr == "urgency")                  return format (task.urgency_c (), 4, 3);
-      else if (A3::is_attribute (name, canonical)) return task.get (canonical);
+           if (attr == "id")                       return format (ref.id);
+      else if (attr == "urgency")                  return format (ref.urgency_c (), 4, 3);
+      else if (A3::is_attribute (name, canonical)) return ref.get (canonical);
     }
   }
 
@@ -250,13 +255,18 @@ const std::string DOM::get (const std::string& name, const Task& task)
   {
     if (n.skip ('.'))
     {
-      // TODO Obtain task 'uuid' from TDB2.
+      Task ref;
+      if (uuid == task.get ("uuid"))
+        ref = task;
+      else
+        context.tdb2.get (uuid, ref);
+
       std::string attr;
       n.getUntilEOS (attr);
 
-           if (name == "id")                       return format (task.id);
-      else if (name == "urgency")                  return format (task.urgency_c (), 4, 3);
-      else if (A3::is_attribute (name, canonical)) return task.get (canonical);
+           if (name == "id")                       return format (ref.id);
+      else if (name == "urgency")                  return format (ref.urgency_c (), 4, 3);
+      else if (A3::is_attribute (name, canonical)) return ref.get (canonical);
     }
   }
 
@@ -264,7 +274,7 @@ const std::string DOM::get (const std::string& name, const Task& task)
   return this->get (name);
 }
 
-// TODO Need a context-specific DOM::set.  For Lua.
+// TODO Need a context-specific DOM::set.  For Lua.  Probably.
 
 ////////////////////////////////////////////////////////////////////////////////
 void DOM::set (const std::string& name, const std::string& value)
