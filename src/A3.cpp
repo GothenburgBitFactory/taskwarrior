@@ -819,24 +819,16 @@ const A3 A3::tokenize (const A3& input) const
           found_something_after_sequence = true;
       }
 
-      else if (n.getName (s) ||
-               n.getWord (s))
-      {
-        if (Date::valid (s))
-          output.push_back (Arg (s, Arg::type_date, Arg::cat_literal));
-        else
-          output.push_back (Arg (s, Arg::type_string, Arg::cat_literal));
-
-        if (found_sequence)
-          found_something_after_sequence = true;
-      }
-
       else
       {
         if (! n.getUntilWS (s))
           n.getUntilEOS (s);
 
-        output.push_back (Arg (s, Arg::type_string, Arg::cat_literal));
+        if (Date::valid (s))
+          output.push_back (Arg (s, Arg::type_date, Arg::cat_literal));
+        else
+          output.push_back (Arg (s, Arg::type_string, Arg::cat_literal));
+
         if (found_sequence)
           found_something_after_sequence = true;
       }
