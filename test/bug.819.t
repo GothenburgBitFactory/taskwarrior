@@ -28,33 +28,20 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 3;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
   print $fh "data.location=.\n";
-  print $fh "bulk=100\n";
-  print $fh "confirmation=no\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }
 
-# Bug 804: URL link and break line
-
-# Setup: Add a tasks, annotate with long word.
-qx{../src/task rc:bug.rc add One};
-qx{../src/task rc:bug.rc 1 annotate abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz};
-
-# List with rc.hyphenate=on.
-my $output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:on ls};
-like ($output, qr/vwx-$/ms, 'hyphenated 1');
-like ($output, qr/tuv-$/ms, 'hyphenated 2');
-
-# List with rc.hyphenate=off.
-$output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:off ls};
-like ($output, qr/vwxy$/ms, 'not hyphenated 1');
-like ($output, qr/uvwx$/ms, 'not hyphenated 2');
+# Bug 819: When I run "task add foo\'s bar." the description of the new task is "foo 's bar .".
+qx{../src/task rc:bug.rc add foo\\'s bar.};
+my $output = qx{../src/task rc:bug.rc ls};
+like ($output, qr/foo's bar\./, "foo's bar. --> preserved");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
