@@ -102,6 +102,7 @@ public:
   // Generalized task accessors.
   bool get (int, Task&);
   bool get (const std::string&, Task&);
+  const std::vector <Task> siblings (Task&);
 
   void dump ();
 

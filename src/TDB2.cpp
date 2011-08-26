@@ -628,6 +628,42 @@ bool TDB2::get (const std::string& uuid, Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::vector <Task> TDB2::siblings (Task& task)
+{
+  std::vector <Task> results;
+  if (task.has ("parent"))
+  {
+    std::string parent = task.get ("parent");
+
+    // First load and scan pending.
+    if (! pending._loaded_tasks)
+      pending.load_tasks ();
+
+    std::vector <Task>::iterator i;
+    for (i = pending._tasks.begin (); i != pending._tasks.end (); ++i)
+    {
+      // Do not include self in results.
+      if (i->id != task.id)
+      {
+        // Do not include completed or deleted tasks.
+        if (i->getStatus () != Task::completed &&
+            i->getStatus () != Task::deleted)
+        {
+          // If task has the same parent, it is a sibling.
+          if (i->has ("parent") &&
+              i->get ("parent") == parent)
+          {
+            results.push_back (*i);
+          }
+        }
+      }
+    }
+  }
+
+  return results;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool TDB2::verifyUniqueUUID (const std::string& uuid)
 {
   if (pending.id (uuid)   != 0 ||
