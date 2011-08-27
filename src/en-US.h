@@ -372,6 +372,9 @@
 #define STRING_JSON_MISSING_OPEN     "Error: expected '{' or '[' at position {1}"
 #define STRING_JSON_EXTRA_CHARACTERS "Error: extra characters found at position {1}"
 
+// Legacy
+#define STRING_LEGACY_FEATURE        "Note: the '{1}' feature is deprecated."
+
 // Lua
 #define STRING_LUA_BAD_HOOK_DEF      "Malformed hook definition '{1}'."
 #define STRING_LUA_BAD_EVENT         "Unrecognized hook event '{1}'."
@@ -427,7 +430,6 @@
 #define STRING_TASK_VALID_RECUR      "The recurrence value '{1}' is not valid."
 #define STRING_TASK_VALID_WAIT_RECUR "You cannot create a task that is both waiting and recurring."
 #define STRING_TASK_VALID_PRIORITY   "Priority values may be 'H', 'M' or 'L', not '{1}'."
-
 
 // Taskmod
 #define STRING_TASKMOD_BAD_INIT      "Taskmod::getUuid(): Task object not initialized."

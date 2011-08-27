@@ -469,6 +469,10 @@ void Command::modify_task (
         // By default, just add it.
         else
           task.set (name, result);
+
+        // Legacy checks.
+        if (name == "fg" || name == "bg")
+          context.footnote (format (STRING_LEGACY_FEATURE, name));
       }
       else
         throw format (STRING_CMD_ADD_BAD_ATTRIBUTE, name);

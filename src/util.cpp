@@ -497,11 +497,9 @@ const std::string encode (const std::string& value)
 {
   std::string modified = value;
 
-  str_replace (modified, "\t", "&tab;");
   str_replace (modified, "\"", "&dquot;");
   str_replace (modified, "[",  "&open;");
   str_replace (modified, "]",  "&close;");
-  str_replace (modified, "\\", "\\\\");
 
   return modified;
 }
@@ -520,7 +518,6 @@ const std::string decode (const std::string& value)
   std::string modified = value;
 
   // Supported encodings.
-  str_replace (modified, "&tab;",   "\t");
   str_replace (modified, "&dquot;", "\"");
   str_replace (modified, "&quot;",  "'");
   str_replace (modified, "&open;",  "[");
