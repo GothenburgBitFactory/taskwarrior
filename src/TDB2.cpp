@@ -134,6 +134,7 @@ void TF2::add_line (const std::string& line)
 {
 //  std::cout << "# TF2::add_line " << _file._data << "\n";
 
+  _lines.push_back (line);
   _added_lines.push_back (line);
   _dirty = true;
 }
@@ -466,17 +467,17 @@ void TDB2::modify (const Task& task)
   else
     pending.modify_task (task);
 
-  // TODO Add undo data lines:
   // time <time>
   // old <task>
   // new <task>
   // ---
-/*
-  undo.add_line ("time " + format (time (NULL)) + "\n");
+  Task original;
+  get (task.get ("uuid"), original);
+
+  undo.add_line ("time " + Date ().toEpochString () + "\n");
   undo.add_line ("old " + original.composeF4 ());
   undo.add_line ("new " + task.composeF4 ());
   undo.add_line ("---\n");
-*/
 
   // Add modified task to backlog.
   backlog.modify_task (task);

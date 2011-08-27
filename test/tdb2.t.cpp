@@ -33,43 +33,72 @@
 Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-void get (std::vector <Task>& pending, std::vector <Task>& completed)
-{
-  TDB tdb;
-  tdb.location (".");
-  tdb.lock ();
-  tdb.loadPending   (pending);
-  tdb.loadCompleted (completed);
-  tdb.unlock ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1);
+  UnitTest t (15);
 
   try
   {
-    t.pass ("sample");
-/*
-    // Remove any residual test file.
+    // Remove any residual test files.
+    rmdir ("./extensions");
     unlink ("./pending.data");
     unlink ("./completed.data");
     unlink ("./undo.data");
+    unlink ("./backlog.data");
+    unlink ("./synch.key");
 
     // Set the context to allow GC.
     context.config.set ("gc", "on");
 
-    // Try reading an empty database.
-    Filter filter;
-    std::vector <Task> all;
-    std::vector <Task> pending;
-    std::vector <Task> completed;
-    get (pending, completed);
-    t.ok (pending.size () == 0, "TDB Read empty pending");
-    t.ok (completed.size () == 0, "TDB Read empty completed");
+    TDB2 tdb2;
+    tdb2.set_location (".");
 
-    // Add without commit.
+    // Try reading an empty database.
+    std::vector <Task> pending          = tdb2.pending.get_tasks ();
+    std::vector <Task> completed        = tdb2.completed.get_tasks ();
+    std::vector <std::string> undo      = tdb2.undo.get_lines ();
+    std::vector <std::string> backlog   = tdb2.backlog.get_lines ();
+    std::vector <std::string> synch_key = tdb2.synch_key.get_lines ();
+
+    t.is ((int) pending.size (),   0, "TDB2 Read empty pending");
+    t.is ((int) completed.size (), 0, "TDB2 Read empty completed");
+    t.is ((int) undo.size (),      0, "TDB2 Read empty undo");
+    t.is ((int) backlog.size (),   0, "TDB2 Read empty backlog");
+    t.is ((int) synch_key.size (), 0, "TDB2 Read empty synch_key");
+
+    // Add a task.
+    Task task ("[name:\"value\"]");
+    tdb2.add (task);
+
+    pending   = tdb2.pending.get_tasks ();
+    completed = tdb2.completed.get_tasks ();
+    undo      = tdb2.undo.get_lines ();
+    backlog   = tdb2.backlog.get_lines ();
+    synch_key = tdb2.synch_key.get_lines ();
+
+    t.is ((int) pending.size (),   1, "TDB2 after add, 1 pending task");
+    t.is ((int) completed.size (), 0, "TDB2 after add, 0 completed tasks");
+    t.is ((int) undo.size (),      3, "TDB2 after add, 3 undo lines");
+    t.is ((int) backlog.size (),   1, "TDB2 after add, 1 backlog line");
+    t.is ((int) synch_key.size (), 0, "TDB2 after add, 0 synch_key");
+
+
+    task.set ("description", "This is a test");
+    tdb2.modify (task);
+
+    pending   = tdb2.pending.get_tasks ();
+    completed = tdb2.completed.get_tasks ();
+    undo      = tdb2.undo.get_lines ();
+    backlog   = tdb2.backlog.get_lines ();
+    synch_key = tdb2.synch_key.get_lines ();
+
+    t.is ((int) pending.size (),   1, "TDB2 after add, 1 pending task");
+    t.is ((int) completed.size (), 0, "TDB2 after add, 0 completed tasks");
+    t.is ((int) undo.size (),      7, "TDB2 after add, 7 undo lines");
+    t.is ((int) backlog.size (),   2, "TDB2 after add, 2 backlog line");
+    t.is ((int) synch_key.size (), 0, "TDB2 after add, 0 synch_key");
+
+/*
     TDB tdb;
     tdb.location (".");
     tdb.lock ();
@@ -101,7 +130,7 @@ int main (int argc, char** argv)
     completed.clear ();
 
     tdb.lock ();
-    tdb.load (all, context.filter);
+    tdb.load (all);
     all[0].set ("name", "value2");
     tdb.update (all[0]);                                             // P1 C0 N0 M1
     tdb.commit ();                                                   // P1 C0 N0 M0
@@ -119,7 +148,7 @@ int main (int argc, char** argv)
     all.clear ();
 
     tdb.lock ();
-    tdb.loadPending (all, context.filter);
+    tdb.loadPending (all);
     all[0].setStatus (Task::completed);
     tdb.update (all[0]);                                             // P1 C0 N0 M1
     Task t2 ("[foo:\"bar\" status:\"pending\"]");
