@@ -93,22 +93,6 @@ static const char* modifierNames[] =
 #define NUM_MODIFIER_NAMES   (sizeof (modifierNames)   / sizeof (modifierNames[0]))
 
 ////////////////////////////////////////////////////////////////////////////////
-static inline std::string& str_replace (
-  std::string &str,
-  const std::string& search,
-  const std::string& replacement)
-{
-  std::string::size_type pos = 0;
-  while ((pos = str.find (search, pos)) != std::string::npos)
-  {
-    str.replace (pos, search.length (), replacement);
-    pos += replacement.length ();
-  }
-
-  return str;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Att::Att ()
 : _name ("")
 , _value ("")
