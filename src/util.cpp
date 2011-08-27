@@ -485,3 +485,57 @@ unsigned burndown_size (unsigned ntasks)
   // Round up to max of unsigned.
   return std::numeric_limits<unsigned>::max ();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Encode values prior to serialization.
+//   \t -> &tab;
+//   "  -> &dquot;
+//   [  -> &open;
+//   ]  -> &close;
+//   \  -> \\               (extra chars to disambiguate multi-line comment)
+const std::string encode (const std::string& value)
+{
+  std::string modified = value;
+
+  str_replace (value, "\t", "&tab;");
+  str_replace (value, "\"", "&dquot;");
+  str_replace (value, "[",  "&open;");
+  str_replace (value, "]",  "&close;");
+  str_replace (value, "\\", "\\\\");
+
+  return modified;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Decode values after parse.
+//   \t <- &tab;
+//   "  <- &quot; or &dquot;
+//   '  <- &squot;
+//   ,  <- &comma;
+//   [  <- &open;
+//   ]  <- &close;
+//   :  <- &colon;
+const std::string decode (const std::string& value)
+{
+  std::string modified = value;
+
+  // Supported encodings.
+  str_replace (modified, "&tab;",   "\t");
+  str_replace (modified, "&dquot;", "\"");
+  str_replace (modified, "&quot;",  "'");
+  str_replace (modified, "&open;",  "[");
+  str_replace (modified, "&close;", "]");
+
+  // Support for deprecated encodings.  These cannot be removed or old files
+  // will not be parsable.  Not just old files - completed.data can contain
+  // tasks formatted/encoded using these.
+  str_replace (modified, "&squot;", "'");
+  str_replace (modified, "&comma;", ",");
+  str_replace (modified, "&colon;", ":");
+
+  return modified;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
