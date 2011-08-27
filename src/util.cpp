@@ -497,11 +497,11 @@ const std::string encode (const std::string& value)
 {
   std::string modified = value;
 
-  str_replace (value, "\t", "&tab;");
-  str_replace (value, "\"", "&dquot;");
-  str_replace (value, "[",  "&open;");
-  str_replace (value, "]",  "&close;");
-  str_replace (value, "\\", "\\\\");
+  str_replace (modified, "\t", "&tab;");
+  str_replace (modified, "\"", "&dquot;");
+  str_replace (modified, "[",  "&open;");
+  str_replace (modified, "]",  "&close;");
+  str_replace (modified, "\\", "\\\\");
 
   return modified;
 }
