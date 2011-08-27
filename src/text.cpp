@@ -483,6 +483,22 @@ std::string ucFirst (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string str_replace (
+  std::string &str,
+  const std::string& search,
+  const std::string& replacement)
+{
+  std::string::size_type pos = 0;
+  while ((pos = str.find (search, pos)) != std::string::npos)
+  {
+    str.replace (pos, search.length (), replacement);
+    pos += replacement.length ();
+  }
+
+  return str;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const char* optionalBlankLine ()
 {
   return context.verbose ("blank") ? newline : noline;
