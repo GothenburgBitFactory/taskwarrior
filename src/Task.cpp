@@ -309,7 +309,7 @@ void Task::parse (const std::string& input)
             nl.skip (':')           &&
             nl.getQuoted ('"', value))
         {
-          (*this)[name] = json::decode (value);
+          (*this)[name] = decode (json::decode (value));
         }
 
         nl.skip (' ');
