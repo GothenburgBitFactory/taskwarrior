@@ -52,6 +52,7 @@ CmdImport::CmdImport ()
 int CmdImport::execute (std::string& output)
 {
   int rc = 0;
+  int count = 0;
 
 	// Use the description as a file name.
   std::vector <std::string> words = context.a3.extract_words ();
@@ -164,14 +165,13 @@ int CmdImport::execute (std::string& output)
 
         task.validate ();
 
-        // TODO Verify uuid is unique, to prevent double-import.
-
         std::cout << "  "
                   << task.get ("uuid")
                   << " "
                   << task.get ("description")
                   << "\n";
         context.tdb2.add (task);
+        ++count;
       }
       else
         throw std::string ("Not a JSON object: ") + *line;
@@ -181,6 +181,8 @@ int CmdImport::execute (std::string& output)
   }
 
   context.tdb2.commit ();
+
+  context.footnote (format (STRING_CMD_IMPORT_SUMMARY, count));
   return rc;
 }
 
