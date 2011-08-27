@@ -72,6 +72,12 @@ int CmdStatistics::execute (std::string& output)
   File undo (location._data + "/undo.data");
   dataSize += undo.size ();
 
+  File backlog (location._data + "/backlog.data");
+  dataSize += backlog.size ();
+
+  File synch_key (location._data + "/synch_key.data");
+  dataSize += synch_key.size ();
+
   std::vector <std::string> undoTxns;
   File::read (undo, undoTxns);
   int undoCount = 0;
