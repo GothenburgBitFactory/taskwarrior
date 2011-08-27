@@ -101,7 +101,7 @@ void TF2::add_task (const Task& task)
   _added_tasks.push_back (task);     // For commit/synch
 
 /*
-  int id = next_id ();
+  int id = context.tdb2.next_id ();
   _I2U[id] = task.get ("uuid");
   _U2I[task.get ("uuid")] = id;
 */
@@ -233,7 +233,6 @@ void TF2::load_tasks ()
   if (! _loaded_lines)
     load_lines ();
 
-  int id = 1;
   int line_number = 0;
   try
   {
@@ -247,7 +246,9 @@ void TF2::load_tasks ()
       Task::status status = task.getStatus ();
       if (status != Task::deleted &&
           status != Task::completed)
-        task.id = id++;
+      {
+        task.id = context.tdb2.next_id ();
+      }
 
       _tasks.push_back (task);
 
@@ -548,10 +549,6 @@ int TDB2::gc ()
 // Next ID is that of the last pending task plus one.
 int TDB2::next_id ()
 {
-  if (! pending._loaded_tasks)
-    pending.load_tasks ();
-
-  _id = pending._tasks.back ().id + 1;
   return _id++;
 }
 

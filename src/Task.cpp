@@ -528,7 +528,7 @@ std::string Task::composeF4 () const
     {
       ff4 += (first ? "" : " ")
            + it->first
-           + ":\"" + json::encode (it->second) + "\"";
+           + ":\"" + encode (json::encode (it->second)) + "\"";
       first = false;
     }
   }
