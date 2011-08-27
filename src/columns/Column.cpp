@@ -29,11 +29,13 @@
 
 #include <Context.h>
 #include <Column.h>
+#include <ColBg.h>
 #include <ColDepends.h>
 #include <ColDescription.h>
 #include <ColDue.h>
 #include <ColEnd.h>
 #include <ColEntry.h>
+#include <ColFg.h>
 #include <ColID.h>
 #include <ColIMask.h>
 #include <ColMask.h>
@@ -77,11 +79,13 @@ Column* Column::factory (const std::string& name, const std::string& report)
   }
 
   Column* c;
-       if (column_name == "depends")     c = new ColumnDepends ();
+       if (column_name == "bg")          c = new ColumnBg ();
+  else if (column_name == "depends")     c = new ColumnDepends ();
   else if (column_name == "description") c = new ColumnDescription ();
   else if (column_name == "due")         c = new ColumnDue ();
   else if (column_name == "end")         c = new ColumnEnd ();
   else if (column_name == "entry")       c = new ColumnEntry ();
+  else if (column_name == "fg")          c = new ColumnFg ();
   else if (column_name == "id")          c = new ColumnID ();
   else if (column_name == "imask")       c = new ColumnIMask ();
   else if (column_name == "mask")        c = new ColumnMask ();
@@ -113,11 +117,13 @@ void Column::factory (std::map <std::string, Column*>& all)
 {
   Column* c;
 
+  c = new ColumnBg ();             all[c->_name] = c;
   c = new ColumnDepends ();        all[c->_name] = c;
   c = new ColumnDescription ();    all[c->_name] = c;
   c = new ColumnDue ();            all[c->_name] = c;
   c = new ColumnEnd ();            all[c->_name] = c;
   c = new ColumnEntry ();          all[c->_name] = c;
+  c = new ColumnFg ();             all[c->_name] = c;
   c = new ColumnID ();             all[c->_name] = c;
   c = new ColumnIMask ();          all[c->_name] = c;
   c = new ColumnMask ();           all[c->_name] = c;
