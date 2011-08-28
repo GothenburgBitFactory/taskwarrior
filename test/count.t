@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'count.rc')
@@ -50,7 +50,7 @@ qx{../src/task rc:count.rc add five due:eom recur:monthly};
 my $output = qx{../src/task rc:count.rc count};
 like ($output, qr/^5$/ms, 'count');
 
-$output = qx{../src/task rc:count.rc count status:deleted};
+$output = qx{../src/task rc:count.rc count status:deleted rc.debug:1};
 like ($output, qr/^1$/ms, 'count status:deleted');
 
 $output = qx{../src/task rc:count.rc count e};
@@ -63,23 +63,13 @@ $output = qx{../src/task rc:count.rc count due.any:};
 like ($output, qr/^1$/ms, 'count due.any:');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'count.rc';
-ok (!-r 'count.rc', 'Removed count.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key count.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'count.rc', 'Cleanup');
 
 exit 0;
 
