@@ -97,6 +97,12 @@ int main (int argc, char** argv)
     t.is ((int) backlog.size (),   2, "TDB2 after add, 2 backlog task");
     t.is ((int) synch_key.size (), 0, "TDB2 after add, 0 synch_key");
 
+    context.tdb2.commit ();
+
+    // Reset for reuse.
+    context.tdb2.clear ();
+    context.tdb2.set_location (".");
+
     // TODO commit
     // TODO complete a task
     // TODO gc

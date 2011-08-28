@@ -369,6 +369,27 @@ int TF2::id (const std::string& uuid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void TF2::clear ()
+{
+  _read_only       = false;
+  _dirty           = false;
+  _loaded_tasks    = false;
+  _loaded_lines    = false;
+  _loaded_contents = false;
+
+  _contents        = "";
+  _file._data      = "";
+
+  _tasks.clear ();
+  _added_tasks.clear ();
+  _modified_tasks.clear ();
+  _lines.clear ();
+  _added_lines.clear ();
+  _I2U.clear ();
+  _U2I.clear ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // <label> <rw><dirty> <tasks> <lines> <contents>
 //
 // label:    <label %+14s>
@@ -707,6 +728,19 @@ bool TDB2::verifyUniqueUUID (const std::string& uuid)
     return false;
 
   return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::clear ()
+{
+  pending.clear ();
+  completed.clear ();
+  undo.clear ();
+  backlog.clear ();
+  synch_key.clear ();
+
+  _location = "";
+  _id = 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

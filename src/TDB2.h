@@ -63,6 +63,7 @@ public:
   std::string uuid (int);
   int id (const std::string&);
 
+  void clear ();
   const std::string dump ();
 
 public:
@@ -104,6 +105,7 @@ public:
   bool get (const std::string&, Task&);
   const std::vector <Task> siblings (Task&);
 
+  void clear ();
   void dump ();
 
 private:
