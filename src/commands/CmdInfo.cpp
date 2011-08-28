@@ -60,28 +60,22 @@ int CmdInfo::execute (std::string& output)
 {
   int rc = 0;
 
-  // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
 
-  // Read the undo file.
-  std::vector <std::string> undo;
-  if (context.config.getBoolean ("journal.info"))
+  if (! filtered.size ())
   {
-    Directory location (context.config.get ("data.location"));
-    std::string undoFile = location._data + "/undo.data";
-    File::read (undoFile, undo);
+    context.footnote (STRING_FEEDBACK_NO_MATCH);
+    rc = 1;
   }
 
-  // Find the task.
+  // Get the undo data.
+  std::vector <std::string> undo;
+  if (context.config.getBoolean ("journal.info"))
+    undo = context.tdb2.undo.get_lines ();
+
+  // Render each task.
   std::stringstream out;
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -100,10 +94,9 @@ int CmdInfo::execute (std::string& output)
     }
 
     Date now;
-    int row;
 
     // id
-    row = view.addRow ();
+    int row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_ID);
     view.set (row, 1, (task->id ? format (task->id) : "-"));
 
@@ -399,12 +392,6 @@ int CmdInfo::execute (std::string& output)
     if (journal.rows () > 0)
       out << journal.render ()
           << "\n";
-  }
-
-  if (! filtered.size ())
-  {
-    context.footnote (STRING_FEEDBACK_NO_MATCH);
-    rc = 1;
   }
 
   output = out.str ();
