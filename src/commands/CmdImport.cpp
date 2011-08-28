@@ -123,6 +123,20 @@ int CmdImport::execute (std::string& output)
               task.set (i->first, d.toEpochString ());
             }
 
+            // Tags are an array of JSON strings.
+            else if (i->first == "tags")
+            {
+              json::array* tags = (json::array*)i->second;
+              json_array_iter t;
+              for (t  = tags->_data.begin ();
+                   t != tags->_data.end ();
+                   ++t)
+              {
+                json::string* tag = (json::string*)*t;
+                task.addTag (tag->_data);
+              }
+            }
+
             // Other types are simply added.
             else
               task.set (i->first, unquoteText (i->second->dump ()));
@@ -156,6 +170,21 @@ int CmdImport::execute (std::string& output)
               }
 
               task.setAnnotations (annos);
+            }
+
+            // TODO Implement
+            else if (i->first == "parent")
+            {
+            }
+
+            // TODO Implement
+            else if (i->first == "mask")
+            {
+            }
+
+            // TODO Implement
+            else if (i->first == "imask")
+            {
             }
 
             else

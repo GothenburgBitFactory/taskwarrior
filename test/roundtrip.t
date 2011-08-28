@@ -28,12 +28,13 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'roundtrip.rc')
 {
   print $fh "data.location=.\n",
+            "verbose=off\n",
             "confirmation=no\n",
             "defaultwidth=100\n";
   close $fh;
@@ -45,12 +46,12 @@ qx{../src/task rc:roundtrip.rc add priority:H project:A one};
 qx{../src/task rc:roundtrip.rc add +tag1 +tag2 two};
 
 # trip 1.
-qx{../src/task rc:roundtrip.rc export.yaml > ./roundtrip.txt};
+qx{../src/task rc:roundtrip.rc export > ./roundtrip.txt};
 unlink 'pending.data', 'completed.data', 'undo.data';
-qx{../src/task rc:roundtrip.rc import ./roundtrip.txt};
+qx{../src/task rc:roundtrip.rc rc.debug:1 import ./roundtrip.txt};
 
 # trip 2.
-qx{../src/task rc:roundtrip.rc export.yaml > ./roundtrip.txt};
+qx{../src/task rc:roundtrip.rc export > ./roundtrip.txt};
 unlink 'pending.data', 'completed.data', 'undo.data';
 qx{../src/task rc:roundtrip.rc import ./roundtrip.txt};
 
@@ -65,26 +66,14 @@ like ($output, qr/1.+A.+H.+\d+\/\d+\/\d+.+(?:-|\d+).+one/,       '2 round trips 
 like ($output, qr/2.+\d+\/\d+\/\d+.+(?:-|\d+).+tag1\stag2\stwo/, '2 round trips task 2 identical');
 
 # Cleanup.
-unlink 'roundtrip.txt';
-ok (!-r 'roundtrip.txt', 'Removed roundtrip.txt');
-
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'roundtrip.rc';
-ok (!-r 'roundtrip.rc', 'Removed roundtrip.rc');
+unlink qw(roundtrip.txt pending.data completed.data undo.data backlog.data synch.key roundtrip.rc);
+ok (! -r 'roundtrip.txt'  &&
+    ! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'roundtrip.rc', 'Cleanup');
 
 exit 0;
 
