@@ -42,7 +42,7 @@ if (open my $fh, '>', 'export.rc')
 # Add two tasks, export, examine result.
 qx{../src/task rc:export.rc add priority:H project:A one};
 qx{../src/task rc:export.rc add +tag1 +tag2 two};
-diag (qx{env PATH=/usr/bin:../src ../scripts/add-ons/export-yaml.pl rc:export.rc > ./export.txt});
+qx{env PATH=../src:$ENV{PATH} ../scripts/add-ons/export-yaml.pl rc:export.rc > ./export.txt};
 
 my @lines;
 if (open my $fh, '<', './export.txt')
