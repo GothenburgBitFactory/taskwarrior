@@ -53,7 +53,12 @@ int CmdExec::execute (std::string& output)
   {
     if (arg != context.a3.begin () &&
         arg->_raw != "execute")
+    {
+      if (command_line.length ())
+        command_line += " ";
+
       command_line += arg->_raw;
+    }
   }
 
   return system (command_line.c_str ());
