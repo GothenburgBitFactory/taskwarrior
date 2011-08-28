@@ -239,7 +239,6 @@ void TF2::commit ()
         _dirty = false;
       }
     }
-
   }
 }
 
@@ -270,14 +269,8 @@ void TF2::load_tasks ()
       ++line_number;
       Task task (*i);
 
-      // Only set an ID for live tasks.
-      Task::status status = task.getStatus ();
-      if (status != Task::deleted &&
-          status != Task::completed)
-      {
-        task.id = context.tdb2.next_id ();
-      }
-
+      // Every task gets an ID.
+      task.id = context.tdb2.next_id ();
       _tasks.push_back (task);
 
       // Maintain mapping for ease of link/dependency resolution.
