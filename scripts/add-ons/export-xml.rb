@@ -29,8 +29,8 @@
 require 'rubygems'
 require 'json'
 
-# Use the taskwarrior 1.9.4+ _query command to issue a query and return JSON
-lines = IO.popen("/usr/local/bin/task _query " + ARGV.join(" ")).readlines
+# Use the taskwarrior 2.0+ export command to filter and return JSON
+lines = IO.popen("/usr/local/bin/task export " + ARGV.join(" ")).readlines
 
 # Generate output.
 print "<tasks>\n"

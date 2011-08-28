@@ -37,12 +37,11 @@ if ($@)
   exit 1;
 }
 
-
-# Use the taskwarrior 1.9.4+ _query command to issue a query and return JSON
-my $command = '/usr/local/bin/task _query ' . join (' ', @ARGV);
+# Use the taskwarrior 2.0+ export command to filter and return JSON
+my $command = join (' ', ("env PATH=$ENV{PATH} task export", @ARGV));
 if ($command =~ /No matches/)
 {
-  print stderr $command;
+  printf STDERR $command;
   exit 1;
 }
 
@@ -55,7 +54,7 @@ for my $task (split /,$/ms, qx{$command})
   my $data = from_json ($task);
 
   print "  task:\n";
-  for my $key (keys %$data)
+  for my $key (sort keys %$data)
   {
     if ($key eq 'annotations')
     {
@@ -63,17 +62,16 @@ for my $task (split /,$/ms, qx{$command})
       for my $anno (@{$data->{$key}})
       {
         print "      annotation:\n";
-        print "        $_:$anno->{$_}\n" for keys %$anno;
+        print "        $_: $anno->{$_}\n" for keys %$anno;
       }
     }
     elsif ($key eq 'tags')
     {
-      print "    tags:\n";
-      print "      tag:$_\n" for @{$data->{'tags'}};
+      print "    tags: ", join (',', @{$data->{'tags'}}), "\n";
     }
     else
     {
-      print "    $key:$data->{$key}\n";
+      print "    $key: $data->{$key}\n";
     }
   }
 }

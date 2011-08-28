@@ -37,12 +37,11 @@ if ($@)
   exit 1;
 }
 
-
-# Use the taskwarrior 1.9.4+ _query command to issue a query and return JSON
-my $command = '/usr/local/bin/task _query ' . join (' ', @ARGV);
+# Use the taskwarrior 2.0+ export command to filter and return JSON
+my $command = join (' ', ("env PATH=$ENV{PATH} task export", @ARGV));
 if ($command =~ /No matches/)
 {
-  print stderr $command;
+  printf STDERR $command;
   exit 1;
 }
 

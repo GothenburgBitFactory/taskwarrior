@@ -30,32 +30,32 @@ import sys
 import commands
 import json
 
-# Use the taskwarrior 1.9.4+ _query command to issue a query and return JSON
-command = "/usr/local/bin/task _query " + " ".join (sys.argv[1:])
+# Use the taskwarrior 2.0+ export command to filter and return JSON
+command = "/usr/local/bin/task export " + " ".join (sys.argv[1:])
 
 # Generate output.
 print "<tasks>"
 for task in commands.getoutput (command).split (",\n"):
     data = json.loads (task)
-    print ("  <task>")
+    print "  <task>"
     for name,value in data.items ():
         if name == "annotations":
-            print ("    <annotations>")
+            print "    <annotations>"
             for anno in value:
-                print ("      <annotation>")
+                print "      <annotation>"
                 for name,value in anno.items ():
-                    print ("        <{0}>{1}</{0}>".format (name, value))
-                    print ("      </annotation>")
-                    print ("    </annotations>")
+                    print "        <{0}>{1}</{0}>".format (name, value)
+                    print "      </annotation>"
+                    print "    </annotations>"
         elif name == "tags":
-            print ("    <tags>")
+            print "    <tags>"
             for tag in value:
-                print ("      <tag>{0}</tag>".format (tag))
-                print ("    </tags>")
+                print "      <tag>{0}</tag>".format (tag)
+                print "    </tags>"
         else:
-            print ("    <{0}>{1}</{0}>".format (name, value))
-    print ("  </task>")
-print ("</tasks>")
+            print "    <{0}>{1}</{0}>".format (name, value)
+    print "  </task>"
+print "</tasks>"
 sys.exit (0)
 
 ################################################################################
