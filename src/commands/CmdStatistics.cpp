@@ -60,30 +60,18 @@ int CmdStatistics::execute (std::string& output)
   std::string dateformat = context.config.get ("dateformat");
 
   // Go get the file sizes.
-  size_t dataSize = 0;
+  size_t dataSize = context.tdb2.pending._file.size ()
+                  + context.tdb2.completed._file.size ()
+                  + context.tdb2.undo._file.size ()
+                  + context.tdb2.backlog._file.size ()
+                  + context.tdb2.synch_key._file.size ();
 
-  Directory location (context.config.get ("data.location"));
-  File pending (location._data + "/pending.data");
-  dataSize += pending.size ();
-
-  File completed (location._data + "/completed.data");
-  dataSize += completed.size ();
-
-  File undo (location._data + "/undo.data");
-  dataSize += undo.size ();
-
-  File backlog (location._data + "/backlog.data");
-  dataSize += backlog.size ();
-
-  File synch_key (location._data + "/synch_key.data");
-  dataSize += synch_key.size ();
-
-  std::vector <std::string> undoTxns;
-  File::read (undo, undoTxns);
+  // Count the undo transactions.
+  std::vector <std::string> undoTxns = context.tdb2.undo.get_lines ();
   int undoCount = 0;
   std::vector <std::string>::iterator tx;
   for (tx = undoTxns.begin (); tx != undoTxns.end (); ++tx)
-    if (tx->substr (0, 3) == "---")
+    if (*tx == "---")
       ++undoCount;
 
   // Get all the tasks.
