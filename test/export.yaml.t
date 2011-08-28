@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 21;
 
 # Create the rc file.
 if (open my $fh, '>', 'export.rc')
@@ -42,6 +42,9 @@ if (open my $fh, '>', 'export.rc')
 # Add two tasks, export, examine result.
 qx{../src/task rc:export.rc add priority:H project:A one};
 qx{../src/task rc:export.rc add +tag1 +tag2 two};
+my $output = qx{env PATH=../src task rc:export.rc _version};
+like ($output, qr/^[a-z0-9]{7}$/, 'found task via env');
+
 qx{env PATH=../src:$ENV{PATH} ../scripts/add-ons/export-yaml.pl rc:export.rc > ./export.txt};
 
 my @lines;
