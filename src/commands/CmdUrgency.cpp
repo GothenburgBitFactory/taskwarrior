@@ -50,17 +50,9 @@ CmdUrgency::CmdUrgency ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdUrgency::execute (std::string& output)
 {
-  // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  handleRecurrence ();
-  context.tdb.loadPending (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
 
   if (filtered.size () == 0)
   {
@@ -68,7 +60,7 @@ int CmdUrgency::execute (std::string& output)
     return 1;
   }
 
-  // Find the task(s).
+  // Display urgency for the selected tasks.
   std::stringstream out;
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
