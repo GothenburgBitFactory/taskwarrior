@@ -480,7 +480,7 @@ void TDB2::modify (const Task& task)
   undo.add_line ("---\n");
 
   // Add modified task to backlog.
-  backlog.modify_task (task);
+  backlog.add_task (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
