@@ -28,12 +28,13 @@
 
 use strict;
 use warnings;
-use Test::More tests => 24;
+use Test::More tests => 20;
 
 # Create the rc file.
 if (open my $fh, '>', 'export.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "verbose=no\n";
   close $fh;
   ok (-r 'export.rc', 'Created export.rc');
 }
@@ -41,7 +42,7 @@ if (open my $fh, '>', 'export.rc')
 # Add two tasks, export, examine result.
 qx{../src/task rc:export.rc add priority:H project:A one};
 qx{../src/task rc:export.rc add +tag1 +tag2 two};
-qx{../src/task rc:export.rc export.yaml > ./export.txt};
+diag (qx{env PATH=/usr/bin:../src ../scripts/add-ons/export-yaml.pl rc:export.rc > ./export.txt});
 
 my @lines;
 if (open my $fh, '<', './export.txt')
@@ -50,44 +51,34 @@ if (open my $fh, '<', './export.txt')
   close $fh;
 }
 
-like ($lines[0],  qr/^\%YAML 1\.1$/,          'export.yaml line 1');
-like ($lines[1],  qr/^---$/,                  'export.yaml line 2');
-like ($lines[2],  qr/^  task:$/,              'export.yaml line 3');
-like ($lines[3],  qr/^    description: one$/, 'export.yaml line 4');
-like ($lines[4],  qr/^    entry: \d+$/,       'export.yaml line 5');
-like ($lines[5],  qr/^    priority: H$/,      'export.yaml line 6');
-like ($lines[6],  qr/^    project: A$/,       'export.yaml line 7');
-like ($lines[7],  qr/^    status: pending$/,  'export.yaml line 8');
-like ($lines[8],  qr/^    uuid: .+$/,         'export.yaml line 9');
-like ($lines[9],  qr/^  task:$/,              'export.yaml line 10');
-like ($lines[10], qr/^    description: two$/, 'export.yaml line 11');
-like ($lines[11], qr/^    entry: \d+$/,       'export.yaml line 12');
-like ($lines[12], qr/^    status: pending$/,  'export.yaml line 13');
-like ($lines[13], qr/^    tags: tag1,tag2$/,  'export.yaml line 14');
-like ($lines[14], qr/^    uuid: .+$/,         'export.yaml line 15');
-like ($lines[15], qr/^\.\.\.$/,               'export.yaml line 16');
+like ($lines[0],  qr/^\%YAML 1\.1$/,             'export YAML line 1');
+like ($lines[1],  qr/^---$/,                     'export YAML line 2');
+like ($lines[2],  qr/^  task:$/,                 'export YAML line 3');
+like ($lines[3],  qr/^    description: one$/,    'export YAML line 4');
+like ($lines[4],  qr/^    entry: \d{8}T\d{6}Z$/, 'export YAML line 5');
+like ($lines[5],  qr/^    id: \d+$/,             'export YAML line 6');
+like ($lines[6],  qr/^    priority: H$/,         'export YAML line 7');
+like ($lines[7],  qr/^    project: A$/,          'export YAML line 8');
+like ($lines[8],  qr/^    status: pending$/,     'export YAML line 9');
+like ($lines[9],  qr/^    uuid: .+$/,            'export YAML line 10');
+like ($lines[10], qr/^  task:$/,                 'export YAML line 11');
+like ($lines[11], qr/^    description: two$/,    'export YAML line 12');
+like ($lines[12], qr/^    entry: \d{8}T\d{6}Z$/, 'export YAML line 13');
+like ($lines[13], qr/^    id: \d+$/,             'export YAML line 14');
+like ($lines[14], qr/^    status: pending$/,     'export YAML line 15');
+like ($lines[15], qr/^    tags: tag1,tag2$/,     'export YAML line 16');
+like ($lines[16], qr/^    uuid: .+$/,            'export YAML line 17');
+like ($lines[17], qr/^\.\.\.$/,                  'export YAML line 18');
 
 # Cleanup.
-unlink 'export.txt';
-ok (!-r 'export.txt', 'Removed export.txt');
-
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'export.rc';
-ok (!-r 'export.rc', 'Removed export.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key export.rc export.txt);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'export.rc'      &&
+    ! -r 'export.txt', 'Cleanup');
 
 exit 0;
 
