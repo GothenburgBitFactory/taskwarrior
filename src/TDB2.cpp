@@ -65,7 +65,16 @@ const std::vector <Task>& TF2::get_tasks ()
 //  std::cout << "# TF2::get_tasks " << _file._data << "\n";
 
   if (! _loaded_tasks)
+  {
     load_tasks ();
+
+    // Apply previously added tasks.
+    std::vector <Task>::iterator i;
+    for (i = _added_tasks.begin (); i != _added_tasks.end (); ++i)
+      _tasks.push_back (*i);
+
+//    std::cout << "# TF2::get_tasks added " << _added_tasks.size () << " tasks\n";
+  }
 
   return _tasks;
 }
@@ -76,7 +85,16 @@ const std::vector <std::string>& TF2::get_lines ()
 //  std::cout << "# TF2::get_lines " << _file._data << "\n";
 
   if (! _loaded_lines)
+  {
     load_lines ();
+
+    // Apply previously added lines.
+    std::vector <std::string>::iterator i;
+    for (i = _added_lines.begin (); i != _added_lines.end (); ++i)
+      _lines.push_back (*i);
+
+//    std::cout << "# TF2::get_lines added " << _added_lines.size () << " lines\n";
+  }
 
   return _lines;
 }
@@ -232,7 +250,16 @@ void TF2::load_tasks ()
   context.timer_load.start ();
 
   if (! _loaded_lines)
+  {
     load_lines ();
+
+    // Apply previously added lines.
+    std::vector <std::string>::iterator i;
+    for (i = _added_lines.begin (); i != _added_lines.end (); ++i)
+      _lines.push_back (*i);
+
+//    std::cout << "# TF2::load_tasks added " << _added_lines.size () << " lines\n";
+  }
 
   int line_number = 0;
   try
@@ -308,7 +335,16 @@ void TF2::load_contents ()
 std::string TF2::uuid (int id)
 {
   if (! _loaded_tasks)
+  {
     load_tasks ();
+
+    // Apply previously added tasks.
+    std::vector <Task>::iterator i;
+    for (i = _added_tasks.begin (); i != _added_tasks.end (); ++i)
+      _tasks.push_back (*i);
+
+//    std::cout << "# TF2::uuid added " << _added_tasks.size () << " tasks\n";
+  }
 
   std::map <int, std::string>::const_iterator i;
   if ((i = _I2U.find (id)) != _I2U.end ())
@@ -321,7 +357,16 @@ std::string TF2::uuid (int id)
 int TF2::id (const std::string& uuid)
 {
   if (! _loaded_tasks)
+  {
     load_tasks ();
+
+    // Apply previously added tasks.
+    std::vector <Task>::iterator i;
+    for (i = _added_tasks.begin (); i != _added_tasks.end (); ++i)
+      _tasks.push_back (*i);
+
+//    std::cout << "# TF2::id added " << _added_tasks.size () << " tasks\n";
+  }
 
   std::map <std::string, int>::const_iterator i;
   if ((i = _U2I.find (uuid)) != _U2I.end ())
