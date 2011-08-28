@@ -661,7 +661,7 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
     {
       Date d (i->second);
       out << "\""
-          << i->second
+          << i->first
           << "\":\""
           << d.toISO ()
           << "\"";
