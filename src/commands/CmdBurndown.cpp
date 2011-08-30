@@ -944,16 +944,11 @@ int CmdBurndownMonthly::execute (std::string& output)
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
 
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('M');
@@ -988,16 +983,11 @@ int CmdBurndownWeekly::execute (std::string& output)
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
 
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('W');
@@ -1032,16 +1022,11 @@ int CmdBurndownDaily::execute (std::string& output)
   int rc = 0;
 
   // Scan the pending tasks, applying any filter.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
 
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('D');
