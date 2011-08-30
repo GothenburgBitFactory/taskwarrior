@@ -54,7 +54,7 @@ int CmdIDs::execute (std::string& output)
   handleRecurrence ();
   std::vector <Task> filtered;
   filter (filtered);
-  context.tdb.commit ();
+  context.tdb2.commit ();
 
   // Find number of matching tasks.
   std::vector <int> ids;
@@ -85,7 +85,7 @@ int CmdCompletionIds::execute (std::string& output)
   handleRecurrence ();
   std::vector <Task> filtered;
   filter (filtered);
-  context.tdb.commit ();
+  context.tdb2.commit ();
 
   std::vector <int> ids;
   std::vector <Task>::iterator task;
@@ -94,8 +94,7 @@ int CmdCompletionIds::execute (std::string& output)
         task->getStatus () != Task::completed)
       ids.push_back (task->id);
 
-  std::sort (ids.begin (), ids.end ());
-
+  std::sort (ids.begin (), ids.end ()); 
   std::stringstream out;
   std::vector <int>::iterator id;
   for (id = ids.begin (); id != ids.end (); ++id)
@@ -122,7 +121,7 @@ int CmdZshCompletionIds::execute (std::string& output)
   handleRecurrence ();
   std::vector <Task> filtered;
   filter (filtered);
-  context.tdb.commit ();
+  context.tdb2.commit ();
 
   std::stringstream out;
   std::vector <Task>::iterator task;
