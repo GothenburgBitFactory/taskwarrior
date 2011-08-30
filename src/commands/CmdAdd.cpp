@@ -64,10 +64,8 @@ int CmdAdd::execute (std::string& output)
   context.tdb2.add (task);
 
   // TODO This should be a call in to feedback.cpp.
-/*
   if (context.verbose ("new-id"))
-    output = format (STRING_CMD_ADD_FEEDBACK, context.tdb.nextId ()) + "\n";
-*/
+    output = format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
 /*
   context.footnote (onProjectChange (task));
 */
