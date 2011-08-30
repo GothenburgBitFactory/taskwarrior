@@ -58,16 +58,12 @@ int CmdSummary::execute (std::string& output)
   int rc = 0;
 
   // Scan the pending tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
 
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
+  context.tdb2.commit ();
 
   // Generate unique list of project names from all pending tasks.
   std::map <std::string, bool> allProjects;

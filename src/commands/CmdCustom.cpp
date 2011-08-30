@@ -177,7 +177,6 @@ int CmdCustom::execute (std::string& output)
   }
 
   context.tdb2.commit ();
-
   output = out.str ();
   return rc;
 }
