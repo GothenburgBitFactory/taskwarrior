@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'prepend.rc')
@@ -49,23 +49,13 @@ $output = qx{../src/task rc:prepend.rc 1 prepend};
 unlike ($output, qr/Prepended 0 tasks/, 'blank prepend failed');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'prepend.rc';
-ok (!-r 'prepend.rc', 'Removed prepend.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key prepend.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'prepend.rc', 'Cleanup');
 
 exit 0;
 
