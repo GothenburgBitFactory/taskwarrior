@@ -54,14 +54,9 @@ int CmdStop::execute (std::string& output)
   int count = 0;
   std::stringstream out;
 
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.loadPending (tasks);
-
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
-
+  filter (filtered);
   if (filtered.size () == 0)
   {
     context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
@@ -98,7 +93,7 @@ int CmdStop::execute (std::string& output)
       {
         if (permission.confirmed (before, taskDifferences (before, *task) + STRING_CMD_DONE_PROCEED))
         {
-          context.tdb.update (*task);
+          context.tdb2.modify (*task);
           ++count;
 
           if (context.config.getBoolean ("echo.command"))
@@ -119,11 +114,7 @@ int CmdStop::execute (std::string& output)
     }
   }
 
-  if (count)
-    context.tdb.commit ();
-
-  context.tdb.unlock ();
-
+  context.tdb2.commit ();
   output = out.str ();
   return rc;
 }
