@@ -203,6 +203,7 @@
 #define STRING_CMD_INFO_MODIFICATION "Modification"
 #define STRING_CMD_INFO_TOTAL_ACTIVE "Total active time"
 #define STRING_CMD_UNDO_USAGE        "Reverts the most recent change to a task."
+#define STRING_CMD_UNDO_MODS         "The undo command does not allow further task modification."
 #define STRING_CMD_STATS_USAGE       "Shows task database statistics."
 #define STRING_CMD_STATS_CATEGORY    "Category"
 #define STRING_CMD_STATS_DATA        "Data"

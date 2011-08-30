@@ -97,6 +97,7 @@ public:
   void modify (const Task&);
   void commit ();
   void synch ();
+  void revert ();
   int  gc ();
   int  next_id ();
 

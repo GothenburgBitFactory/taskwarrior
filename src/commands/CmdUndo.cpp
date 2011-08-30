@@ -46,11 +46,12 @@ CmdUndo::CmdUndo ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdUndo::execute (std::string& output)
 {
-  // TODO Detect attemps to modify the task.
+  // Detect attemps to modify the task.
+  if (context.a3.extract_modifications ().size () > 0)
+    throw STRING_CMD_UNDO_MODS;
 
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.undo ();
-  context.tdb.unlock ();
+  context.tdb2.revert ();
+  context.tdb2.commit ();
   return 0;
 }
 
