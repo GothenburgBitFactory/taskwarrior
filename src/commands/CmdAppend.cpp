@@ -54,14 +54,9 @@ int CmdAppend::execute (std::string& output)
   int count = 0;
   std::stringstream out;
 
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.loadPending (tasks);
-
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
-
+  filter (filtered);
   if (filtered.size () == 0)
   {
     context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
@@ -77,55 +72,51 @@ int CmdAppend::execute (std::string& output)
   if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
+  // A non-zero value forces a file write.
+  int changes = 0;
+
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     modify_task_description_append (*task, modifications);
     apply_defaults (*task);
+    ++changes;
+    context.tdb2.modify (*task);
 
-    std::vector <Task>::iterator other;
-    for (other = tasks.begin (); other != tasks.end (); ++other)
+    std::vector <Task> siblings = context.tdb2.siblings (*task);
+    std::vector <Task>::iterator sibling;
+    for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
     {
-      if (other->id             == task->id               || // Self
-          (task->has ("parent") &&
-           task->get ("parent") == other->get ("parent")) || // Sibling
-          other->get ("uuid")   == task->get ("parent"))     // Parent
+      Task before (*sibling);
+
+      // Apply other deltas.
+      modify_task_description_append (*sibling, modifications);
+      apply_defaults (*sibling);
+      ++changes;
+
+      if (taskDiff (before, *sibling))
       {
-        Task before (*other);
+        // Only allow valid tasks.
+        sibling->validate ();
 
-        // A non-zero value forces a file write.
-        int changes = 0;
-
-        // Apply other deltas.
-        modify_task_description_append (*other, modifications);
-        apply_defaults (*other);
-        ++changes;
-
-        if (taskDiff (before, *other))
+        if (changes && permission.confirmed (before, taskDifferences (before, *sibling) + "Proceed with change?"))
         {
-          // Only allow valid tasks.
-          other->validate ();
+          context.tdb2.modify (*sibling);
 
-          if (changes && permission.confirmed (before, taskDifferences (before, *other) + "Proceed with change?"))
-          {
-            context.tdb.update (*other);
+          if (context.config.getBoolean ("echo.command"))
+            out << format (STRING_CMD_APPEND_DONE, sibling->id)
+                << "\n";
 
-            if (context.config.getBoolean ("echo.command"))
-              out << format (STRING_CMD_APPEND_DONE, other->id)
-                  << "\n";
+          if (before.get ("project") != sibling->get ("project"))
+            context.footnote (onProjectChange (before, *sibling));
 
-            if (before.get ("project") != other->get ("project"))
-              context.footnote (onProjectChange (before, *other));
-
-            ++count;
-          }
+          ++count;
         }
       }
     }
   }
 
-  context.tdb.commit ();
-  context.tdb.unlock ();
+  context.tdb2.commit ();
 
   if (context.config.getBoolean ("echo.command"))
     out << format ((count == 1
