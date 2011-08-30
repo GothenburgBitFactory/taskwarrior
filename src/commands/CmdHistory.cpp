@@ -58,16 +58,10 @@ int CmdHistoryMonthly::execute (std::string& output)
   std::map <time_t, int> deletedGroup;    // Deletions by month
 
   // Scan the pending tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
+  context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -218,16 +212,10 @@ int CmdHistoryAnnual::execute (std::string& output)
   std::map <time_t, int> deletedGroup;    // Deletions by month
 
   // Scan the pending tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
+  context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -375,16 +363,10 @@ int CmdGHistoryMonthly::execute (std::string& output)
   std::map <time_t, int> deletedGroup;    // Deletions by month
 
   // Scan the pending tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
+  context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -574,16 +556,10 @@ int CmdGHistoryAnnual::execute (std::string& output)
   std::map <time_t, int> deletedGroup;    // Deletions by month
 
   // Scan the pending tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
-  context.tdb.load (tasks);
-  context.tdb.commit ();
-  context.tdb.unlock ();
-
-  // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter (filtered);
+  context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
