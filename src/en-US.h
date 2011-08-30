@@ -382,7 +382,7 @@
 #define STRING_LUA_BAD_EVENT         "Unrecognized hook event '{1}'."
 
 // Permission
-#define STRING_PERM_TASK_LINE        "task {1} \"{2}\""
+#define STRING_PERM_TASK_LINE        "Task {1} \"{2}\""
 #define STRING_PERM_RECURRING        "(Recurring)"
 
 // Record

@@ -83,6 +83,7 @@ int CmdModify::execute (std::string& output)
     apply_defaults (*task);
 
     // Perform some logical consistency checks.
+    // TODO Shouldn't these tests be in Task::validate?
     if (task->has ("recur") &&
         !task->has ("due")  &&
         !before.has ("due"))
