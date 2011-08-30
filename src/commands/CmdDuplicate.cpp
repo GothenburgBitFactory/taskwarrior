@@ -54,14 +54,9 @@ int CmdDuplicate::execute (std::string& output)
   int count = 0;
   std::stringstream out;
 
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.loadPending (tasks);
-
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
-
+  filter (filtered);
   if (filtered.size () == 0)
   {
     context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
@@ -100,7 +95,7 @@ int CmdDuplicate::execute (std::string& output)
     // Only allow valid tasks.
     dup.validate ();
 
-    context.tdb.add (dup);
+    context.tdb2.add (dup);
     ++count;
 
     if (context.config.getBoolean ("echo.command"))
@@ -116,13 +111,9 @@ int CmdDuplicate::execute (std::string& output)
     context.footnote (onProjectChange (dup));
   }
 
-  if (count)
-    context.tdb.commit ();
-
-  context.tdb.unlock ();
-
   // TODO Add count summary, like the 'done' command.
 
+  context.tdb2.commit ();
   output = out.str ();
   return rc;
 }
