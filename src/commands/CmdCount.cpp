@@ -52,6 +52,7 @@ int CmdCount::execute (std::string& output)
   handleRecurrence ();
   std::vector <Task> filtered;
   filter (filtered);
+  context.tdb2.commit ();
 
   // Find number of matching tasks.  Skip recurring parent tasks.
   int count = 0;
