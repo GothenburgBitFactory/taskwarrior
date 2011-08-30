@@ -106,7 +106,7 @@ int CmdDuplicate::execute (std::string& output)
 
     // TODO This should be a call in to feedback.cpp.
     if (context.verbose ("new-id"))
-      out << format (STRING_CMD_ADD_FEEDBACK, context.tdb.nextId ()) + "\n";
+      out << format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
 
     context.footnote (onProjectChange (dup));
   }
