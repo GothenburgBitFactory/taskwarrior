@@ -51,13 +51,13 @@ while (my $todo = <>)
   my $due = '';
 
   # pending + pri + entry
-  if ($todo =~ /^(\([A-Z])\)\s(\d{4}-\d{2}-\d{2})\s(.+)$/i)
+  if ($todo =~ /^\(([A-Z])\)\s(\d{4}-\d{2}-\d{2})\s(.+)$/i)
   {
     ($status, $priority, $entry, $description) = ('pending', $1, epoch ($2), $3);
   }
 
   # pending + pri
-  elsif ($todo =~ /^(\([A-Z])\)\s(.+)$/i)
+  elsif ($todo =~ /^\(([A-Z])\)\s(.+)$/i)
   {
     ($status, $priority, $description) = ('pending', $1, $2);
   }
@@ -118,7 +118,7 @@ while (my $todo = <>)
 
   if (@contexts)
   {
-    $json .= ",\"tags\":\"" . join (',', @contexts) . "\"";
+    $json .= ",\"tags\":[" . join (',', map {"\"$_\""} @contexts) . "]";
   }
 
   $json .= ",\"description\":\"${description}\"}";

@@ -28,14 +28,15 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 11;
 
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
 {
   print $fh "data.location=.\n",
             "json.array=on\n",
-            "dateformat=YYYY-M-D\n";
+            "dateformat=YYYY-M-D\n",
+            "verbose=off\n";
   close $fh;
   ok (-r 'import.rc', 'Created import.rc');
 }
@@ -54,8 +55,8 @@ if (open my $fh, '>', 'import.txt')
             "(A) 2011-03-02 Call Mom\n",
             "(A) Call Mom 2011-03-02\n",
             "(A) Call Mom +Family +PeaceLoveAndHappiness \@iphone \@phone\n",
-            "X 2011-03-03 Call Mom\n",
             "xylophone lesson\n",
+            "X 2011-03-03 Call Mom\n",
             "x 2011-03-02 2011-03-01 Review Tim's pull request +TodoTxtTouch \@github\n";
 
   close $fh;
@@ -63,19 +64,48 @@ if (open my $fh, '>', 'import.txt')
 }
 
 # Convert todo.sh --> task JSON.
-my $output = qx{../scripts/add-ons/import-todo.sh.pl <import.txt >json.txt};
-diag ($output);
+qx{../scripts/add-ons/import-todo.sh.pl <import.txt >import.json};
 
 # Import the JSON.
-$output = qx{../src/task rc:import.rc import json.txt};
+my $output = qx{../src/task rc:import.rc import import.json};
 diag ($output);
 
 $output = qx{../src/task rc:import.rc info 1};
-diag ($output);
 like ($output, qr/^Priority.+H/ms, '1 pri:H');
+like ($output, qr/^Tags.+phone/ms, '1 +phone');
+like ($output, qr/^Description.+\@phone thank Mom for the meatballs/ms, '1 <desc>');
+
+$output = qx{../src/task rc:import.rc info 2};
+like ($output, qr/^Priority.+M/ms, '2 pri:M');
+
+$output = qx{../src/task rc:import.rc info 3};
+
+$output = qx{../src/task rc:import.rc info 4};
+
+$output = qx{../src/task rc:import.rc info 5};
+like ($output, qr/^Priority.+H/ms, '5 pri:H');
+
+$output = qx{../src/task rc:import.rc info 6};
+
+$output = qx{../src/task rc:import.rc info 7};
+
+$output = qx{../src/task rc:import.rc info 8};
+
+$output = qx{../src/task rc:import.rc info 9};
+like ($output, qr/^Priority.+H/ms, '9 pri:H');
+
+$output = qx{../src/task rc:import.rc info 10};
+like ($output, qr/^Priority.+H/ms, '10 pri:H');
+
+$output = qx{../src/task rc:import.rc info 11};
+like ($output, qr/^Priority.+H/ms, '11 pri:H');
+
+$output = qx{../src/task rc:import.rc info 12};
+
+# TODO and now the completed ones.
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key import.rc import.txt json.txt);
+unlink qw(pending.data completed.data undo.data backlog.data synch.key import.rc import.txt import.json);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
@@ -83,7 +113,7 @@ ok (! -r 'pending.data'   &&
     ! -r 'synch_key.data' &&
     ! -r 'import.rc'      &&
     ! -r 'import.txt'     &&
-    ! -r 'json.txt', 'Cleanup');
+    ! -r 'import.json', 'Cleanup');
 
 exit 0;
 
