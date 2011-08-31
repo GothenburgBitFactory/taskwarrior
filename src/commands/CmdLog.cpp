@@ -51,14 +51,11 @@ int CmdLog::execute (std::string& output)
 {
   int rc = 0;
 
-  // Every task needs a UUID.
-  Task task;
-  task.set ("uuid", uuid ());
-
   // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
+  Task task;
   modify_task_description_replace (task, modifications);
-  apply_defaults (task);
+  task.setStatus (Task::completed);
 
   // Recurring tasks get a special status.
   if (task.has ("recur"))
@@ -67,15 +64,6 @@ int CmdLog::execute (std::string& output)
   if (task.has ("wait"))
     throw std::string (STRING_CMD_LOG_NO_WAITING);
 
-  // Override with log-specific changes.
-  task.setStatus (Task::completed);
-
-  // Provide an end date unless user already specified one.
-  if (task.get ("end") == "")
-    task.set ("end", task.get ("entry"));
-
-  // Only valid tasks can be added.
-  task.validate ();
   context.tdb2.add (task);
 
 /*
