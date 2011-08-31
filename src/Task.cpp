@@ -996,8 +996,10 @@ void Task::validate ()
   if (has ("due") &&
       has ("recur"))
   {
-    setStatus (Task::recurring);
-    set ("mask", "");
+    if (has ("parent"))
+      setStatus (Task::pending);
+    else
+      setStatus (Task::recurring);
   }
 
   // Tasks with a wait: date get a special status.

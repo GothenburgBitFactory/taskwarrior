@@ -51,16 +51,9 @@ int CmdAdd::execute (std::string& output)
 {
   int rc = 0;
 
-  // Every task needs a UUID.
-  Task task;
-  task.set ("uuid", uuid ());
-
   // Apply the command line modifications to the new task.
+  Task task;
   modify_task_description_replace (task, context.a3.extract_modifications ());
-  apply_defaults (task);
-
-  // Only valid tasks can be added.
-  task.validate ();
   context.tdb2.add (task);
 
   // TODO This should be a call in to feedback.cpp.

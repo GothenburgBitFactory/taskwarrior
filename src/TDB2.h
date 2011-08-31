@@ -93,8 +93,8 @@ public:
   ~TDB2 ();
 
   void set_location (const std::string&);
-  void add (const Task&);
-  void modify (const Task&);
+  void add (Task&);
+  void modify (Task&);
   void commit ();
   void synch ();
   void revert ();

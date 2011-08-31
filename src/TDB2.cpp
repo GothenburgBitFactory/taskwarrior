@@ -483,9 +483,12 @@ void TDB2::set_location (const std::string& location)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add the new task to the appropriate file.
-void TDB2::add (const Task& task)
+void TDB2::add (Task& task)
 {
 //  std::cout << "# TDB2::add\n";
+
+  // Ensure the task is consistent, and provide defaults if necessary.
+  task.validate ();
 
   // If the tasks are loaded, then verify that this uuid is not already in
   // the file.
@@ -513,9 +516,12 @@ void TDB2::add (const Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::modify (const Task& task)
+void TDB2::modify (Task& task)
 {
 //  std::cout << "# TDB2::modify\n";
+
+  // Ensure the task is consistent, and provide defaults if necessary.
+  task.validate ();
 
   // Update task in either completed or deleted.
   // TODO Find task, overwrite it.

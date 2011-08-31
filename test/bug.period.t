@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 45;
+use Test::More tests => 40;
 
 # Create the rc file.
 if (open my $fh, '>', 'period.rc')
@@ -154,23 +154,13 @@ like ($output, qr/\b2q\b/,         'verify 2q');
 like ($output, qr/\b2y\b/,         'verify 2y');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'period.rc';
-ok (!-r 'period.rc', 'Removed period.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key period.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'period.rc', 'Cleanup');
 
 exit 0;
 
