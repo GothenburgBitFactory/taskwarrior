@@ -93,6 +93,9 @@ int CmdImport::execute (std::string& output)
                                  trim (*line), ","),
                                "]"),
                              "[");
+      // Skip blanks.  May be caused by the trim calls above.
+      if (! object.length ())
+        continue;
 
       // Parse the whole thing.
       json::value* root = json::parse (object);
@@ -100,7 +103,6 @@ int CmdImport::execute (std::string& output)
       {
         json::object* root_obj = (json::object*)root;
         Task task;
-        task.set ("uuid", uuid ());
 
         // For each object element...
         json_object_iter i;
@@ -192,15 +194,13 @@ int CmdImport::execute (std::string& output)
           }
         }
 
-        task.validate ();
-
+        context.tdb2.add (task);
+        ++count;
         std::cout << "  "
                   << task.get ("uuid")
                   << " "
                   << task.get ("description")
                   << "\n";
-        context.tdb2.add (task);
-        ++count;
       }
       else
         throw std::string ("Not a JSON object: ") + *line;
