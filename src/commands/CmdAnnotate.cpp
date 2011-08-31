@@ -77,10 +77,6 @@ int CmdAnnotate::execute (std::string& output)
   {
     Task before (*task);
     modify_task_annotate (*task, modifications);
-    apply_defaults (*task);
-
-    // Only allow valid tasks.
-    task->validate ();
 
     if (taskDiff (before, *task))
     {

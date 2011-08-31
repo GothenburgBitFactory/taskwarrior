@@ -116,9 +116,6 @@ int CmdDenotate::execute (std::string& output)
 
     if (taskDiff (before, *task))
     {
-      // Only allow valid tasks.
-      task->validate ();
-
       if (permission.confirmed (before,
                                 taskDifferences (before, *task) + STRING_CMD_DONE_PROCEED))
       {
