@@ -79,7 +79,6 @@ int CmdAppend::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     modify_task_description_append (*task, modifications);
-    apply_defaults (*task);
     ++changes;
     context.tdb2.modify (*task);
 
@@ -91,14 +90,10 @@ int CmdAppend::execute (std::string& output)
 
       // Apply other deltas.
       modify_task_description_append (*sibling, modifications);
-      apply_defaults (*sibling);
       ++changes;
 
       if (taskDiff (before, *sibling))
       {
-        // Only allow valid tasks.
-        sibling->validate ();
-
         if (changes && permission.confirmed (before, taskDifferences (before, *sibling) + "Proceed with change?"))
         {
           context.tdb2.modify (*sibling);

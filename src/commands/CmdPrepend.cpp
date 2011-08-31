@@ -79,9 +79,8 @@ int CmdPrepend::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     modify_task_description_prepend (*task, modifications);
-    apply_defaults (*task);
-    ++changes;
     context.tdb2.modify (*task);
+    ++changes;
 
     std::vector <Task> siblings = context.tdb2.siblings (*task);
     std::vector <Task>::iterator sibling;
@@ -91,17 +90,13 @@ int CmdPrepend::execute (std::string& output)
 
       // Apply other deltas.
       modify_task_description_prepend (*sibling, modifications);
-      apply_defaults (*sibling);
-      ++changes;
 
       if (taskDiff (before, *sibling))
       {
-        // Only allow valid tasks.
-        sibling->validate ();
-
         if (changes && permission.confirmed (before, taskDifferences (before, *sibling) + "Proceed with change?"))
         {
           context.tdb2.modify (*sibling);
+          ++changes;
 
           if (context.config.getBoolean ("echo.command"))
             out << format (STRING_CMD_PREPEND_DONE, sibling->id)
