@@ -79,16 +79,12 @@ int CmdStart::execute (std::string& output)
       Task before (*task);
 
       modify_task_annotate (*task, modifications);
-      apply_defaults (*task);
 
       // Add a start time.
       task->setStart ();
 
       if (context.config.getBoolean ("journal.time"))
         task->addAnnotation (context.config.get ("journal.time.start.annotation"));
-
-      // Only allow valid tasks.
-      task->validate ();
 
       if (taskDiff (before, *task))
       {

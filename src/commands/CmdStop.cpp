@@ -78,16 +78,12 @@ int CmdStop::execute (std::string& output)
       Task before (*task);
 
       modify_task_annotate (*task, modifications);
-      apply_defaults (*task);
 
       // Remove the start time.
       task->remove ("start");
 
       if (context.config.getBoolean ("journal.time"))
         task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
-
-      // Only allow valid tasks.
-      task->validate ();
 
       if (taskDiff (before, *task))
       {
