@@ -97,7 +97,7 @@ public:
 
   void substitute (const std::string&, const std::string&, bool);
 
-  void validate () const;
+  void validate ();
 
   float urgency_c () const;
   float urgency ();

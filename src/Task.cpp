@@ -980,21 +980,74 @@ void Task::substitute (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::validate () const
+// The purpose of Task::validate is three-fold:
+//   1) To provide missing attributes where possible
+//   2) To provide suitable warnings about odd states
+//   3) To generate errors when the inconsistencies are not fixable
+//
+void Task::validate ()
 {
-  // Every task needs an ID, entry and description attribute.
-  if (!has ("uuid"))
-    throw std::string (STRING_TASK_VALID_UUID);
+  // 1) Provide missing attributes where possible
+  // Provide a UUID if necessary.
+  if (! has ("uuid"))
+    set ("uuid", uuid ());
 
+  // Recurring tasks get a special status.
+  if (has ("due") &&
+      has ("recur"))
+  {
+    setStatus (Task::recurring);
+    set ("mask", "");
+  }
+
+  // Tasks with a wait: date get a special status.
+  else if (has ("wait"))
+    setStatus (Task::waiting);
+
+  // By default, tasks are pending.
+  else if (! has ("status"))
+    setStatus (Task::pending);
+
+  // Provide an entry date unless user already specified one.
   if (!has ("entry"))
-    throw std::string (STRING_TASK_VALID_ENTRY);
+    setEntry ();
 
-  if (!has ("description"))
-    throw std::string (STRING_TASK_VALID_DESC);
+  // Completed tasks need an end date, so inherit the entry date.
+  if (! has ("end") &&
+      (getStatus () == Task::completed ||
+       getStatus () == Task::deleted))
+    set ("end", get ("entry"));
 
-  if (get ("description") == "")
-    throw std::string (STRING_TASK_VALID_BLANK);
+  // Override with default.project, if not specified.
+  if (! has ("project"))
+  {
+    std::string defaultProject = context.config.get ("default.project");
+    if (defaultProject != "" &&
+        context.columns["project"]->validate (defaultProject))
+      set ("project", defaultProject);
+  }
 
+  // Override with default.priority, if not specified.
+  if (get ("priority") == "")
+  {
+    std::string defaultPriority = context.config.get ("default.priority");
+    if (defaultPriority != "" &&
+        context.columns["priority"]->validate (defaultPriority))
+      set ("priority", defaultPriority);
+  }
+
+  // Override with default.due, if not specified.
+  if (get ("due") == "")
+  {
+    std::string defaultDue = context.config.get ("default.due");
+    if (defaultDue != "" &&
+        context.columns["due"]->validate (defaultDue))
+      set ("due", Date (defaultDue).toEpoch ());
+  }
+
+  // 2) To provide suitable warnings about odd states
+
+  // When a task has a due date, other dates should conform.
   if (has ("due"))
   {
     Date due (get_date ("due"));
@@ -1023,12 +1076,20 @@ void Task::validate () const
         context.footnote (STRING_TASK_VALID_END);
     }
   }
-  else
-  {
-    if (has ("recur"))
-      throw std::string (STRING_TASK_VALID_REC_DUE);
-  }
 
+  // 3) To generate errors when the inconsistencies are not fixable
+
+  // There is no fixing a missing description.
+  if (!has ("description"))
+    throw std::string (STRING_TASK_VALID_DESC);
+  else if (get ("description") == "")
+    throw std::string (STRING_TASK_VALID_BLANK);
+
+  // Cannot have a recur frequency with no due date - when would it recur?
+  if (! has ("due") && has ("recur"))
+    throw std::string (STRING_TASK_VALID_REC_DUE);
+
+  // Cannot have an until date no recurrence frequency.
   if (has ("until") && !has ("recur"))
     throw std::string (STRING_TASK_VALID_UNTIL);
 
@@ -1045,6 +1106,7 @@ void Task::validate () const
       getStatus () == Task::recurring)
     throw std::string (STRING_TASK_VALID_WAIT_RECUR);
 
+  // Priorities must be valid.
   if (has ("priority"))
   {
     std::string priority = get ("priority");
