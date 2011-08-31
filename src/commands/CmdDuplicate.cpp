@@ -90,11 +90,6 @@ int CmdDuplicate::execute (std::string& output)
     }
 
     modify_task_annotate (dup, modifications);
-    apply_defaults (dup);
-
-    // Only allow valid tasks.
-    dup.validate ();
-
     context.tdb2.add (dup);
     ++count;
 
