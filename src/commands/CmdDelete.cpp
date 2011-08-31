@@ -79,7 +79,6 @@ int CmdDelete::execute (std::string& output)
         task->getStatus () == Task::waiting)
     {
       modify_task_annotate (*task, modifications);
-      apply_defaults (*task);
 
       std::string question = format (STRING_CMD_DELETE_QUESTION,
                                      task->id,
@@ -112,9 +111,6 @@ int CmdDelete::execute (std::string& output)
 
                 // Apply the command line modifications to the sibling.
                 modify_task_annotate (*sibling, modifications);
-                apply_defaults (*sibling);
-
-                sibling->validate ();
                 context.tdb.update (*sibling);
                 ++count;
 
@@ -138,7 +134,6 @@ int CmdDelete::execute (std::string& output)
             if (! task->has ("end"))
               task->setEnd ();
 
-            task->validate ();
             context.tdb.update (*task);
             ++count;
 
@@ -160,7 +155,6 @@ int CmdDelete::execute (std::string& output)
           if (! task->has ("end"))
             task->setEnd ();
 
-          task->validate ();
           context.tdb.update (*task);
           ++count;
 
