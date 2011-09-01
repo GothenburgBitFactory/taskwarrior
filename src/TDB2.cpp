@@ -26,10 +26,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream> // TODO Remove.
+#include <stdlib.h>
 #include <Context.h>
 #include <Color.h>
 #include <Date.h>
 #include <text.h>
+#include <util.h>
+#include <main.h>
 #include <TDB2.h>
 
 extern Context context;
@@ -576,17 +579,7 @@ void TDB2::synch ()
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::revert ()
 {
-/*
-  Directory location (context.config.get ("data.location"));
-
-  std::string undoFile      = location._data + "/undo.data";
-  std::string pendingFile   = location._data + "/pending.data";
-  std::string completedFile = location._data + "/completed.data";
-
-  // load undo.data
-  std::vector <std::string> u;
-  File::read (undoFile, u);
-
+  std::vector <std::string> u = undo.get_lines ();
   if (u.size () < 3)
     throw std::string ("There are no recorded transactions to undo.");
 
@@ -612,7 +605,7 @@ void TDB2::revert ()
     u.pop_back ();
   }
 
-  Date lastChange (atoi (when.c_str ()));
+  Date lastChange (strtol (when.c_str (), NULL, 10));
 
   // Set the colors.
   Color color_red   (context.color () ? context.config.get ("color.undo.before") : "");
@@ -641,11 +634,12 @@ void TDB2::revert ()
       Task before (prior);
 
       std::vector <std::string> beforeAtts;
-      foreach (att, before)
+      std::map <std::string, std::string>::iterator att;
+      for (att = before.begin (); att != before.end (); ++att)
         beforeAtts.push_back (att->first);
 
       std::vector <std::string> afterAtts;
-      foreach (att, after)
+      for (att = after.begin (); att != after.end (); ++att)
         afterAtts.push_back (att->first);
 
       std::vector <std::string> beforeOnly;
@@ -653,30 +647,31 @@ void TDB2::revert ()
       listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
 
       int row;
-      foreach (name, beforeOnly)
+      std::vector <std::string>::iterator name;
+      for (name = beforeOnly.begin (); name != beforeOnly.end (); ++name)
       {
         row = view.addRow ();
         view.set (row, 0, *name);
         view.set (row, 1, renderAttribute (*name, before.get (*name)), color_red);
       }
 
-      foreach (name, before)
+      for (att = before.begin (); att != before.end (); ++att)
       {
-        std::string priorValue   = before.get (name->first);
-        std::string currentValue = after.get  (name->first);
+        std::string priorValue   = before.get (att->first);
+        std::string currentValue = after.get  (att->first);
 
         if (currentValue != "")
         {
           row = view.addRow ();
-          view.set (row, 0, name->first);
-          view.set (row, 1, renderAttribute (name->first, priorValue),
+          view.set (row, 0, att->first);
+          view.set (row, 1, renderAttribute (att->first, priorValue),
                     (priorValue != currentValue ? color_red : Color ()));
-          view.set (row, 2, renderAttribute (name->first, currentValue),
+          view.set (row, 2, renderAttribute (att->first, currentValue),
                     (priorValue != currentValue ? color_green : Color ()));
         }
       }
 
-      foreach (name, afterOnly)
+      for (name = afterOnly.begin (); name != afterOnly.end (); ++name)
       {
         row = view.addRow ();
         view.set (row, 0, *name);
@@ -686,11 +681,12 @@ void TDB2::revert ()
     else
     {
       int row;
-      foreach (name, after)
+      std::map <std::string, std::string>::iterator att;
+      for (att = after.begin (); att != after.end (); ++att)
       {
         row = view.addRow ();
-        view.set (row, 0, name->first);
-        view.set (row, 2, renderAttribute (name->first, after.get (name->first)), color_green);
+        view.set (row, 0, att->first);
+        view.set (row, 2, renderAttribute (att->first, after.get (att->first)), color_green);
       }
     }
 
@@ -757,7 +753,8 @@ void TDB2::revert ()
     std::string before_att;
     std::string after_att;
     std::string last_att;
-    foreach (a, all)
+    std::vector <std::string>::iterator a;
+    for (a = all.begin (); a != all.end (); ++a)
     {
       if (*a != last_att)  // Skip duplicates.
       {
@@ -836,11 +833,11 @@ void TDB2::revert ()
     throw std::string ("Cannot locate UUID in task to undo.");
 
   // load pending.data
-  std::vector <std::string> p;
-  File::read (pendingFile, p);
+  std::vector <std::string> p = pending.get_lines ();
 
   // is 'current' in pending?
-  foreach (task, p)
+  std::vector <std::string>::iterator task;
+  for (task = p.begin (); task != p.end (); ++task)
   {
     if (task->find (uuid) != std::string::npos)
     {
@@ -859,18 +856,17 @@ void TDB2::revert ()
       }
 
       // Rewrite files.
-      File::write (pendingFile, p);
-      File::write (undoFile, u);
+      File::write (pending._file._data, p);
+      File::write (undo._file._data, u);
       return;
     }
   }
 
   // load completed.data
-  std::vector <std::string> c;
-  File::read (completedFile, c);
+  std::vector <std::string> c = completed.get_lines ();
 
   // is 'current' in completed?
-  foreach (task, c)
+  for (task = c.begin (); task != c.end (); ++task)
   {
     if (task->find (uuid) != std::string::npos)
     {
@@ -883,17 +879,17 @@ void TDB2::revert ()
       {
         c.erase (task);
         p.push_back (prior);
-        File::write (completedFile, c);
-        File::write (pendingFile, p);
-        File::write (undoFile, u);
+        File::write (completed._file._data, c);
+        File::write (pending._file._data, p);
+        File::write (undo._file._data, u);
         std::cout << "Modified task reverted.\n";
         context.debug ("TDB::undo - task belongs in pending.data");
       }
       else
       {
         *task = prior;
-        File::write (completedFile, c);
-        File::write (undoFile, u);
+        File::write (completed._file._data, c);
+        File::write (undo._file._data, u);
         std::cout << "Modified task reverted.\n";
         context.debug ("TDB::undo - task belongs in completed.data");
       }
@@ -909,7 +905,6 @@ void TDB2::revert ()
             << uuid.substr (6, 36)
             << " not found in data.\n"
             << "No undo possible.\n";
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
