@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream> // TODO Remove.
+#include <algorithm>
 #include <stdlib.h>
 #include <Context.h>
 #include <Color.h>
