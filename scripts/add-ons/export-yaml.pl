@@ -37,21 +37,18 @@ if ($@)
   exit 1;
 }
 
-# Use the taskwarrior 2.0+ export command to filter and return JSON
-my $command = join (' ', ("env PATH=$ENV{PATH} task export", @ARGV));
-if ($command =~ /No matches/)
-{
-  printf STDERR $command;
-  exit 1;
-}
-
 # Generate output.
 print "%YAML 1.1\n",
       "---\n";
 
-for my $task (split /,$/ms, qx{$command})
+while (my $json = <>)
 {
-  my $data = from_json ($task);
+  $json =~ s/^\[//;
+  $json =~ s/\]$//;
+  $json =~ s/,$//;
+  next if $json eq '';
+
+  my $data = from_json ($json);
 
   print "  task:\n";
   for my $key (sort keys %$data)
