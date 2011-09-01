@@ -137,8 +137,8 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
         else if (arg->_raw == ">")   operator_gt       (result, left, right);
         else if (arg->_raw == "!=")  operator_inequal  (result, left, right, case_sensitive);
         else if (arg->_raw == "=")   operator_equal    (result, left, right, case_sensitive);
-        else if (arg->_raw == "~")   operator_match    (result, left, right, case_sensitive);
-        else if (arg->_raw == "!~")  operator_nomatch  (result, left, right, case_sensitive);
+        else if (arg->_raw == "~")   operator_match    (result, left, right, case_sensitive, task);
+        else if (arg->_raw == "!~")  operator_nomatch  (result, left, right, case_sensitive, task);
         else if (arg->_raw == "*")   operator_multiply (result, left, right);
         else if (arg->_raw == "/")   operator_divide   (result, left, right);
         else if (arg->_raw == "+")   operator_add      (result, left, right);
@@ -498,41 +498,86 @@ void E9::operator_equal (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Match may occur in description or any annotation.  Short circuits.
 void E9::operator_match (
   Arg& result,
   Arg& left,
   Arg& right,
-  bool case_sensitive)
+  bool case_sensitive,
+  const Task& task)
 {
   result._type = Arg::type_bool;
-  result._value = eval_match (left, right, case_sensitive)
-                ? "true"
-                : "false";
 
-//  std::cout << "# " << left << " <operator_match> " << right << " --> " << result << "\n";
+  // TODO The problem is that description/dom -> <description>/string and we lose the original value.
+
+  if (eval_match (left, right, case_sensitive))
+  {
+    // std::cout << "# operator_match description match\n";
+    result._value = "true";
+  }
+  else if (left._raw == "description")
+  {
+    // std::cout << "# operator_match escalation\n";
+    std::map <std::string, std::string> annotations;
+    task.getAnnotations (annotations);
+
+    std::map <std::string, std::string>::iterator a;
+    for (a = annotations.begin (); a != annotations.end (); ++a)
+    {
+      // Clone 'right', override _value.
+      Arg alternate (right);
+      alternate._value = a->second;
+
+      if (eval_match (left, alternate, case_sensitive))
+      {
+        // std::cout << "# operator_match annotation match\n";
+        result._value = "true";
+        break;
+      }
+    }
+  }
+  else
+    result._value = "false";
+
+  // std::cout << "# " << left << " <operator_match> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//        bool case_sensitive = context.config.getBoolean ("search.case.sensitive");
-//        bool result = !eval_match (left, right, case_sensitive);
-//
-//        // Matches against description are really against either description,
-//        // annotations or project.
-//        // Short-circuit if match already failed.
-//        if (result && left._raw == "description")
-//        {
-//          // TODO check further.
-//        }
+// Match may not occur in description or any annotation.  Short circuits.
 void E9::operator_nomatch (
   Arg& result,
   Arg& left,
   Arg& right,
-  bool case_sensitive)
+  bool case_sensitive,
+  const Task& task)
 {
   result._type = Arg::type_bool;
-  result._value = eval_match (left, right, case_sensitive)
-                ? "false"
-                : "true";
+
+  if (eval_match (left, right, case_sensitive))
+  {
+    result._value = "false";
+  }
+  else if (left._raw == "description")
+  {
+    std::map <std::string, std::string> annotations;
+    task.getAnnotations (annotations);
+
+    std::map <std::string, std::string>::iterator a;
+    for (a = annotations.begin (); a != annotations.end (); ++a)
+    {
+      // Clone 'right', override _value.
+      Arg alternate (right);
+      alternate._value = a->second;
+
+      if (eval_match (left, alternate, case_sensitive))
+      {
+        result._value = "false";
+        break;
+      }
+    }
+  }
+  else
+    result._value = "true";
 
 //  std::cout << "# " << left << " <operator_nomatch> " << right << " --> " << result << "\n";
 }

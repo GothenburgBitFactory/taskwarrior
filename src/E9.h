@@ -59,8 +59,8 @@ private:
   void operator_gt       (Arg&, Arg&, Arg&);
   void operator_inequal  (Arg&, Arg&, Arg&, bool);
   void operator_equal    (Arg&, Arg&, Arg&, bool);
-  void operator_match    (Arg&, Arg&, Arg&, bool);
-  void operator_nomatch  (Arg&, Arg&, Arg&, bool);
+  void operator_match    (Arg&, Arg&, Arg&, bool, const Task&);
+  void operator_nomatch  (Arg&, Arg&, Arg&, bool, const Task&);
   void operator_multiply (Arg&, Arg&, Arg&);
   void operator_divide   (Arg&, Arg&, Arg&);
   void operator_add      (Arg&, Arg&, Arg&);
