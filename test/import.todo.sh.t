@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 26;
 
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
@@ -44,20 +44,20 @@ if (open my $fh, '>', 'import.rc')
 # Create import file.
 if (open my $fh, '>', 'import.txt')
 {
-  print $fh "(A) \@phone thank Mom for the meatballs\n",
-            "(B) +GarageSale \@phone schedule Goodwill pickup\n",
-            "+GarageSale \@home post signs around the neighborhood\n",
-            "\@shopping Eskimo pies\n",
-            "(A) Call Mom\n",
-            "Really gotta call Mom (A) \@phone \@someday\n",
-            "(b)->get back to the boss\n",
-            "2011-03-02 Document +TodoTxt task format\n",
-            "(A) 2011-03-02 Call Mom\n",
-            "(A) Call Mom 2011-03-02\n",
-            "(A) Call Mom +Family +PeaceLoveAndHappiness \@iphone \@phone\n",
-            "xylophone lesson\n",
-            "X 2011-03-03 Call Mom\n",
-            "x 2011-03-02 2011-03-01 Review Tim's pull request +TodoTxtTouch \@github\n";
+  print $fh "(A) \@phone thank Mom for the meatballs\n",                                   # 1
+            "(B) +GarageSale \@phone schedule Goodwill pickup\n",                          # 2
+            "+GarageSale \@home post signs around the neighborhood\n",                     # 3
+            "\@shopping Eskimo pies\n",                                                    # 4
+            "(A) Call Mom\n",                                                              # 5
+            "Really gotta call Mom (A) \@phone \@someday\n",                               # 6
+            "(b)->get back to the boss\n",                                                 # 7
+            "2011-03-02 Document +TodoTxt task format\n",                                  # 8
+            "(A) 2011-03-02 Call Mom\n",                                                   # 9
+            "(A) Call Mom 2011-03-02\n",                                                   # 10
+            "(A) Call Mom +Family +PeaceLoveAndHappiness \@iphone \@phone\n",              # 11
+            "xylophone lesson\n",                                                          # 12
+            "X 2011-03-03 Call Mom\n",                                                     # -
+            "x 2011-03-02 2011-03-01 Review Tim's pull request +TodoTxtTouch \@github\n";  # -
 
   close $fh;
   ok (-r 'import.txt', 'Created sample import data');
@@ -77,30 +77,45 @@ like ($output, qr/^Description.+\@phone thank Mom for the meatballs/ms, '1 <desc
 
 $output = qx{../src/task rc:import.rc info 2};
 like ($output, qr/^Priority.+M/ms, '2 pri:M');
+like ($output, qr/^Project.+GarageSale/ms, '2 <project>');
+like ($output, qr/^Description.+/ms, '2 <desc>');
 
 $output = qx{../src/task rc:import.rc info 3};
+like ($output, qr/^Project.+GarageSale/ms, '3 <project>');
+like ($output, qr/^Description.+\+GarageSale \@home post signs around the neighborhood/ms, '3 <desc>');
 
 $output = qx{../src/task rc:import.rc info 4};
+like ($output, qr/^Description.+\@shopping Eskimo pies/ms, '4 <desc>');
 
 $output = qx{../src/task rc:import.rc info 5};
 like ($output, qr/^Priority.+H/ms, '5 pri:H');
+like ($output, qr/^Description.+Call Mom/ms, '5 <desc>');
 
 $output = qx{../src/task rc:import.rc info 6};
+like ($output, qr/^Description.+Really gotta call Mom \(A\) \@phone \@someday/ms, '6 <desc>');
 
 $output = qx{../src/task rc:import.rc info 7};
+like ($output, qr/^Description.+\(b\)->get back to the boss/ms, '7 <desc>');
 
 $output = qx{../src/task rc:import.rc info 8};
+like ($output, qr/^Project.+TodoTxt/ms, '8 <project>');
+like ($output, qr/^Description.+Document \+TodoTxt task format/ms, '8 <desc>');
 
 $output = qx{../src/task rc:import.rc info 9};
 like ($output, qr/^Priority.+H/ms, '9 pri:H');
+like ($output, qr/^Description.+Call Mom/ms, '9 <desc>');
 
 $output = qx{../src/task rc:import.rc info 10};
 like ($output, qr/^Priority.+H/ms, '10 pri:H');
+like ($output, qr/^Description.+Call Mom 2011-03-02/ms, '10 <desc>');
 
 $output = qx{../src/task rc:import.rc info 11};
 like ($output, qr/^Priority.+H/ms, '11 pri:H');
+like ($output, qr/^Project.+Family/ms, '8 <project>');
+like ($output, qr/^Description.+Call Mom \+Family \+PeaceLoveAndHappiness \@iphone \@phone/ms, '11 <desc>');
 
 $output = qx{../src/task rc:import.rc info 12};
+like ($output, qr/^Description.+xylophone lesson/ms, '12 <desc>');
 
 # TODO and now the completed ones.
 
