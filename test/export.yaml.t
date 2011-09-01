@@ -40,6 +40,7 @@ if (open my $fh, '>', 'export.rc')
 }
 
 # Add two tasks, export, examine result.
+# TODO Add annotations.
 qx{../src/task rc:export.rc add priority:H project:A one};
 qx{../src/task rc:export.rc add +tag1 +tag2 two};
 

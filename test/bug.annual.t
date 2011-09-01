@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 17;
+use Test::More tests => 12;
 
 # Create the rc file.
 if (open my $fh, '>', 'annual.rc')
@@ -69,23 +69,13 @@ like ($output, qr/10\s+1\/1\/2008\s+(?:-|\d+\ssecs?)\s+foo/, 'synthetic 10 no cr
 like ($output, qr/11\s+1\/1\/2009\s+(?:-|\d+\ssecs?)\s+foo/, 'synthetic 11 no creep');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'annual.rc';
-ok (!-r 'annual.rc', 'Removed annual.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key annual.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'annual.rc', 'Cleanup');
 
 exit 0;
 
