@@ -86,6 +86,9 @@ Unit Tests Needed
   - Test regex support.
   - Need unit tests for each bug in the issue list, if suitable.
 
+  * Note that running the unit tests required the Perl JSON module to be
+    installed.
+
 Work in Progress
   Things that are currently in flux, which is another way of saying leave it
   alone while it is being worked on.
