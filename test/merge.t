@@ -28,8 +28,9 @@
 
 use strict;
 use warnings;
-use Test::More tests => 45;
+use Test::More tests => 33;
 use File::Copy;
+use File::Path;
 
 use constant false => 0;
 use constant true => 1;
@@ -45,12 +46,12 @@ if (open my $fh, '>', 'local.rc')
 {
   print $fh "data.location=./local\n",
             "confirmation=no\n",
-				"merge.autopush=no\n",
+            "merge.autopush=no\n",
             "report.list.description=DESC\n",
-				"report.list.columns=id,project,active,priority,description,tags\n",
-				"report.list.labels=id,pro,a,pri,d,t\n",
-				"report.list.sort=id+\n",
-				"report.list.filter=status:pending\n";
+            "report.list.columns=id,project,active,priority,description,tags\n",
+            "report.list.labels=id,pro,a,pri,d,t\n",
+            "report.list.sort=id+\n",
+            "report.list.filter=status:pending\n";
   close $fh;
   ok (-r 'local.rc', 'Created local.rc');
 }
@@ -59,12 +60,12 @@ if (open my $fh, '>', 'remote.rc')
 {
   print $fh "data.location=./remote\n",
             "confirmation=no\n",
-				"merge.autopush=no\n",
+            "merge.autopush=no\n",
             "report.list.description=DESC\n",
-				"report.list.columns=id,project,active,priority,description,tags\n",
-				"report.list.labels=id,pro,a,pri,d,t\n",
-				"report.list.sort=id+\n",
-				"report.list.filter=status:pending\n";
+            "report.list.columns=id,project,active,priority,description,tags\n",
+            "report.list.labels=id,pro,a,pri,d,t\n",
+            "report.list.sort=id+\n",
+            "report.list.filter=status:pending\n";
   close $fh;
   ok (-r 'remote.rc', 'Created remote.rc');
 }
@@ -72,71 +73,71 @@ if (open my $fh, '>', 'remote.rc')
 # Create some basic tasks on both sides
 qx{../src/task rc:local.rc add left_modified};
 diag ("25 second delay");
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc add right_modified};
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc add left_newer};
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc add right_newer};
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc add left_deleted};
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc add right_deleted};
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc add left_completed};
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc add right_completed};
-sleep(1);
+sleep 1;
 
-copy("local/undo.data", "remote/undo.data") or fail("copy local/undo.data to remote/undo.data");
-copy("local/pending.data", "remote/pending.data") or fail("copy local/undo.data to remote/undo.data");
-copy("local/completed.data", "remote/completed.data") or fail("copy local/undo.data to remote/undo.data");
+copy ("local/undo.data",      "remote/undo.data")      or fail ("copy local/undo.data to remote/undo.data");
+copy ("local/pending.data",   "remote/pending.data")   or fail ("copy local/undo.data to remote/undo.data");
+copy ("local/completed.data", "remote/completed.data") or fail ("copy local/undo.data to remote/undo.data");
 
 # make local modifications
 qx{../src/task rc:local.rc add left_added}; #left_added
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc 1 modify prio:H};       #left_modified
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc 3 modify +stay};        #left_newer
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc 4 modify project:test}; #right_newer
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc 6 modify +delete};      #right_deleted
-sleep(1);
+sleep 1;
 
 # make remote modifications
 qx{../src/task rc:remote.rc add right_added};    #right_added
-sleep(1);
+sleep 1;
 qx{../src/task rc:remote.rc 2 modify prio:L};           #right_modified
-sleep(1);
+sleep 1;
 qx{../src/task rc:remote.rc 2 modify wait:tomorrow};    #right_modified
-sleep(1);
+sleep 1;
 qx{../src/task rc:remote.rc 4 modify proj:realProject}; #right_newer
-sleep(1);
+sleep 1;
 qx{../src/task rc:remote.rc 5 modify project:deletion}; #left_deleted
-sleep(1);
+sleep 1;
 qx{../src/task rc:remote.rc 8 done};             #right_completed
-sleep(1);
+sleep 1;
 qx{../src/task rc:remote.rc 6 del};              #right_deleted
-sleep(1);
+sleep 1;
 qx{../src/task rc:remote.rc 3 done};             #left_newer
-sleep(1);
+sleep 1;
 
 # make new local modifications
 qx{../src/task rc:local.rc 3 start};         #left_newer
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc 4 modify +car};   #right_newer
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc 7 done};          #left_completed
-sleep(1);
+sleep 1;
 qx{../src/task rc:local.rc 5 del};           #left_deleted
-sleep(1);
+sleep 1;
 
 # make new remote modifications
 qx{../src/task rc:remote.rc 4 modify +gym};         # right_newer
 
 # merge remote into local
-copy("local/undo.data", "local/undo.save") or fail("copy local/undo.data to local/undo.save");
+copy ("local/undo.data", "local/undo.save") or fail ("copy local/undo.data to local/undo.save");
 my $output_l = qx{../src/task rc:local.rc merge remote/};
 
 #check output
@@ -151,37 +152,37 @@ unlike ($output_r,   qr/Missing/,              "remote-merge: no missing entry")
 unlike ($output_r,   qr/Not adding duplicate/, "remote-merge: no duplicates");
 
 # check reports
-my $report_l = qx{../src/task rc:local.rc};
-my $report_r = qx{../src/task rc:remote.rc};
+my $report_l = qx{../src/task rc:local.rc list};
+my $report_r = qx{../src/task rc:remote.rc list};
 
 # local-merge
-like   ($report_l,   qr/left_added/,       "local-merge: left_added is present");
-like   ($report_l,   qr/right_added/,      "local-merge: right_added is present");
-like   ($report_l,   qr/H.*left_modified/, "local-merge: left_modified ok");
-like   ($report_l,   qr/\*.*left_newer.*stay/, "local-merge: left_newer ok");
+like   ($report_l,   qr/left_added/,                    "local-merge: left_added is present");
+like   ($report_l,   qr/right_added/,                   "local-merge: right_added is present");
+like   ($report_l,   qr/H.*left_modified/,              "local-merge: left_modified ok");
+like   ($report_l,   qr/\*.*left_newer.*stay/,          "local-merge: left_newer ok");
 like   ($report_l,   qr/realProject.*right_newer.*gym/, "local-merge: right_newer ok");
 
-$report_l = qx{../src/task rc:local.rc export.csv};
-like   ($report_l,   qr/deleted.*left_deleted/,      "local-merge: left_deleted ok");
-like   ($report_l,   qr/deleted.*right_deleted/,     "local-merge: right_deleted ok");
-like   ($report_l,   qr/completed.*left_completed/,  "local-merge: left_completed ok");
-like   ($report_l,   qr/completed.*right_completed/,  "local-merge: right_completed ok");
+$report_l = qx{../src/task rc:local.rc export};
+like   ($report_l,   qr/deleted.*left_deleted/,         "local-merge: left_deleted ok");
+like   ($report_l,   qr/deleted.*right_deleted/,        "local-merge: right_deleted ok");
+like   ($report_l,   qr/completed.*left_completed/,     "local-merge: left_completed ok");
+like   ($report_l,   qr/completed.*right_completed/,    "local-merge: right_completed ok");
 
 $report_l = qx(../src/task rc:local.rc waiting);
-like   ($report_l,   qr/L.*right_modified/, "local-merge: right_modified ok");
+like   ($report_l,   qr/L.*right_modified/,             "local-merge: right_modified ok");
 
 # remote-merge
-like   ($report_r,   qr/left_added/,       "remote-merge: left_added is present");
-like   ($report_r,   qr/right_added/,      "remote-merge: right_added is present");
-like   ($report_r,   qr/H.*left_modified/, "remote-merge: left_modified ok");
-like   ($report_r,   qr/\*.*left_newer.*stay/, "remote-merge: left_newer ok");
+like   ($report_r,   qr/left_added/,                    "remote-merge: left_added is present");
+like   ($report_r,   qr/right_added/,                   "remote-merge: right_added is present");
+like   ($report_r,   qr/H.*left_modified/,              "remote-merge: left_modified ok");
+like   ($report_r,   qr/\*.*left_newer.*stay/,          "remote-merge: left_newer ok");
 like   ($report_r,   qr/realProject.*right_newer.*gym/, "remote-merge: right_newer ok");
 
-$report_r = qx{../src/task rc:remote.rc export.csv};
-like   ($report_r,   qr/deleted.*left_deleted/,      "remote-merge: left_deleted ok");
-like   ($report_r,   qr/deleted.*right_deleted/,     "remote-merge: right_deleted ok");
-like   ($report_r,   qr/completed.*left_completed/,  "remote-merge: left_completed ok");
-like   ($report_r,   qr/completed.*right_completed/,  "remote-merge: right_completed ok");
+$report_r = qx{../src/task rc:remote.rc export};
+like   ($report_r,   qr/deleted.*left_deleted/,         "remote-merge: left_deleted ok");
+like   ($report_r,   qr/deleted.*right_deleted/,        "remote-merge: right_deleted ok");
+like   ($report_r,   qr/completed.*left_completed/,     "remote-merge: left_completed ok");
+like   ($report_r,   qr/completed.*right_completed/,    "remote-merge: right_completed ok");
 
 $report_r = qx(../src/task rc:remote.rc waiting);
 like   ($report_r,   qr/L.*right_modified/, "remote-merge: right_modified ok");
@@ -228,49 +229,28 @@ if (open my $fh, 'remote/undo.data') {
 ok ($good, "remote-merge: timestamps ok");
 
 # Cleanup.
-unlink 'local/pending.data';
-ok (!-r 'local/pending.data', 'Removed local/pending.data');
+unlink qw(local/pending.data local/completed.data local/undo.data local/undo.save local/backlog.data local/synch.key local.rc);
+ok (! -r 'local/pending.data'   &&
+    ! -r 'local/completed.data' &&
+    ! -r 'local/undo.data'      &&
+    ! -r 'local/undo.save'      &&
+    ! -r 'local/backlog.data'   &&
+    ! -r 'local/synch_key.data' &&
+    ! -r 'local.rc', 'Local Cleanup');
 
-unlink 'local/completed.data';
-ok (!-r 'local/completed.data', 'Removed local/completed.data');
+unlink qw(remote/pending.data remote/completed.data remote/undo.data remote/backlog.data remote/synch.key remote.rc);
+ok (! -r 'remote/pending.data'   &&
+    ! -r 'remote/completed.data' &&
+    ! -r 'remote/undo.data'      &&
+    ! -r 'remote/backlog.data'   &&
+    ! -r 'remote/synch_key.data' &&
+    ! -r 'remote.rc', 'Remove Cleanup');
 
-unlink 'local/undo.data';
-ok (!-r 'local/undo.data', 'Removed local/undo.data');
-
-unlink 'local/backlog.data';
-ok (!-r 'local/backlog.data', 'Removed local/backlog.data');
-
-unlink 'local/synch.key';
-ok (!-r 'local/synch.key', 'Removed local/synch.key');
-
-unlink 'local/undo.save';
-ok (!-r 'local/undo.save', 'Removed local/undo.save');
-
-unlink 'local.rc';
-ok (!-r 'local.rc', 'Removed local.rc');
-
-unlink 'remote/pending.data';
-ok (!-r 'remote/pending.data', 'Removed remote/pending.data');
-
-unlink 'remote/completed.data';
-ok (!-r 'remote/completed.data', 'Removed remote/completed.data');
-
-unlink 'remote/undo.data';
-ok (!-r 'remote/undo.data', 'Removed remote/undo.data');
-
-unlink 'remote/backlog.data';
-ok (!-r 'remote/backlog.data', 'Removed remote/backlog.data');
-
-unlink 'remote/synch.key';
-ok (!-r 'remote/synch.key', 'Removed remote/synch.key');
-
-unlink 'remote.rc';
-ok (!-r 'remote.rc', 'Removed remote.rc');
-
-rmdir("remote");
-ok (!-e "remote", "Removed dir remote");
-rmdir("local");
-ok (!-e "local", "Removed dir local");
+rmtree (['remote/extensions', 'remote', 'local/extensions', 'local'], 0, 1);
+ok (! -e 'remote/extensions' &&
+    ! -e 'remote'            &&
+    ! -e 'local/extensions'  &&
+    ! -e 'local', 'Removed dir local');
 
 exit 0;
 

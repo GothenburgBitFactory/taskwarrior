@@ -82,9 +82,7 @@ int CmdMerge::execute (std::string& output)
     else
       file = uri._path;
 
-    context.tdb.lock (context.config.getBoolean ("locking"));
-    context.tdb.merge (file);
-    context.tdb.unlock ();
+    context.tdb2.merge (file);
 
     output += "Merge complete.\n";
 

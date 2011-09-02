@@ -28,8 +28,9 @@
 
 use strict;
 use warnings;
-use Test::More tests => 53;
+use Test::More tests => 31;
 use File::Copy;
+use File::Path;
 
 use constant false => 0;
 use constant true => 1;
@@ -175,65 +176,50 @@ like ($output, qr/up-to-date/, "res2: up-to-date");
 unlike ($output, qr/Missing/, "no missing entry");
 
 # Cleanup.
-unlink 'data1/pending.data';
-ok (!-r 'data1/pending.data', 'Removed data1/pending.data');
-unlink 'data1/completed.data';
-ok (!-r 'data1/completed.data', 'Removed data1/completed.data');
-unlink 'data1/undo.data';
-ok (!-r 'data1/undo.data', 'Removed data1/undo.data');
-unlink 'data1/backlog.data';
-ok (!-r 'data1/backlog.data', 'Removed data1/backlog.data');
-unlink 'data1/synch.key';
-ok (!-r 'data1/synch.key', 'Removed data1/synch.key');
+unlink qw(data1/pending.data data1/completed.data data1/undo.data data1/undo.save data1/backlog.data data1/synch.key 1.rc);
+ok (! -r 'data1/pending.data'   &&
+    ! -r 'data1/completed.data' &&
+    ! -r 'data1/undo.data'      &&
+    ! -r 'data1/undo.save'      &&
+    ! -r 'data1/backlog.data'   &&
+    ! -r 'data1/synch_key.data' &&
+    ! -r '1.rc', 'data1 Cleanup');
 
-unlink 'data2/pending.data';
-ok (!-r 'data2/pending.data', 'Removed data2/pending.data');
-unlink 'data2/completed.data';
-ok (!-r 'data2/completed.data', 'Removed data2/completed.data');
-unlink 'data2/undo.data';
-ok (!-r 'data2/undo.data', 'Removed data2/undo.data');
-unlink 'data2/backlog.data';
-ok (!-r 'data2/backlog.data', 'Removed data2/backlog.data');
-unlink 'data2/synch.key';
-ok (!-r 'data2/synch.key', 'Removed data2/synch.key');
+unlink qw(data2/pending.data data2/completed.data data2/undo.data data2/undo.save data2/backlog.data data2/synch.key 2.rc);
+ok (! -r 'data2/pending.data'   &&
+    ! -r 'data2/completed.data' &&
+    ! -r 'data2/undo.data'      &&
+    ! -r 'data2/undo.save'      &&
+    ! -r 'data2/backlog.data'   &&
+    ! -r 'data2/synch_key.data' &&
+    ! -r '2.rc', 'data2 Cleanup');
 
-unlink 'data3/pending.data';
-ok (!-r 'data3/pending.data', 'Removed data3/pending.data');
-unlink 'data3/completed.data';
-ok (!-r 'data3/completed.data', 'Removed data3/completed.data');
-unlink 'data3/undo.data';
-ok (!-r 'data3/undo.data', 'Removed data3/undo.data');
-unlink 'data3/backlog.data';
-ok (!-r 'data3/backlog.data', 'Removed data3/backlog.data');
-unlink 'data3/synch.key';
-ok (!-r 'data3/synch.key', 'Removed data3/synch.key');
+unlink qw(data3/pending.data data3/completed.data data3/undo.data data3/undo.save data3/backlog.data data3/synch.key 3.rc);
+ok (! -r 'data3/pending.data'   &&
+    ! -r 'data3/completed.data' &&
+    ! -r 'data3/undo.data'      &&
+    ! -r 'data3/undo.save'      &&
+    ! -r 'data3/backlog.data'   &&
+    ! -r 'data3/synch_key.data' &&
+    ! -r '3.rc', 'data3 Cleanup');
 
-unlink 'backup/pending.data';
-ok (!-r 'backup/pending.data', 'Removed backup/pending.data');
-unlink 'backup/completed.data';
-ok (!-r 'backup/completed.data', 'Removed backup/completed.data');
-unlink 'backup/undo.data';
-ok (!-r 'backup/undo.data', 'Removed backup/undo.data');
-unlink 'backup/backlog.data';
-ok (!-r 'backup/backlog.data', 'Removed backup/backlog.data');
-unlink 'backup/synch.key';
-ok (!-r 'backup/synch.key', 'Removed backup/synch.key');
+unlink qw(backup/pending.data backup/completed.data backup/undo.data backup/undo.save backup/backlog.data backup/synch.key);
+ok (! -r 'backup/pending.data'   &&
+    ! -r 'backup/completed.data' &&
+    ! -r 'backup/undo.data'      &&
+    ! -r 'backup/undo.save'      &&
+    ! -r 'backup/backlog.data'   &&
+    ! -r 'backup/synch_key.data', 'backup Cleanup');
 
-unlink '1.rc';
-ok (!-r '1.rc', 'Removed 1.rc');
-unlink '2.rc';
-ok (!-r '2.rc', 'Removed 2.rc');
-unlink '3.rc';
-ok (!-r '3.rc', 'Removed 3.rc');
-
-rmdir("data1");
-ok (!-e "data1", "Removed dir data1");
-rmdir("data2");
-ok (!-e "data2", "Removed dir data2");
-rmdir("data3");
-ok (!-e "data3", "Removed dir data3");
-rmdir("backup");
-ok (!-e "backup", "Removed dir backup");
+rmtree (['data1/extensions', 'data1', 'data2/extensions', 'data2', 'data3/extensions', 'data3', 'backup/extensions', 'backup'], 0, 1);
+ok (! -e 'data1/extensions'  &&
+    ! -e 'data1'             &&
+    ! -e 'data2/extensions'  &&
+    ! -e 'data2'             &&
+    ! -e 'data3/extensions'  &&
+    ! -e 'data3'             &&
+    ! -e 'backup/extensions' &&
+    ! -e 'backup', 'Removed dir local');
 
 exit 0;
 

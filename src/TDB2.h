@@ -97,6 +97,7 @@ public:
   void modify (Task&);
   void commit ();
   void synch ();
+  void merge (const std::string&);
   void revert ();
   int  gc ();
   int  next_id ();
