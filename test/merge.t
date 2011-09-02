@@ -48,7 +48,7 @@ if (open my $fh, '>', 'local.rc')
             "confirmation=no\n",
             "merge.autopush=no\n",
             "report.list.description=DESC\n",
-            "report.list.columns=id,project,active,priority,description,tags\n",
+            "report.list.columns=id,project,start.active,priority,description,tags\n",
             "report.list.labels=id,pro,a,pri,d,t\n",
             "report.list.sort=id+\n",
             "report.list.filter=status:pending\n";
@@ -62,7 +62,7 @@ if (open my $fh, '>', 'remote.rc')
             "confirmation=no\n",
             "merge.autopush=no\n",
             "report.list.description=DESC\n",
-            "report.list.columns=id,project,active,priority,description,tags\n",
+            "report.list.columns=id,project,start.active,priority,description,tags\n",
             "report.list.labels=id,pro,a,pri,d,t\n",
             "report.list.sort=id+\n",
             "report.list.filter=status:pending\n";
@@ -163,10 +163,10 @@ like   ($report_l,   qr/\*.*left_newer.*stay/,          "local-merge: left_newer
 like   ($report_l,   qr/realProject.*right_newer.*gym/, "local-merge: right_newer ok");
 
 $report_l = qx{../src/task rc:local.rc export};
-like   ($report_l,   qr/deleted.*left_deleted/,         "local-merge: left_deleted ok");
-like   ($report_l,   qr/deleted.*right_deleted/,        "local-merge: right_deleted ok");
-like   ($report_l,   qr/completed.*left_completed/,     "local-merge: left_completed ok");
-like   ($report_l,   qr/completed.*right_completed/,    "local-merge: right_completed ok");
+like   ($report_l,   qr/left_deleted.*deleted/,         "local-merge: left_deleted ok");
+like   ($report_l,   qr/right_deleted.*deleted/,        "local-merge: right_deleted ok");
+like   ($report_l,   qr/left_completed.*completed/,     "local-merge: left_completed ok");
+like   ($report_l,   qr/right_completed.*completed/,    "local-merge: right_completed ok");
 
 $report_l = qx(../src/task rc:local.rc waiting);
 like   ($report_l,   qr/L.*right_modified/,             "local-merge: right_modified ok");
@@ -179,10 +179,10 @@ like   ($report_r,   qr/\*.*left_newer.*stay/,          "remote-merge: left_newe
 like   ($report_r,   qr/realProject.*right_newer.*gym/, "remote-merge: right_newer ok");
 
 $report_r = qx{../src/task rc:remote.rc export};
-like   ($report_r,   qr/deleted.*left_deleted/,         "remote-merge: left_deleted ok");
-like   ($report_r,   qr/deleted.*right_deleted/,        "remote-merge: right_deleted ok");
-like   ($report_r,   qr/completed.*left_completed/,     "remote-merge: left_completed ok");
-like   ($report_r,   qr/completed.*right_completed/,    "remote-merge: right_completed ok");
+like   ($report_r,   qr/left_deleted.*deleted/,         "remote-merge: left_deleted ok");
+like   ($report_r,   qr/right_deleted.*deleted/,        "remote-merge: right_deleted ok");
+like   ($report_r,   qr/left_completed.*completed/,     "remote-merge: left_completed ok");
+like   ($report_r,   qr/right_completed.*completed/,    "remote-merge: right_completed ok");
 
 $report_r = qx(../src/task rc:remote.rc waiting);
 like   ($report_r,   qr/L.*right_modified/, "remote-merge: right_modified ok");
