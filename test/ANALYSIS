@@ -1,0 +1,10 @@
+* cal.t
+month and year are treated as IDs
+
+* bug.hasnt.t
+annotations are no longer considered when searching for strings in desciptions
+
+* caseless.t
+annotations are no longer considered when searching for strings in desciptions
+
+* 
