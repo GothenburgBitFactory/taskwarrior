@@ -311,6 +311,7 @@
 #define STRING_CMD_DENO_NOMATCH      "Did not find any matching annotation to be deleted for '{1}'."
 #define STRING_CMD_IMPORT_USAGE      "Imports JSON files."
 #define STRING_CMD_IMPORT_SUMMARY    "Imported {1} tasks."
+#define STRING_CMD_SHELL_USAGE       "Launches an interactive shell"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."

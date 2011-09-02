@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'shell.rc')
@@ -48,27 +48,17 @@ like ($output, qr/testprompt>/, 'custom prompt is being used');
 $output = qx{echo "-- add foo\ninfo 1\n" | ../src/task rc:shell.rc shell};
 like ($output, qr/Description\s+foo/, 'add/info working');
 
-# Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'response.txt';
-ok (!-r 'response.txt', 'Removed response.txt');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
 unlink 'shell.rc';
 ok (!-r 'shell.rc', 'Removed shell.rc');
+
+# Cleanup.
+unlink qw(pending.data completed.data undo.data backlog.data synch.key shell.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'shell.rc', 'Cleanup');
 
 exit 0;
 

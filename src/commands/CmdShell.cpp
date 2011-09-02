@@ -30,6 +30,7 @@
 #include <Color.h>
 #include <Context.h>
 #include <text.h>
+#include <i18n.h>
 #include <CmdShell.h>
 
 extern Context context;
@@ -39,7 +40,7 @@ CmdShell::CmdShell ()
 {
   _keyword     = "shell";
   _usage       = "task shell";
-  _description = "Launches an interactive shell";
+  _description = STRING_CMD_SHELL_USAGE;
   _read_only   = false;
   _displays_id = true;
 }
@@ -47,7 +48,6 @@ CmdShell::CmdShell ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdShell::execute (std::string&)
 {
-/*
   // Display some kind of welcome message.
   Color bold (Color::nocolor, Color::nocolor, false, true, false);
   std::cout << (context.color () ? bold.colorize (PACKAGE_STRING) : PACKAGE_STRING)
@@ -57,8 +57,19 @@ int CmdShell::execute (std::string&)
             << "Enter 'quit' (or 'bye', 'exit') to end the session.\n\n";
 
   // Make a copy because context.clear will delete them.
-  std::string permanentOverrides = " " + context.file_override
-                                 + " " + context.var_overrides;
+  std::string permanent_overrides;
+  std::vector <Arg>::iterator i;
+  for (i = context.a3.begin (); i != context.a3.end (); ++i)
+  {
+    if (i->_category == Arg::cat_rc ||
+        i->_category == Arg::cat_override)
+    {
+      if (i != context.a3.begin ())
+        permanent_overrides += " ";
+
+      permanent_overrides += i->_raw;
+    }
+  }
 
   std::vector <std::string> quit_commands;
   quit_commands.push_back ("quit");
@@ -74,7 +85,7 @@ int CmdShell::execute (std::string&)
 
     command = "";
     std::getline (std::cin, command);
-    std::string decoratedCommand = trim (command + permanentOverrides);
+    std::string decoratedCommand = "task " + trim (command + permanent_overrides);
 
     // When looking for the 'quit' command, use 'command', not
     // 'decoratedCommand'.
@@ -86,15 +97,16 @@ int CmdShell::execute (std::string&)
     {
       try
       {
-//        context.clear ();
-//        std::vector <std::string> args;
-//        split (args, decoratedCommand, ' ');
-//        std::vector <std::string>::iterator arg;
-//        for (arg = args.begin (); arg != args.end (); ++arg)
-//          context.args.push_back (*arg);
-//
-//        context.initialize (0, NULL);
-//        context.run ();
+        context.clear ();
+
+        std::vector <std::string> args;
+        split (args, decoratedCommand, ' ');
+        std::vector <std::string>::iterator arg;
+        for (arg = args.begin (); arg != args.end (); ++arg)
+          context.a3.capture (*arg);
+
+        context.initialize (0, NULL);
+        context.run ();
       }
 
       catch (std::string& error)
@@ -112,7 +124,6 @@ int CmdShell::execute (std::string&)
 
   // No need to repeat any overrides after the shell quits.
   context.clearMessages ();
-*/
   return 0;
 }
 
