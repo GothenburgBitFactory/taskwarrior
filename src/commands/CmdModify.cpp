@@ -54,14 +54,9 @@ int CmdModify::execute (std::string& output)
   int count = 0;
   std::stringstream out;
 
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.loadPending (tasks);
-
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
-
+  filter (filtered);
   if (filtered.size () == 0)
   {
     context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
@@ -70,6 +65,8 @@ int CmdModify::execute (std::string& output)
 
   // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
+  if (!modifications.size ())
+    throw std::string (STRING_CMD_XPEND_NEED_TEXT);
 
   Permission permission;
   if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
@@ -79,8 +76,10 @@ int CmdModify::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Task before (*task);
-    modify_task_annotate (*task, modifications);
-    apply_defaults (*task);
+
+    modify_task_description_replace (*task, modifications);
+    ++count;
+    context.tdb2.modify (*task);
 
     // Perform some logical consistency checks.
     // TODO Shouldn't these tests be in Task::validate?
@@ -107,75 +106,58 @@ int CmdModify::execute (std::string& output)
 
     // Make all changes.
     bool warned = false;
-    std::vector <Task>::iterator other;
-    for (other = tasks.begin (); other != tasks.end (); ++other)
+    std::vector <Task> siblings = context.tdb2.siblings (*task);
+    std::vector <Task>::iterator sibling;
+    for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
     {
-      // Skip wait: modification to a parent task, and other child tasks.  Too
-      // difficult to achieve properly without losing 'waiting' as a status.
-      // Soon...
-      if (other->id              == task->id               || // Self
-          (! task->has ("wait")  &&                           // skip waits
-           before.has ("parent") &&                           // is recurring
-           before.get ("parent") == other->get ("parent")) || // Sibling
-          other->get ("uuid")    == before.get ("parent"))    // Parent
+      if (before.has ("parent") && !warned)
       {
-        if (before.has ("parent") && !warned)
+        warned = true;
+        std::cout << "Task "
+                  << before.id
+                  << " is a recurring task, and all other instances of this"
+                  << " task will be modified.\n";
+      }
+
+      Task alternate (*sibling);
+
+      // If a task is being made recurring, there are other cascading
+      // changes.
+      if (!before.has ("recur") &&
+          task->has ("recur"))
+      {
+        sibling->setStatus (Task::recurring);
+        sibling->set ("mask", "");
+
+        std::cout << "Task "
+                  << sibling->id
+                  << " is now a recurring task.\n";
+      }
+
+      // Apply other deltas.
+      modify_task_description_replace (*sibling, modifications);
+
+      if (taskDiff (alternate, *sibling))
+      {
+        if (permission.confirmed (alternate, taskDifferences (alternate, *sibling) + "Proceed with change?"))
         {
-          warned = true;
-          std::cout << "Task "
-                    << before.id
-                    << " is a recurring task, and all other instances of this"
-                    << " task will be modified.\n";
-        }
+          // TODO Are dependencies being explicitly removed?
+          //      Either we scan context.task for negative IDs "depends:-n"
+          //      or we ask deltaAttributes (above) to record dependency
+          //      removal.
+          dependencyChainOnModify (alternate, *sibling);
+          context.tdb2.modify (*sibling);
+          ++count;
 
-        Task alternate (*other);
+          if (alternate.get ("project") != sibling->get ("project"))
+            context.footnote (onProjectChange (alternate, *sibling));
 
-        // If a task is being made recurring, there are other cascading
-        // changes.
-        if (!before.has ("recur") &&
-            task->has ("recur"))
-        {
-          other->setStatus (Task::recurring);
-          other->set ("mask", "");
-
-          std::cout << "Task "
-                    << other->id
-                    << " is now a recurring task.\n";
-        }
-
-        // Apply other deltas.
-        modify_task_description_replace (*other, modifications);
-        apply_defaults (*other);
-
-        if (taskDiff (alternate, *other))
-        {
-          // Only allow valid tasks.
-          other->validate ();
-
-          if (permission.confirmed (alternate, taskDifferences (alternate, *other) + "Proceed with change?"))
-          {
-            // TODO Are dependencies being explicitly removed?
-            //      Either we scan context.task for negative IDs "depends:-n"
-            //      or we ask deltaAttributes (above) to record dependency
-            //      removal.
-            dependencyChainOnModify (alternate, *other);
-
-            context.tdb.update (*other);
-            ++count;
-
-            if (alternate.get ("project") != other->get ("project"))
-              context.footnote (onProjectChange (alternate, *other));
-
-          }
         }
       }
     }
   }
 
-  if (count)
-    context.tdb.commit ();
-
-  context.tdb.unlock ();
+  context.tdb2.commit ();
 
   if (context.config.getBoolean ("echo.command"))
     out << "Modified " << count << " task" << (count == 1 ? ".\n" : "s.\n");
