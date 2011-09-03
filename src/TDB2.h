@@ -111,6 +111,9 @@ public:
   std::string uuid (int);
   int id (const std::string&);
 
+  // Read-only mode.
+  bool read_only ();
+
   void clear ();
   void dump ();
 

@@ -77,7 +77,11 @@ TF2::~TF2 ()
 void TF2::target (const std::string& f)
 {
   _file = File (f);
-  _read_only = ! _file.writable ();
+
+  // A missing file is not considered unwritable.
+  _read_only = false;
+  if (_file.exists () && ! _file.writable ())
+    _read_only = true;
 
 //  std::cout << "# TF2::target " << f << "\n";
 }
@@ -396,6 +400,7 @@ int TF2::id (const std::string& uuid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Completely wipe it all clean.
 void TF2::clear ()
 {
   _read_only       = false;
@@ -583,7 +588,7 @@ void TDB2::modify (Task& task)
 void TDB2::commit ()
 {
   dump ();
-  context.timer_gc.start ();
+  context.timer_commit.start ();
 
   pending.commit ();
   completed.commit ();
@@ -591,7 +596,7 @@ void TDB2::commit ()
   backlog.commit ();
   synch_key.commit ();
 
-  context.timer_gc.stop ();
+  context.timer_commit.stop ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1538,26 +1543,98 @@ int TDB2::gc ()
   // Allowed as a temporary override.
   if (context.config.getBoolean ("gc"))
   {
-/*
-    pending.load_tasks
-    completed.load_tasks
+    std::vector <Task> pending_tasks;
+    std::vector <Task> completed_tasks;
 
-    for each pending
-      if status == completed || status == deleted
-        pending.remove
-        completed.add
-      if status == waiting && wait < now
-        status = pending
-        wait.clear
+    bool pending_changes = false;
+    bool completed_changes = false;
 
-    for each completed
-      if status == pending || status == waiting
-        completed.remove
-        pending.add
-*/
+    std::vector <Task> pending_tasks_after;
+    std::vector <Task> completed_tasks_after;
+
+    // Scan all pending tasks, looking for any that need to be relocated to
+    // completed, or need to be 'woken'.
+    Date now;
+    std::string status;
+    std::vector <Task>::iterator task;
+    for (task = pending_tasks.begin ();
+         task != pending_tasks.end ();
+         ++task)
+    {
+      status = task->get ("status");
+      if (status == "pending" || status == "recurring")
+      {
+        pending_tasks_after.push_back (*task);
+      }
+      else if (status == "waiting")
+      {
+        Date wait (task->get ("wait"));
+        if (wait < now)
+        {
+          task->set ("status", "pending");
+          task->remove ("wait");
+          pending_changes = true;
+        }
+
+        pending_tasks_after.push_back (*task);
+      }
+      else
+      {
+        completed_tasks_after.push_back (*task);
+        pending_changes = true;
+        completed_changes = true;
+      }
+    }
+
+    // Scan all completed tasks, looking for any that need to be relocated to
+    // pending.
+    for (task = completed_tasks.begin ();
+         task != completed_tasks.end ();
+         ++task)
+    {
+      status = task->get ("status");
+      if (status == "pending" ||
+          status == "waiting")
+      {
+        pending_tasks_after.push_back (*task);
+        pending_changes = true;
+        completed_changes = true;
+      }
+      else
+      {
+        completed_tasks_after.push_back (*task);
+      }
+    }
+
+    // Only recreate the pending.data file if necessary.
+    if (pending_changes)
+    {
+      pending.clear ();
+      pending._dirty = true;
+
+      for (task = pending_tasks_after.begin ();
+           task != pending_tasks_after.end ();
+           ++task)
+        pending._tasks.push_back (*task);
+
+      // Note: deliberately no commit.
+    }
+
+    // Only recreate the completed.data file if necessary.
+    if (completed_changes)
+    {
+      completed.clear ();
+      completed._dirty = true;
+
+      for (task = completed_tasks_after.begin ();
+           task != completed_tasks_after.end ();
+           ++task)
+        completed._tasks.push_back (*task);
+
+      // Note: deliberately no commit.
+    }
 
     // TODO Remove dangling dependencies
-    // TODO Wake up expired waiting tasks
   }
 
   context.timer_gc.stop ();
@@ -1707,6 +1784,16 @@ bool TDB2::verifyUniqueUUID (const std::string& uuid)
     return false;
 
   return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool TDB2::read_only ()
+{
+  return pending._read_only   ||
+         completed._read_only ||
+         undo._read_only      ||
+         backlog._read_only   ||
+         synch_key._read_only;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
