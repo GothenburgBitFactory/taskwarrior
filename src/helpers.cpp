@@ -136,10 +136,11 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
 
     std::vector <Task> all;
     std::vector <Task> none;
-    context.tdb.load (all);
-
-    countTasks (all,                           project, context.tdb.getAllModified (), count_pending, count_done);
-    countTasks (context.tdb.getAllModified (), project, none,                          count_pending, count_done);
+// TODO Fix.
+//    context.tdb.load (all);
+//
+//    countTasks (all,                           project, context.tdb.getAllModified (), count_pending, count_done);
+//    countTasks (context.tdb.getAllModified (), project, none,                          count_pending, count_done);
 
     // count_done  count_pending  percentage
     // ----------  -------------  ----------
