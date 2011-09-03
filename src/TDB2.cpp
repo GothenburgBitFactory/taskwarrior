@@ -1603,6 +1603,7 @@ int TDB2::gc ()
     {
       pending.clear ();
       pending._dirty = true;
+      pending._loaded_tasks = true;
 
       for (task = pending_tasks_after.begin ();
            task != pending_tasks_after.end ();
@@ -1617,6 +1618,7 @@ int TDB2::gc ()
     {
       completed.clear ();
       completed._dirty = true;
+      completed._loaded_tasks = true;
 
       for (task = completed_tasks_after.begin ();
            task != completed_tasks_after.end ();
