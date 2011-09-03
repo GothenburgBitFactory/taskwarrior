@@ -62,7 +62,6 @@ protected:
   void modify_task_description_append (Task&, const A3&);
   void modify_task_annotate (Task&, const A3&);
   void modify_task (Task&, const A3&, std::string&);
-  void apply_defaults (Task&);
 
 protected:
   std::string _keyword;
