@@ -881,20 +881,10 @@ bool Date::isRelativeDate (const std::string& input)
     }
     else if (found == "eoq")
     {
-      int m = today.month ();
-      int y = today.year ();
-      int q;
-      if (m <= 3)
-        q = 3;
-      else if (m >= 4 && m <= 6)
-        q = 6;
-      else if (m >= 7 && m <= 9)
-        q = 9;
-      else
-        q = 12;
-      Date then (q,
-                 Date::daysInMonth (q, y),
-                 y);
+      int eoq_month = today.month () + 2 - (today.month () - 1) % 3;
+      Date then (eoq_month,
+                 daysInMonth (eoq_month, today.year ()),
+                 today.year ());
       _t = then._t;
       return true;
     }
@@ -919,20 +909,14 @@ bool Date::isRelativeDate (const std::string& input)
     }
     else if (found == "soq")
     {
-      int m = today.month ();
+      int m = today.month () + 3 - (today.month () - 1) % 3;
       int y = today.year ();
-      int q;
-      if (m <= 3)
-        q = 1;
-      else if (m >= 4 && m <= 6)
-        q = 4;
-      else if (m >= 7 && m <= 9)
-        q = 7;
-      else
-        q = 10;
-      Date then (q,
-                 1,
-                 y);
+      if (m > 12)
+      {
+        m -=12;
+        y++;
+      }
+      Date then (m , 1, y);
       _t = then._t;
       return true;
     }
