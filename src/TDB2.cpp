@@ -156,11 +156,15 @@ void TF2::modify_task (const Task& task)
 //  std::cout << "# TF2::modify_task " << _file._data << "\n";
 
   // Modify in-place.
+  std::string uuid = task.get ("uuid");
   std::vector <Task>::iterator i;
   for (i = _tasks.begin (); i != _tasks.end (); ++i)
   {
-    if (i->get ("uuid") == task.get ("uuid"))
+    if (i->get ("uuid") == uuid)
     {
+//      std::cout << "# TF2::modify_task overwriting:\n"
+//                << "#   old " << i->composeF4 ()
+//                << "#   new " << task.composeF4 ();
       *i = task;
       break;
     }
@@ -546,22 +550,26 @@ void TDB2::modify (Task& task)
   // Ensure the task is consistent, and provide defaults if necessary.
   task.validate ();
 
-  // Update task in either completed or deleted.
-  // TODO Find task, overwrite it.
-  std::string status = task.get ("status");
-  if (status == "completed" ||
-      status == "deleted")
-    completed.modify_task (task);
-  else
+  // Find task, overwrite it.
+  Task original;
+  get (task.get ("uuid"), original);
+
+  std::string status = original.get ("status");
+  if (status == "pending" ||
+      status == "waiting" ||
+      status == "recurring")
+  {
     pending.modify_task (task);
+  }
+  else
+  {
+    completed.modify_task (task);
+  }
 
   // time <time>
   // old <task>
   // new <task>
   // ---
-  Task original;
-  get (task.get ("uuid"), original);
-
   undo.add_line ("time " + Date ().toEpochString () + "\n");
   undo.add_line ("old " + original.composeF4 ());
   undo.add_line ("new " + task.composeF4 ());
@@ -976,11 +984,10 @@ void TDB2::merge (const std::string& mergeFile)
       lmods.clear ();
       throw std::string ("Database is up-to-date, no merge required.");
     }
-
   }
   else // lit == l.end ()
   {
-    // nothing happend on the local branch
+    // nothing happened on the local branch
 /*
     std::cout << "No local changes detected.\n";
 */
@@ -1670,6 +1677,26 @@ const std::vector <Task> TDB2::siblings (Task& task)
   }
 
   return results;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string TDB2::uuid (int id)
+{
+  std::string result = pending.uuid (id);
+  if (result == "")
+    result = completed.uuid (id);
+
+  return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int TDB2::id (const std::string& uuid)
+{
+  int result = pending.id (uuid);
+  if (result == 0)
+    result = completed.id (uuid);
+
+  return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
