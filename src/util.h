@@ -47,15 +47,6 @@
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
-// TODO Obsolete.
-#define foreach(i, c)                                              \
-for (typeof (c) *foreach_p = & (c);                                \
-     foreach_p;                                                    \
-     foreach_p = 0)                                                \
-  for (typeof (foreach_p->begin()) i = foreach_p->begin();         \
-       i != foreach_p->end();                                      \
-       ++i)
-
 // util.cpp
 bool confirm (const std::string&);
 int confirm3 (const std::string&);
