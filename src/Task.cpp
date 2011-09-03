@@ -108,11 +108,11 @@ Task::~Task ()
 ////////////////////////////////////////////////////////////////////////////////
 Task::status Task::textToStatus (const std::string& input)
 {
-       if (input == "pending")   return Task::pending;
-  else if (input == "completed") return Task::completed;
-  else if (input == "deleted")   return Task::deleted;
-  else if (input == "recurring") return Task::recurring;
-  else if (input == "waiting")   return Task::waiting;
+       if (input[0] == 'p') return Task::pending;
+  else if (input[0] == 'c') return Task::completed;
+  else if (input[0] == 'd') return Task::deleted;
+  else if (input[0] == 'r') return Task::recurring;
+  else if (input[0] == 'w') return Task::waiting;
 
   return Task::pending;
 }
@@ -987,28 +987,31 @@ void Task::substitute (
 //
 void Task::validate ()
 {
+  Task::status status = getStatus ();
+
   // 1) Provide missing attributes where possible
   // Provide a UUID if necessary.
   if (! has ("uuid"))
     set ("uuid", uuid ());
 
   // Recurring tasks get a special status.
-  if (has ("due") &&
-      has ("recur"))
-  {
-    if (has ("parent"))
-      setStatus (Task::pending);
-    else
-      setStatus (Task::recurring);
-  }
+  if (status == Task::pending &&
+      has ("due")             &&
+      has ("recur")           &&
+      ! has ("parent"))
+    status = Task::recurring;
 
   // Tasks with a wait: date get a special status.
-  else if (has ("wait"))
-    setStatus (Task::waiting);
+  else if (status == Task::pending &&
+           has ("wait"))
+    status = Task::waiting;
 
   // By default, tasks are pending.
   else if (! has ("status"))
-    setStatus (Task::pending);
+    status = Task::pending;
+
+  // Store the derived status.
+  setStatus (status);
 
   // Provide an entry date unless user already specified one.
   if (!has ("entry"))
