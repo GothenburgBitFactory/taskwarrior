@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 50;
+use Test::More tests => 44;
 
 # Create the rc file.
 if (open my $fh, '>', 'confirm.rc')
@@ -128,26 +128,14 @@ $output = qx{cat response.txt | ../src/task rc:confirm.rc 7 del};
 like ($output, qr/(Permanently delete task 7 'foo'\? \(y\/n\)) \1 \1/, 'confirmation - \n re-prompt works');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'response.txt';
-ok (!-r 'response.txt', 'Removed response.txt');
-
-unlink 'confirm.rc';
-ok (!-r 'confirm.rc', 'Removed confirm.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key confirm.rc response.txt);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'confirm.rc'     &&
+    ! -r 'response.txt', 'Cleanup');
 
 exit 0;
 
