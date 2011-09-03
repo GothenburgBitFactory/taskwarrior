@@ -558,7 +558,7 @@ void Context::decomposeSortField (
 void Context::clear ()
 {
   tdb.clear ();            // TODO Obsolete
-//  tdb2.clear ();
+  tdb2.clear ();
   a3.clear ();
 
   clearMessages ();
