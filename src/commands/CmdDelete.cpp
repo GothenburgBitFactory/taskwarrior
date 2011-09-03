@@ -55,14 +55,9 @@ int CmdDelete::execute (std::string& output)
   int count = 0;
   std::stringstream out;
 
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.loadPending (tasks);
-
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
-
+  filter (filtered);
   if (filtered.size () == 0)
   {
     context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
@@ -91,13 +86,16 @@ int CmdDelete::execute (std::string& output)
         std::string parent = task->get ("parent");
         if (parent != "")
         {
+          std::vector <Task> siblings;
+
           if (context.config.getBoolean ("confirmation") &&
               confirm (STRING_CMD_DELETE_CONF_RECUR))
           {
             // Scan all pending tasks for siblings of this task, and the parent
             // itself, and delete them.
+            siblings = context.tdb2.siblings (*task);
             std::vector <Task>::iterator sibling;
-            for (sibling = tasks.begin (); sibling != tasks.end (); ++sibling)
+            for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
             {
               if (sibling->get ("parent") == parent ||
                   sibling->get ("uuid")   == parent)
@@ -111,7 +109,7 @@ int CmdDelete::execute (std::string& output)
 
                 // Apply the command line modifications to the sibling.
                 modify_task_annotate (*sibling, modifications);
-                context.tdb.update (*sibling);
+                context.tdb2.modify (*sibling);
                 ++count;
 
                 // TODO Feedback.
@@ -127,14 +125,14 @@ int CmdDelete::execute (std::string& output)
           {
             // Update mask in parent.
             task->setStatus (Task::deleted);
-            updateRecurrenceMask (tasks, *task);
+            updateRecurrenceMask (siblings, *task);
 
             // Don't want a 'delete' to clobber the end date that may have
             // been written by a 'done' command.
             if (! task->has ("end"))
               task->setEnd ();
 
-            context.tdb.update (*task);
+            context.tdb2.modify (*task);
             ++count;
 
             out << format (STRING_CMD_DELETE_RECURRING,
@@ -155,7 +153,7 @@ int CmdDelete::execute (std::string& output)
           if (! task->has ("end"))
             task->setEnd ();
 
-          context.tdb.update (*task);
+          context.tdb2.modify (*task);
           ++count;
 
           if (context.config.getBoolean ("echo.command"))
@@ -184,10 +182,7 @@ int CmdDelete::execute (std::string& output)
     }
   }
 
-  if (count)
-    context.tdb.commit ();
-
-  context.tdb.unlock ();
+  context.tdb2.commit ();
 
   output = out.str ();
   return rc;
