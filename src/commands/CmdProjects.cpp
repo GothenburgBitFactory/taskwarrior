@@ -53,18 +53,20 @@ int CmdProjects::execute (std::string& output)
   int rc = 0;
 
   // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
+  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
 
-  int quantity;
   if (context.config.getBoolean ("list.all.projects"))
-    quantity = context.tdb.load (tasks);
-  else
-    quantity = context.tdb.loadPending (tasks);
+  {
+    std::vector <Task> extra = context.tdb2.completed.get_tasks ();
+    std::vector <Task>::iterator task;
+    for (task = extra.begin (); task != extra.end (); ++task)
+      tasks.push_back (*task);
+  }
 
-  context.tdb.commit ();
-  context.tdb.unlock ();
+  int quantity = tasks.size ();
+
+  context.tdb2.commit ();
 
   // Apply filter.
   std::vector <Task> filtered;
@@ -162,17 +164,18 @@ CmdCompletionProjects::CmdCompletionProjects ()
 int CmdCompletionProjects::execute (std::string& output)
 {
   // Get all the tasks.
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
   handleRecurrence ();
+  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
 
-  if (context.config.getBoolean ("complete.all.projects"))
-    context.tdb.load (tasks);
-  else
-    context.tdb.loadPending (tasks);
+  if (context.config.getBoolean ("list.all.projects"))
+  {
+    std::vector <Task> extra = context.tdb2.completed.get_tasks ();
+    std::vector <Task>::iterator task;
+    for (task = extra.begin (); task != extra.end (); ++task)
+      tasks.push_back (*task);
+  }
 
-  context.tdb.commit ();
-  context.tdb.unlock ();
+  context.tdb2.commit ();
 
   // Apply filter.
   std::vector <Task> filtered;
