@@ -49,9 +49,9 @@ CmdMerge::CmdMerge ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdMerge::execute (std::string& output)
 {
-  // invoke gc before merging in order to update data files
-  context.tdb.gc ();
+  // invoke gc and commit before merging in order to update data files
   context.tdb2.gc ();
+  context.tdb2.commit ();
 
   std::vector <std::string> words = context.a3.extract_words ();
   std::string file;
