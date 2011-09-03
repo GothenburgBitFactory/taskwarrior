@@ -118,8 +118,8 @@ static bool sort_compare (int left, int right)
         return !ascending;
 
       // Sort on the first dependency.
-      left_number  = context.tdb.id (left_string.substr (0, 36));
-      right_number = context.tdb.id (right_string.substr (0, 36));
+      left_number  = context.tdb2.id (left_string.substr (0, 36));
+      right_number = context.tdb2.id (right_string.substr (0, 36));
 
       if (left_number == right_number)
         continue;
