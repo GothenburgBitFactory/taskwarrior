@@ -1535,8 +1535,8 @@ int TDB2::gc ()
   // Allowed as a temporary override.
   if (context.config.getBoolean ("gc"))
   {
-    std::vector <Task> pending_tasks;
-    std::vector <Task> completed_tasks;
+    std::vector <Task> pending_tasks   = pending.get_tasks ();
+    std::vector <Task> completed_tasks = completed.get_tasks ();
 
     bool pending_changes = false;
     bool completed_changes = false;
