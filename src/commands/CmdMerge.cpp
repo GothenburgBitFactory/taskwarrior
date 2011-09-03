@@ -49,6 +49,10 @@ CmdMerge::CmdMerge ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdMerge::execute (std::string& output)
 {
+  // invoke gc before merging in order to update data files
+  context.tdb.gc ();
+  context.tdb2.gc ();
+
   std::vector <std::string> words = context.a3.extract_words ();
   std::string file;
   if (words.size ())
@@ -92,6 +96,7 @@ int CmdMerge::execute (std::string& output)
     if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri._data + "\'?")) )
        || (bAutopush) )
     {
+      // TODO derive autopush uri from merge.default.uri? otherwise: change prompt above
 //      context.task.set ("description", uri._data);
 
       std::string out;

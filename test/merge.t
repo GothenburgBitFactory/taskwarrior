@@ -159,7 +159,7 @@ my $report_r = qx{../src/task rc:remote.rc list};
 like   ($report_l,   qr/left_added/,                    "local-merge: left_added is present");
 like   ($report_l,   qr/right_added/,                   "local-merge: right_added is present");
 like   ($report_l,   qr/H.*left_modified/,              "local-merge: left_modified ok");
-like   ($report_l,   qr/\*.*left_newer.*stay/,          "local-merge: left_newer ok");
+like   ($report_l,   qr/\*.*left_newer.*stay/,          "local-merge: left_newer ok, undo-completed");
 like   ($report_l,   qr/realProject.*right_newer.*gym/, "local-merge: right_newer ok");
 
 $report_l = qx{../src/task rc:local.rc export};
