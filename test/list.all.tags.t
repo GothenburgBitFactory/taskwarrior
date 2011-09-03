@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'tags.rc')
@@ -57,23 +57,13 @@ like ($output, qr/t1/, 't1 listed');
 like ($output, qr/t2/, 't2 listed');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'tags.rc';
-ok (!-r 'tags.rc', 'Removed tags.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key tags.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'tags.rc', 'Cleanup');
 
 exit 0;
 
