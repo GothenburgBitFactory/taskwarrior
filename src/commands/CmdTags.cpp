@@ -54,16 +54,18 @@ int CmdTags::execute (std::string& output)
   int rc = 0;
   std::stringstream out;
 
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  int quantity = 0;
-  if (context.config.getBoolean ("list.all.tags"))
-    quantity += context.tdb.load (tasks);
-  else
-    quantity += context.tdb.loadPending (tasks);
+  // Get all the tasks.
+  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
 
-  context.tdb.commit ();
-  context.tdb.unlock ();
+  if (context.config.getBoolean ("list.all.tags"))
+  {
+    std::vector <Task> extra = context.tdb2.completed.get_tasks ();
+    std::vector <Task>::iterator task;
+    for (task = extra.begin (); task != extra.end (); ++task)
+      tasks.push_back (*task);
+  }
+
+  int quantity = tasks.size ();
 
   // Apply filter.
   std::vector <Task> filtered;
@@ -149,16 +151,16 @@ CmdCompletionTags::CmdCompletionTags ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionTags::execute (std::string& output)
 {
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
+  // Get all the tasks.
+  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
 
   if (context.config.getBoolean ("complete.all.tags"))
-    context.tdb.load (tasks);
-  else
-    context.tdb.loadPending (tasks);
-
-  context.tdb.commit ();
-  context.tdb.unlock ();
+  {
+    std::vector <Task> extra = context.tdb2.completed.get_tasks ();
+    std::vector <Task>::iterator task;
+    for (task = extra.begin (); task != extra.end (); ++task)
+      tasks.push_back (*task);
+  }
 
   // Apply filter.
   std::vector <Task> filtered;
