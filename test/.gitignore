@@ -2,7 +2,6 @@
 *.data
 *.log
 arguments.t
-att.t
 autocomplete.t
 cmd.t
 color.t
@@ -27,7 +26,6 @@ subst.t
 t.t
 t2.t
 taskmod.t
-tdb.t
 tdb2.t
 text.t
 transport.t

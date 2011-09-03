@@ -8,7 +8,6 @@ include_directories (${CMAKE_SOURCE_DIR}
 set (task_SRCS A3.cpp A3.h
                API.cpp API.h
                Arg.cpp Arg.h
-               Att.cpp Att.h
                Color.cpp Color.h
                Config.cpp Config.h
                Context.cpp Context.h
@@ -20,12 +19,10 @@ set (task_SRCS A3.cpp A3.h
                File.cpp File.h
                Hooks.cpp Hooks.h
                JSON.cpp JSON.h
-               Location.cpp Location.h
                Nibbler.cpp Nibbler.h
                Path.cpp Path.h
                Permission.cpp Permission.h
                RX.cpp RX.h
-               TDB.cpp TDB.h
                TDB2.cpp TDB2.h
                Task.cpp Task.h
                Taskmod.cpp Taskmod.h
