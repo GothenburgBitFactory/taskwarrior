@@ -73,7 +73,6 @@ void handleRecurrence ()
                   << "\n";
 
         // Determine the end date.
-        t->setEnd ();
         t->setStatus (Task::deleted);
         context.tdb2.modify (*t);
         continue;
