@@ -54,14 +54,9 @@ int CmdDone::execute (std::string& output)
   int count = 0;
   std::stringstream out;
 
-  std::vector <Task> tasks;
-  context.tdb.lock (context.config.getBoolean ("locking"));
-  context.tdb.loadPending (tasks);
-
   // Apply filter.
   std::vector <Task> filtered;
-  filter (tasks, filtered);
-
+  filter (filtered);
   if (filtered.size () == 0)
   {
     context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
@@ -83,11 +78,7 @@ int CmdDone::execute (std::string& output)
         task->getStatus () == Task::waiting)
     {
       Task before (*task);
-
       modify_task_annotate (*task, modifications);
-      apply_defaults (*task);
-
-      task->setEnd ();
       task->setStatus (Task::completed);
 
       // Stop the task, if started.
@@ -95,14 +86,11 @@ int CmdDone::execute (std::string& output)
           context.config.getBoolean ("journal.time"))
         task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
 
-      // Only allow valid tasks.
-      task->validate ();
-
       if (taskDiff (before, *task))
       {
         if (permission.confirmed (before, taskDifferences (before, *task) + STRING_CMD_DONE_PROCEED))
         {
-          context.tdb.update (*task);
+          context.tdb2.modify (*task);
           ++count;
 
           if (context.config.getBoolean ("echo.command"))
@@ -127,10 +115,7 @@ int CmdDone::execute (std::string& output)
     }
   }
 
-  if (count)
-    context.tdb.commit ();
-
-  context.tdb.unlock ();
+  context.tdb2.commit ();
 
   if (context.config.getBoolean ("echo.command"))
     out << format ((count == 1
