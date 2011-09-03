@@ -51,7 +51,6 @@ Context::Context ()
 , data_dir ()
 , extension_dir ()
 , config ()
-, tdb ()
 , tdb2 ()
 , dom ()
 , determine_color_use (true)
@@ -150,8 +149,6 @@ int Context::initialize (int argc, const char** argv)
       locale = locale.substr (0, period);
 
     // Initialize the database.
-    tdb.clear ();                   // TODO Obsolete
-    tdb.location (data_dir);        // TODO Obsolete
     tdb2.set_location (data_dir);
 
     // Hook system init, plus post-start event occurring at the first possible
@@ -316,11 +313,13 @@ int Context::dispatch (std::string &out)
 
     Command* c = commands[command];
 
-    // GC is invoked prior to running any command that displays task IDs.
-    if (c->displays_id ())
+    // GC is invoked prior to running any command that displays task IDs, if
+    // possible.
+    bool auto_commit = false;
+    if (c->displays_id () && !tdb2.read_only ())
     {
-      tdb.gc ();
       tdb2.gc ();
+      auto_commit = true;
     }
 
     // Only read-only commands can be run when TDB2 is read-only.
@@ -330,7 +329,11 @@ int Context::dispatch (std::string &out)
       throw std::string ("");
 */
 
-    return c->execute (out);
+    int rc = c->execute (out);
+    if (auto_commit)
+      tdb2.commit ();
+
+    return rc;
   }
 
   return commands["help"]->execute (out);
@@ -557,7 +560,6 @@ void Context::decomposeSortField (
 // be initialized.  That makes this method something of a misnomer.  So be it.
 void Context::clear ()
 {
-  tdb.clear ();            // TODO Obsolete
   tdb2.clear ();
   a3.clear ();
 

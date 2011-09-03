@@ -32,7 +32,6 @@
 #include <Column.h>
 #include <Config.h>
 #include <Task.h>
-#include <TDB.h>
 #include <TDB2.h>
 #include <Hooks.h>
 #include <DOM.h>
@@ -89,7 +88,6 @@ public:
   Directory                           extension_dir;
   Config                              config;
 
-  TDB                                 tdb;                // TODO Obsolete
   TDB2                                tdb2;
   std::map <std::string, std::string> aliases;
   Hooks                               hooks;
