@@ -48,7 +48,8 @@ bool dependencyIsBlocked (const Task& task)
   if (task.has ("depends"))
   {
     std::string depends = task.get ("depends");
-    const std::vector <Task>& all = context.tdb.getAllPending ();
+//    const std::vector <Task>& all = context.tdb.getAllPending ();
+    std::vector <Task> all; // TODO Fix.
     std::vector <Task>::const_iterator it;
     for (it = all.begin (); it != all.end (); ++it)
       if ((it->getStatus () == Task::pending  ||
@@ -65,7 +66,8 @@ void dependencyGetBlocked (const Task& task, std::vector <Task>& blocked)
 {
   std::string uuid = task.get ("uuid");
 
-  const std::vector <Task>& all = context.tdb.getAllPending ();
+//  const std::vector <Task>& all = context.tdb.getAllPending ();
+  std::vector <Task> all; // TODO Fix.
   std::vector <Task>::const_iterator it;
   for (it = all.begin (); it != all.end (); ++it)
     if ((it->getStatus () == Task::pending  ||
@@ -83,7 +85,8 @@ bool dependencyIsBlocking (const Task& task)
 {
   std::string uuid = task.get ("uuid");
 
-  const std::vector <Task>& all = context.tdb.getAllPending ();
+//  const std::vector <Task>& all = context.tdb.getAllPending ();
+  std::vector <Task> all; // TODO Fix.
   std::vector <Task>::const_iterator it;
   for (it = all.begin (); it != all.end (); ++it)
     if ((it->getStatus () == Task::pending  ||
@@ -101,7 +104,8 @@ void dependencyGetBlocking (const Task& task, std::vector <Task>& blocking)
   std::string depends = task.get ("depends");
   if (depends != "")
   {
-    const std::vector <Task>& all = context.tdb.getAllPending ();
+//    const std::vector <Task>& all = context.tdb.getAllPending ();
+    std::vector <Task> all; // TODO Fix.
     std::vector <Task>::const_iterator it;
     for (it = all.begin (); it != all.end (); ++it)
       if ((it->getStatus () == Task::pending  ||
@@ -149,7 +153,7 @@ static bool followUpstream (
     seen.push_back (link);
 
     // Use 'original' over '*b' if they both refer to the same task, otherwise
-    // '*b' is from TDB's committed list, and lacks recent modifications.
+    // '*b' is from TDB2's committed list, and lacks recent modifications.
     if (followUpstream (
           (b->get ("uuid") == original.get ("uuid") ? original : *b),
           original,
@@ -239,12 +243,12 @@ void dependencyChainOnComplete (Task& task)
             left->addDependency (right->id);
         }
 
-        // Now update TDB, now that the updates have all occurred.
+        // Now update TDB2, now that the updates have all occurred.
         for (left = blocked.begin (); left != blocked.end (); ++left)
-          context.tdb.update (*left);
+          context.tdb2.modify (*left);
 
         for (right = blocking.begin (); right != blocking.end (); ++right)
-          context.tdb.update (*right);
+          context.tdb2.modify (*right);
       }
     }
   }
