@@ -410,7 +410,9 @@ void TF2::clear ()
   _loaded_contents = false;
 
   _contents        = "";
-  _file._data      = "";
+
+  // Note that the actual file name is deliberately not cleared.
+  //_file._data      = "";
 
   _tasks.clear ();
   _added_tasks.clear ();
@@ -475,16 +477,6 @@ const std::string TF2::dump ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
 TDB2::TDB2 ()
 : _location ("")
 , _id (1)
@@ -492,8 +484,8 @@ TDB2::TDB2 ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Deliberately no file writes on destruct.  TDB2::commit should have been
-// already called, if data is to be preserved.
+// Deliberately no file writes on destruct.  Commit should have been already
+// called, if data is to be preserved.
 TDB2::~TDB2 ()
 {
 }
