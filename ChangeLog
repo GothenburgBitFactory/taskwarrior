@@ -38,7 +38,6 @@
  + The configuration variable 'json.array' determines whether 'query' command
    output is enclosed by '[...]'.
  + The duration 'm' is now interpreted as 'months', not 'minutes'.
- + New "eoq" and "soq" dates for the end and start of quarter.
 
 # Tracked Features, sorted by ID.
  + Added feature #278, which provides a more consistent command line grammar.
@@ -96,6 +95,8 @@
    controlled by '#define HAVE_EXECUTE 1' in cmake.h.  This allows a build
    that does not have the potential security hole, in the event that taskwarrior
    is run at elevated privilege, or run in the context of a web server.
+ + Added feature #813, new "eoq" and "soq" dates for the end and start of quarter.
+   (thanks to Dave French and Paulo Almeida for the patch)
 
 # Tracked Bugs, sorted by ID.
  + Fixed bug #403, which disambiguates certain commands involving numbers.
