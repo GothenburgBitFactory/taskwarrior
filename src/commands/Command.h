@@ -63,6 +63,10 @@ protected:
   void modify_task_annotate (Task&, const A3&);
   void modify_task (Task&, const A3&, std::string&);
 
+  void safety ();
+
+  A3 group_arguments (const A3&);
+
 protected:
   std::string _keyword;
   std::string _usage;

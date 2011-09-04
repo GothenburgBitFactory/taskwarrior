@@ -433,6 +433,8 @@
 #define STRING_TASK_VALID_RECUR      "The recurrence value '{1}' is not valid."
 #define STRING_TASK_VALID_WAIT_RECUR "You cannot create a task that is both waiting and recurring."
 #define STRING_TASK_VALID_PRIORITY   "Priority values may be 'H', 'M' or 'L', not '{1}'."
+#define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all tasks.  Are you sure?"
+#define STRING_TASK_SAFETY_FAIL      "Command prevented from running."
 
 // Taskmod
 #define STRING_TASKMOD_BAD_INIT      "Taskmod::getUuid(): Task object not initialized."

@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <E9.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 #include <Command.h>
 #include <cmake.h>
@@ -326,6 +327,8 @@ void Command::filter (std::vector <Task>& output)
   }
   else
   {
+    safety ();
+
     context.timer_filter.stop ();
     const std::vector <Task>& pending   = context.tdb2.pending.get_tasks ();
     const std::vector <Task>& completed = context.tdb2.completed.get_tasks ();
@@ -406,8 +409,11 @@ void Command::modify_task (
   const A3& arguments,
   std::string& description)
 {
+  // Coalesce arguments together into sets to be processed as a batch.
+  A3 grouped_arguments = group_arguments (arguments);
+
   std::vector <Arg>::const_iterator arg;
-  for (arg = arguments.begin (); arg != arguments.end (); ++arg)
+  for (arg = grouped_arguments.begin (); arg != grouped_arguments.end (); ++arg)
   {
     // Attributes are essentially name:value pairs, and correspond directly
     // to stored attributes.
@@ -513,6 +519,42 @@ void Command::modify_task (
       description += arg->_raw;
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Disaster avoidance mechanism.
+void Command::safety ()
+{
+  if (! _read_only)
+  {
+    A3 write_filter = context.a3.extract_filter ();
+    if (!write_filter.size ())  // Potential disaster.
+    {
+      // If user is willing to be asked, this can be avoided.
+      if (context.config.getBoolean ("confirmation") &&
+          confirm (STRING_TASK_SAFETY_VALVE))
+        return;
+
+      // No.
+      throw std::string (STRING_TASK_SAFETY_FAIL);
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+A3 Command::group_arguments (const A3& input)
+{
+  A3 result;
+
+  std::vector <Arg>::const_iterator arg;
+  for (arg = input.begin (); arg != input.end (); ++arg)
+  {
+    // TODO Create a grouped set of args.
+
+    result.push_back (*arg);
+  }
+
+  return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
