@@ -3,7 +3,6 @@
 *.log
 arguments.t
 autocomplete.t
-cmd.t
 color.t
 config.t
 date.t
@@ -11,16 +10,12 @@ directory.t
 dom.t
 duration.t
 file.t
-filt.t
 i18n.t
 json.t
-lexer.t
-lisp.t
 list.t
 nibbler.t
 path.t
 rx.t
-sensor.t
 seq.t
 subst.t
 t.t
@@ -31,7 +26,6 @@ text.t
 transport.t
 uri.t
 util.t
-variant.t
 view.t
 
 json_test
