@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'time.rc')
@@ -50,23 +50,23 @@ if (open my $fh, '>', 'time.rc')
 #   C0   completed, this week
 #   C1   completed, last week
 #   C2   completed, 2wks ago
-my $now     = time ();
-my $seven   = $now -  7 * 86_400;
-my $fourteen = $now - 14 * 86_400;
+my $now    = time ();
+my $six    = $now -  6 * 86_400;
+my $twelve = $now - 12 * 86_400;
 
 if (open my $fh, '>', 'pending.data')
 {
   print $fh <<EOF;
-[status:"pending" description:"P0" entry:"$fourteen"]
-[status:"pending" description:"PS0" entry:"$fourteen" start:"$now"]
-[status:"pending" description:"PS1" entry:"$fourteen" start:"$seven"]
-[status:"pending" description:"PS2" entry:"$fourteen" start:"$fourteen"]
-[status:"deleted" description:"D0" entry:"$fourteen" end:"$now"]
-[status:"deleted" description:"D1" entry:"$fourteen" end:"$seven"]
-[status:"deleted" description:"D2" entry:"$fourteen" end:"$fourteen"]
-[status:"completed" description:"C0" entry:"$fourteen" end:"$now"]
-[status:"completed" description:"C1" entry:"$fourteen" end:"$seven"]
-[status:"completed" description:"C2" entry:"$fourteen" end:"$fourteen"]
+[uuid:"00000000-0000-0000-0000-000000000000 " status:"pending" description:"P0" entry:"$twelve"]
+[uuid:"11111111-1111-1111-1111-111111111111 " status:"pending" description:"PS0" entry:"$twelve" start:"$now"]
+[uuid:"22222222-2222-2222-2222-222222222222 " status:"pending" description:"PS1" entry:"$twelve" start:"$six"]
+[uuid:"33333333-3333-3333-3333-333333333333 " status:"pending" description:"PS2" entry:"$twelve" start:"$twelve"]
+[uuid:"44444444-4444-4444-4444-444444444444 " status:"deleted" description:"D0" entry:"$twelve" end:"$now"]
+[uuid:"55555555-5555-5555-5555-555555555555 " status:"deleted" description:"D1" entry:"$twelve" end:"$six"]
+[uuid:"66666666-6666-6666-6666-666666666666 " status:"deleted" description:"D2" entry:"$twelve" end:"$twelve"]
+[uuid:"77777777-7777-7777-7777-777777777777 " status:"completed" description:"C0" entry:"$twelve" end:"$now"]
+[uuid:"88888888-8888-8888-8888-888888888888 " status:"completed" description:"C1" entry:"$twelve" end:"$six"]
+[uuid:"99999999-9999-9999-9999-999999999999 " status:"completed" description:"C2" entry:"$twelve" end:"$twelve"]
 EOF
   close $fh;
   ok (-r 'pending.data', 'Created pending.data');
@@ -82,23 +82,13 @@ $output = qx{../src/task rc:time.rc timesheet 3};
 like ($output, qr/Completed.+C0.+Started.+PS0.+Completed.+C1.+Started.+PS1.+Completed.+C2.+Started.+PS2/ms, 'three weeks of started and completed');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'time.rc';
-ok (!-r 'time.rc', 'Removed time.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key time.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'time.rc', 'Cleanup');
 
 exit 0;
 

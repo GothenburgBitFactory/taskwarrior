@@ -52,12 +52,8 @@ int CmdTimesheet::execute (std::string& output)
 
   // Scan the pending tasks.
   handleRecurrence ();
-  std::vector <Task> filtered;
-  filter (filtered);
+  std::vector <Task> all = context.tdb2.all_tasks ();
   context.tdb2.commit ();
-
-  // Just do this once.
-  int width = context.getWidth ();
 
   // What day of the week does the user consider the first?
   int weekStart = Date::dayOfWeek (context.config.get ("weekstart"));
@@ -76,9 +72,9 @@ int CmdTimesheet::execute (std::string& output)
 
   // Determine how many reports to run.
   int quantity = 1;
-  A3 modifications = context.a3.extract_modifications ();
-  if (modifications.size () == 1)
-    quantity = strtol (modifications[0]._raw.c_str (), NULL, 10);;
+  std::vector <std::string> words = context.a3.extract_words ();
+  if (words.size () == 1)
+    quantity = strtol (words[0].c_str (), NULL, 10);;
 
   std::stringstream out;
   for (int week = 0; week < quantity; ++week)
@@ -97,14 +93,14 @@ int CmdTimesheet::execute (std::string& output)
 
     // Render the completed table.
     ViewText completed;
-    completed.width (width);
+    completed.width (context.getWidth ());
     completed.add (Column::factory ("string", "   "));
     completed.add (Column::factory ("string", "Project"));
     completed.add (Column::factory ("string.right", "Due"));
     completed.add (Column::factory ("string", "Description"));
 
     std::vector <Task>::iterator task;
-    for (task = filtered.begin (); task != filtered.end (); ++task)
+    for (task = all.begin (); task != all.end (); ++task)
     {
       // If task completed within range.
       if (task->getStatus () == Task::completed)
@@ -135,13 +131,13 @@ int CmdTimesheet::execute (std::string& output)
 
     // Now render the started table.
     ViewText started;
-    started.width (width);
+    started.width (context.getWidth ());
     started.add (Column::factory ("string", "   "));
     started.add (Column::factory ("string", "Project"));
     started.add (Column::factory ("string.right", "Due"));
     started.add (Column::factory ("string", "Description"));
 
-    for (task = filtered.begin (); task != filtered.end (); ++task)
+    for (task = all.begin (); task != all.end (); ++task)
     {
       // If task started within range, but not completed withing range.
       if (task->getStatus () == Task::pending &&
