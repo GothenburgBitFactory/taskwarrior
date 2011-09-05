@@ -36,13 +36,13 @@ use constant false => 0;
 use constant true => 1;
 
 # Create data locations
-mkdir("data1", 0755);
-ok(-e 'data1', "Created directory data1");
-mkdir("data2", 0755);
-ok(-e 'data2', "Created directory data2");
-mkdir("data3", 0755);
-ok(-e 'data3', "Created directory data3");
+mkdir("data1",  0755);
+mkdir("data2",  0755);
+mkdir("data3",  0755);
 mkdir('backup', 0755);
+ok(-e 'data1', "Created directory data1");
+ok(-e 'data2', "Created directory data2");
+ok(-e 'data3', "Created directory data3");
 ok(-e 'backup', "Created directory backup");
 
 # Create the rc files.

@@ -89,9 +89,9 @@ sleep 1;
 qx{../src/task rc:local.rc add right_completed};
 sleep 1;
 
-copy ("local/undo.data",      "remote/undo.data")      or fail ("copy local/undo.data to remote/undo.data");
-copy ("local/pending.data",   "remote/pending.data")   or fail ("copy local/undo.data to remote/undo.data");
-copy ("local/completed.data", "remote/completed.data") or fail ("copy local/undo.data to remote/undo.data");
+copy ("local/undo.data",      "remote/undo.data");
+copy ("local/pending.data",   "remote/pending.data");
+copy ("local/completed.data", "remote/completed.data");
 
 # make local modifications
 qx{../src/task rc:local.rc add left_added}; #left_added
@@ -137,7 +137,7 @@ sleep 1;
 qx{../src/task rc:remote.rc 4 modify +gym};         # right_newer
 
 # merge remote into local
-copy ("local/undo.data", "local/undo.save") or fail ("copy local/undo.data to local/undo.save");
+copy ("local/undo.data", "local/undo.save");
 my $output_l = qx{../src/task rc:local.rc merge remote/};
 
 #check output
