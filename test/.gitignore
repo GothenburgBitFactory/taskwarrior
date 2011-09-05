@@ -1,7 +1,6 @@
 *.o
 *.data
 *.log
-arguments.t
 autocomplete.t
 color.t
 config.t
@@ -16,14 +15,11 @@ list.t
 nibbler.t
 path.t
 rx.t
-seq.t
-subst.t
 t.t
 t2.t
 taskmod.t
 tdb2.t
 text.t
-transport.t
 uri.t
 util.t
 view.t
