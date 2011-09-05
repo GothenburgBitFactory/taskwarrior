@@ -103,6 +103,7 @@ public:
   int  next_id ();
 
   // Generalized task accessors.
+  const std::vector <Task> all_tasks ();
   bool get (int, Task&);
   bool get (const std::string&, Task&);
   const std::vector <Task> siblings (Task&);

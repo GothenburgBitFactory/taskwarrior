@@ -1643,6 +1643,19 @@ int TDB2::next_id ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::vector <Task> TDB2::all_tasks ()
+{
+  std::vector <Task> all = pending.get_tasks ();
+  std::vector <Task> extra = completed.get_tasks ();
+
+  std::vector <Task>::iterator task;
+  for (task = extra.begin (); task != extra.end (); ++task)
+    all.push_back (*task);
+
+  return all;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Locate task by ID.
 bool TDB2::get (int id, Task& task)
 {
