@@ -45,6 +45,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdStatistics.cpp  CmdStatistics.h
                    CmdStop.cpp        CmdStop.h
                    CmdSummary.cpp     CmdSummary.h
+                   CmdSynch.cpp       CmdSynch.h
                    CmdTags.cpp        CmdTags.h
                    CmdTimesheet.cpp   CmdTimesheet.h
                    CmdUndo.cpp        CmdUndo.h
