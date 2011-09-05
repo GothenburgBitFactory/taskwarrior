@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 14;
 
 # Create the rc file.
 if (open my $fh, '>', 'delete.rc')
@@ -71,26 +71,13 @@ like ($output, qr/foo/, 'Deletion annotation successful');
 like ($output, qr/H/,   'Deletion modification successful');
 
 # Cleanup.
-ok (-r 'pending.data', 'Need to remove pending.data');
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-ok (-r 'completed.data', 'Need to remove completed.data');
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-ok (-r 'undo.data', 'Need to remove undo.data');
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'delete.rc';
-ok (!-r 'delete.rc', 'Removed delete.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key delete.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'delete.rc', 'Cleanup');
 
 exit 0;
 

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 11;
 use File::Copy;
 
 use constant false => 0;
@@ -73,47 +73,32 @@ my $output = qx{../src/task rc:remote.rc ls};
 like ($output, qr/local task/,    "autopush failed");
 
 # Cleanup.
-unlink 'local/pending.data';
-ok (!-r 'local/pending.data', 'Removed local/pending.data');
+unlink qw(local/pending.data local/completed.data local/undo.data local/undo.save local/backlog.data local/synch.key local.rc);
+ok (! -r 'local/pending.data'   &&
+    ! -r 'local/completed.data' &&
+    ! -r 'local/undo.data'      &&
+    ! -r 'local/undo.save'      &&
+    ! -r 'local/backlog.data'   &&
+    ! -r 'local/synch_key.data' &&
+    ! -r 'local.rc', 'Cleanup');
 
-unlink 'local/completed.data';
-ok (!-r 'local/completed.data', 'Removed local/completed.data');
+unlink qw(remote/pending.data remote/completed.data remote/undo.data remote/backlog.data remote/synch.key remote.rc);
+ok (! -r 'remote/pending.data'   &&
+    ! -r 'remote/completed.data' &&
+    ! -r 'remote/undo.data'      &&
+    ! -r 'remote/backlog.data'   &&
+    ! -r 'remote/synch_key.data' &&
+    ! -r 'remote.rc', 'Cleanup');
 
-unlink 'local/undo.data';
-ok (!-r 'local/undo.data', 'Removed local/undo.data');
-
-unlink 'local/undo.save';
-ok (!-r 'local/undo.save', 'Removed local/undo.save');
-
-unlink 'local/backlog.data';
-ok (!-r 'local/backlog.data', 'Removed local/backlog.data');
-
-unlink 'local/synch.key';
-ok (!-r 'local/synch.key', 'Removed local/synch.key');
-
-unlink 'local.rc';
-ok (!-r 'local.rc', 'Removed local.rc');
-
-unlink 'remote/pending.data';
-ok (!-r 'remote/pending.data', 'Removed remote/pending.data');
-
-unlink 'remote/completed.data';
-ok (!-r 'remote/completed.data', 'Removed remote/completed.data');
-
-unlink 'remote/undo.data';
-ok (!-r 'remote/undo.data', 'Removed remote/undo.data');
-
-unlink 'remote/backlog.data';
-ok (!-r 'remote/backlog.data', 'Removed remote/backlog.data');
-
-unlink 'remote/synch.key';
-ok (!-r 'remote/synch.key', 'Removed remote/synch.key');
-
-unlink 'remote.rc';
-ok (!-r 'remote.rc', 'Removed remote.rc');
+rmdir("remote/extensions");
+ok (!-e "remote/extensions", "Removed dir remote/extensions");
 
 rmdir("remote");
 ok (!-e "remote", "Removed dir remote");
+
+rmdir("local/extensions");
+ok (!-e "local/extensions", "Removed dir local/extensions");
+
 rmdir("local");
 ok (!-e "local", "Removed dir local");
 
