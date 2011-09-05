@@ -177,7 +177,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
       else
         operand._value = operand._raw;
 
-      //std::cout << "# E9::eval operand " << operand << "\n";
+      // std::cout << "# E9::eval operand " << operand << "\n";
       value_stack.push_back (operand);
     }
   }
@@ -508,29 +508,24 @@ void E9::operator_match (
 {
   result._type = Arg::type_bool;
 
-  // TODO The problem is that description/dom -> <description>/string and we lose the original value.
-
   if (eval_match (left, right, case_sensitive))
   {
-    // std::cout << "# operator_match description match\n";
     result._value = "true";
   }
   else if (left._raw == "description")
   {
-    // std::cout << "# operator_match escalation\n";
     std::map <std::string, std::string> annotations;
     task.getAnnotations (annotations);
 
     std::map <std::string, std::string>::iterator a;
     for (a = annotations.begin (); a != annotations.end (); ++a)
     {
-      // Clone 'right', override _value.
-      Arg alternate (right);
+      // Clone 'left', override _value.
+      Arg alternate (left);
       alternate._value = a->second;
 
-      if (eval_match (left, alternate, case_sensitive))
+      if (eval_match (alternate, right, case_sensitive))
       {
-        // std::cout << "# operator_match annotation match\n";
         result._value = "true";
         break;
       }
@@ -539,7 +534,7 @@ void E9::operator_match (
   else
     result._value = "false";
 
-  // std::cout << "# " << left << " <operator_match> " << right << " --> " << result << "\n";
+//  std::cout << "# " << left << " <operator_match> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -565,11 +560,11 @@ void E9::operator_nomatch (
     std::map <std::string, std::string>::iterator a;
     for (a = annotations.begin (); a != annotations.end (); ++a)
     {
-      // Clone 'right', override _value.
-      Arg alternate (right);
+      // Clone 'left', override _value.
+      Arg alternate (left);
       alternate._value = a->second;
 
-      if (eval_match (left, alternate, case_sensitive))
+      if (eval_match (alternate, right, case_sensitive))
       {
         result._value = "false";
         break;
@@ -613,19 +608,27 @@ const Arg E9::coerce (const Arg& input, const Arg::type type)
 
   if (type == Arg::type_bool)
   {
-    result._type = Arg::type_bool;
+    result._raw = input._raw;
     result._value = get_bool (input) ? "true" : "false";
+    result._type = Arg::type_bool;
+    result._category = input._category;
   }
 
-  if (type == Arg::type_string)
+  else if (type == Arg::type_string)
   {
     // TODO Convert date?
+    result._raw = input._raw;
     result._value = input._value;
     result._type  = Arg::type_string;
+    result._category = input._category;
   }
 
   // TODO Date
   // TODO Duration
+  else
+  {
+    result = input;
+  }
 
   return result;
 }
