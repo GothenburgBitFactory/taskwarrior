@@ -75,9 +75,9 @@ int CmdStatistics::execute (std::string& output)
       ++undoCount;
 
   // Get all the tasks.
+  std::vector <Task> all = context.tdb2.all_tasks ();
   std::vector <Task> filtered;
-  filter (context.tdb2.pending.get_tasks (), filtered);
-  filter (context.tdb2.completed.get_tasks (), filtered);
+  filter (all, filtered);
 
   Date now;
   time_t earliest   = time (NULL);
@@ -99,23 +99,28 @@ int CmdStatistics::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     ++totalT;
-    if (task->getStatus () == Task::deleted)   ++deletedT;
-    if (task->getStatus () == Task::pending)   ++pendingT;
-    if (task->getStatus () == Task::completed) ++completedT;
-    if (task->getStatus () == Task::recurring) ++recurringT;
-    if (task->getStatus () == Task::waiting)   ++waitingT;
+
+    Task::status status = task->getStatus ();
+    switch (status)
+    {
+    case Task::deleted:   ++deletedT;   break;
+    case Task::pending:   ++pendingT;   break;
+    case Task::completed: ++completedT; break;
+    case Task::recurring: ++recurringT; break;
+    case Task::waiting:   ++waitingT;   break;
+    }
 
     time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
-    if (task->getStatus () == Task::completed)
+    if (status == Task::completed)
     {
       time_t end = strtol (task->get ("end").c_str (), NULL, 10);
       daysPending += (end - entry) / 86400.0;
     }
 
-    if (task->getStatus () == Task::pending)
+    if (status == Task::pending)
       daysPending += (now.toEpoch () - entry) / 86400.0;
 
     descLength += task->get ("description").length ();
