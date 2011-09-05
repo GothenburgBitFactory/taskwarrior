@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 16;
 
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
@@ -49,19 +49,19 @@ if (open my $fh, '>', 'import.txt')
     description: zero
     project: A
     status: pending
-    entry: 1234567889
+    entry: 20110901T120000Z
   task:
     uuid: 11111111-1111-1111-1111-111111111111
     description: one
     project: B
     status: pending
-    entry: 1234567889
+    entry: 20110902T120000Z
   task:
     uuid: 22222222-2222-2222-2222-222222222222
     description: two
     status: completed
-    entry: 1234524689
-    end: 1234524690
+    entry: 20110903T010000Z
+    end: 20110904T120000Z
 ...
 EOF
 
@@ -69,9 +69,12 @@ EOF
   ok (-r 'import.txt', 'Created sample import data');
 }
 
-my $output = qx{../src/task rc:import.rc import import.txt};
-like ($output, qr/Imported 3 tasks successfully./, 'no errors');
-# Imported 3 tasks successfully.
+# Convert YAML --> task JSON.
+qx{../scripts/add-ons/import-yaml.pl <import.txt >import.json};
+
+# Import the JSON.
+my $output = qx{../src/task rc:import.rc import import.json};
+like ($output, qr/Imported 3 tasks\./, '3 tasks imported');
 
 $output = qx{../src/task rc:import.rc list};
 # ID Project Pri Due Active Age     Description
@@ -94,55 +97,57 @@ $output = qx{../src/task rc:import.rc completed};
 
 unlike ($output, qr/1.+A.+zero/,       't1 missing');
 unlike ($output, qr/2.+B.+one/,        't2 missing');
-like   ($output, qr/2\/13\/2009.+two/, 't3 present');
+like   ($output, qr/9\/4\/2011.+two/, 't3 present');
 
 # Make sure that a duplicate task cannot be imported.
-$output = qx{../src/task rc:import.rc import import.txt};
-like ($output, qr/Cannot add task because the uuid .+ is not unique\./, 'error on duplicate uuid');
+$output = qx{../src/task rc:import.rc import import.json};
+like ($output, qr/Cannot add task because the uuid '.{36}' is not unique\./, 'error on duplicate uuid');
 
 # Create import file.
-if (open my $fh, '>', 'import2.txt')
+if (open my $fh, '>', 'import.txt')
 {
   print $fh <<EOF;
+%YAML 1.1
+---
 task:
   uuid: 44444444-4444-4444-4444-444444444444
   description: three
   status: pending
   entry: 1234567889
+...
 EOF
 
   close $fh;
   ok (-r 'import2.txt', 'Created second sample import data');
 }
 
-$output = qx{../src/task rc:import.rc import import2.txt};
-like ($output, qr/Imported 1 tasks successfully./, 'no errors');
-# Imported 1 tasks successfully.
+# Convert YAML --> task JSON.
+qx{../scripts/add-ons/import-yaml.pl <import.txt >import.json};
+
+# Import the JSON.
+$output = qx{../src/task rc:import.rc import import.json};
+like ($output, qr/Imported 1 tasks\./, '1 task imported');
+
+# Verify.
+$output = qx{../src/task rc:import.rc list};
+# ID Project Pri Due Active Age  Description
+# -- ------- --- --- ------ ---- -----------
+#  3                        2.6y three
+#  1 A                        3d zero
+#  2 B                        2d one
+like ($output, qr/1.+A.+zero/, 't1 present');
+like ($output, qr/2.+B.+one/,  't2 present');
+like ($output, qr/3.+three/,   't3 present');
 
 # Cleanup.
-unlink 'import.txt';
-ok (!-r 'import.txt', 'Removed import.txt');
-
-unlink 'import2.txt';
-ok (!-r 'import2.txt', 'Removed import2.txt');
-
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'import.rc';
-ok (!-r 'import.rc', 'Removed import.rc');
-
+unlink qw(pending.data completed.data undo.data backlog.data synch.key import.rc import.txt import.json);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'import.rc'      &&
+    ! -r 'import.txt'     &&
+    ! -r 'import.json', 'Cleanup');
 exit 0;
 

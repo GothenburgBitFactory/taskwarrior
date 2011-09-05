@@ -174,19 +174,12 @@ int CmdImport::execute (std::string& output)
               task.setAnnotations (annos);
             }
 
-            // TODO Implement
-            else if (i->first == "parent")
+            // Attributes without columns are simply added.
+            else if (i->first == "parent" ||
+                     i->first == "mask"   ||
+                     i->first == "imask")
             {
-            }
-
-            // TODO Implement
-            else if (i->first == "mask")
-            {
-            }
-
-            // TODO Implement
-            else if (i->first == "imask")
-            {
+              task.set (i->first, unquoteText (i->second->dump ()));
             }
 
             else

@@ -1771,13 +1771,11 @@ int TDB2::id (const std::string& uuid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Make sure the specified UUID does not already exist in the data.
 bool TDB2::verifyUniqueUUID (const std::string& uuid)
 {
-  if (pending.id (uuid)   != 0 ||
-      completed.id (uuid) != 0)
-    return false;
-
-  return true;
+  pending.get_tasks ();
+  return pending.id (uuid) != 0 ? false : true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
