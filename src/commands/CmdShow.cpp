@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <vector>
 #include <sstream>
 #include <algorithm>
@@ -34,8 +36,6 @@
 #include <Directory.h>
 #include <ViewText.h>
 #include <CmdShow.h>
-
-#define L10N                                           // Localization complete.
 
 extern Context context;
 
