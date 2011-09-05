@@ -973,7 +973,7 @@ bool Nibbler::getWord (std::string& result)
   if (i < _length)
   {
     while (!isdigit (_input[i]) &&
-           !ispunct (_input[i]) &&
+           !isPunctuation (_input[i]) &&
            !isspace (_input[i]))
     {
       ++i;
