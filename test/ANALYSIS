@@ -21,3 +21,5 @@ PB need to use a UTF-8 friendly way of doing input[--eol].
 * dependencies.t
 PB When running "task 1 dep:-2" the '-' is being considerd a binary op.
 
+* bug.480.t
+FH A3::is_tag related: +@strange is not seen as a tag
