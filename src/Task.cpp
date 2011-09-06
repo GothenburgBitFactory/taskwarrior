@@ -1021,7 +1021,7 @@ void Task::validate ()
   if (! has ("end") &&
       (getStatus () == Task::completed ||
        getStatus () == Task::deleted))
-    set ("end", get ("entry"));
+    setEnd ();
 
   // Override with default.project, if not specified.
   if (! has ("project"))
