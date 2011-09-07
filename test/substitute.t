@@ -70,9 +70,9 @@ $output = qx{../src/task rc:subst.rc info 1};
 like ($output, qr/aaa  ccc/, 'word deletion in description');
 
 # Regexes
-qx{../src/task rc:subst.rc rc.regex:on 1 modify "/c(c)./C/"};
+qx{../src/task rc:subst.rc rc.regex:on 1 modify "/c{3}/CcC/"};
 $output = qx{../src/task rc:subst.rc info 1};
-like ($output, qr/aaa  cCc/, 'regex');
+like ($output, qr/aaa  CcC/, 'regex');
 
 # Cleanup.
 unlink 'pending.data';
