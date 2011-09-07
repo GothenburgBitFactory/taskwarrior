@@ -58,7 +58,7 @@ int main (int argc, char** argv)
     t.notok (n.skipAllOneOf ("abc"),     "trivial: skipAllOneOf");
     t.notok (n.getQuoted ('"', s),       "trivial: getQuoted");
     t.notok (n.getDigit (i),             "trivial: getDigit");
-    t.notok (n.getInt (i),               "trivial: getInt");
+    t.notok (n.getInt (i),               "trivial: getInt"); // 10
     t.notok (n.getHex (i),               "trivial: getHex");
     t.notok (n.getUnsignedInt (i),       "trivial: getUnsignedInt");
     t.notok (n.getUntilEOL (s),          "trivial: getUntilEOL");
@@ -72,7 +72,7 @@ int main (int argc, char** argv)
     t.diag ("Nibbler::getUntil");
     n = Nibbler ("one two");
     t.ok    (n.getUntil (' ', s),        " 'one two' :       getUntil (' ')    -> true");
-    t.is    (s, "one",                   " 'one two' :       getUntil (' ')    -> 'one'");
+    t.is    (s, "one",                   " 'one two' :       getUntil (' ')    -> 'one'"); // 20
     t.ok    (n.getUntil (' ', s),        "    ' two' :       getUntil (' ')    -> true");
     t.is    (s, "",                      "    ' two' :       getUntil (' ')    -> ''");
     t.ok    (n.skip (' '),               "    ' two' :           skip (' ')    -> true");
@@ -88,7 +88,7 @@ int main (int argc, char** argv)
 
     n = Nibbler ("one two");
     t.ok    (n.getUntilRx ("e", s),      " 'one two' :     getUntilRx ('e')    -> true");
-    t.is    (s, "on",                    " 'one two' :     getUntilRx ('e')    -> 'on'");
+    t.is    (s, "on",                    " 'one two' :     getUntilRx ('e')    -> 'on'"); // 30
     t.ok    (n.getUntilRx ("tw", s),     "   'e two' :     getUntilRx ('tw')   -> true");
     t.is    (s, "e ",                    "   'e two' :     getUntilRx ('tw')   -> 'e '");
     t.ok    (n.getUntilRx ("$", s),      "     'two' :     getUntilRx ('$')    -> true");

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 23;
+use Test::More tests => 18;
 
 # Create the rc file.
 if (open my $fh, '>', 'caseless.rc')
@@ -41,12 +41,11 @@ if (open my $fh, '>', 'caseless.rc')
 # Attempt case-sensitive and case-insensitive substitutions and filters.
 qx{../src/task rc:caseless.rc add one two three};
 qx{../src/task rc:caseless.rc 1 annotate four five six};
-my $output;
 
 # Description substitution.
 # 2
 qx{../src/task rc:caseless.rc rc.search.case.sensitive:yes 1 modify /One/ONE/};
-$output = qx{../src/task rc:caseless.rc info 1};
+my $output = qx{../src/task rc:caseless.rc info 1};
 unlike ($output, qr/One two three/, 'one two three\nfour five six -> /One/ONE/ = fail');
 
 # 3
@@ -120,23 +119,13 @@ $output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:no ls descripti
 like ($output, qr/four five six/, 'one two three\nfour five six -> ls description.contains:Six caseless = succeed');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'caseless.rc';
-ok (!-r 'caseless.rc', 'Removed caseless.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key caseless.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch_key.data' &&
+    ! -r 'caseless.rc', 'Cleanup');
 
 exit 0;
 
