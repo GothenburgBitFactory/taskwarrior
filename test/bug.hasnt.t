@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 21;
+use Test::More tests => 16;
 
 # Create the rc file.
 if (open my $fh, '>', 'hasnt.rc')
@@ -72,38 +72,28 @@ my $output = qx{../src/task rc:hasnt.rc ls description.has:foo};
 like   ($output, qr/\n 1/, '1 has foo -> yes');
 like   ($output, qr/\n 2/, '2 has foo -> yes');
 like   ($output, qr/\n 3/, '3 has foo -> yes');
-unlike ($output, qr/\n 4/, '4 has foo -> no');
+unlike ($output, qr/\n 4/, '4 has foo -> no');  # 5
 like   ($output, qr/\n 5/, '5 has foo -> yes');
 like   ($output, qr/\n 6/, '6 has foo -> yes');
 unlike ($output, qr/\n 7/, '7 has foo -> no');
 
 $output = qx{../src/task rc:hasnt.rc ls description.hasnt:foo};
 unlike ($output, qr/\n 1/, '1 hasnt foo -> no');
-unlike ($output, qr/\n 2/, '2 hasnt foo -> no');
+unlike ($output, qr/\n 2/, '2 hasnt foo -> no');  # 10
 unlike ($output, qr/\n 3/, '3 hasnt foo -> no');
 like   ($output, qr/\n 4/, '4 hasnt foo -> yes');
 unlike ($output, qr/\n 5/, '5 hasnt foo -> no');
 unlike ($output, qr/\n 6/, '6 hasnt foo -> no');
-like   ($output, qr/\n 7/, '7 hasnt foo -> yes');
+like   ($output, qr/\n 7/, '7 hasnt foo -> yes');  # 15
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'hasnt.rc';
-ok (!-r 'hasnt.rc', 'Removed hasnt.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key hasnt.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'hasnt.rc', 'Cleanup');
 
 exit 0;
 

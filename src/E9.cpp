@@ -547,6 +547,7 @@ void E9::operator_nomatch (
   const Task& task)
 {
   result._type = Arg::type_bool;
+  result._value = "true";
 
   if (eval_match (left, right, case_sensitive))
   {
@@ -571,8 +572,6 @@ void E9::operator_nomatch (
       }
     }
   }
-  else
-    result._value = "true";
 
 //  std::cout << "# " << left << " <operator_nomatch> " << right << " --> " << result << "\n";
 }

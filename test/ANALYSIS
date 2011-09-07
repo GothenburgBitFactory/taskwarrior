@@ -1,14 +1,6 @@
 * cal.t
 FH month and year are treated as IDs
 
-* bug.hasnt.t
-FH annotations are no longer considered when searching for strings in desciptions
-PB one failure left.  Haven't looked yet.
-
-* caseless.t
-FH annotations are no longer considered when searching for strings in desciptions
-PB one failure left.  Haven't looked yet.
-
 * project.t
 PB problem known, disabled output (???)
 
