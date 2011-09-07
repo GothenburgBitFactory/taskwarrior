@@ -211,6 +211,9 @@ void A3::categorize ()
           arg->_category = Arg::cat_command;
           found_command = true;
         }
+
+        // Context needs a copy.
+        context.program = arg->_raw;
       }
 
       // command

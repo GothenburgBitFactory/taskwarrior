@@ -333,6 +333,10 @@ int Context::dispatch (std::string &out)
     if (auto_commit)
       tdb2.commit ();
 
+    // Write commands cause an update of the shadow file, if configured.
+    if (! c->read_only ())
+      shadow ();
+
     return rc;
   }
 
@@ -395,69 +399,61 @@ bool Context::verbose (const std::string& token)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO OBSOLETE
+// This needs to be taken out and shot, as soon as Lua extensions will allow.
 void Context::shadow ()
 {
-/*
-  // Determine if shadow file is enabled.
-  File shadowFile (config.get ("shadow.file"));
-  if (shadowFile._data != "")
-  {
-    inShadow = true;  // Prevents recursion in case shadow command writes.
+  std::string file_name = config.get ("shadow.file");
+  std::string command   = config.get ("shadow.command");
 
-    // Check for silly shadow file settings.
-    std::string dataLocation = config.get ("data.location");
-    if (shadowFile.data == dataLocation + "/pending.data")
+  // A missing shadow file command uses the default command instead.
+  if (command == "")
+    command = config.get ("default.command");
+
+  if (file_name != "" &&
+      command != "")
+  {
+    File shadow_file (file_name);
+
+    // Check for dangerous shadow file settings.
+    std::string location = config.get ("data.location");
+    if (shadow_file._data == location + "/pending.data")
       throw std::string ("Configuration variable 'shadow.file' is set to "
                          "overwrite your pending tasks.  Please change it.");
 
-    if (shadowFile.data == dataLocation + "/completed.data")
+    if (shadow_file._data == location + "/completed.data")
       throw std::string ("Configuration variable 'shadow.file' is set to "
                          "overwrite your completed tasks.  Please change it.");
 
-    if (shadowFile.data == dataLocation + "/undo.data")
+    if (shadow_file._data == location + "/undo.data")
       throw std::string ("Configuration variable 'shadow.file' is set to "
                          "overwrite your undo log.  Please change it.");
 
-    std::string oldDetection = config.get ("detection");
-    std::string oldColor  = config.get ("color");
+    if (shadow_file._data == location + "/backlog.data")
+      throw std::string ("Configuration variable 'shadow.file' is set to "
+                         "overwrite your backlog file.  Please change it.");
 
-    clear ();
+    if (shadow_file._data == location + "/synch.key")
+      throw std::string ("Configuration variable 'shadow.file' is set to "
+                         "overwrite your synch.key file.  Please change it.");
 
-    // Run report.  Use shadow.command, using default.command as a fallback
-    // with "list" as a default.
-    std::string command = config.get ("shadow.command");
-    if (command == "")
-      command = config.get ("default.command");
+    // Compose the command.  Put the rc overrides up front, so that they may
+    // be overridden by rc.shadow.command.
+    command = program             +
+              " rc.detection:off" +  // No need to determine terminal size
+              " rc.color:off"     +  // Color off by default
+              " rc.gc:off "       +  // GC off, to reduce headaches
+              command             +  // User specified command
+              " >"                +  // Capture
+              shadow_file._data;  // User specified file
 
-    split (args, command, ' ');
-
-    //initialize ();
-    config.set ("detection", "off");
-    config.set ("color",     "off");
-
-//    parse ();
-    std::string result;
-    (void)dispatch (result);
-    std::ofstream out (shadowFile._data.c_str ());
-    if (out.good ())
-    {
-      out << result;
-      out.close ();
-    }
-    else
-      throw std::string ("Could not write file '") + shadowFile._data + "'";
-
-    config.set ("detection", oldDetection);
-    config.set ("color",     oldColor);
+    debug ("Running shadow command: " + command);
+    system (command.c_str ());
 
     // Optionally display a notification that the shadow file was updated.
+    // TODO Convert to a verbosity token.
     if (config.getBoolean ("shadow.notify"))
-      footnote (std::string ("[Shadow file '") + shadowFile._data + "' updated.]");
-
-    inShadow = false;
+      footnote (std::string ("[Shadow file '") + shadow_file._data + "' updated.]");
   }
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
