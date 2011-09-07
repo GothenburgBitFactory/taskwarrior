@@ -877,19 +877,13 @@ void Task::substitute (
   // Count the changes, so we know whether to proceed to annotations, after
   // modifying description.
   int changes = 0;
+  bool done = false;
 
   // Regex support is optional.
   if (context.config.getBoolean ("regex"))
   {
-    // Insert capturing parentheses, if necessary.
-    std::string pattern;
-    if (from.find ('(') != std::string::npos)
-      pattern = from;
-    else
-      pattern = "(" + from + ")";
-
     // Create the regex.
-    RX rx (pattern, sensitive);
+    RX rx (from, sensitive);
     std::vector <int> start;
     std::vector <int> end;
 
@@ -897,32 +891,36 @@ void Task::substitute (
     if (rx.match (start, end, description))
     {
       int skew = 0;
-      int limit = global ? (int) start.size () : 1;
-      for (int i = 0; i < limit && i < RX_MAX_MATCHES; ++i)
+      for (unsigned int i = 0; i < start.size () && !done; ++i)
       {
         description.replace (start[i + skew], end[i] - start[i], to);
         skew += to.length () - (end[i] - start[i]);
         ++changes;
+
+        if (!global)
+          done = true;
       }
     }
 
-    if (changes == 0 || global)
+    if (!done)
     {
       // Perform all subs on annotations.
       std::map <std::string, std::string>::iterator it;
-      for (it = annotations.begin (); it != annotations.end (); ++it)
+      for (it = annotations.begin (); it != annotations.end () && !done; ++it)
       {
         start.clear ();
         end.clear ();
         if (rx.match (start, end, it->second))
         {
           int skew = 0;
-          int limit = global ? (int) start.size () : 1;
-          for (int i = 0; i < limit && i < RX_MAX_MATCHES; ++i)
+          for (unsigned int i = 0; i < start.size () && !done; ++i)
           {
             it->second.replace (start[i + skew], end[i] - start[i], to);
             skew += to.length () - (end[i] - start[i]);
             ++changes;
+
+            if (!global)
+              done = true;
           }
         }
       }
@@ -933,36 +931,42 @@ void Task::substitute (
     // Perform all subs on description.
     int counter = 0;
     std::string::size_type pos = 0;
+    int skew = 0;
 
-    while ((pos = ::find (description, from, pos, sensitive)) != std::string::npos)
+    while ((pos = ::find (description, from, pos, sensitive)) != std::string::npos && !done)
     {
-      description.replace (pos, from.length (), to);
+      description.replace (pos + skew, from.length (), to);
+      skew += to.length () - from.length ();
+
       pos += to.length ();
       ++changes;
 
-      if (! global)
-        break;
+      if (!global)
+        done = true;
 
       if (++counter > APPROACHING_INFINITY)
         throw format (STRING_INFINITE_LOOP, APPROACHING_INFINITY);
     }
 
-    if (changes == 0 || global)
+    if (!done)
     {
       // Perform all subs on annotations.
       counter = 0;
       std::map <std::string, std::string>::iterator i;
-      for (i = annotations.begin (); i != annotations.end (); ++i)
+      for (i = annotations.begin (); i != annotations.end () && !done; ++i)
       {
         pos = 0;
-        while ((pos = ::find (i->first, from, pos, sensitive)) != std::string::npos)
+        skew = 0;
+        while ((pos = ::find (i->second, from, pos, sensitive)) != std::string::npos && !done)
         {
-          i->second.replace (pos, from.length (), to);
+          i->second.replace (pos + skew, from.length (), to);
+          skew += to.length () - from.length ();
+
           pos += to.length ();
           ++changes;
 
-          if (! global)
-            break;
+          if (!global)
+            done = true;
 
           if (++counter > APPROACHING_INFINITY)
             throw format (STRING_INFINITE_LOOP, APPROACHING_INFINITY);
