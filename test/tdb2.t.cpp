@@ -67,7 +67,7 @@ int main (int argc, char** argv)
     t.is ((int) synch_key.size (), 0, "TDB2 Read empty synch_key");
 
     // Add a task.
-    Task task ("[name:\"value\"]");
+    Task task ("[description:\"description\" name:\"value\"]");
     context.tdb2.add (task);
 
     pending   = context.tdb2.pending.get_tasks ();
