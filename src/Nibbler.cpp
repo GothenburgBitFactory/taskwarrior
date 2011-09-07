@@ -142,13 +142,7 @@ bool Nibbler::getUntilRx (const std::string& regex, std::string& result)
 {
   if (_cursor < _length)
   {
-    std::string modified_regex;
-    if (regex[0] != '(')
-      modified_regex = "(" + regex + ")";
-    else
-      modified_regex = regex;
-
-    RX r (modified_regex, true);
+    RX r (regex, true);
     std::vector <int> start;
     std::vector <int> end;
     if (r.match (start, end, _input.substr (_cursor)))
