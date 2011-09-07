@@ -182,7 +182,7 @@ ok (! -r 'data1/pending.data'   &&
     ! -r 'data1/undo.data'      &&
     ! -r 'data1/undo.save'      &&
     ! -r 'data1/backlog.data'   &&
-    ! -r 'data1/synch_key.data' &&
+    ! -r 'data1/synch.key'      &&
     ! -r '1.rc', 'data1 Cleanup');
 
 unlink qw(data2/pending.data data2/completed.data data2/undo.data data2/undo.save data2/backlog.data data2/synch.key 2.rc);
@@ -191,7 +191,7 @@ ok (! -r 'data2/pending.data'   &&
     ! -r 'data2/undo.data'      &&
     ! -r 'data2/undo.save'      &&
     ! -r 'data2/backlog.data'   &&
-    ! -r 'data2/synch_key.data' &&
+    ! -r 'data2/synch.key'      &&
     ! -r '2.rc', 'data2 Cleanup');
 
 unlink qw(data3/pending.data data3/completed.data data3/undo.data data3/undo.save data3/backlog.data data3/synch.key 3.rc);
@@ -200,7 +200,7 @@ ok (! -r 'data3/pending.data'   &&
     ! -r 'data3/undo.data'      &&
     ! -r 'data3/undo.save'      &&
     ! -r 'data3/backlog.data'   &&
-    ! -r 'data3/synch_key.data' &&
+    ! -r 'data3/synch.key'      &&
     ! -r '3.rc', 'data3 Cleanup');
 
 unlink qw(backup/pending.data backup/completed.data backup/undo.data backup/undo.save backup/backlog.data backup/synch.key);
@@ -209,7 +209,7 @@ ok (! -r 'backup/pending.data'   &&
     ! -r 'backup/undo.data'      &&
     ! -r 'backup/undo.save'      &&
     ! -r 'backup/backlog.data'   &&
-    ! -r 'backup/synch_key.data', 'backup Cleanup');
+    ! -r 'backup/synch.key', 'backup Cleanup');
 
 rmtree (['data1/extensions', 'data1', 'data2/extensions', 'data2', 'data3/extensions', 'data3', 'backup/extensions', 'backup'], 0, 1);
 ok (! -e 'data1/extensions'  &&

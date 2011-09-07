@@ -64,7 +64,7 @@ int main (int argc, char** argv)
     t.is ((int) completed.size (), 0, "TDB2 Read empty completed");
     t.is ((int) undo.size (),      0, "TDB2 Read empty undo");
     t.is ((int) backlog.size (),   0, "TDB2 Read empty backlog");
-    t.is ((int) synch_key.size (), 0, "TDB2 Read empty synch_key");
+    t.is ((int) synch_key.size (), 0, "TDB2 Read empty synch.key");
 
     // Add a task.
     Task task ("[description:\"description\" name:\"value\"]");
@@ -80,7 +80,7 @@ int main (int argc, char** argv)
     t.is ((int) completed.size (), 0, "TDB2 after add, 0 completed tasks");
     t.is ((int) undo.size (),      3, "TDB2 after add, 3 undo lines");
     t.is ((int) backlog.size (),   1, "TDB2 after add, 1 backlog task");
-    t.is ((int) synch_key.size (), 0, "TDB2 after add, 0 synch_key");
+    t.is ((int) synch_key.size (), 0, "TDB2 after add, 0 synch.key");
 
     task.set ("description", "This is a test");
     context.tdb2.modify (task);
@@ -95,7 +95,7 @@ int main (int argc, char** argv)
     t.is ((int) completed.size (), 0, "TDB2 after add, 0 completed tasks");
     t.is ((int) undo.size (),      7, "TDB2 after add, 7 undo lines");
     t.is ((int) backlog.size (),   2, "TDB2 after add, 2 backlog task");
-    t.is ((int) synch_key.size (), 0, "TDB2 after add, 0 synch_key");
+    t.is ((int) synch_key.size (), 0, "TDB2 after add, 0 synch.key");
 
     context.tdb2.commit ();
 

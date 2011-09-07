@@ -235,7 +235,7 @@ ok (! -r 'local/pending.data'   &&
     ! -r 'local/undo.data'      &&
     ! -r 'local/undo.save'      &&
     ! -r 'local/backlog.data'   &&
-    ! -r 'local/synch_key.data' &&
+    ! -r 'local/synch.key'      &&
     ! -r 'local.rc', 'Local Cleanup');
 
 unlink qw(remote/pending.data remote/completed.data remote/undo.data remote/backlog.data remote/synch.key remote.rc);
@@ -243,7 +243,7 @@ ok (! -r 'remote/pending.data'   &&
     ! -r 'remote/completed.data' &&
     ! -r 'remote/undo.data'      &&
     ! -r 'remote/backlog.data'   &&
-    ! -r 'remote/synch_key.data' &&
+    ! -r 'remote/synch.key'      &&
     ! -r 'remote.rc', 'Remove Cleanup');
 
 rmtree (['remote/extensions', 'remote', 'local/extensions', 'local'], 0, 1);

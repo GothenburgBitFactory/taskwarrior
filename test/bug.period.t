@@ -159,7 +159,7 @@ ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch_key.data' &&
+    ! -r 'synch.key'      &&
     ! -r 'period.rc', 'Cleanup');
 
 exit 0;
