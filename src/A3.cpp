@@ -709,13 +709,6 @@ const A3 A3::tokenize (const A3& input) const
           found_something_after_sequence = true;
       }
 
-      else if (is_tag (n, s))
-      {
-        output.push_back (Arg (s, Arg::cat_tag));
-        if (found_sequence)
-          found_something_after_sequence = true;
-      }
-
       // Must be higher than number.
       // Must be higher than operator.
       // Note that Nibbler::getDate does not read durations.
@@ -731,6 +724,13 @@ const A3 A3::tokenize (const A3& input) const
       else if (is_duration (n, s))
       {
         output.push_back (Arg (s, Arg::type_duration, Arg::cat_literal));
+        if (found_sequence)
+          found_something_after_sequence = true;
+      }
+
+      else if (is_tag (n, s))
+      {
+        output.push_back (Arg (s, Arg::cat_tag));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -1655,15 +1655,21 @@ bool A3::is_tag (Nibbler& n, std::string& result)
 {
   n.save ();
 
-  std::string indicator;
-  std::string name;
-  if (n.getN (1, indicator)                  &&
-      (indicator == "+" || indicator == "-") &&
-      n.getName (name)                       &&
-      name.length ())
+  std::string::size_type start = n.cursor ();
+
+  if (n.skipAllOneOf ("+-"))
   {
-    result = indicator + name;
-    return true;
+    n.skipAllOneOf ("@#");
+
+    std::string name;
+    if (n.getName (name) &&
+        name.length ())
+    {
+      std::string::size_type end = n.cursor ();
+      n.restore ();
+      if (n.getN (end - start, result))
+        return true;
+    }
   }
 
   n.restore ();
