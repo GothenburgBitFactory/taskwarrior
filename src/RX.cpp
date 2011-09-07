@@ -96,7 +96,7 @@ void RX::compile ()
 
     int result;
     if ((result = regcomp (&_regex, _pattern.c_str (),
-                           REG_EXTENDED | /*REG_NOSUB |*/ REG_NEWLINE |
+                           REG_EXTENDED | REG_NEWLINE |
                            (_case_sensitive ? 0 : REG_ICASE))) != 0)
     {
       char message[256];
@@ -125,16 +125,21 @@ bool RX::match (
   if (!_compiled)
     compile ();
 
-  regmatch_t rm[RX_MAX_MATCHES];
-  if (regexec (&_regex, in.c_str (), RX_MAX_MATCHES, rm, 0) == 0)
+  regmatch_t rm[2];
+  int offset = 0;
+  int length = in.length ();
+  while (regexec (&_regex, in.c_str () + offset, 2, &rm[0], 0) == 0 &&
+         offset < length)
   {
-    for (unsigned int i = 1; i < 1 + _regex.re_nsub; ++i)
-      matches.push_back (in.substr (rm[i].rm_so, rm[i].rm_eo - rm[i].rm_so));
+    matches.push_back (in.substr (rm[0].rm_so + offset, rm[0].rm_eo - rm[0].rm_so));
+    offset += rm[0].rm_eo;
 
-    return true;
+    // Protection against zero-width patterns causing infinite loops.
+    if (rm[0].rm_so == rm[0].rm_eo)
+      ++offset;
   }
 
-  return false;
+  return matches.size () ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -146,19 +151,22 @@ bool RX::match (
   if (!_compiled)
     compile ();
 
-  regmatch_t rm[RX_MAX_MATCHES];
-  if (regexec (&_regex, in.c_str (), RX_MAX_MATCHES, rm, 0) == 0)
+  regmatch_t rm[2];
+  int offset = 0;
+  int length = in.length ();
+  while (regexec (&_regex, in.c_str () + offset, 2, &rm[0], 0) == 0 &&
+         offset < length)
   {
-    for (unsigned int i = 1; i < 1 + _regex.re_nsub; ++i)
-    {
-      start.push_back (rm[i].rm_so);
-      end.push_back   (rm[i].rm_eo);
-    }
+    start.push_back (rm[0].rm_so + offset);
+    end.push_back   (rm[0].rm_eo + offset);
+    offset += rm[0].rm_eo;
 
-    return true;
+    // Protection against zero-width patterns causing infinite loops.
+    if (rm[0].rm_so == rm[0].rm_eo)
+      ++offset;
   }
 
-  return false;
+  return start.size () ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

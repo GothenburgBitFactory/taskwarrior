@@ -32,7 +32,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest ut (16);
+  UnitTest ut (21);
 
   std::string text = "This is a test.";
 
@@ -40,10 +40,10 @@ int main (int argc, char** argv)
   ut.ok (r1.match (text), text + " =~ /i. /");
 
   std::vector <std::string> matches;
-  RX r2 ("(i.) ", false);
-  ut.ok (r2.match (matches, text), text + " =~ /(i.) /");
-  ut.ok (matches.size () == 1, "1 match");
-  ut.is (matches[0], "is", "$1 == is");
+  ut.ok (r1.match (matches, text), text + " =~ /i. /");
+  ut.ok (matches.size () == 2, "2 match");
+  ut.is (matches[0], "is ", "$1 == is\\s");
+  ut.is (matches[1], "is ", "$1 == is\\s");
 
   text = "abcdefghijklmnopqrstuvwxyz";
 
@@ -68,17 +68,27 @@ int main (int argc, char** argv)
   std::vector <std::string> results;
   std::vector <int> start;
   std::vector <int> end;
-  RX r8 ("(e..)", true);
-  ut.ok (r8.match (results, text), "(e..) there are matches");
-  ut.ok (r8.match (start, end, text), "(e..) there are matches");
-  ut.is (results.size (), (size_t) 1, "(e..) == 1 match");
-  ut.is (results[0], "est", "(e..)[0] == 'est'");
-  ut.is (start[0],      11, "(e..)[0] == 11->");
-  ut.is (end[0],        14, "(e..)[0] == ->14");
+  RX r8 ("e..", true);
+  ut.ok (r8.match (results, text), "e.. there are matches");
+  ut.ok (r8.match (start, end, text), "e.. there are matches");
+  ut.is (results.size (), (size_t) 4, "e.. == 4 matches");
+  ut.is (results[0], "est", "e..[0] == 'est'");
+  ut.is (start[0],      11, "e..[0] == 11->");
+  ut.is (end[0],        14, "e..[0] == ->14");
 
-  RX r9 ("\\bthe\\b");
+  results.clear ();
+  RX r9 ("e", true);
+  ut.ok (r9.match (results, text),           "e there are matches");
+  ut.is (results.size (), (size_t) 6,        "e == 6 matches");
+
+  start.clear ();
+  end.clear ();
+  ut.ok (r9.match (start, end, text),        "e there are matches");
+  ut.is (start.size (), (size_t) 6,          "e == 6 matches");
+
+  RX r10 ("\\bthe\\b");
   text = "this is the end.";
-  ut.ok (r9.match (text), text + " =~ /\\bthe\\b/");
+  ut.ok (r10.match (text), text + " =~ /\\bthe\\b/");
 
   return 0;
 }
