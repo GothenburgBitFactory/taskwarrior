@@ -15,3 +15,7 @@ PB When running "task 1 dep:-2" the '-' is being considerd a binary op.
 
 * bug.480.t
 FH A3::is_tag related: +@strange is not seen as a tag
+
+* confirmation.t
+FH missing confirmations. CmdModify doesn't call context.config.getBoolean ("confirmation")
+   perhaps do the same as in Command::safety ()
