@@ -4,9 +4,6 @@ FH month and year are treated as IDs
 * project.t
 PB problem known, disabled output (???)
 
-* confirmation.t
-PB what is going on?  Need to look.
-
 * text.t
 PB need to use a UTF-8 friendly way of doing input[--eol].
 
@@ -23,3 +20,9 @@ FH missing confirmations. CmdModify doesn't call context.config.getBoolean ("con
 * merge.duplicate.t
 FH merge fails because of missing undo.data in data dirs.
    merge ignores URI then outputs wrong (???) msg ?????
+
+* delete.t
+FH 'task info' shows tasks from the completed.data file when doing a filter on the ID
+   could it be confused and interpretes this as an UUID
+
+
