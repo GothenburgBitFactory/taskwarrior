@@ -19,3 +19,7 @@ FH A3::is_tag related: +@strange is not seen as a tag
 * confirmation.t
 FH missing confirmations. CmdModify doesn't call context.config.getBoolean ("confirmation")
    perhaps do the same as in Command::safety ()
+
+* merge.duplicate.t
+FH merge fails because of missing undo.data in data dirs.
+   merge ignores URI then outputs wrong (???) msg ?????
