@@ -82,6 +82,8 @@ int CmdModify::execute (std::string& output)
     {
       ++count;
       context.tdb2.modify (*task);
+      if (before.get ("project") != task->get ("project"))
+        context.footnote (onProjectChange (before, *task));
 
       // Perform some logical consistency checks.
       // TODO Shouldn't these tests be in Task::validate?
