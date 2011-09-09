@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 87;
+use Test::More tests => 82;
 
 # Create the rc file.
 if (open my $fh, '>', 'countdown.rc')
@@ -175,22 +175,12 @@ like ($output, qr/\bthree\b.+\btwo/ms,          'downc: three < two');
 like ($output, qr/\btwo\b.+\bone\b/ms,          'downc: two < one');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'countdown.rc';
-ok (!-r 'countdown.rc', 'Removed countdown.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key countdown.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'countdown.rc', 'Cleanup');
 
 exit 0;
