@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'uuid.rc')
@@ -44,11 +44,11 @@ if (open my $fh, '>', 'uuid.rc')
 qx{../src/task rc:uuid.rc add simple};
 qx{../src/task rc:uuid.rc 1 duplicate};
 qx{../src/task rc:uuid.rc add periodic recur:daily due:yesterday};
-my $output = qx{../src/task rc:uuid.rc stats};
+qx{../src/task rc:uuid.rc ls};
 
 my @all_uuids;
 my %unique_uuids;
-$output = qx{../src/task rc:uuid.rc 1 info};
+my $output = qx{../src/task rc:uuid.rc 1 info};
 my ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
@@ -82,23 +82,13 @@ is (scalar (@all_uuids), 6, '6 tasks created');
 is (scalar (keys %unique_uuids), 6, '6 unique UUIDs');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'uuid.rc';
-ok (!-r 'uuid.rc', 'Removed uuid.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key uuid.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'uuid.rc', 'Cleanup');
 
 exit 0;
 

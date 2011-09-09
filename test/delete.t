@@ -58,7 +58,7 @@ like ($output, qr/No matches./, 'No matches');
 ok (-r 'completed.data', 'completed.data created');
 
 $output = qx{../src/task rc:delete.rc info 1};
-like ($output, qr/No matches\./, 'No matches');
+like ($output, qr/No matches\./, 'No matches');  # 10
 
 # Add a task, delete it, and modify on the fly.
 qx{../src/task rc:delete.rc add one two};
