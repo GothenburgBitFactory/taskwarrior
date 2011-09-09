@@ -47,7 +47,7 @@
 #include <util.h>
 #include <main.h>
 
-static void countTasks (const std::vector <Task>&, const std::string&, const std::vector <Task>&, int&, int&);
+static void countTasks (const std::vector <Task>&, const std::string&, int&, int&);
 
 extern Context context;
 
@@ -134,13 +134,8 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
     int count_pending = 0;
     int count_done = 0;
 
-    std::vector <Task> all;
-    std::vector <Task> none;
-// TODO Fix.
-//    context.tdb.load (all);
-//
-//    countTasks (all,                           project, context.tdb.getAllModified (), count_pending, count_done);
-//    countTasks (context.tdb.getAllModified (), project, none,                          count_pending, count_done);
+    std::vector <Task> all = context.tdb2.all_tasks ();
+    countTasks (all, project, count_pending, count_done);
 
     // count_done  count_pending  percentage
     // ----------  -------------  ----------
@@ -183,43 +178,27 @@ std::string onProjectChange (Task& task1, Task& task2)
 static void countTasks (
   const std::vector <Task>& all,
   const std::string& project,
-  const std::vector <Task>& skipTasks,
   int& count_pending,
   int& count_done)
 {
   std::vector <Task>::const_iterator it;
   for (it = all.begin (); it != all.end (); ++it)
   {
-    bool skip = 0;
-
     if (it->get ("project") == project)
     {
-      std::vector <Task>::const_iterator itSkipTasks;
-      for (itSkipTasks = skipTasks.begin (); itSkipTasks != skipTasks.end (); ++itSkipTasks)
+      switch (it->getStatus ())
       {
-        if (it->get("uuid") == itSkipTasks->get("uuid"))
-        {
-          skip = 1;
-          break;
-        }
-      }
+      case Task::pending:
+      case Task::waiting:
+        ++count_pending;
+        break;
 
-      if (skip == 0)
-      {
-        switch (it->getStatus ())
-        {
-        case Task::pending:
-        case Task::waiting:
-          ++count_pending;
-          break;
+      case Task::completed:
+        ++count_done;
+        break;
 
-        case Task::completed:
-          ++count_done;
-          break;
-
-        default:
-          break;
-        }
+      default:
+        break;
       }
     }
   }

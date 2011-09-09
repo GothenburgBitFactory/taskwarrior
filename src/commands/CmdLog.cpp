@@ -66,9 +66,7 @@ int CmdLog::execute (std::string& output)
 
   context.tdb2.add (task);
 
-/*
-  TODO context.footnote (onProjectChange (task));
-*/
+  context.footnote (onProjectChange (task));
   context.tdb2.commit ();
 
   if (context.config.getBoolean ("echo.command"))
