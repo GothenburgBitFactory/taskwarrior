@@ -1,0 +1,59 @@
+Startup
+  On startup, main creates a global Context object, then calls the
+  Context::initialize and Context::run methods.
+
+  Context is a large object that holds all task information, both in terms of
+  the task data, and intermediate run-time data.  Having one global Context
+  object means we don't have 50 global variables.  Context is therefore just a
+  big bucket of data.
+
+  Context::initialize sets up all the data and processes the command line.  The
+  initialization process is a big chicken-and-egg problem, because the command
+  line depends on configuration (aliases) and the command line can force a
+  reload of configuration (rc:foo).  This is solved by look-ahead: the command
+  line is scanned for 'rc:xxx' and 'rc.data.location:xxx' arguments, then later
+  for overrides.
+
+  The Context::run method handles all the debug output and exceptions.  Its
+  main purpose is to set up exception handling and call Context::dispatch.
+
+
+Command Line Parsing
+  Command line parsing is difficult because of all the ambiguity.  The solution
+  is to make several passes over the command line.  For example, the task
+  command determines whether subsequent arguments are interpreted as part of a
+  filter or set of modifications.
+
+
+
+Dispatch
+  Dispatch is simple:  once the command line is parsed, the command is used to
+  look up a command object, then call its execute method.
+
+  Context stores an associative map of command object pointers indexed by a
+  string.  This means the 'done' string is an index to the CmdDone object that
+  implements the functionality.
+
+
+
+Command Objects
+
+
+Column Objects
+
+
+GC
+
+
+TDB2
+
+
+Filter
+
+
+Sorting
+
+
+Render
+
+
