@@ -1,0 +1,21 @@
+Beta1 Punch List
+- Expression date math
+- Type-aware Command::modify_task code
+- DOM access
+- Working merge command
+- task.1 man page that is accurate
+- taskrc.5 man page that is accurate
+- 42 failing unit tests (arbitrary non-zero number)
+
+Beta 2/3 Punch List
+- Task server integration
+- ...
+
+Release Punch List
+- All updated man pages
+- New tutorials scripted, recorded
+- Working "synch" command
+- Complete localization
+- All important bug fixes
+- ...
+
