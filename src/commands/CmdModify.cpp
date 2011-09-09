@@ -76,82 +76,85 @@ int CmdModify::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Task before (*task);
-
     modify_task_description_replace (*task, modifications);
-    ++count;
-    context.tdb2.modify (*task);
 
-    // Perform some logical consistency checks.
-    // TODO Shouldn't these tests be in Task::validate?
-    if (task->has ("recur") &&
-        !task->has ("due")  &&
-        !before.has ("due"))
-      throw std::string ("You cannot specify a recurring task without a due date.");
-
-    if (task->has ("until")  &&
-        !task->has ("recur") &&
-        !before.has ("recur"))
-      throw std::string ("You cannot specify an until date for a non-recurring task.");
-
-    if (before.has ("recur")     &&
-        before.has ("due")        &&
-        task->has ("due") &&
-        task->get ("due") == "")
-      throw std::string ("You cannot remove the due date from a recurring task.");
-
-    if (before.has ("recur")        &&
-        task->has ("recur") &&
-        task->get ("recur") == "")
-      throw std::string ("You cannot remove the recurrence from a recurring task.");
-
-    // Make all changes.
-    bool warned = false;
-    std::vector <Task> siblings = context.tdb2.siblings (*task);
-    std::vector <Task>::iterator sibling;
-    for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
+    if (permission.confirmed (*task, taskDifferences (before, *task) + "Proceed with change?"))
     {
-      if (before.has ("parent") && !warned)
+      ++count;
+      context.tdb2.modify (*task);
+
+      // Perform some logical consistency checks.
+      // TODO Shouldn't these tests be in Task::validate?
+      if (task->has ("recur") &&
+          !task->has ("due")  &&
+          !before.has ("due"))
+        throw std::string ("You cannot specify a recurring task without a due date.");
+
+      if (task->has ("until")  &&
+          !task->has ("recur") &&
+          !before.has ("recur"))
+        throw std::string ("You cannot specify an until date for a non-recurring task.");
+
+      if (before.has ("recur")     &&
+          before.has ("due")        &&
+          task->has ("due") &&
+          task->get ("due") == "")
+        throw std::string ("You cannot remove the due date from a recurring task.");
+
+      if (before.has ("recur")        &&
+          task->has ("recur") &&
+          task->get ("recur") == "")
+        throw std::string ("You cannot remove the recurrence from a recurring task.");
+
+      // Make all changes.
+      bool warned = false;
+      std::vector <Task> siblings = context.tdb2.siblings (*task);
+      std::vector <Task>::iterator sibling;
+      for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
       {
-        warned = true;
-        std::cout << "Task "
-                  << before.id
-                  << " is a recurring task, and all other instances of this"
-                  << " task will be modified.\n";
-      }
-
-      Task alternate (*sibling);
-
-      // If a task is being made recurring, there are other cascading
-      // changes.
-      if (!before.has ("recur") &&
-          task->has ("recur"))
-      {
-        sibling->setStatus (Task::recurring);
-        sibling->set ("mask", "");
-
-        std::cout << "Task "
-                  << sibling->id
-                  << " is now a recurring task.\n";
-      }
-
-      // Apply other deltas.
-      modify_task_description_replace (*sibling, modifications);
-
-      if (taskDiff (alternate, *sibling))
-      {
-        if (permission.confirmed (alternate, taskDifferences (alternate, *sibling) + "Proceed with change?"))
+        if (before.has ("parent") && !warned)
         {
-          // TODO Are dependencies being explicitly removed?
-          //      Either we scan context.task for negative IDs "depends:-n"
-          //      or we ask deltaAttributes (above) to record dependency
-          //      removal.
-          dependencyChainOnModify (alternate, *sibling);
-          context.tdb2.modify (*sibling);
-          ++count;
+          warned = true;
+          std::cout << "Task "
+                    << before.id
+                    << " is a recurring task, and all other instances of this"
+                    << " task will be modified.\n";
+        }
 
-          if (alternate.get ("project") != sibling->get ("project"))
-            context.footnote (onProjectChange (alternate, *sibling));
+        Task alternate (*sibling);
 
+        // If a task is being made recurring, there are other cascading
+        // changes.
+        if (!before.has ("recur") &&
+            task->has ("recur"))
+        {
+          sibling->setStatus (Task::recurring);
+          sibling->set ("mask", "");
+
+          std::cout << "Task "
+                    << sibling->id
+                    << " is now a recurring task.\n";
+        }
+
+        // Apply other deltas.
+        modify_task_description_replace (*sibling, modifications);
+
+        if (taskDiff (alternate, *sibling))
+        {
+          if (permission.confirmed (alternate, taskDifferences (alternate, *sibling) + "Proceed with change?"))
+          {
+            // TODO Are dependencies being explicitly removed?
+            //      Either we scan context.task for negative IDs "depends:-n"
+            //      or we ask deltaAttributes (above) to record dependency
+            //      removal.
+            dependencyChainOnModify (alternate, *sibling);
+            context.tdb2.modify (*sibling);
+            ++count;
+
+            if (alternate.get ("project") != sibling->get ("project"))
+              context.footnote (onProjectChange (alternate, *sibling));
+
+          }
         }
       }
     }
