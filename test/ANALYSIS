@@ -2,7 +2,7 @@
 FH month and year are treated as IDs
 
 * project.t
-PB problem known, disabled output (???)
+PB There is a bug in the calculation
 
 * text.t
 PB need to use a UTF-8 friendly way of doing input[--eol].
@@ -18,4 +18,10 @@ FH merge fails because of missing undo.data in data dirs.
 FH 'task info' shows tasks from the completed.data file when doing a filter on the ID
    could it be confused and interpretes this as an UUID
 
+* uuid.t
+PB There is a (likely) timezone problem in uuid.t that causes an off-by-one day
+   problem that we have seen before.
+
+* bug.concat.t
+PB The word 'original' is parsed as 'or'(operator) ' '(space) 'iginal'(word).
 
