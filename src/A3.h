@@ -88,6 +88,7 @@ public:
   static bool is_tag (Nibbler&, std::string&);
   static bool is_number (Nibbler&, double&);
   static bool is_integer (Nibbler&, int&);
+  static bool is_operator (std::vector <std::string>&, Nibbler&, std::string&);
 
   static bool extract_pattern (const std::string&, std::string&);
   static bool extract_tag (const std::string&, char&, std::string&);
@@ -97,7 +98,7 @@ public:
   static bool extract_id (const std::string&, std::vector <int>&);
   static bool extract_uuid (const std::string&, std::vector <std::string>&);
 
-  static bool is_operator (const std::string&, char&, int&, char&);
+  static bool which_operator (const std::string&, char&, int&, char&);
 
   void dump (const std::string&);
 

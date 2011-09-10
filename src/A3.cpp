@@ -738,7 +738,7 @@ const A3 A3::tokenize (const A3& input) const
           found_something_after_sequence = true;
       }
 
-      else if (n.getOneOf (operators, s))
+      else if (is_operator (operators, n, s))
       {
         output.push_back (Arg (s, Arg::cat_op));
         if (found_sequence)
@@ -1201,13 +1201,13 @@ const A3 A3::postfix (const A3& input) const
       else
         throw std::string ("Mismatched parentheses in expression");
     }
-    else if (is_operator (arg->_raw, type, precedence, associativity))
+    else if (which_operator (arg->_raw, type, precedence, associativity))
     {
       char type2;
       int precedence2;
       char associativity2;
       while (op_stack.size () > 0 &&
-             is_operator (op_stack.back ()._raw, type2, precedence2, associativity2) &&
+             which_operator (op_stack.back ()._raw, type2, precedence2, associativity2) &&
              ((associativity == 'l' && precedence <= precedence2) ||
               (associativity == 'r' && precedence <  precedence2)))
       {
@@ -1732,6 +1732,24 @@ bool A3::is_integer (Nibbler& n, int& i)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool A3::is_operator (
+  std::vector <std::string>& operators,
+  Nibbler& n,
+  std::string& result)
+{
+  n.save ();
+
+  if (n.getOneOf (operators, result) &&
+      isTokenEnd (n.str (), n.cursor () - 1))
+  {
+    return true;
+  }
+
+  n.restore ();
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool A3::extract_pattern (const std::string& input, std::string& pattern)
 {
   Nibbler n (input);
@@ -1967,7 +1985,7 @@ bool A3::extract_uuid (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool A3::is_operator (
+bool A3::which_operator (
   const std::string& input,
   char& type,
   int& precedence,
