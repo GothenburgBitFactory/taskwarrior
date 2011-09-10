@@ -601,7 +601,7 @@ bool isWordStart (const std::string& input, std::string::size_type pos)
 // Result for pos: ....y......y
 bool isWordEnd (const std::string& input, std::string::size_type pos)
 {
-  // Short circuit: no input means no word start.
+  // Short circuit: no input means no word end.
   if (input.length () == 0)
     return false;
 
@@ -613,6 +613,25 @@ bool isWordEnd (const std::string& input, std::string::size_type pos)
   // non-alphanumeric character.
   if (pos < input.length () - 1 && !isspace (input[pos]) && !isPunctuation (input[pos])
                                 && (isspace (input[pos + 1]) || isPunctuation (input[pos + 1])))
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//          Input: hello, world
+// Result for pos: ....y......y
+//
+//          Input: (one) two
+// Result for pos: y..yy...y
+bool isTokenEnd (const std::string& input, std::string::size_type pos)
+{
+  // Delegate.
+  if (isWordEnd (input, pos))
+    return true;
+
+  // Punctuation divides tokens.
+  if (pos < input.length () && isPunctuation (input[pos]))
     return true;
 
   return false;
