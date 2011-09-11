@@ -859,7 +859,7 @@ const std::string format (double value, int width, int precision)
 const std::string format (double value)
 {
   std::stringstream s;
-  s << value;
+  s << std::fixed << value;
   return s.str ();
 }
 
