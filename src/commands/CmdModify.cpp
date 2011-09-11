@@ -78,7 +78,8 @@ int CmdModify::execute (std::string& output)
     Task before (*task);
     modify_task_description_replace (*task, modifications);
 
-    if (permission.confirmed (*task, taskDifferences (before, *task) + "Proceed with change?"))
+    if (taskDiff (before, *task) &&
+        permission.confirmed (*task, taskDifferences (before, *task) + "Proceed with change?"))
     {
       ++count;
       context.tdb2.modify (*task);

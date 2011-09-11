@@ -749,9 +749,8 @@ void Task::removeDependency (const std::string& uuid)
     std::string combined;
     join (combined, ",", deps);
     set ("depends", combined);
+    recalc_urgency = true;
   }
-
-  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -762,8 +761,6 @@ void Task::removeDependency (int id)
     removeDependency (uuid);
   else
     throw std::string (STRING_TASK_DEPEND_NO_UUID);
-
-  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

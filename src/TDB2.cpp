@@ -551,29 +551,32 @@ void TDB2::modify (Task& task)
   Task original;
   get (task.get ("uuid"), original);
 
-  std::string status = original.get ("status");
-  if (status == "pending" ||
-      status == "waiting" ||
-      status == "recurring")
+  if (taskDiff (original, task))
   {
-    pending.modify_task (task);
-  }
-  else
-  {
-    completed.modify_task (task);
-  }
+    std::string status = original.get ("status");
+    if (status == "pending" ||
+        status == "waiting" ||
+        status == "recurring")
+    {
+      pending.modify_task (task);
+    }
+    else
+    {
+      completed.modify_task (task);
+    }
 
-  // time <time>
-  // old <task>
-  // new <task>
-  // ---
-  undo.add_line ("time " + Date ().toEpochString () + "\n");
-  undo.add_line ("old " + original.composeF4 ());
-  undo.add_line ("new " + task.composeF4 ());
-  undo.add_line ("---\n");
+    // time <time>
+    // old <task>
+    // new <task>
+    // ---
+    undo.add_line ("time " + Date ().toEpochString () + "\n");
+    undo.add_line ("old " + original.composeF4 ());
+    undo.add_line ("new " + task.composeF4 ());
+    undo.add_line ("---\n");
 
-  // Add modified task to backlog.
-  backlog.add_task (task);
+    // Add modified task to backlog.
+    backlog.add_task (task);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
