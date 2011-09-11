@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Date.h>
 #include <Duration.h>
