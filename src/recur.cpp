@@ -56,7 +56,6 @@ extern Context context;
 void handleRecurrence ()
 {
   std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
-  std::vector <Task> modified;
 
   // Look at all tasks and find any recurring ones.
   std::vector <Task>::iterator t;
@@ -124,9 +123,6 @@ void handleRecurrence ()
 
           rec.remove ("mask");                   // Remove the mask of the parent.
 
-          // Add the new task to the vector, for immediate use.
-          modified.push_back (rec);
-
           // Add the new task to the DB.
           context.tdb2.add (rec);
         }
@@ -141,11 +137,7 @@ void handleRecurrence ()
         context.tdb2.modify (*t);
       }
     }
-    else
-      modified.push_back (*t);
   }
-
-  tasks = modified;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -345,47 +337,39 @@ Date getNextRecurrence (Date& current, std::string& period)
 ////////////////////////////////////////////////////////////////////////////////
 // When the status of a recurring child task changes, the parent task must
 // update it's mask.
-void updateRecurrenceMask (
-  std::vector <Task>& all,
-  Task& task)
+void updateRecurrenceMask (Task& task)
 {
-  std::string parent = task.get ("parent");
-  if (parent != "")
+  std::string uuid = task.get ("parent");
+  Task parent;
+
+  if (uuid != "" &&
+      context.tdb2.get (uuid, parent))
   {
-    std::vector <Task>::iterator it;
-    for (it = all.begin (); it != all.end (); ++it)
+    unsigned int index = strtol (task.get ("imask").c_str (), NULL, 10);
+    std::string mask = parent.get ("mask");
+    if (mask.length () > index)
     {
-      if (it->get ("uuid") == parent)
-      {
-        unsigned int index = atoi (task.get ("imask").c_str ());
-        std::string mask = it->get ("mask");
-        if (mask.length () > index)
-        {
-          mask[index] = (task.getStatus () == Task::pending)   ? '-'
-                      : (task.getStatus () == Task::completed) ? '+'
-                      : (task.getStatus () == Task::deleted)   ? 'X'
-                      : (task.getStatus () == Task::waiting)   ? 'W'
-                      :                                          '?';
-
-          it->set ("mask", mask);
-          context.tdb2.modify (*it);
-        }
-        else
-        {
-          std::string mask;
-          for (unsigned int i = 0; i < index; ++i)
-            mask += "?";
-
-          mask += (task.getStatus () == Task::pending)   ? '-'
-                : (task.getStatus () == Task::completed) ? '+'
-                : (task.getStatus () == Task::deleted)   ? 'X'
-                : (task.getStatus () == Task::waiting)   ? 'W'
-                :                                          '?';
-        }
-
-        return;  // No point continuing the loop.
-      }
+      mask[index] = (task.getStatus () == Task::pending)   ? '-'
+                  : (task.getStatus () == Task::completed) ? '+'
+                  : (task.getStatus () == Task::deleted)   ? 'X'
+                  : (task.getStatus () == Task::waiting)   ? 'W'
+                  :                                          '?';
     }
+    else
+    {
+      std::string mask;
+      for (unsigned int i = 0; i < index; ++i)
+        mask += "?";
+
+      mask += (task.getStatus () == Task::pending)   ? '-'
+            : (task.getStatus () == Task::completed) ? '+'
+            : (task.getStatus () == Task::deleted)   ? 'X'
+            : (task.getStatus () == Task::waiting)   ? 'W'
+            :                                          '?';
+    }
+
+    parent.set ("mask", mask);
+    context.tdb2.modify (parent);
   }
 }
 

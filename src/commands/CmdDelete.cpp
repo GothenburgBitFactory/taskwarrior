@@ -125,7 +125,7 @@ int CmdDelete::execute (std::string& output)
           {
             // Update mask in parent.
             task->setStatus (Task::deleted);
-            updateRecurrenceMask (siblings, *task);
+            updateRecurrenceMask (*task);
 
             // Don't want a 'delete' to clobber the end date that may have
             // been written by a 'done' command.
@@ -183,7 +183,6 @@ int CmdDelete::execute (std::string& output)
   }
 
   context.tdb2.commit ();
-
   output = out.str ();
   return rc;
 }

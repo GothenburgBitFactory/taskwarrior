@@ -41,7 +41,7 @@
 void handleRecurrence ();
 Date getNextRecurrence (Date&, std::string&);
 bool generateDueDates (Task&, std::vector <Date>&);
-void updateRecurrenceMask (std::vector <Task>&, Task&);
+void updateRecurrenceMask (Task&);
 int getDueState (const std::string&);
 bool nag (Task&);
 

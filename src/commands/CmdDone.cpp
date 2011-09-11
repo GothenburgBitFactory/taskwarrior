@@ -103,7 +103,7 @@ int CmdDone::execute (std::string& output)
         }
       }
 
-      updateRecurrenceMask (filtered, *task);
+      updateRecurrenceMask (*task);
       if (!nagged)
         nagged = nag (*task);
     }
