@@ -555,8 +555,9 @@ bool Command::next_mod_group (const A3& input, Arg& arg, unsigned int& pos)
     if (arg._type == Arg::type_date &&
         arg._category == Arg::cat_attr)
     {
-      while (input[pos]._type     == Arg::type_duration ||
-             input[pos]._category == Arg::cat_op)
+      while (pos < input.size () &&
+             (input[pos]._type     == Arg::type_duration ||
+              input[pos]._category == Arg::cat_op))
       {
         arg._raw += " " + input[pos++]._raw;
       }
