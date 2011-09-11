@@ -60,6 +60,7 @@ public:
   bool getHex (int&);
   bool getUnsignedInt (int&);
   bool getNumber (double&);
+  bool getUnsignedNumber (double&);
   bool getLiteral (const std::string&);
   bool getRx (const std::string&, std::string&);
   bool getUUID (std::string&);

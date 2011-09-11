@@ -365,7 +365,7 @@ bool Nibbler::getUnsignedInt (int& result)
 //   int frac? exp?
 // 
 // int:
-//   -? digit+
+//   (-|+)? digit+
 // 
 // frac:
 //   . digit+
@@ -381,8 +381,76 @@ bool Nibbler::getNumber (double& result)
   std::string::size_type i = _cursor;
 
   // [+-]?
-  if (i < _length && _input[i] == '-')
+  if (i < _length && (_input[i] == '-' || _input[i] == '+'))
     ++i;
+
+  // digit+
+  if (i < _length && isdigit (_input[i]))
+  {
+    ++i;
+
+    while (i < _length && isdigit (_input[i]))
+      ++i;
+
+    // ( . digit+ )?
+    if (i < _length && _input[i] == '.')
+    {
+      ++i;
+
+      while (i < _length && isdigit (_input[i]))
+        ++i;
+    }
+
+    // ( [eE] [+-]? digit+ )?
+    if (i < _length && (_input[i] == 'e' || _input[i] == 'E'))
+    {
+      ++i;
+
+      if (i < _length && (_input[i] == '+' || _input[i] == '-'))
+        ++i;
+
+      if (i < _length && isdigit (_input[i]))
+      {
+        ++i;
+
+        while (i < _length && isdigit (_input[i]))
+          ++i;
+
+        result = strtof (_input.substr (_cursor, i - _cursor).c_str (), NULL);
+        _cursor = i;
+        return true;
+      }
+
+      return false;
+    }
+
+    result = strtof (_input.substr (_cursor, i - _cursor).c_str (), NULL);
+    _cursor = i;
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// number:
+//   int frac? exp?
+// 
+// int:
+//   digit+
+// 
+// frac:
+//   . digit+
+// 
+// exp:
+//   e digit+
+// 
+// e:
+//   e|E (+|-)?
+// 
+bool Nibbler::getUnsignedNumber (double& result)
+{
+  std::string::size_type i = _cursor;
 
   // digit+
   if (i < _length && isdigit (_input[i]))
