@@ -342,6 +342,9 @@ int CmdCalendar::execute (std::string& output)
       std::string report = context.config.get ("calendar.details.report");
       std::string report_filter = context.config.get ("report." + report + ".filter");
 
+      context.a3.clear ();
+      context.a3.push_back (Arg ("task", Arg::cat_program));
+
       report_filter += " due.after:" + after + " due.before:" + before;
       context.config.set ("report." + report + ".filter", report_filter);
 
