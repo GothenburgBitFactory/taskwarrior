@@ -65,7 +65,7 @@ protected:
 
   void safety ();
 
-  A3 group_arguments (const A3&);
+  bool next_mod_group (const A3&, Arg&, unsigned int&);
 
 protected:
   std::string _keyword;

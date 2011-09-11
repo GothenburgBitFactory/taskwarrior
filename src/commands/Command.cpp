@@ -412,18 +412,17 @@ void Command::modify_task (
   std::string& description)
 {
   // Coalesce arguments together into sets to be processed as a batch.
-  A3 grouped_arguments = group_arguments (arguments);
-
-  std::vector <Arg>::const_iterator arg;
-  for (arg = grouped_arguments.begin (); arg != grouped_arguments.end (); ++arg)
+  unsigned int pos = 0;
+  Arg arg;
+  while (next_mod_group (arguments, arg, pos))
   {
     // Attributes are essentially name:value pairs, and correspond directly
     // to stored attributes.
-    if (arg->_category == Arg::cat_attr)
+    if (arg._category == Arg::cat_attr)
     {
       std::string name;
       std::string value;
-      A3::extract_attr (arg->_raw, name, value);
+      A3::extract_attr (arg._raw, name, value);
       if (A3::is_attribute (name, name))  // Canonicalize
       {
 //        std::cout << "# Command::modify_task name='" << name << "' value='" << value << "'\n";
@@ -434,7 +433,8 @@ void Command::modify_task (
         // All values must be eval'd first.
         A3 fragment;
         fragment.capture (value);
-        fragment = fragment.tokenize (fragment);
+        fragment = fragment.postfix (fragment.tokenize (fragment));
+
         E9 e (fragment);
         std::string result = e.evalExpression (task);
         context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
@@ -489,11 +489,11 @@ void Command::modify_task (
     // Tags need special handling because they are essentially a vector stored
     // in a single string, therefore Task::{add,remove}Tag must be called as
     // appropriate.
-    else if (arg->_category == Arg::cat_tag)
+    else if (arg._category == Arg::cat_tag)
     {
       char type;
       std::string value;
-      A3::extract_tag (arg->_raw, type, value);
+      A3::extract_tag (arg._raw, type, value);
 
       if (type == '+')
         task.addTag (value);
@@ -502,12 +502,12 @@ void Command::modify_task (
     }
 
     // Substitutions.
-    else if (arg->_category == Arg::cat_subst)
+    else if (arg._category == Arg::cat_subst)
     {
       std::string from;
       std::string to;
       bool global;
-      A3::extract_subst (arg->_raw, from, to, global);
+      A3::extract_subst (arg._raw, from, to, global);
       task.substitute (from, to, global);
     }
 
@@ -518,7 +518,7 @@ void Command::modify_task (
       if (description.length ())
         description += " ";
 
-      description += arg->_raw;
+      description += arg._raw;
     }
   }
 }
@@ -544,19 +544,37 @@ void Command::safety ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A3 Command::group_arguments (const A3& input)
+// Special processing for modifications.
+bool Command::next_mod_group (const A3& input, Arg& arg, unsigned int& pos)
 {
-  A3 result;
-
-  std::vector <Arg>::const_iterator arg;
-  for (arg = input.begin (); arg != input.end (); ++arg)
+  if (pos < input.size ())
   {
-    // TODO Create a grouped set of args.
+    arg = input[pos++];
 
-    result.push_back (*arg);
+    // Date attributes aggregate durations and operators.
+    if (arg._type == Arg::type_date &&
+        arg._category == Arg::cat_attr)
+    {
+      while (input[pos]._type     == Arg::type_duration ||
+             input[pos]._category == Arg::cat_op)
+      {
+        arg._raw += " " + input[pos++]._raw;
+      }
+    }
+
+    else if (arg._raw == "depends")
+    {
+      while (input[pos]._category == Arg::cat_op ||
+             input[pos]._type == Arg::type_number)
+      {
+        arg._raw += input[pos++]._raw;
+      }
+    }
+
+    return true;
   }
 
-  return result;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
