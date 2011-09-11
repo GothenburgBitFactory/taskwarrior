@@ -1500,7 +1500,7 @@ bool A3::is_duration (Nibbler& n, std::string& result)
   std::string unit;
   std::vector <std::string> units = Duration::get_units ();
 
-  if (n.getNumber (d) &&
+  if (n.getUnsignedNumber (d) &&
       n.getOneOf (units, unit))
   {
     char next = n.next ();
@@ -1657,19 +1657,21 @@ bool A3::is_uuid (Nibbler& n, std::string& result)
 bool A3::is_tag (Nibbler& n, std::string& result)
 {
   n.save ();
-
   std::string::size_type start = n.cursor ();
 
   if (n.skipAllOneOf ("+-"))
   {
-    std::string name;
-    if (n.getUntilOneOf (" \t()+-*/", name) &&
-        name.length ())
+    if (!isdigit (n.next ()))
     {
-      std::string::size_type end = n.cursor ();
-      n.restore ();
-      if (n.getN (end - start, result))
-        return true;
+      std::string name;
+      if (n.getUntilOneOf (" \t()+-*/", name) &&
+          name.length ())
+      {
+        std::string::size_type end = n.cursor ();
+        n.restore ();
+        if (n.getN (end - start, result))
+          return true;
+      }
     }
   }
 
