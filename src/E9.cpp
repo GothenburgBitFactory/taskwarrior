@@ -238,7 +238,7 @@ void E9::operator_negate (Arg& result, Arg& right)
   result = coerce (right, Arg::type_number);
   result._value = format (- strtod (result._value.c_str (), NULL));
 
-  std::cout << "# <operator_negate> " << right << " --> " << result << "\n";
+//  std::cout << "# <operator_negate> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

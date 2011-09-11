@@ -43,13 +43,15 @@ static bool followUpstream (const Task&, const Task&, std::vector <std::string>&
 
 ////////////////////////////////////////////////////////////////////////////////
 // A task is blocked if it depends on tasks that are pending or waiting.
+//
+//   1 --> 2(pending)    = blocked
+//   3 --> 4(completed)  = not blocked any more
 bool dependencyIsBlocked (const Task& task)
 {
-  if (task.has ("depends"))
+  std::string depends = task.get ("depends");
+  if (depends != "")
   {
-    std::string depends = task.get ("depends");
-//    const std::vector <Task>& all = context.tdb.getAllPending ();
-    std::vector <Task> all; // TODO Fix.
+    const std::vector <Task>& all = context.tdb2.pending.get_tasks ();
     std::vector <Task>::const_iterator it;
     for (it = all.begin (); it != all.end (); ++it)
       if ((it->getStatus () == Task::pending  ||
@@ -66,8 +68,7 @@ void dependencyGetBlocked (const Task& task, std::vector <Task>& blocked)
 {
   std::string uuid = task.get ("uuid");
 
-//  const std::vector <Task>& all = context.tdb.getAllPending ();
-  std::vector <Task> all; // TODO Fix.
+  const std::vector <Task>& all = context.tdb2.pending.get_tasks ();
   std::vector <Task>::const_iterator it;
   for (it = all.begin (); it != all.end (); ++it)
     if ((it->getStatus () == Task::pending  ||
@@ -85,8 +86,7 @@ bool dependencyIsBlocking (const Task& task)
 {
   std::string uuid = task.get ("uuid");
 
-//  const std::vector <Task>& all = context.tdb.getAllPending ();
-  std::vector <Task> all; // TODO Fix.
+  const std::vector <Task>& all = context.tdb2.pending.get_tasks ();
   std::vector <Task>::const_iterator it;
   for (it = all.begin (); it != all.end (); ++it)
     if ((it->getStatus () == Task::pending  ||
@@ -104,8 +104,7 @@ void dependencyGetBlocking (const Task& task, std::vector <Task>& blocking)
   std::string depends = task.get ("depends");
   if (depends != "")
   {
-//    const std::vector <Task>& all = context.tdb.getAllPending ();
-    std::vector <Task> all; // TODO Fix.
+    const std::vector <Task>& all = context.tdb2.pending.get_tasks ();
     std::vector <Task>::const_iterator it;
     for (it = all.begin (); it != all.end (); ++it)
       if ((it->getStatus () == Task::pending  ||
