@@ -109,12 +109,15 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
 
         operator_not (result, right);
       }
-/*
-      // TODO Unary -.
-      else if (arg->raw == "-")
+
+      // TODO Not sure this is correct.
+      else if (arg->_raw == "-" && value_stack.size () < 2)
       {
+        Arg right = value_stack.back ();
+        value_stack.pop_back ();
+
+        operator_negate (result, right);
       }
-*/
 
       // Binary operators.
       else
@@ -218,8 +221,7 @@ bool E9::eval_match (Arg& left, Arg& right, bool case_sensitive)
 ////////////////////////////////////////////////////////////////////////////////
 void E9::operator_not (Arg& result, Arg& right)
 {
-  result = right;
-  coerce (result, Arg::type_bool);
+  result = coerce (right, Arg::type_bool);
 
   if (result._value == "true")
     result._value = "false";
@@ -227,6 +229,15 @@ void E9::operator_not (Arg& result, Arg& right)
     result._value = "true";
 
 //  std::cout << "# <operator_not> " << right << " --> " << result << "\n";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void E9::operator_negate (Arg& result, Arg& right)
+{
+  result = coerce (right, Arg::type_number);
+  result._value = format (- strtod (result._value.c_str (), NULL));
+
+  std::cout << "# <operator_negate> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -607,18 +618,26 @@ const Arg E9::coerce (const Arg& input, const Arg::type type)
 
   if (type == Arg::type_bool)
   {
-    result._raw = input._raw;
-    result._value = get_bool (input) ? "true" : "false";
-    result._type = Arg::type_bool;
+    result._raw      = input._raw;
+    result._value    = get_bool (input) ? "true" : "false";
+    result._type     = Arg::type_bool;
     result._category = input._category;
   }
 
   else if (type == Arg::type_string)
   {
     // TODO Convert date?
-    result._raw = input._raw;
-    result._value = input._value;
-    result._type  = Arg::type_string;
+    result._raw      = input._raw;
+    result._value    = input._value;
+    result._type     = Arg::type_string;
+    result._category = input._category;
+  }
+
+  else if (type == Arg::type_number)
+  {
+    result._raw      = input._raw;
+    result._value    = input._value;
+    result._type     = Arg::type_number;
     result._category = input._category;
   }
 

@@ -47,7 +47,8 @@ private:
   bool eval_match (Arg&, Arg&, bool);
 
   // Unary.
-  void operator_not (Arg&, Arg&);
+  void operator_not      (Arg&, Arg&);
+  void operator_negate   (Arg&, Arg&);
 
   // Binary.
   void operator_and      (Arg&, Arg&, Arg&);
