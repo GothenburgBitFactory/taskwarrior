@@ -1,6 +1,3 @@
-* cal.t
-FH month and year are treated as IDs
-
 * project.t
 PB There is a bug in the calculation
 
