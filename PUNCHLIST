@@ -1,11 +1,10 @@
 Beta1 Punch List
-- Expression date math
-- Type-aware Command::modify_task code
+- Working dependencies
 - DOM access
 - Working merge command
 - task.1 man page that is accurate
 - taskrc.5 man page that is accurate
-- 42 failing unit tests (arbitrary non-zero number)
+- 42 or fewer failing unit tests (arbitrary non-zero number)
 
 Beta 2/3 Punch List
 - Task server integration

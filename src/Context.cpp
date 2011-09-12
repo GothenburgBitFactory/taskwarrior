@@ -559,6 +559,20 @@ void Context::clear ()
   tdb2.clear ();
   a3.clear ();
 
+  // Eliminate the command objects.
+  std::map <std::string, Command*>::iterator com;
+  for (com = commands.begin (); com != commands.end (); ++com)
+    delete com->second;
+
+  commands.clear ();
+
+  // Eliminate the column objects.
+  std::map <std::string, Column*>::iterator col;
+  for (col = columns.begin (); col != columns.end (); ++col)
+    delete col->second;
+
+  columns.clear ();
+
   clearMessages ();
 }
 

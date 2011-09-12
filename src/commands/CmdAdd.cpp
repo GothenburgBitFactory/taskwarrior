@@ -60,6 +60,7 @@ int CmdAdd::execute (std::string& output)
   if (context.verbose ("new-id"))
     output = format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
 
+  // TODO verbosity token.
   context.footnote (onProjectChange (task));
 
   context.tdb2.commit ();
