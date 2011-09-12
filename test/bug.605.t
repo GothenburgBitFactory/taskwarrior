@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -43,22 +43,23 @@ if (open my $fh, '>', 'bug.rc')
 # Setup: Add a task and complete it
 qx{../src/task rc:bug.rc add One project:p1};
 
-# Delete the task and note the completion status of the project
-my $output = qx{echo '-- y' | ../src/task rc:bug.rc 1 del};
-like   ($output, qr/is 100\% complete/ms, 'Empty project correctly reported as being 100% completed.');
+# Delete the task and note the completion status of the project.
+my $output = qx{echo '-- y' | ../src/task rc:bug.rc 1 delete};
+like ($output, qr/is 0\% complete/ms, 'Empty project correctly reported as being 0% completed.');
+
+# Add another task, complete it and note the completion status of hte project.
+qx{../src/task rc:bug.rc add Two project:p1};
+$output = qx{../src/task rc:bug.rc 2 done};
+like ($output, qr/is 100\% complete/ms, 'Empty project correctly reported as being 100% completed.');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'bug.rc';
-ok (!-r 'bug.rc', 'Removed bug.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'bug.rc', 'Cleanup');
 
 exit 0;
 

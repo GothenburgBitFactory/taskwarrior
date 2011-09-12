@@ -4,7 +4,6 @@ Beta1 Punch List
 - Working merge command
 - task.1 man page that is accurate
 - taskrc.5 man page that is accurate
-- 42 or fewer failing unit tests (arbitrary non-zero number)
 
 Beta 2/3 Punch List
 - Task server integration

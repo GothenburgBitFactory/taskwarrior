@@ -133,7 +133,6 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
     // Count pending and done tasks, for this project.
     int count_pending = 0;
     int count_done = 0;
-
     std::vector <Task> all = context.tdb2.all_tasks ();
     countTasks (all, project, count_pending, count_done);
 
@@ -197,6 +196,8 @@ static void countTasks (
         ++count_done;
         break;
 
+      case Task::deleted:
+      case Task::recurring:
       default:
         break;
       }
