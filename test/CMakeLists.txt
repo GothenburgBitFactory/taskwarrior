@@ -20,3 +20,8 @@ foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} "${src_FILE}.cpp" test.cpp)
   target_link_libraries (${src_FILE} task commands task columns ${TASK_LIBRARIES})
 endforeach (src_FILE)
+
+SET(CMAKE_BUILD_TYPE gcov)
+SET(CMAKE_CXX_FLAGS_GCOV "--coverage")
+SET(CMAKE_C_FLAGS_GCOV "--coverage")
+SET(CMAKE_EXE_LINKER_FLAGS_GCOV "--coverage")
