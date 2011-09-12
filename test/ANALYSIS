@@ -1,5 +1,5 @@
 * project.t
-PB There is a bug in the calculation
+FH Failed test 'project with spaces'
 
 * text.t
 PB need to use a UTF-8 friendly way of doing input[--eol].
