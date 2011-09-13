@@ -1607,11 +1607,15 @@ int TDB2::gc ()
       pending.clear ();
       pending._dirty = true;
       pending._loaded_tasks = true;
+      _id = 1;
 
       for (task = pending_tasks_after.begin ();
            task != pending_tasks_after.end ();
            ++task)
+      {
+        task->id = _id++;
         pending._tasks.push_back (*task);
+      }
 
       // Note: deliberately no commit.
     }
