@@ -97,7 +97,6 @@ int CmdMerge::execute (std::string& output)
        || (bAutopush) )
     {
       // TODO derive autopush uri from merge.default.uri? otherwise: change prompt above
-//      context.task.set ("description", uri._data);
 
       std::string out;
       context.commands["push"]->execute (out);

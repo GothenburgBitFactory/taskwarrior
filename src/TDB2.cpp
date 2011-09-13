@@ -503,6 +503,10 @@ void TDB2::set_location (const std::string& location)
   undo.target      (location + "/undo.data");
   backlog.target   (location + "/backlog.data");
   synch_key.target (location + "/synch.key");
+
+  // TODO Awful miserable hack to make merge work with TDB2.
+  if (! undo._file.exists ())
+    undo._file.create ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
