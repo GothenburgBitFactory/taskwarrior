@@ -96,7 +96,21 @@ int CmdMerge::execute (std::string& output)
     if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri._data + "\'?")) )
        || (bAutopush) )
     {
-      // TODO derive autopush uri from merge.default.uri? otherwise: change prompt above
+      // Derive autopush uri from merge.default.uri? otherwise: change prompt above
+
+      // Change the "merge" command to "push".
+      std::vector <Arg>::iterator i;
+      for (i = context.a3.begin (); i != context.a3.end (); ++i)
+      {
+        if (i->_category == Arg::cat_command)
+        {
+          i->_raw = "push";
+          break;
+        }
+      }
+
+      // Append the URI argument.
+      context.a3.push_back (Arg (uri._data, Arg::cat_literal));
 
       std::string out;
       context.commands["push"]->execute (out);

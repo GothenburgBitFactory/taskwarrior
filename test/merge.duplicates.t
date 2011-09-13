@@ -143,11 +143,11 @@ unlike ($output, qr/Missing/, "no missing entry");
 $output = qx{../src/task rc:3.rc merge};
 like ($output, qr/Merge complete/, "res3: post-merge completed");
 unlike ($output, qr/Missing/, "no missing entry");
-like ($output, qr/Retain/,  "retained changes");
+like ($output, qr/Retain/,  "retained changes");  # 16
 
 # pre-merge 1st
 $output = qx{../src/task rc:1.rc merge};
-like ($output, qr/Merge complete/, "res1: pre-merge completed");
+like ($output, qr/Merge complete/, "res1: pre-merge completed");   # 17
 unlike ($output, qr/Missing/, "no missing entry");
 
 qx{../src/task rc:1.rc add Task5};
