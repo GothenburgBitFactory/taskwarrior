@@ -25,11 +25,21 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <Context.h>
+#include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
+void legacyAttributeCheck (const std::string& name)
+{
+  // Legacy checks.
+  if (name == "fg" || name == "bg")
+    context.footnote (format (STRING_LEGACY_FEATURE, name));
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -36,6 +36,7 @@
 #include <i18n.h>
 #include <Command.h>
 #include <cmake.h>
+#include <main.h>
 
 #include <CmdAdd.h>
 #include <CmdAnnotate.h>
@@ -431,56 +432,62 @@ void Command::modify_task (
         Column* column = context.columns[name];
 
         // All values must be eval'd first.
-        A3 fragment;
-        fragment.capture (value);
-        fragment = fragment.postfix (fragment.tokenize (fragment));
+        A3 value_tokens;
+        value_tokens.capture (value);
+        value_tokens = value_tokens.postfix (value_tokens.tokenize (value_tokens));
 
-        E9 e (fragment);
+        E9 e (value_tokens);
         std::string result = e.evalExpression (task);
         context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
 
-        // Dependencies must be resolved to UUIDs.
-        if (name == "depends")
+        if (result == "")
         {
-          // Convert ID to UUID.
-          std::vector <std::string> deps;
-          split (deps, result, ',');
-
-          // Apply or remove dendencies in turn.
-          std::vector <std::string>::iterator i;
-          for (i = deps.begin (); i != deps.end (); i++)
-          {
-            int id = strtol (i->c_str (), NULL, 10);
-            if (id < 0)
-              task.removeDependency (-id);
-            else
-              task.addDependency (id);
-          }
+          task.remove (name);
         }
-
-        // Dates are special, maybe.
-        else if (column->type () == "date")
-        {
-          // If the date value is less than 5 years, it is a duration, not a
-          // date, therefore add 'now'.
-          long l = strtol (result.c_str (), NULL, 10);
-          if (labs (l) < 5 * 365 * 86400)
-          {
-            Date now;
-            now += l;
-            task.set (name, now.toEpochString ());
-          }
-          else
-            task.set (name, result);
-        }
-
-        // By default, just add it.
         else
-          task.set (name, result);
+        {
+          // Dependencies must be resolved to UUIDs.
+          if (name == "depends")
+          {
+            // Convert ID to UUID.
+            std::vector <std::string> deps;
+            split (deps, result, ',');
 
-        // Legacy checks.
-        if (name == "fg" || name == "bg")
-          context.footnote (format (STRING_LEGACY_FEATURE, name));
+            // Apply or remove dendencies in turn.
+            std::vector <std::string>::iterator i;
+            for (i = deps.begin (); i != deps.end (); i++)
+            {
+              int id = strtol (i->c_str (), NULL, 10);
+              if (id < 0)
+                task.removeDependency (-id);
+              else
+                task.addDependency (id);
+            }
+          }
+
+          // Dates are special, maybe.
+          else if (column->type () == "date")
+          {
+            // If the date value is less than 5 years, it is a duration, not a
+            // date, therefore add 'now'.
+            long l = strtol (result.c_str (), NULL, 10);
+            if (labs (l) < 5 * 365 * 86400)
+            {
+              Date now;
+              now += l;
+              task.set (name, now.toEpochString ());
+            }
+            else
+              task.set (name, result);
+          }
+
+          // By default, just add/remove it.
+          else
+              task.set (name, result);
+
+          // Warn about deprecated/obsolete attribute usage.
+          legacyAttributeCheck (name);
+        }
       }
       else
         throw format (STRING_CMD_ADD_BAD_ATTRIBUTE, name);
