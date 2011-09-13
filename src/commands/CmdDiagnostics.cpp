@@ -33,9 +33,7 @@
 #include <Context.h>
 #include <util.h>
 #include <cmake.h>
-#ifdef HAVE_COMMIT
 #include <commit.h>
-#endif
 
 #ifdef HAVE_LIBLUA
 extern "C"
@@ -143,12 +141,8 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Build date.
       << "     Built: " << __DATE__ << " " << __TIME__ << "\n"
-#ifdef HAVE_COMMIT
       << "    Commit: " << COMMIT << "\n"
-#endif
-#ifdef HAVE_CMAKE
       << "     CMake: " << CMAKE_VERSION << "\n"
-#endif
       << "      Caps:"
 #ifdef HAVE_LIBPTHREAD
       << " +pthreads"
