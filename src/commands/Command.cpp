@@ -426,21 +426,13 @@ void Command::modify_task (
       A3::extract_attr (arg._raw, name, value);
       if (A3::is_attribute (name, name))  // Canonicalize
       {
-//        std::cout << "# Command::modify_task name='" << name << "' value='" << value << "'\n";
+        //std::cout << "# Command::modify_task name='" << name << "' value='" << value << "'\n";
 
         // Get the column info.
         Column* column = context.columns[name];
 
-        // All values must be eval'd first.
-        A3 value_tokens;
-        value_tokens.capture (value);
-        value_tokens = value_tokens.postfix (value_tokens.tokenize (value_tokens));
 
-        E9 e (value_tokens);
-        std::string result = e.evalExpression (task);
-        context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
-
-        if (result == "")
+        if (value == "")
         {
           task.remove (name);
         }
@@ -451,7 +443,7 @@ void Command::modify_task (
           {
             // Convert ID to UUID.
             std::vector <std::string> deps;
-            split (deps, result, ',');
+            split (deps, value, ',');
 
             // Apply or remove dendencies in turn.
             std::vector <std::string>::iterator i;
@@ -468,6 +460,15 @@ void Command::modify_task (
           // Dates are special, maybe.
           else if (column->type () == "date")
           {
+            // All values must be eval'd first.
+            A3 value_tokens;
+            value_tokens.capture (value);
+            value_tokens = value_tokens.postfix (value_tokens.tokenize (value_tokens));
+
+            E9 e (value_tokens);
+            std::string result = e.evalExpression (task);
+            context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
+
             // If the date value is less than 5 years, it is a duration, not a
             // date, therefore add 'now'.
             long l = strtol (result.c_str (), NULL, 10);
@@ -483,7 +484,7 @@ void Command::modify_task (
 
           // By default, just add/remove it.
           else
-              task.set (name, result);
+              task.set (name, value);
 
           // Warn about deprecated/obsolete attribute usage.
           legacyAttributeCheck (name);
@@ -572,8 +573,9 @@ bool Command::next_mod_group (const A3& input, Arg& arg, unsigned int& pos)
 
     else if (arg._raw == "depends")
     {
-      while (input[pos]._category == Arg::cat_op ||
-             input[pos]._type == Arg::type_number)
+      while (pos < input.size () &&
+             (input[pos]._category == Arg::cat_op ||
+              input[pos]._type == Arg::type_number))
       {
         arg._raw += input[pos++]._raw;
       }

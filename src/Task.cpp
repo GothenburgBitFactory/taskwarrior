@@ -711,19 +711,20 @@ void Task::addDependency (int id)
   if (id == this->id)
     throw std::string (STRING_TASK_DEPEND_ITSELF);
 
-  // Check for extant dependency.
+  // Check that id is resolvable.
   std::string uuid = context.tdb2.pending.uuid (id);
   if (uuid == "")
     throw format (STRING_TASK_DEPEND_MISSING, id);
 
   // Store the dependency.
   std::string depends = get ("depends");
-  if (depends.length ())
+  if (depends != "")
   {
+    // Check for extant dependency.
     if (depends.find (uuid) == std::string::npos)
       set ("depends", depends + "," + uuid);
     else
-      throw std::string (STRING_TASK_DEPEND_DUP, this->id, id);
+      throw format (STRING_TASK_DEPEND_DUP, this->id, id);
   }
   else
     set ("depends", uuid);

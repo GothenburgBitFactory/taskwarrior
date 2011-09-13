@@ -58,7 +58,7 @@ like ($output, qr/Could not create a dependency on task 99 - not found\./, 'depe
 
 # [4]
 $output = qx{../src/task rc:dep.rc 99 modify dep:1};
-like ($output, qr/Task 99 not found\./, 'dependencies - add dependency to nonexistent task');
+like ($output, qr/No tasks specified\./, 'dependencies - add dependency to nonexistent task');
 
 # [5,6] t 1 dep:2; t info 1 => blocked by 2
 $output = qx{../src/task rc:dep.rc 1 modify dep:2; ../src/task rc:dep.rc info 1};
