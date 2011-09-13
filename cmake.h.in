@@ -1,14 +1,18 @@
-/* cmake.h.in. Creates auto.h during a cmake run */
+/* cmake.h.in. Creates cmake.h during a cmake run */
+
 #define L10N                                           // Localization complete.
 
 /* Package information */
-#define PACKAGE "${PACKAGE}"
-#define VERSION "${VERSION}"
+#define PACKAGE           "${PACKAGE}"
+#define VERSION           "${VERSION}"
 #define PACKAGE_BUGREPORT "${PACKAGE_BUGREPORT}"
 #define PACKAGE_NAME      "${PACKAGE_NAME}"
 #define PACKAGE_TARNAME   "${PACKAGE_TARNAME}"
 #define PACKAGE_VERSION   "${PACKAGE_VERSION}"
 #define PACKAGE_STRING    "${PACKAGE_STRING}"
+
+/* Installation details */
+#define TASK_RCDIR "${CMAKE_INSTALL_PREFIX}/${TASK_DOCDIR}/rc"
 
 /* Localization */
 #define PACKAGE_LANGUAGE  1

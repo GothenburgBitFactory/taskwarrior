@@ -583,16 +583,16 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << _defaults.substr (0, loc + 14)
            << data
            << "\n\n# Color theme (uncomment one to use)\n"
-           << "#include /usr/local/share/doc/task/rc/light-16.theme\n"
-           << "#include /usr/local/share/doc/task/rc/light-256.theme\n"
-           << "#include /usr/local/share/doc/task/rc/dark-16.theme\n"
-           << "#include /usr/local/share/doc/task/rc/dark-256.theme\n"
-           << "#include /usr/local/share/doc/task/rc/dark-red-256.theme\n"
-           << "#include /usr/local/share/doc/task/rc/dark-green-256.theme\n"
-           << "#include /usr/local/share/doc/task/rc/dark-blue-256.theme\n"
-           << "#include /usr/local/share/doc/task/rc/dark-violets-256.theme\n"
-           << "#include /usr/local/share/doc/task/rc/dark-yellow-green.theme\n"
-           << "#include /usr/local/share/doc/task/rc/dark-gray-256.theme\n"
+           << "#include " << TASK_RCDIR << "/light-16.theme\n"
+           << "#include " << TASK_RCDIR << "/light-256.theme\n"
+           << "#include " << TASK_RCDIR << "/dark-16.theme\n"
+           << "#include " << TASK_RCDIR << "/dark-256.theme\n"
+           << "#include " << TASK_RCDIR << "/dark-red-256.theme\n"
+           << "#include " << TASK_RCDIR << "/dark-green-256.theme\n"
+           << "#include " << TASK_RCDIR << "/dark-blue-256.theme\n"
+           << "#include " << TASK_RCDIR << "/dark-violets-256.theme\n"
+           << "#include " << TASK_RCDIR << "/dark-yellow-green.theme\n"
+           << "#include " << TASK_RCDIR << "/dark-gray-256.theme\n"
            << "\n";
 
   // Write out the new file.
