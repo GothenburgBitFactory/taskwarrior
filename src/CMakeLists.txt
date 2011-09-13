@@ -39,6 +39,7 @@ set (task_SRCS A3.cpp A3.h
                feedback.cpp
                i18n.h
                interactive.cpp
+               legacy.cpp
                recur.cpp
                rules.cpp
                sort.cpp
