@@ -4,12 +4,8 @@ FH Failed test 'project with spaces'
 * text.t
 PB need to use a UTF-8 friendly way of doing input[--eol].
 
-* dependencies.t
-PB When running "task 1 dep:-2" the '-' is being considerd a binary op.
-
 * merge.duplicate.t
-FH merge fails because of missing undo.data in data dirs.
-   merge ignores URI then outputs wrong (???) msg ?????
+FH merge ignores URI then outputs wrong (???) msg ?????
 
 * delete.t
 FH 'task info' shows tasks from the completed.data file when doing a filter on the ID
