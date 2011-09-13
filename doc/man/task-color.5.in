@@ -41,14 +41,14 @@ Do we really want all those color control codes in the file?  Taskwarrior
 assumes that you do not, and temporarily sets color to 'off' while generating
 the output.  This explains the output from the following command:
 
-    $ task config | grep '^color '
+    $ task show | grep '^color '
     color                        off
 
-it always returns 'off', no matter what the setting.
+it always returns 'off', no matter what the setting, because the output is being
+sent to a pipe.
 
-The reason is that the taskwarrior output gets piped into grep, and the color is
-disabled.  If you wanted those color codes, you can override this behavior by
-setting the _forcecolor variable to on, like this:
+If you wanted those color codes, you can override this behavior by setting the
+_forcecolor variable to on, like this:
 
     $ task config _forcecolor on
     $ task config | grep '^color '
@@ -121,7 +121,7 @@ the sample requested.
 
 Some combinations look very nice, some look terrible.  Different terminal
 programs do implement slightly different versions of 'red', for example, so you
-may see some unwanted variation due to the program.  The brightness of your
+may see some unexpected variation across machines.  The brightness of your
 display is also a factor.
 
 .SH 256-COLOR SUPPORT
@@ -193,7 +193,7 @@ combination:
     red on gray3
 
 you are mixing a 16-color and 256-color specification.  Taskwarrior will map red
-to color1, and proceed.  Note that red and color1 are not quite the same.
+to color1, and proceed.  Note that red and color1 are not quite the same tone.
 
 Note also that there is no bold or bright attributes when dealing with 256
 colors, but there is still underline available.
@@ -210,7 +210,7 @@ without necessarily creating a set of tasks that meet each of the rule criteria.
 .SH RULES
 Taskwarrior supports colorization rules.  These are configuration values that
 specify a color, and the conditions under which that color is used.  By example,
-let's add a few tasks:
+let us add a few tasks:
 
     $ task add project:Home priority:H pay the bills               (1)
     $ task add project:Home            clean the rug               (2)
@@ -219,13 +219,13 @@ let's add a few tasks:
 We can add a color rule that uses a blue background for all tasks in the Home
 project:
 
-    $ task config color.project.Home on blue
+    $ task config color.project.Home 'on blue'
 
-We use quotes around "on blue" because there are two words, but they represent
+We use quotes around 'on blue' because there are two words, but they represent
 one value in the .taskrc file.  Now suppose we which to use a bold yellow text
 color for all cleaning work:
 
-    $ task config color.keyword.clean bold yellow
+    $ task config color.keyword.clean 'bold yellow'
 
 Now what happens to task 2, which belongs to project Home (blue background), and
 is also a cleaning task (bold yellow foreground)?  The colors are combined, and
@@ -243,16 +243,17 @@ be a visual mess.  Beware!
 The precedence for the color rules is determined by the configuration
 variable 'rule.precedence.color', which by default contains:
 
-    due.today,active,blocked,overdue,due,keyword,project,tag,recurring,pri,tagged
+    due.today,active,blocked,overdue,due,keyword,project,tag,recurring,pri,tagged,completed,deleted
 
 These are just the color rules with the 'color.' prefix removed.  The
-rule 'color.due.today' is the highest precedence, and 'color.tagged' is the lowest.
+rule 'color.due.today' is the highest precedence, and 'color.deleted' is the lowest.
 
 The keyword rule shown here as 'keyword' corresponds to a wildcard pattern,
 meaning 'color.keyword.*', or in other words all the keyword rules.  Similarly
 for the 'color.tag.*' and 'color.project.*' rules.
 
-There is also 'color.project.none', 'color.tag.none' and 'color.pri.none'.
+There is also 'color.project.none', 'color.tag.none' and 'color.pri.none' to
+specifically represent missing data.
 
 .SH THEMES
 Taskwarrior supports themes.  What this really means is that with the ability to
@@ -269,19 +270,29 @@ include /usr/local/share/doc/task/rc/dark-256.theme
 You can use any of the standard taskwarrior themes:
 
 .RS
-light-16.theme
-.br
-light-256.theme
-.br
 dark-16.theme
 .br
 dark-256.theme
 .br
-dark-red-256.theme
+dark-blue-256.theme
+.br
+dark-gray-256.theme
 .br
 dark-green-256.theme
 .br
-dark-blue-256.theme
+dark-red-256.theme
+.br
+dark-violets-256.theme
+.br
+dark-yellow-green.theme
+.br
+light-16.theme
+.br
+light-256.theme
+.br
+solarized-dark-256.theme
+.br
+solarized-light-256.theme
 .RE
 
 You can also see how the theme will color the various tasks with the command:

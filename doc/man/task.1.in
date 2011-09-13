@@ -3,6 +3,8 @@
 .SH NAME
 task \- A command line todo manager.
 
+NOTE THAT THIS DOCUMENT HAS NOT BEEN FULLY UPDATED FOR THE 2.0 RELEASE.
+
 .SH SYNOPSIS
 .B task [subcommand] [args]
 
@@ -22,31 +24,27 @@ the way you want to see it.
 .SH SUBCOMMANDS
 
 .TP
-.B add [tags] [attrs] description
+.B add <modifications>
 Adds a new task to the task list.
 
 .TP
-.B log [tags] [attrs] description
+.B log <modifications>
 Adds a new task that is already completed, to the task list.
 
 .TP
-.B annotate ID description
+.B <filter> annotate <modifications>
 Adds an annotation to an existing task.
 
 .TP
-.B denotate ID description
+.B <filter> denotate <modifications>
 Deletes an annotation for the specified task. If the provided description
 matches an annotation exactly, the corresponding annotation is deleted. If the
 provided description matches annotations partly, the first partly matched
 annotation is deleted.
 
 .TP
-.B information ID
+.B <filter> information
 Shows all data and metadata for the specified task.
-
-.TP
-.B ID
-With an ID but no specific command, taskwarrior runs the "information" command.
 
 .TP
 .B undo
@@ -57,38 +55,38 @@ Reverts the most recent action.  Obeys the confirmation setting.
 Launches an interactive shell with all the task commands available.
 
 .TP
-.B duplicate ID [tags] [attrs] [description]
+.B <filter> duplicate <modifications>
 Duplicates the specified task and allows modifications.
 
 .TP
-.B delete ID
+.B <filter> delete <modifications>
 Deletes the specified task from task list.
 
 .TP
-.B start ID
+.B <filter> start <modifications>
 Marks the specified task as started.
 
 .TP
-.B stop ID
+.B <filter> stop <modifications>
 Removes the
 .I start
 time from the specified task.
 
 .TP
-.B done ID [tags] [attrs] [description]
+.B <filter> done <modifications>
 Marks the specified task as done.
 
 .TP
-.B projects
+.B <filter> projects
 Lists all project names that are currently used by pending tasks, and the
 number of tasks for each.
 
 .TP
-.B tags
+.B <filter> tags
 Show a list of all tags used.  Any special tags used are highlighted.
 
 .TP
-.B summary
+.B <filter> summary
 Shows a report of task status by project.
 
 .TP
@@ -96,31 +94,31 @@ Shows a report of task status by project.
 Shows a weekly report of tasks completed and started.
 
 .TP
-.B history
+.B <filter> history
 Shows a report of task history by month.  Alias to history.monthly.
 
 .TP
-.B history.annual
+.B <filter> history.annual
 Shows a report of task history by year.
 
 .TP
-.B ghistory
+.B <filter> ghistory
 Shows a graphical report of task status by month.  Alias to ghistory.monthly.
 
 .TP
-.B ghistory.annual
+.B <filter> ghistory.annual
 Shows a graphical report of task status by year.
 
 .TP
-.B burndown.daily
+.B <filter> burndown.daily
 Shows a graphical burndown chart, by day.
 
 .TP
-.B burndown.weekly
+.B <filter> burndown.weekly
 Shows a graphical burndown chart, by week.
 
 .TP
-.B burndown.monthly
+.B <filter> burndown.monthly
 Shows a graphical burndown chart, by month.
 
 .TP
@@ -128,7 +126,7 @@ Shows a graphical burndown chart, by month.
 Shows a monthly calendar with due tasks marked.
 
 .TP
-.B stats
+.B <filter> stats
 Shows task database statistics.
 
 .TP
@@ -137,30 +135,11 @@ Imports tasks in a variety of formats, from file or URL.
 
 .TP
 .B export
-Exports all tasks in the default format.  This is an alias to the command
-export.yaml.  Redirect the output to a file, if you wish to save it, or pipe it
-to another command.
+Exports all tasks in the JSON format.  export.yaml.  Redirect the output to a
+file, if you wish to save it, or pipe it to another command.
 
 .TP
-.B export.csv
-Exports all tasks in CSV format.
-Redirect the output to a file, if you wish to save it, or pipe it to another
-command.
-
-.TP
-.B export.ical
-Exports all tasks in iCalendar format.
-Redirect the output to a file, if you wish to save it, or pipe it to another
-command.
-
-.TP
-.B export.yaml
-Exports all tasks in YAML 1.1 format.
-Redirect the output to a file, if you wish to save it, or pipe it to another
-command.
-
-.TP
-.B merge URL
+.B merge <URL>
 Merges two task databases by comparing the modifications that are stored in the
 undo.data files. The location of the second undo.data file must be passed on as
 argument. URL may have the following syntaxes:
@@ -177,14 +156,14 @@ You can set aliases for frequently used URLs in the .taskrc. Further documentati
 can be found in task-sync(5) manpage.
 
 .TP
-.B push URL
+.B push <URL>
 Pushes the task database to a remote another location for distributing the
 changes made by the merge command.
 
 (See annotations above for valid URL syntaxes.)
 
 .TP
-.B pull URL
+.B pull <URL>
 Overwrites the task database with those files found at the URL.
 
 (See annotations above for valid URL syntaxes.)
@@ -195,16 +174,16 @@ Displays all possible colors, a named sample, or a legend containing all
 currently defined colors.
 
 .TP
-.B count [filter]
+.B <filter> count
 Displays only a count of tasks matching the filter.
 
 .TP
-.B ids [filter]
+.B <filter> ids
 Applies the filter then extracts only the task IDs and presents them as
 a range, for example: 1-4,12.  This is useful as input to a task command,
 to achieve this:
 
-	task priority:H $(task ids project:Home)
+	task modify priority:H $(task project:Home ids)
 
 This example first gets the IDs for the project:Home filter, then sets
 the priority to H for each of those tasks.
@@ -249,37 +228,21 @@ Finally, this command removes any 'name=...' entry from the .taskrc file:
 .SH MODIFYING SUBCOMMANDS
 
 .TP
-.B ID [tags] [attrs] [description]
+.B <filter> modify <modifications>
 Modifies the existing task with provided information.
 
 .TP
-.B ID /from/to/
-Performs one substitution on task description and annotation for fixing
-mistakes.
-
-If either 'from' or 'to' contain spaces, you will need to put quotes around
-the whole thing.
-
-.TP
-.B ID /from/to/g
-Performs all substitutions on task description and annotation for fixing
-mistakes.
-
-If either 'from' or 'to' contain spaces, you will need to put quotes around
-the whole thing.
-
-.TP
-.B edit ID
+.B <filter> edit
 Launches an editor to let you modify all aspects of a task directly.
 In general, this is not the recommended method of modifying tasks, but is
 provided for exceptional circumstances.  Use carefully.
 
 .TP
-.B append [tags] [attrs] description
+.B <filter> append <modifications>
 Appends information to an existing task.
 
 .TP
-.B prepend [tags] [attrs] description
+.B <filter> prepend <modifications>
 Prepends information to an existing task.
 
 .SH REPORT SUBCOMMANDS
@@ -290,76 +253,76 @@ these reports can be configured in the configuration file. See also the man page
 taskrc(5).
 
 .TP
-.B active [filter]
+.B <filter> active
 Shows all tasks matching the filter that are started but not completed.
 
 .TP
-.B all [filter]
+.B <filter> all
 Shows all tasks matching the filter, including parents of recurring tasks.
 
 .TP
-.B completed [filter]
+.B <filter> completed
 Shows all tasks matching the filter that are completed.
 
 .TP
-.B minimal [filter]
+.B <filter> minimal
 Provides a minimal listing of tasks matching the filter.
 
 .TP
-.B ls [filter]
+.B <filter> ls
 Provides a short listing of tasks matching the filter.
 
 .TP
-.B list [filter]
+.B <filter> list
 Provides a more detailed listing of tasks matching the filter.
 
 .TP
-.B long [filter]
+.B <filter> long
 Provides the most detailed listing of tasks with filter.
 
 .TP
-.B newest [filter]
+.B <filter> newest
 Shows the newest tasks with filter.
 
 .TP
-.B oldest [filter]
+.B <filter> oldest
 Shows the oldest tasks with filter
 
 .TP
-.B overdue [filter]
+.B <filter> overdue
 Shows all incomplete tasks matching the filter
 that are beyond their due date.
 
 .TP
-.B recurring [filter]
+.B <filter> recurring
 Shows all recurring tasks matching the filter.
 
 .TP
-.B waiting [filter]
+.B <filter> waiting
 Shows all waiting tasks matching the filter.
 
 .TP
-.B blocked [filter]
+.B <filter> blocked
 Shows all blocked tasks, that are dependent on other tasks, matching the filter.
 
 .TP
-.B unblocked [filter]
+.B <filter> unblocked
 Shows all tasks that are not blocked by dependencies, matching the filter.
 
 .TP
-.B next [filter]
-Shows all tasks with upcoming due dates matching the filter.
+.B <filter> next
+Shows a page of the most urgent tasks.  Urgency is a calculated value.
 
 .SH FILTERS
 
 A filter is a set of search criteria that the report applies before displaying
 the results.  For example, to list all tasks belonging to the 'Home' project:
 
-    task list project:Home
+    task project:Home list
 
 You can specify multiple filters, each of which further restrict the results:
 
-    task list project:Home +weekend garden
+    task project:Home +weekend garden list
 
 This example applies three filters: the 'Home' project, the 'weekend' tag, and
 the description or annotations must contain the characters 'garden'.  In this
@@ -381,7 +344,7 @@ modification to the database. Always run a report to check you have the right
 ID for a task. IDs can be given to task as a sequences, for example,
 .br
 .B
-task del 1,4-10,19
+task 1,4-10,19 del
 
 .TP
 .B +tag|-tag
@@ -418,11 +381,11 @@ Specifies the Recurrence end-date of a task.
 
 .TP
 .B fg:<color-spec>
-Specifies foreground color.
+Specifies foreground color. Deprecated.
 
 .TP
 .B bg:<color-spec>
-Specifies background color.
+Specifies background color. Deprecated.
 
 .TP
 .B limit:<number-of-rows>
@@ -480,7 +443,7 @@ the complementary set of items.  Supported modifiers are:
 For example:
 
 .RS
-task list due.before:eom priority.not:L
+task due.before:eom priority.not:L list
 .RE
 
 The
@@ -500,8 +463,8 @@ The
 .I none
 modifier requires that the attribute does not have a value.  For example:
 
-    task list priority:
-    task list priority.none:
+    task priority:      list
+    task priority.none: list
 
 are equivalent, and list tasks that do not have a priority.
 
@@ -523,8 +486,8 @@ The
 .I has
 modifier is used to search for a substring, such as:
 
-    task list description.has:foo
-    task list foo
+    task description.has:foo list
+    task foo                 list
 
 which are equivalent and will return any task that has 'foo' in the description
 or annotations.
@@ -539,14 +502,14 @@ The
 .I startswith
 modifier matches against the left, or beginning of an attribute, such that:
 
-    task list project.startswith:H
-    task list project:H
+    task project.startswith:H list
+    task project:H            list
 
 are equivalent and will match any project starting with 'H'.  Matching all
 projects not starting with 'H' is done with:
 
-    task list project.~startswith:H
-    task list project.not:H
+    task project.~startswith:H list
+    task project.not:H         list
 
 The
 .I endswith
@@ -557,7 +520,7 @@ The
 modifier requires that the attribute contain the whole word specified, such
 that this:
 
-    task list description.word:bar
+    task description.word:bar list
 
 will match the description 'foo bar baz' but does not match 'dog food'.
 
@@ -728,13 +691,13 @@ In other situations, the shell sees spaces and breaks up arguments.  For
 example, this command:
 
 .RS
-$ task 123 /from this/to that/
+$ task 123 modify /from this/to that/
 .RE
 
 is broken up into several arguments, which is corrected with quotes:
 
 .RS
-$ task 123 "/from this/to that/"
+$ task 123 modify "/from this/to that/"
 .RE
 
 .SH CONFIGURATION FILE AND OVERRIDE OPTIONS

@@ -3,6 +3,8 @@
 .SH NAME
 task-tutorial \- A tutorial for the task(1) command line todo manager.
 
+NOTE THAT THIS DOCUMENT HAS NOT YET BEEN UPDATED FOR THE 2.0 RELEASE.
+
 .SH DESCRIPTION
 This tutorial contains a narrative and a series of commands that lead you
 through different scenarios and illustrate the capabilities of taskwarrior.

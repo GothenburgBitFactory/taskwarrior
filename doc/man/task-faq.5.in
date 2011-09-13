@@ -51,8 +51,8 @@ aliases. Here are example Bash commands to achieve this:
 
     % cp ~/.taskrc ~/.taskrc_home
     % (now edit .taskrc_home to change the value of data.location)
-    % alias wtask="task" 
-    % alias htask="task rc:~/.taskrc_home" 
+    % alias wtask="task"
+    % alias htask="task rc:~/.taskrc_home"
 
 This gives you two commands, 'wtask' and 'htask' that operate using two
 different sets of task data files.
@@ -144,8 +144,8 @@ particularly if your .taskrc file was created by an older version.
 
 .TP
 .B Q: Do I need to back up my taskwarrior data?
-Yes.  You should back up your ~/.task directory, and probably your ~/.taskrc
-file too.
+Yes.  You should back up all the files in your ~/.task directory, and probably
+your ~/.taskrc file too.
 
 .TP
 .B Q: Can I share my tasks between different machines?
@@ -253,9 +253,9 @@ When you run a report (such as "list"), the numbers are assigned before display.
 For example, you can do this:
 
     $ task list
-    $ task do 12
+    $ task 12 done
     $ task add Pay the rent
-    $ task delete 31
+    $ task 31 delete
 
 Those id numbers are then good until the next report is run.  This is because
 taskwarrior performs a garbage-collect operation on the pending tasks file when
