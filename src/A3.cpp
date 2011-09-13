@@ -1795,7 +1795,6 @@ bool A3::extract_attr (
 {
   Nibbler n (input);
 
-  // Ensure a clean parse.
   name  = "";
   value = "";
 
@@ -1803,8 +1802,6 @@ bool A3::extract_attr (
   {
     if (n.skip (':'))
     {
-      // Both quoted and unquoted Att's are accepted.
-      // Consider removing this for a stricter parse.
       if (n.getQuoted   ('"', value)  ||
           n.getQuoted   ('\'', value) ||
           n.getUntilEOS (value))
@@ -1828,7 +1825,6 @@ bool A3::extract_attmod (
 {
   Nibbler n (input);
 
-  // Ensure a clean parse.
   name     = "";
   value    = "";
   modifier = "";
@@ -1847,8 +1843,6 @@ bool A3::extract_attmod (
     if (n.skip (':') ||
         n.skip ('='))
     {
-      // Both quoted and unquoted Att's are accepted.
-      // Consider removing this for a stricter parse.
       if (n.getQuoted   ('"', value)  ||
           n.getQuoted   ('\'', value) ||
           n.getUntilEOS (value))

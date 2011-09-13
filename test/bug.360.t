@@ -50,11 +50,13 @@ unlike ($output, qr/You cannot remove the recurrence from a recurring task./ms, 
 
 # Now try to generate the error above via regular means - ie, is it actually
 # doing what it should?
-$output = qx{../src/task rc:bug.rc 1 modify recur:};
+# TODO Removing recur: from a recurring task should also remove imask and parent.
+$output = qx{../src/task rc:bug.rc 2 modify recur:};
 like ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'Recurrence removal error');
 
 # Prevent removal of the due date from a recurring task.
-$output = qx{../src/task rc:bug.rc 1 modify due:};
+# TODO Removing due: from a recurring task should also remove recur, imask and parent
+$output = qx{../src/task rc:bug.rc 2 modify due:};
 like ($output, qr/You cannot remove the due date from a recurring task./ms, 'Cannot remove due date from a recurring task');
 
 # Allow removal of the due date from a non-recurring task.

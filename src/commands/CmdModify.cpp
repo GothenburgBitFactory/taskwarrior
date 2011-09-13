@@ -78,36 +78,37 @@ int CmdModify::execute (std::string& output)
     Task before (*task);
     modify_task_description_replace (*task, modifications);
 
+    // Perform some logical consistency checks.
+    if (task->has ("recur")  &&
+        !task->has ("due")   &&
+        !before.has ("due"))
+      throw std::string ("You cannot specify a recurring task without a due date.");
+
+    if (task->has ("until")  &&
+        !task->has ("recur") &&
+        !before.has ("recur"))
+      throw std::string ("You cannot specify an until date for a non-recurring task.");
+
+    if (before.has ("recur") &&
+        before.has ("due")   &&
+        (!task->has ("due")  ||
+         task->get ("due") == ""))
+      throw std::string ("You cannot remove the due date from a recurring task.");
+
+    if (before.has ("recur")  &&
+        task->has ("recur")   &&
+        (!task->has ("recur") ||
+         task->get ("recur") == ""))
+      throw std::string ("You cannot remove the recurrence from a recurring task.");
+
     if (taskDiff (before, *task) &&
         permission.confirmed (*task, taskDifferences (before, *task) + "Proceed with change?"))
     {
+      // Checks passed, modify the task.
       ++count;
       context.tdb2.modify (*task);
       if (before.get ("project") != task->get ("project"))
         context.footnote (onProjectChange (before, *task));
-
-      // Perform some logical consistency checks.
-      // TODO Shouldn't these tests be in Task::validate?
-      if (task->has ("recur") &&
-          !task->has ("due")  &&
-          !before.has ("due"))
-        throw std::string ("You cannot specify a recurring task without a due date.");
-
-      if (task->has ("until")  &&
-          !task->has ("recur") &&
-          !before.has ("recur"))
-        throw std::string ("You cannot specify an until date for a non-recurring task.");
-
-      if (before.has ("recur")     &&
-          before.has ("due")        &&
-          task->has ("due") &&
-          task->get ("due") == "")
-        throw std::string ("You cannot remove the due date from a recurring task.");
-
-      if (before.has ("recur")        &&
-          task->has ("recur") &&
-          task->get ("recur") == "")
-        throw std::string ("You cannot remove the recurrence from a recurring task.");
 
       // Make all changes.
       bool warned = false;
