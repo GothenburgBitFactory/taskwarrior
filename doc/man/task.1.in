@@ -135,8 +135,10 @@ Imports tasks in a variety of formats, from file or URL.
 
 .TP
 .B export
-Exports all tasks in the JSON format.  export.yaml.  Redirect the output to a
-file, if you wish to save it, or pipe it to another command.
+Exports all tasks in the JSON format.  Redirect the output to a file, if you
+wish to save it, or pipe it to another command or script to convert it to
+another format. The standard task release comes with a few exampel scripts,
+like export-yaml.pl.
 
 .TP
 .B merge <URL>
