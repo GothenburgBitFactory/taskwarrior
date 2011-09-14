@@ -28,7 +28,7 @@
 #define INCLUDED_API
 #define L10N                                           // Localization complete.
 
-#include <../cmake.h>
+#include <cmake.h>
 #ifdef HAVE_LIBLUA
 
 #include <vector>
@@ -58,7 +58,7 @@ private:
   void loadFile (const std::string&);
 
 public:
-  lua_State* _L;
+  lua_State* _state;
   std::vector <std::string> _loaded;
 
   // Context for the API.
