@@ -933,7 +933,7 @@ CmdBurndownMonthly::CmdBurndownMonthly ()
 {
   _keyword     = "burndown.monthly";
   _usage       = "task burndown.monthly [<filter>]";
-  _description = "Shows a graphical burndown chart, by month.";
+  _description = "Shows a graphical burndown chart, by month";
   _read_only   = true;
   _displays_id = false;
 }
@@ -971,7 +971,7 @@ CmdBurndownWeekly::CmdBurndownWeekly ()
 {
   _keyword     = "burndown.weekly";
   _usage       = "task burndown.weekly [<filter>]";
-  _description = "Shows a graphical burndown chart, by week.";
+  _description = "Shows a graphical burndown chart, by week";
   _read_only   = true;
   _displays_id = false;
 }
@@ -1009,7 +1009,7 @@ CmdBurndownDaily::CmdBurndownDaily ()
 {
   _keyword     = "burndown.daily";
   _usage       = "task burndown.daily [<filter>]";
-  _description = "Shows a graphical burndown chart, by day.";
+  _description = "Shows a graphical burndown chart, by day";
   _read_only   = true;
   _displays_id = false;
 }
