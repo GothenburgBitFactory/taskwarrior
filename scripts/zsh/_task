@@ -52,7 +52,7 @@ _task_zshcmds=( ${(f)"$(task _zshcommands)"} )
 
 _task() {
     _arguments -s -S \
-        "*::task command:_task_commands"
+        "*::task default:_task_default"
     return 0
 }
 
@@ -171,9 +171,9 @@ _regex_arguments _task_attributes "${args[@]}"
 
 ## task commands
 
-# default completion
-(( $+functions[_task_default] )) ||
-_task_default() {
+# filter completion
+(( $+functions[_task_filter] )) ||
+_task_filter() {
 	_task_attributes "$@"
 }
 
@@ -211,8 +211,8 @@ _task_id() {
 }
 
 ## first level completion => task sub-command completion
-(( $+functions[_task_commands] )) ||
-_task_commands() {
+(( $+functions[_task_default] )) ||
+_task_default() {
     local cmd ret=1
 
 	integer i=1
@@ -221,7 +221,7 @@ _task_commands() {
 		cmd="${_task_cmds[(r)$words[$i]]}"
 		if (( $#cmd )); then
 			_call_function ret _task_${cmd} ||
-				_call_function ret _task_default ||
+				_call_function ret _task_filter ||
 					_message "No command remaining."
 			return ret
 		fi
@@ -233,7 +233,7 @@ _task_commands() {
 
 	_describe -t commands 'task command' _task_zshcmds
 	_describe -t values 'task IDs' _task_zshids
-	_call_function ret _task_default
+	_call_function ret _task_filter
 
 	return ret
 }
