@@ -315,10 +315,10 @@ This will remove the second annotation - the first non-exact match.
 .B Q: Why Lua as an extension language?
 Lua has many positive attributes:
 
-- Lua is written using tight, fast, standard C
-- Lua is a breeze to integrate into any product
-- The Lua source code is beautifully written
-- Lua is a small language
+ - Lua is written using tight, fast, standard C
+ - Lua is a breeze to integrate into any product
+ - The Lua source code is beautifully written
+ - Lua is a small language
 
 Guile, Scheme and Neko were also considered.
 
