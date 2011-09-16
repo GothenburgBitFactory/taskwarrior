@@ -47,6 +47,13 @@ _task_modifiers=(
 	'word' \
 	'noword'
 )
+_task_conjunctions=(
+   'and' \
+   'or' \
+	'xor' \
+	'\)'
+	'\('
+)
 _task_cmds=($(task _commands))
 _task_zshcmds=( ${(f)"$(task _zshcommands)"} )
 
@@ -175,6 +182,9 @@ _regex_arguments _task_attributes "${args[@]}"
 (( $+functions[_task_filter] )) ||
 _task_filter() {
 	_task_attributes "$@"
+
+	# TODO complete conjunctions only if the previous word is a filter expression, i.e. attribute, ID, any non-command
+	_describe -t default 'task conjunctions' _task_conjunctions
 }
 
 # merge completion
