@@ -308,6 +308,9 @@ names you have used, or just the ones used in active tasks.  The default value i
 May be yes or no, and determines whether keyword lookup and substitutions on the
 description and annotations are done in a case sensitive way.  Defaults to yes.
 
+.TP
+.B regex=off
+Controls whether regular expression support is enabled.
 The default value is off, because this advanced feature could cause confusion
 among users that are not comfortable with regular expressions.
 
