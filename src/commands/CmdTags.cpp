@@ -105,6 +105,7 @@ int CmdTags::execute (std::string& output)
       special = (context.color () &&
                  (i->first == "nocolor" ||
                   i->first == "nonag"   ||
+                  i->first == "nocal"   ||
                   i->first == "next")) ? true : false;
 
       int row = view.addRow ();
@@ -185,8 +186,6 @@ int CmdCompletionTags::execute (std::string& output)
   unique["nonag"]   = 0;
   unique["nocal"]   = 0;
   unique["next"]    = 0;
-  unique["stall"]   = 0;
-  unique["someday"] = 0;
 
   std::stringstream out;
   std::map <std::string, int>::iterator it;
