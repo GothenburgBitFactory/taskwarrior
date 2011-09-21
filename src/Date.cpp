@@ -128,10 +128,6 @@ Date::Date (const int m,  const int d,  const int y,
 ////////////////////////////////////////////////////////////////////////////////
 Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
 {
-  // Perhaps it is an epoch date, in string form?
-  if (isEpoch (input))
-    return;
-
   // Before parsing according to "format", perhaps this is a relative date?
   if (isRelativeDate (input))
     return;
@@ -143,6 +139,10 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
 
   // Parse a formatted date.
   if (n.getDate (format, _t) && n.depleted ())
+    return;
+
+  // Perhaps it is an epoch date, in string form?
+  if (isEpoch (input))
     return;
 
   throw ::format (STRING_DATE_INVALID_FORMAT, input, format);
@@ -771,8 +771,7 @@ void Date::operator++ (int)
 ////////////////////////////////////////////////////////////////////////////////
 bool Date::isEpoch (const std::string& input)
 {
-  if (digitsOnly (input)    &&
-      input.length () >   8 &&
+  if (digitsOnly (input) &&
       input.length () <= 10 )
   {
     _t = (time_t) atoi (input.c_str ());
