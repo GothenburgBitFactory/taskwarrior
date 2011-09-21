@@ -431,7 +431,6 @@ void Command::modify_task (
         // Get the column info.
         Column* column = context.columns[name];
 
-
         if (value == "")
         {
           task.remove (name);

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -41,6 +41,10 @@ if (open my $fh, '>', 'bug.rc')
 qx{../src/task rc:bug.rc add pro:main.subproject Test};
 my $output = qx{../src/task rc:bug.rc ls};
 like ($output, qr/main\.subproject/, "hierarchical project ok");
+
+qx{../src/task rc:bug.rc \\(pro:main.subproject\\) ls};
+like ($output, qr/main\.subproject/, "Parens tolerated");
+unlike ($output, qr/Mismatched parentheses in expression/, "No 'mismatch' error generated");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);

@@ -1254,11 +1254,10 @@ bool A3::is_attr (Nibbler& n, Arg& arg)
     {
       // Both quoted and unquoted Att's are accepted.
       // Consider removing this for a stricter parse.
-      if (n.getQuoted   ('"', value)  ||
-          n.getQuoted   ('\'', value) ||
-          n.getName     (value)       ||
-          n.getUntilWS  (value)       ||
-          n.getUntilEOS (value)       ||
+      if (n.getQuoted   ('"', value)       ||
+          n.getQuoted   ('\'', value)      ||
+          n.getUntilOneOf (" \t)(", value) ||
+          n.getUntilEOS (value)            ||
           n.depleted ())
       {
 /*

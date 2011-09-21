@@ -186,6 +186,7 @@
  + Fixed bug #808, which generated compiler warnings on Solarix (thanks to
    Owen Clarke).
  + Fixed bug #831, which prevented some date fields from being properly parsed.
+ + Fixed bug #835, which prevented hierarchical projects from being recognized.
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
