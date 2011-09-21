@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -46,6 +46,7 @@ if (open my $fh, '>', 'pending.data')
 }
 
 my $output = qx{../src/task rc:bug.rc list};
+like ($output, qr/One/, 'task listed');
 unlike ($output, qr/The recurrence value '1m' is not valid\./, 'recu:1m => no error');
 
 # Cleanup.

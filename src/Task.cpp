@@ -309,6 +309,11 @@ void Task::parse (const std::string& input)
             nl.skip (':')           &&
             nl.getQuoted ('"', value))
         {
+          // Experimental legacy value translation.
+          if (name == "recur" &&
+              value == "1m")
+            value = "1mo";
+
           (*this)[name] = decode (json::decode (value));
         }
 

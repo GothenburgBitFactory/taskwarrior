@@ -187,6 +187,9 @@
    Owen Clarke).
  + Fixed bug #831, which prevented some date fields from being properly parsed.
  + Fixed bug #835, which prevented hierarchical projects from being recognized.
+ + Fixed bug #839, which caused problems when recurrence frequencies of '1m'
+   were used.  This is an obsolete form, and should now be '1mo' (thanks to
+   Gour D).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
