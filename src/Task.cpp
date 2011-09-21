@@ -311,8 +311,9 @@ void Task::parse (const std::string& input)
         {
           // Experimental legacy value translation.
           if (name == "recur" &&
-              value == "1m")
-            value = "1mo";
+              digitsOnly (value.substr (0, value.length () - 1)) &&
+              value[value.length () - 1] == 'm')
+            value += 'o';
 
           (*this)[name] = decode (json::decode (value));
         }
