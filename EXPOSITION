@@ -5,7 +5,7 @@ Startup
   Context is a large object that holds all task information, both in terms of
   the task data, and intermediate run-time data.  Having one global Context
   object means we don't have 50 global variables.  Context is therefore just a
-  big bucket of data.
+  big global bucket of data.
 
   Context::initialize sets up all the data and processes the command line.  The
   initialization process is a big chicken-and-egg problem, because the command
@@ -37,7 +37,7 @@ Dispatch
 
 
 Command Objects
-
+  Every task command is implemented by a command object.
 
 Column Objects
 

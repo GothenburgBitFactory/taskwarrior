@@ -483,7 +483,7 @@ void Command::modify_task (
 
           // By default, just add/remove it.
           else
-              task.set (name, value);
+            task.set (name, value);
 
           // Warn about deprecated/obsolete attribute usage.
           legacyAttributeCheck (name);
