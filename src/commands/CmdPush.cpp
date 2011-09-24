@@ -25,11 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <fstream>
 #include <sstream>
 #include <Context.h>
 #include <Uri.h>
 #include <Transport.h>
+#include <i18n.h>
 #include <text.h>
 #include <CmdPush.h>
 
@@ -40,14 +43,14 @@ CmdPush::CmdPush ()
 {
   _keyword     = "push";
   _usage       = "task push URL";
-  _description = "Pushes the local *.data files to the URL.";
+  _description = STRING_CMD_PUSH_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Transfers the local data (from rc.location._data) to the remote path.  Because
-// this is potentially on another machine, no checking can be performed.
+// Transfers the local data (from rc.location._data) to the remote path.
+// Because this is potentially on another machine, no checking can be performed.
 int CmdPush::execute (std::string& output)
 {
   std::vector <std::string> words = context.a3.extract_words ();
@@ -73,11 +76,11 @@ int CmdPush::execute (std::string& output)
       // Verify that files are not being copied from rc.data.location to the
       // same place.
       if (Directory (uri._path) == Directory (context.config.get ("data.location")))
-        throw std::string ("Cannot push files when the source and destination are the same.");
+        throw std::string (STRING_CMD_PUSH_SAME);
 
       // copy files locally
       if (! Path (uri._data).is_directory ())
-        throw std::string ("The uri '") + uri._path + "' is not a local directory.";
+        throw format (STRING_CMD_PUSH_NONLOCAL, uri._path);
 
       std::ifstream ifile1 ((location._data + "/undo.data").c_str(), std::ios_base::binary);
       std::ofstream ofile1 ((uri._path       + "/undo.data").c_str(), std::ios_base::binary);
@@ -92,12 +95,10 @@ int CmdPush::execute (std::string& output)
       ofile3 << ifile3.rdbuf();
 		}
 
-    output += "Local tasks transferred to " + uri._data + "\n";
+    output += format (STRING_CMD_PUSH_TRANSFERRED, uri._data) + "\n";
   }
   else
-    throw std::string ("No uri was specified for the push.  Either specify "
-                       "the uri of a remote .task directory, or create a "
-                       "'push.default.uri' entry in your .taskrc file.");
+    throw std::string (STRING_CMD_PUSH_NO_URI);
 
   return 0;
 }

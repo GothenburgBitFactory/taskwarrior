@@ -25,11 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <fstream>
 #include <sstream>
 #include <Context.h>
 #include <Uri.h>
 #include <Transport.h>
+#include <i18n.h>
 #include <text.h>
 #include <CmdPull.h>
 
@@ -40,7 +43,7 @@ CmdPull::CmdPull ()
 {
   _keyword     = "pull";
   _usage       = "task pull URL";
-  _description = "Overwrites the local *.data files with those found at the URL.";
+  _description = STRING_CMD_PULL_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -61,7 +64,7 @@ int CmdPull::execute (std::string& output)
 		Directory location (context.config.get ("data.location"));
 
     if (! uri.append ("{pending,undo,completed}.data"))
-      throw std::string ("The uri '") + uri._path + "' is not a directory. Did you forget a trailing '/'?";
+      throw format (STRING_CMD_PULL_NOT_DIR, uri._path);
 
 		Transport* transport;
 		if ((transport = Transport::getTransport (uri)) != NULL)
@@ -74,7 +77,7 @@ int CmdPull::execute (std::string& output)
       // Verify that files are not being copied from rc.data.location to the
       // same place.
       if (Directory (uri._path) == Directory (context.config.get ("data.location")))
-        throw std::string ("Cannot pull files when the source and destination are the same.");
+        throw std::string (STRING_CMD_PULL_SAME);
 
       // copy files locally
 
@@ -104,16 +107,14 @@ int CmdPull::execute (std::string& output)
       }
       else
       {
-        throw std::string ("At least one of the database files in '" + uri._path + "' is not present.");
+        throw format (STRING_CMD_PULL_MISSING, uri._path);
       }
 		}
 
-    output += "Tasks transferred from " + uri._data + "\n";
+    output += format (STRING_CMD_PULL_TRANSFERRED, uri._data) + "\n";
   }
   else
-    throw std::string ("No uri was specified for the pull.  Either specify "
-                       "the uri of a remote .task directory, or create a "
-                       "'pull.default.uri' entry in your .taskrc file.");
+    throw std::string (STRING_CMD_PULL_NO_URI);
 
   return 0;
 }

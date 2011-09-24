@@ -31,6 +31,8 @@
 #include <stdlib.h>
 #include <RX.h>
 #include <Context.h>
+#include <i18n.h>
+#include <text.h>
 #include <util.h>
 #include <cmake.h>
 #include <commit.h>
@@ -51,7 +53,7 @@ CmdDiagnostics::CmdDiagnostics ()
 {
   _keyword     = "diagnostics";
   _usage       = "task diagnostics";
-  _description = "Shows information needed when reporting a problem.";
+  _description = STRING_CMD_DIAG_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -70,7 +72,7 @@ int CmdDiagnostics::execute (std::string& output)
       << bold.colorize (PACKAGE_STRING)
       << "\n";
 
-  out << "  Platform: "
+  out << "  " << STRING_CMD_DIAG_PLATFORM << ": "
       <<
 #if defined (DARWIN)
          "Darwin"
@@ -87,17 +89,18 @@ int CmdDiagnostics::execute (std::string& output)
 #elif defined (LINUX)
          "Linux"
 #else
-         "<unknown>"
+         STRING_CMD_DIAG_UNKNOWN
 #endif
       << "\n\n";
 
   // Compiler.
-  out << bold.colorize ("Compiler")
+  out << bold.colorize (STRING_CMD_DIAG_COMPILER)
       << "\n"
 #ifdef __VERSION__
-      << "   Version: " << __VERSION__ << "\n"
+      << "   " << STRING_CMD_DIAG_VERSION << ": "
+      << __VERSION__ << "\n"
 #endif
-      << "      Caps:"
+      << "      " << STRING_CMD_DIAG_CAPS << ":"
 #ifdef __STDC__
       << " +stdc"
 #endif
@@ -125,7 +128,7 @@ int CmdDiagnostics::execute (std::string& output)
       << " +vp" << sizeof (void*)
       << "\n\n";
 
-  out << bold.colorize ("Libraries")
+  out << bold.colorize (STRING_CMD_DIAG_LIBRARIES)
       << "\n";
 
   out << "       Lua: "
@@ -136,14 +139,14 @@ int CmdDiagnostics::execute (std::string& output)
 #endif
       << "\n\n";
 
-  out << bold.colorize ("Build Features")
+  out << bold.colorize (STRING_CMD_DIAG_FEATURES)
       << "\n"
 
   // Build date.
-      << "     Built: " << __DATE__ << " " << __TIME__ << "\n"
-      << "    Commit: " << COMMIT << "\n"
+      << "     " << STRING_CMD_DIAG_BUILT << ": " << __DATE__ << " " << __TIME__ << "\n"
+      << "    " << STRING_CMD_DIAG_COMMIT << ": " << COMMIT << "\n"
       << "     CMake: " << CMAKE_VERSION << "\n"
-      << "      Caps:"
+      << "      " << STRING_CMD_DIAG_CAPS << ":"
 #ifdef HAVE_LIBPTHREAD
       << " +pthreads"
 #else

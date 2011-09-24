@@ -25,8 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <Context.h>
+#include <text.h>
+#include <i18n.h>
 #include <CmdSynch.h>
 
 extern Context context;
@@ -36,7 +40,7 @@ CmdSynch::CmdSynch ()
 {
   _keyword     = "synchronize";
   _usage       = "task synchronize";
-  _description = "(Not implemented for 2.0.0beta1)";
+  _description = STRING_CMD_SYNCH_USAGE;
   _read_only   = false;
   _displays_id = true;
 }
@@ -44,6 +48,7 @@ CmdSynch::CmdSynch ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdSynch::execute (std::string& output)
 {
+  // TODO Tempporary.
   std::cout << "\n"
             << "Task Server Synchronization is not implemented in 2.0.0beta1.\n"
             << "\n";
