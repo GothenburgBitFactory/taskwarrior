@@ -35,17 +35,19 @@ if (open my $fh, '>', 'shell.rc')
 {
   print $fh "data.location=.\n",
             "shell.prompt=testprompt>\n",
+            "defaultwidth=0\n",
             "default.command=ls\n";
   close $fh;
   ok (-r 'shell.rc', 'Created shell.rc');
 }
 
 # Test the prompt.
-my $output = qx{echo "-- \\nquit\\n" | ../src/task rc:shell.rc shell};
+my $output = qx{echo "-- quit" | ../src/task rc:shell.rc shell};
 like ($output, qr/testprompt>/, 'custom prompt is being used');
 
 # Test a simple add, then info.
-$output = qx{echo "-- add foo\ninfo 1\n" | ../src/task rc:shell.rc shell};
+qx{echo "-- add foo" | ../src/task rc:shell.rc shell};
+$output = qx{echo "-- 1 info" | ../src/task rc:shell.rc shell};
 like ($output, qr/Description\s+foo/, 'add/info working');
 
 unlink 'shell.rc';
