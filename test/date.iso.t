@@ -45,7 +45,7 @@ my $output = qx{../src/task rc:iso.rc 1 info};
 like ($output, qr/Due\s+9\/1\/2011/, 'ISO format recognized.');
 
 # Test use of epoch date format, despite rc.dateformat.
-qx{../src/task rc:iso.rc add one due:1234567890};
+qx{../src/task rc:iso.rc add one due:1234524690};
 $output = qx{../src/task rc:iso.rc 2 info};
 like ($output, qr/Due\s+2\/13\/2009/, 'Epoch format recognized.');
 
