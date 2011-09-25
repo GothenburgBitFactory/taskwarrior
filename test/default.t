@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 24;
+use Test::More tests => 21;
 
 # Create the rc file.
 if (open my $fh, '>', 'default.rc')
@@ -77,24 +77,20 @@ like ($output, qr/\//,                  'default due added');
 $output = qx{../src/task rc:default.rc};
 like ($output, qr/1 PROJECT L .+ priority specified/, 'default command worked');
 
+qx{../src/task rc:default.rc add project:HOME priority:M due:tomorrow all specified};
+qx{echo '-- y' | ../src/task rc:default.rc config default.command 'list priority:M'};
+$output = qx{../src/task rc:default.rc};
+like   ($output, qr/ M /, 'priority:M included in default command');
+unlike ($output, qr/ L /, 'priority:L excluded from default command');
+
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'default.rc';
-ok (!-r 'default.rc', 'Removed default.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key default.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'default.rc', 'Cleanup');
 
 exit 0;
 

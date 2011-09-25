@@ -95,8 +95,11 @@
    controlled by '#define HAVE_EXECUTE 1' in cmake.h.  This allows a build
    that does not have the potential security hole, in the event that taskwarrior
    is run at elevated privilege, or run in the context of a web server.
- + Added feature #813, new "eoq" and "soq" dates for the end and start of quarter.
-   (thanks to Dave French and Paulo Almeida for the patch)
+ + Added feature #813, new "eoq" and "soq" dates for the end and start of
+   quarter.  (thanks to Dave French and Paulo Almeida for the patch).
+ + Added feature #827, which allows augmentation of default.command with extra
+   arguments, when default.command itself contains mulitple arguments (thanks to
+   Aikido Guy).
 
 # Tracked Bugs, sorted by ID.
  + Fixed bug #403, which disambiguates certain commands involving numbers.
@@ -190,6 +193,8 @@
  + Fixed bug #839, which caused problems when recurrence frequencies of '1m'
    were used.  This is an obsolete form, and should now be '1mo' (thanks to
    Gour D).
+ + Fixed bug #846, which prevented the default.command configuration from
+   handling multiple arguments (thanks to Uli Martens).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.

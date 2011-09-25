@@ -154,7 +154,12 @@ void A3::capture_first (const std::string& arg)
 {
   // Break the new argument into parts that comprise a series.
   std::vector <Arg> series;
-  series.push_back (Arg (arg));
+
+  std::vector <std::string> separated;
+  splitq (separated, arg, ' ');
+  std::vector <std::string>::iterator sep;
+  for (sep = separated.begin (); sep != separated.end (); ++sep)
+    series.push_back (Arg (*sep));
 
   // Locate an appropriate place to insert the series.  This would be
   // immediately after the program and command arguments.
