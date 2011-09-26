@@ -33,6 +33,7 @@
 #include <Context.h>
 #include <Command.h>
 #include <CmdCommands.h>
+#include <i18n.h>
 
 extern Context context;
 
