@@ -328,13 +328,14 @@
 #define STRING_CMD_PUSH_NONLOCAL     "The uri '{1}' is not a local directory."
 #define STRING_CMD_PUSH_TRANSFERRED  "Local tasks transferred to {1}"
 #define STRING_CMD_PUSH_NO_URI       "No uri was specified for the push.  Either specify the uri of a remote .task directory, or create a 'push.default.uri' entry in your .taskrc file."
-
 #define STRING_CMD_PULL_USAGE        "Overwrites the local *.data files with those found at the URL."
 #define STRING_CMD_PULL_SAME         "Cannot pull files when the source and destination are the same."
 #define STRING_CMD_PULL_TRANSFERRED  "Local tasks transferred from {1}"
 #define STRING_CMD_PULL_NO_URI       "No uri was specified for the pull.  Either specify the uri of a remote .task directory, or create a 'pull.default.uri' entry in your .taskrc file."
 #define STRING_CMD_PULL_MISSING      "At least one of the database files in '{1}' is not present."
 #define STRING_CMD_PULL_NOT_DIR      "The uri '{1}' is not a directory.  Did you forget a trailing '/'?"
+#define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
+#define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
