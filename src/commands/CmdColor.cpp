@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <ViewText.h>
 #include <Context.h>
@@ -40,8 +42,7 @@ CmdColor::CmdColor ()
 {
   _keyword     = "colors";
   _usage       = "task colors [sample | legend]";
-  _description = "Displays all possible colors, a named sample, or a legend "
-                 "containing all currently defined colors.";
+  _description = STRING_CMD_COLOR_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -66,15 +67,15 @@ int CmdColor::execute (std::string& output)
     // use.
     if (legend)
     {
-      out << "\nHere are the colors currently in use:\n";
+      out << "\n" << STRING_CMD_COLOR_HERE << "\n";
 
       std::vector <std::string> all;
       context.config.all (all);
 
       ViewText view;
       view.width (context.getWidth ());
-      view.add (Column::factory ("string", "Color"));
-      view.add (Column::factory ("string", "Definition"));
+      view.add (Column::factory ("string", STRING_CMD_COLOR_COLOR));
+      view.add (Column::factory ("string", STRING_CMD_COLOR_DEFINITION));
 
       std::vector <std::string>::iterator item;
       for (item = all.begin (); item != all.end (); ++item)
@@ -119,19 +120,19 @@ int CmdColor::execute (std::string& output)
       Color sample (swatch);
 
       out << "\n"
-          << "Use this command to see how colors are displayed by your terminal.\n\n"
-          << "\n"
-          << "16-color usage (supports underline, bold text, bright background):\n"
+          << STRING_CMD_COLOR_EXPLANATION                                          << "\n"
+          << "\n\n"
+          << STRING_CMD_COLOR_16                                                   << "\n"
           << "  " << one.colorize ("task color black on bright yellow")            << "\n"
           << "  " << two.colorize ("task color underline cyan on bright blue")     << "\n"
           << "\n"
-          << "256-color usage (supports underline):\n"
+          << STRING_CMD_COLOR_256                                                  << "\n"
           << "  " << three.colorize ("task color color214 on color202")            << "\n"
           << "  " << four.colorize ("task color rgb150 on rgb020")                 << "\n"
           << "  " << five.colorize ("task color underline grey10 on grey3")        << "\n"
           << "  " << six.colorize ("task color red on color173")                   << "\n"
           << "\n"
-          << "Your sample:"                                                        << "\n"
+          << STRING_CMD_COLOR_YOURS                                                << "\n"
           << "  " << sample.colorize ("task color " + swatch)                      << "\n\n";
     }
 
@@ -139,7 +140,7 @@ int CmdColor::execute (std::string& output)
     else
     {
       out << "\n"
-          << "Basic colors"
+          << STRING_CMD_COLOR_BASIC
           << "\n"
           << " " << Color::colorize (" black ",   "black")
           << " " << Color::colorize (" red ",     "red")
@@ -160,7 +161,7 @@ int CmdColor::execute (std::string& output)
           << " " << Color::colorize (" white ",   "black on white")
           << "\n\n";
 
-      out << "Effects"
+      out << STRING_CMD_COLOR_EFFECTS
           << "\n"
           << " " << Color::colorize (" red ",               "red")
           << " " << Color::colorize (" bold red ",          "bold red")
@@ -190,7 +191,7 @@ int CmdColor::execute (std::string& output)
       out << "          . . . 15\n\n";
 
       // Color cube.
-      out << "Color cube rgb"
+      out << STRING_CMD_COLOR_CUBE
           << Color::colorize ("0", "bold red")
           << Color::colorize ("0", "bold green")
           << Color::colorize ("0", "bold blue")
@@ -238,7 +239,8 @@ int CmdColor::execute (std::string& output)
       out << "\n";
 
       // Grey ramp.
-      out << "Gray ramp gray0 - gray23 (also color232 - color255)\n"
+      out << STRING_CMD_COLOR_RAMP
+          << " gray0 - gray23 (also color232 - color255)\n"
           << "  0 1 2 . . .                             . . . 23\n"
           << "  ";
       for (int g = 0; g < 24; ++g)
@@ -248,13 +250,14 @@ int CmdColor::execute (std::string& output)
         out << Color::colorize ("  ", s.str ());
       }
 
-      out << "\n\nTry running 'task color white on red'.\n\n";
+      out << "\n\n"
+          << format (STRING_CMD_COLOR_TRY, "task color white on red")
+          << "\n\n";
     }
   }
   else
   {
-    out << "Color is currently turned off in your .taskrc file.  To enable "
-           "color, remove the line 'color=off', or change the 'off' to 'on'.\n";
+    out << STRING_CMD_COLOR_OFF << "\n";
     rc = 1;
   }
 
