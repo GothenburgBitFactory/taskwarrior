@@ -340,6 +340,7 @@
 #define STRING_CMD_PULL_NOT_DIR      "The uri '{1}' is not a directory.  Did you forget a trailing '/'?"
 #define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
+#define STRING_CMD_INSTALL_USAGE     "Installs extensions and external scripts"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."

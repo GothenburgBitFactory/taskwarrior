@@ -25,9 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove.
+#define L10N                                           // Localization complete.
+
 #include <CmdInstall.h>
 #include <Context.h>
+#include <i18n.h>
+#include <text.h>
 
 extern Context context;
 
@@ -36,7 +39,7 @@ CmdInstall::CmdInstall ()
 {
   _keyword     = "install";
   _usage       = "task install <extension> [<extension> ...]";
-  _description = "Installs extensions and external scripts";
+  _description = STRING_CMD_INSTALL_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
