@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <sstream>
 #include <Context.h>
@@ -57,13 +59,13 @@ int CmdImport::execute (std::string& output)
 	// Use the description as a file name.
   std::vector <std::string> words = context.a3.extract_words ();
   if (! words.size ())
-    throw std::string ("You must specify a file to import.");
+    throw std::string (STRING_CMD_IMPORT_NOFILE);
 
   std::vector <std::string>::iterator word;
   for (word = words.begin (); word != words.end (); ++word)
   {
     std::string file = *word;
-    std::cout << "Importing '" << file << "'\n";
+    std::cout << format (STRING_CMD_IMPORT_FILE, file) << "\n";
 
     std::string tmpfile = "";
     Uri uri (file);
@@ -183,7 +185,7 @@ int CmdImport::execute (std::string& output)
             }
 
             else
-              throw std::string ("Unrecognized attribute '") + i->first + "'";
+              throw format (STRING_CMD_IMPORT_BAD_ATT, i->first);
           }
         }
 
@@ -196,7 +198,7 @@ int CmdImport::execute (std::string& output)
                   << "\n";
       }
       else
-        throw std::string ("Not a JSON object: ") + *line;
+        throw format (STRING_CMD_IMPORT_NOT_JSON, *line);
 
       delete root;
     }
