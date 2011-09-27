@@ -1,13 +1,12 @@
-* project.t
-FH Failed test 'project with spaces'
-
-* text.t
+* text.t                      5
 PB need to use a UTF-8 friendly way of doing input[--eol].
 
-* merge.duplicate.t
-FH merge ignores URI then outputs wrong (???) msg ?????
+* bug.360.t                   2
 
-* delete.t
+* rx.t                        1
+
+* dom.2.t                     1
+
+* delete.t                    1
 FH 'task info' shows tasks from the completed.data file when doing a filter on the ID
    could it be confused and interpretes this as an UUID
-
