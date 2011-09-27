@@ -25,9 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
+#include <i18n.h>
 #include <text.h>
 #include <util.h>
 #include <CmdConfig.h>
@@ -39,7 +42,7 @@ CmdConfig::CmdConfig ()
 {
   _keyword     = "config";
   _usage       = "task config [name [value | '']]";
-  _description = "Add, modify and remove settings in the task configuration.";
+  _description = STRING_CMD_CONFIG_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -98,12 +101,7 @@ int CmdConfig::execute (std::string& output)
                comment > pos))
           {
             found = true;
-            if (confirm (std::string ("Are you sure you want to change the value of '")
-                           + name
-                           + "' from '"
-                           + context.config.get(name)
-                           + "' to '"
-                           + value + "'?"))
+            if (confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
             {
               if (comment != std::string::npos)
                 *line = name + "=" + value + " " + line->substr (comment);
@@ -117,7 +115,7 @@ int CmdConfig::execute (std::string& output)
 
         // Not found, so append instead.
         if (!found &&
-            confirm (std::string ("Are you sure you want to add '") + name + "' with a value of '" + value + "'?"))
+            confirm (format (STRING_CMD_CONFIG_CONFIRM2, name, value)))
         {
           contents.push_back (name + "=" + value);
           change = true;
@@ -142,7 +140,7 @@ int CmdConfig::execute (std::string& output)
             found = true;
 
             // Remove name
-            if (confirm (std::string ("Are you sure you want to remove '") + name + "'?"))
+            if (confirm (format (STRING_CMD_CONFIG_CONFIRM3, name)))
             {
               *line = "";
               change = true;
@@ -151,27 +149,27 @@ int CmdConfig::execute (std::string& output)
         }
 
         if (!found)
-          throw std::string ("No entry named '") + name + "' found.";
+          throw format (STRING_CMD_CONFIG_NO_ENTRY, name);
       }
 
       // Write .taskrc (or equivalent)
       if (change)
       {
         File::write (context.config._original_file, contents);
-        out << "Config file "
-            << context.config._original_file._data
-            << " modified.\n";
+        out << format (STRING_CMD_CONFIG_FILE_MOD,
+                       context.config._original_file._data)
+            << "\n";
       }
       else
-        out << "No changes made.\n";
+        out << STRING_CMD_CONFIG_NO_CHANGE << "\n";
     }
     else
-      throw std::string ("Specify the name of a config variable to modify.");
+      throw std::string (STRING_CMD_CONFIG_NO_NAME);
 
     output = out.str ();
   }
   else
-    throw std::string ("Specify the name of a config variable to modify.");
+    throw std::string (STRING_CMD_CONFIG_NO_NAME);
 
   return rc;
 }
@@ -181,8 +179,7 @@ CmdCompletionConfig::CmdCompletionConfig ()
 {
   _keyword     = "_config";
   _usage       = "task _config";
-  _description = "Lists all supported configuration variables, for completion "
-                 "purposes.";
+  _description = STRING_CMD_HCONFIG_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
