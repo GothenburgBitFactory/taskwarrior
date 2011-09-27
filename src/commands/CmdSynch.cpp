@@ -53,6 +53,22 @@ int CmdSynch::execute (std::string& output)
             << "Task Server Synchronization is not implemented in 2.0.0beta1.\n"
             << "\n";
 
+  // TODO If no server is set up
+  //        throw std::string ("Task server is not configured.");
+
+  // TODO Obtain credentials.
+  // TODO Obtain synch key.
+
+  // TODO Compose backlog into ticket.
+  // TODO Request synch.
+
+  // TODO Receive synch data.
+  // TODO Extract remote mods.
+  // TODO Extract new synch key.
+  // TODO Apply remote mods.
+  // TODO Store new synch key.
+  // TODO Truncate backlog.
+
   return 1;
 }
 
