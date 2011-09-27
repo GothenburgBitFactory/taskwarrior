@@ -413,6 +413,12 @@
 // Context
 #define STRING_CONTEXT_CREATE_RC     "A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so taskwarrior can proceed?"
 #define STRING_CONTEXT_NEED_RC       "Cannot proceed without rc file."
+#define STRING_CONTEXT_SHADOW_P      "Configuration variable 'shadow.file' is set to " "overwrite your pending tasks.  Please change it."
+#define STRING_CONTEXT_SHADOW_C      "Configuration variable 'shadow.file' is set to " "overwrite your completed tasks.  Please change it."
+#define STRING_CONTEXT_SHADOW_U      "Configuration variable 'shadow.file' is set to " "overwrite your undo log.  Please change it."
+#define STRING_CONTEXT_SHADOW_B      "Configuration variable 'shadow.file' is set to " "overwrite your backlog file.  Please change it."
+#define STRING_CONTEXT_SHADOW_S      "Configuration variable 'shadow.file' is set to " "overwrite your synch.key file.  Please change it."
+#define STRING_CONTEXT_SHADOW_UPDATE "[Shadow file '{1}' updated.]"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' is not a valid date in the '{2}' format."

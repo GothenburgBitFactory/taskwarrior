@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -417,24 +419,19 @@ void Context::shadow ()
     // Check for dangerous shadow file settings.
     std::string location = config.get ("data.location");
     if (shadow_file._data == location + "/pending.data")
-      throw std::string ("Configuration variable 'shadow.file' is set to "
-                         "overwrite your pending tasks.  Please change it.");
+      throw std::string (STRING_CONTEXT_SHADOW_P);
 
     if (shadow_file._data == location + "/completed.data")
-      throw std::string ("Configuration variable 'shadow.file' is set to "
-                         "overwrite your completed tasks.  Please change it.");
+      throw std::string (STRING_CONTEXT_SHADOW_C);
 
     if (shadow_file._data == location + "/undo.data")
-      throw std::string ("Configuration variable 'shadow.file' is set to "
-                         "overwrite your undo log.  Please change it.");
+      throw std::string (STRING_CONTEXT_SHADOW_U);
 
     if (shadow_file._data == location + "/backlog.data")
-      throw std::string ("Configuration variable 'shadow.file' is set to "
-                         "overwrite your backlog file.  Please change it.");
+      throw std::string (STRING_CONTEXT_SHADOW_B);
 
     if (shadow_file._data == location + "/synch.key")
-      throw std::string ("Configuration variable 'shadow.file' is set to "
-                         "overwrite your synch.key file.  Please change it.");
+      throw std::string (STRING_CONTEXT_SHADOW_S);
 
     // Compose the command.  Put the rc overrides up front, so that they may
     // be overridden by rc.shadow.command.
@@ -452,7 +449,7 @@ void Context::shadow ()
     // Optionally display a notification that the shadow file was updated.
     // TODO Convert to a verbosity token.
     if (config.getBoolean ("shadow.notify"))
-      footnote (std::string ("[Shadow file '") + shadow_file._data + "' updated.]");
+      footnote (format (STRING_CONTEXT_SHADOW_UPDATE, shadow_file._data));
   }
 }
 
