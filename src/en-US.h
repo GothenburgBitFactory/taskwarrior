@@ -93,6 +93,21 @@
 #define INCLUDED_STRINGS
 #define L10N                                           // Localization complete.
 
+// A3
+#define STRING_A3_ALTERNATE_RC       "Using alternate .taskrc file {1}"
+#define STRING_A3_ALTERNATE_DATA     "Using alternate date.location {1}"
+#define STRING_A3_OVERRIDE_RC        "Configuration override rc.{1}:{2}"
+#define STRING_A3_OVERRIDE_PROBLEM   "Problem with override: {1}"
+#define STRING_A3_UNKNOWN_ATTMOD     "Error: unrecognized attribute modifier '{1}'."
+#define STRING_A3_MISMATCHED_PARENS  "Mismatched parentheses in expression"
+#define STRING_A3_PATTERN_GARBAGE    "Unrecognized character(s) at end of pattern."
+#define STRING_A3_MALFORMED_PATTERN  "Malformed pattern."
+#define STRING_A3_MALFORMED_ID       "Malformed ID."
+#define STRING_A3_MALFORMED_UUID     "Malformed UUID."
+#define STRING_A3_ID_AFTER_HYPHEN    "Unrecognized ID after hyphen."
+#define STRING_A3_RANGE_INVERTED     "Inverted range 'high-low' instead of 'low-high'"
+#define STRING_A3_UUID_AFTER_COMMA   "Unrecognized UUID after comma."
+
 // API
 #define STRING_API_EXITING           "Exiting."
 #define STRING_API_NOFUNC            "The Lua function '{1}' was not found."
