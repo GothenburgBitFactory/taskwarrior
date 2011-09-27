@@ -377,8 +377,14 @@
 #define STRING_CMD_CONFIG_FILE_MOD   "Config file {1} modified."
 #define STRING_CMD_CONFIG_NO_CHANGE  "No changes made."
 #define STRING_CMD_CONFIG_NO_NAME    "Specify the name of a config variable to modify."
-
 #define STRING_CMD_HCONFIG_USAGE     "Lists all supported configuration variables, for completion purposes."
+#define STRING_CMD_CUSTOM_MISMATCH   "There are different numbers of columns and labels for report '{1}'."
+#define STRING_CMD_CUSTOM_OLD_SORT   "Deprecated sort field '{1}' used.  Please modify this to '{2}'."
+#define STRING_CMD_CUSTOM_OLD_FIELD  "Deprecated report field '{1}' used.  Please modify this to '{2}'."
+#define STRING_CMD_CUSTOM_SHOWN      "{1} shown"
+#define STRING_CMD_CUSTOM_COUNT      "1 task"
+#define STRING_CMD_CUSTOM_COUNTN     "{1} tasks"
+#define STRING_CMD_CUSTOM_TRUNCATED  "truncated to {1} lines"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."

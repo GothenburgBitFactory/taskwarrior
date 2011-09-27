@@ -25,12 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <map>
 #include <vector>
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewTask.h>
+#include <i18n.h>
 #include <text.h>
 #include <main.h>
 #include <CmdCustom.h>
@@ -69,8 +72,7 @@ int CmdCustom::execute (std::string& output)
   split (labels, reportLabels, ',');
 
   if (columns.size () != labels.size () && labels.size () != 0)
-    throw std::string ("There are different numbers of columns and labels ") +
-          "for report '" + _keyword + "'.";
+    throw format (STRING_CMD_CUSTOM_MISMATCH, _keyword);
 
   std::map <std::string, std::string> columnLabels;
   if (labels.size ())
@@ -158,21 +160,23 @@ int CmdCustom::execute (std::string& output)
     out << optionalBlankLine ()
         << view.render (filtered, sequence)
         << optionalBlankLine ()
-        << filtered.size ()
-        << (filtered.size () == 1 ? " task" : " tasks");
+        << (filtered.size () == 1
+              ? STRING_CMD_CUSTOM_COUNT
+              : format (STRING_CMD_CUSTOM_COUNTN, filtered.size ()));
 
     if (maxrows && maxrows < (int)filtered.size ())
-      out << ", " << maxrows << " shown";
+      out << ", " << format (STRING_CMD_CUSTOM_SHOWN, maxrows);
 
     if (maxlines && maxlines < (int)filtered.size ())
-      out << ", truncated to " << maxlines - table_header << " lines";
+      out << ", "
+          << format (STRING_CMD_CUSTOM_TRUNCATED, maxlines - table_header);
 
     out << "\n";
   }
   else
   {
-    out << "No matches."
-        << std::endl;
+    out << STRING_FEEDBACK_NO_MATCH
+        << std::endl;  // Yes, flush required.
     rc = 1;
   }
 
@@ -209,11 +213,7 @@ void CmdCustom::validateReportColumns (std::vector <std::string>& columns)
     std::map <std::string, std::string>::iterator found = legacyMap.find (*i);
     if (found != legacyMap.end ())
     {
-      context.footnote (std::string ("Deprecated report field '")
-                                   + *i
-                                   + "' used.  Please modify this to '"
-                                   + found->second
-                                   + "'.");
+      context.footnote (format (STRING_CMD_CUSTOM_OLD_FIELD, *i, found->second));
       *i = found->second;
     }
   }
@@ -247,11 +247,7 @@ void CmdCustom::validateSortColumns (std::vector <std::string>& columns)
     std::map <std::string, std::string>::iterator found = legacyMap.find (*i);
     if (found != legacyMap.end ())
     {
-      context.footnote (std::string ("Deprecated sort field '")
-                                   + *i
-                                   + "' used.  Please modify this to '"
-                                   + found->second
-                                   + "'.");
+      context.footnote (format (STRING_CMD_CUSTOM_OLD_SORT, *i, found->second));
       *i = found->second;
     }
   }
