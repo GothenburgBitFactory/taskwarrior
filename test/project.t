@@ -63,7 +63,7 @@ like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 50% complete
 like ($output, qr/The project 'bar' has changed\.  Project 'bar' is 0% complete \(1 of 1 tasks remaining\)\./, 'change project');
 
 # Test projects with spaces in them.
-$output = qx{../src/task rc:pro.rc 3 modify pro:"foo bar"};
+$output = qx{../src/task rc:pro.rc 3 modify pro:\\"foo bar\\"};
 like ($output, qr/The project 'foo bar' has changed\./, 'project with spaces');
 
 # Cleanup.
