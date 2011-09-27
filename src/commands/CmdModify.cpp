@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <sstream>
 #include <Context.h>
@@ -42,8 +44,9 @@ CmdModify::CmdModify ()
   _keyword     = "modify";
   _usage       = "task <filter> modify <modifications>\n"
                  "task <sequence> <modifications>";
-  _description = "Modifies the existing task with provided arguments.\n"
-                 "The 'modify' keyword is optional.";
+  _description = std::string (STRING_CMD_MODIFY_USAGE1) +
+                 "\n" +
+                 STRING_CMD_MODIFY_USAGE2;
   _read_only   = false;
   _displays_id = false;
 }
@@ -82,24 +85,24 @@ int CmdModify::execute (std::string& output)
     if (task->has ("recur")  &&
         !task->has ("due")   &&
         !before.has ("due"))
-      throw std::string ("You cannot specify a recurring task without a due date.");
+      throw std::string (STRING_CMD_MODIFY_NO_DUE);
 
     if (task->has ("until")  &&
         !task->has ("recur") &&
         !before.has ("recur"))
-      throw std::string ("You cannot specify an until date for a non-recurring task.");
+      throw std::string (STRING_CMD_MODIFY_UNTIL);
 
     if (before.has ("recur") &&
         before.has ("due")   &&
         (!task->has ("due")  ||
          task->get ("due") == ""))
-      throw std::string ("You cannot remove the due date from a recurring task.");
+      throw std::string (STRING_CMD_MODIFY_REM_DUE);
 
     if (before.has ("recur")  &&
         task->has ("recur")   &&
         (!task->has ("recur") ||
          task->get ("recur") == ""))
-      throw std::string ("You cannot remove the recurrence from a recurring task.");
+      throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
 
     if (taskDiff (before, *task) &&
         permission.confirmed (*task, taskDifferences (before, *task) + "Proceed with change?"))
@@ -119,10 +122,7 @@ int CmdModify::execute (std::string& output)
         if (before.has ("parent") && !warned)
         {
           warned = true;
-          std::cout << "Task "
-                    << before.id
-                    << " is a recurring task, and all other instances of this"
-                    << " task will be modified.\n";
+          std::cout << format (STRING_CMD_MODIFY_INSTANCES, before.id) << "\n";
         }
 
         Task alternate (*sibling);
@@ -135,9 +135,7 @@ int CmdModify::execute (std::string& output)
           sibling->setStatus (Task::recurring);
           sibling->set ("mask", "");
 
-          std::cout << "Task "
-                    << sibling->id
-                    << " is now a recurring task.\n";
+          std::cout << format (STRING_CMD_MODIFY_NOW_RECUR, sibling->id) << "\n";
         }
 
         // Apply other deltas.
@@ -145,7 +143,9 @@ int CmdModify::execute (std::string& output)
 
         if (taskDiff (alternate, *sibling))
         {
-          if (permission.confirmed (alternate, taskDifferences (alternate, *sibling) + "Proceed with change?"))
+          if (permission.confirmed (alternate,
+                                    taskDifferences (alternate, *sibling) +
+                                                     STRING_CMD_MODIFY_PROCEED))
           {
             // TODO Are dependencies being explicitly removed?
             //      Either we scan context.task for negative IDs "depends:-n"
@@ -167,7 +167,12 @@ int CmdModify::execute (std::string& output)
   context.tdb2.commit ();
 
   if (context.config.getBoolean ("echo.command"))
-    out << "Modified " << count << " task" << (count == 1 ? ".\n" : "s.\n");
+  {
+    if (count == 1)
+      out << format (STRING_CMD_MODIFY_TASK, count) << "\n";
+    else
+      out << format (STRING_CMD_MODIFY_TASKS, count) << "\n";
+  }
 
   output = out.str ();
   return 0;

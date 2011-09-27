@@ -344,6 +344,17 @@
 #define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 #define STRING_CMD_INSTALL_USAGE     "Installs extensions and external scripts"
+#define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."
+#define STRING_CMD_MODIFY_USAGE2     "The 'modify' keyword is optional."
+#define STRING_CMD_MODIFY_NO_DUE     "You cannot specify a recurring task without a due date."
+#define STRING_CMD_MODIFY_UNTIL      "You cannot specify an until date for a non-recurring task."
+#define STRING_CMD_MODIFY_REM_DUE    "You cannot remove the due date from a recurring task."
+#define STRING_CMD_MODIFY_REC_ALWAYS "You cannot remove the recurrence from a recurring task."
+#define STRING_CMD_MODIFY_INSTANCES  "Task {1} is a recurring task, and all other instances of this task will be modified."
+#define STRING_CMD_MODIFY_NOW_RECUR  "Task {1} is now a recurring task."
+#define STRING_CMD_MODIFY_PROCEED    "Proceed with change?"
+#define STRING_CMD_MODIFY_TASK       "Modified {1} task."
+#define STRING_CMD_MODIFY_TASKS      "Modified {1} tasks."
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
