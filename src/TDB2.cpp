@@ -64,6 +64,7 @@ TF2::TF2 ()
 , _loaded_tasks (false)
 , _loaded_lines (false)
 , _loaded_contents (false)
+, _has_ids (false)
 , _contents ("")
 {
 }
@@ -300,8 +301,10 @@ void TF2::load_tasks ()
       ++line_number;
       Task task (*i);
 
-      // Every task gets an ID.
-      task.id = context.tdb2.next_id ();
+      // Some tasks gets an ID.
+      if (_has_ids)
+        task.id = context.tdb2.next_id ();
+
       _tasks.push_back (task);
 
       // Maintain mapping for ease of link/dependency resolution.
@@ -400,6 +403,12 @@ int TF2::id (const std::string& uuid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void TF2::has_ids ()
+{
+  _has_ids = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Completely wipe it all clean.
 void TF2::clear ()
 {
@@ -411,8 +420,9 @@ void TF2::clear ()
 
   _contents        = "";
 
-  // Note that the actual file name is deliberately not cleared.
+  // Note that the actual file name, and _has_ids are deliberately not cleared.
   //_file._data      = "";
+  //_has_ids         = false;
 
   _tasks.clear ();
   _added_tasks.clear ();
@@ -481,6 +491,8 @@ TDB2::TDB2 ()
 : _location ("")
 , _id (1)
 {
+  // Mark the pending file as the only one that has ID numbers.
+  pending.has_ids ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

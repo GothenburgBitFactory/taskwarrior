@@ -188,6 +188,8 @@
    (thanks to Owen Clarke).
  + Fixed bug #808, which generated compiler warnings on Solarix (thanks to
    Owen Clarke).
+ + Fixed bug #822, #845, which generated incorrect IDs (thanks to Matt Kraai and
+   Michelle Crane).
  + Fixed bug #831, which prevented some date fields from being properly parsed.
  + Fixed bug #835, which prevented hierarchical projects from being recognized.
  + Fixed bug #839, which caused problems when recurrence frequencies of '1m'

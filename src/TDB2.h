@@ -63,6 +63,7 @@ public:
   std::string uuid (int);
   int id (const std::string&);
 
+  void has_ids ();
   void clear ();
   const std::string dump ();
 
@@ -72,6 +73,7 @@ public:
   bool _loaded_tasks;
   bool _loaded_lines;
   bool _loaded_contents;
+  bool _has_ids;
   std::vector <Task> _tasks;
   std::vector <Task> _added_tasks;
   std::vector <Task> _modified_tasks;
