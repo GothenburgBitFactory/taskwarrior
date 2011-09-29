@@ -195,6 +195,8 @@
    Gour D).
  + Fixed bug #846, which prevented the default.command configuration from
    handling multiple arguments (thanks to Uli Martens).
+ + Fixed bug #856, which prevented filters on missing project from working
+   (thanks to Michelle Crane).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.

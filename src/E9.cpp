@@ -472,14 +472,27 @@ void E9::operator_equal (
   // 'project' is matched leftmost.
   if (left._raw == "project")
   {
-    unsigned int right_len = right._value.length ();
-    if (compare (right._value,
-                 (right_len < left._value.length ()
-                   ? left._value.substr (0, right_len)
-                   : left._value),
-                 case_sensitive))
+    // Bug 856.
+    //
+    // Special case for checking absent projects.  Without the explicit "" check
+    // the right._value.lenghth() is used, which is 0, and therefore generates
+    // a false match.
+    if (right._value == "")
     {
-      result._value = "true";
+      if (left._value == "")
+        result._value = "true";
+    }
+    else
+    {
+      unsigned int right_len = right._value.length ();
+      if (compare (right._value,
+                   (right_len < left._value.length ()
+                     ? left._value.substr (0, right_len)
+                     : left._value),
+                   case_sensitive))
+      {
+        result._value = "true";
+      }
     }
   }
 
