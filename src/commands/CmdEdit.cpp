@@ -41,7 +41,7 @@ extern Context context;
 CmdEdit::CmdEdit ()
 {
   _keyword     = "edit";
-  _usage       = "task edit <ID>";
+  _usage       = "task <filter> edit";
   _description = "Launches an editor to let you modify all aspects of a task "
                  "directly, therefore it is to be used carefully.";
   _read_only   = false;

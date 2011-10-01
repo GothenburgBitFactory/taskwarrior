@@ -41,7 +41,7 @@ extern Context context;
 CmdColor::CmdColor ()
 {
   _keyword     = "colors";
-  _usage       = "task colors [sample | legend]";
+  _usage       = "task          colors [sample | legend]";
   _description = STRING_CMD_COLOR_USAGE;
   _read_only   = true;
   _displays_id = false;

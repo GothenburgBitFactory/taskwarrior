@@ -39,7 +39,7 @@ extern Context context;
 CmdCount::CmdCount ()
 {
   _keyword     = "count";
-  _usage       = "task count [<filter>]";
+  _usage       = "task <filter> count";
   _description = STRING_CMD_COUNT_USAGE;
   _read_only   = true;
   _displays_id = false;

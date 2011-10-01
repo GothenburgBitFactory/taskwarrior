@@ -40,7 +40,7 @@ extern Context context;
 CmdMerge::CmdMerge ()
 {
   _keyword     = "merge";
-  _usage       = "task merge URL";
+  _usage       = "task          merge URL";
   _description = "Merges the specified undo.data file with the local data files.";
   _read_only   = false;
   _displays_id = false;

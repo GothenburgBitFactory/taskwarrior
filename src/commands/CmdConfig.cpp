@@ -41,7 +41,7 @@ extern Context context;
 CmdConfig::CmdConfig ()
 {
   _keyword     = "config";
-  _usage       = "task config [name [value | '']]";
+  _usage       = "task          config [name [value | '']]";
   _description = STRING_CMD_CONFIG_USAGE;
   _read_only   = true;
   _displays_id = false;
@@ -178,7 +178,7 @@ int CmdConfig::execute (std::string& output)
 CmdCompletionConfig::CmdCompletionConfig ()
 {
   _keyword     = "_config";
-  _usage       = "task _config";
+  _usage       = "task          _config";
   _description = STRING_CMD_HCONFIG_USAGE;
   _read_only   = true;
   _displays_id = false;

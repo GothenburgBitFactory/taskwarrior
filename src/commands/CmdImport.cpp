@@ -44,7 +44,7 @@ extern Context context;
 CmdImport::CmdImport ()
 {
   _keyword     = "import";
-  _usage       = "task import <file> [<file> ...]";
+  _usage       = "task          import <file> [<file> ...]";
   _description = STRING_CMD_IMPORT_USAGE;
   _read_only   = false;
   _displays_id = false;

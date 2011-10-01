@@ -41,7 +41,7 @@ extern Context context;
 CmdCalendar::CmdCalendar ()
 {
   _keyword     = "calendar";
-  _usage       = "task calendar [due|month year|year]";
+  _usage       = "task          calendar [due|month year|year]";
   _description = "Shows a calendar, with due tasks marked.";
   _read_only   = true;
   _displays_id = true;

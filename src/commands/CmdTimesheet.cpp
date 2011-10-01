@@ -39,7 +39,7 @@ extern Context context;
 CmdTimesheet::CmdTimesheet ()
 {
   _keyword     = "timesheet";
-  _usage       = "task timesheet [weeks]";
+  _usage       = "task          timesheet [weeks]";
   _description = "Shows a weekly report of tasks completed and started.";
   _read_only   = true;
   _displays_id = false;

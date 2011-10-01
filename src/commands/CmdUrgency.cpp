@@ -41,7 +41,7 @@ extern Context context;
 CmdUrgency::CmdUrgency ()
 {
   _keyword     = "_urgency";
-  _usage       = "task _urgency <IDs>";
+  _usage       = "task <filter> _urgency";
   _description = STRING_CMD_URGENCY_USAGE;
   _read_only   = true;
   _displays_id = false;
@@ -64,8 +64,14 @@ int CmdUrgency::execute (std::string& output)
   std::stringstream out;
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
-    out << format (STRING_CMD_URGENCY_RESULT, task->id, task->urgency ())
-        << "\n";
+    if (task->id)
+      out << format (STRING_CMD_URGENCY_RESULT,
+                     task->id, task->urgency ())
+          << "\n";
+    else
+      out << format (STRING_CMD_URGENCY_RESULT,
+                     task->get ("uuid"), task->urgency ())
+          << "\n";
 
   output = out.str ();
   return 0;

@@ -38,7 +38,7 @@ extern Context context;
 CmdExec::CmdExec ()
 {
   _keyword     = "execute";
-  _usage       = "task execute <external command>";
+  _usage       = "task          execute <external command>";
   _description = STRING_CMD_EXEC_USAGE;
   _read_only   = false;
   _displays_id = true;

@@ -52,7 +52,7 @@ extern Context context;
 CmdDiagnostics::CmdDiagnostics ()
 {
   _keyword     = "diagnostics";
-  _usage       = "task diagnostics";
+  _usage       = "task          diagnostics";
   _description = STRING_CMD_DIAG_USAGE;
   _read_only   = true;
   _displays_id = false;

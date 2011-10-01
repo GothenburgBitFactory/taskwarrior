@@ -37,7 +37,7 @@ extern Context context;
 CmdUndo::CmdUndo ()
 {
   _keyword     = "undo";
-  _usage       = "task undo";
+  _usage       = "task          undo";
   _description = STRING_CMD_UNDO_USAGE;
   _read_only   = false;
   _displays_id = false;

@@ -41,7 +41,7 @@ extern Context context;
 CmdProjects::CmdProjects ()
 {
   _keyword     = "projects";
-  _usage       = "task projects [<filter>]";
+  _usage       = "task <filter> projects";
   _description = STRING_CMD_PROJECTS_USAGE;
   _read_only   = true;
   _displays_id = false;
@@ -154,7 +154,7 @@ int CmdProjects::execute (std::string& output)
 CmdCompletionProjects::CmdCompletionProjects ()
 {
   _keyword     = "_projects";
-  _usage       = "task _projects [<filter>]";
+  _usage       = "task <filter> _projects";
   _description = STRING_CMD_PROJECTS_USAGE_2;
   _read_only   = true;
   _displays_id = false;

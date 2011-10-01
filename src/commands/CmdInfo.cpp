@@ -43,7 +43,7 @@ extern Context context;
 CmdInfo::CmdInfo ()
 {
   _keyword     = "information";
-  _usage       = "task information <filter>";
+  _usage       = "task <filter> information";
   _description = STRING_CMD_INFO_USAGE;
   _read_only   = true;
 

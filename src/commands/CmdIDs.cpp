@@ -41,7 +41,7 @@ extern Context context;
 CmdIDs::CmdIDs ()
 {
   _keyword     = "ids";
-  _usage       = "task ids [<filter>]";
+  _usage       = "task <filter> ids";
   _description = STRING_CMD_IDS_USAGE_RANGE;
   _read_only   = true;
   _displays_id = true;
@@ -72,7 +72,7 @@ int CmdIDs::execute (std::string& output)
 CmdCompletionIds::CmdCompletionIds ()
 {
   _keyword     = "_ids";
-  _usage       = "task _ids [<filter>]";
+  _usage       = "task <filter> _ids";
   _description = STRING_CMD_IDS_USAGE_LIST;
   _read_only   = true;
   _displays_id = true;
@@ -108,7 +108,7 @@ int CmdCompletionIds::execute (std::string& output)
 CmdZshCompletionIds::CmdZshCompletionIds ()
 {
   _keyword     = "_zshids";
-  _usage       = "task _zshids [<filter>]";
+  _usage       = "task <filter> _zshids";
   _description = STRING_CMD_IDS_USAGE_ZSH;
   _read_only   = true;
   _displays_id = true;

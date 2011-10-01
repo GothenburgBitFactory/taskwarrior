@@ -41,7 +41,7 @@ extern Context context;
 CmdHistoryMonthly::CmdHistoryMonthly ()
 {
   _keyword     = "history.monthly";
-  _usage       = "task history.monthly [<filter>]";
+  _usage       = "task <filter> history.monthly";
   _description = STRING_CMD_HISTORY_USAGE_M;
   _read_only   = true;
   _displays_id = false;
@@ -196,7 +196,7 @@ int CmdHistoryMonthly::execute (std::string& output)
 CmdHistoryAnnual::CmdHistoryAnnual ()
 {
   _keyword     = "history.annual";
-  _usage       = "task history.annual [<filter>]";
+  _usage       = "task <filter> history.annual";
   _description = STRING_CMD_HISTORY_USAGE_A;
   _read_only   = true;
   _displays_id = false;
@@ -347,7 +347,7 @@ int CmdHistoryAnnual::execute (std::string& output)
 CmdGHistoryMonthly::CmdGHistoryMonthly ()
 {
   _keyword     = "ghistory.monthly";
-  _usage       = "task ghistory.monthly [<filter>]";
+  _usage       = "task <filter> ghistory.monthly";
   _description = STRING_CMD_GHISTORY_USAGE_M;
   _read_only   = true;
   _displays_id = false;
@@ -540,7 +540,7 @@ int CmdGHistoryMonthly::execute (std::string& output)
 CmdGHistoryAnnual::CmdGHistoryAnnual ()
 {
   _keyword     = "ghistory.annual";
-  _usage       = "task ghistory.annual [<filter>]";
+  _usage       = "task <filter> ghistory.annual";
   _description = STRING_CMD_GHISTORY_USAGE_A;
   _read_only   = true;
   _displays_id = false;

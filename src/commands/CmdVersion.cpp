@@ -43,7 +43,7 @@ extern Context context;
 CmdVersion::CmdVersion ()
 {
   _keyword     = "version";
-  _usage       = "task version";
+  _usage       = "task          version";
   _description = STRING_CMD_VERSION_USAGE;
   _read_only   = true;
   _displays_id = false;
@@ -117,7 +117,7 @@ int CmdVersion::execute (std::string& output)
 CmdCompletionVersion::CmdCompletionVersion ()
 {
   _keyword     = "_version";
-  _usage       = "task _version";
+  _usage       = "task          _version";
   _description = STRING_CMD_VERSION_USAGE2;
   _read_only   = true;
   _displays_id = false;

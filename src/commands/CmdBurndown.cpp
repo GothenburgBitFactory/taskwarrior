@@ -932,7 +932,7 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
 CmdBurndownMonthly::CmdBurndownMonthly ()
 {
   _keyword     = "burndown.monthly";
-  _usage       = "task burndown.monthly [<filter>]";
+  _usage       = "task <filter> burndown.monthly";
   _description = "Shows a graphical burndown chart, by month";
   _read_only   = true;
   _displays_id = false;
@@ -970,7 +970,7 @@ int CmdBurndownMonthly::execute (std::string& output)
 CmdBurndownWeekly::CmdBurndownWeekly ()
 {
   _keyword     = "burndown.weekly";
-  _usage       = "task burndown.weekly [<filter>]";
+  _usage       = "task <filter> burndown.weekly";
   _description = "Shows a graphical burndown chart, by week";
   _read_only   = true;
   _displays_id = false;
@@ -1008,7 +1008,7 @@ int CmdBurndownWeekly::execute (std::string& output)
 CmdBurndownDaily::CmdBurndownDaily ()
 {
   _keyword     = "burndown.daily";
-  _usage       = "task burndown.daily [<filter>]";
+  _usage       = "task <filter> burndown.daily";
   _description = "Shows a graphical burndown chart, by day";
   _read_only   = true;
   _displays_id = false;

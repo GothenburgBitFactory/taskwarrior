@@ -37,7 +37,7 @@ extern Context context;
 CmdHelp::CmdHelp ()
 {
   _keyword     = "help";
-  _usage       = "task help";
+  _usage       = "task          help";
   _description = "Displays this usage help text";
   _read_only   = true;
   _displays_id = false;
@@ -103,19 +103,6 @@ int CmdHelp::execute (std::string& output)
     view.set (row, 1, alias->first);
     view.set (row, 2, "Aliased to '" + alias->second + "'");
   }
-
-/*
-  row = view.addRow ();
-  view.set (row, 1, "task ID /from/to/g");
-  view.set (row, 2, "Performs substitution on the task description and "
-                         "annotations.  The 'g' is optional, and causes "
-                         "substitutions for all matching text, not just the "
-                         "first occurrence.");
-
-  row = view.addRow ();
-  view.set (row, 1, "task ID");
-  view.set (row, 2, "Specifying an ID without a command invokes the 'info' command.");
-*/
 
   output = "\n"
          + view.render ()

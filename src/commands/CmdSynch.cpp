@@ -39,7 +39,7 @@ extern Context context;
 CmdSynch::CmdSynch ()
 {
   _keyword     = "synchronize";
-  _usage       = "task synchronize";
+  _usage       = "task          synchronize";
   _description = STRING_CMD_SYNCH_USAGE;
   _read_only   = false;
   _displays_id = true;

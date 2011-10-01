@@ -45,7 +45,7 @@ extern Context context;
 CmdStatistics::CmdStatistics ()
 {
   _keyword     = "stats";
-  _usage       = "task stats [<filter>]";
+  _usage       = "task <filter> stats";
   _description = STRING_CMD_STATS_USAGE;
   _read_only   = true;
   _displays_id = false;

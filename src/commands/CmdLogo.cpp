@@ -38,7 +38,7 @@ extern Context context;
 CmdLogo::CmdLogo ()
 {
   _keyword     = "logo";
-  _usage       = "task logo";
+  _usage       = "task          logo";
   _description = STRING_CMD_LOGO_USAGE;
   _read_only   = true;
   _displays_id = false;

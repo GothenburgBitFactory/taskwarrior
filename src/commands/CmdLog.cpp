@@ -40,7 +40,7 @@ extern Context context;
 CmdLog::CmdLog ()
 {
   _keyword     = "log";
-  _usage       = "task log <modifications>";
+  _usage       = "task          log <modifications>";
   _description = STRING_CMD_LOG_USAGE;
   _read_only   = false;
   _displays_id = false;

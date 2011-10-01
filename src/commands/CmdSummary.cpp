@@ -43,7 +43,7 @@ extern Context context;
 CmdSummary::CmdSummary ()
 {
   _keyword     = "summary";
-  _usage       = "task summary";
+  _usage       = "task <filter> summary";
   _description = STRING_CMD_SUMMARY_USAGE;
   _read_only   = true;
   _displays_id = false;

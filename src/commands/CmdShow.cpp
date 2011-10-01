@@ -43,7 +43,7 @@ extern Context context;
 CmdShow::CmdShow ()
 {
   _keyword     = "show";
-  _usage       = "task show [all | substring]";
+  _usage       = "task          show [all | substring]";
   _description = STRING_CMD_SHOW;
   _read_only   = true;
   _displays_id = false;

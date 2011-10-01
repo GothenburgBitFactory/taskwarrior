@@ -41,7 +41,7 @@ extern Context context;
 CmdShell::CmdShell ()
 {
   _keyword     = "shell";
-  _usage       = "task shell";
+  _usage       = "task          shell";
   _description = STRING_CMD_SHELL_USAGE;
   _read_only   = false;
   _displays_id = true;

@@ -42,7 +42,7 @@ extern Context context;
 CmdTags::CmdTags ()
 {
   _keyword     = "tags";
-  _usage       = "task tags";
+  _usage       = "task <filter> tags";
   _description = STRING_CMD_TAGS_USAGE;
   _read_only   = true;
   _displays_id = false;
@@ -143,7 +143,7 @@ int CmdTags::execute (std::string& output)
 CmdCompletionTags::CmdCompletionTags ()
 {
   _keyword     = "_tags";
-  _usage       = "task _tags";
+  _usage       = "task <filter> _tags";
   _description = STRING_CMD_COMTAGS_USAGE;
   _read_only   = true;
   _displays_id = false;

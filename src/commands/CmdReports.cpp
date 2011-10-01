@@ -41,7 +41,7 @@ extern Context context;
 CmdReports::CmdReports ()
 {
   _keyword     = "reports";
-  _usage       = "task reports";
+  _usage       = "task          reports";
   _description = STRING_CMD_REPORTS_USAGE;
   _read_only   = true;
   _displays_id = false;

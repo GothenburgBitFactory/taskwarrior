@@ -42,7 +42,7 @@ extern Context context;
 CmdColumns::CmdColumns ()
 {
   _keyword     = "columns";
-  _usage       = "task columns";
+  _usage       = "task          columns";
   _description = STRING_CMD_COLUMNS_USAGE;
   _read_only   = true;
   _displays_id = false;
@@ -98,7 +98,7 @@ int CmdColumns::execute (std::string& output)
 CmdCompletionColumns::CmdCompletionColumns ()
 {
   _keyword     = "_columns";
-  _usage       = "task _columns";
+  _usage       = "task          _columns";
   _description = STRING_CMD_COLUMNS_USAGE2;
   _read_only   = true;
   _displays_id = false;
