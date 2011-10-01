@@ -451,6 +451,12 @@
 // Duration
 #define STRING_DURATION_UNRECOGNIZED "The duration '{1}' was not recognized."
 
+// E9
+#define STRING_E9_UNSUPPORTED        "Unsupported operator '{1}'."
+#define STRING_E9_NO_OPERANDS        "There are no operands for the '{1}' operator."
+#define STRING_E9_INSUFFICIENT_OP    "There are not enough operands for the '{1}' operator."
+#define STRING_E9_MORE_OP            "Found extra operands."
+
 // Errors
 // TODO Move each of these to appropriate section.
 #define STRING_UNKNOWN_ERROR         "Unknown error."

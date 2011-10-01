@@ -25,11 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <stdlib.h>
 #include <Context.h>
 #include <Date.h>
 #include <Duration.h>
+#include <i18n.h>
 #include <text.h>
 #include <E9.h>
 
@@ -103,7 +106,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
       if (arg->_raw == "!")
       {
         if (value_stack.size () < 1)
-          throw std::string ("There are no operands for the 'not' operator.");
+          throw format (STRING_E9_NO_OPERANDS, "not");
 
         Arg right = value_stack.back ();
         value_stack.pop_back ();
@@ -124,7 +127,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
       else
       {
         if (value_stack.size () < 2)
-          throw std::string ("There are not enough operands for the '") + arg->_raw + "' operator.";
+          throw format (STRING_E9_INSUFFICIENT_OP, arg->_raw);
 
         Arg right = value_stack.back ();
         value_stack.pop_back ();
@@ -148,7 +151,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
         else if (arg->_raw == "+")   operator_add      (result, left, right);
         else if (arg->_raw == "-")   operator_subtract (result, left, right);
         else
-          throw std::string ("Unsupported operator '") + arg->_raw + "'.";
+          throw format (STRING_E9_UNSUPPORTED, arg->_raw);
       }
 
       // Store the result.
@@ -188,7 +191,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
 
   // Check for stack remnants.
   if (value_stack.size () != 1)
-    throw std::string ("Error: Expression::eval found extra items on the stack.");
+    throw std::string (STRING_E9_MORE_OP);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
