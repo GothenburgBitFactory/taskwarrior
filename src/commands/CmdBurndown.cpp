@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <algorithm>
 #include <string.h>
@@ -33,6 +35,8 @@
 #include <Date.h>
 #include <Duration.h>
 #include <main.h>
+#include <i18n.h>
+#include <text.h>
 #include <util.h>
 #include <CmdBurndown.h>
 
@@ -401,11 +405,11 @@ std::string Chart::render ()
   if (graph_height < 5 ||     // a 4-line graph is essentially unreadable.
       graph_width < 2)        // A single-bar graph is useless.
   {
-    return "Terminal window too small to draw a graph.\n";
+    return std::string (STRING_CMD_BURN_TOO_SMALL) + "\n";
   }
 
   if (max_value == 0)
-    return "No matches.\n";
+    return std::string (STRING_FEEDBACK_NO_MATCH) + "\n";
 
   // Create a grid, folded into a string.
   grid = "";
@@ -416,12 +420,12 @@ std::string Chart::render ()
   std::string full_title;
   switch (period)
   {
-  case 'D': full_title = "Daily";   break;
-  case 'W': full_title = "Weekly";  break;
-  case 'M': full_title = "Monthly"; break;
+  case 'D': full_title = STRING_CMD_BURN_DAILY;   break;
+  case 'W': full_title = STRING_CMD_BURN_WEEKLY;  break;
+  case 'M': full_title = STRING_CMD_BURN_MONTHLY; break;
   }
 
-  full_title += " Burndown";
+  full_title += std::string (" ") + STRING_CMD_BURN_TITLE;
 
   if (title.length ())
   {
@@ -442,9 +446,9 @@ std::string Chart::render ()
   }
 
   // Legend.
-  grid.replace (LOC (graph_height / 2 - 1, width - 10), 10, "DD Done   ");
-  grid.replace (LOC (graph_height / 2,     width - 10), 10, "SS Started");
-  grid.replace (LOC (graph_height / 2 + 1, width - 10), 10, "PP Pending");
+  grid.replace (LOC (graph_height / 2 - 1, width - 10), 10, "DD " + leftJustify (STRING_CMD_BURN_DONE,    7));
+  grid.replace (LOC (graph_height / 2,     width - 10), 10, "SS " + leftJustify (STRING_CMD_BURN_STARTED, 7));
+  grid.replace (LOC (graph_height / 2 + 1, width - 10), 10, "PP " + leftJustify (STRING_CMD_BURN_PENDING, 7));
 
   // Determine y-axis labelling.
   std::vector <int> labels;
@@ -924,7 +928,7 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
   }
   else
   {
-    completion = "No convergence";
+    completion = STRING_CMD_BURN_NO_CONVERGE;
   }
 }
 
@@ -933,7 +937,7 @@ CmdBurndownMonthly::CmdBurndownMonthly ()
 {
   _keyword     = "burndown.monthly";
   _usage       = "task <filter> burndown.monthly";
-  _description = "Shows a graphical burndown chart, by month";
+  _description = STRING_CMD_BURN_USAGE_M;
   _read_only   = true;
   _displays_id = false;
 }
@@ -971,7 +975,7 @@ CmdBurndownWeekly::CmdBurndownWeekly ()
 {
   _keyword     = "burndown.weekly";
   _usage       = "task <filter> burndown.weekly";
-  _description = "Shows a graphical burndown chart, by week";
+  _description = STRING_CMD_BURN_USAGE_W;
   _read_only   = true;
   _displays_id = false;
 }
@@ -1009,7 +1013,7 @@ CmdBurndownDaily::CmdBurndownDaily ()
 {
   _keyword     = "burndown.daily";
   _usage       = "task <filter> burndown.daily";
-  _description = "Shows a graphical burndown chart, by day";
+  _description = STRING_CMD_BURN_USAGE_D;
   _read_only   = true;
   _displays_id = false;
 }

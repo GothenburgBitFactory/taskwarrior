@@ -417,6 +417,18 @@
 #define STRING_CMD_MERGE_COMPLETE    "Merge complete."
 #define STRING_CMD_MERGE_CONFIRM     "Would you like to push the merged changes to '{1}'?"
 #define STRING_CMD_MERGE_NO_URI      "No uri was specified for the merge.  Either specify the uri of a remote .task directory, or create a 'merge.default.uri' entry in your .taskrc file."
+#define STRING_CMD_BURN_USAGE_M      "Shows a graphical burndown chart, by month"
+#define STRING_CMD_BURN_USAGE_W      "Shows a graphical burndown chart, by week"
+#define STRING_CMD_BURN_USAGE_D      "Shows a graphical burndown chart, by day"
+#define STRING_CMD_BURN_TITLE        "Burndown"
+#define STRING_CMD_BURN_TOO_SMALL    "Terminal window too small to draw a graph."
+#define STRING_CMD_BURN_DAILY        "Daily"
+#define STRING_CMD_BURN_WEEKLY       "Weekly"
+#define STRING_CMD_BURN_MONTHLY      "Monthly"
+#define STRING_CMD_BURN_STARTED      "Started"          // Must be 7 or fewer characters
+#define STRING_CMD_BURN_DONE         "Done"             // Must be 7 or fewer characters
+#define STRING_CMD_BURN_PENDING      "Pending"          // Must be 7 or fewer characters
+#define STRING_CMD_BURN_NO_CONVERGE  "No convergence"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
