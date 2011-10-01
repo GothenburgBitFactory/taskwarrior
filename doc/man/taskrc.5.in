@@ -233,7 +233,7 @@ for safety.
 .B echo.command=yes
 May be "yes" or "no", and causes the display of the ID and description of any
 task when you run the start, stop, do, undo or delete commands. The default
-value is "yes".
+value is "yes".  Deprecated - use verbosity token 'affected'.
 
 .TP
 .B annotations=full

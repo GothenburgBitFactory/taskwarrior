@@ -112,8 +112,8 @@ int CmdDelete::execute (std::string& output)
                 context.tdb2.modify (*sibling);
                 ++count;
 
-                // TODO Feedback.
-                if (context.config.getBoolean ("echo.command"))
+                if (context.verbose ("affected") ||
+                    context.config.getBoolean ("echo.command")) // Deprecated 2.0
                   out << format (STRING_CMD_DELETE_RECURRING,
                                  sibling->id,
                                  sibling->get ("description"))
@@ -156,7 +156,8 @@ int CmdDelete::execute (std::string& output)
           context.tdb2.modify (*task);
           ++count;
 
-          if (context.config.getBoolean ("echo.command"))
+          if (context.verbose ("affected") ||
+              context.config.getBoolean ("echo.command")) // Deprecated 2.0
             out << format (STRING_CMD_DELETE_DELETING,
                            task->id,
                            task->get ("description"))

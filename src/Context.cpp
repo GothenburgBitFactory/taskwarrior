@@ -391,10 +391,8 @@ bool Context::verbose (const std::string& token)
     split (verbosity, config.get ("verbose"), ',');
   }
 
-  if (verbosity_legacy)
-    return true;
-
-  if (std::find (verbosity.begin (), verbosity.end (), token) != verbosity.end ())
+  if (verbosity_legacy ||
+      std::find (verbosity.begin (), verbosity.end (), token) != verbosity.end ())
     return true;
 
   return false;

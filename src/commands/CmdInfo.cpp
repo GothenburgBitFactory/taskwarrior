@@ -284,7 +284,7 @@ int CmdInfo::execute (std::string& output)
 
     view.set (row, 1, entry + " (" + age + ")");
 
-    // fg TODO deprecated
+    // fg TODO deprecated 2.0
     std::string color = task->get ("fg");
     if (color != "")
     {
@@ -293,7 +293,7 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 1, color);
     }
 
-    // bg TODO deprecated
+    // bg TODO deprecated 2.0
     color = task->get ("bg");
     if (color != "")
     {

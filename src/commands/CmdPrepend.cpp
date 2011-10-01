@@ -98,7 +98,8 @@ int CmdPrepend::execute (std::string& output)
           context.tdb2.modify (*sibling);
           ++changes;
 
-          if (context.config.getBoolean ("echo.command"))
+          if (context.verbose ("affected") ||
+              context.config.getBoolean ("echo.command")) // Deprecated 2.0
             out << format (STRING_CMD_PREPEND_DONE, sibling->id)
                 << "\n";
 
@@ -113,7 +114,8 @@ int CmdPrepend::execute (std::string& output)
 
   context.tdb2.commit ();
 
-  if (context.config.getBoolean ("echo.command"))
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
     out << format ((count == 1
                       ? STRING_CMD_PREPEND_SUMMARY
                       : STRING_CMD_PREPEND_SUMMARY_N),

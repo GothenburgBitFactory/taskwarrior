@@ -121,7 +121,8 @@ int CmdDenotate::execute (std::string& output)
       {
         ++count;
         context.tdb2.modify (*task);
-        if (context.config.getBoolean ("echo.command"))
+        if (context.verbose ("affected") ||
+            context.config.getBoolean ("echo.command")) // Deprecated 2.0
           out << format (STRING_CMD_DENO_FOUND, anno)
               << "\n";
       }

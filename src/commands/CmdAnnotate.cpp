@@ -87,7 +87,8 @@ int CmdAnnotate::execute (std::string& output)
         context.tdb2.modify (*task);
         ++count;
 
-        if (context.config.getBoolean ("echo.command"))
+        if (context.verbose ("affected") ||
+            context.config.getBoolean ("echo.command")) // Deprecated 2.0
           out << format (STRING_CMD_ANNO_DONE,
                          task->id,
                          task->get ("description"))
@@ -98,7 +99,8 @@ int CmdAnnotate::execute (std::string& output)
 
   context.tdb2.commit ();
 
-  if (context.config.getBoolean ("echo.command"))
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
     out << format ((count == 1
                       ? STRING_CMD_ANNO_SUMMARY
                       : STRING_CMD_ANNO_SUMMARY_N),

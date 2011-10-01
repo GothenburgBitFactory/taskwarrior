@@ -93,7 +93,8 @@ int CmdStart::execute (std::string& output)
           context.tdb2.modify (*task);
           ++count;
 
-          if (context.config.getBoolean ("echo.command"))
+          if (context.verbose ("affected") ||
+              context.config.getBoolean ("echo.command")) // Deprecated 2.0
             out << format (STRING_CMD_START_DONE,
                            task->id,
                            task->get ("description"))

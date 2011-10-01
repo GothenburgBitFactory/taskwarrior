@@ -98,7 +98,8 @@ int CmdAppend::execute (std::string& output)
         {
           context.tdb2.modify (*sibling);
 
-          if (context.config.getBoolean ("echo.command"))
+          if (context.verbose ("affected") ||
+              context.config.getBoolean ("echo.command")) // Deprecated 2.0
             out << format (STRING_CMD_APPEND_DONE, sibling->id)
                 << "\n";
 
@@ -113,7 +114,8 @@ int CmdAppend::execute (std::string& output)
 
   context.tdb2.commit ();
 
-  if (context.config.getBoolean ("echo.command"))
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
     out << format ((count == 1
                       ? STRING_CMD_APPEND_SUMMARY
                       : STRING_CMD_APPEND_SUMMARY_N),

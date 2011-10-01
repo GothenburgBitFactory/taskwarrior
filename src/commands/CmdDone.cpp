@@ -93,7 +93,8 @@ int CmdDone::execute (std::string& output)
           context.tdb2.modify (*task);
           ++count;
 
-          if (context.config.getBoolean ("echo.command"))
+          if (context.verbose ("affected") ||
+              context.config.getBoolean ("echo.command")) // Deprecated 2.0
             out << format (STRING_CMD_DONE_COMPLETED, task->id, task->get ("description"))
                 << "\n";
 
@@ -117,7 +118,8 @@ int CmdDone::execute (std::string& output)
 
   context.tdb2.commit ();
 
-  if (context.config.getBoolean ("echo.command"))
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
     out << format ((count == 1
                       ? STRING_CMD_DONE_MARKED
                       : STRING_CMD_DONE_MARKED_N),

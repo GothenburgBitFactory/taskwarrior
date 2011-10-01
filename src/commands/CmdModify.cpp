@@ -165,7 +165,8 @@ int CmdModify::execute (std::string& output)
 
   context.tdb2.commit ();
 
-  if (context.config.getBoolean ("echo.command"))
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
   {
     if (count == 1)
       out << format (STRING_CMD_MODIFY_TASK, count) << "\n";

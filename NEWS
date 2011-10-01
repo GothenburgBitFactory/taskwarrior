@@ -70,6 +70,7 @@ Newly deprecated features in taskwarrior 2.0.0
 
   - The 'next' configuration variable has been removed.
   - Use of 'fg:' and 'bg:' attributes are deprecated.
+  - Use of 'echo.command' configuration variable.
 
 ---
 

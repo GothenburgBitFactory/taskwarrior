@@ -143,7 +143,7 @@ int CmdShow::execute (std::string& output)
     " displayweeknumber"
     " dom"
     " due"
-    " echo.command"
+    " echo.command"                      // Deprecated 2.0
     " edit.verbose"
     " editor"
     " exit.on.missing.db"
