@@ -218,6 +218,7 @@ control specific occasions when output is generated.  This list may contain:
     footnote   Messages that appear after report output
     label      Column labels on tabular reports
     new-id     Provides feedback of any new task IDs
+    affected   Reports 'N tasks affected' and similar
 
 Note that the "on" setting is equivalent to all the tokens being specified,
 and the "off" setting is equivalent to none of the tokens being specified.
