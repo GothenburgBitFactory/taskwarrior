@@ -138,7 +138,8 @@ std::string CmdEdit::formatDate (
 std::string CmdEdit::formatTask (Task task)
 {
   std::stringstream before;
-  bool verbose = context.config.getBoolean ("edit.verbose");
+  bool verbose = context.verbose ("edit") ||
+                 context.config.getBoolean ("edit.verbose"); // Deprecated 2.0
 
   if (verbose)
     before << "# The 'task edit <id>' command allows you to modify all aspects of a task\n"

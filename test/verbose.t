@@ -51,6 +51,7 @@ unlike ($output, qr/Logged task/, '\'affected\' verbosity good');
 # TODO Verbosity: 'label'
 # TODO Verbosity: 'header'
 # TODO Verbosity: 'footer'
+# TODO Verbosity: 'edit'
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key verbose.rc);

@@ -200,7 +200,7 @@ environment variables, before it defaults to using "vi".
 When set to on (the default), helpful explanatory comments are added to the
 edited file when using the "task edit ..." command.  Setting this to off means
 that you would see a smaller, more compact representation of the task, with no
-help text.
+help text.  Deprecated - use verbosity token 'edit'.
 
 .SS MISCELLANEOUS
 
@@ -219,6 +219,7 @@ control specific occasions when output is generated.  This list may contain:
     label      Column labels on tabular reports
     new-id     Provides feedback of any new task IDs
     affected   Reports 'N tasks affected' and similar
+    edit       Used the verbose template for the 'edit' command
 
 Note that the "on" setting is equivalent to all the tokens being specified,
 and the "off" setting is equivalent to none of the tokens being specified.

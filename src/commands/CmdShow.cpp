@@ -144,7 +144,7 @@ int CmdShow::execute (std::string& output)
     " dom"
     " due"
     " echo.command"                      // Deprecated 2.0
-    " edit.verbose"
+    " edit.verbose"                      // Deprecated 2.0
     " editor"
     " exit.on.missing.db"
     " export.ical.class"
