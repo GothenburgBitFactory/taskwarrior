@@ -25,11 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <fstream>
 #include <sstream>
 #include <Context.h>
 #include <Uri.h>
 #include <Transport.h>
+#include <i18n.h>
 #include <text.h>
 #include <util.h>
 #include <CmdMerge.h>
@@ -41,7 +44,7 @@ CmdMerge::CmdMerge ()
 {
   _keyword     = "merge";
   _usage       = "task          merge URL";
-  _description = "Merges the specified undo.data file with the local data files.";
+  _description = STRING_CMD_MERGE_USAGE;
   _read_only   = false;
   _displays_id = false;
 }
@@ -88,13 +91,13 @@ int CmdMerge::execute (std::string& output)
 
     context.tdb2.merge (file);
 
-    output += "Merge complete.\n";
+    output += std::string (STRING_CMD_MERGE_COMPLETE) + "\n";
 
     if (tmpfile != "")
       remove (tmpfile.c_str ());
 
-    if ( ((sAutopush == "ask") && (confirm ("Would you like to push the merged changes to \'" + uri._data + "\'?")) )
-       || (bAutopush) )
+    if (((sAutopush == "ask") && (confirm (format (STRING_CMD_MERGE_CONFIRM, uri._data))))
+       || (bAutopush))
     {
       // Derive autopush uri from merge.default.uri? otherwise: change prompt above
 
@@ -117,9 +120,7 @@ int CmdMerge::execute (std::string& output)
     }
   }
   else
-    throw std::string ("No uri was specified for the merge.  Either specify "
-                       "the uri of a remote .task directory, or create a "
-                       "'merge.default.uri' entry in your .taskrc file.");
+    throw std::string (STRING_CMD_MERGE_NO_URI);
 
   return 0;
 }

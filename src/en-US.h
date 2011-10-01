@@ -355,7 +355,6 @@
 #define STRING_CMD_DIAG_UUID_GOOD    "1000 unique UUIDs generated."
 #define STRING_CMD_DIAG_UUID_BAD     "Failed - duplicate UUID at iteration {1}"
 #define STRING_CMD_DIAG_NONE         "-none-"
-
 #define STRING_CMD_PUSH_USAGE        "Pushes the local *.data files to the URL."
 #define STRING_CMD_PUSH_SAME         "Cannot push files when the source and destination are the same."
 #define STRING_CMD_PUSH_NONLOCAL     "The uri '{1}' is not a local directory."
@@ -414,6 +413,10 @@
 #define STRING_CMD_TIMESHEET_USAGE   "Shows a weekly report of tasks completed and started."
 #define STRING_CMD_TIMESHEET_STARTED "Started ({1} tasks)"
 #define STRING_CMD_TIMESHEET_DONE    "Completed ({1} tasks)"
+#define STRING_CMD_MERGE_USAGE       "Merges the specified undo.data file with the local data files."
+#define STRING_CMD_MERGE_COMPLETE    "Merge complete."
+#define STRING_CMD_MERGE_CONFIRM     "Would you like to push the merged changes to '{1}'?"
+#define STRING_CMD_MERGE_NO_URI      "No uri was specified for the merge.  Either specify the uri of a remote .task directory, or create a 'merge.default.uri' entry in your .taskrc file."
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
