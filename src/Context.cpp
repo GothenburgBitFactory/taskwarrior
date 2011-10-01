@@ -134,7 +134,7 @@ int Context::initialize (int argc, const char** argv)
     // The re-categorization allows all injected arguments to be properly given
     // a category.
     a3.categorize ();
-    a3.dump ("Context::initialize");  // TODO Remove.
+    a3.dump ("Context::initialize");
 
     // TODO Instantiate extension command objects.
     // TODO Instantiate default command object.
