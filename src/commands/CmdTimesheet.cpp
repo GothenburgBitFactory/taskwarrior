@@ -25,12 +25,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
 #include <Date.h>
 #include <main.h>
+#include <i18n.h>
+#include <text.h>
 #include <CmdTimesheet.h>
 
 extern Context context;
@@ -40,7 +44,7 @@ CmdTimesheet::CmdTimesheet ()
 {
   _keyword     = "timesheet";
   _usage       = "task          timesheet [weeks]";
-  _description = "Shows a weekly report of tasks completed and started.";
+  _description = STRING_CMD_TIMESHEET_USAGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -58,8 +62,7 @@ int CmdTimesheet::execute (std::string& output)
   // What day of the week does the user consider the first?
   int weekStart = Date::dayOfWeek (context.config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
-    throw std::string ("The 'weekstart' configuration variable may "
-                       "only contain 'Sunday' or 'Monday'.");
+    throw std::string (STRING_DATE_BAD_WEEKSTART);
 
   // Determine the date of the first day of the most recent report.
   Date today;
@@ -94,10 +97,10 @@ int CmdTimesheet::execute (std::string& output)
     // Render the completed table.
     ViewText completed;
     completed.width (context.getWidth ());
-    completed.add (Column::factory ("string", "   "));
-    completed.add (Column::factory ("string", "Project"));
-    completed.add (Column::factory ("string.right", "Due"));
-    completed.add (Column::factory ("string", "Description"));
+    completed.add (Column::factory ("string",       "   "));
+    completed.add (Column::factory ("string",       STRING_COLUMN_LABEL_PROJECT));
+    completed.add (Column::factory ("string.right", STRING_COLUMN_LABEL_DUE));
+    completed.add (Column::factory ("string",       STRING_COLUMN_LABEL_DESC));
 
     std::vector <Task>::iterator task;
     for (task = all.begin (); task != all.end (); ++task)
@@ -123,7 +126,7 @@ int CmdTimesheet::execute (std::string& output)
       }
     }
 
-    out << "  Completed (" << completed.rows () << " tasks)\n";
+    out << "  " << format (STRING_CMD_TIMESHEET_DONE, completed.rows ()) << "\n";
 
     if (completed.rows ())
       out << completed.render ()
@@ -132,10 +135,10 @@ int CmdTimesheet::execute (std::string& output)
     // Now render the started table.
     ViewText started;
     started.width (context.getWidth ());
-    started.add (Column::factory ("string", "   "));
-    started.add (Column::factory ("string", "Project"));
-    started.add (Column::factory ("string.right", "Due"));
-    started.add (Column::factory ("string", "Description"));
+    started.add (Column::factory ("string",       "   "));
+    started.add (Column::factory ("string",       STRING_COLUMN_LABEL_PROJECT));
+    started.add (Column::factory ("string.right", STRING_COLUMN_LABEL_DUE));
+    started.add (Column::factory ("string",       STRING_COLUMN_LABEL_DESC));
 
     for (task = all.begin (); task != all.end (); ++task)
     {
@@ -162,7 +165,7 @@ int CmdTimesheet::execute (std::string& output)
       }
     }
 
-    out << "  Started (" << started.rows () << " tasks)\n";
+    out << "  " << format (STRING_CMD_TIMESHEET_STARTED, started.rows ()) << "\n";
 
     if (started.rows ())
       out << started.render ()
