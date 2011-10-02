@@ -36,7 +36,7 @@
 //   - text output that the user sees
 //
 // Strings that should NOT be localized:
-//   - ./taskrc configuration variable names
+//   - .taskrc configuration variable names
 //   - command names
 //   - extension function names
 //   - certain literals associated with parsing
@@ -46,8 +46,8 @@
 //   - logical operators (and, or, xor)
 //
 // Rules:
-//   - Localized strings should contain leading or trailing white space,
-//     including \n, thus allowing the code to compose strings.
+//   - Localized strings should not in general  contain leading or trailing
+//     white space, including \n, thus allowing the code to compose strings.
 //   - Retain the tense of the original string.
 //   - Retain the same degree of verbosity of the original string.
 //
@@ -429,6 +429,10 @@
 #define STRING_CMD_BURN_DONE         "Done"             // Must be 7 or fewer characters
 #define STRING_CMD_BURN_PENDING      "Pending"          // Must be 7 or fewer characters
 #define STRING_CMD_BURN_NO_CONVERGE  "No convergence"
+#define STRING_CMD_HELP_USAGE        "Displays this usage help text"
+#define STRING_CMD_HELP_USAGE_LABEL  "Usage:"
+#define STRING_CMD_HELP_USAGE_DESC   "Runs rc.default.command, if specified."
+#define STRING_CMD_HELP_ALIASED      "Aliased to '{1}'"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."
@@ -593,6 +597,108 @@
 // utf8
 #define STRING_UTF8_INVALID_CP_REP   "Invalid codepoint representation."
 #define STRING_UTF8_INVALID_CP       "Invalid Unicode codepoint."
+
+// Usage text.  This is an exception, and contains \n characters and formatting.
+#define STRING_CMD_HELP_TEXT \
+  "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man " \
+  "task-tutorial', 'man task-color', 'man task-faq', 'man task-synch or at " \
+  "http://taskwarrior.org\n" \
+  "\n" \
+  "The general form of commands is:\n" \
+  "  task <filter> <command> <modifications>\n" \
+  "\n" \
+  "The <filter> consists of zero or more restrictions on which tasks to select, " \
+  "such as:\n" \
+  "  task                                      <command> <modifications>\n" \
+  "  task 28                                   <command> <modifications>\n" \
+  "  task +weekend                             <command> <modifications>\n" \
+  "  task project:Home due.before:today        <command> <modifications>\n" \
+  "  task ebeeab00-ccf8-464b-8b58-f7f2d606edfb <command> <modifications>\n" \
+  "\n" \
+  "By default, filter elements are combined with an implicit 'and' operator, but " \
+  "'or' and 'xor' may also be used, provided parentheses are included:\n" \
+  "  task '(/[Cc]at|[Dd]og/ or /[0-9]+/)'      <command> <modifications>\n" \
+  "\n" \
+  "A filter may target specific tasks using ID or UUID numbers.  To specify " \
+  "multiple tasks use one of these forms:\n" \
+  "  task 1,2,3                                    delete\n" \
+  "  task 1-3                                      info\n" \
+  "  task 1,2-5,19                                 modify pri:H\n" \
+  "  task 4-7 ebeeab00-ccf8-464b-8b58-f7f2d606edfb info\n" \
+  "\n" \
+  "The <modifications> consist of zero or more changes to apply to the selected " \
+  "tasks, such as:\n" \
+  "  task <filter> <command> project:Home\n" \
+  "  task <filter> <command> +weekend +garden due:tomorrow\n" \
+  "  task <filter> <command> Description/annotation text\n" \
+  "\n" \
+  "Tags are arbitrary words, any quantity:\n" \
+  "  +tag       The + means add the tag\n" \
+  "  -tag       The - means remove the tag\n" \
+  "\n" \
+  "Built-in attributes are:\n" \
+  "  description:    Task description text\n" \
+  "  status:         Status of task - pending, completed, deleted, waiting\n" \
+  "  project:        Project name\n" \
+  "  priority:       Priority\n" \
+  "  due:            Due date\n" \
+  "  recur:          Recurrence frequency\n" \
+  "  until:          Recurrence end date\n" \
+  "  limit:          Desired number of rows in report, or 'page'\n" \
+  "  wait:           Date until task becomes pending\n" \
+  "  entry:          Date task was created\n" \
+  "  end:            Date task was completed/deleted\n" \
+  "  start:          Date task was started\n" \
+  "\n" \
+  "Attribute modifiers make filters more precise.  Supported modifiers are:\n" \
+  "  before     (synonyms under, below)\n" \
+  "  after      (synonyms over, above)\n" \
+  "  none\n" \
+  "  any\n" \
+  "  is         (synonym equals)\n" \
+  "  isnt       (synonym not)\n" \
+  "  has        (synonym contains)\n" \
+  "  hasnt\n" \
+  "  startswith (synonym left)\n" \
+  "  endswith   (synonym right)\n" \
+  "  word\n" \
+  "  noword\n" \
+  "\n" \
+  "Alternately algebraic expressions support:\n" \
+  "  and  or  xor            Logical operators\n" \
+  "  <  <=  =  !=  >=  >     Relational operators\n" \
+  "  +  -                    Addition, subtraction\n" \
+  "  !                       Inversion\n" \
+  "  ~  !~                   Match, no match\n" \
+  "  (  )                    Precedence\n" \
+  "\n" \
+  "  For example:\n" \
+  "    task due.before:eom priority.not:L list\n" \
+  "    task '(due < eom or priority != L)'  list\n" \
+  "\n" \
+  "The default .taskrc file can be overridden with:\n" \
+  "  task ... rc:<alternate file> ...\n" \
+  "  task ... rc:~/.alt_taskrc ...\n" \
+  "\n" \
+  "The values in .taskrc (or alternate) can be overridden with:\n" \
+  "  task ... rc.<name>=<value> ...\n" \
+  "  task rc.color=off list\n" \
+  "\n" \
+  "Any command or attribute name may be abbreviated if still unique:\n" \
+  "  task list project:Home\n" \
+  "  task li       pro:Home\n" \
+  "\n" \
+  "Some task descriptions need to be escaped because of the shell:\n" \
+  "  task add \"quoted ' quote\"\n" \
+  "  task add escaped \\' quote\n" \
+  "\n" \
+  "The argument -- tells taskwarrior to treat all other args as description, even " \
+  "if they would otherwise be attributes or tags:\n" \
+  "  task add -- project:Home needs scheduling\n" \
+  "\n" \
+  "Many characters have special meaning to the shell, including:\n" \
+  "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~\n" \
+  "\n"
 
 // util
 #define STRING_UTIL_CONFIRM_YN       " (y/n) "
