@@ -50,13 +50,18 @@ int CmdSynch::execute (std::string& output)
 {
   // TODO Tempporary.
   std::cout << "\n"
-            << "Task Server Synchronization is not implemented in 2.0.0beta1.\n"
+            << "Task Server Synchronization is not implemented in 2.0.0beta3.\n"
             << "\n";
 
-  // TODO If no server is set up
-  //        throw std::string ("Task server is not configured.");
+  // If no server is set up, quit.
+  std::string connection = context.config.get ("taskd.server");
+  if (connection == "" ||
+      connection.find (':') == std::string::npos)
+    throw std::string (STRING_CMD_SYNCH_NO_SERVER);
 
-  // TODO Obtain credentials.
+  // Obtain credentials.
+  std::string credentials = context.config.get ("taskd.credentials");
+
   // TODO Obtain synch key.
 
   // TODO Compose backlog into ticket.
