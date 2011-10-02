@@ -190,6 +190,8 @@
    Owen Clarke).
  + Fixed bug #822, #845, which generated incorrect IDs (thanks to Matt Kraai and
    Michelle Crane).
+ + Fixed bug #824, which caused probles when completing recurring tasks (thanks
+   to Matt Kraai).
  + Fixed bug #831, which prevented some date fields from being properly parsed.
  + Fixed bug #835, which prevented hierarchical projects from being recognized.
  + Fixed bug #839, which caused problems when recurrence frequencies of '1m'
@@ -197,6 +199,8 @@
    Gour D).
  + Fixed bug #846, which prevented the default.command configuration from
    handling multiple arguments (thanks to Uli Martens).
+ + Fixed bug #850, which failed when newline characters were in a modified task
+   description.  They are now stripped (thanks to Aikido Guy).
  + Fixed bug #856, which prevented filters on missing project from working
    (thanks to Michelle Crane).
 
