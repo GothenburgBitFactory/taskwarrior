@@ -6,12 +6,13 @@ task \- A command line todo manager.
 NOTE THAT THIS DOCUMENT HAS NOT BEEN FULLY UPDATED FOR THE 2.0 RELEASE.
 
 .SH SYNOPSIS
-.B task [subcommand] [args]
+.B task <filter> <command> [ <mods> | <args> ]
 
 .SH DESCRIPTION
 Taskwarrior is a command line todo list manager. It maintains a list of tasks
 that you want to do, allowing you to add/remove, and otherwise manipulate them.
-Task has a rich list of subcommands that allow you to do various things with it.
+Taskwarrior has a rich set of subcommands that allow you to do various things
+with it.
 
 At the core, taskwarrior is a list processing program. You add text and
 additional related parameters and redisplay the information in a nice way.  It
@@ -21,127 +22,265 @@ descriptors), project groups, etc.  Taskwarrior turns into an organized to do
 list program when you modify the configuration file to have the output displayed
 the way you want to see it.
 
+.SH FILTER
+The <filter> consists of zero or more search criteria to select.  For example,
+to list all tasks belonging to the 'Home' project:
+
+  task project:Home list
+
+You can specify multiple filters, each of which further restrict the results:
+
+  task project:Home +weekend garden list
+
+This example applies three filters: the 'Home' project, the 'weekend' tag, and
+the description or annotations must contain the characters 'garden'.  In this
+example, 'garden' is translated internally to:
+
+  description.contains:garden
+
+as a convenient shortcut.  The 'contains' here is an attribute modifier, which
+is used to exert more control over the filter than simply absence or presence.
+See 'ATTRIBUTE MODIFIERS' for a complete list of modifiers.
+
+More filter examples:
+
+  task                                      <command> <mods>
+  task 28                                   <command> <mods>
+  task +weekend                             <command> <mods>
+  task project:Home due.before:today        <command> <mods>
+  task ebeeab00-ccf8-464b-8b58-f7f2d606edfb <command> <mods>
+
+By default, filter elements are combined with an implicit 'and' operator,
+but 'or' and 'xor' may also be used, provided parentheses are included:
+
+  task '(/[Cc]at|[Dd]og/ or /[0-9]+/)'      <command> <mods>
+
+The parentheses isolate the logical term from any default command filter or
+implicit report filter.
+
+A filter may target specific tasks using ID or UUID numbers.  To specify
+multiple tasks use one of these forms:
+
+  task 1,2,3                                    delete
+  task 1-3                                      info
+  task 1,2-5,19                                 modify pri:H
+  task 4-7 ebeeab00-ccf8-464b-8b58-f7f2d606edfb info
+
+.SH MODIFICATIONS
+
+The <mods> consist of zero or more changes to apply to the selected tasks, such
+as:
+
+  task <filter> <command> project:Home
+  task <filter> <command> +weekend +garden due:tomorrow
+  task <filter> <command> Description/annotation text
+  task <filter> <command> /from/to/
+
 .SH SUBCOMMANDS
 
+Taskwarrior supports different kinds of commands.  There are read commands,
+write commands, miscellaneous commands and script helper commands.  Read
+commands do not allow modification of tasks.  Write commands can alter almost
+any aspect of a task.  Script helper commands are provided to help you write
+add-on scripts, for example, shell completion.
+
+.SH READ SUBCOMMANDS
+
+Reports are read subcommands. There are several reports currently predefined in
+taskwarrior. The output and sort behavior of these reports can be configured in
+the configuration file. See also the man page taskrc(5).  There are also other
+read subcommands that are not reports.
+
 .TP
-.B add <modifications>
+.B task <filter> active
+Shows all tasks matching the filter that are started but not completed.
+
+.TP
+.B task <filter> all
+Shows all tasks matching the filter, including parents of recurring tasks.
+
+.TP
+.B task <filter> blocked
+Shows all blocked tasks, that are dependent on other tasks, matching the filter.
+
+.TP
+.B task <filter> burndown.daily
+Shows a graphical burndown chart, by day.  Note that 'burndown' is an alias to
+the 'burndown.daily' report.
+
+.TP
+.B task <filter> burndown.weekly
+Shows a graphical burndown chart, by week.
+
+.TP
+.B task <filter> burndown.monthly
+Shows a graphical burndown chart, by month.
+
+.TP
+.B task calendar [ y | due [y] | month year [y] | year ]
+Shows a monthly calendar with due tasks marked.
+
+.TP
+.B task colors [sample | legend]
+Displays all possible colors, a named sample, or a legend containing all
+currently defined colors.
+
+.TP
+.B task columns
+Displays all supported columns and formatting styles.
+
+.TP
+.B task <filter> completed
+Shows all tasks matching the filter that are completed.
+
+.TP
+.B task <filter> count
+Displays only a count of tasks matching the filter.
+
+.TP
+.B task <filter> export
+Exports all tasks in the JSON format.  Redirect the output to a file, if you
+wish to save it, or pipe it to another command or script to convert it to
+another format. The standard task release comes with a few example scripts,
+such as export-yaml.pl.
+
+.TP
+.B task <filter> ghistory.annual
+Shows a graphical report of task status by year.
+
+.TP
+.B task <filter> ghistory.monthly
+Shows a graphical report of task status by month.  Note that 'ghistory' is
+an alias to 'ghistory.monthly'.
+
+.TP
+.B task help
+Shows the long usage text.
+
+.TP
+.B task <filter> history.annual
+Shows a report of task history by year.
+
+.TP
+.B task <filter> history.monthly
+Shows a report of task history by month.  Note that 'history' is
+an alias to 'history.monthly'.
+
+.TP
+.B task <filter> ids
+Applies the filter then extracts only the task IDs and presents them as
+a range, for example: 1-4,12.  This is useful as input to a task command,
+to achieve this:
+
+	task $(task project:Home ids) modify priority:H
+
+This example first gets the IDs for the project:Home filter, then sets
+the priority to H for each of those tasks.
+
+.TP
+.B task <filter> information
+Shows all data and metadata for the specified tasks.
+
+.TP
+.B task <filter> list
+Provides a standard listing of tasks matching the filter.
+
+.TP
+.B task <filter> long
+Provides the most detailed listing of tasks matching the filter.
+
+.TP
+.B task <filter> ls
+Provides a short listing of tasks matching the filter.
+
+.TP
+.B task <filter> minimal
+Provides a minimal listing of tasks matching the filter.
+
+.TP
+.B task <filter> newest
+Shows the newest tasks matching the filter.
+
+.TP
+.B task <filter> next
+Shows a page of the most urgent tasks, sorted by urgency, which is a calculated
+value.
+
+.TP
+.B task <filter> oldest
+Shows the oldest tasks matching the filter.
+
+.TP
+.B task <filter> overdue
+Shows all incomplete tasks matching the filter that are beyond their due date.
+
+.TP
+.B task <filter> projects
+Lists all project names that are currently used by pending tasks, and the
+number of tasks for each.
+
+.TP
+.B task <filter> recurring
+Shows all recurring tasks matching the filter.
+
+.TP
+.B task <filter> unblocked
+Shows all tasks that are not blocked by dependencies, matching the filter.
+
+.TP
+.B task <filter> waiting
+Shows all waiting tasks matching the filter.
+
+.SH WRITE SUBCOMMANDS
+
+.TP
+.B task add <mods>
 Adds a new task to the task list.
 
 .TP
-.B log <modifications>
-Adds a new task that is already completed, to the task list.
-
-.TP
-.B <filter> annotate <modifications>
+.B task <filter> annotate <mods>
 Adds an annotation to an existing task.
 
 .TP
-.B <filter> denotate <modifications>
+.B task <filter> append <mods>
+Appends description text to an existing task.
+
+.TP
+.B task <filter> delete <mods>
+Deletes the specified task from task list.
+
+.TP
+.B task <filter> denotate <mods>
 Deletes an annotation for the specified task. If the provided description
 matches an annotation exactly, the corresponding annotation is deleted. If the
 provided description matches annotations partly, the first partly matched
 annotation is deleted.
 
 .TP
-.B <filter> information
-Shows all data and metadata for the specified task.
-
-.TP
-.B undo
-Reverts the most recent action.  Obeys the confirmation setting.
-
-.TP
-.B shell
-Launches an interactive shell with all the task commands available.
-
-.TP
-.B <filter> duplicate <modifications>
-Duplicates the specified task and allows modifications.
-
-.TP
-.B <filter> delete <modifications>
-Deletes the specified task from task list.
-
-.TP
-.B <filter> start <modifications>
-Marks the specified task as started.
-
-.TP
-.B <filter> stop <modifications>
-Removes the
-.I start
-time from the specified task.
-
-.TP
-.B <filter> done <modifications>
+.B task <filter> done <mods>
 Marks the specified task as done.
 
 .TP
-.B <filter> projects
-Lists all project names that are currently used by pending tasks, and the
-number of tasks for each.
+.B task <filter> duplicate <mods>
+Duplicates the specified task and allows modifications.
 
 .TP
-.B <filter> tags
-Show a list of all tags used.  Any special tags used are highlighted.
+.B task <filter> edit
+Launches a text editor to let you modify all aspects of a task directly.
+In general, this is not the recommended method of modifying tasks, but is
+provided for exceptional circumstances.  Use carefully.
 
 .TP
-.B <filter> summary
-Shows a report of task status by project.
+.B task import \fIfile
+Imports tasks in the JSON format.  The standard task release comes with a few
+example scripts, such as import-yaml.pl.
 
 .TP
-.B timesheet [weeks]
-Shows a weekly report of tasks completed and started.
+.B task log <mods>
+Adds a new task that is already completed, to the task list.
 
 .TP
-.B <filter> history
-Shows a report of task history by month.  Alias to history.monthly.
-
-.TP
-.B <filter> history.annual
-Shows a report of task history by year.
-
-.TP
-.B <filter> ghistory
-Shows a graphical report of task status by month.  Alias to ghistory.monthly.
-
-.TP
-.B <filter> ghistory.annual
-Shows a graphical report of task status by year.
-
-.TP
-.B <filter> burndown.daily
-Shows a graphical burndown chart, by day.
-
-.TP
-.B <filter> burndown.weekly
-Shows a graphical burndown chart, by week.
-
-.TP
-.B <filter> burndown.monthly
-Shows a graphical burndown chart, by month.
-
-.TP
-.B calendar [ y | due [y] | month year [y] | year ]
-Shows a monthly calendar with due tasks marked.
-
-.TP
-.B <filter> stats
-Shows task database statistics.
-
-.TP
-.B import \fIfile
-Imports tasks in a variety of formats, from file or URL.
-
-.TP
-.B export
-Exports all tasks in the JSON format.  Redirect the output to a file, if you
-wish to save it, or pipe it to another command or script to convert it to
-another format. The standard task release comes with a few exampel scripts,
-like export-yaml.pl.
-
-.TP
-.B merge <URL>
+.B task merge <URL>
 Merges two task databases by comparing the modifications that are stored in the
 undo.data files. The location of the second undo.data file must be passed on as
 argument. URL may have the following syntaxes:
@@ -154,64 +293,45 @@ argument. URL may have the following syntaxes:
 
 	/path/to/local/.task/
 
-You can set aliases for frequently used URLs in the .taskrc. Further documentation
-can be found in task-sync(5) manpage.
+You can set aliases for frequently used URLs in the .taskrc. Further
+documentation can be found in task-sync(5) man page.
 
 .TP
-.B push <URL>
+.B task <filter> modify <mods>
+Modifies the existing task with provided information.
+
+.TP
+.B task <filter> prepend <mods>
+Prepends description text to an existing task.
+
+.TP
+.B task pull <URL>
+Overwrites the task database with those files found at the URL.
+(See 'merge' command for valid URL syntax.)
+
+.TP
+.B task push <URL>
 Pushes the task database to a remote another location for distributing the
 changes made by the merge command.
-
-(See annotations above for valid URL syntaxes.)
-
-.TP
-.B pull <URL>
-Overwrites the task database with those files found at the URL.
-
-(See annotations above for valid URL syntaxes.)
+(See 'merge' command for valid URL syntax.)
 
 .TP
-.B color [sample | legend]
-Displays all possible colors, a named sample, or a legend containing all
-currently defined colors.
+.B task <filter> start <mods>
+Marks the specified tasks as started.
 
 .TP
-.B <filter> count
-Displays only a count of tasks matching the filter.
+.B task <filter> stop <mods>
+Removes the
+.I start
+time from the specified task.
+
+.SH MISCELLANEOUS SUBCOMMANDS
+
+Miscellaneous subcommands either accept no command line arguments, or accept
+non-standard arguments.
 
 .TP
-.B <filter> ids
-Applies the filter then extracts only the task IDs and presents them as
-a range, for example: 1-4,12.  This is useful as input to a task command,
-to achieve this:
-
-	task modify priority:H $(task project:Home ids)
-
-This example first gets the IDs for the project:Home filter, then sets
-the priority to H for each of those tasks.
-
-.TP
-.B execute <external command>
-Executes the specified command.  Not useful by itself, but when used in
-conjunction with aliases and extensions can provide seamless extension
-integration.
-
-.TP
-.B version
-Shows the taskwarrior version number
-
-.TP
-.B help
-Shows the long usage text.
-
-.TP
-.B show [all | substring]"
-Shows all the current settings in the taskwarrior configuration file. If a
-substring is specified just the settings containing that substring will be
-displayed.
-
-.TP
-.B config [name [value | '']]
+.B task config [name [value | '']]
 Add, modify and remove settings directly in the taskwarrior configuration.
 This command either modifies the 'name' setting with a new value of 'value',
 or adds a new entry that is equivalent to 'name=value':
@@ -227,114 +347,110 @@ Finally, this command removes any 'name=...' entry from the .taskrc file:
 
     task config name
 
-.SH MODIFYING SUBCOMMANDS
+.TP
+.B task diagnostics
+Shows diagnostic information, of the kind needed when reporting a problem.
+When you report a bug, it is likely that the platform, version, and environment
+are important.  Running this command generates a summary of similar information
+that should accompany a bug report.
+
+It includes compiler, library and software information.  It does not include
+any personal information, other than the location and size of your task data
+files.
 
 .TP
-.B <filter> modify <modifications>
-Modifies the existing task with provided information.
+.B task execute <external command>
+Executes the specified command.  Not useful by itself, but when used in
+conjunction with aliases and extensions can provide seamless integration.
 
 .TP
-.B <filter> edit
-Launches an editor to let you modify all aspects of a task directly.
-In general, this is not the recommended method of modifying tasks, but is
-provided for exceptional circumstances.  Use carefully.
+.B task logo
+Displays the taskwarrior logo.
 
 .TP
-.B <filter> append <modifications>
-Appends information to an existing task.
+.B task reports
+Lists all supported reports.  This includes the built-in reports, and any custom
+reports you have defined.
 
 .TP
-.B <filter> prepend <modifications>
-Prepends information to an existing task.
-
-.SH REPORT SUBCOMMANDS
-
-A report is a listing of information from the task database. There are several
-reports currently predefined in taskwarrior. The output and sort behavior of
-these reports can be configured in the configuration file. See also the man page
-taskrc(5).
+.B task shell
+Launches an interactive shell with all the task commands available.
 
 .TP
-.B <filter> active
-Shows all tasks matching the filter that are started but not completed.
+.B task show [all | substring]
+Shows all the current settings in the taskwarrior configuration file.  If a
+substring is specified just the settings containing that substring will be
+displayed.
 
 .TP
-.B <filter> all
-Shows all tasks matching the filter, including parents of recurring tasks.
+.B task <filter> stats
+Shows statistics of the tasks defined by the filter.
 
 .TP
-.B <filter> completed
-Shows all tasks matching the filter that are completed.
+.B task <filter> summary
+Shows a report of task status by project.
 
 .TP
-.B <filter> minimal
-Provides a minimal listing of tasks matching the filter.
+.B task synchronize
+Synchronizes task data with the task server, if configured.
 
 .TP
-.B <filter> ls
-Provides a short listing of tasks matching the filter.
+.B task <filter> tags
+Show a list of all tags used.  Any special tags used are highlighted.
 
 .TP
-.B <filter> list
-Provides a more detailed listing of tasks matching the filter.
+.B task timesheet [weeks]
+Shows a weekly report of tasks completed and started.
 
 .TP
-.B <filter> long
-Provides the most detailed listing of tasks with filter.
+.B task undo
+Reverts the most recent action.  Obeys the confirmation setting.
 
 .TP
-.B <filter> newest
-Shows the newest tasks with filter.
+.B task version
+Shows the taskwarrior version number.
+
+.SH HELPER SUBCOMMANDS
 
 .TP
-.B <filter> oldest
-Shows the oldest tasks with filter
+.B task _columns
+Displays only a list of supported columns.
 
 .TP
-.B <filter> overdue
-Shows all incomplete tasks matching the filter
-that are beyond their due date.
+.B task _commands
+Generates a list of all commands, for autocompletion purposes.
 
 .TP
-.B <filter> recurring
-Shows all recurring tasks matching the filter.
+.B task _config
+Lists all supported configuration variables, for completion purposes.
 
 .TP
-.B <filter> waiting
-Shows all waiting tasks matching the filter.
+.B task <filter> _ids
+Shows only the IDs of matching tasks, in the form of a list.
 
 .TP
-.B <filter> blocked
-Shows all blocked tasks, that are dependent on other tasks, matching the filter.
+.B task <filter> _projects
+Shows only a list of all project names used.
 
 .TP
-.B <filter> unblocked
-Shows all tasks that are not blocked by dependencies, matching the filter.
+.B task <filter> _tags
+Shows only a list of all tags used, for autocompletion purposes.
 
 .TP
-.B <filter> next
-Shows a page of the most urgent tasks.  Urgency is a calculated value.
+.B task <filter> _urgency
+Displays the urgency measure of a task.
 
-.SH FILTERS
+.TP
+.B task _version
+Shows only the taskwarrior version number.
 
-A filter is a set of search criteria that the report applies before displaying
-the results.  For example, to list all tasks belonging to the 'Home' project:
+.TP
+.B task _zshcommands
+Generates a list of all commands, for zsh autocompletion purposes.
 
-    task project:Home list
-
-You can specify multiple filters, each of which further restrict the results:
-
-    task project:Home +weekend garden list
-
-This example applies three filters: the 'Home' project, the 'weekend' tag, and
-the description or annotations must contain the characters 'garden'.  In this
-example, 'garden' is translated internally to:
-
-    description.contains:garden
-
-as a convenient shortcut.  The 'contains' here is an attribute modifier, which
-is used to exert more control over the filter than simply absence or presence.
-See 'ATTRIBUTE MODIFIERS' for a complete list of modifiers.
+.TP
+.B task <filter> _zshids
+Shows the IDs and descriptions of matching tasks.
 
 .SH ATTRIBUTES AND METADATA
 
@@ -366,8 +482,8 @@ exempt from all color rules.  The supported special tags are:
 Specifies the project to which a task is related to.
 
 .TP
-.B priority:H|M|L|N
-Specifies High, Medium, Low and No priority for a task.
+.B priority:H|M|L    or    priority:
+Specifies High, Medium, Low and no priority for a task.
 
 .TP
 .B due:<due-date>
@@ -413,8 +529,7 @@ attribute cannot be directly specified using task add, and should not be edited
 after creating the task.
 
 .SH ATTRIBUTE MODIFIERS
-Attribute modifiers improve filters.  Prefixing any modifier with '~' returns
-the complementary set of items.  Supported modifiers are:
+Attribute modifiers improve filters.  Supported modifiers are:
 
 .RS
 .B before     (synonyms under, below)
@@ -491,7 +606,7 @@ modifier is used to search for a substring, such as:
     task description.has:foo list
     task foo                 list
 
-which are equivalent and will return any task that has 'foo' in the description
+These are equivalent and will return any task that has 'foo' in the description
 or annotations.
 
 The
@@ -510,7 +625,6 @@ modifier matches against the left, or beginning of an attribute, such that:
 are equivalent and will match any project starting with 'H'.  Matching all
 projects not starting with 'H' is done with:
 
-    task project.~startswith:H list
     task project.not:H         list
 
 The
@@ -524,13 +638,72 @@ that this:
 
     task description.word:bar list
 
-will match the description 'foo bar baz' but does not match 'dog food'.
+Will match the description 'foo bar baz' but does not match 'dog food'.
 
 The
 .I noword
 modifier is the inverse of the
 .I word
 modifier.
+
+.SH EXPRESSIONS AND OPERATORS
+
+You can use the following operators in filter expressions:
+
+  and  or  xor            Logical operators
+  <  <=  =  !=  >=  >     Relational operators
+  +  -                    Addition, subtraction
+  !                       Inversion
+  ~  !~                   Match, no match
+  (  )                    Precedence
+
+For example:
+
+  task due.before:eom priority.not:L list
+  task '(due < eom or priority != L)'  list
+
+Note that the parentheses are required when using a logical operator other than
+the 'and' operator.  The reason is that some report contains filters that must
+be combined with the command line.  Consider this example:
+
+  task project:Home or project:Garden list
+
+While this looks correct, it is not.  The 'list' report contains a filter of:
+
+  task show report.list.filter
+
+  Config Variable    Value
+  -----------------  --------------
+  report.list.filter status:pending
+
+Which means the example is really:
+
+  task status:pending project:Home or project:Garden list
+
+The implied 'and' operator makes it:
+
+  task status:pending and project:Home or project:Garden list
+
+This is a precedence error - the 'and' and 'or' need to be grouped using
+parentheses, like this:
+
+  task status:pending and (project:Home or project:Garden) list
+
+The original example therefore must be entered as:
+
+  task '(project:Home or project:Garden)' list
+
+This includes quotes to escape the parentheses, so that the shell doesn't
+interpret them and hide them from taskwarrior.
+
+There is redundancy between operators, attribute modifiers and other syntactic
+sugar.  For example, the following are all equivalent:
+
+  task foo                      list
+  task /foo/                    list
+  task description.contains:foo list
+  task description.has:foo      list
+  task 'description ~ foo'      list
 
 .SH SPECIFYING DATES AND FREQUENCIES
 
@@ -615,7 +788,7 @@ of recurring tasks.
 
 .RS
 .TP
-daily, day, 1d, 2d, ...
+daily, day, 1da, 2da, ...
 Every day or a number of days.
 
 .TP
@@ -623,7 +796,7 @@ weekdays
 Mondays, Tuesdays, Wednesdays, Thursdays, Fridays and skipping weekend days.
 
 .TP
-weekly, 1w, 2w, ...
+weekly, 1wk, 2wks, ...
 Every week or a number of weeks.
 
 .TP
@@ -631,7 +804,7 @@ biweekly, fortnight
 Every two weeks.
 
 .TP
-quarterly, 1q, 2q, ...
+quarterly, 1qtr, 2qtrs, ...
 Every three months, a quarter, or a number of quarters.
 
 .TP
@@ -639,14 +812,13 @@ semiannual
 Every six months.
 
 .TP
-annual, yearly, 1y, 2y, ...
+annual, yearly, 1yr, 2yrs, ...
 Every year or a number of years.
 
 .TP
-biannual, biyearly, 2y
+biannual, biyearly, 2yr
 Every two years.
 .RE
-
 
 .SH COMMAND ABBREVIATION
 All taskwarrior commands may be abbreviated as long as a unique prefix is used,
@@ -669,6 +841,13 @@ $ task l
 .RE
 
 could be list, ls or long.
+
+Note that you can restrict the minimum abbreviation size using the configuration
+setting:
+
+.RS
+abbreviation.minimum=3
+.RE
 
 .SH SPECIFYING DESCRIPTIONS
 Some task descriptions need to be escaped because of the shell
@@ -712,9 +891,10 @@ Specifies an alternate configuration file.
 
 .TP
 .B task rc.<name>:<value> ...
+.B task rc.<name>=<value> ...
 Specifies individual configuration file overrides.
 
-.SH EXAMPLES
+.SH MORE EXAMPLES
 
 For examples please see the task tutorial man page at
 
@@ -731,30 +911,38 @@ or the online documentation starting at
 .SH FILES
 
 .TP
-~/.taskrc User configuration file - see also taskrc(5).
+~/.taskrc
+User configuration file - see also taskrc(5).
 
 .TP
-~/.task The default directory where task stores its data files. The location
+~/.task
+The default directory where task stores its data files. The location
 can be configured in the configuration file.
 
 .TP
-~/.task/pending.data The file that contains the tasks that are not yet done.
+~/.task/pending.data
+The file that contains the tasks that are not yet done.
 
 .TP
-~/.task/completed.data The file that contains the completed "done" tasks.
+~/.task/completed.data
+The file that contains the completed "done" tasks.
 
 .TP
-~/.task/undo.data The file that contains the information to the "undo" command.
+~/.task/undo.data
+The file that contains the information to the "undo" command.
+
+.TP
+~/.task/backlog.data
+The file that contains un-synched tasks, if the task server
+is configured.
+
+.TP
+~/.task/synch.key
+The file that contains the synchronization key, if the task
+server is configured.
 
 .SH "CREDITS & COPYRIGHTS"
-Taskwarrior was written by P. Beckingham <paul@beckingham.net>.
-.br
-Copyright (C) 2006 \- 2011 P. Beckingham
-
-This man page was originally written by P.C. Shyamshankar, and has been modified
-and supplemented by Federico Hernandez.
-
-Thank also to T. Charles Yun.
+Copyright (C) 2006 \- 2011 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the GNU General Public License.  See
 http://www.gnu.org/licenses/gpl-2.0.txt for more information.
