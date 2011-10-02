@@ -316,7 +316,7 @@
 #define STRING_CMD_ANNO_DONE         "Annotated {1} '{2}'"
 #define STRING_CMD_ANNO_SUMMARY      "Annotated {1} task."
 #define STRING_CMD_ANNO_SUMMARY_N    "Annotated {1} tasks."
-#define STRING_CMD_COLUMNS_USAGE     "Displays supported columns and styles"
+#define STRING_CMD_COLUMNS_USAGE     "Displays all supported columns and formatting styles"
 #define STRING_CMD_COLUMNS_NOTE      "* Means default format, and therefore optional.  For example, 'due' and 'due.formatted' are equivalent."
 #define STRING_CMD_COLUMNS_USAGE2    "Displays only a list of supported columns"
 #define STRING_CMD_DENO_USAGE        "Deletes an annotation"
@@ -335,7 +335,7 @@
 #define STRING_CMD_SHELL_HELP2       "There is no need to include the 'task' command itself."
 #define STRING_CMD_SHELL_HELP3       "Enter 'quit' (or 'bye', 'exit') to end the session."
 #define STRING_CMD_SYNCH_USAGE       "(Not implemented for 2.0.0beta2)"
-#define STRING_CMD_DIAG_USAGE        "Shows information needed when reporting a problem."
+#define STRING_CMD_DIAG_USAGE        "Shows information needed when reporting a problem"
 #define STRING_CMD_DIAG_PLATFORM     "Platform"
 #define STRING_CMD_DIAG_UNKNOWN      "<unknown>"
 #define STRING_CMD_DIAG_COMPILER     "Compiler"
@@ -355,12 +355,12 @@
 #define STRING_CMD_DIAG_UUID_GOOD    "1000 unique UUIDs generated."
 #define STRING_CMD_DIAG_UUID_BAD     "Failed - duplicate UUID at iteration {1}"
 #define STRING_CMD_DIAG_NONE         "-none-"
-#define STRING_CMD_PUSH_USAGE        "Pushes the local *.data files to the URL."
+#define STRING_CMD_PUSH_USAGE        "Pushes the local *.data files to the URL"
 #define STRING_CMD_PUSH_SAME         "Cannot push files when the source and destination are the same."
 #define STRING_CMD_PUSH_NONLOCAL     "The uri '{1}' is not a local directory."
 #define STRING_CMD_PUSH_TRANSFERRED  "Local tasks transferred to {1}"
 #define STRING_CMD_PUSH_NO_URI       "No uri was specified for the push.  Either specify the uri of a remote .task directory, or create a 'push.default.uri' entry in your .taskrc file."
-#define STRING_CMD_PULL_USAGE        "Overwrites the local *.data files with those found at the URL."
+#define STRING_CMD_PULL_USAGE        "Overwrites the local *.data files with those found at the URL"
 #define STRING_CMD_PULL_SAME         "Cannot pull files when the source and destination are the same."
 #define STRING_CMD_PULL_TRANSFERRED  "Local tasks transferred from {1}"
 #define STRING_CMD_PULL_NO_URI       "No uri was specified for the pull.  Either specify the uri of a remote .task directory, or create a 'pull.default.uri' entry in your .taskrc file."
@@ -380,7 +380,7 @@
 #define STRING_CMD_MODIFY_PROCEED    "Proceed with change?"
 #define STRING_CMD_MODIFY_TASK       "Modified {1} task."
 #define STRING_CMD_MODIFY_TASKS      "Modified {1} tasks."
-#define STRING_CMD_COLOR_USAGE       "Displays all possible colors, a named sample, or a legend containing all currently defined colors."
+#define STRING_CMD_COLOR_USAGE       "Displays all possible colors, a named sample, or a legend containing all currently defined colors"
 #define STRING_CMD_COLOR_HERE        "Here are the colors currently in use:"
 #define STRING_CMD_COLOR_COLOR       "Color"
 #define STRING_CMD_COLOR_DEFINITION  "Definition"
@@ -394,7 +394,7 @@
 #define STRING_CMD_COLOR_RAMP        "Gray ramp"
 #define STRING_CMD_COLOR_TRY         "Try running '{1}'."
 #define STRING_CMD_COLOR_OFF         "Color is currently turned off in your .taskrc file.  To enable color, remove the line 'color=off', or change the 'off' to 'on'."
-#define STRING_CMD_CONFIG_USAGE      "Add, modify and remove settings in the task configuration."
+#define STRING_CMD_CONFIG_USAGE      "Add, modify and remove settings in the task configuration"
 #define STRING_CMD_CONFIG_CONFIRM    "Are you sure you want to change the value of '{1}' from '{2}' to '{3}'?"
 #define STRING_CMD_CONFIG_CONFIRM2   "Are you sure you want to add '{1}' with a value of '{2}'?"
 #define STRING_CMD_CONFIG_CONFIRM3   "Are you sure you want to remove '{1}'?"
@@ -402,7 +402,7 @@
 #define STRING_CMD_CONFIG_FILE_MOD   "Config file {1} modified."
 #define STRING_CMD_CONFIG_NO_CHANGE  "No changes made."
 #define STRING_CMD_CONFIG_NO_NAME    "Specify the name of a config variable to modify."
-#define STRING_CMD_HCONFIG_USAGE     "Lists all supported configuration variables, for completion purposes."
+#define STRING_CMD_HCONFIG_USAGE     "Lists all supported configuration variables, for completion purposes"
 #define STRING_CMD_CUSTOM_MISMATCH   "There are different numbers of columns and labels for report '{1}'."
 #define STRING_CMD_CUSTOM_OLD_SORT   "Deprecated sort field '{1}' used.  Please modify this to '{2}'."
 #define STRING_CMD_CUSTOM_OLD_FIELD  "Deprecated report field '{1}' used.  Please modify this to '{2}'."
@@ -410,10 +410,10 @@
 #define STRING_CMD_CUSTOM_COUNT      "1 task"
 #define STRING_CMD_CUSTOM_COUNTN     "{1} tasks"
 #define STRING_CMD_CUSTOM_TRUNCATED  "truncated to {1} lines"
-#define STRING_CMD_TIMESHEET_USAGE   "Shows a weekly report of tasks completed and started."
+#define STRING_CMD_TIMESHEET_USAGE   "Shows a weekly report of tasks completed and started"
 #define STRING_CMD_TIMESHEET_STARTED "Started ({1} tasks)"
 #define STRING_CMD_TIMESHEET_DONE    "Completed ({1} tasks)"
-#define STRING_CMD_MERGE_USAGE       "Merges the specified undo.data file with the local data files."
+#define STRING_CMD_MERGE_USAGE       "Merges the specified undo.data file with the local data files"
 #define STRING_CMD_MERGE_COMPLETE    "Merge complete."
 #define STRING_CMD_MERGE_CONFIRM     "Would you like to push the merged changes to '{1}'?"
 #define STRING_CMD_MERGE_NO_URI      "No uri was specified for the merge.  Either specify the uri of a remote .task directory, or create a 'merge.default.uri' entry in your .taskrc file."
@@ -672,9 +672,8 @@
   "  ~  !~                   Match, no match\n" \
   "  (  )                    Precedence\n" \
   "\n" \
-  "  For example:\n" \
-  "    task due.before:eom priority.not:L list\n" \
-  "    task '(due < eom or priority != L)'  list\n" \
+  "  task due.before:eom priority.not:L   list\n" \
+  "  task '(due < eom or priority != L)'  list\n" \
   "\n" \
   "The default .taskrc file can be overridden with:\n" \
   "  task ... rc:<alternate file> ...\n" \
