@@ -32,6 +32,7 @@
 #include <algorithm>
 #include <text.h>
 #include <i18n.h>
+#include <main.h>
 #include <Context.h>
 #include <Directory.h>
 #include <ViewText.h>
@@ -304,8 +305,9 @@ int CmdShow::execute (std::string& output)
       out << "  " << format (STRING_CMD_SHOW_DIFFER_COLOR, warning.colorize ("color"));
   }
 
-  out << context.config.checkForDeprecatedColor ();
-  out << context.config.checkForDeprecatedColumns ();
+  out << legacyCheckForDeprecatedColor ();
+  out << legacyCheckForDeprecatedColumns ();
+
   // TODO Check for referenced but missing theme files.
   // TODO Check for referenced but missing string files.
   // TODO Check for referenced but missing tips files.
