@@ -120,7 +120,6 @@ int CmdShow::execute (std::string& output)
     " color.undo.after"
     " color.undo.before"
     " column.padding"
-    " column.spacing"
     " complete.all.projects"
     " complete.all.tags"
     " confirmation"
@@ -147,7 +146,6 @@ int CmdShow::execute (std::string& output)
     " edit.verbose"                      // Deprecated 2.0
     " editor"
     " exit.on.missing.db"
-    " export.ical.class"
     " expressions"
     " extensions"
     " fontunderline"
@@ -169,7 +167,6 @@ int CmdShow::execute (std::string& output)
     " monthsperline"
     " nag"
     " patterns"
-    " project"
     " pull.default.uri"
     " push.default.uri"
     " recurrence.indicator"
