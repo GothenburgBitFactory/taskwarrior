@@ -261,7 +261,8 @@ include other files into the .taskrc file, different sets of color rules can
 be included.
 
 To get a good idea of what a color theme looks like, try adding this entry to
-your .taskrc file:
+your .taskrc file (note that your installation may use a slightly different path
+from the example):
 
 .RS
 include /usr/local/share/doc/task/rc/dark-256.theme
@@ -303,11 +304,7 @@ Better yet, create your own, and share it.  We will gladly host the theme file
 on <http://taskwarrior.org>.
 
 .SH "CREDITS & COPYRIGHTS"
-Taskwarrior was written by P. Beckingham <paul@beckingham.net>.
-.br
-Copyright (C) 2006 \- 2011 P. Beckingham
-
-This man page was originally written by Paul Beckingham.
+Copyright (C) 2006 \- 2011 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the GNU General Public License. See
 http://www.gnu.org/licenses/gpl-2.0.txt for more information.
