@@ -3,8 +3,6 @@
 .SH NAME
 task-tutorial \- A tutorial for the task(1) command line todo manager.
 
-NOTE THAT THIS DOCUMENT HAS NOT YET BEEN UPDATED FOR THE 2.0 RELEASE.
-
 .SH DESCRIPTION
 This tutorial contains a narrative and a series of commands that lead you
 through different scenarios and illustrate the capabilities of taskwarrior.
@@ -163,7 +161,7 @@ by the 'g' at the end.  You could omit the 'g', and it would only make the first
 substitution.
 
 .RS
-$ task 7 /teh/the/g
+$ task 7 modify /teh/the/g
 .br
 Modified 1 task.
 .br
@@ -199,7 +197,7 @@ Let's assign that last task to the 'home' project.  Note that a task may only
 belong to one project.
 
 .RS
-$ task 7 project:home
+$ task 7 modify project:home
 .br
 The scope of project 'home' has changed.  Project 'home' is 0% complete (1 of 1 tasks remaining).
 .br
@@ -211,11 +209,11 @@ specify a range of tasks?  Taskwarrior will want to confirm bulk changes like
 this, but we'll accept all changes here.
 
 .RS
-$ task 1-6 project:party
+$ task 1-6 modify project:party
 .br
 
 .br
-Task 1 "Select a free weekend in November"
+Task 1 modify "Select a free weekend in November"
 .br
   - project will be set to 'party'.
 .br
@@ -260,7 +258,7 @@ party       6        6     0     0     0
 .br
 2 projects (7 tasks)
 .br
-$ task list project:home
+$ task project:home list
 .br
 
 .br
@@ -274,7 +272,7 @@ ID Project Pri Due Active Age    Description
 .br
 1 task
 .br
-$ task li pro:par
+$ task pro:par li
 .br
 
 .br
@@ -304,11 +302,11 @@ Priorities are another way to organize tasks.  You can use priority values of
 high, medium and low, and taskwarrior knows these as H, M or L.
 
 .RS
-$ task 1-3,5 priority:H
+$ task 1-3,5 modify priority:H
 .br
 
 .br
-Task 1 "Select a free weekend in November"
+Task 1 modify "Select a free weekend in November"
 .br
   - priority will be set to 'H'.
 .br
@@ -350,7 +348,7 @@ ID Project Pri Due Active Age     Description
 You can remove priorities by specifying a blank value.
 
 .RS
-$ task 3 pri:
+$ task 3 modify pri:
 .br
 Modified 1 task.
 .RE
@@ -361,11 +359,11 @@ just single words associated with the task.  I can go to the print shop at the
 mall, and do all the invitation tasks, so let's tag them all.
 
 .RS
-$ task 3,5,6 +mall
+$ task 3,5,6 modfy +mall
 .br
 
 .br
-Task 3 "Mail invitations"
+Task 3 modify "Mail invitations"
 .br
   - tags will be set to 'mall'.
 .br
@@ -409,7 +407,7 @@ ID Project Pri Added      Started Due Recur Countdown Age     Deps Tags Descript
 and I can use tags as a filter to any report too.
 
 .RS
-$ task list +mall
+$ task +mall list
 .br
 
 .br
@@ -432,7 +430,7 @@ I made a mistake - I can't mail out the invitations at the mall, so let's remove
 that tag.
 
 .RS
-$ task 3 -mall
+$ task 3 modify -mall
 .br
 Modified 1 task.
 .RE
@@ -443,7 +441,7 @@ and a new description.  This is also considered a bulk change, and so requires
 confirmation.
 
 .RS
-$ task 7 Pay rent at the end of the month
+$ task 7 modify Pay rent at the end of the month
 .br
 
 .br
@@ -467,7 +465,7 @@ $ task 8 prepend Select some
 .br
 $ task 8 append for after dinner
 .br
-$ task list dinner
+$ task dinner list
 .br
 
 .br
@@ -597,7 +595,7 @@ Modified task reverted.
 
 .SH INFO
 During that undo operation, taskwarrior displayed metadata that is associated
-with the task.  You can display this with the info command, and its shortcut.
+with the task.  You can display this with the info command.
 
 .RS
 $ task 1 info
@@ -622,30 +620,6 @@ UUID        3a6881bb-628b-4f90-93d7-4da563b83d54
 .br
 Entered     10/16/2010 (44 mins)
 .br
-
-.br
-$ task 1
-.br
-
-.br
-Name        Value
-.br
------------ ------------------------------------
-.br
-ID          1
-.br
-Description Select a free weekend in November
-.br
-Status      Pending
-.br
-Project     party
-.br
-Priority    H
-.br
-UUID        3a6881bb-628b-4f90-93d7-4da563b83d54
-.br
-Entered     10/16/2010 (44 mins)
-.RE
 
 There are also statistics that taskwarrior gathers, which I can display.
 
@@ -745,7 +719,7 @@ ID Project Pri Due Active Age     Description
 You can choose to display annotations in different ways.
 
 .RS
-$ task list rc.annotations:full
+$ task rc.annotations:full list
 .br
 
 .br
@@ -765,7 +739,7 @@ ID Project Pri Due Active Age     Description
 .br
 Configuration override annotations:full
 .br
-$ task list rc.annotations:sparse
+$ task rc.annotations:sparse list
 .br
 
 .br
@@ -783,7 +757,7 @@ ID Project Pri Due Active Age     Description
 .br
 Configuration override annotations:sparse
 .br
-$ task list rc.annotations:none
+$ task rc.annotations:none list
 .br
 
 .br
@@ -996,7 +970,7 @@ $ task add New task
 .br
 Created task 9.
 .br
-$ task list New task
+$ task New task list
 .br
 
 .br
@@ -1185,7 +1159,7 @@ Here is an example of an explicit override to the color rules where a specific
 task is given a red background.
 
 .RS
-$ task 1 bg:on_red
+$ task 1 modify bg:on_red
 .br
 modified 1 task.
 .br
@@ -1219,7 +1193,7 @@ ID Project Pri Due Active Age     Description
 .br
 8 tasks
 .br
-$ task 1 bg:
+$ task 1 modify bg:
 .br
 Modified 1 task.
 .RE
@@ -1496,7 +1470,7 @@ $ task 2 start
 .br
 Started 2 'Select and book a venue'.
 .br
-$ task list venue
+$ task venue list
 .br
 
 .br
@@ -1516,7 +1490,7 @@ $ task 2 stop
 .br
 Stopped 2 'Select and book a venue'.
 .br
-$ task list venue
+$ task venue list
 .br
 
 .br
@@ -1540,31 +1514,31 @@ Due dates can be specified as dates, durations into the future or past,
 mnemonic, ordinal or day of week.
 
 .RS
-$ task 1 due:7/31/2010
+$ task 1 modify due:7/31/2010
 .br
 Modified 1 task.
 .br
-$ task 1 due:2wks
+$ task 1 modify due:2wks
 .br
 Modified 1 task.
 .br
-$ task 1 due:-2wks
+$ task 1 modify due:-2wks
 .br
 Modified 1 task.
 .br
-$ task 1 due:eom
+$ task 1 modify due:eom
 .br
 Modified 1 task.
 .br
-$ task 2 due:8th
+$ task 2 modify due:8th
 .br
 Modified 1 task.
 .br
-$ task 2 due:sunday
+$ task 2 modify due:sunday
 .br
 Modified 1 task.
 .br
-$ task 5 due:eow
+$ task 5 modify due:eow
 .br
 Modified 1 task.
 .RE
@@ -1843,13 +1817,13 @@ every month.  Recurring tasks allow us to set up a single task that keeps coming
 back, just as you'd expect.
 
 .RS
-$ task 7 due:eom recur:monthly
+$ task 7 modify due:eom recur:monthly
 .br
 Task 7 is now a recurring task.
 .br
 Modified 1 task.
 .br
-$ task 7
+$ task 7 info
 .br
 
 .br
@@ -1880,7 +1854,7 @@ You can also limit the extent of the recurrence.  Let's make sure the task
 doesn't recur after the lease ends.
 
 .RS
-$ task 7 until:eoy
+$ task 7 modify until:eoy
 .br
 Modified 1 task.
 .RE
@@ -2075,7 +2049,7 @@ individual tasks.  The 'nocolor' special tag causes the color rules to be
 bypassed.
 
 .RS
-$ task 6 +nocolor
+$ task 6 modify +nocolor
 .br
 Modified 1 task.
 .RE
@@ -2104,7 +2078,7 @@ There are others - the 'nonag' special tag prevents the generation of nag
 messages when you work on low priority tasks when there are more important ones.
 
 .RS
-$ task 6 -nocolor
+$ task 6 modify -nocolor
 .br
 Modified 1 task.
 .RE
@@ -2127,7 +2101,7 @@ and visible using the 'waiting' report.  When the wait date comes, the task
 will just reappear in the list.
 
 .RS
-$ task 10 wait:12/1/2010
+$ task 10 modify wait:12/1/2010
 .br
 Modified 1 task.
 .br
@@ -2188,7 +2162,7 @@ $ task add Do something in a few seconds
 .br
 Created task 11.
 .br
-$ task 11 wait:5s
+$ task 11 modify wait:5s
 .br
 Modified 1 task.
 .br
@@ -2280,7 +2254,7 @@ Taskwarrior supports dependencies.  Let's take a look at the party planning
 tasks, and assign dependencies.
 
 .RS
-$ task list pro:party
+$ task pro:party list
 .br
 
 .br
@@ -2314,7 +2288,7 @@ ID Project Pri Due        Active Age   Description
 Let's see.  I can't mail invitations until they are printed.
 
 .RS
-$ task 3 depends:6
+$ task 3 modify depends:6
 .br
 Modified 1 task.
 .RE
@@ -2322,7 +2296,7 @@ Modified 1 task.
 I can't print them until I design them.
 
 .RS
-$ task 6 dep:5
+$ task 6 modify dep:5
 .br
 Modified 1 task.
 .RE
@@ -2330,7 +2304,7 @@ Modified 1 task.
 I need to select a weekend before a location.
 
 .RS
-$ task 2 dep:1
+$ task 2 modify dep:1
 .br
 Modified 1 task.
 .RE
@@ -2338,7 +2312,7 @@ Modified 1 task.
 Design depends on location and weekend.
 
 .RS
-$ task 5 dep:1,2
+$ task 5 modify dep:1,2
 .br
 Modified 1 task.
 .RE
@@ -2346,7 +2320,7 @@ Modified 1 task.
 And the caterer needs to know where.
 
 .RS
-$ task 4 dep:1
+$ task 4 modify dep:1
 .br
 Modified 1 task.
 .RE
@@ -2354,7 +2328,7 @@ Modified 1 task.
 Let's take a look.  All my tasks are blocked except task 1.  That makes sense.
 
 .RS
-$ task long pro:party
+$ task pro:party long
 .br
 
 .br
@@ -2388,7 +2362,7 @@ ID Project Pri Added      Started Due        Recur Countdown Age   Deps Tags Des
 Hmm, that double dependency isn't right.
 
 .RS
-$ task 5 dep:-1
+$ task 5 modify dep:-1
 .br
 Modified 1 task.
 .RE
@@ -3101,7 +3075,7 @@ Now again, but with the text 'invit', which acts as a filter on the description
 field.
 
 .RS
-$ task list invit
+$ task invit list
 .br
 
 .br
@@ -3125,7 +3099,7 @@ filtering on descriptions that contain the word fragment.  Here we are using
 the 'contains' modifier, but there are many others.
 
 .RS
-$ task list description.contains:invit
+$ task description.contains:invit list
 .br
 
 .br
@@ -3148,7 +3122,7 @@ All tasks containing the whole word 'the'.  See how annotations are also
 searched?
 
 .RS
-$ task list desc.word:the
+$ task desc.word:the list
 .br
 
 .br
@@ -3170,7 +3144,7 @@ ID Project Pri Due        Active Age   Description
 Here is a list of all tasks that do not contain the whole word 'invitations'.
 
 .RS
-$ task list desc.noword:invitations
+$ task desc.noword:invitations list
 .br
 
 .br
@@ -3199,18 +3173,18 @@ there are several synonyms for modifiers, so that the filter can be written so
 that it reads naturally.
 
 .RS
-$ task list pro:party
+$ task pro:party list
 .br
-$ task list pro.is:party
+$ task pro.is:party list
 .br
-$ task list pro.not:party
+$ task pro.not:party list
 .RE
 
 Here the 'over' modifier is filtering on priorities that sort higher than 'Low',
 and also filtering on the 'party' project.  There are two terms in this filter.
 
 .RS
-$ task list pro:party pri.over:L
+$ task pro:party pri.over:L list
 .br
 
 .br
@@ -3234,7 +3208,7 @@ the first page of tasks.  I don't have a page full of tasks here, but you get
 the idea.
 
 .RS
-$ task list pro:party limit:2
+$ task pro:party limit:2 list
 .br
 
 .br
@@ -3252,7 +3226,7 @@ ID Project Pri Due        Active Age   Description
 .br
 2 tasks, 2 shown
 .br
-$ task list limit:page
+$ task limit:page list
 .br
 
 .br
@@ -3275,198 +3249,15 @@ Now you can see how some of the built-in reports work.  The 'list' report is
 just all tasks, filtered so that only the pending tasks are shown.
 
 .RS
-$ task all status:pending
+$ task status:pending all
  ...
 .RE
 
 The 'waiting' report is similarly defined.
 
 .RS
-$ task all status:waiting
+$ task status:waiting all
  ...
-.RE
-
-.SH IMPORT/EXPORT
-You can export your tasks.  Here you see all tasks being exported in CSV format.
-
-.RS
-$ task export.csv
-.br
-\'uuid','status','tags','entry','start','due','recur','end','project','priority','fg','bg','description'
-.br
-\'3a6881bb-628b-4f90-93d7-4da563b83d54','pending','',1287237300,,1288497600,,,'party','H',,,'Select a free weekend in November'
-.br
-\'4a1de9aa-9b00-41ec-8d00-e0d0131e0e0d','pending','',1287237365,,,,,'party',,,,'Mail invitations'
-.br
-\'2a65e922-ff18-4db1-b867-dbe745b9626a','pending','',1287237372,,,,,'party',,,,'Select a caterer'
-.br
- ...
-.RE
-
-Let's just export one task in CSV format...
-
-.RS
-$ task export.csv venue
-.br
-\'uuid','status','tags','entry','start','due','recur','end','project','priority','fg','bg','description'
-.br
-\'773c2b02-919e-4527-95f0-814c19dd198a','completed','',1287237350,,1287288000,,1287250285,'party','H',,,'Select and book a venue'
-.RE
-
-Or in VCalendar format...
-
-.RS
-$ task export.vcalendar venue
-.br
-BEGIN:VCALENDAR
-.br
-VERSION:2.0
-.br
-PRODID:-//GBF//task 1.9.4.beta1//EN
-.br
-BEGIN:VTODO
-.br
-UID:773c2b02-919e-4527-95f0-814c19dd198a
-.br
-DTSTAMP:20101016T135550Z
-.br
-DUE:20101017T040000Z
-.br
-COMPLETED:20101016T173125Z
-.br
-SUMMARY:Select and book a venue
-.br
-CLASS:PRIVATE
-.br
-PRIORITY:1
-.br
-STATUS:COMPLETED
-.br
-COMMENT:Started task
-.br
-COMMENT:Stopped task
-.br
-END:VTODO
-.br
-END:VCALENDAR
-.RE
-
-Or YAML.
-
-.RS
-$ task export.yaml venue
-.br
-%YAML 1.1
-.br
----
-.br
-  task:
-.br
-    depends: 3a6881bb-628b-4f90-93d7-4da563b83d54
-.br
-    description: Select and book a venue
-.br
-    due: 1287288000
-.br
-    end: 1287250285
-.br
-    entry: 1287237350
-.br
-    priority: H
-.br
-    project: party
-.br
-    status: completed
-.br
-    uuid: 773c2b02-919e-4527-95f0-814c19dd198a
-.br
-    annotation:
-.br
-      entry: 1287242411
-.br
-      description: Started task
-.br
-    annotation:
-.br
-      entry: 1287242506
-.br
-      description: Stopped task
-.br
- ...
-.RE
-
-I can also import.  Here I am importing simple lines of text.  Taskwarrior
-recognizes the format by looking inside the file and making a guess, then
-confirms.
-
-.RS
-$ cat file.text
-.br
-Remember to read the task man page
-.br
-$ task import file.text
-.br
-This looks like a text file with one task per line.  Okay to proceed? (y/n) y
-.br
-Imported 1 tasks successfully, with 0 errors.
-.RE
-
-Here is a YAML example.  Taskwarrior can read several formats, including old
-versions of its data files.  Using YAML, you can round-trip the data without
-loss, which means you can export and import without any missing information.
-This also means that 'export.yaml' is good for making a backup copy of your
-tasks.
-
-.RS
-$ cat file.yaml
-.br
-%YAML 1.1
-.br
----
-.br
-  task:
-.br
-    description: Visit http://taskwarrior.org
-.br
-    due: 1281844800
-.br
-    entry: 1281289630
-.br
-    priority: H
-.br
-    project: work
-.br
-    status: pending
-.br
-    uuid: 23afada0-a446-8d5a-c213-30d99d52c4b0
-.br
- ...
-.br
-$ task import file.yaml
-.br
-This looks like a YAML file.  Okay to proceed? (y/n) y
-.br
-Imported 1 tasks successfully.
-.RE
-
-Here are the imported tasks.
-
-.RS
-$ task new limit:2
-.br
-
-.br
-ID Project Pri Due        Active Age   Description
-.br
--- ------- --- ---------- ------ ----- ------------------------------------
-.br
-11 work    H   8/15/2010         9 wks Visit http://taskwarrior.org
-.br
-10                               1 min Remember to read the task man page
-.br
-
-.br
-9 tasks, 2 shown
 .RE
 
 .SH HELP
@@ -3479,9 +3270,7 @@ $ task help
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
-task was written by P. Beckingham <paul@beckingham.net>.
-.br
-Copyright (C) 2006 \- 2011 P. Beckingham
+Copyright (C) 2006 \- 2011 P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez, and has been modified and supplemented by Paul Beckingham.
 
