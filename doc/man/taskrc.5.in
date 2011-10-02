@@ -428,6 +428,16 @@ Taskwarrior supports command aliases.  This alias provides an alternate name
 any of the commands.  Several commands you may use are actually aliases -
 the 'history' report, for example, or 'export'.
 
+.SS SYNCH SERVER
+.TP
+.B taskd.server=<server>:<port>
+The server and port address of the task server with which you synchronize.
+
+.TP
+.B taskd.credentials=<org>:<user>:<key>
+These are your server credentials.  Keep this information private and secure!
+Note that these credentials must match the server account.
+
 .SS EXTENSIONS
 .TP
 .B extensions=on

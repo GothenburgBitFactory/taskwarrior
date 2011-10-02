@@ -199,6 +199,10 @@ int CmdDiagnostics::execute (std::string& output)
       << location.mode ()
       << "\n";
 
+  out << "    Server: "
+      << context.config.get ("taskd.server")
+      << "\n";
+
   out << "   Locking: "
       << (context.config.getBoolean ("locking")
            ? STRING_CMD_DIAG_ENABLED

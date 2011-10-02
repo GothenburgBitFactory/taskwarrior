@@ -180,6 +180,8 @@ int CmdShow::execute (std::string& output)
     " shadow.notify"
     " shell.prompt"
     " tag.indicator"
+    " taskd.server"
+    " taskd.credentials"
     " undo.style"
     " urgency.active.coefficient"
     " urgency.annotations.coefficient"
