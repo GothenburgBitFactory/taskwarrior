@@ -94,7 +94,7 @@ $ task config nag ""
 Taskwarrior will also display all your settings with this command:
 
 .RS
-$ task config
+$ task show
 .RE
 
 and in addition, will also perform a check of all the values in the file,
@@ -201,6 +201,11 @@ When set to on (the default), helpful explanatory comments are added to the
 edited file when using the "task edit ..." command.  Setting this to off means
 that you would see a smaller, more compact representation of the task, with no
 help text.  Deprecated - use verbosity token 'edit'.
+
+.TP
+.B locale=en-US.UTF8
+Locale to be used by Taskwarrior for synchronization with the task server.  The
+default value is currently blank.
 
 .SS MISCELLANEOUS
 
@@ -358,11 +363,6 @@ $ task rc._forcecolor=yes list > file
 .RE
 
 .TP
-.B blanklines=yes
-Turning this value off causes taskwarrior to generate a more vertically compact
-output.
-
-.TP
 .B shell.prompt=task>
 The task shell command uses this value as a prompt.  You can change it to any
 string you like.
@@ -412,6 +412,7 @@ of the longer-term rate.  The calculation is as follows:
 Minimum length of any abbreviated command/value.  This means that "ve", "ver",
 "vers", "versi", "versio" will all equate to "version", but "v" will not.
 Default is 2.
+
 .TP
 .B debug=off
 Taskwarrior has a debug mode that causes diagnostic output to be displayed.
@@ -571,6 +572,10 @@ of the holidays is also shown.  If set to sparse only the days are color-coded
 and no details on the holidays will be displayed. The displaying of holidays is
 turned off by setting the variable to none.  The default value is "none".
 
+.TP
+.B calendar.legend=yes
+Determines whether the calendar legend is displayed.  The default value is "yes".
+
 .SS JOURNAL ENTRIES
 
 .TP
@@ -655,7 +660,7 @@ specified, taskwarrior will only show as many that will fit.
 Determines whether dependency chain violations generate reminders.
 
 .TP
-.B dependency.confirm=yes
+.B dependency.confirmation=yes
 Determines whether dependency chain repair requires confirmation.
 
 .SS COLOR CONTROLS
@@ -890,6 +895,65 @@ wildcard values (color.tag.XXX) is shortened to 'tag', which places all specific
 tag rules at the same precedence, again for brevity.
 .RE
 
+.TP
+.B color.debug=green
+.RS
+Colors all debug output, if enabled.
+.RE
+
+.SS URGENCY
+
+The urgency calculation uses a polynomial with several terms, each of which
+has a configurable coefficient.  Those coefficients are:
+
+.TP
+.B urgency.next.coefficient=10.0
+.RS
+Urgency coefficients for 'next' special tag
+.RE
+.B urgency.blocking.coefficient=9.0
+.RS
+Urgency coefficients for blocking tasks
+.RE
+.B urgency.blocked.coefficient=-8.0
+.RS
+Urgency coefficients for blocked tasks
+.RE
+.B urgency.due.coefficient=7.0
+.RS
+Urgency coefficients for due dates
+.RE
+.B urgency.priority.coefficient=6.0
+.RS
+Urgency coefficients for priorities
+.RE
+.B urgency.waiting.coefficient=5.0
+.RS
+Urgency coefficients for waiting status
+.RE
+.B urgency.active.coefficient=4.0
+.RS
+Urgency coefficients for active tasks
+.RE
+.B urgency.project.coefficient=3.0
+.RS
+Urgency coefficients for projects
+.RE
+.B urgency.tags.coefficient=2.0
+.RS
+Urgency coefficients for tags
+.RE
+.B urgency.annotations.coefficient=1.0
+.RS
+Urgency coefficients for annotations
+.RE
+
+The coefficients reflect the relative importance of the various terms in the
+urgency calculation.  These are default values, and may be modified to suit your
+preferences, but it is important that you carefully consider any modifications.
+See the original RFC-31 for complete details at:
+http://tasktools.org/gitweb/gitweb.cgi?p=rfc.git;a=blob_plain;f=rfc31-urgency.txt;hb=HEAD
+
 .SS SHADOW FILE
 
 .TP
@@ -917,6 +981,31 @@ shadow.notify=on
 When this value is set to "on", taskwarrior will display a message whenever the
 shadow file is updated by some task command.
 
+.SS PUSH/PULL/MERGE
+
+See the 'man task-synch' page for more details regarding usage.
+
+.TP
+.B merge.autopush=yes|no|ask
+.RS
+Determines post-merge behavior regarding automatic push.
+.RE
+
+.B merge.default.uri
+.RS
+Default merge URI.
+.RE
+
+.B pull.default.uri
+.RS
+Default pull URI.
+.RE
+
+.B push.default.uri
+.RS
+Default push URI.
+.RE
+
 .SS DEFAULTS
 
 .TP
@@ -942,18 +1031,18 @@ command, if you don't specify one.  The default is blank.
 
 .TP
 .B
-default.command=list
+default.command=next
 Provides a default command that is run every time taskwarrior is invoked with no
 arguments.  For example, if set to:
 
 .RS
 .RS
-default.command=list project:foo
+default.command=project:foo list
 .RE
 .RE
 
 .RS
-then taskwarrior will run the "list project:foo" command if no command is
+then taskwarrior will run the "project:foo list" command if no command is
 specified.  This means that by merely typing
 .RE
 
@@ -961,7 +1050,7 @@ specified.  This means that by merely typing
 .RS
 $ task
 .br
-[task list project:foo]
+[task project:foo list]
 .br
 \&
 .br
@@ -1030,7 +1119,7 @@ variable for details on the possible values.
 .TP
 .B report.X.limit
 An optional value to a report limiting the number of displayed tasks in the
-generated report.
+generated report.  Deprecated.
 
 .TP
 Taskwarrior comes with a number of predefined reports in its default
@@ -1089,9 +1178,7 @@ Lists all tasks matching the specified criteria.
 Lists the most important tasks.
 
 .SH "CREDITS & COPYRIGHTS"
-Taskwarrior was written by P. Beckingham <paul@beckingham.net>.
-.br
-Copyright (C) 2006 \- 2011 P. Beckingham
+Copyright (C) 2006 \- 2011 P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez.
 
