@@ -41,7 +41,7 @@ extern Context context;
 CmdPrepend::CmdPrepend ()
 {
   _keyword     = "prepend";
-  _usage       = "task <filter> prepend <modifications>";
+  _usage       = "task <filter> prepend <mods>";
   _description = STRING_CMD_PREPEND_USAGE;
   _read_only   = false;
   _displays_id = false;

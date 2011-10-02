@@ -42,7 +42,7 @@ extern Context context;
 CmdModify::CmdModify ()
 {
   _keyword     = "modify";
-  _usage       = "task <filter> modify <modifications>";
+  _usage       = "task <filter> modify <mods>";
   _description = std::string (STRING_CMD_MODIFY_USAGE1) +
                  "\n" +
                  STRING_CMD_MODIFY_USAGE2;

@@ -41,7 +41,7 @@ extern Context context;
 CmdDone::CmdDone ()
 {
   _keyword     = "done";
-  _usage       = "task <filter> done [<modifications>]";
+  _usage       = "task <filter> done <mods>";
   _description = STRING_CMD_DONE_USAGE;
   _read_only   = false;
   _displays_id = false;

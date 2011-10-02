@@ -41,7 +41,7 @@ extern Context context;
 CmdStop::CmdStop ()
 {
   _keyword     = "stop";
-  _usage       = "task <filter> stop [<modifications>]";
+  _usage       = "task <filter> stop <mods>";
   _description = STRING_CMD_STOP_USAGE;
   _read_only   = false;
   _displays_id = false;

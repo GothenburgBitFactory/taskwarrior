@@ -41,7 +41,7 @@ extern Context context;
 CmdDuplicate::CmdDuplicate ()
 {
   _keyword     = "duplicate";
-  _usage       = "task <filter> duplicate [<modifications>]";
+  _usage       = "task <filter> duplicate <mods>";
   _description = STRING_CMD_DUPLICATE_USAGE;
   _read_only   = false;
   _displays_id = false;

@@ -605,19 +605,19 @@
   "http://taskwarrior.org\n" \
   "\n" \
   "The general form of commands is:\n" \
-  "  task <filter> <command> <modifications>\n" \
+  "  task <filter> <command> <mods>\n" \
   "\n" \
   "The <filter> consists of zero or more restrictions on which tasks to select, " \
   "such as:\n" \
-  "  task                                      <command> <modifications>\n" \
-  "  task 28                                   <command> <modifications>\n" \
-  "  task +weekend                             <command> <modifications>\n" \
-  "  task project:Home due.before:today        <command> <modifications>\n" \
-  "  task ebeeab00-ccf8-464b-8b58-f7f2d606edfb <command> <modifications>\n" \
+  "  task                                      <command> <mods>\n" \
+  "  task 28                                   <command> <mods>\n" \
+  "  task +weekend                             <command> <mods>\n" \
+  "  task project:Home due.before:today        <command> <mods>\n" \
+  "  task ebeeab00-ccf8-464b-8b58-f7f2d606edfb <command> <mods>\n" \
   "\n" \
   "By default, filter elements are combined with an implicit 'and' operator, but " \
   "'or' and 'xor' may also be used, provided parentheses are included:\n" \
-  "  task '(/[Cc]at|[Dd]og/ or /[0-9]+/)'      <command> <modifications>\n" \
+  "  task '(/[Cc]at|[Dd]og/ or /[0-9]+/)'      <command> <mods>\n" \
   "\n" \
   "A filter may target specific tasks using ID or UUID numbers.  To specify " \
   "multiple tasks use one of these forms:\n" \
@@ -626,8 +626,8 @@
   "  task 1,2-5,19                                 modify pri:H\n" \
   "  task 4-7 ebeeab00-ccf8-464b-8b58-f7f2d606edfb info\n" \
   "\n" \
-  "The <modifications> consist of zero or more changes to apply to the selected " \
-  "tasks, such as:\n" \
+  "The <mods> consist of zero or more changes to apply to the selected tasks, " \
+  "such as:\n" \
   "  task <filter> <command> project:Home\n" \
   "  task <filter> <command> +weekend +garden due:tomorrow\n" \
   "  task <filter> <command> Description/annotation text\n" \

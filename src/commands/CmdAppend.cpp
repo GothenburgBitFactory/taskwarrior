@@ -41,7 +41,7 @@ extern Context context;
 CmdAppend::CmdAppend ()
 {
   _keyword     = "append";
-  _usage       = "task <filter> append <modifications>";
+  _usage       = "task <filter> append <mods>";
   _description = STRING_CMD_APPEND_USAGE;
   _read_only   = false;
   _displays_id = false;

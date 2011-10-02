@@ -41,7 +41,7 @@ extern Context context;
 CmdStart::CmdStart ()
 {
   _keyword     = "start";
-  _usage       = "task <filter> start [<modifications>]";
+  _usage       = "task <filter> start <mods>";
   _description = STRING_CMD_START_USAGE;
   _read_only   = false;
   _displays_id = false;

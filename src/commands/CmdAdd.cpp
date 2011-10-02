@@ -40,7 +40,7 @@ extern Context context;
 CmdAdd::CmdAdd ()
 {
   _keyword     = "add";
-  _usage       = "task          add <modifications>";
+  _usage       = "task          add <mods>";
   _description = STRING_CMD_ADD_USAGE;
   _read_only   = false;
   _displays_id = false;
