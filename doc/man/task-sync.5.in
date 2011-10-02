@@ -119,9 +119,9 @@ users home directory as follows:
 
 .br
 .RS
-ssh://[user@]host[:port]/~/.task/
+ssh://[user@]host[:port]/.task/
 .br
-[user@]host:~/.task/
+[user@]host:.task/
 .RE
 
 or even shorter
@@ -163,7 +163,7 @@ https://host[:port]/path/to/.task/
 ftp://[user@]host[:port]/path/to/.task/
 .RE
 
-You can use single quotes to encapsulate user names that contain delimiting 
+You can use single quotes to encapsulate user names that contain delimiting
 characters like '@', '/' or ':', e.g.:
 
 .br
@@ -352,8 +352,6 @@ unable to merge.  The change transactions stored in the undo.data file are
 used for synchronization.
 
 .SH "CREDITS & COPYRIGHTS"
-task was written by P. Beckingham <paul@beckingham.net>.
-.br
 Copyright (C) 2006 \- 2011 P. Beckingham, F. Hernandez.
 
 The sync capabilities were written by J. Schlatow.
