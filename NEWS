@@ -74,6 +74,8 @@ Newly deprecated features in taskwarrior 2.0.0
     'affected' instead.
   - Use of 'edit.verbose' configuration variable.  Use verbosity token 'edit'
     instead.
+  - Use of 'export.ical.class' configuration variable.  Value is now specified
+    in the scripts/add-ons/export-ical.pl script.
 
 ---
 
